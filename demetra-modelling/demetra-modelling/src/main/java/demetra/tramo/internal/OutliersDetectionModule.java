@@ -1,13 +1,13 @@
 /*
- * Copyright 2013 National Bank of Belgium
- *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Copyright 2017 National Bank of Belgium
+ * 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- *
- * http://ec.europa.eu/idabc/eupl
- *
+ * 
+ * https://joinup.ec.europa.eu/software/page/eupl
+ * 
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,54 +16,37 @@
  */
 package demetra.tramo.internal;
 
-import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
+import demetra.tramo.internal.TramoUtility;
+import demetra.tramo.internal.OutliersDetectionModuleImpl;
 import demetra.design.BuilderPattern;
-import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihood;
-import demetra.linearmodel.LeastSquaresResults;
-import demetra.linearmodel.LinearModel;
-import demetra.linearmodel.Ols;
+import demetra.modelling.Variable;
 import demetra.modelling.regression.AdditiveOutlier;
-import demetra.regarima.IRegArimaProcessor;
-import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.RegArimaModel;
-import demetra.regarima.RegArmaModel;
-import demetra.regarima.ami.IOutliersDetectionModule;
-import demetra.regarima.internal.ConcentratedLikelihoodComputer;
-import demetra.regarima.outlier.SingleOutlierDetector;
-import demetra.regarima.outlier.FastOutlierDetector;
-import demetra.sarima.HannanRissanen;
-import demetra.sarima.SarimaMapping;
-import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
-import demetra.sarima.SarmaSpecification;
 import demetra.modelling.regression.IOutlier;
 import demetra.modelling.regression.LevelShift;
+import demetra.modelling.regression.PeriodicOutlier;
 import demetra.modelling.regression.TransitoryChange;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import javax.annotation.Nonnull;
+import demetra.regarima.RegArimaUtility;
+import demetra.regarima.outlier.FastOutlierDetector;
+import demetra.regarima.outlier.SingleOutlierDetector;
+import demetra.regarima.regular.ModelDescription;
+import demetra.sarima.SarimaModel;
+import demetra.sarima.SarimaSpecification;
+import demetra.timeseries.TimeSelector;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
+import demetra.regarima.regular.IOutliersDetectionModule;
+import demetra.regarima.regular.ProcessingResult;
+import demetra.regarima.regular.RegArimaModelling;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
-public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaModel> {
-
-    public static SingleOutlierDetector<SarimaModel> defaultOutlierDetector(){
-        FastOutlierDetector detector=new FastOutlierDetector(null);
-        detector.addOutlierFactory(AdditiveOutlier.FACTORY);
-        detector.addOutlierFactory(LevelShift.FACTORY_ZEROSTARTED);
-        detector.addOutlierFactory(new TransitoryChange.Factory(.7));
-        return detector;
-    }
+public class OutliersDetectionModule implements IOutliersDetectionModule {
 
     public static int DEF_MAXROUND = 100;
     public static int DEF_MAXOUTLIERS = 50;
+    public static final double EPS = 1e-7;
 
     public static Builder builder() {
         return new Builder();
@@ -72,28 +55,49 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
     @BuilderPattern(OutliersDetectionModule.class)
     public static class Builder {
 
-        private double cv = 0;
-        private boolean mvx;
-        private IRegArimaProcessor<SarimaModel> processor;
+        private double eps = EPS;
         private int maxOutliers = DEF_MAXOUTLIERS;
         private int maxRound = DEF_MAXROUND;
-        private SingleOutlierDetector<SarimaModel> sod;
+        private boolean ao, ls, tc, so;
+        private double tcrate;
+        private boolean ml;
+        private TimeSelector span = TimeSelector.all();
 
         private Builder() {
         }
 
-        public Builder criticalValue(double cv) {
-            this.cv = cv;
+        public Builder span(TimeSelector span) {
+            this.span = span;
             return this;
         }
 
-        public Builder maximumLikelihood(boolean mvx) {
-            this.mvx = mvx;
+        public Builder precision(double eps) {
+            this.eps = eps;
             return this;
         }
 
-        public Builder processor(IRegArimaProcessor<SarimaModel> processor) {
-            this.processor = processor;
+        public Builder tcrate(double tcrate) {
+            this.tcrate = tcrate;
+            return this;
+        }
+
+        public Builder ao(boolean ao) {
+            this.ao = ao;
+            return this;
+        }
+
+        public Builder ls(boolean ls) {
+            this.ls = ls;
+            return this;
+        }
+
+        public Builder tc(boolean tc) {
+            this.tc = tc;
+            return this;
+        }
+
+        public Builder so(boolean so) {
+            this.so = so;
             return this;
         }
 
@@ -107,314 +111,156 @@ public class OutliersDetectionModule implements IOutliersDetectionModule<SarimaM
             return this;
         }
 
-         public Builder singleOutlierDetector(SingleOutlierDetector<SarimaModel> sod) {
-            this.sod=sod;
+        public Builder maximumLikelihood(boolean ml) {
+            this.ml = ml;
             return this;
         }
 
         public OutliersDetectionModule build() {
-            return new OutliersDetectionModule(sod, processor, maxRound, maxOutliers, cv, mvx);
+            return new OutliersDetectionModule(this);
         }
     }
 
-    private final int maxRound, maxOutliers;
-    private final ArrayList<int[]> outliers = new ArrayList<>(); // Outliers : (position, type)
-    private final SingleOutlierDetector sod;
-    private final IRegArimaProcessor<SarimaModel> processor;
-    private final double cv;
-    private final boolean mvx;
+    private final double eps;
+    private final int maxOutliers;
+    private final int maxRound;
+    private final boolean ao, ls, tc, so;
+    private final boolean ml;
+    private final double tcrate;
+    private final TimeSelector span;
 
-    private RegArimaModel<SarimaModel> regarima;
-    private double[] tstats;
-    private int round;
-    // festim = true if the model has to be re-estimated
-    private boolean rflag_, backw_, exit_, firstEstimation;
-    private int[] lastremoved;
-    private DoubleSequence coeff, res;
-    //
-
-    private OutliersDetectionModule(final SingleOutlierDetector sod, final IRegArimaProcessor<SarimaModel> processor,
-            final int maxOutliers, final int maxRound, final double cv, final boolean mvx) {
-        this.sod = sod;
-        this.processor = processor;
-        this.maxOutliers = maxOutliers;
-        this.maxRound = maxRound;
-        this.mvx = mvx;
-        this.cv = cv;
+    private OutliersDetectionModule(Builder builder) {
+        this.eps = builder.eps;
+        this.maxOutliers = builder.maxOutliers;
+        this.maxRound = builder.maxRound;
+        this.ao = builder.ao;
+        this.ls = builder.ls;
+        this.tc = builder.tc;
+        this.so = builder.so;
+        this.tcrate = builder.tcrate;
+        this.span = builder.span;
+        this.ml = builder.ml;
     }
 
-    @Override
-    public void setBounds(int start, int end) {
-        sod.setBounds(start, end);
-    }
-
-    @Override
-    public void prepare(int n) {
-        sod.prepare(n);
-    }
-
-    @Override
-    public void exclude(int pos, int type) {
-        sod.exclude(pos, type);
-    }
-
-    /**
-     * @return the outliers_
-     */
-    @Override
-    public int[][] getOutliers() {
-        return outliers.toArray(new int[outliers.size()][]);
-    }
-
-    public IOutlier.IOutlierFactory getFactory(int i) {
-        return sod.getOutlierFactory(i);
-    }
-
-    public String[] outlierTypes() {
-        ArrayList<IOutlier.IOutlierFactory> factories = sod.getFactories();
-        String[] types = new String[factories.size()];
-        for (int i = 0; i < types.length; ++i) {
-            types[i] = factories.get(i).getCode();
+    private OutliersDetectionModuleImpl make(ModelDescription desc, double cv) {
+        TsDomain domain = desc.getDomain();
+        int test = comatip(desc);
+        boolean cmvx;
+        if (test < 0) {
+            return null;
         }
-        return types;
-    }
-
-    @Override
-    public boolean process(RegArimaModel<SarimaModel> initialModel) {
-        clear();
-        int n = initialModel.getY().length();
-        sod.setBounds(0, n);
-        sod.prepare(n);
-        regarima = initialModel;
-        double max;
-        try {
-            do {
-                if (!estimateModel()) {
-                    return false;
-                }
-                boolean search = true;
-                if (backw_) {
-                    search = verifyModel();
-                    if (exit_) {
-                        break;
-                    }
-                }
-                if (search) {
-                    if (!sod.process(regarima)) {
-                        break;
-                    }
-                    round++;
-                    max = sod.getMaxTStat();
-                    if (Math.abs(max) < cv) {
-                        break;
-                    }
-                    int type = sod.getMaxOutlierType();
-                    int pos = sod.getMaxOutlierPosition();
-                    addOutlier(pos, type, sod.coeff(pos, type));
-                    if (outliers.size() == maxOutliers) {
-                        break;
-                    }
-                }
-            } while (round < maxRound);
-
-            // we should remove non signigicant outlier (witouht re-estimation)
-            if (round == maxRound || outliers.size() == maxOutliers) {
-                estimateModel();
-            }
-            firstEstimation = false;
-
-            while (!verifyModel()) {
-                estimateModel();
-            }
-
-            return true;
-        } catch (RuntimeException err) {
-            return false;
-        }
-    }
-
-    private boolean estimateModel() {
-        // step 1 Initial values by OLS
-        SarimaModel sarima = regarima.arima();
-        SarimaSpecification spec = sarima.specification();
-        RegArmaModel<SarimaModel> dm = regarima.differencedModel();
-        LinearModel lm = dm.asLinearModel();
-        if (rflag_) {
-            if (lm.getVariablesCount() > 0) {
-                Ols ols = new Ols();
-                LeastSquaresResults lsr = ols.compute(lm);
-                if (lsr == null) {
-                    return false;
-                }
-                res = lm.calcResiduals(lsr.getCoefficients());
-            } else {
-                res = lm.getY();
-            }
-
-        } else if (coeff != null) {
-            res = lm.calcResiduals(coeff);
+        if (test > 0) {
+            cmvx = true;
         } else {
-            res = lm.getY();
+            cmvx = false;
         }
-        boolean stable = true;
-        rflag_ = false;
 
-        if (firstEstimation) {
-            SarmaSpecification dspec = spec.doStationary();
-            if (spec.getParametersCount() != 0) {
-                HannanRissanen hr = HannanRissanen.builder().build();
-                if (hr.process(res, dspec)) {
-                    SarimaModel hrmodel = hr.getModel();
-                    SarimaModel stmodel = SarimaMapping.stabilize(hrmodel);
-                    stable = stmodel == hrmodel;
-                    if (stable || mvx || round == 0) {
-                        regarima = RegArimaModel.of(regarima,
-                                SarimaModel.builder(spec)
-                                        .parameters(stmodel.parameters())
-                                        .build());
-                    } else {
-                        rflag_ = true;
-                        stable = true;
-                    }
+        OutliersDetectionModuleImpl.Builder builder = OutliersDetectionModuleImpl.builder()
+                .singleOutlierDetector(factories())
+                .criticalValue(cv)
+                .maximumLikelihood(cmvx)
+                .maxOutliers(maxOutliers)
+                .maxRound(maxRound)
+                .processor(RegArimaUtility.processor(desc.getArimaComponent().defaultMapping(), true, eps));
+        OutliersDetectionModuleImpl impl = builder.build();
+        TsDomain odom = domain.select(span);
+        int start = domain.indexOf(odom.getStartPeriod()), end = start + odom.getLength();
+        impl.prepare(domain.getLength());
+        impl.setBounds(start, end);
+        String[] types = impl.outlierTypes();
+        // remove missing values
+        int[] missing = desc.transformation().getMissing();
+        if (missing != null) {
+            for (int i = 0; i < missing.length; ++i) {
+                for (int j = 0; j < types.length; ++j) {
+                    impl.exclude(missing[i], j);
                 }
             }
-            if ((mvx || !stable) && firstEstimation) {
-                return optimizeModel();
+        }
+        // current outliers ([fixed], pre-specified, identified)
+        desc.variables()
+                .filter(var -> var.getVariable() instanceof IOutlier)
+                .map(var -> (IOutlier) var.getVariable()).forEach(
+                o -> impl.exclude(domain.indexOf(o.getPosition()), outlierType(types, o.getCode())));
+        return impl;
+    }
+
+    private SingleOutlierDetector<SarimaModel> factories() {
+        FastOutlierDetector detector = new FastOutlierDetector(null);
+        if (ao) {
+            detector.addOutlierFactory(AdditiveOutlier.FACTORY);
+        }
+        if (ls) {
+            detector.addOutlierFactory(LevelShift.FACTORY_ZEROSTARTED);
+        }
+        if (tc) {
+            detector.addOutlierFactory(new TransitoryChange.Factory(tcrate));
+        }
+        return detector;
+    }
+
+    @Override
+    public ProcessingResult process(RegArimaModelling context, double criticalValue) {
+        ModelDescription model = context.getDescription();
+        TsDomain domain = model.getDomain();
+        OutliersDetectionModuleImpl impl = make(model, criticalValue);
+        if (impl == null) {
+            return ProcessingResult.Failed;
+        }
+        boolean ok = impl.process(model.regarima());
+        if (!ok) {
+            return ProcessingResult.Failed;
+        }
+        // add new outliers
+        int[][] outliers = impl.getOutliers();
+        if (outliers.length == 0) {
+            return ProcessingResult.Unchanged;
+        }
+        for (int i = 0; i < outliers.length; ++i) {
+            int[] cur = outliers[i];
+            TsPeriod pos = domain.get(cur[0]);
+            model.addVariable(new Variable(impl.getFactory(cur[1]).make(pos.start()), false));
+        }
+        return ProcessingResult.Unchanged;
+    }
+
+    private static int outlierType(String[] all, String cur) {
+        for (int i = 0; i < all.length; ++i) {
+            if (cur.equals(all[i])) {
+                return i;
             }
         }
-        if (lm.getVariablesCount() > 0) {
-            updateLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima), spec.getParametersCount());
-        }
-
-        return true;
+        return -1;
     }
 
-    private boolean optimizeModel() {
-        RegArimaEstimation<SarimaModel> estimation = processor.optimize(regarima);
-        regarima = estimation.getModel();
-        updateLikelihood(estimation.getConcentratedLikelihood(), estimation.getNparams());
-        return true;
-    }
-
-    private void updateLikelihood(ConcentratedLikelihood likelihood, int nhp) {
-        coeff = likelihood.coefficients();
-        tstats = likelihood.tstats(nhp, true);
-    }
-
-    private void clear() {
-        rflag_ = true;
-        outliers.clear();
-        round = 0;
-        lastremoved = null;
-        coeff = null;
-        tstats = null;
-        firstEstimation = true;
-        backw_ = false;
-        exit_ = false;
-        res = null;
-        // festim = true if the model has to be re-estimated
-    }
-
-    /**
-     * Backward procedure (without re-estimation of the model)
-     *
-     * @param exit
-     * @return True means that the model was not modified
-     */
-    private boolean verifyModel() {
-        firstEstimation = true;
-        if (outliers.isEmpty()) {
-            return true;
+    private int comatip(ModelDescription desc) {
+        // int rslt = ml ? 1 : 0;
+        int n = desc.getSeries().getValues().count(x -> Double.isFinite(x));
+        // first, check if od is possible
+        SarimaSpecification spec = desc.getSpecification();
+        int nparm = Math.max(spec.getD() + spec.getP() + spec.getPeriod()
+                * (spec.getBd() + spec.getBp()), spec.getQ()
+                + spec.getPeriod() * spec.getBq())
+                + (desc.isEstimatedMean() ? 1 : 0)
+                + (15 * n) / 100 + spec.getPeriod();
+        if (n - nparm <= 0) {
+            return -1;
         }
-        /*double[] t = m_model.computeLikelihood().getTStats(true,
-         m_model.getArma().getParametersCount());*/
-        int nx0 = regarima.getVariablesCount() - outliers.size();
-        int imin = 0;
-        for (int i = 1; i < outliers.size(); ++i) {
-            if (Math.abs(tstats[i + nx0]) < Math.abs(tstats[imin + nx0])) {
-                imin = i;
-            }
+        if (ml) {
+            return 1;
         }
-
-        if (Math.abs(tstats[nx0 + imin]) >= cv) {
-            return true;
+        int ndf1 = TramoUtility.autlar(n, spec);
+        int ndf2 = 0;
+        if (spec.getP() + spec.getBp() > 0 && spec.getQ() + spec.getBq() > 0) {
+            n -= spec.getP() + spec.getPeriod() * spec.getBp();
+            spec.setP(0);
+            spec.setBp(0);
+            ndf2 = TramoUtility.autlar(n, spec);
         }
-        backw_ = false;
-        firstEstimation = false;
-        int[] toremove = outliers.get(imin);
-        sod.allow(toremove[0], toremove[1]);
-        removeOutlier(imin);
-        if (lastremoved != null) {
-            if (Arrays.equals(toremove, lastremoved)) {
-                exit_ = true;
-            }
-        }
-        lastremoved = toremove;
-        return false;
-    }
-
-    private void addOutlier(int pos, int type, double c) {
-        addOutlier(pos, type);
-        double[] tmp;
-        if (coeff == null) {
-            coeff = DoubleSequence.of(c);
+        if (ndf1 < 0 || ndf2 < 0) {
+            return 1;
         } else {
-            tmp = new double[coeff.length() + 1];
-            coeff.copyTo(tmp, 0);
-            tmp[coeff.length()] = c;
-            coeff = DoubleSequence.ofInternal(tmp);
-        }
-        backw_ = true;
-    }
-
-    private void addOutlier(int pos, int type) {
-        int[] o = new int[]{pos, type};
-        outliers.add(o);
-        double[] xo = new double[regarima.getObservationsCount()];
-        DataBlock XO = DataBlock.ofInternal(xo);
-        sod.factory(type).fill(pos, XO);
-        regarima = regarima.toBuilder().addX(XO).build();
-        sod.exclude(pos, type);
-    }
-
-    /**
-     *
-     * @param model
-     * @return
-     */
-    private void removeOutlier(int idx) {
-        //
-        int opos = regarima.getVariablesCount() - outliers.size() + idx;
-        regarima = regarima.toBuilder().removeX(opos).build();
-        outliers.remove(idx);
-        double[] tmp;
-        if (coeff.length() == 1) {
-            coeff = null;
-        } else {
-            if (regarima.isMean()) {
-                ++opos;
-            }
-            tmp = new double[coeff.length() - 1];
-            for (int i = 0; i < opos; ++i) {
-                tmp[i] = coeff.get(i);
-            }
-            for (int i = opos + 1; i < coeff.length(); ++i) {
-                tmp[i - 1] = coeff.get(i);
-            }
-            coeff = DoubleSequence.ofInternal(tmp);
+            return 0;
         }
     }
-
-    /**
-     *
-     * @return
-     */
-    public List<IOutlier.IOutlierFactory> factories() {
-        return Collections.unmodifiableList(sod.getFactories());
-    }
-
-    public double getCritivalValue() {
-        return cv;
-    }
-
 }

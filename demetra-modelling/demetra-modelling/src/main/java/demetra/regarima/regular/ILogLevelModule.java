@@ -16,8 +16,6 @@
  */
 package demetra.regarima.regular;
 
-import demetra.regarima.ami.ProcessingResult;
-
 /**
  *
  * @author Jean Palate
@@ -26,5 +24,5 @@ import demetra.regarima.ami.ProcessingResult;
 
 public interface ILogLevelModule {
     
-    ProcessingResult process(RegArimaContext context);
+    ProcessingResult process(RegArimaModelling context);
 }

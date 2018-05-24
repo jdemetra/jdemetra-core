@@ -14,26 +14,25 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.regarima.ami;
+package demetra.regarima.regular;
 
-import demetra.data.DoubleSequence;
-import demetra.sarima.SarmaSpecification;
+import demetra.arima.IArimaModel;
+import demetra.regarima.RegArimaModel;
 
 /**
  *
  * @author Jean Palate
  */
+public interface IOutliersDetectionModule {
 
-public interface IArmaModule {
-    
     /**
-     * 
-     * @param data The stationary data
-     * @param period The period of the series
-     * @param d The regular differencing applied on the original data to get the stationary series
-     * @param bd The seasonal differencing applied on the original data to get the stationary series
-     * @param seas The fact that seasonal part should be considered or not
-     * @return The best ARMA specification
+     * Search outliers in the given RegArima model
+     *
+     * @param model Model being considered. The model will be augmented with the
+     * new outliers. On exit, 
+     * @param criticalValue Critical value for the detection of outliers
+     * @return True if the model was changed, false otherwise
      */
-    SarmaSpecification process(DoubleSequence data, int period, int d, int bd, boolean seas);
+    ProcessingResult process(RegArimaModelling model, double criticalValue);
+
 }

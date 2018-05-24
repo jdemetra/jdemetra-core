@@ -23,7 +23,7 @@ package demetra.regarima.regular;
  */
 public interface IModelController {
     
-    boolean control(RegArimaContext context);
+    boolean control(RegArimaModelling context);
     
     PreprocessingModel getReferenceModel();
     void setReferenceModel(PreprocessingModel model);

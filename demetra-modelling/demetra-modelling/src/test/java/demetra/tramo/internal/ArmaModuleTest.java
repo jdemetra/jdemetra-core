@@ -14,13 +14,15 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramo;
+package demetra.tramo.internal;
 
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
+import demetra.tramo.internal.ArmaModule;
+import demetra.tramo.internal.ArmaModuleImpl;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -35,7 +37,7 @@ public class ArmaModuleTest {
 
     @Test
     public void testProd() {
-        ArmaModule test = new ArmaModule();
+        ArmaModule test = ArmaModule.builder().build();
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
@@ -47,7 +49,7 @@ public class ArmaModuleTest {
 
     @Test
     public void testX() {
-        ArmaModule test = new ArmaModule();
+        ArmaModule test = ArmaModule.builder().build();
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();

@@ -26,10 +26,10 @@ import demetra.modelling.regression.ITradingDaysVariable;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.regarima.ami.IRegressionModule;
+import demetra.regarima.regular.IRegressionModule;
 import demetra.regarima.regular.ModelDescription;
-import demetra.regarima.ami.ProcessingResult;
-import demetra.regarima.regular.RegArimaContext;
+import demetra.regarima.regular.ProcessingResult;
+import demetra.regarima.regular.RegArimaModelling;
 import demetra.regarima.RegArimaUtility;
 import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.SarimaModel;
@@ -151,7 +151,7 @@ public class DefaultRegressionTest implements IRegressionModule {
         precision=builder.precision;
     }
 
-    private ModelDescription createTestModel(RegArimaContext current) {
+    private ModelDescription createTestModel(RegArimaModelling current) {
         ModelDescription model = new ModelDescription(current.getDescription());
         // add td, lp and easter
         if (td != null) {
@@ -169,7 +169,7 @@ public class DefaultRegressionTest implements IRegressionModule {
     }
 
     @Override
-    public ProcessingResult test(final RegArimaContext context) {
+    public ProcessingResult test(final RegArimaModelling context) {
         // estimate the model.
         ModelDescription currentModel = context.getDescription();
         ModelDescription tmpModel = createTestModel(context);

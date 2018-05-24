@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramo;
+package demetra.tramo.internal;
 
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
@@ -40,7 +40,7 @@ public class TramoUtility {
     
     public static final double MINCV = 2.0;
     
-    int autlar(final int n, final SarimaSpecification spec) {
+    public int autlar(final int n, final SarimaSpecification spec) {
         int d = spec.getD() + spec.getPeriod() * spec.getBd();
         int q = spec.getQ() + spec.getPeriod() * spec.getBq();
         int p = spec.getP() + spec.getPeriod() * spec.getBp();
@@ -61,7 +61,7 @@ public class TramoUtility {
         return nd - nar - Math.max(p, q) - ncol;
     }
 
-    boolean meantest(final int n, final double t) {
+    public boolean meantest(final int n, final double t) {
         double vct = 2.5;
         if (n <= 80) {
             vct = 1.96;
@@ -87,7 +87,7 @@ public class TramoUtility {
         return n;
     }
 
-    double PLjungBox(final int freq, final double[] res,
+    public double PLjungBox(final int freq, final double[] res,
             final int hp) {
         int n = calcLBLength(freq);
 

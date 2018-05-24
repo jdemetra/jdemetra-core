@@ -69,7 +69,11 @@ final class X12SpecDecoder {
                 .ub1(amiSpec.getInitialUnitRootLimit())
                 .ub2(amiSpec.getFinalUnitRootLimit())
                 .build();
-        ArmaModule arma = new ArmaModule();
+        ArmaModule arma = ArmaModule.builder()
+                .balanced(amiSpec.isBalanced())
+                .mixed(amiSpec.isMixed())
+                .build();
+                
         builder.differencing(diff)
                 .arma(arma);
     }
@@ -79,7 +83,7 @@ final class X12SpecDecoder {
         if (!outliers.isUsed()) {
             return;
         }
-        RegularOutliersDetectionModule.Builder obuilder = RegularOutliersDetectionModule.builder();
+        OutliersDetectionModule.Builder obuilder = OutliersDetectionModule.builder();
         SingleOutlierSpec[] types = outliers.getTypes();
         for (int i = 0; i < types.length; ++i) {
             switch (types[i].getType()) {

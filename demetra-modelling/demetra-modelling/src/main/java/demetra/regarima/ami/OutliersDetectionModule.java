@@ -44,7 +44,7 @@ import java.util.function.Consumer;
  * @param <T>
  */
 public class OutliersDetectionModule<T extends IArimaModel>
-        implements IOutliersDetectionModule<T> {
+        implements IGenericOutliersDetectionModule<T> {
 
     public static int DEF_MAXROUND = 100;
     public static int DEF_MAXOUTLIERS = 50;

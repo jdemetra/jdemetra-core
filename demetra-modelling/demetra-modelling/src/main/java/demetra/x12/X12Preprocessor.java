@@ -19,19 +19,20 @@ package demetra.x12;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.regression.ModellingContext;
-import demetra.regarima.ami.IArmaModule;
-import demetra.regarima.ami.IDifferencingModule;
 import demetra.regarima.regular.ILogLevelModule;
-import demetra.regarima.ami.IRegressionModule;
-import demetra.regarima.ami.ProcessingResult;
+import demetra.regarima.regular.IRegressionModule;
+import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.IModelBuilder;
 import demetra.regarima.regular.IPreprocessor;
-import demetra.regarima.regular.IRegularOutliersDetectionModule;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.PreprocessingModel;
-import demetra.regarima.regular.RegArimaContext;
+import demetra.regarima.regular.RegArimaModelling;
 import demetra.timeseries.TsData;
 import javax.annotation.Nonnull;
+import demetra.regarima.ami.IGenericDifferencingModule;
+import demetra.regarima.regular.IArmaModule;
+import demetra.regarima.regular.IDifferencingModule;
+import demetra.regarima.regular.IOutliersDetectionModule;
 
 /**
  *
@@ -49,6 +50,7 @@ public class X12Preprocessor implements IPreprocessor {
         double va;
         double reduceVa;
         double ljungBoxLimit;
+        boolean acceptAirline;
     }
 
     public static Builder builder() {
@@ -63,8 +65,8 @@ public class X12Preprocessor implements IPreprocessor {
         private IRegressionModule calendarTest, easterTest;
         private IDifferencingModule differencing;
         private IArmaModule arma;
-        private IRegularOutliersDetectionModule outliers;
-        private AmiOptions options = new AmiOptions(true, 1e-7, 0, .14286, .95);
+        private IOutliersDetectionModule outliers;
+        private AmiOptions options = new AmiOptions(true, 1e-7, 0, .14286, .95, false);
 
         public Builder modelBuilder(@Nonnull IModelBuilder builder) {
             this.modelBuilder = builder;
@@ -101,7 +103,7 @@ public class X12Preprocessor implements IPreprocessor {
             return this;
         }
 
-        public Builder outliers(IRegularOutliersDetectionModule outliers) {
+        public Builder outliers(IOutliersDetectionModule outliers) {
             this.outliers = outliers;
             return this;
         }
@@ -121,16 +123,17 @@ public class X12Preprocessor implements IPreprocessor {
     private final IModelBuilder modelBuilder;
     private final ILogLevelModule transformation;
     private final IRegressionModule calendarTest, easterTest;
-    private final IRegularOutliersDetectionModule outliers;
+    private final IOutliersDetectionModule outliers;
     private final AmiOptions options;
     private final IDifferencingModule differencing;
     private final IArmaModule arma;
 
     private double curva = 0;
+    private PreprocessingModel refAirline, refAuto;
     private boolean needOutliers;
-    private boolean needDifferencing;
-    private boolean needArma;
-    private int round;
+    private boolean needAutoModelling;
+    private int loop, round;
+    private double plbox, rvr, rtval;
 
     private X12Preprocessor(Builder builder) {
         this.modelBuilder = builder.modelBuilder;
@@ -139,15 +142,23 @@ public class X12Preprocessor implements IPreprocessor {
         this.easterTest = builder.easterTest;
         this.outliers = builder.outliers;
         this.options = builder.options;
-        this.differencing=builder.differencing;
-        this.arma=builder.arma;
+        this.differencing = builder.differencing;
+        this.arma = builder.arma;
+    }
+
+    private void clear() {
+        loop = round = 0;
+        plbox = rvr = rtval = 0;
+        refAirline = null;
+        curva = 0;
+        needAutoModelling = differencing != null || arma != null;
     }
 
     @Override
-    public PreprocessingModel process(TsData originalTs, RegArimaContext context) {
-//        clear();
+    public PreprocessingModel process(TsData originalTs, RegArimaModelling context) {
+        clear();
         if (context == null) {
-            context = new RegArimaContext();
+            context = new RegArimaModelling();
         }
         ModelDescription desc = modelBuilder.build(originalTs, context.getLog());
         if (desc == null) {
@@ -155,7 +166,6 @@ public class X12Preprocessor implements IPreprocessor {
         }
         context.setDescription(desc);
 
-        round=0;
         // initialize some internal variables
         if (outliers != null) {
             curva = options.getVa();
@@ -164,13 +174,7 @@ public class X12Preprocessor implements IPreprocessor {
             }
             needOutliers = true;
         }
-        if (differencing != null) {
-            needDifferencing=true;
-        }
-        if (arma != null) {
-            needArma=true;
-        }
-        
+
         PreprocessingModel rslt = calc(context);
 //        if (rslt != null) {
 //            rslt.info_ = context.information;
@@ -179,31 +183,116 @@ public class X12Preprocessor implements IPreprocessor {
         return rslt;
     }
 
-    private PreprocessingModel calc(RegArimaContext context) {
-        if (transformation != null) {
-            transformation.process(context);
-        }
-        if (calendarTest != null) {
-            calendarTest.test(context);
-        }
-        if (easterTest != null) {
-            easterTest.test(context);
-        }
-
-        checkMu(context, true);
-        context.estimate(options.getPrecision());
-
-        if (needOutliers) {
-            if (outliers.process(context.getDescription(), curva)) {
-                context.setEstimation(null);
+    private PreprocessingModel calc(RegArimaModelling context) {
+        try {
+            if (transformation != null) {
+                transformation.process(context);
             }
-        }
-        
 
-        return null;
+            regAIC(context);
+
+            checkMu(context, true);
+
+            if (needOutliers && ProcessingResult.Changed == outliers.process(context, curva)) {
+                if (context.needEstimation()) {
+                    context.estimate(options.precision);
+                }
+                // TODO test regression effects
+            }
+            if (isAutoModelling()) {
+                if (context.needEstimation()) {
+                    context.estimate(options.precision);
+                }
+                refAirline = context.build();
+                ModelController controller = new ModelController(.95, 1);
+                boolean ok = controller.accept(context);
+                plbox = 1 - controller.getLjungBoxTest().getPValue();
+                rvr = controller.getRvr();
+                rtval = controller.getRTval();
+                if (!options.acceptAirline || !ok) {
+
+                    round = 1;
+                    loop = 1;
+                    do {
+                        boolean defModel = false;
+                        if (needAutoModelling) {
+                            ProcessingResult drslt = differencing.process(context);
+                            ProcessingResult arslt = arma.process(context);
+                            defModel = drslt == ProcessingResult.Unchanged
+                                    && arslt == ProcessingResult.Unchanged;
+                            if (!defModel) {
+                                if (context.getDescription().removeVariable(var -> var.isOutlier(false))) {
+                                    context.setEstimation(null);
+                                    needOutliers = outliers != null;
+                                }
+                            }
+                            if (context.needEstimation()) {
+                                context.estimate(options.precision);
+                            }
+                            if (!defModel || loop > 1) {
+                                regAIC(context);
+                            }
+                        }
+                        if (needOutliers) {
+                            outliers.process(context, curva);
+                            if (context.needEstimation()) {
+                                context.estimate(options.precision);
+                            }
+                        }
+//                    if (! needOutliers && loop <= 2) {
+//                        if (!pass2(defModel, context)) {
+//                            continue;
+//                        }
+//                    }
+//                    if (regressionTest1 != null) {
+//                        ProcessingResult changed = regressionTest1.process(context);
+//                        if (changed == ProcessingResult.Changed) {
+//                            if (loop_ < 3) {
+//                                loop_ = 3;
+//                            }
+//                            if (context.estimation == null) {
+//                                estimator.estimate(context);
+//                            }
+//                        }
+//                    }
+//                    // final tests
+//                    checkUnitRoots(context);
+//                    checkMA(context);
+//                    if (context.automodelling && !context.description.isMean() && Math.abs(rtval_) > 2.5) {
+//                        if (checkMu_) {
+//                            context.description.setMean(true);
+//                        }
+//                    }
+//
+//                    if (finalizer.estimate(context)) {
+//                        break;
+//                    }
+//                    if (loop_ <= 2 && outliers != null) {
+//                        outliers.reduceSelectivity();
+//                        needOutliers_ = true;
+//                        needAutoModelling_ = true;
+//                    }
+                    } while (round++ < 5);
+                }
+            } else {
+//            estimator.estimate(context);
+            }
+
+            return context.build();
+
+        } catch (Exception err) {
+            return null;
+        } finally {
+            clear();
+        }
+    }
+    
+
+    private boolean isAutoModelling() {
+        return differencing != null || arma != null;
     }
 
-    private ProcessingResult checkMu(RegArimaContext context, boolean initial) {
+    private ProcessingResult checkMu(RegArimaModelling context, boolean initial) {
         if (!options.checkMu) {
             return ProcessingResult.Unchanged;
         }
@@ -577,19 +666,19 @@ public class X12Preprocessor implements IPreprocessor {
 //        }
 //    }
 //
-//    private ProcessingResult regAIC(ModellingContext context) {
-//        ProcessingResult rslt = ProcessingResult.Unchanged;
-//        if (tdTest != null && tdTest.process(context) == ProcessingResult.Changed) {
-//            rslt = ProcessingResult.Changed;
-//        }
-//        if (easterTest != null && easterTest.process(context) == ProcessingResult.Changed) {
-//            rslt = ProcessingResult.Changed;
-//        }
+    private ProcessingResult regAIC(RegArimaModelling context) {
+        ProcessingResult rslt = ProcessingResult.Unchanged;
+        if (calendarTest != null && calendarTest.test(context) == ProcessingResult.Changed) {
+            rslt = ProcessingResult.Changed;
+        }
+        if (easterTest != null && easterTest.test(context) == ProcessingResult.Changed) {
+            rslt = ProcessingResult.Changed;
+        }
 //        if (userTest != null && userTest.process(context) == ProcessingResult.Changed) {
 //            rslt = ProcessingResult.Changed;
 //        }
-//        return rslt;
-//    }
+        return rslt;
+    }
 //
 //    private ProcessingResult checkMu(ModellingContext context, boolean initial) {
 //        if (!checkMu_) {

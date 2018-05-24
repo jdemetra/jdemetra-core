@@ -26,7 +26,7 @@ import demetra.regarima.outlier.IRobustStandardDeviationComputer;
  *
  * @author Jean Palate
  */
-public class FastDifferencingModule implements IDifferencingModule {
+public class FastDifferencingModule implements IGenericDifferencingModule {
 
     public static Builder builder() {
         return new Builder();

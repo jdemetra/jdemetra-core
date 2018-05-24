@@ -23,14 +23,14 @@ import demetra.modelling.regression.IEasterVariable;
 import demetra.regarima.IArimaMapping;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.ami.IRegressionModule;
-import demetra.regarima.ami.ProcessingResult;
+import demetra.regarima.regular.IRegressionModule;
+import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.RegArimaUtility;
 import demetra.regarima.regular.AICcComparator;
 import demetra.regarima.regular.IModelComparator;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
-import demetra.regarima.regular.RegArimaContext;
+import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.SarimaModel;
 
 /**
@@ -82,7 +82,7 @@ public class EasterDetectionModule implements IRegressionModule {
     }
 
     @Override
-    public ProcessingResult test(RegArimaContext context) {
+    public ProcessingResult test(RegArimaModelling context) {
         ModelDescription description = context.getDescription();
         int n = easters.length;
         int icur = -1;

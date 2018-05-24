@@ -18,12 +18,12 @@
 
 package demetra.x12;
 
-import demetra.regarima.ami.IRegressionModule;
-import demetra.regarima.ami.ProcessingResult;
+import demetra.regarima.regular.IRegressionModule;
+import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.RegArimaUtility;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
-import demetra.regarima.regular.RegArimaContext;
+import demetra.regarima.regular.RegArimaModelling;
 
 
 /**
@@ -41,7 +41,7 @@ public class MeanController  implements IRegressionModule{
         this.cval=cval;
     }
 
-    public ProcessingResult test(RegArimaContext context) {
+    public ProcessingResult test(RegArimaModelling context) {
         
         ModelDescription desc=context.getDescription();
         ModelEstimation est=context.getEstimation();

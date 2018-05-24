@@ -18,7 +18,7 @@ package demetra.tramo;
 
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
-import demetra.regarima.regular.RegArimaContext;
+import demetra.regarima.regular.RegArimaModelling;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
@@ -63,7 +63,7 @@ public class TramoProcessorTest {
         TramoProcessor processor=TramoProcessor.of(TramoSpec.TRfull, null);
         TsPeriod start=TsPeriod.monthly(1967,1);
         TsData s=TsData.of(start, DoubleSequence.ofInternal(data));
-        RegArimaContext context=new RegArimaContext();
+        RegArimaModelling context=new RegArimaModelling();
         processor.process(s, context);
         context.estimate(1e-9);
     }

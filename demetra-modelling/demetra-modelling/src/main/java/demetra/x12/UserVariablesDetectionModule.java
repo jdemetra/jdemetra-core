@@ -21,14 +21,14 @@ import demetra.design.Development;
 import demetra.modelling.Variable;
 import demetra.modelling.regression.IUserTsVariable;
 import demetra.regarima.IRegArimaProcessor;
-import demetra.regarima.ami.IRegressionModule;
-import demetra.regarima.ami.ProcessingResult;
+import demetra.regarima.regular.IRegressionModule;
+import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.RegArimaUtility;
 import demetra.regarima.regular.AICcComparator;
 import demetra.regarima.regular.IModelComparator;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
-import demetra.regarima.regular.RegArimaContext;
+import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.SarimaModel;
 import demetra.timeseries.TsDomain;
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public class UserVariablesDetectionModule implements IRegressionModule {
     }
 
     @Override
-    public ProcessingResult test(RegArimaContext context) {
+    public ProcessingResult test(RegArimaModelling context) {
 
         ModelDescription description = context.getDescription();
         ModelEstimation est = context.getEstimation();

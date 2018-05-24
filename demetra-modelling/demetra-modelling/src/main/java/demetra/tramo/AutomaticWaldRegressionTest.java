@@ -28,10 +28,10 @@ import demetra.modelling.regression.ITradingDaysVariable;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.regarima.ami.IRegressionModule;
+import demetra.regarima.regular.IRegressionModule;
 import demetra.regarima.regular.ModelDescription;
-import demetra.regarima.ami.ProcessingResult;
-import demetra.regarima.regular.RegArimaContext;
+import demetra.regarima.regular.ProcessingResult;
+import demetra.regarima.regular.RegArimaModelling;
 import demetra.regarima.RegArimaUtility;
 import demetra.sarima.SarimaModel;
 import java.util.Optional;
@@ -142,7 +142,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
     }
 
     @Override
-    public ProcessingResult test(RegArimaContext context) {
+    public ProcessingResult test(RegArimaModelling context) {
 
         ModelDescription current = context.getDescription();
         IRegArimaProcessor processor = RegArimaUtility.processor(current.getArimaComponent().defaultMapping(), true, precision);
@@ -204,7 +204,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         return update(current, model, tdsel, regarima.getConcentratedLikelihood(), nhp);
     }
 
-    private ModelDescription createTestModel(RegArimaContext context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
+    private ModelDescription createTestModel(RegArimaModelling context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
         ModelDescription tmp = new ModelDescription(context.getDescription());
         tmp.setAirline(context.isSeasonal());
         tmp.setMean(true);

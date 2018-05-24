@@ -14,20 +14,17 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramo;
-
-import demetra.regarima.regular.IRegularOutliersDetectionModule;
-import demetra.regarima.regular.ModelDescription;
+package demetra.regarima.regular;
 
 /**
- *
+ * Estimates the stationary part of the arima model provided in the context.
+ * On entry, the estimation should be available
+ * The context should contain the new specification on exit. The fully estimated model
+ * is not necessary provided
  * @author Jean Palate
  */
-public class TramoOutliersDetectionModule implements IRegularOutliersDetectionModule{
-
-    @Override
-    public boolean process(ModelDescription model, double criticalValue) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+public interface IDifferencingModule {
+    
+    ProcessingResult process(RegArimaModelling context);
     
 }

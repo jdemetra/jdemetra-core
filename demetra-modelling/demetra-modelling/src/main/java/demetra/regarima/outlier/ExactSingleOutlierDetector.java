@@ -89,6 +89,8 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
     @Override
     protected boolean calc() {
         try {
+            if (getOutlierFactoriesCount() == 0 || ubound<=lbound)
+                return false;
             RegArmaModel<T> dmodel = this.getRegArima().differencedModel();
             n = filter.prepare(dmodel.getArma(), dmodel.getY().length());
             if (!initialize(dmodel)) {

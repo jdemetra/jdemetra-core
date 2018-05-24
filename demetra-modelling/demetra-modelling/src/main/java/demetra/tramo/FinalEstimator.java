@@ -26,7 +26,7 @@ import demetra.maths.polynomials.Polynomial;
 import demetra.regarima.regular.IModelEstimator;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
-import demetra.regarima.regular.RegArimaContext;
+import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
@@ -69,7 +69,7 @@ public class FinalEstimator implements IModelEstimator {
     }
 
     @Override
-    public boolean estimate(RegArimaContext context) {
+    public boolean estimate(RegArimaModelling context) {
         int niter = 0;
         do {
             try {
@@ -135,7 +135,7 @@ public class FinalEstimator implements IModelEstimator {
 //     * @param context
 //     * @return
 //     */
-    private int test(RegArimaContext context) {
+    private int test(RegArimaModelling context) {
         double cval = tsig;
         int nz = context.getDescription().getDomain().getLength();
         double cmin = nz <= 150 ? .15 : .1;
@@ -254,7 +254,7 @@ public class FinalEstimator implements IModelEstimator {
         return nnsig;
     }
 
-    private boolean checkCommonRoots(RegArimaContext context) {
+    private boolean checkCommonRoots(RegArimaModelling context) {
         // simplify possible common roots on ar, ma
         SarimaModel arima = context.getDescription().getArimaComponent().getModel();
         SarimaSpecification spec = arima.specification();
@@ -290,7 +290,7 @@ public class FinalEstimator implements IModelEstimator {
         }
     }
 
-    private boolean checkUnitRoots(RegArimaContext context) {
+    private boolean checkUnitRoots(RegArimaModelling context) {
 
         //quasi-unit roots of ar are changed in true unit roots
         SarimaModel m = context.getDescription().getArimaComponent().getModel();

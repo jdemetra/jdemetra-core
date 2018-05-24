@@ -22,15 +22,23 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.linearfilters.BackFilter;
+import demetra.maths.polynomials.UnitRoots;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArimaUtility;
+import demetra.regarima.regular.IDifferencingModule;
+import demetra.regarima.regular.ModelDescription;
+import demetra.regarima.regular.ModelEstimation;
+import demetra.regarima.regular.ProcessingResult;
+import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.HannanRissanen;
 import demetra.sarima.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
-import demetra.regarima.ami.IDifferencingModule;
+import demetra.sarima.SarmaSpecification;
+import demetra.x12.X12Exception;
+import demetra.x12.X12Utility;
 
 /**
  *
@@ -53,6 +61,7 @@ public class DifferencingModule implements IDifferencingModule {
         private double ub1 = 0.97;
         private double ub2 = 0.88;
         private double cancel = 0.1;
+        private boolean ml = false;
 
         private Builder() {
         }
@@ -87,8 +96,13 @@ public class DifferencingModule implements IDifferencingModule {
             return this;
         }
 
+        public Builder maximumLikelihood(boolean ml) {
+            this.ml = ml;
+            return this;
+        }
+
         public DifferencingModule build() {
-            return new DifferencingModule(maxd, maxbd, ub1, ub2, cancel, eps);
+            return new DifferencingModule(maxd, maxbd, ub1, ub2, cancel, ml, eps);
         }
     }
 
@@ -103,12 +117,13 @@ public class DifferencingModule implements IDifferencingModule {
     private SarimaModel lastModel;
     private double rmax, rsmax, c_;
     private int iter;
-    private boolean ml_, useml_, mlused, bcalc_;
+    private boolean useml, mlused;
     private final int maxd, maxbd;
     private final double ub1;
     private final double ub2;
     private final double cancel;
     private final double eps;
+    private final boolean ml;
 
     /**
      *
@@ -117,17 +132,19 @@ public class DifferencingModule implements IDifferencingModule {
      * @param ub1
      * @param ub2
      * @param cancel
+     * @param ml
      * @param eps
      */
     public DifferencingModule(final int maxd, final int maxbd,
             final double ub1, final double ub2, final double cancel,
-            final double eps) {
+            final boolean ml, final double eps) {
         this.maxd = maxd;
         this.maxbd = maxbd;
         this.ub1 = ub1;
         this.ub2 = ub2;
         this.cancel = cancel;
         this.eps = eps;
+        this.ml = ml;
     }
 
     private void allcond() {
@@ -153,14 +170,10 @@ public class DifferencingModule implements IDifferencingModule {
         }
     }
 
-    private void calc() {
-        if (x == null || bcalc_) {
-            return;
-        }
+    private boolean calc() {
         c_ = cancel;
-        useml_ = false;
+        useml = false;
         mlused = false;
-        bcalc_ = true;
         rsmax = 0;
         rmax = 0;
 
@@ -169,7 +182,7 @@ public class DifferencingModule implements IDifferencingModule {
         while (nextstep() && iter < 5) {
             ++iter;
         }
-
+        return true;
     }
 
     /**
@@ -178,9 +191,8 @@ public class DifferencingModule implements IDifferencingModule {
     public void clear() {
         lastModel = null;
         spec = null;
-        bcalc_ = false;
         x = null;
-        useml_ = false;
+        useml = false;
     }
 
     private int cond1(int icon) // current condition status
@@ -199,8 +211,8 @@ public class DifferencingModule implements IDifferencingModule {
         // if cancelation ..., but big initial roots
         if ((Math.abs(ar - ma) < c_ || (hasSeas() && Math.abs(sar - sma) < c_))
                 && (rmax >= 0.9 || rsmax >= 0.9)) {
-            if (useml_ && icon == 1) {
-                useml_ = false;
+            if (useml && icon == 1) {
+                useml = false;
             } else {
                 ++icon;
             }
@@ -212,8 +224,8 @@ public class DifferencingModule implements IDifferencingModule {
         } // if big initial roots and coef near -1
         else if (((Math.abs(ar + 1) <= 0.15 || (hasSeas() && Math.abs(sar + 1) <= 0.16)) && (rmax >= 0.9 || rsmax >= 0.88))
                 || ((Math.abs(ar + 1) <= 0.16 || (hasSeas() && Math.abs(sar + 1) <= 0.17)) && (rmax >= 0.91 || rsmax >= 0.89))) {
-            if (useml_ && icon == 1) {
-                useml_ = false;
+            if (useml && icon == 1) {
+                useml = false;
             } else {
                 ++icon;
             }
@@ -275,14 +287,6 @@ public class DifferencingModule implements IDifferencingModule {
         return ub2;
     }
 
-    /**
-     *
-     * @return
-     */
-    public double getCancel() {
-        return cancel;
-    }
-
     private boolean hasSeas() {
         return maxbd > 0 && spec.getPeriod() > 1;
     }
@@ -338,11 +342,12 @@ public class DifferencingModule implements IDifferencingModule {
             lastModel = SarimaModel.builder(spec.doStationary()).setDefault().build();
         }
 
-        if (usedefault || ml_ || useml_) {
+        if (usedefault || ml || useml) {
             SarimaMapping.stabilize(lastModel);
 
             IRegArimaProcessor processor = X12Utility.processor(true, eps);
-            RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(data).arima(lastModel).build();
+            RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class
+            ).y(data).arima(lastModel).build();
             RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima);
             if (rslt == null) {
                 throw new X12Exception("Non convergence in IDDIF");
@@ -353,7 +358,7 @@ public class DifferencingModule implements IDifferencingModule {
         } else {
             mlused = false;
         }
-        useml_ = false;
+        useml = false;
     }
 
     /**
@@ -361,7 +366,7 @@ public class DifferencingModule implements IDifferencingModule {
      * @return
      */
     public boolean isUsingML() {
-        return ml_;
+        return ml;
     }
 
     private int maincondition() {
@@ -386,7 +391,7 @@ public class DifferencingModule implements IDifferencingModule {
             if (-ar > 1.02) // |ar| too big (bad estimation)
             {
                 icon = 1;
-                useml_ = true;
+                useml = true;
             } else if (Math.abs(ar - ma) > c_) // no cancelation
             {
                 ++icon;
@@ -395,24 +400,24 @@ public class DifferencingModule implements IDifferencingModule {
         } else if (Math.abs(ar) > 1.12) // |ar| too big (bad estimation)
         {
             icon = 1;
-            useml_ = true;
+            useml = true;
         }
         if (hasSeas()) {
             if (Math.abs(sar + 1) <= .19) {
                 if (-sar > 1.02) {
-                    useml_ = true;
+                    useml = true;
                     icon = 1;
                 } else if (spec.getBd() == 0 && Math.abs(sar - sma) > c_) {
                     ++icon;
                     spec.setBd(spec.getBd() + 1);
-                    if (useml_) {
+                    if (useml) {
                         --icon;
-                        useml_ = false;
+                        useml = false;
                     }
                 }
             } else if (Math.abs(sar) > 1.12) {
                 icon = 1;
-                useml_ = true;
+                useml = true;
             }
         }
 
@@ -433,27 +438,14 @@ public class DifferencingModule implements IDifferencingModule {
     /**
      *
      * @param data
-     * @param periods
-     * @param start
+     * @param period
      * @return
      */
-    @Override
-    public int[] process(DoubleSequence data, int[] periods, int[] start) {
+    public boolean process(DoubleSequence data, int period) {
         clear();
         x = data.toArray();
-        if (periods.length > 2 || periods[0] != 1 
-                || (start != null && start.length != periods.length)) {
-            throw new IllegalArgumentException();
-        }
-        spec=new SarimaSpecification(periods.length == 2 ? periods[1] : 1);
-        if (start != null) {
-            spec.setD(start[0]);
-            if (start.length == 2) {
-                spec.setBd(start[1]);
-            }
-        }
-        calc();
-        return spec.getPeriod() > 1 ? new int[]{spec.getD(), spec.getBd()} : new int[]{spec.getD()};
+        spec = new SarimaSpecification(period);
+        return calc();
     }
 
     private int searchur(Complex[] r, double val, boolean regular) {
@@ -495,16 +487,14 @@ public class DifferencingModule implements IDifferencingModule {
         }
     }
 
-    /**
-     *
-     * @param value
-     */
-    public void useML(boolean value) {
-        ml_ = value;
-        clear();
+    public int getD() {
+        return spec.getD();
     }
 
-    @Override
+    public int getBd() {
+        return spec.getBd();
+    }
+
     public boolean isMeanCorrection() {
         if (spec.getDifferenceOrder() == 0) {
             return isStMean();
@@ -539,7 +529,8 @@ public class DifferencingModule implements IDifferencingModule {
         //GlsSarimaMonitor monitor = new GlsSarimaMonitor();
         //monitor.setMinimizer(new ProxyMinimizer(new LevenbergMarquardtMethod()));
         SarimaSpecification spec = this.spec.clone();
-        RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
+        RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class
+        )
                 .y(DoubleSequence.ofInternal(x))
                 .meanCorrection(true)
                 .arima(SarimaModel.builder(spec).setDefault().build())
@@ -568,4 +559,49 @@ public class DifferencingModule implements IDifferencingModule {
         return Math.abs(t) > vct;
     }
 
+    @Override
+    public ProcessingResult process(RegArimaModelling context) {
+        if (context.needEstimation()) {
+            context.estimate(eps);
+        }
+        ModelDescription desc = context.getDescription();
+        ModelEstimation est = context.getEstimation();
+        int freq = desc.getAnnualFrequency();
+        SarimaSpecification curspec = desc.getSpecification();
+        try {
+            // get residuals
+            DoubleSequence res = RegArimaUtility.linearizedData(desc.regarima(), est.getConcentratedLikelihood());
+            if (!process(res, freq)) {
+                return airline(context);
+            }
+            boolean changed = false;
+            if (spec.getD() != curspec.getD() || spec.getBd() != curspec.getBd()) {
+                changed = true;
+                desc.setSpecification(spec);
+                context.setEstimation(null);
+            }
+            boolean nmean = isMeanCorrection();
+            if (nmean != desc.isMean()) {
+                changed = true;
+                desc.setMean(nmean);
+                context.setEstimation(null);
+            }
+            return changed ? ProcessingResult.Changed : ProcessingResult.Unchanged;
+        } catch (RuntimeException err) {
+            return airline(context);
+        }
+    }
+
+    private ProcessingResult airline(RegArimaModelling context) {
+        boolean seasonal = context.isSeasonal();
+        ModelDescription desc = context.getDescription();
+        if (!desc.getSpecification().isAirline(seasonal)) {
+            desc.setAirline(seasonal);
+            desc.setMean(false);
+            context.setEstimation(null);
+            return ProcessingResult.Changed;
+        } else {
+            return ProcessingResult.Unprocessed;
+        }
+    }
 }

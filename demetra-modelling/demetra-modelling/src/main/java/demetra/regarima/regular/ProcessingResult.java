@@ -25,6 +25,14 @@ import demetra.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public interface IModelEstimator {
-    boolean estimate(RegArimaModelling context);
+public enum ProcessingResult {
+    Failed,
+    Unprocessed,
+    Unchanged,
+    Changed;
+
+    public boolean isProcessed(){
+        return this == Unchanged||this == Changed;
+    }
+
 }

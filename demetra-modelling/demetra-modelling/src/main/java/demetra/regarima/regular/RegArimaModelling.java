@@ -28,7 +28,7 @@ import demetra.sarima.SarimaModel;
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Data
-public class RegArimaContext {
+public class RegArimaModelling {
 
     private ModelDescription description;
     private ModelEstimation estimation;

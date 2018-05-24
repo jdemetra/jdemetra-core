@@ -500,10 +500,14 @@ public final class ModelDescription {
         }
     }
 
-    public void removeVariable(Predicate<Variable> pred) {
-        variables.removeIf(pred.and(var -> !var.isPrespecified()));
-        regressionVariables = null;
-        regarima = null;
+    public boolean removeVariable(Predicate<Variable> pred) {
+        if (variables.removeIf(pred.and(var -> !var.isPrespecified()))) {
+            regressionVariables = null;
+            regarima = null;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public int getAnnualFrequency() {
@@ -564,7 +568,7 @@ public final class ModelDescription {
                 .period(p)
                 .k(calcLBLength(p))
                 .ks(2)
-                .seasonal(p>1)
+                .seasonal(p > 1)
                 .hyperParametersCount(np)
                 .build();
 

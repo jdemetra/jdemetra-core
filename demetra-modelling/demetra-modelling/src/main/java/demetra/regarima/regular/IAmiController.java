@@ -16,7 +16,7 @@
 */
 
 
-package demetra.regarima.ami;
+package demetra.regarima.regular;
 
 import demetra.design.Development;
 
@@ -25,14 +25,6 @@ import demetra.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public enum ProcessingResult {
-    Failed,
-    Unprocessed,
-    Unchanged,
-    Changed;
-
-    public boolean isProcessed(){
-        return this == Unchanged||this == Changed;
-    }
-
+public interface IAmiController {
+    boolean accept(RegArimaModelling context);
 }

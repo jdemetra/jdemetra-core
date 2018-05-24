@@ -16,6 +16,7 @@
  */
 package demetra.tramo;
 
+import demetra.tramo.internal.TramoUtility;
 import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
@@ -23,12 +24,12 @@ import demetra.modelling.TransformationType;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.regarima.ami.ProcessingResult;
+import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.RegArimaUtility;
 import demetra.sarima.SarimaModel;
 import demetra.regarima.regular.ILogLevelModule;
 import demetra.regarima.regular.ModelDescription;
-import demetra.regarima.regular.RegArimaContext;
+import demetra.regarima.regular.RegArimaModelling;
 
 /**
  *
@@ -200,7 +201,7 @@ public class LogLevelModule implements ILogLevelModule {
     }
     
     @Override
-    public ProcessingResult process(RegArimaContext context) {
+    public ProcessingResult process(RegArimaModelling context) {
         ModelDescription desc = context.getDescription();
         if (desc.isLogTransformation())
             return ProcessingResult.Unprocessed;

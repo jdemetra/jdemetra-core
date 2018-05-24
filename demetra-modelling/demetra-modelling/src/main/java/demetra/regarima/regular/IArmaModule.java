@@ -16,23 +16,14 @@
  */
 package demetra.regarima.regular;
 
-import demetra.arima.IArimaModel;
-import demetra.regarima.RegArimaModel;
-
 /**
- *
+ * Estimates the stationary part of the arima model provided in the context
+ * The context should be contain the new specification on exit. The fully estimated model
+ * is not necessary provided
  * @author Jean Palate
  */
-public interface IRegularOutliersDetectionModule {
-
-    /**
-     * Search outliers in the given RegArima model
-     *
-     * @param model Model being considered. The model will be augmented with the
-     * new outliers
-     * @param criticalValue Critical value for the detection of outliers
-     * @return True if the model was changed, false otherwise
-     */
-    boolean process(ModelDescription model, double criticalValue);
-
+public interface IArmaModule {
+    
+    ProcessingResult process(RegArimaModelling context);
+    
 }

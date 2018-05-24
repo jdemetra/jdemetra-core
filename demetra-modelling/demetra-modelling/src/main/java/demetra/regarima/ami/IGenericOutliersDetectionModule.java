@@ -18,14 +18,13 @@ package demetra.regarima.ami;
 
 import demetra.arima.IArimaModel;
 import demetra.regarima.RegArimaModel;
-import demetra.modelling.regression.IOutlier;
 
 /**
  *
  * @author Jean Palate
  * @param <T>
  */
-public interface IOutliersDetectionModule<T extends IArimaModel> {
+public interface IGenericOutliersDetectionModule<T extends IArimaModel> {
 
 
     /**
@@ -53,7 +52,8 @@ public interface IOutliersDetectionModule<T extends IArimaModel> {
      * Search outliers in the given RegArima model
      *
      * @param initialModel
-     * @return
+     * @return True if the processing was successful (which doesn't mean that outliers were found), 
+     * false otherwise.
      */
     boolean process(RegArimaModel<T> initialModel);
 

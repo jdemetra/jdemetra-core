@@ -29,7 +29,7 @@ import demetra.timeseries.TsData;
  */
 @Development(status = Development.Status.Preliminary)
 public interface IPreprocessor {
-    PreprocessingModel process(TsData originalTs, RegArimaContext context);
+    PreprocessingModel process(TsData originalTs, RegArimaModelling context);
     
     
 }

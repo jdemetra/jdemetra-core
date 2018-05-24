@@ -47,7 +47,6 @@ public class FastOutlierDetector<T extends IArimaModel> extends
     private BackFilter ur;
     private double mad;
 
- 
     /**
      *
      * @param computer
@@ -55,7 +54,6 @@ public class FastOutlierDetector<T extends IArimaModel> extends
     public FastOutlierDetector(IRobustStandardDeviationComputer computer) {
         super(computer == null ? IRobustStandardDeviationComputer.mad() : computer);
     }
-    
 
     /**
      *
@@ -63,6 +61,9 @@ public class FastOutlierDetector<T extends IArimaModel> extends
      */
     @Override
     protected boolean calc() {
+        if (getOutlierFactoriesCount() == 0 || ubound <= lbound) {
+            return false;
+        }
         if (!initmodel()) {
             return false;
         }
@@ -89,8 +90,8 @@ public class FastOutlierDetector<T extends IArimaModel> extends
         ur = st.getUnitRoots();
         ConcentratedLikelihood cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(getRegArima());
         DoubleSequence residuals = fullResiduals(getRegArima().differencedModel(), cll);
-        el=residuals.toArray();
-        mad=getStandardDeviationComputer().compute(residuals);
+        el = residuals.toArray();
+        mad = getStandardDeviationComputer().compute(residuals);
         return true;
     }
 
@@ -161,10 +162,11 @@ public class FastOutlierDetector<T extends IArimaModel> extends
     }
 
     private DoubleSequence fullResiduals(RegArmaModel<T> differencedModel, ConcentratedLikelihood cll) {
-        if (cll.nx() == 0)
+        if (cll.nx() == 0) {
             return cll.e();
+        }
         DataBlock res = differencedModel.asLinearModel().calcResiduals(cll.allCoefficients());
-        FastKalmanFilter filter=new FastKalmanFilter(stmodel);
+        FastKalmanFilter filter = new FastKalmanFilter(stmodel);
         Likelihood ll = filter.process(res);
         return ll.e();
     }

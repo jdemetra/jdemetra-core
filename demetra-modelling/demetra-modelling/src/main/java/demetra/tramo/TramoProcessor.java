@@ -16,31 +16,24 @@
  */
 package demetra.tramo;
 
-import demetra.data.DoubleSequence;
-import demetra.data.Doubles;
+import demetra.tramo.internal.TramoUtility;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.modelling.Variable;
 import demetra.modelling.regression.ModellingContext;
-import demetra.regarima.RegArimaUtility;
-import demetra.regarima.ami.IArmaModule;
-import demetra.regarima.ami.IDifferencingModule;
+import demetra.regarima.regular.IArmaModule;
+import demetra.regarima.regular.IDifferencingModule;
 import demetra.regarima.regular.ILogLevelModule;
 import demetra.regarima.regular.IModelBuilder;
 import demetra.regarima.regular.IPreprocessor;
-import demetra.regarima.ami.IRegressionModule;
-import demetra.regarima.regular.IRegularOutliersDetectionModule;
+import demetra.regarima.regular.IRegressionModule;
 import demetra.regarima.regular.ISeasonalityDetector;
 import demetra.regarima.regular.ModelDescription;
-import demetra.regarima.regular.ModelEstimation;
-import demetra.regarima.regular.RegArimaContext;
+import demetra.regarima.regular.RegArimaModelling;
 import demetra.regarima.regular.PreprocessingModel;
 import demetra.sarima.SarimaSpecification;
-import demetra.sarima.SarmaSpecification;
 import demetra.timeseries.TsData;
-import java.util.Optional;
-import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import demetra.regarima.regular.IOutliersDetectionModule;
 
 /**
  *
@@ -76,8 +69,8 @@ public class TramoProcessor implements IPreprocessor {
         private ISeasonalityDetector seas = new SeasonalityDetector();
         private IRegressionModule regressionTest;
         private IDifferencingModule differencing;
-        private ArmaModule arma;
-        private IRegularOutliersDetectionModule outliers;
+        private IArmaModule arma;
+        private IOutliersDetectionModule outliers;
         private AmiOptions options = null;
 
         public Builder modelBuilder(@Nonnull IModelBuilder builder) {
@@ -110,12 +103,12 @@ public class TramoProcessor implements IPreprocessor {
             return this;
         }
 
-        public Builder arma(ArmaModule arma) {
+        public Builder arma(IArmaModule arma) {
             this.arma = arma;
             return this;
         }
 
-        public Builder outliers(IRegularOutliersDetectionModule outliers) {
+        public Builder outliers(IOutliersDetectionModule outliers) {
             this.outliers = outliers;
             return this;
         }
@@ -137,9 +130,9 @@ public class TramoProcessor implements IPreprocessor {
     private final ISeasonalityDetector seas;
     private final ILogLevelModule transformation;
     private final IRegressionModule regressionTest;
-    private final IRegularOutliersDetectionModule outliers;
+    private final IOutliersDetectionModule outliers;
     private final IDifferencingModule differencing;
-    private final ArmaModule arma;
+    private final IArmaModule arma;
 
     private PreprocessingModel refAirline, refAuto;
 
@@ -175,10 +168,10 @@ public class TramoProcessor implements IPreprocessor {
     }
 
     @Override
-    public PreprocessingModel process(TsData originalTs, RegArimaContext context) {
+    public PreprocessingModel process(TsData originalTs, RegArimaModelling context) {
 //        clear();
         if (context == null) {
-            context = new RegArimaContext();
+            context = new RegArimaModelling();
         }
         ModelDescription desc = builder.build(originalTs, context.getLog());
         if (desc == null) {
@@ -201,7 +194,7 @@ public class TramoProcessor implements IPreprocessor {
 
     }
 
-    private PreprocessingModel calc(RegArimaContext context) {
+    private PreprocessingModel calc(RegArimaModelling context) {
 
         // Test the seasonality
         if (seas != null) {
@@ -329,20 +322,24 @@ public class TramoProcessor implements IPreprocessor {
      * @param context
      * @return True if the model doesn't need further iteration
      */
-    private boolean iterate(RegArimaContext context) {
+    private boolean iterate(RegArimaModelling context) {
         if (context.needEstimation()) {
             context.estimate(options.getIntermediatePrecision());
         }
 
         ModelDescription desc = context.getDescription();
         if (needDifferencing(desc)) {
-            execDifferencing(context);
+            differencing.process(context);
         }
         if (needAutoModelling(desc)) {
             execAutoModelling(context);
         }
         if (needOutliers(desc)) {
-            execOutliers(context);
+
+            if (context.getDescription().removeVariable(var -> var.isOutlier(false))) {
+                context.setEstimation(null);
+            }
+            outliers.process(context, curva);
         }
         context.estimate(options.precision);
 
@@ -359,11 +356,7 @@ public class TramoProcessor implements IPreprocessor {
             ++pass;
             refAirline = context.build();
             double lb = refAirline.getEstimation().getTests().ljungBox().getPValue();
-            if (options.acceptAirline && (1 - lb) < options.ljungBoxLimit) {
-                return true;
-            } else {
-                return false;
-            }
+            return options.acceptAirline && (1 - lb) < options.ljungBoxLimit;
         }
 //        if (pass_ <= 3 && !pass3_ && autoModelling != null) {
 //            if (!pass2(!changed, context)) {
@@ -401,8 +394,8 @@ public class TramoProcessor implements IPreprocessor {
 //            }
 //        }
 //        control(context, estimator);
-           ++round;
-         return false;
+        ++round;
+        return false;
     }
     //
     //    void setFal(boolean b) {
@@ -469,59 +462,6 @@ public class TramoProcessor implements IPreprocessor {
         return round < 3;
     }
 
-    /**
-     *
-     * @param context
-     * @return True if the model was changed, false otherwise
-     */
-    private boolean execDifferencing(RegArimaContext context) {
-        if (context.needEstimation()) {
-            context.estimate(options.getIntermediatePrecision());
-        }
-        ModelDescription desc = context.getDescription();
-        ModelEstimation estimation = context.getEstimation();
-        int freq = desc.getAnnualFrequency();
-        boolean seasonal = context.isSeasonal();
-        try {
-            if (!DifferencingModule.comespd(freq, desc.regarima().getObservationsCount(), seasonal)) {
-                return false;
-            }
-
-            Stream<Variable> filter = desc.variables().filter(var -> var.isOutlier(false));
-            int nvars = (int) filter.count();
-            DoubleSequence res = RegArimaUtility.interpolatedData(desc.regarima(), estimation.getConcentratedLikelihood());
-            if (nvars > 0) {
-                Optional<Variable> first = filter.findFirst();
-                // remove the outliers effects
-                DoubleSequence outs = RegArimaUtility.regressionEffect(desc.regarima(), estimation.getConcentratedLikelihood(), desc.findPosition(first.get().getVariable()), nvars);
-                res = Doubles.op(res, outs, (x, y) -> x - y);
-            }
-            SarimaSpecification nspec = desc.getSpecification();
-            // get residuals
-            int[] curdiff = round == 1 ? null : new int[]{nspec.getD(), nspec.getBd()};
-            int[] ndiff = differencing.process(res, new int[]{1, freq}, curdiff);
-            int nd = ndiff[0], nbd = seasonal ? ndiff[1] : 0;
-            boolean nmean = differencing.isMeanCorrection();
-            boolean changed = false;
-            if (nspec.getD() != nd || nspec.getBd() != nbd) {
-                changed = true;
-                SarimaSpecification cspec = new SarimaSpecification(freq);
-                cspec.setD(nd);
-                cspec.setBd(nbd);
-                desc.setSpecification(cspec);
-                context.setEstimation(null);
-            }
-            if (nmean != desc.isMean()) {
-                changed = true;
-                desc.setMean(nmean);
-                context.setEstimation(null);
-            }
-            return changed;
-        } catch (RuntimeException err) {
-            return false;
-        }
-    }
-
     private boolean needAutoModelling(ModelDescription desc) {
         if (arma == null) {
             return false;
@@ -532,48 +472,21 @@ public class TramoProcessor implements IPreprocessor {
         if (round == 2 && desc.variables().anyMatch(var -> var.isOutlier(false))) {
             return false;
         }
+        // Should be completed
         return true;
     }
 
-    private boolean execAutoModelling(RegArimaContext context) {
-
+    private void execAutoModelling(RegArimaModelling context) {
+        arma.process(context);
         ModelDescription desc = context.getDescription();
         SarimaSpecification curspec = desc.getSpecification();
-        int inic = ArmaModule.comespa(curspec.getPeriod(), desc.regarima().getObservationsCount(),
-                3, curspec.getD(), curspec.getBd(), context.isSeasonal());
-        if (inic == 0) {
-            curspec.airline(context.isSeasonal());
+        if (curspec.getParametersCount() == 0 && pass >= 3) {
+            curspec.setQ(1);
             desc.setSpecification(curspec);
             context.setEstimation(null);
-            return true;
         }
-        SarimaSpecification maxspec = ArmaModule.calcmaxspec(desc.getAnnualFrequency(),
-                inic, curspec.getD(), curspec.getBd(), context.isSeasonal());
-        DoubleSequence res = RegArimaUtility.olsResiduals(desc.regarima());
-        arma.setMaxSpec(maxspec.doStationary());
-        SarmaSpecification nspec = arma.process(res, desc.getAnnualFrequency(), maxspec.getD(), maxspec.getBd(), context.isSeasonal());
-        if (nspec.equals(curspec.doStationary())) {
-            return false;
-        }
-        curspec = SarimaSpecification.of(nspec, curspec.getD(), curspec.getBd());
-        if (curspec.getParametersCount() == 0) {
-            if (pass >= 3) {
-                return false;
-            } else {
-                curspec.setQ(1);
-            }
-        }
-        desc.setSpecification(curspec);
-        context.setEstimation(null);
-        return true;
-
     }
 
-    private boolean execOutliers(RegArimaContext context) {
-        context.getDescription().removeVariable(var -> var.isOutlier(false));
-        context.setEstimation(null);
-        return outliers.process(context.getDescription(), curva);
-    }
 //
 //
 //    private void restore(RegArimaContext context) {
@@ -802,8 +715,7 @@ public class TramoProcessor implements IPreprocessor {
 //        return true;
 //    }
 //
-
-    private void testSeasonality(RegArimaContext context) {
+    private void testSeasonality(RegArimaModelling context) {
         ModelDescription model = context.getDescription();
         int ifreq = model.getAnnualFrequency();
         if (ifreq > 1) {

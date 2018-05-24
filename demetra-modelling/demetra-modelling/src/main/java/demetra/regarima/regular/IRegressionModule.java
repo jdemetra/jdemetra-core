@@ -3,15 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.regarima.ami;
+package demetra.regarima.regular;
 
-import demetra.regarima.regular.RegArimaContext;
-import demetra.information.InformationSet;
+import demetra.regarima.regular.RegArimaModelling;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public interface IRegressionModule {
-    ProcessingResult test(RegArimaContext context);
+    ProcessingResult test(RegArimaModelling context);
 }

@@ -14,9 +14,10 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramo;
+package demetra.x12;
 
-import demetra.tramo.internal.OutliersDetectionModule;
+import demetra.arima.IResidualsComputer;
+import demetra.arima.internal.AnsleyFilter;
 import demetra.design.BuilderPattern;
 import demetra.modelling.Variable;
 import demetra.modelling.regression.AdditiveOutlier;
@@ -25,21 +26,24 @@ import demetra.modelling.regression.LevelShift;
 import demetra.modelling.regression.PeriodicOutlier;
 import demetra.modelling.regression.TransitoryChange;
 import demetra.regarima.RegArimaUtility;
-import demetra.regarima.outlier.FastOutlierDetector;
+import demetra.regarima.outlier.ExactSingleOutlierDetector;
+import demetra.regarima.outlier.IRobustStandardDeviationComputer;
 import demetra.regarima.outlier.SingleOutlierDetector;
-import demetra.regarima.regular.IRegularOutliersDetectionModule;
 import demetra.regarima.regular.ModelDescription;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
+import demetra.x12.OutliersDetectionModuleImpl;
+import demetra.regarima.regular.IOutliersDetectionModule;
+import demetra.regarima.regular.ProcessingResult;
+import demetra.regarima.regular.RegArimaModelling;
 
 /**
  *
  * @author Jean Palate
  */
-public class RegularOutliersDetectionModule implements IRegularOutliersDetectionModule {
+public class OutliersDetectionModule implements IOutliersDetectionModule {
 
     public static int DEF_MAXROUND = 100;
     public static int DEF_MAXOUTLIERS = 50;
@@ -49,7 +53,7 @@ public class RegularOutliersDetectionModule implements IRegularOutliersDetection
         return new Builder();
     }
 
-    @BuilderPattern(RegularOutliersDetectionModule.class)
+    @BuilderPattern(OutliersDetectionModule.class)
     public static class Builder {
 
         private double eps = EPS;
@@ -57,14 +61,13 @@ public class RegularOutliersDetectionModule implements IRegularOutliersDetection
         private int maxRound = DEF_MAXROUND;
         private boolean ao, ls, tc, so;
         private double tcrate;
-        private boolean ml;
-        private TimeSelector span = TimeSelector.all();
+        private TimeSelector span=TimeSelector.all();
 
         private Builder() {
         }
-
-        public Builder span(TimeSelector span) {
-            this.span = span;
+        
+        public Builder span(TimeSelector span){
+            this.span=span;
             return this;
         }
 
@@ -79,22 +82,22 @@ public class RegularOutliersDetectionModule implements IRegularOutliersDetection
         }
 
         public Builder ao(boolean ao) {
-            this.ao = ao;
+            this.ao=ao;
             return this;
         }
 
         public Builder ls(boolean ls) {
-            this.ls = ls;
+            this.ls=ls;
             return this;
         }
 
         public Builder tc(boolean tc) {
-            this.tc = tc;
+            this.tc=tc;
             return this;
         }
 
         public Builder so(boolean so) {
-            this.so = so;
+            this.so=so;
             return this;
         }
 
@@ -108,13 +111,8 @@ public class RegularOutliersDetectionModule implements IRegularOutliersDetection
             return this;
         }
 
-        public Builder maximumLikelihood(boolean ml) {
-            this.ml = ml;
-            return this;
-        }
-
-        public RegularOutliersDetectionModule build() {
-            return new RegularOutliersDetectionModule(this);
+        public OutliersDetectionModule build() {
+            return new OutliersDetectionModule(this);
         }
     }
 
@@ -122,11 +120,10 @@ public class RegularOutliersDetectionModule implements IRegularOutliersDetection
     private final int maxOutliers;
     private final int maxRound;
     private final boolean ao, ls, tc, so;
-    private final boolean ml;
     private final double tcrate;
     private final TimeSelector span;
 
-    private RegularOutliersDetectionModule(Builder builder) {
+    private OutliersDetectionModule(Builder builder) {
         this.eps = builder.eps;
         this.maxOutliers = builder.maxOutliers;
         this.maxRound = builder.maxRound;
@@ -136,31 +133,44 @@ public class RegularOutliersDetectionModule implements IRegularOutliersDetection
         this.so = builder.so;
         this.tcrate = builder.tcrate;
         this.span = builder.span;
-        this.ml = builder.ml;
     }
 
-    private OutliersDetectionModule make(ModelDescription desc, double cv) {
-        TsDomain domain = desc.getDomain();
-        int test = comatip(desc);
-        boolean cmvx;
-        if (test < 0) {
-            return null;
-        }
-        if (test > 0) {
-            cmvx = true;
-        } else {
-            cmvx = false;
-        }
 
-        OutliersDetectionModule.Builder builder = OutliersDetectionModule.builder()
-                .singleOutlierDetector(factories())
+    private SingleOutlierDetector<SarimaModel> factories(int freq) {
+        SingleOutlierDetector sod = new ExactSingleOutlierDetector(IRobustStandardDeviationComputer.mad(false),
+                IResidualsComputer.mlComputer(),
+                new AnsleyFilter());
+        if (ao) {
+            sod.addOutlierFactory(AdditiveOutlier.FACTORY);
+        }
+        if (ls) {
+            sod.addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
+        }
+        if (tc) {
+            double c = tcrate;
+            int r = 12 / freq;
+            if (r > 1) {
+                c = Math.pow(c, r);
+            }
+            sod.addOutlierFactory(new TransitoryChange.Factory(c));
+        }
+        if (freq > 1 && so) {
+            sod.addOutlierFactory(new PeriodicOutlier.Factory(freq, true));
+        }
+        return sod;
+    }
+
+    private OutliersDetectionModuleImpl make(ModelDescription desc, double cv) {
+        TsDomain domain=desc.getDomain();
+
+        OutliersDetectionModuleImpl impl = OutliersDetectionModuleImpl.builder()
+                .singleOutlierDetector(factories(domain.getAnnualFrequency()))
                 .criticalValue(cv)
-                .maximumLikelihood(cmvx)
                 .maxOutliers(maxOutliers)
                 .maxRound(maxRound)
-                .processor(RegArimaUtility.processor(desc.getArimaComponent().defaultMapping(), true, eps));
-        OutliersDetectionModule impl = builder.build();
-        TsDomain odom = domain.select(span);
+                .processor(RegArimaUtility.processor(desc.getArimaComponent().defaultMapping(), true, EPS))
+                .build();
+         TsDomain odom = domain.select(span);
         int start = domain.indexOf(odom.getStartPeriod()), end = start + odom.getLength();
         impl.prepare(domain.getLength());
         impl.setBounds(start, end);
@@ -180,44 +190,29 @@ public class RegularOutliersDetectionModule implements IRegularOutliersDetection
                 .map(var -> (IOutlier) var.getVariable()).forEach(
                 o -> impl.exclude(domain.indexOf(o.getPosition()), outlierType(types, o.getCode())));
         return impl;
-    }
-
-    private SingleOutlierDetector<SarimaModel> factories() {
-        FastOutlierDetector detector = new FastOutlierDetector(null);
-        if (ao) {
-            detector.addOutlierFactory(AdditiveOutlier.FACTORY);
-        }
-        if (ls) {
-            detector.addOutlierFactory(LevelShift.FACTORY_ZEROSTARTED);
-        }
-        if (tc) {
-            detector.addOutlierFactory(new TransitoryChange.Factory(tcrate));
-        }
-        return detector;
-    }
+   }
 
     @Override
-    public boolean process(ModelDescription model, double criticalValue) {
+    public ProcessingResult process(RegArimaModelling context, double criticalValue) {
+        ModelDescription model=context.getDescription();
         TsDomain domain = model.getDomain();
-        OutliersDetectionModule impl = make(model, criticalValue);
-        if (impl == null) {
-            return false;
-        }
+        OutliersDetectionModuleImpl impl=make(model, criticalValue);
         boolean ok = impl.process(model.regarima());
         if (!ok) {
-            return false;
+            return ProcessingResult.Failed;
         }
         // add new outliers
         int[][] outliers = impl.getOutliers();
         if (outliers.length == 0) {
-            return false;
+            return ProcessingResult.Unchanged;
         }
         for (int i = 0; i < outliers.length; ++i) {
             int[] cur = outliers[i];
             TsPeriod pos = domain.get(cur[0]);
             model.addVariable(new Variable(impl.getFactory(cur[1]).make(pos.start()), false));
         }
-        return true;
+        context.setEstimation(null);
+        return ProcessingResult.Changed;
     }
 
     private static int outlierType(String[] all, String cur) {
@@ -229,34 +224,4 @@ public class RegularOutliersDetectionModule implements IRegularOutliersDetection
         return -1;
     }
 
-    private int comatip(ModelDescription desc) {
-        // int rslt = ml ? 1 : 0;
-        int n = desc.getSeries().getValues().count(x -> Double.isFinite(x));
-        // first, check if od is possible
-        SarimaSpecification spec = desc.getSpecification();
-        int nparm = Math.max(spec.getD() + spec.getP() + spec.getPeriod()
-                * (spec.getBd() + spec.getBp()), spec.getQ()
-                + spec.getPeriod() * spec.getBq())
-                + (desc.isEstimatedMean() ? 1 : 0)
-                + (15 * n) / 100 + spec.getPeriod();
-        if (n - nparm <= 0) {
-            return -1;
-        }
-        if (ml) {
-            return 1;
-        }
-        int ndf1 = TramoUtility.autlar(n, spec);
-        int ndf2 = 0;
-        if (spec.getP() + spec.getBp() > 0 && spec.getQ() + spec.getBq() > 0) {
-            n -= spec.getP() + spec.getPeriod() * spec.getBp();
-            spec.setP(0);
-            spec.setBp(0);
-            ndf2 = TramoUtility.autlar(n, spec);
-        }
-        if (ndf1 < 0 || ndf2 < 0) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
 }

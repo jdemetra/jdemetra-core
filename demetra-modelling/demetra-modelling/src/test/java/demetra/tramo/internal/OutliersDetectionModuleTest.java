@@ -14,26 +14,19 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramo;
+package demetra.tramo.internal;
 
-import demetra.tramo.internal.OutliersDetectionModule;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
-import demetra.modelling.regression.AdditiveOutlier;
-import demetra.modelling.regression.IOutlier;
-import demetra.modelling.regression.LevelShift;
-import demetra.modelling.regression.TransitoryChange;
 import demetra.regarima.RegArimaModel;
-import demetra.sarima.GlsSarimaProcessor;
+import demetra.regarima.RegArimaUtility;
+import demetra.sarima.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
-import demetra.sarima.internal.HannanRissanenInitializer;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import java.util.List;
-import java.util.function.Consumer;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -41,14 +34,8 @@ import static org.junit.Assert.*;
  */
 public class OutliersDetectionModuleTest {
 
-    private IOutlier.IOutlierFactory[] fac;
 
     public OutliersDetectionModuleTest() {
-        fac = new IOutlier.IOutlierFactory[]{
-            AdditiveOutlier.FACTORY,
-            LevelShift.FACTORY_ZEROSTARTED,
-            new TransitoryChange.Factory(.7)
-        };
     }
 
     @Test
@@ -60,9 +47,10 @@ public class OutliersDetectionModuleTest {
 
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 500; ++i) {
-        HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
-        OutliersDetectionModule od = OutliersDetectionModule.builder()
+        OutliersDetectionModuleImpl od = OutliersDetectionModuleImpl.builder()
+                .singleOutlierDetector(OutliersDetectionModuleImpl.defaultOutlierDetector())
                 .criticalValue(3)
+                .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
                 .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());
@@ -88,10 +76,11 @@ public class OutliersDetectionModuleTest {
         System.out.println("WN");
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 500; ++i) {
-        HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
-        OutliersDetectionModule od = OutliersDetectionModule.builder()
+        OutliersDetectionModuleImpl od = OutliersDetectionModuleImpl.builder()
+                .singleOutlierDetector(OutliersDetectionModuleImpl.defaultOutlierDetector())
                 .criticalValue(3)
-                .build();
+                 .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
+               .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());
         od.process(regarima);

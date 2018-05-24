@@ -5,6 +5,8 @@
  */
 package demetra.tramo;
 
+import demetra.tramo.internal.OutliersDetectionModule;
+import demetra.tramo.internal.DifferencingModule;
 import demetra.modelling.TransformationType;
 import demetra.modelling.regression.AdditiveOutlier;
 import demetra.modelling.regression.LevelShift;
@@ -14,6 +16,7 @@ import demetra.modelling.regression.TransitoryChange;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.tramo.TradingDaysSpec.AutoMethod;
 import demetra.tramo.TramoProcessor.AmiOptions;
+import demetra.tramo.internal.ArmaModule;
 import javax.annotation.Nonnull;
 
 /**
@@ -66,7 +69,7 @@ final class TramoSpecDecoder {
                 .ub1(amiSpec.getUb1())
                 .ub2(amiSpec.getUb2())
                 .build();
-        ArmaModule arma = new ArmaModule();
+        ArmaModule arma = ArmaModule.builder().build();
         builder.seasonalityDetector(new SeasonalityDetector())
                 .differencing(diff)
                 .arma(arma);
@@ -114,7 +117,7 @@ final class TramoSpecDecoder {
         if (!outliers.isUsed()) {
             return;
         }
-        RegularOutliersDetectionModule.Builder obuilder = RegularOutliersDetectionModule.builder();
+        OutliersDetectionModule.Builder obuilder = OutliersDetectionModule.builder();
         String[] types = outliers.getTypes();
         for (int i = 0; i < types.length; ++i) {
             switch (types[i]) {

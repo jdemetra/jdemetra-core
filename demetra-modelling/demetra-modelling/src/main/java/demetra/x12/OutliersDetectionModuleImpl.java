@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.x12.internal;
+package demetra.x12;
 
 import demetra.arima.IResidualsComputer;
 import demetra.arima.internal.AnsleyFilter;
@@ -24,48 +24,44 @@ import demetra.design.Development;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.regarima.ami.IOutliersDetectionModule;
 import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.outlier.ExactSingleOutlierDetector;
 import demetra.regarima.outlier.IRobustStandardDeviationComputer;
-import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.internal.HannanRissanenInitializer;
 import demetra.modelling.regression.AdditiveOutlier;
 import demetra.modelling.regression.IOutlier;
 import demetra.modelling.regression.LevelShift;
-import demetra.modelling.regression.PeriodicOutlier;
 import demetra.modelling.regression.TransitoryChange;
 import java.util.ArrayList;
+import demetra.regarima.ami.IGenericOutliersDetectionModule;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class RawOutliersDetectionModule implements IOutliersDetectionModule<SarimaModel> {
+class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<SarimaModel> {
 
-    public static int DEF_MAXROUND = 100;
-    public static int DEF_MAXOUTLIERS = 50;
-    public static final double EPS = 1e-5;
+    static int DEF_MAXROUND = 100;
+    static int DEF_MAXOUTLIERS = 50;
+    static final double EPS = 1e-5;
 
-    public static SingleOutlierDetector<SarimaModel> defaultOutlierDetector(int period){
+    static SingleOutlierDetector<SarimaModel> defaultOutlierDetector(int period){
         SingleOutlierDetector sod = new ExactSingleOutlierDetector(IRobustStandardDeviationComputer.mad(false),
                 IResidualsComputer.mlComputer(),
                 new AnsleyFilter());
         sod.addOutlierFactory(AdditiveOutlier.FACTORY);
         sod.addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
-        
         sod.addOutlierFactory(new TransitoryChange.Factory(EPS));
         return sod;
     }
 
-    public static Builder builder() {
+    static Builder builder() {
         return new Builder();
     }
 
-    @BuilderPattern(RawOutliersDetectionModule.class)
-    public static class Builder {
+    @BuilderPattern(OutliersDetectionModuleImpl.class)
+    static class Builder {
 
         private double cv;
         private IRegArimaProcessor<SarimaModel> processor;
@@ -76,72 +72,33 @@ public class RawOutliersDetectionModule implements IOutliersDetectionModule<Sari
         private Builder() {
         }
 
-        public Builder detector(SingleOutlierDetector<SarimaModel> sod) {
+        Builder singleOutlierDetector(SingleOutlierDetector<SarimaModel> sod) {
             this.sod = sod;
-            this.sod.clearOutlierFactories();
             return this;
         }
 
-
-        public Builder criticalValue(double cv) {
+        Builder criticalValue(double cv) {
             this.cv = cv;
             return this;
         }
 
-        public Builder processor(IRegArimaProcessor<SarimaModel> processor) {
+        Builder processor(IRegArimaProcessor<SarimaModel> processor) {
             this.processor = processor;
             return this;
         }
 
-        public Builder maxOutliers(int max) {
+        Builder maxOutliers(int max) {
             this.maxOutliers = max;
             return this;
         }
 
-        public Builder maxRound(int max) {
+        Builder maxRound(int max) {
             this.maxRound = max;
             return this;
         }
 
-        public Builder factory(IOutlier.IOutlierFactory factory) {
-            this.sod.addOutlierFactory(factory);
-            return this;
-        }
-
-        /**
-         *
-         * @return
-         */
-        public Builder setDefault() {
-            this.sod.clearOutlierFactories();
-            this.sod.addOutlierFactory(AdditiveOutlier.FACTORY);
-            this.sod.addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
-            return this;
-        }
-
-        /**
-         *
-         * @return
-         */
-        public Builder setAll() {
-            setDefault();
-            this.sod.addOutlierFactory(new TransitoryChange.Factory(.7));
-            return this;
-        }
-
-        /**
-         *
-         * @param period
-         * @return
-         */
-        public Builder setAll(int period) {
-            setAll();
-            this.sod.addOutlierFactory(new PeriodicOutlier.Factory(period, true));
-            return this;
-        }
-
-        public RawOutliersDetectionModule build() {
-            return new RawOutliersDetectionModule(sod, cv, processor, maxRound, maxOutliers);
+        public OutliersDetectionModuleImpl build() {
+            return new OutliersDetectionModuleImpl(sod, cv, processor, maxRound, maxOutliers);
         }
     }
 
@@ -154,7 +111,7 @@ public class RawOutliersDetectionModule implements IOutliersDetectionModule<Sari
     private double[] tstats;
     private int round;
 
-    private RawOutliersDetectionModule(final SingleOutlierDetector sod, final double cv, final IRegArimaProcessor<SarimaModel> processor,
+    private OutliersDetectionModuleImpl(final SingleOutlierDetector sod, final double cv, final IRegArimaProcessor<SarimaModel> processor,
             final int maxOutliers, final int maxRound) {
         this.sod = sod;
         this.cv = cv;
@@ -237,7 +194,6 @@ public class RawOutliersDetectionModule implements IOutliersDetectionModule<Sari
     }
 
     private boolean execute() {
-        boolean changed = false;
         double max;
         round = 0;
 
@@ -251,7 +207,6 @@ public class RawOutliersDetectionModule implements IOutliersDetectionModule<Sari
                 int type = sod.getMaxOutlierType();
                 int pos = sod.getMaxOutlierPosition();
                 addOutlier(pos, type);
-                changed = true;
                 if (!estimateModel(true)) {
                     outliers.remove(outliers.size() - 1);
                     estimateModel(false);
@@ -271,10 +226,9 @@ public class RawOutliersDetectionModule implements IOutliersDetectionModule<Sari
             if (!estimateModel(false)) {
                 break;
             }
-            changed = true;
         }
 
-        return changed;
+        return true;
     }
 
     public double getCritivalValue() {

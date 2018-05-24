@@ -25,7 +25,7 @@ import demetra.data.DoubleSequence;
  * @param <M>
  */
 
-public interface IDifferencingModule<M extends IArimaModel> {
+public interface IGenericDifferencingModule<M extends IArimaModel> {
     
     int[] process(DoubleSequence data, int[] periods, int[] differencing);
     boolean isMeanCorrection();

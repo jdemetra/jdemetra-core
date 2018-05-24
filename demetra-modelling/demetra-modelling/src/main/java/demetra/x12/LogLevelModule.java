@@ -25,13 +25,13 @@ import demetra.modelling.TransformationType;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.regarima.ami.ProcessingResult;
+import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.RegArimaUtility;
 import demetra.sarima.SarimaModel;
 import demetra.regarima.regular.ILogLevelModule;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
-import demetra.regarima.regular.RegArimaContext;
+import demetra.regarima.regular.RegArimaModelling;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 
 /**
@@ -104,7 +104,7 @@ public class LogLevelModule implements ILogLevelModule {
     }
 
     @Override
-    public ProcessingResult process(RegArimaContext context) {
+    public ProcessingResult process(RegArimaModelling context) {
         clear();
         ModelDescription model = context.getDescription();
         if (model.getSeries().getValues().anyMatch(z->z<=0))
