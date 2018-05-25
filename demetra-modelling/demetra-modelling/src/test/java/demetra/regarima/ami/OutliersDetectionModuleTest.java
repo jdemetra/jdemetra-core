@@ -57,6 +57,7 @@ public class OutliersDetectionModuleTest {
         od.setRemoveHook(rhook);
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 100; ++i) {
+        od.prepare(regarima.getObservationsCount());
         od.process(regarima);
 //        }
 //        long t1 = System.currentTimeMillis();

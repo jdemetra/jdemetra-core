@@ -61,86 +61,92 @@ class DefaultArrayReader implements DoubleReader {
 
     final double[] data;
     final int inc;
-    int pos;
+    final int leftPos;
+    int curPos;
 
     DefaultArrayReader(double[] data, int leftPos, int inc) {
         this.data = data;
-        this.pos = leftPos;
+        this.leftPos=leftPos;
+        this.curPos = leftPos;
         this.inc = inc;
     }
 
     @Override
     public double next() {
-        double val=data[pos];
-        pos = pos + inc;
+        double val=data[curPos];
+        curPos = curPos + inc;
         return val;
     }
 
     @Override
     public void setPosition(int npos) {
-        pos = npos;
+        curPos = leftPos+inc*npos;
     }
 }
 
 class DefaultReader implements DoubleReader {
 
     final DoubleSequence data;
-    int pos;
+    int curPos;
 
     DefaultReader(DoubleSequence data) {
         this.data = data;
-        this.pos = 0;
+        this.curPos = 0;
     }
 
     @Override
     public double next() {
-        return data.get(pos++);
+        return data.get(curPos++);
     }
 
     @Override
     public void setPosition(int npos) {
-        pos = npos;
+        curPos = npos;
     }
 }
 
 class CellReaderP implements DoubleReader {
 
     final double[] data;
-    int pos;
+    final int leftPos;
+    int curPos;
 
     CellReaderP(double[] data, int leftPos) {
         this.data = data;
-        this.pos = leftPos;
+        this.leftPos=leftPos;
+        this.curPos = leftPos;
     }
 
     @Override
     public double next() {
-        return data[pos++];
+        return data[curPos++];
     }
 
     @Override
     public void setPosition(int npos) {
-        pos = npos;
+        curPos = leftPos+npos;
     }
 }
 
 class CellReaderM implements DoubleReader {
 
     final double[] data;
-    int pos;
+    final int leftPos;
+    int curPos;
 
     CellReaderM(double[] data, int leftPos) {
         this.data = data;
-        this.pos = leftPos;
+        this.leftPos=leftPos;
+        this.curPos = leftPos;
     }
 
     @Override
     public double next() {
-        return data[pos--];
+        return data[curPos--];
     }
 
     @Override
     public void setPosition(int npos) {
-        pos = npos;
+        curPos = leftPos-npos;
     }
 }

@@ -21,6 +21,7 @@ import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
 import demetra.dstats.F;
+import demetra.likelihood.ConcentratedLikelihood;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
@@ -52,8 +53,25 @@ public class JointTest {
         this.n = n;
     }
 
+    public JointTest(final ConcentratedLikelihood ll) {
+        this.b = ll.coefficients();
+        this.bvar = Matrix.of(ll.unscaledCovariance());
+        this.rss = ll.ssq();
+        this.n = ll.dim();
+    }
+
     public JointTest variableSelection(int[] variableSelection) {
         this.coef = variableSelection;
+        R = null;
+        alpha = null;
+        return this;
+    }
+
+    public JointTest variableSelection(int start, int end) {
+        this.coef = new int[end-start];
+        for (int i=0; i<coef.length; ++i){
+            coef[i]=start+i;
+        }
         R = null;
         alpha = null;
         return this;

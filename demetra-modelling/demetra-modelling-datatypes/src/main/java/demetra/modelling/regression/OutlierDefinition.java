@@ -27,13 +27,4 @@ public class OutlierDefinition {
 
     private @lombok.NonNull String code;
     private @lombok.NonNull LocalDateTime position;
-    private Double coefficient;
-
-    public boolean isFixed() {
-        return coefficient != null;
-    }   
-    
-    public OutlierDefinition withCoefficient(Double c){
-        return new OutlierDefinition(code, position, c);
-    }
 }

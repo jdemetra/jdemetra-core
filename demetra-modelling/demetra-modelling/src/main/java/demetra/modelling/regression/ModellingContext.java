@@ -18,6 +18,7 @@
 package demetra.modelling.regression;
 
 import demetra.information.InformationSet;
+import demetra.timeseries.TsDataSupplier;
 import demetra.utilities.DefaultNameValidator;
 import demetra.utilities.INameValidator;
 import demetra.utilities.NameManager;
@@ -57,7 +58,7 @@ public class ModellingContext  {
         return mgr.get(family);
     }
 
-    public ITsVariable getTsVariable(String family, String var) {
+    public TsDataSupplier getTsVariable(String family, String var) {
         Object obj = map.get(TsVariables.class);
         if (obj == null) {
             return null;
@@ -70,7 +71,7 @@ public class ModellingContext  {
         return vars.get(var);
     }
 
-    public ITsVariable getTsVariable(String name) {
+    public TsDataSupplier getTsVariable(String name) {
         String[] s = InformationSet.split(name);
         if (s.length == 1){
             return getTsVariable(LEGACY, s[0]);

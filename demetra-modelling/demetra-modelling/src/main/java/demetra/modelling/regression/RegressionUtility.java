@@ -20,7 +20,6 @@ import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import demetra.timeseries.TimeSeriesDomain;
 
 /**
@@ -30,6 +29,13 @@ import demetra.timeseries.TimeSeriesDomain;
 @lombok.experimental.UtilityClass
 public class RegressionUtility {
 
+    /**
+     * Returns the actual number of regression variables (taking into account 
+     * groups of variables)
+     * @param <D>
+     * @param vars The regression variables
+     * @return 
+     */
     public <D extends TimeSeriesDomain<?>> int size(ITsVariable<D>... vars) {
         int n = 0;
         for (ITsVariable<D> var : vars) {
@@ -39,10 +45,10 @@ public class RegressionUtility {
     }
 
     /**
-     * 
-     * @param <D>
-     * @param domain
-     * @param vars
+     * Generates the matrix corresponding to the regression variables
+     * @param <D> The type of the time domain
+     * @param domain The domain used to generate the regression matrix
+     * @param vars The regression variables
      * @return 
      */
     public <D extends TimeSeriesDomain<?>> Matrix data(D domain, ITsVariable<D>... vars) {

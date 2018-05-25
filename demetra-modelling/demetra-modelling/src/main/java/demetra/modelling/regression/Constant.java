@@ -21,6 +21,7 @@ import demetra.design.Development;
 import demetra.modelling.ComponentType;
 import java.util.List;
 import demetra.timeseries.TimeSeriesDomain;
+import java.util.Objects;
 
 /**
  *
@@ -63,13 +64,18 @@ public class Constant<D extends TimeSeriesDomain<?>> implements ITsVariable<D> {
     }
 
     @Override
-    public ComponentType getComponentType(){
-        return ComponentType.Trend;
-    }
-
-    @Override
     public ITsVariable<D> rename(String name) {
         throw new UnsupportedOperationException(); 
     }
 
+    @Override
+    public boolean equals(Object other){
+        return other instanceof Constant;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        return hash;
+    }
 }

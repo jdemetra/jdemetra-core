@@ -19,13 +19,17 @@
 package demetra.modelling.regression;
 
 import demetra.design.Development;
+import demetra.modelling.ComponentType;
 import demetra.timeseries.TimeSeriesDomain;
 
 /**
  *
  * @author Jean Palate
+ * @param <D>
  */
 @Development(status = Development.Status.Alpha)
 public interface IUserTsVariable<D extends TimeSeriesDomain<?>> extends ITsVariable<D> {
+    
+    ComponentType getComponentType();
 
 }

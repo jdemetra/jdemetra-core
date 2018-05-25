@@ -22,7 +22,9 @@ import demetra.modelling.ComponentType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Computes trigonometric variables: sin(wt), cos(wt) at given frequencies if w
@@ -80,7 +82,7 @@ public class TrigonometricVariables implements ITsVariable<TsDomain> {
     public TrigonometricVariables(double[] freq) {
         this.freq = freq;
         this.name = "trig#" + freq.length;
-        this.ref = EPOCH;
+        this.ref = TsPeriod.DEFAULT_EPOCH;
     }
 
     public TrigonometricVariables(double[] freq, LocalDateTime ref, String name) {
@@ -147,11 +149,6 @@ public class TrigonometricVariables implements ITsVariable<TsDomain> {
     }
 
     @Override
-    public ComponentType getComponentType(){
-        return ComponentType.Seasonal;
-    }
-
-    @Override
     public String getName() {
         return name;
     }
@@ -159,6 +156,27 @@ public class TrigonometricVariables implements ITsVariable<TsDomain> {
     @Override
     public TrigonometricVariables rename(String nname) {
         return new TrigonometricVariables(freq, ref, nname);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof TrigonometricVariables) {
+            TrigonometricVariables x = (TrigonometricVariables) other;
+            return x.ref.equals(ref) && Arrays.equals(x.freq, freq);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 23 * hash + Arrays.hashCode(this.freq);
+        hash = 23 * hash + Objects.hashCode(this.ref);
+        return hash;
     }
 
 }

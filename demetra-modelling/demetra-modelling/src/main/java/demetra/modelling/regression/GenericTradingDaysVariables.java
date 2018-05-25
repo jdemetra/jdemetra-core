@@ -20,6 +20,7 @@ import demetra.data.DataBlock;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -32,7 +33,7 @@ public class GenericTradingDaysVariables implements ITradingDaysVariable {
 
     public GenericTradingDaysVariables(GenericTradingDays td) {
         this.td = td;
-        this.name = ITradingDaysVariable.name(td.getCount());
+        this.name = ITradingDaysVariable.defaultName(td.getCount());
     }
 
     public GenericTradingDaysVariables(GenericTradingDays td, String name) {
@@ -72,6 +73,25 @@ public class GenericTradingDaysVariables implements ITradingDaysVariable {
     @Override
     public ITsVariable<TsDomain> rename(String nname) {
         return new GenericTradingDaysVariables(td, nname);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other instanceof GenericTradingDaysVariables) {
+            GenericTradingDaysVariables x = (GenericTradingDaysVariables) other;
+            return x.td.equals(td);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(this.td);
+        return hash;
     }
 
 }

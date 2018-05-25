@@ -172,7 +172,7 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         }
     }
 
-    public static final LocalDateTime DEFAULT_EPOCH = LocalDate.of(1970, 1, 1).atStartOfDay();
+    public static final LocalDateTime DEFAULT_EPOCH = LocalDate.ofEpochDay(0).atStartOfDay();
 
     public static TsPeriod of(TsUnit unit, LocalDateTime date) {
         return make(DEFAULT_EPOCH, unit, date);

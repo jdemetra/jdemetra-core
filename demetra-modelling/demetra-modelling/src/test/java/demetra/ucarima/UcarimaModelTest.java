@@ -16,24 +16,28 @@ import static org.junit.Assert.*;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public class UcarimaModelTest {
-    
+
     public UcarimaModelTest() {
     }
 
     @Test
     public void testAirline() {
-//        System.out.println(ucmAirline(-.6, -.8));
+        assertTrue(ucmAirline(-.6, -.8).isValid());
     }
-    
 
-   public static UcarimaModel ucmAirline(double th, double bth) {
+    @Test
+    public void test3111() {
+        assertTrue(ucm3111(new double[]{.2, -.5, .1},-.6, -.8).isValid());
+    }
+
+    public static UcarimaModel ucmAirline(double th, double bth) {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
-       SarimaModel sarima =SarimaModel.builder(spec)
-               .theta(1, th)
-               .btheta(1, bth)
-               .build();
-       
+        SarimaModel sarima = SarimaModel.builder(spec)
+                .theta(1, th)
+                .btheta(1, bth)
+                .build();
+
         TrendCycleSelector tsel = new TrendCycleSelector();
         SeasonalSelector ssel = new SeasonalSelector(12);
 
@@ -42,7 +46,29 @@ public class UcarimaModelTest {
         decomposer.add(ssel);
 
         UcarimaModel ucm = decomposer.decompose(sarima);
-        ucm=ucm.setVarianceMax(-1, false);
+        ucm = ucm.setVarianceMax(-1, false);
         return ucm;
     }
+    
+    public static UcarimaModel ucm3111(double[] phi, double th, double bth) {
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
+        SarimaModel sarima = SarimaModel.builder(spec)
+                .phi(phi)
+                .theta(1, th)
+                .btheta(1, bth)
+                .build();
+
+        TrendCycleSelector tsel = new TrendCycleSelector();
+        SeasonalSelector ssel = new SeasonalSelector(12);
+
+        ModelDecomposer decomposer = new ModelDecomposer();
+        decomposer.add(tsel);
+        decomposer.add(ssel);
+
+        UcarimaModel ucm = decomposer.decompose(sarima);
+        ucm = ucm.setVarianceMax(-1, false);
+        return ucm;
+    }
+    
 }

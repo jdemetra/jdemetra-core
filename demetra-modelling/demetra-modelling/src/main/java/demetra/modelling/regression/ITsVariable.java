@@ -18,7 +18,6 @@ package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.modelling.ComponentType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,11 +33,38 @@ import demetra.timeseries.TimeSeriesDomain;
  */
 @Development(status = Development.Status.Release)
 public interface ITsVariable<D extends TimeSeriesDomain<?>> {
-    
-    // Predefined categories
-    public static final String I="Irregular", T="Trend", S="Seasonal", U="Undefined";
 
-    static final LocalDateTime EPOCH = LocalDate.ofEpochDay(0).atStartOfDay();
+    public static String nextName(String name) {
+        int pos0 = name.lastIndexOf('('), pos1 = name.lastIndexOf(')');
+        if (pos0 > 0 && pos1 > 0) {
+            String prefix = name.substring(0, pos0);
+            int cur = 1;
+            try {
+                String num = name.substring(pos0 + 1, pos1);
+                cur = Integer.parseInt(num) + 1;
+            } catch (NumberFormatException err) {
+
+            }
+            StringBuilder builder = new StringBuilder();
+            builder.append(prefix).append('(').append(cur).append(')');
+            return builder.toString();
+        } else {
+            return name + "(1)";
+        }
+    }
+
+    public static String shortName(String s) {
+        int pos = s.indexOf('#');
+        if (pos < 0) {
+            return s;
+        } else {
+            return s.substring(0, pos);
+        }
+    }
+
+    public static String validName(String name) {
+        return name.replace('.', '@');
+    }
 
     /**
      * Returns in a buffer the data corresponding to a given domain
@@ -84,9 +110,7 @@ public interface ITsVariable<D extends TimeSeriesDomain<?>> {
             return getDescription(context) + "-" + (idx + 1);
         }
     }
-    
-    ComponentType getComponentType();
-    
+
     String getName();
 
     ITsVariable<D> rename(String name);

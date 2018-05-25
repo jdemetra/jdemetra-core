@@ -203,4 +203,21 @@ public class DayClustering {
         return groups;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + Arrays.hashCode(this.groups);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object other){
+        if (this == other)
+            return true;
+        if (other instanceof DayClustering){
+           DayClustering x=(DayClustering) other;
+           return Arrays.equals(groups, x.groups);
+        }else
+            return false;
+    }
 }

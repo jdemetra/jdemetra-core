@@ -37,11 +37,11 @@ public class LogLevelModuleTest {
 //        long t0 = System.currentTimeMillis();
 //        System.out.println("New");
 //        for (int i = 0; i < 1000; ++i) {
-        LogLevelModule ll = LogLevelModule.builder()
-                .estimationPrecision(1e-7)
-                .build();
-        ll.process(DoubleSequence.ofInternal(Data.PROD), 12, true);
-        assertTrue(ll.isChoosingLog());
+//        LogLevelModule ll = LogLevelModule.builder()
+//                .estimationPrecision(1e-7)
+//                .build();
+//        ll.process(DoubleSequence.ofInternal(Data.PROD), 12, true);
+//        assertTrue(ll.isChoosingLog());
 //        System.out.println(ll.getAICcLevel());
 //        System.out.println(ll.getAICcLog());
 //        System.out.println(ll.isChoosingLog());

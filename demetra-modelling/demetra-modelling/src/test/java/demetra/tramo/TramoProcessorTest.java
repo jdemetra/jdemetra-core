@@ -16,10 +16,15 @@
  */
 package demetra.tramo;
 
-import demetra.tramo.TramoProcessor;
 import demetra.data.Data;
+import demetra.data.DoubleSequence;
+import demetra.regarima.regular.RegArimaModelling;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsPeriod;
+import ec.tstoolkit.modelling.arima.IPreprocessor;
+import ec.tstoolkit.modelling.arima.PreprocessingModel;
+import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -27,13 +32,65 @@ import static org.junit.Assert.*;
  */
 public class TramoProcessorTest {
     
+    private final double[] data, datamissing;
+    
     public TramoProcessorTest() {
+        data=Data.PROD.clone();
+        datamissing=Data.PROD.clone();
+        datamissing[2]=Double.NaN;
+        datamissing[100]=Double.NaN;
+        datamissing[101]=Double.NaN;
+        datamissing[102]=Double.NaN;
     }
 
-    @Test
-    public void testProd() {
-        TramoProcessor processor=TramoProcessor.builder().build();
-        processor.process(Data.TS_PROD, null);
+    //@Test
+    public void testProdMissing() {
+        TramoProcessor processor=TramoProcessor.of(TramoSpec.TR5, null);
+        TsPeriod start=TsPeriod.monthly(1967,1);
+        TsData s=TsData.of(start, DoubleSequence.ofInternal(datamissing));
+        processor.process(s, null);
     }
     
+    //@Test
+    public void testProdLegacyMissing() {
+        IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR5.build();
+        ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, datamissing, true);
+        processor.process(s, null);
+    }
+    
+    @Test
+    public void testProd() {
+        TramoProcessor processor=TramoProcessor.of(TramoSpec.TRfull, null);
+        TsPeriod start=TsPeriod.monthly(1967,1);
+        TsData s=TsData.of(start, DoubleSequence.ofInternal(data));
+        RegArimaModelling context=new RegArimaModelling();
+        processor.process(s, context);
+        context.estimate(1e-9);
+    }
+    
+    @Test
+    public void testProdLegacy() {
+        IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
+        ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
+        PreprocessingModel process = processor.process(s, null);
+    }
+    
+//    @Test
+    public void testProdWald() {
+        TramoSpec nspec=new TramoSpec(TramoSpec.TRfull);
+        nspec.getRegression().getCalendar().getTradingDays().setAutomaticMethod(TradingDaysSpec.AutoMethod.WaldTest);
+        TramoProcessor processor=TramoProcessor.of(nspec, null);
+        TsPeriod start=TsPeriod.monthly(1967,1);
+        TsData s=TsData.of(start, DoubleSequence.ofInternal(data));
+        processor.process(s, null);
+    }
+    
+    @Test
+    public void testProdWaldLegacy() {
+        TramoSpecification nspec = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.clone();
+        nspec.getRegression().getCalendar().getTradingDays().setAutomaticMethod(ec.tstoolkit.modelling.arima.tramo.TradingDaysSpec.AutoMethod.WaldTest);
+        IPreprocessor processor = nspec.build();
+        ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
+        processor.process(s, null);
+    }
 }

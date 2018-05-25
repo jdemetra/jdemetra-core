@@ -40,15 +40,15 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
     @BuilderPattern(GlsArimaProcessor.class)
     public static class Builder<M extends IArimaModel> {
 
-        private Function<M, IParametricMapping<M>> mappingProvider;
+        private IArimaMapping<M> mapping;
         private IRegArimaInitializer<M> initializer;
         private IRegArimaFinalizer<M> finalizer;
         private double eps = 1e-9;
         private ISsqFunctionMinimizer min;
         private boolean ml = true, mt = false, fast = true;
 
-        public Builder<M> mapping(Function<M, IParametricMapping<M>> mapping) {
-            this.mappingProvider = mapping;
+        public Builder<M> mapping(IArimaMapping<M> mapping) {
+            this.mapping = mapping;
             return this;
         }
 
@@ -88,7 +88,9 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
         }
 
         public GlsArimaProcessor<M> build() {
-            return new GlsArimaProcessor(mappingProvider, initializer, finalizer, min, eps, ml, mt, fast);
+            if (mapping == null)
+                throw new IllegalArgumentException();
+            return new GlsArimaProcessor(mapping, initializer, finalizer, min, eps, ml, mt, fast);
         }
 
     }
@@ -97,7 +99,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
         return new Builder<>();
     }
 
-    private final Function<M, IParametricMapping<M>> mappingProvider;
+    private final IArimaMapping<M> mapping;
     private final IRegArimaInitializer<M> initializer;
     private final IRegArimaFinalizer<M> finalizer;
     private final ISsqFunctionMinimizer min;
@@ -106,10 +108,10 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
     /**
      *
      */
-    private GlsArimaProcessor(Function<M, IParametricMapping<M>> mappingProvider,
+    private GlsArimaProcessor(IArimaMapping<M> mapping,
             final IRegArimaInitializer<M> initializer, final IRegArimaFinalizer<M> finalizer, final ISsqFunctionMinimizer min,
             final double eps, final boolean ml, final boolean mt, final boolean fast) {
-        this.mappingProvider = mappingProvider;
+        this.mapping = mapping;
         this.initializer = initializer;
         this.finalizer = finalizer;
         if (min == null) {
@@ -143,8 +145,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
             start = initializer.initialize(regs);
         }
         if (start == null) {
-            IParametricMapping<M> pmapping = mappingProvider.apply(regs.arima());
-            return RegArimaModel.of(regs, pmapping.getDefault());
+            return RegArimaModel.of(regs, mapping.getDefault());
         } else {
             return start;
         }
@@ -162,17 +163,16 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
     public RegArimaEstimation<M> optimize(RegArimaModel<M> regs) {
         M arima = regs.arima();
         M arma = (M) arima.stationaryTransformation().getStationaryModel();
-        IParametricMapping<M> stmapping = mappingProvider.apply(arma);
+        IArimaMapping<M> stmapping = mapping.stationaryMapping();
         RegArmaModel<M> dmodel = regs.differencedModel();
         RegArmaProcessor processor = new RegArmaProcessor(ml, mt, fast);
         int ndf = dmodel.getY().length() - dmodel.getX().getColumnsCount();// - mapping.getDim();
         RegArmaEstimation<M> rslt = processor.compute(dmodel, stmapping.map(arma), stmapping, min, ndf);
-        IParametricMapping<M> mapping = mappingProvider.apply(arima);
         M nmodel = mapping.map(DoubleSequence.ofInternal(rslt.getParameters()));
         RegArimaModel<M> nregs = regs.toBuilder().arima(nmodel).build();
 
         return new RegArimaEstimation(nregs, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nregs),
-                new LogLikelihoodFunction.Point(RegArimaEstimation.concentratedLogLikelihoodFunction(mappingProvider, regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()));
+                new LogLikelihoodFunction.Point(RegArimaEstimation.concentratedLogLikelihoodFunction(mapping, regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()));
     }
 
     @Override

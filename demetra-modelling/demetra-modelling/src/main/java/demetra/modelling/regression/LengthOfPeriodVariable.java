@@ -25,6 +25,7 @@ import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.Utility;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -128,4 +129,21 @@ public class LengthOfPeriodVariable implements ILengthOfPeriodVariable {
         buffer.set(i -> ndays[i] - m);
     }
 
+    @Override
+    public boolean equals(Object other){
+        if (this == other)
+            return true;
+        if (other instanceof LengthOfPeriodVariable){
+            LengthOfPeriodVariable x=(LengthOfPeriodVariable) other;
+            return x.type == type;
+        }else
+            return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.type);
+        return hash;
+    }
 }

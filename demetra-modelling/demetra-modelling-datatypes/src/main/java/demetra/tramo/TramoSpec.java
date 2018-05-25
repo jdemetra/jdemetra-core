@@ -66,6 +66,7 @@ public class TramoSpec {
         dc.setAutomatic(true);
         EasterSpec ec = new EasterSpec(e);
         ec.setOption(EasterSpec.Type.IncludeEaster);
+        ec.setTest(true);
 
         RegressionSpec rwd = new RegressionSpec();
         CalendarSpec cwd = new CalendarSpec();
@@ -139,7 +140,7 @@ public class TramoSpec {
         automdl=new AutoModelSpec(other.automdl);
         outlier=new OutlierSpec(other.outlier);
         arima=new ArimaSpec(other.arima);
-        regression=new RegressionSpec(regression);
+        regression=new RegressionSpec(other.regression);
     }
 
     /**

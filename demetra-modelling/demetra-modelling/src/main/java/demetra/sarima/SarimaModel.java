@@ -53,7 +53,7 @@ public class SarimaModel extends AbstractArimaModel {
         private final int s;
         private int d, bd;
         private double[] phi, bphi, th, bth;
-        private boolean adjust = true;
+        private boolean adjust = false;
 
         private Builder(SarimaSpecification spec) {
             s = spec.getPeriod();

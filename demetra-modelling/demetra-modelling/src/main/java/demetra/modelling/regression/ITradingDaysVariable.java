@@ -26,15 +26,13 @@ import demetra.design.Development;
 @Development(status = Development.Status.Alpha)
 public interface ITradingDaysVariable extends ICalendarVariable {
     
-    public static final String CATEGORY="TradingDays";
-    
-    static final String NAME="td";
+    public static final String NAME="td";
 
-    static String name(int dim){
-       if (dim == 1)
+    public static String defaultName(int dim){
+//       if (dim == 1)
             return NAME;
-        else 
-            return NAME+'#'+dim;
+//        else 
+//            return NAME+'#'+dim;
     }
 
 }

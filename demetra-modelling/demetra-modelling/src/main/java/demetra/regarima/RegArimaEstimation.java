@@ -96,72 +96,6 @@ public class RegArimaEstimation<M extends IArimaModel> {
     }
 
     /**
-     * Data corrected for regression effects (except mean effect)
-     *
-     * @return
-     */
-    public DoubleSequence linearizedData() {
-        double[] res = model.getY().toArray();
-
-        // handle missing values
-        int[] missing = model.missing();
-        if (missing.length > 0) {
-            DoubleSequence missingEstimates = concentratedLikelihood.missingEstimates();
-            for (int i = 0; i < missing.length; ++i) {
-                res[missing[i]] -= missingEstimates.get(i);
-            }
-        }
-        DoubleSequence b = concentratedLikelihood.coefficients();
-        DataBlock e = DataBlock.ofInternal(res);
-        if (b.length() > 0) {
-            List<DoubleSequence> x = model.getX();
-            int cur = model.isMean() ? 1 : 0;
-            for (int i = 0; i < x.size(); ++i) {
-                double bcur = b.get(cur++);
-                e.apply(x.get(i), (u, v) -> u - bcur * v);
-            }
-        }
-        return e;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public DoubleSequence olsResiduals() {
-        LinearModel lm = model.differencedModel().asLinearModel();
-        Ols ols = new Ols();
-        LeastSquaresResults lsr = ols.compute(lm);
-        return lm.calcResiduals(lsr.getCoefficients());
-    }
-    
-    public DoubleSequence fullResiduals() {
-        // compute the residuals...
-        if (model.getVariablesCount() == 0) {
-            return concentratedLikelihood.e();
-        }
-        
-        DoubleSequence ld = linearizedData();
-        StationaryTransformation st = model.arima().stationaryTransformation();
-        DataBlock dld;
-        
-        if (st.getUnitRoots().getDegree() == 0) {
-            dld = DataBlock.of(ld);
-            if (model.isMean()) {
-                dld.sub(concentratedLikelihood.coefficients().get(0));
-            }
-        } else {
-            dld = DataBlock.make(ld.length() - st.getUnitRoots().getDegree());
-        }
-        st.getUnitRoots().apply(ld, dld);
-        
-        FastKalmanFilter kf = new FastKalmanFilter((IArimaModel) st.getStationaryModel());
-        Likelihood ll = kf.process(dld);
-        return ll.e();
-        
-    }
-
-    /**
      * Returns the concentrated log likelihood function associated with a regarima model,
      * taking into account the mapping between the parameter set and the underlying
      * parametric ARIMA model
@@ -172,8 +106,7 @@ public class RegArimaEstimation<M extends IArimaModel> {
      * @return
      */
     public static <M extends IArimaModel> LogLikelihoodFunction<RegArimaModel<SarimaModel>, ConcentratedLikelihood>
-            concentratedLogLikelihoodFunction(Function<M, IParametricMapping<M>> mappingProvider, RegArimaModel<M> regs) {
-        IParametricMapping<M> mapping = mappingProvider.apply(regs.arima());
+            concentratedLogLikelihoodFunction(IArimaMapping<M> mapping, RegArimaModel<M> regs) {
         RegArimaMapping<M> rmapping = new RegArimaMapping<>(mapping, regs);
         Function<RegArimaModel<M>, ConcentratedLikelihood> fn = model -> ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
         return new LogLikelihoodFunction(rmapping, fn);
