@@ -17,7 +17,11 @@
 package demetra.x12;
 
 import demetra.design.Development;
-
+import demetra.regarima.IRegArimaProcessor;
+import demetra.regarima.outlier.CriticalValueComputer;
+import demetra.sarima.GlsSarimaProcessor;
+import demetra.sarima.SarimaModel;
+import demetra.sarima.internal.HannanRissanenInitializer;
 
 /**
  *
@@ -27,5 +31,22 @@ import demetra.design.Development;
 @lombok.experimental.UtilityClass
 public class X12Utility {
 
+    public static final double MINCV = 2.8;
 
+    public double calcCv(int nobs) {
+        return Math.max(CriticalValueComputer.advancedComputer().applyAsDouble(nobs), MINCV);
+    }
+
+    public IRegArimaProcessor<SarimaModel> processor(boolean ml, double precision) {
+        HannanRissanenInitializer initializer = HannanRissanenInitializer.builder()
+                .stabilize(true)
+                .useDefaultIfFailed(true)
+                .build();
+
+        return GlsSarimaProcessor.builder()
+                .initializer(initializer)
+                .useMaximumLikelihood(ml)
+                .precision(precision)
+                .build();
+    }
 }

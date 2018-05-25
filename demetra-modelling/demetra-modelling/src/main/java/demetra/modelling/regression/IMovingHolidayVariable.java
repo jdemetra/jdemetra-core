@@ -29,11 +29,6 @@ import demetra.timeseries.TsDomain;
 public interface IMovingHolidayVariable extends ITsVariable<TsDomain> {
 
     @Override
-    default ComponentType getComponentType(){
-        return ComponentType.CalendarEffect;
-    }
-    
-    @Override
     default String getName(){
         return "mh";
     }

@@ -54,6 +54,15 @@ public interface IConcentratedLikelihood extends ILikelihood {
         return coefficients().length();
     }
 
+    /**
+     * Gets the T-stat for the given regression variable (including mean, 
+     * excluding missing identified by additive outliers)
+     * @param ix Position of the variable
+     * @param nhp Number of hyper-parameters (for correction of the degrees of freedom)
+     * @param unbiased True for use of unbiased variance estimate, 
+     * false for ML variance estimate
+     * @return 
+     */
     default double tstat(int ix, int nhp, boolean unbiased) {
 
         double e = unscaledCovariance().get(ix, ix);

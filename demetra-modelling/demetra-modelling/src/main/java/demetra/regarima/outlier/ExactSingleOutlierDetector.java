@@ -40,7 +40,7 @@ import demetra.sarima.SarimaModel;
  * @param <T>
  */
 @Development(status = Development.Status.Preliminary)
-public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractSingleOutlierDetector<T> {
+public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOutlierDetector<T> {
 
     private IArmaFilter filter;
     private final IResidualsComputer resComputer;
@@ -89,6 +89,8 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
     @Override
     protected boolean calc() {
         try {
+            if (getOutlierFactoriesCount() == 0 || ubound<=lbound)
+                return false;
             RegArmaModel<T> dmodel = this.getRegArima().differencedModel();
             n = filter.prepare(dmodel.getArma(), dmodel.getY().length());
             if (!initialize(dmodel)) {
@@ -165,13 +167,13 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
         int d = df.getDegree();
         double[] o = new double[2 * len];
         DataBlock O = DataBlock.ofInternal(o);
-        getOutlierFactory(idx).fill(lbound + len, O);
+        getOutlierFactory(idx).fill(len, O);
         double[] od = new double[o.length - d];
         DataBlock OD = DataBlock.ofInternal(od);
         df.apply(O, OD);
         DataBlock Yl = DataBlock.ofInternal(yl);
 
-        for (int i = 0; i < len; ++i) {
+        for (int i = lbound; i < ubound; ++i) {
             O = DataBlock.ofInternal(od, len - i, 2 * len - d - i, 1);
             if (isAllowed(i, idx)) {
                 DataBlock Ol = DataBlock.make(n);

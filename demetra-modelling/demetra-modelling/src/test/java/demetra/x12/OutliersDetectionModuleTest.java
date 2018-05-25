@@ -5,9 +5,12 @@
  */
 package demetra.x12;
 
+import demetra.x12.OutliersDetectionModuleImpl;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
 import demetra.regarima.RegArimaModel;
+import demetra.regarima.RegArimaUtility;
+import demetra.sarima.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.internal.HannanRissanenInitializer;
@@ -34,11 +37,13 @@ public class OutliersDetectionModuleTest {
         spec.airline(true);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
 
-        OutliersDetectionModule od = OutliersDetectionModule.builder()
-                .setAll()
+        OutliersDetectionModuleImpl od = OutliersDetectionModuleImpl.builder()
+                .singleOutlierDetector(OutliersDetectionModuleImpl.defaultOutlierDetector(12))
                 .criticalValue(3)
+                .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
                 .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+        od.prepare(regarima.getObservationsCount());
         od.process(regarima);
         int[][] outliers = od.getOutliers();
 //        for (int i = 0; i < outliers.length; ++i) {
@@ -58,11 +63,13 @@ public class OutliersDetectionModuleTest {
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
         System.out.println("WN");
         HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
-        OutliersDetectionModule od = OutliersDetectionModule.builder()
-                .setAll()
+        OutliersDetectionModuleImpl od = OutliersDetectionModuleImpl.builder()
+                .singleOutlierDetector(OutliersDetectionModuleImpl.defaultOutlierDetector(12))
                 .criticalValue(3)
+                .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
                 .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+        od.prepare(regarima.getObservationsCount());
         od.process(regarima);
         int[][] outliers = od.getOutliers();
         for (int i = 0; i < outliers.length; ++i) {
@@ -71,7 +78,7 @@ public class OutliersDetectionModuleTest {
         }
     }
 
-    //@Test
+    @Test
     public void testProdLegacy() {
 
         System.out.println("Legacy");
@@ -88,13 +95,13 @@ public class OutliersDetectionModuleTest {
         od.process(context);
         List<IOutlierVariable> outliers = context.description.getOutliers();
         int n = outliers.size();
-        for (IOutlierVariable o : outliers) {
-            System.out.println(o.getName());
-        }
+//        for (IOutlierVariable o : outliers) {
+//            System.out.println(o.getName());
+//        }
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void stressTestProd() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 200; ++i) {
@@ -102,11 +109,13 @@ public class OutliersDetectionModuleTest {
             spec.airline(true);
             SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
 
-            OutliersDetectionModule od = OutliersDetectionModule.builder()
-                    .setAll()
+            OutliersDetectionModuleImpl od = OutliersDetectionModuleImpl.builder()
+                    .singleOutlierDetector(OutliersDetectionModuleImpl.defaultOutlierDetector(12))
                     .criticalValue(3)
+                    .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
                     .build();
             RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+            od.prepare(regarima.getObservationsCount());
             od.process(regarima);
             int[][] outliers = od.getOutliers();
         }
@@ -115,7 +124,7 @@ public class OutliersDetectionModuleTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void stressTestProdLegacy() {
 
         System.out.println("Legacy");

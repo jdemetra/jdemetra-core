@@ -25,16 +25,21 @@ import demetra.modelling.TransformationType;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.regarima.ami.RegArimaUtility;
+import demetra.regarima.regular.ProcessingResult;
+import demetra.regarima.RegArimaUtility;
 import demetra.sarima.SarimaModel;
-import demetra.regarima.ami.ILogLevelModule;
+import demetra.regarima.regular.ILogLevelModule;
+import demetra.regarima.regular.ModelDescription;
+import demetra.regarima.regular.ModelEstimation;
+import demetra.regarima.regular.RegArimaModelling;
+import demetra.timeseries.calendars.LengthOfPeriodType;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class LogLevelModule implements ILogLevelModule<SarimaModel> {
+public class LogLevelModule implements ILogLevelModule {
 
     public static Builder builder() {
         return new Builder();
@@ -45,6 +50,12 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
 
         private double aiccdiff = -2;
         private double precision = 1e-7;
+        private LengthOfPeriodType adjust = LengthOfPeriodType.None;
+
+        public Builder adjust(LengthOfPeriodType adjust) {
+            this.adjust = adjust;
+            return this;
+        }
 
         public Builder estimationPrecision(double eps) {
             this.precision = eps;
@@ -57,19 +68,21 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
         }
 
         public LogLevelModule build() {
-            return new LogLevelModule(aiccdiff, precision);
+            return new LogLevelModule(aiccdiff, precision, adjust);
         }
 
     }
 
     private final double aiccDiff;
     private final double precision;
-    private RegArimaEstimation<SarimaModel> level, log;
+       private final LengthOfPeriodType adjust;
+    private ModelEstimation level, log;
     private double aiccLevel, aiccLog;
 
-    private LogLevelModule(double aiccdiff, final double precision) {
+    private LogLevelModule(double aiccdiff, final double precision, final LengthOfPeriodType adjust) {
         this.aiccDiff = aiccdiff;
         this.precision = precision;
+        this.adjust=adjust;
     }
 
     public double getEpsilon() {
@@ -80,7 +93,6 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
      *
      * @return
      */
-    @Override
     public boolean isChoosingLog() {
         if (log == null) {
             return false;
@@ -91,51 +103,46 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
         }
     }
 
-    /**
-     * @param data
-     * @param frequency
-     * @param seas
-     * @return
-     */
-    public boolean process(DoubleSequence data, int frequency, boolean seas) {
-        return process(RegArimaUtility.airlineModel(data, false, frequency, seas));
-    }
     @Override
-    public boolean process(RegArimaModel<SarimaModel> levelModel) {
+    public ProcessingResult process(RegArimaModelling context) {
         clear();
-        IRegArimaProcessor processor = RegArimaUtility.processor(true, precision);
-        level = processor.process(levelModel);
+        ModelDescription model = context.getDescription();
+        if (model.getSeries().getValues().anyMatch(z->z<=0))
+            return ProcessingResult.Failed;
+        IRegArimaProcessor processor = X12Utility.processor(true, precision);
+        level = model.estimate(processor);
 
-        int d = levelModel.arima().getDifferencingOrder();
-        DoubleSequence y = levelModel.getY();
-        LogJacobian lj = new LogJacobian(d, y.length());
-        LogTransformation lt = new LogTransformation();
-        if (lt.canTransform(y)) {
-            DoubleSequence ly = lt.transform(y, lj);
-            RegArimaModel<SarimaModel> logModel = levelModel.toBuilder()
-                    .y(ly)
-                    .build();
-
-            log = processor.process(logModel);
-            if (level != null) {
-                aiccLevel = level.statistics(0).getAICC();
-            }
-            if (log != null) {
-                aiccLog = log.statistics(lj.value).getAICC();
-            }
+        ModelDescription logmodel = new ModelDescription(model);
+        logmodel.setLogTransformation(true);
+        if (adjust != LengthOfPeriodType.None){
+            logmodel.remove("lp");
+            logmodel.setTransformation(adjust);
         }
-        return true;
+        log = logmodel.estimate(processor);
+        if (level != null) {
+            aiccLevel = level.getStatistics().getAICC();
+        }
+        if (log != null) {
+            aiccLog = log.getStatistics().getAICC();
+        }
+        if (isChoosingLog()){
+            context.setDescription(logmodel);
+            context.setEstimation(log);
+            return ProcessingResult.Changed;
+        }else
+            return ProcessingResult.Unchanged;
+        
     }
 
     public TransformationType getTransformation() {
         return this.isChoosingLog() ? TransformationType.Log : TransformationType.None;
     }
-    
-    public double getAICcLevel(){
+
+    public double getAICcLevel() {
         return this.aiccLevel;
     }
 
-    public double getAICcLog(){
+    public double getAICcLog() {
         return this.aiccLog;
     }
 
@@ -147,14 +154,14 @@ public class LogLevelModule implements ILogLevelModule<SarimaModel> {
     /**
      * @return the level_
      */
-    public RegArimaEstimation<SarimaModel> getLevel() {
+    public ModelEstimation getLevel() {
         return level;
     }
 
     /**
      * @return the log_
      */
-    public RegArimaEstimation<SarimaModel> getLog() {
+    public ModelEstimation getLog() {
         return log;
     }
 

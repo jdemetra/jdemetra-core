@@ -20,8 +20,8 @@ import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.modelling.ComponentType;
-import demetra.timeseries.TsDomain;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  *
@@ -30,7 +30,7 @@ import java.time.LocalDateTime;
 public class TransitoryChange extends AbstractOutlier {
 
     static double ZERO = 1e-15;
-    public static final String TC = "TC";
+    public static final String CODE = "TC";
 
     public static final class Factory implements IOutlierFactory {
 
@@ -76,7 +76,7 @@ public class TransitoryChange extends AbstractOutlier {
 
         @Override
         public String getCode() {
-            return TC;
+            return CODE;
         }
 
     }
@@ -84,7 +84,7 @@ public class TransitoryChange extends AbstractOutlier {
     private final double coefficient;
 
     public TransitoryChange(LocalDateTime pos, double coefficient) {
-        super(pos, defaultName(TC, pos, null));
+        super(pos, IOutlier.defaultName(CODE, pos, null));
         this.coefficient = coefficient;
     }
 
@@ -123,11 +123,11 @@ public class TransitoryChange extends AbstractOutlier {
 
     @Override
     public String getCode() {
-        return TC;
+        return CODE;
     }
 
     @Override
-    public ComponentType getComponentType(){
+    public ComponentType getComponentType() {
         return ComponentType.Irregular;
     }
 
@@ -136,4 +136,24 @@ public class TransitoryChange extends AbstractOutlier {
         return new TransitoryChange(position, coefficient, name);
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof SwitchOutlier) {
+            TransitoryChange x = (TransitoryChange) other;
+            return this.coefficient == x.coefficient && this.position.equals(x.position);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.coefficient) ^ (Double.doubleToLongBits(this.coefficient) >>> 32));
+        hash = 97 * hash + Objects.hash(position);
+        return hash;
+    }
 }

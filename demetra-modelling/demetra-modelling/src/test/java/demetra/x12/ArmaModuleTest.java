@@ -16,6 +16,7 @@
  */
 package demetra.x12;
 
+import demetra.x12.ArmaModuleImpl;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
 import demetra.regarima.RegArimaModel;
@@ -33,7 +34,7 @@ public class ArmaModuleTest {
     
     @Test
     public void testProd() {
-        ArmaModule test = new ArmaModule();
+        ArmaModuleImpl test = ArmaModuleImpl.builder().build();
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
@@ -45,7 +46,7 @@ public class ArmaModuleTest {
 
     @Test
     public void testX() {
-        ArmaModule test = new ArmaModule();
+        ArmaModuleImpl test = ArmaModuleImpl.builder().build();
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();

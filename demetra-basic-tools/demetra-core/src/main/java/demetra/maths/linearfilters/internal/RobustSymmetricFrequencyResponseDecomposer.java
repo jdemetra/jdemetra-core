@@ -78,7 +78,6 @@ public class RobustSymmetricFrequencyResponseDecomposer  {
         UnitRootsSolver urs = new UnitRootsSolver(m_freq);
         if (urs.factorize(P)) {
             UnitRoots ur = urs.getUnitRoots();
-
             UnitRoots sur = ur.sqrt();
             if (sur != null) {
                 Polynomial urp = sur.toPolynomial();
@@ -98,8 +97,6 @@ public class RobustSymmetricFrequencyResponseDecomposer  {
                 }
                 P=Polynomial.of(c);
            }
-            
-            
         }
         if (m_bf == null) {
             m_bf = BackFilter.ONE;

@@ -69,7 +69,7 @@ public class SwitchOutlier extends AbstractOutlier {
     }
 
     public SwitchOutlier(LocalDateTime pos) {
-        super(pos, defaultName(WO, pos, null));
+        super(pos, IOutlier.defaultName(WO, pos, null));
     }
 
     public SwitchOutlier(LocalDateTime pos, String name) {
@@ -88,7 +88,7 @@ public class SwitchOutlier extends AbstractOutlier {
     }
 
     @Override
-    public ComponentType getComponentType(){
+    public ComponentType getComponentType() {
         return ComponentType.Irregular;
     }
 
@@ -100,6 +100,26 @@ public class SwitchOutlier extends AbstractOutlier {
     @Override
     public SwitchOutlier rename(String name) {
         return new SwitchOutlier(position, name);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof SwitchOutlier) {
+            SwitchOutlier x = (SwitchOutlier) other;
+            return this.position.equals(x.position);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 29 * hash + position.hashCode();
+        return hash;
     }
 
 }

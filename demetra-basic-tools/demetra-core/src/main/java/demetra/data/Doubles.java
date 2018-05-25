@@ -371,4 +371,22 @@ public class Doubles {
             ns=fn(ns, lag, (x, y) -> y - x);
         return ns;
     }
+    
+    public DoubleSequence op(DoubleSequence a, DoubleSequence b, DoubleBinaryOperator op) {
+        double[] data = a.toArray();
+        DoubleReader reader = b.reader();
+        for (int i = 0; i < data.length; ++i) {
+            data[i] = op.applyAsDouble(data[i], reader.next());
+        }
+        return DoubleSequence.ofInternal(data);
+    }
+
+    public DoubleSequence fastOp(DoubleSequence a, DoubleSequence b, DoubleBinaryOperator op) {
+        int n=a.length();
+        return DoubleSequence.of(n, i->a.get(i)+b.get(i));
+    }
+    
+    public DoubleSequence commit(DoubleSequence s){
+        return DoubleSequence.ofInternal(s.toArray());
+    }
 }
