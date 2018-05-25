@@ -26,13 +26,13 @@ import demetra.design.Development;
 @Development(status=Development.Status.Preliminary)
 public class TramoException extends RuntimeException {
 
-    final static String ATIP_E = "Failure in the outliers identification procedure";
+    public final static String ATIP_E = "Failure in the outliers identification procedure";
 
-    final static String ATIP_MANY = "Too many outliers";
+    public final static String ATIP_MANY = "Too many outliers";
 
-    final static String ATIP_ITER = "Too many iterations in the outliers identification procedure";
+    public final static String ATIP_ITER = "Too many iterations in the outliers identification procedure";
 
-    final static String IDDIF_E = "Failure in the identification of the differencing orders";
+    public final static String IDDIF_E = "Failure in the identification of the differencing orders";
 
 
     /**

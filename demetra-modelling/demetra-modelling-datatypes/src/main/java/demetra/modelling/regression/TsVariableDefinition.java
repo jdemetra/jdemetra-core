@@ -30,9 +30,4 @@ public class TsVariableDefinition  {
     private String name;
     private int firstlag, lastlag;
     private ComponentType effect;
-    private double[] coefficients;
-    
-    public TsVariableDefinition withCoefficients(double[] c){
-        return new TsVariableDefinition(name, firstlag, lastlag, effect, c);
-    }
 }

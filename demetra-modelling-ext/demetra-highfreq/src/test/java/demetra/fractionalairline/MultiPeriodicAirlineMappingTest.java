@@ -55,9 +55,8 @@ public class MultiPeriodicAirlineMappingTest {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/edf.txt").toURI();
         MatrixType edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, false);
-        final MultiPeriodicAirlineMapping stmapping=new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, true);
         GlsArimaProcessor<ArimaModel> processor=GlsArimaProcessor.builder(ArimaModel.class)
-                .mapping(m->m.isStationary() ? stmapping : mapping )
+                .mapping(mapping)
                 .precision(1e-5)
                 .build();
         RegArimaModel<ArimaModel> regarima=RegArimaModel.builder(ArimaModel.class)
@@ -77,9 +76,8 @@ public class MultiPeriodicAirlineMappingTest {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/edf.txt").toURI();
         MatrixType edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365}, true, false);
-        final MultiPeriodicAirlineMapping stmapping=new MultiPeriodicAirlineMapping(new double[]{7, 365}, true, true);
         GlsArimaProcessor<ArimaModel> processor=GlsArimaProcessor.builder(ArimaModel.class)
-                .mapping(m->m.isStationary() ? stmapping : mapping )
+                .mapping(mapping )
                 .precision(1e-5)
                 .build();
         RegArimaModel<ArimaModel> regarima=RegArimaModel.builder(ArimaModel.class)
@@ -100,9 +98,8 @@ public class MultiPeriodicAirlineMappingTest {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/births.txt").toURI();
         MatrixType edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, false);
-        final MultiPeriodicAirlineMapping stmapping=new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, true);
         GlsArimaProcessor<ArimaModel> processor=GlsArimaProcessor.builder(ArimaModel.class)
-                .mapping(m->m.isStationary() ? stmapping : mapping )
+                .mapping(mapping )
                 .precision(1e-5)
                 .build();
         RegArimaModel<ArimaModel> regarima=RegArimaModel.builder(ArimaModel.class)

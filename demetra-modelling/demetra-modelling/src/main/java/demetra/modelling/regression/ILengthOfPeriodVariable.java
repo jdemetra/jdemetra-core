@@ -26,7 +26,7 @@ import demetra.design.Development;
 @Development(status = Development.Status.Alpha)
 public interface ILengthOfPeriodVariable extends ICalendarVariable{
     
-    static final String NAME="lp";
+    public static final String NAME="lp";
     
     @Override
     default String getName(){

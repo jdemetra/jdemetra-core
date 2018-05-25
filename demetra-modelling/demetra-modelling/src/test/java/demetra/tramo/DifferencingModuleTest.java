@@ -16,6 +16,7 @@
  */
 package demetra.tramo;
 
+import demetra.tramo.internal.DifferencingModule;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
 import org.junit.Test;
@@ -33,8 +34,8 @@ public class DifferencingModuleTest {
     @Test
     public void testProd() {
         DifferencingModule test = DifferencingModule.builder().build();
-        int[] diff = test.process(DoubleSequence.of(Data.PROD), new int[]{1,12}, null);
-        assertTrue(diff[0] == 1 && diff[1] == 1);
+        test.process(DoubleSequence.of(Data.PROD), 12, 0, 0, true);
+        assertTrue(test.getD() == 1 && test.getBd() == 1);
 //        System.out.println(diff[0]);
 //        System.out.println(diff[1]);
 //        System.out.println(test.isMeanCorrection());
@@ -43,8 +44,8 @@ public class DifferencingModuleTest {
     @Test
     public void testX() {
         DifferencingModule test = DifferencingModule.builder().build();
-        int[] diff = test.process(DoubleSequence.of(Data.EXPORTS), new int[]{1,12}, null);
-        assertTrue(diff[0] == 0 && diff[1] == 1);
+        test.process(DoubleSequence.of(Data.EXPORTS), 12, 0, 0, true);
+        assertTrue(test.getD() == 0 && test.getBd() == 1);
 //        System.out.println(diff[0]);
 //        System.out.println(diff[1]);
 //        System.out.println(test.isMeanCorrection());

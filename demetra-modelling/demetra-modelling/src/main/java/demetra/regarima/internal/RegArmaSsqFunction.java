@@ -31,6 +31,7 @@ import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import demetra.maths.MatrixType;
+import demetra.regarima.IArimaMapping;
 
 /**
  *
@@ -52,7 +53,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
         private MatrixType x;
         private int nmissing;
         // mapping
-        private IParametricMapping<S> mapping;
+        private IArimaMapping<S> mapping;
 
         private SsqBuilder(final DoubleSequence dy) {
             this.dy = dy;
@@ -68,7 +69,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
             return this;
         }
 
-        SsqBuilder mapping(IParametricMapping<S> mapping) {
+        SsqBuilder mapping(IArimaMapping<S> mapping) {
             this.mapping=mapping;
             return this;
         }

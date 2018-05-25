@@ -20,7 +20,6 @@ import demetra.arima.IArimaModel;
 import demetra.data.Parameter;
 import demetra.design.Development;
 
-
 /**
  * @author Jean Palate
  * @param <M>
@@ -29,6 +28,14 @@ import demetra.design.Development;
 public abstract class AbstractArimaComponent<M extends IArimaModel> {
 
     private Parameter mean;
+
+    protected void copy(AbstractArimaComponent<M> other) {
+        if (other.mean != null) {
+            mean = other.mean.clone();
+        } else {
+            mean = null;
+        }
+    }
 
     /**
      * @return the mean
@@ -40,6 +47,7 @@ public abstract class AbstractArimaComponent<M extends IArimaModel> {
     public boolean isEstimatedMean() {
         return mean != null && !mean.isFixed();
     }
+
     /**
      * @param m
      */

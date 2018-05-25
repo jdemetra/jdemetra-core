@@ -26,6 +26,7 @@ import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.Easter;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -33,7 +34,7 @@ import java.util.List;
  */
 @Development(status = Development.Status.Alpha)
 public class EasterVariable implements IEasterVariable {
-    
+
     public static enum Correction {
         Simple,
         PreComputed,
@@ -55,51 +56,61 @@ public class EasterVariable implements IEasterVariable {
         0.5864E0, 0.6024444E0, 0.618E0, 0.6345714E0, 0.6516667E0,
         0.6696E0, 0.6875E0, 0.7033333E0, 0.719E0, 0.734E0};
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     @BuilderPattern(EasterVariable.class)
     public static class Builder {
 
-    private int duration=6, endPosition=0;
-    private Correction meanCorrection = Correction.Simple;
-    private String name;
-    
-    public Builder duration(int duration){
-        this.duration=duration;
-        return this;
-    }
+        private int duration = 6, endPosition = 0;
+        private Correction meanCorrection = Correction.Simple;
+        private String name;
 
-    /**
-     * Position of the end of the Easter effect, relatively to Easter
-     * @param endpos
-     * @return 
-     */
-    public Builder endPoqition(int endpos){
-        if (endpos < -1 || endpos > 1)
-            throw new TsException("Not supported yet");
-        this.endPosition=endpos;
-        return this;
-    }
+        public Builder duration(int duration) {
+            this.duration = duration;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder meanCorrection(Correction correction) {
+            this.meanCorrection = correction;
+            return this;
+        }
+
+        /**
+         * Position of the end of the Easter effect, relatively to Easter
+         *
+         * @param endpos
+         * @return
+         */
+        public Builder endPosition(int endpos) {
+            if (endpos < -1 || endpos > 1) {
+                throw new TsException("Not supported yet");
+            }
+            this.endPosition = endpos;
+            return this;
+        }
 
         public EasterVariable build() {
-            return new EasterVariable(duration, endPosition, meanCorrection, name != null ? name : defaultName(duration));
+            return new EasterVariable(duration, endPosition, meanCorrection, name != null ? name : NAME);
         }
     }
-    
-    public static String defaultName(int duration){
-        StringBuilder builder = new StringBuilder();
-        builder.append("Easter [").append(duration).append(']');
-        return builder.toString();
-        
-    }
+
 
     private final int duration, endPosition;
     private final Correction meanCorrection;
     private final String name;
 
     private EasterVariable(int duration, int endPosition, Correction meanCorrection, String name) {
-        this.duration=duration;
-        this.endPosition=endPosition;
-        this.meanCorrection=meanCorrection;
-        this.name=name;
+        this.duration = duration;
+        this.endPosition = endPosition;
+        this.meanCorrection = meanCorrection;
+        this.name = name;
     }
 
     public int getDuration() {
@@ -123,10 +134,10 @@ public class EasterVariable implements IEasterVariable {
 
     @Override
     public void data(TsDomain domain, List<DataBlock> ldata) {
-        DataBlock data=ldata.get(0);
+        DataBlock data = ldata.get(0);
         data.set(0);
-        TsPeriod start=domain.getStartPeriod();
-        int freq = TsUnit.MONTH.ratioOf(start.getUnit());
+        TsPeriod start = domain.getStartPeriod();
+        int freq = domain.getTsUnit().getAnnualFrequency();
         if ((freq != 12 && freq != 4) || duration < 1 || duration > 25) {
             return;
         }
@@ -153,7 +164,7 @@ public class EasterVariable implements IEasterVariable {
             int month = easter.getMonthValue();
             if (endPosition == -1) {
                 --day;
-            } else if (endPosition==1) {
+            } else if (endPosition == 1) {
                 if (day == 31) {
                     day = 1;
                     ++month;
@@ -245,6 +256,27 @@ public class EasterVariable implements IEasterVariable {
     @Override
     public EasterVariable rename(String nname) {
         return new EasterVariable(duration, endPosition, meanCorrection, nname);
+    }
+
+    @Override
+    public boolean equals(Object other){
+        if (this == other)
+            return true;
+        if (other instanceof EasterVariable){
+            EasterVariable x=(EasterVariable) other;
+            return x.duration==duration && x.endPosition==endPosition 
+                    && Objects.equals(x.meanCorrection, meanCorrection);
+         }else
+            return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + this.duration;
+        hash = 53 * hash + this.endPosition;
+        hash = 53 * hash + Objects.hashCode(this.meanCorrection);
+        return hash;
     }
 
 }

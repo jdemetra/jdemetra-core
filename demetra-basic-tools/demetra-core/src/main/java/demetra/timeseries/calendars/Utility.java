@@ -279,6 +279,25 @@ public class Utility {
     }
 
     /**
+     * Gets the number of days by month (1-based indexed).
+     *
+     * @param year Considered year (meaningful only for February).
+     * @param month Considered (1-based) month.
+     * @return Number of days in the considered month
+     */
+    public static int getNumberOfDaysByMonth(final int year, final int month) {
+        if ((month == 2) && isLeap(year)) {
+            return 29;
+        }
+        return MONTHDAYS[month-1];
+    }
+
+    /**
+     * Number of days by month (if no leap year)
+     */
+    private static final int[] MONTHDAYS = {31, 28, 31, 30, 31, 30, 31, 31, 30,
+        31, 30, 31};
+   /**
      * Cumulative number of days (if no leap year). CumulatedMonthDays[2] =
      * number of days from 1/1 to 28/2.
      */

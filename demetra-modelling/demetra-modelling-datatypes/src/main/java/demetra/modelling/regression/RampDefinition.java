@@ -27,14 +27,4 @@ public class RampDefinition {
 
     private @lombok.NonNull
     LocalDateTime start, end;
-    private Double coefficient;
-
-    public boolean isFixed() {
-        return coefficient != null;
-    }
-    
-        public RampDefinition withCoefficient(Double c){
-        return new RampDefinition(start, end, c);
-    }
-
 }

@@ -53,8 +53,8 @@ public class EasterSpec{
     public EasterSpec( EasterSpec other ){
         this.duration=other.duration;
         this.julian=other.julian;
-        this.test=test;
-        this.type=type;
+        this.test=other.test;
+        this.type=other.type;
     }
 
     public void reset() {

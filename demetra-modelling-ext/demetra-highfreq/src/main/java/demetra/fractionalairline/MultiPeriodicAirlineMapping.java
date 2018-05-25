@@ -22,13 +22,22 @@ import demetra.data.DoubleSequence;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.linearfilters.BackFilter;
+import demetra.regarima.IArimaMapping;
 
-public class MultiPeriodicAirlineMapping implements IParametricMapping<ArimaModel> {
+public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
 
     private final double[] f0, f1;
     private final int[] p0;
     private final boolean adjust;
     private final boolean stationary;
+    
+    private MultiPeriodicAirlineMapping(double[] f0, double[] f1, int[] p0, boolean adjust, boolean stationary){
+        this.f0=f0;
+        this.f1=f1;
+        this.p0=p0;
+        this.adjust=adjust;
+        this.stationary=stationary;
+    }
 
     public MultiPeriodicAirlineMapping(double[] periods, boolean adjust, boolean stationary) {
         this.adjust = adjust;
@@ -151,5 +160,10 @@ public class MultiPeriodicAirlineMapping implements IParametricMapping<ArimaMode
             p[i] = .2;
         }
         return DoubleSequence.ofInternal(p);
+    }
+
+    @Override
+    public IArimaMapping<ArimaModel> stationaryMapping() {
+        return stationary ? this : new MultiPeriodicAirlineMapping(f0, f1, p0, adjust, true);
     }
 }

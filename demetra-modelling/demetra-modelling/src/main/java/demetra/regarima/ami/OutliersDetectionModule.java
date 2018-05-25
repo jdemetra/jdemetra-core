@@ -24,7 +24,7 @@ import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
-import demetra.regarima.outlier.AbstractSingleOutlierDetector;
+import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.outlier.FastOutlierDetector;
 import demetra.regarima.outlier.CriticalValueComputer;
 import demetra.modelling.regression.AdditiveOutlier;
@@ -44,7 +44,7 @@ import java.util.function.Consumer;
  * @param <T>
  */
 public class OutliersDetectionModule<T extends IArimaModel>
-        implements IOutliersDetectionModule<T> {
+        implements IGenericOutliersDetectionModule<T> {
 
     public static int DEF_MAXROUND = 100;
     public static int DEF_MAXOUTLIERS = 50;
@@ -52,12 +52,12 @@ public class OutliersDetectionModule<T extends IArimaModel>
     @BuilderPattern(OutliersDetectionModule.class)
     public static class Builder<T extends IArimaModel> {
 
-        private AbstractSingleOutlierDetector sod = new FastOutlierDetector(null);
+        private SingleOutlierDetector<T> sod = new FastOutlierDetector<>(null);
         private IRegArimaProcessor<T> processor;
         private int maxOutliers = DEF_MAXOUTLIERS;
         private int maxRound = DEF_MAXROUND;
 
-        public Builder<T> detector(AbstractSingleOutlierDetector sod) {
+        public Builder<T> detector(SingleOutlierDetector<T> sod) {
             this.sod = sod;
             this.sod.clearOutlierFactories();
             return this;
@@ -123,7 +123,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
 
     private RegArimaModel<T> regarima; // current regarima model
     private final ArrayList<int[]> outliers = new ArrayList<>(); // Outliers : (position, type)
-    private final AbstractSingleOutlierDetector sod;
+    private final SingleOutlierDetector<T> sod;
     private final IRegArimaProcessor<T> processor;
     private final int maxOutliers;
     private final int maxRound;
@@ -135,9 +135,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
     private boolean exit;
     private int[] lastremoved;
 
-    private int selectivity;
-    private double cv, curcv;
-    private double pc = 0.12;
+    private double cv;
     public static final double MINCV = 2.0;
     private Consumer<int[]> addHook;
     private Consumer<int[]> removeHook;
@@ -146,7 +144,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
         return new Builder<>();
     }
 
-    private OutliersDetectionModule(final AbstractSingleOutlierDetector sod, final IRegArimaProcessor<T> processor, final int maxOutliers, final int maxRound) {
+    private OutliersDetectionModule(final SingleOutlierDetector sod, final IRegArimaProcessor<T> processor, final int maxOutliers, final int maxRound) {
         this.sod = sod;
         this.processor = processor;
         this.maxOutliers = maxOutliers;
@@ -200,12 +198,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
     public boolean process(RegArimaModel<T> initialModel) {
         clear();
         int n = initialModel.getY().length();
-        sod.setBounds(0, n);
-        sod.prepare(n);
         regarima = initialModel;
-        if (curcv == 0) {
-            curcv = calcCv();
-        }
         nhp = 0;
         if (!estimateModel(true)) {
             return false;
@@ -216,6 +209,11 @@ public class OutliersDetectionModule<T extends IArimaModel>
         } catch (RuntimeException err) {
             return false;
         }
+    }
+
+    @Override
+    public void prepare(int n) {
+        sod.prepare(n);
     }
 
     @Override
@@ -232,7 +230,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
             }
             round++;
             max = sod.getMaxTStat();
-            if (Math.abs(max) < curcv) {
+            if (Math.abs(max) < cv) {
                 break;
             }
             int type = sod.getMaxOutlierType();
@@ -276,7 +274,6 @@ public class OutliersDetectionModule<T extends IArimaModel>
         round = 0;
         lastremoved = null;
         tstats = null;
-        curcv = 0;
         // festim = true if the model has to be re-estimated
     }
 
@@ -300,7 +297,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
             }
         }
 
-        if (Math.abs(tstats[nx0 + imin]) >= curcv) {
+        if (Math.abs(tstats[nx0 + imin]) >= cv) {
             return true;
         }
         int[] toremove = outliers.get(imin);
@@ -360,50 +357,8 @@ public class OutliersDetectionModule<T extends IArimaModel>
         return cv;
     }
 
-    public double getPc() {
-        return pc;
-    }
-
-    public void setPc(double pc) {
-        this.pc = pc;
-    }
-
-    private double calcCv() {
-        double cv = this.cv;
-        if (cv == 0) {
-            cv = CriticalValueComputer.simpleComputer().applyAsDouble(regarima.getObservationsCount());
-        }
-        for (int i = 0; i < -selectivity; ++i) {
-            cv *= (1 - pc);
-        }
-        return Math.max(cv, MINCV);
-    }
-
-    @Override
-    public boolean reduceSelectivity() {
-        if (curcv == 0) {
-            return false;
-        }
-        --selectivity;
-        if (curcv == MINCV) {
-            return false;
-        }
-        curcv = Math.max(MINCV, curcv * (1 - pc));
-
-        return true;
-    }
-
-    @Override
-    public void setSelectivity(int level) {
-        if (selectivity != level) {
-            selectivity = level;
-            curcv = 0;
-        }
-    }
-
-    @Override
-    public int getSelectivity() {
-        return selectivity;
+    public static double calcCv(int nobs) {
+        return Math.max(CriticalValueComputer.simpleComputer().applyAsDouble(nobs), MINCV);
     }
 
     @Override

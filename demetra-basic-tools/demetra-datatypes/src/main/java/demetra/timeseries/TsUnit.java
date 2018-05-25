@@ -69,6 +69,29 @@ public class TsUnit implements TemporalAmount {
         return (int) x;
     }
 
+    /**
+     * Gets the number of periods in one year.
+     *
+     * @return The number of periods in 1 year or -1 if the unit is not compatible 
+     * with years
+     */
+    public int getAnnualFrequency() {
+        switch (chronoUnit) {
+            case YEARS:
+                if (amount == 1) {
+                    return 1;
+                }
+                break;
+            case MONTHS:
+                int n = (int) amount;
+                if (12 % n == 0) {
+                    return 12 / n;
+                }
+                break;
+        }
+        return -1;
+    }
+
     @Override
     public String toString() {
         return toIsoString();

@@ -7,6 +7,7 @@ package demetra.arima.estimation;
 
 import demetra.arima.IArmaFilter;
 import demetra.arima.IArimaModel;
+import demetra.arima.StationaryTransformation;
 import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.sarima.SarimaModel;
@@ -29,7 +30,7 @@ public class IArmaFilterTest {
     static {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
-        airline = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).build();
+        airline = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.6).build();
         spec.setP(3);
         arima = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).phi(-.2, -.5, -.2).build();
         DataBlock s = DataBlock.copyOf(Data.PROD);
@@ -266,5 +267,61 @@ public class IArmaFilterTest {
         } else {
             return null;
         }
+    }
+
+    @Test
+    public void testAO() {
+        int POS=35;
+        double[] ao = new double[120];
+        ao[POS] = 1;
+        IArmaFilter filter = IArmaFilter.ansley();
+        StationaryTransformation<SarimaModel> st = airline.stationaryTransformation();
+        double[] dao = new double[ao.length - st.getUnitRoots().getDegree()];
+        st.getUnitRoots().apply(DataBlock.ofInternal(ao), DataBlock.ofInternal(dao));
+        int m = filter.prepare((IArimaModel) st.getStationaryModel(), dao.length);
+        DataBlock s = DataBlock.make(m);
+        filter.apply(DoubleSequence.ofInternal(dao), s);
+        System.out.println(s);
+        double[] coefficients = st.getStationaryModel().getPiWeights().getRationalFunction().coefficients(120);
+        double[] q=coefficients.clone();
+        int start=POS-st.getUnitRoots().getDegree();
+        for (int j=start+1; j<dao.length; ++j){
+            double a=dao[j];
+            if (a != 0){
+                for (int k=j; k<q.length; ++k){
+                    q[k-start]+=a*coefficients[k-j];
+                }
+            }
+        }
+        System.out.println(DoubleSequence.ofInternal(q));
+    }
+
+    @Test
+    public void testLS() {
+        int POS=35;
+        double[] ls = new double[120];
+        for (int i = 0; i < POS; ++i) {
+            ls[i] = -1;
+        }
+        IArmaFilter filter = IArmaFilter.ansley();
+        StationaryTransformation<SarimaModel> st = airline.stationaryTransformation();
+        double[] dls = new double[ls.length - st.getUnitRoots().getDegree()];
+        st.getUnitRoots().apply(DataBlock.ofInternal(ls), DataBlock.ofInternal(dls));
+        int m = filter.prepare((IArimaModel) st.getStationaryModel(), dls.length);
+        DataBlock s = DataBlock.make(m);
+        filter.apply(DoubleSequence.ofInternal(dls), s);
+        System.out.println(s);
+        double[] coefficients = st.getStationaryModel().getPiWeights().getRationalFunction().coefficients(120);
+        double[] q=coefficients.clone();
+        int start=POS-st.getUnitRoots().getDegree();
+        for (int j=start+1; j<dls.length; ++j){
+            double a=dls[j];
+            if (a != 0){
+                for (int k=j; k<q.length; ++k){
+                    q[k-start]+=a*coefficients[k-j];
+                }
+            }
+        }
+        System.out.println(DoubleSequence.ofInternal(q));
     }
 }

@@ -138,21 +138,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
      * with years
      */
     public int getAnnualFrequency() {
-        TsUnit unit = domain.getTsUnit();
-        switch (unit.getChronoUnit()) {
-            case YEARS:
-                if (unit.getAmount() == 1) {
-                    return 1;
-                }
-                break;
-            case MONTHS:
-                int n = (int) unit.getAmount();
-                if (12 % n == 0) {
-                    return 12 / n;
-                }
-                break;
-        }
-        return -1;
+        return domain.getTsUnit().getAnnualFrequency();
     }
 
     /**
