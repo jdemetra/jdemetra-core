@@ -14,6 +14,7 @@ import demetra.ssf.univariate.ISsf;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@lombok.experimental.UtilityClass
 public class AtomicModels {
     
     public ISsf arma(double[] ar, double[] ma, double var){
