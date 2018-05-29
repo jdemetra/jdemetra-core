@@ -5,6 +5,7 @@
  */
 package rssf;
 
+import demetra.ssf.StateStorage;
 import demetra.ssf.ckms.CkmsToolkit;
 import demetra.ssf.dk.DefaultDiffuseFilteringResults;
 import demetra.ssf.dk.DkConcentratedLikelihood;
@@ -19,6 +20,7 @@ import demetra.ssf.univariate.SsfData;
  */
 @lombok.experimental.UtilityClass
 public class Algorithms {
+    
     public double[] filter(ISsf model, double[] data){
         SsfData s=new SsfData(data);
         DefaultDiffuseFilteringResults rslt = DkToolkit.filter(model, s, false);
@@ -35,5 +37,10 @@ public class Algorithms {
         SsfData s=new SsfData(data);
         DkConcentratedLikelihood dll = DkToolkit.concentratedLikelihoodComputer().compute(model, s);
         return dll.logLikelihood();
+    }
+    
+    public StateStorage sqrtSmooth(ISsf model, double[] data, boolean all){
+        SsfData s=new SsfData(data);
+        return DkToolkit.sqrtSmooth(model, s, all);
     }
 }

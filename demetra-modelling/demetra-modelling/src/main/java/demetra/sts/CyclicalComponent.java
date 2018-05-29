@@ -20,6 +20,8 @@ import demetra.ssf.ISsfDynamics;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.implementations.Measurement;
+import demetra.ssf.univariate.Ssf;
 
 /**
  *
@@ -27,6 +29,11 @@ import demetra.ssf.ISsfInitialization;
  */
 public class CyclicalComponent {
     
+   public static Ssf of(final double dumpingFactor, final double period, final double cvar) {
+        Data data = new Data(dumpingFactor, period, cvar);
+        return new Ssf(new Initialization(data), new Dynamics(data), Measurement.create(0));
+    }
+
     static class Data{
         private final double var;
         private final double cdump, cperiod;
