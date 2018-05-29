@@ -251,13 +251,13 @@ public class SeasonalComponent {
     }
 
     public static ISsf harrisonStevens(final int period, final double v) {
-        HarrisonStevensData data=new HarrisonStevensData(period, v);
+        HarrisonStevensData data = new HarrisonStevensData(period, v);
         return new Ssf(new HarrisonStevensInitialization(data),
                 new HarrisonStevensDynamics(data), Measurement.circular(period));
     }
 
     public static ISsf harrisonStevens(final double[] var) {
-        HarrisonStevensData data=new HarrisonStevensData(var);
+        HarrisonStevensData data = new HarrisonStevensData(var);
         return new Ssf(new HarrisonStevensInitialization(data),
                 new HarrisonStevensDynamics(data), Measurement.circular(var.length));
     }
@@ -344,7 +344,6 @@ public class SeasonalComponent {
                 }
             }
         }
-
     }
 
     static class Dynamics implements ISsfDynamics {
@@ -403,7 +402,7 @@ public class SeasonalComponent {
                         s.set(data.std());
                         break;
                     case Dummy:
-                        s.set(data.freq-2, data.freq-2, data.std());
+                        s.set(data.freq - 2, data.freq - 2, data.std());
                         break;
                     default:
                         s.copy(data.lvar);
@@ -437,7 +436,7 @@ public class SeasonalComponent {
                         xs.set(0, data.std() * x.sum());
                         break;
                     case Dummy:
-                        xs.set(0, data.std() * x.get(data.freq-2));
+                        xs.set(0, data.std() * x.get(data.freq - 2));
                         break;
                     default:
                         xs.product(x, data.lvar.columnsIterator());
@@ -449,7 +448,7 @@ public class SeasonalComponent {
         @Override
         public void T(int pos, Matrix tr) {
             if (data.seasVar >= 0) {
-                tr.row(data.freq-2).set(-1);
+                tr.row(data.freq - 2).set(-1);
                 tr.subDiagonal(1).set(1);
             }
         }
@@ -476,7 +475,7 @@ public class SeasonalComponent {
                 case Fixed:
                     return;
                 case Dummy:
-                    p.add(data.freq-2, data.freq-2, data.seasVar);
+                    p.add(data.freq - 2, data.freq - 2, data.seasVar);
                     break;
                 case Crude:
                     p.add(data.seasVar);

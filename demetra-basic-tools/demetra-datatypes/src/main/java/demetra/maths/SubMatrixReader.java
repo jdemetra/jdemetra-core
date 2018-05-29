@@ -61,12 +61,12 @@ class SubMatrixReader implements MatrixType {
 
     @Override
     public int getColumnsCount() {
-        return nr;
+        return nc;
     }
 
     @Override
     public int getRowsCount() {
-        return nc;
+        return nr;
     }
 
     @Override
