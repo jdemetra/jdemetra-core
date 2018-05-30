@@ -18,7 +18,6 @@ package demetra.tsprovider.util;
 
 import static demetra.tsprovider.util.ObsFormat.of;
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,7 +25,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalQuery;
 import java.util.Date;
+import java.util.Locale;
 import static java.util.Locale.*;
 import java.util.function.BiConsumer;
 import static org.assertj.core.api.Assertions.*;
@@ -124,33 +125,32 @@ public class ObsFormatTest {
 
     @Test
     public void testNewDateTimeFormatter() throws ParseException {
-        assertThatThrownBy(() -> of(FRENCH, "p", null).newDateTimeFormatter()).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> of(null, "p", null).newDateTimeFormatter()).isInstanceOf(IllegalArgumentException.class);
+        assertThatIllegalArgumentException().isThrownBy(() -> of(FRENCH, "p", null).newDateTimeFormatter());
+        assertThatIllegalArgumentException().isThrownBy(() -> of(null, "p", null).newDateTimeFormatter());
 
         LocalDateTime date = LocalDate.of(2000, 1, 1).atStartOfDay();
 
         DateTimeFormatter f1 = of(FRANCE, null, null).newDateTimeFormatter();
-        assertThat(f1.format(date)).isEqualTo("1 janv. 2000");
-        assertThat(f1.parse("1 janv. 2000", LocalDateTime::from)).isEqualTo(date);
+        assertThat(f1.format(date)).isEqualTo("1 janv. 2000 00:00:00");
+        assertThat(f1.parseBest("1 janv. 2000", temporalQueries)).isEqualTo(date);
 
         DateTimeFormatter f2 = of(US, null, null).newDateTimeFormatter();
-        assertThat(f2.format(date)).isEqualTo("Jan 1, 2000");
-        assertThat(f2.parse("Jan 1, 2000", LocalDateTime::from)).isEqualTo(date);
+        assertThat(f2.format(date)).isEqualTo("Jan 1, 2000 12:00:00 AM");
+        assertThat(f2.parseBest("Jan 1, 2000", temporalQueries)).isEqualTo(date);
 
         DateTimeFormatter f3 = of(FRANCE, "yyyy-MMM", null).newDateTimeFormatter();
         assertThat(f3.format(date)).isEqualTo("2000-janv.");
-        assertThat(f3.parse("2000-janv.", LocalDateTime::from)).isEqualTo(date);
+        assertThat(f3.parseBest("2000-janv.", temporalQueries)).isEqualTo(date);
 
         DateTimeFormatter f4 = of(US, "yyyy-MMM", null).newDateTimeFormatter();
         assertThat(f4.format(date)).isEqualTo("2000-Jan");
-        assertThat(f4.parse("2000-Jan", LocalDateTime::from)).isEqualTo(date);
+        assertThat(f4.parseBest("2000-Jan", temporalQueries)).isEqualTo(date);
 
-        BiConsumer<ObsFormat, DateFormat> equivalence = (o, r) -> {
+        BiConsumer<ObsFormat, DateFormat> equivalence = (l, r) -> {
             try {
                 Date x = Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
-                Format l = o.newDateTimeFormatter().toFormat(LocalDateTime::from);
-                assertThat(l.parseObject(r.format(x))).isEqualTo(date);
-                assertThat(r.parseObject(l.format(date))).isEqualTo(x);
+                assertThat(l.dateTimeParser().parse(r.format(x))).isEqualTo(date);
+                assertThat(r.parseObject(l.dateTimeFormatter().formatAsString(date))).isEqualTo(x);
             } catch (ParseException ex) {
                 throw new RuntimeException(ex);
             }
@@ -160,6 +160,13 @@ public class ObsFormatTest {
         equivalence.accept(of(null, "yyyy-MMM", null), new SimpleDateFormat("yyyy-MMM"));
         equivalence.accept(of(FRANCE, null, null), SimpleDateFormat.getDateInstance(DateFormat.DEFAULT, FRANCE));
         equivalence.accept(of(null, null, null), SimpleDateFormat.getDateInstance());
+
+        for (Locale l : locales) {
+            DateTimeFormatter f = of(l, null, null).newDateTimeFormatter();
+            for (LocalDateTime d : dates) {
+                assertThat(f.parseBest(f.format(d), temporalQueries)).isEqualTo(d);
+            }
+        }
     }
 
     @Test
@@ -174,4 +181,19 @@ public class ObsFormatTest {
                 .isNotEqualTo(of(null, null, null))
                 .isNotEqualTo(of(FRANCE, "MMMdd", "#"));
     }
+
+    private final TemporalQuery[] temporalQueries = {LocalDateTime::from, o -> LocalDate.from(o).atStartOfDay()};
+
+    private final Locale[] locales = {
+        null, FRANCE, FRENCH, US, JAPAN
+    };
+
+    private final LocalDateTime[] dates = {
+        LocalDate.of(2000, 01, 01).atStartOfDay(),
+        LocalDate.of(2000, 01, 01).atTime(11, 0, 0),
+        LocalDate.of(2000, 01, 01).atTime(23, 59, 59),
+        LocalDate.of(2000, 12, 31).atStartOfDay(),
+        LocalDate.of(2000, 12, 31).atTime(12, 0, 0),
+        LocalDate.of(2000, 12, 31).atTime(23, 59, 59)
+    };
 }

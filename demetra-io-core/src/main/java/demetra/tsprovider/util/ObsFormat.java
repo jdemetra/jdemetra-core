@@ -30,11 +30,12 @@ import javax.annotation.Nullable;
 import demetra.util.Parser;
 import demetra.util.Formatter;
 import internal.util.Strings;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
 import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQuery;
 import lombok.AccessLevel;
 
@@ -88,7 +89,7 @@ public final class ObsFormat {
     }
 
     @Nonnull
-    public <T extends TemporalAccessor> Formatter<T> dateTimeFormatter() {
+    public Formatter<LocalDateTime> dateTimeFormatter() {
         try {
             return Formatter.onDateTimeFormatter(newDateTimeFormatter());
         } catch (IllegalArgumentException ex) {
@@ -97,9 +98,9 @@ public final class ObsFormat {
     }
 
     @Nonnull
-    public <T> Parser<T> dateTimeParser(@Nonnull TemporalQuery<T> query) {
+    public Parser<LocalDateTime> dateTimeParser() {
         try {
-            return Parser.onDateTimeFormatter(newDateTimeFormatter(), query);
+            return Parser.onDateTimeFormatter(newDateTimeFormatter(), TEMPORAL_QUERIES);
         } catch (IllegalArgumentException ex) {
             return Parser.onNull();
         }
@@ -168,19 +169,26 @@ public final class ObsFormat {
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
     @VisibleForTesting
     DateTimeFormatter newDateTimeFormatter() throws IllegalArgumentException {
-        DateTimeFormatterBuilder result = new DateTimeFormatterBuilder()
-                .parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
-                .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
-                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-                .parseDefaulting(ChronoField.MINUTE_OF_DAY, 0)
-                .parseDefaulting(ChronoField.SECOND_OF_DAY, 0);
+        DateTimeFormatterBuilder result = new DateTimeFormatterBuilder();
 
+        // 1. pattern
         if (!datePattern.isEmpty()) {
             result.appendPattern(datePattern);
         } else {
-            result.append(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
+            result
+                    .append(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+                    .optionalStart()
+                    .appendLiteral(' ')
+                    .append(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM))
+                    .optionalEnd();
         }
 
+        // 2. default values
+        result
+                .parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
+                .parseDefaulting(ChronoField.DAY_OF_MONTH, 1);
+
+        // 3. locale
         return locale != null
                 ? result.toFormatter(locale)
                 : result.toFormatter();
@@ -221,5 +229,7 @@ public final class ObsFormat {
             return NumberFormat.getInstance();
         }
     }
+
+    private static final TemporalQuery[] TEMPORAL_QUERIES = {LocalDateTime::from, o -> LocalDate.from(o).atStartOfDay()};
     //</editor-fold>
 }
