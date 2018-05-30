@@ -20,27 +20,31 @@ import demetra.ssf.univariate.SsfData;
  */
 @lombok.experimental.UtilityClass
 public class Algorithms {
-    
-    public double[] filter(ISsf model, double[] data){
-        SsfData s=new SsfData(data);
+
+    public double[] filter(ISsf model, double[] data) {
+        SsfData s = new SsfData(data);
         DefaultDiffuseFilteringResults rslt = DkToolkit.filter(model, s, false);
         return rslt.errors().toArray();
     }
 
-    public double[] sqrtFilter(ISsf model, double[] data){
-        SsfData s=new SsfData(data);
+    public double[] sqrtFilter(ISsf model, double[] data) {
+        SsfData s = new SsfData(data);
         DefaultDiffuseSquareRootFilteringResults rslt = DkToolkit.sqrtFilter(model, s, false);
         return rslt.errors().toArray();
     }
-    
-    public double concentratedLikelihood(ISsf model, double[] data){
-        SsfData s=new SsfData(data);
-        DkConcentratedLikelihood dll = DkToolkit.concentratedLikelihoodComputer().compute(model, s);
-        return dll.logLikelihood();
+
+    public double concentratedLikelihood(ISsf model, double[] data) {
+        try {
+            SsfData s = new SsfData(data);
+            DkConcentratedLikelihood dll = DkToolkit.concentratedLikelihoodComputer().compute(model, s);
+            return dll.logLikelihood();
+        } catch (Exception err) {
+            return Double.NaN;
+        }
     }
-    
-    public StateStorage sqrtSmooth(ISsf model, double[] data, boolean all){
-        SsfData s=new SsfData(data);
+
+    public StateStorage sqrtSmooth(ISsf model, double[] data, boolean all) {
+        SsfData s = new SsfData(data);
         return DkToolkit.sqrtSmooth(model, s, all);
     }
 }

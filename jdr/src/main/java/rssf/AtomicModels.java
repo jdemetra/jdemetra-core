@@ -15,6 +15,7 @@ import demetra.ssf.models.LocalLevel;
 import demetra.ssf.models.LocalLinearTrend;
 import demetra.ssf.univariate.ISsf;
 import demetra.sts.CyclicalComponent;
+import demetra.sts.Noise;
 import demetra.sts.SeasonalComponent;
 import demetra.sts.SeasonalModel;
 
@@ -65,5 +66,9 @@ public class AtomicModels {
     
     public ISsf cycle(double dumpingFactor, double cyclicalPeriod, double cvar){
         return CyclicalComponent.of(dumpingFactor, cyclicalPeriod, cvar);
+    }
+    
+    public ISsf noise(double var){
+        return new Noise(var);
     }
 }
