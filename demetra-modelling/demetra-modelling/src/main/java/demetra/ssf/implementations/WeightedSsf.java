@@ -18,13 +18,20 @@ package demetra.ssf.implementations;
 
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
+import java.util.function.IntToDoubleFunction;
 
 /**
  *
  * @author Jean Palate
  */
-public class WeightedSsf extends Ssf{
-    public WeightedSsf(ISsf original, double[] weights){
-        super(original.getInitialization(), original.getDynamics(), new WeightedMeasurement(original.getMeasurement(), weights));
+@lombok.experimental.UtilityClass
+public class WeightedSsf{
+
+    public ISsf of(ISsf original, IntToDoubleFunction weights){
+        return new Ssf(original.getInitialization(), original.getDynamics(), WeightedMeasurement.of(original.getMeasurement(), weights));
+    }
+
+    public ISsf of(ISsf original, double weight){
+        return new Ssf(original.getInitialization(), original.getDynamics(), WeightedMeasurement.of(original.getMeasurement(), weight));
     }
 }

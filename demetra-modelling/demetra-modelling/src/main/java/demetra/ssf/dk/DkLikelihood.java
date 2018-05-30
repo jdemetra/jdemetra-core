@@ -24,9 +24,9 @@ import demetra.design.BuilderPattern;
 
 /**
  * The diffuse likelihood follows the definition provided in the paper:
- "Likelihood functions for state space models with diffuse initial conditions"
- Francke, Koopman, de Vos Journal ofFunction Time Series Analysis, July 2010. This
- * definition is slightly different in comparison with JD+ 2.0
+ * "Likelihood functions for state space models with diffuse initial conditions"
+ * Francke, Koopman, de Vos Journal ofFunction Time Series Analysis, July 2010.
+ * This definition is slightly different in comparison with JD+ 2.0
  *
  * @author Jean Palate
  */
@@ -40,10 +40,11 @@ public class DkLikelihood implements ILikelihood {
     @BuilderPattern(DkLikelihood.class)
     public static class Builder {
 
-        final int n, nd;
-        double ssqerr, ldet, lddet;
-        double[] res;
-        boolean legacy;
+        private final int n, nd;
+        private double ssqerr, ldet, lddet;
+        private double[] res;
+        private boolean legacy;
+        private boolean concentratedScalingFactor = true;
 
         Builder(int n, int nd) {
             this.n = n;
@@ -70,6 +71,11 @@ public class DkLikelihood implements ILikelihood {
             return this;
         }
 
+        public Builder concentratedScalingFactor(boolean concentrated) {
+            this.concentratedScalingFactor = concentrated;
+            return this;
+        }
+
         public Builder residuals(DoubleSequence residuals) {
             if (residuals == null) {
                 return this;
@@ -85,90 +91,30 @@ public class DkLikelihood implements ILikelihood {
             if (nd == 0 && lddet != 0) {
                 throw new IllegalArgumentException("Incorrect diffuse initialisation");
             }
-            return new DkLikelihood(n, nd, ssqerr, ldet, lddet, res, legacy);
+            return new DkLikelihood(concentratedScalingFactor, n, nd, ssqerr, ldet, lddet, res, legacy);
         }
     }
     /**
      * Respectively: diffuse log-likelihood sum of the squared residuals log
      * determinant of the cov matrix diffuse correction
      */
-    private final double ll,
-
-    /**
-     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
- determinant ofInternal the cov matrix diffuse correction
-     */
-
-    /**
-     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
- determinant ofInternal the cov matrix diffuse correction
-     */
-
-    /**
-     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
- determinant ofInternal the cov matrix diffuse correction
-     */
-
-    /**
-     * Respectively: diffuse log-likelihood sum of the squared e log
- determinant of the cov matrix diffuse correction
-     */
-    ssqerr, 
-
-    /**
-     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
- determinant ofInternal the cov matrix diffuse correction
-     */
-
-    /**
-     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
- determinant ofInternal the cov matrix diffuse correction
-     */
-
-    /**
-     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
- determinant ofInternal the cov matrix diffuse correction
-     */
-
-    /**
-     * Respectively: diffuse log-likelihood sum of the squared e log
- determinant of the cov matrix diffuse correction
-     */
-    ldet, 
-
-    /**
-     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
- determinant ofInternal the cov matrix diffuse correction
-     */
-
-    /**
-     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
- determinant ofInternal the cov matrix diffuse correction
-     */
-
-    /**
-     * Respectively: diffuse log-likelihood sum ofInternal the squared residuals log
- determinant ofInternal the cov matrix diffuse correction
-     */
-
-    /**
-     * Respectively: diffuse log-likelihood sum of the squared e log
- determinant of the cov matrix diffuse correction
-     */
-    lddet;
+    private final double ll, ssqerr, ldet, lddet;
     private final int nobs, nd;
     private final double[] res;
-    private final boolean legacy;
+    private final boolean legacy, concentratedScalingFactor;
 
     /**
      * Initialize the diffuse likelihood. We consider below the GLS problem
      * corresponding to a given state space: y = a * X + e, where X is derived
-     * from the initial conditions and e ~ N(0, V)
+     * from the initial conditions and e ~ N(0, V) or e ~ N(0, s Q)
      *
      * The diffuse likelihood is then:
-     *
-     * -0.5*(m*log(2*pi)+m*log(ssqerr/m)+m+log|V|+log|X'V^-1*X| where m=n-d
-     *
+     * + non-concentrated scaling factor:
+     * -0.5*(m*log(2*pi)+log|V|+log|X'V^-1*X|+ssqerr where m=n-d
+     * 
+     * + concentrated scaling factor (s = ssqerr/n)
+     * -0.5*(m*log(2*pi)+m*log(ssqerr/m)+m+log|Q|+log|X'Q^-1*X| where m=n-d
+     *      
      * It should be noted that the usual definition (implemented in JD+ 2.0) is
      * -0.5*(n*log(2*pi)+n*log(ssqerr/n)+n+log|V|+log|X'V^-1*X| The difference
      * is thus -0.5*(d*log(2*pi)+d*log(ssqerr)-n*log(n)+m*log(m))
@@ -182,7 +128,8 @@ public class DkLikelihood implements ILikelihood {
      * @param nd The number ofFunction diffuse constraints
      * @return
      */
-    private DkLikelihood(int n, int nd, double ssqerr, double ldet, double lddet, double[] res, boolean legacy) {
+    private DkLikelihood(boolean concentrated, int n, int nd, double ssqerr, double ldet, double lddet, double[] res, boolean legacy) {
+        this.concentratedScalingFactor = concentrated;
         this.nobs = n;
         this.nd = nd;
         this.ssqerr = ssqerr;
@@ -192,9 +139,14 @@ public class DkLikelihood implements ILikelihood {
         this.legacy = legacy;
         int m = legacy ? nobs : nobs - nd;
         if (m > 0) {
-            ll = -.5
-                    * (m * Math.log(2 * Math.PI) + m
-                    * (1 + Math.log(ssqerr / m)) + ldet + lddet);
+            if (concentratedScalingFactor) {
+                ll = -.5
+                        * (m * Math.log(2 * Math.PI) + m
+                        * (1 + Math.log(ssqerr / m)) + ldet + lddet);
+            } else {
+                ll = -.5
+                        * (m * Math.log(2 * Math.PI) + ssqerr + ldet + lddet);
+            }
         } else {
             ll = Double.NaN;
         }
@@ -215,13 +167,13 @@ public class DkLikelihood implements ILikelihood {
     /**
      *
      * @param legacy legacy=true should be used only for testing purposes
-     * @return 
+     * @return
      */
     public DkLikelihood setLegacy(boolean legacy) {
         if (this.legacy == legacy) {
             return this;
         } else {
-            return new DkLikelihood(nobs, nd, ssqerr, ldet, lddet, res, legacy);
+            return new DkLikelihood(concentratedScalingFactor, nobs, nd, ssqerr, ldet, lddet, res, legacy);
         }
     }
 
@@ -279,7 +231,7 @@ public class DkLikelihood implements ILikelihood {
 
     /**
      * Adjust the likelihood if the toArray have been pre-multiplied by a given
- scaling factor
+     * scaling factor
      *
      * @param factor The scaling factor
      * @return
@@ -295,7 +247,7 @@ public class DkLikelihood implements ILikelihood {
                     nres[i] = Double.isFinite(res[i]) ? res[i] / factor : Double.NaN;
                 }
             }
-            return new DkLikelihood(nobs, nd, ssqerr / factor * factor, ldet, lddet, nres, legacy);
+            return new DkLikelihood(concentratedScalingFactor, nobs, nd, ssqerr / factor * factor, ldet, lddet, nres, legacy);
         }
     }
 
