@@ -18,7 +18,6 @@ package demetra.data;
 
 import demetra.data.accumulator.DoubleAccumulator;
 import demetra.design.Unsafe;
-import demetra.utilities.functions.DoubleBiPredicate;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.DoubleBinaryOperator;
@@ -28,6 +27,7 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import demetra.utilities.functions.BiDoublePredicate;
 
 /**
  *
@@ -1500,7 +1500,7 @@ public final class DataBlock implements DoubleSequence {
         applyRecursively(1, (a,b)->a+b);
     }
     
-    public boolean allMatch(DataBlock d, @Nonnull DoubleBiPredicate p) {
+    public boolean allMatch(DataBlock d, @Nonnull BiDoublePredicate p) {
         for (int i = beg, j = d.beg; i != end; i += inc, j += d.inc) {
             if (!p.test(data[i], d.data[j])) {
                 return false;

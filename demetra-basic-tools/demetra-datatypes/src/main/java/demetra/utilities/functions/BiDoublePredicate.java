@@ -20,14 +20,15 @@ package demetra.utilities.functions;
  *
  * @author Jean Palate
  */
-@FunctionalInterface 
-public interface DoubleBiPredicate { 
- 
-    /**  * Applies this function to the given argument. 
-     * 
-     * @param lvalue the left argument 
-     * @param rvalue the right argument 
-     * @return the function result 
-     */ 
-    public boolean test(double lvalue, double rvalue); 
+@FunctionalInterface
+public interface BiDoublePredicate {
+
+    /**
+     * * Applies this function to the given argument.
+     *
+     * @param lvalue the left argument
+     * @param rvalue the right argument
+     * @return the function result
+     */
+    public boolean test(double lvalue, double rvalue);
 }

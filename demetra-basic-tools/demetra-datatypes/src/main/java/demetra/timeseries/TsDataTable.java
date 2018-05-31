@@ -16,6 +16,7 @@
  */
 package demetra.timeseries;
 
+import demetra.utilities.functions.BiIntPredicate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,7 +83,7 @@ public final class TsDataTable {
     @lombok.RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public final class Cursor {
 
-        private final List<Distributor> distributors;
+        private final List<BiIntPredicate> distributors;
 
         @lombok.Getter
         private int index = -1;
@@ -152,30 +153,9 @@ public final class TsDataTable {
         public int getSeriesCount() {
             return data.size();
         }
-
-        public void forEachByPeriod(@Nonnull Consumer consumer) {
-            for (int i = 0; i < getPeriodCount(); i++) {
-                for (int j = 0; j < getSeriesCount(); j++) {
-                    moveTo(i, j);
-                    consumer.accept(i, j, this);
-                }
-            }
-        }
     }
 
-    @FunctionalInterface
-    public interface Consumer {
-
-        void accept(int period, int series, Cursor cursor);
-    }
-
-    @FunctionalInterface
-    private interface Distributor {
-
-        boolean test(int pos, int size);
-    }
-
-    private static Distributor getDistributor(DistributionType type) {
+    private static BiIntPredicate getDistributor(DistributionType type) {
         switch (type) {
             case FIRST:
                 return (pos, size) -> pos % size == 0;
