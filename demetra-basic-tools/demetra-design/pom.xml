@@ -13,7 +13,7 @@
     <name>JD3 - Design</name>
     
     <properties>
-        <javapoet.version>1.10.0</javapoet.version>
+        <javapoet.version>1.11.1</javapoet.version>
     </properties>
 
     <dependencies>
