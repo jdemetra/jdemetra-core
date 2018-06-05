@@ -19,6 +19,7 @@ package demetra.tsprovider;
 import internal.util.LombokHelper;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -46,6 +47,13 @@ public class TsCollection implements TsResource<List<Ts>> {
     @lombok.Singular("data")
     private List<Ts> data;
 
+    public static final TsCollection EMPTY = TsCollection.builder().build();
+
+    @Nonnull
+    public static TsCollection of(@Nonnull Ts ts) {
+        return builder().data(ts).build();
+    }
+    
     public static class Builder implements TsResource {
 
         @Override
