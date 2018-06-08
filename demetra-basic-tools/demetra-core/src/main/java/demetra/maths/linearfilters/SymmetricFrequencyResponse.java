@@ -17,7 +17,7 @@
 package demetra.maths.linearfilters;
 
 import demetra.data.DataBlock;
-import demetra.utilities.TableOfLong;
+import demetra.util.TableOfLong;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;

@@ -19,7 +19,7 @@ package demetra.data;
 
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
-import demetra.utilities.IntList;
+import demetra.util.IntList;
 
 
 /**

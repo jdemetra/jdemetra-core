@@ -28,7 +28,7 @@ import java.util.function.DoublePredicate;
 import java.util.function.IntFunction;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
-import demetra.utilities.functions.BiDoublePredicate;
+import demetra.util.function.BiDoublePredicate;
 
 /**
  * Support class of Sequence.

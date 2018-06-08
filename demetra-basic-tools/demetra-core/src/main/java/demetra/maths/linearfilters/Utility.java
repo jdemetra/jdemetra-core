@@ -19,7 +19,7 @@ package demetra.maths.linearfilters;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.polynomials.Polynomial;
-import demetra.utilities.Ref;
+import demetra.util.Ref;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSequence;
 import demetra.maths.ComplexBuilder;

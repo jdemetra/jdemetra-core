@@ -12,7 +12,7 @@ import demetra.data.DataBlockIterator;
 import demetra.data.LogSign;
 import demetra.data.accumulator.DoubleAccumulator;
 import demetra.random.IRandomNumberGenerator;
-import demetra.utilities.ServiceLookup;
+import demetra.util.ServiceLookup;
 
 /**
  *

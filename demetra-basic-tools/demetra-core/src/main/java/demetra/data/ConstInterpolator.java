@@ -17,7 +17,7 @@
 package demetra.data;
 
 import demetra.design.Development;
-import demetra.utilities.IntList;
+import demetra.util.IntList;
 
 /**
  * Interpolates a series by replacing missing values by a pre-specified

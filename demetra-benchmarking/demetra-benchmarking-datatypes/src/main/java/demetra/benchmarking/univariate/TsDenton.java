@@ -19,7 +19,7 @@ package demetra.benchmarking.univariate;
 import demetra.benchmarking.spi.DentonAlgorithm;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
-import demetra.utilities.ServiceLookup;
+import demetra.util.ServiceLookup;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**

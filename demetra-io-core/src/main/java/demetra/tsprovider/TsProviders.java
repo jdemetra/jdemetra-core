@@ -17,7 +17,7 @@
 package demetra.tsprovider;
 
 import demetra.tsprovider.util.IConfig;
-import demetra.utilities.TreeTraverser;
+import demetra.util.TreeTraverser;
 import ioutil.IO;
 import java.io.IOException;
 import java.io.PrintStream;

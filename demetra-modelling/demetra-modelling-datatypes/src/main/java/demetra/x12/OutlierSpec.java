@@ -17,7 +17,7 @@
 package demetra.x12;
 
 import demetra.timeseries.TimeSelector;
-import demetra.utilities.Comparator;
+import demetra.util.Comparator;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;

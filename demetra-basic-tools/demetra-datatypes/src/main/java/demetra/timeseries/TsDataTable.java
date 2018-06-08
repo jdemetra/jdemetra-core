@@ -16,7 +16,7 @@
  */
 package demetra.timeseries;
 
-import demetra.utilities.functions.BiIntPredicate;
+import demetra.util.function.BiIntPredicate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Iterator;

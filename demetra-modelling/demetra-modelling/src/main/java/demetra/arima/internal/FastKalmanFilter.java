@@ -28,7 +28,7 @@ import demetra.likelihood.Likelihood;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
-import demetra.utilities.SubArrayOfInt;
+import demetra.util.SubArrayOfInt;
 import demetra.data.DoubleSequence;
 
 

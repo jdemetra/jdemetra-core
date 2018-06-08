@@ -18,7 +18,7 @@
 package demetra.modelling;
 
 import demetra.design.Development;
-import demetra.utilities.PrimitiveEnum;
+import demetra.util.PrimitiveEnum;
 import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
 

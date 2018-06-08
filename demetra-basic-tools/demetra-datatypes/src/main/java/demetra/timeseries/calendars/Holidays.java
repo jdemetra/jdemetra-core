@@ -17,7 +17,7 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.utilities.Comparator;
+import demetra.util.Comparator;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.DAYS;

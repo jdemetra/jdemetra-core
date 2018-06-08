@@ -18,7 +18,7 @@ package demetra.information;
 
 import demetra.design.Development;
 import demetra.design.NewObject;
-import demetra.utilities.WildCards;
+import demetra.util.WildCards;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.Map.Entry;

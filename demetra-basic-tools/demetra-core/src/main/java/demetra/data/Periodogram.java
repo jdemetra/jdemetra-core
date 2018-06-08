@@ -18,7 +18,7 @@ package demetra.data;
 
 import demetra.design.Development;
 import demetra.maths.Constants;
-import demetra.utilities.IntList;
+import demetra.util.IntList;
 
 /**
  * Periodogram of a series of real-valued data The periodogram is defined at the

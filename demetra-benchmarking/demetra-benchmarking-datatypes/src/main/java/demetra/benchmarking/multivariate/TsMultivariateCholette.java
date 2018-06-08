@@ -21,7 +21,7 @@ import demetra.benchmarking.spi.CholetteAlgorithm;
 import demetra.benchmarking.spi.MultivariateCholetteAlgorithm;
 import demetra.design.Algorithm;
 import demetra.timeseries.TsData;
-import demetra.utilities.ServiceLookup;
+import demetra.util.ServiceLookup;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
