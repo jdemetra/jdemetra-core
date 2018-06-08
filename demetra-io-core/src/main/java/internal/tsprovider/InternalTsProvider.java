@@ -41,11 +41,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import demetra.util.Parser;
 import demetra.util.Formatter;
-import internal.util.Lists;
+import demetra.util.List2;
 import internal.util.Strings;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
+import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 
 /**
@@ -212,7 +213,7 @@ public class InternalTsProvider {
 
         public DataSourceListSupport(String providerName, Iterable<DataSource> dataSources, Consumer<? super DataSource> cacheCleaner) {
             super(providerName);
-            this.dataSources = Lists.immutableCopyOf(dataSources);
+            this.dataSources = StreamSupport.stream(dataSources.spliterator(), false).collect(List2.toUnmodifiableList());
             this.eventSupport = DataSourceEventSupport.create();
             this.cacheCleaner = Objects.requireNonNull(cacheCleaner);
             dataSources.forEach(this::checkProvider);
@@ -296,7 +297,7 @@ public class InternalTsProvider {
         @Override
         public List<DataSource> getDataSources() {
             synchronized (dataSources) {
-                return Lists.immutableCopyOf(dataSources);
+                return List2.copyOf(dataSources);
             }
         }
 

@@ -17,13 +17,13 @@
 package demetra.information;
 
 import demetra.design.Development;
-import demetra.design.NewObject;
 import demetra.util.WildCards;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import demetra.design.ReturnNew;
 
 /**
  * Set of information. That structure can be used recursively: An information
@@ -454,7 +454,7 @@ public final class InformationSet implements Cloneable {
      * information has been added. However, that property will not be guaranteed
      * in the future.
      */
-    @NewObject
+    @ReturnNew
     public String[] content() {
         IndexedName[] inames = new IndexedName[information_.size()];
         int idx = 0;
@@ -751,7 +751,7 @@ public final class InformationSet implements Cloneable {
      * an iteration could be expensive and it should be avoided.
      */
     @SuppressWarnings("unchecked")
-    @NewObject
+    @ReturnNew
     public List<Information<?>> items() {
         ArrayList<Information<?>> list = new ArrayList<>();
         for (Entry<String, IndexedObject<?>> kv : information_.entrySet()) {
@@ -837,7 +837,7 @@ public final class InformationSet implements Cloneable {
      * type (information that can be safely cast to that type).
      */
     @SuppressWarnings("unchecked")
-    @NewObject
+    @ReturnNew
     public <S> List<Information<S>> select(final Class<S> sclass) {
         ArrayList<Information<S>> list = new ArrayList<>();
         for (Entry<String, IndexedObject<?>> kv : information_.entrySet()) {
@@ -860,7 +860,7 @@ public final class InformationSet implements Cloneable {
      * @param wc The wild cards criterion.
      * @return A new list with the selection is returned.
      */
-    @NewObject
+    @ReturnNew
     public List<Information<Object>> select(final String wc) {
         String[] split = split(wc);
         InformationSet cur = root(split);
@@ -891,7 +891,7 @@ public final class InformationSet implements Cloneable {
      * @return A new list with the selection is returned.
      */
     @SuppressWarnings("unchecked")
-    @NewObject
+    @ReturnNew
     public <S> List<Information<S>> select(final String wc,
             final Class<S> sclass) {
         String[] split = split(wc);
