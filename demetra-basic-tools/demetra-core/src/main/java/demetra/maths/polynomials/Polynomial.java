@@ -26,7 +26,7 @@ import demetra.maths.Complex;
 import demetra.maths.ComplexBuilder;
 import demetra.maths.ComplexMath;
 import demetra.maths.Simplifying;
-import demetra.utilities.Arrays2;
+import demetra.util.Arrays2;
 import lombok.NonNull;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;

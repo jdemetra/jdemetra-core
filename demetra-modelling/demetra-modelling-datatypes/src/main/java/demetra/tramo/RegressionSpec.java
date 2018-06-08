@@ -20,7 +20,7 @@ import demetra.modelling.regression.InterventionVariableDefinition;
 import demetra.modelling.regression.OutlierDefinition;
 import demetra.modelling.regression.RampDefinition;
 import demetra.modelling.regression.TsVariableDefinition;
-import demetra.utilities.Comparator;
+import demetra.util.Comparator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;

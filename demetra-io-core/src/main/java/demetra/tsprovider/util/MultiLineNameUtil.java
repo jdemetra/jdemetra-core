@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.util;
 
-import demetra.utilities.TreeTraverser;
+import demetra.util.TreeTraverser;
 import java.util.Collections;
 import java.util.function.Function;
 import javax.annotation.Nonnull;

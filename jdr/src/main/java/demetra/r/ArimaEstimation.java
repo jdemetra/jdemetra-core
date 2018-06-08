@@ -32,7 +32,7 @@ import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarimaType;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.mapping.SarimaInfo;
-import demetra.utilities.IntList;
+import demetra.util.IntList;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;

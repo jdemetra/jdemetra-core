@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import demetra.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.random.IRandomNumberGenerator;
-import demetra.utilities.ServiceLookup;
+import demetra.util.ServiceLookup;
 
 /**
  *

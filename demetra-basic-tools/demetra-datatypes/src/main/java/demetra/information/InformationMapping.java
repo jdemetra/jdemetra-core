@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import demetra.utilities.WildCards;
+import demetra.util.WildCards;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;

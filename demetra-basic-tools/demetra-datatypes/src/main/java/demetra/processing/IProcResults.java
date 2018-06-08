@@ -17,7 +17,7 @@
 package demetra.processing;
 
 import demetra.design.Development;
-import demetra.utilities.WildCards;
+import demetra.util.WildCards;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

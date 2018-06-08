@@ -22,7 +22,7 @@ import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.data.FFT;
 import demetra.design.Immutable;
-import demetra.utilities.Arrays2;
+import demetra.util.Arrays2;
 
 /**
  * A toeplitz matrix T is defined by T[i, j] = r[abs(i-j)]

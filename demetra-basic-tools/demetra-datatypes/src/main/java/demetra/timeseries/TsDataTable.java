@@ -16,9 +16,9 @@
  */
 package demetra.timeseries;
 
-import demetra.utilities.functions.BiIntPredicate;
+import demetra.util.List2;
+import demetra.util.function.BiIntPredicate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -48,7 +48,7 @@ public final class TsDataTable {
     @Nonnull
     public static <X> TsDataTable of(@Nonnull List<X> col, @Nonnull Function<? super X, TsData> toData) {
         TsDomain domain = computeDomain(col.stream().map(toData).map(TsData::getDomain).filter(o -> !o.isEmpty()).iterator());
-        return new TsDataTable(domain, Collections.unmodifiableList(col.stream().map(toData).collect(Collectors.toList())));
+        return new TsDataTable(domain, col.stream().map(toData).collect(List2.toUnmodifiableList()));
     }
 
     @Nonnull

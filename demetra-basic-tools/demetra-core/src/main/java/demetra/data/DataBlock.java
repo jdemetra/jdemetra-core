@@ -27,7 +27,7 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import demetra.utilities.functions.BiDoublePredicate;
+import demetra.util.function.BiDoublePredicate;
 
 /**
  *

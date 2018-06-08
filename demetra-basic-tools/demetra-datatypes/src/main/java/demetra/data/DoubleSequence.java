@@ -27,7 +27,7 @@ import java.util.function.IntToDoubleFunction;
 import java.util.stream.DoubleStream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import demetra.utilities.functions.BiDoublePredicate;
+import demetra.util.function.BiDoublePredicate;
 
 /**
  *

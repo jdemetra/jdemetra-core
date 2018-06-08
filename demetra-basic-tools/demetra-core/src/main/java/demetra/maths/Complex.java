@@ -20,7 +20,7 @@ package demetra.maths;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.utilities.Arrays2;
+import demetra.util.Arrays2;
 import java.io.Serializable;
 
 /**
