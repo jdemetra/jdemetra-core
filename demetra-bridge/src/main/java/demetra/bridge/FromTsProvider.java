@@ -25,6 +25,7 @@ import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
 import ec.tss.TsInformationType;
 import ec.tss.TsMoniker;
+import ec.tss.tsproviders.utils.AbstractTsProvider;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -33,10 +34,15 @@ import java.util.Objects;
  * @author Philippe Charles
  * @param <T>
  */
-@lombok.AllArgsConstructor
-public class FromTsProvider<T extends TsProvider> implements ITsProvider {
+@lombok.extern.slf4j.Slf4j
+public class FromTsProvider<T extends TsProvider> extends AbstractTsProvider implements ITsProvider {
 
     private final T delegate;
+
+    public FromTsProvider(T delegate) {
+        super(log, delegate.getSource(), TsAsyncMode.Once);
+        this.delegate = delegate;
+    }
 
     public T getDelegate() {
         return delegate;
@@ -49,11 +55,26 @@ public class FromTsProvider<T extends TsProvider> implements ITsProvider {
 
     @Override
     public void dispose() {
+        super.dispose();
         getDelegate().close();
     }
 
     @Override
-    public boolean get(TsCollectionInformation info) {
+    public boolean queryTs(TsMoniker moniker, TsInformationType type) {
+        Objects.requireNonNull(moniker, "Moniker cannot be null");
+        Objects.requireNonNull(type, "Type cannot be null");
+        return super.queryTs(moniker, type);
+    }
+
+    @Override
+    public boolean queryTsCollection(TsMoniker moniker, TsInformationType type) {
+        Objects.requireNonNull(moniker, "Moniker cannot be null");
+        Objects.requireNonNull(type, "Type cannot be null");
+        return super.queryTsCollection(moniker, type);
+    }
+
+    @Override
+    protected boolean process(TsCollectionInformation info) {
         try {
             TsCollection result = getDelegate().getTsCollection(TsConverter.toTsMoniker(info.moniker), TsConverter.toType(info.type));
             TsConverter.fillTsCollectionInformation(result, info);
@@ -65,7 +86,7 @@ public class FromTsProvider<T extends TsProvider> implements ITsProvider {
     }
 
     @Override
-    public boolean get(TsInformation info) {
+    protected boolean process(TsInformation info) {
         try {
             Ts result = getDelegate().getTs(TsConverter.toTsMoniker(info.moniker), TsConverter.toType(info.type));
             TsConverter.fillTsInformation(result, info);
@@ -74,34 +95,5 @@ public class FromTsProvider<T extends TsProvider> implements ITsProvider {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public TsAsyncMode getAsyncMode() {
-        return TsAsyncMode.Once;
-    }
-
-    @Override
-    public String getSource() {
-        return getDelegate().getSource();
-    }
-
-    @Override
-    public boolean queryTs(TsMoniker ts, TsInformationType type) {
-        Objects.requireNonNull(ts);
-        Objects.requireNonNull(type);
-        return true;
-    }
-
-    @Override
-    public boolean queryTsCollection(TsMoniker collection, TsInformationType info) {
-        Objects.requireNonNull(collection);
-        Objects.requireNonNull(info);
-        return true;
-    }
-
-    @Override
-    public void close() {
-        getDelegate().close();
     }
 }
