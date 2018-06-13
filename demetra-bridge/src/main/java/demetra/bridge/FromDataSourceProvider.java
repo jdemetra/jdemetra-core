@@ -16,7 +16,10 @@
  */
 package demetra.bridge;
 
+import demetra.tsprovider.DataSourceListener;
 import demetra.tsprovider.DataSourceProvider;
+import ec.tss.TsCollection;
+import ec.tss.TsFactory;
 import ec.tss.TsMoniker;
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
@@ -24,6 +27,7 @@ import ec.tss.tsproviders.IDataSourceListener;
 import ec.tss.tsproviders.IDataSourceProvider;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 /**
@@ -31,10 +35,25 @@ import java.util.stream.Collectors;
  * @author Philippe Charles
  * @param <T>
  */
+@lombok.extern.java.Log
 public class FromDataSourceProvider<T extends DataSourceProvider> extends FromTsProvider<T> implements IDataSourceProvider {
+
+    private final DataSourceListener changeListener;
 
     public FromDataSourceProvider(T delegate) {
         super(delegate);
+        this.changeListener = new DataSourceListener() {
+            @Override
+            public void changed(demetra.tsprovider.DataSource dataSource) {
+                try {
+                    TsCollection col = TsFactory.instance.createTsCollection("", TsConverter.fromTsMoniker(delegate.toMoniker(dataSource)), ec.tss.TsInformationType.None);
+                    TsFactory.instance.query(col, ec.tss.TsInformationType.All);
+                } catch (RuntimeException ex) {
+                    log.log(Level.WARNING, "While reloading data", ex);
+                }
+            }
+        };
+        delegate.addDataSourceListener(changeListener);
     }
 
     @Override

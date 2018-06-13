@@ -78,7 +78,7 @@ public class FromTsProvider<T extends TsProvider> extends AbstractTsProvider imp
         try {
             TsCollection result = getDelegate().getTsCollection(TsConverter.toTsMoniker(info.moniker), TsConverter.toType(info.type));
             TsConverter.fillTsCollectionInformation(result, info);
-        } catch (IOException | IllegalArgumentException ex) {
+        } catch (IOException | IllegalArgumentException | ConverterException ex) {
             info.invalidDataCause = ex.getMessage();
             return false;
         }
@@ -90,7 +90,7 @@ public class FromTsProvider<T extends TsProvider> extends AbstractTsProvider imp
         try {
             Ts result = getDelegate().getTs(TsConverter.toTsMoniker(info.moniker), TsConverter.toType(info.type));
             TsConverter.fillTsInformation(result, info);
-        } catch (IOException | IllegalArgumentException ex) {
+        } catch (IOException | IllegalArgumentException | ConverterException ex) {
             info.invalidDataCause = ex.getMessage();
             return false;
         }
