@@ -27,7 +27,7 @@ import demetra.tsprovider.TsCollection;
 import demetra.tsprovider.TsInformationType;
 import demetra.tsprovider.TsMoniker;
 import demetra.tsprovider.TsResource;
-import ec.tss.TsFactoryBypass;
+import ec.tss.TsBypass;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
 import ec.tss.TsStatus;
@@ -39,7 +39,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -191,22 +191,29 @@ public class TsConverter {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="TsMoniker">
-    private static final Map<TsMoniker, ec.tss.TsMoniker> MONIKERS = Collections.synchronizedMap(new WeakHashMap<>());
+    private static final String ANONYMOUS_PREFIX = "anonymous:";
 
+    @SuppressWarnings("null")
     public TsMoniker toTsMoniker(ec.tss.TsMoniker o) {
-        String source = o.getSource();
-        String id = o.getId();
-        if (source != null && id != null) {
-            return TsMoniker.of(source, id);
+        switch (o.getType()) {
+            case ANONYMOUS:
+                return TsMoniker.of("", ANONYMOUS_PREFIX + TsBypass.uuid(o));
+            case DYNAMIC:
+                return TsMoniker.of("", TsBypass.uuid(o).toString());
+            case PROVIDED:
+                return TsMoniker.of(o.getSource(), o.getId());
+            default:
+                throw new RuntimeException();
         }
-        TsMoniker result = TsMoniker.of("TsFactory", String.valueOf(o.hashCode()));
-        MONIKERS.put(result, o);
-        return result;
     }
 
     public ec.tss.TsMoniker fromTsMoniker(TsMoniker o) {
-        ec.tss.TsMoniker result = MONIKERS.get(o);
-        return result != null ? result : ec.tss.TsMoniker.create(o.getSource(), o.getId());
+        if (o.getSource().isEmpty() && !o.getId().isEmpty()) {
+            return o.getId().startsWith(ANONYMOUS_PREFIX)
+                    ? TsBypass.moniker(false, UUID.fromString(o.getId().substring(ANONYMOUS_PREFIX.length())))
+                    : TsBypass.moniker(true, UUID.fromString(o.getId()));
+        }
+        return ec.tss.TsMoniker.createProvidedMoniker(o.getSource(), o.getId());
     }
     //</editor-fold>
 
@@ -297,7 +304,7 @@ public class TsConverter {
 
     public ec.tss.Ts fromTs(TsResource<TsData> o) {
         OptionalTsData data = fromTsData(o.getData());
-        ec.tss.Ts result = TsFactoryBypass.series(o.getName(), fromTsMoniker(o.getMoniker()), fromMeta(o.getMeta()), data.orNull());
+        ec.tss.Ts result = TsBypass.series(o.getName(), fromTsMoniker(o.getMoniker()), fromMeta(o.getMeta()), data.orNull());
         if (!data.isPresent()) {
             result.setInvalidDataCause(data.getCause());
         }
@@ -340,7 +347,7 @@ public class TsConverter {
     }
 
     public ec.tss.TsCollection fromTsCollection(TsResource<List<Ts>> o) {
-        return TsFactoryBypass.col(o.getName(), fromTsMoniker(o.getMoniker()), fromMeta(o.getMeta()), o.getData().stream().map(TsConverter::fromTs).collect(Collectors.toList()));
+        return TsBypass.col(o.getName(), fromTsMoniker(o.getMoniker()), fromMeta(o.getMeta()), o.getData().stream().map(TsConverter::fromTs).collect(Collectors.toList()));
     }
 
     public TsCollection toTsCollection(ec.tss.TsCollection o) {

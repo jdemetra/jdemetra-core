@@ -235,7 +235,7 @@ public final class PocProvider implements DataSourceProvider {
                 case UPDATING:
                     return TsCursor.from(iter, dataFunc(updatingData, type), metaFunc(dt, type), labelFunc(dt));
                 case SLOW:
-                    log.log(Level.INFO, "Getting data %s - %s", new Object[]{dt, type});
+                    log.log(Level.INFO, "Getting data {0} - {1}", new Object[]{dt, type});
                     sleep(dt, type);
                     return TsCursor.from(iter, dataFunc(slowData, type), metaFunc(dt, type), labelFunc(dt));
                 default:
@@ -363,7 +363,7 @@ public final class PocProvider implements DataSourceProvider {
                 case UPDATING:
                     return 0;
                 case SLOW:
-                    return type.needsData() ? 5000 : 1000;
+                    return type.needsData() ? 5000 : type.equals(TsInformationType.Definition) ? 0 : 1000;
                 default:
                     throw new RuntimeException();
             }

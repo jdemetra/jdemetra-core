@@ -31,7 +31,7 @@ public class TsCollection implements TsResource<List<Ts>> {
 
     @lombok.NonNull
     @lombok.Builder.Default
-    private TsMoniker moniker = TsMoniker.ANONYMOUS;
+    private TsMoniker moniker = TsMoniker.NULL;
 
     @lombok.NonNull
     @lombok.Builder.Default

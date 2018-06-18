@@ -87,7 +87,7 @@ public class TsConverterTest {
 
     @Test
     public void testTsMoniker() {
-        for (TsMoniker o : new TsMoniker[]{TsMoniker.ANONYMOUS, TsMoniker.of("hello", "world")}) {
+        for (TsMoniker o : new TsMoniker[]{TsMoniker.NULL, TsMoniker.of(), TsMoniker.of("hello", "world")}) {
             assertThat(toTsMoniker(fromTsMoniker(o))).isEqualTo(o);
         }
 
@@ -138,6 +138,18 @@ public class TsConverterTest {
                 }
             }
         }
+
+        Ts.Builder invalidData = Ts.builder().type(TsInformationType.All);
+        assertThat(invalidData.getType().hasData()).isTrue();
+        assertThat(fromTsBuilder(invalidData).hasData()).isTrue();
+
+        Ts.Builder validData = Ts.builder().type(TsInformationType.All).data(TsData.random(TsUnit.MONTH, 0));
+        assertThat(validData.getType().hasData()).isTrue();
+        assertThat(fromTsBuilder(validData).hasData()).isTrue();
+
+        Ts.Builder undefinedData = Ts.builder().type(TsInformationType.MetaData);
+        assertThat(undefinedData.getType().hasData()).isFalse();
+        assertThat(fromTsBuilder(undefinedData).hasData()).isFalse();
     }
 
     @Test
