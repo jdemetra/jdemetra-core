@@ -18,6 +18,7 @@ package ec.tss;
 
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.timeseries.simplets.TsData;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -26,7 +27,7 @@ import javax.annotation.Nullable;
  * @author Philippe Charles
  */
 @lombok.experimental.UtilityClass
-public class TsFactoryBypass {
+public class TsBypass {
 
     public Ts series(String name) {
         return new Ts.Master(name);
@@ -50,5 +51,13 @@ public class TsFactoryBypass {
 
     public TsCollection col(@Nullable String name, @Nonnull TsMoniker moniker, @Nullable MetaData md, @Nullable Iterable<Ts> ts) {
         return new TsCollection(name, moniker, md, ts);
+    }
+
+    public TsMoniker moniker(boolean dynamic, @Nonnull UUID uuid) {
+        return TsMoniker.ofInternal(dynamic, uuid);
+    }
+
+    public UUID uuid(@Nonnull TsMoniker moniker) {
+        return moniker.getUuid();
     }
 }

@@ -123,4 +123,26 @@ public enum TsInformationType implements IntSupplier {
                 return true;
         }
     }
+
+    public boolean hasData() {
+        switch (this) {
+            case All:
+            case Data:
+            case UserDefined:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean hasMeta() {
+        switch (this) {
+            case All:
+            case MetaData:
+            case UserDefined:
+                return true;
+            default:
+                return false;
+        }
+    }
 }
