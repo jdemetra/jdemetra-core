@@ -16,10 +16,8 @@
  */
 package ec.tss;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -28,57 +26,94 @@ import static org.junit.Assert.assertTrue;
 public class TsMonikerTest {
 
     @Test
-    public void testEquals() {
-        assertThat(new TsMoniker("ABC", "123"))
-                .isEqualTo(new TsMoniker("ABC", "123"))
-                .isNotEqualTo(new TsMoniker("ABC", "xxx"))
-                .isNotEqualTo(new TsMoniker("xxx", "123"));
+    @SuppressWarnings("null")
+    public void testFactories() {
+        assertThatNullPointerException().isThrownBy(() -> TsMoniker.createProvidedMoniker(null, "123"));
+        assertThatNullPointerException().isThrownBy(() -> TsMoniker.createProvidedMoniker("ABC", null));
 
-        TsMoniker m3 = new TsMoniker();
-        assertThat(m3)
-                .isEqualTo(m3)
-                .isNotEqualTo(new TsMoniker());
+        TsMoniker provided = TsMoniker.createProvidedMoniker("ABC", "123");
+        assertThat(provided)
+                .extracting("source", "id", "type")
+                .containsExactly("ABC", "123", TsMoniker.Type.PROVIDED);
+
+        TsMoniker anonymous = TsMoniker.createAnonymousMoniker();
+        assertThat(anonymous)
+                .extracting("source", "id", "type")
+                .containsExactly(null, null, TsMoniker.Type.ANONYMOUS);
+
+        TsMoniker dynamic = TsMoniker.createDynamicMoniker();
+        assertThat(dynamic)
+                .extracting("source", "id", "type")
+                .containsExactly(Ts.DYNAMIC, null, TsMoniker.Type.DYNAMIC);
+    }
+
+    @Test
+    public void testEquals() {
+        TsMoniker provided = TsMoniker.createProvidedMoniker("ABC", "123");
+        assertThat(provided)
+                .isEqualTo(TsMoniker.createProvidedMoniker("ABC", "123"))
+                .isNotSameAs(TsMoniker.createProvidedMoniker("ABC", "123"))
+                .isNotEqualTo(TsMoniker.createProvidedMoniker("ABC", "xxx"))
+                .isNotEqualTo(TsMoniker.createProvidedMoniker("xxx", "123"))
+                .isNotEqualTo(TsMoniker.createAnonymousMoniker())
+                .isNotEqualTo(TsMoniker.createDynamicMoniker())
+                .isNotEqualTo(TsMoniker.createProvidedMoniker("", ""));
+
+        TsMoniker anonymous = TsMoniker.createAnonymousMoniker();
+        assertThat(anonymous)
+                .isEqualTo(anonymous)
+                .isNotEqualTo(TsMoniker.createAnonymousMoniker())
+                .isNotEqualTo(TsMoniker.createDynamicMoniker())
+                .isNotEqualTo(TsMoniker.createProvidedMoniker("", ""));
+
+        TsMoniker dynamic = TsMoniker.createDynamicMoniker();
+        assertThat(dynamic)
+                .isEqualTo(dynamic)
+                .isNotEqualTo(TsMoniker.createAnonymousMoniker())
+                .isNotEqualTo(TsMoniker.createDynamicMoniker())
+                .isNotEqualTo(TsMoniker.createProvidedMoniker("", ""));
     }
 
     @Test
     public void testHashcode() {
-        assertThat(new TsMoniker("ABC", "123").hashCode())
-                .isEqualTo(new TsMoniker("ABC", "123").hashCode())
-                .isNotEqualTo(new TsMoniker("ABC", "xxx").hashCode())
-                .isNotEqualTo(new TsMoniker("xxx", "123").hashCode());
+        TsMoniker provided = TsMoniker.createProvidedMoniker("ABC", "123");
+        assertThat(provided.hashCode())
+                .isEqualTo(TsMoniker.createProvidedMoniker("ABC", "123").hashCode())
+                .isNotEqualTo(TsMoniker.createProvidedMoniker("ABC", "xxx").hashCode())
+                .isNotEqualTo(TsMoniker.createProvidedMoniker("xxx", "123").hashCode())
+                .isNotEqualTo(TsMoniker.createAnonymousMoniker().hashCode())
+                .isNotEqualTo(TsMoniker.createDynamicMoniker().hashCode())
+                .isNotEqualTo(TsMoniker.createProvidedMoniker("", "").hashCode());
 
-        TsMoniker m3 = new TsMoniker();
-        assertThat(m3.hashCode())
-                .isEqualTo(m3.hashCode())
-                .isNotEqualTo(new TsMoniker());
+        TsMoniker anonymous = TsMoniker.createAnonymousMoniker();
+        assertThat(anonymous.hashCode())
+                .isEqualTo(anonymous.hashCode())
+                .isNotEqualTo(TsMoniker.createAnonymousMoniker().hashCode())
+                .isNotEqualTo(TsMoniker.createDynamicMoniker().hashCode())
+                .isNotEqualTo(TsMoniker.createProvidedMoniker("", "").hashCode());
+
+        TsMoniker dynamic = TsMoniker.createDynamicMoniker();
+        assertThat(dynamic.hashCode())
+                .isEqualTo(dynamic.hashCode())
+                .isNotEqualTo(TsMoniker.createAnonymousMoniker().hashCode())
+                .isNotEqualTo(TsMoniker.createDynamicMoniker().hashCode())
+                .isNotEqualTo(TsMoniker.createProvidedMoniker("", "").hashCode());
     }
 
     @Test
     public void testCompareTo() {
-        TsMoniker a = new TsMoniker("A", "123");
-        TsMoniker b = new TsMoniker("B", "123");
-        TsMoniker c = new TsMoniker("C", "123");
-        TsMoniker a_bis = new TsMoniker("A", "123");
+        TsMoniker p1 = TsMoniker.createProvidedMoniker("A", "123");
+        TsMoniker p2 = TsMoniker.createProvidedMoniker("B", "123");
+        TsMoniker p3 = TsMoniker.createProvidedMoniker("C", "123");
 
-        // R1
-        assertEquals(signum(a.compareTo(b)), -signum(b.compareTo(a)));
-        // R2
-        assertTrue(b.compareTo(a) > 0);
-        assertTrue(c.compareTo(b) > 0);
-        assertTrue(c.compareTo(a) > 0);
-        // R3
-        assertEquals(0, a.compareTo(a_bis));
-        assertEquals(signum(a.compareTo(c)), signum(a_bis.compareTo(c)));
-        // R4
-        assertEquals(0, a.compareTo(a));
+        assertThat(p1).isEqualByComparingTo(TsMoniker.createProvidedMoniker("A", "123"));
+        assertThat(p2).isGreaterThan(p1);
+        assertThat(p3).isGreaterThan(p2);
+        assertThat(p3).isGreaterThan(p1);
 
-        TsMoniker x = new TsMoniker();
-        TsMoniker y = new TsMoniker();
-        assertThat(x.compareTo(x)).isEqualTo(0);
-        assertThat(x.compareTo(y)).isEqualTo(y.compareTo(x) * -1);
-    }
-
-    static int signum(int value) {
-        return value == 0 ? 0 : value > 0 ? 1 : -1;
+        TsMoniker a1 = TsMoniker.createAnonymousMoniker();
+        TsMoniker a2 = TsMoniker.createAnonymousMoniker();
+        assertThat(a1).isEqualByComparingTo(a1);
+        assertThat(a1.compareTo(a2)).isEqualTo(a2.compareTo(a1) * -1);
     }
 }
