@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.linearsystem.ILinearSystemSolver;
-import demetra.utilities.Arrays2;
+import demetra.util.Arrays2;
 import demetra.maths.Complex;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;

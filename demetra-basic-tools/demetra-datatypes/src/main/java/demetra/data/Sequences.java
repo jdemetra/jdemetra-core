@@ -16,7 +16,6 @@
  */
 package demetra.data;
 
-import demetra.utilities.functions.DoubleBiPredicate;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
@@ -29,6 +28,7 @@ import java.util.function.DoublePredicate;
 import java.util.function.IntFunction;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
+import demetra.util.function.BiDoublePredicate;
 
 /**
  * Support class of Sequence.
@@ -149,7 +149,7 @@ class Sequences {
         return true;
     }
 
-    boolean allMatch(DoubleSequence seq1, DoubleSequence seq2, DoubleBiPredicate pred) {
+    boolean allMatch(DoubleSequence seq1, DoubleSequence seq2, BiDoublePredicate pred) {
         int n = seq1.length();
         DoubleReader reader1 = seq1.reader();
         DoubleReader reader2 = seq2.reader();

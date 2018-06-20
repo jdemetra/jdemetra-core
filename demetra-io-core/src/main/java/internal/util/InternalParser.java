@@ -46,9 +46,16 @@ import javax.xml.bind.Unmarshaller;
 @lombok.experimental.UtilityClass
 public class InternalParser {
 
-    public <T> T parseTemporalAccessor(DateTimeFormatter formatter, TemporalQuery<T> query, CharSequence input) {
+    public <T> T parseTemporalAccessor(DateTimeFormatter formatter, TemporalQuery<T>[] queries, CharSequence input) {
         try {
-            return formatter.parse(input, query);
+            switch (queries.length) {
+                case 0:
+                    throw new IllegalArgumentException("At least one query must be specified");
+                case 1:
+                    return formatter.parse(input, queries[0]);
+                default:
+                    return (T) formatter.parseBest(input, queries);
+            }
         } catch (DateTimeParseException ex) {
             return null;
         }

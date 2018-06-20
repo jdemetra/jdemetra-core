@@ -19,9 +19,9 @@ package demetra.modelling.regression;
 
 import demetra.information.InformationSet;
 import demetra.timeseries.TsDataSupplier;
-import demetra.utilities.DefaultNameValidator;
-import demetra.utilities.INameValidator;
-import demetra.utilities.NameManager;
+import demetra.util.DefaultNameValidator;
+import demetra.util.INameValidator;
+import demetra.util.NameManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

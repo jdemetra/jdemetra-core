@@ -26,8 +26,8 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import demetra.util.Parser;
 import demetra.util.Formatter;
+import demetra.util.List2;
 import internal.util.InternalParser;
-import internal.util.Lists;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
@@ -107,7 +107,7 @@ public class Params {
     public <S extends IConfig> IParam<S, List<String>> onStringList(@Nonnull List<String> defaultValue, @Nonnull String key,
             @Nonnull Function<CharSequence, Stream<String>> splitter,
             @Nonnull Function<Stream<CharSequence>, String> joiner) {
-        return new SingleParam<>(Lists.immutableCopyOf(defaultValue), key, Parser.onStringList(splitter), Formatter.onStringList(joiner));
+        return new SingleParam<>(List2.copyOf(defaultValue), key, Parser.onStringList(splitter), Formatter.onStringList(joiner));
     }
 
     @Nonnull

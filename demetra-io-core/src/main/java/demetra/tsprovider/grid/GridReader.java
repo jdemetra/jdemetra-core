@@ -199,7 +199,7 @@ public final class GridReader {
 
             if (info.isSupportedDataType(String.class)) {
                 string = InternalValueReader.onString();
-                dateTimeFallback = InternalValueReader.onStringParser(format.dateTimeParser(LocalDateTime::from));
+                dateTimeFallback = InternalValueReader.onStringParser(format.dateTimeParser());
                 numberFallback = InternalValueReader.onStringParser(format.numberParser());
             } else {
                 string = InternalValueReader.onNull();

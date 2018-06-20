@@ -16,14 +16,29 @@
  */
 package demetra.tsprovider;
 
+import java.util.UUID;
+import javax.annotation.Nonnull;
+import lombok.AccessLevel;
+
 /**
  *
  * @author Jean Palate
  */
-@lombok.Value(staticConstructor = "of")
+@lombok.Value
+@lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TsMoniker {
 
-    public static final TsMoniker ANONYMOUS = new TsMoniker("", "");
+    public static final TsMoniker NULL = TsMoniker.of("", "");
+
+    @Nonnull
+    public static TsMoniker of() {
+        return new TsMoniker("", UUID.randomUUID().toString());
+    }
+
+    @Nonnull
+    public static TsMoniker of(@Nonnull String source, @Nonnull String id) {
+        return new TsMoniker(source, id);
+    }
 
     @lombok.NonNull
     private String source;
@@ -31,12 +46,16 @@ public class TsMoniker {
     @lombok.NonNull
     private String id;
 
-    public boolean isAnonymous() {
-        return id.isEmpty() && source.isEmpty();
+    public boolean isProvided() {
+        return !source.isEmpty();
+    }
+
+    public boolean isNull() {
+        return source.isEmpty() && id.isEmpty();
     }
 
     @Override
     public String toString() {
-        return isAnonymous() ? "ANONYMOUS" : (source + "<@>" + id);
+        return isProvided() ? (source + "<@>" + id) : id;
     }
 }

@@ -18,7 +18,7 @@ package demetra.maths.polynomials;
 
 import demetra.design.Development;
 import demetra.maths.Complex;
-import demetra.utilities.Arrays2;
+import demetra.util.Arrays2;
 
 /**
  *

@@ -18,7 +18,7 @@ package demetra.var;
 
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
-import demetra.utilities.Table;
+import demetra.util.Table;
 import java.util.Objects;
 
 /**

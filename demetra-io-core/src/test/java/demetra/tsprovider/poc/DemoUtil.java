@@ -26,7 +26,7 @@ import demetra.tsprovider.TsInformationType;
 import demetra.tsprovider.TsProviders;
 import demetra.tsprovider.util.MultiLineNameUtil;
 import demetra.timeseries.TsDomain;
-import demetra.utilities.TreeTraverser;
+import demetra.util.TreeTraverser;
 import ioutil.IO;
 import java.io.IOException;
 import java.time.Clock;

@@ -135,10 +135,10 @@ public interface Parser<T> {
     }
 
     @Nonnull
-    static <T> Parser<T> onDateTimeFormatter(@Nonnull DateTimeFormatter formatter, TemporalQuery<T> query) {
+    static <T> Parser<T> onDateTimeFormatter(@Nonnull DateTimeFormatter formatter, TemporalQuery<T>... queries) {
         Objects.requireNonNull(formatter);
-        Objects.requireNonNull(query);
-        return o -> InternalParser.parseTemporalAccessor(formatter, query, o);
+        Objects.requireNonNull(queries);
+        return o -> InternalParser.parseTemporalAccessor(formatter, queries, o);
     }
 
     @Nonnull

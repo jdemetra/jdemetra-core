@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.utilities.IntList;
+import demetra.util.IntList;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleUnaryOperator;

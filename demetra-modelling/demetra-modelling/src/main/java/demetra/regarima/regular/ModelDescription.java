@@ -41,7 +41,7 @@ import demetra.stats.tests.NiidTests;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.utilities.IntList;
+import demetra.util.IntList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

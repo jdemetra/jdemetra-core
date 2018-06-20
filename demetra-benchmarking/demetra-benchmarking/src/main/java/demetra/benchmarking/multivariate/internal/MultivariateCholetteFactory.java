@@ -28,7 +28,7 @@ import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
 import demetra.timeseries.simplets.TsDataView;
-import demetra.utilities.WeightedItem;
+import demetra.util.WeightedItem;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;

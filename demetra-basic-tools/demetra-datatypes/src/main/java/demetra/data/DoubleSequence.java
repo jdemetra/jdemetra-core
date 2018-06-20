@@ -18,7 +18,6 @@ package demetra.data;
 
 import static demetra.data.DoubleArray.EMPTY;
 import demetra.design.Internal;
-import demetra.utilities.functions.DoubleBiPredicate;
 import java.text.DecimalFormat;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
@@ -28,6 +27,7 @@ import java.util.function.IntToDoubleFunction;
 import java.util.stream.DoubleStream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import demetra.util.function.BiDoublePredicate;
 
 /**
  *
@@ -188,7 +188,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      * @param pred
      * @return
      */
-    default boolean allMatch(@Nonnull DoubleSequence seq, @Nonnull DoubleBiPredicate pred) {
+    default boolean allMatch(@Nonnull DoubleSequence seq, @Nonnull BiDoublePredicate pred) {
         return Sequences.allMatch(this, seq, pred);
     }
    /**

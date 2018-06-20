@@ -29,7 +29,7 @@ import demetra.tsprovider.util.MultiLineNameUtil;
 import demetra.timeseries.TsDomain;
 import demetra.tsprovider.DataSourceLoader;
 import demetra.tsprovider.TsMoniker;
-import demetra.utilities.TreeTraverser;
+import demetra.util.TreeTraverser;
 import ioutil.IO;
 import java.io.File;
 import java.io.IOException;

@@ -23,10 +23,10 @@ import demetra.maths.Complex;
 import demetra.maths.polynomials.IRootsSolver;
 import demetra.maths.polynomials.LeastSquaresDivision;
 import demetra.maths.polynomials.Polynomial;
-import demetra.utilities.Ref;
-import demetra.utilities.Ref.BooleanRef;
-import demetra.utilities.Ref.DoubleRef;
-import demetra.utilities.Ref.IntRef;
+import demetra.util.Ref;
+import demetra.util.Ref.BooleanRef;
+import demetra.util.Ref.DoubleRef;
+import demetra.util.Ref.IntRef;
 
 /**
  *

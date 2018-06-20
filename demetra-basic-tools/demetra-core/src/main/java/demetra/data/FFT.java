@@ -19,7 +19,7 @@ package demetra.data;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.Constants;
-import demetra.utilities.Arrays2;
+import demetra.util.Arrays2;
 
 /**
  *

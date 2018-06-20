@@ -33,7 +33,7 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
      * @param hUnit The time unit of the sub-periods
      * @param exact Indicates if the domain must be exactly decomposed into its sub-periods 
      * @return The new domain (never null)
-     * @throws A TsException is thrown when the decomposition is not possible
+     * @throws TsException is thrown when the decomposition is not possible
      */
     public static @Nonnull TsDomain splitOf(TsPeriod period, TsUnit hUnit, boolean exact)throws TsException {
         LocalDateTime start = period.start(), end = period.end();
@@ -46,6 +46,8 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
         }
     }
 
+    public static final TsDomain DEFAULT_EMPTY = TsDomain.of(TsPeriod.of(TsUnit.YEAR, 0), 0);
+    
     @lombok.NonNull
     TsPeriod startPeriod;
 

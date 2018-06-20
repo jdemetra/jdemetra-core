@@ -16,11 +16,12 @@
  */
 package demetra.timeseries;
 
+import demetra.util.List2;
+import demetra.util.function.BiIntPredicate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
@@ -46,14 +47,13 @@ public final class TsDataTable {
 
     @Nonnull
     public static <X> TsDataTable of(@Nonnull List<X> col, @Nonnull Function<? super X, TsData> toData) {
-        TsDomain domain = computeDomain(col.stream().map(toData).map(TsData::getDomain).iterator());
-        return new TsDataTable(domain, Collections.unmodifiableList(col.stream().map(toData).collect(Collectors.toList())));
+        TsDomain domain = computeDomain(col.stream().map(toData).map(TsData::getDomain).filter(o -> !o.isEmpty()).iterator());
+        return new TsDataTable(domain, col.stream().map(toData).collect(List2.toUnmodifiableList()));
     }
 
     @Nonnull
     public static TsDataTable of(@Nonnull List<TsData> col) {
-        TsDomain domain = computeDomain(col.stream().map(TsData::getDomain).iterator());
-        return new TsDataTable(domain, Collections.unmodifiableList(new ArrayList<>(col)));
+        return of(col, Function.identity());
     }
 
     @lombok.NonNull
@@ -66,23 +66,20 @@ public final class TsDataTable {
 
     @Nonnull
     public Cursor cursor(@Nonnull DistributionType distribution) {
+        Objects.requireNonNull(distribution);
         return cursor(i -> distribution);
     }
 
     @Nonnull
     public Cursor cursor(@Nonnull IntFunction<DistributionType> distribution) {
-        return new Cursor(IntStream
-                .range(0, data.size())
-                .mapToObj(distribution)
-                .map(TsDataTable::getDistributor)
-                .collect(Collectors.toList())
-        );
+        Objects.requireNonNull(distribution);
+        return new Cursor(getDistributors(data, distribution));
     }
 
     @lombok.RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public final class Cursor {
 
-        private final List<Distributor> distributors;
+        private final List<BiIntPredicate> distributors;
 
         @lombok.Getter
         private int index = -1;
@@ -102,6 +99,9 @@ public final class TsDataTable {
 
         @Nonnull
         public Cursor moveTo(int period, int series) {
+            if (period <= -1 || period >= domain.getLength()) {
+                throw new IndexOutOfBoundsException("period");
+            }
             TsData ts = data.get(series);
             if (ts.isEmpty()) {
                 index = -1;
@@ -152,30 +152,17 @@ public final class TsDataTable {
         public int getSeriesCount() {
             return data.size();
         }
-
-        public void forEachByPeriod(@Nonnull Consumer consumer) {
-            for (int i = 0; i < getPeriodCount(); i++) {
-                for (int j = 0; j < getSeriesCount(); j++) {
-                    moveTo(i, j);
-                    consumer.accept(i, j, this);
-                }
-            }
-        }
     }
 
-    @FunctionalInterface
-    public interface Consumer {
-
-        void accept(int period, int series, Cursor cursor);
+    private static List<BiIntPredicate> getDistributors(List<TsData> data, IntFunction<DistributionType> distribution) {
+        return IntStream
+                .range(0, data.size())
+                .mapToObj(distribution)
+                .map(TsDataTable::getDistributor)
+                .collect(Collectors.toList());
     }
 
-    @FunctionalInterface
-    private interface Distributor {
-
-        boolean test(int pos, int size);
-    }
-
-    private static Distributor getDistributor(DistributionType type) {
+    private static BiIntPredicate getDistributor(DistributionType type) {
         switch (type) {
             case FIRST:
                 return (pos, size) -> pos % size == 0;
@@ -190,7 +177,7 @@ public final class TsDataTable {
 
     static TsDomain computeDomain(Iterator<TsDomain> domains) {
         if (!domains.hasNext()) {
-            throw new IllegalArgumentException();
+            return TsDomain.DEFAULT_EMPTY;
         }
 
         TsDomain o = domains.next();

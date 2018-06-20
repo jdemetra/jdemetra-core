@@ -19,7 +19,7 @@ package demetra.tramo;
 import demetra.design.Development;
 import demetra.timeseries.TimeSelector;
 import demetra.tramo.TramoException;
-import demetra.utilities.Comparator;
+import demetra.util.Comparator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
