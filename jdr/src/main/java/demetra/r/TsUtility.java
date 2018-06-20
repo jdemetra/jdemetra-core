@@ -9,6 +9,7 @@ import demetra.data.AggregationType;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
 import java.time.LocalDate;
 
 /**
@@ -31,6 +32,19 @@ public class TsUtility {
         }
     }
 
+    public TsDomain of(int freq, int year, int start, int len) {
+        switch (freq) {
+            case 1:
+                return TsDomain.of(TsPeriod.yearly(year), len);
+            case 12:
+                return TsDomain.of(TsPeriod.monthly(year, start), len);
+            default:
+                int c = 12 / freq;
+                TsPeriod pstart = TsPeriod.of(TsUnit.MONTH, LocalDate.of(year, (start - 1) * c + 1, 1));
+                return TsDomain.of(pstart, len);
+        }
+    }
+
     public TsData aggregate(TsData source, int nfreq, String conversion, boolean fullperiods) {
         AggregationType agg = AggregationType.valueOf(conversion);
         if (agg == null) {
@@ -39,6 +53,7 @@ public class TsUtility {
         TsUnit unit = TsUnit.ofAnnualFrequency(nfreq);
         return source.aggregate(unit, agg, fullperiods);
     }
+
     /**
      * Information useful for the conversion of series in R returns [freq, year,
      * period] (period is 1-based)

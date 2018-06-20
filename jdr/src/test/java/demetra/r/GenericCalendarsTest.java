@@ -14,24 +14,28 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.ssf.implementations;
+package demetra.r;
 
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.Ssf;
-import java.util.function.IntToDoubleFunction;
+import demetra.maths.MatrixType;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Jean Palate
  */
-@lombok.experimental.UtilityClass
-public class WeightedSsf{
+public class GenericCalendarsTest {
 
-    public ISsf of(ISsf original, IntToDoubleFunction weights){
-        return new Ssf(original.getInitialization(), original.getDynamics(), WeightedMeasurement.of(original.getMeasurement(), weights));
+    public GenericCalendarsTest() {
     }
 
-    public ISsf of(ISsf original, double weight){
-        return new Ssf(original.getInitialization(), original.getDynamics(), WeightedMeasurement.of(original.getMeasurement(), weight));
+    @Test
+    public void testTD() {
+        MatrixType m = GenericCalendars.td(TsDomain.of(TsPeriod.monthly(1980, 1), 600), new int[]{1, 2, 3, 4, 5, 6, 0}, true);
+        double[] all = m.toArray();
+        assertTrue(!m.isEmpty());
     }
+
 }

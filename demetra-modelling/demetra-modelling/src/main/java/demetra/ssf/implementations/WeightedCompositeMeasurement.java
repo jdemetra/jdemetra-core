@@ -39,8 +39,7 @@ public class WeightedCompositeMeasurement implements ISsfMeasurement {
     };
 
     public static ISsfMeasurement of(IWeights weights, ISsf... ssf) {
-        ISsfMeasurement[] m = new ISsfMeasurement[ssf.length];
-         return of(weights, 0, ssf);
+        return of(weights, 0, ssf);
     }
 
     public static ISsfMeasurement of(IWeights weights, double var, ISsf... ssf) {

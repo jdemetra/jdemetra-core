@@ -19,41 +19,40 @@ package demetra.ssf.implementations;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.univariate.ISsfMeasurement;
+import java.util.function.IntToDoubleFunction;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public class WeightedMeasurement implements ISsfMeasurement {
-
-    public static interface IWeights {
-
-        double get(int pos);
-    };
-
-    private final IWeights weights;
-    private final ISsfMeasurement measurement;
-
-    public WeightedMeasurement(final ISsfMeasurement measurement, final double[] weights) {
-        this.weights = (int pos) -> {
-            return weights[pos];
-        };
-        this.measurement = measurement;
+    
+    public static WeightedMeasurement of(final ISsfMeasurement measurement, final IntToDoubleFunction weights){
+        return new WeightedMeasurement(measurement, weights, false);
     }
 
-    public WeightedMeasurement(final ISsfMeasurement measurement, final IWeights weights) {
+     public static WeightedMeasurement of(final ISsfMeasurement measurement, final double w){
+        return new WeightedMeasurement(measurement, i->w, true);
+    }
+
+    private final IntToDoubleFunction weights;
+    private final ISsfMeasurement measurement;
+    private final boolean timeInvariantWeights;
+
+    private WeightedMeasurement(final ISsfMeasurement measurement, final IntToDoubleFunction weights, final boolean timeInvariant) {
         this.weights = weights;
         this.measurement = measurement;
+        this.timeInvariantWeights=timeInvariant ;
     }
 
-    public IWeights getWeights() {
+    public IntToDoubleFunction getWeights() {
         return weights;
     }
 
     @Override
     public void Z(int pos, DataBlock z) {
         measurement.Z(pos, z);
-        z.mul(weights.get(pos));
+        z.mul(weights.applyAsDouble(pos));
     }
 
     @Override
@@ -63,7 +62,7 @@ public class WeightedMeasurement implements ISsfMeasurement {
 
     @Override
     public boolean areErrorsTimeInvariant(){
-        return ! measurement.hasErrors();
+        return !measurement.hasErrors() || (timeInvariantWeights && measurement.areErrorsTimeInvariant()) ;
     }
 
     @Override
@@ -77,36 +76,36 @@ public class WeightedMeasurement implements ISsfMeasurement {
         if (v == 0) {
             return 0;
         } else {
-            double w = weights.get(pos);
+            double w = weights.applyAsDouble(pos);
             return v * w * w;
         }
     }
 
     @Override
     public double ZX(int pos, DataBlock m) {
-        return weights.get(pos) * measurement.ZX(pos, m);
+        return weights.applyAsDouble(pos) * measurement.ZX(pos, m);
     }
 
     @Override
     public double ZVZ(int pos, Matrix V) {
-        double w = weights.get(pos);
+        double w = weights.applyAsDouble(pos);
         return measurement.ZVZ(pos, V) * w * w;
     }
 
     @Override
     public void VpZdZ(int pos, Matrix V, double d) {
-        double w = weights.get(pos);
+        double w = weights.applyAsDouble(pos);
         measurement.VpZdZ(pos, V, w * w * d);
     }
 
     @Override
     public void XpZd(int pos, DataBlock x, double d) {
-        measurement.XpZd(pos, x, d * weights.get(pos));
+        measurement.XpZd(pos, x, d * weights.applyAsDouble(pos));
     }
 
     @Override
     public boolean isTimeInvariant() {
-        return false;
+        return measurement.isTimeInvariant() && this.timeInvariantWeights;
     }
 
 }

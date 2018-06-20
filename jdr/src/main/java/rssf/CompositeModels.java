@@ -14,24 +14,19 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.ssf.implementations;
+package rssf;
 
+import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.Ssf;
-import java.util.function.IntToDoubleFunction;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-public class WeightedSsf{
-
-    public ISsf of(ISsf original, IntToDoubleFunction weights){
-        return new Ssf(original.getInitialization(), original.getDynamics(), WeightedMeasurement.of(original.getMeasurement(), weights));
-    }
-
-    public ISsf of(ISsf original, double weight){
-        return new Ssf(original.getInitialization(), original.getDynamics(), WeightedMeasurement.of(original.getMeasurement(), weight));
+public class CompositeModels {
+    
+    public ISsf of(ISsf[] ssf, double var){
+        return CompositeSsf.of(var, ssf);
     }
 }

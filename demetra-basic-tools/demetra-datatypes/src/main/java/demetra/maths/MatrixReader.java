@@ -32,6 +32,11 @@ class MatrixReader implements MatrixType {
         this.nrows = nrows;
         this.ncolumns = ncolumns;
     }
+    
+    @Override
+     public double[] toArray(){
+        return storage.clone();
+    }
 
     @Override
     public double get(int row, int column) throws IndexOutOfBoundsException {
@@ -54,8 +59,7 @@ class MatrixReader implements MatrixType {
         if (icolumn < 0 || icolumn >= ncolumns) {
             throw new IndexOutOfBoundsException();
         }
-        int start = icolumn * nrows, end = start + nrows;
-        return DoubleSequence.ofInternal(storage, start, end);
+        return DoubleSequence.ofInternal(storage, icolumn * nrows, nrows);
     }
 
     @Override
@@ -89,12 +93,12 @@ class MatrixReader implements MatrixType {
 
     @Override
     public int getColumnsCount() {
-        return nrows;
+        return ncolumns;
     }
 
     @Override
     public int getRowsCount() {
-        return ncolumns;
+        return nrows;
     }
 
 }
