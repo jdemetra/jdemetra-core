@@ -34,6 +34,7 @@ import demetra.ssf.univariate.Ssf;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
+@lombok.experimental.UtilityClass
 public class SsfDisaggregation {
 
     public Ssf of(ISsf s, int conversion) {
