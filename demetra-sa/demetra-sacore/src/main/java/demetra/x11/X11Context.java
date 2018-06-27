@@ -52,17 +52,17 @@ public class X11Context {
 
     public DoubleSequence remove(DoubleSequence l, DoubleSequence r) {
         if (mode.isMultiplicative()) {
-            return DoubleSequence.of(l.length(), i -> l.get(i) / r.get(i));
+            return DoubleSequence.onMapping(l.length(), i -> l.get(i) / r.get(i));
         } else {
-            return DoubleSequence.of(l.length(), i -> l.get(i) - r.get(i));
+            return DoubleSequence.onMapping(l.length(), i -> l.get(i) - r.get(i));
         }
     }
 
     public DoubleSequence add(DoubleSequence l, DoubleSequence r) {
         if (mode.isMultiplicative()) {
-            return DoubleSequence.of(l.length(), i -> l.get(i) * r.get(i));
+            return DoubleSequence.onMapping(l.length(), i -> l.get(i) * r.get(i));
         } else {
-            return DoubleSequence.of(l.length(), i -> l.get(i) + r.get(i));
+            return DoubleSequence.onMapping(l.length(), i -> l.get(i) + r.get(i));
         }
     }
 

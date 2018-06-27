@@ -32,7 +32,7 @@ import demetra.maths.linearfilters.HendersonFilters;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.timeseries.TsDomain;
 import static demetra.timeseries.simplets.TsDataToolkit.fitToDomain;
-import internal.design.Demo;
+import demetra.design.Demo;
 import org.junit.Ignore;
 import static demetra.timeseries.simplets.TsDataToolkit.*;
 

@@ -65,9 +65,9 @@ public class StlDecomposition {
                     -> {
                 DoubleSequence y = source.getY(), s = source.getS();
                 if (source.isMultiplicative()) {
-                    return DoubleSequence.of(y.length(), i -> y.get(i) / s.get(i)).toArray();
+                    return DoubleSequence.onMapping(y.length(), i -> y.get(i) / s.get(i)).toArray();
                 } else {
-                    return DoubleSequence.of(y.length(), i -> y.get(i) - s.get(i)).toArray();
+                    return DoubleSequence.onMapping(y.length(), i -> y.get(i) - s.get(i)).toArray();
                 }
             }
             );

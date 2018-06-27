@@ -106,9 +106,9 @@ public class DataResults {
 
     public DoubleSequence asDoublesReader(boolean complete) {
         if (complete) {
-            return DoubleSequence.of(nused + start, i -> i < start ? Double.NaN : data[i - start]);
+            return DoubleSequence.onMapping(nused + start, i -> i < start ? Double.NaN : data[i - start]);
         } else {
-            return DoubleSequence.of(nused, i -> data[i]);
+            return DoubleSequence.onMapping(nused, i -> data[i]);
         }
     }
 

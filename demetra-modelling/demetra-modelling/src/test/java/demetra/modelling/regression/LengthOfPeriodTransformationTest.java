@@ -24,7 +24,7 @@ public class LengthOfPeriodTransformationTest {
 
     @Test
     public void testLengthOfPeriod() {
-        DoubleSequence data=DoubleSequence.of(300, i->1);
+        DoubleSequence data=DoubleSequence.onMapping(300, i->1);
         TsPeriod start=TsPeriod.monthly(1980, 3);
         LengthOfPeriodTransformation lp=new LengthOfPeriodTransformation(LengthOfPeriodType.LengthOfPeriod);
         LogJacobian lj=new LogJacobian(0, data.length());
@@ -37,7 +37,7 @@ public class LengthOfPeriodTransformationTest {
     
     @Test
     public void testLengthOfPeriodQ() {
-        DoubleSequence data=DoubleSequence.of(300, i->1);
+        DoubleSequence data=DoubleSequence.onMapping(300, i->1);
         TsPeriod start=TsPeriod.quarterly(1980, 2);
         LengthOfPeriodTransformation lp=new LengthOfPeriodTransformation(LengthOfPeriodType.LengthOfPeriod);
         LogJacobian lj=new LogJacobian(0, data.length());
@@ -50,7 +50,7 @@ public class LengthOfPeriodTransformationTest {
 
     @Test
     public void testLeapYear() {
-        DoubleSequence data=DoubleSequence.of(80, i->1);
+        DoubleSequence data=DoubleSequence.onMapping(80, i->1);
         TsPeriod start=TsPeriod.quarterly(1980, 3);
         LengthOfPeriodTransformation lp=new LengthOfPeriodTransformation(LengthOfPeriodType.LeapYear);
         LogJacobian lj=new LogJacobian(0, data.length());

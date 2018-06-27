@@ -47,7 +47,7 @@ public class PeriodicLjungBoxTest {
     @Test
     public void testRandom() {
         Random rnd = new Random();
-        PeriodicLjungBox lb = new PeriodicLjungBox(DoubleSequence.of(1000, i -> rnd.nextGaussian()), 0);
+        PeriodicLjungBox lb = new PeriodicLjungBox(DoubleSequence.onMapping(1000, i -> rnd.nextGaussian()), 0);
 //        for (int i = 3; i < 20; ++i) {
 //            StatisticalTest test = lb.lags(365.25 / i, 10).useAllAutocorrelations().build();
 //            System.out.println(test.getValue());
@@ -69,7 +69,7 @@ public class PeriodicLjungBoxTest {
         for (int i = 0; i < dlx.length; ++i) {
             dlx[i] -= s;
         }
-        return DoubleSequence.of(dlx.length, i -> dlx[i]);
+        return DoubleSequence.onMapping(dlx.length, i -> dlx[i]);
     }
 
     private DoubleSequence log(final double[] x) {
@@ -83,6 +83,6 @@ public class PeriodicLjungBoxTest {
         for (int i = 0; i < lx.length; ++i) {
             lx[i] -= s;
         }
-        return DoubleSequence.of(lx.length, i -> lx[i]);
+        return DoubleSequence.onMapping(lx.length, i -> lx[i]);
     }
 }

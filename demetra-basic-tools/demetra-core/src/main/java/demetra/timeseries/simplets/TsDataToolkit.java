@@ -42,7 +42,7 @@ public class TsDataToolkit {
     }
 
     public TsData fastFn(TsData s, DoubleUnaryOperator fn) {
-        return TsData.ofInternal(s.getStart(), DoubleSequence.of(s.length(), i -> fn.applyAsDouble(s.getValue(i))));
+        return TsData.ofInternal(s.getStart(), DoubleSequence.onMapping(s.length(), i -> fn.applyAsDouble(s.getValue(i))));
     }
 
     public TsData commit(TsData s) {
@@ -58,7 +58,7 @@ public class TsDataToolkit {
         }
         TsPeriod istart = iDomain.getStartPeriod();
         int li = lDomain.indexOf(istart), ri = rDomain.indexOf(istart);
-        return TsData.ofInternal(istart, DoubleSequence.of(iDomain.length(),
+        return TsData.ofInternal(istart, DoubleSequence.onMapping(iDomain.length(),
                 i -> fn.applyAsDouble(left.getValue(li + i), right.getValue(ri + i))));
     }
 

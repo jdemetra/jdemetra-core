@@ -24,7 +24,7 @@ public class SsfData implements ISsfData  {
     }
 
     public SsfData(double[] x) {
-        data = DoubleSequence.of(x.length, i->x[i]);
+        data = DoubleSequence.onMapping(x.length, i->x[i]);
     }
 
     @Override

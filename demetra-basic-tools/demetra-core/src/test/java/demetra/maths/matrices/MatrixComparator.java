@@ -32,7 +32,7 @@ public class MatrixComparator {
         if (o.getRowsCount() != nrows) {
             return Double.MAX_VALUE;
         }
-        DoubleSequence delta = DoubleSequence.of(o.getColumnsCount() * o.getRowsCount(),
+        DoubleSequence delta = DoubleSequence.onMapping(o.getColumnsCount() * o.getRowsCount(),
                 i -> m.get(i % nrows, i / nrows) - o.get(i % nrows, i / nrows));
         return Doubles.normInf(delta);
     }
@@ -42,7 +42,7 @@ public class MatrixComparator {
         if (o.getRowsCount() != nrows) {
             return Double.MAX_VALUE;
         }
-        DoubleSequence delta = DoubleSequence.of(o.getColumnsCount() * o.getRowsCount(),
+        DoubleSequence delta = DoubleSequence.onMapping(o.getColumnsCount() * o.getRowsCount(),
                 i -> m.get(i % nrows, i / nrows) - o.get(i % nrows, i / nrows));
         return Doubles.normInf(delta);
     }

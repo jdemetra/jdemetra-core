@@ -330,7 +330,7 @@ public class Doubles {
     }
 
     public DoubleSequence fastFn(DoubleSequence s, DoubleUnaryOperator fn) {
-        return DoubleSequence.of(s.length(), i -> fn.applyAsDouble(s.get(i)));
+        return DoubleSequence.onMapping(s.length(), i -> fn.applyAsDouble(s.get(i)));
     }
 
     public DoubleSequence fn(DoubleSequence s, int lag, DoubleBinaryOperator fn) {
@@ -383,7 +383,7 @@ public class Doubles {
 
     public DoubleSequence fastOp(DoubleSequence a, DoubleSequence b, DoubleBinaryOperator op) {
         int n=a.length();
-        return DoubleSequence.of(n, i->a.get(i)+b.get(i));
+        return DoubleSequence.onMapping(n, i->a.get(i)+b.get(i));
     }
     
     public DoubleSequence commit(DoubleSequence s){

@@ -1570,7 +1570,7 @@ public final class DataBlock implements DoubleSequence {
     }
 
     public DoubleSequence unmodifiable() {
-        return DoubleSequence.of(this.length(), i -> get(i));
+        return DoubleSequence.onMapping(this.length(), i -> get(i));
     }
 
     public String toString(String fmt) {
