@@ -65,10 +65,10 @@ class MatrixReader implements MatrixType {
     @Override
     public DoubleSequence subDiagonal(int pos) {
         if (pos >= ncolumns) {
-            return DoubleSequence.EMPTY;
+            return DoubleSequence.empty();
         }
         if (-pos >= nrows) {
-            return DoubleSequence.EMPTY;
+            return DoubleSequence.empty();
         }
         int beg = 0, inc = 1 + nrows;
         int n;

@@ -16,12 +16,10 @@
  */
 package demetra.data;
 
-import static demetra.data.DoubleArray.EMPTY;
-import internal.design.Demo;
+import demetra.design.Demo;
 import java.util.stream.DoubleStream;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -31,7 +29,7 @@ public class DoubleSequenceTest {
 
     @Demo
     public static void main(String[] args) {
-        DoubleSequence values = DoubleSequence.ofInternal(3.14, 3, 5, 7);
+        DoubleSequence values = DoubleSequence.of(3.14, 3, 5, 7);
         System.out.println(DoubleSequence.of(values.stream().skip(1).map(o -> o * 2)));
 
         double[] tmp = values.toArray();
@@ -49,8 +47,8 @@ public class DoubleSequenceTest {
     @Test
     @SuppressWarnings("null")
     public void testFactories() {
-        assertThat(DoubleSequence.ofInternal().length()).isEqualTo(0);
-        assertThat(DoubleSequence.ofInternal(3.14).length()).isEqualTo(1);
+        assertThat(DoubleSequence.ofInternal(new double[]{}).length()).isEqualTo(0);
+        assertThat(DoubleSequence.ofInternal(new double[]{3.14}).length()).isEqualTo(1);
         assertThatThrownBy(() -> DoubleSequence.ofInternal(null)).isInstanceOf(NullPointerException.class);
 
         assertThat(DoubleSequence.of().length()).isEqualTo(0);
@@ -64,32 +62,32 @@ public class DoubleSequenceTest {
 
     @Test
     public void testEquals() {
-        assertThat(EMPTY).isEqualTo(EMPTY).isNotEqualTo(PI);
-        assertThat(PI).isEqualTo(PI).isNotEqualTo(EMPTY);
+        assertThat(DoubleSequence.empty()).isEqualTo(DoubleSequence.empty()).isNotEqualTo(PI);
+        assertThat(PI).isEqualTo(PI).isNotEqualTo(DoubleSequence.empty());
     }
 
     @Test
     public void testHashcode() {
-        assertThat(EMPTY.hashCode()).isEqualTo(EMPTY.hashCode()).isNotEqualTo(PI.hashCode());
-        assertThat(PI.hashCode()).isEqualTo(PI.hashCode()).isNotEqualTo(EMPTY.hashCode());
+        assertThat(DoubleSequence.empty().hashCode()).isEqualTo(DoubleSequence.empty().hashCode()).isNotEqualTo(PI.hashCode());
+        assertThat(PI.hashCode()).isEqualTo(PI.hashCode()).isNotEqualTo(DoubleSequence.empty().hashCode());
     }
 
     @Test
     public void testLength() {
-        assertThat(EMPTY.length()).isEqualTo(0);
+        assertThat(DoubleSequence.empty().length()).isEqualTo(0);
         assertThat(PI.length()).isEqualTo(1);
     }
 
     @Test
     public void testDoubleAt() {
         assertThat(PI.get(0)).isEqualTo(Math.PI);
-        assertThatThrownBy(() -> EMPTY.get(0)).isInstanceOf(IndexOutOfBoundsException.class);
-        assertThatThrownBy(() -> EMPTY.get(-1)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> DoubleSequence.empty().get(0)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> DoubleSequence.empty().get(-1)).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
     public void testToArray() {
-        assertThat(EMPTY.toArray()).isEmpty();
+        assertThat(DoubleSequence.empty().toArray()).isEmpty();
         assertThat(PI.toArray())
                 .containsExactly(Math.PI)
                 .isNotSameAs(PI.toArray());
@@ -101,7 +99,7 @@ public class DoubleSequenceTest {
         assertThat(copy(PI, new double[]{666, 777}, 1)).containsExactly(666, Math.PI);
     }
 
-    private static final DoubleSequence PI = DoubleSequence.ofInternal(Math.PI);
+    private static final DoubleSequence PI = DoubleSequence.of(Math.PI);
 
     private static double[] copy(DoubleSequence o, double[] buffer, int offset) {
         o.copyTo(buffer, offset);

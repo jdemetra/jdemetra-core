@@ -19,7 +19,7 @@ package demetra.timeseries;
 import static demetra.data.AggregationType.*;
 import demetra.data.DoubleSequence;
 import static demetra.timeseries.TsUnit.*;
-import internal.design.Demo;
+import demetra.design.Demo;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class TsDataTest {
 
     @Demo
     public static void main(String[] args) {
-        TsData ts = TsData.of(TsPeriod.yearly(2001), DoubleSequence.ofInternal(3.14, 7));
+        TsData ts = TsData.of(TsPeriod.yearly(2001), DoubleSequence.of(3.14, 7));
 
         System.out.println("\n[Tests ...]");
         System.out.println(ts.toString());
@@ -124,8 +124,8 @@ public class TsDataTest {
                 .isEqualTo(TsData.empty(TsPeriod.yearly(2001), "abc"))
                 .isNotEqualTo(TsData.empty(TsPeriod.yearly(2001), "xyz"));
         
-        assertThat(TsData.of(TsPeriod.yearly(2001), DoubleSequence.ofInternal(1, 2, 3)))
-                .isEqualTo(TsData.of(TsPeriod.yearly(2001), DoubleSequence.ofInternal(1, 2, 3)));
+        assertThat(TsData.of(TsPeriod.yearly(2001), DoubleSequence.of(1, 2, 3)))
+                .isEqualTo(TsData.of(TsPeriod.yearly(2001), DoubleSequence.of(1, 2, 3)));
     }
 
     @Test
@@ -212,11 +212,11 @@ public class TsDataTest {
     }
 
     private static TsData monthlyTs(LocalDateTime start, int count) {
-        return TsData.of(TsPeriod.of(TsUnit.MONTH, start), DoubleSequence.of(count, i -> i + start.getMonthValue()));
+        return TsData.of(TsPeriod.of(TsUnit.MONTH, start), DoubleSequence.onMapping(count, i -> i + start.getMonthValue()));
     }
 
     private static TsData monthlyTs(LocalDate start, int count) {
-        return TsData.of(TsPeriod.of(TsUnit.MONTH, start), DoubleSequence.of(count, i -> i + start.getMonthValue()));
+        return TsData.of(TsPeriod.of(TsUnit.MONTH, start), DoubleSequence.onMapping(count, i -> i + start.getMonthValue()));
     }
 
     private static TsObs y(int year, double val) {

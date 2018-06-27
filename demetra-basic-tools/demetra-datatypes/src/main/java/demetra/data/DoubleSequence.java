@@ -16,7 +16,6 @@
  */
 package demetra.data;
 
-import static demetra.data.DoubleArray.EMPTY;
 import demetra.design.Internal;
 import java.text.DecimalFormat;
 import java.util.function.DoubleBinaryOperator;
@@ -28,6 +27,7 @@ import java.util.stream.DoubleStream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import demetra.util.function.BiDoublePredicate;
+import internal.data.InternalDoubleSeq;
 
 /**
  *
@@ -35,7 +35,6 @@ import demetra.util.function.BiDoublePredicate;
  */
 public interface DoubleSequence extends BaseSequence<Double> {
 
-    public static final DoubleSequence EMPTY = new DoubleArray(new double[0]);
     /**
      * Creates a new value using an array of doubles. Internal use only since it
      * can break immutability.
@@ -45,62 +44,82 @@ public interface DoubleSequence extends BaseSequence<Double> {
      */
     @Internal
     @Nonnull
-    public static DoubleSequence ofInternal(@Nonnull double... data) {
-        return data.length > 0 ? new DoubleArray(data) : EMPTY;
+    static DoubleSequence ofInternal(@Nonnull double[] data) {
+        return new InternalDoubleSeq.DoubleSeqN(data);
     }
 
     /**
-     * 
+     *
      * @param data Storage
      * @param start Position of the first item (non negative)
      * @param len Number of items (non negative)
-     * @return 
+     * @return
      */
     @Internal
     @Nonnull
-    public static DoubleSequence ofInternal(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int len) {
-        return len <= 0 ? EMPTY : new PartialDoubleArray(data, start, len);
+    static DoubleSequence ofInternal(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int len) {
+        return new InternalDoubleSeq.PartialDoubleArray(data, start, len);
     }
 
     /**
      * Makes a sequence of regularly spaced doubles
-     * @param data
+     *
      * @param data Storage
      * @param start Position of the first item (non negative)
      * @param len Number of items (non negative)
      * @param inc Increment in the underlying storage of two succesive items
-     * @return 
+     * @return
      */
     @Internal
     @Nonnull
-    public static DoubleSequence ofInternal(@Nonnull final double[] data, @Nonnegative int start, @Nonnegative int len, int inc) {
-        return new RegularlySpacedDoubles(data, start, len, inc);
+    static DoubleSequence ofInternal(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int len, int inc) {
+        return new InternalDoubleSeq.RegularlySpacedDoubles(data, start, len, inc);
     }
 
     @Nonnull
-    public static DoubleSequence of(@Nonnull double... data) {
-        return ofInternal(data.clone());
+    static DoubleSequence empty() {
+        return InternalDoubleSeq.DoubleSeq0.INSTANCE;
     }
 
     @Nonnull
-    public static DoubleSequence of(@Nonnull DoubleStream stream) {
+    static DoubleSequence of(double value) {
+        return new InternalDoubleSeq.DoubleSeq1(value);
+    }
+
+    @Nonnull
+    static DoubleSequence of(@Nonnull double... data) {
+        switch (data.length) {
+            case 0:
+                return empty();
+            case 1:
+                return of(data[0]);
+            default:
+                return ofInternal(data.clone());
+        }
+    }
+
+    @Nonnull
+    static DoubleSequence of(@Nonnull DoubleStream stream) {
         return ofInternal(stream.toArray());
     }
 
     @Nonnull
-    public static DoubleSequence of(@Nonnull DoubleSequence seq) {
-        return seq instanceof DoubleArray ? (DoubleArray) seq : ofInternal(seq.toArray());
+    static DoubleSequence of(@Nonnull DoubleSequence seq) {
+        return seq instanceof InternalDoubleSeq.DoubleSeqN
+                ? (InternalDoubleSeq.DoubleSeqN) seq
+                : ofInternal(seq.toArray());
     }
 
     @Nonnull
-    public static DoubleSequence of(int length, IntToDoubleFunction fn) {
-        return new IntToDoubleSequence(length, fn);
+    static DoubleSequence onMapping(@Nonnegative int length, @Nonnull IntToDoubleFunction fn) {
+        return new InternalDoubleSeq.IntToDoubleSequence(length, fn);
     }
 
     @Nonnull
-    public static DoubleSequence transformation(DoubleSequence source, DoubleUnaryOperator fn) {
-        return new IntToDoubleSequence(source.length(), i->fn.applyAsDouble(source.get(i)));
+    static DoubleSequence onMapping(@Nonnull DoubleSequence source, @Nonnull DoubleUnaryOperator fn) {
+        return new InternalDoubleSeq.IntToDoubleSequence(source.length(), i -> fn.applyAsDouble(source.get(i)));
     }
+
     /**
      * Returns the <code>double</code> value at the specified index. An index
      * ranges from zero to <tt>length() - 1</tt>. The first <code>double</code>
@@ -120,7 +139,8 @@ public interface DoubleSequence extends BaseSequence<Double> {
      *
      * @return
      */
-    default DoubleReader reader(){
+    @Nonnull
+    default DoubleReader reader() {
         return DoubleReader.defaultReaderOf(this);
     }
 
@@ -134,8 +154,9 @@ public interface DoubleSequence extends BaseSequence<Double> {
      * @return A new (read only) toArray block. Cannot be null (but the length
      * of the result could be 0.
      */
-    default DoubleSequence extract(@Nonnegative final int start, @Nonnegative final int length){
-        return of(length, i->get(start+i));
+    @Nonnull
+    default DoubleSequence extract(@Nonnegative final int start, @Nonnegative final int length) {
+        return DoubleSequence.onMapping(length, i -> get(start + i));
     }
 
     /**
@@ -148,7 +169,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      * array.
      */
     default void copyTo(@Nonnull double[] buffer, @Nonnegative int offset) {
-        Sequences.copyTo(this, buffer, offset);
+        InternalDoubleSeq.copyTo(this, buffer, offset);
     }
 
     /**
@@ -156,7 +177,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      */
     @Nonnull
     default double[] toArray() {
-        return Sequences.toArray(this);
+        return InternalDoubleSeq.toArray(this);
     }
 
     /**
@@ -167,11 +188,11 @@ public interface DoubleSequence extends BaseSequence<Double> {
      */
     @Nonnull
     default DoubleStream stream() {
-        return Sequences.stream(this);
+        return InternalDoubleSeq.stream(this);
     }
 
     default void forEach(@Nonnull DoubleConsumer action) {
-        Sequences.forEach(this, action);
+        InternalDoubleSeq.forEach(this, action);
     }
 
     /**
@@ -180,24 +201,25 @@ public interface DoubleSequence extends BaseSequence<Double> {
      * @see DoubleStream#allMatch(java.util.function.DoublePredicate))
      */
     default boolean allMatch(@Nonnull DoublePredicate pred) {
-        return Sequences.allMatch(this, pred);
+        return InternalDoubleSeq.allMatch(this, pred);
     }
 
-     /**
+    /**
      * @param seq
      * @param pred
      * @return
      */
     default boolean allMatch(@Nonnull DoubleSequence seq, @Nonnull BiDoublePredicate pred) {
-        return Sequences.allMatch(this, seq, pred);
+        return InternalDoubleSeq.allMatch(this, seq, pred);
     }
-   /**
+
+    /**
      * @param pred
      * @return
      * @see DoubleStream#anyMatch(java.util.function.DoublePredicate))
      */
     default boolean anyMatch(@Nonnull DoublePredicate pred) {
-        return Sequences.anyMatch(this, pred);
+        return InternalDoubleSeq.anyMatch(this, pred);
     }
 
     /**
@@ -208,19 +230,19 @@ public interface DoubleSequence extends BaseSequence<Double> {
      * @see DoubleStream#reduce(double, java.util.function.DoubleBinaryOperator)
      */
     default double reduce(double initial, @Nonnull DoubleBinaryOperator fn) {
-        return Sequences.reduce(this, initial, fn);
+        return InternalDoubleSeq.reduce(this, initial, fn);
     }
 
     default int indexOf(@Nonnull DoublePredicate pred) {
-        return Sequences.firstIndexOf(this, pred);
+        return InternalDoubleSeq.firstIndexOf(this, pred);
     }
 
     default int lastIndexOf(@Nonnull DoublePredicate pred) {
-        return Sequences.lastIndexOf(this, pred);
+        return InternalDoubleSeq.lastIndexOf(this, pred);
     }
 
     default int count(DoublePredicate pred) {
-        return Sequences.count(this, pred);
+        return InternalDoubleSeq.count(this, pred);
     }
 
     /**
@@ -239,10 +261,10 @@ public interface DoubleSequence extends BaseSequence<Double> {
      *
      * @param beg The first item
      * @param end The last item
-     * @return 
+     * @return
      */
     default DoubleSequence range(int beg, int end) {
-        return end <= beg ? DoubleSequence.EMPTY : extract(beg, end-beg);
+        return end <= beg ? DoubleSequence.empty() : extract(beg, end - beg);
     }
 
     /**
@@ -252,14 +274,14 @@ public interface DoubleSequence extends BaseSequence<Double> {
      */
     default DoubleSequence reverse() {
         final int n = length();
-        return new IntToDoubleSequence(n, i -> get(n - 1 - i));
+        return new InternalDoubleSeq.IntToDoubleSequence(n, i -> get(n - 1 - i));
     }
 
-    public static boolean equals(double a, double b, double epsilon) {
+    static boolean equals(double a, double b, double epsilon) {
         return a > b ? (a - epsilon <= b) : (b - epsilon <= a);
     }
 
-    public static String toString(DoubleSequence rd) {
+    static String toString(DoubleSequence rd) {
         StringBuilder builder = new StringBuilder();
         int n = rd.length();
         if (n > 0) {
@@ -271,7 +293,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
         return builder.toString();
     }
 
-    public static String toString(DoubleSequence rd, String fmt) {
+    static String toString(DoubleSequence rd, String fmt) {
         StringBuilder builder = new StringBuilder();
         int n = rd.length();
         if (n > 0) {
@@ -283,16 +305,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
         return builder.toString();
     }
 
-        /**
-     * Transforms this object into a function: 0, length()[ -> R.
-     *
-     * @return
-     */
-    default IntToDoubleFunction asFunction() {
-        return i -> get(i);
-    }
-
-    public static double round(double r, final int ndec) {
+    static double round(double r, final int ndec) {
         if (ndec < 0) {
             throw new IllegalArgumentException("Negative rounding parameter");
         }

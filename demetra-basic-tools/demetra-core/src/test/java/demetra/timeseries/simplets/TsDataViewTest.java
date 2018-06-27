@@ -50,12 +50,12 @@ public class TsDataViewTest {
             }
         }
 
-        TsData d1 = TsData.of(TsPeriod.monthly(2010, 1), DoubleSequence.of(2 * 12, i -> 1 + i));
+        TsData d1 = TsData.of(TsPeriod.monthly(2010, 1), DoubleSequence.onMapping(2 * 12, i -> 1 + i));
         assertThat(TsDataView.fullYears(d1))
                 .extracting(o -> o.getStart(), o -> o.getData().toArray())
                 .containsExactly(d1.getStart(), d1.getValues().toArray());
 
-        TsData d2 = TsData.of(TsPeriod.monthly(2010, 2), DoubleSequence.of(2 * 12, i -> 1 + i));
+        TsData d2 = TsData.of(TsPeriod.monthly(2010, 2), DoubleSequence.onMapping(2 * 12, i -> 1 + i));
         assertThat(TsDataView.fullYears(d2))
                 .extracting(o -> o.getStart(), o -> o.getData().toArray())
                 .containsExactly(d2.getStart().plus(11), d2.getValues().drop(11, 1).toArray());

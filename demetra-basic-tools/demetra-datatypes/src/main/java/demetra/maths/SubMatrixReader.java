@@ -80,7 +80,7 @@ class SubMatrixReader implements MatrixType {
     @Override
     public DoubleSequence subDiagonal(int pos) {
         if (pos > nc || pos < -nr) {
-            return DoubleSequence.EMPTY;
+            return DoubleSequence.empty();
         }
         int del = c0 - r0;
         DoubleSequence d = core.subDiagonal(del + pos);

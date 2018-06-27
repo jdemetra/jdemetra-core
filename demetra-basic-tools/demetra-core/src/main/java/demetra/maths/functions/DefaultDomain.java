@@ -88,6 +88,6 @@ public class DefaultDomain implements IParametersDomain {
 
     @Override
     public DoubleSequence getDefaultParameters() {
-        return DoubleSequence.of(dim, i->0);
+        return DoubleSequence.onMapping(dim, i->0);
     }
 }

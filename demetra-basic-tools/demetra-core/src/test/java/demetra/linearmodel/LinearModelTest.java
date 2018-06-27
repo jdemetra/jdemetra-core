@@ -76,7 +76,7 @@ public class LinearModelTest {
         DataBlock x2 = DataBlock.make(10);
         x2.set(rnd::nextDouble);
         LinearModel lm = LinearModel.builder()
-                .y(DoubleSequence.transformation(y, z->Math.log(z)))
+                .y(DoubleSequence.onMapping(y, z->Math.log(z)))
                 .addX(x1, x2)
                 .build();
         assertTrue(lm != null);

@@ -149,16 +149,16 @@ public class X11Decomposition {
     public double icratio(double[] s, double[] sc, boolean mul) {
         DoubleSequence SC = DoubleSequence.ofInternal(sc);
         double gc = SeriesEvolution.calcAbsMeanVariation(SC, 1, mul);
-        double gi = SeriesEvolution.calcAbsMeanVariation(mul ? DoubleSequence.of(s.length, i -> s[i] / sc[i])
-                : DoubleSequence.of(s.length, i -> s[i] - sc[i]), 1, mul);
+        double gi = SeriesEvolution.calcAbsMeanVariation(mul ? DoubleSequence.onMapping(s.length, i -> s[i] / sc[i])
+                : DoubleSequence.onMapping(s.length, i -> s[i] - sc[i]), 1, mul);
         return gi / gc;
     }
 
     public double[] icratios(double[] s, double[] sc, int n, boolean mul) {
         DoubleSequence SC = DoubleSequence.ofInternal(sc);
         double[] gc = SeriesEvolution.calcAbsMeanVariations(SC, n, mul);
-        double[] gi = SeriesEvolution.calcAbsMeanVariations(mul ? DoubleSequence.of(s.length, i -> s[i] / sc[i])
-                : DoubleSequence.of(s.length, i -> s[i] - sc[i]), n, mul);
+        double[] gi = SeriesEvolution.calcAbsMeanVariations(mul ? DoubleSequence.onMapping(s.length, i -> s[i] / sc[i])
+                : DoubleSequence.onMapping(s.length, i -> s[i] - sc[i]), n, mul);
         double[] icr = new double[n];
         for (int i = 0; i < n; ++i) {
             icr[i] = gi[i] / gc[i];

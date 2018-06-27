@@ -177,12 +177,12 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     public DoubleSequence missingEstimates() {
-        return nmissing == 0 ? DoubleSequence.EMPTY : DoubleSequence.ofInternal(b, 0, nmissing);
+        return nmissing == 0 ? DoubleSequence.empty() : DoubleSequence.ofInternal(b, 0, nmissing);
     }
 
     public DoubleSequence missingUnscaledVariances() {
         if (nmissing == 0) {
-            return DoubleSequence.EMPTY;
+            return DoubleSequence.empty();
         }
         bvariance();
         return DoubleSequence.ofInternal(bvar.data(), 0, nmissing, bvar.getRowsCount() + 1);

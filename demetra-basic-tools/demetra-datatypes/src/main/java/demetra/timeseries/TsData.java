@@ -73,7 +73,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
     public static TsData of(@Nonnull TsPeriod start, @Nonnull DoubleSequence values) {
         TsDomain domain = TsDomain.of(start, values.length());
         return domain.isEmpty()
-                ? new TsData(domain, DoubleSequence.EMPTY, NO_DATA_CAUSE)
+                ? new TsData(domain, DoubleSequence.empty(), NO_DATA_CAUSE)
                 : new TsData(domain, DoubleSequence.ofInternal(values.toArray()), null);
     }
 
@@ -81,7 +81,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
     public static TsData ofInternal(@Nonnull TsPeriod start, @Nonnull DoubleSequence values) {
         TsDomain domain = TsDomain.of(start, values.length());
         return domain.isEmpty()
-                ? new TsData(domain, DoubleSequence.EMPTY, NO_DATA_CAUSE)
+                ? new TsData(domain, DoubleSequence.empty(), NO_DATA_CAUSE)
                 : new TsData(domain, values, null);
     }
 
@@ -89,18 +89,18 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
     public static TsData ofInternal(@Nonnull TsPeriod start, @Nonnull double[] values) {
         TsDomain domain = TsDomain.of(start, values.length);
         return domain.isEmpty()
-                ? new TsData(domain, DoubleSequence.EMPTY, NO_DATA_CAUSE)
+                ? new TsData(domain, DoubleSequence.empty(), NO_DATA_CAUSE)
                 : new TsData(domain, DoubleSequence.ofInternal(values), null);
     }
 
     @Nonnull
     public static TsData empty(@Nonnull TsPeriod start, @Nonnull String cause) {
-        return new TsData(TsDomain.of(start, 0), DoubleSequence.EMPTY, Objects.requireNonNull(cause));
+        return new TsData(TsDomain.of(start, 0), DoubleSequence.empty(), Objects.requireNonNull(cause));
     }
 
     @Nonnull
     public static TsData empty(@Nonnull String cause) {
-        return new TsData(TsDomain.of(TsPeriod.of(TsUnit.YEAR, 0), 0), DoubleSequence.EMPTY, Objects.requireNonNull(cause));
+        return new TsData(TsDomain.of(TsPeriod.of(TsUnit.YEAR, 0), 0), DoubleSequence.empty(), Objects.requireNonNull(cause));
     }
 
     private static final String NO_DATA_CAUSE = "No data available";

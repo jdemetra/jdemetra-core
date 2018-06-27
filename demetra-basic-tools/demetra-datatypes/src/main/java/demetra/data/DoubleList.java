@@ -17,6 +17,8 @@
 package demetra.data;
 
 import demetra.design.PrimitiveReplacementOf;
+import demetra.util.IntList;
+import internal.data.InternalDoubleSeq;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.DoublePredicate;
@@ -105,7 +107,7 @@ public final class DoubleList implements DoubleSequence {
 
     @Override
     public DoubleSequence extract(int start, int elength) {
-        return new PartialDoubleArray(values, start, elength);
+        return new InternalDoubleSeq.PartialDoubleArray(values, start, elength);
     }
 
     @Override

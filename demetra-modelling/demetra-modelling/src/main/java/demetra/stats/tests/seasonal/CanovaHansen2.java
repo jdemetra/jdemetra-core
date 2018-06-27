@@ -87,7 +87,7 @@ public class CanovaHansen2 {
         LinearModel.Builder builder = LinearModel.builder();
         builder.y(s);
         if (trend) {
-            builder.addX(DoubleSequence.of(s.length(), i -> i));
+            builder.addX(DoubleSequence.onMapping(s.length(), i -> i));
         }
         builder.addX(sx)
                 .meanCorrection(true);

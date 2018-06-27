@@ -5,7 +5,7 @@
  */
 package demetra.data;
 
-import internal.design.Demo;
+import demetra.design.Demo;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;

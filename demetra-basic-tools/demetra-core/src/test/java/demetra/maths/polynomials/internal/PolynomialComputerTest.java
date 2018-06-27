@@ -33,7 +33,7 @@ public class PolynomialComputerTest {
 
     @Test
     public void testDefault() {
-        Polynomial P = Polynomial.ofInternal(DoubleSequence.of(20, i -> 1.0 / (i + 1)).toArray());
+        Polynomial P = Polynomial.ofInternal(DoubleSequence.onMapping(20, i -> 1.0 / (i + 1)).toArray());
         PolynomialComputer computer = new PolynomialComputer(P);
         Complex c = Complex.cart(.2, -.5);
         computer.computeAll(c);

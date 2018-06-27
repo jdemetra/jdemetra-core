@@ -16,6 +16,7 @@
  */
 package demetra.data;
 
+import internal.data.InternalSeq;
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -47,12 +48,12 @@ public interface Sequence<E> extends BaseSequence<E>, Iterable<E> {
 
     @Override
     default Iterator<E> iterator() {
-        return new Sequences.SequenceIterator(this);
+        return new InternalSeq.SequenceIterator(this);
     }
 
     @Override
     default void forEach(Consumer<? super E> action) {
-        Sequences.forEach(this, action);
+        InternalSeq.forEach(this, action);
     }
 
     @Override
@@ -67,6 +68,6 @@ public interface Sequence<E> extends BaseSequence<E>, Iterable<E> {
 
     @Nonnull
     default E[] toArray(@Nonnull IntFunction<E[]> generator) {
-        return Sequences.toArray(this, generator);
+        return InternalSeq.toArray(this, generator);
     }
 }

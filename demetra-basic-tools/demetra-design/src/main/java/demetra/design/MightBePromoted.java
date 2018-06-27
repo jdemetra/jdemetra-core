@@ -14,13 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.design;
+package demetra.design;
 
 /**
  * Specifies that the annotated code might be part of API in the future if
  * proven useful.
  *
- * @author charphi
+ * @author Philippe Charles
  */
 public @interface MightBePromoted {
 

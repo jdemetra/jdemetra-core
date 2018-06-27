@@ -21,7 +21,7 @@ import demetra.spreadsheet.SpreadSheetBean;
 import demetra.spreadsheet.SpreadSheetProvider;
 import demetra.timeseries.TsDataTable;
 import demetra.tsprovider.DataSource;
-import internal.design.Demo;
+import demetra.design.Demo;
 import java.io.File;
 import java.io.IOException;
 

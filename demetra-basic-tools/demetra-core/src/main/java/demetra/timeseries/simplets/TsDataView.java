@@ -56,7 +56,7 @@ public final class TsDataView {
         int nend = InternalFixme.getPosition(end);
         int len = series.length() - nend - nbeg;
         final int beg = nbeg;
-        return new TsDataView(start.plus(nbeg), DoubleSequence.of(len, i -> series.getValue(beg + i)), 1);
+        return new TsDataView(start.plus(nbeg), DoubleSequence.onMapping(len, i -> series.getValue(beg + i)), 1);
     }
 
     /**
@@ -74,7 +74,7 @@ public final class TsDataView {
         }
         TsPeriod start = series.getStart(), dstart = domain.getStartPeriod();
         int del = start.until(dstart);
-        return new TsDataView(dstart, DoubleSequence.of(domain.length(), i -> series.getValue(del + i)), 1);
+        return new TsDataView(dstart, DoubleSequence.onMapping(domain.length(), i -> series.getValue(del + i)), 1);
     }
 
     /**
@@ -92,7 +92,7 @@ public final class TsDataView {
         }
         TsPeriod start = series.getStart(), dstart = domain.getStartPeriod();
         int del = start.until(dstart);
-        return new TsDataView(dstart, DoubleSequence.of(domain.length(), i -> series.getValue(del + i)), 1);
+        return new TsDataView(dstart, DoubleSequence.onMapping(domain.length(), i -> series.getValue(del + i)), 1);
     }
 
     /**

@@ -142,7 +142,7 @@ public abstract class LuDecomposition implements ILUDecomposition {
     /// <returns>A double value representing the determinant</returns>
     @Override
     public LogSign determinant() {
-        return LogSign.of(DoubleSequence.of(n, i->get(i,i)), pivSign<0);
+        return LogSign.of(DoubleSequence.onMapping(n, i->get(i,i)), pivSign<0);
     }
 
     /// <summary>

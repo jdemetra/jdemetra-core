@@ -132,7 +132,7 @@ public interface ILikelihood {
             return e;
         } else {
             final double sf = Math.sqrt(f);
-            return DoubleSequence.transformation(e, x -> x * sf);
+            return DoubleSequence.onMapping(e, x -> x * sf);
         }
     }
 
