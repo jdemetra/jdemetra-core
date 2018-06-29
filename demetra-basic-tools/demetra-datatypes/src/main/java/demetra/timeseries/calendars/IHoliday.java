@@ -50,22 +50,21 @@ public interface IHoliday {
 
     /**
      * Special Day for the given year
-     * @param freq
      * @param start
      * @param end
      * @return
      */
-    Iterable<IHolidayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end);
+    Iterable<IHolidayInfo> getIterable(LocalDate start, LocalDate end);
 
     /**
      * Gives the long term mean effect on each day of week for each period of a
      * given frequency
-     * @param freq
+     * @param annualFrequency
      * @return The first dimension identifies the period (in [0, freq[,
      * the second dimension identifies the day (from Monday to Sunday).
      * Could be null or could contain null arrays.
      */
-    double[][] getLongTermMeanEffect(int freq);
+    double[][] getLongTermMeanEffect(int annualFrequency);
     
     /**
      * Gets the domain where the special day is significant (not zero).

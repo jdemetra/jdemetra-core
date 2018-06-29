@@ -41,11 +41,11 @@ import javax.annotation.Nonnull;
 @lombok.experimental.UtilityClass
 public class Utility {
 
-    public void fillDays(Holidays hl, final Matrix D, final LocalDate start, int n) {
-        LocalDate end = start.plusDays(n);
+    public void fillDays(Holidays hl, final Matrix D, final LocalDate start) {
+        LocalDate end = start.plusDays(D.getRowsCount());
         int col = 0;
         for (Holiday item : hl.elements()) {
-            Iterator<IHolidayInfo> iter = item.getDay().getIterable(TsUnit.DAY, start, end).iterator();
+            Iterator<IHolidayInfo> iter = item.getDay().getIterable(start, end).iterator();
             while (iter.hasNext()) {
                 LocalDate date = iter.next().getDay();
                 if (date.getDayOfWeek() != DayOfWeek.SUNDAY) {
@@ -59,12 +59,13 @@ public class Utility {
         }
     }
 
-    public void fillPreviousWorkingDays(Holidays hl, final Matrix D, final LocalDate start, int n, final int del) {
+    public void fillPreviousWorkingDays(Holidays hl, final Matrix D, final LocalDate start, final int del) {
+        int n=D.getRowsCount();
         LocalDate nstart = start.plusDays(del);
         LocalDate end = start.plusDays(n);
         int col = 0;
         for (Holiday item : hl.elements()) {
-            Iterator<IHolidayInfo> iter = item.getDay().getIterable(TsUnit.DAY, nstart, end).iterator();
+            Iterator<IHolidayInfo> iter = item.getDay().getIterable(nstart, end).iterator();
             while (iter.hasNext()) {
                 LocalDate date = iter.next().getDay().minusDays(del);
                 date = IHolidayInfo.getPreviousWorkingDate(date);
@@ -79,12 +80,13 @@ public class Utility {
         }
     }
 
-    public void fillNextWorkingDays(Holidays hl, final Matrix D, final LocalDate start, int n, final int del) {
+    public void fillNextWorkingDays(Holidays hl, final Matrix D, final LocalDate start, final int del) {
+        int n=D.getRowsCount();
         LocalDate nstart = start.minusDays(del);
         LocalDate end = nstart.plusDays(n);
         int col = 0;
         for (Holiday item : hl.elements()) {
-            Iterator<IHolidayInfo> iter = item.getDay().getIterable(TsUnit.DAY, nstart, end).iterator();
+            Iterator<IHolidayInfo> iter = item.getDay().getIterable(nstart, end).iterator();
             while (iter.hasNext()) {
                 LocalDate date = iter.next().getDay().plusDays(del);
                 date = IHolidayInfo.getNextWorkingDate(date);

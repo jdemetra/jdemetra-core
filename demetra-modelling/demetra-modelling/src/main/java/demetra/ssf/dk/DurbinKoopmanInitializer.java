@@ -155,7 +155,7 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
     }
 
     private boolean isZero(final Matrix P) {
-        return P.isZero(1e-9 * norm);
+        return P.isZero(1e-6 * norm);
     }
 
     private void update() {

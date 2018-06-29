@@ -39,6 +39,10 @@ public class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
         this.stationary = stationary;
     }
 
+    public PeriodicAirlineMapping(double period) {
+        this(period, true, false);
+    }
+
     public PeriodicAirlineMapping(double period, boolean adjust, boolean stationary) {
         this.adjust = adjust;
         this.stationary = stationary;
@@ -88,7 +92,6 @@ public class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
             } else {
                 return new ArimaModel(BackFilter.ONE, BackFilter.D1.times(BackFilter.ofInternal(d)), fma, 1);
             }
-
         }
     }
 

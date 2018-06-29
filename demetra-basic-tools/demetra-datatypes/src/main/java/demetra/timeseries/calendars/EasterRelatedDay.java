@@ -116,7 +116,7 @@ public class EasterRelatedDay implements IHoliday {
             EASTERTHURSDAY = new EasterRelatedDay(-3),
             ASCENSION = new EasterRelatedDay(39),
             PENTECOST = new EasterRelatedDay(49),
-            PENTECOSTMONDAY = new EasterRelatedDay(50),
+            WHITMONDAY = new EasterRelatedDay(50),
             CORPUSCHRISTI = new EasterRelatedDay(60),
             JULIAN_SHROVEMONDAY = new EasterRelatedDay(-48, true),
             JULIAN_SHROVETUESDAY = new EasterRelatedDay(-47, true),
@@ -127,7 +127,7 @@ public class EasterRelatedDay implements IHoliday {
             JULIAN_EASTERTHURSDAY = new EasterRelatedDay(-3, true),
             JULIAN_ASCENSION = new EasterRelatedDay(39, true),
             JULIAN_PENTECOST = new EasterRelatedDay(49, true),
-            JULIAN_PENTECOSTMONDAY = new EasterRelatedDay(50, true),
+            JULIAN_WHITMONDAY = new EasterRelatedDay(50, true),
             JULIAN_CORPUSCHRISTI = new EasterRelatedDay(60, true);
 
     public LocalDate calcDay(int year) {
@@ -170,8 +170,8 @@ public class EasterRelatedDay implements IHoliday {
     }
 
     @Override
-    public Iterable<IHolidayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end) {
-        return new EasterDayList(freq, offset, start, end, julian);
+    public Iterable<IHolidayInfo> getIterable(LocalDate start, LocalDate end) {
+        return new EasterDayList(offset, start, end, julian);
     }
 
     private static int START = 80, JSTART = 90, DEL = 35, JDEL = 43;
@@ -274,11 +274,12 @@ public class EasterRelatedDay implements IHoliday {
     }
 
     static class EasterDayInfo implements IHolidayInfo {
+        
+        final LocalDate day;
 
-        public EasterDayInfo(TsUnit freq, int year, int offset, boolean julian) {
+        public EasterDayInfo(int year, int offset, boolean julian) {
             LocalDate easter = easter(year, julian);
             day = easter.plusDays(offset);
-            this.freq = freq;
         }
 
         @Override
@@ -295,15 +296,15 @@ public class EasterRelatedDay implements IHoliday {
         public DayOfWeek getDayOfWeek() {
             return day.getDayOfWeek();
         }
-        final LocalDate day;
-        final TsUnit freq;
-    }
+     }
 
     static class EasterDayList extends AbstractList<IHolidayInfo> {
 
-        public EasterDayList(TsUnit freq, int offset, LocalDate fstart, LocalDate fend, boolean julian) {
-            this.freq = freq;
-            m_offset = offset;
+        private final int startyear, n, offset;
+        private final boolean julian;
+
+        public EasterDayList(int offset, LocalDate fstart, LocalDate fend, boolean julian) {
+            this.offset = offset;
             this.julian = julian;
             int ystart = fstart.getYear(), yend = fend.getYear();
             LocalDate xday = easter(ystart, julian).plusDays(offset);
@@ -321,13 +322,10 @@ public class EasterRelatedDay implements IHoliday {
             n = yend - ystart;
             startyear = ystart;
         }
-        private final int startyear, n, m_offset;
-        private final TsUnit freq;
-        private final boolean julian;
 
         @Override
         public IHolidayInfo get(int index) {
-            return new EasterDayInfo(freq, startyear + index, m_offset, julian);
+            return new EasterDayInfo(startyear + index, offset, julian);
         }
 
         @Override

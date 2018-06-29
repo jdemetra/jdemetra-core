@@ -22,9 +22,11 @@ import demetra.maths.matrices.Matrix;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.RegSsf;
 import demetra.ssf.models.AR1;
+import demetra.ssf.models.RandomWalk;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.SsfData;
+import ec.tstoolkit.timeseries.TsAggregationType;
 import org.junit.Test;
 
 /**
@@ -32,6 +34,8 @@ import org.junit.Test;
  * @author Jean Palate
  */
 public class DisaggregationModelsTest {
+    
+    private static final double rho=0.9947781880696613;
 
     public DisaggregationModelsTest() {
     }
@@ -47,11 +51,56 @@ public class DisaggregationModelsTest {
         edata.set(Double.NaN);
         edata.extract(3, m, 4).copyFrom(Data.PCRA, 0);
         SsfData sdata = new SsfData(edata);
-        ISsf ar= AR1.of(.9);
+        ISsf ar = AR1.of(rho);
         ISsf rssf = RegSsf.of(ar, x);
         ISsf dssf = DisaggregationModels.of(rssf, 4);
         DefaultSmoothingResults srslts = DkToolkit.smooth(dssf, sdata, true);
-        System.out.println(srslts.getComponent(0));
+        DataBlock z = DataBlock.make(dssf.getStateDim());
+        for (int i = 0; i < n; ++i) {
+            dssf.getMeasurement().Z(i, z);
+            z.set(0, 0);
+            System.out.println(z.dot(srslts.a(i)));
+        }
+    }
+
+    //@Test
+    public void testFernandez() {
+        int m = Data.PCRA.length;
+        int n = Data.IND_PCR.length;
+        DataBlock edata = DataBlock.make(n);
+        Matrix x = Matrix.make(n, 2);
+        x.column(0).set(1);
+        x.column(1).copyFrom(Data.IND_PCR, 0);
+        edata.set(Double.NaN);
+        edata.extract(3, m, 4).copyFrom(Data.PCRA, 0);
+        SsfData sdata = new SsfData(edata);
+        ISsf rw = RandomWalk.make();
+        ISsf rssf = RegSsf.of(rw, x);
+        ISsf dssf = DisaggregationModels.of(rssf, 4);
+        DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(dssf, sdata, true);
+        DataBlock z = DataBlock.make(dssf.getStateDim());
+        for (int i = 0; i < n; ++i) {
+            dssf.getMeasurement().Z(i, z);
+            z.set(0, 0);
+            System.out.println(z.dot(srslts.a(i)));
+        }
+    }
+
+    @Test
+    public void testChowLinLegacy() {
+        int m = Data.PCRA.length;
+        int n = Data.IND_PCR.length;
+        ec.tstoolkit.timeseries.simplets.TsData Y = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Yearly,
+                1980, 0, Data.PCRA, true);
+        ec.tstoolkit.timeseries.simplets.TsData Q = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Quarterly,
+                1980, 0, Data.IND_PCR, true);
+        ec.benchmarking.simplets.ChowLin cl = new ec.benchmarking.simplets.ChowLin();
+        cl.setConstant(true);
+        
+        ec.tstoolkit.timeseries.regression.TsVariableList vars = new ec.tstoolkit.timeseries.regression.TsVariableList();
+        vars.add(new ec.tstoolkit.timeseries.regression.TsVariable(Q));
+        cl.process(Y, vars);
+        System.out.println(cl.getDisaggregatedSeries());
     }
 
 }

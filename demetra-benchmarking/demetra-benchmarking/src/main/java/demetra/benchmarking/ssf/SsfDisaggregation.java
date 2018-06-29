@@ -67,7 +67,7 @@ public class SsfDisaggregation {
 
         @Override
         public int getDiffuseDim() {
-            return initialization.getStateDim();
+            return initialization.getDiffuseDim();
         }
 
         @Override

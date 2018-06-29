@@ -18,10 +18,12 @@ package demetra.regarima;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
+import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.Immutable;
+import demetra.maths.matrices.Matrix;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -61,6 +63,18 @@ public class RegArimaModel<M extends IArimaModel> {
 
         public Builder meanCorrection(boolean mean) {
             this.mean = mean;
+            return this;
+        }
+
+        public Builder addX(Matrix X) {
+            if (X != null) {
+                if (y.length() != X.getRowsCount()) {
+                    throw new RuntimeException("Incompatible dimensions");
+                }
+                for (int i = 0; i < X.getColumnsCount(); ++i) {
+                    x.add(X.column(i));
+                }
+            }
             return this;
         }
 
@@ -146,10 +160,10 @@ public class RegArimaModel<M extends IArimaModel> {
         this.dmodel = dmodel;
     }
 
-
     /**
      * Gets the number of missing values
-     * @return 
+     *
+     * @return
      */
     public int getMissingValuesCount() {
         return missing.length;
@@ -157,21 +171,23 @@ public class RegArimaModel<M extends IArimaModel> {
 
     /**
      * Gets the number of observations (including missing values)
-     * @return 
+     *
+     * @return
      */
     public int getObservationsCount() {
         return y.length();
     }
 
     /**
-     * Gets the number of observations, excluding missing values 
-     * (= getObservationsCount()-getMissingValuesCount())
-     * @return 
+     * Gets the number of observations, excluding missing values (=
+     * getObservationsCount()-getMissingValuesCount())
+     *
+     * @return
      */
     public int getActualObservationsCount() {
         return y.length() - missing.length;
     }
-    
+
     public int getVariablesCount() {
         int nv = x.size();
         if (mean) {
