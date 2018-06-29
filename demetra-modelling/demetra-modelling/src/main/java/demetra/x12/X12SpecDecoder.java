@@ -12,8 +12,10 @@ import demetra.modelling.regression.IEasterVariable;
 import demetra.modelling.regression.LevelShift;
 import demetra.modelling.regression.ModellingContext;
 import demetra.modelling.regression.PeriodicOutlier;
+import demetra.modelling.regression.RegressionTestType;
 import demetra.modelling.regression.TransitoryChange;
 import demetra.regarima.regular.AICcComparator;
+import demetra.regarima.regular.RegressionVariablesTest;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.x12.X12Preprocessor.AmiOptions;
 import javax.annotation.Nonnull;
@@ -73,7 +75,7 @@ final class X12SpecDecoder {
                 .balanced(amiSpec.isBalanced())
                 .mixed(amiSpec.isMixed())
                 .build();
-                
+
         builder.differencing(diff)
                 .arma(arma);
     }
@@ -138,6 +140,23 @@ final class X12SpecDecoder {
                     .build();
             builder.easterTest(e);
         }
+
+        RegressionVariablesTest.Builder rbuilder = RegressionVariablesTest.builder();
+        if (tdspec.getTest() != RegressionTestSpec.None) {
+            rbuilder.tdTest(RegressionVariablesTest.CVAL, true);
+        }
+        if (espec != null && espec.getTest() != RegressionTestSpec.None) {
+            rbuilder.movingHolidaysTest(RegressionVariablesTest.CVAL);
+        }
+        if (spec.isUsingAutoModel()) {
+            rbuilder.meanTest(RegressionVariablesTest.CVAL);
+        }
+        builder.initialRegressionTest(rbuilder.build());
+        if (spec.isUsingAutoModel()) {
+            rbuilder.meanTest(RegressionVariablesTest.TSIG);
+        }
+        builder.finalRegressionTest(rbuilder.build());
+
     }
 
     private void readAmiOptions(RegArimaSpec spec) {
@@ -149,6 +168,7 @@ final class X12SpecDecoder {
                         .reduceVa(ami.getPercentReductionCV())
                         .ljungBoxLimit(ami.getLjungBoxLimit())
                         .checkMu(spec.isUsingAutoModel())
+                        .mixedModel(ami.isMixed())
                         .build());
 
     }

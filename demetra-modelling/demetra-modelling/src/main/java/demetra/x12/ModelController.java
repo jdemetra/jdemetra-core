@@ -42,14 +42,12 @@ import demetra.stats.tests.StatisticalTest;
 @Development(status = Development.Status.Preliminary)
 public class ModelController implements IAmiController {
 
-    private final double tmu;
     private final double lb;
     private StatisticalTest lbtest;
     private double rvr, rtval;
 
-    public ModelController(double lb, double tmu) {
+    public ModelController(double lb) {
         this.lb = lb;
-        this.tmu = tmu;
     }
 
     public StatisticalTest getLjungBoxTest() {

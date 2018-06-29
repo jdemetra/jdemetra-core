@@ -27,6 +27,7 @@ import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarmaSpecification;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -152,9 +153,8 @@ class ArmaModuleImpl {
                     }
                 }
             }
-            FastBIC[] ahrs = hrs.toArray(new FastBIC[hrs.size()]);
-            Arrays.sort(ahrs);
-            return ahrs;
+            Collections.sort(hrs);
+            return hrs.toArray(new FastBIC[hrs.size()]);
         }
 
         static SarmaSpecification getPreferredSpecification(FastBIC[] hrs, boolean acceptwn) {
@@ -407,6 +407,5 @@ class ArmaModuleImpl {
             return select(data, d, bd);
         }
     }
-
 
 }

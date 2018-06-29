@@ -75,21 +75,11 @@ public class FinalEstimator implements IModelEstimator {
             try {
                 IParametricMapping<SarimaModel> mapping = context.getDescription().getArimaComponent().defaultMapping();
                 ModelDescription model = context.getDescription();
-                
-
                 int ndim = mapping.getDim();
-                RegSarimaProcessor processor;
-                if (model.getArimaComponent().getFixedParametersCount()>0){
-                    processor=RegSarimaProcessor.builder()
-                            .precision(eps)
-                            .startingPoint(RegSarimaProcessor.StartingPoint.Default)
-                            .build();
-                }else{
-                    processor=RegSarimaProcessor.builder()
-                            .precision(eps)
-                            .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
-                            .build();
-                }
+                RegSarimaProcessor processor = RegSarimaProcessor.builder()
+                        .precision(eps)
+                        .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+                        .build();
                 context.estimate(processor);
                 if (ndim == 0) {
                     return true;

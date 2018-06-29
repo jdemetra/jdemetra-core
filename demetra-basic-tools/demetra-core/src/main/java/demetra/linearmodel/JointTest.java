@@ -135,7 +135,7 @@ public class JointTest {
                 rb[i] = b.get(coef[i]);
             }
         } else {
-            rb = new double[coef.length];
+            rb = new double[R.getRowsCount()];
             for (int i = 0; i < rb.length; ++i) {
                 rb[i] = Doubles.dot(R.row(i), b) - alpha.get(i);
             }
