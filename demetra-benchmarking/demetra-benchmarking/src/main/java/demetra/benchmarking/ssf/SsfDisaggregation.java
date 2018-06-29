@@ -34,6 +34,7 @@ import demetra.ssf.univariate.Ssf;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
+@lombok.experimental.UtilityClass
 public class SsfDisaggregation {
 
     public Ssf of(ISsf s, int conversion) {
@@ -66,7 +67,7 @@ public class SsfDisaggregation {
 
         @Override
         public int getDiffuseDim() {
-            return initialization.getStateDim();
+            return initialization.getDiffuseDim();
         }
 
         @Override

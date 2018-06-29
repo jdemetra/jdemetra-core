@@ -30,13 +30,17 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
     private final int[] p0;
     private final boolean adjust;
     private final boolean stationary;
-    
-    private MultiPeriodicAirlineMapping(double[] f0, double[] f1, int[] p0, boolean adjust, boolean stationary){
-        this.f0=f0;
-        this.f1=f1;
-        this.p0=p0;
-        this.adjust=adjust;
-        this.stationary=stationary;
+
+    private MultiPeriodicAirlineMapping(double[] f0, double[] f1, int[] p0, boolean adjust, boolean stationary) {
+        this.f0 = f0;
+        this.f1 = f1;
+        this.p0 = p0;
+        this.adjust = adjust;
+        this.stationary = stationary;
+    }
+
+    public MultiPeriodicAirlineMapping(double[] periods) {
+        this(periods, true, false);
     }
 
     public MultiPeriodicAirlineMapping(double[] periods, boolean adjust, boolean stationary) {
@@ -66,7 +70,7 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
         BackFilter fma = BackFilter.ofInternal(ma), fs = BackFilter.ONE,
                 fd = stationary ? BackFilter.ONE : BackFilter.D1;
         for (int i = 0; i < p0.length; ++i) {
-            boolean frac=adjust && f1[i] != 0;
+            boolean frac = adjust && f1[i] != 0;
             double[] dma = new double[frac ? p0[i] + 2 : p0[i] + 1];
             dma[0] = 1;
             if (frac) {

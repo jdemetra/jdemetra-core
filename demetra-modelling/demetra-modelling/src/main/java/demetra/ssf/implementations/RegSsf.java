@@ -31,12 +31,14 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfInitialization;
 
 /**
- *
+ * SSF extended by regression variables with fixed or time varying coefficients.
+ * Time varying coefficients follow a multi-variate random walk.
  * @author Jean Palate
  */
+@lombok.experimental.UtilityClass
 public class RegSsf {
 
-    public static ISsf of(ISsf model, Matrix X) {
+    public ISsf of(ISsf model, Matrix X) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();
         }
@@ -47,7 +49,16 @@ public class RegSsf {
         return new Ssf(xinit, xdyn, xm);
     }
 
-    public static ISsf ofTimeVarying(ISsf model, Matrix X, Matrix cvar) {
+    /**
+     * Creates a ssf with time varying coefficients, such that the innovations
+     * covariance are defined by cvar
+     *
+     * @param model
+     * @param X
+     * @param cvar The covariance of the coefficients
+     * @return
+     */
+    public ISsf ofTimeVarying(ISsf model, Matrix X, Matrix cvar) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();
         }
@@ -66,10 +77,10 @@ public class RegSsf {
      *
      * @param model
      * @param X
-     * @param s The factor of the coefficients covariance
+     * @param s The Cholesky factor of the  covariance of the coefficients
      * @return
      */
-    public static ISsf ofTimeVaryingFactor(ISsf model, Matrix X, Matrix s) {
+    public ISsf ofTimeVaryingFactor(ISsf model, Matrix X, Matrix s) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();
         }

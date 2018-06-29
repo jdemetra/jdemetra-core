@@ -27,61 +27,36 @@ import java.util.Objects;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
+@lombok.Value
 public class Holiday {
 
-
     private final IHoliday day;
-    private ValidityPeriod validity;
+    private ValidityPeriod validityPeriod;
 
     public Holiday(IHoliday day) {
         this.day = day;
+        validityPeriod=null;
     }
 
-    /**
-     * @return the day
-     */
-    public IHoliday getDay() {
-        return day;
-    }
-
-    public ValidityPeriod getValidityPeriod() {
-        return validity;
-    }
-
-    public void setValidityPeriod(ValidityPeriod value) {
-        validity = value;
+    public Holiday(IHoliday day, ValidityPeriod validityPeriod) {
+        this.day = day;
+        this.validityPeriod=validityPeriod;
     }
 
     public boolean isStartSpecified() {
-        return validity != null && validity.isStartSpecified();
+        return validityPeriod != null && validityPeriod.isStartSpecified();
     }
 
     public boolean isEndSpecified() {
-        return validity != null && validity.isEndSpecified();
+        return validityPeriod != null && validityPeriod.isEndSpecified();
     }
 
     public TsPeriod getStart() {
-        return TsPeriod.of(TsUnit.DAY, validity == null ? LocalDate.MIN : validity.getStart().toLocalDate());
+        return TsPeriod.of(TsUnit.DAY, validityPeriod == null ? LocalDate.MIN : validityPeriod.getStart().toLocalDate());
     }
 
     public TsPeriod getEnd() {
-        return TsPeriod.of(TsUnit.DAY, validity == null ? LocalDate.MAX : validity.getEnd().toLocalDate());
+        return TsPeriod.of(TsUnit.DAY, validityPeriod == null ? LocalDate.MAX : validityPeriod.getEnd().toLocalDate());
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof Holiday && equals((Holiday) obj));
-    }
-
-    private boolean equals(Holiday other) {
-        return day.equals(other.day) && Objects.equals(validity, other.validity);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 97 * hash + this.day.hashCode();
-        hash = 97 * hash + Objects.hashCode(this.validity);
-        return hash;
-    }
 }

@@ -66,11 +66,11 @@ public class FixedDay implements IHoliday {
 
     public static final FixedDay CHRISTMAS = new FixedDay(12, 25), NEWYEAR = new FixedDay(1, 1),
             ASSUMPTION = new FixedDay(8, 15), MAYDAY = new FixedDay(5, 1),
-            ALLSAINTSDAY = new FixedDay(11, 1), HALLOWEEN = new FixedDay(10, 31);
+            ALLSAINTSDAY = new FixedDay(11, 1), ARMISTICE = new FixedDay(11, 11), HALLOWEEN = new FixedDay(10, 31);
 
     @Override
-    public Iterable<IHolidayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end) {
-        return new FixedDayIterable(freq, this, start, end);
+    public Iterable<IHolidayInfo> getIterable(LocalDate start, LocalDate end) {
+        return new FixedDayIterable(this, start, end);
     }
 
     @Override
@@ -149,53 +149,42 @@ public class FixedDay implements IHoliday {
 
     static class FixedDayInfo implements IHolidayInfo {
 
-        FixedDayInfo(TsPeriod period, FixedDay fday) {
-            m_fday = fday;
-            m_period = period;
+        final int year;
+        final FixedDay fday;
+
+        FixedDayInfo(int year, FixedDay fday) {
+            this.fday = fday;
+            this.year = year;
         }
 
         @Override
         public LocalDate getDay() {
-            return LocalDate.of(m_period.start().getYear(), m_fday.month, m_fday.day);
+            return LocalDate.of(year, fday.month, fday.day);
         }
 
-//        @Override
-//        public TsPeriod getPeriod() {
-//            return m_period;
-//        }
-
-        final TsPeriod m_period;
-        final FixedDay m_fday;
     }
 
     static class FixedDayIterable implements Iterable<IHolidayInfo> {
 
-        FixedDayIterable(TsUnit freq, FixedDay fday, LocalDate fstart, LocalDate fend) {
+        private final FixedDay fday;
+        private final int year;
+        private final int n;
+
+        FixedDayIterable(FixedDay fday, LocalDate fstart, LocalDate fend) {
             this.fday = fday;
             int ystart = fstart.getYear(), yend = fend.getYear();
             LocalDate xday = LocalDate.of(ystart, fday.month, fday.day);
             LocalDate yday = LocalDate.of(yend, fday.month, fday.day);
 
-            TsPeriod start = TsPeriod.of(freq, xday);
-            int nyears = yend - ystart;
-
-            // pstart is the first valid period
             if (xday.isBefore(fstart)) {
-                start = start.plus(InternalFixme.getAsInt(freq));
-                --nyears;
+                ++ystart;
             }
-
-            // pend is the first invalidvalid period
-            if (yday.isBefore(fend)) {
-                ++nyears;
+            if (!yday.isBefore(fend)) {
+                --yend;
             }
-
-            pstart = start;
-            n = nyears;
+            year = ystart;
+            n = yend - ystart + 1;
         }
-        private final FixedDay fday;
-        private final TsPeriod pstart;
-        private final int n;
 
         @Override
         public Iterator<IHolidayInfo> iterator() {
@@ -209,12 +198,7 @@ public class FixedDay implements IHoliday {
 
                 @Override
                 public IHolidayInfo next() {
-                    if (cur == 0) {
-                        ++cur;
-                        return new FixedDayInfo(pstart, fday);
-                    } else {
-                        return new FixedDayInfo(pstart.plus(InternalFixme.getAsInt(pstart.getUnit()) * (cur++)), fday);
-                    }
+                    return new FixedDayInfo(year + (cur++), fday);
                 }
             };
         }

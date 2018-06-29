@@ -92,6 +92,10 @@ public enum DayEvent {
      */
     AllSaintsDay,
     /**
+     * November, 11
+     */
+    Armistice,
+    /**
      * Fourth Thursday of November
      */
     //ThanksGiving,

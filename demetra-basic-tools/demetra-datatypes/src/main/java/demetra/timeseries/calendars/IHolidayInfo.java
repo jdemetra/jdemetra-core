@@ -28,15 +28,21 @@ import java.time.LocalDate;
 @Development(status = Development.Status.Preliminary)
 public interface IHolidayInfo {
 
+    /**
+     * Day corresponding to the holiday
+     * @return 
+     */
     LocalDate getDay();
 
-//    TsPeriod getPeriod();
-
+    /**
+     * Day of week of the holiday
+     * @return 
+     */
     default DayOfWeek getDayOfWeek() {
         return getDay().getDayOfWeek();
     }
     
-        /**
+    /**
      * Returns the date equal or before the given date
      * @param date
      * @return 

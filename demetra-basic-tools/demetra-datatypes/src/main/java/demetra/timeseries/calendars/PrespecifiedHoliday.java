@@ -82,8 +82,8 @@ public class PrespecifiedHoliday implements IHoliday {
                 return julian ? EasterRelatedDay.JULIAN_PENTECOST.reweight(weight).plus(offset)
                         : EasterRelatedDay.PENTECOST.reweight(weight).plus(offset);
             case WhitMonday:
-                return julian ? EasterRelatedDay.JULIAN_PENTECOSTMONDAY.reweight(weight).plus(offset)
-                        : EasterRelatedDay.PENTECOSTMONDAY.reweight(weight).plus(offset);
+                return julian ? EasterRelatedDay.JULIAN_WHITMONDAY.reweight(weight).plus(offset)
+                        : EasterRelatedDay.WHITMONDAY.reweight(weight).plus(offset);
             case CorpusChristi:
                 return julian ? EasterRelatedDay.JULIAN_CORPUSCHRISTI.reweight(weight).plus(offset)
                         : EasterRelatedDay.CORPUSCHRISTI.reweight(weight).plus(offset);
@@ -115,12 +115,12 @@ public class PrespecifiedHoliday implements IHoliday {
     }
     
     @Override
-    public Iterable<IHolidayInfo> getIterable(TsUnit freq, LocalDate start, LocalDate end) {
+    public Iterable<IHolidayInfo> getIterable(LocalDate start, LocalDate end) {
         IHoliday sd = toSpecialDay();
         if (sd == null) {
             return null;
         } else {
-            return sd.getIterable(freq, start, end);
+            return sd.getIterable(start, end);
         }
     }
 
