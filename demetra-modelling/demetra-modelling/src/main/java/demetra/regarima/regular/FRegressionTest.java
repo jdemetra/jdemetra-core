@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramo;
+package demetra.regarima.regular;
 
 import demetra.design.Development;
 import demetra.information.InformationSet;

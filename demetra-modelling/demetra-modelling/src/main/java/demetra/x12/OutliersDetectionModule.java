@@ -34,7 +34,6 @@ import demetra.sarima.SarimaModel;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import demetra.x12.OutliersDetectionModuleImpl;
 import demetra.regarima.regular.IOutliersDetectionModule;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
@@ -61,13 +60,13 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         private int maxRound = DEF_MAXROUND;
         private boolean ao, ls, tc, so;
         private double tcrate;
-        private TimeSelector span=TimeSelector.all();
+        private TimeSelector span = TimeSelector.all();
 
         private Builder() {
         }
-        
-        public Builder span(TimeSelector span){
-            this.span=span;
+
+        public Builder span(TimeSelector span) {
+            this.span = span;
             return this;
         }
 
@@ -82,22 +81,22 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         }
 
         public Builder ao(boolean ao) {
-            this.ao=ao;
+            this.ao = ao;
             return this;
         }
 
         public Builder ls(boolean ls) {
-            this.ls=ls;
+            this.ls = ls;
             return this;
         }
 
         public Builder tc(boolean tc) {
-            this.tc=tc;
+            this.tc = tc;
             return this;
         }
 
         public Builder so(boolean so) {
-            this.so=so;
+            this.so = so;
             return this;
         }
 
@@ -135,7 +134,6 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         this.span = builder.span;
     }
 
-
     private SingleOutlierDetector<SarimaModel> factories(int freq) {
         SingleOutlierDetector sod = new ExactSingleOutlierDetector(IRobustStandardDeviationComputer.mad(false),
                 IResidualsComputer.mlComputer(),
@@ -161,7 +159,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
     }
 
     private OutliersDetectionModuleImpl make(ModelDescription desc, double cv) {
-        TsDomain domain=desc.getDomain();
+        TsDomain domain = desc.getDomain();
 
         OutliersDetectionModuleImpl impl = OutliersDetectionModuleImpl.builder()
                 .singleOutlierDetector(factories(domain.getAnnualFrequency()))
@@ -170,7 +168,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
                 .maxRound(maxRound)
                 .processor(RegArimaUtility.processor(desc.getArimaComponent().defaultMapping(), true, EPS))
                 .build();
-         TsDomain odom = domain.select(span);
+        TsDomain odom = domain.select(span);
         int start = domain.indexOf(odom.getStartPeriod()), end = start + odom.getLength();
         impl.prepare(domain.getLength());
         impl.setBounds(start, end);
@@ -184,35 +182,43 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
                 }
             }
         }
-        // current outliers ([fixed], pre-specified, identified)
+        // exclude pre-specified outliers
         desc.variables()
-                .filter(var -> var.getVariable() instanceof IOutlier)
+                .filter(var -> var.isOutlier(true))
                 .map(var -> (IOutlier) var.getVariable()).forEach(
                 o -> impl.exclude(domain.indexOf(o.getPosition()), outlierType(types, o.getCode())));
+        // add current outliers
+        desc.variables()
+                .filter(var -> var.isOutlier(false))
+                .map(var -> (IOutlier) var.getVariable()).forEach(
+                o -> impl.addOutlier(domain.indexOf(o.getPosition()), outlierType(types, o.getCode())));
         return impl;
-   }
+    }
 
     @Override
     public ProcessingResult process(RegArimaModelling context, double criticalValue) {
-        ModelDescription model=context.getDescription();
-        TsDomain domain = model.getDomain();
-        OutliersDetectionModuleImpl impl=make(model, criticalValue);
-        boolean ok = impl.process(model.regarima());
-        if (!ok) {
+        try {
+            ModelDescription model = context.getDescription();
+            TsDomain domain = model.getDomain();
+            OutliersDetectionModuleImpl impl = make(model, criticalValue);
+            boolean changed = impl.process(model.regarima());
+            if (!changed) {
+                return ProcessingResult.Unchanged;
+            }
+            // clear current outliers and add the new ones (that could be partly the same)
+            model.removeVariable(var -> var.isOutlier(false));
+            // add new outliers
+            int[][] outliers = impl.getOutliers();
+            for (int i = 0; i < outliers.length; ++i) {
+                int[] cur = outliers[i];
+                TsPeriod pos = domain.get(cur[0]);
+                model.addVariable(new Variable(impl.getFactory(cur[1]).make(pos.start()), false));
+            }
+            context.setEstimation(null);
+            return ProcessingResult.Changed;
+        } catch (Exception err) {
             return ProcessingResult.Failed;
         }
-        // add new outliers
-        int[][] outliers = impl.getOutliers();
-        if (outliers.length == 0) {
-            return ProcessingResult.Unchanged;
-        }
-        for (int i = 0; i < outliers.length; ++i) {
-            int[] cur = outliers[i];
-            TsPeriod pos = domain.get(cur[0]);
-            model.addVariable(new Variable(impl.getFactory(cur[1]).make(pos.start()), false));
-        }
-        context.setEstimation(null);
-        return ProcessingResult.Changed;
     }
 
     private static int outlierType(String[] all, String cur) {

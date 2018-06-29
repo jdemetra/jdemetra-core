@@ -15,8 +15,9 @@
 * limitations under the Licence.
 */
 
-package demetra.tramo;
+package demetra.regarima.regular;
 
+import demetra.regarima.regular.IRegressionTest;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.likelihood.ConcentratedLikelihood;

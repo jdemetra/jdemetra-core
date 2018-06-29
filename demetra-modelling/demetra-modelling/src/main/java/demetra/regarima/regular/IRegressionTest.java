@@ -16,7 +16,7 @@
 */
 
 
-package demetra.tramo;
+package demetra.regarima.regular;
 
 import demetra.design.Development;
 import demetra.information.InformationSet;
@@ -28,7 +28,7 @@ import demetra.likelihood.ConcentratedLikelihood;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-interface IRegressionTest {
+public interface IRegressionTest {
     /**
      * Test on a linear regression model
      * @param ll The concentrated log-likelihood

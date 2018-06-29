@@ -86,7 +86,7 @@ public interface IConcentratedLikelihood extends ILikelihood {
         double ssq=ssq();
         DoubleSequence b=coefficients();
         for (int i=0; i<e.length; ++i){
-            e[i]=b.get(i)/Math.sqrt(e[i] * ssq() / ndf);
+            e[i]=b.get(i)/Math.sqrt(e[i] * ssq / ndf);
         }
         return e;
     }

@@ -18,6 +18,7 @@ package demetra.x12;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.maths.Complex;
 import demetra.modelling.regression.ModellingContext;
 import demetra.regarima.regular.ILogLevelModule;
 import demetra.regarima.regular.IRegressionModule;
@@ -33,6 +34,10 @@ import demetra.regarima.ami.IGenericDifferencingModule;
 import demetra.regarima.regular.IArmaModule;
 import demetra.regarima.regular.IDifferencingModule;
 import demetra.regarima.regular.IOutliersDetectionModule;
+import demetra.regarima.regular.ModelEstimation;
+import demetra.regarima.regular.RegressionVariablesTest;
+import demetra.sarima.SarimaModel;
+import demetra.sarima.SarimaSpecification;
 
 /**
  *
@@ -45,12 +50,22 @@ public class X12Preprocessor implements IPreprocessor {
     @lombok.Builder
     public static class AmiOptions {
 
-        boolean checkMu;
-        double precision;
-        double va;
-        double reduceVa;
-        double ljungBoxLimit;
-        boolean acceptAirline;
+        @lombok.Builder.Default
+        boolean checkMu = true;
+        @lombok.Builder.Default
+        double precision = 1e-7;
+        @lombok.Builder.Default
+        double va = 0;
+        @lombok.Builder.Default
+        double reduceVa = .14286;
+        @lombok.Builder.Default
+        double ljungBoxLimit = .95;
+        @lombok.Builder.Default
+        double urLimit = .95;
+        @lombok.Builder.Default
+        boolean acceptAirline = false;
+        @lombok.Builder.Default
+        boolean mixedModel = true;
     }
 
     public static Builder builder() {
@@ -66,7 +81,8 @@ public class X12Preprocessor implements IPreprocessor {
         private IDifferencingModule differencing;
         private IArmaModule arma;
         private IOutliersDetectionModule outliers;
-        private AmiOptions options = new AmiOptions(true, 1e-7, 0, .14286, .95, false);
+        private RegressionVariablesTest regressionTest0, regressionTest1;
+        private AmiOptions options = new AmiOptions(true, 1e-7, 0, .14286, .95, .95, false, true);
 
         public Builder modelBuilder(@Nonnull IModelBuilder builder) {
             this.modelBuilder = builder;
@@ -108,6 +124,16 @@ public class X12Preprocessor implements IPreprocessor {
             return this;
         }
 
+        public Builder initialRegressionTest(RegressionVariablesTest test0) {
+            this.regressionTest0 = test0;
+            return this;
+        }
+
+        public Builder finalRegressionTest(RegressionVariablesTest test1) {
+            this.regressionTest1 = test1;
+            return this;
+        }
+
         public X12Preprocessor build() {
             X12Preprocessor processor = new X12Preprocessor(this);
             return processor;
@@ -120,6 +146,10 @@ public class X12Preprocessor implements IPreprocessor {
         return helper.buildProcessor();
     }
 
+    private static final double FCT = 1 / (1 - .0125), FCT2 = 1, MALIM = .001;
+    private static final double MINCV = 2.8;
+    private static final int MAXD = 2, MAXBD = 1;
+
     private final IModelBuilder modelBuilder;
     private final ILogLevelModule transformation;
     private final IRegressionModule calendarTest, easterTest;
@@ -127,13 +157,16 @@ public class X12Preprocessor implements IPreprocessor {
     private final AmiOptions options;
     private final IDifferencingModule differencing;
     private final IArmaModule arma;
+    private final RegressionVariablesTest regressionTest0, regressionTest1;
+    private FinalEstimator finalEstimator;
 
-    private double curva = 0;
-    private PreprocessingModel refAirline, refAuto;
+    private double va0 = 0, curva = 0;
+    private double pcr;
+    private PreprocessingModel reference;
     private boolean needOutliers;
     private boolean needAutoModelling;
     private int loop, round;
-    private double plbox, rvr, rtval;
+    private double plbox0, rvr0, rtval0;
 
     private X12Preprocessor(Builder builder) {
         this.modelBuilder = builder.modelBuilder;
@@ -144,13 +177,21 @@ public class X12Preprocessor implements IPreprocessor {
         this.options = builder.options;
         this.differencing = builder.differencing;
         this.arma = builder.arma;
+        this.regressionTest0 = builder.regressionTest0;
+        this.regressionTest1 = builder.regressionTest1;
+        if (differencing != null || arma != null) {
+            finalEstimator = new FinalEstimator(options.precision);
+        } else {
+            finalEstimator = null;
+        }
     }
 
     private void clear() {
         loop = round = 0;
-        plbox = rvr = rtval = 0;
-        refAirline = null;
+        plbox0 = rvr0 = rtval0 = 0;
+        reference = null;
         curva = 0;
+        pcr = options.ljungBoxLimit;
         needAutoModelling = differencing != null || arma != null;
     }
 
@@ -168,10 +209,11 @@ public class X12Preprocessor implements IPreprocessor {
 
         // initialize some internal variables
         if (outliers != null) {
-            curva = options.getVa();
-            if (curva == 0) {
-                curva = X12Utility.calcCv(desc.getSeries().getDomain().getLength());
+            va0 = options.getVa();
+            if (va0 == 0) {
+                va0 = X12Utility.calcCv(desc.getSeries().getDomain().getLength());
             }
+            curva = va0;
             needOutliers = true;
         }
 
@@ -197,18 +239,18 @@ public class X12Preprocessor implements IPreprocessor {
                 if (context.needEstimation()) {
                     context.estimate(options.precision);
                 }
-                // TODO test regression effects
+                regressionTest0.process(context);
             }
             if (isAutoModelling()) {
                 if (context.needEstimation()) {
                     context.estimate(options.precision);
                 }
-                refAirline = context.build();
-                ModelController controller = new ModelController(.95, 1);
+                reference = context.build();
+                ModelController controller = new ModelController(.95);
                 boolean ok = controller.accept(context);
-                plbox = 1 - controller.getLjungBoxTest().getPValue();
-                rvr = controller.getRvr();
-                rtval = controller.getRTval();
+                plbox0 = 1 - controller.getLjungBoxTest().getPValue();
+                rvr0 = controller.getRvr();
+                rtval0 = controller.getRTval();
                 if (!options.acceptAirline || !ok) {
 
                     round = 1;
@@ -239,43 +281,44 @@ public class X12Preprocessor implements IPreprocessor {
                                 context.estimate(options.precision);
                             }
                         }
-//                    if (! needOutliers && loop <= 2) {
-//                        if (!pass2(defModel, context)) {
-//                            continue;
-//                        }
-//                    }
-//                    if (regressionTest1 != null) {
-//                        ProcessingResult changed = regressionTest1.process(context);
-//                        if (changed == ProcessingResult.Changed) {
-//                            if (loop_ < 3) {
-//                                loop_ = 3;
-//                            }
-//                            if (context.estimation == null) {
-//                                estimator.estimate(context);
-//                            }
-//                        }
-//                    }
-//                    // final tests
-//                    checkUnitRoots(context);
-//                    checkMA(context);
-//                    if (context.automodelling && !context.description.isMean() && Math.abs(rtval_) > 2.5) {
-//                        if (checkMu_) {
-//                            context.description.setMean(true);
-//                        }
-//                    }
-//
-//                    if (finalizer.estimate(context)) {
-//                        break;
-//                    }
-//                    if (loop_ <= 2 && outliers != null) {
-//                        outliers.reduceSelectivity();
-//                        needOutliers_ = true;
-//                        needAutoModelling_ = true;
-//                    }
+                        if (outliers != null && loop <= 2) {
+                            if (!pass2(defModel, context)) {
+                                continue;
+                            }
+                        }
+                        if (regressionTest1 != null) {
+                            ProcessingResult changed = regressionTest1.process(context);
+                            if (changed == ProcessingResult.Changed) {
+                                if (loop < 3) {
+                                    loop = 3;
+                                }
+                                if (context.needEstimation()) {
+                                    context.estimate(options.precision);
+                                }
+                            }
+                        }
+                        // final tests
+                        checkUnitRoots(context);
+                        checkMA(context);
+                        if (isAutoModelling() && !context.getDescription().isMean() && Math.abs(rtval0) > 2.5) {
+                            if (options.checkMu) {
+                                context.getDescription().setMean(true);
+                                context.setEstimation(null);
+                            }
+                        }
+
+                        if (finalEstimator.estimate(context)) {
+                            break;
+                        }
+                        if (loop <= 2 && outliers != null) {
+                            curva = Math.max(MINCV, curva * (1 - options.reduceVa));
+                            needOutliers = true;
+                            needAutoModelling = true;
+                        }
                     } while (round++ < 5);
                 }
             } else {
-//            estimator.estimate(context);
+                context.estimate(options.precision);
             }
 
             return context.build();
@@ -286,7 +329,6 @@ public class X12Preprocessor implements IPreprocessor {
             clear();
         }
     }
-    
 
     private boolean isAutoModelling() {
         return differencing != null || arma != null;
@@ -301,371 +343,115 @@ public class X12Preprocessor implements IPreprocessor {
         return meanTest.test(context);
     }
 
-//    public static IParametricMapping<SarimaModel> createDefaultMapping(ModelDescription desc) {
-//        SarimaComponent arima = desc.getArimaComponent();
-//        if (arima.getFixedParametersCount() == 0) {
-//            return new SarimaMapping(arima.getSpecification(), false);
-//        } else {
-//            return new SarimaFixedMapping(arima.getSpecification(), arima.getParameters(), arima.getFixedConstraints());
-//        }
-//    }
-//    public TsPeriodSelector estimateSpan;
-//    public IModelBuilder builder;
-//    public ISeriesScaling scaling;
-//    public ITsDataInterpolator missing;
-//    public IPreprocessingModule loglevelTest;
-//    public IPreprocessingModule tdTest;
-//    public IPreprocessingModule easterTest;
-//    public IPreprocessingModule userTest;
-//    public IOutliersDetectionModule outliers;
-//    public IPreprocessingModule autoModelling;
-//    private IPreprocessingModule regressionTest0 = new RegressionVariablesTest(false, RegressionVariablesTest.CVAL, true);
-//    public IPreprocessingModule regressionTest1 = new RegressionVariablesTest(RegressionVariablesTest.CVAL, RegressionVariablesTest.TSIG);
-//    public IModelEstimator estimator;
-//    public IModelEstimator finalizer = new FinalEstimator();
-//    private double pcr_ = .95, cpcr_;
-//    private double plbox_, rvr_, rtval_;
-//    private int refsens_;
-//    private int loop_, round_;
-//    private boolean acceptAirline = false;
-//    private PreprocessingModel reference_;
-//    private static final double FCT = 1 / (1 - .0125), FCT2 = 1, MALIM = .001;
-//    //private boolean needOutliers_;
-//    //private boolean keepOutliers_;
-//    private boolean checkMu_ = true;
-//    private boolean needAutoModelling_, needOutliers_;
-//    private boolean mixedModel_ = true;
-//    public static final int MAXD = 2, MAXBD = 1;
-//    private double ur_ = .95;
-//
-//    PreprocessingModel makeProcessing(ModellingContext context) {
-//        // Step 1.
-//        // Initial adjustments:
-//        // - interpolation of the missing values
-//        // - change of units [should always be done, to avoid "scale" effects]
-//
-//        // Step 2.
-//        // Creates a "default model", which is an airline model (0 1 1)(0 1 1) with mean,
-//        // except when no seasonal component is needed; the model is then
-//        // (0 1 1)(0 0 0) with mean
-//        // Step 3.
-//        // Computes the default model with data in levels/logs
-//        // The default model, without regression variables is always used.
-//        // Step 4.
-//        // Check for the presence of trading days/Easter/[others] and mean correction.
-//        // The default model, without regression variables other than the tested ones
-//        // is always used.
-//        // Step 5.
-//        // Complete the model with all the pre-specified regression variables
-//        // and with any pre-specified arima model (or orders).
-//        try {
-//            clear();
-//
-//            builder.initialize(context);
-//            // scaling
-//            if (scaling != null) {
-//                if (!scaling.process(context)) {
-//                    return null;
-//                }
-//            }
-//            // missing value...
-//            if (missing != null) {
-//                if (!context.description.updateMissing(missing)) {
-//                    return null;
-//                }
-//            }
-//            if (context.description.isFullySpecified() && outliers == null) {
-//                // nothing to do
-//                IParametricMapping<SarimaModel> mapping = context.description.defaultMapping();
-//                ModelDescription model = context.description;
-//                RegArimaModel<SarimaModel> regarima = model.buildRegArima();
-//                RegArimaEstimator monitor = new RegArimaEstimator(mapping);
-//                monitor.getMinimizer().setMaxIter(1);
-//                monitor.optimize(regarima);
-//                ModelEstimation estimation = new ModelEstimation(regarima, model.getLikelihoodCorrection());
-//                estimation.computeLikelihood(mapping.getDim());
-//                estimation.updateParametersCovariance(monitor.getParametersCovariance());
-//                return new PreprocessingModel(model, estimation);
-//            }
-//
-//            // step 1. Transformation
-//            runTransformations(context);
-//
-//            regAIC(context);
-//
-//            checkMu(context, true);
-//
-//            estimator.estimate(context);
-//
-//            if (needOutliers_) {
-//                ProcessingResult changed = outliers.process(context);
-//                if (context.estimation == null) {
-//                    estimator.estimate(context);
-//                }
-//                // Call pass0
-//                // The original code of X13 doesn't call pass0 if automatic modelling is not used
-//                // however, it should be done.
-//                if (changed == ProcessingResult.Changed) {
-//                    regressionTest0.process(context);
-//                }
-//            }
-//            if (needAutoModelling_) {
-//                if (context.estimation == null) {
-//                    estimator.estimate(context);
-//                }
-//
-//                ModelController controller = new ModelController();
-//                boolean ok = controller.accept(context);
-//                reference_ = context.current(false);
-//                plbox_ = 1 - controller.getLjungBoxTest().getPValue();
-//                rvr_ = controller.getRvr();
-//                rtval_ = controller.getRTval();
-//                if (!acceptAirline || !ok) {
-//
-//                    round_ = 1;
-//                    loop_ = 1;
-//                    do {
-//                        boolean defModel = false;
-//                        if (needAutoModelling_) {
-//                            ProcessingResult result = execAutoModelling(context);
-//                            defModel = result != ProcessingResult.Changed;
-//                            if (!defModel) {
-//                                context.description.setOutliers(null);
-//                                context.estimation = null;
-//                                needOutliers_ = outliers != null;
-//                            }
-//                            if (context.estimation == null) {
-//                                estimator.estimate(context);
-//                            }
-//                            if (!defModel || loop_ > 1) {
-//                                regAIC(context);
-//                            }
-//                        }
-//                        if (needOutliers_) {
-//                            outliers.process(context);
-//                            if (context.estimation == null) {
-//                                estimator.estimate(context);
-//                            }
-//                        }
-//                        if (outliers != null && loop_ <= 2) {
-//                            if (!pass2(defModel, context)) {
-//                                continue;
-//                            }
-//                        }
-//                        if (regressionTest1 != null) {
-//                            ProcessingResult changed = regressionTest1.process(context);
-//                            if (changed == ProcessingResult.Changed) {
-//                                if (loop_ < 3) {
-//                                    loop_ = 3;
-//                                }
-//                                if (context.estimation == null) {
-//                                    estimator.estimate(context);
-//                                }
-//                            }
-//                        }
-//                        // final tests
-//                        checkUnitRoots(context);
-//                        checkMA(context);
-//                        if (context.automodelling && !context.description.isMean() && Math.abs(rtval_) > 2.5) {
-//                            if (checkMu_) {
-//                                context.description.setMean(true);
-//                            }
-//                        }
-//
-//                        if (finalizer.estimate(context)) {
-//                            break;
-//                        }
-//                        if (loop_ <= 2 && outliers != null) {
-//                            outliers.reduceSelectivity();
-//                            needOutliers_ = true;
-//                            needAutoModelling_ = true;
-//                        }
-//                    } while (round_++ < 5);
-//                }
-//            } else {
-//                estimator.estimate(context);
-//            }
-//
-//            return context.current(true);
-//
-//        } catch (Exception err) {
-//            return null;
-//        } finally {
-//            clear();
-//        }
-//    }
-//
-//    public boolean isCheckMu() {
-//        return checkMu_;
-//    }
-//
-//    public void setCheckMu(boolean check) {
-//        if (check != checkMu_) {
-//            checkMu_ = check;
-//            regressionTest0 = new RegressionVariablesTest(false, RegressionVariablesTest.CVAL, check);
-//        }
-//    }
-//
-//    public boolean isMixed() {
-//        return this.mixedModel_;
-//    }
-//
-//    public void setMixed(boolean mixed) {
-//        mixedModel_ = mixed;
-//    }
-//
-//    public double getLjungBoxLimit() {
-//        return this.pcr_;
-//    }
-//
-//    public void setLjungBoxLimit(double val) {
-//        this.pcr_ = val;
-//    }
-//
-//    protected boolean runTransformations(ModellingContext context) {
-//        // log/level...
-//        if (loglevelTest != null) {
-//            loglevelTest.process(context);
-//        }
-//        return true;
-//    }
-//
-//    private ProcessingResult execAutoModelling(ModellingContext context) {
-//        return autoModelling.process(context);
-//    }
-//
-//    @Override
-//    public PreprocessingModel process(TsData originalTs, ModellingContext context) {
-//
-//        if (context == null) {
-//            context = new ModellingContext();
-//        }
-//        context.description = new ModelDescription(originalTs, estimateSpan == null ? null : originalTs.getDomain().select(estimateSpan));
-//        initContext(context);
-//
-//        PreprocessingModel rslt = makeProcessing(context);
-//        if (rslt != null) {
-//            rslt.info_ = context.information;
-//            rslt.addProcessingInformation(context.processingLog);
-//        }
-//        return rslt;
-//    }
-//
-//    private void initContext(ModellingContext context) {
-//        context.automodelling = autoModelling != null;
-//        context.hasseas = context.description.getFrequency() > 1;
-//    }
-//
-//    private void clear() {
-//        loop_ = 0;
-//        cpcr_ = pcr_;
-//        refsens_ = 0;
-//        reference_ = null;
-//        plbox_ = 0;
-//        rvr_ = 0;
-//        rtval_ = 0;
-//        needAutoModelling_ = autoModelling != null;
-//        needOutliers_ = outliers != null;
-//    }
-//
-//    private boolean pass2(boolean defModel, ModellingContext context) {
-//        int ichk = 0;
-//        int naut = context.description.getOutliers().size();
-//        int naut0 = reference_.description.getOutliers().size();
-//        SarimaSpecification spec0 = reference_.description.getSpecification(),
-//                spec = context.description.getSpecification();
-//        SarimaModel arima = context.estimation.getArima();
-//        boolean mu0 = reference_.description.isEstimatedMean(),
-//                mu = context.description.isEstimatedMean();
-//        ModelController controller = new ModelController();
-//        controller.accept(context);
-//        double rvr = controller.getRvr();
-//        double plbox = 1 - controller.getLjungBoxTest().getPValue();
-//        if (naut0 <= naut && (!spec0.equals(spec) || mu0 != mu)) {
-//            if (plbox < .95 && plbox_ < .75 && rvr_ < rvr) {
-//                ichk = 1;
-//            } else if (loop_ == 1 && plbox >= .95 && plbox_ < .95) {
-//                ichk = 2;
-//            } else if (plbox < .95 && plbox_ < 0.75 && plbox_ < plbox
-//                    && rvr_ < FCT * rvr) {
-//                ichk = 3;
-//            } else if (plbox >= .95 && plbox_ < .95
-//                    && rvr_ < FCT2 * rvr) {
-//                ichk = 4;
-//            } else if (spec.getD() == 0 && spec.getBD() == 1 && spec.getP() == 1
-//                    && spec.getBP() == 0 && spec.getQ() == 1 && spec.getBQ() == 1
-//                    && arima.phi(1) < -.82) {
-//                ichk = 5;
-//            } else if (spec.getD() == 1 && spec.getBD() == 0 && spec.getP() == 0
-//                    && spec.getBP() == 1 && spec.getQ() == 1 && spec.getBQ() == 1
-//                    && arima.bphi(1) < -.65) {
-//                ichk = 6;
-//            }
-//        }
-//        if (ichk > 0) {
-//            context.description = reference_.description;
-//            context.estimation = reference_.estimation;
-//            plbox = plbox_;
-//            rvr = rvr_;
-//            defModel = true;
-//        } else {
-//            rtval_ = controller.getRTval();
-//            rvr_ = rvr;
-//            plbox_ = plbox;
-//            reference_ = context.current(false);
-//        }
-//
-//        if (loop_ == 1) {
-//            cpcr_ += .025;
-//        } else {
-//            cpcr_ += .015;
-//        }
-//        ++loop_;
-//        if (plbox <= cpcr_) {
-//            return true;
-//        }
-//        boolean ncv = false;
-//        if (loop_ == 2 && outliers != null) {
-//            ncv = outliers.reduceSelectivity();
-//            needOutliers_ = true;
-//        }
-//        needAutoModelling_ = !defModel;
-//
-//        if (loop_ > 2 || !ncv) {
-//            lastSolution(context);
-//            if (loop_ == 2) {
-//                loop_ = 3;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    // use the default model, clear outliers
-//    private void lastSolution(ModellingContext context) {
-//        SarimaSpecification nspec = context.description.getSpecification();
-//        nspec.setP(3);
-//        if (nspec.getBD() > 0 || nspec.getFrequency() == 1) {
-//            nspec.setBP(0);
-//        }
-//        if (mixedModel_) {
-//            nspec.setQ(1);
-//        } else {
-//            nspec.setQ(0);
-//        }
-//
-//        if (nspec.getFrequency() > 1) {
-//            nspec.setBQ(1);
-//        }
-//        context.description.setSpecification(nspec);
-//        //context.description.setOutliers(null);
-//        estimator.estimate(context);
-//        needAutoModelling_ = false;
-//        if (outliers != null) {
-//            outliers.setSelectivity(0);
-//            needOutliers_ = true;
-//        }
-//    }
-//
+    private boolean pass2(boolean defModel, RegArimaModelling context) {
+        int ichk = 0;
+        ModelDescription desc = context.getDescription();
+        int naut = (int) desc.variables().filter(v -> v.isOutlier(false)).count();
+
+        ModelDescription desc0 = reference.getDescription();
+        ModelEstimation estimation0 = reference.getEstimation();
+
+        int naut0 = (int) desc0.variables().filter(v -> v.isOutlier(false)).count();
+        SarimaSpecification spec0 = desc0.getSpecification(),
+                spec = desc.getSpecification();
+        SarimaModel arima = desc.arima();
+        boolean mu0 = desc0.isEstimatedMean(),
+                mu = desc.isEstimatedMean();
+        ModelController controller = new ModelController(.95);
+        controller.accept(context);
+        double rtval = controller.getRTval();
+        double rvr = controller.getRvr();
+        double plbox = 1 - controller.getLjungBoxTest().getPValue();
+        if (naut0 <= naut && (!spec0.equals(spec) || mu0 != mu)) {
+            if (plbox < .95 && plbox < .75 && rvr0 < rvr) {
+                ichk = 1;
+            } else if (loop == 1 && plbox >= .95 && plbox0 < .95) {
+                ichk = 2;
+            } else if (plbox < .95 && plbox0 < 0.75 && plbox0 < plbox
+                    && rvr0 < FCT * rvr) {
+                ichk = 3;
+            } else if (plbox >= .95 && plbox0 < .95
+                    && rvr0 < FCT2 * rvr) {
+                ichk = 4;
+            } else if (spec.getD() == 0 && spec.getBd() == 1 && spec.getP() == 1
+                    && spec.getBp() == 0 && spec.getQ() == 1 && spec.getBq() == 1
+                    && arima.phi(1) < -.82) {
+                ichk = 5;
+            } else if (spec.getD() == 1 && spec.getBd() == 0 && spec.getP() == 0
+                    && spec.getBp() == 1 && spec.getQ() == 1 && spec.getBq() == 1
+                    && arima.bphi(1) < -.65) {
+                ichk = 6;
+            }
+        }
+        if (ichk > 0) {
+            context.setDescription(desc0);
+            context.setEstimation(estimation0);
+            plbox = plbox0;
+            rvr = rvr0;
+            defModel = true;
+        } else {
+            rtval0 = rtval;
+            rvr0 = rvr;
+            plbox0 = plbox;
+            reference = context.build();
+        }
+
+        if (loop == 1) {
+            pcr += .025;
+        } else {
+            pcr += .015;
+        }
+        ++loop;
+        if (plbox <= pcr) {
+            return true;
+        }
+        boolean ncv = false;
+        if (loop == 2 && outliers != null) {
+            if (curva > MINCV) {
+                curva = Math.max(MINCV, curva * (1 - options.reduceVa));
+                ncv = true;
+            }
+            needOutliers = true;
+        }
+        needAutoModelling = !defModel;
+
+        if (loop > 2 || !ncv) {
+            lastSolution(context);
+            if (loop == 2) {
+                loop = 3;
+            }
+        }
+        return false;
+    }
+
+    // use the default model
+    private void lastSolution(RegArimaModelling context) {
+        ModelDescription description = context.getDescription();
+        SarimaSpecification nspec = description.getSpecification();
+        nspec.setP(3);
+        if (nspec.getBd() > 0) {
+            nspec.setBp(0);
+        }
+        if (options.mixedModel) {
+            nspec.setQ(1);
+        } else {
+            nspec.setQ(0);
+        }
+
+        if (nspec.getPeriod() > 1) {
+            nspec.setBq(1);
+        }
+        description.setSpecification(nspec);
+        if (outliers != null) {
+            curva = va0;
+            needOutliers = true;
+            // we should remove the outliers because the model could be different
+            //description.removeVariable(var->var.isOutlier(false));
+        }
+        context.estimate(options.precision);
+        needAutoModelling = false;
+    }
+
     private ProcessingResult regAIC(RegArimaModelling context) {
         ProcessingResult rslt = ProcessingResult.Unchanged;
         if (calendarTest != null && calendarTest.test(context) == ProcessingResult.Changed) {
@@ -679,103 +465,92 @@ public class X12Preprocessor implements IPreprocessor {
 //        }
         return rslt;
     }
-//
-//    private ProcessingResult checkMu(ModellingContext context, boolean initial) {
-//        if (!checkMu_) {
-//            return ProcessingResult.Unchanged;
-//        }
-//        MeanController meanTest = new MeanController(initial
-//                ? MeanController.CVAL0 : MeanController.CVAL1);
-//        return meanTest.process(context);
-//    }
-//
-//    private boolean reduceModel(ModellingContext context) {
-//        return false;
-//    }
-//
-//    private void checkUnitRoots(ModellingContext context) {
-//
-//        //quasi-unit roots of ar are changed in true unit roots
-//        SarimaModel m = context.estimation.getArima();
-//        SarimaSpecification nspec = m.getSpecification();
-//
-//        boolean ok = true;
-//        if (nspec.getP() > 0 && nspec.getD() < MAXD) {
-//            if (0 != searchur(m.getRegularAR().mirror().roots())) {
-//                nspec.setP(nspec.getP() - 1);
-//                nspec.setD(nspec.getD() + 1);
-//                ok = false;
-//            }
-//        }
-//        if (nspec.getBP() > 0 && nspec.getBD() < MAXBD) {
-//            if (0 != searchur(m.getSeasonalAR().mirror().roots())) {
-//                nspec.setBP(nspec.getBP() - 1);
-//                nspec.setBD(nspec.getBD() + 1);
-//                ok = false;
-//            }
-//        }
-//        if (!ok) {
-//            context.description.setSpecification(nspec);
-//            redoEstimation(context);
-//        }
-//    }
-//
-//    private void redoEstimation(ModellingContext context) {
-//        estimator.estimate(context);
-//        // check mean
-//        if (context.description.isEstimatedMean()) {
-//            checkMu(context, false);
-//        }
-//        if (!context.description.getOutliers().isEmpty()) {
-//            context.description.setOutliers(null);
-//            context.estimation = null;
-//        }
-//        if (context.estimation == null) {
-//            estimator.estimate(context);
-//        }
-//        if (outliers != null) {
-//            outliers.process(context);
-//        }
-//        if (context.estimation == null) {
-//            estimator.estimate(context);
-//        }
-//        ModelController controller = new ModelController();
-//        controller.accept(context);
-//        rtval_ = controller.getRTval();
-//        rvr_ = controller.getRvr();
-//        plbox_ = 1 - controller.getLjungBoxTest().getPValue();
-//        reference_ = context.current(false);
-//
-//    }
-//
-//    private int searchur(final Complex[] r) {
-//        if (r == null) {
-//            return 0;
-//        }
-//        int n = 0;
-//        for (int i = 0; i < r.length; ++i) {
-//            double cdim = Math.abs(r[i].getIm());
-//            double vcur = r[i].abs();
-//            if (vcur > ur_ && cdim <= 0.05 && r[i].getRe() > 0) {
-//                ++n;
-//            }
-//        }
-//        return n;
-//    }
-//
-//    private void checkMA(ModellingContext context) {
-//        SarimaModel m = context.estimation.getArima();
-//        SarimaSpecification nspec = m.getSpecification();
-//        if (nspec.getQ() == 0 || nspec.getD() == 0) {
-//            return;
-//        }
-//        double ma = m.getRegularMA().evaluateAt(1);
-//        if (Math.abs(ma) < MALIM) {
-//            nspec.setQ(nspec.getQ() - 1);
-//            nspec.setD(nspec.getD() - 1);
-//            context.description.setSpecification(nspec);
-//            context.description.setMean(true);
-//            redoEstimation(context);
-//        }
-//    }
+
+    private void checkUnitRoots(RegArimaModelling context) {
+        ModelDescription desc = context.getDescription();
+        //quasi-unit roots of ar are changed in true unit roots
+        SarimaModel m = desc.arima();
+        SarimaSpecification nspec = m.specification();
+
+        boolean ok = true;
+        if (nspec.getP() > 0 && nspec.getD() < MAXD) {
+            if (0 != searchur(m.getRegularAR().mirror().roots())) {
+                nspec.setP(nspec.getP() - 1);
+                nspec.setD(nspec.getD() + 1);
+                ok = false;
+            }
+        }
+        if (nspec.getBp() > 0 && nspec.getBd() < MAXBD) {
+            if (0 != searchur(m.getSeasonalAR().mirror().roots())) {
+                nspec.setBp(nspec.getBp() - 1);
+                nspec.setBd(nspec.getBd() + 1);
+                ok = false;
+            }
+        }
+        if (!ok) {
+            desc.setSpecification(nspec);
+            redoEstimation(context);
+        }
+    }
+
+    private void redoEstimation(RegArimaModelling context) {
+        context.estimate(options.precision);
+        // check mean
+        ModelDescription desc = context.getDescription();
+        if (desc.isEstimatedMean()) {
+            checkMu(context, false);
+        }
+        if (desc.variables().filter(v -> v.isOutlier(false)).findAny().isPresent()) {
+            desc.removeVariable(v -> v.isOutlier(false));
+            context.setEstimation(null);
+        }
+        if (context.needEstimation()) {
+            context.estimate(options.precision);
+        }
+        if (outliers != null) {
+            outliers.process(context, curva);
+        }
+        if (context.needEstimation()) {
+            context.estimate(options.precision);
+        }
+        ModelController controller = new ModelController(.95);
+        controller.accept(context);
+        rtval0 = controller.getRTval();
+        rvr0 = controller.getRvr();
+        plbox0 = 1 - controller.getLjungBoxTest().getPValue();
+        reference = context.build();
+
+    }
+
+    private int searchur(final Complex[] r) {
+        if (r == null) {
+            return 0;
+        }
+        int n = 0;
+        for (int i = 0; i < r.length; ++i) {
+            double cdim = Math.abs(r[i].getIm());
+            double vcur = r[i].abs();
+            if (vcur > options.urLimit && cdim <= 0.05 && r[i].getRe() > 0) {
+                ++n;
+            }
+        }
+        return n;
+    }
+
+    private void checkMA(RegArimaModelling context) {
+        ModelDescription description = context.getDescription();
+        SarimaModel m = description.arima();
+        SarimaSpecification nspec = m.specification();
+        if (nspec.getQ() == 0 || nspec.getD() == 0) {
+            return;
+        }
+        double ma = m.getRegularMA().evaluateAt(1);
+        if (Math.abs(ma) < MALIM) {
+            nspec.setQ(nspec.getQ() - 1);
+            nspec.setD(nspec.getD() - 1);
+            description.setSpecification(nspec);
+            description.setMean(true);
+            redoEstimation(context);
+        }
+    }
 }
