@@ -26,32 +26,15 @@ import java.time.LocalDate;
  *
  * @author Jean Palate
  */
+@lombok.Value
 public class PrespecifiedHoliday implements IHoliday {
 
-    public final DayEvent event;
-    public final int offset;
-    private final double weight;
-    private final boolean julian;
+    @lombok.NonNull
+    private DayEvent event;
+    private int offset;
+    private double weight;
+    private boolean julian;
 
-    public PrespecifiedHoliday(DayEvent ev, int off) {
-        this(ev, off, 1);
-    }
-
-    public PrespecifiedHoliday(DayEvent ev, int off, double weight) {
-        this(ev, off, weight, false);
-    }
- 
-    public PrespecifiedHoliday(DayEvent ev, int off, boolean julianeaster) {
-        this(ev, off, 1, julianeaster);
-    }
-
-    public PrespecifiedHoliday(DayEvent ev, int off, double weight, boolean julianeaster) {
-        event = ev;
-        offset = off;
-        this.weight = weight;
-        this.julian=julianeaster;
-    }
-    
     public IHoliday toSpecialDay() {
         switch (event) {
             case ShroveMonday:
@@ -110,10 +93,6 @@ public class PrespecifiedHoliday implements IHoliday {
         }
     }
     
-    public boolean isJulianEaster(){
-        return julian;
-    }
-    
     @Override
     public Iterable<IHolidayInfo> getIterable(LocalDate start, LocalDate end) {
         IHoliday sd = toSpecialDay();
@@ -135,16 +114,6 @@ public class PrespecifiedHoliday implements IHoliday {
     }
 
     @Override
-    public TsDomain getSignificantDomain(TsDomain domain) {
-        IHoliday sd = toSpecialDay();
-        if (sd == null) {
-            return null;
-        } else {
-            return sd.getSignificantDomain(domain);
-        }
-    }
-
-    @Override
     public double getWeight() {
         return weight;
     }
@@ -153,6 +122,5 @@ public class PrespecifiedHoliday implements IHoliday {
     public boolean match(Context context){
         return context.isJulianEaster() == julian;
     }
-    
 
 }

@@ -57,9 +57,9 @@ public interface MatrixType extends BaseTable<Double> {
      */
     DoubleSequence row(@Nonnull int irow);
 
-    public DoubleSequence diagonal();
+    DoubleSequence diagonal();
 
-    public DoubleSequence subDiagonal(int pos);
+    DoubleSequence subDiagonal(int pos);
 
     /**
      *

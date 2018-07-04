@@ -18,13 +18,14 @@ package demetra.maths.polynomials;
 
 import demetra.design.Development;
 import demetra.maths.Complex;
+import demetra.maths.polynomials.spi.RootsSolver;
 
 /**
  * 
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class Laguerre implements IRootsSolver {
+public class Laguerre implements RootsSolver {
 
     private final static int MR = 8, MT = 10, MAXIT = MR * MT;
 
@@ -46,7 +47,6 @@ public class Laguerre implements IRootsSolver {
 	m_x = Complex.ZERO;
     }
 
-    @Override
     public void clear() {
 	m_roots = null;
 	m_remainder = null;

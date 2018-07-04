@@ -17,6 +17,7 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
+import demetra.maths.matrices.Matrix;
 import demetra.util.Comparator;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -119,4 +120,63 @@ public class Holidays {
         return Objects.deepEquals(context, other.context) && Comparator.equals(holidays, other.holidays);
     }
     
+    public void fillDays(final Matrix D, final LocalDate start) {
+        LocalDate end = start.plusDays(D.getRowsCount());
+        int col = 0;
+        for (Holiday item : elements()) {
+            Iterator<IHolidayInfo> iter = item.getDay().getIterable(start, end).iterator();
+            while (iter.hasNext()) {
+                LocalDate date = iter.next().getDay();
+                if (date.getDayOfWeek() != DayOfWeek.SUNDAY) {
+                    long pos = start.until(date, DAYS);
+                    D.set((int) pos, col, 1);
+                }
+            }
+            if (D.getColumnsCount() > 1) {
+                ++col;
+            }
+        }
+    }
+
+    public void fillPreviousWorkingDays(final Matrix D, final LocalDate start, final int del) {
+        int n=D.getRowsCount();
+        LocalDate nstart = start.plusDays(del);
+        LocalDate end = start.plusDays(n);
+        int col = 0;
+        for (Holiday item : elements()) {
+            Iterator<IHolidayInfo> iter = item.getDay().getIterable(nstart, end).iterator();
+            while (iter.hasNext()) {
+                LocalDate date = iter.next().getDay().minusDays(del);
+                date = IHolidayInfo.getPreviousWorkingDate(date);
+                long pos = start.until(date, DAYS);
+                if (pos >= 0 && pos < n) {
+                    D.set((int) pos, col, 1);
+                }
+            }
+            if (D.getColumnsCount() > 1) {
+                ++col;
+            }
+        }
+    }
+
+    public void fillNextWorkingDays(final Matrix D, final LocalDate start, final int del) {
+        int n=D.getRowsCount();
+        LocalDate nstart = start.minusDays(del);
+        LocalDate end = nstart.plusDays(n);
+        int col = 0;
+        for (Holiday item : elements()) {
+            Iterator<IHolidayInfo> iter = item.getDay().getIterable(nstart, end).iterator();
+            while (iter.hasNext()) {
+                LocalDate date = iter.next().getDay().plusDays(del);
+                date = IHolidayInfo.getNextWorkingDate(date);
+                long pos = start.until(date, DAYS);
+                if (pos >= 0 && pos < n) {
+                    D.set((int) pos, col, 1);
+                }
+            }
+            if (D.getColumnsCount() > 1) {
+                ++col;
+            }
+        }
+    }
 }

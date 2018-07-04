@@ -24,7 +24,7 @@ import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.polynomials.LeastSquaresDivision;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.UnitRoots;
-import demetra.maths.polynomials.UnitRootsSolver;
+import demetra.maths.polynomials.internal.UnitRootsSolver;
 import java.util.function.IntToDoubleFunction;
 
 

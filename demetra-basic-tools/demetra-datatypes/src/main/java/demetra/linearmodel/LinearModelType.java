@@ -13,8 +13,9 @@ import demetra.maths.MatrixType;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
+@lombok.Builder
 public class LinearModelType {
-    private DoubleSequence y;
-    private boolean meanCorrection;
-    private MatrixType X;
+    DoubleSequence y;
+    boolean meanCorrection;
+    MatrixType X;
 }

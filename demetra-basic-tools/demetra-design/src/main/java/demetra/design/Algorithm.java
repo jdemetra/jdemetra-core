@@ -29,6 +29,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.SOURCE)
 @Documented
-public @interface Algorithm {
+public @interface Algorithm{
     
 }

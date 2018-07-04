@@ -31,7 +31,7 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
      * Generates a domain which is a splitting of a given period in sub-periods
      * @param period The period which corresponds to the domain
      * @param hUnit The time unit of the sub-periods
-     * @param exact Indicates if the domain must be exactly decomposed into its sub-periods 
+     * @param exact Indicates if that the domain must be exactly decomposed into its sub-periods 
      * @return The new domain (never null)
      * @throws TsException is thrown when the decomposition is not possible
      */
