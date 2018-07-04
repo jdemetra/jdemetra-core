@@ -66,13 +66,6 @@ public interface IHoliday {
      */
     double[][] getLongTermMeanEffect(int annualFrequency);
     
-    /**
-     * Gets the domain where the special day is significant (not zero).
-     * @param domain
-     * @return The returned domain is included in the given domain. Could be an empty period
-     */
-    TsDomain getSignificantDomain(TsDomain domain);
-    
     double getWeight();
     
     boolean match(Context context);

@@ -62,7 +62,7 @@ public class Processors {
         }
     }
 
-    private boolean isAssignableFrom(TypeMirror from, TypeMirror to) {
+    public boolean isAssignableFrom(TypeMirror from, TypeMirror to) {
         TypeMirror current = from instanceof TypeVariable ? ((TypeVariable) from).getUpperBound() : from;
         while (current instanceof DeclaredType && !isCompatible(to, current)) {
             current = ((DeclaredType) current).getEnclosingType();

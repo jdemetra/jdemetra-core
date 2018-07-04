@@ -22,6 +22,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import demetra.data.DoubleSequence;
+import demetra.maths.polynomials.spi.RootsSolver;
 
 /**
  *
@@ -110,7 +111,7 @@ public class PolynomialTest {
             assertTrue(Math.abs(arg - Math.round(arg)) < 1e-12);
 
         }
-        Complex[] rroots = P.roots(IRootsSolver.robustSolver());
+        Complex[] rroots = P.roots(RootsSolver.robustSolver());
         for (Complex root : rroots) {
             assertTrue(Math.abs(root.abs() - w) < 1e-9);
             double arg = root.arg() * N / (2 * Math.PI);
@@ -144,7 +145,7 @@ public class PolynomialTest {
         for (int k = 0; k < 10; ++k) {
             Polynomial P = Polynomial.ofInternal(p);
             P=P.times(P);
-            Complex[] rroots = P.roots(IRootsSolver.robustSolver());
+            Complex[] rroots = P.roots(RootsSolver.robustSolver());
             for (Complex root : rroots) {
                 assertEquals(w, root.abs() , 1e-7);
                 double arg = root.arg() * N / (2 * Math.PI);

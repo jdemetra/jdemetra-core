@@ -14,11 +14,14 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.maths.polynomials;
+package demetra.maths.polynomials.internal;
 
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.IntUtility;
+import demetra.maths.polynomials.Polynomial;
+import demetra.maths.polynomials.UnitRoots;
+import demetra.maths.polynomials.spi.RootsSolver;
 
 
 /**
@@ -26,7 +29,7 @@ import demetra.maths.IntUtility;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class UnitRootsSolver implements IRootsSolver {
+public class UnitRootsSolver {
 
     private static double pnorm(final Polynomial p, final int n) {
         if (n == 1) {
@@ -43,11 +46,9 @@ public class UnitRootsSolver implements IRootsSolver {
         }
     }
 
-    private Polynomial m_remainder;
-
-    private UnitRoots m_roots;
-
-    private int m_start = 12;
+    private Polynomial remainder;
+    private UnitRoots roots;
+    private int startDegree = 12;
 
     private final static double EPS = 1e-12;
 
@@ -62,20 +63,13 @@ public class UnitRootsSolver implements IRootsSolver {
      * @param start
      */
     public UnitRootsSolver(final int start) {
-        m_start = start;
+        startDegree = start;
     }
 
-    @Override
-    public void clear() {
-        m_roots = null;
-        m_remainder = null;
-    }
-
-    @Override
     public boolean factorize(final Polynomial p) {
-        m_roots = new UnitRoots();
-        m_remainder = process(p, m_roots);
-        return m_roots.getRootsCount() != 0;
+        roots = new UnitRoots();
+        remainder = process(p, roots);
+        return roots.getRootsCount() != 0;
     }
 
     /**
@@ -83,13 +77,13 @@ public class UnitRootsSolver implements IRootsSolver {
      * @return
      */
     public UnitRoots getUnitRoots() {
-        return m_roots;
+        return roots;
 
     }
 
     private Polynomial process(final Polynomial p, final UnitRoots ur) {
         // return p;
-        int num = m_start == 0 ? (p.getDegree() * 2) + 1 : m_start; //
+        int num = startDegree == 0 ? (p.getDegree() * 2) + 1 : startDegree; //
 
         int[] divs = new int[num];
         UnitRoots tmp = new UnitRoots();
@@ -132,14 +126,12 @@ public class UnitRootsSolver implements IRootsSolver {
         return cur;
     }
 
-    @Override
     public Polynomial remainder() {
-        return m_remainder;
+        return remainder;
     }
 
-    @Override
     public Complex[] roots() {
-        return m_roots == null ? null : m_roots.roots();
+        return roots == null ? null : roots.roots();
 
     }
 

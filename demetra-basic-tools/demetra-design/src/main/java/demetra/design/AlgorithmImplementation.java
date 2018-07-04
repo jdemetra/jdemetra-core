@@ -34,7 +34,7 @@ public @interface AlgorithmImplementation {
     /**
      *
      */
-    public enum Feature {
+    public static enum Feature {
 
         /**
          * Fast implementation
@@ -62,12 +62,13 @@ public @interface AlgorithmImplementation {
         None;
     }
 
-    Class<?> algorithm();
-    /**
-     *
-     * @return
-     */
-    Feature feature() default Feature.None;
+    public Class<?> algorithm();
+
+    public Feature feature() default Feature.None;
     
-    boolean isDefault() default false;
+    public int position() default 2147483647;
+
+    public String[] supersedes() default {};
+
+    public String path() default "";
 }

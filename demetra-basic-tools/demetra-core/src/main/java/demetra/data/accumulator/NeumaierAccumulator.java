@@ -25,7 +25,7 @@ import static demetra.design.AlgorithmImplementation.Feature.Balanced;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@AlgorithmImplementation(algorithm=IDataNormalizer.class, feature=Balanced)
+@AlgorithmImplementation(algorithm=DoubleAccumulator.class, feature=Balanced)
 public strictfp final class NeumaierAccumulator implements DoubleAccumulator {
 
     private double del, sum;

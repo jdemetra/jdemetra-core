@@ -17,11 +17,8 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsUnit;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.AbstractList;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +28,7 @@ import java.util.Map;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
+@lombok.Value
 public class EasterRelatedDay implements IHoliday {
 
     /*
@@ -53,30 +51,27 @@ public class EasterRelatedDay implements IHoliday {
     private static final Map<Integer, LocalDate> DIC = new HashMap<>();
     private static final Map<Integer, LocalDate> JDIC = new HashMap<>();
     private static final int[] DAYS = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    public final int offset;
-    private final double weight;
-    private final boolean julian;
-
-    /**
-     * Creates a new Easter related day, with 0 offset. Corresponds to easter
-     */
-    public EasterRelatedDay() {
-        this(0, 1, false);
+    private int offset;
+    private double weight;
+    private boolean julian;
+    
+    public static EasterRelatedDay gregorian(int offset, double weight){
+        return new EasterRelatedDay(offset, weight, false);
     }
 
-    public EasterRelatedDay(int offset) {
-        this(offset, 1, false);
+    public static EasterRelatedDay gregorian(int offset){
+        return new EasterRelatedDay(offset, 1, false);
     }
 
-    public EasterRelatedDay(int offset, boolean julian) {
-        this(offset, 1, julian);
+    public static EasterRelatedDay julian(int offset, double weight){
+        return new EasterRelatedDay(offset, weight, true);
     }
 
-    public EasterRelatedDay(int offset, double weight) {
-        this(offset, weight, false);
+    public static EasterRelatedDay julian(int offset){
+        return new EasterRelatedDay(offset, 1, true);
     }
 
-    public EasterRelatedDay(int offset, double weight, boolean julian) {
+    private EasterRelatedDay(int offset, double weight, boolean julian) {
         this.weight = weight;
         this.offset = offset;
         this.julian = julian;
@@ -93,10 +88,6 @@ public class EasterRelatedDay implements IHoliday {
         return new EasterRelatedDay(offset + ndays, weight, julian);
     }
 
-    public boolean isJulian() {
-        return julian;
-    }
-
     @Override
     public double getWeight() {
         return weight;
@@ -107,28 +98,28 @@ public class EasterRelatedDay implements IHoliday {
         return context.isJulianEaster() == julian;
     }
 
-    public static final EasterRelatedDay SHROVEMONDAY = new EasterRelatedDay(-48),
-            SHROVETUESDAY = new EasterRelatedDay(-47),
-            ASHWEDNESDAY = new EasterRelatedDay(-46),
-            EASTER = new EasterRelatedDay(0),
-            EASTERMONDAY = new EasterRelatedDay(1),
-            EASTERFRIDAY = new EasterRelatedDay(-2),
-            EASTERTHURSDAY = new EasterRelatedDay(-3),
-            ASCENSION = new EasterRelatedDay(39),
-            PENTECOST = new EasterRelatedDay(49),
-            WHITMONDAY = new EasterRelatedDay(50),
-            CORPUSCHRISTI = new EasterRelatedDay(60),
-            JULIAN_SHROVEMONDAY = new EasterRelatedDay(-48, true),
-            JULIAN_SHROVETUESDAY = new EasterRelatedDay(-47, true),
-            JULIAN_ASHWEDNESDAY = new EasterRelatedDay(-46, true),
-            JULIAN_EASTER = new EasterRelatedDay(0, true),
-            JULIAN_EASTERMONDAY = new EasterRelatedDay(1, true),
-            JULIAN_EASTERFRIDAY = new EasterRelatedDay(-2, true),
-            JULIAN_EASTERTHURSDAY = new EasterRelatedDay(-3, true),
-            JULIAN_ASCENSION = new EasterRelatedDay(39, true),
-            JULIAN_PENTECOST = new EasterRelatedDay(49, true),
-            JULIAN_WHITMONDAY = new EasterRelatedDay(50, true),
-            JULIAN_CORPUSCHRISTI = new EasterRelatedDay(60, true);
+    public static final EasterRelatedDay SHROVEMONDAY = gregorian(-48),
+            SHROVETUESDAY = gregorian(-47),
+            ASHWEDNESDAY = gregorian(-46),
+            EASTER = gregorian(0),
+            EASTERMONDAY = gregorian(1),
+            EASTERFRIDAY = gregorian(-2),
+            EASTERTHURSDAY = gregorian(-3),
+            ASCENSION = gregorian(39),
+            PENTECOST = gregorian(49),
+            WHITMONDAY = gregorian(50),
+            CORPUSCHRISTI = gregorian(60),
+            JULIAN_SHROVEMONDAY = julian(-48),
+            JULIAN_SHROVETUESDAY = julian(-47),
+            JULIAN_ASHWEDNESDAY = julian(-46),
+            JULIAN_EASTER = julian(0),
+            JULIAN_EASTERMONDAY = julian(1),
+            JULIAN_EASTERFRIDAY = julian(-2),
+            JULIAN_EASTERTHURSDAY = julian(-3),
+            JULIAN_ASCENSION = julian(39),
+            JULIAN_PENTECOST = julian(49),
+            JULIAN_WHITMONDAY = julian(50),
+            JULIAN_CORPUSCHRISTI = julian(60);
 
     public LocalDate calcDay(int year) {
         LocalDate d = easter(year);
@@ -236,45 +227,8 @@ public class EasterRelatedDay implements IHoliday {
         return rslt;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof EasterRelatedDay && equals((EasterRelatedDay) obj));
-    }
-
-    private boolean equals(EasterRelatedDay other) {
-        return other.offset == offset && other.weight == weight && other.julian == julian;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 23 * hash + this.offset;
-        return hash;
-    }
-
-    @Override
-    public TsDomain getSignificantDomain(TsDomain domain) {
-        if (!domain.getStartPeriod().getUnit().getChronoUnit().equals(ChronoUnit.DAYS)) {
-            throw new IllegalArgumentException();
-        }
-        LocalDate first = domain.start().toLocalDate(), last = domain.end().toLocalDate().minusDays(1);
-        LocalDate efirst = easter(first.getYear()).plusDays(offset);
-        LocalDate elast = easter(last.getYear()).plusDays(offset);
-        if (efirst.isBefore(first)) {
-            efirst = easter(first.getYear() + 1).plusDays(offset);
-        }
-        if (elast.isAfter(last)) {
-            elast = easter(last.getYear() - 1).plusDays(offset);
-        }
-        if (efirst.isAfter(elast)) {
-            return TsDomain.of(domain.getStartPeriod().withDate(efirst.atStartOfDay()), 0);
-        } else {
-            return TsDomain.of(domain.getStartPeriod().withDate(efirst.atStartOfDay()), (int) ChronoUnit.DAYS.between(efirst, elast));
-        }
-    }
-
     static class EasterDayInfo implements IHolidayInfo {
-        
+
         final LocalDate day;
 
         public EasterDayInfo(int year, int offset, boolean julian) {
@@ -287,16 +241,11 @@ public class EasterRelatedDay implements IHoliday {
             return day;
         }
 
-//        @Override
-//        public TsPeriod getPeriod() {
-//            return TsPeriod.of(freq, day);
-//        }
-
         @Override
         public DayOfWeek getDayOfWeek() {
             return day.getDayOfWeek();
         }
-     }
+    }
 
     static class EasterDayList extends AbstractList<IHolidayInfo> {
 
@@ -332,5 +281,12 @@ public class EasterRelatedDay implements IHoliday {
         public int size() {
             return n;
         }
+    }
+
+    /**
+     * @return the offset
+     */
+    public int getOffset() {
+        return offset;
     }
 }

@@ -19,7 +19,6 @@ package demetra.maths.linearfilters.internal;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
 import demetra.maths.Complex;
-import demetra.maths.polynomials.IRootsSolver;
 import demetra.maths.polynomials.LeastSquaresDivision;
 import demetra.maths.polynomials.Polynomial;
 import demetra.util.Ref;
@@ -27,6 +26,7 @@ import demetra.util.Ref.BooleanRef;
 import demetra.util.Ref.DoubleRef;
 import demetra.util.Ref.IntRef;
 import demetra.maths.polynomials.internal.NewtonOptimizer;
+import demetra.maths.polynomials.spi.RootsSolver;
 
 /**
  * Mueller-Newton solver for symmetric polynomial. A symmetric polynomial is
@@ -36,7 +36,7 @@ import demetra.maths.polynomials.internal.NewtonOptimizer;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class SymmetricMullerNewtonSolver implements IRootsSolver {
+public class SymmetricMullerNewtonSolver implements RootsSolver {
 
     private double[] m_p;
     private double[] m_pred;
@@ -257,7 +257,6 @@ public class SymmetricMullerNewtonSolver implements IRootsSolver {
         }
     }
 
-    @Override
     public void clear() {
         m_roots = null;
         m_remainder = null;

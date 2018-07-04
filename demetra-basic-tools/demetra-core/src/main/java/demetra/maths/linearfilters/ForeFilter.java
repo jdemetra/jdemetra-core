@@ -20,12 +20,12 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
 import demetra.maths.Simplifying;
-import demetra.maths.polynomials.IRootsSolver;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.PolynomialException;
-import demetra.maths.polynomials.UnitRootsSolver;
+import demetra.maths.polynomials.internal.UnitRootsSolver;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSequence;
+import demetra.maths.polynomials.spi.RootsSolver;
 
 /**
  *
@@ -265,7 +265,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @param searcher
      * @return
      */
-    public Complex[] roots(final IRootsSolver searcher) {
+    public Complex[] roots(final RootsSolver searcher) {
         return polynomial.roots(searcher);
     }
 
