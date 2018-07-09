@@ -33,6 +33,15 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
     @Deprecated
     private double mean_;
     private int nf_ = -2, nb_=-2;
+    private final boolean noapply;
+    
+    public DefaultPreprocessingFilter(){
+        this.noapply=false;
+    }
+
+    public DefaultPreprocessingFilter(boolean noapply){
+        this.noapply=noapply;
+    }
 
     public int getForecastHorizon() {
         return nf_;
@@ -64,6 +73,8 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
 
     @Deprecated
     private double seasMeanCorrection(PreprocessingModel model) {
+        if (noapply)
+            return 0;
         TsDomain domain = model.description.getSeriesDomain();
         int freq = domain.getFrequency().intValue();
         int nf = forecastLength(freq);
@@ -92,7 +103,8 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
 
     @Override
     public TsData getCorrectedSeries(boolean transformed) {
-        ;
+        if (noapply)
+            return model_.interpolatedSeries(false);
         boolean mul = (!transformed) && model_.isMultiplicative();
         TsData lin = model_.linearizedSeries(true);
         if (mul) {
@@ -127,6 +139,9 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
             return null;
         }
         int nf = forecastLength(model_.description.getFrequency());
+        if (noapply){
+            return model_.forecast(nf, transformed);
+        }
         TsData f = model_.linearizedForecast(nf, true);
         if ((!transformed) && model_.isMultiplicative()) {
             f.apply(x -> Math.exp(x));
@@ -140,6 +155,9 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
             return null;
         }
         int nb = backcastLength(model_.description.getFrequency());
+        if (noapply){
+            return model_.backcast(nb, transformed);
+        }
         TsData b = model_.linearizedBackcast(nb, true);
         if ((!transformed) && model_.isMultiplicative()) {
             b.apply(x -> Math.exp(x));
@@ -149,6 +167,9 @@ public class DefaultPreprocessingFilter implements IPreprocessingFilter {
 
     @Override
     public TsData getCorrection(TsDomain domain, ComponentType type, boolean transformed) {
+        if (noapply){
+            return null;
+        }
         switch (type) {
             case Series:
                 TsData x = model_.deterministicEffect(domain, type);
