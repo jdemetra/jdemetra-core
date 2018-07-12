@@ -73,7 +73,7 @@ public class X11Results implements ISaResults {
         decomposition.add(info.subSet(X11Kernel.D).get(X11Kernel.D13L, TsData.class),
                 ComponentType.Irregular);
         // implicit forecast of the irregular: SA = T + I or I = SA - T
-        TsData il=decomposition.getMode().isMultiplicative() ? TsData.divide(sal, tl) : TsData.subtract(sal, tl);
+        TsData il=decomposition.getMode() == DecompositionMode.Additive ? TsData.subtract(sal, tl) : TsData.divide(sal, tl);
        decomposition.add(il, ComponentType.Irregular, ComponentInformation.Forecast);
     }
     private DefaultSeriesDecomposition decomposition;

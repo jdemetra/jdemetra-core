@@ -55,6 +55,7 @@ public final class Mstatistics implements IProcResults {
         // get D-Tables...
         InformationSet dtables = info.getSubSet(X11Kernel.D);
         InformationSet atables = info.getSubSet(X11Kernel.A);
+        InformationSet btables = info.getSubSet(X11Kernel.B);
         InformationSet etables = info.getSubSet(X11Kernel.E);
         InformationSet ctables = info.getSubSet(X11Kernel.C);
         if (dtables == null) {
@@ -62,34 +63,32 @@ public final class Mstatistics implements IProcResults {
         }
         try {
             Mstatistics mstats = new Mstatistics(mode);
-            mstats.O = etables.get(X11Kernel.E1, TsData.class);
+            TsData s = atables.get(X11Kernel.A1, TsData.class);
 
-            mstats.Oc = dtables.get(X11Kernel.D1, TsData.class);
-            mstats.Cc = dtables.get(X11Kernel.D12, TsData.class);
-            mstats.CIc = dtables.get(X11Kernel.D11, TsData.class);
-            mstats.Sc = dtables.get(X11Kernel.D10, TsData.class);
-            mstats.Ic = dtables.get(X11Kernel.D13, TsData.class);
-            mstats.TD = dtables.get(X11Kernel.D18, TsData.class);
-            mstats.P = atables.get(X11Kernel.A8, TsData.class);
-            mstats.Pt = atables.get(X11Kernel.A8t, TsData.class);
-            mstats.Ps = atables.get(X11Kernel.A8s, TsData.class);
-            mstats.Pi = atables.get(X11Kernel.A8i, TsData.class);
+            mstats.O = s;
+            mstats.Oc = btables.get(X11Kernel.B1, TsData.class).fittoDomain(s.getDomain());
+            mstats.Cc = dtables.get(X11Kernel.D12L, TsData.class);
+            mstats.CIc = dtables.get(X11Kernel.D11L, TsData.class);
+            mstats.Sc = dtables.get(X11Kernel.D10L, TsData.class);
+            mstats.Ic = dtables.get(X11Kernel.D13L, TsData.class);
+            if (mode != DecompositionMode.PseudoAdditive) {
+                mstats.TD = dtables.get(X11Kernel.D18, TsData.class);
+                mstats.P = atables.get(X11Kernel.A8, TsData.class);
+                mstats.Pt = atables.get(X11Kernel.A8t, TsData.class);
+                mstats.Ps = atables.get(X11Kernel.A8s, TsData.class);
+                mstats.Pi = atables.get(X11Kernel.A8i, TsData.class);
+            }
             mstats.SI = dtables.get(X11Kernel.D8, TsData.class);
 
-            mstats.Omod = etables.get(X11Kernel.E1, TsData.class);
+            mstats.Ome = etables.get(X11Kernel.E1, TsData.class);
             mstats.CImod = etables.get(X11Kernel.E2, TsData.class);
             mstats.Imod = etables.get(X11Kernel.E3, TsData.class);
 
             //mstats.Oc = mstats.op(mstats.O, mstats.P);
-            mstats.Cc = mstats.op(mstats.Cc, mstats.Pt);
-            mstats.Sc = mstats.op(mstats.Sc, mstats.Ps);
-            mstats.Ic = mstats.op(mstats.Ic, mstats.Pi);
-            mstats.CIc = mstats.op(mstats.CIc, mstats.Pt);
-            mstats.CIc = mstats.op(mstats.CIc, mstats.Pi);
-            //
-            mstats.Omod = mstats.op(mstats.Omod, mstats.Pt);
+            mstats.Omod = mstats.op(mstats.Ome, mstats.Pt);
             mstats.Omod = mstats.op(mstats.Omod, mstats.Ps);
             mstats.CImod = mstats.op(mstats.CImod, mstats.Pt);
+            mstats.checkSeries();
 
             if (mstats.TD != null) {
                 DescriptiveStatistics td = new DescriptiveStatistics(mstats.TD);
@@ -133,6 +132,19 @@ public final class Mstatistics implements IProcResults {
         } catch (RuntimeException err) {
             return null;
         }
+    }
+
+    public void checkSeries() {
+        if (mode == DecompositionMode.PseudoAdditive) {
+            valid = new boolean[Oc.getLength()];
+            for (int i = 0; i < valid.length; ++i) {
+                valid[i] = Oc.get(i) > 0 && CIc.get(i) > 0;
+            }
+        }
+    }
+
+    public boolean[] validObservations() {
+        return valid;
     }
 
     public TsData getO() {
@@ -299,7 +311,7 @@ public final class Mstatistics implements IProcResults {
      */
     public double[] getAutoCorrelationsOfIrregular() {
         TsData irr = Ic;
-        if (mode.isMultiplicative() || mode == DecompositionMode.PseudoAdditive) {
+        if (mode.isMultiplicative()) {
             irr = irr.minus(1);
         }
         AutoCorrelations ac = new AutoCorrelations(irr);
@@ -312,11 +324,10 @@ public final class Mstatistics implements IProcResults {
         return c;
     }
     // O=A1, CI=D11, I=D13, C=D12, S=D10, P=A2, TD=D18, Omod=E1, CImod=E2, Imod=E3;
-    private TsData O,/*
-             * E1, CI, I, C, S,
-             */ P, TD, Omod, CImod, Imod;
+    private TsData O, P, TD, Ome;
     // Corrected series for prelimiary effects
-    private TsData Oc, CIc, Cc, Sc, Ic;
+    private TsData Oc, CIc, Cc, Sc, Ic, Omod, CImod, Imod;
+
     // others
     private TsData Snorm, Pt, Ps, Pi, SI, MCD;
     // Stationary
@@ -327,6 +338,7 @@ public final class Mstatistics implements IProcResults {
     private double[] /*
              * gO, gCI, gI, gC, gS,
              */ gP, gTD, gOmod, gCImod, gImod, gMCD;
+    private boolean[] valid;
     private double[] gOc, gCc, gIc, gCIc, gSc;
     private double[] m = new double[11];
     private boolean s3x5, bShort;
@@ -357,19 +369,19 @@ public final class Mstatistics implements IProcResults {
 //        gC = SeriesEvolution.calcAbsMeanVariations(C, null, mul);
 //        gS = SeriesEvolution.calcAbsMeanVariations(S, null, mul);
         // main results
-        gOmod = SeriesEvolution.calcAbsMeanVariations(Omod, null, mul);
-        gCImod = SeriesEvolution.calcAbsMeanVariations(CImod, null, mul);
-        gImod = SeriesEvolution.calcAbsMeanVariations(Imod, null, mul);
-        gOc = SeriesEvolution.calcAbsMeanVariations(Oc, null, mul);
-        gCIc = SeriesEvolution.calcAbsMeanVariations(CIc, null, mul);
-        gCc = SeriesEvolution.calcAbsMeanVariations(Cc, null, mul);
-        gSc = SeriesEvolution.calcAbsMeanVariations(Sc, null, mul);
-        gIc = SeriesEvolution.calcAbsMeanVariations(Ic, null, mul);
+        gOmod = SeriesEvolution.calcAbsMeanVariations(Omod, null, mul, valid);
+        gCImod = SeriesEvolution.calcAbsMeanVariations(CImod, null, mul, valid);
+        gImod = SeriesEvolution.calcAbsMeanVariations(Imod, null, mul, valid);
+        gOc = SeriesEvolution.calcAbsMeanVariations(Oc, null, mul, valid);
+        gCIc = SeriesEvolution.calcAbsMeanVariations(CIc, null, mul, valid);
+        gCc = SeriesEvolution.calcAbsMeanVariations(Cc, null, mul, valid);
+        gSc = SeriesEvolution.calcAbsMeanVariations(Sc, null, mul, valid);
+        gIc = SeriesEvolution.calcAbsMeanVariations(Ic, null, mul, valid);
         if (P != null) {
-            gP = SeriesEvolution.calcAbsMeanVariations(P, null, mul);
+            gP = SeriesEvolution.calcAbsMeanVariations(P, null, mul, valid);
         }
         if (TD != null) {
-            gTD = SeriesEvolution.calcAbsMeanVariations(TD, null, mul);
+            gTD = SeriesEvolution.calcAbsMeanVariations(TD, null, mul, valid);
         }
     }
 
@@ -395,21 +407,21 @@ public final class Mstatistics implements IProcResults {
 
     private void calcM1(int del) {
         boolean mul = mode != DecompositionMode.Additive;
-        double mt = SeriesEvolution.calcAbsMeanVariations(Cc, null, del, mul);
+        double mt = SeriesEvolution.calcAbsMeanVariations(Cc, null, del, mul, valid);
         mt *= mt;
-        double mi = SeriesEvolution.calcAbsMeanVariations(Imod, null, del, mul);
+        double mi = SeriesEvolution.calcAbsMeanVariations(Imod, null, del, mul, valid);
         mi *= mi;
-        double ms = SeriesEvolution.calcAbsMeanVariations(Sc, null, del, mul);
+        double ms = SeriesEvolution.calcAbsMeanVariations(Sc, null, del, mul, valid);
         ms *= ms;
         double mp = 0;
         if (P != null) {
-            mp = SeriesEvolution.calcAbsMeanVariations(P, null, del, mul);
+            mp = SeriesEvolution.calcAbsMeanVariations(P, null, del, mul, valid);
             mp *= mp;
         }
 
         double mtd = 0;
         if (TD != null) {
-            mtd = SeriesEvolution.calcAbsMeanVariations(TD, null, del, mul);
+            mtd = SeriesEvolution.calcAbsMeanVariations(TD, null, del, mul, valid);
             mtd *= mtd;
         }
 
@@ -555,9 +567,37 @@ public final class Mstatistics implements IProcResults {
         Snorm = Sc.div(stde);
     }
 
+    private double variance(TsData s, boolean log, boolean zero) {
+        if (log) {
+            s = s.log();
+        }
+        int n = s.getLength(), m = 0;
+        double z = 0;
+        double mu = 0;
+        if (!zero) {
+            for (int i = 0; i < n; ++i) {
+                double x = s.get(i);
+                if ((valid == null || valid[i]) && Double.isFinite(x)) {
+                    ++m;
+                    z += x;
+                }
+            }
+            mu = z / m;
+        }
+        z = 0;
+        for (int i = 0; i < n; ++i) {
+            double x = s.get(i);
+            if ((valid == null || valid[i]) && Double.isFinite(x)) {
+                x -= mu;
+                z += x * x;
+            }
+        }
+        return z;
+    }
+
     private void calcStationaryVariances() {
         stC = Cc.clone();
-        stO = O.clone();
+        stO = Ome.clone();
 
         double[] line = new double[Cc.getLength()];
         for (int i = 0; i < line.length; ++i) {
@@ -576,8 +616,8 @@ public final class Mstatistics implements IProcResults {
             }
 
             double[] b = ols.getLikelihood().getB();
-            TsData lt = new TsData(stC.getStart(), line, false).times(b[1]);
-            lt.applyOnFinite(x -> x + b[0]);
+            TsData lt = new TsData(stC.getStart(), line, false);
+            lt.applyOnFinite(x -> x * b[1] + b[0]);
 
             stC = stC.minus(lt);
             stO.applyOnFinite(x -> Math.log(x));
@@ -596,50 +636,22 @@ public final class Mstatistics implements IProcResults {
             }
 
             double[] b = ols.getLikelihood().getB();
-            TsData lt = new TsData(stC.getStart(), line, false).times(b[1]);
-            lt.applyOnFinite(x -> x + b[0]);
+            TsData lt = new TsData(stC.getStart(), line, false);
+            lt.applyOnFinite(x -> x * b[1] + b[0]);
 
             stC = stC.minus(lt);
             stO = stO.minus(lt);
         }
 
-        //
-        DescriptiveStatistics stats = new DescriptiveStatistics(stO);
-        double varO = stats.getVar();
-
-        stats = new DescriptiveStatistics(stC);
-        varC = stats.getVar();
-
-        if (mode != DecompositionMode.Additive) {
-            stats = new DescriptiveStatistics(Sc.log());
-        } else {
-            stats = new DescriptiveStatistics(Sc);
-        }
-        varS = stats.getSumSquare() / stats.getObservationsCount();
-
-        if (mode != DecompositionMode.Additive) {
-            stats = new DescriptiveStatistics(Imod.log());
-        } else {
-            stats = new DescriptiveStatistics(Imod);
-        }
-        varI = stats.getSumSquare() / stats.getObservationsCount();
-
+        double varO = variance(stO, false, false);
+        varC = variance(stC, false, false);
+        varS = variance(Sc, mode != DecompositionMode.Additive, true);
+        varI = variance(Imod, mode != DecompositionMode.Additive, true);
         if (P != null) {
-            if (mode != DecompositionMode.Additive) {
-                stats = new DescriptiveStatistics(P.log());
-            } else {
-                stats = new DescriptiveStatistics(P);
-            }
-
-            varP = stats.getVar();
+            varP = variance(P, mode != DecompositionMode.Additive, false);
         }
         if (TD != null) {
-            if (mode != DecompositionMode.Additive) {
-                stats = new DescriptiveStatistics(TD.log());
-            } else {
-                stats = new DescriptiveStatistics(TD);
-            }
-            varTD = stats.getSumSquare() / stats.getObservationsCount();
+            varTD = variance(TD, mode != DecompositionMode.Additive, true);
         }
 
         varP /= varO;

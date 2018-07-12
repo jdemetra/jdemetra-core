@@ -217,7 +217,12 @@ class DefaultSeasonalComputer extends DefaultX11Algorithm implements
 
     private MsrTable calculateMsr(DefaultSeasonalFilteringStrategy fseas, TsDomain rdomain, TsData s) {
         TsData s1 = fseas.process(s, rdomain);
-        TsData s2 = op(s, s1);
+        TsData s2;
+        if (context.isPseudoAdditive()){
+            s2=s.minus(s1).plus(1);
+        }else{
+            s2= op(s, s1);
+        }
         return MsrTable.create(s1, s2, isMultiplicative());
     }
 
