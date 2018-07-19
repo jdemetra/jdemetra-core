@@ -16,6 +16,7 @@
  */
 package ec.satoolkit.algorithm.implementation;
 
+import ec.satoolkit.DecompositionMode;
 import ec.satoolkit.DefaultPreprocessingFilter;
 import ec.satoolkit.DefaultSeriesDecomposition;
 import ec.satoolkit.GenericSaProcessingFactory;
@@ -59,7 +60,9 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
         if (xspec.getRegArimaSpecification().getBasic().isPreprocessing()) {
             addPreprocessingStep(xspec.getRegArimaSpecification().build(context), xspec.getX11Specification().getForecastHorizon(), processing);
         }
-        DefaultPreprocessingFilter filter = new DefaultPreprocessingFilter();
+        DecompositionMode mode = xspec.getX11Specification().getMode();
+        boolean noapply = mode == DecompositionMode.PseudoAdditive;
+        DefaultPreprocessingFilter filter = new DefaultPreprocessingFilter(noapply);
         filter.setForecastHorizon(xspec.getX11Specification().getForecastHorizon());
         filter.setBackcastHorizon(xspec.getX11Specification().getBackcastHorizon());
         addDecompositionStep(new X11Decomposer(xspec.getX11Specification()), filter, processing);

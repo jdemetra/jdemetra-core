@@ -27,6 +27,7 @@ import ec.satoolkit.x11.SeasonalFilterOption;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.IProcessing;
 import data.Data;
+import ec.satoolkit.DecompositionMode;
 import ec.satoolkit.x11.Mstatistics;
 import java.util.List;
 import java.util.Map.Entry;
@@ -89,12 +90,13 @@ public class X13ProcessingFactoryTest {
         }
     }
 
-    //@Test
+    @Test
     public void demoGeneric() {
         // Create the specifications          
         X13Specification mySpec = X13Specification.RSA4.clone();
         // Allow benchmarking
         mySpec.getBenchmarkingSpecification().setEnabled(true);
+        mySpec.getX11Specification().setMode(DecompositionMode.PseudoAdditive);
         // Create the input (for example...)
         TsData input = Data.X;
 

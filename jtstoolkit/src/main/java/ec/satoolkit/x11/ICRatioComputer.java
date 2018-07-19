@@ -37,16 +37,16 @@ public class ICRatioComputer {
         int nf = context.getForecastHorizon();
         int nb = context.getBackcastHorizon();
         TsDomain gdom = (nf == 0 && nb == 0) ? null : sc.getDomain().drop(nb, nf);
+        InformationSet dtables = info.subSet(X11Kernel.D);
         double gc = SeriesEvolution.calcAbsMeanVariations(sc, gdom, 1,
-                context.isMultiplicative() || context.isPseudoAdditive());
+                context.isMultiplicative() || context.isPseudoAdditive(), null);
         double gi = SeriesEvolution.calcAbsMeanVariations(si, gdom, 1,
-                context.isMultiplicative() || context.isPseudoAdditive());
+                context.isMultiplicative() || context.isPseudoAdditive(), null);
         double icr = gi / gc;
         if (freq == 4) {
             icr *= 3.0;
         }
 
-        InformationSet dtables = info.subSet(X11Kernel.D);
         dtables.set(X11Kernel.D12_IC, icr);
     }
 }

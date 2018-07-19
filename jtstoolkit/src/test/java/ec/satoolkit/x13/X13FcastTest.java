@@ -46,6 +46,7 @@ public class X13FcastTest {
     private X13Specification makeX13Spec(DefaultTransformationType trafoType) {
         X13Specification x13Spec = new X13Specification();
         x13Spec.getRegArimaSpecification().getTransform().setFunction(trafoType);
+        x13Spec.checkMode();
         return x13Spec;
     }
 

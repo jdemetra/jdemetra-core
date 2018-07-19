@@ -36,8 +36,9 @@ import ec.tstoolkit.timeseries.simplets.TsDomain;
 public class DefaultPreprocessor extends DefaultX11Algorithm implements
         IX11Preprocessor {
 
-    PreprocessingModel model_;
-    IPreprocessingFilter filter_;
+    private final PreprocessingModel model_;
+    private final IPreprocessingFilter filter_;
+    private final boolean noapply;
 
     /**
      * Creates a new default pre-processor
@@ -46,9 +47,10 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
      * @param filter The filter that will be used to retrieve information from
      * the pre-processing model.
      */
-    public DefaultPreprocessor(PreprocessingModel model, IPreprocessingFilter filter) {
+    public DefaultPreprocessor(PreprocessingModel model, IPreprocessingFilter filter, boolean noapply) {
         model_ = model;
         filter_ = filter;
+        this.noapply = noapply;
     }
 
     /**
@@ -62,22 +64,24 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
         TsData fs = filter_.getCorrectedForecasts(false);
         TsData bs = filter_.getCorrectedBackcasts(false);
         TsData sall = s.update(fs);
-        if (bs != null)
-            sall=bs.update(sall);
+        if (bs != null) {
+            sall = bs.update(sall);
+        }
         InformationSet atables = info.subSet(X11Kernel.A);
         InformationSet btables = info.subSet(X11Kernel.B);
         btables.set(X11Kernel.B1, sall);
         if (fs != null) {
             atables.set(X11Kernel.A1a, model_.forecast(fs.getLength(), false));
         }
-        if (bs!=null)
-         {
+        if (bs != null) {
             atables.set(X11Kernel.A1b, model_.backcast(bs.getLength(), false));
         }
+        if (noapply)
+            return;
         // complete the information sets using the pre-processing model
         TsDomain domain = model_.description.getSeriesDomain();
         // extend the domain for forecasts
-        int nf = context.getForecastHorizon(), nb=context.getBackcastHorizon(), ny = context.getFrequency();
+        int nf = context.getForecastHorizon(), nb = context.getBackcastHorizon(), ny = context.getFrequency();
         domain = domain.extend(nb, nf == 0 ? ny : nf);
 
         TsData mh = model_.movingHolidaysEffect(domain);
@@ -102,9 +106,9 @@ public class DefaultPreprocessor extends DefaultX11Algorithm implements
         pt = TsData.add(pt, ut);
         ps = TsData.add(ps, us);
         pa = TsData.add(pa, ua);
-        TsData pi=TsData.add(pa, pc);
-        TsData pall=TsData.add(pt, TsData.add(ps, pi));
-        TsData u=TsData.add(usa, user);
+        TsData pi = TsData.add(pa, pc);
+        TsData pall = TsData.add(pt, TsData.add(ps, pi));
+        TsData u = TsData.add(usa, user);
         model_.backTransform(p, false, false);
         model_.backTransform(pt, false, false);
         model_.backTransform(ps, false, false);

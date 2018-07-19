@@ -51,7 +51,7 @@ public class X11Decomposer implements IDefaultSeriesDecomposer<X11Results> {
     public boolean decompose(PreprocessingModel model, IPreprocessingFilter filter) {
         X11Specification spec = prepareSpec(model);
         X11Toolkit toolkit = X11Toolkit.create(spec);
-        toolkit.setPreprocessor(new DefaultPreprocessor(model, filter));
+        toolkit.setPreprocessor(new DefaultPreprocessor(model, filter, spec.getMode() == DecompositionMode.PseudoAdditive));
         X11Kernel kernel = new X11Kernel();
         kernel.setToolkit(toolkit);
         results_ = kernel.process(model.interpolatedSeries(false));
@@ -65,6 +65,8 @@ public class X11Decomposer implements IDefaultSeriesDecomposer<X11Results> {
 
     private X11Specification prepareSpec(PreprocessingModel model) {
         X11Specification spec = spec_.clone();
+        if (spec.getMode() == DecompositionMode.PseudoAdditive)
+            return spec;
         boolean mul = model.isMultiplicative();
         if (mul) {
             if (!spec.getMode().isMultiplicative()) {

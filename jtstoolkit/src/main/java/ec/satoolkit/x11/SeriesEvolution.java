@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.satoolkit.x11;
 
 import ec.tstoolkit.data.DataBlock;
@@ -31,7 +30,7 @@ import ec.tstoolkit.timeseries.simplets.TsDomain;
 public class SeriesEvolution {
 
     public static double[] calcAbsMeanVariations(TsData s, TsDomain domain,
-            boolean mul) {
+            boolean mul, boolean[] valid) {
         int freq = s.getFrequency().intValue();
         double[] mean = new double[freq];
 
@@ -40,48 +39,55 @@ public class SeriesEvolution {
         if (domain != null) {
             istart = s.getDomain().search(domain.getStart());
             iend = s.getDomain().search(domain.getLast()) + 1;
-        }
-        else {
+        } else {
             istart = 0;
             iend = s.getLength();
         }
-        for (int l = 1; l <= freq; ++l) {
+        for (int lag = 1; lag <= freq; ++lag) {
             double sum = 0;
-            for (int i = istart + l; i < iend; ++i) {
-                double x1 = x[i], x0 = x[i - l];
-                double d = x1 - x0;
-                if (mul) {
-                    d *= 100/x0;
+            int n = 0;
+            for (int i = istart + lag; i < iend; ++i) {
+                if (valid == null || valid[i - lag]) {
+                    double x0 = x[i - lag];
+                    double x1 = x[i];
+                    double d = x1 - x0;
+                    if (mul) {
+                        d *= 100 / x0;
+                    }
+                    sum += Math.abs(d);
+                    ++n;
                 }
-                sum += Math.abs(d);
             }
-            mean[l - 1] = sum / (iend - istart - l);
+            mean[lag - 1] = sum / n;
         }
         return mean;
     }
 
     public static double calcAbsMeanVariations(TsData s, TsDomain domain,
-            int lag, boolean mul) {
+            int lag, boolean mul, boolean[] valid) {
         double[] x = s.internalStorage();
         int istart, iend;
         if (domain != null) {
             istart = s.getDomain().search(domain.getStart());
             iend = s.getDomain().search(domain.getLast()) + 1;
-        }
-        else {
+        } else {
             istart = 0;
             iend = s.getLength();
         }
         double sum = 0;
+        int n = 0;
         for (int i = istart + lag; i < iend; ++i) {
-            double x1 = x[i], x0 = x[i - lag];
-            double d = Math.abs(x1 - x0);
-            if (mul) {
-                d *= 100/x0;
+            if (valid == null || valid[i - lag]) {
+                double x1 = x[i], x0 = x[i - lag];
+                double d = Math.abs(x1 - x0);
+                if (mul) {
+                    d *= 100 / x0;
+                }
+                sum += d;
+                ++n;
             }
-            sum += d;
         }
-        return sum / (iend - istart - lag);
+        return sum / n;
     }
 
     public static double[] calcAbsMeanVariationsByPeriod(TsData s,
@@ -95,23 +101,26 @@ public class SeriesEvolution {
             double cc = 0.0;
             DataBlock bd = bi.nextElement().data;
             int nc = bd.getLength();
+            int n = 0;
             for (int i = 1; i < nc; i++) {
                 double x0 = bd.get(i - 1);
                 double x1 = bd.get(i);
-                double d = x1 - x0;
-                if (mul) {
-                    d *= 100/x0;
+                if (!mul || x0 > 0) {
+                    double d = x1 - x0;
+                    if (mul) {
+                        d *= 100 / x0;
+                    }
+                    cc += Math.abs(d);
+                    ++n;
                 }
-
-                cc += Math.abs(d);
             }
-            pmean[tell++] = cc / (nc - 1);
+            pmean[tell++] = cc / n;
         }
         return pmean;
     }
 
     public static double[] calcMeanVariations(TsData s, TsDomain domain,
-            boolean mul) {
+            boolean mul, boolean[] valid) {
         int freq = s.getFrequency().intValue();
         double[] mean = new double[freq];
 
@@ -120,28 +129,31 @@ public class SeriesEvolution {
         if (domain != null) {
             istart = s.getDomain().search(domain.getStart());
             iend = s.getDomain().search(domain.getLast()) + 1;
-        }
-        else {
+        } else {
             istart = 0;
             iend = s.getLength();
         }
-        for (int l = 1; l <= freq; ++l) {
+        for (int lag = 1; lag <= freq; ++lag) {
             double sum = 0;
-            for (int i = istart + l; i < iend; ++i) {
-                double x1 = x[i], x0 = x[i - l];
-                double d = x1 - x0;
-                if (mul) {
-                    d *= 100/x0;
+            int n = 0;
+            for (int i = istart + lag; i < iend; ++i) {
+                if (valid == null || valid[i - lag]) {
+                    double x1 = x[i], x0 = x[i - lag];
+                    double d = x1 - x0;
+                    if (mul) {
+                        d *= 100 / x0;
+                    }
+                    sum += d;
+                    ++n;
                 }
-                sum += d;
             }
-            mean[l - 1] = sum / (iend - istart - l);
+            mean[lag - 1] = sum / n;
         }
         return mean;
     }
 
     public static double[][] calcVariations(TsData s, TsDomain domain,
-            boolean mul) {
+            boolean mul, boolean[] valid) {
         int freq = s.getFrequency().intValue();
         double[] mean = new double[freq];
         double[] std = new double[freq];
@@ -151,26 +163,27 @@ public class SeriesEvolution {
         if (domain != null) {
             istart = s.getDomain().search(domain.getStart());
             iend = s.getDomain().search(domain.getLast()) + 1;
-        }
-        else {
+        } else {
             istart = 0;
             iend = s.getLength();
         }
         for (int l = 1; l <= freq; ++l) {
             double sum = 0, sum2 = 0;
             for (int i = istart + l; i < iend; ++i) {
-                double x1 = x[i], x0 = x[i - l];
-                double d = x1 - x0;
-                if (mul) {
-                    d *= 100/x0;
+                if (valid == null || valid[i - l]) {
+                    double x1 = x[i], x0 = x[i - l];
+                    double d = x1 - x0;
+                    if (mul) {
+                        d *= 100 / x0;
+                    }
+                    sum += d;
+                    sum2 += d * d;
                 }
-                sum += d;
-                sum2 += d * d;
             }
             int n = (iend - istart - l);
-                mean[l - 1] = sum / n;
-                std[l - 1] = Math.sqrt((sum2 - sum * sum / n) / n);
-         }
+            mean[l - 1] = sum / n;
+            std[l - 1] = Math.sqrt((sum2 - sum * sum / n) / n);
+        }
         return new double[][]{mean, std};
     }
 
@@ -197,11 +210,9 @@ public class SeriesEvolution {
     private static int sign(double val) {
         if (val < 0) {
             return -1;
-        }
-        else if (val > 0) {
+        } else if (val > 0) {
             return 1;
-        }
-        else {
+        } else {
             return 0;
         }
     }

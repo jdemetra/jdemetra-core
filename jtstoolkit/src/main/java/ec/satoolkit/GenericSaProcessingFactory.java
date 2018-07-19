@@ -330,7 +330,11 @@ public class GenericSaProcessingFactory {
                         i = i.fittoDomain(domain);
                     }
                     finals.add(i, ComponentType.Irregular);
-                    finals.add(inv_op(mul, y, s), ComponentType.SeasonallyAdjusted);
+                    if (ldecomp.getMode() == DecompositionMode.PseudoAdditive) {
+                        finals.add(op(mul, t, i), ComponentType.SeasonallyAdjusted);
+                    } else {
+                        finals.add(inv_op(mul, y, s), ComponentType.SeasonallyAdjusted);
+                    }
 
                     // forecasts...
                     if (fdomain != null) {
@@ -372,7 +376,7 @@ public class GenericSaProcessingFactory {
                             }
                             finals.add(fsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
                         }
-                   }
+                    }
                     results.put(FINAL, finals);
                     return Status.Valid;
                 }

@@ -31,6 +31,7 @@ public final class X11Context {
 
     private DecompositionMode mode;
     private TsDomain edomain;
+    private boolean[] validDecomposition;
     private final int nfcasts, nbcasts;
 
     /**
@@ -67,6 +68,10 @@ public final class X11Context {
      */
     public TsDomain getEstimationDomain() {
         return edomain;
+    }
+    
+    public boolean[] getValidDecomposition(){
+        return validDecomposition;
     }
 
     /**
@@ -201,6 +206,13 @@ public final class X11Context {
      */
     public void check(final TsData s) {
         edomain = s.getDomain();
+        if (mode == DecompositionMode.PseudoAdditive){
+            validDecomposition=new boolean[s.getLength()];
+            for (int i=0; i<validDecomposition.length; ++i){
+                validDecomposition[i]=s.get(i)>0;
+            }
+        }else
+            validDecomposition=null;
 
         int freq = s.getFrequency().intValue();
         if (freq != 4 && freq != 12) {
