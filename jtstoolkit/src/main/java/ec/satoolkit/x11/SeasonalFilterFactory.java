@@ -1,7 +1,7 @@
 /*
 * Copyright 2013 National Bank of Belgium
 *
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+* Licensed under the EUPL, Version 1.1 or â€“ as soon they will be approved 
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
 * You may not use this work except in compliance with the Licence.
 * You may obtain a copy of the Licence at:
@@ -53,6 +53,16 @@ public class SeasonalFilterFactory {
      */
     public static final SymmetricFilter S3X15 = FilterFactory
 	    .makeSymmetricFilter(3, 15);
+    
+    public static final AsymmetricEndPoints endPoints(int len){
+        switch (len){
+            case 1: return new AsymmetricEndPoints(FC1);
+            case 2: return new AsymmetricEndPoints(FC3);
+            case 3: return new AsymmetricEndPoints(FC5);
+            case 5: return new AsymmetricEndPoints(FC9);
+            default: return null;
+        }
+    }
 
     private static final double[] ma1x0 = { 0.39, 0.61 },
 	    ma2x1 = { 3.0 / 27, 7.0 / 27, 10.0 / 27, 7.0 / 27 },
