@@ -34,24 +34,19 @@ public final class ProbInvFinder {
 
     /**
      * Given a continuous distribution cdist and a probability p, the method
-     * looks for a value x such that cdist.prob(x, ProbType.Liwer) = p. Lower
+     * looks for a value x such that cdist.prob(x, ProbType.Lower) = p. Lower
      * bound and upper bound for x a given.
      * 
+     * @param p
      * @param cdist
      *            Interface of type IContinuousDistribution
      * @param a
-     *            The lower bound of the search interval
-     * @param b
-     *            The upper bound of the search interval The value of pa for the
-     *            evaluation function ev
+     *            The initial value
+     * @param xtol
+     *            Tolerance threshold on x
      * @param ptol
-     *            A tolerance threshold
+     *            Tolerance threshold on p
      * @return A double x such that cdist.prob(x, ProbType.Lower) = p
-     * @throws MaxIterSpecFuncException
-     *             No solution can be found within the current number of
-     *             iterations
-     * @throws SpecFuncException
-     *             Thrown when fa and fb do not have opposite signs
      */
     public double find(final double p, final double a, final double ptol,
 	    final double xtol, final IContinuousDistribution cdist) {
