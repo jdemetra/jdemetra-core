@@ -17,7 +17,7 @@
 package demetra.tsprovider.grid;
 
 import demetra.tsprovider.util.ObsFormat;
-import demetra.tsprovider.util.ObsGathering;
+import demetra.timeseries.util.ObsGathering;
 
 /**
  *

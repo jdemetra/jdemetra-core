@@ -17,7 +17,7 @@
 package demetra.tsprovider.cube;
 
 import demetra.tsprovider.cursor.TsCursor;
-import demetra.tsprovider.util.TsDataBuilder;
+import demetra.timeseries.util.TsDataBuilder;
 import demetra.io.IteratorWithIO;
 import demetra.timeseries.TsData;
 import java.io.IOException;

@@ -4,6 +4,7 @@
  */
 package demetra.tsprovider.util;
 
+import demetra.timeseries.util.ObsGathering;
 import com.google.common.collect.ImmutableMap;
 import demetra.data.AggregationType;
 import demetra.timeseries.TsUnit;

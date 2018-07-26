@@ -18,7 +18,7 @@ package demetra.sql.jdbc;
 
 import demetra.tsprovider.cube.BulkCubeConfig;
 import demetra.tsprovider.util.ObsFormat;
-import demetra.tsprovider.util.ObsGathering;
+import demetra.timeseries.util.ObsGathering;
 import java.util.List;
 
 /**

@@ -22,7 +22,7 @@ import demetra.tsprovider.DataSource;
 import demetra.tsprovider.util.IConfig;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.ObsFormat;
-import demetra.tsprovider.util.ObsGathering;
+import demetra.timeseries.util.ObsGathering;
 import static demetra.tsprovider.util.Params.onFile;
 import static demetra.tsprovider.util.Params.onObsFormat;
 import static demetra.tsprovider.util.Params.onObsGathering;

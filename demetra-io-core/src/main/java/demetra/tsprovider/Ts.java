@@ -17,7 +17,7 @@
 package demetra.tsprovider;
 
 import demetra.timeseries.TsData;
-import internal.tsprovider.util.TsDataBuilderUtil;
+import internal.timeseries.util.TsDataBuilderUtil;
 import internal.util.LombokHelper;
 import java.util.Map;
 
