@@ -49,6 +49,7 @@ public class Constants {
     public final double SQTPI = 2.50662827463100050242e0;
     public final double SQRTH = 7.07106781186547524401e-1;
     public final double LOGPI = 1.14472988584940017414;
+    public final double LOGTWOPI = Math.log(TWOPI);
 
     public final double BIG = 4.503599627370496e15;
     public final double BIGINV = 2.22044604925031308085e-16;

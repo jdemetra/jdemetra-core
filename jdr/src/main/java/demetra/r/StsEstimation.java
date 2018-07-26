@@ -111,7 +111,7 @@ public class StsEstimation {
             MAPPING.set(SEASVAR, Double.class, source -> source.variance(Component.Seasonal));
             MAPPING.set(NVAR, Double.class, source -> source.variance(Component.Noise));
             MAPPING.set(CDUMP, Double.class, source -> source.getBsm().getCyclicalDumpingFactor());
-            MAPPING.set(CLENGTH, Double.class, source -> source.getBsm().getCyclicalPeriod() / (6 * source.getBsm().getFrequency()));
+            MAPPING.set(CLENGTH, Double.class, source -> source.getBsm().getCyclicalPeriod() / (6 * source.getBsm().getPeriod()));
             MAPPING.set(Y, TsData.class, source -> source.getY());
             MAPPING.set(T, TsData.class, source -> source.getT());
             MAPPING.set(S, TsData.class, source -> source.getS());

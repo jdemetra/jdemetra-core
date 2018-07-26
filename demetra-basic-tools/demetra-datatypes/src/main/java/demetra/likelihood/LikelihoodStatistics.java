@@ -23,7 +23,7 @@ import java.util.Formatter;
 /**
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 @lombok.Data
 public class LikelihoodStatistics {
 
@@ -121,6 +121,9 @@ public class LikelihoodStatistics {
         AICC = -2 * (ll - (n * np) / (n - np - 1));
         BIC = -2 * ll + np * Math.log(n);
         BIC2 = (-2 * nll + np * Math.log(n)) / n;
+        // Remark: the definition used in Tramo is rather strange: ignoring the
+        // logdeterminant favors (for instance) models with quasi unit roots 
+        // in their AR polynomial.
         if (ssqErr != 0) {
             BICC = Math.log(ssqErr / n) + (np - 1) * Math.log(n) / n; // TRAMO-like
         } else {

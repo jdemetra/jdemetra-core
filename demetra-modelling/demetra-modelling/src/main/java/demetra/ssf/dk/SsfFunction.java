@@ -44,7 +44,7 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
         private final ISsfData data;
         private Matrix X;
         private int[] diffuseX;
-        private boolean ml = true, log = false, fast = false, mt = false, sym = false;
+        private boolean ml = true, log = false, fast = false, mt = false, sym = false, scalingFactor=true;
 
         private Builder(final ISsfData data, final IParametricMapping<S> mapping, final ISsfBuilder<S, F> builder) {
             this.data = data;
@@ -83,8 +83,13 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
             return this;
         }
 
+        public Builder useScalingFactor(boolean scalingFactor) {
+            this.scalingFactor=scalingFactor;
+            return this;
+        }
+
         public SsfFunction<S, F> build() {
-            return new SsfFunction(data, X, diffuseX, mapping, builder, ml, log, fast, mt, sym);
+            return new SsfFunction(data, X, diffuseX, mapping, builder, ml, log, fast, mt, sym, scalingFactor);
         }
     }
 
@@ -98,10 +103,10 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
     private final boolean missing;
     private final Matrix X;
     private final int[] diffuseX;
-    private final boolean ml, log, fast, mt, sym;
+    private final boolean ml, log, fast, mt, sym, scaling;
 
     private SsfFunction(ISsfData data, Matrix X, int[] diffuseX, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
-            final boolean ml, final boolean log, final boolean fast, final boolean mt, final boolean sym) {
+            final boolean ml, final boolean log, final boolean fast, final boolean mt, final boolean sym, final boolean scaling) {
         this.data = data;
         this.mapping = mapper;
         this.builder = builder;
@@ -113,6 +118,7 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
         this.log = log;
         this.mt = mt;
         this.sym = sym;
+        this.scaling=scaling;
     }
 
     public IParametricMapping<S> getMapping() {
@@ -129,6 +135,10 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
 
     public boolean isFast() {
         return fast;
+    }
+
+    public boolean isScalingFactor() {
+        return scaling;
     }
 
     @Override

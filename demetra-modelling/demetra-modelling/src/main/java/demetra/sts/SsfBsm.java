@@ -84,7 +84,7 @@ public class SsfBsm extends Ssf {
             ++n;
         }
         if (model.seasVar >= 0) {
-            n += model.getFrequency() - 1;
+            n += model.getPeriod() - 1;
         }
         return n;
     }
@@ -154,7 +154,7 @@ public class SsfBsm extends Ssf {
             ccos = model.ccos;
             csin = model.csin;
             seasModel = model.seasModel;
-            freq = model.freq;
+            freq = model.period;
             if (seasVar > 0) {
                 tsvar = SeasonalComponent.tsVar(seasModel, freq);
                 tsvar.mul(seasVar);
