@@ -17,7 +17,7 @@
 package demetra.tsprovider.cube;
 
 import demetra.timeseries.TsUnit;
-import demetra.tsprovider.util.ObsGathering;
+import demetra.timeseries.util.ObsGathering;
 import java.util.stream.Collector;
 import javax.annotation.Nonnull;
 

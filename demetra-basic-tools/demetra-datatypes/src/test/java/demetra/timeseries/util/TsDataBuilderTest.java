@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tsprovider.util;
+package demetra.timeseries.util;
 
 import demetra.data.AggregationType;
 import static demetra.data.AggregationType.Average;
@@ -29,12 +29,12 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import static demetra.timeseries.TsUnit.*;
 import demetra.timeseries.TsData;
-import internal.tsprovider.util.GuessingUnit;
-import static internal.tsprovider.util.TsDataBuilderUtil.DUPLICATION_WITHOUT_AGGREGATION;
-import static internal.tsprovider.util.TsDataBuilderUtil.GUESS_DUPLICATION;
-import static internal.tsprovider.util.TsDataBuilderUtil.GUESS_SINGLE;
-import static internal.tsprovider.util.TsDataBuilderUtil.INVALID_AGGREGATION;
-import static internal.tsprovider.util.TsDataBuilderUtil.NO_DATA;
+import internal.timeseries.util.GuessingUnit;
+import static internal.timeseries.util.TsDataBuilderUtil.DUPLICATION_WITHOUT_AGGREGATION;
+import static internal.timeseries.util.TsDataBuilderUtil.GUESS_DUPLICATION;
+import static internal.timeseries.util.TsDataBuilderUtil.GUESS_SINGLE;
+import static internal.timeseries.util.TsDataBuilderUtil.INVALID_AGGREGATION;
+import static internal.timeseries.util.TsDataBuilderUtil.NO_DATA;
 import static java.lang.Double.NaN;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -55,7 +55,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import static demetra.timeseries.TsPeriod.DEFAULT_EPOCH;
-import static java.util.EnumSet.of;
 import static java.util.EnumSet.of;
 
 /**

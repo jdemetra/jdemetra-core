@@ -14,12 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tsprovider.util;
+package demetra.timeseries.util;
 
 import demetra.design.BuilderPattern;
 import demetra.timeseries.TsData;
-import internal.tsprovider.util.ByLongDataBuilder;
-import internal.tsprovider.util.ByObjDataBuilder;
+import internal.timeseries.util.ByLongDataBuilder;
+import internal.timeseries.util.ByObjDataBuilder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;

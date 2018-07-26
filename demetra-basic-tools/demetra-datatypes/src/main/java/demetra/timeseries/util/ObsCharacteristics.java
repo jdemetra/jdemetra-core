@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tsprovider.util;
+package demetra.timeseries.util;
 
 /**
  * List of characteristics of observation that will be collected in order to

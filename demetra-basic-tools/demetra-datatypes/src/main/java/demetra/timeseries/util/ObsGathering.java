@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tsprovider.util;
+package demetra.timeseries.util;
 
 import demetra.data.AggregationType;
 import demetra.timeseries.TsUnit;
