@@ -34,6 +34,8 @@ import internal.data.InternalDoubleSeq;
  * @author Philippe Charles
  */
 public interface DoubleSequence extends BaseSequence<Double> {
+    
+    static final double[] EMPTYARRAY=new double[0];
 
     /**
      * Creates a new value using an array of doubles. Internal use only since it

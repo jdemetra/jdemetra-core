@@ -49,7 +49,7 @@ public final class DataBlock implements DoubleSequence {
         double apply(@Nonnull DataBlock data);
     }
 
-    public static final DataBlock EMPTY = new DataBlock(new double[0], 0, 0, 1);
+    public static final DataBlock EMPTY = new DataBlock(DoubleSequence.EMPTYARRAY, 0, 0, 1);
 
     //<editor-fold defaultstate="collapsed" desc="Static factories">
     /**

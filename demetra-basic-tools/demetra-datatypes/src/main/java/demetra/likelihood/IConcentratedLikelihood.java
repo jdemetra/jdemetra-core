@@ -91,7 +91,7 @@ public interface IConcentratedLikelihood extends ILikelihood {
     default double[] ser(int nhp, boolean unbiased) {
 
         if (nx() == 0) {
-            return null;
+            return DoubleSequence.EMPTYARRAY;
         }
         double[] e = unscaledCovariance().diagonal().toArray();
         int ndf = unbiased ? dim() - nx() - nhp : dim();

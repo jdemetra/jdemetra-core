@@ -50,7 +50,7 @@ public class BasicStructuralModel {
         if (nFixed) {
             spec.fixComponent(nVar, Component.Noise);
         } else {
-            spec.setNoiseUse(of(nVar));
+            spec.setNoiseUse(nVar > 0 ? ComponentUse.Free : ComponentUse.Unused);
         }
         if (cFixed) {
             spec.fixComponent(cVar, Component.Cycle);
@@ -104,9 +104,9 @@ public class BasicStructuralModel {
     public BasicStructuralModel(BsmSpec spec, int period) {
         this.period = period;
         seasModel = spec.getSeasonalModel();
-        switch (spec.getNoiseUse()){
+        switch (spec.getNoiseUse()) {
             case Free:
-                nVar=1;
+                nVar = 1;
                 nFixed = false;
                 break;
             case Fixed:
@@ -121,7 +121,7 @@ public class BasicStructuralModel {
         switch (spec.getCycleUse()) {
             case Free:
                 cycle(.5, period * 2);
-                cVar=1;
+                cVar = 1;
                 cFixed = false;
                 break;
             case Fixed:
@@ -134,9 +134,9 @@ public class BasicStructuralModel {
                 cVar = -1;
                 break;
         }
-        switch (spec.getLevelUse()){
+        switch (spec.getLevelUse()) {
             case Free:
-                lVar=1;
+                lVar = 1;
                 lFixed = false;
                 break;
             case Fixed:
@@ -148,9 +148,9 @@ public class BasicStructuralModel {
                 lVar = -1;
                 break;
         }
-        switch (spec.getSlopeUse()){
+        switch (spec.getSlopeUse()) {
             case Free:
-                sVar=1;
+                sVar = 1;
                 sFixed = false;
                 break;
             case Fixed:
@@ -162,9 +162,9 @@ public class BasicStructuralModel {
                 sVar = -1;
                 break;
         }
-        switch (spec.getSeasUse()){
+        switch (spec.getSeasUse()) {
             case Free:
-                seasVar=1;
+                seasVar = 1;
                 seasFixed = false;
                 break;
             case Fixed:
@@ -181,12 +181,13 @@ public class BasicStructuralModel {
     /**
      *
      * @param factor
-     * @return 
+     * @return
      */
     public boolean scaleVariances(double factor) {
         if ((lFixed && lVar != 0) || (sFixed && sVar != 0) || (seasFixed && seasVar != 0)
-                || (cFixed && cVar != 0) || nFixed)
+                || (cFixed && cVar != 0) || nFixed) {
             return false;
+        }
         if (lVar > 0) {
             lVar *= factor;
         }
@@ -250,10 +251,12 @@ public class BasicStructuralModel {
         if (max != Component.Undefined) {
             double vmax = getVariance(max);
             if (vmax != val) {
-                if (scaleVariances(val / vmax))
+                if (scaleVariances(val / vmax)) {
                     return max;
-            }else
+                }
+            } else {
                 return max;
+            }
         }
         return Component.Undefined;
     }
