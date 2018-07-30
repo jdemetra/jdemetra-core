@@ -75,7 +75,11 @@ public final class BsmSpec implements Cloneable {
                 return;
             case Noise:
                 noiseVar = var;
-                noiseUse = ComponentUse.Fixed;
+                if (var == 0) {
+                    noiseUse = ComponentUse.Unused;
+                } else {
+                    noiseUse = ComponentUse.Fixed;
+                }
         }
     }
 

@@ -149,7 +149,7 @@ public class SsfBsm extends Ssf {
             sVar = model.sVar;
             seasVar = model.seasVar;
             cVar = model.cVar;
-            nVar = model.nVar;
+            nVar = model.nVar <= 0 ? 0 : model.nVar;
             cDump = model.cDump;
             ccos = model.ccos;
             csin = model.csin;
