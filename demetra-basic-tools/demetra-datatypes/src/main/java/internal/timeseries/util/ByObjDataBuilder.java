@@ -14,14 +14,14 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.tsprovider.util;
+package internal.timeseries.util;
 
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import demetra.tsprovider.util.ObsCharacteristics;
-import demetra.tsprovider.util.ObsGathering;
-import demetra.tsprovider.util.TsDataBuilder;
+import demetra.timeseries.util.ObsCharacteristics;
+import demetra.timeseries.util.ObsGathering;
+import demetra.timeseries.util.TsDataBuilder;
 import java.time.LocalDateTime;
 import java.util.function.Function;
 import lombok.AccessLevel;

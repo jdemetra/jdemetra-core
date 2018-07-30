@@ -14,10 +14,10 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.tsprovider.util;
+package internal.timeseries.util;
 
 import demetra.timeseries.TsData;
-import demetra.tsprovider.util.TsDataBuilder;
+import demetra.timeseries.util.TsDataBuilder;
 
 /**
  *

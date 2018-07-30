@@ -36,7 +36,7 @@ public class FixedDayTest {
     @Test
     public void test1() {
         FixedDay fd = new FixedDay(7, 21);
-        Iterable<IHolidayInfo> iterable = fd.getIterable(LocalDate.now(), LocalDate.now().plus(3, ChronoUnit.YEARS));
+        Iterable<IHolidayInfo> iterable = fd.getIterable(LocalDate.of(2018, 1, 1), LocalDate.of(2018, 1, 1).plus(3, ChronoUnit.YEARS));
         Stream<IHolidayInfo> stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(stream.count() == 3);
         stream = StreamSupport.stream(iterable.spliterator(), false);
@@ -46,7 +46,7 @@ public class FixedDayTest {
     @Test
     public void test2() {
         FixedDay fd = new FixedDay(7, 21);
-        Iterable<IHolidayInfo> iterable = fd.getIterable(LocalDate.of(2017, 7, 21), LocalDate.now().plus(3, ChronoUnit.YEARS));
+        Iterable<IHolidayInfo> iterable = fd.getIterable(LocalDate.of(2017, 7, 21), LocalDate.of(2018, 1, 1).plus(3, ChronoUnit.YEARS));
         Stream<IHolidayInfo> stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(stream.count() == 4);
         stream = StreamSupport.stream(iterable.spliterator(), false);

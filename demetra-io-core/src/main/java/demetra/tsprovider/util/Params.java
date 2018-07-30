@@ -16,6 +16,7 @@
  */
 package demetra.tsprovider.util;
 
+import demetra.timeseries.util.ObsGathering;
 import demetra.data.AggregationType;
 import demetra.timeseries.TsUnit;
 import demetra.tsprovider.cube.BulkCubeConfig;

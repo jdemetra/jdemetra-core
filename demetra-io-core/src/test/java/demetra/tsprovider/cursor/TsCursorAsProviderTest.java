@@ -36,7 +36,7 @@ import static demetra.tsprovider.TsInformationType.MetaData;
 import static demetra.tsprovider.TsInformationType.None;
 import demetra.tsprovider.TsMoniker;
 import demetra.tsprovider.TsProvider;
-import internal.tsprovider.util.TsDataBuilderUtil;
+import internal.timeseries.util.TsDataBuilderUtil;
 import ioutil.IO;
 import java.io.IOException;
 import java.util.Collections;

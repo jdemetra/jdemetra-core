@@ -18,7 +18,7 @@ package demetra.spreadsheet;
 
 import demetra.tsprovider.FileBean;
 import demetra.tsprovider.util.ObsFormat;
-import demetra.tsprovider.util.ObsGathering;
+import demetra.timeseries.util.ObsGathering;
 import java.io.File;
 
 /**
