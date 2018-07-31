@@ -5,12 +5,14 @@
  */
 package demetra.stats;
 
+import demetra.design.Development;
+
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-@lombok.Builder
+@Development(status = Development.Status.Beta)
 public class TestResult {
  
     double value;

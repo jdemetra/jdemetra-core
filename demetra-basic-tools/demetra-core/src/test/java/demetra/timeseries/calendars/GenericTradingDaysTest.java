@@ -17,7 +17,6 @@
 package demetra.timeseries.calendars;
 
 import demetra.timeseries.calendars.GenericTradingDays;
-import demetra.timeseries.calendars.DayClustering;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.timeseries.TsDomain;

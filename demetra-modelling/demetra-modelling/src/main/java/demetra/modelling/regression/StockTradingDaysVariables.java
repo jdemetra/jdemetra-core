@@ -19,7 +19,7 @@ package demetra.modelling.regression;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.calendars.Utility;
+import demetra.timeseries.calendars.CalendarUtility;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
@@ -95,7 +95,7 @@ public class StockTradingDaysVariables implements ITradingDaysVariable {
                 }
                 int day = w;
                 if (day > 28) {
-                    int wmax = Utility.getNumberOfDaysByMonth(year, month);
+                    int wmax = CalendarUtility.getNumberOfDaysByMonth(year, month);
                     if (day > wmax) {
                         day = wmax;
                     }

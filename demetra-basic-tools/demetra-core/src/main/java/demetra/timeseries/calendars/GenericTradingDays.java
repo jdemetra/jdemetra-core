@@ -18,10 +18,10 @@ package demetra.timeseries.calendars;
 
 import demetra.data.Cell;
 import demetra.data.DataBlock;
+import demetra.design.Development;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import static demetra.timeseries.calendars.Utility.getCumulatedMonthDays;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -30,6 +30,7 @@ import java.util.Objects;
  *
  * @author Jean Palate
  */
+@Development(status = Development.Status.Alpha)
 public class GenericTradingDays {
 
     private final DayClustering clustering;
@@ -232,11 +233,11 @@ public class GenericTradingDays {
     
     private static int calc(int year, final int month, final int day) {
 
-        boolean bLeapYear = Utility.isLeap(year);
+        boolean bLeapYear = CalendarUtility.isLeap(year);
 
         // make Jan 1, 1AD be 0
         int nDate = year * 365 + year / 4 - year / 100 + year / 400
-                + getCumulatedMonthDays(month - 1) + day;
+                + CalendarUtility.getCumulatedMonthDays(month - 1) + day;
 
         // If leap year and it's before March, subtract 1:
         if ((month < 3) && bLeapYear) {

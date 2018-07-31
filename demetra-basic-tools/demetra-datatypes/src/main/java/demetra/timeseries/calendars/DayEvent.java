@@ -17,10 +17,13 @@
 
 package demetra.timeseries.calendars;
 
+import demetra.design.Development;
+
 /**
  *
  * @author Jean Palate
  */
+@Development(status = Development.Status.Beta)
 public enum DayEvent {
 
     /**

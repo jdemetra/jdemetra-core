@@ -16,6 +16,7 @@
  */
 package demetra.stats.mapping;
 
+import demetra.design.Development;
 import demetra.information.InformationMapping;
 import demetra.stats.TestResult;
 
@@ -24,6 +25,7 @@ import demetra.stats.TestResult;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
+@Development(status = Development.Status.Beta)
 public class TestInfo {
 
     private final String VALUE = "value", PVALUE = "pvalue", DESC = "description";

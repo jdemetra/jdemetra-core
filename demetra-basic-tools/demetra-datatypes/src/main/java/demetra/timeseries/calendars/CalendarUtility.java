@@ -23,8 +23,6 @@ import demetra.timeseries.TsPeriod;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import static java.time.temporal.ChronoUnit.DAYS;
-import java.util.Iterator;
 import javax.annotation.Nonnull;
 
 /**
@@ -33,7 +31,7 @@ import javax.annotation.Nonnull;
  */
 @Development(status = Development.Status.Alpha)
 @lombok.experimental.UtilityClass
-public class Utility {
+public class CalendarUtility {
 
     /**
      *
@@ -65,7 +63,7 @@ public class Utility {
      * @param month
      * @return
      */
-    LocalDate firstWeekDay(DayOfWeek day, int year, int month) {
+    public LocalDate firstWeekDay(DayOfWeek day, int year, int month) {
         TsPeriod m = TsPeriod.monthly(year, month - 1);
         LocalDate start = m.start().toLocalDate();
         int iday = day.getValue();
