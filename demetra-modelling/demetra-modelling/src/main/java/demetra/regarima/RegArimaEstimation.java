@@ -18,21 +18,11 @@ package demetra.regarima;
 
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.arima.IArimaModel;
-import demetra.arima.StationaryTransformation;
-import demetra.arima.internal.FastKalmanFilter;
-import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihood;
-import demetra.likelihood.Likelihood;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.LogLikelihoodFunction;
-import demetra.linearmodel.LeastSquaresResults;
-import demetra.linearmodel.LinearModel;
-import demetra.linearmodel.Ols;
-import demetra.maths.functions.IParametricMapping;
 import demetra.sarima.SarimaModel;
-import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 

@@ -20,10 +20,7 @@ import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
 import demetra.sarima.SarimaSpecification;
-import demetra.sarima.SarimaType;
-import demetra.sarima.SarimaType.SarimaTypeBuilder;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Objects;
 
 /**
