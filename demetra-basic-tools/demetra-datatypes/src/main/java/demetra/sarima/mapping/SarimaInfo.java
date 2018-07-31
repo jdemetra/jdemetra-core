@@ -37,11 +37,11 @@ public class SarimaInfo {
     static final InformationMapping<SarimaType> MAPPING = new InformationMapping<>(SarimaType.class);
 
     static {
-        MAPPING.set(P, Integer.class, source -> source.getPhi().getDegree());
+        MAPPING.set(P, Integer.class, source -> source.getPhi().degree());
         MAPPING.set(D, Integer.class, source -> source.getD());
-        MAPPING.set(Q, Integer.class, source -> source.getTheta().getDegree());
-        MAPPING.set(BP, Integer.class, source -> source.getBphi().getDegree());
-        MAPPING.set(BQ, Integer.class, source -> source.getBtheta().getDegree());
+        MAPPING.set(Q, Integer.class, source -> source.getTheta().degree());
+        MAPPING.set(BP, Integer.class, source -> source.getBphi().degree());
+        MAPPING.set(BQ, Integer.class, source -> source.getBtheta().degree());
         MAPPING.set(BD, Integer.class, source -> source.getBd());
         MAPPING.set(PARAMETERS, double[].class,
                 source -> {
@@ -63,13 +63,13 @@ public class SarimaInfo {
                     return all;
                 });
         MAPPING.setArray(PHI, 1, 12, Double.class,
-                (source, i) -> i >source.getPhi().getDegree() ? 0 : source.getPhi().get(i));
+                (source, i) -> i >source.getPhi().degree() ? 0 : source.getPhi().get(i));
         MAPPING.setArray(BPHI, 1, 12, Double.class,
-                (source, i) -> i >source.getBphi().getDegree() ? 0 : source.getBphi().get(i));
+                (source, i) -> i >source.getBphi().degree() ? 0 : source.getBphi().get(i));
         MAPPING.setArray(THETA, 1, 12, Double.class,
-                (source, i) -> i >source.getTheta().getDegree() ? 0 : source.getTheta().get(i));
+                (source, i) -> i >source.getTheta().degree() ? 0 : source.getTheta().get(i));
         MAPPING.setArray(BTHETA, 1, 12, Double.class,
-                (source, i) -> i >source.getBtheta().getDegree() ? 0 : source.getBtheta().get(i));
+                (source, i) -> i >source.getBtheta().degree() ? 0 : source.getBtheta().get(i));
 
     }
 

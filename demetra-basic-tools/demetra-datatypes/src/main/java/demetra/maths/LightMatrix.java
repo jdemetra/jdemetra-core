@@ -22,12 +22,12 @@ import demetra.data.DoubleSequence;
  *
  * @author Jean Palate
  */
-class MatrixReader implements MatrixType {
+class LightMatrix implements MatrixType {
 
     private final double[] storage;
     private final int nrows, ncolumns;
 
-    MatrixReader(final double[] storage, final int nrows, final int ncolumns) {
+    LightMatrix(final double[] storage, final int nrows, final int ncolumns) {
         this.storage = storage;
         this.nrows = nrows;
         this.ncolumns = ncolumns;

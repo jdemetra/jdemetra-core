@@ -78,8 +78,8 @@ public class RationalBackFilter implements IRationalFilter {
     @Override
     public Complex frequencyResponse(double freq) {
         IntToDoubleFunction fn = rationalFunction.getNumerator()::get;
-        Complex n = Utility.frequencyResponse(i->fn.applyAsDouble(i-bshift), bshift, bshift+rationalFunction.getNumerator().getDegree(), freq);
-        Complex d = Utility.frequencyResponse(rationalFunction.getDenominator()::get, 0, rationalFunction.getDenominator().getDegree(), freq);
+        Complex n = Utility.frequencyResponse(i->fn.applyAsDouble(i-bshift), bshift, bshift+rationalFunction.getNumerator().degree(), freq);
+        Complex d = Utility.frequencyResponse(rationalFunction.getDenominator()::get, 0, rationalFunction.getDenominator().degree(), freq);
         return d.div(n);
     }
 
@@ -95,7 +95,7 @@ public class RationalBackFilter implements IRationalFilter {
      */
     public int getLBound() {
 	if (rationalFunction.isFinite())
-	    return -rationalFunction.getNumerator().getDegree();
+	    return -rationalFunction.getNumerator().degree();
 	else
 	    return Integer.MIN_VALUE;
     }

@@ -46,8 +46,8 @@ public class SymmetricFilterAlgorithms {
             Polynomial q = Q.asPolynomial();
             Polynomial c = filter.coefficientsAsPolynomial();
 
-            int nq = q.length() - 1;
-            int nc = c.length() - 1;
+            int nq = q.degree();
+            int nc = c.degree();
             int r = nq > nc ? nq : nc;
 
             Matrix a = Matrix.square(r + 1);

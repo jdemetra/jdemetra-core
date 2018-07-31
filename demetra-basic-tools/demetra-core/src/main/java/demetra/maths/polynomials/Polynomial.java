@@ -28,8 +28,8 @@ import demetra.maths.ComplexMath;
 import demetra.maths.Simplifying;
 import demetra.util.Arrays2;
 import lombok.NonNull;
-import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
+import demetra.maths.PolynomialType;
 import demetra.maths.polynomials.spi.RootsSolver;
 
 /**
@@ -38,7 +38,7 @@ import demetra.maths.polynomials.spi.RootsSolver;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public final class Polynomial implements DoubleSequence {
+public final class Polynomial implements PolynomialType {
 
     public static final Polynomial ZERO = new Polynomial(Polynomial.Coefficients.zero());
     public static final Polynomial ONE = new Polynomial(Polynomial.Coefficients.one());
@@ -47,29 +47,7 @@ public final class Polynomial implements DoubleSequence {
     private final AtomicReference<Complex[]> defRoots = new AtomicReference<>(); // caching the roots
     private static final double EPSILON = 1e-9;
 
-    //<editor-fold defaultstate="collapsed" desc="DoubleSequence interface">
-    @Override
-    public void copyTo(double[] buffer, int start) {
-        System.arraycopy(coeff, 0, buffer, start, coeff.length);
-    }
-
-    @Override
-    public int length() {
-        return coeff.length;
-    }
-
-    @Override
-    public DoubleSequence extract(int start, int length) {
-        return DoubleSequence.ofInternal(coeff, start, length);
-    }
-
-    @Override
-    public DoubleReader reader() {
-        return DoubleReader.of(coeff);
-    }
-
-    //</editor-fold>
-    /**
+     /**
      * cut-off value for zero. 1e-9.
      *
      * @return
@@ -261,8 +239,39 @@ public final class Polynomial implements DoubleSequence {
         this.coeff = coefficients;
     }
 
-    public int getDegree() {
+    /**
+     * Degree of the polynomial
+     * @return 
+     */
+    @Override
+    public int degree() {
         return coeff.length - 1;
+    }
+    
+    @Override
+    public DoubleSequence coefficients(){
+        return DoubleSequence.ofInternal(coeff);
+    }
+    
+    @Override
+    public double[] toArray(){
+        return coeff.clone();
+    }
+
+    /**
+     * Gets the coefficient at the index.
+     *
+     * @param idx
+     * @return
+     */
+    @Override
+    public double get(final int idx) {
+        return coeff[idx];
+    }
+
+    @Override
+    public void copyTo(double[] buffer, int startpos){
+        System.arraycopy(coeff, 0, buffer, startpos, coeff.length);
     }
 
     /**
@@ -442,26 +451,6 @@ public final class Polynomial implements DoubleSequence {
             f.add(Complex.polar(coeff[i], w * i));
         }
         return f.build();
-    }
-
-    /**
-     * Gets the coefficient at the index.
-     *
-     * @param idx
-     * @return
-     */
-    @Override
-    public double get(final int idx) {
-        return coeff[idx];
-    }
-
-    /**
-     * Gets a copy ofFunction the coefficients of the polynomial.
-     *
-     * @return
-     */
-    public DoubleSequence coefficients() {
-        return DoubleSequence.ofInternal(coeff);
     }
 
     @Override
@@ -698,7 +687,7 @@ public final class Polynomial implements DoubleSequence {
         if (this.isIdentity()) {
             return r;
         }
-        int d = getDegree() + r.getDegree();
+        int d = degree() + r.degree();
         double[] result = new double[d + 1];
         for (int u = 0; u < coeff.length; ++u) {
             if (coeff[u] != 0) {
@@ -766,7 +755,7 @@ public final class Polynomial implements DoubleSequence {
         // info.NumberGroupSeparator="";
         // info.NumberDecimalDigits=4;
         boolean sign = false;
-        int n = p.getDegree();
+        int n = p.degree();
         if (n == 0) {
             sb.append(new Formatter().format(fmt, p.get(0)));
         } else {
@@ -981,7 +970,7 @@ public final class Polynomial implements DoubleSequence {
                     }
                 }
             }
-            if (common.getDegree() > 0) {
+            if (common.degree() > 0) {
                 simplifiedLeft = left;
                 simplifiedRight = right.divide(common);
                 return true;
@@ -1033,7 +1022,7 @@ public final class Polynomial implements DoubleSequence {
      * @return
      */
     public static Division divide(final Polynomial num, final Polynomial denom) {
-        int n = num.getDegree(), nv = denom.getDegree();
+        int n = num.degree(), nv = denom.degree();
         if (nv > n) {
             return new Division(num, Polynomial.ZERO);
         }

@@ -83,7 +83,7 @@ public class UnitRootsSolver {
 
     private Polynomial process(final Polynomial p, final UnitRoots ur) {
         // return p;
-        int num = startDegree == 0 ? (p.getDegree() * 2) + 1 : startDegree; //
+        int num = startDegree == 0 ? (p.degree() * 2) + 1 : startDegree; //
 
         int[] divs = new int[num];
         UnitRoots tmp = new UnitRoots();

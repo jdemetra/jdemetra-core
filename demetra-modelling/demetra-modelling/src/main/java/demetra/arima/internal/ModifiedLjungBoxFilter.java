@@ -91,8 +91,8 @@ public class ModifiedLjungBoxFilter implements IArmaFilter {
 	m_ar = arima.getAR().asPolynomial();
 	m_ma = arima.getMA().asPolynomial();
 	m_n = n;
-	m_p = m_ar.getDegree();
-	m_q = m_ma.getDegree();
+	m_p = m_ar.degree();
+	m_q = m_ma.degree();
 
 	if (m_q > 0) {
 	    m_malb = new MaLjungBoxFilter();

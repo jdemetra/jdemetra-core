@@ -22,12 +22,12 @@ import demetra.data.DoubleSequence;
  *
  * @author Jean Palate
  */
-class SubMatrixReader implements MatrixType {
+class LightSubMatrix implements MatrixType {
 
     private final MatrixType core;
     private final int r0, nr, c0, nc;
 
-    SubMatrixReader(final MatrixType core, int r0, int nr, int c0, int nc) {
+    LightSubMatrix(final MatrixType core, int r0, int nr, int c0, int nc) {
         this.core = core;
         this.r0 = r0;
         this.nr = nr;

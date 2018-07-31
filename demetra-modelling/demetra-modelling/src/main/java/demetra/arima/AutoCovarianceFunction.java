@@ -88,7 +88,7 @@ public class AutoCovarianceFunction {
     public AutoCovarianceFunction(final Polynomial ma, final Polynomial ar, final double var) {
         this.ma = ma;
         this.ar = ar;
-        if (ar.getDegree() == 0) {
+        if (ar.degree() == 0) {
             this.sma = SymmetricFilter.fromFilter(new BackFilter(ma), var);
         } else {
             this.sma = null;
@@ -169,10 +169,10 @@ public class AutoCovarianceFunction {
         if (acov.length <= rank) {
             double[] tmp = new double[rank + 1];
             System.arraycopy(acov, 0, tmp, 0, acov.length);
-            int p = ar.length();
+            int p = ar.degree();
             for (int r = acov.length; r <= rank; ++r) {
                 double s = 0;
-                for (int j = 1; j < p; ++j) {
+                for (int j = 1; j <= p; ++j) {
                     s += ar.get(j) * tmp[r - j];
                 }
                 tmp[r] = -s;
@@ -192,7 +192,7 @@ public class AutoCovarianceFunction {
         if (!hasBound()) {
             return -1;
         }
-        return ma.getDegree() + 1;
+        return ma.degree() + 1;
     }
 
     /**
@@ -202,6 +202,6 @@ public class AutoCovarianceFunction {
      * the auto-regressive polynomial is 1; false otherwise.
      */
     public boolean hasBound() {
-        return ar.getDegree() + 1 == 1;
+        return ar.degree() + 1 == 1;
     }
 }

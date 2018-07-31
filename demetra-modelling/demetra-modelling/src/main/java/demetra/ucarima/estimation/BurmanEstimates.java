@@ -119,7 +119,7 @@ public class BurmanEstimates {
         // //////////////////////////////////
         // Compute w1(t) = g(F) z(t)
         Polynomial g = m_g[cmp];
-        int gstar = g.getDegree();
+        int gstar = g.degree();
         double[] w1 = new double[n + qstar];
         for (int i = 0; i < n + qstar; ++i) {
             double s = g.get(0) * z[nf + i];
@@ -276,10 +276,10 @@ public class BurmanEstimates {
         for (int i = 0; i < m_g.length; ++i) {
             int nr = 0;
             if (m_g[i] != null) {
-                nr = m_g[i].getDegree();
+                nr = m_g[i].degree();
             }
             if (m_ma != null) {
-                nr += m_ma.getDegree();
+                nr += m_ma.degree();
             }
             if (m_bmean) {
                 nr += 2;
@@ -292,8 +292,8 @@ public class BurmanEstimates {
         if (m_nf > nf) {
             nf = m_nf;
         }
-        if (m_bmean && nf <= m_ar.getDegree()) {
-            nf = m_ar.getDegree() + 1;
+        if (m_bmean && nf <= m_ar.degree()) {
+            nf = m_ar.degree() + 1;
         }
         ExactArimaForecasts fcast = new ExactArimaForecasts();
         fcast.prepare(m_wk.getUcarimaModel().getModel(), m_bmean);
@@ -527,8 +527,8 @@ public class BurmanEstimates {
     private void initSolver() {
         Polynomial ma = m_ma;
         Polynomial ar = m_ar;
-        int qstar = ma.getDegree();
-        int pstar = ar.getDegree();
+        int qstar = ma.degree();
+        int pstar = ar.degree();
         if (useD1()) {
             qstar += 1;
         }
@@ -538,7 +538,7 @@ public class BurmanEstimates {
 //         z is the extended series with forecasts and backcasts
         Matrix m = Matrix.square(pstar + qstar);
         for (int i = 0; i < pstar; ++i) {
-            for (int j = 0; j <= ma.getDegree(); ++j) {
+            for (int j = 0; j <= ma.degree(); ++j) {
                 m.set(i, i + j, ma.get(j));
             }
         }

@@ -218,8 +218,8 @@ public class McElroyEstimates {
         Polynomial ds = stS.getUnitRoots().asPolynomial();
         Polynomial dn = stN.getUnitRoots().asPolynomial();
 
-        Matrix DS = Matrix.make(n - ds.getDegree(), n);
-        Matrix DN = Matrix.make(n - dn.getDegree(), n);
+        Matrix DS = Matrix.make(n - ds.degree(), n);
+        Matrix DN = Matrix.make(n - dn.degree(), n);
 
         double[] c = ds.toArray();
         for (int j = 0; j < c.length; ++j) {
@@ -233,20 +233,20 @@ public class McElroyEstimates {
         }
 
         AnsleyFilter S = new AnsleyFilter();
-        S.prepare(stS.getStationaryModel(), n - ds.getDegree());
+        S.prepare(stS.getStationaryModel(), n - ds.degree());
         filters_[cmp] = S;
         AnsleyFilter N = new AnsleyFilter();
-        N.prepare(stN.getStationaryModel(), n - dn.getDegree());
+        N.prepare(stN.getStationaryModel(), n - dn.degree());
 
-        Matrix Q = Matrix.make(n, 2 * n - ds.getDegree() - dn.getDegree());
+        Matrix Q = Matrix.make(n, 2 * n - ds.degree() - dn.degree());
         for (int i = 0; i < n; ++i) {
-            S.apply(DS.column(i), Q.row(n - i - 1).range(0, n - ds.getDegree()));
+            S.apply(DS.column(i), Q.row(n - i - 1).range(0, n - ds.degree()));
         }
         for (int i = 0; i < n; ++i) {
-            N.apply(DN.column(i), Q.row(n - i - 1).drop(n - ds.getDegree(), 0));
+            N.apply(DN.column(i), Q.row(n - i - 1).drop(n - ds.degree(), 0));
         }
-        K_[cmp] = Q.extract(0, n, n - ds.getDegree(), Q.getColumnsCount()-n + ds.getDegree()).deepClone();
-        DataBlock yd = DataBlock.make(n - dn.getDegree());
+        K_[cmp] = Q.extract(0, n, n - ds.degree(), Q.getColumnsCount()-n + ds.degree()).deepClone();
+        DataBlock yd = DataBlock.make(n - dn.degree());
         noise.getNonStationaryAR().apply(DataBlock.ofInternal(data_), yd);
         DataBlock yl = DataBlock.make(yd.length());
         N.apply(yd, yl);
@@ -254,7 +254,7 @@ public class McElroyEstimates {
         // should be improved to take into account the structure of K
         double[] z = new double[n];
         for (int i = 0, j = n - 1; i < n; ++i, --j) {
-            z[i] = Q.row(j).drop(n - ds.getDegree(), 0).dot(yl);
+            z[i] = Q.row(j).drop(n - ds.degree(), 0).dot(yl);
         }
         // triangularize by means of Givens rotations
         ElementaryTransformations.fastGivensTriangularize(Q);
@@ -307,7 +307,7 @@ public class McElroyEstimates {
 
         Polynomial ds = stS.getUnitRoots().asPolynomial();
 
-        Matrix DS = Matrix.make(n - ds.getDegree(), n);
+        Matrix DS = Matrix.make(n - ds.degree(), n);
 
         double[] c = ds.toArray();
         for (int j = 0; j < c.length; ++j) {
@@ -315,16 +315,16 @@ public class McElroyEstimates {
             d.set(c[c.length - j - 1]);
         }
 
-        Matrix Q = Matrix.make(n - ds.getDegree(), n);
+        Matrix Q = Matrix.make(n - ds.degree(), n);
         for (int i = 0; i < n; ++i) {
             filters_[cmp].apply(DS.column(i), Q.column(i));
         }
-        Matrix U = Matrix.make(n - ds.getDegree(), nf_);
-        double[] acf = stS.getStationaryModel().getAutoCovarianceFunction().values(n - ds.getDegree() + nf_);
+        Matrix U = Matrix.make(n - ds.degree(), nf_);
+        double[] acf = stS.getStationaryModel().getAutoCovarianceFunction().values(n - ds.degree() + nf_);
         for (int i = 0; i < nf_; ++i) {
             U.column(i).reverse().copyFrom(acf, i + 1);
         }
-        Matrix V = Matrix.make(nf_, n - ds.getDegree());
+        Matrix V = Matrix.make(nf_, n - ds.degree());
         for (int i = 0; i < nf_; ++i) {
             if (!U.column(i).allMatch(x->Math.abs(x)<1.e-6)) {
                 filters_[cmp].apply(U.column(i), V.row(i));
@@ -332,18 +332,18 @@ public class McElroyEstimates {
         }
         Matrix W = V.times(Q);
         Matrix D;
-        if (ds.getDegree() > 0) {
-            D = Matrix.make(ds.getDegree() + nf_, n);
+        if (ds.degree() > 0) {
+            D = Matrix.make(ds.degree() + nf_, n);
 
-            D.subDiagonal(n - ds.getDegree()).set(1);
-            D.extract(ds.getDegree(), D.getRowsCount(), 0, n).copy(W);
-            Matrix S = Matrix.make(ds.getDegree() + nf_, ds.getDegree() + nf_);
+            D.subDiagonal(n - ds.degree()).set(1);
+            D.extract(ds.degree(), D.getRowsCount(), 0, n).copy(W);
+            Matrix S = Matrix.make(ds.degree() + nf_, ds.degree() + nf_);
             S.diagonal().set(1);
-            for (int i = 1; i <= ds.getDegree(); ++i) {
-                S.subDiagonal(-i).drop(ds.getDegree() - i, 0).set(ds.get(i));
+            for (int i = 1; i <= ds.degree(); ++i) {
+                S.subDiagonal(-i).drop(ds.degree() - i, 0).set(ds.get(i));
             }
             LowerTriangularMatrix.rsolve(S, D);
-            D = D.extract(ds.getDegree(), D.getRowsCount()-ds.getDegree(), 0, n).deepClone();
+            D = D.extract(ds.degree(), D.getRowsCount()-ds.degree(), 0, n).deepClone();
         } else {
             D = W;
         }
@@ -359,7 +359,7 @@ public class McElroyEstimates {
             G.subDiagonal(-i).add(acf[i]);
         }
 
-        if (ds.getDegree() > 0) {
+        if (ds.degree() > 0) {
             Matrix B = Matrix.square(nf_);
             RationalFunction rfe = RationalFunction.of(Polynomial.ONE, ds);
             double[] coeff = rfe.coefficients(nf_);

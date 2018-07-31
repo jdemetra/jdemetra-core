@@ -373,7 +373,7 @@ public class SsfArima extends Ssf {
             Polynomial ar = arima.getAR().asPolynomial();
             Polynomial ma = arima.getMA().asPolynomial();
             phi = ar.toArray();
-            dim = Math.max(ar.getDegree(), ma.getDegree() + 1);
+            dim = Math.max(ar.degree(), ma.degree() + 1);
             psi = DataBlock.ofInternal(RationalFunction.of(ma, ar).coefficients(dim));
             se = Math.sqrt(var);
         }

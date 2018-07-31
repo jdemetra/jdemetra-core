@@ -205,7 +205,7 @@ class SymmetricFrequencyResponseDecomposer  {
 
         double s = 0;
         Polynomial coeff = m_bf.asPolynomial();
-        for (int i = 0; i <= coeff.getDegree(); ++i) {
+        for (int i = 0; i <= coeff.degree(); ++i) {
             s += coeff.get(i) * coeff.get(i);
         }
         m_var=var / s;

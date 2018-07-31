@@ -156,7 +156,7 @@ public class QRMaLjungBoxFilter {
     public int initialize(IArimaModel arima, int n) {
 	ma = arima.getMA().asPolynomial();
 	this.n = n;
-	q = ma.getDegree();
+	q = ma.degree();
 
 	// compute V1' * G * V1 = X' X and V (covar model)
 

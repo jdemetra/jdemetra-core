@@ -155,7 +155,7 @@ public class MaLjungBoxFilter {
     public int prepare(IArimaModel arima, int n) {
 	m_ma = arima.getMA().asPolynomial();
 	m_n = n;
-	m_q = m_ma.getDegree();
+	m_q = m_ma.degree();
 
 	// compute V1' * G * V1 = X' X and V (covar model)
 

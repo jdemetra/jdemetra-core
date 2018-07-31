@@ -36,28 +36,28 @@ public class AutoCovarianceComputers {
 
     public static AutoCovarianceFunction.Computer defaultComputer(ILinearSystemSolver solver) {
         return (Polynomial ma, Polynomial ar, int rank) -> {
-            int p = ar.length();
-            int q = ma.length();
-            int r0 = Math.max(p, q);
+            int p = ar.degree();
+            int q = ma.degree();
+            int r0 = Math.max(p, q)+1;
             if (rank < r0) {
                 rank = r0;
             }
             double[] c = new double[rank + 1];
             RationalFunction rfe = RationalFunction.of(ma, ar);
-            double[] cr = rfe.coefficients(q);
+            double[] cr = rfe.coefficients(q+1);
 
             Matrix M = Matrix.square(r0);
             DataBlock x = DataBlock.ofInternal(c, 0, r0);
-            for (int i = 0; i < q; ++i) {
+            for (int i = 0; i <= q; ++i) {
                 double s = 0;
-                for (int j = i; j < q; ++j) {
+                for (int j = i; j <= q; ++j) {
                     s += ma.get(j) * cr[j - i];
                 }
                 x.set(i, s);
             }
 
             for (int i = 0; i < r0; ++i) {
-                for (int j = 0; j < p; ++j) {
+                for (int j = 0; j <= p; ++j) {
                     double w = ar.get(j);
                     if (w != 0) {
                         M.add(i, i < j ? j - i : i - j, w);
@@ -76,7 +76,7 @@ public class AutoCovarianceComputers {
 
             for (int r = r0; r <= rank; ++r) {
                 double s = 0;
-                for (int j = 1; j < p; ++j) {
+                for (int j = 1; j <= p; ++j) {
                     s += ar.get(j) * c[r - j];
                 }
                 c[r] = -s;
@@ -87,14 +87,14 @@ public class AutoCovarianceComputers {
 
     public static AutoCovarianceFunction.SymmetricComputer defaultSymmetricComputer(ILinearSystemSolver solver) {
         return (SymmetricFilter sma, Polynomial ar, int rank) -> {
-            int p = ar.getDegree() + 1;
-            int q = sma.getUpperBound() + 1;
-            int r0 = Math.max(p, q);
+            int p = ar.degree();
+            int q = sma.getUpperBound();
+            int r0 = Math.max(p, q)+1;
             if (rank < r0) {
                 rank = r0;
             }
             double[] c;
-            if (p == 1) {
+            if (p == 0) {
                 // pure moving average...
                 c = sma.coefficientsAsPolynomial().toArray();
             } else {
@@ -114,10 +114,10 @@ public class AutoCovarianceComputers {
             double[] tmp = new double[rank];
             System.arraycopy(c, 0, tmp, 0, k0);
             c = tmp;
-            if (p > 1) {
+            if (p > 0) {
                 for (int r = k0; r < rank; ++r) {
                     double s = 0;
-                    for (int x = 1; x < p; ++x) {
+                    for (int x = 1; x <= p; ++x) {
                         s += ar.get(x) * c[r - x];
                     }
                     c[r] = -s;

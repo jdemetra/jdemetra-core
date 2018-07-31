@@ -5,6 +5,8 @@
  */
 package demetra.maths;
 
+import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
 import java.util.Formatter;
 import javax.annotation.Nonnull;
 
@@ -32,15 +34,45 @@ public interface PolynomialType {
         }
     }
 
-    int getDegree();
+    /**
+     * Gets the degree of the polynomial
+     * @return 
+     */
+    int degree();
 
+    /**
+     * Gets the coefficient corresponding to the given power
+     * @param i Position of the coefficient (corresponding to x^i). Should be 
+     * in [0, degree()]
+     * @return 
+     */
     double get(int i);
     
+    /**
+     * Gets a copy of the coefficients (increasing power)
+     * @return 
+     */
     double[] toArray();
-
+    
+    /**
+     * Gets all the coefficients (increasing power)
+     * @return 
+     */
+    DoubleSequence coefficients();
+    
+    default void copyTo(double[] buffer, int startpos){
+        coefficients().copyTo(buffer, startpos);
+    }
+    
+    /**
+     * 
+     * @param p1
+     * @param p2
+     * @return 
+     */
     public static boolean equals(PolynomialType p1, PolynomialType p2) {
-        int d = p1.getDegree();
-        if (d != p2.getDegree()) {
+        int d = p1.degree();
+        if (d != p2.degree()) {
             return false;
         }
         for (int i = 0; i <= d; ++i) {
@@ -54,7 +86,7 @@ public interface PolynomialType {
     public static String toString(PolynomialType p, final String fmt, final char var) {
         StringBuilder sb = new StringBuilder(512);
         boolean sign = false;
-        int n = p.getDegree();
+        int n = p.degree();
         if (n == 0) {
             sb.append(new Formatter().format(fmt, p.get(0)));
         } else {

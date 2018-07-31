@@ -114,7 +114,7 @@ public class TrendCycleSelector extends AbstractRootSelector {
             } else {
                 break;
             }
-        } while (p.getDegree() > 1);
-        return selected.getDegree() > 0;
+        } while (p.degree() > 1);
+        return selected.degree() > 0;
     }
 }

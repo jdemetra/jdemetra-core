@@ -191,7 +191,7 @@ public class GrantHitchinsSolver implements RootsSolver {
 
     @Override
     public boolean factorize(Polynomial p) {
-	int degree = p.getDegree();
+	int degree = p.degree();
 	while ((degree > 0) && (p.get(degree) == 0))
 	    --degree;
 	if (degree == 0)
@@ -208,7 +208,7 @@ public class GrantHitchinsSolver implements RootsSolver {
 		for (int i = 0; i < degree; ++i)
 		    m_roots[i] = Complex
 			    .cart(rez[i], imz[i]);
-		m_remainder = Polynomial.valueOf(p.get(p.getDegree()));
+		m_remainder = Polynomial.valueOf(p.get(p.degree()));
 		return true;
 	    } else
 		return false;

@@ -228,7 +228,7 @@ public class SymmetricFilter extends AbstractFiniteFilter {
         // 2*cos iw *cos freq
         int idx = 0;
         double r = polynomial.get(idx++);
-        if (idx >= polynomial.getDegree() + 1) {
+        if (idx >= polynomial.degree() + 1) {
             return Complex.cart(r);
         }
 
@@ -236,7 +236,7 @@ public class SymmetricFilter extends AbstractFiniteFilter {
         do {
             // r+=2*System.Math.Cos((d2-idx)*freq)*m_w[idx--];
             r += 2 * cos1 * polynomial.get(idx++);
-            if (idx < polynomial.getDegree() + 1) {
+            if (idx < polynomial.degree() + 1) {
                 double tmp = 2 * cos * cos1 - cos0;
                 cos0 = cos1;
                 cos1 = tmp;
@@ -264,7 +264,7 @@ public class SymmetricFilter extends AbstractFiniteFilter {
      */
     @Override
     public int getLowerBound() {
-        return -polynomial.getDegree();
+        return -polynomial.degree();
     }
 
     /**
@@ -273,7 +273,7 @@ public class SymmetricFilter extends AbstractFiniteFilter {
      */
     @Override
     public int getUpperBound() {
-        return polynomial.getDegree();
+        return polynomial.degree();
     }
 
     /**
@@ -322,7 +322,7 @@ public class SymmetricFilter extends AbstractFiniteFilter {
      */
     public SymmetricFilter normalize() {
         double s = polynomial.get(0);
-        for (int i = 1; i <= polynomial.getDegree(); ++i) {
+        for (int i = 1; i <= polynomial.degree(); ++i) {
             s += 2 * polynomial.get(i);
         }
         if (s != 0 && s != 1) {
@@ -365,8 +365,8 @@ public class SymmetricFilter extends AbstractFiniteFilter {
      * @return
      */
     public SymmetricFilter times(final SymmetricFilter r) {
-        int ll = polynomial.getDegree();
-        int lr = r.polynomial.getDegree();
+        int ll = polynomial.degree();
+        int lr = r.polynomial.degree();
         double[] o = new double[ll + lr + 1];
 
         if (r.polynomial.get(0) != 0) {
@@ -432,7 +432,7 @@ public class SymmetricFilter extends AbstractFiniteFilter {
     }
 
     public Factorization factorize() {
-        if (polynomial.getDegree() == 0) {
+        if (polynomial.degree() == 0) {
             return new Factorization(BackFilter.ONE, polynomial.get(0));
         } else {
             return DEF_FACTORIZER.get().factorize(this);

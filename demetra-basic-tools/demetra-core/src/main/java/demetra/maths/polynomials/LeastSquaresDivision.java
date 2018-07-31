@@ -18,6 +18,7 @@ package demetra.maths.polynomials;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
+import demetra.data.DoubleSequence;
 import demetra.maths.Constants;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
@@ -36,8 +37,8 @@ public class LeastSquaresDivision {
     public boolean divide(Polynomial num, Polynomial denom) {
         try {
             err = 0;
-            DataBlock N = DataBlock.of(num);
-            DataBlock D = DataBlock.of(denom);
+            DoubleSequence N = num.coefficients();
+            DoubleSequence D = denom.coefficients();
             int n = N.length(), d = D.length();
             if (d > n) {
                 return false;
