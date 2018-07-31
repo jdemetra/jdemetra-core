@@ -49,7 +49,7 @@ public class DefaultLikelihoodEvaluation {
     }
     
     public static Function<ILikelihood, DoubleSequence> v(){
-        return likelihood->likelihood.v();
+        return likelihood->likelihood.deviances();
     }
     
 }

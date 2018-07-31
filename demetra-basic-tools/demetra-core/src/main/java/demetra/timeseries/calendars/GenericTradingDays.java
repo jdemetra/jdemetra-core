@@ -21,6 +21,7 @@ import demetra.data.DataBlock;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
+import static demetra.timeseries.calendars.Utility.getCumulatedMonthDays;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -165,8 +166,6 @@ public class GenericTradingDays {
         }
     }
 
-    private static final int DAY_OF_WEEK_OF_EPOCH = TsPeriod.DEFAULT_EPOCH.getDayOfWeek().getValue() - 1;
-
     public static int[][] tdCount(TsDomain domain) {
         int[][] rslt = new int[7][];
 
@@ -176,7 +175,7 @@ public class GenericTradingDays {
         int conv = TsUnit.MONTH.ratioOf(domain.getStartPeriod().getUnit());
         int year = cur.getYear(), month = cur.getMonthValue();
         for (int i = 0; i < start.length; ++i) {
-            start[i] = Utility.calc(year, month, 1);
+            start[i] = calc(year, month, 1);
             month += conv;
             if (month > 12) {
                 year++;
@@ -228,4 +227,22 @@ public class GenericTradingDays {
         hash = 53 * hash + (this.normalized ? 1 : 0);
         return hash;
     }
+    
+    private static final int DAY_OF_WEEK_OF_EPOCH = TsPeriod.DEFAULT_EPOCH.getDayOfWeek().getValue() - 1;
+    
+    private static int calc(int year, final int month, final int day) {
+
+        boolean bLeapYear = Utility.isLeap(year);
+
+        // make Jan 1, 1AD be 0
+        int nDate = year * 365 + year / 4 - year / 100 + year / 400
+                + getCumulatedMonthDays(month - 1) + day;
+
+        // If leap year and it's before March, subtract 1:
+        if ((month < 3) && bLeapYear) {
+            --nDate;
+        }
+        return nDate - 719528; // number of days since 0
+    }
+
 }

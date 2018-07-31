@@ -16,9 +16,6 @@
  */
 package demetra.sts;
 
-import java.util.Map;
-import java.util.Objects;
-import demetra.data.Parameter;
 import demetra.design.Development;
 
 /**
@@ -30,13 +27,16 @@ import demetra.design.Development;
 public final class BsmSpec implements Cloneable {
 
     @lombok.NonNull
-    ComponentUse levelUse = ComponentUse.Free,
+    private ComponentUse levelUse = ComponentUse.Free,
             slopeUse = ComponentUse.Free,
             cycleUse = ComponentUse.Unused,
-            noiseUse = ComponentUse.Free;
+            noiseUse = ComponentUse.Free,
+            seasUse = ComponentUse.Free;
     @lombok.NonNull
-    SeasonalModel seasonalModel = SeasonalModel.Trigonometric;
-    double cycleDumpingFactor, cycleLength;
+    private SeasonalModel seasonalModel = SeasonalModel.Trigonometric;
+
+    private double levelVar, slopeVar, cycleVar, noiseVar, seasVar; // only used in case of ComponentUse.fixed
+    private double cycleDumpingFactor, cycleLength;
 
     @Override
     public BsmSpec clone() {
@@ -49,70 +49,37 @@ public final class BsmSpec implements Cloneable {
 
     /**
      *
+     * @param var
      * @param cmp
      */
-    public void fixComponent(Component cmp) {
+    public void fixComponent(double var, Component cmp) {
         switch (cmp) {
             case Level:
+                levelVar = var;
                 levelUse = ComponentUse.Fixed;
                 return;
             case Slope:
+                slopeVar = var;
                 slopeUse = ComponentUse.Fixed;
                 return;
             case Seasonal:
-                seasonalModel = SeasonalModel.Fixed;
+                seasVar = var;
+                seasUse = ComponentUse.Fixed;
+                if (seasVar == 0) {
+                    seasonalModel = SeasonalModel.Fixed;
+                }
                 return;
             case Cycle:
+                cycleVar = var;
                 cycleUse = ComponentUse.Fixed;
                 return;
             case Noise:
-                noiseUse = ComponentUse.Fixed;
-        }
-    }
-
-    /**
-     *
-     * @return
-     */
-    public ComponentUse getCycleUse() {
-        return cycleUse;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public ComponentUse getLevelUse() {
-        return levelUse;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public ComponentUse getNoiseUse() {
-        return noiseUse;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public SeasonalModel getSeasonalModel() {
-        return seasonalModel;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public ComponentUse getSeasUse() {
-        if (seasonalModel == SeasonalModel.Unused) {
-            return ComponentUse.Unused;
-        } else if (seasonalModel == SeasonalModel.Fixed) {
-            return ComponentUse.Fixed;
-        } else {
-            return ComponentUse.Free;
+                noiseVar = var;
+                if (var == 0) {
+                    noiseUse = ComponentUse.Unused;
+                } else {
+                    noiseUse = ComponentUse.Fixed;
+                }
         }
     }
 
@@ -123,9 +90,9 @@ public final class BsmSpec implements Cloneable {
     public ComponentUse getSlopeUse() {
         return slopeUse;
     }
-    
-    public boolean hasComponent(Component cmp){
-        switch (cmp){
+
+    public boolean hasComponent(Component cmp) {
+        switch (cmp) {
             case Noise:
                 return hasNoise();
             case Level:
@@ -141,8 +108,8 @@ public final class BsmSpec implements Cloneable {
         }
     }
 
-    public boolean hasFreeComponent(Component cmp){
-        switch (cmp){
+    public boolean hasFreeComponent(Component cmp) {
+        switch (cmp) {
             case Noise:
                 return noiseUse == ComponentUse.Free;
             case Level:
@@ -152,11 +119,12 @@ public final class BsmSpec implements Cloneable {
             case Slope:
                 return slopeUse == ComponentUse.Free;
             case Seasonal:
-                 return seasonalModel != SeasonalModel.Fixed && seasonalModel != SeasonalModel.Unused;
-           default:
+                return seasUse == ComponentUse.Free;
+            default:
                 return false;
         }
     }
+
     /**
      *
      * @return
@@ -186,7 +154,7 @@ public final class BsmSpec implements Cloneable {
      * @return
      */
     public boolean hasSeasonal() {
-        return seasonalModel != SeasonalModel.Unused;
+        return seasUse != ComponentUse.Unused;
     }
 
     /**
@@ -203,8 +171,8 @@ public final class BsmSpec implements Cloneable {
     public void setCycleUse(ComponentUse value) {
         cycleUse = value;
         if (cycleUse != ComponentUse.Unused) {
-            cycleDumpingFactor=0;
-            cycleLength=0;
+            cycleDumpingFactor = 0;
+            cycleLength = 0;
         }
     }
 
@@ -219,6 +187,17 @@ public final class BsmSpec implements Cloneable {
         }
     }
 
+    /**
+     *
+     * @param value
+     */
+    public void setNoiseUse(ComponentUse value) {
+        noiseUse = value;
+        if (value == ComponentUse.Unused) {
+            noiseVar=0;
+        }
+    }
+
     public int getParametersCount() {
         int n = 0;
         if (levelUse == ComponentUse.Free) {
@@ -230,7 +209,7 @@ public final class BsmSpec implements Cloneable {
         if (noiseUse == ComponentUse.Free) {
             ++n;
         }
-        if (seasonalModel != SeasonalModel.Fixed && seasonalModel != SeasonalModel.Unused) {
+        if (seasUse == ComponentUse.Free) {
             ++n;
         }
         n += getCycleParametersCount();
@@ -246,11 +225,10 @@ public final class BsmSpec implements Cloneable {
         if (cycleDumpingFactor != 0) {
             ++n;
         }
-        if (cycleLength  != 0) {
+        if (cycleLength != 0) {
             ++n;
         }
         return n;
     }
-    
-    
+
 }

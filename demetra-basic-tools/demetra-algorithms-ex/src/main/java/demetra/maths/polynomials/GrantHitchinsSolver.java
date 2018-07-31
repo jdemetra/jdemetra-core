@@ -20,13 +20,14 @@ package demetra.maths.polynomials;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.Constants;
+import demetra.maths.polynomials.spi.RootsSolver;
 
 /**
  * 
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class GrantHitchinsSolver implements IRootsSolver {
+public class GrantHitchinsSolver implements RootsSolver {
 
     private static final double ONE = 1.0, TWO = 2.0, ZERO = 0.0, TEN = 10.0,
 	    P8 = 0.8, A8 = 8.0, A1P5 = 1.5, P4Z1 = 0.00001, P5 = 0.5,
@@ -93,7 +94,6 @@ public class GrantHitchinsSolver implements IRootsSolver {
 	return Math.sqrt(m_r * m_r + m_j * m_j) < eps;
     }
 
-    @Override
     public void clear() {
 	m_remainder = null;
 	m_roots = null;

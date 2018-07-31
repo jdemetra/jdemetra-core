@@ -27,46 +27,8 @@ import demetra.maths.matrices.SymmetricMatrix;
  */
 public class BasicStructuralModel {
 
-    private static ComponentUse getUse(double var) {
-        if (var < 0) {
-            return ComponentUse.Unused;
-        } else if (var == 0) {
-            return ComponentUse.Fixed;
-        } else {
-            return ComponentUse.Free;
-        }
-    }
-
-    private static double getVar(ComponentUse use) {
-        switch (use) {
-            case Unused:
-                return -1;
-            case Fixed:
-                return 0;
-            default:
-                return 1;
-        }
-    }
-
-    private static double getVar(SeasonalModel use) {
-        switch (use) {
-            case Unused:
-                return -1;
-            case Fixed:
-                return 0;
-            default:
-                return 1;
-        }
-    }
-
-    private SeasonalModel getSeas() {
-        if (seasVar < 0) {
-            return SeasonalModel.Unused;
-        } else if (seasVar == 0) {
-            return SeasonalModel.Fixed;
-        } else {
-            return seasModel;
-        }
+    private static ComponentUse of(double var) {
+        return var < 0 ? ComponentUse.Unused : ComponentUse.Free;
     }
 
     /**
@@ -75,11 +37,34 @@ public class BasicStructuralModel {
      */
     public BsmSpec specification() {
         BsmSpec spec = new BsmSpec();
-        spec.setSeasonalModel(getSeas());
-        spec.setLevelUse(getUse(lVar));
-        spec.setSlopeUse(getUse(sVar));
-        spec.setCycleUse(getUse(cVar));
-        spec.setNoiseUse(nVar <= 0 ? ComponentUse.Unused : ComponentUse.Free);
+        if (lFixed) {
+            spec.fixComponent(lVar, Component.Level);
+        } else {
+            spec.setLevelUse(of(lVar));
+        }
+        if (sFixed) {
+            spec.fixComponent(sVar, Component.Slope);
+        } else {
+            spec.setSlopeUse(of(sVar));
+        }
+        if (nFixed) {
+            spec.fixComponent(nVar, Component.Noise);
+        } else {
+            spec.setNoiseUse(nVar > 0 ? ComponentUse.Free : ComponentUse.Unused);
+        }
+        if (cFixed) {
+            spec.fixComponent(cVar, Component.Cycle);
+            spec.setCycleDumpingFactor(cDump);
+            spec.setCycleLength(cPeriod);
+        } else {
+            spec.setCycleUse(of(cVar));
+        }
+        if (seasFixed) {
+            spec.fixComponent(seasVar, Component.Seasonal);
+        } else {
+            spec.setSeasUse(of(seasVar));
+            spec.setSeasonalModel(seasModel);
+        }
         return spec;
     }
 
@@ -104,8 +89,9 @@ public class BasicStructuralModel {
     /**
      *
      */
-    final int freq;
+    final int period;
     double lVar, sVar, seasVar, cVar, nVar;
+    boolean lFixed, sFixed, seasFixed, cFixed, nFixed;
     double cDump, cPeriod;
     double ccos, csin;
     SeasonalModel seasModel;
@@ -113,28 +99,95 @@ public class BasicStructuralModel {
     /**
      *
      * @param spec
-     * @param freq
+     * @param period
      */
-    public BasicStructuralModel(BsmSpec spec, int freq) {
-        this.freq = freq;
+    public BasicStructuralModel(BsmSpec spec, int period) {
+        this.period = period;
         seasModel = spec.getSeasonalModel();
-        seasVar = getVar(seasModel);
-        lVar = getVar(spec.getLevelUse());
-        sVar = getVar(spec.getSlopeUse());
-        cVar = getVar(spec.getCycleUse());
-        double nv=getVar(spec.getNoiseUse());
-        nVar = nv > 0 ? nv : 0; 
-        if (spec.getCycleUse() != ComponentUse.Unused) {
-            cycle(.5, freq * 2);
+        switch (spec.getNoiseUse()) {
+            case Free:
+                nVar = 1;
+                nFixed = false;
+                break;
+            case Fixed:
+                nFixed = true;
+                nVar = spec.getNoiseVar();
+                break;
+            case Unused:
+                nFixed = false;
+                nVar = -1;
+                break;
+        }
+        switch (spec.getCycleUse()) {
+            case Free:
+                cycle(.5, period * 2);
+                cVar = 1;
+                cFixed = false;
+                break;
+            case Fixed:
+                cFixed = true;
+                cycle(spec.getCycleDumpingFactor(), spec.getCycleLength());
+                cVar = spec.getCycleVar();
+                break;
+            case Unused:
+                cFixed = false;
+                cVar = -1;
+                break;
+        }
+        switch (spec.getLevelUse()) {
+            case Free:
+                lVar = 1;
+                lFixed = false;
+                break;
+            case Fixed:
+                lFixed = true;
+                lVar = spec.getLevelVar();
+                break;
+            case Unused:
+                lFixed = false;
+                lVar = -1;
+                break;
+        }
+        switch (spec.getSlopeUse()) {
+            case Free:
+                sVar = 1;
+                sFixed = false;
+                break;
+            case Fixed:
+                sFixed = true;
+                sVar = spec.getSlopeVar();
+                break;
+            case Unused:
+                sFixed = false;
+                sVar = -1;
+                break;
+        }
+        switch (spec.getSeasUse()) {
+            case Free:
+                seasVar = 1;
+                seasFixed = false;
+                break;
+            case Fixed:
+                seasFixed = true;
+                seasVar = spec.getSeasVar();
+                break;
+            case Unused:
+                seasFixed = false;
+                seasVar = -1;
+                break;
         }
     }
-
 
     /**
      *
      * @param factor
+     * @return
      */
-    public void scaleVariances(double factor) {
+    public boolean scaleVariances(double factor) {
+        if ((lFixed && lVar != 0) || (sFixed && sVar != 0) || (seasFixed && seasVar != 0)
+                || (cFixed && cVar != 0) || nFixed) {
+            return false;
+        }
         if (lVar > 0) {
             lVar *= factor;
         }
@@ -150,6 +203,7 @@ public class BasicStructuralModel {
         if (nVar > 0) {
             nVar *= factor;
         }
+        return true;
     }
 
     /**
@@ -197,10 +251,14 @@ public class BasicStructuralModel {
         if (max != Component.Undefined) {
             double vmax = getVariance(max);
             if (vmax != val) {
-                scaleVariances(val / vmax);
+                if (scaleVariances(val / vmax)) {
+                    return max;
+                }
+            } else {
+                return max;
             }
         }
-        return max;
+        return Component.Undefined;
     }
 
     /**
@@ -364,8 +422,8 @@ public class BasicStructuralModel {
         return cPeriod;
     }
 
-    public int getFrequency() {
-        return freq;
+    public int getPeriod() {
+        return period;
     }
 
 }

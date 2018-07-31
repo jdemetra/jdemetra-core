@@ -17,25 +17,20 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import internal.timeseries.InternalFixme;
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsUnit;
-import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
-import java.util.Objects;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
+@lombok.Value
 public class FixedDay implements IHoliday {
 
-    public final int day;
-    public final int month;
-    private final double weight;
+    private int day;
+    private int month;
+    private double weight;
 
     public FixedDay(int month, int day) {
         this(month, day, 1);
@@ -92,59 +87,21 @@ public class FixedDay implements IHoliday {
         if (offset == 0) {
             return this;
         }
-        int pos = InternalFixme.getCumulatedMonthDays(month) + day;
+        int pos = Utility.getCumulatedMonthDays(month) + day;
         pos += offset;
         if (pos < 0 || pos >= 365) {
             return null;
         }
         int nmonth = 0;
-        while (pos >= InternalFixme.getCumulatedMonthDays(nmonth + 1)) {
+        while (pos >= Utility.getCumulatedMonthDays(nmonth + 1)) {
             ++nmonth;
         }
-        int nday = pos - InternalFixme.getCumulatedMonthDays(nmonth);
+        int nday = pos - Utility.getCumulatedMonthDays(nmonth);
         // avoid leap year
         if (month <= 1 && nmonth >= 2) {
             return null;
         }
         return new FixedDay(nmonth, nday, weight);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof FixedDay && equals((FixedDay) obj));
-    }
-
-    private boolean equals(FixedDay other) {
-        return other.day == day && other.month == month && other.weight == weight;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 31 * hash + this.day;
-        hash = 31 * hash + Objects.hashCode(this.month);
-        return hash;
-    }
-
-    @Override
-    public TsDomain getSignificantDomain(TsDomain domain) {
-        if (!domain.getStartPeriod().getUnit().getChronoUnit().equals(ChronoUnit.DAYS)) {
-            throw new IllegalArgumentException();
-        }
-        LocalDate first = domain.start().toLocalDate(), last = domain.end().toLocalDate().minusDays(1);
-        LocalDate efirst = LocalDate.of(first.getYear(), month, day);
-        LocalDate elast = LocalDate.of(last.getYear(), month, day);
-        if (efirst.isBefore(first)) {
-            efirst = LocalDate.of(first.getYear() + 1, month, day);
-        }
-        if (elast.isAfter(last)) {
-            elast = LocalDate.of(last.getYear() - 1, month, day);
-        }
-        if (efirst.isAfter(elast)) {
-            return TsDomain.of(domain.getStartPeriod().withDate(efirst.atStartOfDay()), 0);
-        } else {
-            return TsDomain.of(domain.getStartPeriod().withDate(efirst.atStartOfDay()), (int) ChronoUnit.DAYS.between(efirst, elast));
-        }
     }
 
     static class FixedDayInfo implements IHolidayInfo {
@@ -159,7 +116,7 @@ public class FixedDay implements IHoliday {
 
         @Override
         public LocalDate getDay() {
-            return LocalDate.of(year, fday.month, fday.day);
+            return LocalDate.of(year, fday.getMonth(), fday.getDay());
         }
 
     }
@@ -173,8 +130,8 @@ public class FixedDay implements IHoliday {
         FixedDayIterable(FixedDay fday, LocalDate fstart, LocalDate fend) {
             this.fday = fday;
             int ystart = fstart.getYear(), yend = fend.getYear();
-            LocalDate xday = LocalDate.of(ystart, fday.month, fday.day);
-            LocalDate yday = LocalDate.of(yend, fday.month, fday.day);
+            LocalDate xday = LocalDate.of(ystart, fday.getMonth(), fday.getDay());
+            LocalDate yday = LocalDate.of(yend, fday.getMonth(), fday.getDay());
 
             if (xday.isBefore(fstart)) {
                 ++ystart;

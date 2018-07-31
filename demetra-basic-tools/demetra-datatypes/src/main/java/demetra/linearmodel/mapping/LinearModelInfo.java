@@ -14,11 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.models.mapping;
+package demetra.linearmodel.mapping;
 
 import demetra.information.InformationMapping;
 import demetra.maths.MatrixType;
-import demetra.models.LinearModelType;
+import demetra.linearmodel.LinearModelType;
 
 /**
  *

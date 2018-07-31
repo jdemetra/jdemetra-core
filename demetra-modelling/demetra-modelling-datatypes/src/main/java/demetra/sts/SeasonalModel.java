@@ -26,10 +26,6 @@ import demetra.design.Development;
 @Development(status = Development.Status.Preliminary)
 public enum SeasonalModel {
 
-    Unused,
-    /**
-     *
-     */
     Fixed,
     /**
      * 

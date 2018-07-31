@@ -67,11 +67,11 @@ public class DkToolkit {
     }
 
     public static IConcentratedLikelihoodComputer<DkConcentratedLikelihood> concentratedLikelihoodComputer() {
-        return concentratedLikelihoodComputer(true, false);
+        return concentratedLikelihoodComputer(true, false, true);
     }
 
-    public static IConcentratedLikelihoodComputer<DkConcentratedLikelihood> concentratedLikelihoodComputer(boolean sqr, boolean fast) {
-        return new CLLComputer(sqr, fast);
+    public static IConcentratedLikelihoodComputer<DkConcentratedLikelihood> concentratedLikelihoodComputer(boolean sqr, boolean fast, boolean scalingFactor) {
+        return new CLLComputer(sqr, fast, scalingFactor);
     }
 
     public static <S, F extends ISsf> SsfFunction<S, F> likelihoodFunction(ISsfData data, IParametricMapping<S> mapping, ISsfBuilder<S, F> builder) {
@@ -219,12 +219,12 @@ public class DkToolkit {
 
     private static class CLLComputer implements IConcentratedLikelihoodComputer<DkConcentratedLikelihood> {
 
-        private final boolean sqr, fast;
-        private boolean scaling = true;
+        private final boolean sqr, fast, scaling;
 
-        private CLLComputer(boolean sqr, boolean fast) {
+        private CLLComputer(boolean sqr, boolean fast, boolean scaling) {
             this.sqr = sqr;
             this.fast = fast;
+            this.scaling = scaling;
         }
 
         @Override
@@ -243,7 +243,9 @@ public class DkToolkit {
                         .ssqErr(ll.ssq())
                         .logDeterminant(ll.logDeterminant())
                         .logDiffuseDeterminant(ll.getDiffuseCorrection())
-                        .residuals(yl).build();
+                        .residuals(yl)
+                        .scalingFactor(scaling)
+                        .build();
             } else {
                 Householder qr = new Householder();
                 qr.decompose(xl);
@@ -252,7 +254,9 @@ public class DkToolkit {
                             .ssqErr(ll.ssq())
                             .logDeterminant(ll.logDeterminant())
                             .logDiffuseDeterminant(ll.getDiffuseCorrection())
-                            .residuals(yl).build();
+                            .residuals(yl)
+                            .scalingFactor(scaling)
+                            .build();
                 } else {
                     int rank = qr.rank();
                     DataBlock b = DataBlock.make(rank);
@@ -294,6 +298,7 @@ public class DkToolkit {
                             .residuals(yl)
                             .coefficients(b)
                             .unscaledCovariance(bvar)
+                            .scalingFactor(scaling)
                             .build();
                 }
             }

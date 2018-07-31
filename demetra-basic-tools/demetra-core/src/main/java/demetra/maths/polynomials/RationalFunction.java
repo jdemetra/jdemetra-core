@@ -20,6 +20,7 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
 import demetra.maths.Constants;
+import demetra.maths.polynomials.spi.RootsSolver;
 
 /**
  * Rational function expansion, defined by N(x)/D(x)
@@ -309,7 +310,7 @@ public class RationalFunction {
      * @param searcher
      * @return
      */
-    public Complex[] poles(final IRootsSolver searcher) {
+    public Complex[] poles(final RootsSolver searcher) {
         return denom.roots(searcher);
     }
 
@@ -412,7 +413,7 @@ public class RationalFunction {
      * @param searcher
      * @return
      */
-    public Complex[] roots(final IRootsSolver searcher) {
+    public Complex[] roots(final RootsSolver searcher) {
         return num.roots(searcher);
     }
 

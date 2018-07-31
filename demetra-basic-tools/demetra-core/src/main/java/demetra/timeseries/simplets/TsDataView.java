@@ -20,10 +20,11 @@ import demetra.timeseries.TsData;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.Immutable;
-import internal.timeseries.InternalFixme;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TimeSelector;
+import demetra.timeseries.TsException;
+import demetra.timeseries.TsUnit;
 
 /**
  * A TsDataView is a view on equally spaced observations in a time series. Users
@@ -48,12 +49,17 @@ public final class TsDataView {
     public static TsDataView fullYears(TsData series) {
         TsDomain domain = series.getDomain();
         TsPeriod start = domain.getStartPeriod(), end = domain.getEndPeriod();
-        int freq = InternalFixme.getAsInt(domain.getStartPeriod().getUnit());
-        int nbeg = InternalFixme.getPosition(start);
+        if (start.getEpoch() != TsPeriod.DEFAULT_EPOCH)
+            throw new TsException(TsException.INVALID_OPERATION);
+        int period=domain.getAnnualFrequency();
+        if (period<0)
+            throw new TsException(TsException.INVALID_OPERATION);
+        TsPeriod nstart=start.withUnit(TsUnit.YEAR);
+        int nbeg = TsDomain.splitOf(nstart, start.getUnit(), true).indexOf(start);
         if (nbeg != 0) {
-            nbeg = freq - nbeg;
+            nbeg = period - nbeg;
         }
-        int nend = InternalFixme.getPosition(end);
+        int nend = TsDomain.splitOf(end.withUnit(TsUnit.YEAR), end.getUnit(), true).indexOf(end);
         int len = series.length() - nend - nbeg;
         final int beg = nbeg;
         return new TsDataView(start.plus(nbeg), DoubleSequence.onMapping(len, i -> series.getValue(beg + i)), 1);

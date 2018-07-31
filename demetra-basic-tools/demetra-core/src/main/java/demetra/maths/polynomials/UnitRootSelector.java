@@ -16,6 +16,7 @@
 */
 package demetra.maths.polynomials;
 
+import demetra.maths.polynomials.internal.UnitRootsSolver;
 import demetra.design.Development;
 
 /**

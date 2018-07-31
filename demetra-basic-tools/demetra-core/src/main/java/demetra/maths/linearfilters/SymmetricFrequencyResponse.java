@@ -25,8 +25,8 @@ import demetra.maths.Simplifying;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.UpperTriangularMatrix;
-import demetra.maths.polynomials.IRootsSolver;
 import demetra.maths.polynomials.Polynomial;
+import demetra.maths.polynomials.spi.RootsSolver;
 
 /**
  * Considering the symmetric filter P(B)*P(F), where B is the backward operator
@@ -316,7 +316,7 @@ public class SymmetricFrequencyResponse {
      * @param searcher
      * @return
      */
-    public Complex[] roots(final IRootsSolver searcher) {
+    public Complex[] roots(final RootsSolver searcher) {
         return m_p.roots(searcher);
     }
 

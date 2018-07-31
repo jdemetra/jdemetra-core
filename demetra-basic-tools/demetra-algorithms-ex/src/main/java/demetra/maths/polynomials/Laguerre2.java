@@ -19,13 +19,14 @@ package demetra.maths.polynomials;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.util.Arrays2;
+import demetra.maths.polynomials.spi.RootsSolver;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class Laguerre2 implements IRootsSolver {
+public class Laguerre2 implements RootsSolver {
 
     private final double m_AbsoluteAccuracy = 1E-6;
 
@@ -47,7 +48,6 @@ public class Laguerre2 implements IRootsSolver {
     public Laguerre2() {
     }
 
-    @Override
     public void clear() {
         m_roots = null;
         m_remainder = null;

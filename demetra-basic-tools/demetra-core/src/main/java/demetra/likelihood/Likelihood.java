@@ -21,6 +21,7 @@ import demetra.design.Immutable;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
+import demetra.maths.Constants;
 
 /**
  * Log-Likelihood of a multi-variate gaussian distribution. For a N(0, sig2*V)
@@ -41,46 +42,53 @@ import demetra.design.BuilderPattern;
 @Development(status = Development.Status.Release)
 @Immutable
 public final class Likelihood implements ILikelihood {
-    
-    public static Builder builder(int n){
+
+    public static Builder builder(int n) {
         return new Builder(n);
     }
 
     @BuilderPattern(Likelihood.class)
     public static class Builder {
 
-        final int n;
-        double ssqerr, ldet;
-        double[] res;
+        private final int n;
+        private double ssqerr, ldet;
+        private double[] res;
+        private boolean scalingFactor = true;
 
-        Builder (int n){
-            this.n=n;
+        private Builder(int n) {
+            this.n = n;
         }
-        
-        public Builder logDeterminant(double ldet){
-            this.ldet=ldet;
-            return this;
-        }
-        
-        public Builder ssqErr(double ssq){
-            this.ssqerr=ssq;
+
+        public Builder scalingFactor(boolean scalingFactor) {
+            this.scalingFactor = scalingFactor;
             return this;
         }
 
-        public Builder residuals(DoubleSequence residuals){
-            this.ssqerr=Doubles.ssq(residuals);
-            this.res=residuals.toArray();
+        public Builder logDeterminant(double ldet) {
+            this.ldet = ldet;
             return this;
         }
-        
+
+        public Builder ssqErr(double ssq) {
+            this.ssqerr = ssq;
+            return this;
+        }
+
+        public Builder residuals(DoubleSequence residuals) {
+            this.ssqerr = Doubles.ssq(residuals);
+            this.res = residuals.toArray();
+            return this;
+        }
+
         public Likelihood build() {
-            return new Likelihood(n, ssqerr, ldet, res);
+            return new Likelihood(n, ssqerr, ldet, res, scalingFactor);
         }
     }
 
     private final double ll, ssqerr, ldet;
     private final int n;
     private final double[] res;
+    private final boolean scalingFactor;
 
     /**
      * Initializes the likelihood/ See the description of the class for further
@@ -91,10 +99,15 @@ public final class Likelihood implements ILikelihood {
      * @param ndim The number of observations
      * @param res
      */
-    private Likelihood(final int ndim, final double ssqerr, final double ldet, final double[] res) {
-        this.ll = -.5
-                * (ndim * Math.log(2 * Math.PI) + ndim
-                * (1 + Math.log(ssqerr / ndim)) + ldet);
+    private Likelihood(final int ndim, final double ssqerr, final double ldet, final double[] res, final boolean scalingFactor) {
+        this.scalingFactor = scalingFactor;
+        if (scalingFactor) {
+            this.ll = -.5
+                    * (ndim * Constants.LOGTWOPI + ndim
+                    * (1 + Math.log(ssqerr / ndim)) + ldet);
+        } else {
+            this.ll = -.5 * (ndim * Constants.LOGTWOPI + ssqerr + ldet);
+        }
         this.ssqerr = ssqerr;
         this.ldet = ldet;
         this.n = ndim;
@@ -146,7 +159,6 @@ public final class Likelihood implements ILikelihood {
         return DoubleSequence.of(res);
     }
 
- 
     /**
      * Gets the sum of the squares of the (transformed) observations.
      *
@@ -159,7 +171,7 @@ public final class Likelihood implements ILikelihood {
 
     /**
      * Adjust the likelihood if the toArray have been pre-multiplied by a given
- scaling factor
+     * scaling factor
      *
      * @param factor The scaling factor
      * @return
@@ -176,7 +188,11 @@ public final class Likelihood implements ILikelihood {
                 nres[i] = res[i] / factor;
             }
         }
-        return new Likelihood(n, nssqerr, ldet, nres);
+        double nldet=ldet;
+        if (! scalingFactor){
+            nldet+=n*Math.log(factor);
+        }
+        return new Likelihood(n, nssqerr, nldet, nres, scalingFactor);
     }
 
     @Override

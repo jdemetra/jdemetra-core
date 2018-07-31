@@ -46,7 +46,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
     static int DEF_MAXOUTLIERS = 50;
     static final double EPS = 1e-5;
 
-    static SingleOutlierDetector<SarimaModel> defaultOutlierDetector(int period){
+    static SingleOutlierDetector<SarimaModel> defaultOutlierDetector(int period) {
         SingleOutlierDetector sod = new ExactSingleOutlierDetector(IRobustStandardDeviationComputer.mad(false),
                 IResidualsComputer.mlComputer(),
                 new AnsleyFilter());
@@ -110,6 +110,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
     private final double cv;
     private double[] tstats;
     private int round;
+    private boolean changed;
 
     private OutliersDetectionModuleImpl(final SingleOutlierDetector sod, final double cv, final IRegArimaProcessor<SarimaModel> processor,
             final int maxOutliers, final int maxRound) {
@@ -122,14 +123,11 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
 
     @Override
     public boolean process(RegArimaModel<SarimaModel> initialModel) {
-        try {
-            clear();
-            regarima = initialModel;
-            estimateModel(true);
-            return execute();
-        } catch (RuntimeException err) {
-            return false;
-        }
+        changed = false;
+        regarima = initialModel;
+        estimateModel(true);
+        execute();
+        return changed;
     }
 
     @Override
@@ -175,13 +173,20 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         return types;
     }
 
-    private void addOutlier(int pos, int type) {
+    private void addNewOutlier(int pos, int type) {
         int[] o = new int[]{pos, type};
         outliers.add(o);
         double[] xo = new double[regarima.getObservationsCount()];
         DataBlock XO = DataBlock.ofInternal(xo);
         sod.factory(type).fill(pos, XO);
         regarima = regarima.toBuilder().addX(XO).build();
+        sod.exclude(pos, type);
+        changed = true;
+    }
+
+    public void addOutlier(int pos, int type) {
+        int[] o = new int[]{pos, type};
+        outliers.add(o);
         sod.exclude(pos, type);
     }
 
@@ -193,7 +198,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         regarima = null;
     }
 
-    private boolean execute() {
+    private void execute() {
         double max;
         round = 0;
 
@@ -206,7 +211,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
                 round++;
                 int type = sod.getMaxOutlierType();
                 int pos = sod.getMaxOutlierPosition();
-                addOutlier(pos, type);
+                addNewOutlier(pos, type);
                 if (!estimateModel(true)) {
                     outliers.remove(outliers.size() - 1);
                     estimateModel(false);
@@ -227,8 +232,6 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
                 break;
             }
         }
-
-        return true;
     }
 
     public double getCritivalValue() {
@@ -282,23 +285,11 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         return regarima != null;
     }
 
-    // step I.1
-    // / <summary>
-    // / Initialize the model.
-    // / 1. If m_irflag, compute the coefficients by OLS. That happens in the
-    // first run (no previous estimation)
-    // / or when the HR (if used) provides bad estimation (unstable models).
-    // / 2. Calc by HR. Used in the first run or when a new outlier is added.
-    // The model of the SOD is updated, unless
-    // / exact ll estimation is used or HR provides an unstable model.
-    // / 3. Calc by exact ll. (option or unstable HR (first round only)).
-    // / 4. Gls estimation of the new model
-    // / </summary>
     private void removeOutlier(int idx) {
-        //
         int opos = regarima.getVariablesCount() - outliers.size() + idx;
         regarima = regarima.toBuilder().removeX(opos).build();
         outliers.remove(idx);
+        changed = true;
     }
 
     private boolean verifymodel() {

@@ -18,21 +18,27 @@ package demetra.likelihood;
 
 import demetra.design.Development;
 import demetra.data.DoubleSequence;
+import demetra.eco.EcoException;
+import demetra.maths.Constants;
 
 /**
- * The ILikelihood interface formalizes the likelihood of a usual
- * gaussian model. We suppose that the scaling factor is part of the parameters
- * and that it is concentrated out of the likelihood
+ * The ILikelihood interface formalizes the likelihood of a usual gaussian
+ * model. If isConcentratedScalingFactor is true, we suppose that the scaling
+ * factor (sig2) is part of the parameters and that it is concentrated out of
+ * the likelihood In the other case, we can suppose that sig2 = 1.
  * <br>
- * For a N(0, sig2*V) distribution (dim = n), the log-likelihood is given by
+ * For a N(0, [sig2*]V) distribution (dim = n), the log-likelihood is then given
+ * by
  * <br>
- * -.5*[n*log(2*pi)+log(det(V)*sig2^n)+(1/sig2)*y'(V^-1)y].
+ * -.5*[n*log(2*pi)+log(det(V)[*sig2^n])+[(1/sig2)*]y'(V^-1)y].
  * <br>
- * If we factorize V as LL' (L is the Cholesky factor of V) and if we write e=L^-1*y, we get
+ * If we factorize V as LL' (L is the Cholesky factor of V) and if we write
+ * e=L^-1*y, we get
  * <br>
- * ll=-.5*[n*log(2*pi)+log(det(V))+n*log(sig2)+(1/sig2)*e'e]
+ * ll=-.5*[n*log(2*pi)+log(det(V))[+n*log(sig2)]+[(1/sig2)*]e'e]
  * <br>
- * To be noted that det(V) is then the square of the product of the main diagonal of L.
+ * To be noted that det(V) is then the square of the product of the main
+ * diagonal of L.
  * <br>
  * The ML estimator of sig2 is given by sig2=e'e/n
  * <br>
@@ -46,39 +52,49 @@ import demetra.data.DoubleSequence;
  * <br> - ssq = ssq()
  * <br> -sig2 =ssq/n is given by sigma()
  * <br>
- * Maximizing the concentrated likelihood is equivalent to minimizing the function:
+ * Maximizing the concentrated likelihood is equivalent to minimizing the
+ * function:
  * <br>
  * ssq * det^1/n (= ssq*factor)
  * <br>
- * if e are the e and v = e*det^1/(2n), we try to minimize the sum of squares defined by vv'.
- * This last formulation will be used in optimization procedures based like Levenberg-Marquardt or similar algorithms.
+ * if e are the e and v = e*det^1/(2n), we try to minimize the sum of squares
+ * defined by vv'. This last formulation will be used in optimization procedures
+ * based like Levenberg-Marquardt or similar algorithms.
  */
 @Development(status = Development.Status.Release)
 public interface ILikelihood {
 
     /**
-     * Aikake Information Criterion for a given number of (hyper-)parameters 
+     * Aikake Information Criterion for a given number of (hyper-)parameters
      * AIC=2*nparams-2*ll
+     *
      * @param nparams The number of parameters
      * @return The AIC. Models with lower AIC shoud be preferred.
      */
     default double AIC(final int nparams) {
-	return -2 * logLikelihood() + 2 * nparams;
+        return -2 * logLikelihood() + 2 * nparams;
     }
 
     /**
-     * 
+     *
      * @param nparams
      * @return
      */
     default double BIC(final int nparams) {
-	return -2 * logLikelihood() + nparams * Math.log(dim());
+        return -2 * logLikelihood() + nparams * Math.log(dim());
     }
 
     /**
      * @return Log of the likelihood
      */
-    double logLikelihood();
+    default double logLikelihood() {
+        int n = dim();
+        if (isScalingFactor()) {
+            return -.5 * (n * Constants.LOGTWOPI + n * (1 + Math.log(ssq() / n)) + logDeterminant());
+        } else {
+            return -.5 * (n * Constants.LOGTWOPI + ssq() + logDeterminant());
+        }
+    }
 
     /**
      * @return Square root of Sigma.
@@ -93,21 +109,32 @@ public interface ILikelihood {
     double logDeterminant();
 
     /**
-     * Gets the ML estimate of the standard error of the model. ser=sqrt(ssq/n)
+     * True if there is a scaling factor in the distribution. The scaling factor
+     * is then concentrated out of the likelihood and replaced by its ML
+     * estimate. So the likelihood is then in fact the concentrated likelihood.
      *
-     * @return A positive number.
+     * @return
      */
-    default double ser() {
-        return Math.sqrt(ssq() / dim());
+    default boolean isScalingFactor() {
+        return true;
     }
 
     /**
-     * Gets the ML estimate of the variance of the model. sigma=ssq/n
+     * Gets the sqrt of sigma.
      *
-     * @return A positive number.
+     * @return A positive number. 1 if the likelihood is not concentrated.
+     */
+    default double ser() {
+        return isScalingFactor() ? Math.sqrt(ssq() / dim()) : 1;
+    }
+
+    /**
+     * Gets the ML estimate of the scaling factor. sigma=ssq/n
+     *
+     * @return A positive number. 1 if the likelihood is not concentrated.
      */
     default double sigma() {
-        return ssq() / dim();
+        return isScalingFactor() ? ssq() / dim() : 1;
     }
 
     /**
@@ -116,16 +143,28 @@ public interface ILikelihood {
     double ssq();
 
     /**
-     * @return The Standardized innovations. May be null if the e are not stored
+     * @return The Standardized innovations. =L^-1 * y where L is the Cholesky
+     * factor of the (unscaled) covariance matrix. May be null if the e are not
+     * stored
      */
     DoubleSequence e();
 
     /**
-     * @return The determinantal factor (n-th root).
+     * @return The determinantal factor (n-th root). Not used if the likelihood
+     * is not concentrated
      */
-    double factor();
+    default double factor() {
+        if (!isScalingFactor()) {
+            throw new EcoException(EcoException.UNEXPECTEDOPERATION);
+        }
+        return Math.exp(logDeterminant() / dim());
+    }
 
-    default DoubleSequence v() {
+    /**
+     * @return The deviances. = e*sqrt(factor) Not used if the likelihood is not
+     * concentrated.
+     */
+    default DoubleSequence deviances() {
         double f = factor();
         DoubleSequence e = e();
         if (f == 1) {

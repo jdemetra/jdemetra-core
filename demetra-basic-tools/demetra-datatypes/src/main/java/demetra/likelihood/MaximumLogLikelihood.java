@@ -25,10 +25,24 @@ import demetra.maths.MatrixType;
  * @author Jean Palate
  */
 @lombok.Value
-@Development(status=Development.Status.Alpha)
+@Development(status=Development.Status.Release)
 public class MaximumLogLikelihood {
+    /**
+     * Max of the log-likelihood
+     */
     private double value;
+    /**
+     * Parameters that maximize the likelihood
+     */
     private DoubleSequence parameters;
-    private DoubleSequence score;
-    private MatrixType information;
+    /**
+     * Gradient of the log likelihood function (=score) at its maximum.
+     * Should be very near 0
+     */
+    private DoubleSequence gradient;
+    /**
+     * Hessian of the log likelihood function at its maximum. 
+     * E(hessian)=Information. The gien hessian is an approximation of the information matrix
+     */
+    private MatrixType hessian;
 }

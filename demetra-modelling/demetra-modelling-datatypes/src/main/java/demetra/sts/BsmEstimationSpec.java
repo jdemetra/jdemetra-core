@@ -26,9 +26,10 @@ import demetra.maths.Optimizer;
 public class BsmEstimationSpec {
     public static final double DEF_TOL = 1e-9;
     public static final Optimizer DEF_OPT = Optimizer.LevenbergMarquardt;
-    public static final boolean DEF_DREGS = false;
+    public static final boolean DEF_DREGS = false, DEF_SCALINGFACTOR=true;
 
     private boolean diffuseRegression = DEF_DREGS;
+    private boolean scalingFactor = DEF_SCALINGFACTOR;
     private double precision = DEF_TOL;
     private Optimizer optimizer = DEF_OPT;
   

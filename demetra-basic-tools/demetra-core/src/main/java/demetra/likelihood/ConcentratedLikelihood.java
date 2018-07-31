@@ -23,6 +23,7 @@ import demetra.data.Doubles;
 import demetra.data.LogSign;
 import demetra.design.BuilderPattern;
 import demetra.eco.EcoException;
+import demetra.maths.Constants;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.MatrixType;
@@ -47,12 +48,13 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
 
         private static double[] B_EMPTY = new double[0];
 
-        int n;
-        int nmissing = 0;
-        double ssqerr, ldet;
-        double[] res;
-        double[] b = B_EMPTY;
-        Matrix bvar, r;
+        private int n;
+        private int nmissing = 0;
+        private double ssqerr, ldet;
+        private double[] res;
+        private double[] b = B_EMPTY;
+        private Matrix bvar, r;
+        private boolean scalingFactor = true;
 
         private Builder() {
         }
@@ -67,7 +69,11 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
             this.n = n;
             return this;
         }
-
+        
+        public Builder scalingFactor(boolean scalingFactor) {
+            this.scalingFactor = scalingFactor;
+            return this;
+        }
         /**
          * Number of missing values, estimated by means of additive outliers.
          * The regression variables corresponding to the missing values should be put
@@ -139,9 +145,9 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
                 }
                 double corr = LogSign.of(r.diagonal().extract(0, nmissing)).getValue();
                 double nldet = ldet + 2 * corr;
-                return new ConcentratedLikelihood(n - nmissing, nmissing, ssqerr, nldet, res, b, bvar, r);
+                return new ConcentratedLikelihood(n - nmissing, nmissing, ssqerr, nldet, res, b, bvar, r, scalingFactor);
             } else {
-                return new ConcentratedLikelihood(n, 0, ssqerr, ldet, res, b, bvar, r);
+                return new ConcentratedLikelihood(n, 0, ssqerr, ldet, res, b, bvar, r, scalingFactor);
             }
         }
 
@@ -156,9 +162,10 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
     private final double[] b;
     private volatile Matrix bvar;
     private final Matrix r;
+    private final boolean scalingFactor;
 
     private ConcentratedLikelihood(final int n, final int nmissing, final double ssqerr, final double ldet, final double[] res,
-            final double[] b, final Matrix bvar, final Matrix r) {
+            final double[] b, final Matrix bvar, final Matrix r, final boolean scalingFactor) {
         this.n = n;
         this.nmissing = nmissing;
         this.ldet = ldet;
@@ -167,11 +174,16 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         this.bvar = bvar;
         this.r = r;
         this.res = res;
-        this.ll = -.5
-                * (n * Math.log(2 * Math.PI) + n
-                * (1 + Math.log(ssqerr / n)) + ldet);
+        this.scalingFactor = scalingFactor;
+        if (scalingFactor) {
+            this.ll = -.5
+                    * (n * Constants.LOGTWOPI + n
+                    * (1 + Math.log(ssqerr / n)) + ldet);
+        } else {
+            this.ll = -.5 * (n * Constants.LOGTWOPI + ssqerr + ldet);
+        }
     }
-
+    
     public int nmissing() {
         return nmissing;
     }
@@ -195,19 +207,16 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
     public DoubleSequence allCoefficients() {
         return DoubleSequence.ofInternal(b);
     }
+    
+    @Override
+    public boolean isScalingFactor(){
+        return scalingFactor;
+    }
 
+    
     @Override
     public double logDeterminant() {
         return ldet;
-    }
-
-    /**
-     *
-     * @return The factor of the likelihood.
-     */
-    @Override
-    public double factor() {
-        return Math.exp(ldet / n);
     }
 
     /**
@@ -248,6 +257,11 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         return DoubleSequence.ofInternal(b, nmissing, b.length - nmissing);
     }
 
+    @Override
+    public double coefficient(int pos) {
+        return b[pos+nmissing];
+    }
+ 
     @Override
     @Nonnull
     public MatrixType unscaledCovariance() {
@@ -341,7 +355,11 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
                 }
             }
         }
-        return new ConcentratedLikelihood(n, nmissing, nssqerr, ldet, nres, nb, nbvar, nr);
+        double nldet=ldet;
+        if (! scalingFactor){
+            nldet+=n*Math.log(yfactor);
+        }
+        return new ConcentratedLikelihood(n, nmissing, nssqerr, nldet, nres, nb, nbvar, nr, scalingFactor);
     }
     
     public int degreesOfFreedom(){

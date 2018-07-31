@@ -14,13 +14,16 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.maths.polynomials;
+package demetra.maths.polynomials.spi;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.design.Development;
 import demetra.design.PrototypePattern;
+import demetra.design.ServiceDefinition;
+import demetra.design.ThreadSafe;
 import demetra.maths.Complex;
+import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.internal.RobustMullerNewtonSolver;
 import demetra.maths.polynomials.internal.MullerNewtonSolver;
 
@@ -28,14 +31,10 @@ import demetra.maths.polynomials.internal.MullerNewtonSolver;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-@PrototypePattern
-public interface IRootsSolver {
-
-    /**
-     * Clear the previous results
-     */
-    void clear();
+@Development(status = Development.Status.Release)
+@ThreadSafe
+@ServiceDefinition(isSingleton = true)
+public interface RootsSolver {
 
     /**
      * The method tries to factorize the polynomial passed as a parameter.
@@ -66,7 +65,7 @@ public interface IRootsSolver {
      *
      * @return
      */
-    public static IRootsSolver fastSolver() {
+    public static RootsSolver fastSolver() {
         return Roots_Factory.FASTSOLVER.get().get();
     }
 
@@ -82,7 +81,7 @@ public interface IRootsSolver {
      *
      * @return
      */
-    public static IRootsSolver robustSolver() {
+    public static RootsSolver robustSolver() {
         return Roots_Factory.ROBUSTSOLVER.get().get();
     }
 
@@ -90,7 +89,7 @@ public interface IRootsSolver {
      *
      * @param value
      */
-    public static void setFastSolver(final Supplier<IRootsSolver> value) {
+    public static void setFastSolver(final Supplier<RootsSolver> value) {
         Roots_Factory.FASTSOLVER.set(value);
     }
 
@@ -98,7 +97,7 @@ public interface IRootsSolver {
      *
      * @param value
      */
-    public static void setRobustSolver(final Supplier<IRootsSolver> value) {
+    public static void setRobustSolver(final Supplier<RootsSolver> value) {
         Roots_Factory.ROBUSTSOLVER.set(value);
     }
 }
@@ -112,7 +111,7 @@ class Roots_Factory {
      * interface.
      *
      */
-    static final AtomicReference<Supplier<IRootsSolver>> FASTSOLVER = new AtomicReference<>(() -> new MullerNewtonSolver());
-    static final AtomicReference<Supplier<IRootsSolver>> ROBUSTSOLVER = new AtomicReference<>(() -> new RobustMullerNewtonSolver());
+    static final AtomicReference<Supplier<RootsSolver>> FASTSOLVER = new AtomicReference<>(() -> new MullerNewtonSolver());
+    static final AtomicReference<Supplier<RootsSolver>> ROBUSTSOLVER = new AtomicReference<>(() -> new RobustMullerNewtonSolver());
 
 }

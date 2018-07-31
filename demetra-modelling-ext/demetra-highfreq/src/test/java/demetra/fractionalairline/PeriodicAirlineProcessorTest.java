@@ -41,17 +41,17 @@ public class PeriodicAirlineProcessorTest {
         MatrixType edf = MatrixSerializer.read(new File(uri));
         Holidays france = france();
         Matrix hol = Matrix.make(edf.getRowsCount(), france.getCount());
-        demetra.timeseries.calendars.Utility.fillDays(france, hol, LocalDate.of(1996, 1, 1));
+        france.fillDays(hol, LocalDate.of(1996, 1, 1));
         RegArimaEstimation<ArimaModel> rslt = PeriodicAirlineProcessor.process(Doubles.fastFn(edf.column(0), z->Math.log(z)), hol, new double[]{7, 365.25}, 1e-12);
         assertTrue(rslt != null);
-//        ConcentratedLikelihood cll = rslt.getConcentratedLikelihood();
-//        System.out.println(cll.coefficients());
-//        System.out.println(DoubleSequence.ofInternal(cll.tstats(0, false)));
-//        System.out.println(cll.logLikelihood());
-//
-//        rslt = PeriodicAirlineProcessor.process(Doubles.fastFn(edf.column(0), z->Math.log(z)), null, new double[]{7, 365.25}, 1e-12);
-//        cll = rslt.getConcentratedLikelihood();
-//        System.out.println(cll.logLikelihood());
+        ConcentratedLikelihood cll = rslt.getConcentratedLikelihood();
+        System.out.println(cll.coefficients());
+        System.out.println(DoubleSequence.ofInternal(cll.tstats(0, false)));
+        System.out.println(cll.logLikelihood());
+
+        rslt = PeriodicAirlineProcessor.process(Doubles.fastFn(edf.column(0), z->Math.log(z)), null, new double[]{7, 365.25}, 1e-12);
+        cll = rslt.getConcentratedLikelihood();
+        System.out.println(cll.logLikelihood());
     }
 
     @Test

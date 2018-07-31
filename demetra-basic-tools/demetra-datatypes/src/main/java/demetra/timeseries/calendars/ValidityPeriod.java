@@ -23,26 +23,14 @@ import java.time.LocalDateTime;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
+@Development(status = Development.Status.Release)
+@lombok.Value
 public class ValidityPeriod {
 
-    private final LocalDateTime beg, end;
-
-    public ValidityPeriod(LocalDateTime beg, LocalDateTime end) {
-        this.beg=beg;
-        this.end=end;        
-    }
-
-    public LocalDateTime getStart() {
-        return beg;
-    }
-
-    public LocalDateTime getEnd() {
-        return end;
-    }
+    private final LocalDateTime start, end;
 
     public boolean isStartSpecified() {
-        return beg != null;
+        return start != null;
     }
 
     public boolean isEndSpecified() {

@@ -17,15 +17,9 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
-import internal.timeseries.InternalFixme;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
-import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.calendars.Holiday;
-import demetra.timeseries.calendars.Holidays;
-import demetra.timeseries.calendars.IHolidayInfo;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -40,66 +34,6 @@ import javax.annotation.Nonnull;
 @Development(status = Development.Status.Alpha)
 @lombok.experimental.UtilityClass
 public class Utility {
-
-    public void fillDays(Holidays hl, final Matrix D, final LocalDate start) {
-        LocalDate end = start.plusDays(D.getRowsCount());
-        int col = 0;
-        for (Holiday item : hl.elements()) {
-            Iterator<IHolidayInfo> iter = item.getDay().getIterable(start, end).iterator();
-            while (iter.hasNext()) {
-                LocalDate date = iter.next().getDay();
-                if (date.getDayOfWeek() != DayOfWeek.SUNDAY) {
-                    long pos = start.until(date, DAYS);
-                    D.set((int) pos, col, 1);
-                }
-            }
-            if (D.getColumnsCount() > 1) {
-                ++col;
-            }
-        }
-    }
-
-    public void fillPreviousWorkingDays(Holidays hl, final Matrix D, final LocalDate start, final int del) {
-        int n=D.getRowsCount();
-        LocalDate nstart = start.plusDays(del);
-        LocalDate end = start.plusDays(n);
-        int col = 0;
-        for (Holiday item : hl.elements()) {
-            Iterator<IHolidayInfo> iter = item.getDay().getIterable(nstart, end).iterator();
-            while (iter.hasNext()) {
-                LocalDate date = iter.next().getDay().minusDays(del);
-                date = IHolidayInfo.getPreviousWorkingDate(date);
-                long pos = start.until(date, DAYS);
-                if (pos >= 0 && pos < n) {
-                    D.set((int) pos, col, 1);
-                }
-            }
-            if (D.getColumnsCount() > 1) {
-                ++col;
-            }
-        }
-    }
-
-    public void fillNextWorkingDays(Holidays hl, final Matrix D, final LocalDate start, final int del) {
-        int n=D.getRowsCount();
-        LocalDate nstart = start.minusDays(del);
-        LocalDate end = nstart.plusDays(n);
-        int col = 0;
-        for (Holiday item : hl.elements()) {
-            Iterator<IHolidayInfo> iter = item.getDay().getIterable(nstart, end).iterator();
-            while (iter.hasNext()) {
-                LocalDate date = iter.next().getDay().plusDays(del);
-                date = IHolidayInfo.getNextWorkingDate(date);
-                long pos = start.until(date, DAYS);
-                if (pos >= 0 && pos < n) {
-                    D.set((int) pos, col, 1);
-                }
-            }
-            if (D.getColumnsCount() > 1) {
-                ++col;
-            }
-        }
-    }
 
     /**
      *
@@ -122,41 +56,6 @@ public class Utility {
         return rslt;
     }
 
-//    /**
-//     *
-//     * @param domain
-//     * @param day
-//     * @return
-//     */
-//    public static int[] daysCount(TsDomain domain, DayOfWeek day) {
-//        int n = domain.getLength();
-//        int[] rslt = new int[n];
-//        int[] start = new int[n + 1]; // id of the first day for each period
-//        TsPeriod d0 = domain.getStart();
-//        int conv = 12 / d0.getFrequency().intValue();
-//        TsPeriod month = new TsPeriod(TsFrequency.Monthly);
-//        month.set(d0.getYear(), d0.getPosition() * conv);
-//        for (int i = 0; i < start.length; ++i) {
-//            start[i] = Day.calc(month.getYear(), month.getPosition(), 0);
-//            month.move(conv);
-//        }
-//
-//        for (int i = 0; i < n; ++i) {
-//            int dw0 = (start[i] - 4) % 7;
-//            int ni = start[i + 1] - start[i];
-//            if (dw0 < 0) {
-//                dw0 += 7;
-//            }
-//            int j = day.intValue();
-//            int j0 = j - dw0;
-//            if (j0 < 0) {
-//                j0 += 7;
-//            }
-//            rslt[i] = 1 + (ni - 1 - j0) / 7;
-//        }
-//        return rslt;
-//    }
-//
     /**
      * Return the first Day in the given month of the given year which is a
      * specified day of week
@@ -181,34 +80,6 @@ public class Utility {
         return start;
     }
 
-//    /**
-//     * monday=0, ..., sunday=6.
-//     *
-//     * @param domain
-//     * @return
-//     */
-//    public static int[] lastDay(TsDomain domain) {
-//        int n = domain.length();
-//        int[] rslt = new int[n];
-//
-//        TsPeriod d1 = domain.getStart();
-//        d1.move(1);
-//        int conv = 12 / d1.getFrequency().intValue();
-//        TsPeriod month = new TsPeriod(TsFrequency.Monthly);
-//        month.set(d1.getYear(), d1.getPosition() * conv);
-//        // rslt contains the id of the last day of each period
-//        for (int i = 0; i < rslt.length; ++i) {
-//            int id = Day.calc(month.getYear(), month.getPosition(), 0);
-//            id = (id - 5) % 7;
-//            if (id < 0) {
-//                id += 7;
-//            }
-//            rslt[i] = id;
-//            month.move(conv);
-//        }
-//        return rslt;
-//    }
-//
     int calc(int year, final int month, final int day) {
 
         boolean bLeapYear = isLeap(year);
@@ -276,7 +147,7 @@ public class Utility {
      * @param month 1-based index of the month
      * @return
      */
-    public static int getCumulatedMonthDays(int month) {
+    public int getCumulatedMonthDays(int month) {
         return CUMULATEDMONTHDAYS[month];
     }
 
@@ -287,7 +158,7 @@ public class Utility {
      * @param month Considered (1-based) month.
      * @return Number of days in the considered month
      */
-    public static int getNumberOfDaysByMonth(final int year, final int month) {
+    public int getNumberOfDaysByMonth(final int year, final int month) {
         if ((month == 2) && isLeap(year)) {
             return 29;
         }
@@ -297,12 +168,12 @@ public class Utility {
     /**
      * Number of days by month (if no leap year)
      */
-    private static final int[] MONTHDAYS = {31, 28, 31, 30, 31, 30, 31, 31, 30,
+    private final int[] MONTHDAYS = {31, 28, 31, 30, 31, 30, 31, 31, 30,
         31, 30, 31};
    /**
      * Cumulative number of days (if no leap year). CumulatedMonthDays[2] =
      * number of days from 1/1 to 28/2.
      */
-    private static final int[] CUMULATEDMONTHDAYS = {0, 31, 59, 90, 120, 151,
+    private final int[] CUMULATEDMONTHDAYS = {0, 31, 59, 90, 120, 151,
         181, 212, 243, 273, 304, 334, 365};
 }

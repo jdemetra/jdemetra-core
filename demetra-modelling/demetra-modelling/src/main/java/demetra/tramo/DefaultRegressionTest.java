@@ -16,6 +16,9 @@
  */
 package demetra.tramo;
 
+import demetra.regarima.regular.TRegressionTest;
+import demetra.regarima.regular.FRegressionTest;
+import demetra.regarima.regular.IRegressionTest;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihood;
@@ -31,7 +34,6 @@ import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.regarima.RegArimaUtility;
-import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.SarimaModel;
 
 /**

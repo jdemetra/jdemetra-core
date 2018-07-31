@@ -89,22 +89,4 @@ public class AlgorithmDescriptor implements Comparable<AlgorithmDescriptor> {
         }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof AlgorithmDescriptor) {
-            return compareTo((AlgorithmDescriptor) o) == 0;
-            
-        } else {
-            return false;
-            
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 83 * hash + Objects.hashCode(this.family.toLowerCase());
-        hash = 83 * hash + Objects.hashCode(this.name.toLowerCase());
-        return hash;
-    }
 }

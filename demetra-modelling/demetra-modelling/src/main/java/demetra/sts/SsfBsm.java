@@ -84,7 +84,7 @@ public class SsfBsm extends Ssf {
             ++n;
         }
         if (model.seasVar >= 0) {
-            n += model.getFrequency() - 1;
+            n += model.getPeriod() - 1;
         }
         return n;
     }
@@ -141,7 +141,7 @@ public class SsfBsm extends Ssf {
         final Matrix tsvar, ltsvar;
         final double lVar, sVar, seasVar, cVar, nVar, cDump;
         final double ccos, csin;
-        final int freq;
+        final int period;
         final SeasonalModel seasModel;
 
         BsmData(BasicStructuralModel model) {
@@ -149,17 +149,17 @@ public class SsfBsm extends Ssf {
             sVar = model.sVar;
             seasVar = model.seasVar;
             cVar = model.cVar;
-            nVar = model.nVar;
+            nVar = model.nVar <= 0 ? 0 : model.nVar;
             cDump = model.cDump;
             ccos = model.ccos;
             csin = model.csin;
             seasModel = model.seasModel;
-            freq = model.freq;
+            period = model.period;
             if (seasVar > 0) {
-                tsvar = SeasonalComponent.tsVar(seasModel, freq);
+                tsvar = SeasonalComponent.tsVar(seasModel, period);
                 tsvar.mul(seasVar);
                 if (model.seasModel != SeasonalModel.Crude && model.seasModel != SeasonalModel.Dummy) {
-                    ltsvar = SeasonalComponent.tslVar(seasModel, freq);
+                    ltsvar = SeasonalComponent.tslVar(seasModel, period);
                     ltsvar.mul(Math.sqrt(seasVar));
                 } else {
                     ltsvar = null;
@@ -195,7 +195,7 @@ public class SsfBsm extends Ssf {
                 ++r;
             }
             if (data.seasVar >= 0) {
-                r += data.freq - 1;
+                r += data.period - 1;
             }
             return r;
         }
@@ -215,7 +215,7 @@ public class SsfBsm extends Ssf {
                 ++r;
             }
             if (data.seasVar >= 0) {
-                r += data.freq - 1;
+                r += data.period - 1;
             }
             return r;
         }
@@ -312,7 +312,7 @@ public class SsfBsm extends Ssf {
                 if (data.seasModel == SeasonalModel.Dummy || data.seasModel == SeasonalModel.Crude) {
                     ++nr;
                 } else {
-                    nr += data.freq - 1;
+                    nr += data.period - 1;
                 }
             }
             if (data.nVar > 0) {
@@ -399,10 +399,10 @@ public class SsfBsm extends Ssf {
                         s.set(i, j, Math.sqrt(data.seasVar));
                         break;
                     case Crude:
-                        s.extract(i, data.freq - 1, j, 1).set(Math.sqrt(data.seasVar));
+                        s.extract(i, data.period - 1, j, 1).set(Math.sqrt(data.seasVar));
                         break;
                     default:
-                        s.extract(i, data.freq - 1, j, data.freq - 1).copy(data.ltsvar);
+                        s.extract(i, data.period - 1, j, data.period - 1).copy(data.ltsvar);
                         break;
                 }
             }
@@ -437,10 +437,10 @@ public class SsfBsm extends Ssf {
                         x.add(i, u.get(j) * Math.sqrt(data.seasVar));
                         break;
                     case Crude:
-                        x.range(i, i + data.freq - 1).add(Math.sqrt(data.seasVar) * u.get(j));
+                        x.range(i, i + data.period - 1).add(Math.sqrt(data.seasVar) * u.get(j));
                         break;
                     default:
-                        x.range(i, i + data.freq - 1).addProduct(data.ltsvar.rowsIterator(), u.range(j, j + data.freq - 1));
+                        x.range(i, i + data.period - 1).addProduct(data.ltsvar.rowsIterator(), u.range(j, j + data.period - 1));
                         break;
                 }
             }
@@ -475,10 +475,10 @@ public class SsfBsm extends Ssf {
                         xs.set(j, x.get(i) * Math.sqrt(data.seasVar));
                         break;
                     case Crude:
-                        xs.set(j, x.range(i, i + data.freq - 1).sum() * Math.sqrt(data.seasVar));
+                        xs.set(j, x.range(i, i + data.period - 1).sum() * Math.sqrt(data.seasVar));
                         break;
                     default:
-                        xs.range(j, j + data.freq - 1).product(x.range(i, i + data.freq - 1), data.ltsvar.columnsIterator());
+                        xs.range(j, j + data.period - 1).product(x.range(i, i + data.period - 1), data.ltsvar.columnsIterator());
                         break;
                 }
             }
@@ -507,7 +507,7 @@ public class SsfBsm extends Ssf {
                 ++i;
             }
             if (data.seasVar >= 0) {
-                Matrix seas = tr.extract(i, data.freq - 1, i, data.freq - 1);
+                Matrix seas = tr.extract(i, data.period - 1, i, data.period - 1);
                 seas.row(0).set(-1);
                 seas.subDiagonal(-1).set(1);
             }
@@ -535,7 +535,7 @@ public class SsfBsm extends Ssf {
                 }
             }
             if (data.seasVar >= 0) {
-                DataBlock ex = x.extract(i0, data.freq - 1, 1);
+                DataBlock ex = x.extract(i0, data.period - 1, 1);
                 ex.fshiftAndNegSum();
             }
         }
@@ -563,7 +563,7 @@ public class SsfBsm extends Ssf {
                 }
             }
             if (data.seasVar >= 0) {
-                int imax = i0 + data.freq - 2;
+                int imax = i0 + data.period - 2;
                 double xs = x.get(i0);
                 for (int i = i0; i < imax; ++i) {
                     x.set(i, x.get(i + 1) - xs);

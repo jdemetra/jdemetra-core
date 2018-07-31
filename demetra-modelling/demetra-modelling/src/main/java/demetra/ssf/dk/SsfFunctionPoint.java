@@ -64,7 +64,7 @@ public class SsfFunctionPoint<S, F extends ISsf> implements
         current=fn.getMapping().map(p);
         currentSsf = fn.getBuilder().buildSsf(current);
         boolean fastcomputer=fn.isFast() && !fn.isMissing() && currentSsf.isTimeInvariant();
-        IConcentratedLikelihoodComputer<DkConcentratedLikelihood> computer= DkToolkit.concentratedLikelihoodComputer(true, fastcomputer);
+        IConcentratedLikelihoodComputer<DkConcentratedLikelihood> computer= DkToolkit.concentratedLikelihoodComputer(true, fastcomputer, fn.isScalingFactor());
         if (fn.getX() == null)
             ll=computer.compute(currentSsf, fn.getData());
         else

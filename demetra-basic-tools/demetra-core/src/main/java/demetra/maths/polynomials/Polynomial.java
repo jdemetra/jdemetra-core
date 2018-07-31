@@ -30,6 +30,7 @@ import demetra.util.Arrays2;
 import lombok.NonNull;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
+import demetra.maths.polynomials.spi.RootsSolver;
 
 /**
  *
@@ -597,7 +598,7 @@ public final class Polynomial implements DoubleSequence {
     public Complex[] roots() {
         Complex[] result = defRoots.get();
         if (result == null) {
-            result = roots(IRootsSolver.fastSolver());
+            result = roots(RootsSolver.fastSolver());
             defRoots.set(result);
         }
         return result;
@@ -618,16 +619,15 @@ public final class Polynomial implements DoubleSequence {
      * @param solver
      * @return
      */
-    public Complex[] roots(IRootsSolver solver) {
+    public Complex[] roots(RootsSolver solver) {
         if (coeff.length == 1) {
             return new Complex[0];
         }
         if (solver == null) {
-            solver = IRootsSolver.fastSolver();
+            solver = RootsSolver.fastSolver();
         }
         if (solver.factorize(this)) {
             Complex[] roots = solver.roots();
-            solver.clear();
             return roots;
         } else {
             return null;

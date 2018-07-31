@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import demetra.x12.X12Utility;
+import java.util.Collections;
 
 /**
  *
@@ -225,7 +226,7 @@ public class ArmaModuleImpl {
                     all.add(cur);
                 }
             }
-
+            Collections.sort(all);
             return all.toArray(new RegArmaBic[all.size()]);
         }
     }
