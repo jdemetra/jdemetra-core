@@ -17,6 +17,7 @@
 package demetra.ssf.models;
 
 import demetra.ssf.implementations.Measurement;
+import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 
 /**
@@ -25,21 +26,12 @@ import demetra.ssf.univariate.Ssf;
  * l(t+1)=l(t)+u(t) 
  * @author Jean Palate
  */
-public class LocalLevel extends Ssf{
-    private final double lv,nv;
+@lombok.experimental.UtilityClass
+public class LocalLevel{
     
-    public LocalLevel(double lvar, double nvar) {
-        super(new RandomWalk.Initialization(lvar), new RandomWalk.Dynamics(lvar), Measurement.create(0, nvar));
-        lv=lvar;
-        nv=nvar;        
+    public ISsf of(double lvar) {
+        return new Ssf(new RandomWalk.Initialization(lvar), new RandomWalk.Dynamics(lvar), Measurement.create(0));
     }
 
-    public double getVariance() {
-        return lv;
-    }
-
-    public double getNoiseVariance() {
-        return nv;
-    }
 
 }

@@ -220,6 +220,6 @@ public class LinearModel {
     }
     
     public LinearModelType toType(){
-        return new LinearModelType(DoubleSequence.ofInternal(y), mean, x);
+        return new LinearModelType(DoubleSequence.ofInternal(y), mean, x, LinearModelType.NOMISSING);
     }
 }

@@ -52,16 +52,16 @@ public class AtomicModels {
         return SsfArima.of(sarima);
     }
     
-    public ISsf localLevel(double lvar, double nvar){
-        return new LocalLevel(lvar, nvar);
+    public ISsf localLevel(double lvar){
+        return LocalLevel.of(lvar);
     }
 
     public ISsf localLinearTrend(double lvar, double svar, double nvar){
-        return LocalLinearTrend.of(lvar, svar, nvar);
+        return LocalLinearTrend.of(lvar, svar);
     }
 
-    public ISsf seasonalComponent(int period, String model, double seasvar){
-        return SeasonalComponent.of(SeasonalModel.valueOf(model), seasvar, period);
+    public ISsf seasonalComponent(String model, int period, double seasvar){
+        return SeasonalComponent.of(SeasonalModel.valueOf(model), period, seasvar);
     }
     
     public ISsf cycle(double dumpingFactor, double cyclicalPeriod, double cvar){

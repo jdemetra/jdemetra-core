@@ -26,7 +26,7 @@ public class LinearModelType {
     @lombok.Builder.Default
     private int[] missing=NOMISSING;
     
-    private static final int[] NOMISSING = new int[0];
+    public static final int[] NOMISSING = new int[0];
 
 //    public int variablesCount() {
 //        int n = 0;
