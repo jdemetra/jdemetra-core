@@ -103,6 +103,18 @@ public interface IConcentratedLikelihood extends ILikelihood {
         return e;
     }
 
+    /**
+     * Gets the T-Stat of the given variable. This method is only defined
+     * when the likelihood contains a scaling factor. In the other case,
+     * the user should use the corresponding ser() method.
+     * When it is defined T(i) = coefficient(i)/ser(i)
+     * @param ix The 0-based position of the variable. 0 for mean correction, if any
+     * @param nhp The number of hyper-parameters; used to correct the degrees 
+     * of freedom (unused if we use the ML (biased) estimator.
+     * @param unbiased True if the estimator of the scaling factor is unbiased. False
+     * if we use the (biased) ML estimator.
+     * @return 
+     */
     default double tstat(int ix, int nhp, boolean unbiased) {
         if (!isScalingFactor()) {
             throw new EcoException(EcoException.UNEXPECTEDOPERATION);

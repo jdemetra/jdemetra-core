@@ -187,6 +187,17 @@ public final class BsmSpec implements Cloneable {
         }
     }
 
+    /**
+     *
+     * @param value
+     */
+    public void setNoiseUse(ComponentUse value) {
+        noiseUse = value;
+        if (value == ComponentUse.Unused) {
+            noiseVar=0;
+        }
+    }
+
     public int getParametersCount() {
         int n = 0;
         if (levelUse == ComponentUse.Free) {

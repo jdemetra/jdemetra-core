@@ -164,7 +164,7 @@ public interface ILikelihood {
      * @return The deviances. = e*sqrt(factor) Not used if the likelihood is not
      * concentrated.
      */
-    default DoubleSequence v() {
+    default DoubleSequence deviances() {
         double f = factor();
         DoubleSequence e = e();
         if (f == 1) {
