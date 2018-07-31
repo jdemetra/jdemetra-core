@@ -30,7 +30,7 @@ import demetra.timeseries.calendars.GenericTradingDays;
 public class GenericCalendars {
 
     public MatrixType td(TsDomain domain, int[] groups, boolean contrasts) {
-        DayClustering dc = DayClustering.create(groups);
+        DayClustering dc = DayClustering.of(groups);
         if (contrasts) {
             GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
             Matrix m = Matrix.make(domain.getLength(), dc.getGroupsCount() - 1);

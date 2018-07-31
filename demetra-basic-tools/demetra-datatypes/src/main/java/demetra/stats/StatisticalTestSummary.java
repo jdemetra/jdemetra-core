@@ -13,7 +13,7 @@ import demetra.design.Development;
  */
 @lombok.Value
 @Development(status = Development.Status.Beta)
-public class TestResult {
+public class StatisticalTestSummary {
  
     double value;
     double pvalue;

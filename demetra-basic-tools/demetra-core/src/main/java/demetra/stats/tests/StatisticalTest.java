@@ -21,6 +21,7 @@ import demetra.design.Immutable;
 import demetra.dstats.IDistribution;
 import demetra.dstats.ProbabilityType;
 import demetra.stats.StatException;
+import demetra.stats.StatisticalTestSummary;
 
 /**
  *
@@ -130,4 +131,7 @@ public class StatisticalTest {
         return builder.toString();
     }
 
+    public StatisticalTestSummary toSummary(){
+        return new StatisticalTestSummary(value, getPValue(), getDistribution().toString());
+    }
 }

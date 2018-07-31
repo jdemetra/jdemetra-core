@@ -21,7 +21,7 @@ import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
 import demetra.maths.matrices.Matrix;
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTestSummary;
 import demetra.stats.tests.StatisticalTest;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
@@ -33,6 +33,9 @@ import demetra.timeseries.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
 import static demetra.timeseries.simplets.TsDataToolkit.drop;
 import java.util.Collections;
+import static demetra.timeseries.simplets.TsDataToolkit.delta;
+import static demetra.timeseries.simplets.TsDataToolkit.delta;
+import static demetra.timeseries.simplets.TsDataToolkit.delta;
 
 /**
  *
@@ -42,7 +45,7 @@ import java.util.Collections;
 public class TradingDaysTests {
 
 
-    public TestResult ftest(TsData s, boolean ar, int ny) {
+    public StatisticalTestSummary ftest(TsData s, boolean ar, int ny) {
         int freq = s.getTsUnit().ratioOf(TsUnit.YEAR);
 
         if (ar) {
@@ -60,7 +63,7 @@ public class TradingDaysTests {
 
     }
 
-    private TestResult process(TsData s) {
+    private StatisticalTestSummary process(TsData s) {
         try {
             DataBlock y=DataBlock.of(s.getValues());
             y.sub(y.average());
@@ -70,18 +73,14 @@ public class TradingDaysTests {
             Ols ols = new Ols();
             LeastSquaresResults rslt = ols.compute(reg);
             StatisticalTest ftest = rslt.Ftest();
-            return TestResult.builder()
-                    .value(ftest.getValue())
-                    .pvalue(ftest.getPValue())
-                    .description(ftest.getDistribution().toString())
-                    .build();
+            return ftest.toSummary();
           
         } catch (Exception err) {
             return null;
         }
     }
 
-    private TestResult processAr(TsData s) {
+    private StatisticalTestSummary processAr(TsData s) {
         try {
             DataBlock y=DataBlock.of(s.getValues());
             TsDomain domain = s.getDomain();
@@ -96,11 +95,7 @@ public class TradingDaysTests {
             Ols ols = new Ols();
             LeastSquaresResults rslt = ols.compute(reg);
             StatisticalTest ftest = rslt.Ftest(1, td.getColumnsCount());
-            return TestResult.builder()
-                    .value(ftest.getValue())
-                    .pvalue(ftest.getPValue())
-                    .description(ftest.getDistribution().toString())
-                    .build();
+            return ftest.toSummary();
          } catch (Exception err) {
             return null;
         }

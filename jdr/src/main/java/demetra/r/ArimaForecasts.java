@@ -11,24 +11,17 @@ import demetra.arima.ssf.SsfArima;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
-import demetra.likelihood.ConcentratedLikelihood;
-import demetra.likelihood.LikelihoodStatistics;
-import demetra.likelihood.mapping.LikelihoodInfo;
-import demetra.maths.MatrixType;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.processing.IProcResults;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaType;
-import demetra.sarima.mapping.SarimaInfo;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.RegSsf;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.SsfData;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -154,9 +147,9 @@ public class ArimaForecasts {
     public void generateMeanEffect(BackFilter ur, DataBlock m) {
         Polynomial p = ur.asPolynomial();
         int n = m.length();
-        for (int i = p.getDegree(); i < n; ++i) {
+        for (int i = p.degree(); i < n; ++i) {
             double c = 1;
-            for (int j = 1; j <= p.getDegree(); ++j) {
+            for (int j = 1; j <= p.degree(); ++j) {
                 if (p.get(j) != 0) {
                     c -= p.get(j) * m.get(i - j);
                 }
