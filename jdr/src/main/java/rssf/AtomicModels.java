@@ -52,23 +52,23 @@ public class AtomicModels {
         return SsfArima.of(sarima);
     }
     
-    public ISsf localLevel(double lvar){
-        return LocalLevel.of(lvar);
+    public ISsf localLevel(double lvar, double loading){
+        return LocalLevel.of(lvar, loading);
     }
 
-    public ISsf localLinearTrend(double lvar, double svar, double nvar){
-        return LocalLinearTrend.of(lvar, svar);
+    public ISsf localLinearTrend(double lvar, double svar, double loading){
+        return LocalLinearTrend.of(lvar, svar, loading);
     }
 
-    public ISsf seasonalComponent(String model, int period, double seasvar){
-        return SeasonalComponent.of(SeasonalModel.valueOf(model), period, seasvar);
+    public ISsf seasonalComponent(String model, int period, double seasvar, double loading){
+        return SeasonalComponent.of(SeasonalModel.valueOf(model), period, seasvar, loading);
     }
     
     public ISsf cycle(double dumpingFactor, double cyclicalPeriod, double cvar){
         return CyclicalComponent.of(dumpingFactor, cyclicalPeriod, cvar);
     }
     
-    public ISsf noise(double var){
-        return new Noise(var);
+    public ISsf noise(double var, double loading){
+        return Noise.of(var, loading);
     }
 }

@@ -388,7 +388,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
     }
 
     @Override
-    public DoubleSequence map(SarimaModel m) {
+    public DoubleSequence parametersOf(SarimaModel m) {
         return m.parameters();
     }
 

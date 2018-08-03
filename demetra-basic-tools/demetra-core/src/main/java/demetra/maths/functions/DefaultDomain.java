@@ -86,8 +86,4 @@ public class DefaultDomain implements IParametersDomain {
 	return ParamValidation.Valid;
     }
 
-    @Override
-    public DoubleSequence getDefaultParameters() {
-        return DoubleSequence.onMapping(dim, i->0);
-    }
 }

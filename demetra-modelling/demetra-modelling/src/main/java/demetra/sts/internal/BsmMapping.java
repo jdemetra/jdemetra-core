@@ -246,7 +246,6 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
                 : Double.NEGATIVE_INFINITY;
     }
 
-    @Override
     public DoubleSequence map(BasicStructuralModel t) {
         double[] p = new double[getDim()];
         int idx = 0;

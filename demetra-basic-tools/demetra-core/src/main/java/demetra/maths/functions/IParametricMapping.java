@@ -37,12 +37,7 @@ public interface IParametricMapping<T> extends IParametersDomain {
      */
     T map(DoubleSequence p);
 
-    /**
-     * Generates the parameters corresponding to the given object
-     * @param t
-     * @return 
-     */
-    DoubleSequence map(T t);
+    DoubleSequence getDefaultParameters();
     
     default T getDefault(){
         return map(getDefaultParameters());

@@ -99,21 +99,6 @@ public class ProxyMinimizer implements IFunctionMinimizer {
         return (IFunctionPoint) minimizer.getResult();
     }
 
-    /**
-     *
-     * @param function
-     * @param start
-     * @return
-     */
-    @Override
-    public boolean minimize(IFunction function) {
-        if (! (function instanceof ISsqFunction))
-            return false;
-        ISsqFunction fn = (ISsqFunction) function;
-        ISsqFunctionPoint s = fn.ssqEvaluate(function.getDomain().getDefaultParameters());
-        return minimizer.minimize(s);
-     }
-
     @Override
     public boolean minimize(IFunctionPoint start) {
         IFunction function = start.getFunction();

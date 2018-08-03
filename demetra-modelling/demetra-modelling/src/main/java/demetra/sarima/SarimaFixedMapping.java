@@ -137,8 +137,8 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
     }
 
     @Override
-    public DoubleSequence map(SarimaModel t) {
-        return freeParameters(mapper.map(t));
+    public DoubleSequence parametersOf(SarimaModel t) {
+        return freeParameters(mapper.parametersOf(t));
     }
 
     private void save(DoubleSequence all, DataBlock free) {

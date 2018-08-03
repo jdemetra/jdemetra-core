@@ -20,6 +20,8 @@ import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.implementations.Measurement;
+import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
 
@@ -28,10 +30,15 @@ import demetra.ssf.univariate.Ssf;
  *
  * @author Jean Palate
  */
-public class Noise extends Ssf {
+@lombok.experimental.UtilityClass
+public class Noise {
 
-    public Noise(final double var) {
-        super(new Initialization(var), new Dynamics(var), new Measurement());
+    public ISsf of(final double var) {
+        return new Ssf(new Initialization(var), new Dynamics(var), Measurement.create(0));
+    }
+
+    public ISsf of(final double var, final double loading) {
+        return new Ssf(new Initialization(var), new Dynamics(var), Measurement.createLoading(0, loading));
     }
 
     static class Initialization implements ISsfInitialization {
@@ -142,58 +149,4 @@ public class Noise extends Ssf {
 
     }
 
-    private static class Measurement implements ISsfMeasurement {
-
-        @Override
-        public void Z(int pos, DataBlock z) {
-            z.set(0, 0);
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return false;
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return false;
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return 0;
-        }
-
-        @Override
-        public double ZX(int pos, DataBlock m) {
-            return m.get(0);
-        }
-
-        @Override
-        public double ZVZ(int pos, Matrix V) {
-            return V.get(0, 0);
-        }
-
-        @Override
-        public void VpZdZ(int pos, Matrix V, double d) {
-            V.add(0, 0, d);
-        }
-
-        @Override
-        public void XpZd(int pos, DataBlock x, double d) {
-            x.add(0, d);
-        }
-
-        @Override
-        public boolean isTimeInvariant() {
-            return true;
-        }
-
-
-    }
 }

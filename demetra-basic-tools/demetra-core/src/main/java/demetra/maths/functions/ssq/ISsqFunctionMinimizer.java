@@ -83,15 +83,6 @@ public interface ISsqFunctionMinimizer {
 
     /**
      *
-     * @param function
-     * @return
-     */
-    default boolean minimize(ISsqFunction function){
-        DoubleSequence aDefault = function.getDomain().getDefaultParameters();
-        return minimize(function.ssqEvaluate(aDefault));
-    }
-    /**
-     *
      * @param value
      */
     void setFunctionPrecision(double value);

@@ -224,19 +224,16 @@ public class SeasonalComponent {
             default:
                 int n = freq - 1;
                 Matrix Q = Matrix.square(n);
-                if (null != seasModel) // Dummy
-                {
-                    switch (seasModel) {
-                        case Dummy:
-                            Q.set(n - 1, n - 1, 1);
-                            break;
-                        case Crude:
-                            Q.set(1);
-                            //Q.set(0, 0, freq * var);
-                            break;
-                        default:
-                            break;
-                    }
+                switch (seasModel) {
+                    case Dummy:
+                        Q.set(n - 1, n - 1, 1);
+                        break;
+                    case Crude:
+                        Q.set(1);
+                        //Q.set(0, 0, freq * var);
+                        break;
+                    default:
+                        break;
                 }
                 return Q;
         }
@@ -248,6 +245,11 @@ public class SeasonalComponent {
     public static ISsf of(final SeasonalModel model, final int period, final double seasVar) {
         Data data = new Data(model, seasVar, period);
         return new Ssf(new Initialization(data), new Dynamics(data), Measurement.create(0));
+    }
+
+    public static ISsf of(final SeasonalModel model, final int period, final double seasVar, double loading) {
+        Data data = new Data(model, seasVar, period);
+        return new Ssf(new Initialization(data), new Dynamics(data), Measurement.createLoading(0, loading));
     }
 
     public static ISsf harrisonStevens(final int period, final double v) {
@@ -413,35 +415,31 @@ public class SeasonalComponent {
 
         @Override
         public void addSU(int pos, DataBlock x, DataBlock u) {
-            if (null != data.seasModel) {
-                switch (data.seasModel) {
-                    case Crude:
-                        x.add(data.std() * u.get(0));
-                        break;
-                    case Dummy:
-                        x.add(0, data.std() * u.get(0));
-                        break;
-                    default:
-                        x.addProduct(data.lvar.rowsIterator(), u);
-                        break;
-                }
+            switch (data.seasModel) {
+                case Crude:
+                    x.add(data.std() * u.get(0));
+                    break;
+                case Dummy:
+                    x.add(0, data.std() * u.get(0));
+                    break;
+                default:
+                    x.addProduct(data.lvar.rowsIterator(), u);
+                    break;
             }
         }
 
         @Override
         public void XS(int pos, DataBlock x, DataBlock xs) {
-            if (null != data.seasModel) {
-                switch (data.seasModel) {
-                    case Crude:
-                        xs.set(0, data.std() * x.sum());
-                        break;
-                    case Dummy:
-                        xs.set(0, data.std() * x.get(data.freq - 2));
-                        break;
-                    default:
-                        xs.product(x, data.lvar.columnsIterator());
-                        break;
-                }
+            switch (data.seasModel) {
+                case Crude:
+                    xs.set(0, data.std() * x.sum());
+                    break;
+                case Dummy:
+                    xs.set(0, data.std() * x.get(data.freq - 2));
+                    break;
+                default:
+                    xs.product(x, data.lvar.columnsIterator());
+                    break;
             }
         }
 
@@ -455,7 +453,7 @@ public class SeasonalComponent {
 
         @Override
         public void TX(int pos, DataBlock x) {
-            x.bshiftAndNegSum();
+            x.fshiftAndNegSum();
         }
 
         @Override

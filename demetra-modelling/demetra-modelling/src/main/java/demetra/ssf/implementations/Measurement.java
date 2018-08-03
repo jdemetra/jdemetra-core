@@ -37,6 +37,14 @@ public class Measurement {
         return new Measurement1(mpos, 0);
     }
 
+    public static ISsfMeasurement createLoading(final int mpos, final double b) {
+        return b == 1 ? new Measurement1(mpos, 0) : new Measurement1l(mpos, b, 0);
+    }
+
+    public static ISsfMeasurement createLoading(final int mpos, final double b, final double var) {
+        return b == 1 ? new Measurement1(mpos, var) : new Measurement1l(mpos, b, var);
+    }
+
     public static ISsfMeasurement createSum(final double var) {
         return new SumMeasurement(var);
     }
@@ -121,7 +129,7 @@ public class Measurement {
         public boolean areErrorsTimeInvariant() {
             return true;
         }
-        
+
         @Override
         public boolean hasError(int pos) {
             return measurements.hasError(pos);
@@ -180,7 +188,7 @@ public class Measurement {
         public boolean areErrorsTimeInvariant() {
             return true;
         }
-        
+
         @Override
         public boolean hasError(int pos) {
             return var != 0;
@@ -250,7 +258,7 @@ public class Measurement {
         public boolean areErrorsTimeInvariant() {
             return true;
         }
-        
+
         @Override
         public boolean hasError(int pos) {
             return var != 0;
@@ -293,7 +301,7 @@ public class Measurement {
         public void Z(int pos, DataBlock z) {
             z.extract(0, cdim).set(1);
         }
-        
+
     }
 
     private static class ExtractorMeasurement implements ISsfMeasurement {
@@ -309,7 +317,7 @@ public class Measurement {
             this.i0 = i0;
             this.n = n;
             this.inc = inc;
-             this.var = var;
+            this.var = var;
         }
 
         /**
@@ -350,7 +358,7 @@ public class Measurement {
         public boolean areErrorsTimeInvariant() {
             return true;
         }
-        
+
         @Override
         public boolean hasError(int pos) {
             return var != 0;
@@ -403,7 +411,7 @@ public class Measurement {
         private final double var;
 
         Measurement1(int mpos, double var) {
-             this.mpos = mpos;
+            this.mpos = mpos;
             this.var = var;
         }
 
@@ -421,7 +429,7 @@ public class Measurement {
         public boolean areErrorsTimeInvariant() {
             return true;
         }
-        
+
         @Override
         public boolean hasError(int pos) {
             return var != 0;
@@ -462,12 +470,82 @@ public class Measurement {
             z.set(mpos, 1);
         }
 
+    }
+
+    private static class Measurement1l implements ISsfMeasurement {
+
+        private final int mpos;
+        private final double b, b2;
+        private final double var;
+
+        Measurement1l(int mpos, double b, double var) {
+            this.mpos = mpos;
+            this.var = var;
+            this.b = b;
+            this.b2=b*b;
+        }
+
+        @Override
+        public double errorVariance(int pos) {
+            return var;
+        }
+
+        @Override
+        public boolean hasErrors() {
+            return var != 0;
+        }
+
+        @Override
+        public boolean areErrorsTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public boolean hasError(int pos) {
+            return var != 0;
+        }
+
+        @Override
+        public double ZX(int pos, DataBlock m) {
+            return b*m.get(mpos);
+        }
+
+        @Override
+        public void ZM(int pos, Matrix m, DataBlock zm) {
+            zm.setAY(b, m.row(mpos));
+            
+        }
+
+        @Override
+        public double ZVZ(int pos, Matrix V) {
+            return b2*V.get(mpos, mpos);
+        }
+
+        @Override
+        public void VpZdZ(int pos, Matrix V, double d) {
+            V.add(mpos, mpos, d*b2);
+        }
+
+        @Override
+        public void XpZd(int pos, DataBlock x, double d) {
+            x.add(mpos, d*b);
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public void Z(int pos, DataBlock z) {
+            z.set(mpos, b);
+        }
 
     }
 
     private static class Measurement2 implements ISsfMeasurement {
 
-         private final int[] mpos;
+        private final int[] mpos;
         private final double var;
 
         Measurement2(int[] mpos, double var) {
@@ -489,7 +567,7 @@ public class Measurement {
         public boolean areErrorsTimeInvariant() {
             return true;
         }
-        
+
         @Override
         public boolean hasError(int pos) {
             return var != 0;
@@ -603,7 +681,7 @@ public class Measurement {
         public boolean areErrorsTimeInvariant() {
             return true;
         }
-        
+
         @Override
         public double errorVariance(int pos) {
             return 0;
@@ -697,7 +775,7 @@ public class Measurement {
         public boolean areErrorsTimeInvariant() {
             return true;
         }
-        
+
         @Override
         public boolean hasError(int pos) {
             return false;

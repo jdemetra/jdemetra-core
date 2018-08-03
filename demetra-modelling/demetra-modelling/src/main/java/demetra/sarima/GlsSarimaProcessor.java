@@ -154,7 +154,7 @@ public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         RegArmaProcessor processor = new RegArmaProcessor(ml, mt, fast);
         int ndf = dmodel.getY().length() - dmodel.getX().getColumnsCount();// - mapping.getDim();
         IArimaMapping<SarimaModel> stationaryMapping = mapping == null ? SarimaMapping.of(ststart.specification()) :mapping.stationaryMapping();
-        RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, stationaryMapping.map(ststart), stationaryMapping, min, ndf);
+        RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, stationaryMapping.parametersOf(ststart), stationaryMapping, min, ndf);
 
         SarimaModel arima = SarimaModel.builder(regs.arima().specification())
                 .parameters(rslt.getModel().getArma().parameters())

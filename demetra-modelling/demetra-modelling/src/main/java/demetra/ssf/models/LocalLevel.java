@@ -33,5 +33,8 @@ public class LocalLevel{
         return new Ssf(new RandomWalk.Initialization(lvar), new RandomWalk.Dynamics(lvar), Measurement.create(0));
     }
 
+    public ISsf of(double lvar, double loading) {
+        return new Ssf(new RandomWalk.Initialization(lvar), new RandomWalk.Dynamics(lvar), Measurement.createLoading(0, loading));
+    }
 
 }

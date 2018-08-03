@@ -34,7 +34,12 @@ public class CyclicalComponent {
         return new Ssf(new Initialization(data), new Dynamics(data), Measurement.create(0));
     }
 
-    static class Data{
+   public static Ssf of(final double dumpingFactor, final double period, final double cvar, double loading) {
+        Data data = new Data(dumpingFactor, period, cvar);
+        return new Ssf(new Initialization(data), new Dynamics(data), Measurement.createLoading(0, loading));
+    }
+
+   static class Data{
         private final double var;
         private final double cdump, cperiod;
         

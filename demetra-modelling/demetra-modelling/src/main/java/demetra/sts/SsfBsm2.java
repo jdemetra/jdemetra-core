@@ -414,7 +414,7 @@ public class SsfBsm2 extends Ssf {
             }
             if (data.seasVar >= 0) {
                 DataBlock ex = x.extract(i0, data.period - 1, 1);
-                ex.bshiftAndNegSum();
+                ex.fshiftAndNegSum();
             }
         }
 
@@ -468,16 +468,22 @@ public class SsfBsm2 extends Ssf {
                 ++i;
             }
             if (data.seasVar > 0) {
-                if (data.seasModel == SeasonalModel.Dummy) {
-                    int j = i + data.period - 2;
-                    p.add(j, j, data.seasVar);
-                } else if (data.seasModel == SeasonalModel.Crude) {
-                    int j = data.tsvar.getRowsCount();
-                    p.extract(i, j, i, j).add(data.seasVar);
-
-                } else {
-                    int j = data.tsvar.getRowsCount();
-                    p.extract(i, j, i, j).add(data.tsvar);
+                switch (data.seasModel) {
+                    case Dummy: {
+                        int j = i + data.period - 2;
+                        p.add(j, j, data.seasVar);
+                        break;
+                    }
+                    case Crude: {
+                        int j = data.tsvar.getRowsCount();
+                        p.extract(i, j, i, j).add(data.seasVar);
+                        break;
+                    }
+                    default: {
+                        int j = data.tsvar.getRowsCount();
+                        p.extract(i, j, i, j).add(data.tsvar);
+                        break;
+                    }
                 }
             }
         }

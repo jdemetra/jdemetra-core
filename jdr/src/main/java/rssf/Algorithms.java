@@ -6,7 +6,6 @@
 package rssf;
 
 import demetra.ssf.StateStorage;
-import demetra.ssf.ckms.CkmsToolkit;
 import demetra.ssf.dk.DefaultDiffuseFilteringResults;
 import demetra.ssf.dk.DkConcentratedLikelihood;
 import demetra.ssf.dk.DkToolkit;

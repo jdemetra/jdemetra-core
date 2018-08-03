@@ -131,7 +131,7 @@ public class FractionalAirlineDecomposition {
         GlsArimaProcessor<ArimaModel> monitor = builder.build();
         RegArimaEstimation<ArimaModel> rslt = monitor.process(regarima);
         arima = rslt.getModel().arima();
-        double[] p=mapping.map(arima).toArray();
+        double[] p=mapping.parametersOf(arima).toArray();
         UcarimaModel ucm = ucm(rslt.getModel().arima());
 
         ucm = ucm.simplify();
@@ -229,7 +229,7 @@ class PeriodicMapping implements IArimaMapping<ArimaModel> {
     }
 
     @Override
-    public DoubleSequence map(ArimaModel t) {
+    public DoubleSequence parametersOf(ArimaModel t) {
         BackFilter ma = t.getMA();
         double[] p = new double[2];
         p[0] = -ma.get(1);

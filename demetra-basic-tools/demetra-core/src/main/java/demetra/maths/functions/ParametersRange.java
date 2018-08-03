@@ -151,10 +151,4 @@ public class ParametersRange implements IParametersDomain {
         return PARAM+idx; 
     }
 
-    @Override
-    public DoubleSequence getDefaultParameters() {
-        return DataBlock.ofInternal(new double[]{(b+a)/2});
-    }
-
-     
 }

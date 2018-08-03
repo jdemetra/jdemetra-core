@@ -38,6 +38,10 @@ public class LocalLinearTrend{
         return new Ssf(new Initialization(data), new Dynamics(data), Measurement.create(0));
     }
 
+    public static ISsf of(double lvar, double svar, double loading) {
+        Data data = new Data(lvar, svar);
+        return new Ssf(new Initialization(data), new Dynamics(data), Measurement.createLoading(0, loading));
+    }
     static class Data {
 
         final double lv, sv;
