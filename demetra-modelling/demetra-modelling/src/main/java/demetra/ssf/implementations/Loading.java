@@ -18,11 +18,11 @@ package demetra.ssf.implementations;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import java.util.Iterator;
 import demetra.data.DataBlockIterator;
 import demetra.ssf.ISsfLoading;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *

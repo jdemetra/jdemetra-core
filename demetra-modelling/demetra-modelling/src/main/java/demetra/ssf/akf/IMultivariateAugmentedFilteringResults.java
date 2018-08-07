@@ -42,7 +42,7 @@ public interface IMultivariateAugmentedFilteringResults {
      * @param t
      * @param pe
      */
-    void save(int t, AugmentedPredictionErrors pe);
+    void save(int t, MultivariateAugmentedUpdateInformation pe);
     
     /**
      *

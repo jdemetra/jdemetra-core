@@ -22,9 +22,9 @@ import demetra.data.DataWindow;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixWindow;
 import demetra.maths.matrices.QuadraticForm;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.data.DoubleReader;
 import demetra.ssf.ISsfLoading;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *

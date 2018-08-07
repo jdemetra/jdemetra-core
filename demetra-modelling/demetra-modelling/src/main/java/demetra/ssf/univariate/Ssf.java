@@ -24,7 +24,6 @@ import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.SsfException;
 import demetra.ssf.implementations.MeasurementError;
-import demetra.sts.Noise;
 
 /**
  *

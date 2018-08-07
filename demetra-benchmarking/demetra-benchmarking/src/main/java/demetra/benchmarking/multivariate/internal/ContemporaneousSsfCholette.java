@@ -22,7 +22,9 @@ import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.multivariate.IMultivariateSsf;
+import demetra.ssf.multivariate.ISsfErrors;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.MultivariateSsf;
 
@@ -244,55 +246,47 @@ public class ContemporaneousSsfCholette {
         }
 
         @Override
-        public int getCount(int pos) {
+        public int getCount() {
             return info.nm;
         }
 
         @Override
-        public int getMaxCount() {
-            return info.nm;
-         }
+        public ISsfLoading loading(int equation) {
+            return new Loading(info, equation);
+       }
 
         @Override
-        public boolean isHomogeneous() {
+        public ISsfErrors errors() {
+            return null;
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
             return true;
         }
 
+    }
+    
+    static class Loading implements ISsfLoading{
+        
+        private final Constraint cnt;
+        private final Data info;
+        
+        Loading(Data info, int eq){
+            this.info=info;
+            this.cnt=info.constraints[eq];
+        }
+        
         @Override
-        public void Z(int pos, int v, DataBlock z) {
-            Constraint cnt = info.constraints[v];
-            for (int i = 0; i < cnt.index.length; ++i) {
+        public void Z(int pos, DataBlock z) {
+             for (int i = 0; i < cnt.index.length; ++i) {
                 int l = cnt.index[i];
                 z.set(l, info.mweight(pos, l, cnt.weights[i]));
             }
         }
-
+ 
         @Override
-        public boolean hasErrors() {
-            return false;
-        }
-
-        @Override
-        public boolean hasIndependentErrors() {
-            return true;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return false;
-        }
-
-        @Override
-        public void H(int pos, Matrix h) {
-        }
-
-        @Override
-        public void R(int pos, Matrix r) {
-        }
-
-        @Override
-        public double ZX(int pos, int v, DataBlock x) {
-            Constraint cnt = info.constraints[v];
+        public double ZX(int pos, DataBlock x) {
             double sum = 0;
             for (int i = 0; i < cnt.index.length; ++i) {
                 int l = cnt.index[i];
@@ -302,9 +296,8 @@ public class ContemporaneousSsfCholette {
         }
 
         @Override
-        public void ZM(int pos, int v, Matrix m, DataBlock x) {
+        public void ZM(int pos, Matrix m, DataBlock x) {
             x.set(0);
-            Constraint cnt = info.constraints[v];
             for (int i = 0; i < cnt.index.length; ++i) {
                 int l = cnt.index[i];
                 x.addAY(info.mweight(pos, l, cnt.weights[i]), m.row(l));
@@ -312,16 +305,14 @@ public class ContemporaneousSsfCholette {
         }
 
         @Override
-        public double ZVZ(int pos, int v, int w, Matrix vm) {
-            Constraint vcnt = info.constraints[v];
-            Constraint wcnt = info.constraints[w];
+        public double ZVZ(int pos, Matrix vm) {
             double s = 0;
-            for (int i = 0; i < vcnt.index.length; ++i) {
-                int k = vcnt.index[i];
-                double dk = info.mweight(pos, k, vcnt.weights[i]);
-                for (int j = 0; j < wcnt.index.length; ++j) {
-                    int l = wcnt.index[j];
-                    double dl = info.mweight(pos, l, wcnt.weights[j]);
+            for (int i = 0; i < cnt.index.length; ++i) {
+                int k = cnt.index[i];
+                double dk = info.mweight(pos, k, cnt.weights[i]);
+                for (int j = 0; j < cnt.index.length; ++j) {
+                    int l = cnt.index[j];
+                    double dl = info.mweight(pos, l, cnt.weights[j]);
                     s += dk * vm.get(k, l) * dl;
                 }
             }
@@ -329,27 +320,20 @@ public class ContemporaneousSsfCholette {
         }
 
         @Override
-        public void addH(int pos, Matrix V) {
-        }
-
-        @Override
-        public void VpZdZ(int pos, int v, int w, Matrix vm, double d) {
-            Constraint vcnt = info.constraints[v];
-            Constraint wcnt = info.constraints[w];
-            for (int i = 0; i < vcnt.index.length; ++i) {
-                int k = vcnt.index[i];
-                double dk = info.mweight(pos, k, vcnt.weights[i]);
-                for (int j = 0; j < wcnt.index.length; ++j) {
-                    int l = wcnt.index[j];
-                    double dl = info.mweight(pos, l, wcnt.weights[j]);
+        public void VpZdZ(int pos, Matrix vm, double d) {
+            for (int i = 0; i < cnt.index.length; ++i) {
+                int k = cnt.index[i];
+                double dk = info.mweight(pos, k, cnt.weights[i]);
+                for (int j = 0; j < cnt.index.length; ++j) {
+                    int l = cnt.index[j];
+                    double dl = info.mweight(pos, l, cnt.weights[j]);
                     vm.add(k, l, d * dk * dl);
                 }
             }
         }
 
         @Override
-        public void XpZd(int pos, int v, DataBlock x, double d) {
-            Constraint cnt = info.constraints[v];
+        public void XpZd(int pos, DataBlock x, double d) {
             for (int i = 0; i < cnt.index.length; ++i) {
                 int k = cnt.index[i];
                 x.add(k, info.mweight(pos, k, cnt.weights[i] * d));
@@ -360,6 +344,7 @@ public class ContemporaneousSsfCholette {
         public boolean isTimeInvariant() {
             return false;
         }
+        
     }
 
 }

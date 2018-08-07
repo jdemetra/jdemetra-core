@@ -20,10 +20,10 @@ import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.RegSsf;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.SsfData;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *

@@ -17,12 +17,12 @@
 package demetra.ssf.implementations;
 
 import demetra.data.DataBlock;
-import demetra.ssf.univariate.ISsfMeasurement;
 import java.text.DecimalFormat;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.Matrix;
 import demetra.data.DoubleReader;
 import demetra.ssf.ISsfLoading;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *

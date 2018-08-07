@@ -18,10 +18,10 @@ package demetra.ssf.implementations;
 
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfDynamics;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *

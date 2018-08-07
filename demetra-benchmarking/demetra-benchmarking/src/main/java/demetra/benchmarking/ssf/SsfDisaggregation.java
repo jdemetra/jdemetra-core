@@ -24,10 +24,11 @@ import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.SsfException;
 import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *
@@ -38,13 +39,14 @@ import demetra.ssf.univariate.Ssf;
 public class SsfDisaggregation {
 
     public Ssf of(ISsf s, int conversion) {
-        if (s.measurement().hasErrors()) {
+        if (s.measurement().hasError()) {
             throw new SsfException(SsfException.ERRORS);
         }
-        return new Ssf(
-                new Initialization(s.initialization()),
-                new Dynamics(s, conversion),
-                new Measurement(s, conversion));
+        return Ssf.builder()
+                .initialization(new Initialization(s.initialization()))
+                .dynamics(new Dynamics(s, conversion))
+                .loading(new Loading(s, conversion))
+                .build();
     }
 
     static class Initialization implements ISsfInitialization {
@@ -95,12 +97,12 @@ public class SsfDisaggregation {
     static class Dynamics implements ISsfDynamics {
 
         private final ISsfDynamics dynamics;
-        private final ISsfMeasurement measurement;
+        private final ISsfLoading loading;
         private final int conversion;
 
         Dynamics(ISsf ssf, int conversion) {
             this.dynamics = ssf.dynamics();
-            this.measurement = ssf.measurement();
+            this.loading = ssf.loading();
             this.conversion = conversion;
         }
 
@@ -133,7 +135,7 @@ public class SsfDisaggregation {
         public void T(int pos, Matrix tr) {
             dynamics.T(pos, tr.dropTopLeft(1, 1));
             if ((pos + 1) % conversion != 0) {
-                measurement.Z(pos, tr.row(0).drop(1, 0));
+                loading.Z(pos, tr.row(0).drop(1, 0));
                 if (pos % conversion != 0) {
                     tr.set(0, 0, 1);
                 }
@@ -145,7 +147,7 @@ public class SsfDisaggregation {
             DataBlock xc = x.drop(1, 0);
 
             if ((pos + 1) % conversion != 0) {
-                double s = measurement.ZX(pos, xc);
+                double s = loading.ZX(pos, xc);
                 if (pos % conversion == 0) {
                     x.set(0, s);
                 } else {
@@ -162,15 +164,15 @@ public class SsfDisaggregation {
             Matrix v = vm.dropTopLeft(1, 1);
             if (pos % conversion == 0) {
                 DataBlock v0 = vm.row(0).drop(1, 0);
-                measurement.ZM(pos, v, v0);
-                vm.set(0, 0, measurement.ZX(pos, v0));
+                loading.ZM(pos, v, v0);
+                vm.set(0, 0, loading.ZX(pos, v0));
                 dynamics.TX(pos, v0);
                 vm.column(0).drop(1, 0).copy(v0);
             } else if ((pos + 1) % conversion != 0) {
                 DataBlock r0 = vm.row(0).drop(1, 0);
-                double zv0 = measurement.ZX(pos, r0);
-                measurement.ZM(pos, v, r0);
-                vm.add(0, 0, 2 * zv0 + measurement.ZX(pos, r0));
+                double zv0 = loading.ZX(pos, r0);
+                loading.ZM(pos, v, r0);
+                vm.add(0, 0, 2 * zv0 + loading.ZX(pos, r0));
                 dynamics.TX(pos, r0);
                 DataBlock c0 = vm.column(0).drop(1, 0);
                 dynamics.TX(pos, c0);
@@ -198,7 +200,7 @@ public class SsfDisaggregation {
             DataBlock xc = x.drop(1, 0);
             dynamics.XT(pos, xc);
             if ((pos + 1) % conversion != 0) {
-                measurement.XpZd(pos, xc, x.get(0));
+                loading.XpZd(pos, xc, x.get(0));
                 if (pos % conversion == 0) {
                     x.set(0, 0);
                 }
@@ -218,13 +220,13 @@ public class SsfDisaggregation {
         }
     }
 
-    static class Measurement implements ISsfMeasurement {
+    static class Loading implements ISsfLoading {
 
-        private final ISsfMeasurement measurement;
+        private final ISsfLoading measurement;
         private final int conversion;
 
-        Measurement(ISsf s, int conversion) {
-            this.measurement = s.measurement();
+        Loading(ISsf s, int conversion) {
+            this.measurement = s.loading();
             this.conversion = conversion;
         }
 
@@ -234,26 +236,6 @@ public class SsfDisaggregation {
                 z.set(0, 1);
             }
             measurement.Z(pos, z.drop(1, 0));
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return false;
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return false;
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return 0;
         }
 
         @Override

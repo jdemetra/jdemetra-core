@@ -49,7 +49,7 @@ public interface ISsf extends ISsfBase {
     default SsfComponent asComponent(){
         return new SsfComponent(initialization(), dynamics(), loading());
     }
-
+    
 
 //<editor-fold defaultstate="collapsed" desc="auxiliary operations">
     /**
@@ -69,13 +69,13 @@ public interface ISsf extends ISsfBase {
     default void XL(int pos, Matrix M, DataBlock m, double f) {
         // MT - [(MT)*m]/f * z
         ISsfDynamics dynamics = dynamics();
-        ISsfMeasurement measurement = measurement();
+        ISsfLoading loading = loading();
         // Apply XL on each row copyOf M
         DataBlockIterator rows = M.rowsIterator();
         while (rows.hasNext()){
             DataBlock row=rows.next();
             dynamics.XT(pos, row);
-            loading().XpZd(pos, row, -row.dot(m) / f);
+            loading.XpZd(pos, row, -row.dot(m) / f);
         }
        
     }

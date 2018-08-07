@@ -37,4 +37,5 @@ public interface ISsfMeasurement extends ISsfRoot {
     default boolean isTimeInvariant(){
         return loading().isTimeInvariant() && (! hasError() || error().isTimeInvariant());
     }
+
 }

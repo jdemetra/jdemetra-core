@@ -16,8 +16,12 @@
  */
 package demetra.ssf.akf;
 
+import demetra.data.DataBlockIterator;
+import demetra.data.DoubleSequence;
+import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.State;
+import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.MultivariateUpdateInformation;
 
 /**
@@ -26,7 +30,7 @@ import demetra.ssf.multivariate.MultivariateUpdateInformation;
  *
  * @author Jean Palate
  */
-public class AugmentedPredictionErrors extends MultivariateUpdateInformation {
+public class MultivariateAugmentedUpdateInformation extends MultivariateUpdateInformation {
 
     /**
      * E is the "prediction error" on the diffuse constraints (=(0-Z(t)A(t)) E ~
@@ -40,7 +44,7 @@ public class AugmentedPredictionErrors extends MultivariateUpdateInformation {
      * @param nvars
      * @param dim
      */
-    public AugmentedPredictionErrors(final int dim, final int nvars, final int ndiffuse) {
+    public MultivariateAugmentedUpdateInformation(final int dim, final int nvars, final int ndiffuse) {
         super(dim, nvars);
         E = Matrix.make(ndiffuse, nvars);
     }
@@ -53,4 +57,16 @@ public class AugmentedPredictionErrors extends MultivariateUpdateInformation {
         return E.isZero(State.ZERO);
     }
 
+    public void compute(IMultivariateSsf ssf, int t, AugmentedState state, DoubleSequence x, int[] equations) {
+
+        super.compute(ssf, t, state, x, equations);
+        // E is ndiffuse x nobs. Each column contains the diffuse effects
+        // on the corresponding variable
+        ZM(t, ssf.measurements(), equations, state.B(), E.transpose());
+        E.chs();
+        DataBlockIterator erows = E.rowsIterator();
+        while (erows.hasNext()) {
+            LowerTriangularMatrix.rsolve(this.getCholeskyFactor(), erows.next(), State.ZERO);
+        }
+    }
 }

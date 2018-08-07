@@ -123,7 +123,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
     }
 
     @Override
-    public void save(final int t, final AugmentedPredictionErrors pe) {
+    public void save(final int t, final MultivariateAugmentedUpdateInformation pe) {
         DataBlock U = pe.getTransformedPredictionErrors();
         Matrix L=pe.getCholeskyFactor();
         DataBlock D=L.diagonal();

@@ -17,6 +17,8 @@
 package demetra.ssf.multivariate;
 
 import demetra.data.DataBlock;
+import demetra.data.DoubleSequence;
+import demetra.data.Doubles;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
@@ -76,7 +78,21 @@ public class MultivariateOrdinaryFilter {
      * @param pos
      */
     protected void error(int pos) {
-        updinfo=MultivariateSsfHelper.of(ssf, pos, state, data.get(pos));
+        int dim = ssf.getStateDim();
+        DoubleSequence x=data.get(pos);
+        int nmissing = x.count(y -> Double.isInfinite(y));
+        int nobs = x.length() - nmissing;
+        if (nobs == 0)
+            updinfo=null;
+        int[] obs;
+        if (nmissing != 0) {
+            obs = new int[nobs];
+            Doubles.search(x, y -> Double.isFinite(y), obs);
+        } else {
+            obs = null;
+        }
+        updinfo = new MultivariateUpdateInformation(dim, nobs);
+        updinfo.compute(ssf, pos, state, x, obs);
     }
 
     /**

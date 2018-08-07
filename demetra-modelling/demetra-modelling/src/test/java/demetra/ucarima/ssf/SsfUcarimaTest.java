@@ -19,6 +19,7 @@ package demetra.ucarima.ssf;
 import demetra.data.Data;
 import demetra.data.DataBlockStorage;
 import demetra.ssf.dk.DkToolkit;
+import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.SsfData;
 import demetra.ucarima.UcarimaModel;
@@ -39,13 +40,14 @@ public class SsfUcarimaTest {
     public void testDkSmoother() {
         UcarimaModel ucm = ucmAirline(-.6, -.8);
         ucm = ucm.simplify();
-        SsfUcarima ssf = SsfUcarima.of(ucm);
+        CompositeSsf ssf = SsfUcarima.of(ucm);
         SsfData data = new SsfData(Data.PROD);
         DefaultSmoothingResults sd = DkToolkit.smooth(ssf, data, true);
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
+        int[] pos = ssf.componentsPosition();
         for (int i = 0; i < 3; ++i) {
 //            System.out.println(sd.getComponent(ssf.getComponentPosition(i)));
-            assertTrue(ds.item(ssf.getComponentPosition(i)).distance(sd.getComponent(ssf.getComponentPosition(i))) < 1e-9);
+            assertTrue(ds.item(pos[i]).distance(sd.getComponent(pos[i])) < 1e-9);
         }
 //        System.out.println(sd.getComponentVariance(0));
     }

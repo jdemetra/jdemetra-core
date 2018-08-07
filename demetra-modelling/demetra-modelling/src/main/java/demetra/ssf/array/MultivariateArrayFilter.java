@@ -59,7 +59,7 @@ public class MultivariateArrayFilter {
         U.set(0);
         for (int i = 0; i < nm; ++i) {
             double y = data.get(pos, i);
-            U.set(i, y - measurements.ZX(pos, i, state.a));
+            U.set(i, y - measurements.loading(i).ZX(pos, state.a));
         }
         LowerTriangularMatrix.rsolve(L, U, State.ZERO);
     }
@@ -67,7 +67,7 @@ public class MultivariateArrayFilter {
     private boolean initFilter() {
         pos = 0;
         end = data.getCount();
-        nm = measurements.getMaxCount();
+        nm = measurements.getCount();
         nres = dynamics.getInnovationsDim();
         dim = ssf.getStateDim();
         A = Matrix.make(dim + nm, dim + nm + nres);
@@ -95,9 +95,6 @@ public class MultivariateArrayFilter {
     public boolean process(final IMultivariateSsf ssf, final IMultivariateSsfData data, final IMultivariateFilteringResults rslts) {
         this.ssf=ssf;
         measurements = ssf.measurements();
-        if (!measurements.isHomogeneous()) {
-            return false;
-        }
         dynamics = ssf.dynamics();
         this.data = data;
         if (!initFilter()) {

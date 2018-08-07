@@ -16,8 +16,8 @@ import demetra.ssf.multivariate.MultivariateSsf;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  * This class provides algorithms that integrate the measurement errors into the

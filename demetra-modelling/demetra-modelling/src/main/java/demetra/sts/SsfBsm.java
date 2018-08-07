@@ -24,9 +24,9 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.implementations.Loading;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Measurement;
 import demetra.ssf.univariate.Ssf;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *

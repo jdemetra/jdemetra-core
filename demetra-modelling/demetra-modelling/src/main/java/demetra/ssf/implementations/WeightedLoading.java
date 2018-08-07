@@ -19,8 +19,8 @@ package demetra.ssf.implementations;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfLoading;
-import demetra.ssf.univariate.ISsfMeasurement;
 import java.util.function.IntToDoubleFunction;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *
