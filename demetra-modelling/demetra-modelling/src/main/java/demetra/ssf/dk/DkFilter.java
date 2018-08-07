@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.linearfilters.ILinearProcess;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
@@ -34,7 +34,7 @@ public class DkFilter implements ILinearProcess {
 
     private final IBaseDiffuseFilteringResults frslts;
     private final ISsf ssf;
-    private final ISsfMeasurement measurement;
+    private final ISsfLoading loading;
     private final ISsfDynamics dynamics;
     private final int start, end, enddiffuse;
     private boolean normalized = true;
@@ -62,8 +62,8 @@ public class DkFilter implements ILinearProcess {
     public DkFilter(ISsf ssf, IBaseDiffuseFilteringResults frslts, ResultsRange range) {
         this.frslts = frslts;
         this.ssf=ssf;
-        measurement = ssf.getMeasurement();
-        dynamics = ssf.getDynamics();
+        loading = ssf.loading();
+        dynamics = ssf.dynamics();
         start = range.getStart();
         end = range.getEnd();
         enddiffuse = frslts.getEndDiffusePosition();
@@ -146,7 +146,7 @@ public class DkFilter implements ILinearProcess {
                     K = frslts.M(i);
                 }
 
-                measurement.ZM(i, states, tmp);
+                loading.ZM(i, states, tmp);
                 row.sub(tmp);
                 // update the states
                 scols.reset();
@@ -219,7 +219,7 @@ public class DkFilter implements ILinearProcess {
                     K = frslts.M(i);
                 }
 
-                e = y - measurement.ZX(i, state);
+                e = y - loading.ZX(i, state);
                 // update the states
                 state.addAY(e / w, K);
                 if (f == 0) {
@@ -266,7 +266,7 @@ public class DkFilter implements ILinearProcess {
                         K = frslts.M(pos);
                     }
 
-                    double e = in.get(ipos) - measurement.ZX(pos, state);
+                    double e = in.get(ipos) - loading.ZX(pos, state);
                     // update the states
                     state.addAY(e / w, K);
                     if (!diffuse && f != 0) {

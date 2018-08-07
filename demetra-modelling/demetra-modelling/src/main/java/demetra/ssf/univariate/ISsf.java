@@ -16,12 +16,14 @@
  */
 package demetra.ssf.univariate;
 
+import demetra.ssf.ISsfLoading;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.ssf.ISsfDynamics;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfBase;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.SsfComponent;
 
 /**
  *
@@ -29,11 +31,23 @@ import demetra.ssf.ISsfInitialization;
  */
 public interface ISsf extends ISsfBase {
 
-    ISsfMeasurement getMeasurement();
+    ISsfMeasurement measurement();
 
     @Override
     default boolean isTimeInvariant() {
-        return getDynamics().isTimeInvariant() && getMeasurement().isTimeInvariant();
+        return dynamics().isTimeInvariant() && measurement().isTimeInvariant();
+    }
+    
+    default ISsfLoading loading(){
+        return measurement().loading();
+    }
+    
+    default ISsfError measurementError(){
+        return measurement().error();
+    }
+    
+    default SsfComponent asComponent(){
+        return new SsfComponent(initialization(), dynamics(), loading());
     }
 
 
@@ -48,20 +62,20 @@ public interface ISsf extends ISsfBase {
      */
     default void xL(int pos, DataBlock x, DataBlock m, double f) {
         // XT - [(XT)*m]/f * z 
-        getDynamics().XT(pos, x);
-        getMeasurement().XpZd(pos, x, -x.dot(m) / f);
+        dynamics().XT(pos, x);
+        loading().XpZd(pos, x, -x.dot(m) / f);
     }
 
     default void XL(int pos, Matrix M, DataBlock m, double f) {
         // MT - [(MT)*m]/f * z
-        ISsfDynamics dynamics = getDynamics();
-        ISsfMeasurement measurement = getMeasurement();
+        ISsfDynamics dynamics = dynamics();
+        ISsfMeasurement measurement = measurement();
         // Apply XL on each row copyOf M
         DataBlockIterator rows = M.rowsIterator();
         while (rows.hasNext()){
             DataBlock row=rows.next();
             dynamics.XT(pos, row);
-            measurement.XpZd(pos, row, -row.dot(m) / f);
+            loading().XpZd(pos, row, -row.dot(m) / f);
         }
        
     }
@@ -77,27 +91,27 @@ public interface ISsf extends ISsfBase {
         // TX - T*m/f * z * X
         // TX - T * m * (zX)/f)
         // T (X - m*(zX/f))
-        x.addAY(-getMeasurement().ZX(pos, x) / f, m);
-        getDynamics().XT(pos, x);
+        x.addAY(-loading().ZX(pos, x) / f, m);
+        dynamics().XT(pos, x);
     }
 
     default void LM(int pos, Matrix M, DataBlock m, double f) {
         // TX - T*m/f * z * X
         // TX - T * m * (zX)/f)
         // T (X - m*(zX/f))
-        ISsfDynamics dynamics = getDynamics();
-        ISsfMeasurement measurement = getMeasurement();
+        ISsfDynamics dynamics = dynamics();
+        ISsfLoading loading = loading();
         // Apply LX on each column copyOf M
         M.columns().forEach(col -> {
-            col.addAY(-measurement.ZX(pos, col) / f, m);
+            col.addAY(-loading.ZX(pos, col) / f, m);
             dynamics.XT(pos, col);
         });
     }
 
     default boolean diffuseEffects(Matrix effects) {
-        ISsfDynamics dynamics = getDynamics();
-        ISsfMeasurement measurement = getMeasurement();
-        ISsfInitialization initializer = getInitialization();
+        ISsfDynamics dynamics = dynamics();
+        ISsfLoading loading = loading();
+        ISsfInitialization initializer = initialization();
         int n = initializer.getStateDim();
         int d = initializer.getDiffuseDim();
         if (d == 0 || d != effects.getColumnsCount()) {
@@ -108,11 +122,11 @@ public interface ISsf extends ISsfBase {
         initializer.diffuseConstraints(matrix);
         DataBlockIterator rows = effects.rowsIterator();
         int pos = 0;
-        measurement.ZM(pos, matrix, rows.next());
+        loading.ZM(pos, matrix, rows.next());
         while (rows.hasNext()) {
             // Apply T on matrix and Copy Z*matrix in the current row
             dynamics.TM(pos++, matrix);
-            measurement.ZM(pos, matrix, rows.next());
+            loading.ZM(pos, matrix, rows.next());
         }
         return true;
     }

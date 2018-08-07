@@ -16,6 +16,7 @@
  */
 package demetra.ssf.univariate;
 
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.UpdateInformation;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
@@ -108,7 +109,7 @@ public class FixedPointSmoother {
         OrdinaryFilter filter = new OrdinaryFilter(new Initializer(ssf, fixpos, M));
         SsfDataWindow xdata = new SsfDataWindow(data, fixpos, data.length());
         int mdim = M == null ? ssf.getStateDim() : M.getRowsCount();
-        Ssf xssf = new Ssf(new DummyInitialization(mdim+ssf.getStateDim()), new Dynamics(ssf, mdim), new Measurement(ssf, mdim));
+        Ssf xssf = new Ssf(new DummyInitialization(mdim+ssf.getStateDim()), new Dynamics(ssf, mdim), new Measurement(new Loading(ssf, mdim), ssf.measurementError()));
         states = StateStorage.full(StateInfo.Concurrent);
         states.prepare(mdim, fixpos, data.length());
         Results frslts = new Results(states, ssf.getStateDim(), mdim);
@@ -164,13 +165,13 @@ public class FixedPointSmoother {
         }
     }
 
-    static class Measurement implements ISsfMeasurement {
+    static class Loading implements ISsfLoading{
 
-        private final ISsfMeasurement core;
+        private final ISsfLoading core;
         private final int cdim, mdim;
 
-        Measurement(ISsf ssf, int mdim) {
-            this.core = ssf.getMeasurement();
+        Loading(ISsf ssf, int mdim) {
+            this.core = ssf.loading();
             this.mdim = mdim;
             this.cdim = ssf.getStateDim();
         }
@@ -178,26 +179,6 @@ public class FixedPointSmoother {
         @Override
         public void Z(int pos, DataBlock z) {
             core.Z(pos, z.range(0, cdim));
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return core.hasErrors();
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return core.areErrorsTimeInvariant();
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return core.hasError(pos);
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return core.errorVariance(pos);
         }
 
         @Override
@@ -225,14 +206,14 @@ public class FixedPointSmoother {
             throw new UnsupportedOperationException("Not supported yet."); //To change body copyOf generated methods, choose Tools | Templates.
         }
     }
-
+    
     static class Dynamics implements ISsfDynamics {
 
         private final ISsfDynamics core;
         private final int cdim, mdim;
 
         Dynamics(ISsf ssf, int mdim) {
-            this.core = ssf.getDynamics();
+            this.core = ssf.dynamics();
             this.mdim = mdim;
             this.cdim = ssf.getStateDim();
         }

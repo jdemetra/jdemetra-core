@@ -21,9 +21,10 @@ package demetra.ssf.models;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
-import demetra.ssf.implementations.Measurement;
+import demetra.ssf.implementations.Loading;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.SsfComponent;
 import demetra.ssf.models.AR1.Data;
 
 /**
@@ -40,43 +41,17 @@ import demetra.ssf.models.AR1.Data;
  *
  * @author Jean Palate
  */
-public class Arima_1_1_0 extends Ssf {
+@lombok.experimental.UtilityClass
+public class Arima_1_1_0 {
 
-    public static Arima_1_1_0 of(final double rho) {
+    public SsfComponent of(final double rho) {
         Data data = new Data(rho, 1, false);
-        return new Arima_1_1_0(data);
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.createSum());
     }
 
-    public static Arima_1_1_0 of(final double rho, final double var, final boolean zeroinit) {
+    public SsfComponent of(final double rho, final double var, final boolean zeroinit) {
         Data data = new Data(rho, var, zeroinit);
-        return new Arima_1_1_0(data);
-    }
-
-    private Arima_1_1_0(Data data) {
-        super(new Initialization(data), new Dynamics(data), Measurement.createSum());
-        this.data = data;
-    }
-
-    private final Data data;
-
-    public double getRho() {
-        return data.rho;
-    }
-
-    public double getInnovationVariance() {
-        return data.var;
-    }
-
-    public boolean isZeroInitialization() {
-        return data.zeroinit;
-    }
-
-    private Dynamics dynamics() {
-        return (Dynamics) this.dynamics;
-    }
-
-    private Initialization initializer() {
-        return (Initialization) this.getInitialization();
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.createSum());
     }
 
     static class Initialization implements ISsfInitialization {

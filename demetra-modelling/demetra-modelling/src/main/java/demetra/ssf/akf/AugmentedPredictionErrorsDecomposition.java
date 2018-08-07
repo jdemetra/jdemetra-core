@@ -154,7 +154,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
 
     @Override
     public void open(IMultivariateSsf ssf, IMultivariateSsfData data) {
-        prepare(ssf.getDiffuseDim(), ssf.getMeasurements().getMaxCount());
+        prepare(ssf.getDiffuseDim(), ssf.measurements().getCount());
     }
 
     @Override

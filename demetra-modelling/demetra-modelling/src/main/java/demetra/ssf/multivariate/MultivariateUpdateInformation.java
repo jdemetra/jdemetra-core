@@ -33,7 +33,7 @@ public class MultivariateUpdateInformation  {
     private final DataBlock U;
 
     /**
-     * =(ZPZ'+H)^1/2 Cholesky factor copyOf the variance/covariance matrix copyOf the
+     * =(ZPZ'+H)^1/2 Cholesky factor of the variance/covariance matrix of the
  prediction errors (lower triangular).
      * nvars x nvars
      */
@@ -79,5 +79,5 @@ public class MultivariateUpdateInformation  {
     public Matrix getK() {
         return K;
     }
-    
+
 }

@@ -16,14 +16,12 @@
  */
 package demetra.arima.ssf;
 
-import demetra.arima.AutoCovarianceFunction;
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
 import demetra.design.Development;
-import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
@@ -39,10 +37,11 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.OrdinaryFilter;
 import demetra.ssf.univariate.Ssf;
-import demetra.ssf.implementations.Measurement;
+import demetra.ssf.implementations.Loading;
 import demetra.ssf.UpdateInformation;
 import demetra.data.DoubleReader;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.univariate.Measurement;
 
 /**
  *
@@ -70,7 +69,7 @@ public class SsfArima extends Ssf {
         DataBlock M = upd.M(), L = state.l();
         upd.M().copyFrom(values, 0);
         L.copy(M);
-        ssf1.dynamics.TX(0, L);
+        ssf1.dynamics().TX(0, L);
         upd.setVariance(values[0]);
         return 0;
     }
@@ -82,8 +81,8 @@ public class SsfArima extends Ssf {
     static OrdinaryFilter.FilterInitializer diffuseInitializer() {
         return (State state, ISsf ssf, ISsfData data) -> {
             SsfArima ssfArima = (SsfArima) ssf;
-            ArimaInitialization initialization = (ArimaInitialization) ssfArima.getInitialization();
-            ISsfMeasurement m = ssf.getMeasurement();
+            ArimaInitialization initialization = (ArimaInitialization) ssfArima.initialization();
+            ISsfMeasurement m = ssf.measurement();
             int nr = ssf.getStateDim(), nd = initialization.getDiffuseDim();
             Matrix A = Matrix.make(nr + nd, nd);
             double[] dif = ssfArima.model.getNonStationaryAR().asPolynomial().toArray();
@@ -148,7 +147,7 @@ public class SsfArima extends Ssf {
         }
         ArmaInitialization initialization=new ArmaInitialization(arima);
         ISsfDynamics dynamics = new ArimaDynamics(initialization.data);
-        ISsfMeasurement measurement = Measurement.create(0);
+        ISsfMeasurement measurement = new Measurement(Loading.create(0), null);
         return new SsfArima(arima, initialization, dynamics, measurement);
     }
 
@@ -159,7 +158,7 @@ public class SsfArima extends Ssf {
         }
         ArimaInitialization initialization=new ArimaInitialization(arima);
         ISsfDynamics dynamics = new ArimaDynamics(initialization.data);
-        ISsfMeasurement measurement = Measurement.create(0);
+        ISsfMeasurement measurement = new Measurement(Loading.create(0), null);
         return new SsfArima(arima, initialization, dynamics, measurement);
     }
 

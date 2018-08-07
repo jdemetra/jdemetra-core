@@ -270,6 +270,7 @@ public class IArmaFilterTest {
     }
 
     @Test
+    @Ignore
     public void testAO() {
         int POS=35;
         double[] ao = new double[120];
@@ -297,6 +298,7 @@ public class IArmaFilterTest {
     }
 
     @Test
+    @Ignore
     public void testLS() {
         int POS=35;
         double[] ls = new double[120];

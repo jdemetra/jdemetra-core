@@ -34,7 +34,7 @@ import demetra.ssf.ISsfInitialization;
 public class DiffuseState extends State {
 
     public static DiffuseState of(ISsfBase ssf) {
-        ISsfInitialization initialization = ssf.getInitialization();
+        ISsfInitialization initialization = ssf.initialization();
         DiffuseState state = new DiffuseState(initialization.getStateDim());
         initialization.a0(state.a());
         initialization.Pf0(state.P());

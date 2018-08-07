@@ -36,23 +36,7 @@ public class CompositeDynamics implements ISsfDynamics {
     private final ISsfDynamics[] dyn;
     private final int[] dim;
 
-    public static CompositeDynamics of(ISsf... ssfs) {
-        ISsfDynamics[] dyn = new ISsfDynamics[ssfs.length];
-        for (int i = 0; i < dyn.length; ++i) {
-            dyn[i] = ssfs[i].getDynamics();
-        }
-        return new CompositeDynamics(CompositeSsf.dimensions(ssfs), dyn);
-    }
-
-    public static CompositeDynamics of(IMultivariateSsf... ssfs) {
-        ISsfDynamics[] dyn = new ISsfDynamics[ssfs.length];
-        for (int i = 0; i < dyn.length; ++i) {
-            dyn[i] = ssfs[i].getDynamics();
-        }
-        return new CompositeDynamics(CompositeSsf.dimensions(ssfs), dyn);
-    }
-
-    CompositeDynamics(int[] dim, ISsfDynamics... dyn) {
+    public CompositeDynamics(int[] dim, ISsfDynamics... dyn) {
         this.dim=dim;
         this.dyn = dyn;
     }

@@ -22,8 +22,8 @@ import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISmoothingResults;
 import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.data.DoubleReader;
+import demetra.ssf.ISsfLoading;
 
 /**
  *
@@ -32,7 +32,7 @@ import demetra.data.DoubleReader;
 public abstract class BaseDiffuseSmoother {
 
     protected ISsfDynamics dynamics;
-    protected ISsfMeasurement measurement;
+    protected ISsfLoading loading;
     protected ISmoothingResults srslts;
 
     protected double e, f, fi;
@@ -66,7 +66,7 @@ public abstract class BaseDiffuseSmoother {
      * @param k
      */
     private void xQ(int pos, DataBlock x) {
-        measurement.XpZd(pos, x, -x.dot(C));
+        loading.XpZd(pos, x, -x.dot(C));
     }
 
     private void XQ(int pos, DataBlockIterator X) {
@@ -76,7 +76,7 @@ public abstract class BaseDiffuseSmoother {
     }
 
     private void xQi(int pos, DataBlock x) {
-        measurement.XpZd(pos, x, -x.dot(Ci));
+        loading.XpZd(pos, x, -x.dot(Ci));
     }
 
     private void XQi(int pos, DataBlockIterator X) {
@@ -110,7 +110,7 @@ public abstract class BaseDiffuseSmoother {
         tvt(pos, N0);
         XQ(pos, N0.rowsIterator());
         XQ(pos, N0.columnsIterator());
-        measurement.VpZdZ(pos, N0, 1 / f);
+        loading.VpZdZ(pos, N0, 1 / f);
         tvt(pos, N1);
         XQ(pos, N1.columnsIterator());
         tvt(pos, N2);
@@ -145,8 +145,8 @@ public abstract class BaseDiffuseSmoother {
         while (n1cols.hasNext()){
             double zx=z.next();
             if (zx != 0){
-                measurement.XpZd(pos, n1cols.next(), zx/fi);
-                measurement.XpZd(pos, n2cols.next(), zx*h);
+                loading.XpZd(pos, n1cols.next(), zx/fi);
+                loading.XpZd(pos, n2cols.next(), zx*h);
             }else{
                 n1cols.next();
                 n2cols.next();
@@ -178,7 +178,7 @@ public abstract class BaseDiffuseSmoother {
             double cur = cell.next();
             DataBlock row = rows.next();
             if (cur != 0) {
-                measurement.XpZd(pos, row, -cur);
+                loading.XpZd(pos, row, -cur);
             }
         } 
     }
@@ -203,7 +203,7 @@ public abstract class BaseDiffuseSmoother {
         if (!missing && f != 0) {
             // RT
             double c = e / f - Rf.dot(C);
-            measurement.XpZd(pos, Rf, c);
+            loading.XpZd(pos, Rf, c);
         }
     }
 
@@ -214,17 +214,17 @@ public abstract class BaseDiffuseSmoother {
             // Ri(t-1)=c*Z(t) +Ri(t)*T(t)
             // c = e/fi-(Ri(t)*T(t)*Ci(t))/fi-(Rf(t)*T(t)*Cf(t))/f
             double ci = e / fi - Ri.dot(Ci) - Rf.dot(C);
-            measurement.XpZd(pos, Ri, ci);
+            loading.XpZd(pos, Ri, ci);
             // Rf(t-1)=c*Z(t)+Rf(t)*T(t)
             // c =  - Rf(t)T(t)*Ci/fi
             double cf = -Rf.dot(Ci);
-            measurement.XpZd(pos, Rf, cf);
+            loading.XpZd(pos, Rf, cf);
         }
     }
 
     protected void initFilter(ISsf ssf) {
-        dynamics = ssf.getDynamics();
-        measurement = ssf.getMeasurement();
+        dynamics = ssf.dynamics();
+        loading = ssf.loading();
     }
 
     public void setCalcVariances(boolean b) {

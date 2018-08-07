@@ -82,7 +82,7 @@ public class ExactArimaForecasts implements IArimaForecasts{
 	    // complete the forecasts....
 	    int last = a.length() - 1;
 	    for (int i = ssf.getStateDim(); i < nf; ++i) {
-		ssf.getDynamics().TX(0, a);
+		ssf.dynamics().TX(0, a);
 		f[i] = a.get(last);
 	    }
 	} else

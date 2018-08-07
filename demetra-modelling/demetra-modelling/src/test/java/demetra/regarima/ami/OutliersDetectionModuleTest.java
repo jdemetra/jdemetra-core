@@ -50,11 +50,11 @@ public class OutliersDetectionModuleTest {
         spec.airline(true);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
 
-        Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
-        Consumer<int[]> rhook = a -> System.out.println("Remove outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
+//        Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
+//        Consumer<int[]> rhook = a -> System.out.println("Remove outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
         RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
-        od.setAddHook(hook);
-        od.setRemoveHook(rhook);
+//        od.setAddHook(hook);
+//        od.setRemoveHook(rhook);
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 100; ++i) {
         od.prepare(regarima.getObservationsCount());

@@ -99,7 +99,7 @@ public class DiffuseSmoother extends BaseDiffuseSmoother{
         if (calcvar) {
             state.P().copy(frslts.P(pos));
             state.Pi().copy(frslts.Pi(pos));
-            measurement.Z(pos, Z);
+            loading.Z(pos, Z);
         }
     }
 
@@ -134,8 +134,8 @@ public class DiffuseSmoother extends BaseDiffuseSmoother{
 
     @Override
     protected void initFilter(ISsf ssf) {
-        dynamics = ssf.getDynamics();
-        measurement = ssf.getMeasurement();
+        dynamics = ssf.dynamics();
+        loading = ssf.loading();
     }
 
     private void ordinarySmoothing(ISsf ssf, final int end) {

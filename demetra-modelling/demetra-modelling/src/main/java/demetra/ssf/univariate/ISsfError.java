@@ -16,25 +16,27 @@
  */
 package demetra.ssf.univariate;
 
-import demetra.ssf.ISsfLoading;
+import demetra.data.DataBlock;
+import demetra.data.DataWindow;
+import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfRoot;
 
 /**
  *
  * @author Jean Palate
  */
-public interface ISsfMeasurement extends ISsfRoot {
+public interface ISsfError extends ISsfRoot {
+//<editor-fold defaultstate="collapsed" desc="description">
+
+
+    /**
+     * Gets the variance copyOf the measurement error at a given position
+     *
+     * @param pos
+     * @return The variance copyOf the measurement error at the given position. May
+ be 0
+     */
+    double at(int pos);
+//</editor-fold>
     
-    ISsfLoading loading();
-    
-    ISsfError error();
-    
-    default boolean hasError(){
-        return error() != null;
-    }
-    
-    @Override
-    default boolean isTimeInvariant(){
-        return loading().isTimeInvariant() && (! hasError() || error().isTimeInvariant());
-    }
 }

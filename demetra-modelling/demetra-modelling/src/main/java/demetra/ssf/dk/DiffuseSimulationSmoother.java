@@ -28,9 +28,10 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.ISsfLoading;
 import demetra.data.DoubleSequence;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.univariate.ISsfError;
 
 /**
  *
@@ -61,14 +62,16 @@ public class DiffuseSimulationSmoother {
     private final ISsf ssf;
     private final ISsfData data;
     private final ISsfDynamics dynamics;
-    private final ISsfMeasurement measurement;
+    private final ISsfLoading loading;
+    private final ISsfError error;
     private final Smoothing smoothing;
     private final double var;
 
     public DiffuseSimulationSmoother(ISsf ssf, ISsfData data) {
         this.ssf = ssf;
-        dynamics = ssf.getDynamics();
-        measurement = ssf.getMeasurement();
+        dynamics = ssf.dynamics();
+        loading = ssf.loading();
+        error=ssf.measurementError();
         this.data = data;
         initSsf();
         smoothing = new Smoothing();
@@ -84,17 +87,17 @@ public class DiffuseSimulationSmoother {
     }
 
     private double lh(int pos) {
-        return Math.sqrt(ssf.getMeasurement().errorVariance(pos));
+        return error == null ? 0 : Math.sqrt(error.at(pos));
     }
 
     private double h(int pos) {
-        return ssf.getMeasurement().errorVariance(pos);
+        return error == null ? 0 : error.at(pos);
     }
 
     private void initSsf() {
         int dim = ssf.getStateDim();
         LA = Matrix.square(dim);
-        ssf.getInitialization().Pf0(LA);
+        ssf.initialization().Pf0(LA);
         SymmetricMatrix.lcholesky(LA, EPS);
 
     }
@@ -132,7 +135,7 @@ public class DiffuseSimulationSmoother {
             n = data.length();
             nd = frslts.getEndDiffusePosition();
             smoothedInnovations = new DataBlockStorage(resdim, n);
-            if (measurement.hasErrors()) {
+            if (error != null) {
                 esm = DataBlock.make(n);
             } else {
                 esm = null;
@@ -168,7 +171,7 @@ public class DiffuseSimulationSmoother {
                 if (!missing && e != 0) {
                     // RT
                     double c = (e - R.dot(frslts.M(pos))) / v;
-                    measurement.XpZd(pos, R, c);
+                    loading.XpZd(pos, R, c);
                 }
                 // Computes esm, U
                 if (esm != null) {
@@ -213,14 +216,14 @@ public class DiffuseSimulationSmoother {
                 if (fi == 0) {
                     if (!missing && f != 0) {
                         c = e / f - R.dot(C);
-                        measurement.XpZd(pos, R, c);
+                        loading.XpZd(pos, R, c);
                     }
                 } else if (!missing && f != 0) {
                     c = -Ri.dot(Ci);
                     double ci = e / fi + c - R.dot(C);
-                    measurement.XpZd(pos, Ri, ci);
+                    loading.XpZd(pos, Ri, ci);
                     double cf = -R.dot(Ci);
-                    measurement.XpZd(pos, R, cf);
+                    loading.XpZd(pos, R, cf);
                 }
                 // Computes esm, U
                 if (esm != null) {
@@ -237,7 +240,7 @@ public class DiffuseSimulationSmoother {
             // initial state
             a0 = DataBlock.make(dim);
             Matrix Pf0 = Matrix.square(dim);
-            ISsfInitialization initializer = ssf.getInitialization();
+            ISsfInitialization initializer = ssf.initialization();
             initializer.a0(a0);
             initializer.Pf0(Pf0);
             // stationary initialization
@@ -309,10 +312,9 @@ public class DiffuseSimulationSmoother {
 
         public Simulation() {
             super(smoothing.frslts);
-            boolean err = measurement.hasErrors();
             states = new DataBlockStorage(dim, n);
             transitionInnovations = new DataBlockStorage(resdim, n);
-            if (err) {
+            if (error != null) {
                 measurementErrors = new double[n];
                 generateMeasurementRandoms(DataBlock.copyOf(measurementErrors));
             } else {
@@ -337,10 +339,10 @@ public class DiffuseSimulationSmoother {
             generateInitialState(a0f);
             a0f.mul(std);
             DataBlock a = DataBlock.make(dim);
-            ssf.getInitialization().a0(a);
+            ssf.initialization().a0(a);
             a.add(a0f);
             states.save(0, a);
-            simulatedData[0] = measurement.ZX(0, a);
+            simulatedData[0] = loading.ZX(0, a);
             if (measurementErrors != null) {
                 simulatedData[0] += measurementErrors[0] * std;
             }
@@ -356,7 +358,7 @@ public class DiffuseSimulationSmoother {
                     dynamics.addSU(i-1, a, q);
                 }
                 states.save(i, a);
-                simulatedData[i] = measurement.ZX(i, a);
+                simulatedData[i] = loading.ZX(i, a);
                 if (measurementErrors != null) {
                     simulatedData[i] += measurementErrors[i] * std;
                 }

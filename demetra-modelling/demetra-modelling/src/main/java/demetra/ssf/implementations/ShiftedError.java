@@ -16,28 +16,35 @@
  */
 package demetra.ssf.implementations;
 
+import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.ISsfDynamics;
-import demetra.ssf.ISsfInitialization;
-import demetra.ssf.multivariate.ISsfMeasurements;
-import demetra.ssf.multivariate.MultivariateSsf;
-import demetra.ssf.univariate.ISsf;
+import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
+ * Shifted measurement: Zshift(t) = Z(pos + shift) 
  *
  * @author Jean Palate
  */
-public class MultivariateCompositeSsf extends MultivariateSsf {
-    
-    public static MultivariateCompositeSsf create(Matrix ecorr, ISsf... ssfs){
-        CompositeInitialization init=CompositeInitialization.of(ssfs);
-        CompositeDynamics dyn=CompositeDynamics.of(ssfs);
-        ISsfMeasurements m=CompositeMeasurements.of(ecorr, ssfs);
-        return new MultivariateCompositeSsf(init, dyn, m);
-    }
+public class ShiftedError implements ISsfError {
 
-    private MultivariateCompositeSsf(ISsfInitialization init, ISsfDynamics dyn, ISsfMeasurements m) {
-        super(init, dyn, m);
+    private final ISsfError error;
+    private final int shift;
+    
+    public ShiftedError(ISsfError error, int shift) {
+        this.error = error;
+        this.shift = shift;
+    }
+    
+    @Override
+    public boolean isTimeInvariant() {
+        return error.isTimeInvariant();
+    }
+    
+    
+    @Override
+    public double at(int pos) {
+        return error.at(pos + shift);
     }
 
 }

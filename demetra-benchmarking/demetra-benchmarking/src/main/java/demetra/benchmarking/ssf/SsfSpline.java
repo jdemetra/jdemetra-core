@@ -23,7 +23,7 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.DiffuseInitialization;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
-import demetra.ssf.implementations.Measurement;
+import demetra.ssf.implementations.Loading;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 
@@ -37,15 +37,15 @@ import demetra.ssf.univariate.Ssf;
 public class SsfSpline {
 
     public ISsf of(double measurementError) {
-        return new Ssf(new DiffuseInitialization(2), new SimpleDynamics(1), Measurement.create(0, measurementError));
+        return new Ssf(new DiffuseInitialization(2), new SimpleDynamics(1), Loading.create(0, measurementError));
     }
 
     public ISsf of(double measurementError, double d) {
-        return new Ssf(new DiffuseInitialization(2), new SimpleDynamics(d), Measurement.create(0, measurementError));
+        return new Ssf(new DiffuseInitialization(2), new SimpleDynamics(d), Loading.create(0, measurementError));
     }
 
     public ISsf of(double measurementError, double[] d) {
-        return new Ssf(new DiffuseInitialization(2), new Dynamics(d), Measurement.create(0, measurementError));
+        return new Ssf(new DiffuseInitialization(2), new Dynamics(d), Loading.create(0, measurementError));
     }
 
     static class SimpleDynamics implements ISsfDynamics {

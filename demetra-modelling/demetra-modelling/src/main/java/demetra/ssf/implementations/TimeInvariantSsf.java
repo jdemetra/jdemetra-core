@@ -14,7 +14,6 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-
 package demetra.ssf.implementations;
 
 import demetra.ssf.univariate.ISsf;
@@ -22,33 +21,40 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.univariate.ISsfError;
 
 /**
  *
  * @author Jean Palate
  */
-public class TimeInvariantSsf extends Ssf{
-    public static ISsf of(ISsf ssf){
-        TimeInvariantDynamics td=TimeInvariantDynamics.of(ssf.getStateDim(), ssf.getDynamics());
-        if (td == null)
+@lombok.experimental.UtilityClass
+public class TimeInvariantSsf {
+
+    public static Ssf of(ISsf ssf) {
+        if (!ssf.isTimeInvariant()) {
             return null;
-        TimeInvariantMeasurement tm=TimeInvariantMeasurement.of(ssf.getStateDim(), ssf.getMeasurement());
-        return new TimeInvariantSsf(ssf.getInitialization(), td, tm);
+        }
+        ISsfError e = ssf.measurementError();
+        if (e != null) {
+            e = MeasurementError.of(e.at(0));
+        }
+        return Ssf.builder()
+                .initialization(ssf.initialization())
+                .dynamics(TimeInvariantDynamics.of(ssf.getStateDim(), ssf.dynamics()))
+                .loading(TimeInvariantLoading.of(ssf.getStateDim(), ssf.loading()))
+                .measurementError(e)
+                .build();
     }
-    
-    private TimeInvariantSsf(final ISsfInitialization initializer, final ISsfDynamics dynamics, ISsfMeasurement measurement) {
-        super(initializer, dynamics, measurement);
-    }
-    
-    @Override
-    public String toString(){
-        StringBuilder builder=new StringBuilder();
+
+    public String toString(ISsf ssf) {
+        StringBuilder builder = new StringBuilder();
         builder.append("Initialization").append(System.lineSeparator());
-        builder.append(getInitialization());
+        builder.append(ssf.initialization());
         builder.append("Measurement").append(System.lineSeparator());
-        builder.append(getMeasurement());
+        builder.append(ssf.measurement());
         builder.append("Dynamics").append(System.lineSeparator());
-        builder.append(getDynamics());
+        builder.append(ssf.dynamics());
         return builder.toString();
     }
+
 }

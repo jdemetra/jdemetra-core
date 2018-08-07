@@ -78,9 +78,9 @@ public class MultivariateArrayFilter {
         state = new LState(L());
         perrors = new MultivariateUpdateInformation(dim, nm);
         
-        ssf.getInitialization().a0(state.a);
+        ssf.initialization().a0(state.a);
         Matrix P0 = Matrix.make(dim, dim);
-        ssf.getInitialization().Pf0(P0);
+        ssf.initialization().Pf0(P0);
         SymmetricMatrix.lcholesky(P0, State.ZERO);
         state.L.copy(P0);
     }
@@ -94,11 +94,11 @@ public class MultivariateArrayFilter {
      */
     public boolean process(final IMultivariateSsf ssf, final IMultivariateSsfData data, final IMultivariateFilteringResults rslts) {
         this.ssf=ssf;
-        measurements = ssf.getMeasurements();
+        measurements = ssf.measurements();
         if (!measurements.isHomogeneous()) {
             return false;
         }
-        dynamics = ssf.getDynamics();
+        dynamics = ssf.dynamics();
         this.data = data;
         if (!initFilter()) {
             return false;
@@ -122,7 +122,7 @@ public class MultivariateArrayFilter {
         measurements.ZM(pos, L(), ZL());
         dynamics.TM(pos, L());
         R().set(0);
-        measurements.R(pos, R());
+        measurements.errors().R(pos, R());
         U().set(0);
         dynamics.S(pos, U());
         K().set(0);

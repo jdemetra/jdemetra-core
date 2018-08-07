@@ -34,23 +34,7 @@ public class CompositeInitialization implements ISsfInitialization {
     private final int[] dim;
     private final int sdim;
 
-    public static CompositeInitialization of(ISsf... ssfs) {
-        ISsfInitialization[] dyn = new ISsfInitialization[ssfs.length];
-        for (int i = 0; i < dyn.length; ++i) {
-            dyn[i] = ssfs[i].getInitialization();
-        }
-        return new CompositeInitialization(CompositeSsf.dimensions(ssfs), dyn);
-    }
-
-    public static CompositeInitialization of(IMultivariateSsf... ssfs) {
-        ISsfInitialization[] dyn = new ISsfInitialization[ssfs.length];
-        for (int i = 0; i < dyn.length; ++i) {
-            dyn[i] = ssfs[i].getInitialization();
-        }
-        return new CompositeInitialization(CompositeSsf.dimensions(ssfs), dyn);
-    }
-
-    CompositeInitialization(int[] dim, ISsfInitialization... initializers) {
+    public CompositeInitialization(int[] dim, ISsfInitialization... initializers) {
         this.dim = dim;
         this.initializers = initializers;
         int tdim = 0;

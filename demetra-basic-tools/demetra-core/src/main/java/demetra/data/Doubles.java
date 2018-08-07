@@ -41,6 +41,21 @@ public class Doubles {
         return list.toArray();
     }
 
+    public int search(final DoubleSequence d, final DoublePredicate pred, final int[] first) {
+        int n = d.length();
+        DoubleReader cell = d.reader();
+        int cur = 0;
+        for (int j = 0; j < n; ++j) {
+            if (pred.test(cell.next())) {
+                first[cur++] = j;
+                if (cur == first.length) {
+                    return cur;
+                }
+            }
+        }
+        return cur;
+    }
+
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Descriptive statistics (with default implementations">
     public double sum(final DoubleSequence d) {
@@ -288,35 +303,36 @@ public class Doubles {
         }
         return scale * Math.sqrt(ssq);
     }
-    
-    public DoubleSequence select(DoubleSequence data, DoublePredicate pred){
-        double[] x=data.toArray();
-        int cur=0;
-        for (int i=0; i<x.length; ++i){
-            if (pred.test(x[i])){
-                if (cur <i)
-                    x[cur]=x[i];
+
+    public DoubleSequence select(DoubleSequence data, DoublePredicate pred) {
+        double[] x = data.toArray();
+        int cur = 0;
+        for (int i = 0; i < x.length; ++i) {
+            if (pred.test(x[i])) {
+                if (cur < i) {
+                    x[cur] = x[i];
+                }
                 ++cur;
             }
         }
-        if (cur == x.length)
+        if (cur == x.length) {
             return DoubleSequence.ofInternal(x);
-        else{
-            double[] xc=new double[cur];
+        } else {
+            double[] xc = new double[cur];
             System.arraycopy(x, 0, xc, 0, cur);
             return DoubleSequence.ofInternal(xc);
         }
     }
-    
+
     public static DoubleSequence removeMean(DoubleSequence x) {
-        double[] y=x.toArray();
-        double s=0;
-        for (int i=0; i<y.length; ++i){
-            s+=y[i];
+        double[] y = x.toArray();
+        double s = 0;
+        for (int i = 0; i < y.length; ++i) {
+            s += y[i];
         }
-        s/=y.length;
-        for (int i=0; i<y.length; ++i){
-            y[i]-=s;
+        s /= y.length;
+        for (int i = 0; i < y.length; ++i) {
+            y[i] -= s;
         }
         return DoubleSequence.ofInternal(y);
     }
@@ -351,27 +367,30 @@ public class Doubles {
     }
 
     public DoubleSequence extend(DoubleSequence s, @Nonnegative int nbeg, @Nonnegative int nend) {
-        int n=s.length()+nbeg+nend;
-        double[] nvalues=new double[n];
-        for (int i=0; i<nbeg; ++i)
-            nvalues[i]=Double.NaN;
+        int n = s.length() + nbeg + nend;
+        double[] nvalues = new double[n];
+        for (int i = 0; i < nbeg; ++i) {
+            nvalues[i] = Double.NaN;
+        }
         s.copyTo(nvalues, nbeg);
-        for (int i=n-nend; i<n; ++i)
-            nvalues[i]=Double.NaN;
+        for (int i = n - nend; i < n; ++i) {
+            nvalues[i] = Double.NaN;
+        }
         return DoubleSequence.ofInternal(nvalues);
     }
-    
+
     public DoubleSequence delta(DoubleSequence s, int lag) {
         return fn(s, lag, (x, y) -> y - x);
     }
 
     public DoubleSequence delta(DoubleSequence s, int lag, int pow) {
-        DoubleSequence ns=s;
-        for (int i=0; i<pow; ++i)
-            ns=fn(ns, lag, (x, y) -> y - x);
+        DoubleSequence ns = s;
+        for (int i = 0; i < pow; ++i) {
+            ns = fn(ns, lag, (x, y) -> y - x);
+        }
         return ns;
     }
-    
+
     public DoubleSequence op(DoubleSequence a, DoubleSequence b, DoubleBinaryOperator op) {
         double[] data = a.toArray();
         DoubleReader reader = b.reader();
@@ -382,11 +401,11 @@ public class Doubles {
     }
 
     public DoubleSequence fastOp(DoubleSequence a, DoubleSequence b, DoubleBinaryOperator op) {
-        int n=a.length();
-        return DoubleSequence.onMapping(n, i->a.get(i)+b.get(i));
+        int n = a.length();
+        return DoubleSequence.onMapping(n, i -> a.get(i) + b.get(i));
     }
-    
-    public DoubleSequence commit(DoubleSequence s){
+
+    public DoubleSequence commit(DoubleSequence s) {
         return DoubleSequence.ofInternal(s.toArray());
     }
 }

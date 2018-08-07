@@ -46,6 +46,18 @@ import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.multiply;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.multiply;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.multiply;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.multiply;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.multiply;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
  *
@@ -175,7 +187,7 @@ public class CholetteFactory implements CholetteAlgorithm {
             DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false);
             double[] b = new double[s.length()];
             for (int i = 0; i < b.length; ++i) {
-                b[i] = ssf.getMeasurement().ZX(i, rslts.a(i));
+                b[i] = ssf.measurement().ZX(i, rslts.a(i));
             }
             return add(s, TsData.ofInternal(start, b));
         }

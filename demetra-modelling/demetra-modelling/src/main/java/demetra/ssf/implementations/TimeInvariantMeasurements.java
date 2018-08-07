@@ -16,14 +16,12 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.State;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.multivariate.ISsfMeasurements;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.data.DoubleReader;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.multivariate.ISsfErrors;
+import demetra.ssf.univariate.ISsfError;
 
 /**
  *
@@ -31,44 +29,58 @@ import demetra.data.DoubleReader;
  */
 public class TimeInvariantMeasurements implements ISsfMeasurements {
 
-    private final Matrix Z, H, R;
-
-    public static TimeInvariantMeasurements of(int dim, ISsfMeasurement measurement) {
-        return of(dim, Measurements.proxy(measurement));
-    }
+    private final Matrix Z;
+    private final ISsfErrors errors;
 
     public static TimeInvariantMeasurements of(int dim, ISsfMeasurements measurements) {
         if (!measurements.isTimeInvariant()) {
             return null;
         }
-        int m = measurements.getMaxCount();
+        int m = measurements.getCount();
         Matrix Z = Matrix.make(m, dim);
-        measurements.Z(0, Z);
-        if (!measurements.hasErrors()) {
-            return new TimeInvariantMeasurements(Z, null);
+        for (int i = 0; i < m; ++i) {
+            measurements.loading(i).Z(0, Z.row(i));
+        }
+        ISsfErrors errors = measurements.errors();
+        if (errors == null) {
+            return new TimeInvariantMeasurements(Z, null, null);
         }
         Matrix H = Matrix.square(m), R = Matrix.square(m);
-        measurements.H(0, H);
-        measurements.R(0, R);
+        errors.H(0, H);
+        errors.R(0, R);
         return new TimeInvariantMeasurements(Z, H, R);
 
     }
 
-    public TimeInvariantMeasurements(Matrix Z, Matrix H) {
-        this.Z = Z;
-        this.H = H;
-        if (H != null) {
-            R = H.deepClone();
-            SymmetricMatrix.lcholesky(H, State.ZERO);
-        } else {
-            R = null;
+    public static TimeInvariantMeasurements of(int dim, ISsfMeasurement measurement) {
+        if (!measurement.isTimeInvariant()) {
+            return null;
         }
+        Matrix Z = Matrix.make(1, dim);
+        measurement.loading().Z(0, Z.row(0));
+        ISsfError error = measurement.error();
+        if (error == null) {
+            return new TimeInvariantMeasurements(Z, null, null);
+        }
+        double v = error.at(0);
+        Matrix H = Matrix.square(1);
+        H.set(0, 0, v);
+        Matrix R = Matrix.square(1);
+        R.set(0, 0, Math.sqrt(v));
+        return new TimeInvariantMeasurements(Z, H, R);
+
     }
 
     public TimeInvariantMeasurements(Matrix Z, Matrix H, Matrix R) {
         this.Z = Z;
-        this.H = H;
-        this.R = R;
+        if (H == null && R == null) {
+            errors = null;
+        } else if (H != null && H.isDiagonal()) {
+            errors = MeasurementsError.of(H.diagonal());
+        } else {
+            errors = MeasurementsError.of(H, R);
+        }
+
     }
 
     @Override
@@ -77,96 +89,18 @@ public class TimeInvariantMeasurements implements ISsfMeasurements {
     }
 
     @Override
-    public int getCount(int pos) {
+    public int getCount() {
         return Z.getRowsCount();
     }
 
     @Override
-    public int getMaxCount() {
-        return Z.getRowsCount();
+    public ISsfLoading loading(int equation) {
+        return new TimeInvariantLoading(Z.row(equation));
     }
 
     @Override
-    public boolean isHomogeneous() {
-        return true;
-    }
-
-    @Override
-    public void Z(int pos, int var, DataBlock z) {
-        z.copy(Z.row(var));
-    }
-
-    @Override
-    public void Z(int pos, Matrix z) {
-        z.copy(Z);
-    }
-
-    @Override
-    public boolean hasErrors() {
-        return H != null;
-    }
-
-    @Override
-    public boolean hasError(int pos) {
-        return H != null;
-    }
-
-    @Override
-    public boolean hasIndependentErrors() {
-        return H == null || H.isDiagonal();
-    }
-
-    @Override
-    public void H(int pos, Matrix h) {
-        if (H != null) {
-            h.copy(H);
-        }
-    }
-
-    @Override
-    public void R(int pos, Matrix r) {
-        if (R != null) {
-            r.copy(R);
-        }
-    }
-
-    @Override
-    public double ZX(int pos, int var, DataBlock m) {
-        return Z.row(var).dot(m);
-    }
-
-    @Override
-    public double ZVZ(int pos, int ivar, int jvar, Matrix V) {
-        DataBlock zv = DataBlock.make(Z.getColumnsCount());
-        zv.product(Z.row(ivar), V.columnsIterator());
-        return zv.dot(Z.row(jvar));
-    }
-
-    @Override
-    public void ZVZ(int pos, Matrix V, Matrix zvz) {
-        SymmetricMatrix.XSXt(V, Z, zvz);
-    }
-
-    @Override
-    public void addH(int pos, Matrix V) {
-        if (H != null) {
-            V.add(H);
-        }
-    }
-
-    @Override
-    public void VpZdZ(int pos, int ivar, int jvar, Matrix V, double d) {
-        DataBlockIterator cols = V.columnsIterator();
-        DataBlock zi = Z.row(ivar), zj = Z.row(jvar);
-        DoubleReader zcell=zj.reader();
-        while (cols.hasNext()) {
-            cols.next().addAY(d * zcell.next(), zi);
-        }
-    }
-
-    @Override
-    public void XpZd(int pos, int var, DataBlock x, double d) {
-        x.addAY(d, Z.row(var));
+    public ISsfErrors errors() {
+        return errors;
     }
 
 }

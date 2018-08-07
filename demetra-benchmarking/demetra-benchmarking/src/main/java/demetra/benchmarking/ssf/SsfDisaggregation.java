@@ -38,11 +38,11 @@ import demetra.ssf.univariate.Ssf;
 public class SsfDisaggregation {
 
     public Ssf of(ISsf s, int conversion) {
-        if (s.getMeasurement().hasErrors()) {
+        if (s.measurement().hasErrors()) {
             throw new SsfException(SsfException.ERRORS);
         }
         return new Ssf(
-                new Initialization(s.getInitialization()),
+                new Initialization(s.initialization()),
                 new Dynamics(s, conversion),
                 new Measurement(s, conversion));
     }
@@ -99,8 +99,8 @@ public class SsfDisaggregation {
         private final int conversion;
 
         Dynamics(ISsf ssf, int conversion) {
-            this.dynamics = ssf.getDynamics();
-            this.measurement = ssf.getMeasurement();
+            this.dynamics = ssf.dynamics();
+            this.measurement = ssf.measurement();
             this.conversion = conversion;
         }
 
@@ -224,7 +224,7 @@ public class SsfDisaggregation {
         private final int conversion;
 
         Measurement(ISsf s, int conversion) {
-            this.measurement = s.getMeasurement();
+            this.measurement = s.measurement();
             this.conversion = conversion;
         }
 

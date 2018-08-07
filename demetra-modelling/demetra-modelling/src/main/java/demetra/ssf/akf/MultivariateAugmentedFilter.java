@@ -131,7 +131,7 @@ public class MultivariateAugmentedFilter {
             perrors = null;
             return false;
         } else {
-        ISsfInitialization initialization = ssf.getInitialization();
+        ISsfInitialization initialization = ssf.initialization();
             perrors = new AugmentedPredictionErrors(initialization.getStateDim(), nobs, initialization.getDiffuseDim());
             Matrix L = perrors.getCholeskyFactor();
             // K = PZ'(ZPZ'+H)^-1/2
@@ -233,8 +233,8 @@ public class MultivariateAugmentedFilter {
      * @return
      */
     public boolean process(final IMultivariateSsf ssf, final IMultivariateSsfData data, final IMultivariateAugmentedFilteringResults rslts) {
-        measurements = ssf.getMeasurements();
-        dynamics = ssf.getDynamics();
+        measurements = ssf.measurements();
+        dynamics = ssf.dynamics();
         this.data = data;
         if (!initState()) {
             return false;

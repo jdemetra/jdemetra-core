@@ -22,7 +22,7 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.IFilteringResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.UpdateInformation;
 
 /**
@@ -44,7 +44,7 @@ public class CkmsFilter<F extends ISsf> {
 
 
     private final IFastFilterInitializer<F> initializer;
-    private ISsfMeasurement measurement;
+    private ISsfLoading loading;
     private ISsfDynamics dynamics;
 
     private ISsfData data;
@@ -88,8 +88,8 @@ public class CkmsFilter<F extends ISsf> {
 
     private int initialize(F ssf) {
         steadypos = -1;
-        dynamics = ssf.getDynamics();
-        measurement = ssf.getMeasurement();
+        dynamics = ssf.dynamics();
+        loading = ssf.loading();
         int dim=ssf.getStateDim();
         state = new CkmsState(dim);
         pe = new UpdateInformation(dim);
@@ -142,7 +142,7 @@ public class CkmsFilter<F extends ISsf> {
             // F(i+1) = F(i) - (Z*L(i))^2/V(i)
 
             // ZLi, V(i+1)
-            double zl = measurement.ZX(0, state.l);
+            double zl = loading.ZX(0, state.l);
 
             if (Math.abs(zl) > neps) {
                 // C, L
@@ -169,6 +169,6 @@ public class CkmsFilter<F extends ISsf> {
 
     private void error(int t) {
         double y = data.get(t);
-        pe.set(y - measurement.ZX(t, state.a));
+        pe.set(y - loading.ZX(t, state.a));
     }
 }

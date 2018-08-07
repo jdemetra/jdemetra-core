@@ -25,7 +25,8 @@ import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.univariate.OrdinaryFilter;
 
 /**
@@ -39,7 +40,8 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
     private DiffuseState state;
     private DiffuseUpdateInformation pe;
     private ISsf ssf;
-    private ISsfMeasurement measurement;
+    private ISsfLoading loading;
+    private ISsfError error;
     private ISsfDynamics dynamics;
     private ISsfData data;
     private double norm = 0;
@@ -70,14 +72,14 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
         // computes the gain copyOf the filter and the prediction error 
         // calc f and fi
         // fi = Z Pi Z' , f = Z P Z' + H
-        double fi = measurement.ZVZ(t, state.Pi());
+        double fi = loading.ZVZ(t, state.Pi());
         if (Math.abs(fi) < State.ZERO) {
             fi = 0;
         }
         pe.setDiffuseVariance(fi);
-        double f = measurement.ZVZ(t, state.P());
-        if (measurement.hasErrors()) {
-            f += measurement.errorVariance(t);
+        double f = loading.ZVZ(t, state.P());
+        if (error != null) {
+            f += error.at(t);
         }
         if (Math.abs(f) / norm < State.ZERO) {
             f = 0;
@@ -89,12 +91,12 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
                 pe.setMissing();
                 return false;
             } else {
-                pe.set(y - measurement.ZX(t, state.a()));
+                pe.set(y - loading.ZX(t, state.a()));
             }
         }
-        measurement.ZM(t, state.P(), pe.M());
+        loading.ZM(t, state.P(), pe.M());
         if (pe.isDiffuse()) {
-            measurement.ZM(t, state.Pi(), pe.Mi());
+            loading.ZM(t, state.Pi(), pe.Mi());
         }
         return true;
     }
@@ -109,8 +111,9 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
     @Override
     public int initializeFilter(final State fstate, final ISsf ssf, final ISsfData data) {
         this.ssf=ssf;
-        measurement = ssf.getMeasurement();
-        dynamics = ssf.getDynamics();
+        loading = ssf.loading();
+        error=ssf.measurementError();
+        dynamics = ssf.dynamics();
         this.data = data;
         if (!initState()) {
             return -1;

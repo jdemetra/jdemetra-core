@@ -124,7 +124,7 @@ public class ArimaForecasts {
         }
         DefaultSmoothingResults ss = DkToolkit.sqrtSmooth(ssf, new SsfData(yc), true);
         Results.ResultsBuilder builder = Results.builder();
-        ISsfMeasurement me = ssf.getMeasurement();
+        ISsfMeasurement me = ssf.measurement();
         if (nb > 0) {
             double[] b = new double[nb], eb = new double[nb];
             for (int i = 0; i < nb; ++i) {

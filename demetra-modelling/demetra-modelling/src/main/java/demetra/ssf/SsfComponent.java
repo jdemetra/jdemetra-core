@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 National Bank of Belgium
+ * Copyright 2013-2014 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,23 +14,20 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.ssf.multivariate;
-
-import demetra.ssf.State;
-import demetra.data.DoubleSequence;
+package demetra.ssf;
 
 /**
  *
  * @author Jean Palate
  */
-public interface IMultivariateSsfFiltering {
-    /**
-     * Computes a(t+1|t), P(t
-     * @param t Time position
-     * @param state On entry, contains a(t|t-1), P(t|t-1). On exit, contains 
-     * a(t+1|t), P(t+1|t)
-     * @param x Observations in t
-     * @return Update information corresponding to the new observations
-     */
-    MultivariateUpdateInformation next(int t, State state, DoubleSequence x);
+@lombok.Value
+@lombok.Getter
+@lombok.experimental.Accessors(fluent=true)
+public class SsfComponent {
+    
+    private ISsfInitialization initialization;
+    @lombok.NonNull
+    private ISsfDynamics dynamics;
+    private ISsfLoading loading;
+    
 }

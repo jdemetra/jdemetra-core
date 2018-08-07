@@ -22,8 +22,10 @@ import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
-import demetra.ssf.implementations.Measurement;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.implementations.Loading;
 import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.univariate.Measurement;
 import demetra.ssf.univariate.Ssf;
 
 /**
@@ -73,8 +75,8 @@ public class SsfBsm2 extends Ssf {
         SsfBsm.BsmData data = new SsfBsm.BsmData(model);
         Bsm2Initialization initialization = new Bsm2Initialization(data);
         Bsm2Dynamics dynamics = new Bsm2Dynamics(data);
-        ISsfMeasurement measurement = Measurement.create(idx, data.nVar);
-        return new SsfBsm2(initialization, dynamics, measurement);
+        ISsfLoading loading = Loading.create(idx);
+        return new SsfBsm2(initialization, dynamics, new Measurement(loading,data.nVar));
     }
 
     static class Bsm2Initialization implements ISsfInitialization {

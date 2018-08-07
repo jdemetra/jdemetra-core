@@ -6,8 +6,8 @@
 package rssf;
 
 import demetra.data.DataBlock;
-import demetra.ssf.implementations.Measurement;
-import demetra.ssf.implementations.TimeInvariantMeasurement;
+import demetra.ssf.implementations.Loading;
+import demetra.ssf.implementations.TimeInvariantLoading;
 import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
@@ -17,10 +17,10 @@ import demetra.ssf.univariate.ISsfMeasurement;
 @lombok.experimental.UtilityClass
 public class Measurements {
     public ISsfMeasurement of(int mpos, double var){
-        return Measurement.create(mpos, var);
+        return Loading.create(mpos, var);
     }
     
     public ISsfMeasurement of(double[] Z, double var){
-        return new TimeInvariantMeasurement(DataBlock.ofInternal(Z), var);
+        return new TimeInvariantLoading(DataBlock.ofInternal(Z), var);
     }
 }

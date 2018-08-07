@@ -18,53 +18,53 @@ public class SsfTools {
 
     public Matrix transitionMatrix(ISsf ssf, int pos) {
         Matrix m = Matrix.square(ssf.getStateDim());
-        ssf.getDynamics().T(pos, m);
+        ssf.dynamics().T(pos, m);
         return m;
     }
 
     public Matrix innovationMatrix(ISsf ssf, int pos) {
         Matrix m = Matrix.square(ssf.getStateDim());
-        ssf.getDynamics().V(pos, m);
+        ssf.dynamics().V(pos, m);
         return m;
     }
 
     public double[] measurement(ISsf ssf, int pos) {
         DataBlock m = DataBlock.make(ssf.getStateDim());
-        ssf.getMeasurement().Z(pos, m);
+        ssf.measurement().Z(pos, m);
         return m.getStorage();
     }
 
     public double measurementError(ISsf ssf, int pos) {
-        return ssf.getMeasurement().errorVariance(pos);
+        return ssf.measurement().errorVariance(pos);
     }
 
     public double[] initialState(ISsf ssf) {
         DataBlock m = DataBlock.make(ssf.getStateDim());
-        ssf.getInitialization().a0(m);
+        ssf.initialization().a0(m);
         return m.getStorage();
     }
 
     public Matrix stationaryInitialVariance(ISsf ssf) {
         Matrix m = Matrix.square(ssf.getStateDim());
-        ssf.getInitialization().Pf0(m);
+        ssf.initialization().Pf0(m);
         return m;
     }
 
     public Matrix diffuseInitialConstraint(ISsf ssf) {
-        if (!ssf.getInitialization().isDiffuse()) {
+        if (!ssf.initialization().isDiffuse()) {
             return null;
         }
         Matrix m = Matrix.make(ssf.getStateDim(), ssf.getDiffuseDim());
-        ssf.getInitialization().diffuseConstraints(m);
+        ssf.initialization().diffuseConstraints(m);
         return m;
     }
 
     public Matrix diffuseInitialVariance(ISsf ssf) {
-        if (!ssf.getInitialization().isDiffuse()) {
+        if (!ssf.initialization().isDiffuse()) {
             return null;
         }
         Matrix m = Matrix.square(ssf.getStateDim());
-        ssf.getInitialization().Pi0(m);
+        ssf.initialization().Pi0(m);
         return m;
     }
 }

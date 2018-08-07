@@ -18,34 +18,52 @@ package demetra.ssf.implementations;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
- * Shifted measurement: Zshift(t) = Z(pos + shift)
+ * Shifted measurement: Zshift(t) = Z(pos + shift) 
  *
  * @author Jean Palate
  */
-public class ShiftedMeasurement implements ISsfMeasurement {
+public class ShiftedLoading implements ISsfLoading {
 
-    private final ShiftedLoading loading;
-    private final ShiftedError error;
-
-    public ShiftedMeasurement(ISsfMeasurement m, int shift) {
-        this.loading = new ShiftedLoading(m.loading(), shift);
-        ISsfError e = m.error();
-        error = e == null ? null : new ShiftedError(e, shift);
+    private final ISsfLoading loading;
+    private final int shift;
+    
+    public ShiftedLoading(ISsfLoading loading, int shift) {
+        this.loading = loading;
+        this.shift = shift;
     }
-
+    
     @Override
-    public ISsfLoading loading() {
-        return loading;
+    public boolean isTimeInvariant() {
+        return loading.isTimeInvariant();
     }
-
+    
     @Override
-    public ISsfError error() {
-        return error;
+    public void Z(int pos, DataBlock z) {
+        loading.Z(pos + shift, z);
+    }
+    
+    @Override
+    public double ZX(int pos, DataBlock b) {
+        return loading.ZX(pos + shift, b);
+    }
+    
+    @Override
+    public double ZVZ(int pos, Matrix V) {
+        return loading.ZVZ(pos + shift, V);
+    }
+    
+    @Override
+    public void VpZdZ(int pos, Matrix V, double d) {
+        loading.VpZdZ(pos + shift, V, d);
+    }
+    
+    @Override
+    public void XpZd(int pos, DataBlock x, double d) {
+        loading.XpZd(pos + shift, x, d);
     }
 
 }

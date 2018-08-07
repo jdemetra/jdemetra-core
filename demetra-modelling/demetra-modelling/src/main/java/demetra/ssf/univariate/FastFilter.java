@@ -5,6 +5,7 @@
  */
 package demetra.ssf.univariate;
 
+import demetra.ssf.ISsfLoading;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.linearfilters.ILinearProcess;
@@ -22,7 +23,7 @@ public class FastFilter implements ILinearProcess {
 
     private final IFilteringResults frslts;
     private final ISsf ssf;
-    private final ISsfMeasurement measurement;
+    private final ISsfLoading loading;
     private final ISsfDynamics dynamics;
     private final int start, end;
     private Matrix states;
@@ -33,8 +34,8 @@ public class FastFilter implements ILinearProcess {
     public FastFilter(ISsf ssf, IFilteringResults frslts, ResultsRange range) {
         this.ssf=ssf;
         this.frslts = frslts;
-        measurement = ssf.getMeasurement();
-        dynamics = ssf.getDynamics();
+        loading = ssf.measurement().loading();
+        dynamics = ssf.dynamics();
         start = range.getStart();
         end = range.getEnd();
     }
@@ -65,7 +66,7 @@ public class FastFilter implements ILinearProcess {
         if (!missing) {
             double f = frslts.errorVariance(i);
             if (f > 0) {
-                measurement.ZM(i, states, tmp);
+                loading.ZM(i, states, tmp);
                 row.sub(tmp);
                 // update the states
                 DataBlock C = frslts.M(i);
@@ -96,7 +97,7 @@ public class FastFilter implements ILinearProcess {
             boolean missing = !Double.isFinite(frslts.error(pos));
             if (!missing) {
                 double f = frslts.errorVariance(pos);
-                double e = in.get(ipos) - measurement.ZX(pos, state);
+                double e = in.get(ipos) - loading.ZX(pos, state);
                 if (f != 0) {
                     out.set(opos++, e / Math.sqrt(f));
                     // update the state

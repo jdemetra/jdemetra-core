@@ -20,9 +20,8 @@ import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
-import demetra.ssf.implementations.Measurement;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.Ssf;
+import demetra.ssf.SsfComponent;
+import demetra.ssf.implementations.Loading;
 
 /**
  * Usual local linear trend y(t)=l(t)+n(t) l(t+1)=s(t)+l(t)+u(t)
@@ -31,17 +30,13 @@ import demetra.ssf.univariate.Ssf;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-public class LocalLinearTrend{
+public class LocalLinearTrend {
 
-    public static ISsf of(double lvar, double svar) {
+    public SsfComponent of(double lvar, double svar) {
         Data data = new Data(lvar, svar);
-        return new Ssf(new Initialization(data), new Dynamics(data), Measurement.create(0));
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.create(0));
     }
 
-    public static ISsf of(double lvar, double svar, double loading) {
-        Data data = new Data(lvar, svar);
-        return new Ssf(new Initialization(data), new Dynamics(data), Measurement.createLoading(0, loading));
-    }
     static class Data {
 
         final double lv, sv;

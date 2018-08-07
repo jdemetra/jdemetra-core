@@ -26,9 +26,10 @@ import demetra.ssf.univariate.DisturbanceSmoother;
 import demetra.ssf.univariate.IDisturbanceSmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.data.DoubleReader;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.ISsfLoading;
 import javax.annotation.Nonnull;
 
 /**
@@ -39,14 +40,15 @@ public class DiffuseDisturbanceSmoother {
 
     private ISsf ssf;
     private ISsfDynamics dynamics;
-    private ISsfMeasurement measurement;
+    private ISsfLoading loading;
+    private ISsfError error;
     private IDisturbanceSmoothingResults srslts;
     private IBaseDiffuseFilteringResults frslts;
 
     private double e, f, esm, esmVariance, h, fi;
     private DataBlock C, Ci, R, Ri, U;
     private Matrix N, UVar, S;
-    private boolean missing, res, calcvar = true;
+    private boolean missing, calcvar = true;
     private int pos;
     // temporary
     private DataBlock tmp;
@@ -87,7 +89,7 @@ public class DiffuseDisturbanceSmoother {
             loadInfo();
             if (iterate()) {
                 srslts.saveSmoothedTransitionDisturbances(pos, U, UVar);
-                if (res) {
+                if (error != null) {
                     srslts.saveSmoothedMeasurementDisturbance(pos, esm, esmVariance);
                 }
             }
@@ -109,8 +111,10 @@ public class DiffuseDisturbanceSmoother {
             N = Matrix.square(dim);
             tmp = DataBlock.make(dim);
             UVar = Matrix.square(resdim);
-            if (measurement.isTimeInvariant()) {
-                h = measurement.errorVariance(0);
+            if (error != null && error.isTimeInvariant()) {
+                h = error.at(0);
+            } else {
+                h = 0;
             }
         }
         if (dynamics.isTimeInvariant()) {
@@ -138,8 +142,8 @@ public class DiffuseDisturbanceSmoother {
                 S.set(0);
                 dynamics.S(pos - 1, S);
             }
-            if (!measurement.isTimeInvariant()) {
-                h = measurement.errorVariance(pos - 1);
+            if (error != null && !error.isTimeInvariant()) {
+                h = error.at(pos - 1);
             }
         }
     }
@@ -152,15 +156,11 @@ public class DiffuseDisturbanceSmoother {
         // updates the smoothed disturbances
         if (pos > 0) {
             // updates the smoothed disturbances
-            if (res && measurement.hasError(pos - 1)) {
-                esm = c * h;
-            }
+            esm = c * h;
             if (dynamics.hasInnovations(pos - 1)) {
                 dynamics.XS(pos - 1, R, U);
                 if (calcvar) {
-                    if (res) {
-                        esmVariance = h - h * h * v;
-                    }
+                    esmVariance = h - h * h * v;
                     // v(U) = I-S'NS
                     SymmetricMatrix.XtSX(N, S, UVar);
                     UVar.chs();
@@ -200,7 +200,7 @@ public class DiffuseDisturbanceSmoother {
         tmp.product(C, N.columnsIterator());
         // 2. v
         v = 1 / f + tmp.dot(C);
-        measurement.VpZdZ(pos, N, v);
+        loading.VpZdZ(pos, N, v);
         subZ(N.rowsIterator(), tmp);
         subZ(N.columnsIterator(), tmp);
     }
@@ -210,7 +210,7 @@ public class DiffuseDisturbanceSmoother {
         tmp.product(Ci, N.columnsIterator());
         // 2. v
         v = tmp.dot(Ci);
-        measurement.VpZdZ(pos, N, v);
+        loading.VpZdZ(pos, N, v);
         subZ(N.rowsIterator(), tmp);
         subZ(N.columnsIterator(), tmp);
     }
@@ -235,7 +235,7 @@ public class DiffuseDisturbanceSmoother {
         if (!missing && f != 0) {
             // RT
             c = e / f - R.dot(C);
-            measurement.XpZd(pos, R, c);
+            loading.XpZd(pos, R, c);
         }
     }
 
@@ -247,19 +247,19 @@ public class DiffuseDisturbanceSmoother {
             // Ri(t-1)=c*Z(t) +Ri(t)*T(t)
             // c = e/fi-(Ri(t)*T(t)*Ci(t))/fi-(Rf(t)*T(t)*Cf(t))/f
             double ci = e / fi + c - R.dot(C);
-            measurement.XpZd(pos, Ri, ci);
+            loading.XpZd(pos, Ri, ci);
             // Rf(t-1)=c*Z(t)+Rf(t)*T(t)
             // c =  - Rf(t)T(t)*Ci/fi
             double cf = -R.dot(Ci);
-            measurement.XpZd(pos, R, cf);
+            loading.XpZd(pos, R, cf);
         }
     }
 
     private void initFilter(ISsf ssf) {
         this.ssf = ssf;
-        dynamics = ssf.getDynamics();
-        measurement = ssf.getMeasurement();
-        res = measurement.hasErrors();
+        dynamics = ssf.dynamics();
+        loading = ssf.loading();
+        error = ssf.measurementError();
     }
 
     public void setCalcVariances(boolean b) {
@@ -284,7 +284,7 @@ public class DiffuseDisturbanceSmoother {
     private void subZ(DataBlockIterator rows, DataBlock b) {
         DoubleReader cell = b.reader();
         while (rows.hasNext()) {
-            measurement.XpZd(pos, rows.next(), -cell.next());
+            loading.XpZd(pos, rows.next(), -cell.next());
         }
     }
 
@@ -317,7 +317,7 @@ public class DiffuseDisturbanceSmoother {
 
     public DataBlock firstSmoothedState() {
 
-        ISsfInitialization initialization = ssf.getInitialization();
+        ISsfInitialization initialization = ssf.initialization();
         int n = initialization.getStateDim();
         // initial state
         DataBlock a = DataBlock.make(n);

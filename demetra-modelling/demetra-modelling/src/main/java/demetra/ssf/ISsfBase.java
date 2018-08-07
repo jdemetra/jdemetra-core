@@ -22,16 +22,16 @@ package demetra.ssf;
  */
 public interface ISsfBase extends ISsfRoot {
 
-    ISsfInitialization getInitialization();
+    ISsfInitialization initialization();
 
-    ISsfDynamics getDynamics();
+    ISsfDynamics dynamics();
 
     default int getStateDim() {
-        return getInitialization().getStateDim();
+        return initialization().getStateDim();
     }
 
     default int getDiffuseDim() {
-        return getInitialization().getDiffuseDim();
+        return initialization().getDiffuseDim();
     }
 
     static final String FMT = "0.#####";

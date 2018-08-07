@@ -20,19 +20,21 @@ import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
-import demetra.ssf.implementations.Measurement;
+import demetra.ssf.implementations.Loading;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 import demetra.linearsystem.ILinearSystemSolver;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.SsfComponent;
 
 /**
  *
  * @author Jean Palate
  */
+@lombok.experimental.UtilityClass
 public class SeasonalComponent {
 
-    private static Matrix tsvar(int freq) {
+    private Matrix tsvar(int freq) {
         int n = freq - 1;
         Matrix M = Matrix.make(n, freq);
         M.diagonal().set(1);
@@ -63,7 +65,7 @@ public class SeasonalComponent {
      * @param freq
      * @return
      */
-    private static synchronized Matrix tsVar(int freq) {
+    private synchronized Matrix tsVar(int freq) {
         switch (freq) {
             case 12:
                 if (VTS12 == null) {
@@ -95,14 +97,14 @@ public class SeasonalComponent {
         }
     }
 
-    private static Matrix hsvar(int freq) {
+    private Matrix hsvar(int freq) {
         Matrix m = Matrix.square(freq - 1);
         m.set(-1.0 / freq);
         m.diagonal().add(1);
         return m;
     }
 
-    private static synchronized Matrix hslVar(int freq) {
+    private synchronized Matrix hslVar(int freq) {
         switch (freq) {
             case 12:
                 if (LHS12 == null) {
@@ -141,7 +143,7 @@ public class SeasonalComponent {
         }
     }
 
-    public static Matrix tsVar(SeasonalModel seasModel, final int freq) {
+    public Matrix tsVar(SeasonalModel seasModel, final int freq) {
         if (seasModel == SeasonalModel.Trigonometric) {
             return tsVar(freq);
         } else {
@@ -170,7 +172,7 @@ public class SeasonalComponent {
         }
     }
 
-    private static synchronized Matrix tslVar(int freq) {
+    private synchronized Matrix tslVar(int freq) {
         switch (freq) {
             case 12:
                 if (LVTS12 == null) {
@@ -215,7 +217,7 @@ public class SeasonalComponent {
         }
     }
 
-    public static Matrix tslVar(SeasonalModel seasModel, final int freq) {
+    public Matrix tslVar(SeasonalModel seasModel, final int freq) {
         switch (seasModel) {
             case Trigonometric:
                 return tslVar(freq);
@@ -242,26 +244,21 @@ public class SeasonalComponent {
     private static Matrix VTS2, VTS3, VTS4, VTS6, VTS12;
     private static Matrix LVTS2, LVTS3, LVTS4, LVTS6, LVTS12, LHS2, LHS3, LHS4, LHS6, LHS12;
 
-    public static ISsf of(final SeasonalModel model, final int period, final double seasVar) {
+    public SsfComponent of(final SeasonalModel model, final int period, final double seasVar) {
         Data data = new Data(model, seasVar, period);
-        return new Ssf(new Initialization(data), new Dynamics(data), Measurement.create(0));
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.create(0));
     }
 
-    public static ISsf of(final SeasonalModel model, final int period, final double seasVar, double loading) {
-        Data data = new Data(model, seasVar, period);
-        return new Ssf(new Initialization(data), new Dynamics(data), Measurement.createLoading(0, loading));
-    }
-
-    public static ISsf harrisonStevens(final int period, final double v) {
+    public SsfComponent harrisonStevens(final int period, final double v) {
         HarrisonStevensData data = new HarrisonStevensData(period, v);
-        return new Ssf(new HarrisonStevensInitialization(data),
-                new HarrisonStevensDynamics(data), Measurement.circular(period));
+        return new SsfComponent(new HarrisonStevensInitialization(data),
+                new HarrisonStevensDynamics(data), Loading.circular(period));
     }
 
-    public static ISsf harrisonStevens(final double[] var) {
+    public SsfComponent harrisonStevens(final double[] var) {
         HarrisonStevensData data = new HarrisonStevensData(var);
-        return new Ssf(new HarrisonStevensInitialization(data),
-                new HarrisonStevensDynamics(data), Measurement.circular(var.length));
+        return new SsfComponent(new HarrisonStevensInitialization(data),
+                new HarrisonStevensDynamics(data), Loading.circular(var.length));
     }
 
     static class Data {

@@ -22,33 +22,27 @@ import java.text.DecimalFormat;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.Matrix;
 import demetra.data.DoubleReader;
+import demetra.ssf.ISsfLoading;
 
 /**
  *
  * @author Jean Palate
  */
-public class TimeInvariantMeasurement implements ISsfMeasurement {
+public class TimeInvariantLoading implements ISsfLoading {
 
     private final DataBlock Z;
-    private final double var;
 
-    public static TimeInvariantMeasurement of(int dim, ISsfMeasurement measurement) {
-        if (!measurement.isTimeInvariant()) {
+    public static TimeInvariantLoading of(int dim, ISsfLoading loading) {
+        if (!loading.isTimeInvariant()) {
             return null;
         }
         DataBlock Z = DataBlock.make(dim);
-        measurement.Z(0, Z);
-        if (!measurement.hasErrors()) {
-            return new TimeInvariantMeasurement(Z, 0);
-        } else {
-            return new TimeInvariantMeasurement(Z, measurement.errorVariance(0));
-        }
-
+        loading.Z(0, Z);
+        return new TimeInvariantLoading(Z);
     }
 
-    public TimeInvariantMeasurement(DataBlock Z, double var) {
+    public TimeInvariantLoading(DataBlock Z) {
         this.Z = Z;
-        this.var = var;
     }
 
     @Override
@@ -57,28 +51,8 @@ public class TimeInvariantMeasurement implements ISsfMeasurement {
     }
 
     @Override
-    public boolean areErrorsTimeInvariant() {
-        return true;
-    }
-
-    @Override
     public void Z(int pos, DataBlock z) {
         z.copy(Z);
-    }
-
-    @Override
-    public boolean hasErrors() {
-        return var != 0;
-    }
-
-    @Override
-    public boolean hasError(int pos) {
-        return var != 0;
-    }
-
-    @Override
-    public double errorVariance(int pos) {
-        return var;
     }
 
     @Override
@@ -109,11 +83,11 @@ public class TimeInvariantMeasurement implements ISsfMeasurement {
         x.addAY(d, Z);
     }
 
-     @Override
+    @Override
     public String toString(){
         StringBuilder builder=new StringBuilder();
         builder.append("Z:\r\n").append(Z.toString(FMT)).append("\r\n");
-        builder.append("H:\r\n").append(new DecimalFormat(FMT).format(var)).append("\r\n\r\n");
+//        builder.append("H:\r\n").append(new DecimalFormat(FMT).format(var)).append("\r\n\r\n");
         return builder.toString();
     }
     private static final String FMT="0.#####";

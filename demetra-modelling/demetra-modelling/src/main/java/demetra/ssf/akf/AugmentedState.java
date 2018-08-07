@@ -35,7 +35,7 @@ import demetra.ssf.ISsfInitialization;
 public class AugmentedState extends State {
 
     public static AugmentedState of(ISsfBase ssf) {
-        ISsfInitialization initialization = ssf.getInitialization();
+        ISsfInitialization initialization = ssf.initialization();
         AugmentedState state = new AugmentedState(initialization.getStateDim(), initialization.getDiffuseDim());
         initialization.a0(state.a());
         initialization.Pf0(state.P());

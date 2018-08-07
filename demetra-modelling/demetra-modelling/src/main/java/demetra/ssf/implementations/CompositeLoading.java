@@ -22,40 +22,23 @@ import demetra.data.DataWindow;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixWindow;
 import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.ISsfMeasurement;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import demetra.data.DataBlockIterator;
+import demetra.ssf.ISsfLoading;
 
 /**
  *
  * @author Jean Palate
  */
-public class CompositeMeasurement implements ISsfMeasurement {
+class CompositeLoading implements ISsfLoading {
 
-    public static ISsfMeasurement of(ISsf... ssf) {
-        return CompositeMeasurement.of(0, ssf);
-    }
 
-    public static ISsfMeasurement of(double var, ISsf... ssf) {
-        ISsfMeasurement[] l = new ISsfMeasurement[ssf.length];
-        for (int i = 0; i < ssf.length; ++i) {
-            l[i] = ssf[i].getMeasurement();
-            if (l[i].hasErrors()) {
-                return null;
-            }
-        }
-        return new CompositeMeasurement(CompositeSsf.dimensions(ssf), l, var);
-    }
-
-    private final ISsfMeasurement[] measurements;
+    private final ISsfLoading[] measurements;
     private final int[] dim;
-    private final double var;
     private final DataBlock tmp;
 
-    CompositeMeasurement(final int[] dim, final ISsfMeasurement[] ms, double var) {
+    CompositeLoading(final int[] dim, final ISsfLoading[] ms) {
         this.measurements = ms;
         this.dim = dim;
         int n = ms.length;
@@ -63,11 +46,10 @@ public class CompositeMeasurement implements ISsfMeasurement {
         for (int i = 0; i < n; ++i) {
             tdim += dim[i];
         }
-        this.var = var;
         tmp = DataBlock.make(tdim);
     }
 
-    public List<ISsfMeasurement> getMeasurements() {
+    public List<ISsfLoading> getMeasurements() {
         return Arrays.asList(measurements);
     }
 
@@ -93,36 +75,11 @@ public class CompositeMeasurement implements ISsfMeasurement {
     }
 
     @Override
-    public boolean areErrorsTimeInvariant() {
-        for (int i = 0; i < measurements.length; ++i) {
-            if (!measurements[i].areErrorsTimeInvariant()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
     public void Z(int pos, DataBlock z) {
         DataWindow cur = z.left();
         for (int i = 0; i < measurements.length; ++i) {
             measurements[i].Z(pos, cur.next(dim[i]));
         }
-    }
-
-    @Override
-    public boolean hasErrors() {
-        return var != 0;
-    }
-
-    @Override
-    public boolean hasError(int pos) {
-        return var != 0;
-    }
-
-    @Override
-    public double errorVariance(int pos) {
-        return var;
     }
 
     @Override

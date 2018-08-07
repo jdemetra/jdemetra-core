@@ -25,24 +25,44 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
+import javax.annotation.Nullable;
 
 /**
  *
  * @author Jean Palate
  */
+@lombok.experimental.UtilityClass
 public class MultivariateSsfHelper {
 
-    public static MultivariateUpdateInformation next(IMultivariateSsf ssf, int t, State state, DoubleSequence x) {
+    /**
+     *
+     * @param ssf The considered SSF
+     * @param t The current position
+     * @param state The current state
+     * @param x The observation at t. Could contain missing values. the length
+     * of obs should be identical to the number of measurement equations at
+     * t=pos.
+     *
+     * @return
+     */
+    public MultivariateUpdateInformation of(IMultivariateSsf ssf, int t, State state, DoubleSequence x) {
         // use ordinary filter
-        ISsfDynamics dynamics = ssf.getDynamics();
-        ISsfMeasurements measurements = ssf.getMeasurements();
-         // error
-        if (measurements.getCount(t) != x.length()) {
-            return null;
-        }
+        ISsfDynamics dynamics = ssf.dynamics();
+        ISsfMeasurements measurements = ssf.measurements();
+        ISsfErrors errors = ssf.errors();
+
         int dim = ssf.getStateDim();
-        int[] obs = Doubles.search(x, y -> Double.isFinite(y));
-        int nobs = obs.length;
+        int nmissing = x.count(y -> Double.isInfinite(y));
+        int nobs = x.length() - nmissing;
+        if (nobs == 0)
+            return null;
+        int[] obs;
+        if (nmissing != 0) {
+            obs = new int[nobs];
+            Doubles.search(x, y -> Double.isFinite(y), obs);
+        } else {
+            obs = null;
+        }
         MultivariateUpdateInformation updinfo;
         if (nobs == 0) {
             updinfo = new MultivariateUpdateInformation(dim, 0);
@@ -56,9 +76,7 @@ public class MultivariateSsfHelper {
             ZM(t, measurements, obs, state.P(), K.transpose());
             // computes ZPZ'; results in pe_.L
             ZM(t, measurements, obs, K, L);
-            if (measurements.hasError(t)) {
-                addH(t, measurements, obs, L);
-            }
+            addH(t, errors, obs, L);
             SymmetricMatrix.reenforceSymmetry(L);
 
             // pe_L contains the Cholesky factor !!!
@@ -68,33 +86,18 @@ public class MultivariateSsfHelper {
             // K L' = PZ' or L K' = ZP
             LowerTriangularMatrix.rsolve(L, K.transpose(), State.ZERO);
             DataBlock U = updinfo.getTransformedPredictionErrors();
-            for (int i = 0, j = 0; i < x.length(); ++i) {
-                double y = x.get(i);
-                if (Double.isFinite(y)) {
-                    U.set(j, y - measurements.ZX(t, i, state.a()));
-                    ++j;
+            if (obs == null) {
+                for (int i = 0; i < x.length(); ++i) {
+                    double y = x.get(i);
+                    U.set(i, y - measurements.loading(i).ZX(t, state.a()));
+                }
+            } else {
+                for (int i = 0; i < obs.length; ++i) {
+                    double y = x.get(obs[i]);
+                    U.set(i, y - measurements.loading(obs[i]).ZX(t, state.a()));
                 }
             }
-            // E = e*L'^-1 or E L' = e or L*E' = e'
-            LowerTriangularMatrix.rsolve(L, U, State.ZERO);
-            // update
-            int n = updinfo.getK().getColumnsCount();
-            // P = P - (M)* F^-1 *(M)' --> Symmetric
-            // PZ'(LL')^-1 ZP' =PZ'L'^-1*L^-1*ZP'
-            // A = a + (M)* F^-1 * v
-//        for (int i = 0; i < n; ++i) {
-//            state.P().addXaXt(-1, updinfo.getK().column(i));//, state_.K.column(i));
-//            state.a().addAY(updinfo.getTransformedPredictionErrors().get(i), updinfo.getK().column(i));
-//        }
-            for (int i = 0; i < n; ++i) {
-                state.P().addXaXt(-1, K.column(i));//, state_.K.column(i));
-                state.a().addAY(U.get(i), K.column(i));
-            }
         }
-        // prediction
-        dynamics.TX(t, state.a());
-        dynamics.TVT(t, state.P());
-        dynamics.addV(t, state.P());
 
         return updinfo;
     }
@@ -108,27 +111,47 @@ public class MultivariateSsfHelper {
      * @param M
      * @param zm
      */
-    public static void ZM(int t, ISsfMeasurements measurements, int[] idx, Matrix M, Matrix zm) {
+    private void ZM(int t, ISsfMeasurements measurements, int[] idx, Matrix M, Matrix zm) {
         DataBlockIterator zrows = zm.rowsIterator();
-        for (int i = 0; i < idx.length; ++i) {
-            measurements.ZM(t, idx[i], M, zrows.next());
-            if (!zrows.hasNext()) {
-                return;
+        if (idx == null) {
+            int eq = 0;
+            while (zrows.hasNext()) {
+                measurements.loading(eq++).ZM(t, M, zrows.next());
             }
-
+        } else {
+            int eq = 0;
+            while (zrows.hasNext()) {
+                measurements.loading(idx[eq++]).ZM(t, M, zrows.next());
+            }
         }
     }
 
-    public static void addH(int t, ISsfMeasurements measurements, int[] idx, Matrix P) {
-        Matrix H = Matrix.square(P.getColumnsCount());
-        measurements.H(t, H);
-        for (int i = 0; i < idx.length; ++i) {
-            for (int j = 0; j < i; ++j) {
-                double h = H.get(idx[i], idx[j]);
-                P.add(i, j, h);
-                P.add(j, i, h);
+    /**
+     * *
+     *
+     * @param t The current position
+     * @param errors The errors
+     * @param idx The position of the measurement corresponding to available
+     * observations. When we have observations for all equations, set to null.
+     * @param P The covariance matrix of the prediction errors
+     */
+    private void addH(int t, @Nullable ISsfErrors errors, @Nullable int[] idx, Matrix P) {
+        if (errors == null) {
+            return;
+        }
+        if (idx == null) {
+            errors.addH(t, P);
+        } else {
+            Matrix H = Matrix.square(P.getColumnsCount());
+            errors.H(t, H);
+            for (int i = 0; i < idx.length; ++i) {
+                for (int j = 0; j < i; ++j) {
+                    double h = H.get(idx[i], idx[j]);
+                    P.add(i, j, h);
+                    P.add(j, i, h);
+                }
+                P.add(i, i, H.get(idx[i], idx[i]));
             }
-            P.add(i, i, H.get(idx[i], idx[i]));
         }
     }
 

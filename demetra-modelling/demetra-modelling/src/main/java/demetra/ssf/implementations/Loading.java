@@ -22,176 +22,57 @@ import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import java.util.Iterator;
 import demetra.data.DataBlockIterator;
+import demetra.ssf.ISsfLoading;
 
 /**
  *
  * @author Jean Palate
  */
-public class Measurement {
+public class Loading {
 
-    public static ISsfMeasurement create(final int mpos, final double var) {
-        return new Measurement1(mpos, var);
+    public static ISsfLoading create(final int mpos) {
+        return new Loading1(mpos);
     }
 
-    public static ISsfMeasurement create(final int mpos) {
-        return new Measurement1(mpos, 0);
+    public static ISsfLoading createLoading(final int mpos, final double b) {
+        return b == 1 ? new Loading1(mpos) : new Loading1l(mpos, b);
     }
 
-    public static ISsfMeasurement createLoading(final int mpos, final double b) {
-        return b == 1 ? new Measurement1(mpos, 0) : new Measurement1l(mpos, b, 0);
+    public static ISsfLoading createSum() {
+        return new SumLoading();
     }
 
-    public static ISsfMeasurement createLoading(final int mpos, final double b, final double var) {
-        return b == 1 ? new Measurement1(mpos, var) : new Measurement1l(mpos, b, var);
+    public static ISsfLoading createPartialSum(final int n) {
+        return new PartialSumLoading(n);
     }
 
-    public static ISsfMeasurement createSum(final double var) {
-        return new SumMeasurement(var);
+    public static ISsfLoading createExtractor(final int i0, final int n, final int inc) {
+        return new ExtractorLoading(n, inc, n);
     }
 
-    public static ISsfMeasurement createSum() {
-        return new SumMeasurement(0);
+    public static ISsfLoading create(final int[] mpos) {
+        return new Loading2(mpos);
     }
 
-    public static ISsfMeasurement createPartialSum(final int n, final double var) {
-        return new PartialSumMeasurement(n, var);
+    public static ISsfLoading circular(final int period) {
+        return new CircularLoading(period, 0);
     }
 
-    public static ISsfMeasurement createPartialSum(final int n) {
-        return new PartialSumMeasurement(n, 0);
+    public static ISsfLoading circular(final int period, final int pstart) {
+        return new CircularLoading(period, pstart);
     }
 
-    public static ISsfMeasurement createExtractor(final int i0, final int n, final int inc) {
-        return new ExtractorMeasurement(n, inc, n);
+    public static ISsfLoading cyclical(final int period, final int dim) {
+        return new CyclicalLoading(period, 0);
     }
 
-    public static ISsfMeasurement create(final int[] mpos) {
-        return new Measurement2(mpos, 0);
+    public static ISsfLoading cyclical(final int period, final int pstart, final int dim) {
+        return new CyclicalLoading(period, pstart);
     }
 
-    public static ISsfMeasurement create(final int[] mpos, final double var) {
-        return new Measurement2(mpos, var);
-    }
+    private static class SumLoading implements ISsfLoading {
 
-    public static ISsfMeasurement proxy(ISsfMeasurements m) {
-        if (!m.isHomogeneous() || m.getCount(0) != 1) {
-            return null;
-        }
-        return new Proxy(m);
-    }
-
-    public static ISsfMeasurement circular(final int period) {
-        return new CircularMeasurement(period, 0);
-    }
-
-    public static ISsfMeasurement circular(final int period, final int pstart) {
-        return new CircularMeasurement(period, pstart);
-    }
-
-    public static ISsfMeasurement cyclical(final int period, final int dim) {
-        return new CyclicalMeasurement(period, 0);
-    }
-
-    public static ISsfMeasurement cyclical(final int period, final int pstart, final int dim) {
-        return new CyclicalMeasurement(period, pstart);
-    }
-
-    private static class Proxy implements ISsfMeasurement {
-
-        private final ISsfMeasurements measurements;
-        private final transient Matrix h;
-
-        private Proxy(ISsfMeasurements m) {
-            measurements = m;
-            if (m.hasErrors()) {
-                h = Matrix.make(1, 1);
-            } else {
-                h = null;
-            }
-        }
-
-        @Override
-        public boolean isTimeInvariant() {
-            return measurements.isTimeInvariant();
-        }
-
-        @Override
-        public void Z(int pos, DataBlock z) {
-            measurements.Z(pos, 0, z); //To change body copyOf generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return h != null;
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return measurements.hasError(pos);
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            if (h == null || !measurements.hasError(pos)) {
-                return 0;
-            }
-            measurements.H(pos, h);
-            return h.get(0, 0);
-        }
-
-        @Override
-        public double ZX(int pos, DataBlock m) {
-            return measurements.ZX(pos, 0, m);
-        }
-
-        @Override
-        public double ZVZ(int pos, Matrix V) {
-            return measurements.ZVZ(pos, 0, 0, V);
-        }
-
-        @Override
-        public void VpZdZ(int pos, Matrix V, double d) {
-            measurements.VpZdZ(pos, 0, 0, V, d);
-        }
-
-        @Override
-        public void XpZd(int pos, DataBlock x, double d) {
-            measurements.XpZd(pos, 0, x, d);
-        }
-
-    }
-
-    private static class SumMeasurement implements ISsfMeasurement {
-
-        private final double var;
-
-        SumMeasurement(double var) {
-            this.var = var;
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return var;
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return var != 0;
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return var != 0;
+        SumLoading() {
         }
 
         @Override
@@ -234,34 +115,12 @@ public class Measurement {
 
     }
 
-    private static class PartialSumMeasurement implements ISsfMeasurement {
+    private static class PartialSumLoading implements ISsfLoading {
 
         private final int cdim;
-        private final double var;
 
-        PartialSumMeasurement(int n, double var) {
+        PartialSumLoading(int n) {
             this.cdim = n;
-            this.var = var;
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return var;
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return var != 0;
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return var != 0;
         }
 
         @Override
@@ -304,20 +163,14 @@ public class Measurement {
 
     }
 
-    private static class ExtractorMeasurement implements ISsfMeasurement {
+    private static class ExtractorLoading implements ISsfLoading {
 
         private final int i0, n, inc;
-        private final double var;
 
-        ExtractorMeasurement(int i0, int n, int inc) {
-            this(i0, n, inc, 0);
-        }
-
-        ExtractorMeasurement(int i0, int n, int inc, double var) {
+        ExtractorLoading(int i0, int n, int inc) {
             this.i0 = i0;
             this.n = n;
             this.inc = inc;
-            this.var = var;
         }
 
         /**
@@ -342,26 +195,6 @@ public class Measurement {
 
         private Matrix extract(Matrix v) {
             return v.extract(i0, i0, n, n, inc, inc);
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return var;
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return var != 0;
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return var != 0;
         }
 
         @Override
@@ -405,34 +238,12 @@ public class Measurement {
 
     }
 
-    private static class Measurement1 implements ISsfMeasurement {
+    private static class Loading1 implements ISsfLoading {
 
         private final int mpos;
-        private final double var;
 
-        Measurement1(int mpos, double var) {
+        Loading1(int mpos) {
             this.mpos = mpos;
-            this.var = var;
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return var;
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return var != 0;
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return var != 0;
         }
 
         @Override
@@ -472,63 +283,41 @@ public class Measurement {
 
     }
 
-    private static class Measurement1l implements ISsfMeasurement {
+    private static class Loading1l implements ISsfLoading {
 
         private final int mpos;
         private final double b, b2;
-        private final double var;
 
-        Measurement1l(int mpos, double b, double var) {
+        Loading1l(int mpos, double b) {
             this.mpos = mpos;
-            this.var = var;
             this.b = b;
-            this.b2=b*b;
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return var;
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return var != 0;
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return var != 0;
+            this.b2 = b * b;
         }
 
         @Override
         public double ZX(int pos, DataBlock m) {
-            return b*m.get(mpos);
+            return b * m.get(mpos);
         }
 
         @Override
         public void ZM(int pos, Matrix m, DataBlock zm) {
             zm.setAY(b, m.row(mpos));
-            
+
         }
 
         @Override
         public double ZVZ(int pos, Matrix V) {
-            return b2*V.get(mpos, mpos);
+            return b2 * V.get(mpos, mpos);
         }
 
         @Override
         public void VpZdZ(int pos, Matrix V, double d) {
-            V.add(mpos, mpos, d*b2);
+            V.add(mpos, mpos, d * b2);
         }
 
         @Override
         public void XpZd(int pos, DataBlock x, double d) {
-            x.add(mpos, d*b);
+            x.add(mpos, d * b);
         }
 
         @Override
@@ -543,34 +332,12 @@ public class Measurement {
 
     }
 
-    private static class Measurement2 implements ISsfMeasurement {
+    private static class Loading2 implements ISsfLoading {
 
         private final int[] mpos;
-        private final double var;
 
-        Measurement2(int[] mpos, double var) {
+        Loading2(int[] mpos) {
             this.mpos = mpos;
-            this.var = var;
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return var;
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return var != 0;
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return var != 0;
         }
 
         @Override
@@ -643,11 +410,11 @@ public class Measurement {
 
     }
 
-    static class CircularMeasurement implements ISsfMeasurement {
+    static class CircularLoading implements ISsfLoading {
 
         private final int period, start;
 
-        public CircularMeasurement(int period, int start) {
+        public CircularLoading(int period, int start) {
             this.period = period;
             this.start = start;
         }
@@ -665,26 +432,6 @@ public class Measurement {
             } else {
                 z.set(spos, 1);
             }
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return false;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return false;
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return 0;
         }
 
         @Override
@@ -746,11 +493,11 @@ public class Measurement {
         }
     }
 
-    static class CyclicalMeasurement implements ISsfMeasurement {
+    static class CyclicalLoading implements ISsfLoading {
 
         private final int period, start;
 
-        public CyclicalMeasurement(int period, int start) {
+        public CyclicalLoading(int period, int start) {
             this.period = period;
             this.start = start;
         }
@@ -764,26 +511,6 @@ public class Measurement {
         public void Z(int pos, DataBlock z) {
             int spos = (start + pos) % period;
             z.set(spos, 1);
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return false;
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return false;
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return 0;
         }
 
         @Override

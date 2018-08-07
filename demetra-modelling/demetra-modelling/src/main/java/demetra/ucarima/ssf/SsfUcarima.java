@@ -14,21 +14,19 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-/*
+ /*
  */
 package demetra.ucarima.ssf;
 
 import demetra.arima.ssf.SsfArima;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
-import demetra.ssf.implementations.CompositeDynamics;
-import demetra.ssf.implementations.CompositeInitialization;
-import demetra.ssf.implementations.Measurement;
+import demetra.ssf.implementations.Loading;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.univariate.Measurement;
 import demetra.ssf.univariate.Ssf;
 import demetra.ucarima.UcarimaModel;
-
 
 /**
  *
@@ -37,15 +35,16 @@ import demetra.ucarima.UcarimaModel;
 public class SsfUcarima extends Ssf {
 
     public static SsfUcarima of(final UcarimaModel ucm) {
-        UcarimaModel ucmc=ucm.simplify();
-        ISsf[] ssf = new ISsf[ucmc.getComponentsCount()];
-        int[] pos=new int[ssf.length];
-             ssf[0]=SsfArima.of(ucmc.getComponent(0));
-       for (int i=1; i<ssf.length; ++i){
-            ssf[i]=SsfArima.of(ucmc.getComponent(i));
-             pos[i]=pos[i-1]+ssf[i-1].getStateDim();
+        UcarimaModel ucmc = ucm.simplify();
+        int n=ucmc.getComponentsCount();
+        ISsfInitialization[] init=new ISsfInitializationssf = new ISsf[];
+        int[] pos = new int[ssf.length];
+        ssf[0] = SsfArima.of(ucmc.getComponent(0));
+        for (int i = 1; i < ssf.length; ++i) {
+            ssf[i] = SsfArima.of(ucmc.getComponent(i));
+            pos[i] = pos[i - 1] + ssf[i - 1].getStateDim();
         }
-        return new SsfUcarima(ucm, CompositeInitialization.of(ssf), CompositeDynamics.of(ssf), Measurement.create(pos), pos);
+        return new SsfUcarima(ucm, new CompositeInitialization.of(ssf), CompositeDynamics.of(ssf), new Measurement(Loading.create(pos), null), pos);
     }
 
     private final UcarimaModel ucm;
@@ -54,14 +53,14 @@ public class SsfUcarima extends Ssf {
     private SsfUcarima(final UcarimaModel ucm, ISsfInitialization init, ISsfDynamics dyn, ISsfMeasurement m, int[] cmpPos) {
         super(init, dyn, m);
         this.ucm = ucm;
-        this.cmpPos=cmpPos;
+        this.cmpPos = cmpPos;
     }
 
     public UcarimaModel getUcarimaModel() {
         return ucm;
     }
-    
-    public int getComponentPosition(int cmp){
+
+    public int getComponentPosition(int cmp) {
         return cmpPos[cmp];
     }
 }

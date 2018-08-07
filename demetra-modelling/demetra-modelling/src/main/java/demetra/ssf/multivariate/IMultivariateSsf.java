@@ -16,25 +16,29 @@
  */
 package demetra.ssf.multivariate;
 
-import demetra.data.DataBlock;
-import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.data.DoubleSequence;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfBase;
+import demetra.ssf.ISsfLoading;
 
 /**
  *
  * @author Jean Palate
  */
-public interface IMultivariateSsf extends ISsfBase, IMultivariateSsfFiltering {
+public interface IMultivariateSsf extends ISsfBase {
 
-    ISsfMeasurements getMeasurements();
-
-    @Override
-    default MultivariateUpdateInformation next(int t, State state, DoubleSequence x) {
-        return MultivariateSsfHelper.next(this, t, state, x);
+    ISsfMeasurements measurements();
+    
+    default ISsfLoading loading(int eq){
+        return measurements().loading(eq);
+    }
+    
+    default ISsfErrors errors(){
+        return measurements().errors();
+    }
+    
+    default int measurementsCount(){
+        return measurements().getCount();
     }
 
 }

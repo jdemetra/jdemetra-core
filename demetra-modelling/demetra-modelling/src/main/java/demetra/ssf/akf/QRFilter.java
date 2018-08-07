@@ -79,7 +79,7 @@ public class QRFilter {
         ldet = det.getLogDeterminant();
 
         // apply the filter on the diffuse effects
-        ISsfDynamics dynamics = ssf.getDynamics();
+        ISsfDynamics dynamics = ssf.dynamics();
         X = Matrix.make(data.length(), ssf.getDiffuseDim());
         ssf.diffuseEffects(X);
         yl = DataBlock.of(fr.errors(true, true));

@@ -20,10 +20,8 @@ import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
-import demetra.ssf.implementations.Measurement;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.ISsfMeasurement;
-import demetra.ssf.univariate.Ssf;
+import demetra.ssf.SsfComponent;
+import demetra.ssf.implementations.Loading;
 
 
 /**
@@ -33,12 +31,8 @@ import demetra.ssf.univariate.Ssf;
 @lombok.experimental.UtilityClass
 public class Noise {
 
-    public ISsf of(final double var) {
-        return new Ssf(new Initialization(var), new Dynamics(var), Measurement.create(0));
-    }
-
-    public ISsf of(final double var, final double loading) {
-        return new Ssf(new Initialization(var), new Dynamics(var), Measurement.createLoading(0, loading));
+    public SsfComponent of(final double var) {
+        return new SsfComponent(new Initialization(var), new Dynamics(var), Loading.create(0));
     }
 
     static class Initialization implements ISsfInitialization {
