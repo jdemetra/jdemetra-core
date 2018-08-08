@@ -37,7 +37,7 @@ public class CompositeDynamics implements ISsfDynamics {
     private final int[] dim;
 
     public CompositeDynamics(int[] dim, ISsfDynamics... dyn) {
-        this.dim=dim;
+        this.dim = dim;
         this.dyn = dyn;
     }
 
@@ -68,6 +68,7 @@ public class CompositeDynamics implements ISsfDynamics {
         }
         return true;
     }
+
     @Override
     public int getInnovationsDim() {
         int ni = 0;
@@ -136,8 +137,7 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void T(int pos, Matrix tr
-    ) {
+    public void T(int pos, Matrix tr) {
         MatrixWindow cur = tr.topLeft();
         for (int i = 0, j = 0; i < dyn.length; ++i) {
             cur.next(dim[i], dim[i]);
@@ -146,11 +146,21 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void TX(int pos, DataBlock x
-    ) {
-        DataWindow cur = x.left();
-        for (int i = 0; i < dyn.length; ++i) {
+    public void TX(int pos, DataBlock x) {
+        DataWindow cur = x.window(0, dim[0]);
+        dyn[0].TX(pos, cur.get());
+        for (int i = 1; i < dyn.length; ++i) {
             dyn[i].TX(pos, cur.next(dim[i]));
+        }
+    }
+
+    @Override
+    public void TM(int pos, Matrix x) {
+        MatrixWindow cur = x.top(dim[0]);
+        dyn[0].TM(pos, cur);
+        for (int i = 1; i < dyn.length; ++i) {
+            cur.vnext(dim[i]);
+            dyn[i].TM(pos, cur);
         }
     }
 
@@ -163,8 +173,7 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void TVT(int pos, Matrix v
-    ) {
+    public void TVT(int pos, Matrix v) {
         MatrixWindow D = v.topLeft();
         for (int i = 0; i < dyn.length; ++i) {
             int ni = dim[i];

@@ -11,6 +11,7 @@ import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
+import demetra.ssf.SsfComponent;
 import demetra.ssf.models.LocalLevel;
 import demetra.ssf.models.LocalLinearTrend;
 import demetra.ssf.univariate.ISsf;
@@ -52,23 +53,23 @@ public class AtomicModels {
         return SsfArima.of(sarima);
     }
     
-    public ISsf localLevel(double lvar, double loading){
-        return LocalLevel.of(lvar, loading);
+    public SsfComponent localLevel(double lvar){
+        return LocalLevel.of(lvar);
     }
 
-    public ISsf localLinearTrend(double lvar, double svar, double loading){
-        return LocalLinearTrend.of(lvar, svar, loading);
+    public SsfComponent localLinearTrend(double lvar, double svar){
+        return LocalLinearTrend.of(lvar, svar);
     }
 
-    public ISsf seasonalComponent(String model, int period, double seasvar, double loading){
-        return SeasonalComponent.of(SeasonalModel.valueOf(model), period, seasvar, loading);
+    public SsfComponent seasonalComponent(String model, int period, double seasvar){
+        return SeasonalComponent.of(SeasonalModel.valueOf(model), period, seasvar);
     }
     
-    public ISsf cycle(double dumpingFactor, double cyclicalPeriod, double cvar){
+    public SsfComponent cycle(double dumpingFactor, double cyclicalPeriod, double cvar){
         return CyclicalComponent.of(dumpingFactor, cyclicalPeriod, cvar);
     }
     
-    public ISsf noise(double var, double loading){
-        return Noise.of(var, loading);
+    public SsfComponent noise(double var){
+        return Noise.of(var);
     }
 }

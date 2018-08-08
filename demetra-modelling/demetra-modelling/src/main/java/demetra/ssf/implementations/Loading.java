@@ -18,11 +18,9 @@ package demetra.ssf.implementations;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.multivariate.ISsfMeasurements;
-import java.util.Iterator;
 import demetra.data.DataBlockIterator;
+import demetra.maths.matrices.QuadraticForm;
 import demetra.ssf.ISsfLoading;
-import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *
@@ -68,6 +66,49 @@ public class Loading {
 
     public static ISsfLoading cyclical(final int period, final int pstart, final int dim) {
         return new CyclicalLoading(period, pstart);
+    }
+    
+    public static ISsfLoading regression(final Matrix X){
+        return new RegressionLoading(X);
+    }
+    
+    private static class RegressionLoading implements ISsfLoading{
+        private final Matrix data;
+ 
+        private RegressionLoading(final Matrix data) {
+            this.data = data;
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return false;
+        }
+
+        @Override
+        public void Z(int pos, DataBlock z) {
+            z.copy(data.row(pos));
+        }
+
+        @Override
+        public double ZX(int pos, DataBlock x) {
+             return x.dot(data.row(pos));
+        }
+
+        @Override
+        public double ZVZ(int pos, Matrix V) {
+            return QuadraticForm.apply(V, data.row(pos));
+        }
+
+        @Override
+        public void VpZdZ(int pos, Matrix V, double d) {
+            V.addXaXt(d, data.row(pos));
+        }
+
+        @Override
+        public void XpZd(int pos, DataBlock x, double d) {
+            x.addAY(d, data.row(pos));
+        }
+
     }
 
     private static class SumLoading implements ISsfLoading {

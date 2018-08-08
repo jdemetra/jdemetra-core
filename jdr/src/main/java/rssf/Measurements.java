@@ -9,6 +9,7 @@ import demetra.data.DataBlock;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.implementations.TimeInvariantLoading;
 import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.univariate.Measurement;
 
 /**
  *
@@ -17,10 +18,10 @@ import demetra.ssf.univariate.ISsfMeasurement;
 @lombok.experimental.UtilityClass
 public class Measurements {
     public ISsfMeasurement of(int mpos, double var){
-        return Loading.create(mpos, var);
+        return new Measurement(Loading.create(mpos), var);
     }
     
     public ISsfMeasurement of(double[] Z, double var){
-        return new TimeInvariantLoading(DataBlock.ofInternal(Z), var);
+        return new Measurement(new TimeInvariantLoading(DataBlock.ofInternal(Z)), var);
     }
 }

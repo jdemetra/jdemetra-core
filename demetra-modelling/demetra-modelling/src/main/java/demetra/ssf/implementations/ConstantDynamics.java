@@ -29,7 +29,6 @@ public class ConstantDynamics implements ISsfDynamics {
     public ConstantDynamics() {
     }
 
-
     @Override
     public boolean isTimeInvariant() {
         return true;
@@ -73,6 +72,10 @@ public class ConstantDynamics implements ISsfDynamics {
     }
 
     @Override
+    public void TM(int pos, Matrix m) {
+    }
+
+    @Override
     public void XS(int pos, DataBlock x, DataBlock sx) {
     }
 
@@ -92,4 +95,7 @@ public class ConstantDynamics implements ISsfDynamics {
     public void addV(int pos, Matrix p) {
     }
 
+    @Override
+    public void MT(int pos, Matrix x) {
+    }
 }

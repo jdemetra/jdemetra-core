@@ -41,7 +41,7 @@ public class SsfUcarima {
         int n = ucmc.getComponentsCount();
         CompositeSsf.Builder builder = CompositeSsf.builder();
         for (int i = 0; i < n; ++i) {
-            builder.add(SsfArima.of(ucmc.getComponent(i)).asComponent());
+            builder.add(SsfArima.componentOf(ucmc.getComponent(i)));
         }
         return builder.build();
     }

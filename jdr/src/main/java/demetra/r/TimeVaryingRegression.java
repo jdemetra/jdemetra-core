@@ -206,7 +206,7 @@ public class TimeVaryingRegression {
                     .theta(params.getTheta())
                     .btheta(params.getBtheta())
                     .build();
-            SsfArima ssf = SsfArima.of(arima);
+            ISsf ssf = SsfArima.of(arima);
             double nv = params.getRegVariance();
             Matrix v = nvar.deepClone();
             v.mul(nv);

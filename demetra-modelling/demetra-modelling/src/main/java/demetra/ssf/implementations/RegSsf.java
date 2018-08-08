@@ -29,6 +29,7 @@ import demetra.data.DoubleReader;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
+import demetra.ssf.SsfComponent;
 import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
@@ -39,7 +40,12 @@ import demetra.ssf.univariate.ISsfMeasurement;
  */
 @lombok.experimental.UtilityClass
 public class RegSsf {
-
+    
+    public SsfComponent of(Matrix X){
+        int nx=X.getColumnsCount();
+        return new SsfComponent(new ConstantInitialization(nx), new ConstantDynamics(), Loading.regression(X));
+    }
+    
     public ISsf of(ISsf model, Matrix X) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();
@@ -100,6 +106,7 @@ public class RegSsf {
                 .build();
     }
 
+    
     static class Xdynamics implements ISsfDynamics {
 
         private final int n, nx;

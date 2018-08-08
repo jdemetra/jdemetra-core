@@ -34,12 +34,12 @@ import demetra.ssf.ISsfLoading;
 class CompositeLoading implements ISsfLoading {
 
 
-    private final ISsfLoading[] measurements;
+    private final ISsfLoading[] loadings;
     private final int[] dim;
     private final DataBlock tmp;
 
     CompositeLoading(final int[] dim, final ISsfLoading[] ms) {
-        this.measurements = ms;
+        this.loadings = ms;
         this.dim = dim;
         int n = ms.length;
         int tdim = 0;
@@ -50,24 +50,17 @@ class CompositeLoading implements ISsfLoading {
     }
 
     public List<ISsfLoading> getMeasurements() {
-        return Arrays.asList(measurements);
+        return Arrays.asList(loadings);
     }
 
     public int getComponentsCount() {
-        return measurements.length;
-    }
-
-    public void ZX(int pos, DataBlock x, DataBlock zx) {
-        DataWindow cur = x.left();
-        for (int i = 0; i < measurements.length; ++i) {
-            zx.set(i, measurements[i].ZX(pos, cur.next(dim[i])));
-        }
+        return loadings.length;
     }
 
     @Override
     public boolean isTimeInvariant() {
-        for (int i = 0; i < measurements.length; ++i) {
-            if (!measurements[i].isTimeInvariant()) {
+        for (int i = 0; i < loadings.length; ++i) {
+            if (!loadings[i].isTimeInvariant()) {
                 return false;
             }
         }
@@ -77,17 +70,17 @@ class CompositeLoading implements ISsfLoading {
     @Override
     public void Z(int pos, DataBlock z) {
         DataWindow cur = z.left();
-        for (int i = 0; i < measurements.length; ++i) {
-            measurements[i].Z(pos, cur.next(dim[i]));
+        for (int i = 0; i < loadings.length; ++i) {
+            loadings[i].Z(pos, cur.next(dim[i]));
         }
     }
 
     @Override
     public double ZX(int pos, DataBlock m) {
-        DataWindow cur = m.left();
-        double x = 0;
-        for (int i = 0; i < measurements.length; ++i) {
-            x += measurements[i].ZX(pos, cur.next(dim[i]));
+        DataWindow cur = m.window(0, dim[0]);
+        double x = loadings[0].ZX(pos, cur.get());
+        for (int i = 1; i < loadings.length; ++i) {
+            x += loadings[i].ZX(pos, cur.next(dim[i]));
         }
         return x;
     }
@@ -96,19 +89,19 @@ class CompositeLoading implements ISsfLoading {
     public double ZVZ(int pos, Matrix v) {
         MatrixWindow D = v.topLeft();
         double x = 0;
-        for (int i = 0; i < measurements.length; ++i) {
+        for (int i = 0; i < loadings.length; ++i) {
             int ni = dim[i];
             tmp.set(0);
             DataWindow wnd = tmp.left();
             D.next(ni, ni);
-            x += measurements[i].ZVZ(pos, D);
+            x += loadings[i].ZVZ(pos, D);
             MatrixWindow C = D.clone();
-            for (int j = i + 1; j < measurements.length; ++j) {
+            for (int j = i + 1; j < loadings.length; ++j) {
                 int nj = dim[j];
                 DataBlock cur = wnd.next(nj);
                 C.vnext(nj);
-                measurements[j].ZM(pos, C, cur);
-                x += 2 * measurements[i].ZX(pos, cur);
+                loadings[j].ZM(pos, C, cur);
+                x += 2 * loadings[i].ZX(pos, cur);
             }
         }
         return x;
@@ -128,8 +121,8 @@ class CompositeLoading implements ISsfLoading {
     @Override
     public void XpZd(int pos, DataBlock x, double d) {
         DataWindow cur = x.left();
-        for (int i = 0; i < measurements.length; ++i) {
-            measurements[i].XpZd(pos, cur.next(dim[i]), d);
+        for (int i = 0; i < loadings.length; ++i) {
+            loadings[i].XpZd(pos, cur.next(dim[i]), d);
         }
     }
 

@@ -8,6 +8,7 @@ package rssf;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.univariate.ISsf;
+import demetra.ssf.univariate.ISsfError;
 
 /**
  *
@@ -28,14 +29,15 @@ public class SsfTools {
         return m;
     }
 
-    public double[] measurement(ISsf ssf, int pos) {
+    public double[] loading(ISsf ssf, int pos) {
         DataBlock m = DataBlock.make(ssf.getStateDim());
-        ssf.measurement().Z(pos, m);
+        ssf.loading().Z(pos, m);
         return m.getStorage();
     }
 
     public double measurementError(ISsf ssf, int pos) {
-        return ssf.measurement().errorVariance(pos);
+        ISsfError e = ssf.measurementError();
+        return e == null ? 0 : e.at(pos);
     }
 
     public double[] initialState(ISsf ssf) {

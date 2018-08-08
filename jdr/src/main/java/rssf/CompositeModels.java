@@ -16,6 +16,7 @@
  */
 package rssf;
 
+import demetra.ssf.SsfComponent;
 import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.univariate.ISsf;
 
@@ -25,8 +26,12 @@ import demetra.ssf.univariate.ISsf;
  */
 @lombok.experimental.UtilityClass
 public class CompositeModels {
-    
-    public ISsf of(ISsf[] ssf, double var){
-        return CompositeSsf.of(var, ssf);
+
+    public CompositeSsf of(SsfComponent[] ssf, double var) {
+        CompositeSsf.Builder builder = CompositeSsf.builder();
+        for (SsfComponent c : ssf) {
+            builder.add(c);
+        }
+        return builder.measurementError(var).build();
     }
 }

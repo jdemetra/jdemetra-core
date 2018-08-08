@@ -16,6 +16,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.processing.IProcResults;
 import demetra.sarima.SarimaModel;
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.RegSsf;
 import demetra.ssf.univariate.DefaultSmoothingResults;
@@ -23,7 +24,6 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.SsfData;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *
@@ -97,7 +97,7 @@ public class ArimaForecasts {
     }
 
     private Results ssfcompute(RegArimaModel regarima, int nf, int nb) {
-        SsfArima arima = SsfArima.of(regarima.arima());
+        ISsf arima = SsfArima.of(regarima.arima());
         DoubleSequence y = regarima.getY();
         double[] yc = new double[y.length() + nf + nb];
         for (int i = 0; i < nb; ++i) {
@@ -124,20 +124,20 @@ public class ArimaForecasts {
         }
         DefaultSmoothingResults ss = DkToolkit.sqrtSmooth(ssf, new SsfData(yc), true);
         Results.ResultsBuilder builder = Results.builder();
-        ISsfMeasurement me = ssf.measurement();
+        ISsfLoading loading = ssf.loading();
         if (nb > 0) {
             double[] b = new double[nb], eb = new double[nb];
             for (int i = 0; i < nb; ++i) {
-                b[i] = me.ZX(i, ss.a(i));
-                eb[i] = Math.sqrt(me.ZVZ(i, ss.P(i)));
+                b[i] = loading.ZX(i, ss.a(i));
+                eb[i] = Math.sqrt(loading.ZVZ(i, ss.P(i)));
             }
             builder.backcasts(DoubleSequence.ofInternal(b)).backcastsErrors(DoubleSequence.ofInternal(eb));
         }
         if (nf > 0) {
             double[] f = new double[nf], ef = new double[nf];
             for (int i = 0, j = nb + y.length(); i < nf; ++i, ++j) {
-                f[i] = me.ZX(j, ss.a(j));
-                ef[i] = Math.sqrt(me.ZVZ(j, ss.P(j)));
+                f[i] = loading.ZX(j, ss.a(j));
+                ef[i] = Math.sqrt(loading.ZVZ(j, ss.P(j)));
             }
             builder.forecasts(DoubleSequence.ofInternal(f)).forecastsErrors(DoubleSequence.ofInternal(ef));
         }

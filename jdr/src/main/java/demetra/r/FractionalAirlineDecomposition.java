@@ -39,6 +39,7 @@ import static demetra.r.AirlineDecomposition.ucm;
 import demetra.regarima.GlsArimaProcessor;
 import demetra.regarima.IArimaMapping;
 import demetra.ssf.dk.DkToolkit;
+import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.univariate.SsfData;
 import demetra.ucarima.UcarimaModel;
 import demetra.ucarima.ssf.SsfUcarima;
@@ -135,7 +136,7 @@ public class FractionalAirlineDecomposition {
         UcarimaModel ucm = ucm(rslt.getModel().arima());
 
         ucm = ucm.simplify();
-        SsfUcarima ssf = SsfUcarima.of(ucm);
+        CompositeSsf ssf = SsfUcarima.of(ucm);
         SsfData data = new SsfData(s);
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
 
@@ -143,12 +144,12 @@ public class FractionalAirlineDecomposition {
         ArimaType mt = ArimaModel.copyOf(ucm.getComponent(0)).toType("trend");
         ArimaType ms = ArimaModel.copyOf(ucm.getComponent(1)).toType("seasonal");
         ArimaType mi = ArimaModel.copyOf(ucm.getComponent(2)).toType("irregular");
-
+        int[] pos = ssf.componentsPosition();
         return Results.builder()
                 .y(s)
-                .t(ds.item(ssf.getComponentPosition(0)).toArray())
-                .s(ds.item(ssf.getComponentPosition(1)).toArray())
-                .i(ds.item(ssf.getComponentPosition(2)).toArray())
+                .t(ds.item(pos[0]).toArray())
+                .s(ds.item(pos[1]).toArray())
+                .i(ds.item(pos[2]).toArray())
                 .ucarima(new UcarimaType(sum, new ArimaType[]{mt, ms, mi}))
                 .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
                 .parameters(p)
