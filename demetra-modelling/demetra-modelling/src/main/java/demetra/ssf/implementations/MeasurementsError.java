@@ -24,7 +24,13 @@ public class MeasurementsError {
     }
 
     public ISsfErrors of(DoubleSequence var) {
-        return new IndependentErrors(var);
+        double[] v = var.toArray();
+        for (int i = 0; i < v.length; ++i) {
+            if (v[i] > 0) {
+                return new IndependentErrors(v);
+            }
+        }
+        return null;
     }
 
     public ISsfErrors of(double var) {
@@ -79,11 +85,14 @@ public class MeasurementsError {
 
     private static class IndependentErrors implements ISsfErrors {
 
-        private final DoubleSequence v, e;
+        private final double[] v, e;
 
-        private IndependentErrors(DoubleSequence v) {
+        private IndependentErrors(double[] v) {
             this.v = v;
-            this.e = Doubles.fn(v, z -> z <= 0 ? 0 : Math.sqrt(z));
+            e = this.v.clone();
+            for (int i = 0; i < e.length; ++i) {
+                e[i] = this.v[i] <= 0 ? 0 : Math.sqrt(this.v[i]);
+            }
         }
 
         @Override
@@ -93,17 +102,17 @@ public class MeasurementsError {
 
         @Override
         public void H(int pos, Matrix h) {
-            h.diagonal().copy(v);
+            h.diagonal().copyFrom(v, 0);
         }
 
         @Override
         public void R(int pos, Matrix r) {
-            r.diagonal().copy(e);
+            r.diagonal().copyFrom(e, 0);
         }
 
         @Override
         public void addH(int pos, Matrix V) {
-            V.diagonal().apply(v, (a, b) -> a + b);
+            V.diagonal().apply(pos, x -> x + v[pos]);
         }
 
         @Override

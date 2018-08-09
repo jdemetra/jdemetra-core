@@ -31,20 +31,23 @@ import demetra.ssf.ISsfLoading;
  *
  * @author Jean Palate
  */
-class CompositeLoading implements ISsfLoading {
-
+class ComplexLoading implements ISsfLoading {
 
     private final ISsfLoading[] loadings;
     private final int[] dim;
+    private final int[] start;
     private final DataBlock tmp;
 
-    CompositeLoading(final int[] dim, final ISsfLoading[] ms) {
+    ComplexLoading(final int[] start, final int[] dim, final ISsfLoading[] ms) {
         this.loadings = ms;
+        this.start = start;
         this.dim = dim;
         int n = ms.length;
         int tdim = 0;
         for (int i = 0; i < n; ++i) {
-            tdim += dim[i];
+            if (dim[i] > tdim) {
+                tdim = dim[i];
+            }
         }
         tmp = DataBlock.make(tdim);
     }
@@ -61,37 +64,32 @@ class CompositeLoading implements ISsfLoading {
 
     @Override
     public void Z(int pos, DataBlock z) {
-        DataWindow cur = z.left();
         for (int i = 0; i < loadings.length; ++i) {
-            loadings[i].Z(pos, cur.next(dim[i]));
+            loadings[i].Z(pos, z.extract(start[i], dim[i]));
         }
     }
 
     @Override
     public double ZX(int pos, DataBlock m) {
-        DataWindow cur = m.window(0, dim[0]);
-        double x = loadings[0].ZX(pos, cur.get());
-        for (int i = 1; i < loadings.length; ++i) {
-            x += loadings[i].ZX(pos, cur.next(dim[i]));
+        double x = 0;
+        for (int i = 0; i < loadings.length; ++i) {
+            x += loadings[i].ZX(pos, m.extract(start[i], dim[i]));
         }
         return x;
     }
 
     @Override
     public double ZVZ(int pos, Matrix v) {
-        MatrixWindow D = v.topLeft();
         double x = 0;
         for (int i = 0; i < loadings.length; ++i) {
             int ni = dim[i];
             tmp.set(0);
-            DataWindow wnd = tmp.left();
-            D.next(ni, ni);
+            Matrix D = v.extract(start[i], dim[i], start[i], dim[i]);
             x += loadings[i].ZVZ(pos, D);
-            MatrixWindow C = D.clone();
             for (int j = i + 1; j < loadings.length; ++j) {
                 int nj = dim[j];
-                DataBlock cur = wnd.next(nj);
-                C.vnext(nj);
+                DataBlock cur = tmp.range(0, nj);
+                Matrix C = v.extract(start[i], dim[i], start[j], dim[j]);
                 loadings[j].ZM(pos, C, cur);
                 x += 2 * loadings[i].ZX(pos, cur);
             }
@@ -101,20 +99,34 @@ class CompositeLoading implements ISsfLoading {
 
     @Override
     public void VpZdZ(int pos, Matrix V, double d) {
-        tmp.set(0);
-        Z(pos, tmp);
-        DataBlockIterator cols = V.columnsIterator();
-        Cell cell = tmp.cells();
-        while (cols.hasNext()) {
-            cols.next().addAY(cell.next(), tmp);
+        for (int i = 0; i < loadings.length; ++i) {
+            int ni = dim[i];
+            tmp.set(0);
+            Matrix D = V.extract(start[i], dim[i], start[i], dim[i]);
+            loadings[i].VpZdZ(pos, D, d);
+            for (int j = i + 1; j < loadings.length; ++j) {
+                int nj = dim[j];
+                DataBlock cur = tmp.range(0, nj);
+                loadings[j].Z(pos, cur); // Zj
+                Matrix C = V.extract(start[i], dim[i], start[j], dim[j]);
+                DataBlockIterator cols = C.columnsIterator();
+                int k = 0;
+                while (cols.hasNext()) {
+                    double zj = tmp.get(k++);
+                    if (zj != 0) {
+                        loadings[i].XpZd(pos, cols.next(), d * zj);
+                    }
+                }
+                Matrix CC = V.extract(start[j], dim[j], start[i], dim[i]);
+                CC.copy(C.transpose());
+            }
         }
     }
 
     @Override
     public void XpZd(int pos, DataBlock x, double d) {
-        DataWindow cur = x.left();
         for (int i = 0; i < loadings.length; ++i) {
-            loadings[i].XpZd(pos, cur.next(dim[i]), d);
+            loadings[i].XpZd(pos, x.extract(start[i], dim[i]), d);
         }
     }
 

@@ -18,6 +18,8 @@ package demetra.var;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.multivariate.ISsfErrors;
 import demetra.ssf.multivariate.ISsfMeasurements;
 
 /**
@@ -39,75 +41,56 @@ class VarMeasurements implements ISsfMeasurements {
     }
 
     @Override
-    public int getCount(int pos) {
+    public int getCount() {
         return nv;
     }
 
     @Override
-    public int getMaxCount() {
-        return nv;
+    public ISsfLoading loading(int equation) {
+        return new Loading(equation);
     }
 
     @Override
-    public boolean isHomogeneous() {
-        return true;
+    public ISsfErrors errors() {
+        return null;
     }
 
-    @Override
-    public void Z(int pos, int var, DataBlock z) {
-        z.set(var, 1);
-    }
+    class Loading implements ISsfLoading {
 
-    @Override
-    public boolean hasErrors() {
-        return false;
-    }
+        private final int var;
 
-    @Override
-    public boolean hasIndependentErrors() {
-        return true;
-    }
-
-    @Override
-    public boolean hasError(int pos) {
-        return false;
-    }
-
-    @Override
-    public void H(int pos, Matrix h) {
-    }
-
-    @Override
-    public void R(int pos, Matrix r) {
-    }
-
-    @Override
-    public double ZX(int pos, int var, DataBlock m) {
-        return m.get(var);
-    }
-
-    @Override
-    public double ZVZ(int pos, int ivar, int jvar, Matrix V) {
-        if (ivar != jvar) {
-            return 0;
-        } else {
-            return V.get(ivar, ivar);
+        Loading(int var) {
+            this.var = var;
         }
-    }
 
-    @Override
-    public void addH(int pos, Matrix V) {
-    }
-
-    @Override
-    public void VpZdZ(int pos, int ivar, int jvar, Matrix V, double d) {
-        if (ivar == jvar) {
-            V.add(ivar, ivar, d);
+        @Override
+        public void Z(int pos, DataBlock z) {
+            z.set(var, 1);
         }
-    }
 
-    @Override
-    public void XpZd(int pos, int var, DataBlock x, double d) {
-        x.add(var, d);
+        @Override
+        public double ZX(int pos, DataBlock m) {
+            return m.get(var);
+        }
+
+        @Override
+        public double ZVZ(int pos, Matrix V) {
+            return V.get(var, var);
+        }
+
+        @Override
+        public void VpZdZ(int pos, Matrix V, double d) {
+            V.add(var, var, d);
+        }
+
+        @Override
+        public void XpZd(int pos, DataBlock x, double d) {
+            x.add(var, d);
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return true;
+        }
     }
 }

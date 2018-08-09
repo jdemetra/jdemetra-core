@@ -55,18 +55,18 @@ public class RegSsfTest {
         DkLikelihood ll1 = DkToolkit.likelihoodComputer().compute(rssf1, y);
         DkLikelihood ll2 = DkToolkit.likelihoodComputer().compute(rssf2, y);
         assertEquals(ll1.logLikelihood(), ll2.logLikelihood(), 1e-5);
-        long t0 = System.currentTimeMillis();
-        for (int i = 0; i < 5000; ++i) {
-            DkToolkit.likelihoodComputer().compute(rssf1, y);
-        }
-        long t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
-        t0 = System.currentTimeMillis();
-        for (int i = 0; i < 5000; ++i) {
-            DkToolkit.likelihoodComputer().compute(rssf2, y);
-        }
-        t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
+//        long t0 = System.currentTimeMillis();
+//        for (int i = 0; i < 5000; ++i) {
+//            DkToolkit.likelihoodComputer().compute(rssf1, y);
+//        }
+//        long t1 = System.currentTimeMillis();
+//        System.out.println(t1 - t0);
+//        t0 = System.currentTimeMillis();
+//        for (int i = 0; i < 5000; ++i) {
+//            DkToolkit.likelihoodComputer().compute(rssf2, y);
+//        }
+//        t1 = System.currentTimeMillis();
+//        System.out.println(t1 - t0);
 
     }
 
