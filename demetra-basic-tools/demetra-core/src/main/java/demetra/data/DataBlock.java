@@ -691,13 +691,13 @@ public final class DataBlock implements DoubleSequence {
     public int length() {
         return (end - beg) / inc;
     }
-    
-    public double first(){
+
+    public double first() {
         return data[beg];
     }
 
-    public double last(){
-        return data[end-inc];
+    public double last() {
+        return data[end - inc];
     }
 
     /**
@@ -861,9 +861,9 @@ public final class DataBlock implements DoubleSequence {
         }
         return s;
     }
-    
-    public void correctForMean(){
-        double s=sum();
+
+    public void correctForMean() {
+        double s = sum();
         sub(s);
     }
 
@@ -1422,6 +1422,18 @@ public final class DataBlock implements DoubleSequence {
         }
     }
 
+    public double getLast() {
+        return data[end - inc];
+    }
+
+    public void setLast(double x) {
+        data[end - inc] = x;
+    }
+
+    public void addLast(double x) {
+        data[end - inc] += x;
+    }
+
     @Override
     public double reduce(final double initial, @Nonnull DoubleBinaryOperator fn) {
         double cur = initial;
@@ -1432,11 +1444,10 @@ public final class DataBlock implements DoubleSequence {
     }
 
     /**
-     * Computes iteratively y(t) = fn(y(t), y(t+del))
-     * If del is negative, the iteration goes from the end to the beginning;
-     * the first del items are unchanged.
-     * If del is positive, the iteration goes from the beginning to the end;
-     * the last del items are unchanged.
+     * Computes iteratively y(t) = fn(y(t), y(t+del)) If del is negative, the
+     * iteration goes from the end to the beginning; the first del items are
+     * unchanged. If del is positive, the iteration goes from the beginning to
+     * the end; the last del items are unchanged.
      *
      * @param del
      * @param fn
@@ -1461,15 +1472,16 @@ public final class DataBlock implements DoubleSequence {
                 cur -= inc;
                 dcur -= inc;
                 data[cur] = fn.applyAsDouble(data[cur], data[dcur]);
-            } 
-       }
+            }
+        }
     }
 
     /**
-     * Apply recursively the function: x(t+del)=f(x(t), x(t+del)) 
-     * (or x(t-|del|)=f(x(t), x(t-|del|)) if del is negative)
+     * Apply recursively the function: x(t+del)=f(x(t), x(t+del)) (or
+     * x(t-|del|)=f(x(t), x(t-|del|)) if del is negative)
+     *
      * @param del
-     * @param fn 
+     * @param fn
      */
     public void applyRecursively(final int del, @Nonnull DoubleBinaryOperator fn) {
         if (del > 0) {
@@ -1496,10 +1508,10 @@ public final class DataBlock implements DoubleSequence {
         }
     }
 
-    public void cumul(){
-        applyRecursively(1, (a,b)->a+b);
+    public void cumul() {
+        applyRecursively(1, (a, b) -> a + b);
     }
-    
+
     public boolean allMatch(DataBlock d, @Nonnull BiDoublePredicate p) {
         for (int i = beg, j = d.beg; i != end; i += inc, j += d.inc) {
             if (!p.test(data[i], d.data[j])) {

@@ -7,10 +7,15 @@ package demetra.ssf.models;
 
 import demetra.arima.AutoCovarianceFunction;
 import demetra.data.DataBlock;
+import demetra.data.DataBlockIterator;
+import demetra.data.DoubleReader;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.SsfComponent;
+import demetra.ssf.implementations.Loading;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -18,6 +23,15 @@ import demetra.ssf.ISsfInitialization;
  */
 @lombok.experimental.UtilityClass
 public class AR {
+    
+    public SsfComponent componentOf(@Nonnull double[] ar, double var, int nlags){
+        if (ar.length == 0)
+            throw new IllegalArgumentException();
+        if (nlags<ar.length)
+            nlags=ar.length;
+        Data data=new Data(ar,var,nlags);
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.create(0));
+    }
 
     @lombok.Value
     private static class Data {
@@ -77,10 +91,10 @@ public class AR {
 
         @Override
         public void Pf0(Matrix pf0) {
-            AutoCovarianceFunction acf=new AutoCovarianceFunction(Polynomial.ONE, info.ar(), info.var );
+            AutoCovarianceFunction acf = new AutoCovarianceFunction(Polynomial.ONE, info.ar(), info.var);
             acf.prepare(pf0.getColumnsCount());
             pf0.diagonal().set(acf.get(0));
-            for (int i=1; i<pf0.getColumnsCount(); ++i){
+            for (int i = 1; i < pf0.getColumnsCount(); ++i) {
                 pf0.subDiagonal(i).set(acf.get(i));
                 pf0.subDiagonal(-i).set(acf.get(i));
             }
@@ -91,9 +105,11 @@ public class AR {
     private static class Dynamics implements ISsfDynamics {
 
         private final Data info;
+        private DataBlock z;
 
         Dynamics(final Data info) {
             this.info = info;
+            z = DataBlock.make(info.dim());
         }
 
         @Override
@@ -103,32 +119,52 @@ public class AR {
 
         @Override
         public void V(int pos, Matrix qm) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            qm.set(0, 0, info.var);
         }
 
         @Override
         public void S(int pos, Matrix cm) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            cm.set(0, 0, Math.sqrt(info.var));
         }
 
         @Override
         public boolean hasInnovations(int pos) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return true;
         }
 
         @Override
         public boolean areInnovationsTimeInvariant() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return true;
         }
 
         @Override
         public void T(int pos, Matrix tr) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            tr.subDiagonal(-1).set(1);
+            tr.row(0).extract(0, info.phi.length).copyFrom(info.phi, 0);
         }
 
         @Override
         public void TX(int pos, DataBlock x) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            double z = 0;
+            DoubleReader reader = x.reader();
+            for (int i = 0; i < info.phi.length; ++i) {
+                z += info.phi[i] * reader.next();
+            }
+            x.fshift(1);
+            x.set(0, z);
+        }
+
+        @Override
+        public void TVT(final int pos, final Matrix vm) {
+            z.set(0);
+            DataBlockIterator cols = vm.columnsIterator();
+            for (int i = 0; i < info.phi.length; ++i) {
+                z.addAY(info.phi[i], cols.next());
+            }
+            TX(pos, z);
+            vm.downRightShift(1);
+            vm.column(0).copy(z);
+            vm.row(0).copy(z);
         }
 
         @Override
@@ -138,22 +174,32 @@ public class AR {
 
         @Override
         public void addV(int pos, Matrix p) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            p.add(0, 0, info.var);
         }
 
         @Override
-        public void XT(int pos, DataBlock x) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public void XT(int pos, DataBlock x
+        ) {
+            double first = x.get(0);
+            x.bshift(1);
+            x.setLast(0);
+            if (first != 0) {
+                for (int i = 0; i < info.phi.length; ++i) {
+                    x.add(i, first * info.phi[i]);
+                }
+            }
         }
 
         @Override
-        public void XS(int pos, DataBlock x, DataBlock xs) {
+        public void XS(int pos, DataBlock x,
+                 DataBlock xs
+        ) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public boolean isTimeInvariant() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return true;
         }
 
     }

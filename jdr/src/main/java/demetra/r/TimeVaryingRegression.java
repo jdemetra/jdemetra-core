@@ -9,7 +9,6 @@ import demetra.arima.ssf.SsfArima;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
-import demetra.likelihood.ILikelihood;
 import demetra.maths.MatrixType;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
@@ -38,7 +37,6 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.modelling.regression.GenericTradingDaysVariables;
 import demetra.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
