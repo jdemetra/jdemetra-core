@@ -52,6 +52,10 @@ public class Loading {
         return new Loading2(mpos);
     }
 
+    public static ISsfLoading create(final int[] mpos, final double[] w) {
+        return new Loading3(mpos, w);
+    }
+
     public static ISsfLoading circular(final int period) {
         return new CircularLoading(period, 0);
     }
@@ -382,7 +386,7 @@ public class Loading {
 
     }
 
-    private static class Loading2 implements ISsfLoading {
+    static class Loading2 implements ISsfLoading {
 
         private final int[] mpos;
 
@@ -455,6 +459,90 @@ public class Loading {
             int n = mpos.length;
             for (int i = 0; i < n; ++i) {
                 z.set(mpos[i], 1);
+            }
+        }
+
+    }
+
+    static class Loading3 implements ISsfLoading {
+
+        private final int[] mpos;
+        private final double[] w;
+
+        Loading3(int[] mpos, double[] w) {
+            this.mpos = mpos;
+            this.w = w;
+        }
+
+        @Override
+        public double ZX(int pos, DataBlock m) {
+            int n = mpos.length;
+            double d = 0;
+            for (int i = 0; i < n; ++i) {
+                d += w[i] * m.get(mpos[i]);
+            }
+            return d;
+        }
+
+        @Override
+        public void ZM(int pos, Matrix m, DataBlock zm) {
+            zm.setAY(w[0], m.row(mpos[0]));
+            for (int i = 1; i < mpos.length; ++i) {
+                zm.addAY(w[i], m.row(mpos[i]));
+            }
+        }
+
+        @Override
+        public double ZVZ(int pos, Matrix V) {
+            double d = 0;
+            int n = mpos.length;
+            for (int i = 0; i < n; ++i) {
+                double wi = w[i];
+                d += V.get(mpos[i], mpos[i]) * wi * wi;
+                for (int j = 0; j < i; ++j) {
+                    double wj = w[j];
+                    d += 2 * V.get(mpos[i], mpos[j]) * wi * wj;
+                }
+            }
+            return d;
+        }
+
+        @Override
+        public void VpZdZ(int pos, Matrix V, double d) {
+            if (d == 0) {
+                return;
+            }
+            int n = mpos.length;
+            for (int i = 0; i < n; ++i) {
+                double wi = w[i];
+                for (int j = 0; j < n; ++j) {
+                    double wj = w[j];
+                    V.add(mpos[i], mpos[j], d * wi * wj);
+                }
+            }
+        }
+
+        @Override
+        public void XpZd(int pos, DataBlock x, double d) {
+            if (d == 0) {
+                return;
+            }
+            int n = mpos.length;
+            for (int i = 0; i < n; ++i) {
+                x.add(mpos[i], d * w[i]);
+            }
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public void Z(int pos, DataBlock z) {
+            int n = mpos.length;
+            for (int i = 0; i < n; ++i) {
+                z.set(mpos[i], w[i]);
             }
         }
 

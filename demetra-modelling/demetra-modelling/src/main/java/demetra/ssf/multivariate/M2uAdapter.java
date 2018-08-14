@@ -34,11 +34,7 @@ import demetra.ssf.univariate.Ssf;
 public class M2uAdapter {
 
     public static ISsfData of(IMultivariateSsfData data) {
-        if (data.isHomogeneous()) {
-            return new Data(data);
-        } else {
-            return null;
-        }
+        return new Data(data);
     }
 
     public static ISsf of(IMultivariateSsf mssf) {
@@ -66,7 +62,7 @@ public class M2uAdapter {
 
         Data(IMultivariateSsfData data) {
             this.data = data;
-            this.nvars = data.getMaxVarsCount();
+            this.nvars = data.getVarsCount();
         }
 
         @Override
@@ -86,7 +82,7 @@ public class M2uAdapter {
 
         @Override
         public int length() {
-            return data.getCount() * nvars;
+            return data.getObsCount() * nvars;
         }
     }
 

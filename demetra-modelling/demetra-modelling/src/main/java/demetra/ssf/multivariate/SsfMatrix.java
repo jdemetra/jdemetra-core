@@ -42,24 +42,15 @@ public class SsfMatrix implements IMultivariateSsfData {
     }
 
     @Override
-    public int getCount() {
+    public int getObsCount() {
         return x_.getRowsCount();
     }
 
     @Override
-    public boolean isHomogeneous() {
-        return true;
-    }
-
-    @Override
-    public int getVarsCount(int pos) {
+    public int getVarsCount() {
         return x_.getColumnsCount();
     }
 
-    @Override
-    public int getMaxVarsCount() {
-        return x_.getColumnsCount();
-    }
 
     @Override
     public DoubleSequence get(int pos) {

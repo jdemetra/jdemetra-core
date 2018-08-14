@@ -32,6 +32,14 @@ public class MultivariateCompositeSsf extends MultivariateSsf {
         this.pos = pos;
         this.dim = dim;
     }
+    
+    public int[] componentsPosition(){
+        return pos.clone();
+    }
+
+    public int[] componentsDimension(){
+        return dim.clone();
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -42,6 +50,25 @@ public class MultivariateCompositeSsf extends MultivariateSsf {
 
         private String component;
         private double coefficient;
+        private ISsfLoading loading;
+        
+        public Item(String component){
+            this.component=component;
+            coefficient=1;
+            loading=null;
+        }
+
+        public Item(String component, double coefficient){
+            this.component=component;
+            this.coefficient=coefficient;
+            loading=null;
+        }
+
+        public Item(String component, double coefficient, ISsfLoading loading){
+            this.component=component;
+            this.coefficient=coefficient;
+            this.loading=loading;
+        }
     }
 
     @lombok.Value
@@ -55,7 +82,7 @@ public class MultivariateCompositeSsf extends MultivariateSsf {
         }
     }
 
-    static class Builder {
+    public static class Builder {
 
         private final List<SsfComponent> components = new ArrayList<>();
         private final List<String> names = new ArrayList<>();
@@ -78,7 +105,7 @@ public class MultivariateCompositeSsf extends MultivariateSsf {
             return this;
         }
 
-        public IMultivariateSsf build() {
+        public MultivariateCompositeSsf build() {
             if (components.isEmpty() || equations.isEmpty()) {
                 return null;
             }
@@ -89,16 +116,14 @@ public class MultivariateCompositeSsf extends MultivariateSsf {
             int[] pos = new int[n];
             ISsfInitialization[] i = new ISsfInitialization[n];
             ISsfDynamics[] d = new ISsfDynamics[n];
-            ISsfLoading[] l = new ISsfLoading[n];
             int cpos = 0;
             for (int j = 0; j < n; ++j) {
                 SsfComponent cur = components.get(j);
+                i[j] = cur.initialization();
+                d[j] = cur.dynamics();
                 pos[j] = cpos;
                 dim[j] = i[j].getStateDim();
                 cpos += dim[j];
-                i[j] = cur.initialization();
-                d[j] = cur.dynamics();
-                l[j] = cur.loading();
             }
             ISsfErrors errors = measurementsError;
             if (errors == null) {
@@ -110,7 +135,7 @@ public class MultivariateCompositeSsf extends MultivariateSsf {
                 loadings[j] = loadingOf(equations.get(j), pos, dim);
             }
 
-            return new MultivariateSsf(new CompositeInitialization(dim, i),
+            return new MultivariateCompositeSsf(pos, dim, new CompositeInitialization(dim, i),
                     new CompositeDynamics(dim, d),
                     new Measurements(loadings, errors));
         }
@@ -121,8 +146,10 @@ public class MultivariateCompositeSsf extends MultivariateSsf {
             int[] ndim = new int[c.length];
             ISsfLoading[] loadings = new ISsfLoading[c.length];
             for (int j = 0; j < c.length; ++j) {
-                ISsfLoading loading = components.get(c[j]).loading();
-                loadings[j] = Loading.rescale(loading, eq.items.get(j).coefficient);
+                Item item = eq.items.get(j);
+                SsfComponent cmp = components.get(c[j]);
+                ISsfLoading loading = item.loading != null ? item.loading : cmp.loading();
+                loadings[j] = Loading.rescale(loading, item.coefficient);
                 npos[j] = pos[c[j]];
                 ndim[j] = dim[c[j]];
             }

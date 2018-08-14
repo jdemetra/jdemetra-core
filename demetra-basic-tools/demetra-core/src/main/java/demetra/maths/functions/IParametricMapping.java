@@ -43,4 +43,16 @@ public interface IParametricMapping<T> extends IParametersDomain {
         return map(getDefaultParameters());
     }
     
+    /**
+     * Returns a singular point near the given point 
+     * 
+     * @param p The given point
+     * @return If no singularity is found return p. Otherwise,
+     * some elements of p could be changed. The new point will correspond to the 
+     * singular point. It should be noted that the singular point belongs to the domain.
+     */
+    default DoubleSequence singularityAt(DoubleSequence p){
+        return p;
+    }
+    
 }

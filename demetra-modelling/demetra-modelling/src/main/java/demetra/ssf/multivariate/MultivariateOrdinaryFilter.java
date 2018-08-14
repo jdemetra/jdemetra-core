@@ -152,7 +152,7 @@ public class MultivariateOrdinaryFilter {
         if (rslts != null) {
             rslts.open(ssf, this.data);
         }
-        int end = data.getCount();
+        int end = data.getObsCount();
         while (t < end) {
             if (rslts != null) {
                 rslts.save(t, state, StateInfo.Forecast);

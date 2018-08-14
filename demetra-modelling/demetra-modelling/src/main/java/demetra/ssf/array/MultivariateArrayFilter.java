@@ -66,7 +66,7 @@ public class MultivariateArrayFilter {
 
     private boolean initFilter() {
         pos = 0;
-        end = data.getCount();
+        end = data.getObsCount();
         nm = measurements.getCount();
         nres = dynamics.getInnovationsDim();
         dim = ssf.getStateDim();

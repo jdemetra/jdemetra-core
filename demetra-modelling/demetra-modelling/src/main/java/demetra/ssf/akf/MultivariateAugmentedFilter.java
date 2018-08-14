@@ -153,7 +153,7 @@ public class MultivariateAugmentedFilter {
             return false;
         }
         rslts.open(ssf, data);
-        int t = 0, end = data.getCount();
+        int t = 0, end = data.getObsCount();
 
         while (t < end) {
             if (collapse(rslts)) {

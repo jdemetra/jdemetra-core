@@ -178,8 +178,7 @@ public class AR {
         }
 
         @Override
-        public void XT(int pos, DataBlock x
-        ) {
+        public void XT(int pos, DataBlock x) {
             double first = x.get(0);
             x.bshift(1);
             x.setLast(0);
@@ -191,9 +190,7 @@ public class AR {
         }
 
         @Override
-        public void XS(int pos, DataBlock x,
-                 DataBlock xs
-        ) {
+        public void XS(int pos, DataBlock x, DataBlock xs) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 

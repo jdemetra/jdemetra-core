@@ -72,12 +72,11 @@ public class CompositeInitialization implements ISsfInitialization {
     public void diffuseConstraints(Matrix b) {
         // statedim * diffusedim
         MatrixWindow cur = b.topLeft();
-        for (int i = 0, j = 0; i < initializers.length; ++i) {
+        for (int i = 0; i < initializers.length; ++i) {
             int nst = initializers[i].getDiffuseDim();
             if (nst != 0) {
                 cur.next(dim[i], nst);
                 initializers[i].diffuseConstraints(cur);
-                j += nst;
             } else {
                 cur.vnext(dim[i]);
             }

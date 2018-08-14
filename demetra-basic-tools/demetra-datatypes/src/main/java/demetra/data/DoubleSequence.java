@@ -34,8 +34,8 @@ import internal.data.InternalDoubleSeq;
  * @author Philippe Charles
  */
 public interface DoubleSequence extends BaseSequence<Double> {
-    
-    static final double[] EMPTYARRAY=new double[0];
+
+    static final double[] EMPTYARRAY = new double[0];
 
     /**
      * Creates a new value using an array of doubles. Internal use only since it
@@ -159,6 +159,11 @@ public interface DoubleSequence extends BaseSequence<Double> {
     @Nonnull
     default DoubleSequence extract(@Nonnegative final int start, @Nonnegative final int length) {
         return DoubleSequence.onMapping(length, i -> get(start + i));
+    }
+
+    @Nonnull
+    default DoubleSequence extract(@Nonnegative final int start, @Nonnegative final int length, final int increment) {
+        return DoubleSequence.onMapping(length, i -> get(start + i * increment));
     }
 
     /**
