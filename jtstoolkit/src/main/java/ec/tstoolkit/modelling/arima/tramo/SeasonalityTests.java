@@ -1,26 +1,22 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tstoolkit.modelling.arima.tramo;
 
-import ec.satoolkit.diagnostics.AutoRegressiveSpectrumTest;
-import ec.satoolkit.diagnostics.FriedmanTest;
-import ec.satoolkit.diagnostics.PeriodogramTest;
-import ec.satoolkit.diagnostics.QSTest;
-import ec.satoolkit.diagnostics.TukeySpectrumPeaksTest;
+import ec.satoolkit.diagnostics.*;
 import ec.tstoolkit.data.BlackmanTukeySpectrum;
 import ec.tstoolkit.data.WindowType;
 import ec.tstoolkit.modelling.DifferencingResults;
@@ -34,13 +30,14 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
  */
 public class SeasonalityTests {
 
-    public static final int MSHORT = 80, SHORT = 60, SPEC_LENGTH=120;
+    public static final int MSHORT = 80, SHORT = 60, SPEC_LENGTH = 120;
 
     /**
      * This test corresponds to the OverResidSeasTest function of TRAMO
      *
-     * @param res The residuals of the model
+     * @param res  The residuals of the model
      * @param freq The frequency of the series
+     *
      * @return
      */
     public static SeasonalityTests residualSeasonalityTest(double[] res, TsFrequency freq) {
@@ -67,10 +64,12 @@ public class SeasonalityTests {
     }
 
     /**
-     * @param s The original series
+     * @param s    The original series
      * @param diff The differencing order (-1 if it is automatically detected)
      * @param mean Mean correction of the differenced series
-     * @param all Executed all the tests or stop when one of them is significant
+     * @param all  Executed all the tests or stop when one of them is
+     *             significant
+     *
      * @return
      */
     public static SeasonalityTests seasonalityTest(TsData s, int diff, boolean mean, boolean all) {
@@ -112,7 +111,8 @@ public class SeasonalityTests {
      *
      * @param input Original series
      * @param ndiff Differencing order
-     * @param mean Mean correction (after differencing)
+     * @param mean  Mean correction (after differencing)
+     *
      * @return
      */
     void test(TsData input, int ndiff, boolean mean) {
@@ -131,7 +131,6 @@ public class SeasonalityTests {
 //        delta = DifferencingResults.create(input, -1, true);
 //        clear();
 //    }
-
     private void testResiduals(double[] res, TsFrequency freq) {
         // we create a "temporary" time series. Dates don't matter
         TsData tmp = new TsData(freq, 2000, 0, res, false);
@@ -201,7 +200,7 @@ public class SeasonalityTests {
     public AutoRegressiveSpectrumTest getArPeaks() {
         if (arpeaks == null) {
             arpeaks = new AutoRegressiveSpectrumTest();
-            TsData dlast=delta.getDifferenced();
+            TsData dlast = delta.getDifferenced();
 //            if (dlast.getLength()> SPEC_LENGTH){
 //                dlast=dlast.drop(dlast.getLength()-SPEC_LENGTH, 0);
 //            }
@@ -226,10 +225,10 @@ public class SeasonalityTests {
             for (int i = 0; i < peaks.length; ++i) {
                 SpectralPeaks.AR ar = SpectralPeaks.AR.none;
                 SpectralPeaks.Tukey tu = SpectralPeaks.Tukey.none;
-                if (a != null) {
+                if (a != null && a.length >= i) {
                     ar = SpectralPeaks.AR.fromInt(a[i]);
                 }
-                if (t != null) {
+                if (t != null && t.length >= i) {
                     tu = SpectralPeaks.Tukey.fromInt(t[i]);
                 }
                 peaks[i] = new SpectralPeaks(ar, tu);
