@@ -32,11 +32,11 @@ public class CochranTest {
     private int nminNumberOfYears = 0;
 
 //  Critical values for monthly data
-    private static final double[] t = {0.5410, 0.3934, 0.3264, 0.2880, 0.2624, 0.2439, 0.2299, 0.2187,
-                                       0.2098, 0.2020, 0.1980, 0.194, 0.186, 0.182, 0.178, 0.174, 0.17,
-                                       0.166, 0.162, 0.158, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15,
-                                       0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1403, 0.14,
-                                       0.14, 0.14, 0.14};
+    private static final double[] t12 = {0.5410, 0.3934, 0.3264, 0.2880, 0.2624, 0.2439, 0.2299, 0.2187,
+                                         0.2098, 0.2020, 0.1980, 0.194, 0.186, 0.182, 0.178, 0.174, 0.17,
+                                         0.166, 0.162, 0.158, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15,
+                                         0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1403, 0.14,
+                                         0.14, 0.14, 0.14};
 
 //critical values for quarterly data
     private static final double[] t4 = {
@@ -48,6 +48,19 @@ public class CochranTest {
 //calculate the Corantest for a given Timseries, and gives the false if the Nullhypothesis
     // of equal variances of the periodes has to be rejected and different standarddeviations should be used
     //for outlier detection
+
+    /**
+     * The critical values C are calculated for up to 41 years from
+     * C=[1+(N-1)/(F(0.05/N;n-1;(N-1)(n-1)))]^(-1)
+     * N=number of observation per year
+     * n= number of years
+     * F distribution
+     */
+    private static final double[] t2 = {
+        0.9985, 0.975, 0.9392, 0.9057, 0.8772, 0.8534, 0.8332, 0.8159, 0.801, 0.788, 0.7765,
+        0.7662, 0.757, 0.7487, 0.7411, 0.7341, 0.7278, 0.7219, 0.7164, 0.7114, 0.7066, 0.7022,
+        0.698, 0.6941, 0.6904, 0.6869, 0.6836, 0.6805, 0.6775, 0.6747, 0.672, 0.6694, 0.6669,
+        0.6646, 0.6623, 0.6601, 0.658, 0.656, 0.6541, 0.6522};
 
     public void calcCochranTest() {
         int Ib = ts_.getStart().getPosition(); //Ib index of the first period //X conatins the values from the beginning to the end of the,
@@ -119,9 +132,11 @@ public class CochranTest {
             nmin = 39;
         }
 
-        tt_ = t[nmin];
+        tt_ = t12[nmin];
         if (Ny == 4) {
             tt_ = t4[nmin];
+        } else if (Ny == 2) {
+            tt_ = t2[nmin];
         }
 
         if (tw_ >= tt_) {
