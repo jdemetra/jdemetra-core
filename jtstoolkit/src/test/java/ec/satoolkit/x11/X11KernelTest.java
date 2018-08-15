@@ -251,14 +251,13 @@ public class X11KernelTest {
         X11Toolkit toolkit = X11Toolkit.create(spec);
         toolkit.setPreprocessor(new AirlinePreprocessor());
         X11Kernel kernel = new X11Kernel();
-        //     toolkit.context.setRHalf(.008); //damit man ueber die Eingabe an das set R ran kommt, echt haesslich
         kernel.setToolkit(toolkit);
         TsData td = new TsData(TsFrequency.HalfYearly, 1970, 0, Data.X.getValues().internalStorage(), true);
-        System.out.println(td);
+//        System.out.println(td);
         X11Results rslt = kernel.process(td);
 //        System.out.println("f105");
-        System.out.println("d-tables.d10");
-        System.out.println(rslt.getData("d-tables.d10", TsData.class));
+//        System.out.println("d-tables.d10");
+//        System.out.println(rslt.getData("d-tables.d10", TsData.class));
         assertTrue(rslt.getData("d-tables.d10a", TsData.class
         ) != null);
     }

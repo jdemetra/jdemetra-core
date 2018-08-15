@@ -71,13 +71,16 @@ public class MusgraveFilterFactory {
         }
         if (frequency == 2) {
             return 0.001;
-        } else if (length <= 9) {
-            return 1;
-        } else if (length <= 13) {
-            return 3.5;
-        } else {
-            return 4.5;
         }
+        //monthly
+        if (length <= 9) {
+            return 1;
+        }
+        if (length <= 13) {
+            return 3.5;
+        }
+        return 4.5;
+
     }
 
     private static Map<Integer, FiniteFilter[]> getFilterStore(int freq) {
