@@ -19,6 +19,7 @@ package demetra.ssf.akf;
 import demetra.data.DataBlock;
 import demetra.likelihood.ILikelihood;
 import demetra.data.DoubleSequence;
+import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
 
@@ -37,12 +38,24 @@ public class MarginalLikelihood implements ILikelihood {
 
         private final int n, nd;
         private double ssqerr, ldet, dcorr, mcorr;
+        private double[] res;
         private boolean legacy;
         private boolean concentratedScalingFactor = true;
 
         Builder(int n, int nd) {
             this.n = n;
             this.nd = nd;
+        }
+
+        public Builder residuals(DoubleSequence residuals) {
+            if (residuals == null) {
+                return this;
+            }
+            if (ssqerr == 0) {
+                this.ssqerr = Doubles.ssq(residuals);
+            }
+            this.res = residuals.toArray();
+            return this;
         }
 
         public Builder logDeterminant(double ldet) {
@@ -79,7 +92,7 @@ public class MarginalLikelihood implements ILikelihood {
             if (nd == 0 && dcorr != 0) {
                 throw new IllegalArgumentException("Incorrect diffuse initialisation");
             }
-            return new MarginalLikelihood(concentratedScalingFactor, n, nd, ssqerr, ldet, dcorr, mcorr, legacy);
+            return new MarginalLikelihood(concentratedScalingFactor, n, nd, ssqerr, ldet, dcorr, mcorr, res, legacy);
         }
     }
     /**
@@ -87,6 +100,7 @@ public class MarginalLikelihood implements ILikelihood {
      * determinant of the cov matrix diffuse correction
      */
     private final double ll, ssqerr, ldet, dcorr, mcorr;
+    private final double[] res;
     private final int nobs, nd;
     private final boolean legacy, scalingFactor;
 
@@ -115,7 +129,8 @@ public class MarginalLikelihood implements ILikelihood {
      * @param nd The number ofFunction diffuse constraints
      * @return
      */
-    private MarginalLikelihood(boolean concentrated, int n, int nd, double ssqerr, double ldet, double dcorr, double mcorr, boolean legacy) {
+    private MarginalLikelihood(boolean concentrated, int n, int nd, double ssqerr, double ldet, 
+            double dcorr, double mcorr, final double[] res, boolean legacy) {
         this.scalingFactor = concentrated;
         this.nobs = n;
         this.nd = nd;
@@ -123,6 +138,7 @@ public class MarginalLikelihood implements ILikelihood {
         this.ldet = ldet;
         this.dcorr = dcorr;
         this.mcorr=mcorr;
+        this.res=res;
         this.legacy = legacy;
         int m = legacy ? nobs : nobs - nd;
         if (m > 0) {
@@ -160,7 +176,7 @@ public class MarginalLikelihood implements ILikelihood {
         if (this.legacy == legacy) {
             return this;
         } else {
-            return new MarginalLikelihood(scalingFactor, nobs, nd, ssqerr, ldet, dcorr, mcorr, legacy);
+            return new MarginalLikelihood(scalingFactor, nobs, nd, ssqerr, ldet, dcorr, mcorr, res, legacy);
         }
     }
 
@@ -222,7 +238,14 @@ public class MarginalLikelihood implements ILikelihood {
         if (factor == 1) {
             return this;
         } else {
-             return new MarginalLikelihood(scalingFactor, nobs, nd, ssqerr / factor * factor, ldet, dcorr, mcorr, legacy);
+            double[] nres = null;
+            if (res != null) {
+                nres = new double[res.length];
+                for (int i = 0; i < res.length; ++i) {
+                    nres[i] = Double.isFinite(res[i]) ? res[i] / factor : Double.NaN;
+                }
+            }
+             return new MarginalLikelihood(scalingFactor, nobs, nd, ssqerr / factor * factor, ldet, dcorr, mcorr, nres, legacy);
         }
     }
 
@@ -248,7 +271,7 @@ public class MarginalLikelihood implements ILikelihood {
 
     @Override
     public DoubleSequence e() {
-        return DataBlock.EMPTY;
+        return res == null ? null : DoubleSequence.ofInternal(res);
     }
 
     public MarginalLikelihood add(ILikelihood ll) {

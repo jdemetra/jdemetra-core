@@ -44,7 +44,7 @@ public class QRFilter {
     private MarginalLikelihood mll;
     private DiffuseLikelihood dll;
     private Matrix R, X, Xl;
-    private DataBlock yl, b;
+    private DataBlock yl, b, e;
     private double ldet, ssq, dcorr, pcorr, mcorr;
 
     /**
@@ -107,6 +107,7 @@ public class QRFilter {
                 .logDeterminant(ldet)
                 .diffuseCorrection(dcorr)
                 .marginalCorrection(mcorr)
+                .residuals(e)
                 .build();
     }
 
@@ -115,7 +116,7 @@ public class QRFilter {
         hous.decompose(Xl);
         b = DataBlock.make(hous.rank());
         int nd = b.length(), n = Xl.getRowsCount();
-        DataBlock e = DataBlock.make(n - nd);
+        e = DataBlock.make(n - nd);
         hous.leastSquares(yl, b, e);
         ssq = e.ssq();
         dcorr = 2 * LogSign.of(hous.rdiagonal(true)).getValue();

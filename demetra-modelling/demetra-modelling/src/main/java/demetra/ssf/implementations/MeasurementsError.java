@@ -91,7 +91,7 @@ public class MeasurementsError {
             this.v = v;
             e = this.v.clone();
             for (int i = 0; i < e.length; ++i) {
-                e[i] = this.v[i] <= 0 ? 0 : Math.sqrt(this.v[i]);
+                e[i] = v[i] <= 0 ? 0 : Math.sqrt(v[i]);
             }
         }
 

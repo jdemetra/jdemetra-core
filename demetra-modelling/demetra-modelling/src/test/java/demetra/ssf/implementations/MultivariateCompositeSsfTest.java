@@ -9,7 +9,9 @@ import demetra.ar.ArBuilder;
 import demetra.arima.ArimaModel;
 import demetra.arima.ssf.SsfArima;
 import demetra.data.DataBlock;
+import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
+import demetra.data.Doubles;
 import demetra.data.MatrixSerializer;
 import demetra.maths.MatrixType;
 import demetra.maths.functions.IParametricMapping;
@@ -22,6 +24,9 @@ import demetra.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaMapping;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.SsfComponent;
+import demetra.ssf.akf.AkfFunction;
+import demetra.ssf.akf.AkfFunctionPoint;
+import demetra.ssf.akf.AkfToolkit;
 import demetra.ssf.dk.DkLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.SsfFunction;
@@ -65,11 +70,15 @@ public class MultivariateCompositeSsfTest {
         D.column(2).copy(data.column(2));
         D.column(3).copy(data.column(3));
 
+//        D.column(0).sub(D.column(0).average());
+//        D.column(1).sub(D.column(1).average());
+//        D.column(2).sub(D.column(2).average());
+//        D.column(3).sub(D.column(3).average());
         SsfMatrix mdata = new SsfMatrix(D);
         ISsfData udata = M2uAdapter.of(mdata);
 
         Mapping mapping = new Mapping();
-        SsfFunction<MultivariateCompositeSsf, ISsf> fn = SsfFunction.builder(udata, mapping, m -> M2uAdapter.of(m))
+        AkfFunction<MultivariateCompositeSsf, ISsf> fn = AkfFunction.builder(udata, mapping, m -> M2uAdapter.of(m))
                 .useParallelProcessing(true)
                 .useScalingFactor(true)
                 .useMaximumLikelihood(true)
@@ -79,16 +88,16 @@ public class MultivariateCompositeSsfTest {
 //        LevenbergMarquardtMinimizer lm = new LevenbergMarquardtMinimizer();
         lm.setMaxIter(1000);
         boolean ok = lm.minimize(fn.evaluate(mapping.getDefaultParameters()));
-        SsfFunctionPoint rslt = (SsfFunctionPoint) lm.getResult();
+        AkfFunctionPoint rslt = (AkfFunctionPoint) lm.getResult();
         System.out.println(rslt.getLikelihood().logLikelihood());
         System.out.println(rslt.getLikelihood().ser());
         System.out.println(rslt.getParameters());
 
-//        LbfgsMinimizer bfgs = new LbfgsMinimizer();
-//        bfgs.setMaxIter(1000);
-//        ok = bfgs.minimize(fn.evaluate(mapping.getDefaultParameters()));
-//        SsfFunctionPoint rslt2 = (SsfFunctionPoint) bfgs.getResult();
-//        System.out.println(rslt2.getLikelihood().logLikelihood());
+        LbfgsMinimizer bfgs = new LbfgsMinimizer();
+        bfgs.setMaxIter(1000);
+        ok = bfgs.minimize(fn.evaluate(mapping.getDefaultParameters()));
+        AkfFunctionPoint rslt2 = (AkfFunctionPoint) bfgs.getResult();
+        System.out.println(rslt2.getLikelihood().logLikelihood());
 
         MultivariateCompositeSsf mssf = mapping.map(rslt.getParameters());
         DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(M2uAdapter.of(mssf), udata, true);
@@ -114,15 +123,22 @@ public class MultivariateCompositeSsfTest {
         D.column(3).copy(data.column(3));
         D.column(4).copy(data.column(5));
         D.column(5).copy(data.column(6));
-        
+
         // remove the means:
-        D.column(4).sub(D.column(4).average());
-        D.column(5).sub(D.column(5).average());
+//        int q=2;
+        DataBlockIterator cols = D.columnsIterator();
+        while (cols.hasNext()){
+            DataBlock col = cols.next();
+            double mu=col.average();
+            col.sub(mu);
+            double s = Doubles.ssqcWithMissing(col, 0);
+            col.div(Math.sqrt(s/col.count(x->Double.isFinite(x))));
+        }
         SsfMatrix mdata = new SsfMatrix(D);
         ISsfData udata = M2uAdapter.of(mdata);
 
         Mapping2 mapping = new Mapping2();
-        SsfFunction<MultivariateCompositeSsf, ISsf> fn = SsfFunction.builder(udata, mapping, m -> M2uAdapter.of(m))
+        AkfFunction<MultivariateCompositeSsf, ISsf> fn = AkfFunction.builder(udata, mapping, m -> M2uAdapter.of(m))
                 .useParallelProcessing(true)
                 .useScalingFactor(true)
                 .useMaximumLikelihood(true)
@@ -130,20 +146,21 @@ public class MultivariateCompositeSsfTest {
 
         MinPackMinimizer lm = new MinPackMinimizer();
 //        LevenbergMarquardtMinimizer lm = new LevenbergMarquardtMinimizer();
-        lm.setMaxIter(1000);
+        lm.setMaxIter(2000);
         boolean ok = lm.minimize(fn.evaluate(mapping.getDefaultParameters()));
-        SsfFunctionPoint rslt = (SsfFunctionPoint) lm.getResult();
+        AkfFunctionPoint rslt = (AkfFunctionPoint) lm.getResult();
         System.out.println(rslt.getLikelihood().logLikelihood());
         System.out.println(rslt.getLikelihood().ser());
         System.out.println(rslt.getParameters());
 //        LbfgsMinimizer bfgs = new LbfgsMinimizer();
 //        bfgs.setMaxIter(1000);
 //        ok = bfgs.minimize(fn.evaluate(mapping.getDefaultParameters()));
-//        SsfFunctionPoint rslt2 = (SsfFunctionPoint) bfgs.getResult();
+//        AkfFunctionPoint rslt2 = (AkfFunctionPoint) bfgs.getResult();
 //        System.out.println(rslt2.getLikelihood().logLikelihood());
 //        System.out.println(rslt2.getParameters());
 
         MultivariateCompositeSsf mssf = mapping.map(rslt.getParameters());
+//        DefaultSmoothingResults srslts = AkfToolkit.smooth(M2uAdapter.of(mssf), udata, false);
         DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(M2uAdapter.of(mssf), udata, false);
         int[] pos = mssf.componentsPosition();
         for (int k = 0; k < pos.length; ++k) {
@@ -247,7 +264,7 @@ class Mapping implements IParametricMapping<MultivariateCompositeSsf> {
 
 class Mapping2 implements IParametricMapping<MultivariateCompositeSsf> {
 
-    private static final int ARPOS = 9, DIM=17;
+    private static final int ARPOS = 8, DIM = 16;
 
     private double p(DoubleSequence p, int pos) {
         double x = p.get(pos);
@@ -260,12 +277,12 @@ class Mapping2 implements IParametricMapping<MultivariateCompositeSsf> {
         SsfComponent ar = AR.componentOf(new double[]{c1, c2}, 1, 5);
 
         MultivariateCompositeSsf.Equation eq1 = new MultivariateCompositeSsf.Equation(1);
-        MultivariateCompositeSsf.Equation eq2 = new MultivariateCompositeSsf.Equation(p(p, 4));
-        MultivariateCompositeSsf.Equation eq3 = new MultivariateCompositeSsf.Equation(p(p, 5));
-        MultivariateCompositeSsf.Equation eq4 = new MultivariateCompositeSsf.Equation(p(p, 6));
-        MultivariateCompositeSsf.Equation eq5 = new MultivariateCompositeSsf.Equation(p(p, 7));
-        MultivariateCompositeSsf.Equation eq6 = new MultivariateCompositeSsf.Equation(p(p, 8));
-        int pcur=ARPOS+2;
+        MultivariateCompositeSsf.Equation eq2 = new MultivariateCompositeSsf.Equation(p(p, 3));
+        MultivariateCompositeSsf.Equation eq3 = new MultivariateCompositeSsf.Equation(p(p, 4));
+        MultivariateCompositeSsf.Equation eq4 = new MultivariateCompositeSsf.Equation(p(p, 5));
+        MultivariateCompositeSsf.Equation eq5 = new MultivariateCompositeSsf.Equation(p(p, 6));
+        MultivariateCompositeSsf.Equation eq6 = new MultivariateCompositeSsf.Equation(p(p, 7));
+        int pcur = ARPOS + 2;
         eq1.add(new Item("tu"));
         eq1.add(new Item("cycle", p(p, pcur++)));
         eq2.add(new Item("ty"));
@@ -276,19 +293,23 @@ class Mapping2 implements IParametricMapping<MultivariateCompositeSsf> {
         eq4.add(new Item("cycle", p(p, pcur++)));
         double b1 = p(p, pcur++);
         ISsfLoading pl = Loading.create(new int[]{0, 1}, new double[]{b1 * c1, b1 * c2});
+        eq5.add(new Item("tbi"));
         eq5.add(new Item("cycle", 1, pl));
-        double b2=p(p, pcur);
-        double c12=c1*c1, c13=c12*c1, c14=c13*c1, c22=c2*c2;
-        double d1=c1+c12+c13+c14+c2+c22+2*c1*c2+3*c12*c2; 
-        double d2=c2+c1*c2+c22+c12*c2+2*c1*c22+c13*c2;
+        double b2 = p(p, pcur);
+        double c12 = c1 * c1, c13 = c12 * c1, c14 = c13 * c1, c22 = c2 * c2;
+        double d1 = c1 + c12 + c13 + c14 + c2 + c22 + 2 * c1 * c2 + 3 * c12 * c2;
+        double d2 = c2 + c1 * c2 + c22 + c12 * c2 + 2 * c1 * c22 + c13 * c2;
         ISsfLoading p2 = Loading.create(new int[]{0, 1}, new double[]{b2 * d1, b2 * d2});
+        eq6.add(new Item("tci"));
         eq6.add(new Item("cycle", 1, p2));
 
         return MultivariateCompositeSsf.builder()
                 .add("tu", LocalLinearTrend.of(0, p(p, 0)))
                 .add("ty", LocalLinearTrend.of(0, p(p, 1)))
-                .add("tpicore", LocalLevel.of(p(p, 2)))
-                .add("tpi", LocalLevel.of(p(p, 3)))
+                .add("tpicore", LocalLevel.of(0))
+                .add("tpi", LocalLevel.of(p(p, 2)))
+                .add("tbi", LocalLevel.of(0))
+                .add("tci", LocalLevel.of(0))
                 .add("cycle", ar)
                 .add(eq1)
                 .add(eq2)

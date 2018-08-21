@@ -25,6 +25,7 @@ import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.ssf.akf.AkfToolkit;
 import demetra.ssf.akf.DiffuseLikelihood;
+import demetra.ssf.akf.QRFilter;
 import demetra.ssf.dk.DkLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.TimeInvariantSsf;
@@ -69,6 +70,10 @@ public class SsfArimaTest {
         DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer().compute(ssf, ssfData);
 //        System.out.println(ll3);
         assertEquals(ll1.logLikelihood(), ll3.logLikelihood(), 1e-6);
+        QRFilter qr=new QRFilter();
+        qr.process(ssf, sdata);
+        DiffuseLikelihood ll4 = qr.getDiffuseLikelihood();
+        assertEquals(ll1.logLikelihood(), ll4.logLikelihood(), 1e-6);
         RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
                 .y(DoubleSequence.of(data))
                 .arima(arima)
