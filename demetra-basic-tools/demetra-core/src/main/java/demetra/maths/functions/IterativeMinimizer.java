@@ -38,7 +38,6 @@ public class IterativeMinimizer {
         exemplar.setMaxIter(maxiter);
         boolean ok=exemplar.minimize(cur);
         IFunctionPoint ncur = exemplar.getResult();
-        fn.getDomain().
         return true;
     }
 

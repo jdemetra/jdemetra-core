@@ -96,6 +96,7 @@ public class DiffuseSquareRootSmoother extends BaseDiffuseSmoother{
         missing = !Double.isFinite(e);
         state.a().copy(frslts.a(pos));
         if (calcvar) {
+            Z.set(0);
             loading.Z(pos, Z);
             state.P().copy(frslts.P(pos));
             Matrix B = frslts.B(pos);

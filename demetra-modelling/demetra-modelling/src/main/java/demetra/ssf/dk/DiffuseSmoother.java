@@ -99,6 +99,7 @@ public class DiffuseSmoother extends BaseDiffuseSmoother{
         if (calcvar) {
             state.P().copy(frslts.P(pos));
             state.Pi().copy(frslts.Pi(pos));
+            Z.set(0);
             loading.Z(pos, Z);
         }
     }

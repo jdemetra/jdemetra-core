@@ -53,7 +53,7 @@ public class MultivariateCompositeSsfTest {
     public MultivariateCompositeSsfTest() {
     }
 
-    //@Test
+    @Test
     public void testSimple() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/mssf1").toURI();
@@ -101,7 +101,7 @@ public class MultivariateCompositeSsfTest {
         }
     }
 
-    //@Test
+    @Test
     public void testSimpleX() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/mssf1").toURI();
@@ -136,14 +136,14 @@ public class MultivariateCompositeSsfTest {
         System.out.println(rslt.getLikelihood().logLikelihood());
         System.out.println(rslt.getLikelihood().ser());
         System.out.println(rslt.getParameters());
-        LbfgsMinimizer bfgs = new LbfgsMinimizer();
-        bfgs.setMaxIter(1000);
-        ok = bfgs.minimize(fn.evaluate(mapping.getDefaultParameters()));
-        SsfFunctionPoint rslt2 = (SsfFunctionPoint) bfgs.getResult();
-        System.out.println(rslt2.getLikelihood().logLikelihood());
-        System.out.println(rslt2.getParameters());
+//        LbfgsMinimizer bfgs = new LbfgsMinimizer();
+//        bfgs.setMaxIter(1000);
+//        ok = bfgs.minimize(fn.evaluate(mapping.getDefaultParameters()));
+//        SsfFunctionPoint rslt2 = (SsfFunctionPoint) bfgs.getResult();
+//        System.out.println(rslt2.getLikelihood().logLikelihood());
+//        System.out.println(rslt2.getParameters());
 
-        MultivariateCompositeSsf mssf = mapping.map(rslt2.getParameters());
+        MultivariateCompositeSsf mssf = mapping.map(rslt.getParameters());
         DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(M2uAdapter.of(mssf), udata, false);
         int[] pos = mssf.componentsPosition();
         for (int k = 0; k < pos.length; ++k) {

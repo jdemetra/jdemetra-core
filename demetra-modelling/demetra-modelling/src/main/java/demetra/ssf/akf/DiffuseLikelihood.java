@@ -19,6 +19,10 @@ package demetra.ssf.akf;
 import demetra.data.DataBlock;
 import demetra.likelihood.ILikelihood;
 import demetra.data.DoubleSequence;
+import demetra.data.Doubles;
+import demetra.design.BuilderPattern;
+import demetra.maths.Constants;
+import demetra.ssf.dk.DkLikelihood;
 
 /**
  * The diffuse likelihood follows the definition provided in the paper:
@@ -30,47 +34,108 @@ import demetra.data.DoubleSequence;
  */
 public class DiffuseLikelihood implements ILikelihood {
 
+    public static Builder builder(int n, int nd) {
+        return new Builder(n, nd);
+    }
+
+    @BuilderPattern(DiffuseLikelihood.class)
+    public static class Builder {
+
+        private final int n, nd;
+        private double ssqerr, ldet, dcorr;
+        private boolean legacy;
+        private boolean concentratedScalingFactor = true;
+
+        Builder(int n, int nd) {
+            this.n = n;
+            this.nd = nd;
+        }
+
+        public Builder logDeterminant(double ldet) {
+            this.ldet = ldet;
+            return this;
+        }
+
+        public Builder diffuseCorrection(double dcorr) {
+            this.dcorr=dcorr;
+            return this;
+        }
+
+        public Builder ssqErr(double ssq) {
+            this.ssqerr = ssq;
+            return this;
+        }
+
+        public Builder legacy(boolean legacy) {
+            this.legacy = legacy;
+            return this;
+        }
+
+        public Builder concentratedScalingFactor(boolean concentrated) {
+            this.concentratedScalingFactor = concentrated;
+            return this;
+        }
+
+        public DiffuseLikelihood build() {
+            if (nd == 0 && dcorr != 0) {
+                throw new IllegalArgumentException("Incorrect diffuse initialisation");
+            }
+            return new DiffuseLikelihood(concentratedScalingFactor, n, nd, ssqerr, ldet, dcorr, legacy);
+        }
+    }
     /**
      * Respectively: diffuse log-likelihood sum of the squared residuals log
      * determinant of the cov matrix diffuse correction
      */
-    private double ll,
+    private final double ll, ssqerr, ldet, dcorr;
+    private final int nobs, nd;
+    private final boolean legacy, scalingFactor;
 
     /**
-     * Respectively: diffuse log-likelihood sum of the squared e log
- determinant of the cov matrix diffuse correction
-     */
-    ssqerr, 
-
-    /**
-     * Respectively: diffuse log-likelihood sum of the squared e log
- determinant of the cov matrix diffuse correction
-     */
-    ldet, 
-
-    /**
-     * Respectively: diffuse log-likelihood sum of the squared e log
- determinant of the cov matrix diffuse correction
-     */
-    dcorr;
-
-    private int nobs, nd;
-    private boolean legacy;
-
-    /**
+     * Initialize the diffuse likelihood. We consider below the GLS problem
+     * corresponding to a given state space: y = a * X + e, where X is derived
+     * from the initial conditions and e ~ N(0, V) or e ~ N(0, s Q)
      *
+     * The diffuse likelihood is then:
+     * + non-concentrated scaling factor:
+     * -0.5*(m*log(2*pi)+log|V|+log|X'V^-1*X|+ssqerr where m=n-d
+     * 
+     * + concentrated scaling factor (s = ssqerr/n)
+     * -0.5*(m*log(2*pi)+m*log(ssqerr/m)+m+log|Q|+log|X'Q^-1*X| where m=n-d
+     *      
+     * It should be noted that the usual definition (implemented in JD+ 2.0) is
+     * -0.5*(n*log(2*pi)+n*log(ssqerr/n)+n+log|V|+log|X'V^-1*X| The difference
+     * is thus -0.5*(d*log(2*pi)+d*log(ssqerr)-n*log(n)+m*log(m))
+     *
+     * The new definition is more coherent with the marginal likelihood.
+     *
+     * @param ssqerr The sum ofFunction the squared e
+     * @param ldet The log ofFunction the determinant ofFunction V
+     * @param lddet Diffuse correction
+     * @param n The number ofFunction observations
+     * @param nd The number ofFunction diffuse constraints
+     * @return
      */
-    public DiffuseLikelihood() {
-    }
-
-    public boolean isLegacy() {
-        return legacy;
-    }
-
-    public void setLegacy(boolean legacy) {
-        if (this.legacy != legacy) {
-            this.legacy = legacy;
-            calcll();
+    private DiffuseLikelihood(boolean concentrated, int n, int nd, double ssqerr, double ldet, double dcorr, boolean legacy) {
+        this.scalingFactor = concentrated;
+        this.nobs = n;
+        this.nd = nd;
+        this.ssqerr = ssqerr;
+        this.ldet = ldet;
+        this.dcorr = dcorr;
+        this.legacy = legacy;
+        int m = legacy ? nobs : nobs - nd;
+        if (m > 0) {
+            if (scalingFactor) {
+                ll = -.5
+                        * (m * Constants.LOGTWOPI + m
+                        * (1 + Math.log(ssqerr / m)) + ldet + dcorr);
+            } else {
+                ll = -.5
+                        * (m * Constants.LOGTWOPI + ssqerr + ldet + dcorr);
+            }
+        } else {
+            ll = Double.NaN;
         }
     }
 
@@ -80,14 +145,23 @@ public class DiffuseLikelihood implements ILikelihood {
 
     /**
      *
+     * @return false by default
      */
-    public void clear() {
-        ll = 0;
-        ssqerr = 0;
-        ldet = 0;
-        dcorr = 0;
-        nobs = 0;
-        nd = 0;
+    public boolean isLegacy() {
+        return legacy;
+    }
+
+    /**
+     *
+     * @param legacy legacy=true should be used only for testing purposes
+     * @return
+     */
+    public DiffuseLikelihood setLegacy(boolean legacy) {
+        if (this.legacy == legacy) {
+            return this;
+        } else {
+            return new DiffuseLikelihood(scalingFactor, nobs, nd, ssqerr, ldet, dcorr, legacy);
+        }
     }
 
     /**
@@ -114,11 +188,6 @@ public class DiffuseLikelihood implements ILikelihood {
     }
 
     @Override
-    public DoubleSequence e() {
-        return DataBlock.EMPTY;
-    }
-
-    @Override
     public double logDeterminant() {
         return ldet;
     }
@@ -127,6 +196,7 @@ public class DiffuseLikelihood implements ILikelihood {
      *
      * @return
      */
+    @Override
     public double ser() {
         return Math.sqrt(ssqerr / (m()));
     }
@@ -142,87 +212,49 @@ public class DiffuseLikelihood implements ILikelihood {
     }
 
     /**
-     * Adjust the likelihood if the data have been pre-multiplied by a given
+     * Adjust the likelihood if the toArray have been pre-multiplied by a given
      * scaling factor
      *
      * @param factor The scaling factor
+     * @return
      */
-    public void rescale(final double factor) {
+    public DiffuseLikelihood rescale(final double factor) {
         if (factor == 1) {
-            return;
+            return this;
+        } else {
+             return new DiffuseLikelihood(scalingFactor, nobs, nd, ssqerr / factor * factor, ldet, dcorr, legacy);
         }
-        ssqerr /= factor * factor;
-        ll += (m()) * Math.log(factor);
     }
 
     public double getDiffuseCorrection() {
         return dcorr;
     }
 
-    /**
-     * Initialize the diffuse likelihood. We consider below the GLS problem
-     * corresponding to a given state space: y = a * X + e, where X is derived
-     * from the initial conditions and e ~ N(0, V)
-     *
-     * The diffuse likelihood is then:
-     *
-     * -0.5*(m*log(2*pi)+m*log(ssqerr/m)+m+log|V|+log|X'V^-1*X| where m=n-d
-     *
-     * It should be noted that the usual definition (implemented in JD+ 2.0) is
-     * -0.5*(n*log(2*pi)+n*log(ssqerr/n)+n+log|V|+log|X'V^-1*X| The difference
-     * is thus -0.5*(d*log(2*pi)+d*log(ssqerr)-n*log(n)+m*log(m))
-     *
-     * The new definition is more coherent with the marginal likelihood. See the
-     * paper mentioned above.
-     *
-     * @param ssqerr The sum of the squared e
-     * @param ldet The log of the determinant of V
-     * @param dcorr Diffuse correction (= |X'*V^-1*X|)
-     * @param n The number of observations
-     * @param d The number of diffuse constraints
-     * @return
-     */
-    public boolean set(final double ssqerr, final double ldet, final double dcorr,
-            final int n, final int d) {
-        if (d == 0 && dcorr != 0) {
-            return false;
-        }
-        this.ssqerr = ssqerr;
-        this.ldet = ldet;
-        this.dcorr = dcorr;
-        this.nobs = n;
-        nd = d;
-        calcll();
-        return true;
-    }
-
-    private void calcll() {
-        int m = m();
-        if (m <= 0) {
-            return;
-        }
-        ll = -.5
-                * (m * Math.log(2 * Math.PI) + m
-                * (1 + Math.log(ssqerr / m)) + ldet + dcorr);
-
-    }
-
-    public void add(ILikelihood ll) {
-        nobs += ll.dim();
-        ssqerr += ll.ssq();
-        ldet += ll.logDeterminant();
-        calcll();
-    }
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ll=").append(this.logLikelihood()).append("\r\n");
-        builder.append("n=").append(this.dim()).append("\r\n");
-        builder.append("ssq=").append(this.ssq()).append("\r\n");
-        builder.append("ldet=").append(this.logDeterminant()).append("\r\n");
-        builder.append("dcorr=").append(this.getDiffuseCorrection()).append("\r\n");
+        builder.append("ll=").append(this.logLikelihood()).append(System.lineSeparator());
+        builder.append("n=").append(this.dim()).append(System.lineSeparator());
+        builder.append("ssq=").append(this.ssq()).append(System.lineSeparator());
+        builder.append("ldet=").append(this.logDeterminant()).append(System.lineSeparator());
+        builder.append("dcorr=").append(this.getDiffuseCorrection()).append(System.lineSeparator());
         return builder.toString();
     }
+
+    @Override
+    public DoubleSequence e() {
+        return DataBlock.EMPTY;
+    }
+
+    public DiffuseLikelihood add(ILikelihood ll) {
+        return DiffuseLikelihood.builder(nobs+ll.dim(), nd)
+                .ssqErr(ssqerr+ll.ssq())
+                .logDeterminant(ldet+ll.logDeterminant())
+                .diffuseCorrection(dcorr)
+                .legacy(legacy)
+                .concentratedScalingFactor(scalingFactor)
+                .build();
+    }
+
 
 }

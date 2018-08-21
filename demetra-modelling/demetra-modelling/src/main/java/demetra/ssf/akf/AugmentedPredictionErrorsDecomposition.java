@@ -143,13 +143,15 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
 
     @Override
     public DiffuseLikelihood likelihood() {
-        DiffuseLikelihood ll = new DiffuseLikelihood();
         double cc = c();
         cc *= cc;
         LogSign dsl =LogSign.of(a().diagonal());
-        double ddet = 2 * dsl.getValue();
-        ll.set(cc, 2*det, ddet, n, nd);
-        return ll;
+        double dcorr = 2 * dsl.getValue();
+        return DiffuseLikelihood.builder(n, nd)
+                .ssqErr(cc)
+                .logDeterminant(2*det)
+                .diffuseCorrection(dcorr)
+                .build();
     }
 
     @Override

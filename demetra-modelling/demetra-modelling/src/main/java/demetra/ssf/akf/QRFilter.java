@@ -102,8 +102,12 @@ public class QRFilter {
         mcorr = 2 * LogSign.of(housx.rdiagonal(true)).getValue();
         int nd = housx.rank(), n = Xl.getRowsCount();
 
-        mll = new MarginalLikelihood();
-        mll.set(ssq, ldet, dcorr, mcorr, n, nd);
+        mll = MarginalLikelihood.builder(n, nd)
+                .ssqErr(ssq)
+                .logDeterminant(ldet)
+                .diffuseCorrection(dcorr)
+                .marginalCorrection(mcorr)
+                .build();
     }
 
     private void calcDLL() {
@@ -116,8 +120,11 @@ public class QRFilter {
         ssq = e.ssq();
         dcorr = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
         R = hous.r(true);
-        dll = new DiffuseLikelihood();
-        dll.set(ssq, ldet, dcorr, n, nd);
+        dll = DiffuseLikelihood.builder(n, nd)
+                .ssqErr(ssq)
+                .logDeterminant(ldet)
+                .diffuseCorrection(dcorr)
+                .build();
     }
 
     private void calcPLL() {

@@ -102,13 +102,15 @@ public class QAugmentation {
     }
 
     public DiffuseLikelihood likelihood() {
-        DiffuseLikelihood ll = new DiffuseLikelihood();
         double cc = c();
         cc *= cc;
         LogSign dsl = LogSign.of(a().diagonal());
         double dcorr = 2 * dsl.getValue();
-        ll.set(cc, det.getLogDeterminant(), dcorr, n, nd);
-        return ll;
+        return DiffuseLikelihood.builder(n, nd)
+                .ssqErr(cc)
+                .logDeterminant(det.getLogDeterminant())
+                .diffuseCorrection(dcorr)
+                .build();
     }
 
     public boolean canCollapse() {
