@@ -17,7 +17,6 @@
 package ec.tss.xml;
 
 import ec.tstoolkit.information.RegressionItem;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -35,11 +34,15 @@ public class XmlRegItem implements IXmlConverter<RegressionItem> {
     public double coefficient;
     @XmlElement
     public double stderror;
+    @XmlElement
+    public double pvalue;
 
+    @Override
     public RegressionItem create() {
-        return new RegressionItem(description, coefficient, stderror);
+        return new RegressionItem(description, coefficient, stderror, pvalue);
     }
 
+    @Override
     public void copy(RegressionItem t) {
         description = t.description;
         coefficient = t.coefficient;

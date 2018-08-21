@@ -69,20 +69,23 @@ public class RegressionItemFormatter implements IStringFormatter {
         if (Strings.isNullOrEmpty(reg.description) || !showDesc_) {
             ++item;
         }
-        if (Math.abs(item) == 1) {
-            return StringFormatter.cleanup(reg.description);
-        } else if (Math.abs(item) == 2) {
-            return fmt.format(reg.coefficient);
-        } else if (Math.abs(item) == 3) {
-            if (reg.stdError == 0) {
+        switch (Math.abs(item)) {
+            case 1:
+                return StringFormatter.cleanup(reg.description);
+            case 2:
+                return fmt.format(reg.coefficient);
+            case 3:
+                if (reg.stdError == 0) {
+                    return "";
+                } else {
+                    return df3.format(reg.coefficient / reg.stdError);
+                }
+            case 4:
+                return fmt.format(reg.stdError);
+            case 5:
+                return df3.format(reg.pValue);
+            default:
                 return "";
-            } else {
-                return df3.format(reg.coefficient / reg.stdError);
-            }
-        } else if (Math.abs(item) == 4) {
-            return fmt.format(reg.stdError);
-        } else {
-            return "";
         }
     }
 

@@ -27,6 +27,7 @@ import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.dstats.T;
 import ec.tstoolkit.eco.CoefficientEstimation;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
 import ec.tstoolkit.information.Information;
@@ -874,11 +875,16 @@ public class PreprocessingModel implements IProcResults {
         return description.getEstimationDomain().getFrequency();
     }
 
-    public <T extends ITsVariable> RegressionItem getRegressionItem(Class<T> tclass, int vpos) {
-        TsVariableSelection<T> sel = vars().select(tclass);
+    public <V extends ITsVariable> RegressionItem getRegressionItem(Class<V> tclass, int vpos) {
+        TsVariableSelection<V> sel = vars().select(tclass);
         if (sel.isEmpty()) {
             return null;
         } else {
+            int nhp = description.getArimaComponent().getFreeParametersCount();
+            int df = estimation.getLikelihood().getDegreesOfFreedom(true, nhp);
+            T tstat = new T();
+            tstat.setDegreesofFreedom(df);
+
             int cur = 0;
             while (cur < sel.getItemsCount()) {
                 int l = sel.get(cur).variable.getDim();
@@ -892,12 +898,14 @@ public class PreprocessingModel implements IProcResults {
             if (cur == sel.getItemsCount()) {
                 return null;
             }
-            Item<T> item = sel.get(cur);
+            Item<V> item = sel.get(cur);
             TsFrequency context = description.getEstimationDomain().getFrequency();
             int pos = description.getRegressionVariablesStartingPosition() + item.position + vpos;
             double c = estimation.getLikelihood().getB()[pos];
-            double e = estimation.getLikelihood().getBSer(pos, true, description.getArimaComponent().getFreeParametersCount());
-            return new RegressionItem(item.variable.getItemDescription(vpos, context), c, e);
+            double e = estimation.getLikelihood().getBSer(pos, true, nhp);
+            double t = c / e;
+            double prob = 1 - tstat.getProbabilityForInterval(-t, t);
+            return new RegressionItem(item.variable.getItemDescription(vpos, context), c, e, prob);
         }
     }
     // some caching...
@@ -907,7 +915,7 @@ public class PreprocessingModel implements IProcResults {
     private int ncasts = -2;
     public static final String LOG = "log",
             ADJUST = "adjust",
-            SPAN = "span", ESPAN = "espan", START = "start", END = "end", N = "n",
+            SPAN = "span", ESPAN = "espan", START = "start", END = "end", N = "n", PERIOD = "period",
             REGRESSION = "regression",
             OUTLIERS = "outlier(*)",
             CALENDAR = "calendar(*)",
@@ -946,6 +954,7 @@ public class PreprocessingModel implements IProcResults {
     private static final InformationMapping<PreprocessingModel> MAPPING = new InformationMapping<>(PreprocessingModel.class);
 
     static {
+        MAPPING.set(PERIOD, Integer.class, source -> source.description.getFrequency());
         MAPPING.set(InformationSet.item(SPAN, START), TsPeriod.class, source -> source.description.getSeriesDomain().getStart());
         MAPPING.set(InformationSet.item(SPAN, END), TsPeriod.class, source -> source.description.getSeriesDomain().getLast());
         MAPPING.set(InformationSet.item(SPAN, N), Integer.class, source -> source.description.getSeriesDomain().getLength());
