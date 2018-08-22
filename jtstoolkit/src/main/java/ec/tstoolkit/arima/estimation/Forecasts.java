@@ -1,20 +1,19 @@
 /*
 * Copyright 2013 National Bank of Belgium
 *
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+* Licensed under the EUPL, Version 1.1 or – as soon they will be approved
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
 * You may not use this work except in compliance with the Licence.
 * You may obtain a copy of the Licence at:
 *
 * http://ec.europa.eu/idabc/eupl
 *
-* Unless required by applicable law or agreed to in writing, software 
+* Unless required by applicable law or agreed to in writing, software
 * distributed under the Licence is distributed on an "AS IS" basis,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
+* See the Licence for the specific language governing permissions and
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.arima.estimation;
 
 import ec.tstoolkit.arima.IArimaModel;
@@ -27,10 +26,8 @@ import ec.tstoolkit.ssf.DiffuseFilteringResults;
 import ec.tstoolkit.ssf.DiffuseVarianceFilter;
 import ec.tstoolkit.ssf.Filter;
 import ec.tstoolkit.ssf.FilteredData;
-import ec.tstoolkit.ssf.FilteringResults;
 import ec.tstoolkit.ssf.ISsf;
 import ec.tstoolkit.ssf.SsfData;
-import ec.tstoolkit.ssf.VarianceFilter;
 import ec.tstoolkit.ssf.arima.SsfArima;
 import ec.tstoolkit.ssf.arima.SsfArima.Initializer;
 import java.util.List;
@@ -47,8 +44,8 @@ public class Forecasts {
     public int getForecastsCount() {
         return nf_;
     }
-    
-    public double[] getForecasts(){
+
+    public double[] getForecasts() {
         return f_;
     }
 
@@ -60,36 +57,39 @@ public class Forecasts {
         return ef_[idx];
     }
 
-     public double[] getForecastStdevs(){
+    public double[] getForecastStdevs() {
         return ef_;
     }
 
-     Forecasts(int nf) {
+    Forecasts(int nf) {
         nf_ = nf;
         f_ = new double[nf];
         ef_ = new double[nf];
     }
 
-    public Forecasts(){}
+    public Forecasts() {
+    }
 
     /**
-     * Computes the forecasts of a RegArima model, using a Kalman filter.
-     * The diffuse initialiser of Koopman is used for the non stationary part.
+     * Computes the forecasts of a RegArima model, using a Kalman filter. The
+     * diffuse initialiser of Koopman is used for the non stationary part.
+     *
      * @param <M> The type of the Arima model
      * @param gls The gls model
-     * @param x the extended values of the deterministic components (without mean)
+     * @param x the extended values of the deterministic components (without
+     * mean)
      * @param fHorizon The length of the forecasts
-     * @param nhp The number of hyper parameters count. This parameter is used in the
-     * computation of the standard error.
+     * @param nhp The number of hyper parameters count. This parameter is used
+     * in the computation of the standard error.
      */
     public <M extends IArimaModel> void calcForecast(final RegArimaEstimation<M> gls,
             final List<DataBlock> x, final int fHorizon, final int nhp) {
         DataBlock y = gls.model.getY();
         IArimaModel arima = gls.model.getArima();
-        int nd=arima.getNonStationaryARCount();
+        int nd = arima.getNonStationaryARCount();
         int[] missings = gls.model.getMissings();
-        if (!checkMissings(missings, nd)){
-            calcForecast2(gls,x,fHorizon,nhp);
+        if (!checkMissings(missings, nd)) {
+            calcForecast2(gls, x, fHorizon, nhp);
             return;
         }
         int nx = x == null ? 0 : x.size();
@@ -99,6 +99,8 @@ public class Forecasts {
 
         nf_ = fHorizon;
         if (nf_ <= 0) {
+            ef_ = new double[0];
+            f_ = new double[0];
             return;
         }
         ef_ = new double[nf_];
@@ -174,7 +176,7 @@ public class Forecasts {
             Matrix xe = new Matrix(nf_, nx);
 
             for (int i = 0, ix = 0; i < nx; ++i) {
-                double[] xcur = null;
+                double[] xcur;
                 if (i == 0 && gls.model.isMeanCorrection()) {
                     xcur = gls.model.calcMeanReg(n + nf_);
                 } else {
@@ -205,7 +207,7 @@ public class Forecasts {
             ef_[i] = Math.sqrt(ef_[i]);
         }
     }
-   
+
     public <M extends IArimaModel> void calcForecast2(final RegArimaEstimation<M> gls,
             final List<DataBlock> x, final int fHorizon, final int nhp) {
         DataBlock y = gls.model.getY();
@@ -217,6 +219,8 @@ public class Forecasts {
 
         nf_ = fHorizon;
         if (nf_ <= 0) {
+            ef_ = new double[0];
+            f_ = new double[0];
             return;
         }
         ef_ = new double[nf_];
@@ -226,8 +230,8 @@ public class Forecasts {
         SsfArima ssf = new SsfArima(arima);
         Filter<ISsf> filter = new Filter<>();
         filter.setSsf(ssf);
-        ec.tstoolkit.ssf.DiffuseSquareRootInitializer initializer=
-                new ec.tstoolkit.ssf.DiffuseSquareRootInitializer();
+        ec.tstoolkit.ssf.DiffuseSquareRootInitializer initializer
+                = new ec.tstoolkit.ssf.DiffuseSquareRootInitializer();
         filter.setInitializer(initializer);
 
         DiffuseFilteringResults frslts = new DiffuseFilteringResults(true);
@@ -290,7 +294,7 @@ public class Forecasts {
             Matrix xe = new Matrix(nf_, nx);
 
             for (int i = 0, ix = 0; i < nx; ++i) {
-                double[] xcur = null;
+                double[] xcur;
                 if (i == 0 && gls.model.isMeanCorrection()) {
                     xcur = gls.model.calcMeanReg(n + nf_);
                 } else {
@@ -321,11 +325,14 @@ public class Forecasts {
     }
 
     private boolean checkMissings(int[] missings, int nd) {
-        if (missings == null)
+        if (missings == null) {
             return true;
-        for (int i=0;i<missings.length; ++i)
-            if (missings[i]<nd)
+        }
+        for (int i = 0; i < missings.length; ++i) {
+            if (missings[i] < nd) {
                 return false;
+            }
+        }
         return true;
     }
 }

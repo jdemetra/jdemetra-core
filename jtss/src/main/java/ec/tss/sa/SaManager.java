@@ -142,17 +142,14 @@ public final class SaManager extends AlgorithmManager<ISaSpecification, TsData, 
 
     public static InformationSet createDiagnostics(CompositeResults sa) {
         InformationSet summary = new InformationSet();
-        for (IDiagnosticsFactory diag : SaManager.instance.getDiagnostics()) {
-            if (diag.isEnabled()) {
-                if (diag.getName() == MDiagnosticsFactory.NAME) {
-                    if (sa.getData(ModellingDictionary.Y, TsData.class) != null && sa.getData(ModellingDictionary.Y, TsData.class).getFrequency().intValue() == 2) {
-                    } else {
-                        summary.add(create((ISaDiagnosticsFactory) diag, sa));
-                    }
+        TsData y = sa.getData(ModellingDictionary.Y, TsData.class);
+        boolean isHalfYearly = y != null && y.getFrequency().intValue() == 2;
 
-                } else {
-                    summary.add(create((ISaDiagnosticsFactory) diag, sa));
-                }
+        for (IDiagnosticsFactory diag : SaManager.instance.getDiagnostics()) {
+            if (diag.isEnabled()
+                    && (!diag.getName().equals(MDiagnosticsFactory.NAME)
+                    || !isHalfYearly)) {
+                summary.add(create((ISaDiagnosticsFactory) diag, sa));
             }
         }
         return summary;

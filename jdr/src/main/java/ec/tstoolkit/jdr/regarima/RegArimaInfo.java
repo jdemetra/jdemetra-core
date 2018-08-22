@@ -1,17 +1,17 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * https://joinup.ec.europa.eu/software/page/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tstoolkit.jdr.regarima;
@@ -71,7 +71,7 @@ public class RegArimaInfo {
             NOUT = "nout", NOUTAO = "noutao", NOUTLS = "noutls", NOUTTC = "nouttc", NOUTSO = "noutso",
             COEFF = "coefficients", COVAR = "covar", COEFFDESC = "description", PCOVAR = "pcovar";
     ;
-    
+
     final InformationMapping<PreprocessingModel> MAPPING = new InformationMapping<>(PreprocessingModel.class);
 
     public InformationMapping<PreprocessingModel> getMapping() {
@@ -212,15 +212,15 @@ public class RegArimaInfo {
         MAPPING.setArray(BCASTS, -2, TsData.class, (source, i) -> source.backcast(nperiods(source, i), false));
         MAPPING.setArray(LIN_FCASTS, -2, TsData.class, (source, i) -> source.linearizedForecast(nperiods(source, i)));
         MAPPING.setArray(LIN_BCASTS, -2, TsData.class, (source, i) -> source.linearizedBackcast(nperiods(source, i)));
-        MAPPING.setArray(EFCASTS, -2, TsData.class, (source, i)
-                -> {
+        MAPPING.setArray(EFCASTS, -2, TsData.class, (source, i) ->
+        {
             int np = nperiods(source, i);
             TsDomain fdomain = new TsDomain(source.description.getSeriesDomain().getEnd(), np);
             Forecasts fcasts = source.forecasts(np);
             double[] ef;
             if (source.isMultiplicative()) {
                 LogForecasts lf = new LogForecasts(fcasts);
-                ef = lf.getForecatStdevs();
+                ef = lf.getForecastStdevs();
             } else {
                 ef = fcasts.getForecastStdevs();
             }
@@ -352,7 +352,7 @@ public class RegArimaInfo {
         double[] ef;
         if (model.isMultiplicative()) {
             LogForecasts lf = new LogForecasts(fcasts);
-            ef = lf.getForecatStdevs();
+            ef = lf.getForecastStdevs();
         } else {
             ef = fcasts.getForecastStdevs();
         }
