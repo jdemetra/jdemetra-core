@@ -30,6 +30,7 @@ import ec.tstoolkit.modelling.ModellingDictionary;
 import ec.tstoolkit.modelling.SeriesInfo;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.ucarima.UcarimaModel;
+import ec.tstoolkit.ucarima.WienerKolmogorovDiagnostics;
 import ec.tstoolkit.ucarima.WienerKolmogorovEstimators;
 import ec.tstoolkit.utilities.Arrays2;
 import java.util.ArrayList;
@@ -93,6 +94,7 @@ public class SeatsResults implements ISaResults {
     DefaultSeriesDecomposition initialComponents, finalComponents;
     InformationSet info_;
     private List<ProcessingInformation> log_ = new ArrayList<>();
+    private WienerKolmogorovDiagnostics diagnostics;
 
     void addProcessingInformation(ProcessingInformation info) {
         log_.add(info);
@@ -102,6 +104,33 @@ public class SeatsResults implements ISaResults {
         if (log_ != null && info != null) {
             log_.addAll(info);
         }
+    }
+
+    public WienerKolmogorovDiagnostics diagnostics() {
+        if (diagnostics == null) {
+            try {
+                UcarimaModel ucm = decomposition.clone();
+                if (ucm.getComponentsCount() > 3) {
+                    ucm.compact(2, 2);
+                }
+                int[] cmps = new int[]{1, -2, 2, 3};
+                double err = model.getSer();
+                TsData t = initialComponents.getSeries(ComponentType.Trend, ComponentInformation.Value);
+                TsData s = initialComponents.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
+                TsData i = initialComponents.getSeries(ComponentType.Irregular, ComponentInformation.Value);
+                TsData sa = initialComponents.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
+
+                double[][] data = new double[][]{
+                    t == null ? null : t.internalStorage(),
+                    s == null ? null : sa.internalStorage(),
+                    s == null ? null : s.internalStorage(),
+                    i == null ? null : i.internalStorage()
+                };
+                diagnostics = WienerKolmogorovDiagnostics.make(decomposition, err, data, cmps);
+            } catch (Exception e) {
+            }
+        }
+        return diagnostics;
     }
 
     @Override
@@ -213,7 +242,10 @@ public class SeatsResults implements ISaResults {
 
     private static final InformationMapping<SeatsResults> MAPPING = new InformationMapping<>(SeatsResults.class);
 
-    public static final String CUTOFF = "parameters_cutoff", CHANGED = "model_changed", SEAS = "seasonality", AR_ROOT = "ar_root";
+    public static final String CUTOFF = "parameters_cutoff", CHANGED = "model_changed", SEAS = "seasonality", AR_ROOT = "ar_root", MA_ROOT = "ma_root";
+    public static final String TREND = "trend", SEASONAL = "seasonal", SA = "sa", TS="trend/seasonal", SI="seasonal/irregular", TI="trend/irregular", 
+            IRREGULAR = "irregular", ESTIMATE = "estimate", ESTIMATOR = "estimator", VARIANCE = "variance", PVALUE = "pvalue";
+    private static final int T_CMP = 0, SA_CMP = 1, I_CMP = 3, S_CMP = 2;
 
     static {
         MAPPING.set(ModellingDictionary.Y_LIN, source -> source.initialComponents.getSeries(ComponentType.Series, ComponentInformation.Value));
@@ -301,6 +333,51 @@ public class SeatsResults implements ISaResults {
                 return ar[i - 1].inv();
             }
         });
+        MAPPING.setList(MA_ROOT, 1, 3, Complex.class, (source, i) -> {
+            Complex[] ma = source.model.getMovingAverageRoots();
+            if (i > ma.length) {
+                return null;
+            } else {
+                return ma[i - 1].inv();
+            }
+        });
+
+        MAPPING.set(InformationSet.concatenate(TREND, ESTIMATE), Double.class, source
+                -> source.diagnostics().getEstimateVariance(0));
+        MAPPING.set(InformationSet.concatenate(TREND, ESTIMATOR), Double.class, source
+                -> source.diagnostics().getEstimatorVariance(0));
+        MAPPING.set(InformationSet.concatenate(TREND, PVALUE), Double.class, source
+                -> source.diagnostics().getPValue(0));
+        MAPPING.set(InformationSet.concatenate(TREND, ESTIMATE), Double.class, source
+                -> source.diagnostics().getEstimateVariance(T_CMP));
+        MAPPING.set(InformationSet.concatenate(TREND, ESTIMATOR), Double.class, source
+                -> source.diagnostics().getEstimatorVariance(T_CMP));
+        MAPPING.set(InformationSet.concatenate(TREND, PVALUE), Double.class, source
+                -> source.diagnostics().getPValue(T_CMP));
+        MAPPING.set(InformationSet.concatenate(SEASONAL, ESTIMATE), Double.class, source
+                -> source.diagnostics().getEstimateVariance(S_CMP));
+        MAPPING.set(InformationSet.concatenate(SEASONAL, ESTIMATOR), Double.class, source
+                -> source.diagnostics().getEstimatorVariance(S_CMP));
+        MAPPING.set(InformationSet.concatenate(SEASONAL, PVALUE), Double.class, source
+                -> source.diagnostics().getPValue(S_CMP));
+        MAPPING.set(InformationSet.concatenate(IRREGULAR, ESTIMATE), Double.class, source
+                -> source.diagnostics().getEstimateVariance(I_CMP));
+        MAPPING.set(InformationSet.concatenate(IRREGULAR, ESTIMATOR), Double.class, source
+                -> source.diagnostics().getEstimatorVariance(I_CMP));
+        MAPPING.set(InformationSet.concatenate(IRREGULAR, PVALUE), Double.class, source
+                -> source.diagnostics().getPValue(I_CMP));
+        MAPPING.set(InformationSet.concatenate(SA, ESTIMATE), Double.class, source
+                -> source.diagnostics().getEstimateVariance(SA_CMP));
+        MAPPING.set(InformationSet.concatenate(SA, ESTIMATOR), Double.class, source
+                -> source.diagnostics().getEstimatorVariance(SA_CMP));
+        MAPPING.set(InformationSet.concatenate(SA, PVALUE), Double.class, source
+                -> source.diagnostics().getPValue(SA_CMP));
+        MAPPING.set(InformationSet.concatenate(TS, PVALUE), Double.class, source
+                -> source.diagnostics().getPValue(T_CMP, S_CMP));
+        MAPPING.set(InformationSet.concatenate(TI, PVALUE), Double.class, source
+                -> source.diagnostics().getPValue(T_CMP, I_CMP));
+        MAPPING.set(InformationSet.concatenate(SI, PVALUE), Double.class, source
+                -> source.diagnostics().getPValue(S_CMP, I_CMP));
 
     }
 }

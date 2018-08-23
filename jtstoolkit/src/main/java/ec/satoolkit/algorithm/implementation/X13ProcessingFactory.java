@@ -22,6 +22,7 @@ import ec.satoolkit.DefaultSeriesDecomposition;
 import ec.satoolkit.GenericSaProcessingFactory;
 import static ec.satoolkit.GenericSaProcessingFactory.BENCHMARKING;
 import static ec.satoolkit.GenericSaProcessingFactory.DECOMPOSITION;
+import ec.satoolkit.GenericSaResults;
 import ec.satoolkit.benchmarking.SaBenchmarkingResults;
 import ec.satoolkit.x11.Mstatistics;
 import ec.satoolkit.x11.X11Results;
@@ -69,6 +70,8 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
         addFinalStep(filter, processing);
         addDiagnosticsStep(processing);
         addBenchmarkingStep(xspec.getBenchmarkingSpecification(), processing);
+        addGeneralStep(processing);
+//        addDiagnosticStep(processing);
         return processing;
     }
 
@@ -146,6 +149,7 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
         Mstatistics.fillDictionary(MSTATISTICS, dic, compact);
         DefaultSeriesDecomposition.fillDictionary(null, dic, compact);
         SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic, compact);
+        GenericSaResults.fillDictionary(null, dic, compact);
         return dic;
     }
 }

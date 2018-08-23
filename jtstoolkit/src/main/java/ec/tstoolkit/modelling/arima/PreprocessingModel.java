@@ -915,7 +915,7 @@ public class PreprocessingModel implements IProcResults {
     private int ncasts = -2;
     public static final String LOG = "log",
             ADJUST = "adjust",
-            SPAN = "span", ESPAN = "espan", START = "start", END = "end", N = "n", PERIOD = "period",
+            SPAN = "span", ESPAN = "espan", START = "start", END = "end", N = "n", NM = "missing", PERIOD = "period",
             REGRESSION = "regression",
             OUTLIERS = "outlier(*)",
             CALENDAR = "calendar(*)",
@@ -958,6 +958,7 @@ public class PreprocessingModel implements IProcResults {
         MAPPING.set(InformationSet.item(SPAN, START), TsPeriod.class, source -> source.description.getSeriesDomain().getStart());
         MAPPING.set(InformationSet.item(SPAN, END), TsPeriod.class, source -> source.description.getSeriesDomain().getLast());
         MAPPING.set(InformationSet.item(SPAN, N), Integer.class, source -> source.description.getSeriesDomain().getLength());
+        MAPPING.set(InformationSet.item(SPAN, NM), Integer.class, source -> source.description.getOriginal().getMissingValuesCount());
         MAPPING.set(InformationSet.item(ESPAN, START), TsPeriod.class, source -> source.description.getEstimationDomain().getStart());
         MAPPING.set(InformationSet.item(ESPAN, END), TsPeriod.class, source -> source.description.getEstimationDomain().getLast());
         MAPPING.set(InformationSet.item(ESPAN, N), Integer.class, source -> source.description.getEstimationDomain().getLength());
