@@ -28,13 +28,13 @@ import java.text.DecimalFormat;
 public class RegressionItemFormatter implements IStringFormatter {
 
     private static final DecimalFormat df6 = new DecimalFormat();
-    private static final DecimalFormat df3 = new DecimalFormat();
+    private static final DecimalFormat df4 = new DecimalFormat();
 
     static {
         df6.setMaximumFractionDigits(6);
-        df3.setMaximumFractionDigits(3);
+        df4.setMaximumFractionDigits(4);
         df6.setGroupingUsed(false);
-        df3.setGroupingUsed(false);
+        df4.setGroupingUsed(false);
     }
     private final DecimalFormat fmt;
     private final boolean showDesc_;
@@ -78,12 +78,12 @@ public class RegressionItemFormatter implements IStringFormatter {
                 if (reg.stdError == 0) {
                     return "";
                 } else {
-                    return df3.format(reg.coefficient / reg.stdError);
+                    return df4.format(reg.coefficient / reg.stdError);
                 }
             case 4:
                 return fmt.format(reg.stdError);
             case 5:
-                return df3.format(reg.pValue);
+                return df4.format(reg.pValue);
             default:
                 return "";
         }
@@ -94,10 +94,10 @@ public class RegressionItemFormatter implements IStringFormatter {
         if (reg.description != null) {
             builder.append(reg.description).append(':');
         }
-        builder.append(df3.format(reg.coefficient));
+        builder.append(df4.format(reg.coefficient));
         if (reg.stdError != 0) {
             builder.append('[').append(
-                    df3.format(reg.coefficient / reg.stdError)).append(']');
+                    df4.format(reg.coefficient / reg.stdError)).append(']');
         }
         return builder.toString();
 

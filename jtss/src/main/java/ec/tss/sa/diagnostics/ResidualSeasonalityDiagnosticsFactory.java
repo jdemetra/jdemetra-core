@@ -32,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ISaDiagnosticsFactory.class)
 public class ResidualSeasonalityDiagnosticsFactory implements ISaDiagnosticsFactory {
 
-    public static final String NAME = "Combined residual seasonality test",
+    public static final String NAME = "combined seasonality test",
             SA = NAME + " on sa", SA_LAST = NAME + " on sa (last 3 years)", IRR = NAME + " on irregular";
     public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(SA, SA_LAST, IRR));
     private ResidualSeasonalityDiagnosticsConfiguration config_;
