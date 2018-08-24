@@ -18,6 +18,7 @@ package ec.satoolkit.algorithm.implementation;
 
 import ec.satoolkit.DefaultPreprocessingFilter;
 import ec.satoolkit.DefaultSeriesDecomposition;
+import ec.satoolkit.GenericSaDiagnostics;
 import ec.satoolkit.GenericSaProcessingFactory;
 import ec.satoolkit.GenericSaResults;
 import ec.satoolkit.benchmarking.SaBenchmarkingResults;
@@ -56,7 +57,7 @@ public class TramoSeatsProcessingFactory extends GenericSaProcessingFactory impl
         addFinalStep(filter, processing);
         addBenchmarkingStep(xspec.getBenchmarkingSpecification(), processing);
         addGeneralStep(processing);
-//        addDiagnosticStep(processing);
+        addDiagnosticsStep(processing);
         return processing;
     }
     public static final TramoSeatsProcessingFactory instance = new TramoSeatsProcessingFactory();
@@ -111,6 +112,7 @@ public class TramoSeatsProcessingFactory extends GenericSaProcessingFactory impl
         DefaultSeriesDecomposition.fillDictionary(null, dic, compact);
         SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic, compact);
         GenericSaResults.fillDictionary(null, dic, compact);
+        GenericSaDiagnostics.fillDictionary(DIAGNOSTICS, dic, compact);
         return dic;
     }
 }

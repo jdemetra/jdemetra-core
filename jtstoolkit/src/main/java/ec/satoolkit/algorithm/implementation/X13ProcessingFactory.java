@@ -19,6 +19,7 @@ package ec.satoolkit.algorithm.implementation;
 import ec.satoolkit.DecompositionMode;
 import ec.satoolkit.DefaultPreprocessingFilter;
 import ec.satoolkit.DefaultSeriesDecomposition;
+import ec.satoolkit.GenericSaDiagnostics;
 import ec.satoolkit.GenericSaProcessingFactory;
 import static ec.satoolkit.GenericSaProcessingFactory.BENCHMARKING;
 import static ec.satoolkit.GenericSaProcessingFactory.DECOMPOSITION;
@@ -68,14 +69,14 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
         filter.setBackcastHorizon(xspec.getX11Specification().getBackcastHorizon());
         addDecompositionStep(new X11Decomposer(xspec.getX11Specification()), filter, processing);
         addFinalStep(filter, processing);
-        addDiagnosticsStep(processing);
+        addMStep(processing);
         addBenchmarkingStep(xspec.getBenchmarkingSpecification(), processing);
         addGeneralStep(processing);
-//        addDiagnosticStep(processing);
+        addDiagnosticsStep(processing);
         return processing;
     }
 
-    private static void addDiagnosticsStep(SequentialProcessing processing) {
+    private static void addMStep(SequentialProcessing processing) {
         processing.add(new IProcessingNode<TsData>() {
             @Override
             public String getName() {
@@ -150,6 +151,7 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
         DefaultSeriesDecomposition.fillDictionary(null, dic, compact);
         SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic, compact);
         GenericSaResults.fillDictionary(null, dic, compact);
+        GenericSaDiagnostics.fillDictionary(DIAGNOSTICS, dic, compact);
         return dic;
     }
 }

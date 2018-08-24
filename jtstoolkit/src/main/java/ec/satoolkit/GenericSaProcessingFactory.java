@@ -421,6 +421,38 @@ public class GenericSaProcessingFactory {
         };
     }
 
+    protected static void addDiagnosticsStep(SequentialProcessing sproc) {
+        sproc.add(createDiagnosticsStep());
+    }
+
+    protected static IProcessingNode<TsData> createDiagnosticsStep() {
+
+        return new IProcessingNode<TsData>() {
+            @Override
+            public String getName() {
+                return DIAGNOSTICS;
+            }
+
+            @Override
+            public String getPrefix() {
+                return DIAGNOSTICS;
+            }
+
+            @Override
+            public Status process(TsData s, Map<String, IProcResults> results) {
+                PreprocessingModel pm = (PreprocessingModel) results.get(PREPROCESSING);
+                ISaResults decomp = (ISaResults) results.get(DECOMPOSITION);
+                ISeriesDecomposition finals = (ISeriesDecomposition) results.get(FINAL);
+                GenericSaDiagnostics sa = GenericSaDiagnostics.of(pm, decomp, finals);
+                if (sa == null) {
+                    return Status.Unprocessed;
+                }
+                results.put(DIAGNOSTICS, sa);
+                return Status.Valid;
+            }
+        };
+    }
+
     protected static IProcessingNode<TsData> createBenchmarkingStep(final SaBenchmarkingSpec spec) {
 
         return new IProcessingNode<TsData>() {
