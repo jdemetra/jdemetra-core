@@ -5,20 +5,14 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.ar.ArBuilder;
-import demetra.arima.ArimaModel;
-import demetra.arima.ssf.SsfArima;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
-import demetra.data.Doubles;
 import demetra.data.MatrixSerializer;
 import demetra.maths.MatrixType;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
-import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.functions.minpack.MinPackMinimizer;
-import demetra.maths.functions.riso.LbfgsMinimizer;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaMapping;
@@ -27,9 +21,6 @@ import demetra.ssf.SsfComponent;
 import demetra.ssf.akf.AkfFunction;
 import demetra.ssf.akf.AkfFunctionPoint;
 import demetra.ssf.akf.AkfToolkit;
-import demetra.ssf.akf.AugmentedPredictionErrorsDecomposition;
-import demetra.ssf.akf.MultivariateAugmentedFilter;
-import demetra.ssf.dk.DkLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.dk.SsfFunctionPoint;
@@ -37,7 +28,6 @@ import demetra.ssf.implementations.MultivariateCompositeSsf.Item;
 import demetra.ssf.models.AR;
 import demetra.ssf.models.LocalLevel;
 import demetra.ssf.models.LocalLinearTrend;
-import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.M2uAdapter;
 import demetra.ssf.multivariate.SsfMatrix;
 import demetra.ssf.univariate.DefaultSmoothingResults;
@@ -83,8 +73,8 @@ public class MultivariateCompositeSsfTest {
         ISsfData udata = M2uAdapter.of(mdata);
 
         Mapping mapping = new Mapping();
-        AkfFunction<MultivariateCompositeSsf, ISsf> fn = AkfFunction.builder(udata, mapping, m -> M2uAdapter.of(m))
-                .useParallelProcessing(false)
+        SsfFunction<MultivariateCompositeSsf, ISsf> fn = SsfFunction.builder(udata, mapping, m -> M2uAdapter.of(m))
+                .useParallelProcessing(true)
                 .useScalingFactor(true)
                 .useMaximumLikelihood(true)
                 .build();
@@ -93,7 +83,7 @@ public class MultivariateCompositeSsfTest {
 //        LevenbergMarquardtMinimizer lm = new LevenbergMarquardtMinimizer();
         lm.setMaxIter(1000);
         boolean ok = lm.minimize(fn.evaluate(mapping.getDefaultParameters()));
-        AkfFunctionPoint rslt = (AkfFunctionPoint) lm.getResult();
+        SsfFunctionPoint rslt = (SsfFunctionPoint) lm.getResult();
         System.out.println(rslt.getLikelihood().logLikelihood());
         System.out.println(rslt.getLikelihood().ser());
         System.out.println(rslt.getParameters());
