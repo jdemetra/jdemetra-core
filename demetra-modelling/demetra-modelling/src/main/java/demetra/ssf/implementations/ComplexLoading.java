@@ -82,14 +82,11 @@ class ComplexLoading implements ISsfLoading {
     public double ZVZ(int pos, Matrix v) {
         double x = 0;
         for (int i = 0; i < loadings.length; ++i) {
-            int ni = dim[i];
-            tmp.set(0);
             Matrix D = v.extract(start[i], dim[i], start[i], dim[i]);
             x += loadings[i].ZVZ(pos, D);
             for (int j = i + 1; j < loadings.length; ++j) {
-                int nj = dim[j];
-                DataBlock cur = tmp.range(0, nj);
-                Matrix C = v.extract(start[i], dim[i], start[j], dim[j]);
+                DataBlock cur = tmp.range(0, dim[i]);
+                Matrix C = v.extract(start[j], dim[j], start[i], dim[i]);
                 loadings[j].ZM(pos, C, cur);
                 x += 2 * loadings[i].ZX(pos, cur);
             }
@@ -104,8 +101,7 @@ class ComplexLoading implements ISsfLoading {
             Matrix D = V.extract(start[i], dim[i], start[i], dim[i]);
             loadings[i].VpZdZ(pos, D, d);
             for (int j = i + 1; j < loadings.length; ++j) {
-                int nj = dim[j];
-                DataBlock cur = tmp.range(0, nj);
+                DataBlock cur = tmp.range(0, dim[j]);
                 loadings[j].Z(pos, cur); // Zj
                 Matrix C = V.extract(start[i], dim[i], start[j], dim[j]);
                 DataBlockIterator cols = C.columnsIterator();

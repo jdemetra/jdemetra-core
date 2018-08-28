@@ -101,8 +101,7 @@ public class CompositeInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void Pi0(Matrix p
-    ) {
+    public void Pi0(Matrix p) {
         MatrixWindow cur = p.topLeft();
         for (int i = 0; i < initializers.length; ++i) {
             cur.next(dim[i], dim[i]);

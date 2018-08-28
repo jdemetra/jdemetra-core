@@ -863,7 +863,7 @@ public final class DataBlock implements DoubleSequence {
     }
 
     public void correctForMean() {
-        double s = sum();
+        double s = average();
         sub(s);
     }
 
@@ -883,8 +883,9 @@ public final class DataBlock implements DoubleSequence {
         int n = length();
         double s = 0;
         for (int i = beg; i != end; i += inc) {
-            double cur = data[i] - mean;
+            double cur = data[i];
             if (Double.isFinite(cur)) {
+                cur -= mean;
                 s += cur * cur;
             }
         }
@@ -902,6 +903,9 @@ public final class DataBlock implements DoubleSequence {
             } else {
                 m++;
             }
+        }
+        if (m == n) {
+            return Double.NaN;
         }
         return s / (n - m);
     }
@@ -1066,6 +1070,47 @@ public final class DataBlock implements DoubleSequence {
         if (d != 1) {
             data[beg + pos * inc] /= d;
         }
+    }
+
+    /**
+     * Removes the mean and divide by the standard deviation (taking into
+     * account missing values)
+     */
+    public void normalize() {
+        int n = length();
+        int m = 0;
+        double s = 0;
+        for (int i = beg; i != end; i += inc) {
+            double cur = data[i];
+            if (Double.isFinite(cur)) {
+                s += cur;
+            } else {
+                m++;
+            }
+        }
+        if (m == n) {
+            return;
+        }
+        double mean = s / (n - m);
+        s = 0;
+        for (int i = beg; i != end; i += inc) {
+            double cur = data[i];
+            if (Double.isFinite(cur)) {
+                cur -= mean;
+                s += cur * cur;
+            }
+        }
+        double se = Math.sqrt(s / (n - m));
+        if (se == 0) {
+            set(1);
+        } else {
+            for (int i = beg; i != end; i += inc) {
+                if (Double.isFinite(data[i])) {
+                    data[i] = (data[i] - mean) / se;
+                }
+            }
+        }
+
     }
 
     public void set(Iterator<DataBlock> blocks, DataBlockFunction fn) {

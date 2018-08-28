@@ -146,6 +146,7 @@ public class MultivariateAugmentedFilter {
      * @return
      */
     public boolean process(final IMultivariateSsf ssf, final IMultivariateSsfData data, final IMultivariateAugmentedFilteringResults rslts) {
+        this.ssf=ssf;
         measurements = ssf.measurements();
         dynamics = ssf.dynamics();
         this.data = data;

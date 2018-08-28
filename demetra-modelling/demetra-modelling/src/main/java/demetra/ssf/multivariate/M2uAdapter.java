@@ -151,9 +151,6 @@ public class M2uAdapter {
 
         @Override
         public double at(int pos) {
-            if (H == null) {
-                return 0;
-            }
             int i = pos % nvars;
             if (errors == null) {
                 return H.get(i, i);

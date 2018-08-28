@@ -58,7 +58,6 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
         this.results = results;
     }
 
-
     /**
      * Computes: e(t)=y(t) - Z(t)a(t|t-1)) F(t)=Z(t)P(t|t-1)Z'(t)+H(t) F(t) =
      * L(t)L'(t) E(t) = e(t)L'(t)^-1 K(t)= P(t|t-1)Z'(t)L'(t)^-1
@@ -69,7 +68,7 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
      * @return false if it has not been computed (missing value), true otherwise
      */
     protected boolean error(int t) {
-        // computes the gain copyOf the filter and the prediction error 
+        // computes the gain of the filter and the prediction error 
         // calc f and fi
         // fi = Z Pi Z' , f = Z P Z' + H
         double fi = loading.ZVZ(t, state.Pi());
@@ -110,9 +109,14 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
      */
     @Override
     public int initializeFilter(final State fstate, final ISsf ssf, final ISsfData data) {
-        this.ssf=ssf;
+        if (! ssf.initialization().isDiffuse()){
+            ssf.initialization().a0(fstate.a());
+            ssf.initialization().Pf0(fstate.P());
+            return 0;
+        }
+        this.ssf = ssf;
         loading = ssf.loading();
-        error=ssf.measurementError();
+        error = ssf.measurementError();
         dynamics = ssf.dynamics();
         this.data = data;
         if (!initState()) {
@@ -120,9 +124,6 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
         }
         int t = 0, end = data.length();
         while (t < end) {
-            if (isZero(this.state.Pi())) {
-                break;
-            }
             if (results != null) {
                 results.save(t, state, StateInfo.Forecast);
             }
@@ -137,13 +138,19 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
             if (results != null) {
                 results.save(t, state, StateInfo.Concurrent);
             }
+            if (isZero(this.state.Pi())) {
+                break;
+            }
             state.next(t++, dynamics);
+        }
+        if (t < end) {
+            fstate.P().copy(state.P());
+            fstate.a().copy(state.a());
+            fstate.next(t++, dynamics);
         }
         if (results != null) {
             results.close(t);
         }
-        fstate.P().copy(state.P());
-        fstate.a().copy(state.a());
         return t;
     }
 

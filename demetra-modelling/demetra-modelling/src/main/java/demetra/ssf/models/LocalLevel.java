@@ -30,12 +30,13 @@ import demetra.ssf.implementations.Loading;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-public class LocalLevel{
-    
+public class LocalLevel {
+
     public SsfComponent of(final double var) {
         Data data = new Data(var, false);
         return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.create(0));
     }
+
     public SsfComponent of(final double var, final boolean zeroinit) {
         Data data = new Data(var, zeroinit);
         return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.create(0));
@@ -85,8 +86,9 @@ public class LocalLevel{
 
         @Override
         public void diffuseConstraints(Matrix b) {
-            if (! data.zeroinit)
-                b.set(0,0,1);
+            if (!data.zeroinit) {
+                b.set(0, 0, 1);
+            }
         }
 
         @Override
@@ -95,13 +97,16 @@ public class LocalLevel{
 
         @Override
         public void Pf0(Matrix pf0) {
-            pf0.set(0, 0, data.var);
+            if (data.zeroinit) {
+                pf0.set(0, 0, data.var);
+            }
         }
 
         @Override
         public void Pi0(Matrix pi0) {
-            if (! data.zeroinit)
-                pi0.set(0,0,1);
+            if (!data.zeroinit) {
+                pi0.set(0, 0, 1);
+            }
         }
     }
 
@@ -165,11 +170,11 @@ public class LocalLevel{
         @Override
         public void TX(int pos, DataBlock x) {
         }
-        
+
         @Override
         public void TVT(int pos, Matrix v) {
         }
-        
+
         @Override
         public void XT(int pos, DataBlock x) {
         }

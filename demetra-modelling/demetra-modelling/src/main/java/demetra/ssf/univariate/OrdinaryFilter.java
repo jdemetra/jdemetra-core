@@ -56,7 +56,7 @@ public class OrdinaryFilter {
         this.initializer = null;
     }
 
-     protected boolean error(int t, ISsfData data) {
+    protected boolean error(int t, ISsfData data) {
         missing = data.isMissing(t);
         if (missing) {
             // pe_ = null;
@@ -85,7 +85,6 @@ public class OrdinaryFilter {
         }
     }
 
-
     /**
      * Retrieves the final state (which is a(N|N-1))
      *
@@ -97,7 +96,7 @@ public class OrdinaryFilter {
 
     private int initialize(ISsf ssf, ISsfData data) {
         loading = ssf.loading();
-        error=ssf.measurementError();
+        error = ssf.measurementError();
         dynamics = ssf.dynamics();
         updinfo = new UpdateInformation(ssf.getStateDim());
         if (initializer == null) {
@@ -142,6 +141,5 @@ public class OrdinaryFilter {
         }
         return true;
     }
-
 
 }

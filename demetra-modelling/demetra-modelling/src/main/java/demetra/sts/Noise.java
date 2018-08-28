@@ -117,6 +117,11 @@ public class Noise {
         }
 
         @Override
+        public void TVT(int pos, Matrix v) {
+            v.set(0,0,0);
+        }
+
+        @Override
         public void addSU(int pos, DataBlock x, DataBlock u) {
             x.add(0, e * u.get(0));
         }
