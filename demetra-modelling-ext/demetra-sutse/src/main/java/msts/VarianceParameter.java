@@ -20,19 +20,24 @@ public class VarianceParameter implements IMstsParametersBlock {
     private static final double DEF_STDE = .1;
 
     private Double fixedVariance;
+    private final String name;
 
-    public VarianceParameter() {
-
+    public VarianceParameter(final String name) {
+        this.name = name;
     }
 
-    public VarianceParameter(double var) {
+    public VarianceParameter(final String name, double var) {
         fixedVariance = var;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void fix(double val) {
         fixedVariance = val;
     }
-
 
     public void free() {
         fixedVariance = null;
@@ -61,8 +66,8 @@ public class VarianceParameter implements IMstsParametersBlock {
 
     @Override
     public int encode(DoubleReader input, double[] buffer, int pos) {
+        double v = input.next();
         if (fixedVariance == null) {
-            double v = input.next();
             buffer[pos] = Math.sqrt(v);
             return pos + 1;
         } else {

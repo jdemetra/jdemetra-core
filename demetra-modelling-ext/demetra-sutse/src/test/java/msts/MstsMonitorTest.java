@@ -10,31 +10,28 @@ import demetra.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
 import demetra.ssf.models.AR;
 import demetra.ssf.models.LocalLevel;
 import demetra.ssf.models.LocalLinearTrend;
-import demetra.ssf.multivariate.M2uAdapter;
-import demetra.ssf.multivariate.SsfMatrix;
-import demetra.ssf.univariate.ISsfData;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author palatej
  */
 public class MstsMonitorTest {
-    
+
     public MstsMonitorTest() {
     }
 
-    @Test
+    //@Test
     public void testSimple() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/mssf1").toURI();
@@ -52,68 +49,160 @@ public class MstsMonitorTest {
             col.normalize();
         }
 
-        SsfMatrix mdata = new SsfMatrix(D);
-        ISsfData udata = M2uAdapter.of(mdata);
 
+        MstsMonitor monitor = new MstsMonitor();
+        int r = 40;
+        while (r <= D.getRowsCount()) {
+            Matrix E = D.extract(0, r, 0, 4);
+        MstsMapping mapping = new MstsMapping();
+        generateU(mapping);
+        generateY(mapping);
+        generatePicore(mapping);
+        generatePi(mapping);
+        generateCycle(mapping);
+            monitor.process(E, mapping);
+            //System.out.println(mapping.trueParameters(monitor.getPrslts()));
+            System.out.println(monitor.smoothedComponent(4));
+            r += 1;
+        }
+    }
+
+    //@Test
+    public void testSimpleX() throws URISyntaxException, IOException {
+
+        URI uri = MultivariateCompositeSsf.class.getResource("/mssf1").toURI();
+        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
+
+        Matrix D = Matrix.make(data.getRowsCount(), 6);
+        D.column(0).copy(data.column(0));
+        D.column(1).copy(data.column(9));
+        D.column(2).copy(data.column(2));
+        D.column(3).copy(data.column(3));
+        D.column(4).copy(data.column(5));
+        D.column(5).copy(data.column(6));
+
+//        DataBlockIterator cols = D.columnsIterator();
+//        while (cols.hasNext()) {
+//            DataBlock col = cols.next();
+//            col.normalize();
+//        }
         MstsMapping mapping = new MstsMapping();
 
-        // add the parameters
-        // 0=tuvar, 1=tyvar, 2=tpivar, 3=tpicorevar, 4=eq2var, 5=eq3var, 6=eq4var
-        for (int i = 0; i < 7; ++i) {
-            mapping.add(new VarianceParameter());
-        }
-        // loading
-        // 7=l-eq1, 8=l-eq2, 9=l-eq3, 10=l-eq4
-        for (int i = 0; i < 4; ++i) {
-            mapping.add(new LoadingParameter());
-        }
+        generateU(mapping);
+        generateY(mapping);
+        generatePicore(mapping);
+        generatePi(mapping);
+        generateXCycle(mapping);
 
-        // AR 11 - 12
-        mapping.add(new GenericParameters(new ARDomain(), new double[]{-.1, -.1}, null));
-
-        // fixed parameters var cycle and var eq1
-        VarianceParameter vc = new VarianceParameter(1);
-        mapping.add(vc);
-        VarianceParameter v1 = new VarianceParameter(1);
-        mapping.add(v1);
-
-        // Builder
-        mapping.add((p, pos, builder) -> {
-            builder.add("tu", LocalLinearTrend.of(0, p.get(pos)));
-            builder.add("ty", LocalLinearTrend.of(0, p.get(pos + 1)));
-            builder.add("tpi", LocalLevel.of(p.get(pos + 2)));
-            builder.add("tpicore", LocalLevel.of(p.get(pos + 3)));
-            builder.add("cycle", AR.componentOf(p.extract(pos + 11, 2).toArray(), p.get(pos + 13), 5));
-            double v = p.get(pos + 14);
-            double l = p.get(pos + 7);
-            MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(v);
-            eq.add(new MultivariateCompositeSsf.Item("tu"));
-            eq.add(new MultivariateCompositeSsf.Item("cycle", l));
-            builder.add(eq);
-            v = p.get(pos + 4);
-            l = p.get(pos + 8);
-            eq = new MultivariateCompositeSsf.Equation(v);
-            eq.add(new MultivariateCompositeSsf.Item("ty"));
-            eq.add(new MultivariateCompositeSsf.Item("cycle", l));
-            builder.add(eq);
-            v = p.get(pos + 5);
-            l = p.get(pos + 9);
-            eq = new MultivariateCompositeSsf.Equation(v);
-            eq.add(new MultivariateCompositeSsf.Item("tpicore"));
-            eq.add(new MultivariateCompositeSsf.Item("cycle", l, Loading.create(4)));
-            builder.add(eq);
-            v = p.get(pos + 6);
-            l = p.get(pos + 10);
-            eq = new MultivariateCompositeSsf.Equation(v);
-            eq.add(new MultivariateCompositeSsf.Item("tpi"));
-            eq.add(new MultivariateCompositeSsf.Item("cycle", l));
-            builder.add(eq);
-            return 15;
-        });
-        
-        MstsMonitor monitor=new MstsMonitor();
+        MstsMonitor monitor = new MstsMonitor();
         monitor.process(D, mapping);
+        System.out.println(monitor.getLogLikelihood().logLikelihood());
         System.out.println(mapping.trueParameters(monitor.getPrslts()));
         System.out.println(monitor.smoothedComponent(4));
-    }    
+    }
+
+    private void generateU(MstsMapping mapping) {
+        mapping.add(new VarianceParameter("u_var", 1));
+        mapping.add(new LoadingParameter("u_c"));
+        mapping.add(new VarianceParameter("tu_var"));
+        mapping.add((p, builder) -> {
+            MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
+            eq.add(new MultivariateCompositeSsf.Item("tu"));
+            eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1)));
+            builder.add("tu", LocalLinearTrend.of(0, p.get(2)))
+                    .add(eq);
+            return 3;
+        });
+
+    }
+
+    private void generateY(MstsMapping mapping) {
+        mapping.add(new VarianceParameter("y_var"));
+        mapping.add(new LoadingParameter("y_c"));
+        mapping.add(new VarianceParameter("ty_var"));
+        mapping.add((p, builder) -> {
+            MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
+            eq.add(new MultivariateCompositeSsf.Item("ty"));
+            eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1)));
+            builder.add("ty", LocalLinearTrend.of(0, p.get(2)))
+                    .add(eq);
+            return 3;
+        });
+
+    }
+
+    private void generatePicore(MstsMapping mapping) {
+        mapping.add(new VarianceParameter("picore_var"));
+        mapping.add(new LoadingParameter("picore_c"));
+        mapping.add(new VarianceParameter("tpicore_var"));
+        mapping.add((p, builder) -> {
+            MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
+            eq.add(new MultivariateCompositeSsf.Item("tpicore"));
+            eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), Loading.create(4)));
+            builder.add("tpicore", LocalLevel.of(p.get(2)))
+                    .add(eq);
+            return 3;
+        });
+    }
+
+    private void generatePi(MstsMapping mapping) {
+        mapping.add(new VarianceParameter("pi_var"));
+        mapping.add(new LoadingParameter("pi_c"));
+        mapping.add(new VarianceParameter("tpi_var"));
+        mapping.add((p, builder) -> {
+            MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
+            eq.add(new MultivariateCompositeSsf.Item("tpi"));
+            eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1)));
+            builder.add("tpi", LocalLevel.of(p.get(2)))
+                    .add(eq);
+            return 3;
+        });
+
+    }
+
+    private void generateCycle(MstsMapping mapping) {
+        mapping.add(new GenericParameters("ar", new ARDomain(), new double[]{.2, .2}, null));
+        mapping.add(new VarianceParameter("ar_var", 1));
+        mapping.add((p, builder) -> {
+            double c1 = p.get(0), c2 = p.get(1), v = p.get(2);
+            builder.add("cycle", AR.componentOf(new double[]{c1, c2}, v, 5));
+            return 3;
+        });
+
+    }
+
+    private void generateXCycle(MstsMapping mapping) {
+        mapping.add(new GenericParameters("ar", new ARDomain(), new double[]{.2, .2}, null));
+        mapping.add(new VarianceParameter("ar_var", 1));
+        mapping.add(new LoadingParameter("b_c"));
+        mapping.add(new VarianceParameter("b_var"));
+        mapping.add(new LoadingParameter("c_c"));
+        mapping.add(new VarianceParameter("c_var"));
+        mapping.add((p, builder) -> {
+            double c1 = p.get(0), c2 = p.get(1), v = p.get(2);
+            double b1 = p.get(3), v1 = p.get(4);
+            double b2 = p.get(5), v2 = p.get(6);
+            ISsfLoading pl = Loading.create(new int[]{0, 1}, new double[]{b1 * c1, b1 * c2});
+            MultivariateCompositeSsf.Equation eq1 = new MultivariateCompositeSsf.Equation(v1);
+            eq1.add(new MultivariateCompositeSsf.Item("tb"));
+            eq1.add(new MultivariateCompositeSsf.Item("cycle", 1, pl));
+            double c12 = c1 * c1, c13 = c12 * c1, c14 = c13 * c1, c22 = c2 * c2;
+            double d1 = c1 + c12 + c13 + c14 + c2 + c22 + 2 * c1 * c2 + 3 * c12 * c2;
+            double d2 = c2 + c1 * c2 + c22 + c12 * c2 + 2 * c1 * c22 + c13 * c2;
+            pl = Loading.create(new int[]{0, 1}, new double[]{b2 * d1, b2 * d2});
+            MultivariateCompositeSsf.Equation eq2 = new MultivariateCompositeSsf.Equation(v2);
+            eq2.add(new MultivariateCompositeSsf.Item("tc"));
+            eq2.add(new MultivariateCompositeSsf.Item("cycle", 1, pl));
+            builder.add("cycle", AR.componentOf(new double[]{c1, c2}, v, 5))
+                    .add("tb", LocalLevel.of(0))
+                    .add("tc", LocalLevel.of(0))
+                    .add(eq1)
+                    .add(eq2);
+
+            return 7;
+//            builder.add("cycle", AR.componentOf(new double[]{c1, c2}, v, 5));
+//            return 3;
+        });
+
+    }
 }

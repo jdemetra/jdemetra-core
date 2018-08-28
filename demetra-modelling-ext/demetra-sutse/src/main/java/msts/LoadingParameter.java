@@ -17,15 +17,23 @@ import demetra.maths.functions.ParamValidation;
  */
 public class LoadingParameter implements IMstsParametersBlock {
 
-    private static final double DEF_STDE = .1;
+    private static final double DEF_VALUE = .1;
 
     private Double fixedLoading;
+    private final String name;
 
-    public LoadingParameter() {
+    public LoadingParameter(final String name) {
+        this.name=name;
     }
 
-    public LoadingParameter(double var) {
+    public LoadingParameter(final String name, double var) {
+        this.name=name;
         fixedLoading = var;
+    }
+
+    @Override
+    public String getName(){
+        return name;
     }
 
     public void fix(double val) {
@@ -58,8 +66,8 @@ public class LoadingParameter implements IMstsParametersBlock {
 
     @Override
     public int encode(DoubleReader input, double[] buffer, int pos) {
+        buffer[pos] = input.next();
         if (fixedLoading == null) {
-            buffer[pos] = input.next();
             return pos + 1;
         } else {
             return pos;
@@ -69,7 +77,7 @@ public class LoadingParameter implements IMstsParametersBlock {
     @Override
     public int fillDefault(double[] buffer, int pos) {
         if (fixedLoading == null) {
-            buffer[pos] = DEF_STDE;
+            buffer[pos] = DEF_VALUE;
             return pos + 1;
         } else {
             return pos;

@@ -13,5 +13,5 @@ import demetra.ssf.implementations.MultivariateCompositeSsf;
  * @author palatej
  */
 public interface IMstsBuilder {
-    int decode(DoubleSequence parameters, int startpos, MultivariateCompositeSsf.Builder builder);
+    int decode(DoubleSequence parameters, MultivariateCompositeSsf.Builder builder);
 }

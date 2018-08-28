@@ -41,29 +41,23 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
         return false;
     }
 
-    public boolean fixSmallVariance(DoubleSequence cur, double eps) {
+    public List<VarianceParameter> smallVariances(DoubleSequence cur, double eps) {
+        List<VarianceParameter> small=new ArrayList<>();
         int pos = 0;
-        double vmin = 0;
-        VarianceParameter pmin = null;
         for (IMstsParametersBlock p : parameters) {
             if (!p.isFixed()) {
                 int dim = p.getDomain().getDim();
                 if (dim == 1 && p instanceof VarianceParameter) {
                     double e = cur.get(pos);
                     double v = e * e;
-                    if (v < eps && (v < vmin || pmin == null)) {
-                        vmin = v;
-                        pmin = (VarianceParameter) p;
+                    if (v < eps) {
+                        small.add((VarianceParameter) p);
                     }
                 }
                 pos += dim;
             }
         }
-        if (pmin != null) {
-            pmin.fix(0);
-            return true;
-        }
-        return false;
+        return small;
     }
 
     private double[] array(DoubleSequence inparams) {
@@ -117,10 +111,10 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
     @Override
     public MultivariateCompositeSsf map(DoubleSequence p) {
         MultivariateCompositeSsf.Builder builder = MultivariateCompositeSsf.builder();
-        int pos = 0;
         DoubleSequence fp = trueParameters(p);
         for (IMstsBuilder decoder : builders) {
-            pos = decoder.decode(fp, pos, builder);
+            int np= decoder.decode(fp, builder);
+            fp=fp.drop(np, 0);
         }
         return builder.build();
     }

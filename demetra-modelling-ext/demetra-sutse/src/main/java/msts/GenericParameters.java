@@ -16,11 +16,18 @@ public class GenericParameters implements IMstsParametersBlock {
 
     private final double[] defParameters, parameters;
     private final IParametersDomain domain;
+    private final String name;
 
-    public GenericParameters(IParametersDomain domain, double[] defParameters, double[] parameters) {
+    public GenericParameters(String name, IParametersDomain domain, double[] defParameters, double[] parameters) {
+        this.name=name;
         this.domain = domain;
         this.defParameters = defParameters;
         this.parameters = parameters;
+    }
+    
+    @Override
+    public String getName(){
+        return name;
     }
 
     @Override
@@ -45,12 +52,17 @@ public class GenericParameters implements IMstsParametersBlock {
 
     @Override
     public int encode(DoubleReader reader, double[] buffer, int pos) {
+        int n = defParameters.length;
         if (parameters == null) {
-            int n = defParameters.length;
             for (int i = 0; i < n; ++i) {
                 buffer[pos++] = reader.next();
             }
+        } else {
+            for (int i = 0; i < n; ++i) {
+                reader.next();
+            }
         }
+
         return pos;
     }
 

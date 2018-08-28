@@ -12,6 +12,7 @@ import demetra.data.MatrixSerializer;
 import demetra.maths.MatrixType;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
+import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.functions.minpack.MinPackMinimizer;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
@@ -146,11 +147,11 @@ public class MultivariateCompositeSsfTest {
         D.column(4).copy(data.column(5));
         D.column(5).copy(data.column(6));
 
-        DataBlockIterator cols = D.columnsIterator();
-        while (cols.hasNext()){
-            DataBlock col = cols.next();
-            col.normalize();
-        }
+//        DataBlockIterator cols = D.columnsIterator();
+//        while (cols.hasNext()){
+//            DataBlock col = cols.next();
+//            col.normalize();
+//        }
         SsfMatrix mdata = new SsfMatrix(D);
         ISsfData udata = M2uAdapter.of(mdata);
 
@@ -162,8 +163,8 @@ public class MultivariateCompositeSsfTest {
                 .useMaximumLikelihood(true)
                 .build();
 
-        MinPackMinimizer lm = new MinPackMinimizer();
-//        LevenbergMarquardtMinimizer lm = new LevenbergMarquardtMinimizer();
+//        MinPackMinimizer lm = new MinPackMinimizer();
+        LevenbergMarquardtMinimizer lm = new LevenbergMarquardtMinimizer();
         lm.setMaxIter(2000);
         boolean ok = lm.minimize(fn.evaluate(mapping.getDefaultParameters()));
         AkfFunctionPoint rslt = (AkfFunctionPoint) lm.getResult();

@@ -15,6 +15,8 @@ import demetra.maths.functions.IParametersDomain;
  */
 public interface IMstsParametersBlock {
     
+    String getName();
+    
     boolean isFixed();
     
     /**
