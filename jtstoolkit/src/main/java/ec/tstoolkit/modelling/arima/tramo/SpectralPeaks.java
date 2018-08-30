@@ -1,20 +1,19 @@
 /*
 * Copyright 2013 National Bank of Belgium
 *
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+* Licensed under the EUPL, Version 1.1 or – as soon they will be approved
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
 * You may not use this work except in compliance with the Licence.
 * You may obtain a copy of the Licence at:
 *
 * http://ec.europa.eu/idabc/eupl
 *
-* Unless required by applicable law or agreed to in writing, software 
+* Unless required by applicable law or agreed to in writing, software
 * distributed under the Licence is distributed on an "AS IS" basis,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
+* See the Licence for the specific language governing permissions and
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.modelling.arima.tramo;
 
 /**
@@ -22,15 +21,15 @@ package ec.tstoolkit.modelling.arima.tramo;
  * @author gianluca
  */
 public class SpectralPeaks {
-    
+
     static public enum AR {
-        
+
         A, a, none, undef;
-        
+
         public boolean isPresent() {
             return this == A || this == a;
         }
-        
+
         public static AR fromInt(int v) {
             switch (v) {
                 case 0:
@@ -44,15 +43,15 @@ public class SpectralPeaks {
             }
         }
     }
-    
+
     static public enum Tukey {
-        
+
         T, t, none, undef;
-        
+
         public boolean isPresent() {
             return this == T || this == t;
         }
-        
+
         public static Tukey fromInt(int v) {
             switch (v) {
                 case 0:
@@ -71,20 +70,20 @@ public class SpectralPeaks {
     public static final SpectralPeaks NONE = new SpectralPeaks(AR.none, Tukey.none);
     public static final SpectralPeaks UNDEF = new SpectralPeaks(AR.undef, Tukey.undef);
     public static final SpectralPeaks ALL = new SpectralPeaks(AR.A, Tukey.T);
-    
+
     public SpectralPeaks(AR ar, Tukey tu) {
         this.ar = ar;
         this.tu = tu;
     }
-    
+
     public boolean hasHighPeak() {
         return ar == AR.A || tu == Tukey.T;
     }
-    
+
     public boolean hasPeak() {
         return ar.isPresent() || tu.isPresent();
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -92,16 +91,16 @@ public class SpectralPeaks {
         hash = 73 * hash + (this.tu != null ? this.tu.hashCode() : 0);
         return hash;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         return this == obj || (obj instanceof SpectralPeaks && equals((SpectralPeaks) obj));
     }
-    
+
     public boolean equals(SpectralPeaks peaks) {
         return this.ar == peaks.ar && this.tu == peaks.tu;
     }
-    
+
     private char ar() {
         if (this.ar == AR.A) {
             return 'A';
@@ -113,7 +112,7 @@ public class SpectralPeaks {
             return 'n';
         }
     }
-    
+
     public char tu() {
         if (this.tu == Tukey.T) {
             return 'T';
@@ -125,7 +124,7 @@ public class SpectralPeaks {
             return 'n';
         }
     }
-    
+
     @Override
     public String toString() {
         char[] s = new char[]{ar(), tu()};
@@ -136,6 +135,7 @@ public class SpectralPeaks {
      * Corresponds to the fortran function SeasSpectCrit
      *
      * @param peaks
+     *
      * @return
      */
     public static boolean hasSeasonalPeaks(SpectralPeaks[] peaks) {
@@ -146,6 +146,9 @@ public class SpectralPeaks {
             return hasMonthlyPeaks(peaks);
         } else if (peaks.length == 2) {
             return hasQuarterlyPeaks(peaks);
+        } else if (peaks.length == 1) {
+            return hasHalfYearlyPreaks(peaks);
+
         } else {
             return false;
         }
@@ -155,6 +158,7 @@ public class SpectralPeaks {
      * Corresponds to the fortran function SeasSpectCrit2
      *
      * @param peaks
+     *
      * @return
      */
     public static boolean hasHighSeasonalPeaks(SpectralPeaks[] peaks) {
@@ -162,11 +166,13 @@ public class SpectralPeaks {
             return hasHighMonthlyPeaks(peaks);
         } else if (peaks.length == 2) {
             return hasHighQuarterlyPeaks(peaks);
+        } else if (peaks.length == 1) {
+            return hasHighHalfYearlyPreaks(peaks);
         } else {
             return false;
         }
     }
-    
+
     private static boolean hasMonthlyPeaks(SpectralPeaks[] peaks) {
         int n = 0, nd = 0;
         for (int i = 0; i < peaks.length; ++i) {
@@ -177,7 +183,7 @@ public class SpectralPeaks {
                 }
             }
         }
-        
+
         switch (n) {
             case 4:
             case 5:
@@ -194,14 +200,15 @@ public class SpectralPeaks {
                     return true;
                 } else if (peaks[5].equals(NONE)) {
                     return nd >= 1;
-                }else
+                } else {
                     return false;
-            
+                }
+
             default:
                 return false;
         }
     }
-    
+
     private static boolean hasHighMonthlyPeaks(SpectralPeaks[] peaks) {
         int n = 0, nd = 0;
         for (int i = 0; i < peaks.length; ++i) {
@@ -212,7 +219,7 @@ public class SpectralPeaks {
                 }
             }
         }
-        
+
         switch (n) {
             case 4:
             case 5:
@@ -231,12 +238,12 @@ public class SpectralPeaks {
                 {
                     return nd >= 1;
                 }
-            
+
             default:
                 return false;
         }
     }
-    
+
     private static boolean hasHighQuarterlyPeaks(SpectralPeaks[] peaks) {
         if (peaks[0].equals(ALL)) {
             return true;
@@ -249,7 +256,7 @@ public class SpectralPeaks {
         }
         return n == 2;
     }
-    
+
     private static boolean hasQuarterlyPeaks(SpectralPeaks[] peaks) {
         if (peaks[0].equals(ALL)) {
             return true;
@@ -262,12 +269,21 @@ public class SpectralPeaks {
         }
         return n == 2;
     }
-    
-    public static String format(SpectralPeaks[] peaks){
-        StringBuilder builder=new StringBuilder();
-        for (int i=0; i<peaks.length; ++i){
-            if (i != 0)
+
+    private static boolean hasHalfYearlyPreaks(SpectralPeaks[] peaks) {
+        return peaks[0].hasPeak();
+    }
+
+    private static boolean hasHighHalfYearlyPreaks(SpectralPeaks[] peaks) {
+        return peaks[0].hasHighPeak();
+    }
+
+    public static String format(SpectralPeaks[] peaks) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < peaks.length; ++i) {
+            if (i != 0) {
                 builder.append('.');
+            }
             builder.append(peaks[i].toString());
         }
         return builder.toString();

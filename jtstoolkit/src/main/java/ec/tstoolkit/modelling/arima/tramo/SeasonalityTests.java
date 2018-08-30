@@ -225,10 +225,10 @@ public class SeasonalityTests {
             for (int i = 0; i < peaks.length; ++i) {
                 SpectralPeaks.AR ar = SpectralPeaks.AR.none;
                 SpectralPeaks.Tukey tu = SpectralPeaks.Tukey.none;
-                if (a != null && a.length >= i) {
+                if (a != null && a.length > i) {
                     ar = SpectralPeaks.AR.fromInt(a[i]);
                 }
-                if (t != null && t.length >= i) {
+                if (t != null && t.length > i) {
                     tu = SpectralPeaks.Tukey.fromInt(t[i]);
                 }
                 peaks[i] = new SpectralPeaks(ar, tu);

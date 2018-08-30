@@ -19,6 +19,7 @@ package ec.tss.sa;
 import ec.satoolkit.GenericSaProcessingFactory;
 import ec.satoolkit.ISaSpecification;
 import ec.tss.sa.diagnostics.MDiagnosticsFactory;
+import ec.tss.sa.diagnostics.ResidualsDiagnosticsFactory;
 import ec.tss.sa.documents.SaDocument;
 import ec.tstoolkit.algorithm.*;
 import ec.tstoolkit.design.Singleton;
@@ -148,6 +149,8 @@ public final class SaManager extends AlgorithmManager<ISaSpecification, TsData, 
         for (IDiagnosticsFactory diag : SaManager.instance.getDiagnostics()) {
             if (diag.isEnabled()
                     && (!diag.getName().equals(MDiagnosticsFactory.NAME)
+                    || !isHalfYearly)
+                    && (!diag.getName().equals(ResidualsDiagnosticsFactory.NAME)
                     || !isHalfYearly)) {
                 summary.add(create((ISaDiagnosticsFactory) diag, sa));
             }
