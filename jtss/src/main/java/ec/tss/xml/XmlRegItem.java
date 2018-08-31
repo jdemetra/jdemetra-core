@@ -47,5 +47,6 @@ public class XmlRegItem implements IXmlConverter<RegressionItem> {
         description = t.description;
         coefficient = t.coefficient;
         stderror = t.stdError;
+        pvalue = t.pValue;
     }
 }

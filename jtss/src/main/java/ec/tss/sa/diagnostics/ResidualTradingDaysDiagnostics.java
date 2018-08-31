@@ -201,7 +201,7 @@ public class ResidualTradingDaysDiagnostics implements IDiagnostics {
         return test == null ? Double.NaN : test.getPValue();
     }
 
-    private static StatisticalTest process(TsData s) {
+   private static StatisticalTest process(TsData s) {
         try {
             RegModel reg = new RegModel();
             DataBlock y = new DataBlock(s);
@@ -233,7 +233,7 @@ public class ResidualTradingDaysDiagnostics implements IDiagnostics {
             return null;
         }
     }
-
+ 
     private static StatisticalTest processAr(TsData s) {
         try {
             RegModel reg = new RegModel();

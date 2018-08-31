@@ -27,6 +27,7 @@ import ec.tstoolkit.modelling.arima.IPreprocessingModule;
 import ec.tstoolkit.modelling.arima.ModelDescription;
 import ec.tstoolkit.modelling.arima.ModelEstimation;
 import ec.tstoolkit.modelling.arima.ModellingContext;
+import ec.tstoolkit.modelling.arima.PreprocessingDictionary;
 import ec.tstoolkit.modelling.arima.ProcessingResult;
 import ec.tstoolkit.modelling.arima.RegArimaEstimator;
 import ec.tstoolkit.sarima.SarimaModel;
@@ -131,16 +132,16 @@ public class LogLevelTest implements IPreprocessingModule {
     }
 
     private void addInfo(InformationSet information) {
-//        InformationSet subset = information.subSet(PreprocessingDictionary.TRANSFORMATION);
+        InformationSet subset = information.subSet(PreprocessingDictionary.TRANSFORMATION);
 //        subset.set("function", getTransformation());
-//        if (level_ != null) {
+        if (level_ != null) {
 //            subset.set("stats_level", level_.getStatistics());
-//            subset.set("level", level_.getStatistics().AICC);
-//        }
-//        if (log_ != null) {
+            subset.set("level", level_.getStatistics().AICC);
+        }
+        if (log_ != null) {
 //            subset.set("stats_log", log_.getStatistics());
-//            subset.set("log", log_.getStatistics().AICC);
-//        }
+            subset.set("log", log_.getStatistics().AICC);
+        }
     }
 
     private void clear() {

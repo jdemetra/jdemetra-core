@@ -935,7 +935,8 @@ public class PreprocessingModel implements IProcResults {
             OUT15 = "out(15)", OUT16 = "out(16)", OUT17 = "out(17)", OUT18 = "out(18)", OUT19 = "out(19)", OUT20 = "out(20)",
             OUT21 = "out(21)", OUT22 = "out(22)", OUT23 = "out(23)", OUT24 = "out(24)", OUT25 = "out(25)", OUT26 = "out(26)",
             OUT27 = "out(27)", OUT28 = "out(28)", OUT29 = "out(29)", OUT30 = "out(30)",
-            COEFF = "coefficients", COVAR = "covar", COEFFDESC = "description", PCOVAR = "pcovar";
+            COEFF = "coefficients", COVAR = "covar", COEFFDESC = "description", PCOVAR = "pcovar",
+            TD_DERIVED = "td-derived", TD_FTEST = "td-ftest";
 
     ;
     // MAPPING
@@ -1026,6 +1027,52 @@ public class PreprocessingModel implements IProcResults {
             return source.description.countRegressors(var -> var.status.isSelected() && var.getVariable() instanceof IMovingHolidayVariable);
         });
         MAPPING.setList(InformationSet.item(REGRESSION, TD), 1, 15, RegressionItem.class, (source, i) -> source.getRegressionItem(ITradingDaysVariable.class, i - 1));
+        MAPPING.set(InformationSet.item(REGRESSION, TD_DERIVED), RegressionItem.class, source -> {
+            TsVariableSelection<ITsVariable> regs = source.x_.select(var -> var instanceof ITradingDaysVariable);
+            if (regs.isEmpty() || regs.getItemsCount() > 1) {
+                return null;
+            }
+            Item<ITsVariable> reg = regs.elements()[0];
+            int ndim = reg.variable.getDim();
+            if (ndim <= 1) {
+                return null;
+            } else {
+                ConcentratedLikelihood ll = source.estimation.getLikelihood();
+                int nhp = source.description.getArimaComponent().getFreeParametersCount();
+                int start = source.description.getRegressionVariablesStartingPosition() + regs.get(0).position;
+                double[] b = ll.getB();
+                int k0 = start + reg.position, k1 = k0 + ndim;
+                double bd = 0;
+                for (int k = k0; k < k1; ++k) {
+                    bd -= b[k];
+                }
+                double var = ll.getBVar(true, nhp).subMatrix(k0, k1, k0, k1).sum();
+                double tval = bd / Math.sqrt(var);
+                T t = new T();
+                t.setDegreesofFreedom(ll.getDegreesOfFreedom(true, nhp));
+                double prob = 1 - t.getProbabilityForInterval(-tval, tval);
+                return new RegressionItem("td-derived", bd, Math.sqrt(var), prob);
+            }
+        });
+        MAPPING.set(InformationSet.item(REGRESSION, TD_FTEST), Double.class, source -> {
+            TsVariableSelection<ITsVariable> regs = source.x_.select(var -> var instanceof ITradingDaysVariable);
+            if (regs.isEmpty()) {
+                return null;
+            }
+            int nvars = regs.getVariablesCount();
+            if (regs.getItemsCount() == 1 && nvars > 1) {
+                try {
+                    JointRegressionTest jtest = new JointRegressionTest(.05);
+                    jtest.accept(source.estimation.getLikelihood(),
+                            source.description.getArimaComponent().getFreeParametersCount(),
+                            source.description.getRegressionVariablesStartingPosition() + regs.get(0).position,
+                            nvars, null);
+                    return jtest.getTest().getPValue();
+                } catch (Exception ex) {
+                }
+            }
+            return null;
+        });
         MAPPING.set(InformationSet.item(REGRESSION, EASTER), RegressionItem.class, source -> source.getRegressionItem(IEasterVariable.class, 0));
         MAPPING.set(InformationSet.item(REGRESSION, NOUT), Integer.class, source -> source.description.getOutliers().size() + source.description.getPrespecifiedOutliers().size());
         MAPPING.set(InformationSet.item(REGRESSION, NOUTAO), Integer.class, source -> {

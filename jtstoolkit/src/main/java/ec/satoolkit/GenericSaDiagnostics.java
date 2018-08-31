@@ -8,20 +8,36 @@ package ec.satoolkit;
 import ec.satoolkit.diagnostics.CombinedSeasonalityTest;
 import ec.satoolkit.diagnostics.FTest;
 import ec.satoolkit.diagnostics.KruskalWallisTest;
+import ec.satoolkit.x11.DefaultTrendFilteringStrategy;
+import ec.satoolkit.x11.IFiltering;
+import ec.satoolkit.x11.MsrTable;
+import ec.satoolkit.x11.SeriesEvolution;
+import ec.satoolkit.x11.TrendCycleFilterFactory;
 import ec.satoolkit.x11.X11Kernel;
 import ec.satoolkit.x11.X11Results;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.data.AutoCorrelations;
+import ec.tstoolkit.data.DataBlock;
+import ec.tstoolkit.eco.Ols;
+import ec.tstoolkit.eco.RegModel;
 import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
+import ec.tstoolkit.maths.linearfilters.SymmetricFilter;
 import ec.tstoolkit.modelling.ModellingDictionary;
+import ec.tstoolkit.modelling.arima.JointRegressionTest;
+import ec.tstoolkit.modelling.arima.PreprocessingDictionary;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.modelling.arima.diagnostics.OneStepAheadForecastingTest;
 import ec.tstoolkit.modelling.arima.tramo.SeasonalityTests;
 import ec.tstoolkit.modelling.arima.tramo.SpectralPeaks;
+import ec.tstoolkit.stats.StatisticalTest;
 import ec.tstoolkit.timeseries.TsPeriodSelector;
+import ec.tstoolkit.timeseries.calendars.TradingDaysType;
+import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
 import ec.tstoolkit.timeseries.simplets.TsData;
+import ec.tstoolkit.timeseries.simplets.TsDomain;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,17 +62,19 @@ public class GenericSaDiagnostics implements IProcResults {
     private final ISeriesDecomposition finals;
     private final boolean mul;
 
-    private final TsData lin, res, sa, irr, si, s;
+    private final TsData lin, res, sa, irr, si, s, t;
 
     private SeasonalityTests ytests, rtests, satests, itests;
     private CombinedSeasonalityTest seasSI, seasSa, seasI, seasRes, seasSa3, seasI3, seasRes3;
     private OneStepAheadForecastingTest outOfSampleTest;
+    private MsrTable msr;
 
     private GenericSaDiagnostics(PreprocessingModel regarima, ISaResults decomposition, ISeriesDecomposition finals) {
         this.regarima = regarima;
         this.decomposition = decomposition;
         this.finals = finals;
         sa = decomposition.getData(ModellingDictionary.SA_CMP, TsData.class);
+        t = decomposition.getData(ModellingDictionary.T_CMP, TsData.class);
         s = decomposition.getData(ModellingDictionary.S_CMP, TsData.class);
         irr = decomposition.getData(ModellingDictionary.I_CMP, TsData.class);
         mul = decomposition.getSeriesDecomposition().getMode().isMultiplicative();
@@ -189,6 +207,80 @@ public class GenericSaDiagnostics implements IProcResults {
         return outOfSampleTest;
     }
 
+    private static StatisticalTest tdAr(TsData s) {
+        try {
+            RegModel reg = new RegModel();
+            DataBlock y = new DataBlock(s);
+            reg.setY(y.drop(1, 0));
+            GregorianCalendarVariables tdvars = GregorianCalendarVariables.getDefault(TradingDaysType.TradingDays);
+            int ntd = tdvars.getDim();
+            TsDomain edomain = s.getDomain().drop(1, 0);
+            List<DataBlock> bvars = new ArrayList<>(ntd);
+            for (int i = 0; i < ntd; ++i) {
+                bvars.add(new DataBlock(edomain.getLength()));
+            }
+            tdvars.data(edomain, bvars);
+            //       BackFilter ur = context.description.getArimaComponent().getDifferencingFilter();
+            reg.addX(y.drop(0, 1));
+            for (int i = 0; i < ntd; ++i) {
+                DataBlock cur = bvars.get(i);
+                reg.addX(cur);
+            }
+            Ols ols = new Ols();
+            reg.setMeanCorrection(true);
+            if (!ols.process(reg)) {
+                return null;
+            }
+            JointRegressionTest test = new JointRegressionTest(.01);
+            test.accept(ols.getLikelihood(), 0, 2, ntd, null);
+            return test.getTest();
+        } catch (Exception err) {
+            return null;
+        }
+    }
+
+    private static StatisticalTest td(TsData s) {
+        try {
+            RegModel reg = new RegModel();
+            DataBlock y = new DataBlock(s);
+            y.add(-y.average());
+            reg.setY(y);
+            GregorianCalendarVariables tdvars = GregorianCalendarVariables.getDefault(TradingDaysType.TradingDays);
+            int ntd = tdvars.getDim();
+            TsDomain edomain = s.getDomain();
+            List<DataBlock> bvars = new ArrayList<>(ntd);
+            for (int i = 0; i < ntd; ++i) {
+                bvars.add(new DataBlock(edomain.getLength()));
+            }
+            tdvars.data(edomain, bvars);
+            //       BackFilter ur = context.description.getArimaComponent().getDifferencingFilter();
+            for (int i = 0; i < ntd; ++i) {
+                DataBlock cur = bvars.get(i);
+                reg.addX(cur);
+            }
+            //           reg.setMeanCorrection(true);
+            Ols ols = new Ols();
+
+            if (!ols.process(reg)) {
+                return null;
+            }
+            JointRegressionTest test = new JointRegressionTest(.01);
+            test.accept(ols.getLikelihood(), 0, 0, ntd, null);
+            return test.getTest();
+        } catch (Exception err) {
+            return null;
+        }
+    }
+
+    private MsrTable msr() {
+        if (msr == null) {
+            if (s != null) {
+                msr = MsrTable.create(s, irr, mul);
+            }
+        }
+        return msr;
+    }
+
     public static void fillDictionary(String prefix, Map<String, Class> map, boolean compact) {
         MAPPING.fillDictionary(prefix, map, compact);
     }
@@ -257,7 +349,19 @@ public class GenericSaDiagnostics implements IProcResults {
             SEAS_I_SP = "seas-i-spectralpeaks",
             FCAST_INSAMPLE_MEAN = "fcast-insample-mean",
             FCAST_OUTSAMPLE_MEAN = "fcast-outsample-mean",
-            FCAST_OUTSAMPLE_VARIANCE = "fcast-outsample-variance";
+            FCAST_OUTSAMPLE_VARIANCE = "fcast-outsample-variance",
+            LOG_STAT = "logstat",
+            LEVEL_STAT = "levelstat",
+            TD_RES_ALL = "td-res-all",
+            TD_RES_LAST = "td-res-last",
+            TD_I_ALL = "td-i-all",
+            TD_I_LAST = "td-i-last",
+            TD_SA_ALL = "td-sa-all",
+            TD_SA_LAST = "td-sa-last",
+            IC_RATIO = "ic-ratio",
+            IC_RATIO_HENDERSON = "ic-ratio-henderson",
+            MSR_GLOBAL = "msr-global",
+            MSR = "msr";
 
     // MAPPING
     public static InformationMapping<GenericSaDiagnostics> getMapping() {
@@ -273,6 +377,38 @@ public class GenericSaDiagnostics implements IProcResults {
     private static final InformationMapping<GenericSaDiagnostics> MAPPING = new InformationMapping<>(GenericSaDiagnostics.class);
 
     static {
+
+////////////////////// LOG/LEVEL
+        MAPPING.set(LOG_STAT, Double.class, source -> {
+            if (source.regarima == null) {
+                return null;
+            }
+            return source.regarima.getData(
+                    InformationSet.concatenate(PreprocessingDictionary.TRANSFORMATION, "log"), Double.class);
+        });
+        MAPPING.set(LEVEL_STAT, Double.class, source -> {
+            if (source.regarima == null) {
+                return null;
+            }
+            return source.regarima.getData(
+                    InformationSet.concatenate(PreprocessingDictionary.TRANSFORMATION, "level"), Double.class);
+        });
+
+////////////////////// FCASTS
+        MAPPING.set(FCAST_INSAMPLE_MEAN, Double.class, source -> {
+            OneStepAheadForecastingTest ftest = source.forecastingTest();
+            return ftest.inSampleMeanTest().getPValue();
+        });
+
+        MAPPING.set(FCAST_OUTSAMPLE_MEAN, Double.class, source -> {
+            OneStepAheadForecastingTest ftest = source.forecastingTest();
+            return ftest.outOfSampleMeanTest().getPValue();
+        });
+
+        MAPPING.set(FCAST_OUTSAMPLE_VARIANCE, Double.class, source -> {
+            OneStepAheadForecastingTest ftest = source.forecastingTest();
+            return ftest.mseTest().getPValue();
+        });
 
         //////////  Y
         MAPPING.set(SEAS_LIN_F, Double.class, source -> {
@@ -321,7 +457,12 @@ public class GenericSaDiagnostics implements IProcResults {
             if (ytests == null) {
                 return null;
             } else {
-                return SpectralPeaks.format(ytests.getSpectralPeaks());
+                SpectralPeaks[] spectralPeaks = ytests.getSpectralPeaks();
+                if (spectralPeaks == null) {
+                    return null;
+                } else {
+                    return SpectralPeaks.format(spectralPeaks);
+                }
             }
         });
 
@@ -615,21 +756,102 @@ public class GenericSaDiagnostics implements IProcResults {
             return ac.autoCorrelation(1);
         });
 
-////////////////////// FCASTS
-
-        MAPPING.set(FCAST_INSAMPLE_MEAN, Double.class, source -> {
-            OneStepAheadForecastingTest ftest = source.forecastingTest();
-            return ftest.inSampleMeanTest().getPValue();
-        });
-        
-        MAPPING.set(FCAST_OUTSAMPLE_MEAN, Double.class, source -> {
-            OneStepAheadForecastingTest ftest = source.forecastingTest();
-            return ftest.outOfSampleMeanTest().getPValue();
+        MAPPING.set(TD_SA_ALL, Double.class, source -> {
+            TsData s = source.sa;
+            if (source.mul) {
+                s = s.log();
+            }
+            StatisticalTest test = tdAr(s);
+            return test == null ? null : test.getPValue();
         });
 
-        MAPPING.set(FCAST_OUTSAMPLE_VARIANCE, Double.class, source -> {
-            OneStepAheadForecastingTest ftest = source.forecastingTest();
-            return ftest.mseTest().getPValue();
+        MAPPING.set(TD_SA_LAST, Double.class, source -> {
+            TsData s = source.sa;
+            if (source.mul) {
+                s = s.log();
+            }
+            int ifreq = s.getFrequency().intValue();
+            s = s.drop(Math.max(0, s.getLength() - ifreq * 8 - 1), 0);
+            StatisticalTest test = tdAr(s);
+            return test == null ? null : test.getPValue();
+        });
+
+        MAPPING.set(TD_I_ALL, Double.class, source -> {
+            TsData s = source.irr;
+            if (source.mul) {
+                s = s.log();
+            }
+            StatisticalTest test = tdAr(s);
+            return test == null ? null : test.getPValue();
+        });
+
+        MAPPING.set(TD_I_LAST, Double.class, source -> {
+            TsData s = source.irr;
+            if (source.mul) {
+                s = s.log();
+            }
+            int ifreq = s.getFrequency().intValue();
+            s = s.drop(Math.max(0, s.getLength() - ifreq * 8 - 1), 0);
+            StatisticalTest test = tdAr(s);
+            return test == null ? null : test.getPValue();
+        });
+
+        MAPPING.set(TD_RES_ALL, Double.class, source -> {
+            TsData s = source.res;
+            if (s == null) {
+                return null;
+            }
+            StatisticalTest test = td(s);
+            return test == null ? null : test.getPValue();
+        });
+
+        MAPPING.set(TD_RES_LAST, Double.class, source -> {
+            TsData s = source.res;
+            if (s == null) {
+                return null;
+            }
+            int ifreq = s.getFrequency().intValue();
+            s = s.drop(Math.max(0, s.getLength() - ifreq * 8 - 1), 0);
+            StatisticalTest test = td(s);
+            return test == null ? null : test.getPValue();
+        });
+
+        MAPPING.set(IC_RATIO_HENDERSON, Double.class, source -> {
+            TsData sa = source.sa;
+            int freq = sa.getFrequency().intValue();
+            int filterLength = freq + 1;
+            SymmetricFilter trendFilter = TrendCycleFilterFactory.makeHendersonFilter(filterLength);// .defaultHendersonFilterForFrequency(freq);
+            IFiltering strategy = new DefaultTrendFilteringStrategy(trendFilter,
+                    null, filterLength + " terms Henderson moving average");
+            TsData sc = strategy.process(sa, sa.getDomain());
+            TsData si = source.mul ? TsData.divide(sa, sc) : TsData.subtract(sa, sc);
+            double gc = SeriesEvolution.calcAbsMeanVariations(sc, null, 1, source.mul, null);
+            double gi = SeriesEvolution.calcAbsMeanVariations(si, null, 1, source.mul, null);
+            return (12 / freq) * gi / gc;
+        });
+
+        MAPPING.set(IC_RATIO, Double.class, source -> {
+            TsData sa = source.sa;
+            int freq = sa.getFrequency().intValue();
+            TsData sc = source.t;
+            TsData si = source.mul ? TsData.divide(sa, sc) : TsData.subtract(sa, sc);
+            double gc = SeriesEvolution.calcAbsMeanVariations(sc, null, 1, source.mul, null);
+            double gi = SeriesEvolution.calcAbsMeanVariations(si, null, 1, source.mul, null);
+            return (12 / freq) * gi / gc;
+        });
+
+        MAPPING.set(MSR_GLOBAL, Double.class, source -> {
+            MsrTable msr = source.msr();
+            if (msr == null)
+                return null;
+             return msr.getGlobalMsr();
+        });
+
+        MAPPING.setList(MSR, 1, 12, Double.class, (source, i) -> {
+            MsrTable msr = source.msr();
+            if (msr == null)
+                return null;
+            return i <= 0 || i > msr.getCount() ? null : msr.getRMS(i-1);
         });
     }
 }
