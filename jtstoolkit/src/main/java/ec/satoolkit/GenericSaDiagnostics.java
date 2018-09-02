@@ -156,9 +156,12 @@ public class GenericSaDiagnostics implements IProcResults {
         if (res == null) {
             return null;
         }
+        int freq = res.getFrequency().intValue();
+        if (res.getLength() < 3 * freq) {
+            return null;
+        }
         if (last) {
             if (seasRes3 == null) {
-                int freq = res.getFrequency().intValue();
                 TsPeriodSelector sel = new TsPeriodSelector();
                 sel.last(freq * 3);
                 seasRes3 = new CombinedSeasonalityTest(res.select(sel), false);
@@ -196,13 +199,20 @@ public class GenericSaDiagnostics implements IProcResults {
             return null;
         }
         if (outOfSampleTest == null) {
-            int ifreq = regarima.description.getFrequency();
-            int nback = (int) (FLEN * ifreq);
-            if (nback < 5) {
-                nback = 5;
+            try {
+                int ifreq = regarima.description.getFrequency();
+                int nback = (int) (FLEN * ifreq);
+                if (nback < 5) {
+                    nback = 5;
+                }
+                OneStepAheadForecastingTest os = new OneStepAheadForecastingTest(nback);
+                if (!os.test(regarima.estimation.getRegArima())) {
+                    return null;
+                }
+                outOfSampleTest = os;
+            } catch (Exception err) {
+
             }
-            outOfSampleTest = new OneStepAheadForecastingTest(nback);
-            outOfSampleTest.test(regarima.estimation.getRegArima());
         }
         return outOfSampleTest;
     }
@@ -397,16 +407,25 @@ public class GenericSaDiagnostics implements IProcResults {
 ////////////////////// FCASTS
         MAPPING.set(FCAST_INSAMPLE_MEAN, Double.class, source -> {
             OneStepAheadForecastingTest ftest = source.forecastingTest();
+            if (ftest == null) {
+                return null;
+            }
             return ftest.inSampleMeanTest().getPValue();
         });
 
         MAPPING.set(FCAST_OUTSAMPLE_MEAN, Double.class, source -> {
             OneStepAheadForecastingTest ftest = source.forecastingTest();
+            if (ftest == null) {
+                return null;
+            }
             return ftest.outOfSampleMeanTest().getPValue();
         });
 
         MAPPING.set(FCAST_OUTSAMPLE_VARIANCE, Double.class, source -> {
             OneStepAheadForecastingTest ftest = source.forecastingTest();
+            if (ftest == null) {
+                return null;
+            }
             return ftest.mseTest().getPValue();
         });
 
@@ -448,7 +467,8 @@ public class GenericSaDiagnostics implements IProcResults {
             if (ytests == null) {
                 return null;
             } else {
-                return ytests.getPeriodogramTest().getPValue();
+                StatisticalTest ptest = ytests.getPeriodogramTest();
+                return ptest == null ? null : ptest.getPValue();
             }
         });
 
@@ -536,7 +556,8 @@ public class GenericSaDiagnostics implements IProcResults {
             if (rtests == null) {
                 return null;
             } else {
-                return rtests.getPeriodogramTest().getPValue();
+                StatisticalTest ptest = rtests.getPeriodogramTest();
+                return ptest == null ? null : ptest.getPValue();
             }
         });
 
@@ -614,7 +635,8 @@ public class GenericSaDiagnostics implements IProcResults {
             if (itests == null) {
                 return null;
             } else {
-                return itests.getPeriodogramTest().getPValue();
+                StatisticalTest ptest = itests.getPeriodogramTest();
+                return ptest == null ? null : ptest.getPValue();
             }
         });
 
@@ -701,7 +723,8 @@ public class GenericSaDiagnostics implements IProcResults {
             if (satests == null) {
                 return null;
             } else {
-                return satests.getPeriodogramTest().getPValue();
+                StatisticalTest ptest = satests.getPeriodogramTest();
+                return ptest == null ? null : ptest.getPValue();
             }
         });
 
@@ -842,16 +865,18 @@ public class GenericSaDiagnostics implements IProcResults {
 
         MAPPING.set(MSR_GLOBAL, Double.class, source -> {
             MsrTable msr = source.msr();
-            if (msr == null)
+            if (msr == null) {
                 return null;
-             return msr.getGlobalMsr();
+            }
+            return msr.getGlobalMsr();
         });
 
         MAPPING.setList(MSR, 1, 12, Double.class, (source, i) -> {
             MsrTable msr = source.msr();
-            if (msr == null)
+            if (msr == null) {
                 return null;
-            return i <= 0 || i > msr.getCount() ? null : msr.getRMS(i-1);
+            }
+            return i <= 0 || i > msr.getCount() ? null : msr.getRMS(i - 1);
         });
     }
 }

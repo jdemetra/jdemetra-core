@@ -882,6 +882,7 @@ public class PreprocessingModel implements IProcResults {
         } else {
             int nhp = description.getArimaComponent().getFreeParametersCount();
             int df = estimation.getLikelihood().getDegreesOfFreedom(true, nhp);
+            
             T tstat = new T();
             tstat.setDegreesofFreedom(df);
 

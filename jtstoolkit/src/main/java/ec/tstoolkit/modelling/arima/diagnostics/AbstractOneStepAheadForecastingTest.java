@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.modelling.arima.diagnostics;
 
 import ec.tstoolkit.arima.estimation.IRegArimaProcessor;
@@ -66,13 +65,21 @@ public abstract class AbstractOneStepAheadForecastingTest implements IOneStepAhe
 
     @Override
     public boolean test(RegArimaModel<SarimaModel> regarima) {
+        try{
         RegArimaModel<SarimaModel> model = linearize(regarima);
         res_ = computeResiduals(model);
         if (res_ == null) {
             return false;
         }
+        }
+        catch (Exception err){
+            return false;
+        }
 
         int n = res_.getLength();
+        if (n <= nback_ + 2) {
+            return false;
+        }
         DataBlock in = res_.drop(0, nback_), out = res_.range(in.getLength(), n);
         int nsample = mean_ ? in.getLength() - 1 : in.getLength();
         min_ = in.sum() / in.getLength();
@@ -122,17 +129,18 @@ public abstract class AbstractOneStepAheadForecastingTest implements IOneStepAhe
         int n = res_.getLength();
         return res_.range(n - nback_, n);
     }
-    
+
     @Override
-    public StatisticalTest mseTest(){
-        int n=res_.getLength();
-        int nin=n-nback_;
-        if ( mean_)
+    public StatisticalTest mseTest() {
+        int n = res_.getLength();
+        int nin = n - nback_;
+        if (mean_) {
             --nin;
-        F f=new F();
+        }
+        F f = new F();
         f.setDFNum(nback_);
         f.setDFDenom(nin);
-        return new StatisticalTest(f, vout_/vin_, TestType.Upper, false);
+        return new StatisticalTest(f, vout_ / vin_, TestType.Upper, false);
     }
 
     @Override
@@ -148,7 +156,6 @@ public abstract class AbstractOneStepAheadForecastingTest implements IOneStepAhe
         if (regarima.getVarsCount() == 0) {
             return regarima;
         }
-
         DataBlock z = regarima.getY().deepClone();
         double[] b = regarima.computeLikelihood().getB();
         if (b != null) {
