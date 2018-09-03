@@ -30,7 +30,7 @@ public class AR {
         if (nlags<ar.length)
             nlags=ar.length;
         Data data=new Data(ar,var,nlags);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.create(0));
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
 
     @lombok.Value

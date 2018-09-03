@@ -134,7 +134,7 @@ public class SsfBsm extends Ssf {
         BsmData data = new BsmData(model);
         BsmInitialization initialization = new BsmInitialization(data);
         BsmDynamics dynamics = new BsmDynamics(data);
-        ISsfLoading loading = Loading.create(idx);
+        ISsfLoading loading = Loading.fromPositions(idx);
             return new SsfBsm(initialization, dynamics, new Measurement(loading, null));
       }
 

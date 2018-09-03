@@ -5,11 +5,15 @@
  */
 package demetra.ssf.implementations;
 
+import demetra.data.DataBlock;
+import demetra.ssf.CompositeInitialization;
+import demetra.ssf.CompositeDynamics;
 import demetra.design.BuilderPattern;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.SsfComponent;
+import demetra.ssf.StateComponent;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.univariate.Measurement;
@@ -17,24 +21,29 @@ import demetra.ssf.univariate.Ssf;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.util.IntList;
 
 /**
  *
  * @author palatej
  */
-public class CompositeSsf implements ISsf {
+public class CompositeSsf extends Ssf {
 
-    @lombok.experimental.Delegate
-    private final Ssf ssf;
-    private final int[] cmpPos;
+    private final int[] pos;
+    private final int[] dim;
 
-    private CompositeSsf(int[] cmpPos, ISsfInitialization init, ISsfDynamics dynamics, ISsfMeasurement measurement) {
-        ssf = new Ssf(init, dynamics, measurement);
-        this.cmpPos = cmpPos;
+    private CompositeSsf(int[] cmpPos, int[] cmpDim, ISsfInitialization init, ISsfDynamics dynamics, ISsfMeasurement measurement) {
+        super(init, dynamics, measurement);
+        this.pos = cmpPos;
+        this.dim = cmpDim;
     }
 
     public int[] componentsPosition() {
-        return cmpPos.clone();
+        return pos.clone();
+    }
+
+    public int[] componentsDimension() {
+        return dim.clone();
     }
 
     @BuilderPattern(CompositeSsf.class)
@@ -47,6 +56,11 @@ public class CompositeSsf implements ISsf {
 
         public Builder add(SsfComponent cmp) {
             components.add(cmp);
+            return this;
+        }
+
+        public Builder add(StateComponent cmp, ISsfLoading loading) {
+            components.add(new SsfComponent(cmp.initialization(), cmp.dynamics(), loading));
             return this;
         }
 
@@ -81,9 +95,12 @@ public class CompositeSsf implements ISsf {
                 dim[j] = i[j].getStateDim();
                 cpos += dim[j];
             }
-            return new CompositeSsf(pos, new CompositeInitialization(dim, i),
+            // optimization
+            ISsfLoading cl = Loading.optimize(new CompositeLoading(dim, l), cpos);
+
+            return new CompositeSsf(pos, dim, new CompositeInitialization(dim, i),
                     new CompositeDynamics(dim, d),
-                    new Measurement(new CompositeLoading(dim, l), measurementError));
+                    new Measurement(cl, measurementError));
         }
 
         public int[] getComponentsDimension() {

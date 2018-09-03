@@ -54,11 +54,7 @@ public class SsfCalendarizationEx {
      */
     public ISsf of(@Nonnull final int[] starts, final int[] astarts, final double[] weights) {
         Data data = new Data(starts, astarts, weights);
-        return Ssf.builder()
-                .initialization(new Initialization())
-                .dynamics(new Dynamics(data))
-                .loading(new Loading(data))
-                .build();
+        return Ssf.of(new Initialization(), new Dynamics(data), new Loading(data));
     }
 
     static class Data {
@@ -157,7 +153,7 @@ public class SsfCalendarizationEx {
             return true;
         }
 
-         /**
+        /**
          *
          * @param pf0
          */
@@ -213,8 +209,9 @@ public class SsfCalendarizationEx {
         }
 
         /**
-         * case I: pos+1 % c = 0. Last pos T=| 0 0 | | 0 1 | case II: pos % c = 0.
-         * First pos T=| 0 w | | 0 1 | case III: others. Inside T=| 1 w | | 0 1 |
+         * case I: pos+1 % c = 0. Last pos T=| 0 0 | | 0 1 | case II: pos % c =
+         * 0. First pos T=| 0 w | | 0 1 | case III: others. Inside T=| 1 w | | 0
+         * 1 |
          *
          * @param pos
          * @param tr

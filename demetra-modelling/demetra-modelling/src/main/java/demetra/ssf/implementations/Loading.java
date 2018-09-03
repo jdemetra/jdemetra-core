@@ -19,8 +19,10 @@ package demetra.ssf.implementations;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.data.DataBlockIterator;
+import demetra.data.DoubleReader;
 import demetra.maths.matrices.QuadraticForm;
 import demetra.ssf.ISsfLoading;
+import demetra.util.IntList;
 
 /**
  *
@@ -28,15 +30,56 @@ import demetra.ssf.ISsfLoading;
  */
 public class Loading {
 
-    public static ISsfLoading create(final int mpos) {
+    public static ISsfLoading optimize(ISsfLoading l, int len) {
+        if (!l.isTimeInvariant()) {
+            return l;
+        }
+        DataBlock z = DataBlock.make(len);
+        l.Z(0, z);
+        IntList c = new IntList();
+        DoubleReader reader = z.reader();
+        double cur = 0;
+        boolean same = true;
+        int n0 = 0;
+        for (int k = 0; k < len; ++k) {
+            double x = reader.next();
+            if (x == 0) {
+                ++n0;
+            } else if (same) {
+                if (cur == 0) {
+                    cur = x;
+                    c.add(k);
+                } else if (cur == x) {
+                    c.add(k);
+                } else {
+                    same = false;
+                }
+            }
+        }
+        if (same == false) {
+            if (n0 < 2 * len / 3) {
+                return new TimeInvariantLoading(z);
+            } else {
+                return l;
+            }
+        } else if (c.size() == 1) {
+            return cur == 1 ? fromPosition(c.get(0)) : from(c.get(0), cur);
+        } else {
+            int[] pos = c.toArray();
+            return cur == 0 ? fromPositions(pos) : rescale(fromPositions(pos), cur);
+        }
+
+    }
+
+    public static ISsfLoading fromPosition(final int mpos) {
         return new Loading1(mpos);
     }
 
-    public static ISsfLoading createLoading(final int mpos, final double b) {
+    public static ISsfLoading from(final int mpos, final double b) {
         return b == 1 ? new Loading1(mpos) : new Loading1l(mpos, b);
     }
 
-    public static ISsfLoading createSum() {
+    public static ISsfLoading sum() {
         return new SumLoading();
     }
 
@@ -48,11 +91,11 @@ public class Loading {
         return new ExtractorLoading(n, inc, n);
     }
 
-    public static ISsfLoading create(final int[] mpos) {
+    public static ISsfLoading fromPositions(final int[] mpos) {
         return new Loading2(mpos);
     }
 
-    public static ISsfLoading create(final int[] mpos, final double[] w) {
+    public static ISsfLoading from(final int[] mpos, final double[] w) {
         return new Loading3(mpos, w);
     }
 

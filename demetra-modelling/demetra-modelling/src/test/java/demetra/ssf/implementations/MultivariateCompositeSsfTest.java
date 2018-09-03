@@ -209,7 +209,7 @@ class Mapping implements IParametricMapping<MultivariateCompositeSsf> {
         eq2.add(new Item("ty"));
         eq2.add(new Item("cycle", p(p, ARPOS + 3)));
         eq3.add(new Item("tpicore"));
-        eq3.add(new Item("cycle", p(p, ARPOS + 4), Loading.create(4)));
+        eq3.add(new Item("cycle", p(p, ARPOS + 4), Loading.fromPosition(4)));
         eq4.add(new Item("tpi"));
         eq4.add(new Item("cycle", p(p, ARPOS + 5)));
 
@@ -306,18 +306,18 @@ class Mapping2 implements IParametricMapping<MultivariateCompositeSsf> {
         eq2.add(new Item("ty"));
         eq2.add(new Item("cycle", p(p, pcur++)));
         eq3.add(new Item("tpicore"));
-        eq3.add(new Item("cycle", p(p, pcur++), Loading.create(4)));
+        eq3.add(new Item("cycle", p(p, pcur++), Loading.fromPosition(4)));
         eq4.add(new Item("tpi"));
         eq4.add(new Item("cycle", p(p, pcur++)));
         double b1 = p(p, pcur++);
-        ISsfLoading pl = Loading.create(new int[]{0, 1}, new double[]{b1 * c1, b1 * c2});
+        ISsfLoading pl = Loading.from(new int[]{0, 1}, new double[]{b1 * c1, b1 * c2});
         eq5.add(new Item("tbi"));
         eq5.add(new Item("cycle", 1, pl));
         double b2 = p(p, pcur);
         double c12 = c1 * c1, c13 = c12 * c1, c14 = c13 * c1, c22 = c2 * c2;
         double d1 = c1 + c12 + c13 + c14 + c2 + c22 + 2 * c1 * c2 + 3 * c12 * c2;
         double d2 = c2 + c1 * c2 + c22 + c12 * c2 + 2 * c1 * c22 + c13 * c2;
-        ISsfLoading p2 = Loading.create(new int[]{0, 1}, new double[]{b2 * d1, b2 * d2});
+        ISsfLoading p2 = Loading.from(new int[]{0, 1}, new double[]{b2 * d1, b2 * d2});
         eq6.add(new Item("tci"));
         eq6.add(new Item("cycle", 1, p2));
 
@@ -420,13 +420,13 @@ class Mapping3 implements IParametricMapping<MultivariateCompositeSsf> {
         eq2.add(new Item("cycle", p(p, pcur++)));
         eq2.add(new Item("ey"));
         eq3.add(new Item("tpicore"));
-        eq3.add(new Item("cycle", p(p, pcur++), Loading.create(4)));
+        eq3.add(new Item("cycle", p(p, pcur++), Loading.fromPosition(4)));
         eq3.add(new Item("epicore"));
         eq4.add(new Item("tpi"));
         eq4.add(new Item("cycle", p(p, pcur++)));
         eq4.add(new Item("epi"));
         double b1 = p(p, pcur++);
-        ISsfLoading pl = Loading.create(new int[]{0, 1}, new double[]{b1 * c1, b1 * c2});
+        ISsfLoading pl = Loading.from(new int[]{0, 1}, new double[]{b1 * c1, b1 * c2});
         eq5.add(new Item("tbi"));
         eq5.add(new Item("cycle", 1, pl));
         eq5.add(new Item("ebi"));
@@ -434,7 +434,7 @@ class Mapping3 implements IParametricMapping<MultivariateCompositeSsf> {
         double c12 = c1 * c1, c13 = c12 * c1, c14 = c13 * c1, c22 = c2 * c2;
         double d1 = c1 + c12 + c13 + c14 + c2 + c22 + 2 * c1 * c2 + 3 * c12 * c2;
         double d2 = c2 + c1 * c2 + c22 + c12 * c2 + 2 * c1 * c22 + c13 * c2;
-        ISsfLoading p2 = Loading.create(new int[]{0, 1}, new double[]{b2 * d1, b2 * d2});
+        ISsfLoading p2 = Loading.from(new int[]{0, 1}, new double[]{b2 * d1, b2 * d2});
         eq6.add(new Item("tci"));
         eq6.add(new Item("cycle", 1, p2));
         eq6.add(new Item("eci"));

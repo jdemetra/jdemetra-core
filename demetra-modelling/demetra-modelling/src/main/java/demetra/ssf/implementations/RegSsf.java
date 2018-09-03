@@ -31,6 +31,7 @@ import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.univariate.Measurement;
 
 /**
  * SSF extended by regression variables with fixed or time varying coefficients.
@@ -40,23 +41,20 @@ import demetra.ssf.univariate.ISsfMeasurement;
  */
 @lombok.experimental.UtilityClass
 public class RegSsf {
-    
-    public SsfComponent of(Matrix X){
-        int nx=X.getColumnsCount();
+
+    public SsfComponent of(Matrix X) {
+        int nx = X.getColumnsCount();
         return new SsfComponent(new ConstantInitialization(nx), new ConstantDynamics(), Loading.regression(X));
     }
-    
+
     public ISsf of(ISsf model, Matrix X) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();
         }
         int mdim = model.getStateDim();
-        return Ssf.builder()
-                .initialization(new Xinitializer(model.initialization(), X.getColumnsCount()))
-                .dynamics(new Xdynamics(mdim, model.dynamics(), X.getColumnsCount()))
-                .loading(new Xloading(mdim, model.loading(), X))
-                .measurementError(model.measurementError())
-                .build();
+        return Ssf.of(new Xinitializer(model.initialization(), X.getColumnsCount()),
+                new Xdynamics(mdim, model.dynamics(), X.getColumnsCount()),
+                new Xloading(mdim, model.loading(), X), model.measurementError());
     }
 
     /**
@@ -75,12 +73,9 @@ public class RegSsf {
         int mdim = model.getStateDim();
         Matrix s = cvar.deepClone();
         SymmetricMatrix.lcholesky(s, 1e-12);
-        return Ssf.builder()
-                .initialization(new Xinitializer(model.initialization(), X.getColumnsCount()))
-                .dynamics(new Xvardynamics(mdim, model.dynamics(), cvar, s))
-                .loading(new Xloading(mdim, model.loading(), X))
-                .measurementError(model.measurementError())
-                .build();
+        return Ssf.of(new Xinitializer(model.initialization(), X.getColumnsCount()),
+                new Xvardynamics(mdim, model.dynamics(), cvar, s),
+                new Xloading(mdim, model.loading(), X), model.measurementError());
     }
 
     /**
@@ -98,15 +93,11 @@ public class RegSsf {
         }
         int mdim = model.getStateDim();
         Matrix var = SymmetricMatrix.XXt(s);
-        return Ssf.builder()
-                .initialization(new Xinitializer(model.initialization(), X.getColumnsCount()))
-                .dynamics(new Xvardynamics(mdim, model.dynamics(), var, s))
-                .loading(new Xloading(mdim, model.loading(), X))
-                .measurementError(model.measurementError())
-                .build();
+        return Ssf.of(new Xinitializer(model.initialization(), X.getColumnsCount()),
+                new Xvardynamics(mdim, model.dynamics(), var, s),
+                new Xloading(mdim, model.loading(), X), model.measurementError());
     }
 
-    
     static class Xdynamics implements ISsfDynamics {
 
         private final int n, nx;

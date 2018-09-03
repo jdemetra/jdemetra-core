@@ -33,7 +33,7 @@ public class CyclicalComponent {
 
     public SsfComponent of(final double dumpingFactor, final double period, final double cvar) {
         Data data = new Data(dumpingFactor, period, cvar);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.create(0));
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
 
     static class Data {

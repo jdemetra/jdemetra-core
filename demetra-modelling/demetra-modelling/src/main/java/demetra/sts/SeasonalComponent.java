@@ -246,7 +246,7 @@ public class SeasonalComponent {
 
     public SsfComponent of(final SeasonalModel model, final int period, final double seasVar) {
         Data data = new Data(model, seasVar, period);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.create(0));
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
 
     public SsfComponent harrisonStevens(final int period, final double v) {

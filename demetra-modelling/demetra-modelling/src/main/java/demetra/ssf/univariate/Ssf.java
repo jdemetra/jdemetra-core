@@ -23,6 +23,7 @@ import demetra.ssf.implementations.TimeInvariantSsf;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.SsfException;
+import demetra.ssf.StateComponent;
 import demetra.ssf.implementations.MeasurementError;
 
 /**
@@ -30,58 +31,36 @@ import demetra.ssf.implementations.MeasurementError;
  * @author Jean Palate
  */
 public class Ssf implements ISsf {
-    
-    public static Builder builder(){
-        return new Builder();
-    }
-
-    @BuilderPattern(Ssf.class)
-    public static class Builder {
-
-        private ISsfInitialization initializer;
-        private ISsfLoading loading;
-        private ISsfError error;
-        private ISsfDynamics dynamics;
-        
-        public Builder initialization(ISsfInitialization initializer){
-            this.initializer=initializer;
-            return this;
-        }
-        
-        public Builder dynamics(ISsfDynamics dynamics){
-            this.dynamics=dynamics;
-            return this;
-        }
-
-        public Builder loading(ISsfLoading loading){
-            this.loading=loading;
-            return this;
-        }
-
-        public Builder measurementError(ISsfError error){
-            this.error=error;
-            return this;
-        }
-
-        public Builder measurementError(double evar){
-            this.error=MeasurementError.of(evar);
-            return this;
-        }
-
-        public Ssf build(){
-            if (dynamics == null || loading == null)
-                throw new SsfException(SsfException.MODEL);
-            return new Ssf(initializer, dynamics, new Measurement(loading, error));
-        }
-    }
 
     private final ISsfInitialization initializer;
     private final ISsfMeasurement measurement;
     private final ISsfDynamics dynamics;
-    
-    public static Ssf of(SsfComponent cmp, double measurementError){
-        return new Ssf(cmp.initialization(), cmp.dynamics(), 
+
+    public static Ssf of(SsfComponent cmp, double measurementError) {
+        return new Ssf(cmp.initialization(), cmp.dynamics(),
                 new Measurement(cmp.loading(), MeasurementError.of(measurementError)));
+    }
+
+    public static Ssf of(StateComponent cmp, ISsfLoading loading, double measurementError) {
+        return new Ssf(cmp.initialization(), cmp.dynamics(),
+                new Measurement(loading, MeasurementError.of(measurementError)));
+    }
+
+    public static Ssf of(StateComponent cmp, ISsfLoading loading) {
+        return new Ssf(cmp.initialization(), cmp.dynamics(),
+                new Measurement(loading, null));
+    }
+
+    public static Ssf of(final ISsfInitialization initializer, final ISsfDynamics dynamics, ISsfLoading loading) {
+        return new Ssf(initializer, dynamics, new Measurement(loading, null));
+    }
+
+    public static Ssf of(final ISsfInitialization initializer, final ISsfDynamics dynamics, ISsfLoading loading, double measurementError) {
+        return new Ssf(initializer, dynamics, new Measurement(loading, MeasurementError.of(measurementError)));
+    }
+
+    public static Ssf of(final ISsfInitialization initializer, final ISsfDynamics dynamics, ISsfLoading loading, ISsfError measurementError) {
+        return new Ssf(initializer, dynamics, new Measurement(loading, measurementError));
     }
 
     /**

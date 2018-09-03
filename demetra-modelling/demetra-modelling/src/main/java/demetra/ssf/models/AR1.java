@@ -35,12 +35,12 @@ public class AR1 {
 
     public SsfComponent of(final double rho) {
         Data data = new Data(rho, 1, false);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.create(0));
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
 
     public static SsfComponent of(final double rho, final double var, final boolean zeroinit) {
         Data data = new Data(rho, var, zeroinit);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.create(0));
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
 
     static class Data {

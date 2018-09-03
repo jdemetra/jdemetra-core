@@ -59,12 +59,8 @@ public class SsfCalendarization {
      */
     public ISsf of(@Nonnull final int[] starts, final double[] weights){
         Data data=new Data(starts, weights);
-        return Ssf.builder()
-                .initialization(new Initialization())
-                .dynamics(new Dynamics(data))
-                .loading(new Loading(data))
-                .build();
-    }
+        return Ssf.of(new Initialization(), new Dynamics(data), new Loading(data));
+     }
 
     static class Data {
 

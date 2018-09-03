@@ -37,30 +37,15 @@ import demetra.ssf.univariate.Ssf;
 public class SsfSpline {
 
     public ISsf of(double measurementError) {
-        return Ssf.builder()
-                .initialization(new DiffuseInitialization(2))
-                .dynamics(new SimpleDynamics(1))
-                .loading(Loading.create(0))
-                .measurementError(measurementError)
-                .build();
+        return Ssf.of(new DiffuseInitialization(2), new SimpleDynamics(1), Loading.fromPosition(0), measurementError);
     }
 
     public ISsf of(double measurementError, double d) {
-        return Ssf.builder()
-                .initialization(new DiffuseInitialization(2))
-                .dynamics(new SimpleDynamics(d))
-                .loading(Loading.create(0))
-                .measurementError(measurementError)
-                .build();
+        return Ssf.of(new DiffuseInitialization(2), new SimpleDynamics(d), Loading.fromPosition(0), measurementError);
     }
 
     public ISsf of(double measurementError, double[] d) {
-        return Ssf.builder()
-                .initialization(new DiffuseInitialization(2))
-                .dynamics(new Dynamics(d))
-                .loading(Loading.create(0))
-                .measurementError(measurementError)
-                .build();
+        return Ssf.of(new DiffuseInitialization(2), new Dynamics(d), Loading.fromPosition(0), measurementError);
     }
 
     static class SimpleDynamics implements ISsfDynamics {
@@ -189,7 +174,6 @@ public class SsfSpline {
             x.add(0, d[pos] * x.get(1));
         }
 
- 
         @Override
         public void addV(int pos, Matrix p) {
             double d1 = d[pos];

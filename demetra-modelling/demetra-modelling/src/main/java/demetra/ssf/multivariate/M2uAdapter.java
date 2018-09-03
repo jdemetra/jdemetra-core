@@ -25,6 +25,7 @@ import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.univariate.Measurement;
 import demetra.ssf.univariate.Ssf;
 
 /**
@@ -47,12 +48,7 @@ public class M2uAdapter {
         Dynamics ndyn = new Dynamics(mdynamics, measurements.getCount());
         Loading nload = new Loading(measurements);
         Error ne = errors == null ? null : new Error(errors, measurements.getCount());
-        return Ssf.builder()
-                .initialization(mssf.initialization())
-                .dynamics(ndyn)
-                .loading(nload)
-                .measurementError(ne)
-                .build();
+        return Ssf.of(mssf.initialization(), ndyn, nload, ne);
     }
 
     static class Data implements ISsfData {

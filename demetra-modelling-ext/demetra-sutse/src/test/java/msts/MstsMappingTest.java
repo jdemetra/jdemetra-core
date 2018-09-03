@@ -110,7 +110,7 @@ public class MstsMappingTest {
             l = p.get(9);
             eq = new MultivariateCompositeSsf.Equation(v);
             eq.add(new MultivariateCompositeSsf.Item("tpicore"));
-            eq.add(new MultivariateCompositeSsf.Item("cycle", l, Loading.create(4)));
+            eq.add(new MultivariateCompositeSsf.Item("cycle", l, Loading.fromPosition(4)));
             builder.add(eq);
             v = p.get(6);
             l = p.get(10);

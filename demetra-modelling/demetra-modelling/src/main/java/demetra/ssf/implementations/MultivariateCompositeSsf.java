@@ -5,6 +5,8 @@
  */
 package demetra.ssf.implementations;
 
+import demetra.ssf.CompositeInitialization;
+import demetra.ssf.CompositeDynamics;
 import demetra.data.DoubleSequence;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
@@ -132,7 +134,7 @@ public class MultivariateCompositeSsf extends MultivariateSsf {
             // creates the equations
             ISsfLoading[] loadings = new ISsfLoading[neq];
             for (int j = 0; j < neq; ++j) {
-                loadings[j] = loadingOf(equations.get(j), pos, dim);
+                loadings[j] = Loading.optimize(loadingOf(equations.get(j), pos, dim), cpos);
             }
 
             return new MultivariateCompositeSsf(pos, dim, new CompositeInitialization(dim, i),

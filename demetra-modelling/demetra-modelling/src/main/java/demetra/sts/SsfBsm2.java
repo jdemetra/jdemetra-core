@@ -75,7 +75,7 @@ public class SsfBsm2 extends Ssf {
         SsfBsm.BsmData data = new SsfBsm.BsmData(model);
         Bsm2Initialization initialization = new Bsm2Initialization(data);
         Bsm2Dynamics dynamics = new Bsm2Dynamics(data);
-        ISsfLoading loading = Loading.create(idx);
+        ISsfLoading loading = Loading.fromPositions(idx);
         return new SsfBsm2(initialization, dynamics, new Measurement(loading,data.nVar));
     }
 

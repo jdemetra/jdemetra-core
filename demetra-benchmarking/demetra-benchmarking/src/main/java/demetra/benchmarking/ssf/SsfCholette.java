@@ -49,11 +49,8 @@ public class SsfCholette {
 
         public ISsf build() {
             CholetteDefinition def = new CholetteDefinition(conversion, start, rho, weights);
-            return Ssf.builder()
-                    .initialization(rho == 1 ? new DiffuseInitialization() : new StationaryInitialization(rho))
-                    .dynamics(new Dynamics(def))
-                    .loading(new Loading(def))
-                    .build();
+            return Ssf.of(rho == 1 ? new DiffuseInitialization() : new StationaryInitialization(rho),
+                    new Dynamics(def), new Loading(def));
         }
 
         public Builder rho(final double rho) {

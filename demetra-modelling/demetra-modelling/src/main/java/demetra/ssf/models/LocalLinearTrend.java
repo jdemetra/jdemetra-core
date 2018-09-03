@@ -34,7 +34,7 @@ public class LocalLinearTrend {
 
     public SsfComponent of(double lvar, double svar) {
         Data data = new Data(lvar, svar);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.create(0));
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
 
     static class Data {

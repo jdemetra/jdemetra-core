@@ -11,13 +11,11 @@ import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
-import demetra.ssf.multivariate.IMultivariateSsf;
-import demetra.ssf.multivariate.MultivariateSsf;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.Ssf;
-import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.univariate.Measurement;
 
 /**
  * This class provides algorithms that integrate the measurement errors into the
@@ -29,15 +27,11 @@ import demetra.ssf.univariate.ISsfMeasurement;
 public class CompactSsf {
 
     public ISsf compact(ISsf ssf) {
-        
+
         if (!ssf.measurement().hasError()) {
             return ssf;
         } else {
-            return Ssf.builder()
-                    .initialization(new Initialization(ssf))
-                    .dynamics(new Dynamics(ssf))
-                    .loading(new Loading(ssf))
-                    .build();
+            return Ssf.of(new Initialization(ssf), new Dynamics(ssf), new Loading(ssf));
         }
     }
 
@@ -101,8 +95,8 @@ public class CompactSsf {
                 e = 0;
             }
         }
-        
-        private double err(int pos){
+
+        private double err(int pos) {
             return e != 0 ? e : Math.sqrt(error.at(pos));
         }
 
@@ -240,6 +234,5 @@ public class CompactSsf {
         }
 
     }
-    
 
 }

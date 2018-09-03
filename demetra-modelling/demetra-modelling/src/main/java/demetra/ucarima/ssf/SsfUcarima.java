@@ -19,8 +19,10 @@
 package demetra.ucarima.ssf;
 
 import demetra.arima.ssf.SsfArima;
+import demetra.ssf.CompositeState;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.StateComponent;
 import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.univariate.ISsf;
@@ -41,7 +43,7 @@ public class SsfUcarima {
         int n = ucmc.getComponentsCount();
         CompositeSsf.Builder builder = CompositeSsf.builder();
         for (int i = 0; i < n; ++i) {
-            builder.add(SsfArima.componentOf(ucmc.getComponent(i)));
+            builder.add(SsfArima.componentOf(ucmc.getComponent(i)), Loading.fromPosition(0));
         }
         return builder.build();
     }

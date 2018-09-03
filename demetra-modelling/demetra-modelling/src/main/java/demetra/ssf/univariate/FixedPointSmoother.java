@@ -109,7 +109,8 @@ public class FixedPointSmoother {
         OrdinaryFilter filter = new OrdinaryFilter(new Initializer(ssf, fixpos, M));
         SsfDataWindow xdata = new SsfDataWindow(data, fixpos, data.length());
         int mdim = M == null ? ssf.getStateDim() : M.getRowsCount();
-        Ssf xssf = new Ssf(new DummyInitialization(mdim+ssf.getStateDim()), new Dynamics(ssf, mdim), new Measurement(new Loading(ssf, mdim), ssf.measurementError()));
+        Ssf xssf = Ssf.of(new DummyInitialization(mdim+ssf.getStateDim()), 
+                new Dynamics(ssf, mdim), new Loading(ssf, mdim), ssf.measurementError());
         states = StateStorage.full(StateInfo.Concurrent);
         states.prepare(mdim, fixpos, data.length());
         Results frslts = new Results(states, ssf.getStateDim(), mdim);

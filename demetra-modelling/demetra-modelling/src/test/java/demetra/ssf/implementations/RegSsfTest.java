@@ -13,6 +13,7 @@ import demetra.modelling.regression.RegressionUtility;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.ssf.SsfComponent;
+import demetra.ssf.StateComponent;
 import demetra.ssf.dk.DkLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.ISsf;
@@ -42,14 +43,14 @@ public class RegSsfTest {
                 .btheta(1, -.8)
                 .build();
         Ssf ssf = SsfArima.of(airline);
-        SsfComponent cmp1 = SsfArima.componentOf(airline);
+        StateComponent cmp1 = SsfArima.componentOf(airline);
         TsData s = Data.TS_PROD;
         SsfData y = new SsfData(s.getValues());
         GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD7);
         Matrix X = RegressionUtility.data(s.getDomain(), new GenericTradingDaysVariables(td));
         ISsf rssf1 = RegSsf.of(ssf, X);
         CompositeSsf rssf2 = CompositeSsf.builder()
-                .add(cmp1)
+                .add(cmp1, Loading.fromPosition(0))
                 .add(RegSsf.of(X))
                 .build();
         DkLikelihood ll1 = DkToolkit.likelihoodComputer().compute(rssf1, y);

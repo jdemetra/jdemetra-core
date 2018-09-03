@@ -18,7 +18,7 @@ import demetra.ssf.univariate.Measurement;
 @lombok.experimental.UtilityClass
 public class Measurements {
     public ISsfMeasurement of(int mpos, double var){
-        return new Measurement(Loading.create(mpos), var);
+        return new Measurement(Loading.fromPosition(mpos), var);
     }
     
     public ISsfMeasurement of(double[] Z, double var){

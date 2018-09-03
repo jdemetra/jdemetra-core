@@ -42,6 +42,7 @@ import demetra.data.DoubleReader;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.SsfComponent;
+import demetra.ssf.StateComponent;
 import demetra.ssf.univariate.Measurement;
 import demetra.ssf.univariate.ISsfMeasurement;
 
@@ -52,8 +53,12 @@ import demetra.ssf.univariate.ISsfMeasurement;
 @Development(status = Development.Status.Beta)
 @lombok.experimental.UtilityClass
 public class SsfArima {
+    
+    public ISsfLoading loading(){
+        return Loading.fromPosition(0);
+    }
 
-    public SsfComponent componentOf(IArimaModel arima) {
+    public StateComponent componentOf(IArimaModel arima) {
         if (arima.isStationary()) {
             return ofStationary(arima);
         } else {
@@ -62,7 +67,7 @@ public class SsfArima {
     }
 
     public Ssf of(IArimaModel arima) {
-        return Ssf.of(componentOf(arima), 0);
+        return Ssf.of(componentOf(arima), loading(), 0);
     }
 
     
@@ -125,26 +130,25 @@ public class SsfArima {
         };
     }
 
-    private SsfComponent ofStationary(IArimaModel arima) {
+    private StateComponent ofStationary(IArimaModel arima) {
         double var = arima.getInnovationVariance();
         if (var == 0) {
             throw new SsfException(SsfException.STOCH);
         }
         ArmaInitialization initialization=new ArmaInitialization(arima);
         ISsfDynamics dynamics = new ArimaDynamics(initialization.data);
-        ISsfLoading loading = Loading.create(0);
-        return new SsfComponent(initialization, dynamics, loading);
+        return new StateComponent(initialization, dynamics);
     }
 
-    private static SsfComponent ofNonStationary(IArimaModel arima) {
+    private static StateComponent ofNonStationary(IArimaModel arima) {
         double var = arima.getInnovationVariance();
         if (var == 0) {
             throw new SsfException(SsfException.STOCH);
         }
         ArimaInitialization initialization=new ArimaInitialization(arima);
         ISsfDynamics dynamics = new ArimaDynamics(initialization.data);
-        ISsfLoading loading = Loading.create(0);
-        return new SsfComponent(initialization, dynamics, loading);
+        ISsfLoading loading = Loading.fromPosition(0);
+        return new StateComponent(initialization, dynamics);
     }
 
     static class ArmaInitialization implements ISsfInitialization {

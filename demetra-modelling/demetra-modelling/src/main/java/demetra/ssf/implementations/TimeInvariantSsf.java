@@ -22,6 +22,7 @@ import demetra.ssf.univariate.Ssf;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.univariate.Measurement;
 
 /**
  *
@@ -38,12 +39,9 @@ public class TimeInvariantSsf {
         if (e != null) {
             e = MeasurementError.of(e.at(0));
         }
-        return Ssf.builder()
-                .initialization(ssf.initialization())
-                .dynamics(TimeInvariantDynamics.of(ssf.getStateDim(), ssf.dynamics()))
-                .loading(TimeInvariantLoading.of(ssf.getStateDim(), ssf.loading()))
-                .measurementError(e)
-                .build();
+        return Ssf.of(ssf.initialization(),
+                TimeInvariantDynamics.of(ssf.getStateDim(), ssf.dynamics()),
+                TimeInvariantLoading.of(ssf.getStateDim(), ssf.loading()), e);
     }
 
     public String toString(ISsf ssf) {

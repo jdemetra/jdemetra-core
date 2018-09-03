@@ -31,7 +31,7 @@ public class MstsMonitorTest {
     public MstsMonitorTest() {
     }
 
-    //@Test
+    @Test
     public void testSimple() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/mssf1").toURI();
@@ -49,22 +49,16 @@ public class MstsMonitorTest {
             col.normalize();
         }
 
-
         MstsMonitor monitor = new MstsMonitor();
-        int r = 40;
-        while (r <= D.getRowsCount()) {
-            Matrix E = D.extract(0, r, 0, 4);
         MstsMapping mapping = new MstsMapping();
         generateU(mapping);
         generateY(mapping);
         generatePicore(mapping);
         generatePi(mapping);
         generateCycle(mapping);
-            monitor.process(E, mapping);
-            //System.out.println(mapping.trueParameters(monitor.getPrslts()));
-            System.out.println(monitor.smoothedComponent(4));
-            r += 1;
-        }
+        monitor.process(D, mapping);
+        System.out.println(mapping.trueParameters(monitor.getPrslts()));
+        System.out.println(monitor.smoothedComponent(4));
     }
 
     //@Test
@@ -93,6 +87,42 @@ public class MstsMonitorTest {
         generatePicore(mapping);
         generatePi(mapping);
         generateXCycle(mapping);
+
+        MstsMonitor monitor = new MstsMonitor();
+        monitor.process(D, mapping);
+        System.out.println(monitor.getLogLikelihood().logLikelihood());
+        System.out.println(mapping.trueParameters(monitor.getPrslts()));
+        System.out.println(monitor.smoothedComponent(4));
+    }
+
+    //@Test
+    public void testSimpleX2() throws URISyntaxException, IOException {
+
+        URI uri = MultivariateCompositeSsf.class.getResource("/mssf1").toURI();
+        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
+
+        Matrix D = Matrix.make(data.getRowsCount(), 6);
+        D.column(0).copy(data.column(0));
+        D.column(1).copy(data.column(9));
+        D.column(2).copy(data.column(2));
+        D.column(3).copy(data.column(3));
+        D.column(4).copy(data.column(5));
+        D.column(5).copy(data.column(6));
+
+//        DataBlockIterator cols = D.columnsIterator();
+//        while (cols.hasNext()) {
+//            DataBlock col = cols.next();
+//            col.normalize();
+//        }
+        MstsMapping mapping = new MstsMapping();
+
+        generateU(mapping);
+        generateY(mapping);
+        generatePicore(mapping);
+        generatePi(mapping);
+        generateCycle(mapping);
+        generateB(mapping);
+        generateC(mapping);
 
         MstsMonitor monitor = new MstsMonitor();
         monitor.process(D, mapping);
@@ -138,7 +168,7 @@ public class MstsMonitorTest {
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("tpicore"));
-            eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), Loading.create(4)));
+            eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), Loading.fromPosition(4)));
             builder.add("tpicore", LocalLevel.of(p.get(2)))
                     .add(eq);
             return 3;
@@ -182,14 +212,14 @@ public class MstsMonitorTest {
             double c1 = p.get(0), c2 = p.get(1), v = p.get(2);
             double b1 = p.get(3), v1 = p.get(4);
             double b2 = p.get(5), v2 = p.get(6);
-            ISsfLoading pl = Loading.create(new int[]{0, 1}, new double[]{b1 * c1, b1 * c2});
+            ISsfLoading pl = Loading.from(new int[]{0, 1}, new double[]{b1 * c1, b1 * c2});
             MultivariateCompositeSsf.Equation eq1 = new MultivariateCompositeSsf.Equation(v1);
             eq1.add(new MultivariateCompositeSsf.Item("tb"));
             eq1.add(new MultivariateCompositeSsf.Item("cycle", 1, pl));
             double c12 = c1 * c1, c13 = c12 * c1, c14 = c13 * c1, c22 = c2 * c2;
             double d1 = c1 + c12 + c13 + c14 + c2 + c22 + 2 * c1 * c2 + 3 * c12 * c2;
             double d2 = c2 + c1 * c2 + c22 + c12 * c2 + 2 * c1 * c22 + c13 * c2;
-            pl = Loading.create(new int[]{0, 1}, new double[]{b2 * d1, b2 * d2});
+            pl = Loading.from(new int[]{0, 1}, new double[]{b2 * d1, b2 * d2});
             MultivariateCompositeSsf.Equation eq2 = new MultivariateCompositeSsf.Equation(v2);
             eq2.add(new MultivariateCompositeSsf.Item("tc"));
             eq2.add(new MultivariateCompositeSsf.Item("cycle", 1, pl));
@@ -204,5 +234,37 @@ public class MstsMonitorTest {
 //            return 3;
         });
 
+    }
+
+    private void generateB(MstsMapping mapping) {
+        mapping.add(new VarianceParameter("bs_var"));
+        mapping.add(new LoadingParameter("bs1_c"));
+        mapping.add(new LoadingParameter("bs2_var"));
+        mapping.add((p, builder) -> {
+            double v = p.get(0), a1 = p.get(1), a2 = p.get(2);
+            ISsfLoading pl = Loading.from(new int[]{0, 1}, new double[]{a1, a2});
+            MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(v);
+            eq.add(new MultivariateCompositeSsf.Item("tb"));
+            eq.add(new MultivariateCompositeSsf.Item("cycle", 1, pl));
+            builder.add("tb", LocalLevel.of(0))
+                    .add(eq);
+            return 3;
+        });
+    }
+
+    private void generateC(MstsMapping mapping) {
+        mapping.add(new VarianceParameter("cs_var"));
+        mapping.add(new LoadingParameter("cs1_c"));
+        mapping.add(new LoadingParameter("cs2_var"));
+        mapping.add((p, builder) -> {
+            double v = p.get(0), a1 = p.get(1), a2 = p.get(2);
+            ISsfLoading pl = Loading.from(new int[]{0, 1}, new double[]{a1, a2});
+            MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(v);
+            eq.add(new MultivariateCompositeSsf.Item("tc"));
+            eq.add(new MultivariateCompositeSsf.Item("cycle", 1, pl));
+            builder.add("tc", LocalLevel.of(0))
+                    .add(eq);
+            return 3;
+        });
     }
 }

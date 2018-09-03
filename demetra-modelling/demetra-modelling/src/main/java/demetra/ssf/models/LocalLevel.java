@@ -34,12 +34,12 @@ public class LocalLevel {
 
     public SsfComponent of(final double var) {
         Data data = new Data(var, false);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.create(0));
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
 
     public SsfComponent of(final double var, final boolean zeroinit) {
         Data data = new Data(var, zeroinit);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.create(0));
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
 
     static class Data {

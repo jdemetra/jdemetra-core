@@ -14,7 +14,6 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-
 package demetra.benchmarking.ssf;
 
 import demetra.data.Cell;
@@ -42,11 +41,7 @@ public class SsfDisaggregation {
         if (s.measurement().hasError()) {
             throw new SsfException(SsfException.ERRORS);
         }
-        return Ssf.builder()
-                .initialization(new Initialization(s.initialization()))
-                .dynamics(new Dynamics(s, conversion))
-                .loading(new Loading(s, conversion))
-                .build();
+        return Ssf.of(new Initialization(s.initialization()), new Dynamics(s, conversion), new Loading(s, conversion));
     }
 
     static class Initialization implements ISsfInitialization {
@@ -55,7 +50,7 @@ public class SsfDisaggregation {
 
         Initialization(ISsfInitialization initialization) {
             this.initialization = initialization;
-         }
+        }
 
         @Override
         public int getStateDim() {
@@ -74,7 +69,7 @@ public class SsfDisaggregation {
 
         @Override
         public void diffuseConstraints(Matrix b) {
-            initialization.diffuseConstraints(b.dropTopLeft(1,0));
+            initialization.diffuseConstraints(b.dropTopLeft(1, 0));
         }
 
         @Override

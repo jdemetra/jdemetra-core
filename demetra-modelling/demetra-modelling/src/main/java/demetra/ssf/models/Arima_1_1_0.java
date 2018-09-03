@@ -46,12 +46,12 @@ public class Arima_1_1_0 {
 
     public SsfComponent of(final double rho) {
         Data data = new Data(rho, 1, false);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.createSum());
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.sum());
     }
 
     public SsfComponent of(final double rho, final double var, final boolean zeroinit) {
         Data data = new Data(rho, var, zeroinit);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.createSum());
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.sum());
     }
 
     static class Initialization implements ISsfInitialization {

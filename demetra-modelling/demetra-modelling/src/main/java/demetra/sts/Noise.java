@@ -32,7 +32,7 @@ import demetra.ssf.implementations.Loading;
 public class Noise {
 
     public SsfComponent of(final double var) {
-        return new SsfComponent(new Initialization(var), new Dynamics(var), Loading.create(0));
+        return new SsfComponent(new Initialization(var), new Dynamics(var), Loading.fromPosition(0));
     }
 
     static class Initialization implements ISsfInitialization {
