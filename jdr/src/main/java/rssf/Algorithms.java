@@ -5,12 +5,18 @@
  */
 package rssf;
 
+import demetra.maths.matrices.Matrix;
 import demetra.ssf.StateStorage;
 import demetra.ssf.dk.DefaultDiffuseFilteringResults;
 import demetra.ssf.dk.DkConcentratedLikelihood;
+import demetra.ssf.dk.DkLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.sqrt.DefaultDiffuseSquareRootFilteringResults;
+import demetra.ssf.multivariate.IMultivariateSsf;
+import demetra.ssf.multivariate.M2uAdapter;
+import demetra.ssf.multivariate.SsfMatrix;
 import demetra.ssf.univariate.ISsf;
+import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.SsfData;
 
 /**
@@ -32,18 +38,33 @@ public class Algorithms {
         return rslt.errors().toArray();
     }
 
-    public double concentratedLikelihood(ISsf model, double[] data) {
+    public double diffuseLikelihood(ISsf model, double[] data) {
         try {
             SsfData s = new SsfData(data);
-            DkConcentratedLikelihood dll = DkToolkit.concentratedLikelihoodComputer().compute(model, s);
+            DkLikelihood dll = DkToolkit.likelihood(model, s);
             return dll.logLikelihood();
         } catch (Exception err) {
             return Double.NaN;
         }
     }
 
-    public StateStorage sqrtSmooth(ISsf model, double[] data, boolean all) {
+    public StateStorage smooth(ISsf model, double[] data, boolean all) {
         SsfData s = new SsfData(data);
         return DkToolkit.sqrtSmooth(model, s, all);
+    }
+
+    public double diffuseLikelihood(IMultivariateSsf model, Matrix data) {
+        try {
+            SsfMatrix s = new SsfMatrix(data);
+            DkLikelihood dll = DkToolkit.likelihood(model, s);
+            return dll.logLikelihood();
+        } catch (Exception err) {
+            return Double.NaN;
+        }
+    }
+
+    public StateStorage smooth(IMultivariateSsf model, Matrix data, boolean all) {
+        SsfMatrix s = new SsfMatrix(data);
+        return DkToolkit.smooth(model, s, all);
     }
 }

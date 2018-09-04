@@ -6,9 +6,13 @@
 package msts;
 
 import demetra.data.DoubleSequence;
+import demetra.likelihood.ILikelihood;
+import demetra.likelihood.ILikelihoodFunction;
+import demetra.likelihood.ILikelihoodFunctionPoint;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.functions.minpack.MinPackMinimizer;
 import demetra.maths.functions.riso.LbfgsMinimizer;
+import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.akf.AkfFunction;
 import demetra.ssf.akf.AkfFunctionPoint;
@@ -31,55 +35,155 @@ import java.util.List;
  */
 public class MstsMonitor {
 
-    private static final int MAXITER=20;
-    
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private static final int MAXITER = 20, MAXITER_MIN = 500;
+
+        private boolean marginalLikelihood;
+        private double precision = 1e-9;
+        private int maxIter = MAXITER;
+        private int maxIterOptimzer = MAXITER_MIN;
+        private boolean bfgs;
+        private boolean minpack;
+        private boolean resetParameters;
+
+        public Builder marginalLikelihood(boolean ml) {
+            this.marginalLikelihood = ml;
+            return this;
+        }
+
+        public Builder precision(double eps) {
+            this.precision = eps;
+            return this;
+        }
+
+       public Builder resetParameters(boolean reset) {
+            this.resetParameters=reset;
+            return this;
+        }
+
+       public Builder maxIter(int maxiter) {
+            this.maxIter = maxiter;
+            return this;
+        }
+
+        public Builder maxIterOptimizer(int maxiter) {
+            this.maxIterOptimzer = maxiter;
+            return this;
+        }
+
+        public Builder bfgs() {
+            this.bfgs = true;
+            this.minpack = false;
+            return this;
+        }
+
+        public Builder minpack() {
+            this.bfgs = false;
+            this.minpack = true;
+            return this;
+        }
+
+        public Builder lm() {
+            this.bfgs = false;
+            this.minpack = false;
+            return this;
+        }
+
+        public MstsMonitor build() {
+            return new MstsMonitor(this);
+        }
+    }
+
+    private final boolean marginalLikelihood;
+    private final double precision;
+    private final int maxIter;
+    private final int maxIterOptimzer;
+    private final boolean bfgs;
+    private final boolean minpack;
+    private final boolean resetParameters;
+
     private Matrix data;
     private MstsMapping model;
     private MultivariateCompositeSsf ssf;
     private DoubleSequence prslts, fullp;
     private DefaultSmoothingResults srslts;
-    private MarginalLikelihood ll;
+    private ILikelihood ll;
     private int[] cpos;
-    private int maxiter=MAXITER;
 
     private final List<VarianceParameter> smallVariances = new ArrayList<>();
 
-    public void process(Matrix data, MstsMapping model) {
-        
+    private MstsMonitor(Builder builder) {
+        this.bfgs = builder.bfgs;
+        this.minpack = builder.minpack;
+        this.maxIterOptimzer = builder.maxIterOptimzer;
+        this.precision = builder.precision;
+        this.marginalLikelihood = builder.marginalLikelihood;
+        this.maxIter = builder.maxIter;
+        this.resetParameters = builder.resetParameters;
+    }
+
+    private ILikelihoodFunction function(ISsfData data) {
+        if (this.marginalLikelihood) {
+            return AkfFunction.builder(data, model, m -> M2uAdapter.of(m))
+                    .useParallelProcessing(true)
+                    .useScalingFactor(true)
+                    .useMaximumLikelihood(true)
+                    .build();
+        } else {
+            return SsfFunction.builder(data, model, m -> M2uAdapter.of(m))
+                    .useParallelProcessing(true)
+                    .useScalingFactor(true)
+                    .useMaximumLikelihood(true)
+                    .build();
+        }
+    }
+
+    public void process(Matrix data, MstsMapping model, DoubleSequence fullInitial) {
+
         this.data = data;
         this.model = model;
         smallVariances.clear();
         SsfMatrix mdata = new SsfMatrix(data);
         ISsfData udata = M2uAdapter.of(mdata);
-        prslts = model.getDefaultParameters();
-        int niter=0;
+        DoubleSequence start=fullInitial == null ? model.getDefaultParameters() : model.functionParameters(fullInitial);
+        prslts = start;
+        int niter = 0;
         do {
-            AkfFunction<MultivariateCompositeSsf, ISsf> fn = AkfFunction.builder(udata, model, m -> M2uAdapter.of(m))
-                    .useParallelProcessing(true)
-                    .useScalingFactor(true)
-                    .useMaximumLikelihood(true)
-                    .build();
-
-//            MinPackMinimizer lm = new MinPackMinimizer();
-//            LbfgsMinimizer lm = new LbfgsMinimizer();
-            LevenbergMarquardtMinimizer lm = new LevenbergMarquardtMinimizer();
-//            lm.setMaxIter(500);
-
-//            boolean ok = lm.minimize(fn.evaluate(model.getDefaultParameters()));
-            boolean ok = lm.minimize(fn.evaluate(prslts));
-            AkfFunctionPoint rslt = (AkfFunctionPoint) lm.getResult();
+            ILikelihoodFunction fn = function(udata);
+            ILikelihoodFunctionPoint rslt = min(fn, this.resetParameters ? start : prslts);
             ll = rslt.getLikelihood();
             prslts = rslt.getParameters();
             if (!fixSmallVariance(fn, 1e-3) && !freeSmallVariance(fn)) {
                 break;
             }
-        } while (niter++<maxiter);
+        } while (niter++ < maxIter);
         ssf = model.map(prslts);
         cpos = ssf.componentsPosition();
         srslts = DkToolkit.sqrtSmooth(M2uAdapter.of(ssf), udata, true);
     }
-    
-    private boolean freeSmallVariance(AkfFunction fn){
+
+    private ILikelihoodFunctionPoint min(ILikelihoodFunction fn, DoubleSequence start) {
+        if (bfgs) {
+            LbfgsMinimizer lm = new LbfgsMinimizer();
+            lm.setFunctionPrecision(precision);
+            lm.setMaxIter(this.maxIterOptimzer);
+            lm.minimize(fn.evaluate(start));
+            return (ILikelihoodFunctionPoint) lm.getResult();
+        } else {
+            ISsqFunctionMinimizer lm = minpack ? new MinPackMinimizer() : new LevenbergMarquardtMinimizer();
+            lm.setFunctionPrecision(precision);
+            lm.setMaxIter(this.maxIterOptimzer);
+            lm.minimize(fn.evaluate(start));
+            return (ILikelihoodFunctionPoint) lm.getResult();
+        }
+    }
+
+    private boolean freeSmallVariance(ILikelihoodFunction fn) {
         if (smallVariances.isEmpty()) {
             return false;
         }
@@ -89,7 +193,7 @@ public class MstsMonitor {
             fullp = model.trueParameters(prslts);
             small.fix(1e-5);
             DoubleSequence nprslts = model.functionParameters(fullp);
-            MarginalLikelihood nll = fn.evaluate(nprslts).getLikelihood();
+            ILikelihood nll = fn.evaluate(nprslts).getLikelihood();
             double d = nll.logLikelihood() - ll.logLikelihood();
             if (d > 0 && d > dll) {
                 dll = d;
@@ -105,10 +209,10 @@ public class MstsMonitor {
         } else {
             return false;
         }
-        
+
     }
 
-    private boolean fixSmallVariance(AkfFunction fn, double eps) {
+    private boolean fixSmallVariance(ILikelihoodFunction fn, double eps) {
         List<VarianceParameter> svar = model.smallVariances(prslts, 1e-3);
         if (svar.isEmpty()) {
             return false;
@@ -119,7 +223,7 @@ public class MstsMonitor {
             fullp = model.trueParameters(prslts);
             small.fix(0);
             DoubleSequence nprslts = model.functionParameters(fullp);
-            MarginalLikelihood nll = fn.evaluate(nprslts).getLikelihood();
+            ILikelihood nll = fn.evaluate(nprslts).getLikelihood();
             double d = nll.logLikelihood() - ll.logLikelihood();
             if (d > 0 && d > dll) {
                 dll = d;
@@ -179,21 +283,8 @@ public class MstsMonitor {
     /**
      * @return the ll
      */
-    public MarginalLikelihood getLogLikelihood() {
+    public ILikelihood getLogLikelihood() {
         return ll;
     }
 
-    /**
-     * @return the maxiter
-     */
-    public int getMaxiter() {
-        return maxiter;
-    }
-
-    /**
-     * @param maxiter the maxiter to set
-     */
-    public void setMaxiter(int maxiter) {
-        this.maxiter = maxiter;
-    }
 }

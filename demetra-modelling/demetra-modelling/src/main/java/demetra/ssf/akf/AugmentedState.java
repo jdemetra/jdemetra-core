@@ -18,11 +18,11 @@ package demetra.ssf.akf;
 
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.ISsfBase;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.ISsfState;
 
 /**
  * Represents x* = x + A d, where x is a usual state vector and A is a matrix of
@@ -34,7 +34,7 @@ import demetra.ssf.ISsfInitialization;
 @Development(status = Development.Status.Alpha)
 public class AugmentedState extends State {
 
-    public static AugmentedState of(ISsfBase ssf) {
+    public static AugmentedState of(ISsfState ssf) {
         ISsfInitialization initialization = ssf.initialization();
         AugmentedState state = new AugmentedState(initialization.getStateDim(), initialization.getDiffuseDim());
         initialization.a0(state.a());

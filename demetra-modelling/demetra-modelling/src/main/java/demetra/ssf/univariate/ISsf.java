@@ -21,15 +21,15 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.ssf.ISsfDynamics;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.ISsfBase;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
+import demetra.ssf.ISsfState;
 
 /**
  *
  * @author Jean Palate
  */
-public interface ISsf extends ISsfBase {
+public interface ISsf extends ISsfState {
 
     ISsfMeasurement measurement();
 

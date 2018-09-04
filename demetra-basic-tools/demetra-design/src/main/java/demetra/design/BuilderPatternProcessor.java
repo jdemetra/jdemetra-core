@@ -33,9 +33,9 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Philippe Charles
  */
-@ServiceProvider(service = Processor.class)
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
-@SupportedAnnotationTypes("demetra.design.BuilderPattern")
+//@ServiceProvider(service = Processor.class)
+//@SupportedSourceVersion(SourceVersion.RELEASE_8)
+//@SupportedAnnotationTypes("demetra.design.BuilderPattern")
 public final class BuilderPatternProcessor extends AbstractProcessor {
 
     @Override

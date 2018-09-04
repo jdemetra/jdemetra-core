@@ -39,4 +39,23 @@ public class StationaryInitializationTest {
         assertTrue(I.minus(P).frobeniusNorm() < 1e-12);
     }
 
+    //@Test
+    public void stressTestArma() {
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.setP(3);
+        spec.setQ(1);
+        spec.setBp(1);
+        spec.setBq(1);
+        SarimaModel arima = SarimaModel.builder(spec)
+                .setDefault(-.3, -.9)
+                .build();
+        StateComponent cmp = SsfArima.componentOf(arima);
+        int dim = cmp.initialization().getStateDim();
+        long t0 = System.currentTimeMillis();
+        for (int i = 0; i < 10000; ++i) {
+            Matrix I = StationaryInitialization.of(cmp.dynamics(), dim);
+        }
+        long t1 = System.currentTimeMillis();
+        System.out.println(t1-t0);
+    }
 }

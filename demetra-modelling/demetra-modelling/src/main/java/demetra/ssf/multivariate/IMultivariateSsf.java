@@ -18,14 +18,14 @@ package demetra.ssf.multivariate;
 
 import demetra.ssf.State;
 import demetra.data.DoubleSequence;
-import demetra.ssf.ISsfBase;
 import demetra.ssf.ISsfLoading;
+import demetra.ssf.ISsfState;
 
 /**
  *
  * @author Jean Palate
  */
-public interface IMultivariateSsf extends ISsfBase {
+public interface IMultivariateSsf extends ISsfState {
 
     ISsfMeasurements measurements();
     

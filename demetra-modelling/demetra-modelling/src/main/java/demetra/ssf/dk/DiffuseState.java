@@ -18,10 +18,10 @@ package demetra.ssf.dk;
 
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.ISsfBase;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.ISsfState;
 
 /**
  * Represents x* = x + d, where x is a usual state vector and d models the
@@ -33,7 +33,7 @@ import demetra.ssf.ISsfInitialization;
 @Development(status = Development.Status.Alpha)
 public class DiffuseState extends State {
 
-    public static DiffuseState of(ISsfBase ssf) {
+    public static DiffuseState of(ISsfState ssf) {
         ISsfInitialization initialization = ssf.initialization();
         DiffuseState state = new DiffuseState(initialization.getStateDim());
         initialization.a0(state.a());

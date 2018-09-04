@@ -49,19 +49,22 @@ public class MstsMonitorTest {
             col.normalize();
         }
 
-        MstsMonitor monitor = new MstsMonitor();
+        MstsMonitor monitor = MstsMonitor.builder()
+                .marginalLikelihood(true)
+                .build();
         MstsMapping mapping = new MstsMapping();
         generateU(mapping);
         generateY(mapping);
         generatePicore(mapping);
         generatePi(mapping);
         generateCycle(mapping);
-        monitor.process(D, mapping);
+        monitor.process(D, mapping, null);
+        System.out.println(monitor.getLogLikelihood().logLikelihood());
         System.out.println(mapping.trueParameters(monitor.getPrslts()));
         System.out.println(monitor.smoothedComponent(4));
     }
 
-    //@Test
+    @Test
     public void testSimpleX() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/mssf1").toURI();
@@ -88,8 +91,10 @@ public class MstsMonitorTest {
         generatePi(mapping);
         generateXCycle(mapping);
 
-        MstsMonitor monitor = new MstsMonitor();
-        monitor.process(D, mapping);
+        MstsMonitor monitor = MstsMonitor.builder()
+                .marginalLikelihood(true)
+                .build();
+        monitor.process(D, mapping, null);
         System.out.println(monitor.getLogLikelihood().logLikelihood());
         System.out.println(mapping.trueParameters(monitor.getPrslts()));
         System.out.println(monitor.smoothedComponent(4));
@@ -124,8 +129,10 @@ public class MstsMonitorTest {
         generateB(mapping);
         generateC(mapping);
 
-        MstsMonitor monitor = new MstsMonitor();
-        monitor.process(D, mapping);
+        MstsMonitor monitor = MstsMonitor.builder()
+                .marginalLikelihood(true)
+                .build();
+        monitor.process(D, mapping, null);
         System.out.println(monitor.getLogLikelihood().logLikelihood());
         System.out.println(mapping.trueParameters(monitor.getPrslts()));
         System.out.println(monitor.smoothedComponent(4));

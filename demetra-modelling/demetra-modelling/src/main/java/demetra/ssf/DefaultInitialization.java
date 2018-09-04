@@ -114,7 +114,7 @@ public class DefaultInitialization implements ISsfInitialization {
         } else {
             DataBlock a = DataBlock.make(dim);
             a0.accept(a);
-            builder.append(a.toString(ISsfBase.FMT));
+            builder.append(a.toString(ISsfState.FMT));
         }
         builder.append(System.lineSeparator());
         if (Pf == null) {
@@ -122,7 +122,7 @@ public class DefaultInitialization implements ISsfInitialization {
         } else {
             Matrix M = Matrix.square(dim);
             Pf.accept(M);
-            builder.append(M.toString(ISsfBase.FMT));
+            builder.append(M.toString(ISsfState.FMT));
         }
         builder.append(System.lineSeparator());
         if (B == null) {
@@ -130,7 +130,7 @@ public class DefaultInitialization implements ISsfInitialization {
         } else {
             Matrix M = Matrix.make(dim, ndiffuse);
             B.accept(M);
-            builder.append(M.toString(ISsfBase.FMT));
+            builder.append(M.toString(ISsfState.FMT));
         }
         return builder.toString();
     }

@@ -20,7 +20,7 @@ package demetra.ssf;
  *
  * @author Jean Palate
  */
-public interface ISsfBase extends ISsfRoot {
+public interface ISsfState extends ISsfRoot {
 
     ISsfInitialization initialization();
 

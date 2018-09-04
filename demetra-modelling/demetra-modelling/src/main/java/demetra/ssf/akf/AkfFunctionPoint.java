@@ -17,15 +17,11 @@
 package demetra.ssf.akf;
 
 import demetra.data.DataBlock;
-import demetra.likelihood.ILikelihood;
 import demetra.maths.functions.IFunction;
-import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.ssq.ISsqFunction;
-import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.IConcentratedLikelihoodComputer;
-import demetra.ssf.univariate.SsfRegressionModel;
 import demetra.data.DoubleSequence;
+import demetra.likelihood.ILikelihoodFunctionPoint;
 import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.NumericalDerivatives;
 import demetra.maths.functions.ssq.ISsqFunctionDerivatives;
@@ -38,7 +34,7 @@ import demetra.ssf.univariate.ILikelihoodComputer;
  * @param <S>
  */
 public class AkfFunctionPoint<S, F extends ISsf> implements
-        ISsqFunctionPoint, IFunctionPoint {
+        ILikelihoodFunctionPoint<MarginalLikelihood> {
 
     /**
      *
@@ -97,6 +93,7 @@ public class AkfFunctionPoint<S, F extends ISsf> implements
      *
      * @return
      */
+    @Override
     public MarginalLikelihood getLikelihood() {
         return ll;
     }

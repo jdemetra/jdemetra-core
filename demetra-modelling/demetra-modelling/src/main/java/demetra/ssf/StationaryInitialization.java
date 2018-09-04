@@ -20,7 +20,6 @@ import demetra.data.DataBlock;
 import demetra.linearsystem.ILinearSystemSolver;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.internal.Householder;
 
 /**
  *
@@ -49,14 +48,15 @@ public class StationaryInitialization {
                 b[i] = Q.get(r, c);
                 M.set(i, i, 1);
                 for (int k = 0; k < dim; ++k) {
-                    for (int l = 0; l < dim; ++l) {
-                        double zr = 0, zc = 0;
-                        zr = T.get(r, l);
-                        zc = T.get(c, k);
-                        double z = zr * zc;
-                        if (z != 0) {
-                            int p = l <= k ? pos(k, l, dim) : pos(l, k, dim);
-                            M.add(i, p, -z);
+                    double zc = T.get(c, k);
+                    if (zc != 0) {
+                        for (int l = 0; l < dim; ++l) {
+                            double zr = T.get(r, l);
+                            double z = zr * zc;
+                            if (z != 0) {
+                                int p = l <= k ? pos(k, l, dim) : pos(l, k, dim);
+                                M.add(i, p, -z);
+                            }
                         }
                     }
                 }
