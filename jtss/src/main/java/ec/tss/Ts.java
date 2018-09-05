@@ -245,6 +245,25 @@ public abstract class Ts implements IDocumented, ITsIdentified {
         private volatile TsInformationType m_info = TsInformationType.None;
         private String m_invalidDataMessage;
 
+        @Deprecated
+        @Internal
+        Master(String name) {
+            this(TsFactory.instance.getTsCallback(), name);
+        }
+
+        @Deprecated
+        @Internal
+        Master(String name, TsMoniker moniker) {
+            this(TsFactory.instance.getTsCallback(), name, moniker);
+        }
+
+        @Internal
+        Master(String name, TsMoniker moniker, MetaData md, TsData d) {
+            this(TsFactory.instance.getTsCallback(), name, moniker, md, d);
+        }
+
+        @Deprecated
+        @Internal
         Master(FactoryCallback factory, String name) {
             super(name);
             this.factory = factory;
@@ -252,6 +271,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
             m_info = TsInformationType.UserDefined;
         }
 
+        @Internal
         Master(FactoryCallback factory, String name, TsMoniker moniker) {
             super(name);
             this.factory = factory;
@@ -261,6 +281,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
             }
         }
 
+        @Internal
         Master(FactoryCallback factory, String name, TsMoniker moniker, MetaData md, TsData d) {
             super(name);
             this.factory = factory;

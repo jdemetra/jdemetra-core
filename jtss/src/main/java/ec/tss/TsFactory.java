@@ -24,6 +24,7 @@ import ec.tss.tsproviders.IDataSourceProvider;
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.design.InterfaceLoader;
+import ec.tstoolkit.design.Internal;
 import ec.tstoolkit.design.NewObject;
 import ec.tstoolkit.design.Singleton;
 import ec.tstoolkit.timeseries.simplets.TsData;
@@ -1047,5 +1048,15 @@ public class TsFactory {
         public TsCollection createTsCollection(String name) {
             return TsFactory.this.createTsCollection(name);
         }
+    }
+
+    @Internal
+    Ts.FactoryCallback getTsCallback() {
+        return tsCallback;
+    }
+
+    @Internal
+    TsCollection.FactoryCallback getTsCollectionCallback() {
+        return tsCollectionCallback;
     }
 }

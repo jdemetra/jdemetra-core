@@ -79,6 +79,24 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
     private volatile Set<TsMoniker> m_set;
     private String m_invalidDataCause;
 
+    @Deprecated
+    @Internal
+    TsCollection(@Nullable String name) {
+        this(TsFactory.instance.getTsCollectionCallback(), name);
+    }
+
+    @Deprecated
+    @Internal
+    TsCollection(@Nullable String name, @Nonnull TsMoniker moniker) {
+        this(TsFactory.instance.getTsCollectionCallback(), name, moniker);
+    }
+
+    @Deprecated
+    @Internal
+    TsCollection(@Nullable String name, @Nonnull TsMoniker moniker, @Nullable MetaData md, @Nullable Iterable<Ts> ts) {
+        this(TsFactory.instance.getTsCollectionCallback(), name, moniker, md, ts);
+    }
+
     @Internal
     TsCollection(FactoryCallback factory, @Nullable String name) {
         this.factory = factory;
