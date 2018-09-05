@@ -270,23 +270,28 @@ public abstract class Ts implements IDocumented, ITsIdentified {
             if (isFrozen()) {
                 return this;
             }
+
+            TsData data;
+            MetaData md;
             synchronized (m_moniker) {
                 load(TsInformationType.All);
-                TsData data = m_data != null ? m_data.clone() : null;
-                synchronized (m_moniker) {
-                    MetaData md = m_metadata != null ? m_metadata.clone()
-                            : new MetaData();
-                    //
-                    if (m_moniker.getSource() != null) {
-                        md.put(MetaData.SOURCE, m_moniker.getSource());
-                    }
-                    if (m_moniker.getId() != null) {
-                        md.put(MetaData.ID, m_moniker.getId());
-                    }
-                    md.put(MetaData.DATE, new Date().toString());
-                    return TsFactory.instance.createTs(getRawName(), md, data);
-                }
+                data = m_data != null ? m_data.clone() : null;
+                md = m_metadata != null ? m_metadata.clone() : new MetaData();
             }
+
+            putFreezeMeta(md, m_moniker);
+
+            return TsFactory.instance.createTs(getRawName(), md, data);
+        }
+
+        private static void putFreezeMeta(MetaData md, TsMoniker origin) {
+            if (origin.getSource() != null) {
+                md.put(MetaData.SOURCE, origin.getSource());
+            }
+            if (origin.getId() != null) {
+                md.put(MetaData.ID, origin.getId());
+            }
+            md.put(MetaData.DATE, new Date().toString());
         }
 
         /**
