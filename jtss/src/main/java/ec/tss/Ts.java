@@ -235,8 +235,11 @@ public abstract class Ts implements IDocumented, ITsIdentified {
     @Internal
     static final class Master extends Ts {
 
+        // safe
         private final FactoryCallback factory;
         private final TsMoniker m_moniker;
+
+        // unsafe
         private MetaData m_metadata;
         private TsData m_data;
         private volatile TsInformationType m_info = TsInformationType.None;
@@ -245,7 +248,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
         Master(FactoryCallback factory, String name) {
             super(name);
             this.factory = factory;
-            m_moniker = new TsMoniker();
+            m_moniker = TsMoniker.createAnonymousMoniker();
             m_info = TsInformationType.UserDefined;
         }
 
@@ -296,27 +299,17 @@ public abstract class Ts implements IDocumented, ITsIdentified {
                 return this;
             }
 
-            TsData data;
-            MetaData md;
+            TsData copyOfData;
+            MetaData copyOfMeta;
             synchronized (m_moniker) {
                 load(TsInformationType.All);
-                data = m_data != null ? m_data.clone() : null;
-                md = m_metadata != null ? m_metadata.clone() : new MetaData();
+                copyOfData = m_data != null ? m_data.clone() : null;
+                copyOfMeta = m_metadata != null ? m_metadata.clone() : new MetaData();
             }
 
-            putFreezeMeta(md, m_moniker);
+            putFreezeMeta(copyOfMeta, m_moniker);
 
-            return factory.createTs(getRawName(), md, data);
-        }
-
-        private static void putFreezeMeta(MetaData md, TsMoniker origin) {
-            if (origin.getSource() != null) {
-                md.put(MetaData.SOURCE, origin.getSource());
-            }
-            if (origin.getId() != null) {
-                md.put(MetaData.ID, origin.getId());
-            }
-            md.put(MetaData.DATE, new Date().toString());
+            return factory.createTs(getRawName(), copyOfMeta, copyOfData);
         }
 
         /**
@@ -393,21 +386,11 @@ public abstract class Ts implements IDocumented, ITsIdentified {
          */
         @Override
         public boolean isFrozen() {
+            if (m_moniker.getSource() != null) {
+                return false;
+            }
             synchronized (m_moniker) {
-                if (m_moniker.getSource() != null) {
-                    return false;
-                }
-                if (m_metadata == null) {
-                    return false;
-                }
-                if (m_metadata.containsKey(MetaData.SOURCE)) {
-                    return true;
-                }
-                if (m_metadata.containsKey(SOURCE_OLD)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return containsFreezeMeta(m_metadata);
             }
         }
 
@@ -456,10 +439,13 @@ public abstract class Ts implements IDocumented, ITsIdentified {
          */
         @Override
         public boolean set(MetaData md) {
-            if (m_info != TsInformationType.UserDefined) {
-                return false;
+            synchronized (m_moniker) {
+                if (m_info != TsInformationType.UserDefined) {
+                    return false;
+                }
+                m_metadata = md;
             }
-            m_metadata = md;
+
             factory.notify(this, TsInformationType.MetaData, this);
             return true;
         }
@@ -471,10 +457,13 @@ public abstract class Ts implements IDocumented, ITsIdentified {
          */
         @Override
         public boolean set(TsData data) {
-            if (m_info != TsInformationType.UserDefined) {
-                return false;
+            synchronized (m_moniker) {
+                if (m_info != TsInformationType.UserDefined) {
+                    return false;
+                }
+                m_data = data;
             }
-            m_data = data;
+
             factory.notify(this, TsInformationType.Data, this);
             return true;
         }
@@ -487,11 +476,14 @@ public abstract class Ts implements IDocumented, ITsIdentified {
          */
         @Override
         public boolean set(TsData data, MetaData md) {
-            if (m_info != TsInformationType.UserDefined) {
-                return false;
+            synchronized (m_moniker) {
+                if (m_info != TsInformationType.UserDefined) {
+                    return false;
+                }
+                m_data = data;
+                m_metadata = md;
             }
-            m_data = data;
-            m_metadata = md;
+
             factory.notify(this, TsInformationType.All, this);
             return true;
         }
@@ -508,30 +500,30 @@ public abstract class Ts implements IDocumented, ITsIdentified {
          */
         @Override
         public Ts unfreeze() {
-            synchronized (m_moniker) {
-                if (m_moniker.getSource() != null || m_moniker.getId() != null
-                        || m_metadata == null) {
-                    return this;
-                }
-                String source = m_metadata.get(MetaData.SOURCE);
-                if (source == null) {
-                    source = m_metadata.get(SOURCE_OLD);
-                }
+            if (m_moniker.getSource() != null || m_moniker.getId() != null) {
+                return this;
+            }
 
-                if (DYNAMIC.equals(source)) {
-                    return factory.createTs(getRawName(), null, m_data == null ? null : m_data.clone());
-                }
-                String id = m_metadata.get(MetaData.ID);
-                if (id == null) {
-                    id = m_metadata.get(ID_OLD);
-                }
-                if (source == null || id == null) {
-                    return this;
-                } else {
-                    TsMoniker moniker = new TsMoniker(source, id);
-                    return factory.createTs(getRawName(), moniker, TsInformationType.None);
+            // Three cases:
+            // 1. no meta: origin == null
+            // 2. dynamic meta: origin != null && source == dynamic
+            // 3. normal meta: origin != null && source != dynamic
+            TsMoniker origin;
+            TsData copyOfData = null;
+            synchronized (m_moniker) {
+                origin = getFreezeMeta(m_metadata);
+                if (origin != null && TsMoniker.Type.DYNAMIC.equals(origin.getType())) {
+                    copyOfData = m_data == null ? null : m_data.clone();
                 }
             }
+
+            if (origin == null) {
+                return this;
+            }
+            if (TsMoniker.Type.DYNAMIC.equals(origin.getType())) {
+                return factory.createTs(getRawName(), null, copyOfData);
+            }
+            return factory.createTs(getRawName(), origin, TsInformationType.None);
         }
 
         void update(TsInformation info) {
@@ -554,18 +546,84 @@ public abstract class Ts implements IDocumented, ITsIdentified {
 
         @Override
         public void setInvalidDataCause(String message) {
-            this.m_invalidDataMessage = message;
+            synchronized (m_moniker) {
+                this.m_invalidDataMessage = message;
+            }
         }
 
         @Override
         public String getInvalidDataCause() {
-            return m_invalidDataMessage;
+            synchronized (m_moniker) {
+                return m_invalidDataMessage;
+            }
         }
 
         @Override
         public TsInformation toInfo(TsInformationType type) {
+            TsInformation result = new TsInformation(getRawName(), m_moniker, type);
+            load(type);
+
             synchronized (m_moniker) {
-                return new TsInformation(this, type);
+                if (result.hasData()) {
+                    result.data = m_data;
+                }
+                if (result.hasMetaData()) {
+                    result.metaData = m_metadata;
+                }
+                result.invalidDataCause = m_invalidDataMessage;
+            }
+
+            return result;
+        }
+
+        private static void putFreezeMeta(@Nonnull MetaData md, @Nonnull TsMoniker origin) {
+            if (origin.getSource() != null) {
+                md.put(MetaData.SOURCE, origin.getSource());
+            }
+            if (origin.getId() != null) {
+                md.put(MetaData.ID, origin.getId());
+            }
+            md.put(MetaData.DATE, new Date().toString());
+        }
+
+        private static boolean containsFreezeMeta(@Nullable MetaData md) {
+            if (md == null) {
+                return false;
+            }
+            if (md.containsKey(MetaData.SOURCE)) {
+                return true;
+            }
+            if (md.containsKey(SOURCE_OLD)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        @Nullable
+        private static TsMoniker getFreezeMeta(@Nullable MetaData md) {
+            if (md == null) {
+                return null;
+            }
+
+            String source = md.get(MetaData.SOURCE);
+            if (source == null) {
+                source = md.get(SOURCE_OLD);
+            }
+
+            if (DYNAMIC.equals(source)) {
+                return TsMoniker.createDynamicMoniker();
+            }
+
+            String id = md.get(MetaData.ID);
+            if (id == null) {
+                id = md.get(ID_OLD);
+            }
+
+            if (source == null || id == null) {
+                return null;
+            } else {
+                return TsMoniker.createProvidedMoniker(source, id);
             }
         }
     }
