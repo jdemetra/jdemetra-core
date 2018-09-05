@@ -20,12 +20,15 @@ import com.google.common.base.Strings;
 import ec.tstoolkit.IDocumented;
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.design.Internal;
+import ec.tstoolkit.design.NewObject;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.TsPeriodSelector;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.text.ParseException;
 import java.util.Date;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  *
@@ -212,30 +215,52 @@ public abstract class Ts implements IDocumented, ITsIdentified {
         }
     }
 
-    static class Master extends Ts {
+    @Internal
+    interface FactoryCallback {
 
+        boolean load(@Nonnull Ts ts, @Nonnull TsInformationType type);
+
+        boolean query(@Nonnull Ts s, @Nonnull TsInformationType type);
+
+        void notify(Ts s, TsInformationType type, Object sender);
+
+        @Nonnull
+        @NewObject
+        Ts createTs(@Nullable String name, @Nullable MetaData md, @Nullable TsData d);
+
+        @Nonnull
+        Ts createTs(@Nullable String name, @Nonnull TsMoniker moniker, @Nonnull TsInformationType type);
+    }
+
+    @Internal
+    static final class Master extends Ts {
+
+        private final FactoryCallback factory;
         private final TsMoniker m_moniker;
         private MetaData m_metadata;
         private TsData m_data;
         private volatile TsInformationType m_info = TsInformationType.None;
         private String m_invalidDataMessage;
 
-        Master(String name) {
+        Master(FactoryCallback factory, String name) {
             super(name);
+            this.factory = factory;
             m_moniker = new TsMoniker();
             m_info = TsInformationType.UserDefined;
         }
 
-        Master(String name, TsMoniker moniker) {
+        Master(FactoryCallback factory, String name, TsMoniker moniker) {
             super(name);
+            this.factory = factory;
             m_moniker = moniker;
             if (moniker.getId() == null) {
                 m_info = TsInformationType.UserDefined;
             }
         }
 
-        Master(String name, TsMoniker moniker, MetaData md, TsData d) {
+        Master(FactoryCallback factory, String name, TsMoniker moniker, MetaData md, TsData d) {
             super(name);
+            this.factory = factory;
             m_moniker = moniker;
             m_metadata = md;
             m_data = d;
@@ -281,7 +306,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
 
             putFreezeMeta(md, m_moniker);
 
-            return TsFactory.instance.createTs(getRawName(), md, data);
+            return factory.createTs(getRawName(), md, data);
         }
 
         private static void putFreezeMeta(MetaData md, TsMoniker origin) {
@@ -397,7 +422,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
             if (m_info.encompass(type)) {
                 return true;
             }
-            return TsFactory.instance.load(this, type);
+            return factory.load(this, type);
         }
 
         /**
@@ -411,7 +436,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
             if (m_info.encompass(type)) {
                 return true;
             }
-            return TsFactory.instance.query(this, type);
+            return factory.query(this, type);
         }
 
         /**
@@ -421,7 +446,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
          */
         @Override
         public boolean reload(TsInformationType type) {
-            return TsFactory.instance.load(this, type);
+            return factory.load(this, type);
         }
 
         /**
@@ -435,7 +460,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
                 return false;
             }
             m_metadata = md;
-            TsFactory.instance.notify(this, TsInformationType.MetaData, this);
+            factory.notify(this, TsInformationType.MetaData, this);
             return true;
         }
 
@@ -450,7 +475,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
                 return false;
             }
             m_data = data;
-            TsFactory.instance.notify(this, TsInformationType.Data, this);
+            factory.notify(this, TsInformationType.Data, this);
             return true;
         }
 
@@ -467,7 +492,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
             }
             m_data = data;
             m_metadata = md;
-            TsFactory.instance.notify(this, TsInformationType.All, this);
+            factory.notify(this, TsInformationType.All, this);
             return true;
         }
 
@@ -494,7 +519,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
                 }
 
                 if (DYNAMIC.equals(source)) {
-                    return TsFactory.instance.createTs(getRawName(), null, m_data == null ? null : m_data.clone());
+                    return factory.createTs(getRawName(), null, m_data == null ? null : m_data.clone());
                 }
                 String id = m_metadata.get(MetaData.ID);
                 if (id == null) {
@@ -504,7 +529,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
                     return this;
                 } else {
                     TsMoniker moniker = new TsMoniker(source, id);
-                    return TsFactory.instance.createTs(getRawName(), moniker, TsInformationType.None);
+                    return factory.createTs(getRawName(), moniker, TsInformationType.None);
                 }
             }
         }
@@ -545,11 +570,12 @@ public abstract class Ts implements IDocumented, ITsIdentified {
         }
     }
 
-    static class Proxy extends Ts {
+    @Internal
+    static final class Proxy extends Ts {
 
         private final Master master;
 
-        Proxy(String name, Master master) {
+        private Proxy(String name, Master master) {
             super(name);
             this.master = master;
         }
@@ -559,8 +585,8 @@ public abstract class Ts implements IDocumented, ITsIdentified {
             if (master.isFrozen()) {
                 return this;
             }
-            Ts tmp = master.freeze();
-            return new Proxy(getName() + " [frozen]", tmp.getMaster());
+            Ts frozen = master.freeze();
+            return new Proxy(getName() + " [frozen]", frozen.getMaster());
         }
 
         @Override

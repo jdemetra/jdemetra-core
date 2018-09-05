@@ -143,6 +143,7 @@ public class TsFactory {
         cur.start();
         instance = cur;
     }
+
     private final HashMap<String, ITsProvider> m_providers = new HashMap<>();
     private final HashMap<TsMoniker, WeakReference<TsCollection>> m_collections = new HashMap<>();
     private final HashMap<TsMoniker, WeakReference<Ts.Master>> m_ts = new HashMap<>();
@@ -152,6 +153,8 @@ public class TsFactory {
     NotificationsQueue notifications = new NotificationsQueue();
     TsFactoryCleaner cleaner = new TsFactoryCleaner();
     private final ReloadListener reloadListener = new ReloadListener();
+    private final Ts.FactoryCallback tsCallback = new TsCallback();
+    private final TsCollection.FactoryCallback tsCollectionCallback = new TsCollectionCallback();
 
     private TsFactory() {
         m_threadID = Thread.currentThread().getId();
@@ -266,7 +269,7 @@ public class TsFactory {
     @NewObject
     public Ts createTs(@Nullable String name) {
         synchronized (m_ts) {
-            Ts.Master ts = new Ts.Master(name);
+            Ts.Master ts = new Ts.Master(tsCallback, name);
             m_ts.put(ts.getMoniker(), new WeakReference<>(ts));
             return ts;
         }
@@ -280,7 +283,7 @@ public class TsFactory {
                 ts = wref.get();
             }
             if (ts == null) {
-                ts = new Ts.Master(info.name, info.moniker);
+                ts = new Ts.Master(tsCallback, info.name, info.moniker);
             }
             ts.update(info);
             m_ts.put(ts.getMoniker(), new WeakReference<>(ts));
@@ -324,7 +327,7 @@ public class TsFactory {
                 if (ts != null) {
                     return ts.rename(name);
                 } else {
-                    ts = new Ts.Master(name, moniker, md, d);
+                    ts = new Ts.Master(tsCallback, name, moniker, md, d);
                     m_ts.put(moniker, new WeakReference<>(ts));
                     return ts;
                 }
@@ -332,7 +335,7 @@ public class TsFactory {
                 if (moniker == null) {
                     moniker = new TsMoniker();
                 }
-                Ts.Master ts = new Ts.Master(name, moniker, md, d);
+                Ts.Master ts = new Ts.Master(tsCallback, name, moniker, md, d);
                 m_ts.put(ts.getMoniker(), new WeakReference<>(ts));
                 return ts;
             }
@@ -356,10 +359,10 @@ public class TsFactory {
                 if (type != TsInformationType.None) {
                     TsInformation info = new TsInformation(name, moniker, type);
                     fill(info);
-                    result = new Ts.Master(name != null ? name : info.name, moniker);
+                    result = new Ts.Master(tsCallback, name != null ? name : info.name, moniker);
                     result.update(info);
                 } else {
-                    result = new Ts.Master(name, moniker);
+                    result = new Ts.Master(tsCallback, name, moniker);
                 }
                 m_ts.put(moniker, new WeakReference<>(result));
             } else {
@@ -405,7 +408,7 @@ public class TsFactory {
     @NewObject
     public TsCollection createTsCollection(@Nullable String name) {
         synchronized (m_collections) {
-            TsCollection coll = new TsCollection(name);
+            TsCollection coll = new TsCollection(tsCollectionCallback, name);
             m_collections.put(coll.getMoniker(),
                     new WeakReference<>(coll));
             return coll;
@@ -427,7 +430,7 @@ public class TsFactory {
             @Nullable Iterable<Ts> ts) {
         synchronized (m_collections) {
             if (moniker == null) {
-                TsCollection c = new TsCollection(name, new TsMoniker(), md, ts);
+                TsCollection c = new TsCollection(tsCollectionCallback, name, new TsMoniker(), md, ts);
                 m_collections.put(c.getMoniker(), new WeakReference<>(c));
                 return c;
             } else {
@@ -437,12 +440,12 @@ public class TsFactory {
                     if (c != null) {
                         return c;
                     } else {
-                        c = new TsCollection(name, moniker, md, ts);
+                        c = new TsCollection(tsCollectionCallback, name, moniker, md, ts);
                         m_collections.put(c.getMoniker(), new WeakReference<>(c));
                         return c;
                     }
                 } else {
-                    TsCollection c = new TsCollection(name, moniker, md, ts);
+                    TsCollection c = new TsCollection(tsCollectionCallback, name, moniker, md, ts);
                     m_collections.put(c.getMoniker(), new WeakReference<>(c));
                     return c;
                 }
@@ -466,7 +469,7 @@ public class TsFactory {
         synchronized (m_collections) {
             TsCollection result = getTsCollection(moniker);
             if (result == null) {
-                result = new TsCollection(name, moniker);
+                result = new TsCollection(tsCollectionCallback, name, moniker);
                 if (type != TsInformationType.None) {
                     TsCollectionInformation info = new TsCollectionInformation(moniker, type);
                     fill(info);
@@ -977,6 +980,72 @@ public class TsFactory {
             return p.getAsyncMode() == TsAsyncMode.None
                     ? o -> doLoad(o, o.getInformationType())
                     : o -> p.queryTs(o.getMoniker(), o.getInformationType());
+        }
+    }
+
+    private final class TsCallback implements Ts.FactoryCallback {
+
+        @Override
+        public boolean load(Ts ts, TsInformationType type) {
+            return TsFactory.this.load(ts, type);
+        }
+
+        @Override
+        public boolean query(Ts s, TsInformationType type) {
+            return TsFactory.this.query(s, type);
+        }
+
+        @Override
+        public void notify(Ts s, TsInformationType type, Object sender) {
+            TsFactory.this.notify(s, type, sender);
+        }
+
+        @Override
+        public Ts createTs(String name, MetaData md, TsData d) {
+            return TsFactory.this.createTs(name, md, d);
+        }
+
+        @Override
+        public Ts createTs(String name, TsMoniker moniker, TsInformationType type) {
+            return TsFactory.this.createTs(name, moniker, type);
+        }
+    }
+
+    private final class TsCollectionCallback implements TsCollection.FactoryCallback {
+
+        @Override
+        public boolean load(TsCollection c, TsInformationType type) {
+            return TsFactory.this.load(c, type);
+        }
+
+        @Override
+        public boolean query(TsCollection c, TsInformationType type) {
+            return TsFactory.this.query(c, type);
+        }
+
+        @Override
+        public void notify(TsCollection s, TsInformationType type, Object sender) {
+            TsFactory.this.notify(s, type, sender);
+        }
+
+        @Override
+        public Ts getTs(TsMoniker moniker) {
+            return TsFactory.this.getTs(moniker);
+        }
+
+        @Override
+        public Ts createTs(TsInformation info) {
+            return TsFactory.this.createTs(info);
+        }
+
+        @Override
+        public TsCollection createTsCollection(String name, TsMoniker moniker, MetaData md, Iterable<Ts> ts) {
+            return TsFactory.this.createTsCollection(name, moniker, md, ts);
+        }
+
+        @Override
+        public TsCollection createTsCollection(String name) {
+            return TsFactory.this.createTsCollection(name);
         }
     }
 }
