@@ -14,14 +14,14 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
- /*
- */
 package demetra.ssf.multivariate;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
+import demetra.ssf.implementations.MeasurementError;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfError;
@@ -40,15 +40,33 @@ public class M2uAdapter {
 
     public static ISsf of(IMultivariateSsf mssf) {
         ISsfMeasurements measurements = mssf.measurements();
-        ISsfErrors errors = mssf.errors();
-        if (errors != null && !errors.areIndependent()) {
-            return null;
+        int m = measurements.getCount();
+        if (m > 1) {
+            ISsfErrors errors = mssf.errors();
+            if (errors != null && !errors.areIndependent()) {
+                return null;
+            }
+            ISsfDynamics mdynamics = mssf.dynamics();
+            Dynamics ndyn = new Dynamics(mdynamics, measurements.getCount());
+            Loading nload = new Loading(measurements);
+            Error ne = errors == null ? null : new Error(errors, measurements.getCount());
+            return Ssf.of(mssf.initialization(), ndyn, nload, ne);
+        } else {
+            ISsfInitialization initialization = mssf.initialization();
+            ISsfDynamics dynamics = mssf.dynamics();
+            ISsfErrors errors = mssf.errors();
+            ISsfError error = null;
+            if (errors != null) {
+                if (errors.isTimeInvariant()) {
+                    Matrix h = Matrix.square(1);
+                    errors.H(0, h);
+                    error = MeasurementError.of(h.get(0, 0));
+                } else {
+                    error = new Error(errors, 1);
+                }
+            }
+            return Ssf.of(initialization, dynamics, measurements.loading(0), error);
         }
-        ISsfDynamics mdynamics = mssf.dynamics();
-        Dynamics ndyn = new Dynamics(mdynamics, measurements.getCount());
-        Loading nload = new Loading(measurements);
-        Error ne = errors == null ? null : new Error(errors, measurements.getCount());
-        return Ssf.of(mssf.initialization(), ndyn, nload, ne);
     }
 
     static class Data implements ISsfData {

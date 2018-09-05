@@ -3,8 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package msts;
+package demetra.msts;
 
+import demetra.msts.LoadingParameter;
+import demetra.msts.MstsMapping;
+import demetra.msts.VarianceParameter;
+import demetra.msts.MstsMonitor;
+import demetra.msts.GenericParameters;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
@@ -13,7 +18,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
-import demetra.ssf.models.AR;
+import demetra.ssf.models.SsfAr;
 import demetra.ssf.models.LocalLevel;
 import demetra.ssf.models.LocalLinearTrend;
 import java.io.File;
@@ -59,8 +64,8 @@ public class MstsMonitorTest {
         generatePi(mapping);
         generateCycle(mapping);
         monitor.process(D, mapping, null);
-        System.out.println(monitor.getLogLikelihood().logLikelihood());
-        System.out.println(mapping.trueParameters(monitor.getPrslts()));
+        System.out.println(monitor.getLikelihood().logLikelihood());
+        System.out.println(mapping.trueParameters(monitor.fullParameters()));
         System.out.println(monitor.smoothedComponent(4));
     }
 
@@ -95,8 +100,8 @@ public class MstsMonitorTest {
                 .marginalLikelihood(true)
                 .build();
         monitor.process(D, mapping, null);
-        System.out.println(monitor.getLogLikelihood().logLikelihood());
-        System.out.println(mapping.trueParameters(monitor.getPrslts()));
+        System.out.println(monitor.getLikelihood().logLikelihood());
+        System.out.println(mapping.trueParameters(monitor.fullParameters()));
         System.out.println(monitor.smoothedComponent(4));
     }
 
@@ -133,8 +138,8 @@ public class MstsMonitorTest {
                 .marginalLikelihood(true)
                 .build();
         monitor.process(D, mapping, null);
-        System.out.println(monitor.getLogLikelihood().logLikelihood());
-        System.out.println(mapping.trueParameters(monitor.getPrslts()));
+        System.out.println(monitor.getLikelihood().logLikelihood());
+        System.out.println(mapping.trueParameters(monitor.fullParameters()));
         System.out.println(monitor.smoothedComponent(4));
     }
 
@@ -202,7 +207,7 @@ public class MstsMonitorTest {
         mapping.add(new VarianceParameter("ar_var", 1));
         mapping.add((p, builder) -> {
             double c1 = p.get(0), c2 = p.get(1), v = p.get(2);
-            builder.add("cycle", AR.componentOf(new double[]{c1, c2}, v, 5));
+            builder.add("cycle", SsfAr.of(new double[]{c1, c2}, v, 5));
             return 3;
         });
 
@@ -230,7 +235,7 @@ public class MstsMonitorTest {
             MultivariateCompositeSsf.Equation eq2 = new MultivariateCompositeSsf.Equation(v2);
             eq2.add(new MultivariateCompositeSsf.Item("tc"));
             eq2.add(new MultivariateCompositeSsf.Item("cycle", 1, pl));
-            builder.add("cycle", AR.componentOf(new double[]{c1, c2}, v, 5))
+            builder.add("cycle", SsfAr.of(new double[]{c1, c2}, v, 5))
                     .add("tb", LocalLevel.of(0))
                     .add("tc", LocalLevel.of(0))
                     .add(eq1)

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package msts;
+package demetra.msts;
 
 import demetra.data.DoubleSequence;
 import demetra.likelihood.ILikelihood;
@@ -266,7 +266,7 @@ public class MstsMonitor {
     /**
      * @return the prslts
      */
-    public DoubleSequence getPrslts() {
+    public DoubleSequence getParameters() {
         return prslts;
     }
 
@@ -283,8 +283,11 @@ public class MstsMonitor {
     /**
      * @return the ll
      */
-    public ILikelihood getLogLikelihood() {
+    public ILikelihood getLikelihood() {
         return ll;
     }
 
+    public DoubleSequence fullParameters(){
+        return model.trueParameters(prslts);
+    }
 }

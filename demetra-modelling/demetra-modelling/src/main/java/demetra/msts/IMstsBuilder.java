@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package msts;
+package demetra.msts;
 
 import demetra.data.DoubleSequence;
 import demetra.ssf.implementations.MultivariateCompositeSsf;

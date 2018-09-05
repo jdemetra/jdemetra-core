@@ -23,7 +23,7 @@ public class ARTest {
 
     @Test
     public void testTVT() {
-        SsfComponent cmp = AR.componentOf(new double[]{.3, -.4, .2}, 0.7, 10);
+        SsfComponent cmp = SsfAr.of(new double[]{.3, -.4, .2}, 0.7, 10);
         Matrix z=Matrix.square(cmp.initialization().getStateDim());
         Random rnd=new Random();
         z.set(rnd::nextDouble);

@@ -13,6 +13,7 @@ import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.SsfException;
+import demetra.ssf.StateComponent;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.ISsfErrors;
 import demetra.ssf.multivariate.ISsfMeasurements;
@@ -93,6 +94,13 @@ public class MultivariateCompositeSsf extends MultivariateSsf {
 
         public Builder add(String name, SsfComponent cmp) {
             components.add(cmp);
+            names.add(name);
+            return this;
+        }
+
+        public Builder add(String name, StateComponent cmp, ISsfLoading loading) {
+            components.add(new SsfComponent(cmp.initialization(), cmp.dynamics(), 
+                    loading == null ? Loading.fromPosition(0) : loading));
             names.add(name);
             return this;
         }

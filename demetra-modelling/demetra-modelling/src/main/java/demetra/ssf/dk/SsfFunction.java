@@ -16,11 +16,8 @@
  */
 package demetra.ssf.dk;
 
-import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.IParametricMapping;
-import demetra.maths.functions.ssq.ISsqFunction;
-import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfBuilder;

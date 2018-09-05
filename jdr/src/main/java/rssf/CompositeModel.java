@@ -16,22 +16,40 @@
  */
 package rssf;
 
-import demetra.ssf.SsfComponent;
-import demetra.ssf.implementations.CompositeSsf;
-import demetra.ssf.univariate.ISsf;
+import demetra.msts.MstsMapping;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Jean Palate
  */
-@lombok.experimental.UtilityClass
-public class CompositeModels {
+public class CompositeModel {
 
-    public CompositeSsf of(SsfComponent[] ssf, double var) {
-        CompositeSsf.Builder builder = CompositeSsf.builder();
-        for (SsfComponent c : ssf) {
-            builder.add(c);
-        }
-        return builder.measurementError(var).build();
+    private MstsMapping mapping;
+    private final List<ModelItem> items = new ArrayList<>();
+    private final List<ModelEquation> equations = new ArrayList<>();
+
+    public void add(ModelItem item) {
+        this.items.add(item);
     }
+
+    public void add(ModelEquation eq) {
+        this.equations.add(eq);
+    }
+
+    MstsMapping getMapping() {
+        return mapping;
+    }
+
+    public void build() {
+        mapping = new MstsMapping();
+        for (ModelItem item : items) {
+            item.addTo(mapping);
+        }
+        for (ModelEquation eq : equations) {
+            eq.addTo(mapping);
+        }
+    }
+
 }

@@ -5,18 +5,18 @@
  */
 package rssf;
 
+import demetra.data.DoubleSequence;
 import demetra.maths.matrices.Matrix;
+import demetra.msts.MstsMonitor;
 import demetra.ssf.StateStorage;
 import demetra.ssf.dk.DefaultDiffuseFilteringResults;
-import demetra.ssf.dk.DkConcentratedLikelihood;
 import demetra.ssf.dk.DkLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.sqrt.DefaultDiffuseSquareRootFilteringResults;
+import demetra.ssf.implementations.MultivariateCompositeSsf;
 import demetra.ssf.multivariate.IMultivariateSsf;
-import demetra.ssf.multivariate.M2uAdapter;
 import demetra.ssf.multivariate.SsfMatrix;
 import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.SsfData;
 
 /**
@@ -66,5 +66,18 @@ public class Algorithms {
     public StateStorage smooth(IMultivariateSsf model, Matrix data, boolean all) {
         SsfMatrix s = new SsfMatrix(data);
         return DkToolkit.smooth(model, s, all);
+    }
+    
+    public double diffuseLikelihood(CompositeModel model, Matrix data, double[] parameters){
+        MultivariateCompositeSsf mssf = model.getMapping().map(DoubleSequence.of(parameters));
+        DkLikelihood likelihood = DkToolkit.likelihood(mssf, new SsfMatrix(data));
+        return likelihood.logLikelihood();
+    }
+    
+    public double[] estimate(CompositeModel model, Matrix data){
+        MstsMonitor monitor=MstsMonitor.builder()
+                .build();
+        monitor.process(data, model.getMapping(), null);
+        return monitor.fullParameters().toArray();
     }
 }

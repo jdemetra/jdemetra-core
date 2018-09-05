@@ -17,11 +17,8 @@
 package demetra.ssf.dk;
 
 import demetra.data.DataBlock;
-import demetra.likelihood.ILikelihood;
 import demetra.maths.functions.IFunction;
-import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.ssq.ISsqFunction;
-import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.IConcentratedLikelihoodComputer;
 import demetra.ssf.univariate.SsfRegressionModel;
@@ -36,6 +33,7 @@ import demetra.maths.functions.ssq.SsqNumericalDerivatives;
  *
  * @author Jean Palate
  * @param <S>
+ * @param <F>
  */
 public class SsfFunctionPoint<S, F extends ISsf> implements
         ILikelihoodFunctionPoint<DkConcentratedLikelihood> {

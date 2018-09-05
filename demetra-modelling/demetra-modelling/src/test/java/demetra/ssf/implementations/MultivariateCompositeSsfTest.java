@@ -26,7 +26,7 @@ import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.dk.SsfFunctionPoint;
 import demetra.ssf.implementations.MultivariateCompositeSsf.Item;
-import demetra.ssf.models.AR;
+import demetra.ssf.models.SsfAr;
 import demetra.ssf.models.LocalLevel;
 import demetra.ssf.models.LocalLinearTrend;
 import demetra.ssf.multivariate.M2uAdapter;
@@ -198,7 +198,7 @@ class Mapping implements IParametricMapping<MultivariateCompositeSsf> {
 
     @Override
     public MultivariateCompositeSsf map(DoubleSequence p) {
-        SsfComponent ar = AR.componentOf(new double[]{p.get(ARPOS), p.get(ARPOS + 1)}, 1, 5);
+        SsfComponent ar = SsfAr.of(new double[]{p.get(ARPOS), p.get(ARPOS + 1)}, 1, 5);
 
         MultivariateCompositeSsf.Equation eq1 = new MultivariateCompositeSsf.Equation(1);
         MultivariateCompositeSsf.Equation eq2 = new MultivariateCompositeSsf.Equation(p(p, 4));
@@ -292,7 +292,7 @@ class Mapping2 implements IParametricMapping<MultivariateCompositeSsf> {
     @Override
     public MultivariateCompositeSsf map(DoubleSequence p) {
         double c1 = p.get(ARPOS), c2 = p.get(ARPOS + 1);
-        SsfComponent ar = AR.componentOf(new double[]{c1, c2}, 1, 5);
+        SsfComponent ar = SsfAr.of(new double[]{c1, c2}, 1, 5);
 
         MultivariateCompositeSsf.Equation eq1 = new MultivariateCompositeSsf.Equation(1);
         MultivariateCompositeSsf.Equation eq2 = new MultivariateCompositeSsf.Equation(p(p, 3));
@@ -404,7 +404,7 @@ class Mapping3 implements IParametricMapping<MultivariateCompositeSsf> {
     @Override
     public MultivariateCompositeSsf map(DoubleSequence p) {
         double c1 = p.get(ARPOS), c2 = p.get(ARPOS + 1);
-        SsfComponent ar = AR.componentOf(new double[]{c1, c2}, 1, 5);
+        SsfComponent ar = SsfAr.of(new double[]{c1, c2}, 1, 5);
 
         MultivariateCompositeSsf.Equation eq1 = new MultivariateCompositeSsf.Equation(0);
         MultivariateCompositeSsf.Equation eq2 = new MultivariateCompositeSsf.Equation(0);

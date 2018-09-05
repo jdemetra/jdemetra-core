@@ -22,9 +22,9 @@ import javax.annotation.Nonnull;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class AR {
+public class SsfAr {
     
-    public SsfComponent componentOf(@Nonnull double[] ar, double var, int nlags){
+    public SsfComponent of(@Nonnull double[] ar, double var, int nlags){
         if (ar.length == 0)
             throw new IllegalArgumentException();
         if (nlags<ar.length)

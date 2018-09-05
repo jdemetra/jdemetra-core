@@ -3,8 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package msts;
+package demetra.msts;
 
+import demetra.msts.LoadingParameter;
+import demetra.msts.MstsMapping;
+import demetra.msts.VarianceParameter;
+import demetra.msts.GenericParameters;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
@@ -21,7 +25,7 @@ import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.dk.SsfFunctionPoint;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
-import demetra.ssf.models.AR;
+import demetra.ssf.models.SsfAr;
 import demetra.ssf.models.LocalLevel;
 import demetra.ssf.models.LocalLinearTrend;
 import demetra.ssf.multivariate.M2uAdapter;
@@ -93,7 +97,7 @@ public class MstsMappingTest {
             builder.add("ty", LocalLinearTrend.of(0, p.get(1)));
             builder.add("tpi", LocalLevel.of(p.get(2)));
             builder.add("tpicore", LocalLevel.of(p.get(3)));
-            builder.add("cycle", AR.componentOf(p.extract(11, 2).toArray(), p.get(13), 5));
+            builder.add("cycle", SsfAr.of(p.extract(11, 2).toArray(), p.get(13), 5));
             double v = p.get(14);
             double l = p.get(7);
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(v);
