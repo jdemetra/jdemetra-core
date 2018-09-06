@@ -139,6 +139,7 @@ public class MstsMonitor {
                     .useParallelProcessing(true)
                     .useScalingFactor(true)
                     .useMaximumLikelihood(true)
+                    .useFastAlgorithm(true)
                     .build();
         }
     }
@@ -164,7 +165,7 @@ public class MstsMonitor {
         } while (niter++ < maxIter);
         ssf = model.map(prslts);
         cpos = ssf.componentsPosition();
-        srslts = DkToolkit.sqrtSmooth(M2uAdapter.of(ssf), udata, true);
+//        srslts = DkToolkit.sqrtSmooth(M2uAdapter.of(ssf), udata, true);
     }
 
     private ILikelihoodFunctionPoint min(ILikelihoodFunction fn, DoubleSequence start) {

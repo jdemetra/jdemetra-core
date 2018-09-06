@@ -25,6 +25,7 @@ import demetra.ssf.models.LocalLevel;
 import demetra.ssf.models.LocalLinearTrend;
 import demetra.ssf.univariate.ISsf;
 import demetra.sts.CyclicalComponent;
+import demetra.sts.Noise;
 import demetra.sts.SeasonalComponent;
 import demetra.sts.SeasonalModel;
 
@@ -142,7 +143,7 @@ public class AtomicModels {
             mapping.add(v);
             mapping.add((p, builder) -> {
                 double nv=p.get(0);
-                SsfComponent cmp = LocalLevel.of(nv);
+                SsfComponent cmp = Noise.of(nv);
                 builder.add(name, cmp);
                 return 1;
             });
