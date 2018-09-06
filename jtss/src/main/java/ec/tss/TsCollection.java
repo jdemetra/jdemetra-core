@@ -27,6 +27,8 @@ import java.util.List;
 import ec.tstoolkit.IDocumented;
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.design.Internal;
+import ec.tstoolkit.design.NewObject;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import java.util.*;
@@ -42,17 +44,64 @@ import javax.annotation.Nullable;
 @Development(status = Development.Status.Alpha)
 public final class TsCollection implements ITsIdentified, IDocumented, Iterable<Ts> {
 
+    @Internal
+    interface FactoryCallback {
+
+        boolean load(@Nonnull TsCollection c, @Nonnull TsInformationType type);
+
+        boolean query(@Nonnull TsCollection c, @Nonnull TsInformationType type);
+
+        void notify(TsCollection s, TsInformationType type, Object sender);
+
+        @Nullable
+        Ts getTs(@Nullable TsMoniker moniker);
+
+        Ts createTs(TsInformation info);
+
+        @Nonnull
+        TsCollection createTsCollection(@Nullable String name, @Nullable TsMoniker moniker,
+                @Nullable MetaData md, @Nullable Iterable<Ts> ts);
+
+        @Nonnull
+        @NewObject
+        TsCollection createTsCollection(@Nullable String name);
+    }
+
+    // safe
+    private final FactoryCallback factory;
     private final TsMoniker m_moniker;
     private final String m_name;
+
+    // unsafe
     private MetaData m_metadata;
     private final List<Ts> m_ts;
     private volatile TsInformationType m_info;
     private volatile Set<TsMoniker> m_set;
     private String m_invalidDataCause;
 
+    @Deprecated
+    @Internal
     TsCollection(@Nullable String name) {
+        this(TsFactory.instance.getTsCollectionCallback(), name);
+    }
+
+    @Deprecated
+    @Internal
+    TsCollection(@Nullable String name, @Nonnull TsMoniker moniker) {
+        this(TsFactory.instance.getTsCollectionCallback(), name, moniker);
+    }
+
+    @Deprecated
+    @Internal
+    TsCollection(@Nullable String name, @Nonnull TsMoniker moniker, @Nullable MetaData md, @Nullable Iterable<Ts> ts) {
+        this(TsFactory.instance.getTsCollectionCallback(), name, moniker, md, ts);
+    }
+
+    @Internal
+    TsCollection(FactoryCallback factory, @Nullable String name) {
+        this.factory = factory;
         m_name = Strings.nullToEmpty(name);
-        m_moniker = new TsMoniker();
+        m_moniker = TsMoniker.createAnonymousMoniker();
         m_metadata = null;
         m_ts = new ArrayList<>();
         m_info = TsInformationType.UserDefined;
@@ -60,7 +109,9 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
         m_invalidDataCause = null;
     }
 
-    TsCollection(@Nullable String name, @Nonnull TsMoniker moniker) {
+    @Internal
+    TsCollection(FactoryCallback factory, @Nullable String name, @Nonnull TsMoniker moniker) {
+        this.factory = factory;
         m_name = Strings.nullToEmpty(name);
         m_moniker = moniker;
         m_metadata = null;
@@ -70,7 +121,9 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
         m_invalidDataCause = null;
     }
 
-    TsCollection(@Nullable String name, @Nonnull TsMoniker moniker, @Nullable MetaData md, @Nullable Iterable<Ts> ts) {
+    @Internal
+    TsCollection(FactoryCallback factory, @Nullable String name, @Nonnull TsMoniker moniker, @Nullable MetaData md, @Nullable Iterable<Ts> ts) {
+        this.factory = factory;
         m_name = Strings.nullToEmpty(name);
         m_moniker = moniker;
         m_metadata = md;
@@ -86,11 +139,15 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
     }
 
     public String getInvalidDataCause() {
-        return m_invalidDataCause;
+        synchronized (m_moniker) {
+            return m_invalidDataCause;
+        }
     }
 
     public void setInvalidDataCause(String message) {
-        m_invalidDataCause = message;
+        synchronized (m_moniker) {
+            m_invalidDataCause = message;
+        }
     }
 
     /**
@@ -100,7 +157,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
      */
     public boolean add(Ts ts) {
         if (quietAdd(ts)) {
-            TsFactory.instance.notify(this, TsInformationType.Definition, this);
+            factory.notify(this, TsInformationType.Definition, this);
             return true;
         } else {
             return false;
@@ -129,7 +186,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
     public int append(Iterable<? extends Ts> list) {
         int n = quietAppend(list);
         if (n > 0) {
-            TsFactory.instance.notify(this, TsInformationType.Definition, this);
+            factory.notify(this, TsInformationType.Definition, this);
         }
         return n;
     }
@@ -180,8 +237,10 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
      * @return
      */
     public TsCollection clean(boolean empty) {
+        List<Ts> list;
+
         synchronized (m_moniker) {
-            List<Ts> list = new ArrayList(m_ts.size());
+            list = new ArrayList(m_ts.size());
             for (Ts s : m_ts) {
                 if (s.hasData() == TsStatus.Valid) {
                     list.add(s);
@@ -192,12 +251,12 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
                     }
                 }
             }
-            if (list.isEmpty() && !empty) {
-                return null;
-            }
-            return TsFactory.instance.createTsCollection(m_name, new TsMoniker(), null,
-                    list);
         }
+
+        if (list.isEmpty() && !empty) {
+            return null;
+        }
+        return factory.createTsCollection(m_name, TsMoniker.createAnonymousMoniker(), null, list);
     }
 
     /**
@@ -207,8 +266,10 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
      * @return
      */
     public TsCollection clean(double cntVal, boolean empty) {
+        List<Ts> list;
+
         synchronized (m_moniker) {
-            List<Ts> list = new ArrayList(m_ts.size());
+            list = new ArrayList(m_ts.size());
             for (Ts s : m_ts) {
                 if (s.hasData() == TsStatus.Undefined) {
                     s.load(TsInformationType.Data);
@@ -224,12 +285,12 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
                     }
                 }
             }
-            if (list.isEmpty() && !empty) {
-                return null;
-            }
-            return TsFactory.instance.createTsCollection(m_name, new TsMoniker(), null,
-                    list);
         }
+
+        if (list.isEmpty() && !empty) {
+            return null;
+        }
+        return factory.createTsCollection(m_name, TsMoniker.createAnonymousMoniker(), null, list);
     }
 
     /**
@@ -239,6 +300,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
         if (isLocked()) {
             return;
         }
+
         synchronized (m_moniker) {
             if (m_ts.isEmpty()) {
                 return;
@@ -246,7 +308,8 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
             m_ts.clear();
             m_set = null;
         }
-        TsFactory.instance.notify(this, TsInformationType.Definition, this);
+
+        factory.notify(this, TsInformationType.Definition, this);
     }
 
     /**
@@ -393,6 +456,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
         if (isLocked()) {
             return false;
         }
+
         synchronized (m_moniker) {
             if (contains(ts)) {
                 return false;
@@ -400,7 +464,8 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
             m_ts.add(pos, ts);
             m_set = null;
         }
-        TsFactory.instance.notify(this, TsInformationType.Definition, this);
+
+        factory.notify(this, TsInformationType.Definition, this);
         return true;
     }
 
@@ -437,7 +502,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
                     .map(o -> o.load(type))
                     .reduce(Boolean.TRUE, (l, r) -> r && l);
         }
-        return TsFactory.instance.load(this, type);
+        return factory.load(this, type);
     }
 
     /**
@@ -445,11 +510,15 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
      * @return
      */
     public TsCollection makeCopy() {
-        TsCollection coll = TsFactory.instance.createTsCollection(m_name);
-        if (m_metadata != null) {
-            coll.m_metadata = m_metadata.clone();
+        TsCollection coll = factory.createTsCollection(m_name);
+
+        synchronized (m_moniker) {
+            if (m_metadata != null) {
+                coll.m_metadata = m_metadata.clone();
+            }
+            coll.m_ts.addAll(m_ts);
         }
-        coll.m_ts.addAll(m_ts);
+
         return coll;
     }
 
@@ -463,7 +532,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
         if (m_info.encompass(type)) {
             return true;
         }
-        return TsFactory.instance.query(this, type);
+        return factory.query(this, type);
     }
 
     /**
@@ -472,7 +541,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
      * @return
      */
     public boolean reload(TsInformationType type) {
-        return TsFactory.instance.load(this, type);
+        return factory.load(this, type);
     }
 
     /**
@@ -499,7 +568,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
             }
         }
         if (rslt > 0) {
-            TsFactory.instance.notify(this, TsInformationType.Definition, this);
+            factory.notify(this, TsInformationType.Definition, this);
         }
         return rslt;
     }
@@ -513,6 +582,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
         if (isLocked()) {
             return false;
         }
+
         synchronized (m_moniker) {
             if (!contains(s)) {
                 return false;
@@ -520,7 +590,8 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
             m_ts.remove(s);
             m_set = null;
         }
-        TsFactory.instance.notify(this, TsInformationType.Definition, this);
+
+        factory.notify(this, TsInformationType.Definition, this);
         return true;
     }
 
@@ -532,11 +603,13 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
         if (isLocked()) {
             return;
         }
+
         synchronized (m_moniker) {
             m_ts.remove(pos);
             m_set = null;
         }
-        TsFactory.instance.notify(this, TsInformationType.Definition, this);
+
+        factory.notify(this, TsInformationType.Definition, this);
     }
 
     /**
@@ -548,13 +621,15 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
         if (isLocked()) {
             return;
         }
+
         synchronized (m_moniker) {
             for (int pos = start + n - 1; pos >= start; --pos) {
                 m_ts.remove(pos);
             }
             m_set = null;
         }
-        TsFactory.instance.notify(this, TsInformationType.Definition, this);
+
+        factory.notify(this, TsInformationType.Definition, this);
     }
 
     /**
@@ -564,7 +639,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
      */
     public boolean replace(Iterable<Ts> c) {
         if (quietReplace(c)) {
-            TsFactory.instance.notify(this, TsInformationType.Definition, this);
+            factory.notify(this, TsInformationType.Definition, this);
             return true;
         } else {
             return false;
@@ -580,6 +655,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
         if (isLocked()) {
             return false;
         }
+
         synchronized (m_moniker) {
             m_ts.clear();
             for (Ts s : c) {
@@ -587,6 +663,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
             }
             m_set = null;
         }
+
         return true;
     }
 
@@ -597,7 +674,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
      */
     public boolean replace(Ts s) {
         if (quietReplace(s)) {
-            TsFactory.instance.notify(this, TsInformationType.Definition, this);
+            factory.notify(this, TsInformationType.Definition, this);
             return true;
         } else {
             return false;
@@ -611,7 +688,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
      */
     public boolean replace(Ts... s) {
         if (quietReplace(s)) {
-            TsFactory.instance.notify(this, TsInformationType.Definition, this);
+            factory.notify(this, TsInformationType.Definition, this);
             return true;
         } else {
             return false;
@@ -641,6 +718,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
         if (isLocked()) {
             return false;
         }
+
         synchronized (m_moniker) {
             if (m_ts.size() == 1
                     && m_ts.get(0).getMoniker().equals(s.getMoniker())) {
@@ -650,6 +728,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
             m_ts.add(s);
             m_set = null;
         }
+
         return true;
     }
 
@@ -706,10 +785,12 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
         if (m_info != TsInformationType.UserDefined) {
             return false;
         }
+
         synchronized (m_moniker) {
             m_metadata = md;
         }
-        TsFactory.instance.notify(this, TsInformationType.MetaData, this);
+
+        factory.notify(this, TsInformationType.MetaData, this);
         return true;
     }
 
@@ -725,12 +806,12 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
                 if (!info.items.isEmpty()) {
                     updated = new ArrayList(info.items.size());
                     for (TsInformation sinfo : info.items) {
-                        Ts s = TsFactory.instance.getTs(sinfo.moniker);
+                        Ts s = factory.getTs(sinfo.moniker);
                         if (s != null) {
                             s.getMaster().update(sinfo);
                             updated.add(s);
                         } else {
-                            s = TsFactory.instance.createTs(sinfo);
+                            s = factory.createTs(sinfo);
                         }
                         m_ts.add(s);
                     }
@@ -772,5 +853,27 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
 
     private boolean equals(TsCollection other) {
         return other == null ? false : getMoniker().equals(other.getMoniker());
+    }
+
+    /**
+     * Converts this collection to a TsCollectionInformation.
+     *
+     * @param type
+     * @return a non-null TsCollectionInformation
+     */
+    @Nonnull
+    public TsCollectionInformation toInfo(@Nonnull TsInformationType type) {
+        TsCollectionInformation result = new TsCollectionInformation(m_moniker, type);
+        result.type = type;
+        result.name = m_name;
+        load(type);
+
+        synchronized (m_moniker) {
+            stream().map(o -> o.toInfo(type)).forEach(result.items::add);
+            result.metaData = m_metadata;
+            result.invalidDataCause = m_invalidDataCause;
+        }
+
+        return result;
     }
 }

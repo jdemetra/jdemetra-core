@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss;
 
 import ec.tstoolkit.MetaData;
@@ -22,17 +21,17 @@ import ec.tstoolkit.design.Development;
 import java.util.ArrayList;
 
 /**
- * 
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 public final class TsCollectionInformation {
 
-   /**
+    /**
      * IN
      */
     public TsMoniker moniker;
-    
+
     /**
      * OUT
      */
@@ -56,68 +55,71 @@ public final class TsCollectionInformation {
      * OUT
      */
     public String invalidDataCause;
-    
+
     /**
-     * 
+     *
      */
-    public TsCollectionInformation()
-    {
-	this.moniker = new TsMoniker();
-	type = TsInformationType.UserDefined;
+    public TsCollectionInformation() {
+        this.moniker = TsMoniker.createAnonymousMoniker();
+        type = TsInformationType.UserDefined;
     }
 
     /**
-     * 
+     *
      * @param ts
      * @param type
+     * @deprecated use {@link TsCollection#toInfo(ec.tss.TsInformationType)}
+     * instead
      */
+    @Deprecated
     public TsCollectionInformation(TsCollection ts, TsInformationType type) {
-	this.moniker = ts.getMoniker();
-	this.type = type;
-        this.name=ts.getName();
-	ts.load(type);
-	for (Ts item : ts.toArray())
-	    this.items.add(new TsInformation(item, type));
-	if (hasMetaData())
-	    metaData = ts.getMetaData();
+        this.moniker = ts.getMoniker();
+        this.type = type;
+        this.name = ts.getName();
+        ts.load(type);
+        for (Ts item : ts.toArray()) {
+            this.items.add(item.toInfo(type));
+        }
+        if (hasMetaData()) {
+            metaData = ts.getMetaData();
+        }
     }
 
     /**
-     * 
+     *
      * @param moniker
      * @param type
      */
-    public TsCollectionInformation(TsMoniker moniker, TsInformationType type)
-    {
-	this.moniker = moniker;
-	this.type = type;
+    public TsCollectionInformation(TsMoniker moniker, TsInformationType type) {
+        this.moniker = moniker;
+        this.type = type;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public boolean hasData() {
-	return type == TsInformationType.All || type == TsInformationType.Data;
+        return type == TsInformationType.All || type == TsInformationType.Data;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public boolean hasDefinition() {
-	return type == TsInformationType.All
-		|| type == TsInformationType.Definition
-		|| type == TsInformationType.BaseInformation;
+        return type == TsInformationType.All
+                || type == TsInformationType.Definition
+                || type == TsInformationType.BaseInformation;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public boolean hasMetaData() {
-	return type == TsInformationType.All
-		|| type == TsInformationType.MetaData
-		|| type == TsInformationType.BaseInformation;
+        return type == TsInformationType.All
+                || type == TsInformationType.MetaData
+                || type == TsInformationType.BaseInformation;
     }
 }
