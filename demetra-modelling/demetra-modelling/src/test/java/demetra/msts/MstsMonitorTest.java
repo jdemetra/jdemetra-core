@@ -16,11 +16,14 @@ import demetra.data.MatrixSerializer;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfLoading;
+import demetra.ssf.StateStorage;
+import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
 import demetra.ssf.models.SsfAr;
 import demetra.ssf.models.LocalLevel;
 import demetra.ssf.models.LocalLinearTrend;
+import demetra.ssf.multivariate.SsfMatrix;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -48,11 +51,11 @@ public class MstsMonitorTest {
         D.column(2).copy(data.column(2));
         D.column(3).copy(data.column(3));
 
-        DataBlockIterator cols = D.columnsIterator();
-        while (cols.hasNext()) {
-            DataBlock col = cols.next();
-            col.normalize();
-        }
+//        DataBlockIterator cols = D.columnsIterator();
+//        while (cols.hasNext()) {
+//            DataBlock col = cols.next();
+//            col.normalize();
+//        }
 
         MstsMonitor monitor = MstsMonitor.builder()
                 .marginalLikelihood(true)
@@ -66,10 +69,11 @@ public class MstsMonitorTest {
         monitor.process(D, mapping, null);
         System.out.println(monitor.getLikelihood().logLikelihood());
         System.out.println(mapping.trueParameters(monitor.fullParameters()));
-        System.out.println(monitor.smoothedComponent(4));
+        StateStorage ss = DkToolkit.smooth(monitor.getSsf(), new SsfMatrix(monitor.getData()), true);
+        System.out.println(ss.getComponent(monitor.getSsf().componentsPosition()[4]));
     }
 
-    @Test
+    //@Test
     public void testSimpleX() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/mssf1").toURI();
@@ -102,7 +106,6 @@ public class MstsMonitorTest {
         monitor.process(D, mapping, null);
         System.out.println(monitor.getLikelihood().logLikelihood());
         System.out.println(mapping.trueParameters(monitor.fullParameters()));
-        System.out.println(monitor.smoothedComponent(4));
     }
 
     //@Test
@@ -140,7 +143,6 @@ public class MstsMonitorTest {
         monitor.process(D, mapping, null);
         System.out.println(monitor.getLikelihood().logLikelihood());
         System.out.println(mapping.trueParameters(monitor.fullParameters()));
-        System.out.println(monitor.smoothedComponent(4));
     }
 
     private void generateU(MstsMapping mapping) {
@@ -203,7 +205,7 @@ public class MstsMonitorTest {
     }
 
     private void generateCycle(MstsMapping mapping) {
-        mapping.add(new GenericParameters("ar", new ARDomain(), new double[]{.2, .2}, null));
+        mapping.add(new GenericParameters("ar", new ARDomain(), new double[2], null));
         mapping.add(new VarianceParameter("ar_var", 1));
         mapping.add((p, builder) -> {
             double c1 = p.get(0), c2 = p.get(1), v = p.get(2);

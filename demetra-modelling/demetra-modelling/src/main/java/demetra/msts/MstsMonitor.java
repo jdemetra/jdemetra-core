@@ -15,16 +15,10 @@ import demetra.maths.functions.riso.LbfgsMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.akf.AkfFunction;
-import demetra.ssf.akf.AkfFunctionPoint;
-import demetra.ssf.akf.MarginalLikelihood;
-import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.SsfFunction;
-import demetra.ssf.dk.SsfFunctionPoint;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
 import demetra.ssf.multivariate.M2uAdapter;
 import demetra.ssf.multivariate.SsfMatrix;
-import demetra.ssf.univariate.DefaultSmoothingResults;
-import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,9 +105,7 @@ public class MstsMonitor {
     private MstsMapping model;
     private MultivariateCompositeSsf ssf;
     private DoubleSequence prslts, fullp;
-    private DefaultSmoothingResults srslts;
     private ILikelihood ll;
-    private int[] cpos;
 
     private final List<VarianceParameter> smallVariances = new ArrayList<>();
 
@@ -164,8 +156,6 @@ public class MstsMonitor {
             }
         } while (niter++ < maxIter);
         ssf = model.map(prslts);
-        cpos = ssf.componentsPosition();
-//        srslts = DkToolkit.sqrtSmooth(M2uAdapter.of(ssf), udata, true);
     }
 
     private ILikelihoodFunctionPoint min(ILikelihoodFunction fn, DoubleSequence start) {
@@ -269,16 +259,6 @@ public class MstsMonitor {
      */
     public DoubleSequence getParameters() {
         return prslts;
-    }
-
-    public DoubleSequence smoothedComponent(int pos) {
-        ssf.componentsPosition();
-        return srslts.getComponent(cpos[pos]).extract(0, data.getRowsCount(), data.getColumnsCount());
-    }
-
-    public DoubleSequence varianceOfSmoothedComponent(int pos) {
-        ssf.componentsPosition();
-        return srslts.getComponentVariance(cpos[pos]).extract(0, data.getRowsCount(), data.getColumnsCount());
     }
 
     /**

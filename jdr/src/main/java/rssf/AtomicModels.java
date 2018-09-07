@@ -11,6 +11,7 @@ import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
+import demetra.msts.ArParameters;
 import demetra.msts.MstsMapping;
 import demetra.msts.SarimaParameters;
 import demetra.msts.StablePolynomial;
@@ -87,7 +88,6 @@ public class AtomicModels {
                 return np;
             });
         };
-
     }
 
     public ModelItem localLevel(String name, double lvar) {
@@ -160,9 +160,9 @@ public class AtomicModels {
         };
     }
     
-    public ModelItem ar(String name, int nar, double[] ar, double var, int nlags) {
+    public ModelItem ar(String name, int nar, double[] ar, double var, int nlags, boolean fixed) {
         return mapping -> {
-            mapping.add(new StablePolynomial(name + "_ar", nar, ar, -.1));
+            mapping.add(new ArParameters(name + "_ar", nar, fixed ? ar : null, ar));
             VarianceParameter v = var >= 0 ? new VarianceParameter(name + "_var", var) : new VarianceParameter(name + "_var");
             mapping.add(v);
             mapping.add((p, builder) -> {

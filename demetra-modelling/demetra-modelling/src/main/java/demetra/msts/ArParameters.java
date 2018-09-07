@@ -17,14 +17,14 @@ import demetra.sarima.SarimaMapping;
  *
  * @author palatej
  */
-public class StablePolynomial implements IMstsParametersBlock {
+public class ArParameters implements IMstsParametersBlock {
 
     private final String name;
     private final int degree;
     private final double[] values, defValue;
     private final Domain domain;
 
-    public StablePolynomial(final String name, int degree, double[] values, double[] defValue) {
+    public ArParameters(final String name, int degree, double[] values, double[] defValue) {
         this.name = name;
         this.values = values;
         this.defValue = defValue;
@@ -32,12 +32,13 @@ public class StablePolynomial implements IMstsParametersBlock {
         this.domain = new Domain(degree);
     }
 
-    public StablePolynomial(final String name, int degree, double[] values, double defValue) {
+    public ArParameters(final String name, int degree, double[] values, double defValue) {
         this.name = name;
         this.values = values;
         this.defValue = new double[degree];
-        for (int i=0; i<degree; ++i)
-            this.defValue[i]=defValue;
+        for (int i = 0; i < degree; ++i) {
+            this.defValue[i] = defValue;
+        }
         this.degree = degree;
         this.domain = new Domain(degree);
     }
@@ -107,7 +108,7 @@ public class StablePolynomial implements IMstsParametersBlock {
 
         @Override
         public boolean checkBoundaries(DoubleSequence inparams) {
-            return SarimaMapping.checkStability(inparams);
+            return SarimaMapping.checkStability(DoubleSequence.onMapping(inparams.length(), i -> -inparams.get(i)));
         }
 
         @Override
@@ -132,12 +133,20 @@ public class StablePolynomial implements IMstsParametersBlock {
 
         @Override
         public ParamValidation validate(DataBlock ioparams) {
-            Polynomial p = Polynomial.valueOf(1, ioparams.toArray());
+            double[] z = ioparams.toArray();
+            for (int i = 0; i < z.length; ++i) {
+                z[i] = -z[i];
+            }
+            Polynomial p = Polynomial.valueOf(1, z);
             Polynomial np = SarimaMapping.stabilize(p);
             if (np.equals(p)) {
                 return ParamValidation.Valid;
             } else {
-                ioparams.copy(np.coefficients().drop(1, 0));
+                for (int i = 0; i < z.length; ++i) {
+                    z[i] = -np.get(i + 1);
+                }
+
+                ioparams.copyFrom(z, 0);
                 return ParamValidation.Changed;
             }
         }

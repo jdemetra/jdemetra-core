@@ -46,10 +46,10 @@ public class SsfUcarimaTest {
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
         int[] pos = ssf.componentsPosition();
         for (int i = 0; i < 3; ++i) {
-//            System.out.println(sd.getComponent(ssf.getComponentPosition(i)));
+            System.out.println(sd.getComponent(pos[i]));
             assertTrue(ds.item(pos[i]).distance(sd.getComponent(pos[i])) < 1e-9);
         }
-//        System.out.println(sd.getComponentVariance(0));
+        System.out.println(sd.getComponentVariance(0));
     }
 
 }
