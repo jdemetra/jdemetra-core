@@ -19,16 +19,20 @@ public class LoadingParameter implements IMstsParametersBlock {
 
     private static final double DEF_VALUE = .1;
 
-    private Double fixedLoading;
+    private double loading;
+    private boolean fixed;
     private final String name;
 
     public LoadingParameter(final String name) {
         this.name=name;
+        loading=DEF_VALUE;
+        fixed=false;
     }
 
-    public LoadingParameter(final String name, double var) {
+    public LoadingParameter(final String name, double loading, boolean fixed) {
         this.name=name;
-        fixedLoading = var;
+        this.loading=loading;
+        this.fixed=fixed;
     }
 
     @Override
@@ -37,16 +41,17 @@ public class LoadingParameter implements IMstsParametersBlock {
     }
 
     public void fix(double val) {
-        fixedLoading = val;
+        loading=val;
+        fixed=true;
     }
 
     public void free() {
-        fixedLoading = null;
+        fixed=false;
     }
 
     @Override
     public boolean isFixed() {
-        return fixedLoading != null;
+        return fixed;
     }
 
     @Override
@@ -56,18 +61,19 @@ public class LoadingParameter implements IMstsParametersBlock {
 
     @Override
     public int decode(DoubleReader input, double[] buffer, int pos) {
-        if (fixedLoading == null) {
+        if (!fixed) {
             buffer[pos] = input.next();
         } else {
-            buffer[pos] = fixedLoading;
+            buffer[pos] = loading;
         }
         return pos + 1;
     }
 
     @Override
     public int encode(DoubleReader input, double[] buffer, int pos) {
-        buffer[pos] = input.next();
-        if (fixedLoading == null) {
+        double l = input.next();
+        if (!fixed) {
+            buffer[pos]=l;
             return pos + 1;
         } else {
             return pos;
@@ -76,8 +82,8 @@ public class LoadingParameter implements IMstsParametersBlock {
 
     @Override
     public int fillDefault(double[] buffer, int pos) {
-        if (fixedLoading == null) {
-            buffer[pos] = DEF_VALUE;
+        if (!fixed) {
+            buffer[pos] = loading;
             return pos + 1;
         } else {
             return pos;

@@ -14,14 +14,15 @@ import demetra.maths.functions.IParametersDomain;
  */
 public class GenericParameters implements IMstsParametersBlock {
 
-    private final double[] defParameters, parameters;
+    private boolean fixed;
+    private final double[] parameters;
     private final IParametersDomain domain;
     private final String name;
 
-    public GenericParameters(String name, IParametersDomain domain, double[] defParameters, double[] parameters) {
+    public GenericParameters(String name, IParametersDomain domain, double[] parameters, boolean fixed) {
         this.name=name;
         this.domain = domain;
-        this.defParameters = defParameters;
+        this.fixed=fixed;
         this.parameters = parameters;
     }
     
@@ -32,13 +33,13 @@ public class GenericParameters implements IMstsParametersBlock {
 
     @Override
     public boolean isFixed() {
-        return parameters != null;
+        return fixed;
     }
 
     @Override
     public int decode(DoubleReader reader, double[] buffer, int pos) {
-        int n = defParameters.length;
-        if (parameters == null) {
+        int n = parameters.length;
+        if (! fixed) {
             for (int i = 0; i < n; ++i) {
                 buffer[pos++] = reader.next();
             }
@@ -52,8 +53,8 @@ public class GenericParameters implements IMstsParametersBlock {
 
     @Override
     public int encode(DoubleReader reader, double[] buffer, int pos) {
-        int n = defParameters.length;
-        if (parameters == null) {
+        int n = parameters.length;
+        if (!fixed) {
             for (int i = 0; i < n; ++i) {
                 buffer[pos++] = reader.next();
             }
@@ -73,9 +74,9 @@ public class GenericParameters implements IMstsParametersBlock {
 
     @Override
     public int fillDefault(double[] buffer, int pos) {
-        if (parameters == null) {
-            System.arraycopy(defParameters, 0, buffer, pos, defParameters.length);
-            return pos + defParameters.length;
+        if (! fixed) {
+            System.arraycopy(parameters, 0, buffer, pos, parameters.length);
+            return pos + parameters.length;
         } else {
             return pos;
         }

@@ -12,6 +12,7 @@ import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaMapping;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -20,26 +21,23 @@ import demetra.sarima.SarimaMapping;
 public class ArParameters implements IMstsParametersBlock {
 
     private final String name;
-    private final int degree;
-    private final double[] values, defValue;
+    private final double[] values;
+    private boolean fixed;
     private final Domain domain;
 
-    public ArParameters(final String name, int degree, double[] values, double[] defValue) {
+    public ArParameters(@Nonnull final String name, @Nonnull double[] values, boolean fixed) {
         this.name = name;
         this.values = values;
-        this.defValue = defValue;
-        this.degree = degree;
-        this.domain = new Domain(degree);
+        this.fixed = fixed;
+        this.domain = new Domain(values.length);
     }
 
-    public ArParameters(final String name, int degree, double[] values, double defValue) {
+    public ArParameters(final String name, int degree, double defValue) {
         this.name = name;
-        this.values = values;
-        this.defValue = new double[degree];
+        this.values = new double[degree];
         for (int i = 0; i < degree; ++i) {
-            this.defValue[i] = defValue;
+            this.values[i] = defValue;
         }
-        this.degree = degree;
         this.domain = new Domain(degree);
     }
 
@@ -50,17 +48,17 @@ public class ArParameters implements IMstsParametersBlock {
 
     @Override
     public boolean isFixed() {
-        return values != null;
+        return fixed;
     }
 
     @Override
     public int decode(DoubleReader reader, double[] buffer, int pos) {
-        if (values == null) {
-            for (int i = 0; i < degree; ++i) {
+        if (!fixed) {
+            for (int i = 0; i < values.length; ++i) {
                 buffer[pos++] = reader.next();
             }
         } else {
-            for (int i = 0; i < degree; ++i) {
+            for (int i = 0; i < values.length; ++i) {
                 buffer[pos++] = values[i];
             }
         }
@@ -69,12 +67,12 @@ public class ArParameters implements IMstsParametersBlock {
 
     @Override
     public int encode(DoubleReader reader, double[] buffer, int pos) {
-        if (values == null) {
-            for (int i = 0; i < degree; ++i) {
+        if (!fixed) {
+            for (int i = 0; i < values.length; ++i) {
                 buffer[pos++] = reader.next();
             }
         } else {
-            for (int i = 0; i < degree; ++i) {
+            for (int i = 0; i < values.length; ++i) {
                 reader.next();
             }
         }
@@ -88,11 +86,11 @@ public class ArParameters implements IMstsParametersBlock {
 
     @Override
     public int fillDefault(double[] buffer, int pos) {
-        if (values == null) {
-            for (int i = 0; i < degree; ++i) {
-                buffer[pos + i] = defValue[i];
+        if (!fixed) {
+            for (int i = 0; i < values.length; ++i) {
+                buffer[pos + i] = values[i];
             }
-            return pos + degree;
+            return pos + values.length;
         } else {
             return pos;
         }

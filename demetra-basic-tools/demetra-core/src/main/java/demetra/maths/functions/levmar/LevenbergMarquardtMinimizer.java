@@ -309,7 +309,7 @@ public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
             }
         }
         //validate();
-        return (stop != 7 && stop != 4);
+        return (stop != 7 && stop != 4 && iter<itmax);
     }
 //    private void validate() {
 //        DataBlock np = new DataBlock(fcur_.getParameters());

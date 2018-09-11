@@ -19,33 +19,42 @@ public class VarianceParameter implements IMstsParametersBlock {
 
     private static final double DEF_STDE = .1;
 
-    private Double fixedVariance;
+    private double stde;
+    private boolean fixed;
     private final String name;
 
     public VarianceParameter(final String name) {
         this.name = name;
+        stde = DEF_STDE;
+        fixed = false;
     }
 
-    public VarianceParameter(final String name, double var) {
-        fixedVariance = var;
+    public VarianceParameter(final String name, double var, boolean fixed) {
+        stde = Math.sqrt(var);
+        this.fixed = fixed;
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
-    public void fix(double val) {
-        fixedVariance = val;
+    public double fix(double e) {
+        double olde = stde;
+        stde = e;
+        fixed = true;
+        return olde;
     }
 
-    public void free() {
-        fixedVariance = null;
+    public void free(double e) {
+        fixed = false;
+        stde = e;
     }
 
     @Override
     public boolean isFixed() {
-        return fixedVariance != null;
+        return fixed;
     }
 
     @Override
@@ -55,11 +64,11 @@ public class VarianceParameter implements IMstsParametersBlock {
 
     @Override
     public int decode(DoubleReader input, double[] buffer, int pos) {
-        if (fixedVariance == null) {
+        if (!fixed) {
             double e = input.next();
             buffer[pos] = e * e;
         } else {
-            buffer[pos] = fixedVariance;
+            buffer[pos] = stde;
         }
         return pos + 1;
     }
@@ -67,7 +76,7 @@ public class VarianceParameter implements IMstsParametersBlock {
     @Override
     public int encode(DoubleReader input, double[] buffer, int pos) {
         double v = input.next();
-        if (fixedVariance == null) {
+        if (!fixed) {
             buffer[pos] = Math.sqrt(v);
             return pos + 1;
         } else {
@@ -77,8 +86,8 @@ public class VarianceParameter implements IMstsParametersBlock {
 
     @Override
     public int fillDefault(double[] buffer, int pos) {
-        if (fixedVariance == null) {
-            buffer[pos] = DEF_STDE;
+        if (!fixed) {
+            buffer[pos] = stde;
             return pos + 1;
         } else {
             return pos;

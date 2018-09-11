@@ -16,6 +16,7 @@
  */
 package rssf;
 
+import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ILikelihood;
@@ -43,11 +44,12 @@ public class CompositeModel {
 
     public static class Estimation implements IProcResults {
 
-        static Estimation estimate(CompositeModel model, Matrix data, boolean marginal) {
+        static Estimation estimate(CompositeModel model, Matrix data, double eps, boolean marginal) {
             Estimation rslt = new Estimation();
             rslt.data = data;
             MstsMonitor monitor = MstsMonitor.builder()
                     .marginalLikelihood(marginal)
+                    .precision(eps)
                     .build();
             monitor.process(data, model.getMapping(), null);
             rslt.likelihood = monitor.getLikelihood();
@@ -94,19 +96,72 @@ public class CompositeModel {
         static {
             MAPPING.set("loglikelihood", Double.class, source -> source.getLikelihood().logLikelihood());
             MAPPING.set("ssf.ncmps", Integer.class, source -> source.getCmpPos().length);
+            MAPPING.set("ssf.cmppos", int[].class, source -> source.getCmpPos());
             MAPPING.set("parameters", double[].class, source -> source.getFullParameters());
             MAPPING.set("fn.parameters", double[].class, source -> source.getParameters());
-            MAPPING.setArray("ssf.T", 0, 10000, Matrix.class, (source, t) -> {
+            MAPPING.setArray("ssf.T", 0, 10000, MatrixType.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();
                 Matrix T = Matrix.square(dim);
                 source.getSsf().dynamics().T(t, T);
                 return T;
             });
-            MAPPING.setArray("ssf.V", 0, 10000, Matrix.class, (source, t) -> {
+            MAPPING.setArray("ssf.V", 0, 10000, MatrixType.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();
                 Matrix V = Matrix.square(dim);
                 source.getSsf().dynamics().V(t, V);
                 return V;
+            });
+            MAPPING.setArray("ssf.Z", 0, 10000, MatrixType.class, (source, t) -> {
+                int dim = source.getSsf().getStateDim();
+                int m = source.getSsf().measurementsCount();
+                Matrix M = Matrix.make(m, dim);
+                for (int i = 0; i < m; ++i) {
+                    source.getSsf().loading(i).Z(t, M.row(i));
+                }
+                return M;
+            });
+            MAPPING.set("ssf.T", MatrixType.class, source -> {
+                if (!source.getSsf().dynamics().isTimeInvariant()) {
+                    return null;
+                }
+                int dim = source.getSsf().getStateDim();
+                Matrix T = Matrix.square(dim);
+                source.getSsf().dynamics().T(0, T);
+                return T;
+            });
+            MAPPING.set("ssf.V", MatrixType.class, source -> {
+                if (!source.getSsf().dynamics().isTimeInvariant()) {
+                    return null;
+                }
+                int dim = source.getSsf().getStateDim();
+                Matrix V = Matrix.square(dim);
+                source.getSsf().dynamics().V(0, V);
+                return V;
+            });
+            MAPPING.set("ssf.P0", MatrixType.class, source -> {
+                int dim = source.getSsf().getStateDim();
+                Matrix V = Matrix.square(dim);
+                source.getSsf().initialization().Pf0(V);
+                return V;
+            });
+            MAPPING.set("ssf.B0", MatrixType.class, source -> {
+                int dim = source.getSsf().getStateDim();
+                int nd=source.getSsf().initialization().getDiffuseDim();
+                Matrix V = Matrix.make(dim, nd);
+                source.getSsf().initialization().diffuseConstraints(V);
+                return V;
+            });
+            MAPPING.set("ssf.Z", MatrixType.class, source -> {
+                if (!source.getSsf().measurements().isTimeInvariant()) {
+                    return null;
+                }
+                int dim = source.getSsf().getStateDim();
+                int m = source.getSsf().measurementsCount();
+                Matrix M = Matrix.make(m, dim);
+                for (int i = 0; i < m; ++i) {
+                    source.getSsf().loading(i).Z(0, M.row(i));
+                }
+                return M;
             });
             MAPPING.setArray("ssf.smoothing.array", 0, 1000, double[].class, (source, p) -> {
                 StateStorage smoothedStates = source.getSmoothedStates();
@@ -194,6 +249,22 @@ public class CompositeModel {
     private final List<ModelItem> items = new ArrayList<>();
     private final List<ModelEquation> equations = new ArrayList<>();
 
+    public int getEquationsCount() {
+        return equations.size();
+    }
+
+    public int getItemsCount() {
+        return items.size();
+    }
+
+    public ModelItem getItem(int pos) {
+        return items.get(pos);
+    }
+
+    public ModelEquation getEquation(int pos) {
+        return equations.get(pos);
+    }
+
     public void add(ModelItem item) {
         this.items.add(item);
         mapping = null;
@@ -218,11 +289,25 @@ public class CompositeModel {
         }
     }
 
-    public Estimation estimate(MatrixType data, boolean marginal) {
+    public double[] defaultParameters() {
         if (mapping == null) {
             build();
         }
-        return Estimation.estimate(this, Matrix.of(data), marginal);
+        return mapping.getDefaultParameters().toArray();
+    }
+
+    public double[] fullDefaultParameters() {
+        if (mapping == null) {
+            build();
+        }
+        return mapping.trueParameters(mapping.getDefaultParameters()).toArray();
+    }
+
+    public Estimation estimate(MatrixType data, double eps, boolean marginal) {
+        if (mapping == null) {
+            build();
+        }
+        return Estimation.estimate(this, Matrix.of(data), eps, marginal);
     }
 
     public Estimation compute(MatrixType data, double[] parameters, boolean marginal) {

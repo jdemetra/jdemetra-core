@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 @lombok.experimental.UtilityClass
 public class SsfAr2 {
 
-    public SsfComponent of(@Nonnull double[] ar, double var, int fcasts, int nlags) {
+    public SsfComponent of(@Nonnull double[] ar, double var, int nlags, int fcasts) {
         if (ar.length == 0) {
             throw new IllegalArgumentException();
         }

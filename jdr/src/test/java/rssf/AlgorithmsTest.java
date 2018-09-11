@@ -7,6 +7,7 @@ package rssf;
 
 import demetra.data.Data;
 import demetra.data.DataBlock;
+import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -23,40 +24,46 @@ public class AlgorithmsTest {
     @Test
     public void testBsm() {
         CompositeModel model = new CompositeModel();
-        model.add(AtomicModels.localLinearTrend("l", -1, -1));
-        model.add(AtomicModels.seasonalComponent("s", "Dummy", 12, 1));
-        model.add(AtomicModels.noise("n", -1));
-        ModelEquation eq = ModelEquation.withFixedError("eq1", 0);
+        model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
+        model.add(AtomicModels.seasonalComponent("s", "Dummy", 12, 1, true));
+        model.add(AtomicModels.noise("n", .01, false));
+        ModelEquation eq = new ModelEquation("eq1", 0, true);
         eq.add("l");
         eq.add("s");
         eq.add("n");
         model.add(eq);
-        model.build();
+//        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
+//        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
 
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
+        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false);
 
-        double[] p = Algorithms.estimate(model, M);
+        double[] p = rslt.getFullParameters();
+        System.out.println("Dummy");
         System.out.println(DataBlock.ofInternal(p));
+        System.out.println(rslt.getLikelihood().logLikelihood());
     }
 
     @Test
     public void testBsm2() {
         CompositeModel model = new CompositeModel();
-        model.add(AtomicModels.localLinearTrend("l", -1, -1));
-        model.add(AtomicModels.seasonalComponent("s", "Crude", 12, -1));
-        ModelEquation eq = ModelEquation.withFixedError("eq1", 1);
+        model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
+        model.add(AtomicModels.seasonalComponent("s", "Crude", 12, .01, false));
+        ModelEquation eq = new ModelEquation("eq1", 1, true);
         eq.add("l");
         eq.add("s");
         model.add(eq);
-        model.build();
 
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
+        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false);
 
-        double[] p = Algorithms.estimate(model, M);
+        double[] p = rslt.getFullParameters();
+        System.out.println("Crude");
         System.out.println(DataBlock.ofInternal(p));
+        System.out.println(rslt.getLikelihood().logLikelihood());
     }
 }

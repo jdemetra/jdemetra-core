@@ -83,12 +83,12 @@ public class MstsMappingTest {
         }
 
         // AR 11 - 12
-        mapping.add(new GenericParameters("", new ARDomain(), new double[]{-.1, -.1}, null));
+        mapping.add(new GenericParameters("", new ARDomain(), new double[]{-.1, -.1}, false));
 
         // fixed parameters var cycle and var eq1
-        VarianceParameter vc = new VarianceParameter("", 1);
+        VarianceParameter vc = new VarianceParameter("", 1, true);
         mapping.add(vc);
-        VarianceParameter v1 = new VarianceParameter("", 1);
+        VarianceParameter v1 = new VarianceParameter("", 1, true);
         mapping.add(v1);
 
         // Builder

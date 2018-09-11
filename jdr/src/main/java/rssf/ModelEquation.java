@@ -22,27 +22,22 @@ public class ModelEquation implements ModelItem {
     private final String name;
     private final List<Item> items = new ArrayList<>();
 
-    private final Double var;
+    private final double var;
+    private boolean fixed;
 
     @lombok.Value
-    private static class Item {
+    public static class Item {
 
         String cmp;
-        Double c;
+        double c;
+        boolean fixed;
         ISsfLoading loading;
     }
 
-    public static ModelEquation withFixedError(String name, double var) {
-        return new ModelEquation(name, var);
-    }
-
-    public static ModelEquation withError(String name) {
-        return new ModelEquation(name, null);
-    }
-
-    private ModelEquation(String name, Double var) {
+    public ModelEquation(String name, double var, boolean fixed) {
         this.name = name;
         this.var = var;
+        this.fixed = fixed;
     }
 
     public String getName() {
@@ -50,41 +45,51 @@ public class ModelEquation implements ModelItem {
     }
 
     public void add(String item) {
-        items.add(new Item(item, 1.0, null));
+        items.add(new Item(item, 1.0, true, null));
     }
 
-    public void add(String item, Double coeff, ISsfLoading loading) {
-        items.add(new Item(item, coeff, loading));
+    public void add(String item, double coeff, boolean fixed, ISsfLoading loading) {
+        items.add(new Item(item, coeff, fixed, loading));
+    }
+
+    public void free() {
+        fixed = false;
+    }
+
+    public double getVariance() {
+        return var;
+    }
+
+    public boolean isFixed() {
+        return fixed;
+    }
+
+    public int getItemsCount() {
+        return items.size();
+    }
+
+    public Item getItem(int pos) {
+        return items.get(pos);
     }
 
     @Override
     public void addTo(MstsMapping mapping) {
-        if (var == null) {
-            mapping.add(new VarianceParameter(name + "_var"));
-        } else if (var != 0) {
-            mapping.add(new VarianceParameter(name + "_var", var));
-        }
+        mapping.add(new VarianceParameter(name + "_var", var, fixed));
         for (Item item : items) {
-            if (item.c == null) {
-                mapping.add(new LoadingParameter(item.cmp + "_c"));
-            } else if (item.c != 1) {
-                mapping.add(new LoadingParameter(item.cmp + "_c", item.c));
+            if (!item.fixed) {
+                mapping.add(new LoadingParameter(item.cmp + "_c", item.c, item.fixed));
             }
         }
         mapping.add((p, builder) -> {
             int pos = 0;
-            double v = 0;
-            if (var == null || var != 0) {
-                v = p.get(pos++);
-            }
+            double v = p.get(pos++);
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(v);
             for (Item item : items) {
-                if (item.c == null || item.c != 1) {
-                    double c = p.get(pos++);
-                    eq.add(new MultivariateCompositeSsf.Item(item.cmp, c, item.loading));
-                } else {
-                    eq.add(new MultivariateCompositeSsf.Item(item.cmp, 1, item.loading));
+                double c = item.c;
+                if (!item.fixed) {
+                    c = p.get(pos++);
                 }
+                eq.add(new MultivariateCompositeSsf.Item(item.cmp, c, item.loading));
             }
             builder.add(eq);
             return pos;

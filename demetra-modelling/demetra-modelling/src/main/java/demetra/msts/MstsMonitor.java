@@ -35,7 +35,7 @@ public class MstsMonitor {
 
     public static class Builder {
 
-        private static final int MAXITER = 20, MAXITER_MIN = 500;
+        private static  int MAXITER = 20, MAXITER_MIN = 500;
 
         private boolean marginalLikelihood;
         private double precision = 1e-9;
@@ -55,12 +55,12 @@ public class MstsMonitor {
             return this;
         }
 
-       public Builder resetParameters(boolean reset) {
-            this.resetParameters=reset;
+        public Builder resetParameters(boolean reset) {
+            this.resetParameters = reset;
             return this;
         }
 
-       public Builder maxIter(int maxiter) {
+        public Builder maxIter(int maxiter) {
             this.maxIter = maxiter;
             return this;
         }
@@ -119,15 +119,16 @@ public class MstsMonitor {
         this.resetParameters = builder.resetParameters;
     }
 
-    private ILikelihoodFunction function(ISsfData data) {
+    private ILikelihoodFunction function() {
+        SsfMatrix s = new SsfMatrix(data);
         if (this.marginalLikelihood) {
-            return AkfFunction.builder(data, model, m -> M2uAdapter.of(m))
+            return AkfFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
                     .useParallelProcessing(true)
                     .useScalingFactor(true)
                     .useMaximumLikelihood(true)
                     .build();
         } else {
-            return SsfFunction.builder(data, model, m -> M2uAdapter.of(m))
+            return SsfFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
                     .useParallelProcessing(true)
                     .useScalingFactor(true)
                     .useMaximumLikelihood(true)
@@ -143,48 +144,56 @@ public class MstsMonitor {
         smallVariances.clear();
         SsfMatrix mdata = new SsfMatrix(data);
         ISsfData udata = M2uAdapter.of(mdata);
-        DoubleSequence start=fullInitial == null ? model.getDefaultParameters() : model.functionParameters(fullInitial);
+        DoubleSequence start = fullInitial == null ? model.getDefaultParameters() : model.functionParameters(fullInitial);
         prslts = start;
         int niter = 0;
         do {
-            ILikelihoodFunction fn = function(udata);
-            ILikelihoodFunctionPoint rslt = min(fn, this.resetParameters ? start : prslts);
+            ILikelihoodFunction fn = function();
+            ILikelihoodFunctionPoint rslt = min(fn, 50, this.resetParameters ? start : prslts);
             ll = rslt.getLikelihood();
             prslts = rslt.getParameters();
-            if (!fixSmallVariance(fn, 1e-3) && !freeSmallVariance(fn)) {
+            fullp = model.trueParameters(prslts);
+            if (!fixSmallVariance(1e-3) && !freeSmallVariance()) {
                 break;
             }
         } while (niter++ < maxIter);
+
+        // Final estimation. To do anyway
+        ILikelihoodFunction fn = function();
+        ILikelihoodFunctionPoint rslt = min(fn, this.maxIterOptimzer, this.resetParameters ? start : prslts);
+        ll = rslt.getLikelihood();
+        prslts = rslt.getParameters();
+        fullp = model.trueParameters(prslts);
+        
         ssf = model.map(prslts);
     }
 
-    private ILikelihoodFunctionPoint min(ILikelihoodFunction fn, DoubleSequence start) {
+    private ILikelihoodFunctionPoint min(ILikelihoodFunction fn, int niter, DoubleSequence start) {
         if (bfgs) {
             LbfgsMinimizer lm = new LbfgsMinimizer();
             lm.setFunctionPrecision(precision);
-            lm.setMaxIter(this.maxIterOptimzer);
+            lm.setMaxIter(niter);
             lm.minimize(fn.evaluate(start));
             return (ILikelihoodFunctionPoint) lm.getResult();
         } else {
             ISsqFunctionMinimizer lm = minpack ? new MinPackMinimizer() : new LevenbergMarquardtMinimizer();
             lm.setFunctionPrecision(precision);
-            lm.setMaxIter(this.maxIterOptimzer);
+            lm.setMaxIter(niter);
             lm.minimize(fn.evaluate(start));
             return (ILikelihoodFunctionPoint) lm.getResult();
         }
     }
 
-    private boolean freeSmallVariance(ILikelihoodFunction fn) {
+    private boolean freeSmallVariance() {
         if (smallVariances.isEmpty()) {
             return false;
         }
         double dll = 0;
         VarianceParameter cur = null;
         for (VarianceParameter small : smallVariances) {
-            fullp = model.trueParameters(prslts);
-            small.fix(1e-5);
+            small.fix(1e-3);
             DoubleSequence nprslts = model.functionParameters(fullp);
-            ILikelihood nll = fn.evaluate(nprslts).getLikelihood();
+            ILikelihood nll = function().evaluate(nprslts).getLikelihood();
             double d = nll.logLikelihood() - ll.logLikelihood();
             if (d > 0 && d > dll) {
                 dll = d;
@@ -193,7 +202,7 @@ public class MstsMonitor {
             small.fix(0);
         }
         if (cur != null) {
-            cur.free();
+            cur.free(1e-3);
             prslts = model.functionParameters(fullp);
             smallVariances.remove(cur);
             return true;
@@ -203,24 +212,23 @@ public class MstsMonitor {
 
     }
 
-    private boolean fixSmallVariance(ILikelihoodFunction fn, double eps) {
-        List<VarianceParameter> svar = model.smallVariances(prslts, 1e-3);
+    private boolean fixSmallVariance(double eps) {
+        List<VarianceParameter> svar = model.smallVariances(prslts, 1e-2);
         if (svar.isEmpty()) {
             return false;
         }
         double dll = 0;
         VarianceParameter cur = null;
         for (VarianceParameter small : svar) {
-            fullp = model.trueParameters(prslts);
-            small.fix(0);
+            double olde = small.fix(0);
             DoubleSequence nprslts = model.functionParameters(fullp);
-            ILikelihood nll = fn.evaluate(nprslts).getLikelihood();
+            ILikelihood nll = function().evaluate(nprslts).getLikelihood();
             double d = nll.logLikelihood() - ll.logLikelihood();
             if (d > 0 && d > dll) {
                 dll = d;
                 cur = small;
             }
-            small.free();
+            small.free(olde);
         }
         if (cur != null) {
             cur.fix(0);
@@ -268,7 +276,7 @@ public class MstsMonitor {
         return ll;
     }
 
-    public DoubleSequence fullParameters(){
+    public DoubleSequence fullParameters() {
         return model.trueParameters(prslts);
     }
 }
