@@ -5,6 +5,7 @@
  */
 package demetra.maths;
 
+import demetra.data.DoubleSequence;
 import java.util.Arrays;
 
 /**
@@ -20,7 +21,7 @@ class LightPolynomial implements PolynomialType {
     }
 
     @Override
-    public int getDegree() {
+    public int degree() {
         return c.length - 1;
     }
 
@@ -59,6 +60,16 @@ class LightPolynomial implements PolynomialType {
         return c.clone();
     }
     
+    @Override
+    public void copyTo(double[] buffer, int startpos){
+        System.arraycopy(c, 0, buffer, startpos, c.length);
+    }
+
+    @Override
+    public DoubleSequence coefficients() {
+        return DoubleSequence.ofInternal(c);
+    }
+
     @Override
     public String toString() {
         return PolynomialType.toString(this, "%6g", 'X');

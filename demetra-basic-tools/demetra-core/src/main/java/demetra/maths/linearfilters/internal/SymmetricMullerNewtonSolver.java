@@ -309,7 +309,7 @@ public class SymmetricMullerNewtonSolver implements RootsSolver {
     }
 
     private boolean isSymmetric(Polynomial p) {
-        int n = p.length(), d = n - 1;
+        int d=p.degree();
         for (int i = 0; i <= d / 2; ++i) {
             if (Math.abs(p.get(i) - p.get(d - i)) > 1e-9) {
                 return false;
@@ -325,7 +325,7 @@ public class SymmetricMullerNewtonSolver implements RootsSolver {
             if (!isSymmetric(p)) {
                 return false;
             }
-            m_degree = p.getDegree();
+            m_degree = p.degree();
             // we store only half of the roots
             m_roots = new Complex[m_degree / 2];
             m_p = new double[m_degree + 1];

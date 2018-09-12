@@ -29,29 +29,33 @@ import demetra.ssf.akf.AugmentedState;
 import demetra.ssf.dk.DiffuseUpdateInformation;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.OrdinaryFilter;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
- * Mixed algorithm based on the diffuse initializer copyOf Durbin-Koopman and on the
- (square root) array filter copyOf Kailath for the diffuse part. That solution
- provides a much more stable estimate copyOf the diffuse part.
+ * Mixed algorithm based on the diffuse initializer copyOf Durbin-Koopman and on
+ * the (square root) array filter copyOf Kailath for the diffuse part. That
+ * solution provides a much more stable estimate copyOf the diffuse part.
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
 public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitializer {
 
-    public interface Transformation{
-        void transform(DataBlock row, Matrix A); 
+    public interface Transformation {
+
+        void transform(DataBlock row, Matrix A);
     }
 
-    private Transformation fn=(DataBlock row,Matrix A) ->ElementaryTransformations.fastRowGivens(row, A); 
+    private Transformation fn = (DataBlock row, Matrix A) -> ElementaryTransformations.fastRowGivens(row, A);
     private final IDiffuseSquareRootFilteringResults results;
     private AugmentedState astate;
     private DiffuseUpdateInformation pe;
     private ISsf ssf;
-    private ISsfMeasurement measurement;
+    private ISsfLoading loading;
+    private ISsfError error;
     private ISsfDynamics dynamics;
     private ISsfData data;
     private int t, endpos;
@@ -82,7 +86,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitia
     public void setTransformation(Transformation fn) {
         this.fn = fn;
     }
-    
+
     /**
      *
      * @param ssf
@@ -92,9 +96,15 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitia
      */
     @Override
     public int initializeFilter(final State state, final ISsf ssf, final ISsfData data) {
-        this.ssf=ssf;
-        measurement = ssf.getMeasurement();
-        dynamics = ssf.getDynamics();
+        if (!ssf.initialization().isDiffuse()) {
+            ssf.initialization().a0(state.a());
+            ssf.initialization().Pf0(state.P());
+            return 0;
+        }
+        this.ssf = ssf;
+        loading = ssf.loading();
+        error = ssf.measurementError();
+        dynamics = ssf.dynamics();
         this.data = data;
         t = 0;
         int end = data.length();
@@ -102,9 +112,6 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitia
             return -1;
         }
         while (t < end) {
-            if (!astate.isDiffuse()) {
-                break;
-            }
             // astate contains a(t|t-1), P(t|t-1)
             if (results != null) {
                 results.save(t, astate, StateInfo.Forecast);
@@ -115,33 +122,36 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitia
                     results.save(t, pe);
                 }
                 update();
-            } else {
-                if (results != null) {
-                    results.save(t, pe);
-                }
+            } else if (results != null) {
+                results.save(t, pe);
             }
             if (results != null) {
                 results.save(t, astate, StateInfo.Concurrent);
             }
+            if (!astate.isDiffuse()) {
+                break;
+            }
             // astate contains now a(t+1|t), P(t+1|t), B(t+1)
             astate.next(t++, dynamics);
         }
-
+        if (t < end) {
+            state.P().copy(this.astate.P());
+            state.a().copy(this.astate.a());
+            state.next(t++, dynamics);
+        }
         if (results != null) {
             results.close(t);
         }
-        state.P().copy(this.astate.P());
-        state.a().copy(this.astate.a());
-        endpos=t;
+        endpos = t;
         return t;
     }
-    
-    public int getEndDiffusePos(){
+
+    public int getEndDiffusePos() {
         return endpos;
     }
 
     private boolean initState() {
-        ISsfInitialization initialization = ssf.getInitialization();
+        ISsfInitialization initialization = ssf.initialization();
         int r = initialization.getStateDim();
         astate = AugmentedState.of(ssf);
         if (astate == null) {
@@ -152,7 +162,6 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitia
         initialization.diffuseConstraints(constraints());
         return true;
     }
-
 
     /**
      * Computes P(t|t), a(t|t)
@@ -196,27 +205,25 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitia
     }
 
     /**
-     * Computes  
-     * e(t)=y(t)-Z(t)a(t|t-1)
-     * f(t)=Z(t)P(t|t-1)Z'(t)+h(t)
-     * C(t)=Z(t)P(t|t-1)
-     * Ci(t) by array algorithm
+     * Computes e(t)=y(t)-Z(t)a(t|t-1) f(t)=Z(t)P(t|t-1)Z'(t)+h(t)
+     * C(t)=Z(t)P(t|t-1) Ci(t) by array algorithm
+     *
      * @return true if y non missing
      */
     private boolean error(int t) {
         // calc f and fi
         // fi = Z Pi Z' , f = Z P Z' + H
         preArray();
-        DataBlock z=zconstraints();
+        DataBlock z = zconstraints();
         double fi = z.ssq();
         if (fi < State.ZERO) {
             fi = 0;
         }
         pe.setDiffuseVariance(fi);
 
-        double f = measurement.ZVZ(t, astate.P());
-        if (measurement.hasErrors()) {
-            f += measurement.errorVariance(t);
+        double f = loading.ZVZ(t, astate.P());
+        if (error != null) {
+            f += error.at(t);
         }
         if (Math.abs(f) < State.ZERO) {
             f = 0;
@@ -229,15 +236,15 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitia
                 pe.setMissing();
                 return false;
             } else {
-                pe.set(y - measurement.ZX(t, astate.a()));
+                pe.set(y - loading.ZX(t, astate.a()));
             }
         }
 
         DataBlock C = pe.M();
-        measurement.ZM(t, astate.P(), C);
+        loading.ZM(t, astate.P(), C);
         if (pe.isDiffuse()) {
             Matrix B = constraints();
-           fn.transform(z, B);
+            fn.transform(z, B);
             pe.Mi().setAY(z.get(0), B.column(0));
             // move right
             astate.dropDiffuseConstraint();
@@ -258,7 +265,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitia
         DataBlock zconstraints = zconstraints();
         zconstraints.set(0);
         Matrix A = constraints();
-        measurement.ZM(t, A, zconstraints);
+        loading.ZM(t, A, zconstraints);
         //dynamics.TM(pos, A);
     }
 

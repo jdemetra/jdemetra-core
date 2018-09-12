@@ -57,13 +57,13 @@ public class Laguerre implements RootsSolver {
 	// if (p == null)
 	// throw new ArgumentNullException("p");
 	try {
-	    int d = p.getDegree();
+	    int d = p.degree();
 	    m_roots = new Complex[d];
 	    Complex[] a = new Complex[d + 1];
 	    for (int u = 0; u <= d; ++u)
 		a[u] = Complex.cart(p.get(u), 0);
 	    zroots(a, m_roots, m_bPolish);
-	    m_remainder = Polynomial.valueOf(p.get(p.getDegree()));
+	    m_remainder = Polynomial.valueOf(p.get(p.degree()));
 	    return true;
 	} catch (PolynomialException e) {
 	    m_remainder = p;

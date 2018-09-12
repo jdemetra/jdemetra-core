@@ -59,15 +59,15 @@ public class MultivariateArrayFilter {
         U.set(0);
         for (int i = 0; i < nm; ++i) {
             double y = data.get(pos, i);
-            U.set(i, y - measurements.ZX(pos, i, state.a));
+            U.set(i, y - measurements.loading(i).ZX(pos, state.a));
         }
         LowerTriangularMatrix.rsolve(L, U, State.ZERO);
     }
 
     private boolean initFilter() {
         pos = 0;
-        end = data.getCount();
-        nm = measurements.getMaxCount();
+        end = data.getObsCount();
+        nm = measurements.getCount();
         nres = dynamics.getInnovationsDim();
         dim = ssf.getStateDim();
         A = Matrix.make(dim + nm, dim + nm + nres);
@@ -78,9 +78,9 @@ public class MultivariateArrayFilter {
         state = new LState(L());
         perrors = new MultivariateUpdateInformation(dim, nm);
         
-        ssf.getInitialization().a0(state.a);
+        ssf.initialization().a0(state.a);
         Matrix P0 = Matrix.make(dim, dim);
-        ssf.getInitialization().Pf0(P0);
+        ssf.initialization().Pf0(P0);
         SymmetricMatrix.lcholesky(P0, State.ZERO);
         state.L.copy(P0);
     }
@@ -94,11 +94,8 @@ public class MultivariateArrayFilter {
      */
     public boolean process(final IMultivariateSsf ssf, final IMultivariateSsfData data, final IMultivariateFilteringResults rslts) {
         this.ssf=ssf;
-        measurements = ssf.getMeasurements();
-        if (!measurements.isHomogeneous()) {
-            return false;
-        }
-        dynamics = ssf.getDynamics();
+        measurements = ssf.measurements();
+        dynamics = ssf.dynamics();
         this.data = data;
         if (!initFilter()) {
             return false;
@@ -122,7 +119,7 @@ public class MultivariateArrayFilter {
         measurements.ZM(pos, L(), ZL());
         dynamics.TM(pos, L());
         R().set(0);
-        measurements.R(pos, R());
+        measurements.errors().R(pos, R());
         U().set(0);
         dynamics.S(pos, U());
         K().set(0);

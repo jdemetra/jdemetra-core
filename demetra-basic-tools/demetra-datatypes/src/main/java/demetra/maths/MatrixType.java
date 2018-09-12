@@ -28,17 +28,17 @@ import javax.annotation.Nonnull;
  */
 public interface MatrixType extends BaseTable<Double> {
 
-    public static MatrixType EMPTY = new MatrixReader(null, 0, 0);
+    public static MatrixType EMPTY = new LightMatrix(null, 0, 0);
 
     public static MatrixType ofInternal(@Nonnull double[] data, @Nonnegative int nrows, @Nonnegative int ncolumns) {
         if (data.length < nrows * ncolumns) {
             throw new IllegalArgumentException();
         }
-        return new MatrixReader(data, nrows, ncolumns);
+        return new LightMatrix(data, nrows, ncolumns);
     }
 
     public static MatrixType copyOf(@Nonnull MatrixType matrix) {
-        return new MatrixReader(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
+        return new LightMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
     }
 
     /**
@@ -70,7 +70,7 @@ public interface MatrixType extends BaseTable<Double> {
 
     default MatrixType extract(@Nonnegative final int rstart, @Nonnegative final int nr,
             @Nonnegative final int cstart, @Nonnegative final int nc) {
-        return new SubMatrixReader(this, rstart, nr, cstart, nc);
+        return new LightSubMatrix(this, rstart, nr, cstart, nc);
     }
 
     /**

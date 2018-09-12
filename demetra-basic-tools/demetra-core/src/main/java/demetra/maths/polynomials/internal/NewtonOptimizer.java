@@ -64,7 +64,7 @@ public class NewtonOptimizer {
 
     public NewtonOptimizer(Polynomial p, boolean mroots) {
         // normalize the polynomial
-        fn = new PolynomialComputer(p.divide(p.get(p.getDegree())));
+        fn = new PolynomialComputer(p.divide(p.get(p.degree())));
         this.mroots = mroots;
     }
 

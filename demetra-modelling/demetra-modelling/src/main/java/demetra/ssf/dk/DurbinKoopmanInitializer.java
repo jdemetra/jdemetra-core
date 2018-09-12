@@ -25,7 +25,8 @@ import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.univariate.OrdinaryFilter;
 
 /**
@@ -39,7 +40,8 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
     private DiffuseState state;
     private DiffuseUpdateInformation pe;
     private ISsf ssf;
-    private ISsfMeasurement measurement;
+    private ISsfLoading loading;
+    private ISsfError error;
     private ISsfDynamics dynamics;
     private ISsfData data;
     private double norm = 0;
@@ -56,7 +58,6 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
         this.results = results;
     }
 
-
     /**
      * Computes: e(t)=y(t) - Z(t)a(t|t-1)) F(t)=Z(t)P(t|t-1)Z'(t)+H(t) F(t) =
      * L(t)L'(t) E(t) = e(t)L'(t)^-1 K(t)= P(t|t-1)Z'(t)L'(t)^-1
@@ -67,17 +68,17 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
      * @return false if it has not been computed (missing value), true otherwise
      */
     protected boolean error(int t) {
-        // computes the gain copyOf the filter and the prediction error 
+        // computes the gain of the filter and the prediction error 
         // calc f and fi
         // fi = Z Pi Z' , f = Z P Z' + H
-        double fi = measurement.ZVZ(t, state.Pi());
+        double fi = loading.ZVZ(t, state.Pi());
         if (Math.abs(fi) < State.ZERO) {
             fi = 0;
         }
         pe.setDiffuseVariance(fi);
-        double f = measurement.ZVZ(t, state.P());
-        if (measurement.hasErrors()) {
-            f += measurement.errorVariance(t);
+        double f = loading.ZVZ(t, state.P());
+        if (error != null) {
+            f += error.at(t);
         }
         if (Math.abs(f) / norm < State.ZERO) {
             f = 0;
@@ -89,12 +90,12 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
                 pe.setMissing();
                 return false;
             } else {
-                pe.set(y - measurement.ZX(t, state.a()));
+                pe.set(y - loading.ZX(t, state.a()));
             }
         }
-        measurement.ZM(t, state.P(), pe.M());
+        loading.ZM(t, state.P(), pe.M());
         if (pe.isDiffuse()) {
-            measurement.ZM(t, state.Pi(), pe.Mi());
+            loading.ZM(t, state.Pi(), pe.Mi());
         }
         return true;
     }
@@ -108,18 +109,21 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
      */
     @Override
     public int initializeFilter(final State fstate, final ISsf ssf, final ISsfData data) {
-        this.ssf=ssf;
-        measurement = ssf.getMeasurement();
-        dynamics = ssf.getDynamics();
+        if (! ssf.initialization().isDiffuse()){
+            ssf.initialization().a0(fstate.a());
+            ssf.initialization().Pf0(fstate.P());
+            return 0;
+        }
+        this.ssf = ssf;
+        loading = ssf.loading();
+        error = ssf.measurementError();
+        dynamics = ssf.dynamics();
         this.data = data;
         if (!initState()) {
             return -1;
         }
         int t = 0, end = data.length();
         while (t < end) {
-            if (isZero(this.state.Pi())) {
-                break;
-            }
             if (results != null) {
                 results.save(t, state, StateInfo.Forecast);
             }
@@ -134,13 +138,19 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitialize
             if (results != null) {
                 results.save(t, state, StateInfo.Concurrent);
             }
+            if (isZero(this.state.Pi())) {
+                break;
+            }
             state.next(t++, dynamics);
+        }
+        if (t < end) {
+            fstate.P().copy(state.P());
+            fstate.a().copy(state.a());
+            fstate.next(t++, dynamics);
         }
         if (results != null) {
             results.close(t);
         }
-        fstate.P().copy(state.P());
-        fstate.a().copy(state.a());
         return t;
     }
 

@@ -28,6 +28,7 @@ import demetra.ssf.ckms.CkmsFilter;
 import demetra.ssf.univariate.PredictionErrorDecomposition;
 import demetra.ssf.univariate.SsfData;
 import demetra.data.DoubleSequence;
+import demetra.ssf.univariate.Ssf;
 
 /**
  * @author Jean Palate
@@ -35,7 +36,8 @@ import demetra.data.DoubleSequence;
 @Development(status = Development.Status.Alpha)
 public class ExactArimaForecasts implements IArimaForecasts{
 
-    private SsfArima ssf;
+    private IArimaModel arima;
+    private Ssf ssf;
     private BackFilter bar;
     private double mean;
     private boolean bmean;
@@ -45,7 +47,6 @@ public class ExactArimaForecasts implements IArimaForecasts{
     }
     /**
      * 
-     * @param model
      * @param mean
      */
     public ExactArimaForecasts()
@@ -66,12 +67,13 @@ public class ExactArimaForecasts implements IArimaForecasts{
 	}
         else
             bar=model.getAR();
+        arima=cmodel;
 	ssf = SsfArima.of(cmodel);
         return true;
     }
 
     private double[] fcasts(SsfData sd, int nf) {
-        CkmsFilter filter=new CkmsFilter(SsfArima.fastInitializer());
+        CkmsFilter filter=new CkmsFilter(SsfArima.fastInitializer(arima));
         PredictionErrorDecomposition perr=new PredictionErrorDecomposition(false);
         filter.process(ssf, sd, perr);
 	// the first forecasts are produced by the state vector...
@@ -82,7 +84,7 @@ public class ExactArimaForecasts implements IArimaForecasts{
 	    // complete the forecasts....
 	    int last = a.length() - 1;
 	    for (int i = ssf.getStateDim(); i < nf; ++i) {
-		ssf.getDynamics().TX(0, a);
+		ssf.dynamics().TX(0, a);
 		f[i] = a.get(last);
 	    }
 	} else

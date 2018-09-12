@@ -23,7 +23,7 @@ import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.calendars.Utility;
+import demetra.timeseries.calendars.CalendarUtility;
 import java.util.List;
 import java.util.Objects;
 
@@ -106,7 +106,7 @@ public class LengthOfPeriodVariable implements ILengthOfPeriodVariable {
         // position of the first period containing 29/2
         int lppos = idx;
         int year = domain.get(idx).year();
-        while (!Utility.isLeap(year)) {
+        while (!CalendarUtility.isLeap(year)) {
             lppos += freq;
             ++year;
         }
@@ -124,7 +124,7 @@ public class LengthOfPeriodVariable implements ILengthOfPeriodVariable {
         if (!start.getEpoch().equals(TsPeriod.DEFAULT_EPOCH)) {
             throw new UnsupportedOperationException();
         }
-        int[] ndays = Utility.daysCount(domain);
+        int[] ndays = CalendarUtility.daysCount(domain);
         final double m = 365.25 / freq;
         buffer.set(i -> ndays[i] - m);
     }

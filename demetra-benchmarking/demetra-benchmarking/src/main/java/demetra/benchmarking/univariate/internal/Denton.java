@@ -74,7 +74,7 @@ public class Denton {
 
     private Matrix D(DataBlock x) {
         Polynomial pd = UnitRoots.D(1, differencing);
-        int d = pd.getDegree();
+        int d = pd.degree();
         int n = x.length();
         if (multiplicative) {
             x = DataBlock.of(x);

@@ -229,7 +229,7 @@ public class SymmetricFrequencyResponse {
      * @return
      */
     public int getDegree() {
-        return m_p.getDegree();
+        return m_p.degree();
     }
 
     /**
@@ -246,7 +246,7 @@ public class SymmetricFrequencyResponse {
 
         double var = m_p.get(0);
         double icos = 1;
-        for (int i = 2; i <= m_p.getDegree(); i += 2) {
+        for (int i = 2; i <= m_p.degree(); i += 2) {
             icos *= (i - 1);
             icos /= i;
             var += m_p.get(i) * icos;
@@ -369,7 +369,7 @@ public class SymmetricFrequencyResponse {
          */
         public boolean simplify(final SymmetricFrequencyResponse left, final BackFilter urb) {
             clear();
-            if (left.m_p.getDegree() == 0) {
+            if (left.m_p.degree() == 0) {
                 return false;
             }
             Complex[] roots = urb.roots();
@@ -414,7 +414,7 @@ public class SymmetricFrequencyResponse {
         @Override
         public boolean simplify(final SymmetricFrequencyResponse left, final SymmetricFrequencyResponse right) {
             clear();
-            if (left.m_p.getDegree() == 0 || right.m_p.getDegree() == 0) {
+            if (left.m_p.degree() == 0 || right.m_p.degree() == 0) {
                 return false;
             }
             Polynomial lp = left.m_p, rp = right.m_p, p;

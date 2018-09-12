@@ -25,7 +25,7 @@ import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.calendars.Utility;
+import demetra.timeseries.calendars.CalendarUtility;
 
 /**
  *
@@ -79,7 +79,7 @@ public class LengthOfPeriodTransformation implements ITsTransformation {
     }
 
     private TsData length(TsData tsdata, int ratio, LogJacobian lj) {
-        int[] ndays = Utility.daysCount(tsdata.getDomain());
+        int[] ndays = CalendarUtility.daysCount(tsdata.getDomain());
         // average length of a period
         double m = 365.25 / ratio;
 
@@ -124,7 +124,7 @@ public class LengthOfPeriodTransformation implements ITsTransformation {
         // position of the first period containing 29/2
         int lppos = idx;
         int year = domain.get(idx).year();
-        while (!Utility.isLeap(year)) {
+        while (!CalendarUtility.isLeap(year)) {
             lppos += freq;
             ++year;
         }
@@ -133,7 +133,7 @@ public class LengthOfPeriodTransformation implements ITsTransformation {
         if (freq == 12) {
             ndays = 28;
         } else {
-            ndays = Utility.getCumulatedMonthDays(1 + 12 / freq);
+            ndays = CalendarUtility.getCumulatedMonthDays(1 + 12 / freq);
         }
         double[] data = tsdata.getValues().toArray();
         if (back) {

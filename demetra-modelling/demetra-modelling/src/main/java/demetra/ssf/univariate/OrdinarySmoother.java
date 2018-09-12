@@ -18,6 +18,7 @@
  */
 package demetra.ssf.univariate;
 
+import demetra.ssf.ISsfLoading;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
@@ -35,7 +36,7 @@ public class OrdinarySmoother {
     private State state;
     private ISsf ssf;
     private ISsfDynamics dynamics;
-    private ISsfMeasurement measurement;
+    private ISsfLoading loading;
     private ISmoothingResults srslts;
     private IFilteringResults frslts;
 
@@ -46,7 +47,7 @@ public class OrdinarySmoother {
     private int stop;
 
     public boolean process(ISsf ssf, ISsfData data) {
-        if (ssf.getInitialization().isDiffuse()) {
+        if (ssf.initialization().isDiffuse()) {
             return false;
         }
         OrdinaryFilter filter = new OrdinaryFilter();
@@ -58,7 +59,7 @@ public class OrdinarySmoother {
     }
 
     public boolean process(ISsf ssf, DefaultFilteringResults results) {
-        if (ssf.getInitialization().isDiffuse()) {
+        if (ssf.initialization().isDiffuse()) {
             return false;
         }
         ResultsRange range = results.getRange();
@@ -178,7 +179,7 @@ public class OrdinarySmoother {
 //                }
 //            } while (rows.next() && columns.next());
 
-            measurement.VpZdZ(pos, N, 1 / errVariance);
+            loading.VpZdZ(pos, N, 1 / errVariance);
             SymmetricMatrix.reenforceSymmetry(N);
         } else {
             //T'*N(t)*T
@@ -199,14 +200,14 @@ public class OrdinarySmoother {
         if (!missing && errVariance != 0) {
             // RT
             u = (err - R.dot(M)) / errVariance;
-            measurement.XpZd(pos, R, u);
+            loading.XpZd(pos, R, u);
         }
     }
 
     private void initFilter(ISsf ssf) {
         this.ssf=ssf;
-        dynamics = ssf.getDynamics();
-        measurement = ssf.getMeasurement();
+        dynamics = ssf.dynamics();
+        loading = ssf.loading();
     }
 
     public void setCalcVariances(boolean b) {

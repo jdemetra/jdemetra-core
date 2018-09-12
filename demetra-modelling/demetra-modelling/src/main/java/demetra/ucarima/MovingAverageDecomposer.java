@@ -38,7 +38,7 @@ public class MovingAverageDecomposer extends SimpleModelDecomposer {
         BackFilter AR = model.getAR();
         Polynomial ar = AR.asPolynomial();
         Polynomial q = model.getMA().asPolynomial();
-        if (q.getDegree() <= ar.getDegree()) {
+        if (q.degree() <= ar.degree()) {
             signal = null;
             noise = model;
         } else {
@@ -50,9 +50,9 @@ public class MovingAverageDecomposer extends SimpleModelDecomposer {
             Polynomial r = div.getQuotient();
             // normalize r...
             // q(-) = ar(-)*r(-) -> r(-) = q(-)/ar(-)
-            double cq = q.get(q.getDegree());
-            double cp = ar.get(ar.getDegree());
-            double cr = r.get(r.getDegree());
+            double cq = q.get(q.degree());
+            double cp = ar.get(ar.degree());
+            double cr = r.get(r.degree());
             double c0 = r.get(0);
 
             r = r.times(cq / (cr * cp));

@@ -17,7 +17,6 @@
 package demetra.ssf;
 
 import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 

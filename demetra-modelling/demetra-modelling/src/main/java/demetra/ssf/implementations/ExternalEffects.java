@@ -22,24 +22,25 @@ import demetra.data.DataWindow;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixWindow;
 import demetra.maths.matrices.QuadraticForm;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.data.DoubleReader;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *
  * @author Jean Palate
  */
-public class ExternalEffects implements ISsfMeasurement {
+public class ExternalEffects implements ISsfLoading {
 
 
-    private final ISsfMeasurement m;
+    private final ISsfLoading loading;
     private final Matrix data;
     private final int nm, nx;
     private final DataBlock tmp;
 
-    ExternalEffects(final int dim, final ISsfMeasurement m, final Matrix data) {
+    ExternalEffects(final int dim, final ISsfLoading loading, final Matrix data) {
         this.data = data;
-        this.m = m;
+        this.loading = loading;
         nm = dim;
         nx = data.getColumnsCount();
         tmp = DataBlock.make(nx);
@@ -53,45 +54,25 @@ public class ExternalEffects implements ISsfMeasurement {
     @Override
     public void Z(int pos, DataBlock z) {
         DataWindow range = z.window(0, nm);
-        m.Z(pos, range.get());
+        loading.Z(pos, range.get());
         range.next(nx).copy(data.row(pos));
-    }
-
-    @Override
-    public boolean hasErrors() {
-        return m.hasErrors();
-    }
-
-    @Override
-    public boolean areErrorsTimeInvariant() {
-        return m.areErrorsTimeInvariant();
-    }
-
-    @Override
-    public boolean hasError(int pos) {
-        return m.hasError(pos);
-    }
-
-    @Override
-    public double errorVariance(int pos) {
-        return m.errorVariance(pos);
     }
 
     @Override
     public double ZX(int pos, DataBlock x) {
         DataWindow range = x.window(0, nm);
-        double r = m.ZX(pos, range.get());
+        double r = loading.ZX(pos, range.get());
         return r + range.next(nx).dot(data.row(pos));
     }
 
     @Override
     public double ZVZ(int pos, Matrix V) {
         MatrixWindow v = V.topLeft(nm, nm);
-        double v00 = m.ZVZ(pos, v);
+        double v00 = loading.ZVZ(pos, v);
         v.vnext(nx);
         tmp.set(0);
         double v01 = tmp.dot(data.row(pos));
-        m.ZM(pos, v, tmp);
+        loading.ZM(pos, v, tmp);
         v.hnext(nx);
         double v11 = QuadraticForm.apply(v, data.row(pos));
         return v00 + 2 * v01 + v11;
@@ -100,7 +81,7 @@ public class ExternalEffects implements ISsfMeasurement {
     @Override
     public void VpZdZ(int pos, Matrix V, double d) {
         MatrixWindow v = V.topLeft(nm, nm);
-        m.VpZdZ(pos, v, d);
+        loading.VpZdZ(pos, v, d);
         MatrixWindow vtmp = v.clone();
         vtmp.hnext(nx);
         v.vnext(nx);
@@ -108,7 +89,7 @@ public class ExternalEffects implements ISsfMeasurement {
         DataBlock xrow=data.row(pos);
         DoubleReader cell = xrow.reader();
         while (rows.hasNext()){
-            m.XpZd(pos, rows.next(), d*cell.next());
+            loading.XpZd(pos, rows.next(), d*cell.next());
         }
         vtmp.copy(v.transpose());
         v.hnext(nx);
@@ -118,7 +99,7 @@ public class ExternalEffects implements ISsfMeasurement {
     @Override
     public void XpZd(int pos, DataBlock x, double d) {
         DataWindow range = x.window(0, nm);
-        m.XpZd(pos, range.get(), d);
+        loading.XpZd(pos, range.get(), d);
         range.next(nx).addAY(d, data.row(pos));
     }
 

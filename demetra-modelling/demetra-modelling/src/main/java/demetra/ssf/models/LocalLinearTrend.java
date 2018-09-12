@@ -20,8 +20,8 @@ import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
-import demetra.ssf.implementations.Measurement;
-import demetra.ssf.univariate.Ssf;
+import demetra.ssf.SsfComponent;
+import demetra.ssf.implementations.Loading;
 
 /**
  * Usual local linear trend y(t)=l(t)+n(t) l(t+1)=s(t)+l(t)+u(t)
@@ -29,41 +29,22 @@ import demetra.ssf.univariate.Ssf;
  *
  * @author Jean Palate
  */
-public class LocalLinearTrend extends Ssf {
+@lombok.experimental.UtilityClass
+public class LocalLinearTrend {
 
-    public static LocalLinearTrend of(double lvar, double svar, double nvar) {
-        Data data = new Data(lvar, svar, nvar);
-        return new LocalLinearTrend(data);
+    public SsfComponent of(double lvar, double svar) {
+        Data data = new Data(lvar, svar);
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
-
-    private LocalLinearTrend(Data data) {
-        super(new Initialization(data), new Dynamics(data), Measurement.create(0, data.nv));
-        this.data = data;
-    }
-
-    private final Data data;
 
     static class Data {
 
-        final double lv, sv, nv;
+        final double lv, sv;
 
-        Data(final double lv, final double sv, final double nv) {
+        Data(final double lv, final double sv) {
             this.lv = lv;
             this.sv = sv;
-            this.nv = nv;
         }
-    }
-
-    public double getVariance() {
-        return data.lv;
-    }
-
-    public double getSlopeVariance() {
-        return data.sv;
-    }
-
-    public double getNoiseVariance() {
-        return data.nv;
     }
 
     public static class Initialization implements ISsfInitialization {
@@ -100,12 +81,12 @@ public class LocalLinearTrend extends Ssf {
 
         @Override
         public void Pf0(Matrix pf0) {
-            if (data.lv > 0) {
-                pf0.set(0, 0, data.lv);
-            }
-            if (data.sv > 0) {
-                pf0.set(1, 1, data.sv);
-            }
+//            if (data.lv > 0) {
+//                pf0.set(0, 0, data.lv);
+//            }
+//            if (data.sv > 0) {
+//                pf0.set(1, 1, data.sv);
+//            }
         }
 
         @Override

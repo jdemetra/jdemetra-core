@@ -16,7 +16,6 @@
  */
 package demetra.timeseries.calendars;
 
-import demetra.timeseries.calendars.DayClustering;
 import java.time.DayOfWeek;
 import org.junit.Test;
 import static org.junit.Assert.*;

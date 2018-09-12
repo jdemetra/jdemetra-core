@@ -147,7 +147,7 @@ public class ArimaSeriesGenerator {
                 return w;
             } else {
                 Polynomial P = stm.getUnitRoots().asPolynomial();
-                double[] yprev = new double[P.getDegree()];
+                double[] yprev = new double[P.degree()];
                 if (startStdev != 0) {
                     Normal normal=new Normal(startMean, startStdev);
                     
@@ -162,7 +162,7 @@ public class ArimaSeriesGenerator {
 
                 for (int i = 0; i < n; ++i) {
                     double y = w[i];
-                    for (int j = 1; j <= P.getDegree(); ++j) {
+                    for (int j = 1; j <= P.degree(); ++j) {
                         y -= yprev[j - 1] * P.get(j);
                     }
                     w[i] = y;

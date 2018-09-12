@@ -241,7 +241,7 @@ public class RobustMullerNewtonSolver implements RootsSolver {
         // throw new ArgumentNullException("p");
         // initialization ...
         startIdx = 0;
-        degree = p.getDegree();
+        degree = p.degree();
         while ((degree > 0) && (p.get(degree) == 0)) {
             --degree;
         }
@@ -249,8 +249,7 @@ public class RobustMullerNewtonSolver implements RootsSolver {
             return false;
         }
         roots = new Complex[degree];
-        polynomial = new double[degree + 1];
-        p.copyTo(polynomial, 0);
+        polynomial = p.toArray();
         reducedPolynomial = polynomial.clone();
         if (!newtonnull()) {
             return false;
@@ -267,7 +266,7 @@ public class RobustMullerNewtonSolver implements RootsSolver {
             }
             roots[i + 1] = tmp;
         }
-        remainder = Polynomial.valueOf(p.get(p.getDegree()));
+        remainder = Polynomial.valueOf(p.get(p.degree()));
         return true;
     }
 

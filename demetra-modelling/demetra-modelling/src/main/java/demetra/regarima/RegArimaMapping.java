@@ -43,11 +43,6 @@ public class RegArimaMapping<M extends IArimaModel> implements IParametricMappin
     }
 
     @Override
-    public DoubleSequence map(RegArimaModel<M> t) {
-        return mapping.map(t.arima());
-    }
-
-    @Override
     public boolean checkBoundaries(DoubleSequence inparams) {
         return mapping.checkBoundaries(inparams);
     }

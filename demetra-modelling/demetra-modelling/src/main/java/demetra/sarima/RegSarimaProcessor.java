@@ -375,7 +375,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         RegArmaModel<SarimaModel> dmodel = regs.differencedModel();
         RegArmaProcessor processor = new RegArmaProcessor(ml, mt, fast);
         IArimaMapping<SarimaModel> stationaryMapping = stationaryMapping(regs);
-        DataBlock p = DataBlock.of(stationaryMapping.map(start));
+        DataBlock p = DataBlock.of(stationaryMapping.parametersOf(start));
         stationaryMapping.validate(p);
 
         int ndf = dmodel.getY().length() - dmodel.getX().getColumnsCount();

@@ -44,7 +44,7 @@ public class QRFilter {
     private MarginalLikelihood mll;
     private DiffuseLikelihood dll;
     private Matrix R, X, Xl;
-    private DataBlock yl, b;
+    private DataBlock yl, b, e;
     private double ldet, ssq, dcorr, pcorr, mcorr;
 
     /**
@@ -79,7 +79,7 @@ public class QRFilter {
         ldet = det.getLogDeterminant();
 
         // apply the filter on the diffuse effects
-        ISsfDynamics dynamics = ssf.getDynamics();
+        ISsfDynamics dynamics = ssf.dynamics();
         X = Matrix.make(data.length(), ssf.getDiffuseDim());
         ssf.diffuseEffects(X);
         yl = DataBlock.of(fr.errors(true, true));
@@ -102,8 +102,13 @@ public class QRFilter {
         mcorr = 2 * LogSign.of(housx.rdiagonal(true)).getValue();
         int nd = housx.rank(), n = Xl.getRowsCount();
 
-        mll = new MarginalLikelihood();
-        mll.set(ssq, ldet, dcorr, mcorr, n, nd);
+        mll = MarginalLikelihood.builder(n, nd)
+                .ssqErr(ssq)
+                .logDeterminant(ldet)
+                .diffuseCorrection(dcorr)
+                .marginalCorrection(mcorr)
+                .residuals(e)
+                .build();
     }
 
     private void calcDLL() {
@@ -111,13 +116,16 @@ public class QRFilter {
         hous.decompose(Xl);
         b = DataBlock.make(hous.rank());
         int nd = b.length(), n = Xl.getRowsCount();
-        DataBlock e = DataBlock.make(n - nd);
+        e = DataBlock.make(n - nd);
         hous.leastSquares(yl, b, e);
         ssq = e.ssq();
         dcorr = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
         R = hous.r(true);
-        dll = new DiffuseLikelihood();
-        dll.set(ssq, ldet, dcorr, n, nd);
+        dll = DiffuseLikelihood.builder(n, nd)
+                .ssqErr(ssq)
+                .logDeterminant(ldet)
+                .diffuseCorrection(dcorr)
+                .build();
     }
 
     private void calcPLL() {

@@ -25,8 +25,10 @@ import demetra.random.IRandomNumberGenerator;
 import demetra.random.JdkRNG;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *
@@ -50,13 +52,15 @@ public class RandomGenerator {
     private Matrix LA;
     private final ISsf ssf;
     private final ISsfDynamics dynamics;
-    private final ISsfMeasurement measurement;
+    private final ISsfLoading loading;
+    private final ISsfError error;
     private double svar = 1, dvar = 100;
 
     public RandomGenerator(ISsf ssf) {
         this.ssf = ssf;
-        dynamics = ssf.getDynamics();
-        measurement = ssf.getMeasurement();
+        dynamics = ssf.dynamics();
+        loading = ssf.loading();
+        error=ssf.measurementError();
         initSsf();
     }
 
@@ -65,17 +69,17 @@ public class RandomGenerator {
     }
 
     private double lh(int pos) {
-        return Math.sqrt(ssf.getMeasurement().errorVariance(pos));
+        return error == null ? 0 : Math.sqrt(error.at(pos));
     }
 
     private double h(int pos) {
-        return ssf.getMeasurement().errorVariance(pos);
+        return error == null ? 0 : error.at(pos);
     }
 
     private void initSsf() {
         int dim = ssf.getStateDim();
         LA = Matrix.square(dim);
-        ssf.getInitialization().Pf0(LA);
+        ssf.initialization().Pf0(LA);
         SymmetricMatrix.lcholesky(LA, EPS);
 
     }
@@ -95,7 +99,7 @@ public class RandomGenerator {
         // generate diffuse elements
         double std = Math.sqrt(svar);
         a.mul(std);
-        ISsfInitialization initialization = ssf.getInitialization();
+        ISsfInitialization initialization = ssf.initialization();
         if (initialization.isDiffuse()) {
             DataBlock b = DataBlock.make(initialization.getDiffuseDim());
             fillRandoms(b);
@@ -113,9 +117,9 @@ public class RandomGenerator {
 
         public RandomData(int n) {
             this.n = n;
-            dim = ssf.getInitialization().getStateDim();
+            dim = ssf.initialization().getStateDim();
             resdim = dynamics.getInnovationsDim();
-            if (measurement.hasErrors()) {
+            if (error != null) {
                 measurementErrors = new double[n];
                 generateMeasurementRandoms(DataBlock.ofInternal(measurementErrors));
             } else {
@@ -132,7 +136,7 @@ public class RandomGenerator {
             DataBlock a = DataBlock.make(dim);
             generateInitialState(a);
             double std = Math.sqrt(svar);
-            simulatedData[0] = measurement.ZX(0, a);
+            simulatedData[0] = loading.ZX(0, a);
             if (measurementErrors != null) {
                 simulatedData[0] += measurementErrors[0] * std;
             }
@@ -146,7 +150,7 @@ public class RandomGenerator {
                     q.mul(std);
                     dynamics.addSU(i - 1, a, q);
                 }
-                simulatedData[i] = measurement.ZX(i, a);
+                simulatedData[i] = loading.ZX(i, a);
                 if (measurementErrors != null) {
                     simulatedData[i] += measurementErrors[i] * std;
                 }

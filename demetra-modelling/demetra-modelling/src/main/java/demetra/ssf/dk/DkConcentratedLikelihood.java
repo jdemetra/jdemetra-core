@@ -133,10 +133,10 @@ public class DkConcentratedLikelihood implements IConcentratedLikelihood {
         if (m > 0) {
             if (scalingFactor) {
                 ll = -.5
-                        * (nc * Constants.TWOPI + m
+                        * (nc * Constants.LOGTWOPI + m
                         * (1 + Math.log(ssqerr / m)) + ldet + lddet);
             } else {
-                ll = -.5 * (nc * Constants.TWOPI + ssqerr + ldet + lddet);
+                ll = -.5 * (nc * Constants.LOGTWOPI + ssqerr + ldet + lddet);
             }
         } else {
             ll = Double.NaN;

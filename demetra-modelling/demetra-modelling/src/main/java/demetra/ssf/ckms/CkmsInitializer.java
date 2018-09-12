@@ -23,8 +23,10 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.UpdateInformation;
+import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *
@@ -48,7 +50,7 @@ public class CkmsInitializer<S extends ISsf> implements CkmsFilter.IFastFilterIn
         if (!ssf.isTimeInvariant()) {
             return -1;
         }
-        if (ssf.getInitialization().isDiffuse()) {
+        if (ssf.initialization().isDiffuse()) {
             return initializeDiffuse(fstate, upd, ssf, data);
         } else {
             return initializeStationary(fstate, upd, ssf, data);
@@ -56,21 +58,26 @@ public class CkmsInitializer<S extends ISsf> implements CkmsFilter.IFastFilterIn
     }
 
     public int initializeStationary(final CkmsState fstate, final UpdateInformation upd, final S ssf, ISsfData data) {
-        ISsfDynamics dynamics = ssf.getDynamics();
-        ISsfMeasurement measurement = ssf.getMeasurement();
-        ISsfInitialization initialization = ssf.getInitialization();
+        ISsfDynamics dynamics = ssf.dynamics();
+        ISsfLoading loading = ssf.loading();
+        ISsfError error = ssf.measurementError();
+        ISsfInitialization initialization = ssf.initialization();
         Matrix P0 = Matrix.square(initialization.getStateDim());
         initialization.Pf0(P0);
-        DataBlock m=upd.M();
-        measurement.ZM(0, P0, m);
+        DataBlock m = upd.M();
+        loading.ZM(0, P0, m);
         fstate.l.copy(m);
         dynamics.TX(0, fstate.l());
-        upd.setVariance(measurement.ZX(0, fstate.l)+ measurement.errorVariance(0));
+        double f = loading.ZX(0, fstate.l);
+        if (error != null) {
+            f += error.at(0);
+        }
+        upd.setVariance(f);
         return 0;
     }
-    
+
     public int initializeDiffuse(final CkmsState fstate, final UpdateInformation upd, final S ssf, ISsfData data) {
-        CkmsDiffuseInitializer initializer=new CkmsDiffuseInitializer();
+        CkmsDiffuseInitializer initializer = new CkmsDiffuseInitializer();
         return initializer.initializeFilter(fstate, upd, ssf, data);
     }
 }

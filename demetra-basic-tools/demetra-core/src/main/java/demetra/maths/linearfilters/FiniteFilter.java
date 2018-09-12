@@ -233,7 +233,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      * @return
      */
     public boolean center() {
-	int d = m_w.getDegree();
+	int d = m_w.degree();
 	if (d % 2 != 0)
 	    return false;
 	m_lb = -d / 2;
@@ -257,7 +257,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      */
     @Override
     public int length() {
-	return m_w.getDegree() + 1;
+	return m_w.degree() + 1;
     }
 
     /**
@@ -271,7 +271,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
 
     @Override
     public int getUpperBound() {
-	return m_lb + m_w.getDegree();
+	return m_lb + m_w.degree();
     }
 
     /**
@@ -297,7 +297,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      * @return
      */
     public boolean isSymmetric() {
-	int d = m_w.getDegree();
+	int d = m_w.degree();
 	if (d % 2 != 0 || d != -m_lb)
 	    return false;
 	for (int i = 0; i < d / 2; ++i)
@@ -312,7 +312,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      */
     public FiniteFilter mirror() {
         Polynomial w = m_w.mirror();
-	int lb = 1 - m_lb - (w.getDegree() + 1);
+	int lb = 1 - m_lb - (w.degree() + 1);
 	return new FiniteFilter(w, lb);
     }
 
@@ -331,7 +331,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      */
     public boolean normalize(final boolean center) {
 	double s = 0;
-	for (int i = 0; i <= m_w.getDegree(); ++i)
+	for (int i = 0; i <= m_w.degree(); ++i)
 	    s += m_w.get(i);
 	if (s == 0)
 	    return false;
@@ -354,7 +354,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
 
 	StringBuilder buffer = new StringBuilder(512);
 	int curp = m_lb;
-	int n = p.getDegree();
+	int n = p.degree();
 	for (int i = 0; i <= n; ++i, ++curp) {
 	    double v = Math.abs(p.get(i));
 	    if (v >= 1e-6) {

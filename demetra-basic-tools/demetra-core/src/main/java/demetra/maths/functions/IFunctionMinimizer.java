@@ -81,15 +81,6 @@ public interface IFunctionMinimizer {
      */
     boolean minimize(IFunctionPoint start);
 
-    /**
-     * 
-     * @param function
-     * @return
-     */
-    default boolean minimize(IFunction function){
-        DoubleSequence start = function.getDomain().getDefaultParameters();
-        return minimize(function.evaluate(start));
-    }
     
     /**
      * 

@@ -11,21 +11,21 @@ import demetra.maths.PolynomialType;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@lombok.Builder(toBuilder=true)
+@lombok.Builder(toBuilder = true)
 @lombok.Value
 public class ArimaType {
-    double innovationVariance;
-    @lombok.NonNull PolynomialType ar;
-    @lombok.NonNull PolynomialType delta;
-    @lombok.NonNull PolynomialType ma;
-    String name;
 
-    public static ArimaTypeBuilder builder(){
-        ArimaTypeBuilder builder= new ArimaTypeBuilder();
-        builder.innovationVariance=1;
-        builder.ar=PolynomialType.ONE;
-        builder.delta=PolynomialType.ONE;
-        builder.ma=PolynomialType.ONE;
-        return builder;
-    }
+    @lombok.Builder.Default
+    private double innovationVariance = 1;
+    @lombok.NonNull
+    @lombok.Builder.Default
+    private PolynomialType ar = PolynomialType.ONE;
+    @lombok.NonNull
+    @lombok.Builder.Default
+    private PolynomialType delta = PolynomialType.ONE;
+    @lombok.NonNull
+    @lombok.Builder.Default
+    private PolynomialType ma = PolynomialType.ONE;
+    private String name;
+
 }

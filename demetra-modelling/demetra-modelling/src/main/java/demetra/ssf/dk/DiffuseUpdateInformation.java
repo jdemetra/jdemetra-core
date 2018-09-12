@@ -58,4 +58,5 @@ public class DiffuseUpdateInformation extends UpdateInformation {
      public boolean isDiffuse(){
          return fi != 0;
      }
+
 }

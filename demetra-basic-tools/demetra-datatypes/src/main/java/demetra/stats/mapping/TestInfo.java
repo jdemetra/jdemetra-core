@@ -16,19 +16,21 @@
  */
 package demetra.stats.mapping;
 
+import demetra.design.Development;
 import demetra.information.InformationMapping;
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTestSummary;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
+@Development(status = Development.Status.Beta)
 public class TestInfo {
 
     private final String VALUE = "value", PVALUE = "pvalue", DESC = "description";
 
-    private final InformationMapping<TestResult> MAPPING = new InformationMapping<>(TestResult.class);
+    private final InformationMapping<StatisticalTestSummary> MAPPING = new InformationMapping<>(StatisticalTestSummary.class);
 
     static {
         MAPPING.set(VALUE, Double.class, source -> source.getValue());
@@ -36,7 +38,7 @@ public class TestInfo {
         MAPPING.set(DESC, String.class, source -> source.getDescription());
     }
 
-    public InformationMapping<TestResult> getMapping() {
+    public InformationMapping<StatisticalTestSummary> getMapping() {
         return MAPPING;
     }
 }

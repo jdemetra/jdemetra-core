@@ -23,6 +23,7 @@ import demetra.modelling.ComponentType;
 import demetra.sa.DecompositionMode;
 import demetra.sa.SeriesDecomposition;
 import demetra.ssf.dk.DkToolkit;
+import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ExtendedSsfData;
 import demetra.ssf.univariate.ISsfData;
@@ -48,7 +49,7 @@ public class KalmanEstimator implements IComponentsEstimator {
         DoubleSequence s = model.getSeries();
         int n = s.length(), nf = model.getForecastsCount(), nb = model.getBackcastsCount();
 
-        SsfUcarima ssf = SsfUcarima.of(model.getUcarimaModel());
+        CompositeSsf ssf = SsfUcarima.of(model.getUcarimaModel());
         // compute KS
         ISsfData data = new ExtendedSsfData(new SsfData(s), nb, nf);
         DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(ssf, data, true);
@@ -56,9 +57,10 @@ public class KalmanEstimator implements IComponentsEstimator {
         srslts.rescaleVariances(model.getInnovationVariance());
 
         UcarimaModel ucm = model.getUcarimaModel();
+        int[] pos = ssf.componentsPosition();
         for (int i = 0; i < ucm.getComponentsCount(); ++i) {
             ComponentType type = model.getTypes()[i];
-            DoubleSequence cmp = DoubleSequence.of(srslts.getComponent(ssf.getComponentPosition(i)));
+            DoubleSequence cmp = DoubleSequence.of(srslts.getComponent(pos[i]));
             if (nb > 0) {
                 decomposition.add(cmp.range(0, nb), type, ComponentInformation.Backcast);
             }
@@ -66,7 +68,7 @@ public class KalmanEstimator implements IComponentsEstimator {
                 decomposition.add(cmp.extract(nb + n, nf), type, ComponentInformation.Forecast);
             }
             decomposition.add(cmp.extract(nb, n), type);
-            cmp = DoubleSequence.of(srslts.getComponentVariance(ssf.getComponentPosition(i)));
+            cmp = DoubleSequence.of(srslts.getComponentVariance(pos[i]));
             if (nb > 0) {
                 decomposition.add(cmp.range(0, nb), type, ComponentInformation.StdevBackcast);
             }

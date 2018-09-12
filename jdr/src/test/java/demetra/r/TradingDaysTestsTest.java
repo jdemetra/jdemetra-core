@@ -24,6 +24,7 @@ import static demetra.r.TimeVaryingRegressionTest.FURNITURE;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.ssf.dk.DkToolkit;
+import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.SsfData;
 import demetra.timeseries.TsPeriod;
@@ -55,14 +56,15 @@ public class TradingDaysTestsTest {
 
         UcarimaModel ucm = ucmAirline(regarima.getArima());
         ucm = ucm.simplify();
-        SsfUcarima ssf = SsfUcarima.of(ucm);
+        CompositeSsf ssf = SsfUcarima.of(ucm);
         SsfData data = new SsfData(s.getValues());
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
-        TsData i1 = TsData.of(s.getStart(), ds.item(ssf.getComponentPosition(2)));
+        int[] pos = ssf.componentsPosition();
+        TsData i1 = TsData.of(s.getStart(), ds.item(pos[2]));
         
         data = new SsfData(TsDataToolkit.subtract(s, rtd).getValues());
         ds = DkToolkit.fastSmooth(ssf, data);
-        TsData i2 = TsData.of(s.getStart(), ds.item(ssf.getComponentPosition(2)));
+        TsData i2 = TsData.of(s.getStart(), ds.item(pos[2]));
        
 //        System.out.println(TradingDaysTests.ftest(i1, true, 0));
 //        System.out.println(TradingDaysTests.ftest(i1, false, 0));

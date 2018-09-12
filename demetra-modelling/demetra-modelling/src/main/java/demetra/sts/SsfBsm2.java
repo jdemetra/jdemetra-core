@@ -22,9 +22,11 @@ import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
-import demetra.ssf.implementations.Measurement;
-import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.implementations.Loading;
+import demetra.ssf.univariate.Measurement;
 import demetra.ssf.univariate.Ssf;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *
@@ -73,8 +75,8 @@ public class SsfBsm2 extends Ssf {
         SsfBsm.BsmData data = new SsfBsm.BsmData(model);
         Bsm2Initialization initialization = new Bsm2Initialization(data);
         Bsm2Dynamics dynamics = new Bsm2Dynamics(data);
-        ISsfMeasurement measurement = Measurement.create(idx, data.nVar);
-        return new SsfBsm2(initialization, dynamics, measurement);
+        ISsfLoading loading = Loading.fromPositions(idx);
+        return new SsfBsm2(initialization, dynamics, new Measurement(loading,data.nVar));
     }
 
     static class Bsm2Initialization implements ISsfInitialization {
@@ -414,7 +416,7 @@ public class SsfBsm2 extends Ssf {
             }
             if (data.seasVar >= 0) {
                 DataBlock ex = x.extract(i0, data.period - 1, 1);
-                ex.bshiftAndNegSum();
+                ex.fshiftAndNegSum();
             }
         }
 
@@ -468,16 +470,22 @@ public class SsfBsm2 extends Ssf {
                 ++i;
             }
             if (data.seasVar > 0) {
-                if (data.seasModel == SeasonalModel.Dummy) {
-                    int j = i + data.period - 2;
-                    p.add(j, j, data.seasVar);
-                } else if (data.seasModel == SeasonalModel.Crude) {
-                    int j = data.tsvar.getRowsCount();
-                    p.extract(i, j, i, j).add(data.seasVar);
-
-                } else {
-                    int j = data.tsvar.getRowsCount();
-                    p.extract(i, j, i, j).add(data.tsvar);
+                switch (data.seasModel) {
+                    case Dummy: {
+                        int j = i + data.period - 2;
+                        p.add(j, j, data.seasVar);
+                        break;
+                    }
+                    case Crude: {
+                        int j = data.tsvar.getRowsCount();
+                        p.extract(i, j, i, j).add(data.seasVar);
+                        break;
+                    }
+                    default: {
+                        int j = data.tsvar.getRowsCount();
+                        p.extract(i, j, i, j).add(data.tsvar);
+                        break;
+                    }
                 }
             }
         }

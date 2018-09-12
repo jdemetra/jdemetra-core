@@ -88,7 +88,7 @@ public class RobustSymmetricFrequencyResponseDecomposer  {
                 lsd.divide(P, ur2);
                 P=lsd.getQuotient();
                 double[] c = P.toArray();
-                int d=P.getDegree();
+                int d=P.degree();
                 int n=d/2;
                 for (int i=0; i<n; ++i){
                     double q=(c[i]+c[d-i])/2;
@@ -113,7 +113,7 @@ public class RobustSymmetricFrequencyResponseDecomposer  {
         m_bf = m_bf.normalize();
         
         Polynomial coeff = m_bf.asPolynomial();
-        m_var=var /Doubles.ssq(coeff);
+        m_var=var /Doubles.ssq(coeff.coefficients());
         return m_var>=0;
     }
 

@@ -34,10 +34,10 @@ public class State {
 
     public static final double ZERO = 1e-9;
 
-    public static State of(ISsfBase ssf) {
+    public static State of(ISsfState ssf) {
         State state = new State(ssf.getStateDim());
-        ssf.getInitialization().a0(state.a);
-        ssf.getInitialization().Pf0(state.P);
+        ssf.initialization().a0(state.a);
+        ssf.initialization().Pf0(state.P);
         return state;
     }
 

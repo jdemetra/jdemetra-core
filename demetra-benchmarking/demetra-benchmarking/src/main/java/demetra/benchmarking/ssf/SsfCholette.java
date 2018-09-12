@@ -23,9 +23,10 @@ import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *
@@ -48,8 +49,8 @@ public class SsfCholette {
 
         public ISsf build() {
             CholetteDefinition def = new CholetteDefinition(conversion, start, rho, weights);
-            return new Ssf(rho == 1 ? new DiffuseInitialization() : new StationaryInitialization(rho)
-                    , new Dynamics(def), new Measurement(def));
+            return Ssf.of(rho == 1 ? new DiffuseInitialization() : new StationaryInitialization(rho),
+                    new Dynamics(def), new Loading(def));
         }
 
         public Builder rho(final double rho) {
@@ -112,11 +113,11 @@ public class SsfCholette {
         }
     }
 
-    static class Measurement implements ISsfMeasurement {
+    static class Loading implements ISsfLoading {
 
         private final CholetteDefinition def;
 
-        Measurement(CholetteDefinition def) {
+        Loading(CholetteDefinition def) {
             this.def = def;
         }
 
@@ -129,26 +130,6 @@ public class SsfCholette {
                 z.set(0, 1);
             }
             z.set(1, def.weight(pos));
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return false;
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return false;
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return 0;
         }
 
         @Override

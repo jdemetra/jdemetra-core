@@ -24,22 +24,26 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringReader;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import javax.swing.text.NumberFormatter;
 
 /**
  *
  * @author Jean Palate
  */
 public class MatrixSerializer {
+    
+    
+
+    public static MatrixType read(File file, String separators) throws FileNotFoundException, IOException {
+        return read(file, Locale.ROOT, separators);
+    }
 
     public static MatrixType read(File file) throws FileNotFoundException, IOException {
-        return read(file, Locale.ROOT);
+        return read(file, Locale.ROOT, "\\s+|,");
     }
 
     public static void write(MatrixType m, File file) throws FileNotFoundException, IOException {
@@ -48,14 +52,14 @@ public class MatrixSerializer {
         }
     }
 
-    public static MatrixType read(File file, Locale locale) throws FileNotFoundException, IOException {
+    public static MatrixType read(File file, Locale locale, String separators) throws FileNotFoundException, IOException {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             List<double[]> data = new ArrayList<>();
             String curline;
             int nc = 0;
             while ((curline = reader.readLine()) != null) {
-                double[] c = split(curline, locale);
+                double[] c = split(curline, locale, separators);
                 if (c == null) {
                     return null;
                 }
@@ -81,19 +85,19 @@ public class MatrixSerializer {
         }
     }
 
-    private static double[] split(String line, Locale locale) {
-        String[] items = line.split("\\s+|,");
+    private static double[] split(String line, Locale locale, String separators) {
+        String[] items = line.split(separators);
         double[] data = new double[items.length];
         NumberFormat fmt = NumberFormat.getNumberInstance(locale);
-        try {
-            for (int i = 0; i < data.length; ++i) {
+        for (int i = 0; i < data.length; ++i) {
+            try {
                 Number n = fmt.parse(items[i]);
                 data[i] = n.doubleValue();
+            } catch (ParseException ex) {
+                data[i] = Double.NaN;
             }
-            return data;
-        } catch (ParseException ex) {
-            return null;
         }
+        return data;
     }
 
 }

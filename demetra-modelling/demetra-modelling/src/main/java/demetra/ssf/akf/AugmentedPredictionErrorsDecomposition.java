@@ -123,7 +123,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
     }
 
     @Override
-    public void save(final int t, final AugmentedPredictionErrors pe) {
+    public void save(final int t, final MultivariateAugmentedUpdateInformation pe) {
         DataBlock U = pe.getTransformedPredictionErrors();
         Matrix L=pe.getCholeskyFactor();
         DataBlock D=L.diagonal();
@@ -143,18 +143,20 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
 
     @Override
     public DiffuseLikelihood likelihood() {
-        DiffuseLikelihood ll = new DiffuseLikelihood();
         double cc = c();
         cc *= cc;
         LogSign dsl =LogSign.of(a().diagonal());
-        double ddet = 2 * dsl.getValue();
-        ll.set(cc, 2*det, ddet, n, nd);
-        return ll;
+        double dcorr = 2 * dsl.getValue();
+        return DiffuseLikelihood.builder(n, nd)
+                .ssqErr(cc)
+                .logDeterminant(2*det)
+                .diffuseCorrection(dcorr)
+                .build();
     }
 
     @Override
     public void open(IMultivariateSsf ssf, IMultivariateSsfData data) {
-        prepare(ssf.getDiffuseDim(), ssf.getMeasurements().getMaxCount());
+        prepare(ssf.getDiffuseDim(), ssf.measurements().getCount());
     }
 
     @Override

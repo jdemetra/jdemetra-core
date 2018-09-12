@@ -6,8 +6,8 @@
 package demetra.regarima;
 
 import demetra.arima.IArimaModel;
+import demetra.data.DoubleSequence;
 import demetra.maths.functions.IParametricMapping;
-import static javafx.scene.input.KeyCode.M;
 
 /**
  *
@@ -16,4 +16,11 @@ import static javafx.scene.input.KeyCode.M;
  */
 public interface IArimaMapping<M extends IArimaModel> extends IParametricMapping<M>{
     IArimaMapping<M> stationaryMapping();
+
+    /**
+     * Generates the parameters corresponding to the given Arima model
+     * @param t
+     * @return 
+     */
+    DoubleSequence parametersOf(M t);
 }

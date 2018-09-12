@@ -25,10 +25,12 @@ import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.ssf.akf.AkfToolkit;
 import demetra.ssf.akf.DiffuseLikelihood;
+import demetra.ssf.akf.QRFilter;
 import demetra.ssf.dk.DkLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.TimeInvariantSsf;
 import demetra.ssf.univariate.ISsf;
+import demetra.ssf.univariate.Ssf;
 import demetra.ssf.univariate.SsfData;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -56,7 +58,7 @@ public class SsfArimaTest {
 
     @Test
     public void testArima() {
-        SsfArima ssf = SsfArima.of(arima);
+        Ssf ssf = SsfArima.of(arima);
         SsfData sdata = new SsfData(data);
         SsfData ssfData = new SsfData(data);
         DkLikelihood ll1 = DkToolkit.likelihoodComputer(false, true).compute(ssf, ssfData);
@@ -68,6 +70,10 @@ public class SsfArimaTest {
         DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer().compute(ssf, ssfData);
 //        System.out.println(ll3);
         assertEquals(ll1.logLikelihood(), ll3.logLikelihood(), 1e-6);
+        QRFilter qr=new QRFilter();
+        qr.process(ssf, sdata);
+        DiffuseLikelihood ll4 = qr.getDiffuseLikelihood();
+        assertEquals(ll1.logLikelihood(), ll4.logLikelihood(), 1e-6);
         RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
                 .y(DoubleSequence.of(data))
                 .arima(arima)
@@ -81,7 +87,7 @@ public class SsfArimaTest {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
         SarimaModel arima = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).build();
-        SsfArima ssf = SsfArima.of(arima);
+        Ssf ssf = SsfArima.of(arima);
         double[] mdata=data.clone();
         mdata[2] = Double.NaN;
         mdata[11] = Double.NaN;
@@ -108,7 +114,7 @@ public class SsfArimaTest {
     public void testStressLikelihood() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < M; ++i) {
-            SsfArima ssf = SsfArima.of(arima);
+            Ssf ssf = SsfArima.of(arima);
             DkLikelihood ll = DkToolkit.likelihoodComputer(false).compute(ssf, new SsfData(data));
         }
         long t1 = System.currentTimeMillis();
@@ -116,7 +122,7 @@ public class SsfArimaTest {
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < M; ++i) {
-            SsfArima ssf = SsfArima.of(arima);
+            Ssf ssf = SsfArima.of(arima);
             DkLikelihood ll = DkToolkit.likelihoodComputer(true).compute(ssf, new SsfData(data));
         }
         t1 = System.currentTimeMillis();
@@ -124,7 +130,7 @@ public class SsfArimaTest {
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < M; ++i) {
-            SsfArima ssf = SsfArima.of(arima);
+            Ssf ssf = SsfArima.of(arima);
             ISsf tssf = TimeInvariantSsf.of(ssf);
             DkLikelihood ll = DkToolkit.likelihoodComputer(true).compute(tssf, new SsfData(data));
         }

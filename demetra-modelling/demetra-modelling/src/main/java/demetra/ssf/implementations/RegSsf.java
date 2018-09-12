@@ -24,29 +24,37 @@ import demetra.maths.matrices.MatrixWindow;
 import demetra.maths.matrices.QuadraticForm;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
 import demetra.data.DoubleReader;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.SsfComponent;
+import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.univariate.Measurement;
 
 /**
  * SSF extended by regression variables with fixed or time varying coefficients.
  * Time varying coefficients follow a multi-variate random walk.
+ *
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
 public class RegSsf {
+
+    public SsfComponent of(Matrix X) {
+        int nx = X.getColumnsCount();
+        return new SsfComponent(new ConstantInitialization(nx), new ConstantDynamics(), Loading.regression(X));
+    }
 
     public ISsf of(ISsf model, Matrix X) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();
         }
         int mdim = model.getStateDim();
-        Xinitializer xinit = new Xinitializer(model.getInitialization(), X.getColumnsCount());
-        Xdynamics xdyn = new Xdynamics(mdim, model.getDynamics(), X.getColumnsCount());
-        Xmeasurement xm = new Xmeasurement(mdim, model.getMeasurement(), X);
-        return new Ssf(xinit, xdyn, xm);
+        return Ssf.of(new Xinitializer(model.initialization(), X.getColumnsCount()),
+                new Xdynamics(mdim, model.dynamics(), X.getColumnsCount()),
+                new Xloading(mdim, model.loading(), X), model.measurementError());
     }
 
     /**
@@ -63,12 +71,11 @@ public class RegSsf {
             throw new IllegalArgumentException();
         }
         int mdim = model.getStateDim();
-        Xinitializer xinit = new Xinitializer(model.getInitialization(), X.getColumnsCount());
         Matrix s = cvar.deepClone();
         SymmetricMatrix.lcholesky(s, 1e-12);
-        Xvardynamics xdyn = new Xvardynamics(mdim, model.getDynamics(), cvar, s);
-        Xmeasurement xm = new Xmeasurement(mdim, model.getMeasurement(), X);
-        return new Ssf(xinit, xdyn, xm);
+        return Ssf.of(new Xinitializer(model.initialization(), X.getColumnsCount()),
+                new Xvardynamics(mdim, model.dynamics(), cvar, s),
+                new Xloading(mdim, model.loading(), X), model.measurementError());
     }
 
     /**
@@ -77,7 +84,7 @@ public class RegSsf {
      *
      * @param model
      * @param X
-     * @param s The Cholesky factor of the  covariance of the coefficients
+     * @param s The Cholesky factor of the covariance of the coefficients
      * @return
      */
     public ISsf ofTimeVaryingFactor(ISsf model, Matrix X, Matrix s) {
@@ -86,10 +93,9 @@ public class RegSsf {
         }
         int mdim = model.getStateDim();
         Matrix var = SymmetricMatrix.XXt(s);
-        Xinitializer xinit = new Xinitializer(model.getInitialization(), X.getColumnsCount());
-        Xvardynamics xdyn = new Xvardynamics(mdim, model.getDynamics(), var, s);
-        Xmeasurement xm = new Xmeasurement(mdim, model.getMeasurement(), X);
-        return new Ssf(xinit, xdyn, xm);
+        return Ssf.of(new Xinitializer(model.initialization(), X.getColumnsCount()),
+                new Xvardynamics(mdim, model.dynamics(), var, s),
+                new Xloading(mdim, model.loading(), X), model.measurementError());
     }
 
     static class Xdynamics implements ISsfDynamics {
@@ -341,16 +347,16 @@ public class RegSsf {
         }
     }
 
-    static class Xmeasurement implements ISsfMeasurement {
+    static class Xloading implements ISsfLoading {
 
-        private final ISsfMeasurement m;
+        private final ISsfLoading loading;
         private final Matrix data;
         private final int n, nx;
         private final DataBlock tmp;
 
-        private Xmeasurement(final int n, final ISsfMeasurement m, final Matrix data) {
+        private Xloading(final int n, final ISsfLoading loading, final Matrix data) {
             this.data = data;
-            this.m = m;
+            this.loading = loading;
             this.n = n;
             nx = data.getColumnsCount();
             tmp = DataBlock.make(nx);
@@ -364,44 +370,24 @@ public class RegSsf {
         @Override
         public void Z(int pos, DataBlock z) {
             DataWindow range = z.window(0, n);
-            m.Z(pos, range.get());
+            loading.Z(pos, range.get());
             range.next(nx).copy(data.row(pos));
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return m.hasErrors();
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return m.areErrorsTimeInvariant();
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return m.hasError(pos);
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return m.errorVariance(pos);
         }
 
         @Override
         public double ZX(int pos, DataBlock x) {
             DataWindow range = x.window(0, n);
-            double r = m.ZX(pos, range.get());
+            double r = loading.ZX(pos, range.get());
             return r + range.next(nx).dot(data.row(pos));
         }
 
         @Override
         public double ZVZ(int pos, Matrix V) {
             MatrixWindow v = V.topLeft(n, n);
-            double v00 = m.ZVZ(pos, v);
+            double v00 = loading.ZVZ(pos, v);
             v.hnext(nx);
             tmp.set(0);
-            m.ZM(pos, v, tmp);
+            loading.ZM(pos, v, tmp);
             double v01 = tmp.dot(data.row(pos));
             v.vnext(nx);
             double v11 = QuadraticForm.apply(v, data.row(pos));
@@ -411,7 +397,7 @@ public class RegSsf {
         @Override
         public void VpZdZ(int pos, Matrix V, double d) {
             MatrixWindow v = V.topLeft(n, n);
-            m.VpZdZ(pos, v, d);
+            loading.VpZdZ(pos, v, d);
             MatrixWindow vtmp = v.clone();
             vtmp.hnext(nx);
             v.vnext(nx);
@@ -419,7 +405,7 @@ public class RegSsf {
             DataBlock xrow = data.row(pos);
             DoubleReader x = xrow.reader();
             while (rows.hasNext()) {
-                m.XpZd(pos, rows.next(), d * x.next());
+                loading.XpZd(pos, rows.next(), d * x.next());
             }
             vtmp.copy(v.transpose());
             v.hnext(nx);
@@ -429,7 +415,7 @@ public class RegSsf {
         @Override
         public void XpZd(int pos, DataBlock x, double d) {
             DataWindow range = x.left();
-            m.XpZd(pos, range.next(n), d);
+            loading.XpZd(pos, range.next(n), d);
             range.next(nx).addAY(d, data.row(pos));
         }
 

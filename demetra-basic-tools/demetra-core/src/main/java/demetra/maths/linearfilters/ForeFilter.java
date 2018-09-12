@@ -126,7 +126,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      * @return
      */
     public int getDegree() {
-        return polynomial.getDegree();
+        return polynomial.degree();
     }
 
     /**
@@ -135,7 +135,7 @@ public class ForeFilter extends AbstractFiniteFilter {
      */
     @Override
     public int length() {
-        return polynomial.getDegree() + 1;
+        return polynomial.degree() + 1;
     }
 
     /**
@@ -149,7 +149,7 @@ public class ForeFilter extends AbstractFiniteFilter {
 
     @Override
     public int getUpperBound() {
-        return polynomial.getDegree();
+        return polynomial.degree();
     }
 
     /**

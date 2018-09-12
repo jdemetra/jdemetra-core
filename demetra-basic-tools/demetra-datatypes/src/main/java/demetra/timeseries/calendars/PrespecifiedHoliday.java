@@ -17,6 +17,7 @@
 
 package demetra.timeseries.calendars;
 
+import demetra.design.Development;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ import java.time.LocalDate;
  * @author Jean Palate
  */
 @lombok.Value
+@Development(status = Development.Status.Beta)
 public class PrespecifiedHoliday implements IHoliday {
 
     @lombok.NonNull

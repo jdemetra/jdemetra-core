@@ -16,14 +16,12 @@
  */
 package demetra.arima.ssf;
 
-import demetra.arima.AutoCovarianceFunction;
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
 import demetra.design.Development;
-import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
@@ -36,57 +34,75 @@ import demetra.ssf.ckms.CkmsFilter;
 import demetra.ssf.ckms.CkmsState;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.OrdinaryFilter;
 import demetra.ssf.univariate.Ssf;
-import demetra.ssf.implementations.Measurement;
+import demetra.ssf.implementations.Loading;
 import demetra.ssf.UpdateInformation;
 import demetra.data.DoubleReader;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.SsfComponent;
+import demetra.ssf.StateComponent;
+import demetra.ssf.univariate.Measurement;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-public class SsfArima extends Ssf {
+@Development(status = Development.Status.Beta)
+@lombok.experimental.UtilityClass
+public class SsfArima {
+    
+    public ISsfLoading loading(){
+        return Loading.fromPosition(0);
+    }
 
-//    public static IParametricMapping<SsfArima> mapping(final SarimaSpecification spec) {
-//        return new Mapping(spec);
-//    }
-    public static CkmsFilter.IFastFilterInitializer<SsfArima> fastInitializer() {
-        return (CkmsState state, UpdateInformation upd, SsfArima ssf, ISsfData data) -> {
-            if (ssf.model.isStationary()) {
-                return stInitialize(state, upd, ssf, data);
+    public StateComponent componentOf(IArimaModel arima) {
+        if (arima.isStationary()) {
+            return ofStationary(arima);
+        } else {
+            return ofNonStationary(arima);
+        }
+    }
+
+    public Ssf of(IArimaModel arima) {
+        return Ssf.of(componentOf(arima), loading(), 0);
+    }
+
+    
+    public CkmsFilter.IFastFilterInitializer<Ssf> fastInitializer(IArimaModel arima) {
+        return (CkmsState state, UpdateInformation upd, Ssf ssf, ISsfData data) -> {
+            if (arima.isStationary()) {
+                return stInitialize(state, upd, arima, ssf, data);
             } else {
-                return dInitialize(state, upd, ssf, data);
+                return dInitialize(state, upd, arima, ssf, data);
             }
         };
     }
 
-    private static int stInitialize(CkmsState state, UpdateInformation upd, SsfArima ssf1, ISsfData data) {
-        int n = ssf1.getStateDim();
-        double[] values = ssf1.model.getAutoCovarianceFunction().values(n);
+    private int stInitialize(CkmsState state, UpdateInformation upd, IArimaModel arima, Ssf ssf, ISsfData data) {
+        int n = ssf.getStateDim();
+        double[] values = arima.getAutoCovarianceFunction().values(n);
         DataBlock M = upd.M(), L = state.l();
         upd.M().copyFrom(values, 0);
         L.copy(M);
-        ssf1.dynamics.TX(0, L);
+        ssf.dynamics().TX(0, L);
         upd.setVariance(values[0]);
         return 0;
     }
     
-    private static int dInitialize(CkmsState state, UpdateInformation upd, SsfArima ssf1, ISsfData data) {
-        return new CkmsDiffuseInitializer<SsfArima>(diffuseInitializer()).initializeFilter(state, upd, ssf1, data);
+    private int dInitialize(CkmsState state, UpdateInformation upd, IArimaModel arima, Ssf ssf, ISsfData data) {
+        return new CkmsDiffuseInitializer<Ssf>(diffuseInitializer(arima)).initializeFilter(state, upd, ssf, data);
     }
 
-    static OrdinaryFilter.FilterInitializer diffuseInitializer() {
+    private OrdinaryFilter.FilterInitializer diffuseInitializer(IArimaModel arima) {
         return (State state, ISsf ssf, ISsfData data) -> {
-            SsfArima ssfArima = (SsfArima) ssf;
-            ArimaInitialization initialization = (ArimaInitialization) ssfArima.getInitialization();
-            ISsfMeasurement m = ssf.getMeasurement();
+            ArimaInitialization initialization = (ArimaInitialization) ssf.initialization();
+            ISsfMeasurement m = ssf.measurement();
             int nr = ssf.getStateDim(), nd = initialization.getDiffuseDim();
             Matrix A = Matrix.make(nr + nd, nd);
-            double[] dif = ssfArima.model.getNonStationaryAR().asPolynomial().toArray();
+            double[] dif = arima.getNonStationaryAR().asPolynomial().toArray();
             for (int j = 0; j < nd; ++j) {
                 A.set(j, j, 1);
                 for (int i = nd; i < nd + nr; ++i) {
@@ -114,53 +130,25 @@ public class SsfArima extends Ssf {
         };
     }
 
-    private final IArimaModel model;
-
-    /**
-     *
-     * @param arima
-     */
-    private SsfArima(final IArimaModel arima, final ISsfInitialization initialization, final ISsfDynamics dynamics, ISsfMeasurement measurement) {
-        super(initialization, dynamics, measurement);
-        model = arima;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public IArimaModel getModel() {
-        return model;
-    }
-
-    public static SsfArima of(IArimaModel arima) {
-        if (arima.isStationary()) {
-            return ofStationary(arima);
-        } else {
-            return ofNonStationary(arima);
-        }
-    }
-
-    private static SsfArima ofStationary(IArimaModel arima) {
+    private StateComponent ofStationary(IArimaModel arima) {
         double var = arima.getInnovationVariance();
         if (var == 0) {
             throw new SsfException(SsfException.STOCH);
         }
         ArmaInitialization initialization=new ArmaInitialization(arima);
         ISsfDynamics dynamics = new ArimaDynamics(initialization.data);
-        ISsfMeasurement measurement = Measurement.create(0);
-        return new SsfArima(arima, initialization, dynamics, measurement);
+        return new StateComponent(initialization, dynamics);
     }
 
-    private static SsfArima ofNonStationary(IArimaModel arima) {
+    private static StateComponent ofNonStationary(IArimaModel arima) {
         double var = arima.getInnovationVariance();
         if (var == 0) {
             throw new SsfException(SsfException.STOCH);
         }
         ArimaInitialization initialization=new ArimaInitialization(arima);
         ISsfDynamics dynamics = new ArimaDynamics(initialization.data);
-        ISsfMeasurement measurement = Measurement.create(0);
-        return new SsfArima(arima, initialization, dynamics, measurement);
+        ISsfLoading loading = Loading.fromPosition(0);
+        return new StateComponent(initialization, dynamics);
     }
 
     static class ArmaInitialization implements ISsfInitialization {
@@ -373,7 +361,7 @@ public class SsfArima extends Ssf {
             Polynomial ar = arima.getAR().asPolynomial();
             Polynomial ma = arima.getMA().asPolynomial();
             phi = ar.toArray();
-            dim = Math.max(ar.getDegree(), ma.getDegree() + 1);
+            dim = Math.max(ar.degree(), ma.degree() + 1);
             psi = DataBlock.ofInternal(RationalFunction.of(ma, ar).coefficients(dim));
             se = Math.sqrt(var);
         }

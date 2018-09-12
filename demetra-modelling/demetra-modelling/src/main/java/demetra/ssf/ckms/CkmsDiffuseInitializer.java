@@ -25,10 +25,12 @@ import demetra.ssf.State;
 import demetra.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.OrdinaryFilter;
 import demetra.ssf.UpdateInformation;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  * Automatic initialization of diffuse time invariant models. The algorithm
@@ -58,7 +60,7 @@ public class CkmsDiffuseInitializer<S extends ISsf> implements CkmsFilter.IFastF
 
     @Override
     public int initializeFilter(CkmsState fstate, final UpdateInformation upd, S ssf, ISsfData data) {
-        ISsfInitialization initialization = ssf.getInitialization();
+        ISsfInitialization initialization = ssf.initialization();
         int dim = initialization.getStateDim();
         State state = new State(dim);
         int t = 0;
@@ -75,14 +77,18 @@ public class CkmsDiffuseInitializer<S extends ISsf> implements CkmsFilter.IFastF
         }
 
         fstate.a().copy(state.a());
-        ISsfDynamics dynamics = ssf.getDynamics();
-        ISsfMeasurement measurement = ssf.getMeasurement();
+        ISsfDynamics dynamics = ssf.dynamics();
+        ISsfLoading loading = ssf.loading();
+        ISsfError error = ssf.measurementError();
         Matrix P = state.P();
         DataBlock k = upd.M();
-        double f = measurement.ZVZ(0, P) + measurement.errorVariance(0);
+        double f = loading.ZVZ(0, P);
+        if (error != null) {
+            f += error.at(0);
+        }
         upd.setVariance(f);
         // K0 = TPZ' / var
-        measurement.ZM(0, P, k);
+        loading.ZM(0, P, k);
         DataBlock l = fstate.l();
         l.copy(k);
         dynamics.TX(0, l);

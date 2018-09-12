@@ -47,7 +47,7 @@ public class AllSelector implements IRootSelector {
     @Override
     public boolean select(final Polynomial p) {
 	m_p = p;
-	return p.getDegree() > 0;
+	return p.degree() > 0;
     }
 
     @Override

@@ -9,7 +9,6 @@ import demetra.arima.ssf.SsfArima;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
-import demetra.likelihood.ILikelihood;
 import demetra.maths.MatrixType;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
@@ -38,7 +37,6 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.modelling.regression.GenericTradingDaysVariables;
 import demetra.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -133,7 +131,7 @@ public class TimeVaryingRegression {
         // fixed model
         TDvarMapping mapping0 = new TDvarMapping(mtd, true);
         SsfFunction<Airline, ISsf> fn0 = buildFunction(data, spec, mapping0, mtd, nvar);
-        min.minimize(fn0);
+        min.minimize(fn0.evaluate(mapping0.getDefaultParameters()));
         SsfFunctionPoint<Airline, ISsf> rfn0 = (SsfFunctionPoint<Airline, ISsf>) min.getResult();
 
         // compute the unconstrained solution
@@ -142,7 +140,7 @@ public class TimeVaryingRegression {
 
         Airline air0 = rfn0.getCore();
         air0.setRegVariance(.001);
-        min.minimize(fn.ssqEvaluate(mapping.map(air0)));
+        min.minimize(fn.ssqEvaluate(mapping.parametersOf(air0)));
         SsfFunctionPoint<Airline, ISsf> rfn = (SsfFunctionPoint<Airline, ISsf>) min.getResult();
         
         // compute AIC
@@ -206,7 +204,7 @@ public class TimeVaryingRegression {
                     .theta(params.getTheta())
                     .btheta(params.getBtheta())
                     .build();
-            SsfArima ssf = SsfArima.of(arima);
+            ISsf ssf = SsfArima.of(arima);
             double nv = params.getRegVariance();
             Matrix v = nvar.deepClone();
             v.mul(nv);
@@ -295,8 +293,7 @@ public class TimeVaryingRegression {
             return airline;
         }
 
-        @Override
-        public DoubleSequence map(Airline t) {
+        public DoubleSequence parametersOf(Airline t) {
             double[] p = new double[fixed ? 2 : 3];
             p[0] = t.getTheta();
             p[1] = t.getBtheta();

@@ -22,7 +22,7 @@ import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
 import demetra.maths.matrices.Matrix;
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTestSummary;
 import demetra.stats.tests.LjungBox;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.seasonal.CanovaHansen;
@@ -37,7 +37,7 @@ import demetra.modelling.regression.PeriodicContrasts;
 @lombok.experimental.UtilityClass
 public class SeasonalityTests {
 
-    public TestResult fTest(double[] s, int period, boolean ar, int ny) {
+    public StatisticalTestSummary fTest(double[] s, int period, boolean ar, int ny) {
 
         DoubleSequence y = DoubleSequence.ofInternal(s);
         if (ar) {
@@ -58,7 +58,7 @@ public class SeasonalityTests {
         }
     }
 
-    public TestResult qsTest(double[] s, int period, int ny) {
+    public StatisticalTestSummary qsTest(double[] s, int period, int ny) {
 
         for (int i = s.length - 1; i > 0; --i) {
             s[i] -= s[i - 1];
@@ -72,14 +72,10 @@ public class SeasonalityTests {
                 .autoCorrelationsCount(2)
                 .usePositiveAutoCorrelations()
                 .build();
-        return TestResult.builder()
-                .value(test.getValue())
-                .pvalue(test.getPValue())
-                .description(test.getDistribution().toString())
-                .build();
+        return test.toSummary();
     }
 
-    public TestResult periodicQsTest(double[] s, double[] periods) {
+    public StatisticalTestSummary periodicQsTest(double[] s, double[] periods) {
         DoubleSequence y;
         if (periods.length == 1) {
             for (int j = s.length - 1; j > 0; --j) {
@@ -101,11 +97,7 @@ public class SeasonalityTests {
                 .lags(periods[0], 2)
                 .usePositiveAutocorrelations()
                 .build();
-        return TestResult.builder()
-                .value(test.getValue())
-                .pvalue(test.getPValue())
-                .description(test.getDistribution().toString())
-                .build();
+        return test.toSummary();
     }
 
     public double[] canovaHansenTest(double[] s, int start, int end, boolean original) {
@@ -126,7 +118,7 @@ public class SeasonalityTests {
         return rslt;
     }
 
-    private TestResult process(DoubleSequence s, int freq) {
+    private StatisticalTestSummary process(DoubleSequence s, int freq) {
         try {
             DataBlock y = DataBlock.of(s);
             y.sub(y.average());
@@ -137,18 +129,14 @@ public class SeasonalityTests {
             LeastSquaresResults rslt = ols.compute(reg);
 
             StatisticalTest ftest = rslt.Ftest();
-            return TestResult.builder()
-                    .value(ftest.getValue())
-                    .pvalue(ftest.getPValue())
-                    .description(ftest.getDistribution().toString())
-                    .build();
+            return ftest.toSummary();
 
         } catch (Exception err) {
             return null;
         }
     }
 
-    private TestResult processAr(DoubleSequence s, int freq) {
+    private StatisticalTestSummary processAr(DoubleSequence s, int freq) {
         try {
             PeriodicContrasts var = new PeriodicContrasts(freq);
 
@@ -164,11 +152,7 @@ public class SeasonalityTests {
             Ols ols = new Ols();
             LeastSquaresResults rslt = ols.compute(reg);
             StatisticalTest ftest = rslt.Ftest(2, sd.getColumnsCount());
-            return TestResult.builder()
-                    .value(ftest.getValue())
-                    .pvalue(ftest.getPValue())
-                    .description(ftest.getDistribution().toString())
-                    .build();
+            return ftest.toSummary();
         } catch (Exception err) {
             return null;
         }

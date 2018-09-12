@@ -45,11 +45,11 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
     private final double eps;
     private final boolean all;
 
-    private static boolean checkStability(double d) {
+    public static boolean checkStability(double d) {
         return Math.abs(d) < 1;
     }
 
-    private static boolean checkStability(double a, double b) {
+    public static boolean checkStability(double a, double b) {
         double ro = b * b - 4 * a;
         if (ro < 0) {
             return Math.abs(a) < 1;
@@ -64,7 +64,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
         }
     }
 
-    static boolean checkStability(DoubleSequence c) {
+    public static boolean checkStability(DoubleSequence c) {
         int nc = c.length();
         while (nc > 0 && c.get(nc - 1) == 0) {
             --nc;
@@ -148,7 +148,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
         return false;
     }
 
-    private static Polynomial stabilize(Polynomial p) {
+    public static Polynomial stabilize(Polynomial p) {
         if (p == null) {
             return null;
         }
@@ -388,7 +388,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
     }
 
     @Override
-    public DoubleSequence map(SarimaModel m) {
+    public DoubleSequence parametersOf(SarimaModel m) {
         return m.parameters();
     }
 

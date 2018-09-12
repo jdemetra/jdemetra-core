@@ -5,15 +5,17 @@
  */
 package demetra.stats;
 
+import demetra.design.Development;
+
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-@lombok.Builder
+@Development(status = Development.Status.Beta)
 public class ParameterEstimation {
-    double value;
-    double standardError;
-    String description;
+    private double value;
+    private double standardError;
+    private String description;
    
 }

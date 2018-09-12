@@ -16,6 +16,7 @@
  */
 package demetra.ssf.univariate;
 
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.UpdateInformation;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
@@ -38,7 +39,8 @@ public class OrdinaryFilter {
     private final FilterInitializer initializer;
     private State state;
     private UpdateInformation updinfo;
-    private ISsfMeasurement measurement;
+    private ISsfLoading loading;
+    private ISsfError error;
     private ISsfDynamics dynamics;
     private boolean missing;
 
@@ -54,7 +56,7 @@ public class OrdinaryFilter {
         this.initializer = null;
     }
 
-     protected boolean error(int t, ISsfData data) {
+    protected boolean error(int t, ISsfData data) {
         missing = data.isMissing(t);
         if (missing) {
             // pe_ = null;
@@ -68,21 +70,20 @@ public class OrdinaryFilter {
             DataBlock C = updinfo.M();
             // computes ZPZ'; results in pe_.L
             //measurement.ZVZ(pos_, state_.P.subMatrix(), F);
-            measurement.ZM(t, state.P(), C);
-            double v = measurement.ZX(t, C);
-            if (measurement.hasErrors()) {
-                v += measurement.errorVariance(t);
+            loading.ZM(t, state.P(), C);
+            double v = loading.ZX(t, C);
+            if (error != null) {
+                v += error.at(t);
             }
             updinfo.setVariance(v);
             // We put in K  PZ'*(ZPZ'+H)^-1 = PZ'* F^-1 = PZ'*(LL')^-1/2 = PZ'(L')^-1
             // K L' = PZ' or L K' = ZP
 
             double y = data.get(t);
-            updinfo.set(y - measurement.ZX(t, state.a()));
+            updinfo.set(y - loading.ZX(t, state.a()));
             return true;
         }
     }
-
 
     /**
      * Retrieves the final state (which is a(N|N-1))
@@ -94,8 +95,9 @@ public class OrdinaryFilter {
     }
 
     private int initialize(ISsf ssf, ISsfData data) {
-        measurement = ssf.getMeasurement();
-        dynamics = ssf.getDynamics();
+        loading = ssf.loading();
+        error = ssf.measurementError();
+        dynamics = ssf.dynamics();
         updinfo = new UpdateInformation(ssf.getStateDim());
         if (initializer == null) {
             state = State.of(ssf);
@@ -139,6 +141,5 @@ public class OrdinaryFilter {
         }
         return true;
     }
-
 
 }

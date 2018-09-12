@@ -26,6 +26,7 @@ import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.functions.ssq.SsqProxyFunctionPoint;
 import demetra.maths.matrices.Matrix;
 import demetra.regarima.IArimaMapping;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -41,7 +42,7 @@ public class RegArmaProcessor {
         this.fast = fastDerivatives;
     }
 
-    public <S extends IArimaModel> RegArmaEstimation<S> compute(RegArmaModel<S> model, DoubleSequence start, IArimaMapping<S> mapping, ISsqFunctionMinimizer minimizer, int ndf) {
+    public <S extends IArimaModel> RegArmaEstimation<S> compute(@Nonnull RegArmaModel<S> model, @Nonnull DoubleSequence start, IArimaMapping<S> mapping, ISsqFunctionMinimizer minimizer, int ndf) {
         // step 1. Build the function
         RegArmaSsqFunction fn = RegArmaSsqFunction.builder(model.getY())
                 .variables(model.getX())
@@ -51,7 +52,7 @@ public class RegArmaProcessor {
                 .parallelProcessing(mt)
                 .build();
 
-        boolean ok = start == null ? minimizer.minimize(fn) : minimizer.minimize(fn.ssqEvaluate(start));
+        boolean ok = minimizer.minimize(fn.ssqEvaluate(start));
         RegArmaSsqFunction.Evaluation<S> rslt = (RegArmaSsqFunction.Evaluation<S>) minimizer.getResult();
         double objective = rslt.getSsqE();
         Matrix hessian;

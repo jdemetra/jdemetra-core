@@ -96,7 +96,7 @@ public class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
     }
 
     @Override
-    public DoubleSequence map(ArimaModel t) {
+    public DoubleSequence parametersOf(ArimaModel t) {
         BackFilter ma = t.getMA();
         double[] p = new double[2];
         p[0] = -ma.get(1);

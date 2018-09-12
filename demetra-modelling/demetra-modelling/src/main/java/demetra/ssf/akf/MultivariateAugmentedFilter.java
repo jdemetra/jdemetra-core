@@ -18,16 +18,14 @@ package demetra.ssf.akf;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.LowerTriangularMatrix;
+import demetra.data.DoubleSequence;
+import demetra.data.Doubles;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
-import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.ISsfMeasurements;
-import demetra.ssf.ISsfInitialization;
 
 /**
  *
@@ -36,7 +34,7 @@ import demetra.ssf.ISsfInitialization;
 public class MultivariateAugmentedFilter {
 
     private AugmentedState state;
-    private AugmentedPredictionErrors perrors;
+    private MultivariateAugmentedUpdateInformation updinfo;
     private IMultivariateSsf ssf;
     private ISsfMeasurements measurements;
     private ISsfDynamics dynamics;
@@ -55,54 +53,6 @@ public class MultivariateAugmentedFilter {
         this.collapsing = collapsing;
     }
 
-    private int countMeasurements(int pos) {
-        int n = 0;
-        for (int i = 0; i < measurements.getCount(pos); ++i) {
-            if (!data.isMissing(pos, i)) {
-                ++n;
-            }
-        }
-        return n;
-    }
-
-    /**
-     * Computes zm = Z * M
-     *
-     * @param M
-     * @param zm
-     */
-    private void ZM(int pos, Matrix M, Matrix zm) {
-        DataBlockIterator zrows = zm.rowsIterator();
-        int imax = measurements.getCount(pos);
-        for (int i = 0; i < imax; ++i) {
-            if (!data.isMissing(pos, i)) {
-                measurements.ZM(pos, i, M, zrows.next());
-                if (!zrows.hasNext()) {
-                    return;
-                }
-            }
-        }
-    }
-
-    private void addH(int pos, Matrix P) {
-        int nm = measurements.getCount(pos);
-        Matrix H = Matrix.square(nm);
-        measurements.H(pos, H);
-        for (int i = 0, r = 0; i < nm; ++i) {
-            if (!data.isMissing(pos, i)) {
-                for (int j = 0, c = 0; j < i; ++j) {
-                    if (!data.isMissing(pos, j)) {
-                        double h = H.get(i, j);
-                        P.add(r, c, h);
-                        P.add(c, r, h);
-                        ++c;
-                    }
-                }
-                P.add(r, r, H.get(i, i));
-                ++r;
-            }
-        }
-    }
 
     /**
      * Computes a(t+1|t), P(t+1|t) from a(t|t), P(t|t) a(t+1|t) = T(t)a(t|t)
@@ -125,83 +75,46 @@ public class MultivariateAugmentedFilter {
      *
      * Not computed for missing values
      */
-    private boolean error(int pos) {
-        int nobs = countMeasurements(pos);
-        if (nobs == 0) {
-            perrors = null;
-            return false;
+    private void error(int pos) {
+        int dim = ssf.getStateDim();
+        DoubleSequence x=data.get(pos);
+        int nmissing = x.count(y -> Double.isInfinite(y));
+        int nobs = x.length() - nmissing;
+        if (nobs == 0)
+            updinfo=null;
+        int[] obs;
+        if (nmissing != 0) {
+            obs = new int[nobs];
+            Doubles.search(x, y -> Double.isFinite(y), obs);
         } else {
-        ISsfInitialization initialization = ssf.getInitialization();
-            perrors = new AugmentedPredictionErrors(initialization.getStateDim(), nobs, initialization.getDiffuseDim());
-            Matrix L = perrors.getCholeskyFactor();
-            // K = PZ'(ZPZ'+H)^-1/2
-            // computes (ZP)' in K'. 
-            // Z~v x r, P~r x r, K~r x v
-            // F = ZPZ'+H ~ v x v
-            // L = F^-1/2 ~ v x v
-            Matrix F = L, K = perrors.getK();
-            // K' = ZP or K = PZ'
-            ZM(pos, state.P(), K.transpose());
-            // computes ZPZ'; results in L
-            ZM(pos, K, F);
-            addH(pos, L);
-            // to avoid numerical problems
-            SymmetricMatrix.reenforceSymmetry(L);
-
-            // L contains now the Cholesky factor !!!
-            SymmetricMatrix.lcholesky(L, State.ZERO);
-
-            // We put in K  PZ'*(ZPZ'+H)^-1/2 = PZ'* L'^-1
-            // K L' = PZ' or L K' = ZP
-            LowerTriangularMatrix.rsolve(L, K.transpose(), State.ZERO);
-            DataBlock U = perrors.getTransformedPredictionErrors();
-            for (int i = 0, j = 0; i < measurements.getCount(pos); ++i) {
-                if (!data.isMissing(pos, i)) {
-                    double y = data.get(pos, i);
-                    U.set(j, y - measurements.ZX(pos, i, state.a()));
-                    ++j;
-                }
-            }
-            // U = e*L'^-1 or U L' = e or L*U' = e'
-            LowerTriangularMatrix.rsolve(L, U, State.ZERO);
-            Matrix E = perrors.E();
-            // E is ndiffuse x nobs. Each column contains the diffuse effects
-            // on the corresponding variable
-            ZM(pos, state.B(), E.transpose());
-            E.chs();
-            DataBlockIterator erows = E.rowsIterator();
-            while (erows.hasNext()) {
-                LowerTriangularMatrix.rsolve(L, erows.next(), State.ZERO);
-            };
-            return true;
+            obs = null;
         }
+        updinfo = new MultivariateAugmentedUpdateInformation(dim, nobs, state.getDiffuseDim());
+        updinfo.compute(ssf, pos, state, x, obs);
     }
 
     /**
      * Updates the state vector and its covariance a(t|t) = a(t|t-1) + e(t)
      */
     protected void update() {
-        if (perrors == null) {
+        if (updinfo == null) {
             return;
         }
-        int n = perrors.getK().getColumnsCount();
+        int n = updinfo.getK().getColumnsCount();
         // P = P - (M)* F^-1 *(M)' --> Symmetric
         // PZ'(LL')^-1 ZP' =PZ'L'^-1*L^-1*ZP'
         // A = a + (M)* F^-1 * v
         Matrix P = state.P();
-        DataBlock U = perrors.getTransformedPredictionErrors();
-        Matrix K = perrors.getK();
+        DataBlock U = updinfo.getTransformedPredictionErrors();
+        Matrix K = updinfo.getK();
         for (int i = 0; i < n; ++i) {
-//            for (int j = 0; j < n; ++j) {
-//                P.addXaYt(-1, K.column(i), K.column(j));//, state_.K.column(i));
-//            }
             state.a().addAY(U.get(i), K.column(i));
             P.addXaXt(-1, K.column(i));//, state_.K.column(i));
         }
         DataBlockIterator acols = state.B().columnsIterator();
         int apos=0;
         while (acols.hasNext()) {
-            DataBlock row = perrors.E().row(apos++);
+            DataBlock row = updinfo.E().row(apos++);
             for (int i = 0; i < n; ++i) {
                 acols.next().addAY(row.get(i), K.column(i));
             }
@@ -233,14 +146,15 @@ public class MultivariateAugmentedFilter {
      * @return
      */
     public boolean process(final IMultivariateSsf ssf, final IMultivariateSsfData data, final IMultivariateAugmentedFilteringResults rslts) {
-        measurements = ssf.getMeasurements();
-        dynamics = ssf.getDynamics();
+        this.ssf=ssf;
+        measurements = ssf.measurements();
+        dynamics = ssf.dynamics();
         this.data = data;
         if (!initState()) {
             return false;
         }
         rslts.open(ssf, data);
-        int t = 0, end = data.getCount();
+        int t = 0, end = data.getObsCount();
 
         while (t < end) {
             if (collapse(rslts)) {
@@ -248,8 +162,9 @@ public class MultivariateAugmentedFilter {
                 break;
             }
             rslts.save(t, state, StateInfo.Forecast);
-            if (error(t)) {
-                rslts.save(t, perrors);
+            error(t);
+            if (updinfo != null) {
+                rslts.save(t, updinfo);
                 update();
             }
             rslts.save(t, state, StateInfo.Concurrent);

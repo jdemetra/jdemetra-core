@@ -23,7 +23,7 @@ import demetra.design.Development;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Beta)
 public enum LengthOfPeriodType {
     /**
      *

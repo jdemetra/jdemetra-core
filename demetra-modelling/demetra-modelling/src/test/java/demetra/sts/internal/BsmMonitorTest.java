@@ -42,14 +42,14 @@ public class BsmMonitorTest {
         BsmMonitor monitor = new BsmMonitor();
         BsmEstimationSpec bspec = new BsmEstimationSpec();
         BsmSpec mspec = new BsmSpec();
-        mspec.setLevelUse(demetra.sts.ComponentUse.Fixed);
+        mspec.setLevelUse(demetra.sts.ComponentUse.Free);
         mspec.setSlopeUse(demetra.sts.ComponentUse.Free);
 //        bspec.setOptimizer(BsmSpecification.Optimizer.LBFGS);
         mspec.setSeasonalModel(SeasonalModel.Crude);
         monitor.setSpecifications(mspec, bspec);
         monitor.process(DoubleSequence.ofInternal(Data.PROD), 12);
-//        System.out.println("New");
-//        System.out.println(monitor.getLikelihood().legacy(true).logLikelihood());
+        System.out.println("New");
+        System.out.println(monitor.getLikelihood().logLikelihood());
 //        System.out.println(monitor.getLikelihood().ser());
     }
 
@@ -59,7 +59,7 @@ public class BsmMonitorTest {
         BsmEstimationSpec bspec = new BsmEstimationSpec();
         bspec.setScalingFactor(false);
         BsmSpec mspec = new BsmSpec();
-        mspec.setLevelUse(demetra.sts.ComponentUse.Fixed);
+        mspec.setLevelUse(demetra.sts.ComponentUse.Free);
         mspec.setSlopeUse(demetra.sts.ComponentUse.Free);
 //        bspec.setOptimizer(BsmSpecification.Optimizer.LBFGS);
         mspec.setSeasonalModel(SeasonalModel.Crude);
@@ -68,11 +68,11 @@ public class BsmMonitorTest {
 //        System.out.println("New no scaling");
 //        System.out.println(monitor.getLikelihood().legacy(true).logLikelihood());
 //        System.out.println(monitor.getLikelihood().ser());
-        mspec.fixComponent(2, Component.Noise);
+        mspec.fixComponent(5, Component.Noise);
         monitor.setSpecifications(mspec, bspec);
         monitor.process(DoubleSequence.ofInternal(Data.PROD), 12);
-//        System.out.println("New no scaling; fixed noise var = "+mspec.getNoiseVar());
-//        System.out.println(monitor.getLikelihood().legacy(true).logLikelihood());
+        System.out.println("New no scaling; fixed noise var = "+mspec.getNoiseVar());
+        System.out.println(monitor.getLikelihood().logLikelihood());
 //        System.out.println(monitor.getLikelihood().ser());
     }
 
@@ -81,12 +81,12 @@ public class BsmMonitorTest {
         ec.tstoolkit.structural.BsmMonitor monitor = new ec.tstoolkit.structural.BsmMonitor();
         ec.tstoolkit.structural.BsmSpecification bspec = new ec.tstoolkit.structural.BsmSpecification();
         bspec.getModelSpecification().setSeasonalModel(ec.tstoolkit.structural.SeasonalModel.Crude);
-        bspec.getModelSpecification().useCycle(ComponentUse.Free);
+//        bspec.getModelSpecification().useCycle(ComponentUse.Free);
 //        bspec.setOptimizer(ec.tstoolkit.structural.BsmSpecification.Optimizer.LBFGS);
         monitor.setSpecification(bspec);
         monitor.process(Data.PROD, 12);
-//        System.out.println("Legacy");
-//        System.out.println(monitor.getLikelihood().getLogLikelihood());
+        System.out.println("Legacy");
+        System.out.println(monitor.getLikelihood().getLogLikelihood());
     }
 
     @Test

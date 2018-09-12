@@ -25,9 +25,11 @@ import demetra.ssf.State;
 import demetra.ssf.univariate.IFilteringResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.UpdateInformation;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  * Array form copyOf the Kalman filter
@@ -37,12 +39,13 @@ import demetra.ssf.ISsfInitialization;
 public class ArrayFilter {
 
     private LState state_;
-    private UpdateInformation pe_;
+    private UpdateInformation predictionError;
     private ISsf ssf;
-    private ISsfMeasurement measurement;
+    private ISsfLoading loading;
+    private ISsfError error;
     private ISsfDynamics dynamics;
     private ISsfData data_;
-    private int pos_, end_, dim_, nres_;
+    private int curPos, end, dim_, nres_;
     private Matrix A;
 
     /**
@@ -55,13 +58,13 @@ public class ArrayFilter {
      */
     protected void error() {
 
-        double y = data_.get(pos_);
-        pe_.set(y - measurement.ZX(pos_, state_.a));
+        double y = data_.get(curPos);
+        predictionError.set(y - loading.ZX(curPos, state_.a));
     }
 
     private boolean initFilter() {
-        pos_ = 0;
-        end_ = data_.length();
+        curPos = 0;
+        end = data_.length();
         nres_ = dynamics.getInnovationsDim();
         dim_ = ssf.getStateDim();
         A = Matrix.make(dim_ + 1, dim_ + 1 + nres_);
@@ -70,8 +73,8 @@ public class ArrayFilter {
 
     private void initState() {
         state_ = new LState(L());
-        pe_ = new UpdateInformation(dim_);
-        ISsfInitialization initialization = ssf.getInitialization();
+        predictionError = new UpdateInformation(dim_);
+        ISsfInitialization initialization = ssf.initialization();
         initialization.a0(state_.a);
         Matrix P0 = Matrix.make(dim_, dim_);
         initialization.Pf0(P0);
@@ -88,47 +91,48 @@ public class ArrayFilter {
      */
     public boolean process(final ISsf ssf, final ISsfData data, final IFilteringResults rslts) {
         this.ssf=ssf;
-        measurement = ssf.getMeasurement();
-        dynamics = ssf.getDynamics();
+        loading = ssf.loading();
+        error=ssf.measurementError();
+        dynamics = ssf.dynamics();
         data_ = data;
         if (!initFilter()) {
             return false;
         }
         initState();
-        pos_ = 0;
+        curPos = 0;
         do {
             preArray();
             ElementaryTransformations.fastGivensTriangularize(A);
             postArray();
             error();
-            rslts.save(pos_, pe_);
+            rslts.save(curPos, predictionError);
             nextState();
-        } while (++pos_ < end_);
+        } while (++curPos < end);
         return true;
     }
 
     private void preArray() {
-        measurement.ZM(pos_, L(), ZL());
-        dynamics.TM(pos_, L());
+        loading.ZM(curPos, L(), ZL());
+        dynamics.TM(curPos, L());
         U().set(0);
-        dynamics.S(pos_, U());
+        dynamics.S(curPos, U());
         K().set(0);
-        if (measurement.hasError(pos_))
-            A.set(0,0, Math.sqrt(measurement.errorVariance(pos_)));
+        if (error != null)
+            A.set(0,0, Math.sqrt(error.at(curPos)));
         else
             A.set(0,0,0);
     }
 
     private void postArray() {
         double e=A.get(0,0);
-        pe_.setStandardDeviation(e);
-        pe_.M().copy(K());
-        pe_.M().mul(e);
+        predictionError.setStandardDeviation(e);
+        predictionError.M().copy(K());
+        predictionError.M().mul(e);
     }
 
     private void nextState() {
-        dynamics.TX(pos_, state_.a);
-        state_.a.addAY(pe_.get() / pe_.getVariance(), pe_.M());
+        dynamics.TX(curPos, state_.a);
+        state_.a.addAY(predictionError.get() / predictionError.getVariance(), predictionError.M());
      }
 
     private DataBlock K() {

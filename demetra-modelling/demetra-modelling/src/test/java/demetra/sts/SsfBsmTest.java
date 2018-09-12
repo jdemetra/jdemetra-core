@@ -35,20 +35,21 @@ public class SsfBsmTest {
 
     static final int N = 50000;
 
-    final SsfBsm bsm;
+    final SsfBsm2 bsm;
 
     public SsfBsmTest() {
         BsmSpec mspec = new BsmSpec();
         mspec.setSeasonalModel(SeasonalModel.Crude);
         BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
-        bsm = SsfBsm.of(model);
+        model.setVariance(Component.Seasonal, 100);
+        bsm = SsfBsm2.of(model);
     }
 
     @Test
     public void testLikelihood() {
-        SsfData data = new SsfData(Data.EXPORTS);
+        SsfData data = new SsfData(Data.PROD);
         DkLikelihood ll1 = DkToolkit.likelihoodComputer(true, true).compute(bsm, data);
-//        System.out.println(ll);
+        System.out.println(ll1);
         DkLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(bsm, data);
 //        System.out.println(ll2);
         DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(true).compute(bsm, data);

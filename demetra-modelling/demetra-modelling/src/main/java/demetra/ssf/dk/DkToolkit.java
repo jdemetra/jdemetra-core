@@ -44,45 +44,59 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.OrdinaryFilter;
 import demetra.ssf.univariate.SsfRegressionModel;
 import demetra.data.DoubleSequence;
+import demetra.ssf.StateInfo;
+import demetra.ssf.StateStorage;
+import demetra.ssf.multivariate.IMultivariateSsf;
+import demetra.ssf.multivariate.IMultivariateSsfData;
+import demetra.ssf.multivariate.M2uAdapter;
+import demetra.ssf.multivariate.SsfMatrix;
 
 /**
  *
  * @author Jean Palate
  */
+@lombok.experimental.UtilityClass
 public class DkToolkit {
 
-    private DkToolkit() {
+    public DkLikelihood likelihood(ISsf ssf, ISsfData data) {
+        return likelihoodComputer().compute(ssf, data);
     }
 
-    public static ILikelihoodComputer<DkLikelihood> likelihoodComputer() {
+    public DkLikelihood likelihood(IMultivariateSsf ssf, IMultivariateSsfData data) {
+        ISsf ussf = M2uAdapter.of(ssf);
+        ISsfData udata = M2uAdapter.of(data);
+        return likelihoodComputer().compute(ussf, udata);
+    }
+
+    public ILikelihoodComputer<DkLikelihood> likelihoodComputer() {
         return likelihoodComputer(true, false);
     }
 
-    public static ILikelihoodComputer<DkLikelihood> likelihoodComputer(boolean res) {
+    public ILikelihoodComputer<DkLikelihood> likelihoodComputer(boolean res) {
         return likelihoodComputer(true, res);
     }
 
-    public static ILikelihoodComputer<DkLikelihood> likelihoodComputer(boolean sqr, boolean res) {
+    public ILikelihoodComputer<DkLikelihood> likelihoodComputer(boolean sqr, boolean res) {
         return sqr ? new LLComputer2(res) : new LLComputer1(res);
     }
 
-    public static IConcentratedLikelihoodComputer<DkConcentratedLikelihood> concentratedLikelihoodComputer() {
+    public IConcentratedLikelihoodComputer<DkConcentratedLikelihood> concentratedLikelihoodComputer() {
         return concentratedLikelihoodComputer(true, false, true);
     }
 
-    public static IConcentratedLikelihoodComputer<DkConcentratedLikelihood> concentratedLikelihoodComputer(boolean sqr, boolean fast, boolean scalingFactor) {
+    public IConcentratedLikelihoodComputer<DkConcentratedLikelihood> concentratedLikelihoodComputer(boolean sqr, boolean fast, boolean scalingFactor) {
         return new CLLComputer(sqr, fast, scalingFactor);
     }
 
-    public static <S, F extends ISsf> SsfFunction<S, F> likelihoodFunction(ISsfData data, IParametricMapping<S> mapping, ISsfBuilder<S, F> builder) {
+    public <S, F extends ISsf> SsfFunction<S, F> likelihoodFunction(ISsfData data, IParametricMapping<S> mapping, ISsfBuilder<S, F> builder) {
         return SsfFunction.builder(data, mapping, builder).build();
     }
 
-    public static <F extends ISsf> SsfFunction<F, F> likelihoodFunction(ISsfData data, IParametricMapping<F> mapping) {
+    public <F extends ISsf> SsfFunction<F, F> likelihoodFunction(ISsfData data, IParametricMapping<F> mapping) {
         return SsfFunction.builder(data, mapping, (F f) -> f).build();
     }
 
-    public static DefaultDiffuseFilteringResults filter(ISsf ssf, ISsfData data, boolean all) {
+    public DefaultDiffuseFilteringResults filter(ISsf ssf, ISsfData data, boolean all) {
         DefaultDiffuseFilteringResults frslts = all
                 ? DefaultDiffuseFilteringResults.full() : DefaultDiffuseFilteringResults.light();
         frslts.prepare(ssf, 0, data.length());
@@ -92,7 +106,7 @@ public class DkToolkit {
         return frslts;
     }
 
-    public static DefaultDiffuseSquareRootFilteringResults sqrtFilter(ISsf ssf, ISsfData data, boolean all) {
+    public DefaultDiffuseSquareRootFilteringResults sqrtFilter(ISsf ssf, ISsfData data, boolean all) {
         DefaultDiffuseSquareRootFilteringResults frslts = all
                 ? DefaultDiffuseSquareRootFilteringResults.full() : DefaultDiffuseSquareRootFilteringResults.light();
         frslts.prepare(ssf, 0, data.length());
@@ -102,7 +116,7 @@ public class DkToolkit {
         return frslts;
     }
 
-    public static DefaultSmoothingResults smooth(ISsf ssf, ISsfData data, boolean all) {
+    public DefaultSmoothingResults smooth(ISsf ssf, ISsfData data, boolean all) {
         DiffuseSmoother smoother = new DiffuseSmoother();
         smoother.setCalcVariances(all);
         DefaultSmoothingResults sresults = all ? DefaultSmoothingResults.full()
@@ -116,6 +130,25 @@ public class DkToolkit {
         } else {
             return null;
         }
+    }
+
+    public StateStorage smooth(IMultivariateSsf ssf, IMultivariateSsfData data, boolean all) {
+        ISsf ussf = M2uAdapter.of(ssf);
+        ISsfData udata = M2uAdapter.of(data);
+        DefaultSmoothingResults sr = sqrtSmooth(ussf, udata, all);
+        StateStorage ss = all ? StateStorage.full(StateInfo.Smoothed) : StateStorage.light(StateInfo.Smoothed);
+        int m = data.getVarsCount(), n = data.getObsCount();
+        ss.prepare(ussf.getStateDim(), 0, n);
+        if (all) {
+            for (int i = 0; i < n; ++i) {
+                ss.save(i, sr.a(i * m), sr.P(i * m));
+            }
+        } else {
+            for (int i = 0; i < n; ++i) {
+                ss.save(i, sr.a(i * m), null);
+            }
+        }
+        return ss;
     }
 
     public static boolean smooth(ISsf ssf, ISsfData data, ISmoothingResults sresults) {

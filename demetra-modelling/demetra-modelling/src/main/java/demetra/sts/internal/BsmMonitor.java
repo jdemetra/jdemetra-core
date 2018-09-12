@@ -152,9 +152,9 @@ public class BsmMonitor {
             m_ll = fnmax_.getLikelihood();
             ok = false;
         }
-        if (m_factor != 1) {
-            m_ll = m_ll.rescale(m_factor, null);
-        }
+//        if (m_factor != 1) {
+//            m_ll = m_ll.rescale(m_factor, null);
+//        }
         return ok;
     }
     
@@ -391,9 +391,9 @@ public class BsmMonitor {
         if (scalingFactor) {
             AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
             DataBlock Y = DataBlock.ofInternal(m_y);
-            m_factor = normalizer.normalize(Y);
+//            m_factor = normalizer.normalize(Y);
         } else {
-            m_factor = 1;
+//            m_factor = 1;
         }
         boolean rslt = estimate();
         return rslt;
@@ -468,7 +468,8 @@ public class BsmMonitor {
     public IFunction likelihoodFunction() {
         BsmMapping mapper = new BsmMapping(m_bsm.specification(), m_bsm.getPeriod(), Transformation.None);
         SsfFunction<BasicStructuralModel, SsfBsm2> fn = buildFunction(mapper, false);
-        double a = (m_ll.dim() - m_ll.ndiffuse()) * Math.log(m_factor);
+        double a = (m_ll.dim() - m_ll.ndiffuse()) ;
+//        double a = (m_ll.dim() - m_ll.ndiffuse()) * Math.log(m_factor);
         return new TransformedFunction(fn, TransformedFunction.linearTransformation(-a, 1));
     }
     

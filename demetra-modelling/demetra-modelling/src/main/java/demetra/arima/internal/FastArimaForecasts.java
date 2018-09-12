@@ -82,7 +82,7 @@ public class FastArimaForecasts implements IArimaForecasts {
             DataBlock res = residuals(data);
             // residuals i correspond to t=i+p-q
             double[] fcasts = new double[nf];
-            int p = ar.getDegree();
+            int p = ar.degree();
             double[] y = new double[p];
             // copy the last obs, in reverse order.
             int last = data.length() - 1;
@@ -90,7 +90,7 @@ public class FastArimaForecasts implements IArimaForecasts {
                 y[i] = data.get(last - i);
             }
             // copy the last residuals in reverse order
-            int q = ma.getDegree();
+            int q = ma.degree();
             double[] e = new double[q];
             // copy the last obs, in reverse order.
             last = res.length() - 1;
@@ -126,8 +126,8 @@ public class FastArimaForecasts implements IArimaForecasts {
             // step 1. AR filter w, if necessary
             DataBlock z = w;
 
-            int p = ar.getDegree();
-            int q = ma.getDegree();
+            int p = ar.degree();
+            int q = ma.degree();
             if (p > 0) {
                 z = DataBlock.make(w.length() - p);
                 arima.getAR().apply(w, z);

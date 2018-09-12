@@ -57,7 +57,7 @@ public abstract class AbstractRootSelector implements IRootSelector {
 
     @Override
     public boolean select(final Polynomial p) {
-	if (p.getDegree() == 0) {
+	if (p.degree() == 0) {
 	    notSelected = p;
 	    selected = null;
 	    return false;

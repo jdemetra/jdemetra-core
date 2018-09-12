@@ -24,7 +24,7 @@ import java.util.Iterator;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
+@Development(status = Development.Status.Beta)
 @lombok.Value
 public class FixedDay implements IHoliday {
 
@@ -87,16 +87,16 @@ public class FixedDay implements IHoliday {
         if (offset == 0) {
             return this;
         }
-        int pos = Utility.getCumulatedMonthDays(month) + day;
+        int pos = CalendarUtility.getCumulatedMonthDays(month) + day;
         pos += offset;
         if (pos < 0 || pos >= 365) {
             return null;
         }
         int nmonth = 0;
-        while (pos >= Utility.getCumulatedMonthDays(nmonth + 1)) {
+        while (pos >= CalendarUtility.getCumulatedMonthDays(nmonth + 1)) {
             ++nmonth;
         }
-        int nday = pos - Utility.getCumulatedMonthDays(nmonth);
+        int nday = pos - CalendarUtility.getCumulatedMonthDays(nmonth);
         // avoid leap year
         if (month <= 1 && nmonth >= 2) {
             return null;

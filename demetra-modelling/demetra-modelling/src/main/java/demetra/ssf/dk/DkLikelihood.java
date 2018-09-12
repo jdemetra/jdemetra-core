@@ -21,6 +21,7 @@ import demetra.design.Immutable;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
+import demetra.maths.Constants;
 
 /**
  * The diffuse likelihood follows the definition provided in the paper:
@@ -101,7 +102,7 @@ public class DkLikelihood implements ILikelihood {
     private final double ll, ssqerr, ldet, lddet;
     private final int nobs, nd;
     private final double[] res;
-    private final boolean legacy, concentratedScalingFactor;
+    private final boolean legacy, scalingFactor;
 
     /**
      * Initialize the diffuse likelihood. We consider below the GLS problem
@@ -129,7 +130,7 @@ public class DkLikelihood implements ILikelihood {
      * @return
      */
     private DkLikelihood(boolean concentrated, int n, int nd, double ssqerr, double ldet, double lddet, double[] res, boolean legacy) {
-        this.concentratedScalingFactor = concentrated;
+        this.scalingFactor = concentrated;
         this.nobs = n;
         this.nd = nd;
         this.ssqerr = ssqerr;
@@ -139,13 +140,13 @@ public class DkLikelihood implements ILikelihood {
         this.legacy = legacy;
         int m = legacy ? nobs : nobs - nd;
         if (m > 0) {
-            if (concentratedScalingFactor) {
+            if (scalingFactor) {
                 ll = -.5
-                        * (m * Math.log(2 * Math.PI) + m
+                        * (m * Constants.LOGTWOPI + m
                         * (1 + Math.log(ssqerr / m)) + ldet + lddet);
             } else {
                 ll = -.5
-                        * (m * Math.log(2 * Math.PI) + ssqerr + ldet + lddet);
+                        * (m * Constants.LOGTWOPI + ssqerr + ldet + lddet);
             }
         } else {
             ll = Double.NaN;
@@ -173,7 +174,7 @@ public class DkLikelihood implements ILikelihood {
         if (this.legacy == legacy) {
             return this;
         } else {
-            return new DkLikelihood(concentratedScalingFactor, nobs, nd, ssqerr, ldet, lddet, res, legacy);
+            return new DkLikelihood(scalingFactor, nobs, nd, ssqerr, ldet, lddet, res, legacy);
         }
     }
 
@@ -247,7 +248,7 @@ public class DkLikelihood implements ILikelihood {
                     nres[i] = Double.isFinite(res[i]) ? res[i] / factor : Double.NaN;
                 }
             }
-            return new DkLikelihood(concentratedScalingFactor, nobs, nd, ssqerr / factor * factor, ldet, lddet, nres, legacy);
+            return new DkLikelihood(scalingFactor, nobs, nd, ssqerr / factor * factor, ldet, lddet, nres, legacy);
         }
     }
 

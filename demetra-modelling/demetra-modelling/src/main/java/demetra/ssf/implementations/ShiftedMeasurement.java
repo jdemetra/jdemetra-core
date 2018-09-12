@@ -16,73 +16,34 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
- * Shifted measurement: Zshift(t) = Z(pos + shift) 
+ * Shifted measurement: Zshift(t) = Z(pos + shift)
  *
  * @author Jean Palate
  */
 public class ShiftedMeasurement implements ISsfMeasurement {
 
-    private final ISsfMeasurement m;
-    private final int shift;
-    
+    private final ShiftedLoading loading;
+    private final ShiftedError error;
+
     public ShiftedMeasurement(ISsfMeasurement m, int shift) {
-        this.m = m;
-        this.shift = shift;
+        this.loading = new ShiftedLoading(m.loading(), shift);
+        ISsfError e = m.error();
+        error = e == null ? null : new ShiftedError(e, shift);
     }
-    
+
     @Override
-    public boolean isTimeInvariant() {
-        return m.isTimeInvariant();
+    public ISsfLoading loading() {
+        return loading;
     }
-    
+
     @Override
-    public boolean areErrorsTimeInvariant() {
-        return m.areErrorsTimeInvariant();
-    }
-    
-    @Override
-    public void Z(int pos, DataBlock z) {
-        m.Z(pos + shift, z);
-    }
-    
-    @Override
-    public boolean hasErrors() {
-        return m.hasErrors();
-    }
-    
-    @Override
-    public boolean hasError(int pos) {
-        return m.hasError(pos + shift);
-    }
-    
-    @Override
-    public double errorVariance(int pos) {
-        return m.errorVariance(pos + shift);
-    }
-    
-    @Override
-    public double ZX(int pos, DataBlock b) {
-        return m.ZX(pos + shift, b);
-    }
-    
-    @Override
-    public double ZVZ(int pos, Matrix V) {
-        return m.ZVZ(pos + shift, V);
-    }
-    
-    @Override
-    public void VpZdZ(int pos, Matrix V, double d) {
-        m.VpZdZ(pos + shift, V, d);
-    }
-    
-    @Override
-    public void XpZd(int pos, DataBlock x, double d) {
-        m.XpZd(pos + shift, x, d);
+    public ISsfError error() {
+        return error;
     }
 
 }

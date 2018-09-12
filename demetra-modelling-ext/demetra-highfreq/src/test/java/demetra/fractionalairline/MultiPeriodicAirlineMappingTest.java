@@ -50,7 +50,7 @@ public class MultiPeriodicAirlineMappingTest {
     public MultiPeriodicAirlineMappingTest() {
     }
 
-    @Test
+    //@Test
     public void testDaily() throws IOException, URISyntaxException {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/edf.txt").toURI();
         MatrixType edf = MatrixSerializer.read(new File(uri));
@@ -71,7 +71,7 @@ public class MultiPeriodicAirlineMappingTest {
 //        System.out.println(ucm.getComponent(2).getMA().asPolynomial().coefficients());
     }
 
-    @Test
+    //@Test
     public void testDaily2() throws IOException, URISyntaxException {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/edf.txt").toURI();
         MatrixType edf = MatrixSerializer.read(new File(uri));

@@ -21,43 +21,26 @@ package demetra.ssf.models;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
-import demetra.ssf.implementations.Measurement;
+import demetra.ssf.implementations.Loading;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.SsfComponent;
 
 /**
  *
  * @author Jean Palate
  */
-public class AR1 extends Ssf {
+@lombok.experimental.UtilityClass
+public class AR1 {
 
-    public static AR1 of(final double rho) {
+    public SsfComponent of(final double rho) {
         Data data = new Data(rho, 1, false);
-        return new AR1(data);
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
 
-    public static AR1 of(final double rho, final double var, final boolean zeroinit) {
+    public static SsfComponent of(final double rho, final double var, final boolean zeroinit) {
         Data data = new Data(rho, var, zeroinit);
-        return new AR1(data);
-    }
-
-    private AR1(Data data) {
-        super(new Initialization(data), new Dynamics(data), Measurement.create(0));
-        this.data = data;
-    }
-
-    private final Data data;
-
-    public double getRho() {
-        return data.rho;
-    }
-
-    public double getInnovationVariance() {
-        return data.var;
-    }
-
-    public boolean isZeroInitialization() {
-        return data.zeroinit;
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
 
     static class Data {

@@ -105,8 +105,7 @@ public class Utility {
         if (nc == 1) {
             return Math.abs(c.get(0)) < 1;
         }
-        double[] coeff = new double[nc];
-        c.copyTo(coeff, 0);
+        double[] coeff = c.toArray();
         double[] pat = new double[nc];
         double[] pu = new double[nc];
         for (int i = coeff.length - 1; i >= 0; --i) {

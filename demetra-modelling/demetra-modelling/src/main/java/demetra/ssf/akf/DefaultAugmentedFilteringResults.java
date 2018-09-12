@@ -53,7 +53,7 @@ public class DefaultAugmentedFilteringResults extends DefaultFilteringResults im
     @Override
     public void prepare(ISsf ssf, final int start, final int end) {
         super.prepare(ssf, start, end);
-        ISsfInitialization initialization = ssf.getInitialization();
+        ISsfInitialization initialization = ssf.initialization();
         int dim = initialization.getStateDim(), n = initialization.getDiffuseDim();
         B.prepare(dim, n, 0, n);
         E.prepare(n, 0, n);

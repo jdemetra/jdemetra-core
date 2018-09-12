@@ -245,11 +245,11 @@ public class UnitRoots implements Cloneable {
      * @return
      */
     public static Polynomial divide(final Polynomial p, final UnitRoots ur) {
-        if (p.getDegree() < ur.getRootsCount()) {
+        if (p.degree() < ur.getRootsCount()) {
             return null;
         }
-        double[] tmp = new double[p.getDegree() + 1 + ur.getDenomDegree()];
-        int nc = p.getDegree() + 1;
+        double[] tmp = new double[p.degree() + 1 + ur.getDenomDegree()];
+        int nc = p.degree() + 1;
         for (int i = 0; i < nc; ++i) {
             tmp[i] = p.get(i);
         }
@@ -289,8 +289,8 @@ public class UnitRoots implements Cloneable {
      * @return
      */
     public static Polynomial multiply(final Polynomial p, final UnitRoots ur) {
-        double[] tmp = new double[p.getDegree() + 1 + ur.getNumDegree()];
-        int nc = p.getDegree() + 1;
+        double[] tmp = new double[p.degree() + 1 + ur.getNumDegree()];
+        int nc = p.degree() + 1;
         for (int i = 0; i < nc; ++i) {
             tmp[i] = p.get(i);
         }

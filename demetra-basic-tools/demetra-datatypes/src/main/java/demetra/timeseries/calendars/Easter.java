@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.calendars;
 
+import demetra.design.Development;
 import java.time.LocalDate;
 
 /**
@@ -23,6 +24,7 @@ import java.time.LocalDate;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
+@Development(status = Development.Status.Beta)
 public class Easter {
 
     /**

@@ -139,8 +139,8 @@ public class SeasonalSelector extends AbstractRootSelector {
                 notSelected=div.getQuotient();
             }else
                 break;
-        }while (p.getDegree()>=S.getDegree());
-        return selected.getDegree()>0;
+        }while (p.degree()>=S.degree());
+        return selected.degree()>0;
     }
 
 }

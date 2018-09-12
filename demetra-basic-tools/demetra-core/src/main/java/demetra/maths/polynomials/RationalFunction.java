@@ -127,10 +127,10 @@ public class RationalFunction {
         Polynomial cn = num, cd = denom;
 
         // size of the numerator:
-        int p = cd.getDegree() + 1;
+        int p = cd.degree() + 1;
         int q = p;// -1;
-        if (cn.getDegree() + 1 - n > q) {
-            q = cn.getDegree() + 1 - n;
+        if (cn.degree() + 1 - n > q) {
+            q = cn.degree() + 1 - n;
         }
         if (q == 0) {
             return new RationalFunction();
@@ -249,7 +249,7 @@ public class RationalFunction {
      * @return
      */
     public boolean isFinite() {
-        return denom.getDegree() == 0;
+        return denom.degree() == 0;
     }
 
     /**
@@ -327,8 +327,8 @@ public class RationalFunction {
         Polynomial pn = num;
 
         int k0 = 1;
-        int p = pd.getDegree();
-        int q = pn.getDegree();
+        int p = pd.degree();
+        int q = pn.degree();
         double d = pd.get(0);
 
         // trivial case

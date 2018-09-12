@@ -35,22 +35,21 @@ import demetra.maths.PolynomialType;
 @lombok.Builder(toBuilder=true)
 public class SarimaType  {
 
-    int period;
-    int d, bd;
-    @lombok.NonNull PolynomialType phi;
-    @lombok.NonNull PolynomialType theta;
-    @lombok.NonNull PolynomialType bphi;
-    @lombok.NonNull PolynomialType btheta;
-
-    public static SarimaTypeBuilder builder(){
-        SarimaTypeBuilder builder= new SarimaTypeBuilder();
-        builder.period=1;
-        builder.phi=PolynomialType.ONE;
-        builder.theta=PolynomialType.ONE;
-        builder.bphi=PolynomialType.ONE;
-        builder.btheta=PolynomialType.ONE;
-        return builder;
-    }
+    @lombok.Builder.Default
+    private int period=1;
+    private int d, bd;
+    @lombok.Builder.Default
+    @lombok.NonNull 
+    private PolynomialType phi=PolynomialType.ONE;
+    @lombok.Builder.Default
+    @lombok.NonNull 
+    private PolynomialType theta=PolynomialType.ONE;
+    @lombok.Builder.Default
+    @lombok.NonNull 
+    private PolynomialType bphi=PolynomialType.ONE;
+    @lombok.Builder.Default
+    @lombok.NonNull 
+    private PolynomialType btheta=PolynomialType.ONE;
 
     /**
      *
@@ -60,10 +59,10 @@ public class SarimaType  {
         SarimaSpecification spec = new SarimaSpecification(period);
         spec.setD(d);
         spec.setBd(bd);
-        spec.setP(phi.getDegree());
-        spec.setBp(bphi.getDegree());
-        spec.setQ(theta.getDegree());
-        spec.setBq(btheta.getDegree());
+        spec.setP(phi.degree());
+        spec.setBp(bphi.degree());
+        spec.setQ(theta.degree());
+        spec.setBq(btheta.degree());
         return spec;
     }
 

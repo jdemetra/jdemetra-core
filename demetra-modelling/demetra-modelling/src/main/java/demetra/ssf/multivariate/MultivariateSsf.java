@@ -18,48 +18,41 @@ package demetra.ssf.multivariate;
 
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
-import demetra.ssf.implementations.Measurement;
-import demetra.ssf.implementations.Measurements;
-import demetra.ssf.univariate.ISsf;
 
 /**
  *
  * @author Jean Palate
  */
 public class MultivariateSsf implements IMultivariateSsf {
+
+    private final ISsfInitialization initializer;
+    private final ISsfDynamics dynamics;
+    private final ISsfMeasurements measurements;
     
-    public static MultivariateSsf proxy(ISsf ssf){
-        return new MultivariateSsf(ssf.getInitialization(), ssf.getDynamics(), Measurements.proxy(ssf.getMeasurement()));
-    }
-
-    protected final ISsfInitialization initialization;
-    protected final ISsfDynamics dynamics;
-    protected final ISsfMeasurements measurements;
-
     /**
      *
-     * @param initialization
+     * @param initializer
      * @param dynamics
      * @param measurements
      */
-    public MultivariateSsf(final ISsfInitialization initialization, final ISsfDynamics dynamics, ISsfMeasurements measurements) {
-        this.initialization=initialization;
-        this.dynamics=dynamics;
-        this.measurements=measurements;
+    public MultivariateSsf(final ISsfInitialization initializer, final ISsfDynamics dynamics, final ISsfMeasurements measurements) {
+        this.initializer = initializer;
+        this.dynamics = dynamics;
+        this.measurements = measurements;
     }
 
-     @Override
-    public ISsfInitialization getInitialization() {
-        return initialization;
+    @Override
+    public ISsfInitialization initialization() {
+        return initializer;
     }
 
-   @Override
-    public ISsfMeasurements getMeasurements() {
+    @Override
+    public ISsfMeasurements measurements() {
         return measurements;
     }
 
     @Override
-    public ISsfDynamics getDynamics() {
+    public ISsfDynamics dynamics() {
         return dynamics;
     }
 
@@ -67,4 +60,5 @@ public class MultivariateSsf implements IMultivariateSsf {
     public boolean isTimeInvariant() {
         return dynamics.isTimeInvariant() && measurements.isTimeInvariant();
     }
+
 }

@@ -24,6 +24,8 @@ import demetra.ssf.univariate.DisturbanceSmoother;
 import demetra.ssf.univariate.IDisturbanceSmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
+import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
@@ -39,7 +41,8 @@ public class FastStateSmoother {
     
     private ISsf ssf;
     private ISsfDynamics dynamics;
-    private ISsfMeasurement measurement;
+    private ISsfLoading loading;
+    private ISsfError error;
     protected Corrector corrector;
     
     public DataBlockStorage process(ISsf ssf, ISsfData data) {
@@ -47,7 +50,7 @@ public class FastStateSmoother {
         int dim = ssf.getStateDim();
         int n = data.length();
         DataBlockStorage storage = new DataBlockStorage(dim, n);
-        DefaultDisturbanceSmoothingResults srslts = DefaultDisturbanceSmoothingResults.light(measurement.hasErrors());
+        DefaultDisturbanceSmoothingResults srslts = DefaultDisturbanceSmoothingResults.light(error != null);
         srslts.prepare(ssf, 0, n);
         DataBlock a = initialState(ssf, data, srslts);
         storage.save(0, a);
@@ -65,7 +68,7 @@ public class FastStateSmoother {
                 // we suppose that the error is very small, so that we can distribute it on a 
                 // in  a simple way
                 if (!data.isMissing(cur)) {
-                    double e = data.get(cur) - measurement.ZX(cur, a) - srslts.e(cur);
+                    double e = data.get(cur) - loading.ZX(cur, a) - srslts.e(cur);
                     corrector.adjust(cur, a, e);
                 }
             }
@@ -76,12 +79,13 @@ public class FastStateSmoother {
     
     private void initSsf(ISsf ssf) {
         this.ssf=ssf;
-        dynamics = ssf.getDynamics();
-        measurement = ssf.getMeasurement();
+        dynamics = ssf.dynamics();
+        loading = ssf.loading();
+        error=ssf.measurementError();
     }
     
     private DataBlock initialState(ISsf ssf, ISsfData data, IDisturbanceSmoothingResults srslts) {
-        if (ssf.getInitialization().isDiffuse()) {
+        if (ssf.initialization().isDiffuse()) {
             DiffuseDisturbanceSmoother sm = new DiffuseDisturbanceSmoother();
             sm.setCalcVariances(false);
             sm.process(ssf, data, srslts);

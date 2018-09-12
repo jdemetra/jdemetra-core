@@ -21,11 +21,12 @@ import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
 import java.util.HashSet;
 import javax.annotation.Nonnull;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  * State space form for calendarization. State vector: 0: Cumulative (weighted) sum (from
@@ -58,8 +59,8 @@ public class SsfCalendarization {
      */
     public ISsf of(@Nonnull final int[] starts, final double[] weights){
         Data data=new Data(starts, weights);
-        return new Ssf(new Initialization(), new Dynamics(data), new Measurement(data));
-    }
+        return Ssf.of(new Initialization(), new Dynamics(data), new Loading(data));
+     }
 
     static class Data {
 
@@ -319,11 +320,11 @@ public class SsfCalendarization {
 
     }
 
-    static class Measurement implements ISsfMeasurement {
+    static class Loading implements ISsfLoading {
 
         private final Data info;
 
-        Measurement(Data info) {
+        Loading(Data info) {
             this.info = info;
         }
 
@@ -405,26 +406,6 @@ public class SsfCalendarization {
             int postype = info.posType(pos);
             double r = (postype == FIRST) ? 0 : x.get(0);
             return r + info.mweight(pos, x.get(1));
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return false;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return false;
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return 0;
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return true;
         }
 
         @Override

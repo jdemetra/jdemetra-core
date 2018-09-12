@@ -1,86 +1,119 @@
 /*
- * Copyright 2016 National Bank of Belgium
- *  
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions of the EUPL (the "Licence");
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
- *  
- * http://ec.europa.eu/idabc/eupl
- *  
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the Licence is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
- * limitations under the Licence.
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package demetra.ssf.implementations;
 
+import demetra.data.DataBlock;
+import demetra.ssf.CompositeInitialization;
+import demetra.ssf.CompositeDynamics;
+import demetra.design.BuilderPattern;
 import demetra.ssf.ISsfDynamics;
-import demetra.ssf.multivariate.IMultivariateSsf;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.ISsfMeasurement;
-import demetra.ssf.univariate.Ssf;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.SsfComponent;
+import demetra.ssf.StateComponent;
+import demetra.ssf.univariate.ISsf;
+import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.univariate.Measurement;
+import demetra.ssf.univariate.Ssf;
+import java.util.ArrayList;
+import java.util.List;
+import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.util.IntList;
 
 /**
  *
- * @author Jean Palate
+ * @author palatej
  */
-public class CompositeSsf extends Ssf{
-    
-    public static int[] dimensions(ISsf... ssf){
-        int[] dim=new int[ssf.length];
-        for (int i=0; i<dim.length; ++i){
-            dim[i]=ssf[i].getStateDim();
-        }
-        return dim;
-    }
-    
-    public static int[] dimensions(IMultivariateSsf... ssf){
-        int[] dim=new int[ssf.length];
-        for (int i=0; i<dim.length; ++i){
-            dim[i]=ssf[i].getStateDim();
-        }
-        return dim;
+public class CompositeSsf extends Ssf {
+
+    private final int[] pos;
+    private final int[] dim;
+
+    private CompositeSsf(int[] cmpPos, int[] cmpDim, ISsfInitialization init, ISsfDynamics dynamics, ISsfMeasurement measurement) {
+        super(init, dynamics, measurement);
+        this.pos = cmpPos;
+        this.dim = cmpDim;
     }
 
-     CompositeSsf(ISsfInitialization initializer, ISsfDynamics dyn, ISsfMeasurement m){
-        super(initializer, dyn, m);
+    public int[] componentsPosition() {
+        return pos.clone();
     }
-    
-    public static CompositeSsf of(double var, ISsf... ssf ){
-        int[] dim=dimensions(ssf);
-        int n=0;
-        ISsfInitialization[] initializer =new ISsfInitialization[ssf.length];
-        ISsfMeasurement[] measurement =new ISsfMeasurement[ssf.length];
-        ISsfDynamics[] dynamics =new ISsfDynamics[ssf.length];
-        for (int i=0; i<ssf.length; ++i){
-            ISsf cur=ssf[i];
-            n+=cur.getStateDim();
-            initializer[i]=cur.getInitialization();
-            measurement[i]=cur.getMeasurement();
-            dynamics[i]=cur.getDynamics();
+
+    public int[] componentsDimension() {
+        return dim.clone();
+    }
+
+    @BuilderPattern(CompositeSsf.class)
+    public static class Builder {
+
+        private final List<SsfComponent> components = new ArrayList<>();
+        private ISsfError measurementError;
+
+        private int[] dim, pos;
+
+        public Builder add(SsfComponent cmp) {
+            components.add(cmp);
+            return this;
         }
-        return new CompositeSsf(new CompositeInitialization(dim, initializer), 
-                new CompositeDynamics(dim, dynamics), new CompositeMeasurement(dim, measurement, var));
-    }
-    
-    public static CompositeSsf of(WeightedCompositeMeasurement.IWeights weights, ISsf... ssf ){
-        ISsfMeasurement m=WeightedCompositeMeasurement.of(weights, ssf);
-        if (m == null)
-            return null;
-        int[] dim=dimensions(ssf);
-        int n=0;
-        ISsfInitialization[] initializer =new ISsfInitialization[ssf.length];
-        ISsfDynamics[] dynamics =new ISsfDynamics[ssf.length];
-        for (int i=0; i<ssf.length; ++i){
-            ISsf cur=ssf[i];
-            n+=cur.getStateDim();
-            initializer[i]=cur.getInitialization();
-            dynamics[i]=cur.getDynamics();
+
+        public Builder add(StateComponent cmp, ISsfLoading loading) {
+            components.add(new SsfComponent(cmp.initialization(), cmp.dynamics(), loading));
+            return this;
         }
-        return new CompositeSsf(new CompositeInitialization(dim, initializer), 
-                new CompositeDynamics(dim, dynamics), m);
+
+        public Builder measurementError(ISsfError measurementError) {
+            this.measurementError = measurementError;
+            return this;
+        }
+
+        public Builder measurementError(double var) {
+            this.measurementError = MeasurementError.of(var);
+            return this;
+        }
+
+        public CompositeSsf build() {
+            if (components.isEmpty()) {
+                return null;
+            }
+            // build dim / pos
+            int n = components.size();
+            dim = new int[n];
+            pos = new int[n];
+            ISsfInitialization[] i = new ISsfInitialization[n];
+            ISsfDynamics[] d = new ISsfDynamics[n];
+            ISsfLoading[] l = new ISsfLoading[n];
+            int cpos = 0;
+            for (int j = 0; j < n; ++j) {
+                SsfComponent cur = components.get(j);
+                i[j] = cur.initialization();
+                d[j] = cur.dynamics();
+                l[j] = cur.loading();
+                pos[j] = cpos;
+                dim[j] = i[j].getStateDim();
+                cpos += dim[j];
+            }
+            // optimization
+            ISsfLoading cl = Loading.optimize(new CompositeLoading(dim, l), cpos);
+
+            return new CompositeSsf(pos, dim, new CompositeInitialization(dim, i),
+                    new CompositeDynamics(dim, d),
+                    new Measurement(cl, measurementError));
+        }
+
+        public int[] getComponentsDimension() {
+            return dim;
+        }
+
+        public int[] getComponentsPosition() {
+            return pos;
+        }
     }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
 }

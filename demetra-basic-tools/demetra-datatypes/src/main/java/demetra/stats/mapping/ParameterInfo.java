@@ -16,6 +16,7 @@
  */
 package demetra.stats.mapping;
 
+import demetra.design.Development;
 import demetra.information.InformationMapping;
 import demetra.stats.ParameterEstimation;
 
@@ -24,6 +25,7 @@ import demetra.stats.ParameterEstimation;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
+@Development(status = Development.Status.Beta)
 public class ParameterInfo {
     
     private final String VALUE = "value", STDE = "stde", DESC="description";

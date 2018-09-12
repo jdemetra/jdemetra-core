@@ -21,8 +21,8 @@ import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Ssf;
 import java.util.HashSet;
 import javax.annotation.Nonnull;
@@ -54,7 +54,7 @@ public class SsfCalendarizationEx {
      */
     public ISsf of(@Nonnull final int[] starts, final int[] astarts, final double[] weights) {
         Data data = new Data(starts, astarts, weights);
-        return new Ssf(new Initialization(), new Dynamics(data), new Measurement(data));
+        return Ssf.of(new Initialization(), new Dynamics(data), new Loading(data));
     }
 
     static class Data {
@@ -153,7 +153,7 @@ public class SsfCalendarizationEx {
             return true;
         }
 
-         /**
+        /**
          *
          * @param pf0
          */
@@ -209,8 +209,9 @@ public class SsfCalendarizationEx {
         }
 
         /**
-         * case I: pos+1 % c = 0. Last pos T=| 0 0 | | 0 1 | case II: pos % c = 0.
-         * First pos T=| 0 w | | 0 1 | case III: others. Inside T=| 1 w | | 0 1 |
+         * case I: pos+1 % c = 0. Last pos T=| 0 0 | | 0 1 | case II: pos % c =
+         * 0. First pos T=| 0 w | | 0 1 | case III: others. Inside T=| 1 w | | 0
+         * 1 |
          *
          * @param pos
          * @param tr
@@ -348,11 +349,11 @@ public class SsfCalendarizationEx {
 
     }
 
-    static class Measurement implements ISsfMeasurement {
+    static class Loading implements ISsfLoading {
 
         private final Data info;
 
-        Measurement(Data info) {
+        Loading(Data info) {
             this.info = info;
         }
 
@@ -452,26 +453,6 @@ public class SsfCalendarizationEx {
             int postype = info.posType(pos);
             double r = (postype == FIRST) ? 0 : x.get(0);
             return r + info.mweight(pos, x.get(2));
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return false;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return false;
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            return 0;
-        }
-
-        @Override
-        public boolean areErrorsTimeInvariant() {
-            return true;
         }
 
         @Override

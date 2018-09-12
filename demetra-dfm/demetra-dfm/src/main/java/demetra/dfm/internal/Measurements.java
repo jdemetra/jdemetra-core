@@ -17,17 +17,21 @@
 package demetra.dfm.internal;
 
 import demetra.data.DataBlock;
+import demetra.data.DoubleSequence;
 import demetra.dfm.IDfmMeasurement;
 import demetra.dfm.MeasurementDescriptor;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.implementations.TimeInvariantMeasurements;
+import demetra.maths.matrices.QuadraticForm;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.implementations.MeasurementsError;
+import demetra.ssf.multivariate.ISsfErrors;
 import demetra.ssf.multivariate.ISsfMeasurements;
 
 /**
  *
  * @author Jean Palate
  */
-class Measurements extends TimeInvariantMeasurements {
+class Measurements implements ISsfMeasurements {
 
     static Measurements of(int nf, int c, MeasurementDescriptor... mdesc) {
         return new Measurements(mdesc, nf, c);
@@ -35,6 +39,7 @@ class Measurements extends TimeInvariantMeasurements {
 
     private final MeasurementDescriptor[] mdesc;
     private final int nf, c;
+    private final Matrix Z;
 
     private static Matrix Z(MeasurementDescriptor[] mdesc, int nf, int c) {
         int mdim = nf * c, vdim = mdesc.length;
@@ -77,10 +82,10 @@ class Measurements extends TimeInvariantMeasurements {
     }
 
     private Measurements(MeasurementDescriptor[] mdesc, int nf, int c) {
-        super(Z(mdesc, nf, c), H(mdesc), R(mdesc));
         this.mdesc = mdesc;
         this.nf = nf;
         this.c = c;
+        this.Z = Z(mdesc, nf, c);
     }
 
     private static boolean mused(MeasurementDescriptor m, int i) {
@@ -94,54 +99,65 @@ class Measurements extends TimeInvariantMeasurements {
     }
 
     @Override
-    public int getCount(int pos) {
+    public int getCount() {
         return mdesc.length;
     }
 
     @Override
-    public int getMaxCount() {
-        return mdesc.length;
+    public ISsfLoading loading(int equation) {
+        return new Loading(equation);
     }
 
     @Override
-    public boolean isHomogeneous() {
-        return true;
+    public ISsfErrors errors() {
+        return MeasurementsError.of(DoubleSequence.onMapping(mdesc.length, i -> mdesc[i].getVar()));
     }
 
-    @Override
-    public boolean hasErrors() {
-        return true;
-    }
+    class Loading implements ISsfLoading {
 
-    @Override
-    public boolean hasIndependentErrors() {
-        return true;
-    }
+        private final int var;
 
-    @Override
-    public boolean hasError(int pos) {
-        return true;
-    }
-
-    @Override
-    public double ZX(int pos, int var, DataBlock m) {
-        MeasurementDescriptor zdesc = mdesc[var];
-        double r = 0;
-        for (int j = 0, start = 0; j < nf; ++j, start += c) {
-            if (mused(zdesc, j)) {
-                IDfmMeasurement dfm = zdesc.getType();
-                DataBlock cur = m.range(start, start + dfm.getLength());
-                r += zdesc.getCoefficient(j) * dfm.dot(cur);
-            }
+        private Loading(int var) {
+            this.var = var;
         }
-        return r;
-    }
 
-    @Override
-    public void addH(int pos, Matrix V) {
-        DataBlock diagonal = V.diagonal();
-        for (int i = 0; i < mdesc.length; ++i) {
-            diagonal.add(i, mdesc[i].getVar());
+        @Override
+        public double ZX(int pos, DataBlock m) {
+            MeasurementDescriptor zdesc = mdesc[var];
+            double r = 0;
+            for (int j = 0, start = 0; j < nf; ++j, start += c) {
+                if (mused(zdesc, j)) {
+                    IDfmMeasurement dfm = zdesc.getType();
+                    DataBlock cur = m.range(start, start + dfm.getLength());
+                    r += zdesc.getCoefficient(j) * dfm.dot(cur);
+                }
+            }
+            return r;
+        }
+
+        @Override
+        public void Z(int pos, DataBlock z) {
+            z.copy(Z.row(var));
+        }
+
+        @Override
+        public double ZVZ(int pos, Matrix V) {
+            return QuadraticForm.apply(V, Z.row(var));
+        }
+
+        @Override
+        public void VpZdZ(int pos, Matrix V, double d) {
+            V.addXaXt(d, Z.row(var));
+        }
+
+        @Override
+        public void XpZd(int pos, DataBlock x, double d) {
+            x.addAY(d, Z.row(var));
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return true;
         }
     }
 

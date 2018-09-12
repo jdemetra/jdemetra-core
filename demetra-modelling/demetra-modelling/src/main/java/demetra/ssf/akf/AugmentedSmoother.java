@@ -26,10 +26,12 @@ import demetra.ssf.StateInfo;
 import demetra.ssf.univariate.ISmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.OrdinarySmoother;
 import demetra.data.DoubleReader;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *
@@ -39,7 +41,7 @@ public class AugmentedSmoother {
 
     private AugmentedState state;
     private ISsfDynamics dynamics;
-    private ISsfMeasurement measurement;
+    private ISsfLoading loading;
     private ISmoothingResults srslts;
     private IAugmentedFilteringResults frslts;
 
@@ -78,7 +80,7 @@ public class AugmentedSmoother {
     }
 
     private void initSmoother(ISsf ssf, int end) {
-        ISsfInitialization initialization = ssf.getInitialization();
+        ISsfInitialization initialization = ssf.initialization();
         int dim = initialization.getStateDim();
         int nd = initialization.getDiffuseDim();
         state = new AugmentedState(dim, nd);
@@ -196,7 +198,7 @@ public class AugmentedSmoother {
         // compute q=xT*c
         double q = x.dot(C);
         // remove q/f*Z
-        measurement.XpZd(pos, x, -q / f);
+        loading.XpZd(pos, x, -q / f);
     }
 
     private void XL(int pos, DataBlockIterator X) {
@@ -213,7 +215,7 @@ public class AugmentedSmoother {
             // N(t-1) = Z'(t)*Z(t)/f(t) + L'(t)*N(t)*L(t)
             XL(pos, N.rowsIterator());
             XL(pos, N.columnsIterator());
-            measurement.VpZdZ(pos, N, 1 / f);
+            loading.VpZdZ(pos, N, 1 / f);
             SymmetricMatrix.reenforceSymmetry(N);
         } else {
             //T'*N(t)*T
@@ -246,21 +248,21 @@ public class AugmentedSmoother {
         if (!missing && f != 0) {
             // RT
             double c = (e - R.dot(C)) / f;
-            measurement.XpZd(pos, R, c);
+            loading.XpZd(pos, R, c);
             // apply the same to the colums copyOf Rd
             DataBlockIterator rcols = Rd.columnsIterator();
             DoubleReader cell=E.reader();
             while (rcols.hasNext()){
                 DataBlock rcol = rcols.next();
                 c = (cell.next() - rcol.dot(C)) / f;
-                measurement.XpZd(pos, rcol, c);
+                loading.XpZd(pos, rcol, c);
             }
         }
     }
 
     private void initFilter(ISsf ssf) {
-        dynamics = ssf.getDynamics();
-        measurement = ssf.getMeasurement();
+        dynamics = ssf.dynamics();
+        loading = ssf.loading();
     }
 
     public void setCalcVariances(boolean b) {

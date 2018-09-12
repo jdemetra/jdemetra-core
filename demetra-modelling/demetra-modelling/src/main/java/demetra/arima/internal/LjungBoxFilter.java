@@ -206,8 +206,8 @@ public class LjungBoxFilter implements IArmaFilter {
         m_ar = arima.getAR().asPolynomial();
         m_ma = arima.getMA().asPolynomial();
         m_n = n;
-        m_p = m_ar.getDegree();
-        m_q = m_ma.getDegree();
+        m_p = m_ar.degree();
+        m_q = m_ma.degree();
 
         int m = Math.max(m_p, m_q);
         if (m > 0) {

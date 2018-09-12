@@ -58,11 +58,7 @@ public interface IMultivariateSsfData {
      *
      * @return
      */
-    int getCount();
+    int getObsCount();
  
-    boolean isHomogeneous();
-    
-    int getVarsCount(int pos);
-    
-    int getMaxVarsCount();
+    int getVarsCount();
 }

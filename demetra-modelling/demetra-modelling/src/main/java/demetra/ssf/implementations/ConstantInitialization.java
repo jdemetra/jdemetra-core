@@ -26,12 +26,12 @@ import demetra.ssf.ISsfInitialization;
  */
 public class ConstantInitialization implements ISsfInitialization{
     
-    private final int dim, ndiffuse;
+    private final int dim;
     
-    public ConstantInitialization(int dim, int ndiffuse){
+    public ConstantInitialization(int dim){
         this.dim=dim;
-        this.ndiffuse=ndiffuse;
     }
+
     
     @Override
     public int getStateDim() {
@@ -45,7 +45,7 @@ public class ConstantInitialization implements ISsfInitialization{
 
     @Override
     public int getDiffuseDim() {
-        return ndiffuse;
+        return dim;
     }
 
     @Override

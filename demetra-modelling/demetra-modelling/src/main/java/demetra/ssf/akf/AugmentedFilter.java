@@ -23,11 +23,13 @@ import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.ISsfMeasurement;
 import java.util.Iterator;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleReader;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *
@@ -38,7 +40,8 @@ public class AugmentedFilter {
     private AugmentedState state;
     private AugmentedUpdateInformation pe;
     private ISsf ssf;
-    private ISsfMeasurement measurement;
+    private ISsfLoading loading;
+    private ISsfError error;
     private ISsfDynamics dynamics;
     private ISsfData data;
     private boolean missing;
@@ -71,10 +74,10 @@ public class AugmentedFilter {
             DataBlock C = pe.M();
             // computes ZPZ'; results in pe_.L
             //measurement.ZVZ(pos_, state_.P.subMatrix(), F);
-            measurement.ZM(t, state.P(), C);
-            double v = measurement.ZX(t, C);
-            if (measurement.hasErrors()) {
-                v += measurement.errorVariance(t);
+            loading.ZM(t, state.P(), C);
+            double v = loading.ZX(t, C);
+            if (error != null) {
+                v += error.at(t);
             }
             if (v < State.ZERO) {
                 v = 0;
@@ -84,8 +87,8 @@ public class AugmentedFilter {
             // K L' = PZ' or L K' = ZP
 
             double y = data.get(t);
-            pe.set(y - measurement.ZX(t, state.a()));
-            measurement.ZM(t, state.B(), pe.E());
+            pe.set(y - loading.ZX(t, state.a()));
+            loading.ZM(t, state.B(), pe.E());
             pe.E().apply(x -> -x);
             return true;
         }
@@ -122,7 +125,7 @@ public class AugmentedFilter {
         if (state == null) {
             return false;
         }
-        ISsfInitialization initialization = ssf.getInitialization();
+        ISsfInitialization initialization = ssf.initialization();
         pe = new AugmentedUpdateInformation(initialization.getStateDim(), initialization.getDiffuseDim());
         return true;
     }
@@ -136,8 +139,9 @@ public class AugmentedFilter {
      */
     public boolean process(final ISsf ssf, final ISsfData data, final IAugmentedFilteringResults rslts) {
         this.ssf=ssf;
-        measurement = ssf.getMeasurement();
-        dynamics = ssf.getDynamics();
+        loading = ssf.loading();
+        error=ssf.measurementError();
+        dynamics = ssf.dynamics();
         this.data = data;
         if (!initState()) {
             return false;

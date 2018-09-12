@@ -14,16 +14,18 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-/*
- */
 package demetra.ssf.multivariate;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.ISsfInitialization;
+import demetra.ssf.ISsfLoading;
+import demetra.ssf.implementations.MeasurementError;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.univariate.ISsfError;
+import demetra.ssf.univariate.Measurement;
 import demetra.ssf.univariate.Ssf;
 
 /**
@@ -33,38 +35,48 @@ import demetra.ssf.univariate.Ssf;
 public class M2uAdapter {
 
     public static ISsfData of(IMultivariateSsfData data) {
-        if (data.isHomogeneous()) {
-            return new HomogeneousData(data);
-        } else {
-            return null;
-        }
+        return new Data(data);
     }
-    
-    
 
     public static ISsf of(IMultivariateSsf mssf) {
-        ISsfMeasurements measurements = mssf.getMeasurements();
-        if (!measurements.hasIndependentErrors()) {
-            return null;
-        }
-        if (!measurements.isHomogeneous()) {
-            return null;
+        ISsfMeasurements measurements = mssf.measurements();
+        int m = measurements.getCount();
+        if (m > 1) {
+            ISsfErrors errors = mssf.errors();
+            if (errors != null && !errors.areIndependent()) {
+                return null;
+            }
+            ISsfDynamics mdynamics = mssf.dynamics();
+            Dynamics ndyn = new Dynamics(mdynamics, measurements.getCount());
+            Loading nload = new Loading(measurements);
+            Error ne = errors == null ? null : new Error(errors, measurements.getCount());
+            return Ssf.of(mssf.initialization(), ndyn, nload, ne);
         } else {
-            ISsfDynamics mdynamics = mssf.getDynamics();
-            HomogeneousDynamics ndyn = new HomogeneousDynamics(mdynamics, measurements.getMaxCount());
-            HomogeneousMeasurement nm = new HomogeneousMeasurement(measurements);
-            return new Ssf(mssf.getInitialization(), ndyn, nm);
+            ISsfInitialization initialization = mssf.initialization();
+            ISsfDynamics dynamics = mssf.dynamics();
+            ISsfErrors errors = mssf.errors();
+            ISsfError error = null;
+            if (errors != null) {
+                if (errors.isTimeInvariant()) {
+                    Matrix h = Matrix.square(1);
+                    errors.H(0, h);
+                    error = MeasurementError.of(h.get(0, 0));
+                } else {
+                    error = new Error(errors, 1);
+                }
+            }
+            return Ssf.of(initialization, dynamics, measurements.loading(0), error);
         }
     }
 
-    static class HomogeneousData implements ISsfData {
+    static class Data implements ISsfData {
 
         private final int nvars;
         private final IMultivariateSsfData data;
 
-        HomogeneousData(IMultivariateSsfData data) {
+        Data(IMultivariateSsfData data) {
             this.data = data;
-            this.nvars = data.getMaxVarsCount();
+            this.nvars = data.getVarsCount();
         }
 
         @Override
@@ -84,27 +96,65 @@ public class M2uAdapter {
 
         @Override
         public int length() {
-            return data.getCount() * nvars;
+            return data.getObsCount() * nvars;
         }
     }
 
-    static class HomogeneousMeasurement implements ISsfMeasurement {
+    static class Loading implements ISsfLoading {
 
         private final ISsfMeasurements measurements;
+        private final int nvars;
+
+        Loading(ISsfMeasurements measurements) {
+            this.measurements = measurements;
+            this.nvars = measurements.getCount();
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return false;
+        }
+
+        @Override
+        public void Z(int pos, DataBlock z) {
+            measurements.loading(pos % nvars).Z(pos / nvars, z);
+        }
+
+        @Override
+        public double ZX(int pos, DataBlock m) {
+            return measurements.loading(pos % nvars).ZX(pos / nvars, m);
+        }
+
+        @Override
+        public double ZVZ(int pos, Matrix V) {
+            return measurements.loading(pos % nvars).ZVZ(pos / nvars, V);
+        }
+
+        @Override
+        public void VpZdZ(int pos, Matrix V, double d) {
+            measurements.loading(pos % nvars).VpZdZ(pos / nvars, V, d);
+        }
+
+        @Override
+        public void XpZd(int pos, DataBlock x, double d) {
+            measurements.loading(pos % nvars).XpZd(pos / nvars, x, d);
+        }
+
+    }
+
+    static class Error implements ISsfError {
+
+        private final ISsfErrors errors;
         private final int nvars;
         private final Matrix H;
         private int hpos = -1;
 
-        HomogeneousMeasurement(ISsfMeasurements measurements) {
-            this.measurements = measurements;
-            this.nvars = measurements.getMaxCount();
-            if (measurements.hasErrors()) {
-                H = Matrix.square(nvars);
-                if (measurements.isTimeInvariant()) {
-                    measurements.H(0, H);
-                }
-            } else {
-                H = null;
+        Error(ISsfErrors errors, int nvars) {
+            this.errors = errors.isTimeInvariant() ? null : errors;
+            this.nvars = nvars;
+            H = Matrix.square(nvars);
+            if (errors.isTimeInvariant()) {
+                errors.H(0, H);
             }
         }
 
@@ -114,73 +164,26 @@ public class M2uAdapter {
         }
 
         @Override
-        public boolean areErrorsTimeInvariant() {
-            return ! hasErrors();
-        }
-
-        @Override
-        public void Z(int pos, DataBlock z) {
-            measurements.Z(pos / nvars, pos % nvars, z);
-        }
-
-        @Override
-        public boolean hasErrors() {
-            return H != null;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return errorVariance(pos) != 0;
-        }
-
-        @Override
-        public double errorVariance(int pos) {
-            if (H == null) {
-                return 0;
-            }
+        public double at(int pos) {
             int i = pos % nvars;
-            if (measurements.isTimeInvariant()) {
+            if (errors == null) {
                 return H.get(i, i);
             }
             int j = pos / nvars;
             if (j != hpos) {
-                measurements.H(j, H);
+                errors.H(j, H);
                 hpos = j;
             }
             return H.get(i, i);
         }
-
-        @Override
-        public double ZX(int pos, DataBlock m) {
-            return measurements.ZX(pos / nvars, pos % nvars, m);
-        }
-
-        @Override
-        public double ZVZ(int pos, Matrix V) {
-            int i = pos % nvars;
-            return measurements.ZVZ(pos / nvars, i, i, V);
-        }
-
-        @Override
-        public void VpZdZ(int pos, Matrix V, double d) {
-            int i = pos % nvars;
-            measurements.VpZdZ(pos / nvars, i, i, V, d);
-        }
-
-        @Override
-        public void XpZd(int pos, DataBlock x, double d) {
-            int i = pos % nvars;
-            measurements.XpZd(pos / nvars, i, x, d);
-        }
-
     }
 
-    static class HomogeneousDynamics implements ISsfDynamics {
+    static class Dynamics implements ISsfDynamics {
 
         private final ISsfDynamics mdynamics;
         private final int nstep;
 
-        public HomogeneousDynamics(final ISsfDynamics mdynamics, final int nstep) {
+        public Dynamics(final ISsfDynamics mdynamics, final int nstep) {
             this.mdynamics = mdynamics;
             this.nstep = nstep;
         }
@@ -234,8 +237,9 @@ public class M2uAdapter {
         public void XS(int pos, DataBlock x, DataBlock xs) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.XS(pos / nstep, x, xs);
-            }else
+            } else {
                 xs.set(0);
+            }
         }
 
         @Override

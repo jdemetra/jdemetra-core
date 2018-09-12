@@ -17,10 +17,9 @@
 package demetra.ssf.multivariate;
 
 import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.LowerTriangularMatrix;
+import demetra.data.DoubleSequence;
+import demetra.data.Doubles;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
@@ -59,54 +58,6 @@ public class MultivariateOrdinaryFilter {
         this.initializer = initializer;
     }
 
-    private int countMeasurements(int pos) {
-        int n = 0;
-        for (int i = 0; i < measurements.getCount(pos); ++i) {
-            if (!data.isMissing(pos, i)) {
-                ++n;
-            }
-        }
-        return n;
-    }
-
-    /**
-     * Computes zm = Z * M
-     *
-     * @param M
-     * @param zm
-     */
-    private void ZM(int pos, Matrix M, Matrix zm) {
-        DataBlockIterator zrows = zm.rowsIterator();
-        int imax = measurements.getCount(pos);
-        for (int i = 0; i < imax; ++i) {
-            if (!data.isMissing(pos, i)) {
-                measurements.ZM(pos, i, M, zrows.next());
-                if (!zrows.hasNext()) {
-                    return;
-                }
-            }
-        }
-    }
-
-    private void addH(int pos, Matrix P) {
-         int nm = measurements.getCount(pos);
-        Matrix H = Matrix.square(nm);
-        measurements.H(pos, H);
-        for (int i = 0, r = 0; i < nm; ++i) {
-            if (!data.isMissing(pos, i)) {
-                for (int j = 0, c = 0; j < i; ++j) {
-                    if (!data.isMissing(pos, j)) {
-                        double h = H.get(i, j);
-                        P.add(r, c, h);
-                        P.add(c, r, h);
-                        ++c;
-                    }
-                }
-                P.add(r, r, H.get(i, i));
-                ++r;
-            }
-        }
-    }
 
     /**
      * Computes a(t+1|t), P(t+1|t) from a(t|t), P(t|t) a(t+1|t) = T(t)a(t|t)
@@ -127,39 +78,21 @@ public class MultivariateOrdinaryFilter {
      * @param pos
      */
     protected void error(int pos) {
-        int nobs = countMeasurements(pos);
-        if (nobs == 0) {
-            updinfo = null;
+        int dim = ssf.getStateDim();
+        DoubleSequence x=data.get(pos);
+        int nmissing = x.count(y -> Double.isInfinite(y));
+        int nobs = x.length() - nmissing;
+        if (nobs == 0)
+            updinfo=null;
+        int[] obs;
+        if (nmissing != 0) {
+            obs = new int[nobs];
+            Doubles.search(x, y -> Double.isFinite(y), obs);
         } else {
-            updinfo = new MultivariateUpdateInformation(ssf.getStateDim(), nobs);
-            Matrix L = updinfo.getCholeskyFactor();
-            // K = PZ'(ZPZ'+H)^-1/2
-            // computes (ZP)' in K'. Missing values are set to 0 
-            // Z~v x r, P~r x r, K~r x v
-            Matrix K = updinfo.getK();
-            ZM(pos, state.P(), K.transpose());
-            // computes ZPZ'; results in pe_.L
-            ZM(pos, K, L);
-            addH(pos, L);
-            SymmetricMatrix.reenforceSymmetry(L);
-
-            // pe_L contains the Cholesky factor !!!
-            SymmetricMatrix.lcholesky(L, State.ZERO);
-
-            // We put in K  PZ'*(ZPZ'+H)^-1/2 = PZ'* F^-1 = PZ'*(LL')^-1/2 = PZ'(L')^-1
-            // K L' = PZ' or L K' = ZP
-            LowerTriangularMatrix.rsolve(L, K.transpose(), State.ZERO);
-            DataBlock U = updinfo.getTransformedPredictionErrors();
-            for (int i = 0, j = 0; i < measurements.getCount(pos); ++i) {
-                if (!data.isMissing(pos, i)) {
-                    double y = data.get(pos, i);
-                    U.set(j, y - measurements.ZX(pos, i, state.a()));
-                    ++j;
-                }
-            }
-            // E = e*L'^-1 or E L' = e or L*E' = e'
-            LowerTriangularMatrix.rsolve(L, U, State.ZERO);
+            obs = null;
         }
+        updinfo = new MultivariateUpdateInformation(dim, nobs);
+        updinfo.compute(ssf, pos, state, x, obs);
     }
 
     /**
@@ -173,10 +106,6 @@ public class MultivariateOrdinaryFilter {
         // P = P - (M)* F^-1 *(M)' --> Symmetric
         // PZ'(LL')^-1 ZP' =PZ'L'^-1*L^-1*ZP'
         // A = a + (M)* F^-1 * v
-//        for (int i = 0; i < n; ++i) {
-//            state.P().addXaXt(-1, updinfo.getK().column(i));//, state_.K.column(i));
-//            state.a().addAY(updinfo.getTransformedPredictionErrors().get(i), updinfo.getK().column(i));
-//        }
         Matrix P = state.P();
         Matrix K = updinfo.getK();
         DataBlock U = updinfo.getTransformedPredictionErrors();
@@ -197,8 +126,8 @@ public class MultivariateOrdinaryFilter {
     private int initialize(IMultivariateSsf ssf, IMultivariateSsfData data) {
         this.data = data;
         this.ssf=ssf;
-        measurements = ssf.getMeasurements();
-        dynamics = ssf.getDynamics();
+        measurements = ssf.measurements();
+        dynamics = ssf.dynamics();
         if (initializer == null) {
             state = State.of(ssf);
             return state == null ? -1 : 0;
@@ -223,7 +152,7 @@ public class MultivariateOrdinaryFilter {
         if (rslts != null) {
             rslts.open(ssf, this.data);
         }
-        int end = data.getCount();
+        int end = data.getObsCount();
         while (t < end) {
             if (rslts != null) {
                 rslts.save(t, state, StateInfo.Forecast);

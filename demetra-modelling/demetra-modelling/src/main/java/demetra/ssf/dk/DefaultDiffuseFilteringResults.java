@@ -57,7 +57,7 @@ public class DefaultDiffuseFilteringResults extends DefaultFilteringResults impl
     @Override
     public void prepare(ISsf ssf, final int start, final int end) {
         super.prepare(ssf, start, end);
-        ISsfInitialization initialization = ssf.getInitialization();
+        ISsfInitialization initialization = ssf.initialization();
         int dim = initialization.getStateDim(), n = initialization.getDiffuseDim();
         fi.prepare(start, n);
         Ci.prepare(dim, start, n);

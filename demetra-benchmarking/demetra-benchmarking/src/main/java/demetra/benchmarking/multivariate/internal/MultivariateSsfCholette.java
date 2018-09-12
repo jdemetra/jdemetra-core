@@ -22,7 +22,9 @@ import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.ISsfLoading;
 import demetra.ssf.multivariate.IMultivariateSsf;
+import demetra.ssf.multivariate.ISsfErrors;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.MultivariateSsf;
 
@@ -42,39 +44,40 @@ public class MultivariateSsfCholette {
     public static class Builder {
 
         private final int nvars;
-        private int conversion=4;
-        double rho=1;
-        double[][] w=null;
-        Constraint[] constraints=null;
+        private int conversion = 4;
+        double rho = 1;
+        double[][] w = null;
+        Constraint[] constraints = null;
 
         private Builder(int nvars) {
             this.nvars = nvars;
         }
-        
-        public Builder conversion(int c){
-            this.conversion=c;
+
+        public Builder conversion(int c) {
+            this.conversion = c;
             return this;
         }
 
-        public Builder rho(double rho){
-            this.rho=rho;
+        public Builder rho(double rho) {
+            this.rho = rho;
             return this;
         }
 
-        public Builder weights(double[][] weights){
-            if (weights.length != nvars)
+        public Builder weights(double[][] weights) {
+            if (weights.length != nvars) {
                 throw new IllegalArgumentException();
-            this.w=weights;
+            }
+            this.w = weights;
             return this;
         }
 
-        public Builder constraints(Constraint[] constraints){
-            this.constraints=constraints;
+        public Builder constraints(Constraint[] constraints) {
+            this.constraints = constraints;
             return this;
         }
 
         public IMultivariateSsf build() {
-            Data data=new Data(nvars, conversion, rho, w, constraints);
+            Data data = new Data(nvars, conversion, rho, w, constraints);
             return new MultivariateSsf(new Initialization(data), new Dynamics(data), new Measurements(data));
         }
 
@@ -177,8 +180,8 @@ public class MultivariateSsfCholette {
 
         @Override
         public void S(int pos, Matrix cm) {
-            for (int i=0; i<info.nvars; ++i){
-                cm.set(2*i+1, i, 1);
+            for (int i = 0; i < info.nvars; ++i) {
+                cm.set(2 * i + 1, i, 1);
             }
         }
 
@@ -277,7 +280,7 @@ public class MultivariateSsfCholette {
         }
 
         @Override
-        public int getCount(int pos) {
+        public int getCount() {
             if (info.constraints == null) {
                 return info.nvars;
             } else {
@@ -286,21 +289,33 @@ public class MultivariateSsfCholette {
         }
 
         @Override
-        public int getMaxCount() {
-            if (info.constraints == null) {
-                return info.nvars;
-            } else {
-                return info.constraints.length + info.nvars;
-            }
+        public ISsfLoading loading(int equation) {
+            return new Loading(info, equation);
         }
 
         @Override
-        public boolean isHomogeneous() {
+        public ISsfErrors errors() {
+            return null;
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
             return true;
         }
+    }
+
+    static class Loading implements ISsfLoading {
+
+        final Data info;
+        final int v;
+
+        Loading(Data info, int v) {
+            this.info = info;
+            this.v = v;
+        }
 
         @Override
-        public void Z(int pos, int v, DataBlock z) {
+        public void Z(int pos, DataBlock z) {
             if (v < info.nvars) {
                 int iv = 2 * v;
                 if ((pos + 1) % info.c == 0) {
@@ -319,30 +334,7 @@ public class MultivariateSsfCholette {
         }
 
         @Override
-        public boolean hasErrors() {
-            return false;
-        }
-
-        @Override
-        public boolean hasIndependentErrors() {
-            return true;
-        }
-
-        @Override
-        public boolean hasError(int pos) {
-            return false;
-        }
-
-        @Override
-        public void H(int pos, Matrix h) {
-        }
-
-        @Override
-        public void R(int pos, Matrix r) {
-        }
-
-        @Override
-        public double ZX(int pos, int v, DataBlock x) {
+        public double ZX(int pos, DataBlock x) {
             if (v < info.nvars) {
                 int iv = 2 * v;
                 double r = ((pos + 1) % info.c != 0) ? 0 : x.get(iv);
@@ -361,7 +353,7 @@ public class MultivariateSsfCholette {
         }
 
         @Override
-        public void ZM(int pos, int v, Matrix m, DataBlock x) {
+        public void ZM(int pos, Matrix m, DataBlock x) {
             if (v < info.nvars) {
                 int iv = 2 * v;
                 if ((pos + 1) % info.c == 0) {
@@ -381,53 +373,29 @@ public class MultivariateSsfCholette {
         }
 
         @Override
-        public double ZVZ(int pos, int v, int w, Matrix vm) {
-            if (w < v) {
-                int t = v;
-                v = w;
-                w = t;
-            }
-            int iv = 2 * v, iw = 2 * w;
-            if (w < info.nvars) {
-                double dv = info.weight(pos, v), dw = info.weight(pos, w);
-                double s = dv * vm.get(iv + 1, iw + 1) * dw;
+        public double ZVZ(int pos, Matrix vm) {
+            int iv = 2 * v;
+            if (v < info.nvars) {
+                double dv = info.weight(pos, v), dw = info.weight(pos, v);
+                double s = dv * vm.get(iv + 1, iv + 1) * dw;
                 if ((pos + 1) % info.c == 0) {
-                    s += vm.get(iw, iv);
-                    s += dv * vm.get(iv + 1, iw);
-                    s += dw * vm.get(iv, iw + 1);
-                }
-                return s;
-            } else if (v < info.nvars) {
-                int k = w - info.nvars;
-                Constraint cnt = info.constraints[k];
-                double dv = info.weight(pos, v);
-                double s = 0;
-                for (int i = 0; i < cnt.index.length; ++i) {
-                    int l = cnt.index[i];
-                    int il = 2 * l;
-                    double wl = cnt.weights[i];
-                    double dl = info.weight(pos, l);
-                    double scur = dv * vm.get(iv + 1, il + 1) * dl;
-                    if ((pos + 1) % info.c == 0) {
-                        scur += dl * vm.get(iv, il + 1);
-                    }
-                    s += scur * wl;
+                    s += vm.get(iv, iv);
+                    s += dv * vm.get(iv + 1, iv);
+                    s += dw * vm.get(iv, iv + 1);
                 }
                 return s;
             } else {
-                v -= info.nvars;
-                w -= info.nvars;
-                Constraint vcnt = info.constraints[v];
-                Constraint wcnt = info.constraints[w];
+                int w = v-info.nvars;
+                Constraint cnt = info.constraints[w];
                 double s = 0;
-                for (int i = 0; i < vcnt.index.length; ++i) {
-                    int k = vcnt.index[i];
+                for (int i = 0; i < cnt.index.length; ++i) {
+                    int k = cnt.index[i];
                     int ik = 2 * k;
-                    double dk = info.mweight(pos, k, vcnt.weights[i]);
-                    for (int j = 0; j < wcnt.index.length; ++j) {
-                        int l = wcnt.index[j];
+                    double dk = info.mweight(pos, k, cnt.weights[i]);
+                    for (int j = 0; j < cnt.index.length; ++j) {
+                        int l = cnt.index[j];
                         int il = 2 * l;
-                        double dl = info.mweight(pos, l, wcnt.weights[j]);
+                        double dl = info.mweight(pos, l, cnt.weights[j]);
                         s += dk * vm.get(ik + 1, il + 1) * dl;
                     }
                 }
@@ -435,54 +403,29 @@ public class MultivariateSsfCholette {
             }
         }
 
-        @Override
-        public void addH(int pos, Matrix V) {
-        }
 
         @Override
-        public void VpZdZ(int pos, int v, int w, Matrix vm, double d) {
-            if (w < v) {
-                int t = v;
-                v = w;
-                w = t;
-            }
-            int iv = 2 * v, iw = 2 * w;
-            if (w < info.nvars) {
-                double dv = info.weight(pos, v), dw = info.weight(pos, w);
-                vm.add(iv + 1, iw + 1, dv * d * dw);
+        public void VpZdZ(int pos, Matrix vm, double d) {
+            int iv = 2 * v;
+            if (v < info.nvars) {
+                double dv = info.weight(pos, v), dw = info.weight(pos, v);
+                vm.add(iv + 1, iv + 1, dv * d * dw);
                 if ((pos + 1) % info.c == 0) {
-                    vm.add(iv, iw, d);
-                    vm.add(iv, iw + 1, d * dw);
-                    vm.add(iv + 1, iw, d * dv);
+                    vm.add(iv, iv, d);
+                    vm.add(iv, iv + 1, d * dw);
+                    vm.add(iv + 1, iv, d * dv);
                 }
-            } else if (v < info.nvars) {
-                w -= info.nvars;
-                Constraint wcnt = info.constraints[w];
-                double dv = info.weight(pos, v);
-                for (int i = 0; i < wcnt.index.length; ++i) {
-                    int l = wcnt.index[i];
-                    int il = 2 * l;
-                    double wl = wcnt.weights[i];
-                    double dl = info.weight(pos, l);
-                    double D = d * wl;
-                    vm.add(iv + 1, il + 1, dv * D * dl);
-                    if ((pos + 1) % info.c == 0) {
-                        vm.add(iv, il + 1, D * dl);
-                    }
-                }
-            } else {
-                v -= info.nvars;
-                w -= info.nvars;
-                Constraint vcnt = info.constraints[v];
-                Constraint wcnt = info.constraints[w];
-                for (int i = 0; i < vcnt.index.length; ++i) {
-                    int k = vcnt.index[i];
+            }  else {
+                int w = v-info.nvars;
+                Constraint cnt = info.constraints[w];
+                for (int i = 0; i < cnt.index.length; ++i) {
+                    int k = cnt.index[i];
                     int ik = 2 * k;
-                    double dk = info.mweight(pos, k, vcnt.weights[i]);
-                    for (int j = 0; j < wcnt.index.length; ++j) {
-                        int l = wcnt.index[j];
+                    double dk = info.mweight(pos, k, cnt.weights[i]);
+                    for (int j = 0; j < cnt.index.length; ++j) {
+                        int l = cnt.index[j];
                         int il = 2 * l;
-                        double dl = info.mweight(pos, l, wcnt.weights[j]);
+                        double dl = info.mweight(pos, l, cnt.weights[j]);
                         vm.add(ik + 1, il + 1, d * dk * dl);
                     }
                 }
@@ -490,7 +433,7 @@ public class MultivariateSsfCholette {
         }
 
         @Override
-        public void XpZd(int pos, int v, DataBlock x, double d) {
+        public void XpZd(int pos, DataBlock x, double d) {
             if (v < info.nvars) {
                 int iv = 2 * v;
                 x.add(iv + 1, info.mweight(pos, v, d));
@@ -498,8 +441,8 @@ public class MultivariateSsfCholette {
                     x.add(iv, d);
                 }
             } else {
-                v -= info.nvars;
-                Constraint cnt = info.constraints[v];
+                int w= v- info.nvars;
+                Constraint cnt = info.constraints[w];
                 for (int i = 0; i < cnt.index.length; ++i) {
                     int k = cnt.index[i];
                     int ik = 2 * k;

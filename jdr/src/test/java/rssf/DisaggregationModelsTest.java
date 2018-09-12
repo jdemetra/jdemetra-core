@@ -19,12 +19,15 @@ package rssf;
 import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
+import demetra.ssf.SsfComponent;
 import demetra.ssf.dk.DkToolkit;
+import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.implementations.RegSsf;
 import demetra.ssf.models.AR1;
-import demetra.ssf.models.RandomWalk;
+import demetra.ssf.models.LocalLevel;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ISsf;
+import demetra.ssf.univariate.Ssf;
 import demetra.ssf.univariate.SsfData;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import org.junit.Test;
@@ -51,15 +54,15 @@ public class DisaggregationModelsTest {
         edata.set(Double.NaN);
         edata.extract(3, m, 4).copyFrom(Data.PCRA, 0);
         SsfData sdata = new SsfData(edata);
-        ISsf ar = AR1.of(rho);
+        ISsf ar = Ssf.of(AR1.of(rho),0);
         ISsf rssf = RegSsf.of(ar, x);
         ISsf dssf = DisaggregationModels.of(rssf, 4);
         DefaultSmoothingResults srslts = DkToolkit.smooth(dssf, sdata, true);
         DataBlock z = DataBlock.make(dssf.getStateDim());
         for (int i = 0; i < n; ++i) {
-            dssf.getMeasurement().Z(i, z);
+            dssf.loading().Z(i, z);
             z.set(0, 0);
-            System.out.println(z.dot(srslts.a(i)));
+//            System.out.println(z.dot(srslts.a(i)));
         }
     }
 
@@ -74,13 +77,16 @@ public class DisaggregationModelsTest {
         edata.set(Double.NaN);
         edata.extract(3, m, 4).copyFrom(Data.PCRA, 0);
         SsfData sdata = new SsfData(edata);
-        ISsf rw = RandomWalk.make();
-        ISsf rssf = RegSsf.of(rw, x);
+        CompositeSsf rssf = CompositeSsf.builder()
+                .add(LocalLevel.of(1))
+                .add(RegSsf.of(x))
+                .measurementError(1)
+                .build();
         ISsf dssf = DisaggregationModels.of(rssf, 4);
         DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(dssf, sdata, true);
         DataBlock z = DataBlock.make(dssf.getStateDim());
         for (int i = 0; i < n; ++i) {
-            dssf.getMeasurement().Z(i, z);
+            dssf.loading().Z(i, z);
             z.set(0, 0);
             System.out.println(z.dot(srslts.a(i)));
         }
@@ -100,7 +106,7 @@ public class DisaggregationModelsTest {
         ec.tstoolkit.timeseries.regression.TsVariableList vars = new ec.tstoolkit.timeseries.regression.TsVariableList();
         vars.add(new ec.tstoolkit.timeseries.regression.TsVariable(Q));
         cl.process(Y, vars);
-        System.out.println(cl.getDisaggregatedSeries());
+ //       System.out.println(cl.getDisaggregatedSeries());
     }
 
 }

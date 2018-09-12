@@ -16,17 +16,15 @@
  */
 package demetra.ssf.dk;
 
-import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.IParametricMapping;
-import demetra.maths.functions.ssq.ISsqFunction;
-import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfBuilder;
 import demetra.ssf.univariate.ISsfData;
 import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
+import demetra.likelihood.ILikelihoodFunction;
 
 /**
  *
@@ -34,7 +32,7 @@ import demetra.design.BuilderPattern;
  * @param <S> Type of the underlying object
  * @param <F> Ssf representation of objects of type S
  */
-public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
+public class SsfFunction<S, F extends ISsf> implements ILikelihoodFunction<DkConcentratedLikelihood> {
 
     @BuilderPattern(SsfFunction.class)
     public static class Builder<S, F extends ISsf> {
@@ -156,7 +154,7 @@ public class SsfFunction<S, F extends ISsf> implements IFunction, ISsqFunction {
     }
 
     @Override
-    public ISsqFunctionPoint ssqEvaluate(DoubleSequence parameters) {
+    public SsfFunctionPoint<S, F> ssqEvaluate(DoubleSequence parameters) {
         return new SsfFunctionPoint<>(this, parameters);
     }
 

@@ -79,8 +79,8 @@ public class RationalForeFilter implements IRationalFilter {
     @Override
     public Complex frequencyResponse(final double freq) {
         IntToDoubleFunction fn = rationalFunction.getNumerator()::get;
-        Complex n = Utility.frequencyResponse(i->fn.applyAsDouble(i-fshift), fshift, fshift+rationalFunction.getNumerator().getDegree(), freq);
-        Complex d = Utility.frequencyResponse(rationalFunction.getDenominator()::get, 0, rationalFunction.getDenominator().getDegree(), freq);
+        Complex n = Utility.frequencyResponse(i->fn.applyAsDouble(i-fshift), fshift, fshift+rationalFunction.getNumerator().degree(), freq);
+        Complex d = Utility.frequencyResponse(rationalFunction.getDenominator()::get, 0, rationalFunction.getDenominator().degree(), freq);
         return n.div(d);
     }
 
@@ -130,7 +130,7 @@ public class RationalForeFilter implements IRationalFilter {
      */
     public int getUBound() {
         if (rationalFunction.isFinite()) {
-            return rationalFunction.getNumerator().getDegree();
+            return rationalFunction.getNumerator().degree();
         } else {
             return Integer.MAX_VALUE;
         }

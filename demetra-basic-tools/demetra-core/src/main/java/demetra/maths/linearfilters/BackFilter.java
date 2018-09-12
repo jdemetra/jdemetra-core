@@ -148,12 +148,12 @@ public class BackFilter extends AbstractFiniteFilter {
      */
     @Override
     public int length() {
-	return polynomial.getDegree() + 1;
+	return polynomial.degree() + 1;
     }
 
     @Override
     public int getLowerBound() {
-	return -polynomial.getDegree();
+	return -polynomial.degree();
     }
 
     /**
@@ -166,7 +166,7 @@ public class BackFilter extends AbstractFiniteFilter {
     }
 
     public int getDegree(){
-        return polynomial.getDegree();
+        return polynomial.degree();
     }
 
     /**
@@ -343,7 +343,7 @@ public class BackFilter extends AbstractFiniteFilter {
 		p = psimp.getCommon();
 		p = p.divide(p.get(0));
 
-		if (m_sur || p.getDegree() == 0) {
+		if (m_sur || p.degree() == 0) {
 
 		    common = new BackFilter(p);
 		    simplifiedLeft = new BackFilter(lp);

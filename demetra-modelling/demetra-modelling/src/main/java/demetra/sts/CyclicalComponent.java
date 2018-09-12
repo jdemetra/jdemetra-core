@@ -20,37 +20,40 @@ import demetra.ssf.ISsfDynamics;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfInitialization;
-import demetra.ssf.implementations.Measurement;
+import demetra.ssf.SsfComponent;
+import demetra.ssf.implementations.Loading;
 import demetra.ssf.univariate.Ssf;
 
 /**
  *
  * @author Jean Palate
  */
+@lombok.experimental.UtilityClass
 public class CyclicalComponent {
-    
-   public static Ssf of(final double dumpingFactor, final double period, final double cvar) {
+
+    public SsfComponent of(final double dumpingFactor, final double period, final double cvar) {
         Data data = new Data(dumpingFactor, period, cvar);
-        return new Ssf(new Initialization(data), new Dynamics(data), Measurement.create(0));
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
 
-    static class Data{
+    static class Data {
+
         private final double var;
         private final double cdump, cperiod;
-        
+
         public Data(double cyclicaldumpingfactor, double cyclicalperiod, double var) {
             this.var = var;
             cperiod = cyclicalperiod;
             cdump = cyclicaldumpingfactor;
-       }
+        }
     }
 
     static class Initialization implements ISsfInitialization {
 
-        final Data data;        
+        final Data data;
 
-        Initialization(Data data){
-            this.data=data;
+        Initialization(Data data) {
+            this.data = data;
         }
 
         @Override
@@ -86,16 +89,16 @@ public class CyclicalComponent {
 
     static class Dynamics implements ISsfDynamics {
 
-        final Data data;        
+        final Data data;
         private final double ccos, csin, e;
 
-        Dynamics(Data data){
-            this.data=data;
+        Dynamics(Data data) {
+            this.data = data;
             e = Math.sqrt(data.var);
             double q = Math.PI * 2 / data.cperiod;
             ccos = data.cdump * Math.cos(q);
             csin = data.cdump * Math.sin(q);
-         }
+        }
 
         @Override
         public int getInnovationsDim() {
@@ -163,6 +166,5 @@ public class CyclicalComponent {
         public boolean isTimeInvariant() {
             return true;
         }
-
     }
 }

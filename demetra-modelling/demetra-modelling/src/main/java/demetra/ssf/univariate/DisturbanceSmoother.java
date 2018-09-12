@@ -5,6 +5,7 @@
  */
 package demetra.ssf.univariate;
 
+import demetra.ssf.ISsfLoading;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
@@ -22,22 +23,22 @@ public class DisturbanceSmoother {
 
     private ISsf ssf;
     private ISsfDynamics dynamics;
-    private ISsfMeasurement measurement;
+    private ISsfLoading loading;
+    private ISsfError error;
     private IDisturbanceSmoothingResults srslts;
     private IFilteringResults frslts;
 
     private double err, errVariance, esm, esmVariance, h;
     private DataBlock K, R, U;
     private Matrix N, UVar, S;
-    private boolean missing, res, calcvar = true;
+    private boolean missing, calcvar = true;
     private int pos, stop;
     // temporary
     private DataBlock tmp;
     private double c, v;
 
     public boolean process(ISsf ssf, ISsfData data) {
-        this.ssf = ssf;
-        if (ssf.getInitialization().isDiffuse()) {
+        if (ssf.initialization().isDiffuse()) {
             return false;
         }
         OrdinaryFilter filter = new OrdinaryFilter();
@@ -58,7 +59,7 @@ public class DisturbanceSmoother {
      */
     public boolean process(ISsf ssf, @Nonnull DefaultFilteringResults results) {
         this.ssf = ssf;
-        if (ssf.getInitialization().isDiffuse()) {
+        if (ssf.initialization().isDiffuse()) {
             return false;
         }
         ResultsRange range = results.getRange();
@@ -70,18 +71,16 @@ public class DisturbanceSmoother {
      * @param ssf
      * @param start
      * @param end
-     * @param results Thr filtering results should contain the information
+     * @param results The filtering results should contain the information
      * necessary for
      * @return
      */
     public boolean process(ISsf ssf, int start, int end, @Nonnull IFilteringResults results) {
-        this.ssf = ssf;
         IDisturbanceSmoothingResults sresults;
-        boolean hasErrors = ssf.getMeasurement().hasErrors();
         if (calcvar) {
-            sresults = DefaultDisturbanceSmoothingResults.full(hasErrors);
+            sresults = DefaultDisturbanceSmoothingResults.full(ssf.measurement().hasError());
         } else {
-            sresults = DefaultDisturbanceSmoothingResults.light(hasErrors);
+            sresults = DefaultDisturbanceSmoothingResults.light(ssf.measurement().hasError());
         }
         sresults.prepare(ssf, start, end);
         return process(ssf, start, end, results, sresults);
@@ -108,18 +107,17 @@ public class DisturbanceSmoother {
     }
 
     public boolean process(ISsf ssf, final int start, final int end, IFilteringResults results, IDisturbanceSmoothingResults sresults) {
-        this.ssf = ssf;
+        initFilter(ssf);
         frslts = results;
         srslts = sresults;
         stop = start;
         pos = end;
-        initFilter(ssf);
         initSmoother(ssf);
         while (--pos >= stop) {
             loadInfo();
             if (iterate()) {
                 srslts.saveSmoothedTransitionDisturbances(pos, U, UVar == null ? null : UVar);
-                if (res) {
+                if (error != null) {
                     srslts.saveSmoothedMeasurementDisturbance(pos, esm, esmVariance);
                 }
             }
@@ -133,7 +131,7 @@ public class DisturbanceSmoother {
             loadInfo();
             if (iterate()) {
                 srslts.saveSmoothedTransitionDisturbances(pos, U, UVar);
-                if (res) {
+                if (error != null) {
                     srslts.saveSmoothedMeasurementDisturbance(pos, esm, esmVariance);
                 }
             }
@@ -166,8 +164,10 @@ public class DisturbanceSmoother {
             N = Matrix.square(dim);
             tmp = DataBlock.make(dim);
             UVar = Matrix.square(resdim);
-            if (measurement.isTimeInvariant()) {
-                h = measurement.errorVariance(0);
+            if (error == null) {
+                h = 0;
+            } else if (error.isTimeInvariant()) {
+                h = error.at(0);
             }
             if (dynamics.isTimeInvariant()) {
                 dynamics.S(0, S);
@@ -188,8 +188,8 @@ public class DisturbanceSmoother {
                 S.set(0);
                 dynamics.S(pos - 1, S);
             }
-            if (!measurement.isTimeInvariant()) {
-                h = measurement.errorVariance(pos - 1);
+            if (error != null && !error.isTimeInvariant()) {
+                h = error.at(pos - 1);
             }
         }
     }
@@ -201,15 +201,11 @@ public class DisturbanceSmoother {
         }
         if (pos > 0) {
             // updates the smoothed disturbances
-            if (res && measurement.hasError(pos - 1)) {
-                esm = c * h;
-            }
+            esm = c * h;
             if (dynamics.hasInnovations(pos - 1)) {
                 dynamics.XS(pos - 1, R, U);
                 if (calcvar) {
-                    if (res) {
-                        esmVariance = h - h * h * v;
-                    }
+                    esmVariance = h - h * h * v;
                     // v(U) = I-S'NS
                     SymmetricMatrix.XtSX(N, S, UVar);
                     UVar.chs();
@@ -242,7 +238,7 @@ public class DisturbanceSmoother {
             dynamics.XT(pos, tmp);
             // TNT
             tvt(N);
-            measurement.VpZdZ(pos, N, v);
+            loading.VpZdZ(pos, N, v);
             subZ(N.rowsIterator(), tmp);
             subZ(N.columnsIterator(), tmp);
         } else {
@@ -261,7 +257,7 @@ public class DisturbanceSmoother {
             // RT
             c = (err / errVariance - R.dot(K));
             dynamics.XT(pos, R);
-            measurement.XpZd(pos, R, c);
+            loading.XpZd(pos, R, c);
         } else {
             dynamics.XT(pos, R);
             c = Double.NaN;
@@ -269,9 +265,10 @@ public class DisturbanceSmoother {
     }
 
     private void initFilter(ISsf ssf) {
-        dynamics = ssf.getDynamics();
-        measurement = ssf.getMeasurement();
-        res = measurement.hasErrors();
+        this.ssf = ssf;
+        dynamics = ssf.dynamics();
+        loading = ssf.measurement().loading();
+        error = ssf.measurement().error();
     }
 
     public void setCalcVariances(boolean b) {
@@ -292,7 +289,7 @@ public class DisturbanceSmoother {
         while (rows.hasNext()) {
             double cur = x.next();
             if (cur != 0) {
-                measurement.XpZd(pos, rows.next(), -cur);
+                loading.XpZd(pos, rows.next(), -cur);
             }
         }
     }
@@ -302,8 +299,8 @@ public class DisturbanceSmoother {
         // initial state
         DataBlock a = DataBlock.make(n);
         Matrix Pf0 = Matrix.square(n);
-        ssf.getInitialization().a0(a);
-        ssf.getInitialization().Pf0(Pf0);
+        ssf.initialization().a0(a);
+        ssf.initialization().Pf0(Pf0);
         // stationary initialization
         a.addProduct(R, Pf0.columnsIterator());
         return a;

@@ -57,14 +57,14 @@ public class Laguerre2 implements RootsSolver {
     public boolean factorize(final Polynomial p) {
         try {
             m_niterations = 0;
-            int d = p.getDegree();
+            int d = p.degree();
             m_roots = new Complex[d];
             Complex[] a = new Complex[d + 1];
             for (int u = 0; u <= d; ++u) {
                 a[u] = Complex.cart(p.get(u), 0);
             }
             zroots(a, m_roots);
-            m_remainder = Polynomial.valueOf(p.get(p.getDegree()));
+            m_remainder = Polynomial.valueOf(p.get(p.degree()));
             return true;
         } catch (PolynomialException e) {
             m_remainder = p;

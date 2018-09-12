@@ -83,19 +83,19 @@ public class Initialization implements ISsfInitialization {
             builder.append("a0:").append(System.lineSeparator()).append("0");
         } else {
             DataBlock a = DataBlock.ofInternal(a0);
-            builder.append(a.toString(ISsfBase.FMT));
+            builder.append(a.toString(ISsfState.FMT));
         }
         builder.append(System.lineSeparator());
         if (Pf == null) {
             builder.append("Pf0:").append(System.lineSeparator()).append("0");
         } else {
-            builder.append(Pf.toString(ISsfBase.FMT));
+            builder.append(Pf.toString(ISsfState.FMT));
         }
         builder.append(System.lineSeparator());
         if (B == null) {
             builder.append("B:").append(System.lineSeparator()).append("0");
         } else {
-            builder.append(B.toString(ISsfBase.FMT));
+            builder.append(B.toString(ISsfState.FMT));
         }
         return builder.toString();
     }
