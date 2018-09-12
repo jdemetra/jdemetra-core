@@ -35,7 +35,7 @@ public class PeriodicAirlineProcessorTest {
     public PeriodicAirlineProcessorTest() {
     }
 
-    @Test
+    //@Test
     public void testDaily() throws URISyntaxException, IOException {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/edf.txt").toURI();
         MatrixType edf = MatrixSerializer.read(new File(uri));
@@ -54,7 +54,7 @@ public class PeriodicAirlineProcessorTest {
         System.out.println(cll.logLikelihood());
     }
 
-    @Test
+    //@Test
     public void testWeekly() {
         double ll = PeriodicAirlineProcessor.process(DoubleSequence.of(WeeklyData.US_CLAIMS), null, 365.25 / 7, 1e-9).getConcentratedLikelihood().logLikelihood();
     }

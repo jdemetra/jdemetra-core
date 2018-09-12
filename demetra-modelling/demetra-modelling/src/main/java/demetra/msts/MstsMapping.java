@@ -237,4 +237,19 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
         this.scalable = scalable;
     }
 
+    public String[] parametersName() {
+        List<String> names=new ArrayList<>();
+        for (IMstsParametersBlock block : parameters){
+            int n=block.getDomain().getDim();
+            if (n == 1){
+                names.add(block.getName());
+            }else{
+                for (int i=1; i<=n; ++i){
+                    names.add(block.getName()+"_"+i);
+                }
+            }
+        }
+        return names.toArray(new String[names.size()]);
+    }
+
 }

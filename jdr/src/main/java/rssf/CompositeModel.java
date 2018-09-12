@@ -25,12 +25,16 @@ import demetra.maths.matrices.Matrix;
 import demetra.msts.MstsMapping;
 import demetra.msts.MstsMonitor;
 import demetra.processing.IProcResults;
+import demetra.ssf.StateInfo;
 import demetra.ssf.StateStorage;
 import demetra.ssf.akf.AkfToolkit;
 import demetra.ssf.dk.DkToolkit;
+import demetra.ssf.dk.sqrt.DefaultDiffuseSquareRootFilteringResults;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
 import demetra.ssf.multivariate.M2uAdapter;
 import demetra.ssf.multivariate.SsfMatrix;
+import demetra.ssf.univariate.ISsf;
+import demetra.ssf.univariate.ISsfData;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -57,6 +61,7 @@ public class CompositeModel {
             rslt.cmpPos = rslt.getSsf().componentsPosition();
             rslt.parameters = monitor.getParameters().toArray();
             rslt.fullParameters = monitor.fullParameters().toArray();
+            rslt.parametersName = model.getMapping().parametersName();
             return rslt;
         }
 
@@ -68,6 +73,7 @@ public class CompositeModel {
             rslt.parameters = fp.toArray();
             rslt.ssf = model.getMapping().map(fp);
             rslt.cmpPos = rslt.getSsf().componentsPosition();
+            rslt.parametersName = model.getMapping().parametersName();
             if (marginal) {
                 rslt.likelihood = AkfToolkit.marginalLikelihoodComputer().
                         compute(M2uAdapter.of(rslt.getSsf()), M2uAdapter.of(new SsfMatrix(data)));
@@ -82,13 +88,35 @@ public class CompositeModel {
         private int[] cmpPos;
         private Matrix data;
         private double[] fullParameters, parameters;
-        private StateStorage smoothedStates;
+        private String[] parametersName;
+        private StateStorage smoothedStates, filteredStates;
 
         StateStorage getSmoothedStates() {
             if (smoothedStates == null) {
                 smoothedStates = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true);
             }
             return smoothedStates;
+        }
+
+        StateStorage getFilteredStates() {
+            if (filteredStates == null) {
+
+                ISsf ussf = M2uAdapter.of(ssf);
+                ISsfData udata = M2uAdapter.of(new SsfMatrix(data));
+                DefaultDiffuseSquareRootFilteringResults fr = DkToolkit.sqrtFilter(ussf, udata, true);
+                StateStorage ss = StateStorage.full(StateInfo.Forecast);
+                int m = data.getColumnsCount(), n = data.getRowsCount();
+                ss.prepare(ussf.getStateDim(), 0, n);
+                for (int i = fr.getEndDiffusePosition(); i < n; ++i) {
+                    ss.save(i, fr.a(i * m), fr.P(i * m));
+                }
+                for (int i = 0; i<fr.getEndDiffusePosition(); ++i) {
+                    ss.a(i).set(Double.NaN);
+                    ss.P(i).set(Double.NaN);
+                }
+                filteredStates = ss;
+            }
+            return filteredStates;
         }
 
         private static final InformationMapping<Estimation> MAPPING = new InformationMapping<>(Estimation.class);
@@ -98,6 +126,7 @@ public class CompositeModel {
             MAPPING.set("ssf.ncmps", Integer.class, source -> source.getCmpPos().length);
             MAPPING.set("ssf.cmppos", int[].class, source -> source.getCmpPos());
             MAPPING.set("parameters", double[].class, source -> source.getFullParameters());
+            MAPPING.set("parametersname", String[].class, source -> source.getParametersName());
             MAPPING.set("fn.parameters", double[].class, source -> source.getParameters());
             MAPPING.setArray("ssf.T", 0, 10000, MatrixType.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();
@@ -146,7 +175,7 @@ public class CompositeModel {
             });
             MAPPING.set("ssf.B0", MatrixType.class, source -> {
                 int dim = source.getSsf().getStateDim();
-                int nd=source.getSsf().initialization().getDiffuseDim();
+                int nd = source.getSsf().initialization().getDiffuseDim();
                 Matrix V = Matrix.make(dim, nd);
                 source.getSsf().initialization().diffuseConstraints(V);
                 return V;
@@ -178,6 +207,22 @@ public class CompositeModel {
             MAPPING.setArray("ssf.smoothing.vcmp", 0, 100, double[].class, (source, p) -> {
                 StateStorage smoothedStates = source.getSmoothedStates();
                 return smoothedStates.getComponentVariance(source.getCmpPos()[p]).toArray();
+            });
+            MAPPING.setArray("ssf.filtering.array", 0, 1000, double[].class, (source, p) -> {
+                StateStorage fStates = source.getFilteredStates();
+                return fStates.getComponent(p).toArray();
+            });
+            MAPPING.setArray("ssf.filtering.varray", 0, 1000, double[].class, (source, p) -> {
+                StateStorage fStates = source.getFilteredStates();
+                return fStates.getComponentVariance(p).toArray();
+            });
+            MAPPING.setArray("ssf.filtering.cmp", 0, 100, double[].class, (source, p) -> {
+                StateStorage fStates = source.getFilteredStates();
+                return fStates.getComponent(source.getCmpPos()[p]).toArray();
+            });
+            MAPPING.setArray("ssf.filtering.vcmp", 0, 100, double[].class, (source, p) -> {
+                StateStorage fStates = source.getFilteredStates();
+                return fStates.getComponentVariance(source.getCmpPos()[p]).toArray();
             });
         }
 
@@ -242,6 +287,10 @@ public class CompositeModel {
          */
         double[] getParameters() {
             return parameters;
+        }
+
+        String[] getParametersName() {
+            return parametersName;
         }
     }
 
