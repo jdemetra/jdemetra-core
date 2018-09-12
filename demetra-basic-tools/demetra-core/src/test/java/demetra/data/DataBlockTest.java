@@ -1584,9 +1584,6 @@ public class DataBlockTest {
 
     @Test
     public void testSsqc() {
-        assertThat(ofInternal(getSample(10), 0, 10, 1).ssqc(Double.POSITIVE_INFINITY))
-                .isEqualTo(0);
-
         assertThat(ofInternal(getSample(10), 0, 10, 1).ssqc(5))
                 .isEqualTo(85);
         assertThat(ofInternal(getSample(10), 2, 10, 1).ssqc(5))

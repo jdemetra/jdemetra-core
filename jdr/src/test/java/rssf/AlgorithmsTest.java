@@ -41,9 +41,9 @@ public class AlgorithmsTest {
         CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false);
 
         double[] p = rslt.getFullParameters();
-        System.out.println("Dummy");
-        System.out.println(DataBlock.ofInternal(p));
-        System.out.println(rslt.getLikelihood().logLikelihood());
+//        System.out.println("Dummy");
+//        System.out.println(DataBlock.ofInternal(p));
+//        System.out.println(rslt.getLikelihood().logLikelihood());
     }
 
     @Test
@@ -62,8 +62,8 @@ public class AlgorithmsTest {
         CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false);
 
         double[] p = rslt.getFullParameters();
-        System.out.println("Crude");
-        System.out.println(DataBlock.ofInternal(p));
-        System.out.println(rslt.getLikelihood().logLikelihood());
+//        System.out.println("Crude");
+//        System.out.println(DataBlock.ofInternal(p));
+//        System.out.println(rslt.getLikelihood().logLikelihood());
     }
 }

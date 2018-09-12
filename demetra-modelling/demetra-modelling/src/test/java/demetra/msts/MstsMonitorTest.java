@@ -74,7 +74,7 @@ public class MstsMonitorTest {
         System.out.println(ss.getComponent(monitor.getSsf().componentsPosition()[4]));
     }
 
-    @Test
+    //@Test
     public void testSimpleX() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
@@ -154,7 +154,7 @@ public class MstsMonitorTest {
         System.out.println(ss.getComponent(monitor.getSsf().componentsPosition()[4]));
     }
 
-    @Test
+    //@Test
     public void testSimpleXbis() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
