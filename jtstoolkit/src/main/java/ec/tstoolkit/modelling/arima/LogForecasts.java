@@ -46,7 +46,7 @@ public class LogForecasts {
         return f;
     }
 
-    public double[] getForecats() {
+    public double[] getForecasts() {
         double[] f = fcasts_.getForecasts().clone();
         for (int i = 0; i < f.length; ++i) {
             f[i] = Math.exp(f[i]);
@@ -66,7 +66,7 @@ public class LogForecasts {
         return expStdev(ser, m);
     }
 
-    public double[] getForecatStdevs() {
+    public double[] getForecastStdevs() {
         double[] ef = fcasts_.getForecastStdevs().clone();
         double[] m = fcasts_.getForecasts();
         for (int i = 0; i < ef.length; ++i) {

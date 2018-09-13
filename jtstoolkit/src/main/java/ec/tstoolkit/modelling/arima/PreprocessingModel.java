@@ -39,15 +39,15 @@ import ec.tstoolkit.maths.realfunctions.IFunctionInstance;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.DeterministicComponent;
-import ec.tstoolkit.modelling.PreadjustmentVariable;
 import ec.tstoolkit.modelling.ModellingDictionary;
+import ec.tstoolkit.modelling.PreadjustmentVariable;
 import ec.tstoolkit.modelling.SeriesInfo;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.x13.UscbForecasts;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
-import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.ICalendarVariable;
+import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
 import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
@@ -398,8 +398,8 @@ public class PreprocessingModel implements IProcResults {
         if (type == ComponentType.Undefined) {
             return outliersEffect(domain);
         } else {
-            return deterministicEffect(domain, var
-                    -> var instanceof IOutlierVariable
+            return deterministicEffect(domain, var ->
+                    var instanceof IOutlierVariable
                     && type == Variable.searchType((IOutlierVariable) var));
         }
 
@@ -672,7 +672,7 @@ public class PreprocessingModel implements IProcResults {
         double[] ef;
         if (isMultiplicative()) {
             LogForecasts lf = new LogForecasts(fcasts);
-            ef = lf.getForecatStdevs();
+            ef = lf.getForecastStdevs();
         } else {
             ef = fcasts.getForecastStdevs();
         }
@@ -1079,15 +1079,15 @@ public class PreprocessingModel implements IProcResults {
         MAPPING.set(BCASTS, -2, TsData.class, (source, i) -> source.backcast(nperiods(source, i), false));
         MAPPING.set(LIN_FCASTS, -2, TsData.class, (source, i) -> source.linearizedForecast(nperiods(source, i)));
         MAPPING.set(LIN_BCASTS, -2, TsData.class, (source, i) -> source.linearizedBackcast(nperiods(source, i)));
-        MAPPING.set(EFCASTS, -2, TsData.class, (source, i)
-                -> {
+        MAPPING.set(EFCASTS, -2, TsData.class, (source, i) ->
+        {
             int np = nperiods(source, i);
             TsDomain fdomain = new TsDomain(source.description.getSeriesDomain().getEnd(), np);
             Forecasts fcasts = source.forecasts(np);
             double[] ef;
             if (source.isMultiplicative()) {
                 LogForecasts lf = new LogForecasts(fcasts);
-                ef = lf.getForecatStdevs();
+                ef = lf.getForecastStdevs();
             } else {
                 ef = fcasts.getForecastStdevs();
             }

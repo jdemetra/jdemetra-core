@@ -1,17 +1,17 @@
 /*
 * Copyright 2013 National Bank of Belgium
 *
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+* Licensed under the EUPL, Version 1.1 or – as soon they will be approved
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
 * You may not use this work except in compliance with the Licence.
 * You may obtain a copy of the Licence at:
 *
 * http://ec.europa.eu/idabc/eupl
 *
-* Unless required by applicable law or agreed to in writing, software 
+* Unless required by applicable law or agreed to in writing, software
 * distributed under the Licence is distributed on an "AS IS" basis,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
+* See the Licence for the specific language governing permissions and
 * limitations under the Licence.
  */
 package ec.tstoolkit.algorithm;
@@ -19,7 +19,8 @@ package ec.tstoolkit.algorithm;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.information.Information;
 import ec.tstoolkit.information.InformationSet;
-import java.util.ArrayList;
+import ec.tstoolkit.modelling.ModellingDictionary;
+import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -34,10 +35,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  *
  * @author Jean Palate
- * 
- * Manages Processing factories (P), which produce results R from input I and specification S
- * Objects of this class will also contains diagnostic classes (T) that can analyse the results
- * and output factory classes (O) that can handle document objects (D) corresponding to a processing
+ *
+ * Manages Processing factories (P), which produce results R from input I and
+ * specification S
+ * Objects of this class will also contains diagnostic classes (T) that can
+ * analyse the results
+ * and output factory classes (O) that can handle document objects (D)
+ * corresponding to a processing
  * @param <S> Specification class
  * @param <I> Input class
  * @param <R> Results class
@@ -61,7 +65,11 @@ public abstract class AlgorithmManager<S extends IProcSpecification, I, R extend
     public InformationSet diagnostic(R sa) {
         InformationSet summary = new InformationSet();
         for (IDiagnosticsFactory<R> diag : tests_) {
-            if (diag.isEnabled()) {
+            TsData y = sa.getData(ModellingDictionary.Y, TsData.class);
+            boolean isHalfYearly = y != null && y.getFrequency().intValue() == 2;
+            if (diag.isEnabled() && (!diag.getName().equals("M-Statistics")
+                    || !isHalfYearly) && (!diag.getName().equals("Regarima residuals")
+                    || !isHalfYearly)) {
                 summary.add(create(diag, sa));
             }
         }
@@ -150,7 +158,7 @@ public abstract class AlgorithmManager<S extends IProcSpecification, I, R extend
         }
         return null;
     }
-    
+
     protected T addDiagnostics(String module, String impl) {
         T diag = (T) ec.tstoolkit.design.InterfaceLoader.create(module, IDiagnosticsFactory.class, impl);
         if (diag != null) {
