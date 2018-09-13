@@ -37,9 +37,9 @@ public class ParameterInfo {
     public ParameterInfo(ec.tstoolkit.Parameter p, double pvalue, String desc)
     {
         value=p.getValue();
-        stde=p.getValue();
-        this.pvalue=pvalue;
+        stde=p.getStde();
         type=p.getType();
+        this.pvalue=pvalue;
         this.description=desc;
     }
 
