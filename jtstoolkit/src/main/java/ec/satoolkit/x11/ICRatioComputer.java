@@ -47,6 +47,8 @@ public class ICRatioComputer {
         double icr = gi / gc;
         if (freq == 4) {
             icr *= 3.0;
+        } else if (freq == 2) {
+            icr *= 6.0;
         }
 
         InformationSet dtables = info.subSet(X11Kernel.D);
