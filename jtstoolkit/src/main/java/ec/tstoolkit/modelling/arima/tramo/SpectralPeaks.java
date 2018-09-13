@@ -1,17 +1,17 @@
 /*
 * Copyright 2013 National Bank of Belgium
 *
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+* Licensed under the EUPL, Version 1.1 or – as soon they will be approved
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
 * You may not use this work except in compliance with the Licence.
 * You may obtain a copy of the Licence at:
 *
 * http://ec.europa.eu/idabc/eupl
 *
-* Unless required by applicable law or agreed to in writing, software 
+* Unless required by applicable law or agreed to in writing, software
 * distributed under the Licence is distributed on an "AS IS" basis,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
+* See the Licence for the specific language governing permissions and
 * limitations under the Licence.
  */
 package ec.tstoolkit.modelling.arima.tramo;
@@ -135,6 +135,7 @@ public class SpectralPeaks {
      * Corresponds to the fortran function SeasSpectCrit
      *
      * @param peaks
+     *
      * @return
      */
     public static boolean hasSeasonalPeaks(SpectralPeaks[] peaks) {
@@ -145,6 +146,9 @@ public class SpectralPeaks {
             return hasMonthlyPeaks(peaks);
         } else if (peaks.length == 2) {
             return hasQuarterlyPeaks(peaks);
+        } else if (peaks.length == 1) {
+            return hasHalfYearlyPreaks(peaks);
+
         } else {
             return false;
         }
@@ -154,16 +158,18 @@ public class SpectralPeaks {
      * Corresponds to the fortran function SeasSpectCrit2
      *
      * @param peaks
+     *
      * @return
      */
     public static boolean hasHighSeasonalPeaks(SpectralPeaks[] peaks) {
-        switch (peaks.length) {
-            case 6:
-                return hasHighMonthlyPeaks(peaks);
-            case 2:
-                return hasHighQuarterlyPeaks(peaks);
-            default:
-                return false;
+        if (peaks.length == 6) {
+            return hasHighMonthlyPeaks(peaks);
+        } else if (peaks.length == 2) {
+            return hasHighQuarterlyPeaks(peaks);
+        } else if (peaks.length == 1) {
+            return hasHighHalfYearlyPreaks(peaks);
+        } else {
+            return false;
         }
     }
 
@@ -264,15 +270,21 @@ public class SpectralPeaks {
         return n == 2;
     }
 
+    private static boolean hasHalfYearlyPreaks(SpectralPeaks[] peaks) {
+        return peaks[0].hasPeak();
+    }
+
+    private static boolean hasHighHalfYearlyPreaks(SpectralPeaks[] peaks) {
+        return peaks[0].hasHighPeak();
+    }
+
     public static String format(SpectralPeaks[] peaks) {
         StringBuilder builder = new StringBuilder();
-        if (peaks != null) {
-            for (int i = 0; i < peaks.length; ++i) {
-                if (i != 0) {
-                    builder.append('.');
-                }
-                builder.append(peaks[i].toString());
+        for (int i = 0; i < peaks.length; ++i) {
+            if (i != 0) {
+                builder.append('.');
             }
+            builder.append(peaks[i].toString());
         }
         return builder.toString();
     }

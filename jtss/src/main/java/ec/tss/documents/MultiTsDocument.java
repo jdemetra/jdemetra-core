@@ -37,7 +37,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  *
@@ -197,9 +196,9 @@ public abstract class MultiTsDocument<S extends IProcSpecification, R extends IP
             TsInformation tsinfo;
             for (int i = 0; i < ts.length; ++i) {
                 if (ts[i].getMoniker().isAnonymous()) {
-                    tsinfo = new TsInformation(ts[i], TsInformationType.All);
+                    tsinfo = ts[i].toInfo(TsInformationType.All);
                 } else {
-                    tsinfo = new TsInformation(ts[i].freeze(), TsInformationType.All);
+                    tsinfo = ts[i].freeze().toInfo(TsInformationType.All);
                 }
                 info.subSet(INPUT).add(SERIES + i, tsinfo);
             }

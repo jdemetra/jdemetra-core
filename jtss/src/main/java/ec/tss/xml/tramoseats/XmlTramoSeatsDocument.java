@@ -81,7 +81,7 @@ public class XmlTramoSeatsDocument implements IXmlConverter<TramoSeatsDocument> 
         Ts s = t.getTs();
         if (s != null) {
             ts = new XmlTs();
-            ts.copy(new TsInformation(s.freeze(), TsInformationType.All));
+            ts.copy(s.freeze().toInfo(TsInformationType.All));
         }
         spec = new XmlTramoSeatsSpecification();
 
