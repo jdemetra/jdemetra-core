@@ -112,11 +112,13 @@ public class BasicConfiguration {
     }
 
     public static final List<String> allSaDetails(boolean compact) {
-        return allDetails(compact, SaManager.instance.getProcessors(), SaManager.instance.getDiagnostics());
+        List<String> details = allDetails(compact, SaManager.instance.getProcessors(), SaManager.instance.getDiagnostics());
+        details.add(InformationSet.concatenate(GenericSaProcessingFactory.DIAGNOSTICS, "quality"));
+        return details;
     }
 
     public static final List<String> allSingleSaDetails(boolean compact) {
-        List<String> d = allDetails(compact, SaManager.instance.getProcessors(), SaManager.instance.getDiagnostics());
+        List<String> d = allSaDetails(compact);
         List<String> dc=new ArrayList<>();
         for (String cur : d){
             int last = cur.lastIndexOf(":");

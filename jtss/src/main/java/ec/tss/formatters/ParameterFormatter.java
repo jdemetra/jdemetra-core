@@ -48,20 +48,20 @@ public class ParameterFormatter implements IStringFormatter {
     public String format(Object obj, int item) {
 
         Parameter param = (Parameter) obj;
-        if (item == 0) {
-            return fmt.format(param.getValue());
-        } else if (item == 1) {
-            return fmt.format(param.getValue());
-        } else if (item == 2) {
-            if (param.getStde() == 0) {
+        switch (item) {
+            case 0:
+            case 1:
+                return fmt.format(param.getValue());
+            case 2:
+                if (param.getStde() == 0) {
+                    return "";
+                } else {
+                    return df3.format(param.getValue() / param.getStde());
+                }
+            case 3:
+                return fmt.format(param.getStde());
+            default:
                 return "";
-            } else {
-                return df3.format(param.getValue() / param.getStde());
-            }
-        } else if (item == 3) {
-            return fmt.format(param.getStde());
-        } else {
-            return "";
         }
     }
 }
