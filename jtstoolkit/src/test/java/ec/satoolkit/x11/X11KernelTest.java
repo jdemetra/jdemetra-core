@@ -1,29 +1,31 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.satoolkit.x11;
 
-import data.*;
+import data.Data;
+import data.Datax11;
 import ec.satoolkit.DecompositionMode;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.maths.linearfilters.SymmetricFilter;
 import ec.tstoolkit.timeseries.simplets.TsData;
-import org.junit.Test;
+import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 import utilities.CompareTsData;
 
 /**
@@ -239,6 +241,27 @@ public class X11KernelTest {
 //        System.out.println(rslt.getData("d-tables.d10a", TsData.class));
         assertTrue(rslt.getData("d-tables.d10a", TsData.class) != null);
     }
+
+    @Test
+    public void testHalfYear() {
+        X11Specification spec = new X11Specification();
+        spec.setSeasonalFilter(SeasonalFilterOption.Msr);
+        spec.setHendersonFilterLength(13);
+//  spec.setForecastHorizon(105);
+        X11Toolkit toolkit = X11Toolkit.create(spec);
+        toolkit.setPreprocessor(new AirlinePreprocessor());
+        X11Kernel kernel = new X11Kernel();
+        kernel.setToolkit(toolkit);
+        TsData td = new TsData(TsFrequency.HalfYearly, 1970, 0, Data.X.getValues().internalStorage(), true);
+//        System.out.println(td);
+        X11Results rslt = kernel.process(td);
+//        System.out.println("f105");
+//        System.out.println("d-tables.d10");
+//        System.out.println(rslt.getData("d-tables.d10", TsData.class));
+        assertTrue(rslt.getData("d-tables.d10a", TsData.class
+        ) != null);
+    }
+
 }
 
 class MyDummyTrendCycleComputer extends DefaultX11Algorithm implements ITrendCycleComputer {
@@ -247,7 +270,7 @@ class MyDummyTrendCycleComputer extends DefaultX11Algorithm implements ITrendCyc
     public TsData doFinalFiltering(X11Step step, TsData s, InformationSet info) {
         SymmetricFilter trendFilter = TrendCycleFilterFactory.makeTrendFilter(context.getFrequency());
         return new DefaultTrendFilteringStrategy(trendFilter, new CopyEndPoints(context.getFrequency() / 2)).process(s,
-                s.getDomain());
+                                                                                                                     s.getDomain());
     }
 
     @Override

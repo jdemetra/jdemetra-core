@@ -39,7 +39,7 @@ public final class X11Context {
      *
      * @param mode    The decomposition mode used in the processing
      * @param nfcasts The number of forecasts that will be used during the
-     *                processing. 
+     *                processing.
      */
     @Deprecated
     public X11Context(final DecompositionMode mode, final int nfcasts) {
@@ -53,15 +53,16 @@ public final class X11Context {
      *
      * @param mode    The decomposition mode used in the processing
      * @param nbcasts The number of backcasts that will be used during the
-     *                processing. 
+     *                processing.
      * @param nfcasts The number of forecasts that will be used during the
-     *                processing. 
+     *                processing.
      */
     public X11Context(final DecompositionMode mode, final int nbcasts, final int nfcasts) {
         this.mode = mode;
         this.nfcasts = nfcasts;
         this.nbcasts = nbcasts;
     }
+
     /**
      *
      * @return
@@ -99,6 +100,7 @@ public final class X11Context {
             return -nbcasts * freq;
         }
     }
+
     /**
      * Gets the current annual frequency, as an integer
      *
@@ -142,12 +144,14 @@ public final class X11Context {
     public final boolean isPseudoAdditive() {
         return mode == DecompositionMode.PseudoAdditive;
     }
+
     /**
      * Subtracts/divides two time series, following the decomposition mode.
      * (divides in the case of multiplicative decomposition)
      *
      * @param l The left operand
      * @param r The right operand
+     *
      * @return A new time series is returned
      */
     public final TsData op(TsData l, TsData r) {
@@ -164,6 +168,7 @@ public final class X11Context {
      *
      * @param l The left operand
      * @param r The right operand
+     *
      * @return A new time series is returned
      */
     public final TsData invOp(TsData l, TsData r) {
@@ -173,24 +178,26 @@ public final class X11Context {
             return TsData.multiply(l, r);
         }
     }
-    
-    public final TsData pseudoOp(TsData y, TsData t, TsData s){
-        TsData sa=new TsData(y.getDomain());
-        int beg=t.getStart().minus(y.getStart()), end=t.getLength()+beg;
-        for (int i=0; i<beg; ++i){
-            double cur=s.get(i);
-            if (cur == 0)
+
+    public final TsData pseudoOp(TsData y, TsData t, TsData s) {
+        TsData sa = new TsData(y.getDomain());
+        int beg = t.getStart().minus(y.getStart()), end = t.getLength() + beg;
+        for (int i = 0; i < beg; ++i) {
+            double cur = s.get(i);
+            if (cur == 0) {
                 throw new X11Exception("Unexpected 0 in peudo-additive");
-            sa.set(i, y.get(i)/cur);
+            }
+            sa.set(i, y.get(i) / cur);
         }
-        for (int i=beg; i<end; ++i){
-            sa.set(i, y.get(i)-t.get(i-beg)*(s.get(i)-1));
-        }        
-        for (int i=end; i<sa.getLength(); ++i){
-            double cur=s.get(i);
-            if (cur == 0)
+        for (int i = beg; i < end; ++i) {
+            sa.set(i, y.get(i) - t.get(i - beg) * (s.get(i) - 1));
+        }
+        for (int i = end; i < sa.getLength(); ++i) {
+            double cur = s.get(i);
+            if (cur == 0) {
                 throw new X11Exception("Unexpected 0 in peudo-additive");
-            sa.set(i, y.get(i)/cur);
+            }
+            sa.set(i, y.get(i) / cur);
         }
         return sa;
     }
@@ -199,6 +206,7 @@ public final class X11Context {
      * Controls that the given series can be processed by X11
      *
      * @param s The considered time series
+     *
      * @throws X11Exception is thrown if the series is invalid. Invalid series
      *                      are: - Series with an annual frequency other than 4 or 12 - Series with
      *                      less than 3 years of observations - Series with negative values (in the
@@ -215,7 +223,7 @@ public final class X11Context {
             validDecomposition=null;
 
         int freq = s.getFrequency().intValue();
-        if (freq != 4 && freq != 12) {
+        if (freq != 4 && freq != 12 && freq != 2) {
             throw new X11Exception(X11Exception.ERR_FREQ);
         }
         if (s.getLength() < 3 * freq) {
