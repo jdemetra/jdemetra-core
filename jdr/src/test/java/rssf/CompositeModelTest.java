@@ -35,7 +35,8 @@ public class CompositeModelTest {
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false);
-//        System.out.println(rslt.getSmoothedStates().getComponent(0));
+        System.out.println(rslt.getSmoothedStates().getComponent(0));
+        System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
     }
     
     @Test
@@ -69,10 +70,12 @@ public class CompositeModelTest {
         
         model.build();
         
-//        Matrix M=Matrix.make(40, 4);
-//        Random rnd=new Random(0);
-//        M.set(rnd::nextDouble);
-//        
+        Matrix M=Matrix.make(40, 4);
+        Random rnd=new Random(0);
+        M.set(rnd::nextDouble);
+        
 //        CompositeModel.Estimation rslt2 = model.estimate(M, 1e-12, false);
+//        System.out.println(rslt2.getSmoothedStates().getComponent(0));
+//        System.out.println(rslt2.getSmoothedStates().getComponentVariance(0));
     }
 }

@@ -114,6 +114,7 @@ public class CompositeModel {
                     ss.a(i).set(Double.NaN);
                     ss.P(i).set(Double.NaN);
                 }
+                ss.rescaleVariances(likelihood.sigma());
                 filteredStates = ss;
             }
             return filteredStates;
@@ -123,6 +124,7 @@ public class CompositeModel {
 
         static {
             MAPPING.set("loglikelihood", Double.class, source -> source.getLikelihood().logLikelihood());
+            MAPPING.set("scalingfactor", Double.class, source -> source.getLikelihood().sigma());
             MAPPING.set("ssf.ncmps", Integer.class, source -> source.getCmpPos().length);
             MAPPING.set("ssf.cmppos", int[].class, source -> source.getCmpPos());
             MAPPING.set("parameters", double[].class, source -> source.getFullParameters());
