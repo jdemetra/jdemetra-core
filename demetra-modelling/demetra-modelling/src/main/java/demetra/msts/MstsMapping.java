@@ -42,7 +42,8 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
     }
 
     public List<VarianceParameter> smallVariances(DoubleSequence cur, double eps) {
-        List<VarianceParameter> small=new ArrayList<>();
+        List<VarianceParameter> small = new ArrayList<>();
+        double max = maxVariance(cur);
         int pos = 0;
         for (IMstsParametersBlock p : parameters) {
             if (!p.isFixed()) {
@@ -50,7 +51,7 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
                 if (dim == 1 && p instanceof VarianceParameter) {
                     double e = cur.get(pos);
                     double v = e * e;
-                    if (v < eps) {
+                    if (v < eps * max) {
                         small.add((VarianceParameter) p);
                     }
                 }
@@ -58,6 +59,25 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
             }
         }
         return small;
+    }
+
+    public double maxVariance(DoubleSequence cur) {
+        double max = 0;
+        int pos = 0;
+        for (IMstsParametersBlock p : parameters) {
+            int dim = p.getDomain().getDim();
+            if (dim == 1 && p instanceof VarianceParameter) {
+                VarianceParameter var = (VarianceParameter) p;
+                double e = var.isFixed() ? var.defValue() : cur.get(pos);
+                if (e > max) {
+                    max = e;
+                }
+            }
+            if (!p.isFixed()) {
+                pos += dim;
+            }
+        }
+        return max * max;
     }
 
     private double[] array(DoubleSequence inparams) {
@@ -113,8 +133,8 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
         MultivariateCompositeSsf.Builder builder = MultivariateCompositeSsf.builder();
         DoubleSequence fp = trueParameters(p);
         for (IMstsBuilder decoder : builders) {
-            int np= decoder.decode(fp, builder);
-            fp=fp.drop(np, 0);
+            int np = decoder.decode(fp, builder);
+            fp = fp.drop(np, 0);
         }
         return builder.build();
     }
@@ -238,14 +258,14 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
     }
 
     public String[] parametersName() {
-        List<String> names=new ArrayList<>();
-        for (IMstsParametersBlock block : parameters){
-            int n=block.getDomain().getDim();
-            if (n == 1){
+        List<String> names = new ArrayList<>();
+        for (IMstsParametersBlock block : parameters) {
+            int n = block.getDomain().getDim();
+            if (n == 1) {
                 names.add(block.getName());
-            }else{
-                for (int i=1; i<=n; ++i){
-                    names.add(block.getName()+"_"+i);
+            } else {
+                for (int i = 1; i <= n; ++i) {
+                    names.add(block.getName() + "_" + i);
                 }
             }
         }

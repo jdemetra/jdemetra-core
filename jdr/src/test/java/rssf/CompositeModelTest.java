@@ -6,6 +6,7 @@
 package rssf;
 
 import demetra.data.Data;
+import demetra.data.DataBlock;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.implementations.Loading;
@@ -25,21 +26,25 @@ public class CompositeModelTest {
     @Test
     public void testBsm() {
         CompositeModel model = new CompositeModel();
-        model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
-        model.add(AtomicModels.seasonalComponent("s", "Crude", 12, .01, false));
-        ModelEquation eq = new ModelEquation("eq1", 1, true);
-        eq.add("l");
-        eq.add("s");
+        model.add(AtomicModels.localLinearTrend("l", 1, .01, true, false));
+        model.add(AtomicModels.seasonalComponent("s", "Crude", 12, 1, true));
+        model.add(AtomicModels.noise("n", 1, true));
+        ModelEquation eq = new ModelEquation("eq1", 0, true);
+        eq.add("l",1, true, null);
+        eq.add("s",.1, false, null);
+        eq.add("n",.1, false, null);
         model.add(eq);
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false);
+        CompositeModel.Estimation rslt = model.estimate(M, 1e-15, false);
+        System.out.println(DataBlock.ofInternal(rslt.getFullParameters()));
         System.out.println(rslt.getSmoothedStates().getComponent(0));
         System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
+        System.out.println(rslt.getLikelihood().logLikelihood());
     }
     
-    @Test
+    //@Test
     public void testSimple() {
         CompositeModel model = new CompositeModel();
         model.add(AtomicModels.localLinearTrend("tu", 0, .01, true, false));

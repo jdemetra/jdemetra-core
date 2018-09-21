@@ -5,6 +5,7 @@
  */
 package rssf;
 
+import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.implementations.TimeInvariantDynamics;
@@ -16,7 +17,7 @@ import demetra.ssf.implementations.TimeInvariantDynamics.Innovations;
  */
 @lombok.experimental.UtilityClass
 public class Dynamics {
-    public ISsfDynamics of(Matrix T, Matrix V, Matrix S){
-        return new TimeInvariantDynamics(T, new Innovations(V, S));
+    public ISsfDynamics of(MatrixType T, MatrixType V, MatrixType S){
+        return new TimeInvariantDynamics(Matrix.of(T), new Innovations(Matrix.of(V), Matrix.of(S)));
     }
 }

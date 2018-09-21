@@ -46,6 +46,8 @@ public class Matrix implements MatrixType {
     }
 
     public static Matrix of(MatrixType matrix) {
+        if (matrix == null)
+            return null;
         return new Matrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
     }
 

@@ -35,10 +35,11 @@ public class MstsMonitor {
 
     public static class Builder {
 
-        private static  int MAXITER = 20, MAXITER_MIN = 500;
+        private static final int MAXITER = 20, MAXITER_MIN = 500;
+        private static final double SMALL_VAR=1e-8;
 
         private boolean marginalLikelihood;
-        private double precision = 1e-9;
+        private double precision = 1e-9, smallVar=SMALL_VAR;
         private int maxIter = MAXITER;
         private int maxIterOptimzer = MAXITER_MIN;
         private boolean bfgs;
@@ -52,6 +53,13 @@ public class MstsMonitor {
 
         public Builder precision(double eps) {
             this.precision = eps;
+            return this;
+        }
+
+        public Builder smallVariance(double var) {
+            if (var <=0)
+                throw new IllegalArgumentException();
+            this.smallVar=var;
             return this;
         }
 
@@ -94,7 +102,7 @@ public class MstsMonitor {
     }
 
     private final boolean marginalLikelihood;
-    private final double precision;
+    private final double precision, smallStde;
     private final int maxIter;
     private final int maxIterOptimzer;
     private final boolean bfgs;
@@ -117,6 +125,7 @@ public class MstsMonitor {
         this.marginalLikelihood = builder.marginalLikelihood;
         this.maxIter = builder.maxIter;
         this.resetParameters = builder.resetParameters;
+        this.smallStde=Math.sqrt(builder.smallVar);
     }
 
     private ILikelihoodFunction function() {
@@ -191,7 +200,7 @@ public class MstsMonitor {
         double dll = 0;
         VarianceParameter cur = null;
         for (VarianceParameter small : smallVariances) {
-            small.fix(1e-3);
+            small.fix(smallStde);
             DoubleSequence nprslts = model.functionParameters(fullp);
             ILikelihood nll = function().evaluate(nprslts).getLikelihood();
             double d = nll.logLikelihood() - ll.logLikelihood();
@@ -202,7 +211,7 @@ public class MstsMonitor {
             small.fix(0);
         }
         if (cur != null) {
-            cur.free(1e-3);
+            cur.free(smallStde);
             prslts = model.functionParameters(fullp);
             smallVariances.remove(cur);
             return true;

@@ -40,7 +40,7 @@ public class MstsMonitorTest {
     public MstsMonitorTest() {
     }
 
-//    @Test
+    @Test
     public void testSimple() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();

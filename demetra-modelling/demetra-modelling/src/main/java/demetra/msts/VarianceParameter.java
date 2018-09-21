@@ -51,6 +51,10 @@ public class VarianceParameter implements IMstsParametersBlock {
         fixed = false;
         stde = e;
     }
+    
+    public double defValue(){
+        return stde;
+    }
 
     @Override
     public boolean isFixed() {

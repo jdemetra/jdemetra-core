@@ -107,10 +107,13 @@ public class CompositeModel {
                 StateStorage ss = StateStorage.full(StateInfo.Forecast);
                 int m = data.getColumnsCount(), n = data.getRowsCount();
                 ss.prepare(ussf.getStateDim(), 0, n);
-                for (int i = fr.getEndDiffusePosition(); i < n; ++i) {
+                int nd = fr.getEndDiffusePosition() / m;
+                if (fr.getEndDiffusePosition()%m != 0)
+                    ++nd;
+                for (int i = nd; i < n; ++i) {
                     ss.save(i, fr.a(i * m), fr.P(i * m));
                 }
-                for (int i = 0; i<fr.getEndDiffusePosition(); ++i) {
+                for (int i = 0; i < nd; ++i) {
                     ss.a(i).set(Double.NaN);
                     ss.P(i).set(Double.NaN);
                 }
