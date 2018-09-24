@@ -83,6 +83,8 @@ public class SsfFunction<S, F extends ISsf> implements ILikelihoodFunction<DkCon
 
         public Builder useScalingFactor(boolean scalingFactor) {
             this.scalingFactor=scalingFactor;
+            if (! scalingFactor)
+                this.log=true;
             return this;
         }
 

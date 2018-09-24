@@ -43,6 +43,7 @@ public class QRFilter {
     private ProfileLikelihood pll;
     private MarginalLikelihood mll;
     private DiffuseLikelihood dll;
+    private ISsfData o;
     private Matrix R, X, Xl;
     private DataBlock yl, b, e;
     private double ldet, ssq, dcorr, pcorr, mcorr;
@@ -62,6 +63,7 @@ public class QRFilter {
      */
     public boolean process(final ISsf ssf, final ISsfData data) {
         clear();
+        this.o=data;
         OrdinaryFilter filter = new OrdinaryFilter();
         DefaultFilteringResults fr = DefaultFilteringResults.light();
         fr.prepare(ssf, 0, data.length());
@@ -98,7 +100,16 @@ public class QRFilter {
         }
 
         Householder housx = new Householder();
-        housx.decompose(X);
+        Matrix Q=X;
+        if (X.getRowsCount() != Xl.getRowsCount()){
+            Q=Matrix.make(Xl.getRowsCount(), X.getColumnsCount());
+            for (int i=0, j=0; i<o.length(); ++i){
+                if (!o.isMissing(i)){
+                    Q.row(j++).copy(X.row(i));
+                }
+            }
+        }
+        housx.decompose(Q);
         mcorr = 2 * LogSign.of(housx.rdiagonal(true)).getValue();
         int nd = housx.rank(), n = Xl.getRowsCount();
 
@@ -143,6 +154,7 @@ public class QRFilter {
     }
 
     private void clear() {
+        o=null;
         ssq = 0;
         ldet = 0;
         dcorr = 0;

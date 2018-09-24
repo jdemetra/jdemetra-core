@@ -48,11 +48,12 @@ public class CompositeModel {
 
     public static class Estimation implements IProcResults {
 
-        static Estimation estimate(CompositeModel model, Matrix data, double eps, boolean marginal) {
+        static Estimation estimate(CompositeModel model, Matrix data, double eps, boolean marginal, boolean concentrated) {
             Estimation rslt = new Estimation();
             rslt.data = data;
             MstsMonitor monitor = MstsMonitor.builder()
                     .marginalLikelihood(marginal)
+                    .concentratedLikelihood(concentrated)
                     .precision(eps)
                     .build();
             monitor.process(data, model.getMapping(), null);
@@ -65,7 +66,7 @@ public class CompositeModel {
             return rslt;
         }
 
-        static Estimation compute(CompositeModel model, Matrix data, DoubleSequence fullParameters, boolean marginal) {
+        static Estimation compute(CompositeModel model, Matrix data, DoubleSequence fullParameters, boolean marginal, boolean concentrated) {
             Estimation rslt = new Estimation();
             rslt.data = data;
             rslt.fullParameters = fullParameters.toArray();
@@ -357,17 +358,17 @@ public class CompositeModel {
         return mapping.trueParameters(mapping.getDefaultParameters()).toArray();
     }
 
-    public Estimation estimate(MatrixType data, double eps, boolean marginal) {
+    public Estimation estimate(MatrixType data, double eps, boolean marginal, boolean rescaling) {
         if (mapping == null) {
             build();
         }
-        return Estimation.estimate(this, Matrix.of(data), eps, marginal);
+        return Estimation.estimate(this, Matrix.of(data), eps, marginal, rescaling);
     }
 
-    public Estimation compute(MatrixType data, double[] parameters, boolean marginal) {
+    public Estimation compute(MatrixType data, double[] parameters, boolean marginal, boolean concentrated) {
         if (mapping == null) {
             build();
         }
-        return Estimation.compute(this, Matrix.of(data), DoubleSequence.ofInternal(parameters), marginal);
+        return Estimation.compute(this, Matrix.of(data), DoubleSequence.ofInternal(parameters), marginal, concentrated);
     }
 }

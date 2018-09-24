@@ -38,12 +38,12 @@ public class AlgorithmsTest {
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false);
+        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, true);
 
         double[] p = rslt.getFullParameters();
-//        System.out.println("Dummy");
-//        System.out.println(DataBlock.ofInternal(p));
-//        System.out.println(rslt.getLikelihood().logLikelihood());
+        System.out.println("Dummy");
+        System.out.println(DataBlock.ofInternal(p));
+        System.out.println(rslt.getLikelihood().logLikelihood());
     }
 
     @Test
@@ -59,11 +59,57 @@ public class AlgorithmsTest {
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false);
+        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, true);
 
         double[] p = rslt.getFullParameters();
-//        System.out.println("Crude");
-//        System.out.println(DataBlock.ofInternal(p));
-//        System.out.println(rslt.getLikelihood().logLikelihood());
+        System.out.println("Crude");
+        System.out.println(DataBlock.ofInternal(p));
+        System.out.println(rslt.getLikelihood().logLikelihood());
+    }
+    
+    @Test
+    public void testBsmBis() {
+        CompositeModel model = new CompositeModel();
+        model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
+        model.add(AtomicModels.seasonalComponent("s", "Dummy", 12, 1, false));
+        model.add(AtomicModels.noise("n", .01, false));
+        ModelEquation eq = new ModelEquation("eq1", 0, true);
+        eq.add("l");
+        eq.add("s");
+        eq.add("n");
+        model.add(eq);
+//        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
+//        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
+
+        int len = Data.ABS_RETAIL.length;
+        Matrix M = Matrix.make(len, 1);
+        M.column(0).copyFrom(Data.ABS_RETAIL, 0);
+        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, false);
+
+        double[] p = rslt.getFullParameters();
+        System.out.println("Dummy-non concentrated");
+        System.out.println(DataBlock.ofInternal(p));
+        System.out.println(rslt.getLikelihood().logLikelihood());
+    }
+
+    @Test
+    public void testBsm2Bis() {
+        CompositeModel model = new CompositeModel();
+        model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
+        model.add(AtomicModels.seasonalComponent("s", "Crude", 12, .01, false));
+        ModelEquation eq = new ModelEquation("eq1", 1, false);
+        eq.add("l");
+        eq.add("s");
+        model.add(eq);
+
+        int len = Data.ABS_RETAIL.length;
+        Matrix M = Matrix.make(len, 1);
+        M.column(0).copyFrom(Data.ABS_RETAIL, 0);
+        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, false);
+
+        double[] p = rslt.getFullParameters();
+        System.out.println("Crude-Non concentrated");
+        System.out.println(DataBlock.ofInternal(p));
+        System.out.println(rslt.getLikelihood().logLikelihood());
     }
 }

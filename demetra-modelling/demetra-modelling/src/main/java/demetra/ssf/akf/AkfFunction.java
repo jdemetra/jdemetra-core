@@ -73,6 +73,8 @@ public class AkfFunction<S, F extends ISsf> implements ILikelihoodFunction<Margi
 
         public Builder useScalingFactor(boolean scalingFactor) {
             this.scalingFactor=scalingFactor;
+            if (! scalingFactor)
+                this.log=true;
             return this;
         }
 
