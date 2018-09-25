@@ -60,7 +60,7 @@ public class AkfFunctionPoint<S, F extends ISsf> implements
         this.p = DataBlock.of(p);
         current=fn.getMapping().map(p);
         currentSsf = fn.getBuilder().buildSsf(current);
-        ILikelihoodComputer<MarginalLikelihood> computer= AkfToolkit.marginalLikelihoodComputer();
+        ILikelihoodComputer<MarginalLikelihood> computer= AkfToolkit.marginalLikelihoodComputer(fn.isScalingFactor());
         ll=computer.compute(currentSsf, fn.getData());
     }
 

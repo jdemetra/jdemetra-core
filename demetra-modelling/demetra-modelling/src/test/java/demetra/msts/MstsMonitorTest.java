@@ -197,9 +197,9 @@ public class MstsMonitorTest {
     }
     
     private void generateU(MstsMapping mapping) {
-        mapping.add(new VarianceParameter("u_var", 1, true));
+        mapping.add(new VarianceParameter("u_var", 1, true, false));
         mapping.add(new LoadingParameter("u_c"));
-        mapping.add(new VarianceParameter("tu_var"));
+        mapping.add(new VarianceParameter("tu_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("tu"));
@@ -212,9 +212,9 @@ public class MstsMonitorTest {
     }
 
     private void generateY(MstsMapping mapping) {
-        mapping.add(new VarianceParameter("y_var"));
+        mapping.add(new VarianceParameter("y_var", false));
         mapping.add(new LoadingParameter("y_c"));
-        mapping.add(new VarianceParameter("ty_var"));
+        mapping.add(new VarianceParameter("ty_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("ty"));
@@ -227,9 +227,9 @@ public class MstsMonitorTest {
     }
 
     private void generatePicore(MstsMapping mapping) {
-        mapping.add(new VarianceParameter("picore_var"));
+        mapping.add(new VarianceParameter("picore_var", false));
         mapping.add(new LoadingParameter("picore_c"));
-        mapping.add(new VarianceParameter("tpicore_var"));
+        mapping.add(new VarianceParameter("tpicore_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("tpicore"));
@@ -241,9 +241,9 @@ public class MstsMonitorTest {
     }
 
     private void generatePi(MstsMapping mapping) {
-        mapping.add(new VarianceParameter("pi_var"));
+        mapping.add(new VarianceParameter("pi_var", false));
         mapping.add(new LoadingParameter("pi_c"));
-        mapping.add(new VarianceParameter("tpi_var"));
+        mapping.add(new VarianceParameter("tpi_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("tpi"));
@@ -257,7 +257,7 @@ public class MstsMonitorTest {
 
     private void generateCycle(MstsMapping mapping) {
         mapping.add(new ArParameters("ar", new double[]{1, -.5}, false));
-        mapping.add(new VarianceParameter("ar_var", 1, true));
+        mapping.add(new VarianceParameter("ar_var", 1, true, false));
         mapping.add((p, builder) -> {
             double c1 = p.get(0), c2 = p.get(1), v = p.get(2);
             builder.add("cycle", SsfAr.of(new double[]{c1, c2}, v, 5));
@@ -268,11 +268,11 @@ public class MstsMonitorTest {
 
     private void generateXCycle(MstsMapping mapping) {
         mapping.add(new ArParameters("ar", new double[]{1, -.5}, false));
-        mapping.add(new VarianceParameter("ar_var", 1, true));
+        mapping.add(new VarianceParameter("ar_var", 1, true, false));
         mapping.add(new LoadingParameter("b_c"));
-        mapping.add(new VarianceParameter("b_var"));
+        mapping.add(new VarianceParameter("b_var", false));
         mapping.add(new LoadingParameter("c_c"));
-        mapping.add(new VarianceParameter("c_var"));
+        mapping.add(new VarianceParameter("c_var", false));
         mapping.add((p, builder) -> {
             double c1 = p.get(0), c2 = p.get(1), v = p.get(2);
             double b1 = p.get(3), v1 = p.get(4);
@@ -302,7 +302,7 @@ public class MstsMonitorTest {
     }
 
     private void generateB(MstsMapping mapping) {
-        mapping.add(new VarianceParameter("bs_var"));
+        mapping.add(new VarianceParameter("bs_var", false));
         mapping.add(new LoadingParameter("bs1_c"));
         mapping.add(new LoadingParameter("bs2_c"));
         mapping.add((p, builder) -> {
@@ -319,7 +319,7 @@ public class MstsMonitorTest {
     }
 
     private void generateC(MstsMapping mapping) {
-        mapping.add(new VarianceParameter("cs_var"));
+        mapping.add(new VarianceParameter("cs_var", false));
         mapping.add(new LoadingParameter("cs1_c"));
         mapping.add(new LoadingParameter("cs2_c"));
         mapping.add((p, builder) -> {
@@ -335,9 +335,9 @@ public class MstsMonitorTest {
     }
 
     private void generateU2(MstsMapping mapping) {
-        mapping.add(new VarianceParameter("u_var", 1, true));
+        mapping.add(new VarianceParameter("u_var", 1, true, false));
         mapping.add(new LoadingParameter("u_c"));
-        mapping.add(new VarianceParameter("tu_var"));
+        mapping.add(new VarianceParameter("tu_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("tu"));
@@ -350,9 +350,9 @@ public class MstsMonitorTest {
     }
 
     private void generateY2(MstsMapping mapping) {
-        mapping.add(new VarianceParameter("y_var"));
+        mapping.add(new VarianceParameter("y_var", false));
         mapping.add(new LoadingParameter("y_c"));
-        mapping.add(new VarianceParameter("ty_var"));
+        mapping.add(new VarianceParameter("ty_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("ty"));
@@ -365,9 +365,9 @@ public class MstsMonitorTest {
     }
 
     private void generatePicore2(MstsMapping mapping) {
-        mapping.add(new VarianceParameter("picore_var"));
+        mapping.add(new VarianceParameter("picore_var", false));
         mapping.add(new LoadingParameter("picore_c"));
-        mapping.add(new VarianceParameter("tpicore_var"));
+        mapping.add(new VarianceParameter("tpicore_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("tpicore"));
@@ -379,9 +379,9 @@ public class MstsMonitorTest {
     }
 
     private void generatePi2(MstsMapping mapping) {
-        mapping.add(new VarianceParameter("pi_var"));
+        mapping.add(new VarianceParameter("pi_var", false));
         mapping.add(new LoadingParameter("pi_c"));
-        mapping.add(new VarianceParameter("tpi_var"));
+        mapping.add(new VarianceParameter("tpi_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("tpi"));
@@ -395,7 +395,7 @@ public class MstsMonitorTest {
 
     private void generateCycle2(MstsMapping mapping) {
         mapping.add(new ArParameters("ar", new double[]{1, -.5}, false));
-        mapping.add(new VarianceParameter("ar_var", 1, true));
+        mapping.add(new VarianceParameter("ar_var", 1, true, false));
         mapping.add((p, builder) -> {
             double c1 = p.get(0), c2 = p.get(1), v = p.get(2);
             builder.add("cycle", SsfAr2.of(new double[]{c1, c2}, v, 4, 4));
@@ -405,7 +405,7 @@ public class MstsMonitorTest {
     }
 
         private void generateB2(MstsMapping mapping) {
-        mapping.add(new VarianceParameter("bs_var"));
+        mapping.add(new VarianceParameter("bs_var", false));
         mapping.add(new LoadingParameter("bs_c"));
         mapping.add((p, builder) -> {
             double v = p.get(0), a1 = p.get(1);
@@ -419,7 +419,7 @@ public class MstsMonitorTest {
     }
 
     private void generateC2(MstsMapping mapping) {
-        mapping.add(new VarianceParameter("cs_var"));
+        mapping.add(new VarianceParameter("cs_var", false));
         mapping.add(new LoadingParameter("cs_c"));
         mapping.add((p, builder) -> {
             double v = p.get(0), a1 = p.get(1);

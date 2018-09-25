@@ -36,8 +36,9 @@ public class AkfToolkit {
         return likelihoodComputer(true);
     }
 
-    public static ILikelihoodComputer<MarginalLikelihood> marginalLikelihoodComputer() {
-        return new MLLComputer();
+    public static ILikelihoodComputer<MarginalLikelihood> marginalLikelihoodComputer(final boolean concentrated) {
+        return (ssf, data)->QRFilter.ml(ssf, data, concentrated);
+
     }
 
     public static ILikelihoodComputer<ProfileLikelihood> profileLikelihoodComputer() {
@@ -99,18 +100,6 @@ public class AkfToolkit {
             OrdinaryFilter filter = new OrdinaryFilter(initializer);
             filter.process(ssf, data, pe);
             return pe.likelihood();
-        }
-    }
-
-    private static class MLLComputer implements ILikelihoodComputer<MarginalLikelihood> {
-
-        @Override
-        public MarginalLikelihood compute(ISsf ssf, ISsfData data) {
-            QRFilter qr = new QRFilter();
-            if (!qr.process(ssf, data)) {
-                return null;
-            }
-            return qr.getMarginalLikelihood();
         }
     }
 

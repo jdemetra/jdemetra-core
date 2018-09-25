@@ -154,6 +154,11 @@ public class MarginalLikelihood implements ILikelihood {
             ll = Double.NaN;
         }
     }
+    
+    public static MarginalLikelihood of(DiffuseLikelihood dl, double mcorr){
+        DoubleSequence e = dl.e();
+        return new MarginalLikelihood(dl.isScalingFactor(), dl.dim(), dl.getD(), dl.ssq(), dl.logDeterminant(), dl.getDiffuseCorrection(), mcorr, e == null ? null : e.toArray(), dl.isLegacy());
+    }
 
     private int m() {
         return legacy ? nobs : nobs - nd;

@@ -59,7 +59,6 @@ public class SsfArimaTest {
     @Test
     public void testArima() {
         Ssf ssf = SsfArima.of(arima);
-        SsfData sdata = new SsfData(data);
         SsfData ssfData = new SsfData(data);
         DkLikelihood ll1 = DkToolkit.likelihoodComputer(false, true).compute(ssf, ssfData);
        // square root form
@@ -71,7 +70,7 @@ public class SsfArimaTest {
 //        System.out.println(ll3);
         assertEquals(ll1.logLikelihood(), ll3.logLikelihood(), 1e-6);
         QRFilter qr=new QRFilter();
-        qr.process(ssf, sdata);
+        qr.process(ssf, ssfData);
         DiffuseLikelihood ll4 = qr.getDiffuseLikelihood();
         assertEquals(ll1.logLikelihood(), ll4.logLikelihood(), 1e-6);
         RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
@@ -91,6 +90,7 @@ public class SsfArimaTest {
         double[] mdata=data.clone();
         mdata[2] = Double.NaN;
         mdata[11] = Double.NaN;
+        mdata[12] = Double.NaN;
         mdata[119] = Double.NaN;
 
         SsfData sdata = new SsfData(mdata);
@@ -103,7 +103,7 @@ public class SsfArimaTest {
         RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
                 .y(DoubleSequence.of(data))
                 .arima(arima)
-                .missing(2, 11, 119)
+                .missing(2, 11, 12, 119)
                 .build();
         ConcentratedLikelihood cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
         assertEquals(ll1.logLikelihood(), cll.logLikelihood(), 1e-6);

@@ -76,7 +76,7 @@ public class CompositeModel {
             rslt.cmpPos = rslt.getSsf().componentsPosition();
             rslt.parametersName = model.getMapping().parametersName();
             if (marginal) {
-                rslt.likelihood = AkfToolkit.marginalLikelihoodComputer().
+                rslt.likelihood = AkfToolkit.marginalLikelihoodComputer(concentrated).
                         compute(M2uAdapter.of(rslt.getSsf()), M2uAdapter.of(new SsfMatrix(data)));
             } else {
                 rslt.likelihood = DkToolkit.likelihood(rslt.getSsf(), new SsfMatrix(data));

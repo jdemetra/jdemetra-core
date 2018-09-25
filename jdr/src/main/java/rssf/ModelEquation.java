@@ -74,7 +74,7 @@ public class ModelEquation implements ModelItem {
 
     @Override
     public void addTo(MstsMapping mapping) {
-        mapping.add(new VarianceParameter(name + "_var", var, fixed));
+        mapping.add(new VarianceParameter(name + "_var", var, fixed, var == 0));
         for (Item item : items) {
             if (!item.fixed) {
                 mapping.add(new LoadingParameter(item.cmp + "_c", item.c, item.fixed));

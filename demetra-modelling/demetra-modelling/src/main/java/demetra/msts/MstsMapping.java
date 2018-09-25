@@ -49,10 +49,13 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
             if (!p.isFixed()) {
                 int dim = p.getDomain().getDim();
                 if (dim == 1 && p instanceof VarianceParameter) {
-                    double e = cur.get(pos);
-                    double v = e * e;
-                    if (v < eps * max) {
-                        small.add((VarianceParameter) p);
+                    VarianceParameter vp = (VarianceParameter) p;
+                    if (vp.isNullable()) {
+                        double e = cur.get(pos);
+                        double v = e * e;
+                        if (v < eps * max) {
+                            small.add((VarianceParameter) p);
+                        }
                     }
                 }
                 pos += dim;

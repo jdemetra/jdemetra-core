@@ -63,7 +63,7 @@ public class QRFilter {
      */
     public boolean process(final ISsf ssf, final ISsfData data) {
         clear();
-        this.o=data;
+        this.o = data;
         OrdinaryFilter filter = new OrdinaryFilter();
         DefaultFilteringResults fr = DefaultFilteringResults.light();
         fr.prepare(ssf, 0, data.length());
@@ -81,7 +81,6 @@ public class QRFilter {
         ldet = det.getLogDeterminant();
 
         // apply the filter on the diffuse effects
-        ISsfDynamics dynamics = ssf.dynamics();
         X = Matrix.make(data.length(), ssf.getDiffuseDim());
         ssf.diffuseEffects(X);
         yl = DataBlock.of(fr.errors(true, true));
@@ -94,17 +93,51 @@ public class QRFilter {
         return true;
     }
 
+    public static MarginalLikelihood ml(final ISsf ssf, final ISsfData data, boolean concentrated) {
+        AugmentedPredictionErrorDecomposition pe = new AugmentedPredictionErrorDecomposition(true);
+        pe.prepare(ssf, data.length());
+        AugmentedFilterInitializer initializer = new AugmentedFilterInitializer(pe);
+        OrdinaryFilter filter = new OrdinaryFilter(initializer);
+        filter.process(ssf, data, pe);
+        int collapsing = pe.getCollapsingPosition();
+        DiffuseLikelihood likelihood = pe.likelihood();
+        double mc = 0;
+        Matrix M = Matrix.make(collapsing, ssf.getDiffuseDim());
+        ssf.diffuseEffects(M);
+        int j = 0;
+        for (int i = 0; i < collapsing; ++i) {
+            if (!data.isMissing(i)) {
+                if (i > j) {
+                    M.row(j).copy(M.row(i));
+                }
+                j++;
+            }
+        }
+        Householder hous = new Householder();
+        hous.decompose(M.extract(0, j, 0, M.getColumnsCount()));
+        mc = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
+        return MarginalLikelihood.builder(likelihood.dim(), likelihood.getD())
+                .concentratedScalingFactor(concentrated)
+                .diffuseCorrection(likelihood.getDiffuseCorrection())
+                .legacy(false)
+                .logDeterminant(likelihood.logDeterminant())
+                .ssqErr(likelihood.ssq())
+                .residuals(pe.errors(true, true))
+                .marginalCorrection(mc)
+                .build();
+    }
+
     private void calcMLL() {
         if (dll == null) {
             calcDLL();
         }
 
         Householder housx = new Householder();
-        Matrix Q=X;
-        if (X.getRowsCount() != Xl.getRowsCount()){
-            Q=Matrix.make(Xl.getRowsCount(), X.getColumnsCount());
-            for (int i=0, j=0; i<o.length(); ++i){
-                if (!o.isMissing(i)){
+        Matrix Q = X;
+        if (X.getRowsCount() != Xl.getRowsCount()) {
+            Q = Matrix.make(Xl.getRowsCount(), X.getColumnsCount());
+            for (int i = 0, j = 0; i < o.length(); ++i) {
+                if (!o.isMissing(i)) {
                     Q.row(j++).copy(X.row(i));
                 }
             }
@@ -154,13 +187,14 @@ public class QRFilter {
     }
 
     private void clear() {
-        o=null;
+        o = null;
         ssq = 0;
         ldet = 0;
         dcorr = 0;
         pcorr = 0;
         mcorr = 0;
         mll = null;
+        dll=null;
         pll = null;
         X = null;
         Xl = null;

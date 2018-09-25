@@ -118,6 +118,8 @@ public class PredictionErrorDecomposition implements
     public ILikelihood likelihood() {
         return Likelihood.builder(cumulator.getObsCount())
                 .ssqErr(cumulator.getSsqErr())
-                .logDeterminant(cumulator.getLogDeterminant()).build();
+                .logDeterminant(cumulator.getLogDeterminant())
+                .residuals(res)
+                .build();
      }
 }

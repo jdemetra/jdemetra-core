@@ -42,7 +42,7 @@ public class AtomicModels {
         return mapping -> {
             mapping.add(new StablePolynomial(name + "_ar", nar, ar, -.1));
             mapping.add(new StablePolynomial(name + "_ma", nma, ma, -.2));
-            VarianceParameter v = new VarianceParameter(name + "_var", var, true);
+            VarianceParameter v = new VarianceParameter(name + "_var", var, true, true);
             mapping.add(v);
             mapping.add((p, builder) -> {
                 BackFilter bar = BackFilter.ONE, bma = BackFilter.ONE;
@@ -93,7 +93,7 @@ public class AtomicModels {
 
     public ModelItem localLevel(String name, double lvar, boolean fixed) {
         return mapping -> {
-            VarianceParameter v=new VarianceParameter(name+"_var", lvar, fixed);
+            VarianceParameter v=new VarianceParameter(name+"_var", lvar, fixed, true);
             mapping.add(v);
             mapping.add((p, builder) -> {
                 double var=p.get(0);
@@ -106,9 +106,9 @@ public class AtomicModels {
 
     public ModelItem localLinearTrend(final String name, double lvar, double svar, boolean lfixed, boolean sfixed) {
         return mapping -> {
-            VarianceParameter v1=new VarianceParameter(name+"_lvar", lvar, lfixed);
+            VarianceParameter v1=new VarianceParameter(name+"_lvar", lvar, lfixed, true);
             mapping.add(v1);
-            VarianceParameter v2=new VarianceParameter(name+"_svar", svar, sfixed);
+            VarianceParameter v2=new VarianceParameter(name+"_svar", svar, sfixed, true);
             mapping.add(v2);
             mapping.add((p, builder) -> {
                 double var1=p.get(0);
@@ -122,7 +122,7 @@ public class AtomicModels {
 
     public ModelItem seasonalComponent(String name, String smodel, int period, double seasvar, boolean fixed) {
         return mapping -> {
-            VarianceParameter v=new VarianceParameter(name+"_var", seasvar, fixed);
+            VarianceParameter v=new VarianceParameter(name+"_var", seasvar, fixed, true);
             mapping.add(v);
             mapping.add((p, builder) -> {
                 double var=p.get(0);
@@ -135,7 +135,7 @@ public class AtomicModels {
 
     public ModelItem noise(String name, double var, boolean fixed) {
         return mapping -> {
-            VarianceParameter v=new VarianceParameter(name+"_var", var, fixed);
+            VarianceParameter v=new VarianceParameter(name+"_var", var, fixed, true);
             mapping.add(v);
             mapping.add((p, builder) -> {
                 double nv=p.get(0);
@@ -159,7 +159,7 @@ public class AtomicModels {
     public ModelItem ar(String name, double[] ar, boolean fixedar, double var, boolean fixedvar, int nlags) {
         return mapping -> {
             mapping.add(new ArParameters(name + "_ar", ar, fixedar));
-            VarianceParameter v = new VarianceParameter(name + "_var", var, fixedvar);
+            VarianceParameter v = new VarianceParameter(name + "_var", var, fixedvar, true);
             mapping.add(v);
             mapping.add((p, builder) -> {
                 double[] par = p.extract(0, ar.length).toArray();
@@ -174,7 +174,7 @@ public class AtomicModels {
     public ModelItem ar(String name, double[] ar, boolean fixedar, double var, boolean fixedvar, int nlags, int nfcasts) {
         return mapping -> {
             mapping.add(new ArParameters(name + "_ar", ar, fixedar));
-            VarianceParameter v = new VarianceParameter(name + "_var", var, fixedvar);
+            VarianceParameter v = new VarianceParameter(name + "_var", var, fixedvar, true);
             mapping.add(v);
             mapping.add((p, builder) -> {
                 double[] par = p.extract(0, ar.length).toArray();

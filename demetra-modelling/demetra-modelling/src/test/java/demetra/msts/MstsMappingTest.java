@@ -74,7 +74,7 @@ public class MstsMappingTest {
         // add the parameters
         // 0=tuvar, 1=tyvar, 2=tpivar, 3=tpicorevar, 4=eq2var, 5=eq3var, 6=eq4var
         for (int i = 0; i < 7; ++i) {
-            mapping.add(new VarianceParameter(""));
+            mapping.add(new VarianceParameter("", true));
         }
         // loading
         // 7=l-eq1, 8=l-eq2, 9=l-eq3, 10=l-eq4
@@ -86,9 +86,9 @@ public class MstsMappingTest {
         mapping.add(new GenericParameters("", new ARDomain(), new double[]{-.1, -.1}, false));
 
         // fixed parameters var cycle and var eq1
-        VarianceParameter vc = new VarianceParameter("", 1, true);
+        VarianceParameter vc = new VarianceParameter("", 1, true, false);
         mapping.add(vc);
-        VarianceParameter v1 = new VarianceParameter("", 1, true);
+        VarianceParameter v1 = new VarianceParameter("", 1, true, false);
         mapping.add(v1);
 
         // Builder

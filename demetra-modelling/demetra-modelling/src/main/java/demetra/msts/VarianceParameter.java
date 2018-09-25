@@ -22,22 +22,29 @@ public class VarianceParameter implements IMstsParametersBlock {
     private double stde;
     private boolean fixed;
     private final String name;
+    private final boolean nullable;
 
-    public VarianceParameter(final String name) {
+    public VarianceParameter(final String name, boolean nullable) {
         this.name = name;
+        this.nullable=nullable;
         stde = DEF_STDE;
         fixed = false;
     }
 
-    public VarianceParameter(final String name, double var, boolean fixed) {
+    public VarianceParameter(final String name, double var, boolean fixed, boolean nullable) {
         stde = Math.sqrt(var);
         this.fixed = fixed;
         this.name = name;
+        this.nullable=nullable;
     }
 
     @Override
     public String getName() {
         return name;
+    }
+    
+    public boolean isNullable(){
+        return true;
     }
 
     public double fix(double e) {
