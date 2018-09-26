@@ -48,7 +48,7 @@ public class CompositeModel {
 
     public static class Estimation implements IProcResults {
 
-        static Estimation estimate(CompositeModel model, Matrix data, double eps, boolean marginal, boolean concentrated) {
+        static Estimation estimate(CompositeModel model, Matrix data, double eps, boolean marginal, boolean concentrated, double[] parameters) {
             Estimation rslt = new Estimation();
             rslt.data = data;
             MstsMonitor monitor = MstsMonitor.builder()
@@ -56,7 +56,7 @@ public class CompositeModel {
                     .concentratedLikelihood(concentrated)
                     .precision(eps)
                     .build();
-            monitor.process(data, model.getMapping(), null);
+            monitor.process(data, model.getMapping(), parameters == null ? null : DoubleSequence.ofInternal(parameters));
             rslt.likelihood = monitor.getLikelihood();
             rslt.ssf = monitor.getSsf();
             rslt.cmpPos = rslt.getSsf().componentsPosition();
@@ -358,11 +358,11 @@ public class CompositeModel {
         return mapping.trueParameters(mapping.getDefaultParameters()).toArray();
     }
 
-    public Estimation estimate(MatrixType data, double eps, boolean marginal, boolean rescaling) {
+    public Estimation estimate(MatrixType data, double eps, boolean marginal, boolean rescaling, double[] parameters) {
         if (mapping == null) {
             build();
         }
-        return Estimation.estimate(this, Matrix.of(data), eps, marginal, rescaling);
+        return Estimation.estimate(this, Matrix.of(data), eps, marginal, rescaling, parameters);
     }
 
     public Estimation compute(MatrixType data, double[] parameters, boolean marginal, boolean concentrated) {

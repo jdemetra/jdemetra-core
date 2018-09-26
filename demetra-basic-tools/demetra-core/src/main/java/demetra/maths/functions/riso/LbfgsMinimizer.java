@@ -25,6 +25,7 @@ import demetra.maths.functions.IFunctionMinimizer;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.matrices.Matrix;
 import demetra.data.DoubleSequence;
+import demetra.maths.functions.ParamValidation;
 
 
 /**
@@ -176,7 +177,8 @@ public class LbfgsMinimizer implements IFunctionMinimizer {
                 if (iflag[0] != 1) {
                     return false;
                 }
-                if (!fn.getDomain().checkBoundaries(rx)) {
+                ParamValidation validation = fn.getDomain().validate(rx);
+                if (validation==ParamValidation.Invalid) {
                     failed = true;
                 } else {
                     IFunctionPoint efn = fn.evaluate(rx);

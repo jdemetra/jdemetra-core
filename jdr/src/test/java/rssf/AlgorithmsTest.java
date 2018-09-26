@@ -38,7 +38,7 @@ public class AlgorithmsTest {
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, true);
+        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, true, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("Dummy");
@@ -59,7 +59,7 @@ public class AlgorithmsTest {
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, true);
+        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, true, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("Crude");
@@ -84,7 +84,7 @@ public class AlgorithmsTest {
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, false);
+        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, false, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("Dummy-non concentrated");
@@ -105,7 +105,7 @@ public class AlgorithmsTest {
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, false);
+        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, false, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("Crude-Non concentrated");

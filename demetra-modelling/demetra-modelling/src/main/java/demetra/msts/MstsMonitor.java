@@ -166,14 +166,14 @@ public class MstsMonitor {
         DoubleSequence start = fullInitial == null ? model.getDefaultParameters() : model.functionParameters(fullInitial);
         prslts = start;
         int niter = 0;
-        int fniter = this.concentratedLikelihood ? 100 : 150;
+        int fniter = this.concentratedLikelihood ? 100 : 500;
         do {
             ILikelihoodFunction fn = function();
             ILikelihoodFunctionPoint rslt = min(fn, fniter, this.resetParameters ? start : prslts);
             ll = rslt.getLikelihood();
             prslts = rslt.getParameters();
             fullp = model.trueParameters(prslts);
-            if (!fixSmallVariance(1e-3) && !freeSmallVariance()) {
+            if (!fixSmallVariance(1e-1) && !freeSmallVariance()) {
                 break;
             }
         } while (niter++ < maxIter);
@@ -247,17 +247,14 @@ public class MstsMonitor {
             try {
                 DoubleSequence nprslts = model.functionParameters(fullp);
                 ILikelihood nll = function().evaluate(nprslts).getLikelihood();
-                double d = nll.logLikelihood() - ll.logLikelihood();
-                //if (d > 0) {
-                    small.fix(1e-6);
-                    nprslts = model.functionParameters(fullp);
-                    ILikelihood nll2 = function().evaluate(nprslts).getLikelihood();
-                    double ndll = nll.logLikelihood() - nll2.logLikelihood();
-                    if (ndll > dll) {
-                        dll = ndll;
-                        cur = small;
-                    }
-                //}
+                small.fix(1e-4);
+                nprslts = model.functionParameters(fullp);
+                ILikelihood nll2 = function().evaluate(nprslts).getLikelihood();
+                double ndll = nll.logLikelihood() - nll2.logLikelihood();
+                if (ndll > dll) {
+                    dll = ndll;
+                    cur = small;
+                }
             } catch (Exception err) {
 
             }

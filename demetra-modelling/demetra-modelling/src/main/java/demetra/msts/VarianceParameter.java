@@ -116,7 +116,7 @@ public class VarianceParameter implements IMstsParametersBlock {
 
         @Override
         public double epsilon(DoubleSequence inparams, int idx) {
-            return Math.max(1e-8, Math.abs(inparams.get(0)) * 1e-4);
+            return Math.max(1e-4, Math.abs(inparams.get(0)) * 1e-4);
         }
 
         @Override
