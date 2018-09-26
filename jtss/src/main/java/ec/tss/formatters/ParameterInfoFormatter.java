@@ -63,8 +63,6 @@ public class ParameterInfoFormatter implements IStringFormatter {
                 return fmt.format(param.stde);
             case 4:
                 return df4.format(param.pvalue);
-            case 5:
-                return param.description == null ? "" : param.description;
             default:
                 return "";
         }

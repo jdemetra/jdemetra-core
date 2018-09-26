@@ -113,14 +113,14 @@ public class GenericSaDiagnostics implements IProcResults {
 
     private SeasonalityTests saTests() {
         if (satests == null) {
-            satests = SeasonalityTests.seasonalityTest(sa, 1, true, true);
+            satests = SeasonalityTests.seasonalityTest(mul ? sa.log(): sa, 1, true, true);
         }
         return satests;
     }
 
     private SeasonalityTests irrTests() {
         if (itests == null) {
-            itests = SeasonalityTests.seasonalityTest(irr, 0, true, true);
+            itests = SeasonalityTests.seasonalityTest(mul ? irr.log() : irr, 0, true, true);
         }
         return itests;
     }

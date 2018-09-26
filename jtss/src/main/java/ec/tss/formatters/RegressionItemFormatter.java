@@ -71,20 +71,20 @@ public class RegressionItemFormatter implements IStringFormatter {
         }
         switch (Math.abs(item)) {
             case 1:
-                return fmt.format(reg.coefficient);
+                return StringFormatter.cleanup(reg.description);
             case 2:
-                if (reg.stdError == 0) {
+                return fmt.format(reg.coefficient);
+            case 3:
+                 if (reg.stdError == 0) {
                     return "";
                 } else {
                     return df4.format(reg.coefficient / reg.stdError);
                 }
-            case 3:
-                return fmt.format(reg.stdError);
             case 4:
-                return df4.format(reg.pValue);
+                return fmt.format(reg.stdError);
             case 5:
-                return StringFormatter.cleanup(reg.description);
-            default:
+              return df4.format(reg.pValue);
+             default:
                 return "";
         }
     }
