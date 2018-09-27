@@ -9,6 +9,7 @@ import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
+import demetra.timeseries.TsDomain;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,11 +26,13 @@ public class AlgorithmsTest {
     public void testBsm() {
         CompositeModel model = new CompositeModel();
         model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
-        model.add(AtomicModels.seasonalComponent("s", "Dummy", 12, 1, true));
-        model.add(AtomicModels.noise("n", .01, false));
+        model.add(AtomicModels.seasonalComponent("s", "Crude", 12, .01, false));
+        model.add(AtomicModels.noise("n", 1, true));
+        model.add(AtomicModels.tdRegression("td", Data.TS_ABS_RETAIL.getDomain(), new int[]{1,2,3,4,5,6,0}, false, 0.001, false));
         ModelEquation eq = new ModelEquation("eq1", 0, true);
         eq.add("l");
         eq.add("s");
+        eq.add("td");
         eq.add("n");
         model.add(eq);
 //        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
@@ -38,15 +41,16 @@ public class AlgorithmsTest {
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
+        M.column(0).apply(q->Math.log(q));
         CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, true, null);
 
         double[] p = rslt.getFullParameters();
-        System.out.println("Dummy");
+        System.out.println("Crude+TD");
         System.out.println(DataBlock.ofInternal(p));
         System.out.println(rslt.getLikelihood().logLikelihood());
     }
 
-    @Test
+    //@Test
     public void testBsm2() {
         CompositeModel model = new CompositeModel();
         model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));

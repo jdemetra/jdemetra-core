@@ -26,6 +26,7 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
@@ -47,6 +48,21 @@ public class RegSsf {
         return new SsfComponent(new ConstantInitialization(nx), new ConstantDynamics(), Loading.regression(X));
     }
 
+    public SsfComponent ofTimeVarying(Matrix X, double var) {
+        int nx = X.getColumnsCount();
+        return new SsfComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(X.getColumnsCount(), var), Loading.regression(X));
+    }
+
+    public SsfComponent ofTimeVarying(Matrix X, DoubleSequence vars) {
+        int nx = X.getColumnsCount();
+        return new SsfComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(vars), Loading.regression(X));
+    }
+    
+    public SsfComponent ofTimeVarying(Matrix X, Matrix vars) {
+        int nx = X.getColumnsCount();
+        return new SsfComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(vars), Loading.regression(X));
+    }
+    
     public ISsf of(ISsf model, Matrix X) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();

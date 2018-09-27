@@ -28,14 +28,100 @@ import demetra.data.DoubleSequence;
  */
 public class TimeVaryingDynamics {
 
-    public static ISsfDynamics create(DoubleSequence dvar) {
+    public static ISsfDynamics of(int n, double var) {
+        return new TimeVaryingCDiag(n, var);
+    }
+
+    public static ISsfDynamics of(DoubleSequence dvar) {
         return new TimeVaryingDiag(dvar);
     }
 
-    public static ISsfDynamics create(Matrix var) {
+    public static ISsfDynamics of(Matrix var) {
         return new TimeVaryingFull(var);
     }
 
+        static class TimeVaryingCDiag implements ISsfDynamics {
+
+        private final int n;
+        private final double var, std;
+
+        TimeVaryingCDiag(final int n, final double var) {
+            this.n=n;
+            this.var = var;
+            this.std =Math.sqrt(var);
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return true;
+        }
+
+        @Override
+        public int getInnovationsDim() {
+            return n;
+        }
+
+        @Override
+        public void V(int pos, Matrix qm) {
+            qm.diagonal().set(var);
+        }
+
+        @Override
+        public boolean hasInnovations(int pos) {
+            return true;
+        }
+
+        @Override
+        public void S(int pos, Matrix sm) {
+            sm.diagonal().set(std);
+        }
+
+        @Override
+        public void addSU(int pos, DataBlock x, DataBlock u) {
+            int n = x.length();
+            for (int i = 0; i < n; ++i) {
+                x.add(i, u.get(i) * std);
+            }
+        }
+
+        @Override
+
+        public void XS(int pos, DataBlock x, DataBlock xs) {
+            int n = x.length();
+            for (int i = 0; i < n; ++i) {
+                xs.set(i, x.get(i) * std);
+            }
+        }
+
+        @Override
+        public void T(int pos, Matrix tr) {
+            tr.diagonal().set(1);
+        }
+
+        @Override
+        public void TX(int pos, DataBlock x) {
+        }
+
+        @Override
+        public void XT(int pos, DataBlock x) {
+        }
+
+        @Override
+        public void TVT(int pos, Matrix v) {
+        }
+
+        @Override
+        public void addV(int pos, Matrix p) {
+            p.diagonal().add(var);
+        }
+    }
+
+    
     static class TimeVaryingDiag implements ISsfDynamics {
 
         private final DataBlock var, std;
