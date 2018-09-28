@@ -36,8 +36,8 @@ public class DefaultSummary {
 
     public DefaultSummary(String name, IProcResults results, List<String> items) {
         name_ = name;
-        for (String item : items){
-            series_.put(item, results.getData(item, TsData.class));
+        if (results != null) {
+            items.forEach(o -> series_.put(o, results.getData(o, TsData.class)));
         }
     }
 
