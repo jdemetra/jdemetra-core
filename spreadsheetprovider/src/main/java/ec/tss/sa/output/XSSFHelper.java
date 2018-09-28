@@ -61,20 +61,22 @@ public class XSSFHelper {
                 currentCell.setCellValue(headers1[cellNum]);
             }
             //columnvalues & data
-            for (int i = 0; i < table.getDomain().getLength(); i++) {
-                ++rowNum;
-                currentRow = sheet.createRow(rowNum);
-                int cellNum = 0;
-                currentCell = currentRow.createCell(cellNum);
-                currentCell.setCellValue(table.getDomain().get(i).firstday().toString());
-                for (int j = 0; j < table.getSeriesCount(); j++) {
-                    cellNum++;
+            if (table.getDomain() != null) {
+                for (int i = 0; i < table.getDomain().getLength(); i++) {
+                    ++rowNum;
+                    currentRow = sheet.createRow(rowNum);
+                    int cellNum = 0;
                     currentCell = currentRow.createCell(cellNum);
-                    TsDataTableInfo info = table.getDataInfo(i, j);
-                    if (info == TsDataTableInfo.Valid) {
-                        currentCell.setCellValue(table.getData(i, j));
-                    } else {
-                        currentCell.setCellValue("");
+                    currentCell.setCellValue(table.getDomain().get(i).firstday().toString());
+                    for (int j = 0; j < table.getSeriesCount(); j++) {
+                        cellNum++;
+                        currentCell = currentRow.createCell(cellNum);
+                        TsDataTableInfo info = table.getDataInfo(i, j);
+                        if (info == TsDataTableInfo.Valid) {
+                            currentCell.setCellValue(table.getData(i, j));
+                        } else {
+                            currentCell.setCellValue("");
+                        }
                     }
                 }
             }
