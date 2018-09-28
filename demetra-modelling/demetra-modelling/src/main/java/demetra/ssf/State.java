@@ -116,8 +116,10 @@ public class State {
     }
 
     public void update(UpdateInformation updinfo) {
-        double e = updinfo.get();
         double v = updinfo.getVariance();
+        if (v == 0)
+            return;
+        double e = updinfo.get();
         DataBlock M = updinfo.M();
 
         // P = P - (M)* F^-1 *(M)' --> Symmetric

@@ -72,10 +72,14 @@ public class GenericTradingDays {
             dataNoContrast(domain, buffer);
         }
     }
-
+    
+    private static final double[] MDAYS=new double[]
+    {31.0, 28.25, 31.0, 30.0, 31.0, 30.0, 31.0, 31.0, 30.0, 31.0, 30.0, 31.0};
+    
     private void dataNoContrast(TsDomain domain, List<DataBlock> buffer) {
         int n = domain.length();
         int[][] days = tdCount(domain);
+        double[] mdays=meanDays(domain);
 
         int[][] groups = clustering.allPositions();
         int ng = groups.length;
@@ -93,8 +97,11 @@ public class GenericTradingDays {
                 }
                 double dsum = sum;
                 if (normalized) {
-                    dsum /= np;
+                    dsum = dsum/np - mdays[i];
+                }else{
+                    dsum-=np* mdays[i];
                 }
+                    
                 cells[ig].setAndNext(dsum);
             }
         }
@@ -206,6 +213,27 @@ public class GenericTradingDays {
             }
         }
         return rslt;
+    }
+
+    public static double[] meanDays(TsDomain domain) {
+        int conv = TsUnit.MONTH.ratioOf(domain.getStartPeriod().getUnit());
+        if (conv <=0)
+            return null;
+        LocalDate cur = domain.start().toLocalDate();
+        int month = cur.getMonthValue()-1;
+        double[] m=new double[domain.getLength()];
+        int p=12/conv, pmax=Math.min(p, m.length);
+        for (int i=0, k=month; i<pmax; ++i){
+            double s=0;
+            for (int j=0; j<conv; ++j, ++k){
+                s+=MDAYS[k%12];
+            }
+            m[i]=s/7;
+        }
+        for (int i=p; i<m.length; ++i){
+            m[i]=m[i-p];
+        }
+        return m;
     }
 
     @Override

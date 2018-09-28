@@ -175,28 +175,35 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitia
     }
 
     private void update0() {
-        double f = pe.getVariance(), e = pe.get();
-        DataBlock C = pe.M();
-        Matrix P = astate.P();
-        P.addXaXt(-1 / f, C);
-
-        // state
-        // a0 = a0 + f1*Mi*v0.
-        if (data.hasData()) {
-            double c = e / f;
-            astate.a().addAY(c, C);
+        double f = pe.getVariance();
+        if (f != 0) {
+            double e = pe.get();
+            DataBlock C = pe.M();
+            Matrix P = astate.P();
+            P.addXaXt(-1 / f, C);
+            // state
+            // a0 = a0 + f1*Mi*v0.
+            if (data.hasData()) {
+                double c = e / f;
+                astate.a().addAY(c, C);
+            }
         }
     }
 
     private void update1() {
-        double fi = pe.getDiffuseVariance(), f = pe.getVariance(), e = pe.get();
+        double f = pe.getVariance();
+        if (f == 0) {
+            return;
+        }
+        double fi = pe.getDiffuseVariance(), e = pe.get();
         DataBlock C = pe.M(), Ci = pe.Mi();
         // P = T P T' - 1/f*(TMf)(TMf)'+RQR'+f*(TMf/f-TMi/fi)(TMf/f-TMi/fi)'
-        astate.P().addXaXt(-1 / f, C);
-
-        DataBlock tmp = DataBlock.of(C);
-        tmp.addAY(-f / fi, Ci);
-        astate.P().addXaXt(1 / f, tmp);
+        if (f != 0) {
+            astate.P().addXaXt(-1 / f, C);
+            DataBlock tmp = DataBlock.of(C);
+            tmp.addAY(-f / fi, Ci);
+            astate.P().addXaXt(1 / f, tmp);
+        }
 
         if (data.hasData()) {
             // a0 = a0 + f1*Mi*v0. Reuse Mf as temporary buffer
@@ -236,7 +243,14 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitia
                 pe.setMissing();
                 return false;
             } else {
-                pe.set(y - loading.ZX(t, astate.a()));
+                double e = y - loading.ZX(t, astate.a());
+                if (Math.abs(e) < State.ZERO) {
+                    e = 0;
+                }
+                if (fi == 0 && f == 0 && e != 0) {
+                    throw new SsfException(SsfException.INCONSISTENT);
+                }
+                pe.set(e);
             }
         }
 

@@ -31,6 +31,7 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.SsfComponent;
+import demetra.ssf.SsfException;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Measurement;
 
@@ -55,14 +56,20 @@ public class RegSsf {
 
     public SsfComponent ofTimeVarying(Matrix X, DoubleSequence vars) {
         int nx = X.getColumnsCount();
-        return new SsfComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(vars), Loading.regression(X));
+        if (vars.length() == 1) {
+            return new SsfComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(nx, vars.get(0)), Loading.regression(X));
+        } else if (nx == vars.length()) {
+            return new SsfComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(vars), Loading.regression(X));
+        } else {
+            throw new SsfException(SsfException.MODEL);
+        }
     }
-    
+
     public SsfComponent ofTimeVarying(Matrix X, Matrix vars) {
         int nx = X.getColumnsCount();
         return new SsfComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(vars), Loading.regression(X));
     }
-    
+
     public ISsf of(ISsf model, Matrix X) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();

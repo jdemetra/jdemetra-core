@@ -21,6 +21,7 @@ import demetra.ssf.UpdateInformation;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.SsfException;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 
@@ -75,12 +76,22 @@ public class OrdinaryFilter {
             if (error != null) {
                 v += error.at(t);
             }
+            if (v < State.ZERO){
+                v=0;
+            }
             updinfo.setVariance(v);
             // We put in K  PZ'*(ZPZ'+H)^-1 = PZ'* F^-1 = PZ'*(LL')^-1/2 = PZ'(L')^-1
             // K L' = PZ' or L K' = ZP
 
             double y = data.get(t);
-            updinfo.set(y - loading.ZX(t, state.a()));
+            double e=y - loading.ZX(t, state.a());
+            if (v == 0){
+                if (Math.abs(e)<State.ZERO)
+                    e=0;
+                else
+                    throw new SsfException(SsfException.INCONSISTENT);
+            }
+            updinfo.set(e);
             return true;
         }
     }

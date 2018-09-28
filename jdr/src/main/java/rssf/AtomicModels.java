@@ -216,7 +216,7 @@ public class AtomicModels {
             mapping.add((p, builder) -> {
                 double pvar = p.get(0);
                 Matrix xvar = mvar.deepClone();
-                xvar.mul(pvar);
+                xvar.mul(pvar*pvar);
                 SsfComponent cmp = RegSsf.ofTimeVarying(x, xvar);
                 builder.add(name, cmp);
                 return 1;
@@ -227,7 +227,7 @@ public class AtomicModels {
     public ModelItem rawTdRegression(String name, TsDomain domain, int[] groups, final double[] vars, final boolean fixed) {
         DayClustering dc = DayClustering.of(groups);
         GenericTradingDays gtd = GenericTradingDays.of(dc);
-        final Matrix x = RegressionUtility.data(domain, new GenericTradingDaysVariables(gtd));
+        Matrix x = RegressionUtility.data(domain, new GenericTradingDaysVariables(gtd));
         return mapping -> {
             final int n = vars.length;
             for (int i = 0; i < n; ++i) {
@@ -236,7 +236,10 @@ public class AtomicModels {
             }
             mapping.add((p, builder) -> {
                 DoubleSequence np = p.extract(0, n);
-                SsfComponent cmp = RegSsf.ofTimeVarying(x, np);
+                double[] nv = np.toArray();
+                for (int i=0; i<nv.length; ++i)
+                    nv[i]=nv[i]*nv[i];
+                SsfComponent cmp = RegSsf.ofTimeVarying(x, DoubleSequence.ofInternal(nv));
                 builder.add(name, cmp);
                 return n;
             });

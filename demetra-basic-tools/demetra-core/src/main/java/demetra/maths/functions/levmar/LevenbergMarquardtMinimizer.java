@@ -148,7 +148,11 @@ public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
             return false;
         }
 
-        fcur_.ssqDerivatives().jacobian(J);
+        try {
+            fcur_.ssqDerivatives().jacobian(J);
+        } catch (Exception ex) {
+            return false;
+        }
 
         // Computes J'J, J'e
         Jte.product(J.columnsIterator(), ecur);
@@ -309,7 +313,7 @@ public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
             }
         }
         //validate();
-        return (stop != 7 && stop != 4 && iter<itmax);
+        return (stop != 7 && stop != 4 && iter < itmax);
     }
 //    private void validate() {
 //        DataBlock np = new DataBlock(fcur_.getParameters());

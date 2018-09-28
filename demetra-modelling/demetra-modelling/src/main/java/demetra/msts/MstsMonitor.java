@@ -189,6 +189,8 @@ public class MstsMonitor {
     }
 
     private ILikelihoodFunctionPoint min(ILikelihoodFunction fn, int niter, DoubleSequence start) {
+        if (fn.getDomain().getDim() == 0)
+            return fn.evaluate(start);
         if (bfgs) {
             LbfgsMinimizer lm = new LbfgsMinimizer();
             lm.setFunctionPrecision(precision);
