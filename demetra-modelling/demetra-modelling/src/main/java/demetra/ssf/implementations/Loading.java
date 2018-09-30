@@ -107,14 +107,17 @@ public class Loading {
         return new CircularLoading(period, pstart);
     }
 
-    public static ISsfLoading cyclical(final int period, final int dim) {
+    public static ISsfLoading cyclical(final int period) {
         return new CyclicalLoading(period, 0);
     }
 
-    public static ISsfLoading cyclical(final int period, final int pstart, final int dim) {
+    public static ISsfLoading cyclical(final int period, final int pstart) {
         return new CyclicalLoading(period, pstart);
     }
 
+    public static ISsfLoading periodic(final int period, final int start) {
+        return new PeriodicLoading(period, start);
+    }
     public static ISsfLoading regression(final Matrix X) {
         return new RegressionLoading(X);
     }
@@ -730,6 +733,75 @@ public class Loading {
             x.add(spos, d);
         }
 
+    }
+
+    static class PeriodicLoading implements ISsfLoading {
+
+        private final int period, pos;
+
+        public PeriodicLoading(int period, int pos) {
+            this.period = period;
+            this.pos = pos;
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return false;
+        }
+
+        @Override
+        public void Z(int t, DataBlock z) {
+            if (t % period == pos) {
+                z.set(0, 1);
+            }
+        }
+
+        @Override
+        public double ZX(int t, DataBlock x) {
+            if (t % period == pos) {
+                return x.get(0);
+            } else {
+                return 0;
+            }
+        }
+
+        @Override
+        public void ZM(int t, Matrix m, DataBlock x) {
+            if (t % period == pos) {
+                x.copy(m.row(0));
+            } else {
+                x.set(0);
+            }
+        }
+
+        @Override
+        public double ZVZ(int t, Matrix vm) {
+            if (t % period == pos) {
+                return vm.get(0, 0);
+            } else {
+                return 0;
+            }
+        }
+
+        @Override
+        public void VpZdZ(int t, Matrix vm, double d) {
+            if (d == 0) {
+                return;
+            }
+            if (t % period == pos) {
+                vm.add(0, 0, d);
+            }
+        }
+
+        @Override
+        public void XpZd(int t, DataBlock x, double d) {
+            if (d == 0) {
+                return;
+            }
+            if (t % period == pos) {
+                x.add(0, d);
+            }
+        }
     }
 
     private static class MLoading implements ISsfLoading {

@@ -35,6 +35,10 @@ public class Noise {
         return new SsfComponent(new Initialization(var), new Dynamics(var), Loading.fromPosition(0));
     }
 
+    public SsfComponent periodic(final int period, final int startPos, final double var) {
+        return new SsfComponent(new Initialization(var), new Dynamics(var), Loading.circular(period, startPos));
+    }
+
     static class Initialization implements ISsfInitialization {
 
         private final double var;
