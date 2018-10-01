@@ -1,46 +1,53 @@
 /*
 * Copyright 2013 National Bank of Belgium
 *
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+* Licensed under the EUPL, Version 1.1 or – as soon they will be approved
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
 * You may not use this work except in compliance with the Licence.
 * You may obtain a copy of the Licence at:
 *
 * http://ec.europa.eu/idabc/eupl
 *
-* Unless required by applicable law or agreed to in writing, software 
+* Unless required by applicable law or agreed to in writing, software
 * distributed under the Licence is distributed on an "AS IS" basis,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
+* See the Licence for the specific language governing permissions and
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.modelling.arima;
 
+import data.Data;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
 import ec.tstoolkit.maths.matrices.Matrix;
-import ec.tstoolkit.sarima.SarimaModel;
-import ec.tstoolkit.timeseries.regression.SeasonalDummies;
-import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
-import ec.tstoolkit.timeseries.regression.ITsVariable;
-import ec.tstoolkit.modelling.Variable;
-import data.Data;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.RegStatus;
+import ec.tstoolkit.modelling.Variable;
+import ec.tstoolkit.sarima.SarimaModel;
+import ec.tstoolkit.timeseries.Day;
+import ec.tstoolkit.timeseries.Month;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
+import ec.tstoolkit.timeseries.regression.AdditiveOutlier;
+import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
+import ec.tstoolkit.timeseries.regression.IOutlierVariable;
+import ec.tstoolkit.timeseries.regression.ITsVariable;
+import ec.tstoolkit.timeseries.regression.SeasonalDummies;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
 import ec.tstoolkit.timeseries.regression.TsVariableSelection;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
  * @author Jean Palate
  */
 public class ModelDescriptionTest {
-    
+
     public ModelDescriptionTest() {
     }
 
@@ -56,14 +63,14 @@ public class ModelDescriptionTest {
     public void demoModel() {
         // Create a model for the series Data.X. The entire time domain of X is
         // modelled (second parameter setto null).
-        ModelDescription model=new ModelDescription(Data.X, null);
+        ModelDescription model = new ModelDescription(Data.X, null);
         // Add log transformation and preliminary correction for leap year.
         model.setTransformation(DefaultTransformationType.Log, PreadjustmentType.LengthOfPeriod);
         // Use a (0 1 1) (without parameters)
         model.setAirline(false);
         // Add trading days (without leap year) and seasonal dummies
-        GregorianCalendarVariables td=GregorianCalendarVariables.getDefault(TradingDaysType.TradingDays);
-        ITsVariable sd= new SeasonalDummies(Data.X.getFrequency());
+        GregorianCalendarVariables td = GregorianCalendarVariables.getDefault(TradingDaysType.TradingDays);
+        ITsVariable sd = new SeasonalDummies(Data.X.getFrequency());
         model.getCalendars().add(Variable.calendarVariable(td, RegStatus.Accepted));
         model.getUserVariables().add(Variable.userVariable(sd, ComponentType.Seasonal, RegStatus.Accepted));
         // Get the list of the regression variables
@@ -78,16 +85,34 @@ public class ModelDescriptionTest {
         // Arima model
         ConcentratedLikelihood cll = regarima.computeLikelihood();
         // Get the coefficient
-        double[] B=cll.getB();
+        double[] B = cll.getB();
         // Get the T-Stat
-        double[] T=cll.getTStats();
-        int ipos=model.getRegressionVariablesStartingPosition();
-        for (TsVariableSelection.Item<ITsVariable> var : X.all().elements()){
-            for (int j=0; j<var.variable.getDim(); ++j){
-                System.out.print(var.variable.getItemDescription(j)+ " "+(var.position+j));
-                System.out.println(" "+B[ipos]+" "+T[ipos]);
+        double[] T = cll.getTStats();
+        int ipos = model.getRegressionVariablesStartingPosition();
+        for (TsVariableSelection.Item<ITsVariable> var : X.all().elements()) {
+            for (int j = 0; j < var.variable.getDim(); ++j) {
+                System.out.print(var.variable.getItemDescription(j) + " " + (var.position + j));
+                System.out.println(" " + B[ipos] + " " + T[ipos]);
                 ++ipos;
             }
         }
+    }
+
+    @Test
+    public void addPrespecifiedOutliersTest() {
+        ModelDescription model = new ModelDescription(Data.X, null);
+        List<IOutlierVariable> outliers = new ArrayList<>();
+
+        outliers.add(new AdditiveOutlier(Day.BEG));
+        outliers.add(new AdditiveOutlier(Day.END));
+        outliers.add(new AdditiveOutlier(new Day(1995, Month.March, 0)));
+
+        model.addPrespecifiedOutliers(outliers);
+        List<IOutlierVariable> modelOutliers = model.getPrespecifiedOutliers();
+
+        AdditiveOutlier expectedOutlier = new AdditiveOutlier(new Day(1995, Month.March, 0));
+
+        Assert.assertEquals(1, modelOutliers.size());
+        Assert.assertEquals(expectedOutlier.getPosition(), modelOutliers.get(0).getPosition());
     }
 }

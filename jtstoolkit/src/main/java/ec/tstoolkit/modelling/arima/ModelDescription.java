@@ -1,25 +1,23 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tstoolkit.modelling.arima;
 
-import ec.tstoolkit.OperationType;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
-import ec.tstoolkit.data.LogSign;
 import ec.tstoolkit.data.ReadDataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.eco.Ols;
@@ -27,7 +25,6 @@ import ec.tstoolkit.eco.RegModel;
 import ec.tstoolkit.maths.realfunctions.IParametricMapping;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.DefaultTransformationType;
-import ec.tstoolkit.modelling.DeterministicComponent;
 import ec.tstoolkit.modelling.PreadjustmentVariable;
 import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.Variable;
@@ -36,11 +33,12 @@ import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.sarima.SarimaSpecification;
 import ec.tstoolkit.sarima.estimation.SarimaFixedMapping;
 import ec.tstoolkit.sarima.estimation.SarimaMapping;
+import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.TsException;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.regression.*;
-import ec.tstoolkit.timeseries.simplets.ITsDataTransformation.LogJacobian;
 import ec.tstoolkit.timeseries.simplets.*;
+import ec.tstoolkit.timeseries.simplets.ITsDataTransformation.LogJacobian;
 import ec.tstoolkit.utilities.IntList;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -116,50 +114,50 @@ public class ModelDescription implements Cloneable {
     // 2 users
     // 3 calendars
     // 4 moving holidays
-    // 5 outliers, 5.1 pre-specified, 5.2 detected 
+    // 5 outliers, 5.1 pre-specified, 5.2 detected
     private List<DataBlock> createX() {
         checkVariables();
         ArrayList<DataBlock> xdata = new ArrayList<>();
         // users...
-        variables.stream().filter(var
-                -> var.isUser() && var.status.isSelected())
+        variables.stream().filter(var ->
+                var.isUser() && var.status.isSelected())
                 .forEach(
                         var -> {
-                            DataBlock[] cur = getX(var.getVariable());
-                            Collections.addAll(xdata, cur);
-                        });
+                    DataBlock[] cur = getX(var.getVariable());
+                    Collections.addAll(xdata, cur);
+                });
         // calendars
-        variables.stream().filter(var
-                -> var.isCalendar() && var.status.isSelected())
+        variables.stream().filter(var ->
+                var.isCalendar() && var.status.isSelected())
                 .forEach(
                         var -> {
-                            DataBlock[] cur = getX(var.getVariable());
-                            Collections.addAll(xdata, cur);
-                        });
+                    DataBlock[] cur = getX(var.getVariable());
+                    Collections.addAll(xdata, cur);
+                });
         // moving holidays
-        variables.stream().filter(var
-                -> var.isMovingHoliday() && var.status.isSelected())
+        variables.stream().filter(var ->
+                var.isMovingHoliday() && var.status.isSelected())
                 .forEach(
                         var -> {
-                            DataBlock[] cur = getX(var.getVariable());
-                            Collections.addAll(xdata, cur);
-                        });
+                    DataBlock[] cur = getX(var.getVariable());
+                    Collections.addAll(xdata, cur);
+                });
         // prespecified outliers
-        variables.stream().filter(var
-                -> var.isOutlier() && var.status == RegStatus.Prespecified)
+        variables.stream().filter(var ->
+                var.isOutlier() && var.status == RegStatus.Prespecified)
                 .forEach(
                         var -> {
-                            DataBlock[] cur = getX(var.getVariable());
-                            Collections.addAll(xdata, cur);
-                        });
+                    DataBlock[] cur = getX(var.getVariable());
+                    Collections.addAll(xdata, cur);
+                });
         // other outliers
-        variables.stream().filter(var
-                -> var.isOutlier() && var.status != RegStatus.Prespecified)
+        variables.stream().filter(var ->
+                var.isOutlier() && var.status != RegStatus.Prespecified)
                 .forEach(
                         var -> {
-                            DataBlock[] cur = getX(var.getVariable());
-                            Collections.addAll(xdata, cur);
-                        });
+                    DataBlock[] cur = getX(var.getVariable());
+                    Collections.addAll(xdata, cur);
+                });
         return xdata;
     }
 
@@ -183,24 +181,24 @@ public class ModelDescription implements Cloneable {
         checkVariables();
         List<Variable> x = new ArrayList<>();
         // users
-        variables.stream().filter(var
-                -> var.isUser() && var.status.isSelected())
+        variables.stream().filter(var ->
+                var.isUser() && var.status.isSelected())
                 .forEach(var -> x.add(var));
         // calendars
-        variables.stream().filter(var
-                -> var.isCalendar() && var.status.isSelected())
+        variables.stream().filter(var ->
+                var.isCalendar() && var.status.isSelected())
                 .forEach(var -> x.add(var));
         // moving holidays
-        variables.stream().filter(var
-                -> var.isMovingHoliday() && var.status.isSelected())
+        variables.stream().filter(var ->
+                var.isMovingHoliday() && var.status.isSelected())
                 .forEach(var -> x.add(var));
         // prespecified outliers
-        variables.stream().filter(var
-                -> var.isOutlier() && var.status == RegStatus.Prespecified)
+        variables.stream().filter(var ->
+                var.isOutlier() && var.status == RegStatus.Prespecified)
                 .forEach(var -> x.add(var));
         // other outliers
-        variables.stream().filter(var
-                -> var.isOutlier() && var.status != RegStatus.Prespecified)
+        variables.stream().filter(var ->
+                var.isOutlier() && var.status != RegStatus.Prespecified)
                 .forEach(var -> x.add(var));
         return x;
     }
@@ -436,9 +434,9 @@ public class ModelDescription implements Cloneable {
 
     /**
      * Gets the transformed original series. The original may be transformed for
-     * leap year correction or log-transformation and for fixed effects. The fixed
-     * effects are always applied additively after the log-transformation. The
-     * transformed original may contain missing values
+     * leap year correction or log-transformation and for fixed effects. The
+     * fixed effects are always applied additively after the log-transformation.
+     * The transformed original may contain missing values
      *
      * @return
      */
@@ -572,6 +570,7 @@ public class ModelDescription implements Cloneable {
                 .filter(pred)
                 .mapToInt(var -> var.getVariable().getDim()).sum();
     }
+
     /**
      * @return the outliers
      */
@@ -597,11 +596,11 @@ public class ModelDescription implements Cloneable {
      */
     public List<IOutlierVariable> getFixedOutliers() {
         return preadjustment.stream()
-                .filter(var -> var.isOutlier() )
+                .filter(var -> var.isOutlier())
                 .map(var -> (IOutlierVariable) var.getVariable())
                 .collect(Collectors.toList());
     }
-    
+
     public int[] getOutliersPosition(boolean prespecified) {
         List<IOutlierVariable> vars = prespecified ? getPrespecifiedOutliers() : getOutliers();
 
@@ -809,9 +808,13 @@ public class ModelDescription implements Cloneable {
     }
 
     public void addPrespecifiedOutliers(List<IOutlierVariable> outliers) {
+        Day lastDayOriginal = original_.getDomain().getLast().lastday();
+        Day firstDayOriginal = original_.getDomain().getStart().firstday();
         if (outliers != null) {
             for (IOutlierVariable o : outliers) {
-                variables.add(Variable.prespecifiedOutlier(o));
+                if (lastDayOriginal.isNotBefore(o.getPosition()) && firstDayOriginal.isNotAfter(o.getPosition())) {
+                    variables.add(Variable.prespecifiedOutlier(o));
+                }
             }
         }
     }
