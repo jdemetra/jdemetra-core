@@ -48,6 +48,10 @@ public class StateStorage implements IStateResults {
     public boolean hasVariances(){
         return P != null;
     }
+    
+    public int size(){
+        return A.getCurrentSize();
+    }
 
     @Override
     public void save(final int t, final State state, final StateInfo info) {

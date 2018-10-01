@@ -92,14 +92,14 @@ public class CompositeModel {
         private String[] parametersName;
         private StateStorage smoothedStates, filteredStates;
 
-        StateStorage getSmoothedStates() {
+        public StateStorage getSmoothedStates() {
             if (smoothedStates == null) {
                 smoothedStates = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true);
             }
             return smoothedStates;
         }
 
-        StateStorage getFilteredStates() {
+        public StateStorage getFilteredStates() {
             if (filteredStates == null) {
 
                 ISsf ussf = M2uAdapter.of(ssf);
@@ -109,8 +109,9 @@ public class CompositeModel {
                 int m = data.getColumnsCount(), n = data.getRowsCount();
                 ss.prepare(ussf.getStateDim(), 0, n);
                 int nd = fr.getEndDiffusePosition() / m;
-                if (fr.getEndDiffusePosition()%m != 0)
+                if (fr.getEndDiffusePosition() % m != 0) {
                     ++nd;
+                }
                 for (int i = nd; i < n; ++i) {
                     ss.save(i, fr.a(i * m), fr.P(i * m));
                 }
@@ -124,6 +125,14 @@ public class CompositeModel {
             return filteredStates;
         }
 
+//        public double[] component(int pos, int[] items, double[] weights, boolean filtered, boolean stderr){
+//            StateStorage data=filtered ? getFilteredStates() : getSmoothedStates();
+//            if (items == null){
+//                
+//            }
+//            double[] q=new double[data.size()];
+//            
+//        }
         private static final InformationMapping<Estimation> MAPPING = new InformationMapping<>(Estimation.class);
 
         static {
@@ -214,6 +223,32 @@ public class CompositeModel {
                 StateStorage smoothedStates = source.getSmoothedStates();
                 return smoothedStates.getComponentVariance(source.getCmpPos()[p]).toArray();
             });
+            MAPPING.setArray("ssf.smoothing.state", 0, 10000, double[].class, (source, p) -> {
+                StateStorage smoothedStates = source.getSmoothedStates();
+                return smoothedStates.a(p).toArray();
+            });
+            MAPPING.setArray("ssf.smoothing.vstate", 0, 10000, MatrixType.class, (source, p) -> {
+                StateStorage smoothedStates = source.getSmoothedStates();
+                return smoothedStates.P(p).unmodifiable();
+            });
+            MAPPING.set("ssf.smoothing.states", MatrixType.class, source -> {
+                int n=source.data.getRowsCount(), m=source.ssf.getStateDim();
+                double[] z=new double[n*m];
+                StateStorage smoothedStates = source.getSmoothedStates();
+                for (int i=0, j=0; i<m; ++i, j+=n){
+                    smoothedStates.getComponent(i).copyTo(z, j);
+                }
+                return MatrixType.ofInternal(z, n, m);
+            });
+            MAPPING.set("ssf.smoothing.vstates", MatrixType.class, source -> {
+                int n=source.data.getRowsCount(), m=source.ssf.getStateDim();
+                double[] z=new double[n*m];
+                StateStorage smoothedStates = source.getSmoothedStates();
+                for (int i=0, j=0; i<m; ++i, j+=n){
+                    smoothedStates.getComponentVariance(i).copyTo(z, j);
+                }
+                return MatrixType.ofInternal(z, n, m);
+            });
             MAPPING.setArray("ssf.filtering.array", 0, 1000, double[].class, (source, p) -> {
                 StateStorage fStates = source.getFilteredStates();
                 return fStates.getComponent(p).toArray();
@@ -229,6 +264,32 @@ public class CompositeModel {
             MAPPING.setArray("ssf.filtering.vcmp", 0, 100, double[].class, (source, p) -> {
                 StateStorage fStates = source.getFilteredStates();
                 return fStates.getComponentVariance(source.getCmpPos()[p]).toArray();
+            });
+            MAPPING.setArray("ssf.filtering.state", 0, 10000, double[].class, (source, p) -> {
+                StateStorage fStates = source.getFilteredStates();
+                return fStates.a(p).toArray();
+            });
+            MAPPING.set("ssf.filtering.states", MatrixType.class, source -> {
+                int n=source.data.getRowsCount(), m=source.ssf.getStateDim();
+                double[] z=new double[n*m];
+                StateStorage fStates = source.getFilteredStates();
+                for (int i=0, j=0; i<m; ++i, j+=n){
+                    fStates.getComponent(i).copyTo(z, j);
+                }
+                return MatrixType.ofInternal(z, n, m);
+            });
+            MAPPING.set("ssf.filtering.vstates", MatrixType.class, source -> {
+                int n=source.data.getRowsCount(), m=source.ssf.getStateDim();
+                double[] z=new double[n*m];
+                StateStorage fStates = source.getFilteredStates();
+                for (int i=0, j=0; i<m; ++i, j+=n){
+                    fStates.getComponentVariance(i).copyTo(z, j);
+                }
+                return MatrixType.ofInternal(z, n, m);
+            });
+            MAPPING.setArray("ssf.filtering.vstate", 0, 10000, MatrixType.class, (source, p) -> {
+                StateStorage fStates = source.getFilteredStates();
+                return fStates.P(p).unmodifiable();
             });
         }
 
