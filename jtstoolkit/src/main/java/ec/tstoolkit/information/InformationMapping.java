@@ -254,7 +254,7 @@ public class InformationMapping<S> {
                     if (fn.start == fn.end) {
                         dic.put(InformationSet.item(prefix, listKey(entry.getKey(), fn.start)), fn.targetClass);
                     } else {
-                        for (int i = fn.start; i < fn.end; ++i) {
+                        for (int i = fn.start; i <= fn.end; ++i) {
                             dic.put(InformationSet.item(prefix, listKey(entry.getKey(), i)), fn.targetClass);
                         }
                     }
@@ -292,7 +292,7 @@ public class InformationMapping<S> {
                     }
                 } else {
                     int idx = listItem(x.getKey(), id);
-                    if (idx >= x.getValue().start && idx < x.getValue().end) {
+                    if (idx >= x.getValue().start && idx <= x.getValue().end) {
                         return true;
                     }
                 }
@@ -319,7 +319,7 @@ public class InformationMapping<S> {
                         continue;
                     if (value.start == value.end) {
                         return (T) value.extractor.apply(source, idx);
-                    } else if (idx >= value.start && idx < value.end) {
+                    } else if (idx >= value.start && idx <= value.end) {
                         return (T) value.extractor.apply(source, idx);
                     }
                 }
