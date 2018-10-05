@@ -7,9 +7,17 @@ package demetra.x11;
 
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
+import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
+import demetra.maths.MatrixType;
 import demetra.sa.DecompositionMode;
 import ec.satoolkit.x11.X11Results;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -23,7 +31,13 @@ public class X11KernelTest {
     }
     
     public static void main(String[] cmds){
-       new X11KernelTest().testWeekly();
+//        try {
+            new X11KernelTest().testWeekly();
+//        } catch (URISyntaxException ex) {
+//            Logger.getLogger(X11KernelTest.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IOException ex) {
+//            Logger.getLogger(X11KernelTest.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     @Test
@@ -72,4 +86,18 @@ public class X11KernelTest {
         ec.tstoolkit.timeseries.simplets.TsData b=x11.getData("d-tables.d13", ec.tstoolkit.timeseries.simplets.TsData.class);
 //        System.out.println(new ec.tstoolkit.data.DataBlock(b));
     }
+    
+    // 31/12/2002
+//    @Test
+//    public void testDaily() throws URISyntaxException, IOException {
+//        URI uri = X11Kernel.class.getResource("/cic.txt").toURI();
+//        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
+//        X11Kernel kernel=new X11Kernel();
+//        X11Context context1=X11Context.builder()
+//                .mode(DecompositionMode.Multiplicative)
+//                .period(7)
+//                .trendFilterLength(13)
+//                .build();
+//        kernel.process(data.column(0), context1);
+//    }
 }

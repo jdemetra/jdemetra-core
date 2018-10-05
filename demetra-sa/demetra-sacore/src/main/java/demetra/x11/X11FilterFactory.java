@@ -145,7 +145,7 @@ public final class X11FilterFactory {
         if (ilen % 2 == 0) {
             flen += 1;
         }
-            ilen/=2;
+        ilen = (ilen + 1) / 2;
 
         double[] c = new double[ilen + 1];
         double w = 1.0 / len;
