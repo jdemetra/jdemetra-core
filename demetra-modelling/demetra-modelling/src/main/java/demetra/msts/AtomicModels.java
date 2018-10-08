@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package rssf;
+package demetra.msts;
 
 import demetra.arima.ArimaModel;
+import demetra.arima.AutoCovarianceFunction;
 import demetra.arima.ssf.SsfArima;
 import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
@@ -15,11 +16,6 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.modelling.regression.GenericTradingDaysVariables;
 import demetra.modelling.regression.RegressionUtility;
-import demetra.msts.ArParameters;
-import demetra.msts.MstsMapping;
-import demetra.msts.SarimaParameters;
-import demetra.msts.StablePolynomial;
-import demetra.msts.VarianceParameter;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.ssf.SsfComponent;
@@ -246,7 +242,7 @@ public class AtomicModels {
         };
     }
 
-    public ModelItem ar(String name, double[] ar, boolean fixedar, double var, boolean fixedvar, int nlags) {
+    public ModelItem ar(String name, double[] ar, boolean fixedar, double var, boolean fixedvar, int nlags, boolean zeroinit) {
         return mapping -> {
             mapping.add(new ArParameters(name + "_ar", ar, fixedar));
             VarianceParameter v = new VarianceParameter(name + "_var", var, fixedvar, true);
@@ -254,7 +250,29 @@ public class AtomicModels {
             mapping.add((p, builder) -> {
                 double[] par = p.extract(0, ar.length).toArray();
                 double w = p.get(ar.length);
-                SsfComponent cmp = SsfAr.of(par, w, nlags);
+                SsfComponent cmp = SsfAr.of(par, w, nlags, zeroinit);
+                builder.add(name, cmp);
+                return ar.length + 1;
+            });
+        };
+    }
+
+    public ModelItem nar(String name, double[] ar, boolean fixedar, int nlags, int lag, boolean zeroinit) {
+        return mapping -> {
+            mapping.add(new ArParameters(name + "_ar", ar, fixedar));
+            mapping.add((p, builder) -> {
+                double[] par = p.extract(0, ar.length).toArray();
+                // compute the "normalized" covariance
+                double[] car=new double[par.length+1];
+                double[] lpar=new double[par.length*lag];
+                car[0]=1;
+                for (int i=0, j=lag-1; i<par.length; ++i, j+=lag){
+                    lpar[j]=par[i];
+                    car[i+1]=-par[i];
+                }
+                AutoCovarianceFunction acf=new AutoCovarianceFunction(Polynomial.ONE, Polynomial.ofInternal(car),1);
+                double w=acf.get(0);
+                SsfComponent cmp = SsfAr.of(lpar, w, nlags, zeroinit);
                 builder.add(name, cmp);
                 return ar.length + 1;
             });

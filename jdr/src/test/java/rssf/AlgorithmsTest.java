@@ -5,14 +5,15 @@
  */
 package rssf;
 
+import demetra.msts.AtomicModels;
+import demetra.msts.ModelEquation;
 import demetra.data.Data;
 import demetra.data.DataBlock;
-import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
+import demetra.msts.CompositeModel;
+import demetra.msts.CompositeModelEstimation;
 import demetra.ssf.implementations.Loading;
-import demetra.timeseries.TsDomain;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -46,7 +47,7 @@ public class AlgorithmsTest {
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         M.column(0).apply(q->Math.log(q));
-        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, true, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-12, false, true, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("Crude+TD");
@@ -70,7 +71,7 @@ public class AlgorithmsTest {
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         M.column(0).apply(q->Math.log(q));
-        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, true, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-12, false, true, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("Crude+TD");
@@ -91,7 +92,7 @@ public class AlgorithmsTest {
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, true, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-12, false, true, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("Crude");
@@ -116,7 +117,7 @@ public class AlgorithmsTest {
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, false, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-12, false, false, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("Dummy-non concentrated");
@@ -137,7 +138,7 @@ public class AlgorithmsTest {
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModel.Estimation rslt = model.estimate(M, 1e-12, false, false, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-12, false, false, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("Crude-Non concentrated");

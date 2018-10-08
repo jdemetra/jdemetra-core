@@ -18,19 +18,35 @@ import demetra.ssf.implementations.Loading;
 import javax.annotation.Nonnull;
 
 /**
+ * Dynamics of the state array for y(t) = ar(0) y(t-1)+ ... + ar(p)y(t-p-1) The
+ * state array block contains y(t), y(t-1)...y(t-lag), where lag can be greater
+ * than the degree of the ar coefficients
  *
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
 public class SsfAr {
-    
-    public SsfComponent of(@Nonnull double[] ar, double var, int nlags){
-        if (ar.length == 0)
+
+    public SsfComponent of(@Nonnull double[] ar, double var, int nlags) {
+        return of(ar, var, nlags, false);
+    }
+
+    /**
+     * @param ar Auto-regressive parameters
+     * @param var Innovation variance
+     * @param nlags Number of lags. Meaningful if greater than the length of ar.
+     * @param zeroinit Zero initialization. Should be false by default
+     * @return
+     */
+    public SsfComponent of(@Nonnull double[] ar, double var, int nlags, boolean zeroinit) {
+        if (ar.length == 0) {
             throw new IllegalArgumentException();
-        if (nlags<ar.length)
-            nlags=ar.length;
-        Data data=new Data(ar,var,nlags);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
+        }
+        if (nlags < ar.length) {
+            nlags = ar.length;
+        }
+        Data data = new Data(ar, var, nlags);
+        return new SsfComponent(new Initialization(data, zeroinit), new Dynamics(data), Loading.fromPosition(0));
     }
 
     @lombok.Value
@@ -57,9 +73,11 @@ public class SsfAr {
     private static class Initialization implements ISsfInitialization {
 
         private final Data info;
+        private final boolean zeroinit;
 
-        Initialization(final Data info) {
+        Initialization(final Data info, final boolean zeroinit) {
             this.info = info;
+            this.zeroinit = zeroinit;
         }
 
         @Override
@@ -91,12 +109,16 @@ public class SsfAr {
 
         @Override
         public void Pf0(Matrix pf0) {
-            AutoCovarianceFunction acf = new AutoCovarianceFunction(Polynomial.ONE, info.ar(), info.var);
-            acf.prepare(pf0.getColumnsCount());
-            pf0.diagonal().set(acf.get(0));
-            for (int i = 1; i < pf0.getColumnsCount(); ++i) {
-                pf0.subDiagonal(i).set(acf.get(i));
-                pf0.subDiagonal(-i).set(acf.get(i));
+            if (!zeroinit) {
+                AutoCovarianceFunction acf = new AutoCovarianceFunction(Polynomial.ONE, info.ar(), info.var);
+                acf.prepare(pf0.getColumnsCount());
+                pf0.diagonal().set(acf.get(0));
+                for (int i = 1; i < pf0.getColumnsCount(); ++i) {
+                    pf0.subDiagonal(i).set(acf.get(i));
+                    pf0.subDiagonal(-i).set(acf.get(i));
+                }
+            } else {
+                pf0.set(0, 0, info.var);
             }
         }
 

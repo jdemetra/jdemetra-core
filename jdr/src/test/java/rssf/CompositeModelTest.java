@@ -5,24 +5,24 @@
  */
 package rssf;
 
+import demetra.msts.AtomicModels;
+import demetra.msts.ModelEquation;
 import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleSequence;
 import demetra.data.MatrixSerializer;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
+import demetra.msts.CompositeModel;
+import demetra.msts.CompositeModelEstimation;
 import demetra.ssf.implementations.Loading;
-import demetra.ssf.implementations.MultivariateCompositeSsf;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -35,11 +35,9 @@ public class CompositeModelTest {
     static {
         MatrixType tmp = null;
         try {
-            URI uri = CompositeModel.class.getResource("/mssf1").toURI();
+            URI uri = CompositeModels.class.getResource("/mssf1").toURI();
             tmp = MatrixSerializer.read(new File(uri), "\t|,");
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(CompositeModelTest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (URISyntaxException | IOException ex) {
             Logger.getLogger(CompositeModelTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         data = tmp;
@@ -62,7 +60,7 @@ public class CompositeModelTest {
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModel.Estimation rslt = model.estimate(M, 1e-15, false, true, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-15, false, true, null);
         System.out.println(DataBlock.ofInternal(rslt.getFullParameters()));
         System.out.println(rslt.getSmoothedStates().getComponent(0));
         System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
@@ -123,7 +121,7 @@ public class CompositeModelTest {
         model.add(eq6);
         //estimate the model
         double[] dp = model.fullDefaultParameters();
-        CompositeModel.Estimation rslt = model.estimate(x, 1e-15, false, true, null);
+        CompositeModelEstimation rslt = model.estimate(x, 1e-15, false, true, null);
         System.out.println(rslt.getLikelihood().logLikelihood());
         System.out.println(DataBlock.ofInternal(rslt.getFullParameters()));
         System.out.println(rslt.getLikelihood().sigma());

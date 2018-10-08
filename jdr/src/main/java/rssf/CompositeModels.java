@@ -16,124 +16,32 @@
  */
 package rssf;
 
-import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
-import demetra.likelihood.ILikelihood;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
-import demetra.msts.MstsMapping;
-import demetra.msts.MstsMonitor;
+import demetra.msts.CompositeModel;
+import demetra.msts.CompositeModelEstimation;
 import demetra.processing.IProcResults;
-import demetra.ssf.StateInfo;
 import demetra.ssf.StateStorage;
-import demetra.ssf.akf.AkfToolkit;
-import demetra.ssf.dk.DkToolkit;
-import demetra.ssf.dk.sqrt.DefaultDiffuseSquareRootFilteringResults;
-import demetra.ssf.implementations.MultivariateCompositeSsf;
-import demetra.ssf.multivariate.M2uAdapter;
-import demetra.ssf.multivariate.SsfMatrix;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.ISsfData;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  *
  * @author Jean Palate
  */
-public class CompositeModel {
+@lombok.experimental.UtilityClass
+public class CompositeModels {
 
-    public static class Estimation implements IProcResults {
-
-        static Estimation estimate(CompositeModel model, Matrix data, double eps, boolean marginal, boolean concentrated, double[] parameters) {
-            Estimation rslt = new Estimation();
-            rslt.data = data;
-            MstsMonitor monitor = MstsMonitor.builder()
-                    .marginalLikelihood(marginal)
-                    .concentratedLikelihood(concentrated)
-                    .precision(eps)
-                    .build();
-            monitor.process(data, model.getMapping(), parameters == null ? null : DoubleSequence.ofInternal(parameters));
-            rslt.likelihood = monitor.getLikelihood();
-            rslt.ssf = monitor.getSsf();
-            rslt.cmpPos = rslt.getSsf().componentsPosition();
-            rslt.parameters = monitor.getParameters().toArray();
-            rslt.fullParameters = monitor.fullParameters().toArray();
-            rslt.parametersName = model.getMapping().parametersName();
-            return rslt;
+    public static class Results implements IProcResults {
+        
+        private final CompositeModelEstimation estimation;
+        
+        Results(final CompositeModelEstimation estimation){
+            this.estimation=estimation;
         }
 
-        static Estimation compute(CompositeModel model, Matrix data, DoubleSequence fullParameters, boolean marginal, boolean concentrated) {
-            Estimation rslt = new Estimation();
-            rslt.data = data;
-            rslt.fullParameters = fullParameters.toArray();
-            DoubleSequence fp = model.getMapping().functionParameters(fullParameters);
-            rslt.parameters = fp.toArray();
-            rslt.ssf = model.getMapping().map(fp);
-            rslt.cmpPos = rslt.getSsf().componentsPosition();
-            rslt.parametersName = model.getMapping().parametersName();
-            if (marginal) {
-                rslt.likelihood = AkfToolkit.marginalLikelihoodComputer(concentrated).
-                        compute(M2uAdapter.of(rslt.getSsf()), M2uAdapter.of(new SsfMatrix(data)));
-            } else {
-                rslt.likelihood = DkToolkit.likelihood(rslt.getSsf(), new SsfMatrix(data));
-            }
-            return rslt;
-        }
-
-        private ILikelihood likelihood;
-        private MultivariateCompositeSsf ssf;
-        private int[] cmpPos;
-        private Matrix data;
-        private double[] fullParameters, parameters;
-        private String[] parametersName;
-        private StateStorage smoothedStates, filteredStates;
-
-        public StateStorage getSmoothedStates() {
-            if (smoothedStates == null) {
-                smoothedStates = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true);
-            }
-            return smoothedStates;
-        }
-
-        public StateStorage getFilteredStates() {
-            if (filteredStates == null) {
-
-                ISsf ussf = M2uAdapter.of(ssf);
-                ISsfData udata = M2uAdapter.of(new SsfMatrix(data));
-                DefaultDiffuseSquareRootFilteringResults fr = DkToolkit.sqrtFilter(ussf, udata, true);
-                StateStorage ss = StateStorage.full(StateInfo.Forecast);
-                int m = data.getColumnsCount(), n = data.getRowsCount();
-                ss.prepare(ussf.getStateDim(), 0, n);
-                int nd = fr.getEndDiffusePosition() / m;
-                if (fr.getEndDiffusePosition() % m != 0) {
-                    ++nd;
-                }
-                for (int i = nd; i < n; ++i) {
-                    ss.save(i, fr.a(i * m), fr.P(i * m));
-                }
-                for (int i = 0; i < nd; ++i) {
-                    ss.a(i).set(Double.NaN);
-                    ss.P(i).set(Double.NaN);
-                }
-                ss.rescaleVariances(likelihood.sigma());
-                filteredStates = ss;
-            }
-            return filteredStates;
-        }
-
-//        public double[] component(int pos, int[] items, double[] weights, boolean filtered, boolean stderr){
-//            StateStorage data=filtered ? getFilteredStates() : getSmoothedStates();
-//            if (items == null){
-//                
-//            }
-//            double[] q=new double[data.size()];
-//            
-//        }
-        private static final InformationMapping<Estimation> MAPPING = new InformationMapping<>(Estimation.class);
+        private static final InformationMapping<CompositeModelEstimation> MAPPING = new InformationMapping<>(CompositeModelEstimation.class);
 
         static {
             MAPPING.set("loglikelihood", Double.class, source -> source.getLikelihood().logLikelihood());
@@ -232,7 +140,7 @@ public class CompositeModel {
                 return smoothedStates.P(p).unmodifiable();
             });
             MAPPING.set("ssf.smoothing.states", MatrixType.class, source -> {
-                int n=source.data.getRowsCount(), m=source.ssf.getStateDim();
+                int n=source.getData().getRowsCount(), m=source.getSsf().getStateDim();
                 double[] z=new double[n*m];
                 StateStorage smoothedStates = source.getSmoothedStates();
                 for (int i=0, j=0; i<m; ++i, j+=n){
@@ -241,7 +149,7 @@ public class CompositeModel {
                 return MatrixType.ofInternal(z, n, m);
             });
             MAPPING.set("ssf.smoothing.vstates", MatrixType.class, source -> {
-                int n=source.data.getRowsCount(), m=source.ssf.getStateDim();
+                int n=source.getData().getRowsCount(), m=source.getSsf().getStateDim();
                 double[] z=new double[n*m];
                 StateStorage smoothedStates = source.getSmoothedStates();
                 for (int i=0, j=0; i<m; ++i, j+=n){
@@ -270,7 +178,7 @@ public class CompositeModel {
                 return fStates.a(p).toArray();
             });
             MAPPING.set("ssf.filtering.states", MatrixType.class, source -> {
-                int n=source.data.getRowsCount(), m=source.ssf.getStateDim();
+                int n=source.getData().getRowsCount(), m=source.getSsf().getStateDim();
                 double[] z=new double[n*m];
                 StateStorage fStates = source.getFilteredStates();
                 for (int i=0, j=0; i<m; ++i, j+=n){
@@ -279,7 +187,7 @@ public class CompositeModel {
                 return MatrixType.ofInternal(z, n, m);
             });
             MAPPING.set("ssf.filtering.vstates", MatrixType.class, source -> {
-                int n=source.data.getRowsCount(), m=source.ssf.getStateDim();
+                int n=source.getData().getRowsCount(), m=source.getSsf().getStateDim();
                 double[] z=new double[n*m];
                 StateStorage fStates = source.getFilteredStates();
                 for (int i=0, j=0; i<m; ++i, j+=n){
@@ -307,129 +215,20 @@ public class CompositeModel {
 
         @Override
         public <T> T getData(String id, Class<T> tclass) {
-            return MAPPING.getData(this, id, tclass);
+            return MAPPING.getData(estimation, id, tclass);
         }
 
-        public static final InformationMapping<Estimation> getMapping() {
+        public static final InformationMapping<CompositeModelEstimation> getMapping() {
             return MAPPING;
         }
 
-        /**
-         * @return the likelihood
-         */
-        ILikelihood getLikelihood() {
-            return likelihood;
-        }
-
-        /**
-         * @return the ssf
-         */
-        MultivariateCompositeSsf getSsf() {
-            return ssf;
-        }
-
-        /**
-         * @return the cmpPos
-         */
-        int[] getCmpPos() {
-            return cmpPos;
-        }
-
-        /**
-         * @return the data
-         */
-        Matrix getData() {
-            return data;
-        }
-
-        /**
-         * @return the fullParameters
-         */
-        double[] getFullParameters() {
-            return fullParameters;
-        }
-
-        /**
-         * @return the parameters
-         */
-        double[] getParameters() {
-            return parameters;
-        }
-
-        String[] getParametersName() {
-            return parametersName;
-        }
     }
 
-    private MstsMapping mapping;
-    private final List<ModelItem> items = new ArrayList<>();
-    private final List<ModelEquation> equations = new ArrayList<>();
-
-    public int getEquationsCount() {
-        return equations.size();
+    public Results estimate(CompositeModel model, MatrixType data, double eps, boolean marginal, boolean rescaling, double[] parameters) {
+        return new Results(model.estimate(Matrix.of(data), eps, marginal, rescaling, parameters));
     }
 
-    public int getItemsCount() {
-        return items.size();
-    }
-
-    public ModelItem getItem(int pos) {
-        return items.get(pos);
-    }
-
-    public ModelEquation getEquation(int pos) {
-        return equations.get(pos);
-    }
-
-    public void add(ModelItem item) {
-        this.items.add(item);
-        mapping = null;
-    }
-
-    public void add(ModelEquation eq) {
-        this.equations.add(eq);
-        mapping = null;
-    }
-
-    MstsMapping getMapping() {
-        return mapping;
-    }
-
-    public void build() {
-        mapping = new MstsMapping();
-        for (ModelItem item : items) {
-            item.addTo(mapping);
-        }
-        for (ModelEquation eq : equations) {
-            eq.addTo(mapping);
-        }
-    }
-
-    public double[] defaultParameters() {
-        if (mapping == null) {
-            build();
-        }
-        return mapping.getDefaultParameters().toArray();
-    }
-
-    public double[] fullDefaultParameters() {
-        if (mapping == null) {
-            build();
-        }
-        return mapping.trueParameters(mapping.getDefaultParameters()).toArray();
-    }
-
-    public Estimation estimate(MatrixType data, double eps, boolean marginal, boolean rescaling, double[] parameters) {
-        if (mapping == null) {
-            build();
-        }
-        return Estimation.estimate(this, Matrix.of(data), eps, marginal, rescaling, parameters);
-    }
-
-    public Estimation compute(MatrixType data, double[] parameters, boolean marginal, boolean concentrated) {
-        if (mapping == null) {
-            build();
-        }
-        return Estimation.compute(this, Matrix.of(data), DoubleSequence.ofInternal(parameters), marginal, concentrated);
+    public Results compute(CompositeModel model, MatrixType data, double[] parameters, boolean marginal, boolean concentrated) {
+        return new Results(model.compute(Matrix.of(data), parameters, marginal, concentrated));
     }
 }

@@ -129,6 +129,14 @@ public class Loading {
             return new MLoading(loading, s);
         }
     }
+    
+    public static ISsfLoading rescale(ISsfLoading loading, double[] s) {
+        if (s.length == 1) {
+            return rescale(loading, s[0]);
+        }else{
+            return new ALoading(loading, s);
+        }
+    }
 
     private static class RegressionLoading implements ISsfLoading {
 
@@ -273,15 +281,15 @@ public class Loading {
             this.inc = inc;
         }
 
-        /**
-         * Selects specific columns
-         *
-         * @param m
-         * @return
-         */
-        private Matrix columnExtract(Matrix m) {
-            return m.extract(0, i0, m.getRowsCount(), n, 1, inc);
-        }
+//        /**
+//         * Selects specific columns
+//         *
+//         * @param m
+//         * @return
+//         */
+//        private Matrix columnExtract(Matrix m) {
+//            return m.extract(0, i0, m.getRowsCount(), n, 1, inc);
+//        }
 
         /**
          * Selects specific rows
@@ -850,6 +858,64 @@ public class Loading {
         @Override
         public boolean isTimeInvariant() {
             return loading.isTimeInvariant();
+        }
+
+    }
+
+    private static class ALoading implements ISsfLoading {
+
+        private final ISsfLoading loading;
+        private final double[] s;
+
+        private ALoading(ISsfLoading loading, final double[] s) {
+            this.loading = loading;
+            this.s = s;
+        }
+        
+        private double l(int pos){
+            return pos >=s.length? s[s.length-1] : s[pos];
+        }
+
+        private double l2(int pos){
+            double z=l(pos);
+            return z*z;
+        }
+
+        @Override
+        public void Z(int pos, DataBlock z) {
+            loading.Z(pos, z);
+            z.mul(l(pos));
+        }
+
+        @Override
+        public double ZX(int pos, DataBlock m) {
+            return l(pos) * loading.ZX(pos, m);
+        }
+
+        @Override
+        public void ZM(int pos, Matrix M, DataBlock zm) {
+            loading.ZM(pos, M, zm);
+            zm.mul(l(pos));
+        }
+
+        @Override
+        public double ZVZ(int pos, Matrix V) {
+            return l2(pos) * loading.ZVZ(pos, V);
+        }
+
+        @Override
+        public void VpZdZ(int pos, Matrix V, double d) {
+            loading.VpZdZ(pos, V, d * l2(pos));
+        }
+
+        @Override
+        public void XpZd(int pos, DataBlock x, double d) {
+            loading.XpZd(pos, x, d * l(pos));
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return false;
         }
 
     }

@@ -5,9 +5,10 @@
  */
 package demetra.ssf.models;
 
+import demetra.arima.AutoCovarianceFunction;
 import demetra.maths.matrices.Matrix;
+import demetra.maths.polynomials.Polynomial;
 import demetra.ssf.SsfComponent;
-import demetra.ssf.StateComponent;
 import demetra.ssf.StationaryInitialization;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -30,6 +31,12 @@ public class SsfArTest {
         cmp.initialization().Pf0(P);
         assertTrue(I.minus(P).frobeniusNorm() < 1e-12);
 
+    }
+    
+    @Test
+    public void testVar(){
+        AutoCovarianceFunction fn=new AutoCovarianceFunction(Polynomial.ONE, Polynomial.valueOf(1,-.5, .8),1);
+        System.out.println(fn.get(0)); 
     }
     
 }

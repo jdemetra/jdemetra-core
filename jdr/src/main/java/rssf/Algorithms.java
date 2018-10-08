@@ -7,6 +7,7 @@ package rssf;
 
 import demetra.data.DoubleSequence;
 import demetra.maths.matrices.Matrix;
+import demetra.msts.CompositeModel;
 import demetra.msts.MstsMonitor;
 import demetra.ssf.StateStorage;
 import demetra.ssf.dk.DefaultDiffuseFilteringResults;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package rssf;
+package demetra.msts;
 
 import demetra.msts.LoadingParameter;
 import demetra.msts.MstsMapping;
