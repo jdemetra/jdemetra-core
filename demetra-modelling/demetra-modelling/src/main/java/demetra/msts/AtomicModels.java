@@ -257,11 +257,13 @@ public class AtomicModels {
         };
     }
 
-    public ModelItem nar(String name, double[] ar, boolean fixedar, int nlags, int lag, boolean zeroinit) {
+    public ModelItem sae(String name, double[] ar, boolean fixedar, double var, boolean fixedvar, int lag, boolean zeroinit) {
         return mapping -> {
-            mapping.add(new ArParameters(name + "_ar", ar, fixedar));
+            mapping.add(new ArParameters(name + "_sea", ar, fixedar));
+            mapping.add(new VarianceParameter(name + "_seavar", var, fixedvar, true));
             mapping.add((p, builder) -> {
                 double[] par = p.extract(0, ar.length).toArray();
+                double w = p.get(ar.length);
                 // compute the "normalized" covariance
                 double[] car=new double[par.length+1];
                 double[] lpar=new double[par.length*lag];
@@ -270,9 +272,8 @@ public class AtomicModels {
                     lpar[j]=par[i];
                     car[i+1]=-par[i];
                 }
-                AutoCovarianceFunction acf=new AutoCovarianceFunction(Polynomial.ONE, Polynomial.ofInternal(car),1);
-                double w=acf.get(0);
-                SsfComponent cmp = SsfAr.of(lpar, w, nlags, zeroinit);
+                AutoCovarianceFunction acf=new AutoCovarianceFunction(Polynomial.ONE, Polynomial.ofInternal(car),w);
+                SsfComponent cmp = SsfAr.of(lpar, acf.get(0), lpar.length, zeroinit);
                 builder.add(name, cmp);
                 return ar.length + 1;
             });

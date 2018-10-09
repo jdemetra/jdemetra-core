@@ -83,6 +83,15 @@ public class OutliersDetectionModule<T extends IArimaModel>
             return this;
         }
 
+        public Builder<T> addFactories(IOutlierFactory[] factories) {
+            if (factories != null) {
+                for (int i = 0; i < factories.length; ++i) {
+                    this.sod.addOutlierFactory(factories[i]);
+                }
+            }
+            return this;
+        }
+
         /**
          *
          * @return
@@ -119,7 +128,6 @@ public class OutliersDetectionModule<T extends IArimaModel>
             return new OutliersDetectionModule(sod, processor, maxOutliers, maxRound);
         }
     }
-
 
     private RegArimaModel<T> regarima; // current regarima model
     private final ArrayList<int[]> outliers = new ArrayList<>(); // Outliers : (position, type)
@@ -301,7 +309,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
             return true;
         }
         int[] toremove = outliers.get(imin);
-        //sod.allow(toremove[0], toremove[1]);
+        sod.allow(toremove[0], toremove[1]);
         removeOutlier(imin);
         if (removeHook != null) {
             removeHook.accept(toremove);
@@ -336,6 +344,8 @@ public class OutliersDetectionModule<T extends IArimaModel>
     private void removeOutlier(int idx) {
         //
         int opos = regarima.getVariablesCount() - outliers.size() + idx;
+        if (regarima.isMean())
+            --opos;
         regarima = regarima.toBuilder().removeX(opos).build();
         outliers.remove(idx);
     }

@@ -13,6 +13,8 @@ import demetra.maths.matrices.Matrix;
 import demetra.msts.CompositeModel;
 import demetra.msts.CompositeModelEstimation;
 import demetra.ssf.implementations.Loading;
+import demetra.timeseries.TsDomain;
+import java.util.Random;
 import org.junit.Test;
 
 /**
@@ -26,16 +28,28 @@ public class AlgorithmsTest {
 
     @Test
     public void testBsm() {
+        int len = Data.ABS_RETAIL.length;
+        Matrix M = Matrix.make(len, 1);
+        M.column(0).copyFrom(Data.ABS_RETAIL, 0);
+        M.column(0).apply(q->Math.log(q));
+        
+        double[] w=new double[len];
+        w[0]=1;
+        Random rnd=new Random();
+        for (int i=1; i<len; ++i){
+            w[i]=.9*w[i-1]+rnd.nextGaussian()*.01;
+        }
+        
         CompositeModel model = new CompositeModel();
         model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
         model.add(AtomicModels.seasonalComponent("s", "Crude", 12, .01, false));
-        model.add(AtomicModels.tdRegression("td", Data.TS_ABS_RETAIL.getDomain(), new int[]{1,1,1,1,1,0,0}, false, 0.01, false));
-        model.add(AtomicModels.noise("n", 0.01, false));
+        model.add(AtomicModels.rawTdRegression("td", Data.TS_ABS_RETAIL.getDomain(), new int[]{1,1,1,1,1,0,0}, new double[]{0.01, 0.01}, false));
+        model.add(AtomicModels.sae("n", new double[]{0.01}, false, 1.0, false, 1, false));
         ModelEquation eq = new ModelEquation("eq1", 1, true);
         eq.add("l");
         eq.add("s");
         eq.add("td");
-        eq.add("n", 1, true, Loading.periodic(12, 11));
+        eq.add("n", 1, true, Loading.rescale(Loading.fromPosition(0), w));
         model.add(eq);
 //        ModelEquation eqs = new ModelEquation("eqs", 0, true);
 //        eqs.add("td", 1, true, Loading.sum());
@@ -43,14 +57,10 @@ public class AlgorithmsTest {
 //        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
 //        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
 
-        int len = Data.ABS_RETAIL.length;
-        Matrix M = Matrix.make(len, 1);
-        M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        M.column(0).apply(q->Math.log(q));
         CompositeModelEstimation rslt = model.estimate(M, 1e-12, false, true, null);
 
         double[] p = rslt.getFullParameters();
-        System.out.println("Crude+TD");
+        System.out.println("SEA+TD");
         System.out.println(DataBlock.ofInternal(p));
         System.out.println(rslt.getLikelihood().logLikelihood());
     }

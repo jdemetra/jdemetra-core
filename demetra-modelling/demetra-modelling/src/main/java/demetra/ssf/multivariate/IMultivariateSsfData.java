@@ -47,6 +47,10 @@ public interface IMultivariateSsfData {
      * @return
      */
     boolean isMissing(int pos, int v);
+    
+    default boolean isConstraint(int pos, int v){
+        return false;
+    }
 
     /**
      *
