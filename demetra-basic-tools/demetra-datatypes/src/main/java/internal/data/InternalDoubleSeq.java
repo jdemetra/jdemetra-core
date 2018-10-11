@@ -266,7 +266,7 @@ public class InternalDoubleSeq {
 
         @Override
         public String toString() {
-            return DoubleSequence.toString(this);
+            return DoubleSequence.format(this);
         }
 
         private final class Cell implements DoubleReader {
@@ -320,7 +320,7 @@ public class InternalDoubleSeq {
 
         @Override
         public String toString() {
-            return DoubleSequence.toString(this);
+            return DoubleSequence.format(this);
         }
 
         private final class Cell implements DoubleReader {
@@ -367,7 +367,7 @@ public class InternalDoubleSeq {
 
         @Override
         public String toString() {
-            return DoubleSequence.toString(this);
+            return DoubleSequence.format(this);
         }
 
         private final class Cell implements DoubleReader {
@@ -423,7 +423,7 @@ public class InternalDoubleSeq {
 
         @Override
         public String toString() {
-            return DoubleSequence.toString(this);
+            return DoubleSequence.format(this);
         }
 
         private final class Cell implements DoubleReader {

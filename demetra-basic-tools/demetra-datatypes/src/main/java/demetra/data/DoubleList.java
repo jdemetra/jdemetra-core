@@ -112,7 +112,7 @@ public final class DoubleList implements DoubleSequence {
 
     @Override
     public String toString() {
-        return DoubleSequence.toString(this);
+        return DoubleSequence.format(this);
     }
 
     /**

@@ -288,7 +288,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
         return a > b ? (a - epsilon <= b) : (b - epsilon <= a);
     }
 
-    static String toString(DoubleSequence rd) {
+    static String format(DoubleSequence rd) {
         StringBuilder builder = new StringBuilder();
         int n = rd.length();
         if (n > 0) {
@@ -300,7 +300,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
         return builder.toString();
     }
 
-    static String toString(DoubleSequence rd, String fmt) {
+    static String format(DoubleSequence rd, String fmt) {
         StringBuilder builder = new StringBuilder();
         int n = rd.length();
         if (n > 0) {

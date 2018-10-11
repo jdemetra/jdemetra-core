@@ -28,14 +28,25 @@ import java.util.Iterator;
 @lombok.Value
 public class FixedDay implements IHoliday {
 
-    private int day;
     private int month;
+    private int day;
     private double weight;
 
+    /**
+     * 
+     * @param month Month, 1-based
+     * @param day Day of the month, 1-based
+     */
     public FixedDay(int month, int day) {
         this(month, day, 1);
     }
 
+    /**
+     * 
+     * @param month Month, 1-based
+     * @param day Day of the month, 1-based
+     * @param weight Weight of the holiday 
+     */
     public FixedDay(int month, int day, double weight) {
         this.day = day;
         this.month = month;
@@ -87,21 +98,24 @@ public class FixedDay implements IHoliday {
         if (offset == 0) {
             return this;
         }
-        int pos = CalendarUtility.getCumulatedMonthDays(month) + day;
+        // position in the year (1-based)
+        int pos = CalendarUtility.getCumulatedMonthDays(month-1) + day;
         pos += offset;
-        if (pos < 0 || pos >= 365) {
-            return null;
+        if (pos > 365)
+            pos-=365;
+        else if (pos <=0){
+            pos+=365;
         }
         int nmonth = 0;
-        while (pos >= CalendarUtility.getCumulatedMonthDays(nmonth + 1)) {
+        while (pos > CalendarUtility.getCumulatedMonthDays(nmonth+1)) {
             ++nmonth;
         }
         int nday = pos - CalendarUtility.getCumulatedMonthDays(nmonth);
         // avoid leap year
-        if (month <= 1 && nmonth >= 2) {
+        if (month <= 2 && nmonth >= 2) {
             return null;
         }
-        return new FixedDay(nmonth, nday, weight);
+        return new FixedDay(nmonth+1, nday, weight);
     }
 
     static class FixedDayInfo implements IHolidayInfo {

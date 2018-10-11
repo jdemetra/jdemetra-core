@@ -187,7 +187,7 @@ public final class DataBlock implements DoubleSequence {
      */
     @Override
     public String toString() {
-        return DoubleSequence.toString(this);
+        return DoubleSequence.format(this);
     }
 
     /**
@@ -1631,7 +1631,7 @@ public final class DataBlock implements DoubleSequence {
     }
 
     public String toString(String fmt) {
-        return DoubleSequence.toString(this, fmt);
+        return DoubleSequence.format(this, fmt);
     }
 
     void slide(int del) {

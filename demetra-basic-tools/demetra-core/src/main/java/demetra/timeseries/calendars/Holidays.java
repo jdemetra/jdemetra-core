@@ -120,14 +120,14 @@ public class Holidays {
         return Objects.deepEquals(context, other.context) && Comparator.equals(holidays, other.holidays);
     }
     
-    public void fillDays(final Matrix D, final LocalDate start) {
+    public void fillDays(final Matrix D, final LocalDate start, final boolean skipSundays) {
         LocalDate end = start.plusDays(D.getRowsCount());
         int col = 0;
         for (Holiday item : elements()) {
             Iterator<IHolidayInfo> iter = item.getDay().getIterable(start, end).iterator();
             while (iter.hasNext()) {
                 LocalDate date = iter.next().getDay();
-                if (date.getDayOfWeek() != DayOfWeek.SUNDAY) {
+                if (!skipSundays || date.getDayOfWeek() != DayOfWeek.SUNDAY) {
                     long pos = start.until(date, DAYS);
                     D.set((int) pos, col, 1);
                 }

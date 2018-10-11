@@ -62,6 +62,6 @@ public class SsfData implements ISsfData  {
     
     @Override
     public String toString(){
-        return DoubleSequence.toString(data);
+        return DoubleSequence.format(data);
     }
 }

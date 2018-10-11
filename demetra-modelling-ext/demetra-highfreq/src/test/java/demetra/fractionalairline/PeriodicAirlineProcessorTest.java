@@ -41,7 +41,7 @@ public class PeriodicAirlineProcessorTest {
         MatrixType edf = MatrixSerializer.read(new File(uri));
         Holidays france = france();
         Matrix hol = Matrix.make(edf.getRowsCount(), france.getCount());
-        france.fillDays(hol, LocalDate.of(1996, 1, 1));
+        france.fillDays(hol, LocalDate.of(1996, 1, 1), false);
         RegArimaEstimation<ArimaModel> rslt = PeriodicAirlineProcessor.process(Doubles.fastFn(edf.column(0), z->Math.log(z)), hol, new double[]{7, 365.25}, 1e-12);
         assertTrue(rslt != null);
         ConcentratedLikelihood cll = rslt.getConcentratedLikelihood();
