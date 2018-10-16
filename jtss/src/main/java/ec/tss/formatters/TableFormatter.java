@@ -22,6 +22,7 @@ import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcDiagnostic;
 import ec.tstoolkit.data.Table;
 import ec.tstoolkit.information.InformationSet;
+import ec.tstoolkit.information.ParameterInfo;
 import ec.tstoolkit.information.RegressionItem;
 import ec.tstoolkit.information.StatisticalTest;
 import ec.tstoolkit.sarima.SarimaModel;
@@ -52,6 +53,7 @@ public class TableFormatter {
         dictionary.put(String.class, new StringFormatter());
         dictionary.put(SarimaModel.class, new SarimaFormatter());
         dictionary.put(Parameter.class, new ParameterFormatter());
+        dictionary.put(ParameterInfo.class, new ParameterInfoFormatter());
         dictionary.put(TsMoniker.class, new MonikerFormatter());
         dictionary.put(TsPeriod.class, new PeriodFormatter());
         dictionary.put(RegressionItem.class, new RegressionItemFormatter());

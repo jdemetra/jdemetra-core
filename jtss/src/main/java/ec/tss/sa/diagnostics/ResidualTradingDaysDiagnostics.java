@@ -45,7 +45,7 @@ public class ResidualTradingDaysDiagnostics implements IDiagnostics {
     private StatisticalTest f_sa, f_i;
     private double sev, bad, unc;
 
-    private static final double E_LIMIT = .01;
+    private static final double E_LIMIT = .005;
 
     private static boolean isMultiplicative(CompositeResults rslts) {
         DecompositionMode mul = rslts.getData(ModellingDictionary.MODE, DecompositionMode.class);
@@ -201,7 +201,7 @@ public class ResidualTradingDaysDiagnostics implements IDiagnostics {
         return test == null ? Double.NaN : test.getPValue();
     }
 
-    private static StatisticalTest process(TsData s) {
+   private static StatisticalTest process(TsData s) {
         try {
             RegModel reg = new RegModel();
             DataBlock y = new DataBlock(s);
@@ -233,7 +233,7 @@ public class ResidualTradingDaysDiagnostics implements IDiagnostics {
             return null;
         }
     }
-
+ 
     private static StatisticalTest processAr(TsData s) {
         try {
             RegModel reg = new RegModel();

@@ -90,12 +90,15 @@ public class PeriodogramTest {
      */
     public static StatisticalTest computeSum2(IReadDataBlock data, int freq) {
         data=shrink(data, freq);
+        int n=data.getLength();
+        if (n<3*freq)
+            return null;
         Periodogram periodogram = new Periodogram(data, false);
         double[] p = periodogram.getP();
         double xsum = 0;
         int f2=(freq-1)/2;
         int nf = 2*f2;
-        int m=data.getLength()/freq;
+        int m=n/freq;
         for (int i = 1; i <= f2; ++i) {
                 xsum+=p[i*m];
          }
@@ -103,7 +106,6 @@ public class PeriodogramTest {
             ++nf;
             xsum += p[p.length - 1];
         }
-        int n=data.getLength();
         F f = new F();
         f.setDFNum(nf);
         f.setDFDenom(n-nf-1);

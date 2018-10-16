@@ -37,10 +37,12 @@ public class XmlRegItem implements IXmlConverter<RegressionItem> {
     public double coefficient;
     @XmlElement(name="Stde")
     public double stderror;
+    @XmlElement(name="Pvalue")
+    public double pvalue;
 
     @Override
     public RegressionItem create() {
-        return new RegressionItem(description, coefficient, stderror);
+        return new RegressionItem(description, coefficient, stderror, pvalue);
     }
 
     @Override

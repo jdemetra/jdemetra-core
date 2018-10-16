@@ -20,9 +20,10 @@ import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.maths.matrices.Matrix;
 
 /**
- * This class represents the concentrated likelihood of a linear regression model.
- * 
- * 
+ * This class represents the concentrated likelihood of a linear regression
+ * model.
+ *
+ *
  * @author Jean Palate
  */
 public class ConcentratedLikelihood extends Likelihood {
@@ -94,21 +95,17 @@ public class ConcentratedLikelihood extends Likelihood {
     }
 
     /**
-     * Returns the variance/covariance matrix V of the coefficients of the 
-     * regression variables. 
-     * V = sig2 * (X'X)^-1
-     * sig2 may be computed as 
-     * 1. ssqErr/n (ml estimate)
-     * or as 
-     * 2. ssqErr/(n-nx-nhp) (unbiased estimate)
-     * 
-     * n is the number of obs.
-     * nx is the number of regression variables
-     * nhp is the number of hyper-parameters
-     * 
+     * Returns the variance/covariance matrix V of the coefficients of the
+     * regression variables. V = sig2 * (X'X)^-1 sig2 may be computed as 1.
+     * ssqErr/n (ml estimate) or as 2. ssqErr/(n-nx-nhp) (unbiased estimate)
+     *
+     * n is the number of obs. nx is the number of regression variables nhp is
+     * the number of hyper-parameters
+     *
      * ML estimate will always lead to smaller (co)variances.
-     * @param unbiased False if the ML estimate is used. True otherwise.
-     * See the description for more information.
+     *
+     * @param unbiased False if the ML estimate is used. True otherwise. See the
+     * description for more information.
      * @param hpcount The number of hyper-parameters. Can be 0.
      * @return The covariance matrix. The matrix should not be modified.
      */
@@ -123,22 +120,27 @@ public class ConcentratedLikelihood extends Likelihood {
 
     /**
      * Returns the number of degrees of freedom used in the computation of the
-     * different variance/standard deviations 
+     * different variance/standard deviations
+     *
      * @param unbiased True if ML estimates are used, false otherwise.
-     * @param hpcount Number of hyper-paraneters that should be taken into account.
-     * hpcount is not considered if unbiased is set to false.
-     * @return 
+     * @param hpcount Number of hyper-paraneters that should be taken into
+     * account. hpcount is not considered if unbiased is set to false.
+     * @return
      */
     public int getDegreesOfFreedom(boolean unbiased, int hpcount) {
         int n = getN();
         if (unbiased) {
             n -= m_nx + hpcount;
+            if (n <= 0) {
+                n += hpcount;
+            }
         }
         return n;
     }
 
     /**
      * Number of regression variables
+     *
      * @return
      */
     public int getNx() {

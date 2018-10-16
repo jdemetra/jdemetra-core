@@ -17,49 +17,52 @@
 package ec.tss.formatters;
 
 import ec.tstoolkit.Parameter;
+import ec.tstoolkit.information.ParameterInfo;
 import java.text.DecimalFormat;
 
 /**
  *
  * @author Jean Palate
  */
-public class ParameterFormatter implements IStringFormatter {
+public class ParameterInfoFormatter implements IStringFormatter {
 
     private static final DecimalFormat df6 = new DecimalFormat();
-    private static final DecimalFormat df3 = new DecimalFormat();
+    private static final DecimalFormat df4 = new DecimalFormat();
 
     static {
         df6.setMaximumFractionDigits(6);
-        df3.setMaximumFractionDigits(3);
+        df4.setMaximumFractionDigits(3);
         df6.setGroupingUsed(false);
-        df3.setGroupingUsed(false);
+        df4.setGroupingUsed(false);
     }
     private final DecimalFormat fmt;
 
-    public ParameterFormatter() {
+    public ParameterInfoFormatter() {
         fmt = df6;
     }
 
-    public ParameterFormatter(DecimalFormat fmt) {
+    public ParameterInfoFormatter(DecimalFormat fmt) {
         this.fmt = fmt;
     }
 
     @Override
     public String format(Object obj, int item) {
 
-        Parameter param = (Parameter) obj;
+        ParameterInfo param = (ParameterInfo) obj;
         switch (item) {
             case 0:
             case 1:
-                return fmt.format(param.getValue());
+                return fmt.format(param.value);
             case 2:
-                if (param.getStde() == 0) {
+                if (param.stde == 0) {
                     return "";
                 } else {
-                    return df3.format(param.getValue() / param.getStde());
+                    return df4.format(param.value / param.stde);
                 }
             case 3:
-                return fmt.format(param.getStde());
+                return fmt.format(param.stde);
+            case 4:
+                return df4.format(param.pvalue);
             default:
                 return "";
         }

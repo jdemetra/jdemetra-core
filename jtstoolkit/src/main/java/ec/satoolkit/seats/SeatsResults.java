@@ -30,6 +30,7 @@ import ec.tstoolkit.modelling.ModellingDictionary;
 import ec.tstoolkit.modelling.SeriesInfo;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.ucarima.UcarimaModel;
+import ec.tstoolkit.ucarima.WienerKolmogorovDiagnostics;
 import ec.tstoolkit.ucarima.WienerKolmogorovEstimators;
 import ec.tstoolkit.utilities.Arrays2;
 import java.util.ArrayList;
@@ -93,6 +94,7 @@ public class SeatsResults implements ISaResults {
     DefaultSeriesDecomposition initialComponents, finalComponents;
     InformationSet info_;
     private List<ProcessingInformation> log_ = new ArrayList<>();
+    private WienerKolmogorovDiagnostics diagnostics;
 
     void addProcessingInformation(ProcessingInformation info) {
         log_.add(info);
@@ -102,6 +104,33 @@ public class SeatsResults implements ISaResults {
         if (log_ != null && info != null) {
             log_.addAll(info);
         }
+    }
+
+    public WienerKolmogorovDiagnostics diagnostics() {
+        if (diagnostics == null) {
+            try {
+                UcarimaModel ucm = decomposition.clone();
+                if (ucm.getComponentsCount() > 3) {
+                    ucm.compact(2, 2);
+                }
+                int[] cmps = new int[]{1, -2, 2, 3};
+                double err = model.getSer();
+                TsData t = initialComponents.getSeries(ComponentType.Trend, ComponentInformation.Value);
+                TsData s = initialComponents.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
+                TsData i = initialComponents.getSeries(ComponentType.Irregular, ComponentInformation.Value);
+                TsData sa = initialComponents.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
+
+                double[][] data = new double[][]{
+                    t == null ? null : t.internalStorage(),
+                    s == null ? null : sa.internalStorage(),
+                    s == null ? null : s.internalStorage(),
+                    i == null ? null : i.internalStorage()
+                };
+                diagnostics = WienerKolmogorovDiagnostics.make(ucm, err, data, cmps);
+            } catch (Exception e) {
+            }
+        }
+        return diagnostics;
     }
 
     @Override
@@ -213,7 +242,37 @@ public class SeatsResults implements ISaResults {
 
     private static final InformationMapping<SeatsResults> MAPPING = new InformationMapping<>(SeatsResults.class);
 
-    public static final String CUTOFF = "parameters_cutoff", CHANGED = "model_changed", SEAS = "seasonality", AR_ROOT = "ar_root";
+    public static final String CUTOFF = "parameters_cutoff", CHANGED = "model_changed", SEAS = "seasonality", AR_ROOT = "ar_root", MA_ROOT = "ma_root";
+    public static final String 
+            TVAR_ESTIMATE="tvar-estimate",
+            TVAR_ESTIMATOR="tvar-estimator",
+            TVAR_PVALUE="tvar-pvalue",
+            SAVAR_ESTIMATE="savar-estimate",
+            SAVAR_ESTIMATOR="savar-estimator",
+            SAVAR_PVALUE="savar-pvalue",
+            SVAR_ESTIMATE="svar-estimate",
+            SVAR_ESTIMATOR="svar-estimator",
+            SVAR_PVALUE="svar-pvalue",
+            IVAR_ESTIMATE="ivar-estimate",
+            IVAR_ESTIMATOR="ivar-estimator",
+            IVAR_PVALUE="ivar-pvalue",
+            SAAC1_ESTIMATE="saac1-estimate",
+            SAAC1_ESTIMATOR="saac1-estimator",
+            SAAC1_PVALUE="saac1-pvalue",
+            IAC1_ESTIMATE="iac1-estimate",
+            IAC1_ESTIMATOR="iac1-estimator",
+            IAC1_PVALUE="iac1-pvalue",
+            TICORR_ESTIMATE="ticorr-estimate",
+            TICORR_ESTIMATOR="ticorr-estimator",
+            TICORR_PVALUE="ticorr-pvalue",
+            SICORR_ESTIMATE="sicorr-estimate",
+            SICORR_ESTIMATOR="sicorr-estimator",
+            SICORR_PVALUE="sicorr-pvalue",
+            TSCORR_ESTIMATE="tscorr-estimate",
+            TSCORR_ESTIMATOR="tscorr-estimator",
+            TSCORR_PVALUE="tscorr-pvalue"
+            ;
+    private static final int T_CMP = 0, SA_CMP = 1, I_CMP = 3, S_CMP = 2;
 
     static {
         MAPPING.set(ModellingDictionary.Y_LIN, source -> source.initialComponents.getSeries(ComponentType.Series, ComponentInformation.Value));
@@ -301,6 +360,134 @@ public class SeatsResults implements ISaResults {
                 return ar[i - 1].inv();
             }
         });
+        MAPPING.setList(MA_ROOT, 1, 3, Complex.class, (source, i) -> {
+            Complex[] ma = source.model.getMovingAverageRoots();
+            if (i > ma.length) {
+                return null;
+            } else {
+                return ma[i - 1].inv();
+            }
+        });
 
+        MAPPING.set(TVAR_ESTIMATOR, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimatorVariance(T_CMP);});
+        MAPPING.set(TVAR_ESTIMATE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimateVariance(T_CMP);});
+        MAPPING.set(TVAR_PVALUE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getPValue(T_CMP);});
+        MAPPING.set(TVAR_ESTIMATOR, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimatorVariance(T_CMP);});
+        MAPPING.set(TVAR_ESTIMATE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimateVariance(T_CMP);});
+        MAPPING.set(TVAR_PVALUE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getPValue(T_CMP);});
+        MAPPING.set(TVAR_ESTIMATOR, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimatorVariance(T_CMP);});
+        MAPPING.set(TVAR_ESTIMATE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimateVariance(T_CMP);});
+        MAPPING.set(TVAR_PVALUE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getPValue(T_CMP);});
+        MAPPING.set(SAVAR_ESTIMATOR, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimatorVariance(SA_CMP);});
+        MAPPING.set(SAVAR_ESTIMATE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimateVariance(SA_CMP);});
+        MAPPING.set(SAVAR_PVALUE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getPValue(SA_CMP);});
+        MAPPING.set(SVAR_ESTIMATOR, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimatorVariance(S_CMP);});
+        MAPPING.set(SVAR_ESTIMATE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimateVariance(S_CMP);});
+        MAPPING.set(SVAR_PVALUE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getPValue(S_CMP);});
+        MAPPING.set(IVAR_ESTIMATOR, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimatorVariance(I_CMP);});
+        MAPPING.set(IVAR_ESTIMATE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimateVariance(I_CMP);});
+        MAPPING.set(IVAR_PVALUE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getPValue(I_CMP);});
+//        MAPPING.set(SAAC1_ESTIMATOR, Double.class, source
+//                ->{ 
+//                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+//                return diag == null ? null : diag.(SA_CMP);});
+//        MAPPING.set(SAAC1_ESTIMATE, Double.class, source
+//                ->{ 
+//                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+//                return diag == null ? null : diag.getEstimateVariance(SA_CMP);});
+//        MAPPING.set(SAAC1_PVALUE, Double.class, source
+//                ->{ 
+//                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+//                return diag == null ? null : diag.getPValue(SA_CMP);});
+        MAPPING.set(TSCORR_ESTIMATOR, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimatorCrossCorrelation(T_CMP, S_CMP);});
+        MAPPING.set(TSCORR_ESTIMATE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimateCrossCorrelation(T_CMP, S_CMP);});
+        MAPPING.set(TSCORR_PVALUE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getPValue(T_CMP, S_CMP);});
+        MAPPING.set(TICORR_ESTIMATOR, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimatorCrossCorrelation(T_CMP, I_CMP);});
+        MAPPING.set(TICORR_ESTIMATE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimateCrossCorrelation(T_CMP, I_CMP);});
+        MAPPING.set(TICORR_PVALUE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getPValue(T_CMP, I_CMP);});
+        MAPPING.set(SICORR_ESTIMATOR, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimatorCrossCorrelation(S_CMP, I_CMP);});
+        MAPPING.set(SICORR_ESTIMATE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getEstimateCrossCorrelation(S_CMP, I_CMP);});
+        MAPPING.set(SICORR_PVALUE, Double.class, source
+                ->{ 
+                WienerKolmogorovDiagnostics diag=source.diagnostics(); 
+                return diag == null ? null : diag.getPValue(S_CMP, I_CMP);});
     }
 }

@@ -586,14 +586,14 @@ public class HtmlNiidTest extends AbstractHtmlElement implements IHtmlElement {
             m_tests.getUpAndDownRuns().setKind(RunsTestKind.Number);
             stream.open(HtmlTag.TABLEROW);
             stream.write(new HtmlTableCell("Up and Down runs: number").withWidth(200));
-            stream.write(new HtmlTableCell(df4.format(m_tests.getRuns()
-                    .getPValue())).withWidth(100).withClass(PValue(m_tests.getRuns().getPValue())));
+            stream.write(new HtmlTableCell(df4.format(m_tests.getUpAndDownRuns()
+                    .getPValue())).withWidth(100).withClass(PValue(m_tests.getUpAndDownRuns().getPValue())));
             stream.close(HtmlTag.TABLEROW);
             m_tests.getUpAndDownRuns().setKind(RunsTestKind.Length);
             stream.open(HtmlTag.TABLEROW);
             stream.write(new HtmlTableCell("Up and Down runs: length").withWidth(200));
-            stream.write(new HtmlTableCell(df4.format(m_tests.getRuns()
-                    .getPValue())).withWidth(100).withClass(PValue(m_tests.getRuns().getPValue())));
+            stream.write(new HtmlTableCell(df4.format(m_tests.getUpAndDownRuns()
+                    .getPValue())).withWidth(100).withClass(PValue(m_tests.getUpAndDownRuns().getPValue())));
             stream.close(HtmlTag.TABLEROW);
         }
 
