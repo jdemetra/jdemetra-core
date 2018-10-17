@@ -43,13 +43,13 @@ public class AlgorithmsTest {
         CompositeModel model = new CompositeModel();
         model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
         model.add(AtomicModels.seasonalComponent("s", "Crude", 12, .01, false));
-        model.add(AtomicModels.rawTdRegression("td", Data.TS_ABS_RETAIL.getDomain(), new int[]{1,1,1,1,1,0,0}, new double[]{0.01, 0.01}, false));
-        model.add(AtomicModels.sae("n", new double[]{0.01}, false, 1.0, false, 1, false));
-        ModelEquation eq = new ModelEquation("eq1", 1, true);
+//        model.add(AtomicModels.rawTdRegression("td", Data.TS_ABS_RETAIL.getDomain(), new int[]{1,1,1,1,1,0,0}, new double[]{0.01, 0.01}, false));
+        model.add(AtomicModels.sae("n", new double[]{0.5, 0.2}, false, 0.0001, true, 1, false));
+        ModelEquation eq = new ModelEquation("eq1", 1, false);
         eq.add("l");
         eq.add("s");
-        eq.add("td");
-        eq.add("n", 1, true, Loading.rescale(Loading.fromPosition(0), w));
+//        eq.add("td");
+        eq.add("n");//, 1, true, Loading.rescale(Loading.fromPosition(0), w));
         model.add(eq);
 //        ModelEquation eqs = new ModelEquation("eqs", 0, true);
 //        eqs.add("td", 1, true, Loading.sum());
@@ -60,12 +60,12 @@ public class AlgorithmsTest {
         CompositeModelEstimation rslt = model.estimate(M, 1e-12, false, true, null);
 
         double[] p = rslt.getFullParameters();
-        System.out.println("SEA+TD");
+        System.out.println("SAE+TD");
         System.out.println(DataBlock.ofInternal(p));
         System.out.println(rslt.getLikelihood().logLikelihood());
     }
     
-    @Test
+    //@Test
     public void testAirline() {
         CompositeModel model = new CompositeModel();
         model.add(AtomicModels.sarima("air", 12, new int[]{0,1,1}, new int[]{0,1,1}, new double[]{-.2, -.2}));
@@ -110,10 +110,10 @@ public class AlgorithmsTest {
         System.out.println(rslt.getLikelihood().logLikelihood());
     }
     
-    @Test
+    //@Test
     public void testBsmBis() {
         CompositeModel model = new CompositeModel();
-        model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
+        model.add(AtomicModels.localLinearTrend("l", .1, .1, false, false));
         model.add(AtomicModels.seasonalComponent("s", "Dummy", 12, 1, false));
         model.add(AtomicModels.noise("n", .01, false));
         ModelEquation eq = new ModelEquation("eq1", 0, true);
@@ -135,7 +135,7 @@ public class AlgorithmsTest {
         System.out.println(rslt.getLikelihood().logLikelihood());
     }
 
-    @Test
+    //@Test
     public void testBsm2Bis() {
         CompositeModel model = new CompositeModel();
         model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
