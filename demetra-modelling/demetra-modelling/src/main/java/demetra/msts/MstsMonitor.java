@@ -163,13 +163,16 @@ public class MstsMonitor {
         this.data = data;
         this.model = model;
         smallVariances.clear();
-        DoubleSequence start = fullInitial == null ? model.getDefaultParameters() : model.functionParameters(fullInitial);
-        prslts = start;
+        prslts = fullInitial == null ? model.getDefaultParameters() : model.functionParameters(fullInitial);
         int niter = 0;
         int fniter = this.concentratedLikelihood ? 100 : 500;
         do {
+            DoubleSequence curp = prslts;
+            if (this.resetParameters) {
+                curp = model.getDefaultParameters();
+            }
             ILikelihoodFunction fn = function();
-            ILikelihoodFunctionPoint rslt = min(fn, fniter, this.resetParameters ? start : prslts);
+            ILikelihoodFunctionPoint rslt = min(fn, fniter, curp);
             ll = rslt.getLikelihood();
             prslts = rslt.getParameters();
             fullp = model.trueParameters(prslts);
@@ -180,7 +183,11 @@ public class MstsMonitor {
 
         // Final estimation. To do anyway
         ILikelihoodFunction fn = function();
-        ILikelihoodFunctionPoint rslt = min(fn, this.maxIterOptimzer, this.resetParameters ? start : prslts);
+        DoubleSequence curp = prslts;
+        if (this.resetParameters) {
+            curp = model.getDefaultParameters();
+        }
+        ILikelihoodFunctionPoint rslt = min(fn, this.maxIterOptimzer, curp);
         ll = rslt.getLikelihood();
         prslts = rslt.getParameters();
         fullp = model.trueParameters(prslts);
@@ -189,8 +196,9 @@ public class MstsMonitor {
     }
 
     private ILikelihoodFunctionPoint min(ILikelihoodFunction fn, int niter, DoubleSequence start) {
-        if (fn.getDomain().getDim() == 0)
+        if (fn.getDomain().getDim() == 0) {
             return fn.evaluate(start);
+        }
         if (bfgs) {
             LbfgsMinimizer lm = new LbfgsMinimizer();
             lm.setFunctionPrecision(precision);

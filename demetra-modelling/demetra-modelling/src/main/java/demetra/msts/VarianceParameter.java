@@ -79,7 +79,7 @@ public class VarianceParameter implements IMstsParametersBlock {
             double e = input.next();
             buffer[pos] = e * e;
         } else {
-            buffer[pos] = stde;
+            buffer[pos] = stde*stde;
         }
         return pos + 1;
     }

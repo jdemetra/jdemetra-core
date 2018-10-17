@@ -31,6 +31,7 @@ public class CompositeModelEstimation {
         MstsMonitor monitor = MstsMonitor.builder()
                 .marginalLikelihood(marginal)
                 .concentratedLikelihood(concentrated)
+//                .resetParameters(true)
                 .precision(eps)
                 .smallVariance(1e-6)
                 .build();

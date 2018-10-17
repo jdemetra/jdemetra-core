@@ -34,7 +34,7 @@ import demetra.maths.functions.ParamValidation;
  */
 public class LbfgsMinimizer implements IFunctionMinimizer {
 
-    private static final int MAX_FAILED = 100;
+    private static final int MAX_FAILED = 20;
 
     private double xtol = 1e-9, gtol = 1e-5;
 
@@ -214,8 +214,7 @@ public class LbfgsMinimizer implements IFunctionMinimizer {
      * @param value
      */
     @Override
-    public void setFunctionPrecision(double value
-    ) {
+    public void setFunctionPrecision(double value) {
         feps = value;
     }
 

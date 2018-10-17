@@ -212,7 +212,7 @@ public class AtomicModels {
             mapping.add((p, builder) -> {
                 double pvar = p.get(0);
                 Matrix xvar = mvar.deepClone();
-                xvar.mul(pvar*pvar);
+                xvar.mul(pvar * pvar);
                 SsfComponent cmp = RegSsf.ofTimeVarying(x, xvar);
                 builder.add(name, cmp);
                 return 1;
@@ -233,8 +233,9 @@ public class AtomicModels {
             mapping.add((p, builder) -> {
                 DoubleSequence np = p.extract(0, n);
                 double[] nv = np.toArray();
-                for (int i=0; i<nv.length; ++i)
-                    nv[i]=nv[i]*nv[i];
+                for (int i = 0; i < nv.length; ++i) {
+                    nv[i] = nv[i] * nv[i];
+                }
                 SsfComponent cmp = RegSsf.ofTimeVarying(x, DoubleSequence.ofInternal(nv));
                 builder.add(name, cmp);
                 return n;
@@ -265,17 +266,45 @@ public class AtomicModels {
                 double[] par = p.extract(0, ar.length).toArray();
                 double w = p.get(ar.length);
                 // compute the "normalized" covariance
-                double[] car=new double[par.length+1];
-                double[] lpar=new double[par.length*lag];
-                car[0]=1;
-                for (int i=0, j=lag-1; i<par.length; ++i, j+=lag){
-                    lpar[j]=par[i];
-                    car[i+1]=-par[i];
+                double[] car = new double[par.length + 1];
+                double[] lpar = new double[par.length * lag];
+                car[0] = 1;
+                for (int i = 0, j = lag - 1; i < par.length; ++i, j += lag) {
+                    lpar[j] = par[i];
+                    car[i + 1] = -par[i];
                 }
-                AutoCovarianceFunction acf=new AutoCovarianceFunction(Polynomial.ONE, Polynomial.ofInternal(car), w*w);
-                SsfComponent cmp = SsfAr.of(lpar, acf.get(0), lpar.length, zeroinit);
+                AutoCovarianceFunction acf=new AutoCovarianceFunction(Polynomial.ONE, Polynomial.ofInternal(car), 1);
+                SsfComponent cmp = SsfAr.of(lpar, w/acf.get(0), lpar.length, zeroinit);
                 builder.add(name, cmp);
                 return ar.length + 1;
+            });
+        };
+    }
+
+    public ModelItem waveSpecificSurveyError(String name, int nwaves, MatrixType wsae, double ar1, double[] ar2, boolean fixedar, int lag, boolean zeroinit) {
+        return mapping -> {
+            final boolean bar1=Double.isFinite(ar1), bar2=ar2 != null;
+            if (bar1) {
+                mapping.add(new ArParameters(name + "_sae1", new double[]{ar1}, fixedar));
+            }
+            if (bar2) {
+                mapping.add(new ArParameters(name + "_sae2", ar2, fixedar));
+            }
+            mapping.add((p, builder) -> {
+                int np=0;
+                double par1=Double.NaN;
+                if (bar1){
+                    par1=p.get(0);
+                    ++np;
+                }
+                double[] par2=null;
+                if (bar2){
+                    par2=p.extract(np, 2).toArray();
+                    np+=2;
+                }
+//                SsfComponent cmp = SsfAr.of(lpar, acf.get(0), lpar.length, zeroinit);
+//                builder.add(name, cmp);
+                return np;
             });
         };
     }
