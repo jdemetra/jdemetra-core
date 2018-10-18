@@ -5,21 +5,18 @@
  */
 package ec.satoolkit.x13;
 
-import ec.satoolkit.DecompositionMode;
 import ec.satoolkit.DefaultSeriesDecomposition;
 import ec.satoolkit.algorithm.implementation.X13ProcessingFactory;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.SequentialProcessing;
 import ec.tstoolkit.modelling.ComponentInformation;
 import ec.tstoolkit.modelling.ComponentType;
-import ec.tstoolkit.modelling.DefaultTransformationType;
-import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 import utilities.CompareTsData;
-import utilities.X13SpecAirlineSeveral;
 
 /**
  *
@@ -27,13 +24,29 @@ import utilities.X13SpecAirlineSeveral;
  */
 public class X13SpecDefaultTest {
 
+    /**
+     * Checks if Math#exp(double) has been intrinsified. For your information:
+     * StrictMath insures portability by returning the same results on every
+     * platform while Math might be optimized by the VM to improve performance.
+     * In some edge cases (and if intrinsified), Math results are slightly
+     * different.
+     *
+     * @return true if Math is currently intrinsified, false otherwise
+     */
+    private static boolean isMathExpIntrinsifiedByVM() {
+        double edgeCase = 0.12585918361184556;
+        return Math.exp(edgeCase) != StrictMath.exp(edgeCase);
+    }
+
     @Test
     public void RSA0Test() {
+        Assume.assumeTrue("This test expects Math#exp(double) to be intrinsified", isMathExpIntrinsifiedByVM());
+
         X13Specification x13spec = X13Specification.RSA0.clone();
         x13spec.getRegArimaSpecification().getTransform().reset();
         SequentialProcessing<TsData> processing = X13ProcessingFactory.instance.generateProcessing(x13spec);
         CompositeResults comprest = processing.process(TsdUEMPLOMENSEASONAL_1);
-      //  System.out.println("Transform: "+ x13spec.getRegArimaSpecification().getTransform().getFunction().name());
+        //  System.out.println("Transform: "+ x13spec.getRegArimaSpecification().getTransform().getFunction().name());
         //  utilities.WriteOutPutTest.writeAllToOutput(comprest, "RSA0");
         double[] aRSA0a1 = {0.9180562, 1.0272757, 1.0668658, 0.9787514, 0.9313836, 1.0250405, 1.0650804, 0.9747613, 0.9418502, 1.0156112, 1.0654049, 0.9738503, 0.9504815, 1.010104, 1.0645658, 0.9699722, 0.9592689, 1.0082833, 1.0642167, 0.9640116, 0.965041, 1.0076595, 1.0648469, 0.9615725, 0.9678711, 10.0034218, 1.066394, 0.9605819, 0.9743569, 0.996285, 1.0674977, 0.9616944, 0.9799257, 0.9869897, 1.0695324, 0.9633976, 0.9840746, 0.9803236, 1.0720522, 0.9668027, 0.9761973, 0.9852996, 1.0730376, 0.9667407, 0.9710266, 0.9903273, 1.0730635, 0.967825, 0.9660222, 0.992547, 1.0727041, 0.9699537, 0.964653, 0.9927414, 1.072418, 0.9711013, 0.9627251, 0.9940281, 1.0721618, 0.9717765, 0.9603546, 0.9962908, 1.0715377, 0.9748881, 0.9546215, 0.9984903, 1.0715511, 0.9792769, 0.9477065, 1.000862, 1.0715326, 0.9832773, 0.942155, 1.003048, 1.0724468, 0.983362, 0.9407448, 1.0021712, 1.0738647, 0.9849541, 0.9379978, 1.002259, 1.0755799, 0.9857489, 0.9344911, 1.0034349, 1.0764464, 0.986686, 0.9328302, 1.0034421, 1.076927, 0.9878056, 0.9318523, 1.0025105, 1.077559, 0.9893451, 0.9308975, 1.000813, 1.0781244, 0.9907408, 0.9303614, 1.0008349, 1.0780044, 0.989879, 0.9316045, 1.0010713, 1.077419, 0.9894252, 0.9319111, 1.001701, 1.0762305, 0.9898486, 0.9325315, 1.0023491, 1.0752361, 0.9884643, 0.9347162, 1.0023267, 1.0739461, 0.9876701, 0.9378643, 1.0009766, 1.0735102, 0.9861014, 0.9406324, 0.999855, 1.0730103, 0.9865699, 0.9411618, 0.9989676, 1.0728322, 0.9869915, 0.9418439, 0.9982591, 1.072555, 0.9861752, 0.9438692, 0.998087, 1.0721105, 0.9846667, 0.9457213, 0.9979742, 1.0716681, 0.9834916, 0.9478989, 0.9970811, 1.0713196, 0.983102, 0.9502612, 0.9942578, 1.0710793, 0.985063, 0.9511854, 0.9914698, 1.0707433, 0.9874407, 0.9515542, 0.9900275, 1.070696, 0.9845132, 0.9548301, 0.9932408, 1.0691118, 0.977684, 0.9601211, 0.9968435, 1.0677422, 0.9696101, 0.9651861, 1.0007962, 1.065838, 0.9700529, 0.9625211, 0.9996584, 1.0667989, 0.9738917, 0.9600908, 0.996862, 1.0680945, 0.977864, 0.9575264, 0.9946873, 1.070673, 0.9772387, 0.9537045, 1.0004651, 1.0713684, 0.974299, 0.9493839, 1.0071895, 1.0722726, 0.9697757, 0.946103, 1.0144437, 1.0720051, 0.9700858, 0.9426046, 1.0120981, 1.0744092, 0.9738236, 0.939198, 1.0102382, 1.0757456, 0.9792007, 0.9355581, 1.0059027, 1.0780573, 0.9789557, 0.9381395, 1.0058429, 1.0776412, 0.9771881, 0.9388107, 1.0076234, 1.0778313, 0.9752792, 0.9391388, 1.0061087, 1.0754564, 0.9793699, 0.9439685, 1.0006578, 1.0737004, 0.9810835, 0.9492386, 0.994066, 1.0730588, 0.9855865, 0.950731, 0.9875736, 1.0734068, 0.9896219, 0.9502576, 0.9861444, 1.0712624, 0.9920906, 0.9516965, 0.9867609};
         TsData RSA0a1 = new TsData(TsFrequency.Monthly, 1991, 0, aRSA0a1, false);
