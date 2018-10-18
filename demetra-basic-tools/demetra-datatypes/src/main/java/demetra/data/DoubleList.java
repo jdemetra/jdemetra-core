@@ -556,6 +556,11 @@ public final class DoubleList implements DoubleSequence {
         }
 
         @Override
+        public void skip(int n) {
+            pos += n;
+        }
+
+        @Override
         public void setPosition(int npos) {
             pos = npos;
         }

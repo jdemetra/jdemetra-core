@@ -117,9 +117,9 @@ public class AlgorithmsTest {
         
         CompositeModel model = new CompositeModel();
         model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
-        model.add(AtomicModels.seasonalComponent("s", "Trigonometric", 12, .01, false));
+        model.add(AtomicModels.seasonalComponent("s", "Dummy", 12, .01, false));
 //        model.add(AtomicModels.rawTdRegression("td", Data.TS_ABS_RETAIL.getDomain(), new int[]{1,1,1,1,1,0,0}, new double[]{0.01, 0.01}, false));
-        model.add(AtomicModels.sae("sae", new double[]{0.67, 0.16}, false, 1e-5, true, 1, false));
+        model.add(AtomicModels.sae("sae", new double[]{0.5, 0.3}, false, 1e-5, true, 1, false));
         model.add(AtomicModels.noise("n", 0.01, false));
         ModelEquation eq = new ModelEquation("eq", 0, true);
         eq.add("l");
@@ -144,7 +144,7 @@ public class AlgorithmsTest {
     //@Test
     public void testAirline() {
         CompositeModel model = new CompositeModel();
-        model.add(AtomicModels.sarima("air", 12, new int[]{0,1,1}, new int[]{0,1,1}, new double[]{-.2, -.2}));
+        model.add(AtomicModels.sarima("air", 12, new int[]{0,1,1}, new int[]{0,1,1}, new double[]{-.2, -.2}, false));
         model.add(AtomicModels.tdRegression("td", Data.TS_ABS_RETAIL.getDomain(), new int[]{1,1,1,1,1,0,0}, false, 0.01, false));
         ModelEquation eq = new ModelEquation("eq1", 1, true);
         eq.add("air");

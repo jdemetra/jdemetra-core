@@ -26,7 +26,7 @@ public class VarianceParameter implements IMstsParametersBlock {
 
     public VarianceParameter(final String name, boolean nullable) {
         this.name = name;
-        this.nullable=nullable;
+        this.nullable = nullable;
         stde = DEF_STDE;
         fixed = false;
     }
@@ -35,31 +35,47 @@ public class VarianceParameter implements IMstsParametersBlock {
         stde = Math.sqrt(var);
         this.fixed = fixed;
         this.name = name;
-        this.nullable=nullable;
+        this.nullable = nullable;
     }
 
     @Override
     public String getName() {
         return name;
     }
-    
-    public boolean isNullable(){
+
+    public boolean isNullable() {
         return true;
     }
 
-    public double fix(double e) {
+    @Override
+    public boolean isPotentialSingularity() {
+        return true;
+    }
+
+    @Override
+    public void fixModelParameter(DoubleReader reader) {
+        stde = Math.sqrt(reader.next());
+        fixed = true;
+    }
+
+    @Override
+    public void free(){
+        fixed=false;
+    }
+
+    public double fixStde(double e) {
         double olde = stde;
-        stde = e;
+        stde = Math.abs(e);
         fixed = true;
         return olde;
     }
 
-    public void free(double e) {
+    public void freeStde(double e) {
         fixed = false;
         stde = e;
     }
-    
-    public double defValue(){
+
+    public double defValue() {
         return stde;
     }
 
@@ -79,7 +95,7 @@ public class VarianceParameter implements IMstsParametersBlock {
             double e = input.next();
             buffer[pos] = e * e;
         } else {
-            buffer[pos] = stde*stde;
+            buffer[pos] = stde * stde;
         }
         return pos + 1;
     }

@@ -33,7 +33,7 @@ public class CompositeModelEstimation {
                 .concentratedLikelihood(concentrated)
 //                .resetParameters(true)
                 .precision(eps)
-                .smallVariance(1e-6)
+//                .smallVariance(1e-6)
                 .build();
         monitor.process(data, model.getMapping(), parameters == null ? null : DoubleSequence.ofInternal(parameters));
         rslt.likelihood = monitor.getLikelihood();

@@ -71,8 +71,13 @@ class DefaultCell implements Cell {
     }
 
     @Override
+    public void skip(int n) {
+        pos += inc * n;
+    }
+
+    @Override
     public void setPosition(int npos) {
-        pos = npos;
+        pos = npos * inc;
     }
 
     @Override
@@ -98,9 +103,14 @@ class CellP implements Cell {
         this.pos = leftPos;
     }
 
-     @Override
+    @Override
     public double next() {
         return data[pos++];
+    }
+
+    @Override
+    public void skip(int n) {
+        pos += n;
     }
 
     @Override
@@ -135,6 +145,11 @@ class CellM implements Cell {
     }
 
     @Override
+    public void skip(int n) {
+        pos -= n;
+    }
+
+    @Override
     public void setPosition(int npos) {
         pos = npos;
     }
@@ -166,6 +181,10 @@ class SingleCell implements Cell {
     @Override
     public double next() {
         return value;
+    }
+
+    @Override
+    public void skip(int n) {
     }
 
     @Override

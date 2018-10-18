@@ -24,34 +24,46 @@ public class LoadingParameter implements IMstsParametersBlock {
     private final String name;
 
     public LoadingParameter(final String name) {
-        this.name=name;
-        loading=DEF_VALUE;
-        fixed=false;
+        this.name = name;
+        loading = DEF_VALUE;
+        fixed = false;
     }
 
     public LoadingParameter(final String name, double loading, boolean fixed) {
-        this.name=name;
-        this.loading=loading;
-        this.fixed=fixed;
+        this.name = name;
+        this.loading = loading;
+        this.fixed = fixed;
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return name;
     }
 
     public void fix(double val) {
-        loading=val;
-        fixed=true;
+        loading = val;
+        fixed = true;
     }
 
+    @Override
     public void free() {
-        fixed=false;
+        fixed = false;
+    }
+
+    @Override
+    public void fixModelParameter(DoubleReader reader) {
+        loading = reader.next();
+        fixed = true;
     }
 
     @Override
     public boolean isFixed() {
         return fixed;
+    }
+
+    @Override
+    public boolean isPotentialSingularity() {
+        return true;
     }
 
     @Override
@@ -71,11 +83,11 @@ public class LoadingParameter implements IMstsParametersBlock {
 
     @Override
     public int encode(DoubleReader input, double[] buffer, int pos) {
-        double l = input.next();
         if (!fixed) {
-            buffer[pos]=l;
+            buffer[pos] = input.next();
             return pos + 1;
         } else {
+            input.skip(1);
             return pos;
         }
     }

@@ -14,6 +14,8 @@ import demetra.ssf.SsfException;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  *
@@ -31,6 +33,10 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
 
     public void add(IMstsParametersBlock block) {
         this.parameters.add(block);
+    }
+    
+    public Stream<IMstsParametersBlock> parameters(){
+        return parameters.stream();
     }
 
     public boolean fixMaxVariance() {
@@ -63,6 +69,10 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
         }
         return small;
     }
+    
+    public void fixModelParameters(Predicate<IMstsParametersBlock> selection, DoubleSequence fullParameters){
+        IMstsParametersBlock.fixModelParameters(parameters, selection, fullParameters);
+    }
 
     public double maxVariance(DoubleSequence cur) {
         double max = 0;
@@ -83,34 +93,14 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
         return max * max;
     }
 
-    private double[] array(DoubleSequence inparams) {
-        double[] buffer = new double[fullDim()];
-        int pos = 0;
-        DoubleReader reader = inparams.reader();
-        for (IMstsParametersBlock p : parameters) {
-            pos = p.decode(reader, buffer, pos);
-        }
-        return buffer;
-    }
-
-    private double[] farray(DoubleSequence inparams) {
-        double[] buffer = new double[getDim()];
-        int pos = 0;
-        DoubleReader reader = inparams.reader();
-        for (IMstsParametersBlock p : parameters) {
-            pos = p.encode(reader, buffer, pos);
-        }
-        return buffer;
-    }
-
     /**
      * From function parameters to model parameters
      *
      * @param input
      * @return
      */
-    public DoubleSequence trueParameters(DoubleSequence input) {
-        return DoubleSequence.ofInternal(array(input));
+    public DoubleSequence modelParameters(DoubleSequence input) {
+        return DoubleSequence.ofInternal(IMstsParametersBlock.decode(parameters, input));
     }
 
     /**
@@ -120,21 +110,13 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
      * @return
      */
     public DoubleSequence functionParameters(DoubleSequence input) {
-        return DoubleSequence.ofInternal(farray(input));
-    }
-
-    public int fullDim() {
-        int n = 0;
-        for (IMstsParametersBlock p : parameters) {
-            n += p.getDomain().getDim();
-        }
-        return n;
+        return DoubleSequence.ofInternal(IMstsParametersBlock.encode(parameters, input));
     }
 
     @Override
     public MultivariateCompositeSsf map(DoubleSequence p) {
         MultivariateCompositeSsf.Builder builder = MultivariateCompositeSsf.builder();
-        DoubleSequence fp = trueParameters(p);
+        DoubleSequence fp = modelParameters(p);
         for (IMstsBuilder decoder : builders) {
             int np = decoder.decode(fp, builder);
             fp = fp.drop(np, 0);
@@ -184,13 +166,7 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
 
     @Override
     public int getDim() {
-        int n = 0;
-        for (IMstsParametersBlock p : parameters) {
-            if (!p.isFixed()) {
-                n += p.getDomain().getDim();
-            }
-        }
-        return n;
+        return IMstsParametersBlock.dim(parameters.stream());
     }
 
     @Override

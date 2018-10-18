@@ -82,7 +82,7 @@ public class CompositeModel {
         if (mapping == null) {
             build();
         }
-        return mapping.trueParameters(mapping.getDefaultParameters()).toArray();
+        return mapping.modelParameters(mapping.getDefaultParameters()).toArray();
     }
 
     public CompositeModelEstimation estimate(Matrix data, double eps, boolean marginal, boolean rescaling, double[] parameters) {

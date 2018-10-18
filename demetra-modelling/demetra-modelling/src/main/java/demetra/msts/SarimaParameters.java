@@ -24,12 +24,14 @@ public class SarimaParameters implements IMstsParametersBlock {
     private final double[] values;
     private final SarimaMapping mapping;
     private final int np;
+    private boolean fixed;
 
-    public SarimaParameters(final String name, final SarimaSpecification spec, final double[] p) {
+    public SarimaParameters(final String name, final SarimaSpecification spec, final double[] p, final boolean fixed) {
         this.name = name;
-        this.values = p;
         this.mapping = SarimaMapping.of(spec);
+        this.values = p == null ? mapping.getDefaultParameters().toArray() : p;
         this.np = spec.getParametersCount();
+        this.fixed = fixed;
     }
 
     @Override
@@ -39,12 +41,12 @@ public class SarimaParameters implements IMstsParametersBlock {
 
     @Override
     public boolean isFixed() {
-        return values != null;
+        return fixed;
     }
 
     @Override
     public int decode(DoubleReader reader, double[] buffer, int pos) {
-        if (values == null) {
+        if (!fixed) {
             for (int i = 0; i < np; ++i) {
                 buffer[pos++] = reader.next();
             }
@@ -58,16 +60,27 @@ public class SarimaParameters implements IMstsParametersBlock {
 
     @Override
     public int encode(DoubleReader reader, double[] buffer, int pos) {
-        if (values == null) {
+        if (!fixed) {
             for (int i = 0; i < np; ++i) {
                 buffer[pos++] = reader.next();
             }
         } else {
-            for (int i = 0; i < np; ++i) {
-                reader.next();
-            }
+            reader.skip(np);
         }
         return pos;
+    }
+
+    @Override
+    public void fixModelParameter(DoubleReader reader) {
+        for (int i = 0; i < values.length; ++i) {
+            values[i] = reader.next();
+        }
+        fixed = true;
+    }
+
+    @Override
+    public void free(){
+        fixed=false;
     }
 
     @Override

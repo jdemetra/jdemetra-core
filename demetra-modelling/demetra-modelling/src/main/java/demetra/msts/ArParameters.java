@@ -52,6 +52,19 @@ public class ArParameters implements IMstsParametersBlock {
     }
 
     @Override
+    public void fixModelParameter(DoubleReader reader) {
+        for (int i = 0; i < values.length; ++i) {
+            values[i] = reader.next();
+        }
+        fixed = true;
+    }
+    
+    @Override
+    public void free(){
+        fixed=false;
+    }
+
+    @Override
     public int decode(DoubleReader reader, double[] buffer, int pos) {
         if (!fixed) {
             for (int i = 0; i < values.length; ++i) {
@@ -72,9 +85,7 @@ public class ArParameters implements IMstsParametersBlock {
                 buffer[pos++] = reader.next();
             }
         } else {
-            for (int i = 0; i < values.length; ++i) {
-                reader.next();
-            }
+            reader.skip(values.length);
         }
         return pos;
     }

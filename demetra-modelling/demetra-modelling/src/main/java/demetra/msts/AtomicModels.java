@@ -16,6 +16,7 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.modelling.regression.GenericTradingDaysVariables;
 import demetra.modelling.regression.RegressionUtility;
+import demetra.sarima.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.ssf.SsfComponent;
@@ -41,10 +42,15 @@ import demetra.timeseries.calendars.GenericTradingDays;
 @lombok.experimental.UtilityClass
 public class AtomicModels {
 
-    public ModelItem arma(final String name, int nar, double[] ar, int nma, double[] ma, double var, boolean fixed) {
+    public ModelItem arma(final String name, double[] ar, double[] ma, double var, boolean fixed) {
         return mapping -> {
-            mapping.add(new StablePolynomial(name + "_ar", nar, ar, -.1));
-            mapping.add(new StablePolynomial(name + "_ma", nma, ma, -.2));
+            final int nar = ar == null ? 0 : ar.length, nma = ma == null ? 0 : ma.length;
+            if (nar > 0) {
+                mapping.add(new StablePolynomial(name + "_ar", ar, fixed));
+            }
+            if (nma > 0) {
+                mapping.add(new StablePolynomial(name + "_ma", ma, fixed));
+            }
             VarianceParameter v = new VarianceParameter(name + "_var", var, true, true);
             mapping.add(v);
             mapping.add((p, builder) -> {
@@ -58,7 +64,7 @@ public class AtomicModels {
                 if (nma > 0) {
                     Polynomial pma = Polynomial.valueOf(1, p.extract(0, nma).toArray());
                     bma = new BackFilter(pma);
-                    pos += nma;
+                    pos += ma.length;
                 }
                 double n = p.get(pos++);
                 ArimaModel arima = new ArimaModel(bar, BackFilter.ONE, bma, n);
@@ -69,7 +75,7 @@ public class AtomicModels {
         };
     }
 
-    public ModelItem sarima(final String name, int period, int[] orders, int[] seasonal, double[] parameters) {
+    public ModelItem sarima(final String name, int period, int[] orders, int[] seasonal, double[] parameters, boolean fixed) {
         SarimaSpecification spec = new SarimaSpecification(period);
         spec.setP(orders[0]);
         spec.setD(orders[1]);
@@ -80,7 +86,7 @@ public class AtomicModels {
             spec.setBq(seasonal[2]);
         }
         return mapping -> {
-            mapping.add(new SarimaParameters(name, spec, parameters));
+            mapping.add(new SarimaParameters(name, spec, parameters, fixed));
             mapping.add((p, builder) -> {
                 int np = spec.getParametersCount();
                 double[] c = p.extract(0, np).toArray();
@@ -273,8 +279,8 @@ public class AtomicModels {
                     lpar[j] = par[i];
                     car[i + 1] = -par[i];
                 }
-                AutoCovarianceFunction acf=new AutoCovarianceFunction(Polynomial.ONE, Polynomial.ofInternal(car), 1);
-                SsfComponent cmp = SsfAr.of(lpar, w/acf.get(0), lpar.length, zeroinit);
+                AutoCovarianceFunction acf = new AutoCovarianceFunction(Polynomial.ONE, Polynomial.ofInternal(car), 1);
+                SsfComponent cmp = SsfAr.of(lpar, w / acf.get(0), lpar.length, zeroinit);
                 builder.add(name, cmp);
                 return ar.length + 1;
             });
@@ -283,7 +289,7 @@ public class AtomicModels {
 
     public ModelItem waveSpecificSurveyError(String name, int nwaves, MatrixType wsae, double ar1, double[] ar2, boolean fixedar, int lag, boolean zeroinit) {
         return mapping -> {
-            final boolean bar1=Double.isFinite(ar1), bar2=ar2 != null;
+            final boolean bar1 = Double.isFinite(ar1), bar2 = ar2 != null;
             if (bar1) {
                 mapping.add(new ArParameters(name + "_sae1", new double[]{ar1}, fixedar));
             }
@@ -291,16 +297,16 @@ public class AtomicModels {
                 mapping.add(new ArParameters(name + "_sae2", ar2, fixedar));
             }
             mapping.add((p, builder) -> {
-                int np=0;
-                double par1=Double.NaN;
-                if (bar1){
-                    par1=p.get(0);
+                int np = 0;
+                double par1 = Double.NaN;
+                if (bar1) {
+                    par1 = p.get(0);
                     ++np;
                 }
-                double[] par2=null;
-                if (bar2){
-                    par2=p.extract(np, 2).toArray();
-                    np+=2;
+                double[] par2 = null;
+                if (bar2) {
+                    par2 = p.extract(np, 2).toArray();
+                    np += 2;
                 }
 //                SsfComponent cmp = SsfAr.of(lpar, acf.get(0), lpar.length, zeroinit);
 //                builder.add(name, cmp);

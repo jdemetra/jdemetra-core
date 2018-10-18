@@ -20,14 +20,14 @@ public class GenericParameters implements IMstsParametersBlock {
     private final String name;
 
     public GenericParameters(String name, IParametersDomain domain, double[] parameters, boolean fixed) {
-        this.name=name;
+        this.name = name;
         this.domain = domain;
-        this.fixed=fixed;
+        this.fixed = fixed;
         this.parameters = parameters;
     }
-    
+
     @Override
-    public String getName(){
+    public String getName() {
         return name;
     }
 
@@ -39,7 +39,7 @@ public class GenericParameters implements IMstsParametersBlock {
     @Override
     public int decode(DoubleReader reader, double[] buffer, int pos) {
         int n = parameters.length;
-        if (! fixed) {
+        if (!fixed) {
             for (int i = 0; i < n; ++i) {
                 buffer[pos++] = reader.next();
             }
@@ -59,12 +59,23 @@ public class GenericParameters implements IMstsParametersBlock {
                 buffer[pos++] = reader.next();
             }
         } else {
-            for (int i = 0; i < n; ++i) {
-                reader.next();
-            }
+            reader.skip(n);
         }
 
         return pos;
+    }
+
+    @Override
+    public void fixModelParameter(DoubleReader reader) {
+        for (int i = 0; i < parameters.length; ++i) {
+            parameters[i] = reader.next();
+        }
+        fixed = true;
+    }
+
+    @Override
+    public void free(){
+        fixed=false;
     }
 
     @Override
@@ -74,7 +85,7 @@ public class GenericParameters implements IMstsParametersBlock {
 
     @Override
     public int fillDefault(double[] buffer, int pos) {
-        if (! fixed) {
+        if (!fixed) {
             System.arraycopy(parameters, 0, buffer, pos, parameters.length);
             return pos + parameters.length;
         } else {

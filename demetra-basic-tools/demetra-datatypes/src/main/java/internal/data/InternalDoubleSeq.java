@@ -279,6 +279,11 @@ public class InternalDoubleSeq {
             }
 
             @Override
+            public void skip(int n) {
+                pos += n;
+            }
+
+            @Override
             public void setPosition(int npos) {
                 pos = npos;
             }
@@ -333,6 +338,11 @@ public class InternalDoubleSeq {
             }
 
             @Override
+            public void skip(int n) {
+                pos += n;
+            }
+
+            @Override
             public void setPosition(int npos) {
                 pos = beg + npos;
             }
@@ -377,6 +387,11 @@ public class InternalDoubleSeq {
             @Override
             public double next() {
                 return fn.applyAsDouble(pos++);
+            }
+
+            @Override
+            public void skip(int n) {
+                pos += n;
             }
 
             @Override
@@ -435,6 +450,11 @@ public class InternalDoubleSeq {
                 double val = data[pos];
                 pos += inc;
                 return val;
+            }
+
+            @Override
+            public void skip(int n) {
+                pos += n * inc;
             }
 
             @Override

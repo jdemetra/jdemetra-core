@@ -22,6 +22,7 @@ import demetra.ssf.multivariate.SsfMatrix;
 import demetra.ssf.univariate.ISsfData;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -162,35 +163,60 @@ public class MstsMonitor {
 
         this.data = data;
         this.model = model;
-        smallVariances.clear();
-        prslts = fullInitial == null ? model.getDefaultParameters() : model.functionParameters(fullInitial);
-        int niter = 0;
-        int fniter = this.concentratedLikelihood ? 100 : 500;
-        do {
-            DoubleSequence curp = prslts;
-            if (this.resetParameters) {
-                curp = model.getDefaultParameters();
+        fullp = fullInitial;
+        if (fullp == null) {
+            fullp = model.modelParameters(model.getDefaultParameters());
+        }
+        int fniter = 100;
+
+        for (int k = 0; k < 3; ++k) {
+            for (IMstsParametersBlock p : smallVariances){
+                p.free();
             }
+            prslts = model.functionParameters(fullp);
+            smallVariances.clear();
+            int niter = 0;
+            do {
+                DoubleSequence curp = prslts;
+                if (this.resetParameters) {
+                    curp = model.getDefaultParameters();
+                }
+                ILikelihoodFunction fn = function();
+                ILikelihoodFunctionPoint rslt = min(fn, fniter, curp);
+                ll = rslt.getLikelihood();
+                prslts = rslt.getParameters();
+                fullp = model.modelParameters(prslts);
+                if (!fixSmallVariance(1e-1) && !freeSmallVariance()) {
+                    break;
+                }
+            } while (niter++ < maxIter);
+
+            // Fix variances and loadings, which are potential singular points
+            DoubleSequence modelParameters1 = fullp;
+            List<IMstsParametersBlock> fixedBlocks = model.parameters()
+                    .filter(p -> !p.isFixed() && p.isPotentialSingularity())
+                    .collect(Collectors.toList());
+            model.fixModelParameters(p -> p.isPotentialSingularity(), modelParameters1);
+
             ILikelihoodFunction fn = function();
+            DoubleSequence curp = model.functionParameters(fullp);
             ILikelihoodFunctionPoint rslt = min(fn, fniter, curp);
             ll = rslt.getLikelihood();
             prslts = rslt.getParameters();
-            fullp = model.trueParameters(prslts);
-            if (!fixSmallVariance(1e-1) && !freeSmallVariance()) {
-                break;
-            }
-        } while (niter++ < maxIter);
+            fullp = model.modelParameters(prslts);
 
+            // Reset the normal default values and free the fixed parameters
+            for (IMstsParametersBlock p : fixedBlocks) {
+                p.free();
+            }
+        }
+        prslts = model.functionParameters(fullp);
         // Final estimation. To do anyway
         ILikelihoodFunction fn = function();
-        DoubleSequence curp = prslts;
-        if (this.resetParameters) {
-            curp = model.getDefaultParameters();
-        }
-        ILikelihoodFunctionPoint rslt = min(fn, this.maxIterOptimzer, curp);
+        ILikelihoodFunctionPoint rslt = min(fn, this.maxIterOptimzer, prslts);
         ll = rslt.getLikelihood();
         prslts = rslt.getParameters();
-        fullp = model.trueParameters(prslts);
+        fullp = model.modelParameters(prslts);
 
         ssf = model.map(prslts);
     }
@@ -221,7 +247,7 @@ public class MstsMonitor {
         double dll = 0;
         VarianceParameter cur = null;
         for (VarianceParameter small : smallVariances) {
-            small.fix(smallStde);
+            small.fixStde(smallStde);
             try {
                 DoubleSequence nprslts = model.functionParameters(fullp);
                 ILikelihood nll = function().evaluate(nprslts).getLikelihood();
@@ -232,10 +258,10 @@ public class MstsMonitor {
                 }
             } catch (Exception err) {
             }
-            small.fix(0);
+            small.fixStde(0);
         }
         if (cur != null) {
-            cur.free(smallStde);
+            cur.freeStde(smallStde);
             prslts = model.functionParameters(fullp);
             smallVariances.remove(cur);
             return true;
@@ -253,11 +279,11 @@ public class MstsMonitor {
         double dll = 0;
         VarianceParameter cur = null;
         for (VarianceParameter small : svar) {
-            double olde = small.fix(0);
+            double olde = small.fixStde(0);
             try {
                 DoubleSequence nprslts = model.functionParameters(fullp);
                 ILikelihood nll = function().evaluate(nprslts).getLikelihood();
-                small.fix(1e-4);
+                small.fixStde(1e-4);
                 nprslts = model.functionParameters(fullp);
                 ILikelihood nll2 = function().evaluate(nprslts).getLikelihood();
                 double ndll = nll.logLikelihood() - nll2.logLikelihood();
@@ -266,12 +292,11 @@ public class MstsMonitor {
                     cur = small;
                 }
             } catch (Exception err) {
-
             }
-            small.free(olde);
+            small.freeStde(olde);
         }
         if (cur != null) {
-            cur.fix(0);
+            cur.fixStde(0);
             prslts = model.functionParameters(fullp);
             smallVariances.add(cur);
             return true;
@@ -317,6 +342,6 @@ public class MstsMonitor {
     }
 
     public DoubleSequence fullParameters() {
-        return model.trueParameters(prslts);
+        return model.modelParameters(prslts);
     }
 }

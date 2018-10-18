@@ -36,6 +36,8 @@ public interface DoubleReader {
      * @param npos 
      */
     void setPosition(int npos);
+    
+    void skip(int n);
 
     public static DoubleReader of(double[] data) {
         return new CellReaderP(data, 0);
@@ -77,6 +79,11 @@ class DefaultArrayReader implements DoubleReader {
         curPos = curPos + inc;
         return val;
     }
+    
+    @Override
+    public void skip(int n){
+        curPos+=inc*n;
+    }
 
     @Override
     public void setPosition(int npos) {
@@ -99,6 +106,10 @@ class DefaultReader implements DoubleReader {
         return data.get(curPos++);
     }
 
+    @Override
+    public void skip(int n){
+        curPos+=n;
+    }
     @Override
     public void setPosition(int npos) {
         curPos = npos;
@@ -123,6 +134,11 @@ class CellReaderP implements DoubleReader {
     }
 
     @Override
+    public void skip(int n){
+        curPos+=n;
+    }
+
+    @Override
     public void setPosition(int npos) {
         curPos = leftPos+npos;
     }
@@ -143,6 +159,11 @@ class CellReaderM implements DoubleReader {
     @Override
     public double next() {
         return data[curPos--];
+    }
+
+    @Override
+    public void skip(int n){
+        curPos-=n;
     }
 
     @Override
