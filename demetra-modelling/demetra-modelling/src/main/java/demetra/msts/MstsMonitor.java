@@ -128,6 +128,7 @@ public class MstsMonitor {
     private ILikelihood ll;
 
     private final List<VarianceParameter> smallVariances = new ArrayList<>();
+//    private final List<LoadingParameter> smallLoadings = new ArrayList<>();
 
     private MstsMonitor(Builder builder) {
         this.bfgs = builder.bfgs;
@@ -173,8 +174,12 @@ public class MstsMonitor {
             for (IMstsParametersBlock p : smallVariances){
                 p.free();
             }
+//            for (IMstsParametersBlock p : smallLoadings){
+//                p.free();
+//            }
             prslts = model.functionParameters(fullp);
             smallVariances.clear();
+//            smallLoadings.clear();
             int niter = 0;
             do {
                 DoubleSequence curp = prslts;
@@ -196,8 +201,9 @@ public class MstsMonitor {
             List<IMstsParametersBlock> fixedBlocks = model.parameters()
                     .filter(p -> !p.isFixed() && p.isPotentialSingularity())
                     .collect(Collectors.toList());
+            
             model.fixModelParameters(p -> p.isPotentialSingularity(), modelParameters1);
-
+            
             ILikelihoodFunction fn = function();
             DoubleSequence curp = model.functionParameters(fullp);
             ILikelihoodFunctionPoint rslt = min(fn, fniter, curp);
@@ -306,6 +312,43 @@ public class MstsMonitor {
 
     }
 
+//    private boolean fixLoading() {
+//        List<IMstsParametersBlock> sl = model.parameters().filter(p->p instanceof LoadingParameter)
+//                .collect(Collectors.toList());
+//        if (sl.isEmpty()) {
+//            return false;
+//        }
+//        double dll = 0;
+//        LoadingParameter cur = null;
+//        for (IMstsParametersBlock small : sl) {
+//            LoadingParameter l=(LoadingParameter) small;
+//            double old = l.fix(0);
+//            try {
+//                DoubleSequence nprslts = model.functionParameters(fullp);
+//                ILikelihood nll = function().evaluate(nprslts).getLikelihood();
+//                l.fix(1e-4);
+//                nprslts = model.functionParameters(fullp);
+//                ILikelihood nll2 = function().evaluate(nprslts).getLikelihood();
+//                double ndll = nll.logLikelihood() - nll2.logLikelihood();
+//                if (ndll > dll) {
+//                    dll = ndll;
+//                    cur = l;
+//                }
+//            } catch (Exception err) {
+//            }
+//            l.fix(old);
+//            l.free();
+//        }
+//        if (cur != null) {
+//            cur.fix(0);
+//            prslts = model.functionParameters(fullp);
+//            smallLoadings.add(cur);
+//            return true;
+//        } else {
+//            return false;
+//        }
+//
+//    }
     /**
      * @return the data
      */

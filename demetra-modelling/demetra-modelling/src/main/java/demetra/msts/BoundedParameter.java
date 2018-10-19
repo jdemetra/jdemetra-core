@@ -10,29 +10,61 @@ import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParamValidation;
+import demetra.maths.functions.ParametersRange;
 
 /**
  *
  * @author palatej
  */
-public class LoadingParameter implements IMstsParametersBlock {
+public class BoundedParameter implements IMstsParametersBlock {
 
-    private static final double DEF_VALUE = .1;
+    public static Builder builder() {
+        return new Builder();
+    }
 
-    private double loading;
+    public static class Builder {
+
+        private double lbound=0, ubound=Double.MAX_VALUE;
+        private boolean open=true;
+        private double value=.5;
+        private boolean fixed=false;
+        private String name="";
+        
+        public Builder bounds(double lbound, double ubound, boolean open){
+            this.lbound=lbound;
+            this.ubound=ubound;
+            this.open=open;
+            return this;
+        }
+        
+        public Builder value(double value, boolean fixed){
+            this.value=value;
+            this.fixed=fixed;
+            return this;
+        }
+
+        public Builder name(String name){
+            this.name=name;
+            return this;
+        }
+
+        public BoundedParameter build(){
+            return new BoundedParameter(name, value, fixed, lbound, ubound, open);
+        }
+    }
+
+    private static final double EPS = 1e-8;
+
+    private final ParametersRange range;
+    private double value;
     private boolean fixed;
     private final String name;
 
-    public LoadingParameter(final String name) {
+    private BoundedParameter(final String name, double value, boolean fixed, double lbound, double ubound, boolean open) {
         this.name = name;
-        loading = DEF_VALUE;
-        fixed = false;
-    }
-
-    public LoadingParameter(final String name, double loading, boolean fixed) {
-        this.name = name;
-        this.loading = loading;
+        this.value=value;
         this.fixed = fixed;
+        this.range=new ParametersRange(lbound, ubound, open);
     }
 
     @Override
@@ -41,8 +73,8 @@ public class LoadingParameter implements IMstsParametersBlock {
     }
 
     public double fix(double val) {
-        double oldval=loading;
-        loading = val;
+        double oldval = value;
+        value = val;
         fixed = true;
         return oldval;
     }
@@ -54,7 +86,7 @@ public class LoadingParameter implements IMstsParametersBlock {
 
     @Override
     public void fixModelParameter(DoubleReader reader) {
-        loading = reader.next();
+        value = reader.next();
         fixed = true;
     }
 
@@ -65,12 +97,12 @@ public class LoadingParameter implements IMstsParametersBlock {
 
     @Override
     public boolean isPotentialSingularity() {
-        return true;
+        return false;
     }
 
     @Override
     public IParametersDomain getDomain() {
-        return Domain.INSTANCE;
+        return range;
     }
 
     @Override
@@ -78,7 +110,7 @@ public class LoadingParameter implements IMstsParametersBlock {
         if (!fixed) {
             buffer[pos] = input.next();
         } else {
-            buffer[pos] = loading;
+            buffer[pos] = value;
         }
         return pos + 1;
     }
@@ -97,45 +129,10 @@ public class LoadingParameter implements IMstsParametersBlock {
     @Override
     public int fillDefault(double[] buffer, int pos) {
         if (!fixed) {
-            buffer[pos] = loading;
+            buffer[pos] = value;
             return pos + 1;
         } else {
             return pos;
-        }
-    }
-
-    static class Domain implements IParametersDomain {
-
-        static final Domain INSTANCE = new Domain();
-
-        @Override
-        public boolean checkBoundaries(DoubleSequence inparams) {
-            return true;
-        }
-
-        @Override
-        public double epsilon(DoubleSequence inparams, int idx) {
-            return 1e-8;
-        }
-
-        @Override
-        public int getDim() {
-            return 1;
-        }
-
-        @Override
-        public double lbound(int idx) {
-            return -Double.MAX_VALUE;
-        }
-
-        @Override
-        public double ubound(int idx) {
-            return -Double.MIN_VALUE;
-        }
-
-        @Override
-        public ParamValidation validate(DataBlock ioparams) {
-            return ParamValidation.Valid;
         }
     }
 

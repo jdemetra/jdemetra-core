@@ -287,7 +287,8 @@ public class AtomicModels {
         };
     }
 
-    public ModelItem waveSpecificSurveyError(String name, int nwaves, MatrixType wsae, double ar1, double[] ar2, boolean fixedar, int lag, boolean zeroinit) {
+    // ABS-like
+    public ModelItem waveSpecificSurveyError(String name, int nwaves, double ar1, double[] ar2, boolean fixedar) {
         return mapping -> {
             final boolean bar1 = Double.isFinite(ar1), bar2 = ar2 != null;
             if (bar1) {
@@ -315,6 +316,22 @@ public class AtomicModels {
         };
     }
 
+    // ONS-like
+    public ModelItem waveSpecificSurveyError(String name, int nwaves, int lag, double[] ar, boolean fixedar) {
+        return mapping -> {
+            mapping.add(new ArParameters(name + "_sae2", ar, fixedar));
+            mapping.add((p, builder) -> {
+                int np = 0;
+                double[] par = null;
+                par = p.extract(np, 2).toArray();
+                np += 2;
+//                SsfComponent cmp = SsfAr.of(lpar, acf.get(0), lpar.length, zeroinit);
+//                builder.add(name, cmp);
+                return np;
+            });
+        };
+    }
+
     public ModelItem ar(String name, double[] ar, boolean fixedar, double var, boolean fixedvar, int nlags, int nfcasts) {
         return mapping -> {
             mapping.add(new ArParameters(name + "_ar", ar, fixedar));
@@ -329,15 +346,66 @@ public class AtomicModels {
             });
         };
     }
-    // TODO
 
-    public ISsf arima(double[] ar, double[] diff, double[] ma, double var) {
-        ArimaModel arima = new ArimaModel(BackFilter.ofInternal(ar), BackFilter.ofInternal(diff), BackFilter.ofInternal(ma), var);
-        return SsfArima.of(arima);
+    public ModelItem arima(String name, double[] ar, boolean fixedar, double[] diff, double[] ma, boolean fixedma, double var, boolean fixedvar) {
+        return mapping -> {
+            final int nar = ar == null ? 0 : ar.length;
+            if (ar != null) {
+                mapping.add(new StablePolynomial(name + "_ar", ar, fixedar));
+            }
+            final int nma = ma == null ? 0 : ma.length;
+            if (ma != null) {
+                mapping.add(new StablePolynomial(name + "_ma", ma, fixedma));
+            }
+            mapping.add(new VarianceParameter(name + "_var", var, fixedvar, true));
+            mapping.add((p, builder) -> {
+                BackFilter bar = BackFilter.ONE, bma = BackFilter.ONE, bdiff = BackFilter.ONE;
+                int pos = 0;
+                if (nar > 0) {
+                    Polynomial par = Polynomial.valueOf(1, p.extract(0, nar).toArray());
+                    bar = new BackFilter(par);
+                    pos += nar;
+                }
+                if (nma > 0) {
+                    Polynomial pma = Polynomial.valueOf(1, p.extract(0, nma).toArray());
+                    bma = new BackFilter(pma);
+                    pos += ma.length;
+                }
+                if (diff != null) {
+                    Polynomial pdiff = Polynomial.valueOf(1, diff);
+                    bdiff = new BackFilter(pdiff);
+                }
+                double n = p.get(pos++);
+                ArimaModel arima = new ArimaModel(bar, bdiff, bma, n);
+                StateComponent cmp = SsfArima.componentOf(arima);
+                builder.add(name, cmp, null);
+                return pos;
+            });
+        };
     }
 
-    public SsfComponent cycle(double dumpingFactor, double cyclicalPeriod, double cvar) {
-        return CyclicalComponent.of(dumpingFactor, cyclicalPeriod, cvar);
+    public ModelItem cycle(String name, double dumpingFactor, double cyclicalPeriod, boolean fixedcycle, double cvar, boolean fixedvar) {
+        return mapping -> {
+
+            mapping.add(BoundedParameter.builder()
+                    .name(name + "_factor")
+                    .value(cvar, fixedcycle)
+                    .bounds(0, 1, true)
+                    .build()
+            );
+            mapping.add(BoundedParameter.builder()
+                    .name(name + "_period")
+                    .value(cyclicalPeriod, fixedcycle)
+                    .bounds(2, Double.MAX_VALUE, false)
+                    .build()
+            );
+            mapping.add(new VarianceParameter(name + "_var", cvar, fixedvar, true));
+            mapping.add((p, builder) -> {
+                double f = p.get(0), l = p.get(1), v = p.get(2);
+                builder.add(name, CyclicalComponent.of(f, l, v));
+                return 3;
+            });
+        };
     }
 
     private Matrix generateVar(DayClustering dc, boolean contrasts) {
