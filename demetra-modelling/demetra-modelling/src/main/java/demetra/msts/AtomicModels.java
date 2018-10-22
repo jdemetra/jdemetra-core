@@ -16,6 +16,7 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.modelling.regression.GenericTradingDaysVariables;
 import demetra.modelling.regression.RegressionUtility;
+import demetra.msts.survey.WaveSpecificSurveyErrors;
 import demetra.sarima.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
@@ -309,8 +310,8 @@ public class AtomicModels {
                     par2 = p.extract(np, 2).toArray();
                     np += 2;
                 }
-//                SsfComponent cmp = SsfAr.of(lpar, acf.get(0), lpar.length, zeroinit);
-//                builder.add(name, cmp);
+                StateComponent cmp = WaveSpecificSurveyErrors.of(par1, par2[0], par2[1], nwaves);
+                builder.add(name, cmp, null);
                 return np;
             });
         };
@@ -319,15 +320,13 @@ public class AtomicModels {
     // ONS-like
     public ModelItem waveSpecificSurveyError(String name, int nwaves, int lag, double[] ar, boolean fixedar) {
         return mapping -> {
+            final int nar=ar.length;
             mapping.add(new ArParameters(name + "_sae2", ar, fixedar));
             mapping.add((p, builder) -> {
-                int np = 0;
-                double[] par = null;
-                par = p.extract(np, 2).toArray();
-                np += 2;
-//                SsfComponent cmp = SsfAr.of(lpar, acf.get(0), lpar.length, zeroinit);
-//                builder.add(name, cmp);
-                return np;
+                double[] par = p.extract(nar, nar).toArray();
+                StateComponent cmp = WaveSpecificSurveyErrors.of(par, nwaves, lag);
+                builder.add(name, cmp, null);
+                return nar;
             });
         };
     }
