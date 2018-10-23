@@ -27,9 +27,9 @@ public class WaveSpecificSurveyErrorsTest {
 
     @Test
     public void testTx2() {
-        tx(new double[][]{new double[0], new double[]{.3}, new double[]{2}, new double[]{.4}}, 1);
-        tx(new double[][]{new double[0], new double[]{.3}, new double[]{2}, new double[]{.4}}, 3);
-        tx(new double[][]{new double[0], new double[]{.3}, new double[]{.2, .4}}, 1);
+        tx(new double[][]{new double[0], new double[]{.3}, new double[]{.2}, new double[]{.4}}, 1);
+        tx(new double[][]{new double[0], new double[]{.3}, new double[]{.2}, new double[]{.4}}, 3);
+        tx(new double[][]{new double[0], new double[]{.3}, new double[]{.2, .4}, new double[]{.2, .4}, new double[]{.2, .4}}, 1);
         tx(new double[][]{new double[0], new double[]{.3}, new double[]{.2, .4}}, 3);
     }
 
@@ -116,6 +116,11 @@ public class WaveSpecificSurveyErrorsTest {
         y.product(T.rowsIterator(), x);
         dyn.TX(0, x);
         assertTrue(y.distance(x) < 1e-9);
+        
+        Matrix Q = Matrix.square(dim);
+        init.Pf0(Q);
+        System.out.println();
+        System.out.println(Q);
     }
 
     private void xt(double[][] ar, int lag) {

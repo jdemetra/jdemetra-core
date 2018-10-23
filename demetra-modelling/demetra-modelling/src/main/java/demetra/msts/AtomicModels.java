@@ -8,6 +8,7 @@ package demetra.msts;
 import demetra.arima.ArimaModel;
 import demetra.arima.AutoCovarianceFunction;
 import demetra.arima.ssf.SsfArima;
+import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
 import demetra.maths.linearfilters.BackFilter;
@@ -318,13 +319,37 @@ public class AtomicModels {
     }
 
     // ONS-like
-    public ModelItem waveSpecificSurveyError(String name, int nwaves, int lag, double[] ar, boolean fixedar) {
+    public ModelItem waveSpecificSurveyError(String name, MatrixType ar, int nwaves, int lag, boolean fixedar) {
         return mapping -> {
-            final int nar=ar.length;
-            mapping.add(new ArParameters(name + "_sae2", ar, fixedar));
+            final int nar = ar.getColumnsCount();
+            final int[] lar = new int[nar];
+            double[][] car = new double[nar][];
+            for (int i = 0; i < nar; ++i) {
+                int j = 0;
+                for (; j <= i && j < ar.getRowsCount(); ++j) {
+                    double c = ar.get(j, i);
+                    if (Double.isNaN(c)) {
+                        break;
+                    }
+                }
+                lar[i] = j;
+                car[i] = ar.column(i).extract(0, j).toArray();
+                mapping.add(new ArParameters(name + "_sae_" + (i + 1), car[i], fixedar));
+            }
+            
             mapping.add((p, builder) -> {
-                double[] par = p.extract(nar, nar).toArray();
-                StateComponent cmp = WaveSpecificSurveyErrors.of(par, nwaves, lag);
+                double[][] w=new double[nwaves][];
+                w[0]=DoubleSequence.EMPTYARRAY;
+                int pos=0;
+                for (int i=0; i<nar; ++i){
+                    w[i+1]=p.extract(pos, lar[i]).toArray();
+                    pos+=lar[i];
+                }
+                // same coefficients for the last waves, if any
+                for (int i=nar+1; i<nwaves; ++i){
+                    w[i]=w[i-1];
+                }
+                StateComponent cmp = WaveSpecificSurveyErrors.of(w, lag);
                 builder.add(name, cmp, null);
                 return nar;
             });

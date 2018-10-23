@@ -7,13 +7,10 @@ package demetra.msts.survey;
 
 import demetra.arima.AutoCovarianceFunction;
 import demetra.data.DataBlock;
-import demetra.data.DataWindow;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixWindow;
 import demetra.maths.polynomials.Polynomial;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
-import demetra.ssf.SsfComponent;
 import demetra.ssf.StateComponent;
 
 /**
@@ -205,14 +202,13 @@ public class WaveSpecificSurveyErrors {
 
         double[][] ar;
         int lag;
-        double[] v, c;
+        double[] v;
 
         Data2(double[][] ar, int lag) {
             this.ar = ar;
             this.lag = lag;
             // compute the variances
             this.v = var(ar);
-            this.c = cor(ar);
         }
 
         /**
@@ -233,7 +229,7 @@ public class WaveSpecificSurveyErrors {
                         v[i] = 1 / (1 - c * c);
                         break;
                     default:
-                        v[i] = acf(ar[i]).get(0);
+                        v[i] = WaveSpecificSurveyErrors.acf(ar[i]).get(0);
                 }
 
             }
@@ -311,17 +307,17 @@ public class WaveSpecificSurveyErrors {
                 return cur[degree - 1];
             }
         }
-    }
-
-    static double[] cor(double[][] ar) {
-        double[] c = new double[ar.length];
-        for (int i = 0; i < c.length; ++i) {
-            c[i] = acf(ar[i]).get(0);
+        
+        AutoCovarianceFunction[] acf(){
+            AutoCovarianceFunction[] acf=new AutoCovarianceFunction[ar.length];
+            for (int i=0; i<acf.length; ++i){
+                acf[i]=WaveSpecificSurveyErrors.acf(ar[i]);
+            }
+            return acf;
         }
-        return c;
     }
 
-    Polynomial ar(double[] ar) {
+    static Polynomial ar(double[] ar) {
         double[] c = new double[1 + ar.length];
         c[0] = 1;
         for (int i = 1; i < c.length; ++i) {
@@ -330,7 +326,7 @@ public class WaveSpecificSurveyErrors {
         return Polynomial.ofInternal(c);
     }
 
-    AutoCovarianceFunction acf(double[] ar) {
+    static AutoCovarianceFunction acf(double[] ar) {
         return new AutoCovarianceFunction(Polynomial.ONE, ar(ar), 1);
     }
 
@@ -483,12 +479,34 @@ public class WaveSpecificSurveyErrors {
         @Override
         public void Pf0(Matrix pf0) {
             pf0.diagonal().set(1);
-//            int d = info.ar.length;
-//            int m = info.lag * info.ar.length;
-//            for (int i = 0; i < info.) {
-//                
-//            }
+            AutoCovarianceFunction[] acf=info.acf();
+            int m=info.nar()*info.lag;
+            int n=info.nwaves();
+            for (int i=0; i<m; ++i){
+                for (int j=i+1; j<m; ++j){
+                    Matrix cur=pf0.extract(n*i, n, n*j, n);
+                    q(cur, j-i, acf);
+                    cur=pf0.extract(n*j, n, n*i, n);
+                    q(cur.transpose(), j-i, acf);
+                }
+            }
         }
+        
+        /**
+         * Fills the sub-matrix q=cov(e(t), e(t-l)) 
+         * @param q
+         * @param l 
+         */
+        private void q(Matrix q, int l, AutoCovarianceFunction[] acf) {
+            if (l%info.lag != 0)
+                return;
+            int k=l/info.lag;
+            DataBlock d = q.subDiagonal(-k);
+            for (int j=0; j<d.length(); ++j){
+                d.set(j, acf[j+k].get(k)/acf[j+k].get(0));
+            }
+        }
+        
     }
 
 }
