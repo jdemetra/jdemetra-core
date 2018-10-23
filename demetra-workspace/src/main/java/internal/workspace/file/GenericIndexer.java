@@ -21,6 +21,7 @@ import internal.workspace.file.xml.XmlGenericWorkspace;
 import internal.workspace.file.xml.XmlGenericWorkspaceItem;
 import internal.io.JaxbUtil;
 import java.io.IOException;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -37,7 +38,9 @@ final class GenericIndexer implements Indexer {
         try {
             unmarshalIndex(file);
             return true;
-        } catch (JAXBException ex) {
+        } catch (FileSystemException ex) {
+            throw ex;
+        } catch (IOException | JAXBException ex) {
             return false;
         }
     }
