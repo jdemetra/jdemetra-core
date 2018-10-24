@@ -102,13 +102,13 @@ public class AtomicModels {
         };
     }
 
-    public ModelItem localLevel(String name, double lvar, boolean fixed) {
+    public ModelItem localLevel(String name, final double lvar, final boolean fixed, final double initial) {
         return mapping -> {
             VarianceParameter v = new VarianceParameter(name + "_var", lvar, fixed, true);
             mapping.add(v);
             mapping.add((p, builder) -> {
                 double var = p.get(0);
-                SsfComponent cmp = LocalLevel.of(var);
+                SsfComponent cmp = LocalLevel.of(var, initial);
                 builder.add(name, cmp);
                 return 1;
             });

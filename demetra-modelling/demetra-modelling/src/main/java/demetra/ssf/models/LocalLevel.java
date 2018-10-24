@@ -33,40 +33,27 @@ import demetra.ssf.implementations.Loading;
 public class LocalLevel {
 
     public SsfComponent of(final double var) {
-        Data data = new Data(var, false);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
+        return new SsfComponent(new Initialization(var, Double.NaN), new Dynamics(var), Loading.fromPosition(0));
     }
 
-    public SsfComponent of(final double var, final boolean zeroinit) {
-        Data data = new Data(var, zeroinit);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
+    public SsfComponent of(final double var, final double initialValue) {
+        return new SsfComponent(new Initialization(var, initialValue), new Dynamics(var), Loading.fromPosition(0));
     }
 
-    static class Data {
-
-        final boolean zeroinit;
-        final double var;
-
-        Data(double var, boolean zeroinit) {
-            this.var = var;
-            this.zeroinit = zeroinit;
-        }
-
-        double std() {
-            return var == 1 ? 1 : Math.sqrt(var);
-        }
-    }
 
     static class Initialization implements ISsfInitialization {
 
-        private final Data data;
+        final double var;
+        final double initialValue;
 
-        Initialization(Data data) {
-            this.data = data;
+        Initialization(final double var, final double initialValue) {
+            this.var=var;
+            this.initialValue=initialValue;
         }
 
         Initialization(double var) {
-            this.data = new Data(var, false);
+            this.var=var;
+            this.initialValue=Double.NaN;
         }
 
         @Override
@@ -76,35 +63,37 @@ public class LocalLevel {
 
         @Override
         public boolean isDiffuse() {
-            return !data.zeroinit;
+            return Double.isNaN(initialValue);
         }
 
         @Override
         public int getDiffuseDim() {
-            return data.zeroinit ? 0 : 1;
+            return Double.isNaN(initialValue) ? 1 : 0;
         }
 
         @Override
         public void diffuseConstraints(Matrix b) {
-            if (!data.zeroinit) {
+            if (Double.isNaN(initialValue)) {
                 b.set(0, 0, 1);
             }
         }
 
         @Override
         public void a0(DataBlock a0) {
+            if (Double.isFinite(initialValue))
+                a0.set(0, initialValue);
         }
 
         @Override
         public void Pf0(Matrix pf0) {
-            if (data.zeroinit) {
-                pf0.set(0, 0, data.var);
+            if (Double.isFinite(initialValue)) {
+                pf0.set(0, 0, var);
             }
         }
 
         @Override
         public void Pi0(Matrix pi0) {
-            if (!data.zeroinit) {
+            if (Double.isNaN(initialValue)) {
                 pi0.set(0, 0, 1);
             }
         }
@@ -112,14 +101,12 @@ public class LocalLevel {
 
     static class Dynamics implements ISsfDynamics {
 
-        private final Data data;
+        private final double var, std;
 
-        Dynamics(Data data) {
-            this.data = data;
-        }
 
         Dynamics(double var) {
-            this.data = new Data(var, false);
+            this.var=var;
+            this.std=var <=0 ? 0 : Math.sqrt(var);
         }
 
         @Override
@@ -139,7 +126,7 @@ public class LocalLevel {
 
         @Override
         public void V(int pos, Matrix qm) {
-            qm.set(0, 0, data.var);
+            qm.set(0, 0, var);
         }
 
         @Override
@@ -149,17 +136,17 @@ public class LocalLevel {
 
         @Override
         public void S(int pos, Matrix sm) {
-            sm.set(0, 0, data.std());
+            sm.set(0, 0, std);
         }
 
         @Override
         public void addSU(int pos, DataBlock x, DataBlock u) {
-            x.add(0, data.std() * u.get(0));
+            x.add(0, std * u.get(0));
         }
 
         @Override
         public void XS(int pos, DataBlock x, DataBlock xs) {
-            xs.set(0, data.std() * x.get(0));
+            xs.set(0, std * x.get(0));
         }
 
         @Override
@@ -181,7 +168,7 @@ public class LocalLevel {
 
         @Override
         public void addV(int pos, Matrix p) {
-            p.add(0, 0, data.var);
+            p.add(0, 0, var);
         }
 
     }

@@ -116,13 +116,15 @@ public class AlgorithmsTest {
         
         
         CompositeModel model = new CompositeModel();
-        model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
+        model.add(AtomicModels.localLevel("l", .01, false, 0));
+        model.add(AtomicModels.localLinearTrend("lt", 0, .01, true, false));
         model.add(AtomicModels.seasonalComponent("s", "Dummy", 12, .01, false));
 //        model.add(AtomicModels.rawTdRegression("td", Data.TS_ABS_RETAIL.getDomain(), new int[]{1,1,1,1,1,0,0}, new double[]{0.01, 0.01}, false));
         model.add(AtomicModels.sae("sae", new double[]{0.5, 0.3}, false, 1e-5, true, 1, false));
-        model.add(AtomicModels.noise("n", 0.01, false));
+        model.add(AtomicModels.noise("n", 1, true));
         ModelEquation eq = new ModelEquation("eq", 0, true);
         eq.add("l");
+        eq.add("lt");
         eq.add("s");
         eq.add("sae");
         eq.add("n");//, 1, true, Loading.rescale(Loading.fromPosition(0), w));
@@ -133,7 +135,7 @@ public class AlgorithmsTest {
 //        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
 //        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
 
-        CompositeModelEstimation rslt = model.estimate(M, 1e-15, false, false, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-15, true, true, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("SAE+TD");

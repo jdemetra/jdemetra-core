@@ -88,11 +88,11 @@ public class CompositeModelTest {
 // create the components and add them to the model
         model.add(AtomicModels.localLinearTrend("tu", 0, 0.01, true, false));
         model.add(AtomicModels.localLinearTrend("ty", 0, 0.01, true, false));
-        model.add(AtomicModels.localLevel("tpicore", 0.01, false));
-        model.add(AtomicModels.localLevel("tpi", 0.01, false));
+        model.add(AtomicModels.localLevel("tpicore", 0.01, false, Double.NaN));
+        model.add(AtomicModels.localLevel("tpi", 0.01, false, Double.NaN));
         model.add(AtomicModels.ar("cycle", new double[]{1, -.5}, false, 1, true, 4, 4));
-        model.add(AtomicModels.localLevel("tb", 0, true));
-        model.add(AtomicModels.localLevel("tc", 0, true));
+        model.add(AtomicModels.localLevel("tb", 0, true, Double.NaN));
+        model.add(AtomicModels.localLevel("tc", 0, true, Double.NaN));
 // create the equations 
 
         ModelEquation eq1 = new ModelEquation("eq1", 1, true);

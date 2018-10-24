@@ -69,8 +69,10 @@ public class QAugmentation {
 //    }
 //
     public void update(AugmentedUpdateInformation pe) {
-        ++n;
         double v = pe.getVariance();
+        if (v == 0)
+            return; // redundant constraint
+        ++n;
         double e = pe.get();
         det.add(v);
         DataBlock col = Q.column(nd + 1);
