@@ -14,7 +14,7 @@ import demetra.maths.functions.minpack.MinPackMinimizer;
 import demetra.maths.functions.riso.LbfgsMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.akf.AkfFunction;
+import demetra.ssf.likelihood.MarginalLikelihoodFunction;
 import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
 import demetra.ssf.multivariate.M2uAdapter;
@@ -145,7 +145,7 @@ public class MstsMonitor {
     private ILikelihoodFunction function() {
         SsfMatrix s = new SsfMatrix(data);
         if (this.marginalLikelihood) {
-            return AkfFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
+            return MarginalLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
                     .useParallelProcessing(true)
                     .useMaximumLikelihood(true)
                     .useScalingFactor(concentratedLikelihood)
@@ -168,7 +168,7 @@ public class MstsMonitor {
         if (fullp == null) {
             fullp = model.modelParameters(model.getDefaultParameters());
         }
-        int fniter = 100;
+        int fniter = 30;
 
         for (int k = 0; k < 3; ++k) {
             for (IMstsParametersBlock p : smallVariances){

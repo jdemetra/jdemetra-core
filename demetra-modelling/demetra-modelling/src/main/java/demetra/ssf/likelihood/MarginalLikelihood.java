@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.ssf.akf;
+package demetra.ssf.likelihood;
 
 import demetra.data.DataBlock;
 import demetra.likelihood.ILikelihood;

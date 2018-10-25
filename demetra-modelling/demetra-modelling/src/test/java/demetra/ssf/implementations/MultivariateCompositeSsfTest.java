@@ -19,8 +19,8 @@ import demetra.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaMapping;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.SsfComponent;
-import demetra.ssf.akf.AkfFunction;
-import demetra.ssf.akf.AkfFunctionPoint;
+import demetra.ssf.likelihood.MarginalLikelihoodFunction;
+import demetra.ssf.likelihood.MarginalLikelihoodFunctionPoint;
 import demetra.ssf.akf.AkfToolkit;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.SsfFunction;
@@ -157,7 +157,7 @@ public class MultivariateCompositeSsfTest {
 
         Mapping2 mapping = new Mapping2();
         Mapping3 mapping3 = new Mapping3();
-        AkfFunction<MultivariateCompositeSsf, ISsf> fn = AkfFunction.builder(udata, mapping, m -> M2uAdapter.of(m))
+        MarginalLikelihoodFunction<MultivariateCompositeSsf, ISsf> fn = MarginalLikelihoodFunction.builder(udata, mapping, m -> M2uAdapter.of(m))
                 .useParallelProcessing(true)
                 .useScalingFactor(true)
                 .useMaximumLikelihood(true)
@@ -167,7 +167,7 @@ public class MultivariateCompositeSsfTest {
         LevenbergMarquardtMinimizer lm = new LevenbergMarquardtMinimizer();
         lm.setMaxIter(2000);
         boolean ok = lm.minimize(fn.evaluate(mapping.getDefaultParameters()));
-        AkfFunctionPoint rslt = (AkfFunctionPoint) lm.getResult();
+        MarginalLikelihoodFunctionPoint rslt = (MarginalLikelihoodFunctionPoint) lm.getResult();
         System.out.println(rslt.getLikelihood().logLikelihood());
         System.out.println(rslt.getLikelihood().ser());
         System.out.println(rslt.getParameters());

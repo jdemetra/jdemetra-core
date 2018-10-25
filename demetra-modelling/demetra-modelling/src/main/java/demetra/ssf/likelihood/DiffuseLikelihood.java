@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.ssf.dk;
+package demetra.ssf.likelihood;
 
 import demetra.likelihood.ILikelihood;
 import demetra.design.Immutable;
@@ -32,17 +32,17 @@ import demetra.maths.Constants;
  * @author Jean Palate
  */
 @Immutable
-public class DkLikelihood implements ILikelihood {
+public class DiffuseLikelihood implements ILikelihood {
 
     public static Builder builder(int n, int nd) {
         return new Builder(n, nd);
     }
 
-    @BuilderPattern(DkLikelihood.class)
+    @BuilderPattern(DiffuseLikelihood.class)
     public static class Builder {
 
         private final int n, nd;
-        private double ssqerr, ldet, lddet;
+        private double ssqerr, ldet, dcorr;
         private double[] res;
         private boolean legacy;
         private boolean concentratedScalingFactor = true;
@@ -57,8 +57,8 @@ public class DkLikelihood implements ILikelihood {
             return this;
         }
 
-        public Builder logDiffuseDeterminant(double lddet) {
-            this.lddet = lddet;
+        public Builder diffuseCorrection(double dcorr) {
+            this.dcorr = dcorr;
             return this;
         }
 
@@ -88,18 +88,18 @@ public class DkLikelihood implements ILikelihood {
             return this;
         }
 
-        public DkLikelihood build() {
-            if (nd == 0 && lddet != 0) {
+        public DiffuseLikelihood build() {
+            if (nd == 0 && dcorr != 0) {
                 throw new IllegalArgumentException("Incorrect diffuse initialisation");
             }
-            return new DkLikelihood(concentratedScalingFactor, n, nd, ssqerr, ldet, lddet, res, legacy);
+            return new DiffuseLikelihood(concentratedScalingFactor, n, nd, ssqerr, ldet, dcorr, res, legacy);
         }
     }
     /**
      * Respectively: diffuse log-likelihood sum of the squared residuals log
      * determinant of the cov matrix diffuse correction
      */
-    private final double ll, ssqerr, ldet, lddet;
+    private final double ll, ssqerr, ldet, dcorr;
     private final int nobs, nd;
     private final double[] res;
     private final boolean legacy, scalingFactor;
@@ -129,13 +129,13 @@ public class DkLikelihood implements ILikelihood {
      * @param nd The number ofFunction diffuse constraints
      * @return
      */
-    private DkLikelihood(boolean concentrated, int n, int nd, double ssqerr, double ldet, double lddet, double[] res, boolean legacy) {
+    private DiffuseLikelihood(boolean concentrated, int n, int nd, double ssqerr, double ldet, double lddet, double[] res, boolean legacy) {
         this.scalingFactor = concentrated;
         this.nobs = n;
         this.nd = nd;
         this.ssqerr = ssqerr;
         this.ldet = ldet;
-        this.lddet = lddet;
+        this.dcorr = lddet;
         this.res = res;
         this.legacy = legacy;
         int m = legacy ? nobs : nobs - nd;
@@ -170,11 +170,11 @@ public class DkLikelihood implements ILikelihood {
      * @param legacy legacy=true should be used only for testing purposes
      * @return
      */
-    public DkLikelihood setLegacy(boolean legacy) {
+    public DiffuseLikelihood setLegacy(boolean legacy) {
         if (this.legacy == legacy) {
             return this;
         } else {
-            return new DkLikelihood(scalingFactor, nobs, nd, ssqerr, ldet, lddet, res, legacy);
+            return new DiffuseLikelihood(scalingFactor, nobs, nd, ssqerr, ldet, dcorr, res, legacy);
         }
     }
 
@@ -188,7 +188,7 @@ public class DkLikelihood implements ILikelihood {
 
     @Override
     public double factor() {
-        return Math.exp((ldet + lddet) / (m()));
+        return Math.exp((ldet + dcorr) / (m()));
     }
 
     @Override
@@ -237,7 +237,7 @@ public class DkLikelihood implements ILikelihood {
      * @param factor The scaling factor
      * @return
      */
-    public DkLikelihood rescale(final double factor) {
+    public DiffuseLikelihood rescale(final double factor) {
         if (factor == 1) {
             return this;
         } else {
@@ -248,13 +248,24 @@ public class DkLikelihood implements ILikelihood {
                     nres[i] = Double.isFinite(res[i]) ? res[i] / factor : Double.NaN;
                 }
             }
-            return new DkLikelihood(scalingFactor, nobs, nd, ssqerr / factor * factor, ldet, lddet, nres, legacy);
+            return new DiffuseLikelihood(scalingFactor, nobs, nd, ssqerr / factor * factor, ldet, dcorr, nres, legacy);
         }
     }
 
     public double getDiffuseCorrection() {
-        return lddet;
+        return dcorr;
     }
+    
+            public DiffuseLikelihood add(ILikelihood ll) {
+        return DiffuseLikelihood.builder(nobs+ll.dim(), nd)
+                .ssqErr(ssqerr+ll.ssq())
+                .logDeterminant(ldet+ll.logDeterminant())
+                .diffuseCorrection(dcorr)
+                .legacy(legacy)
+                .concentratedScalingFactor(scalingFactor)
+                .build();
+    }
+
 
     @Override
     public String toString() {

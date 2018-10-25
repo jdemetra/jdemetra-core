@@ -17,7 +17,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.QuadraticForm;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.processing.IProcResults;
-import demetra.r.mapping.DkLikelihoodInfo;
+import demetra.r.mapping.DiffuseLikelihoodInfo;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarimaMapping;
@@ -74,9 +74,9 @@ public class TimeVaryingRegression {
 
         static {
             MAPPING.delegate(ARIMA0, SarimaInfo.getMapping(), r -> r.getArima0().toType());
-            MAPPING.delegate(LL0, DkLikelihoodInfo.getMapping(), r -> r.getLl0());
+            MAPPING.delegate(LL0, DiffuseLikelihoodInfo.getMapping(), r -> r.getLl0());
             MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getArima().toType());
-            MAPPING.delegate(LL, DkLikelihoodInfo.getMapping(), r -> r.getLl());
+            MAPPING.delegate(LL, DiffuseLikelihoodInfo.getMapping(), r -> r.getLl());
             MAPPING.set("aic0", Double.class, r -> r.getLl0().AIC(2));
             MAPPING.set("aic", Double.class, r -> r.getLl().AIC(3));
             MAPPING.set("tdvar", Double.class, r -> r.getNvar());

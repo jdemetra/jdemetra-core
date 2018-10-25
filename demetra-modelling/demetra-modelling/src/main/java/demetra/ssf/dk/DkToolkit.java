@@ -16,6 +16,7 @@
  */
 package demetra.ssf.dk;
 
+import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataBlockStorage;
@@ -44,8 +45,10 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.OrdinaryFilter;
 import demetra.ssf.univariate.SsfRegressionModel;
 import demetra.data.DoubleSequence;
+import demetra.data.LogSign;
 import demetra.ssf.StateInfo;
 import demetra.ssf.StateStorage;
+import demetra.ssf.likelihood.MarginalLikelihood;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.M2uAdapter;
@@ -58,25 +61,33 @@ import demetra.ssf.multivariate.SsfMatrix;
 @lombok.experimental.UtilityClass
 public class DkToolkit {
 
-    public DkLikelihood likelihood(ISsf ssf, ISsfData data) {
+    public DiffuseLikelihood likelihood(ISsf ssf, ISsfData data) {
         return likelihoodComputer().compute(ssf, data);
     }
 
-    public DkLikelihood likelihood(IMultivariateSsf ssf, IMultivariateSsfData data) {
+    public MarginalLikelihood marginalLikelihood(ISsf ssf, ISsfData data, boolean concentrated) {
+        return new MLLComputer(concentrated, concentrated).compute(ssf, data);
+    }
+
+    public MarginalLikelihood marginalLikelihood(ISsf ssf, ISsfData data, boolean res, boolean concentrated) {
+        return new MLLComputer(res, concentrated).compute(ssf, data);
+    }
+
+    public DiffuseLikelihood likelihood(IMultivariateSsf ssf, IMultivariateSsfData data) {
         ISsf ussf = M2uAdapter.of(ssf);
         ISsfData udata = M2uAdapter.of(data);
         return likelihoodComputer().compute(ussf, udata);
     }
 
-    public ILikelihoodComputer<DkLikelihood> likelihoodComputer() {
+    public ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer() {
         return likelihoodComputer(true, false);
     }
 
-    public ILikelihoodComputer<DkLikelihood> likelihoodComputer(boolean res) {
+    public ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer(boolean res) {
         return likelihoodComputer(true, res);
     }
 
-    public ILikelihoodComputer<DkLikelihood> likelihoodComputer(boolean sqr, boolean res) {
+    public ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer(boolean sqr, boolean res) {
         return sqr ? new LLComputer2(res) : new LLComputer1(res);
     }
 
@@ -205,7 +216,7 @@ public class DkToolkit {
         }
     }
 
-    private static class LLComputer1 implements ILikelihoodComputer<DkLikelihood> {
+    private static class LLComputer1 implements ILikelihoodComputer<DiffuseLikelihood> {
 
         private final boolean res;
 
@@ -214,7 +225,7 @@ public class DkToolkit {
         }
 
         @Override
-        public DkLikelihood compute(ISsf ssf, ISsfData data) {
+        public DiffuseLikelihood compute(ISsf ssf, ISsfData data) {
 
             DiffusePredictionErrorDecomposition pe = new DiffusePredictionErrorDecomposition(res);
             if (res) {
@@ -228,7 +239,7 @@ public class DkToolkit {
 
     }
 
-    private static class LLComputer2 implements ILikelihoodComputer<DkLikelihood> {
+    private static class LLComputer2 implements ILikelihoodComputer<DiffuseLikelihood> {
 
         private final boolean res;
 
@@ -237,7 +248,7 @@ public class DkToolkit {
         }
 
         @Override
-        public DkLikelihood compute(ISsf ssf, ISsfData data) {
+        public DiffuseLikelihood compute(ISsf ssf, ISsfData data) {
 
             DiffusePredictionErrorDecomposition pe = new DiffusePredictionErrorDecomposition(res);
             if (res) {
@@ -247,6 +258,89 @@ public class DkToolkit {
             OrdinaryFilter filter = new OrdinaryFilter(initializer);
             filter.process(ssf, data, pe);
             return pe.likelihood();
+        }
+
+        public MarginalLikelihood mcompute(ISsf ssf, ISsfData data, boolean concentrated) {
+
+            DiffusePredictionErrorDecomposition pe = new DiffusePredictionErrorDecomposition(res);
+            if (res) {
+                pe.prepare(ssf, data.length());
+            }
+            DiffuseSquareRootInitializer initializer = new DiffuseSquareRootInitializer(pe);
+            OrdinaryFilter filter = new OrdinaryFilter(initializer);
+            filter.process(ssf, data, pe);
+            DiffuseLikelihood likelihood = pe.likelihood();
+            int collapsing = pe.getEndDiffusePosition();
+            Matrix M = Matrix.make(collapsing, ssf.getDiffuseDim());
+            ssf.diffuseEffects(M);
+            int j = 0;
+            for (int i = 0; i < collapsing; ++i) {
+                if (!data.isMissing(i)) {
+                    if (i > j) {
+                        M.row(j).copy(M.row(i));
+                    }
+                    j++;
+                }
+            }
+            Householder hous = new Householder();
+            hous.decompose(M.extract(0, j, 0, M.getColumnsCount()));
+            double mc = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
+            return MarginalLikelihood.builder(likelihood.dim(), likelihood.getD())
+                    .concentratedScalingFactor(concentrated)
+                    .diffuseCorrection(likelihood.getDiffuseCorrection())
+                    .legacy(false)
+                    .logDeterminant(likelihood.logDeterminant())
+                    .ssqErr(likelihood.ssq())
+                    .residuals(pe.errors(true, true))
+                    .marginalCorrection(mc)
+                    .build();
+        }
+    }
+
+    private static class MLLComputer implements ILikelihoodComputer<MarginalLikelihood> {
+
+        private final boolean res, concentrated;
+
+        MLLComputer(boolean res, boolean concentrated) {
+            this.res = res;
+            this.concentrated = concentrated;
+        }
+
+        @Override
+        public MarginalLikelihood compute(ISsf ssf, ISsfData data) {
+
+            DiffusePredictionErrorDecomposition pe = new DiffusePredictionErrorDecomposition(res);
+            if (res) {
+                pe.prepare(ssf, data.length());
+            }
+            DiffuseSquareRootInitializer initializer = new DiffuseSquareRootInitializer(pe);
+            OrdinaryFilter filter = new OrdinaryFilter(initializer);
+            filter.process(ssf, data, pe);
+            DiffuseLikelihood likelihood = pe.likelihood();
+            int collapsing = pe.getEndDiffusePosition();
+            Matrix M = Matrix.make(collapsing, ssf.getDiffuseDim());
+            ssf.diffuseEffects(M);
+            int j = 0;
+            for (int i = 0; i < collapsing; ++i) {
+                if (!data.isMissing(i)) {
+                    if (i > j) {
+                        M.row(j).copy(M.row(i));
+                    }
+                    j++;
+                }
+            }
+            Householder hous = new Householder();
+            hous.decompose(M.extract(0, j, 0, M.getColumnsCount()));
+            double mc = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
+            return MarginalLikelihood.builder(likelihood.dim(), likelihood.getD())
+                    .concentratedScalingFactor(concentrated)
+                    .diffuseCorrection(likelihood.getDiffuseCorrection())
+                    .legacy(false)
+                    .logDeterminant(likelihood.logDeterminant())
+                    .ssqErr(likelihood.ssq())
+                    .residuals(pe.errors(true, true))
+                    .marginalCorrection(mc)
+                    .build();
         }
     }
 
@@ -267,7 +361,7 @@ public class DkToolkit {
             DiffusePredictionErrorDecomposition pe = new DiffusePredictionErrorDecomposition(true);
             pe.prepare(model.getSsf(), n);
             ILinearProcess lp = filteringResults(model.getSsf(), y, pe);
-            DkLikelihood ll = pe.likelihood();
+            DiffuseLikelihood ll = pe.likelihood();
             DoubleSequence yl = pe.errors(true, true);
             int nl = yl.length();
             Matrix xl = xl(model, lp, nl);

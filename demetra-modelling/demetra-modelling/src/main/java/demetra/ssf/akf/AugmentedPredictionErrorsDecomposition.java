@@ -27,6 +27,7 @@ import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.data.LogSign;
 import demetra.maths.matrices.decomposition.ElementaryTransformations;
+import demetra.ssf.likelihood.DiffuseLikelihood;
 
 /**
  *

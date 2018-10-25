@@ -17,7 +17,7 @@
 package demetra.ssf.ckms;
 
 import demetra.ssf.dk.DiffusePredictionErrorDecomposition;
-import demetra.ssf.dk.DkLikelihood;
+import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.ssf.dk.DkConcentratedLikelihood;
 import demetra.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import demetra.ssf.univariate.IConcentratedLikelihoodComputer;
@@ -32,7 +32,7 @@ import demetra.ssf.univariate.SsfRegressionModel;
  */
 public class CkmsToolkit {
 
-    public static ILikelihoodComputer<DkLikelihood> likelihoodComputer() {
+    public static ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer() {
         return (ISsf ssf, ISsfData data) -> {
             DiffusePredictionErrorDecomposition decomp = new DiffusePredictionErrorDecomposition(false);
             CkmsDiffuseInitializer ff = new CkmsDiffuseInitializer(new DiffuseSquareRootInitializer(decomp));

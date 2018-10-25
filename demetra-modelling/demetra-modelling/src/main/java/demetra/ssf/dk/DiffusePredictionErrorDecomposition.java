@@ -16,6 +16,7 @@
  */
 package demetra.ssf.dk;
 
+import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.data.DataBlock;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.ssf.StateInfo;
@@ -38,11 +39,11 @@ public class DiffusePredictionErrorDecomposition extends PredictionErrorDecompos
     }
 
     @Override
-    public DkLikelihood likelihood() {
-        return DkLikelihood.builder(nd + cumulator.getObsCount(), nd)
+    public DiffuseLikelihood likelihood() {
+        return DiffuseLikelihood.builder(nd + cumulator.getObsCount(), nd)
                 .ssqErr(cumulator.getSsqErr())
                 .logDeterminant(cumulator.getLogDeterminant())
-                .logDiffuseDeterminant(ddet.getLogDeterminant())
+                .diffuseCorrection(ddet.getLogDeterminant())
                 .residuals(bres? res:null).build();
     }
 

@@ -16,7 +16,7 @@ import demetra.ssf.dk.DkConcentratedLikelihood;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.experimental.UtilityClass
-public class DkLikelihoodInfo {
+public class DiffuseLikelihoodInfo {
 
     private final String LL = "ll", SSQ = "ssqerr", SER = "ser", SIGMA = "sigma", COEF = "coeff", VAR = "cvar", RES="residuals";
 

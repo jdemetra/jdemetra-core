@@ -14,7 +14,7 @@ import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.StateComponent;
-import demetra.ssf.dk.DkLikelihood;
+import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
@@ -53,8 +53,8 @@ public class RegSsfTest {
                 .add(cmp1, Loading.fromPosition(0))
                 .add(RegSsf.of(X))
                 .build();
-        DkLikelihood ll1 = DkToolkit.likelihoodComputer().compute(rssf1, y);
-        DkLikelihood ll2 = DkToolkit.likelihoodComputer().compute(rssf2, y);
+        DiffuseLikelihood ll1 = DkToolkit.likelihoodComputer().compute(rssf1, y);
+        DiffuseLikelihood ll2 = DkToolkit.likelihoodComputer().compute(rssf2, y);
         assertEquals(ll1.logLikelihood(), ll2.logLikelihood(), 1e-5);
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 5000; ++i) {

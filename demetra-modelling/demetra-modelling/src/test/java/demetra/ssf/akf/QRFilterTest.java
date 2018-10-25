@@ -5,6 +5,7 @@
  */
 package demetra.ssf.akf;
 
+import demetra.ssf.likelihood.MarginalLikelihood;
 import demetra.arima.ssf.SsfArima;
 import demetra.data.Data;
 import demetra.data.Doubles;

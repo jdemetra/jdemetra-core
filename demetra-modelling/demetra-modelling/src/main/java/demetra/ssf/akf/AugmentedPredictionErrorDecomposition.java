@@ -18,6 +18,7 @@ package demetra.ssf.akf;
 
 import demetra.design.Development;
 import demetra.ssf.StateInfo;
+import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.PredictionErrorDecomposition;
 

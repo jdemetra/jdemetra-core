@@ -16,7 +16,10 @@
  */
 package demetra.ssf.akf;
 
+import demetra.ssf.likelihood.ProfileLikelihood;
+import demetra.ssf.likelihood.MarginalLikelihood;
 import demetra.likelihood.ILikelihood;
+import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ILikelihoodComputer;
 import demetra.ssf.univariate.ISsf;

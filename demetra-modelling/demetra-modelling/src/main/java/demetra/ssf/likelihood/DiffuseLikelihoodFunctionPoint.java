@@ -14,27 +14,30 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.ssf.akf;
+package demetra.ssf.likelihood;
 
+import demetra.ssf.dk.*;
 import demetra.data.DataBlock;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.ssf.univariate.ISsf;
+import demetra.ssf.univariate.IConcentratedLikelihoodComputer;
+import demetra.ssf.univariate.SsfRegressionModel;
 import demetra.data.DoubleSequence;
 import demetra.likelihood.ILikelihoodFunctionPoint;
 import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.NumericalDerivatives;
 import demetra.maths.functions.ssq.ISsqFunctionDerivatives;
 import demetra.maths.functions.ssq.SsqNumericalDerivatives;
-import demetra.ssf.univariate.ILikelihoodComputer;
 
 /**
  *
  * @author Jean Palate
  * @param <S>
+ * @param <F>
  */
-public class AkfFunctionPoint<S, F extends ISsf> implements
-        ILikelihoodFunctionPoint<MarginalLikelihood> {
+public class DiffuseLikelihoodFunctionPoint<S, F extends ISsf> implements
+        ILikelihoodFunctionPoint<DkConcentratedLikelihood> {
 
     /**
      *
@@ -45,23 +48,27 @@ public class AkfFunctionPoint<S, F extends ISsf> implements
     /**
      *
      */
-    private final MarginalLikelihood ll;
+    private final DkConcentratedLikelihood ll;
     private final DataBlock p;
     private DataBlock E;
-    private final AkfFunction<S, F> fn;
+    private final DiffuseLikelihoodFunction<S, F> fn;
 
     /**
      *
      * @param fn
      * @param p
      */
-    public AkfFunctionPoint(AkfFunction<S, F> fn, DoubleSequence p) {
+    public DiffuseLikelihoodFunctionPoint(DiffuseLikelihoodFunction<S, F> fn, DoubleSequence p) {
         this.fn = fn;
         this.p = DataBlock.of(p);
         current=fn.getMapping().map(p);
         currentSsf = fn.getBuilder().buildSsf(current);
-        ILikelihoodComputer<MarginalLikelihood> computer= AkfToolkit.marginalLikelihoodComputer(fn.isScalingFactor());
-        ll=computer.compute(currentSsf, fn.getData());
+        boolean fastcomputer=fn.isFast() && !fn.isMissing() && currentSsf.isTimeInvariant();
+        IConcentratedLikelihoodComputer<DkConcentratedLikelihood> computer= DkToolkit.concentratedLikelihoodComputer(true, fastcomputer, fn.isScalingFactor());
+        if (fn.getX() == null)
+            ll=computer.compute(currentSsf, fn.getData());
+        else
+            ll=computer.compute(new SsfRegressionModel(currentSsf, fn.getData(), fn.getX(), fn.getDiffuseX()));
     }
 
     public F getSsf() {
@@ -94,7 +101,7 @@ public class AkfFunctionPoint<S, F extends ISsf> implements
      * @return
      */
     @Override
-    public MarginalLikelihood getLikelihood() {
+    public DkConcentratedLikelihood getLikelihood() {
         return ll;
     }
 

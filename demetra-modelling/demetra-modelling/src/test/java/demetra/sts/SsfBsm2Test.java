@@ -19,16 +19,12 @@ package demetra.sts;
 import demetra.data.Data;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.akf.AkfToolkit;
-import demetra.ssf.akf.DiffuseLikelihood;
 import demetra.ssf.ckms.CkmsToolkit;
-import demetra.ssf.dk.DkLikelihood;
+import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.models.LocalLinearTrend;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.Ssf;
 import demetra.ssf.univariate.SsfData;
-import ec.tstoolkit.ssf.SsfComposite;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -64,8 +60,8 @@ public class SsfBsm2Test {
                 .build();
 
         SsfData data = new SsfData(Data.EXPORTS);
-        DkLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(composite, data);
-        DkLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(SsfBsm2.of(model), data);
+        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(composite, data);
+        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(SsfBsm2.of(model), data);
         assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
     }
 
@@ -83,8 +79,8 @@ public class SsfBsm2Test {
                 .build();
 
         SsfData data = new SsfData(Data.EXPORTS);
-        DkLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(composite, data);
-        DkLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(SsfBsm2.of(model), data);
+        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(composite, data);
+        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(SsfBsm2.of(model), data);
         assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
     }
 
@@ -102,8 +98,8 @@ public class SsfBsm2Test {
                 .build();
 
         SsfData data = new SsfData(Data.EXPORTS);
-        DkLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(composite, data);
-        DkLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(SsfBsm2.of(model), data);
+        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(composite, data);
+        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(SsfBsm2.of(model), data);
         assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
     }
 
@@ -121,16 +117,16 @@ public class SsfBsm2Test {
                 .build();
 
         SsfData data = new SsfData(Data.EXPORTS);
-        DkLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(composite, data);
-        DkLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(SsfBsm2.of(model), data);
+        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(composite, data);
+        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(SsfBsm2.of(model), data);
         assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
     }
 
     @Test
     public void testLikelihood() {
         SsfData data = new SsfData(Data.EXPORTS);
-        DkLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(bsm, data);
-        DkLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(bsm, data);
+        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(bsm, data);
+        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(bsm, data);
         DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(true).compute(bsm, data);
         assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
         assertEquals(ll.logLikelihood(), ll3.logLikelihood(), 1e-6);

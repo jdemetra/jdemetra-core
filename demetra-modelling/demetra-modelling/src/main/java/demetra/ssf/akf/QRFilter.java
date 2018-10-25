@@ -16,6 +16,8 @@
  */
 package demetra.ssf.akf;
 
+import demetra.ssf.likelihood.ProfileLikelihood;
+import demetra.ssf.likelihood.MarginalLikelihood;
 import demetra.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.likelihood.DeterminantalTerm;
@@ -31,6 +33,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.OrdinaryFilter;
 import demetra.data.DoubleSequence;
+import demetra.ssf.likelihood.DiffuseLikelihood;
 
 /**
  * QR variant copyOf the augmented Kalman filter. See for instance
@@ -98,10 +101,10 @@ public class QRFilter {
         pe.prepare(ssf, data.length());
         AugmentedFilterInitializer initializer = new AugmentedFilterInitializer(pe);
         OrdinaryFilter filter = new OrdinaryFilter(initializer);
-        filter.process(ssf, data, pe);
+        if (!filter.process(ssf, data, pe))
+            return null;
         int collapsing = pe.getCollapsingPosition();
         DiffuseLikelihood likelihood = pe.likelihood();
-        double mc = 0;
         Matrix M = Matrix.make(collapsing, ssf.getDiffuseDim());
         ssf.diffuseEffects(M);
         int j = 0;
@@ -115,7 +118,7 @@ public class QRFilter {
         }
         Householder hous = new Householder();
         hous.decompose(M.extract(0, j, 0, M.getColumnsCount()));
-        mc = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
+        double mc = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
         return MarginalLikelihood.builder(likelihood.dim(), likelihood.getD())
                 .concentratedScalingFactor(concentrated)
                 .diffuseCorrection(likelihood.getDiffuseCorrection())

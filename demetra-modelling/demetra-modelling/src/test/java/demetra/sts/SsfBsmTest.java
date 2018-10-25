@@ -18,9 +18,8 @@ package demetra.sts;
 
 import demetra.data.Data;
 import demetra.ssf.akf.AkfToolkit;
-import demetra.ssf.akf.DiffuseLikelihood;
 import demetra.ssf.ckms.CkmsToolkit;
-import demetra.ssf.dk.DkLikelihood;
+import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.SsfData;
 import static org.junit.Assert.assertEquals;
@@ -48,9 +47,9 @@ public class SsfBsmTest {
     @Test
     public void testLikelihood() {
         SsfData data = new SsfData(Data.PROD);
-        DkLikelihood ll1 = DkToolkit.likelihoodComputer(true, true).compute(bsm, data);
+        DiffuseLikelihood ll1 = DkToolkit.likelihoodComputer(true, true).compute(bsm, data);
         System.out.println(ll1);
-        DkLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(bsm, data);
+        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(bsm, data);
 //        System.out.println(ll2);
         DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(true).compute(bsm, data);
 //        System.out.println(ll3);

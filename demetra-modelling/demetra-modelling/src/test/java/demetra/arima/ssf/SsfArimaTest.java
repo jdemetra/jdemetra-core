@@ -24,9 +24,8 @@ import demetra.likelihood.ConcentratedLikelihood;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.ssf.akf.AkfToolkit;
-import demetra.ssf.akf.DiffuseLikelihood;
 import demetra.ssf.akf.QRFilter;
-import demetra.ssf.dk.DkLikelihood;
+import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.TimeInvariantSsf;
 import demetra.ssf.univariate.ISsf;
@@ -60,9 +59,9 @@ public class SsfArimaTest {
     public void testArima() {
         Ssf ssf = SsfArima.of(arima);
         SsfData ssfData = new SsfData(data);
-        DkLikelihood ll1 = DkToolkit.likelihoodComputer(false, true).compute(ssf, ssfData);
+        DiffuseLikelihood ll1 = DkToolkit.likelihoodComputer(false, true).compute(ssf, ssfData);
        // square root form
-        DkLikelihood ll2 = DkToolkit.likelihoodComputer(true, true).compute(ssf, ssfData);
+        DiffuseLikelihood ll2 = DkToolkit.likelihoodComputer(true, true).compute(ssf, ssfData);
 //        System.out.println(ll1);
 //        System.out.println(ll2);
         assertEquals(ll1.logLikelihood(), ll2.logLikelihood(), 1e-6);
@@ -94,9 +93,9 @@ public class SsfArimaTest {
         mdata[119] = Double.NaN;
 
         SsfData sdata = new SsfData(mdata);
-        DkLikelihood ll1 = DkToolkit.likelihoodComputer(false, true).compute(ssf, sdata);
+        DiffuseLikelihood ll1 = DkToolkit.likelihoodComputer(false, true).compute(ssf, sdata);
         // square root form
-        DkLikelihood ll2 = DkToolkit.likelihoodComputer(true, true).compute(ssf, sdata);
+        DiffuseLikelihood ll2 = DkToolkit.likelihoodComputer(true, true).compute(ssf, sdata);
         assertEquals(ll1.logLikelihood(), ll2.logLikelihood(), 1e-6);
         DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer().compute(ssf, sdata);
         assertEquals(ll1.logLikelihood(), ll3.logLikelihood(), 1e-6);
@@ -115,7 +114,7 @@ public class SsfArimaTest {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < M; ++i) {
             Ssf ssf = SsfArima.of(arima);
-            DkLikelihood ll = DkToolkit.likelihoodComputer(false).compute(ssf, new SsfData(data));
+            DiffuseLikelihood ll = DkToolkit.likelihoodComputer(false).compute(ssf, new SsfData(data));
         }
         long t1 = System.currentTimeMillis();
         System.out.println("DK (normal)");
@@ -123,7 +122,7 @@ public class SsfArimaTest {
         t0 = System.currentTimeMillis();
         for (int i = 0; i < M; ++i) {
             Ssf ssf = SsfArima.of(arima);
-            DkLikelihood ll = DkToolkit.likelihoodComputer(true).compute(ssf, new SsfData(data));
+            DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true).compute(ssf, new SsfData(data));
         }
         t1 = System.currentTimeMillis();
         System.out.println("DK (square root form)");
@@ -132,7 +131,7 @@ public class SsfArimaTest {
         for (int i = 0; i < M; ++i) {
             Ssf ssf = SsfArima.of(arima);
             ISsf tssf = TimeInvariantSsf.of(ssf);
-            DkLikelihood ll = DkToolkit.likelihoodComputer(true).compute(tssf, new SsfData(data));
+            DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true).compute(tssf, new SsfData(data));
         }
 
         t1 = System.currentTimeMillis();
