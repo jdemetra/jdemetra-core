@@ -48,7 +48,7 @@ public class VarianceParameter implements IMstsParametersBlock {
     }
 
     @Override
-    public boolean isPotentialSingularity() {
+    public boolean isPotentialInstability() {
         return true;
     }
 

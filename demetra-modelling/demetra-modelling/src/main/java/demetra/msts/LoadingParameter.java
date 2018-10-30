@@ -64,7 +64,7 @@ public class LoadingParameter implements IMstsParametersBlock {
     }
 
     @Override
-    public boolean isPotentialSingularity() {
+    public boolean isPotentialInstability() {
         return true;
     }
 

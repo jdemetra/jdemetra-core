@@ -96,7 +96,7 @@ public class BoundedParameter implements IMstsParametersBlock {
     }
 
     @Override
-    public boolean isPotentialSingularity() {
+    public boolean isPotentialInstability() {
         return false;
     }
 

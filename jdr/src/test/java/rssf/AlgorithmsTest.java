@@ -107,7 +107,7 @@ public class AlgorithmsTest {
     public AlgorithmsTest() {
     }
 
-    @Test
+    //@Test
     public void testBsm() {
         int len = abs.length;
         Matrix M = Matrix.make(len, 1);
@@ -143,6 +143,53 @@ public class AlgorithmsTest {
         System.out.println(rslt.getLikelihood().logLikelihood());
     }
     
+    @Test
+    public void testSutse() {
+        int len = Data.ABS63.length;
+        Matrix M = Matrix.make(len, 2);
+        M.column(0).copyFrom(Data.ABS63, 0);
+        M.column(1).copyFrom(Data.ABS68, 0);
+        
+        
+        CompositeModel model = new CompositeModel();
+        model.add(AtomicModels.localLevel("l1", 1, false, 0));
+        model.add(AtomicModels.localLinearTrend("lt1", 0, 1, true, false));
+        model.add(AtomicModels.seasonalComponent("s1", "Trigonometric", 12, 1, false));
+        model.add(AtomicModels.noise("n1", 1, false));
+        model.add(AtomicModels.localLevel("l2", 1, false, 0));
+        model.add(AtomicModels.localLinearTrend("lt2", 0, 1, true, false));
+        model.add(AtomicModels.seasonalComponent("s2", "Trigonometric", 12, 1, false));
+        model.add(AtomicModels.noise("n2", 1, false));
+        ModelEquation eq1 = new ModelEquation("eq", 0, true);
+        eq1.add("l1");
+        eq1.add("lt1");
+        eq1.add("s1");
+        eq1.add("n1");
+        model.add(eq1);
+        ModelEquation eq2 = new ModelEquation("eq", 0, true);
+        eq2.add("l2");
+        eq2.add("l1", 0, false, null);
+        eq2.add("lt2");
+        eq2.add("lt1", 0, false, null);
+        eq2.add("s2");
+        eq2.add("s1", 0, false, null);
+        eq2.add("n2");
+        eq2.add("n1", 0, false, null);
+        model.add(eq2);
+ //        ModelEquation eqs = new ModelEquation("eqs", 0, true);
+//        eqs.add("td", 1, true, Loading.sum());
+//        model.add(eqs);
+//        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
+//        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
+
+        CompositeModelEstimation rslt = model.estimate(M, 1e-15, true, true, null);
+
+        double[] p = rslt.getFullParameters();
+        System.out.println("SAE+TD");
+        System.out.println(DataBlock.ofInternal(p));
+        System.out.println(rslt.getLikelihood().logLikelihood());
+    }
+
     //@Test
     public void testAirline() {
         CompositeModel model = new CompositeModel();

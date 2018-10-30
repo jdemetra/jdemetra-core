@@ -96,7 +96,7 @@ public interface IMstsParametersBlock {
     
     boolean isFixed();
     
-    default boolean isPotentialSingularity() {
+    default boolean isPotentialInstability() {
         return false;
     }
 
