@@ -66,6 +66,11 @@ public class BoundedParameter implements IMstsParametersBlock {
         this.fixed = fixed;
         this.range=new ParametersRange(lbound, ubound, open);
     }
+    
+    @Override
+    public BoundedParameter duplicate(){
+        return new BoundedParameter(name, value, fixed, range.getA(), range.getB(), range.isOpen());
+    }
 
     @Override
     public String getName() {

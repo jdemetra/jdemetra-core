@@ -135,7 +135,7 @@ public class AlgorithmsTest {
 //        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
 //        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
 
-        CompositeModelEstimation rslt = model.estimate(M, 1e-15, true, true, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-15, true, false, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("SAE+TD");
@@ -143,7 +143,7 @@ public class AlgorithmsTest {
         System.out.println(rslt.getLikelihood().logLikelihood());
     }
     
-    @Test
+    //@Test
     public void testSutse() {
         int len = Data.ABS63.length;
         Matrix M = Matrix.make(len, 2);
@@ -182,20 +182,20 @@ public class AlgorithmsTest {
 //        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
 //        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
 
-        CompositeModelEstimation rslt = model.estimate(M, 1e-15, true, true, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-15, true, false, null);
 
         double[] p = rslt.getFullParameters();
-        System.out.println("SAE+TD");
+        System.out.println("SUTSE");
         System.out.println(DataBlock.ofInternal(p));
         System.out.println(rslt.getLikelihood().logLikelihood());
     }
 
-    //@Test
+    @Test
     public void testAirline() {
         CompositeModel model = new CompositeModel();
-        model.add(AtomicModels.sarima("air", 12, new int[]{0,1,1}, new int[]{0,1,1}, new double[]{-.2, -.2}, false));
-        model.add(AtomicModels.tdRegression("td", Data.TS_ABS_RETAIL.getDomain(), new int[]{1,1,1,1,1,0,0}, false, 0.01, false));
-        ModelEquation eq = new ModelEquation("eq1", 1, true);
+        model.add(AtomicModels.sarima("air", 12, new int[]{0,1,1}, new int[]{0,1,1}, null, false, 1, false));
+        model.add(AtomicModels.tdRegression("td", Data.TS_ABS_RETAIL.getDomain(), new int[]{1,1,1,1,2,3,0}, true, 0.01, false));
+        ModelEquation eq = new ModelEquation("eq1", 0, true);
         eq.add("air");
         eq.add("td");
         model.add(eq);
@@ -206,10 +206,10 @@ public class AlgorithmsTest {
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         M.column(0).apply(q->Math.log(q));
-        CompositeModelEstimation rslt = model.estimate(M, 1e-12, false, true, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-12, true, false, null);
 
         double[] p = rslt.getFullParameters();
-        System.out.println("Crude+TD");
+        System.out.println("Airline+TD");
         System.out.println(DataBlock.ofInternal(p));
         System.out.println(rslt.getLikelihood().logLikelihood());
     }

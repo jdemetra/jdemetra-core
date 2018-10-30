@@ -10,12 +10,14 @@ import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParamValidation;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author palatej
  */
-public class LoadingParameter implements IMstsParametersBlock {
+public final class LoadingParameter implements IMstsParametersBlock {
 
     private static final double DEF_VALUE = .1;
 
@@ -33,6 +35,11 @@ public class LoadingParameter implements IMstsParametersBlock {
         this.name = name;
         this.loading = loading;
         this.fixed = fixed;
+    }
+    
+    @Override
+    public LoadingParameter duplicate(){
+        return new LoadingParameter(name, loading, fixed);
     }
 
     @Override

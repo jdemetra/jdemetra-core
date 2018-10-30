@@ -40,6 +40,11 @@ public class ArParameters implements IMstsParametersBlock {
         }
         this.domain = new Domain(degree);
     }
+    
+    @Override
+    public ArParameters duplicate(){
+        return new ArParameters(name, values.clone(), fixed);
+    }
 
     @Override
     public String getName() {

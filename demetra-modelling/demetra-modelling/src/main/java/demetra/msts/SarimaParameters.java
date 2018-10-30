@@ -18,10 +18,10 @@ import demetra.sarima.SarimaSpecification;
  *
  * @author palatej
  */
-public class SarimaParameters implements IMstsParametersBlock {
+public final class SarimaParameters implements IMstsParametersBlock {
 
     private final String name;
-    private final double[] values;
+    private double[] values;
     private final SarimaMapping mapping;
     private final int np;
     private boolean fixed;
@@ -32,6 +32,11 @@ public class SarimaParameters implements IMstsParametersBlock {
         this.values = p == null ? mapping.getDefaultParameters().toArray() : p;
         this.np = spec.getParametersCount();
         this.fixed = fixed;
+    }
+
+    @Override
+    public SarimaParameters duplicate(){
+        return new SarimaParameters(name, mapping.getSpec(), values.clone(), fixed);
     }
 
     @Override
@@ -90,10 +95,11 @@ public class SarimaParameters implements IMstsParametersBlock {
 
     @Override
     public int fillDefault(double[] buffer, int pos) {
-        if (values == null) {
-            DoubleSequence p = mapping.getDefaultParameters();
-            p.copyTo(buffer, pos);
-            return pos + np;
+        if (! fixed) {
+           for (int i = 0; i < values.length; ++i) {
+                buffer[pos + i] = values[i];
+            }
+            return pos + values.length;
         } else {
             return pos;
         }

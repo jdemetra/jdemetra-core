@@ -92,6 +92,8 @@ public interface IMstsParametersBlock {
         return buffer;
     }
     
+    IMstsParametersBlock duplicate();
+    
     String getName();
     
     boolean isFixed();

@@ -69,7 +69,7 @@ public class AtomicModels {
                     pos += ma.length;
                 }
                 double n = p.get(pos++);
-                ArimaModel arima = new ArimaModel(bar, BackFilter.ONE, bma, n);
+                ArimaModel arima = new ArimaModel(bar, BackFilter.ONE, bma, n*n);
                 StateComponent cmp = SsfArima.componentOf(arima);
                 builder.add(name, cmp, null);
                 return pos;
@@ -77,7 +77,7 @@ public class AtomicModels {
         };
     }
 
-    public ModelItem sarima(final String name, int period, int[] orders, int[] seasonal, double[] parameters, boolean fixed) {
+    public ModelItem sarima(final String name, int period, int[] orders, int[] seasonal, double[] parameters, boolean fixed, double var, boolean fixedvar) {
         SarimaSpecification spec = new SarimaSpecification(period);
         spec.setP(orders[0]);
         spec.setD(orders[1]);
@@ -88,16 +88,19 @@ public class AtomicModels {
             spec.setBq(seasonal[2]);
         }
         return mapping -> {
+            mapping.add(new VarianceParameter(name+"_var", var, fixedvar, true));
             mapping.add(new SarimaParameters(name, spec, parameters, fixed));
             mapping.add((p, builder) -> {
+                double v=p.get(0);
                 int np = spec.getParametersCount();
-                double[] c = p.extract(0, np).toArray();
+                double[] c = p.extract(1, np).toArray();
                 SarimaModel sarima = SarimaModel.builder(spec)
                         .parameters(DoubleSequence.ofInternal(c))
                         .build();
-                StateComponent cmp = SsfArima.componentOf(sarima);
+                ArimaModel arima=new ArimaModel(sarima.getStationaryAR(), sarima.getNonStationaryAR(), sarima.getMA(), v*v);
+                StateComponent cmp = SsfArima.componentOf(arima);
                 builder.add(name, cmp, null);
-                return np;
+                return np+1;
             });
         };
     }
@@ -107,8 +110,8 @@ public class AtomicModels {
             VarianceParameter v = new VarianceParameter(name + "_var", lvar, fixed, true);
             mapping.add(v);
             mapping.add((p, builder) -> {
-                double var = p.get(0);
-                SsfComponent cmp = LocalLevel.of(var, initial);
+                double e = p.get(0);
+                SsfComponent cmp = LocalLevel.of(e*e, initial);
                 builder.add(name, cmp);
                 return 1;
             });
@@ -122,9 +125,9 @@ public class AtomicModels {
             VarianceParameter v2 = new VarianceParameter(name + "_svar", svar, sfixed, true);
             mapping.add(v2);
             mapping.add((p, builder) -> {
-                double var1 = p.get(0);
-                double var2 = p.get(1);
-                SsfComponent cmp = LocalLinearTrend.of(var1, var2);
+                double e1 = p.get(0);
+                double e2 = p.get(1);
+                SsfComponent cmp = LocalLinearTrend.of(e1*e1, e2*e2);
                 builder.add(name, cmp);
                 return 2;
             });
@@ -136,8 +139,8 @@ public class AtomicModels {
             VarianceParameter v = new VarianceParameter(name + "_var", seasvar, fixed, true);
             mapping.add(v);
             mapping.add((p, builder) -> {
-                double var = p.get(0);
-                SsfComponent cmp = SeasonalComponent.of(SeasonalModel.valueOf(smodel), period, var);
+                double e = p.get(0);
+                SsfComponent cmp = SeasonalComponent.of(SeasonalModel.valueOf(smodel), period, e*e);
                 builder.add(name, cmp);
                 return 1;
             });
@@ -149,8 +152,8 @@ public class AtomicModels {
             VarianceParameter v = new VarianceParameter(name + "_var", var, fixed, true);
             mapping.add(v);
             mapping.add((p, builder) -> {
-                double nv = p.get(0);
-                SsfComponent cmp = Noise.of(nv);
+                double e = p.get(0);
+                SsfComponent cmp = Noise.of(e*e);
                 builder.add(name, cmp);
                 return 1;
             });
@@ -172,8 +175,8 @@ public class AtomicModels {
             VarianceParameter v = new VarianceParameter(name + "_var", var, fixed, true);
             mapping.add(v);
             mapping.add((p, builder) -> {
-                double nv = p.get(0);
-                SsfComponent cmp = RegSsf.ofTimeVarying(Matrix.of(x), nv);
+                double e = p.get(0);
+                SsfComponent cmp = RegSsf.ofTimeVarying(Matrix.of(x), e*e);
                 builder.add(name, cmp);
                 return 0;
             });
@@ -184,11 +187,13 @@ public class AtomicModels {
         return mapping -> {
             final int n = vars.length;
             for (int i = 0; i < n; ++i) {
-                VarianceParameter v = new VarianceParameter(name + "_var" + (i + 1), vars[i], fixed, true);
+                mapping.add(new VarianceParameter(name + "_var" + (i + 1), vars[i], fixed, true));
             }
             mapping.add((p, builder) -> {
-                DoubleSequence np = p.extract(0, n);
-                SsfComponent cmp = RegSsf.ofTimeVarying(Matrix.of(x), np);
+                double[] e=p.extract(0, n).toArray();
+                for (int i=0; i<e.length; ++i)
+                    e[i]=e[i]*e[i];
+                SsfComponent cmp = RegSsf.ofTimeVarying(Matrix.of(x), DoubleSequence.ofInternal(e));
                 builder.add(name, cmp);
                 return 0;
             });
@@ -215,8 +220,7 @@ public class AtomicModels {
         Matrix x = RegressionUtility.data(domain, new GenericTradingDaysVariables(gtd));
         Matrix mvar = generateVar(dc, contrast);
         return mapping -> {
-            VarianceParameter v = new VarianceParameter(name + "_var", var, fixed, true);
-            mapping.add(v);
+            mapping.add(new VarianceParameter(name + "_var", var, fixed, true));
             mapping.add((p, builder) -> {
                 double pvar = p.get(0);
                 Matrix xvar = mvar.deepClone();
@@ -259,7 +263,7 @@ public class AtomicModels {
             mapping.add((p, builder) -> {
                 double[] par = p.extract(0, ar.length).toArray();
                 double w = p.get(ar.length);
-                SsfComponent cmp = SsfAr.of(par, w, nlags, zeroinit);
+                SsfComponent cmp = SsfAr.of(par, w*w, nlags, zeroinit);
                 builder.add(name, cmp);
                 return ar.length + 1;
             });
@@ -282,7 +286,7 @@ public class AtomicModels {
                     car[i + 1] = -par[i];
                 }
                 AutoCovarianceFunction acf = new AutoCovarianceFunction(Polynomial.ONE, Polynomial.ofInternal(car), 1);
-                SsfComponent cmp = SsfAr.of(lpar, w / acf.get(0), lpar.length, zeroinit);
+                SsfComponent cmp = SsfAr.of(lpar, w*w / acf.get(0), lpar.length, zeroinit);
                 builder.add(name, cmp);
                 return ar.length + 1;
             });
@@ -364,7 +368,7 @@ public class AtomicModels {
             mapping.add((p, builder) -> {
                 double[] par = p.extract(0, ar.length).toArray();
                 double w = p.get(ar.length);
-                SsfComponent cmp = SsfAr2.of(par, w, nlags, nfcasts);
+                SsfComponent cmp = SsfAr2.of(par, w*w, nlags, nfcasts);
                 builder.add(name, cmp);
                 return ar.length + 1;
             });
@@ -399,8 +403,8 @@ public class AtomicModels {
                     Polynomial pdiff = Polynomial.valueOf(1, diff);
                     bdiff = new BackFilter(pdiff);
                 }
-                double n = p.get(pos++);
-                ArimaModel arima = new ArimaModel(bar, bdiff, bma, n);
+                double e = p.get(pos++);
+                ArimaModel arima = new ArimaModel(bar, bdiff, bma, e*e);
                 StateComponent cmp = SsfArima.componentOf(arima);
                 builder.add(name, cmp, null);
                 return pos;
@@ -425,8 +429,8 @@ public class AtomicModels {
             );
             mapping.add(new VarianceParameter(name + "_var", cvar, fixedvar, true));
             mapping.add((p, builder) -> {
-                double f = p.get(0), l = p.get(1), v = p.get(2);
-                builder.add(name, CyclicalComponent.of(f, l, v));
+                double f = p.get(0), l = p.get(1), e = p.get(2);
+                builder.add(name, CyclicalComponent.of(f, l, e*e));
                 return 3;
             });
         };

@@ -70,10 +70,10 @@ public class ParametersRange implements IParametersDomain {
     public boolean checkBoundaries(DoubleSequence inparams) {
 	for (int i = 0; i < m_np; ++i) {
 	    double v = inparams.get(i);
-	    if (m_excluded) {
-		if (v <= a || v >= b)
+	    if (isOpen()) {
+		if (v <= getA() || v >= getB())
 		    return false;
-	    } else if (v < a || v > b)
+	    } else if (v < getA() || v > getB())
 		return false;
 	}
 	return true;
@@ -81,8 +81,8 @@ public class ParametersRange implements IParametersDomain {
 
     @Override
     public double epsilon(DoubleSequence inparams, int idx) {
-	double eps = (b - a) * m_eps;
-	if (inparams.get(idx) + eps >= b)
+	double eps = (getB() - getA()) * m_eps;
+	if (inparams.get(idx) + eps >= getB())
 	    eps = -eps;
 	return eps;
     }
@@ -103,7 +103,7 @@ public class ParametersRange implements IParametersDomain {
 
     @Override
     public double lbound(int idx) {
-	return m_excluded ? a + m_eps : a;
+	return isOpen() ? getA() + m_eps : getA();
     }
 
     /**
@@ -117,7 +117,7 @@ public class ParametersRange implements IParametersDomain {
 
     @Override
     public double ubound(int idx) {
-	return m_excluded ? b - m_eps : b;
+	return isOpen() ? getB() - m_eps : getB();
     }
 
     @Override
@@ -125,21 +125,21 @@ public class ParametersRange implements IParametersDomain {
 	ParamValidation rslt = ParamValidation.Valid;
 	for (int i = 0; i < m_np; ++i) {
 	    double v = ioparams.get(i);
-	    if (m_excluded) {
-		if (v <= a) {
-		    double eps = (b - a) * m_eps;
-		    ioparams.set(i, a + eps);
+	    if (isOpen()) {
+		if (v <= getA()) {
+		    double eps = (getB() - getA()) * m_eps;
+		    ioparams.set(i, getA() + eps);
 		    rslt = ParamValidation.Changed;
-		} else if (v >= b) {
-		    double eps = (b - a) * m_eps;
-		    ioparams.set(i, b - eps);
+		} else if (v >= getB()) {
+		    double eps = (getB() - getA()) * m_eps;
+		    ioparams.set(i, getB() - eps);
 		    rslt = ParamValidation.Changed;
 		}
-	    } else if (v < a) {
-		ioparams.set(i, a);
+	    } else if (v < getA()) {
+		ioparams.set(i, getA());
 		rslt = ParamValidation.Changed;
-	    } else if (v > b) {
-		ioparams.set(i, b);
+	    } else if (v > getB()) {
+		ioparams.set(i, getB());
 		rslt = ParamValidation.Changed;
 	    }
 	}
@@ -149,6 +149,27 @@ public class ParametersRange implements IParametersDomain {
     @Override
     public String getDescription(int idx) {
         return PARAM+idx; 
+    }
+
+    /**
+     * @return the a
+     */
+    public double getA() {
+        return a;
+    }
+
+    /**
+     * @return the b
+     */
+    public double getB() {
+        return b;
+    }
+
+    /**
+     * @return the m_excluded
+     */
+    public boolean isOpen() {
+        return m_excluded;
     }
 
 }

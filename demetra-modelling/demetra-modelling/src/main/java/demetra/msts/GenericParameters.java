@@ -27,6 +27,11 @@ public class GenericParameters implements IMstsParametersBlock {
     }
 
     @Override
+    public GenericParameters duplicate(){
+        return new GenericParameters(name, domain, parameters.clone(), fixed);
+    }
+
+     @Override
     public String getName() {
         return name;
     }

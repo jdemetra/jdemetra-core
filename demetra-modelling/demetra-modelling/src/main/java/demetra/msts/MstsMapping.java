@@ -34,8 +34,8 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
     public void add(IMstsParametersBlock block) {
         this.parameters.add(block);
     }
-    
-    public Stream<IMstsParametersBlock> parameters(){
+
+    public Stream<IMstsParametersBlock> parameters() {
         return parameters.stream();
     }
 
@@ -52,25 +52,23 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
         double max = maxVariance(cur);
         int pos = 0;
         for (IMstsParametersBlock p : parameters) {
-            if (!p.isFixed()) {
-                int dim = p.getDomain().getDim();
-                if (dim == 1 && p instanceof VarianceParameter) {
-                    VarianceParameter vp = (VarianceParameter) p;
-                    if (vp.isNullable()) {
-                        double e = cur.get(pos);
-                        double v = e * e;
-                        if (v < eps * max) {
-                            small.add((VarianceParameter) p);
-                        }
+            int dim = p.getDomain().getDim();
+            if (!p.isFixed() && dim == 1 && p instanceof VarianceParameter) {
+                VarianceParameter vp = (VarianceParameter) p;
+                if (vp.isNullable()) {
+                    double v = cur.get(pos);
+                    if (v < eps * max) {
+                        small.add(vp);
                     }
                 }
-                pos += dim;
             }
+
+            pos += dim;
         }
         return small;
     }
-    
-    public void fixModelParameters(Predicate<IMstsParametersBlock> selection, DoubleSequence fullParameters){
+
+    public void fixModelParameters(Predicate<IMstsParametersBlock> selection, DoubleSequence fullParameters) {
         IMstsParametersBlock.fixModelParameters(parameters, selection, fullParameters);
     }
 
@@ -79,18 +77,15 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
         int pos = 0;
         for (IMstsParametersBlock p : parameters) {
             int dim = p.getDomain().getDim();
-            if (dim == 1 && p instanceof VarianceParameter) {
-                VarianceParameter var = (VarianceParameter) p;
-                double e = var.isFixed() ? var.defValue() : cur.get(pos);
-                if (e > max) {
-                    max = e;
+            if (dim == 1 && !p.isFixed() && p instanceof VarianceParameter) {
+               double v = cur.get(pos);
+                if (v > max) {
+                    max = v;
                 }
             }
-            if (!p.isFixed()) {
-                pos += dim;
-            }
+            pos += dim;
         }
-        return max * max;
+        return max;
     }
 
     /**

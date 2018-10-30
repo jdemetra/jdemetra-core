@@ -37,6 +37,15 @@ public class VarianceParameter implements IMstsParametersBlock {
         this.name = name;
         this.nullable = nullable;
     }
+    
+     
+    @Override
+    public VarianceParameter duplicate(){
+        VarianceParameter p = new VarianceParameter(name, nullable);
+        p.stde=stde;
+        p.fixed=fixed;
+        return p;
+    }
 
     @Override
     public String getName() {

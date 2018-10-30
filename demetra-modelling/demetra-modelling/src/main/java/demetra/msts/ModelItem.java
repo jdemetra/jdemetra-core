@@ -5,8 +5,6 @@
  */
 package demetra.msts;
 
-import demetra.msts.MstsMapping;
-
 /**
  *
  * @author palatej

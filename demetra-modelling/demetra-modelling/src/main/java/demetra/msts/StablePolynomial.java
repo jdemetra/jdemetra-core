@@ -31,6 +31,11 @@ public class StablePolynomial implements IMstsParametersBlock {
         this.fixed = fixed;
         this.domain = new Domain(values.length);
     }
+    
+    @Override
+    public StablePolynomial duplicate(){
+        return new StablePolynomial(name, values.clone(), fixed);
+    }
 
     @Override
     public String getName() {
