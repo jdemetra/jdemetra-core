@@ -138,10 +138,17 @@ public class VarianceParameter implements IMstsParametersBlock {
         public boolean checkBoundaries(DoubleSequence inparams) {
             return true;
         }
+        
+        private static final double EPS=1e-6;
 
         @Override
         public double epsilon(DoubleSequence inparams, int idx) {
-            return Math.max(1e-4, Math.abs(inparams.get(0)) * 1e-4);
+            double c=inparams.get(0);
+            if (c >= 0)
+                return Math.max(EPS, c * EPS);
+            else
+                return -Math.max(EPS, -c * EPS);
+                
         }
 
         @Override

@@ -245,7 +245,8 @@ public class SeasonalComponent {
     private static Matrix LVTS2, LVTS3, LVTS4, LVTS6, LVTS12, LHS2, LHS3, LHS4, LHS6, LHS12;
 
     public SsfComponent of(final SeasonalModel model, final int period, final double seasVar) {
-        Data data = new Data(model, seasVar, period);
+        SeasonalModel cmodel=seasVar == 0 ? SeasonalModel.Fixed : model;
+        Data data = new Data(cmodel, seasVar, period);
         return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
 

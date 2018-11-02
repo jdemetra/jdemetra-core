@@ -120,9 +120,16 @@ public final class LoadingParameter implements IMstsParametersBlock {
             return true;
         }
 
+        private static final double EPS=1e-6;
+
         @Override
         public double epsilon(DoubleSequence inparams, int idx) {
-            return 1e-8;
+            double c=inparams.get(0);
+            if (c >= 0)
+                return Math.max(EPS, c * EPS);
+            else
+                return -Math.max(EPS, -c * EPS);
+                
         }
 
         @Override

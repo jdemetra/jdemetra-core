@@ -21,6 +21,7 @@ import demetra.ssf.multivariate.M2uAdapter;
 import demetra.ssf.multivariate.SsfMatrix;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -36,16 +37,15 @@ public class MstsMonitor {
 
     public static class Builder {
 
-        private static final int MAXITER = 5, MAXITER_MIN = 500;
-        private static final double SMALL_VAR = 1e-8;
+        private static final int MAXITER = 20, MAXITER_MIN = 500;
+        private static final double SMALL_VAR = 1e-12;
 
         private boolean marginalLikelihood;
-        private double precision = 1e-9, smallVar = SMALL_VAR, precision2 = 1e-2;
+        private double precision = 1e-9, smallVar = SMALL_VAR, precision2 = 1e-7, precision3 = 1e-3;
         private int maxIter = MAXITER;
         private int maxIterOptimzer = MAXITER_MIN;
         private boolean bfgs;
         private boolean minpack;
-        private boolean resetParameters;
         private boolean concentratedLikelihood = true;
 
         public Builder marginalLikelihood(boolean ml) {
@@ -71,11 +71,6 @@ public class MstsMonitor {
                 throw new IllegalArgumentException();
             }
             this.smallVar = var;
-            return this;
-        }
-
-        public Builder resetParameters(boolean reset) {
-            this.resetParameters = reset;
             return this;
         }
 
@@ -111,21 +106,21 @@ public class MstsMonitor {
             return new MstsMonitor(this);
         }
     }
-
+    private static final int NITER = 8;
     private final boolean marginalLikelihood;
     private final boolean concentratedLikelihood;
-    private final double precision, precision2, smallStde;
+    private final double precision, precision2, precision3, smallStde;
     private final int maxIter;
     private final int maxIterOptimzer;
     private final boolean bfgs;
     private final boolean minpack;
-    private final boolean resetParameters;
 
     private Matrix data;
     private MstsMapping model;
     private MultivariateCompositeSsf ssf;
     private DoubleSequence fullp;
     private ILikelihood ll;
+    private VarianceParameter fixedVariance;
 
     private final List<VarianceParameter> smallVariances = new ArrayList<>();
 //    private final List<LoadingParameter> smallLoadings = new ArrayList<>();
@@ -136,104 +131,134 @@ public class MstsMonitor {
         this.maxIterOptimzer = builder.maxIterOptimzer;
         this.precision = builder.precision;
         this.precision2 = builder.precision2;
+        this.precision3 = builder.precision3;
         this.marginalLikelihood = builder.marginalLikelihood;
         this.concentratedLikelihood = builder.concentratedLikelihood;
         this.maxIter = builder.maxIter;
-        this.resetParameters = builder.resetParameters;
         this.smallStde = Math.sqrt(builder.smallVar);
     }
 
-    private ILikelihoodFunction function() {
+    private ILikelihoodFunction function(boolean concentrated) {
         SsfMatrix s = new SsfMatrix(data);
         if (this.marginalLikelihood) {
             return MarginalLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
                     .useParallelProcessing(true)
                     .useMaximumLikelihood(true)
-                    .useScalingFactor(concentratedLikelihood)
+                    .useScalingFactor(concentrated)
                     .build();
         } else {
             return SsfFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
                     .useParallelProcessing(true)
                     .useMaximumLikelihood(true)
-                    .useScalingFactor(concentratedLikelihood)
+                    .useScalingFactor(concentrated)
                     .useFastAlgorithm(true)
                     .build();
         }
     }
 
-    public void process(Matrix data, MstsMapping model, DoubleSequence fullInitial) {
+    private boolean needFixedVariance() {
+        if (fixedVariance != null) {
+            return true;
+        }
+        if (!concentratedLikelihood || !model.isScalable()) {
+            return false;
+        }
+        // No fixed variance
+        return model.parameters()
+                .filter(p -> p.isFixed()
+                        && p instanceof VarianceParameter
+                        && ((VarianceParameter) p).defValue() > 0)
+                .count() == 0;
+    }
 
+    public void process(Matrix data, MstsMapping model, DoubleSequence fullInitial) {
+        fixedVariance = null;
         this.data = data;
         this.model = model;
         fullp = fullInitial;
         if (fullp == null) {
             fullp = model.modelParameters(model.getDefaultParameters());
         }
-        int fniter = 50;
-        if (concentratedLikelihood && model.isScalable() && model.parameters()
-                .filter(p -> p.isFixed() && p instanceof VarianceParameter && ((VarianceParameter) p).defValue() > 0).count() == 0) {
-            fixVariance();
+        int fniter = concentratedLikelihood ? 30 : 50;
+        if (needFixedVariance()) {
+            Optional<IMstsParametersBlock> first = model.parameters().filter(var()).findFirst();
+            if (first.isPresent()) {
+                fixedVariance = (VarianceParameter) first.get();
+                fixedVariance.fixStde(1);
+            }
         }
 
+        int nv=0;
         double curll = 0;
-        for (int k = 0; k < 6; ++k) {
-//            for (IMstsParametersBlock p : smallVariances) {
-//                p.free();
-//            }
-//            smallVariances.clear();
+        for (int k = 0; k < NITER; ++k) {
             int niter = 0;
             do {
                 DoubleSequence p = model.functionParameters(fullp);
-                ILikelihoodFunction fn = function();
-                ILikelihoodFunctionPoint rslt = min(fn, precision2, fniter, p);
+                ILikelihoodFunction fn = function(concentratedLikelihood);
+                ILikelihoodFunctionPoint rslt = min(fn, concentratedLikelihood, curll == 0 ? precision3 : precision2, fniter, p);
                 ll = rslt.getLikelihood();
                 p = rslt.getParameters();
                 fullp = model.modelParameters(p);
-                if (!fixSmallVariance(1e-2) && !freeSmallVariance()) {
+                if (!fixSmallVariance(1e-3) && !freeSmallVariance()) {
                     break;
                 }
             } while (niter++ < maxIter);
 
-            // Fix all variances and loadings
-            List<IMstsParametersBlock> fixedBlocks = model.parameters()
-                    .filter(p -> !p.isFixed() && p.isPotentialInstability())
-                    .collect(Collectors.toList());
-
-            model.fixModelParameters(p -> p.isPotentialInstability(), fullp);
-            if (model.parameters().filter(p -> !p.isFixed()).count() > 0) {
-                ILikelihoodFunction fn = function();
-                DoubleSequence curp = model.functionParameters(fullp);
-                ILikelihoodFunctionPoint rslt = min(fn, precision2, fniter, curp);
-                ll = rslt.getLikelihood();
-                DoubleSequence np = rslt.getParameters();
-                fullp = model.modelParameters(np);
+            boolean changed = false;
+                // we can change twice the fixed variance
+            if (needFixedVariance() && nv < 3) {
+                VarianceParameter mvar = model.findMaxVariance(fullp);
+                if (mvar != fixedVariance ) {
+                    ++nv;
+                    fixedVariance.free();
+                    mvar.fixStde(1);
+                    fixedVariance = mvar;
+                    curll=0;
+                    changed = true;
+                }
             }
-            // Free the fixed parameters
-            for (IMstsParametersBlock p : fixedBlocks) {
-                p.free();
-            }
+            if (!changed) {
+                // Fix all variances and loadings
+                List<IMstsParametersBlock> fixedBlocks = model.parameters()
+                        .filter(p -> !p.isFixed() && p.isPotentialInstability())
+                        .collect(Collectors.toList());
 
-            if (curll != 0 && Math.abs(curll - ll.logLikelihood()) < 1e-4) {
-                break;
-            } else {
-                curll = ll.logLikelihood();
+                model.fixModelParameters(p -> p.isPotentialInstability(), fullp);
+                if (model.parameters().filter(p -> !p.isFixed()).count() > 0) {
+                    ILikelihoodFunction fn = function(concentratedLikelihood);
+                    DoubleSequence curp = model.functionParameters(fullp);
+                    ILikelihoodFunctionPoint rslt = min(fn, concentratedLikelihood, curll == 0 ? precision3 : precision2, fniter, curp);
+                    ll = rslt.getLikelihood();
+                    DoubleSequence np = rslt.getParameters();
+                    fullp = model.modelParameters(np);
+                }
+                // Free the fixed parameters
+                for (IMstsParametersBlock p : fixedBlocks) {
+                    p.free();
+                }
+
+                if (curll != 0 && Math.abs(curll - ll.logLikelihood()) < 1e-4) {
+                    break;
+                } else {
+                    curll = ll.logLikelihood();
+                }
             }
         }
         DoubleSequence p = model.functionParameters(fullp);
         // Final estimation. To do anyway
-        ILikelihoodFunction fn = function();
-        ILikelihoodFunctionPoint rslt = min(fn, precision, this.maxIterOptimzer, p);
+        ILikelihoodFunction fn = function(concentratedLikelihood);
+        ILikelihoodFunctionPoint rslt = min(fn, concentratedLikelihood, precision, this.maxIterOptimzer, p);
         ll = rslt.getLikelihood();
         p = rslt.getParameters();
         fullp = model.modelParameters(p);
         ssf = model.map(p);
     }
 
-    private ILikelihoodFunctionPoint min(ILikelihoodFunction fn, double eps, int niter, DoubleSequence start) {
+    private ILikelihoodFunctionPoint min(ILikelihoodFunction fn, boolean concentrated, double eps, int niter, DoubleSequence start) {
         if (fn.getDomain().getDim() == 0) {
             return fn.evaluate(start);
         }
-        if (bfgs) {
+        if (!concentrated) {
             LbfgsMinimizer lm = new LbfgsMinimizer();
             lm.setFunctionPrecision(eps);
             lm.setMaxIter(niter);
@@ -258,7 +283,7 @@ public class MstsMonitor {
             small.fixStde(smallStde);
             try {
                 DoubleSequence nprslts = model.functionParameters(fullp);
-                ILikelihood nll = function().evaluate(nprslts).getLikelihood();
+                ILikelihood nll = function(concentratedLikelihood).evaluate(nprslts).getLikelihood();
                 double d = nll.logLikelihood() - ll.logLikelihood();
                 if (d > dll) {
                     dll = d;
@@ -297,7 +322,7 @@ public class MstsMonitor {
             double olde = small.fixStde(0);
             try {
                 DoubleSequence p = model.functionParameters(fullp);
-                ILikelihood nll = function().evaluate(p).getLikelihood();
+                ILikelihood nll = function(concentratedLikelihood).evaluate(p).getLikelihood();
                 double ndll = nll.logLikelihood() - ll.logLikelihood();
                 if (ndll > dll) {
                     dll = ndll;
@@ -318,6 +343,17 @@ public class MstsMonitor {
     }
 
     private void fixVariance() {
+        // we fix the first one
+        DoubleSequence p = model.functionParameters(fullp);
+        ILikelihoodFunction fn = function(false);
+        ILikelihoodFunctionPoint rslt = min(fn, false, precision2, 15, p);
+        p = rslt.getParameters();
+        DoubleSequence fp = model.modelParameters(p);
+        VarianceParameter mv = model.findMaxVariance(fp);
+        mv.fixStde(1);
+    }
+
+    private void fixVariance2() {
         List<VarianceParameter> svar = model.parameters()
                 .filter(var())
                 .map(p -> (VarianceParameter) p)
@@ -331,12 +367,12 @@ public class MstsMonitor {
         }
         // current params
         DoubleSequence p = model.functionParameters(fullp);
-        ILikelihood ll0 = function().evaluate(p).getLikelihood();
+        ILikelihood ll0 = function(true).evaluate(p).getLikelihood();
         VarianceParameter cur = null;
         for (VarianceParameter var : svar) {
             var.fixStde(1);
             try {
-                ILikelihood nll = function().evaluate(p).getLikelihood();
+                ILikelihood nll = function(true).evaluate(p).getLikelihood();
                 double ndll = nll.logLikelihood() - ll0.logLikelihood();
                 if (dll == 0 || ndll > dll) {
                     dll = ndll;

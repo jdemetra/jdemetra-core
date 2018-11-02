@@ -88,6 +88,23 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
         return max;
     }
 
+    public VarianceParameter findMaxVariance(DoubleSequence cur) {
+        double max = 0;
+        int pos = 0;
+        VarianceParameter mvar=null;
+        for (IMstsParametersBlock p : parameters) {
+            int dim = p.getDomain().getDim();
+            if (dim == 1 && p instanceof VarianceParameter) {
+               double v = cur.get(pos);
+                if (v > max) {
+                    max = v;
+                    mvar=(VarianceParameter) p;
+                }
+            }
+            pos += dim;
+        }
+        return mvar;
+    }
     /**
      * From function parameters to model parameters
      *
