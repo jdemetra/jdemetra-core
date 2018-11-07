@@ -54,6 +54,7 @@ import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
+import ec.tstoolkit.timeseries.regression.IUserTsVariable;
 import ec.tstoolkit.timeseries.regression.MissingValueEstimation;
 import ec.tstoolkit.timeseries.regression.OutlierEstimation;
 import ec.tstoolkit.timeseries.regression.OutlierType;
@@ -936,7 +937,7 @@ public class PreprocessingModel implements IProcResults {
             OUT15 = "out(15)", OUT16 = "out(16)", OUT17 = "out(17)", OUT18 = "out(18)", OUT19 = "out(19)", OUT20 = "out(20)",
             OUT21 = "out(21)", OUT22 = "out(22)", OUT23 = "out(23)", OUT24 = "out(24)", OUT25 = "out(25)", OUT26 = "out(26)",
             OUT27 = "out(27)", OUT28 = "out(28)", OUT29 = "out(29)", OUT30 = "out(30)",
-            COEFF = "coefficients", COVAR = "covar", COEFFDESC = "description", PCOVAR = "pcovar",
+            USER="user", COEFF = "coefficients", COVAR = "covar", COEFFDESC = "description", PCOVAR = "pcovar",
             TD_DERIVED = "td-derived", TD_FTEST = "td-ftest";
 
     ;
@@ -1093,6 +1094,7 @@ public class PreprocessingModel implements IProcResults {
             return vars.select(OutlierType.SO).getItemsCount();
         });
         MAPPING.setList(InformationSet.item(REGRESSION, OUT), 1, 31, RegressionItem.class, (source, i) -> source.getRegressionItem(IOutlierVariable.class, i - 1));
+        MAPPING.setList(InformationSet.item(REGRESSION, USER), 1, 31, RegressionItem.class, (source, i) -> source.getRegressionItem(IUserTsVariable.class, i - 1));
         MAPPING.set(InformationSet.item(REGRESSION, COEFF), Parameter[].class, source -> {
             double[] c = source.estimation.getLikelihood().getB();
             if (c == null) {

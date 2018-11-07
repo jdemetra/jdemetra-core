@@ -146,6 +146,13 @@ public final class X11Context {
     }
 
     /**
+     *
+     * @return
+     */
+    public final boolean isLogAdditive() {
+        return mode == DecompositionMode.LogAdditive;
+    }
+    /**
      * Subtracts/divides two time series, following the decomposition mode.
      * (divides in the case of multiplicative decomposition)
      *
@@ -201,7 +208,7 @@ public final class X11Context {
         }
         return sa;
     }
-
+    
     /**
      * Controls that the given series can be processed by X11
      *

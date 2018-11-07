@@ -70,7 +70,7 @@ public class X11Kernel implements ISeriesDecomposer {
     public static final String E1 = "e1", E2 = "e2", E3 = "e3", E11 = "e11";
     public static final String[] ALL_E = {E1, E2, E3, E11};
     private IX11Toolkit toolkit;
-    private TsData refSeries;
+    private TsData refSeries, refCorrection;
     //private TsData correctionFactors;
     private boolean uscbLike = true;
     private IExtremeValuesCorrector ecorr;
@@ -131,11 +131,7 @@ public class X11Kernel implements ISeriesDecomposer {
         InformationSet btables = info.subSet(B);
 
         TsData b1 = btables.get(B1, TsData.class);
-        if (toolkit.getContext().getMode() == DecompositionMode.LogAdditive) {
-            refSeries = b1.log();
-        } else {
-            refSeries = b1;
-        }
+        refSeries=toolkit.getContext().isLogAdditive() ? b1.log() : b1;
         // build the modules
         // b2
         TsData b2 = toolkit.getTrendCycleComputer().doInitialFiltering(
@@ -241,7 +237,24 @@ public class X11Kernel implements ISeriesDecomposer {
         ecorr.analyse(next);
         TsData b17 = ecorr.getObservationWeights();
         TsData b20 = ecorr.getCorrectionFactors();
+        refCorrection=b20;
 
+        // Correct log-additive series
+        if (toolkit.getContext().isLogAdditive()){
+            b2.applyOnFinite(x->Math.exp(x));
+            b3.applyOnFinite(x->Math.exp(x));
+            b4.applyOnFinite(x->Math.exp(x));
+            b5.applyOnFinite(x->Math.exp(x));
+            b6.applyOnFinite(x->Math.exp(x));
+            b7.applyOnFinite(x->Math.exp(x));
+            b8.applyOnFinite(x->Math.exp(x));
+            b9.applyOnFinite(x->Math.exp(x));
+            b10.applyOnFinite(x->Math.exp(x));
+            b11.applyOnFinite(x->Math.exp(x));
+            b13.applyOnFinite(x->Math.exp(x));
+            b20=b20.exp();
+        }
+        
         btables.set(B2, b2);
         btables.set(B3, b3);
         // btables.set(B3TEST, b3test);
@@ -261,14 +274,13 @@ public class X11Kernel implements ISeriesDecomposer {
 
     private void stepC(InformationSet info) {
         InformationSet ctables = info.subSet(C);
-        TsData b20 = info.subSet(B).get(B20, TsData.class);
         TsData c1;
         if (toolkit.getContext().isPseudoAdditive()) {
             TsData b7 = info.subSet(B).get(B7, TsData.class); // trend
             TsData b13 = info.subSet(B).get(B13, TsData.class); // irregular
-            c1 = refSeries.plus(b7.times(b13.div(b20).minus(b13)));
+            c1 = refSeries.plus(b7.times(b13.div(refCorrection).minus(b13)));
         } else {
-            c1 = toolkit.getContext().op(refSeries, b20);
+            c1 = toolkit.getContext().op(refSeries, refCorrection);
         }
         TsData c2 = toolkit.getTrendCycleComputer().doInitialFiltering(
                 X11Step.B, c1, info);
@@ -331,13 +343,21 @@ public class X11Kernel implements ISeriesDecomposer {
         ecorr.analyse(next);
         TsData c17 = ecorr.getObservationWeights();
         TsData c20 = ecorr.getCorrectionFactors();
-        /*
-         * if (toolkit.getContext().getMode() == DecompositionMode.LogAdditive)
-         * { c1.getValues().exp(); c2.getValues().exp(); c4.getValues().exp();
-         * c5.getValues().exp(); c6.getValues().exp(); c7.getValues().exp();
-         * c9.getValues().exp(); c10.getValues().exp(); c11.getValues().exp();
-         * c13.getValues().exp(); c20.getValues().exp(); }
-         */
+        refCorrection=c20;
+        
+        if (toolkit.getContext().isLogAdditive()){
+            c1.applyOnFinite(x->Math.exp(x));
+            c2.applyOnFinite(x->Math.exp(x));
+            c4.applyOnFinite(x->Math.exp(x));
+            c5.applyOnFinite(x->Math.exp(x));
+            c6.applyOnFinite(x->Math.exp(x));
+            c7.applyOnFinite(x->Math.exp(x));
+            c9.applyOnFinite(x->Math.exp(x));
+            c10.applyOnFinite(x->Math.exp(x));
+            c11.applyOnFinite(x->Math.exp(x));
+            c13.applyOnFinite(x->Math.exp(x));
+            c20=c20.exp();
+        }
 
         ctables.set(C1, c1);
         ctables.set(C2, c2);
@@ -356,14 +376,13 @@ public class X11Kernel implements ISeriesDecomposer {
     private void stepD(InformationSet info) {
         InformationSet dtables = info.subSet(D);
         TsDomain sdomain = toolkit.getContext().getEstimationDomain();
-        TsData c20 = info.subSet(C).get(C20, TsData.class);
         TsData d1;
         if (toolkit.getContext().isPseudoAdditive()) {
             TsData c7 = info.subSet(C).get(C7, TsData.class); // trend
             TsData c13 = info.subSet(C).get(C13, TsData.class); // irregular
-            d1 = refSeries.plus(c7.times(c13.div(c20).minus(c13)));
+            d1 = refSeries.plus(c7.times(c13.div(refCorrection).minus(c13)));
         } else {
-            d1 = toolkit.getContext().op(refSeries, c20);
+            d1 = toolkit.getContext().op(refSeries, refCorrection);
         }
         // d2
         TsData d2 = toolkit.getTrendCycleComputer().doInitialFiltering(
@@ -390,7 +409,7 @@ public class X11Kernel implements ISeriesDecomposer {
             toolkit.getUtilities().checkPositivity(d7);
         }
         TsData d8a = toolkit.getContext().op(d1, d7);
-        TsData d8 = toolkit.getContext().invOp(d8a, c20);
+        TsData d8 = toolkit.getContext().invOp(d8a, refCorrection);
 // probably a mistake in case of pseudoadditive decomposition. To See with Brian
 
 //        TsData d8 = toolkit.getContext().op(refSeries, d7);
@@ -426,15 +445,6 @@ public class X11Kernel implements ISeriesDecomposer {
             }
         }
 
-        DecompositionMode curMode = toolkit.getContext().getMode();
-        if (curMode == DecompositionMode.LogAdditive) {
-            d1.applyOnFinite(x -> Math.exp(x));
-            // d9bis.getValues().exp(); ???
-            d10.applyOnFinite(x -> Math.exp(x));
-            toolkit.getContext().setMode(DecompositionMode.Multiplicative);
-        }
-
-        toolkit.getContext().setMode(curMode);
         TsData d12 = toolkit.getTrendCycleComputer().doFinalFiltering(
                 X11Step.D, d11bis, info);
         ICRatioComputer.writeICR(toolkit.getContext(), d11bis, info);
@@ -454,8 +464,20 @@ public class X11Kernel implements ISeriesDecomposer {
         TsData d13 = toolkit.getContext().op(d11, d12);
 
         if (toolkit.getContext().getMode() == DecompositionMode.LogAdditive) {
-            TsData b1 = info.subSet(B).get(B1, TsData.class); // (m_params.isTradingDayRegression()
+            // we transform all the current series
+            d1.applyOnFinite(x -> Math.exp(x));
+            d2.applyOnFinite(x -> Math.exp(x));
+            d4.applyOnFinite(x -> Math.exp(x));
+            d5.applyOnFinite(x -> Math.exp(x));
+            d6.applyOnFinite(x -> Math.exp(x));
+            d7.applyOnFinite(x -> Math.exp(x));
+            d8.applyOnFinite(x -> Math.exp(x));
+            d9.applyOnFinite(x -> Math.exp(x));
+            d10.applyOnFinite(x -> Math.exp(x));
+            d11.applyOnFinite(x -> Math.exp(x));
             d12.applyOnFinite(x -> Math.exp(x));
+            d13.applyOnFinite(x -> Math.exp(x));
+            TsData b1 = info.subSet(B).get(B1, TsData.class); // (m_params.isTradingDayRegression()
             toolkit.getContext().setMode(DecompositionMode.Multiplicative);
             if (uscbLike) {
                 TsData c13 = info.subSet(C).get(C13, TsData.class);
@@ -608,5 +630,5 @@ public class X11Kernel implements ISeriesDecomposer {
 
     private void stepF(InformationSet info) {
     }
-
+    
 }
