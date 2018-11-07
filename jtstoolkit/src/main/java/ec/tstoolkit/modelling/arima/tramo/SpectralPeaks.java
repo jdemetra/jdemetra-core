@@ -280,11 +280,13 @@ public class SpectralPeaks {
 
     public static String format(SpectralPeaks[] peaks) {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < peaks.length; ++i) {
-            if (i != 0) {
-                builder.append('.');
+        if (peaks != null) {
+            for (int i = 0; i < peaks.length; ++i) {
+                if (i != 0) {
+                    builder.append('.');
+                }
+                builder.append(peaks[i].toString());
             }
-            builder.append(peaks[i].toString());
         }
         return builder.toString();
     }
