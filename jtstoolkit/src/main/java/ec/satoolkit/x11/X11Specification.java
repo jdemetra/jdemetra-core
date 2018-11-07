@@ -45,8 +45,9 @@ public class X11Specification implements IProcSpecification, Cloneable {
             BCASTS = "bcasts",
             FCASTS = "fcasts",
             CALENDARSIGMA = "calendarsigma",
-            SIGMAVEC="sigmavec",
-    EXCLUDEFCAST="excludeforcast";
+            SIGMAVEC = "sigmavec",
+            EXCLUDEFCAST = "excludeforcast",
+            BIAS = "bias";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, MODE), String.class);
@@ -58,9 +59,10 @@ public class X11Specification implements IProcSpecification, Cloneable {
         dic.put(InformationSet.item(prefix, FCASTS), Integer.class);
         dic.put(InformationSet.item(prefix, BCASTS), Integer.class);
         dic.put(InformationSet.item(prefix, CALENDARSIGMA), String.class);
-      //  dic.put(InformationSet.item(prefix, MODE), String.class);
+        //  dic.put(InformationSet.item(prefix, MODE), String.class);
         dic.put(InformationSet.item(prefix, SIGMAVEC), String[].class);
-        dic.put(InformationSet.item(prefix, EXCLUDEFCAST), String.class);  
+        dic.put(InformationSet.item(prefix, EXCLUDEFCAST), String.class);
+        dic.put(InformationSet.item(prefix, BIAS), String.class);
     }
 
     private DecompositionMode mode_ = DecompositionMode.Undefined;
@@ -70,13 +72,14 @@ public class X11Specification implements IProcSpecification, Cloneable {
     private int henderson_ = 0;
     private int fcasts_ = DEF_FCASTS, bcasts_ = DEF_BCASTS;
     private CalendarSigma calendarsigma_ = CalendarSigma.None;
-    private SigmavecOption[] sigmavec_; 
-    private boolean excludefcast_= false;
+    private SigmavecOption[] sigmavec_;
+    private boolean excludefcast_ = false;
+    private BiasCorrection bias = BiasCorrection.Legacy;
 
     /**
      * Number of forecasts used in X11. By default, 0. When pre-processing is
-     * used, the number of forecasts corresponds usually to 1 year.
-     * Negative values correspond to full years (-3 = 3 years)
+     * used, the number of forecasts corresponds usually to 1 year. Negative
+     * values correspond to full years (-3 = 3 years)
      *
      * @return the forecastsHorizon
      */
@@ -85,14 +88,15 @@ public class X11Specification implements IProcSpecification, Cloneable {
     }
 
     /**
-     * Number of backcasts used in X11. By default, 0.
-     * Negative values correspond to full years (-3 = 3 years)
+     * Number of backcasts used in X11. By default, 0. Negative values
+     * correspond to full years (-3 = 3 years)
      *
      * @return the backcastsHorizon
      */
     public int getBackcastHorizon() {
         return bcasts_;
     }
+
     /**
      * Length of the Henderson filter [trendma option in X12-Arima]. When the
      * length is 0, an automatic estimation of the length of the Henderson
@@ -113,11 +117,11 @@ public class X11Specification implements IProcSpecification, Cloneable {
     public CalendarSigma getCalendarSigma() {
         return calendarsigma_;
     }
-    
-    public SigmavecOption[] getSigmavec(){
-        return sigmavec_ ;
+
+    public SigmavecOption[] getSigmavec() {
+        return sigmavec_;
     }
-    
+
     public double getLowerSigma() {
         return lsigma_;
     }
@@ -145,17 +149,18 @@ public class X11Specification implements IProcSpecification, Cloneable {
     public void setSeasonal(boolean seas) {
         seasonal_ = seas;
     }
-    
-    public boolean isExcludefcst(){
-    return excludefcast_;
+
+    public boolean isExcludefcst() {
+        return excludefcast_;
     }
-    
+
     /**
      *
-     * @param excludefcst default is false; true then the forcasts are ignored for the extreme value calculation
+     * @param excludefcst default is false; true then the forcasts are ignored
+     * for the extreme value calculation
      */
-    public void setExcludefcst(boolean excludefcst){
-    excludefcast_=excludefcst;
+    public void setExcludefcst(boolean excludefcst) {
+        excludefcast_ = excludefcst;
     }
 
     public boolean isDefault() {
@@ -166,7 +171,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
         if (calendarsigma_ != CalendarSigma.None) {
             return false;
         }
-        
+
         if (fcasts_ != DEF_FCASTS) {
             return false;
         }
@@ -177,7 +182,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
                 }
             }
         }
-        
+
         if (sigmavec_ != null) {
             for (int i = 0; i < sigmavec_.length; ++i) {
                 if (sigmavec_[i] != SigmavecOption.Group1) {
@@ -191,13 +196,13 @@ public class X11Specification implements IProcSpecification, Cloneable {
         if (usigma_ != DEF_USIGMA) {
             return false;
         }
-        
-        if (!excludefcast_){
-        return false;}
-        
+
+        if (!excludefcast_) {
+            return false;
+        }
+
         return isAutoHenderson();
-        
-        
+
     }
 
     public boolean isAutoHenderson() {
@@ -231,6 +236,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
     public void setBackcastHorizon(int backcastsHorizon) {
         this.bcasts_ = backcastsHorizon;
     }
+
     /**
      * Option of Calendarsigma[X12], specifies the calculation of the standard
      * error calculation used for outlier detection in the X11 part
@@ -241,11 +247,10 @@ public class X11Specification implements IProcSpecification, Cloneable {
         calendarsigma_ = calendarsigma;
     }
 
-    public void setSigmavec(SigmavecOption[] sigmavec){
-        sigmavec_= sigmavec.clone();
+    public void setSigmavec(SigmavecOption[] sigmavec) {
+        sigmavec_ = sigmavec.clone();
     }
-              
-        
+
     /**
      * Set the decomposition mode of X11
      *
@@ -309,6 +314,14 @@ public class X11Specification implements IProcSpecification, Cloneable {
         filters_ = new SeasonalFilterOption[]{seasonalFilter};
     }
 
+    public BiasCorrection getBiasCorrection() {
+        return bias;
+    }
+
+    public void setBiasCorrection(BiasCorrection bias) {
+        this.bias = bias;
+    }
+
     @Override
     public X11Specification clone() {
         try {
@@ -340,7 +353,8 @@ public class X11Specification implements IProcSpecification, Cloneable {
                 && spec.usigma_ == usigma_
                 && spec.mode_ == mode_
                 && spec.calendarsigma_ == calendarsigma_
-              && spec.excludefcast_== excludefcast_;
+                && spec.excludefcast_ == excludefcast_
+                && spec.bias == bias;
     }
 
     @Override
@@ -364,7 +378,7 @@ public class X11Specification implements IProcSpecification, Cloneable {
         if (verbose || mode_ != DecompositionMode.Undefined) {
             info.add(MODE, mode_.name());
         }
-        if (verbose || ! seasonal_) {
+        if (verbose || !seasonal_) {
             info.add(SEASONAL, seasonal_);
         }
         if (verbose || lsigma_ != DEF_LSIGMA) {
@@ -400,10 +414,13 @@ public class X11Specification implements IProcSpecification, Cloneable {
             }
             info.add(SIGMAVEC, sigmavec);
         }
-        
-       if (verbose || excludefcast_){
+
+        if (verbose || excludefcast_) {
             info.add(EXCLUDEFCAST, excludefcast_);
-       }
+        }
+        if (verbose || bias != BiasCorrection.Legacy) {
+            info.add(BIAS, bias.name());
+        }
         return info;
     }
 
@@ -415,9 +432,9 @@ public class X11Specification implements IProcSpecification, Cloneable {
                 mode_ = DecompositionMode.valueOf(mode);
             }
             Boolean seasonal = info.get(SEASONAL, Boolean.class);
-            if (seasonal != null){
+            if (seasonal != null) {
                 seasonal_ = seasonal;
-            }        
+            }
             Double lsig = info.get(LSIGMA, Double.class);
             if (lsig != null) {
                 lsigma_ = lsig;
@@ -458,12 +475,19 @@ public class X11Specification implements IProcSpecification, Cloneable {
                     sigmavec_[i] = SigmavecOption.valueOf(sigmavec[i]);
                 }
             }
-            
+
             Boolean excludefcst = info.get(EXCLUDEFCAST, Boolean.class);
-            if (excludefcst != null){
-                excludefcast_=excludefcst;
-            }        
-            
+            if (excludefcst != null) {
+                excludefcast_ = excludefcst;
+            }
+
+            String sbias = info.get(BIAS, String.class);
+            if (sbias != null) {
+                bias = BiasCorrection.valueOf(sbias);
+            } else {
+                bias = BiasCorrection.Legacy;
+            }
+
             return true;
         } catch (Exception err) {
             return false;

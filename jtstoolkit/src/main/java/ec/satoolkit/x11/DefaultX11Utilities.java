@@ -123,7 +123,20 @@ public class DefaultX11Utilities extends DefaultX11Algorithm implements IX11Util
      * @return
      */
     @Override
-    public TsData correctTrendBias(TsData t, TsData s, TsData i) {
+    public TsData correctTrendBias(TsData t, TsData s, TsData i, BiasCorrection bias) {
+        switch (bias){
+            case Legacy:
+                return legacyBiasCorrection(t, s, i);
+            case Ratio:
+                return ratioBiasCorrection(t, s, i);
+            case Smooth:
+                return smoothBiasCorrection(t, s, i);
+            default:
+                return t;
+        }
+    }
+    
+    private TsData legacyBiasCorrection(TsData t, TsData s, TsData i) {
         double issq = i.log().ssq();
         double sig = Math.exp(issq / (2 * i.getLength()));
         int ifreq = t.getFrequency().intValue();
@@ -135,12 +148,25 @@ public class DefaultX11Utilities extends DefaultX11Algorithm implements IX11Util
                 .makeFilters(smoother, 4.5)));
 
         TsData hs = filter.process(s, null);
-//        TsData hs=new DefaultNormalizingStrategie().process(s, null, ifreq);
         hs.applyOnFinite(x -> x * sig);
-
         return t.times(hs);
     }
 
+    private TsData smoothBiasCorrection(TsData t, TsData s, TsData i) {
+        double issq = i.log().ssq();
+        double sig = Math.exp(issq / (2 * i.getLength()));
+        int ifreq = t.getFrequency().intValue();
+        TsData hs=new DefaultNormalizingStrategie().process(s, null, ifreq);
+        hs.applyOnFinite(x -> x * sig);
+        return t.times(hs);
+    }
+
+    private TsData ratioBiasCorrection(TsData t, TsData s, TsData i) {
+        // average of s, i on complete years
+        double sbias=s.fullYears().average(), ibias=i.average();
+        s.apply(x->x/sbias);
+        return t.times(sbias*ibias);
+    }
     /**
      *
      * @param l
