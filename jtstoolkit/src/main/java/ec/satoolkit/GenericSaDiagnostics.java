@@ -8,7 +8,10 @@ package ec.satoolkit;
 import ec.satoolkit.diagnostics.CombinedSeasonalityTest;
 import ec.satoolkit.diagnostics.FTest;
 import ec.satoolkit.diagnostics.KruskalWallisTest;
+import ec.satoolkit.x11.DefaultSeasonalFilteringStrategy;
 import ec.satoolkit.x11.DefaultTrendFilteringStrategy;
+import ec.satoolkit.x11.FilterFactory;
+import ec.satoolkit.x11.FilteredMeanEndPoints;
 import ec.satoolkit.x11.IFiltering;
 import ec.satoolkit.x11.MsrTable;
 import ec.satoolkit.x11.SeriesEvolution;
@@ -113,7 +116,7 @@ public class GenericSaDiagnostics implements IProcResults {
 
     private SeasonalityTests saTests() {
         if (satests == null) {
-            satests = SeasonalityTests.seasonalityTest(mul ? sa.log(): sa, 1, true, true);
+            satests = SeasonalityTests.seasonalityTest(mul ? sa.log() : sa, 1, true, true);
         }
         return satests;
     }
@@ -285,7 +288,43 @@ public class GenericSaDiagnostics implements IProcResults {
     private MsrTable msr() {
         if (msr == null) {
             if (s != null) {
-                msr = MsrTable.create(s, irr, mul);
+                if (decomposition instanceof X11Results) {
+                    DecompositionMode mode = decomposition.getSeriesDecomposition().getMode();
+                    SymmetricFilter f7 = FilterFactory.makeSymmetricFilter(7);
+                    DefaultSeasonalFilteringStrategy fseas = new DefaultSeasonalFilteringStrategy(
+                            f7, new FilteredMeanEndPoints(f7));
+                    TsData d1 = decomposition.getData("d-tables.d1", TsData.class);
+                    TsData d7 = decomposition.getData("d-tables.d7", TsData.class);
+                    TsData d9;
+                    switch (mode) {
+                        case Multiplicative:
+                        case PseudoAdditive:
+                            d9 = TsData.divide(d1, d7);
+                            break;
+                        case LogAdditive:
+                            d9 = TsData.divide(d1, d7).log();
+                            break;
+                        default:
+                            d9 = TsData.subtract(d1, d7);
+                    }
+                    TsData s1 = fseas.process(d9, null);
+                    TsData s2;
+                    switch (mode) {
+                        case Multiplicative:
+                            s2 = TsData.divide(d9, s1);
+                            break;
+                        case PseudoAdditive:
+                            s2 = d9.minus(s1).plus(1);
+                            break;
+                        default:
+                            s2 = TsData.subtract(d9, s1);
+                    }
+                    return MsrTable.create(s1, s2,
+                            mode == DecompositionMode.Multiplicative
+                            || mode == DecompositionMode.PseudoAdditive);
+                } else {
+                    msr = MsrTable.create(s, irr, mul);
+                }
             }
         }
         return msr;

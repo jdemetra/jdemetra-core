@@ -17,7 +17,6 @@
 package ec.tss.sa.diagnostics;
 
 import ec.satoolkit.DecompositionMode;
-import ec.satoolkit.diagnostics.FTest;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnostics;
 import ec.tstoolkit.algorithm.ProcQuality;
@@ -161,8 +160,7 @@ public class ResidualTradingDaysDiagnostics implements IDiagnostics {
     }
 
     @Override
-    public double getValue(String test
-    ) {
+    public double getValue(String test) {
 
         switch (test) {
 
