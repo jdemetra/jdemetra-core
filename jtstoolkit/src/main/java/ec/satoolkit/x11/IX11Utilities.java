@@ -65,10 +65,21 @@ public interface IX11Utilities extends IX11Algorithm{
      * @param t
      * @param s
      * @param i
+     * @param bias
      * @return
      */
-    TsData correctTrendBias(TsData t, TsData s, TsData i);
+    TsData correctTrendBias(TsData t, TsData s, TsData i, BiasCorrection bias);
 
+    /**
+     *
+     * @param t
+     * @param s
+     * @param i
+     * @return
+     */
+    default TsData correctTrendBias(TsData t, TsData s, TsData i){
+        return correctTrendBias(t, s, i, BiasCorrection.Legacy);
+    }
     /**
      *
      * @param l

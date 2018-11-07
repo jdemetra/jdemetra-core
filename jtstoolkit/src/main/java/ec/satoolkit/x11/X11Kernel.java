@@ -481,13 +481,13 @@ public class X11Kernel implements ISeriesDecomposer {
             toolkit.getContext().setMode(DecompositionMode.Multiplicative);
             if (uscbLike) {
                 TsData c13 = info.subSet(C).get(C13, TsData.class);
-                d12 = toolkit.getUtilities().correctTrendBias(d12, d10, c13);
+                d12 = toolkit.getUtilities().correctTrendBias(d12, d10, c13, toolkit.getBiasCorrection());
             } else {
                 d12 = toolkit.getUtilities().correctTrendBias(d12, d10, d13);
             }
             toolkit.getUtilities().checkPositivity(d12);
             d11 = toolkit.getContext().op(b1, d10);
-            d13 = toolkit.getContext().op(d11, d12); // ???
+            d13 = toolkit.getContext().op(d11, d12); 
         }
 
         dtables.set(D1, d1.fittoDomain(sdomain));

@@ -69,4 +69,8 @@ public interface IX11Toolkit {
      */
     boolean isExcludefcst();
 
+    default BiasCorrection getBiasCorrection() {
+        return BiasCorrection.Legacy;
+    }
+
 }
