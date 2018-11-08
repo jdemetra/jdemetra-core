@@ -155,6 +155,11 @@ public class CsvInformationFormatter {
         }
 
         void fill(final String id, IProcResults record, boolean shortname) {
+            if (record == null) {
+                results = EMPTY;
+                items = SEMPTY;
+                return;
+            }
             // we search for a pre-specified length
             int l = id.indexOf(':');
             String sid = id;
@@ -412,7 +417,7 @@ public class CsvInformationFormatter {
         } else {
             txt = MultiLineNameUtil.last(txt);
         }
-        txt=StringFormatter.cleanup(txt);
+        txt = StringFormatter.cleanup(txt);
 
         if (txt.indexOf(comma) >= 0) {
             if (txt.indexOf('\"') >= 0) {
