@@ -1041,7 +1041,7 @@ public class PreprocessingModel implements IProcResults {
             } else {
                 ConcentratedLikelihood ll = source.estimation.getLikelihood();
                 int nhp = source.description.getArimaComponent().getFreeParametersCount();
-                int start = source.description.getRegressionVariablesStartingPosition() + regs.get(0).position;
+                int start = source.description.getRegressionVariablesStartingPosition();
                 double[] b = ll.getB();
                 int k0 = start + reg.position, k1 = k0 + ndim;
                 double bd = 0;
