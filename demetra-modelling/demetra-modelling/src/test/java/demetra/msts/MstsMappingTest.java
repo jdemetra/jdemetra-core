@@ -48,7 +48,7 @@ public class MstsMappingTest {
     public MstsMappingTest() {
     }
 
-    //@Test
+    @Test
     public void testSimple() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/mssf1").toURI();

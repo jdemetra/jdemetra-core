@@ -120,7 +120,7 @@ public class AlgorithmsTest {
         model.add(AtomicModels.localLinearTrend("lt", 0, .01, true, false));
         model.add(AtomicModels.seasonalComponent("s", "Dummy", 12, .01, false));
 //        model.add(AtomicModels.rawTdRegression("td", Data.TS_ABS_RETAIL.getDomain(), new int[]{1,1,1,1,1,0,0}, new double[]{0.01, 0.01}, false));
-        model.add(AtomicModels.sae("sae", new double[]{0.5, 0.3}, false, 1e-5, true, 1, false));
+        model.add(AtomicModels.sae("sae", new double[]{0.5, 0.3}, false, 1, false));
         model.add(AtomicModels.noise("n", 1, true));
         ModelEquation eq = new ModelEquation("eq", 0, true);
         eq.add("l");

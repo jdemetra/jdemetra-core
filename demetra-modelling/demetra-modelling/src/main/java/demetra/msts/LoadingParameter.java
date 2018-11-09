@@ -21,25 +21,25 @@ public final class LoadingParameter implements IMstsParametersBlock {
 
     private static final double DEF_VALUE = .1;
 
-    private double loading;
+    private double c;
     private boolean fixed;
     private final String name;
 
     public LoadingParameter(final String name) {
         this.name = name;
-        loading = DEF_VALUE;
+        c = DEF_VALUE;
         fixed = false;
     }
 
     public LoadingParameter(final String name, double loading, boolean fixed) {
         this.name = name;
-        this.loading = loading;
+        this.c = loading;
         this.fixed = fixed;
     }
     
     @Override
     public LoadingParameter duplicate(){
-        return new LoadingParameter(name, loading, fixed);
+        return new LoadingParameter(name, c, fixed);
     }
 
     @Override
@@ -48,10 +48,14 @@ public final class LoadingParameter implements IMstsParametersBlock {
     }
 
     public double fix(double val) {
-        double oldval=loading;
-        loading = val;
+        double oldval=c;
+        c = val;
         fixed = true;
         return oldval;
+    }
+    
+    public double value(){
+        return c;
     }
 
     @Override
@@ -61,7 +65,7 @@ public final class LoadingParameter implements IMstsParametersBlock {
 
     @Override
     public void fixModelParameter(DoubleReader reader) {
-        loading = reader.next();
+        c = reader.next();
         fixed = true;
     }
 
@@ -85,7 +89,7 @@ public final class LoadingParameter implements IMstsParametersBlock {
         if (!fixed) {
             buffer[pos] = input.next();
         } else {
-            buffer[pos] = loading;
+            buffer[pos] = c;
         }
         return pos + 1;
     }
@@ -104,7 +108,7 @@ public final class LoadingParameter implements IMstsParametersBlock {
     @Override
     public int fillDefault(double[] buffer, int pos) {
         if (!fixed) {
-            buffer[pos] = loading;
+            buffer[pos] = c;
             return pos + 1;
         } else {
             return pos;

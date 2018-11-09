@@ -89,7 +89,7 @@ public final class SarimaParameters implements IMstsParametersBlock {
     }
 
     @Override
-    public IParametersDomain getDomain() {
+    public SarimaMapping getDomain() {
         return mapping;
     }
 

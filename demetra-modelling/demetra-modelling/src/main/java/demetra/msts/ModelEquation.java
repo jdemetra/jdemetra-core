@@ -5,9 +5,6 @@
  */
 package demetra.msts;
 
-import demetra.msts.LoadingParameter;
-import demetra.msts.MstsMapping;
-import demetra.msts.VarianceParameter;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
 import java.util.ArrayList;
@@ -22,22 +19,39 @@ public class ModelEquation implements ModelItem {
     private final String name;
     private final List<Item> items = new ArrayList<>();
 
-    private final double var;
-    private boolean fixed;
+    private final VarianceParameter var;
 
     @lombok.Value
     public static class Item {
 
         String cmp;
-        double c;
-        boolean fixed;
+        LoadingParameter c;
         ISsfLoading loading;
+
+        Item(String cmp) {
+            this.cmp = cmp;
+            c = null;
+            loading = null;
+        }
+
+        Item(String cmp, double p, boolean fixed, ISsfLoading loading) {
+            this.cmp = cmp;
+            if (p == 1 && fixed) {
+                this.c = null;
+            } else {
+                this.c = new LoadingParameter(cmp + ".c", p, fixed);
+            }
+            this.loading = loading;
+        }
     }
 
     public ModelEquation(String name, double var, boolean fixed) {
         this.name = name;
-        this.var = var;
-        this.fixed = fixed;
+        if (var == 0 && fixed) {
+            this.var = null;
+        } else {
+            this.var = new VarianceParameter(name + ".var", var, fixed, var == 0);
+        }
     }
 
     public String getName() {
@@ -45,7 +59,7 @@ public class ModelEquation implements ModelItem {
     }
 
     public void add(String item) {
-        items.add(new Item(item, 1.0, true, null));
+        items.add(new Item(item));
     }
 
     public void add(String item, double coeff, boolean fixed, ISsfLoading loading) {
@@ -53,15 +67,15 @@ public class ModelEquation implements ModelItem {
     }
 
     public void free() {
-        fixed = false;
+        var.free();
     }
 
     public double getVariance() {
-        return var;
+        return var.variance();
     }
 
     public boolean isFixed() {
-        return fixed;
+        return var.isFixed();
     }
 
     public int getItemsCount() {
@@ -74,26 +88,42 @@ public class ModelEquation implements ModelItem {
 
     @Override
     public void addTo(MstsMapping mapping) {
-        mapping.add(new VarianceParameter(name + "_var", var, fixed, var == 0));
+        if (var != null) {
+            mapping.add(var);
+        }
         for (Item item : items) {
-            if (!item.fixed) {
-                mapping.add(new LoadingParameter(item.cmp + "_c", item.c, item.fixed));
+            if (item.c != null) {
+                mapping.add(item.c);
             }
         }
         mapping.add((p, builder) -> {
             int pos = 0;
-            double v = p.get(pos++);
+            double v = var == null ? 0 : p.get(pos++);
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(v);
             for (Item item : items) {
-                double c = item.c;
-                if (!item.fixed) {
+                double c;
+                if (item.c != null) {
                     c = p.get(pos++);
+                } else {
+                    c = 1;
                 }
                 eq.add(new MultivariateCompositeSsf.Item(item.cmp, c, item.loading));
             }
             builder.add(eq);
             return pos;
         });
+    }
+
+    @Override
+    public List<IMstsParametersBlock> parameters() {
+        ArrayList<IMstsParametersBlock> list = new ArrayList<>();
+        list.add(var);
+        for (Item item : items) {
+            if (!item.c.isFixed()) {
+                list.add(item.c);
+            }
+        }
+        return list;
     }
 
 }

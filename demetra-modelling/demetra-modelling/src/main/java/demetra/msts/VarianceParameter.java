@@ -84,8 +84,12 @@ public class VarianceParameter implements IMstsParametersBlock {
         stde = e;
     }
 
-    public double defValue() {
+    public double stde() {
         return stde;
+    }
+
+    public double variance() {
+        return stde*stde;
     }
 
     @Override

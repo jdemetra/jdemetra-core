@@ -167,7 +167,7 @@ public class MstsMonitor {
         return model.parameters()
                 .filter(p -> p.isFixed()
                         && p instanceof VarianceParameter
-                        && ((VarianceParameter) p).defValue() > 0)
+                        && ((VarianceParameter) p).stde() > 0)
                 .count() == 0;
     }
 

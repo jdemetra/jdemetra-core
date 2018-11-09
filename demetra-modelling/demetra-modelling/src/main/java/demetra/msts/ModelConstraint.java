@@ -11,6 +11,7 @@ import demetra.msts.VarianceParameter;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,13 +29,12 @@ public class ModelConstraint implements ModelItem {
 
         String cmp;
         double c;
-        boolean fixed;
         ISsfLoading loading;
     }
 
     public ModelConstraint(String name, double value) {
         this.name = name;
-        this.value=value;
+        this.value = value;
     }
 
     public String getName() {
@@ -42,13 +42,12 @@ public class ModelConstraint implements ModelItem {
     }
 
     public void add(String item) {
-        items.add(new Item(item, 1.0, true, null));
+        items.add(new Item(item, 1.0, null));
     }
 
-    public void add(String item, double coeff, boolean fixed, ISsfLoading loading) {
-        items.add(new Item(item, coeff, fixed, loading));
+    public void add(String item, double coeff, ISsfLoading loading) {
+        items.add(new Item(item, coeff, loading));
     }
-
 
     public double getValue() {
         return value;
@@ -64,25 +63,21 @@ public class ModelConstraint implements ModelItem {
 
     @Override
     public void addTo(MstsMapping mapping) {
-        for (Item item : items) {
-            if (!item.fixed) {
-                mapping.add(new LoadingParameter(item.cmp + "_c", item.c, item.fixed));
-            }
-        }
         mapping.add((p, builder) -> {
             int pos = 0;
             double v = p.get(pos++);
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(v);
             for (Item item : items) {
-                double c = item.c;
-                if (!item.fixed) {
-                    c = p.get(pos++);
-                }
-                eq.add(new MultivariateCompositeSsf.Item(item.cmp, c, item.loading));
+                eq.add(new MultivariateCompositeSsf.Item(item.cmp, item.c, item.loading));
             }
             builder.add(eq);
             return pos;
         });
+    }
+
+    @Override
+    public List<IMstsParametersBlock> parameters() {
+        return Collections.EMPTY_LIST;
     }
 
 }

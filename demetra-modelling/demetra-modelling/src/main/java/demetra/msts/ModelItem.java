@@ -5,11 +5,16 @@
  */
 package demetra.msts;
 
+import java.util.List;
+
 /**
  *
  * @author palatej
  */
 public interface ModelItem {
+    String getName();
     
     void addTo(MstsMapping model);
+    
+    List<IMstsParametersBlock> parameters();
 }
