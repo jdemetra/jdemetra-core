@@ -143,7 +143,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      */
     @Nonnull
     default DoubleReader reader() {
-        return DoubleReader.defaultReaderOf(this);
+        return DoubleReader.of(this);
     }
 
     /**

@@ -16,6 +16,7 @@
  */
 package demetra.sarima;
 
+import demetra.ar.AutoRegressiveEstimation;
 import demetra.ar.IAutoRegressiveEstimation;
 import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.data.DataBlock;
@@ -306,13 +307,13 @@ public class HannanRissanen {
         IAutoRegressiveEstimation ar;
         switch (initialization) {
             case Ols:
-                ar=IAutoRegressiveEstimation.ols();
+                ar=AutoRegressiveEstimation.ols();
                 break;
             case Burg:
-                ar=IAutoRegressiveEstimation.burg();
+                ar=AutoRegressiveEstimation.burg();
                 break;
             default:
-                ar=IAutoRegressiveEstimation.levinson();
+                ar=AutoRegressiveEstimation.levinson();
                 break;
         }
         ar.estimate(DoubleSequence.of(m_data), npi());

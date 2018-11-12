@@ -16,6 +16,7 @@
  */
 package demetra.stats.tests.seasonal;
 
+import demetra.ar.AutoRegressiveEstimation;
 import demetra.ar.IAutoRegressiveEstimation;
 import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
@@ -44,7 +45,7 @@ public class PeriodicLjungBox {
 
     public PeriodicLjungBox(DoubleSequence sample, int nar) {
         if (nar > 0) {
-            IAutoRegressiveEstimation burg = IAutoRegressiveEstimation.burg();
+            IAutoRegressiveEstimation burg = AutoRegressiveEstimation.burg();
             burg.estimate(sample, nar);
             this.autoCorrelations = AutoCovariances.autoCorrelationFunction(burg.residuals(), 0);
         } else {

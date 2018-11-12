@@ -16,9 +16,6 @@
  */
 package demetra.ar;
 
-import demetra.ar.internal.BurgAlgorithm;
-import demetra.ar.internal.LevinsonAlgorithm;
-import demetra.ar.internal.OlsAlgorithm;
 import demetra.design.Algorithm;
 import demetra.data.DoubleSequence;
 
@@ -66,15 +63,4 @@ public interface IAutoRegressiveEstimation {
         return DoubleSequence.ofInternal(e);
     }
     
-    public static IAutoRegressiveEstimation levinson(){
-        return new LevinsonAlgorithm();
-    }
-
-    public static IAutoRegressiveEstimation ols(){
-        return new OlsAlgorithm();
-    }
-    
-    public static IAutoRegressiveEstimation burg(){
-        return new BurgAlgorithm();
-    }
 }

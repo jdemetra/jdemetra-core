@@ -16,6 +16,7 @@
  */
 package demetra.data;
 
+import demetra.design.Development;
 import javax.annotation.Nonnegative;
 
 /**
@@ -23,6 +24,7 @@ import javax.annotation.Nonnegative;
  * @author Philippe Charles
  * @param <E>
  */
+@Development(status = Development.Status.Release)
 public interface BaseTable<E> {
 
     /**

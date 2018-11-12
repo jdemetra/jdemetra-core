@@ -16,12 +16,17 @@
  */
 package demetra.data;
 
+import demetra.design.Development;
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
 /**
  * Fast iterator to access cells of a sequence of doubles.
  * This "simplified" iterator doesn't control the end of the iterations 
  * (done externally). 
  * @author Jean Palate
  */
+@Development(status = Development.Status.Release)
 public interface DoubleReader {
 
     /**
@@ -35,15 +40,33 @@ public interface DoubleReader {
      * return the item at that position
      * @param npos 
      */
-    void setPosition(int npos);
+    void setPosition(@Nonnegative int npos);
     
-    void skip(int n);
+    /**
+     * Skips n data (advances the iterator by n positions).
+     * @param n 
+     */
+    void skip(@Nonnegative int n);
 
-    public static DoubleReader of(double[] data) {
+    /**
+     * Reader of an array of doubles.
+     * All data a read. The starting position is the first element of the array
+     * @param data The underlying array
+     * @return 
+     */
+    public static DoubleReader of(@Nonnull double[] data) {
         return new CellReaderP(data, 0);
     }
 
-    public static DoubleReader of(double[] data, int pos, int inc) {
+    /**
+     * Reader of an array of doubles. The starting position and the increment
+     * between two successive elements are given. 
+     * @param data The underlying array
+     * @param pos The starting position
+     * @param inc The increment between two successive items. Can be negative.
+     * @return 
+     */
+    public static DoubleReader of(@Nonnull double[] data, @Nonnegative int pos, int inc) {
         switch (inc) {
             case 1:
                 return new CellReaderP(data, pos);
@@ -54,7 +77,12 @@ public interface DoubleReader {
         }
     }
     
-    public static DoubleReader defaultReaderOf(DoubleSequence seq){
+    /**
+     * Reader of a sequence of double
+     * @param seq
+     * @return 
+     */
+    public static DoubleReader of(@Nonnull DoubleSequence seq){
         return new DefaultReader(seq);
     }
 }

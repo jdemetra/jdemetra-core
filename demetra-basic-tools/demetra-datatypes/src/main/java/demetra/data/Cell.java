@@ -17,14 +17,24 @@
 package demetra.data;
 
 import demetra.data.DoubleReader;
+import demetra.design.Development;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- *
+ * Modifiable reader
  * @author Jean Palate
  */
+@Development(status = Development.Status.Release)
 public interface Cell extends DoubleReader {
 
+    /**
+     * Creates a cell on an array of doubles
+     * @param data The array of doubles
+     * @param pos The starting position of the cell
+     * @param inc The distance between two adjacent cells 
+     * (if c(t)=data[k], c(t+1)=data[k+inc]).
+     * @return The r/w iterator 
+     */
     public static Cell of(double[] data, int pos, int inc) {
         switch (inc) {
             case 1:
@@ -36,6 +46,11 @@ public interface Cell extends DoubleReader {
         }
     }
 
+    /**
+     * Single cell
+     * @param value The value of the cell
+     * @return 
+     */
     public static Cell of(double value) {
         return new SingleCell(value);
     }

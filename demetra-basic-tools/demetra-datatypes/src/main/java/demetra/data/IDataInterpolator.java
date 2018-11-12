@@ -26,7 +26,8 @@ import demetra.util.IntList;
  * Interface for interpolation methods of time series
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
+@FunctionalInterface
 public interface IDataInterpolator
 {
 

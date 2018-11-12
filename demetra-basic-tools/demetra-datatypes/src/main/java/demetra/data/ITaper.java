@@ -17,11 +17,15 @@
 
 package demetra.data;
 
+import demetra.design.Development;
+
 /**
  * Tapering consists of altering the ends of the (mean-adjusted) series so that 
  * they taper gradually down to zero.
  * @author Jean Palate
  */
+@Development(status = Development.Status.Release)
+@FunctionalInterface
 public interface ITaper {
 
     /**
