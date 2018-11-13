@@ -12,20 +12,20 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.data.accumulator.NeumaierAccumulator;
-import demetra.leastsquares.IQRSolver;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
+import demetra.maths.matrices.spi.QRSolver;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceProvider(service = IQRSolver.class)
-public class QRSolver implements IQRSolver {
+@ServiceProvider(service = QRSolver.class)
+public class QRSolverImpl implements QRSolver {
 
     @BuilderPattern(QRSolver.class)
     public static class Builder {
@@ -53,8 +53,8 @@ public class QRSolver implements IQRSolver {
             return this;
         }
 
-        public QRSolver build() {
-            return new QRSolver(qr, niter, simple);
+        public QRSolverImpl build() {
+            return new QRSolverImpl(qr, niter, simple);
         }
     }
 
@@ -70,11 +70,11 @@ public class QRSolver implements IQRSolver {
     private final boolean simple;
     private final int niter;
     
-    public QRSolver(){
+    public QRSolverImpl(){
         this(new Householder(), 1, false);
     }
     
-    private QRSolver(IQRDecomposition qr, int niter, boolean simple) {
+    private QRSolverImpl(IQRDecomposition qr, int niter, boolean simple) {
         this.qr = qr;
         this.niter = niter;
         this.simple = simple;

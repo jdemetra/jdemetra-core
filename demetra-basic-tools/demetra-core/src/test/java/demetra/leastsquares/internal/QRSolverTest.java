@@ -5,7 +5,7 @@
  */
 package demetra.leastsquares.internal;
 
-import demetra.leastsquares.internal.QRSolver;
+import demetra.leastsquares.internal.QRSolverImpl;
 import demetra.data.DataBlock;
 import demetra.data.DataSets;
 import static demetra.data.DataSets.lre;
@@ -22,7 +22,7 @@ import demetra.data.DoubleSequence;
  */
 public class QRSolverTest {
 
-        QRSolver solver = QRSolver.builder(new HouseholderWithPivoting())
+        QRSolverImpl solver = QRSolverImpl.builder(new HouseholderWithPivoting())
                 .iterative(1)
                 .simpleIteration(true)
                 .build();

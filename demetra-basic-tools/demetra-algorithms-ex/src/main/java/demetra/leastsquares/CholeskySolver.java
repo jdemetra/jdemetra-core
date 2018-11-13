@@ -8,20 +8,20 @@ package demetra.leastsquares;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.data.accumulator.NeumaierAccumulator;
-import demetra.leastsquares.ILeastSquaresSolver;
 import demetra.maths.Constants;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.SymmetricMatrix;
+import demetra.maths.matrices.spi.LeastSquaresSolver;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceProvider(service = ILeastSquaresSolver.class)
-public class CholeskySolver implements ILeastSquaresSolver {
+@ServiceProvider(service = LeastSquaresSolver.class)
+public class CholeskySolver implements LeastSquaresSolver {
 
     private Matrix L;
     private double[] b;

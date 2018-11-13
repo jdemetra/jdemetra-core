@@ -3,18 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.leastsquares;
+package demetra.maths.matrices.spi;
 
 import demetra.maths.matrices.Matrix;
 import demetra.design.Algorithm;
 import demetra.data.DoubleSequence;
+import demetra.design.Development;
+import demetra.design.ServiceDefinition;
+import demetra.design.ThreadSafe;
 
 /**
  * 
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@ThreadSafe
 @Algorithm
-public interface ILeastSquaresSolver {
+@ServiceDefinition(isSingleton = true)
+@Development(status = Development.Status.Beta)
+public interface LeastSquaresSolver {
 
 
     /**
@@ -22,10 +28,10 @@ public interface ILeastSquaresSolver {
      * <br>
      * b = (X'X)^-1 X'y
      * <br>
-     * e = y - Xb = [I-X(X'X)^-1 X']y = My
+     * e = y - Xb = [I-X(X'X)^-1 X']y = My, e'e = y'My
      * @param y 
      * @param X 
-     * @return
+     * @return True if the system was successfully solved
      */
     boolean solve(DoubleSequence y, Matrix X);
 
@@ -36,13 +42,13 @@ public interface ILeastSquaresSolver {
     DoubleSequence coefficients();
 
     /**
-     * Returns b
+     * Returns e
      * @return 
      */
     DoubleSequence residuals();
 
     /**
-     * Computes e*e'
+     * Computes e'*e = y'My
      * @return 
      */
     double ssqerr();

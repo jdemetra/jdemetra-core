@@ -27,42 +27,17 @@ import demetra.maths.linearfilters.BackFilter;
  * @author Jean Palate
  * @param <S>
  */
-@Development(status = Development.Status.Alpha)
-@Immutable
+@Development(status = Development.Status.Release)
+@lombok.Value
 public class StationaryTransformation<S extends IModel> {
 
     /**
-     *
+     * Stationary model. Same class as the original model
      */
-    private final S stationaryModel;
+    private S stationaryModel;
 
     /**
-     *
+     * Unit roots removed by means of a stationary transformation
      */
-    private final BackFilter unitRoots;
-
-    /**
-     *
-     * @param stationaryModel
-     * @param unitRoots
-     */
-    public StationaryTransformation(final S stationaryModel,
-	    final BackFilter unitRoots) {
-	this.stationaryModel = stationaryModel;
-	this.unitRoots = unitRoots;
-    }
-
-    /**
-     * @return the stationaryModel
-     */
-    public S getStationaryModel() {
-        return stationaryModel;
-    }
-
-    /**
-     * @return the unitRoots
-     */
-    public BackFilter getUnitRoots() {
-        return unitRoots;
-    }
+    private BackFilter unitRoots;
 }

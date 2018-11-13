@@ -14,45 +14,32 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.leastsquares;
+package demetra.maths.matrices.spi;
 
 import demetra.design.Algorithm;
-import demetra.leastsquares.internal.QRSolver;
+import demetra.design.Development;
+import demetra.design.ServiceDefinition;
+import demetra.leastsquares.internal.QRSolverImpl;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import demetra.maths.matrices.spi.LeastSquaresSolver;
 
 /**
  *
  * @author Jean Palate
  */
 @Algorithm
-public interface IQRSolver extends ILeastSquaresSolver {
+@ServiceDefinition
+@Development(status = Development.Status.Alpha)
+public interface QRSolver extends LeastSquaresSolver {
 
-      public static IQRSolver fastSolver() {
-        return QR_Factory.FAST_FACTORY.get().get();
-    }
-
-    public static IQRSolver robustSolver() {
-        return QR_Factory.ROBUST_FACTORY.get().get();
-    }
-
-    public static void setFastSolver(Supplier<IQRSolver> factory) {
-        QR_Factory.FAST_FACTORY.set(factory);
-    }
-
-    public static void setRobustSolver(Supplier<IQRSolver> factory) {
-        QR_Factory.ROBUST_FACTORY.set(factory);
-    }
-  
+    /**
+     * Gets the R matrix (upper triangular matrix) of the QR decomposition.
+     *    
+     * @return The R matrix. Might be singular. 
+     */
     Matrix R();
 }
 
-class QR_Factory {
-
-    static AtomicReference<Supplier<IQRSolver>> FAST_FACTORY = new AtomicReference<>(() -> 
-            QRSolver.builder(new Householder()).build());
-    static AtomicReference<Supplier<IQRSolver>> ROBUST_FACTORY = new AtomicReference<>(() -> 
-            QRSolver.builder(new Householder()).iterative(3).simpleIteration(true).build());
-}

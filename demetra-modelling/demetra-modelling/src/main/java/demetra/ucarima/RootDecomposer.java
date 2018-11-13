@@ -19,13 +19,13 @@ package demetra.ucarima;
 import demetra.arima.ArimaModel;
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.leastsquares.IQRSolver;
 import demetra.linearsystem.ILinearSystemSolver;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.linearfilters.SymmetricFrequencyResponse;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
+import demetra.maths.matrices.spi.QRSolver;
 
 /**
  *

@@ -21,11 +21,12 @@ import demetra.ar.IAutoRegressiveEstimation;
 import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.leastsquares.IQRSolver;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
 import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
+import demetra.leastsquares.QRSolvers;
+import demetra.maths.matrices.spi.QRSolver;
 
 /**
  * The Hannan-Rissanen procedure is performed as in TRAMO. See
@@ -123,7 +124,7 @@ public class HannanRissanen {
     }
     
     private double[] ls(Matrix mat, double[] y, boolean bbic) {
-        IQRSolver solver = IQRSolver.fastSolver();
+        QRSolver solver = QRSolvers.fastSolver();
         solver.solve(DataBlock.ofInternal(y), mat);
         DoubleSequence pi = solver.coefficients();
         int n = y.length, m = pi.count(x -> x != 0);

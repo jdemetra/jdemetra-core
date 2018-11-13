@@ -8,20 +8,19 @@ package demetra.leastsquares;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
-import demetra.data.DoubleSequence;
-import demetra.leastsquares.IQRSolver;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.decomposition.GivensRotation;
+import demetra.maths.matrices.spi.QRSolver;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceProvider(service = IQRSolver.class)
-public class GRSolver implements IQRSolver {
+@ServiceProvider(service = QRSolver.class)
+public class GRSolver implements QRSolver {
 
     private Matrix R;
     private double[] b;
