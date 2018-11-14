@@ -6,23 +6,24 @@
 package demetra.arima;
 
 import demetra.arima.IArimaModel;
-import demetra.arima.internal.ExactArimaForecasts;
 import demetra.arima.internal.FastArimaForecasts;
 import demetra.data.DoubleSequence;
+import demetra.design.Algorithm;
+import demetra.design.Development;
+import demetra.design.ServiceDefinition;
+import demetra.design.ThreadSafe;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public interface IArimaForecasts {
-    
-    public static IArimaForecasts exact(){
-        return new ExactArimaForecasts();
-    }
 
-    public static IArimaForecasts fast(){
-        return new FastArimaForecasts();
-    }
+@ThreadSafe
+@Algorithm
+@ServiceDefinition(isSingleton = true)
+@Development(status = Development.Status.Beta)
+public interface ArimaForecaster {
+    
     /**
      * Initialises the forecasts routine
      * @param model The ARIMA model used for forecasting
@@ -49,4 +50,6 @@ public interface IArimaForecasts {
     default DoubleSequence backcasts(DoubleSequence data, final int nbackcasts){
         return forecasts(data.reverse(), nbackcasts).reverse();
     }
+    
+    double getMean();
 }

@@ -15,11 +15,10 @@
 * limitations under the Licence.
 */
 
-package demetra.arima.internal;
+package demetra.arima.ssf;
 
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
-import demetra.arima.IArimaForecasts;
 import demetra.arima.ssf.SsfArima;
 import demetra.data.DataBlock;
 import demetra.design.Development;
@@ -29,12 +28,13 @@ import demetra.ssf.univariate.PredictionErrorDecomposition;
 import demetra.ssf.univariate.SsfData;
 import demetra.data.DoubleSequence;
 import demetra.ssf.univariate.Ssf;
+import demetra.arima.ArimaForecaster;
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class ExactArimaForecasts implements IArimaForecasts{
+public class ExactArimaForecasts implements ArimaForecaster{
 
     private IArimaModel arima;
     private Ssf ssf;

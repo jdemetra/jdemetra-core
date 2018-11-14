@@ -18,12 +18,16 @@ package demetra.ucarima.ssf;
 
 import demetra.data.Data;
 import demetra.data.DataBlockStorage;
+import demetra.sarima.SarimaModel;
+import demetra.sarima.SarimaSpecification;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.SsfData;
+import demetra.ucarima.ModelDecomposer;
+import demetra.ucarima.SeasonalSelector;
+import demetra.ucarima.TrendCycleSelector;
 import demetra.ucarima.UcarimaModel;
-import static demetra.ucarima.UcarimaModelTest.ucmAirline;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -52,4 +56,23 @@ public class SsfUcarimaTest {
         System.out.println(sd.getComponentVariance(0));
     }
 
+    public static UcarimaModel ucmAirline(double th, double bth) {
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
+        SarimaModel sarima = SarimaModel.builder(spec)
+                .theta(1, th)
+                .btheta(1, bth)
+                .build();
+
+        TrendCycleSelector tsel = new TrendCycleSelector();
+        SeasonalSelector ssel = new SeasonalSelector(12);
+
+        ModelDecomposer decomposer = new ModelDecomposer();
+        decomposer.add(tsel);
+        decomposer.add(ssel);
+
+        UcarimaModel ucm = decomposer.decompose(sarima);
+        ucm = ucm.setVarianceMax(-1, false);
+        return ucm;
+    }
 }

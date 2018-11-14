@@ -25,12 +25,37 @@
         <dependencies>
             <dependency>
                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-modelling-datatypes</artifactId>
+                <version>${jd3-modelling.version}</version>            
+            </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-modelling</artifactId>
                 <version>${jd3-modelling.version}</version>            
             </dependency>
             <dependency>
                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-modelling-datatypes</artifactId>
+                <artifactId>demetra-ssf</artifactId>
+                <version>${jd3-modelling.version}</version>            
+            </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-regarima</artifactId>
+                <version>${jd3-modelling.version}</version>            
+            </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-regarima-x13</artifactId>
+                <version>${jd3-modelling.version}</version>            
+            </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-regarima-tramo</artifactId>
+                <version>${jd3-modelling.version}</version>            
+            </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-regarima-ami</artifactId>
                 <version>${jd3-modelling.version}</version>            
             </dependency>
         </dependencies>
@@ -39,6 +64,11 @@
     <modules>
         <module>demetra-modelling-datatypes</module>
         <module>demetra-modelling</module>
+        <module>demetra-ssf</module>
+        <module>demetra-regarima</module>
+        <module>demetra-regarima-tramo</module>
+        <module>demetra-regarima-x13</module>
+        <module>demetra-regarima-ami</module>
     </modules>
     
 </project>

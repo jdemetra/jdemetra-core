@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.arima.estimation;
+package demetra.arima.ssf;
 
 import demetra.arima.internal.FastArimaForecasts;
-import demetra.arima.internal.ExactArimaForecasts;
 import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.sarima.SarimaModel;

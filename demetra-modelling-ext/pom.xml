@@ -38,7 +38,6 @@
     </dependencyManagement>
  
     <modules>
-        <module>demetra-sutse</module>
         <module>demetra-highfreq</module>
     </modules>
     
