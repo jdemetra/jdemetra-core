@@ -18,14 +18,14 @@ package demetra.benchmarking.univariate;
 
 import demetra.algorithms.AlgorithmDescriptor;
 import demetra.data.AggregationType;
-import demetra.processing.IProcSpecification;
+import demetra.processing.ProcSpecification;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.Data
-public class CholetteSpecification implements IProcSpecification {
+public class CholetteSpecification implements ProcSpecification {
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "cholette", null);
 

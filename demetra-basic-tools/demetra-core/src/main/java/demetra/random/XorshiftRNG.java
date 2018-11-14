@@ -27,7 +27,7 @@ import demetra.design.Development;
  * @author Jean Palate, Jeremy Demortier
  */
 @Development(status = Development.Status.Release)
-@AlgorithmImplementation(algorithm=IRandomNumberGenerator.class)
+@AlgorithmImplementation(algorithm=RandomNumberGenerator.class)
 public class XorshiftRNG extends AbstractRNG {
 
     // STATIC FACTORY METHODS >

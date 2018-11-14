@@ -5,7 +5,6 @@
  */
 package demetra.dstats;
 
-import demetra.random.IRandomNumberGenerator;
 import demetra.random.SystemRNG;
 import java.util.Random;
 import org.assertj.core.api.Assertions;
@@ -13,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Ignore;
 import org.junit.Test;
+import demetra.random.RandomNumberGenerator;
 
 /**
  *
@@ -108,11 +108,11 @@ public class TTest {
             assertThat(i).isCloseTo(z, Assertions.within(z * TOLERANCE));
         }
 
-        assertThatThrownBy(() -> t.getProbabilityInverse(IDistribution.EPS_P - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> t.getProbabilityInverse(Distribution.EPS_P - 1, ProbabilityType.Lower))
                 .as("p < EPS_P")
                 .isInstanceOf(DStatException.class);
 
-        assertThatThrownBy(() -> t.getProbabilityInverse((1 - IDistribution.EPS_P) - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> t.getProbabilityInverse((1 - Distribution.EPS_P) - 1, ProbabilityType.Lower))
                 .as("1 - p < EPS_P")
                 .isInstanceOf(DStatException.class);
     }
@@ -126,11 +126,11 @@ public class TTest {
             assertThat(i).isCloseTo(z, Assertions.within(z * TOLERANCE));
         }
 
-        assertThatThrownBy(() -> t.getProbabilityInverse(IDistribution.EPS_P - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> t.getProbabilityInverse(Distribution.EPS_P - 1, ProbabilityType.Lower))
                 .as("p < EPS_P")
                 .isInstanceOf(DStatException.class);
 
-        assertThatThrownBy(() -> t.getProbabilityInverse((1 - IDistribution.EPS_P) - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> t.getProbabilityInverse((1 - Distribution.EPS_P) - 1, ProbabilityType.Lower))
                 .as("1 - p < EPS_P")
                 .isInstanceOf(DStatException.class);
     }
@@ -144,11 +144,11 @@ public class TTest {
             assertThat(i).isCloseTo(z, Assertions.within(z * TOLERANCE));
         }
 
-        assertThatThrownBy(() -> t.getProbabilityInverse(IDistribution.EPS_P - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> t.getProbabilityInverse(Distribution.EPS_P - 1, ProbabilityType.Lower))
                 .as("p < EPS_P")
                 .isInstanceOf(DStatException.class);
 
-        assertThatThrownBy(() -> t.getProbabilityInverse((1 - IDistribution.EPS_P) - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> t.getProbabilityInverse((1 - Distribution.EPS_P) - 1, ProbabilityType.Lower))
                 .as("1 - p < EPS_P")
                 .isInstanceOf(DStatException.class);
     }
@@ -162,11 +162,11 @@ public class TTest {
             assertThat(i).isCloseTo(z, Assertions.within(z * TOLERANCE));
         }
 
-        assertThatThrownBy(() -> t.getProbabilityInverse(IDistribution.EPS_P - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> t.getProbabilityInverse(Distribution.EPS_P - 1, ProbabilityType.Lower))
                 .as("p < EPS_P")
                 .isInstanceOf(DStatException.class);
 
-        assertThatThrownBy(() -> t.getProbabilityInverse((1 - IDistribution.EPS_P) - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> t.getProbabilityInverse((1 - Distribution.EPS_P) - 1, ProbabilityType.Lower))
                 .as("1 - p < EPS_P")
                 .isInstanceOf(DStatException.class);
     }
@@ -180,11 +180,11 @@ public class TTest {
             assertThat(i).isCloseTo(z, Assertions.within(z * TOLERANCE));
         }
 
-        assertThatThrownBy(() -> t.getProbabilityInverse(IDistribution.EPS_P - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> t.getProbabilityInverse(Distribution.EPS_P - 1, ProbabilityType.Lower))
                 .as("p < EPS_P")
                 .isInstanceOf(DStatException.class);
 
-        assertThatThrownBy(() -> t.getProbabilityInverse((1 - IDistribution.EPS_P) - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> t.getProbabilityInverse((1 - Distribution.EPS_P) - 1, ProbabilityType.Lower))
                 .as("1 - p < EPS_P")
                 .isInstanceOf(DStatException.class);
     }
@@ -198,11 +198,11 @@ public class TTest {
             assertThat(i).isCloseTo(z, Assertions.within(z * TOLERANCE));
         }
 
-        assertThatThrownBy(() -> t.getProbabilityInverse(IDistribution.EPS_P - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> t.getProbabilityInverse(Distribution.EPS_P - 1, ProbabilityType.Lower))
                 .as("p < EPS_P")
                 .isInstanceOf(DStatException.class);
 
-        assertThatThrownBy(() -> t.getProbabilityInverse((1 - IDistribution.EPS_P) - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> t.getProbabilityInverse((1 - Distribution.EPS_P) - 1, ProbabilityType.Lower))
                 .as("1 - p < EPS_P")
                 .isInstanceOf(DStatException.class);
     }
@@ -232,7 +232,7 @@ public class TTest {
         int iterations = 20000;
         double sum = 0;
         double avg;
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
 
         for (int i = 0; i < iterations; i++) {
             sum += t.random(rng);
@@ -247,7 +247,7 @@ public class TTest {
         int iterations = 10000;
         double sum = 0;
         double avg;
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
 
         for (int i = 0; i < iterations; i++) {
             sum += t.random(rng);
@@ -262,7 +262,7 @@ public class TTest {
         int iterations = 10000;
         double sum = 0;
         double avg;
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
 
         for (int i = 0; i < iterations; i++) {
             sum += t.random(rng);
@@ -277,7 +277,7 @@ public class TTest {
         int iterations = 10000;
         double sum = 0;
         double avg;
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
 
         for (int i = 0; i < iterations; i++) {
             sum += t.random(rng);
@@ -292,7 +292,7 @@ public class TTest {
         int iterations = 10000;
         double sum = 0;
         double avg;
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
 
         for (int i = 0; i < iterations; i++) {
             sum += t.random(rng);
@@ -306,7 +306,7 @@ public class TTest {
     public void testRandomVarianceT_2() {
         int iterations = 10000;
         T t = new T(2);
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
         double[] values = new double[iterations];
         double sum = 0, avg;
 
@@ -329,7 +329,7 @@ public class TTest {
     public void testRandomVarianceT_5() {
         int iterations = 10000;
         T t = new T(5);
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
         double[] values = new double[iterations];
         double sum = 0, avg;
 
@@ -351,7 +351,7 @@ public class TTest {
     public void testRandomVarianceT_10() {
         int iterations = 10000;
         T t = new T(10);
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
         double[] values = new double[iterations];
         double sum = 0, avg;
 
@@ -373,7 +373,7 @@ public class TTest {
     public void testRandomVarianceT_100() {
         int iterations = 10000;
         T t = new T(100);
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
         double[] values = new double[iterations];
         double sum = 0, avg;
 
@@ -395,7 +395,7 @@ public class TTest {
     public void testRandomVarianceT_200() {
         int iterations = 10000;
         T t = new T(200);
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
         double[] values = new double[iterations];
         double sum = 0, avg;
 
@@ -413,7 +413,7 @@ public class TTest {
         assertThat(t.getVariance()).isCloseTo(variance, Assertions.within(t.getVariance() * TOLERANCE));
     }
 
-    private IRandomNumberGenerator getRandomNumberGenerator() {
+    private RandomNumberGenerator getRandomNumberGenerator() {
         return new SystemRNG(0);
     }
 

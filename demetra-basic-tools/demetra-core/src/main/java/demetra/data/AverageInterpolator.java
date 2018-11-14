@@ -20,6 +20,7 @@ package demetra.data;
 
 import demetra.design.Development;
 import demetra.util.IntList;
+import demetra.data.transformation.DataInterpolator;
 
 
 /**
@@ -30,7 +31,7 @@ import demetra.util.IntList;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class AverageInterpolator implements IDataInterpolator
+public class AverageInterpolator implements DataInterpolator
 {
 
     /**

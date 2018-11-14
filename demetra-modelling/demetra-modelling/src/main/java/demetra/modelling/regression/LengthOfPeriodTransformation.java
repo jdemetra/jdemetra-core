@@ -17,7 +17,7 @@
 package demetra.modelling.regression;
 
 import demetra.data.DoubleSequence;
-import demetra.data.IDataTransformation.LogJacobian;
+import demetra.data.transformation.DataTransformation.LogJacobian;
 import demetra.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;

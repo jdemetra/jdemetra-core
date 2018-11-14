@@ -124,7 +124,7 @@ public class Holidays {
         LocalDate end = start.plusDays(D.getRowsCount());
         int col = 0;
         for (Holiday item : elements()) {
-            Iterator<IHolidayInfo> iter = item.getDay().getIterable(start, end).iterator();
+            Iterator<HolidayInfo> iter = item.getDay().getIterable(start, end).iterator();
             while (iter.hasNext()) {
                 LocalDate date = iter.next().getDay();
                 if (!skipSundays || date.getDayOfWeek() != DayOfWeek.SUNDAY) {
@@ -144,10 +144,10 @@ public class Holidays {
         LocalDate end = start.plusDays(n);
         int col = 0;
         for (Holiday item : elements()) {
-            Iterator<IHolidayInfo> iter = item.getDay().getIterable(nstart, end).iterator();
+            Iterator<HolidayInfo> iter = item.getDay().getIterable(nstart, end).iterator();
             while (iter.hasNext()) {
                 LocalDate date = iter.next().getDay().minusDays(del);
-                date = IHolidayInfo.getPreviousWorkingDate(date);
+                date = HolidayInfo.getPreviousWorkingDate(date);
                 long pos = start.until(date, DAYS);
                 if (pos >= 0 && pos < n) {
                     D.set((int) pos, col, 1);
@@ -165,10 +165,10 @@ public class Holidays {
         LocalDate end = nstart.plusDays(n);
         int col = 0;
         for (Holiday item : elements()) {
-            Iterator<IHolidayInfo> iter = item.getDay().getIterable(nstart, end).iterator();
+            Iterator<HolidayInfo> iter = item.getDay().getIterable(nstart, end).iterator();
             while (iter.hasNext()) {
                 LocalDate date = iter.next().getDay().plusDays(del);
-                date = IHolidayInfo.getNextWorkingDate(date);
+                date = HolidayInfo.getNextWorkingDate(date);
                 long pos = start.until(date, DAYS);
                 if (pos >= 0 && pos < n) {
                     D.set((int) pos, col, 1);

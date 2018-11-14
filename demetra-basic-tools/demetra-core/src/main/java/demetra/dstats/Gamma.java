@@ -24,14 +24,14 @@ package demetra.dstats;
 
 import demetra.maths.Constants;
 import demetra.maths.polynomials.Polynomial;
-import demetra.random.IRandomNumberGenerator;
+import demetra.random.RandomNumberGenerator;
 
 
 /**
  *
  * @author Jean Palate
  */
-public class Gamma implements IContinuousDistribution {
+public class Gamma implements ContinuousDistribution {
 
     public static final double MAXGAM = 171.624376956302725;
 
@@ -141,7 +141,7 @@ public class Gamma implements IContinuousDistribution {
     }
 
     @Override
-    public double random(IRandomNumberGenerator rng) throws DStatException {
+    public double random(RandomNumberGenerator rng) throws DStatException {
         double a = alpha;
         double aa = -1.0, aaa = -1.0,
                 b = 0.0, c = 0.0, d = 0.0, e, r, s = 0.0, si = 0.0, ss = 0.0, q0 = 0.0,

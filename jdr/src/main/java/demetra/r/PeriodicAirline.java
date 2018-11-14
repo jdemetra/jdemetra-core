@@ -12,7 +12,7 @@ import demetra.fractionalairline.MultiPeriodicAirlineMapping;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.likelihood.mapping.LikelihoodInfo;
+import demetra.likelihood.LikelihoodDescriptor;
 import demetra.linearmodel.LinearModel;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
@@ -20,7 +20,6 @@ import demetra.modelling.regression.AdditiveOutlier;
 import demetra.modelling.regression.IOutlier.IOutlierFactory;
 import demetra.modelling.regression.LevelShift;
 import demetra.modelling.regression.SwitchOutlier;
-import demetra.processing.IProcResults;
 import demetra.regarima.GlsArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import demetra.processing.ProcResults;
 
 /**
  *
@@ -39,7 +39,7 @@ public class PeriodicAirline {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements IProcResults {
+    public static class Results implements ProcResults {
 
         RegArimaModel<ArimaModel> regarima;
         ConcentratedLikelihood concentratedLogLikelihood;
@@ -56,7 +56,7 @@ public class PeriodicAirline {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(LL, LikelihoodInfo.getMapping(), r -> r.statistics);
+            MAPPING.delegate(LL, LikelihoodDescriptor.getMapping(), r -> r.statistics);
             MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
             MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters());

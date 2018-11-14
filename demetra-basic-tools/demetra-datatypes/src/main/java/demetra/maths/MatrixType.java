@@ -18,6 +18,7 @@ package demetra.maths;
 
 import demetra.data.BaseTable;
 import demetra.data.DoubleSequence;
+import demetra.design.Development;
 import java.util.stream.DoubleStream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -26,6 +27,7 @@ import javax.annotation.Nonnull;
  *
  * @author Philippe Charles
  */
+@Development(status = Development.Status.Release)
 public interface MatrixType extends BaseTable<Double> {
 
     public static MatrixType EMPTY = new LightMatrix(null, 0, 0);

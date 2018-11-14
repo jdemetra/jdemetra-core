@@ -16,7 +16,6 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.Cell;
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;
 import demetra.maths.matrices.Matrix;
@@ -26,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import demetra.data.DataBlockIterator;
 import demetra.ssf.ISsfLoading;
+import demetra.data.DoubleCell;
 
 /**
  *

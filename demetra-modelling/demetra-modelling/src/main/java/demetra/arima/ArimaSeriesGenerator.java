@@ -19,7 +19,6 @@ package demetra.arima;
 import demetra.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Immutable;
-import demetra.dstats.IDistribution;
 import demetra.dstats.Normal;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
@@ -27,9 +26,10 @@ import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
-import demetra.random.IRandomNumberGenerator;
 import demetra.random.XorshiftRNG;
 import javax.annotation.Nonnull;
+import demetra.dstats.Distribution;
+import demetra.random.RandomNumberGenerator;
 
 /**
  *
@@ -44,14 +44,14 @@ public class ArimaSeriesGenerator {
     private int ndrop = 0;
     private double startMean = 100;
     private double startStdev = 10;
-    private final IRandomNumberGenerator rng;
-    private IDistribution dist=new Normal();
+    private final RandomNumberGenerator rng;
+    private Distribution dist=new Normal();
     
     private Builder(){
         rng = XorshiftRNG.fromSystemNanoTime();
     }
     
-    private Builder(IRandomNumberGenerator rng){
+    private Builder(RandomNumberGenerator rng){
         this.rng = rng;
     }
     /**
@@ -69,7 +69,7 @@ public class ArimaSeriesGenerator {
      * @param distribution
      * @return 
      */
-    public Builder distribution(IDistribution distribution){
+    public Builder distribution(Distribution distribution){
         dist=distribution;
         return this;
     }
@@ -93,15 +93,15 @@ public class ArimaSeriesGenerator {
         return new Builder();
     }
     
-    public static Builder builder(@Nonnull IRandomNumberGenerator rng){
+    public static Builder builder(@Nonnull RandomNumberGenerator rng){
         return new Builder(rng);
     }
 
     private final int initialdrop;
     private final double startMean;
     private final double startStdev;
-    private final IRandomNumberGenerator rng;
-    private final IDistribution distribution;
+    private final RandomNumberGenerator rng;
+    private final Distribution distribution;
     
     public ArimaSeriesGenerator(){
         this(new Builder());

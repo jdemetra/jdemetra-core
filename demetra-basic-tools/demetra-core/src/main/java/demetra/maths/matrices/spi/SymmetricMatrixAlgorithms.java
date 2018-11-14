@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.design.ServiceDefinition;
 import demetra.design.ThreadSafe;
 import demetra.maths.matrices.Matrix;
-import demetra.random.IRandomNumberGenerator;
+import demetra.random.RandomNumberGenerator;
 
 /**
  *
@@ -30,7 +30,7 @@ import demetra.random.IRandomNumberGenerator;
 @ServiceDefinition(isSingleton = true)
 public interface SymmetricMatrixAlgorithms {
 
-    void randomize(Matrix M, IRandomNumberGenerator rng);
+    void randomize(Matrix M, RandomNumberGenerator rng);
 
     /**
      * Computes xx' and stores the results in m. The routines doesn't verify the

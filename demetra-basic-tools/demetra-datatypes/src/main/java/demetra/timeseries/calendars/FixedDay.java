@@ -75,7 +75,7 @@ public class FixedDay implements IHoliday {
             ALLSAINTSDAY = new FixedDay(11, 1), ARMISTICE = new FixedDay(11, 11), HALLOWEEN = new FixedDay(10, 31);
 
     @Override
-    public Iterable<IHolidayInfo> getIterable(LocalDate start, LocalDate end) {
+    public Iterable<HolidayInfo> getIterable(LocalDate start, LocalDate end) {
         return new FixedDayIterable(this, start, end);
     }
 
@@ -118,7 +118,7 @@ public class FixedDay implements IHoliday {
         return new FixedDay(nmonth+1, nday, weight);
     }
 
-    static class FixedDayInfo implements IHolidayInfo {
+    static class FixedDayInfo implements HolidayInfo {
 
         final int year;
         final FixedDay fday;
@@ -135,7 +135,7 @@ public class FixedDay implements IHoliday {
 
     }
 
-    static class FixedDayIterable implements Iterable<IHolidayInfo> {
+    static class FixedDayIterable implements Iterable<HolidayInfo> {
 
         private final FixedDay fday;
         private final int year;
@@ -158,8 +158,8 @@ public class FixedDay implements IHoliday {
         }
 
         @Override
-        public Iterator<IHolidayInfo> iterator() {
-            return new Iterator<IHolidayInfo>() {
+        public Iterator<HolidayInfo> iterator() {
+            return new Iterator<HolidayInfo>() {
                 int cur = 0;
 
                 @Override
@@ -168,7 +168,7 @@ public class FixedDay implements IHoliday {
                 }
 
                 @Override
-                public IHolidayInfo next() {
+                public HolidayInfo next() {
                     return new FixedDayInfo(year + (cur++), fday);
                 }
             };

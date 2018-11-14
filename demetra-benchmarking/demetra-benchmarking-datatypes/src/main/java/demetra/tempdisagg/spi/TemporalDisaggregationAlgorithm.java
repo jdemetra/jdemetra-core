@@ -18,10 +18,10 @@ package demetra.tempdisagg.spi;
 
 import demetra.design.Algorithm;
 import demetra.design.ServiceDefinition;
-import demetra.processing.IProcResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpecification;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import demetra.processing.ProcResults;
 
 /**
  *

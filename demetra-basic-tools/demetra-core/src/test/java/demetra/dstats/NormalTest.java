@@ -5,11 +5,11 @@
  */
 package demetra.dstats;
 
-import demetra.random.IRandomNumberGenerator;
 import java.util.Random;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
+import demetra.random.RandomNumberGenerator;
 
 /**
  *
@@ -49,7 +49,7 @@ public class NormalTest {
     public void testExpectation() {
         int iterations = 10000;
         Normal n = new Normal(0, 1);
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
 
         double sum = 0, avg;
         for (int i = 0; i < iterations; i++) {
@@ -63,7 +63,7 @@ public class NormalTest {
     public void testVariance() {
         int iterations = 10000;
         Normal n = new Normal();
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
         double[] values = new double[iterations];
         double sum = 0, avg;
 
@@ -81,8 +81,8 @@ public class NormalTest {
         assertThat(n.getVariance()).isCloseTo(variance, Assertions.within(n.getVariance() * TOLERANCE));
     }
 
-    private IRandomNumberGenerator getRandomNumberGenerator() {
-        return new IRandomNumberGenerator() {
+    private RandomNumberGenerator getRandomNumberGenerator() {
+        return new RandomNumberGenerator() {
             @Override
             public double nextDouble() {
                 return new Random().nextDouble();
@@ -114,7 +114,7 @@ public class NormalTest {
             }
 
             @Override
-            public IRandomNumberGenerator synchronize() {
+            public RandomNumberGenerator synchronize() {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         };

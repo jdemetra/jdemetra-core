@@ -20,8 +20,7 @@ import demetra.data.AverageInterpolator;
 import demetra.modelling.Variable;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
-import demetra.data.IDataInterpolator;
-import demetra.data.IDataTransformation.LogJacobian;
+import demetra.data.transformation.DataTransformation.LogJacobian;
 import demetra.data.LogTransformation;
 import demetra.data.ParameterType;
 import demetra.design.Development;
@@ -49,6 +48,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import demetra.data.transformation.DataInterpolator;
 
 /**
  *
@@ -60,7 +60,7 @@ public final class ModelDescription {
     private final TsData series;
     private boolean logTransformation;
     private LengthOfPeriodType lpTransformation = LengthOfPeriodType.None;
-    private IDataInterpolator interpolator = new AverageInterpolator();
+    private DataInterpolator interpolator = new AverageInterpolator();
     private final List<PreadjustmentVariable> preadjustmentVariables = new ArrayList<>();
     private final List<Variable> variables = new ArrayList<>();
     private final SarimaComponent arima = new SarimaComponent();
@@ -517,14 +517,14 @@ public final class ModelDescription {
     /**
      * @return the interpolator
      */
-    public IDataInterpolator getInterpolator() {
+    public DataInterpolator getInterpolator() {
         return interpolator;
     }
 
     /**
      * @param interpolator the interpolator to set
      */
-    public void setInterpolator(IDataInterpolator interpolator) {
+    public void setInterpolator(DataInterpolator interpolator) {
         this.interpolator = interpolator;
         invalidateTransformation();
     }

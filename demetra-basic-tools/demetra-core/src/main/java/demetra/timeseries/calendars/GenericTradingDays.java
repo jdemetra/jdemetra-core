@@ -16,7 +16,6 @@
  */
 package demetra.timeseries.calendars;
 
-import demetra.data.Cell;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.timeseries.TsDomain;
@@ -25,6 +24,7 @@ import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import demetra.data.DoubleCell;
 
 /**
  *
@@ -83,7 +83,7 @@ public class GenericTradingDays {
 
         int[][] groups = clustering.allPositions();
         int ng = groups.length;
-        Cell[] cells = new Cell[ng];
+        DoubleCell[] cells = new DoubleCell[ng];
         for (int i = 0; i < cells.length; ++i) {
             cells[i] = buffer.get(i).cells();
         }
@@ -115,7 +115,7 @@ public class GenericTradingDays {
         rotate(groups);
         int ng = groups.length - 1;
         int[] cgroup = groups[ng];
-        Cell[] cells = new Cell[ng];
+        DoubleCell[] cells = new DoubleCell[ng];
         for (int i = 0; i < cells.length; ++i) {
             cells[i] = buffer.get(i).cells();
         }

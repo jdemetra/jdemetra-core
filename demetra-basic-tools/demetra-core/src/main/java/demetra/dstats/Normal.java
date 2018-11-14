@@ -22,9 +22,9 @@ import demetra.data.Interval;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.dstats.internal.Utility.calcProbDelegate;
-import demetra.random.IRandomNumberGenerator;
 import java.util.Formatter;
 import lombok.NonNull;
+import demetra.random.RandomNumberGenerator;
 
 /**
  * 
@@ -32,7 +32,7 @@ import lombok.NonNull;
  */
 @Development(status = Development.Status.Release)
 @Immutable
-public class Normal implements IContinuousDistribution {
+public class Normal implements ContinuousDistribution {
 
     private final double mean;
     private final double stdev;
@@ -216,7 +216,7 @@ public class Normal implements IContinuousDistribution {
     }
 
     @Override
-    public double random(@NonNull IRandomNumberGenerator rng) {
+    public double random(@NonNull RandomNumberGenerator rng) {
 	double x1, x2, w;
 	do {
 	    x1 = 2 * rng.nextDouble() - 1;

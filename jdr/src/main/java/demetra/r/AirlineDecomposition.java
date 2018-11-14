@@ -20,7 +20,7 @@ import demetra.arima.ArimaModel;
 import demetra.arima.ArimaType;
 import demetra.arima.IArimaModel;
 import demetra.arima.UcarimaType;
-import demetra.arima.mapping.UcarimaInfo;
+import demetra.arima.UcarimaDescriptor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlockStorage;
@@ -28,15 +28,14 @@ import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.likelihood.mapping.LikelihoodInfo;
+import demetra.likelihood.LikelihoodDescriptor;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
-import demetra.processing.IProcResults;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarimaType;
 import demetra.sarima.RegSarimaProcessor;
-import demetra.sarima.mapping.SarimaInfo;
+import demetra.arima.SarimaDescriptor;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.univariate.SsfData;
@@ -50,6 +49,7 @@ import demetra.ucarima.UcarimaModel;
 import demetra.ucarima.ssf.SsfUcarima;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import demetra.processing.ProcResults;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
@@ -61,7 +61,7 @@ public class AirlineDecomposition {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements IProcResults {
+    public static class Results implements ProcResults {
 
         TsData y, t, s, i;
         UcarimaType ucarima;
@@ -105,10 +105,10 @@ public class AirlineDecomposition {
             MAPPING.set(S, TsData.class, source -> source.getS());
             MAPPING.set(I, TsData.class, source -> source.getI());
             MAPPING.set(SA, TsData.class, source -> subtract(source.getY(), source.getS()));
-            MAPPING.delegate(UCARIMA, UcarimaInfo.getMapping(), source -> source.getUcarima());
+            MAPPING.delegate(UCARIMA, UcarimaDescriptor.getMapping(), source -> source.getUcarima());
             MAPPING.set(UCM, UcarimaType.class, source -> source.getUcarima());
-            MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getSarima());
-            MAPPING.delegate(LL, LikelihoodInfo.getMapping(), r -> r.statistics);
+            MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getSarima());
+            MAPPING.delegate(LL, LikelihoodDescriptor.getMapping(), r -> r.statistics);
             MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
         }

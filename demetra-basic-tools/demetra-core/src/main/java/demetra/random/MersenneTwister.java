@@ -27,7 +27,7 @@ import java.util.Date;
  * @author Jean Palate, Jeremy Demortier
  */
 @Development(status = Development.Status.Release)
-@AlgorithmImplementation(algorithm=IRandomNumberGenerator.class)
+@AlgorithmImplementation(algorithm=RandomNumberGenerator.class)
 public class MersenneTwister extends AbstractRNG {
 
     // STATIC FACTORY METHODS >

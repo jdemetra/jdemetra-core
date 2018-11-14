@@ -17,10 +17,10 @@
 package demetra.modelling.regression;
 
 import demetra.data.DoubleSequence;
-import demetra.data.IDataTransformation;
-import demetra.data.IDataTransformation.LogJacobian;
+import demetra.data.transformation.DataTransformation.LogJacobian;
 import demetra.design.Development;
 import demetra.timeseries.TsData;
+import demetra.data.transformation.DataTransformation;
 
 /**
  * Interface for transformation of a time series
@@ -49,7 +49,7 @@ public interface ITsTransformation {
      */
     TsData transform(TsData data, LogJacobian logjacobian);
 
-    public static ITsTransformation of(final IDataTransformation dataTransformation) {
+    public static ITsTransformation of(final DataTransformation dataTransformation) {
         return new GenericTsTransformation(dataTransformation);
     }
 
@@ -57,9 +57,9 @@ public interface ITsTransformation {
 
 class GenericTsTransformation implements ITsTransformation {
 
-    private final IDataTransformation dataTransformation;
+    private final DataTransformation dataTransformation;
 
-    GenericTsTransformation(final IDataTransformation dataTransformation) {
+    GenericTsTransformation(final DataTransformation dataTransformation) {
         this.dataTransformation = dataTransformation;
     }
 

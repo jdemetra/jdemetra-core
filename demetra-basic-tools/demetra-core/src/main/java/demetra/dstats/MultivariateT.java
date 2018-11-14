@@ -24,8 +24,8 @@ import demetra.maths.Constants;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.random.IRandomNumberGenerator;
 import lombok.NonNull;
+import demetra.random.RandomNumberGenerator;
 
 /**
  *
@@ -84,7 +84,7 @@ public class MultivariateT {
      * @param rng
      * @param rnd The buffer that will contain the generated random numbers
      */
-    public void random(@NonNull IRandomNumberGenerator rng, DataBlock rnd) {
+    public void random(@NonNull RandomNumberGenerator rng, DataBlock rnd) {
         rnd.set(()->N.random(rng));
         Matrix lm=l();
         LowerTriangularMatrix.lmul(lm, rnd);

@@ -20,9 +20,9 @@ import demetra.dstats.internal.SpecialFunctions;
 import demetra.dstats.internal.ProbInvFinder;
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.random.IRandomNumberGenerator;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.NonNull;
+import demetra.random.RandomNumberGenerator;
 
 
 /**
@@ -31,7 +31,7 @@ import lombok.NonNull;
  */
 @Development(status = Development.Status.Release)
 @Immutable
-public class F implements IContinuousDistribution {
+public class F implements ContinuousDistribution {
 
     private final double k1;
     private final double k2;
@@ -158,7 +158,7 @@ public class F implements IContinuousDistribution {
     }
 
     @Override
-    public double random(@NonNull IRandomNumberGenerator rng) {
+    public double random(@NonNull RandomNumberGenerator rng) {
         Chi2 cnum=num.get(), cdenom=denom.get();
         if (cnum ==null){
             cnum=new Chi2(k1);

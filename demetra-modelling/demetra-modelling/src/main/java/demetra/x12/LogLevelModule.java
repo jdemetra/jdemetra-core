@@ -17,7 +17,7 @@
 package demetra.x12;
 
 import demetra.data.DoubleSequence;
-import demetra.data.IDataTransformation.LogJacobian;
+import demetra.data.transformation.DataTransformation.LogJacobian;
 import demetra.data.LogTransformation;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;

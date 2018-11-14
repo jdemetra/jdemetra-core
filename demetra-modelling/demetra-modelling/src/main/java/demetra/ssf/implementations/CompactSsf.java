@@ -5,7 +5,6 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.Cell;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.Matrix;
@@ -16,6 +15,7 @@ import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.univariate.Measurement;
+import demetra.data.DoubleCell;
 
 /**
  * This class provides algorithms that integrate the measurement errors into the
@@ -200,7 +200,7 @@ public class CompactSsf {
             zm.copy(m.row(0));
             Matrix q = m.dropTopLeft(1, 0);
             DataBlockIterator cols = q.columnsIterator();
-            Cell cur = zm.cells();
+            DoubleCell cur = zm.cells();
             while (cols.hasNext()) {
                 cur.applyAndNext(x -> x + loading.ZX(pos, cols.next()));
             }

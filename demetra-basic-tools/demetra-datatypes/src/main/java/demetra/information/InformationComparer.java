@@ -17,6 +17,7 @@
 
 package demetra.information;
 
+import demetra.design.Development;
 import java.io.Serializable;
 
 /**
@@ -24,6 +25,7 @@ import java.io.Serializable;
  * @param <S>
  * @author Jean Palate
  */
+@Development(status = Development.Status.Release)
 public class InformationComparer<S> implements java.util.Comparator<Information<S>>, Serializable {
 
     @Override

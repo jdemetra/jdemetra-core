@@ -22,7 +22,6 @@ import demetra.dstats.Normal;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.random.IRandomNumberGenerator;
 import demetra.random.JdkRNG;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
@@ -32,6 +31,7 @@ import demetra.ssf.ISsfLoading;
 import demetra.data.DoubleSequence;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsfError;
+import demetra.random.RandomNumberGenerator;
 
 /**
  *
@@ -40,7 +40,7 @@ import demetra.ssf.univariate.ISsfError;
 public class DiffuseSimulationSmoother {
 
     private static final Normal N = new Normal();
-    private static final IRandomNumberGenerator RNG = JdkRNG.newRandom(0);
+    private static final RandomNumberGenerator RNG = JdkRNG.newRandom(0);
 
     private static void fillRandoms(DataBlock u) {
         synchronized (N) {

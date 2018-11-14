@@ -17,11 +17,13 @@
 package demetra.maths;
 
 import demetra.data.DoubleSequence;
+import demetra.design.Development;
 
 /**
  *
  * @author Jean Palate
  */
+@Development(status = Development.Status.Release)
 class LightMatrix implements MatrixType {
 
     private final double[] storage;

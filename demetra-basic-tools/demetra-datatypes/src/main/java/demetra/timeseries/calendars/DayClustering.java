@@ -24,7 +24,7 @@ import java.util.Arrays;
  * Repartition of the days of the week in different groups
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Beta)
 public class DayClustering {
 
     private final int[] groups;

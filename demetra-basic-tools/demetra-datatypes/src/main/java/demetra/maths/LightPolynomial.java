@@ -6,12 +6,14 @@
 package demetra.maths;
 
 import demetra.data.DoubleSequence;
+import demetra.design.Development;
 import java.util.Arrays;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Development(status = Development.Status.Release)
 class LightPolynomial implements PolynomialType {
 
     private double[] c;

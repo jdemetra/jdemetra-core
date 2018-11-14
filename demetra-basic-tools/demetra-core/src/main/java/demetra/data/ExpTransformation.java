@@ -17,13 +17,14 @@
 package demetra.data;
 
 import demetra.design.Development;
+import demetra.data.transformation.DataTransformation;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class ExpTransformation implements IDataTransformation {
+public class ExpTransformation implements DataTransformation {
 
     /**
      *
@@ -39,7 +40,7 @@ public class ExpTransformation implements IDataTransformation {
      * @return
      */
     @Override
-    public IDataTransformation converse() {
+    public DataTransformation converse() {
         return new LogTransformation();
     }
 

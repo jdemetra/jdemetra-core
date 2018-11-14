@@ -12,10 +12,11 @@ import demetra.design.Development;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-@Development(status = Development.Status.Beta)
+@Development(status = Development.Status.Release)
 public class ParameterEstimation {
     private double value;
     private double standardError;
+    private double pvalue;
     private String description;
    
 }

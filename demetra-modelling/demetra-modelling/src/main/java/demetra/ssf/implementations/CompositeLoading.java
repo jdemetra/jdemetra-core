@@ -16,7 +16,6 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.Cell;
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;
 import demetra.maths.matrices.Matrix;
@@ -26,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import demetra.data.DataBlockIterator;
 import demetra.ssf.ISsfLoading;
+import demetra.data.DoubleCell;
 
 /**
  *
@@ -104,7 +104,7 @@ class CompositeLoading implements ISsfLoading {
         tmp.set(0);
         Z(pos, tmp);
         DataBlockIterator cols = V.columnsIterator();
-        Cell cell = tmp.cells();
+        DoubleCell cell = tmp.cells();
         while (cols.hasNext()) {
             cols.next().addAY(cell.next(), tmp);
         }

@@ -24,7 +24,7 @@ import java.time.LocalDate;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-@Development(status = Development.Status.Beta)
+@Development(status = Development.Status.Release)
 public class Easter {
 
     /**

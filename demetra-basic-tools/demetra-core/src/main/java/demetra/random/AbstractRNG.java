@@ -27,7 +27,7 @@ import demetra.design.Development;
  * @author Philippe Charles
  */
 @Development(status = Development.Status.Alpha)
-public abstract class AbstractRNG implements IRandomNumberGenerator {
+public abstract class AbstractRNG implements RandomNumberGenerator {
 
     private static final double IntToDoubleMultiplier = 1.0 / (Integer.MAX_VALUE + 1.0);
 
@@ -62,15 +62,15 @@ public abstract class AbstractRNG implements IRandomNumberGenerator {
     }
 
     @Override
-    public IRandomNumberGenerator synchronize() {
+    public RandomNumberGenerator synchronize() {
         return new SynchronizedRNG(this);
     }
 
-    private static final class SynchronizedRNG implements IRandomNumberGenerator {
+    private static final class SynchronizedRNG implements RandomNumberGenerator {
 
-        private final IRandomNumberGenerator rng;
+        private final RandomNumberGenerator rng;
 
-        private SynchronizedRNG(IRandomNumberGenerator rng) {
+        private SynchronizedRNG(RandomNumberGenerator rng) {
             this.rng = rng;
         }
 
@@ -105,7 +105,7 @@ public abstract class AbstractRNG implements IRandomNumberGenerator {
         }
 
         @Override
-        public IRandomNumberGenerator synchronize() {
+        public RandomNumberGenerator synchronize() {
             return this;
         }
     }

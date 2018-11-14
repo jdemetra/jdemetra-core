@@ -8,7 +8,7 @@ package demetra.maths.matrices;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
-import demetra.data.accumulator.DoubleAccumulator;
+import demetra.data.transformation.DoubleAccumulator;
 import java.util.Iterator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;

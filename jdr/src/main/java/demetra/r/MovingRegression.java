@@ -14,12 +14,11 @@ import demetra.likelihood.ConcentratedLikelihood;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.processing.IProcResults;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.RegSarimaProcessor;
-import demetra.sarima.mapping.SarimaInfo;
+import demetra.arima.SarimaDescriptor;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsUnit;
@@ -30,10 +29,10 @@ import demetra.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.fitToDomain;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import demetra.processing.ProcResults;
 
 /**
  *
@@ -52,7 +51,7 @@ public class MovingRegression {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements IProcResults {
+    public static class Results implements ProcResults {
 
         TsDomain domain;
         MatrixType variables;
@@ -63,7 +62,7 @@ public class MovingRegression {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getArima().toType());
+            MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getArima().toType());
             MAPPING.set(COEFF, MatrixType.class, r -> r.getCoefficients());
             MAPPING.set(TD, MatrixType.class, r -> r.getVariables());
             MAPPING.set(TDEFFECT, TsData.class, r

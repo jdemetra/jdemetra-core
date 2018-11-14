@@ -5,7 +5,6 @@
  */
 package demetra.leastsquares.internal;
 
-import demetra.data.Cell;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.Matrix;
@@ -19,6 +18,7 @@ import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.maths.matrices.spi.QRSolver;
+import demetra.data.DoubleCell;
 
 /**
  *
@@ -163,7 +163,8 @@ public class QRSolverImpl implements QRSolver {
         // step 1
         int iter = 0;
         do {
-            Cell f = F.cells(), g = G.cells(), e = E.cells();
+            DoubleCell f = F.cells();
+            DoubleCell g = G.cells(), e = E.cells();
             DoubleReader y = Y.reader();
             NeumaierAccumulator acc = new NeumaierAccumulator();
             DataBlockIterator rows = X.rowsIterator();
@@ -215,7 +216,7 @@ public class QRSolverImpl implements QRSolver {
             ssqerr = ssq;
 
             DataBlock Err = DataBlock.make(n);
-            Cell err = Err.cells();
+            DoubleCell err = Err.cells();
             DoubleReader y = Y.reader();
             NeumaierAccumulator acc = new NeumaierAccumulator();
             DataBlockIterator rows = X.rowsIterator();

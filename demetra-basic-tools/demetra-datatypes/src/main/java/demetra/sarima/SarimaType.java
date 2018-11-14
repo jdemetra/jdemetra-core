@@ -30,7 +30,7 @@ import demetra.maths.PolynomialType;
  *
  * @author Jeremy Demortier, Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 @lombok.Value
 @lombok.Builder(toBuilder=true)
 public class SarimaType  {

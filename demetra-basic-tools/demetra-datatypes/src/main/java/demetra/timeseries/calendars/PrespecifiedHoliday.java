@@ -94,7 +94,7 @@ public class PrespecifiedHoliday implements IHoliday {
     }
     
     @Override
-    public Iterable<IHolidayInfo> getIterable(LocalDate start, LocalDate end) {
+    public Iterable<HolidayInfo> getIterable(LocalDate start, LocalDate end) {
         IHoliday sd = toSpecialDay();
         if (sd == null) {
             return null;

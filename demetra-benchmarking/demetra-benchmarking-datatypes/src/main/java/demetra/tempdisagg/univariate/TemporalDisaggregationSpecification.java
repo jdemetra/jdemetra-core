@@ -19,9 +19,9 @@ package demetra.tempdisagg.univariate;
 import demetra.algorithms.AlgorithmDescriptor;
 import demetra.data.AggregationType;
 import demetra.data.Parameter;
-import demetra.processing.IProcSpecification;
 import demetra.timeseries.TimeSelector;
 import java.util.Objects;
+import demetra.processing.ProcSpecification;
 
 /**
  *
@@ -29,7 +29,7 @@ import java.util.Objects;
  */
 @lombok.Data
 @lombok.NoArgsConstructor
-public class TemporalDisaggregationSpecification implements IProcSpecification {
+public class TemporalDisaggregationSpecification implements ProcSpecification {
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("temporaldisaggregation", "generic", null);
 

@@ -22,7 +22,7 @@ import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
 import demetra.maths.matrices.Matrix;
-import demetra.stats.StatisticalTestSummary;
+import demetra.stats.TestResult;
 import demetra.stats.tests.LjungBox;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.seasonal.CanovaHansen;
@@ -37,7 +37,7 @@ import demetra.modelling.regression.PeriodicContrasts;
 @lombok.experimental.UtilityClass
 public class SeasonalityTests {
 
-    public StatisticalTestSummary fTest(double[] s, int period, boolean ar, int ny) {
+    public TestResult fTest(double[] s, int period, boolean ar, int ny) {
 
         DoubleSequence y = DoubleSequence.ofInternal(s);
         if (ar) {
@@ -58,7 +58,7 @@ public class SeasonalityTests {
         }
     }
 
-    public StatisticalTestSummary qsTest(double[] s, int period, int ny) {
+    public TestResult qsTest(double[] s, int period, int ny) {
 
         for (int i = s.length - 1; i > 0; --i) {
             s[i] -= s[i - 1];
@@ -75,7 +75,7 @@ public class SeasonalityTests {
         return test.toSummary();
     }
 
-    public StatisticalTestSummary periodicQsTest(double[] s, double[] periods) {
+    public TestResult periodicQsTest(double[] s, double[] periods) {
         DoubleSequence y;
         if (periods.length == 1) {
             for (int j = s.length - 1; j > 0; --j) {
@@ -118,7 +118,7 @@ public class SeasonalityTests {
         return rslt;
     }
 
-    private StatisticalTestSummary process(DoubleSequence s, int freq) {
+    private TestResult process(DoubleSequence s, int freq) {
         try {
             DataBlock y = DataBlock.of(s);
             y.sub(y.average());
@@ -136,7 +136,7 @@ public class SeasonalityTests {
         }
     }
 
-    private StatisticalTestSummary processAr(DoubleSequence s, int freq) {
+    private TestResult processAr(DoubleSequence s, int freq) {
         try {
             PeriodicContrasts var = new PeriodicContrasts(freq);
 

@@ -14,7 +14,6 @@ import demetra.information.InformationMapping;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
-import demetra.processing.IProcResults;
 import demetra.sarima.SarimaModel;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.dk.DkToolkit;
@@ -24,6 +23,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.SsfData;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import demetra.processing.ProcResults;
 
 /**
  *
@@ -34,7 +34,7 @@ public class ArimaForecasts {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements IProcResults {
+    public static class Results implements ProcResults {
 
         RegArimaModel<SarimaModel> regarima;
         DoubleSequence forecasts, forecastsErrors;

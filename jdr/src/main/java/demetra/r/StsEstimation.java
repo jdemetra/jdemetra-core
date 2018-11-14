@@ -22,7 +22,6 @@ import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.NumericalDerivatives;
 import demetra.maths.matrices.Matrix;
-import demetra.processing.IProcResults;
 import demetra.r.mapping.DiffuseLikelihoodInfo;
 import demetra.ssf.dk.DkConcentratedLikelihood;
 import demetra.ssf.dk.DkToolkit;
@@ -45,6 +44,11 @@ import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import demetra.processing.ProcResults;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
  *
@@ -55,7 +59,7 @@ public class StsEstimation {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements IProcResults {
+    public static class Results implements ProcResults {
 
         TsData y, t, s, i;
         BasicStructuralModel bsm;

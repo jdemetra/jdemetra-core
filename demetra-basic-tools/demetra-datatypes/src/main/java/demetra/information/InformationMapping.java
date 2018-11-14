@@ -16,6 +16,7 @@
  */
 package demetra.information;
 
+import demetra.design.Development;
 import demetra.design.ThreadSafe;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,6 +38,7 @@ import java.util.ServiceLoader;
  * @author Jean Palate
  */
 @ThreadSafe
+@Development(status = Development.Status.Release)
 public class InformationMapping<S> implements InformationExtractor<S> {
 
     private final LinkedHashMap<String, InformationExtractor<S>> map = new LinkedHashMap<>();

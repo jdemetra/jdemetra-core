@@ -21,10 +21,10 @@ import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.msts.CompositeModel;
 import demetra.msts.CompositeModelEstimation;
-import demetra.processing.IProcResults;
 import demetra.ssf.StateStorage;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import demetra.processing.ProcResults;
 
 /**
  *
@@ -33,7 +33,7 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 public class CompositeModels {
 
-    public static class Results implements IProcResults {
+    public static class Results implements ProcResults {
         
         private final CompositeModelEstimation estimation;
         

@@ -24,7 +24,17 @@
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-design</artifactId>
+            <version>${jd3-basic.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-datatypes</artifactId>
+            <version>${jd3-basic.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-datatypes-descriptors</artifactId>
             <version>${jd3-basic.version}</version>
         </dependency>
         <dependency>

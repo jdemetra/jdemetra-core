@@ -16,6 +16,7 @@
  */
 package demetra.information;
 
+import demetra.design.Development;
 import demetra.util.WildCards;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -26,6 +27,7 @@ import java.util.function.Function;
  * @author Jean Palate
  * @param <S>
  */
+@Development(status = Development.Status.Release)
 public interface InformationExtractor<S> {
 
     public static final char SEP = '.';

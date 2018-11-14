@@ -20,6 +20,7 @@ package demetra.data;
 import demetra.stats.AutoCovariances;
 import demetra.stats.DescriptiveStatistics;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.transformation.Taper;
 
 /**
  * This class implements the Durbin's algorithm, which fits recursively
@@ -35,7 +36,7 @@ public class DurbinAlgorithm {
     private double[] a;
     private static final double SMALL = 1e-9;
     private boolean mean = true;
-    private ITaper taper;
+    private Taper taper;
 
     public double getAutocovariance(int lag) {
         return cxx[lag];
@@ -45,11 +46,11 @@ public class DurbinAlgorithm {
         return cxx == null ? 0 : cxx.length - 1;
     }
 
-    public void setTaper(ITaper taper) {
+    public void setTaper(Taper taper) {
         this.taper = taper;
     }
 
-    public ITaper getTaper() {
+    public Taper getTaper() {
         return taper;
     }
 

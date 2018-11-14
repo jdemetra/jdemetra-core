@@ -17,6 +17,7 @@
 package demetra.data;
 
 import demetra.maths.Constants;
+import demetra.data.transformation.Taper;
 
 /**
  * TUKEY-HANNING Taper.
@@ -25,7 +26,7 @@ import demetra.maths.Constants;
  *
  * @author Jean Palate
  */
-public class TukeyHanningTaper implements ITaper {
+public class TukeyHanningTaper implements Taper {
 
     private final double r;
 

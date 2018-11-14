@@ -19,7 +19,6 @@ package demetra.arima.internal;
 import demetra.arima.ArimaException;
 import demetra.arima.IArimaModel;
 import demetra.arima.IArmaFilter;
-import demetra.data.Cell;
 import demetra.data.DataBlock;
 import demetra.data.DoubleReader;
 import demetra.design.AlgorithmImplementation;
@@ -29,6 +28,7 @@ import demetra.likelihood.DeterminantalTerm;
 import demetra.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.data.DoubleSequence;
+import demetra.data.DoubleCell;
 
 /**
  * @author Jean Palate
@@ -228,7 +228,7 @@ public class KalmanFilter implements IArmaFilter {
         double[] a = new double[m_dim];
         // iteration
         DoubleReader yreader = y.reader();
-        Cell yfwriter = yf.cells();
+        DoubleCell yfwriter = yf.cells();
         int pos = 0, cpos = 0, ilast = m_dim - 1;
         double s = m_s[pos];
         double e = yreader.next() / s;

@@ -6,12 +6,14 @@
 package demetra.linearmodel;
 
 import demetra.data.DoubleSequence;
+import demetra.design.Development;
 import demetra.maths.MatrixType;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Development(status = Development.Status.Release)
 @lombok.Value
 @lombok.Builder
 public class LinearModelType {

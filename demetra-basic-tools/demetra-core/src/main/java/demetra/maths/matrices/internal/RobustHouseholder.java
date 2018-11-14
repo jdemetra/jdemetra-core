@@ -18,7 +18,7 @@ package demetra.maths.matrices.internal;
 
 import demetra.maths.Constants;
 import demetra.data.DataBlock;
-import demetra.data.accumulator.DoubleAccumulator;
+import demetra.data.transformation.DoubleAccumulator;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;

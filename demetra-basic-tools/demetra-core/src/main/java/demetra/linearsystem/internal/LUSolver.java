@@ -16,7 +16,6 @@
  */
 package demetra.linearsystem.internal;
 
-import demetra.data.Cell;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.accumulator.NeumaierAccumulator;
@@ -25,6 +24,7 @@ import demetra.maths.matrices.decomposition.ILUDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.linearsystem.ILinearSystemSolver;
+import demetra.data.DoubleCell;
 
 /**
  *
@@ -84,7 +84,7 @@ public class LUSolver implements ILinearSystemSolver {
 
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
-            Cell cells = b.cells();
+            DoubleCell cells = b.cells();
             while (rows.hasNext()) {
                 DataBlock row = rows.next();
                 double norm = row.norm2()/Math.sqrt(row.length());

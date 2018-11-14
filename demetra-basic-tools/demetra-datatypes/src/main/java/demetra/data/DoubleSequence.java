@@ -16,6 +16,7 @@
  */
 package demetra.data;
 
+import demetra.design.Development;
 import demetra.design.Internal;
 import java.text.DecimalFormat;
 import java.util.function.DoubleBinaryOperator;
@@ -33,6 +34,7 @@ import internal.data.InternalDoubleSeq;
  *
  * @author Philippe Charles
  */
+@Development(status = Development.Status.Release)
 public interface DoubleSequence extends BaseSequence<Double> {
 
     static final double[] EMPTYARRAY = new double[0];

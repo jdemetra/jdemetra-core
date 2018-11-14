@@ -10,12 +10,12 @@ import demetra.maths.linearfilters.FiniteFilter;
 import demetra.maths.linearfilters.IFilter;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.processing.IProcResults;
 import demetra.ssf.dk.DkConcentratedLikelihood;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
+import demetra.processing.ProcResults;
 
 /**
  *
@@ -26,7 +26,7 @@ public class FiltersToolkit {
 
     @lombok.Value
     @lombok.Builder
-    public static class FiniteFilters implements IProcResults {
+    public static class FiniteFilters implements ProcResults {
 
         private SymmetricFilter filter;
         private FiniteFilter[] afilters;

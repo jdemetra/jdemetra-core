@@ -161,7 +161,7 @@ public class EasterRelatedDay implements IHoliday {
     }
 
     @Override
-    public Iterable<IHolidayInfo> getIterable(LocalDate start, LocalDate end) {
+    public Iterable<HolidayInfo> getIterable(LocalDate start, LocalDate end) {
         return new EasterDayList(offset, start, end, julian);
     }
 
@@ -227,7 +227,7 @@ public class EasterRelatedDay implements IHoliday {
         return rslt;
     }
 
-    static class EasterDayInfo implements IHolidayInfo {
+    static class EasterDayInfo implements HolidayInfo {
 
         final LocalDate day;
 
@@ -247,7 +247,7 @@ public class EasterRelatedDay implements IHoliday {
         }
     }
 
-    static class EasterDayList extends AbstractList<IHolidayInfo> {
+    static class EasterDayList extends AbstractList<HolidayInfo> {
 
         private final int startyear, n, offset;
         private final boolean julian;
@@ -273,7 +273,7 @@ public class EasterRelatedDay implements IHoliday {
         }
 
         @Override
-        public IHolidayInfo get(int index) {
+        public HolidayInfo get(int index) {
             return new EasterDayInfo(startyear + index, offset, julian);
         }
 
