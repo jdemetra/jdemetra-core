@@ -148,8 +148,8 @@ public class TreeTraverserTest {
             }
         };
 
-        TreeTraverser<DefaultMutableTreeNode> tree = TreeTraverser.of(root, TreeTraverserTest::children);
-        Function<DefaultMutableTreeNode, String> toString = o -> o.getUserObject().toString();
+        TreeTraverser<TreeNode> tree = TreeTraverser.of(root, TreeTraverserTest::children);
+        Function<TreeNode, String> toString = o -> ((DefaultMutableTreeNode) o).getUserObject().toString();
         String nl = System.lineSeparator();
 
         assertThat(tree.prettyPrintToString(0, toString))
@@ -194,7 +194,7 @@ public class TreeTraverserTest {
                 );
     }
 
-    private static <X extends TreeNode> Iterable<X> children(X root) {
+    private static Iterable<? extends TreeNode> children(TreeNode root) {
         return Collections.list(root.children());
     }
 }
