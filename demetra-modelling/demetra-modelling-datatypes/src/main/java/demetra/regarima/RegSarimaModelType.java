@@ -19,6 +19,7 @@ package demetra.regarima;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.linearmodel.LinearModelType;
+import demetra.maths.MatrixType;
 import demetra.sarima.SarimaType;
 
 
@@ -32,7 +33,6 @@ import demetra.sarima.SarimaType;
 public class RegSarimaModelType {
     
     @lombok.NonNull
-    @lombok.experimental.Delegate
     private LinearModelType model;
     
     @lombok.NonNull
@@ -40,4 +40,37 @@ public class RegSarimaModelType {
     
     private static final int[] NOMISSING = new int[0];
     private static final DoubleSequence[] NOX=new DoubleSequence[0];
+
+    //<editor-fold defaultstate="collapsed" desc="delegate to model">
+    public DoubleSequence getY() {
+        return model.getY();
+    }
+    
+    public boolean isMeanCorrection() {
+        return model.isMeanCorrection();
+    }
+    
+    public MatrixType getX() {
+        return model.getX();
+    }
+    
+    public int[] getMissing() {
+        return model.getMissing();
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        return model.equals(o);
+    }
+    
+    @Override
+    public int hashCode() {
+        return model.hashCode();
+    }
+    
+    @Override
+    public String toString() {
+        return model.toString();
+    }
+    //</editor-fold>
 }
