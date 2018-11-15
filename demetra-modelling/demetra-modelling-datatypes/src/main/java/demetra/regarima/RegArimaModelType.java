@@ -20,6 +20,7 @@ import demetra.arima.ArimaType;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.linearmodel.LinearModelType;
+import demetra.maths.MatrixType;
 
 
 /**
@@ -32,10 +33,41 @@ import demetra.linearmodel.LinearModelType;
 public class RegArimaModelType {
     
     @lombok.NonNull
-    @lombok.experimental.Delegate
     private LinearModelType model;
     
     @lombok.NonNull
     private ArimaType arima;
     
+    //<editor-fold defaultstate="collapsed" desc="delegate to model">
+    public DoubleSequence getY() {
+        return model.getY();
+    }
+    
+    public boolean isMeanCorrection() {
+        return model.isMeanCorrection();
+    }
+    
+    public MatrixType getX() {
+        return model.getX();
+    }
+    
+    public int[] getMissing() {
+        return model.getMissing();
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        return model.equals(o);
+    }
+    
+    @Override
+    public int hashCode() {
+        return model.hashCode();
+    }
+    
+    @Override
+    public String toString() {
+        return model.toString();
+    }
+    //</editor-fold>
 }
