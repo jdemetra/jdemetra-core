@@ -192,9 +192,9 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitia
 
     private void update1() {
         double f = pe.getVariance();
-        if (f == 0) {
-            return;
-        }
+//        if (f == 0) {
+//            return;
+//        }
         double fi = pe.getDiffuseVariance(), e = pe.get();
         DataBlock C = pe.M(), Ci = pe.Mi();
         // P = T P T' - 1/f*(TMf)(TMf)'+RQR'+f*(TMf/f-TMi/fi)(TMf/f-TMi/fi)'

@@ -66,9 +66,13 @@
         <module>demetra-modelling</module>
         <module>demetra-ssf</module>
         <module>demetra-regarima</module>
+        <module>demetra-tramoseats-datatypes</module>
+        <module>demetra-x13-datatypes</module>
         <module>demetra-regarima-tramo</module>
         <module>demetra-regarima-x13</module>
         <module>demetra-regarima-ami</module>
+        <module>demetra-sts-datatypes</module>
+        <module>demetra-sts</module>
     </modules>
     
 </project>

@@ -24,6 +24,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.arima.ArimaForecaster;
+import demetra.arima.internal.FastArimaForecasts;
+import demetra.arima.ssf.ExactArimaForecasts;
 
 /**
  *
@@ -78,7 +80,7 @@ public class ArimaForecasts {
         if (!method.equalsIgnoreCase("all")) {
             Results.ResultsBuilder builder = Results.builder();
             boolean exact = method.equalsIgnoreCase("exact");
-            ArimaForecaster fcasts = exact ? ArimaForecaster.exact() : ArimaForecaster.fast();
+            ArimaForecaster fcasts = exact ? new ExactArimaForecasts() : new FastArimaForecasts();
             if (exact) {
                 fcasts.prepare(regarima.arima(), mean != 0);
             } else {

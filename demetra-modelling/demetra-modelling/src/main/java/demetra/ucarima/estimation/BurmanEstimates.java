@@ -20,6 +20,7 @@ import demetra.arima.ArimaException;
 import demetra.arima.ArimaForecaster;
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
+import demetra.arima.internal.FastArimaForecasts;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
@@ -61,7 +62,7 @@ public class BurmanEstimates {
     private DoubleSequence m_xb, m_xf;
     private boolean m_bmean;
     private ILUDecomposition solver;
-    private ArimaForecaster forecaster;
+    private ArimaForecaster forecaster=new FastArimaForecasts();
 
     /**
      * Creates a new instance of WKEstimators
