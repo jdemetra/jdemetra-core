@@ -18,6 +18,7 @@ import demetra.ssf.multivariate.M2uAdapter;
 import demetra.ssf.multivariate.SsfMatrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
+import demetra.ssf.univariate.StateFilteringResults;
 
 /**
  *
@@ -67,7 +68,7 @@ public class CompositeModelEstimation {
     private Matrix data;
     private double[] fullParameters, parameters;
     private String[] parametersName;
-    private StateStorage smoothedStates, filteredStates;
+    private StateStorage smoothedStates, filteredStates, filteringStates;
 
     public StateStorage getSmoothedStates() {
         if (smoothedStates == null) {
@@ -81,6 +82,26 @@ public class CompositeModelEstimation {
 
             ISsf ussf = M2uAdapter.of(ssf);
             ISsfData udata = M2uAdapter.of(new SsfMatrix(data));
+            StateFilteringResults fr = new StateFilteringResults(StateInfo.Concurrent, true);
+            int m = data.getColumnsCount(), n = data.getRowsCount();
+            fr.prepare(ussf.getStateDim(), 0, udata.length());
+            DkToolkit.sqrtFilter(ussf, udata, fr, true);
+            StateStorage ss = StateStorage.full(StateInfo.Forecast);
+            ss.prepare(ussf.getStateDim(), 0, n);
+            for (int i = 1; i <= n; ++i) {
+                ss.save(i - 1, fr.a(i * m - 1), fr.P(i * m - 1));
+            }
+            ss.rescaleVariances(likelihood.sigma());
+            filteredStates = ss;
+        }
+        return filteredStates;
+    }
+
+    public StateStorage getFilteringStates() {
+        if (filteringStates == null) {
+
+            ISsf ussf = M2uAdapter.of(ssf);
+            ISsfData udata = M2uAdapter.of(new SsfMatrix(data));
             DefaultDiffuseSquareRootFilteringResults fr = DkToolkit.sqrtFilter(ussf, udata, true);
             StateStorage ss = StateStorage.full(StateInfo.Forecast);
             int m = data.getColumnsCount(), n = data.getRowsCount();
@@ -89,7 +110,7 @@ public class CompositeModelEstimation {
             if (fr.getEndDiffusePosition() % m != 0) {
                 ++nd;
             }
-            for (int i = nd; i < n; ++i) {
+            for (int i = 0; i < n; ++i) {
                 ss.save(i, fr.a(i * m), fr.P(i * m));
             }
             for (int i = 0; i < nd; ++i) {
@@ -97,9 +118,9 @@ public class CompositeModelEstimation {
                 ss.P(i).set(Double.NaN);
             }
             ss.rescaleVariances(likelihood.sigma());
-            filteredStates = ss;
+            filteringStates = ss;
         }
-        return filteredStates;
+        return filteringStates;
     }
 
     /**

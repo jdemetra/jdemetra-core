@@ -158,29 +158,29 @@ public class CompositeModels {
                 return MatrixType.ofInternal(z, n, m);
             });
             MAPPING.setArray("ssf.filtering.array", 0, 1000, double[].class, (source, p) -> {
-                StateStorage fStates = source.getFilteredStates();
+                StateStorage fStates = source.getFilteringStates();
                 return fStates.getComponent(p).toArray();
             });
             MAPPING.setArray("ssf.filtering.varray", 0, 1000, double[].class, (source, p) -> {
-                StateStorage fStates = source.getFilteredStates();
+                StateStorage fStates = source.getFilteringStates();
                 return fStates.getComponentVariance(p).toArray();
             });
             MAPPING.setArray("ssf.filtering.cmp", 0, 100, double[].class, (source, p) -> {
-                StateStorage fStates = source.getFilteredStates();
+                StateStorage fStates = source.getFilteringStates();
                 return fStates.getComponent(source.getCmpPos()[p]).toArray();
             });
             MAPPING.setArray("ssf.filtering.vcmp", 0, 100, double[].class, (source, p) -> {
-                StateStorage fStates = source.getFilteredStates();
+                StateStorage fStates = source.getFilteringStates();
                 return fStates.getComponentVariance(source.getCmpPos()[p]).toArray();
             });
             MAPPING.setArray("ssf.filtering.state", 0, 10000, double[].class, (source, p) -> {
-                StateStorage fStates = source.getFilteredStates();
+                StateStorage fStates = source.getFilteringStates();
                 return fStates.a(p).toArray();
             });
             MAPPING.set("ssf.filtering.states", MatrixType.class, source -> {
                 int n=source.getData().getRowsCount(), m=source.getSsf().getStateDim();
                 double[] z=new double[n*m];
-                StateStorage fStates = source.getFilteredStates();
+                StateStorage fStates = source.getFilteringStates();
                 for (int i=0, j=0; i<m; ++i, j+=n){
                     fStates.getComponent(i).copyTo(z, j);
                 }
@@ -189,17 +189,60 @@ public class CompositeModels {
             MAPPING.set("ssf.filtering.vstates", MatrixType.class, source -> {
                 int n=source.getData().getRowsCount(), m=source.getSsf().getStateDim();
                 double[] z=new double[n*m];
-                StateStorage fStates = source.getFilteredStates();
+                StateStorage fStates = source.getFilteringStates();
                 for (int i=0, j=0; i<m; ++i, j+=n){
                     fStates.getComponentVariance(i).copyTo(z, j);
                 }
                 return MatrixType.ofInternal(z, n, m);
             });
             MAPPING.setArray("ssf.filtering.vstate", 0, 10000, MatrixType.class, (source, p) -> {
+                StateStorage fStates = source.getFilteringStates();
+                return fStates.P(p).unmodifiable();
+            });
+
+            MAPPING.setArray("ssf.filtered.array", 0, 1000, double[].class, (source, p) -> {
+                StateStorage fStates = source.getFilteredStates();
+                return fStates.getComponent(p).toArray();
+            });
+            MAPPING.setArray("ssf.filtered.varray", 0, 1000, double[].class, (source, p) -> {
+                StateStorage fStates = source.getFilteredStates();
+                return fStates.getComponentVariance(p).toArray();
+            });
+            MAPPING.setArray("ssf.filtered.cmp", 0, 100, double[].class, (source, p) -> {
+                StateStorage fStates = source.getFilteredStates();
+                return fStates.getComponent(source.getCmpPos()[p]).toArray();
+            });
+            MAPPING.setArray("ssf.filtered.vcmp", 0, 100, double[].class, (source, p) -> {
+                StateStorage fStates = source.getFilteredStates();
+                return fStates.getComponentVariance(source.getCmpPos()[p]).toArray();
+            });
+            MAPPING.setArray("ssf.filtered.state", 0, 10000, double[].class, (source, p) -> {
+                StateStorage fStates = source.getFilteredStates();
+                return fStates.a(p).toArray();
+            });
+            MAPPING.setArray("ssf.filtered.vstate", 0, 10000, MatrixType.class, (source, p) -> {
                 StateStorage fStates = source.getFilteredStates();
                 return fStates.P(p).unmodifiable();
             });
-        }
+            MAPPING.set("ssf.filtered.states", MatrixType.class, source -> {
+                int n=source.getData().getRowsCount(), m=source.getSsf().getStateDim();
+                double[] z=new double[n*m];
+                StateStorage fStates = source.getFilteredStates();
+                for (int i=0, j=0; i<m; ++i, j+=n){
+                    fStates.getComponent(i).copyTo(z, j);
+                }
+                return MatrixType.ofInternal(z, n, m);
+            });
+            MAPPING.set("ssf.filtered.vstates", MatrixType.class, source -> {
+                int n=source.getData().getRowsCount(), m=source.getSsf().getStateDim();
+                double[] z=new double[n*m];
+                StateStorage fStates = source.getFilteredStates();
+                for (int i=0, j=0; i<m; ++i, j+=n){
+                    fStates.getComponentVariance(i).copyTo(z, j);
+                }
+                return MatrixType.ofInternal(z, n, m);
+            });
+       }
 
         @Override
         public boolean contains(String id) {

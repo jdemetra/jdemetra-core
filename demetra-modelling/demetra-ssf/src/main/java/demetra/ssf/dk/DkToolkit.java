@@ -53,6 +53,7 @@ import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.M2uAdapter;
 import demetra.ssf.multivariate.SsfMatrix;
+import demetra.ssf.univariate.IFilteringResults;
 
 /**
  *
@@ -125,6 +126,12 @@ public class DkToolkit {
         OrdinaryFilter filter = new OrdinaryFilter(initializer);
         filter.process(ssf, data, frslts);
         return frslts;
+    }
+
+    public void sqrtFilter(ISsf ssf, ISsfData data, IFilteringResults frslts, boolean all) {
+        DiffuseSquareRootInitializer initializer = new DiffuseSquareRootInitializer(null);
+        OrdinaryFilter filter = new OrdinaryFilter(initializer);
+        filter.process(ssf, data, frslts);
     }
 
     public DefaultSmoothingResults smooth(ISsf ssf, ISsfData data, boolean all) {
