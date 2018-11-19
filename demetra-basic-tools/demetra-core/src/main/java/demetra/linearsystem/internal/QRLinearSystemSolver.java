@@ -23,14 +23,18 @@ import demetra.design.BuilderPattern;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.linearsystem.ILinearSystemSolver;
 import demetra.data.DoubleCell;
+import demetra.design.AlgorithmImplementation;
+import demetra.design.Development;
+import demetra.linearsystem.LinearSystemSolver;
 
 /**
  *
  * @author Jean Palate
  */
-public class QRLinearSystemSolver implements ILinearSystemSolver {
+@AlgorithmImplementation(algorithm = LinearSystemSolver.class)
+@Development(status = Development.Status.Release)
+public class QRLinearSystemSolver implements LinearSystemSolver {
 
     @BuilderPattern(QRLinearSystemSolver.class)
     public static class Builder {

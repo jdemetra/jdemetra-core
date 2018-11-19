@@ -28,8 +28,8 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.UnitRoots;
-import demetra.linearsystem.ILinearSystemSolver;
 import demetra.data.DoubleSequence;
+import demetra.linearsystem.LinearSystemSolver;
 
 /**
  *
@@ -137,7 +137,7 @@ public class Denton {
 
         DataBlock z = DataBlock.make(n + ny);
         z.product(B.rowsIterator(), q);
-        ILinearSystemSolver.fastSolver().solve(A, z);
+        LinearSystemSolver.fastSolver().solve(A, z);
         DataBlock rslt = z.range(0, n);
         rslt.mul(xm);
         return rslt.toArray();
@@ -168,7 +168,7 @@ public class Denton {
         q1.copy(y);
         DataBlock z = DataBlock.make(n + ny);
         z.product(B.rowsIterator(), q);
-        ILinearSystemSolver.fastSolver().solve(A, z);
+        LinearSystemSolver.fastSolver().solve(A, z);
         return z.range(0, n).toArray();
     }
 

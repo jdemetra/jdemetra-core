@@ -16,6 +16,7 @@
  */
 package demetra.x12;
 
+import demetra.data.AverageInterpolator;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.modelling.PreadjustmentVariable;
@@ -52,6 +53,7 @@ import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.simplets.TsDataToolkit;
+import demetra.util.IntList;
 import demetra.x12.MovingHolidaySpec.Type;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -125,11 +127,16 @@ class X12ModelBuilder implements IModelBuilder {
         TsData nseries = TsDataToolkit.select(series, spec.getBasic().getSpan());
         ModelDescription cur = new ModelDescription(TsDataToolkit.select(nseries, spec.getEstimate().getSpan()));
 
+        initializeMissing(cur);
         initializeTransformation(cur, spec.getTransform());
         initializeArima(cur);
         initializeVariables(cur, spec.getRegression());
 
         return cur;
+    }
+
+    private void initializeMissing(ModelDescription cur) {
+        cur.interpolate(AverageInterpolator.interpolator());
     }
 
     private void initializeTransformation(ModelDescription model, TransformSpec fnSpec) {
@@ -406,4 +413,5 @@ class X12ModelBuilder implements IModelBuilder {
                 return null;
         }
     }
+
 }

@@ -5,9 +5,7 @@
  */
 package demetra.linearsystem;
 
-import demetra.linearsystem.FastRotationsSystemSolver;
 import demetra.data.DataBlock;
-import demetra.linearsystem.ILinearSystemSolver;
 import demetra.maths.matrices.Matrix;
 import java.util.Random;
 import org.junit.Test;
@@ -33,7 +31,7 @@ public class FastRotationsSystemSolverTest {
         solver.solve(A, x);
         DataBlock y = DataBlock.make(A.getColumnsCount());
         y.set(1);
-        ILinearSystemSolver.fastSolver().solve(A, y);
+        LinearSystemSolver.fastSolver().solve(A, y);
         assertTrue(x.distance(y)<1e-9);
     }
 

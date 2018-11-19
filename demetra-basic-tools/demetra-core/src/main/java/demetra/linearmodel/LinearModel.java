@@ -32,7 +32,7 @@ import demetra.design.Internal;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @Immutable
-public class LinearModel {
+public class LinearModel implements LinearModelType{
 
     public static class Builder {
 
@@ -171,6 +171,7 @@ public class LinearModel {
      *
      * @return
      */
+    @Override
     public DoubleSequence getY() {
         return DoubleSequence.of(y);
     }
@@ -179,8 +180,13 @@ public class LinearModel {
      *
      * @return
      */
+    @Override
     public boolean isMeanCorrection() {
         return mean;
+    }
+    
+    public Matrix getX(){
+        return x;
     }
 
     /**
@@ -218,8 +224,5 @@ public class LinearModel {
         }
         return builder.toString();
     }
-    
-    public LinearModelType toType(){
-        return new LinearModelType(DoubleSequence.ofInternal(y), mean, x, LinearModelType.NOMISSING);
-    }
+   
 }

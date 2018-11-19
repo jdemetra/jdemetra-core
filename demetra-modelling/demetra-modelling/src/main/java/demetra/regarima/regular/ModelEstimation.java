@@ -21,8 +21,6 @@ import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.maths.matrices.Matrix;
-import demetra.regarima.RegArimaEstimation;
-import demetra.sarima.SarimaModel;
 import demetra.stats.tests.NiidTests;
 
 /**

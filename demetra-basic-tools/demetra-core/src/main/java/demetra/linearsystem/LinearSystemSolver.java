@@ -22,6 +22,7 @@ import demetra.linearsystem.internal.LUSolver;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.data.DataBlock;
+import demetra.design.Algorithm;
 import demetra.design.Development;
 import demetra.design.ServiceDefinition;
 import demetra.maths.matrices.Matrix;
@@ -37,22 +38,22 @@ import demetra.maths.matrices.internal.Householder;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@ServiceDefinition
-public interface ILinearSystemSolver {
+@Algorithm
+public interface LinearSystemSolver {
 
-    public static ILinearSystemSolver fastSolver(){
+    public static LinearSystemSolver fastSolver(){
         return LS_Factory.FAST_FACTORY.get().get();
     }
 
-    public static ILinearSystemSolver robustSolver(){
+    public static LinearSystemSolver robustSolver(){
         return LS_Factory.ROBUST_FACTORY.get().get();
     }
 
-    public static void setFastSolver(Supplier<ILinearSystemSolver> factory){
+    public static void setFastSolver(Supplier<LinearSystemSolver> factory){
         LS_Factory.FAST_FACTORY.set(factory);
     }
     
-    public static void setRobustSolver(Supplier<ILinearSystemSolver> factory){
+    public static void setRobustSolver(Supplier<LinearSystemSolver> factory){
         LS_Factory.ROBUST_FACTORY.set(factory);
     }
 
@@ -79,8 +80,8 @@ public interface ILinearSystemSolver {
 
 class LS_Factory{
    
-    static AtomicReference<Supplier<ILinearSystemSolver>> FAST_FACTORY = new AtomicReference<>(
+    static AtomicReference<Supplier<LinearSystemSolver>> FAST_FACTORY = new AtomicReference<>(
             ()->LUSolver.builder(new CroutDoolittle()).normalize(true).improve(true).build());
-    static AtomicReference<Supplier<ILinearSystemSolver>> ROBUST_FACTORY = new AtomicReference<>(
+    static AtomicReference<Supplier<LinearSystemSolver>> ROBUST_FACTORY = new AtomicReference<>(
             ()->QRLinearSystemSolver.builder(new Householder()).normalize(true).improve(true).build());
 }

@@ -18,8 +18,7 @@ package demetra.maths.matrices.spi;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.design.ServiceDefinition;
-import demetra.design.ThreadSafe;
+import demetra.design.Algorithm;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 
@@ -27,8 +26,7 @@ import demetra.maths.matrices.MatrixException;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ThreadSafe
-@ServiceDefinition(isSingleton = true)
+@Algorithm
 public interface UpperTriangularMatrixAlgorithms {
 
     void rsolve(Matrix M, DataBlock x, double zero) throws MatrixException;

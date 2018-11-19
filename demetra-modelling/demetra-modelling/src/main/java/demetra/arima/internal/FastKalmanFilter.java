@@ -30,7 +30,7 @@ import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.util.SubArrayOfInt;
 import demetra.data.DoubleSequence;
 import demetra.leastsquares.QRSolvers;
-import demetra.maths.matrices.spi.QRSolver;
+import demetra.leastsquares.QRSolver;
 
 /**
  * The FastKalmanFilter class provides fast computation of Regression models

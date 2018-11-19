@@ -16,6 +16,7 @@
  */
 package demetra.tramo;
 
+import demetra.data.AverageInterpolator;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.modelling.PreadjustmentVariable;
@@ -123,11 +124,16 @@ class TramoModelBuilder implements IModelBuilder {
         TsData nseries = TsDataToolkit.select(series, spec.getTransform().getSpan());
         ModelDescription cur = new ModelDescription(TsDataToolkit.select(nseries, spec.getEstimate().getSpan()));
 
+        initializeMissing(cur);
         initializeTransformation(cur, spec.getTransform());
         initializeArima(cur);
         initializeVariables(cur, spec.getRegression());
 
         return cur;
+    }
+
+    private void initializeMissing(ModelDescription cur) {
+        cur.interpolate(AverageInterpolator.interpolator());
     }
 
     private void initializeTransformation(ModelDescription model, TransformSpec fnSpec) {

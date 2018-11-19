@@ -17,9 +17,9 @@
 package demetra.ssf;
 
 import demetra.data.DataBlock;
-import demetra.linearsystem.ILinearSystemSolver;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
+import demetra.linearsystem.LinearSystemSolver;
 
 /**
  *
@@ -62,7 +62,7 @@ public class StationaryInitialization {
                 }
             }
         }
-        ILinearSystemSolver.fastSolver().solve(M, DataBlock.ofInternal(b));
+        LinearSystemSolver.fastSolver().solve(M, DataBlock.ofInternal(b));
 //        Householder hous = new Householder();
 //        hous.decompose(M);
 //        boolean ok = hous.solve(DataBlock.ofInternal(b));

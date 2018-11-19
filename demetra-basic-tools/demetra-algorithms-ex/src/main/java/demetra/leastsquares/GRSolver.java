@@ -12,7 +12,6 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.decomposition.GivensRotation;
-import demetra.maths.matrices.spi.QRSolver;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

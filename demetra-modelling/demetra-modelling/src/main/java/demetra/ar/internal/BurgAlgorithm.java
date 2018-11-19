@@ -16,19 +16,19 @@
  */
 package demetra.ar.internal;
 
-import demetra.ar.IAutoRegressiveEstimation;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Balanced;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.data.DoubleSequence;
+import demetra.ar.AutoRegressiveEstimation;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = IAutoRegressiveEstimation.class)
-@AlgorithmImplementation(algorithm =IAutoRegressiveEstimation.class, feature=Balanced)
-public class BurgAlgorithm implements IAutoRegressiveEstimation {
+@ServiceProvider(service = AutoRegressiveEstimation.class)
+@AlgorithmImplementation(algorithm =AutoRegressiveEstimation.class, feature=Balanced)
+public class BurgAlgorithm implements AutoRegressiveEstimation {
 
     private double[] y;
     private double[] a;

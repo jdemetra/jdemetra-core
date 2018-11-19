@@ -17,8 +17,7 @@
 package demetra.maths.matrices.spi;
 
 import demetra.data.DataBlock;
-import demetra.design.ServiceDefinition;
-import demetra.design.ThreadSafe;
+import demetra.design.Algorithm;
 import demetra.maths.matrices.Matrix;
 import demetra.random.RandomNumberGenerator;
 
@@ -26,8 +25,7 @@ import demetra.random.RandomNumberGenerator;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ThreadSafe
-@ServiceDefinition(isSingleton = true)
+@Algorithm
 public interface SymmetricMatrixAlgorithms {
 
     void randomize(Matrix M, RandomNumberGenerator rng);

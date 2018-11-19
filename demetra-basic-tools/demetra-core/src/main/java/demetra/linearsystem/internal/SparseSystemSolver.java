@@ -20,18 +20,20 @@ package demetra.linearsystem.internal;
 import demetra.design.Development;
 import java.util.Arrays;
 import demetra.data.DataBlock;
+import demetra.design.AlgorithmImplementation;
 import demetra.maths.Constants;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.linearsystem.ILinearSystemSolver;
+import demetra.linearsystem.LinearSystemSolver;
 
 /**
  * This class is a translation ofInternal the code used in Seats (routine MLTSOL)
  * 
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-public final class SparseSystemSolver implements ILinearSystemSolver {
+@Development(status = Development.Status.Release)
+@AlgorithmImplementation(algorithm = LinearSystemSolver.class)
+public final class SparseSystemSolver implements LinearSystemSolver {
 
     
     /**

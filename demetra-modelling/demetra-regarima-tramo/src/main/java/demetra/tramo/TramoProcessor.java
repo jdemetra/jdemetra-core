@@ -19,14 +19,20 @@ package demetra.tramo;
 import demetra.tramo.internal.TramoUtility;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.information.InformationSet;
+import demetra.modelling.TransformationType;
+import demetra.modelling.regression.AdditiveOutlier;
+import demetra.modelling.regression.LevelShift;
 import demetra.modelling.regression.ModellingContext;
+import demetra.modelling.regression.PeriodicOutlier;
+import demetra.modelling.regression.TransitoryChange;
 import demetra.regarima.regular.IArmaModule;
 import demetra.regarima.regular.IDifferencingModule;
 import demetra.regarima.regular.ILogLevelModule;
 import demetra.regarima.regular.IModelBuilder;
 import demetra.regarima.regular.IPreprocessor;
 import demetra.regarima.regular.IRegressionModule;
-import demetra.regarima.regular.ISeasonalityDetector;
+import demetra.regarima.regular.SeasonalityDetector;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.regarima.regular.PreprocessingModel;
@@ -34,6 +40,10 @@ import demetra.sarima.SarimaSpecification;
 import demetra.timeseries.TsData;
 import javax.annotation.Nonnull;
 import demetra.regarima.regular.IOutliersDetectionModule;
+import demetra.timeseries.calendars.DayClustering;
+import demetra.tramo.internal.ArmaModule;
+import demetra.tramo.internal.DifferencingModule;
+import demetra.tramo.internal.OutliersDetectionModule;
 
 /**
  *
@@ -47,87 +57,97 @@ public class TramoProcessor implements IPreprocessor {
     public static class AmiOptions {
 
         boolean checkMu;
-        @lombok.Builder.Default
-        double precision = 1e-7, intermediatePrecision = 1e-5;
+        double precision, intermediatePrecision;
         double va;
-        @lombok.Builder.Default
-        double reduceVa = .12;
-        @lombok.Builder.Default
-        double ljungBoxLimit = .95;
+        double reduceVa;
+        double ljungBoxLimit;
         boolean acceptAirline;
+
+        public static AmiOptionsBuilder builder() {
+            return new AmiOptionsBuilder()
+                    .intermediatePrecision(1e-5)
+                    .precision(1e-7)
+                    .reduceVa(.12)
+                    .ljungBoxLimit(.95);
+
+        }
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    @BuilderPattern(TramoProcessor.class)
-    public static class Builder {
-
-        private IModelBuilder modelBuilder = new DefaultModelBuilder();
-        private ILogLevelModule transformation;
-        private ISeasonalityDetector seas = new SeasonalityDetector();
-        private IRegressionModule regressionTest;
-        private IDifferencingModule differencing;
-        private IArmaModule arma;
-        private IOutliersDetectionModule outliers;
-        private AmiOptions options = null;
-
-        public Builder modelBuilder(@Nonnull IModelBuilder builder) {
-            this.modelBuilder = builder;
-            return this;
-        }
-
-        public Builder options(AmiOptions options) {
-            this.options = options;
-            return this;
-        }
-
-        public Builder seasonalityDetector(@Nonnull ISeasonalityDetector seas) {
-            this.seas = seas;
-            return this;
-        }
-
-        public Builder logLevel(ILogLevelModule ll) {
-            this.transformation = ll;
-            return this;
-        }
-
-        public Builder differencing(IDifferencingModule diff) {
-            this.differencing = diff;
-            return this;
-        }
-
-        public Builder regressionTest(IRegressionModule regressionTest) {
-            this.regressionTest = regressionTest;
-            return this;
-        }
-
-        public Builder arma(IArmaModule arma) {
-            this.arma = arma;
-            return this;
-        }
-
-        public Builder outliers(IOutliersDetectionModule outliers) {
-            this.outliers = outliers;
-            return this;
-        }
-
-        public TramoProcessor build() {
-            TramoProcessor processor = new TramoProcessor(this);
-            return processor;
-        }
-
-    }
-
+//    public static Builder builder() {
+//        return new Builder();
+//    }
+//
+//    @BuilderPattern(TramoProcessor.class)
+//    public static class Builder {
+//
+//        private IModelBuilder modelBuilder = new DefaultModelBuilder();
+//        private ILogLevelModule transformation;
+//        private SeasonalityDetector seas = new TramoSeasonalityDetector();
+//        private IRegressionModule regressionTest;
+//        private IDifferencingModule differencing;
+//        private IArmaModule arma;
+//        private IOutliersDetectionModule outliers;
+//        private AmiOptions options = null;
+//
+//        public Builder modelBuilder(@Nonnull IModelBuilder builder) {
+//            this.modelBuilder = builder;
+//            return this;
+//        }
+//
+//        public Builder options(AmiOptions options) {
+//            this.options = options;
+//            return this;
+//        }
+//
+//        public Builder seasonalityDetector(@Nonnull SeasonalityDetector seas) {
+//            this.seas = seas;
+//            return this;
+//        }
+//
+//        public Builder logLevel(ILogLevelModule ll) {
+//            this.transformation = ll;
+//            return this;
+//        }
+//
+//        public Builder differencing(IDifferencingModule diff) {
+//            this.differencing = diff;
+//            return this;
+//        }
+//
+//        public Builder regressionTest(IRegressionModule regressionTest) {
+//            this.regressionTest = regressionTest;
+//            return this;
+//        }
+//
+//        public Builder arma(IArmaModule arma) {
+//            this.arma = arma;
+//            return this;
+//        }
+//
+//        public Builder outliers(IOutliersDetectionModule outliers) {
+//            this.outliers = outliers;
+//            return this;
+//        }
+//
+//        public TramoProcessor build() {
+//            TramoProcessor processor = new TramoProcessor(this);
+//            return processor;
+//        }
+//
+//    }
+//    public static TramoProcessor of(TramoSpec spec, ModellingContext context) {
+//        TramoSpecDecoder helper = new TramoSpecDecoder(spec, context);
+//        return helper.buildProcessor();
+//    }
     public static TramoProcessor of(TramoSpec spec, ModellingContext context) {
-        TramoSpecDecoder helper = new TramoSpecDecoder(spec, context);
-        return helper.buildProcessor();
+        return new TramoProcessor(spec, context);
     }
 
-    private final IModelBuilder builder;
+//    private final IModelBuilder builder;
+    private final TramoSpec spec;
+    private final ModellingContext modellingContext;
     private final AmiOptions options;
-    private final ISeasonalityDetector seas;
+    private final SeasonalityDetector seas;
     private final ILogLevelModule transformation;
     private final IRegressionModule regressionTest;
     private final IOutliersDetectionModule outliers;
@@ -136,10 +156,6 @@ public class TramoProcessor implements IPreprocessor {
 
     private PreprocessingModel refAirline, refAuto;
 
-//    public IPreprocessingModule loglevelTest;
-//    public IOutliersDetectionModule outliers;
-//    public IPreprocessingModule differencing;
-//    public IPreprocessingModule autoModelling;
 //    public IPreprocessingModule regressionTest2, regressionTest3;
 //    public IModelController seasonalityController = new SeasonalityController();
 //    public FinalEstimator finalizer;
@@ -156,24 +172,142 @@ public class TramoProcessor implements IPreprocessor {
     private int pass = 0, round = 0;
     private double curva = 0;
 
-    private TramoProcessor(Builder builder) {
-        this.builder = builder.modelBuilder;
-        this.transformation = builder.transformation;
-        this.seas = builder.seas;
-        this.regressionTest = builder.regressionTest;
-        this.outliers = builder.outliers;
-        this.options = builder.options == null ? AmiOptions.builder().build() : builder.options;
-        this.arma = builder.arma;
-        this.differencing = builder.differencing;
+    private TramoProcessor(TramoSpec spec, ModellingContext context) {
+        this.spec = new TramoSpec(spec);
+        this.modellingContext = context;
+        this.options = readAmiOptions(spec);
+        this.transformation = readTransformation(spec);
+        if (spec.isUsingAutoModel()) {
+            this.seas = new TramoSeasonalityDetector();
+            this.differencing = readDifferencing(spec);
+            this.arma = readArma(spec);
+        } else {
+            this.seas = null;
+            this.differencing = null;
+            this.arma = null;
+        }
+        this.regressionTest = readRegression(spec, context);
+        this.outliers=readOutliers(spec);
     }
 
+    private static AmiOptions readAmiOptions(TramoSpec spec) {
+        AutoModelSpec ami = spec.getAutoModel();
+        return AmiOptions.builder()
+                .precision(spec.getEstimate().getTol())
+                .va(spec.getOutliers().getCriticalValue())
+                .reduceVa(ami.getPc())
+                .checkMu(spec.isUsingAutoModel())
+                .ljungBoxLimit(ami.getPcr())
+                .acceptAirline(ami.isAcceptDefault())
+                .build();
+    }
+
+    private static LogLevelModule readTransformation(final TramoSpec spec) {
+        TransformSpec tspec = spec.getTransform();
+        EstimateSpec espec = spec.getEstimate();
+        if (tspec.getFunction() == TransformationType.Auto) {
+            return LogLevelModule.builder()
+                    .logPreference(Math.log(tspec.getFct()))
+                    .estimationPrecision(espec.getTol())
+                    .build();
+        } else {
+            return null;
+        }
+    }
+
+    private static DifferencingModule readDifferencing(final TramoSpec spec) {
+        AutoModelSpec amiSpec = spec.getAutoModel();
+        return DifferencingModule.builder()
+                .cancel(amiSpec.getCancel())
+                .ub1(amiSpec.getUb1())
+                .ub2(amiSpec.getUb2())
+                .build();
+    }
+
+    private static ArmaModule readArma(final TramoSpec spec) {
+        return ArmaModule.builder().build();
+    }
+
+    private static IRegressionModule readRegression(final TramoSpec spec, ModellingContext context) {
+        TradingDaysSpec tdspec = spec.getRegression().getCalendar().getTradingDays();
+        if (tdspec.isAutomatic()) {
+            if (tdspec.getAutomaticMethod() == TradingDaysSpec.AutoMethod.FTest) {
+                return AutomaticFRegressionTest.builder()
+                        .easter(TramoModelBuilder.easter(spec))
+                        .leapYear(TramoModelBuilder.leapYear(tdspec))
+                        .tradingDays(TramoModelBuilder.td(spec, DayClustering.TD7, context))
+                        .workingDays(TramoModelBuilder.td(spec, DayClustering.TD2, context))
+                        .testMean(spec.isUsingAutoModel())
+                        .fPValue(tdspec.getProbabibilityForFTest())
+                        .build();
+            } else {
+                return AutomaticWaldRegressionTest.builder()
+                        .easter(TramoModelBuilder.easter(spec))
+                        .leapYear(TramoModelBuilder.leapYear(tdspec))
+                        .tradingDays(TramoModelBuilder.td(spec, DayClustering.TD7, context))
+                        .workingDays(TramoModelBuilder.td(spec, DayClustering.TD2, context))
+                        .testMean(spec.isUsingAutoModel())
+                        .fPValue(tdspec.getProbabibilityForFTest())
+                        .PConstraint(tdspec.getProbabibilityForFTest())
+                        .build();
+            }
+        } else {
+            return DefaultRegressionTest.builder()
+                    .easter(TramoModelBuilder.easter(spec))
+                    .leapYear(TramoModelBuilder.leapYear(tdspec))
+                    .tradingDays(TramoModelBuilder.tradingDays(spec, context))
+                    .testMean(spec.isUsingAutoModel())
+                    .build();
+        }
+    }
+
+    private static OutliersDetectionModule readOutliers(final TramoSpec spec) {
+        OutlierSpec outliers = spec.getOutliers();
+        if (!outliers.isUsed()) {
+            return null;
+        }
+        OutliersDetectionModule.Builder obuilder = OutliersDetectionModule.builder();
+        String[] types = outliers.getTypes();
+        for (int i = 0; i < types.length; ++i) {
+            switch (types[i]) {
+                case AdditiveOutlier.CODE:
+                    obuilder.ao(true);
+                    break;
+                case LevelShift.CODE:
+                    obuilder.ls(true);
+                    break;
+                case TransitoryChange.CODE:
+                    obuilder.tc(true);
+                    break;
+                case PeriodicOutlier.CODE:
+                    obuilder.so(true);
+                    break;
+            }
+        }
+        return obuilder.span(outliers.getSpan())
+                .tcrate(outliers.getDeltaTC())
+                .maximumLikelihood(outliers.isMaximumLikelihood())
+                .build();
+    }
+
+//    private TramoProcessor(Builder builder) {
+//        this.builder = builder.modelBuilder;
+//        this.transformation = builder.transformation;
+//        this.seas = builder.seas;
+//        this.regressionTest = builder.regressionTest;
+//        this.outliers = builder.outliers;
+//        this.options = builder.options == null ? AmiOptions.builder().build() : builder.options;
+//        this.arma = builder.arma;
+//        this.differencing = builder.differencing;
+//        this.spec=null;
+//    }
     @Override
     public PreprocessingModel process(TsData originalTs, RegArimaModelling context) {
 //        clear();
         if (context == null) {
             context = new RegArimaModelling();
         }
-        ModelDescription desc = builder.build(originalTs, context.getLog());
+        ModelDescription desc = build(originalTs, context.getLog());
         if (desc == null) {
             throw new TramoException("Initialization failed");
         }
@@ -185,6 +319,11 @@ public class TramoProcessor implements IPreprocessor {
 //            rslt.addProcessingInformation(context.processingLog);
 //        }
         return rslt;
+    }
+
+    private ModelDescription build(TsData originalTs, InformationSet log) {
+        TramoModelBuilder builder = new TramoModelBuilder(spec, modellingContext);
+        return builder.build(originalTs, log);
     }
 
     private boolean isFullySpecified() {
@@ -719,7 +858,7 @@ public class TramoProcessor implements IPreprocessor {
         ModelDescription model = context.getDescription();
         int ifreq = model.getAnnualFrequency();
         if (ifreq > 1) {
-            ISeasonalityDetector.Seasonality s = seas.hasSeasonality(model.getTransformedSeries());
+            SeasonalityDetector.Seasonality s = seas.hasSeasonality(model.getTransformedSeries());
 //            model.setSeasonality(s.getAsInt() >= 2);
             if (s.getAsInt() < 2) {
                 SarimaSpecification nspec = new SarimaSpecification(ifreq);

@@ -25,7 +25,7 @@ import java.util.function.IntSupplier;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Exploratory)
-public interface ISeasonalityDetector {
+public interface SeasonalityDetector {
 
     public static enum Seasonality implements IntSupplier {
 
@@ -52,5 +52,10 @@ public interface ISeasonalityDetector {
         }
     }
 
+    /**
+     * Tests the seasonality of a time series
+     * @param data
+     * @return The actual meaning of the returned value is left to the implementation.
+     */
     Seasonality hasSeasonality(TsData data);
 }

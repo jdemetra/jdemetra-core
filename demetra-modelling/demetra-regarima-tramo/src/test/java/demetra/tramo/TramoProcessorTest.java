@@ -43,7 +43,7 @@ public class TramoProcessorTest {
         datamissing[102]=Double.NaN;
     }
 
-    //@Test
+    @Test
     public void testProdMissing() {
         TramoProcessor processor=TramoProcessor.of(TramoSpec.TR5, null);
         TsPeriod start=TsPeriod.monthly(1967,1);
@@ -51,7 +51,7 @@ public class TramoProcessorTest {
         processor.process(s, null);
     }
     
-    //@Test
+    @Test
     public void testProdLegacyMissing() {
         IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR5.build();
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, datamissing, true);

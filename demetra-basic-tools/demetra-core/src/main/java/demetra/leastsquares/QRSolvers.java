@@ -5,9 +5,7 @@
  */
 package demetra.leastsquares;
 
-import demetra.maths.matrices.spi.QRSolver;
-import demetra.leastsquares.internal.QRSolverImpl;
-import demetra.maths.matrices.Matrix;
+import demetra.leastsquares.internal.AdvancedQRSolver;
 import demetra.maths.matrices.internal.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -35,8 +33,8 @@ public class QRSolvers {
         ROBUST_FACTORY.set(factory);
     }
 
-    private AtomicReference<Supplier<QRSolver>> FAST_FACTORY = new AtomicReference<>(()
-            -> QRSolverImpl.builder(new Householder()).build());
-    private AtomicReference<Supplier<QRSolver>> ROBUST_FACTORY = new AtomicReference<>(()
-            -> QRSolverImpl.builder(new Householder()).iterative(3).simpleIteration(true).build());
+    private static final AtomicReference<Supplier<QRSolver>> FAST_FACTORY = new AtomicReference<>(()
+            -> AdvancedQRSolver.builder(new Householder()).build());
+    private static final AtomicReference<Supplier<QRSolver>> ROBUST_FACTORY = new AtomicReference<>(()
+            -> AdvancedQRSolver.builder(new Householder()).iterative(3).simpleIteration(true).build());
 }

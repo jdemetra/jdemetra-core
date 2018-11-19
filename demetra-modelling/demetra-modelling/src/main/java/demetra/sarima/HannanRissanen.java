@@ -16,8 +16,6 @@
  */
 package demetra.sarima;
 
-import demetra.ar.AutoRegressiveEstimation;
-import demetra.ar.IAutoRegressiveEstimation;
 import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.data.DataBlock;
 import demetra.design.Development;
@@ -26,7 +24,8 @@ import demetra.maths.matrices.Matrix;
 import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.leastsquares.QRSolvers;
-import demetra.maths.matrices.spi.QRSolver;
+import demetra.leastsquares.QRSolver;
+import demetra.ar.AutoRegressiveEstimation;
 
 /**
  * The Hannan-Rissanen procedure is performed as in TRAMO. See
@@ -305,7 +304,7 @@ public class HannanRissanen {
     }
 
     private void initialize() {
-        IAutoRegressiveEstimation ar;
+        AutoRegressiveEstimation ar;
         switch (initialization) {
             case Ols:
                 ar=AutoRegressiveEstimation.ols();

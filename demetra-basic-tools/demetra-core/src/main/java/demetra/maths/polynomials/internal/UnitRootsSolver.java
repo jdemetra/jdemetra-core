@@ -32,17 +32,24 @@ import demetra.maths.polynomials.spi.RootsSolver;
 public class UnitRootsSolver {
 
     private static double pnorm(final Polynomial p, final int n) {
-        if (n == 1) {
-            double x = p.evaluateAt(1);
-            return Math.abs(x);
-        } else if (n == 2) {
-            double x = p.evaluateAt(-1);
-            return Math.abs(x);
-        } else {
-            double x = Math.PI * 2 / n;
-            final Complex c = Complex.cart(Math.cos(x), Math.sin(x));
-            Complex val = p.evaluateAt(c);
-            return val.abs();
+        switch (n) {
+            case 1:
+            {
+                double x = p.evaluateAt(1);
+                return Math.abs(x);
+            }
+            case 2:
+            {
+                double x = p.evaluateAt(-1);
+                return Math.abs(x);
+            }
+            default:
+            {
+                double x = Math.PI * 2 / n;
+                final Complex c = Complex.cart(Math.cos(x), Math.sin(x));
+                Complex val = p.evaluateAt(c);
+                return val.abs();
+            }
         }
     }
 

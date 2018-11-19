@@ -23,9 +23,9 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
-import demetra.linearsystem.ILinearSystemSolver;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
+import demetra.linearsystem.LinearSystemSolver;
 
 /**
  *
@@ -40,7 +40,7 @@ public class SeasonalComponent {
         M.diagonal().set(1);
         M.column(n).set(-1);
         Matrix O = SymmetricMatrix.XXt(M);
-        ILinearSystemSolver.robustSolver().solve(O, M);
+        LinearSystemSolver.robustSolver().solve(O, M);
         Matrix H = Matrix.make(freq, n);
         // should be improved
         for (int i = 0; i < freq; ++i) {

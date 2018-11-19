@@ -5,7 +5,7 @@
  */
 package demetra.leastsquares;
 
-import demetra.leastsquares.internal.QRSolverImpl;
+import demetra.leastsquares.internal.AdvancedQRSolver;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.internal.Householder;
@@ -35,21 +35,21 @@ public class ILeastSquaresSolverTest {
         y.set(rnd::nextDouble);
         long t0=System.currentTimeMillis();
         for (int i=0; i<K; ++i){
-            QRSolverImpl qr= QRSolverImpl.builder(new Householder()).build();
+            AdvancedQRSolver qr= AdvancedQRSolver.builder(new Householder()).build();
             qr.solve(y, A);
         }
         long t1=System.currentTimeMillis();
         System.out.println(t1-t0);
         t0=System.currentTimeMillis();
         for (int i=0; i<K; ++i){
-            QRSolverImpl qr= QRSolverImpl.builder(new Householder()).iterative(3).simpleIteration(true).build();
+            AdvancedQRSolver qr= AdvancedQRSolver.builder(new Householder()).iterative(3).simpleIteration(true).build();
             qr.solve(y, A);
         }
         t1=System.currentTimeMillis();
         System.out.println(t1-t0);
         t0=System.currentTimeMillis();
         for (int i=0; i<K; ++i){
-            QRSolverImpl qr= QRSolverImpl.builder(new HouseholderWithPivoting()).build();
+            AdvancedQRSolver qr= AdvancedQRSolver.builder(new HouseholderWithPivoting()).build();
             qr.solve(y, A);
         }
         t1=System.currentTimeMillis();

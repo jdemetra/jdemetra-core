@@ -14,29 +14,22 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.maths.matrices.spi;
+package demetra.leastsquares;
 
 import demetra.design.Algorithm;
 import demetra.design.Development;
-import demetra.design.ServiceDefinition;
-import demetra.leastsquares.internal.QRSolverImpl;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.internal.Householder;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
-import demetra.maths.matrices.spi.LeastSquaresSolver;
 
 /**
- *
+ * Solves a least squares problem by means of the QR algorithm.
  * @author Jean Palate
  */
 @Algorithm
-@ServiceDefinition
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Beta)
 public interface QRSolver extends LeastSquaresSolver {
 
     /**
-     * Gets the R matrix (upper triangular matrix) of the QR decomposition.
+     * Gets the R matrix (upper triangular matrix) of the used QR decomposition.
      *    
      * @return The R matrix. Might be singular. 
      */

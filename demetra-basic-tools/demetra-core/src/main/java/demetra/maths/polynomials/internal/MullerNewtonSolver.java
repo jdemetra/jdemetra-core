@@ -32,7 +32,7 @@ import demetra.maths.polynomials.spi.RootsSolver;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 @AlgorithmImplementation(algorithm=RootsSolver.class, feature=Balanced)
 public class MullerNewtonSolver implements RootsSolver {
 

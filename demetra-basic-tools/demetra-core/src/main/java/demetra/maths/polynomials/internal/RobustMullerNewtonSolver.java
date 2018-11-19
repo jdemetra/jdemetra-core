@@ -368,7 +368,7 @@ public class RobustMullerNewtonSolver implements RootsSolver {
      * @return
      */
     private Complex muller() {
-        double f1absq = MFVALUE;
+        double f1absq;
         /* f1absq=|f1|^2 */
         final DoubleRef f2absq = new DoubleRef(MFVALUE);
         /* f2absq=|f2|^2 */
@@ -752,7 +752,7 @@ public class RobustMullerNewtonSolver implements RootsSolver {
      */
     private void suppress_overflow() {
         final int nred = reducedPolynomial.length - 1 - startIdx;
-        boolean loop = false;
+        boolean loop;
         int kiter = 0;
         /* reset iteration counter */
         do {

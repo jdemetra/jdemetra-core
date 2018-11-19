@@ -227,6 +227,7 @@ public class X12Preprocessor implements IPreprocessor {
 
     private PreprocessingModel calc(RegArimaModelling context) {
         try {
+            
             if (transformation != null) {
                 transformation.process(context);
             }

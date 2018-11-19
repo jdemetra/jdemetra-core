@@ -7,7 +7,7 @@ package demetra.linearmodel;
 
 import demetra.eco.EcoException;
 import lombok.NonNull;
-import demetra.leastsquares.internal.QRSolverImpl;
+import demetra.leastsquares.internal.AdvancedQRSolver;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.data.DoubleSequence;
 import org.openide.util.lookup.ServiceProvider;
-import demetra.maths.matrices.spi.QRSolver;
+import demetra.leastsquares.QRSolver;
 
 /**
  *
@@ -26,7 +26,7 @@ import demetra.maths.matrices.spi.QRSolver;
 public class Ols implements IOls {
 
     private static AtomicReference<Supplier<QRSolver>> QR_FACTORY = new AtomicReference<>(()
-            -> QRSolverImpl.builder(new Householder()).build());
+            -> AdvancedQRSolver.builder(new Householder()).build());
 
     public static void setDefaultSolver(Supplier<QRSolver> factory) {
         QR_FACTORY.set(factory);

@@ -23,14 +23,18 @@ import demetra.design.BuilderPattern;
 import demetra.maths.matrices.decomposition.ILUDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.linearsystem.ILinearSystemSolver;
 import demetra.data.DoubleCell;
+import demetra.design.AlgorithmImplementation;
+import demetra.design.Development;
+import demetra.linearsystem.LinearSystemSolver;
 
 /**
  *
  * @author Jean Palate
  */
-public class LUSolver implements ILinearSystemSolver {
+@AlgorithmImplementation(algorithm = LinearSystemSolver.class)
+@Development(status = Development.Status.Release)
+public class LUSolver implements LinearSystemSolver {
 
     @BuilderPattern(LUSolver.class)
     public static class Builder {

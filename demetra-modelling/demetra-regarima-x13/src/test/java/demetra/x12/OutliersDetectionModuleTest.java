@@ -81,7 +81,6 @@ public class OutliersDetectionModuleTest {
     @Test
     public void testProdLegacy() {
 
-        System.out.println("Legacy");
         ec.tstoolkit.modelling.arima.x13.OutliersDetector od = new ec.tstoolkit.modelling.arima.x13.OutliersDetector();
         od.setDefault();
         od.setCriticalValue(3);
@@ -95,14 +94,16 @@ public class OutliersDetectionModuleTest {
         od.process(context);
         List<IOutlierVariable> outliers = context.description.getOutliers();
         int n = outliers.size();
+//        System.out.println("Legacy");
 //        for (IOutlierVariable o : outliers) {
 //            System.out.println(o.getName());
 //        }
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void stressTestProd() {
+        System.out.println("JD3");
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 200; ++i) {
             SarimaSpecification spec = new SarimaSpecification(12);
@@ -124,7 +125,7 @@ public class OutliersDetectionModuleTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void stressTestProdLegacy() {
 
         System.out.println("Legacy");

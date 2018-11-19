@@ -33,7 +33,7 @@ import demetra.maths.matrices.internal.Householder;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArmaModel;
 import demetra.sarima.SarimaModel;
-import demetra.maths.matrices.spi.QRSolver;
+import demetra.leastsquares.QRSolver;
 
 /**
  *

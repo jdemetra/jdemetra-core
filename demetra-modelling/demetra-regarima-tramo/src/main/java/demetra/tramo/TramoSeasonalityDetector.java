@@ -16,15 +16,15 @@
  */
 package demetra.tramo;
 
-import demetra.regarima.regular.ISeasonalityDetector;
 import demetra.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;
+import demetra.regarima.regular.SeasonalityDetector;
 
 /**
  *
  * @author Jean Palate
  */
-public class SeasonalityDetector implements ISeasonalityDetector{
+public class TramoSeasonalityDetector implements SeasonalityDetector{
 
 
     private SeasonalityTests tests;

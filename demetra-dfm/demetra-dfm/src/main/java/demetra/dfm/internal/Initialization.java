@@ -17,11 +17,11 @@
 package demetra.dfm.internal;
 
 import demetra.data.DataBlock;
-import demetra.linearsystem.ILinearSystemSolver;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
+import demetra.linearsystem.LinearSystemSolver;
 
 /**
  *
@@ -72,7 +72,7 @@ class Initialization implements ISsfInitialization {
             }
         }
 
-        ILinearSystemSolver.robustSolver().solve(M, DataBlock.ofInternal(b));
+        LinearSystemSolver.robustSolver().solve(M, DataBlock.ofInternal(b));
 
         for (int i = 0, j = 0; i < n; i++) {
             cov.column(i).drop(i, 0).copyFrom(b, j);

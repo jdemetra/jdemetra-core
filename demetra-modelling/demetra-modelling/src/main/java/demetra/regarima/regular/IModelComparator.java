@@ -19,6 +19,7 @@
 package demetra.regarima.regular;
 
 import demetra.design.Development;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -27,6 +28,20 @@ import demetra.design.Development;
 @Development(status = Development.Status.Preliminary)
 public interface IModelComparator {
 
-    int compare(ModelEstimation reference, ModelEstimation[] models);
-    int compare(ModelEstimation reference, ModelEstimation alternative);
+    /**
+     * 
+     * @param reference Reference model. Could be null
+     * @param models Alternative models
+     * @return -1 if the preferred model is the reference, 
+     * the index of the alternative model in the array otherwise
+     */
+    int compare(ModelEstimation reference, @Nonnull ModelEstimation[] models);
+
+    /**
+     * 
+     * @param reference Reference model
+     * @param alternative Alternative model
+     * @return -1 if the preferred model is the reference, 0 otherwise
+     */
+    int compare(@Nonnull ModelEstimation reference, @Nonnull ModelEstimation alternative);
 }
