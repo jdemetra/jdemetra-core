@@ -38,7 +38,7 @@ public class ArmaModule implements IPreprocessingModule {
 
     // returns the first inic value that can be estimated
     static int comespa(final int freq, final int n, final int inic, final int d, final int bd, final boolean seas) {
-        for (int i = inic; i > 1; --i) {
+        for (int i = inic; i > 0; --i) {
             if (checkespa(freq, n, i, d, bd, seas)) {
                 return i;
             }
@@ -164,8 +164,19 @@ public class ArmaModule implements IPreprocessingModule {
     @Override
     public ProcessingResult process(ModellingContext context) {
         SarimaSpecification curspec = context.description.getSpecification();
+        int m;
+        switch (curspec.getFrequency()){
+            case 2:
+                m=1;
+                break;
+            case 3:
+                m=2;
+                break;
+            default:
+                m=3;
+        }
         int inic = comespa(curspec.getFrequency(), context.description.getEstimationDomain().getLength(),
-                3, curspec.getD(), curspec.getBD(), context.hasseas);
+                m, curspec.getD(), curspec.getBD(), context.hasseas);
         if (inic == 0) {
             curspec.airline(context.hasseas);
             context.description.setSpecification(curspec);

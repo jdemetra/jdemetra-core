@@ -523,8 +523,17 @@ public final class Mstatistics implements IProcResults {
     }
 
     private void calcM7() {
-        CombinedSeasonalityTest test = new CombinedSeasonalityTest(SI,
-                mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive);
+        CombinedSeasonalityTest test;
+        switch (mode){
+            case LogAdditive:
+                test = new CombinedSeasonalityTest(SI.log(), false);
+                break;
+            case Additive: 
+                test = new CombinedSeasonalityTest(SI, false);
+                break;
+            default:
+                test = new CombinedSeasonalityTest(SI, true);
+        }
         m[6] = test.mvalue();
     }
 

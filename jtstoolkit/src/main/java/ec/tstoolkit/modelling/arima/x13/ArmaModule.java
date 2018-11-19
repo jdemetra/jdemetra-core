@@ -355,7 +355,11 @@ public class ArmaModule {
         m_est = new RegArmaBic[m_nmod];
 
         spec.setFrequency(freq);
-        spec.setP(3);
+        if (freq == 2) {
+            spec.setP(1);
+        } else {
+            spec.setP(3);
+        }
         spec.setQ(0);
 
         int nmax = 0;
@@ -383,7 +387,7 @@ public class ArmaModule {
         }
 
         List<SarmaSpecification> lspecs1 = new ArrayList<>();
-        for (int p = 0, i = 0; p <= rmax; ++p) {
+        for (int p = 0; p <= rmax; ++p) {
             for (int q = 0; q <= rmax; ++q) {
                 if (mixed_ || (p == 0 || q == 0)) {
                     cur.setP(p);
