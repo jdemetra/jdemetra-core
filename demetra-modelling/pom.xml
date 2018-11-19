@@ -19,6 +19,9 @@
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
         <jd3-modelling.version>1.0.0-SNAPSHOT</jd3-modelling.version>
+        <jd3-x13.version>1.0.0-SNAPSHOT</jd3-x13.version>
+        <jd3-tramoseats.version>1.0.0-SNAPSHOT</jd3-tramoseats.version>
+        <jd3-sts.version>1.0.0-SNAPSHOT</jd3-sts.version>
     </properties>
     
     <dependencyManagement>
@@ -27,6 +30,21 @@
                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-modelling-datatypes</artifactId>
                 <version>${jd3-modelling.version}</version>            
+            </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-x13-datatypes</artifactId>
+                <version>${jd3-x13.version}</version>            
+            </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-tramoseats-datatypes</artifactId>
+                <version>${jd3-tramoseats.version}</version>            
+            </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sts-datatypes</artifactId>
+                <version>${jd3-sts.version}</version>            
             </dependency>
             <dependency>
                <groupId>eu.europa.ec.joinup.sat</groupId>
@@ -46,12 +64,12 @@
             <dependency>
                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-regarima-x13</artifactId>
-                <version>${jd3-modelling.version}</version>            
+                <version>${jd3-x13.version}</version>            
             </dependency>
             <dependency>
                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-regarima-tramo</artifactId>
-                <version>${jd3-modelling.version}</version>            
+                <version>${jd3-tramoseats.version}</version>            
             </dependency>
             <dependency>
                <groupId>eu.europa.ec.joinup.sat</groupId>

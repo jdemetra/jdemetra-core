@@ -17,6 +17,9 @@
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
         <jd3-modelling.version>1.0.0-SNAPSHOT</jd3-modelling.version>
+        <jd3-x13.version>1.0.0-SNAPSHOT</jd3-x13.version>
+        <jd3-tramoseats.version>1.0.0-SNAPSHOT</jd3-tramoseats.version>
+        <jd3-sts.version>1.0.0-SNAPSHOT</jd3-sts.version>
         <jd3-benchmarking.version>1.0.0-SNAPSHOT</jd3-benchmarking.version>
         <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
     </properties>
