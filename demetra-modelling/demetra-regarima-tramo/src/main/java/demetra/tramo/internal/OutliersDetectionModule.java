@@ -221,7 +221,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
             TsPeriod pos = domain.get(cur[0]);
             model.addVariable(new Variable(impl.getFactory(cur[1]).make(pos.start()), false));
         }
-        return ProcessingResult.Unchanged;
+        return ProcessingResult.Changed;
     }
 
     private static int outlierType(String[] all, String cur) {

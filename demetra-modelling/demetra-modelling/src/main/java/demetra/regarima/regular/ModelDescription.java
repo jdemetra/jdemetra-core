@@ -117,6 +117,8 @@ public final class ModelDescription {
 
     public ModelDescription(@Nonnull ModelDescription desc) {
         this.series = desc.series;
+        this.interpolatedSeries=desc.interpolatedSeries;
+        this.missing=desc.missing;
         desc.preadjustmentVariables.forEach(preadjustmentVariables::add);
         desc.variables.forEach(variables::add);
         this.arima.copy(desc.arima);

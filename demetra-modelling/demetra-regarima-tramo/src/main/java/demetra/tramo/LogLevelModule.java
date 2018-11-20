@@ -47,6 +47,7 @@ public class LogLevelModule implements ILogLevelModule {
         
         private double precision=1e-5;
         private double logpreference=0;
+        private boolean seasonal=true;
         
         public Builder logPreference(double lp){
             this.logpreference=lp;
@@ -58,22 +59,30 @@ public class LogLevelModule implements ILogLevelModule {
             return this;
         }
 
+        public Builder seasonal(boolean seasonal){
+            this.seasonal=seasonal;
+            return this;
+        }
+
         public LogLevelModule build() {
-            return new LogLevelModule(logpreference, precision);
+            return new LogLevelModule(logpreference, precision, seasonal);
         }
         
     }
 
     private final double logpreference, precision;
+    private final boolean seasonal;
     private double level, log = 1, slog;
     private RegArimaEstimation<SarimaModel> e, el;
 
     /**
      *
      */
-    private  LogLevelModule(double logpreference, double precision) {
+    private  LogLevelModule(double logpreference, double precision, boolean seasonal) {
         this.logpreference=logpreference;
         this.precision=precision;
+        this.seasonal=seasonal;
+        
     }
 
     /**
@@ -206,7 +215,7 @@ public class LogLevelModule implements ILogLevelModule {
         if (desc.isLogTransformation())
             return ProcessingResult.Unprocessed;
         double[] data=desc.transformation().getData();
-        if (! process(DoubleSequence.ofInternal(data), desc.getAnnualFrequency(), context.isSeasonal()))
+        if (! process(DoubleSequence.ofInternal(data), desc.getAnnualFrequency(), seasonal))
             return ProcessingResult.Failed;
         if (isChoosingLog()){
             desc.setLogTransformation(true);

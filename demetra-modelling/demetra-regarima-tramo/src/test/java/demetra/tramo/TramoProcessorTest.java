@@ -48,14 +48,18 @@ public class TramoProcessorTest {
         TramoProcessor processor=TramoProcessor.of(TramoSpec.TR5, null);
         TsPeriod start=TsPeriod.monthly(1967,1);
         TsData s=TsData.of(start, DoubleSequence.ofInternal(datamissing));
-        processor.process(s, null);
+        demetra.regarima.regular.PreprocessingModel rslt = processor.process(s, null);
+        System.out.println("JD3 with missing");
+        System.out.println(rslt.getEstimation().getStatistics().getLogLikelihood());
     }
     
     @Test
     public void testProdLegacyMissing() {
         IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR5.build();
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, datamissing, true);
-        processor.process(s, null);
+        PreprocessingModel rslt = processor.process(s, null);
+        System.out.println("Legacy with missing");
+        System.out.println(rslt.estimation.getStatistics().logLikelihood);
     }
     
     @Test
@@ -63,16 +67,18 @@ public class TramoProcessorTest {
         TramoProcessor processor=TramoProcessor.of(TramoSpec.TRfull, null);
         TsPeriod start=TsPeriod.monthly(1967,1);
         TsData s=TsData.of(start, DoubleSequence.ofInternal(data));
-        RegArimaModelling context=new RegArimaModelling();
-        processor.process(s, context);
-        context.estimate(1e-9);
+        demetra.regarima.regular.PreprocessingModel rslt = processor.process(s, null);
+        System.out.println("JD3");
+        System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
     }
     
     @Test
     public void testProdLegacy() {
         IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
-        PreprocessingModel process = processor.process(s, null);
+        PreprocessingModel rslt = processor.process(s, null);
+        System.out.println("Legacy");
+        System.out.println(rslt.estimation.getStatistics().adjustedLogLikelihood);
     }
     
 //    @Test

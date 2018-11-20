@@ -165,7 +165,7 @@ public class DefaultRegressionTest implements IRegressionModule {
         if (easter != null) {
             model.addVariable(new Variable(easter, false));
         }
-        model.setAirline(current.isSeasonal());
+        model.setAirline(true);
         model.setMean(true);
         return model;
     }
@@ -193,7 +193,6 @@ public class DefaultRegressionTest implements IRegressionModule {
                 IRegressionTest test = dim == 1 ? wdTest : tdTest;
                 if (test.accept(ll, nhp, pos, dim, null)) {
                     usetd = true;
-                } else {
                     currentModel.addVariable(new Variable(td, false));
                     changed = true;
                 }
@@ -203,7 +202,7 @@ public class DefaultRegressionTest implements IRegressionModule {
             Variable variable = tmpModel.variable(lp);
             if (variable != null && !variable.isPrespecified()) {
                 int pos = start + tmpModel.findPosition(variable.getVariable());
-                if (!usetd || !lpTest.accept(ll, nhp, pos, 1, null)) {
+                if (usetd && lpTest.accept(ll, nhp, pos, 1, null)) {
                     currentModel.addVariable(new Variable(lp, false));
                     changed = true;
                 }
@@ -214,13 +213,13 @@ public class DefaultRegressionTest implements IRegressionModule {
             Variable variable = tmpModel.variable(easter);
             if (variable != null && !variable.isPrespecified()) {
                 int pos = start + tmpModel.findPosition(variable.getVariable());
-                if (!mhTest.accept(ll, nhp, pos, 1, null)) {
+                if (mhTest.accept(ll, nhp, pos, 1, null)) {
                     currentModel.addVariable(new Variable(easter, false));
                     changed = true;
                 }
             }
         }
-        if (meanTest != null && !meanTest.accept(ll, nhp, 0, 1, null)) {
+        if (meanTest != null && regarima.isMean() && !meanTest.accept(ll, nhp, 0, 1, null)) {
             currentModel.setMean(false);
             changed = true;
         }

@@ -41,7 +41,7 @@ public class ArmaModule implements IArmaModule {
     @BuilderPattern(ArmaModule.class)
     public static class Builder {
 
-        private boolean wn = false;
+        private boolean wn = false, seasonal = true;
 
         private Builder() {
         }
@@ -51,8 +51,13 @@ public class ArmaModule implements IArmaModule {
             return this;
         }
 
+        public Builder seasonal(boolean seasonal) {
+            this.seasonal=seasonal;
+            return this;
+        }
+
         public ArmaModule build() {
-            return new ArmaModule(wn);
+            return new ArmaModule(this);
         }
     }
 
@@ -186,10 +191,11 @@ public class ArmaModule implements IArmaModule {
         return spec;
     }
 
-    private final boolean wn;
+    private final boolean wn, seasonal;
 
-    private ArmaModule(boolean wn) {
-        this.wn = wn;
+    private ArmaModule(Builder builder) {
+        this.wn = builder.wn;
+        this.seasonal=builder.seasonal;
     }
 
     private ArmaModuleImpl createModule(SarimaSpecification maxspec) {
@@ -208,10 +214,10 @@ public class ArmaModule implements IArmaModule {
         ModelDescription desc = context.getDescription();
         SarimaSpecification curspec = desc.getSpecification();
         int inic = comespa(curspec.getPeriod(), desc.regarima().getObservationsCount(),
-                maxInic(curspec.getPeriod()), curspec.getD(), curspec.getBd(), context.isSeasonal());
+                maxInic(curspec.getPeriod()), curspec.getD(), curspec.getBd(), seasonal);
         if (inic == 0) {
-            if (!curspec.isAirline(context.isSeasonal())) {
-                curspec.airline(context.isSeasonal());
+            if (!curspec.isAirline(seasonal)) {
+                curspec.airline(seasonal);
                 desc.setSpecification(curspec);
                 context.setEstimation(null);
                 return ProcessingResult.Changed;
@@ -220,10 +226,10 @@ public class ArmaModule implements IArmaModule {
             }
         }
         SarimaSpecification maxspec = calcmaxspec(desc.getAnnualFrequency(),
-                inic, curspec.getD(), curspec.getBd(), context.isSeasonal());
+                inic, curspec.getD(), curspec.getBd(), seasonal);
         DoubleSequence res = RegArimaUtility.olsResiduals(desc.regarima());
         ArmaModuleImpl impl = createModule(maxspec);
-        SarmaSpecification nspec = impl.process(res, desc.getAnnualFrequency(), maxspec.getD(), maxspec.getBd(), context.isSeasonal());
+        SarmaSpecification nspec = impl.process(res, desc.getAnnualFrequency(), maxspec.getD(), maxspec.getBd(), seasonal);
         if (nspec.equals(curspec.doStationary())) {
             return ProcessingResult.Unchanged;
         }

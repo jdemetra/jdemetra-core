@@ -295,7 +295,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
     }
 
     private void updateLikelihood(ConcentratedLikelihood likelihood, int nhp) {
-        coeff = likelihood.coefficients();
+        coeff = likelihood.allCoefficients();
         tstats = likelihood.tstats(nhp, true);
     }
 
@@ -326,7 +326,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         }
         /*double[] t = m_model.computeLikelihood().getTStats(true,
          m_model.getArma().getParametersCount());*/
-        int nx0 = regarima.getVariablesCount() - outliers.size();
+        int nx0 = tstats.length - outliers.size();
         int imin = 0;
         for (int i = 1; i < outliers.size(); ++i) {
             if (Math.abs(tstats[i + nx0]) < Math.abs(tstats[imin + nx0])) {

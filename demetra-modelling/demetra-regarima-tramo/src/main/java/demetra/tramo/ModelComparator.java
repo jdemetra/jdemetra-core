@@ -5,15 +5,13 @@
  */
 package demetra.tramo;
 
-import demetra.regarima.regular.IModelComparator;
 import demetra.regarima.regular.PreprocessingModel;
-import java.util.Comparator;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public class ModelComparator implements Comparator<PreprocessingModel> {
+public class ModelComparator {
 
     public static enum Preference {
 
@@ -155,7 +153,6 @@ public class ModelComparator implements Comparator<PreprocessingModel> {
     }
 
 
-    @Override
     public int compare(PreprocessingModel m1, PreprocessingModel m2) {
 
         if (m1 == m2) {
@@ -204,10 +201,7 @@ public class ModelComparator implements Comparator<PreprocessingModel> {
         if (s1.getLjungBoxPvalue()>= significance) {
             return false;
         }
-        if (s1.getLjungBox() <= s2.getLjungBox() * kq) {
-            return false;
-        }
-        return true;
+        return s1.getLjungBox() > s2.getLjungBox() * kq;
     }
 
     /**
@@ -221,10 +215,7 @@ public class ModelComparator implements Comparator<PreprocessingModel> {
         if (s1.getOutliersCount() <= s1.getObservationsCount() * (knz)) {
             return false;
         }
-        if (s1.getOutliersCount() <= s2.getOutliersCount() + mout) {
-            return false;
-        }
-        return true;
+        return s1.getOutliersCount() > s2.getOutliersCount() + mout;
     }
 
     /**
@@ -238,10 +229,7 @@ public class ModelComparator implements Comparator<PreprocessingModel> {
         if (s1.getSeasonalLjungBoxPvalue() >= significance) {
             return false;
         }
-        if (s1.getSeasonalLjungBox() <= s2.getSeasonalLjungBox() * kqs) {
-            return false;
-        }
-        return true;
+        return s1.getSeasonalLjungBox() > s2.getSeasonalLjungBox() * kqs;
     }
 
     /**
@@ -255,10 +243,7 @@ public class ModelComparator implements Comparator<PreprocessingModel> {
         if (s1.getSkewnessPvalue() >= significance) {
             return false;
         }
-        if (s1.getSkewnessAbsvalue() <= s2.getSkewnessAbsvalue() * ksk) {
-            return false;
-        }
-        return true;
+        return s1.getSkewnessAbsvalue() > s2.getSkewnessAbsvalue() * ksk;
     }
 
     /**

@@ -206,7 +206,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
 
     private ModelDescription createTestModel(RegArimaModelling context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
         ModelDescription tmp = new ModelDescription(context.getDescription());
-        tmp.setAirline(context.isSeasonal());
+        tmp.setAirline(true);
         tmp.setMean(true);
         if (td != null) {
             tmp.addVariable(new Variable(td, false));

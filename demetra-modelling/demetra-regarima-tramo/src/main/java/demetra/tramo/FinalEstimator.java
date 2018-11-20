@@ -25,7 +25,6 @@ import demetra.maths.functions.IParametricMapping;
 import demetra.maths.polynomials.Polynomial;
 import demetra.regarima.regular.IModelEstimator;
 import demetra.regarima.regular.ModelDescription;
-import demetra.regarima.regular.ModelEstimation;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.SarimaModel;
@@ -36,9 +35,13 @@ import demetra.sarima.SarimaSpecification;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class FinalEstimator implements IModelEstimator {
+class FinalEstimator implements IModelEstimator {
 
     private static final int MAXD = 2, MAXBD = 1;
+    
+    public static Builder builder(){
+        return new Builder();
+    }
 
     @BuilderPattern(FinalEstimator.class)
     public static class Builder {
@@ -47,18 +50,50 @@ public class FinalEstimator implements IModelEstimator {
         private double significanceThreshold = 1;
         private double unitRootThreshold = .96;
         private double precision = .0001;
+        private int pass=0;
+        private boolean ami=false, outliers=false;
 
         public FinalEstimator build() {
             return new FinalEstimator(this);
         }
+        
+        public Builder precision(double precision){
+            this.precision=precision;
+            return this;
+        }
+        
+        public Builder cancel(double cancel){
+            this.cancel=cancel;
+            return this;
+        }
+        
+        public Builder unitRootThreshold(double ur){
+            this.unitRootThreshold=ur;
+            return this;
+        }
+        
+        public Builder pass(int pass){
+            this.pass=pass;
+            return this;
+        }
 
+        public Builder ami(boolean ami){
+            this.ami=ami;
+            return this;
+        }
+
+        public Builder outliers(boolean outliers){
+            this.outliers=outliers;
+            return this;
+        }
     }
 
     private final double cancel;
     private final double tsig;
     private final double ur;
     private final double eps;
-    private int pass = 0;
+    private final int pass;
+    private final boolean ami, outliers;
     private int nnsig;
 
     private FinalEstimator(Builder builder) {
@@ -66,6 +101,9 @@ public class FinalEstimator implements IModelEstimator {
         this.eps = builder.precision;
         this.tsig = builder.significanceThreshold;
         this.ur = builder.unitRootThreshold;
+        this.pass=builder.pass;
+        this.ami=builder.ami;
+        this.outliers=builder.outliers;
     }
 
     @Override
@@ -85,34 +123,30 @@ public class FinalEstimator implements IModelEstimator {
                     return true;
                 }
 //                context.information.subSet(RegArimaEstimator.OPTIMIZATION).set(RegArimaEstimator.SCORE, monitor.getScore());
-//                if (checkUnitRoots(context)) {
-//                    nnsig = 0;
-//                    if (context.automodelling) {
-//                        if (!checkCommonRoots(context)) {
-//                            nnsig = 2;
-//                        } else {
-//                            nnsig = test(context);
-//                        }
-//                    }
-//                    if (nnsig == 0) {
-//                        return true;
-//                    }
-//                    if (nnsig == 1) {
-//                        continue;
-//                    }
-//                    if (context.outliers && pass <= 1) {
-//                        return false;
-//                    }
-//                }
+                if (checkUnitRoots(context)) {
+                    nnsig = 0;
+                    if (ami) {
+                        if (!checkCommonRoots(context)) {
+                            nnsig = 2;
+                        } else {
+                            nnsig = test(context);
+                        }
+                    }
+                    if (nnsig == 0) {
+                        return true;
+                    }
+                    if (nnsig == 1) {
+                        continue;
+                    }
+                    if (outliers && pass <= 1) {
+                        return false;
+                    }
+                }
             } catch (RuntimeException err) {
                 return false;
             }
         } while (niter++ < 5);
         return false;
-    }
-
-    public void setPass(int pass) {
-        this.pass = pass;
     }
 
     public int getChangedParametersCount() {

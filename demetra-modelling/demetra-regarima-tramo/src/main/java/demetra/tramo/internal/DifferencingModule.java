@@ -73,6 +73,7 @@ public class DifferencingModule implements IDifferencingModule {
         private double ub1 = 0.97;
         private double ub2 = 0.88;
         private double cancel = 0.1;
+        private boolean seasonal=true;
 
         private Builder() {
         }
@@ -107,8 +108,13 @@ public class DifferencingModule implements IDifferencingModule {
             return this;
         }
 
+        public Builder seasonal(boolean seasonal) {
+            this.seasonal=seasonal;
+            return this;
+        }
+
         public DifferencingModule build() {
-            return new DifferencingModule(maxd, maxbd, ub1, ub2, cancel, eps);
+            return new DifferencingModule(maxd, maxbd, ub1, ub2, cancel, eps, seasonal);
         }
     }
 
@@ -129,6 +135,7 @@ public class DifferencingModule implements IDifferencingModule {
     private final double ub2;
     private final double cancel;
     private final double eps;
+    private final boolean seasonal;
 
     /**
      *
@@ -141,13 +148,14 @@ public class DifferencingModule implements IDifferencingModule {
      */
     private DifferencingModule(final int maxd, final int maxbd,
             final double ub1, final double ub2, final double cancel,
-            final double eps) {
+            final double eps, final boolean seasonal) {
         this.maxd = maxd;
         this.maxbd = maxbd;
         this.ub1 = ub1;
         this.ub2 = ub2;
         this.cancel = cancel;
         this.eps = eps;
+        this.seasonal=seasonal;
     }
 
     private boolean calc() {
@@ -498,7 +506,6 @@ public class DifferencingModule implements IDifferencingModule {
         ModelEstimation estimation = context.getEstimation();
 
         int freq = desc.getAnnualFrequency();
-        boolean seasonal = context.isSeasonal();
         try {
             if (!DifferencingModule.comespd(freq, desc.regarima().getObservationsCount(), seasonal)) {
                 return airline(context);
@@ -538,7 +545,6 @@ public class DifferencingModule implements IDifferencingModule {
     }
 
     private ProcessingResult airline(RegArimaModelling context) {
-        boolean seasonal = context.isSeasonal();
         ModelDescription desc = context.getDescription();
         if (!desc.getSpecification().isAirline(seasonal)) {
             desc.setAirline(seasonal);
