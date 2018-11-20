@@ -56,7 +56,6 @@ import java.util.List;
  */
 @Development(status = Development.Status.Preliminary)
 public class OutliersDetector implements IOutliersDetectionModule {
-    
 
     private static final double EPS = 1e-5;
     private static final int MAXROUND = 50, MAXOUTLIERS = 24;
@@ -101,7 +100,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
         sod_.exclude(context.description.getOutliersPosition(true));
         sod_.exclude(context.description.getOutliersPosition(false));
         sod_.exclude(context.description.getFixedOutliersPosition());
-        
+
         outliers_.addAll(context.description.getOutliers());
 
         regarima_ = context.description.buildRegArima();
@@ -150,13 +149,13 @@ public class OutliersDetector implements IOutliersDetectionModule {
             } while (round_ < MAXROUND);
 
             // we should remove non signigicant outlier (witouht re-estimation)
-            if (round_ == MAXROUND || outliers_.size() == MAXOUTLIERS) {
-                estimateModel();
+            if (exit_ || round_ == MAXROUND || outliers_.size() == MAXOUTLIERS) {
+                updateLikelihood(regarima_.computeLikelihood());
             }
             festim_ = false;
 
             while (!verifyModel(context)) {
-                estimateModel();
+                updateLikelihood(regarima_.computeLikelihood());
             }
             if (!ec.tstoolkit.utilities.Comparator.equals(initial, OutlierDefinition.of(outliers_))) {
                 context.description.setOutliers(outliers_);
@@ -476,7 +475,7 @@ public class OutliersDetector implements IOutliersDetectionModule {
         int nparm = Math.max(spec.getD() + spec.getP() + spec.getFrequency()
                 * (spec.getBD() + spec.getBP()), spec.getQ()
                 + spec.getFrequency() * spec.getBQ())
-                + (desc.isEstimatedMean()? 1 : 0)
+                + (desc.isEstimatedMean() ? 1 : 0)
                 + (15 * n) / 100 + spec.getFrequency();
         if (n - nparm <= 0) {
             return -1;
