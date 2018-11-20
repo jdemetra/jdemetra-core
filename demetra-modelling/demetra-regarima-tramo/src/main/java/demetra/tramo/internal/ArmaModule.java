@@ -121,6 +121,17 @@ public class ArmaModule implements IArmaModule {
 //        }
         return spec;
     }
+    
+    static int maxInic(int period){
+        switch (period){
+            case 2:
+                return 1;
+            case 3:
+                return 2;
+            default:
+                return 3;
+        }
+    }
 
     static SarimaSpecification checkmaxspec(final int freq, final int inic, final int d,
             final int bd, final boolean seas) {
@@ -197,7 +208,7 @@ public class ArmaModule implements IArmaModule {
         ModelDescription desc = context.getDescription();
         SarimaSpecification curspec = desc.getSpecification();
         int inic = comespa(curspec.getPeriod(), desc.regarima().getObservationsCount(),
-                3, curspec.getD(), curspec.getBd(), context.isSeasonal());
+                maxInic(curspec.getPeriod()), curspec.getD(), curspec.getBd(), context.isSeasonal());
         if (inic == 0) {
             if (!curspec.isAirline(context.isSeasonal())) {
                 curspec.airline(context.isSeasonal());
@@ -224,7 +235,7 @@ public class ArmaModule implements IArmaModule {
 
     public SarimaSpecification process(RegArimaModel<SarimaModel> regarima, boolean seas) {
         SarimaSpecification curSpec = regarima.arima().specification();
-        int inic = comespa(curSpec.getPeriod(), regarima.getObservationsCount(), 3, curSpec.getD(), curSpec.getBd(), seas);
+        int inic = comespa(curSpec.getPeriod(), regarima.getObservationsCount(),  maxInic(curSpec.getPeriod()), curSpec.getD(), curSpec.getBd(), seas);
         if (inic == 0) {
             curSpec.airline(seas);
             return curSpec;
