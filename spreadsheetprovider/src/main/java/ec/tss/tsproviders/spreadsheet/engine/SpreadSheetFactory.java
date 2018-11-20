@@ -41,6 +41,7 @@ import ec.util.spreadsheet.Sheet;
 import ec.util.spreadsheet.helpers.ArraySheet;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -85,7 +86,7 @@ public abstract class SpreadSheetFactory {
 
         @Override
         public SpreadSheetSource toSource(Book book, TsImportOptions options) throws IOException {
-            return parseSource(book, Context.create(options));
+            return parseSource(book, options);
         }
 
         @Override
@@ -169,11 +170,11 @@ public abstract class SpreadSheetFactory {
         }
 
         @VisibleForTesting
-        static SpreadSheetSource parseSource(Book book, Context context) throws IOException {
+        static SpreadSheetSource parseSource(Book book, TsImportOptions options) throws IOException {
             int sheetCount = book.getSheetCount();
-            List<SpreadSheetCollection> result = new ArrayList<>(sheetCount);
-            book.forEach((sheet, i) -> result.add(parseCollection(sheet, i, context)));
-            return new SpreadSheetSource(result, "?");
+            SpreadSheetCollection[] result = new SpreadSheetCollection[sheetCount];
+            book.parallelForEach((sheet, i) -> result[i] = parseCollection(sheet, i, Context.create(options)));
+            return new SpreadSheetSource(Arrays.asList(result), "?");
         }
 
         @VisibleForTesting
