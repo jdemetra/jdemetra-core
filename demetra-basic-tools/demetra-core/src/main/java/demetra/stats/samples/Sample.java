@@ -14,6 +14,14 @@ import java.util.stream.DoubleStream;
  */
 public interface Sample {
     
+    public static Sample of(DoubleSequence data){
+        return new DefaultSample(data, Population.UNKNOWN);
+    }
+    
+    public static Sample ofResiduals(DoubleSequence data){
+        return new DefaultSample(data, Population.RESIDUALS);
+    }
+
     DoubleStream all();
 
     double mean();

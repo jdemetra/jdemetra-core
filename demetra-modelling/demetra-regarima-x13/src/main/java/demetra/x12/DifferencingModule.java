@@ -251,13 +251,13 @@ public class DifferencingModule implements IDifferencingModule {
                     spec.setBd(spec.getBd() + 1);
                 }
             } else // use the values stored in the first step
-             if (rmax > rsmax) {
-                    if (rmax > 0) {
-                        spec.setD(spec.getD() + 1);
-                    }
-                } else if (rsmax > 0) {
-                    spec.setBd(spec.getBd() + 1);
+            if (rmax > rsmax) {
+                if (rmax > 0) {
+                    spec.setD(spec.getD() + 1);
                 }
+            } else if (rsmax > 0) {
+                spec.setBd(spec.getBd() + 1);
+            }
         }
 
         if (spec.getD() > maxd) {
@@ -593,8 +593,8 @@ public class DifferencingModule implements IDifferencingModule {
     }
 
     private ProcessingResult airline(RegArimaModelling context) {
-        boolean seasonal = context.isSeasonal();
         ModelDescription desc = context.getDescription();
+        boolean seasonal = desc.getAnnualFrequency() > 1;
         if (!desc.getSpecification().isAirline(seasonal)) {
             desc.setAirline(seasonal);
             desc.setMean(false);

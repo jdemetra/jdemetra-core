@@ -24,7 +24,7 @@ public class ModelComparator {
 
     public static class Builder {
 
-        private Preference preference= Preference.BIC;
+        private Preference preference = Preference.BIC;
         private double significance = .01;
         private double kbic = .03;
         private double kq = 1.1;
@@ -33,96 +33,102 @@ public class ModelComparator {
         private int kout = 4;
         private double knz = .05;
         private double ksk = 1.25;
-        
-        public Builder preference(Preference preference){
-            this.preference=preference;
+
+        public Builder preference(Preference preference) {
+            this.preference = preference;
             return this;
         }
-        
-        public Builder significance(double significance){
-            this.significance=significance;
-            return this;
-        }
-        
-        /**
-         * @param bic Should be greater than 0.
-         * .03 by default
-         * @return 
-         */
-        public Builder bicTolerance(double bic){
-            if (bic<0)
-                throw new IllegalArgumentException();
-            this.kbic=bic;
+
+        public Builder significance(double significance) {
+            this.significance = significance;
             return this;
         }
 
         /**
-         * A model is discarded if its Ljung-Box stat is greater than kq
-         * times the Ljung-Box of the second one
-         * @param kq Should be greater than 1.
-         * 1.1 by default
-         * @return 
+         * @param bic Should be greater than 0. .03 by default
+         * @return
          */
-        public Builder ljungBoxTolerance(double kq){
-            if (kq<1)
+        public Builder bicTolerance(double bic) {
+            if (bic < 0) {
                 throw new IllegalArgumentException();
-            this.kq=kq;
-            return this;
-        }
-        
-        /**
-         * A model is discarded if its seasonal Ljung-Box stat is greater than kqs
-         * times the seasonal Ljung-Box of the second one
-         * @param kqs Should be greater than 1.
-         * 1.1 by default
-         * @return 
-         */
-        public Builder seasonalLjungBoxTolerance(double kqs){
-            if (kqs<1)
-                throw new IllegalArgumentException();
-            this.kqs=kqs;
+            }
+            this.kbic = bic;
             return this;
         }
 
         /**
-         * A model is discarded if its skewness stat is greater than ksk
-         * times the skewness of the second one
-         * @param ksk Should be greater than 1.
-         * 1.25 by default
-         * @return 
+         * A model is discarded if its Ljung-Box stat is greater than kq times
+         * the Ljung-Box of the second one
+         *
+         * @param kq Should be greater than 1. 1.1 by default
+         * @return
          */
-        public Builder skewnessTolerance(double ksk){
-            if (ksk<1)
+        public Builder ljungBoxTolerance(double kq) {
+            if (kq < 1) {
                 throw new IllegalArgumentException();
-            this.ksk=ksk;
+            }
+            this.kq = kq;
+            return this;
+        }
+
+        /**
+         * A model is discarded if its seasonal Ljung-Box stat is greater than
+         * kqs times the seasonal Ljung-Box of the second one
+         *
+         * @param kqs Should be greater than 1. 1.1 by default
+         * @return
+         */
+        public Builder seasonalLjungBoxTolerance(double kqs) {
+            if (kqs < 1) {
+                throw new IllegalArgumentException();
+            }
+            this.kqs = kqs;
+            return this;
+        }
+
+        /**
+         * A model is discarded if its skewness stat is greater than ksk times
+         * the skewness of the second one
+         *
+         * @param ksk Should be greater than 1. 1.25 by default
+         * @return
+         */
+        public Builder skewnessTolerance(double ksk) {
+            if (ksk < 1) {
+                throw new IllegalArgumentException();
+            }
+            this.ksk = ksk;
             return this;
         }
 
         /**
          * Limit for the relative number of outliers, in comparison with the
          * length of the series
-         * @param knz In [0, .5[. 
-         * 0.05 by default
-         * @return 
+         *
+         * @param knz In [0, .5[. 0.05 by default
+         * @return
          */
-        public Builder relativeOutliersThreshold(double knz){
-            if (knz>=.5 || knz <0)
+        public Builder relativeOutliersThreshold(double knz) {
+            if (knz >= .5 || knz < 0) {
                 throw new IllegalArgumentException();
-            this.knz=knz;
+            }
+            this.knz = knz;
             return this;
         }
-        
+
         /**
-         * A model is discarded if it contains m outliers more than the second one
+         * A model is discarded if it contains m outliers more than the second
+         * one
+         *
          * @param m
-         * @return 
+         * @return
          */
-        public Builder outliersTolerance(int m){
-            this.mout=m;
+        public Builder outliersTolerance(int m) {
+            this.mout = m;
             return this;
         }
-        
-        public ModelComparator build(){
+
+        public ModelComparator build() {
             return new ModelComparator(this);
         }
 
@@ -142,16 +148,15 @@ public class ModelComparator {
 
     public ModelComparator(Builder builder) {
         this.preference = builder.preference;
-        this.significance=builder.significance;
-        this.kbic=builder.kbic;
-        this.kq=builder.kq;
-        this.kqs=builder.kqs;
-        this.mout=builder.mout;
-        this.kout=builder.kout;
-        this.knz=builder.knz;
-        this.ksk=builder.ksk;
+        this.significance = builder.significance;
+        this.kbic = builder.kbic;
+        this.kq = builder.kq;
+        this.kqs = builder.kqs;
+        this.mout = builder.mout;
+        this.kout = builder.kout;
+        this.knz = builder.knz;
+        this.ksk = builder.ksk;
     }
-
 
     public int compare(PreprocessingModel m1, PreprocessingModel m2) {
 
@@ -198,7 +203,7 @@ public class ModelComparator {
      * @return True if s2 is preferred to s1
      */
     private boolean test1(ModelStatistics s1, ModelStatistics s2) {
-        if (s1.getLjungBoxPvalue()>= significance) {
+        if (s1.getLjungBoxPvalue() >= significance) {
             return false;
         }
         return s1.getLjungBox() > s2.getLjungBox() * kq;
@@ -246,6 +251,18 @@ public class ModelComparator {
         return s1.getSkewnessAbsvalue() > s2.getSkewnessAbsvalue() * ksk;
     }
 
+    // high score fore unstable model
+    private int stabilityScore(ModelStatistics s) {
+        int c = 0;
+        if (s.getStableMeanPvalue() < significance) {
+            ++c;
+        }
+        if (s.getStableVariancePvalue() < significance) {
+            ++c;
+        }
+        return c;
+    }
+
     /**
      * Better Stability
      *
@@ -254,7 +271,7 @@ public class ModelComparator {
      * @return
      */
     private boolean test5(ModelStatistics s1, ModelStatistics s2) {
-        return s1.getStabilityScore() > s2.getStabilityScore();
+        return stabilityScore(s1) > stabilityScore(s2);
     }
 
     private boolean checkAcceptable(ModelStatistics s1, ModelStatistics s2) {
@@ -268,7 +285,7 @@ public class ModelComparator {
                 || (s2.getSkewnessPvalue() > significance);
         acceptableQS = (s2.getSeasonalLjungBox() < s1.getSeasonalLjungBox() * kqs)
                 || (s2.getSeasonalLjungBoxPvalue() > significance);
-        acceptableStab = s2.isStableMean();
+        acceptableStab = s2.getStableMeanPvalue() > significance;
         return acceptableQ && acceptableOut && acceptableSk && acceptableQS;// && acceptableStab_;
     }
 

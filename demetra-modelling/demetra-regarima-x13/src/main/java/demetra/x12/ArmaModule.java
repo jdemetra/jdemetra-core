@@ -103,7 +103,7 @@ public class ArmaModule implements IArmaModule {
         SarimaSpecification curspec = desc.getSpecification();
         DoubleSequence res = RegArimaUtility.olsResiduals(desc.regarima());
         ArmaModuleImpl impl = createModule();
-        SarmaSpecification nspec = impl.process(res, curspec.getPeriod(), curspec.getD(), curspec.getBd(), context.isSeasonal());
+        SarmaSpecification nspec = impl.process(res, curspec.getPeriod(), curspec.getD(), curspec.getBd(), desc.getAnnualFrequency()>1);
         if (nspec.equals(curspec.doStationary())) {
             return ProcessingResult.Unchanged;
         }

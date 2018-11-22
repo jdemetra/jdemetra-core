@@ -6,10 +6,8 @@
 package demetra.stats.samples;
 
 import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
 import java.util.stream.DoubleStream;
 import demetra.data.DoubleSequence;
-import demetra.data.Doubles;
 
 /**
  *
