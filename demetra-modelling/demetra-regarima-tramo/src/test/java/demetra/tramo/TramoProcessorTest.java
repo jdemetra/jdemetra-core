@@ -91,7 +91,7 @@ public class TramoProcessorTest {
         processor.process(s, null);
     }
     
-    @Test
+//    @Test
     public void testProdWaldLegacy() {
         TramoSpecification nspec = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.clone();
         nspec.getRegression().getCalendar().getTradingDays().setAutomaticMethod(ec.tstoolkit.modelling.arima.tramo.TradingDaysSpec.AutoMethod.WaldTest);

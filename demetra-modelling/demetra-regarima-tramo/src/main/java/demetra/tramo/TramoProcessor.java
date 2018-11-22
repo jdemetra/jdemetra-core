@@ -548,9 +548,6 @@ public class TramoProcessor implements IPreprocessor {
             if (!useprev) {
                 refAuto = cur;
                 refStats = stats;
-//            if (outliers != null) {
-//                refsens_ = outliers.getSelectivity();
-//            }
             } else {
                 restore(context);
                 plbox = plbox0;
@@ -618,42 +615,6 @@ public class TramoProcessor implements IPreprocessor {
 //        for (IModelController controller : controllers) {
 //            controller.setReferenceModel(null);
 //        }
-//    }
-//
-////    private boolean checkMean(ModellingContext context) {
-////        if (context.description.isMean() && context.automodelling && (pass_ != 0 || !isDfm())) {
-////            int nhp = context.description.getArimaComponent().getFreeParametersCount();
-////            double e = context.estimation.getLikelihood().getBSer(0, true, nhp);
-////            double mu = context.estimation.getLikelihood().getB()[0];
-////            if (!mu_ && Math.abs(mu / e) < getTsig()) {
-////                mu_ = true;
-////                context.description.setMean(false);
-////                RegArimaModel<SarimaModel> nregarima = context.description.buildRegArima();
-////                nregarima.setArima(context.estimation.getArima());
-////                context.estimation = new ModelEstimation(nregarima, context.description.getLikelihoodCorrection());
-////                context.estimation.computeLikelihood(nhp);
-////                return false;
-////            }
-////        }
-////        return true;
-////    }
-//    private boolean initContext(RegArimaContext context) {
-//        context.automodelling = autoModelling != null;
-//        context.outliers = outliers != null;
-//        // scaling
-//        if (scaling != null) {
-//            if (!scaling.process(context)) {
-//                return false;
-//            }
-//        }
-//
-//        // missing value...
-//        if (missing != null) {
-//            if (!context.description.updateMissing(missing)) {
-//                return false;
-//            }
-//        }
-//        return true;
 //    }
 //
 
@@ -727,106 +688,4 @@ public class TramoProcessor implements IPreprocessor {
         return regtest.test(context) == ProcessingResult.Unchanged;
     }
 
-//    private boolean update(RegArimaContext context) {
-//        try {
-//            if (context.estimation != null) {
-//                return true;
-//            }
-//            IParametricMapping<SarimaModel> mapping = context.description.defaultMapping();
-//            ModelDescription model = context.description;
-//            context.estimation = new ModelEstimation(model.buildRegArima(), model.getLikelihoodCorrection());
-//            // should be changed for fixed parameters
-//            int ndim = mapping.getDim();
-//            TramoModelEstimator monitor = new TramoModelEstimator(mapping);
-//            if (context.description.isPartiallySpecified()) {
-//                context.estimation.improve(monitor, ndim);
-//            } else {
-//                context.estimation.compute(monitor, ndim);
-//            }
-//            context.estimation.updateParametersCovariance(monitor.getParametersCovariance());
-//            return true;
-//        } catch (Exception err) {
-//            return false;
-//        }
-//    }
-//
-//    /**
-//     *
-//     * @param context
-//     * @return True if the model finally chosen is not an airline model, false
-//     * otherwise
-//     */
-//    /**
-//     * @return the dfm_
-//     */
-//    public boolean isDfm() {
-//        return dfm_;
-//    }
-//
-//    /**
-//     * @param dfm_ the dfm_ to set
-//     */
-//    public void setDfm(boolean dfm_) {
-//        this.dfm_ = dfm_;
-//    }
-//
-//    /**
-//     * @return the pcr_
-//     */
-//    public double getPcr() {
-//        return pcr_;
-//    }
-//
-//    /**
-//     * @param pcr_ the pcr_ to set
-//     */
-//    public void setPcr(double pcr_) {
-//        this.pcr_ = pcr_;
-//    }
-//
-//    /**
-//     * @return the tsig_
-//     */
-//    public double getTsig() {
-//        return tsig_;
-//    }
-//
-//    /**
-//     * @param tsig_ the tsig_ to set
-//     */
-//    public void setTsig_(double tsig_) {
-//        this.tsig_ = tsig_;
-//    }
-//
-//    /**
-//     * This function is different from the CHECKSEAS routine of TRAMO.
-//     *
-//     * @param s The tested series
-//     * @return
-//     */
-//    public static boolean checkSeasonality(TsData s) {
-//        if (s.getFrequency() == TsFrequency.Yearly) {
-//            return false;
-//        }
-//        TsData delta = s.delta(1);
-//        int ifreq = s.getFrequency().intValue();
-//        int k = 3;
-//        if (k * ifreq >= delta.getLength()) {
-//            k = 2;
-//        }
-//        LjungBoxTest lb = new LjungBoxTest();
-//        lb.setLag(ifreq);
-//        lb.setK(k);
-//        lb.test(delta);
-//        lb.setSignificanceThreshold(.1);
-//        return !lb.isValid() || lb.isSignificant();
-//    }
-//
-//    public IModelEstimator getEstimator() {
-//        ModelEstimator e = new ModelEstimator();
-//        e.setOutliersDetectionModule(outliers);
-//        e.setPrecision(finalizer.getEpsilon());
-//        return e;
-//    }
-//
 }

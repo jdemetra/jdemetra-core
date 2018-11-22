@@ -128,7 +128,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
     private double[] tstats;
     private int round;
     // festim = true if the model has to be re-estimated
-    private boolean rflag_, backw_, exit_, firstEstimation;
+    private boolean rflag, backwardStep, exit, estimationStep;
     private int[] lastremoved;
     private DoubleSequence coeff, res;
     //
@@ -191,9 +191,9 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
                     return false;
                 }
                 boolean search = true;
-                if (backw_) {
+                if (backwardStep) {
                     search = verifyModel();
-                    if (exit_) {
+                    if (exit) {
                         break;
                     }
                 }
@@ -216,10 +216,10 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
             } while (round < maxRound);
 
             // we should remove non signigicant outlier (witouht re-estimation)
-            if (round == maxRound || outliers.size() == maxOutliers) {
+            if (exit || round == maxRound || outliers.size() == maxOutliers) {
                 estimateModel();
             }
-            firstEstimation = false;
+            estimationStep = false;
 
             while (!verifyModel()) {
                 estimateModel();
@@ -237,7 +237,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         SarimaSpecification spec = sarima.specification();
         RegArmaModel<SarimaModel> dm = regarima.differencedModel();
         LinearModel lm = dm.asLinearModel();
-        if (rflag_) {
+        if (rflag) {
             if (lm.getVariablesCount() > 0) {
                 Ols ols = new Ols();
                 LeastSquaresResults lsr = ols.compute(lm);
@@ -255,9 +255,9 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
             res = lm.getY();
         }
         boolean stable = true;
-        rflag_ = false;
+        rflag = false;
 
-        if (firstEstimation) {
+        if (estimationStep) {
             SarmaSpecification dspec = spec.doStationary();
             if (spec.getParametersCount() != 0) {
                 HannanRissanen hr = HannanRissanen.builder().build();
@@ -271,12 +271,12 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
                                         .parameters(stmodel.parameters())
                                         .build());
                     } else {
-                        rflag_ = true;
+                        rflag = true;
                         stable = true;
                     }
                 }
             }
-            if ((mvx || !stable) && firstEstimation) {
+            if ((mvx || !stable) && estimationStep) {
                 return optimizeModel();
             }
         }
@@ -300,15 +300,15 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
     }
 
     private void clear() {
-        rflag_ = true;
+        rflag = true;
         outliers.clear();
         round = 0;
         lastremoved = null;
         coeff = null;
         tstats = null;
-        firstEstimation = true;
-        backw_ = false;
-        exit_ = false;
+        estimationStep = true;
+        backwardStep = false;
+        exit = false;
         res = null;
         // festim = true if the model has to be re-estimated
     }
@@ -320,7 +320,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
      * @return True means that the model was not modified
      */
     private boolean verifyModel() {
-        firstEstimation = true;
+        estimationStep = true;
         if (outliers.isEmpty()) {
             return true;
         }
@@ -337,14 +337,14 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         if (Math.abs(tstats[nx0 + imin]) >= cv) {
             return true;
         }
-        backw_ = false;
-        firstEstimation = false;
+        backwardStep = false;
+        estimationStep = false;
         int[] toremove = outliers.get(imin);
         sod.allow(toremove[0], toremove[1]);
         removeOutlier(imin);
         if (lastremoved != null) {
             if (Arrays.equals(toremove, lastremoved)) {
-                exit_ = true;
+                exit = true;
             }
         }
         lastremoved = toremove;
@@ -362,7 +362,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
             tmp[coeff.length()] = c;
             coeff = DoubleSequence.ofInternal(tmp);
         }
-        backw_ = true;
+        backwardStep = true;
     }
 
     private void addOutlier(int pos, int type) {

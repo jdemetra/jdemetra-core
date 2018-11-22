@@ -112,13 +112,12 @@ class FinalEstimator implements IModelEstimator {
         do {
             try {
                 IParametricMapping<SarimaModel> mapping = context.getDescription().getArimaComponent().defaultMapping();
-                ModelDescription model = context.getDescription();
-                int ndim = mapping.getDim();
                 RegSarimaProcessor processor = RegSarimaProcessor.builder()
                         .precision(eps)
                         .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
                         .build();
                 context.estimate(processor);
+                int ndim = mapping.getDim();
                 if (ndim == 0) {
                     return true;
                 }
