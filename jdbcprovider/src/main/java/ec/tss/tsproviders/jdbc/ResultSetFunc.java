@@ -34,6 +34,11 @@ import javax.annotation.Nullable;
 public abstract class ResultSetFunc<T> implements DbUtil.Func<ResultSet, T, SQLException> {
 
     @Nonnull
+    public static ResultSetFunc<String> onNull() {
+        return NullResultSetFunc.INSTANCE;
+    }
+
+    @Nonnull
     public static ResultSetFunc<String> onGetString(final int columnIndex) {
         return new ResultSetFunc<String>() {
             @Override
@@ -97,6 +102,16 @@ public abstract class ResultSetFunc<T> implements DbUtil.Func<ResultSet, T, SQLE
     public static ResultSetFunc<Number> onNumber(@Nonnull ResultSetMetaData metaData, int columnIndex, @Nonnull IParser<Number> numberParser) throws SQLException {
         ResultSetFunc<Number> result = numberBySqlType(metaData.getColumnType(columnIndex), columnIndex);
         return result != null ? result : compose(columnIndex, numberParser);
+    }
+
+    private static final class NullResultSetFunc extends ResultSetFunc<String> {
+
+        static final ResultSetFunc<String> INSTANCE = new NullResultSetFunc();
+
+        @Override
+        public String apply(ResultSet input) throws SQLException {
+            return null;
+        }
     }
 
     @Nullable
