@@ -16,29 +16,32 @@
  */
 package demetra.regarima.regular;
 
+import demetra.data.DataBlock;
+import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
 import demetra.design.Development;
-import demetra.information.InformationSet;
-import demetra.likelihood.ConcentratedLikelihood;
-import demetra.likelihood.LikelihoodStatistics;
-import demetra.modelling.PreadjustmentVariable;
-import demetra.modelling.Variable;
-import demetra.sarima.SarimaModel;
-import demetra.stats.tests.NiidTests;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.TsPeriod;
+import demetra.timeseries.simplets.TsDataToolkit;
+import demetra.timeseries.simplets.TsDataTransformation;
+import demetra.timeseries.transformation.TimeSeriesTransformation;
+import java.util.List;
 
 /**
- * The pre-processing model contains all information on the estimated regarima model
+ * The pre-processing model contains all information on the estimated regarima
+ * model
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
-public class PreprocessingModel  {
+public class PreprocessingModel {
+
     // Model description
     private ModelDescription description;
     private ModelEstimation estimation;
-    
+
 //
 //    public static ComponentType outlierComponent(OutlierType type) {
 //        switch (type) {
@@ -73,15 +76,22 @@ public class PreprocessingModel  {
 //    private InformationSet information;
 //    private List<ProcessingInformation> log;
 //
-//    public void backTransform(TsData s, boolean T, boolean S) {
-//        if (s == null) {
-//            return;
-//        }
-//        List<ITsDataTransformation> back = description.backTransformations(T, S);
-//        for (ITsDataTransformation t : back) {
-//            t.transform(s, null);
-//        }
-//    }
+    public TsData backTransform(TsData s) {
+        List<TsDataTransformation> back = description.backTransformations();
+        for (TsDataTransformation t : back) {
+            s = t.transform(s, null);
+        }
+        return s;
+    }
+
+    public double backTransform(TsPeriod p, double s) {
+        List<TsDataTransformation> back = description.backTransformations();
+        for (TsDataTransformation t : back) {
+            s = t.transform(p, s);
+        }
+        return s;
+    }
+
 //
 //    public PreprocessingModel(ModelDescription description, ModelEstimation estimation) {
 //        this.description = description;
@@ -152,55 +162,51 @@ public class PreprocessingModel  {
 //        }
 //    }
 //
-//    public TsData interpolatedSeries(boolean bTransformed) {
-//        TsData data;
-//        if (!bTransformed) {
-//            data = description.getOriginal();
-//        } else {
-//            data = description.transformedOriginal();
-//        }
-//
-//        // complete for missings
-//        int[] missings = description.getMissingValues();
-//        if (missings != null) {
-//            if (estimation == null) {
-//                return null;
-//            }
-//            List<ITsDataTransformation> back;
-//            if (!bTransformed) {
-//                back = description.backTransformations(true, true);
-//            }
-//            double[] b = estimation.getLikelihood().getB();
-//            int istart = description.isEstimatedMean() ? 1 : 0;
-//            int del = description.getEstimationDomain().getStart().minus(description.getSeriesDomain().getStart());
-//            for (int i = 0; i < missings.length; ++i) {
-//                int pos = missings[i];
-//                double val = description.getY()[pos] - b[istart + i];
-//                if (!bTransformed) {
-//                    TsData tmp = new TsData(description.getEstimationDomain().get(pos), 1);
-//                    tmp.set(0, val);
-//                    backTransform(tmp, true, true);
-//                    data.set(del + pos, tmp.get(0));
-//                } else {
-//                    data.set(del + pos, val);
-//                }
-//            }
-//        }
-//        return data;
-//    }
-//
-//    public TsData linearizedSeries() {
-//        if (lin_ != null) {
-//            return lin_.clone();
-//        }
-//        if (estimation == null) {
-//            return description.transformedOriginal();
-//        }
-//        TsData interp = interpolatedSeries(true);
-//        TsData regs = regressionEffect(description.getSeriesDomain());
-//        lin_ = TsData.subtract(interp, regs);
-//        return lin_.clone();
-//    }
+    public TsData interpolatedSeries(boolean bTransformed) {
+        TsData data;
+        if (!bTransformed) {
+            data = description.getSeries();
+        } else {
+            data = description.getTransformedSeries();
+        }
+
+        // complete for missings
+        int[] missings = description.getMissing();
+        if (missings != null) {
+            if (estimation == null) {
+                return null;
+            }
+            List<TsDataTransformation> back;
+            if (!bTransformed) {
+                back = description.backTransformations();
+            }
+            DoubleSequence m = estimation.getConcentratedLikelihood().missingEstimates();
+            DoubleReader reader = m.reader();
+            double[] tmp = data.getValues().toArray();
+            for (int i = 0; i < missings.length; ++i) {
+                int pos = missings[i];
+                TsPeriod p = description.getDomain().get(pos);
+                double val = reader.next();
+                if (!bTransformed) {
+                    tmp[pos] = backTransform(p, val);
+                } else {
+                    tmp[pos] = val;
+                }
+            }
+            data = TsData.ofInternal(data.getStart(), tmp);
+        }
+        return data;
+    }
+
+    public TsData linearizedSeries() {
+        if (estimation == null) {
+            return description.getTransformedSeries();
+        }
+        TsData interp = interpolatedSeries(true);
+        TsData regs = regressionEffect(description.getDomain());
+        TsData lin = TsDataToolkit.subtract(interp, regs);
+        return lin;
+    }
 //
 //    public TsData linearizedSeries(boolean includeUndefinedReg) {
 //        TsData s = linearizedSeries();
@@ -211,45 +217,41 @@ public class PreprocessingModel  {
 //        return s;
 //    }
 //
-//    public <T extends ITsVariable> TsData preadjustmentEffect(TsDomain domain) {
-//        if (description.hasFixedEffects()) {
-//            DataBlock reg = PreadjustmentVariable.regressionEffect(description.preadjustmentVariables(), domain);
-//            return new TsData(domain.getStart(), reg);
-//        } else {
-//            return null;
-//        }
-//    }
-//
-//    public <T extends ITsVariable> TsData preadjustmentEffect(TsDomain domain, final ComponentType type) {
-//        if (description.hasFixedEffects()) {
-//            DataBlock reg = PreadjustmentVariable.regressionEffect(description.preadjustmentVariables(), domain, type);
-//            return new TsData(domain.getStart(), reg);
-//        } else {
-//            return null;
-//        }
-//    }
-//
-//    // cmp is used in back transformation
-//    public TsData regressionEffect(TsDomain domain) {
-//        if (estimation == null) {
-//            return null;
-//        }
-//        double[] coeffs = estimation.getLikelihood().getB();
-//        if (coeffs == null) {
-//            return new TsData(domain, 0);
-//        } else {
-//            int istart = description.getRegressionVariablesStartingPosition();
-//
-//            TsVariableSelection sel = vars().all();
-//            DataBlock sum = sel.sum(new DataBlock(coeffs, istart, coeffs.length, 1), domain);
-//
-//            if (sum == null) {
-//                sum = new DataBlock(domain.getLength());
-//            }
-//            TsData rslt = new TsData(domain.getStart(), sum.getData(), false);
-//            return rslt;
-//        }
-//    }
+
+    public TsData preadjustmentEffect(TsDomain domain) {
+        if (description.hasFixedEffects()) {
+            DataBlock t = DataBlock.make(domain.getLength());
+            description.preadjustmentVariables().forEachOrdered(v -> v.addTo(t, domain));
+            return TsData.ofInternal(domain.getStartPeriod(), t.unmodifiable());
+        } else {
+            return null;
+        }
+    }
+
+    public TsData regressionEffect(TsDomain domain) {
+        if (estimation == null) {
+            return null;
+        }
+        final int n=domain.getLength();
+        DoubleSequence coeffs = estimation.getConcentratedLikelihood().coefficients();
+        DoubleReader reader = coeffs.reader();
+        DataBlock r = DataBlock.make(n);
+        if (description.isEstimatedMean()) {
+            reader.next();
+        }
+
+        description.regressionVariables().forEachOrdered(var -> {
+            List<DataBlock> list = var.createBuffer(n);
+            var.data(domain, list);
+            for (DataBlock x : list) {
+                r.addAY(reader.next(), x);
+            }
+        });
+
+        TsData rslt = TsData.ofInternal(domain.getStartPeriod(), r.unmodifiable());
+        return rslt;
+    }
+
 //
 //    public <T extends ITsVariable> TsData preadjustmentEffect(TsDomain domain, Class<T> tclass) {
 //        if (description.hasFixedEffects()) {

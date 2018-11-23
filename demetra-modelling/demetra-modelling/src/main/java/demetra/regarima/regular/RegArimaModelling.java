@@ -55,6 +55,12 @@ public class RegArimaModelling {
     public boolean needEstimation() {
         return estimation == null;
     }
+    
+    public void setDescription(ModelDescription desc){
+        this.description=desc;
+        this.estimation=null;
+    }
+    
 //    public ModellingContext() {
 //        processingLog = new ArrayList<>();
 //    }

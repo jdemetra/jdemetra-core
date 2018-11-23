@@ -16,30 +16,40 @@
  */
 package demetra.tramo;
 
+import demetra.regarima.regular.ModelDescription;
+import demetra.regarima.regular.PreprocessingModel;
+import demetra.regarima.regular.ProcessingResult;
+import demetra.regarima.regular.RegArimaModelling;
+import demetra.sarima.SarimaSpecification;
+
 
 /**
  *
  * @author Jean Palate
  */
-public class SeasonalUnderDifferencingTest2 extends AbstractModelController {
+class SeasonalUnderDifferencingTest2 extends ModelController {
 
     private static final double DEF_SBOUND = .91;
 
     @Override
-    public ProcessingResult process(ModellingContext context) {
-        if (context.description.getFrequency() == 1) {
+    ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context) {
+        ModelDescription desc = modelling.getDescription();
+        int period=desc.getAnnualFrequency();
+        if (period == 1) {
             return ProcessingResult.Unprocessed;
         }
-        SarimaSpecification spec = context.description.getSpecification();
-        if (spec.getBD() == 1 || spec.getBQ() == 1 || context.originalSeasonalityTest == 0) {
+        SarimaSpecification spec = desc.getSpecification();
+        if (spec.getBd() == 1 || spec.getBq() == 1 || context.originalSeasonalityTest == 0) {
             return ProcessingResult.Unchanged;
         }
-        if (spec.getBP() == 1) {
-            TsVariableList x = context.description.buildRegressionVariables();
-            boolean hastd = !x.selectCompatible(ICalendarVariable.class).isEmpty();
-            boolean hasmh = !x.selectCompatible(IMovingHolidayVariable.class).isEmpty();
+        if (spec.getBp() == 1) {
+            
+            boolean hastdmh = desc.variables()
+                    .filter(var->var.isCalendar() || var.isMovingHolidays())
+                    .findAny()
+                    .isPresent();
 
-            if (!hastd && !hasmh) {
+            if (!hastdmh) {
                 return ProcessingResult.Unchanged;
             }
         }
@@ -47,14 +57,12 @@ public class SeasonalUnderDifferencingTest2 extends AbstractModelController {
 //        if (!isUnderDiff(context)) {
 //            return ProcessingResult.Unchanged;
 //        }
-        ModellingContext scontext=buildNewModel(context);
-        PreprocessingModel smodel = scontext.tmpModel();
-        if (smodel == null) {
-            return ProcessingResult.Failed;
-        }
-        if (new ModelComparator().compare(smodel, context.tmpModel()) < 0) {
+        RegArimaModelling scontext=buildNewModel(modelling);
+        PreprocessingModel smodel = scontext.build();
+        ModelComparator cmp = ModelComparator.builder().build();
+        if (cmp.compare(smodel, modelling.build()) < 0) {
 //            setReferenceModel(smodel);
-            transferInformation(scontext, context);
+            transferInformation(scontext, modelling);
             return ProcessingResult.Changed;
         } else {
             return ProcessingResult.Unchanged;
@@ -68,16 +76,16 @@ public class SeasonalUnderDifferencingTest2 extends AbstractModelController {
 //        return tests.getScore() >= 1;
 //    }
 //
-    private ModellingContext buildNewModel(ModellingContext context) {
-        ModellingContext ncontext = new ModellingContext();
-        ModelDescription ndesc = context.description.clone();
+    private RegArimaModelling buildNewModel(RegArimaModelling context) {
+        RegArimaModelling ncontext = new RegArimaModelling();
+        ModelDescription ndesc = new ModelDescription(context.getDescription());
         SarimaSpecification spec = ndesc.getSpecification();
-        spec.setBP(0);
-        spec.setBD(1);
-        spec.setBQ(1);
+        spec.setBp(0);
+        spec.setBd(1);
+        spec.setBq(1);
         ndesc.setSpecification(spec);
         ndesc.setMean(false);
-        ncontext.description = ndesc;
+        ncontext.setDescription(ndesc);
         // estimate the new model
         if (!estimate(ncontext, false)) {
             return null;

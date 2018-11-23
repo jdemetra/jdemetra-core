@@ -17,26 +17,39 @@
 
 package demetra.tramo;
 
+import demetra.data.DataBlock;
+import demetra.data.DoubleSequence;
+import demetra.maths.Complex;
+import demetra.regarima.regular.ModelDescription;
+import demetra.regarima.regular.ModelEstimation;
+import demetra.regarima.regular.ProcessingResult;
+import demetra.regarima.regular.RegArimaModelling;
+import demetra.sarima.SarimaModel;
+import demetra.sarima.SarimaSpecification;
+import demetra.tramo.internal.DifferencingModule;
+
 
 /**
  *
  * @author Jean Palate
  */
-public class RegularUnderDifferencingTest extends AbstractModelController {
+class RegularUnderDifferencingTest extends ModelController {
 
     private static final double RTVAL = 1.6, IM = .01, MOD = .9;
 
-    public RegularUnderDifferencingTest() {
+    RegularUnderDifferencingTest() {
     }
 
     @Override
-    public ProcessingResult process(ModellingContext context) {
-        SarimaModel cur = context.estimation.getArima();
-        SarimaSpecification spec = cur.getSpecification();
-        if (spec.getD() == DifferencingModule.MAXD || spec.getP() == 0 || !context.description.isEstimatedMean()) {
+    ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context) {
+        ModelDescription desc = modelling.getDescription();
+        ModelEstimation estimation = modelling.getEstimation();
+        SarimaModel cur = desc.arima();
+        SarimaSpecification spec = cur.specification();
+        if (spec.getD() == DifferencingModule.MAXD || spec.getP() == 0 || !desc.isEstimatedMean()) {
             return ProcessingResult.Unchanged;
         }
-        if (checkResiduals(context)) {
+        if (checkResiduals(estimation.getConcentratedLikelihood().e())) {
             return ProcessingResult.Unchanged;
         }
         if (!hasQuasiUnitRoots(cur)) {
@@ -44,23 +57,24 @@ public class RegularUnderDifferencingTest extends AbstractModelController {
         }
         spec.setD(spec.getD() + 1);
         spec.setP(spec.getP() - 1);
-        ModellingContext ncontext = new ModellingContext();
-        ncontext.description = context.description.clone();
-        ncontext.description.setSpecification(spec);
-        ncontext.description.setMean(false);
+        RegArimaModelling ncontext = new RegArimaModelling();
+        ModelDescription ndesc=new ModelDescription(desc);
+        ndesc.setSpecification(spec);
+        ndesc.setMean(false);
+        ncontext.setDescription(ndesc);
         if (!estimate(ncontext, false)) {
             return ProcessingResult.Failed;
         }
         else {
-            transferInformation(ncontext, context);
+            transferInformation(ncontext, modelling);
             return ProcessingResult.Changed;
         }
     }
 
-    private boolean checkResiduals(ModellingContext context) {
-        DataBlock res = new DataBlock(context.estimation.getLikelihood().getResiduals());
+    private boolean checkResiduals(DoubleSequence e) {
+        DataBlock res = DataBlock.of(e);
         double rm = res.sum(), rv = res.ssq();
-        int n = res.getLength();
+        int n = res.length();
         rm /= n;
         rv = rv / n - rm * rm;
         double rstd = Math.sqrt(rv / n);

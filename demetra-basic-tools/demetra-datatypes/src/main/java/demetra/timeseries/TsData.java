@@ -141,6 +141,10 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
         return domain.getTsUnit().getAnnualFrequency();
     }
 
+    public boolean hasDefaultEpoch() {
+        return domain.hasDefaultEpoch();
+    }
+
     /**
      * *
      * Gets the data corresponding to a given period. The period should have the

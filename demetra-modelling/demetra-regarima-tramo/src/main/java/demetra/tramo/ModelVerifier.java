@@ -17,6 +17,12 @@
 
 package demetra.tramo;
 
+import demetra.data.DoubleSequence;
+import demetra.regarima.regular.ModelDescription;
+import demetra.regarima.regular.ModelEstimation;
+import demetra.regarima.regular.RegArimaModelling;
+import demetra.stats.tests.NiidTests;
+
 
 /**
  *
@@ -25,43 +31,44 @@ package demetra.tramo;
 public class ModelVerifier {
 
     private static final double OUT = .03, NORMAL = 6, SKEWNESS = 2.576, RUNS = 2.576, QSTAT = .05, QS = 6, MEAN = .01;
-    NiidTests niid;
 
-    public boolean accept(ModellingContext context) {
-        int nz = context.estimation.getRegArima().getObsCount();
-        if (context.description.getOutliers().size() > OUT * nz) {
+    public boolean accept(RegArimaModelling context) {
+        ModelDescription desc = context.getDescription();
+        ModelEstimation estimation = context.getEstimation();
+        int nz = desc.getSeries().getValues().count(x->Double.isFinite(x));
+        if (desc.variables().filter(var->var.isOutlier(false)).count() > OUT * nz) {
             return false;
         }
-        niid = context.estimation.getNiidTests();
+        NiidTests niid = estimation.getTests();
         //join test on normality
-        if (niid.getNormalityTest().getValue() > NORMAL) {
+        if (niid.normalityTest().getValue() > NORMAL) {
             return false;
         }
         // QStat
-        if (niid.getLjungBox().getPValue() < QSTAT) {
+        if (niid.ljungBox().getPValue() < QSTAT) {
             return false;
         }
         // skewness
-        if (niid.getSkewness().getValue() > SKEWNESS) {
+        if (niid.skewness().getValue() > SKEWNESS) {
             return false;
         }
         // runs
-        if (niid.getRuns().getValue() > RUNS) {
+        if (niid.runs().getValue() > RUNS) {
             return false;
         }
         // mean
-        if (niid.getMeanTest().getPValue() < .01) {
+        if (niid.meanTest().getPValue() < .01) {
             return false;
         }
         // qs
-        int ifreq = context.description.getFrequency();
-        if (ifreq > 1) {
-            if (niid.getSeasonalLjungBox().getValue() > QS) {
+        int period = desc.getAnnualFrequency();
+        if (period > 1) {
+            if (niid.seasonalLjungBox().getValue() > QS) {
                 return false;
             }
             // Seasonality
-            SeasonalityTests stests = SeasonalityTests.residualSeasonalityTest(context.estimation.getLikelihood().getResiduals(),
-                    TsFrequency.valueOf(ifreq));
+            DoubleSequence res = estimation.getConcentratedLikelihood().e();
+            SeasonalityTests stests = SeasonalityTests.residualSeasonalityTest(res, period);
             if (stests.getScore() > 1) {
                 return false;
             }

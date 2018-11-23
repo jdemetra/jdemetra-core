@@ -15,18 +15,25 @@
 * limitations under the Licence.
 */
 
-package demetra.data.transformation;
+package demetra.timeseries.transformation;
 
-import demetra.data.DoubleSequence;
+import demetra.data.Range;
+import demetra.data.transformation.LogJacobian;
 import demetra.design.Development;
+import demetra.timeseries.TimeSeriesData;
+import demetra.timeseries.TimeSeriesObs;
+import java.time.LocalDateTime;
 
 /**
  * Interface for transformation of a time series
  *
  * @author Jean Palate
+ * @param <P>
+ * @param <O>
+ * @param <S>
  */
 @Development(status = Development.Status.Release)
-public interface DataTransformation {
+public interface TimeSeriesTransformation<P extends Range<LocalDateTime>, O extends TimeSeriesObs<P>, S extends TimeSeriesData<P, O>> {
 
 
     /**
@@ -35,7 +42,7 @@ public interface DataTransformation {
      *
      * @return The converse transformation.
      */
-    DataTransformation converse();
+    TimeSeriesTransformation<P, O, S> converse();
 
     /**
      * Transforms a time series.
@@ -44,7 +51,7 @@ public interface DataTransformation {
      * @param logjacobian I/O parameter. The log of the Jacobian of this transformation
      * @return The transformed data. Null if the transformation was not successful
      */
-    DoubleSequence transform(DoubleSequence data, LogJacobian logjacobian);
+    S transform(S data, LogJacobian logjacobian);
     
-    double transform(double value);
+    double transform(P period, double value);
 }

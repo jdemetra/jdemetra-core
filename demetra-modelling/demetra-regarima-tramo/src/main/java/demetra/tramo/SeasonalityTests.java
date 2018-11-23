@@ -122,8 +122,8 @@ public class SeasonalityTests {
     }
 
     private void testResiduals(DoubleSequence res, int period) {
-        // we create a "temporary" time series. Dates don't matter
         delta = DifferencingResults.of(res, period, 0, false);
+        this.period=period;
         clear();
     }
 

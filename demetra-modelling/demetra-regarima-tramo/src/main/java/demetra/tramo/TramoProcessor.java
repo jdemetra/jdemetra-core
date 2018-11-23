@@ -39,6 +39,8 @@ import demetra.timeseries.calendars.DayClustering;
 import demetra.tramo.internal.ArmaModule;
 import demetra.tramo.internal.DifferencingModule;
 import demetra.tramo.internal.OutliersDetectionModule;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -46,6 +48,12 @@ import demetra.tramo.internal.OutliersDetectionModule;
  */
 @Development(status = Development.Status.Preliminary)
 public class TramoProcessor implements IPreprocessor {
+
+    static class Context {
+
+        int originalSeasonalityTest;
+        boolean seasonal;
+    }
 
     @lombok.Value
     @lombok.Builder
@@ -75,19 +83,44 @@ public class TramoProcessor implements IPreprocessor {
     private final TramoSpec spec;
     private final ModellingContext modellingContext;
     private final AmiOptions options;
+    private final Context context=new Context();
+
+    private final SeasonalityController scontroller;
+    private final List<ModelController> controllers = new ArrayList<>();
 
     private PreprocessingModel refAirline, refAuto;
     private ModelStatistics refStats;
 
     private int pass = 0, round = 0;
     private double curva = 0, pcr = 0;
-    private boolean pass3, seasonal;
-    private int ost;
+    private boolean pass3;
 
     private TramoProcessor(TramoSpec spec, ModellingContext context) {
         this.spec = new TramoSpec(spec);
         this.modellingContext = context;
         this.options = readAmiOptions(spec);
+        TradingDaysSpec td = spec.getRegression().getCalendar().getTradingDays();
+
+        if (spec.isUsingAutoModel()) {
+            scontroller = new SeasonalityController();
+            controllers.add(new RegularUnderDifferencingTest());
+            controllers.add(new SeasonalUnderDifferencingTest());
+            if (spec.getAutoModel().isAmiCompare()) {
+                controllers.add(new ModelBenchmarking());
+            }
+            if (td.isAutomatic()) {
+                controllers.add(new TradingDaysController(
+                        TramoModelBuilder.tradingDays(spec, modellingContext), td.getProbabibilityForFTest()));
+            }
+            controllers.add(new SeasonalUnderDifferencingTest2());
+            controllers.add(new RegularUnderDifferencingTest2());
+        } else {
+            scontroller = null;
+            if (td.isAutomatic()) {
+                controllers.add(new TradingDaysController(
+                        TramoModelBuilder.tradingDays(spec, modellingContext), td.getProbabibilityForFTest()));
+            }
+        }
     }
 
     private static AmiOptions readAmiOptions(TramoSpec spec) {
@@ -168,28 +201,28 @@ public class TramoProcessor implements IPreprocessor {
                 .cancel(amiSpec.getCancel())
                 .ub1(amiSpec.getUb1())
                 .ub2(amiSpec.getUb2())
-                .seasonal(seasonal)
+                .seasonal(context.seasonal)
                 .build();
     }
 
     private ArmaModule armaModule() {
         return ArmaModule.builder()
-                .seasonal(seasonal)
+                .seasonal(context.seasonal)
                 .build();
     }
 
     @Override
-    public PreprocessingModel process(TsData originalTs, RegArimaModelling context) {
+    public PreprocessingModel process(TsData originalTs, RegArimaModelling modelling) {
 //        clear();
-        if (context == null) {
-            context = new RegArimaModelling();
+        if (modelling == null) {
+            modelling = new RegArimaModelling();
         }
-        ModelDescription desc = build(originalTs, context.getLog());
+        ModelDescription desc = build(originalTs, modelling.getLog());
         if (desc == null) {
             throw new TramoException("Initialization failed");
         }
-        context.setDescription(desc);
-        PreprocessingModel rslt = ami(context);
+        modelling.setDescription(desc);
+        PreprocessingModel rslt = ami(modelling);
 //        if (rslt != null) {
 //            rslt.info_ = context.information;
 //            rslt.addProcessingInformation(context.processingLog);
@@ -208,29 +241,29 @@ public class TramoProcessor implements IPreprocessor {
 
     }
 
-    private PreprocessingModel ami(RegArimaModelling context) {
+    private PreprocessingModel ami(RegArimaModelling modelling) {
 
         // Test the seasonality
-        testSeasonality(context);
+        testSeasonality(modelling);
 
         // Test for loglevel transformation
-        testTransformation(context);
+        testTransformation(modelling);
 
-        regressionModule().test(context);
+        regressionModule().test(modelling);
 
         if (isFullySpecified()) {
-            context.estimate(options.precision);
-            return context.build();
+            modelling.estimate(options.precision);
+            return modelling.build();
         }
 
-        initProcessing(context.getDescription().regarima().getActualObservationsCount());
+        initProcessing(modelling.getDescription().regarima().getActualObservationsCount());
 
         int iter = 0;
         do {
             ++iter;
-        } while (iter < 10 && !iterate(context));
+        } while (iter < 10 && !iterate(modelling));
 
-        return context.build();
+        return modelling.build();
     }
 
     private void initProcessing(int n) {
@@ -248,6 +281,9 @@ public class TramoProcessor implements IPreprocessor {
         refAuto = null;
         refStats = null;
         refAirline = null;
+        if (scontroller != null)
+            scontroller.setReferenceModel(null);
+        controllers.forEach(c->c.setReferenceModel(null));
     }
 
     private boolean reduceVa() {
@@ -260,38 +296,38 @@ public class TramoProcessor implements IPreprocessor {
 
     /**
      *
-     * @param context
+     * @param modelling
      * @return True if the model doesn't need further iteration
      */
-    private boolean iterate(RegArimaModelling context) {
-        if (context.needEstimation()) {
-            context.estimate(options.getIntermediatePrecision());
+    private boolean iterate(RegArimaModelling modelling) {
+        if (modelling.needEstimation()) {
+            modelling.estimate(options.getIntermediatePrecision());
         }
 
-        ModelDescription desc = context.getDescription();
+        ModelDescription desc = modelling.getDescription();
         boolean changed = false;
         SarimaSpecification curspec = desc.getSpecification();
         boolean curmu = desc.isMean();
         if (needDifferencing(desc)) {
-            execDifferencing(context);
+            execDifferencing(modelling);
         }
         if (needAutoModelling(desc)) {
-            execAutoModelling(context);
-            desc = context.getDescription();
+            execAutoModelling(modelling);
+            desc = modelling.getDescription();
             changed = (!desc.getSpecification().equals(curspec))
                     || desc.isEstimatedMean() != curmu;
         }
         if (needOutliers(desc)) {
 
-            if (context.getDescription().removeVariable(var -> var.isOutlier(false))) {
-                context.setEstimation(null);
+            if (modelling.getDescription().removeVariable(var -> var.isOutlier(false))) {
+                modelling.setEstimation(null);
             }
-            ProcessingResult rslt = execOutliers(context);
+            ProcessingResult rslt = execOutliers(modelling);
             changed = changed || rslt == ProcessingResult.Changed;
         }
 //        context.estimate(options.precision);
 
-        if (!estimateModel(context)) {
+        if (!estimateModel(modelling)) {
             ++round;
             ++pass;
             return false;
@@ -300,43 +336,44 @@ public class TramoProcessor implements IPreprocessor {
         if (round == 0) {
             ++round;
             ++pass;
-            refAirline = context.build();
+            refAirline = modelling.build();
             refAuto = refAirline;
             refStats = ModelStatistics.of(refAuto);
             double lb = refAirline.getEstimation().getTests().ljungBox().getPValue();
             return options.acceptAirline && (1 - lb) < options.ljungBoxLimit;
         }
         if (pass <= 3 && !pass3 && isAutoModelling()) {
-            if (!pass2(!changed, context)) {
+            if (!pass2(!changed, modelling)) {
                 return false;
             }
         }
 
-        if (!testRegression(context, spec.getAutoModel().getTsig())) {
+        if (!testRegression(modelling, spec.getAutoModel().getTsig())) {
             pass = 4;
             return false;
         }
+
 //
-//        ModelEstimator estimator = new ModelEstimator();
-//        estimator.setOutliersDetectionModule(outliers);
-//        estimator.setPrecision(finalizer.getEpsilon());
+        ModelEstimator estimator = new ModelEstimator(options.precision, curva, outliersModule());
 //
-//        if (context.automodelling) {
-//            seasonalityController.setEstimator(estimator);
-//            if (seasonalityController.process(context) == ProcessingResult.Changed) {
-//                if (!pass3_) {
-//                    pass3_ = true;
-//                    needAutoModelling_ = true;
-////                        context.description.setOutliers(null);
-//                    needOutliers_ = outliers != null;
-//                    pass_ = 1;
-//                    return false;
-//                }
-//            }
-//        }
-//        control(context, estimator);
+        if (spec.isUsingAutoModel()) {
+            scontroller.setEstimator(estimator);
+            if (scontroller.process(modelling, context) == ProcessingResult.Changed) {
+                if (!pass3) {
+                    pass3 = true;
+                    pass = 1;
+                    return false;
+                }
+            }
+        }
+        for (ModelController controller : controllers){
+            controller.setEstimator(estimator);
+            controller.setReferenceModel(refAuto);
+            controller.process(modelling, context);
+        }
         return true;
     }
+
 
     //
     //    private void control(RegArimaContext context, ModelEstimator estimator) {
@@ -410,8 +447,12 @@ public class TramoProcessor implements IPreprocessor {
         if (!isAutoModelling()) {
             return false;
         }
-        if (pass > 2)
+        if (pass > 2) {
             return false;
+        }
+        if (pass == 1 && pass3) {
+            return false;
+        }
         if (round == 0) {
             return false;
         }
@@ -581,20 +622,20 @@ public class TramoProcessor implements IPreprocessor {
     }
 
     // use the default model, clear outliers
-    private void lastSolution(RegArimaModelling context) {
-        ModelDescription desc = context.getDescription();
+    private void lastSolution(RegArimaModelling modelling) {
+        ModelDescription desc = modelling.getDescription();
         SarimaSpecification nspec = desc.getSpecification();
         nspec.setP(3);
         if (nspec.getBd() > 0) {
             nspec.setBp(0);
         }
         nspec.setQ(1);
-        if (seasonal) {
+        if (context.seasonal) {
             nspec.setBq(1);
         }
         desc.setSpecification(nspec);
         desc.removeVariable(var -> var.isOutlier(false));
-        context.setEstimation(null);
+        modelling.setEstimation(null);
 //        addArmaHistory(context);
         round = 1;
     }
@@ -618,41 +659,41 @@ public class TramoProcessor implements IPreprocessor {
 //    }
 //
 
-    private void testSeasonality(RegArimaModelling context) {
+    private void testSeasonality(RegArimaModelling modelling) {
         if (!isAutoModelling()) {
             return;
         }
 
-        ModelDescription model = context.getDescription();
+        ModelDescription model = modelling.getDescription();
         int ifreq = model.getAnnualFrequency();
         if (ifreq > 1) {
             TramoSeasonalityDetector seas = new TramoSeasonalityDetector();
             SeasonalityDetector.Seasonality s = seas.hasSeasonality(model.getTransformedSeries());
-            ost = s.getAsInt();
-            if (ost < 2) {
+            context.originalSeasonalityTest = s.getAsInt();
+            if (context.originalSeasonalityTest < 2) {
                 SarimaSpecification nspec = new SarimaSpecification(ifreq);
                 nspec.airline(false);
                 model.setSpecification(nspec);
-                context.setEstimation(null);
-                seasonal = false;
+                modelling.setEstimation(null);
+                context.seasonal = false;
             } else {
-                seasonal = true;
+                context.seasonal = true;
             }
         } else {
-            seasonal = false;
+            context.seasonal = false;
         }
     }
 
-    private void testTransformation(RegArimaModelling context) {
+    private void testTransformation(RegArimaModelling modelling) {
         TransformSpec tspec = spec.getTransform();
         EstimateSpec espec = spec.getEstimate();
         if (tspec.getFunction() == TransformationType.Auto) {
             LogLevelModule module = LogLevelModule.builder()
                     .logPreference(Math.log(tspec.getFct()))
                     .estimationPrecision(espec.getTol())
-                    .seasonal(seasonal)
+                    .seasonal(context.seasonal)
                     .build();
-            module.process(context);
+            module.process(modelling);
         }
     }
 

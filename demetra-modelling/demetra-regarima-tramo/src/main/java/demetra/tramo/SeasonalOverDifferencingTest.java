@@ -13,41 +13,46 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package demetra.tramo;
 
+import demetra.regarima.regular.RegArimaModelling;
+import demetra.regarima.regular.SeasonalFTest;
+import demetra.sarima.SarimaModel;
+import demetra.sarima.SarimaSpecification;
+import demetra.timeseries.TsData;
 
 /**
  *
  * @author Jean Palate
  */
-public class SeasonalOverDifferencingTest {
+class SeasonalOverDifferencingTest {
 
-    private static double THRESHOLD = -.7;
+    private static final double THRESHOLD = -.7;
+    private static final double SIGNIF = 0.01;
 
-    public int test(ModellingContext context) {
-        
-        SarimaModel arima = context.estimation.getArima();
-        SarimaSpecification spec = arima.getSpecification();
-        if (spec.getFrequency() == 1)
-            return 0;
-        if (spec.getBP() != 0 || spec.getBD() != 1 || spec.getBQ() != 1 || arima.btheta(1) >= THRESHOLD) {
+    public int test(RegArimaModelling context) {
+
+        SarimaModel arima = context.getDescription().arima();
+        SarimaSpecification spec = arima.specification();
+        if (spec.getPeriod() == 1) {
             return 0;
         }
-        TsData lin = context.current(false).linearizedSeries(false);
+        if (spec.getBp() == 1 || spec.getBd() == 0 || spec.getBq() == 0 || arima.btheta(1) >= THRESHOLD) {
+            return 0;
+        }
+        TsData lin = context.build().linearizedSeries();
         SeasonalityTests tests = SeasonalityTests.seasonalityTest(lin, 1, true, true);
-        FTest ftest = new FTest();
-        ftest.test(context.description);
+        SeasonalFTest ftest = new SeasonalFTest();
+        ftest.test(context.getDescription());
         int score = tests.getScore();
-        boolean fsign = ftest.getFTest().isSignificant();
+        boolean fsign = ftest.getFTest().getPValue() < SIGNIF;
         if (fsign) {
             ++score;
         }
-        if (score >= 2 || fsign || tests.getQs().isSignificant()) {
+        if (score >= 2 || fsign || tests.getQs().getPValue()<SIGNIF) {
             return 1;
-        }
-        else {
+        } else {
             return 2;
         }
     }

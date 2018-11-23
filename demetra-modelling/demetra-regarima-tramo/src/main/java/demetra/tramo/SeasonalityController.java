@@ -6,12 +6,16 @@
 package demetra.tramo;
 
 import demetra.design.Development;
+import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.PreprocessingModel;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
+import demetra.regarima.regular.SeasonalFTest;
 import demetra.sarima.SarimaSpecification;
 import demetra.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;
+import static demetra.tramo.SeasonalityTests.MSHORT;
+import static demetra.tramo.SeasonalityTests.SHORT;
 
 /**
  *
@@ -23,29 +27,29 @@ import demetra.timeseries.TsData;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class SeasonalityController extends ModelController {
-
-    private StatisticalTest ftest_;
+class SeasonalityController extends ModelController {
+    
+    private StatisticalTest ftest;
     private SeasonalityTests stests;
     private ModelStatistics mstats;
-
+    
     public SeasonalityController() {
     }
-
+    
     @Override
-    public ProcessingResult process(RegArimaModelling context) {
+    ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context) {
         ProcessingResult result;
         if (getReferenceModel() == null) {
-            result = computeReferenceModel(context);
+            result = computeReferenceModel(modelling, context);
         } else {
-            result = compareReferenceModels(context);
+            result = compareReferenceModels(modelling);
         }
 
         return result;
     }
-
+    
     private void computeSTests() {
-        TsData lin = getReferenceModel().linearizedSeries(false);
+        TsData lin = getReferenceModel().linearizedSeries();
         SarimaSpecification spec = getReferenceModel().getDescription().getSpecification();
 //        int del = spec.getD() + spec.getBD();
 //        del = Math.max(Math.min(2, del), 1);
@@ -54,13 +58,13 @@ public class SeasonalityController extends ModelController {
         stests.test(lin, del, true);
         mstats = ModelStatistics.of(getReferenceModel());
     }
-
-    private boolean hasSeasonality(RegArimaModelling context) {
-        int  period = context.getDescription().getAnnualFrequency();
+    
+    private boolean hasSeasonality(RegArimaModelling modelling, TramoProcessor.Context context) {
+        int period = modelling.getDescription().getAnnualFrequency();
         if (stests == null) {
             return false;
         }
-        int score = 0, nscore=0;
+        int score = 0, nscore = 0;
         if (mstats.getSeasonalLjungBoxPvalue() < .01) {
             ++score;
             ++nscore;
@@ -76,64 +80,65 @@ public class SeasonalityController extends ModelController {
                 ++score;
             }
         }
-        ftest_ = new FTest();
-        ftest_.test(getReferenceModel().description);
-        boolean fs = ftest_.getFTest().isSignificant();
+        SeasonalFTest f = new SeasonalFTest();
+        f.test(getReferenceModel().getDescription());
+        ftest = f.getFTest();
+        boolean fs = ftest.getPValue() < .01;
         if (fs) {
             ++score;
             ++nscore;
         }
-        context.originalSeasonalityTest=score;
+        context.originalSeasonalityTest = score;
         if (score > 1 || nscore > 0) {
             return true;
         }
-        return fs || mstats.seasLjungBoxPvalue < .01;
-
+        return fs || mstats.getSeasonalLjungBoxPvalue() < .01;
+        
     }
 
     /**
      * This module corresponds to the routine testXLSeas of TRAMO
      *
-     * @param context
+     * @param modelling
      * @return
      */
-    private ProcessingResult computeReferenceModel(RegArimaModelling context) {
-        PreprocessingModel model = context.build();
+    private ProcessingResult computeReferenceModel(RegArimaModelling modelling, TramoProcessor.Context context) {
+        PreprocessingModel model = modelling.build();
         setReferenceModel(model);
         computeSTests();
-        boolean seas = hasSeasonality(context);
+        boolean seas = hasSeasonality(modelling, context);
         SarimaSpecification spec = model.getDescription().getSpecification();
-
+        
         boolean schanged = false;
         if (!seas && spec.hasSeasonalPart()) {
             spec.airline(false);
             spec.setBq(1);
             schanged = true;
-        } else if (!context.hasseas && seas) {
-            context.hasseas = true;
+        } else if (!context.seasonal && seas) {
+            context.seasonal = true;
             return ProcessingResult.Changed;
         }
-        if (!context.hasseas && (mstats.seasLjungBoxPvalue < 0.05 || mstats.ljungBoxPvalue < 0.05)) {
-            context.hasseas = true;
+        if (!context.seasonal && (mstats.getSeasonalLjungBoxPvalue() < 0.05 || mstats.getLjungBoxPvalue() < 0.05)) {
+            context.seasonal = true;
             spec.airline(false);
-            spec.setBQ(1);
+            spec.setBq(1);
             schanged = true;
         }
-
+        
         if (schanged) {
-            ModellingContext ncontext = new ModellingContext();
-            ncontext.description = context.description.clone();
-            ncontext.description.setSpecification(spec);
-
+            RegArimaModelling ncontext = new RegArimaModelling();
+            ModelDescription desc = new ModelDescription(modelling.getDescription());
+            desc.setSpecification(spec);
+            ncontext.setDescription(desc);
             if (estimate(ncontext, false)) {
-                transferInformation(ncontext, context);
-                setReferenceModel(context.current(false));
+                transferInformation(ncontext, modelling);
+                setReferenceModel(modelling.build());
                 return ProcessingResult.Changed;
             }
         }
         return ProcessingResult.Unchanged;
     }
-
+    
     private ProcessingResult compareReferenceModels(RegArimaModelling context) {
         // compare with the previous reference model
         PreprocessingModel refmodel = getReferenceModel();
@@ -149,19 +154,16 @@ public class SeasonalityController extends ModelController {
                     break;
             }
         }
-        ModelComparator cmp = new ModelComparator(pref);
-        PreprocessingModel cur = context.current(false);
+        ModelComparator cmp = ModelComparator.builder()
+                .preference(pref)
+                .build();
+        PreprocessingModel cur = context.build();
         int icmp = cmp.compare(cur, refmodel);
         if (icmp < 0) {
             setReferenceModel(cur);
             return ProcessingResult.Unchanged;
         } else if (icmp > 0) {
-            context.description = refmodel.description.clone();
-            context.estimation = refmodel.estimation;
-            context.information.clear();
-            if (refmodel.info_ != null) {
-                context.information.copy(refmodel.info_);
-            }
+            this.transferInformation(refmodel, context);
             return ProcessingResult.Changed;
         } else {
             return ProcessingResult.Unchanged;

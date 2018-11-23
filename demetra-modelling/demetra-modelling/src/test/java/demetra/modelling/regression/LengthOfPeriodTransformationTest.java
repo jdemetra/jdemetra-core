@@ -6,10 +6,12 @@
 package demetra.modelling.regression;
 
 import demetra.data.DoubleSequence;
-import demetra.data.transformation.DataTransformation.LogJacobian;
+import demetra.data.transformation.LogJacobian;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.simplets.TsDataTransformation;
 import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.simplets.Transformations;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -26,7 +28,7 @@ public class LengthOfPeriodTransformationTest {
     public void testLengthOfPeriod() {
         DoubleSequence data=DoubleSequence.onMapping(300, i->1);
         TsPeriod start=TsPeriod.monthly(1980, 3);
-        LengthOfPeriodTransformation lp=new LengthOfPeriodTransformation(LengthOfPeriodType.LengthOfPeriod);
+        TsDataTransformation lp=Transformations.lengthOfPeriod(LengthOfPeriodType.LengthOfPeriod);
         LogJacobian lj=new LogJacobian(0, data.length());
         TsData s=TsData.of(start, data);
         TsData s1=lp.transform(s, lj);
@@ -39,7 +41,7 @@ public class LengthOfPeriodTransformationTest {
     public void testLengthOfPeriodQ() {
         DoubleSequence data=DoubleSequence.onMapping(300, i->1);
         TsPeriod start=TsPeriod.quarterly(1980, 2);
-        LengthOfPeriodTransformation lp=new LengthOfPeriodTransformation(LengthOfPeriodType.LengthOfPeriod);
+        TsDataTransformation lp=Transformations.lengthOfPeriod(LengthOfPeriodType.LengthOfPeriod);
         LogJacobian lj=new LogJacobian(0, data.length());
         TsData s=TsData.of(start, data);
         TsData s1=lp.transform(s, lj);
@@ -52,7 +54,7 @@ public class LengthOfPeriodTransformationTest {
     public void testLeapYear() {
         DoubleSequence data=DoubleSequence.onMapping(80, i->1);
         TsPeriod start=TsPeriod.quarterly(1980, 3);
-        LengthOfPeriodTransformation lp=new LengthOfPeriodTransformation(LengthOfPeriodType.LeapYear);
+        TsDataTransformation lp=Transformations.lengthOfPeriod(LengthOfPeriodType.LengthOfPeriod);
         LogJacobian lj=new LogJacobian(0, data.length());
         TsData s=TsData.of(start, data);
         TsData s1=lp.transform(s, lj);

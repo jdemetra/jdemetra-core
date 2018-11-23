@@ -14,25 +14,27 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.modelling.regression;
+package demetra.timeseries.simplets;
 
 import demetra.data.DoubleSequence;
-import demetra.data.transformation.DataTransformation.LogJacobian;
+import demetra.data.transformation.LogJacobian;
 import demetra.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.CalendarUtility;
+import static demetra.timeseries.calendars.CalendarUtility.daysCount;
+import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.transformation.TimeSeriesTransformation;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-public class LengthOfPeriodTransformation implements ITsTransformation {
+@Development(status = Development.Status.Release)
+class LengthOfPeriodTransformation implements TsDataTransformation {
 
     private final boolean back;
     private final LengthOfPeriodType type;
@@ -55,7 +57,7 @@ public class LengthOfPeriodTransformation implements ITsTransformation {
      * @return
      */
     @Override
-    public ITsTransformation converse() {
+    public TsDataTransformation converse() {
         return new LengthOfPeriodTransformation(type, !back);
     }
 
@@ -76,6 +78,14 @@ public class LengthOfPeriodTransformation implements ITsTransformation {
         } else {
             return lp(data, ratio, ljacobian);
         }
+    }
+    
+    @Override
+    public double transform(TsPeriod p, double value){
+        // TODO: optimize        
+        TsData s=TsData.of(p, DoubleSequence.of(value));
+        TsData t = transform(s, null);
+        return t.getValue(0);
     }
 
     private TsData length(TsData tsdata, int ratio, LogJacobian lj) {
@@ -105,11 +115,10 @@ public class LengthOfPeriodTransformation implements ITsTransformation {
     }
 
     private TsData lp(TsData tsdata, int freq, LogJacobian lj) {
-        if (!tsdata.getStart().getEpoch().equals(TsPeriod.DEFAULT_EPOCH)) {
+        if (!tsdata.hasDefaultEpoch()) {
             throw new UnsupportedOperationException();
         }
         TsDomain domain = tsdata.getDomain();
-        int n = domain.getLength();
         int period = 0;
         if (freq == 12) {
             period = 1;

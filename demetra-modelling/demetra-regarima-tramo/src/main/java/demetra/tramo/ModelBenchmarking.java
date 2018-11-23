@@ -16,51 +16,58 @@
  */
 package demetra.tramo;
 
+import demetra.design.Development;
+import demetra.regarima.regular.ModelDescription;
+import demetra.regarima.regular.PreprocessingModel;
+import demetra.regarima.regular.ProcessingResult;
+import demetra.regarima.regular.RegArimaModelling;
+import demetra.sarima.SarimaSpecification;
+
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class ModelBenchmarking extends AbstractModelController {
+class ModelBenchmarking extends ModelController {
 
     public ModelBenchmarking() {
     }
 
     @Override
-    public ProcessingResult process(ModellingContext context) {
+    public ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context) {
 
-        PreprocessingModel current = context.tmpModel();
+        PreprocessingModel current = modelling.build();
 
-        SarimaSpecification spec = current.description.getSpecification();
-        if (spec.isAirline(context.hasseas)) {
+        SarimaSpecification spec = current.getDescription().getSpecification();
+        if (spec.isAirline(context.seasonal)) {
             return ProcessingResult.Unchanged;
         }
         ModelVerifier verifier = new ModelVerifier();
-        if (verifier.accept(context)) {
+        if (verifier.accept(modelling)) {
             return ProcessingResult.Unchanged;
         }
 
         // compute the corresponding airline model.
-        ModellingContext scontext = new ModellingContext();
-        scontext.description = current.description.clone();
-        scontext.description.setAirline(context.hasseas);
-        scontext.description.setMean(context.hasseas ? context.description.isMean() : true);
-        scontext.description.setOutliers(null);
+        RegArimaModelling nmodelling = new RegArimaModelling();
+        ModelDescription ndesc=new ModelDescription(current.getDescription()); 
+        ndesc.setAirline(context.seasonal);
+        ndesc.setMean(context.seasonal ? modelling.getDescription().isMean() : true);
+        ndesc.removeVariable(var->var.isOutlier(false));
+        nmodelling.setDescription(ndesc);
 
-        if (!estimate(scontext, true)) {
+        if (!estimate(nmodelling, true)) {
             return ProcessingResult.Failed;
         }
 
 
-        PreprocessingModel smodel = scontext.tmpModel();
-        int cmp = new ModelComparator().compare(current, smodel);
+        PreprocessingModel nmodel = nmodelling.build();
+        ModelComparator mcmp = ModelComparator.builder().build();
+        int cmp = mcmp.compare(current, nmodel);
         if (cmp < 1) {
-//            setReferenceModel(current);
             return ProcessingResult.Unchanged;
         } else {
-//            setReferenceModel(smodel);
-            transferInformation(scontext, context);
+            transferInformation(nmodelling, modelling);
             return ProcessingResult.Changed;
         }
     }

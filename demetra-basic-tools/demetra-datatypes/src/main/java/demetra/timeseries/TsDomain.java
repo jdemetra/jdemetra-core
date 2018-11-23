@@ -16,6 +16,7 @@
  */
 package demetra.timeseries;
 
+import static demetra.timeseries.TsPeriod.DEFAULT_EPOCH;
 import java.time.LocalDateTime;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -132,6 +133,10 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
     public int position(TsPeriod period) {
         startPeriod.checkCompatibility(period);
         return distance(startPeriod.getRebasedId(period));
+    }
+
+    public boolean hasDefaultEpoch() {
+        return startPeriod.hasDefaultEpoch();
     }
 
     public TsDomain move(int count) {

@@ -16,18 +16,11 @@
  */
 package demetra.x12;
 
-import demetra.data.DoubleSequence;
-import demetra.data.transformation.DataTransformation.LogJacobian;
-import demetra.data.LogTransformation;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.TransformationType;
 import demetra.regarima.IRegArimaProcessor;
-import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.RegArimaModel;
 import demetra.regarima.regular.ProcessingResult;
-import demetra.regarima.RegArimaUtility;
-import demetra.sarima.SarimaModel;
 import demetra.regarima.regular.ILogLevelModule;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;

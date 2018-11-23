@@ -16,28 +16,28 @@ import demetra.regarima.regular.RegArimaModelling;
  *
  * @author palatej
  */
-public abstract class ModelController {
+abstract class ModelController {
 
     private IModelEstimator estimator;
     private PreprocessingModel refmodel_;
 
-    public PreprocessingModel getReferenceModel() {
+    PreprocessingModel getReferenceModel() {
         return refmodel_;
     }
 
-    public void setReferenceModel(PreprocessingModel model) {
+    void setReferenceModel(PreprocessingModel model) {
         refmodel_ = model;
     }
 
-    public IModelEstimator getEstimator() {
+    IModelEstimator getEstimator() {
         return estimator;
     }
 
-    public void setEstimator(IModelEstimator estimator) {
+    void setEstimator(IModelEstimator estimator) {
         this.estimator = estimator;
     }
 
-    public abstract ProcessingResult process(RegArimaModelling context);
+    abstract ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context);
 
     /**
      *
@@ -72,6 +72,13 @@ public abstract class ModelController {
     }
 
     protected void transferInformation(RegArimaModelling from, RegArimaModelling to) {
+        to.setDescription(from.getDescription());
+        to.setEstimation(from.getEstimation());
+        //        to.information.clear();
+        //        to.information.copy(from.information);
+    }
+
+    protected void transferInformation(PreprocessingModel from, RegArimaModelling to) {
         to.setDescription(from.getDescription());
         to.setEstimation(from.getEstimation());
         //        to.information.clear();

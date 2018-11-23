@@ -18,6 +18,7 @@ package demetra.data;
 
 import demetra.design.Development;
 import demetra.data.transformation.DataTransformation;
+import demetra.data.transformation.LogJacobian;
 
 /**
  *
@@ -74,14 +75,14 @@ public final class ConstTransformation implements DataTransformation {
     /**
      *
      */
-    public final OperationType op;
+    private final OperationType op;
 
     /**
      *
      */
-    public final double value;
-    
-    private ConstTransformation(OperationType type, double val) {
+    private final double value;
+
+    public ConstTransformation(OperationType type, double val) {
         this.op = type;
         this.value = val;
     }
@@ -135,5 +136,24 @@ public final class ConstTransformation implements DataTransformation {
         }
         return DoubleSequence.ofInternal(x);
     }
-    
+
+    @Override
+    public double transform(double x) {
+        switch (op) {
+            case Diff:
+                return x - value;
+            case Product:
+                return x * value;
+            case Sum:
+                return x + value;
+            case Ratio:
+                if (value == 0) {
+                    return Double.NaN;
+                } else {
+                    return x / value;
+                }
+            default:
+                return x;
+        }
+    }
 }

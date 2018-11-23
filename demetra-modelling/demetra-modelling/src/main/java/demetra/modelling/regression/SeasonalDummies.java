@@ -25,49 +25,55 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * The periodic contrasts are defined as follows:
+ * The seasonal dummies are in fact seasonal contrasts. The contrasting period
+ * is by design the last period of the year. The regression variables generated
+ * that way are linearly independent.
  *
- * The contrasting period is by design the last period of the year.
- * The regression variables generated that way are linearly independent.
- *
- * @author Jean Palate
+ * @author Gianluca Caporello
  */
-public class PeriodicDummies implements ITsVariable<TsDomain> {
+public class SeasonalDummies implements ITsVariable<TsDomain> {
 
     private final int period;
     private final LocalDateTime ref;
     private final String name;
 
-    public PeriodicDummies(final int period) {
+    public SeasonalDummies(final int period) {
         this.period = period;
         this.ref = TsPeriod.DEFAULT_EPOCH;
         this.name = "seas#" + (period);
     }
 
-    public PeriodicDummies(final int period, final LocalDateTime ref) {
+    public SeasonalDummies(final int period, final LocalDateTime ref) {
         this.period = period;
         this.ref = ref;
         this.name = "seas#" + (period);
     }
 
-    public PeriodicDummies(final int period, final LocalDateTime ref, final String name) {
+    public SeasonalDummies(final int period, final LocalDateTime ref, final String name) {
         this.period = period;
         this.ref = ref;
         this.name = name;
     }
 
     public Matrix matrix(int length, int start) {
-        Matrix m = Matrix.make(length, period);
+        Matrix M = Matrix.make(length, period-1);
         int pstart = start % period;
-        for (int i = 0; i < period; i++) {
-            DataBlock x = m.column(i);
+        int lstart = period - pstart - 1;
+        if (lstart < 0) {
+            lstart += period;
+        }
+        for (int i = 0; i < period - 1; i++) {
+            DataBlock x = M.column(i);
             int jstart = i - pstart;
             if (jstart < 0) {
                 jstart += period;
             }
-            x.extract(jstart, -1, period).set(1);
+            DataBlock m = x.extract(jstart, -1, period);
+            m.set(1);
+            DataBlock q = x.extract(lstart, -1, period);
+            q.set(-1);
         }
-        return m;
+        return M;
     }
 
     @Override
@@ -75,7 +81,11 @@ public class PeriodicDummies implements ITsVariable<TsDomain> {
         TsPeriod refPeriod = domain.getStartPeriod().withDate(ref);
         long del = domain.getStartPeriod().getId() - refPeriod.getId();
         int pstart = (int) del % period;
-        for (int i = 0; i < period; i++) {
+        int lstart = period - pstart - 1;
+        if (lstart < 0) {
+            lstart += period;
+        }
+        for (int i = 0; i < period - 1; i++) {
             DataBlock x = data.get(i);
             int jstart = i - pstart;
             if (jstart < 0) {
@@ -83,6 +93,8 @@ public class PeriodicDummies implements ITsVariable<TsDomain> {
             }
             DataBlock m = x.extract(jstart, -1, period);
             m.set(1);
+            DataBlock q = x.extract(lstart, -1, period);
+            q.set(-1);
         }
     }
 
@@ -93,7 +105,7 @@ public class PeriodicDummies implements ITsVariable<TsDomain> {
     @Override
     public String getDescription(TsDomain context) {
         StringBuilder builder = new StringBuilder();
-        builder.append("Periodic dummies");
+        builder.append("Seasonal dummies");
         return builder.toString();
     }
 
@@ -103,7 +115,7 @@ public class PeriodicDummies implements ITsVariable<TsDomain> {
      */
     @Override
     public int getDim() {
-        return period;
+        return period-1;
     }
 
     /**
@@ -114,7 +126,7 @@ public class PeriodicDummies implements ITsVariable<TsDomain> {
     @Override
     public String getItemDescription(int idx, TsDomain context) {
         StringBuilder builder = new StringBuilder();
-        builder.append("Period dummy [").append(idx + 1).append(']');
+        builder.append("Seasonal dummy [").append(idx + 1).append(']');
         return builder.toString();
     }
 
@@ -132,8 +144,8 @@ public class PeriodicDummies implements ITsVariable<TsDomain> {
     public boolean equals(Object other) {
         if (this == other)
             return true;
-        if (other instanceof PeriodicDummies) {
-            PeriodicDummies x = (PeriodicDummies) other;
+        if (other instanceof SeasonalDummies) {
+            SeasonalDummies x = (SeasonalDummies) other;
             return x.period == period && x.ref.equals(ref);
         } else {
             return false;
@@ -147,4 +159,6 @@ public class PeriodicDummies implements ITsVariable<TsDomain> {
         hash = 47 * hash + Objects.hashCode(this.ref);
         return hash;
     }
+
+
 }

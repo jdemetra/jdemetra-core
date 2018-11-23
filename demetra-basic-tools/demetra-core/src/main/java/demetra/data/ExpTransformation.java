@@ -18,6 +18,7 @@ package demetra.data;
 
 import demetra.design.Development;
 import demetra.data.transformation.DataTransformation;
+import demetra.data.transformation.LogJacobian;
 
 /**
  *
@@ -26,6 +27,7 @@ import demetra.data.transformation.DataTransformation;
 @Development(status = Development.Status.Alpha)
 public class ExpTransformation implements DataTransformation {
 
+    public static final ExpTransformation EXEMPLAR=new ExpTransformation();
     /**
      *
      * @param data
@@ -41,7 +43,7 @@ public class ExpTransformation implements DataTransformation {
      */
     @Override
     public DataTransformation converse() {
-        return new LogTransformation();
+        return LogTransformation.EXEMPLAR;
     }
 
     /**
@@ -65,5 +67,10 @@ public class ExpTransformation implements DataTransformation {
             ljacobian.value += s;
         }
         return DoubleSequence.ofInternal(x);
+    }
+    
+    @Override
+    public double transform(double x){
+        return Math.exp(x);
     }
 }
