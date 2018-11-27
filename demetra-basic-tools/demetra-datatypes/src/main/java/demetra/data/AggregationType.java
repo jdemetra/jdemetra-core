@@ -16,40 +16,42 @@
  */
 package demetra.data;
 
+import demetra.design.Development;
 import java.util.EnumSet;
 import java.util.function.IntSupplier;
 
 /**
- *
+ * Describes the way a set of ordered observations are aggregated
  * @author Jean Palate
  */
+@Development(status = Development.Status.Release)
 public enum AggregationType implements IntSupplier {
     /**
-     *
+     * No transformation
      */
     None(0),
     /**
-     *
+     * Sum
      */
     Sum(1),
     /**
-     *
+     * Average
      */
     Average(2),
     /**
-     *
+     * First observation
      */
     First(3),
     /**
-     *
+     * Last observation
      */
     Last(4),
     /**
-     *
+     * Minimum
      */
     Min(5),
     /**
-     *
+     * Maximum
      */
     Max(6);
 

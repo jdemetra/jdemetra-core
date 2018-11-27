@@ -62,10 +62,21 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
 
     /**
      * Year of the start of this period
-     * @return 
+     *
+     * @return
      */
     public int year() {
         return start().getYear();
+    }
+
+    /**
+     * 0-based position of this period in the year
+     *
+     * @return
+     */
+    public int annualPosition() {
+        TsPeriod p = withUnit(TsUnit.YEAR);
+        return TsDomain.splitOf(p, unit, true).indexOf(this);
     }
 
     public boolean isAfter(TsPeriod period) {
@@ -154,6 +165,10 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
 
     public LocalDateTime dateAt(long id) {
         return dateAt(epoch, unit, id);
+    }
+
+    public boolean hasDefaultEpoch() {
+        return epoch.equals(DEFAULT_EPOCH);
     }
 
     private boolean hasSameEpoch(TsPeriod period) {

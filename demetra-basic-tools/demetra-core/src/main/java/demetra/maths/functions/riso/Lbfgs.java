@@ -463,8 +463,6 @@ public class Lbfgs {
             }
 
             if (gtol <= 0.0001) {
-                System.err
-                        .println("LBFGS.lbfgs: gtol is less than or equal to 0.0001. It has been reset to 0.9.");
                 gtol = 0.9;
             }
 
@@ -611,11 +609,12 @@ public class Lbfgs {
 
             if (info[0] != 1) {
                 iflag[0] = -1;
-                throw new ExceptionWithIflag(
-                        iflag[0],
-                        "Line search failed. See documentation of routine mcsrch. Error return of line search: info = "
-                        + info[0]
-                        + " Possible causes: function or gradient are incorrect, or incorrect tolerances.");
+                return;
+//                throw new ExceptionWithIflag(
+//                        iflag[0],
+//                        "Line search failed. See documentation of routine mcsrch. Error return of line search: info = "
+//                        + info[0]
+//                        + " Possible causes: function or gradient are incorrect, or incorrect tolerances.");
             }
 
             nfun = nfun + nfev[0];

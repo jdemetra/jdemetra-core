@@ -16,11 +16,11 @@
  */
 package demetra.ar.internal;
 
-import demetra.ar.IAutoRegressiveEstimation;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSequence;
+import demetra.ar.AutoRegressiveEstimation;
 
 /**
  *
@@ -46,7 +46,7 @@ public class LevinsonAlgorithmTest {
 
     @Test
     public void testSomeMethod() {
-        IAutoRegressiveEstimation ar = new LevinsonAlgorithm();
+        AutoRegressiveEstimation ar = new LevinsonAlgorithm();
         ar.estimate(X, 30);
 //        System.out.println(ar.coefficients());
 //        System.out.println(ar.residuals());

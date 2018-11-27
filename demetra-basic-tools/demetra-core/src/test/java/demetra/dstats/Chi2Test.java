@@ -5,13 +5,13 @@
  */
 package demetra.dstats;
 
-import demetra.random.IRandomNumberGenerator;
 import demetra.random.SystemRNG;
 import java.util.Random;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import demetra.random.RandomNumberGenerator;
 
 /**
  *
@@ -87,11 +87,11 @@ public class Chi2Test {
             assertThat(i).isCloseTo(z, Assertions.within(i * TOLERANCE));
         }
 
-        assertThatThrownBy(() -> c.getProbabilityInverse(IDistribution.EPS_P - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> c.getProbabilityInverse(Distribution.EPS_P - 1, ProbabilityType.Lower))
                 .as("p < EPS_P")
                 .isInstanceOf(DStatException.class);
 
-        assertThatThrownBy(() -> c.getProbabilityInverse((1 - IDistribution.EPS_P) - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> c.getProbabilityInverse((1 - Distribution.EPS_P) - 1, ProbabilityType.Lower))
                 .as("1 - p < EPS_P")
                 .isInstanceOf(DStatException.class);
     }
@@ -105,11 +105,11 @@ public class Chi2Test {
             assertThat(i).isCloseTo(z, Assertions.within(i * TOLERANCE));
         }
 
-        assertThatThrownBy(() -> c.getProbabilityInverse(IDistribution.EPS_P - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> c.getProbabilityInverse(Distribution.EPS_P - 1, ProbabilityType.Lower))
                 .as("p < EPS_P")
                 .isInstanceOf(DStatException.class);
 
-        assertThatThrownBy(() -> c.getProbabilityInverse((1 - IDistribution.EPS_P) - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> c.getProbabilityInverse((1 - Distribution.EPS_P) - 1, ProbabilityType.Lower))
                 .as("1 - p < EPS_P")
                 .isInstanceOf(DStatException.class);
     }
@@ -123,11 +123,11 @@ public class Chi2Test {
             assertThat(i).isCloseTo(z, Assertions.within(i * TOLERANCE));
         }
 
-        assertThatThrownBy(() -> c.getProbabilityInverse(IDistribution.EPS_P - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> c.getProbabilityInverse(Distribution.EPS_P - 1, ProbabilityType.Lower))
                 .as("p < EPS_P")
                 .isInstanceOf(DStatException.class);
 
-        assertThatThrownBy(() -> c.getProbabilityInverse((1 - IDistribution.EPS_P) - 1, ProbabilityType.Lower))
+        assertThatThrownBy(() -> c.getProbabilityInverse((1 - Distribution.EPS_P) - 1, ProbabilityType.Lower))
                 .as("1 - p < EPS_P")
                 .isInstanceOf(DStatException.class);
     }
@@ -138,7 +138,7 @@ public class Chi2Test {
         int iterations = 10000;
         double sum = 0;
         double avg;
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
 
         for (int i = 0; i < iterations; i++) {
             sum += c.random(rng);
@@ -153,7 +153,7 @@ public class Chi2Test {
         int iterations = 10000;
         double sum = 0;
         double avg;
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
 
         for (int i = 0; i < iterations; i++) {
             sum += c.random(rng);
@@ -168,7 +168,7 @@ public class Chi2Test {
         int iterations = 10000;
         double sum = 0;
         double avg;
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
 
         for (int i = 0; i < iterations; i++) {
             sum += c.random(rng);
@@ -181,7 +181,7 @@ public class Chi2Test {
     public void testRandomVarianceChi2_4() {
         int iterations = 10000;
         Chi2 c = new Chi2(4);
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
         double[] values = new double[iterations];
         double sum = 0, avg;
 
@@ -203,7 +203,7 @@ public class Chi2Test {
     public void testRandomVarianceChi2_8() {
         int iterations = 10000;
         Chi2 c = new Chi2(8);
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
         double[] values = new double[iterations];
         double sum = 0, avg;
 
@@ -225,7 +225,7 @@ public class Chi2Test {
     public void testRandomVarianceChi2_20() {
         int iterations = 10000;
         Chi2 c = new Chi2(20);
-        IRandomNumberGenerator rng = getRandomNumberGenerator();
+        RandomNumberGenerator rng = getRandomNumberGenerator();
         double[] values = new double[iterations];
         double sum = 0, avg;
 
@@ -243,7 +243,7 @@ public class Chi2Test {
         assertThat(c.getVariance()).isCloseTo(variance, Assertions.within(c.getVariance() * TOLERANCE));
     }
 
-    private IRandomNumberGenerator getRandomNumberGenerator() {
+    private RandomNumberGenerator getRandomNumberGenerator() {
         return new SystemRNG(0);
     }
 }

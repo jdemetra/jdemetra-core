@@ -21,7 +21,7 @@ import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
 import demetra.maths.matrices.Matrix;
-import demetra.stats.StatisticalTestSummary;
+import demetra.stats.TestResult;
 import demetra.stats.tests.StatisticalTest;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
@@ -36,6 +36,10 @@ import java.util.Collections;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
+import static demetra.timeseries.simplets.TsDataToolkit.delta;
+import static demetra.timeseries.simplets.TsDataToolkit.delta;
+import static demetra.timeseries.simplets.TsDataToolkit.delta;
+import static demetra.timeseries.simplets.TsDataToolkit.delta;
 
 /**
  *
@@ -45,7 +49,7 @@ import static demetra.timeseries.simplets.TsDataToolkit.delta;
 public class TradingDaysTests {
 
 
-    public StatisticalTestSummary ftest(TsData s, boolean ar, int ny) {
+    public TestResult ftest(TsData s, boolean ar, int ny) {
         int freq = s.getTsUnit().ratioOf(TsUnit.YEAR);
 
         if (ar) {
@@ -63,7 +67,7 @@ public class TradingDaysTests {
 
     }
 
-    private StatisticalTestSummary process(TsData s) {
+    private TestResult process(TsData s) {
         try {
             DataBlock y=DataBlock.of(s.getValues());
             y.sub(y.average());
@@ -80,7 +84,7 @@ public class TradingDaysTests {
         }
     }
 
-    private StatisticalTestSummary processAr(TsData s) {
+    private TestResult processAr(TsData s) {
         try {
             DataBlock y=DataBlock.of(s.getValues());
             TsDomain domain = s.getDomain();

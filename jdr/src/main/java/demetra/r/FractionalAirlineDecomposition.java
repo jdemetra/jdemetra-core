@@ -19,7 +19,7 @@ package demetra.r;
 import demetra.arima.ArimaModel;
 import demetra.arima.ArimaType;
 import demetra.arima.UcarimaType;
-import demetra.arima.mapping.UcarimaInfo;
+import demetra.arima.UcarimaDescriptor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlock;
@@ -28,13 +28,11 @@ import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.likelihood.mapping.LikelihoodInfo;
-import demetra.maths.functions.IParametricMapping;
+import demetra.likelihood.LikelihoodDescriptor;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
-import demetra.processing.IProcResults;
 import static demetra.r.AirlineDecomposition.ucm;
 import demetra.regarima.GlsArimaProcessor;
 import demetra.regarima.IArimaMapping;
@@ -45,6 +43,7 @@ import demetra.ucarima.UcarimaModel;
 import demetra.ucarima.ssf.SsfUcarima;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import demetra.processing.ProcResults;
 
 /**
  *
@@ -55,7 +54,7 @@ public class FractionalAirlineDecomposition {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements IProcResults {
+    public static class Results implements ProcResults {
 
         double[] y, t, s, i, sa;
         ArimaType arima;
@@ -104,9 +103,9 @@ public class FractionalAirlineDecomposition {
                 }
                 return y;
             });
-            MAPPING.delegate(UCARIMA, UcarimaInfo.getMapping(), source -> source.getUcarima());
+            MAPPING.delegate(UCARIMA, UcarimaDescriptor.getMapping(), source -> source.getUcarima());
             MAPPING.set(UCM, UcarimaType.class, source -> source.getUcarima());
-            MAPPING.delegate(LL, LikelihoodInfo.getMapping(), r -> r.statistics);
+            MAPPING.delegate(LL, LikelihoodDescriptor.getMapping(), r -> r.statistics);
             //MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters());
             //MAPPING.set(SCORE, double[].class, source -> source.getScore());
@@ -114,7 +113,12 @@ public class FractionalAirlineDecomposition {
     }
 
     public Results process(double[] s, double period, boolean adjust) {
-        PeriodicMapping mapping = new PeriodicMapping(period, adjust, false);
+        int iperiod=(int)period;
+        if (period-iperiod < 1e-9){
+            period=iperiod;
+            adjust=false;
+        }
+        PeriodicAirlineMapping mapping = new PeriodicAirlineMapping(period, adjust, false);
         
         GlsArimaProcessor.Builder<ArimaModel> builder=GlsArimaProcessor.builder(ArimaModel.class);
         builder.mapping(mapping)
@@ -161,14 +165,14 @@ public class FractionalAirlineDecomposition {
 
 }
 
-class PeriodicMapping implements IArimaMapping<ArimaModel> {
+class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
 
     private final double f0, f1;
     private final int p0;
     private final boolean adjust;
     private final boolean stationary;
 
-    private PeriodicMapping(double f0, double f1, int p0, boolean adjust, boolean stationary) {
+    private PeriodicAirlineMapping(double f0, double f1, int p0, boolean adjust, boolean stationary) {
         this.f0 = f0;
         this.f1 = f1;
         this.p0 = p0;
@@ -176,7 +180,11 @@ class PeriodicMapping implements IArimaMapping<ArimaModel> {
         this.stationary = stationary;
     }
 
-    public PeriodicMapping(double period, boolean adjust, boolean stationary) {
+    public PeriodicAirlineMapping(double period) {
+        this(period, true, false);
+    }
+
+    public PeriodicAirlineMapping(double period, boolean adjust, boolean stationary) {
         this.adjust = adjust;
         this.stationary = stationary;
         if (adjust) {
@@ -196,10 +204,10 @@ class PeriodicMapping implements IArimaMapping<ArimaModel> {
         double[] dma = new double[adjust ? p0 + 2 : p0 + 1];
         dma[0] = 1;
         if (adjust) {
-            double[] d = new double[p0 + 2];
-            d[0] = 1;
-            d[p0] = -f0;
-            d[p0 + 1] = -f1;
+//            double[] d = new double[p0 + 2];
+//            d[0] = 1;
+//            d[p0] = -f0;
+//            d[p0 + 1] = -f1;
             dma[p0] = -f0 * bth;
             dma[p0 + 1] = -f1 * bth;
             BackFilter fma = BackFilter.ofInternal(ma).times(BackFilter.ofInternal(dma));
@@ -225,7 +233,6 @@ class PeriodicMapping implements IArimaMapping<ArimaModel> {
             } else {
                 return new ArimaModel(BackFilter.ONE, BackFilter.D1.times(BackFilter.ofInternal(d)), fma, 1);
             }
-
         }
     }
 
@@ -295,6 +302,6 @@ class PeriodicMapping implements IArimaMapping<ArimaModel> {
 
     @Override
     public IArimaMapping<ArimaModel> stationaryMapping() {
-        return stationary ? this : new PeriodicMapping(f0, f1, p0, adjust, true);
+        return stationary ? this : new PeriodicAirlineMapping(f0, f1, p0, adjust, true);
     }
 }

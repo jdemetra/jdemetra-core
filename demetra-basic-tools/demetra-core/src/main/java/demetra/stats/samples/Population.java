@@ -16,6 +16,7 @@ public class Population {
 
     public static final int UNKNOWN_SIZE = -1;
     public static final Population UNKNOWN = new Population(UNKNOWN_SIZE, Double.NaN, Double.NaN, false);
+    public static final Population RESIDUALS = new Population(UNKNOWN_SIZE, 0, Double.NaN, true);
 
     private final int size;
     private final double mean, variance;

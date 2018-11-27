@@ -25,6 +25,7 @@ import demetra.maths.functions.IFunctionMinimizer;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.matrices.Matrix;
 import demetra.data.DoubleSequence;
+import demetra.maths.functions.ParamValidation;
 
 
 /**
@@ -33,7 +34,7 @@ import demetra.data.DoubleSequence;
  */
 public class LbfgsMinimizer implements IFunctionMinimizer {
 
-    private static final int MAX_FAILED = 100;
+    private static final int MAX_FAILED = 20;
 
     private double xtol = 1e-9, gtol = 1e-5;
 
@@ -176,7 +177,8 @@ public class LbfgsMinimizer implements IFunctionMinimizer {
                 if (iflag[0] != 1) {
                     return false;
                 }
-                if (!fn.getDomain().checkBoundaries(rx)) {
+                ParamValidation validation = fn.getDomain().validate(rx);
+                if (validation==ParamValidation.Invalid) {
                     failed = true;
                 } else {
                     IFunctionPoint efn = fn.evaluate(rx);
@@ -212,8 +214,7 @@ public class LbfgsMinimizer implements IFunctionMinimizer {
      * @param value
      */
     @Override
-    public void setFunctionPrecision(double value
-    ) {
+    public void setFunctionPrecision(double value) {
         feps = value;
     }
 

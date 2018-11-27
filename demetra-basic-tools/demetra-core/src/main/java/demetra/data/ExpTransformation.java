@@ -17,14 +17,17 @@
 package demetra.data;
 
 import demetra.design.Development;
+import demetra.data.transformation.DataTransformation;
+import demetra.data.transformation.LogJacobian;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class ExpTransformation implements IDataTransformation {
+public class ExpTransformation implements DataTransformation {
 
+    public static final ExpTransformation EXEMPLAR=new ExpTransformation();
     /**
      *
      * @param data
@@ -39,8 +42,8 @@ public class ExpTransformation implements IDataTransformation {
      * @return
      */
     @Override
-    public IDataTransformation converse() {
-        return new LogTransformation();
+    public DataTransformation converse() {
+        return LogTransformation.EXEMPLAR;
     }
 
     /**
@@ -64,5 +67,10 @@ public class ExpTransformation implements IDataTransformation {
             ljacobian.value += s;
         }
         return DoubleSequence.ofInternal(x);
+    }
+    
+    @Override
+    public double transform(double x){
+        return Math.exp(x);
     }
 }

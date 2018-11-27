@@ -75,7 +75,11 @@ public final class Likelihood implements ILikelihood {
         }
 
         public Builder residuals(DoubleSequence residuals) {
-            this.ssqerr = Doubles.ssq(residuals);
+            if (residuals == null)
+                return this;
+            if (ssqerr == 0) {
+                this.ssqerr = Doubles.ssqWithMissing(residuals);
+            }
             this.res = residuals.toArray();
             return this;
         }
@@ -188,9 +192,9 @@ public final class Likelihood implements ILikelihood {
                 nres[i] = res[i] / factor;
             }
         }
-        double nldet=ldet;
-        if (! scalingFactor){
-            nldet+=n*Math.log(factor);
+        double nldet = ldet;
+        if (!scalingFactor) {
+            nldet += n * Math.log(factor);
         }
         return new Likelihood(n, nssqerr, nldet, nres, scalingFactor);
     }

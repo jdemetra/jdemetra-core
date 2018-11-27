@@ -5,6 +5,7 @@
  */
 package demetra.arima;
 
+import demetra.design.Development;
 import demetra.maths.PolynomialType;
 
 /**
@@ -13,6 +14,7 @@ import demetra.maths.PolynomialType;
  */
 @lombok.Builder(toBuilder = true)
 @lombok.Value
+@Development(status = Development.Status.Release)
 public class ArimaType {
 
     @lombok.Builder.Default

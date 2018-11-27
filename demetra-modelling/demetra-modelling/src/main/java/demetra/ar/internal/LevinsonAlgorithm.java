@@ -16,11 +16,11 @@
  */
 package demetra.ar.internal;
 
-import demetra.ar.IAutoRegressiveEstimation;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Fast;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.data.DoubleSequence;
+import demetra.ar.AutoRegressiveEstimation;
 
 /**
  * This class implements the Durbin's algorithm, which fits recursively
@@ -28,9 +28,9 @@ import demetra.data.DoubleSequence;
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = IAutoRegressiveEstimation.class)
-@AlgorithmImplementation(algorithm=IAutoRegressiveEstimation.class, feature=Fast)
-public class LevinsonAlgorithm implements IAutoRegressiveEstimation {
+@ServiceProvider(service = AutoRegressiveEstimation.class)
+@AlgorithmImplementation(algorithm=AutoRegressiveEstimation.class, feature=Fast)
+public class LevinsonAlgorithm implements AutoRegressiveEstimation {
 
     private static final double SMALL = 1e-9;
 

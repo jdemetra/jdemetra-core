@@ -18,10 +18,12 @@ package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
+import demetra.maths.matrices.Matrix;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import demetra.timeseries.TimeSeriesDomain;
+import java.util.Collections;
 
 /**
  * Basic interface for regression variable. The variable may be a single
@@ -64,6 +66,17 @@ public interface ITsVariable<D extends TimeSeriesDomain<?>> {
 
     public static String validName(String name) {
         return name.replace('.', '@');
+    }
+    
+    default List<DataBlock> createBuffer(int length){
+        int n=getDim();
+        if (n == 1){
+            DataBlock q = DataBlock.make(length);
+            return Collections.singletonList(q);
+        }else{
+            Matrix m=Matrix.make(length, n);
+            return m.columnList();
+        }
     }
 
     /**

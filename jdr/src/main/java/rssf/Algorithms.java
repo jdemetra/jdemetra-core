@@ -7,10 +7,11 @@ package rssf;
 
 import demetra.data.DoubleSequence;
 import demetra.maths.matrices.Matrix;
+import demetra.msts.CompositeModel;
 import demetra.msts.MstsMonitor;
 import demetra.ssf.StateStorage;
 import demetra.ssf.dk.DefaultDiffuseFilteringResults;
-import demetra.ssf.dk.DkLikelihood;
+import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.sqrt.DefaultDiffuseSquareRootFilteringResults;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
@@ -41,7 +42,7 @@ public class Algorithms {
     public double diffuseLikelihood(ISsf model, double[] data) {
         try {
             SsfData s = new SsfData(data);
-            DkLikelihood dll = DkToolkit.likelihood(model, s);
+            DiffuseLikelihood dll = DkToolkit.likelihood(model, s);
             return dll.logLikelihood();
         } catch (Exception err) {
             return Double.NaN;
@@ -56,7 +57,7 @@ public class Algorithms {
     public double diffuseLikelihood(IMultivariateSsf model, Matrix data) {
         try {
             SsfMatrix s = new SsfMatrix(data);
-            DkLikelihood dll = DkToolkit.likelihood(model, s);
+            DiffuseLikelihood dll = DkToolkit.likelihood(model, s);
             return dll.logLikelihood();
         } catch (Exception err) {
             return Double.NaN;
@@ -70,7 +71,7 @@ public class Algorithms {
     
     public double diffuseLikelihood(CompositeModel model, Matrix data, double[] parameters){
         MultivariateCompositeSsf mssf = model.getMapping().map(DoubleSequence.of(parameters));
-        DkLikelihood likelihood = DkToolkit.likelihood(mssf, new SsfMatrix(data));
+        DiffuseLikelihood likelihood = DkToolkit.likelihood(mssf, new SsfMatrix(data));
         return likelihood.logLikelihood();
     }
     

@@ -35,6 +35,7 @@ import static demetra.timeseries.simplets.TsDataToolkit.fitToDomain;
 import demetra.design.Demo;
 import org.junit.Ignore;
 import static demetra.timeseries.simplets.TsDataToolkit.*;
+import static demetra.timeseries.simplets.TsDataToolkit.delta;
 
 /**
  *

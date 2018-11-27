@@ -17,7 +17,6 @@
 
 package demetra.regarima.regular;
 
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.information.InformationSet;
 import demetra.likelihood.ConcentratedLikelihood;

@@ -21,7 +21,7 @@ import demetra.design.Development;
 /**
  * @author Jeremy Demortier, Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 @lombok.Data
 public final class SarmaSpecification implements Cloneable {
 

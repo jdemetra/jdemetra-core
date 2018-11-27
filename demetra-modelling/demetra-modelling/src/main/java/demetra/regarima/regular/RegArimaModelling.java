@@ -32,7 +32,6 @@ public class RegArimaModelling {
 
     private ModelDescription description;
     private ModelEstimation estimation;
-    private boolean seasonal;
     private final InformationSet log = new InformationSet();
 
     public void estimate(IRegArimaProcessor<SarimaModel> processor) {
@@ -48,14 +47,20 @@ public class RegArimaModelling {
 
         estimation = description.estimate(processor);
     }
-    
-    public PreprocessingModel build(){
+
+    public PreprocessingModel build() {
         return new PreprocessingModel(description, estimation);
     }
-    
-    public boolean needEstimation(){
+
+    public boolean needEstimation() {
         return estimation == null;
     }
+    
+    public void setDescription(ModelDescription desc){
+        this.description=desc;
+        this.estimation=null;
+    }
+    
 //    public ModellingContext() {
 //        processingLog = new ArrayList<>();
 //    }
@@ -93,5 +98,4 @@ public class RegArimaModelling {
 //    public boolean outliers = false;
 //    public boolean hasseas;
 //    public int originalSeasonalityTest;
-
 }

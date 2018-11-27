@@ -266,7 +266,7 @@ public class InternalDoubleSeq {
 
         @Override
         public String toString() {
-            return DoubleSequence.toString(this);
+            return DoubleSequence.format(this);
         }
 
         private final class Cell implements DoubleReader {
@@ -276,6 +276,11 @@ public class InternalDoubleSeq {
             @Override
             public double next() {
                 return values[pos++];
+            }
+
+            @Override
+            public void skip(int n) {
+                pos += n;
             }
 
             @Override
@@ -320,7 +325,7 @@ public class InternalDoubleSeq {
 
         @Override
         public String toString() {
-            return DoubleSequence.toString(this);
+            return DoubleSequence.format(this);
         }
 
         private final class Cell implements DoubleReader {
@@ -330,6 +335,11 @@ public class InternalDoubleSeq {
             @Override
             public double next() {
                 return data[pos++];
+            }
+
+            @Override
+            public void skip(int n) {
+                pos += n;
             }
 
             @Override
@@ -367,7 +377,7 @@ public class InternalDoubleSeq {
 
         @Override
         public String toString() {
-            return DoubleSequence.toString(this);
+            return DoubleSequence.format(this);
         }
 
         private final class Cell implements DoubleReader {
@@ -377,6 +387,11 @@ public class InternalDoubleSeq {
             @Override
             public double next() {
                 return fn.applyAsDouble(pos++);
+            }
+
+            @Override
+            public void skip(int n) {
+                pos += n;
             }
 
             @Override
@@ -423,7 +438,7 @@ public class InternalDoubleSeq {
 
         @Override
         public String toString() {
-            return DoubleSequence.toString(this);
+            return DoubleSequence.format(this);
         }
 
         private final class Cell implements DoubleReader {
@@ -435,6 +450,11 @@ public class InternalDoubleSeq {
                 double val = data[pos];
                 pos += inc;
                 return val;
+            }
+
+            @Override
+            public void skip(int n) {
+                pos += n * inc;
             }
 
             @Override

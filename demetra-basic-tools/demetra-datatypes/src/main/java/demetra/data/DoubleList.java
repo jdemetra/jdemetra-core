@@ -16,6 +16,7 @@
  */
 package demetra.data;
 
+import demetra.design.Development;
 import demetra.design.PrimitiveReplacementOf;
 import demetra.util.IntList;
 import internal.data.InternalDoubleSeq;
@@ -30,6 +31,7 @@ import java.util.stream.DoubleStream;
  *
  * @author Philippe Charles
  */
+@Development(status = Development.Status.Release)
 @PrimitiveReplacementOf(generic = List.class, primitive = double.class)
 public final class DoubleList implements DoubleSequence {
 
@@ -112,7 +114,7 @@ public final class DoubleList implements DoubleSequence {
 
     @Override
     public String toString() {
-        return DoubleSequence.toString(this);
+        return DoubleSequence.format(this);
     }
 
     /**
@@ -553,6 +555,11 @@ public final class DoubleList implements DoubleSequence {
         @Override
         public double next() {
             return values[pos++];
+        }
+
+        @Override
+        public void skip(int n) {
+            pos += n;
         }
 
         @Override

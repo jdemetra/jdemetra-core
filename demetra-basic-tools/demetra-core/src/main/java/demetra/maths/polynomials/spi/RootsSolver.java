@@ -16,12 +16,10 @@
  */
 package demetra.maths.polynomials.spi;
 
+import demetra.design.Algorithm;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.design.Development;
-import demetra.design.PrototypePattern;
-import demetra.design.ServiceDefinition;
-import demetra.design.ThreadSafe;
 import demetra.maths.Complex;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.internal.RobustMullerNewtonSolver;
@@ -32,8 +30,7 @@ import demetra.maths.polynomials.internal.MullerNewtonSolver;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-@ThreadSafe
-@ServiceDefinition(isSingleton = true)
+@Algorithm
 public interface RootsSolver {
 
     /**

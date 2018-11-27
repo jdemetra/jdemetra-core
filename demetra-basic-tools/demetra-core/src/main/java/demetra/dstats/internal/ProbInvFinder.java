@@ -20,8 +20,8 @@ import demetra.design.Development;
 import demetra.design.Internal;
 import demetra.dstats.BoundaryType;
 import demetra.dstats.DStatException;
-import demetra.dstats.IContinuousDistribution;
 import demetra.dstats.ProbabilityType;
+import demetra.dstats.ContinuousDistribution;
 
 /*
  * @author Jean Palate
@@ -49,7 +49,7 @@ public final class ProbInvFinder {
      * @return A double x such that cdist.prob(x, ProbType.Lower) = p
      */
     public double find(final double p, final double a, final double ptol,
-	    final double xtol, final IContinuousDistribution cdist) {
+	    final double xtol, final ContinuousDistribution cdist) {
 	double x = a;
 	double fx = cdist.getProbability(x, ProbabilityType.Lower) - p;
 
@@ -107,7 +107,7 @@ public final class ProbInvFinder {
     }
 
     private double finish(final double p, final double x,
-            final double xtol, final IContinuousDistribution cdist) {
+            final double xtol, final ContinuousDistribution cdist) {
         // search limits
         double step = xtol;
         double a = x;
@@ -155,7 +155,7 @@ public final class ProbInvFinder {
         return m;
     }
 
-    private double remove(final double x, final double d, final double xtol, final IContinuousDistribution cdist) {
+    private double remove(final double x, final double d, final double xtol, final ContinuousDistribution cdist) {
         double nx = x - d;
         BoundaryType lb = cdist.hasLeftBound();
         if (lb == BoundaryType.None) {
@@ -171,7 +171,7 @@ public final class ProbInvFinder {
         }
     }
 
-    private double add(final double x, final double d, final double xtol, final IContinuousDistribution cdist) {
+    private double add(final double x, final double d, final double xtol, final ContinuousDistribution cdist) {
         double nx = x + d;
         BoundaryType rb = cdist.hasRightBound();
         if (rb == BoundaryType.None) {

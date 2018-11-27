@@ -93,7 +93,7 @@ public class MultiPeriodicAirlineMappingTest {
     }
     
     @Test
-    @Ignore
+    //@Ignore
     public void testOutliers() throws IOException, URISyntaxException {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/births.txt").toURI();
         MatrixType edf = MatrixSerializer.read(new File(uri));
@@ -108,8 +108,8 @@ public class MultiPeriodicAirlineMappingTest {
                 .build();
         OutliersDetectionModule od = OutliersDetectionModule.build(ArimaModel.class)
                 .addFactory(AdditiveOutlier.FACTORY)
-                //.addFactory(SwitchOutlier.FACTORY)
-                //.addFactory(LevelShift.FACTORY_ZEROSTARTED)
+                .addFactory(SwitchOutlier.FACTORY)
+                .addFactory(LevelShift.FACTORY_ZEROSTARTED)
                 .maxOutliers(100)
                 .processor(processor)
                 .build();
@@ -118,7 +118,8 @@ public class MultiPeriodicAirlineMappingTest {
                     System.out.println(str);
                 };
         od.setAddHook(hook);
-        od.setCriticalValue(6);
+        od.setCriticalValue(5);
+        od.prepare(regarima.getObservationsCount());
         od.process(regarima);
     }
     

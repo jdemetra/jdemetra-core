@@ -12,7 +12,6 @@ import demetra.maths.linearfilters.HendersonFilters;
 import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.processing.IProcResults;
 import demetra.sa.DecompositionMode;
 import demetra.x11.AsymmetricEndPoints;
 import demetra.x11.MusgraveFilterFactory;
@@ -23,6 +22,7 @@ import demetra.x11.X11Kernel;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import demetra.processing.ProcResults;
 
 /**
  *
@@ -33,7 +33,7 @@ public class X11Decomposition {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements IProcResults {
+    public static class Results implements ProcResults {
 
         boolean multiplicative;
         DoubleSequence y;

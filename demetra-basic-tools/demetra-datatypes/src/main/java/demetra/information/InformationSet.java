@@ -31,7 +31,7 @@ import demetra.design.ReturnNew;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public final class InformationSet implements Cloneable {
 
     public static final char SEP = '.';

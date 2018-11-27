@@ -6,8 +6,12 @@
 package rssf;
 
 import demetra.data.DataBlock;
+import demetra.maths.MatrixType;
+import demetra.maths.matrices.Matrix;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.implementations.TimeInvariantLoading;
+import demetra.ssf.implementations.TimeInvariantMeasurements;
+import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Measurement;
 
@@ -17,11 +21,17 @@ import demetra.ssf.univariate.Measurement;
  */
 @lombok.experimental.UtilityClass
 public class Measurements {
-    public ISsfMeasurement of(int mpos, double var){
+
+    public ISsfMeasurement of(int mpos, double var) {
         return new Measurement(Loading.fromPosition(mpos), var);
     }
-    
-    public ISsfMeasurement of(double[] Z, double var){
+
+    public ISsfMeasurement of(double[] Z, double var) {
         return new Measurement(new TimeInvariantLoading(DataBlock.ofInternal(Z)), var);
     }
+
+    public ISsfMeasurements of(MatrixType Z, MatrixType H) {
+        return new TimeInvariantMeasurements(Matrix.of(Z), Matrix.of(H), null);
+    }
+
 }

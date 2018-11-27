@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.calendars;
 
+import demetra.timeseries.ValidityPeriod;
 import demetra.design.Development;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;

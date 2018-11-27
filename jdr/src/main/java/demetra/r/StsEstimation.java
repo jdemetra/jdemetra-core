@@ -22,8 +22,7 @@ import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.NumericalDerivatives;
 import demetra.maths.matrices.Matrix;
-import demetra.processing.IProcResults;
-import demetra.r.mapping.DkLikelihoodInfo;
+import demetra.r.mapping.DiffuseLikelihoodInfo;
 import demetra.ssf.dk.DkConcentratedLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;
@@ -39,20 +38,13 @@ import demetra.sts.internal.BsmMonitor;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import demetra.processing.ProcResults;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
@@ -67,7 +59,7 @@ public class StsEstimation {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements IProcResults {
+    public static class Results implements ProcResults {
 
         TsData y, t, s, i;
         BasicStructuralModel bsm;
@@ -117,7 +109,7 @@ public class StsEstimation {
             MAPPING.set(S, TsData.class, source -> source.getS());
             MAPPING.set(I, TsData.class, source -> source.getI());
             MAPPING.set(SA, TsData.class, source -> subtract(source.getY(), source.getS()));
-            MAPPING.delegate(LL, DkLikelihoodInfo.getMapping(), r -> r.getLikelihood());
+            MAPPING.delegate(LL, DiffuseLikelihoodInfo.getMapping(), r -> r.getLikelihood());
             MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
         }

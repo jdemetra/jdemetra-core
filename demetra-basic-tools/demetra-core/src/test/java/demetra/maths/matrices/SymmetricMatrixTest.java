@@ -19,11 +19,11 @@ package demetra.maths.matrices;
 import demetra.data.LogSign;
 import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.maths.Constants;
-import demetra.random.IRandomNumberGenerator;
 import demetra.random.MersenneTwister;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.random.RandomNumberGenerator;
 
 /**
  *
@@ -128,7 +128,7 @@ public class SymmetricMatrixTest {
     @Test
     public void testReenforce() {
         Matrix Q = Matrix.square(20);
-        IRandomNumberGenerator rnd = MersenneTwister.fromSystemNanoTime();
+        RandomNumberGenerator rnd = MersenneTwister.fromSystemNanoTime();
         Q.set((i, j) -> rnd.nextDouble());
         SymmetricMatrix.reenforceSymmetry(Q);
         assertTrue(Q.isSymmetric(0));

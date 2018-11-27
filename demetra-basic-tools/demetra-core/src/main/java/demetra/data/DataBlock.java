@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.data.accumulator.DoubleAccumulator;
+import demetra.data.transformation.DoubleAccumulator;
 import demetra.design.Unsafe;
 import java.util.Iterator;
 import java.util.Objects;
@@ -187,7 +187,7 @@ public final class DataBlock implements DoubleSequence {
      */
     @Override
     public String toString() {
-        return DoubleSequence.toString(this);
+        return DoubleSequence.format(this);
     }
 
     /**
@@ -206,8 +206,8 @@ public final class DataBlock implements DoubleSequence {
      *
      * @return
      */
-    public Cell cells() {
-        return Cell.of(data, beg, inc);
+    public DoubleCell cells() {
+        return DoubleCell.of(data, beg, inc);
     }
 
     /**
@@ -1631,7 +1631,7 @@ public final class DataBlock implements DoubleSequence {
     }
 
     public String toString(String fmt) {
-        return DoubleSequence.toString(this, fmt);
+        return DoubleSequence.format(this, fmt);
     }
 
     void slide(int del) {

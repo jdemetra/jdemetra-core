@@ -18,11 +18,15 @@ package demetra.regarima;
 
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.arima.IArimaModel;
+import demetra.data.DataBlock;
+import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.LogLikelihoodFunction;
 import demetra.sarima.SarimaModel;
+import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 
@@ -51,9 +55,9 @@ public class RegArimaEstimation<M extends IArimaModel> {
      *
      */
     LogLikelihoodFunction.Point<RegArimaModel<M>, ConcentratedLikelihood> max;
-    
+
     int nparams;
-    
+
     public RegArimaEstimation(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihood concentratedLikelihood,
             @Nonnull LogLikelihoodFunction.Point<RegArimaModel<M>, ConcentratedLikelihood> max) {
         this.model = model;
@@ -61,7 +65,7 @@ public class RegArimaEstimation<M extends IArimaModel> {
         this.max = max;
         this.nparams = max.getParameters().length;
     }
-    
+
     public RegArimaEstimation(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihood concentratedLikelihood,
             int nparams) {
         this.model = model;
@@ -72,7 +76,8 @@ public class RegArimaEstimation<M extends IArimaModel> {
 
     /**
      *
-     * @param adj Adjustment factor, defined by the possible transformation of the data
+     * @param adj Adjustment factor, defined by the possible transformation of
+     * the data
      * @return
      */
     public LikelihoodStatistics statistics(double adj) {
@@ -82,13 +87,13 @@ public class RegArimaEstimation<M extends IArimaModel> {
                 .parametersCount(nparams + model.getVariablesCount() + 1)
                 .ssq(concentratedLikelihood.ssq())
                 .build();
-        
+
     }
 
     /**
-     * Returns the concentrated log likelihood function associated with a regarima model,
-     * taking into account the mapping between the parameter set and the underlying
-     * parametric ARIMA model
+     * Returns the concentrated log likelihood function associated with a
+     * regarima model, taking into account the mapping between the parameter set
+     * and the underlying parametric ARIMA model
      *
      * @param <M>
      * @param mappingProvider
@@ -101,9 +106,42 @@ public class RegArimaEstimation<M extends IArimaModel> {
         Function<RegArimaModel<M>, ConcentratedLikelihood> fn = model -> ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
         return new LogLikelihoodFunction(rmapping, fn);
     }
-    
+
     public static <M extends IArimaModel> RegArimaEstimation<M> of(RegArimaModel<M> model, int nparams) {
         return new RegArimaEstimation<>(model, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model), nparams);
     }
-    
+
+    public DoubleSequence interpolatedSeries() {
+        DoubleSequence y = model.getY();
+        int[] missing = model.missing();
+        if (missing.length == 0) {
+            return y;
+        } else {
+            double[] dy = y.toArray();
+            DoubleSequence missingEstimates = concentratedLikelihood.missingEstimates();
+            DoubleReader reader = missingEstimates.reader();
+            for (int i = 0; i < missing.length; ++i) {
+                dy[missing[i]] = reader.next();
+            }
+            return DoubleSequence.ofInternal(dy);
+        }
+    }
+
+    public DoubleSequence linearizedSeries() {
+        DoubleSequence y = interpolatedSeries();
+        List<DoubleSequence> x = model.getX();
+        if (x.isEmpty()) {
+            return y;
+        }
+        DoubleSequence coefficients = concentratedLikelihood.coefficients();
+        DoubleReader reader = coefficients.reader();
+        DataBlock ylin = DataBlock.of(y);
+        if (model.isMean()) {
+            reader.next();
+        }
+        for (DoubleSequence cur : x) {
+            ylin.addAY(-reader.next(), DataBlock.of(cur));
+        }
+        return ylin.unmodifiable();
+    }
 }

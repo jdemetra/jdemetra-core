@@ -18,10 +18,10 @@ package demetra.stats.tests;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.dstats.IDistribution;
 import demetra.dstats.ProbabilityType;
 import demetra.stats.StatException;
-import demetra.stats.StatisticalTestSummary;
+import demetra.stats.TestResult;
+import demetra.dstats.Distribution;
 
 /**
  *
@@ -31,7 +31,7 @@ import demetra.stats.StatisticalTestSummary;
 @Immutable
 public class StatisticalTest {
 
-    private final IDistribution distribution;
+    private final Distribution distribution;
     private final double value;
     private final TestType type;
     private final boolean asymptotical;
@@ -44,7 +44,7 @@ public class StatisticalTest {
      * @param type
      * @param asymptotical
      */
-    public StatisticalTest(final IDistribution dist, final double val,
+    public StatisticalTest(final Distribution dist, final double val,
             final TestType type, final boolean asymptotical) {
         distribution = dist;
         value = val;
@@ -56,7 +56,7 @@ public class StatisticalTest {
      *
      * @return
      */
-    public IDistribution getDistribution() {
+    public Distribution getDistribution() {
         return distribution;
     }
 
@@ -131,7 +131,7 @@ public class StatisticalTest {
         return builder.toString();
     }
 
-    public StatisticalTestSummary toSummary(){
-        return new StatisticalTestSummary(value, getPValue(), getDistribution().toString());
+    public TestResult toSummary(){
+        return new TestResult(value, getPValue(), getDistribution().toString());
     }
 }

@@ -19,7 +19,6 @@ package demetra.maths.linearfilters;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.linearsystem.ILinearSystemSolver;
 import demetra.util.Arrays2;
 import demetra.maths.Complex;
 import demetra.maths.matrices.Matrix;
@@ -27,6 +26,7 @@ import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
+import demetra.linearsystem.LinearSystemSolver;
 
 /**
  * Rational filters are the ratio of two filters. They are defined in
@@ -203,7 +203,7 @@ public class RationalFilter implements IRationalFilter {
         }
         
         try {
-            ILinearSystemSolver.robustSolver().solve(m, DataBlock.ofInternal(nc));
+            LinearSystemSolver.robustSolver().solve(m, DataBlock.ofInternal(nc));
         } catch (MatrixException e) {
             throw new LinearFilterException(
                     "Invalid decomposition of rational filter");

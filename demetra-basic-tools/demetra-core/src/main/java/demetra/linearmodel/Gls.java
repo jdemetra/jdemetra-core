@@ -8,8 +8,7 @@ package demetra.linearmodel;
 import demetra.data.DataBlock;
 import demetra.eco.EcoException;
 import lombok.NonNull;
-import demetra.leastsquares.IQRSolver;
-import demetra.leastsquares.internal.QRSolver;
+import demetra.leastsquares.internal.AdvancedQRSolver;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
@@ -19,6 +18,7 @@ import java.util.function.Supplier;
 import demetra.data.LogSign;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import org.openide.util.lookup.ServiceProvider;
+import demetra.leastsquares.QRSolver;
 
 /**
  *
@@ -27,20 +27,20 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = IGls.class)
 public class Gls implements IGls {
 
-    private static AtomicReference<Supplier<IQRSolver>> QR_FACTORY = new AtomicReference<>(()
-            -> QRSolver.builder(new Householder()).build());
+    private static AtomicReference<Supplier<QRSolver>> QR_FACTORY = new AtomicReference<>(()
+            -> AdvancedQRSolver.builder(new Householder()).build());
 
-    public static void setDefaultSolver(Supplier<IQRSolver> factory) {
+    public static void setDefaultSolver(Supplier<QRSolver> factory) {
         QR_FACTORY.set(factory);
     }
 
-    private final IQRSolver solver;
+    private final QRSolver solver;
 
     public Gls() {
         solver = QR_FACTORY.get().get();
     }
 
-    public Gls(@NonNull final IQRSolver solver) {
+    public Gls(@NonNull final QRSolver solver) {
         this.solver = solver;
     }
 

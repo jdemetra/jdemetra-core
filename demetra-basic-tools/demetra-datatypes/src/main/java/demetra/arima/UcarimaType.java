@@ -16,11 +16,14 @@
  */
 package demetra.arima;
 
+import demetra.design.Development;
+
 /**
  *
  * @author Jean Palate
  */
 @lombok.Value
+@Development(status = Development.Status.Release)
 public class UcarimaType {
 
     ArimaType sum;

@@ -24,7 +24,7 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
-import demetra.leastsquares.IQRSolver;
+import demetra.leastsquares.QRSolvers;
 import demetra.linearmodel.LinearModel;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.LowerTriangularMatrix;
@@ -33,6 +33,7 @@ import demetra.maths.matrices.internal.Householder;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArmaModel;
 import demetra.sarima.SarimaModel;
+import demetra.leastsquares.QRSolver;
 
 /**
  *
@@ -129,7 +130,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
                 filter.apply(rcols.next(), drcols.next());
             }
 
-            IQRSolver qr = IQRSolver.fastSolver();
+            QRSolver qr = QRSolvers.fastSolver();
 
             if (!qr.solve(Yl, Xl)) {
                 return false;

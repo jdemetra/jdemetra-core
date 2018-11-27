@@ -18,8 +18,6 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 
 
@@ -96,7 +94,7 @@ public class PrespecifiedHoliday implements IHoliday {
     }
     
     @Override
-    public Iterable<IHolidayInfo> getIterable(LocalDate start, LocalDate end) {
+    public Iterable<HolidayInfo> getIterable(LocalDate start, LocalDate end) {
         IHoliday sd = toSpecialDay();
         if (sd == null) {
             return null;

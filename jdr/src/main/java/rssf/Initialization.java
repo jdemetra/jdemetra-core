@@ -5,6 +5,7 @@
  */
 package rssf;
 
+import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfInitialization;
 
@@ -15,7 +16,7 @@ import demetra.ssf.ISsfInitialization;
 @lombok.experimental.UtilityClass
 public class Initialization {
     
-    public ISsfInitialization of(double[] a, Matrix P) {
+    public ISsfInitialization of(double[] a, MatrixType P) {
         if (P == null) {
             throw new IllegalArgumentException();
         }
@@ -23,11 +24,11 @@ public class Initialization {
         return demetra.ssf.Initialization.builder()
                 .dim(P.getRowsCount())
                 .a0(a)
-                .Pf(P)
+                .Pf(Matrix.of(P))
                 .build();
     }
     
-    public ISsfInitialization ofDiffuse(double[] a, Matrix P, Matrix B, Matrix Pi) {
+    public ISsfInitialization ofDiffuse(double[] a, MatrixType P, MatrixType B, MatrixType Pi) {
         if (B == null && Pi == null) {
             return of(a, P);
         }
@@ -38,9 +39,9 @@ public class Initialization {
                 .dim(P.getRowsCount())
                 .diffuseDim(B.getColumnsCount())
                 .a0(a)
-                .Pf(P)
-                .B(B)
-                .Pi(Pi)
+                .Pf(Matrix.of(P))
+                .B(B==null ? null : Matrix.of(B))
+                .Pi(Pi==null ? null : Matrix.of(Pi))
                 .build();
     }
 }

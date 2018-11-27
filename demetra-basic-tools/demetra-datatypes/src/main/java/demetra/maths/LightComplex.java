@@ -5,10 +5,13 @@
  */
 package demetra.maths;
 
+import demetra.design.Development;
+
 /**
  *
  * @author palatej
  */
+@Development(status = Development.Status.Release)
 @lombok.Value
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PACKAGE)
 class LightComplex implements ComplexType {

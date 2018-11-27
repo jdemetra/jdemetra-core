@@ -16,14 +16,10 @@
  */
 package demetra.benchmarking.multivariate;
 
-import demetra.benchmarking.spi.MultivariateCholetteAlgorithm;
 import demetra.benchmarking.multivariate.MultivariateCholetteSpecification.ContemporaneousConstraintDescriptor;
 import demetra.benchmarking.multivariate.MultivariateCholetteSpecification.TemporalConstraintDescriptor;
-import demetra.data.DoubleSequence;
-import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.distance;
 import ec.benchmarking.simplets.TsMultiBenchmarking;
 import java.util.HashMap;
@@ -32,19 +28,6 @@ import java.util.Random;
 import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
 import org.junit.Test;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 

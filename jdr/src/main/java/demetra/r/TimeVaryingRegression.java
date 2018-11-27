@@ -16,12 +16,10 @@ import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.QuadraticForm;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.processing.IProcResults;
-import demetra.r.mapping.DkLikelihoodInfo;
+import demetra.r.mapping.DiffuseLikelihoodInfo;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
-import demetra.sarima.SarimaMapping;
-import demetra.sarima.mapping.SarimaInfo;
+import demetra.arima.SarimaDescriptor;
 import demetra.ssf.dk.DkConcentratedLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.SsfFunction;
@@ -39,6 +37,8 @@ import demetra.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import demetra.processing.ProcResults;
+import demetra.sarima.SarimaMapping;
 
 /**
  *
@@ -57,7 +57,7 @@ public class TimeVaryingRegression {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements IProcResults {
+    public static class Results implements ProcResults {
 
         TsDomain domain;
         MatrixType variables;
@@ -73,10 +73,10 @@ public class TimeVaryingRegression {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA0, SarimaInfo.getMapping(), r -> r.getArima0().toType());
-            MAPPING.delegate(LL0, DkLikelihoodInfo.getMapping(), r -> r.getLl0());
-            MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getArima().toType());
-            MAPPING.delegate(LL, DkLikelihoodInfo.getMapping(), r -> r.getLl());
+            MAPPING.delegate(ARIMA0, SarimaDescriptor.getMapping(), r -> r.getArima0().toType());
+            MAPPING.delegate(LL0, DiffuseLikelihoodInfo.getMapping(), r -> r.getLl0());
+            MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getArima().toType());
+            MAPPING.delegate(LL, DiffuseLikelihoodInfo.getMapping(), r -> r.getLl());
             MAPPING.set("aic0", Double.class, r -> r.getLl0().AIC(2));
             MAPPING.set("aic", Double.class, r -> r.getLl().AIC(3));
             MAPPING.set("tdvar", Double.class, r -> r.getNvar());

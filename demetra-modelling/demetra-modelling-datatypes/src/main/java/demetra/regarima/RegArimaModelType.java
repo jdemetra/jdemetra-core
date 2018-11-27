@@ -51,23 +51,5 @@ public class RegArimaModelType {
         return model.getX();
     }
     
-    public int[] getMissing() {
-        return model.getMissing();
-    }
-    
-    @Override
-    public boolean equals(Object o) {
-        return model.equals(o);
-    }
-    
-    @Override
-    public int hashCode() {
-        return model.hashCode();
-    }
-    
-    @Override
-    public String toString() {
-        return model.toString();
-    }
     //</editor-fold>
 }

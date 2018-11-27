@@ -5,7 +5,6 @@
  */
 package demetra.r;
 
-import demetra.arima.IArimaForecasts;
 import demetra.regarima.RegArimaModel;
 import demetra.arima.ssf.SsfArima;
 import demetra.data.DataBlock;
@@ -14,7 +13,6 @@ import demetra.information.InformationMapping;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
-import demetra.processing.IProcResults;
 import demetra.sarima.SarimaModel;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.dk.DkToolkit;
@@ -24,6 +22,10 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.SsfData;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import demetra.processing.ProcResults;
+import demetra.arima.ArimaForecaster;
+import demetra.arima.internal.FastArimaForecasts;
+import demetra.arima.ssf.ExactArimaForecasts;
 
 /**
  *
@@ -34,7 +36,7 @@ public class ArimaForecasts {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements IProcResults {
+    public static class Results implements ProcResults {
 
         RegArimaModel<SarimaModel> regarima;
         DoubleSequence forecasts, forecastsErrors;
@@ -78,7 +80,7 @@ public class ArimaForecasts {
         if (!method.equalsIgnoreCase("all")) {
             Results.ResultsBuilder builder = Results.builder();
             boolean exact = method.equalsIgnoreCase("exact");
-            IArimaForecasts fcasts = exact ? IArimaForecasts.exact() : IArimaForecasts.fast();
+            ArimaForecaster fcasts = exact ? new ExactArimaForecasts() : new FastArimaForecasts();
             if (exact) {
                 fcasts.prepare(regarima.arima(), mean != 0);
             } else {

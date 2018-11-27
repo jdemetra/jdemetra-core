@@ -18,11 +18,11 @@ package demetra.maths.linearfilters;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
-import demetra.linearsystem.ILinearSystemSolver;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.function.IntToDoubleFunction;
+import demetra.linearsystem.LinearSystemSolver;
 
 /**
  * The local polynomial filter is defined as follows: h is the number of lags
@@ -162,7 +162,7 @@ public class LocalPolynomialFilters {
         }
         double[] u = new double[d + 1];
         u[0] = 1;
-        ILinearSystemSolver.robustSolver().solve(xkx, DataBlock.ofInternal(u));
+        LinearSystemSolver.robustSolver().solve(xkx, DataBlock.ofInternal(u));
         double[] w = new double[h + 1];
         for (int i = 0; i <= h; ++i) {
             double s = u[0];

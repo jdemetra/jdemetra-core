@@ -20,7 +20,6 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
 import demetra.data.DoubleSequence;
-import demetra.leastsquares.IQRSolver;
 import demetra.maths.Constants;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
@@ -33,8 +32,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = IQRSolver.class)
-public class FastRotationsSolver implements IQRSolver {
+@ServiceProvider(service = QRSolver.class)
+public class FastRotationsSolver implements QRSolver {
 
     private Matrix R;
     private double[] c, d2;

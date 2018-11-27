@@ -16,7 +16,6 @@
  */
 package demetra.benchmarking.ssf;
 
-import demetra.data.Cell;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.design.Development;
@@ -28,6 +27,7 @@ import demetra.ssf.SsfException;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.data.DoubleCell;
 
 /**
  *
@@ -248,7 +248,7 @@ public class SsfDisaggregation {
             }
             Matrix q = m.dropTopLeft(1, 0);
             DataBlockIterator cols = q.columnsIterator();
-            Cell cur = zm.cells();
+            DoubleCell cur = zm.cells();
             while (cols.hasNext()) {
                 cur.applyAndNext(x -> x + measurement.ZX(pos, cols.next()));
             }

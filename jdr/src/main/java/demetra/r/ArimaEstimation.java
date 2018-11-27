@@ -22,21 +22,21 @@ import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.likelihood.mapping.LikelihoodInfo;
+import demetra.likelihood.LikelihoodDescriptor;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.processing.IProcResults;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarimaType;
 import demetra.sarima.RegSarimaProcessor;
-import demetra.sarima.mapping.SarimaInfo;
+import demetra.arima.SarimaDescriptor;
 import demetra.util.IntList;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import demetra.processing.ProcResults;
 
 /**
  *
@@ -99,7 +99,7 @@ public class ArimaEstimation {
     }
 
     @lombok.Value
-    public static class Results implements IProcResults {
+    public static class Results implements ProcResults {
 
         RegArimaModel<SarimaModel> regarima;
         ConcentratedLikelihood concentratedLogLikelihood;
@@ -116,14 +116,14 @@ public class ArimaEstimation {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA, SarimaInfo.getMapping(), r -> r.getArima());
-            MAPPING.delegate(LL, LikelihoodInfo.getMapping(), r -> r.statistics);
+            MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getArima());
+            MAPPING.delegate(LL, LikelihoodDescriptor.getMapping(), r -> r.statistics);
             MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
             MAPPING.set(B, double[].class, source
                     -> {
                 DoubleSequence b = source.getConcentratedLogLikelihood().coefficients();
-                return b == null ? null : b.toArray();
+                return b.toArray();
             });
             MAPPING.set(MEAN, Double.class, source
                     -> {

@@ -13,7 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
+ */
 package demetra.arima.internal;
 
 import demetra.arima.ArimaException;
@@ -21,7 +21,6 @@ import demetra.arima.IArimaModel;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.design.Development;
-import demetra.leastsquares.IQRSolver;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.likelihood.Likelihood;
@@ -30,15 +29,17 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.util.SubArrayOfInt;
 import demetra.data.DoubleSequence;
-
+import demetra.leastsquares.QRSolvers;
+import demetra.leastsquares.QRSolver;
 
 /**
  * The FastKalmanFilter class provides fast computation of Regression models
- with stationary Arma noises, by means of a Kalman filter
- It is a simplified implementation of the routine used in Tramo.
- * It should be noted that other implementations of the Kalman filter provide 
- * exactly the same results. However, this one, which is intensively used in 
- * several high-level routines, has been optimised as much as possible.
+ * with stationary Arma noises, by means of a Kalman filter It is a simplified
+ * implementation of the routine used in Tramo. It should be noted that other
+ * implementations of the Kalman filter provide exactly the same results.
+ * However, this one, which is intensively used in several high-level routines,
+ * has been optimised as much as possible.
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
@@ -57,17 +58,19 @@ public class FastKalmanFilter {
     private boolean fast_;
 
     /**
-     * Creates a new Kalman filter for a given stationary Arima model 
+     * Creates a new Kalman filter for a given stationary Arima model
+     *
      * @param arma The Arima model. Should be stationary.
-    */
+     */
     public FastKalmanFilter(final IArimaModel arma) {
         initmodel(arma, 0);
     }
 
     /**
-     * Fast processing. The exact filter is used on the Max(p, q) first
-     * data. Fast iteration is used on the following data.
-     * Roughly speaking, the fast processing is twice faster than the exact processing.
+     * Fast processing. The exact filter is used on the Max(p, q) first data.
+     * Fast iteration is used on the following data. Roughly speaking, the fast
+     * processing is twice faster than the exact processing.
+     *
      * @param y
      * @return
      */
@@ -92,7 +95,7 @@ public class FastKalmanFilter {
         int ilast = dim - 1;
 
         double[] theta = arma.getMA().asPolynomial().toArray();
-        int np = phi.length-1, nq = theta.length-1;
+        int np = phi.length - 1, nq = theta.length - 1;
         int im = np > nq ? np : nq;
 
         for (int pos = 0; pos < im; ++pos) {
@@ -153,7 +156,7 @@ public class FastKalmanFilter {
     /**
      * Fast processing. The exact filter is used on the Max(p, q) first
      * observations. Fast iteration is used on the following observations
-     * 
+     *
      * @param y
      * @param nparams
      * @return BIC statistics
@@ -173,7 +176,7 @@ public class FastKalmanFilter {
         this.arma = arma;
         phi = this.arma.getAR().asPolynomial().toArray();
         if (statedim == 0) {
-            statedim = Math.max(arma.getAROrder(), arma.getMAOrder()+1);
+            statedim = Math.max(arma.getAROrder(), arma.getMAOrder() + 1);
         }
         dim = statedim;
         c0 = this.arma.getAutoCovarianceFunction().values(dim);
@@ -183,7 +186,7 @@ public class FastKalmanFilter {
     }
 
     /**
-     * 
+     *
      * @param y
      * @param res
      * @param stde
@@ -255,11 +258,13 @@ public class FastKalmanFilter {
     }
 
     /**
-     * Exact processing. The likelihood is computed. The filtered data (residuals)
-     * are returned along with the likelihood
+     * Exact processing. The likelihood is computed. The filtered data
+     * (residuals) are returned along with the likelihood
+     *
      * @param y The data that have to be filtered
-     * @param ll The likelihood that will contain the results. Must be uninitialised
-     * on entry. The likelihood is completed if the processing is successful.
+     * @param ll The likelihood that will contain the results. Must be
+     * uninitialised on entry. The likelihood is completed if the processing is
+     * successful.
      * @return True if the processing is successful, false otherwise.
      */
     public Likelihood process(final DoubleSequence y) {
@@ -330,9 +335,8 @@ public class FastKalmanFilter {
 
     /**
      * @param y
-     * @param ao
-     *            Positions of AO outliers corresponding to missing values int
-     *            the regressors. Can be null
+     * @param ao Positions of AO outliers corresponding to missing values int
+     * the regressors. Can be null
      * @param x
      * @param ll
      * @return
@@ -424,13 +428,13 @@ public class FastKalmanFilter {
                 }
             }
             xrows.next();
-        } while (++pos < n);
-
-        IQRSolver solver=IQRSolver.fastSolver();
+        }
+ 
+        QRSolver solver = QRSolvers.fastSolver();
         solver.solve(DataBlock.ofInternal(yl), xl);
         Matrix R = solver.R();
-        double ssqerr =solver.ssqerr();
- 
+        double ssqerr = solver.ssqerr();
+
         double ldet = det.getLogDeterminant();
         if (ao != null && !ao.isEmpty()) {
             DataBlock rdiag = R.diagonal();
@@ -447,12 +451,12 @@ public class FastKalmanFilter {
                 .rfactor(R)
                 .build();
     }
-    
-    public void setEpsilon(double eps){
-        eps_=eps;
+
+    public void setEpsilon(double eps) {
+        eps_ = eps;
     }
-      
-    public double getEpsilon(){
+
+    public double getEpsilon() {
         return eps_;
     }
 

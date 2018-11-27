@@ -9,8 +9,8 @@ import demetra.maths.matrices.spi.LowerTriangularMatrixAlgorithms;
 import java.util.concurrent.atomic.AtomicReference;
 import demetra.data.DataBlock;
 import demetra.data.LogSign;
-import demetra.random.IRandomNumberGenerator;
 import demetra.util.ServiceLookup;
+import demetra.random.RandomNumberGenerator;
 
 /**
  *
@@ -29,7 +29,7 @@ public class LowerTriangularMatrix {
         return IMPL.get();
     }
 
-    public void randomize(Matrix M, IRandomNumberGenerator rng) {
+    public void randomize(Matrix M, RandomNumberGenerator rng) {
         M.set((r, c) -> (c > r) ? 0 : rng.nextDouble());
     }
 

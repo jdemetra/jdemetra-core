@@ -17,20 +17,18 @@
 package demetra.maths.matrices.spi;
 
 import demetra.data.DataBlock;
-import demetra.design.ServiceDefinition;
-import demetra.design.ThreadSafe;
+import demetra.design.Algorithm;
 import demetra.maths.matrices.Matrix;
-import demetra.random.IRandomNumberGenerator;
+import demetra.random.RandomNumberGenerator;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ThreadSafe
-@ServiceDefinition(isSingleton = true)
+@Algorithm
 public interface SymmetricMatrixAlgorithms {
 
-    void randomize(Matrix M, IRandomNumberGenerator rng);
+    void randomize(Matrix M, RandomNumberGenerator rng);
 
     /**
      * Computes xx' and stores the results in m. The routines doesn't verify the

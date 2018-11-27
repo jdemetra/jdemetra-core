@@ -19,7 +19,6 @@ package demetra.arima.internal;
 import demetra.arima.ArimaException;
 import demetra.arima.AutoCovarianceFunction;
 import demetra.data.DataBlock;
-import demetra.linearsystem.ILinearSystemSolver;
 import demetra.linearsystem.internal.QRLinearSystemSolver;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
@@ -27,6 +26,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
+import demetra.linearsystem.LinearSystemSolver;
 
 /**
  *
@@ -34,7 +34,7 @@ import demetra.maths.polynomials.RationalFunction;
  */
 public class AutoCovarianceComputers {
 
-    public static AutoCovarianceFunction.Computer defaultComputer(ILinearSystemSolver solver) {
+    public static AutoCovarianceFunction.Computer defaultComputer(LinearSystemSolver solver) {
         return (Polynomial ma, Polynomial ar, int rank) -> {
             int p = ar.degree();
             int q = ma.degree();
@@ -85,7 +85,7 @@ public class AutoCovarianceComputers {
         };
     }
 
-    public static AutoCovarianceFunction.SymmetricComputer defaultSymmetricComputer(ILinearSystemSolver solver) {
+    public static AutoCovarianceFunction.SymmetricComputer defaultSymmetricComputer(LinearSystemSolver solver) {
         return (SymmetricFilter sma, Polynomial ar, int rank) -> {
             int p = ar.degree();
             int q = sma.getUpperBound();

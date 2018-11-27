@@ -18,6 +18,7 @@ package demetra.data;
 
 import demetra.design.Development;
 import demetra.util.IntList;
+import demetra.data.transformation.DataInterpolator;
 
 /**
  * Interpolates a series by replacing missing values by a pre-specified
@@ -26,7 +27,7 @@ import demetra.util.IntList;
  * Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class ConstInterpolator implements IDataInterpolator {
+public class ConstInterpolator implements DataInterpolator {
 
     /**
      * The default value used for interpolation

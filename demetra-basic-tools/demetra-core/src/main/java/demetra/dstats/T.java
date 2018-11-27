@@ -20,15 +20,15 @@ import demetra.dstats.internal.SpecialFunctions;
 import demetra.dstats.internal.ProbInvFinder;
 import demetra.dstats.internal.Utility;
 import demetra.design.Development;
-import demetra.random.IRandomNumberGenerator;
 import java.util.concurrent.atomic.AtomicReference;
+import demetra.random.RandomNumberGenerator;
 
 /**
  *
  * @author Frank Osaer, Jean Palate
  */
 @Development(status = Development.Status.Release)
-public class T implements IContinuousDistribution {
+public class T implements ContinuousDistribution {
     
     private static final Normal N = new Normal();
     static final double[][] COEFF = new double[][]{
@@ -170,7 +170,7 @@ public class T implements IContinuousDistribution {
     }
     
     @Override
-    public double random(IRandomNumberGenerator rng) {
+    public double random(RandomNumberGenerator rng) {
         Chi2 cdenom = chi2.get();
         if (cdenom == null) {
             cdenom = new Chi2(df);

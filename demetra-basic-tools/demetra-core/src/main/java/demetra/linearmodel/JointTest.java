@@ -67,9 +67,9 @@ public class JointTest {
         return this;
     }
 
-    public JointTest variableSelection(int start, int end) {
-        this.coef = new int[end-start];
-        for (int i=0; i<coef.length; ++i){
+    public JointTest variableSelection(int start, int n) {
+        this.coef = new int[n];
+        for (int i=0; i<n; ++i){
             coef[i]=start+i;
         }
         R = null;
@@ -145,8 +145,7 @@ public class JointTest {
 
     private int df() {
         if (blue) {
-            int k = coef == null ? R.getRowsCount() : coef.length;
-            return n - hyperParameters - k;
+            return n - bvar.getRowsCount() - hyperParameters;
         } else {
             return n;
         }

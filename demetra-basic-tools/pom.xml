@@ -22,6 +22,7 @@
         <module>demetra-core</module>
         <module>demetra-datatypes</module>
         <module>DataForTests</module>
+        <module>demetra-datatypes-descriptors</module>
     </modules>
   
     <properties>
@@ -40,6 +41,11 @@
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-datatypes</artifactId>
+                <version>${jd3-basic.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-datatypes-descriptors</artifactId>
                 <version>${jd3-basic.version}</version>            
             </dependency>
             <dependency>

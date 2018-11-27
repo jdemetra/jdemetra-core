@@ -18,8 +18,6 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 
 
@@ -54,7 +52,7 @@ public interface IHoliday {
      * @param end
      * @return
      */
-    Iterable<IHolidayInfo> getIterable(LocalDate start, LocalDate end);
+    Iterable<HolidayInfo> getIterable(LocalDate start, LocalDate end);
 
     /**
      * Gives the long term mean effect on each day of week for each period of a

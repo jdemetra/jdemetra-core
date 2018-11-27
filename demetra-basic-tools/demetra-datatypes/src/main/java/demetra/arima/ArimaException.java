@@ -23,7 +23,7 @@ import demetra.design.Development;
  * 
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public class ArimaException extends RuntimeException {
 
     /**

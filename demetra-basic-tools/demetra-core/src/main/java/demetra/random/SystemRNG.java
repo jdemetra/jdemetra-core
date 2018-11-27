@@ -23,7 +23,7 @@ import java.util.Random;
  *
  * @author Jean Palate
  */
-@AlgorithmImplementation(algorithm=IRandomNumberGenerator.class)
+@AlgorithmImplementation(algorithm=RandomNumberGenerator.class)
 public class SystemRNG extends AbstractRNG{
     
     private final Random rnd;

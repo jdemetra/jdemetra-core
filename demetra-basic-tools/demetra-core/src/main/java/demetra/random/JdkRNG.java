@@ -35,8 +35,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Philippe Charles
  */
-@AlgorithmImplementation(algorithm=IRandomNumberGenerator.class)
-public class JdkRNG implements IRandomNumberGenerator {
+@AlgorithmImplementation(algorithm=RandomNumberGenerator.class)
+public class JdkRNG implements RandomNumberGenerator {
 
     // STATIC FACTORY METHODS >
     public static JdkRNG newRandom() {

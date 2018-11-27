@@ -19,7 +19,7 @@ package demetra.dstats;
 import demetra.dstats.internal.SpecialFunctions;
 import demetra.dstats.internal.ProbInvFinder;
 import demetra.design.Development;
-import demetra.random.IRandomNumberGenerator;
+import demetra.random.RandomNumberGenerator;
 
 
 /**
@@ -28,7 +28,7 @@ import demetra.random.IRandomNumberGenerator;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public class Chi2 implements IContinuousDistribution {
+public class Chi2 implements ContinuousDistribution {
 
     public static final String NAME = "Chi2";
 
@@ -160,7 +160,7 @@ public class Chi2 implements IContinuousDistribution {
      * Based on "cern.jet.random.ChiSquare", from the Colt library
      * Copyright (c) 1999 CERN - European Organization for Nuclear Research.
      */
-    public double random(IRandomNumberGenerator rng) {
+    public double random(RandomNumberGenerator rng) {
 
         if (df == 1) {
             while (true) {

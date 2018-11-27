@@ -7,7 +7,6 @@ package demetra.r;
 
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
-import demetra.processing.IProcResults;
 import demetra.stl.IDataGetter;
 import demetra.stl.IDataSelector;
 import demetra.stl.LoessFilter;
@@ -16,6 +15,7 @@ import demetra.stl.StlPlus;
 import demetra.stl.StlPlusSpecification;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import demetra.processing.ProcResults;
 
 /**
  *
@@ -26,7 +26,7 @@ public class StlDecomposition {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements IProcResults {
+    public static class Results implements ProcResults {
 
         boolean multiplicative;
         DoubleSequence y, t, s, i;

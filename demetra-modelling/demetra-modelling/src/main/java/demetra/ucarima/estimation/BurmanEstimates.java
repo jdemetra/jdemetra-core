@@ -17,9 +17,10 @@
 package demetra.ucarima.estimation;
 
 import demetra.arima.ArimaException;
+import demetra.arima.ArimaForecaster;
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
-import demetra.arima.internal.ExactArimaForecasts;
+import demetra.arima.internal.FastArimaForecasts;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
@@ -61,6 +62,7 @@ public class BurmanEstimates {
     private DoubleSequence m_xb, m_xf;
     private boolean m_bmean;
     private ILUDecomposition solver;
+    private ArimaForecaster forecaster=new FastArimaForecasts();
 
     /**
      * Creates a new instance of WKEstimators
@@ -295,12 +297,11 @@ public class BurmanEstimates {
         if (m_bmean && nf <= m_ar.degree()) {
             nf = m_ar.degree() + 1;
         }
-        ExactArimaForecasts fcast = new ExactArimaForecasts();
-        fcast.prepare(m_wk.getUcarimaModel().getModel(), m_bmean);
-        m_xf = fcast.forecasts(DataBlock.ofInternal(m_data), nf);
-        m_xb = fcast.backcasts(DataBlock.ofInternal(m_data), nf);
+        forecaster.prepare(m_wk.getUcarimaModel().getModel(), m_bmean);
+        m_xf = forecaster.forecasts(DataBlock.ofInternal(m_data), nf);
+        m_xb = forecaster.backcasts(DataBlock.ofInternal(m_data), nf);
         if (m_bmean) {
-            m_mean = fcast.getMean();
+            m_mean = forecaster.getMean();
         } else {
             m_mean = 0;
         }

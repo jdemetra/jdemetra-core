@@ -17,21 +17,20 @@
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.arima.IArimaForecasts;
-import demetra.arima.internal.MaLjungBoxFilter;
 import demetra.data.DataBlock;
-import demetra.data.DataWindow;
 import demetra.design.Development;
 import demetra.maths.polynomials.Polynomial;
 import demetra.data.DoubleSequence;
+import demetra.arima.ArimaForecaster;
 
 /**
- * Computes the forecasts of an Arima model using the approach followed in X12/X13.
+ * Computes the forecasts of an Arima model using the approach followed in
+ * X12/X13.
  *
  * @author Frank Osaer, Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class FastArimaForecasts implements IArimaForecasts {
+public class FastArimaForecasts implements ArimaForecaster {
 
     private IArimaModel arima;
     private Polynomial ar, ma;
@@ -39,7 +38,6 @@ public class FastArimaForecasts implements IArimaForecasts {
 
     /**
      *
-     * @param model
      */
     public FastArimaForecasts() {
     }
@@ -148,5 +146,10 @@ public class FastArimaForecasts implements IArimaForecasts {
         } catch (Exception err) {
             return w;
         }
+    }
+
+    @Override
+    public double getMean() {
+        return mean;
     }
 }

@@ -17,7 +17,7 @@
 package demetra.r;
 
 import demetra.data.Data;
-import demetra.stats.StatisticalTestSummary;
+import demetra.stats.TestResult;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -32,21 +32,21 @@ public class SeasonalityTestsTest {
 
     @Test
     public void testFTest() {
-        StatisticalTestSummary test = SeasonalityTests.fTest(Data.ABS_RETAIL.clone(), 12, true, 0);
+        TestResult test = SeasonalityTests.fTest(Data.ABS_RETAIL.clone(), 12, true, 0);
 //        System.out.println(test);
         assertTrue(test.getPvalue() <.01);
     }
     
     @Test
     public void testQsTest() {
-        StatisticalTestSummary test = SeasonalityTests.qsTest(Data.ABS_RETAIL.clone(), 12, 0);
+        TestResult test = SeasonalityTests.qsTest(Data.ABS_RETAIL.clone(), 12, 0);
 //        System.out.println(test);
         assertTrue(test.getPvalue() < .01);
     }
     
     @Test
     public void testPeriodicQsTest() {
-        StatisticalTestSummary test = SeasonalityTests.periodicQsTest(Data.ABS_RETAIL.clone(), new double[]{17, 1});
+        TestResult test = SeasonalityTests.periodicQsTest(Data.ABS_RETAIL.clone(), new double[]{17, 1});
 //        System.out.println(test);
         assertTrue(test.getPvalue() >.01);
     }

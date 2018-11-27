@@ -150,6 +150,16 @@ public class CalendarUtility {
     }
 
     /**
+     * Returns the number of days for the given
+     * month. We consider that there are 28 days in February
+     *
+     * @param month 1-based index of the month
+     * @return
+     */
+    public int getNumberOfDaysByMonth(int month) {
+        return MONTHDAYS[month-1];
+    }
+    /**
      * Gets the number of days by month (1-based indexed).
      *
      * @param year Considered year (meaningful only for February).

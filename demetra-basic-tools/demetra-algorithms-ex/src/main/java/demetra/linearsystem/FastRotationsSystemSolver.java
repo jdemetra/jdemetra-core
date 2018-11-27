@@ -17,13 +17,10 @@
 package demetra.linearsystem;
 
 import demetra.design.Development;
-import java.util.Arrays;
 import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
 import demetra.maths.Constants;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.linearsystem.ILinearSystemSolver;
 import demetra.maths.matrices.UpperTriangularMatrix;
 
 /**
@@ -31,7 +28,7 @@ import demetra.maths.matrices.UpperTriangularMatrix;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public final class FastRotationsSystemSolver implements ILinearSystemSolver {
+public final class FastRotationsSystemSolver implements LinearSystemSolver {
 
     private double[] d2;
     private double eps = Constants.getEpsilon();

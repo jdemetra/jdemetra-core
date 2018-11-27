@@ -18,6 +18,7 @@ package demetra.maths;
 
 import demetra.data.BaseTable;
 import demetra.data.DoubleSequence;
+import demetra.design.Development;
 import java.util.stream.DoubleStream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -26,6 +27,7 @@ import javax.annotation.Nonnull;
  *
  * @author Philippe Charles
  */
+@Development(status = Development.Status.Release)
 public interface MatrixType extends BaseTable<Double> {
 
     public static MatrixType EMPTY = new LightMatrix(null, 0, 0);
@@ -108,11 +110,37 @@ public interface MatrixType extends BaseTable<Double> {
         StringBuilder builder = new StringBuilder();
         if (!matrix.isEmpty()) {
             DoubleSequence row = matrix.row(0);
-            builder.append(DoubleSequence.toString(row, fmt));
+            builder.append(DoubleSequence.format(row, fmt));
             for (int i = 1; i < matrix.getRowsCount(); ++i) {
                 builder.append(System.lineSeparator());
                 row = matrix.row(i);
-                builder.append(DoubleSequence.toString(row, fmt));
+                builder.append(DoubleSequence.format(row, fmt));
+            }
+        }
+        return builder.toString();
+    }
+
+    public static String format(MatrixType m, String fmt) {
+        StringBuilder builder = new StringBuilder();
+        int nrows=m.getRowsCount();
+        if (nrows>0) {
+            builder.append(DoubleSequence.format(m.row(0), fmt));
+            for (int r=1; r<nrows; ++r) {
+                builder.append(System.lineSeparator());
+                builder.append(DoubleSequence.format(m.row(r), fmt));
+            }
+        }
+        return builder.toString();
+    }
+    
+        public static String format(MatrixType m) {
+        StringBuilder builder = new StringBuilder();
+        int nrows=m.getRowsCount();
+        if (nrows>0) {
+            builder.append(DoubleSequence.format(m.row(0)));
+            for (int r=1; r<nrows; ++r) {
+                builder.append(System.lineSeparator());
+                builder.append(DoubleSequence.format(m.row(r)));
             }
         }
         return builder.toString();

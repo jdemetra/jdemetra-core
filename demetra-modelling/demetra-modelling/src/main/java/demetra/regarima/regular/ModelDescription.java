@@ -16,21 +16,17 @@
  */
 package demetra.regarima.regular;
 
-import demetra.data.AverageInterpolator;
 import demetra.modelling.Variable;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
-import demetra.data.IDataInterpolator;
-import demetra.data.IDataTransformation.LogJacobian;
-import demetra.data.LogTransformation;
+import demetra.data.transformation.LogJacobian;
 import demetra.data.ParameterType;
+import demetra.data.transformation.DataInterpolator;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.modelling.PreadjustmentVariable;
-import demetra.modelling.regression.ITsTransformation;
 import demetra.modelling.regression.ITsVariable;
-import demetra.modelling.regression.LengthOfPeriodTransformation;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -41,6 +37,8 @@ import demetra.stats.tests.NiidTests;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.simplets.Transformations;
+import demetra.timeseries.simplets.TsDataTransformation;
 import demetra.util.IntList;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,12 +55,36 @@ import javax.annotation.Nonnull;
 @Development(status = Development.Status.Preliminary)
 public final class ModelDescription {
 
+    /**
+     * Original series
+     */
     private final TsData series;
+
+    /**
+     * Interpolated series (before transformation
+     */
+    private TsData interpolatedSeries;
+    /**
+     * Position in the original series of the missing values (if interpolated)
+     */
+    private int[] missing;
+
     private boolean logTransformation;
     private LengthOfPeriodType lpTransformation = LengthOfPeriodType.None;
-    private IDataInterpolator interpolator = new AverageInterpolator();
+
+    /**
+     * Preadjustment variables (with their coefficients
+     */
     private final List<PreadjustmentVariable> preadjustmentVariables = new ArrayList<>();
+
+    /**
+     * Regression variables
+     */
     private final List<Variable> variables = new ArrayList<>();
+
+    /**
+     * Arima component (including mean correction
+     */
     private final SarimaComponent arima = new SarimaComponent();
 
     // Caching
@@ -94,6 +116,8 @@ public final class ModelDescription {
 
     public ModelDescription(@Nonnull ModelDescription desc) {
         this.series = desc.series;
+        this.interpolatedSeries = desc.interpolatedSeries;
+        this.missing = desc.missing;
         desc.preadjustmentVariables.forEach(preadjustmentVariables::add);
         desc.variables.forEach(variables::add);
         this.arima.copy(desc.arima);
@@ -127,22 +151,12 @@ public final class ModelDescription {
         if (transformedSeries == null) {
             int diff = arima.getDifferencingOrder();
             LogJacobian lj = new LogJacobian(diff, series.length());
-            TsData tmp = series;
-            int[] m;
-            if (interpolator != null && tmp.getValues().anyMatch(z -> Double.isNaN(z))) {
-                IntList missing = new IntList();
-                double[] data = interpolator.interpolate(tmp.getValues(), missing);
-                m = missing.isEmpty() ? null : missing.toArray();
-                tmp = TsData.ofInternal(series.getStart(), data);
-            } else {
-                m = null;
-            }
-
+            TsData tmp = interpolatedSeries == null ? series : interpolatedSeries;
             if (logTransformation) {
                 if (lpTransformation != LengthOfPeriodType.None) {
-                    tmp = new LengthOfPeriodTransformation(lpTransformation).transform(tmp, lj);
+                    tmp = Transformations.lengthOfPeriod(lpTransformation).transform(tmp, lj);
                 }
-                tmp = ITsTransformation.of(new LogTransformation()).transform(tmp, lj);
+                tmp = Transformations.log().transform(tmp, lj);
             }
 
             if (!preadjustmentVariables.isEmpty()) {
@@ -157,7 +171,7 @@ public final class ModelDescription {
             transformedSeries = TransformedSeries.builder()
                     .transformationCorrection(lj.value)
                     .data(tmp.getValues().toArray())
-                    .missing(m)
+                    .missing(missing)
                     .build();
         }
     }
@@ -271,7 +285,7 @@ public final class ModelDescription {
         return variables.stream()
                 .anyMatch(var -> var.getVariable().getName().equals(name))
                 || preadjustmentVariables.stream()
-                .anyMatch(var -> var.getVariable().getName().equals(name));
+                        .anyMatch(var -> var.getVariable().getName().equals(name));
     }
 
     public void setLogTransformation(boolean log) {
@@ -436,55 +450,20 @@ public final class ModelDescription {
         return lpTransformation;
     }
 
-//    public boolean updateMissing(IDataInterpolator interpolator) {
-//        if (missings != null) {
-//            return false;
-//        }
-//        DoubleSequence y = DoubleSequence.of(y0);
-//        IntList missings = new IntList(y0.length);
-//        double[] tmp = interpolator.interpolate(y, missings);
-//        if (tmp == null) {
-//            return false;
-//        }
-//        if (missings.isEmpty()) {
-//            return true;
-//        }
-//        TsData tmp = new TsData(estimationDomain.getStartPeriod(), y, false);
-//        this.missings = new int[missings.size()];
-//        for (int i = 0; i < this.missings.length; ++i) {
-//            this.missings[i] = missings.get(i);
-//        }
-//        y0 = y;
-//        invalidateData();
-//        return true;
-//    }
-//    public void setTransformation(PreadjustmentType lengthOfPeriodType) {
-//        if (preadjustment != lengthOfPeriodType) {
-//            preadjustment = lengthOfPeriodType;
-//            invalidateData();
-//        }
-//    }
-//
-//    public void setTransformation(DefaultTransformationType fn) {
-//        if (transformation != fn) {
-//            transformation = fn;
-//            checkPreadjustment();
-//            invalidateData();
-//        }
-//    }
-//
-//    public void setPreadjustments(List<PreadjustmentVariable> var) {
-//        preadjustment.clear();
-//        preadjustment.addAll(var);
-//        invalidateData();
-//    }
-//
-//    public void setVariables(List<Variable> var) {
-//        variables.clear();
-//        variables.addAll(var);
-//        invalidateData();
-//    }
-//
+    public void interpolate(@Nonnull DataInterpolator interpolator) {
+        if (series.getValues().anyMatch(z -> Double.isNaN(z))) {
+            IntList lmissing = new IntList();
+            double[] data = interpolator.interpolate(series.getValues(), lmissing);
+            missing = lmissing.isEmpty() ? null : lmissing.toArray();
+            interpolatedSeries = TsData.ofInternal(series.getStart(), data);
+            invalidateTransformation();
+        }
+    }
+
+    public int[] getMissing() {
+        return this.missing;
+    }
+
     public void setMean(boolean mean) {
         arima.setMean(mean);
         if (regarima != null && mean != regarima.isMean()) {
@@ -514,19 +493,35 @@ public final class ModelDescription {
         return series.getAnnualFrequency();
     }
 
-    /**
-     * @return the interpolator
-     */
-    public IDataInterpolator getInterpolator() {
-        return interpolator;
+    public List<TsDataTransformation> transformations() {
+        buildTransformation();
+        ArrayList<TsDataTransformation> tr = new ArrayList<>();
+
+        if (lpTransformation != LengthOfPeriodType.None) {
+            tr.add(Transformations.lengthOfPeriod(lpTransformation));
+        }
+        if (logTransformation) {
+            tr.add(Transformations.log());
+        }
+        return tr;
     }
 
     /**
-     * @param interpolator the interpolator to set
+     * Back transformation
+     *
+     * @return The list of the transformation
      */
-    public void setInterpolator(IDataInterpolator interpolator) {
-        this.interpolator = interpolator;
-        invalidateTransformation();
+    public List<TsDataTransformation> backTransformations() {
+        buildTransformation();
+        ArrayList<TsDataTransformation> tr = new ArrayList<>();
+
+        if (logTransformation) {
+            tr.add(Transformations.exp());
+        }
+        if (lpTransformation != LengthOfPeriodType.None) {
+            tr.add(Transformations.lengthOfPeriod(lpTransformation).converse());
+        }
+        return tr;
     }
 
     public int findPosition(ITsVariable<TsDomain> variable) {

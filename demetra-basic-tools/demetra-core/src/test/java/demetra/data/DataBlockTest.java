@@ -21,6 +21,14 @@ import static demetra.data.DataBlock.ofInternal;
 import static demetra.data.DataBlock.ofInternal;
 import static demetra.data.DataBlock.ofInternal;
 import static demetra.data.DataBlock.ofInternal;
+import static demetra.data.DataBlock.ofInternal;
+import static demetra.data.DataBlock.ofInternal;
+import static demetra.data.DataBlock.ofInternal;
+import static demetra.data.DataBlock.ofInternal;
+import static demetra.data.DataBlock.ofInternal;
+import static demetra.data.DataBlock.ofInternal;
+import static demetra.data.DataBlock.ofInternal;
+import static demetra.data.DataBlock.ofInternal;
 
 /**
  *
@@ -210,7 +218,7 @@ public class DataBlockTest {
 
     @Test
     public void testCells() {
-        assertThat(ofInternal(getSample(10), 0, 10, 1).cells()).isInstanceOf(Cell.class);
+        assertThat(ofInternal(getSample(10), 0, 10, 1).cells()).isInstanceOf(DoubleCell.class);
     }
 
     @Test

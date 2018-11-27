@@ -10,9 +10,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.LogSign;
-import demetra.data.accumulator.DoubleAccumulator;
-import demetra.random.IRandomNumberGenerator;
+import demetra.data.transformation.DoubleAccumulator;
 import demetra.util.ServiceLookup;
+import demetra.random.RandomNumberGenerator;
 
 /**
  *
@@ -32,7 +32,7 @@ public class SymmetricMatrix {
     }
 
     // Static calls to the current implementation
-    public void randomize(Matrix M, IRandomNumberGenerator rng) {
+    public void randomize(Matrix M, RandomNumberGenerator rng) {
         IMPL.get().randomize(M, rng);
     }
 

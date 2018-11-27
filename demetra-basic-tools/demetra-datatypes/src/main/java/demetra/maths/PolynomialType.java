@@ -5,8 +5,8 @@
  */
 package demetra.maths;
 
-import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
+import demetra.design.Development;
 import java.util.Formatter;
 import javax.annotation.Nonnull;
 
@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Development(status = Development.Status.Release)
 public interface PolynomialType {
 
     public static final PolynomialType ONE = new LightPolynomial(new double[]{1});

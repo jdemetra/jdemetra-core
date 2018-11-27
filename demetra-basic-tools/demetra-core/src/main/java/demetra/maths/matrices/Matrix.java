@@ -8,7 +8,7 @@ package demetra.maths.matrices;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
-import demetra.data.accumulator.DoubleAccumulator;
+import demetra.data.transformation.DoubleAccumulator;
 import java.util.Iterator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -46,6 +46,8 @@ public class Matrix implements MatrixType {
     }
 
     public static Matrix of(MatrixType matrix) {
+        if (matrix == null)
+            return null;
         return new Matrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
     }
 

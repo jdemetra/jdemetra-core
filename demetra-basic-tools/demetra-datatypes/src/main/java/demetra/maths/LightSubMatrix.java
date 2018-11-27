@@ -17,11 +17,13 @@
 package demetra.maths;
 
 import demetra.data.DoubleSequence;
+import demetra.design.Development;
 
 /**
  *
  * @author Jean Palate
  */
+@Development(status = Development.Status.Release)
 class LightSubMatrix implements MatrixType {
 
     private final MatrixType core;

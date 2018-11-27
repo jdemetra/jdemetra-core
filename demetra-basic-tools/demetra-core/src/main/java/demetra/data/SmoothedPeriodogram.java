@@ -19,6 +19,7 @@ package demetra.data;
 import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
 import demetra.stats.AutoCovariances;
+import demetra.data.transformation.Taper;
 
 /**
  *
@@ -36,7 +37,7 @@ public class SmoothedPeriodogram {
         private DiscreteWindowFunction win = DiscreteWindowFunction.Tukey;
         private int winLen = 44;
         private int resolution = 0;
-        private ITaper taper = null;
+        private Taper taper = null;
         private DoubleSequence data;
 
         private Builder() {
@@ -58,7 +59,7 @@ public class SmoothedPeriodogram {
          * tapering)
          * @return
          */
-        public Builder taper(ITaper taper) {
+        public Builder taper(Taper taper) {
             this.taper = taper;
             return this;
         }

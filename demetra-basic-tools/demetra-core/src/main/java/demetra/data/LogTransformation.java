@@ -17,13 +17,17 @@
 package demetra.data;
 
 import demetra.design.Development;
+import demetra.data.transformation.DataTransformation;
+import demetra.data.transformation.LogJacobian;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class LogTransformation implements IDataTransformation {
+public class LogTransformation implements DataTransformation {
+
+    public static final LogTransformation EXEMPLAR = new LogTransformation();
 
     /**
      *
@@ -39,8 +43,8 @@ public class LogTransformation implements IDataTransformation {
      * @return
      */
     @Override
-    public IDataTransformation converse() {
-        return new ExpTransformation();
+    public DataTransformation converse() {
+        return ExpTransformation.EXEMPLAR;
     }
 
     /**
@@ -68,4 +72,10 @@ public class LogTransformation implements IDataTransformation {
         }
         return DoubleSequence.ofInternal(x);
     }
+
+    @Override
+    public double transform(double x) {
+        return x <= 0 ? Double.NaN : Math.log(x);
+    }
+
 }

@@ -16,7 +16,6 @@
  */
 package demetra.linearsystem.internal;
 
-import demetra.data.Cell;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.accumulator.NeumaierAccumulator;
@@ -24,13 +23,18 @@ import demetra.design.BuilderPattern;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.linearsystem.ILinearSystemSolver;
+import demetra.data.DoubleCell;
+import demetra.design.AlgorithmImplementation;
+import demetra.design.Development;
+import demetra.linearsystem.LinearSystemSolver;
 
 /**
  *
  * @author Jean Palate
  */
-public class QRLinearSystemSolver implements ILinearSystemSolver {
+@AlgorithmImplementation(algorithm = LinearSystemSolver.class)
+@Development(status = Development.Status.Release)
+public class QRLinearSystemSolver implements LinearSystemSolver {
 
     @BuilderPattern(QRLinearSystemSolver.class)
     public static class Builder {
@@ -82,7 +86,7 @@ public class QRLinearSystemSolver implements ILinearSystemSolver {
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
-            Cell cells = b.cells();
+            DoubleCell cells = b.cells();
             while (rows.hasNext()) {
                 DataBlock row = rows.next();
                 double norm = row.norm2();

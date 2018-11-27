@@ -17,12 +17,12 @@
 package demetra.maths.linearfilters.internal;
 
 import demetra.data.DataBlock;
-import demetra.linearsystem.ILinearSystemSolver;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.data.DoubleSequence;
+import demetra.linearsystem.LinearSystemSolver;
 
 /**
  *
@@ -30,7 +30,7 @@ import demetra.data.DoubleSequence;
  */
 public class SymmetricFilterAlgorithms {
 
-    public static SymmetricFilter.Decomposer decomposer(ILinearSystemSolver solver) {
+    public static SymmetricFilter.Decomposer decomposer(LinearSystemSolver solver) {
         return (SymmetricFilter filter, final BackFilter Q) -> {
             if (Q.length() == 1) {
                 double[] data = filter.coefficientsAsPolynomial().toArray();
@@ -67,7 +67,7 @@ public class SymmetricFilterAlgorithms {
             }
             DataBlock g = DataBlock.ofInternal(mc);
             if (solver == null) {
-                ILinearSystemSolver.robustSolver().solve(a, g);
+                LinearSystemSolver.robustSolver().solve(a, g);
             } else {
                 solver.solve(a, g);
             }

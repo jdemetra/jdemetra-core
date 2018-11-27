@@ -18,7 +18,6 @@ package demetra.benchmarking.multivariate;
 
 import demetra.algorithms.AlgorithmDescriptor;
 import demetra.data.AggregationType;
-import demetra.processing.IProcSpecification;
 import demetra.util.Comparator;
 import demetra.util.WeightedItem;
 import demetra.util.WildCards;
@@ -26,13 +25,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
+import demetra.processing.ProcSpecification;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.Data
-public class MultivariateCholetteSpecification implements IProcSpecification {
+public class MultivariateCholetteSpecification implements ProcSpecification {
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "multivariatecholette", null);
 

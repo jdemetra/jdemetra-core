@@ -17,15 +17,15 @@
 package demetra.dstats;
 
 import demetra.design.Development;
-import demetra.random.IRandomNumberGenerator;
 import lombok.NonNull;
+import demetra.random.RandomNumberGenerator;
 
 /**
  * 
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public class Uniform implements IContinuousDistribution {
+public class Uniform implements ContinuousDistribution {
 
     private final double min, max;
     
@@ -152,7 +152,7 @@ public class Uniform implements IContinuousDistribution {
     }
 
     @Override
-    public double random(@NonNull IRandomNumberGenerator rng) throws DStatException {
+    public double random(@NonNull RandomNumberGenerator rng) throws DStatException {
 	return min + rng.nextDouble() * (max - min);
     }
 

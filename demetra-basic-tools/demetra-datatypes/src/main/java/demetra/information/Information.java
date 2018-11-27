@@ -26,7 +26,7 @@ import demetra.design.Development;
  * @author Jean Palate
  */
 @Immutable
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public final class Information<S> {
 
     /**

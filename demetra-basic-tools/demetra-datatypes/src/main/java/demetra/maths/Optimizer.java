@@ -5,10 +5,13 @@
  */
 package demetra.maths;
 
+import demetra.design.Development;
+
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Development(status = Development.Status.Release)
 public enum Optimizer {
     LevenbergMarquardt, MinPack, LBFGS
 }

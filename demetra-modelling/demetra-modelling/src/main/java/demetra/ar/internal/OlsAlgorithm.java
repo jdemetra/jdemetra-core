@@ -16,21 +16,22 @@
  */
 package demetra.ar.internal;
 
-import demetra.ar.IAutoRegressiveEstimation;
 import demetra.data.DataBlockIterator;
 import demetra.design.AlgorithmImplementation;
-import demetra.leastsquares.IQRSolver;
 import demetra.maths.matrices.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.data.DoubleSequence;
+import demetra.leastsquares.QRSolvers;
+import demetra.leastsquares.QRSolver;
+import demetra.ar.AutoRegressiveEstimation;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = IAutoRegressiveEstimation.class)
-@AlgorithmImplementation(algorithm=IAutoRegressiveEstimation.class)
-public class OlsAlgorithm implements IAutoRegressiveEstimation {
+@ServiceProvider(service = AutoRegressiveEstimation.class)
+@AlgorithmImplementation(algorithm=AutoRegressiveEstimation.class)
+public class OlsAlgorithm implements AutoRegressiveEstimation {
 
     private double[] y, a;
 
@@ -44,7 +45,7 @@ public class OlsAlgorithm implements IAutoRegressiveEstimation {
         for (int i = 0; i < nar; ++i) {
             cols.next().copy(Y.drop(nar-i-1, n));
         }
-        IQRSolver solver = IQRSolver.fastSolver();
+        QRSolver solver = QRSolvers.fastSolver();
         DoubleSequence yc = Y.drop(nar, 0);
         if (!solver.solve(yc, M)) {
             return false;

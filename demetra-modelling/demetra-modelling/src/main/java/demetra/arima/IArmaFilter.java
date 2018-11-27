@@ -18,7 +18,6 @@
 
 package demetra.arima;
 
-import demetra.arima.IArimaModel;
 import demetra.arima.internal.AnsleyFilter;
 import demetra.arima.internal.KalmanFilter;
 import demetra.arima.internal.LjungBoxFilter;
