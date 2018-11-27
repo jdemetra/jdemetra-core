@@ -5,8 +5,15 @@
  */
 package demetra.data;
 
+import demetra.maths.MatrixType;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -401,5 +408,21 @@ public class Data {
         TS_ABS_RETAIL = TsData.of(TsPeriod.monthly(1982, 4), DoubleSequence.ofInternal(ABS_RETAIL));
         TS_ABS_RETAIL2 = TsData.of(TsPeriod.monthly(1982, 4), DoubleSequence.ofInternal(ABS_RETAIL2));
         DAILY_CONTINUOUS = TsData.of(TsPeriod.daily(2004, 1, 1), DoubleSequence.ofInternal(US_UNEMPL));
+    }
+
+    public static final TsData[] insee() {
+        try {
+            URI uri = Data.class.getResource("/insee.txt").toURI();
+            MatrixType insee = MatrixSerializer.read(new File(uri));
+            TsData[] all=new TsData[insee.getColumnsCount()];
+            TsPeriod start=TsPeriod.monthly(1990, 1);
+            for (int i=0; i<all.length; ++i){
+                all[i]=TsData.of(start, insee.column(i));
+            }
+            return all;
+        } catch (URISyntaxException | IOException ex) {
+            return null;
+        }
+
     }
 }

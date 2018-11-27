@@ -83,7 +83,7 @@ public class TramoProcessor implements IPreprocessor {
     private final TramoSpec spec;
     private final ModellingContext modellingContext;
     private final AmiOptions options;
-    private final Context context=new Context();
+    private final Context context = new Context();
 
     private final SeasonalityController scontroller;
     private final List<ModelController> controllers = new ArrayList<>();
@@ -94,6 +94,8 @@ public class TramoProcessor implements IPreprocessor {
     private int pass = 0, round = 0;
     private double curva = 0, pcr = 0;
     private boolean pass3;
+    private boolean needOutliers;
+    private boolean needAutoModelling;
 
     private TramoProcessor(TramoSpec spec, ModellingContext context) {
         this.spec = new TramoSpec(spec);
@@ -147,6 +149,7 @@ public class TramoProcessor implements IPreprocessor {
                         .workingDays(TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext))
                         .testMean(spec.isUsingAutoModel())
                         .fPValue(tdspec.getProbabibilityForFTest())
+                        .estimationPrecision(options.intermediatePrecision)
                         .build();
             } else {
                 return AutomaticWaldRegressionTest.builder()
@@ -157,6 +160,7 @@ public class TramoProcessor implements IPreprocessor {
                         .testMean(spec.isUsingAutoModel())
                         .fPValue(tdspec.getProbabibilityForFTest())
                         .PConstraint(tdspec.getProbabibilityForFTest())
+                        .estimationPrecision(options.intermediatePrecision)
                         .build();
             }
         } else {
@@ -165,6 +169,7 @@ public class TramoProcessor implements IPreprocessor {
                     .leapYear(TramoModelBuilder.leapYear(tdspec))
                     .tradingDays(TramoModelBuilder.tradingDays(spec, modellingContext))
                     .testMean(spec.isUsingAutoModel())
+                    .estimationPrecision(options.intermediatePrecision)
                     .build();
         }
     }
@@ -192,6 +197,7 @@ public class TramoProcessor implements IPreprocessor {
         return obuilder.span(outliers.getSpan())
                 .tcrate(outliers.getDeltaTC())
                 .maximumLikelihood(outliers.isMaximumLikelihood())
+                .precision(options.intermediatePrecision)
                 .build();
     }
 
@@ -202,6 +208,7 @@ public class TramoProcessor implements IPreprocessor {
                 .ub1(amiSpec.getUb1())
                 .ub2(amiSpec.getUb2())
                 .seasonal(context.seasonal)
+                .precision(options.intermediatePrecision)
                 .build();
     }
 
@@ -268,6 +275,8 @@ public class TramoProcessor implements IPreprocessor {
 
     private void initProcessing(int n) {
         round = 0;
+        needOutliers = spec.getOutliers().isUsed();
+        needAutoModelling = false;
         pass = 0;
         pass3 = false;
         // initialize some internal variables
@@ -281,9 +290,10 @@ public class TramoProcessor implements IPreprocessor {
         refAuto = null;
         refStats = null;
         refAirline = null;
-        if (scontroller != null)
+        if (scontroller != null) {
             scontroller.setReferenceModel(null);
-        controllers.forEach(c->c.setReferenceModel(null));
+        }
+        controllers.forEach(c -> c.setReferenceModel(null));
     }
 
     private boolean reduceVa() {
@@ -366,14 +376,13 @@ public class TramoProcessor implements IPreprocessor {
                 }
             }
         }
-        for (ModelController controller : controllers){
+        for (ModelController controller : controllers) {
             controller.setEstimator(estimator);
             controller.setReferenceModel(refAuto);
             controller.process(modelling, context);
         }
         return true;
     }
-
 
     //
     //    private void control(RegArimaContext context, ModelEstimator estimator) {
@@ -690,7 +699,7 @@ public class TramoProcessor implements IPreprocessor {
         if (tspec.getFunction() == TransformationType.Auto) {
             LogLevelModule module = LogLevelModule.builder()
                     .logPreference(Math.log(tspec.getFct()))
-                    .estimationPrecision(espec.getTol())
+                    .estimationPrecision(options.intermediatePrecision)
                     .seasonal(context.seasonal)
                     .build();
             module.process(modelling);
