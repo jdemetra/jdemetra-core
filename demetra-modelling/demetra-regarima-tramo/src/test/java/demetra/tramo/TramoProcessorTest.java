@@ -41,7 +41,7 @@ public class TramoProcessorTest {
         datamissing[102] = Double.NaN;
     }
 
-    @Test
+    //@Test
     public void testProdMissing() {
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TR5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
@@ -51,7 +51,7 @@ public class TramoProcessorTest {
         System.out.println(rslt.getEstimation().getStatistics().getLogLikelihood());
     }
 
-    @Test
+    //@Test
     public void testProdLegacyMissing() {
         IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR5.build();
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, datamissing, true);
@@ -60,7 +60,7 @@ public class TramoProcessorTest {
         System.out.println(rslt.estimation.getStatistics().logLikelihood);
     }
 
-    @Test
+    //@Test
     public void testProd() {
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
@@ -75,7 +75,7 @@ public class TramoProcessorTest {
         TsData[] all = Data.insee();
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
-        for (int i = 3; i < all.length; ++i) {
+        for (int i = 0; i < all.length; ++i) {
             PreprocessingModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
@@ -88,7 +88,7 @@ public class TramoProcessorTest {
         }
     }
 
-    @Test
+    //@Test
     public void testProdLegacy() {
         IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
@@ -97,7 +97,7 @@ public class TramoProcessorTest {
         System.out.println(rslt.estimation.getStatistics().adjustedLogLikelihood);
     }
 
-    @Test
+    //@Test
     public void testProdWald() {
         TramoSpec nspec = new TramoSpec(TramoSpec.TRfull);
         nspec.getRegression().getCalendar().getTradingDays().setAutomaticMethod(TradingDaysSpec.AutoMethod.WaldTest);
@@ -109,7 +109,7 @@ public class TramoProcessorTest {
         System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
     }
 
-    @Test
+    //@Test
     public void testProdWaldLegacy() {
         ec.tstoolkit.modelling.arima.tramo.TramoSpecification nspec = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.clone();
         nspec.getRegression().getCalendar().getTradingDays().setAutomaticMethod(ec.tstoolkit.modelling.arima.tramo.TradingDaysSpec.AutoMethod.WaldTest);

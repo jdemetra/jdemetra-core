@@ -41,9 +41,9 @@ class TradingDaysController extends ModelController {
     ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context) {
         // find td variables
         ModelDescription desc = modelling.getDescription();
-        Optional<Variable> findAny = desc.variables().filter(var ->(!var.isPrespecified()) && var.isCalendar()).findAny();
+        boolean hascal = desc.variables().anyMatch(var ->(!var.isPrespecified()) && var.isCalendar());
         // nothing to do if td is prespecified
-        if (findAny.isPresent()) {
+        if (hascal) {
             return ProcessingResult.Unchanged;
         }
         if (!needProcessing(modelling)) {

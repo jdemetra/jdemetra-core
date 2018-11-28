@@ -275,7 +275,7 @@ public class TramoProcessor implements IPreprocessor {
 
     private void initProcessing(int n) {
         round = 0;
-        needOutliers = spec.getOutliers().isUsed();
+        needOutliers = isOutliersDetection();
         needAutoModelling = false;
         pass = 0;
         pass3 = false;
@@ -319,7 +319,10 @@ public class TramoProcessor implements IPreprocessor {
         SarimaSpecification curspec = desc.getSpecification();
         boolean curmu = desc.isMean();
         if (needDifferencing(desc)) {
-            execDifferencing(modelling);
+            if (execDifferencing(modelling) == ProcessingResult.Changed && pass ==1){
+                desc.removeVariable(var->var.isOutlier(false));
+                modelling.setEstimation(null);
+            }
         }
         if (needAutoModelling(desc)) {
             execAutoModelling(modelling);
@@ -338,12 +341,16 @@ public class TramoProcessor implements IPreprocessor {
 //        context.estimate(options.precision);
 
         if (!estimateModel(modelling)) {
+            needOutliers = isOutliersDetection();
+            needAutoModelling = isAutoModelling();
             ++round;
             ++pass;
             return false;
         }
 
         if (round == 0) {
+            needOutliers = isOutliersDetection();
+            needAutoModelling = isAutoModelling();
             ++round;
             ++pass;
             refAirline = modelling.build();
@@ -360,6 +367,8 @@ public class TramoProcessor implements IPreprocessor {
 
         if (!testRegression(modelling, spec.getAutoModel().getTsig())) {
             pass = 4;
+            needAutoModelling = false;
+            needOutliers = false;
             return false;
         }
 
@@ -372,6 +381,8 @@ public class TramoProcessor implements IPreprocessor {
                 if (!pass3) {
                     pass3 = true;
                     pass = 1;
+                    needAutoModelling = true;
+                    needOutliers = isOutliersDetection();
                     return false;
                 }
             }
@@ -416,25 +427,18 @@ public class TramoProcessor implements IPreprocessor {
         // We start from current differencing
         // we will not compute differencing if it is already max (2,1) or if
         // we didn't find any outlier at the end of round 0 and 1 (same problem)
-        if (!isAutoModelling()) {
+        if (!needAutoModelling) {
             return false;
         }
-        if (pass > 2) {
+        if (round == 2 && !desc.variables().anyMatch(var -> var.isOutlier(false))) {
             return false;
         }
-
-        switch (round) {
-            case 0:
-                return false;
-            case 1:
-                return true;
-            default:
-                SarimaSpecification curspec = desc.getSpecification();
-                if (curspec.getD() == 2 && curspec.getBd() == 1) {
-                    return false;
-                }
-                return !ModelDescription.sameVariables(refAirline.getDescription(), desc);
+        SarimaSpecification curspec = desc.getSpecification();
+        if (curspec.getD() == 2 && curspec.getBd() == 1) {
+            return false;
         }
+        return true;
+//        return !ModelDescription.sameVariables(refAirline.getDescription(), desc);
     }
 
     private boolean isAutoModelling() {
@@ -453,19 +457,10 @@ public class TramoProcessor implements IPreprocessor {
     }
 
     private boolean needAutoModelling(ModelDescription desc) {
-        if (!isAutoModelling()) {
+        if (!needAutoModelling) {
             return false;
         }
-        if (pass > 2) {
-            return false;
-        }
-        if (pass == 1 && pass3) {
-            return false;
-        }
-        if (round == 0) {
-            return false;
-        }
-        if (round == 2 && desc.variables().anyMatch(var -> var.isOutlier(false))) {
+        if (round == 2 && !desc.variables().anyMatch(var -> var.isOutlier(false))) {
             return false;
         }
         // Should be completed
@@ -624,8 +619,12 @@ public class TramoProcessor implements IPreprocessor {
         ++round;
         ++pass;
 
-        if (pass > 2) {
+        if (pass <= 2) {
+            needAutoModelling = !same;
+            needOutliers = isOutliersDetection();
+        } else {
             lastSolution(context);
+            needAutoModelling = false;
         }
         return false;
     }
@@ -647,6 +646,8 @@ public class TramoProcessor implements IPreprocessor {
         modelling.setEstimation(null);
 //        addArmaHistory(context);
         round = 1;
+        needOutliers = isOutliersDetection();
+        needAutoModelling = false;
     }
 //
 //    private void clear() {

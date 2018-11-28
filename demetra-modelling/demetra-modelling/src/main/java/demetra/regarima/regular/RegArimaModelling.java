@@ -49,7 +49,7 @@ public class RegArimaModelling {
     }
 
     public PreprocessingModel build() {
-        return new PreprocessingModel(description, estimation);
+        return new PreprocessingModel(new ModelDescription(description), estimation);
     }
 
     public boolean needEstimation() {

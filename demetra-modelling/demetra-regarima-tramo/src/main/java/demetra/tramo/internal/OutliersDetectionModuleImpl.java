@@ -297,6 +297,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
     private void updateLikelihood(ConcentratedLikelihood likelihood, int nhp) {
         coeff = likelihood.allCoefficients();
         tstats = likelihood.tstats(nhp, true);
+        res=regarima.differencedModel().asLinearModel().calcResiduals(coeff);
     }
 
     private void clear() {
@@ -382,7 +383,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
      */
     private void removeOutlier(int idx) {
         //
-        int opos = regarima.getVariablesCount() - outliers.size() + idx;
+        int opos = regarima.getX().size() - outliers.size() + idx;
         regarima = regarima.toBuilder().removeX(opos).build();
         outliers.remove(idx);
         double[] tmp;

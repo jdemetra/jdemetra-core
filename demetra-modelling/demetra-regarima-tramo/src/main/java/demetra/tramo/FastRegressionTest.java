@@ -95,7 +95,7 @@ public class FastRegressionTest implements IRegressionModule {
                 removetd = true;
             }
         }
-        if (lp.isPresent()) {
+        if (removetd && lp.isPresent()) {
             Variable variable = lp.get();
             int pos = start + tmpModel.findPosition(variable.getVariable());
             if (lpTest.accept(ll, nhp, pos, 1, null)) {
@@ -108,6 +108,8 @@ public class FastRegressionTest implements IRegressionModule {
 
         if (removetd) {
             currentModel.remove(td.get().getVariable());
+            if (lp.isPresent())
+                currentModel.remove(lp.get().getVariable());
             changed = true;
         }
 

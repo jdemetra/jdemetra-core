@@ -191,7 +191,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
             detector.addOutlierFactory(AdditiveOutlier.FACTORY);
         }
         if (ls) {
-            detector.addOutlierFactory(LevelShift.FACTORY_ZEROSTARTED);
+            detector.addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
         }
         if (tc) {
             detector.addOutlierFactory(new TransitoryChange.Factory(tcrate));

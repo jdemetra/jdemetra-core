@@ -379,16 +379,23 @@ public final class ModelDescription {
 
     public void setSpecification(SarimaSpecification spec) {
         arima.setSpecification(spec);
+        if (transformedSeries != null) {
+            transformedSeries=null;
+            buildTransformation();
+        }
         if (regarima != null) {
             regarima = RegArimaModel.of(regarima, arima.getModel());
         }
-
     }
 
     public void setAirline(boolean seas) {
         SarimaSpecification s = new SarimaSpecification(this.getAnnualFrequency());
         s.airline(seas);
         arima.setSpecification(s);
+        if (transformedSeries != null) {
+            transformedSeries=null;
+            buildTransformation();
+        }
         if (regarima != null) {
             regarima = RegArimaModel.of(regarima, arima.getModel());
         }

@@ -356,6 +356,8 @@ class TramoModelBuilder implements IModelBuilder {
             return null;
         }
         TradingDaysType tdType = td.getTradingDaysType();
+        if (td.isAutomatic())
+            tdType=TradingDaysType.WorkingDays;
         DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return new GenericTradingDaysVariables(gtd);
