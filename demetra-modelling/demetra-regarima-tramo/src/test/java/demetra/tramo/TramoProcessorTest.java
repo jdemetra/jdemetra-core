@@ -41,7 +41,7 @@ public class TramoProcessorTest {
         datamissing[102] = Double.NaN;
     }
 
-    //@Test
+    @Test
     public void testProdMissing() {
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TR5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
@@ -51,7 +51,7 @@ public class TramoProcessorTest {
         System.out.println(rslt.getEstimation().getStatistics().getLogLikelihood());
     }
 
-    //@Test
+    @Test
     public void testProdLegacyMissing() {
         IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR5.build();
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, datamissing, true);
@@ -60,7 +60,7 @@ public class TramoProcessorTest {
         System.out.println(rslt.estimation.getStatistics().logLikelihood);
     }
 
-    //@Test
+    @Test
     public void testProd() {
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
@@ -88,7 +88,7 @@ public class TramoProcessorTest {
         }
     }
 
-    //@Test
+    @Test
     public void testProdLegacy() {
         IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
@@ -119,4 +119,28 @@ public class TramoProcessorTest {
         System.out.println("Legacy wald");
         System.out.println(rslt.estimation.getStatistics().adjustedLogLikelihood);
     }
+
+    @Test
+    public void stressTestProd() {
+        long t0 = System.currentTimeMillis();
+        for (int i = 0; i < 1000; ++i) {
+            TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
+            TsPeriod start = TsPeriod.monthly(1967, 1);
+            TsData s = TsData.of(start, DoubleSequence.ofInternal(data));
+            PreprocessingModel rslt = processor.process(s, null);
+        }
+        long t1 = System.currentTimeMillis();
+        System.out.println("JD3");
+        System.out.println(t1 - t0);
+        t0 = System.currentTimeMillis();
+        for (int i = 0; i < 1000; ++i) {
+            IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
+            ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
+            ec.tstoolkit.modelling.arima.PreprocessingModel rslt = processor.process(s, null);
+        }
+        t1 = System.currentTimeMillis();
+        System.out.println("Legacy");
+        System.out.println(t1 - t0);
+    }
+
 }

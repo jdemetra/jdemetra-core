@@ -25,39 +25,103 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import demetra.data.DoubleCell;
+import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixWindow;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public class GenericTradingDays {
 
+    @lombok.Value
+    private static class Entry {
+
+        DayClustering clustering;
+        int period;
+    }
+
+    
+    @lombok.Value
+    private static class Data {
+
+        TsPeriod start;
+        Matrix data;
+        
+    }
+
+    private static final Map<Entry, Data> cache = new HashMap<>();
+
+    private static Matrix dataFor(DayClustering clustering, TsDomain domain) {
+        synchronized (cache) {
+            TsPeriod start=domain.getStartPeriod();
+            Entry entry=new Entry(clustering, domain.getAnnualFrequency());
+            Data rslt = cache.get(entry);
+            if (rslt == null){
+                Matrix m = generateContrasts(clustering, domain);
+                cache.put(entry, new Data(start, m));
+                return m;
+            }else{
+                int beg=rslt.start.until(start);
+                int n=domain.getLength();
+                int ng=rslt.data.getColumnsCount();
+                int end=beg+n;
+                if (beg>= 0 && end<= rslt.data.getRowsCount()){
+                    return rslt.data.extract(beg, n, 0, ng);
+                }else{
+                    int n0=0, n1=0;
+                    int ncur=rslt.data.getRowsCount();
+                    if (beg <0){
+                        n0=-beg;
+                        beg=0;
+                    }
+                    if (end > ncur){
+                        n1=end-ncur;
+                    }
+                    int nn=n0+n1+ncur;
+                    Matrix m=Matrix.make(nn, ng);
+                    MatrixWindow mw=m.top(0);
+                    if (n0>0){
+                        TsDomain d0=TsDomain.of(start, n0);
+                        mw.vnext(n0);
+                        mw.copy(generateContrasts(clustering, d0));
+                    }
+                    mw.vnext(ncur);
+                    mw.copy(rslt.data);
+                    if (n1>0){
+                        TsDomain d1=TsDomain.of(start.plus(n0+ncur), n1);
+                        mw.vnext(n1);
+                        mw.copy(generateContrasts(clustering, d1));
+                    }
+                    cache.put(entry, new Data(start, m));
+                    return m.extract(beg, n, 0, ng);
+                }
+            }
+        }
+    }
+
     private final DayClustering clustering;
-    private final int contrastGroup;
+    private final boolean contrast;
     private final boolean normalized;
 
     public static GenericTradingDays contrasts(DayClustering clustering) {
-        return new GenericTradingDays(clustering, 0);
+        return new GenericTradingDays(clustering, true, false);
     }
 
     public static GenericTradingDays of(DayClustering clustering) {
-        return new GenericTradingDays(clustering, false);
+        return new GenericTradingDays(clustering, false, false);
     }
 
     public static GenericTradingDays normalized(DayClustering clustering) {
-        return new GenericTradingDays(clustering, true);
+        return new GenericTradingDays(clustering, false, true);
     }
 
-    private GenericTradingDays(DayClustering clustering, int contrastGroup) {
+    private GenericTradingDays(DayClustering clustering, boolean contrast, boolean normalized) {
         this.clustering = clustering;
-        this.contrastGroup = contrastGroup;
-        normalized = true;
-    }
-
-    private GenericTradingDays(DayClustering clustering, boolean normalized) {
-        this.clustering = clustering;
-        this.contrastGroup = -1;
+        this.contrast = contrast;
         this.normalized = normalized;
     }
 
@@ -66,20 +130,19 @@ public class GenericTradingDays {
     }
 
     public void data(TsDomain domain, List<DataBlock> buffer) {
-        if (contrastGroup >= 0) {
+        if (contrast) {
             dataContrasts(domain, buffer);
         } else {
             dataNoContrast(domain, buffer);
         }
     }
-    
-    private static final double[] MDAYS=new double[]
-    {31.0, 28.25, 31.0, 30.0, 31.0, 30.0, 31.0, 31.0, 30.0, 31.0, 30.0, 31.0};
-    
+
+    private static final double[] MDAYS = new double[]{31.0, 28.25, 31.0, 30.0, 31.0, 30.0, 31.0, 31.0, 30.0, 31.0, 30.0, 31.0};
+
     private void dataNoContrast(TsDomain domain, List<DataBlock> buffer) {
         int n = domain.length();
         int[][] days = tdCount(domain);
-        double[] mdays=meanDays(domain);
+        double[] mdays = meanDays(domain);
 
         int[][] groups = clustering.allPositions();
         int ng = groups.length;
@@ -97,17 +160,24 @@ public class GenericTradingDays {
                 }
                 double dsum = sum;
                 if (normalized) {
-                    dsum = dsum/np - mdays[i];
-                }else{
-                    dsum-=np* mdays[i];
+                    dsum = dsum / np - mdays[i];
+                } else {
+                    dsum -= np * mdays[i];
                 }
-                    
+
                 cells[ig].setAndNext(dsum);
             }
         }
     }
 
     private void dataContrasts(TsDomain domain, List<DataBlock> buffer) {
+        Matrix m=dataFor(clustering, domain);
+        for (int i=0; i<m.getColumnsCount(); ++i){
+            buffer.get(i).copy(m.column(i));
+        }
+    }
+
+    private static Matrix generateContrasts(DayClustering clustering, TsDomain domain) {
         int n = domain.length();
         int[][] days = tdCount(domain);
 
@@ -116,8 +186,9 @@ public class GenericTradingDays {
         int ng = groups.length - 1;
         int[] cgroup = groups[ng];
         DoubleCell[] cells = new DoubleCell[ng];
+        Matrix data = Matrix.make(n, ng);
         for (int i = 0; i < cells.length; ++i) {
-            cells[i] = buffer.get(i).cells();
+            cells[i] = data.column(i).cells();
         }
         for (int i = 0; i < n; ++i) {
             int csum = days[cgroup[0]][i];
@@ -138,11 +209,12 @@ public class GenericTradingDays {
                 cells[ig].setAndNext(dsum - np * dcsum);
             }
         }
+        return data;
     }
 
     public int getCount() {
         int n = clustering.getGroupsCount();
-        return contrastGroup >= 0 ? n - 1 : n;
+        return contrast ? n - 1 : n;
     }
 
     public String getDescription(int idx) {
@@ -152,8 +224,8 @@ public class GenericTradingDays {
     /**
      * @return the contrastGroup
      */
-    public int getContrastGroup() {
-        return contrastGroup;
+    public boolean isContrast() {
+        return contrast;
     }
 
     /**
@@ -163,15 +235,13 @@ public class GenericTradingDays {
         return normalized;
     }
 
-    private void rotate(int[][] groups) {
-        if (contrastGroup >= 0) {
-            // we put the contrast group at the end
-            int[] cgroup = groups[contrastGroup];
-            for (int i = contrastGroup + 1; i < groups.length; ++i) {
-                groups[i - 1] = groups[i];
-            }
-            groups[groups.length - 1] = cgroup;
+    private static void rotate(int[][] groups) {
+        // we put the contrast group at the end
+        int[] cgroup = groups[0];
+        for (int i = 1; i < groups.length; ++i) {
+            groups[i - 1] = groups[i];
         }
+        groups[groups.length - 1] = cgroup;
     }
 
     public static int[][] tdCount(TsDomain domain) {
@@ -217,48 +287,51 @@ public class GenericTradingDays {
 
     public static double[] meanDays(TsDomain domain) {
         int conv = TsUnit.MONTH.ratioOf(domain.getStartPeriod().getUnit());
-        if (conv <=0)
+        if (conv <= 0) {
             return null;
-        LocalDate cur = domain.start().toLocalDate();
-        int month = cur.getMonthValue()-1;
-        double[] m=new double[domain.getLength()];
-        int p=12/conv, pmax=Math.min(p, m.length);
-        for (int i=0, k=month; i<pmax; ++i){
-            double s=0;
-            for (int j=0; j<conv; ++j, ++k){
-                s+=MDAYS[k%12];
-            }
-            m[i]=s/7;
         }
-        for (int i=p; i<m.length; ++i){
-            m[i]=m[i-p];
+        LocalDate cur = domain.start().toLocalDate();
+        int month = cur.getMonthValue() - 1;
+        double[] m = new double[domain.getLength()];
+        int p = 12 / conv, pmax = Math.min(p, m.length);
+        for (int i = 0, k = month; i < pmax; ++i) {
+            double s = 0;
+            for (int j = 0; j < conv; ++j, ++k) {
+                s += MDAYS[k % 12];
+            }
+            m[i] = s / 7;
+        }
+        for (int i = p; i < m.length; ++i) {
+            m[i] = m[i - p];
         }
         return m;
     }
 
     @Override
-    public boolean equals(Object other){
-        if (this == other)
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
-        if (other instanceof GenericTradingDays){
-           GenericTradingDays x=(GenericTradingDays) other;
-           return x.normalized == normalized && x.contrastGroup == contrastGroup
-                   && x.clustering.equals(clustering);
-        }else
+        }
+        if (other instanceof GenericTradingDays) {
+            GenericTradingDays x = (GenericTradingDays) other;
+            return x.normalized == normalized && x.contrast == contrast
+                    && x.clustering.equals(clustering);
+        } else {
             return false;
+        }
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 53 * hash + Objects.hashCode(this.clustering);
-        hash = 53 * hash + this.contrastGroup;
+        hash = 53 * hash + (this.contrast ? 1 : 0);
         hash = 53 * hash + (this.normalized ? 1 : 0);
         return hash;
     }
-    
+
     private static final int DAY_OF_WEEK_OF_EPOCH = TsPeriod.DEFAULT_EPOCH.getDayOfWeek().getValue() - 1;
-    
+
     private static int calc(int year, final int month, final int day) {
 
         boolean bLeapYear = CalendarUtility.isLeap(year);
