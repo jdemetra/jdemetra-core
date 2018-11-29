@@ -348,7 +348,7 @@ public class TramoProcessor implements IPreprocessor {
             return false;
         }
 
-        if (round == 0) {
+        if (round == 0 && (isAutoModelling() || isOutliersDetection())) {
             needOutliers = isOutliersDetection();
             needAutoModelling = isAutoModelling();
             ++round;
@@ -734,6 +734,7 @@ public class TramoProcessor implements IPreprocessor {
 
     private boolean testRegression(RegArimaModelling context, double tmean) {
         FastRegressionTest regtest = FastRegressionTest.builder()
+                .testMean(isAutoModelling())
                 .meanThreshold(tmean)
                 .build();
         return regtest.test(context) == ProcessingResult.Unchanged;

@@ -45,6 +45,8 @@ public abstract class DefaultArimaSpec {
         theta = Parameter.clone(spec.theta);
         bphi = Parameter.clone(spec.bphi);
         btheta = Parameter.clone(spec.btheta);
+        if (spec.mu != null)
+            mu=spec.mu.clone();
     }
 
     public boolean isMean() {

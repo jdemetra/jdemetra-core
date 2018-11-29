@@ -41,7 +41,7 @@ public class RegArimaModelling {
     public void estimate(double precision) {
         RegSarimaProcessor processor = RegSarimaProcessor.builder()
                 .precision(precision)
-                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+                .startingPoint(RegSarimaProcessor.StartingPoint.HannanRissanen)
                 .mapping(description.getArimaComponent().defaultMapping())
                 .build();
 

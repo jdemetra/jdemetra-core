@@ -555,7 +555,8 @@ public final class ModelDescription {
         // update current description
         regarima = rslt.getModel();
         int p = this.getAnnualFrequency();
-        DoubleSequence score = DoubleSequence.ofInternal(rslt.getMax().getGradient());
+        double[] gradient = rslt.getMax().getGradient();
+        DoubleSequence score = DoubleSequence.ofInternal(gradient == null ? DoubleSequence.EMPTYARRAY : gradient);
         Matrix hessian = rslt.getMax().getHessian();
         Matrix J = hessian == null ? null : SymmetricMatrix.inverse(hessian);
         if (np < allp) {

@@ -73,11 +73,14 @@ public class GenericTradingDays {
                     return rslt.data.extract(beg, n, 0, ng);
                 }else{
                     int n0=0, n1=0;
+                    TsPeriod mstart;
                     int ncur=rslt.data.getRowsCount();
                     if (beg <0){
                         n0=-beg;
                         beg=0;
-                    }
+                        mstart=start;
+                    }else
+                        mstart=rslt.start;
                     if (end > ncur){
                         n1=end-ncur;
                     }
@@ -92,11 +95,11 @@ public class GenericTradingDays {
                     mw.vnext(ncur);
                     mw.copy(rslt.data);
                     if (n1>0){
-                        TsDomain d1=TsDomain.of(start.plus(n0+ncur), n1);
+                        TsDomain d1=TsDomain.of(mstart.plus(n0+ncur), n1);
                         mw.vnext(n1);
                         mw.copy(generateContrasts(clustering, d1));
                     }
-                    cache.put(entry, new Data(start, m));
+                    cache.put(entry, new Data(mstart, m));
                     return m.extract(beg, n, 0, ng);
                 }
             }

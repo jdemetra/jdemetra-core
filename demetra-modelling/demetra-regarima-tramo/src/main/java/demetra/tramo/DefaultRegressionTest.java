@@ -172,6 +172,8 @@ public class DefaultRegressionTest implements IRegressionModule {
 
     @Override
     public ProcessingResult test(final RegArimaModelling context) {
+        if (td == null && lp == null && easter == null && meanTest == null)
+            return ProcessingResult.Unprocessed;
         // estimate the model.
         ModelDescription currentModel = context.getDescription();
         ModelDescription tmpModel = createTestModel(context);

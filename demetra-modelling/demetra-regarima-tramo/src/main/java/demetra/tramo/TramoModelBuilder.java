@@ -80,8 +80,6 @@ class TramoModelBuilder implements IModelBuilder {
         if (spec.isUsingAutoModel()) {
             model.setAirline(!yearly);
             model.setMean(true);
-        } else if (spec.getArima() == null) {
-            model.setAirline(!yearly);
         } else {
             SarimaComponent cmp = model.getArimaComponent();
             ArimaSpec arima = spec.getArima();
