@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.modelling.arima.x13;
 
 import ec.tstoolkit.modelling.arima.RegArimaEstimator;
@@ -72,6 +71,7 @@ public class FinalEstimator implements IModelEstimator {
                 context.estimation.updateParametersCovariance(monitor.getParametersCovariance());
                 //if (checkUnitRoots(context) && checkCommonRoots(context)) {
                 if (ndim == 0) {
+                    context.information.subSet(RegArimaEstimator.OPTIMIZATION).set(RegArimaEstimator.SCORE, new double[0]);
                     return true;
                 }
                 context.information.subSet(RegArimaEstimator.OPTIMIZATION).set(RegArimaEstimator.SCORE, monitor.getScore());
@@ -87,6 +87,7 @@ public class FinalEstimator implements IModelEstimator {
                 }
                 //}
             } catch (RuntimeException err) {
+                context.estimation = null;
                 return false;
             }
         } while (niter++ < 5);
@@ -94,6 +95,9 @@ public class FinalEstimator implements IModelEstimator {
     }
 
     private int test(ModellingContext context) {
+        if (context.estimation.getLikelihood().getSsqErr() < 1e-12) {
+            return testExactModel(context);
+        }
         double cval = tsig_;
         int nz = context.description.getEstimationDomain().getLength();
         double cmin = nz <= 150 ? .15 : .1;
@@ -128,11 +132,9 @@ public class FinalEstimator implements IModelEstimator {
 
         // new implementation (cfr Tramo)
         // searchVariable the smallest TVal, remove only 1 parameter
-
         int cpr = 0, cps = 0, cqr = 0, cqs = 0;
         double tmin = cval;
         DataBlock diag = context.estimation.getParametersCovariance().diagonal();
-
 
         int k = -1;
         if (dpr) {
@@ -289,5 +291,65 @@ public class FinalEstimator implements IModelEstimator {
             }
         }
         return n;
+    }
+
+    private int testExactModel(ModellingContext context) {
+        SarimaModel m = context.estimation.getRegArima().getArima();
+        SarimaSpecification spec = m.getSpecification();
+        IReadDataBlock pm = m.getParameters();
+
+        SarimaSpecification nspec = spec.clone();
+        int j = 0;
+        int a = spec.getP();
+        if (a > 0) {
+            int k = a;
+            for (; k > 0; --k) {
+                if (Math.abs(pm.get(j + k - 1)) > 1e-3) {
+                    break;
+                }
+            }
+            nspec.setP(k);
+            j += a;
+        }
+        a = spec.getBP();
+        if (a > 0) {
+            int k = a;
+            for (; k > 0; --k) {
+                if (Math.abs(pm.get(j + k - 1)) > 1e-3) {
+                    break;
+                }
+            }
+            nspec.setBP(k);
+            j += a;
+        }
+        a = spec.getQ();
+        if (a > 0) {
+            int k = a;
+            for (; k > 0; --k) {
+                if (Math.abs(pm.get(j + k - 1)) > 1e-3) {
+                    break;
+                }
+            }
+            nspec.setQ(k);
+            j += a;
+        }
+        a = spec.getBQ();
+        if (a > 0) {
+            int k = a;
+            for (; k > 0; --k) {
+                if (Math.abs(pm.get(j + k - 1)) > 1e-3) {
+                    break;
+                }
+            }
+            nspec.setBQ(k);
+            j += a;
+        }
+        if (!nspec.equals(spec)) {
+            context.description.setSpecification(nspec);
+            return spec.getParametersCount() - nspec.getParametersCount();
+        } else {
+            return 0;
+        }
+
     }
 }
