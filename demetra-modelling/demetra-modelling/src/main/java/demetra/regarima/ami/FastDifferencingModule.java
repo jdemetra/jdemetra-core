@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
-import demetra.regarima.outlier.IRobustStandardDeviationComputer;
+import demetra.regarima.outlier.RobustStandardDeviationComputer;
 
 /**
  *
@@ -105,7 +105,7 @@ public class FastDifferencingModule implements IGenericDifferencingModule {
         if (!mad) {
             return Math.sqrt(Doubles.ssqc(z, Doubles.average(z)) / z.length());
         } else {
-            return IRobustStandardDeviationComputer.mad(centile, mad).compute(z);
+            return RobustStandardDeviationComputer.mad(centile, mad).compute(z);
         }
     }
 

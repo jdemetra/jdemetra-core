@@ -16,7 +16,7 @@
  */
 package demetra.x12;
 
-import demetra.arima.IResidualsComputer;
+import demetra.arima.ResidualsComputer;
 import demetra.arima.internal.AnsleyFilter;
 import demetra.data.DataBlock;
 import demetra.design.BuilderPattern;
@@ -26,7 +26,6 @@ import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.outlier.ExactSingleOutlierDetector;
-import demetra.regarima.outlier.IRobustStandardDeviationComputer;
 import demetra.sarima.SarimaModel;
 import demetra.modelling.regression.AdditiveOutlier;
 import demetra.modelling.regression.IOutlier;
@@ -34,6 +33,7 @@ import demetra.modelling.regression.LevelShift;
 import demetra.modelling.regression.TransitoryChange;
 import java.util.ArrayList;
 import demetra.regarima.ami.IGenericOutliersDetectionModule;
+import demetra.regarima.outlier.RobustStandardDeviationComputer;
 
 /**
  *
@@ -47,9 +47,11 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
     static final double EPS = 1e-5;
 
     static SingleOutlierDetector<SarimaModel> defaultOutlierDetector(int period) {
-        SingleOutlierDetector sod = new ExactSingleOutlierDetector(IRobustStandardDeviationComputer.mad(false),
-                IResidualsComputer.mlComputer(),
-                new AnsleyFilter());
+        SingleOutlierDetector sod = ExactSingleOutlierDetector.builder()
+                .robustStandardDeviationComputer(RobustStandardDeviationComputer.mad(false))
+                .armaFilter(new AnsleyFilter())
+                .residualsComputer(ResidualsComputer.mlComputer())
+                .build();
         sod.addOutlierFactory(AdditiveOutlier.FACTORY);
         sod.addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
         sod.addOutlierFactory(new TransitoryChange.Factory(EPS));

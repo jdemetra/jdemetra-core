@@ -46,10 +46,10 @@ public class OutliersDetectionModuleTest {
         od.prepare(regarima.getObservationsCount());
         od.process(regarima);
         int[][] outliers = od.getOutliers();
-//        for (int i = 0; i < outliers.length; ++i) {
-//            int[] cur = outliers[i];
-//            System.out.println(od.getFactory(cur[1]).getCode() + '-' + start.plus(cur[0]).display());
-//        }
+        for (int i = 0; i < outliers.length; ++i) {
+            int[] cur = outliers[i];
+            System.out.println(od.getFactory(cur[1]).getCode() + '-' + start.plus(cur[0]).display());
+        }
         assertTrue(outliers.length == 4);
     }
 

@@ -15,11 +15,11 @@ import demetra.data.DoubleSequence;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public interface IResidualsComputer {
+public interface ResidualsComputer {
 
     DoubleSequence residuals(IArimaModel arma, DoubleSequence y);
 
-    public static IResidualsComputer mlComputer() {
+    public static ResidualsComputer mlComputer() {
         return (arma, y) -> {
             ModifiedLjungBoxFilter f = new ModifiedLjungBoxFilter();
             int n = y.length();
@@ -30,11 +30,11 @@ public interface IResidualsComputer {
         };
     }
     
-    public static IResidualsComputer defaultComputer() {
+    public static ResidualsComputer defaultComputer() {
         return defaultComputer(new KalmanFilter(false));
     }
    
-    public static IResidualsComputer defaultComputer(final IArmaFilter filter) {
+    public static ResidualsComputer defaultComputer(final IArmaFilter filter) {
         return (arma, y) -> {
             int n = y.length();
             int nf = filter.prepare(arma, n);

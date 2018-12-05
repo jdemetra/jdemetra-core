@@ -51,6 +51,7 @@ public class OutliersDetectionModuleTest {
                 .singleOutlierDetector(OutliersDetectionModuleImpl.defaultOutlierDetector())
                 .criticalValue(3)
                 .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
+                .maximumLikelihood(true)
                 .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());
@@ -69,7 +70,7 @@ public class OutliersDetectionModuleTest {
     public void testProdWn() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
         SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline(true);
+ //       spec.airline(true);
         spec.setBd(1);
         spec.setD(1);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
@@ -103,6 +104,7 @@ public class OutliersDetectionModuleTest {
         ec.tstoolkit.modelling.arima.tramo.OutliersDetector od = new ec.tstoolkit.modelling.arima.tramo.OutliersDetector();
         od.setDefault();
         od.setCriticalValue(3);
+        od.useEML(true);
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, true);
         ec.tstoolkit.modelling.arima.ModelDescription desc = new ec.tstoolkit.modelling.arima.ModelDescription(s, null);
         ec.tstoolkit.modelling.arima.ModellingContext context = new ec.tstoolkit.modelling.arima.ModellingContext();

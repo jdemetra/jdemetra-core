@@ -18,7 +18,7 @@ package demetra.regarima.outlier;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.IArmaFilter;
-import demetra.arima.IResidualsComputer;
+import demetra.arima.ResidualsComputer;
 import demetra.arima.internal.AnsleyFilter;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
@@ -29,11 +29,10 @@ import demetra.linearmodel.LinearModel;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.internal.Householder;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArmaModel;
-import demetra.sarima.SarimaModel;
 import demetra.leastsquares.QRSolver;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -43,37 +42,57 @@ import demetra.leastsquares.QRSolver;
 @Development(status = Development.Status.Preliminary)
 public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOutlierDetector<T> {
 
+    public static class Builder {
+
+        private IArmaFilter filter = null;
+        private ResidualsComputer resComputer = null;
+        private RobustStandardDeviationComputer madComputer = RobustStandardDeviationComputer.mad();
+
+        public Builder armaFilter(@Nonnull IArmaFilter filter) {
+            this.filter = filter;
+            return this;
+        }
+
+        public Builder robustStandardDeviationComputer(@Nonnull RobustStandardDeviationComputer mad) {
+            this.madComputer = mad;
+            return this;
+        }
+
+        public Builder residualsComputer(@Nonnull ResidualsComputer res) {
+            this.resComputer = res;
+            return this;
+        }
+
+        public ExactSingleOutlierDetector build() {
+            IArmaFilter f=filter == null ? new AnsleyFilter() : null;
+            ResidualsComputer r = resComputer == null ? ResidualsComputer.defaultComputer(f) : resComputer;
+            return new ExactSingleOutlierDetector(madComputer, f, r);
+        }
+    }
+    
+    public static Builder builder(){
+        return new Builder();
+    }
+
     private IArmaFilter filter;
-    private final IResidualsComputer resComputer;
+    private final ResidualsComputer resComputer;
     private Matrix L, Xl;
     private double[] yl, b, w;
     private int n;
     private double mad;
-
-    public ExactSingleOutlierDetector() {
-        this(IRobustStandardDeviationComputer.mad());
-    }
-
-    public ExactSingleOutlierDetector(IRobustStandardDeviationComputer computer) {
-        this(computer, null);
-    }
 
     /**
      *
      * @param computer
      * @param filter
      */
-    public ExactSingleOutlierDetector(IRobustStandardDeviationComputer computer, IArmaFilter filter) {
+    private ExactSingleOutlierDetector(@Nonnull RobustStandardDeviationComputer computer, @Nonnull IArmaFilter filter, @Nonnull ResidualsComputer res) {
         super(computer);
-        if (filter == null) {
-            this.filter = new AnsleyFilter();
-        } else {
-            this.filter = filter;
-        }
-        resComputer = IResidualsComputer.defaultComputer(this.filter);
+        this.filter = filter;
+        resComputer = res;
     }
 
-    public ExactSingleOutlierDetector(IRobustStandardDeviationComputer computer, IResidualsComputer resComputer, IArmaFilter filter) {
+    public ExactSingleOutlierDetector(RobustStandardDeviationComputer computer, ResidualsComputer resComputer, IArmaFilter filter) {
         super(computer);
         if (filter == null) {
             this.filter = new AnsleyFilter();
@@ -90,8 +109,9 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
     @Override
     protected boolean calc() {
         try {
-            if (getOutlierFactoriesCount() == 0 || ubound<=lbound)
+            if (getOutlierFactoriesCount() == 0 || ubound <= lbound) {
                 return false;
+            }
             RegArmaModel<T> dmodel = this.getRegArima().differencedModel();
             n = filter.prepare(dmodel.getArma(), dmodel.getY().length());
             if (!initialize(dmodel)) {

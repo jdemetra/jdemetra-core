@@ -17,7 +17,6 @@
 package demetra.regarima.outlier;
 
 import demetra.data.DoubleSequence;
-import static demetra.data.Doubles.ssq;
 import demetra.dstats.Normal;
 import demetra.dstats.ProbabilityType;
 import java.util.Arrays;
@@ -26,7 +25,7 @@ import java.util.Arrays;
  *
  * @author Jean Palate
  */
-public interface IRobustStandardDeviationComputer {
+public interface RobustStandardDeviationComputer {
 
     /**
      *
@@ -35,7 +34,7 @@ public interface IRobustStandardDeviationComputer {
      */
     double compute(DoubleSequence data);
 
-    public static IRobustStandardDeviationComputer mad() {
+    public static RobustStandardDeviationComputer mad() {
         return new Mad2(50);
     }
     /**
@@ -43,7 +42,7 @@ public interface IRobustStandardDeviationComputer {
      * @param mediancorrected
      * @return
      */
-    public static IRobustStandardDeviationComputer mad(boolean mediancorrected) {
+    public static RobustStandardDeviationComputer mad(boolean mediancorrected) {
         return mediancorrected ? new Mad2(50) : new Mad(50);
     }
 
@@ -53,11 +52,11 @@ public interface IRobustStandardDeviationComputer {
      * @param mediancorrected
      * @return
      */
-    public static IRobustStandardDeviationComputer mad(double centile, boolean mediancorrected) {
+    public static RobustStandardDeviationComputer mad(double centile, boolean mediancorrected) {
         return mediancorrected ? new Mad2(centile) : new Mad(centile);
     }
 
-    static class Mad implements IRobustStandardDeviationComputer {
+    static class Mad implements RobustStandardDeviationComputer {
 
         private final double centile;
 
@@ -90,7 +89,7 @@ public interface IRobustStandardDeviationComputer {
 
     }
 
-    static class Mad2 implements IRobustStandardDeviationComputer {
+    static class Mad2 implements RobustStandardDeviationComputer {
 
         private final double centile;
 
