@@ -40,7 +40,8 @@ public class FastDifferencingModule implements IGenericDifferencingModule {
         private int[] maxd = new int[]{2, 1};
         private double k = 1.2;
         private double tstat = 1.96;
-        private boolean mad = false;
+        private boolean mad = true;
+        private double centile=90;
 
         private Builder() {
         }
@@ -55,6 +56,11 @@ public class FastDifferencingModule implements IGenericDifferencingModule {
             return this;
         }
 
+         public Builder centile(double centile) {
+            this.centile=centile;
+            return this;
+        }
+
         public Builder k(double k) {
             this.k = k;
             return this;
@@ -66,7 +72,7 @@ public class FastDifferencingModule implements IGenericDifferencingModule {
         }
 
         public FastDifferencingModule build() {
-            return new FastDifferencingModule(maxd, mad, k, tstat);
+            return new FastDifferencingModule(maxd, mad, centile, k, tstat);
         }
     }
 
@@ -74,6 +80,7 @@ public class FastDifferencingModule implements IGenericDifferencingModule {
     private double tmean;
     private final int[] maxd;
     private final boolean mad;
+    private final double centile;
     private final double k;
     private final double tstat;
 
@@ -81,11 +88,12 @@ public class FastDifferencingModule implements IGenericDifferencingModule {
      *
      */
     private FastDifferencingModule(final int[] maxd, final boolean mad,
-            final double k, final double tstat) {
+            final double centile, final double k, final double tstat) {
         this.maxd = maxd;
         this.mad = mad;
         this.k = k;
         this.tstat = tstat;
+        this.centile=centile;
     }
 
     @Override
@@ -97,7 +105,7 @@ public class FastDifferencingModule implements IGenericDifferencingModule {
         if (!mad) {
             return Math.sqrt(Doubles.ssqc(z, Doubles.average(z)) / z.length());
         } else {
-            return IRobustStandardDeviationComputer.mad(mad).compute(z);
+            return IRobustStandardDeviationComputer.mad(centile, mad).compute(z);
         }
     }
 

@@ -205,11 +205,6 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
     }
 
     @Override
-    public double getPrecision() {
-        return eps;
-    }
-
-    @Override
     public RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs) {
         SarimaModel arima = regs.arima();
         return estimate(regs, (SarimaModel) arima.stationaryTransformation().getStationaryModel(), eps);

@@ -187,6 +187,11 @@ public class RegArimaModel<M extends IArimaModel> {
         return y.length() - missing.length;
     }
 
+    /**
+     * Gets the number of variables, including the mean but without the missing values
+     * estimated by additive outliers.
+     * @return 
+     */
     public int getVariablesCount() {
         int nv = x.size();
         if (mean) {

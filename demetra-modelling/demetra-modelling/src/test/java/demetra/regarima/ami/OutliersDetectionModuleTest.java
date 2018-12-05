@@ -19,6 +19,7 @@ package demetra.regarima.ami;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
 import demetra.regarima.RegArimaModel;
+import demetra.sarima.FastSarimaProcessor;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.GlsSarimaProcessor;
@@ -49,20 +50,51 @@ public class OutliersDetectionModuleTest {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
-
-//        Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
-//        Consumer<int[]> rhook = a -> System.out.println("Remove outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
+        System.out.println("Full");
+        Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
+        Consumer<int[]> rhook = a -> System.out.println("Remove outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
         RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
-//        od.setAddHook(hook);
-//        od.setRemoveHook(rhook);
+        od.setAddHook(hook);
+        od.setRemoveHook(rhook);
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 100; ++i) {
-        od.prepare(regarima.getObservationsCount());
-        od.process(regarima);
+            od.prepare(regarima.getObservationsCount());
+            od.process(regarima);
 //        }
 //        long t1 = System.currentTimeMillis();
 //        System.out.println(t1 - t0);
         assertTrue(od.getOutliers().length == 8);
     }
 
+    @Test
+    public void testMonthly2() {
+        GlsSarimaProcessor fallback = GlsSarimaProcessor.builder()
+                .precision(1e-5)
+                .build();
+        FastSarimaProcessor processor = new FastSarimaProcessor(fallback);
+        OutliersDetectionModule<SarimaModel> od = OutliersDetectionModule.build(SarimaModel.class)
+                .processor(processor)
+                .setAll()
+                .build();
+        od.setCriticalValue(3.0);
+        SarimaSpecification spec = new SarimaSpecification(12);
+        spec.airline(true);
+        SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
+
+        System.out.println("Fast");
+        TsPeriod start = TsPeriod.monthly(1967, 1);
+        Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
+        Consumer<int[]> rhook = a -> System.out.println("Remove outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+        od.setAddHook(hook);
+        od.setRemoveHook(rhook);
+//        long t0 = System.currentTimeMillis();
+        //for (int i = 0; i < 100; ++i) {
+            od.prepare(regarima.getObservationsCount());
+            od.process(regarima);
+        //}
+//        long t1 = System.currentTimeMillis();
+//        System.out.println(t1 - t0);
+//        assertTrue(od.getOutliers().length == 8);
+    }
 }

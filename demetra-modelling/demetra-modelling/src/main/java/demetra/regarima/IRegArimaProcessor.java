@@ -31,12 +31,6 @@ public interface IRegArimaProcessor<S extends IArimaModel> {
 
     /**
      * 
-     * @return
-     */
-    public double getPrecision();
-
-    /**
-     * 
      * @param regs
      * @return
      */

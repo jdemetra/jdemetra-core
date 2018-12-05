@@ -165,8 +165,4 @@ public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
                 new LogLikelihoodFunction.Point(llFunction(regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()));
     }
 
-    @Override
-    public double getPrecision() {
-        return min.getFunctionPrecision();
-    }
 }

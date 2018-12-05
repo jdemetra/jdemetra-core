@@ -53,15 +53,15 @@ public interface IRobustStandardDeviationComputer {
      * @param mediancorrected
      * @return
      */
-    public static IRobustStandardDeviationComputer mad(int centile, boolean mediancorrected) {
+    public static IRobustStandardDeviationComputer mad(double centile, boolean mediancorrected) {
         return mediancorrected ? new Mad2(centile) : new Mad(centile);
     }
 
     static class Mad implements IRobustStandardDeviationComputer {
 
-        private final int centile;
+        private final double centile;
 
-        Mad(int centile) {
+        Mad(double centile) {
             this.centile = centile;
         }
 
@@ -74,8 +74,8 @@ public interface IRobustStandardDeviationComputer {
             }
             Arrays.sort(a);
             double m;
-            int nm = (n+1) * centile / 100;
             double dnm = (n+1) * centile / 100.0;
+            int nm = (int) dnm;
             double dx = dnm - nm;
             if (dx < 1e-9) {
                 m = a[nm-1];
@@ -92,9 +92,9 @@ public interface IRobustStandardDeviationComputer {
 
     static class Mad2 implements IRobustStandardDeviationComputer {
 
-        private final int centile;
+        private final double centile;
 
-        Mad2(int centile) {
+        Mad2(double centile) {
             this.centile = centile;
         }
 
@@ -121,8 +121,8 @@ public interface IRobustStandardDeviationComputer {
 
             Arrays.sort(e);
             double m;
-            int nm = (n+1) * centile / 100;
             double dnm = (n+1) * centile / 100.0;
+            int nm = (int) dnm;
             double dx = dnm - nm;
             if (dx < 1e-9) {
                 m = e[nm-1];
