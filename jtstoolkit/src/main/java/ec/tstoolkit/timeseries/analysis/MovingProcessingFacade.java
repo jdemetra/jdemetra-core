@@ -1,23 +1,24 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tstoolkit.timeseries.analysis;
 
 import ec.tstoolkit.Parameter;
 import ec.tstoolkit.algorithm.IProcResults;
+import ec.tstoolkit.information.ParameterInfo;
 import ec.tstoolkit.information.RegressionItem;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
@@ -30,7 +31,7 @@ import java.util.HashMap;
  * @author Mats Maggi
  */
 public class MovingProcessingFacade<T extends IProcResults> {
-    
+
     private ITsProcessing<T> processing;
     private HashMap<TsDomain, T> m_cache = new HashMap<>();
     private TsDomain m_domainT;
@@ -38,57 +39,71 @@ public class MovingProcessingFacade<T extends IProcResults> {
     private int m_increment;
     private int m_length;
     private TsPeriod m_start;
-    
+
     private static HashMap<Type, IDoubleFormatter> dictionary = new HashMap<>();
-    
+
     public MovingProcessingFacade(ITsProcessing<T> processing, TsDomain domain) {
         this.processing = processing;
         m_domainT = domain;
-	m_cache.put(m_domainT, processing.process(m_domainT));
-	m_start = m_domainT.getStart();
-	m_increment = m_domainT.getFrequency().intValue();
-	m_length = m_increment * g_nyears;
-        
+        m_cache.put(m_domainT, processing.process(m_domainT));
+        m_start = m_domainT.getStart();
+        m_increment = m_domainT.getFrequency().intValue();
+        m_length = m_increment * g_nyears;
+
         dictionary.put(Double.class, new DoubleFormatter());
         dictionary.put(Integer.class, new IntegerFormatter());
         dictionary.put(RegressionItem.class, new RegressionItemFormatter());
         dictionary.put(Parameter.class, new ParameterFormatter());
+        dictionary.put(ParameterInfo.class, new ParameterInfoFormatter());
     }
-    
+
     //<editor-fold defaultstate="collapsed" desc="Double Formatters">
     private static class RegressionItemFormatter implements IDoubleFormatter {
+
         @Override
         public Double getDoubleValue(Object item) {
-            RegressionItem i = (RegressionItem)item;
+            RegressionItem i = (RegressionItem) item;
             return i.coefficient;
         }
     }
-    
+
     private static class IntegerFormatter implements IDoubleFormatter {
+
         @Override
         public Double getDoubleValue(Object item) {
-            Integer i = (Integer)item;
+            Integer i = (Integer) item;
             return Double.valueOf(i);
         }
     }
-    
+
     private static class DoubleFormatter implements IDoubleFormatter {
+
         @Override
         public Double getDoubleValue(Object item) {
-            Double i = (Double)item;
+            Double i = (Double) item;
             return i;
         }
     }
-    
+
     private static class ParameterFormatter implements IDoubleFormatter {
+
         @Override
         public Double getDoubleValue(Object item) {
-            Parameter p = (Parameter)item;
+            Parameter p = (Parameter) item;
             return p == null ? null : p.getValue();
         }
     }
+
+    private static class ParameterInfoFormatter implements IDoubleFormatter {
+
+        @Override
+        public Double getDoubleValue(Object item) {
+            ParameterInfo p = (ParameterInfo) item;
+            return p == null ? null : p.value;
+        }
+    }
     //</editor-fold>
-    
+
     public Double getData(String key, TsDomain domain) {
         T info = tsInfo(domain);
         if (info == null) {
@@ -100,7 +115,7 @@ public class MovingProcessingFacade<T extends IProcResults> {
         } else {
             return dictionary.get(o.getClass()).getDoubleValue(o);
         }
-        
+
     }
 
     public HashMap<TsDomain, T> getCache() {
@@ -150,22 +165,21 @@ public class MovingProcessingFacade<T extends IProcResults> {
     public void setProcessing(ITsProcessing<T> processing) {
         this.processing = processing;
     }
-    
-    public T tsInfo(TsDomain domain)
-    {
-	T it=m_cache.get(domain);
-	if (it == null) {
-	    it = processing.process(domain);
-	    m_cache.put(domain, it);
-	}
-	return it;
+
+    public T tsInfo(TsDomain domain) {
+        T it = m_cache.get(domain);
+        if (it == null) {
+            it = processing.process(domain);
+            m_cache.put(domain, it);
+        }
+        return it;
     }
-    
-    public TsData referenceSeries(String series)
-    {
-	T it = tsInfo(m_domainT);
-        if (it == null)
+
+    public TsData referenceSeries(String series) {
+        T it = tsInfo(m_domainT);
+        if (it == null) {
             return null;
- 	return it.getData(series, TsData.class);
+        }
+        return it.getData(series, TsData.class);
     }
 }
