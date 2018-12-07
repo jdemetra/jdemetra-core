@@ -27,7 +27,7 @@ import demetra.design.Development;
 @Development(status = Development.Status.Alpha)
 public class GenericTradingDaysDefinition {
     private DayClustering clustering;
-    private int contrastGroup;
+    private boolean contrast;
     private boolean normalized;
 
 }

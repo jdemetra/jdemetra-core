@@ -18,7 +18,6 @@
 package demetra.modelling.regression;
 
 import demetra.design.Development;
-import demetra.modelling.ComponentType;
 import demetra.timeseries.TsDomain;
 
 /**

@@ -19,7 +19,6 @@ package demetra.modelling.regression;
 import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.modelling.ComponentType;
 import java.time.LocalDateTime;
 
 /**
@@ -85,11 +84,6 @@ public class SwitchOutlier extends AbstractOutlier {
         if (npos >= 0 && npos < buffer.length()) {
             buffer.set(npos, -1);
         }
-    }
-
-    @Override
-    public ComponentType getComponentType() {
-        return ComponentType.Irregular;
     }
 
     @Override

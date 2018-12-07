@@ -19,7 +19,6 @@ package demetra.modelling.regression;
 import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.modelling.ComponentType;
 import java.time.LocalDateTime;
 import java.util.List;
 import demetra.timeseries.TimeSeriesDomain;
@@ -102,11 +101,6 @@ public class AdditiveOutlier<D extends TimeSeriesDomain<?>> extends BaseOutlier 
         return IOutlier.defaultName(CODE, position, context);
     }
     
-    @Override
-    public ComponentType getComponentType(){
-        return ComponentType.Irregular;
-    }
-
     @Override
     public String getName() {
         return name;

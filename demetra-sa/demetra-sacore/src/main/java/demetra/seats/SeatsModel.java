@@ -18,7 +18,7 @@ package demetra.seats;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
-import demetra.modelling.ComponentType;
+import demetra.sa.ComponentType;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.SarimaModel;
 import demetra.ucarima.UcarimaModel;

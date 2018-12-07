@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package demetra.modelling;
+package demetra.sa;
 
 import demetra.design.Development;
 import demetra.util.PrimitiveEnum;

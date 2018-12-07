@@ -18,10 +18,8 @@ package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.modelling.ComponentType;
 import java.util.List;
 import demetra.timeseries.TimeSeriesDomain;
-import java.util.Objects;
 
 /**
  *

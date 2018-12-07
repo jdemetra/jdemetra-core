@@ -18,7 +18,6 @@ package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.modelling.ComponentType;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
@@ -151,11 +150,6 @@ public class Ramp<D extends TimeSeriesDomain<?>> implements IUserTsVariable<D> {
         hash = 43 * hash + Objects.hashCode(this.end);
         return hash;
     }
-
-    public ComponentType getComponentType(){
-        return ComponentType.Trend;
-    }
-
 
     @Override
     public String getName() {

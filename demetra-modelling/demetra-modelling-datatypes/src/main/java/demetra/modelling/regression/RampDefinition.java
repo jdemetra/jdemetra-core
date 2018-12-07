@@ -23,8 +23,8 @@ import java.time.LocalDateTime;
  * @author Jean Palate
  */
 @lombok.Value
-public class RampDefinition {
+public class RampDefinition implements ITsVariableDefinition{
 
-    private @lombok.NonNull
-    LocalDateTime start, end;
+    @lombok.NonNull
+    private LocalDateTime start, end;
 }

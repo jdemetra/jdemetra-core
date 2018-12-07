@@ -33,7 +33,7 @@ import java.util.List;
 @lombok.Value
 @lombok.AllArgsConstructor(access=lombok.AccessLevel.PRIVATE)
 @lombok.Builder
-public class InterventionVariableDefinition {
+public class InterventionVariableDefinition implements ITsVariableDefinition{
     
     public static Builder builder() {
         return new Builder();
@@ -44,7 +44,7 @@ public class InterventionVariableDefinition {
         
         private String name;
         private double delta, deltaSeasonal;
-        private List<Range<LocalDateTime>> sequences = new ArrayList<>();
+        private final List<Range<LocalDateTime>> sequences = new ArrayList<>();
         private Double coefficient;
         
         public Builder name(String name) {

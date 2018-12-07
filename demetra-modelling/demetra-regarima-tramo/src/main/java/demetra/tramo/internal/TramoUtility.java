@@ -18,7 +18,7 @@ package demetra.tramo.internal;
 
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
-import demetra.modelling.regression.AdditiveOutlier;
+import demetra.modelling.regression.AdditiveOutlierDef;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.outlier.CriticalValueComputer;
 import demetra.regarima.outlier.FastOutlierDetector;

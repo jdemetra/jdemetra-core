@@ -19,7 +19,6 @@ package demetra.modelling.regression;
 import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.modelling.ComponentType;
 import java.time.LocalDateTime;
 import java.util.List;
 import demetra.timeseries.TimeSeriesDomain;
@@ -124,11 +123,6 @@ public class LevelShift<D extends TimeSeriesDomain<?>> extends BaseOutlier imple
     @Override
     public String getDescription(D context) {
         return IOutlier.defaultName(CODE, position, context);
-    }
-
-    @Override
-    public ComponentType getComponentType(){
-        return ComponentType.Trend;
     }
 
     @Override

@@ -17,7 +17,6 @@
 package demetra.modelling.regression;
 
 import demetra.design.Development;
-import demetra.modelling.ComponentType;
 
 /**
  *
@@ -25,9 +24,12 @@ import demetra.modelling.ComponentType;
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
-public class TsVariableDefinition  {
-    
+public class TsVariableDefinition {
+
     private String name;
     private int firstlag, lastlag;
-    private ComponentType effect;
+
+    public int dim() {
+        return 1 + lastlag - firstlag;
+    }
 }

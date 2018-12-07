@@ -17,7 +17,6 @@
 package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
-import demetra.modelling.ComponentType;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import java.util.List;
@@ -30,116 +29,109 @@ import javax.annotation.Nonnull;
  * @param <D>
  */
 public abstract class TsVariableBox<D extends TimeSeriesDomain<?>> implements ITsVariable<D> {
-    
+
     private final ITsVariable<D> var;
     private final String name;
-    
+
     protected TsVariableBox(@Nonnull ITsVariable var, @Nonnull String name) {
         this.var = var;
         this.name = name;
     }
-    
+
     @Override
     public void data(D domain, List<DataBlock> data) {
         var.data(domain, data);
     }
-    
+
     @Override
     public String getName() {
         return name;
     }
-    
+
     @Override
     public String getDescription(D context) {
         return var.getDescription(context);
     }
-    
+
     @Override
     public int getDim() {
         return var.getDim();
     }
-    
+
     @Override
     public String getItemDescription(int idx, D context) {
         return var.getItemDescription(idx, context);
     }
-    
+
     ITsVariable<D> getCore() {
         return var;
     }
-    
+
     public static ITradingDaysVariable tradingDays(ITsVariable var) {
         return new TradingDays(var, ITradingDaysVariable.defaultName(var.getDim()));
     }
-    
+
     static class TradingDays extends TsVariableBox<TsDomain> implements ITradingDaysVariable {
-        
+
         TradingDays(@Nonnull ITsVariable<TsDomain> var, @Nonnull String name) {
             super(var, name);
         }
-        
+
         @Override
         public TradingDays rename(String newName) {
             return new TradingDays(getCore(), newName);
         }
     }
-    
+
     public static ILengthOfPeriodVariable leapYear(ITsVariable var) {
         return new LeapYear(var, ILengthOfPeriodVariable.NAME);
     }
-    
+
     static class LeapYear extends TsVariableBox<TsDomain> implements ILengthOfPeriodVariable {
-        
+
         LeapYear(@Nonnull ITsVariable var, @Nonnull String name) {
             super(var, name);
         }
-        
+
         @Override
         public LeapYear rename(String newName) {
             return new LeapYear(getCore(), newName);
         }
     }
-    
+
     public static IMovingHolidayVariable movingHoliday(ITsVariable var) {
         return new MovingHoliday(var, null);
     }
-    
+
     static class MovingHoliday extends TsVariableBox<TsDomain> implements IMovingHolidayVariable {
-        
+
         MovingHoliday(ITsVariable var, String name) {
             super(var, name);
         }
-        
+
         @Override
         public MovingHoliday rename(String newName) {
             return new MovingHoliday(getCore(), newName);
         }
     }
-    
-    public static IUserTsVariable<TsDomain> user(@Nonnull ITsVariable var, @Nonnull String name, @Nonnull ComponentType type) {
-        return new User(var, name, type);
+
+    public static IUserTsVariable<TsDomain> user(@Nonnull ITsVariable var, @Nonnull String name) {
+        return new User(var, name);
     }
-    
+
     static class User extends TsVariableBox<TsDomain> implements IUserTsVariable<TsDomain> {
-        
-        private final ComponentType type;
-        
-        User(@Nonnull ITsVariable var, @Nonnull String name, ComponentType type) {
+
+        User(@Nonnull ITsVariable var, @Nonnull String name) {
             super(var, name);
-            this.type = type;
         }
-        
+
         @Override
         public User rename(String newName) {
-            return new User(getCore(), newName, type);
+            return new User(getCore(), newName);
         }
-        
-        @Override
-        public ComponentType getComponentType() {
-            return type;
-        }
+
     }
-    
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -159,5 +151,5 @@ public abstract class TsVariableBox<D extends TimeSeriesDomain<?>> implements IT
         hash = 37 * hash + Objects.hashCode(this.var);
         return hash;
     }
-    
+
 }

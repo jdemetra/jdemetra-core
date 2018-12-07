@@ -94,4 +94,5 @@ public class OutliersDetectionModuleTest {
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
         assertTrue(od.getOutliers().length == 8);
+    }
 }

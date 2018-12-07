@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarmaSpecification;
-import demetra.modelling.regression.AdditiveOutlier;
+import demetra.modelling.regression.AdditiveOutlierDef;
 import demetra.modelling.regression.LevelShift;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Random;
@@ -44,7 +44,7 @@ public class FastOutlierDetectorTest {
         Random gen = new Random(0);
         rnd.set(gen::nextDouble);
         FastOutlierDetector sod = new FastOutlierDetector(null);
-        sod.addOutlierFactory(AdditiveOutlier.FACTORY);
+        sod.addOutlierFactory(AdditiveOutlierDef.FACTORY);
         sod.addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
         SarmaSpecification spec = new SarmaSpecification(12);
         spec.setBq(1);

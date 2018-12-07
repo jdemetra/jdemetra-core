@@ -16,15 +16,33 @@
  */
 package demetra.modelling.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 
 /**
  *
  * @author Jean Palate
  */
-@lombok.Value
-public class OutlierDefinition {
+public interface OutlierDefinition extends ITsVariableDefinition {
 
-    private @lombok.NonNull String code;
-    private @lombok.NonNull LocalDateTime position;
+    public static <D extends TimeSeriesDomain<?>> String defaultName(String code, LocalDateTime pos, D context) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(code).append(" (");
+        if (context == null || !(context instanceof TsDomain)) {
+            builder.append(pos);
+        } else {
+            TsPeriod p = ((TsDomain) context).get(0);
+            p.withDate(pos);
+            builder.append(p);
+        }
+        builder.append(')');
+        return builder.toString();
+    }
+
+    String getCode();
+
+    LocalDateTime getPosition();
+    
 }

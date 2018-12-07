@@ -310,29 +310,6 @@ public class GenericTradingDays {
         return m;
     }
 
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (other instanceof GenericTradingDays) {
-            GenericTradingDays x = (GenericTradingDays) other;
-            return x.normalized == normalized && x.contrast == contrast
-                    && x.clustering.equals(clustering);
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 53 * hash + Objects.hashCode(this.clustering);
-        hash = 53 * hash + (this.contrast ? 1 : 0);
-        hash = 53 * hash + (this.normalized ? 1 : 0);
-        return hash;
-    }
-
     private static final int DAY_OF_WEEK_OF_EPOCH = TsPeriod.DEFAULT_EPOCH.getDayOfWeek().getValue() - 1;
 
     private static int calc(int year, final int month, final int day) {

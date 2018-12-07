@@ -16,12 +16,10 @@
  */
 package demetra.modelling.regression;
 
-import demetra.timeseries.TsData;
 import demetra.timeseries.TsDataSupplier;
 import demetra.util.DefaultNameValidator;
 import demetra.util.INameValidator;
 import demetra.util.NameManager;
-import java.util.function.Supplier;
 
 /**
  *

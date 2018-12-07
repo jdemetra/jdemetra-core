@@ -20,7 +20,6 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.ServiceDefinition;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.modelling.ComponentType;
 import java.time.LocalDateTime;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
@@ -126,6 +125,4 @@ public interface IOutlier<D extends TimeSeriesDomain<?>> extends ITsVariable<D> 
      */
     LocalDateTime getPosition();
     
-    ComponentType getComponentType();
-
 }

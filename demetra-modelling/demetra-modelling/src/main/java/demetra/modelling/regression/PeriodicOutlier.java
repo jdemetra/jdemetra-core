@@ -20,7 +20,6 @@ import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.maths.polynomials.UnitRoots;
-import demetra.modelling.ComponentType;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -166,11 +165,6 @@ public class PeriodicOutlier extends AbstractOutlier {
     @Override
     public String getCode() {
         return CODE;
-    }
-
-    @Override
-    public ComponentType getComponentType(){
-        return ComponentType.Seasonal;
     }
 
     @Override

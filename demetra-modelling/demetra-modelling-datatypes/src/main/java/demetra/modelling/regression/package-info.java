@@ -1,5 +1,5 @@
 /*
-* Copyright 2013 National Bank of Belgium
+* Copyright 2019 National Bank of Belgium
 *
 * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -15,18 +15,7 @@
 * limitations under the Licence.
 */
 
-
-package demetra.modelling.regression;
-
-import demetra.design.Development;
-import demetra.timeseries.TimeSeriesDomain;
-
 /**
- *
- * @author Jean Palate
- * @param <D>
+ * 
  */
-@Development(status = Development.Status.Alpha)
-public interface IUserTsVariable<D extends TimeSeriesDomain<?>> extends ITsVariable<D> {
-    
-}
+package demetra.modelling.regression;
