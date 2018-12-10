@@ -18,8 +18,7 @@ package demetra.x12;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.modelling.Variable;
-import demetra.modelling.regression.IUserTsVariable;
+import demetra.modelling.regression.Variable;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.regular.IRegressionModule;
 import demetra.regarima.regular.ProcessingResult;
@@ -33,6 +32,7 @@ import demetra.sarima.SarimaModel;
 import demetra.timeseries.TsDomain;
 import java.util.ArrayList;
 import java.util.List;
+import demetra.modelling.regression.IUserTsVariable;
 
 /**
  *
@@ -48,11 +48,11 @@ public class UserVariablesDetectionModule implements IRegressionModule {
     @BuilderPattern(UserVariablesDetectionModule.class)
     public static class Builder {
 
-        private final List<IUserTsVariable<TsDomain>> users = new ArrayList<>();
+        private final List<IUserTsVariable> users = new ArrayList<>();
         private IModelComparator comparator = new AICcComparator(0);
         private double eps = 1e-5;
 
-        public Builder add(IUserTsVariable<TsDomain>... vars) {
+        public Builder add(IUserTsVariable... vars) {
             for (int i = 0; i < vars.length; ++i) {
                 users.add(vars[i]);
             }
@@ -74,7 +74,7 @@ public class UserVariablesDetectionModule implements IRegressionModule {
         }
     }
 
-    private final IUserTsVariable<TsDomain>[] users;
+    private final IUserTsVariable[] users;
     private IModelComparator comparator = new AICcComparator(0);
     private final double eps;
 
@@ -94,9 +94,10 @@ public class UserVariablesDetectionModule implements IRegressionModule {
         // builds models with and without user variables 
         for (int i = 0; i < users.length; ++i) {
             ModelDescription nudesc = new ModelDescription(description);
-            boolean removed = nudesc.remove(users[i].getName());
+            final IUserTsVariable cur=users[i];
+            boolean removed = nudesc.removeVariable(var->var.getVariable().equals(cur));
             ModelDescription udesc = new ModelDescription(nudesc);
-            nudesc.addVariable(new Variable(users[i], false));
+            nudesc.addVariable(new Variable(users[i], "user-"+(i+1), false));
 
             ModelEstimation nuest, uest;
             if (removed || est == null) {

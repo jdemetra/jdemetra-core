@@ -29,6 +29,7 @@ import demetra.maths.polynomials.Polynomial;
 import demetra.regarima.RegArmaModel;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.modelling.regression.IOutlier;
+import demetra.modelling.regression.IOutlierFactory;
 
 /**
  *
@@ -97,7 +98,7 @@ public class FastOutlierDetector<T extends IArimaModel> extends
         int n = nl + d;
 //        double[] o = new double[n];
 //        DataBlock O = new DataBlock(o);
-        IOutlier.FilterRepresentation representation = factory(idx).getFilterRepresentation();
+        IOutlierFactory.FilterRepresentation representation = factory(idx).getFilterRepresentation();
         if (representation == null) {
             return;
         }

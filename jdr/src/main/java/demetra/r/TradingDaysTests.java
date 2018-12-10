@@ -26,19 +26,11 @@ import demetra.stats.tests.StatisticalTest;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.DayClustering;
-import demetra.timeseries.calendars.GenericTradingDays;
-import demetra.modelling.regression.GenericTradingDaysVariables;
-import demetra.modelling.regression.RegressionUtility;
+import demetra.modelling.regression.GenericTradingDaysVariable;
+import demetra.modelling.regression.Regression;
 import demetra.timeseries.TsData;
-import static demetra.timeseries.simplets.TsDataToolkit.delta;
+import demetra.timeseries.calendars.GenericTradingDaysDefinition;
 import static demetra.timeseries.simplets.TsDataToolkit.drop;
-import java.util.Collections;
-import static demetra.timeseries.simplets.TsDataToolkit.delta;
-import static demetra.timeseries.simplets.TsDataToolkit.delta;
-import static demetra.timeseries.simplets.TsDataToolkit.delta;
-import static demetra.timeseries.simplets.TsDataToolkit.delta;
-import static demetra.timeseries.simplets.TsDataToolkit.delta;
-import static demetra.timeseries.simplets.TsDataToolkit.delta;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
 
 /**
@@ -71,8 +63,8 @@ public class TradingDaysTests {
         try {
             DataBlock y=DataBlock.of(s.getValues());
             y.sub(y.average());
-            GenericTradingDaysVariables var=new GenericTradingDaysVariables(GenericTradingDays.contrasts(DayClustering.TD7));
-            Matrix td = RegressionUtility.data(s.getDomain(), var);
+            GenericTradingDaysVariable var=new GenericTradingDaysVariable(GenericTradingDaysDefinition.contrasts(DayClustering.TD7));
+            Matrix td = Regression.matrix(s.getDomain(), var);
             LinearModel reg=new LinearModel(y.getStorage(), false, td);
             Ols ols = new Ols();
             LeastSquaresResults rslt = ols.compute(reg);
@@ -88,8 +80,8 @@ public class TradingDaysTests {
         try {
             DataBlock y=DataBlock.of(s.getValues());
             TsDomain domain = s.getDomain();
-            GenericTradingDaysVariables var=new GenericTradingDaysVariables(GenericTradingDays.contrasts(DayClustering.TD7));
-            Matrix td = RegressionUtility.data(domain.range(1, domain.length()), var);
+            GenericTradingDaysVariable var=new GenericTradingDaysVariable(GenericTradingDaysDefinition.contrasts(DayClustering.TD7));
+            Matrix td = Regression.matrix(domain.range(1, domain.length()), var);
             LinearModel reg=LinearModel.builder()
                     .y(y.drop(1, 0))
                     .addX(y.drop(0, 1))

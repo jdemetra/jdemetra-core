@@ -27,11 +27,11 @@ import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.outlier.FastOutlierDetector;
 import demetra.regarima.outlier.CriticalValueComputer;
-import demetra.modelling.regression.AdditiveOutlier;
-import demetra.modelling.regression.IOutlier.IOutlierFactory;
-import demetra.modelling.regression.LevelShift;
-import demetra.modelling.regression.PeriodicOutlier;
-import demetra.modelling.regression.TransitoryChange;
+import demetra.modelling.regression.AdditiveOutlierFactory;
+import demetra.modelling.regression.IOutlierFactory;
+import demetra.modelling.regression.LevelShiftFactory;
+import demetra.modelling.regression.PeriodicOutlierFactory;
+import demetra.modelling.regression.TransitoryChangeFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -98,8 +98,8 @@ public class OutliersDetectionModule<T extends IArimaModel>
          */
         public Builder<T> setDefault() {
             this.sod.clearOutlierFactories();
-            this.sod.addOutlierFactory(AdditiveOutlier.FACTORY);
-            this.sod.addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
+            this.sod.addOutlierFactory(AdditiveOutlierFactory.FACTORY);
+            this.sod.addOutlierFactory(LevelShiftFactory.FACTORY_ZEROENDED);
             return this;
         }
 
@@ -109,7 +109,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
          */
         public Builder<T> setAll() {
             setDefault();
-            this.sod.addOutlierFactory(new TransitoryChange.Factory(.7));
+            this.sod.addOutlierFactory(new TransitoryChangeFactory(.7));
             return this;
         }
 
@@ -120,7 +120,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
          */
         public Builder<T> setAll(int period) {
             setAll();
-            this.sod.addOutlierFactory(new PeriodicOutlier.Factory(period, true));
+            this.sod.addOutlierFactory(new PeriodicOutlierFactory(period, true));
             return this;
         }
 
@@ -245,10 +245,9 @@ public class OutliersDetectionModule<T extends IArimaModel>
             addOutlier(pos, type);
             estimateModel(false);
             if (!verifyModel()) {
+                cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
                 if (exit) {
                     break;
-                } else {
-                    cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
                 }
             }
         } while (round <= maxRound && outliers.size() <= maxOutliers);

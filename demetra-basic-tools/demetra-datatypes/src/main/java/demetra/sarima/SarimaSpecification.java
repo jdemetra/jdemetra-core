@@ -135,7 +135,7 @@ public final class SarimaSpecification implements Cloneable {
         return d==0 && bd==0; 
     }
 
-    public boolean hasSeasonalPart() {
+    public boolean isSeasonal() {
         return bp > 0 || bq > 0 || bd == 1;
     }
 
@@ -159,7 +159,4 @@ public final class SarimaSpecification implements Cloneable {
         }
         return builder.toString();
     }
-
-
-
 }

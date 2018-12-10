@@ -64,7 +64,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
         }
 
         public ExactSingleOutlierDetector build() {
-            IArmaFilter f=filter == null ? new AnsleyFilter() : null;
+            IArmaFilter f=filter == null ? new AnsleyFilter() : filter;
             ResidualsComputer r = resComputer == null ? ResidualsComputer.defaultComputer(f) : resComputer;
             return new ExactSingleOutlierDetector(madComputer, f, r);
         }

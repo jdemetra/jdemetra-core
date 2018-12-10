@@ -8,6 +8,7 @@ package demetra.modelling.regression;
 import demetra.timeseries.TsPeriod;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
+import demetra.maths.matrices.Matrix;
 import demetra.timeseries.TsDomain;
 import java.util.Collections;
 import org.junit.Test;
@@ -30,10 +31,10 @@ public class JulianEasterVariableTest {
             ec.tstoolkit.data.DataBlock odata = new ec.tstoolkit.data.DataBlock(i);
             ovar.data(ostart, odata);
 
-            JulianEasterVariable var = JulianEasterVariable.builder().build();
+            JulianEasterVariable var = new JulianEasterVariable(6, true);
             TsPeriod start = TsPeriod.monthly(2000, 1);
-            DataBlock data = DataBlock.make(i);
-            var.data(TsDomain.of(start, i), Collections.singletonList(data));
+            TsDomain dom = TsDomain.of(start, i);
+            DataBlock data = Regression.x(dom, var);
             assertTrue(data.distance(DoubleSequence.ofInternal(odata.getData())) < 1e-9);
         }
     }
@@ -46,10 +47,10 @@ public class JulianEasterVariableTest {
             ec.tstoolkit.data.DataBlock odata = new ec.tstoolkit.data.DataBlock(i);
             ovar.data(ostart, odata);
 
-            JulianEasterVariable var = JulianEasterVariable.builder().build();
+            JulianEasterVariable var = new JulianEasterVariable(6, true);
             TsPeriod start = TsPeriod.quarterly(2000, 1);
-            DataBlock data = DataBlock.make(i);
-            var.data(TsDomain.of(start, i), Collections.singletonList(data));
+            TsDomain dom = TsDomain.of(start, i);
+            DataBlock data = Regression.x(dom, var);
             assertTrue(data.distance(DoubleSequence.ofInternal(odata.getData())) < 1e-9);
         }
     }

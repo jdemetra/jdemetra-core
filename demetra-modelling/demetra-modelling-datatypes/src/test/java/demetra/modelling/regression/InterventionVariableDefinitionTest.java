@@ -32,7 +32,7 @@ public class InterventionVariableDefinitionTest {
 
     @Test
     public void testBuilder() {
-        InterventionVariableDefinition var = InterventionVariableDefinition.builder()
+        InterventionVariable var = InterventionVariable.builder()
                 .add(LocalDateTime.now(), LocalDateTime.now().plus(1, ChronoUnit.WEEKS))
                 .build();
     }

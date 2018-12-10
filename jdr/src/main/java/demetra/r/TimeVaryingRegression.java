@@ -31,14 +31,14 @@ import demetra.ssf.univariate.SsfData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.DayClustering;
-import demetra.timeseries.calendars.GenericTradingDays;
-import demetra.modelling.regression.GenericTradingDaysVariables;
-import demetra.modelling.regression.RegressionUtility;
+import demetra.modelling.regression.GenericTradingDaysVariable;
+import demetra.modelling.regression.Regression;
 import demetra.timeseries.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.sarima.SarimaMapping;
+import demetra.timeseries.calendars.GenericTradingDaysDefinition;
 
 /**
  *
@@ -235,8 +235,8 @@ public class TimeVaryingRegression {
     }
 
     public Matrix generate(TsDomain domain, DayClustering dc) {
-        GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        return RegressionUtility.data(domain, new GenericTradingDaysVariables(gtd));
+        GenericTradingDaysDefinition gtd = GenericTradingDaysDefinition.contrasts(dc);
+        return Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
     }
 
     public Matrix generateVar(DayClustering dc, String var) {

@@ -20,7 +20,7 @@ import demetra.arima.IArimaModel;
 import demetra.data.DoubleList;
 import demetra.maths.matrices.Matrix;
 import demetra.regarima.RegArimaModel;
-import demetra.modelling.regression.IOutlier.IOutlierFactory;
+import demetra.modelling.regression.IOutlierFactory;
 import demetra.util.TableOfBoolean;
 import java.util.ArrayList;
 

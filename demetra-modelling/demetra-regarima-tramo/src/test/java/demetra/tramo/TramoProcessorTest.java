@@ -87,8 +87,13 @@ public class TramoProcessorTest {
             if (Math.abs(del) < 1e-3) {
                 ++n;
             }
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
-        System.out.println(n);
+//        System.out.println(n);
         assertTrue(n > .9 * all.length);
     }
 
@@ -108,11 +113,11 @@ public class TramoProcessorTest {
             if (Math.abs(del) < 1e-3) {
                 ++n;
             }
-            System.out.print(i);
-            System.out.print('\t');
-            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
-            System.out.print('\t');
-            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
 //        System.out.println(n);
         assertTrue(n > .9 * all.length);
@@ -124,7 +129,7 @@ public class TramoProcessorTest {
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TR1, null);
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR1.build();
         int n = 0;
-        for (int i = 1; i < all.length; ++i) {
+        for (int i = 0; i < all.length; ++i) {
             PreprocessingModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
@@ -134,11 +139,11 @@ public class TramoProcessorTest {
             if (Math.abs(del) < 1e-3) {
                 ++n;
             }
-            System.out.print(i);
-            System.out.print('\t');
-            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
-            System.out.print('\t');
-            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
 //        System.out.println(n);
         assertTrue(n > .9 * all.length);
@@ -176,7 +181,7 @@ public class TramoProcessorTest {
         System.out.println(rslt.estimation.getStatistics().adjustedLogLikelihood);
     }
 
-    //@Test
+//    @Test
     public void stressTestProd() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000; ++i) {

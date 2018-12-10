@@ -10,8 +10,8 @@ import demetra.data.DoubleSequence;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
-import demetra.modelling.Variable;
-import demetra.modelling.regression.ITradingDaysVariable;
+import demetra.maths.matrices.Matrix;
+import demetra.modelling.regression.Variable;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.PreprocessingModel;
 import demetra.regarima.regular.ProcessingResult;
@@ -19,6 +19,8 @@ import demetra.regarima.regular.RegArimaModelling;
 import demetra.timeseries.TsDomain;
 import java.util.List;
 import java.util.Optional;
+import demetra.modelling.regression.ITradingDaysVariable;
+import demetra.modelling.regression.Regression;
 
 /**
  *
@@ -80,9 +82,8 @@ class TradingDaysController extends ModelController {
         // drop the number of data corresponding to the number of regression variables 
         domain = domain.drop(domain.getLength() - res.length(), 0);
         if (td != null){
-            List<DataBlock> buffer = td.createBuffer(domain.getLength());
-            td.data(domain, buffer);
-            buffer.forEach(v->builder.addX(v));
+            Matrix mtd = Regression.matrix(domain, td);
+            builder.addX(mtd);
         }
             
         LinearModel lm = builder.build();
@@ -99,7 +100,7 @@ class TradingDaysController extends ModelController {
     private ModelDescription newModel(RegArimaModelling context) {
         ModelDescription ndesc = new ModelDescription(context.getDescription());
         ndesc.removeVariable(var -> var.isCalendar());
-        ndesc.addVariable(new Variable(td, false));
+        ndesc.addVariable(new Variable(td, "td", false));
         return ndesc;
     }
 

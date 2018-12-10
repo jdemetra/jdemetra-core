@@ -29,20 +29,18 @@ import static org.junit.Assert.*;
  * @author Jean Palate
  */
 public class SwitchOutlierTest {
-    
+
     public SwitchOutlierTest() {
     }
 
     @Test
     public void testData() {
-        DataBlock buffer = DataBlock.make(20);
-        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
-        for (int i = -10; i < buffer.length()+10; ++i) {
-            buffer.set(0);
+        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), 20);
+        for (int i = -10; i < 30; ++i) {
             SwitchOutlier wo = new SwitchOutlier(days.get(0).plus(i).start());
-            wo.data(days.getStartPeriod(), buffer);
+            DataBlock buffer = Regression.x(days, wo);
             assertTrue(buffer.sum() <= 1.0001);
         }
     }
-    
+
 }

@@ -44,19 +44,23 @@ public class X12PreprocessorTest {
         datamissing[102] = Double.NaN;
     }
 
-    //@Test
+    @Test
     public void testProdMissing() {
         X12Preprocessor processor = X12Preprocessor.of(RegArimaSpec.RG5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, DoubleSequence.ofInternal(datamissing));
-        processor.process(s, null);
+        PreprocessingModel rslt=processor.process(s, null);
+        System.out.println("New");
+        System.out.println(rslt.getEstimation().getConcentratedLikelihood().logLikelihood());
     }
 
-    //@Test
+    @Test
     public void testProdLegacyMissing() {
         IPreprocessor processor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.build();
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, datamissing, true);
-        processor.process(s, null);
+        ec.tstoolkit.modelling.arima.PreprocessingModel rslt = processor.process(s, null);
+        System.out.println("Legacy");
+        System.out.println(rslt.estimation.getLikelihood().getLogLikelihood());
     }
 
     @Test

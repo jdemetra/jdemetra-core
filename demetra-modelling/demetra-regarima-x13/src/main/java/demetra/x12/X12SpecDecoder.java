@@ -8,7 +8,6 @@ package demetra.x12;
 import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.modelling.regression.AdditiveOutlier;
-import demetra.modelling.regression.IEasterVariable;
 import demetra.modelling.regression.LevelShift;
 import demetra.modelling.regression.ModellingContext;
 import demetra.modelling.regression.PeriodicOutlier;
@@ -19,6 +18,7 @@ import demetra.regarima.regular.RegressionVariablesTest;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.x12.X12Preprocessor.AmiOptions;
 import javax.annotation.Nonnull;
+import demetra.modelling.regression.IEasterVariable;
 
 /**
  * The Tramo processing builder initializes the regarima processing, which

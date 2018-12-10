@@ -14,7 +14,7 @@ import demetra.timeseries.TsPeriod;
  * @author palatej
  * @param <X>
  */
-public interface RegressionVariableFactory <X extends ITsVariableDefinition> {
+public interface RegressionVariableFactory <X extends ITsVariable> {
     boolean fill(X var, TsPeriod start, Matrix buffer);
     
     <D extends TimeSeriesDomain> boolean fill(X var, D domain, Matrix buffer);

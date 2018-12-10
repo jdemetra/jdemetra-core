@@ -24,7 +24,7 @@ import demetra.likelihood.ConcentratedLikelihood;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
-import demetra.modelling.regression.AdditiveOutlier;
+import demetra.modelling.regression.AdditiveOutlierFactory;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -37,14 +37,13 @@ import demetra.sarima.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarmaSpecification;
-import demetra.modelling.regression.IOutlier;
-import demetra.modelling.regression.LevelShift;
-import demetra.modelling.regression.TransitoryChange;
+import demetra.modelling.regression.IOutlierFactory;
+import demetra.modelling.regression.LevelShiftFactory;
+import demetra.modelling.regression.TransitoryChangeFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
 import demetra.regarima.ami.IGenericOutliersDetectionModule;
 
 /**
@@ -56,9 +55,9 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
 
     static SingleOutlierDetector<SarimaModel> defaultOutlierDetector(){
         FastOutlierDetector detector=new FastOutlierDetector(null);
-        detector.addOutlierFactory(AdditiveOutlier.FACTORY);
-        detector.addOutlierFactory(LevelShift.FACTORY_ZEROSTARTED);
-        detector.addOutlierFactory(new TransitoryChange.Factory(.7));
+        detector.addOutlierFactory(AdditiveOutlierFactory.FACTORY);
+        detector.addOutlierFactory(LevelShiftFactory.FACTORY_ZEROSTARTED);
+        detector.addOutlierFactory(new TransitoryChangeFactory(.7));
         return detector;
     }
 
@@ -166,12 +165,12 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         return outliers.toArray(new int[outliers.size()][]);
     }
 
-    IOutlier.IOutlierFactory getFactory(int i) {
+    IOutlierFactory getFactory(int i) {
         return sod.getOutlierFactory(i);
     }
 
     String[] outlierTypes() {
-        ArrayList<IOutlier.IOutlierFactory> factories = sod.getFactories();
+        ArrayList<IOutlierFactory> factories = sod.getFactories();
         String[] types = new String[factories.size()];
         for (int i = 0; i < types.length; ++i) {
             types[i] = factories.get(i).getCode();
@@ -408,7 +407,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
      *
      * @return
      */
-    List<IOutlier.IOutlierFactory> factories() {
+    List<IOutlierFactory> factories() {
         return Collections.unmodifiableList(sod.getFactories());
     }
 

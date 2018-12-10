@@ -41,30 +41,30 @@ public class ModellingContext  {
     private static AtomicReference<ModellingContext> DEF_CONTEXT=new AtomicReference<>(null);
 
     public ModellingContext() {
-        map.put(TsVariables.class, new NameManager(TsVariables.class, "Variables_", new DefaultNameValidator(".")));
+        map.put(TsSuppliers.class, new NameManager(TsSuppliers.class, "Variables_", new DefaultNameValidator(".")));
     }
 
  
-    public NameManager<TsVariables> getTsVariableManagers() {
-        return map.get(TsVariables.class);
+    public NameManager<TsSuppliers> getTsVariableManagers() {
+        return map.get(TsSuppliers.class);
     }
 
-    public TsVariables getTsVariables(String family) {
-        Object obj = map.get(TsVariables.class);
+    public TsSuppliers getTsVariables(String family) {
+        Object obj = map.get(TsSuppliers.class);
         if (obj == null) {
             return null;
         }
-        NameManager<TsVariables> mgr = (NameManager<TsVariables>) obj;
+        NameManager<TsSuppliers> mgr = (NameManager<TsSuppliers>) obj;
         return mgr.get(family);
     }
 
     public TsDataSupplier getTsVariable(String family, String var) {
-        Object obj = map.get(TsVariables.class);
+        Object obj = map.get(TsSuppliers.class);
         if (obj == null) {
             return null;
         }
-        NameManager<TsVariables> mgr = (NameManager<TsVariables>) obj;
-        TsVariables vars = mgr.get(family);
+        NameManager<TsSuppliers> mgr = (NameManager<TsSuppliers>) obj;
+        TsSuppliers vars = mgr.get(family);
         if (vars == null) {
             return null;
         }
@@ -85,10 +85,10 @@ public class ModellingContext  {
 
     public List<String> getTsVariableDictionary() {
         ArrayList<String> all = new ArrayList<>();
-        NameManager<TsVariables> mgrs = getTsVariableManagers();
+        NameManager<TsSuppliers> mgrs = getTsVariableManagers();
         String[] groups = mgrs.getNames();
         for (int i = 0; i < groups.length; ++i) {
-            TsVariables tv = mgrs.get(groups[i]);
+            TsSuppliers tv = mgrs.get(groups[i]);
             String[] vars = tv.getNames();
             for (int j = 0; j < vars.length; ++j) {
                 all.add(InformationSet.item(groups[i], vars[j]));
@@ -144,6 +144,6 @@ public class ModellingContext  {
 
     public void resetDefault() {
         map.clear();
-        map.put(TsVariables.class, new NameManager(TsVariables.class, "Variables_", new DefaultNameValidator(".")));
+        map.put(TsSuppliers.class, new NameManager(TsSuppliers.class, "Variables_", new DefaultNameValidator(".")));
     }
 }

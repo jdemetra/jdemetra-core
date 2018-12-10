@@ -13,13 +13,12 @@ import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.LikelihoodDescriptor;
-import demetra.linearmodel.LinearModel;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
-import demetra.modelling.regression.AdditiveOutlier;
-import demetra.modelling.regression.IOutlier.IOutlierFactory;
-import demetra.modelling.regression.LevelShift;
-import demetra.modelling.regression.SwitchOutlier;
+import demetra.modelling.regression.AdditiveOutlierFactory;
+import demetra.modelling.regression.IOutlierFactory;
+import demetra.modelling.regression.LevelShiftFactory;
+import demetra.modelling.regression.SwitchOutlierFactory;
 import demetra.regarima.GlsArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -191,15 +190,15 @@ public class PeriodicAirline {
             switch (code[i]) {
                 case "ao":
                 case "AO":
-                    fac.add(AdditiveOutlier.FACTORY);
+                    fac.add(AdditiveOutlierFactory.FACTORY);
                     break;
                 case "wo":
                 case "WO":
-                    fac.add(SwitchOutlier.FACTORY);
+                    fac.add(SwitchOutlierFactory.FACTORY);
                     break;
                 case "ls":
                 case "LS":
-                    fac.add(LevelShift.FACTORY_ZEROSTARTED);
+                    fac.add(LevelShiftFactory.FACTORY_ZEROSTARTED);
                     break;
             }
         }

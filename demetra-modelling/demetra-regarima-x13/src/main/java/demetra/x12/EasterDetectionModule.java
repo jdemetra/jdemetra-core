@@ -18,8 +18,7 @@ package demetra.x12;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.modelling.Variable;
-import demetra.modelling.regression.IEasterVariable;
+import demetra.modelling.regression.Variable;
 import demetra.regarima.IArimaMapping;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
@@ -32,6 +31,7 @@ import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.SarimaModel;
+import demetra.modelling.regression.IEasterVariable;
 
 /**
  *
@@ -98,7 +98,7 @@ public class EasterDetectionModule implements IRegressionModule {
 
         for (int i = 0; i < n; ++i) {
             ModelDescription curDesc = new ModelDescription(refdesc);
-            curDesc.addVariable(new Variable(easters[i], false));
+            curDesc.addVariable(new Variable(easters[i], "easter", false));
             desc[i] = curDesc;
             est[i]=curDesc.estimate(processor);
          }

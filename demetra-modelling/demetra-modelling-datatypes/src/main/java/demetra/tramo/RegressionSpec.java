@@ -16,10 +16,9 @@
  */
 package demetra.tramo;
 
-import demetra.modelling.regression.InterventionVariableDefinition;
-import demetra.modelling.regression.OutlierDefinition;
-import demetra.modelling.regression.RampDefinition;
-import demetra.modelling.regression.TsVariableDefinition;
+import demetra.modelling.regression.InterventionVariable;
+import demetra.modelling.regression.Ramp;
+import demetra.modelling.regression.UserVariable;
 import demetra.util.Comparator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import demetra.modelling.regression.IOutlier;
 
 /**
  *
@@ -35,10 +35,10 @@ import javax.annotation.Nonnull;
 public class RegressionSpec {
 
     private CalendarSpec calendar; 
-    private final ArrayList<OutlierDefinition> outliers = new ArrayList<>();
-    private final ArrayList<RampDefinition> ramps = new ArrayList<>();
-    private final ArrayList<InterventionVariableDefinition> interventions = new ArrayList<>();
-    private final ArrayList<TsVariableDefinition> users = new ArrayList<>();
+    private final ArrayList<IOutlier> outliers = new ArrayList<>();
+    private final ArrayList<Ramp> ramps = new ArrayList<>();
+    private final ArrayList<InterventionVariable> interventions = new ArrayList<>();
+    private final ArrayList<UserVariable> users = new ArrayList<>();
      // the maps with the coefficients use short names...
     private final Map<String, double[]> fcoeff = new LinkedHashMap<>();
     private final Map<String, double[]> coeff = new LinkedHashMap<>();
@@ -91,29 +91,29 @@ public class RegressionSpec {
         calendar = value;
     }
 
-    public OutlierDefinition[] getOutliers() {
-        return outliers.toArray(new OutlierDefinition[outliers.size()]);
+    public IOutlier[] getOutliers() {
+        return outliers.toArray(new IOutlier[outliers.size()]);
     }
 
-    public void setOutliers(@Nonnull OutlierDefinition[] value) {
+    public void setOutliers(@Nonnull IOutlier[] value) {
         outliers.clear();
         Collections.addAll(outliers, value);
     }
 
-    public TsVariableDefinition[] getUserDefinedVariables() {
-        return users.toArray(new TsVariableDefinition[users.size()]);
+    public UserVariable[] getUserDefinedVariables() {
+        return users.toArray(new UserVariable[users.size()]);
     }
 
-    public void setUserDefinedVariables(@Nonnull TsVariableDefinition[] value) {
+    public void setUserDefinedVariables(@Nonnull UserVariable[] value) {
         users.clear();
         Collections.addAll(users, value);
     }
 
-    public InterventionVariableDefinition[] getInterventionVariables() {
-        return interventions.toArray(new InterventionVariableDefinition[interventions.size()]);
+    public InterventionVariable[] getInterventionVariables() {
+        return interventions.toArray(new InterventionVariable[interventions.size()]);
     }
 
-    public void setInterventionVariables(@Nonnull InterventionVariableDefinition[] value) {
+    public void setInterventionVariables(@Nonnull InterventionVariable[] value) {
         Collections.addAll(interventions, value);
     }
 
@@ -122,19 +122,19 @@ public class RegressionSpec {
                 && outliers.isEmpty() && interventions.isEmpty();
     }
 
-    public void add(TsVariableDefinition svar) {
+    public void add(UserVariable svar) {
         users.add(svar);
     }
 
-    public void add(OutlierDefinition outlier) {
+    public void add(IOutlier outlier) {
         outliers.add(outlier);
     }
 
-    public void add(InterventionVariableDefinition ivar) {
+    public void add(InterventionVariable ivar) {
         interventions.add(ivar);
     }
 
-    public boolean contains(OutlierDefinition outlier) {
+    public boolean contains(IOutlier outlier) {
         return outliers.stream().anyMatch((def) -> (def.equals(outlier)));
     }
 
@@ -146,7 +146,7 @@ public class RegressionSpec {
         return users.size();
     }
 
-    public TsVariableDefinition getUserDefinedVariable(int idx) {
+    public UserVariable getUserDefinedVariable(int idx) {
         return users.get(idx);
     }
 
@@ -158,7 +158,7 @@ public class RegressionSpec {
         return outliers.size();
     }
 
-    public OutlierDefinition getOutlier(int idx) {
+    public IOutlier getOutlier(int idx) {
         return outliers.get(idx);
     }
 
@@ -170,7 +170,7 @@ public class RegressionSpec {
         return interventions.size();
     }
 
-    public InterventionVariableDefinition getInterventionVariable(int idx) {
+    public InterventionVariable getInterventionVariable(int idx) {
         return interventions.get(idx);
     }
 
@@ -182,19 +182,19 @@ public class RegressionSpec {
         return ramps.size();
     }
 
-    public RampDefinition getRamp(int idx) {
+    public Ramp getRamp(int idx) {
         return ramps.get(idx);
     }
 
-    public void add(RampDefinition rp) {
+    public void add(Ramp rp) {
         ramps.add(rp);
     }
 
-    public RampDefinition[] getRamps() {
-        return ramps.toArray(new RampDefinition[ramps.size()]);
+    public Ramp[] getRamps() {
+        return ramps.toArray(new Ramp[ramps.size()]);
     }
 
-    public void setRamps(@Nonnull RampDefinition[] value) {
+    public void setRamps(@Nonnull Ramp[] value) {
         ramps.clear();
         Collections.addAll(ramps, value);
     }

@@ -20,9 +20,9 @@ import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.data.MatrixSerializer;
 import demetra.maths.MatrixType;
-import demetra.modelling.regression.AdditiveOutlierDef;
-import demetra.modelling.regression.LevelShift;
-import demetra.modelling.regression.SwitchOutlier;
+import demetra.modelling.regression.AdditiveOutlierFactory;
+import demetra.modelling.regression.LevelShiftFactory;
+import demetra.modelling.regression.SwitchOutlierFactory;
 import demetra.regarima.GlsArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -39,7 +39,6 @@ import java.net.URISyntaxException;
 import java.util.function.Consumer;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 
 /**
  *
@@ -107,9 +106,9 @@ public class MultiPeriodicAirlineMappingTest {
                 .arima(mapping.getDefault())
                 .build();
         OutliersDetectionModule od = OutliersDetectionModule.build(ArimaModel.class)
-                .addFactory(AdditiveOutlierDef.FACTORY)
-                .addFactory(SwitchOutlier.FACTORY)
-                .addFactory(LevelShift.FACTORY_ZEROSTARTED)
+                .addFactory(AdditiveOutlierFactory.FACTORY)
+                .addFactory(SwitchOutlierFactory.FACTORY)
+                .addFactory(LevelShiftFactory.FACTORY_ZEROSTARTED)
                 .maxOutliers(100)
                 .processor(processor)
                 .build();

@@ -15,8 +15,10 @@ import demetra.linearmodel.Ols;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.stats.RobustCovarianceComputer;
 import demetra.modelling.regression.PeriodicDummies;
+import demetra.stats.RobustCovarianceComputer;
+import demetra.modelling.regression.PeriodicDummiesFactory;
+import demetra.modelling.regression.Regression;
 
 /**
  *
@@ -104,7 +106,7 @@ public class CanovaHansen {
             switch (type) {
                 case Dummy: {
                     PeriodicDummies vars = new PeriodicDummies((int) period);
-                    return vars.matrix(len, pos);
+                    return PeriodicDummiesFactory.matrix(vars, len, pos);
                 }
                 case Trigonometric: {
                     TrigonometricSeries vars = TrigonometricSeries.regular((int) period);

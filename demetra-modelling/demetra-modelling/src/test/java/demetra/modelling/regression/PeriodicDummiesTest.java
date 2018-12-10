@@ -36,8 +36,7 @@ public class PeriodicDummiesTest {
     public void testMonthly() {
         PeriodicDummies vars = new PeriodicDummies(12);
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2017, 8), 180);
-        Matrix M=Matrix.make(domain.getLength(), vars.getDim());
-        vars.data(domain, M.columnList());
+        Matrix M=Regression.matrix(domain, vars);
         //System.out.println(M);
         assertTrue(M.columnList().stream().allMatch(col->col.sum()==15));
     }

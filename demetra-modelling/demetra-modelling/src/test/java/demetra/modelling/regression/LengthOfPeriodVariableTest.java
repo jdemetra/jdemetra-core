@@ -24,22 +24,20 @@ public class LengthOfPeriodVariableTest {
 
     @Test
     public void testLeapYear() {
-        LengthOfPeriodVariable var=new LengthOfPeriodVariable(LengthOfPeriodType.LeapYear);
+        LengthOfPeriod var=new LengthOfPeriod(LengthOfPeriodType.LeapYear);
         TsPeriod start=TsPeriod.monthly(1980, 5);
         TsDomain domain=TsDomain.of(start, 28*12);
-        DataBlock x=DataBlock.make(domain.getLength());
-        var.data(domain, Collections.singletonList(x));
+        DataBlock x=Regression.x(domain, var);
 //        System.out.println(x);
         assertEquals(x.sum(), 0, 1e-9);
     }
     
     @Test
     public void testLengthOfPeriod() {
-        LengthOfPeriodVariable var=new LengthOfPeriodVariable(LengthOfPeriodType.LengthOfPeriod);
+        LengthOfPeriod var=new LengthOfPeriod(LengthOfPeriodType.LengthOfPeriod);
         TsPeriod start=TsPeriod.monthly(1980, 5);
         TsDomain domain=TsDomain.of(start, 28*12);
-        DataBlock x=DataBlock.make(domain.getLength());
-        var.data(domain, Collections.singletonList(x));
+        DataBlock x=Regression.x(domain, var);
 //        System.out.println(x);
         assertEquals(x.sum(), 0, 1e-9);
     }

@@ -16,8 +16,10 @@
  */
 package demetra.regarima.regular;
 
-import demetra.modelling.Variable;
+import demetra.modelling.regression.Variable;
 import demetra.data.DataBlock;
+import demetra.data.DataBlockIterator;
+import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.data.transformation.LogJacobian;
 import demetra.data.ParameterType;
@@ -25,8 +27,9 @@ import demetra.data.transformation.DataInterpolator;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.modelling.PreadjustmentVariable;
+import demetra.modelling.regression.PreadjustmentVariable;
 import demetra.modelling.regression.ITsVariable;
+import demetra.modelling.regression.Regression;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -88,7 +91,7 @@ public final class ModelDescription {
     private final SarimaComponent arima = new SarimaComponent();
 
     // Caching
-    private ITsVariable<TsDomain>[] regressionVariables;
+    private ITsVariable[] regressionVariables;
     private TransformedSeries transformedSeries;
     private RegArimaModel<SarimaModel> regarima;
 
@@ -137,7 +140,7 @@ public final class ModelDescription {
     // 5 outliers, 5.1 pre-specified, 5.2 detected 
     private void buildRegressionVariables() {
         if (regressionVariables == null) {
-            List<ITsVariable<TsDomain>> vars = new ArrayList<>();
+            List<ITsVariable> vars = new ArrayList<>();
             variables.stream().filter(v -> v.isUser()).forEachOrdered(v -> vars.add(v.getVariable()));
             variables.stream().filter(v -> v.isCalendar()).forEachOrdered(v -> vars.add(v.getVariable()));
             variables.stream().filter(v -> v.isMovingHolidays()).forEachOrdered(v -> vars.add(v.getVariable()));
@@ -163,7 +166,12 @@ public final class ModelDescription {
                 final DataBlock ndata = DataBlock.of(tmp.getValues());
                 final TsDomain domain = tmp.getDomain();
                 preadjustmentVariables.forEach(v -> {
-                    v.removeFrom(ndata, domain);
+                    Matrix m = Regression.matrix(domain, v.getVariable());
+                    DoubleReader reader = v.getCoefficients().reader();
+                    DataBlockIterator columns = m.columnsIterator();
+                    while (columns.hasNext()) {
+                        ndata.addAY(reader.next(), columns.next());
+                    }
                 });
                 tmp = TsData.ofInternal(domain.getStartPeriod(), ndata.getStorage());
             }
@@ -185,7 +193,7 @@ public final class ModelDescription {
                     .missing(transformedSeries.missing)
                     .arima(arima.getModel())
                     .meanCorrection(arima.isMean());
-            for (ITsVariable<TsDomain> v : regressionVariables) {
+            for (ITsVariable v : regressionVariables) {
                 builder.addX(getX(v));
             }
             regarima = builder.build();
@@ -202,9 +210,9 @@ public final class ModelDescription {
         this.regarima = null;
     }
 
-    public Stream<ITsVariable<TsDomain>> regressionVariables() {
+    public ITsVariable[] regressionVariables() {
         buildRegressionVariables();
-        return Arrays.stream(regressionVariables);
+        return regressionVariables;
     }
 
     public RegArimaModel<SarimaModel> regarima() {
@@ -214,12 +222,12 @@ public final class ModelDescription {
 
     public Variable variable(String name) {
         Optional<Variable> search = variables.stream()
-                .filter(var -> var.getVariable().getName().equals(name))
+                .filter(var -> var.getName().equals(name))
                 .findFirst();
         return search.isPresent() ? search.get() : null;
     }
 
-    public Variable variable(ITsVariable<TsDomain> v) {
+    public Variable variable(ITsVariable v) {
         Optional<Variable> search = variables.stream()
                 .filter(var -> var.getVariable() == v)
                 .findFirst();
@@ -228,7 +236,7 @@ public final class ModelDescription {
 
     public boolean remove(String name) {
         Optional<Variable> search = variables.stream()
-                .filter(var -> var.getVariable().getName().equals(name))
+                .filter(var -> var.getName().equals(name))
                 .findFirst();
         if (search.isPresent()) {
             variables.remove(search.get());
@@ -254,13 +262,13 @@ public final class ModelDescription {
 
     public PreadjustmentVariable preadjustmentVariable(String name) {
         Optional<PreadjustmentVariable> search = preadjustmentVariables.stream()
-                .filter(var -> var.getVariable().getName().equals(name))
+                .filter(var -> var.getName().equals(name))
                 .findFirst();
         return search.isPresent() ? search.get() : null;
     }
 
     public Variable addVariable(Variable var) {
-        String name = var.getVariable().getName();
+        String name = var.getName();
         while (contains(name)) {
             name = ITsVariable.nextName(name);
         }
@@ -271,7 +279,7 @@ public final class ModelDescription {
     }
 
     public PreadjustmentVariable addPreadjustmentVariable(PreadjustmentVariable var) {
-        String name = var.getVariable().getName();
+        String name = var.getName();
         while (contains(name)) {
             name = ITsVariable.nextName(name);
         }
@@ -283,9 +291,9 @@ public final class ModelDescription {
 
     public boolean contains(String name) {
         return variables.stream()
-                .anyMatch(var -> var.getVariable().getName().equals(name))
+                .anyMatch(var -> var.getName().equals(name))
                 || preadjustmentVariables.stream()
-                        .anyMatch(var -> var.getVariable().getName().equals(name));
+                .anyMatch(var -> var.getVariable().equals(name));
     }
 
     public void setLogTransformation(boolean log) {
@@ -304,16 +312,8 @@ public final class ModelDescription {
         return logTransformation && lpTransformation != LengthOfPeriodType.None;
     }
 
-    private DoubleSequence[] getX(ITsVariable variable) {
-        int n = series.length();
-        DataBlock[] x = new DataBlock[variable.getDim()];
-        ArrayList<DataBlock> tmp = new ArrayList<>();
-        for (int i = 0; i < x.length; ++i) {
-            x[i] = DataBlock.make(n);
-            tmp.add(x[i]);
-        }
-        variable.data(series.getDomain(), tmp);
-        return x;
+    private Matrix getX(ITsVariable variable) {
+        return Regression.matrix(series.getDomain(), variable);
     }
 
     /**
@@ -380,7 +380,7 @@ public final class ModelDescription {
     public void setSpecification(SarimaSpecification spec) {
         arima.setSpecification(spec);
         if (transformedSeries != null) {
-            transformedSeries=null;
+            transformedSeries = null;
             buildTransformation();
         }
         if (regarima != null) {
@@ -393,7 +393,7 @@ public final class ModelDescription {
         s.airline(seas);
         arima.setSpecification(s);
         if (transformedSeries != null) {
-            transformedSeries=null;
+            transformedSeries = null;
             buildTransformation();
         }
         if (regarima != null) {
@@ -443,7 +443,7 @@ public final class ModelDescription {
     public int countRegressors(Predicate<Variable> pred) {
         return variables()
                 .filter(pred)
-                .mapToInt(var -> var.getVariable().getDim()).sum();
+                .mapToInt(var -> var.getVariable().dim()).sum();
     }
 
     public void setTransformation(LengthOfPeriodType lengthOfPeriodType) {
@@ -531,12 +531,12 @@ public final class ModelDescription {
         return tr;
     }
 
-    public int findPosition(ITsVariable<TsDomain> variable) {
+    public int findPosition(ITsVariable variable) {
         buildRegressionVariables();
         int pos = 0;
         int cur = 0;
         while (cur < regressionVariables.length && regressionVariables[cur] != variable) {
-            pos += regressionVariables[cur++].getDim();
+            pos += regressionVariables[cur++].dim();
         }
         return cur < regressionVariables.length ? pos : -1;
     }

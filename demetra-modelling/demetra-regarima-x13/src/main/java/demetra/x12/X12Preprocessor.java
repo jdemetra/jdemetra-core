@@ -43,29 +43,45 @@ import demetra.sarima.SarimaSpecification;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
+@Development(status = Development.Status.Alpha)
 public class X12Preprocessor implements IPreprocessor {
 
     @lombok.Value
     @lombok.Builder
     public static class AmiOptions {
+        
+        public static AmiOptionsBuilder builder(){
+            AmiOptionsBuilder builder=new AmiOptionsBuilder();
+            builder.checkMu=true;
+            builder.precision=1e-7;
+            builder.va=0;
+            builder.reduceVa=.14286;
+            builder.ljungBoxLimit=.95;
+            builder.urLimit=.95;
+            builder.acceptAirline=false;
+            builder.mixedModel=true;
+            return builder;
+        }
 
-        @lombok.Builder.Default
-        boolean checkMu = true;
-        @lombok.Builder.Default
-        double precision = 1e-7;
-        @lombok.Builder.Default
-        double va = 0;
-        @lombok.Builder.Default
-        double reduceVa = .14286;
-        @lombok.Builder.Default
-        double ljungBoxLimit = .95;
-        @lombok.Builder.Default
-        double urLimit = .95;
-        @lombok.Builder.Default
-        boolean acceptAirline = false;
-        @lombok.Builder.Default
-        boolean mixedModel = true;
+//        public static class Builder {
+//
+//            boolean checkMu = true;
+//            double precision = 1e-7;
+//            double va = 0;
+//            double reduceVa = .14286;
+//            double ljungBoxLimit = .95;
+//            double urLimit = .95;
+//            boolean acceptAirline = false;
+//            boolean mixedModel = true;
+//        }
+        boolean checkMu;
+        double precision;
+        double va;
+        double reduceVa;
+        double ljungBoxLimit;
+        double urLimit;
+        boolean acceptAirline;
+        boolean mixedModel;
     }
 
     public static Builder builder() {
@@ -227,7 +243,7 @@ public class X12Preprocessor implements IPreprocessor {
 
     private PreprocessingModel calc(RegArimaModelling context) {
         try {
-            
+
             if (transformation != null) {
                 transformation.process(context);
             }

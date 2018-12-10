@@ -7,7 +7,7 @@ package demetra.tramo;
 
 import demetra.design.BuilderPattern;
 import demetra.likelihood.ConcentratedLikelihood;
-import demetra.modelling.Variable;
+import demetra.modelling.regression.Variable;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.regular.IRegressionModule;
 import demetra.regarima.regular.IRegressionTest;
@@ -89,7 +89,7 @@ public class FastRegressionTest implements IRegressionModule {
         if (td.isPresent()) {
             Variable variable = td.get();
             int pos = start + tmpModel.findPosition(variable.getVariable());
-            int dim = variable.getVariable().getDim();
+            int dim = variable.getVariable().dim();
             IRegressionTest test = dim == 1 ? wdTest : tdTest;
             if (!test.accept(ll, nhp, pos, dim, null)) {
                 removetd = true;

@@ -25,7 +25,7 @@ import demetra.design.Development;
 import demetra.design.VisibleForTesting;
 import demetra.maths.Complex;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.modelling.Variable;
+import demetra.modelling.regression.Variable;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;

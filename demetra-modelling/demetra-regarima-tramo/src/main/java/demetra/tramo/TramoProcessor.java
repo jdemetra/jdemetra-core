@@ -670,11 +670,12 @@ public class TramoProcessor implements IPreprocessor {
 //
 
     private void testSeasonality(RegArimaModelling modelling) {
+        ModelDescription model = modelling.getDescription();
         if (!isAutoModelling()) {
+            context.seasonal=model.getSpecification().isSeasonal();
             return;
         }
 
-        ModelDescription model = modelling.getDescription();
         int ifreq = model.getAnnualFrequency();
         if (ifreq > 1) {
             TramoSeasonalityDetector seas = new TramoSeasonalityDetector();

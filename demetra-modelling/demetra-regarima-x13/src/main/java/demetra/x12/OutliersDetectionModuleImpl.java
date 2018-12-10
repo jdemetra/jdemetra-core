@@ -27,10 +27,10 @@ import demetra.regarima.RegArimaModel;
 import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.outlier.ExactSingleOutlierDetector;
 import demetra.sarima.SarimaModel;
-import demetra.modelling.regression.AdditiveOutlier;
-import demetra.modelling.regression.IOutlier;
-import demetra.modelling.regression.LevelShift;
-import demetra.modelling.regression.TransitoryChange;
+import demetra.modelling.regression.AdditiveOutlierFactory;
+import demetra.modelling.regression.IOutlierFactory;
+import demetra.modelling.regression.LevelShiftFactory;
+import demetra.modelling.regression.TransitoryChangeFactory;
 import java.util.ArrayList;
 import demetra.regarima.ami.IGenericOutliersDetectionModule;
 import demetra.regarima.outlier.RobustStandardDeviationComputer;
@@ -52,9 +52,9 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
                 .armaFilter(new AnsleyFilter())
                 .residualsComputer(ResidualsComputer.mlComputer())
                 .build();
-        sod.addOutlierFactory(AdditiveOutlier.FACTORY);
-        sod.addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
-        sod.addOutlierFactory(new TransitoryChange.Factory(EPS));
+        sod.addOutlierFactory(AdditiveOutlierFactory.FACTORY);
+        sod.addOutlierFactory(LevelShiftFactory.FACTORY_ZEROENDED);
+        sod.addOutlierFactory(new TransitoryChangeFactory(EPS));
         return sod;
     }
 
@@ -162,12 +162,12 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         return outliers.toArray(new int[outliers.size()][]);
     }
 
-    public IOutlier.IOutlierFactory getFactory(int i) {
+    public IOutlierFactory getFactory(int i) {
         return sod.getOutlierFactory(i);
     }
 
     public String[] outlierTypes() {
-        ArrayList<IOutlier.IOutlierFactory> factories = sod.getFactories();
+        ArrayList<IOutlierFactory> factories = sod.getFactories();
         String[] types = new String[factories.size()];
         for (int i = 0; i < types.length; ++i) {
             types[i] = factories.get(i).getCode();

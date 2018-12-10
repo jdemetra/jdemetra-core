@@ -18,7 +18,10 @@ package demetra.regarima.regular;
 
 import demetra.data.DataBlock;
 import demetra.linearmodel.JointTest;
-import demetra.modelling.regression.SeasonalDummies;
+import demetra.maths.matrices.Matrix;
+import demetra.modelling.regression.PeriodicContrasts;
+import demetra.modelling.regression.PeriodicDummies;
+import demetra.modelling.regression.Regression;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.GlsSarimaProcessor;
@@ -27,6 +30,7 @@ import demetra.sarima.SarimaSpecification;
 import demetra.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
 import java.util.List;
 
 /**
@@ -94,14 +98,11 @@ public class SeasonalFTest {
 
     private void addSeasonalDummies(RegArimaModel.Builder builder, TsDomain domain) {
         // makes seasonal dummies
-        SeasonalDummies dummies = new SeasonalDummies(domain.getAnnualFrequency());
-        List<DataBlock> regs = dummies.createBuffer(domain.getLength());
-        dummies.data(domain, regs);
-        for (DataBlock reg : regs) {
-            builder.addX(reg);
-        }
+        PeriodicContrasts dummies = new PeriodicContrasts(domain.getAnnualFrequency());
+        Matrix x = Regression.matrix(domain, dummies);
+        builder.addX(x);
         regarima = builder.build();
-        nseas = dummies.getDim();
+        nseas = dummies.dim();
     }
 
     private boolean estimateModel() {
@@ -129,7 +130,7 @@ public class SeasonalFTest {
         seasonalModel = null;
         ftest = null;
     }
-    
+
 //    public boolean testAMI(TsData s) {
 //        clear();
 //        return searchSeasonalModel(s);
@@ -146,7 +147,6 @@ public class SeasonalFTest {
 //        return context.estimation.compute(monitor, context.description.getArimaComponent().getFreeParametersCount());
 //    }
 //
-
 //    private boolean searchSeasonalModel(TsData s) {
 //        RegArimaModelling context = new RegArimaModelling();
 //        ModelDescription model=new ModelDescription(s);
