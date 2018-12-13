@@ -91,6 +91,12 @@ public class CompositeModelEstimation {
             for (int i = 1; i <= n; ++i) {
                 ss.save(i - 1, fr.a(i * m - 1), fr.P(i * m - 1));
             }
+            // TO BE CORRECTED
+            int nd = ussf.getDiffuseDim()/ m;
+            for (int i = 0; i < nd; ++i) {
+                ss.a(i).set(Double.NaN);
+                ss.P(i).set(Double.NaN);
+            }
             ss.rescaleVariances(likelihood.sigma());
             filteredStates = ss;
         }

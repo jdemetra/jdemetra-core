@@ -18,7 +18,7 @@ import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.RegSarimaProcessor;
-import demetra.arima.SarimaDescriptor;
+import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsUnit;

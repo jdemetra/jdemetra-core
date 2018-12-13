@@ -50,6 +50,5 @@ public class RegArimaModelType {
     public MatrixType getX() {
         return model.getX();
     }
-    
     //</editor-fold>
 }

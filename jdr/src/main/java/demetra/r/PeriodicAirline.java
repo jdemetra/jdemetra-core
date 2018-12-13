@@ -12,7 +12,7 @@ import demetra.fractionalairline.MultiPeriodicAirlineMapping;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.likelihood.LikelihoodDescriptor;
+import demetra.descriptors.stats.LikelihoodDescriptor;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.modelling.regression.AdditiveOutlierFactory;

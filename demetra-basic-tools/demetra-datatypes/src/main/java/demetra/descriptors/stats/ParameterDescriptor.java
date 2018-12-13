@@ -14,10 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.stats;
+package demetra.descriptors.stats;
 
 import demetra.design.Development;
 import demetra.information.InformationMapping;
+import demetra.stats.ParameterEstimation;
 
 /**
  *

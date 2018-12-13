@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.likelihood;
+package demetra.descriptors.stats;
 
 import demetra.information.InformationMapping;
+import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.LikelihoodStatistics;
 
 /**

@@ -19,7 +19,7 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.r.mapping.DiffuseLikelihoodInfo;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
-import demetra.arima.SarimaDescriptor;
+import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.ssf.dk.DkConcentratedLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.SsfFunction;
