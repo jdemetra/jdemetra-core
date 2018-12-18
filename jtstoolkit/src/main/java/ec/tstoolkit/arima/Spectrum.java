@@ -138,11 +138,21 @@ public class Spectrum {
         }
 
         /**
-         * Computes the minimum of the spectrum by means of a grid search
+         * Computes the minimum of the spectrum by means of a grid search.
+         * 
          *
          * @param spectrum The spectrum being minimized
          */
+        
+        private static final int MIN_DEG=8;
+        
         public void minimize(final Spectrum spectrum) {
+            int nd = spectrum.m_num.getDegree() + spectrum.m_denom.getDegree();
+            if (nd <= MIN_DEG){
+                minimize2(spectrum);
+                return; 
+            }
+                
             m_x = 0;
             m_min = Double.MAX_VALUE;
             double y = value(spectrum, 0);
@@ -161,7 +171,6 @@ public class Spectrum {
             GridSearch search = new GridSearch();
             search.setBounds(0, Math.PI);
             search.setMaxIter(1000);
-            int nd = spectrum.m_num.getDegree() + spectrum.m_denom.getDegree();
             search.setInitialGridCount(4 * nd - 1);
             search.setConvergenceCriterion(1e-9);
             search.setPrecision(1e-7);
