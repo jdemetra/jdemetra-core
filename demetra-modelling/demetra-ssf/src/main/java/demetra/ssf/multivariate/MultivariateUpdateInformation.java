@@ -42,7 +42,7 @@ public class MultivariateUpdateInformation {
      * =(ZPZ'+H)^1/2 Cholesky factor of the variance/covariance matrix of the
      * prediction errors (lower triangular). nvars x nvars
      */
-    private final Matrix L;
+    private final Matrix R;
 
     /**
      * K = P Z' L'^-1 dim x nvars
@@ -56,7 +56,7 @@ public class MultivariateUpdateInformation {
      */
     public MultivariateUpdateInformation(final int dim, final int nvars) {
         U = DataBlock.make(nvars);
-        L = Matrix.square(nvars);
+        R = Matrix.square(nvars);
         K = Matrix.make(dim, nvars);
     }
 
@@ -65,16 +65,16 @@ public class MultivariateUpdateInformation {
     }
 
     public Matrix getPredictionErrorCovariance() {
-        if (L.getRowsCount() == 1) {
-            double l = L.get(0, 0);
+        if (R.getRowsCount() == 1) {
+            double l = R.get(0, 0);
             return Matrix.builder(new double[]{l * l}).nrows(1).ncolumns(1).build();
         } else {
-            return SymmetricMatrix.LLt(L);
+            return SymmetricMatrix.LLt(R);
         }
     }
 
     public Matrix getCholeskyFactor() {
-        return L;
+        return R;
     }
 
     /**
@@ -90,16 +90,16 @@ public class MultivariateUpdateInformation {
 
         ZM(t, measurements, equations, state.P(), K.transpose());
         // computes ZPZ'; results in pe_.L
-        ZM(t, measurements, equations, K, L);
-        addH(t, errors, equations, L);
-        SymmetricMatrix.reenforceSymmetry(L);
+        ZM(t, measurements, equations, K, R);
+        addH(t, errors, equations, R);
+        SymmetricMatrix.reenforceSymmetry(R);
 
         // pe_L contains the Cholesky factor !!!
-        SymmetricMatrix.lcholesky(L, State.ZERO);
+        SymmetricMatrix.lcholesky(R, State.ZERO);
 
         // We put in K  PZ'*(ZPZ'+H)^-1/2 = PZ'* F^-1 = PZ'*(LL')^-1/2 = PZ'(L')^-1
         // K L' = PZ' or L K' = ZP
-        LowerTriangularMatrix.rsolve(L, K.transpose(), State.ZERO);
+        LowerTriangularMatrix.rsolve(R, K.transpose(), State.ZERO);
         if (equations == null) {
             for (int i = 0; i < x.length(); ++i) {
                 double y = x.get(i);

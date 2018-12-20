@@ -82,7 +82,7 @@ public class OrdinarySmoother {
         srslts = sresults;
         stop = start;
         initFilter(ssf);
-        initSmoother(ssf, end);
+        initSmoother(ssf);
         int t=end;
         while (--t >= stop) {
             loadInfo(t);
@@ -106,7 +106,7 @@ public class OrdinarySmoother {
         return N;
     }
 
-    private void initSmoother(ISsf ssf, int endpos) {
+    private void initSmoother(ISsf ssf) {
         int dim = ssf.getStateDim();
         state = new State(dim);
 

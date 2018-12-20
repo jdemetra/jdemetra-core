@@ -16,18 +16,17 @@
  */
 package demetra.x12;
 
-import demetra.arima.IResidualsComputer;
+import demetra.arima.ResidualsComputer;
 import demetra.arima.internal.AnsleyFilter;
 import demetra.design.BuilderPattern;
-import demetra.modelling.Variable;
-import demetra.modelling.regression.AdditiveOutlier;
+import demetra.modelling.regression.Variable;
+import demetra.modelling.regression.AdditiveOutlierFactory;
 import demetra.modelling.regression.IOutlier;
-import demetra.modelling.regression.LevelShift;
-import demetra.modelling.regression.PeriodicOutlier;
-import demetra.modelling.regression.TransitoryChange;
+import demetra.modelling.regression.LevelShiftFactory;
+import demetra.modelling.regression.PeriodicOutlierFactory;
+import demetra.modelling.regression.TransitoryChangeFactory;
 import demetra.regarima.RegArimaUtility;
 import demetra.regarima.outlier.ExactSingleOutlierDetector;
-import demetra.regarima.outlier.IRobustStandardDeviationComputer;
 import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.regular.ModelDescription;
 import demetra.sarima.SarimaModel;
@@ -37,6 +36,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.regarima.regular.IOutliersDetectionModule;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
+import demetra.regarima.outlier.RobustStandardDeviationComputer;
 
 /**
  *
@@ -135,14 +135,16 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
     }
 
     private SingleOutlierDetector<SarimaModel> factories(int freq) {
-        SingleOutlierDetector sod = new ExactSingleOutlierDetector(IRobustStandardDeviationComputer.mad(false),
-                IResidualsComputer.mlComputer(),
-                new AnsleyFilter());
+        SingleOutlierDetector sod = ExactSingleOutlierDetector.builder()
+                .robustStandardDeviationComputer(RobustStandardDeviationComputer.mad(false))
+                .armaFilter(new AnsleyFilter())
+                .residualsComputer(ResidualsComputer.mlComputer())
+                .build();
         if (ao) {
-            sod.addOutlierFactory(AdditiveOutlier.FACTORY);
+            sod.addOutlierFactory(AdditiveOutlierFactory.FACTORY);
         }
         if (ls) {
-            sod.addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
+            sod.addOutlierFactory(LevelShiftFactory.FACTORY_ZEROENDED);
         }
         if (tc) {
             double c = tcrate;
@@ -150,10 +152,10 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
             if (r > 1) {
                 c = Math.pow(c, r);
             }
-            sod.addOutlierFactory(new TransitoryChange.Factory(c));
+            sod.addOutlierFactory(new TransitoryChangeFactory(c));
         }
         if (freq > 1 && so) {
-            sod.addOutlierFactory(new PeriodicOutlier.Factory(freq, true));
+            sod.addOutlierFactory(new PeriodicOutlierFactory(freq, true));
         }
         return sod;
     }
@@ -212,7 +214,8 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
             for (int i = 0; i < outliers.length; ++i) {
                 int[] cur = outliers[i];
                 TsPeriod pos = domain.get(cur[0]);
-                model.addVariable(new Variable(impl.getFactory(cur[1]).make(pos.start()), false));
+                IOutlier o = impl.getFactory(cur[1]).make(pos.start());
+                model.addVariable(new Variable(o, IOutlier.defaultName(o.getCode(), pos), false));
             }
             context.setEstimation(null);
             return ProcessingResult.Changed;

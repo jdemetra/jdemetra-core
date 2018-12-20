@@ -130,7 +130,7 @@ public class TramoSpec {
         automdl = new AutoModelSpec(false);
         outlier = new OutlierSpec();
         arima = new ArimaSpec();
-        arima.setMean(true);
+        arima.airlineWithMean();
         regression = new RegressionSpec();
     }
 

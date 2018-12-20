@@ -9,7 +9,6 @@ import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
 import demetra.msts.ArParameters;
 import demetra.msts.IMstsParametersBlock;
-import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
 import demetra.msts.survey.WaveSpecificSurveyErrors;
 import demetra.ssf.StateComponent;
@@ -25,7 +24,6 @@ public class MsaeItem extends AbstractModelItem {
     private final int nwaves;
     private final int lag;
     private final int[] lar;
-    private final double[][] car;
     private final ArParameters[] par;
     
     public MsaeItem(String name, int nwaves, MatrixType ar, boolean fixedar, int lag) {
@@ -34,7 +32,6 @@ public class MsaeItem extends AbstractModelItem {
         this.lag = lag;
         final int nar = ar.getColumnsCount();
         lar = new int[nar];
-        car = new double[nar][];
         par = new ArParameters[nar];
         for (int i = 0; i < nar; ++i) {
             int j = 0;
@@ -45,8 +42,8 @@ public class MsaeItem extends AbstractModelItem {
                 }
             }
             lar[i] = j;
-            car[i] = ar.column(i).extract(0, j).toArray();
-            par[i] = new ArParameters(name + ".wae" + (i + 1), car[i], fixedar);
+            double[] car = ar.column(i).extract(0, j).toArray();
+            par[i] = new ArParameters(name + ".wae" + (i + 1), car, fixedar);
         }
     }
     
@@ -70,7 +67,7 @@ public class MsaeItem extends AbstractModelItem {
             }
             StateComponent cmp = WaveSpecificSurveyErrors.of(w, lag);
             builder.add(name, cmp, null);
-            return nar;
+            return pos;
         });
     }
     

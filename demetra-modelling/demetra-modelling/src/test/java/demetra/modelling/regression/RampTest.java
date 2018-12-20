@@ -30,31 +30,26 @@ public class RampTest {
 
         // just before
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2012, 4), 60);
-        DataBlock data = DataBlock.make(domain.getLength());
-        ramp.data(domain, Collections.singletonList(data));
-        assertTrue(data.allMatch(x->x==-1));
+        DataBlock data = Regression.x(domain, ramp);
+        assertTrue(data.allMatch(x -> x == -1));
         // just after
         domain = TsDomain.of(TsPeriod.monthly(2018, 3), 60);
-        data = DataBlock.make(domain.getLength());
-        ramp.data(domain, Collections.singletonList(data));
-        assertTrue(data.allMatch(x->x==0));
-        
+        data = Regression.x(domain, ramp);
+        assertTrue(data.allMatch(x -> x == 0));
+
         // inside
         domain = TsDomain.of(TsPeriod.monthly(2017, 4), 10);
-        data = DataBlock.make(domain.getLength());
-        ramp.data(domain, Collections.singletonList(data));
-        assertTrue(data.allMatch(x->x!=0 && x != -1));
+        data = Regression.x(domain, ramp);
+        assertTrue(data.allMatch(x -> x != 0 && x != -1));
 
         // across the beginning
         domain = TsDomain.of(TsPeriod.monthly(2017, 1), 10);
-        data = DataBlock.make(domain.getLength());
-        ramp.data(domain, Collections.singletonList(data));
-        assertTrue(data.count(x->x == -1) == 3);
+        data = Regression.x(domain, ramp);
+        assertTrue(data.count(x -> x == -1) == 3);
         // across the beginning
         domain = TsDomain.of(TsPeriod.monthly(2017, 10), 10);
-        data = DataBlock.make(domain.getLength());
-        ramp.data(domain, Collections.singletonList(data));
-        assertTrue(data.count(x->x != 0) == 5);
+        data = Regression.x(domain, ramp);
+        assertTrue(data.count(x -> x != 0) == 5);
     }
 
     @Test
@@ -64,39 +59,33 @@ public class RampTest {
 
         // just before
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2012, 4), 60);
-        DataBlock data = DataBlock.make(domain.getLength());
-        ramp.data(domain, Collections.singletonList(data));
-        assertTrue(data.allMatch(x->x==-1));
+        DataBlock data = Regression.x(domain, ramp);
+        assertTrue(data.allMatch(x -> x == -1));
         // just after
         domain = TsDomain.of(TsPeriod.monthly(2018, 3), 60);
-        data = DataBlock.make(domain.getLength());
-        ramp.data(domain, Collections.singletonList(data));
-        assertTrue(data.allMatch(x->x==0));
+        data = Regression.x(domain, ramp);
+        assertTrue(data.allMatch(x -> x == 0));
     }
-    
-        @Test
+
+    @Test
     public void testDaiyRamp() {
         Ramp ramp = new Ramp(LocalDate.of(2017, Month.MARCH, 1).atStartOfDay(),
                 LocalDate.of(2018, Month.MARCH, 31).atStartOfDay());
 
         // just before
         TsDomain domain = TsDomain.of(TsPeriod.daily(2017, 2, 1), 29);
-        DataBlock data = DataBlock.make(domain.getLength());
-        ramp.data(domain, Collections.singletonList(data));
-        assertTrue(data.allMatch(x->x==-1));
+        DataBlock data = Regression.x(domain, ramp);
+        assertTrue(data.allMatch(x -> x == -1));
         domain = TsDomain.of(TsPeriod.daily(2017, 2, 1), 30);
-        data = DataBlock.make(domain.getLength());
-        ramp.data(domain, Collections.singletonList(data));
-        assertTrue(data.count(x->x != -1) == 1);
+        data = Regression.x(domain, ramp);
+        assertTrue(data.count(x -> x != -1) == 1);
         // just after
         domain = TsDomain.of(TsPeriod.daily(2018, 3, 31), 60);
-        data = DataBlock.make(domain.getLength());
-        ramp.data(domain, Collections.singletonList(data));
-        assertTrue(data.allMatch(x->x==0));
+        data = Regression.x(domain, ramp);
+        assertTrue(data.allMatch(x -> x == 0));
         domain = TsDomain.of(TsPeriod.daily(2018, 3, 30), 60);
-        data = DataBlock.make(domain.getLength());
-        ramp.data(domain, Collections.singletonList(data));
-        assertTrue(data.count(x->x != 0) == 1);
+        data = Regression.x(domain, ramp);
+        assertTrue(data.count(x -> x != 0) == 1);
     }
 
 }

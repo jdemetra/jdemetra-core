@@ -37,8 +37,7 @@ public class PeriodicContrastsTest {
     public void testMonthly() {
         PeriodicContrasts vars = new PeriodicContrasts(12);
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2017, 8), 120);
-        Matrix M=Matrix.make(domain.getLength(), vars.getDim());
-        vars.data(domain, M.columnList());
+        Matrix M=Regression.matrix(domain, vars);
         //System.out.println(M);
         assertTrue(M.columnList().stream().allMatch(col->col.sum()==0));
     }

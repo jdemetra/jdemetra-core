@@ -16,15 +16,12 @@
  */
 package demetra.tramo.internal;
 
-import demetra.tramo.internal.TramoUtility;
-import demetra.tramo.internal.OutliersDetectionModuleImpl;
 import demetra.design.BuilderPattern;
-import demetra.modelling.Variable;
-import demetra.modelling.regression.AdditiveOutlier;
+import demetra.modelling.regression.Variable;
+import demetra.modelling.regression.AdditiveOutlierFactory;
 import demetra.modelling.regression.IOutlier;
-import demetra.modelling.regression.LevelShift;
-import demetra.modelling.regression.PeriodicOutlier;
-import demetra.modelling.regression.TransitoryChange;
+import demetra.modelling.regression.LevelShiftFactory;
+import demetra.modelling.regression.TransitoryChangeFactory;
 import demetra.regarima.RegArimaUtility;
 import demetra.regarima.outlier.FastOutlierDetector;
 import demetra.regarima.outlier.SingleOutlierDetector;
@@ -37,6 +34,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.regarima.regular.IOutliersDetectionModule;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -188,13 +186,13 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
     private SingleOutlierDetector<SarimaModel> factories() {
         FastOutlierDetector detector = new FastOutlierDetector(null);
         if (ao) {
-            detector.addOutlierFactory(AdditiveOutlier.FACTORY);
+            detector.addOutlierFactory(AdditiveOutlierFactory.FACTORY);
         }
         if (ls) {
-            detector.addOutlierFactory(LevelShift.FACTORY_ZEROSTARTED);
+            detector.addOutlierFactory(LevelShiftFactory.FACTORY_ZEROENDED);
         }
         if (tc) {
-            detector.addOutlierFactory(new TransitoryChange.Factory(tcrate));
+            detector.addOutlierFactory(new TransitoryChangeFactory(tcrate));
         }
         return detector;
     }
@@ -219,7 +217,8 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         for (int i = 0; i < outliers.length; ++i) {
             int[] cur = outliers[i];
             TsPeriod pos = domain.get(cur[0]);
-            model.addVariable(new Variable(impl.getFactory(cur[1]).make(pos.start()), false));
+            IOutlier o = impl.getFactory(cur[1]).make(pos.start());
+            model.addVariable(new Variable(o, IOutlier.defaultName(o.getCode(), pos), false));
         }
         return ProcessingResult.Changed;
     }

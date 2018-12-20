@@ -21,7 +21,6 @@ package demetra.sa;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.modelling.ComponentInformation;
-import demetra.modelling.ComponentType;
 import java.util.EnumMap;
 
 /**

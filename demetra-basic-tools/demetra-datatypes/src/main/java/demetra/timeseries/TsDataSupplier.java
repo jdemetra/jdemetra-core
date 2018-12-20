@@ -16,7 +16,6 @@
  */
 package demetra.timeseries;
 
-import demetra.timeseries.TsData;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 

@@ -19,7 +19,7 @@ package demetra.regarima.regular;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihood;
-import demetra.modelling.Variable;
+import demetra.modelling.regression.Variable;
 import demetra.modelling.regression.ITsVariable;
 import demetra.timeseries.TsDomain;
 import java.util.ArrayList;
@@ -114,14 +114,14 @@ public class RegressionVariablesTest {
         
         boolean changed = false;
         // td
-        List<ITsVariable<TsDomain>> tdtoremove = new ArrayList<>();
+        List<ITsVariable> tdtoremove = new ArrayList<>();
         boolean usetd = false, uselp = false;
         if (tdTest != null) {
             List<Variable> ltd = desc.variables().filter(v -> v.isTradingDays()).collect(Collectors.toList());
             for (Variable cur : ltd) {
-                ITsVariable<TsDomain> var = cur.getVariable();
+                ITsVariable var = cur.getVariable();
                 int pos = desc.findPosition(var);
-                int nregs = var.getDim();
+                int nregs = var.dim();
                 if (!tdTest.accept(ll, 0, pos, nregs, null)
                         && (nregs <= 1 || derivedTest == null || !derivedTest.accept(ll, pos, nregs, nregs, null))) {
                     tdtoremove.add(var);
@@ -131,7 +131,7 @@ public class RegressionVariablesTest {
             }
             List<Variable> llp = desc.variables().filter(v -> v.isLengthOfPeriod()).collect(Collectors.toList());
             for (Variable cur : llp) {
-                ITsVariable<TsDomain> var = cur.getVariable();
+                ITsVariable var = cur.getVariable();
                 int pos = desc.findPosition(var);
                 if (!tdTest.accept(ll, 0, pos, 1, null)) {
                     tdtoremove.add(var);
@@ -141,24 +141,24 @@ public class RegressionVariablesTest {
             }
         }
         if (mhTest != null) {
-            List<ITsVariable<TsDomain>> mhtoremove = new ArrayList<>();
+            List<ITsVariable> mhtoremove = new ArrayList<>();
             List<Variable> lmh = desc.variables().filter(v -> v.isMovingHolidays()).collect(Collectors.toList());
             for (Variable cur : lmh) {
-                ITsVariable<TsDomain> var = cur.getVariable();
+                ITsVariable var = cur.getVariable();
                 int pos = desc.findPosition(var);
                 if (!mhTest.accept(ll, 0, pos, 1, null)) {
                     mhtoremove.add(var);
                     changed = true;
                 }
             }
-            for (ITsVariable<TsDomain> var : mhtoremove) {
+            for (ITsVariable var : mhtoremove) {
                 desc.remove(var);
             }
         }
         
         if (!tdtoremove.isEmpty() && !uselp && !usetd) {
             changed = true;
-            for (ITsVariable<TsDomain> var : tdtoremove) {
+            for (ITsVariable var : tdtoremove) {
                 desc.remove(var);
             }
         }

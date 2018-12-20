@@ -41,7 +41,7 @@ public class RegArimaModelling {
     public void estimate(double precision) {
         RegSarimaProcessor processor = RegSarimaProcessor.builder()
                 .precision(precision)
-                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+                .startingPoint(RegSarimaProcessor.StartingPoint.HannanRissanen)
                 .mapping(description.getArimaComponent().defaultMapping())
                 .build();
 
@@ -49,7 +49,7 @@ public class RegArimaModelling {
     }
 
     public PreprocessingModel build() {
-        return new PreprocessingModel(description, estimation);
+        return new PreprocessingModel(new ModelDescription(description), estimation);
     }
 
     public boolean needEstimation() {

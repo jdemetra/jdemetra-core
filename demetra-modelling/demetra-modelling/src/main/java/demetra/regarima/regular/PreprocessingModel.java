@@ -20,6 +20,7 @@ import demetra.data.DataBlock;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
@@ -221,7 +222,8 @@ public class PreprocessingModel {
     public TsData preadjustmentEffect(TsDomain domain) {
         if (description.hasFixedEffects()) {
             DataBlock t = DataBlock.make(domain.getLength());
-            description.preadjustmentVariables().forEachOrdered(v -> v.addTo(t, domain));
+            description.preadjustmentVariables().forEachOrdered(v->RegressionUtility
+                    .addAY(domain, t, 1, v.getCoefficients(), v.getVariable()));
             return TsData.ofInternal(domain.getStartPeriod(), t.unmodifiable());
         } else {
             return null;
@@ -237,16 +239,10 @@ public class PreprocessingModel {
         DoubleReader reader = coeffs.reader();
         DataBlock r = DataBlock.make(n);
         if (description.isEstimatedMean()) {
-            reader.next();
+            reader.skip(1);
         }
-
-        description.regressionVariables().forEachOrdered(var -> {
-            List<DataBlock> list = var.createBuffer(n);
-            var.data(domain, list);
-            for (DataBlock x : list) {
-                r.addAY(reader.next(), x);
-            }
-        });
+        
+        RegressionUtility.addAY(domain, r, 1, coeffs, description.regressionVariables());
 
         TsData rslt = TsData.ofInternal(domain.getStartPeriod(), r.unmodifiable());
         return rslt;

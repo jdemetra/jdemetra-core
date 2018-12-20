@@ -22,10 +22,7 @@ import demetra.regarima.regular.IRegressionTest;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihood;
-import demetra.modelling.Variable;
-import demetra.modelling.regression.IEasterVariable;
-import demetra.modelling.regression.ILengthOfPeriodVariable;
-import demetra.modelling.regression.ITradingDaysVariable;
+import demetra.modelling.regression.Variable;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -35,6 +32,9 @@ import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.regarima.RegArimaUtility;
 import demetra.sarima.SarimaModel;
+import demetra.modelling.regression.ILengthOfPeriodVariable;
+import demetra.modelling.regression.ITradingDaysVariable;
+import demetra.modelling.regression.IEasterVariable;
 
 /**
  * This module test for the presence of td, easter and mean in 
@@ -157,13 +157,13 @@ public class DefaultRegressionTest implements IRegressionModule {
         ModelDescription model = new ModelDescription(current.getDescription());
         // add td, lp and easter
         if (td != null) {
-            model.addVariable(new Variable(td, false));
+            model.addVariable(new Variable(td, "td", false));
         }
         if (lp != null) {
-            model.addVariable(new Variable(lp, false));
+            model.addVariable(new Variable(lp, "lp", false));
         }
         if (easter != null) {
-            model.addVariable(new Variable(easter, false));
+            model.addVariable(new Variable(easter, "easter", false));
         }
         model.setAirline(true);
         model.setMean(true);
@@ -172,6 +172,8 @@ public class DefaultRegressionTest implements IRegressionModule {
 
     @Override
     public ProcessingResult test(final RegArimaModelling context) {
+        if (td == null && lp == null && easter == null && meanTest == null)
+            return ProcessingResult.Unprocessed;
         // estimate the model.
         ModelDescription currentModel = context.getDescription();
         ModelDescription tmpModel = createTestModel(context);
@@ -189,11 +191,11 @@ public class DefaultRegressionTest implements IRegressionModule {
             Variable variable = tmpModel.variable(td);
             if (variable != null && !variable.isPrespecified()) {
                 int pos = start + tmpModel.findPosition(variable.getVariable());
-                int dim = variable.getVariable().getDim();
+                int dim = variable.getVariable().dim();
                 IRegressionTest test = dim == 1 ? wdTest : tdTest;
                 if (test.accept(ll, nhp, pos, dim, null)) {
                     usetd = true;
-                    currentModel.addVariable(new Variable(td, false));
+                    currentModel.addVariable(new Variable(td, "td", false));
                     changed = true;
                 }
             }
@@ -203,7 +205,7 @@ public class DefaultRegressionTest implements IRegressionModule {
             if (variable != null && !variable.isPrespecified()) {
                 int pos = start + tmpModel.findPosition(variable.getVariable());
                 if (usetd && lpTest.accept(ll, nhp, pos, 1, null)) {
-                    currentModel.addVariable(new Variable(lp, false));
+                    currentModel.addVariable(new Variable(lp, "lp", false));
                     changed = true;
                 }
             }
@@ -214,7 +216,7 @@ public class DefaultRegressionTest implements IRegressionModule {
             if (variable != null && !variable.isPrespecified()) {
                 int pos = start + tmpModel.findPosition(variable.getVariable());
                 if (mhTest.accept(ll, nhp, pos, 1, null)) {
-                    currentModel.addVariable(new Variable(easter, false));
+                    currentModel.addVariable(new Variable(easter, "easter", false));
                     changed = true;
                 }
             }

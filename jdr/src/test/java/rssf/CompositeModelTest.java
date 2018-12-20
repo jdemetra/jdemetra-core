@@ -127,6 +127,7 @@ public class CompositeModelTest {
         System.out.println(rslt.getLikelihood().sigma());
         System.out.println(rslt.getFilteringStates().getComponent(0));
         System.out.println(rslt.getFilteredStates().getComponent(0));
-        System.out.println(rslt.getSmoothedStates().getComponent(0));
+        System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
+        System.out.println(rslt.getSmoothedStates().getComponentVariance(1));
     }
 }

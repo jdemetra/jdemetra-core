@@ -40,15 +40,6 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
 
     private int d, bd, period;
 
-
-
-
-
-
-
-
-
-
     private Parameter[] phi, theta, bphi, btheta;
 
     public SarimaComponent() {

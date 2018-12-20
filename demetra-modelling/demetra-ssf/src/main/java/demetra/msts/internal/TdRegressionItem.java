@@ -8,7 +8,8 @@ package demetra.msts.internal;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.modelling.regression.GenericTradingDaysVariables;
+import demetra.modelling.regression.GenericTradingDaysVariable;
+import demetra.modelling.regression.Regression;
 import demetra.modelling.regression.RegressionUtility;
 import demetra.msts.IMstsParametersBlock;
 import demetra.msts.ModelItem;
@@ -19,6 +20,7 @@ import demetra.ssf.implementations.RegSsf;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
+import demetra.timeseries.calendars.GenericTradingDaysDefinition;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,8 +37,8 @@ public class TdRegressionItem extends AbstractModelItem {
     public TdRegressionItem(String name, TsDomain domain, int[] groups, final boolean contrast, final double var, final boolean fixed) {
         super(name);
         DayClustering dc = DayClustering.of(groups);
-        GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        this.x = RegressionUtility.data(domain, new GenericTradingDaysVariables(gtd));
+        GenericTradingDaysDefinition gtd = GenericTradingDaysDefinition.contrasts(dc);
+        this.x = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
         this.mvar = generateVar(dc, contrast);
         this.v = new VarianceParameter(name + ".var", var, fixed, true);
     }
@@ -61,16 +63,16 @@ public class TdRegressionItem extends AbstractModelItem {
 
     public static MatrixType tdContrasts(TsDomain domain, int[] groups) {
         DayClustering dc = DayClustering.of(groups);
-        GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        Matrix x = RegressionUtility.data(domain, new GenericTradingDaysVariables(gtd));
-        return x.unmodifiable();
+        GenericTradingDaysDefinition gtd = GenericTradingDaysDefinition.contrasts(dc);
+        Matrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
+        return td.unmodifiable();
     }
 
     public static MatrixType rawTd(TsDomain domain, int[] groups) {
         DayClustering dc = DayClustering.of(groups);
-        GenericTradingDays gtd = GenericTradingDays.of(dc);
-        Matrix x = RegressionUtility.data(domain, new GenericTradingDaysVariables(gtd));
-        return x.unmodifiable();
+        GenericTradingDaysDefinition gtd = GenericTradingDaysDefinition.of(dc);
+        Matrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
+        return td.unmodifiable();
     }
 
     public static Matrix generateVar(DayClustering dc, boolean contrasts) {

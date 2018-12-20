@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -36,6 +37,7 @@ public class PeriodicAirlineProcessorTest {
     }
 
     @Test
+    @Ignore
     public void testDaily() throws URISyntaxException, IOException {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/edf.txt").toURI();
         MatrixType edf = MatrixSerializer.read(new File(uri));

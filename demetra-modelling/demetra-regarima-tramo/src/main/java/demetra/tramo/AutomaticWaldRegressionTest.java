@@ -21,10 +21,7 @@ import demetra.dstats.F;
 import demetra.dstats.ProbabilityType;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.modelling.Variable;
-import demetra.modelling.regression.IEasterVariable;
-import demetra.modelling.regression.ILengthOfPeriodVariable;
-import demetra.modelling.regression.ITradingDaysVariable;
+import demetra.modelling.regression.Variable;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -35,6 +32,9 @@ import demetra.regarima.regular.RegArimaModelling;
 import demetra.regarima.RegArimaUtility;
 import demetra.sarima.SarimaModel;
 import java.util.Optional;
+import demetra.modelling.regression.ILengthOfPeriodVariable;
+import demetra.modelling.regression.ITradingDaysVariable;
+import demetra.modelling.regression.IEasterVariable;
 
 /**
  * * @author gianluca, jean Correction 22/7/2014. pre-specified Easter effect
@@ -209,13 +209,13 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         tmp.setAirline(true);
         tmp.setMean(true);
         if (td != null) {
-            tmp.addVariable(new Variable(td, false));
+            tmp.addVariable(new Variable(td, "td", false));
             if (lp != null) {
-                tmp.addVariable(new Variable(lp, false));
+                tmp.addVariable(new Variable(lp, "lp", false));
             }
         }
         if (easter != null) {
-            tmp.addVariable(new Variable(easter, false));
+            tmp.addVariable(new Variable(easter, "easter", false));
         }
         return tmp;
     }
@@ -223,7 +223,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
     private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ConcentratedLikelihood ll, int nhp) {
         boolean changed = false;
         if (aTd != null)
-                current.addVariable(new Variable(aTd, false));
+                current.addVariable(new Variable(aTd, "td", false));
         if (testMean) {
             boolean mean = Math.abs(ll.tstat(0, nhp, true)) > tmean;
             if (mean != current.getArimaComponent().isMean()) {
@@ -234,14 +234,14 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         if (aTd!= null && lp != null) {
             int pos = 1 + test.findPosition(lp);
             if (Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
-                current.addVariable(new Variable(lp, false));
+                current.addVariable(new Variable(lp, "lp", false));
                 changed = true;
             }
         }
         if (easter != null) {
             int pos = 1 + test.findPosition(easter);
             if (Math.abs(ll.tstat(pos, nhp, true)) > teaster) {
-                current.addVariable(new Variable(easter, false));
+                current.addVariable(new Variable(easter, "easter", false));
                 changed = true;
             }
         }

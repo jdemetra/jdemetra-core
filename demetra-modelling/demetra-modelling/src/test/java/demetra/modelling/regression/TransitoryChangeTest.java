@@ -39,13 +39,11 @@ public class TransitoryChangeTest {
 
     @Test
     public void testData() {
-        DataBlock buffer = DataBlock.make(20);
-        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
-        for (int i = -10; i < buffer.length() + 10; ++i) {
-            buffer.set(0);
+        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), 20);
+        for (int i = -10; i < 30; ++i) {
             TransitoryChange tc = new TransitoryChange(days.get(0).plus(i).start(), .7);
-            tc.data(days.getStartPeriod(), buffer);
-            assertTrue(buffer.sum() <= 1 / (1 - tc.getCoefficient()) + 1e-9);
+            DataBlock x = Regression.x(days, tc);
+            assertTrue(x.sum() <= 1 / (1 - tc.getRate()) + 1e-9);
         }
     }
 

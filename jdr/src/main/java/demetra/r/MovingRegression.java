@@ -18,13 +18,14 @@ import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.RegSarimaProcessor;
-import demetra.arima.SarimaDescriptor;
+import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.DayClustering;
-import demetra.timeseries.calendars.GenericTradingDays;
-import demetra.modelling.regression.GenericTradingDaysVariables;
+import demetra.timeseries.calendars.GenericTradingDaysDefinition;
+import demetra.modelling.regression.GenericTradingDaysVariable;
+import demetra.modelling.regression.Regression;
 import demetra.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.fitToDomain;
@@ -109,8 +110,8 @@ public class MovingRegression {
                 .build();
 
         DayClustering dc = days(td);
-        GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        Matrix x = RegressionUtility.data(s.getDomain(), new GenericTradingDaysVariables(gtd));
+        GenericTradingDaysDefinition gtd = GenericTradingDaysDefinition.contrasts(dc);
+        Matrix x = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(gtd));
 
         RegSarimaProcessor monitor = RegSarimaProcessor.builder()
                 .useParallelProcessing(true)
@@ -198,8 +199,8 @@ public class MovingRegression {
     }
 
     private Matrix generate(TsDomain domain, DayClustering dc) {
-        GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        return RegressionUtility.data(domain, new GenericTradingDaysVariables(gtd));
+        GenericTradingDaysDefinition gtd = GenericTradingDaysDefinition.contrasts(dc);
+        return Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
     }
 
     private Matrix generateVar(DayClustering dc, String var) {

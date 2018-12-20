@@ -25,7 +25,7 @@ import demetra.design.Development;
 import demetra.design.VisibleForTesting;
 import demetra.maths.Complex;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.modelling.Variable;
+import demetra.modelling.regression.Variable;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -74,6 +74,7 @@ public class DifferencingModule implements IDifferencingModule {
         private double ub2 = 0.88;
         private double cancel = 0.1;
         private boolean seasonal=true;
+        private boolean initial=true;
 
         private Builder() {
         }
@@ -113,8 +114,13 @@ public class DifferencingModule implements IDifferencingModule {
             return this;
         }
 
+        public Builder initial(boolean initial) {
+            this.initial=initial;
+            return this;
+        }
+        
         public DifferencingModule build() {
-            return new DifferencingModule(maxd, maxbd, ub1, ub2, cancel, eps, seasonal);
+            return new DifferencingModule(maxd, maxbd, ub1, ub2, cancel, eps, seasonal, initial);
         }
     }
 
@@ -135,7 +141,7 @@ public class DifferencingModule implements IDifferencingModule {
     private final double ub2;
     private final double cancel;
     private final double eps;
-    private final boolean seasonal;
+    private final boolean seasonal, initial;
 
     /**
      *
@@ -148,7 +154,7 @@ public class DifferencingModule implements IDifferencingModule {
      */
     private DifferencingModule(final int maxd, final int maxbd,
             final double ub1, final double ub2, final double cancel,
-            final double eps, final boolean seasonal) {
+            final double eps, final boolean seasonal, final boolean initial) {
         this.maxd = maxd;
         this.maxbd = maxbd;
         this.ub1 = ub1;
@@ -156,6 +162,7 @@ public class DifferencingModule implements IDifferencingModule {
         this.cancel = cancel;
         this.eps = eps;
         this.seasonal=seasonal;
+        this.initial=initial;
     }
 
     private boolean calc() {
@@ -322,7 +329,7 @@ public class DifferencingModule implements IDifferencingModule {
                         || (spec.getBp() == 1 && Math.abs(lastModel.bphi(1)) > 1.02)) {
                     usedefault = true;
                 } else {
-                    SarimaMapping.stabilize(lastModel);
+                    lastModel=SarimaMapping.stabilize(lastModel);
                 }
             }
         }
@@ -332,7 +339,7 @@ public class DifferencingModule implements IDifferencingModule {
         }
 
         if (usedefault || ml || useml) {
-            SarimaMapping.stabilize(lastModel);
+            lastModel=SarimaMapping.stabilize(lastModel);
             IRegArimaProcessor processor = TramoUtility.processor(true, eps);
             RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(data).arima(lastModel).build();
             RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima);
@@ -486,7 +493,7 @@ public class DifferencingModule implements IDifferencingModule {
                 throw new TramoException(TramoException.IDDIF_E);
             }
 
-            SarimaMapping.stabilize(lastModel);
+            lastModel=SarimaMapping.stabilize(lastModel);
             FastKalmanFilter kf = new FastKalmanFilter(lastModel);
             BackFilter D = RegArimaUtility.differencingFilter(spec.getPeriod(), spec.getD(), spec.getBd());
             res = DataBlock.make(y.length - D.getDegree());
@@ -511,18 +518,17 @@ public class DifferencingModule implements IDifferencingModule {
                 return airline(context);
             }
 
-            Stream<Variable> filter = desc.variables().filter(var -> var.isOutlier(false));
-            int nvars = (int) filter.count();
+            int nvars = (int) desc.variables().filter(var -> var.isOutlier(false)).count();
             DoubleSequence res = RegArimaUtility.interpolatedData(desc.regarima(), estimation.getConcentratedLikelihood());
             if (nvars > 0) {
-                Optional<Variable> first = filter.findFirst();
+                Optional<Variable> first = desc.variables().filter(var -> var.isOutlier(false)).findFirst();
                 // remove the outliers effects
                 DoubleSequence outs = RegArimaUtility.regressionEffect(desc.regarima(), estimation.getConcentratedLikelihood(), desc.findPosition(first.get().getVariable()), nvars);
                 res = Doubles.op(res, outs, (a, b) -> a - b);
             }
             SarimaSpecification curspec = desc.getSpecification();
             // get residuals
-            if (!process(res, freq, curspec.getD(), curspec.getBd(), seasonal)) {
+            if (!process(res, freq, initial ? 0 : curspec.getD(), initial ? 0 : curspec.getBd(), seasonal)) {
                 return airline(context);
             }
             boolean nmean = isMeanCorrection();

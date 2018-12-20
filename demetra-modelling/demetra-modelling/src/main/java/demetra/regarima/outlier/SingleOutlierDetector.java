@@ -20,7 +20,7 @@ import demetra.arima.IArimaModel;
 import demetra.data.DoubleList;
 import demetra.maths.matrices.Matrix;
 import demetra.regarima.RegArimaModel;
-import demetra.modelling.regression.IOutlier.IOutlierFactory;
+import demetra.modelling.regression.IOutlierFactory;
 import demetra.util.TableOfBoolean;
 import java.util.ArrayList;
 
@@ -31,7 +31,7 @@ import java.util.ArrayList;
  */
 public abstract class SingleOutlierDetector<T extends IArimaModel> {
 
-    private final IRobustStandardDeviationComputer sdevComputer;
+    private final RobustStandardDeviationComputer sdevComputer;
     private final ArrayList<IOutlierFactory> factories = new ArrayList<>();
     protected final DoubleList weights = new DoubleList();
     protected int lbound;
@@ -53,7 +53,7 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
      *
      * @param sdevComputer
      */
-    protected SingleOutlierDetector(IRobustStandardDeviationComputer sdevComputer) {
+    protected SingleOutlierDetector(RobustStandardDeviationComputer sdevComputer) {
         this.sdevComputer = sdevComputer;
     }
 
@@ -81,7 +81,7 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
     /**
      * @return the sdevComputer
      */
-    public IRobustStandardDeviationComputer getStandardDeviationComputer() {
+    public RobustStandardDeviationComputer getStandardDeviationComputer() {
         return sdevComputer;
     }
 

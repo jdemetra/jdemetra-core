@@ -23,6 +23,7 @@ import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.regression.ITsVariable;
+import demetra.modelling.regression.Regression;
 import demetra.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
@@ -42,7 +43,7 @@ import javax.annotation.Nonnull;
 class DisaggregationModel {
 
     private TsData y;
-    private final List<ITsVariable<TsDomain>> regressors = new ArrayList<>();
+    private final List<ITsVariable> regressors = new ArrayList<>();
     private TsDomain disaggregationDomain;
     private AggregationType aType = AggregationType.Sum;
     private boolean rescale = true;
@@ -181,7 +182,7 @@ class DisaggregationModel {
 
     private void prepareX(DisaggregationData data, boolean rescale) {
         
-        data.hX = RegressionUtility.data(disaggregationDomain, regressors.toArray(new ITsVariable[regressors.size()]));
+        data.hX = Regression.matrix(disaggregationDomain, regressors.toArray(new ITsVariable[regressors.size()]));
         if (rescale) {
             data.scale(new AbsMeanNormalizer());
         } else {

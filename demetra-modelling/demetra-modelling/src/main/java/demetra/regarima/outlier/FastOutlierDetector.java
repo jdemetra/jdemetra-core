@@ -19,7 +19,6 @@ package demetra.regarima.outlier;
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
 import demetra.arima.internal.FastKalmanFilter;
-import demetra.arima.internal.KalmanFilter;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.likelihood.ConcentratedLikelihood;
@@ -27,12 +26,10 @@ import demetra.likelihood.Likelihood;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.maths.polynomials.Polynomial;
-import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArmaModel;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.modelling.regression.IOutlier;
-import demetra.modelling.regression.IRegularOutlier;
+import demetra.modelling.regression.IOutlierFactory;
 
 /**
  *
@@ -51,8 +48,8 @@ public class FastOutlierDetector<T extends IArimaModel> extends
      *
      * @param computer
      */
-    public FastOutlierDetector(IRobustStandardDeviationComputer computer) {
-        super(computer == null ? IRobustStandardDeviationComputer.mad() : computer);
+    public FastOutlierDetector(RobustStandardDeviationComputer computer) {
+        super(computer == null ? RobustStandardDeviationComputer.mad() : computer);
     }
 
     /**
@@ -101,7 +98,7 @@ public class FastOutlierDetector<T extends IArimaModel> extends
         int n = nl + d;
 //        double[] o = new double[n];
 //        DataBlock O = new DataBlock(o);
-        IOutlier.FilterRepresentation representation = factory(idx).getFilterRepresentation();
+        IOutlierFactory.FilterRepresentation representation = factory(idx).getFilterRepresentation();
         if (representation == null) {
             return;
         }

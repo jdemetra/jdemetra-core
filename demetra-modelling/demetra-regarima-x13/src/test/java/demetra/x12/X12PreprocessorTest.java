@@ -25,6 +25,7 @@ import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 import static org.junit.Assert.assertEquals;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -44,22 +45,26 @@ public class X12PreprocessorTest {
         datamissing[102] = Double.NaN;
     }
 
-    //@Test
+    @Test
     public void testProdMissing() {
         X12Preprocessor processor = X12Preprocessor.of(RegArimaSpec.RG5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, DoubleSequence.ofInternal(datamissing));
-        processor.process(s, null);
-    }
-
-    //@Test
-    public void testProdLegacyMissing() {
-        IPreprocessor processor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.build();
-        ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, datamissing, true);
-        processor.process(s, null);
+        PreprocessingModel rslt=processor.process(s, null);
+        System.out.println("New");
+        System.out.println(rslt.getEstimation().getConcentratedLikelihood().logLikelihood());
     }
 
     @Test
+    public void testProdLegacyMissing() {
+        IPreprocessor processor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.build();
+        ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, datamissing, true);
+        ec.tstoolkit.modelling.arima.PreprocessingModel rslt = processor.process(s, null);
+        System.out.println("Legacy");
+        System.out.println(rslt.estimation.getLikelihood().getLogLikelihood());
+    }
+
+    //@Test
     public void testProd() {
         RegArimaSpec spec = new RegArimaSpec(RegArimaSpec.RG5);
         spec.getOutliers().setDefaultCriticalValue(3);
@@ -75,10 +80,11 @@ public class X12PreprocessorTest {
         assertEquals(rslt.getEstimation().getStatistics().getLogLikelihood(), orslt.estimation.getStatistics().logLikelihood, 1e-4);
     }
 
-//    @Test
+    @Test
+    @Ignore
     public void stressTestProd() {
         long t0 = System.currentTimeMillis();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 250; ++i) {
             RegArimaSpecification spec = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.clone();
             IPreprocessor processor = spec.build();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
@@ -87,7 +93,7 @@ public class X12PreprocessorTest {
         long t1 = System.currentTimeMillis();
         System.out.println("legacy: " + (t1 - t0));
         t0 = System.currentTimeMillis();
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 250; ++i) {
             RegArimaSpec spec = new RegArimaSpec(RegArimaSpec.RG5);
             X12Preprocessor processor = X12Preprocessor.of(spec, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);

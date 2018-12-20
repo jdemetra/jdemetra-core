@@ -20,9 +20,9 @@ import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.data.MatrixSerializer;
 import demetra.maths.MatrixType;
-import demetra.modelling.regression.AdditiveOutlier;
-import demetra.modelling.regression.LevelShift;
-import demetra.modelling.regression.SwitchOutlier;
+import demetra.modelling.regression.AdditiveOutlierFactory;
+import demetra.modelling.regression.LevelShiftFactory;
+import demetra.modelling.regression.SwitchOutlierFactory;
 import demetra.regarima.GlsArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -93,7 +93,7 @@ public class MultiPeriodicAirlineMappingTest {
     }
     
     @Test
-    //@Ignore
+    @Ignore
     public void testOutliers() throws IOException, URISyntaxException {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/births.txt").toURI();
         MatrixType edf = MatrixSerializer.read(new File(uri));
@@ -107,9 +107,9 @@ public class MultiPeriodicAirlineMappingTest {
                 .arima(mapping.getDefault())
                 .build();
         OutliersDetectionModule od = OutliersDetectionModule.build(ArimaModel.class)
-                .addFactory(AdditiveOutlier.FACTORY)
-                .addFactory(SwitchOutlier.FACTORY)
-                .addFactory(LevelShift.FACTORY_ZEROSTARTED)
+                .addFactory(AdditiveOutlierFactory.FACTORY)
+                .addFactory(SwitchOutlierFactory.FACTORY)
+                .addFactory(LevelShiftFactory.FACTORY_ZEROSTARTED)
                 .maxOutliers(100)
                 .processor(processor)
                 .build();

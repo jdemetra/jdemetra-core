@@ -175,8 +175,4 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
                 new LogLikelihoodFunction.Point(RegArimaEstimation.concentratedLogLikelihoodFunction(mapping, regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()));
     }
 
-    @Override
-    public double getPrecision() {
-        return min.getFunctionPrecision();
-    }
 }

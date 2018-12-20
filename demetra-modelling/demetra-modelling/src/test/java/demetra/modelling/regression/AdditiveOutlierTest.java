@@ -17,6 +17,7 @@
 package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
+import demetra.maths.matrices.Matrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
@@ -38,10 +39,10 @@ public class AdditiveOutlierTest {
     @Test
     public void testSimple() {
         final int pos = 25;
-        DataBlock buffer = DataBlock.make(100);
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2000, 1), 100);
         AdditiveOutlier ao = new AdditiveOutlier(domain.get(pos).start());
-        ao.data(domain, Collections.singletonList(buffer));
+        Matrix M = Regression.matrix(domain, ao);
+        DataBlock buffer = M.column(0);
         assertTrue(buffer.indexOf(x -> x != 0) == pos);
         assertTrue(buffer.lastIndexOf(x -> x == 1) == pos);
 //        System.out.println(ao.getDescription(domain));
@@ -50,10 +51,9 @@ public class AdditiveOutlierTest {
     @Test
     public void testWeek() {
         final int pos = 25;
-        DataBlock buffer = DataBlock.make(100);
-        TsDomain weeks = TsDomain.of(TsPeriod.of(TsUnit.of(7, ChronoUnit.DAYS), LocalDate.now()), buffer.length());
+        TsDomain weeks = TsDomain.of(TsPeriod.of(TsUnit.of(7, ChronoUnit.DAYS), LocalDate.now()), 100);
         AdditiveOutlier ao = new AdditiveOutlier(weeks.get(pos).start());
-        ao.data(weeks, Collections.singletonList(buffer));
+        DataBlock buffer = Regression.x(weeks, ao);
         assertTrue(buffer.indexOf(x -> x != 0) == pos);
         assertTrue(buffer.lastIndexOf(x -> x == 1) == pos);
 //        System.out.println(ao.getDescription(weeks));
@@ -62,10 +62,9 @@ public class AdditiveOutlierTest {
     @Test
     public void testDay() {
         final int pos = 25;
-        DataBlock buffer = DataBlock.make(100);
-        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
+        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), 100);
         AdditiveOutlier ao = new AdditiveOutlier(days.get(pos).start());
-        ao.data(days, Collections.singletonList(buffer));
+        DataBlock buffer = Regression.x(days, ao);
         assertTrue(buffer.indexOf(x -> x != 0) == pos);
         assertTrue(buffer.lastIndexOf(x -> x == 1) == pos);
 //        System.out.println(ao.getDescription(days));
@@ -74,32 +73,28 @@ public class AdditiveOutlierTest {
     @Test
     public void testInside() {
         final int pos = 25;
-        DataBlock buffer = DataBlock.make(100);
-        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
+        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), 100);
         AdditiveOutlier ao = new AdditiveOutlier(days.get(pos).start());
-        ao.data(days, Collections.singletonList(buffer));
+        DataBlock buffer = Regression.x(days, ao);
         assertEquals(1, buffer.sum(), 1e-9);
     }
 
     @Test
     public void testBefore() {
-        DataBlock buffer = DataBlock.make(100);
-        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
+        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), 100);
         for (int i = 1; i < 3; ++i) {
             AdditiveOutlier ao = new AdditiveOutlier(days.get(0).plus(-i).start());
-            ao.data(days, Collections.singletonList(buffer));
+            DataBlock buffer = Regression.x(days, ao);
             assertEquals(0, buffer.sum(), 1e-9);
-            buffer.set(0);
         }
     }
 
     @Test
     public void testAfter() {
-        DataBlock buffer = DataBlock.make(100);
-        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
+        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), 100);
         for (int i = 1; i < 3; ++i) {
             AdditiveOutlier ao = new AdditiveOutlier(days.get(99).plus(i).start());
-            ao.data(days, Collections.singletonList(buffer));
+            DataBlock buffer = Regression.x(days, ao);
             assertEquals(0, buffer.sum(), 1e-9);
             buffer.set(0);
         }

@@ -27,11 +27,11 @@ import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.outlier.FastOutlierDetector;
 import demetra.regarima.outlier.CriticalValueComputer;
-import demetra.modelling.regression.AdditiveOutlier;
-import demetra.modelling.regression.IOutlier.IOutlierFactory;
-import demetra.modelling.regression.LevelShift;
-import demetra.modelling.regression.PeriodicOutlier;
-import demetra.modelling.regression.TransitoryChange;
+import demetra.modelling.regression.AdditiveOutlierFactory;
+import demetra.modelling.regression.IOutlierFactory;
+import demetra.modelling.regression.LevelShiftFactory;
+import demetra.modelling.regression.PeriodicOutlierFactory;
+import demetra.modelling.regression.TransitoryChangeFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -98,8 +98,8 @@ public class OutliersDetectionModule<T extends IArimaModel>
          */
         public Builder<T> setDefault() {
             this.sod.clearOutlierFactories();
-            this.sod.addOutlierFactory(AdditiveOutlier.FACTORY);
-            this.sod.addOutlierFactory(LevelShift.FACTORY_ZEROENDED);
+            this.sod.addOutlierFactory(AdditiveOutlierFactory.FACTORY);
+            this.sod.addOutlierFactory(LevelShiftFactory.FACTORY_ZEROENDED);
             return this;
         }
 
@@ -109,7 +109,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
          */
         public Builder<T> setAll() {
             setDefault();
-            this.sod.addOutlierFactory(new TransitoryChange.Factory(.7));
+            this.sod.addOutlierFactory(new TransitoryChangeFactory(.7));
             return this;
         }
 
@@ -120,7 +120,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
          */
         public Builder<T> setAll(int period) {
             setAll();
-            this.sod.addOutlierFactory(new PeriodicOutlier.Factory(period, true));
+            this.sod.addOutlierFactory(new PeriodicOutlierFactory(period, true));
             return this;
         }
 
@@ -130,13 +130,13 @@ public class OutliersDetectionModule<T extends IArimaModel>
     }
 
     private RegArimaModel<T> regarima; // current regarima model
+    private ConcentratedLikelihood cll;
     private final ArrayList<int[]> outliers = new ArrayList<>(); // Outliers : (position, type)
     private final SingleOutlierDetector<T> sod;
     private final IRegArimaProcessor<T> processor;
     private final int maxOutliers;
     private final int maxRound;
 
-    private double[] tstats;
     private int nhp;
     private int round;
     // festim = true if the model has to be re-estimated
@@ -205,7 +205,6 @@ public class OutliersDetectionModule<T extends IArimaModel>
     @Override
     public boolean process(RegArimaModel<T> initialModel) {
         clear();
-        int n = initialModel.getY().length();
         regarima = initialModel;
         nhp = 0;
         if (!estimateModel(true)) {
@@ -245,43 +244,34 @@ public class OutliersDetectionModule<T extends IArimaModel>
             int pos = sod.getMaxOutlierPosition();
             addOutlier(pos, type);
             estimateModel(false);
-
-            while (!verifyModel()) {
+            if (!verifyModel()) {
+                cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
                 if (exit) {
                     break;
                 }
-//                    estimateModel(false);
-                ConcentratedLikelihood ce = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
-                updateLikelihood(ce);
             }
-            if (exit || outliers.size() == maxOutliers) {
-                break;
-            }
-        } while (round < maxRound);
+        } while (round <= maxRound && outliers.size() <= maxOutliers);
 
         while (!verifyModel()) {
-//                updateLikelihood(regarima_.computeLikelihood());
-            estimateModel(false);
+            cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
+//            estimateModel(false);
         }
     }
 
     private boolean estimateModel(boolean full) {
         RegArimaEstimation<T> est = full ? processor.process(regarima) : processor.optimize(regarima);
         regarima = est.getModel();
-        updateLikelihood(est.getConcentratedLikelihood());
+        cll = est.getConcentratedLikelihood();
         return true;
     }
 
-    private void updateLikelihood(ConcentratedLikelihood likelihood) {
-        tstats = likelihood.tstats(nhp, true);
-    }
-
     private void clear() {
+        cll = null;
+        regarima = null;
         nhp = 0;
         outliers.clear();
         round = 0;
         lastremoved = null;
-        tstats = null;
         // festim = true if the model has to be re-estimated
     }
 
@@ -295,17 +285,20 @@ public class OutliersDetectionModule<T extends IArimaModel>
         if (outliers.isEmpty()) {
             return true;
         }
-        /*double[] t = m_model.computeLikelihood().getTStats(true,
-         m_model.getArma().getParametersCount());*/
+
         int nx0 = regarima.getVariablesCount() - outliers.size();
+        // nx0 is the position of the first outlier in the list.
         int imin = 0;
+        double tmin = Math.abs(cll.tstat(nx0, nhp, true));
         for (int i = 1; i < outliers.size(); ++i) {
-            if (Math.abs(tstats[i + nx0]) < Math.abs(tstats[imin + nx0])) {
+            double tcur = Math.abs(cll.tstat(i + nx0, nhp, true));
+            if (tcur < tmin) {
                 imin = i;
+                tmin = tcur;
             }
         }
 
-        if (Math.abs(tstats[nx0 + imin]) >= cv) {
+        if (tmin >= cv) {
             return true;
         }
         int[] toremove = outliers.get(imin);
@@ -330,6 +323,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
         DataBlock XO = DataBlock.ofInternal(xo);
         sod.factory(type).fill(pos, XO);
         regarima = regarima.toBuilder().addX(XO).build();
+        cll = null;
         sod.exclude(pos, type);
         if (addHook != null) {
             addHook.accept(o);
@@ -342,11 +336,11 @@ public class OutliersDetectionModule<T extends IArimaModel>
      * @return
      */
     private void removeOutlier(int idx) {
-        //
-        int opos = regarima.getVariablesCount() - outliers.size() + idx;
-        if (regarima.isMean())
-            --opos;
+        // position of the outlier in the regression variables
+        int opos = regarima.getX().size() - outliers.size() + idx;
         regarima = regarima.toBuilder().removeX(opos).build();
+        cll = null;
+
         outliers.remove(idx);
     }
 

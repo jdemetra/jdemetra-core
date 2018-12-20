@@ -83,7 +83,7 @@ public class TramoProcessor implements IPreprocessor {
     private final TramoSpec spec;
     private final ModellingContext modellingContext;
     private final AmiOptions options;
-    private final Context context=new Context();
+    private final Context context = new Context();
 
     private final SeasonalityController scontroller;
     private final List<ModelController> controllers = new ArrayList<>();
@@ -94,6 +94,8 @@ public class TramoProcessor implements IPreprocessor {
     private int pass = 0, round = 0;
     private double curva = 0, pcr = 0;
     private boolean pass3;
+    private boolean needOutliers;
+    private boolean needAutoModelling;
 
     private TramoProcessor(TramoSpec spec, ModellingContext context) {
         this.spec = new TramoSpec(spec);
@@ -147,6 +149,7 @@ public class TramoProcessor implements IPreprocessor {
                         .workingDays(TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext))
                         .testMean(spec.isUsingAutoModel())
                         .fPValue(tdspec.getProbabibilityForFTest())
+                        .estimationPrecision(options.intermediatePrecision)
                         .build();
             } else {
                 return AutomaticWaldRegressionTest.builder()
@@ -157,6 +160,7 @@ public class TramoProcessor implements IPreprocessor {
                         .testMean(spec.isUsingAutoModel())
                         .fPValue(tdspec.getProbabibilityForFTest())
                         .PConstraint(tdspec.getProbabibilityForFTest())
+                        .estimationPrecision(options.intermediatePrecision)
                         .build();
             }
         } else {
@@ -165,6 +169,7 @@ public class TramoProcessor implements IPreprocessor {
                     .leapYear(TramoModelBuilder.leapYear(tdspec))
                     .tradingDays(TramoModelBuilder.tradingDays(spec, modellingContext))
                     .testMean(spec.isUsingAutoModel())
+                    .estimationPrecision(options.intermediatePrecision)
                     .build();
         }
     }
@@ -192,6 +197,7 @@ public class TramoProcessor implements IPreprocessor {
         return obuilder.span(outliers.getSpan())
                 .tcrate(outliers.getDeltaTC())
                 .maximumLikelihood(outliers.isMaximumLikelihood())
+                .precision(options.intermediatePrecision)
                 .build();
     }
 
@@ -202,6 +208,7 @@ public class TramoProcessor implements IPreprocessor {
                 .ub1(amiSpec.getUb1())
                 .ub2(amiSpec.getUb2())
                 .seasonal(context.seasonal)
+                .precision(options.intermediatePrecision)
                 .build();
     }
 
@@ -268,6 +275,8 @@ public class TramoProcessor implements IPreprocessor {
 
     private void initProcessing(int n) {
         round = 0;
+        needOutliers = isOutliersDetection();
+        needAutoModelling = false;
         pass = 0;
         pass3 = false;
         // initialize some internal variables
@@ -281,9 +290,10 @@ public class TramoProcessor implements IPreprocessor {
         refAuto = null;
         refStats = null;
         refAirline = null;
-        if (scontroller != null)
+        if (scontroller != null) {
             scontroller.setReferenceModel(null);
-        controllers.forEach(c->c.setReferenceModel(null));
+        }
+        controllers.forEach(c -> c.setReferenceModel(null));
     }
 
     private boolean reduceVa() {
@@ -309,7 +319,10 @@ public class TramoProcessor implements IPreprocessor {
         SarimaSpecification curspec = desc.getSpecification();
         boolean curmu = desc.isMean();
         if (needDifferencing(desc)) {
-            execDifferencing(modelling);
+            if (execDifferencing(modelling) == ProcessingResult.Changed && pass ==1){
+                desc.removeVariable(var->var.isOutlier(false));
+                modelling.setEstimation(null);
+            }
         }
         if (needAutoModelling(desc)) {
             execAutoModelling(modelling);
@@ -328,12 +341,16 @@ public class TramoProcessor implements IPreprocessor {
 //        context.estimate(options.precision);
 
         if (!estimateModel(modelling)) {
+            needOutliers = isOutliersDetection();
+            needAutoModelling = isAutoModelling();
             ++round;
             ++pass;
             return false;
         }
 
-        if (round == 0) {
+        if (round == 0 && (isAutoModelling() || isOutliersDetection())) {
+            needOutliers = isOutliersDetection();
+            needAutoModelling = isAutoModelling();
             ++round;
             ++pass;
             refAirline = modelling.build();
@@ -350,6 +367,8 @@ public class TramoProcessor implements IPreprocessor {
 
         if (!testRegression(modelling, spec.getAutoModel().getTsig())) {
             pass = 4;
+            needAutoModelling = false;
+            needOutliers = false;
             return false;
         }
 
@@ -362,18 +381,19 @@ public class TramoProcessor implements IPreprocessor {
                 if (!pass3) {
                     pass3 = true;
                     pass = 1;
+                    needAutoModelling = true;
+                    needOutliers = isOutliersDetection();
                     return false;
                 }
             }
         }
-        for (ModelController controller : controllers){
+        for (ModelController controller : controllers) {
             controller.setEstimator(estimator);
             controller.setReferenceModel(refAuto);
             controller.process(modelling, context);
         }
         return true;
     }
-
 
     //
     //    private void control(RegArimaContext context, ModelEstimator estimator) {
@@ -407,25 +427,18 @@ public class TramoProcessor implements IPreprocessor {
         // We start from current differencing
         // we will not compute differencing if it is already max (2,1) or if
         // we didn't find any outlier at the end of round 0 and 1 (same problem)
-        if (!isAutoModelling()) {
+        if (!needAutoModelling) {
             return false;
         }
-        if (pass > 2) {
+        if (round == 2 && !desc.variables().anyMatch(var -> var.isOutlier(false))) {
             return false;
         }
-
-        switch (round) {
-            case 0:
-                return false;
-            case 1:
-                return true;
-            default:
-                SarimaSpecification curspec = desc.getSpecification();
-                if (curspec.getD() == 2 && curspec.getBd() == 1) {
-                    return false;
-                }
-                return !ModelDescription.sameVariables(refAirline.getDescription(), desc);
+        SarimaSpecification curspec = desc.getSpecification();
+        if (curspec.getD() == 2 && curspec.getBd() == 1) {
+            return false;
         }
+        return true;
+//        return !ModelDescription.sameVariables(refAirline.getDescription(), desc);
     }
 
     private boolean isAutoModelling() {
@@ -444,19 +457,10 @@ public class TramoProcessor implements IPreprocessor {
     }
 
     private boolean needAutoModelling(ModelDescription desc) {
-        if (!isAutoModelling()) {
+        if (!needAutoModelling) {
             return false;
         }
-        if (pass > 2) {
-            return false;
-        }
-        if (pass == 1 && pass3) {
-            return false;
-        }
-        if (round == 0) {
-            return false;
-        }
-        if (round == 2 && desc.variables().anyMatch(var -> var.isOutlier(false))) {
+        if (round == 2 && !desc.variables().anyMatch(var -> var.isOutlier(false))) {
             return false;
         }
         // Should be completed
@@ -615,8 +619,12 @@ public class TramoProcessor implements IPreprocessor {
         ++round;
         ++pass;
 
-        if (pass > 2) {
+        if (pass <= 2) {
+            needAutoModelling = !same;
+            needOutliers = isOutliersDetection();
+        } else {
             lastSolution(context);
+            needAutoModelling = false;
         }
         return false;
     }
@@ -638,6 +646,8 @@ public class TramoProcessor implements IPreprocessor {
         modelling.setEstimation(null);
 //        addArmaHistory(context);
         round = 1;
+        needOutliers = isOutliersDetection();
+        needAutoModelling = false;
     }
 //
 //    private void clear() {
@@ -660,11 +670,12 @@ public class TramoProcessor implements IPreprocessor {
 //
 
     private void testSeasonality(RegArimaModelling modelling) {
+        ModelDescription model = modelling.getDescription();
         if (!isAutoModelling()) {
+            context.seasonal=model.getSpecification().isSeasonal();
             return;
         }
 
-        ModelDescription model = modelling.getDescription();
         int ifreq = model.getAnnualFrequency();
         if (ifreq > 1) {
             TramoSeasonalityDetector seas = new TramoSeasonalityDetector();
@@ -690,7 +701,7 @@ public class TramoProcessor implements IPreprocessor {
         if (tspec.getFunction() == TransformationType.Auto) {
             LogLevelModule module = LogLevelModule.builder()
                     .logPreference(Math.log(tspec.getFct()))
-                    .estimationPrecision(espec.getTol())
+                    .estimationPrecision(options.intermediatePrecision)
                     .seasonal(context.seasonal)
                     .build();
             module.process(modelling);
@@ -724,6 +735,7 @@ public class TramoProcessor implements IPreprocessor {
 
     private boolean testRegression(RegArimaModelling context, double tmean) {
         FastRegressionTest regtest = FastRegressionTest.builder()
+                .testMean(isAutoModelling())
                 .meanThreshold(tmean)
                 .build();
         return regtest.test(context) == ProcessingResult.Unchanged;

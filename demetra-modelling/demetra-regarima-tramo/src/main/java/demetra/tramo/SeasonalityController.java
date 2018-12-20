@@ -110,7 +110,7 @@ class SeasonalityController extends ModelController {
         SarimaSpecification spec = model.getDescription().getSpecification();
         
         boolean schanged = false;
-        if (!seas && spec.hasSeasonalPart()) {
+        if (!seas && spec.isSeasonal()) {
             spec.airline(false);
             spec.setBq(1);
             schanged = true;

@@ -35,8 +35,7 @@ public class TrigonometricVariablesTest {
     public void testMonthly() {
         TrigonometricVariables vars = TrigonometricVariables.regular(12);
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2017, 8), 180);
-        Matrix M=Matrix.make(domain.getLength(), vars.getDim());
-        vars.data(domain, M.columnList());
+        Matrix M = Regression.matrix(domain, vars);
         //System.out.println(M);
         assertTrue(M.columnList().stream().allMatch(col->Math.abs(col.sum())<1e-6));
     }

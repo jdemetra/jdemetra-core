@@ -19,7 +19,7 @@ package demetra.seats;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.modelling.ComponentInformation;
-import demetra.modelling.ComponentType;
+import demetra.sa.ComponentType;
 import demetra.sa.DecompositionMode;
 import demetra.sa.SeriesDecomposition;
 import demetra.ucarima.UcarimaModel;

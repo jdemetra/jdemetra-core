@@ -38,7 +38,7 @@ public class MstsMonitor {
     public static class Builder {
 
         private static final int MAXITER = 20, MAXITER_MIN = 500;
-        private static final double SMALL_VAR = 1e-12;
+        private static final double SMALL_VAR = 1e-16;
 
         private boolean marginalLikelihood;
         private double precision = 1e-9, smallVar = SMALL_VAR, precision2 = 1e-7, precision3 = 1e-3;

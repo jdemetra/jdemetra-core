@@ -18,7 +18,6 @@ package demetra.timeseries.calendars;
 
 import demetra.design.Development;
 
-
 /**
  *
  * @author Jean Palate
@@ -26,8 +25,21 @@ import demetra.design.Development;
 @lombok.Value
 @Development(status = Development.Status.Alpha)
 public class GenericTradingDaysDefinition {
+
     private DayClustering clustering;
-    private int contrastGroup;
+    private boolean contrast;
     private boolean normalized;
+
+    public static GenericTradingDaysDefinition contrasts(DayClustering clustering) {
+        return new GenericTradingDaysDefinition(clustering, true, false);
+    }
+
+    public static GenericTradingDaysDefinition of(DayClustering clustering) {
+        return new GenericTradingDaysDefinition(clustering, false, false);
+    }
+
+    public static GenericTradingDaysDefinition normalized(DayClustering clustering) {
+        return new GenericTradingDaysDefinition(clustering, false, true);
+    }
 
 }

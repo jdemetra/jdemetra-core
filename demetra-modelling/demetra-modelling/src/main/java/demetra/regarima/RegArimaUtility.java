@@ -114,7 +114,7 @@ public class RegArimaUtility {
             int i0 = startPos, i1 = startPos + nvars;
             for (int i = i0; i < i1; ++i) {
                 double bcur = reader.next();
-                e.apply(x.get(i), (u, v) -> u - bcur * v);
+                e.apply(x.get(i), (u, v) -> u + bcur * v);
             }
         }
         return e.unmodifiable();

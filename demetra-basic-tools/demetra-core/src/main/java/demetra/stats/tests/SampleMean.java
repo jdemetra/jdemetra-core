@@ -73,7 +73,7 @@ public class SampleMean {
    
     public static StatisticalTest compareVariances(Sample s0, Sample s1) {
         F f = new F(s1.size()- 1, s0.size()- 1);
-        return new StatisticalTest(f, s1.variance()/ s0.variance(), TestType.TwoSided, false);
+        return new StatisticalTest(f, s1.variance()/ s0.variance(), TestType.Upper, false);
     }
 
     public static StatisticalTest compareMeans(Sample s0, Sample s1, boolean samevar) {

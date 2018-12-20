@@ -29,30 +29,27 @@ import static org.junit.Assert.*;
  * @author Jean Palate
  */
 public class PeriodicOutlierTest {
-    
+
     public PeriodicOutlierTest() {
     }
 
     @Test
     public void testData() {
-        DataBlock buffer = DataBlock.make(20);
-        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
-        for (int i = -10; i < buffer.length()+10; ++i) {
+        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), 20);
+        for (int i = -1; i < 30; ++i) {
             PeriodicOutlier po = new PeriodicOutlier(days.get(0).plus(i).start(), 5, true);
-            po.data(days.getStartPeriod(), buffer);
-            assertTrue(buffer.sum() <  1.0001);
+            DataBlock buffer = Regression.x(days, po);
+            assertTrue(buffer.sum() < 1.0001);
         }
     }
-    
+
     @Test
     public void testData2() {
-        DataBlock buffer = DataBlock.make(20);
-        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), buffer.length());
-        for (int i = -10; i < buffer.length()+10; ++i) {
+        TsDomain days = TsDomain.of(TsPeriod.of(TsUnit.DAY, LocalDate.now()), 20);
+        for (int i = -10; i < 30; ++i) {
             PeriodicOutlier po = new PeriodicOutlier(days.get(0).plus(i).start(), 5, false);
-            buffer.set(0);
-            po.data(days.getStartPeriod(), buffer);
-            assertTrue(buffer.sum() <  1.0001);
+            DataBlock buffer = Regression.x(days, po);
+            assertTrue(buffer.sum() < 1.0001);
         }
     }
 }

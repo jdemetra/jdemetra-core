@@ -307,11 +307,11 @@ public class WaveSpecificSurveyErrors {
                 return cur[degree - 1];
             }
         }
-        
-        AutoCovarianceFunction[] acf(){
-            AutoCovarianceFunction[] acf=new AutoCovarianceFunction[ar.length];
-            for (int i=0; i<acf.length; ++i){
-                acf[i]=WaveSpecificSurveyErrors.acf(ar[i]);
+
+        AutoCovarianceFunction[] acf() {
+            AutoCovarianceFunction[] acf = new AutoCovarianceFunction[ar.length];
+            for (int i = 0; i < acf.length; ++i) {
+                acf[i] = WaveSpecificSurveyErrors.acf(ar[i]);
             }
             return acf;
         }
@@ -478,35 +478,43 @@ public class WaveSpecificSurveyErrors {
 
         @Override
         public void Pf0(Matrix pf0) {
-            pf0.diagonal().set(1);
-            AutoCovarianceFunction[] acf=info.acf();
-            int m=info.nar()*info.lag;
-            int n=info.nwaves();
-            for (int i=0; i<m; ++i){
-                for (int j=i+1; j<m; ++j){
-                    Matrix cur=pf0.extract(n*i, n, n*j, n);
-                    q(cur, j-i, acf);
-                    cur=pf0.extract(n*j, n, n*i, n);
-                    q(cur.transpose(), j-i, acf);
-                }
+            Dynamics2 dyn = new Dynamics2(info);
+            dyn.addV(0, pf0);
+            for (int i = 1; i < info.nwaves(); ++i) {
+                dyn.TVT(i, pf0);
+                dyn.addV(0, pf0);
             }
+//            pf0.diagonal().set(1);
+//            AutoCovarianceFunction[] acf=info.acf();
+//            int m=info.nar()*info.lag;
+//            int n=info.nwaves();
+//            for (int i=0; i<m; ++i){
+//                for (int j=i+1; j<m; ++j){
+//                    Matrix cur=pf0.extract(n*i, n, n*j, n);
+//                    q(cur, j-i, acf);
+//                    cur=pf0.extract(n*j, n, n*i, n);
+//                    q(cur.transpose(), j-i, acf);
+//                }
+//            }
         }
-        
+
         /**
-         * Fills the sub-matrix q=cov(e(t), e(t-l)) 
+         * Fills the sub-matrix q=cov(e(t), e(t-l))
+         *
          * @param q
-         * @param l 
+         * @param l
          */
         private void q(Matrix q, int l, AutoCovarianceFunction[] acf) {
-            if (l%info.lag != 0)
+            if (l % info.lag != 0) {
                 return;
-            int k=l/info.lag;
+            }
+            int k = l / info.lag;
             DataBlock d = q.subDiagonal(-k);
-            for (int j=0; j<d.length(); ++j){
-                d.set(j, acf[j+k].get(k)/acf[j+k].get(0));
+            for (int j = 0; j < d.length(); ++j) {
+                d.set(j, acf[j + k].get(k) / acf[j + k].get(0));
             }
         }
-        
+
     }
 
 }
