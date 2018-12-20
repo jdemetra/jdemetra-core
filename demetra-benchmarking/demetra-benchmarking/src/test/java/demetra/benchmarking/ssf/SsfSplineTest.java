@@ -56,6 +56,8 @@ public class SsfSplineTest {
         for (int i = 0; i < 25; ++i) {
             assertEquals(component.get(i), fn.applyAsDouble(i), 1e-9);
         }
+        DefaultSmoothingResults r = DkToolkit.smooth(ssf, new SsfData(DoubleSequence.ofInternal(s)), true);
+        System.out.println(r.getComponentVariance(1));
     }
 
     @Test

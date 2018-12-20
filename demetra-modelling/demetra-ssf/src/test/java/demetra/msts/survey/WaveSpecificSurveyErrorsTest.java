@@ -108,6 +108,8 @@ public class WaveSpecificSurveyErrorsTest {
         int dim = init.getStateDim();
         Matrix T = Matrix.square(dim);
         dyn.T(0, T);
+        System.out.println();
+        System.out.println(T);
 
         DataBlock x = DataBlock.make(dim);
         Random rnd = new Random(0);

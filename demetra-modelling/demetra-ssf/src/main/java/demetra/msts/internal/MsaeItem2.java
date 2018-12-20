@@ -10,8 +10,10 @@ import demetra.maths.MatrixType;
 import demetra.msts.ArParameters;
 import demetra.msts.IMstsParametersBlock;
 import demetra.msts.MstsMapping;
-import demetra.msts.survey.WaveSpecificSurveyErrors;
+import demetra.msts.VarianceParameter;
+import demetra.msts.survey.WaveSpecificSurveyErrors2;
 import demetra.ssf.StateComponent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,20 +21,24 @@ import java.util.List;
  *
  * @author palatej
  */
-public class MsaeItem extends AbstractModelItem {
+public class MsaeItem2 extends AbstractModelItem {
     
-    private final int nwaves;
+    private final VarianceParameter[] v;
     private final int lag;
     private final int[] lar;
     private final ArParameters[] par;
     
-    public MsaeItem(String name, int nwaves, MatrixType ar, boolean fixedar, int lag) {
+    public MsaeItem2(String name, double[] v, boolean fixedVar, MatrixType ar, boolean fixedar, int lag) {
         super(name);
-        this.nwaves = nwaves;
+        int nwaves = v.length;
         this.lag = lag;
         final int nar = ar.getColumnsCount();
         lar = new int[nar];
         par = new ArParameters[nar];
+        this.v=new VarianceParameter[nwaves];
+        for (int i=0; i<nwaves; ++i){
+            this.v[i]=new VarianceParameter(name + ".var" + (i+1), v[i], fixedVar, true);
+        }
         for (int i = 0; i < nar; ++i) {
             int j = 0;
             for (; j <= i && j < ar.getRowsCount(); ++j) {
@@ -49,13 +55,21 @@ public class MsaeItem extends AbstractModelItem {
     
     @Override
     public void addTo(MstsMapping mapping) {
+        for (int i = 0; i < v.length; ++i) {
+            mapping.add(v[i]);
+        }
         for (int i = 0; i < par.length; ++i) {
             mapping.add(par[i]);
         }
         mapping.add((p, builder) -> {
+            int nwaves=v.length;
+            double[] var=new double[nwaves];
+            int pos = 0;
+            for (int i=0; i<nwaves; ++i){
+                var[i]=p.get(pos++);
+            }
             double[][] w = new double[nwaves][];
             w[0] = DoubleSequence.EMPTYARRAY;
-            int pos = 0;
             int nar = lar.length;
             for (int i = 0; i < nar; ++i) {
                 w[i + 1] = p.extract(pos, lar[i]).toArray();
@@ -65,7 +79,7 @@ public class MsaeItem extends AbstractModelItem {
             for (int i = nar + 1; i < nwaves; ++i) {
                 w[i] = w[i - 1];
             }
-            StateComponent cmp = WaveSpecificSurveyErrors.of(w, lag);
+            StateComponent cmp = WaveSpecificSurveyErrors2.of(var, w, lag);
             builder.add(name, cmp, null);
             return pos;
         });
@@ -73,7 +87,12 @@ public class MsaeItem extends AbstractModelItem {
     
     @Override
     public List<IMstsParametersBlock> parameters() {
-        return Arrays.asList(par);
+        List<IMstsParametersBlock> all=new ArrayList<>();
+        for (int i=0; i<v.length; ++i)
+            all.add(v[i]);
+        for (int i=0; i<par.length; ++i)
+            all.add(par[i]);
+        return all;
     }
     
 }

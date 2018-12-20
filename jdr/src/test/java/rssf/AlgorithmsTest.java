@@ -9,12 +9,14 @@ import demetra.msts.AtomicModels;
 import demetra.msts.ModelEquation;
 import demetra.data.Data;
 import demetra.data.DataBlock;
+import demetra.data.DoubleSequence;
 import demetra.maths.matrices.Matrix;
 import demetra.msts.CompositeModel;
 import demetra.msts.CompositeModelEstimation;
 import demetra.ssf.implementations.Loading;
 import demetra.timeseries.TsDomain;
 import java.util.Random;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -144,6 +146,7 @@ public class AlgorithmsTest {
     }
     
     @Test
+    @Ignore
     public void testSutse() {
         int len = Data.ABS63.length;
         Matrix M = Matrix.make(len, 2);
@@ -188,6 +191,15 @@ public class AlgorithmsTest {
         System.out.println("SUTSE");
         System.out.println(DataBlock.ofInternal(p));
         System.out.println(rslt.getLikelihood().logLikelihood());
+        double[] z=new double[30];
+        z[0]=1;
+        z[1]=1;
+        System.out.println(rslt.getFilteredStates().zvariance(DoubleSequence.ofInternal(z)));
+        System.out.println(rslt.getSmoothedStates().zvariance(DoubleSequence.ofInternal(z)));
+        System.out.println(rslt.getFilteredStates().getComponentVariance(3));
+        System.out.println(rslt.getSmoothedStates().getComponentVariance(3));
+        System.out.println(rslt.getFilteredStates().getComponentVariance(14));
+        System.out.println(rslt.getSmoothedStates().getComponentVariance(14));
     }
 
 //    @Test

@@ -48,6 +48,7 @@ import demetra.data.DoubleSequence;
 import demetra.data.LogSign;
 import demetra.ssf.StateInfo;
 import demetra.ssf.StateStorage;
+import demetra.ssf.dk.sqrt.IDiffuseSquareRootFilteringResults;
 import demetra.ssf.likelihood.MarginalLikelihood;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
@@ -134,6 +135,12 @@ public class DkToolkit {
         filter.process(ssf, data, frslts);
     }
 
+    public void sqrtFilter(ISsf ssf, ISsfData data, IDiffuseSquareRootFilteringResults frslts, boolean all) {
+        DiffuseSquareRootInitializer initializer = new DiffuseSquareRootInitializer(frslts);
+        OrdinaryFilter filter = new OrdinaryFilter(initializer);
+        filter.process(ssf, data, frslts);
+    }
+
     public DefaultSmoothingResults smooth(ISsf ssf, ISsfData data, boolean all) {
         DiffuseSmoother smoother = new DiffuseSmoother();
         smoother.setCalcVariances(all);
@@ -141,9 +148,6 @@ public class DkToolkit {
                 : DefaultSmoothingResults.light();
         sresults.prepare(ssf.getStateDim(), 0, data.length());
         if (smoother.process(ssf, data, sresults)) {
-            if (all) {
-                sresults.rescaleVariances(var(data.length(), smoother.getFilteringResults()));
-            }
             return sresults;
         } else {
             return null;
@@ -173,14 +177,7 @@ public class DkToolkit {
         boolean all = sresults.hasVariances();
         DiffuseSmoother smoother = new DiffuseSmoother();
         smoother.setCalcVariances(all);
-        if (smoother.process(ssf, data, sresults)) {
-            if (all) {
-                sresults.rescaleVariances(var(data.length(), smoother.getFilteringResults()));
-            }
-            return true;
-        } else {
-            return false;
-        }
+        return smoother.process(ssf, data, sresults);
     }
 
     public static DataBlockStorage fastSmooth(ISsf ssf, ISsfData data) {
@@ -200,9 +197,6 @@ public class DkToolkit {
                 : DefaultSmoothingResults.light();
         sresults.prepare(ssf.getStateDim(), 0, data.length());
         if (smoother.process(ssf, data, sresults)) {
-            if (all) {
-                sresults.rescaleVariances(var(data.length(), smoother.getFilteringResults()));
-            }
             return sresults;
         } else {
             return null;
@@ -213,14 +207,7 @@ public class DkToolkit {
         boolean all = sresults.hasVariances();
         DiffuseSquareRootSmoother smoother = new DiffuseSquareRootSmoother();
         smoother.setCalcVariances(all);
-        if (smoother.process(ssf, data, sresults)) {
-            if (all) {
-                sresults.rescaleVariances(var(data.length(), smoother.getFilteringResults()));
-            }
-            return true;
-        } else {
-            return false;
-        }
+        return smoother.process(ssf, data, sresults);
     }
 
     private static class LLComputer1 implements ILikelihoodComputer<DiffuseLikelihood> {

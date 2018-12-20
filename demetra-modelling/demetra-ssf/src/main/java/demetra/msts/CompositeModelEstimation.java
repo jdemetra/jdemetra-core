@@ -72,7 +72,11 @@ public class CompositeModelEstimation {
 
     public StateStorage getSmoothedStates() {
         if (smoothedStates == null) {
-            smoothedStates = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true);
+            StateStorage ss = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true);
+            if (likelihood.isScalingFactor()) {
+                ss.rescaleVariances(likelihood.sigma());
+            }
+            smoothedStates = ss;
         }
         return smoothedStates;
     }
@@ -91,13 +95,9 @@ public class CompositeModelEstimation {
             for (int i = 1; i <= n; ++i) {
                 ss.save(i - 1, fr.a(i * m - 1), fr.P(i * m - 1));
             }
-            // TO BE CORRECTED
-            int nd = ussf.getDiffuseDim()/ m;
-            for (int i = 0; i < nd; ++i) {
-                ss.a(i).set(Double.NaN);
-                ss.P(i).set(Double.NaN);
+            if (likelihood.isScalingFactor()) {
+                ss.rescaleVariances(likelihood.sigma());
             }
-            ss.rescaleVariances(likelihood.sigma());
             filteredStates = ss;
         }
         return filteredStates;
@@ -123,7 +123,9 @@ public class CompositeModelEstimation {
                 ss.a(i).set(Double.NaN);
                 ss.P(i).set(Double.NaN);
             }
-            ss.rescaleVariances(likelihood.sigma());
+            if (likelihood.isScalingFactor()) {
+                ss.rescaleVariances(likelihood.sigma());
+            }
             filteringStates = ss;
         }
         return filteringStates;

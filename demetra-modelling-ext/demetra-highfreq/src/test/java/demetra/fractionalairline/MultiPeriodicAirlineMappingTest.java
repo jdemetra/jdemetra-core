@@ -39,6 +39,7 @@ import java.net.URISyntaxException;
 import java.util.function.Consumer;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -92,7 +93,7 @@ public class MultiPeriodicAirlineMappingTest {
     }
     
     @Test
-    //@Ignore
+    @Ignore
     public void testOutliers() throws IOException, URISyntaxException {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/births.txt").toURI();
         MatrixType edf = MatrixSerializer.read(new File(uri));

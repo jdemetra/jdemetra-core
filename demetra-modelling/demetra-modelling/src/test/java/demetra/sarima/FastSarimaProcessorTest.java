@@ -13,6 +13,7 @@ import demetra.regarima.ami.OutliersDetectionModule;
 import ec.tstoolkit.modelling.arima.RegArimaEstimator;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -24,6 +25,7 @@ public class FastSarimaProcessorTest {
     }
 
     @Test
+    @Ignore
     public void stressTestSomeMethod() {
         GlsSarimaProcessor fallback = GlsSarimaProcessor.builder()
                 .precision(1e-5)

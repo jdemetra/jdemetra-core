@@ -25,6 +25,7 @@ import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 import static org.junit.Assert.assertEquals;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -80,6 +81,7 @@ public class X12PreprocessorTest {
     }
 
     @Test
+    @Ignore
     public void stressTestProd() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 250; ++i) {

@@ -835,12 +835,6 @@ public class Loading {
         }
 
         @Override
-        public void ZM(int pos, Matrix M, DataBlock zm) {
-            loading.ZM(pos, M, zm);
-            zm.mul(s);
-        }
-
-        @Override
         public double ZVZ(int pos, Matrix V) {
             return s2 * loading.ZVZ(pos, V);
         }
@@ -890,12 +884,6 @@ public class Loading {
         @Override
         public double ZX(int pos, DataBlock m) {
             return l(pos) * loading.ZX(pos, m);
-        }
-
-        @Override
-        public void ZM(int pos, Matrix M, DataBlock zm) {
-            loading.ZM(pos, M, zm);
-            zm.mul(l(pos));
         }
 
         @Override

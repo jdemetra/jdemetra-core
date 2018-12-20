@@ -26,6 +26,7 @@ import java.util.List;
 import demetra.data.DataBlockIterator;
 import demetra.ssf.ISsfLoading;
 import demetra.data.DoubleCell;
+import demetra.maths.matrices.QuadraticForm;
 
 /**
  *
@@ -97,24 +98,42 @@ class ComplexLoading implements ISsfLoading {
     @Override
     public void VpZdZ(int pos, Matrix V, double d) {
         for (int i = 0; i < loadings.length; ++i) {
-            tmp.set(0);
             Matrix D = V.extract(start[i], dim[i], start[i], dim[i]);
             loadings[i].VpZdZ(pos, D, d);
             for (int j = i + 1; j < loadings.length; ++j) {
-                DataBlock cur = tmp.range(0, dim[j]);
-                loadings[j].Z(pos, cur); // Zj
-                Matrix C = V.extract(start[i], dim[i], start[j], dim[j]);
-                DataBlockIterator cols = C.columnsIterator();
-                int k = 0;
-                while (cols.hasNext()) {
-                    double zj = tmp.get(k++);
-                    DataBlock n = cols.next();
-                    if (zj != 0) {
-                        loadings[i].XpZd(pos, n, d * zj);
+                if (dim[j] < dim[i]) {
+                    DataBlock cur = tmp.range(0, dim[j]);
+                    cur.set(0);
+                    loadings[j].Z(pos, cur); // Zj
+                    Matrix C = V.extract(start[i], dim[i], start[j], dim[j]);
+                    DataBlockIterator cols = C.columnsIterator();
+                    int k = 0;
+                    while (cols.hasNext()) {
+                        double zj = tmp.get(k++);
+                        DataBlock n = cols.next();
+                        if (zj != 0) {
+                            loadings[i].XpZd(pos, n, d * zj);
+                        }
                     }
+                    Matrix CC = V.extract(start[j], dim[j], start[i], dim[i]);
+                    CC.copy(C.transpose());
+                }else{
+                    DataBlock cur = tmp.range(0, dim[i]);
+                    cur.set(0);
+                    loadings[i].Z(pos, cur); // Zj
+                    Matrix C = V.extract(start[j], dim[j], start[i], dim[i]);
+                    DataBlockIterator cols = C.columnsIterator();
+                    int k = 0;
+                    while (cols.hasNext()) {
+                        double zi = tmp.get(k++);
+                        DataBlock n = cols.next();
+                        if (zi != 0) {
+                            loadings[j].XpZd(pos, n, d * zi);
+                        }
+                    }
+                    Matrix CC = V.extract(start[i], dim[i], start[j], dim[j]);
+                    CC.copy(C.transpose());
                 }
-                Matrix CC = V.extract(start[j], dim[j], start[i], dim[i]);
-                CC.copy(C.transpose());
             }
         }
     }

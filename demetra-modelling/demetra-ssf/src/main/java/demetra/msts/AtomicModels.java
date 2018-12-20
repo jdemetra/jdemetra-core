@@ -5,13 +5,7 @@
  */
 package demetra.msts;
 
-import demetra.arima.ArimaModel;
-import demetra.arima.AutoCovarianceFunction;
-import demetra.arima.ssf.SsfArima;
-import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
-import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.polynomials.Polynomial;
 import demetra.msts.internal.ArItem;
 import demetra.msts.internal.ArItem2;
 import demetra.msts.internal.ArimaItem;
@@ -20,18 +14,13 @@ import demetra.msts.internal.CycleItem;
 import demetra.msts.internal.LocalLevelItem;
 import demetra.msts.internal.LocalLinearTrendItem;
 import demetra.msts.internal.MsaeItem;
+import demetra.msts.internal.MsaeItem2;
 import demetra.msts.internal.NoiseItem;
 import demetra.msts.internal.RegressionItem;
 import demetra.msts.internal.SaeItem;
 import demetra.msts.internal.SarimaItem;
 import demetra.msts.internal.SeasonalComponentItem;
 import demetra.msts.internal.TdRegressionItem;
-import demetra.msts.survey.WaveSpecificSurveyErrors;
-import demetra.ssf.SsfComponent;
-import demetra.ssf.StateComponent;
-import demetra.ssf.models.SsfAr;
-import demetra.ssf.models.SsfAr2;
-import demetra.sts.CyclicalComponent;
 import demetra.timeseries.TsDomain;
 
 /**
@@ -121,6 +110,11 @@ public class AtomicModels {
     // ONS-like
     public ModelItem waveSpecificSurveyError(String name, int nwaves, MatrixType ar, boolean fixedar, int lag) {
         return new MsaeItem(name, nwaves, ar, fixedar, lag);
+    }
+
+    // ONS-like
+    public ModelItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, MatrixType ar, boolean fixedar, int lag) {
+        return new MsaeItem2(name, var, fixedVar, ar, fixedar, lag);
     }
 
     public ModelItem ar(String name, double[] ar, boolean fixedar, double var, boolean fixedvar, int nlags, int nfcasts) {
