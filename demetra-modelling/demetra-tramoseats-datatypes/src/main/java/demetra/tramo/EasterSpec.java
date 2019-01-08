@@ -46,6 +46,8 @@ public final class EasterSpec implements Cloneable {
     private int duration = DEF_IDUR;
     private Type type = Type.Unused;
     private boolean julian = DEF_JULIAN;
+    
+    private static final EasterSpec DEFAULT=new EasterSpec();
 
     public EasterSpec() {
     }
@@ -109,7 +111,7 @@ public final class EasterSpec implements Cloneable {
     }
 
     public boolean isDefault() {
-        return type == Type.Unused;
+        return this.equals(DEFAULT);
     }
 
 }

@@ -160,7 +160,7 @@ public class TramoProcessorTest {
 
 //    @Test
     public void testProdWald() {
-        TramoSpec nspec = new TramoSpec(TramoSpec.TRfull);
+        TramoSpec nspec = TramoSpec.TRfull.clone();
         nspec.getRegression().getCalendar().getTradingDays().setAutomaticMethod(TradingDaysSpec.AutoMethod.WaldTest);
         TramoProcessor processor = TramoProcessor.of(nspec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);

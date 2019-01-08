@@ -20,6 +20,7 @@ import demetra.design.Development;
 import demetra.modelling.TransformationType;
 import demetra.modelling.regression.RegressionTestType;
 import demetra.modelling.regression.TradingDaysType;
+import demetra.regarima.ArimaSpec;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 
@@ -29,8 +30,9 @@ import javax.annotation.Nonnull;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Temporary)
-public class TramoSpec {
+@Development(status = Development.Status.Beta)
+@lombok.Data
+public final class TramoSpec implements Cloneable {
 
     //public static TramoSpecification Default;
     public static final TramoSpec TR0, TR1, TR2, TR3, TR4, TR5, TRfull;
@@ -62,9 +64,9 @@ public class TramoSpec {
         td.setLeapYear(true);
         td.setRegressionTestType(RegressionTestType.Separate_T);
 
-        TradingDaysSpec dc = new TradingDaysSpec(td);
+        TradingDaysSpec dc = td.clone();
         dc.setAutomatic(true);
-        EasterSpec ec = new EasterSpec(e);
+        EasterSpec ec = e.clone();
         ec.setOption(EasterSpec.Type.IncludeEaster);
         ec.setTest(true);
 
@@ -85,9 +87,9 @@ public class TramoSpec {
         rc.setCalendar(cc);
 
         OutlierSpec o = new OutlierSpec();
-        o.add("AO");
-        o.add("TC");
-        o.add("LS");
+        o.setAo(true);
+        o.setTc(true);
+        o.setLs(true);
 
         TR1.setTransform(tr);
         TR1.setOutliers(o);
@@ -120,6 +122,19 @@ public class TramoSpec {
         return new TramoSpec[]{TR0, TR1, TR2, TR3, TR4, TR5, TRfull};
     }
 
+    @lombok.NonNull
+    private ArimaSpec arima;
+    @lombok.NonNull
+    private TransformSpec transform;
+    @lombok.NonNull
+    private AutoModelSpec automdl;
+    @lombok.NonNull
+    private EstimateSpec estimate;
+    @lombok.NonNull
+    private OutlierSpec outlier;
+    @lombok.NonNull
+    private RegressionSpec regression;
+
     /**
      * Creates a new default specification. No transformation, no regression
      * variables, no outliers detection, default airline model (without mean).
@@ -129,18 +144,25 @@ public class TramoSpec {
         estimate = new EstimateSpec();
         automdl = new AutoModelSpec(false);
         outlier = new OutlierSpec();
-        arima = new ArimaSpec();
-        arima.setMean(true);
+        arima = new ArimaSpec(ArimaValidator.VALIDATOR);
+        arima.airlineWithMean();
         regression = new RegressionSpec();
     }
 
-    public TramoSpec(TramoSpec other) {
-        transform=new TransformSpec(other.transform);
-        estimate=new EstimateSpec(other.estimate);
-        automdl=new AutoModelSpec(other.automdl);
-        outlier=new OutlierSpec(other.outlier);
-        arima=new ArimaSpec(other.arima);
-        regression=new RegressionSpec(other.regression);
+    @Override
+    public TramoSpec clone() {
+        try {
+            TramoSpec c = (TramoSpec) super.clone();
+            c.transform = transform.clone();
+            c.estimate = estimate.clone();
+            c.automdl = automdl.clone();
+            c.outlier = outlier.clone();
+            c.arima = arima.clone();
+            c.regression = regression.clone();
+            return c;
+        } catch (CloneNotSupportedException ex) {
+            throw new AssertionError();
+        }
     }
 
     /**
@@ -246,7 +268,8 @@ public class TramoSpec {
     /**
      * Gets the options for the automatic outliers detection Related TRAMO
      * options: IATIP, AIO, TC, VA
-     * @return 
+     *
+     * @return
      */
     public OutlierSpec getOutliers() {
         return outlier;
@@ -258,7 +281,7 @@ public class TramoSpec {
      * @param value The new specifications.
      */
     public void setOutliers(@Nonnull OutlierSpec value) {
-         outlier = value;
+        outlier = value;
     }
 
     /**
@@ -277,14 +300,8 @@ public class TramoSpec {
      * @param value The new specifications.
      */
     public void setRegression(@Nonnull RegressionSpec value) {
-         regression = value;
+        regression = value;
     }
-    private ArimaSpec arima;
-    private TransformSpec transform;
-    private AutoModelSpec automdl;
-    private EstimateSpec estimate;
-    private OutlierSpec outlier;
-    private RegressionSpec regression;
 
     /**
      * Checks that specifications are one of the pre-defined ones.
@@ -304,8 +321,6 @@ public class TramoSpec {
      * @param spec The inspected specifications
      * @return true if the specifications object corresponds to the pre-defined
      * ones.
-     * @param spec
-     * @return
      */
     public static TramoSpec matchSystem(TramoSpec spec) {
         if (spec == TR0 || spec == TR1 || spec == TR2
@@ -330,42 +345,6 @@ public class TramoSpec {
         } else {
             return null;
         }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof TramoSpec && equals((TramoSpec) obj));
-    }
-
-    private boolean equals(TramoSpec spec) {
-        if (isUsingAutoModel() != spec.isUsingAutoModel()) {
-            return false;
-        }
-        if (!isUsingAutoModel() && !Objects.equals(spec.arima, arima)) {
-            return false;
-        }
-        if (isUsingAutoModel() && !Objects.equals(spec.automdl, automdl)) {
-            return false;
-        }
-        return Objects.equals(spec.transform, transform)
-                && Objects.equals(spec.regression, regression)
-                && Objects.equals(spec.outlier, outlier)
-                && Objects.equals(spec.estimate, estimate);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        if (isUsingAutoModel()) {
-            hash = 11 * hash + automdl.hashCode();
-        } else {
-            hash = 11 * hash + arima.hashCode();
-        }
-        hash = 11 * hash + transform.hashCode();
-        hash = 11 * hash + estimate.hashCode();
-        hash = 11 * hash + outlier.hashCode();
-        hash = 11 * hash + regression.hashCode();
-        return hash;
     }
 
     @Override

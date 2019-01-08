@@ -21,6 +21,8 @@ import demetra.modelling.TransformationType;
 import demetra.timeseries.TimeSelector;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 
 /**
@@ -28,100 +30,40 @@ import javax.annotation.Nonnull;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class TransformSpec {
+@lombok.Data
+public final class TransformSpec implements Cloneable{
 
+    public static final double DEF_FCT = 0.95;
 
+    @lombok.NonNull
     private TimeSelector span = TimeSelector.all();
     private double fct = DEF_FCT;
     private boolean preliminaryCheck = true;
-    private TransformationType fn = TransformationType.None;
-    public static final double DEF_FCT = 0.95;
+    private TransformationType function = TransformationType.None;
+    
+    private static final TransformSpec DEFAULT=new TransformSpec();
 
     public TransformSpec() {
     }
 
-    public TransformSpec(TransformSpec other) {
-        span=other.span;
-        fct=other.fct;
-        preliminaryCheck=other.preliminaryCheck;
-        fn=other.fn;
+    @Override
+    public TransformSpec clone() {
+        try {
+            return (TransformSpec) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new AssertionError();
+        }
     }
 
     public void reset() {
         span=TimeSelector.all();
         fct = DEF_FCT;
         preliminaryCheck = true;
-        fn = TransformationType.None;
-    }
-
-    public TimeSelector getSpan() {
-        return span;
-    }
-
-    public void setSpan(@Nonnull TimeSelector value) {
-            span = value;
-    }
-
-    public TransformationType getFunction() {
-        return fn;
-    }
-
-    public void setFunction(@Nonnull TransformationType fn) {
-        this.fn = fn;
-    }
-
-    public double getFct() {
-        return fct;
-    }
-
-    public void setFct(double value) {
-        fct = value;
-    }
-
-    public boolean isPreliminaryCheck() {
-        return preliminaryCheck;
-    }
-    
-    public void setPreliminaryCheck(boolean value) {
-        preliminaryCheck = value;
+        function = TransformationType.None;
     }
 
     public boolean isDefault() {
-        return fn == TransformationType.None
-                && fct == DEF_FCT && span.getType() == TimeSelector.SelectionType.All
-                && preliminaryCheck;
-    }
-
-    @Override
-    public TransformSpec clone() {
-        try {
-            TransformSpec spec = (TransformSpec) super.clone();
-            spec.span = span.clone();
-            return spec;
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
-        }
-    }
-
-    public boolean equals(TransformSpec other) {
-        if (other == null) {
-            return isDefault();
-        }
-        return fct == other.fct && fn == other.fn && Objects.equals(span, other.span) && preliminaryCheck == other.preliminaryCheck;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof TransformSpec && equals((TransformSpec) obj));
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 61 * hash + Objects.hashCode(this.span);
-        hash = 61 * hash + Double.hashCode(this.fct);
-        hash = 61 * hash + fn.hashCode();
-        return hash;
+        return this.equals(DEFAULT);
     }
 
 }

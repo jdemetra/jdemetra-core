@@ -98,7 +98,7 @@ public class TramoProcessor implements IPreprocessor {
     private boolean needAutoModelling;
 
     private TramoProcessor(TramoSpec spec, ModellingContext context) {
-        this.spec = new TramoSpec(spec);
+        this.spec = spec.clone();
         this.modellingContext = context;
         this.options = readAmiOptions(spec);
         TradingDaysSpec td = spec.getRegression().getCalendar().getTradingDays();
@@ -112,7 +112,7 @@ public class TramoProcessor implements IPreprocessor {
             }
             if (td.isAutomatic()) {
                 controllers.add(new TradingDaysController(
-                        TramoModelBuilder.tradingDays(spec, modellingContext), td.getProbabibilityForFTest()));
+                        TramoModelBuilder.tradingDays(spec, modellingContext), td.getProbabilityForFTest()));
             }
             controllers.add(new SeasonalUnderDifferencingTest2());
             controllers.add(new RegularUnderDifferencingTest2());
@@ -120,7 +120,7 @@ public class TramoProcessor implements IPreprocessor {
             scontroller = null;
             if (td.isAutomatic()) {
                 controllers.add(new TradingDaysController(
-                        TramoModelBuilder.tradingDays(spec, modellingContext), td.getProbabibilityForFTest()));
+                        TramoModelBuilder.tradingDays(spec, modellingContext), td.getProbabilityForFTest()));
             }
         }
     }
@@ -148,7 +148,7 @@ public class TramoProcessor implements IPreprocessor {
                         .tradingDays(TramoModelBuilder.td(spec, DayClustering.TD7, modellingContext))
                         .workingDays(TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext))
                         .testMean(spec.isUsingAutoModel())
-                        .fPValue(tdspec.getProbabibilityForFTest())
+                        .fPValue(tdspec.getProbabilityForFTest())
                         .estimationPrecision(options.intermediatePrecision)
                         .build();
             } else {
@@ -158,8 +158,8 @@ public class TramoProcessor implements IPreprocessor {
                         .tradingDays(TramoModelBuilder.td(spec, DayClustering.TD7, modellingContext))
                         .workingDays(TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext))
                         .testMean(spec.isUsingAutoModel())
-                        .fPValue(tdspec.getProbabibilityForFTest())
-                        .PConstraint(tdspec.getProbabibilityForFTest())
+                        .fPValue(tdspec.getProbabilityForFTest())
+                        .PConstraint(tdspec.getProbabilityForFTest())
                         .estimationPrecision(options.intermediatePrecision)
                         .build();
             }
@@ -176,25 +176,12 @@ public class TramoProcessor implements IPreprocessor {
 
     private OutliersDetectionModule outliersModule() {
         OutlierSpec outliers = spec.getOutliers();
-        OutliersDetectionModule.Builder obuilder = OutliersDetectionModule.builder();
-        String[] types = outliers.getTypes();
-        for (int i = 0; i < types.length; ++i) {
-            switch (types[i]) {
-                case AdditiveOutlier.CODE:
-                    obuilder.ao(true);
-                    break;
-                case LevelShift.CODE:
-                    obuilder.ls(true);
-                    break;
-                case TransitoryChange.CODE:
-                    obuilder.tc(true);
-                    break;
-                case PeriodicOutlier.CODE:
-                    obuilder.so(true);
-                    break;
-            }
-        }
-        return obuilder.span(outliers.getSpan())
+        return OutliersDetectionModule.builder()
+                .ao(outliers.isAo())
+                .ls(outliers.isLs())
+                .tc(outliers.isTc())
+                .so(outliers.isSo())
+                .span(outliers.getSpan())
                 .tcrate(outliers.getDeltaTC())
                 .maximumLikelihood(outliers.isMaximumLikelihood())
                 .precision(options.intermediatePrecision)
@@ -319,8 +306,8 @@ public class TramoProcessor implements IPreprocessor {
         SarimaSpecification curspec = desc.getSpecification();
         boolean curmu = desc.isMean();
         if (needDifferencing(desc)) {
-            if (execDifferencing(modelling) == ProcessingResult.Changed && pass ==1){
-                desc.removeVariable(var->var.isOutlier(false));
+            if (execDifferencing(modelling) == ProcessingResult.Changed && pass == 1) {
+                desc.removeVariable(var -> var.isOutlier(false));
                 modelling.setEstimation(null);
             }
         }
@@ -672,7 +659,7 @@ public class TramoProcessor implements IPreprocessor {
     private void testSeasonality(RegArimaModelling modelling) {
         ModelDescription model = modelling.getDescription();
         if (!isAutoModelling()) {
-            context.seasonal=model.getSpecification().isSeasonal();
+            context.seasonal = model.getSpecification().isSeasonal();
             return;
         }
 

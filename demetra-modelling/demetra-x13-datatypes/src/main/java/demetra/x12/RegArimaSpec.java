@@ -20,6 +20,7 @@ import demetra.design.Development;
 import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.modelling.regression.TradingDaysType;
+import demetra.regarima.ArimaSpec;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import java.util.Map;
 import java.util.Objects;
@@ -114,7 +115,7 @@ public class RegArimaSpec{
         estimate = new EstimateSpec();
         automdl = new AutoModelSpec(false);
         outliers = new OutlierSpec();
-        arima = new ArimaSpec();
+        arima = new ArimaSpec(ArimaValidator.VALIDATOR);
         regression = new RegressionSpec();
     }
     
@@ -124,7 +125,7 @@ public class RegArimaSpec{
         estimate=new EstimateSpec(other.estimate);
         automdl=new AutoModelSpec(other.automdl);
         outliers=new OutlierSpec(other.outliers);
-        arima=new ArimaSpec(other.arima);
+        arima=other.arima.clone();
         regression=new RegressionSpec(other.regression);
     }
 

@@ -17,73 +17,64 @@
 
 package demetra.tramo;
 
-import demetra.regarima.DefaultArimaSpec;
 import demetra.design.Development;
-import java.util.Map;
+import demetra.regarima.ArimaSpec;
 
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
-public class ArimaSpec extends DefaultArimaSpec {
+@Development(status = Development.Status.Beta)
+public class ArimaValidator  implements ArimaSpec.Validator {
 
     public static final int MAXP=3, MAXD=2, MAXQ=3, MAXBP=1, MAXBD=1, MAXBQ=1;
 
-    public ArimaSpec() {
+    public static final ArimaValidator VALIDATOR=new ArimaValidator();
+    
+    private  ArimaValidator() {
     }
     
-    public ArimaSpec(ArimaSpec other){
-        super(other);
-    }
-
-   @Override
-    public void setP(int value) {
+    @Override
+    public void checkP(int value) {
         if (value > MAXP) {
             throw new TramoException("P must be <= "+Integer.toString(MAXP));
         }
-        super.setP(value);
     }
 
     @Override
-    public void setD(int value) {
+    public void checkD(int value) {
         if (value > MAXD) {
             throw new TramoException("D must be <= "+Integer.toString(MAXD));
         }
-        super.setD(value);
     }
 
     @Override
-    public void setQ(int value) {
+    public void checkQ(int value) {
         if (value > MAXQ) {
             throw new TramoException("Q must be <= "+Integer.toString(MAXQ));
         }
-        super.setQ(value);
     }
+    
      @Override
-    public void setBp(int value) {
+    public void checkBp(int value) {
         if (value > MAXBP) {
             throw new TramoException("BP must be <= "+Integer.toString(MAXBP));
         }
-        super.setBp(value);
     }
 
     @Override
-    public void setBd(int value) {
+    public void checkBd(int value) {
         if (value > MAXBD) {
             throw new TramoException("BD must be <= "+Integer.toString(MAXBD));
         }
-        super.setBd(value);
     }
 
     @Override
-    public void setBq(int value) {
+    public void checkBq(int value) {
         if (value > MAXBQ) {
             throw new TramoException("BQ must be <= "+Integer.toString(MAXBQ));
         }
-        super.setBq(value);
     }
-
 }
 

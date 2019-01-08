@@ -92,9 +92,9 @@ class X12ModelBuilder implements IModelBuilder {
             cmp.setTheta(arima.getTheta());
             cmp.setD(arima.getD());
             if (!yearly) {
-                cmp.setBPhi(arima.getBPhi());
-                cmp.setBTheta(arima.getBTheta());
-                cmp.setBD(arima.getBd());
+                cmp.setBphi(arima.getBPhi());
+                cmp.setBtheta(arima.getBTheta());
+                cmp.setBd(arima.getBd());
             }
         }
     }
