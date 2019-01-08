@@ -21,7 +21,7 @@ import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
-import demetra.sarima.HannanRissanen;
+import demetra.sarima.estimation.HannanRissanen;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarmaSpecification;

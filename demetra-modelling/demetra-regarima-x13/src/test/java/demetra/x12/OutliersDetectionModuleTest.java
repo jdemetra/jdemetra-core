@@ -10,7 +10,7 @@ import demetra.data.Data;
 import demetra.data.DoubleSequence;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArimaUtility;
-import demetra.sarima.SarimaMapping;
+import demetra.sarima.estimation.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.internal.HannanRissanenInitializer;

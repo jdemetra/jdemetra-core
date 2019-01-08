@@ -35,7 +35,7 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
 import static demetra.r.AirlineDecomposition.ucm;
 import demetra.regarima.GlsArimaProcessor;
-import demetra.regarima.IArimaMapping;
+import demetra.arima.estimation.IArimaMapping;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.univariate.SsfData;

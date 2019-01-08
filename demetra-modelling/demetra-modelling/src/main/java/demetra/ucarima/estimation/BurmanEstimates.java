@@ -17,7 +17,6 @@
 package demetra.ucarima.estimation;
 
 import demetra.arima.ArimaException;
-import demetra.arima.ArimaForecaster;
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.internal.FastArimaForecasts;
@@ -35,6 +34,7 @@ import demetra.ucarima.UcarimaModel;
 import demetra.ucarima.WienerKolmogorovEstimators;
 import java.util.Arrays;
 import demetra.data.DoubleSequence;
+import demetra.arima.estimation.ArimaForecasts;
 
 /**
  * Estimation of the components of an UCARIMA model using a variant of the
@@ -62,7 +62,7 @@ public class BurmanEstimates {
     private DoubleSequence m_xb, m_xf;
     private boolean m_bmean;
     private ILUDecomposition solver;
-    private ArimaForecaster forecaster=new FastArimaForecasts();
+    private ArimaForecasts forecaster=new FastArimaForecasts();
 
     /**
      * Creates a new instance of WKEstimators

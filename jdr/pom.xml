@@ -67,6 +67,11 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-regarima</artifactId>
+            <version>${jd3-modelling.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-ssf</artifactId>
             <version>${jd3-modelling.version}</version>
         </dependency>

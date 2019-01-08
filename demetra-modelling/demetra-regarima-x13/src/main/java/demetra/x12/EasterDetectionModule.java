@@ -16,10 +16,10 @@
  */
 package demetra.x12;
 
+import demetra.arima.estimation.IArimaMapping;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.regression.Variable;
-import demetra.regarima.IArimaMapping;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.regular.IRegressionModule;

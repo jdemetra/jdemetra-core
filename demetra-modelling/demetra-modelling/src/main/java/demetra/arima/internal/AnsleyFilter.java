@@ -17,7 +17,6 @@
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.arima.IArmaFilter;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.LogSign;
@@ -32,15 +31,16 @@ import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.data.DoubleSequence;
+import demetra.arima.estimation.ArmaFilter;
 
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@AlgorithmImplementation(algorithm=IArmaFilter.class)
-@ServiceProvider(service=IArmaFilter.class)
-public class AnsleyFilter implements IArmaFilter {
+@AlgorithmImplementation(algorithm=ArmaFilter.class)
+@ServiceProvider(service=ArmaFilter.class)
+public class AnsleyFilter implements ArmaFilter {
 
     private Matrix m_bL;
     private double[] m_ar, m_ma;

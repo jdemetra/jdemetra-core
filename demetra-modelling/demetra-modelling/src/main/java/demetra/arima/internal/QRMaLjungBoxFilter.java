@@ -18,7 +18,6 @@
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.arima.IArmaFilter;
 import demetra.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.design.Development;
@@ -28,6 +27,7 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
 import demetra.data.DoubleSequence;
+import demetra.arima.estimation.ArmaFilter;
 
 /**
  * @author Jean Palate

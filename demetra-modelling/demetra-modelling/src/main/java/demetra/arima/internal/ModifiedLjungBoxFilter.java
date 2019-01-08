@@ -18,7 +18,6 @@
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.arima.IArmaFilter;
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;
 import demetra.data.LogSign;
@@ -31,14 +30,15 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.data.DoubleSequence;
+import demetra.arima.estimation.ArmaFilter;
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@AlgorithmImplementation(algorithm=IArmaFilter.class, feature=Legacy)
-@ServiceProvider(service=IArmaFilter.class)
-public class ModifiedLjungBoxFilter implements IArmaFilter {
+@AlgorithmImplementation(algorithm=ArmaFilter.class, feature=Legacy)
+@ServiceProvider(service=ArmaFilter.class)
+public class ModifiedLjungBoxFilter implements ArmaFilter {
 
     private int m_n, m_p, m_q;
 

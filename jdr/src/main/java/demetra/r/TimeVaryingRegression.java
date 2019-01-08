@@ -37,7 +37,7 @@ import demetra.timeseries.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
-import demetra.sarima.SarimaMapping;
+import demetra.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDaysDefinition;
 
 /**

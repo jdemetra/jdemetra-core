@@ -11,7 +11,7 @@ import demetra.data.DoubleSequence;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.polynomials.Polynomial;
-import demetra.sarima.SarimaMapping;
+import demetra.sarima.estimation.SarimaMapping;
 import javax.annotation.Nonnull;
 
 /**

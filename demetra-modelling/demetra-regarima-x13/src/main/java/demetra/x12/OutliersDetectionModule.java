@@ -16,7 +16,7 @@
  */
 package demetra.x12;
 
-import demetra.arima.ResidualsComputer;
+import demetra.arima.estimation.ResidualsComputer;
 import demetra.arima.internal.AnsleyFilter;
 import demetra.design.BuilderPattern;
 import demetra.modelling.regression.Variable;
