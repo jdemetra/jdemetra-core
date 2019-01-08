@@ -17,15 +17,14 @@
 package demetra.tramo;
 
 import demetra.design.Development;
-import demetra.tramo.TramoException;
-import java.util.Map;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
-public class EasterSpec{
+@Development(status = Development.Status.Beta)
+@lombok.Data
+public final class EasterSpec implements Cloneable {
 
     public static enum Type {
 
@@ -39,22 +38,25 @@ public class EasterSpec{
             return this == IncludeEasterMonday;
         }
     };
+
+    public static final int DEF_IDUR = 6;
+    public static boolean DEF_JULIAN = false;
+
     private boolean test;
     private int duration = DEF_IDUR;
     private Type type = Type.Unused;
-    private boolean julian=DEF_JULIAN;
-    
-    public static final int DEF_IDUR = 6;
-    public static boolean DEF_JULIAN=false;
- 
+    private boolean julian = DEF_JULIAN;
+
     public EasterSpec() {
     }
 
-    public EasterSpec( EasterSpec other ){
-        this.duration=other.duration;
-        this.julian=other.julian;
-        this.test=other.test;
-        this.type=other.type;
+    @Override
+    public EasterSpec clone() {
+        try {
+            return (EasterSpec) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new AssertionError();
+        }
     }
 
     public void reset() {
@@ -98,53 +100,16 @@ public class EasterSpec{
         this.type = type;
     }
 
-    public boolean isJulian(){
+    public boolean isJulian() {
         return julian;
     }
-    
-    public void setJulian(boolean julian){
-        this.julian=julian;
+
+    public void setJulian(boolean julian) {
+        this.julian = julian;
     }
 
     public boolean isDefault() {
         return type == Type.Unused;
-    }
-
-//        public ICalendarProvider Provider(TSContext context)
-//        {
-//            ICalendarProvider provider = null;
-//            if (context != null && m_holidays != null)
-//                provider = context.Calendars[m_holidays];
-//            if (provider == null)
-//                provider = new DefaultCalendarProvider();
-//            return provider;
-//        }
-    @Override
-    public EasterSpec clone() {
-        try {
-            EasterSpec spec = (EasterSpec) super.clone();
-            return spec;
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
-        }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof EasterSpec && equals((EasterSpec) obj));
-    }
-
-    private boolean equals(EasterSpec other) {
-        return duration == other.duration && test == other.test
-                && type == other.type && julian == other.julian;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 67 * hash + this.duration;
-        hash = 67 * hash + type.hashCode();
-        return hash;
     }
 
 }
