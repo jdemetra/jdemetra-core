@@ -20,33 +20,47 @@ import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
 import demetra.sarima.SarimaSpecification;
-import java.util.Arrays;
-import java.util.Objects;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
-public abstract class DefaultArimaSpec {
+@Development(status = Development.Status.Beta)
+@lombok.Data
+public final class ArimaSpec implements Cloneable{
+    
+    public static interface Validator{
+        void checkP(int p);
+        void checkD(int d);
+        void checkQ(int q);
+        void checkBp(int bp);
+        void checkBd(int bd);
+        void checkBq(int bq);
+    }
 
+    private final Validator validator;
     private Parameter mu;
     private int d, bd;
     private Parameter[] phi, theta, bphi, btheta;
     
-    protected DefaultArimaSpec(){
-        
+    public ArimaSpec(Validator validator){
+        this.validator=validator;
     }
 
-    protected DefaultArimaSpec(DefaultArimaSpec spec) {
-        d = spec.d;
-        bd = spec.bd;
-        phi = Parameter.clone(spec.phi);
-        theta = Parameter.clone(spec.theta);
-        bphi = Parameter.clone(spec.bphi);
-        btheta = Parameter.clone(spec.btheta);
-        if (spec.mu != null)
-            mu=spec.mu.clone();
+    @Override
+    public ArimaSpec clone(){
+        try {
+            ArimaSpec c=(ArimaSpec) super.clone();
+            c.phi = Parameter.clone(phi);
+            c.theta = Parameter.clone(theta);
+            c.bphi = Parameter.clone(bphi);
+            c.btheta = Parameter.clone(btheta);
+            if (mu != null)
+                c.mu=mu.clone();
+            return c;
+        } catch (CloneNotSupportedException ex) {
+            throw new AssertionError();
+        }
     }
 
     public boolean isMean() {
@@ -57,19 +71,10 @@ public abstract class DefaultArimaSpec {
         mu = mean ? new Parameter() : null;
     }
 
-    public Parameter getMu() {
-        return mu;
-    }
-
-    public void setMu(Parameter mu) {
-        this.mu = mu;
-    }
-
     public void fixMu() {
         if (mu != null) {
             mu.setType(ParameterType.Fixed);
         }
-
     }
 
     public void setParameterType(ParameterType type) {
@@ -217,14 +222,14 @@ public abstract class DefaultArimaSpec {
     }
 
     public void setP(int value) {
+        if (validator != null)
+            validator.checkP(value);
         phi = Parameter.create(value);
     }
 
-    public int getD() {
-        return d;
-    }
-
     public void setD(int value) {
+        if (validator != null)
+            validator.checkD(value);
         d = value;
     }
 
@@ -233,6 +238,8 @@ public abstract class DefaultArimaSpec {
     }
 
     public void setQ(int value) {
+        if (validator != null)
+            validator.checkQ(value);
         theta = Parameter.create(value);
     }
 
@@ -241,14 +248,14 @@ public abstract class DefaultArimaSpec {
     }
 
     public void setBp(int value) {
+        if (validator != null)
+            validator.checkBp(value);
         bphi = Parameter.create(value);
     }
 
-    public int getBd() {
-        return bd;
-    }
-
     public void setBd(int value) {
+        if (validator != null)
+            validator.checkBd(value);
         bd = value;
     }
 
@@ -257,7 +264,33 @@ public abstract class DefaultArimaSpec {
     }
 
     public void setBq(int value) {
+        if (validator != null)
+            validator.checkBq(value);
         btheta = Parameter.create(value);
+    }
+
+    public void setPhi(Parameter[] value) {
+        if (validator != null && value != null)
+            validator.checkP(value.length);
+        phi = value;
+    }
+
+    public void setTheta(Parameter[] value) {
+        if (validator != null && value != null)
+            validator.checkQ(value.length);
+        theta = value;
+    }
+
+    public void setBphi(Parameter[] value) {
+        if (validator != null && value != null)
+            validator.checkBp(value.length);
+        phi = value;
+    }
+
+    public void setBtheta(Parameter[] value) {
+        if (validator != null && value != null)
+            validator.checkBq(value.length);
+        theta = value;
     }
 
     public boolean isAirline() {
@@ -271,38 +304,6 @@ public abstract class DefaultArimaSpec {
                 && Parameter.isDefault(bphi) && Parameter.isDefault(btheta);
     }
 
-    public Parameter[] getPhi() {
-        return phi;
-    }
-
-    public void setPhi(Parameter[] value) {
-        phi = value;
-    }
-
-    public Parameter[] getTheta() {
-        return theta;
-    }
-
-    public void setTheta(Parameter[] value) {
-        theta = value;
-    }
-
-    public Parameter[] getBPhi() {
-        return bphi;
-    }
-
-    public void setBPhi(Parameter[] value) {
-        bphi = value;
-    }
-
-    public Parameter[] getBTheta() {
-        return btheta;
-    }
-
-    public void setBTheta(Parameter[] value) {
-        btheta = value;
-    }
-
     public SarimaSpecification getSpecification(int period) {
         SarimaSpecification spec = new SarimaSpecification(period);
         spec.setP(getP());
@@ -314,26 +315,6 @@ public abstract class DefaultArimaSpec {
             spec.setBq(getBq());
         }
         return spec;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof DefaultArimaSpec && equals((DefaultArimaSpec) obj));
-    }
-
-    private boolean equals(DefaultArimaSpec other) {
-        return bd == other.bd && d == other.d && Objects.equals(mu, other.mu)
-                && Arrays.deepEquals(phi, other.phi) && Arrays.deepEquals(theta, other.theta)
-                && Arrays.deepEquals(bphi, other.bphi) && Arrays.deepEquals(btheta, other.btheta);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 53 * hash;
-        hash = 53 * hash + this.d;
-        hash = 53 * hash + this.bd;
-        return hash;
     }
 
 }

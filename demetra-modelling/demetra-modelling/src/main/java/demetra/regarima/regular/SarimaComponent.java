@@ -164,9 +164,9 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
         setP(0);
         d = 1;
         setQ(1);
-        setBP(0);
+        setBp(0);
         bd = 1;
-        setBQ(1);
+        setBq(1);
         setMean(false);
     }
 
@@ -175,9 +175,9 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
         setP(0);
         d = 1;
         setQ(1);
-        setBP(0);
+        setBp(0);
         bd = 1;
-        setBQ(1);
+        setBq(1);
         setMean(true);
     }
 
@@ -228,7 +228,7 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
         return bphi == null ? 0 : bphi.length;
     }
 
-    public void setBP(int value) {
+    public void setBp(int value) {
         bphi = Parameter.create(value);
     }
 
@@ -236,7 +236,7 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
         return bd;
     }
 
-    public void setBD(int value) {
+    public void setBd(int value) {
         bd = value;
     }
 
@@ -244,7 +244,7 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
         return btheta == null ? 0 : btheta.length;
     }
 
-    public void setBQ(int value) {
+    public void setBq(int value) {
         btheta = Parameter.create(value);
     }
 
@@ -264,19 +264,19 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
         theta = Parameter.clone(value);
     }
 
-    public Parameter[] getBPhi() {
+    public Parameter[] getBphi() {
         return bphi;
     }
 
-    public void setBPhi(Parameter[] value) {
+    public void setBphi(Parameter[] value) {
         bphi = Parameter.clone(value);
     }
 
-    public Parameter[] getBTheta() {
+    public Parameter[] getBtheta() {
         return btheta;
     }
 
-    public void setBTheta(Parameter[] value) {
+    public void setBtheta(Parameter[] value) {
         btheta = Parameter.clone(value);
     }
 
@@ -382,9 +382,9 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
         setP(spec.getP());
         d = spec.getD();
         setQ(spec.getQ());
-        setBP(spec.getBp());
+        setBp(spec.getBp());
         bd = spec.getBd();
-        setBQ(spec.getBq());
+        setBq(spec.getBq());
         period = spec.getPeriod();
     }
 
@@ -394,9 +394,9 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
         setP(spec.getP());
         d = spec.getD();
         setQ(spec.getQ());
-        setBP(spec.getBp());
+        setBp(spec.getBp());
         bd = spec.getBd();
-        setBQ(spec.getBq());
+        setBq(spec.getBq());
         period = spec.getPeriod();
         Parameter[] p = phi;
         for (int i = 0; i < spec.getP(); ++i) {

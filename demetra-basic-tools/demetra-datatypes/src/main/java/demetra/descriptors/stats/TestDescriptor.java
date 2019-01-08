@@ -19,7 +19,6 @@ package demetra.descriptors.stats;
 import demetra.design.Development;
 import demetra.information.InformationMapping;
 import demetra.stats.TestResult;
-import demetra.stats.TestResult;
 
 /**
  *

@@ -25,6 +25,8 @@ import demetra.data.transformation.LogJacobian;
 import demetra.data.ParameterType;
 import demetra.data.transformation.DataInterpolator;
 import demetra.design.Development;
+import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.LogLikelihoodFunction;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.modelling.regression.PreadjustmentVariable;
@@ -555,17 +557,21 @@ public final class ModelDescription {
         // update current description
         regarima = rslt.getModel();
         int p = this.getAnnualFrequency();
-        double[] gradient = rslt.getMax().getGradient();
-        DoubleSequence score = DoubleSequence.ofInternal(gradient == null ? DoubleSequence.EMPTYARRAY : gradient);
-        Matrix hessian = rslt.getMax().getHessian();
-        Matrix J = hessian == null ? null : SymmetricMatrix.inverse(hessian);
-        if (np < allp) {
-            J = expand(J);
+        LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihood> max = rslt.getMax();
+        Matrix J = Matrix.EMPTY;
+        DoubleSequence score = DoubleSequence.empty();
+        if (max != null) {
+            double[] gradient = max.getGradient();
+            Matrix hessian = rslt.getMax().getHessian();
+            score = DoubleSequence.ofInternal(gradient == null ? DoubleSequence.EMPTYARRAY : gradient);
+            J = hessian == null ? null : SymmetricMatrix.inverse(hessian);
+            if (np < allp) {
+                J = expand(J);
+            }
+            DataBlock stde = J.diagonal().deepClone();
+            stde.apply(a -> a <= 0 ? 0 : Math.sqrt(a));
+            arima.setFreeParameters(regarima.arima().parameters(), stde, ParameterType.Estimated);
         }
-        DataBlock stde = J.diagonal().deepClone();
-        stde.apply(a -> a <= 0 ? 0 : Math.sqrt(a));
-        arima.setFreeParameters(regarima.arima().parameters(), stde, ParameterType.Estimated);
-
         NiidTests tests = NiidTests.builder()
                 .data(rslt.getConcentratedLikelihood().e())
                 .period(p)

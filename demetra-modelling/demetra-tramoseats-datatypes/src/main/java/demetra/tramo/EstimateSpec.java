@@ -25,52 +25,27 @@ import javax.annotation.Nonnull;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
-public class EstimateSpec {
+@Development(status = Development.Status.Beta)
+@lombok.Data
+public final class EstimateSpec implements Cloneable{
 
-    public static final String SPAN = "span",
-            EML = "eml",
-            TOL = "tol",
-            UBP = "ubp";
-
-    private TimeSelector span = TimeSelector.all();
-    private boolean ml = true;
-    private double tol = DEF_TOL, ubp = DEF_UBP;
     public static final double DEF_TOL = 1e-7, DEF_UBP = .96;
+    
+    @lombok.NonNull
+    private TimeSelector span = TimeSelector.all();
+    private boolean maximumLikelihood = true;
+    private double tol = DEF_TOL, ubp = DEF_UBP;
 
+    private static final EstimateSpec DEFAULT=new EstimateSpec();
+    
     public EstimateSpec() {
-    }
-
-    public EstimateSpec(EstimateSpec other) {
-        this.ml = other.ml;
-        this.span = other.span.clone();
     }
 
     public void reset() {
         span=TimeSelector.all();
-        ml = true;
+        maximumLikelihood = true;
         tol = DEF_TOL;
         ubp = DEF_UBP;
-    }
-
-    public TimeSelector getSpan() {
-        return span;
-    }
-
-    public void setSpan(@Nonnull TimeSelector span) {
-        this.span = span;
-    }
-
-    public boolean isMaximumLikelihood() {
-        return ml;
-    }
-
-    public void setMaximumLikelihood(boolean value) {
-        ml = value;
-    }
-
-    public double getTol() {
-        return tol;
     }
 
     public void setTol(double value) {
@@ -80,16 +55,8 @@ public class EstimateSpec {
         tol = value;
     }
 
-    public double getUbp() {
-        return ubp;
-    }
-
-    public void setUbp(double value) {
-        ubp = value;
-    }
-
     public boolean isDefault() {
-        return ml && tol == DEF_TOL && ubp == DEF_UBP && span.getType() == TimeSelector.SelectionType.All;
+        return this.equals(DEFAULT);
     }
 
     @Override
@@ -102,23 +69,4 @@ public class EstimateSpec {
             throw new AssertionError();
         }
     }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 13 * hash + (this.ml ? 1 : 0);
-        hash = 13 * hash + Double.hashCode(this.tol);
-        hash = 13 * hash + Double.hashCode(this.ubp);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof EstimateSpec && equals((EstimateSpec) obj));
-    }
-
-    private boolean equals(EstimateSpec other) {
-        return ml == other.ml && tol == other.tol && ubp == other.ubp && Objects.equals(other.span, span);
-    }
-
 }

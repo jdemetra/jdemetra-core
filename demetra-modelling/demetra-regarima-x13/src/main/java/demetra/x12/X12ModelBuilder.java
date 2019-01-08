@@ -54,6 +54,7 @@ import demetra.modelling.regression.LevelShiftFactory;
 import demetra.modelling.regression.PeriodicOutlierFactory;
 import demetra.modelling.regression.TransitoryChangeFactory;
 import demetra.modelling.regression.UserTradingDays;
+import demetra.regarima.ArimaSpec;
 import demetra.timeseries.calendars.GenericTradingDaysDefinition;
 
 /**
@@ -92,9 +93,9 @@ class X12ModelBuilder implements IModelBuilder {
             cmp.setTheta(arima.getTheta());
             cmp.setD(arima.getD());
             if (!yearly) {
-                cmp.setBPhi(arima.getBPhi());
-                cmp.setBTheta(arima.getBTheta());
-                cmp.setBD(arima.getBd());
+                cmp.setBphi(arima.getBphi());
+                cmp.setBtheta(arima.getBtheta());
+                cmp.setBd(arima.getBd());
             }
         }
     }

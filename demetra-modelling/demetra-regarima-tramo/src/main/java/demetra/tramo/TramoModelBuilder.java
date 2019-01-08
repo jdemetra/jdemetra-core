@@ -52,6 +52,7 @@ import demetra.modelling.regression.LevelShiftFactory;
 import demetra.modelling.regression.PeriodicOutlierFactory;
 import demetra.modelling.regression.TransitoryChangeFactory;
 import demetra.modelling.regression.UserTradingDays;
+import demetra.regarima.ArimaSpec;
 import demetra.timeseries.calendars.GenericTradingDaysDefinition;
 
 /**
@@ -88,9 +89,9 @@ class TramoModelBuilder implements IModelBuilder {
             cmp.setTheta(arima.getTheta());
             cmp.setD(arima.getD());
             if (!yearly) {
-                cmp.setBPhi(arima.getBPhi());
-                cmp.setBTheta(arima.getBTheta());
-                cmp.setBD(arima.getBd());
+                cmp.setBphi(arima.getBphi());
+                cmp.setBtheta(arima.getBtheta());
+                cmp.setBd(arima.getBd());
             }
         }
     }
@@ -100,7 +101,7 @@ class TramoModelBuilder implements IModelBuilder {
         if (!regSpec.isUsed()) {
             return;
         }
-        Map<String, double[]> preadjustment = regSpec.getAllFixedCoefficients();
+        Map<String, double[]> preadjustment = regSpec.getFixedCoefficients();
         initializeCalendar(model, regSpec.getCalendar(), preadjustment);
         if (regSpec.getOutliersCount() > 0) {
             initializeOutliers(model, regSpec.getOutliers(), preadjustment);
@@ -168,7 +169,6 @@ class TramoModelBuilder implements IModelBuilder {
 
     private void initializeOutliers(ModelDescription model, IOutlier[] outliers, Map<String, double[]> preadjustment) {
         int freq = model.getAnnualFrequency();
-        IOutlier[] vars = new IOutlier[outliers.length];
         TransitoryChangeFactory tc = new TransitoryChangeFactory(spec.getOutliers().getDeltaTC());
         PeriodicOutlierFactory so = new PeriodicOutlierFactory(freq, false);
         for (int i = 0; i < outliers.length; ++i) {

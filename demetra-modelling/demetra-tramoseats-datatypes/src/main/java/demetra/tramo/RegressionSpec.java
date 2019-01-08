@@ -16,206 +16,106 @@
  */
 package demetra.tramo;
 
+import demetra.design.Development;
 import demetra.modelling.regression.InterventionVariable;
 import demetra.modelling.regression.Ramp;
 import demetra.modelling.regression.UserVariable;
-import demetra.util.Comparator;
-import java.util.ArrayList;
+import demetra.modelling.regression.IOutlier;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
-import javax.annotation.Nonnull;
-import demetra.modelling.regression.IOutlier;
 
 /**
  *
  * @author Jean Palate
  */
-public class RegressionSpec {
+@Development(status = Development.Status.Beta)
+@lombok.Data
+public final class RegressionSpec implements Cloneable {
 
-    private CalendarSpec calendar; 
-    private final ArrayList<IOutlier> outliers = new ArrayList<>();
-    private final ArrayList<Ramp> ramps = new ArrayList<>();
-    private final ArrayList<InterventionVariable> interventions = new ArrayList<>();
-    private final ArrayList<UserVariable> users = new ArrayList<>();
-     // the maps with the coefficients use short names...
-    private final Map<String, double[]> fcoeff = new LinkedHashMap<>();
-    private final Map<String, double[]> coeff = new LinkedHashMap<>();
-   
-    public RegressionSpec(){
+    private static final IOutlier[] NOOUTLIER = new IOutlier[0];
+    private static final Ramp[] NORAMP = new Ramp[0];
+    private static final InterventionVariable[] NOII = new InterventionVariable[0];
+    private static final UserVariable[] NOUSER = new UserVariable[0];
+
+    private CalendarSpec calendar;
+    private IOutlier[] outliers = NOOUTLIER;
+    private Ramp[] ramps = NORAMP;
+    private InterventionVariable[] interventionVariables = NOII;
+    private UserVariable[] userDefinedVariables = NOUSER;
+    // the maps with the coefficients use short names...
+    private Map<String, double[]> fixedCoefficients = new LinkedHashMap<>();
+    private Map<String, double[]> coefficients = new LinkedHashMap<>();
+    
+    private static final RegressionSpec DEFAULT=new RegressionSpec();
+
+    public RegressionSpec() {
         calendar = new CalendarSpec();
     }
 
-    public RegressionSpec(RegressionSpec other){
-        calendar=new CalendarSpec(other.calendar);
-        outliers.addAll(other.outliers);
-        ramps.addAll(other.ramps);
-        interventions.addAll(other.interventions);
-        users.addAll(other.users);
-        other.coeff.forEach(coeff::put);
-        other.fcoeff.forEach(fcoeff::put);
+    @Override
+    public RegressionSpec clone() {
+        try {
+            RegressionSpec c = (RegressionSpec) super.clone();
+            c.calendar = calendar.clone();
+            c.coefficients=new LinkedHashMap();
+            c.coefficients.putAll(coefficients);
+            c.fixedCoefficients=new LinkedHashMap();
+            c.fixedCoefficients.putAll(fixedCoefficients);
+            return c;
+        } catch (CloneNotSupportedException ex) {
+            throw new AssertionError();
+        }
     }
 
     public void reset() {
-        outliers.clear();
-        ramps.clear();
-        interventions.clear();
-        users.clear();
-        coeff.clear();
-        fcoeff.clear();
+        outliers = NOOUTLIER;
+        ramps = NORAMP;
+        interventionVariables = NOII;
+        userDefinedVariables = NOUSER;
+        coefficients.clear();
+        fixedCoefficients.clear();
     }
-    
-    
-    public Map<String, double[]> getAllFixedCoefficients() {
-//        checkFixedCoefficients();
-        return Collections.unmodifiableMap(fcoeff);
-    }
-
-    public Map<String, double[]> getAllCoefficients() {
-        return Collections.unmodifiableMap(coeff);
-    }
-
 
     public boolean isUsed() {
-        return calendar.isUsed() || !outliers.isEmpty()
-                || !ramps.isEmpty() || !interventions.isEmpty()
-                || !users.isEmpty();
-    }
-
-    public CalendarSpec getCalendar() {
-        return calendar;
-    }
-
-    public void setCalendar(@Nonnull CalendarSpec value) {
-        calendar = value;
-    }
-
-    public IOutlier[] getOutliers() {
-        return outliers.toArray(new IOutlier[outliers.size()]);
-    }
-
-    public void setOutliers(@Nonnull IOutlier[] value) {
-        outliers.clear();
-        Collections.addAll(outliers, value);
-    }
-
-    public UserVariable[] getUserDefinedVariables() {
-        return users.toArray(new UserVariable[users.size()]);
-    }
-
-    public void setUserDefinedVariables(@Nonnull UserVariable[] value) {
-        users.clear();
-        Collections.addAll(users, value);
-    }
-
-    public InterventionVariable[] getInterventionVariables() {
-        return interventions.toArray(new InterventionVariable[interventions.size()]);
-    }
-
-    public void setInterventionVariables(@Nonnull InterventionVariable[] value) {
-        Collections.addAll(interventions, value);
+        return calendar.isUsed() || outliers.length > 0
+                || ramps.length > 0 || interventionVariables.length > 0 || userDefinedVariables.length > 0;
     }
 
     public boolean isDefault() {
-        return calendar.isDefault() && users.isEmpty()
-                && outliers.isEmpty() && interventions.isEmpty();
-    }
-
-    public void add(UserVariable svar) {
-        users.add(svar);
-    }
-
-    public void add(IOutlier outlier) {
-        outliers.add(outlier);
-    }
-
-    public void add(InterventionVariable ivar) {
-        interventions.add(ivar);
-    }
-
-    public boolean contains(IOutlier outlier) {
-        return outliers.stream().anyMatch((def) -> (def.equals(outlier)));
-    }
-
-    public void clearUserDefinedVariables() {
-        users.clear();
+        return this.equals(DEFAULT);
     }
 
     public int getUserDefinedVariablesCount() {
-        return users.size();
+        return userDefinedVariables.length;
     }
 
     public UserVariable getUserDefinedVariable(int idx) {
-        return users.get(idx);
+        return userDefinedVariables[idx];
     }
 
-    public void clearOutliers() {
-        outliers.clear();
-    }
-
-    public int getOutliersCount() {
-        return outliers.size();
+     public int getOutliersCount() {
+        return outliers.length;
     }
 
     public IOutlier getOutlier(int idx) {
-        return outliers.get(idx);
-    }
-
-    public void clearInterventionVariables() {
-        interventions.clear();
+        return outliers[idx];
     }
 
     public int getInterventionVariablesCount() {
-        return interventions.size();
+        return interventionVariables.length;
     }
 
     public InterventionVariable getInterventionVariable(int idx) {
-        return interventions.get(idx);
-    }
-
-    public void clearRamps() {
-        ramps.clear();
+        return interventionVariables[idx];
     }
 
     public int getRampsCount() {
-        return ramps.size();
+        return ramps.length;
     }
 
     public Ramp getRamp(int idx) {
-        return ramps.get(idx);
+        return ramps[idx];
     }
 
-    public void add(Ramp rp) {
-        ramps.add(rp);
-    }
-
-    public Ramp[] getRamps() {
-        return ramps.toArray(new Ramp[ramps.size()]);
-    }
-
-    public void setRamps(@Nonnull Ramp[] value) {
-        ramps.clear();
-        Collections.addAll(ramps, value);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof RegressionSpec && equals((RegressionSpec) obj));
-    }
-
-    private boolean equals(RegressionSpec other) {
-        return Comparator.equals(interventions, other.interventions)
-                && Comparator.equals(users, other.users)
-                && Comparator.equals(ramps, other.ramps)
-                && Comparator.equals(outliers, other.outliers)
-                && Objects.equals(calendar, other.calendar);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 47 * hash + calendar.hashCode();
-        return hash;
-    }
 }

@@ -17,98 +17,46 @@
 package demetra.tramo;
 
 import demetra.design.Development;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
-public class CalendarSpec {
+@Development(status = Development.Status.Beta)
+@lombok.Data
+public final class CalendarSpec implements Cloneable {
 
     public static final String TD = "td", EASTER = "easter";
 
-    private TradingDaysSpec td;
-    private EasterSpec easter = new EasterSpec();
+    @lombok.NonNull
+    private TradingDaysSpec tradingDays;
+
+    @lombok.NonNull
+    private EasterSpec easter;
 
     public CalendarSpec() {
-        td = new TradingDaysSpec();
+        tradingDays = new TradingDaysSpec();
         easter = new EasterSpec();
     }
 
-    public CalendarSpec(CalendarSpec other) {
-        td = new TradingDaysSpec(other.td);
-        easter = new EasterSpec(other.easter);
-    }
-
-    public TradingDaysSpec getTradingDays() {
-        return td;
-    }
-
-    public void setTradingDays(TradingDaysSpec spec) {
-        if (spec == null) {
-            throw new java.lang.IllegalArgumentException(TD);
-        }
-        td = spec;
-    }
-
-    public EasterSpec getEaster() {
-        return easter;
-    }
-
-    public void setEaster(EasterSpec spec) {
-        if (spec == null) {
-            throw new java.lang.IllegalArgumentException(EASTER);
-        }
-        easter = spec;
-    }
-
-    public boolean isUsed() {
-        return easter.isUsed() || td.isUsed();
-    }
-
-    public boolean isDefault() {
-        return easter.isDefault()
-                && td.isDefault();
-    }
-
-//        public ICalendarProvider Provider(TSContext context)
-//        {
-//            ICalendarProvider provider = null;
-//            if (context != null && m_holidays != null)
-//                provider = context.Calendars[m_holidays];
-//            if (provider == null)
-//                provider = new DefaultCalendarProvider();
-//            return provider;
-//        }
     @Override
     public CalendarSpec clone() {
         try {
-            CalendarSpec spec = (CalendarSpec) super.clone();
-            spec.td = td.clone();
-            spec.easter = easter.clone();
-            return spec;
+            CalendarSpec c = (CalendarSpec) super.clone();
+            c.tradingDays = tradingDays.clone();
+            c.easter = easter.clone();
+            return c;
         } catch (CloneNotSupportedException ex) {
             throw new AssertionError();
         }
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof CalendarSpec && equals((CalendarSpec) obj));
+    public boolean isUsed() {
+        return easter.isUsed() || tradingDays.isUsed();
     }
 
-    private boolean equals(CalendarSpec other) {
-        return Objects.equals(easter, other.easter) && Objects.equals(td, other.td);
+    public boolean isDefault() {
+        return easter.isDefault()
+                && tradingDays.isDefault();
     }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 61 * hash + td.hashCode();
-        hash = 61 * hash + easter.hashCode();
-        return hash;
-    }
-
 }

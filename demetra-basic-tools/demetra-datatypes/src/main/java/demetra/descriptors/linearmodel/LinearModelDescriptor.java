@@ -19,7 +19,6 @@ package demetra.descriptors.linearmodel;
 import demetra.information.InformationMapping;
 import demetra.maths.MatrixType;
 import demetra.linearmodel.LinearModelType;
-import demetra.linearmodel.LinearModelType;
 
 /**
  *
