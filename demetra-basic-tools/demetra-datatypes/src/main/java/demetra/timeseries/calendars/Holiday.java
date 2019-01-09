@@ -18,8 +18,6 @@ package demetra.timeseries.calendars;
 
 import demetra.timeseries.ValidityPeriod;
 import demetra.design.Development;
-import demetra.timeseries.TsUnit;
-import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 
 /**
@@ -51,12 +49,12 @@ public class Holiday {
         return validityPeriod != null && validityPeriod.isEndSpecified();
     }
 
-    public TsPeriod getStart() {
-        return TsPeriod.of(TsUnit.DAY, validityPeriod == null ? LocalDate.MIN : validityPeriod.getStart().toLocalDate());
+    public LocalDate getStart() {
+        return validityPeriod == null ? LocalDate.MIN : validityPeriod.getStart().toLocalDate();
     }
 
-    public TsPeriod getEnd() {
-        return TsPeriod.of(TsUnit.DAY, validityPeriod == null ? LocalDate.MAX : validityPeriod.getEnd().toLocalDate());
+    public LocalDate getEnd() {
+        return validityPeriod == null ? LocalDate.MAX : validityPeriod.getEnd().toLocalDate();
     }
 
 }

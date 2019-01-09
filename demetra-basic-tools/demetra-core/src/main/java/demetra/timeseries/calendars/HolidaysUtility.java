@@ -18,98 +18,24 @@ package demetra.timeseries.calendars;
 
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import demetra.util.Comparator;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.DAYS;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class Holidays {
+@lombok.experimental.UtilityClass
+public class HolidaysUtility {
 
-    private final List<Holiday> holidays = new ArrayList<>();
-    private final boolean meanCorrection;
-
-    public Holidays() {
-        this.meanCorrection = true;
-    }
-
-    public Holidays(boolean mean) {
-        this.meanCorrection = mean;
-    }
-
-    public boolean add(IHoliday fday) {
-        Holiday ev = new Holiday(fday);
-        if (holidays.contains(ev)) {
-            return false;
-        } else {
-            holidays.add(ev);
-            return true;
-        }
-    }
-
-    public int getCount() {
-        return holidays.size();
-    }
-
-    public boolean add(Holiday sd) {
-        for (Holiday ev : holidays) {
-            if (ev.equals(sd)) {
-                return false;
-            }
-        }
-        holidays.add(sd);
-        return true;
-    }
-
-    public void addAll(Collection<Holiday> c) {
-        for (Holiday nev : c) {
-            boolean used = false;
-            for (Holiday ev : holidays) {
-                if (ev.equals(nev)) {
-                    used = true;
-                    break;
-                }
-            }
-            if (!used) {
-                holidays.add(nev);
-            }
-        }
-    }
-
-    public Holiday get(int idx) {
-        return holidays.get(idx);
-    }
-
-    public void clear() {
-        holidays.clear();
-    }
-
-    public Holiday[] toArray() {
-        return holidays.toArray(new Holiday[holidays.size()]);
-    }
-
-    public Collection<Holiday> elements() {
-        return Collections.unmodifiableList(holidays);
-    }
-
-    public boolean contentEquals(Holidays other) {
-        return meanCorrection == other.meanCorrection && Comparator.equals(holidays, other.holidays);
-    }
-
-    public void fillDays(final Matrix D, final LocalDate start, final boolean skipSundays) {
+    
+    public void fillDays(Holiday[] holidays, final Matrix D, final LocalDate start, final boolean skipSundays) {
         LocalDate end = start.plusDays(D.getRowsCount());
         int col = 0;
-        for (Holiday item : elements()) {
+        for (Holiday item : holidays) {
             Iterator<HolidayInfo> iter = item.getDay().getIterable(start, end).iterator();
             while (iter.hasNext()) {
                 LocalDate date = iter.next().getDay();
@@ -124,12 +50,12 @@ public class Holidays {
         }
     }
 
-    public void fillPreviousWorkingDays(final Matrix D, final LocalDate start, final int del) {
+    public void fillPreviousWorkingDays(Holiday[] holidays, final Matrix D, final LocalDate start, final int del) {
         int n = D.getRowsCount();
         LocalDate nstart = start.plusDays(del);
         LocalDate end = start.plusDays(n);
         int col = 0;
-        for (Holiday item : elements()) {
+        for (Holiday item : holidays) {
             Iterator<HolidayInfo> iter = item.getDay().getIterable(nstart, end).iterator();
             while (iter.hasNext()) {
                 LocalDate date = iter.next().getDay().minusDays(del);
@@ -145,12 +71,12 @@ public class Holidays {
         }
     }
 
-    public void fillNextWorkingDays(final Matrix D, final LocalDate start, final int del) {
+    public void fillNextWorkingDays(Holiday[] holidays, final Matrix D, final LocalDate start, final int del) {
         int n = D.getRowsCount();
         LocalDate nstart = start.minusDays(del);
         LocalDate end = nstart.plusDays(n);
         int col = 0;
-        for (Holiday item : elements()) {
+        for (Holiday item : holidays) {
             Iterator<HolidayInfo> iter = item.getDay().getIterable(nstart, end).iterator();
             while (iter.hasNext()) {
                 LocalDate date = iter.next().getDay().plusDays(del);

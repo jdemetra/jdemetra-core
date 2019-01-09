@@ -17,12 +17,15 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
+import demetra.maths.MatrixType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 
 /**
@@ -184,4 +187,83 @@ public class CalendarUtility {
      */
     private final int[] CUMULATEDMONTHDAYS = {0, 31, 59, 90, 120, 151,
         181, 212, 243, 273, 304, 334, 365};
+    
+        /**
+     * Gets the number of days corresponding to the holidays
+     *
+     * @param holidays
+     * @param domain
+     * @return The (weighted) number of holidays for each period of the domain.
+     * The different columns of the matrix correspond to Mondays...Sundays
+     */
+    public MatrixType holidays(Holiday[] holidays, TsDomain domain) {
+        int n = domain.getLength();
+        double[] h = new double[7 * n];
+
+        LocalDate dstart = domain.start().toLocalDate(), dend = domain.end().toLocalDate();
+        Map<LocalDate, Double> used = new HashMap<>();
+        for (int i = 0; i < holidays.length; ++i) {
+            Holiday cur = holidays[i];
+            LocalDate start = cur.getStart(), end = cur.getEnd();
+            if (start.isBefore(dstart)) {
+                start = dstart;
+            }
+            if (end.isAfter(dend)) {
+                end = dend;
+            }
+            if (start.isBefore(end)) {
+                IHoliday hol = cur.getDay();
+                for (HolidayInfo info : hol.getIterable(start, end)) {
+                    LocalDate curday = info.getDay();
+                    Double Weight = used.get(curday);
+                    double weight = hol.getWeight();
+                    if (Weight == null || weight > Weight) {
+                        used.put(curday, weight);
+                        DayOfWeek w = info.getDayOfWeek();
+                        int pos = domain.indexOf(curday.atStartOfDay());
+                        if (pos >= 0) {
+                            int col = w.getValue() - 1;
+                            h[n * col + pos] += Weight == null ? weight : weight - Weight;
+                        }
+                    }
+                }
+            }
+        }
+        return MatrixType.ofInternal(h, n, 7);
+    }
+
+    /**
+     * Computes the long term mean effects
+     * @param holidays
+     * @param freq
+     * @return Returns an array of "annualFrequency" length, corresponding to each period in one year (for instance, Jan, Feb..., Dec).
+     * Each item of the result will contain 7 elements, corresponding to the long term average for Mondays...Sundays
+     * The sum of the longTermMean must be equal to the sum of the weights of the different holidays.
+     * Some element of the array can be null, which means that there are no effect for the considered period.
+     */
+    public double[][] longTermMean(Holiday[] holidays, int freq) {
+        double[][] rslt = null;
+        for (int k = 0; k < holidays.length; ++k) {
+            double[][] cur = holidays[k].getDay().longTermMean(freq);
+            if (cur != null) {
+                if (rslt == null) {
+                    rslt = cur;
+                } else {
+                    for (int i = 0; i < cur.length; ++i) {
+                        if (cur[i] != null) {
+                            if (rslt[i] == null) {
+                                rslt[i] = cur[i];
+                            } else {
+                                for (int j = 0; j < 7; ++j) {
+                                    rslt[i][j] += cur[i][j];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return rslt;
+    }
+
 }

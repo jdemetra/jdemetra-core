@@ -22,8 +22,6 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
 import demetra.data.DoubleCell;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixWindow;
@@ -48,62 +46,62 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         int period;
     }
 
-    
     @lombok.Value
     private static class Data {
 
         TsPeriod start;
         Matrix data;
-        
+
     }
 
-    private static final Map<Entry, Data> cache = new HashMap<>();
+    private static final Map<Entry, Data> CACHE = new HashMap<>();
 
     private static Matrix dataFor(DayClustering clustering, TsDomain domain) {
-        synchronized (cache) {
-            TsPeriod start=domain.getStartPeriod();
-            Entry entry=new Entry(clustering, domain.getAnnualFrequency());
-            Data rslt = cache.get(entry);
-            if (rslt == null){
+        synchronized (CACHE) {
+            TsPeriod start = domain.getStartPeriod();
+            Entry entry = new Entry(clustering, domain.getAnnualFrequency());
+            Data rslt = CACHE.get(entry);
+            if (rslt == null) {
                 Matrix m = generateContrasts(clustering, domain);
-                cache.put(entry, new Data(start, m));
+                CACHE.put(entry, new Data(start, m));
                 return m;
-            }else{
-                int beg=rslt.start.until(start);
-                int n=domain.getLength();
-                int ng=rslt.data.getColumnsCount();
-                int end=beg+n;
-                if (beg>= 0 && end<= rslt.data.getRowsCount()){
+            } else {
+                int beg = rslt.start.until(start);
+                int n = domain.getLength();
+                int ng = rslt.data.getColumnsCount();
+                int end = beg + n;
+                if (beg >= 0 && end <= rslt.data.getRowsCount()) {
                     return rslt.data.extract(beg, n, 0, ng);
-                }else{
-                    int n0=0, n1=0;
+                } else {
+                    int n0 = 0, n1 = 0;
                     TsPeriod mstart;
-                    int ncur=rslt.data.getRowsCount();
-                    if (beg <0){
-                        n0=-beg;
-                        beg=0;
-                        mstart=start;
-                    }else
-                        mstart=rslt.start;
-                    if (end > ncur){
-                        n1=end-ncur;
+                    int ncur = rslt.data.getRowsCount();
+                    if (beg < 0) {
+                        n0 = -beg;
+                        beg = 0;
+                        mstart = start;
+                    } else {
+                        mstart = rslt.start;
                     }
-                    int nn=n0+n1+ncur;
-                    Matrix m=Matrix.make(nn, ng);
-                    MatrixWindow mw=m.top(0);
-                    if (n0>0){
-                        TsDomain d0=TsDomain.of(start, n0);
+                    if (end > ncur) {
+                        n1 = end - ncur;
+                    }
+                    int nn = n0 + n1 + ncur;
+                    Matrix m = Matrix.make(nn, ng);
+                    MatrixWindow mw = m.top(0);
+                    if (n0 > 0) {
+                        TsDomain d0 = TsDomain.of(start, n0);
                         mw.vnext(n0);
                         mw.copy(generateContrasts(clustering, d0));
                     }
                     mw.vnext(ncur);
                     mw.copy(rslt.data);
-                    if (n1>0){
-                        TsDomain d1=TsDomain.of(mstart.plus(n0+ncur), n1);
+                    if (n1 > 0) {
+                        TsDomain d1 = TsDomain.of(mstart.plus(n0 + ncur), n1);
                         mw.vnext(n1);
                         mw.copy(generateContrasts(clustering, d1));
                     }
-                    cache.put(entry, new Data(mstart, m));
+                    CACHE.put(entry, new Data(mstart, m));
                     return m.extract(beg, n, 0, ng);
                 }
             }
@@ -143,10 +141,10 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
 
     private static final double[] MDAYS = new double[]{31.0, 28.25, 31.0, 30.0, 31.0, 30.0, 31.0, 31.0, 30.0, 31.0, 30.0, 31.0};
 
-    private void dataNoContrast(DayClustering clustering, boolean normalized, 
+    private void dataNoContrast(DayClustering clustering, boolean normalized,
             TsPeriod start, Matrix buffer) {
         int n = buffer.getRowsCount();
-        TsDomain domain=TsDomain.of(start, n);
+        TsDomain domain = TsDomain.of(start, n);
         int[][] days = tdCount(domain);
         double[] mdays = meanDays(domain);
 
@@ -177,7 +175,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
     }
 
     private void dataContrast(DayClustering clustering, TsPeriod start, Matrix buffer) {
-        Matrix m=dataFor(clustering, TsDomain.of(start, buffer.getRowsCount()));
+        Matrix m = dataFor(clustering, TsDomain.of(start, buffer.getRowsCount()));
         buffer.copy(m);
     }
 
@@ -216,6 +214,90 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         return data;
     }
 
+    public static Matrix generateContrasts(DayClustering clustering, Matrix days) {
+        Matrix m = Matrix.make(days.getRowsCount(), clustering.getGroupsCount() - 1);
+        fillContrasts(clustering, days, m);
+        return m;
+    }
+
+    public static Matrix fillContrasts(DayClustering clustering, Matrix days, Matrix data) {
+        int n = days.getRowsCount();
+        int[][] groups = clustering.allPositions();
+        rotate(groups);
+        int ng = groups.length - 1;
+        int[] cgroup = groups[ng];
+        DoubleCell[] cells = new DoubleCell[ng];
+        for (int i = 0; i < cells.length; ++i) {
+            cells[i] = data.column(i).cells();
+        }
+        for (int i = 0; i < n; ++i) {
+            DataBlock rdays = days.row(i);
+            double csum = rdays.get(cgroup[0]);
+            int cnp = cgroup.length;
+            for (int ip = 1; ip < cnp; ++ip) {
+                csum += rdays.get(cgroup[ip]);
+            }
+            csum /= cnp;
+            for (int ig = 0; ig < ng; ++ig) {
+                int[] group = groups[ig];
+                double sum = rdays.get(group[0]);
+                int np = group.length;
+                for (int ip = 1; ip < np; ++ip) {
+                    sum += rdays.get(group[ip]);
+                }
+                double dsum = sum;
+                double val = dsum - np * csum;
+                double ival = Math.round(val);
+                if (Math.abs(val - ival) < 1e-9) {
+                    val = ival;
+                }
+                cells[ig].setAndNext(val);
+            }
+        }
+        return data;
+    }
+
+    public static Matrix generateNoContrast(DayClustering clustering, TsPeriod start,
+            Matrix days) {
+        Matrix m = Matrix.make(days.getRowsCount(), clustering.getGroupsCount());
+        fillNoContrasts(clustering, start, days, m);
+        return m;
+    }
+
+    public static Matrix fillNoContrasts(DayClustering clustering, TsPeriod start, Matrix days, Matrix data) {
+        int n = days.getRowsCount();
+        double[] mdays = null;
+        if (start != null) {
+            TsDomain domain = TsDomain.of(start, n);
+            mdays = meanDays(domain);
+        }
+        int[][] groups = clustering.allPositions();
+        int ng = groups.length;
+        DoubleCell[] cells = new DoubleCell[ng];
+        for (int i = 0; i < cells.length; ++i) {
+            cells[i] = data.column(i).cells();
+        }
+        for (int i = 0; i < n; ++i) {
+            DataBlock rdays = days.row(i);
+            for (int ig = 0; ig < ng; ++ig) {
+                int[] group = groups[ig];
+                double sum = rdays.get(group[0]);
+                int np = group.length;
+                for (int ip = 1; ip < np; ++ip) {
+                    sum += rdays.get(group[ip]);
+                }
+                double dsum = sum;
+                if (mdays != null) {
+                    dsum = dsum / np - mdays[i];
+                } else {
+                    dsum -= np * mdays[i];
+                }
+
+                cells[ig].setAndNext(dsum);
+            }
+        }
+        return data;
+    }
 
     private static void rotate(int[][] groups) {
         // we put the contrast group at the end
@@ -265,6 +347,14 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
             }
         }
         return rslt;
+    }
+
+    public static void fillTdMatrix(TsPeriod start, Matrix mtd) {
+        int[][] td = tdCount(TsDomain.of(start, mtd.getRowsCount()));
+        for (int i = 0; i < 7; ++i) {
+            int[] curtd = td[i];
+            mtd.column(i).set(k -> curtd[k]);
+        }
     }
 
     public static double[] meanDays(TsDomain domain) {

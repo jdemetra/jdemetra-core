@@ -75,14 +75,14 @@ public class FixedDay implements IHoliday {
     }
 
     @Override
-    public double[][] getLongTermMeanEffect(int freq) {
+    public double[][] longTermMean(int freq) {
         int c = 12 / freq;
-        int p = month / c;
+        int p = (month-1) / c;
         double[] m = new double[7];
-        for (int i = 0; i < 6; ++i) {
+        
+        for (int i = 0; i < 7; ++i) {
             m[i] = weight / 7;
         }
-        m[6] = -weight * 6 / 7;
 
         double[][] rslt = new double[freq][];
         rslt[p] = m;

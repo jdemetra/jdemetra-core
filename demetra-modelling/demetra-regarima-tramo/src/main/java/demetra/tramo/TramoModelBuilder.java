@@ -26,6 +26,8 @@ import demetra.modelling.regression.AdditiveOutlier;
 import demetra.modelling.regression.AdditiveOutlierFactory;
 import demetra.modelling.regression.EasterVariable;
 import demetra.modelling.regression.GenericTradingDaysVariable;
+import demetra.modelling.regression.HolidaysCorrectedTradingDays;
+import demetra.modelling.regression.HolidaysCorrectionFactory;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.JulianEasterVariable;
 import demetra.modelling.regression.LengthOfPeriod;
@@ -151,8 +153,8 @@ class TramoModelBuilder implements IModelBuilder {
         }
         if (td.isStockTradingDays()) {
             initializeStockTradingDays(model, td, preadjustment);
-//        } else if (td.getHolidays() != null) {
-//            initializeHolidays(model, td, preadjustment);
+        } else if (td.getHolidays() != null) {
+            initializeHolidays(model, td, preadjustment);
         } else if (td.getUserVariables() != null) {
             initializeUserTradingDays(model, td, preadjustment);
         } else {
@@ -254,37 +256,11 @@ class TramoModelBuilder implements IModelBuilder {
 //        }
 //    }
 //
-//    private void initializeHolidays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
-//        IGregorianCalendarProvider cal = context.getGregorianCalendars().get(td.getHolidays());
-//        if (cal == null) {
-//            return;
-//        }
-//        TradingDaysType tdType = td.getTradingDaysType();
-//        if (tdType != TradingDaysType.None) {
-//            GregorianCalendarVariables var = new GregorianCalendarVariables(cal, tdType);
-//            String sname = ITsVariable.shortName(var.getName());
-//            if (preadjustment.containsKey(sname)) {
-//                PreadjustmentVariable pvar = PreadjustmentVariable.calendarVariable(var, preadjustment.get(sname));
-//                model.addPreadjustment(pvar);
-//            } else {
-//                Variable tvar = Variable.calendarVariable(var,
-//                        td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
-//                model.addVariable(tvar);
-//            }
-//        }
-//        if (td.isLeapYear()) {
-//            LeapYearVariable lp = new LeapYearVariable(LengthOfPeriodType.LeapYear);
-//            String sname = ITsVariable.shortName(lp.getName());
-//            if (preadjustment.containsKey(sname)) {
-//                PreadjustmentVariable pvar = PreadjustmentVariable.calendarVariable(lp, preadjustment.get(sname));
-//                model.addPreadjustment(pvar);
-//            } else {
-//                Variable lvar = Variable.calendarVariable(lp,
-//                        td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
-//                model.addVariable(lvar);
-//            }
-//        }
-//    }
+    private void initializeHolidays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
+        add(model, holidays(td, context), "td", preadjustment);
+        add(model, leapYear(td), "lp", preadjustment);
+    }
+    
     private void initializeUserTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
         add(model, userTradingDays(td, context), "usertd", preadjustment);
     }
@@ -322,8 +298,8 @@ class TramoModelBuilder implements IModelBuilder {
         }
         if (tdspec.isStockTradingDays()) {
             return new StockTradingDays(tdspec.getStockTradingDays());
-//        } else if (tdspec.getHolidays() != null) {
-//            initializeHolidays(model, td, preadjustment);
+        } else if (tdspec.getHolidays() != null) {
+            return holidays(tdspec, context);
         } else if (tdspec.getUserVariables() != null) {
             return userTradingDays(tdspec, context);
         } else {
@@ -338,8 +314,10 @@ class TramoModelBuilder implements IModelBuilder {
         }
         if (tdspec.isStockTradingDays()) {
             return null;
-//        } else if (tdspec.getHolidays() != null) {
-//            initializeHolidays(model, td, preadjustment);
+        } else if (tdspec.getHolidays() != null) {
+            GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(tdspec.getHolidays(), context.getCalendars());
+            return new HolidaysCorrectedTradingDays(gtd, corrector);
         } else if (tdspec.getUserVariables() != null) {
             return null;
         } else {
@@ -358,6 +336,19 @@ class TramoModelBuilder implements IModelBuilder {
         DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return new GenericTradingDaysVariable(gtd);
+    }
+
+    private static ITradingDaysVariable holidays(TradingDaysSpec td, ModellingContext context) {
+        if (td.getTradingDaysType() == TradingDaysType.None) {
+            return null;
+        }
+        TradingDaysType tdType = td.getTradingDaysType();
+        if (td.isAutomatic())
+            tdType=TradingDaysType.WorkingDays;
+        DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
+        GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars());
+            return new HolidaysCorrectedTradingDays(gtd, corrector);
     }
 
     private static ITradingDaysVariable userTradingDays(TradingDaysSpec td, ModellingContext context) {

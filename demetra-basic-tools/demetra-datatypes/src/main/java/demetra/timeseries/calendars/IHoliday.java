@@ -44,7 +44,7 @@ public interface IHoliday {
      * the second dimension identifies the day (from Monday to Sunday).
      * Could be null or could contain null arrays.
      */
-    double[][] getLongTermMeanEffect(int annualFrequency);
+    double[][] longTermMean(int annualFrequency);
     
     double getWeight();
 }

@@ -54,6 +54,7 @@ public class Regression {
             // Trading Days
             FACTORIES.put(LengthOfPeriod.class, LPFactory.FACTORY);
             FACTORIES.put(GenericTradingDaysVariable.class, GenericTradingDaysFactory.FACTORY);
+            FACTORIES.put(HolidaysCorrectedTradingDays.class, HolidaysCorrectionFactory.FACTORY);
             FACTORIES.put(StockTradingDays.class, StockTDFactory.FACTORY);
 
             // Moving holidays

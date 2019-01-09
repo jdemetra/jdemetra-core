@@ -16,13 +16,17 @@ import demetra.maths.matrices.Matrix;
 import demetra.regarima.RegArimaEstimation;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
-import demetra.timeseries.calendars.Holidays;
+import demetra.timeseries.calendars.Holiday;
+import demetra.timeseries.calendars.HolidaysUtility;
+import demetra.timeseries.calendars.IHoliday;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -41,9 +45,9 @@ public class PeriodicAirlineProcessorTest {
     public void testDaily() throws URISyntaxException, IOException {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/edf.txt").toURI();
         MatrixType edf = MatrixSerializer.read(new File(uri));
-        Holidays france = france();
-        Matrix hol = Matrix.make(edf.getRowsCount(), france.getCount());
-        france.fillDays(hol, LocalDate.of(1996, 1, 1), false);
+        Holiday[] france = france();
+        Matrix hol = Matrix.make(edf.getRowsCount(), france.length);
+        HolidaysUtility.fillDays(france, hol, LocalDate.of(1996, 1, 1), false);
         RegArimaEstimation<ArimaModel> rslt = PeriodicAirlineProcessor.process(Doubles.fastFn(edf.column(0), z->Math.log(z)), hol, new double[]{7, 365.25}, 1e-12);
         assertTrue(rslt != null);
         ConcentratedLikelihood cll = rslt.getConcentratedLikelihood();
@@ -61,7 +65,7 @@ public class PeriodicAirlineProcessorTest {
         double ll = PeriodicAirlineProcessor.process(DoubleSequence.of(WeeklyData.US_CLAIMS), null, 365.25 / 7, 1e-9).getConcentratedLikelihood().logLikelihood();
     }
 
-    private static void addDefault(Holidays holidays) {
+    private static void addDefault(List<IHoliday> holidays) {
         holidays.add(FixedDay.NEWYEAR);
         holidays.add(FixedDay.MAYDAY);
         holidays.add(FixedDay.ASSUMPTION);
@@ -72,12 +76,12 @@ public class PeriodicAirlineProcessorTest {
         holidays.add(EasterRelatedDay.WHITMONDAY);
     }
 
-    public static Holidays france() {
-        Holidays holidays = new Holidays();
+    public static Holiday[] france() {
+        List<IHoliday> holidays = new ArrayList<>();
         addDefault(holidays);
         holidays.add(new FixedDay(5, 8));
         holidays.add(new FixedDay(7, 14));
         holidays.add(FixedDay.ARMISTICE);
-        return holidays;
+        return holidays.stream().map(h->new Holiday(h)).toArray(i->new Holiday[i]);
     }
 }

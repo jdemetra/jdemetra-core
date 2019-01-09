@@ -18,12 +18,20 @@ package demetra.tramo;
 
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
+import demetra.modelling.regression.ModellingContext;
 import demetra.regarima.regular.PreprocessingModel;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.calendars.Calendar;
+import demetra.timeseries.calendars.EasterRelatedDay;
+import demetra.timeseries.calendars.FixedDay;
+import demetra.timeseries.calendars.Holiday;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
-import static org.junit.Assert.assertTrue;
+import ec.tstoolkit.timeseries.Month;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -32,6 +40,38 @@ import org.junit.Test;
 public class TramoProcessorTest {
 
     private final double[] data, datamissing;
+    public static final Calendar france;
+    public static final ec.tstoolkit.timeseries.calendars.NationalCalendar ofrance;
+
+    static {
+        List<Holiday> holidays = new ArrayList<>();
+        holidays.add(new Holiday(new FixedDay(7, 14)));
+        holidays.add(new Holiday(new FixedDay(5, 8)));
+        holidays.add(new Holiday(FixedDay.ALLSAINTSDAY));
+        holidays.add(new Holiday(FixedDay.ARMISTICE));
+        holidays.add(new Holiday(FixedDay.ASSUMPTION));
+        holidays.add(new Holiday(FixedDay.CHRISTMAS));
+        holidays.add(new Holiday(FixedDay.MAYDAY));
+        holidays.add(new Holiday(FixedDay.NEWYEAR));
+        holidays.add(new Holiday(EasterRelatedDay.ASCENSION));
+        holidays.add(new Holiday(EasterRelatedDay.EASTERMONDAY));
+        holidays.add(new Holiday(EasterRelatedDay.WHITMONDAY));
+
+        france = new Calendar(holidays.toArray(new Holiday[holidays.size()]), true);
+
+        ofrance = new ec.tstoolkit.timeseries.calendars.NationalCalendar();
+        ofrance.add(new ec.tstoolkit.timeseries.calendars.FixedDay(13, Month.July));
+        ofrance.add(new ec.tstoolkit.timeseries.calendars.FixedDay(7, Month.May));
+        ofrance.add(new ec.tstoolkit.timeseries.calendars.FixedDay(10, Month.November));
+        ofrance.add(ec.tstoolkit.timeseries.calendars.FixedDay.AllSaintsDay);
+        ofrance.add(ec.tstoolkit.timeseries.calendars.FixedDay.Assumption);
+        ofrance.add(ec.tstoolkit.timeseries.calendars.FixedDay.Christmas);
+        ofrance.add(ec.tstoolkit.timeseries.calendars.FixedDay.MayDay);
+        ofrance.add(ec.tstoolkit.timeseries.calendars.FixedDay.NewYear);
+        ofrance.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.Ascension);
+        ofrance.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.EasterMonday);
+        ofrance.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.PentecostMonday);
+    }
 
     public TramoProcessorTest() {
         data = Data.PROD.clone();
@@ -95,6 +135,43 @@ public class TramoProcessorTest {
         }
 //        System.out.println(n);
         assertTrue(n > .9 * all.length);
+    }
+
+    @Test
+    public void testInseeFullc() {
+        TsData[] all = Data.insee();
+        TramoSpec spec = TramoSpec.TRfull.clone();
+        ModellingContext context=new ModellingContext();
+        context.getCalendars().set("france", france);
+        spec.getRegression().getCalendar().getTradingDays().setHolidays("france");
+        TramoProcessor processor = TramoProcessor.of(spec, context);
+        
+        ec.tstoolkit.algorithm.ProcessingContext ocontext=new ec.tstoolkit.algorithm.ProcessingContext();
+        ocontext.getGregorianCalendars().set("france", new ec.tstoolkit.timeseries.calendars.NationalCalendarProvider(ofrance));
+        ec.tstoolkit.modelling.arima.tramo.TramoSpecification ospec=ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.clone();
+        ospec.getRegression().getCalendar().getTradingDays().setHolidays("france");
+        IPreprocessor oprocessor = ospec.build(ocontext);
+        int n = 0;
+        for (int i = 0; i < all.length; ++i) {
+            PreprocessingModel rslt = processor.process(all[i], null);
+            TsPeriod start = all[i].getStart();
+            ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
+            ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+                    - orslt.estimation.getStatistics().adjustedLogLikelihood;
+            if (Math.abs(del) < 1e-3) {
+                ++n;
+            }
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+        }
+//        System.out.println(n);
+
+// The old implementation was bugged. 
+        assertTrue(n > .6 * all.length);
     }
 
     @Test

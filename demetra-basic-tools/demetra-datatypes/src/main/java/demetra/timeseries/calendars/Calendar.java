@@ -14,9 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.util;
+package demetra.timeseries.calendars;
 
 import demetra.design.Development;
+import demetra.maths.MatrixType;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
 
 /**
  *
@@ -24,19 +27,13 @@ import demetra.design.Development;
  */
 @Development(status = Development.Status.Alpha)
 @lombok.Value
-public class WeightedItem<T> {
+public class Calendar implements CalendarDefinition {
 
-    /**
-     *
-     */
-    private T item;
-    /**
-     *
-     */
-    private double weight;
+    @lombok.NonNull
+    private Holiday[] holidays;
 
-    public WeightedItem<T> reweight(double nw) {
-        return new WeightedItem<>(item, nw);
-    }
+    private boolean meanCorrection;
+
+    public static final Calendar DEFAULT = new Calendar(new Holiday[0], false);
 
 }

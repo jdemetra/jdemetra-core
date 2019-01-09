@@ -164,12 +164,12 @@ public class EasterRelatedDay implements IHoliday {
     // 31+28+21=80, 31+28+31=90
 
     @Override
-    public double[][] getLongTermMeanEffect(int freq) {
+    public double[][] longTermMean(int freq) {
         // week day
 
         int w = offset % 7;
         if (w == 0) {
-            return null;
+            w=7; // Sunday
         }
         if (w < 0) {
             w += 7;
@@ -208,7 +208,6 @@ public class EasterRelatedDay implements IHoliday {
                     x += probEaster(j - d0);
                 }
                 m[w] = x * weight;
-                m[6] = -m[w];
                 rslt[i] = m;
             }
             // update c0, c1;

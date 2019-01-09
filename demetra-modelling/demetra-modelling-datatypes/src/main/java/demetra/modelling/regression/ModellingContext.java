@@ -19,6 +19,7 @@ package demetra.modelling.regression;
 
 import demetra.information.InformationSet;
 import demetra.timeseries.TsDataSupplier;
+import demetra.timeseries.calendars.CalendarManager;
 import demetra.util.DefaultNameValidator;
 import demetra.util.INameValidator;
 import demetra.util.NameManager;
@@ -27,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import demetra.timeseries.calendars.CalendarDefinition;
 
 /**
  *
@@ -42,9 +44,13 @@ public class ModellingContext  {
 
     public ModellingContext() {
         map.put(TsSuppliers.class, new NameManager(TsSuppliers.class, "Variables_", new DefaultNameValidator(".")));
+        map.put(CalendarDefinition.class, new CalendarManager());
+    }
+ 
+    public CalendarManager getCalendars() {
+        return (CalendarManager) map.get(CalendarDefinition.class);
     }
 
- 
     public NameManager<TsSuppliers> getTsVariableManagers() {
         return map.get(TsSuppliers.class);
     }

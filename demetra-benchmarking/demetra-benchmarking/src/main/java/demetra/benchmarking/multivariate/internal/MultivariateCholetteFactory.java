@@ -148,8 +148,8 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
                 cnt = cnt.expand(inputs.keySet());
             }
             for (WeightedItem<String> ws : cnt.components) {
-                if (!inputs.containsKey(ws.item)) {
-                    throw new IllegalArgumentException("Invalid contemporaneous constraint: " + ws.item);
+                if (!inputs.containsKey(ws.getItem())) {
+                    throw new IllegalArgumentException("Invalid contemporaneous constraint: " + ws.getItem());
                 }
             }
             contemporaneousConstraints.add(cnt);
@@ -228,10 +228,10 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
                     lcnt.add(desc.constraint);
                 }
                 for (WeightedItem<String> wc : desc.components) {
-                    if (lcnt.contains(wc.item)) {
-                        throw new IllegalArgumentException("Component definition cannot be a constraint: " + wc.item);
-                    } else if (!rcnt.contains(wc.item)) {
-                        rcnt.add(wc.item);
+                    if (lcnt.contains(wc.getItem())) {
+                        throw new IllegalArgumentException("Component definition cannot be a constraint: " + wc.getItem());
+                    } else if (!rcnt.contains(wc.getItem())) {
+                        rcnt.add(wc.getItem());
                     }
                 }
             }
@@ -241,7 +241,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
             for (ContemporaneousConstraintDescriptor desc : contemporaneousConstraints) {
                 HashMap<Integer, Double> constraint = new HashMap<>();
                 for (WeightedItem<String> cur : desc.components) {
-                    constraint.put(rcnt.indexOf(cur.item), cur.weight);
+                    constraint.put(rcnt.indexOf(cur.getItem()), cur.getWeight());
                 }
                 Constraint acnt = new Constraint(constraint);
                 cs[pos++] = acnt;
