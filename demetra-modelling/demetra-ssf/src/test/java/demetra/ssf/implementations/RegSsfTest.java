@@ -20,7 +20,7 @@ import demetra.ssf.univariate.Ssf;
 import demetra.ssf.univariate.SsfData;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.DayClustering;
-import demetra.timeseries.calendars.GenericTradingDaysDefinition;
+import demetra.timeseries.calendars.GenericTradingDays;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -45,7 +45,7 @@ public class RegSsfTest {
         StateComponent cmp1 = SsfArima.componentOf(airline);
         TsData s = Data.TS_PROD;
         SsfData y = new SsfData(s.getValues());
-        GenericTradingDaysDefinition td = GenericTradingDaysDefinition.contrasts(DayClustering.TD7);
+        GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD7);
         Matrix X = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(td));
         ISsf rssf1 = RegSsf.of(ssf, X);
         CompositeSsf rssf2 = CompositeSsf.builder()

@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.calendars;
+package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
@@ -27,6 +27,10 @@ import java.util.Objects;
 import demetra.data.DoubleCell;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixWindow;
+import demetra.timeseries.TimeSeriesDomain;
+import demetra.timeseries.calendars.CalendarUtility;
+import demetra.timeseries.calendars.DayClustering;
+import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +39,7 @@ import java.util.Map;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public class GenericTradingDays {
+public class GenericTradingDaysFactory implements RegressionVariableFactory<GenericTradingDaysVariable> {
 
     @lombok.Value
     private static class Entry {
@@ -106,44 +110,43 @@ public class GenericTradingDays {
         }
     }
 
-    private final DayClustering clustering;
-    private final boolean contrast;
-    private final boolean normalized;
+    public static GenericTradingDaysFactory FACTORY = new GenericTradingDaysFactory();
 
-    public static GenericTradingDays contrasts(DayClustering clustering) {
-        return new GenericTradingDays(clustering, true, false);
+    private GenericTradingDaysFactory() {
     }
 
-    public static GenericTradingDays of(DayClustering clustering) {
-        return new GenericTradingDays(clustering, false, false);
-    }
+    public boolean fill(GenericTradingDays var, TsPeriod start, Matrix buffer) {
 
-    public static GenericTradingDays normalized(DayClustering clustering) {
-        return new GenericTradingDays(clustering, false, true);
-    }
-
-    private GenericTradingDays(DayClustering clustering, boolean contrast, boolean normalized) {
-        this.clustering = clustering;
-        this.contrast = contrast;
-        this.normalized = normalized;
-    }
-
-    public DayClustering getClustering() {
-        return clustering;
-    }
-
-    public void data(TsDomain domain, List<DataBlock> buffer) {
-        if (contrast) {
-            dataContrasts(domain, buffer);
+        if (var.isContrast()) {
+            dataContrast(var.getClustering(), start, buffer);
         } else {
-            dataNoContrast(domain, buffer);
+            dataNoContrast(var.getClustering(), var.isNormalized(), start, buffer);
         }
+        return true;
+    }
+
+    @Override
+    public boolean fill(GenericTradingDaysVariable var, TsPeriod start, Matrix buffer) {
+
+        if (var.isContrast()) {
+            dataContrast(var.getClustering(), start, buffer);
+        } else {
+            dataNoContrast(var.getClustering(), var.isNormalized(), start, buffer);
+        }
+        return true;
+    }
+
+    @Override
+    public <D extends TimeSeriesDomain> boolean fill(GenericTradingDaysVariable var, D domain, Matrix buffer) {
+        throw new UnsupportedOperationException("Not supported.");
     }
 
     private static final double[] MDAYS = new double[]{31.0, 28.25, 31.0, 30.0, 31.0, 30.0, 31.0, 31.0, 30.0, 31.0, 30.0, 31.0};
 
-    private void dataNoContrast(TsDomain domain, List<DataBlock> buffer) {
-        int n = domain.length();
+    private void dataNoContrast(DayClustering clustering, boolean normalized, 
+            TsPeriod start, Matrix buffer) {
+        int n = buffer.getRowsCount();
+        TsDomain domain=TsDomain.of(start, n);
         int[][] days = tdCount(domain);
         double[] mdays = meanDays(domain);
 
@@ -151,7 +154,7 @@ public class GenericTradingDays {
         int ng = groups.length;
         DoubleCell[] cells = new DoubleCell[ng];
         for (int i = 0; i < cells.length; ++i) {
-            cells[i] = buffer.get(i).cells();
+            cells[i] = buffer.column(i).cells();
         }
         for (int i = 0; i < n; ++i) {
             for (int ig = 0; ig < ng; ++ig) {
@@ -173,11 +176,9 @@ public class GenericTradingDays {
         }
     }
 
-    private void dataContrasts(TsDomain domain, List<DataBlock> buffer) {
-        Matrix m=dataFor(clustering, domain);
-        for (int i=0; i<m.getColumnsCount(); ++i){
-            buffer.get(i).copy(m.column(i));
-        }
+    private void dataContrast(DayClustering clustering, TsPeriod start, Matrix buffer) {
+        Matrix m=dataFor(clustering, TsDomain.of(start, buffer.getRowsCount()));
+        buffer.copy(m);
     }
 
     private static Matrix generateContrasts(DayClustering clustering, TsDomain domain) {
@@ -215,28 +216,6 @@ public class GenericTradingDays {
         return data;
     }
 
-    public int getCount() {
-        int n = clustering.getGroupsCount();
-        return contrast ? n - 1 : n;
-    }
-
-    public String getDescription(int idx) {
-        return clustering.toString(idx);
-    }
-
-    /**
-     * @return the contrastGroup
-     */
-    public boolean isContrast() {
-        return contrast;
-    }
-
-    /**
-     * @return the normalization
-     */
-    public boolean isNormalized() {
-        return normalized;
-    }
 
     private static void rotate(int[][] groups) {
         // we put the contrast group at the end

@@ -38,7 +38,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.sarima.estimation.SarimaMapping;
-import demetra.timeseries.calendars.GenericTradingDaysDefinition;
+import demetra.timeseries.calendars.GenericTradingDays;
 
 /**
  *
@@ -235,7 +235,7 @@ public class TimeVaryingRegression {
     }
 
     public Matrix generate(TsDomain domain, DayClustering dc) {
-        GenericTradingDaysDefinition gtd = GenericTradingDaysDefinition.contrasts(dc);
+        GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
     }
 

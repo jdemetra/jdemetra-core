@@ -28,24 +28,6 @@ import java.time.LocalDate;
 @Development(status = Development.Status.Preliminary)
 public interface IHoliday {
     
-    public static class Context{
-        private final boolean mean;
-        private final boolean julian;
-        
-        public Context(boolean mean, boolean julian){
-            this.mean=mean;
-            this.julian=julian;
-        }
-        
-        public boolean isLongTermMeanCorrection(){
-            return mean;
-        }
-        
-        public boolean isJulianEaster(){
-            return julian;
-        }
-    }
-
     /**
      * Special Day for the given year
      * @param start
@@ -55,7 +37,7 @@ public interface IHoliday {
     Iterable<HolidayInfo> getIterable(LocalDate start, LocalDate end);
 
     /**
-     * Gives the long term mean effect on each day of week for each period of a
+     * Gives the long term mean effect on each day of the week for each period of a
      * given frequency
      * @param annualFrequency
      * @return The first dimension identifies the period (in [0, freq[,
@@ -65,6 +47,4 @@ public interface IHoliday {
     double[][] getLongTermMeanEffect(int annualFrequency);
     
     double getWeight();
-    
-    boolean match(Context context);
 }

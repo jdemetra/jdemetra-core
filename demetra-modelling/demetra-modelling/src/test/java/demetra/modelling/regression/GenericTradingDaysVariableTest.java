@@ -21,7 +21,6 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
-import demetra.timeseries.calendars.GenericTradingDaysDefinition;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import org.junit.Test;
 import static org.junit.Assert.*;

@@ -24,22 +24,31 @@ import demetra.design.Development;
  */
 @lombok.Value
 @Development(status = Development.Status.Alpha)
-public class GenericTradingDaysDefinition {
+public class GenericTradingDays {
 
     private DayClustering clustering;
     private boolean contrast;
     private boolean normalized;
 
-    public static GenericTradingDaysDefinition contrasts(DayClustering clustering) {
-        return new GenericTradingDaysDefinition(clustering, true, false);
+    public static GenericTradingDays contrasts(DayClustering clustering) {
+        return new GenericTradingDays(clustering, true, false);
     }
 
-    public static GenericTradingDaysDefinition of(DayClustering clustering) {
-        return new GenericTradingDaysDefinition(clustering, false, false);
+    public static GenericTradingDays of(DayClustering clustering) {
+        return new GenericTradingDays(clustering, false, false);
     }
 
-    public static GenericTradingDaysDefinition normalized(DayClustering clustering) {
-        return new GenericTradingDaysDefinition(clustering, false, true);
+    public static GenericTradingDays normalized(DayClustering clustering) {
+        return new GenericTradingDays(clustering, false, true);
+    }
+
+    public int getCount() {
+        int n = clustering.getGroupsCount();
+        return contrast ? n - 1 : n;
+    }
+
+    public String getDescription(int idx) {
+        return clustering.toString(idx);
     }
 
 }

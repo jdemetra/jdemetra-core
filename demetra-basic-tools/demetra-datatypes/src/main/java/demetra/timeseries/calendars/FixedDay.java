@@ -65,11 +65,6 @@ public class FixedDay implements IHoliday {
         return weight;
     }
 
-    @Override
-    public boolean match(Context context) {
-        return true;
-    }
-
     public static final FixedDay CHRISTMAS = new FixedDay(12, 25), NEWYEAR = new FixedDay(1, 1),
             ASSUMPTION = new FixedDay(8, 15), MAYDAY = new FixedDay(5, 1),
             ALLSAINTSDAY = new FixedDay(11, 1), ARMISTICE = new FixedDay(11, 11), HALLOWEEN = new FixedDay(10, 31);

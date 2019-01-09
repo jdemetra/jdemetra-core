@@ -14,13 +14,15 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.calendars;
+package demetra.modelling.regression;
 
-import demetra.timeseries.calendars.GenericTradingDays;
+import demetra.modelling.regression.GenericTradingDaysFactory;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.calendars.DayClustering;
+import demetra.timeseries.calendars.GenericTradingDays;
 import ec.tstoolkit.timeseries.calendars.DefaultGregorianCalendarProvider;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import org.junit.Test;
@@ -38,10 +40,10 @@ public class GenericTradingDaysTest {
 
     @Test
     public void testTD() {
-        TsDomain md = TsDomain.of(TsPeriod.monthly(1980, 1), 360);
-        Matrix M1 = Matrix.make(md.length(), 6);
+        TsPeriod start = TsPeriod.monthly(1980, 1);
+        Matrix M1 = Matrix.make(360, 6);
         GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
-        gtd.data(md, M1.columnList());
+        GenericTradingDaysFactory.FACTORY.fill(gtd, start, M1);
         ec.tstoolkit.timeseries.simplets.TsDomain omd = new ec.tstoolkit.timeseries.simplets.TsDomain(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1980, 0, 360);
         ec.tstoolkit.maths.matrices.Matrix oM1 = new ec.tstoolkit.maths.matrices.Matrix(omd.getLength(), 6);
         DefaultGregorianCalendarProvider.instance.calendarData(TradingDaysType.TradingDays, omd, oM1.columnList());
@@ -52,10 +54,10 @@ public class GenericTradingDaysTest {
 
     @Test
     public void testWD() {
-        TsDomain md = TsDomain.of(TsPeriod.monthly(1980, 1), 360);
-        Matrix M1 = Matrix.make(md.length(), 1);
+        TsPeriod start = TsPeriod.monthly(1980, 1);
+        Matrix M1 = Matrix.make(360, 1);
         GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD2);
-        gtd.data(md, M1.columnList());
+        GenericTradingDaysFactory.FACTORY.fill(gtd, start, M1);
         ec.tstoolkit.timeseries.simplets.TsDomain omd = new ec.tstoolkit.timeseries.simplets.TsDomain(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1980, 0, 360);
         ec.tstoolkit.maths.matrices.Matrix oM1 = new ec.tstoolkit.maths.matrices.Matrix(omd.getLength(), 1);
         DefaultGregorianCalendarProvider.instance.calendarData(TradingDaysType.WorkingDays, omd, oM1.columnList());
@@ -69,10 +71,10 @@ public class GenericTradingDaysTest {
     public void stressTestTD() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000000; ++i) {
-            TsDomain md = TsDomain.of(TsPeriod.monthly(1980, 1), 360);
-            Matrix M1 = Matrix.make(md.length(), 6);
-            GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
-            gtd.data(md, M1.columnList());
+        TsPeriod start = TsPeriod.monthly(1980, 1);
+        Matrix M1 = Matrix.make(360, 6);
+        GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
+        GenericTradingDaysFactory.FACTORY.fill(gtd, start, M1);
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

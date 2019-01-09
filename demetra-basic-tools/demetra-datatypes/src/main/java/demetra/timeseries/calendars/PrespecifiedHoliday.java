@@ -118,9 +118,4 @@ public class PrespecifiedHoliday implements IHoliday {
         return weight;
     }
     
-        @Override
-    public boolean match(Context context){
-        return context.isJulianEaster() == julian;
-    }
-
 }

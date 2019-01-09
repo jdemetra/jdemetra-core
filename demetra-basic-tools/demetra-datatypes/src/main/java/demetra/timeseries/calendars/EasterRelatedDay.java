@@ -93,11 +93,6 @@ public class EasterRelatedDay implements IHoliday {
         return weight;
     }
 
-    @Override
-    public boolean match(Context context) {
-        return context.isJulianEaster() == julian;
-    }
-
     public static final EasterRelatedDay SHROVEMONDAY = gregorian(-48),
             SHROVETUESDAY = gregorian(-47),
             ASHWEDNESDAY = gregorian(-46),

@@ -37,31 +37,23 @@ import java.util.Objects;
 public class Holidays {
 
     private final List<Holiday> holidays = new ArrayList<>();
-    private final IHoliday.Context context;
+    private final boolean meanCorrection;
 
     public Holidays() {
-        this(true, false);
+        this.meanCorrection = true;
     }
 
-    public Holidays(boolean mean, boolean julianeaster) {
-        context = new IHoliday.Context(mean, julianeaster);
-    }
-
-    public IHoliday.Context getContext() {
-        return context;
+    public Holidays(boolean mean) {
+        this.meanCorrection = mean;
     }
 
     public boolean add(IHoliday fday) {
-        if (fday.match(context)) {
-            Holiday ev = new Holiday(fday);
-            if (holidays.contains(ev)) {
-                return false;
-            } else {
-                holidays.add(ev);
-                return true;
-            }
-        } else {
+        Holiday ev = new Holiday(fday);
+        if (holidays.contains(ev)) {
             return false;
+        } else {
+            holidays.add(ev);
+            return true;
         }
     }
 
@@ -70,9 +62,6 @@ public class Holidays {
     }
 
     public boolean add(Holiday sd) {
-        if (!sd.getDay().match(context)) {
-            return false;
-        }
         for (Holiday ev : holidays) {
             if (ev.equals(sd)) {
                 return false;
@@ -84,9 +73,6 @@ public class Holidays {
 
     public void addAll(Collection<Holiday> c) {
         for (Holiday nev : c) {
-            if (!nev.getDay().match(context)) {
-                continue;
-            }
             boolean used = false;
             for (Holiday ev : holidays) {
                 if (ev.equals(nev)) {
@@ -117,9 +103,9 @@ public class Holidays {
     }
 
     public boolean contentEquals(Holidays other) {
-        return Objects.deepEquals(context, other.context) && Comparator.equals(holidays, other.holidays);
+        return meanCorrection == other.meanCorrection && Comparator.equals(holidays, other.holidays);
     }
-    
+
     public void fillDays(final Matrix D, final LocalDate start, final boolean skipSundays) {
         LocalDate end = start.plusDays(D.getRowsCount());
         int col = 0;
@@ -139,7 +125,7 @@ public class Holidays {
     }
 
     public void fillPreviousWorkingDays(final Matrix D, final LocalDate start, final int del) {
-        int n=D.getRowsCount();
+        int n = D.getRowsCount();
         LocalDate nstart = start.plusDays(del);
         LocalDate end = start.plusDays(n);
         int col = 0;
@@ -160,7 +146,7 @@ public class Holidays {
     }
 
     public void fillNextWorkingDays(final Matrix D, final LocalDate start, final int del) {
-        int n=D.getRowsCount();
+        int n = D.getRowsCount();
         LocalDate nstart = start.minusDays(del);
         LocalDate end = nstart.plusDays(n);
         int col = 0;
