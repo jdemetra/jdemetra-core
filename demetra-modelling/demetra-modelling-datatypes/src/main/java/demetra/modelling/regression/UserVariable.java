@@ -19,13 +19,12 @@ package demetra.modelling.regression;
 import demetra.design.Development;
 import static demetra.modelling.regression.TsVariable.data;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsDataSupplier;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
+@Development(status = Development.Status.Beta)
 public class UserVariable extends TsVariable implements IUserTsVariable {
 
     public static UserVariable of(String id, ModellingContext context) {

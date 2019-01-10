@@ -23,50 +23,20 @@ import demetra.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
+@lombok.Value
 public class WeightedItem<T> {
 
     /**
      *
      */
-    public final T item;
+    private T item;
     /**
      *
      */
-    public double weight;
+    private double weight;
 
-    /**
-     *
-     * @param item
-     */
-    public WeightedItem(T item) {
-        this.item = item;
-        this.weight = 1;
+    public WeightedItem<T> reweight(double nw) {
+        return new WeightedItem<>(item, nw);
     }
 
-    /**
-     *
-     * @param item
-     * @param w
-     */
-    public WeightedItem(T item, double w) {
-        this.item = item;
-        this.weight = w;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof WeightedItem && equals((WeightedItem) obj));
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + this.item.hashCode();
-        hash = 97 * hash + (int) (Double.doubleToLongBits(this.weight) ^ (Double.doubleToLongBits(this.weight) >>> 32));
-        return hash;
-    }
-
-    public boolean equals(WeightedItem c) {
-        return weight == c.weight && item.equals(c.item);
-    }
 }

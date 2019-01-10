@@ -17,15 +17,6 @@
 package demetra.modelling.regression;
 
 import demetra.design.Development;
-import demetra.modelling.regression.IOutlier;
-import demetra.modelling.regression.ITsVariable;
-import demetra.timeseries.TsDomain;
-import demetra.modelling.regression.ICalendarVariable;
-import demetra.modelling.regression.IUserTsVariable;
-import demetra.modelling.regression.ILengthOfPeriodVariable;
-import demetra.modelling.regression.IMovingHolidayVariable;
-import demetra.modelling.regression.ITradingDaysVariable;
-import demetra.modelling.regression.IEasterVariable;
 import javax.annotation.Nonnull;
 
 /**
@@ -35,8 +26,8 @@ import javax.annotation.Nonnull;
 @Development(status = Development.Status.Preliminary)
 public final class Variable {
 
-    private final ITsVariable variable;
     private final String name;
+    private final ITsVariable variable;
     private final boolean prespecified;
 
     /**

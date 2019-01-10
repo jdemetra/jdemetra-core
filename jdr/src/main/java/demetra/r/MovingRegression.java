@@ -23,7 +23,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.DayClustering;
-import demetra.timeseries.calendars.GenericTradingDaysDefinition;
+import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.modelling.regression.GenericTradingDaysVariable;
 import demetra.modelling.regression.Regression;
 import demetra.modelling.regression.RegressionUtility;
@@ -110,7 +110,7 @@ public class MovingRegression {
                 .build();
 
         DayClustering dc = days(td);
-        GenericTradingDaysDefinition gtd = GenericTradingDaysDefinition.contrasts(dc);
+        GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         Matrix x = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(gtd));
 
         RegSarimaProcessor monitor = RegSarimaProcessor.builder()
@@ -199,7 +199,7 @@ public class MovingRegression {
     }
 
     private Matrix generate(TsDomain domain, DayClustering dc) {
-        GenericTradingDaysDefinition gtd = GenericTradingDaysDefinition.contrasts(dc);
+        GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
     }
 

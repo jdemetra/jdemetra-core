@@ -19,7 +19,7 @@ import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.minpack.MinPackMinimizer;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
-import demetra.sarima.SarimaMapping;
+import demetra.sarima.estimation.SarimaMapping;
 import demetra.ssf.akf.AkfToolkit;
 import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.dk.SsfFunctionPoint;

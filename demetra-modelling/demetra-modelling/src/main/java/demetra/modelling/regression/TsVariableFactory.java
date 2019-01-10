@@ -30,14 +30,15 @@ import demetra.timeseries.TsPeriod;
  */
 @Development(status = Development.Status.Alpha)
 class TsVariableFactory implements RegressionVariableFactory<TsVariable> {
-    
-    static TsVariableFactory FACTORY=new TsVariableFactory();
 
-    private TsVariableFactory(){}
-    
+    static TsVariableFactory FACTORY = new TsVariableFactory();
+
+    private TsVariableFactory() {
+    }
+
     @Override
     public boolean fill(TsVariable var, TsPeriod start, Matrix buffer) {
-         TsData v = var.getData();
+        TsData v = var.getData();
         TsDomain curdom = v.getDomain();
         // position of the first data (in m_ts)
         int istart = curdom.getStartPeriod().until(start);

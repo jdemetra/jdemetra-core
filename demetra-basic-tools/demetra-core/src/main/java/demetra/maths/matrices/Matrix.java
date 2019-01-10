@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.internal.Householder;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -46,9 +47,80 @@ public class Matrix implements MatrixType {
     }
 
     public static Matrix of(MatrixType matrix) {
-        if (matrix == null)
+        if (matrix == null) {
             return null;
+        }
         return new Matrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
+    }
+
+    /**
+     * This version try to return the current object if its type is Matrix. 
+     * To be used with caution, only when the returned object is a temporary object
+     * that is not modified. For optimization only.
+     * @param matrix
+     * @return 
+     */
+    public static Matrix ofInternal(MatrixType matrix) {
+        if (matrix == null) {
+            return null;
+        }
+        if (matrix instanceof Matrix) {
+            return (Matrix) matrix;
+        } else {
+            return new Matrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
+        }
+    }
+
+    public static Matrix rowBind(@Nonnull MatrixType... M) {
+        int nr = 0;
+        int nc = 0;
+        for (int i = 0; i < M.length; ++i) {
+            if (M[i] != null) {
+                nr += M[i].getRowsCount();
+                if (nc == 0) {
+                    nc = M[i].getColumnsCount();
+                } else if (M[i].getColumnsCount() != nc) {
+                    throw new MatrixException(MatrixException.DIM);
+                }
+            }
+        }
+        Matrix all = Matrix.make(nr, nc);
+        DataBlockIterator rows = all.rowsIterator();
+        for (int i = 0; i < M.length; ++i) {
+            if (M[i] != null) {
+                int ncur = M[i].getRowsCount();
+                for (int j = 0; j < ncur; ++j) {
+                    rows.next().copy(M[i].row(j));
+                }
+            }
+        }
+        return all;
+    }
+
+    public static Matrix columnBind(@Nonnull MatrixType... M) {
+        int nr = 0;
+        int nc = 0;
+        for (int i = 0; i < M.length; ++i) {
+            if (M[i] != null) {
+                nc += M[i].getColumnsCount();
+                if (nr == 0) {
+                    nr = M[i].getRowsCount();
+                } else if (M[i].getRowsCount() != nr) {
+                    throw new MatrixException(MatrixException.DIM);
+                }
+            }
+        }
+        Matrix all = Matrix.make(nr, nc);
+        DataBlockIterator cols = all.columnsIterator();
+        for (int i = 0; i < M.length; ++i) {
+            if (M[i] != null) {
+                int ncur = M[i].getColumnsCount();
+                for (int j = 0; j < ncur; ++j) {
+                    cols.next().copy(M[i].column(j));
+                }
+            }
+        }
+        return all;
     }
 
     public static Matrix identity(int n) {
@@ -307,8 +379,8 @@ public class Matrix implements MatrixType {
         if (isFull()) {
             double s = 0;
             for (int i = 0; i < storage.length; ++i) {
-                double c=storage[i];
-                s += c*c;
+                double c = storage[i];
+                s += c * c;
             }
             return s;
         }
@@ -725,7 +797,8 @@ public class Matrix implements MatrixType {
     }
 
     /**
-     * Creates a new matrix which contains the current matrix at given row/col position
+     * Creates a new matrix which contains the current matrix at given row/col
+     * position
      *
      * @param nr
      * @param rowPos
@@ -976,11 +1049,11 @@ public class Matrix implements MatrixType {
     }
 
     /**
-     * Computes the kronecker product ofFunction two matrix. This object will contain
-     * the results. The dimensions ofFunction this object must be equal to the product
-     * ofFunction the dimensions ofFunction the operands. For optimisation purpose, the code
-     * consider that the resulting sub-matrix is set to 0 at the entry ofFunction the
-     * code
+     * Computes the kronecker product ofFunction two matrix. This object will
+     * contain the results. The dimensions ofFunction this object must be equal
+     * to the product ofFunction the dimensions ofFunction the operands. For
+     * optimisation purpose, the code consider that the resulting sub-matrix is
+     * set to 0 at the entry ofFunction the code
      *
      * @param m The left operand
      * @param n The right operand
@@ -1139,9 +1212,9 @@ public class Matrix implements MatrixType {
     }
 
     /**
-     * Shifts the matrix to the top-left corner.
-     * a(i,j) = a(i+n, j+n) for i in [0, nrows-n[ and j in [0, ncols-n[
-     * The cells that are not moved are not modified
+     * Shifts the matrix to the top-left corner. a(i,j) = a(i+n, j+n) for i in
+     * [0, nrows-n[ and j in [0, ncols-n[ The cells that are not moved are not
+     * modified
      *
      * @param n The displacement (n cells left and n cells up)
      */
@@ -1155,9 +1228,9 @@ public class Matrix implements MatrixType {
     }
 
     /**
-     * Shifts the matrix to the bottom-right corner
-     * a(i,j) = a(i-n, j-n) for i in [n, nrows[ and j in [n, ncols[
-     * The cells that are not moved are not modified.
+     * Shifts the matrix to the bottom-right corner a(i,j) = a(i-n, j-n) for i
+     * in [n, nrows[ and j in [n, ncols[ The cells that are not moved are not
+     * modified.
      *
      * @param n The displacement (n cells right and n cells down)
      */
@@ -1378,22 +1451,25 @@ public class Matrix implements MatrixType {
             return DataBlock.ofInternal(Matrix.this.storage, start, start + len, Matrix.this.rowInc);
         }
     }
-    
-    public static LogSign logDeterminant(Matrix X){
-        if (! X.isSquare())
+
+    public static LogSign logDeterminant(Matrix X) {
+        if (!X.isSquare()) {
             throw new IllegalArgumentException();
-        Householder hous=new Householder(true);
+        }
+        Householder hous = new Householder(true);
         hous.decompose(X);
-        if (! hous.isFullRank())
+        if (!hous.isFullRank()) {
             return null;
+        }
         return LogSign.of(hous.rdiagonal(false));
     }
-    
-    public static double determinant(Matrix X){
-        LogSign ls=logDeterminant(X);
-        if (ls == null)
+
+    public static double determinant(Matrix X) {
+        LogSign ls = logDeterminant(X);
+        if (ls == null) {
             return 0;
-        double val=Math.exp(ls.getValue());
+        }
+        double val = Math.exp(ls.getValue());
         return ls.isPositive() ? val : -val;
     }
 }

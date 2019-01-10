@@ -14,8 +14,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayEvent;
 import demetra.timeseries.calendars.FixedDay;
-import demetra.timeseries.calendars.Holiday;
-import demetra.timeseries.calendars.Holidays;
+import demetra.timeseries.calendars.HolidaysUtility;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
 import java.time.LocalDate;
 
@@ -78,7 +77,7 @@ public class TsUtility {
         return new int[]{freq, year, 1 + (mon - 1) / c};
     }
 
-    public boolean add(Holidays all, String holiday, int offset, double weight, boolean julian) {
+    public boolean add( Holidays all, String holiday, int offset, double weight, boolean julian) {
         try {
             PrespecifiedHoliday cur = new PrespecifiedHoliday(DayEvent.valueOf(holiday), offset, weight, julian);
             return all.add(cur);
@@ -94,19 +93,19 @@ public class TsUtility {
 
     public MatrixType holidays(Holidays all, String date, int length, String type) {
         LocalDate start = LocalDate.parse(date);
-        Matrix m = Matrix.make(length, all.getCount());
+        Matrix m = Matrix.make(length, all.elements().length);
         switch (type){
             case "SkipSundays":
-                all.fillDays(m, start, true);
+                HolidaysUtility.fillDays(all.elements(), m, start, true);
                 break;
             case "NextWorkingDay":
-                all.fillNextWorkingDays(m, start, 0);
+                HolidaysUtility.fillNextWorkingDays(all.elements(), m, start, 0);
                 break;
             case "PreviousWorkingDay":
-                all.fillPreviousWorkingDays(m, start, 0);
+                HolidaysUtility.fillPreviousWorkingDays(all.elements(), m, start, 0);
                 break;
             default:
-                all.fillDays(m, start, false);
+                HolidaysUtility.fillDays(all.elements(), m, start, false);
         }
         return m.unmodifiable();
     }

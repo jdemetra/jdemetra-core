@@ -28,13 +28,13 @@ import demetra.ssf.univariate.PredictionErrorDecomposition;
 import demetra.ssf.univariate.SsfData;
 import demetra.data.DoubleSequence;
 import demetra.ssf.univariate.Ssf;
-import demetra.arima.ArimaForecaster;
+import demetra.arima.estimation.ArimaForecasts;
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class ExactArimaForecasts implements ArimaForecaster{
+public class ExactArimaForecasts implements ArimaForecasts{
 
     private IArimaModel arima;
     private Ssf ssf;

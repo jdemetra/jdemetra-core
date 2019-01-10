@@ -29,7 +29,7 @@ import demetra.timeseries.calendars.DayClustering;
 import demetra.modelling.regression.GenericTradingDaysVariable;
 import demetra.modelling.regression.Regression;
 import demetra.timeseries.TsData;
-import demetra.timeseries.calendars.GenericTradingDaysDefinition;
+import demetra.timeseries.calendars.GenericTradingDays;
 import static demetra.timeseries.simplets.TsDataToolkit.drop;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
 
@@ -63,7 +63,7 @@ public class TradingDaysTests {
         try {
             DataBlock y=DataBlock.of(s.getValues());
             y.sub(y.average());
-            GenericTradingDaysVariable var=new GenericTradingDaysVariable(GenericTradingDaysDefinition.contrasts(DayClustering.TD7));
+            GenericTradingDaysVariable var=new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD7));
             Matrix td = Regression.matrix(s.getDomain(), var);
             LinearModel reg=new LinearModel(y.getStorage(), false, td);
             Ols ols = new Ols();
@@ -80,7 +80,7 @@ public class TradingDaysTests {
         try {
             DataBlock y=DataBlock.of(s.getValues());
             TsDomain domain = s.getDomain();
-            GenericTradingDaysVariable var=new GenericTradingDaysVariable(GenericTradingDaysDefinition.contrasts(DayClustering.TD7));
+            GenericTradingDaysVariable var=new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD7));
             Matrix td = Regression.matrix(domain.range(1, domain.length()), var);
             LinearModel reg=LinearModel.builder()
                     .y(y.drop(1, 0))

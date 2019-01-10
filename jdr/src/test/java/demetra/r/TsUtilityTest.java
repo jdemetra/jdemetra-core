@@ -8,7 +8,9 @@ package demetra.r;
 import demetra.maths.MatrixType;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
-import demetra.timeseries.calendars.Holidays;
+import demetra.timeseries.calendars.IHoliday;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -33,7 +35,7 @@ public class TsUtilityTest {
         System.out.println(MatrixType.format(rslt));
     }
     
-    private static void addDefault(Holidays holidays) {
+    private static void addDefault( List<IHoliday> holidays) {
         holidays.add(FixedDay.NEWYEAR);
         holidays.add(FixedDay.MAYDAY);
         holidays.add(FixedDay.ASSUMPTION);

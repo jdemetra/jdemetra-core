@@ -18,7 +18,6 @@ package demetra.arima.internal;
 
 import demetra.arima.ArimaException;
 import demetra.arima.IArimaModel;
-import demetra.arima.IArmaFilter;
 import demetra.data.DataBlock;
 import demetra.data.DoubleReader;
 import demetra.design.AlgorithmImplementation;
@@ -29,14 +28,15 @@ import demetra.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.data.DoubleSequence;
 import demetra.data.DoubleCell;
+import demetra.arima.estimation.ArmaFilter;
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@AlgorithmImplementation(algorithm = IArmaFilter.class, feature = Fast)
-@ServiceProvider(service = IArmaFilter.class)
-public class KalmanFilter implements IArmaFilter {
+@AlgorithmImplementation(algorithm = ArmaFilter.class, feature = Fast)
+@ServiceProvider(service = ArmaFilter.class)
+public class KalmanFilter implements ArmaFilter {
 
     private double[] m_C;
 

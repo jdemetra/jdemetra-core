@@ -104,12 +104,12 @@ public class PrespecifiedHoliday implements IHoliday {
     }
 
     @Override
-    public double[][] getLongTermMeanEffect(int freq) {
+    public double[][] longTermMean(int freq) {
         IHoliday sd = toSpecialDay();
         if (sd == null) {
             return null;
         } else {
-            return sd.getLongTermMeanEffect(freq);
+            return sd.longTermMean(freq);
         }
     }
 
@@ -118,9 +118,4 @@ public class PrespecifiedHoliday implements IHoliday {
         return weight;
     }
     
-        @Override
-    public boolean match(Context context){
-        return context.isJulianEaster() == julian;
-    }
-
 }

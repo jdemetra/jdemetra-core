@@ -6,7 +6,7 @@
 package demetra.modelling.regression;
 
 import demetra.timeseries.calendars.DayClustering;
-import demetra.timeseries.calendars.GenericTradingDaysDefinition;
+import demetra.timeseries.calendars.GenericTradingDays;
 
 /**
  *
@@ -15,19 +15,19 @@ import demetra.timeseries.calendars.GenericTradingDaysDefinition;
 @lombok.Value
 @lombok.AllArgsConstructor
 public class GenericTradingDaysVariable implements ITradingDaysVariable{
-    private DayClustering dayClustering;
+    private DayClustering clustering;
     private boolean contrast;
     private boolean normalized;
     
-    public GenericTradingDaysVariable(GenericTradingDaysDefinition td){
-        this.dayClustering=td.getClustering();
+    public GenericTradingDaysVariable(GenericTradingDays td){
+        this.clustering=td.getClustering();
         this.contrast=td.isContrast();
         this.normalized=td.isNormalized();                
     }
     
     @Override
     public int dim(){
-        int n=dayClustering.getGroupsCount();
+        int n=clustering.getGroupsCount();
         return contrast ? n-1 : n;
     }
 }

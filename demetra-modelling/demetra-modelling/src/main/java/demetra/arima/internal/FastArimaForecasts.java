@@ -21,7 +21,7 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.polynomials.Polynomial;
 import demetra.data.DoubleSequence;
-import demetra.arima.ArimaForecaster;
+import demetra.arima.estimation.ArimaForecasts;
 
 /**
  * Computes the forecasts of an Arima model using the approach followed in
@@ -30,7 +30,7 @@ import demetra.arima.ArimaForecaster;
  * @author Frank Osaer, Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class FastArimaForecasts implements ArimaForecaster {
+public class FastArimaForecasts implements ArimaForecasts {
 
     private IArimaModel arima;
     private Polynomial ar, ma;

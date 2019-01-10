@@ -28,52 +28,53 @@ import java.util.List;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class WeightedItems<T> implements Cloneable {
+public final class WeightedItems<T> implements Cloneable {
 
     public WeightedItems() {
     }
 
     public List<WeightedItem<T>> items() {
-        return Collections.unmodifiableList(m_items);
+        return Collections.unmodifiableList(items);
     }
 
     public void clear() {
-        m_items.clear();
+        items.clear();
     }
 
     public int getCount() {
-        return m_items.size();
+        return items.size();
     }
 
     public WeightedItem<T> get(int idx) {
-        return m_items.get(idx);
+        return items.get(idx);
     }
 
     public void add(WeightedItem<T> item) {
-        m_items.add(item);
+        items.add(item);
     }
 
     public void add(Collection<WeightedItem<T>> items) {
-        m_items.addAll(items);
+        this.items.addAll(items);
     }
 
     public void removeAt(int pos) {
-        m_items.remove(pos);
+        items.remove(pos);
     }
 
     /// <summary>
     /// Changes the weights so that their sum is 1.
     /// </summary>
     /// <returns></returns>
-    public boolean normalize() {
+    public WeightedItems<T> normalize() {
         double sum = getSumWeights();
         if (sum == 0) {
-            return false;
+            return null;
         }
-        for (WeightedItem<T> item : m_items) {
-            item.weight /= sum;
+        WeightedItems<T> nw=new WeightedItems<>();
+        for (WeightedItem<T> item : items) {
+            nw.add(item.reweight(item.getWeight() / sum));
         }
-        return true;
+        return nw;
     }
 
     /// <summary>
@@ -81,19 +82,19 @@ public class WeightedItems<T> implements Cloneable {
     /// </summary>
     public double getSumWeights() {
         double s = 0;
-        for (WeightedItem<T> item : m_items) {
-            s += item.weight;
+        for (WeightedItem<T> item : items) {
+            s += item.getWeight();
         }
         return s;
     }
-    private ArrayList<WeightedItem<T>> m_items = new ArrayList<>();
+    private ArrayList<WeightedItem<T>> items = new ArrayList<>();
 
     @Override
     public WeightedItems<T> clone() {
         try {
-            WeightedItems<T> items = (WeightedItems<T>) super.clone();
-            items.m_items = (ArrayList<WeightedItem<T>>) m_items.clone();
-            return items;
+            WeightedItems<T> c = (WeightedItems<T>) super.clone();
+            c.items = (ArrayList<WeightedItem<T>>) items.clone();
+            return c;
         } catch (CloneNotSupportedException ex) {
             throw new AssertionError();
         }
@@ -101,23 +102,6 @@ public class WeightedItems<T> implements Cloneable {
 
     public static <T> boolean equals(WeightedItems<T> l, WeightedItems<T> r) {
 
-        boolean[] used = new boolean[l.getCount()];
-        for (WeightedItem<T> wc : l.m_items) {
-            int idx = 0;
-            while (idx < used.length) {
-                WeightedItem<T> cur = r.m_items.get(idx);
-
-                if (!used[idx] && cur.item.equals(wc.item) && cur.weight == wc.weight) {
-                    used[idx] = true;
-                    break;
-                }
-                ++idx;
-            }
-            if (idx == used.length) {
-                return false;
-            }
-        }
-
-        return true;
+       return Comparator.equals(l.items, r.items);
     }
 }

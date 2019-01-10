@@ -19,10 +19,9 @@ package demetra.fractionalairline;
 import demetra.arima.ArimaModel;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
-import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.regarima.IArimaMapping;
+import demetra.arima.estimation.IArimaMapping;
 
 public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
 

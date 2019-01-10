@@ -55,7 +55,7 @@ import demetra.modelling.regression.PeriodicOutlierFactory;
 import demetra.modelling.regression.TransitoryChangeFactory;
 import demetra.modelling.regression.UserTradingDays;
 import demetra.regarima.ArimaSpec;
-import demetra.timeseries.calendars.GenericTradingDaysDefinition;
+import demetra.timeseries.calendars.GenericTradingDays;
 
 /**
  *
@@ -353,7 +353,7 @@ class X12ModelBuilder implements IModelBuilder {
         } else if (tdspec.getUserVariables() != null) {
             return null;
         } else {
-            GenericTradingDaysDefinition gtd = GenericTradingDaysDefinition.contrasts(dc);
+            GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
             return new GenericTradingDaysVariable(gtd);
         }
     }
@@ -364,7 +364,7 @@ class X12ModelBuilder implements IModelBuilder {
         }
         TradingDaysType tdType = td.getTradingDaysType();
         DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
-        GenericTradingDaysDefinition gtd = GenericTradingDaysDefinition.contrasts(dc);
+        GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return new GenericTradingDaysVariable(gtd);
     }
 

@@ -90,7 +90,7 @@ public class MultivariateCholetteSpecification implements ProcSpecification {
 
         public boolean hasWildCards() {
             for (WeightedItem<String> ws : components) {
-                if (ws.item.contains("?") || ws.item.contains("*")) {
+                if (ws.getItem().contains("?") || ws.getItem().contains("*")) {
                     return true;
                 }
             }
@@ -100,9 +100,9 @@ public class MultivariateCholetteSpecification implements ProcSpecification {
         public ContemporaneousConstraintDescriptor expand(Collection<String> input) {
             ContemporaneousConstraintDescriptor ndesc = new ContemporaneousConstraintDescriptor(constant, constraint);
             for (WeightedItem<String> ws : components) {
-                double w = ws.weight;
-                if (ws.item.contains("*") || ws.item.contains("?")) {
-                    WildCards wc = new WildCards(ws.item);
+                double w = ws.getWeight();
+                if (ws.getItem().contains("*") || ws.getItem().contains("?")) {
+                    WildCards wc = new WildCards(ws.getItem());
                     for (String i : input) {
                         if (!i.equals(constraint) && wc.match(i)) {
                             ndesc.components.add(new WeightedItem<>(i, w));
@@ -127,7 +127,7 @@ public class MultivariateCholetteSpecification implements ProcSpecification {
 
             boolean first = true;
             for (WeightedItem<String> ws : components) {
-                double w = ws.weight;
+                double w = ws.getWeight();
                 if (w == 0) {
                     continue;
                 }
@@ -140,7 +140,7 @@ public class MultivariateCholetteSpecification implements ProcSpecification {
                 if (aw != 1) {
                     builder.append(aw).append('*');
                 }
-                builder.append(ws.item);
+                builder.append(ws.getItem());
                 first = false;
             }
             return builder.toString();

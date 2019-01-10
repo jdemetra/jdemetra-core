@@ -19,7 +19,6 @@ package demetra.ucarima.estimation;
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
-import demetra.arima.IArmaFilter;
 import demetra.arima.internal.AnsleyFilter;
 import demetra.data.DataBlock;
 import demetra.design.Development;
@@ -31,6 +30,7 @@ import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
 import demetra.ucarima.UcarimaModel;
 import demetra.data.DoubleSequence;
+import demetra.arima.estimation.ArmaFilter;
 
 
 /**
@@ -50,7 +50,7 @@ public class McElroyEstimates {
     private Matrix[] M_, F_, L_, K_, D_;
     private double[][] cmps_, fcmps_;
     private int nf_;
-    private IArmaFilter[] filters_;
+    private ArmaFilter[] filters_;
 
     private void clear() {
         M_ = null;
@@ -199,7 +199,7 @@ public class McElroyEstimates {
             M_ = new Matrix[ncmps];
             F_ = new Matrix[ncmps];
             cmps_ = new double[ncmps][];
-            filters_ = new IArmaFilter[ncmps + 1];
+            filters_ = new ArmaFilter[ncmps + 1];
         } else if (cmps_[cmp] != null) {
             return;
         }
@@ -267,7 +267,7 @@ public class McElroyEstimates {
         // F= M^-1, 
     }
 
-    private IArmaFilter seriesFilter() {
+    private ArmaFilter seriesFilter() {
         int n = data_.length;
         IArimaModel model = ucm_.getModel();
         StationaryTransformation stm = model.stationaryTransformation();
@@ -292,7 +292,7 @@ public class McElroyEstimates {
         // actual computation.
         if (fs) {
             if (filters_ == null) {
-                filters_ = new IArmaFilter[ncmps + 1];
+                filters_ = new ArmaFilter[ncmps + 1];
             }
             if (filters_[cmp] == null) {
                 filters_[cmp] = seriesFilter();
