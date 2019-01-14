@@ -365,6 +365,7 @@ public final class DataBlock implements DoubleSequence {
      * accepted? FIXME: What if count > DataBlock.data.size? FIXME: reverse
      * order, what if count will give negative end? >> Out of bound exception?
      */
+    @Override
     public DataBlock extract(@Nonnegative int start, int count, int inc) {
         int i0 = beg + start * this.inc, i1, ninc;
         ninc = inc * this.inc;
@@ -387,6 +388,7 @@ public final class DataBlock implements DoubleSequence {
         return new DataBlock(data, i0, i1, ninc);
     }
 
+    @Override
     public DataBlock range(int beg, int end) {
         return new DataBlock(data, this.beg + beg * inc, this.beg + end * inc, inc);
     }

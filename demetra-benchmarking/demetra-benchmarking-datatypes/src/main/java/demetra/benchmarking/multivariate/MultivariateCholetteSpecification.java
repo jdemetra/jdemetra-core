@@ -18,7 +18,6 @@ package demetra.benchmarking.multivariate;
 
 import demetra.algorithms.AlgorithmDescriptor;
 import demetra.data.AggregationType;
-import demetra.util.Comparator;
 import demetra.util.WeightedItem;
 import demetra.util.WildCards;
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ import demetra.processing.ProcSpecification;
  * @author Jean Palate
  */
 @lombok.Data
-public class MultivariateCholetteSpecification implements ProcSpecification {
+public final class MultivariateCholetteSpecification implements ProcSpecification, Cloneable {
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "multivariatecholette", null);
 
@@ -40,53 +39,13 @@ public class MultivariateCholetteSpecification implements ProcSpecification {
      * Description of a contemporaneous constraint. The constraint may be
      * binding y = w1*x1+...+wn*xn or free constant = w1*x1+...+wn*xn
      */
-    public final static class ContemporaneousConstraintDescriptor {
+    @lombok.Value
+    public static class ContemporaneousConstraintDescriptor {
 
-        public ContemporaneousConstraintDescriptor(double cnt) {
-            constant = cnt;
-            constraint = null;
-        }
-
-        public ContemporaneousConstraintDescriptor(String cnt) {
-            constant = 0;
-            constraint = cnt;
-        }
-
-        private ContemporaneousConstraintDescriptor(double d, String s) {
-            constant = d;
-            constraint = s;
-        }
-
-        public void add(String cmp, double w) {
-            this.components.add(new WeightedItem<>(cmp, w));
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return this == obj || (obj instanceof ContemporaneousConstraintDescriptor && equals((ContemporaneousConstraintDescriptor) obj));
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 5;
-            hash = 23 * hash + (int) (Double.doubleToLongBits(this.constant) ^ (Double.doubleToLongBits(this.constant) >>> 32));
-            hash = 23 * hash + (this.constraint != null ? this.constraint.hashCode() : 0);
-            return hash;
-        }
-
-        public boolean equals(ContemporaneousConstraintDescriptor c) {
-            if (!this.constraint.equals(c.constraint)) {
-                return false;
-            }
-            if (this.constant != c.constant) {
-                return false;
-            }
-            return Comparator.equals(this.components, c.components);
-        }
-        public final double constant;
-        public final String constraint;
-        public final List<WeightedItem<String>> components
-                = new ArrayList<>();
+        private double constant;
+        private String constraint;
+        @lombok.NonNull
+        private WeightedItem<String>[] components;
 
         public boolean hasWildCards() {
             for (WeightedItem<String> ws : components) {
@@ -98,21 +57,22 @@ public class MultivariateCholetteSpecification implements ProcSpecification {
         }
 
         public ContemporaneousConstraintDescriptor expand(Collection<String> input) {
-            ContemporaneousConstraintDescriptor ndesc = new ContemporaneousConstraintDescriptor(constant, constraint);
+            List<WeightedItem<String>> ndesc = new ArrayList<>();
             for (WeightedItem<String> ws : components) {
                 double w = ws.getWeight();
                 if (ws.getItem().contains("*") || ws.getItem().contains("?")) {
                     WildCards wc = new WildCards(ws.getItem());
                     for (String i : input) {
                         if (!i.equals(constraint) && wc.match(i)) {
-                            ndesc.components.add(new WeightedItem<>(i, w));
+                            ndesc.add(new WeightedItem<>(i, w));
                         }
                     }
                 } else {
-                    ndesc.components.add(ws);
+                    ndesc.add(ws);
                 }
             }
-            return ndesc;
+            WeightedItem<String>[] items = ndesc.toArray(new WeightedItem[ndesc.size()]);
+            return new ContemporaneousConstraintDescriptor(constant, constraint, items);
         }
 
         @Override
@@ -159,11 +119,12 @@ public class MultivariateCholetteSpecification implements ProcSpecification {
                     scnt = n;
                 }
                 n = scanner.next();
-                ContemporaneousConstraintDescriptor desc = new ContemporaneousConstraintDescriptor(dcnt, scnt);
-                if (!parseComponents(n, desc.components)) {
+                List<WeightedItem<String>> cmps = new ArrayList<>();
+                if (!parseComponents(n, cmps)) {
                     return null;
                 }
-                return desc;
+                return new ContemporaneousConstraintDescriptor(dcnt, scnt,
+                        cmps.toArray(new WeightedItem[cmps.size()]));
             } catch (Exception err) {
                 return null;
             }
@@ -219,14 +180,10 @@ public class MultivariateCholetteSpecification implements ProcSpecification {
         }
     }
 
-    public final static class TemporalConstraintDescriptor {
+    @lombok.Value
+    public static class TemporalConstraintDescriptor {
 
         public final String aggregate, detail;
-
-        public TemporalConstraintDescriptor(final String constraint, final String component) {
-            this.aggregate = constraint;
-            this.detail = component;
-        }
 
         public static TemporalConstraintDescriptor parse(String s) {
             try {
@@ -276,42 +233,21 @@ public class MultivariateCholetteSpecification implements ProcSpecification {
                     .append(detail).append(')');
             return builder.toString();
         }
-
-        @Override
-        public boolean equals(Object obj) {
-            return this == obj || (obj instanceof TemporalConstraintDescriptor && equals((TemporalConstraintDescriptor) obj));
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 5;
-            hash = 67 * hash + this.aggregate.hashCode();
-            hash = 67 * hash + this.detail.hashCode();
-            return hash;
-        }
-
-        public boolean equals(TemporalConstraintDescriptor c) {
-            return this.aggregate.equals(c.aggregate) && this.detail.equals(c.detail);
-        }
     }
 
     public static double DEF_LAMBDA = 1, DEF_RHO = 1;
+
+    public static final ContemporaneousConstraintDescriptor[] NOCC = new ContemporaneousConstraintDescriptor[0];
+    public static final TemporalConstraintDescriptor[] NOTC = new TemporalConstraintDescriptor[0];
+
     private double rho = DEF_RHO;
     private double lambda = DEF_LAMBDA;
     @lombok.NonNull
     private AggregationType aggregationType = AggregationType.Sum;
-    private final List<ContemporaneousConstraintDescriptor> contemporaneousConstraints
-            = new ArrayList<>();
-    private final List<TemporalConstraintDescriptor> temporalConstraints
-            = new ArrayList<>();
-    
-    public void add(ContemporaneousConstraintDescriptor cdesc){
-        contemporaneousConstraints.add(cdesc);
-    }
-
-    public void add(TemporalConstraintDescriptor cdesc){
-        temporalConstraints.add(cdesc);
-    }
+    @lombok.NonNull
+    private ContemporaneousConstraintDescriptor[] contemporaneousConstraints = NOCC;
+    @lombok.NonNull
+    private TemporalConstraintDescriptor[] temporalConstraints = NOTC;
 
     @Override
     public AlgorithmDescriptor getAlgorithmDescriptor() {
@@ -319,14 +255,12 @@ public class MultivariateCholetteSpecification implements ProcSpecification {
     }
 
     @Override
-    public MultivariateCholetteSpecification makeCopy() {
-        MultivariateCholetteSpecification spec = new MultivariateCholetteSpecification();
-        spec.rho = rho;
-        spec.lambda = lambda;
-        spec.aggregationType=aggregationType;
-        spec.contemporaneousConstraints.addAll(contemporaneousConstraints);
-        spec.temporalConstraints.addAll(temporalConstraints);
-        return spec;
+    public MultivariateCholetteSpecification clone() {
+        try {
+            return (MultivariateCholetteSpecification) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new AssertionError();
+        }
     }
 
 }

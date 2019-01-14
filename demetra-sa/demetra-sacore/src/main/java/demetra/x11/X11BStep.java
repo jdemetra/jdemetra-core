@@ -7,12 +7,10 @@ package demetra.x11;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
-import demetra.maths.linearfilters.HendersonFilters;
 import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import static demetra.x11.X11Kernel.table;
-import java.util.Arrays;
 
 /**
  *

@@ -25,7 +25,7 @@ import demetra.processing.ProcSpecification;
  * @author Jean Palate
  */
 @lombok.Data
-public class DentonSpecification implements ProcSpecification {
+public final class DentonSpecification implements ProcSpecification, Cloneable {
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "denton", null);
 
@@ -43,13 +43,12 @@ public class DentonSpecification implements ProcSpecification {
     private AggregationType aggregationType = AggregationType.Sum;
 
     @Override
-    public DentonSpecification makeCopy() {
-        DentonSpecification spec = new DentonSpecification();
-        spec.multiplicative = multiplicative;
-        spec.modified = modified;
-        spec.differencing = differencing;
-        spec.aggregationType = aggregationType;
-        return spec;
+    public DentonSpecification clone() {
+        try {
+            return (DentonSpecification) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new AssertionError();
+        }
     }
 
     @Override

@@ -37,8 +37,22 @@ public class ElementaryTransformations {
         }
     }
 
+    /**
+     * Applies a Householder reflection on the first row and transform the next
+     * rows.
+     *
+     * @param m
+     */
     public void rowHouseholder(Matrix m) {
         householder(m.rowsIterator());
+    }
+
+    public void rowHouseholder(final DataBlock row, final Matrix X) {
+        DataBlockIterator rows = X.rowsIterator();
+        HouseholderReflection reflection = HouseholderReflection.of(row);
+        while (rows.hasNext()) {
+            reflection.transform(rows.next());
+        }
     }
 
     public boolean givensTriangularize(final Matrix X) {
@@ -53,14 +67,6 @@ public class ElementaryTransformations {
             return true;
         } catch (MatrixException err) {
             return false;
-        }
-    }
-
-    public void rowHouseholder(final DataBlock row, final Matrix X) {
-        DataBlockIterator rows = X.rowsIterator();
-        HouseholderReflection reflection = HouseholderReflection.of(row);
-        while (rows.hasNext()) {
-            reflection.transform(rows.next());
         }
     }
 
@@ -168,42 +174,51 @@ public class ElementaryTransformations {
         }
     }
 
-    // apply givens rotations on the first row and transform the next rows.
+    /**
+     * Applies Givens rotations on the first row and transform the next rows.
+     *
+     * @param m
+     */
     public void rowGivens(Matrix m) {
         givens(m.rowsIterator(), m.getColumnsCount());
     }
 
+    /**
+     * Applies a Householder reflection on the first column and transform the
+     * next columns.
+     *
+     * @param m
+     */
     public void columnHouseholder(Matrix m) {
         householder(m.columnsIterator());
     }
 
-    private void householder(DataBlockIterator vectors) {
-        HouseholderReflection reflection = HouseholderReflection.of(vectors.next());
-        while (vectors.hasNext()) {
-            reflection.transform(vectors.next());
-        }
-    }
-
+    /**
+     * Applies Givens rotations on the first column and transform the next
+     * columns.
+     *
+     * @param m
+     */
     public void columnGivens(Matrix m) {
         givens(m.columnsIterator(), m.getRowsCount());
     }
 
-    /**
-     * Decomposes L0.V0.L0' + X.W.X' = L.V.L' L0 and L are lower triangular
-     * matrices V, W are diagonal matrices that can contain infinite values See
-     * Snijder and Saligari (1996). "Initialization of the Kalman Filter with
-     * Partially Diffuse Initial Conditions", Journal of Time Series analysis,
-     * 17/4, pages 409-424.
-     *
-     * @param X Contains the X disturbance matrix (not necessary lower
-     * triangular)
-     * @param W Contains the diagonal of the disturbance matrix
-     * @param L On entry, contains the initial lower L0 matrix. On exit,
-     * contains the final L matrix
-     * @param V On entry, contains the initial V0 diagonal. On exit, contains
-     * the final V diagonal
-     * @return true if the decomposition was successful, false otherwise.
-     */
+//    /**
+//     * Decomposes L0.V0.L0' + X.W.X' = L.V.L' L0 and L are lower triangular
+//     * matrices V, W are diagonal matrices that can contain infinite values See
+//     * Snijder and Saligari (1996). "Initialization of the Kalman Filter with
+//     * Partially Diffuse Initial Conditions", Journal of Time Series analysis,
+//     * 17/4, pages 409-424.
+//     *
+//     * @param X Contains the X disturbance matrix (not necessary lower
+//     * triangular)
+//     * @param W Contains the diagonal of the disturbance matrix
+//     * @param L On entry, contains the initial lower L0 matrix. On exit,
+//     * contains the final L matrix
+//     * @param V On entry, contains the initial V0 diagonal. On exit, contains
+//     * the final V diagonal
+//     * @return true if the decomposition was successful, false otherwise.
+//     */
 //    public static boolean extendedGivensTriangularize(Matrix X, DataBlock W, Matrix L, DataBlock V) {
 //
 //        int nc = X.getColumnsCount(), nr = X.getRowsCount(),
@@ -267,20 +282,8 @@ public class ElementaryTransformations {
 //        }
 //        return true;
 //    }
-
-    private void givens(DataBlockIterator vectors, int n) {
-        for (int i = 1; i < n; ++i) {
-            vectors.reset();
-            DataBlock cur = vectors.next();
-            if (cur.get(i) != 0) {
-                GivensRotation rotation = GivensRotation.of(cur, i);
-                while (vectors.hasNext()) {
-                    rotation.transform(vectors.next());
-                }
-            }
-        }
-    }
-
+    
+    
     /**
      * Returns sqrt(x**2+y**2), taking care not to cause unnecessary overflow.
      *
@@ -301,16 +304,35 @@ public class ElementaryTransformations {
         }
     }
 
+    /**
+     * Returns sqrt(x**2-y**2)
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     public double jhypotenuse(double x, double y) {
-        double xabs = Math.abs(x);
-        double yabs = Math.abs(y);
-        double w = Math.max(xabs, yabs);
-        double z = Math.min(xabs, yabs);
-        if (z == 0) {
-            return w;
-        } else {
-            double zw = z / w;
-            return w * Math.sqrt(1 - zw * zw);
+//        return Math.sqrt(x*x-y*y);
+        return Math.sqrt((x+y)*(x-y));
+    }
+
+    private void householder(DataBlockIterator vectors) {
+        HouseholderReflection reflection = HouseholderReflection.of(vectors.next());
+        while (vectors.hasNext()) {
+            reflection.transform(vectors.next());
+        }
+    }
+
+    private void givens(DataBlockIterator vectors, int n) {
+        for (int i = 1; i < n; ++i) {
+            vectors.reset();
+            DataBlock cur = vectors.next();
+            if (cur.get(i) != 0) {
+                GivensRotation rotation = GivensRotation.of(cur, i);
+                while (vectors.hasNext()) {
+                    rotation.transform(vectors.next());
+                }
+            }
         }
     }
 

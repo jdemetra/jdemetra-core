@@ -18,14 +18,13 @@ package demetra.maths.matrices.decomposition;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.decomposition.ElementaryTransformations;
 
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
+@Development(status = Development.Status.Release)
 public class GivensRotation implements IVectorTransformation {
 
     private final int lentry, rentry;

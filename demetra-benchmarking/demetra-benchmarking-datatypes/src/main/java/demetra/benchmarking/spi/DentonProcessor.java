@@ -28,7 +28,7 @@ import demetra.timeseries.TsData;
  */
 @Algorithm
 @ServiceDefinition(isSingleton=true)
-public interface DentonAlgorithm {
+public interface DentonProcessor {
     TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, DentonSpecification spec);
     TsData benchmark(TsUnit highFreq, TsData aggregationConstraint, DentonSpecification spec);
 }

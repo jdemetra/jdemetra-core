@@ -15,17 +15,15 @@
 * limitations under the Licence.
 */
 
-package demetra.maths.matrices.internal;
+package demetra.maths.matrices.decomposition;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.decomposition.IVectorTransformation;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.Constants;
 
 /**
- * A Householder reflection is a matrix ofInternal the form H = I - 2/(v'Jv) * (vv'J) 
- v is called the householder vector. Transforms x = (a, b) into (c, 0) such that
+ * A Householder reflection is a matrix of the form H = I - 2/(v'Jv) * (vv'J) 
+ * v is called the householder vector. Transforms x = (a, b) into (c, 0) such that
  * a*a - b*b = c*c We consider here that a*a &gt b*b. J-unitary transformations
  * are considered. if a*a = b*b, the transformation is | 1 0| | 0 -1|
  *

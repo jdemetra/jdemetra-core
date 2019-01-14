@@ -23,7 +23,7 @@ import demetra.design.Development;
  */
 @Development(status = Development.Status.Alpha)
 @lombok.Data
-public final class SeatsSpecification implements Cloneable {
+public final class SeatsSpec implements Cloneable {
      public static enum ApproximationMode {
 
         None, Legacy, Noisy
@@ -42,6 +42,7 @@ public final class SeatsSpecification implements Cloneable {
     private double seasTolerance=DEF_EPSPHI;
     private double trendBoundary=DEF_RMOD, seasBoundary=DEF_SMOD, seasBoundaryAtPi=DEF_SMOD1;
     
+    private static final SeatsSpec DEFAULT=new SeatsSpec();
 
     public void setXlBoundary(double value) {
         if (value < 0.9 || value > 1) {
@@ -80,14 +81,13 @@ public final class SeatsSpecification implements Cloneable {
     }
 
     public boolean isDefault() {
-        return seasTolerance == DEF_EPSPHI && xlBoundary == DEF_XL && trendBoundary == DEF_RMOD && seasBoundary == DEF_SMOD && seasBoundaryAtPi == DEF_SMOD1
-                && approximationMode == ApproximationMode.Legacy && method == EstimationMethod.Burman;
+        return this.equals(DEFAULT);
     }
 
     @Override
-    public SeatsSpecification clone() {
+    public SeatsSpec clone() {
         try {
-            SeatsSpecification spec = (SeatsSpecification) super.clone();
+            SeatsSpec spec = (SeatsSpec) super.clone();
             return spec;
         } catch (CloneNotSupportedException ex) {
             throw new AssertionError();

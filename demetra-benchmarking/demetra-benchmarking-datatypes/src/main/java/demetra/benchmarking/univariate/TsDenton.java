@@ -16,11 +16,11 @@
  */
 package demetra.benchmarking.univariate;
 
-import demetra.benchmarking.spi.DentonAlgorithm;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
 import demetra.util.ServiceLookup;
 import java.util.concurrent.atomic.AtomicReference;
+import demetra.benchmarking.spi.DentonProcessor;
 
 /**
  *
@@ -29,13 +29,13 @@ import java.util.concurrent.atomic.AtomicReference;
 @lombok.experimental.UtilityClass
 public class TsDenton {
 
-    private final AtomicReference<DentonAlgorithm> IMPL = ServiceLookup.firstMutable(DentonAlgorithm.class);
+    private final AtomicReference<DentonProcessor> IMPL = ServiceLookup.firstMutable(DentonProcessor.class);
 
-    public void setImplementation(DentonAlgorithm algorithm) {
+    public void setImplementation(DentonProcessor algorithm) {
         IMPL.set(algorithm);
     }
 
-    public DentonAlgorithm getImplementation() {
+    public DentonProcessor getImplementation() {
         return IMPL.get();
     }
     

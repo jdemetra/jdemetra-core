@@ -64,20 +64,16 @@ public class TsMultivariateCholetteTest {
         spec2.setLambda(0.5);
         spec2.setRho(1);
         ContemporaneousConstraintDescriptor c1 = ContemporaneousConstraintDescriptor.parse("s_1=s11+s21");
-        spec1.add(c1);
-        spec2.add(c1);
-        ContemporaneousConstraintDescriptor c2 = ContemporaneousConstraintDescriptor.parse("s_2=s12+s22");
-        spec1.add(c2);
-        spec2.add(c2);
-        ContemporaneousConstraintDescriptor c3 = ContemporaneousConstraintDescriptor.parse("s2_=s21+s22");
-        spec1.add(c3);
-        spec2.add(c3);
-        
+   ContemporaneousConstraintDescriptor c2 = ContemporaneousConstraintDescriptor.parse("s_2=s12+s22");
+       ContemporaneousConstraintDescriptor c3 = ContemporaneousConstraintDescriptor.parse("s2_=s21+s22");
+        spec1.setContemporaneousConstraints(new ContemporaneousConstraintDescriptor[]{c1, c2, c3});
+        spec2.setContemporaneousConstraints(new ContemporaneousConstraintDescriptor[]{c1, c2, c3});
+         
         TsData S22 = randomY(10, 7);
         input.put("S22", S22);
 
         TemporalConstraintDescriptor c4 = TemporalConstraintDescriptor.parse("S22=sum(s22)");
-        spec2.add(c4);
+        spec2.setTemporalConstraints(new TemporalConstraintDescriptor[]{c4});
         
         Map<String, TsData> rslt1 = TsMultivariateCholette.benchmark(input, spec1);
         assertTrue(rslt1.size() == 4);

@@ -27,6 +27,6 @@ public interface ProcSpecification{
 
     AlgorithmDescriptor getAlgorithmDescriptor();
     
-    ProcSpecification makeCopy();
+    ProcSpecification clone();
     
 }

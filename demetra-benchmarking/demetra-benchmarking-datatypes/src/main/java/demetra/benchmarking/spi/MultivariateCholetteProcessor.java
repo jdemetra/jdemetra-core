@@ -16,10 +16,11 @@
  */
 package demetra.benchmarking.spi;
 
-import demetra.benchmarking.univariate.CholetteSpecification;
+import demetra.benchmarking.multivariate.MultivariateCholetteSpecification;
 import demetra.design.Algorithm;
 import demetra.design.ServiceDefinition;
 import demetra.timeseries.TsData;
+import java.util.Map;
 
 /**
  *
@@ -27,6 +28,13 @@ import demetra.timeseries.TsData;
  */
 @Algorithm
 @ServiceDefinition(isSingleton=true)
-public interface CholetteAlgorithm {
-    TsData benchmark(TsData source, TsData target, CholetteSpecification spec);
+public interface MultivariateCholetteProcessor {
+
+    /**
+     *
+     * @param dictionary
+     * @param spec
+     * @return
+     */
+    Map<String, TsData> benchmark(Map<String, TsData> dictionary, MultivariateCholetteSpecification spec);
 }

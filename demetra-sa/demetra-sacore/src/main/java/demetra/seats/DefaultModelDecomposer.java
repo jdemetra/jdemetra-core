@@ -18,7 +18,7 @@ package demetra.seats;
 
 import demetra.arima.IArimaModel;
 import demetra.design.Development;
-import demetra.seats.SeatsSpecification.ApproximationMode;
+import demetra.seats.SeatsSpec.ApproximationMode;
 import demetra.ucarima.ModelDecomposer;
 import demetra.ucarima.SeasonalSelector;
 import demetra.ucarima.TrendCycleSelector;
@@ -30,7 +30,7 @@ import demetra.ucarima.UcarimaModel;
 @Development(status = Development.Status.Alpha)
 public class DefaultModelDecomposer implements IModelDecomposer {
 
-    public static DefaultModelDecomposer of(SeatsSpecification spec) {
+    public static DefaultModelDecomposer of(SeatsSpec spec) {
         DefaultModelDecomposer decomposer = new DefaultModelDecomposer();
         decomposer.epsphi = spec.getSeasTolerance();
         decomposer.smod = spec.getSeasBoundary();
@@ -38,9 +38,9 @@ public class DefaultModelDecomposer implements IModelDecomposer {
         return decomposer;
     }
 
-    private double epsphi = SeatsSpecification.DEF_EPSPHI;
-    private double rmod = SeatsSpecification.DEF_RMOD;
-    private double smod = SeatsSpecification.DEF_SMOD;
+    private double epsphi = SeatsSpec.DEF_EPSPHI;
+    private double rmod = SeatsSpec.DEF_RMOD;
+    private double smod = SeatsSpec.DEF_SMOD;
     private boolean noisyModel;
 
     /**

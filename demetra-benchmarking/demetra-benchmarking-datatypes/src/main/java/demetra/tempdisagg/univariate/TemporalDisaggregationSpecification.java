@@ -20,7 +20,6 @@ import demetra.algorithms.AlgorithmDescriptor;
 import demetra.data.AggregationType;
 import demetra.data.Parameter;
 import demetra.timeseries.TimeSelector;
-import java.util.Objects;
 import demetra.processing.ProcSpecification;
 
 /**
@@ -29,7 +28,7 @@ import demetra.processing.ProcSpecification;
  */
 @lombok.Data
 @lombok.NoArgsConstructor
-public class TemporalDisaggregationSpecification implements ProcSpecification {
+public final class TemporalDisaggregationSpecification implements ProcSpecification, Cloneable {
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("temporaldisaggregation", "generic", null);
 
@@ -39,21 +38,15 @@ public class TemporalDisaggregationSpecification implements ProcSpecification {
     }
 
     @Override
-    public TemporalDisaggregationSpecification makeCopy() {
-        TemporalDisaggregationSpecification spec=new TemporalDisaggregationSpecification();
-        spec.constant=constant;
-        spec.trend=trend;
-        spec.log=log;
-        spec.aggregationType=aggregationType;
-        spec.residualsModel=residualsModel;
-        spec.parameter=parameter.clone();
-        spec.diffuseRegressors=diffuseRegressors;
-        spec.span=span.clone();
-        spec.estimationPrecision=estimationPrecision;
-        spec.maximumLikelihood=maximumLikelihood;
-        spec.truncatedParameter=truncatedParameter;
-        spec.zeroInitialization=zeroInitialization;
-        return spec;
+    public TemporalDisaggregationSpecification clone() {
+        try {
+            TemporalDisaggregationSpecification c=(TemporalDisaggregationSpecification) super.clone();
+            c.parameter=parameter.clone();
+            c.span=span.clone();
+            return c;
+        } catch (CloneNotSupportedException ex) {
+            throw new AssertionError();
+         }
     }
 
     public static enum Model {

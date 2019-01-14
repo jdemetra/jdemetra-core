@@ -25,7 +25,7 @@ import demetra.processing.ProcSpecification;
  * @author Jean Palate
  */
 @lombok.Data
-public class CholetteSpecification implements ProcSpecification {
+public final class CholetteSpecification implements ProcSpecification, Cloneable {
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "cholette", null);
 
@@ -48,13 +48,12 @@ public class CholetteSpecification implements ProcSpecification {
     }
 
     @Override
-    public CholetteSpecification makeCopy() {
-        CholetteSpecification spec = new CholetteSpecification();
-        spec.rho = rho;
-        spec.lambda = lambda;
-        spec.bias=bias;
-        spec.aggregationType=aggregationType;
-        return spec;
+    public CholetteSpecification clone() {
+        try {
+            return (CholetteSpecification) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new AssertionError();
+        }
     }
 
     @Override
