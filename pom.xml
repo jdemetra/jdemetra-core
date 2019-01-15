@@ -5,7 +5,7 @@
 
     <groupId>eu.europa.ec.joinup.sat</groupId>
     <artifactId>demetra-parent</artifactId>
-    <version>2.2.2-RC2</version>
+    <version>2.2.2</version>
     <packaging>pom</packaging>
 
     <name>JDemetra+</name>
