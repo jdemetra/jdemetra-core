@@ -156,11 +156,11 @@ public class HtmlX11Diagnostics extends AbstractHtmlElement {
         stream.close(HtmlTag.TABLEROW);
 
         boolean mul = stats_.getMode().isMultiplicative();
-        double[][] QO = SeriesEvolution.calcVariations(stats_.getOc(), null, mul);
-        double[][] QI = SeriesEvolution.calcVariations(stats_.getIc(), null, mul);
-        double[][] QC = SeriesEvolution.calcVariations(stats_.getCc(), null, mul);
-        double[][] QS = SeriesEvolution.calcVariations(stats_.getSc(), null, mul);
-        double[][] QCI = SeriesEvolution.calcVariations(stats_.getCIc(), null, mul);
+        double[][] QO = SeriesEvolution.calcVariations(stats_.getOc(), null, mul, stats_.validObservations());
+        double[][] QI = SeriesEvolution.calcVariations(stats_.getIc(), null, mul, stats_.validObservations());
+        double[][] QC = SeriesEvolution.calcVariations(stats_.getCc(), null, mul, stats_.validObservations());
+        double[][] QS = SeriesEvolution.calcVariations(stats_.getSc(), null, mul, stats_.validObservations());
+        double[][] QCI = SeriesEvolution.calcVariations(stats_.getCIc(), null, mul, stats_.validObservations());
 
         int len = QO[0].length;
 

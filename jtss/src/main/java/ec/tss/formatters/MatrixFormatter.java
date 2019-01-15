@@ -22,6 +22,7 @@ import ec.tstoolkit.Parameter;
 import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcDiagnostic;
 import ec.tstoolkit.information.InformationSet;
+import ec.tstoolkit.information.ParameterInfo;
 import ec.tstoolkit.information.RegressionItem;
 import ec.tstoolkit.information.StatisticalTest;
 import ec.tstoolkit.maths.Complex;
@@ -51,6 +52,7 @@ public class MatrixFormatter {
         DICTIONARY.put(String.class, new StringFormatter());
         DICTIONARY.put(SarimaModel.class, new SarimaFormatter());
         DICTIONARY.put(Parameter.class, new ParameterFormatter());
+        DICTIONARY.put(ParameterInfo.class, new ParameterInfoFormatter());
         DICTIONARY.put(TsMoniker.class, new MonikerFormatter());
         DICTIONARY.put(TsPeriod.class, new PeriodFormatter());
         DICTIONARY.put(RegressionItem.class, new RegressionItemFormatter());

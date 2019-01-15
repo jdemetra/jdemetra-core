@@ -43,7 +43,7 @@ public class SeatsModel {
     private IArimaModel noisyModel;
     private final boolean hasSeas;
     private boolean cutoff, changed;
-    private Complex[] arRoots;
+    private Complex[] arRoots, maRoots;
 
     /**
      *
@@ -79,6 +79,17 @@ public class SeatsModel {
             }
         }
         return arRoots;
+    }
+
+    public Complex[] getMovingAverageRoots(){
+        if (maRoots == null){
+            if (model == null)
+                maRoots=new Complex[0];
+            else{
+                maRoots=model.getRegularMA().roots();
+            }
+        }
+        return maRoots;
     }
 
     /**

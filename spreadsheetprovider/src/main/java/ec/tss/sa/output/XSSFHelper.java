@@ -19,10 +19,10 @@ package ec.tss.sa.output;
 import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import ec.tstoolkit.timeseries.simplets.TsDataTableInfo;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -50,31 +50,33 @@ public class XSSFHelper {
             int rowNum = 0;
             currentRow = sheet.createRow(rowNum);
             for (int cellNum = 0; cellNum < headers0.length; cellNum++) {
-                currentCell = currentRow.createCell(cellNum + 1, XSSFCell.CELL_TYPE_STRING);
+                currentCell = currentRow.createCell(cellNum + 1, CellType.STRING);
                 currentCell.setCellValue(headers0[cellNum]);
             }
             //headers1
             rowNum++;
             currentRow = sheet.createRow(rowNum);
             for (int cellNum = 0; cellNum < headers1.length; cellNum++) {
-                currentCell = currentRow.createCell(1 + cellNum, XSSFCell.CELL_TYPE_STRING);
+                currentCell = currentRow.createCell(1 + cellNum, CellType.STRING);
                 currentCell.setCellValue(headers1[cellNum]);
             }
             //columnvalues & data
-            for (int i = 0; i < table.getDomain().getLength(); i++) {
-                ++rowNum;
-                currentRow = sheet.createRow(rowNum);
-                int cellNum = 0;
-                currentCell = currentRow.createCell(cellNum);
-                currentCell.setCellValue(table.getDomain().get(i).firstday().toString());
-                for (int j = 0; j < table.getSeriesCount(); j++) {
-                    cellNum++;
+            if (table.getDomain() != null) {
+                for (int i = 0; i < table.getDomain().getLength(); i++) {
+                    ++rowNum;
+                    currentRow = sheet.createRow(rowNum);
+                    int cellNum = 0;
                     currentCell = currentRow.createCell(cellNum);
-                    TsDataTableInfo info = table.getDataInfo(i, j);
-                    if (info == TsDataTableInfo.Valid) {
-                        currentCell.setCellValue(table.getData(i, j));
-                    } else {
-                        currentCell.setCellValue("");
+                    currentCell.setCellValue(table.getDomain().get(i).firstday().toString());
+                    for (int j = 0; j < table.getSeriesCount(); j++) {
+                        cellNum++;
+                        currentCell = currentRow.createCell(cellNum);
+                        TsDataTableInfo info = table.getDataInfo(i, j);
+                        if (info == TsDataTableInfo.Valid) {
+                            currentCell.setCellValue(table.getData(i, j));
+                        } else {
+                            currentCell.setCellValue("");
+                        }
                     }
                 }
             }
@@ -86,7 +88,7 @@ public class XSSFHelper {
             for (String h : headers0) {
                 if (!h.isEmpty()) {
                     currentRow = sheet.createRow(rowNum);
-                    currentCell = currentRow.createCell(1, XSSFCell.CELL_TYPE_STRING);
+                    currentCell = currentRow.createCell(1, CellType.STRING);
                     currentCell.setCellValue(h);
 
                     // Periods
@@ -100,7 +102,7 @@ public class XSSFHelper {
                     // Components + Data
                     for (int i = currentData; i < currentData + nbComponents; i++) {
                         currentRow = sheet.createRow(++rowNum);
-                        currentCell = currentRow.createCell(0, XSSFCell.CELL_TYPE_STRING);
+                        currentCell = currentRow.createCell(0, CellType.STRING);
                         currentCell.setCellValue(headers1[i]);
                         for (int j = 0; j < table.getDomain().getLength(); j++) {
                             currentCell = currentRow.createCell(j + 1);

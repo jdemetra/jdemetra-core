@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
 
-    private static final double E_LIMIT1 = .01, E_LIMIT2=0.005;
+    private static final double E_LIMIT = .005;
     private StatisticalTest qs_sa, qs_i, f_sa, f_i;
     private double sev, bad, unc;
 
@@ -68,10 +68,10 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
         }
         DescriptiveStatistics idesc = new DescriptiveStatistics(i);
         double se = idesc.getStdev();
-        return se > E_LIMIT1;
+        return se > E_LIMIT;
     }
 
-    static IDiagnostics create(CompositeResults rslts, AdvancedResidualSeasonalityDiagnosticsConfiguration config) {
+    public static IDiagnostics create(CompositeResults rslts, AdvancedResidualSeasonalityDiagnosticsConfiguration config) {
         try {
             if (rslts == null || GenericSaResults.getDecomposition(rslts, ISaResults.class) == null) {
                 return null;
@@ -83,7 +83,7 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
                 return null;
             }
             boolean mul = isMultiplicative(rslts);
-            boolean isignif = mul ? isSignificant(i) : (sa != null && i != null) ? isSignificant(i, sa, E_LIMIT1) : true;
+            boolean isignif = mul ? isSignificant(i) : (sa != null && i != null) ? isSignificant(i, sa, E_LIMIT) : true;
             if (config.isQsTest()) {
                 int ny = config.getQsTestLastYears();
                 if (sa != null) {
@@ -97,7 +97,7 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
                         salast = sac.drop(Math.max(0, sac.getLength() - ifreq * ny - 1), 0);
                     }
                     DifferencingResults dsa = DifferencingResults.create(salast, -1, true);
-                    if (isSignificant(dsa.getDifferenced(), salast, E_LIMIT2)) {
+                    if (mul ? isSignificant(dsa.getDifferenced()) : isSignificant(dsa.getDifferenced(), salast, E_LIMIT)) {
                         test.qs_sa = QSTest.compute(dsa.getDifferenced().internalStorage(), ifreq, 2);
                     }
                 }

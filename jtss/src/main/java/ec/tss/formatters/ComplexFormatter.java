@@ -53,22 +53,23 @@ public class ComplexFormatter implements IStringFormatter {
         if (item == 0) {
             return c.toString();
         }
-        if (Math.abs(item) == 1) {
-            return fmt.format(c.abs());
-        } else if (Math.abs(item) == 2) {
-            double arg = c.arg();
-            if (arg == 0) {
-                return "";
-            } else {
-                double period = (2 * Math.PI) / arg;
-                if (period < -2 + 1e-6 && period > -2 - 1e-6) {
-                    return "2";
+        switch (Math.abs(item)) {
+            case 1:
+                return fmt.format(c.abs());
+            case 2:
+                double arg = c.arg();
+                if (arg == 0) {
+                    return "";
                 } else {
-                    return fmt.format(period);
+                    double period = (2 * Math.PI) / arg;
+                    if (period < -2 + 1e-6 && period > -2 - 1e-6) {
+                        return "2";
+                    } else {
+                        return fmt.format(period);
+                    }
                 }
-            }
-        } else {
-            return "";
+            default:
+                return "";
         }
     }
 }

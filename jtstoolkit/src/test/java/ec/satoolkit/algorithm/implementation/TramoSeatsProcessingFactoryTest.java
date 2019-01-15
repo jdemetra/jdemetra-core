@@ -138,8 +138,9 @@ public class TramoSeatsProcessingFactoryTest {
 //        System.out.println(sabench);
         StatisticalTest skewness = rslts.getData("residuals.skewness", StatisticalTest.class);
         assertTrue(skewness != null);
+        Double vt = rslts.getData("variancedecomposition.total", Double.class);
 //        System.out.println(skewness);
-            // All the possible results are defined in the dictionary of "rslts"
+        // All the possible results are defined in the dictionary of "rslts"
 //        Map<String, Class> dictionary = rslts.getDictionary();
 //        for (Entry<String, Class> entry : dictionary.entrySet()) {
 //            System.out.println(entry.getKey());

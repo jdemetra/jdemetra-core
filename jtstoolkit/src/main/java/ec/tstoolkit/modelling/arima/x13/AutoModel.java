@@ -93,7 +93,7 @@ public class AutoModel implements IPreprocessingModule {
 //            }
 
             SarmaSpecification rsltSpec = amdid.select(dres, curspec.getFrequency(),
-                    2, 1, nd, nbd);
+                    curspec.getFrequency() == 2 ? 1 : 2, 1, nd, nbd);
             nspec.copy(rsltSpec);
             nspec.setD(nd);
             nspec.setBD(nbd);

@@ -24,16 +24,19 @@ import ec.tstoolkit.arima.estimation.*;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.ReadDataBlock;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.dstats.T;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
 import ec.tstoolkit.eco.Ols;
 import ec.tstoolkit.eco.RegModel;
 import ec.tstoolkit.information.InformationMapping;
 import ec.tstoolkit.information.InformationSet;
+import ec.tstoolkit.information.ParameterInfo;
 import ec.tstoolkit.information.StatisticalTest;
 import ec.tstoolkit.maths.matrices.Matrix;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.stats.NiidTests;
 import ec.tstoolkit.stats.RunsTestKind;
+import ec.tstoolkit.stats.TestofRuns;
 import ec.tstoolkit.stats.TestofUpDownRuns;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -238,8 +241,8 @@ public class ModelEstimation implements IProcResults {
 
     @Override
     public boolean contains(String id) {
-            return MAPPING.contains(id);
-     }
+        return MAPPING.contains(id);
+    }
 
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
@@ -271,8 +274,10 @@ public class ModelEstimation implements IProcResults {
             RES_BP = "bp",
             RES_BP2 = "bp2",
             RES_SEASBP = "seasbp",
-            RES_UD_NUMBER = "nruns",
-            RES_UD_LENGTH = "lruns",
+            RES_UD_NUMBER = "nudruns",
+            RES_UD_LENGTH = "ludruns",
+            RES_RUNS_NUMBER = "nruns",
+            RES_RUNS_LENGTH = "lruns",
             ARIMA = "arima",
             ARIMA_COVAR = "covar",
             ARIMA_MEAN = "mean",
@@ -299,7 +304,7 @@ public class ModelEstimation implements IProcResults {
 
     private static final InformationMapping<ModelEstimation> MAPPING = new InformationMapping<>(ModelEstimation.class);
 
-    private static Parameter param(ModelEstimation source, String name, int lag) {
+    private static ParameterInfo param(ModelEstimation source, String name, int lag) {
         SarimaModel arima = source.getArima();
         int pos = -1;
         switch (name) {
@@ -324,7 +329,20 @@ public class ModelEstimation implements IProcResults {
         double err = source.pcov_ == null ? 0 : Math.sqrt(source.pcov_.get(pos, pos));
         Parameter p = new Parameter(arima.getParameter(pos), err == 0 ? ParameterType.Fixed : ParameterType.Estimated);
         p.setStde(err);
-        return p;
+        if (err == 0) {
+            return ParameterInfo.of(p);
+        }
+        // p-value
+        int nhp = 0;
+        if (source.pcov_ != null) {
+            nhp = source.pcov_.diagonal().count(x -> x > 0);
+        }
+        int df = source.likelihood_.getDegreesOfFreedom(true, nhp);
+        T t = new T();
+        t.setDegreesofFreedom(df);
+        double tval = p.getValue() / err;
+        double prob = 1 - t.getProbabilityForInterval(-tval, tval);
+        return new ParameterInfo(p, prob, null);
     }
 
     static {
@@ -345,40 +363,60 @@ public class ModelEstimation implements IProcResults {
                 source -> Math.sqrt(source.statistics_.SsqErr / (source.statistics_.effectiveObservationsCount)));
         MAPPING.set(InformationSet.item(RESIDUALS, RES_DATA), double[].class, source -> source.likelihood_.getResiduals());
         MAPPING.set(InformationSet.item(RESIDUALS, RES_MEAN), StatisticalTest.class,
-                source -> StatisticalTest.create(source.getNiidTests().getMeanTest()));
+                source -> StatisticalTest.of(source.getNiidTests().getMeanTest()));
         MAPPING.set(InformationSet.item(RESIDUALS, RES_SKEWNESS), StatisticalTest.class,
-                source -> StatisticalTest.create(source.getNiidTests().getSkewness()));
+                source -> StatisticalTest.of(source.getNiidTests().getSkewness()));
         MAPPING.set(InformationSet.item(RESIDUALS, RES_KURTOSIS), StatisticalTest.class,
-                source -> StatisticalTest.create(source.getNiidTests().getKurtosis()));
+                source -> StatisticalTest.of(source.getNiidTests().getKurtosis()));
         MAPPING.set(InformationSet.item(RESIDUALS, RES_DH), StatisticalTest.class,
-                source -> StatisticalTest.create(source.getNiidTests().getNormalityTest()));
+                source -> StatisticalTest.of(source.getNiidTests().getNormalityTest()));
         MAPPING.set(InformationSet.item(RESIDUALS, RES_LB), StatisticalTest.class,
-                source -> StatisticalTest.create(source.getNiidTests().getLjungBox()));
+                source -> StatisticalTest.of(source.getNiidTests().getLjungBox()));
         MAPPING.set(InformationSet.item(RESIDUALS, RES_LB2), StatisticalTest.class,
-                source -> StatisticalTest.create(source.getNiidTests().getLjungBoxOnSquare()));
+                source -> StatisticalTest.of(source.getNiidTests().getLjungBoxOnSquare()));
         MAPPING.set(InformationSet.item(RESIDUALS, RES_SEASLB), StatisticalTest.class,
-                source -> StatisticalTest.create(source.getNiidTests().getSeasonalLjungBox()));
+                source -> StatisticalTest.of(source.getNiidTests().getSeasonalLjungBox()));
         MAPPING.set(InformationSet.item(RESIDUALS, RES_BP), StatisticalTest.class,
-                source -> StatisticalTest.create(source.getNiidTests().getBoxPierce()));
+                source -> StatisticalTest.of(source.getNiidTests().getBoxPierce()));
         MAPPING.set(InformationSet.item(RESIDUALS, RES_BP2), StatisticalTest.class,
-                source -> StatisticalTest.create(source.getNiidTests().getBoxPierceOnSquare()));
+                source -> StatisticalTest.of(source.getNiidTests().getBoxPierceOnSquare()));
         MAPPING.set(InformationSet.item(RESIDUALS, RES_SEASBP), StatisticalTest.class,
-                source -> StatisticalTest.create(source.getNiidTests().getSeasonalBoxPierce()));
+                source -> StatisticalTest.of(source.getNiidTests().getSeasonalBoxPierce()));
         MAPPING.set(InformationSet.item(RESIDUALS, RES_UD_NUMBER), StatisticalTest.class,
                 source -> {
                     TestofUpDownRuns ud = source.getNiidTests().getUpAndDownRuns();
-                    if (ud==null)
+                    if (ud == null) {
                         return null;
+                    }
                     ud.setKind(RunsTestKind.Number);
-                    return StatisticalTest.create(ud);
+                    return StatisticalTest.of(ud);
                 });
         MAPPING.set(InformationSet.item(RESIDUALS, RES_UD_LENGTH), StatisticalTest.class,
                 source -> {
                     TestofUpDownRuns ud = source.getNiidTests().getUpAndDownRuns();
-                    if (ud==null)
+                    if (ud == null) {
                         return null;
+                    }
                     ud.setKind(RunsTestKind.Length);
-                    return StatisticalTest.create(ud);
+                    return StatisticalTest.of(ud);
+                });
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_RUNS_NUMBER), StatisticalTest.class,
+                source -> {
+                    TestofRuns runs = source.getNiidTests().getRuns();
+                    if (runs == null) {
+                        return null;
+                    }
+                    runs.setKind(RunsTestKind.Number);
+                    return StatisticalTest.of(runs);
+                });
+        MAPPING.set(InformationSet.item(RESIDUALS, RES_RUNS_LENGTH), StatisticalTest.class,
+                source -> {
+                    TestofRuns runs = source.getNiidTests().getRuns();
+                    if (runs == null) {
+                        return null;
+                    }
+                    runs.setKind(RunsTestKind.Length);
+                    return StatisticalTest.of(runs);
                 });
 
         // ARIMA
@@ -390,13 +428,13 @@ public class ModelEstimation implements IProcResults {
         MAPPING.set(InformationSet.item(ARIMA, ARIMA_BP), Integer.class, source -> source.model_.getArima().getSeasonalAROrder());
         MAPPING.set(InformationSet.item(ARIMA, ARIMA_BD), Integer.class, source -> source.model_.getArima().getSeasonalDifferenceOrder());
         MAPPING.set(InformationSet.item(ARIMA, ARIMA_BQ), Integer.class, source -> source.model_.getArima().getSeasonalMAOrder());
-        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_PHI), 1, 5, Parameter.class,
+        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_PHI), 1, 5, ParameterInfo.class,
                 (source, i) -> param(source, ARIMA_PHI, i));
-        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_BPHI), 1, 2, Parameter.class,
+        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_BPHI), 1, 2, ParameterInfo.class,
                 (source, i) -> param(source, ARIMA_BPHI, i));
-        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_TH), 1, 5, Parameter.class,
+        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_TH), 1, 5, ParameterInfo.class,
                 (source, i) -> param(source, ARIMA_TH, i));
-        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_BTH), 1, 2, Parameter.class,
+        MAPPING.setList(InformationSet.item(ARIMA, ARIMA_BTH), 1, 2, ParameterInfo.class,
                 (source, i) -> param(source, ARIMA_BTH, i));
         MAPPING.set(InformationSet.item(ARIMA, ARIMA_COVAR), Matrix.class, source -> source.pcov_);
     }

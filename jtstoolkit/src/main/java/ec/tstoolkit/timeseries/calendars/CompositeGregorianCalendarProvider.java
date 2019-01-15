@@ -48,9 +48,9 @@ public class CompositeGregorianCalendarProvider extends WeightedItems<String> im
     @Override
     @Deprecated
     public void calendarData(TradingDaysType dtype, TsDomain domain, List<DataBlock> buffer, int start) {
-        calendarData(dtype, domain, buffer.subList(start, start+count(dtype)));
+        calendarData(dtype, domain, buffer.subList(start, start + count(dtype)));
     }
-    
+
     @Override
     public void calendarData(TradingDaysType dtype, TsDomain domain, List<DataBlock> buffer) {
         GregorianCalendarManager mgr = calendarManager.get();
@@ -128,5 +128,19 @@ public class CompositeGregorianCalendarProvider extends WeightedItems<String> im
     @Override
     public String getDescription(TradingDaysType dtype, int idx) {
         return DefaultGregorianCalendarProvider.description(dtype, idx);
+    }
+
+    @Override
+    public CompositeGregorianCalendarProvider withCalendarManager(GregorianCalendarManager manager) {
+        CompositeGregorianCalendarProvider result = new CompositeGregorianCalendarProvider(manager);
+        items()
+                .stream()
+                .map(CompositeGregorianCalendarProvider::cloneItem)
+                .forEach(result::add);
+        return result;
+    }
+
+    private static WeightedItem<String> cloneItem(WeightedItem<String> o) {
+        return new WeightedItem<>(o.item, o.weight);
     }
 }

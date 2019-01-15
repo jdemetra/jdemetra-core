@@ -13,9 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package ec.tss.sa.diagnostics;
 
 import ec.tss.sa.ISaDiagnosticsFactory;
@@ -34,9 +32,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ISaDiagnosticsFactory.class)
 public class ResidualSeasonalityDiagnosticsFactory implements ISaDiagnosticsFactory {
 
-    public static final String NAME="Combined residual seasonality test", 
-            SA="on sa", SA_LAST="on sa (last 3 years)", IRR="on irregular";
-    public static final List<String> ALL=Collections.unmodifiableList(Arrays.asList(SA, SA_LAST, IRR));
+    public static final String NAME = "combined seasonality test",
+            SA = NAME + " on sa", SA_LAST = NAME + " on sa (last 3 years)", IRR = NAME + " on irregular";
+    public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(SA, SA_LAST, IRR));
     private ResidualSeasonalityDiagnosticsConfiguration config_;
     //public static final ResidualSeasonalityDiagnosticsFactory Default = new ResidualSeasonalityDiagnosticsFactory();
 
@@ -68,8 +66,8 @@ public class ResidualSeasonalityDiagnosticsFactory implements ISaDiagnosticsFact
     }
 
     @Override
-    public List<String> getTestDictionary(){
-        return ALL.stream().map(s->s+":2").collect(Collectors.toList());
+    public List<String> getTestDictionary() {
+        return ALL.stream().map(s -> s + ":2").collect(Collectors.toList());
     }
 
     @Override
@@ -89,7 +87,7 @@ public class ResidualSeasonalityDiagnosticsFactory implements ISaDiagnosticsFact
 
     @Override
     public void setProperties(Object obj) {
-        ResidualSeasonalityDiagnosticsConfiguration config = (ResidualSeasonalityDiagnosticsConfiguration)obj;
+        ResidualSeasonalityDiagnosticsConfiguration config = (ResidualSeasonalityDiagnosticsConfiguration) obj;
         if (config != null) {
             config.check();
             config_ = config.clone();

@@ -28,4 +28,8 @@ public interface IPropertyDescriptors {
     List<EnhancedPropertyDescriptor> getProperties();
 
     String getDisplayName();
+    
+    public static interface Validator{
+        void validate();
+    }
 }

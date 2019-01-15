@@ -379,7 +379,16 @@ public class X13Preprocessor implements IPreprocessor {
     // use the default model, clear outliers
     private void lastSolution(ModellingContext context) {
         SarimaSpecification nspec = context.description.getSpecification();
-        nspec.setP(3);
+        switch (nspec.getFrequency()) {
+            case 2:
+                nspec.setP(1);
+                break;
+            case 3: // for the future
+                nspec.setP(2);
+                break;
+            default:
+                nspec.setP(3);
+        }
         if (nspec.getBD() > 0 || nspec.getFrequency() == 1) {
             nspec.setBP(0);
         }

@@ -516,11 +516,11 @@ public class SaItem {
         }
         TsInformation tsinfo;
         if (ts_.getMoniker().isAnonymous()) {
-            tsinfo = new TsInformation(ts_, TsInformationType.All);
+            tsinfo = ts_.toInfo(TsInformationType.All);
         } else if (status_ == SaItem.Status.Unprocessed) {
-            tsinfo = new TsInformation(ts_, TsInformationType.Definition);
+            tsinfo = ts_.toInfo(TsInformationType.Definition);
         } else {
-            tsinfo = new TsInformation(ts_.freeze(), TsInformationType.All);
+            tsinfo = ts_.freeze().toInfo(TsInformationType.All);
         }
         info.set(TS, tsinfo);
         String dname = defaults.get(dspec_);

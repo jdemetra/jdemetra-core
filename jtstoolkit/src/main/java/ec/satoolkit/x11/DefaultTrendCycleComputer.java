@@ -30,7 +30,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 class DefaultTrendCycleComputer extends DefaultX11Algorithm implements
         ITrendCycleComputer {
 
-    private SymmetricFilter hendersonFilter;
+    private final SymmetricFilter hendersonFilter;
 
     /**
      *

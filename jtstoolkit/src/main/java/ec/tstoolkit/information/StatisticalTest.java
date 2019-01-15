@@ -38,6 +38,14 @@ public class StatisticalTest {
      */
     public final double pvalue;
 
+    public static StatisticalTest of(ec.tstoolkit.stats.StatisticalTest test){
+        if (test == null)
+            return null;
+        else
+            return new StatisticalTest(test);
+    }
+
+    @Deprecated
     public static StatisticalTest create(ec.tstoolkit.stats.StatisticalTest test){
         if (test == null)
             return null;

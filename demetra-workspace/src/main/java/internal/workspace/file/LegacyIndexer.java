@@ -29,6 +29,7 @@ import internal.workspace.file.xml.XmlLegacyWorkspace;
 import internal.workspace.file.xml.XmlLegacyWorkspaceItem;
 import internal.io.JaxbUtil;
 import java.io.IOException;
+import java.nio.file.FileSystemException;
 import java.nio.file.Path;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -46,7 +47,9 @@ final class LegacyIndexer implements Indexer {
         try {
             unmarshalIndex(file);
             return true;
-        } catch (JAXBException ex) {
+        } catch (FileSystemException ex) {
+            throw ex;
+        } catch (IOException | JAXBException ex) {
             return false;
         }
     }

@@ -388,10 +388,15 @@ public class X13Specification extends AbstractSaSpecification implements ISaSpec
                 }
                 return;
             case None:
-                x11Spec_.setMode(DecompositionMode.Additive);
+                if (x11Spec_.getMode() != DecompositionMode.Additive
+                        && x11Spec_.getMode() != DecompositionMode.PseudoAdditive) {
+                    x11Spec_.setMode(DecompositionMode.Additive);
+                }
                 return;
             default:
-                x11Spec_.setMode(DecompositionMode.Undefined);
+                if (x11Spec_.getMode() != DecompositionMode.PseudoAdditive) {
+                    x11Spec_.setMode(DecompositionMode.Undefined);
+                }
         }
     }
 }

@@ -19,6 +19,7 @@ package ec.tss.sa.diagnostics;
 
 import ec.satoolkit.GenericSaResults;
 import ec.satoolkit.ISeriesDecomposition;
+import ec.satoolkit.algorithm.implementation.X13ProcessingFactory;
 import ec.satoolkit.x11.Mstatistics;
 import ec.satoolkit.x11.X11Results;
 import ec.tstoolkit.algorithm.CompositeResults;
@@ -39,25 +40,22 @@ public class MDiagnostics implements IDiagnostics {
 
     public static MDiagnostics create(MDiagnosticsConfiguration config, CompositeResults rslts) {
         try {
-            X11Results drslts = GenericSaResults.getDecomposition(rslts, X11Results.class);
-            if (drslts == null) {
+            Mstatistics stats=rslts.get(X13ProcessingFactory.MSTATISTICS, Mstatistics.class);
+            if (stats == null) {
                 return null;
             }
 
-            return new MDiagnostics(config, rslts);
+            return new MDiagnostics(config, stats);
         } catch (Exception ex) {
             return null;
         }
     }
 
-    protected MDiagnostics(MDiagnosticsConfiguration config, CompositeResults rslts) {
+    protected MDiagnostics(MDiagnosticsConfiguration config,  Mstatistics mstats) {
         bad_ = config.getBad();
         severe_ = config.getSevere();
         all_ = config.isUseAll();
 
-        ISeriesDecomposition decomposition=GenericSaResults.getFinalDecomposition(rslts);
-        X11Results x11=GenericSaResults.getDecomposition(rslts, X11Results.class);
-        Mstatistics mstats = Mstatistics.computeFromX11(decomposition.getMode(), x11.getInformation());
 
         int nm = mstats.getMCount();
         stats_ = new double[nm + 2];

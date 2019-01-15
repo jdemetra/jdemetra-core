@@ -117,6 +117,8 @@ public class X11Toolkit extends BaseX11Algorithm implements
         } else {
             toolkit.setSeasonalnormalizer(DummySeasonalNormalizer.instance);
         }
+        
+        toolkit.bias=spec.getBiasCorrection();
 
         /*toolkit.setSeasonalnormalizer(new DefaultSeasonalNormalizer());*/
         return toolkit;
@@ -132,6 +134,7 @@ public class X11Toolkit extends BaseX11Algorithm implements
     private ISeasonalNormalizer snormalizer;
     private IX11Utilities utilities = new DefaultX11Utilities();
     private boolean excludefcst = false;
+    private BiasCorrection bias=BiasCorrection.Legacy;
 
     private X11Toolkit(X11Context context) {
         this.context = context;
@@ -202,6 +205,10 @@ public class X11Toolkit extends BaseX11Algorithm implements
         return excludefcst;
     }
 
+    @Override
+    public BiasCorrection getBiasCorrection() {
+        return bias;
+    }
     /**
      *
      * @return context

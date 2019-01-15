@@ -45,6 +45,9 @@ class DoubleFormatter implements IStringFormatter {
     public String format(Object obj, int item) {
         if (item > 0)
             return "";
-        return fmt.format(obj);
+        double val=(Double) obj;
+        if (! Double.isFinite(val))
+            return "";
+        return fmt.format(val);
     }
 }

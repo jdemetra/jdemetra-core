@@ -13,14 +13,14 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.modelling.arima;
 
 import ec.tstoolkit.Parameter;
 import ec.tstoolkit.ParameterType;
 import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.dstats.T;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.RegressionItem;
 import ec.tstoolkit.modelling.DefaultTransformationType;
@@ -102,8 +102,7 @@ public class RegArimaDictionary {
 
                 info.set(OUTLIERSCOUNT, vars.select(OutlierType.Undefined).getItemsCount());
             }
-        }
-        catch (Exception err) {
+        } catch (Exception err) {
         }
     }
 
@@ -218,15 +217,19 @@ public class RegArimaDictionary {
         }
         double[] c = estimation.getLikelihood().getB();
         double[] e = estimation.getLikelihood().getBSer(true, hpcount);
+        int df = estimation.getLikelihood().getDegreesOfFreedom(true, hpcount);
+        T tstat = new T();
+        tstat.setDegreesofFreedom(df);
         int tdmax = Math.min(ntd, TD_LIST.length);
         int icur = 0;
         for (TsVariableSelection.Item<ICalendarVariable> var : td.elements()) {
             for (int j = 0; j < var.variable.getDim(); ++j) {
-                RegressionItem reg = new RegressionItem(null, c[start + var.position + j], e[start + var.position + j]);
+                double t = c[start + var.position + j] / e[start + var.position + j];
+                double prob = 1 - tstat.getProbabilityForInterval(-t, t);
+                RegressionItem reg = new RegressionItem(null, c[start + var.position + j], e[start + var.position + j], prob);
                 if (icur < tdmax) {
                     cinfo.set(TD_LIST[icur++], reg);
-                }
-                else {
+                } else {
                     StringBuilder builder = new StringBuilder();
                     builder.append("td(").append(++icur).append(')');
                     cinfo.set(builder.toString(), reg);
@@ -236,19 +239,25 @@ public class RegArimaDictionary {
     }
 
     private static void fillEaster(TsVariableList vars, ModelEstimation estimation, InformationSet info, int start, int hpcount) {
-         TsVariableSelection<IEasterVariable> easter = vars.select(IEasterVariable.class);
-           if (easter.isEmpty())
-                return;
-            InformationSet cinfo = info.subSet(CAL);
+        TsVariableSelection<IEasterVariable> easter = vars.select(IEasterVariable.class);
+        if (easter.isEmpty()) {
+            return;
+        }
+        InformationSet cinfo = info.subSet(CAL);
         double[] c = estimation.getLikelihood().getB();
         double[] e = estimation.getLikelihood().getBSer(true, hpcount);
-            int pos = easter.get(0).position+start;
-            int dur = easter.get(0).variable.getDuration();
-            StringBuilder builder = new StringBuilder();
-            builder.append(EASTER).append('(').append(dur).append(')');
-            RegressionItem reg = new RegressionItem(builder.toString(), c[pos], e[pos]);
-            cinfo.set(EASTER, reg);
-   }
+        int pos = easter.get(0).position + start;
+        int dur = easter.get(0).variable.getDuration();
+        StringBuilder builder = new StringBuilder();
+        builder.append(EASTER).append('(').append(dur).append(')');
+        int df = estimation.getLikelihood().getDegreesOfFreedom(true, hpcount);
+        T tstat = new T();
+        tstat.setDegreesofFreedom(df);
+        double t = c[pos] / e[pos];
+        double prob = 1 - tstat.getProbabilityForInterval(-t, t);
+        RegressionItem reg = new RegressionItem(builder.toString(), c[pos], e[pos], prob);
+        cinfo.set(EASTER, reg);
+    }
 
     private static void fillOutliers(TsVariableList vars, ModelEstimation estimation, InformationSet info, int start, int hpcount, TsFrequency freq) {
         InformationSet oinfo = info.subSet(OUTLIERS);
@@ -256,17 +265,21 @@ public class RegArimaDictionary {
         double[] b = estimation.getLikelihood().getB();
         double[] e = estimation.getLikelihood().getBSer(true, hpcount);
         TsVariableSelection<IOutlierVariable> outliers = vars.select(IOutlierVariable.class);
+        int df = estimation.getLikelihood().getDegreesOfFreedom(true, hpcount);
+        T tstat = new T();
+        tstat.setDegreesofFreedom(df);
         for (TsVariableSelection.Item<IOutlierVariable> cur : outliers.elements()) {
             String name;
             if (icur < OUTLIERS_LIST.length) {
                 name = OUTLIERS_LIST[icur++];
-            }
-            else {
+            } else {
                 StringBuilder builder = new StringBuilder();
                 builder.append("out(").append(++icur).append(')');
                 name = builder.toString();
             }
-            RegressionItem reg = new RegressionItem(cur.variable.getDescription(freq), b[start + cur.position], e[start + cur.position]);
+                double t = b[start + cur.position] / e[start + cur.position];
+                double prob = 1 - tstat.getProbabilityForInterval(-t, t);
+            RegressionItem reg = new RegressionItem(cur.variable.getDescription(freq), b[start + cur.position], e[start + cur.position], prob);
             oinfo.set(name, reg);
         }
     }

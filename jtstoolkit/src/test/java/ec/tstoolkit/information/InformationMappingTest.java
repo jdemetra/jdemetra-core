@@ -62,5 +62,6 @@ public class InformationMappingTest {
     public void testSearchId() {
         assertTrue(mapping.contains("squares(4)"));
         assertTrue(mapping.getData(5,"squares(4)", Integer.class) != null);
+        assertTrue(mapping.getData(5,"squares(20)", Integer.class) != null);
     }
 }

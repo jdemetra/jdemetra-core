@@ -23,30 +23,35 @@ public class ICRatioComputer {
      *
      * @param context
      * @param s
-     * @param info The InformationSet this method writes into.
+     * @param info    The InformationSet this method writes into.
      */
     public static void writeICR(X11Context context, TsData s, InformationSet info) {
         int freq = context.getFrequency();
 
         int filterLength = freq + 1;
+        if (freq == 2) {
+            filterLength = 5;
+        }
         SymmetricFilter trendFilter = TrendCycleFilterFactory.makeHendersonFilter(filterLength);// .defaultHendersonFilterForFrequency(freq);
         IFiltering strategy = new DefaultTrendFilteringStrategy(trendFilter,
-                null, filterLength + " terms Henderson moving average");
+                                                                null, filterLength + " terms Henderson moving average");
         TsData sc = strategy.process(s, s.getDomain());
         TsData si = context.op(s, sc);
         int nf = context.getForecastHorizon();
         int nb = context.getBackcastHorizon();
         TsDomain gdom = (nf == 0 && nb == 0) ? null : sc.getDomain().drop(nb, nf);
+        InformationSet dtables = info.subSet(X11Kernel.D);
         double gc = SeriesEvolution.calcAbsMeanVariations(sc, gdom, 1,
-                context.isMultiplicative() || context.isPseudoAdditive());
+                context.isMultiplicative() || context.isPseudoAdditive(), null);
         double gi = SeriesEvolution.calcAbsMeanVariations(si, gdom, 1,
-                context.isMultiplicative() || context.isPseudoAdditive());
+                context.isMultiplicative() || context.isPseudoAdditive(), null);
         double icr = gi / gc;
         if (freq == 4) {
             icr *= 3.0;
+        } else if (freq == 2) {
+            icr *= 6.0;
         }
 
-        InformationSet dtables = info.subSet(X11Kernel.D);
         dtables.set(X11Kernel.D12_IC, icr);
     }
 }

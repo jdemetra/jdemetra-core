@@ -49,6 +49,6 @@ public enum DecompositionMode {
     PseudoAdditive;
 
     public boolean isMultiplicative() {
-        return this == Multiplicative || this == LogAdditive;
+        return this  != Additive && this != Undefined;
     }
 }

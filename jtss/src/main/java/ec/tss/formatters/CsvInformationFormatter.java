@@ -24,6 +24,7 @@ import ec.tstoolkit.algorithm.IProcResults;
 import ec.tstoolkit.algorithm.ProcDiagnostic;
 import ec.tstoolkit.information.Information;
 import ec.tstoolkit.information.InformationSet;
+import ec.tstoolkit.information.ParameterInfo;
 import ec.tstoolkit.information.RegressionItem;
 import ec.tstoolkit.information.StatisticalTest;
 import ec.tstoolkit.maths.Complex;
@@ -75,6 +76,7 @@ public class CsvInformationFormatter {
         DICTIONARY.put(Boolean.class, new BooleanFormatter("1", "0"));
         DICTIONARY.put(String.class, new StringFormatter());
         DICTIONARY.put(SarimaModel.class, new SarimaFormatter());
+        DICTIONARY.put(ParameterInfo.class, new ParameterInfoFormatter());
         DICTIONARY.put(Parameter.class, new ParameterFormatter());
         DICTIONARY.put(TsMoniker.class, new MonikerFormatter());
         DICTIONARY.put(TsPeriod.class, new PeriodFormatter());
@@ -153,6 +155,11 @@ public class CsvInformationFormatter {
         }
 
         void fill(final String id, IProcResults record, boolean shortname) {
+            if (record == null) {
+                results = EMPTY;
+                items = SEMPTY;
+                return;
+            }
             // we search for a pre-specified length
             int l = id.indexOf(':');
             String sid = id;
@@ -410,7 +417,7 @@ public class CsvInformationFormatter {
         } else {
             txt = MultiLineNameUtil.last(txt);
         }
-        txt=StringFormatter.cleanup(txt);
+        txt = StringFormatter.cleanup(txt);
 
         if (txt.indexOf(comma) >= 0) {
             if (txt.indexOf('\"') >= 0) {

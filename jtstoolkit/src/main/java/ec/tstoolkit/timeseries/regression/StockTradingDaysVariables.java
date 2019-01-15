@@ -13,9 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package ec.tstoolkit.timeseries.regression;
 
 import ec.tstoolkit.data.DataBlock;
@@ -39,20 +37,21 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
 
     /**
      * Creates a new set of StockTradingDays variables
-     * @param w The wth day of the month is considered. When w is negative, 
-     * the (-w) day before the end of the month is considered
-     * 
+     *
+     * @param w The wth day of the month is considered. When w is negative, the
+     * (-w) day before the end of the month is considered
+     *
      */
     public StockTradingDaysVariables(int w) {
-        w_=w;
-     }
+        w_ = w;
+    }
 
     @Override
-    public StockTradingDaysVariables clone(){
-        try{
-            StockTradingDaysVariables td=(StockTradingDaysVariables) super.clone();
+    public StockTradingDaysVariables clone() {
+        try {
+            StockTradingDaysVariables td = (StockTradingDaysVariables) super.clone();
             return td;
-        } catch (CloneNotSupportedException err){
+        } catch (CloneNotSupportedException err) {
             throw new AssertionError();
         }
     }
@@ -69,10 +68,10 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
 
     @Override
     public String getDescription(TsFrequency context) {
-        StringBuilder builder=new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         builder.append("TD Stock [").append(w_).append(']');
         return builder.toString();
-     }
+    }
 
     @Override
     public int getDim() {
@@ -81,26 +80,27 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
 
     @Override
     public String getItemDescription(int idx, TsFrequency context) {
-        return DayOfWeek.valueOf(idx+1).toString();
+        return DayOfWeek.valueOf(idx + 1).toString();
     }
 
     @Override
     public boolean isSignificant(TsDomain domain) {
-        return domain.getFrequency()==TsFrequency.Monthly;
+        return domain.getFrequency() == TsFrequency.Monthly;
     }
 
-    @Override
     public void data(TsDomain domain, List<DataBlock> data) {
         int n = domain.getLength();
         TsPeriod d0 = domain.getStart();
         int conv = 12 / d0.getFrequency().intValue();
-        int[] begin = new int[n + 1];
+        int[] begin = new int[n];
+        int[] monthlen = new int[n];
         TsPeriod month = new TsPeriod(TsFrequency.Monthly);
-        month.set(d0.getYear(), d0.getPosition()*conv);
+        month.set(d0.getYear(), d0.getPosition() * conv);
         month.move(conv - 1);
         for (int i = 0; i < begin.length; ++i) {
             // begin contains the first day of the last month of each period
             begin[i] = Day.calc(month.getYear(), month.getPosition(), 0);
+            monthlen[i] = Day.getNumberOfDaysByMonth(month.getYear(), month.getPosition());
             month.move(conv);
         }
         double[] z0 = new double[7];
@@ -110,7 +110,7 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
             // z0[0] = Sunday
             //
             int dayofweek = (begin[j] - 3) % 7;
-            int monthlen = begin[j + 1] - begin[j];
+            int mlen = monthlen[j];
             if (dayofweek < 0) {
                 dayofweek += 7;
             }
@@ -126,16 +126,16 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
             // .............
             //
             if (this.w_ >= 0) {
-                if (this.w_ < monthlen) {
-                    monthlen = this.w_;
+                if (this.w_ < mlen) {
+                    mlen = this.w_;
                 }
             } else {
-                monthlen += this.w_;
-                if (monthlen <= 0) {
-                    monthlen = 1;
+                mlen += this.w_;
+                if (mlen <= 0) {
+                    mlen = 1;
                 }
             }
-            int Lastdayofweek = (dayofweek + (monthlen-1)) % 7;
+            int Lastdayofweek = (dayofweek + (mlen - 1)) % 7;
             z0[Lastdayofweek] = 1.0d;
             for (int i = 0; i < 6; ++i) {
                 DataBlock x = data.get(i);
@@ -144,5 +144,3 @@ public class StockTradingDaysVariables implements ITradingDaysVariable, Cloneabl
         }
     }
 }
-        
-

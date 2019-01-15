@@ -52,7 +52,7 @@ public class GenericSaProcessingFactory {
 
     public static final String FAMILY = "Seasonal adjustment";
     public static final String PREPROCESSING = "preprocessing",
-            DECOMPOSITION = "decomposition", FINAL = "final", BENCHMARKING = "benchmarking", DIAGNOSTICS = "diagnostics";
+            DECOMPOSITION = "decomposition", FINAL = "final", BENCHMARKING = "benchmarking", DIAGNOSTICS = "diagnostics", GENERAL = "general";
     public final static int MAX_REPEAT_COUNT = 80, MAX_MISSING_COUNT = 33;
 
     public static void testSeries(final TsData y) {
@@ -330,7 +330,11 @@ public class GenericSaProcessingFactory {
                         i = i.fittoDomain(domain);
                     }
                     finals.add(i, ComponentType.Irregular);
-                    finals.add(inv_op(mul, y, s), ComponentType.SeasonallyAdjusted);
+                    if (ldecomp.getMode() == DecompositionMode.PseudoAdditive) {
+                        finals.add(op(mul, t, i), ComponentType.SeasonallyAdjusted);
+                    } else {
+                        finals.add(inv_op(mul, y, s), ComponentType.SeasonallyAdjusted);
+                    }
 
                     // forecasts...
                     if (fdomain != null) {
@@ -372,7 +376,7 @@ public class GenericSaProcessingFactory {
                             }
                             finals.add(fsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
                         }
-                   }
+                    }
                     results.put(FINAL, finals);
                     return Status.Valid;
                 }
@@ -383,6 +387,70 @@ public class GenericSaProcessingFactory {
     // computes the final decomposition
     protected static void addFinalStep(IPreprocessingFilter filter, SequentialProcessing sproc) {
         sproc.add(createFinalStep(filter));
+    }
+
+    protected static void addGeneralStep(SequentialProcessing sproc) {
+        sproc.add(createGeneralStep());
+    }
+
+    protected static IProcessingNode<TsData> createGeneralStep() {
+
+        return new IProcessingNode<TsData>() {
+            @Override
+            public String getName() {
+                return GENERAL;
+            }
+
+            @Override
+            public String getPrefix() {
+                return null;
+            }
+
+            @Override
+            public Status process(TsData s, Map<String, IProcResults> results) {
+                PreprocessingModel pm = (PreprocessingModel) results.get(PREPROCESSING);
+                ISaResults decomp = (ISaResults) results.get(DECOMPOSITION);
+                ISeriesDecomposition finals = (ISeriesDecomposition) results.get(FINAL);
+                GenericSaResults sa = GenericSaResults.of(pm, decomp, finals);
+                if (sa == null) {
+                    return Status.Unprocessed;
+                }
+                results.put(GENERAL, sa);
+                return Status.Valid;
+            }
+        };
+    }
+
+    protected static void addDiagnosticsStep(SequentialProcessing sproc) {
+        sproc.add(createDiagnosticsStep());
+    }
+
+    protected static IProcessingNode<TsData> createDiagnosticsStep() {
+
+        return new IProcessingNode<TsData>() {
+            @Override
+            public String getName() {
+                return DIAGNOSTICS;
+            }
+
+            @Override
+            public String getPrefix() {
+                return DIAGNOSTICS;
+            }
+
+            @Override
+            public Status process(TsData s, Map<String, IProcResults> results) {
+                PreprocessingModel pm = (PreprocessingModel) results.get(PREPROCESSING);
+                ISaResults decomp = (ISaResults) results.get(DECOMPOSITION);
+                ISeriesDecomposition finals = (ISeriesDecomposition) results.get(FINAL);
+                GenericSaDiagnostics sa = GenericSaDiagnostics.of(pm, decomp, finals);
+                if (sa == null) {
+                    return Status.Unprocessed;
+                }
+                results.put(DIAGNOSTICS, sa);
+                return Status.Valid;
+            }
+        };
     }
 
     protected static IProcessingNode<TsData> createBenchmarkingStep(final SaBenchmarkingSpec spec) {

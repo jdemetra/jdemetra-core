@@ -64,7 +64,7 @@ public class RevisionAnalysisDocument extends ActiveDocument<RevisionAnalysisSpe
     public InformationSet write(boolean verbose) {
         InformationSet info = super.write(verbose);
         info.add(ALGORITHM, processor.getInformation());
-        TsCollectionInformation tsCollInfo = new TsCollectionInformation(getInput(), TsInformationType.All);
+        TsCollectionInformation tsCollInfo = getInput().toInfo(TsInformationType.All);
         info.add(INPUT, tsCollInfo);
         info.set(SPEC, getSpecification().write(verbose));
         return info;

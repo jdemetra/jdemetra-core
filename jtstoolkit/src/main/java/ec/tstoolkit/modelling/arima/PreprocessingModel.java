@@ -27,6 +27,7 @@ import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.design.Development;
+import ec.tstoolkit.dstats.T;
 import ec.tstoolkit.eco.CoefficientEstimation;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
 import ec.tstoolkit.information.Information;
@@ -39,20 +40,21 @@ import ec.tstoolkit.maths.realfunctions.IFunctionInstance;
 import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.DeterministicComponent;
-import ec.tstoolkit.modelling.PreadjustmentVariable;
 import ec.tstoolkit.modelling.ModellingDictionary;
+import ec.tstoolkit.modelling.PreadjustmentVariable;
 import ec.tstoolkit.modelling.SeriesInfo;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.x13.UscbForecasts;
 import ec.tstoolkit.sarima.SarimaModel;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
-import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.ICalendarVariable;
+import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
 import ec.tstoolkit.timeseries.regression.IMovingHolidayVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
+import ec.tstoolkit.timeseries.regression.IUserTsVariable;
 import ec.tstoolkit.timeseries.regression.MissingValueEstimation;
 import ec.tstoolkit.timeseries.regression.OutlierEstimation;
 import ec.tstoolkit.timeseries.regression.OutlierType;
@@ -398,8 +400,8 @@ public class PreprocessingModel implements IProcResults {
         if (type == ComponentType.Undefined) {
             return outliersEffect(domain);
         } else {
-            return deterministicEffect(domain, var
-                    -> var instanceof IOutlierVariable
+            return deterministicEffect(domain, var ->
+                    var instanceof IOutlierVariable
                     && type == Variable.searchType((IOutlierVariable) var));
         }
 
@@ -498,7 +500,7 @@ public class PreprocessingModel implements IProcResults {
             return xfcasts_;
         }
         xfcasts_ = new Forecasts();
-        TsDomain fdomain = new TsDomain(description.getEstimationDomain().getEnd(), nf);
+        TsDomain fdomain = new TsDomain(description.getSeriesDomain().getEnd(), nf);
         RegArimaEstimation<SarimaModel> est
                 = new RegArimaEstimation<>(estimation.getRegArima(),
                         estimation.getLikelihood());
@@ -666,13 +668,13 @@ public class PreprocessingModel implements IProcResults {
         }
     }
 
-    private TsData getForecastError() {
+    public TsData getForecastError() {
         TsDomain fdomain = domain(true);
         Forecasts fcasts = forecasts(fdomain.getLength());
         double[] ef;
         if (isMultiplicative()) {
             LogForecasts lf = new LogForecasts(fcasts);
-            ef = lf.getForecatStdevs();
+            ef = lf.getForecastStdevs();
         } else {
             ef = fcasts.getForecastStdevs();
         }
@@ -834,8 +836,8 @@ public class PreprocessingModel implements IProcResults {
     }
 
     private int getForecastCount() {
-        int n=ncasts>=0 ? ncasts : -ncasts*description.getFrequency();
-        return n ;
+        int n = ncasts >= 0 ? ncasts : -ncasts * description.getFrequency();
+        return n;
     }
 
     private TsDomain domain(boolean fcast) {
@@ -874,11 +876,17 @@ public class PreprocessingModel implements IProcResults {
         return description.getEstimationDomain().getFrequency();
     }
 
-    public <T extends ITsVariable> RegressionItem getRegressionItem(Class<T> tclass, int vpos) {
-        TsVariableSelection<T> sel = vars().select(tclass);
+    public <V extends ITsVariable> RegressionItem getRegressionItem(Class<V> tclass, int vpos) {
+        TsVariableSelection<V> sel = vars().select(tclass);
         if (sel.isEmpty()) {
             return null;
         } else {
+            int nhp = description.getArimaComponent().getFreeParametersCount();
+            int df = estimation.getLikelihood().getDegreesOfFreedom(true, nhp);
+            
+            T tstat = new T();
+            tstat.setDegreesofFreedom(df);
+
             int cur = 0;
             while (cur < sel.getItemsCount()) {
                 int l = sel.get(cur).variable.getDim();
@@ -892,28 +900,31 @@ public class PreprocessingModel implements IProcResults {
             if (cur == sel.getItemsCount()) {
                 return null;
             }
-            Item<T> item = sel.get(cur);
+            Item<V> item = sel.get(cur);
             TsFrequency context = description.getEstimationDomain().getFrequency();
             int pos = description.getRegressionVariablesStartingPosition() + item.position + vpos;
             double c = estimation.getLikelihood().getB()[pos];
-            double e = estimation.getLikelihood().getBSer(pos, true, description.getArimaComponent().getFreeParametersCount());
-            return new RegressionItem(item.variable.getItemDescription(vpos, context), c, e);
+            double e = estimation.getLikelihood().getBSer(pos, true, nhp);
+            double t = c / e;
+            double prob = 1 - tstat.getProbabilityForInterval(-t, t);
+            return new RegressionItem(item.variable.getItemDescription(vpos, context), c, e, prob);
         }
     }
     // some caching...
     private TsVariableList x_;
     private TsData fullres_, lin_, fcast_, bcast_;
     private Forecasts xfcasts_;
-    private int ncasts=-2;
+    private int ncasts = -2;
     public static final String LOG = "log",
             ADJUST = "adjust",
-            SPAN = "span", ESPAN = "espan", START = "start", END = "end", N = "n",
+            SPAN = "span", ESPAN = "espan", START = "start", END = "end", N = "n", NM = "missing", PERIOD = "period",
             REGRESSION = "regression",
             OUTLIERS = "outlier(*)",
             CALENDAR = "calendar(*)",
             EASTER = "easter",
             FULLRES = "fullresiduals",
             FCASTS = "fcasts",
+            EFCASTS = "efcasts",
             BCASTS = "bcasts",
             LIN_FCASTS = "lin_fcasts",
             LIN_BCASTS = "lin_bcasts",
@@ -926,7 +937,8 @@ public class PreprocessingModel implements IProcResults {
             OUT15 = "out(15)", OUT16 = "out(16)", OUT17 = "out(17)", OUT18 = "out(18)", OUT19 = "out(19)", OUT20 = "out(20)",
             OUT21 = "out(21)", OUT22 = "out(22)", OUT23 = "out(23)", OUT24 = "out(24)", OUT25 = "out(25)", OUT26 = "out(26)",
             OUT27 = "out(27)", OUT28 = "out(28)", OUT29 = "out(29)", OUT30 = "out(30)",
-            COEFF = "coefficients", COVAR = "covar", COEFFDESC = "description", PCOVAR = "pcovar";
+            USER="user", COEFF = "coefficients", COVAR = "covar", COEFFDESC = "description", PCOVAR = "pcovar",
+            TD_DERIVED = "td-derived", TD_FTEST = "td-ftest";
 
     ;
     // MAPPING
@@ -945,9 +957,11 @@ public class PreprocessingModel implements IProcResults {
     private static final InformationMapping<PreprocessingModel> MAPPING = new InformationMapping<>(PreprocessingModel.class);
 
     static {
+        MAPPING.set(PERIOD, Integer.class, source -> source.description.getFrequency());
         MAPPING.set(InformationSet.item(SPAN, START), TsPeriod.class, source -> source.description.getSeriesDomain().getStart());
         MAPPING.set(InformationSet.item(SPAN, END), TsPeriod.class, source -> source.description.getSeriesDomain().getLast());
         MAPPING.set(InformationSet.item(SPAN, N), Integer.class, source -> source.description.getSeriesDomain().getLength());
+        MAPPING.set(InformationSet.item(SPAN, NM), Integer.class, source -> source.description.getOriginal().getMissingValuesCount());
         MAPPING.set(InformationSet.item(ESPAN, START), TsPeriod.class, source -> source.description.getEstimationDomain().getStart());
         MAPPING.set(InformationSet.item(ESPAN, END), TsPeriod.class, source -> source.description.getEstimationDomain().getLast());
         MAPPING.set(InformationSet.item(ESPAN, N), Integer.class, source -> source.description.getEstimationDomain().getLength());
@@ -1015,6 +1029,52 @@ public class PreprocessingModel implements IProcResults {
             return source.description.countRegressors(var -> var.status.isSelected() && var.getVariable() instanceof IMovingHolidayVariable);
         });
         MAPPING.setList(InformationSet.item(REGRESSION, TD), 1, 15, RegressionItem.class, (source, i) -> source.getRegressionItem(ITradingDaysVariable.class, i - 1));
+        MAPPING.set(InformationSet.item(REGRESSION, TD_DERIVED), RegressionItem.class, source -> {
+            TsVariableSelection<ITsVariable> regs = source.x_.select(var -> var instanceof ITradingDaysVariable);
+            if (regs.isEmpty() || regs.getItemsCount() > 1) {
+                return null;
+            }
+            Item<ITsVariable> reg = regs.elements()[0];
+            int ndim = reg.variable.getDim();
+            if (ndim <= 1) {
+                return null;
+            } else {
+                ConcentratedLikelihood ll = source.estimation.getLikelihood();
+                int nhp = source.description.getArimaComponent().getFreeParametersCount();
+                int start = source.description.getRegressionVariablesStartingPosition();
+                double[] b = ll.getB();
+                int k0 = start + reg.position, k1 = k0 + ndim;
+                double bd = 0;
+                for (int k = k0; k < k1; ++k) {
+                    bd -= b[k];
+                }
+                double var = ll.getBVar(true, nhp).subMatrix(k0, k1, k0, k1).sum();
+                double tval = bd / Math.sqrt(var);
+                T t = new T();
+                t.setDegreesofFreedom(ll.getDegreesOfFreedom(true, nhp));
+                double prob = 1 - t.getProbabilityForInterval(-tval, tval);
+                return new RegressionItem("td-derived", bd, Math.sqrt(var), prob);
+            }
+        });
+        MAPPING.set(InformationSet.item(REGRESSION, TD_FTEST), Double.class, source -> {
+            TsVariableSelection<ITsVariable> regs = source.x_.select(var -> var instanceof ITradingDaysVariable);
+            if (regs.isEmpty()) {
+                return null;
+            }
+            int nvars = regs.getVariablesCount();
+            if (regs.getItemsCount() == 1 && nvars > 1) {
+                try {
+                    JointRegressionTest jtest = new JointRegressionTest(.05);
+                    jtest.accept(source.estimation.getLikelihood(),
+                            source.description.getArimaComponent().getFreeParametersCount(),
+                            source.description.getRegressionVariablesStartingPosition() + regs.get(0).position,
+                            nvars, null);
+                    return jtest.getTest().getPValue();
+                } catch (Exception ex) {
+                }
+            }
+            return null;
+        });
         MAPPING.set(InformationSet.item(REGRESSION, EASTER), RegressionItem.class, source -> source.getRegressionItem(IEasterVariable.class, 0));
         MAPPING.set(InformationSet.item(REGRESSION, NOUT), Integer.class, source -> source.description.getOutliers().size() + source.description.getPrespecifiedOutliers().size());
         MAPPING.set(InformationSet.item(REGRESSION, NOUTAO), Integer.class, source -> {
@@ -1034,6 +1094,7 @@ public class PreprocessingModel implements IProcResults {
             return vars.select(OutlierType.SO).getItemsCount();
         });
         MAPPING.setList(InformationSet.item(REGRESSION, OUT), 1, 31, RegressionItem.class, (source, i) -> source.getRegressionItem(IOutlierVariable.class, i - 1));
+        MAPPING.setList(InformationSet.item(REGRESSION, USER), 1, 31, RegressionItem.class, (source, i) -> source.getRegressionItem(IUserTsVariable.class, i - 1));
         MAPPING.set(InformationSet.item(REGRESSION, COEFF), Parameter[].class, source -> {
             double[] c = source.estimation.getLikelihood().getB();
             if (c == null) {
@@ -1078,6 +1139,20 @@ public class PreprocessingModel implements IProcResults {
         MAPPING.set(BCASTS, -2, TsData.class, (source, i) -> source.backcast(nperiods(source, i), false));
         MAPPING.set(LIN_FCASTS, -2, TsData.class, (source, i) -> source.linearizedForecast(nperiods(source, i)));
         MAPPING.set(LIN_BCASTS, -2, TsData.class, (source, i) -> source.linearizedBackcast(nperiods(source, i)));
+        MAPPING.set(EFCASTS, -2, TsData.class, (source, i) ->
+        {
+            int np = nperiods(source, i);
+            TsDomain fdomain = new TsDomain(source.description.getSeriesDomain().getEnd(), np);
+            Forecasts fcasts = source.forecasts(np);
+            double[] ef;
+            if (source.isMultiplicative()) {
+                LogForecasts lf = new LogForecasts(fcasts);
+                ef = lf.getForecastStdevs();
+            } else {
+                ef = fcasts.getForecastStdevs();
+            }
+            return new TsData(fdomain.getStart(), ef, true);
+        });
 
     }
 

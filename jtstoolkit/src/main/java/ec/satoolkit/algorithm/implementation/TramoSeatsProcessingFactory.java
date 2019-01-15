@@ -18,7 +18,9 @@ package ec.satoolkit.algorithm.implementation;
 
 import ec.satoolkit.DefaultPreprocessingFilter;
 import ec.satoolkit.DefaultSeriesDecomposition;
+import ec.satoolkit.GenericSaDiagnostics;
 import ec.satoolkit.GenericSaProcessingFactory;
+import ec.satoolkit.GenericSaResults;
 import ec.satoolkit.benchmarking.SaBenchmarkingResults;
 import ec.satoolkit.seats.SeatsResults;
 import ec.satoolkit.tramoseats.SeatsDecomposer;
@@ -54,6 +56,8 @@ public class TramoSeatsProcessingFactory extends GenericSaProcessingFactory impl
         addDecompositionStep(new SeatsDecomposer(xspec.getSeatsSpecification()), filter, processing);
         addFinalStep(filter, processing);
         addBenchmarkingStep(xspec.getBenchmarkingSpecification(), processing);
+        addGeneralStep(processing);
+        addDiagnosticsStep(processing);
         return processing;
     }
     public static final TramoSeatsProcessingFactory instance = new TramoSeatsProcessingFactory();
@@ -61,9 +65,13 @@ public class TramoSeatsProcessingFactory extends GenericSaProcessingFactory impl
     protected TramoSeatsProcessingFactory() {
     }
 
-    public static CompositeResults process(TsData s, TramoSeatsSpecification xspec) {
-        SequentialProcessing<TsData> processing = create(xspec, null);
+    public static CompositeResults process(TsData s, TramoSeatsSpecification xspec, ProcessingContext context) {
+        SequentialProcessing<TsData> processing = create(xspec, context);
         return processing.process(s);
+    }
+
+    public static CompositeResults process(TsData s, TramoSeatsSpecification xspec) {
+        return process(s, xspec, null);
     }
 
     @Override
@@ -103,6 +111,8 @@ public class TramoSeatsProcessingFactory extends GenericSaProcessingFactory impl
         SeatsResults.fillDictionary(DECOMPOSITION, dic, compact);
         DefaultSeriesDecomposition.fillDictionary(null, dic, compact);
         SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic, compact);
+        GenericSaResults.fillDictionary(null, dic, compact);
+        GenericSaDiagnostics.fillDictionary(DIAGNOSTICS, dic, compact);
         return dic;
     }
 }

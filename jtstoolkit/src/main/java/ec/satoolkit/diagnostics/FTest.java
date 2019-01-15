@@ -60,8 +60,7 @@ public class FTest {
         if (!estimateModel()) {
             return false;
         }
-        computeStatistics();
-        return true;
+        return computeStatistics();
     }
 
     public boolean test(ModelDescription m) {
@@ -71,8 +70,7 @@ public class FTest {
         if (!estimateModel()) {
             return false;
         }
-        computeStatistics();
-        return true;
+        return computeStatistics();
     }
 
     public boolean testAMI(TsData s) {
@@ -148,11 +146,16 @@ public class FTest {
         return context.estimation.compute(monitor, context.description.getArimaComponent().getFreeParametersCount());
     }
 
-    private void computeStatistics() {
-        JointRegressionTest test = new JointRegressionTest(sensitivity_);
-        int nvars = regmodel_.getVarsCount();
-        test.accept(seasonalModel_.likelihood, regmodel_.getArma().getParametersCount(), nvars - nseas_, nseas_, null);
-        f_ = test.getTest();
+    private boolean computeStatistics() {
+        try {
+            JointRegressionTest test = new JointRegressionTest(sensitivity_);
+            int nvars = regmodel_.getVarsCount();
+            test.accept(seasonalModel_.likelihood, regmodel_.getArma().getParametersCount(), nvars - nseas_, nseas_, null);
+            f_ = test.getTest();
+            return true;
+        } catch (Exception err) {
+            return false;
+        }
     }
 
     private void clear() {
@@ -186,7 +189,6 @@ public class FTest {
         }
         regmodel_ = context.estimation.getRegArima();
         seasonalModel_ = new RegArimaEstimation<>(regmodel_, context.estimation.getLikelihood());
-        computeStatistics();
-        return true;
+        return computeStatistics();
     }
 }

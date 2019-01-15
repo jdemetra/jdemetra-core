@@ -16,11 +16,14 @@
  */
 package ec.satoolkit.algorithm.implementation;
 
+import ec.satoolkit.DecompositionMode;
 import ec.satoolkit.DefaultPreprocessingFilter;
 import ec.satoolkit.DefaultSeriesDecomposition;
+import ec.satoolkit.GenericSaDiagnostics;
 import ec.satoolkit.GenericSaProcessingFactory;
 import static ec.satoolkit.GenericSaProcessingFactory.BENCHMARKING;
 import static ec.satoolkit.GenericSaProcessingFactory.DECOMPOSITION;
+import ec.satoolkit.GenericSaResults;
 import ec.satoolkit.benchmarking.SaBenchmarkingResults;
 import ec.satoolkit.x11.Mstatistics;
 import ec.satoolkit.x11.X11Results;
@@ -59,17 +62,21 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
         if (xspec.getRegArimaSpecification().getBasic().isPreprocessing()) {
             addPreprocessingStep(xspec.getRegArimaSpecification().build(context), xspec.getX11Specification().getForecastHorizon(), processing);
         }
-        DefaultPreprocessingFilter filter = new DefaultPreprocessingFilter();
+        DecompositionMode mode = xspec.getX11Specification().getMode();
+        boolean noapply = mode == DecompositionMode.PseudoAdditive;
+        DefaultPreprocessingFilter filter = new DefaultPreprocessingFilter(noapply);
         filter.setForecastHorizon(xspec.getX11Specification().getForecastHorizon());
         filter.setBackcastHorizon(xspec.getX11Specification().getBackcastHorizon());
         addDecompositionStep(new X11Decomposer(xspec.getX11Specification()), filter, processing);
         addFinalStep(filter, processing);
-        addDiagnosticsStep(processing);
+        addMStep(processing);
         addBenchmarkingStep(xspec.getBenchmarkingSpecification(), processing);
+        addGeneralStep(processing);
+        addDiagnosticsStep(processing);
         return processing;
     }
 
-    private static void addDiagnosticsStep(SequentialProcessing processing) {
+    private static void addMStep(SequentialProcessing processing) {
         processing.add(new IProcessingNode<TsData>() {
             @Override
             public String getName() {
@@ -105,9 +112,13 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
         return create(xspec, null);
     }
 
-    public static CompositeResults process(TsData s, X13Specification xspec) {
-        SequentialProcessing<TsData> processing = create(xspec, null);
+    public static CompositeResults process(TsData s, X13Specification xspec, ProcessingContext context) {
+        SequentialProcessing<TsData> processing = create(xspec, context);
         return processing.process(s);
+    }
+
+    public static CompositeResults process(TsData s, X13Specification xspec) {
+        return process(s, xspec, null);
     }
 
     @Override
@@ -139,6 +150,8 @@ public class X13ProcessingFactory extends GenericSaProcessingFactory implements 
         Mstatistics.fillDictionary(MSTATISTICS, dic, compact);
         DefaultSeriesDecomposition.fillDictionary(null, dic, compact);
         SaBenchmarkingResults.fillDictionary(BENCHMARKING, dic, compact);
+        GenericSaResults.fillDictionary(null, dic, compact);
+        GenericSaDiagnostics.fillDictionary(DIAGNOSTICS, dic, compact);
         return dic;
     }
 }

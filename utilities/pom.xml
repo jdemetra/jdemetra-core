@@ -6,7 +6,7 @@
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-parent</artifactId>
-        <version>2.2.1</version>
+        <version>2.2.2</version>
     </parent>
     
     <artifactId>demetra-utils</artifactId>
@@ -14,9 +14,9 @@
     <name>Demetra - Utilities</name>
 
     <properties>
-        <slf4j.version>1.7.22</slf4j.version>
+        <slf4j.version>1.7.25</slf4j.version>
         <guava.version>21.0</guava.version>
-        <java-io-util.version>0.0.1</java-io-util.version>
+        <java-io-util.version>0.0.2</java-io-util.version>
     </properties>
 
     <dependencyManagement>

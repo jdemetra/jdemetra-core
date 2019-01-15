@@ -13,9 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package ec.tstoolkit.modelling.arima;
 
 import ec.tstoolkit.data.DescriptiveStatistics;
@@ -26,34 +24,36 @@ import ec.tstoolkit.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class UnitSeriesScaling implements ISeriesScaling{
+public class UnitSeriesScaling implements ISeriesScaling {
 
-    public UnitSeriesScaling(){
-        dmin_=D_MIN;
-        dmax_=D_MAX;
-   }
+    public UnitSeriesScaling() {
+        dmin_ = D_MIN;
+        dmax_ = D_MAX;
+    }
 
-   /**
+    /**
      * Scaling of data, except if all data (in abs) are in the range[dmin, dmax];
+     *
      * @param dmin_
      * @param dmax_
      */
-    public UnitSeriesScaling(final double dmin, final double dmax){
-        this.dmin_=dmin;
-        this.dmax_=dmax;
+    public UnitSeriesScaling(final double dmin, final double dmax) {
+        this.dmin_ = dmin;
+        this.dmax_ = dmax;
     }
 
-    private static final double D_MAX=1e8, D_MIN=1e-6;
+    private static final double D_MAX = 1e8, D_MIN = 1e-6;
 
     private final double dmax_, dmin_;
- 
+
     @Override
     public boolean process(ModellingContext context) {
-        if (context.description.getUnits() != 1)
+        if (context.description.getUnits() != 1) {
             return false;
-         double[] data=context.description.getY();
-       int i = 0;
-         while (i < data.length && !Double.isFinite(data[i])) {
+        }
+        double[] data = context.description.getY();
+        int i = 0;
+        while (i < data.length && !Double.isFinite(data[i])) {
             ++i;
         }
         if (i == data.length) {
@@ -70,9 +70,10 @@ public class UnitSeriesScaling implements ISeriesScaling{
                 }
             }
         }
-        int k=0;
-        if (ymin == ymax)
+        int k = 0;
+        if (ymin == ymax) {
             return false;
+        }
         if (ymax < dmax_ && ymin > dmin_) {
             return true;
         }

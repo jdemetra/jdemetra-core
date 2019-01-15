@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.satoolkit.x11;
 
 import ec.tstoolkit.data.DataBlock;
@@ -124,8 +123,21 @@ public class DefaultX11Utilities extends DefaultX11Algorithm implements IX11Util
      * @return
      */
     @Override
-    public TsData correctTrendBias(TsData t, TsData s, TsData i) {
-        double issq = i.ssq();
+    public TsData correctTrendBias(TsData t, TsData s, TsData i, BiasCorrection bias) {
+        switch (bias){
+            case Legacy:
+                return legacyBiasCorrection(t, s, i);
+            case Ratio:
+                return ratioBiasCorrection(t, s, i);
+            case Smooth:
+                return smoothBiasCorrection(t, s, i);
+            default:
+                return t;
+        }
+    }
+    
+    private TsData legacyBiasCorrection(TsData t, TsData s, TsData i) {
+        double issq = i.log().ssq();
         double sig = Math.exp(issq / (2 * i.getLength()));
         int ifreq = t.getFrequency().intValue();
         int length = 2 * ifreq - 1;
@@ -136,11 +148,25 @@ public class DefaultX11Utilities extends DefaultX11Algorithm implements IX11Util
                 .makeFilters(smoother, 4.5)));
 
         TsData hs = filter.process(s, null);
-        hs.applyOnFinite(x->x*sig);
-
+        hs.applyOnFinite(x -> x * sig);
         return t.times(hs);
     }
 
+    private TsData smoothBiasCorrection(TsData t, TsData s, TsData i) {
+        double issq = i.log().ssq();
+        double sig = Math.exp(issq / (2 * i.getLength()));
+        int ifreq = t.getFrequency().intValue();
+        TsData hs=new DefaultNormalizingStrategie().process(s, null, ifreq);
+        hs.applyOnFinite(x -> x * sig);
+        return t.times(hs);
+    }
+
+    private TsData ratioBiasCorrection(TsData t, TsData s, TsData i) {
+        // average of s, i on complete years
+        double sbias=s.fullYears().average(), ibias=i.average();
+        s.apply(x->x/sbias);
+        return t.times(sbias*ibias);
+    }
     /**
      *
      * @param l

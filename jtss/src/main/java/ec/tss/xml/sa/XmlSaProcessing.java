@@ -122,11 +122,11 @@ public class XmlSaProcessing implements IXmlConverter<SaProcessing> {
                 XmlSaItem xitem = new XmlSaItem();
                 xitem.series = new XmlTs();
                 if (item.getMoniker().isAnonymous())
-                    xitem.series.copy(new TsInformation(item.getTs(), TsInformationType.All));
+                    xitem.series.copy(item.getTs().toInfo(TsInformationType.All));
                 else if (item.getStatus() == SaItem.Status.Unprocessed)
-                    xitem.series.copy(new TsInformation(item.getTs(), TsInformationType.Definition));
+                    xitem.series.copy(item.getTs().toInfo(TsInformationType.Definition));
                 else
-                    xitem.series.copy(new TsInformation(item.getTs().freeze(), TsInformationType.All));
+                    xitem.series.copy(item.getTs().freeze().toInfo(TsInformationType.All));
                 xitem.priority = item.getPriority();
                 xitem.quality = item.getQuality();
                 xitem.policy = item.getEstimationPolicy();

@@ -211,10 +211,10 @@ public class LogLevelTest extends AbstractTramoModule implements IPreprocessingM
     }
 
     private void addInfo(InformationSet information) {
-//        InformationSet subset = information.subSet(PreprocessingDictionary.TRANSFORMATION);
+        InformationSet subset = information.subSet(PreprocessingDictionary.TRANSFORMATION);
 //        subset.set("function", getTransformation());
-//        subset.set("level", level_);
-//        subset.set("log", log_);
+        subset.set("level", level_);
+        subset.set("log", log_);
     }
 
     public boolean hasChangedModel() {

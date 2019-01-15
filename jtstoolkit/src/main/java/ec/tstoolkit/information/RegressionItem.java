@@ -37,18 +37,24 @@ public class RegressionItem {
      *
      */
     public final double stdError;
+    /**
+     * 
+     */
+    public final double pValue;
 
     /**
      *
      * @param desc
      * @param coeff
      * @param err
+     * @param pvalue
      */
     public RegressionItem(String desc, double coeff,
-	    double err) {
+	    double err, double pvalue) {
 	this.description = desc;
 	this.coefficient = coeff;
 	this.stdError = err;
+        this.pValue=pvalue;
     }
 
     @Override

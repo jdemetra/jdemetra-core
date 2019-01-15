@@ -53,13 +53,15 @@ public class StatisticalTestFormatter implements IStringFormatter {
             return fmt.format(test.value);
         if (Strings.isNullOrEmpty(test.description))
             ++item;
-        if (Math.abs(item)== 1)
-            return test.description;
-        else if (Math.abs(item)== 2)
-            return fmt.format(test.value);
-        else if (Math.abs(item)== 3)
-            return df4.format(test.pvalue);
-        else
-            return "";
+        switch (Math.abs(item)) {
+            case 1:
+                return test.description;
+            case 2:
+                return fmt.format(test.value);
+            case 3:
+                return df4.format(test.pvalue);
+            default:
+                return "";
+        }
     }
 }

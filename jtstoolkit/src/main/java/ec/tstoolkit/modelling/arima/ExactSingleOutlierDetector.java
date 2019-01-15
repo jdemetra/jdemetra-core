@@ -124,12 +124,31 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
 
             Householder qr = new Householder(true);
             qr.decompose(m_X);
+            int[] unused = qr.getUnused();
             int nx = m_X.getColumnsCount();
-            m_b = qr.solve(m_yl);
+            if (unused != null) {
+                nx -= unused.length;
+                // we remove the corresponding regression variables
+                Matrix tmp = new Matrix(m_n, nx);
+                for (int i = 0, j = 0; j < nx; ++i) {
+                    if (isUsed(i, unused)) {
+                        tmp.column(j++).copy(m_X.column(i));
+                    }
+                }
+                m_X = tmp;
+                drcols = m_X.columns();
+                drcol = drcols.getData();
+            }
+            m_b = new double[nx];
+            qr.leastSquares(YL, new DataBlock(m_b), null);
             m_w = new double[nx];
             m_L = qr.getR().transpose();
-
-            DataBlock e = model.calcRes(new DataBlock(m_b));
+            DataBlock all;
+            if (unused == null)
+                all=new DataBlock(m_b);
+            else
+                all=expand(m_b, unused);
+            DataBlock e = model.calcRes(all);
             getStandardDeviationComputer().compute((filter(e)));
 //	    DataBlock E = YL.deepClone();
             drcols.begin();
@@ -143,6 +162,25 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends AbstractS
         } catch (Exception ex) {
             return false;
         }
+    }
+
+    private static boolean isUsed(int i, int[] unused) {
+        for (int k = 0; k < unused.length; ++k) {
+            if (i == unused[k]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private DataBlock expand(double[] b, int[] unused){
+        double[] c=new double[b.length+unused.length];
+        for (int i=0, j=0; i<c.length; ++i){
+            if (isUsed(i, unused)){
+                c[i]=b[j++];
+            }
+        }
+        return new DataBlock(c);
     }
 
     /**

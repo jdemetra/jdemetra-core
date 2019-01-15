@@ -62,7 +62,7 @@ public final class TsInformation {
      *
      */
     public TsInformation() {
-        this.moniker = new TsMoniker();
+        this.moniker = TsMoniker.createAnonymousMoniker();
         type = TsInformationType.UserDefined;
     }
 
@@ -70,7 +70,9 @@ public final class TsInformation {
      *
      * @param ts
      * @param type
+     * @deprecated use {@link Ts#toInfo(ec.tss.TsInformationType)} instead
      */
+    @Deprecated
     public TsInformation(Ts ts, TsInformationType type) {
         this.name = ts.getRawName();
         this.moniker = ts.getMoniker();

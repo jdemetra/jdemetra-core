@@ -318,6 +318,7 @@ public class Householder extends AbstractLinearSystemSolver implements
      * @param x
      * @return
      */
+    @Override
     public double[] solve(double[] x) {
         if (m_norig != m_n) {
             throw new MatrixException(MatrixException.Singular);

@@ -148,9 +148,9 @@ public class TsDocument<S extends IProcSpecification, R extends IProcResults> ex
         if (ts != null) {
             TsInformation tsinfo;
             if (ts.getMoniker().isAnonymous()) {
-                tsinfo = new TsInformation(ts, TsInformationType.All);
+                tsinfo = ts.toInfo(TsInformationType.All);
             } else {
-                tsinfo = new TsInformation(ts.freeze(), TsInformationType.All);
+                tsinfo = ts.freeze().toInfo(TsInformationType.All);
             }
             info.subSet(INPUT).add(SERIES, tsinfo);
         }

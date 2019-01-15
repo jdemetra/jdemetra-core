@@ -57,7 +57,7 @@ public class NationalCalendarProvider extends DefaultGregorianCalendarProvider {
     public NationalCalendarProvider(NationalCalendar ncal) {
         this.ncal = ncal.clone();
     }
-    
+
     public Collection<SpecialDayEvent> events() {
         return ncal.elements();
     }
@@ -315,15 +315,17 @@ public class NationalCalendarProvider extends DefaultGregorianCalendarProvider {
     public boolean add(ISpecialDay day) {
         if (!m_locked) {
             return ncal.add(day);
-        }else
+        } else {
             return false;
+        }
     }
 
     public boolean add(SpecialDayEvent evday) {
         if (!m_locked) {
             return ncal.add(evday);
-        }else
+        } else {
             return false;
+        }
     }
 
     public boolean isLongTermMeanCorrection() {
@@ -340,5 +342,10 @@ public class NationalCalendarProvider extends DefaultGregorianCalendarProvider {
 
     public boolean contentEquals(NationalCalendarProvider other) {
         return ncal.contentEquals(other.ncal);
+    }
+
+    @Override
+    public NationalCalendarProvider withCalendarManager(GregorianCalendarManager manager) {
+        return this;
     }
 }
