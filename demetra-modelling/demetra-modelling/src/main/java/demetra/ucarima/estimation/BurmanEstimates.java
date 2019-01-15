@@ -26,7 +26,7 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.matrices.decomposition.ILUDecomposition;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.UnitRoots;

@@ -16,6 +16,7 @@
 */
 package demetra.ssf;
 
+import demetra.DemetraException;
 import demetra.design.Development;
 
 
@@ -24,12 +25,8 @@ import demetra.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class SsfException extends RuntimeException  {
+public class SsfException extends DemetraException  {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -8083959378471463639L;
     /**
      *
      */

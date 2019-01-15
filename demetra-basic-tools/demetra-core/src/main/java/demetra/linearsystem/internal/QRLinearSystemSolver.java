@@ -22,7 +22,7 @@ import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.design.BuilderPattern;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 import demetra.data.DoubleCell;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;

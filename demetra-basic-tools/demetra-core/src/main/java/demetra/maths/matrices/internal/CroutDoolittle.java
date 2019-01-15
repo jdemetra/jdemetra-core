@@ -20,7 +20,7 @@ package demetra.maths.matrices.internal;
 
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 
 /**
  * LU decomposition by means of the Crout-Doolittle algorithm

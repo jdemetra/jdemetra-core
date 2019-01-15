@@ -29,7 +29,7 @@ import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.maths.linearfilters.RationalFilter;
 import demetra.maths.linearfilters.RationalForeFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 import java.util.function.IntToDoubleFunction;
 import demetra.arima.IModel;
 

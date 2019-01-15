@@ -17,7 +17,7 @@
 package demetra.data;
 
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 import demetra.maths.matrices.internal.Householder;
 
 

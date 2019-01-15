@@ -16,6 +16,11 @@
  */
 package demetra.x12;
 
+import demetra.regarima.MovingHolidaySpec;
+import demetra.regarima.RegressionSpec;
+import demetra.regarima.RegArimaSpec;
+import demetra.regarima.TradingDaysSpec;
+import demetra.regarima.TransformSpec;
 import demetra.data.AverageInterpolator;
 import demetra.design.Development;
 import demetra.information.InformationSet;
@@ -43,7 +48,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.simplets.TsDataToolkit;
-import demetra.x12.MovingHolidaySpec.Type;
+import demetra.regarima.MovingHolidaySpec.Type;
 import java.time.LocalDateTime;
 import java.util.Map;
 import demetra.modelling.regression.ILengthOfPeriodVariable;

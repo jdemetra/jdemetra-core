@@ -16,6 +16,7 @@
  */
 package demetra.x12;
 
+import demetra.regarima.RegArimaSpec;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
 import demetra.regarima.regular.PreprocessingModel;

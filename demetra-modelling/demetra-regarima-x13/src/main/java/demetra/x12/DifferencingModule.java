@@ -37,7 +37,7 @@ import demetra.sarima.estimation.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarmaSpecification;
-import demetra.x12.X12Exception;
+import demetra.regarima.X13Exception;
 import demetra.x12.X12Utility;
 
 /**
@@ -350,7 +350,7 @@ public class DifferencingModule implements IDifferencingModule {
             ).y(data).arima(lastModel).build();
             RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima);
             if (rslt == null) {
-                throw new X12Exception("Non convergence in IDDIF");
+                throw new X13Exception("Non convergence in IDDIF");
             }
 
             lastModel = rslt.getModel().arima();

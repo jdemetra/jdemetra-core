@@ -21,7 +21,7 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 
 /**
  *

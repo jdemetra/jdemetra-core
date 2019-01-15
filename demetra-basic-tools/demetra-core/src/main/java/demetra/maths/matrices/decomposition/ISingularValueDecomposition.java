@@ -7,7 +7,7 @@ package demetra.maths.matrices.decomposition;
 
 import demetra.data.DoubleSequence;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 
 /**
  * A = U*S*V'

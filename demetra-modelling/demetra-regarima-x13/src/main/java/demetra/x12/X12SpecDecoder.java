@@ -5,6 +5,14 @@
  */
 package demetra.x12;
 
+import demetra.regarima.MovingHolidaySpec;
+import demetra.regarima.SingleOutlierSpec;
+import demetra.regarima.EstimateSpec;
+import demetra.regarima.OutlierSpec;
+import demetra.regarima.AutoModelSpec;
+import demetra.regarima.RegArimaSpec;
+import demetra.regarima.TradingDaysSpec;
+import demetra.regarima.TransformSpec;
 import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.modelling.regression.AdditiveOutlier;
