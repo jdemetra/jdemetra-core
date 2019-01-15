@@ -48,6 +48,8 @@ public class ModellingContext {
     }
 
     public PreprocessingModel current(boolean update) {
+        if (estimation == null)
+            return null;
         if (!update) {
             PreprocessingModel model = new PreprocessingModel(description.clone(), estimation);
             model.info_ = information.clone();
