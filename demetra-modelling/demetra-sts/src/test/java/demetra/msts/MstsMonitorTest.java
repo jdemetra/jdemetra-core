@@ -5,11 +5,7 @@
  */
 package demetra.msts;
 
-import demetra.msts.LoadingParameter;
-import demetra.msts.MstsMapping;
-import demetra.msts.VarianceParameter;
-import demetra.msts.MstsMonitor;
-import demetra.msts.GenericParameters;
+import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
@@ -43,8 +39,8 @@ public class MstsMonitorTest {
     @Test
     public void testSimple() throws URISyntaxException, IOException {
 
-        URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
-        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
+        File file = Data.copyToTempFile(MultivariateCompositeSsf.class.getResource("/bematrix.txt"));
+        MatrixType data = MatrixSerializer.read(file, "\t|,");
 
         Matrix D = Matrix.make(data.getRowsCount(), 4);
         D.column(0).copy(data.column(0));

@@ -10,10 +10,9 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
 
 /**
  *
@@ -410,17 +409,27 @@ public class Data {
         DAILY_CONTINUOUS = TsData.of(TsPeriod.daily(2004, 1, 1), DoubleSequence.ofInternal(US_UNEMPL));
     }
 
+    public static File copyToTempFile(URL url) throws IOException {
+        File file = File.createTempFile("temp", "file");
+        file.delete();
+        try (InputStream stream = url.openStream()) {
+            Files.copy(stream, file.toPath());
+        }
+        file.deleteOnExit();
+        return file;
+    }
+
     public static final TsData[] insee() {
         try {
-            URI uri = Data.class.getResource("/insee.txt").toURI();
-            MatrixType insee = MatrixSerializer.read(new File(uri));
-            TsData[] all=new TsData[insee.getColumnsCount()];
-            TsPeriod start=TsPeriod.monthly(1990, 1);
-            for (int i=0; i<all.length; ++i){
-                all[i]=TsData.of(start, insee.column(i));
+            File file = copyToTempFile(Data.class.getResource("/insee.txt"));
+            MatrixType insee = MatrixSerializer.read(file);
+            TsData[] all = new TsData[insee.getColumnsCount()];
+            TsPeriod start = TsPeriod.monthly(1990, 1);
+            for (int i = 0; i < all.length; ++i) {
+                all[i] = TsData.of(start, insee.column(i));
             }
             return all;
-        } catch (URISyntaxException | IOException ex) {
+        } catch (IOException ex) {
             return null;
         }
 
