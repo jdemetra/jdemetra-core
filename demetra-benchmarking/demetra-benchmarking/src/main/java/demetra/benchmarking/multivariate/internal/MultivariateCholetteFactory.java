@@ -6,7 +6,6 @@
 package demetra.benchmarking.multivariate.internal;
 
 import demetra.benchmarking.multivariate.MultivariateCholetteSpecification.ContemporaneousConstraintDescriptor;
-import demetra.benchmarking.spi.MultivariateCholetteAlgorithm;
 import demetra.benchmarking.multivariate.MultivariateCholetteSpecification;
 import demetra.benchmarking.multivariate.MultivariateCholetteSpecification.TemporalConstraintDescriptor;
 import demetra.benchmarking.univariate.CholetteSpecification;
@@ -35,13 +34,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
+import demetra.benchmarking.spi.MultivariateCholetteProcessor;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceProvider(service = MultivariateCholetteAlgorithm.class)
-public class MultivariateCholetteFactory implements MultivariateCholetteAlgorithm {
+@ServiceProvider(service = MultivariateCholetteProcessor.class)
+public class MultivariateCholetteFactory implements MultivariateCholetteProcessor {
 
     @Override
     public Map<String, TsData> benchmark(Map<String, TsData> inputs, MultivariateCholetteSpecification spec) {
@@ -141,13 +141,13 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
         }
 
         private void addContemporaneousConstraint(ContemporaneousConstraintDescriptor cnt) {
-            if (cnt.constraint != null && !inputs.containsKey(cnt.constraint)) {
-                throw new IllegalArgumentException("Invalid contemporaneous constraint: " + cnt.constraint);
+            if (cnt.getConstraint() != null && !inputs.containsKey(cnt.getConstraint())) {
+                throw new IllegalArgumentException("Invalid contemporaneous constraint: " + cnt.getConstraint());
             }
             if (cnt.hasWildCards()) {
                 cnt = cnt.expand(inputs.keySet());
             }
-            for (WeightedItem<String> ws : cnt.components) {
+            for (WeightedItem<String> ws : cnt.getComponents()) {
                 if (!inputs.containsKey(ws.getItem())) {
                     throw new IllegalArgumentException("Invalid contemporaneous constraint: " + ws.getItem());
                 }
@@ -220,14 +220,14 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
         private void buildMaps() {
             // first of all, we go through the constraints to get information on the used series
             for (ContemporaneousConstraintDescriptor desc : contemporaneousConstraints) {
-                if (rcnt.contains(desc.constraint)) {
-                    throw new IllegalArgumentException("Binding constraint cannot be used in definitions: " + desc.constraint);
+                if (rcnt.contains(desc.getConstraint())) {
+                    throw new IllegalArgumentException("Binding constraint cannot be used in definitions: " + desc.getConstraint());
                 }
                 // TODO Deal with such cases. Use "extended names" and modify the current constraint
-                if (!lcnt.contains(desc.constraint)) {
-                    lcnt.add(desc.constraint);
+                if (!lcnt.contains(desc.getConstraint())) {
+                    lcnt.add(desc.getConstraint());
                 }
-                for (WeightedItem<String> wc : desc.components) {
+                for (WeightedItem<String> wc : desc.getComponents()) {
                     if (lcnt.contains(wc.getItem())) {
                         throw new IllegalArgumentException("Component definition cannot be a constraint: " + wc.getItem());
                     } else if (!rcnt.contains(wc.getItem())) {
@@ -240,7 +240,7 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
             int pos = 0;
             for (ContemporaneousConstraintDescriptor desc : contemporaneousConstraints) {
                 HashMap<Integer, Double> constraint = new HashMap<>();
-                for (WeightedItem<String> cur : desc.components) {
+                for (WeightedItem<String> cur : desc.getComponents()) {
                     constraint.put(rcnt.indexOf(cur.getItem()), cur.getWeight());
                 }
                 Constraint acnt = new Constraint(constraint);
@@ -250,11 +250,11 @@ public class MultivariateCholetteFactory implements MultivariateCholetteAlgorith
             lcntData = new double[contemporaneousConstraints.size()][];
             for (int i = 0; i < contemporaneousConstraints.size(); ++i) {
                 ContemporaneousConstraintDescriptor desc = contemporaneousConstraints.get(i);
-                if (desc.constraint != null) {
-                    TsData s = inputs.get(desc.constraint);
+                if (desc.getConstraint() != null) {
+                    TsData s = inputs.get(desc.getConstraint());
                     lcntData[i] = s.getValues().toArray();
                 } else {
-                    lcntData[i] = new double[]{desc.constant};
+                    lcntData[i] = new double[]{desc.getConstant()};
                 }
             }
         }

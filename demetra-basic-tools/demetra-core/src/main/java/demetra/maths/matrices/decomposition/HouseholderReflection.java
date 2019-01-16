@@ -22,8 +22,8 @@ import demetra.design.Development;
 import demetra.maths.Constants;
 
 /**
- * A Householder reflection is represented by a matrix copyOf the form H = I - 2/(v'v) * vv' 
- v is called the householder vector. 
+ * A Householder reflection is represented by a matrix of the form H = I - 2/(v'v) * vv'
+ * v is called the householder vector. 
  *
  * This implementation always uses a transformation that projects x on (|x|,
  * 0...0)
@@ -32,7 +32,7 @@ import demetra.maths.Constants;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
+@Development(status = Development.Status.Release)
 public class HouseholderReflection implements IVectorTransformation {
 
     private double beta, mu;
@@ -58,13 +58,12 @@ public class HouseholderReflection implements IVectorTransformation {
      *
      * @param v The vector used to compute the transformation. The vector
      * is modified "in place". The vector v is rescaled so that v(0)=1.
-     * After the processing, v(0) contains and the
      * @return 
      */
     public static HouseholderReflection inPlace(DataBlock v) {
         HouseholderReflection reflection = new HouseholderReflection();
         reflection.vector=v;
-        reflection.inPlaceHouseholder();
+        reflection.prepare();
         return reflection;
 
     }
@@ -104,12 +103,12 @@ public class HouseholderReflection implements IVectorTransformation {
             return;
         }
         vector = DataBlock.of(x);
-        inPlaceHouseholder();
-        x.set(()->0.0);
+        prepare();
+        x.set(0.0);
         x.set(0, mu);
     }
 
-    private void inPlaceHouseholder() {
+    private void prepare() {
 
         int n = vector.length();
         if (n == 1) {
@@ -119,10 +118,10 @@ public class HouseholderReflection implements IVectorTransformation {
         double[] v = vector.getStorage();
         int beg = vector.getStartPosition(), end = vector.getEndPosition(), inc = vector.getIncrement();
         double sig = 0;
+        double x0 = v[beg];
         for (int i = beg + inc; i != end; i += inc) {
             sig += v[i] * v[i];
         }
-        double x0 = v[beg];
         if (sig < Constants.getEpsilon()) {
             mu=Math.abs(x0);
             return; // nothing to do...

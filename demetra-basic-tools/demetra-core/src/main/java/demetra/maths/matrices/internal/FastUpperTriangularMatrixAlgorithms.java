@@ -18,7 +18,7 @@ package demetra.maths.matrices.internal;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 import demetra.maths.matrices.spi.UpperTriangularMatrixAlgorithms;
 import org.openide.util.lookup.ServiceProvider;
 

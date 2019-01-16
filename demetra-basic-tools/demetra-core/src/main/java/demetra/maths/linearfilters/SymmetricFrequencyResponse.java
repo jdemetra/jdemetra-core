@@ -23,7 +23,7 @@ import demetra.design.Immutable;
 import demetra.maths.Complex;
 import demetra.maths.Simplifying;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.spi.RootsSolver;

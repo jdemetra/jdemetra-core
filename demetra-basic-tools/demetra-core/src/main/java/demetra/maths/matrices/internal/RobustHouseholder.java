@@ -21,7 +21,7 @@ import demetra.data.DataBlock;
 import demetra.data.transformation.DoubleAccumulator;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.data.accumulator.NeumaierAccumulator;
 import java.util.function.Supplier;

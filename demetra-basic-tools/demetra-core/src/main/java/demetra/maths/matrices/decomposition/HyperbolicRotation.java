@@ -17,7 +17,6 @@
 package demetra.maths.matrices.decomposition;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.decomposition.IVectorTransformation;
 import demetra.design.Development;
 
 /**
@@ -199,6 +198,6 @@ public class HyperbolicRotation implements IVectorTransformation {
 //            }
 //        }
 //
-//        // step2: elimination copyOf the "negative part"
+//        // step2: elimination of the "negative part"
 //    }
 }

@@ -5,6 +5,7 @@
  */
 package demetra.maths.matrices;
 
+import demetra.maths.MatrixException;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;

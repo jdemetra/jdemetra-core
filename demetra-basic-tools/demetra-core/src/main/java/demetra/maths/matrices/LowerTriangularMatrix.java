@@ -5,6 +5,7 @@
  */
 package demetra.maths.matrices;
 
+import demetra.maths.MatrixException;
 import demetra.maths.matrices.spi.LowerTriangularMatrixAlgorithms;
 import java.util.concurrent.atomic.AtomicReference;
 import demetra.data.DataBlock;

@@ -19,7 +19,7 @@ package demetra.maths.matrices.internal;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.decomposition.ISingularValueDecomposition;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 import demetra.data.DataBlockIterator;
 import demetra.maths.Constants;
 import demetra.data.DoubleSequence;

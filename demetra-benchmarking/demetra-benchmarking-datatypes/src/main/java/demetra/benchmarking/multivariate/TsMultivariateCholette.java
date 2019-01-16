@@ -17,13 +17,13 @@
 package demetra.benchmarking.multivariate;
 
 import demetra.benchmarking.univariate.*;
-import demetra.benchmarking.spi.CholetteAlgorithm;
-import demetra.benchmarking.spi.MultivariateCholetteAlgorithm;
 import demetra.design.Algorithm;
 import demetra.timeseries.TsData;
 import demetra.util.ServiceLookup;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import demetra.benchmarking.spi.CholetteProcessor;
+import demetra.benchmarking.spi.MultivariateCholetteProcessor;
 
 /**
  *
@@ -32,13 +32,13 @@ import java.util.concurrent.atomic.AtomicReference;
 @lombok.experimental.UtilityClass
 public class TsMultivariateCholette {
 
-    private final AtomicReference<MultivariateCholetteAlgorithm> IMPL = ServiceLookup.firstMutable(MultivariateCholetteAlgorithm.class);
+    private final AtomicReference<MultivariateCholetteProcessor> IMPL = ServiceLookup.firstMutable(MultivariateCholetteProcessor.class);
 
-    public void setImplementation(MultivariateCholetteAlgorithm algorithm) {
+    public void setImplementation(MultivariateCholetteProcessor algorithm) {
         IMPL.set(algorithm);
     }
 
-    public MultivariateCholetteAlgorithm getImplementation() {
+    public MultivariateCholetteProcessor getImplementation() {
         return IMPL.get();
     }
     

@@ -26,7 +26,7 @@ import demetra.design.Algorithm;
 import demetra.design.Development;
 import demetra.design.ServiceDefinition;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.matrices.internal.Householder;
 

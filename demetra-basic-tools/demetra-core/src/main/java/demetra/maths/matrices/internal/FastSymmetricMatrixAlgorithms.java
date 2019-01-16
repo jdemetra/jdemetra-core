@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.spi.SymmetricMatrixAlgorithms;
 import org.openide.util.lookup.ServiceProvider;

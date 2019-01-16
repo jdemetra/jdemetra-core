@@ -87,8 +87,48 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-sts-datatypes</artifactId>
+            <version>${jd3-sts.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-sts</artifactId>
+            <version>${jd3-sts.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-sacore</artifactId>
             <version>${jd3-sa.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tramoseats-datatypes</artifactId>
+            <version>${jd3-tramoseats.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-regarima-tramo</artifactId>
+            <version>${jd3-tramoseats.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tramoseats</artifactId>
+            <version>${jd3-tramoseats.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-x13-datatypes</artifactId>
+            <version>${jd3-x13.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-regarima-x13</artifactId>
+            <version>${jd3-x13.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-x13</artifactId>
+            <version>${jd3-x13.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>

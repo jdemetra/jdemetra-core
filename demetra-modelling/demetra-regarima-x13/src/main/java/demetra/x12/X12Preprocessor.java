@@ -16,6 +16,8 @@
  */
 package demetra.x12;
 
+import demetra.regarima.X13Exception;
+import demetra.regarima.RegArimaSpec;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.maths.Complex;
@@ -219,7 +221,7 @@ public class X12Preprocessor implements IPreprocessor {
         }
         ModelDescription desc = modelBuilder.build(originalTs, context.getLog());
         if (desc == null) {
-            throw new X12Exception("Initialization failed");
+            throw new X13Exception("Initialization failed");
         }
         context.setDescription(desc);
 

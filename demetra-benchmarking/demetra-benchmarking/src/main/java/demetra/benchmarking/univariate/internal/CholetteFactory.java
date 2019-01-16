@@ -17,7 +17,6 @@
 package demetra.benchmarking.univariate.internal;
 
 import demetra.benchmarking.ssf.SsfCholette;
-import demetra.benchmarking.spi.CholetteAlgorithm;
 import demetra.benchmarking.univariate.CholetteSpecification;
 import demetra.benchmarking.univariate.CholetteSpecification.BiasCorrection;
 import demetra.data.AggregationType;
@@ -40,13 +39,14 @@ import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.multiply;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import demetra.benchmarking.spi.CholetteProcessor;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = CholetteAlgorithm.class)
-public class CholetteFactory implements CholetteAlgorithm {
+@ServiceProvider(service = CholetteProcessor.class)
+public class CholetteFactory implements CholetteProcessor {
 
     @Override
     public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, CholetteSpecification spec) {

@@ -16,6 +16,7 @@
 */
 package demetra.arima;
 
+import demetra.DemetraException;
 import demetra.design.Development;
 
 
@@ -24,12 +25,8 @@ import demetra.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public class ArimaException extends RuntimeException {
+public class ArimaException extends DemetraException {
 
-    /**
-     *
-     */
-    public static final String DECOMPOSITION_INVALID = "invalid arima decomposition";
     /**
      *
      */

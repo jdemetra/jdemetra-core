@@ -20,7 +20,7 @@ import demetra.design.Development;
 import demetra.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 
 /**
  * Computes the L-U decomposition of a matrix M = L * U where L is a lower

@@ -16,11 +16,11 @@
  */
 package demetra.benchmarking.univariate;
 
-import demetra.benchmarking.spi.CholetteAlgorithm;
 import demetra.design.Algorithm;
 import demetra.timeseries.TsData;
 import demetra.util.ServiceLookup;
 import java.util.concurrent.atomic.AtomicReference;
+import demetra.benchmarking.spi.CholetteProcessor;
 
 /**
  *
@@ -29,13 +29,13 @@ import java.util.concurrent.atomic.AtomicReference;
 @lombok.experimental.UtilityClass
 public class TsCholette {
 
-    private final AtomicReference<CholetteAlgorithm> IMPL = ServiceLookup.firstMutable(CholetteAlgorithm.class);
+    private final AtomicReference<CholetteProcessor> IMPL = ServiceLookup.firstMutable(CholetteProcessor.class);
 
-    public void setImplementation(CholetteAlgorithm algorithm) {
+    public void setImplementation(CholetteProcessor algorithm) {
         IMPL.set(algorithm);
     }
 
-    public CholetteAlgorithm getImplementation() {
+    public CholetteProcessor getImplementation() {
         return IMPL.get();
     }
     

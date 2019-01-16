@@ -32,15 +32,7 @@ public class DentonSpecificationTest {
     @Test
     public void testCopy() {
         DentonSpecification spec = new DentonSpecification();
-        assertTrue(spec.makeCopy().equals(spec));
-        spec.setMultiplicative(false);
-        assertTrue(spec.makeCopy().equals(spec));
-        spec.setModified(false);
-        assertTrue(spec.makeCopy().equals(spec));
-        spec.setDifferencing(2);
-        assertTrue(spec.makeCopy().equals(spec));
-        spec.setAggregationType(AggregationType.Average);
-        assertTrue(spec.makeCopy().equals(spec));
+        assertTrue(spec.clone().equals(spec));
     }
 
 }

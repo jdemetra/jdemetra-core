@@ -31,11 +31,7 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-modelling</artifactId>
+            <artifactId>demetra-modelling-datatypes</artifactId>
         </dependency>
 
         <!-- test only -->

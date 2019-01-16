@@ -21,7 +21,7 @@ package demetra.maths.matrices.internal;
 import demetra.maths.Complex;
 import demetra.maths.matrices.decomposition.IEigenSystem;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 
 /// The class represents routines for finding EigenValues and EigenVectors of matrices. The
 /// routines are available as static members.  The routines are based on code found in

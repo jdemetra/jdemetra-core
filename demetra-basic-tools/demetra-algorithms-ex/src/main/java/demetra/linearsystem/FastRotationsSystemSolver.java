@@ -20,7 +20,7 @@ import demetra.design.Development;
 import demetra.data.DataBlock;
 import demetra.maths.Constants;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 import demetra.maths.matrices.UpperTriangularMatrix;
 
 /**

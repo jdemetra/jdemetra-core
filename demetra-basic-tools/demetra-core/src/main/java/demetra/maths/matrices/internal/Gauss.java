@@ -20,7 +20,7 @@ package demetra.maths.matrices.internal;
 import demetra.design.Development;
 import demetra.maths.Constants;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 
 /**
  *

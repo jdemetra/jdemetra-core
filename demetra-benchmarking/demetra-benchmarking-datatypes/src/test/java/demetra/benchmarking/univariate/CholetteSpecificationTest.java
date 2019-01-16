@@ -29,14 +29,9 @@ public class CholetteSpecificationTest {
     }
 
     @Test
-    public void testCopy() {
+    public void testClone() {
         CholetteSpecification spec = new CholetteSpecification();
-        assertTrue(spec.makeCopy().equals(spec));
-        spec.setLambda(.5);
-        assertTrue(spec.makeCopy().equals(spec));
-        spec.setRho(.25);
-        assertTrue(spec.makeCopy().equals(spec));
-
+        assertTrue(spec.clone().equals(spec));
     }
 
 }

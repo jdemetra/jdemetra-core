@@ -16,6 +16,7 @@
  */
 package demetra.eco;
 
+import demetra.DemetraException;
 import demetra.design.Development;
 
 /**
@@ -23,7 +24,7 @@ import demetra.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public class EcoException extends RuntimeException {
+public class EcoException extends DemetraException {
 
     public static final String INV_VAR = "Invalid variance";
     public static final String NEG_VAR = "Negative variance";

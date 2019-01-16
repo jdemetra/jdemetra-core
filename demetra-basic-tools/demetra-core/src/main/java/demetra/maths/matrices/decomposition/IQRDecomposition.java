@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.data.DoubleSequence;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 
 /**
  * Decomposes a matrix A as A = applyQ*R

@@ -11,7 +11,7 @@ import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.maths.Constants;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 import demetra.maths.matrices.SymmetricMatrix;
 import org.openide.util.lookup.ServiceProvider;
 

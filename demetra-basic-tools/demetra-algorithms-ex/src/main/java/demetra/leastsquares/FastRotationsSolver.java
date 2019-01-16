@@ -22,7 +22,7 @@ import demetra.data.DoubleSequence;
 import demetra.data.DoubleSequence;
 import demetra.maths.Constants;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import org.openide.util.lookup.ServiceProvider;
 

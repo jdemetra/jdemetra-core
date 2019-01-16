@@ -23,7 +23,7 @@ import demetra.design.Development;
 import demetra.maths.Constants;
 import demetra.maths.matrices.decomposition.ILUDecomposition;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.maths.MatrixException;
 import demetra.data.DoubleSequence;
 
 

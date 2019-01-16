@@ -40,6 +40,8 @@
     <modules>
         <module>demetra-sacore</module>
         <module>demetra-sa-datatypes</module>
+        <module>demetra-tramoseats</module>
+        <module>demetra-x13</module>
     </modules>
     
     <!--build>
