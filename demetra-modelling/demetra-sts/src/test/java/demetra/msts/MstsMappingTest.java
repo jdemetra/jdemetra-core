@@ -5,10 +5,7 @@
  */
 package demetra.msts;
 
-import demetra.msts.LoadingParameter;
-import demetra.msts.MstsMapping;
-import demetra.msts.VarianceParameter;
-import demetra.msts.GenericParameters;
+import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
@@ -35,7 +32,6 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import org.junit.Test;
 
@@ -51,8 +47,8 @@ public class MstsMappingTest {
     @Test
     public void testSimple() throws URISyntaxException, IOException {
 
-        URI uri = MultivariateCompositeSsf.class.getResource("/mssf1").toURI();
-        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
+        File file = Data.copyToTempFile(MultivariateCompositeSsf.class.getResource("/mssf1"));
+        MatrixType data = MatrixSerializer.read(file, "\t|,");
 
         Matrix D = Matrix.make(data.getRowsCount(), 4);
         D.column(0).copy(data.column(0));

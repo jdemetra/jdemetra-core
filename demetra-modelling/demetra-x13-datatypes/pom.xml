@@ -6,6 +6,7 @@
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-sa-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../demetra-sa/pom.xml</relativePath>
     </parent>
     
     <artifactId>demetra-x13-datatypes</artifactId>
