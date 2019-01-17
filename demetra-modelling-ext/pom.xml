@@ -44,6 +44,7 @@
  
     <modules>
         <module>demetra-highfreq</module>
+        <module>demetra-calendar-ex</module>
     </modules>
     
 </project>
