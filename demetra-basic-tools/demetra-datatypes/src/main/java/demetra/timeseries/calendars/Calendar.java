@@ -17,9 +17,6 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.maths.MatrixType;
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsPeriod;
 
 /**
  *
