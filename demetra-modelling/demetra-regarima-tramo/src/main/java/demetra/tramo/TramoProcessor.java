@@ -196,6 +196,7 @@ public class TramoProcessor implements IPreprocessor {
                 .ub2(amiSpec.getUb2())
                 .seasonal(context.seasonal)
                 .precision(options.intermediatePrecision)
+                .initial(round==1)
                 .build();
     }
 
@@ -297,6 +298,7 @@ public class TramoProcessor implements IPreprocessor {
      * @return True if the model doesn't need further iteration
      */
     private boolean iterate(RegArimaModelling modelling) {
+
         if (modelling.needEstimation()) {
             modelling.estimate(options.getIntermediatePrecision());
         }
@@ -306,7 +308,9 @@ public class TramoProcessor implements IPreprocessor {
         SarimaSpecification curspec = desc.getSpecification();
         boolean curmu = desc.isMean();
         if (needDifferencing(desc)) {
-            if (execDifferencing(modelling) == ProcessingResult.Changed && pass == 1) {
+            changed=execDifferencing(modelling) == ProcessingResult.Changed;
+            SarimaSpecification nspec = desc.getSpecification();
+            if (pass == 1 && nspec.getDifferenceOrder() != curspec.getDifferenceOrder() ) {
                 desc.removeVariable(var -> var.isOutlier(false));
                 modelling.setEstimation(null);
             }

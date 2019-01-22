@@ -133,7 +133,8 @@ public class TramoProcessorTest {
 //            System.out.print('\t');
 //            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
-//        System.out.println(n);
+        System.out.println("TRfull");
+        System.out.println(n);
         assertTrue(n > .9 * all.length);
     }
 
@@ -168,7 +169,8 @@ public class TramoProcessorTest {
 //            System.out.print('\t');
 //            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
-//        System.out.println(n);
+        System.out.println("TRfullc");
+        System.out.println(n);
 
 // The old implementation was bugged. 
         assertTrue(n > .6 * all.length);
@@ -196,7 +198,8 @@ public class TramoProcessorTest {
 //            System.out.print('\t');
 //            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
-//        System.out.println(n);
+        System.out.println("TR0");
+        System.out.println(n);
         assertTrue(n > .9 * all.length);
     }
 
@@ -222,7 +225,116 @@ public class TramoProcessorTest {
 //            System.out.print('\t');
 //            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
-//        System.out.println(n);
+        System.out.println("TR1");
+        System.out.println(n);
+        assertTrue(n > .9 * all.length);
+    }
+
+    @Test
+    public void testInsee2() {
+        TsData[] all = Data.insee();
+        TramoProcessor processor = TramoProcessor.of(TramoSpec.TR2, null);
+        IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR2.build();
+        int n = 0;
+        for (int i = 0; i < all.length; ++i) {
+            PreprocessingModel rslt = processor.process(all[i], null);
+            TsPeriod start = all[i].getStart();
+            ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
+            ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+                    - orslt.estimation.getStatistics().adjustedLogLikelihood;
+            if (Math.abs(del) < 1e-3) {
+                ++n;
+            }
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+        }
+        System.out.println("TR2");
+        System.out.println(n);
+        assertTrue(n > .9 * all.length);
+    }
+    
+    @Test
+    public void testInsee3() {
+        TsData[] all = Data.insee();
+        TramoProcessor processor = TramoProcessor.of(TramoSpec.TR3, null);
+        IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR3.build();
+        int n = 0;
+        for (int i = 0; i < all.length; ++i) {
+            PreprocessingModel rslt = processor.process(all[i], null);
+            TsPeriod start = all[i].getStart();
+            ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
+            ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+                    - orslt.estimation.getStatistics().adjustedLogLikelihood;
+            if (Math.abs(del) < 1e-3) {
+                ++n;
+            }
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+        }
+        System.out.println("TR3");
+        System.out.println(n);
+        assertTrue(n > .9 * all.length);
+    }
+    
+    @Test
+    public void testInsee4() {
+        TsData[] all = Data.insee();
+        TramoProcessor processor = TramoProcessor.of(TramoSpec.TR4, null);
+        IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR4.build();
+        int n = 0;
+        for (int i = 0; i < all.length; ++i) {
+            PreprocessingModel rslt = processor.process(all[i], null);
+            TsPeriod start = all[i].getStart();
+            ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
+            ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+                    - orslt.estimation.getStatistics().adjustedLogLikelihood;
+            if (Math.abs(del) < 1e-3) {
+                ++n;
+            }
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+        }
+        System.out.println("TR4");
+        System.out.println(n);
+        assertTrue(n > .9 * all.length);
+    }
+
+    @Test
+    public void testInsee5() {
+        TsData[] all = Data.insee();
+        TramoProcessor processor = TramoProcessor.of(TramoSpec.TR5, null);
+        IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR5.build();
+        int n = 0;
+        for (int i = 0; i < all.length; ++i) {
+            PreprocessingModel rslt = processor.process(all[i], null);
+            TsPeriod start = all[i].getStart();
+            ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
+            ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+                    - orslt.estimation.getStatistics().adjustedLogLikelihood;
+            if (Math.abs(del) < 1e-3) {
+                ++n;
+            }
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+        }
+        System.out.println("TR5");
+        System.out.println(n);
         assertTrue(n > .9 * all.length);
     }
 
