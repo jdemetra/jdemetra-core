@@ -18,7 +18,6 @@
 
 package demetra.processing;
 
-import demetra.algorithms.AlgorithmDescriptor;
 import demetra.design.Development;
 import java.util.Map;
 

@@ -93,10 +93,10 @@ public class ModelStatistics {
         int nlast = Math.min(nres2, 10 * p);
         DoubleSequence data0 = e.range(0, nres - nlast);
         DoubleSequence data1 = e.range(nlast, nres);
-        Sample s0 = Sample.ofResiduals(data0);
-        Sample s1 = Sample.ofResiduals(data1);
-        StatisticalTest means = SampleMean.compareMeans(s0, s1, true);
-        StatisticalTest vars = SampleMean.compareVariances(s0, s1);
+        Sample s0 = Sample.ofResiduals(data0, false);
+        Sample s1 = Sample.ofResiduals(data1, false);
+        StatisticalTest means = Sample.compareMeans(s0, s1, true);
+        StatisticalTest vars = Sample.compareVariances(s0, s1);
 
         return builder
                 .stableMean(means.getValue())

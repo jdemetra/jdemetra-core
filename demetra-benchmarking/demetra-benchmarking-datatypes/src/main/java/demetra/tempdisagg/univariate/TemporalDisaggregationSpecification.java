@@ -16,7 +16,7 @@
  */
 package demetra.tempdisagg.univariate;
 
-import demetra.algorithms.AlgorithmDescriptor;
+import demetra.processing.AlgorithmDescriptor;
 import demetra.data.AggregationType;
 import demetra.data.Parameter;
 import demetra.timeseries.TimeSelector;

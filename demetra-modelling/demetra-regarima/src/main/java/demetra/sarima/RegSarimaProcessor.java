@@ -117,6 +117,8 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         return new Builder();
     }
 
+    public static final RegSarimaProcessor DEFAULT = builder().build();
+
     public static final double DEF_EPS = 1e-7, DEF_INTERNAL_EPS = 1e-4;
     private final IArimaMapping<SarimaModel> mapping;
     private final double eps, feps;

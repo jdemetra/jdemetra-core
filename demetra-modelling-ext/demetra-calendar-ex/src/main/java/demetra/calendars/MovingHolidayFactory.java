@@ -19,6 +19,7 @@ public class MovingHolidayFactory implements RegressionVariableFactory<MovingHol
 
     @Override
     public boolean fill(MovingHolidayVariable var, TsPeriod start, Matrix buffer) {
+//        mh(var.getDefinition().getEvent(),...);
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

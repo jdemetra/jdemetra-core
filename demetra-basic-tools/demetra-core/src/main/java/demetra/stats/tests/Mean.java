@@ -46,13 +46,13 @@ public class Mean {
      * @return
      */
     public static Mean zeroMean(DoubleSequence data) {
-        int m = data.length();
-        boolean missing = data.anyMatch(x -> !Double.isFinite(x));
-        if (missing) {
+        int nmissing = data.count(x -> !Double.isFinite(x));
+        int m = data.length() - nmissing;
+        if (nmissing > 0) {
             double av = Doubles.sumWithMissing(data) / m;
             double v = Doubles.ssqWithMissing(data) / m;
             return new Mean(av, 0, v, m);
-        }else{
+        } else {
             double av = Doubles.sum(data) / m;
             double v = Doubles.ssq(data) / m;
             return new Mean(av, 0, v, m);
@@ -66,13 +66,13 @@ public class Mean {
      * @return
      */
     public static Mean mean(DoubleSequence data, final double mu) {
-        int m = data.length();
-        boolean missing = data.anyMatch(x -> !Double.isFinite(x));
-        if (missing) {
+        int nmissing = data.count(x -> !Double.isFinite(x));
+        int m = data.length() - nmissing;
+        if (nmissing > 0) {
             double av = Doubles.sumWithMissing(data) / m;
             double v = Doubles.ssqcWithMissing(data, mu) / m;
             return new Mean(av, mu, v, m);
-        }else{
+        } else {
             double av = Doubles.sum(data) / m;
             double v = Doubles.ssqc(data, mu) / m;
             return new Mean(av, mu, v, m);
