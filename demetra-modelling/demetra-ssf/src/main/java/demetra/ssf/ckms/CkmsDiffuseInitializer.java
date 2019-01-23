@@ -30,7 +30,6 @@ import demetra.ssf.UpdateInformation;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
-import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  * Automatic initialization of diffuse time invariant models. The algorithm
@@ -42,7 +41,7 @@ import demetra.ssf.univariate.ISsfMeasurement;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @Development(status = Development.Status.Alpha)
-public class CkmsDiffuseInitializer<S extends ISsf> implements CkmsFilter.IFastFilterInitializer<S> {
+public class CkmsDiffuseInitializer implements CkmsFilter.IFastFilterInitializer {
 
     private final OrdinaryFilter.FilterInitializer initializer;
 
@@ -59,7 +58,7 @@ public class CkmsDiffuseInitializer<S extends ISsf> implements CkmsFilter.IFastF
     }
 
     @Override
-    public int initializeFilter(CkmsState fstate, final UpdateInformation upd, S ssf, ISsfData data) {
+    public int initializeFilter(CkmsState fstate, final UpdateInformation upd, ISsf ssf, ISsfData data) {
         ISsfInitialization initialization = ssf.initialization();
         int dim = initialization.getStateDim();
         State state = new State(dim);

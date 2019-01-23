@@ -27,7 +27,7 @@ import java.util.EnumMap;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
+@Development(status = Development.Status.Beta)
 public class SeriesDecomposition {
 
     private final DecompositionMode mode;

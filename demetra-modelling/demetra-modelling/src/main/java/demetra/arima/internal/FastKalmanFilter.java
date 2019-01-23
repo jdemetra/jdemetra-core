@@ -25,8 +25,6 @@ import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.likelihood.Likelihood;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.util.SubArrayOfInt;
 import demetra.data.DoubleSequence;
 import demetra.leastsquares.QRSolvers;
@@ -54,8 +52,8 @@ public class FastKalmanFilter {
     private int dim;
     private double h0;
     private double[] c0;
-    private double eps_ = 0; //1e-12;
-    private boolean fast_;
+    private double eps = 1e-12;
+    private boolean fast;
 
     /**
      * Creates a new Kalman filter for a given stationary Arima model
@@ -98,6 +96,8 @@ public class FastKalmanFilter {
         int np = phi.length - 1, nq = theta.length - 1;
         int im = np > nq ? np : nq;
 
+        boolean steady = false;
+
         for (int pos = 0; pos < im; ++pos) {
             // filter y
             double s = Math.sqrt(h);
@@ -120,7 +120,7 @@ public class FastKalmanFilter {
             if (Double.isNaN(h)) {
                 throw new ArimaException();
             }
-            if (h - 1 > eps_) {
+            if (!steady) {
                 double llast = tlast(L), clast = C[ilast];
 
                 // C, L
@@ -136,6 +136,16 @@ public class FastKalmanFilter {
 
                 L[ilast] = llast - zlv * clast;
                 C[ilast] -= zlv * llast;
+
+                int k = 0;
+                for (; k < L.length; ++k) {
+                    if (Math.abs(L[k]) > eps) {
+                        break;
+                    }
+                }
+                if (k == L.length) {
+                    steady = true;
+                }
             }
         }
 
@@ -194,7 +204,7 @@ public class FastKalmanFilter {
      */
     public boolean process(final DoubleSequence y, final DataBlock res,
             final DataBlock stde) {
-        fast_ = false;
+        fast = false;
         DeterminantalTerm det = new DeterminantalTerm();
         double[] C = c0.clone();
         double[] L = C.clone();
@@ -226,7 +236,7 @@ public class FastKalmanFilter {
             double zl = L[0];
             double zlv = zl / h;
 
-            if (!fast_) {
+            if (!fast) {
 
                 double llast = tlast(L), clast = C[ilast];
 
@@ -247,8 +257,8 @@ public class FastKalmanFilter {
                 if (h < var) {
                     h = var;
                 }
-                if (h - var <= eps_) {
-                    fast_ = true;
+                if (h - var <= eps) {
+                    fast = true;
                 }
             }
 
@@ -268,7 +278,7 @@ public class FastKalmanFilter {
      * @return True if the processing is successful, false otherwise.
      */
     public Likelihood process(final DoubleSequence y) {
-        fast_ = false;
+        fast = false;
         DeterminantalTerm det = new DeterminantalTerm();
         double[] C = c0.clone();
         double[] L = C.clone();
@@ -300,7 +310,7 @@ public class FastKalmanFilter {
             double zl = L[0];
             double zlv = zl / h;
 
-            if (!fast_) {
+            if (!fast) {
                 double llast = tlast(L), clast = C[ilast];
 
                 // C, L
@@ -320,8 +330,8 @@ public class FastKalmanFilter {
                 if (h < var) {
                     h = var;
                 }
-                if (h - var <= eps_) {
-                    fast_ = true;
+                if (h - var <= eps) {
+                    fast = true;
                 }
             }
 
@@ -343,7 +353,7 @@ public class FastKalmanFilter {
      */
     public ConcentratedLikelihood process(final DoubleSequence y, final SubArrayOfInt ao,
             final Matrix x) {
-        fast_ = false;
+        fast = false;
         DeterminantalTerm det = new DeterminantalTerm();
         double[] c = c0.clone();
         double[] l = c.clone();
@@ -402,7 +412,7 @@ public class FastKalmanFilter {
 
             double zl = l[0];
             double zlv = zl / h;
-            if (!fast_) {
+            if (!fast) {
 
                 double llast = tlast(l), clast = c[ilast];
 
@@ -423,13 +433,13 @@ public class FastKalmanFilter {
                 if (h < var) {
                     h = var;
                 }
-                if (h - var <= eps_) {
-                    fast_ = true;
+                if (h - var <= eps) {
+                    fast = true;
                 }
             }
             xrows.next();
         }
- 
+
         QRSolver solver = QRSolvers.fastSolver();
         solver.solve(DataBlock.ofInternal(yl), xl);
         Matrix R = solver.R();
@@ -453,11 +463,11 @@ public class FastKalmanFilter {
     }
 
     public void setEpsilon(double eps) {
-        eps_ = eps;
+        this.eps = eps;
     }
 
     public double getEpsilon() {
-        return eps_;
+        return eps;
     }
 
     private double tlast(final double[] x) {

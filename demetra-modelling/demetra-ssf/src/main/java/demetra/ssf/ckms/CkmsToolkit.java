@@ -18,13 +18,10 @@ package demetra.ssf.ckms;
 
 import demetra.ssf.dk.DiffusePredictionErrorDecomposition;
 import demetra.ssf.likelihood.DiffuseLikelihood;
-import demetra.ssf.dk.DkConcentratedLikelihood;
 import demetra.ssf.dk.sqrt.DiffuseSquareRootInitializer;
-import demetra.ssf.univariate.IConcentratedLikelihoodComputer;
 import demetra.ssf.univariate.ILikelihoodComputer;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.SsfRegressionModel;
 
 /**
  *

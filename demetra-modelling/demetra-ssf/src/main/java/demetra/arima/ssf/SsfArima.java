@@ -41,9 +41,7 @@ import demetra.ssf.UpdateInformation;
 import demetra.data.DoubleReader;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
-import demetra.ssf.SsfComponent;
 import demetra.ssf.StateComponent;
-import demetra.ssf.univariate.Measurement;
 import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
@@ -71,8 +69,8 @@ public class SsfArima {
     }
 
     
-    public CkmsFilter.IFastFilterInitializer<Ssf> fastInitializer(IArimaModel arima) {
-        return (CkmsState state, UpdateInformation upd, Ssf ssf, ISsfData data) -> {
+    public CkmsFilter.IFastFilterInitializer fastInitializer(IArimaModel arima) {
+        return (CkmsState state, UpdateInformation upd, ISsf ssf, ISsfData data) -> {
             if (arima.isStationary()) {
                 return stInitialize(state, upd, arima, ssf, data);
             } else {
@@ -81,7 +79,7 @@ public class SsfArima {
         };
     }
 
-    private int stInitialize(CkmsState state, UpdateInformation upd, IArimaModel arima, Ssf ssf, ISsfData data) {
+    private int stInitialize(CkmsState state, UpdateInformation upd, IArimaModel arima, ISsf ssf, ISsfData data) {
         int n = ssf.getStateDim();
         double[] values = arima.getAutoCovarianceFunction().values(n);
         DataBlock M = upd.M(), L = state.l();
@@ -92,8 +90,8 @@ public class SsfArima {
         return 0;
     }
     
-    private int dInitialize(CkmsState state, UpdateInformation upd, IArimaModel arima, Ssf ssf, ISsfData data) {
-        return new CkmsDiffuseInitializer<Ssf>(diffuseInitializer(arima)).initializeFilter(state, upd, ssf, data);
+    private int dInitialize(CkmsState state, UpdateInformation upd, IArimaModel arima, ISsf ssf, ISsfData data) {
+        return new CkmsDiffuseInitializer(diffuseInitializer(arima)).initializeFilter(state, upd, ssf, data);
     }
 
     private OrdinaryFilter.FilterInitializer diffuseInitializer(IArimaModel arima) {

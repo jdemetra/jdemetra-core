@@ -16,27 +16,18 @@
  */
 package demetra.ssf.ckms;
 
+import demetra.design.Development;
+
 /**
- * 
- * @param <F>
  * @author Jean Palate
  */
-//@Development(status = Development.Status.Alpha)
-//public class FastArrayFilter<F extends ISsf> {
-//
-//    /*
-//     * private void checksteady() { m_steady = false; for (int i = 0; i < m_dim;
-//     * ++i) if (Math.abs(m_matrix.L[i]) > m_epsilon) return; m_steady = true; }
-//     */
-//    private int m_pos, m_end, m_dim, m_ndiffuse;
-//
-//    private boolean m_steady;
-//
-//    private final UMatrix m_matrix = new UMatrix();
-//
-//    private FastArrayState m_state;
-//
-//    private IFastArrayInitializer<F> m_initializer;
+@Development(status = Development.Status.Alpha)
+public class CkmsArrayFilter {
+
+    private int m_pos, m_end, m_dim, m_ndiffuse;
+    private final UMatrix m_matrix = new UMatrix();
+    private CkmsState m_state;
+    private CkmsInitializer m_initializer;
 //
 //    private F m_ssf;
 //
@@ -173,4 +164,4 @@ package demetra.ssf.ckms;
 //	m_state.e = y - m_ssf.ZX(m_pos, m_state.A);
 //	m_state.r = m_matrix.R;
 //    }
-//}
+}

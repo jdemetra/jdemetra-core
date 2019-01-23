@@ -19,7 +19,6 @@ package demetra.ssf.ckms;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 
-
 /**
  *
  * @author Jean Palate
@@ -42,16 +41,17 @@ public class CkmsState {
     public final DataBlock l() {
         return l;
     }
+
     /**
      *
      * @param n
-    */
+     */
     public CkmsState(final int n) {
         a = DataBlock.make(n);
         l = DataBlock.make(n);
     }
 
-    public final int getDim(){
+    public final int getDim() {
         return a.length();
     }
 

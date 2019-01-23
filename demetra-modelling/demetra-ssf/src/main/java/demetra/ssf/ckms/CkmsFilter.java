@@ -28,22 +28,20 @@ import demetra.ssf.UpdateInformation;
 /**
  * Chandrasekhar recursions
  *
- * @param <F>
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class CkmsFilter<F extends ISsf> {
+public class CkmsFilter {
 
-    public static interface IFastFilterInitializer<F> {
+    public static interface IFastFilterInitializer {
 
-        int initializeFilter(CkmsState state, UpdateInformation upd, F ssf, ISsfData data);
+        int initializeFilter(CkmsState state, UpdateInformation upd, ISsf ssf, ISsfData data);
     }
 
-    private double eps = 0;
+    private double eps = 1e-15;
     private double neps;
 
-
-    private final IFastFilterInitializer<F> initializer;
+    private final IFastFilterInitializer initializer;
     private ISsfLoading loading;
     private ISsfDynamics dynamics;
 
@@ -61,7 +59,7 @@ public class CkmsFilter<F extends ISsf> {
         initializer = new CkmsInitializer();
     }
 
-    public CkmsFilter(IFastFilterInitializer<F> initializer) {
+    public CkmsFilter(IFastFilterInitializer initializer) {
         this.initializer = initializer;
     }
 
@@ -86,11 +84,11 @@ public class CkmsFilter<F extends ISsf> {
         return steadypos;
     }
 
-    private int initialize(F ssf) {
+    private int initialize(ISsf ssf) {
         steadypos = -1;
         dynamics = ssf.dynamics();
         loading = ssf.loading();
-        int dim=ssf.getStateDim();
+        int dim = ssf.getStateDim();
         state = new CkmsState(dim);
         pe = new UpdateInformation(dim);
 
@@ -111,7 +109,7 @@ public class CkmsFilter<F extends ISsf> {
      * @param rslts
      * @return
      */
-    public boolean process(final F ssf, final ISsfData data,
+    public boolean process(final ISsf ssf, final ISsfData data,
             final IFilteringResults rslts) {
         this.data = data;
         int t = initialize(ssf);
@@ -137,7 +135,7 @@ public class CkmsFilter<F extends ISsf> {
 
     private void next(int t) {
         if (steadypos < 0) {
-         // M(i+1) = M(i) - L(i) * (Z*L(i))/V(i)
+            // M(i+1) = M(i) - L(i) * (Z*L(i))/V(i)
             // L(i+1) = T (L(i) - M(i) * (Z*L(i))/V(i))
             // F(i+1) = F(i) - (Z*L(i))^2/V(i)
 
@@ -146,7 +144,7 @@ public class CkmsFilter<F extends ISsf> {
 
             if (Math.abs(zl) > neps) {
                 // C, L
-                double f=pe.getVariance();
+                double f = pe.getVariance();
                 double zlv = zl / f;
                 f -= zl * zlv;
                 for (int i = 0; i < L.length; ++i) {
@@ -155,11 +153,12 @@ public class CkmsFilter<F extends ISsf> {
                     M[i] -= l * zlv;
                 }
                 pe.setVariance(f);
-            } else if (state.l.norm2() < eps) {
+            } else if (state.l.norm2() <= eps) {
                 steadypos = t;
+            } else {
+                dynamics.TX(t, state.l);
             }
         }
-        dynamics.TX(t, state.l);
         dynamics.TX(t, state.a);
     }
 

@@ -370,7 +370,7 @@ public class TramoProcessorTest {
         System.out.println(rslt.estimation.getStatistics().adjustedLogLikelihood);
     }
 
-//    @Test
+    @Test
     public void stressTestProd() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000; ++i) {

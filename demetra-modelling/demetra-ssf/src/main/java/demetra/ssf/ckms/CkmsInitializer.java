@@ -26,15 +26,13 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.UpdateInformation;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
-import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *
- * @param <S>
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class CkmsInitializer<S extends ISsf> implements CkmsFilter.IFastFilterInitializer<S> {
+public class CkmsInitializer implements CkmsFilter.IFastFilterInitializer {
 
     /**
      * K = TPZ', L=K, F=ZPZ'+H
@@ -46,7 +44,7 @@ public class CkmsInitializer<S extends ISsf> implements CkmsFilter.IFastFilterIn
      * @return
      */
     @Override
-    public int initializeFilter(final CkmsState fstate, final UpdateInformation upd, final S ssf, ISsfData data) {
+    public int initializeFilter(final CkmsState fstate, final UpdateInformation upd, final ISsf ssf, ISsfData data) {
         if (!ssf.isTimeInvariant()) {
             return -1;
         }
@@ -57,7 +55,7 @@ public class CkmsInitializer<S extends ISsf> implements CkmsFilter.IFastFilterIn
         }
     }
 
-    public int initializeStationary(final CkmsState fstate, final UpdateInformation upd, final S ssf, ISsfData data) {
+    public int initializeStationary(final CkmsState fstate, final UpdateInformation upd, final ISsf ssf, ISsfData data) {
         ISsfDynamics dynamics = ssf.dynamics();
         ISsfLoading loading = ssf.loading();
         ISsfError error = ssf.measurementError();
@@ -76,7 +74,7 @@ public class CkmsInitializer<S extends ISsf> implements CkmsFilter.IFastFilterIn
         return 0;
     }
 
-    public int initializeDiffuse(final CkmsState fstate, final UpdateInformation upd, final S ssf, ISsfData data) {
+    public int initializeDiffuse(final CkmsState fstate, final UpdateInformation upd, final ISsf ssf, ISsfData data) {
         CkmsDiffuseInitializer initializer = new CkmsDiffuseInitializer();
         return initializer.initializeFilter(fstate, upd, ssf, data);
     }
