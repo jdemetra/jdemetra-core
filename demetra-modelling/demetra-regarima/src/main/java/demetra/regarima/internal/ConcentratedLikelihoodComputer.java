@@ -21,7 +21,6 @@ import demetra.arima.IArimaModel;
 import demetra.arima.internal.KalmanFilter;
 import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;

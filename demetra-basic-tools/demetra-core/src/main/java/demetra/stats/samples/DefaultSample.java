@@ -6,7 +6,6 @@
 package demetra.stats.samples;
 
 import demetra.data.DoubleReader;
-import java.util.stream.DoubleStream;
 import demetra.data.DoubleSequence;
 
 /**
@@ -16,9 +15,14 @@ import demetra.data.DoubleSequence;
 public class DefaultSample implements Sample {
 
     private final DoubleSequence data;
-    private final double mean, var;
+    private final double mean, var, ssq;
     private final Population population;
 
+    /**
+     * @param data The sample (no missing values)
+     * @param population The underlying population. Might be null, which means
+     * that the population is unknown.
+     */
     public DefaultSample(DoubleSequence data, Population population) {
         this.data = data;
         this.population = population == null ? Population.UNKNOWN : population;
@@ -32,15 +36,21 @@ public class DefaultSample implements Sample {
         }
         mean = sx / n;
         var = (sxx - sx * sx / n) / (n - 1);
-    }
-
-    @Override
-    public double mean() {
-        return mean;
+        ssq = sxx;
     }
 
     public DoubleSequence data() {
         return data;
+    }
+
+    /**
+     * Usual sample mean
+     *
+     * @return
+     */
+    @Override
+    public double mean() {
+        return mean;
     }
 
     @Override
@@ -53,14 +63,20 @@ public class DefaultSample implements Sample {
         return population;
     }
 
-    @Override
-    public DoubleStream all() {
-        return data.stream();
-    }
-
+    /**
+     * Variance of the sample, considering the mean of the population when it is
+     * known. For instance, when the mean of the population is 0 (residuals),
+     * the variance is the mean square error.
+     *
+     * @return
+     */
     @Override
     public double variance() {
         return var;
+    }
+    
+    public double ssq(){
+        return ssq;
     }
 
 }

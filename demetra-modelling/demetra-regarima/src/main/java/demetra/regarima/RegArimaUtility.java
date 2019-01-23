@@ -213,4 +213,27 @@ public class RegArimaUtility {
         }
         return new BackFilter(X);
     }
+    
+        /**
+     *
+     * @param differencing
+     * @param n
+     * @return
+     */
+    public double[] meanRegressionVariable(final BackFilter differencing, final int n) {
+        double[] m = new double[n];
+
+        double[] D = differencing.asPolynomial().toArray();
+        int d = D.length - 1;
+        m[d] = 1;
+        for (int i = d + 1; i < n; ++i) {
+            double s = 1;
+            for (int j = 1; j <= d; ++j) {
+                s -= m[i - j] * D[j];
+            }
+            m[i] = s;
+        }
+        return m;
+    }
+
 }

@@ -16,7 +16,7 @@
  */
 package demetra.benchmarking.multivariate;
 
-import demetra.algorithms.AlgorithmDescriptor;
+import demetra.processing.AlgorithmDescriptor;
 import demetra.data.AggregationType;
 import demetra.util.WeightedItem;
 import demetra.util.WildCards;

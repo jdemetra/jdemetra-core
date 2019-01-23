@@ -17,8 +17,6 @@
 
 package demetra.processing;
 
-import demetra.algorithms.AlgorithmDescriptor;
-
 /**
  *
  * @author Jean Palate

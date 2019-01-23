@@ -19,10 +19,16 @@
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
         <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
+        <jd3-stl.version>1.0.0-SNAPSHOT</jd3-stl.version>
     </properties>
     
     <dependencyManagement>
         <dependencies>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sa-datatypes</artifactId>
+                <version>${jd3-sa.version}</version>            
+            </dependency>
             <dependency>
                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-sacore</artifactId>
@@ -30,8 +36,13 @@
             </dependency>
             <dependency>
                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-sa-datatypes</artifactId>
-                <version>${jd3-sa.version}</version>            
+                <artifactId>demetra-stl-datatypes</artifactId>
+                <version>${jd3-stl.version}</version>            
+            </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-stl</artifactId>
+                <version>${jd3-stl.version}</version>            
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -42,6 +53,8 @@
         <module>demetra-sa-datatypes</module>
         <module>demetra-tramoseats</module>
         <module>demetra-x13</module>
+        <module>demetra-stl</module>
+        <module>demetra-stl-datatypes</module>
     </modules>
     
     <!--build>

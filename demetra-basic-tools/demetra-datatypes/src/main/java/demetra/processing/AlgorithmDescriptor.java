@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package demetra.algorithms;
+package demetra.processing;
 
 import demetra.design.Development;
 

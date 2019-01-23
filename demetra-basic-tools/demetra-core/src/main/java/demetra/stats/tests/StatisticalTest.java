@@ -27,38 +27,14 @@ import demetra.dstats.Distribution;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-@Immutable
+@Development(status = Development.Status.Beta)
+@lombok.Value
 public class StatisticalTest {
 
-    private final Distribution distribution;
-    private final double value;
-    private final TestType type;
-    private final boolean asymptotical;
-
-    /**
-     * Creates new TestStatistic
-     *
-     * @param dist
-     * @param val
-     * @param type
-     * @param asymptotical
-     */
-    public StatisticalTest(final Distribution dist, final double val,
-            final TestType type, final boolean asymptotical) {
-        distribution = dist;
-        value = val;
-        this.type = type;
-        this.asymptotical = asymptotical;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Distribution getDistribution() {
-        return distribution;
-    }
+    private Distribution distribution;
+    private double value;
+    private TestType type;
+    private boolean asymptotical;
 
     /**
      *
@@ -89,46 +65,11 @@ public class StatisticalTest {
 
     /**
      *
-     * @return
-     */
-    public TestType getType() {
-        return type;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public double getValue() {
-        return value;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isAsymptotical() {
-        return asymptotical;
-    }
-
-    /**
-     *
      * @param threshold
      * @return
      */
     public boolean isSignificant(double threshold) {
         return getPValue() < threshold;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        if (distribution != null) {
-            builder.append("Distribution=").append(distribution).append(System.lineSeparator());
-        }
-        builder.append("Value=").append(value).append(System.lineSeparator());
-        builder.append("PValue=").append(getPValue());
-        return builder.toString();
     }
 
     public TestResult toSummary(){

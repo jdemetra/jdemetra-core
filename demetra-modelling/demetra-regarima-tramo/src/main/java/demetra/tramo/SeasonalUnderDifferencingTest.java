@@ -90,7 +90,7 @@ class SeasonalUnderDifferencingTest extends ModelController {
         ModelDescription description = context.getDescription();
         SarimaModel model = description.arima();
         SarimaSpecification spec = model.specification();
-        if (spec.getBd() != 0 || spec.getBd() != 1 || model.bphi(1) >= -DEF_SBOUND) {
+        if (spec.getBd() != 0 || spec.getBp() != 1 || model.bphi(1) >= -DEF_SBOUND) {
             return false;
         }
         spec.setBp(0);

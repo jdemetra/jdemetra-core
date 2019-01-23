@@ -42,7 +42,7 @@
 
         <!-- dependencies -->
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
-        <jd2.version>2.2.2-SNAPSHOT</jd2.version>
+        <jd2.version>2.2.2</jd2.version>
     </properties>
   
     <modules>
@@ -53,12 +53,12 @@
         <module>demetra-sa-ext</module>
         <module>demetra-dfm</module>
         <module>demetra-benchmarking</module>
+        <module>jdr</module>
         <module>demetra-io-core</module>
         <module>demetra-io-spreadsheet-core</module>
         <module>demetra-io-sql-core</module>
         <module>demetra-io-text-core</module>
         <module>demetra-io-legacy-core</module>
-        <module>jdr</module>
         <module>demetra-bridge</module>
     </modules>
 	

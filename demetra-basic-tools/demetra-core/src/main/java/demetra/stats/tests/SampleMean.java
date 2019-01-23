@@ -18,13 +18,12 @@ package demetra.stats.tests;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.dstats.F;
 import demetra.dstats.Normal;
 import demetra.dstats.T;
-import demetra.stats.samples.Population;
-import demetra.stats.samples.Sample;
 
 /**
+ * Test the mean of a sample. H0: mean(sample) == mean(population), H1:
+ * mean(sample) != mean(population)
  *
  * @author Jean Palate
  */
@@ -34,66 +33,61 @@ public class SampleMean {
 
     public static final double SMALL = 1e-38;
 
-    private final Sample sample;
+    private final double sampleMean;
+    private final int sampleSize;
+    private double populationMean, populationVariance;
+    private int sampleSizeForVariance;
+    private boolean normalPopulation;
 
-    public SampleMean(final Sample sample) {
-        this.sample=sample;
+    public SampleMean(final double sampleMean, final int sampleSize) {
+        this.sampleMean = sampleMean;
+        this.sampleSize = sampleSize;
     }
 
-    public StatisticalTest build() {
-        // case I: pmean and pvariance are known
-        if (Double.isFinite(sample.population().getVariance())) {
-            return fromKnownPopulation();
-        } else {
-            return fromKnownMean();
-        }
+    public SampleMean populationMean(double value) {
+        this.populationMean = value;
+        return this;
     }
 
-    private StatisticalTest fromKnownPopulation() {
-        Population population=sample.population();
-        double val = (sample.mean() - population.getMean()) / Math.sqrt(population.getVariance()/sample.size());
-        return new StatisticalTest(new Normal(), val, TestType.TwoSided, ! population.isNormal());
+    public SampleMean populationVariance(double value) {
+        this.populationVariance = value;
+        this.sampleSizeForVariance = 0;
+        return this;
     }
 
-    private StatisticalTest fromKnownMean() {
-        Population population=sample.population();
-        double val = (sample.mean() - population.getMean()) / Math.sqrt(sample.variance()/sample.size());
-        return new StatisticalTest(new T(sample.size() - 1), val, TestType.TwoSided, ! population.isNormal());
+    public SampleMean normalDistribution(boolean value) {
+        this.normalPopulation=value;
+        return this;
     }
-
-
     /**
+     *
+     * @param value
+     * @param sampleSize The sample size is the size of the sample for
+     * estimating the variance, which could be different of the size used for
+     * the mean
      *
      * @return
      */
-    public Sample getSample() {
-        return sample;
+    public SampleMean estimatedPopulationVariance(double value, int sampleSize) {
+        this.populationVariance = value;
+        this.sampleSizeForVariance = sampleSize;
+        return this;
     }
 
-   
-    public static StatisticalTest compareVariances(Sample s0, Sample s1) {
-        F f = new F(s1.size()- 1, s0.size()- 1);
-        return new StatisticalTest(f, s1.variance()/ s0.variance(), TestType.Upper, false);
-    }
-
-    public static StatisticalTest compareMeans(Sample s0, Sample s1, boolean samevar) {
-        int n0 = s0.size(), n1 = s1.size();
-        double v0 = s0.variance(), v1 = s1.variance();
-        double t;
-        int df;
-        if (samevar) {
-            double v = (v0 * (n0 - 1) + v1 * (n1 - 1)) / (n0 + n1 - 2);
-            t = (s1.mean() - s0.mean()) / Math.sqrt(v / n0 + v / n1);
-            df = n0 + n1 - 2;
-        } else {
-            t = (s1.mean() - s0.mean()) / Math.sqrt(v0 / n0 + v1 / n1);
-            df = Math.min(n0 - 1, n1 - 1);
-//            double f=v1/v0;
-//            double z=1.0/n0+f/n1;
-//            df=(z*z)/(1.0/(n0*n0*(n0-1))+f*f/(n1*n1*(n1-1)));
+    /**
+     * @return Normal distribution if the variance is known, T(n-1) if the
+     * variance is estimated using the sample.
+     */
+    public StatisticalTest build() {
+        if (this.populationVariance == 0) {
+            throw new java.lang.IllegalStateException("undefined population variance");
         }
-        T dist = new T(df);
-        return new StatisticalTest(dist, t, TestType.TwoSided, false);
+        double val = (sampleMean - populationMean) / Math.sqrt(populationVariance / sampleSize);
+        if (sampleSizeForVariance>0) {
+            return new StatisticalTest(new T(sampleSizeForVariance - 1), val, TestType.TwoSided, !normalPopulation);
+        } else {
+            return new StatisticalTest(new Normal(), val, TestType.TwoSided, !normalPopulation);
+        }
     }
 
-}
+ }
