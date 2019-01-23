@@ -5,6 +5,7 @@
  */
 package demetra.stats.samples;
 
+import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.dstats.F;
 import demetra.dstats.T;
@@ -21,46 +22,44 @@ import java.util.stream.DoubleStream;
 public interface Sample {
 
     public static Sample of(DoubleSequence data) {
-        return DefaultSample.of(data, Population.UNKNOWN);
+        return new DefaultSample(data, Population.UNKNOWN);
     }
 
-    public static Sample ofResiduals(DoubleSequence data, boolean meanCorrected) {
-        return meanCorrected ? DefaultSample.ofMeanCorrected(data)
-                : DefaultSample.of(data, Population.ZEROMEAN);
+    public static Sample ofResiduals(DoubleSequence data) {
+        double sx = 0, sxx = 0;
+        DoubleReader reader = data.reader();
+        int n = data.length();
+        for (int i = 0; i < n; ++i) {
+            double x = reader.next();
+            sx += x;
+            sxx += x * x;
+        }
+        return of(n, sx/n, sxx/n, Population.ZEROMEAN);
     }
 
     /**
      *
      * @param size Size of the sample
      * @param sampleMean Mean of the sample
-     * @param sampleStandardError
-     * @param estimatedVariance Estimated variance of the underlying population.
-     * The estimation is usually based on the sample, but it could be estimated
-     * otherwise. When the variance of the population is known, the
-     * populationVariance
+     * @param sampleVariance 
      * @param population
      * @return
      */
-    public static Sample of(int size, double sampleMean, double sampleStandardError, double estimatedVariance, Population population) {
+    public static Sample of(int size, double sampleMean, double sampleVariance, Population population) {
         return new Sample() {
+            
+            @Override
+            public int size() {
+                return size;
+            }
             @Override
             public double mean() {
                 return sampleMean;
             }
 
             @Override
-            public double standardError() {
-                return sampleStandardError;
-            }
-
-            @Override
-            public int size() {
-                return size;
-            }
-
-            @Override
-            public double estimatedVariance() {
-                return estimatedVariance;
+            public double variance() {
+                return sampleVariance;
             }
 
             @Override
@@ -70,24 +69,22 @@ public interface Sample {
         };
     }
 
+    int size();
+    
     double mean();
 
-    double estimatedVariance();
-
-    double standardError();
-
-    int size();
+    double variance();
 
     Population population();
 
     public static StatisticalTest compareVariances(Sample s0, Sample s1) {
         F f = new F(s1.size() - 1, s0.size() - 1);
-        return new StatisticalTest(f, s1.estimatedVariance() / s0.estimatedVariance(), TestType.Upper, false);
+        return new StatisticalTest(f, s1.variance() / s0.variance(), TestType.Upper, false);
     }
 
     public static StatisticalTest compareMeans(Sample s0, Sample s1, boolean samevar) {
         int n0 = s0.size(), n1 = s1.size();
-        double v0 = s0.estimatedVariance(), v1 = s1.estimatedVariance();
+        double v0 = s0.variance(), v1 = s1.variance();
         double t;
         int df;
         if (samevar) {

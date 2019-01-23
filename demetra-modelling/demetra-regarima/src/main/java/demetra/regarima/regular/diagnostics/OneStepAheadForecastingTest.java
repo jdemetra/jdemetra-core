@@ -109,11 +109,11 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
         return meanOut;
     }
 
-    public double getInSampleMeanSquareError() {
+    public double getInSampleMeanSquaredError() {
         return mseIn;
     }
 
-    public double getOutOfSampleMeanSquareError() {
+    public double getOutOfSampleMeanSquaredError() {
         return mseOut;
     }
 

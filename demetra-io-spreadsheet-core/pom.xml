@@ -14,7 +14,7 @@
     <description>A TS Provider that handles Excel and OpenDocument spreadsheets.</description>
 
     <properties>
-        <spreadsheet4j.version>2.2.2</spreadsheet4j.version>
+        <spreadsheet4j.version>2.2.3</spreadsheet4j.version>
         <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
     </properties>
 

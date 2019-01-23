@@ -53,12 +53,12 @@
         <module>demetra-sa-ext</module>
         <module>demetra-dfm</module>
         <module>demetra-benchmarking</module>
+        <module>jdr</module>
         <module>demetra-io-core</module>
         <module>demetra-io-spreadsheet-core</module>
         <module>demetra-io-sql-core</module>
         <module>demetra-io-text-core</module>
         <module>demetra-io-legacy-core</module>
-        <module>jdr</module>
         <module>demetra-bridge</module>
     </modules>
 	
