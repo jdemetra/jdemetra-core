@@ -4,57 +4,41 @@
 
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
-        <artifactId>demetra-toolkit</artifactId>
+        <artifactId>demetra-stl</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../demetra-toolkit</relativePath>
     </parent>
 
-    <artifactId>demetra-bridge</artifactId>
+    <artifactId>demetra-stl-core</artifactId>
     <packaging>jar</packaging>
-    
-    <name>JD3 - Bridge to JD2</name>
+    <name>JD3 - STL - Core</name>
     
     <dependencies>
         <!-- compile only -->
         <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <!-- compile and runtime -->
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tstoolkit</artifactId>
-            <version>${jd2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tss</artifactId>
-            <version>${jd2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-data-tests</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-design</artifactId>
             <scope>provided</scope>
         </dependency>
+        
+        <!-- compile and runtime -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-api</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-io-core</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
+            <artifactId>demetra-toolkit-basic</artifactId>
         </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-stl-api</artifactId>
+        </dependency>
+
         <!-- test only -->
         <dependency>
             <groupId>junit</groupId>
@@ -62,14 +46,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tstoolkit</artifactId>
+            <version>${jd2.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tck</artifactId>
-            <version>${jd2.version}</version>
+            <artifactId>demetra-data-tests</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

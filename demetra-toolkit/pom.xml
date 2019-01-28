@@ -1,24 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-parent</artifactId>
         <version>3.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>demetra-sa</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+
+    <artifactId>demetra-toolkit</artifactId>
     <packaging>pom</packaging>
-    <name>JD3 - SA</name>
-    <modules>
-        <module>demetra-sa-api</module>
-        <module>demetra-sa-core</module>
-    </modules>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>JD3 - Toolkit</name>
     
+    
+    <modules>
+        <module>demetra-design</module>
+        <module>demetra-data-tests</module>
+        <module>demetra-toolkit-api</module>
+        <module>demetra-toolkit-core</module>
+    </modules>
+  
     <properties>
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd3-toolkit.version>1.0.0-SNAPSHOT</jd3-toolkit.version>
-        <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
     </properties>
     
     <dependencyManagement>  
@@ -31,64 +36,47 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-api</artifactId>
-                <version>${jd3-toolkit.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-data-tests</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-toolkit-api</artifactId>
+                <version>${jd3-toolkit.version}</version>            
+            </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-toolkit-basic</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-toolkit-ssf</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-toolkit-modelling</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-toolkit-regarima</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-toolkit-sa</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-toolkit-benchmarking</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-sa-api</artifactId>
-                <version>${jd3-sa.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-sa-core</artifactId>
-                <version>${jd3-sa.version}</version>            
-            </dependency>
             <!-- < modules 3.0 -->
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-tstoolkit</artifactId>
-                <version>${jd2.version}</version>            
-                <scope>test</scope>
-            </dependency>
         </dependencies>   
     </dependencyManagement>
-    
     <build>
         <plugins>
             <plugin>
@@ -99,5 +87,5 @@
             </plugin>
         </plugins>
     </build>
-
+    
 </project>

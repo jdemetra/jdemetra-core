@@ -6,19 +6,21 @@
         <artifactId>demetra-parent</artifactId>
         <version>3.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>demetra-sa</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>JD3 - SA</name>
-    <modules>
-        <module>demetra-sa-api</module>
-        <module>demetra-sa-core</module>
-    </modules>
     
+    <artifactId>demetra-highfreq</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>JD3 - HighFreq</name>
+    
+    <modules>
+        <module>demetra-highfreq-api</module>
+        <module>demetra-highfreq-core</module>
+    </modules>
+  
     <properties>
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd3-toolkit.version>1.0.0-SNAPSHOT</jd3-toolkit.version>
-        <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
+        <jd3-highfreq.version>1.0.0-SNAPSHOT</jd3-highfreq.version>
     </properties>
     
     <dependencyManagement>  
@@ -71,13 +73,13 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-sa-api</artifactId>
-                <version>${jd3-sa.version}</version>            
+                <artifactId>demetra-highfreq-api</artifactId>
+                <version>${jd3-highfreq.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-sa-core</artifactId>
-                <version>${jd3-sa.version}</version>            
+                <artifactId>demetra-highfreq-core</artifactId>
+                <version>${jd3-highfreq.version}</version>            
             </dependency>
             <!-- < modules 3.0 -->
             <dependency>
@@ -99,5 +101,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
