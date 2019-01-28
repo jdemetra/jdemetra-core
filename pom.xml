@@ -46,20 +46,23 @@
     </properties>
   
     <modules>
-        <module>demetra-basic-tools</module>
-        <module>demetra-modelling</module>
-        <module>demetra-sa</module>
-        <module>demetra-modelling-ext</module>
-        <module>demetra-sa-ext</module>
-        <module>demetra-dfm</module>
-        <module>demetra-benchmarking</module>
-        <module>jdr</module>
+        <module>demetra-toolkit</module>
+        <module>demetra-tramoseats</module>
+        <module>demetra-x13</module>
         <module>demetra-io-core</module>
+        <module>demetra-io-legacy-core</module>
         <module>demetra-io-spreadsheet-core</module>
         <module>demetra-io-sql-core</module>
         <module>demetra-io-text-core</module>
-        <module>demetra-io-legacy-core</module>
         <module>demetra-bridge</module>
+        <module>demetra-benchmarking</module>
+        <module>demetra-sa</module>
+        <module>demetra-sts</module>
+        <module>demetra-stl</module>
+        <module>demetra-dfm</module>
+        <module>demetra-highfreq</module>
+        <module>demetra-toolkit-ext</module>
+        <module>jdr</module>
     </modules>
 	
     <dependencyManagement>

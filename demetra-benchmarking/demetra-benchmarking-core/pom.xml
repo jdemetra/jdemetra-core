@@ -1,50 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
-        <artifactId>demetra-toolkit</artifactId>
+        <artifactId>demetra-benchmarking</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../demetra-toolkit</relativePath>
     </parent>
-
-    <artifactId>demetra-bridge</artifactId>
+    <artifactId>demetra-benchmarking-core</artifactId>
     <packaging>jar</packaging>
-    
-    <name>JD3 - Bridge to JD2</name>
+    <name>JD3 - Benchmarking - Core</name>
     
     <dependencies>
-        <!-- compile only -->
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!-- compile and runtime -->
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tstoolkit</artifactId>
-            <version>${jd2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tss</artifactId>
-            <version>${jd2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-data-tests</artifactId>
-        </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-design</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
@@ -52,24 +21,49 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-io-core</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
+            <artifactId>demetra-benchmarking-api</artifactId>
         </dependency>
-        <!-- test only -->
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-toolkit-basic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-toolkit-modelling</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-toolkit-ssf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tstoolkit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tck</artifactId>
-            <version>${jd2.version}</version>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

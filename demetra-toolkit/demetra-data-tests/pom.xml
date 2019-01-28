@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-toolkit</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../demetra-toolkit</relativePath>
     </parent>
 
-    <artifactId>demetra-bridge</artifactId>
+    <artifactId>demetra-data-tests</artifactId>
+    <name>JD3 - Data for tests</name>
     <packaging>jar</packaging>
-    
-    <name>JD3 - Bridge to JD2</name>
     
     <dependencies>
         <!-- compile only -->
@@ -26,34 +24,15 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <!-- compile and runtime -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tstoolkit</artifactId>
-            <version>${jd2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tss</artifactId>
-            <version>${jd2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-data-tests</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-design</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-io-core</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
         </dependency>
         <!-- test only -->
         <dependency>
@@ -64,12 +43,6 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tck</artifactId>
-            <version>${jd2.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
