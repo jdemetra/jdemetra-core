@@ -26,7 +26,6 @@ import demetra.ssf.ISsfLoading;
 import demetra.ssf.SsfException;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
-import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.data.DoubleCell;
 
 /**

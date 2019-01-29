@@ -6,6 +6,7 @@
 package demetra.arima.ssf;
 
 import demetra.arima.internal.FastArimaForecasts;
+import demetra.arima.ssf.ExactArimaForecasts;
 import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.sarima.SarimaModel;

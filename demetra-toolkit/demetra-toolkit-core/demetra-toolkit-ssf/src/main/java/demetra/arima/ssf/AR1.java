@@ -16,7 +16,7 @@
  */
  /*
  */
-package demetra.ssf.models;
+package demetra.arima.ssf;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;

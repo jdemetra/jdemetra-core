@@ -16,6 +16,7 @@
  */
 package demetra.benchmarking.ssf;
 
+import demetra.benchmarking.ssf.SsfSpline;
 import demetra.data.DataBlockStorage;
 import demetra.data.DoubleSequence;
 import demetra.maths.functions.CubicSpline;

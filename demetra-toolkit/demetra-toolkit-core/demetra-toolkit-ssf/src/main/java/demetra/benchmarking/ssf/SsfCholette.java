@@ -16,6 +16,7 @@
  */
 package demetra.benchmarking.ssf;
 
+
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;

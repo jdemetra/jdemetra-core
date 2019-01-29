@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.ssf.models;
+package demetra.sts;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;

@@ -15,7 +15,7 @@
  * limitations under the Licence.
  */
 
-package demetra.benchmarking;
+package demetra.data;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;

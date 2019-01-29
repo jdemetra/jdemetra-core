@@ -19,7 +19,7 @@ package demetra.seats;
 import demetra.design.Development;
 
 /**
- * @author Jean Palate & BAYENSK
+ * @author Jean Palate 
  */
 @Development(status = Development.Status.Alpha)
 @lombok.Data

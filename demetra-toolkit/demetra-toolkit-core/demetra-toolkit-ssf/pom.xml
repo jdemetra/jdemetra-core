@@ -46,10 +46,6 @@
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-modelling</artifactId>
         </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-regarima</artifactId>
-        </dependency>
         <!-- test only -->
         <dependency>
             <groupId>junit</groupId>

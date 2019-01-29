@@ -70,11 +70,6 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-benchmarking</artifactId>
-                <version>${jd3-toolkit.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tramoseats-api</artifactId>
                 <version>${jd3-tramoseats.version}</version>            
             </dependency>

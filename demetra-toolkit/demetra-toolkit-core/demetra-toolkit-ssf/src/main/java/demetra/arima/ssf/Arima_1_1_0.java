@@ -16,84 +16,90 @@
  */
  /*
  */
-package demetra.ssf.models;
+package demetra.arima.ssf;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
+import demetra.ssf.implementations.Loading;
+import demetra.ssf.univariate.Ssf;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
-import demetra.ssf.implementations.Loading;
+import demetra.arima.ssf.AR1.Data;
 
 /**
+ * Ssf for (1 1 0) ARIMA models.
+ *
+ * y(t)-y(t-1) = rho*(y(t-1)-y(t-2)) + e(t) or y(t)=(1+rho)*y(t-1) - rho*y(t-2)
+ * + e(t)
+ *
+ * The class is designed to handle models initialized by zero. State: a(t) =
+ * [y(t-1) y(t)-y(t-1)]' Measurement: Z(t) = 1 1 Transition: T(t) = | 1 1 | | 0
+ * rho| Innovations: V(t) = | 0 0 | | 0 1 | Initialization: default: Pi0 = | 1 0
+ * | | 0 0 | Pf0 = | 0 0 | | 0 1/(1-rho*rho)| 0-initialization Pi0 = | 0 0 | | 0
+ * 0 | Pf0 = | 0 0 | | 0 1 |
  *
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-public class LocalLevel {
+public class Arima_1_1_0 {
 
-    public SsfComponent of(final double var) {
-        return new SsfComponent(new Initialization(var, Double.NaN), new Dynamics(var), Loading.fromPosition(0));
+    public SsfComponent of(final double rho) {
+        Data data = new Data(rho, 1, false);
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.sum());
     }
 
-    public SsfComponent of(final double var, final double initialValue) {
-        return new SsfComponent(new Initialization(var, initialValue), new Dynamics(var), Loading.fromPosition(0));
+    public SsfComponent of(final double rho, final double var, final boolean zeroinit) {
+        Data data = new Data(rho, var, zeroinit);
+        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.sum());
     }
-
 
     static class Initialization implements ISsfInitialization {
 
-        final double var;
-        final double initialValue;
+        private final Data data;
 
-        Initialization(final double var, final double initialValue) {
-            this.var=var;
-            this.initialValue=initialValue;
-        }
-
-        Initialization(double var) {
-            this.var=var;
-            this.initialValue=Double.NaN;
+        Initialization(Data data) {
+            this.data = data;
         }
 
         @Override
         public int getStateDim() {
-            return 1;
+            return 21;
         }
 
         @Override
         public boolean isDiffuse() {
-            return Double.isNaN(initialValue);
+            return !data.zeroinit;
         }
 
         @Override
         public int getDiffuseDim() {
-            return Double.isNaN(initialValue) ? 1 : 0;
+            return data.zeroinit ? 0 : 1;
         }
 
         @Override
         public void diffuseConstraints(Matrix b) {
-            if (Double.isNaN(initialValue)) {
+            if (!data.zeroinit) {
                 b.set(0, 0, 1);
             }
         }
 
         @Override
         public void a0(DataBlock a0) {
-            if (Double.isFinite(initialValue))
-                a0.set(0, initialValue);
         }
 
         @Override
         public void Pf0(Matrix pf0) {
-            if (Double.isFinite(initialValue)) {
-                pf0.set(0, 0, var);
+            if (data.zeroinit) {
+                pf0.set(0, 0, data.var);
+            } else {
+                pf0.set(0, 0, data.var / (1 - data.rho * data.rho));
             }
         }
 
         @Override
         public void Pi0(Matrix pi0) {
-            if (Double.isNaN(initialValue)) {
+            if (!data.zeroinit) {
                 pi0.set(0, 0, 1);
             }
         }
@@ -101,12 +107,10 @@ public class LocalLevel {
 
     static class Dynamics implements ISsfDynamics {
 
-        private final double var, std;
+        private final Data data;
 
-
-        Dynamics(double var) {
-            this.var=var;
-            this.std=var <=0 ? 0 : Math.sqrt(var);
+        Dynamics(Data data) {
+            this.data = data;
         }
 
         @Override
@@ -126,7 +130,7 @@ public class LocalLevel {
 
         @Override
         public void V(int pos, Matrix qm) {
-            qm.set(0, 0, var);
+            qm.set(1, 1, data.var);
         }
 
         @Override
@@ -136,40 +140,52 @@ public class LocalLevel {
 
         @Override
         public void S(int pos, Matrix sm) {
-            sm.set(0, 0, std);
+            sm.set(1, 0, data.std());
         }
 
         @Override
         public void addSU(int pos, DataBlock x, DataBlock u) {
-            x.add(0, std * u.get(0));
+            x.add(1, data.std() * u.get(0));
         }
 
         @Override
         public void XS(int pos, DataBlock x, DataBlock xs) {
-            xs.set(0, std * x.get(0));
+            xs.set(0, data.std() * x.get(1));
         }
 
         @Override
         public void T(int pos, Matrix tr) {
             tr.set(0, 0, 1);
+            tr.set(0, 1, 1);
+            tr.set(1, 1, data.rho);
         }
 
         @Override
         public void TX(int pos, DataBlock x) {
+            x.set(0, x.sum());
+            x.mul(1, data.rho);
         }
 
         @Override
-        public void TVT(int pos, Matrix v) {
+        public void TVT(int pos, Matrix vm) {
+            double v00 = vm.get(0, 0);
+            double v01 = vm.get(0, 1);
+            double v10 = vm.get(1, 0);
+            double v11 = vm.get(1, 1);
+            vm.set(0, 0, v00 + v01 + v10 + v11);
+            vm.set(0, 1, data.rho * (v01 + v11));
+            vm.set(1, 0, data.rho * (v10 + v11));
+            vm.set(1, 1, data.rho * data.rho * v11);
         }
 
         @Override
         public void XT(int pos, DataBlock x) {
+            x.set(1, x.get(0) + data.rho * x.get(1));
         }
 
         @Override
         public void addV(int pos, Matrix p) {
-            p.add(0, 0, var);
+            p.add(1, 1, data.var);
         }
-
     }
 }

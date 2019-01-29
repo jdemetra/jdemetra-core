@@ -12,7 +12,7 @@ import demetra.msts.IMstsParametersBlock;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
 import demetra.ssf.SsfComponent;
-import demetra.ssf.models.SsfAr;
+import demetra.arima.ssf.SsfAr;
 import java.util.Collections;
 import java.util.List;
 

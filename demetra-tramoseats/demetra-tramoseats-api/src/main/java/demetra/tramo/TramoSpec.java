@@ -21,7 +21,6 @@ import demetra.modelling.TransformationType;
 import demetra.modelling.regression.RegressionTestType;
 import demetra.modelling.regression.TradingDaysType;
 import demetra.regarima.ArimaSpec;
-import java.util.Objects;
 import javax.annotation.Nonnull;
 
 /**

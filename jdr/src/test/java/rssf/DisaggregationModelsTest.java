@@ -19,17 +19,15 @@ package rssf;
 import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.SsfComponent;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.implementations.RegSsf;
-import demetra.ssf.models.AR1;
-import demetra.ssf.models.LocalLevel;
+import demetra.arima.ssf.AR1;
+import demetra.sts.LocalLevel;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.univariate.SsfData;
-import ec.tstoolkit.timeseries.TsAggregationType;
 import org.junit.Test;
 
 /**

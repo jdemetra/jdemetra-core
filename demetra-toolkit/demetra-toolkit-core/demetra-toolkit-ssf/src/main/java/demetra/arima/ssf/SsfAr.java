@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.ssf.models;
+package demetra.arima.ssf;
 
 import demetra.arima.AutoCovarianceFunction;
 import demetra.data.DataBlock;

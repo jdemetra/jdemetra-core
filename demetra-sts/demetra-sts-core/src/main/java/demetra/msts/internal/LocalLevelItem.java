@@ -10,7 +10,7 @@ import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
 import demetra.msts.VarianceParameter;
 import demetra.ssf.SsfComponent;
-import demetra.ssf.models.LocalLevel;
+import demetra.sts.LocalLevel;
 import java.util.Collections;
 import java.util.List;
 
