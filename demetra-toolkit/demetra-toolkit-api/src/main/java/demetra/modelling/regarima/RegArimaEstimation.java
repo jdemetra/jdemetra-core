@@ -14,16 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package demetra.modelling.regarima;
 
-package demetra.processing;
-
-import demetra.timeseries.TsData;
+import demetra.likelihood.IConcentratedLikelihood;
+import demetra.likelihood.MaximumLogLikelihood;
+import demetra.regarima.RegSarimaModelType;
 
 /**
  *
  * @author Jean Palate
-  * @param <R>
  */
-public interface TsDataProcessor <R extends ProcResults> extends Processor<TsData, R>{
-
+@lombok.Value
+@lombok.Builder
+public class RegArimaEstimation {
+    
+    private RegSarimaModelType regarima;
+    private IConcentratedLikelihood likelihood;
+    private MaximumLogLikelihood maximumLogLikelihood;
 }

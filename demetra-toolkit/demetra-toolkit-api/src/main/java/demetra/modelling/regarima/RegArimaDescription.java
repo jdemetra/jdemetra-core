@@ -14,16 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package demetra.modelling.regarima;
 
-package demetra.processing;
-
+import demetra.modelling.regression.PreadjustmentVariable;
+import demetra.modelling.regression.Variable;
+import demetra.sarima.SarimaType;
 import demetra.timeseries.TsData;
+import demetra.timeseries.calendars.LengthOfPeriodType;
+import java.util.List;
 
 /**
  *
  * @author Jean Palate
-  * @param <R>
  */
-public interface TsDataProcessor <R extends ProcResults> extends Processor<TsData, R>{
-
+@lombok.Value
+@lombok.Builder
+public class RegArimaDescription {
+    private TsData series;
+    private boolean logTransformation;
+    private LengthOfPeriodType lengthOfPeriodTransformation;
+    @lombok.Singular
+    private List<PreadjustmentVariable> preadjustmentVariables;
+    @lombok.Singular
+    private List<Variable> variables;
+    private SarimaType arima;
+    private boolean mean;
 }

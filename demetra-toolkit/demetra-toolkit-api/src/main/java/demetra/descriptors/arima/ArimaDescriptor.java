@@ -25,8 +25,8 @@ import demetra.information.InformationMapping;
  *
  * @author Jean Palate
  */
-@lombok.experimental.UtilityClass
 @Development(status = Development.Status.Release)
+@lombok.experimental.UtilityClass
 public class ArimaDescriptor {
 
     final static String AR="ar", // Stationary auto-regressive polynomial
@@ -35,7 +35,7 @@ public class ArimaDescriptor {
             VAR = "var", // Innovation variance
             DESC = "desc"; // Optional description/name
 
-    static final InformationMapping<ArimaType> MAPPING = new InformationMapping<>(ArimaType.class);
+    final InformationMapping<ArimaType> MAPPING = new InformationMapping<>(ArimaType.class);
 
     static {
         MAPPING.set(AR, double[].class, source->source.getAr().toArray());

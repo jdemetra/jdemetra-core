@@ -15,10 +15,9 @@
 * limitations under the Licence.
 */
 
-package demetra.tramo;
+package demetra.regarima;
 
 import demetra.design.Development;
-import demetra.regarima.ArimaSpec;
 
 
 /**
@@ -26,54 +25,54 @@ import demetra.regarima.ArimaSpec;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
-public class ArimaValidator  implements ArimaSpec.Validator {
+public class SarimaValidator  implements SarimaSpec.Validator {
 
-    public static final int MAXP=3, MAXD=2, MAXQ=3, MAXBP=1, MAXBD=1, MAXBQ=1;
+   public static final int MAXP = 6, MAXD = 2, MAXQ = 6, MAXBP = 1, MAXBD = 1, MAXBQ = 1;
 
-    public static final ArimaValidator VALIDATOR=new ArimaValidator();
+    public static final SarimaValidator VALIDATOR=new SarimaValidator();
     
-    private  ArimaValidator() {
+    private  SarimaValidator() {
     }
     
     @Override
     public void checkP(int value) {
         if (value > MAXP) {
-            throw new TramoException("P must be <= "+Integer.toString(MAXP));
+            throw new X13Exception("P must be <= "+Integer.toString(MAXP));
         }
     }
 
     @Override
     public void checkD(int value) {
         if (value > MAXD) {
-            throw new TramoException("D must be <= "+Integer.toString(MAXD));
+            throw new X13Exception("D must be <= "+Integer.toString(MAXD));
         }
     }
 
     @Override
     public void checkQ(int value) {
         if (value > MAXQ) {
-            throw new TramoException("Q must be <= "+Integer.toString(MAXQ));
+            throw new X13Exception("Q must be <= "+Integer.toString(MAXQ));
         }
     }
     
      @Override
     public void checkBp(int value) {
         if (value > MAXBP) {
-            throw new TramoException("BP must be <= "+Integer.toString(MAXBP));
+            throw new X13Exception("BP must be <= "+Integer.toString(MAXBP));
         }
     }
 
     @Override
     public void checkBd(int value) {
         if (value > MAXBD) {
-            throw new TramoException("BD must be <= "+Integer.toString(MAXBD));
+            throw new X13Exception("BD must be <= "+Integer.toString(MAXBD));
         }
     }
 
     @Override
     public void checkBq(int value) {
         if (value > MAXBQ) {
-            throw new TramoException("BQ must be <= "+Integer.toString(MAXBQ));
+            throw new X13Exception("BQ must be <= "+Integer.toString(MAXBQ));
         }
     }
 }

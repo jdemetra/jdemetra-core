@@ -18,6 +18,7 @@ package demetra.data;
 
 import demetra.design.Development;
 import demetra.design.Internal;
+import demetra.util.IntList;
 import java.text.DecimalFormat;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
@@ -286,6 +287,384 @@ public interface DoubleSequence extends BaseSequence<Double> {
         return new InternalDoubleSeq.IntToDoubleSequence(n, i -> get(n - 1 - i));
     }
 
+    public default int[] search(final DoublePredicate pred) {
+        IntList list = new IntList();
+        int n = length();
+        DoubleReader cell = reader();
+        for (int j = 0; j < n; ++j) {
+            if (pred.test(cell.next())) {
+                list.add(j);
+            }
+        }
+        return list.toArray();
+    }
+
+    public default int search(final DoublePredicate pred, final int[] first) {
+        int n = length();
+        DoubleReader cell = reader();
+        int cur = 0;
+        for (int j = 0; j < n; ++j) {
+            if (pred.test(cell.next())) {
+                first[cur++] = j;
+                if (cur == first.length) {
+                    return cur;
+                }
+            }
+        }
+        return cur;
+    }
+
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Descriptive statistics (with default implementations">
+    public default double sum() {
+        return reduce(0, (s, x) -> s + x);
+    }
+
+    public default double average() {
+        return reduce(0, (s, x) -> s + x) / length();
+    }
+
+    public default double ssq() {
+        return reduce(0, (s, x) -> s + x * x);
+    }
+
+    public default double ssqc(double mean) {
+        return reduce(0, (s, x) -> {
+            x -= mean;
+            return s + x * x;
+        });
+    }
+
+    public default double sumWithMissing() {
+        int n = length();
+        double s = 0;
+        DoubleReader cell = reader();
+        for (int i = 0; i < n; i++) {
+            double cur = cell.next();
+            if (Double.isFinite(cur)) {
+                s += cur;
+            }
+        }
+        return s;
+    }
+
+    public default double ssqWithMissing() {
+        int n = length();
+        double s = 0;
+        DoubleReader cell = reader();
+        for (int i = 0; i < n; i++) {
+            double cur = cell.next();
+            if (Double.isFinite(cur)) {
+                s += cur * cur;
+            }
+        }
+        return s;
+    }
+
+    public default double ssqcWithMissing(final double mean) {
+        int n = length();
+        double s = 0;
+        DoubleReader cell = reader();
+        for (int i = 0; i < n; i++) {
+            double cur = cell.next() - mean;
+            if (Double.isFinite(cur)) {
+                s += cur * cur;
+            }
+        }
+        return s;
+    }
+
+    public default double averageWithMissing() {
+        int n = length();
+        int m = 0;
+        double s = 0;
+        DoubleReader cell = reader();
+        for (int i = 0; i < n; i++) {
+            double cur = cell.next();
+            if (Double.isFinite(cur)) {
+                s += cur;
+            } else {
+                m++;
+            }
+        }
+        return s / (n - m);
+    }
+
+    public default double norm1() {
+        int n = length();
+        double nrm = 0;
+        DoubleReader cur = reader();
+        for (int i = 0; i < n; ++i) {
+            nrm += Math.abs(cur.next());
+        }
+        return nrm;
+    }
+
+    /**
+     * Computes the euclidian norm of the src block. Based on the "dnrm2" Lapack
+     * function.
+     *
+     * @return The euclidian norm (&gt=0).
+     */
+    public default double norm2() {
+        int n = length();
+        switch (n) {
+            case 0:
+                return 0;
+            case 1:
+                return Math.abs(get(0));
+            default:
+                double scale = 0;
+                double ssq = 1;
+                DoubleReader cell = reader();
+                for (int i = 0; i < n; ++i) {
+                    double cur = cell.next();
+                    if (cur != 0) {
+                        double absxi = Math.abs(cur);
+                        if (scale < absxi) {
+                            double s = scale / absxi;
+                            ssq = 1 + ssq * s * s;
+                            scale = absxi;
+                        } else {
+                            double s = absxi / scale;
+                            ssq += s * s;
+                        }
+                    }
+                }
+                return scale * Math.sqrt(ssq);
+        }
+    }
+
+    public default double fastNorm2() {
+        int n = length();
+        switch (n) {
+            case 0:
+                return 0;
+            case 1:
+                return Math.abs(get(0));
+            default:
+                DoubleReader cell = reader();
+                double ssq = 0;
+                for (int i = 0; i < n; ++i) {
+                    double cur = cell.next();
+                    if (cur != 0) {
+                        ssq += cur * cur;
+                    }
+                }
+                return Math.sqrt(ssq);
+        }
+    }
+
+    /**
+     * Computes the infinite-norm of this src block
+     *
+     * @return Returns min{|src(i)|}
+     */
+    public default double normInf() {
+        int n = length();
+        if (n == 0) {
+            return 0;
+        } else {
+            double nrm = Math.abs(get(0));
+            DoubleReader cell = reader();
+            for (int i = 1; i < n; ++i) {
+                double tmp = Math.abs(cell.next());
+                if (tmp > nrm) {
+                    nrm = tmp;
+                }
+            }
+            return nrm;
+        }
+    }
+
+    /**
+     * Counts the number of identical consecutive values.
+     *
+     * @return Missing values are omitted.
+     */
+    public default int getRepeatCount() {
+        int i = 0;
+        int n = length();
+        DoubleReader cell = reader();
+        double prev = 0;
+        while (i++ < n) {
+            prev = cell.next();
+            if (Double.isFinite(prev)) {
+                break;
+            }
+        }
+        if (i == n) {
+            return 0;
+        }
+        int c = 0;
+        for (; i < n; ++i) {
+            double cur = cell.next();
+            if (Double.isFinite(cur)) {
+                if (cur == prev) {
+                    ++c;
+                } else {
+                    prev = cur;
+                }
+            }
+        }
+        return c;
+    }
+
+    public default double dot(DoubleSequence data) {
+        int n = length();
+        double s = 0;
+        DoubleReader cur = reader();
+        DoubleReader xcur = data.reader();
+        for (int i = 0; i < n; i++) {
+            s += cur.next() * xcur.next();
+        }
+        return s;
+    }
+
+    public default double jdot(DoubleSequence data, int pos) {
+        int n = length();
+        double s = 0;
+        DoubleReader cur = reader();
+        DoubleReader xcur = data.reader();
+        for (int i = 0; i < pos; i++) {
+            s += cur.next() * xcur.next();
+        }
+        for (int i = pos; i < n; i++) {
+            s -= cur.next() * xcur.next();
+        }
+        return s;
+    }
+
+    public default double distance(DoubleSequence data) {
+        double scale = 0;
+        double ssq = 1;
+        DoubleReader cur = reader();
+        DoubleReader xcur = data.reader();
+        int n = length();
+        for (int i = 0; i < n; ++i) {
+            double x = cur.next(), y = xcur.next();
+            if (Double.compare(x, y) != 0) {
+                double d = x - y;
+                if (d != 0) {
+                    double absxi = Math.abs(d);
+                    if (scale < absxi) {
+                        double s = scale / absxi;
+                        ssq = 1 + ssq * s * s;
+                        scale = absxi;
+                    } else {
+                        double s = absxi / scale;
+                        ssq += s * s;
+                    }
+                }
+            }
+        }
+        return scale * Math.sqrt(ssq);
+    }
+
+    public default DoubleSequence select(DoublePredicate pred) {
+        double[] x = toArray();
+        int cur = 0;
+        for (int i = 0; i < x.length; ++i) {
+            if (pred.test(x[i])) {
+                if (cur < i) {
+                    x[cur] = x[i];
+                }
+                ++cur;
+            }
+        }
+        if (cur == x.length) {
+            return DoubleSequence.ofInternal(x);
+        } else {
+            double[] xc = new double[cur];
+            System.arraycopy(x, 0, xc, 0, cur);
+            return DoubleSequence.ofInternal(xc);
+        }
+    }
+
+    public default DoubleSequence removeMean() {
+        double[] y = toArray();
+        double s = 0;
+        for (int i = 0; i < y.length; ++i) {
+            s += y[i];
+        }
+        s /= y.length;
+        for (int i = 0; i < y.length; ++i) {
+            y[i] -= s;
+        }
+        return DoubleSequence.ofInternal(y);
+    }
+
+    public default DoubleSequence fn(DoubleUnaryOperator fn) {
+        double[] data = toArray();
+        for (int i = 0; i < data.length; ++i) {
+            data[i] = fn.applyAsDouble(data[i]);
+        }
+        return DoubleSequence.ofInternal(data);
+    }
+
+    public default DoubleSequence fastFn(DoubleUnaryOperator fn) {
+        return DoubleSequence.onMapping(length(), i -> fn.applyAsDouble(get(i)));
+    }
+
+    public default DoubleSequence fn(int lag, DoubleBinaryOperator fn) {
+        int n = length() - lag;
+        if (n <= 0) {
+            return null;
+        }
+        double[] nvalues = new double[n];
+        for (int j = 0; j < lag; ++j) {
+            double prev = get(j);
+            for (int i = j; i < n; i += lag) {
+                double next = get(i + lag);
+                nvalues[i] = fn.applyAsDouble(prev, next);
+                prev = next;
+            }
+        }
+        return DoubleSequence.ofInternal(nvalues);
+    }
+
+    public default DoubleSequence extend(@Nonnegative int nbeg, @Nonnegative int nend) {
+        int n = length() + nbeg + nend;
+        double[] nvalues = new double[n];
+        for (int i = 0; i < nbeg; ++i) {
+            nvalues[i] = Double.NaN;
+        }
+        copyTo(nvalues, nbeg);
+        for (int i = n - nend; i < n; ++i) {
+            nvalues[i] = Double.NaN;
+        }
+        return DoubleSequence.ofInternal(nvalues);
+    }
+
+    public default DoubleSequence delta(int lag) {
+        return fn(lag, (x, y) -> y - x);
+    }
+
+    public default DoubleSequence delta(int lag, int pow) {
+        DoubleSequence ns = this;
+        for (int i = 0; i < pow; ++i) {
+            ns = ns.fn(lag, (x, y) -> y - x);
+        }
+        return ns;
+    }
+
+    public default DoubleSequence op(DoubleSequence b, DoubleBinaryOperator op) {
+        double[] data = toArray();
+        DoubleReader reader = b.reader();
+        for (int i = 0; i < data.length; ++i) {
+            data[i] = op.applyAsDouble(data[i], reader.next());
+        }
+        return DoubleSequence.ofInternal(data);
+    }
+
+    public default DoubleSequence fastOp(DoubleSequence b, DoubleBinaryOperator op) {
+        int n = length();
+        return DoubleSequence.onMapping(n, i -> get(i) + b.get(i));
+    }
+
+    public default DoubleSequence commit() {
+        return DoubleSequence.ofInternal(toArray());
+    }
     static boolean equals(double a, double b, double epsilon) {
         return a > b ? (a - epsilon <= b) : (b - epsilon <= a);
     }

@@ -27,7 +27,7 @@ import demetra.sarima.SarimaSpecification;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Data
-public final class ArimaSpec implements Cloneable{
+public final class SarimaSpec implements Cloneable{
     
     public static interface Validator{
         void checkP(int p);
@@ -43,14 +43,14 @@ public final class ArimaSpec implements Cloneable{
     private int d, bd;
     private Parameter[] phi, theta, bphi, btheta;
     
-    public ArimaSpec(Validator validator){
+    public SarimaSpec(Validator validator){
         this.validator=validator;
     }
 
     @Override
-    public ArimaSpec clone(){
+    public SarimaSpec clone(){
         try {
-            ArimaSpec c=(ArimaSpec) super.clone();
+            SarimaSpec c=(SarimaSpec) super.clone();
             c.phi = Parameter.clone(phi);
             c.theta = Parameter.clone(theta);
             c.bphi = Parameter.clone(bphi);

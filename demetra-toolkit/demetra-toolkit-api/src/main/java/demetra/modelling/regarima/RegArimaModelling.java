@@ -14,16 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package demetra.processing;
-
-import demetra.timeseries.TsData;
+package demetra.modelling.regarima;
 
 /**
  *
  * @author Jean Palate
-  * @param <R>
  */
-public interface TsDataProcessor <R extends ProcResults> extends Processor<TsData, R>{
-
+@lombok.Value
+public class RegArimaModelling {
+    private RegArimaDescription description;
+    private RegArimaEstimation estimation;
 }

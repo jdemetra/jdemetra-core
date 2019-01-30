@@ -54,7 +54,7 @@ import demetra.modelling.regression.LevelShiftFactory;
 import demetra.modelling.regression.PeriodicOutlierFactory;
 import demetra.modelling.regression.TransitoryChangeFactory;
 import demetra.modelling.regression.UserTradingDays;
-import demetra.regarima.ArimaSpec;
+import demetra.regarima.SarimaSpec;
 import demetra.timeseries.calendars.GenericTradingDays;
 
 /**
@@ -84,7 +84,7 @@ class TramoModelBuilder implements IModelBuilder {
             model.setMean(true);
         } else {
             SarimaComponent cmp = model.getArimaComponent();
-            ArimaSpec arima = spec.getArima();
+            SarimaSpec arima = spec.getArima();
             cmp.setPeriod(freq);
             cmp.setMu(arima.getMu());
             cmp.setPhi(arima.getPhi());

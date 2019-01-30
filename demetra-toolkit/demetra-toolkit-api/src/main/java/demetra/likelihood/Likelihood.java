@@ -19,7 +19,6 @@ package demetra.likelihood;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.data.DoubleSequence;
-import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
 
@@ -77,9 +76,6 @@ public final class Likelihood implements ILikelihood {
         public Builder residuals(DoubleSequence residuals) {
             if (residuals == null)
                 return this;
-            if (ssqerr == 0) {
-                this.ssqerr = Doubles.ssqWithMissing(residuals);
-            }
             this.res = residuals.toArray();
             return this;
         }

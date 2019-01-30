@@ -7,19 +7,10 @@ package demetra.x11;
 
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
-import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
-import demetra.maths.MatrixType;
 import demetra.sa.DecompositionMode;
 import ec.satoolkit.x11.X11Results;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

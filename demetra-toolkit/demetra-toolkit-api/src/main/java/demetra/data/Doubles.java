@@ -16,6 +16,8 @@
  */
 package demetra.data;
 
+import demetra.data.DoubleReader;
+import demetra.data.DoubleSequence;
 import demetra.util.IntList;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
@@ -27,6 +29,7 @@ import javax.annotation.Nonnegative;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
+@Deprecated
 public class Doubles {
 
     public int[] search(final DoubleSequence d, final DoublePredicate pred) {
