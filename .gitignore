@@ -1,4 +1,5 @@
 **/nbproject/
+**/nb-configuration.xml
 /demetra-toolkit/demetra-design/target/
 /demetra-toolkit/demetra-data-tests/target/
 /demetra-toolkit/demetra-toolkit-api/target/
