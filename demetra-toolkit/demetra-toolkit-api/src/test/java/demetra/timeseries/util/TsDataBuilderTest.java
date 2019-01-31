@@ -56,7 +56,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import static demetra.timeseries.TsPeriod.DEFAULT_EPOCH;
 import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
 
 /**
  *

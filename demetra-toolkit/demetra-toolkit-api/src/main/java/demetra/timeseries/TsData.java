@@ -313,7 +313,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
     }
 
     public double distance(TsData r) {
-        DoubleSequence diff = subtract(r).getValues();
+        DoubleSequence diff = subtract(this, r).getValues();
         int n=diff.count(x->Double.isFinite(x));
         if (n == 0)
             return Double.NaN;

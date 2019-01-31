@@ -22,6 +22,7 @@
         <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
         <jd3-stl.version>1.0.0-SNAPSHOT</jd3-stl.version>
         <jd3-highfreq.version>1.0.0-SNAPSHOT</jd3-highfreq.version>
+        <jd3-saX.version>1.0.0-SNAPSHOT</jd3-saX.version>
     </properties>
 
     <dependencies>
@@ -114,6 +115,16 @@
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-highfreq-core</artifactId>
             <version>${jd3-highfreq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-sa-experimental-api</artifactId>
+            <version>${jd3-saX.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-sa-experimental-core</artifactId>
+            <version>${jd3-saX.version}</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
