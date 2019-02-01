@@ -20,7 +20,7 @@ package demetra.regarima.regular;
 import demetra.regarima.regular.IRegressionTest;
 import demetra.design.Development;
 import demetra.information.InformationSet;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 
 /**
  *
@@ -45,7 +45,7 @@ public class TRegressionTest implements IRegressionTest {
     }
 
     @Override
-    public boolean accept(ConcentratedLikelihood ll, int nhp, int ireg, int nregs, InformationSet info) {
+    public boolean accept(ConcentratedLikelihoodWithMissing ll, int nhp, int ireg, int nregs, InformationSet info) {
         double[] t = ll.tstats(nhp, true);
         int nlow = 0, nhigh = 0;
         for (int i = 0; i < nregs; ++i) {

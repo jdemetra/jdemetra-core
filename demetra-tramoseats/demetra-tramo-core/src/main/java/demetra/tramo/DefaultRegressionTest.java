@@ -21,7 +21,7 @@ import demetra.regarima.regular.FRegressionTest;
 import demetra.regarima.regular.IRegressionTest;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.modelling.regression.Variable;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
@@ -181,7 +181,7 @@ public class DefaultRegressionTest implements IRegressionModule {
         RegArimaModel<SarimaModel> regarima = tmpModel.regarima();
         IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(tmpModel.getArimaComponent().defaultMapping(), true, precision);
         RegArimaEstimation<SarimaModel> rslt = processor.process(regarima);
-        ConcentratedLikelihood ll = rslt.getConcentratedLikelihood();
+        ConcentratedLikelihoodWithMissing ll = rslt.getConcentratedLikelihood();
 
         int start = regarima.isMean() ? 1 : 0;
         int nhp = tmpModel.getArimaComponent().getFreeParametersCount();

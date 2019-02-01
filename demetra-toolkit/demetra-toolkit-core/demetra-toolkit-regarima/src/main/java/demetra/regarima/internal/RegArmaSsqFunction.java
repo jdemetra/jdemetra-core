@@ -21,7 +21,7 @@ import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.DefaultLikelihoodEvaluation;
 import demetra.likelihood.ILikelihood;
 import demetra.maths.functions.IParametersDomain;
@@ -145,7 +145,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
         final RegArmaSsqFunction<S> fn;
         final DoubleSequence p;
         final S arma;
-        final ConcentratedLikelihood ll;
+        final ConcentratedLikelihoodWithMissing ll;
 
         public Evaluation(RegArmaSsqFunction<S> fn, DoubleSequence p) {
             this.fn = fn;
@@ -160,7 +160,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
             return fn.errors.apply(ll);
         }
 
-        public ConcentratedLikelihood getLikelihood() {
+        public ConcentratedLikelihoodWithMissing getLikelihood() {
             return ll;
         }
 

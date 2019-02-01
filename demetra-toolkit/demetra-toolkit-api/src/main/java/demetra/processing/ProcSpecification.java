@@ -24,7 +24,4 @@ package demetra.processing;
 public interface ProcSpecification{
 
     AlgorithmDescriptor getAlgorithmDescriptor();
-    
-    ProcSpecification clone();
-    
 }

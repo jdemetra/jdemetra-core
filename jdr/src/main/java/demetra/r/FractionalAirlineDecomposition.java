@@ -26,7 +26,7 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockStorage;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodDescriptor;
 import demetra.maths.functions.ParamValidation;
@@ -59,7 +59,7 @@ public class FractionalAirlineDecomposition {
         double[] y, t, s, i, sa;
         ArimaType arima;
         UcarimaType ucarima;
-        ConcentratedLikelihood concentratedLogLikelihood;
+        ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
         Matrix parametersCovariance;
         double[] parameters, score;

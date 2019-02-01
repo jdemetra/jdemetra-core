@@ -21,7 +21,7 @@ import demetra.arima.StationaryTransformation;
 import demetra.arima.internal.FastKalmanFilter;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.Likelihood;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
@@ -85,7 +85,7 @@ public class FastOutlierDetector<T extends IArimaModel> extends
         StationaryTransformation<IArimaModel> st = getRegArima().arima().stationaryTransformation();
         stmodel = st.getStationaryModel();
         ur = st.getUnitRoots();
-        ConcentratedLikelihood cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(getRegArima());
+        ConcentratedLikelihoodWithMissing cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(getRegArima());
         DoubleSequence residuals = fullResiduals(getRegArima().differencedModel(), cll);
         el = residuals.toArray();
         mad = getStandardDeviationComputer().compute(residuals);
@@ -158,7 +158,7 @@ public class FastOutlierDetector<T extends IArimaModel> extends
         }
     }
 
-    private DoubleSequence fullResiduals(RegArmaModel<T> differencedModel, ConcentratedLikelihood cll) {
+    private DoubleSequence fullResiduals(RegArmaModel<T> differencedModel, ConcentratedLikelihoodWithMissing cll) {
         if (cll.nx() == 0) {
             return cll.e();
         }

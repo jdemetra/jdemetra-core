@@ -22,7 +22,7 @@ import demetra.data.DoubleSequence;
 import static demetra.data.Doubles.ssq;
 import static demetra.data.Doubles.sum;
 import demetra.dstats.F;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -141,7 +141,7 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
             return regarima;
         }
 
-        ConcentratedLikelihood concentratedLikelihood = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
+        ConcentratedLikelihoodWithMissing concentratedLikelihood = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
         DoubleSequence linearizedData = RegArimaUtility.linearizedData(regarima, concentratedLikelihood);
 
         mean = regarima.isMean();

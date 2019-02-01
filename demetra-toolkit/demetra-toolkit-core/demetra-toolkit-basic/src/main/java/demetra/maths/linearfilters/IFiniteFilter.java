@@ -17,9 +17,7 @@
 package demetra.maths.linearfilters;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleReader;
 import demetra.design.Development;
-import demetra.maths.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSequence;
 

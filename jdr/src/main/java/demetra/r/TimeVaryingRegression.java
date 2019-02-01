@@ -20,7 +20,7 @@ import demetra.r.mapping.DiffuseLikelihoodInfo;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.descriptors.arima.SarimaDescriptor;
-import demetra.ssf.dk.DkConcentratedLikelihood;
+import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.dk.SsfFunctionPoint;
@@ -64,7 +64,8 @@ public class TimeVaryingRegression {
         MatrixType coefficients;
         MatrixType coefficientsStde;
         SarimaModel arima0, arima;
-        DkConcentratedLikelihood ll0, ll;
+        DiffuseConcentratedLikelihood ll0;
+        DiffuseConcentratedLikelihood ll;
         double nvar;
 
         private static final String ARIMA0 = "arima0", LL0 = "likelihood0",

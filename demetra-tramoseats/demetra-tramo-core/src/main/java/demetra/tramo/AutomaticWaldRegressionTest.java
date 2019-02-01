@@ -19,7 +19,7 @@ package demetra.tramo;
 import demetra.design.BuilderPattern;
 import demetra.dstats.F;
 import demetra.dstats.ProbabilityType;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.modelling.regression.Variable;
 import demetra.regarima.IRegArimaProcessor;
@@ -149,7 +149,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         // We compute the full model
         ModelDescription test6 = createTestModel(context, td, null);
         RegArimaEstimation<SarimaModel> regarima6 = processor.process(test6.regarima());
-        ConcentratedLikelihood ll = regarima6.getConcentratedLikelihood();
+        ConcentratedLikelihoodWithMissing ll = regarima6.getConcentratedLikelihood();
         int nhp = test6.getArimaComponent().getFreeParametersCount();
         int df = ll.degreesOfFreedom() - nhp;
         double sigma = ll.ssq() / df;
@@ -220,7 +220,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         return tmp;
     }
 
-    private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ConcentratedLikelihood ll, int nhp) {
+    private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ConcentratedLikelihoodWithMissing ll, int nhp) {
         boolean changed = false;
         if (aTd != null)
                 current.addVariable(new Variable(aTd, "td", false));

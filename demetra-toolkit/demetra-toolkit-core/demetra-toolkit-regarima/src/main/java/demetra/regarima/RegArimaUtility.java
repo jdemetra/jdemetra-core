@@ -23,7 +23,7 @@ import demetra.arima.internal.FastKalmanFilter;
 import demetra.data.DataBlock;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.Likelihood;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
@@ -53,7 +53,7 @@ public class RegArimaUtility {
      * @param concentratedLikelihood
      * @return
      */
-    public <M extends IArimaModel> DoubleSequence linearizedData(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihood concentratedLikelihood) {
+    public <M extends IArimaModel> DoubleSequence linearizedData(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
         double[] res = model.getY().toArray();
 
         // handle missing values
@@ -77,7 +77,7 @@ public class RegArimaUtility {
         return e;
     }
     
-    public <M extends IArimaModel> DoubleSequence interpolatedData(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihood concentratedLikelihood) {
+    public <M extends IArimaModel> DoubleSequence interpolatedData(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
         int[] missing = model.missing();
         if (missing.length == 0) {
             return model.getY();
@@ -105,7 +105,7 @@ public class RegArimaUtility {
      * @return
      */
     public <M extends IArimaModel> DoubleSequence regressionEffect(@Nonnull RegArimaModel<M> model,
-            @Nonnull ConcentratedLikelihood concentratedLikelihood, int startPos, int nvars) {
+            @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood, int startPos, int nvars) {
         DoubleSequence b = concentratedLikelihood.coefficients();
         DataBlock e = DataBlock.make(model.getObservationsCount());
         if (b.length() > 0) {
@@ -141,7 +141,7 @@ public class RegArimaUtility {
      * @param concentratedLikelihood
      * @return
      */
-    public <M extends IArimaModel> DoubleSequence fullResiduals(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihood concentratedLikelihood) {
+    public <M extends IArimaModel> DoubleSequence fullResiduals(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
         // compute the residuals...
         if (model.getVariablesCount() == 0) {
             return concentratedLikelihood.e();

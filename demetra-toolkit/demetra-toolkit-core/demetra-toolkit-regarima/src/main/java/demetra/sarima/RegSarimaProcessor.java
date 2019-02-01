@@ -28,7 +28,7 @@ import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LogLikelihoodFunction;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
@@ -391,9 +391,9 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         return finalProcessing ? finalProcessing(finalRslt) : finalRslt;
     }
 
-    public LogLikelihoodFunction<RegArimaModel<SarimaModel>, ConcentratedLikelihood> llFunction(RegArimaModel<SarimaModel> regs) {
+    public LogLikelihoodFunction<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> llFunction(RegArimaModel<SarimaModel> regs) {
         IParametricMapping<RegArimaModel<SarimaModel>> rmapping = new RegArimaMapping<>(stationaryMapping(regs), regs);
-        Function<RegArimaModel<SarimaModel>, ConcentratedLikelihood> fn = model -> ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
+        Function<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> fn = model -> ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
         return new LogLikelihoodFunction(rmapping, fn);
     }
 

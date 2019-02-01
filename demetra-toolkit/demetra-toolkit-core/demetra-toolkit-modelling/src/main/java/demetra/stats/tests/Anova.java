@@ -20,7 +20,7 @@ package demetra.stats.tests;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.dstats.F;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.linearmodel.LinearModel;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
@@ -66,7 +66,7 @@ public class Anova {
         HouseholderR qr=new HouseholderR();
         qr.setPrecision(EPS);
         qr.decompose(model.variables());
-        ConcentratedLikelihood[] ll = nestedModelsEstimation(model.isMeanCorrection(), qr, model.getY(), groups);
+        ConcentratedLikelihoodWithMissing[] ll = nestedModelsEstimation(model.isMeanCorrection(), qr, model.getY(), groups);
         rssq=ll[groups.length].ssq();
         rdf=ll[groups.length].degreesOfFreedom();
         
@@ -90,7 +90,7 @@ public class Anova {
         return Arrays.asList(rows);
     }
 
-    private ConcentratedLikelihood likelihood(HouseholderR qr, DoubleSequence y, int nvars) {
+    private ConcentratedLikelihoodWithMissing likelihood(HouseholderR qr, DoubleSequence y, int nvars) {
         int rank = qr.rank(nvars);
         int n = qr.getRowsCount();
         DataBlock res = DataBlock.make(n - rank);
@@ -98,7 +98,7 @@ public class Anova {
         qr.partialLeastSquares(y, b, res);
         double ssqerr = res.ssq();
         // initializing the results...
-        return ConcentratedLikelihood.builder()
+        return ConcentratedLikelihoodWithMissing.builder()
                 .ndata(n)
                 .ssqErr(ssqerr)
                 .residuals(res)
@@ -107,8 +107,8 @@ public class Anova {
                 .build();
      }
 
-    private ConcentratedLikelihood[] nestedModelsEstimation(boolean mean, HouseholderR qr, DoubleSequence y, int[] groups) {
-        ConcentratedLikelihood[] ll = new ConcentratedLikelihood[groups.length + 1];
+    private ConcentratedLikelihoodWithMissing[] nestedModelsEstimation(boolean mean, HouseholderR qr, DoubleSequence y, int[] groups) {
+        ConcentratedLikelihoodWithMissing[] ll = new ConcentratedLikelihoodWithMissing[groups.length + 1];
         int n = mean ? 1 : 0;
         ll[0] = likelihood(qr, y, n);
         for (int i = 0; i < groups.length; ++i) {

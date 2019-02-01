@@ -29,7 +29,7 @@ import demetra.maths.functions.minpack.MinPackMinimizer;
 import demetra.maths.functions.riso.LbfgsMinimizer;
 import demetra.maths.functions.ssq.ProxyMinimizer;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.dk.DkConcentratedLikelihood;
+import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.dk.SsfFunctionPoint;
 import demetra.ssf.univariate.SsfData;
@@ -69,7 +69,7 @@ public class BsmMonitor {
 
     private double m_dsmall = 0.01;
     
-    private DkConcentratedLikelihood m_ll;
+    private DiffuseConcentratedLikelihood m_ll;
     private SsfFunction<BasicStructuralModel, SsfBsm2> fn_;
     private SsfFunctionPoint<BasicStructuralModel, SsfBsm2> fnmax_;
     
@@ -234,7 +234,7 @@ public class BsmMonitor {
      *
      * @return
      */
-    public DkConcentratedLikelihood getLikelihood() {
+    public DiffuseConcentratedLikelihood getLikelihood() {
         return m_ll;
     }
 

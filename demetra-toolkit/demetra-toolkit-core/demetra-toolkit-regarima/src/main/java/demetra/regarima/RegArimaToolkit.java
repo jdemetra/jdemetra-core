@@ -16,7 +16,7 @@
  */
 package demetra.regarima;
 
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.GlsSarimaProcessor;
@@ -40,7 +40,7 @@ public class RegArimaToolkit {
     }
     
     RegArimaEstimation<SarimaModel> concentratedLikelihood(RegArimaModel<SarimaModel> regarima, int nparams){
-        ConcentratedLikelihood cl = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
+        ConcentratedLikelihoodWithMissing cl = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
         return new RegArimaEstimation(regarima, cl, nparams);
     }
 }

@@ -16,6 +16,7 @@
  */
 package demetra.ssf.dk;
 
+import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
@@ -93,11 +94,11 @@ public class DkToolkit {
         return sqr ? new LLComputer2(res) : new LLComputer1(res);
     }
 
-    public IConcentratedLikelihoodComputer<DkConcentratedLikelihood> concentratedLikelihoodComputer() {
+    public IConcentratedLikelihoodComputer<DiffuseConcentratedLikelihood> concentratedLikelihoodComputer() {
         return concentratedLikelihoodComputer(true, false, true);
     }
 
-    public IConcentratedLikelihoodComputer<DkConcentratedLikelihood> concentratedLikelihoodComputer(boolean sqr, boolean fast, boolean scalingFactor) {
+    public IConcentratedLikelihoodComputer<DiffuseConcentratedLikelihood> concentratedLikelihoodComputer(boolean sqr, boolean fast, boolean scalingFactor) {
         return new CLLComputer(sqr, fast, scalingFactor);
     }
 
@@ -338,7 +339,7 @@ public class DkToolkit {
         }
     }
 
-    private static class CLLComputer implements IConcentratedLikelihoodComputer<DkConcentratedLikelihood> {
+    private static class CLLComputer implements IConcentratedLikelihoodComputer<DiffuseConcentratedLikelihood> {
 
         private final boolean sqr, fast, scaling;
 
@@ -349,7 +350,7 @@ public class DkToolkit {
         }
 
         @Override
-        public DkConcentratedLikelihood compute(SsfRegressionModel model) {
+        public DiffuseConcentratedLikelihood compute(SsfRegressionModel model) {
             ISsfData y = model.getY();
             int n = y.length();
             DiffusePredictionErrorDecomposition pe = new DiffusePredictionErrorDecomposition(true);
@@ -360,7 +361,7 @@ public class DkToolkit {
             int nl = yl.length();
             Matrix xl = xl(model, lp, nl);
             if (xl == null) {
-                return DkConcentratedLikelihood.builder(ll.dim(), ll.getD())
+                return DiffuseConcentratedLikelihood.builder(ll.dim(), ll.getD())
                         .ssqErr(ll.ssq())
                         .logDeterminant(ll.logDeterminant())
                         .logDiffuseDeterminant(ll.getDiffuseCorrection())
@@ -371,7 +372,7 @@ public class DkToolkit {
                 Householder qr = new Householder();
                 qr.decompose(xl);
                 if (qr.rank() == 0) {
-                    return DkConcentratedLikelihood.builder(ll.dim(), ll.getD())
+                    return DiffuseConcentratedLikelihood.builder(ll.dim(), ll.getD())
                             .ssqErr(ll.ssq())
                             .logDeterminant(ll.logDeterminant())
                             .logDiffuseDeterminant(ll.getDiffuseCorrection())
@@ -412,7 +413,7 @@ public class DkToolkit {
                     double sig = ssqerr / (nobs - d);
                     Matrix bvar = SymmetricMatrix.UUt(u);
                     bvar.mul(sig);
-                    return DkConcentratedLikelihood.builder(ll.dim(), ll.getD())
+                    return DiffuseConcentratedLikelihood.builder(ll.dim(), ll.getD())
                             .ssqErr(ll.ssq())
                             .logDeterminant(ll.logDeterminant())
                             .logDiffuseDeterminant(ll.getDiffuseCorrection())

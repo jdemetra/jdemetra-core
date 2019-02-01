@@ -20,7 +20,7 @@ import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodDescriptor;
 import demetra.maths.MatrixType;
@@ -102,7 +102,7 @@ public class ArimaEstimation {
     public static class Results implements ProcResults {
 
         RegArimaModel<SarimaModel> regarima;
-        ConcentratedLikelihood concentratedLogLikelihood;
+        ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
         Matrix parametersCovariance;
         double[] score;

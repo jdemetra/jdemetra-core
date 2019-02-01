@@ -9,7 +9,7 @@ import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.maths.MatrixType;
 import demetra.sarima.SarimaModel;
-import demetra.ssf.dk.DkConcentratedLikelihood;
+import demetra.likelihood.DiffuseConcentratedLikelihood;
 
 /**
  *
@@ -20,7 +20,7 @@ public class DiffuseLikelihoodInfo {
 
     private final String LL = "ll", SSQ = "ssqerr", SER = "ser", SIGMA = "sigma", COEF = "coeff", VAR = "cvar", RES="residuals";
 
-    private final InformationMapping<DkConcentratedLikelihood> MAPPING = new InformationMapping<>(DkConcentratedLikelihood.class);
+    private final InformationMapping<DiffuseConcentratedLikelihood> MAPPING = new InformationMapping<>(DiffuseConcentratedLikelihood.class);
 
     static {
         MAPPING.set(SER, Double.class, source -> source.ser());
@@ -32,7 +32,7 @@ public class DiffuseLikelihoodInfo {
         MAPPING.set(RES, double[].class, source -> source.e().toArray());
     }
 
-    public InformationMapping<DkConcentratedLikelihood> getMapping() {
+    public InformationMapping<DiffuseConcentratedLikelihood> getMapping() {
         return MAPPING;
     }
 }

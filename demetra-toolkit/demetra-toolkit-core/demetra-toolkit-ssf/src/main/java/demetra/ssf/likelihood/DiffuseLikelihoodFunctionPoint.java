@@ -16,6 +16,7 @@
  */
 package demetra.ssf.likelihood;
 
+import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.ssf.dk.*;
 import demetra.data.DataBlock;
 import demetra.maths.functions.IFunction;
@@ -37,7 +38,7 @@ import demetra.maths.functions.ssq.SsqNumericalDerivatives;
  * @param <F>
  */
 public class DiffuseLikelihoodFunctionPoint<S, F extends ISsf> implements
-        ILikelihoodFunctionPoint<DkConcentratedLikelihood> {
+        ILikelihoodFunctionPoint<DiffuseConcentratedLikelihood> {
 
     /**
      *
@@ -48,7 +49,7 @@ public class DiffuseLikelihoodFunctionPoint<S, F extends ISsf> implements
     /**
      *
      */
-    private final DkConcentratedLikelihood ll;
+    private final DiffuseConcentratedLikelihood ll;
     private final DataBlock p;
     private DataBlock E;
     private final DiffuseLikelihoodFunction<S, F> fn;
@@ -64,7 +65,7 @@ public class DiffuseLikelihoodFunctionPoint<S, F extends ISsf> implements
         current=fn.getMapping().map(p);
         currentSsf = fn.getBuilder().buildSsf(current);
         boolean fastcomputer=fn.isFast() && !fn.isMissing() && currentSsf.isTimeInvariant();
-        IConcentratedLikelihoodComputer<DkConcentratedLikelihood> computer= DkToolkit.concentratedLikelihoodComputer(true, fastcomputer, fn.isScalingFactor());
+        IConcentratedLikelihoodComputer<DiffuseConcentratedLikelihood> computer= DkToolkit.concentratedLikelihoodComputer(true, fastcomputer, fn.isScalingFactor());
         if (fn.getX() == null)
             ll=computer.compute(currentSsf, fn.getData());
         else
@@ -101,7 +102,7 @@ public class DiffuseLikelihoodFunctionPoint<S, F extends ISsf> implements
      * @return
      */
     @Override
-    public DkConcentratedLikelihood getLikelihood() {
+    public DiffuseConcentratedLikelihood getLikelihood() {
         return ll;
     }
 
