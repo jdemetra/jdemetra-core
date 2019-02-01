@@ -20,7 +20,7 @@ import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.DefaultLikelihoodEvaluation;
 import demetra.likelihood.ILikelihood;
 import demetra.maths.functions.IFunction;
@@ -128,7 +128,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
         final RegArmaFunction<S> fn;
         final DoubleSequence p;
         final S arma;
-        final ConcentratedLikelihood ll;
+        final ConcentratedLikelihoodWithMissing ll;
 
         public Evaluation(RegArmaFunction<S> fn, DoubleSequence p) {
             this.fn = fn;
@@ -138,7 +138,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
             ll = fn.cll.compute(regarma);
         }
 
-        public ConcentratedLikelihood getLikelihood() {
+        public ConcentratedLikelihoodWithMissing getLikelihood() {
             return ll;
         }
 

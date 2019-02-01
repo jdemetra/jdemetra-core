@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
@@ -293,7 +293,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         return true;
     }
 
-    private void updateLikelihood(ConcentratedLikelihood likelihood, int nhp) {
+    private void updateLikelihood(ConcentratedLikelihoodWithMissing likelihood, int nhp) {
         coeff = likelihood.allCoefficients();
         tstats = likelihood.tstats(nhp, true);
         res=regarima.differencedModel().asLinearModel().calcResiduals(coeff);

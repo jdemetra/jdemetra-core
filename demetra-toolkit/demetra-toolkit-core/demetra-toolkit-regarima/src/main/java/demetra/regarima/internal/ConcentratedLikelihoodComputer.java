@@ -24,7 +24,7 @@ import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.internal.Householder;
@@ -52,11 +52,11 @@ public class ConcentratedLikelihoodComputer {
         this.scaling = scaling;
     }
 
-    public <M extends IArimaModel> ConcentratedLikelihood compute(RegArimaModel<M> model) {
+    public <M extends IArimaModel> ConcentratedLikelihoodWithMissing compute(RegArimaModel<M> model) {
         return compute(model.differencedModel());
     }
 
-    public <M extends IArimaModel> ConcentratedLikelihood compute(RegArmaModel<M> dmodel) {
+    public <M extends IArimaModel> ConcentratedLikelihoodWithMissing compute(RegArmaModel<M> dmodel) {
         DoubleSequence dy = dmodel.getY();
         int n = dy.length();
         int nl = filter.prepare(dmodel.getArma(), n);
@@ -68,7 +68,7 @@ public class ConcentratedLikelihoodComputer {
 
     }
 
-    private <M extends IArimaModel> ConcentratedLikelihood process(DoubleSequence dy, MatrixType x, int nl, int nm) {
+    private <M extends IArimaModel> ConcentratedLikelihoodWithMissing process(DoubleSequence dy, MatrixType x, int nl, int nm) {
 
         DataBlock y = DataBlock.of(dy);
         int n = y.length();
@@ -91,11 +91,11 @@ public class ConcentratedLikelihoodComputer {
             }
 
             qr.decompose(xl);
-            ConcentratedLikelihood cll;
+            ConcentratedLikelihoodWithMissing cll;
             if (qr.rank() == 0) {
                 double ssqerr = yl.ssq();
                 double ldet = filter.getLogDeterminant();
-                cll = ConcentratedLikelihood.builder()
+                cll = ConcentratedLikelihoodWithMissing.builder()
                         .ndata(n)
                         .logDeterminant(ldet)
                         .ssqErr(ssqerr)
@@ -113,7 +113,7 @@ public class ConcentratedLikelihoodComputer {
                 double ssqerr = res.ssq();
                 double ldet = filter.getLogDeterminant();
 
-                cll = ConcentratedLikelihood.builder()
+                cll = ConcentratedLikelihoodWithMissing.builder()
                         .ndata(n)
                         .nmissing(nm)
                         .coefficients(b)
@@ -135,7 +135,7 @@ public class ConcentratedLikelihoodComputer {
         } else {
             double ssqerr = yl.ssq();
             double ldet = filter.getLogDeterminant();
-            ConcentratedLikelihood cll = ConcentratedLikelihood.builder()
+            ConcentratedLikelihoodWithMissing cll = ConcentratedLikelihoodWithMissing.builder()
                     .ndata(n)
                     .ssqErr(ssqerr)
                     .logDeterminant(ldet)

@@ -16,7 +16,7 @@
  */
 package demetra.tempdisagg.univariate.internal;
 
-import demetra.benchmarking.Cumulator;
+import demetra.data.Cumulator;
 import demetra.data.AggregationType;
 import demetra.data.DataBlockIterator;
 import demetra.data.normalizer.AbsMeanNormalizer;

@@ -18,7 +18,7 @@ package demetra.regarima.regular;
 
 import demetra.design.Development;
 import demetra.information.InformationSet;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.linearmodel.JointTest;
 import demetra.stats.tests.StatisticalTest;
 
@@ -47,7 +47,7 @@ public class FRegressionTest implements IRegressionTest {
      * @return
      */
     @Override
-    public boolean accept(ConcentratedLikelihood ll, int nhp, int ireg, int nregs, InformationSet info) {
+    public boolean accept(ConcentratedLikelihoodWithMissing ll, int nhp, int ireg, int nregs, InformationSet info) {
         StatisticalTest stat = new JointTest(ll)
                 .variableSelection(ireg, nregs)
                 .hyperParametersCount(nhp)

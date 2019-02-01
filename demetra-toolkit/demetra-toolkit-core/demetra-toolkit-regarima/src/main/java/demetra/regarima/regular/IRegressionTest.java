@@ -20,7 +20,7 @@ package demetra.regarima.regular;
 
 import demetra.design.Development;
 import demetra.information.InformationSet;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 
 
 /**
@@ -39,5 +39,5 @@ public interface IRegressionTest {
      * @param info To put additional information, if need be.
      * @return 
      */
-    boolean accept(ConcentratedLikelihood ll, int nhp, int ireg, int nregs, InformationSet info);
+    boolean accept(ConcentratedLikelihoodWithMissing ll, int nhp, int ireg, int nregs, InformationSet info);
 }

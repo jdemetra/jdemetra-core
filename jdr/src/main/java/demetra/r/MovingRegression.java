@@ -10,7 +10,7 @@ import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
@@ -137,7 +137,7 @@ public class MovingRegression {
                     .y(DoubleSequence.of(yc.getValues()))
                     .arima(arima);
             mtd.columns().forEach(xx -> builder.addX(xx));
-            ConcentratedLikelihood cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(builder.build());
+            ConcentratedLikelihoodWithMissing cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(builder.build());
             coef.add(cll.coefficients().toArray());
             dom = dom.move(period);
         }

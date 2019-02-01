@@ -18,7 +18,7 @@ package demetra.regarima.regular;
 
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.maths.matrices.Matrix;
 import demetra.stats.tests.NiidTests;
@@ -32,7 +32,7 @@ import demetra.stats.tests.NiidTests;
 @lombok.Builder
 public class ModelEstimation {
 
-    private ConcentratedLikelihood concentratedLikelihood;
+    private ConcentratedLikelihoodWithMissing concentratedLikelihood;
     private LikelihoodStatistics statistics;
     private DoubleSequence score;
     private Matrix parametersCovariance;

@@ -17,8 +17,6 @@
 package demetra.descriptors.arima;
 
 import demetra.arima.ArimaType;
-import demetra.arima.ArimaType;
-import demetra.arima.UcarimaType;
 import demetra.arima.UcarimaType;
 import demetra.design.Development;
 import demetra.information.InformationMapping;

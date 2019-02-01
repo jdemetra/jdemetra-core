@@ -10,7 +10,7 @@ import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.regarima.RegArimaEstimation;
@@ -50,7 +50,7 @@ public class PeriodicAirlineProcessorTest {
         HolidaysUtility.fillDays(france, hol, LocalDate.of(1996, 1, 1), false);
         RegArimaEstimation<ArimaModel> rslt = PeriodicAirlineProcessor.process(Doubles.fastFn(edf.column(0), z->Math.log(z)), hol, new double[]{7, 365.25}, 1e-12);
         assertTrue(rslt != null);
-        ConcentratedLikelihood cll = rslt.getConcentratedLikelihood();
+        ConcentratedLikelihoodWithMissing cll = rslt.getConcentratedLikelihood();
         System.out.println(cll.coefficients());
         System.out.println(DoubleSequence.ofInternal(cll.tstats(0, false)));
         System.out.println(cll.logLikelihood());

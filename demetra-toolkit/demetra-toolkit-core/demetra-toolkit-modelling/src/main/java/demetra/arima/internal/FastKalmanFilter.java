@@ -21,12 +21,13 @@ import demetra.arima.IArimaModel;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.likelihood.Likelihood;
 import demetra.maths.matrices.Matrix;
 import demetra.util.SubArrayOfInt;
 import demetra.data.DoubleSequence;
+import demetra.data.Doubles;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;
 
@@ -336,9 +337,10 @@ public class FastKalmanFilter {
             }
 
         } while (++pos < n);
-
+        DoubleSequence dy = DoubleSequence.ofInternal(yl);
         return Likelihood.builder(n)
-                .residuals(DoubleSequence.of(yl))
+                .ssqErr(Doubles.ssq(dy))
+                .residuals(dy)
                 .logDeterminant(det.getLogDeterminant())
                 .build();
     }
@@ -351,7 +353,7 @@ public class FastKalmanFilter {
      * @param ll
      * @return
      */
-    public ConcentratedLikelihood process(final DoubleSequence y, final SubArrayOfInt ao,
+    public ConcentratedLikelihoodWithMissing process(final DoubleSequence y, final SubArrayOfInt ao,
             final Matrix x) {
         fast = false;
         DeterminantalTerm det = new DeterminantalTerm();
@@ -453,7 +455,7 @@ public class FastKalmanFilter {
                 ldet += 2 * Math.log(Math.abs(rdiag.get(ao.get(i))));
             }
         }
-        return ConcentratedLikelihood.builder()
+        return ConcentratedLikelihoodWithMissing.builder()
                 .ndata(n)
                 .coefficients(solver.coefficients())
                 .ssqErr(ssqerr)

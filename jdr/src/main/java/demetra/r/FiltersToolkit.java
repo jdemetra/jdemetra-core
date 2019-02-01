@@ -10,7 +10,7 @@ import demetra.maths.linearfilters.FiniteFilter;
 import demetra.maths.linearfilters.IFilter;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.ssf.dk.DkConcentratedLikelihood;
+import demetra.likelihood.DiffuseConcentratedLikelihood;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.DoubleUnaryOperator;

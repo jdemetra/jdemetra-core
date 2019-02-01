@@ -8,7 +8,7 @@ package demetra.stats.tests.seasonal;
 import demetra.data.DoubleSequence;
 import demetra.data.TrigonometricSeries;
 import demetra.data.WindowFunction;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;

@@ -23,7 +23,6 @@ import demetra.ssf.ckms.CkmsToolkit;
 import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.CompositeSsf;
-import demetra.ssf.models.LocalLinearTrend;
 import demetra.ssf.univariate.SsfData;
 import org.junit.Test;
 import static org.junit.Assert.*;

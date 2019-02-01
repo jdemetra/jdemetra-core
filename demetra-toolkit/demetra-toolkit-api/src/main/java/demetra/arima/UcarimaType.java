@@ -26,8 +26,9 @@ import demetra.design.Development;
 @Development(status = Development.Status.Release)
 public class UcarimaType {
 
-    ArimaType sum;
-    @lombok.NonNull ArimaType[] components;
+    private ArimaType sum;
+    @lombok.NonNull 
+    private ArimaType[] components;
     
     public int size(){
         return components.length;

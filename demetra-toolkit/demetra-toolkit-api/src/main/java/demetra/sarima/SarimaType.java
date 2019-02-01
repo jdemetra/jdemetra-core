@@ -35,21 +35,42 @@ import demetra.maths.PolynomialType;
 @lombok.Builder(toBuilder=true)
 public class SarimaType  {
 
-    @lombok.Builder.Default
-    private int period=1;
+//    @lombok.Builder.Default
+//    private int period=1;
+//    private int d, bd;
+//    @lombok.Builder.Default
+//    @lombok.NonNull 
+//    private PolynomialType phi=PolynomialType.ONE;
+//    @lombok.Builder.Default
+//    @lombok.NonNull 
+//    private PolynomialType theta=PolynomialType.ONE;
+//    @lombok.Builder.Default
+//    @lombok.NonNull 
+//    private PolynomialType bphi=PolynomialType.ONE;
+//    @lombok.Builder.Default
+//    @lombok.NonNull 
+//    private PolynomialType btheta=PolynomialType.ONE;
+    
+    private int period;
     private int d, bd;
-    @lombok.Builder.Default
     @lombok.NonNull 
-    private PolynomialType phi=PolynomialType.ONE;
-    @lombok.Builder.Default
+    private PolynomialType phi;
     @lombok.NonNull 
-    private PolynomialType theta=PolynomialType.ONE;
-    @lombok.Builder.Default
+    private PolynomialType theta;
     @lombok.NonNull 
-    private PolynomialType bphi=PolynomialType.ONE;
-    @lombok.Builder.Default
+    private PolynomialType bphi;
     @lombok.NonNull 
-    private PolynomialType btheta=PolynomialType.ONE;
+    private PolynomialType btheta;
+
+    public static SarimaTypeBuilder builder(){
+        SarimaTypeBuilder builder=new SarimaTypeBuilder();
+        builder.period=1;
+        builder.phi=PolynomialType.ONE;
+        builder.theta=PolynomialType.ONE;
+        builder.bphi=PolynomialType.ONE;
+        builder.btheta=PolynomialType.ONE;
+        return builder;
+    }
 
     /**
      *

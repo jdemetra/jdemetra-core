@@ -21,7 +21,7 @@ import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
 import demetra.dstats.F;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
@@ -53,7 +53,7 @@ public class JointTest {
         this.n = n;
     }
 
-    public JointTest(final ConcentratedLikelihood ll) {
+    public JointTest(final ConcentratedLikelihoodWithMissing ll) {
         this.b = ll.coefficients();
         this.bvar = Matrix.of(ll.unscaledCovariance());
         this.rss = ll.ssq();

@@ -16,7 +16,7 @@
  */
 package demetra.r;
 
-import demetra.benchmarking.univariate.DentonSpecification;
+import demetra.benchmarking.univariate.DentonSpec;
 import demetra.data.DataBlock;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;

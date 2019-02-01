@@ -11,8 +11,8 @@ import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
 import demetra.msts.VarianceParameter;
 import demetra.ssf.SsfComponent;
-import demetra.ssf.models.SsfAr;
-import demetra.ssf.models.SsfAr2;
+import demetra.arima.ssf.SsfAr;
+import demetra.arima.ssf.SsfAr2;
 import java.util.Arrays;
 import java.util.List;
 

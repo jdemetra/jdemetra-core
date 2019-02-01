@@ -19,7 +19,7 @@ package demetra.regarima.ami;
 import demetra.arima.IArimaModel;
 import demetra.data.DataBlock;
 import demetra.design.BuilderPattern;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -130,7 +130,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
     }
 
     private RegArimaModel<T> regarima; // current regarima model
-    private ConcentratedLikelihood cll;
+    private ConcentratedLikelihoodWithMissing cll;
     private final ArrayList<int[]> outliers = new ArrayList<>(); // Outliers : (position, type)
     private final SingleOutlierDetector<T> sod;
     private final IRegArimaProcessor<T> processor;

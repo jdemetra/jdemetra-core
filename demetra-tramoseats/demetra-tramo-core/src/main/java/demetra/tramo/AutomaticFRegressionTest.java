@@ -19,7 +19,7 @@ package demetra.tramo;
 import demetra.design.BuilderPattern;
 import demetra.dstats.F;
 import demetra.dstats.ProbabilityType;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.modelling.regression.Variable;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
@@ -139,7 +139,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         ModelDescription test0 = createTestModel(context, null, null);
         IRegArimaProcessor processor = RegArimaUtility.processor(current.getArimaComponent().defaultMapping(), true, precision);
         RegArimaEstimation regarima0 = processor.process(test0.regarima());
-        ConcentratedLikelihood ll0 = regarima0.getConcentratedLikelihood();
+        ConcentratedLikelihoodWithMissing ll0 = regarima0.getConcentratedLikelihood();
         int nhp = test0.getArimaComponent().getFreeParametersCount();
         double SS0 = ll0.ssq();
 
@@ -150,7 +150,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         //      Second case TD=TradindDay only
         ModelDescription test6 = createTestModel(context, td, null);
         RegArimaEstimation regarima6 = processor.process(test6.regarima());
-        ConcentratedLikelihood ll6 = regarima6.getConcentratedLikelihood();
+        ConcentratedLikelihoodWithMissing ll6 = regarima6.getConcentratedLikelihood();
         double SS6 = ll6.ssq(), SSmc6 = SS6 / (ll6.degreesOfFreedom() - nhp);
         double Ftd = (SS0 - SS6) / (SSmc6 * 6);
         double pFtd6 = 0.0;
@@ -162,7 +162,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
 //      Third case TD=WorkingDay only
         ModelDescription test1 = createTestModel(context, wd, null);
         RegArimaEstimation regarima1 = processor.process(test1.regarima());
-        ConcentratedLikelihood ll1 = regarima1.getConcentratedLikelihood();
+        ConcentratedLikelihoodWithMissing ll1 = regarima1.getConcentratedLikelihood();
         double SS1 = ll1.ssq(), SSmc1 = SS1 / (ll1.degreesOfFreedom() - nhp);
         Ftd = (SS0 - SS1) / SSmc1;
         double pFtd1 = 0.0;
@@ -203,7 +203,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         return tmp;
     }
 
-    private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ConcentratedLikelihood ll, int nhp) {
+    private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ConcentratedLikelihoodWithMissing ll, int nhp) {
         boolean changed = false;
         if (aTd != null) {
             current.addVariable(new Variable(aTd, "td", false));

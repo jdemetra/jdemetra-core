@@ -25,7 +25,7 @@ import demetra.data.transformation.LogJacobian;
 import demetra.data.ParameterType;
 import demetra.data.transformation.DataInterpolator;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LogLikelihoodFunction;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
@@ -557,7 +557,7 @@ public final class ModelDescription {
         // update current description
         regarima = rslt.getModel();
         int p = this.getAnnualFrequency();
-        LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihood> max = rslt.getMax();
+        LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
         Matrix J = Matrix.EMPTY;
         DoubleSequence score = DoubleSequence.empty();
         if (max != null) {

@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.design.Immutable;
 import demetra.dstats.F;
 import demetra.dstats.T;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.matrices.Matrix;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
@@ -249,8 +249,8 @@ public class LeastSquaresResults {
     /**
      * @return the likelihood
      */
-    public ConcentratedLikelihood getLikelihood() {
-        return ConcentratedLikelihood.builder()
+    public ConcentratedLikelihoodWithMissing getLikelihood() {
+        return ConcentratedLikelihoodWithMissing.builder()
                 .ndata(n)
                 .coefficients(coefficients)
                 .unscaledCovariance(ucov)

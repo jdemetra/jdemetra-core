@@ -6,7 +6,7 @@
 package demetra.tramo;
 
 import demetra.design.BuilderPattern;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.modelling.regression.Variable;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.regular.IRegressionModule;
@@ -76,7 +76,7 @@ public class FastRegressionTest implements IRegressionModule {
         ModelDescription tmpModel = new ModelDescription(currentModel);
         boolean changed = false;
         RegArimaModel<SarimaModel> regarima = tmpModel.regarima();
-        ConcentratedLikelihood ll = context.getEstimation().getConcentratedLikelihood();
+        ConcentratedLikelihoodWithMissing ll = context.getEstimation().getConcentratedLikelihood();
 
         int start = regarima.isMean() ? 1 : 0;
         int nhp = tmpModel.getArimaComponent().getFreeParametersCount();

@@ -5,6 +5,7 @@
  */
 package demetra.ssf.models;
 
+import demetra.arima.ssf.SsfAr;
 import demetra.arima.AutoCovarianceFunction;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;

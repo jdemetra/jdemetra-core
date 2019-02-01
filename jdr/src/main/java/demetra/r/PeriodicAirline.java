@@ -10,7 +10,7 @@ import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.fractionalairline.MultiPeriodicAirlineMapping;
 import demetra.information.InformationMapping;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodDescriptor;
 import demetra.maths.MatrixType;
@@ -41,7 +41,7 @@ public class PeriodicAirline {
     public static class Results implements ProcResults {
 
         RegArimaModel<ArimaModel> regarima;
-        ConcentratedLikelihood concentratedLogLikelihood;
+        ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
         OutlierDescriptor[] outliers;
         Matrix parametersCovariance;

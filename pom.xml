@@ -63,6 +63,7 @@
         <module>demetra-highfreq</module>
         <module>demetra-toolkit-ext</module>
         <module>jdr</module>
+        <module>demetra-sa-experimental</module>
     </modules>
 	
     <dependencyManagement>

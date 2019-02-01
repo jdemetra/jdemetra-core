@@ -20,7 +20,7 @@ import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.ssq.ISsqFunction;
@@ -37,7 +37,7 @@ class ArmaEvaluation<S extends IArimaModel> implements ISsqFunctionPoint,
     final ArmaFunction<S> fn;
     final DoubleSequence p;
     final S arma;
-    final ConcentratedLikelihood ll;
+    final ConcentratedLikelihoodWithMissing ll;
 
     public ArmaEvaluation(ArmaFunction<S> fn, DoubleSequence p) {
         this.fn = fn;
@@ -52,7 +52,7 @@ class ArmaEvaluation<S extends IArimaModel> implements ISsqFunctionPoint,
         return fn.errors.apply(ll);
     }
 
-    public ConcentratedLikelihood getLikelihood() {
+    public ConcentratedLikelihoodWithMissing getLikelihood() {
         return ll;
     }
 

@@ -16,6 +16,7 @@
  */
 package demetra.ssf.likelihood;
 
+import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.ssf.dk.*;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.IParametricMapping;
@@ -33,7 +34,7 @@ import demetra.likelihood.ILikelihoodFunction;
  * @param <S> Type of the underlying object
  * @param <F> Ssf representation of objects of type S
  */
-public class DiffuseLikelihoodFunction<S, F extends ISsf> implements ILikelihoodFunction<DkConcentratedLikelihood> {
+public class DiffuseLikelihoodFunction<S, F extends ISsf> implements ILikelihoodFunction<DiffuseConcentratedLikelihood> {
 
     @BuilderPattern(DiffuseLikelihoodFunction.class)
     public static class Builder<S, F extends ISsf> {

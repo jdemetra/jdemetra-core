@@ -1,4 +1,5 @@
 **/nbproject/
+**/nb-configuration.xml
 /demetra-toolkit/demetra-design/target/
 /demetra-toolkit/demetra-data-tests/target/
 /demetra-toolkit/demetra-toolkit-api/target/
@@ -7,7 +8,6 @@
 /demetra-toolkit/demetra-toolkit-core/demetra-toolkit-ssf/target/
 /demetra-toolkit/demetra-toolkit-core/demetra-toolkit-regarima/target/
 /demetra-toolkit/demetra-toolkit-core/demetra-toolkit-sa/target/
-/demetra-toolkit/demetra-toolkit-core/demetra-toolkit-benchmarking/target/
 /demetra-tramoseats/demetra-tramoseats-api/target/
 /demetra-tramoseats/demetra-tramo-core/target/
 /demetra-tramoseats/demetra-tramoseats-core/target/
@@ -34,3 +34,5 @@ demetra-io-core/target/
 /demetra-io-text-core/target/
 /demetra-io-legacy-core/target/
 /jdr/target/
+/demetra-sa-experimental/demetra-sa-experimental-api/target/
+/demetra-sa-experimental/demetra-sa-experimental-core/target/

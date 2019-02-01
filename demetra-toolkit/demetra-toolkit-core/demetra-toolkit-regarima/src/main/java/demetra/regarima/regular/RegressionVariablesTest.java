@@ -18,7 +18,7 @@ package demetra.regarima.regular;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.modelling.regression.Variable;
 import demetra.modelling.regression.ITsVariable;
 import demetra.timeseries.TsDomain;
@@ -109,7 +109,7 @@ public class RegressionVariablesTest {
     
     public ProcessingResult process(RegArimaModelling context) {
         
-        ConcentratedLikelihood ll = context.getEstimation().getConcentratedLikelihood();
+        ConcentratedLikelihoodWithMissing ll = context.getEstimation().getConcentratedLikelihood();
         ModelDescription desc = context.getDescription();
         
         boolean changed = false;

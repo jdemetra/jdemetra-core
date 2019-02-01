@@ -25,6 +25,5 @@
         <module>demetra-toolkit-ssf</module>
         <module>demetra-toolkit-regarima</module>
         <module>demetra-toolkit-sa</module>
-        <module>demetra-toolkit-benchmarking</module>
     </modules>
 </project>

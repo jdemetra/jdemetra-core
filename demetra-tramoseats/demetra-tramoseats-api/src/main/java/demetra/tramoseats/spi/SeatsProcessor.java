@@ -8,7 +8,7 @@ package demetra.tramoseats.spi;
 import demetra.design.Algorithm;
 import demetra.design.ServiceDefinition;
 import demetra.processing.ProcResults;
-import demetra.regarima.ArimaSpec;
+import demetra.regarima.SarimaSpec;
 import demetra.timeseries.TsData;
 import demetra.seats.SeatsSpec;
 import javax.annotation.Nonnull;
@@ -21,5 +21,5 @@ import javax.annotation.Nonnull;
 @ServiceDefinition
 public interface SeatsProcessor {
 
-    ProcResults process(@Nonnull TsData series, @Nonnull ArimaSpec arima, @Nonnull SeatsSpec spec);
+    ProcResults process(@Nonnull TsData series, @Nonnull SarimaSpec arima, @Nonnull SeatsSpec spec);
 }

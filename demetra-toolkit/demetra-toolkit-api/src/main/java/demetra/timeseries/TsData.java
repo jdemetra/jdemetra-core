@@ -19,10 +19,14 @@ package demetra.timeseries;
 import demetra.data.AggregationType;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
+import demetra.data.Doubles;
 import demetra.design.Development;
 import internal.timeseries.InternalAggregator;
 import java.util.Objects;
 import java.util.Random;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleUnaryOperator;
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 
@@ -158,6 +162,259 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
         int pos = domain.indexOf(period);
         return (pos < 0 || pos >= values.length()) ? Double.NaN : values.get(pos);
     }
+    
+        public TsData fn(DoubleUnaryOperator fn) {
+        return TsData.of(getStart(), values.fn(fn));
+    }
+
+    public TsData fastFn(DoubleUnaryOperator fn) {
+        return TsData.ofInternal(getStart(), DoubleSequence.onMapping(values.length(), i -> fn.applyAsDouble(values.get(i))));
+    }
+
+    public TsData commit() {
+        return TsData.ofInternal(getStart(), values.toArray());
+    }
+
+    public TsData fastFn(@Nonnull TsData right, DoubleBinaryOperator fn) {
+        TsDomain rDomain = right.getDomain();
+        TsDomain iDomain = domain.intersection(rDomain);
+        if (iDomain == null) {
+            return null;
+        }
+        TsPeriod istart = iDomain.getStartPeriod();
+        int li = domain.indexOf(istart), ri = rDomain.indexOf(istart);
+        return TsData.ofInternal(istart, DoubleSequence.onMapping(iDomain.length(),
+                i -> fn.applyAsDouble(values.get(li + i), right.getValue(ri + i))));
+    }
+
+    public TsData fn(TsData right, DoubleBinaryOperator fn) {
+        TsDomain rDomain = right.getDomain();
+        TsDomain iDomain = domain.intersection(rDomain);
+        if (iDomain == null) {
+            return null;
+        }
+
+        TsPeriod istart = iDomain.getStartPeriod();
+        int li = domain.indexOf(istart), ri = rDomain.indexOf(istart);
+        double[] data = new double[iDomain.length()];
+        DoubleReader lreader = values.reader(), rreader = right.getValues().reader();
+        lreader.setPosition(li);
+        rreader.setPosition(ri);
+        for (int i = 0; i < data.length; ++i) {
+            data[i] = fn.applyAsDouble(lreader.next(), rreader.next());
+        }
+        return TsData.ofInternal(istart, data);
+    }
+
+    public TsData fn(int lag, DoubleBinaryOperator fn) {
+        return TsData.of(getStart().plus(lag), values.fn(lag, fn));
+    }
+
+    public TsData drop(@Nonnegative int nbeg, @Nonnegative int nend) {
+        int len=length()-nbeg-nend;
+        TsPeriod start = getStart().plus(nbeg);
+        return TsData.of(start, values.extract(nbeg, Math.max(0, len)));
+    }
+
+    public TsData extend(@Nonnegative int nbeg, @Nonnegative int nend) {
+        TsPeriod start = getStart().plus(-nbeg);
+        return TsData.ofInternal(start, values.extend(nbeg, nend));
+    }
+
+    public TsData select(TsData s, TimeSelector selector) {
+        TsDomain ndomain = s.getDomain().select(selector);
+        final int beg = s.getStart().until(ndomain.getStartPeriod());
+        return TsData.of(ndomain.getStartPeriod(), s.getValues().extract(beg, ndomain.length()));
+    }
+
+    /**
+     * Extends the series to the specified domain. Missing values are added (or
+     * some values are removed if necessary).
+     *
+     * @param s
+     * @param domain The domain of the new series. Must have the same frequency
+     * than the original series.
+     * @return A new (possibly empty) series is returned (or null if the domain
+     * hasn't the right frequency.
+     */
+    public TsData fitToDomain(TsData s, TsDomain domain) {
+        if (!s.getTsUnit().equals(domain.getStartPeriod().getUnit())) {
+            throw new TsException(TsException.INCOMPATIBLE_FREQ);
+        }
+        TsDomain sdomain = s.getDomain();
+        int nbeg = sdomain.getStartPeriod().until(domain.getStartPeriod());
+        TsDomain idomain = domain.intersection(sdomain);
+        double[] data = new double[domain.length()];
+        int cur = 0;
+        if (nbeg < 0) { // before s
+            int cmax = Math.min(-nbeg, data.length);
+            for (; cur < cmax; ++cur) {
+                data[cur] = Double.NaN;
+            }
+        }
+        int ncommon = idomain.length();
+        // common data
+        if (ncommon > 0) {
+            s.getValues().extract(sdomain.getStartPeriod().until(idomain.getStartPeriod()), ncommon).copyTo(data, cur);
+            cur += ncommon;
+        }
+        // after s
+        for (; cur < data.length; ++cur) {
+            data[cur] = Double.NaN;
+        }
+        return TsData.ofInternal(domain.getStartPeriod(), data);
+    }
+
+    // some useful shortcuts
+    public TsData log() {
+        return fastFn(x -> Math.log(x));
+    }
+
+    public TsData exp() {
+        return fastFn(x -> Math.exp(x));
+    }
+
+    public TsData inv() {
+        return fastFn(x -> 1 / x);
+    }
+
+    public TsData chs() {
+        return fastFn(x -> -x);
+    }
+
+    public TsData abs() {
+        return fastFn(x -> Math.abs(x));
+    }
+
+    public static TsData add(TsData l, TsData r) {
+        if (l == null) {
+            return r;
+        } else if (r == null) {
+            return l;
+        } else {
+            return l.fn( r, (a, b) -> a + b);
+        }
+    }
+
+    public TsData add(double d) {
+        if (d == 0) {
+            return this;
+        } else {
+            return fastFn(x -> x + d);
+        }
+    }
+
+    public TsData subtract(double d) {
+        if (d == 0) {
+            return this;
+        } else {
+            return fastFn(x -> x - d);
+        }
+    }
+
+    public double distance(TsData r) {
+        DoubleSequence diff = subtract(this, r).getValues();
+        int n=diff.count(x->Double.isFinite(x));
+        if (n == 0)
+            return Double.NaN;
+        return diff.fastNorm2();
+    }
+     
+    public static TsData subtract(double d, TsData l) {
+        if (d == 0) {
+            return l.chs();
+        } else {
+            return l.fastFn( x -> d - x);
+        }
+    }
+
+    public static TsData subtract(TsData l, TsData r) {
+        if (l == null) {
+            return r;
+        } else if (r == null) {
+            return l;
+        } else {
+            return l.fastFn(r, (a, b) -> a - b);
+        }
+    }
+
+    public static TsData multiply(TsData l, TsData r) {
+        if (l == null) {
+            return r;
+        } else if (r == null) {
+            return l;
+        } else {
+            return l.fastFn(r, (a, b) -> a * b);
+        }
+    }
+
+    public TsData multiply(double d) {
+        if (d == 1) {
+            return this;
+        } else if (d == 0) {
+            return fastFn(x -> 0);
+        } else {
+            return fastFn(x -> x * d);
+        }
+    }
+
+    public static TsData divide(TsData l, TsData r) {
+        if (l == null) {
+            return r.inv();
+        } else if (r == null) {
+            return l;
+        } else {
+            return l.fastFn(r, (a, b) -> a / b);
+        }
+    }
+
+    public TsData divide(double d) {
+        if (d == 1) {
+            return this;
+        } else {
+            return fastFn( x -> x / d);
+        }
+    }
+
+    public static TsData divide(double d, TsData l) {
+        return l.fastFn(x -> d / x);
+    }
+
+    public TsData delta(int lag) {
+        return fn(lag, (x, y) -> y - x);
+    }
+
+    public TsData delta(int lag, int pow) {
+        TsData ns=this;
+        for (int i=0; i<pow; ++i)
+            ns=ns.fn(lag, (x, y) -> y - x);
+        return ns;
+    }
+
+    public TsData pctVariation(int lag) {
+        return fn(lag, (x, y) -> (y / x - 1) * 100);
+    }
+
+    public TsData normalize() {
+        double[] data = values.toArray();
+        DoubleSequence values = DoubleSequence.ofInternal(data);
+        final double mean = values.average();
+        double ssqc = values.ssqc(mean);
+        final double std = Math.sqrt(ssqc / values.length());
+        for (int i = 0; i < data.length; ++i) {
+            data[i] = (data[i] - mean) / std;
+        }
+        return TsData.ofInternal(getStart(), data);
+    }
+
+    public TsData lead(@Nonnegative int lead) {
+        return lead == 0 ? this : TsData.ofInternal(getStart().plus(-lead), values);
+    }
+
+    public TsData lag(@Nonnegative int lag) {
+        return lag == 0 ? this : TsData.ofInternal(getStart().plus(lag), values);
+    }
+
 
     @Override
     public String toString() {

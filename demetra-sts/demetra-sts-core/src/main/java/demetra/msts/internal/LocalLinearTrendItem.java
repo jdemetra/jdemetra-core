@@ -34,7 +34,7 @@ public class LocalLinearTrendItem extends AbstractModelItem {
         mapping.add((p, builder) -> {
             double e1 = p.get(0);
             double e2 = p.get(1);
-            SsfComponent cmp = demetra.ssf.models.LocalLinearTrend.of(e1, e2);
+            SsfComponent cmp = demetra.sts.LocalLinearTrend.of(e1, e2);
             builder.add(name, cmp);
             return 2;
         });

@@ -230,7 +230,7 @@ public class TsDataToolkit {
         } else if (d == 0) {
             return fastFn(l, x -> 0);
         } else {
-            return fastFn(l, x -> x - d);
+            return fastFn(l, x -> x * d);
         }
     }
 

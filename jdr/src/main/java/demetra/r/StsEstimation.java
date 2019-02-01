@@ -23,7 +23,7 @@ import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.NumericalDerivatives;
 import demetra.maths.matrices.Matrix;
 import demetra.r.mapping.DiffuseLikelihoodInfo;
-import demetra.ssf.dk.DkConcentratedLikelihood;
+import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.SsfData;
@@ -49,6 +49,14 @@ import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
  *
@@ -63,7 +71,7 @@ public class StsEstimation {
 
         TsData y, t, s, i;
         BasicStructuralModel bsm;
-        DkConcentratedLikelihood likelihood;
+        DiffuseConcentratedLikelihood likelihood;
         Matrix parametersCovariance;
         double[] score;
 

@@ -20,8 +20,7 @@ import demetra.design.Development;
 import demetra.modelling.TransformationType;
 import demetra.modelling.regression.RegressionTestType;
 import demetra.modelling.regression.TradingDaysType;
-import demetra.regarima.ArimaSpec;
-import java.util.Objects;
+import demetra.regarima.SarimaSpec;
 import javax.annotation.Nonnull;
 
 /**
@@ -123,7 +122,7 @@ public final class TramoSpec implements Cloneable {
     }
 
     @lombok.NonNull
-    private ArimaSpec arima;
+    private SarimaSpec arima;
     @lombok.NonNull
     private TransformSpec transform;
     @lombok.NonNull
@@ -144,7 +143,7 @@ public final class TramoSpec implements Cloneable {
         estimate = new EstimateSpec();
         automdl = new AutoModelSpec(false);
         outlier = new OutlierSpec();
-        arima = new ArimaSpec(ArimaValidator.VALIDATOR);
+        arima = new SarimaSpec(SarimaValidator.VALIDATOR);
         arima.airlineWithMean();
         regression = new RegressionSpec();
     }
@@ -232,7 +231,7 @@ public final class TramoSpec implements Cloneable {
      *
      * @return
      */
-    public ArimaSpec getArima() {
+    public SarimaSpec getArima() {
         return arima;
     }
 
@@ -241,7 +240,7 @@ public final class TramoSpec implements Cloneable {
      *
      * @param value The new Arima specifications
      */
-    public void setArima(@Nonnull ArimaSpec value) {
+    public void setArima(@Nonnull SarimaSpec value) {
         arima = value;
         setUsingAutoModel(false);
     }

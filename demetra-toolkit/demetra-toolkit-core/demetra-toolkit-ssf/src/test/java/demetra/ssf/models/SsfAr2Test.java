@@ -5,6 +5,7 @@
  */
 package demetra.ssf.models;
 
+import demetra.arima.ssf.SsfAr2;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.StationaryInitialization;

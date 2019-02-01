@@ -68,11 +68,6 @@
             </dependency>
             <dependency>
                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-benchmarking</artifactId>
-                <version>${jd3-toolkit.version}</version>            
-            </dependency>
-            <dependency>
-               <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-x13-api</artifactId>
                 <version>${jd3-x13.version}</version>            
             </dependency>
