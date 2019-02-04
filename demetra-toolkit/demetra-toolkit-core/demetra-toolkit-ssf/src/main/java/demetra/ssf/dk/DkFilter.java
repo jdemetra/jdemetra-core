@@ -32,7 +32,7 @@ import demetra.data.DoubleSequence;
  */
 public class DkFilter implements ILinearProcess {
 
-    private final IBaseDiffuseFilteringResults frslts;
+    private final BaseDiffuseFilteringResults frslts;
     private final ISsf ssf;
     private final ISsfLoading loading;
     private final ISsfDynamics dynamics;
@@ -59,7 +59,7 @@ public class DkFilter implements ILinearProcess {
         return new FastDiffuseFilter1().filter(x, normalized);
     }
 
-    public DkFilter(ISsf ssf, IBaseDiffuseFilteringResults frslts, ResultsRange range) {
+    public DkFilter(ISsf ssf, BaseDiffuseFilteringResults frslts, ResultsRange range) {
         this.frslts = frslts;
         this.ssf=ssf;
         loading = ssf.loading();

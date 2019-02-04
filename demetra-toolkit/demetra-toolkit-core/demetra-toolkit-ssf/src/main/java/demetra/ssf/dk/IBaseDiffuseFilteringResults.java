@@ -17,6 +17,8 @@
 package demetra.ssf.dk;
 
 import demetra.data.DataBlock;
+import demetra.likelihood.DeterminantalTerm;
+import demetra.ssf.State;
 import demetra.ssf.univariate.IFilteringResults;
 
 /**
@@ -30,16 +32,5 @@ public interface IBaseDiffuseFilteringResults extends IFilteringResults{
      */
     void close(int pos);
 
-    
-    default double diffuseNorm2(int pos) {
-        return Double.NaN;
-    }
-
-    default DataBlock Mi(int pos) {
-        return null;
-    }
-   
-    default int getEndDiffusePosition(){
-        return -1;
-    };
+    int getEndDiffusePosition();
 }

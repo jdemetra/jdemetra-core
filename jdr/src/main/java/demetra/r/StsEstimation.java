@@ -149,7 +149,7 @@ public class StsEstimation {
 
         BasicStructuralModel bsm = monitor.getResult();
         SsfBsm ssf = SsfBsm.of(bsm);
-        DefaultSmoothingResults sr = DkToolkit.sqrtSmooth(ssf, new SsfData(y.getValues()), true);
+        DefaultSmoothingResults sr = DkToolkit.sqrtSmooth(ssf, new SsfData(y.getValues()), true, true);
 
         TsData t = null, c = null, s = null, seas = null, n = null;
         TsPeriod start = y.getStart();

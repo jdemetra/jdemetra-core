@@ -67,7 +67,7 @@ public class DiffuseSimulationSmoother {
     private final Smoothing smoothing;
     private final double var;
 
-    public DiffuseSimulationSmoother(ISsf ssf, ISsfData data) {
+    public DiffuseSimulationSmoother(ISsf ssf, ISsfData data, boolean rescaleVariance) {
         this.ssf = ssf;
         dynamics = ssf.dynamics();
         loading = ssf.loading();
@@ -75,7 +75,7 @@ public class DiffuseSimulationSmoother {
         this.data = data;
         initSsf();
         smoothing = new Smoothing();
-        var = DkToolkit.var(data.length(), smoothing.frslts);
+        var = rescaleVariance ? smoothing.frslts.var() : 1;
     }
 
     public Smoothing getReferenceSmoothing() {
@@ -118,7 +118,7 @@ public class DiffuseSimulationSmoother {
 
     abstract class BaseSimulation {
 
-        protected final IBaseDiffuseFilteringResults frslts;
+        protected final BaseDiffuseFilteringResults frslts;
         protected final DataBlockStorage smoothedInnovations;
         protected final DataBlock esm;
         protected DataBlockStorage smoothedStates;
@@ -128,7 +128,7 @@ public class DiffuseSimulationSmoother {
 
         protected abstract double getError(int pos);
 
-        protected BaseSimulation(IBaseDiffuseFilteringResults frslts) {
+        protected BaseSimulation(BaseDiffuseFilteringResults frslts) {
             this.frslts = frslts;
             dim = ssf.getStateDim();
             resdim = dynamics.getInnovationsDim();

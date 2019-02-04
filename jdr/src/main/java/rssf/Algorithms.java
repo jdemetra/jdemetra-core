@@ -51,7 +51,7 @@ public class Algorithms {
 
     public StateStorage smooth(ISsf model, double[] data, boolean all) {
         SsfData s = new SsfData(data);
-        return DkToolkit.sqrtSmooth(model, s, all);
+        return DkToolkit.sqrtSmooth(model, s, all, true);
     }
 
     public double diffuseLikelihood(IMultivariateSsf model, Matrix data) {
@@ -66,7 +66,7 @@ public class Algorithms {
 
     public StateStorage smooth(IMultivariateSsf model, Matrix data, boolean all) {
         SsfMatrix s = new SsfMatrix(data);
-        return DkToolkit.smooth(model, s, all);
+        return DkToolkit.smooth(model, s, all, true);
     }
     
     public double diffuseLikelihood(CompositeModel model, Matrix data, double[] parameters){

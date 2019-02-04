@@ -35,8 +35,9 @@ public class CalendarizationSpec implements ProcSpecification {
     public static final String FAMILY = "Benchmarking";
     public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, "Calendarization", null);
     
-    private static final double[] WEIGHTS={1,1,1,1,1,1,1};
-
+    /**
+     * Weights of each week day, starting from Monday
+     */
     private double[] dailyWeights;
     private boolean stdev;
     private TsUnit aggregationUnit;
@@ -49,9 +50,8 @@ public class CalendarizationSpec implements ProcSpecification {
     
     public static CalendarizationSpecBuilder builder(){
         return new CalendarizationSpecBuilder()
-                .dailyWeights(WEIGHTS)
                 .stdev(true)
-                .aggregationUnit(TsUnit.MONTH);
+                .aggregationUnit(TsUnit.UNDEFINED);
     }
 
 }

@@ -16,7 +16,6 @@
  */
 package demetra.timeseries;
 
-import static demetra.timeseries.TsPeriod.DEFAULT_EPOCH;
 import java.time.LocalDateTime;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;

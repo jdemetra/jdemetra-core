@@ -114,7 +114,7 @@ public class AkfToolkit {
             return qr.getProfileLikelihood();
         }
     }
-    public static double var(int n, IAugmentedFilteringResults frslts) {
+    public static double var(int n, DefaultAugmentedFilteringResults frslts) {
         double c = frslts.getAugmentation().c();
         double ssq = c * c;
         int nd = frslts.getCollapsingPosition();

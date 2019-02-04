@@ -134,15 +134,16 @@ public class DefaultDisturbanceSmoothingResults implements IDisturbanceSmoothing
         }
     }
 
-    public void rescale(double factor) {
-        double se = Math.sqrt(factor);
-        U.rescale(se);
-//        if (UVar != null) {
-//            UVar.rescale(factor);
-//        }
-//        if (evar != null) {
-//            evar.rescale(factor);
-//        }
+    @Override
+    public void rescaleVariances(double factor){
+        if (evar != null)
+            evar.rescale(factor);
+        if (UVar != null)
+            UVar.rescale(factor);
+        
+        // TO DO: Check the next two lines
+        double se = Math.sqrt(factor); 
+        U.rescale(se); 
     }
-
+    
 }

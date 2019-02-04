@@ -26,6 +26,7 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
+import demetra.ssf.dk.DiffuseSmoother;
 
 /**
  *
@@ -33,20 +34,64 @@ import demetra.ssf.StateInfo;
  */
 public class OrdinarySmoother {
 
+    public static class Builder {
+
+        private final ISsf ssf;
+        private boolean rescaleVariance = false;
+        private boolean calcVariance = true;
+
+        public Builder(ISsf ssf) {
+            this.ssf = ssf;
+        }
+
+        public Builder rescaleVariance(boolean rescale) {
+            this.rescaleVariance = rescale;
+            if (rescale) {
+                calcVariance = true;
+            }
+            return this;
+        }
+
+        public Builder calcVariance(boolean calc) {
+            this.calcVariance = calc;
+            if (!calc) {
+                rescaleVariance = false;
+            }
+            return this;
+        }
+
+        public OrdinarySmoother build() {
+            return new OrdinarySmoother(ssf, calcVariance, rescaleVariance);
+        }
+    }
+
+    public static Builder builder(ISsf ssf) {
+        return new Builder(ssf);
+    }
+
+    private final ISsf ssf;
+    private final ISsfDynamics dynamics;
+    private final ISsfLoading loading;
+    private final boolean calcvar, rescalevar;
     private State state;
-    private ISsf ssf;
-    private ISsfDynamics dynamics;
-    private ISsfLoading loading;
     private ISmoothingResults srslts;
-    private IFilteringResults frslts;
+    private DefaultFilteringResults frslts;
 
     private double err, errVariance, u, uVariance;
     private DataBlock M, R;
     private Matrix N;
-    private boolean missing, calcvar = true;
+    private boolean missing;
     private int stop;
 
-    public boolean process(ISsf ssf, ISsfData data) {
+    public OrdinarySmoother(ISsf ssf, boolean calcvar, boolean rescalevar) {
+        this.ssf = ssf;
+        this.calcvar = calcvar;
+        this.rescalevar = rescalevar;
+        dynamics = ssf.dynamics();
+        loading = ssf.loading();
+    }
+
+    public boolean process(ISsfData data) {
         if (ssf.initialization().isDiffuse()) {
             return false;
         }
@@ -55,18 +100,18 @@ public class OrdinarySmoother {
         if (!filter.process(ssf, data, fresults)) {
             return false;
         }
-        return process(ssf, 0, data.length(), fresults);
+        return process(0, data.length(), fresults);
     }
 
-    public boolean process(ISsf ssf, DefaultFilteringResults results) {
+    public boolean process(DefaultFilteringResults results) {
         if (ssf.initialization().isDiffuse()) {
             return false;
         }
         ResultsRange range = results.getRange();
-        return process(ssf, range.getStart(), range.getEnd(), results);
+        return process(range.getStart(), range.getEnd(), results);
     }
 
-    public boolean process(ISsf ssf, int start, int end, IFilteringResults results) {
+    public boolean process(int start, int end, DefaultFilteringResults results) {
         ISmoothingResults sresults;
         if (calcvar) {
             sresults = DefaultSmoothingResults.full();
@@ -74,16 +119,15 @@ public class OrdinarySmoother {
             sresults = DefaultSmoothingResults.light();
         }
 
-        return process(ssf, start, end, results, sresults);
+        return process(start, end, results, sresults);
     }
 
-    public boolean process(ISsf ssf, final int start, final int end, IFilteringResults results, ISmoothingResults sresults) {
+    public boolean process(final int start, final int end, DefaultFilteringResults results, ISmoothingResults sresults) {
         frslts = results;
         srslts = sresults;
         stop = start;
-        initFilter(ssf);
         initSmoother(ssf);
-        int t=end;
+        int t = end;
         while (--t >= stop) {
             loadInfo(t);
             if (iterate(t)) {
@@ -178,7 +222,6 @@ public class OrdinarySmoother {
 //                    measurement.XpZd(pos, col, -k);
 //                }
 //            } while (rows.next() && columns.next());
-
             loading.VpZdZ(pos, N, 1 / errVariance);
             SymmetricMatrix.reenforceSymmetry(N);
         } else {
@@ -202,20 +245,6 @@ public class OrdinarySmoother {
             u = (err - R.dot(M)) / errVariance;
             loading.XpZd(pos, R, u);
         }
-    }
-
-    private void initFilter(ISsf ssf) {
-        this.ssf=ssf;
-        dynamics = ssf.dynamics();
-        loading = ssf.loading();
-    }
-
-    public void setCalcVariances(boolean b) {
-        calcvar = b;
-    }
-
-    public boolean isCalcVariances() {
-        return calcvar;
     }
 
 }

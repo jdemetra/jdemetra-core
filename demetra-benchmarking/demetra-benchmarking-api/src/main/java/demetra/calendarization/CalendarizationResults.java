@@ -16,8 +16,12 @@
  */
 package demetra.calendarization;
 
+import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsPeriod;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 /**
  *
@@ -27,8 +31,11 @@ import demetra.timeseries.TsData;
 @lombok.Value
 @lombok.Builder
 public class CalendarizationResults {
+    @lombok.NonNull 
+    private LocalDate start;
+    @lombok.NonNull 
     private double[] dailyData, dailyStdev;
-            
-    private @lombok.NonNull TsData aggregatedSeries;
-    private @lombok.NonNull TsData stdevAggregatedSeries;
+    private TsData aggregatedSeries;
+    private TsData stdevAggregatedSeries;
+    
 }

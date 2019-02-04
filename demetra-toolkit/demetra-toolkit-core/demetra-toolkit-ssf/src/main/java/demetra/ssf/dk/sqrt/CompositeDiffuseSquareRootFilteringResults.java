@@ -16,8 +16,6 @@
  */
 package demetra.ssf.dk.sqrt;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
 import demetra.ssf.UpdateInformation;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
@@ -87,94 +85,6 @@ public class CompositeDiffuseSquareRootFilteringResults implements IDiffuseSquar
             }
         }
         return -1;
-
     }
 
-    @Override
-    public DataBlock a(int pos) {
-        for (int i = 0; i < subresults.length; ++i) {
-            DataBlock a = subresults[i].a(pos);
-            if (a != null) {
-                return a;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Matrix B(int pos) {
-        for (int i = 0; i < subresults.length; ++i) {
-            Matrix P = subresults[i].B(pos);
-            if (P != null) {
-                return P;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public DataBlock M(int pos) {
-        for (int i = 0; i < subresults.length; ++i) {
-            DataBlock c = subresults[i].M(pos);
-            if (c != null) {
-                return c;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public DataBlock Mi(int pos) {
-        for (int i = 0; i < subresults.length; ++i) {
-            DataBlock c = subresults[i].Mi(pos);
-            if (c != null) {
-                return c;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Matrix P(int pos) {
-        for (int i = 0; i < subresults.length; ++i) {
-            Matrix P = subresults[i].P(pos);
-            if (P != null) {
-                return P;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public double error(int pos) {
-        for (int i = 0; i < subresults.length; ++i) {
-            double d = subresults[i].error(pos);
-            if (Double.isFinite(d)) {
-                return d;
-            }
-        }
-        return Double.NaN;
-    }
-
-    @Override
-    public double errorVariance(int pos) {
-        for (int i = 0; i < subresults.length; ++i) {
-            double d = subresults[i].errorVariance(pos);
-            if (Double.isFinite(d)) {
-                return d;
-            }
-        }
-        return Double.NaN;
-    }
-
-    @Override
-    public double diffuseNorm2(int pos) {
-        for (int i = 0; i < subresults.length; ++i) {
-            double d = subresults[i].diffuseNorm2(pos);
-            if (Double.isFinite(d)) {
-                return d;
-            }
-        }
-        return Double.NaN;
-    }
 }

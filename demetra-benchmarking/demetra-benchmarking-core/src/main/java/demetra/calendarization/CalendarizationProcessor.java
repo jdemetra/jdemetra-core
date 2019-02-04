@@ -20,16 +20,20 @@
  */
 package demetra.calendarization;
 
+import demetra.data.DataBlock;
+import demetra.data.DataBlockStorage;
 import demetra.design.Development;
+import demetra.maths.matrices.QuadraticForm;
+import demetra.ssf.dk.DkToolkit;
+import demetra.ssf.univariate.DefaultSmoothingResults;
+import demetra.ssf.univariate.SsfData;
+import demetra.timeseries.CalendarPeriodObs;
 import demetra.timeseries.CalendarTimeSeries;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsPeriod;
+import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -41,41 +45,53 @@ import org.openide.util.lookup.ServiceProvider;
 @Development(status = Development.Status.Preliminary)
 @ServiceProvider(service = Calendarization.Processor.class)
 public class CalendarizationProcessor implements Calendarization.Processor {
-
+    
+    public static final CalendarizationProcessor PROCESSOR = new CalendarizationProcessor();
+    
     @Override
     public CalendarizationResults process(CalendarTimeSeries data, CalendarizationSpec spec) {
-        Impl monitor=new Impl(data, spec);
-        return null;
+        Impl monitor = new Impl(data, spec);
+        return CalendarizationResults.builder()
+                .start(monitor.start)
+                .dailyData(monitor.sdays)
+                .dailyStdev(monitor.esdays)
+                .aggregatedSeries(monitor.aggts)
+                .stdevAggregatedSeries(monitor.eaggts)
+                .build();
     }
-
+    
     private static class Impl {
-
+        
         private final CalendarTimeSeries data;
         private final CalendarizationSpec spec;
-        private double[] s_, es_;
-        private TsData[] output_;
+        private double[] sdays, esdays;
+        private TsData aggts, eaggts;
+        // local buffer
+        private double[] x, w;
+        private int[] starts;
+        private LocalDate start, end;
         
-        private Impl(final CalendarTimeSeries data, final CalendarizationSpec spec){
-            this.data=data;
-            this.spec=spec;
+        private Impl(final CalendarTimeSeries data, final CalendarizationSpec spec) {
+            this.data = data;
+            this.spec = spec;
+            process();
         }
-
-
+        
         private boolean process() {
+            prepare();
             if (!spec.isStdev()) {
                 return fastProcess();
+            } else if (spec.getAggregationUnit() == TsUnit.UNDEFINED) {
+                return fastFullProcess();
             } else {
                 return fullProcess();
             }
         }
-
-        // processing without forecast errors
-        private boolean fastProcess() {
-            if (s_ != null) {
-                return true;
-            }
+        
+        private void prepare() {
             // actual start/end for computation
-            LocalDate start = data.getPeriod(0).getStart(), end = data.getPeriod(data.length() - 1).getEnd();
+            start = data.getPeriod(0).getStart();
+            end = data.getPeriod(data.length() - 1).getEnd();
             if (spec.getStart() != null && spec.getStart().isBefore(start)) {
                 start = spec.getStart();
             }
@@ -83,266 +99,142 @@ public class CalendarizationProcessor implements Calendarization.Processor {
                 end = spec.getEnd();
             }
             // creates the data.
-            int n=(int)start.until(end, ChronoUnit.DAYS);
-            double[] x = new double[n];
-            double[] w;
+            int n = (int) start.until(end, ChronoUnit.DAYS);
+            x = new double[n];
             if (spec.getDailyWeights() != null) {
                 w = new double[n];
-                int j = start.getDayOfWeek().getValue()-1;
+                int j = start.getDayOfWeek().getValue() - 1;
                 for (int i = 0; i < w.length; ++i) {
                     w[i] = spec.getDailyWeights()[j];
                     if (++j == 7) {
                         j = 0;
                     }
                 }
-            } else {
-                w = null;
             }
             for (int i = 0; i < n; ++i) {
-                data[i] = Double.NaN;
+                x[i] = Double.NaN;
             }
-            int[] starts = new int[data_.size()];
+            starts = new int[data.length()];
             int idx = 0;
-            for (PeriodObs obs : data_) {
-                starts[idx++] = obs.start.difference(start);
-                int n = obs.end.difference(start);
-                data[n] = obs.value;
+            for (CalendarPeriodObs obs : data) {
+                starts[idx++] = (int) start.until(obs.getPeriod().start(), ChronoUnit.DAYS);
+                int q = (int) start.until(obs.getPeriod().end(), ChronoUnit.DAYS) - 1;
+                x[q] = obs.getValue();
             }
+            
+        }
 
-            DisturbanceSmoother smoother = new DisturbanceSmoother();
-            smoother.setSsf(new SsfCalendarization(starts, w));
-            smoother.process(new SsfData(data, null));
-            SmoothingResults sstates = smoother.calcSmoothedStates();
-            double[] c = sstates.component(1);
-
+        // processing without forecast errors
+        private boolean fastProcess() {
+            DataBlockStorage rslt = DkToolkit.fastSmooth(SsfCalendarization.of(starts, w), new SsfData(x));
+            double[] c = rslt.item(1).toArray();
+            
             if (w != null) {
                 for (int i = 0; i < c.length; ++i) {
                     c[i] *= w[i];
                 }
             }
-            s_ = c;
+            sdays = c;
             return true;
         }
-
-        private boolean fullProcess(TsFrequency freq) {
-            if (freq == TsFrequency.Undefined) {
-                if (s_ != null) {
-                    return true;
-                } else {
-                    return fastFullProcess();
-                }
-            } else if (output_.containsKey(freq)) {
-                return true;
-            }
-
-            // actual start/end for computation
-            Day start = data_.get(0).start, end = data_.get(data_.size() - 1).end;
-            if (start_.isBefore(start)) {
-                start = start_;
-            }
-            if (end_.isAfter(end)) {
-                end = end_;
-            }
-            // creates the data.
-            double[] data = new double[end.difference(start) + 1];
-            double[] w;
-            if (dweights_ != null) {
-                w = new double[data.length];
-                int j = start.getDayOfWeek().intValue();
-                for (int i = 0; i < w.length; ++i) {
-                    w[i] = dweights_[j];
-                    if (++j == 7) {
-                        j = 0;
-                    }
-                }
-            } else {
-                w = null;
-            }
-            for (int i = 0; i < data.length; ++i) {
-                data[i] = Double.NaN;
-            }
-
-            int[] starts = new int[data_.size()];
-
-            TsPeriod S = new TsPeriod(freq, start);
-            TsPeriod E = new TsPeriod(freq, end);
-            int[] astarts = new int[E.minus(S) + 1];
-            for (int i = 0; i < astarts.length; ++i) {
-                astarts[i] = Math.max(0, S.plus(i).firstday().difference(start));
-            }
-
-            int idx = 0;
-            for (PeriodObs obs : data_) {
-                starts[idx++] = obs.start.difference(start);
-                int n = obs.end.difference(start);
-                data[n] = obs.value;
-            }
-
-            Smoother smoother = new Smoother();
-            smoother.setCalcVar(true);
-            smoother.setSsf(new SsfCalendarizationEx(starts, astarts, w));
-            SmoothingResults sstates = new SmoothingResults(true, true);
-            smoother.process(new SsfData(data, null), sstates);
-            if (s_ == null) {
-                double[] c = sstates.component(2);
-                if (w != null) {
-                    for (int i = 0; i < c.length; ++i) {
-                        c[i] *= w[i];
-                    }
-                }
-                s_ = c;
-            }
-            if (es_ == null) {
-                double[] e = sstates.componentStdev(2);
-                if (w != null) {
-                    for (int i = 0; i < e.length; ++i) {
-                        e[i] *= w[i];
-                    }
-                }
-                es_ = e;
-            }
-            TsData X = new TsData(S, astarts.length);
-            TsData EX = new TsData(S, astarts.length);
-            int[] aends = new int[astarts.length];
-            for (int i = 1; i < astarts.length; ++i) {
-                aends[i - 1] = astarts[i] - 1;
-            }
-            aends[aends.length - 1] = s_.length - 1;
-            DataBlock Z = new DataBlock(3);
-            Z.set(1, 1);
-            Z.set(2, 1);
-            for (int i = 0; i < aends.length; ++i) {
-                int icur = aends[i];
-                if (w != null) {
-                    Z.set(2, w[icur]);
-                }
-                X.set(i, sstates.zcomponent(icur, Z));
-                EX.set(i, Math.sqrt(Math.max(0, sstates.zvariance(icur, Z))));
-            }
-            output_.put(freq, new TsData[]{X, EX});
-            return true;
-        }
-
+        
         private boolean fastFullProcess() {
-            // actual start/end for computation
-            Day start = data_.get(0).start, end = data_.get(data_.size() - 1).end;
-            if (start_.isBefore(start)) {
-                start = start_;
-            }
-            if (end_.isAfter(end)) {
-                end = end_;
-            }
-            // creates the data.
-            double[] data = new double[end.difference(start) + 1];
-            double[] w;
-            if (dweights_ != null) {
-                w = new double[data.length];
-                int j = start.getDayOfWeek().intValue();
-                for (int i = 0; i < w.length; ++i) {
-                    w[i] = dweights_[j];
-                    if (++j == 7) {
-                        j = 0;
-                    }
-                }
-            } else {
-                w = null;
-            }
-            for (int i = 0; i < data.length; ++i) {
-                data[i] = Double.NaN;
-            }
-            int[] starts = new int[data_.size()];
-            int idx = 0;
-            for (PeriodObs obs : data_) {
-                starts[idx++] = obs.start.difference(start);
-                int n = obs.end.difference(start);
-                data[n] = obs.value;
-            }
-
-            Smoother smoother = new Smoother();
-            smoother.setCalcVar(true);
-            smoother.setSsf(new SsfCalendarization(starts, w));
-            SmoothingResults sstates = new SmoothingResults(true, true);
-            smoother.process(new SsfData(data, null), sstates);
-            double[] c = sstates.component(1);
-            double[] e = sstates.componentStdev(1);
-
+            
+            DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(SsfCalendarization.of(starts, w), new SsfData(x), true, true);
+            double[] c = srslts.getComponent(1).toArray();
+            double[] e = srslts.getComponentVariance(1)
+                    .fastFn(q -> q <= 0 ? 0 : Math.sqrt(q))
+                    .toArray();
             if (w != null) {
                 for (int i = 0; i < c.length; ++i) {
                     c[i] *= w[i];
                     e[i] *= w[i];
                 }
             }
-            s_ = c;
-            es_ = e;
+            sdays = c;
+            esdays = e;
+            return true;
+        }
+        
+        private boolean fullProcess() {
+
+            // actual start/end for computation
+            TsPeriod S = TsPeriod.of(spec.getAggregationUnit(), start);
+            TsPeriod E = TsPeriod.of(spec.getAggregationUnit(), end);
+            int na = S.until(E);
+            int[] astarts = new int[na];
+            for (int i = 0; i < astarts.length; ++i) {
+                astarts[i] = (int) Math.max(0, start.until(S.plus(i).start(), ChronoUnit.DAYS));
+            }
+            
+            DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(SsfCalendarizationEx.of(starts, astarts, w), new SsfData(x), true, true);
+            double[] c = srslts.getComponent(2).toArray();
+            if (w != null) {
+                for (int i = 0; i < c.length; ++i) {
+                    c[i] *= w[i];
+                }
+            }
+            sdays = c;
+            
+            if (esdays == null) {
+                double[] e = srslts.getComponentVariance(2)
+                        .fastFn(q -> q <= 0 ? 0 : Math.sqrt(q))
+                        .toArray();
+                if (w != null) {
+                    for (int i = 0; i < e.length; ++i) {
+                        e[i] *= w[i];
+                    }
+                }
+                esdays = e;
+            }
+            int[] aends = new int[astarts.length];
+            for (int i = 1; i < astarts.length; ++i) {
+                aends[i - 1] = astarts[i] - 1;
+            }
+            aends[aends.length - 1] = sdays.length - 1;
+            DataBlock Z = DataBlock.ofInternal(new double[]{0, 1, 1});
+            Z.set(1, 1);
+            Z.set(2, 1);
+            double[] ax = new double[aends.length],
+                    eax = new double[aends.length];
+            for (int i = 0; i < aends.length; ++i) {
+                int icur = aends[i];
+                if (w != null) {
+                    Z.set(2, w[icur]);
+                }
+                ax[i] = srslts.a(icur).dot(Z);
+                eax[i] = Math.sqrt(Math.max(0, QuadraticForm.apply(srslts.P(icur), Z)));
+            }
+            aggts = TsData.ofInternal(S, ax);
+            eaggts = TsData.ofInternal(S, eax);
             return true;
         }
 
-        private TsData makeTsData(TsFrequency freq) {
-            Day start = data_.get(0).start, end = data_.get(data_.size() - 1).end;
-            if (start_.isBefore(start)) {
-                start = start_;
-            }
-            if (end_.isAfter(end)) {
-                end = end_;
-            }
-            TsPeriod S = new TsPeriod(freq, start);
-            TsPeriod E = new TsPeriod(freq, end);
-            double[] sum = new double[E.minus(S) + 1];
-            TsPeriod cur = S.clone();
-            for (int i = 0, j0 = 0, j1 = 0; i < sum.length; ++i) {
-                j1 = Math.min(cur.lastday().difference(start) + 1, s_.length);
-                double s = 0;
-                for (int j = j0; j < j1; ++j) {
-                    s += s_[j];
-                }
-                sum[i] = s;
-                cur.move(1);
-                j0 = j1;
-            }
-
-            return new TsData(S, sum, false);
-        }
-
-        public Day getStart() {
-            return start_;
-        }
-
-        public Day getEnd() {
-            return end_;
-        }
-
-        public double[] getSmoothedData() {
-            if (!process(TsFrequency.Undefined)) {
-                return null;
-            }
-            return s_;
-        }
-
-        public TsData getAggregates(TsFrequency freq) {
-            if (!process(freq)) {
-                return null;
-            }
-            if (!stdev_) {
-                return makeTsData(freq);
-            } else {
-                TsData[] o = output_.get(freq);
-                return o == null ? null : o[0];
-            }
-        }
-
-        public double[] getSmoothedStdev() {
-            if (!stdev_ || !process(TsFrequency.Undefined)) {
-                return null;
-            }
-            return es_;
-        }
-
-        public TsData getAggregatesStdev(TsFrequency freq) {
-            if (!stdev_ || !process(freq)) {
-                return null;
-            }
-            TsData[] o = output_.get(freq);
-            return o == null ? null : o[1];
-        }
+//        private TsData makeTsData() {
+//            LocalDate start = data.get(0).getPeriod().getStart(), end = data.get(data.length() - 1).getPeriod().getEnd();
+//            if (spec.getStart().isBefore(start)) {
+//                start = spec.getStart();
+//            }
+//            if (spec.getEnd().isAfter(end)) {
+//                end = spec.getEnd();
+//            }
+//            TsPeriod S = TsPeriod.of(spec.getAggregationUnit(), start);
+//            TsPeriod E = TsPeriod.of(spec.getAggregationUnit(), end);
+//            int n = S.until(E);
+//            double[] sum = new double[n];
+//            TsPeriod cur = S;
+//            for (int i = 0, j0 = 0, j1 = 0; i < sum.length; ++i) {
+//                j1 = Math.min((int) start.until(cur.end(), ChronoUnit.DAYS), sdays.length);
+//                double s = 0;
+//                for (int j = j0; j < j1; ++j) {
+//                    s += sdays[j];
+//                }
+//                sum[i] = s;
+//                cur = cur.next();
+//                j0 = j1;
+//            }
+//
+//            return TsData.of(S, DoubleSequence.ofInternal(sum));
+//        }
     }
 }

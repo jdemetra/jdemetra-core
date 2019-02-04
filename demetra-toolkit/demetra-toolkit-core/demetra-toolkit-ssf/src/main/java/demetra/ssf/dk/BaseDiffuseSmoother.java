@@ -31,14 +31,24 @@ import demetra.ssf.ISsfLoading;
  */
 public abstract class BaseDiffuseSmoother {
 
-    protected ISsfDynamics dynamics;
-    protected ISsfLoading loading;
+    protected final ISsf ssf;
+    protected final ISsfDynamics dynamics;
+    protected final ISsfLoading loading;
+    protected final boolean calcvar, rescalevar;
     protected ISmoothingResults srslts;
 
     protected double e, f, fi;
     protected DataBlock C, Ci, Rf, Ri, tmp0, tmp1, Z;
     protected Matrix N0, N1, N2;
-    protected boolean missing, hasinfo, calcvar = true;
+    protected boolean missing, hasinfo;
+    
+    protected BaseDiffuseSmoother(ISsf ssf, boolean calcvar, boolean rescalevar){
+        this.ssf=ssf;
+        this.calcvar=calcvar;
+        this.rescalevar=rescalevar;
+        dynamics = ssf.dynamics();
+        loading = ssf.loading();
+    }
 
     public ISmoothingResults getResults() {
         return srslts;
@@ -220,19 +230,6 @@ public abstract class BaseDiffuseSmoother {
             double cf = -Rf.dot(Ci);
             loading.XpZd(pos, Rf, cf);
         }
-    }
-
-    protected void initFilter(ISsf ssf) {
-        dynamics = ssf.dynamics();
-        loading = ssf.loading();
-    }
-
-    public void setCalcVariances(boolean b) {
-        calcvar = b;
-    }
-
-    public boolean isCalcVariances() {
-        return calcvar;
     }
 
 }

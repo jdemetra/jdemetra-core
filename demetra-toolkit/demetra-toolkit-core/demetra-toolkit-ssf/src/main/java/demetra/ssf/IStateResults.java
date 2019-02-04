@@ -33,5 +33,5 @@ public interface IStateResults {
      * @param info
      */
     void save(int pos, State state, StateInfo info);
-
+    
 }

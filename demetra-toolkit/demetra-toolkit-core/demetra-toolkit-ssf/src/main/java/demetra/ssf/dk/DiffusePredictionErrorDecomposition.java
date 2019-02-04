@@ -91,14 +91,4 @@ public class DiffusePredictionErrorDecomposition extends PredictionErrorDecompos
         return enddiffuse;
     }
 
-    @Override
-    public DataBlock Mi(int pos) {
-        return null;
-    }
-
-    @Override
-    public double diffuseNorm2(int pos) {
-        return Double.NaN;
-    }
-
 }

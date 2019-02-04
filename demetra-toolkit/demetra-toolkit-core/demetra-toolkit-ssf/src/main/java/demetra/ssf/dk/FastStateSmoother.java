@@ -26,33 +26,56 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
-import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.ssf.SsfException;
 
 /**
  *
  * @author Jean Palate
  */
 public class FastStateSmoother {
-    
-    public static interface Corrector {
 
-        void adjust(int pos, DataBlock a, double error);
+//    public static class Builder{
+//        private final ISsf ssf;
+//        private boolean rescaleVariance=false;
+//        
+//        public Builder(ISsf ssf){
+//            this.ssf=ssf;
+//        }
+//        
+//        public Builder rescaleVariance(boolean rescale){
+//            this.rescaleVariance=rescale;
+//            return this;
+//        }
+//
+//        
+//        public FastStateSmoother build(){
+//            return new FastStateSmoother(ssf, rescaleVariance);
+//        }
+//    }
+//    
+//    public static Builder builder(ISsf ssf){
+//        return new Builder(ssf);
+//    }
+//
+    private final ISsf ssf;
+    private final ISsfDynamics dynamics;
+    private final ISsfLoading loading;
+    private final ISsfError error;
+
+    public FastStateSmoother(final ISsf ssf) {
+        this.ssf = ssf;
+        dynamics = ssf.dynamics();
+        loading = ssf.loading();
+        error = ssf.measurementError();
     }
-    
-    private ISsf ssf;
-    private ISsfDynamics dynamics;
-    private ISsfLoading loading;
-    private ISsfError error;
-    protected Corrector corrector;
-    
-    public DataBlockStorage process(ISsf ssf, ISsfData data) {
-        initSsf(ssf);
+
+    public DataBlockStorage process(ISsfData data) {
         int dim = ssf.getStateDim();
         int n = data.length();
         DataBlockStorage storage = new DataBlockStorage(dim, n);
         DefaultDisturbanceSmoothingResults srslts = DefaultDisturbanceSmoothingResults.light(error != null);
         srslts.prepare(ssf, 0, n);
-        DataBlock a = initialState(ssf, data, srslts);
+        DataBlock a = initialState(data, srslts);
         storage.save(0, a);
         int cur = 1;
         while (cur < n) {
@@ -62,54 +85,29 @@ public class FastStateSmoother {
                 DataBlock u = srslts.u(cur);
                 dynamics.addSU(cur - 1, a, u);
             }
-            // T
-            if (corrector != null) {
-                // we want to stabilize the results so that Za(t)=y(t)
-                // we suppose that the error is very small, so that we can distribute it on a 
-                // in  a simple way
-                if (!data.isMissing(cur)) {
-                    double e = data.get(cur) - loading.ZX(cur, a) - srslts.e(cur);
-                    corrector.adjust(cur, a, e);
-                }
-            }
             storage.save(cur++, a);
         }
         return storage;
     }
-    
-    private void initSsf(ISsf ssf) {
-        this.ssf=ssf;
-        dynamics = ssf.dynamics();
-        loading = ssf.loading();
-        error=ssf.measurementError();
-    }
-    
-    private DataBlock initialState(ISsf ssf, ISsfData data, IDisturbanceSmoothingResults srslts) {
+
+    private DataBlock initialState(ISsfData data, IDisturbanceSmoothingResults srslts) {
         if (ssf.initialization().isDiffuse()) {
-            DiffuseDisturbanceSmoother sm = new DiffuseDisturbanceSmoother();
-            sm.setCalcVariances(false);
-            sm.process(ssf, data, srslts);
+            DiffuseDisturbanceSmoother sm = DiffuseDisturbanceSmoother
+                    .builder(ssf)
+                    .calcVariance(false)
+                    .rescaleVariance(false)
+                    .build();
+            sm.process(data, srslts);
             return sm.firstSmoothedState();
         } else {
-            DisturbanceSmoother sm = new DisturbanceSmoother();
-            sm.setCalcVariances(false);
-            sm.process(ssf, data, srslts, 0);
+            DisturbanceSmoother sm = DisturbanceSmoother
+                    .builder(ssf)
+                    .calcVariance(false)
+                    .rescaleVariance(false)
+                    .build();
+            sm.process(data, srslts, 0);
             return sm.firstSmoothedState();
         }
     }
 
-    /**
-     * @return the adjust
-     */
-    public Corrector getCorrector() {
-        return corrector;
-    }
-
-    /**
-     * @param adjust the adjust to set
-     */
-    public void setCorrector(Corrector corrector) {
-        this.corrector = corrector;
-    }
-    
 }

@@ -66,7 +66,7 @@ public class MstsMonitorTest {
         monitor.process(D, mapping, null);
         System.out.println(monitor.getLikelihood().logLikelihood());
         System.out.println(monitor.fullParameters());
-        StateStorage ss = DkToolkit.smooth(monitor.getSsf(), new SsfMatrix(monitor.getData()), true);
+        StateStorage ss = DkToolkit.smooth(monitor.getSsf(), new SsfMatrix(monitor.getData()), true, true);
         System.out.println(ss.getComponent(monitor.getSsf().componentsPosition()[4]));
     }
 
@@ -106,7 +106,7 @@ public class MstsMonitorTest {
         monitor.process(D, mapping, null);
         System.out.println(monitor.getLikelihood().logLikelihood());
         System.out.println(monitor.fullParameters());
-        StateStorage ss = DkToolkit.smooth(monitor.getSsf(), new SsfMatrix(monitor.getData()), true);
+        StateStorage ss = DkToolkit.smooth(monitor.getSsf(), new SsfMatrix(monitor.getData()), true, true);
         System.out.println(ss.getComponent(monitor.getSsf().componentsPosition()[4]));
     }
 
@@ -146,7 +146,7 @@ public class MstsMonitorTest {
         monitor.process(D, mapping, null);
         System.out.println(monitor.getLikelihood().logLikelihood());
         System.out.println(monitor.fullParameters());
-        StateStorage ss = DkToolkit.smooth(monitor.getSsf(), new SsfMatrix(monitor.getData()), true);
+        StateStorage ss = DkToolkit.smooth(monitor.getSsf(), new SsfMatrix(monitor.getData()), true, true);
         System.out.println(ss.getComponent(monitor.getSsf().componentsPosition()[4]));
     }
 
@@ -188,7 +188,7 @@ public class MstsMonitorTest {
         System.out.println("Xbis");
         System.out.println(monitor.getLikelihood().logLikelihood());
         System.out.println(monitor.fullParameters());
-        StateStorage ss = DkToolkit.smooth(monitor.getSsf(), new SsfMatrix(monitor.getData()), true);
+        StateStorage ss = DkToolkit.smooth(monitor.getSsf(), new SsfMatrix(monitor.getData()), true, true);
         System.out.println(ss.getComponent(monitor.getSsf().componentsPosition()[6]+4));
     }
     

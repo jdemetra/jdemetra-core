@@ -16,6 +16,8 @@
  */
 package demetra.timeseries;
 
+import java.time.LocalDate;
+
 /**
  *
  * @author Jean Palate
@@ -24,7 +26,15 @@ package demetra.timeseries;
 public class CalendarPeriodObs implements TimeSeriesObs<CalendarPeriod> {
 
     @lombok.NonNull
-    CalendarPeriod period;
-
+    LocalDate start, end;
     double value;
+    
+    public static CalendarPeriodObs of(CalendarPeriod period, double value){
+        return new CalendarPeriodObs(period.getStart(), period.getEnd(), value);
+    }
+    
+    @Override
+    public CalendarPeriod getPeriod(){
+        return CalendarPeriod.of(start, end);
+    }
 }

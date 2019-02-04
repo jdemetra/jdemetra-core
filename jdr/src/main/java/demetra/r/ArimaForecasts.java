@@ -123,7 +123,7 @@ public class ArimaForecasts {
             }
             ssf = RegSsf.of(ssf, x);
         }
-        DefaultSmoothingResults ss = DkToolkit.sqrtSmooth(ssf, new SsfData(yc), true);
+        DefaultSmoothingResults ss = DkToolkit.sqrtSmooth(ssf, new SsfData(yc), true, true);
         Results.ResultsBuilder builder = Results.builder();
         ISsfLoading loading = ssf.loading();
         if (nb > 0) {
