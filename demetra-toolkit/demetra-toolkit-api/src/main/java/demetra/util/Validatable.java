@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
  * @author Philippe Charles
  * @param <T>
  */
-public interface Validable<T> {
+public interface Validatable<T> {
 
     /**
      * Check if the current object is valid.
@@ -40,7 +40,7 @@ public interface Validable<T> {
      *
      * @param <T>
      */
-    interface Builder<T extends Validable<T>> {
+    interface Builder<T extends Validatable<T>> {
 
         /**
          * Builds a new object with validation.
