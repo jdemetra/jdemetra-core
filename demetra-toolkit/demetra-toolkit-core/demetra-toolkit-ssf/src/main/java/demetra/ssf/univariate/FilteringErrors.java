@@ -18,17 +18,17 @@ public class FilteringErrors implements IFilteringResults {
 
     private final DataResults e, f;
     private final boolean normalized_;
-    
-    public FilteringErrors(boolean normalized){
-        normalized_=normalized;
-        e=new DataResults();
-        f=new DataResults();
+
+    public FilteringErrors(boolean normalized) {
+        normalized_ = normalized;
+        e = new DataResults();
+        f = new DataResults();
     }
 
-    public boolean isNormalized(){
+    public boolean isNormalized() {
         return normalized_;
     }
-    
+
     public void prepare(final int start, final int end) {
         e.prepare(start, end);
         f.prepare(start, end);
@@ -38,10 +38,11 @@ public class FilteringErrors implements IFilteringResults {
     public void save(final int t, final State state, final StateInfo info) {
     }
 
-   @Override
+    @Override
     public void save(int t, UpdateInformation pe) {
-        if (pe.isMissing())
+        if (pe.isMissing()) {
             return;
+        }
         double x = pe.get();
         double v = pe.getVariance();
 
@@ -49,14 +50,14 @@ public class FilteringErrors implements IFilteringResults {
             double s = Math.sqrt(v);
             e.save(t, x / s);
             f.save(t, s);
-        }else{
-            e.save(t, x );
+        } else {
+            e.save(t, x);
             f.save(t, v);
         }
     }
-    
+
     @Override
-    public void clear(){
+    public void clear() {
         e.clear();
         f.clear();
     }

@@ -13,6 +13,7 @@ import demetra.ssf.ResultsRange;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleReader;
+import demetra.ssf.SsfException;
 import javax.annotation.Nonnull;
 
 /**
@@ -21,49 +22,86 @@ import javax.annotation.Nonnull;
  */
 public class DisturbanceSmoother {
 
-    private ISsf ssf;
-    private ISsfDynamics dynamics;
-    private ISsfLoading loading;
-    private ISsfError error;
+    public static class Builder {
+
+        private final ISsf ssf;
+        private boolean rescaleVariance = false;
+        private boolean calcVariance = true;
+
+        public Builder(ISsf ssf) {
+            this.ssf = ssf;
+        }
+
+        public Builder rescaleVariance(boolean rescale) {
+            this.rescaleVariance = rescale;
+            if (rescale) {
+                calcVariance = true;
+            }
+            return this;
+        }
+
+        public Builder calcVariance(boolean calc) {
+            this.calcVariance = calc;
+            if (!calc) {
+                rescaleVariance = false;
+            }
+            return this;
+        }
+
+        public DisturbanceSmoother build() {
+            return new DisturbanceSmoother(ssf, calcVariance, rescaleVariance);
+        }
+    }
+
+    public static Builder builder(ISsf ssf) {
+        return new Builder(ssf);
+    }
+
+    private final ISsf ssf;
+    private final ISsfDynamics dynamics;
+    private final ISsfLoading loading;
+    private final ISsfError error;
+    private final boolean calcvar, rescalevar;
     private IDisturbanceSmoothingResults srslts;
-    private IFilteringResults frslts;
+    private DefaultFilteringResults frslts;
 
     private double err, errVariance, esm, esmVariance, h;
     private DataBlock K, R, U;
     private Matrix N, UVar, S;
-    private boolean missing, calcvar = true;
+    private boolean missing;
     private int pos, stop;
     // temporary
     private DataBlock tmp;
     private double c, v;
 
-    public boolean process(ISsf ssf, ISsfData data) {
-        if (ssf.initialization().isDiffuse()) {
-            return false;
-        }
+    private DisturbanceSmoother(ISsf ssf, boolean calcvar, boolean rescalevar) {
+        this.ssf = ssf;
+        this.calcvar = calcvar;
+        this.rescalevar = rescalevar;
+        dynamics = ssf.dynamics();
+        loading = ssf.measurement().loading();
+        error = ssf.measurement().error();
+    }
+
+    public boolean process(ISsfData data) {
         OrdinaryFilter filter = new OrdinaryFilter();
         DefaultFilteringResults fresults = DefaultFilteringResults.light();
         fresults.prepare(ssf, stop, data.length());
         if (!filter.process(ssf, data, fresults)) {
             return false;
         }
-        return process(ssf, 0, data.length(), fresults);
+        return process(0, data.length(), fresults);
     }
 
     /**
      *
-     * @param ssf
      * @param results Thr filtering results should contain the information
      * necessary for the smoothing.
      * @return
      */
-    public boolean process(ISsf ssf, @Nonnull DefaultFilteringResults results) {
-        this.ssf = ssf;
-        if (ssf.initialization().isDiffuse()) {
-            return false;
-        }
+    public boolean process(@Nonnull DefaultFilteringResults results) {
         ResultsRange range = results.getRange();
-        return process(ssf, range.getStart(), range.getEnd(), results);
+        return process(range.getStart(), range.getEnd(), results);
     }
 
     /**
@@ -75,7 +113,7 @@ public class DisturbanceSmoother {
      * necessary for
      * @return
      */
-    public boolean process(ISsf ssf, int start, int end, @Nonnull IFilteringResults results) {
+    public boolean process(int start, int end, @Nonnull DefaultFilteringResults results) {
         IDisturbanceSmoothingResults sresults;
         if (calcvar) {
             sresults = DefaultDisturbanceSmoothingResults.full(ssf.measurement().hasError());
@@ -83,7 +121,7 @@ public class DisturbanceSmoother {
             sresults = DefaultDisturbanceSmoothingResults.light(ssf.measurement().hasError());
         }
         sresults.prepare(ssf, start, end);
-        return process(ssf, start, end, results, sresults);
+        return process(start, end, results, sresults);
     }
 
     /**
@@ -95,19 +133,17 @@ public class DisturbanceSmoother {
      * @param stop
      * @return
      */
-    public boolean process(ISsf ssf, ISsfData data, @Nonnull IDisturbanceSmoothingResults sresults, final int stop) {
-        this.ssf = ssf;
+    public boolean process(ISsfData data, @Nonnull IDisturbanceSmoothingResults sresults, final int stop) {
         OrdinaryFilter filter = new OrdinaryFilter();
         DefaultFilteringResults fresults = DefaultFilteringResults.light();
         fresults.prepare(ssf, stop, data.length());
         if (!filter.process(ssf, data, fresults)) {
             return false;
         }
-        return process(ssf, stop, data.length(), fresults, sresults);
+        return process(stop, data.length(), fresults, sresults);
     }
 
-    public boolean process(ISsf ssf, final int start, final int end, IFilteringResults results, IDisturbanceSmoothingResults sresults) {
-        initFilter(ssf);
+    public boolean process(final int start, final int end, DefaultFilteringResults results, IDisturbanceSmoothingResults sresults) {
         frslts = results;
         srslts = sresults;
         stop = start;
@@ -121,6 +157,9 @@ public class DisturbanceSmoother {
                     srslts.saveSmoothedMeasurementDisturbance(pos, esm, esmVariance);
                 }
             }
+        }
+        if (rescalevar) {
+            srslts.rescaleVariances(results.var());
         }
         return true;
     }
@@ -262,21 +301,6 @@ public class DisturbanceSmoother {
             dynamics.XT(pos, R);
             c = Double.NaN;
         }
-    }
-
-    private void initFilter(ISsf ssf) {
-        this.ssf = ssf;
-        dynamics = ssf.dynamics();
-        loading = ssf.measurement().loading();
-        error = ssf.measurement().error();
-    }
-
-    public void setCalcVariances(boolean b) {
-        calcvar = b;
-    }
-
-    public boolean isCalcVariances() {
-        return calcvar;
     }
 
     private void tvt(Matrix N) {

@@ -16,10 +16,6 @@
  */
 package demetra.benchmarking.multivariate;
 
-import demetra.benchmarking.multivariate.ContemporaneousConstraint;
-import demetra.benchmarking.multivariate.MultivariateCholette;
-import demetra.benchmarking.multivariate.MultivariateCholetteSpec;
-import demetra.benchmarking.multivariate.TemporalConstraint;
 import demetra.benchmarking.univariate.CholetteSpec;
 import demetra.benchmarking.univariate.CholetteProcessor;
 import demetra.data.AggregationType;
@@ -46,7 +42,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
-import demetra.benchmarking.multivariate.MultivariateCholette;
 
 /**
  *

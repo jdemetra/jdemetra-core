@@ -30,7 +30,6 @@ import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
 import javax.annotation.Nonnull;
-import demetra.data.DoubleCell;
 
 /**
  *
@@ -38,21 +37,63 @@ import demetra.data.DoubleCell;
  */
 public class DiffuseDisturbanceSmoother {
 
-    private ISsf ssf;
-    private ISsfDynamics dynamics;
-    private ISsfLoading loading;
-    private ISsfError error;
+    public static class Builder{
+        private final ISsf ssf;
+        private boolean rescaleVariance=false;
+        private boolean calcVariance=true;
+        
+        public Builder(ISsf ssf){
+            this.ssf=ssf;
+        }
+        
+        public Builder rescaleVariance(boolean rescale){
+            this.rescaleVariance=rescale;
+            if (rescale)
+                calcVariance=true;
+            return this;
+        }
+
+        public Builder calcVariance(boolean calc){
+            this.calcVariance=calc;
+            if (! calc)
+                rescaleVariance=false;
+            return this;
+        }
+        
+        public DiffuseDisturbanceSmoother build(){
+            return new DiffuseDisturbanceSmoother(ssf, calcVariance, rescaleVariance);
+        }
+    }
+    
+    public static Builder builder(ISsf ssf){
+        return new Builder(ssf);
+    }
+
+    private final ISsf ssf;
+    private final ISsfDynamics dynamics;
+    private final ISsfLoading loading;
+    private final ISsfError error;
+    private final boolean calcvar, rescalevar;
     private IDisturbanceSmoothingResults srslts;
-    private IBaseDiffuseFilteringResults frslts;
+    private BaseDiffuseFilteringResults frslts;
 
     private double e, f, esm, esmVariance, h, fi;
     private DataBlock C, Ci, R, Ri, U;
     private Matrix N, UVar, S;
-    private boolean missing, calcvar = true;
+    private boolean missing;
     private int pos;
     // temporary
     private DataBlock tmp;
     private double c, v;
+
+    private DiffuseDisturbanceSmoother(ISsf ssf, boolean calcvar, boolean rescalevar){
+        this.ssf=ssf;
+        this.calcvar=calcvar;
+        this.rescalevar=rescalevar;
+        dynamics = ssf.dynamics();
+        loading = ssf.measurement().loading();
+        error = ssf.measurement().error();
+    }
 
     /**
      *
@@ -62,15 +103,14 @@ public class DiffuseDisturbanceSmoother {
      * them!
      * @return
      */
-    public boolean process(final ISsf ssf, final ISsfData data, @Nonnull IDisturbanceSmoothingResults sresults) {
-        IBaseDiffuseFilteringResults fresults = DkToolkit.sqrtFilter(ssf, data, false);
+    public boolean process(final ISsfData data, @Nonnull IDisturbanceSmoothingResults sresults) {
+        BaseDiffuseFilteringResults fresults = DkToolkit.sqrtFilter(ssf, data, false);
         // rescale the variances
-        return process(ssf, data.length(), fresults, sresults);
+        return process(data.length(), fresults, sresults);
     }
 
     /**
      *
-     * @param ssf
      * @param endpos
      * @param results The filtering results should contain the necessary
      * information for the smoothing
@@ -78,10 +118,9 @@ public class DiffuseDisturbanceSmoother {
      * them!
      * @return
      */
-    public boolean process(ISsf ssf, final int endpos, IBaseDiffuseFilteringResults results, @Nonnull IDisturbanceSmoothingResults sresults) {
+    public boolean process(final int endpos, BaseDiffuseFilteringResults results, @Nonnull IDisturbanceSmoothingResults sresults) {
         frslts = results;
         srslts = sresults;
-        initFilter(ssf);
         initSmoother(ssf);
         ordinarySmoothing(ssf, endpos);
         pos = frslts.getEndDiffusePosition();
@@ -94,6 +133,8 @@ public class DiffuseDisturbanceSmoother {
                 }
             }
         }
+        if (rescalevar)
+            srslts.rescaleVariances(frslts.var());
         return true;
     }
 
@@ -255,21 +296,6 @@ public class DiffuseDisturbanceSmoother {
         }
     }
 
-    private void initFilter(ISsf ssf) {
-        this.ssf = ssf;
-        dynamics = ssf.dynamics();
-        loading = ssf.loading();
-        error = ssf.measurementError();
-    }
-
-    public void setCalcVariances(boolean b) {
-        calcvar = b;
-    }
-
-    public boolean isCalcVariances() {
-        return calcvar;
-    }
-
     private void tvt(Matrix N) {
         DataBlockIterator columns = N.columnsIterator();
         while (columns.hasNext()) {
@@ -289,9 +315,12 @@ public class DiffuseDisturbanceSmoother {
     }
 
     private void ordinarySmoothing(ISsf ssf, final int endpos) {
-        DisturbanceSmoother smoother = new DisturbanceSmoother();
-        smoother.setCalcVariances(calcvar);
-        smoother.process(ssf, frslts.getEndDiffusePosition(), endpos, frslts, srslts);
+        // Remark: rescaling is processed on the final results
+        DisturbanceSmoother smoother = DisturbanceSmoother.builder(ssf)
+                .calcVariance(calcvar)
+                .rescaleVariance(false)
+                .build();
+         smoother.process(frslts.getEndDiffusePosition(), endpos, frslts, srslts);
         // updates R, N
         R.copy(smoother.getFinalR());
         if (calcvar) {

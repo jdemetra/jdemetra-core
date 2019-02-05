@@ -1,12 +1,12 @@
 /*
  * Copyright 2017 National Bank of Belgium
  * 
- * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  * 
- * https://joinup.ec.europa.eu/software/page/eupl
+ * http://ec.europa.eu/idabc/eupl
  * 
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
@@ -16,31 +16,15 @@
  */
 package demetra.timeseries;
 
-import demetra.data.Range;
-import java.time.LocalDateTime;
-
 /**
  *
- * @author Jean Palate
+ * @author Philippe Charles
  */
 @lombok.Value(staticConstructor = "of")
-public class IrregularPeriod implements Range<LocalDateTime> {
+public class TimePeriodObs implements TimeSeriesObs<TimePeriod> {
 
     @lombok.NonNull
-    LocalDateTime point;
+    TimePeriod period;
 
-    @Override
-    public LocalDateTime start() {
-        return point;
-    }
-
-    @Override
-    public LocalDateTime end() {
-        return point;
-    }
-
-    @Override
-    public boolean contains(LocalDateTime element) {
-        return point.equals(element);
-    }
+    double value;
 }

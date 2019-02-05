@@ -19,7 +19,6 @@ package demetra.timeseries;
 import demetra.data.AggregationType;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
-import demetra.data.Doubles;
 import demetra.design.Development;
 import internal.timeseries.InternalAggregator;
 import java.util.Objects;

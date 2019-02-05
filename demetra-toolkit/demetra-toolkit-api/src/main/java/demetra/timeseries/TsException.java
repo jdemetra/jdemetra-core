@@ -38,6 +38,7 @@ public class TsException extends RuntimeException {
             INVALID_FREQ = "Invalid frequnecy",
             INCOMPATIBLE_FREQ = "Incompatible frequencies",
             INCOMPATIBLE_DOMAIN = "Incompatible domains",
+            INCOMPATIBLE_PERIOD = "Incompatible periods",
             INVALID_PERIOD = "Invalid period",
             INVALID_OPERATION ="Invalid operation",
             INVALID_AGGREGATIONMODE = "Invalid aggregation mode",

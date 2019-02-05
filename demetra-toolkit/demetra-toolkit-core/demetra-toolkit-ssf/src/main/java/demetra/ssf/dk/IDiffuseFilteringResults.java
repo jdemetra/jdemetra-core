@@ -40,8 +40,4 @@ public interface IDiffuseFilteringResults extends IBaseDiffuseFilteringResults{
      */
     void save(int t, DiffuseState state, StateInfo info);
     
-    default Matrix Pi(int pos) {
-        return null;
-    }
-    
 }

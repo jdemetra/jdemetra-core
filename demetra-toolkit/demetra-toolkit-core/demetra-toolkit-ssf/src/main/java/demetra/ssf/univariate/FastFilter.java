@@ -21,7 +21,7 @@ import demetra.data.DoubleSequence;
  */
 public class FastFilter implements ILinearProcess {
 
-    private final IFilteringResults frslts;
+    private final DefaultFilteringResults frslts;
     private final ISsf ssf;
     private final ISsfLoading loading;
     private final ISsfDynamics dynamics;
@@ -31,7 +31,7 @@ public class FastFilter implements ILinearProcess {
     private DataBlock tmp;
     private DataBlockIterator scols;
 
-    public FastFilter(ISsf ssf, IFilteringResults frslts, ResultsRange range) {
+    public FastFilter(ISsf ssf, DefaultFilteringResults frslts, ResultsRange range) {
         this.ssf=ssf;
         this.frslts = frslts;
         loading = ssf.measurement().loading();

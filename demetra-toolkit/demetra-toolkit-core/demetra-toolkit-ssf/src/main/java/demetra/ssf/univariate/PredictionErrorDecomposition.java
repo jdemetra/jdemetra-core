@@ -55,7 +55,6 @@ public class PredictionErrorDecomposition implements
         return bres;
     }
 
-    @Override
     public DoubleSequence errors(boolean normalized, boolean clean) {
         if (!bres || !normalized) {
             return null;
@@ -122,4 +121,5 @@ public class PredictionErrorDecomposition implements
                 .residuals(res)
                 .build();
      }
+
 }

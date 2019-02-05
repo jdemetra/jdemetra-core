@@ -27,23 +27,20 @@ import demetra.ssf.DataResults;
 import demetra.ssf.StateInfo;
 import demetra.ssf.akf.AugmentedState;
 import demetra.data.DoubleSequence;
+import demetra.likelihood.DeterminantalTerm;
 import demetra.ssf.ISsfInitialization;
+import demetra.ssf.dk.BaseDiffuseFilteringResults;
 
 /**
  *
  * @author Jean Palate
  */
-public class DefaultDiffuseSquareRootFilteringResults extends DefaultFilteringResults implements IDiffuseSquareRootFilteringResults {
+public class DefaultDiffuseSquareRootFilteringResults extends BaseDiffuseFilteringResults implements IDiffuseSquareRootFilteringResults {
 
-    private final DataBlockResults Ci;
     private final DataBlocksResults B;
-    private final DataResults fi;
-    private int enddiffuse;
 
     private DefaultDiffuseSquareRootFilteringResults(boolean var) {
         super(var);
-        Ci = new DataBlockResults();
-        fi = new DataResults();
         B = var ? new DataBlocksResults() : null;
     }
 
@@ -60,23 +57,9 @@ public class DefaultDiffuseSquareRootFilteringResults extends DefaultFilteringRe
         super.prepare(ssf, start, end);
         ISsfInitialization initialization = ssf.initialization();
         int dim = initialization.getStateDim(), n = initialization.getDiffuseDim();
-        fi.prepare(start, n);
-        Ci.prepare(dim, start, n);
         if (B != null) {
             B.prepare(dim, n, n);
         }
-    }
-
-    @Override
-    public void save(int t, DiffuseUpdateInformation pe) {
-        super.save(t, pe);
-        fi.save(t, pe.getDiffuseVariance());
-        Ci.save(t, pe.Mi());
-    }
-
-    @Override
-    public void close(int pos) {
-        enddiffuse = pos;
     }
 
     @Override
@@ -91,17 +74,6 @@ public class DefaultDiffuseSquareRootFilteringResults extends DefaultFilteringRe
 
     }
 
-    @Override
-    public double diffuseNorm2(int pos) {
-        return fi.get(pos);
-    }
-
-    @Override
-    public DataBlock Mi(int pos) {
-        return Ci.datablock(pos);
-    }
-
-    @Override
     public Matrix B(int pos) {
         return B.matrix(pos);
     }
@@ -109,27 +81,7 @@ public class DefaultDiffuseSquareRootFilteringResults extends DefaultFilteringRe
     @Override
     public void clear() {
         super.clear();
-        enddiffuse = 0;
-    }
-
-    @Override
-    public int getEndDiffusePosition() {
-        return enddiffuse;
-    }
-
-    @Override
-    public DoubleSequence errors(boolean normalized, boolean clean) {
-        DataBlock r = DataBlock.of(errors());
-        // set diffuse elements to Double.NaN
-        r.range(0, enddiffuse).apply(fi.extract(0, enddiffuse), (x, y) -> y != 0 ? Double.NaN : x);
-        if (normalized) {
-            DoubleSequence allf = errorVariances();
-            r.apply(allf, (x, y) -> Double.isFinite(x) && Double.isFinite(y) ? x / Math.sqrt(y) : Double.NaN);
-        }
-        if (clean) {
-            r = DataBlock.select(r, (x) -> Double.isFinite(x));
-        }
-        return r;
+        B.clear();
     }
 
 }

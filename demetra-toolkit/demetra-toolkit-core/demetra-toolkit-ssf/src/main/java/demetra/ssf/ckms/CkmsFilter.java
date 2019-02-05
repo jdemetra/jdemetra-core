@@ -121,10 +121,6 @@ public class CkmsFilter {
             error(t);
             if (rslts != null) {
                 rslts.save(t, pe);
-                DataBlock tmp = rslts.M(t);
-                if (tmp != null) {
-                    rslts.M(t).copyFrom(M, 0);
-                }
             }
             update(t);
             next(t++);

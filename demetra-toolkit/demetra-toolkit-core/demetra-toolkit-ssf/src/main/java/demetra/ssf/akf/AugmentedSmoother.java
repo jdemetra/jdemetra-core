@@ -29,9 +29,7 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.OrdinarySmoother;
 import demetra.data.DoubleReader;
 import demetra.ssf.ISsfInitialization;
-import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
-import demetra.ssf.univariate.ISsfMeasurement;
 
 /**
  *
@@ -43,7 +41,7 @@ public class AugmentedSmoother {
     private ISsfDynamics dynamics;
     private ISsfLoading loading;
     private ISmoothingResults srslts;
-    private IAugmentedFilteringResults frslts;
+    private DefaultAugmentedFilteringResults frslts;
 
     private double e, f;
     private DataBlock C, E, R;
@@ -53,11 +51,11 @@ public class AugmentedSmoother {
     private boolean missing, hasinfo, calcvar = true;
 
     public boolean process(final ISsf ssf, final ISsfData data, ISmoothingResults sresults) {
-        IAugmentedFilteringResults fresults = AkfToolkit.filter(ssf, data, true);
+        DefaultAugmentedFilteringResults fresults = AkfToolkit.filter(ssf, data, true);
         return process(ssf, data.length(), fresults, sresults);
     }
 
-    public boolean process(ISsf ssf, final int endpos, IAugmentedFilteringResults results, ISmoothingResults sresults) {
+    public boolean process(ISsf ssf, final int endpos, DefaultAugmentedFilteringResults results, ISmoothingResults sresults) {
         frslts = results;
         srslts = sresults;
         initFilter(ssf);
@@ -274,9 +272,12 @@ public class AugmentedSmoother {
     }
 
     private void ordinarySmoothing(ISsf ssf, final int endpos) {
-        OrdinarySmoother smoother = new OrdinarySmoother();
-        smoother.setCalcVariances(calcvar);
-        smoother.process(ssf, frslts.getCollapsingPosition(), endpos, frslts, srslts);
+        OrdinarySmoother smoother = OrdinarySmoother
+                .builder(ssf)
+                .calcVariance(calcvar)
+                .rescaleVariance(false)
+                .build();
+        smoother.process(frslts.getCollapsingPosition(), endpos, frslts, srslts);
         // updates R, N
         R.copy(smoother.getFinalR());
         if (calcvar) {

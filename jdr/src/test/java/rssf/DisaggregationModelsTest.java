@@ -55,7 +55,7 @@ public class DisaggregationModelsTest {
         ISsf ar = Ssf.of(AR1.of(rho),0);
         ISsf rssf = RegSsf.of(ar, x);
         ISsf dssf = DisaggregationModels.of(rssf, 4);
-        DefaultSmoothingResults srslts = DkToolkit.smooth(dssf, sdata, true);
+        DefaultSmoothingResults srslts = DkToolkit.smooth(dssf, sdata, true, true);
         DataBlock z = DataBlock.make(dssf.getStateDim());
         for (int i = 0; i < n; ++i) {
             dssf.loading().Z(i, z);
@@ -81,7 +81,7 @@ public class DisaggregationModelsTest {
                 .measurementError(1)
                 .build();
         ISsf dssf = DisaggregationModels.of(rssf, 4);
-        DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(dssf, sdata, true);
+        DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(dssf, sdata, true, true);
         DataBlock z = DataBlock.make(dssf.getStateDim());
         for (int i = 0; i < n; ++i) {
             dssf.loading().Z(i, z);

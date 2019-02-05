@@ -142,23 +142,26 @@ public class DkToolkit {
         filter.process(ssf, data, frslts);
     }
 
-    public DefaultSmoothingResults smooth(ISsf ssf, ISsfData data, boolean all) {
-        DiffuseSmoother smoother = new DiffuseSmoother();
-        smoother.setCalcVariances(all);
+    public DefaultSmoothingResults smooth(ISsf ssf, ISsfData data, boolean all, boolean rescaleVariance) {
+        DiffuseSmoother smoother = DiffuseSmoother
+                .builder(ssf)
+                .calcVariance(all)
+                .rescaleVariance(rescaleVariance)
+                .build();
         DefaultSmoothingResults sresults = all ? DefaultSmoothingResults.full()
                 : DefaultSmoothingResults.light();
         sresults.prepare(ssf.getStateDim(), 0, data.length());
-        if (smoother.process(ssf, data, sresults)) {
+        if (smoother.process(data, sresults)) {
             return sresults;
         } else {
             return null;
         }
     }
 
-    public StateStorage smooth(IMultivariateSsf ssf, IMultivariateSsfData data, boolean all) {
+    public StateStorage smooth(IMultivariateSsf ssf, IMultivariateSsfData data, boolean all, boolean rescaleVariance) {
         ISsf ussf = M2uAdapter.of(ssf);
         ISsfData udata = M2uAdapter.of(data);
-        DefaultSmoothingResults sr = sqrtSmooth(ussf, udata, all);
+        DefaultSmoothingResults sr = sqrtSmooth(ussf, udata, all, rescaleVariance);
         StateStorage ss = all ? StateStorage.full(StateInfo.Smoothed) : StateStorage.light(StateInfo.Smoothed);
         int m = data.getVarsCount(), n = data.getObsCount();
         ss.prepare(ussf.getStateDim(), 0, n);
@@ -174,41 +177,45 @@ public class DkToolkit {
         return ss;
     }
 
-    public static boolean smooth(ISsf ssf, ISsfData data, ISmoothingResults sresults) {
+    public static boolean smooth(ISsf ssf, ISsfData data, ISmoothingResults sresults, boolean rescaleVariance) {
         boolean all = sresults.hasVariances();
-        DiffuseSmoother smoother = new DiffuseSmoother();
-        smoother.setCalcVariances(all);
-        return smoother.process(ssf, data, sresults);
+        DiffuseSmoother smoother = DiffuseSmoother
+                .builder(ssf)
+                .calcVariance(all)
+                .rescaleVariance(rescaleVariance)
+                .build();
+        return smoother.process(data, sresults);
     }
 
     public static DataBlockStorage fastSmooth(ISsf ssf, ISsfData data) {
-        return fastSmooth(ssf, data, null);
+        FastStateSmoother smoother = new FastStateSmoother(ssf);
+        return smoother.process(data);
     }
 
-    public static DataBlockStorage fastSmooth(ISsf ssf, ISsfData data, FastStateSmoother.Corrector corrector) {
-        FastStateSmoother smoother = new FastStateSmoother();
-        smoother.setCorrector(corrector);
-        return smoother.process(ssf, data);
-    }
-
-    public static DefaultSmoothingResults sqrtSmooth(ISsf ssf, ISsfData data, boolean all) {
-        DiffuseSquareRootSmoother smoother = new DiffuseSquareRootSmoother();
-        smoother.setCalcVariances(all);
+    public static DefaultSmoothingResults sqrtSmooth(ISsf ssf, ISsfData data, boolean all, boolean rescaleVariance) {
+        DiffuseSquareRootSmoother smoother = DiffuseSquareRootSmoother
+                .builder(ssf)
+                .calcVariance(all)
+                .rescaleVariance(rescaleVariance)
+                .build();
         DefaultSmoothingResults sresults = all ? DefaultSmoothingResults.full()
                 : DefaultSmoothingResults.light();
         sresults.prepare(ssf.getStateDim(), 0, data.length());
-        if (smoother.process(ssf, data, sresults)) {
+        if (smoother.process(data, sresults)) {
             return sresults;
         } else {
             return null;
         }
     }
 
-    public static boolean sqrtSmooth(ISsf ssf, ISsfData data, ISmoothingResults sresults) {
+    public static boolean sqrtSmooth(ISsf ssf, ISsfData data, ISmoothingResults sresults, boolean rescaleVariance) {
         boolean all = sresults.hasVariances();
-        DiffuseSquareRootSmoother smoother = new DiffuseSquareRootSmoother();
-        smoother.setCalcVariances(all);
-        return smoother.process(ssf, data, sresults);
+        DiffuseSquareRootSmoother smoother = DiffuseSquareRootSmoother
+                .builder(ssf)
+                .calcVariance(all)
+                .rescaleVariance(rescaleVariance)
+                .build();
+        return smoother.process(data, sresults);
     }
 
     private static class LLComputer1 implements ILikelihoodComputer<DiffuseLikelihood> {
@@ -530,63 +537,5 @@ public class DkToolkit {
         }
     }
 
-    public static double var(int n, IBaseDiffuseFilteringResults frslts) {
-        int m = 0;
-        double ssq = 0;
-        int nd = frslts.getEndDiffusePosition();
-        for (int i = 0; i < nd; ++i) {
-            double e = frslts.error(i);
-            if (Double.isFinite(e) && frslts.diffuseNorm2(i) == 0) {
-                ++m;
-                ssq += e * e / frslts.errorVariance(i);
-            }
-        }
-        for (int i = nd; i < n; ++i) {
-            double e = frslts.error(i);
-            if (Double.isFinite(e)) {
-                ++m;
-                ssq += e * e / frslts.errorVariance(i);
-            }
-        }
-        return ssq / m;
-    }
-
-    public static double logDeterminant(int n, IBaseDiffuseFilteringResults frslts) {
-        DeterminantalTerm det = new DeterminantalTerm();
-        for (int i = 0; i < frslts.getEndDiffusePosition(); ++i) {
-            if (Double.isFinite(frslts.error(i))) {
-                double d = frslts.diffuseNorm2(i);
-                if (d == 0) {
-                    double e = frslts.errorVariance(i);
-                    if (e > State.ZERO) {
-                        det.add(e);
-                    }
-                }
-            }
-        }
-        for (int i = frslts.getEndDiffusePosition(); i < n; ++i) {
-            if (Double.isFinite(frslts.error(i))) {
-                double e = frslts.errorVariance(i);
-                if (e > State.ZERO) {
-                    det.add(e);
-                }
-            }
-        }
-        return det.getLogDeterminant();
-
-    }
-
-    public static double diffuseCorrection(IBaseDiffuseFilteringResults frslts) {
-        DeterminantalTerm det = new DeterminantalTerm();
-        for (int i = 0; i < frslts.getEndDiffusePosition(); ++i) {
-            if (Double.isFinite(frslts.error(i))) {
-                double d = frslts.diffuseNorm2(i);
-                if (d > 0) {
-                    det.add(d);
-                }
-            }
-        }
-        return det.getLogDeterminant();
-    }
-
+ 
 }

@@ -29,6 +29,7 @@ import demetra.ssf.ResultsRange;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.data.DoubleSequence;
+import demetra.likelihood.DeterminantalTerm;
 
 /**
  * Will contain the following items at position t: a(t|t-1)
@@ -99,17 +100,14 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
         range.add(t);
     }
 
-    @Override
     public double error(int pos) {
         return e.get(pos);
     }
 
-    @Override
     public double errorVariance(int pos) {
         return f.get(pos);
     }
 
-    @Override
     public DoubleSequence errors(boolean normalized, boolean clean) {
         DataBlock r = e.all();
         if (normalized) {
@@ -139,17 +137,14 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
         return f.asDoublesReader(true);
     }
 
-    @Override
     public DataBlock a(int pos) {
         return A.datablock(pos);
     }
 
-    @Override
     public DataBlock M(int pos) {
         return C.datablock(pos);
     }
 
-    @Override
     public Matrix P(int pos) {
         return P.matrix(pos);
     }
@@ -165,4 +160,38 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
         }
         range.clear();
     }
+    
+    public int size(){
+        return e.getLength();
+    }
+
+    public double var() {
+        int m = 0;
+        double ssq = 0;
+        int n=e.getLength();
+        for (int i = 0; i < n; ++i) {
+            double e = error(i);
+            if (Double.isFinite(e)) {
+                ++m;
+                ssq += e * e / errorVariance(i);
+            }
+        }
+        return ssq / m;
+    }
+
+    public double logDeterminant() {
+        DeterminantalTerm det = new DeterminantalTerm();
+        int n=e.getLength();
+        for (int i = 0; i < n; ++i) {
+            if (Double.isFinite(error(i))) {
+                double e = errorVariance(i);
+                if (e > State.ZERO) {
+                    det.add(e);
+                }
+            }
+        }
+        return det.getLogDeterminant();
+
+    }
+    
 }

@@ -29,23 +29,61 @@ import demetra.ssf.univariate.OrdinarySmoother;
  *
  * @author Jean Palate
  */
-public class DiffuseSmoother extends BaseDiffuseSmoother{
+public class DiffuseSmoother extends BaseDiffuseSmoother {
 
-    private DiffuseState state;
-    private IDiffuseFilteringResults frslts;
+    public static class Builder {
 
-    public boolean process(final ISsf ssf, final ISsfData data, ISmoothingResults sresults) {
-        IDiffuseFilteringResults fresults = DkToolkit.filter(ssf, data, true);
-        return process(ssf, data.length(), fresults, sresults);
+        private final ISsf ssf;
+        private boolean rescaleVariance = false;
+        private boolean calcVariance = true;
+
+        public Builder(ISsf ssf) {
+            this.ssf = ssf;
+        }
+
+        public Builder rescaleVariance(boolean rescale) {
+            this.rescaleVariance = rescale;
+            if (rescale) {
+                calcVariance = true;
+            }
+            return this;
+        }
+
+        public Builder calcVariance(boolean calc) {
+            this.calcVariance = calc;
+            if (!calc) {
+                rescaleVariance = false;
+            }
+            return this;
+        }
+
+        public DiffuseSmoother build() {
+            return new DiffuseSmoother(ssf, calcVariance, rescaleVariance);
+        }
     }
 
-    public boolean process(ISsf ssf, final int endpos, IDiffuseFilteringResults results, ISmoothingResults sresults) {
+    public static Builder builder(ISsf ssf) {
+        return new Builder(ssf);
+    }
+
+    private DiffuseState state;
+    private DefaultDiffuseFilteringResults frslts;
+
+    private DiffuseSmoother(ISsf ssf, boolean calcvar, boolean rescalevar) {
+        super(ssf, calcvar, rescalevar);
+    }
+
+    public boolean process(final ISsfData data, ISmoothingResults sresults) {
+        DefaultDiffuseFilteringResults fresults = DkToolkit.filter(ssf, data, true);
+        return process(data.length(), fresults, sresults);
+    }
+
+    public boolean process(final int endpos, DefaultDiffuseFilteringResults results, ISmoothingResults sresults) {
         frslts = results;
         srslts = sresults;
-        initFilter(ssf);
-        initSmoother(ssf, endpos);
+        initSmoother();
         ordinarySmoothing(ssf, endpos);
-        int t=frslts.getEndDiffusePosition();
+        int t = frslts.getEndDiffusePosition();
         while (--t >= 0) {
             loadInfo(t);
             iterate(t);
@@ -53,13 +91,15 @@ public class DiffuseSmoother extends BaseDiffuseSmoother{
                 srslts.save(t, state, StateInfo.Smoothed);
             }
         }
+        if (rescalevar)
+            srslts.rescaleVariances(frslts.var());
         return true;
     }
 
-    private void initSmoother(ISsf ssf, int endpos) {
+    private void initSmoother() {
         int dim = ssf.getStateDim();
         state = new DiffuseState(dim);
- 
+
         Rf = DataBlock.make(dim);
         C = DataBlock.make(dim);
         Ri = DataBlock.make(dim);
@@ -104,7 +144,6 @@ public class DiffuseSmoother extends BaseDiffuseSmoother{
         }
     }
 
-
     @Override
     protected void updateA(int pos) {
         DataBlock a = state.a();
@@ -133,17 +172,14 @@ public class DiffuseSmoother extends BaseDiffuseSmoother{
 
     }
 
-    @Override
-    protected void initFilter(ISsf ssf) {
-        dynamics = ssf.dynamics();
-        loading = ssf.loading();
-    }
-
     private void ordinarySmoothing(ISsf ssf, final int end) {
-        OrdinarySmoother smoother = new OrdinarySmoother();
-        smoother.setCalcVariances(calcvar);
-        int beg=frslts.getEndDiffusePosition();
-        smoother.process(ssf, beg, end, frslts, srslts);
+        OrdinarySmoother smoother = OrdinarySmoother
+                .builder(ssf)
+                .calcVariance(calcvar)
+                .rescaleVariance(false)
+                .build();
+        int beg = frslts.getEndDiffusePosition();
+        smoother.process(beg, end, frslts, srslts);
         // updates R, N
         Rf.copy(smoother.getFinalR());
         if (calcvar) {
@@ -151,8 +187,8 @@ public class DiffuseSmoother extends BaseDiffuseSmoother{
         }
     }
 
-        public IDiffuseFilteringResults getFilteringResults() {
+    public IDiffuseFilteringResults getFilteringResults() {
         return frslts;
-      }
+    }
 
 }

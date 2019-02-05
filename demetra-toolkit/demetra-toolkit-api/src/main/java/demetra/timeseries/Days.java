@@ -16,7 +16,7 @@
  */
 package demetra.timeseries;
 
-import static demetra.timeseries.DiscreteTimeDomain.of;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -24,77 +24,67 @@ import java.util.List;
 
 /**
  *
- * @author Jean Palate
+ * @author Philippe Charles
  */
 @lombok.Value(staticConstructor = "of")
-public class IrregularDomain implements TimeSeriesDomain<TimePeriod> {
+public class Days implements TimeSeriesDomain<Day> {
 
     @lombok.NonNull
-    TimePeriod[] periods;
+    LocalDate[] days;
 
     @Override
     public int length() {
-        return periods.length;
+        return days.length;
     }
 
     @Override
-    public TimePeriod get(int index) throws IndexOutOfBoundsException {
-        return periods[index];
+    public Day get(int index) throws IndexOutOfBoundsException {
+        return Day.of(days[index]);
     }
 
     @Override
     public LocalDateTime start() {
-        return periods[0].start();
+        return days[0].atStartOfDay();
     }
 
     @Override
     public LocalDateTime end() {
-        return periods[periods.length - 1].end();
+        return days[days.length - 1].plusDays(1).atStartOfDay();
     }
 
     @Override
     public boolean contains(LocalDateTime date) {
-        int pos = 0;
-        while (pos < periods.length && !periods[pos].start().isAfter(date)) {
-            if (date.isBefore(periods[pos].end())) {
-                return true;
-            } else {
-                ++pos;
-            }
-        }
-        return false;
+        LocalDate day=date.toLocalDate();
+        return Arrays.binarySearch(days, day) >= 0;
     }
 
     @Override
     public int indexOf(LocalDateTime date) {
-        int pos = 0;
-        while (pos < periods.length && !periods[pos].start().isAfter(date)) {
-            if (date.isBefore(periods[pos].end())) {
-                return pos;
-            } else {
-                ++pos;
-            }
-        }
-        return -pos-1;
+        LocalDate day=date.toLocalDate();
+        return Arrays.binarySearch(days, day);
+    }
+
+    public static Days of(List<LocalDate> values) {
+        return of(values.toArray(new LocalDate[values.size()]));
     }
 
     @Override
-    public int indexOf(TimePeriod period) {
-        return Arrays.binarySearch(periods, period);
+    public int indexOf(Day point) {
+        return Arrays.binarySearch(days, point.getDay());
     }
 
     @Override
-    public boolean contains(TimePeriod period) {
-        return Arrays.binarySearch(periods, period) >= 0;
+    public boolean contains(Day period) {
+        return Arrays.binarySearch(days, period.getDay()) >= 0;
     }
 
     @Override
-    public Iterator<TimePeriod> iterator() {
+    public Iterator<Day> iterator() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public TimeSeriesDomain<TimePeriod> select(TimeSelector selector) {
+    public TimeSeriesDomain<Day> select(TimeSelector selector) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

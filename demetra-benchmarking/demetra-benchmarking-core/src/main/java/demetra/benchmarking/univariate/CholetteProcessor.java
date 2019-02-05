@@ -33,16 +33,7 @@ import demetra.timeseries.simplets.TsDataToolkit;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import org.openide.util.lookup.ServiceProvider;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import demetra.benchmarking.univariate.Cholette;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.multiply;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
@@ -53,6 +44,8 @@ import static demetra.timeseries.simplets.TsDataToolkit.subtract;
  */
 @ServiceProvider(service = Cholette.Processor.class)
 public class CholetteProcessor implements Cholette.Processor {
+    
+    public static final CholetteProcessor PROCESSOR=new CholetteProcessor();
 
     @Override
     public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, CholetteSpec spec) {
@@ -155,7 +148,7 @@ public class CholetteProcessor implements Cholette.Processor {
                     .rho(spec.getRho())
                     .weights(w == null ? null : DoubleSequence.ofInternal(w))
                     .build();
-            DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false);
+            DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false, false);
 
             double[] b = new double[s.length()];
             if (w != null) {
@@ -172,7 +165,7 @@ public class CholetteProcessor implements Cholette.Processor {
                     .rho(spec.getRho())
                     .weights(w == null ? null : DoubleSequence.ofInternal(w))
                     .build();
-            DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false);
+            DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false, false);
             double[] b = new double[s.length()];
             for (int i = 0; i < b.length; ++i) {
                 b[i] = ssf.loading().ZX(i, rslts.a(i));

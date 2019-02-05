@@ -27,12 +27,8 @@ import demetra.ssf.dk.IBaseDiffuseFilteringResults;
  * @author Jean Palate
  */
 public interface IDiffuseSquareRootFilteringResults extends IBaseDiffuseFilteringResults {
-    /**
-     *
-     * @param pos
-     */
-    void close(int pos);
 
+    
     /**
      *
      * @param t
@@ -47,10 +43,5 @@ public interface IDiffuseSquareRootFilteringResults extends IBaseDiffuseFilterin
      * @param info
      */
     void save(int pos, AugmentedState state, StateInfo info);
-    
-
-    default Matrix B(int pos) {
-        return null;
-    }
 
 }

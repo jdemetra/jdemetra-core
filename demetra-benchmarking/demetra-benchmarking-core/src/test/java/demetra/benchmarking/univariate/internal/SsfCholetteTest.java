@@ -45,7 +45,7 @@ public class SsfCholetteTest {
         
         
         ISsf ssf = SsfCholette.builder(4).start(2).rho(.8).weights(DoubleSequence.ofInternal(w)).build();
-        DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(data), true);
+        DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(data), true, true);
         DoubleSequence c0 = rslts.getComponent(1);
         
         ec.benchmarking.ssf.SsfCholette ossf=new ec.benchmarking.ssf.SsfCholette(4, 2, .8, w);
@@ -70,7 +70,7 @@ public class SsfCholetteTest {
         
         
         ISsf ssf = SsfCholette.builder(4).start(2).rho(1).weights(DoubleSequence.ofInternal(w)).build();
-        DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(data), true);
+        DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(data), true, true);
         DoubleSequence c0 = rslts.getComponent(1);
         
         ec.benchmarking.ssf.SsfDenton ossf=new ec.benchmarking.ssf.SsfDenton(4, 2, w);

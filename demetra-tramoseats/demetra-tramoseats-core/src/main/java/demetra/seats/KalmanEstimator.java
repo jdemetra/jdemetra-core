@@ -52,7 +52,7 @@ public class KalmanEstimator implements IComponentsEstimator {
         CompositeSsf ssf = SsfUcarima.of(model.getUcarimaModel());
         // compute KS
         ISsfData data = new ExtendedSsfData(new SsfData(s), nb, nf);
-        DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(ssf, data, true);
+        DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(ssf, data, true, true);
         // for using the same standard error (unbiased stdandard error, not ml)
         srslts.rescaleVariances(model.getInnovationVariance());
 

@@ -103,7 +103,7 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         }
         return new TsPeriod(epoch, unit, id + count);
     }
-
+    
     public TsPeriod withEpoch(LocalDateTime epoch) {
         if (epoch.equals(this.epoch)) {
             return this;

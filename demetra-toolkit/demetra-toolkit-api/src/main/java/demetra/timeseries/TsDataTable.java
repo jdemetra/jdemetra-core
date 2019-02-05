@@ -203,4 +203,25 @@ public final class TsDataTable {
         // FIXME: default epoch?
         return TsDomain.of(startPeriod, startPeriod.until(endPeriod));
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        Cursor cursor = this.cursor(DistributionType.LAST);
+        int pos = 0;
+        for (TsPeriod period : domain) {
+            builder.append(period.display());
+
+            for (int i = 0; i < data.size(); ++i) {
+                cursor.moveTo(pos, i);
+                builder.append('\t');
+                if (cursor.getStatus() == ValueStatus.PRESENT) {
+                    builder.append(cursor.getValue());
+                }
+            }
+            ++pos;
+            builder.append(("\r\n"));
+        }
+        return builder.toString();
+    }
 }

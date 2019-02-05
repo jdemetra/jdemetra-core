@@ -16,21 +16,19 @@
  */
 package demetra.timeseries;
 
-import static demetra.timeseries.DiscreteTimeDomain.of;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.Value(staticConstructor = "of")
-public class IrregularDomain implements TimeSeriesDomain<TimePeriod> {
+public class CalendarPeriods implements TimeSeriesDomain<CalendarPeriod> {
 
     @lombok.NonNull
-    TimePeriod[] periods;
+    CalendarPeriod[] periods;
 
     @Override
     public int length() {
@@ -38,7 +36,7 @@ public class IrregularDomain implements TimeSeriesDomain<TimePeriod> {
     }
 
     @Override
-    public TimePeriod get(int index) throws IndexOutOfBoundsException {
+    public CalendarPeriod get(int index) throws IndexOutOfBoundsException {
         return periods[index];
     }
 
@@ -79,22 +77,22 @@ public class IrregularDomain implements TimeSeriesDomain<TimePeriod> {
     }
 
     @Override
-    public int indexOf(TimePeriod period) {
+    public int indexOf(CalendarPeriod period) {
         return Arrays.binarySearch(periods, period);
     }
 
     @Override
-    public boolean contains(TimePeriod period) {
+    public boolean contains(CalendarPeriod period) {
         return Arrays.binarySearch(periods, period) >= 0;
     }
 
     @Override
-    public Iterator<TimePeriod> iterator() {
+    public Iterator<CalendarPeriod> iterator() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public TimeSeriesDomain<TimePeriod> select(TimeSelector selector) {
+    public TimeSeriesDomain<CalendarPeriod> select(TimeSelector selector) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

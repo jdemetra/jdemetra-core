@@ -47,4 +47,7 @@ public interface IDisturbanceSmoothingResults {
     void saveSmoothedTransitionDisturbances(int pos, DataBlock u, Matrix uVar);
     
     void saveSmoothedMeasurementDisturbance(int pos, double e, double evar);
+    
+    void rescaleVariances(double factor);
+
 }

@@ -154,7 +154,7 @@ public class TimeVaryingRegression {
         else
             ssf=rfn0.getSsf();
 
-        DefaultSmoothingResults fs = DkToolkit.sqrtSmooth(ssf, data, true);
+        DefaultSmoothingResults fs = DkToolkit.sqrtSmooth(ssf, data, true, true);
         Matrix c = Matrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
         Matrix ec = Matrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
 

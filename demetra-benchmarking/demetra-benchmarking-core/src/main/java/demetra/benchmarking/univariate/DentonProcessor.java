@@ -16,7 +16,6 @@
  */
 package demetra.benchmarking.univariate;
 
-import demetra.benchmarking.univariate.DentonSpec;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
@@ -24,7 +23,6 @@ import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
 import org.openide.util.lookup.ServiceProvider;
-import demetra.benchmarking.univariate.Denton;
 import demetra.data.AggregationType;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
@@ -41,6 +39,8 @@ import demetra.maths.polynomials.UnitRoots;
  */
 @ServiceProvider(service = Denton.Processor.class)
 public class DentonProcessor implements Denton.Processor {
+
+    public static final DentonProcessor PROCESSOR=new DentonProcessor();
 
     @Override
     public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, DentonSpec spec) {
