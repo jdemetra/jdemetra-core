@@ -200,7 +200,7 @@ public class DiffuseSquareRootSmoother extends BaseDiffuseSmoother {
         }
     }
 
-    public IDiffuseSquareRootFilteringResults getFilteringResults() {
+    public DefaultDiffuseSquareRootFilteringResults getFilteringResults() {
         return frslts;
     }
 

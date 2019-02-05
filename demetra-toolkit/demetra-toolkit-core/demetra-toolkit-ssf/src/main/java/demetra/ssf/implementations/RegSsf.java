@@ -80,6 +80,16 @@ public class RegSsf {
                 new Xloading(mdim, model.loading(), X), model.measurementError());
     }
 
+    public SsfComponent of(SsfComponent model, Matrix X) {
+        if (X.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        int mdim = model.initialization().getStateDim();
+        return new SsfComponent(new Xinitializer(model.initialization(), X.getColumnsCount()),
+                new Xdynamics(mdim, model.dynamics(), X.getColumnsCount()),
+                new Xloading(mdim, model.loading(), X));
+    }
+
     /**
      * Creates a ssf with time varying coefficients, such that the innovations
      * covariance are defined by cvar

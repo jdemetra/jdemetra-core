@@ -61,7 +61,7 @@ public class MultivariateCholetteTest {
         input.put("S22", S22);
         
         TemporalConstraint c4 = TemporalConstraint.parse("S22=sum(s22)");
-        MultivariateCholetteSpec.MultivariateCholetteSpecBuilder builder = MultivariateCholetteSpec.builder()
+        MultivariateCholetteSpec.Builder builder = MultivariateCholetteSpec.builder()
                 .lambda(1)
                 .rho(1)
                 .contemporaneousConstraint(c1)

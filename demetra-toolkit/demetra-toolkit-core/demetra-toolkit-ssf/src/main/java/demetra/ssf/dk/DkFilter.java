@@ -18,6 +18,7 @@ package demetra.ssf.dk;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
+import demetra.data.DoubleReader;
 import demetra.maths.linearfilters.ILinearProcess;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfLoading;
@@ -25,6 +26,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.data.DoubleSequence;
+import demetra.ssf.State;
 
 /**
  *
@@ -61,7 +63,7 @@ public class DkFilter implements ILinearProcess {
 
     public DkFilter(ISsf ssf, BaseDiffuseFilteringResults frslts, ResultsRange range) {
         this.frslts = frslts;
-        this.ssf=ssf;
+        this.ssf = ssf;
         loading = ssf.loading();
         dynamics = ssf.dynamics();
         start = range.getStart();
@@ -126,52 +128,50 @@ public class DkFilter implements ILinearProcess {
 
         private void iterate(int i, DataBlock row, boolean normalized) {
             boolean missing = !Double.isFinite(frslts.error(i));
-            if (!missing) {
-                double f = frslts.errorVariance(i);
-                double w;
-                DataBlock K;
-                boolean diffuse = false;
-                if (i < enddiffuse) {
-                    double fi = frslts.diffuseNorm2(i);
-                    if (fi != 0) {
-                        w = fi;
-                        K = frslts.Mi(i);
-                        diffuse = true;
-                    } else {
-                        w = f;
-                        K = frslts.M(i);
-                    }
+            double f = frslts.errorVariance(i);
+            double w;
+            DataBlock K;
+            if (i < enddiffuse) {
+                double fi = frslts.diffuseNorm2(i);
+                if (fi != 0) {
+                    w = fi;
+                    K = frslts.Mi(i);
                 } else {
                     w = f;
                     K = frslts.M(i);
                 }
+            } else {
+                w = f;
+                K = frslts.M(i);
+            }
 
-                loading.ZM(i, states, tmp);
-                row.sub(tmp);
-                // update the states
-                scols.reset();
-                int j = 0;
-                while (scols.hasNext()) {
-                    DataBlock scol=scols.next();
-                    scol.addAY(row.get(j++) / w, K);
-                    dynamics.TX(i, scol);
-                } ;
-                if (f == 0) {
-                    row.set(0);
-                } else if (normalized) {
-                    if (diffuse) {
-                        row.set(Double.NaN);
-                    } else {
-                        row.mul(1 / Math.sqrt(f));
+            loading.ZM(i, states, tmp);
+            row.sub(tmp);
+            if (w > 0) {
+                if (!missing) {
+                    // update the states
+                    scols.reset();
+                    DoubleReader reader = row.reader();
+                    while (scols.hasNext()) {
+                        DataBlock scol = scols.next();
+                        scol.addAY(reader.next() / w, K);
+                        dynamics.TX(i, scol);
                     }
                 }
-            } else {
-                scols.reset();
-                 while (scols.hasNext()) {
-                    dynamics.TX(i, scols.next());
-                }
-                row.set(Double.NaN);
             }
+            if (f > 0) {
+                if (normalized) {
+                    row.mul(1 / Math.sqrt(f));
+
+                } else {
+                    row.apply(q -> q == 0 ? 0 : Double.NaN);
+                }
+            }
+            scols.reset();
+            while (scols.hasNext()) {
+                dynamics.TX(i, scols.next());
+            }
+            row.set(Double.NaN);
             //  
         }
 
@@ -198,40 +198,37 @@ public class DkFilter implements ILinearProcess {
 
         private double iterate(int i, double y, boolean normalized) {
             boolean missing = !Double.isFinite(frslts.error(i));
-            double e = Double.NaN;
-            if (!missing) {
-                double f = frslts.errorVariance(i);
-                double w;
-                DataBlock K;
-                boolean diffuse = false;
-                if (i < enddiffuse) {
-                    double fi = frslts.diffuseNorm2(i);
-                    if (fi != 0) {
-                        w = fi;
-                        K = frslts.Mi(i);
-                        diffuse = true;
-                    } else {
-                        w = f;
-                        K = frslts.M(i);
-                    }
+            double f = frslts.errorVariance(i);
+            double w;
+            DataBlock K;
+            if (i < enddiffuse) {
+                double fi = frslts.diffuseNorm2(i);
+                if (fi != 0) {
+                    w = fi;
+                    K = frslts.Mi(i);
                 } else {
                     w = f;
                     K = frslts.M(i);
                 }
-
-                e = y - loading.ZX(i, state);
-                // update the states
-                state.addAY(e / w, K);
-                if (f == 0) {
-                    e = 0;
+            } else {
+                w = f;
+                K = frslts.M(i);
+            }
+            double e = y - loading.ZX(i, state);
+            // update the states
+            if (w > 0) {
+                if (!missing) {
+                    state.addAY(e / w, K);
                 }
+            }
+            if (f > 0) { // can we have fi > 0 && f == 0 ?
                 if (normalized) {
-                    if (diffuse) {
-                        e = Double.NaN;
-                    } else {
-                        e /= Math.sqrt(f);
-                    }
+                    e /= Math.sqrt(f);
                 }
+            } else if (Math.abs(e) > State.ZERO) {
+                e = Double.NaN;
+            } else {
+                e = 0;
             }
             dynamics.TX(i, state);
             return e;

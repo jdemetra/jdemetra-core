@@ -14,6 +14,7 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
+import demetra.ssf.State;
 
 /**
  *
@@ -32,7 +33,7 @@ public class FastFilter implements ILinearProcess {
     private DataBlockIterator scols;
 
     public FastFilter(ISsf ssf, DefaultFilteringResults frslts, ResultsRange range) {
-        this.ssf=ssf;
+        this.ssf = ssf;
         this.frslts = frslts;
         loading = ssf.measurement().loading();
         dynamics = ssf.dynamics();
@@ -49,8 +50,8 @@ public class FastFilter implements ILinearProcess {
         prepareTmp();
         DataBlockIterator rows = x.rowsIterator();
         int pos = start;
-        while (++pos < end && rows.hasNext()) {
-            iterate(pos, rows.next());
+        while (pos < end && rows.hasNext()) {
+            iterate(pos++, rows.next());
         }
         return true;
     }
@@ -62,13 +63,14 @@ public class FastFilter implements ILinearProcess {
     }
 
     private void iterate(int i, DataBlock row) {
+        // retrieve the current information
         boolean missing = !Double.isFinite(frslts.error(i));
-        if (!missing) {
-            double f = frslts.errorVariance(i);
-            if (f > 0) {
-                loading.ZM(i, states, tmp);
-                row.sub(tmp);
-                // update the states
+        double f = frslts.errorVariance(i);
+        loading.ZM(i, states, tmp);
+        row.sub(tmp);
+        // update the states
+        if (f > 0) {
+            if (!missing) {
                 DataBlock C = frslts.M(i);
                 // process by column
                 scols.reset();
@@ -76,10 +78,10 @@ public class FastFilter implements ILinearProcess {
                 while (scols.hasNext()) {
                     scols.next().addAY(r.next() / f, C);
                 }
-                row.mul(1 / Math.sqrt(f));
-            } else {
-                row.set(Double.NaN);
             }
+            row.mul(1 / Math.sqrt(f));
+        } else {
+            row.apply(q -> Math.abs(q) > State.ZERO ? Double.NaN : 0);
         }
         dynamics.TM(i, states);
         //  
@@ -98,12 +100,14 @@ public class FastFilter implements ILinearProcess {
             if (!missing) {
                 double f = frslts.errorVariance(pos);
                 double e = in.get(ipos) - loading.ZX(pos, state);
-                if (f != 0) {
+                if (f > 0) {
                     out.set(opos++, e / Math.sqrt(f));
                     // update the state
                     DataBlock C = frslts.M(pos);
                     // process by column
                     state.addAY(e / f, C);
+                } else {
+                    out.set(opos++, Math.abs(e) > State.ZERO ? Double.NaN : 0);
                 }
             }
             dynamics.TX(pos++, state);

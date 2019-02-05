@@ -21,6 +21,7 @@ import demetra.data.AggregationType;
 import demetra.design.Development;
 import java.util.List;
 import demetra.processing.ProcSpecification;
+import demetra.util.Validatable;
 
 /**
  *
@@ -28,8 +29,8 @@ import demetra.processing.ProcSpecification;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder=true)
-public class MultivariateCholetteSpec implements ProcSpecification{
+@lombok.Builder(toBuilder=true, builderClassName="Builder", buildMethodName="buildWithoutValidation")
+public class MultivariateCholetteSpec implements ProcSpecification, Validatable<MultivariateCholetteSpec>{
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "multivariatecholette", null);
 
@@ -50,9 +51,19 @@ public class MultivariateCholetteSpec implements ProcSpecification{
     public AlgorithmDescriptor getAlgorithmDescriptor() {
         return ALGORITHM;
     }
+
+    @Override
+    public MultivariateCholetteSpec validate() throws IllegalArgumentException {
+        if (rho<=-1 || rho>1)
+            throw new IllegalArgumentException("Rho should be in ]-1,1]");
+        return this;   
+    }
     
-    public static MultivariateCholetteSpecBuilder builder(){
-        return new MultivariateCholetteSpecBuilder()
+    public static class Builder implements Validatable.Builder<MultivariateCholetteSpec>{
+    }
+    
+    public static Builder builder(){
+        return new Builder()
                 .lambda(DEF_LAMBDA)
                 .rho(DEF_RHO)
                 .aggregationType(AggregationType.Sum);

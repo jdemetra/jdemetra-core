@@ -14,31 +14,29 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.tempdisagg.univariate.internal;
+package demetra.tempdisagg.univariate;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.data.DoubleSequence;
-import demetra.data.normalizer.IDataNormalizer;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.timeseries.TsDomain;
+import javax.annotation.Nonnull;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-class DisaggregationData {
+class DisaggregationModel {
 
     /**
      * Y expanded to the high frequency (with missing values). hY corresponds to
-     * hDom (domain of the set of the indicators). If necessary it is expanded
-     * with missing values.
+     * hDom (domain of the set of the indicators or pre-specified domain when
+     * indicators are missing). If necessary it is expanded with missing values.
      */
+    @Nonnull
     double[] hY;
     /**
-     * Regression variables. Defined on the high level domain.
+     * Regression variables. Defined on the high level domain. Could be null
      */
     Matrix hX;
     /**
@@ -58,43 +56,51 @@ class DisaggregationData {
     /**
      * Ratio between the high and the low frequencies (Conversion ratio)
      */
-    int FrequencyRatio;
-    /**
-     * Scaling factor for hY
-     */
-    double yfactor;
-    /**
-     * Scaling factors for hX
-     */
-    double[] xfactor;
+    int frequencyRatio;
 
-    /**
-     *
-     * @param normalizer
-     */
-    void scale(IDataNormalizer normalizer) {
-        if (normalizer != null) {
-            double yfactor = normalizer.normalize(DataBlock.ofInternal(hY));
-        } else {
-            yfactor = 1;
-        }
-        if (hX == null) {
-            return;
-        }
-
-        int nx = hX.getColumnsCount();
-        xfactor = new double[nx];
-
-        if (normalizer != null) {
-            DataBlockIterator cols = hX.columnsIterator();
-            int i = 0;
-            while (cols.hasNext()) {
-                xfactor[i++] = normalizer.normalize(cols.next());
-            }
-        } else {
-            for (int i = 0; i < xfactor.length; ++i) {
-                xfactor[i] = 1;
-            }
-        }
+    int nx() {
+        return hX == null ? 0 : hX.getColumnsCount();
     }
+
+    int n() {
+        return hY.length;
+    }
+//    /**
+//     * Scaling factor for hY
+//     */
+//    double yfactor;
+//    /**
+//     * Scaling factors for hX
+//     */
+//    double[] xfactor;
+
+//    /**
+//     *
+//     * @param normalizer
+//     */
+//    void scale(IDataNormalizer normalizer) {
+//        if (normalizer != null) {
+//            double yfactor = normalizer.normalize(DataBlock.ofInternal(hY));
+//        } else {
+//            yfactor = 1;
+//        }
+//        if (hX == null) {
+//            return;
+//        }
+//
+//        int nx = hX.getColumnsCount();
+//        xfactor = new double[nx];
+//
+//        if (normalizer != null) {
+//            DataBlockIterator cols = hX.columnsIterator();
+//            int i = 0;
+//            while (cols.hasNext()) {
+//                xfactor[i++] = normalizer.normalize(cols.next());
+//            }
+//        } else {
+//            for (int i = 0; i < xfactor.length; ++i) {
+//                xfactor[i] = 1;
+//            }
+//        }
+//    }
 }

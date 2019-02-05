@@ -187,7 +187,7 @@ public class DiffuseSmoother extends BaseDiffuseSmoother {
         }
     }
 
-    public IDiffuseFilteringResults getFilteringResults() {
+    public DefaultDiffuseFilteringResults getFilteringResults() {
         return frslts;
     }
 

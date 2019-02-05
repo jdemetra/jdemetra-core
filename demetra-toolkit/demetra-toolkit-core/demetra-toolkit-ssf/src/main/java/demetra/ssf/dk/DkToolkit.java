@@ -417,14 +417,12 @@ public class DkToolkit {
                         dcorr += lregdet;
                         d += ndc;
                     }
-                    double sig = ssqerr / (nobs - d);
                     Matrix bvar = SymmetricMatrix.UUt(u);
-                    bvar.mul(sig);
-                    return DiffuseConcentratedLikelihood.builder(ll.dim(), ll.getD())
-                            .ssqErr(ll.ssq())
-                            .logDeterminant(ll.logDeterminant())
-                            .logDiffuseDeterminant(ll.getDiffuseCorrection())
-                            .residuals(yl)
+                    return DiffuseConcentratedLikelihood.builder(nobs, d)
+                            .ssqErr(ssqerr)
+                            .logDeterminant(ldet)
+                            .logDiffuseDeterminant(dcorr)
+                            .residuals(res)
                             .coefficients(b)
                             .unscaledCovariance(bvar)
                             .scalingFactor(scaling)
@@ -528,6 +526,8 @@ public class DkToolkit {
         }
 
         private static boolean isUsed(final int i, final int[] unused) {
+            if (unused == null)
+                return true;
             for (int j = 0; j < unused.length; ++j) {
                 if (unused[j] == i) {
                     return false;

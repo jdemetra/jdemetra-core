@@ -17,72 +17,45 @@
 package demetra.data;
 
 import demetra.design.Development;
-import java.util.EnumSet;
-import java.util.function.IntSupplier;
 
 /**
  * Describes the way a set of ordered observations are aggregated
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public enum AggregationType implements IntSupplier {
+public enum AggregationType {
     /**
      * No transformation
      */
-    None(0),
+    None,
     /**
      * Sum
      */
-    Sum(1),
+    Sum,
     /**
      * Average
      */
-    Average(2),
+    Average,
     /**
      * First observation
      */
-    First(3),
+    First,
     /**
      * Last observation
      */
-    Last(4),
+    Last,
     /**
      * Minimum
      */
-    Min(5),
+    Min,
     /**
      * Maximum
      */
-    Max(6);
-
+    Max,
     /**
-     * Enum correspondence to an integer
-     *
-     * @param value Integer representation of the TsAggregationType
-     * @return Enum representation of the TsAggregationType
+     * 
      */
-    public static AggregationType valueOf(int value) {
-        for (AggregationType option : EnumSet.allOf(AggregationType.class)) {
-            if (option.getAsInt() == value) {
-                return option;
-            }
-        }
-        return null;
-    }
+    UserDefined;
+    
 
-    private final int value;
-
-    AggregationType(final int value) {
-        this.value = value;
-    }
-
-    /**
-     * Returns the value of this TsAggregationType as an int.
-     *
-     * @return
-     */
-    @Override
-    public int getAsInt() {
-        return value;
-    }
 }

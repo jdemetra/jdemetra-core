@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.benchmarking.univariate.internal;
+package demetra.benchmarking.univariate;
 
 import demetra.benchmarking.ssf.SsfCholette;
 import demetra.data.DoubleSequence;

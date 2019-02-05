@@ -23,10 +23,9 @@ import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
-import demetra.ssf.SsfException;
-import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 import demetra.data.DoubleCell;
+import demetra.ssf.SsfComponent;
 
 /**
  *
@@ -36,10 +35,7 @@ import demetra.data.DoubleCell;
 @lombok.experimental.UtilityClass
 public class SsfDisaggregation {
 
-    public Ssf of(ISsf s, int conversion) {
-        if (s.measurement().hasError()) {
-            throw new SsfException(SsfException.ERRORS);
-        }
+    public Ssf of(SsfComponent s, int conversion) {
         return Ssf.of(new Initialization(s.initialization()), new Dynamics(s, conversion), new Loading(s, conversion));
     }
 
@@ -94,7 +90,7 @@ public class SsfDisaggregation {
         private final ISsfLoading loading;
         private final int conversion;
 
-        Dynamics(ISsf ssf, int conversion) {
+        Dynamics(SsfComponent ssf, int conversion) {
             this.dynamics = ssf.dynamics();
             this.loading = ssf.loading();
             this.conversion = conversion;
@@ -219,7 +215,7 @@ public class SsfDisaggregation {
         private final ISsfLoading measurement;
         private final int conversion;
 
-        Loading(ISsf s, int conversion) {
+        Loading(SsfComponent s, int conversion) {
             this.measurement = s.loading();
             this.conversion = conversion;
         }

@@ -20,6 +20,7 @@ import demetra.processing.AlgorithmDescriptor;
 import demetra.data.AggregationType;
 import demetra.design.Development;
 import demetra.processing.ProcSpecification;
+import demetra.util.Validatable;
 
 /**
  *
@@ -27,8 +28,8 @@ import demetra.processing.ProcSpecification;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true)
-public class DentonSpec implements ProcSpecification {
+@lombok.Builder(toBuilder=true, builderClassName="Builder", buildMethodName="buildWithoutValidation")
+public class DentonSpec implements ProcSpecification, Validatable<DentonSpec> {
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "denton", null);
 
@@ -37,8 +38,8 @@ public class DentonSpec implements ProcSpecification {
     @lombok.NonNull
     private AggregationType aggregationType;
 
-    public static DentonSpecBuilder builder() {
-        return new DentonSpecBuilder()
+    public static Builder builder() {
+        return new Builder()
                 .multiplicative(true)
                 .modified(true)
                 .differencing(1)
@@ -50,6 +51,14 @@ public class DentonSpec implements ProcSpecification {
         return ALGORITHM;
     }
 
+    @Override
+    public DentonSpec validate() throws IllegalArgumentException {
+        return this;
+    }
+
+    public static class Builder implements Validatable.Builder<DentonSpec>{
+        
+    }
     public static final DentonSpec DEFAULT = builder().build();
 
 }

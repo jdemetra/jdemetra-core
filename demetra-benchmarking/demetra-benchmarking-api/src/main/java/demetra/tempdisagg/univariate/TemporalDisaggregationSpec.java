@@ -18,10 +18,12 @@ package demetra.tempdisagg.univariate;
 
 import demetra.processing.AlgorithmDescriptor;
 import demetra.data.AggregationType;
-import demetra.data.Parameter;
+import demetra.data.ParameterSpec;
+import demetra.data.ParameterType;
 import demetra.design.Development;
 import demetra.timeseries.TimeSelector;
 import demetra.processing.ProcSpecification;
+import demetra.util.Validatable;
 
 /**
  *
@@ -29,8 +31,8 @@ import demetra.processing.ProcSpecification;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true)
-public final class TemporalDisaggregationSpec implements ProcSpecification {
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class TemporalDisaggregationSpec implements ProcSpecification, Validatable<TemporalDisaggregationSpec> {
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("temporaldisaggregation", "generic", null);
 
@@ -77,25 +79,54 @@ public final class TemporalDisaggregationSpec implements ProcSpecification {
     public static final double DEF_EPS = 1e-5;
     @lombok.NonNull
     private AggregationType aggregationType;
+    private int observationPosition;
     @lombok.NonNull
     private Model residualsModel;
     private boolean constant, trend;
+    private ParameterSpec parameter;
     @lombok.NonNull
     private TimeSelector estimationSpan;
     private boolean log, diffuseRegressors;
-    private Double parameter, truncatedParameter;
+    private Double truncatedParameter;
     private boolean zeroInitialization, maximumLikelihood;
     private double estimationPrecision;
+    
+    public boolean isParameterEstimation(){
+        return (residualsModel == Model.Ar1 || residualsModel == Model.RwAr1)
+                && parameter.getType() != ParameterType.Fixed;
+    }
 
-    public static TemporalDisaggregationSpecBuilder builder() {
-        return new TemporalDisaggregationSpecBuilder()
+    public static class Builder implements Validatable.Builder<TemporalDisaggregationSpec>{
+    }
+    
+    public static Builder builder() {
+        return new Builder()
                 .aggregationType(AggregationType.Sum)
                 .residualsModel(Model.Ar1)
                 .constant(true)
                 .estimationSpan(TimeSelector.all())
                 .maximumLikelihood(true)
-                .truncatedParameter(0.0)
+                .parameter(ParameterSpec.undefined())
                 .estimationPrecision(DEF_EPS);
+    }
+
+    @Override
+    public TemporalDisaggregationSpec validate() throws IllegalArgumentException {
+        switch (residualsModel){
+            case Rw:
+            case RwAr1:
+                if (constant && !zeroInitialization)
+                    throw new IllegalArgumentException("constant not allowed");
+                break;
+            case I2:
+            case I3:
+                if (constant && !zeroInitialization)
+                    throw new IllegalArgumentException("constant not allowed");
+                if (trend && !zeroInitialization)
+                    throw new IllegalArgumentException("trend not allowed");
+                break;
+        }
+        return this;
     }
 
 }

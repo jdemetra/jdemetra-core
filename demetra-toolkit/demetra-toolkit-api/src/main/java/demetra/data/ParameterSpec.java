@@ -27,10 +27,12 @@ public class ParameterSpec {
     private ParameterType type;
     
     public static ParameterSpec undefined(){
-        return new ParameterSpec(0,0,ParameterType.Undefined);
+        return UNDEFINED ;
     }
     
     public static ParameterSpec fixed(double value){
         return new ParameterSpec(value, 0, ParameterType.Fixed);
     }
+    
+    private static final ParameterSpec UNDEFINED =new ParameterSpec(0,0,ParameterType.Undefined);
 }

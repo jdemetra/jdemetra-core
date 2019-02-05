@@ -87,8 +87,7 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
 
         public Builder coefficients(DoubleSequence coeff) {
             if (coeff != null) {
-                b = new double[coeff.length()];
-                coeff.copyTo(res, n);
+                b = coeff.toArray();
             }
             return this;
         }
