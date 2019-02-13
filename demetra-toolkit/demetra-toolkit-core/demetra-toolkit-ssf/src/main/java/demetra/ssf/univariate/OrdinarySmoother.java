@@ -206,30 +206,13 @@ public class OrdinarySmoother {
             ssf.XL(pos, N, M, errVariance);
             ssf.XL(pos, N.transpose(), M, errVariance);
 
-//            // Compute V = C'U
-//            DataBlock v = new DataBlock(M.length());
-//            v.product(N.columns(), M);
-//
-//            DataBlockIterator columns = N.columns();
-//            DataBlock col = columns.getData();
-//            DataBlockIterator rows = N.rows();
-//            DataBlock row = rows.getData();
-//            int i = 0;
-//            do {
-//                double k = v.get(i++);
-//                if (k != 0) {
-//                    measurement.XpZd(pos, row, -k);
-//                    measurement.XpZd(pos, col, -k);
-//                }
-//            } while (rows.next() && columns.next());
             loading.VpZdZ(pos, N, 1 / errVariance);
-            SymmetricMatrix.reenforceSymmetry(N);
         } else {
             //T'*N(t)*T
             dynamics.MT(pos, N);
             dynamics.MT(pos, N.transpose());
-            SymmetricMatrix.reenforceSymmetry(N);
         }
+        SymmetricMatrix.reenforceSymmetry(N);
     }
 
     /**
@@ -244,6 +227,8 @@ public class OrdinarySmoother {
             // RT
             u = (err - R.dot(M)) / errVariance;
             loading.XpZd(pos, R, u);
+        } else {
+            u = 0;
         }
     }
 

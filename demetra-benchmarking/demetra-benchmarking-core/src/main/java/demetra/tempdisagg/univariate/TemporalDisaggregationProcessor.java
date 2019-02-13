@@ -10,7 +10,6 @@ import demetra.arima.ssf.Arima_1_1_0;
 import demetra.arima.ssf.Rw;
 import demetra.benchmarking.ssf.SsfDisaggregation;
 import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
@@ -20,26 +19,19 @@ import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.QuadraticForm;
 import demetra.modelling.regression.Constant;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.LinearTrend;
 import demetra.modelling.regression.UserVariable;
 import demetra.ssf.ISsfLoading;
-import demetra.ssf.ResultsRange;
+import demetra.ssf.SsfAlgorithm;
 import demetra.ssf.SsfComponent;
-import demetra.ssf.dk.DiffuseSmoother;
-import demetra.ssf.dk.DkFilter;
+import demetra.ssf.akf.AkfToolkit;
 import demetra.ssf.dk.DkToolkit;
-import demetra.ssf.dk.IDiffuseFilteringResults;
 import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.dk.SsfFunctionPoint;
-import demetra.ssf.dk.sqrt.DiffuseSquareRootSmoother;
 import demetra.ssf.implementations.RegSsf;
 import demetra.ssf.univariate.DefaultSmoothingResults;
-import demetra.ssf.univariate.DisturbanceSmoother;
-import demetra.ssf.univariate.FastFilter;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.univariate.SsfData;
 import demetra.ssf.univariate.SsfRegressionModel;
@@ -57,7 +49,7 @@ import java.util.List;
 @ServiceProvider(service = TemporalDisaggregation.Processor.class)
 public class TemporalDisaggregationProcessor implements TemporalDisaggregation.Processor {
 
-    public static final TemporalDisaggregationProcessor PROCESSOR=new TemporalDisaggregationProcessor();
+    public static final TemporalDisaggregationProcessor PROCESSOR = new TemporalDisaggregationProcessor();
 
     @Override
     public TemporalDisaggregationResults process(TsData aggregatedSeries, TsData[] indicators, TemporalDisaggregationSpec spec) {
@@ -92,6 +84,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
                 .disaggregationDomain(hdomain)
                 .aggregationType(spec.getAggregationType())
                 .addX(vars)
+                .rescale(spec.isRescale())
                 .build();
     }
 
@@ -108,6 +101,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
                 .disaggregationDomain(hdomain)
                 .aggregationType(spec.getAggregationType())
                 .addX(vars)
+                .rescale(spec.isRescale())
                 .build();
     }
 
@@ -160,24 +154,36 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
                 nssf = Arima_1_1_0.of(p.get(0), 1, spec.isZeroInitialization());
             }
         }
-        builder.concentratedLikelihood(dll);
-        SsfComponent rssf = RegSsf.of(nssf, model.hX);
-        ssf = SsfDisaggregation.of(rssf, model.frequencyRatio);
-        DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(ssf, ssfdata, true, true);
-        
+        builder.concentratedLikelihood(dll.rescale(model.yfactor, model.xfactor));
+
         // for computing the full model, we prefer to use the "slower" approach
         // which is much simpler
-        
+        SsfComponent rssf = RegSsf.of(nssf, model.hX);
+        ssf = SsfDisaggregation.of(rssf, model.frequencyRatio);
+        DefaultSmoothingResults srslts;
+        if (spec.getAlgorithm() != SsfAlgorithm.Augmented) {
+            srslts = DkToolkit.smooth(ssf, ssfdata, true, false);
+        } else {
+            srslts = AkfToolkit.smooth(ssf, ssfdata, true);
+        }
+
+// The estimation of the initial covariance matrices is unstable in case of 
+// large values in the regression variables. Two solutions: rescaling of the 
+// regression variables (no garantee) or use of the augmented Kalman smoother (preferred solution)
+// A square root form of the diffuse smoothing should also be investigated.
         double[] yh = new double[model.hY.length];
         double[] vyh = new double[model.hY.length];
         int dim = ssf.getStateDim();
         ISsfLoading loading = rssf.loading();
+        double f = 1 / model.yfactor;
+        double sigma = f * Math.sqrt(dll.ssq() / dll.dim());
         for (int i = 0; i < yh.length; ++i) {
             yh[i] = loading.ZX(i, srslts.a(i).drop(1, 0));
-            vyh[i] = loading.ZVZ(i, srslts.P(i).extract(1, dim, 1, dim));
+            double v = loading.ZVZ(i, srslts.P(i).extract(1, dim, 1, dim));
+            vyh[i] = v <= 0 ? 0 : sigma * Math.sqrt(v);
         }
-        builder.disaggregatedSeries(TsData.ofInternal(model.hDom.getStartPeriod(), yh))
-                .stdevDisaggregatedSeries(TsData.ofInternal(model.hDom.getStartPeriod(), vyh).fastFn(q -> Math.sqrt(q)));
+        builder.disaggregatedSeries(TsData.ofInternal(model.hDom.getStartPeriod(), yh).multiply(f))
+                .stdevDisaggregatedSeries(TsData.ofInternal(model.hDom.getStartPeriod(), vyh));
         return builder.build();
     }
 
@@ -211,7 +217,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
     private static Ssf ssf(double rho, boolean cl, boolean zeroinit, int ratio) {
         SsfComponent cmp = cl ? AR1.of(rho, 1, zeroinit)
                 : Arima_1_1_0.of(rho, 1, zeroinit);
-        return  SsfDisaggregation.of(cmp, ratio);
+        return SsfDisaggregation.of(cmp, ratio);
     }
 
     private int[] diffuseRegressors(int nx, TemporalDisaggregationSpec spec) {

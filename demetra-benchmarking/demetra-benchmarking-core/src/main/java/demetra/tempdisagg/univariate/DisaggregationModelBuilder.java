@@ -46,7 +46,7 @@ class DisaggregationModelBuilder {
     private final List<ITsVariable> regressors = new ArrayList<>();
     private TsDomain disaggregationDomain;
     private AggregationType aType = AggregationType.Sum;
-//    private boolean rescale = true;
+    private boolean rescale = true;
 
     DisaggregationModelBuilder y(TsData y) {
         this.y = y;
@@ -63,10 +63,11 @@ class DisaggregationModelBuilder {
         return this;
     }
 
-//    DisaggregationModel rescale(boolean rescale) {
-//        this.rescale = rescale;
-//        return this;
-//    }
+    DisaggregationModelBuilder rescale(boolean rescale) {
+        this.rescale = rescale;
+        return this;
+    }
+
     DisaggregationModelBuilder addX(@Nonnull ITsVariable... vars) {
         for (int i = 0; i < vars.length; ++i) {
             regressors.add(vars[i]);
@@ -167,8 +168,8 @@ class DisaggregationModelBuilder {
         prepareY(data, yDom);
         if (regressors.size() > 0) {
             prepareX(data);
-//        } else {
-//            data.scale(rescale ? new AbsMeanNormalizer() : null);
+        } else {
+            data.scale(rescale ? new AbsMeanNormalizer() : null);
         }
 
         return true;
@@ -177,11 +178,11 @@ class DisaggregationModelBuilder {
     private void prepareX(DisaggregationModel data) {
 
         data.hX = Regression.matrix(disaggregationDomain, regressors.toArray(new ITsVariable[regressors.size()]));
-//        if (rescale) {
-//            data.scale(new AbsMeanNormalizer());
-//        } else {
-//            data.scale(null);
-//        }
+        if (rescale) {
+            data.scale(new AbsMeanNormalizer());
+        } else {
+            data.scale(null);
+        }
 
         if (aType != AggregationType.Average
                 && aType != AggregationType.Sum) {

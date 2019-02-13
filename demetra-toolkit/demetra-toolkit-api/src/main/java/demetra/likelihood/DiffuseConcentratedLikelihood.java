@@ -137,11 +137,11 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     private DiffuseConcentratedLikelihood(final Builder builder) {
-        this(builder.n, builder.nd, builder.ssqerr, builder.ldet, builder.lddet, 
+        this(builder.n, builder.nd, builder.ssqerr, builder.ldet, builder.lddet,
                 builder.b, builder.bvar, builder.res, builder.legacy, builder.scalingFactor);
     }
-    
-    public int ndiffuse(){
+
+    public int ndiffuse() {
         return nd;
     }
 
@@ -174,8 +174,9 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
 
     @Override
     public double factor() {
-        if (! scalingFactor)
+        if (!scalingFactor) {
             throw new EcoException(EcoException.UNEXPECTEDOPERATION);
+        }
         return Math.exp((ldet + lddet) / (m()));
     }
 
@@ -234,11 +235,10 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     @Override
-    public boolean isScalingFactor(){
+    public boolean isScalingFactor() {
         return scalingFactor;
     }
 
-    
     /**
      * Adjust the likelihood if the toArray have been pre-multiplied by a given
      * scaling factor
@@ -259,29 +259,38 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
         }
         double[] nb = null;
         MatrixType nbvar = null;
-        if (b != null && xfactor != null) {
-            int nx=b.length;
-            nb = new double[nx];
-            double[] nbv = bvar.toArray();
-            for (int i = 0; i < nx; ++i) {
-                double ifactor = xfactor[i] / yfactor;
-                nb[i] = b[i] * ifactor;
-                for (int j = 0; j < i; ++j) {
-                    double ijfactor = ifactor * xfactor[j] / yfactor;
-                    nbv[i+j*nx]*=ijfactor;
-                    nbv[j+i*nx]*=ijfactor;
+        if (b != null) {
+            int nx = b.length;
+            if (xfactor != null) {
+                nb = new double[nx];
+                double[] nbv = bvar.toArray();
+                for (int i = 0; i < nx; ++i) {
+                    double ifactor = xfactor[i];
+                    nb[i] = b[i] * ifactor / yfactor;
+                    for (int j = 0; j < i; ++j) {
+                        double ijfactor = ifactor * xfactor[j];
+                        nbv[i + j * nx] *= ijfactor;
+                        nbv[j + i * nx] *= ijfactor;
+                    }
+                    nbv[i * (nx + 1)] *= ifactor * ifactor;
                 }
-                nbv[i*(nx+1)]*=ifactor * ifactor;
+                nbvar = MatrixType.ofInternal(nbv, nx, nx);
+            } else if (yfactor != 1) {
+                nb = new double[nx];
+                for (int i = 0; i < nx; ++i) {
+                    nb[i] = b[i] / yfactor;
+                }
+            } else {
+                nb = b;
             }
-            nbvar=MatrixType.ofInternal(nbv, nx, nx);
         }
-        double nldet=ldet;
-        if (! scalingFactor){
-            nldet+=(nobs-nd)*Math.log(yfactor);
+        double nldet = ldet;
+        if (!scalingFactor) {
+            nldet += (nobs - nd) * Math.log(yfactor);
         }
-        double nlddet=lddet;
-        if (! scalingFactor){
-            nlddet+=nd*Math.log(yfactor);
+        double nlddet = lddet;
+        if (!scalingFactor) {
+            nlddet += nd * Math.log(yfactor);
         }
         return new DiffuseConcentratedLikelihood(nobs, nd, ssqerr / (yfactor * yfactor), nldet, nlddet, nb, nbvar, nres, legacy, scalingFactor);
     }

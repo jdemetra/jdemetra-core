@@ -16,6 +16,9 @@
  */
 package demetra.tempdisagg.univariate;
 
+import demetra.data.DataBlock;
+import demetra.data.DataBlockIterator;
+import demetra.data.normalizer.IDataNormalizer;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.timeseries.TsDomain;
@@ -65,42 +68,42 @@ class DisaggregationModel {
     int n() {
         return hY.length;
     }
-//    /**
-//     * Scaling factor for hY
-//     */
-//    double yfactor;
-//    /**
-//     * Scaling factors for hX
-//     */
-//    double[] xfactor;
+    /**
+     * Scaling factor for hY
+     */
+    double yfactor;
+    /**
+     * Scaling factors for hX
+     */
+    double[] xfactor;
 
-//    /**
-//     *
-//     * @param normalizer
-//     */
-//    void scale(IDataNormalizer normalizer) {
-//        if (normalizer != null) {
-//            double yfactor = normalizer.normalize(DataBlock.ofInternal(hY));
-//        } else {
-//            yfactor = 1;
-//        }
-//        if (hX == null) {
-//            return;
-//        }
-//
-//        int nx = hX.getColumnsCount();
-//        xfactor = new double[nx];
-//
-//        if (normalizer != null) {
-//            DataBlockIterator cols = hX.columnsIterator();
-//            int i = 0;
-//            while (cols.hasNext()) {
-//                xfactor[i++] = normalizer.normalize(cols.next());
-//            }
-//        } else {
-//            for (int i = 0; i < xfactor.length; ++i) {
-//                xfactor[i] = 1;
-//            }
-//        }
-//    }
+    /**
+     *
+     * @param normalizer
+     */
+    void scale(IDataNormalizer normalizer) {
+        if (normalizer != null) {
+            yfactor = normalizer.normalize(DataBlock.ofInternal(hY));
+        } else {
+            yfactor = 1;
+        }
+        if (hX == null) {
+            return;
+        }
+
+        int nx = hX.getColumnsCount();
+        xfactor = new double[nx];
+
+        if (normalizer != null) {
+            DataBlockIterator cols = hX.columnsIterator();
+            int i = 0;
+            while (cols.hasNext()) {
+                xfactor[i++] = normalizer.normalize(cols.next());
+            }
+        } else {
+            for (int i = 0; i < xfactor.length; ++i) {
+                xfactor[i] = 1;
+            }
+        }
+    }
 }

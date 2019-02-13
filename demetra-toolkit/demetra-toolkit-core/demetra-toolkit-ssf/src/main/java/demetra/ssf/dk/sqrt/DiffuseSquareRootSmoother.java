@@ -95,7 +95,7 @@ public class DiffuseSquareRootSmoother extends BaseDiffuseSmoother {
                 srslts.save(t, state, StateInfo.Smoothed);
             }
         }
-        if (rescalevar){
+        if (rescalevar) {
             srslts.rescaleVariances(frslts.var());
         }
         return true;
@@ -118,6 +118,10 @@ public class DiffuseSquareRootSmoother extends BaseDiffuseSmoother {
             N1 = Matrix.square(dim);
             N2 = Matrix.square(dim);
             Z = DataBlock.make(dim);
+            if (loading.isTimeInvariant()) {
+                Z.set(0);
+                loading.Z(0, Z);
+            }
         }
     }
 
@@ -125,24 +129,29 @@ public class DiffuseSquareRootSmoother extends BaseDiffuseSmoother {
         e = frslts.error(pos);
         f = frslts.errorVariance(pos);
         fi = frslts.diffuseNorm2(pos);
-        C.copy(frslts.M(pos));
-        if (fi != 0) {
-            Ci.copy(frslts.Mi(pos));
-            Ci.mul(1 / fi);
-            C.addAY(-f, Ci);
-            C.mul(1 / fi);
-        } else {
-            C.mul(1 / f);
-            Ci.set(0);
-        }
         missing = !Double.isFinite(e);
         state.a().copy(frslts.a(pos));
+        if (!missing) {
+            C.copy(frslts.M(pos));
+            if (fi != 0) {
+                Ci.copy(frslts.Mi(pos));
+                Ci.mul(1 / fi);
+                C.addAY(-f, Ci);
+                C.mul(1 / fi);
+            } else {
+                C.mul(1 / f);
+                Ci.set(0);
+            }
+        } else {
+            e = 0;
+        }
         if (calcvar) {
-            Z.set(0);
-            loading.Z(pos, Z);
+            if (!loading.isTimeInvariant()) {
+                Z.set(0);
+                loading.Z(pos, Z);
+            }
             state.P().copy(frslts.P(pos));
-            Matrix B = frslts.B(pos);
-            state.restoreB(B);
+            state.restoreB(frslts.B(pos));
         }
     }
 
@@ -150,23 +159,18 @@ public class DiffuseSquareRootSmoother extends BaseDiffuseSmoother {
     @Override
     protected void updateA(int pos) {
         DataBlock a = state.a();
-        if (calcvar) {
-            a.addProduct(Rf, state.P().columnsIterator());
-            // Pi=B*B'
-            DataBlock tmp = DataBlock.make(state.getDiffuseDim());
-            tmp.product(Ri, state.B().columnsIterator());
-            a.addProduct(tmp, state.B().rowsIterator());
-        } else { // to avoid unnecessary copies
-            a.addProduct(Rf, frslts.P(pos).columnsIterator());
-            Matrix B = frslts.B(pos);
-            DataBlock tmp = DataBlock.make(B.getColumnsCount());
-            tmp.product(Ri, B.columnsIterator());
-            a.addProduct(tmp, B.rowsIterator());
-        }
+        a.addProduct(Rf, frslts.P(pos).columnsIterator());
+        Matrix B = frslts.B(pos);
+        DataBlock tmp = DataBlock.make(B.getColumnsCount());
+        tmp.product(Ri, B.columnsIterator());
+        a.addProduct(tmp, B.rowsIterator());
     }
 
     @Override
     protected void updateP(int pos) {
+        // V = Pf - Pf * N0 * Pf - < Pi * N1 * Pf > - Pi * N2 * Pi
+        // Pi = B*B'
+        // ! N1 is not a symmetric matrix
         Matrix P = state.P();
         Matrix PN0P = SymmetricMatrix.XtSX(N0, P);
         Matrix BN2B = SymmetricMatrix.XtSX(N2, state.B());
@@ -179,11 +183,11 @@ public class DiffuseSquareRootSmoother extends BaseDiffuseSmoother {
 //        Matrix PN2P = SymmetricMatrix.quadraticForm(N2, Pi);
 //        Matrix PN1 = P.times(N1);
 //        Matrix PN1Pi = PN1.times(Pi);
+        PN0P.add(PN2P);
+        PN0P.add(PN1Pi);
+        PN0P.add(PN1Pi.transpose());
+        SymmetricMatrix.reenforceSymmetry(PN0P);
         P.sub(PN0P);
-        P.sub(PN2P);
-        P.sub(PN1Pi);
-        P.sub(PN1Pi.transpose());
-        SymmetricMatrix.reenforceSymmetry(P);
     }
 
     private void ordinarySmoothing(ISsf ssf, final int endpos) {

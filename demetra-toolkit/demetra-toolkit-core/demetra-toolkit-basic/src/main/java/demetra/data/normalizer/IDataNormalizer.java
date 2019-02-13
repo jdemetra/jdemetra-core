@@ -27,9 +27,12 @@ import demetra.design.Algorithm;
 @Algorithm
 public interface IDataNormalizer {
     /**
+     * Normalizes a vector of data.
+     * data(out) = data(in)*factor 
      * 
-     * @param data On exit, data contains data*factor; 
+     * @param data in/out data. 
      * @return The scaling factor
      */
     double normalize(DataBlock data);
 }
+                  
