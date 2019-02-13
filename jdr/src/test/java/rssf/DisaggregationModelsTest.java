@@ -23,6 +23,7 @@ import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.implementations.RegSsf;
 import demetra.arima.ssf.AR1;
+import demetra.ssf.SsfComponent;
 import demetra.sts.LocalLevel;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ISsf;
@@ -52,8 +53,8 @@ public class DisaggregationModelsTest {
         edata.set(Double.NaN);
         edata.extract(3, m, 4).copyFrom(Data.PCRA, 0);
         SsfData sdata = new SsfData(edata);
-        ISsf ar = Ssf.of(AR1.of(rho),0);
-        ISsf rssf = RegSsf.of(ar, x);
+        SsfComponent ar = AR1.of(rho);
+        SsfComponent rssf = RegSsf.of(ar, x);
         ISsf dssf = DisaggregationModels.of(rssf, 4);
         DefaultSmoothingResults srslts = DkToolkit.smooth(dssf, sdata, true, true);
         DataBlock z = DataBlock.make(dssf.getStateDim());

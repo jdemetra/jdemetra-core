@@ -62,8 +62,8 @@ public class AugmentedSmoother {
         initSmoother(ssf, endpos);
         ordinarySmoothing(ssf, endpos);
         calcSmoothedDiffuseEffects();
-        int t=frslts.getCollapsingPosition();
-        while (--t>= 0) {
+        int t = frslts.getCollapsingPosition();
+        while (--t >= 0) {
             iterate(t);
             if (hasinfo) {
                 srslts.save(t, state, StateInfo.Smoothed);
@@ -123,7 +123,7 @@ public class AugmentedSmoother {
             // P = P-PNP
             iterateN(pos);
             calcV();
-            updateP(pos);
+            updateP();
         }
     }
 
@@ -153,13 +153,13 @@ public class AugmentedSmoother {
             DataBlock rnac = rnacolumns.next();
             rnac.product(N.rowsIterator(), acolumns.next());
             rnac.add(rcolumns.next());
-        } 
+        }
 
         DataBlockIterator vcolumns = V.columnsIterator();
         rnacolumns.reset();
         while (vcolumns.hasNext() && rnacolumns.hasNext()) {
             vcolumns.next().product(state.P().rowsIterator(), rnacolumns.next());
-        } ;
+        };
 
     }
 
@@ -171,7 +171,7 @@ public class AugmentedSmoother {
         a.addProduct(U.rowsIterator(), delta);
     }
 
-    private void updateP(int pos) {
+    private void updateP() {
         Matrix P = state.P();
         // normal iteration
         Matrix PNP = SymmetricMatrix.XtSX(N, P);
@@ -202,7 +202,7 @@ public class AugmentedSmoother {
     private void XL(int pos, DataBlockIterator X) {
         while (X.hasNext()) {
             xL(pos, X.next());
-        } 
+        }
     }
 
     /**
@@ -214,24 +214,11 @@ public class AugmentedSmoother {
             XL(pos, N.rowsIterator());
             XL(pos, N.columnsIterator());
             loading.VpZdZ(pos, N, 1 / f);
-            SymmetricMatrix.reenforceSymmetry(N);
         } else {
-            //T'*N(t)*T
-            tvt(pos, N);
+            dynamics.MT(pos, N);
+            dynamics.MT(pos, N.transpose());
         }
-    }
-
-    private void tvt(int pos, Matrix N) {
-        DataBlockIterator columns = N.columnsIterator();
-         while (columns.hasNext()) {
-            dynamics.XT(pos, columns.next());
-        };
-        DataBlockIterator rows = N.rowsIterator();
-        while (rows.hasNext()){
-            dynamics.XT(pos, rows.next());
-        } ;
         SymmetricMatrix.reenforceSymmetry(N);
-
     }
 
     /**
@@ -249,8 +236,8 @@ public class AugmentedSmoother {
             loading.XpZd(pos, R, c);
             // apply the same to the colums copyOf Rd
             DataBlockIterator rcols = Rd.columnsIterator();
-            DoubleReader cell=E.reader();
-            while (rcols.hasNext()){
+            DoubleReader cell = E.reader();
+            while (rcols.hasNext()) {
                 DataBlock rcol = rcols.next();
                 c = (cell.next() - rcol.dot(C)) / f;
                 loading.XpZd(pos, rcol, c);

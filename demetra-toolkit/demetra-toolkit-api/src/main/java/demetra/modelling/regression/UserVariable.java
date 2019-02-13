@@ -36,7 +36,7 @@ public class UserVariable extends TsVariable implements IUserTsVariable {
         }
     }
 
-    private UserVariable(String id, TsData data){
+    public UserVariable(String id, TsData data){
         super(id, data);
     }
     

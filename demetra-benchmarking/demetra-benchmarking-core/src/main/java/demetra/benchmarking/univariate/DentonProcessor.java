@@ -23,15 +23,6 @@ import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
 import org.openide.util.lookup.ServiceProvider;
-import demetra.data.AggregationType;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.data.DoubleSequence;
-import demetra.linearsystem.LinearSystemSolver;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.UnitRoots;
 
 /**
  *

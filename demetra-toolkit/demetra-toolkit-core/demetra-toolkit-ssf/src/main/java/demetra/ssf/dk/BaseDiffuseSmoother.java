@@ -172,14 +172,8 @@ public abstract class BaseDiffuseSmoother {
     }
 
     private void tvt(int pos, Matrix N) {
-        DataBlockIterator columns = N.columnsIterator();
-        while (columns.hasNext()) {
-            dynamics.XT(pos, columns.next());
-        }
-        DataBlockIterator rows = N.rowsIterator();
-        while (rows.hasNext()) {
-            dynamics.XT(pos, rows.next());
-        }
+        dynamics.MT(pos, N);
+        dynamics.MT(pos, N.transpose());
     }
 
     private void subZ(int pos, DataBlockIterator rows, DataBlock b) {

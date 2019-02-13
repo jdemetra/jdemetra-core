@@ -20,6 +20,7 @@ import demetra.design.Development;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
 import demetra.timeseries.TsUnit;
+import demetra.util.Validatable;
 import java.time.LocalDate;
 
 /**
@@ -29,8 +30,8 @@ import java.time.LocalDate;
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
-@lombok.Builder(toBuilder=true)
-public class CalendarizationSpec implements ProcSpecification {
+@lombok.Builder(toBuilder=true, builderClassName="Builder", buildMethodName="buildWithoutValidation")
+public class CalendarizationSpec implements ProcSpecification, Validatable<CalendarizationSpec> {
 
     public static final String FAMILY = "Benchmarking";
     public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, "Calendarization", null);
@@ -47,9 +48,20 @@ public class CalendarizationSpec implements ProcSpecification {
     public AlgorithmDescriptor getAlgorithmDescriptor() {
         return DESCRIPTOR;
     }
+
+    @Override
+    public CalendarizationSpec validate() throws IllegalArgumentException {
+        if (start != null && end != null && !start.isBefore(end))
+            throw new IllegalArgumentException("Invalide span");
+        return this;
+    }
     
-    public static CalendarizationSpecBuilder builder(){
-        return new CalendarizationSpecBuilder()
+    public static class Builder implements Validatable.Builder<CalendarizationSpec>{
+          
+    }
+    
+    public static Builder builder(){
+        return new Builder()
                 .stdev(true)
                 .aggregationUnit(TsUnit.UNDEFINED);
     }

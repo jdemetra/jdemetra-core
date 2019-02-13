@@ -17,9 +17,7 @@
 package rssf;
 
 import demetra.benchmarking.ssf.SsfDisaggregation;
-import demetra.maths.MatrixType;
-import demetra.maths.matrices.Matrix;
-import demetra.ssf.implementations.RegSsf;
+import demetra.ssf.SsfComponent;
 import demetra.ssf.univariate.ISsf;
 
 /**
@@ -28,7 +26,12 @@ import demetra.ssf.univariate.ISsf;
  */
 @lombok.experimental.UtilityClass
 public class DisaggregationModels {
+
     public ISsf of(ISsf ssf, int conversion){
+        return SsfDisaggregation.of(ssf.asComponent(), conversion);
+    }
+    
+    public ISsf of(SsfComponent ssf, int conversion){
         return SsfDisaggregation.of(ssf, conversion);
     }
     

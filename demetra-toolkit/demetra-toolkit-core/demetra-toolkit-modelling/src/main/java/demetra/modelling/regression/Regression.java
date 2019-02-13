@@ -44,6 +44,10 @@ public class Regression {
 
     static {
         synchronized (FACTORIES) {
+            // Basic
+            FACTORIES.put(Constant.class, ConstantFactory.FACTORY);
+            FACTORIES.put(LinearTrend.class, LinearTrendFactory.FACTORY);
+            
             // Outliers
             FACTORIES.put(AdditiveOutlier.class, AOFactory.FACTORY);
             FACTORIES.put(LevelShift.class, LSFactory.FACTORY);
@@ -87,16 +91,16 @@ public class Regression {
             TsPeriod start = ((TsDomain) domain).getStartPeriod();
             for (int i = 0, j = 0; i < vars.length; ++i) {
                 ITsVariable v = vars[i];
-                MatrixWindow cur = wnd.left(v.dim());
+                wnd.hnext(v.dim());
                 RegressionVariableFactory factory = FACTORIES.get(v.getClass());
                 if (factory != null) {
-                    factory.fill(v, start, cur);
+                    factory.fill(v, start, wnd);
                 }
             }
         } else {
             for (int i = 0, j = 0; i < vars.length; ++i) {
                 ITsVariable v = vars[i];
-                MatrixWindow cur = wnd.left(v.dim());
+                MatrixWindow cur = wnd.right(v.dim());
                 RegressionVariableFactory factory = FACTORIES.get(v.getClass());
                 if (factory != null) {
                     factory.fill(v, domain, cur);

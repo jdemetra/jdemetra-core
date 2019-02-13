@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.tempdisagg.univariate.internal;
+package demetra.tempdisagg.univariate;
 
 import demetra.data.Cumulator;
 import demetra.data.AggregationType;
@@ -24,13 +24,13 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.Regression;
-import demetra.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
 
@@ -39,8 +39,8 @@ import javax.annotation.Nonnull;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@BuilderPattern(DisaggregationData.class)
-class DisaggregationModel {
+@BuilderPattern(DisaggregationModel.class)
+class DisaggregationModelBuilder {
 
     private TsData y;
     private final List<ITsVariable> regressors = new ArrayList<>();
@@ -48,56 +48,61 @@ class DisaggregationModel {
     private AggregationType aType = AggregationType.Sum;
     private boolean rescale = true;
 
-    DisaggregationModel y(TsData y) {
+    DisaggregationModelBuilder y(TsData y) {
         this.y = y;
         return this;
     }
 
-    DisaggregationModel disaggregationDomain(TsDomain domain) {
+    DisaggregationModelBuilder disaggregationDomain(TsDomain domain) {
         this.disaggregationDomain = domain;
         return this;
     }
 
-    DisaggregationModel aggregationType(AggregationType type) {
+    DisaggregationModelBuilder aggregationType(AggregationType type) {
         this.aType = type;
         return this;
     }
 
-    DisaggregationModel rescale(boolean rescale) {
+    DisaggregationModelBuilder rescale(boolean rescale) {
         this.rescale = rescale;
         return this;
     }
 
-    DisaggregationModel addX(@Nonnull ITsVariable... vars) {
+    DisaggregationModelBuilder addX(@Nonnull ITsVariable... vars) {
         for (int i = 0; i < vars.length; ++i) {
             regressors.add(vars[i]);
         }
         return this;
     }
 
-    public DisaggregationData build() {
-        DisaggregationData data = startDataPreparation();
+    DisaggregationModelBuilder addX(@Nonnull Collection<ITsVariable> vars) {
+        regressors.addAll(vars);
+        return this;
+    }
+
+    public DisaggregationModel build() {
+        DisaggregationModel data = startDataPreparation();
         if (data == null) {
             return null;
         }
-        if (!prepare(data, rescale)) {
+        if (!prepare(data)) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
         return data;
     }
 
-    private DisaggregationData startDataPreparation() {
+    private DisaggregationModel startDataPreparation() {
         if (y == null) {
             return null;
         }
         TsDomain lDom = y.getDomain(), hDom = disaggregationDomain;
-        int c = lDom.getTsUnit().ratioOf(hDom.getTsUnit());
+        int c = hDom.getTsUnit().ratioOf(lDom.getTsUnit());
         if (c <= 1) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
 
-        DisaggregationData data = new DisaggregationData();
-        data.FrequencyRatio = c;
+        DisaggregationModel data = new DisaggregationModel();
+        data.frequencyRatio = c;
         data.hDom = hDom;
         return data;
     }
@@ -108,17 +113,7 @@ class DisaggregationModel {
      * @param rescale
      * @return
      */
-//    public DisaggregationData data(TsDomain domain, boolean rescale) {
-//        DisaggregationData data = startDataPreparation(domain);
-//        if (data == null) {
-//            return null;
-//        }
-//        if (!prepare(data, rescale)) {
-//            return null;
-//        }
-//        return data;
-//    }
-    private boolean prepare(DisaggregationData data, boolean rescale) {
+    private boolean prepare(DisaggregationModel data) {
         TsDomain lDom = y.getDomain();
         int lN = lDom.getLength(), hN = data.hDom.getLength();
         if (lN == 0 || hN == 0) {
@@ -167,12 +162,12 @@ class DisaggregationModel {
         } else {
             hEnd = TsPeriod.of(hUnit, cEnd.end()).previous();
         }
-        
+
         data.hEDom = TsDomain.of(hStart, hStart.until(hEnd));
 
         prepareY(data, yDom);
         if (regressors.size() > 0) {
-            prepareX(data, rescale);
+            prepareX(data);
         } else {
             data.scale(rescale ? new AbsMeanNormalizer() : null);
         }
@@ -180,8 +175,8 @@ class DisaggregationModel {
         return true;
     }
 
-    private void prepareX(DisaggregationData data, boolean rescale) {
-        
+    private void prepareX(DisaggregationModel data) {
+
         data.hX = Regression.matrix(disaggregationDomain, regressors.toArray(new ITsVariable[regressors.size()]));
         if (rescale) {
             data.scale(new AbsMeanNormalizer());
@@ -194,7 +189,7 @@ class DisaggregationModel {
             data.hEX = data.hX;
         } else {
             data.hEX = data.hX.deepClone();
-            Cumulator cumul = new Cumulator(data.FrequencyRatio);
+            Cumulator cumul = new Cumulator(data.frequencyRatio);
             DataBlockIterator cX = data.hEX.columnsIterator();
             while (cX.hasNext()) {
                 cumul.transform(cX.next());
@@ -202,7 +197,7 @@ class DisaggregationModel {
         }
     }
 
-    private void prepareY(DisaggregationData data, TsDomain yDom) {
+    private void prepareY(DisaggregationModel data, TsDomain yDom) {
         double[] s = y.getValues().toArray();
 
         int ny = yDom.getLength();
@@ -211,7 +206,7 @@ class DisaggregationModel {
                 || aType == AggregationType.Last) {
             pos = 0;
         } else {
-            pos = data.FrequencyRatio - 1;
+            pos = data.frequencyRatio - 1;
         }
         double[] y = new double[data.hDom.getLength()];
         for (int i = 0; i < y.length; ++i) {
@@ -219,7 +214,7 @@ class DisaggregationModel {
         }
 
         int xstart = data.hDom.getStartPeriod().until(data.hEDom.getStartPeriod()), ystart = this.y.getStart().until(yDom.getStartPeriod());
-        for (int i = 0, j = xstart + pos, k = ystart; i < ny; ++i, j += data.FrequencyRatio, ++k) {
+        for (int i = 0, j = xstart + pos, k = ystart; i < ny; ++i, j += data.frequencyRatio, ++k) {
             y[j] = s[k];
         }
         data.hY = y;
