@@ -18,6 +18,7 @@ package demetra.fractionalairline;
 
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
+import demetra.data.Data;
 import demetra.data.MatrixSerializer;
 import demetra.maths.MatrixType;
 import demetra.modelling.regression.AdditiveOutlierFactory;
@@ -52,7 +53,7 @@ public class MultiPeriodicAirlineMappingTest {
 
     //@Test
     public void testDaily() throws IOException, URISyntaxException {
-        URI uri = MultiPeriodicAirlineMapping.class.getResource("/edf.txt").toURI();
+        URI uri = Data.class.getResource("/edf.txt").toURI();
         MatrixType edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, false);
         GlsArimaProcessor<ArimaModel> processor=GlsArimaProcessor.builder(ArimaModel.class)

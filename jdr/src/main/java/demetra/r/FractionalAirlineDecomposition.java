@@ -28,7 +28,7 @@ import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.descriptors.stats.LikelihoodDescriptor;
+import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.linearfilters.BackFilter;
@@ -105,7 +105,7 @@ public class FractionalAirlineDecomposition {
             });
             MAPPING.delegate(UCARIMA, UcarimaDescriptor.getMapping(), source -> source.getUcarima());
             MAPPING.set(UCM, UcarimaType.class, source -> source.getUcarima());
-            MAPPING.delegate(LL, LikelihoodDescriptor.getMapping(), r -> r.statistics);
+            MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
             //MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters());
             //MAPPING.set(SCORE, double[].class, source -> source.getScore());

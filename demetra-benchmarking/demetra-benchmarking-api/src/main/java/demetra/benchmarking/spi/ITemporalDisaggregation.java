@@ -14,35 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.benchmarking.univariate;
+package demetra.benchmarking.spi;
 
-import demetra.benchmarking.spi.ICholette;
+import demetra.design.Algorithm;
+import demetra.design.ServiceDefinition;
+import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
+import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
 import demetra.timeseries.TsData;
-import demetra.util.ServiceLookup;
-import java.util.concurrent.atomic.AtomicReference;
-import demetra.design.Development;
+import demetra.timeseries.TsDomain;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Beta)
-@lombok.experimental.UtilityClass
-public class Cholette {
+@Algorithm
+@ServiceDefinition
+public interface ITemporalDisaggregation {
 
+    TemporalDisaggregationResults process(TsData aggregatedSeries, TsData[] indicators, TemporalDisaggregationSpec spec);
 
-    private final AtomicReference<ICholette> PROCESSOR = ServiceLookup.firstMutable(ICholette.class);
-
-    public void setProcessor(ICholette algorithm) {
-        PROCESSOR.set(algorithm);
-    }
-
-    public ICholette getProcessor() {
-        return PROCESSOR.get();
-    }
-
-    public TsData benchmark(TsData source, TsData target, CholetteSpec spec) {
-        return PROCESSOR.get().benchmark(source, target, spec);
-    }
-
+    TemporalDisaggregationResults process(TsData aggregatedSeries, TsDomain domain, TemporalDisaggregationSpec spec);
 }

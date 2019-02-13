@@ -20,6 +20,7 @@
  */
 package demetra.calendarization;
 
+import demetra.benchmarking.spi.ICalendarization;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockStorage;
 import demetra.design.Development;
@@ -43,8 +44,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-@ServiceProvider(service = Calendarization.Processor.class)
-public class CalendarizationProcessor implements Calendarization.Processor {
+@ServiceProvider(service = ICalendarization.class)
+public class CalendarizationProcessor implements ICalendarization {
     
     public static final CalendarizationProcessor PROCESSOR = new CalendarizationProcessor();
     

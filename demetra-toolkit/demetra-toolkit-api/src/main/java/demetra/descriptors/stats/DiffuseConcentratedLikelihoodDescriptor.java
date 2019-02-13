@@ -6,7 +6,7 @@
 package demetra.descriptors.stats;
 
 import demetra.information.InformationMapping;
-import demetra.likelihood.Likelihood;
+import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.maths.MatrixType;
 
 /**
@@ -14,22 +14,25 @@ import demetra.maths.MatrixType;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.experimental.UtilityClass
-public class LikelihoodDescriptor {
+public class DiffuseConcentratedLikelihoodDescriptor {
 
-    private final String LL = "ll", LDET="ldet", SSQ = "ssqerr", SER = "ser", SIGMA = "sigma", RES="residuals";
+    private final String LL = "ll", LDET="ldet", DCOR="diffusecorrection", SSQ = "ssqerr", SER = "ser", SIGMA = "sigma", COEF = "coeff", VAR = "cvar", RES="residuals";
 
-    private final InformationMapping<Likelihood> MAPPING = new InformationMapping<>(Likelihood.class);
+    private final InformationMapping<DiffuseConcentratedLikelihood> MAPPING = new InformationMapping<>(DiffuseConcentratedLikelihood.class);
 
     static {
         MAPPING.set(SER, Double.class, source -> source.ser());
         MAPPING.set(SIGMA, Double.class, source -> source.sigma());
+        MAPPING.set(COEF, double[].class, source -> source.coefficients().toArray());
+        MAPPING.set(VAR, MatrixType.class, source -> source.unscaledCovariance());
         MAPPING.set(LL, Double.class, source -> source.logLikelihood());
         MAPPING.set(LDET, Double.class, source -> source.logDeterminant());
+        MAPPING.set(DCOR, Double.class, source -> source.diffuseCorrection());
         MAPPING.set(SSQ, Double.class, source -> source.ssq());
         MAPPING.set(RES, double[].class, source -> source.e().toArray());
     }
 
-    public InformationMapping<Likelihood> getMapping() {
+    public InformationMapping<DiffuseConcentratedLikelihood> getMapping() {
         return MAPPING;
     }
 }

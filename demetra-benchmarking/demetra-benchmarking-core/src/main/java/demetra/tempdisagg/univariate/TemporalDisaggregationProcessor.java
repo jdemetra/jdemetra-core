@@ -8,7 +8,9 @@ package demetra.tempdisagg.univariate;
 import demetra.arima.ssf.AR1;
 import demetra.arima.ssf.Arima_1_1_0;
 import demetra.arima.ssf.Rw;
+import demetra.benchmarking.spi.ITemporalDisaggregation;
 import demetra.benchmarking.ssf.SsfDisaggregation;
+import demetra.data.AggregationType;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.data.Parameter;
@@ -24,7 +26,6 @@ import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.LinearTrend;
 import demetra.modelling.regression.UserVariable;
 import demetra.ssf.ISsfLoading;
-import demetra.ssf.SsfAlgorithm;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.akf.AkfToolkit;
 import demetra.ssf.dk.DkToolkit;
@@ -32,6 +33,7 @@ import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.dk.SsfFunctionPoint;
 import demetra.ssf.implementations.RegSsf;
 import demetra.ssf.univariate.DefaultSmoothingResults;
+import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.univariate.SsfData;
 import demetra.ssf.univariate.SsfRegressionModel;
@@ -46,8 +48,8 @@ import java.util.List;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceProvider(service = TemporalDisaggregation.Processor.class)
-public class TemporalDisaggregationProcessor implements TemporalDisaggregation.Processor {
+@ServiceProvider(service = ITemporalDisaggregation.class)
+public class TemporalDisaggregationProcessor implements ITemporalDisaggregation {
 
     public static final TemporalDisaggregationProcessor PROCESSOR = new TemporalDisaggregationProcessor();
 
@@ -79,8 +81,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
         for (int i = 0; i < indicators.length; ++i) {
             vars.add(new UserVariable("var" + (i + 1), indicators[i]));
         }
-        return new DisaggregationModelBuilder()
-                .y(aggregatedSeries)
+        return new DisaggregationModelBuilder(aggregatedSeries)
                 .disaggregationDomain(hdomain)
                 .aggregationType(spec.getAggregationType())
                 .addX(vars)
@@ -96,8 +97,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
         if (spec.isTrend()) {
             vars.add(new LinearTrend(hdomain.start()));
         }
-        return new DisaggregationModelBuilder()
-                .y(aggregatedSeries)
+        return new DisaggregationModelBuilder(aggregatedSeries)
                 .disaggregationDomain(hdomain)
                 .aggregationType(spec.getAggregationType())
                 .addX(vars)
@@ -120,21 +120,14 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
     }
 
     private TemporalDisaggregationResults interpolate(DisaggregationModel model, TemporalDisaggregationSpec spec) {
-
-        return null;
-    }
-
-    private TemporalDisaggregationResults disaggregate(DisaggregationModel model, TemporalDisaggregationSpec spec) {
-        TemporalDisaggregationResults.Builder builder = TemporalDisaggregationResults.builder();
-        Ssf ssf;
         SsfComponent nssf;
-        SsfData ssfdata = new SsfData(model.hY);
+        MaximumLogLikelihood ml = null;
         int[] diffuse = diffuseRegressors(model.nx(), spec);
         DiffuseConcentratedLikelihood dll;
         if (!spec.isParameterEstimation()) {
             nssf = noiseModel(spec);
-            ssf = SsfDisaggregation.of(nssf, model.frequencyRatio);
-            SsfRegressionModel ssfmodel = new SsfRegressionModel(ssf, ssfdata, model.hEX, diffuse);
+            SsfData ssfdata = new SsfData(model.getHEY());
+            SsfRegressionModel ssfmodel = new SsfRegressionModel(Ssf.of(nssf, 0), ssfdata, model.getHEX(), diffuse);
             dll = DkToolkit.concentratedLikelihoodComputer().compute(ssfmodel);
         } else {
             SsfFunction<Parameter, Ssf> fn = ssfFunction(model, spec);
@@ -145,8 +138,8 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
             SsfFunctionPoint<Parameter, Ssf> rslt = (SsfFunctionPoint<Parameter, Ssf>) fmin.getResult();
             DoubleSequence p = rslt.getParameters();
             dll = rslt.getLikelihood();
-            builder.maximum(new MaximumLogLikelihood(rslt.getLikelihood().logLikelihood(),
-                    p, fmin.gradientAtMinimum(), fmin.curvatureAtMinimum()));
+            ml = new MaximumLogLikelihood(rslt.getLikelihood().logLikelihood(),
+                    p, fmin.gradientAtMinimum(), fmin.curvatureAtMinimum());
 
             if (spec.getResidualsModel() == Model.Ar1) {
                 nssf = AR1.of(p.get(0), 1, spec.isZeroInitialization());
@@ -154,37 +147,128 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
                 nssf = Arima_1_1_0.of(p.get(0), 1, spec.isZeroInitialization());
             }
         }
-        builder.concentratedLikelihood(dll.rescale(model.yfactor, model.xfactor));
 
         // for computing the full model, we prefer to use the "slower" approach
         // which is much simpler
-        SsfComponent rssf = RegSsf.of(nssf, model.hX);
-        ssf = SsfDisaggregation.of(rssf, model.frequencyRatio);
+        // The estimation of the initial covariance matrices is unstable in case of 
+        // large values in the regression variables. Two solutions: rescaling of the 
+        // regression variables (no garantee) or use of the augmented Kalman smoother (default solution)
+        // A square root form of the diffuse smoothing should also be investigated.
+        ISsf rssf = RegSsf.of(Ssf.of(nssf, 0), model.getHX());
+        SsfData ssfdata = new SsfData(model.getHY());
         DefaultSmoothingResults srslts;
-        if (spec.getAlgorithm() != SsfAlgorithm.Augmented) {
-            srslts = DkToolkit.smooth(ssf, ssfdata, true, false);
-        } else {
-            srslts = AkfToolkit.smooth(ssf, ssfdata, true);
+        switch (spec.getAlgorithm()) {
+            case Augmented:
+                srslts = AkfToolkit.smooth(rssf, ssfdata, true);
+                break;
+            case Diffuse:
+                srslts = DkToolkit.smooth(rssf, ssfdata, true, false);
+                break;
+            default:
+                srslts = DkToolkit.smooth(rssf, ssfdata, true, false);
         }
-
-// The estimation of the initial covariance matrices is unstable in case of 
-// large values in the regression variables. Two solutions: rescaling of the 
-// regression variables (no garantee) or use of the augmented Kalman smoother (preferred solution)
-// A square root form of the diffuse smoothing should also be investigated.
-        double[] yh = new double[model.hY.length];
-        double[] vyh = new double[model.hY.length];
-        int dim = ssf.getStateDim();
+        double[] Y = model.getHY();
+        double[] O = model.getHO();
+        double[] yh = new double[Y.length];
+        double[] vyh = new double[Y.length];
         ISsfLoading loading = rssf.loading();
-        double f = 1 / model.yfactor;
+        double f = 1 / model.getYfactor();
         double sigma = f * Math.sqrt(dll.ssq() / dll.dim());
         for (int i = 0; i < yh.length; ++i) {
-            yh[i] = loading.ZX(i, srslts.a(i).drop(1, 0));
+            if (Double.isFinite(Y[i])) {
+                yh[i] = O[i];
+                vyh[i] = 0;
+            } else {
+                yh[i] = f * loading.ZX(i, srslts.a(i));
+                double v = loading.ZVZ(i, srslts.P(i));
+                vyh[i] = v <= 0 ? 0 : sigma * Math.sqrt(v);
+            }
+        }
+        return TemporalDisaggregationResults.builder()
+                .maximum(ml)
+                .concentratedLikelihood(dll.rescale(model.getYfactor(), model.getXfactor()))
+                .disaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), yh))
+                .stdevDisaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), vyh))
+                .build();
+    }
+
+    private TemporalDisaggregationResults disaggregate(DisaggregationModel model, TemporalDisaggregationSpec spec) {
+        Ssf ssf;
+        SsfComponent nssf;
+        int[] diffuse = diffuseRegressors(model.nx(), spec);
+        MaximumLogLikelihood ml = null;
+        DiffuseConcentratedLikelihood dll;
+        if (!spec.isParameterEstimation()) {
+            nssf = noiseModel(spec);
+            ssf = SsfDisaggregation.of(nssf, model.getFrequencyRatio());
+            SsfData ssfdata = new SsfData(model.getHEY());
+            SsfRegressionModel ssfmodel = new SsfRegressionModel(ssf, ssfdata, model.getHEX(), diffuse);
+            dll = DkToolkit.concentratedLikelihoodComputer().compute(ssfmodel);
+        } else {
+            SsfFunction<Parameter, Ssf> fn = ssfFunction(model, spec);
+            ISsqFunctionMinimizer fmin = new LevenbergMarquardtMinimizer();
+            double start = spec.getParameter().getType() == ParameterType.Undefined
+                    ? .9 : spec.getParameter().getValue();
+            fmin.minimize(fn.ssqEvaluate(DoubleSequence.of(start)));
+            SsfFunctionPoint<Parameter, Ssf> rslt = (SsfFunctionPoint<Parameter, Ssf>) fmin.getResult();
+            DoubleSequence p = rslt.getParameters();
+            dll = rslt.getLikelihood();
+            ml = new MaximumLogLikelihood(rslt.getLikelihood().logLikelihood(),
+                    p, fmin.gradientAtMinimum(), fmin.curvatureAtMinimum());
+
+            if (spec.getResidualsModel() == Model.Ar1) {
+                nssf = AR1.of(p.get(0), 1, spec.isZeroInitialization());
+            } else {
+                nssf = Arima_1_1_0.of(p.get(0), 1, spec.isZeroInitialization());
+            }
+        }
+
+        // for computing the full model, we prefer to use the "slower" approach
+        // which is much simpler
+        // The estimation of the initial covariance matrices is unstable in case of 
+        // large values in the regression variables. Two solutions: rescaling of the 
+        // regression variables (no garantee) or use of the augmented Kalman smoother (default solution)
+        // A square root form of the diffuse smoothing should also be investigated.
+        SsfComponent rssf = RegSsf.of(nssf, model.getHX());
+        SsfData ssfdata = new SsfData(model.getHY());
+        ssf = SsfDisaggregation.of(rssf, model.getFrequencyRatio());
+        DefaultSmoothingResults srslts;
+        switch (spec.getAlgorithm()) {
+            case Augmented:
+                srslts = AkfToolkit.smooth(ssf, ssfdata, true);
+                break;
+            case Diffuse:
+                srslts = DkToolkit.smooth(ssf, ssfdata, true, false);
+                break;
+            default:
+                srslts = DkToolkit.smooth(ssf, ssfdata, true, false);
+        }
+
+        double[] yh = new double[model.getHY().length];
+        double[] vyh = new double[model.getHY().length];
+        int dim = ssf.getStateDim();
+        ISsfLoading loading = rssf.loading();
+        double yfac = model.getYfactor();
+        if (spec.getAggregationType() == AggregationType.Average)
+            yfac/=model.getFrequencyRatio();
+        double[] xfac = model.getXfactor();
+        double sigma = Math.sqrt(dll.ssq() / dll.dim()) / yfac;
+        for (int i = 0; i < yh.length; ++i) {
+            yh[i] = loading.ZX(i, srslts.a(i).drop(1, 0)) / yfac;
             double v = loading.ZVZ(i, srslts.P(i).extract(1, dim, 1, dim));
             vyh[i] = v <= 0 ? 0 : sigma * Math.sqrt(v);
         }
-        builder.disaggregatedSeries(TsData.ofInternal(model.hDom.getStartPeriod(), yh).multiply(f))
-                .stdevDisaggregatedSeries(TsData.ofInternal(model.hDom.getStartPeriod(), vyh));
-        return builder.build();
+        dll=dll.rescale(yfac, xfac);
+        // full residuals are obtained by applying the filter on the series without the
+        // regression effects
+         
+        
+        return TemporalDisaggregationResults.builder()
+                .maximum(ml)
+                .concentratedLikelihood(dll)
+                .disaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), yh))
+                .stdevDisaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), vyh))
+                .build();
     }
 
     private SsfComponent noiseModel(TemporalDisaggregationSpec spec) {
@@ -203,21 +287,22 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
     }
 
     private SsfFunction<Parameter, Ssf> ssfFunction(DisaggregationModel model, TemporalDisaggregationSpec spec) {
-        SsfData data = new SsfData(model.hY);
+        SsfData data = new SsfData(model.getHEY());
         Double lbound = spec.getTruncatedParameter();
         Mapping mapping = new Mapping(lbound == null ? -1 : lbound);
         boolean cl = spec.getResidualsModel() == Model.Ar1;
+        boolean disagg = spec.getAggregationType() == AggregationType.Average || spec.getAggregationType() == AggregationType.Sum;
         return SsfFunction.builder(data, mapping,
-                p -> ssf(p.getValue(), cl, spec.isZeroInitialization(), model.frequencyRatio))
-                .regression(model.hEX, diffuseRegressors(model.nx(), spec))
+                p -> ssf(p.getValue(), disagg, cl, spec.isZeroInitialization(), model.getFrequencyRatio()))
+                .regression(model.getHEX(), diffuseRegressors(model.nx(), spec))
                 .useMaximumLikelihood(true)
                 .build();
     }
 
-    private static Ssf ssf(double rho, boolean cl, boolean zeroinit, int ratio) {
+    private static Ssf ssf(double rho, boolean disagg, boolean cl, boolean zeroinit, int ratio) {
         SsfComponent cmp = cl ? AR1.of(rho, 1, zeroinit)
                 : Arima_1_1_0.of(rho, 1, zeroinit);
-        return SsfDisaggregation.of(cmp, ratio);
+        return disagg ? SsfDisaggregation.of(cmp, ratio) : Ssf.of(cmp, 0);
     }
 
     private int[] diffuseRegressors(int nx, TemporalDisaggregationSpec spec) {

@@ -21,6 +21,7 @@ import demetra.data.DataBlockIterator;
 import demetra.data.normalizer.IDataNormalizer;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
+import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import javax.annotation.Nonnull;
 
@@ -28,16 +29,22 @@ import javax.annotation.Nonnull;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Beta)
+@lombok.Value
 class DisaggregationModel {
 
+    @Nonnull
+    double[] hO;
+
+    @Nonnull
+    double[] hY;
     /**
      * Y expanded to the high frequency (with missing values). hY corresponds to
      * hDom (domain of the set of the indicators or pre-specified domain when
      * indicators are missing). If necessary it is expanded with missing values.
      */
     @Nonnull
-    double[] hY;
+    double[] hEY;
     /**
      * Regression variables. Defined on the high level domain. Could be null
      */
@@ -48,26 +55,19 @@ class DisaggregationModel {
      */
     Matrix hEX;
     /**
-     * High level domain. The results correspond to that domain.
+     * High level domain. Same length as hX, The results correspond to that
+     * domain.
      */
     TsDomain hDom;
     /**
-     * High level estimation domain. Corresponds to the domain taken into
-     * account in the estimation procedure.
+     * High level estimation domain. Same length as hEX. Corresponds to the
+     * domain taken into account in the estimation procedure.
      */
     TsDomain hEDom;
     /**
      * Ratio between the high and the low frequencies (Conversion ratio)
      */
     int frequencyRatio;
-
-    int nx() {
-        return hX == null ? 0 : hX.getColumnsCount();
-    }
-
-    int n() {
-        return hY.length;
-    }
     /**
      * Scaling factor for hY
      */
@@ -76,34 +76,28 @@ class DisaggregationModel {
      * Scaling factors for hX
      */
     double[] xfactor;
-
-    /**
-     *
-     * @param normalizer
-     */
-    void scale(IDataNormalizer normalizer) {
-        if (normalizer != null) {
-            yfactor = normalizer.normalize(DataBlock.ofInternal(hY));
-        } else {
-            yfactor = 1;
-        }
-        if (hX == null) {
-            return;
-        }
-
-        int nx = hX.getColumnsCount();
-        xfactor = new double[nx];
-
-        if (normalizer != null) {
-            DataBlockIterator cols = hX.columnsIterator();
-            int i = 0;
-            while (cols.hasNext()) {
-                xfactor[i++] = normalizer.normalize(cols.next());
-            }
-        } else {
-            for (int i = 0; i < xfactor.length; ++i) {
-                xfactor[i] = 1;
-            }
-        }
+    
+    DisaggregationModel(DisaggregationModelBuilder builder){
+        this.hO=builder.hO;
+        this.hY=builder.hY;
+        this.hEY=builder.hEY;
+        this.hX=builder.hX;
+        this.hEX=builder.hEX;
+        this.hDom=builder.hDom;
+        this.hEDom=builder.hEDom;
+        this.frequencyRatio=builder.frequencyRatio;
+        this.yfactor=builder.yfactor;
+        this.xfactor=builder.xfactor;
     }
+
+    int nx() {
+        return hX == null ? 0 : hX.getColumnsCount();
+    }
+
+    int n() {
+        return hEY.length;
+    }
+    
+    
+
 }

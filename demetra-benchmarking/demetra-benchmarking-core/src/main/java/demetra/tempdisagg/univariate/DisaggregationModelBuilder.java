@@ -18,10 +18,14 @@ package demetra.tempdisagg.univariate;
 
 import demetra.data.Cumulator;
 import demetra.data.AggregationType;
+import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
+import demetra.data.DoubleReader;
 import demetra.data.normalizer.AbsMeanNormalizer;
+import demetra.data.normalizer.IDataNormalizer;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.maths.matrices.Matrix;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.Regression;
 import demetra.timeseries.TsData;
@@ -29,6 +33,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -42,15 +47,23 @@ import javax.annotation.Nonnull;
 @BuilderPattern(DisaggregationModel.class)
 class DisaggregationModelBuilder {
 
-    private TsData y;
+    final TsData y;
     private final List<ITsVariable> regressors = new ArrayList<>();
     private TsDomain disaggregationDomain;
     private AggregationType aType = AggregationType.Sum;
+    private int observationPosition; // only used in custom interpolation
     private boolean rescale = true;
 
-    DisaggregationModelBuilder y(TsData y) {
+    // local information used in the building operation
+    double[] hO, hY, hEY;
+    Matrix hX, hEX;
+    TsDomain hDom, hEDom;
+    int frequencyRatio;
+    double yfactor = 1;
+    double[] xfactor;
+
+    DisaggregationModelBuilder(TsData y) {
         this.y = y;
-        return this;
     }
 
     DisaggregationModelBuilder disaggregationDomain(TsDomain domain) {
@@ -60,6 +73,12 @@ class DisaggregationModelBuilder {
 
     DisaggregationModelBuilder aggregationType(AggregationType type) {
         this.aType = type;
+        return this;
+    }
+
+    DisaggregationModelBuilder observationPosition(int pos) {
+        this.observationPosition = pos - 1;
+        this.aType = AggregationType.UserDefined;
         return this;
     }
 
@@ -81,30 +100,40 @@ class DisaggregationModelBuilder {
     }
 
     public DisaggregationModel build() {
-        DisaggregationModel data = startDataPreparation();
-        if (data == null) {
-            return null;
-        }
-        if (!prepare(data)) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-        return data;
+        clearTmp();
+        startDataPreparation();
+        prepare();
+        return new DisaggregationModel(this);
     }
 
-    private DisaggregationModel startDataPreparation() {
+    private void clearTmp() {
+        hO = null;
+        hY = null;
+        hEY = null;
+        hX = null;
+        hEX = null;
+        hDom = null;
+        hEDom = null;
+        frequencyRatio = 0;
+        yfactor = 1;
+        xfactor = null;
+    }
+
+    private void startDataPreparation() {
         if (y == null) {
-            return null;
+            throw new IllegalArgumentException("y not set");
         }
-        TsDomain lDom = y.getDomain(), hDom = disaggregationDomain;
-        int c = hDom.getTsUnit().ratioOf(lDom.getTsUnit());
+        if (disaggregationDomain == null) {
+            throw new IllegalArgumentException("disaggregation domain not set");
+        }
+        int c = disaggregationDomain.getTsUnit().ratioOf(y.getTsUnit());
         if (c <= 1) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
 
-        DisaggregationModel data = new DisaggregationModel();
-        data.frequencyRatio = c;
-        data.hDom = hDom;
-        return data;
+        // local data
+        frequencyRatio = c;
+        hDom = disaggregationDomain;
     }
 
     /**
@@ -113,30 +142,54 @@ class DisaggregationModelBuilder {
      * @param rescale
      * @return
      */
-    private boolean prepare(DisaggregationModel data) {
+    private void prepare() {
         TsDomain lDom = y.getDomain();
-        int lN = lDom.getLength(), hN = data.hDom.getLength();
+        int lN = lDom.getLength(), hN = hDom.getLength();
         if (lN == 0 || hN == 0) {
-            return false;
+            throw new IllegalArgumentException("Empty model"); //To change body of generated methods, choose Tools | Templates.
         }
         TsPeriod lStart = lDom.getStartPeriod(), lEnd = lDom.getEndPeriod();
-        TsPeriod hStart = data.hDom.getStartPeriod(), hEnd = data.hDom.getEndPeriod();
+        TsPeriod hStart = hDom.getStartPeriod(), hEnd = hDom.getEndPeriod();
         TsUnit lUnit = lStart.getUnit(), hUnit = hStart.getUnit();
 
-        // common periods in lFreq
+        // common periods in lFreq. First, we start from hdom and then we adjust for ldom
         TsPeriod cStart = TsPeriod.of(lUnit, hStart.start());
-        TsPeriod cEnd = TsPeriod.of(lUnit, hEnd.start());
+        TsPeriod cEnd = TsPeriod.of(lUnit, hEnd.previous().start()).next();
 
-        // adjust for complete periods...
-        if (aType != AggregationType.Last) {
-            if (!hStart.start().equals(cStart.start())) {
-                cStart = cStart.next();
-            }
-        }
-        if (aType != AggregationType.First) {
-            if (!hEnd.end().equals(cEnd.end())) {
-                cEnd = cEnd.previous();
-            }
+
+        // adjust start and end...
+        switch (aType) {
+            case Last:
+                if (!hEnd.start().equals(cEnd.start())) {
+                    cEnd = cEnd.previous();
+                }
+                break;
+            case First:
+                if (!hStart.start().equals(cStart.start())) {
+                    cStart = cStart.next();
+                }
+                break;
+            case UserDefined:
+                TsPeriod c = TsPeriod.of(hUnit, cStart.start());
+                if (c.until(hStart) > observationPosition) {
+                    cStart = cStart.next();
+                }
+                TsPeriod d = TsPeriod.of(hUnit, cEnd.previous().start());
+                if (d.until(hEnd) <= observationPosition) {
+                    cEnd = cEnd.previous();
+                }
+                break;
+            case Sum:
+            case Average:
+                if (!hStart.start().equals(cStart.start())) {
+                    cStart = cStart.next();
+                }
+                if (!hEnd.start().equals(cEnd.start())) {
+                    cEnd = cEnd.previous();
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid aggregation type");
         }
         if (lStart.isAfter(cStart)) {
             cStart = lStart;
@@ -144,80 +197,151 @@ class DisaggregationModelBuilder {
         if (lEnd.isBefore(cEnd)) {
             cEnd = lEnd;
         }
+        TsPeriod eStart;
+        switch (aType) {
+            case Last:
+                eStart = TsPeriod.of(hUnit, cStart.end()).previous();
+                break;
+            case First:
+                eStart = TsPeriod.of(hUnit, cStart.start());
+                break;
+            case UserDefined:
+                TsPeriod c = TsPeriod.of(hUnit, cStart.start());
+                eStart = c.plus(observationPosition);
+                break;
+            default:
+                eStart = TsPeriod.of(hUnit, cStart.start());
+        }
 
+        // Number of common lowfreq data
         int ny = cStart.until(cEnd);
+        // TODO: should be adjusted for diffuse orders
         if (ny < regressors.size()) {
-            return false;
+            throw new IllegalArgumentException("Empty model"); //To change body of generated methods, choose Tools | Templates.
         }
-        // common domain
+
+        // estimation domain in high frequency (start include, end excluded)
+        // the "estimation" data of the indicators will correspond to the "estimation domain".
+        // it is as small as possible.
+        // the estimation domain is defined as follow, depending on the aggregation type
+        // average, sum: full low-freq periods
+        // last: start at the last high freq period of a low freq period 
+        // and ends at a first high freq period of a low freq period
+        // first: start at the first high freq period of a low freq period 
+        // and ends at a second high freq period of a low freq period
+        // TODO: custom interpolation
         TsDomain yDom = TsDomain.of(cStart, ny);
-
-        if (aType == AggregationType.Last) {
-            hStart = TsPeriod.of(hUnit, cStart.end()).previous();
-        } else {
-            hStart = TsPeriod.of(hUnit, cStart.start());
+        int np;
+        switch (aType) {
+            case Average:
+            case Sum:
+                np = ny * frequencyRatio;
+                break;
+            default:
+                np = (ny - 1) * frequencyRatio + 1;
         }
-        if (aType == AggregationType.First) {
-            hEnd = TsPeriod.of(hUnit, cEnd.start());
-        } else {
-            hEnd = TsPeriod.of(hUnit, cEnd.end()).previous();
-        }
-
-        data.hEDom = TsDomain.of(hStart, hStart.until(hEnd));
-
-        prepareY(data, yDom);
+        hEDom = TsDomain.of(eStart, np);
+        prepareY(yDom);
         if (regressors.size() > 0) {
-            prepareX(data);
-        } else {
-            data.scale(rescale ? new AbsMeanNormalizer() : null);
+            prepareX();
         }
-
-        return true;
+        scale(rescale ? new AbsMeanNormalizer() : null);
     }
 
-    private void prepareX(DisaggregationModel data) {
+    private void prepareX() {
 
-        data.hX = Regression.matrix(disaggregationDomain, regressors.toArray(new ITsVariable[regressors.size()]));
-        if (rescale) {
-            data.scale(new AbsMeanNormalizer());
-        } else {
-            data.scale(null);
-        }
+        hX = Regression.matrix(disaggregationDomain, regressors.toArray(new ITsVariable[regressors.size()]));
 
+        int pos = hDom.indexOf(hEDom.getStartPeriod());
         if (aType != AggregationType.Average
                 && aType != AggregationType.Sum) {
-            data.hEX = data.hX;
+            hEX = hX.extract(pos, hEDom.length(), 0, hX.getColumnsCount());
         } else {
-            data.hEX = data.hX.deepClone();
-            Cumulator cumul = new Cumulator(data.frequencyRatio);
-            DataBlockIterator cX = data.hEX.columnsIterator();
+            hEX = hX.extract(pos, hEDom.length(), 0, hX.getColumnsCount()).deepClone();
+            Cumulator cumul = new Cumulator(frequencyRatio);
+            DataBlockIterator cX = hEX.columnsIterator();
             while (cX.hasNext()) {
                 cumul.transform(cX.next());
             }
         }
     }
 
-    private void prepareY(DisaggregationModel data, TsDomain yDom) {
-        double[] s = y.getValues().toArray();
+    private void prepareY(TsDomain yDom) {
 
         int ny = yDom.getLength();
         int pos;
-        if (aType == AggregationType.First
-                || aType == AggregationType.Last) {
-            pos = 0;
+        if (aType == AggregationType.Sum
+                || aType == AggregationType.Average) {
+            pos = frequencyRatio - 1;
         } else {
-            pos = data.frequencyRatio - 1;
+            pos = 0;
         }
-        double[] y = new double[data.hDom.getLength()];
-        for (int i = 0; i < y.length; ++i) {
-            y[i] = Double.NaN;
+        double[] hy = new double[hEDom.getLength()];
+        for (int i = 0; i < hy.length; ++i) {
+            hy[i] = Double.NaN;
         }
 
-        int xstart = data.hDom.getStartPeriod().until(data.hEDom.getStartPeriod()), ystart = this.y.getStart().until(yDom.getStartPeriod());
-        for (int i = 0, j = xstart + pos, k = ystart; i < ny; ++i, j += data.frequencyRatio, ++k) {
-            y[j] = s[k];
+        DoubleReader reader = y.getValues().reader();
+        int k = y.getStart().until(yDom.getStartPeriod());
+        reader.setPosition(k);
+        for (int j = pos, i = 0; i < ny; ++i, j += frequencyRatio) {
+            hy[j] = reader.next();
         }
-        data.hY = y;
+        hEY = hy;
+
+        hY = new double[hDom.getLength()];
+        int beg = hDom.getStartPeriod().until(hEDom.getStartPeriod());
+        for (int i = 0; i < beg; ++i) {
+            hY[i] = Double.NaN;
+        }
+        System.arraycopy(hEY, 0, hY, beg, hEY.length);
+        for (int i = beg + hEY.length; i < hY.length; ++i) {
+            hY[i] = Double.NaN;
+        }
+    }
+
+    private void scale(IDataNormalizer normalizer) {
+        if (normalizer != null) {
+            hO = hY.clone();
+            yfactor = normalizer.normalize(DataBlock.ofInternal(hY));
+            for (int i = 0; i < hEY.length; ++i) {
+                if (Double.isFinite(hEY[i])) {
+                    hEY[i] *= yfactor;
+                }
+            }
+        } else {
+            hO = hY;
+            yfactor = 1;
+        }
+        if (hX == null) {
+            return;
+        }
+
+        int nx = hX.getColumnsCount();
+        xfactor = new double[nx];
+
+        if (normalizer != null) {
+            DataBlockIterator cols = hX.columnsIterator();
+            int i = 0;
+            while (cols.hasNext()) {
+                double z = normalizer.normalize(cols.next());
+                xfactor[i++] = z;
+            }
+            if (aType == AggregationType.Average
+                    || aType == AggregationType.Sum) {
+                // in the other cases, hEX is a sub-matrix of hX; so it is already
+                // scaled;
+                DataBlockIterator ecols = hEX.columnsIterator();
+                i = 0;
+                while (ecols.hasNext()) {
+                    ecols.next().mul(xfactor[i++]);
+                }
+            }
+        } else {
+            for (int i = 0; i < xfactor.length; ++i) {
+                xfactor[i] = 1;
+            }
+        }
     }
 
 }

@@ -14,35 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.benchmarking.univariate;
+package demetra.benchmarking.spi;
 
-import demetra.benchmarking.spi.ICholette;
+import demetra.benchmarking.univariate.DentonSpec;
+import demetra.design.Algorithm;
+import demetra.design.ServiceDefinition;
 import demetra.timeseries.TsData;
-import demetra.util.ServiceLookup;
-import java.util.concurrent.atomic.AtomicReference;
-import demetra.design.Development;
+import demetra.timeseries.TsUnit;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Beta)
-@lombok.experimental.UtilityClass
-public class Cholette {
+@Algorithm
+@ServiceDefinition
+public interface IDenton {
 
+    TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, DentonSpec spec);
 
-    private final AtomicReference<ICholette> PROCESSOR = ServiceLookup.firstMutable(ICholette.class);
-
-    public void setProcessor(ICholette algorithm) {
-        PROCESSOR.set(algorithm);
-    }
-
-    public ICholette getProcessor() {
-        return PROCESSOR.get();
-    }
-
-    public TsData benchmark(TsData source, TsData target, CholetteSpec spec) {
-        return PROCESSOR.get().benchmark(source, target, spec);
-    }
-
+    TsData benchmark(TsUnit highFreq, TsData aggregationConstraint, DentonSpec spec);
 }

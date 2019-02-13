@@ -16,6 +16,7 @@
  */
 package demetra.benchmarking.multivariate;
 
+import demetra.benchmarking.spi.IMultivariateCholette;
 import demetra.benchmarking.univariate.CholetteSpec;
 import demetra.benchmarking.univariate.CholetteProcessor;
 import demetra.data.AggregationType;
@@ -47,8 +48,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceProvider(service = MultivariateCholette.Processor.class)
-public class MultivariateCholetteProcessor implements MultivariateCholette.Processor {
+@ServiceProvider(service = IMultivariateCholette.class)
+public class MultivariateCholetteProcessor implements IMultivariateCholette {
 
     /**
      * Inputs

@@ -16,6 +16,7 @@
  */
 package demetra.benchmarking.multivariate;
 
+import demetra.benchmarking.spi.IMultivariateCholette;
 import demetra.design.Algorithm;
 import demetra.design.Development;
 import demetra.design.ServiceDefinition;
@@ -32,27 +33,14 @@ import java.util.concurrent.atomic.AtomicReference;
 @lombok.experimental.UtilityClass
 public class MultivariateCholette {
 
-    @Algorithm
-    @ServiceDefinition
-    @FunctionalInterface
-    public static interface Processor {
 
-        /**
-         *
-         * @param dictionary
-         * @param spec
-         * @return
-         */
-        Map<String, TsData> benchmark(Map<String, TsData> dictionary, MultivariateCholetteSpec spec);
-    }
+    private final AtomicReference<IMultivariateCholette> PROCESSOR = ServiceLookup.firstMutable(IMultivariateCholette.class);
 
-    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
-
-    public void setProcessor(Processor algorithm) {
+    public void setProcessor(IMultivariateCholette algorithm) {
         PROCESSOR.set(algorithm);
     }
 
-    public Processor getProcessor() {
+    public IMultivariateCholette getProcessor() {
         return PROCESSOR.get();
     }
 

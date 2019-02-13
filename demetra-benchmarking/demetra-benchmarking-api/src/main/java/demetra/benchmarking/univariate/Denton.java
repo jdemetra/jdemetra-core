@@ -1,18 +1,18 @@
 /*
- * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * Copyright 2019 National Bank of Belgium.
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
- * https://joinup.ec.europa.eu/software/page/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the Licence is distributed on an "AS IS" basis,
+ *
+ *      https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
- * limitations under the Licence.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package demetra.benchmarking.univariate;
 
@@ -32,22 +32,14 @@ import demetra.design.ServiceDefinition;
 @lombok.experimental.UtilityClass
 public class Denton {
 
-    @Algorithm
-    @ServiceDefinition
-    public static interface Processor {
 
-        TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, DentonSpec spec);
+    private final AtomicReference<demetra.benchmarking.spi.IDenton> PROCESSOR = ServiceLookup.firstMutable(demetra.benchmarking.spi.IDenton.class);
 
-        TsData benchmark(TsUnit highFreq, TsData aggregationConstraint, DentonSpec spec);
-    }
-
-    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
-
-    public void setProcessor(Processor algorithm) {
+    public void setProcessor(demetra.benchmarking.spi.IDenton algorithm) {
         PROCESSOR.set(algorithm);
     }
 
-    public Processor getProcessor() {
+    public demetra.benchmarking.spi.IDenton getProcessor() {
         return PROCESSOR.get();
     }
 

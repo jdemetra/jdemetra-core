@@ -14,35 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.calendarization;
+package demetra.benchmarking.spi;
 
-import demetra.benchmarking.spi.ICalendarization;
-import demetra.design.Development;
+import demetra.calendarization.CalendarizationResults;
+import demetra.calendarization.CalendarizationSpec;
+import demetra.design.Algorithm;
+import demetra.design.ServiceDefinition;
 import demetra.timeseries.CalendarTimeSeries;
-import demetra.util.ServiceLookup;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Beta)
-@lombok.experimental.UtilityClass
-public class Calendarization {
+@Algorithm
+@ServiceDefinition
+@FunctionalInterface
+public interface ICalendarization {
 
-
-    private final AtomicReference<ICalendarization> PROCESSOR = ServiceLookup.firstMutable(ICalendarization.class);
-
-    public void setProcessor(ICalendarization algorithm) {
-        PROCESSOR.set(algorithm);
-    }
-
-    public ICalendarization getProcessor() {
-        return PROCESSOR.get();
-    }
-
-    public CalendarizationResults process(CalendarTimeSeries data, CalendarizationSpec spec) {
-        return PROCESSOR.get().process(data, spec);
-    }
-
+    /**
+     *
+     * @param data
+     * @param spec
+     * @return
+     */
+    CalendarizationResults process(CalendarTimeSeries data, CalendarizationSpec spec);
 }
