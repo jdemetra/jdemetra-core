@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -16,15 +16,23 @@
  */
 package demetra.tramo;
 
+import demetra.design.Development;
+import demetra.design.LombokWorkaround;
 import demetra.modelling.regression.RegressionTestType;
 import demetra.modelling.regression.TradingDaysType;
+import demetra.util.Validatable;
+import java.util.List;
 
 /**
  *
  * @author Jean Palate
  */
-@lombok.Data
-public final class TradingDaysSpec implements Cloneable {
+@Development(status = Development.Status.Beta)
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
+
+    private static final TradingDaysSpec DEFAULT = TradingDaysSpec.builder().build();
 
     public static enum AutoMethod {
         Unused,
@@ -35,39 +43,30 @@ public final class TradingDaysSpec implements Cloneable {
     public static final double DEF_PFTD = .01;
 
     private String holidays;
-    private String[] userVariables;
-    private TradingDaysType tradingDaysType = TradingDaysType.None;
+    private List<String> userVariables;
+    private TradingDaysType tradingDaysType;
     private boolean leapYear;
-    private RegressionTestType regressionTestType = RegressionTestType.None;
-    private int stockTradingDays = 0;
-    private AutoMethod automaticMethod = AutoMethod.Unused;
-    private double probabilityForFTest = DEF_PFTD;
+    private RegressionTestType regressionTestType;
+    private int stockTradingDays;
+    private AutoMethod automaticMethod;
+    private double probabilityForFTest;
 
-    public TradingDaysSpec() {
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .tradingDaysType(TradingDaysType.None)
+                .regressionTestType(RegressionTestType.None)
+                .stockTradingDays(0)
+                .automaticMethod(AutoMethod.Unused)
+                .probabilityForFTest(DEF_PFTD);
     }
 
     @Override
-    public TradingDaysSpec clone() {
-        try {
-            TradingDaysSpec c = (TradingDaysSpec) super.clone();
-             if (userVariables != null) {
-                c.userVariables = userVariables.clone();
-            }
-             return c;
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
+    public TradingDaysSpec validate() throws IllegalArgumentException {
+        if (probabilityForFTest <= 0 || probabilityForFTest > .1) {
+            throw new IllegalArgumentException("Probability for FTest must be > 0 and < 0.1");
         }
-    }
-
-    public void reset() {
-        holidays = null;
-        userVariables = null;
-        tradingDaysType = TradingDaysType.None;
-        leapYear = false;
-        regressionTestType = RegressionTestType.None;
-        stockTradingDays = 0;
-        automaticMethod = AutoMethod.Unused;
-        probabilityForFTest = DEF_PFTD;
+        return this;
     }
 
     public boolean isUsed() {
@@ -84,44 +83,8 @@ public final class TradingDaysSpec implements Cloneable {
         return automaticMethod != AutoMethod.Unused;
     }
 
-    public void setAutomatic(boolean value) {
-        automaticMethod = value ? AutoMethod.FTest : AutoMethod.Unused;
-    }
-
- 
-    public void setProbabibilityForFTest(double f) {
-        if (f <= 0 || f > .1) {
-            throw new IllegalArgumentException();
-        }
-        probabilityForFTest = f;
-    }
-
-    public void setTradingDaysType(TradingDaysType value) {
-        tradingDaysType = value;
-        userVariables = null;
-        stockTradingDays = 0;
-    }
-
-    /**
-     *
-     * @param w 1-based day of the month. Should be in [1, 31]
-     */
-    public void setStockTradingDays(int w) {
-        this.stockTradingDays = w;
-        holidays = null;
-        userVariables = null;
-        tradingDaysType = TradingDaysType.None;
-        leapYear = false;
-        automaticMethod = AutoMethod.Unused;
-        probabilityForFTest = DEF_PFTD;
-    }
-
     public boolean isStockTradingDays() {
         return stockTradingDays != 0;
-    }
-
-    public int getStockTradingDays() {
-        return stockTradingDays;
     }
 
     public boolean isValid() {
@@ -137,52 +100,76 @@ public final class TradingDaysSpec implements Cloneable {
         return true;
     }
 
-    public void setHolidays(String value) {
-        holidays = value;
-        if (holidays != null && holidays.length() == 0) {
-            holidays = null;
-        }
-        if (holidays != null) {
-            userVariables = null;
-        }
-    }
-
-    public void setUserVariables(String[] value) {
-        userVariables = value;
-        if (userVariables != null) {
-            holidays = null;
-            tradingDaysType = TradingDaysType.None;
-            leapYear = false;
-            automaticMethod = AutoMethod.Unused;
-            probabilityForFTest = DEF_PFTD;
-        }
-    }
-
     public boolean isTest() {
         return regressionTestType.isUsed();
     }
 
-    public void setTest(boolean test) {
-        if (test) {
-            this.regressionTestType = RegressionTestType.Separate_T;
-        } else {
-            this.regressionTestType = RegressionTestType.None;
+    public boolean isDefault() {
+        return this.equals(DEFAULT);
+    }
+
+    public static class Builder implements Validatable.Builder<TradingDaysSpec> {
+
+        public Builder automatic(boolean value) {
+            this.automaticMethod = value ? AutoMethod.FTest : AutoMethod.Unused;
+            return this;
+        }
+
+        public Builder test(boolean test) {
+            if (test) {
+                this.regressionTestType = RegressionTestType.Separate_T;
+            } else {
+                this.regressionTestType = RegressionTestType.None;
+            }
+            return this;
+        }
+
+        // TODO : Check if it should be done here
+        public Builder userVariables(List<String> value) {
+            userVariables = value;
+            if (userVariables != null) {
+                holidays = null;
+                tradingDaysType = TradingDaysType.None;
+                leapYear = false;
+                automaticMethod = AutoMethod.Unused;
+                probabilityForFTest = DEF_PFTD;
+            }
+            return this;
+        }
+
+        // TODO : Check if it should be done here
+        public Builder holidays(String value) {
+            holidays = value;
+            if (holidays != null && holidays.length() == 0) {
+                holidays = null;
+            }
+            if (holidays != null) {
+                userVariables = null;
+            }
+            return this;
+        }
+
+        /**
+         *
+         * @param w 1-based day of the month. Should be in [1, 31]
+         * @return
+         */
+        public Builder stockTradingDays(int w) {
+            this.stockTradingDays = w;
+            holidays = null;
+            userVariables = null;
+            tradingDaysType = TradingDaysType.None;
+            leapYear = false;
+            automaticMethod = AutoMethod.Unused;
+            probabilityForFTest = DEF_PFTD;
+            return this;
+        }
+
+        public Builder tradingDaysType(TradingDaysType type) {
+            tradingDaysType = type;
+            userVariables = null;
+            stockTradingDays = 0;
+            return this;
         }
     }
-
-    public boolean isDefault() {
-
-        return automaticMethod == AutoMethod.Unused && stockTradingDays == 0 && tradingDaysType == TradingDaysType.None && leapYear == false && holidays == null && userVariables == null;
-    }
-
-    public void disable() {
-        holidays = null;
-        userVariables = null;
-        tradingDaysType = TradingDaysType.None;
-        regressionTestType = RegressionTestType.None;
-        leapYear = false;
-        stockTradingDays = 0;
-        automaticMethod = AutoMethod.Unused;
-    }
-
 }

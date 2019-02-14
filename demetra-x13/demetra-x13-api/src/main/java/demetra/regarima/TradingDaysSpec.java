@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -16,207 +16,126 @@
  */
 package demetra.regarima;
 
+import demetra.design.Development;
+import demetra.design.LombokWorkaround;
 import demetra.modelling.ChangeOfRegimeSpec;
 import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.regression.TradingDaysType;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
+import demetra.util.Validatable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
- * @author Jean Palate
+ * @author Jean Palate, Mats Maggi
  */
-public class TradingDaysSpec {
+@Development(status = Development.Status.Beta)
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
+
+    private static final TradingDaysSpec DEFAULT = TradingDaysSpec.builder().build();
 
     private String holidays;
-    private String[] users;
-    private TradingDaysType type = TradingDaysType.None;
-    private LengthOfPeriodType lp = LengthOfPeriodType.None;
-    private RegressionTestSpec test = RegressionTestSpec.None;
-    private boolean autoAdjust = true;
-    private int w = 0;
-    private ChangeOfRegimeSpec changeofregime;
+    private List<String> userVariables;
+    private TradingDaysType type;
+    private LengthOfPeriodType lengthOfPeriodTime;
+    private RegressionTestSpec test;
+    private boolean autoAdjust;
+    private int stockTradingDays;
+    private ChangeOfRegimeSpec changeOfRegime;
 
-    public TradingDaysSpec() {
-    }
-
-    public TradingDaysSpec(TradingDaysSpec other) {
-        this.autoAdjust=other.autoAdjust;
-        this.changeofregime=other.changeofregime;
-        this.holidays=other.holidays;
-        this.lp=other.lp;
-        this.test=other.test;
-        this.type=other.type;
-        this.users=users != null ? users.clone() : null;
-        this.w=other.w;                
-    }
-
-    public void reset() {
-        holidays = null;
-        users = null;
-        type = TradingDaysType.None;
-        lp = LengthOfPeriodType.None;
-        test = RegressionTestSpec.None;
-        autoAdjust = true;
-        w = 0;
-        changeofregime = null;
-
-    }
-
-    public TradingDaysType getTradingDaysType() {
-        return type;
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .type(TradingDaysType.None)
+                .lengthOfPeriodTime(LengthOfPeriodType.None)
+                .test(RegressionTestSpec.None)
+                .autoAdjust(true)
+                .stockTradingDays(0);
     }
 
     public boolean isUsed() {
-        return type != TradingDaysType.None || users != null || w != 0;
+        return type != TradingDaysType.None || userVariables != null || stockTradingDays != 0;
     }
 
     boolean isDefined() {
         return isUsed() && test == RegressionTestSpec.None;
     }
 
-    public void setTradingDaysType(TradingDaysType value) {
-        type = value;
-        users = null;
-        w = 0;
-    }
-
-    public LengthOfPeriodType getLengthOfPeriod() {
-        return lp;
-    }
-
-    public void setLengthOfPeriod(LengthOfPeriodType value) {
-        lp = value;
-    }
-
-    public boolean isAutoAdjust() {
-        return autoAdjust;
-    }
-
-    public void setAutoAdjust(boolean value) {
-        autoAdjust = value;
-    }
-
-    /**
-     *
-     * @param w 1-based day of the month. Should be in [1, 31]
-     */
-    public void setStockTradingDays(int w) {
-        this.w = w;
-        holidays = null;
-        users = null;
-        type = TradingDaysType.None;
-        lp = LengthOfPeriodType.None;
-    }
-
     public boolean isStockTradingDays() {
-        return w != 0;
+        return stockTradingDays != 0;
     }
 
-    public int getStockTradingDays() {
-        return w;
-    }
-
+    // TODO : Include in validate() ?
     public boolean isValid() {
         if (isStockTradingDays()) {
             return true;
         }
         if (test != RegressionTestSpec.None) {
-            return type != TradingDaysType.None && lp != LengthOfPeriodType.None;
+            return type != TradingDaysType.None && lengthOfPeriodTime != LengthOfPeriodType.None;
         }
         if (type == TradingDaysType.None) {
-            return lp == LengthOfPeriodType.None;
+            return lengthOfPeriodTime == LengthOfPeriodType.None;
         }
         return true;
     }
 
-    public String getHolidays() {
-        return holidays;
-    }
-
-    public void setHolidays(String value) {
-        holidays = value;
-//                if (holidays_ == CalendarManager.DEF)
-//                    holidays_ = null;
-        if (holidays != null && holidays.length() == 0) {
-            holidays = null;
-        }
-        if (holidays != null) {
-            users = null;
-            w = 0;
-        }
-    }
-
-    public String[] getUserVariables() {
-        return users;
-    }
-
-    public void setUserVariables(String[] value) {
-        users = value;
-//        if (users_ != null && users_.length == 0) {
-//            users_ = null;
-//        }
-        if (users != null) {
-            holidays = null;
-            type = TradingDaysType.None;
-            lp = LengthOfPeriodType.None;
-            autoAdjust = false;
-        }
-    }
-
-    public RegressionTestSpec getTest() {
-        return test;
-    }
-
-    public void setTest(RegressionTestSpec value) {
-        test = value;
-    }
-
     public boolean isDefault() {
-        return w == 0 && type == TradingDaysType.None && lp == LengthOfPeriodType.None && holidays == null && users == null;
-    }
-
-    public ChangeOfRegimeSpec getChangeOfRegime() {
-        return changeofregime;
-    }
-
-    public void setChangeOfRegime(ChangeOfRegimeSpec value) {
-        changeofregime = value;
+        return this.equals(DEFAULT);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof TradingDaysSpec && equals((TradingDaysSpec) obj));
+    public TradingDaysSpec validate() throws IllegalArgumentException {
+        return this;
     }
 
-    private boolean equals(TradingDaysSpec other) {
-        return Arrays.deepEquals(users, other.users)
-                && Objects.equals(holidays, other.holidays) && w == other.w
-                && Objects.equals(changeofregime, other.changeofregime)
-                && type == other.type && lp == other.lp
-                && test == other.test && autoAdjust == other.autoAdjust;
-    }
+    public static class Builder implements Validatable.Builder<TradingDaysSpec> {
 
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 47 * hash + Objects.hashCode(this.holidays);
-        hash = 47 * hash + Arrays.deepHashCode(this.users);
-        hash = 47 * hash + Objects.hashCode(this.type);
-        hash = 47 * hash + Objects.hashCode(this.test);
-        hash = 47 * hash + this.w;
-        return hash;
-    }
+        public Builder type(TradingDaysType type) {
+            this.type = type;
+            this.userVariables = new ArrayList<>();
+            this.stockTradingDays = 0;
+            return this;
+        }
 
-    public void disable() {
-        holidays = null;
-        users = null;
-        type = TradingDaysType.None;
-        test = RegressionTestSpec.None;
-        lp = LengthOfPeriodType.None;
-        w = 0;
+        /**
+         *
+         * @param w 1-based day of the month. Should be in [1, 31]
+         * @return
+         */
+        public Builder stockTradingDays(int w) {
+            this.stockTradingDays = w;
+            this.holidays = null;
+            this.userVariables = new ArrayList<>();
+            this.type = TradingDaysType.None;
+            this.lengthOfPeriodTime = LengthOfPeriodType.None;
+            return this;
+        }
+
+        public Builder holidays(String h) {
+            this.holidays = h;
+            if (holidays != null && holidays.length() == 0) {
+                holidays = null;
+            }
+            if (holidays != null) {
+                this.userVariables = new ArrayList<>();
+                stockTradingDays = 0;
+            }
+            return this;
+        }
+
+        public Builder userVariables(List<String> userVariables) {
+            this.userVariables = new ArrayList<>(userVariables);
+            if (userVariables != null) {
+                this.holidays = null;
+                this.type = TradingDaysType.None;
+                this.lengthOfPeriodTime = LengthOfPeriodType.None;
+                this.autoAdjust = false;
+            }
+            return this;
+        }
     }
 
 }

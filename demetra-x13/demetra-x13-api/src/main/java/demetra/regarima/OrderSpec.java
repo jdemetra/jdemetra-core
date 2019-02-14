@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -16,46 +16,44 @@
  */
 package demetra.regarima;
 
-import java.util.Map;
-import java.util.Objects;
+import demetra.design.Development;
+import demetra.design.LombokWorkaround;
+import demetra.util.Validatable;
 
 /**
  *
- * @author Jean Palate
+ * @author Jean Palate, Mats Maggi
  */
-public class OrderSpec{
+@Development(status = Development.Status.Beta)
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class OrderSpec implements Validatable<OrderSpec> {
+
+    private static final OrderSpec DEFAULT = OrderSpec.builder().build();
+
+    private int regular;
+    private int seasonal;
+    private Type type;
 
     public enum Type {
-
         Fixed,
         Max
     }
 
-    public OrderSpec(int regular, int seasonal, Type type) {
-        this.regular = regular;
-        this.seasonal = seasonal;
-        this.type = type;
-    }
-    public final int regular;
-    public final int seasonal;
-    public final Type type;
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof OrderSpec && equals((OrderSpec) obj));
-    }
-
-    private boolean equals(OrderSpec other) {
-        return regular == other.regular && seasonal == other.seasonal && type == other.type;
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder();
     }
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + this.regular;
-        hash = 29 * hash + this.seasonal;
-        hash = 29 * hash + Objects.hashCode(this.type);
-        return hash;
+    public OrderSpec validate() throws IllegalArgumentException {
+        return this;
     }
 
+    public boolean isDefault() {
+        return this.equals(DEFAULT);
+    }
+
+    public static class Builder implements Validatable.Builder<OrderSpec> {
+    }
 }

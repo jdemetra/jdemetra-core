@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -17,11 +17,13 @@
 package demetra.tramo;
 
 import demetra.design.Development;
+import demetra.design.LombokWorkaround;
 import demetra.modelling.TransformationType;
 import demetra.modelling.regression.RegressionTestType;
 import demetra.modelling.regression.TradingDaysType;
 import demetra.regarima.SarimaSpec;
-import javax.annotation.Nonnull;
+import demetra.util.Validatable;
+import lombok.NonNull;
 
 /**
  * Defines the specifications for the Tramo pre-processing, which is
@@ -30,180 +32,110 @@ import javax.annotation.Nonnull;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
-@lombok.Data
-public final class TramoSpec implements Cloneable {
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class TramoSpec implements Validatable<TramoSpec> {
 
-    //public static TramoSpecification Default;
-    public static final TramoSpec TR0, TR1, TR2, TR3, TR4, TR5, TRfull;
-
-    static {
-        TR0 = new TramoSpec();
-        TR1 = new TramoSpec();
-        TR2 = new TramoSpec();
-        TR3 = new TramoSpec();
-        TR4 = new TramoSpec();
-        TR5 = new TramoSpec();
-        TRfull = new TramoSpec();
-
-        TransformSpec tr = new TransformSpec();
-        tr.setFunction(TransformationType.Auto);
-
-        EasterSpec e = new EasterSpec();
-        e.setOption(EasterSpec.Type.Standard);
-        e.setTest(true);
-        //e.setEasterIncluded(true);
-
-        TradingDaysSpec wd = new TradingDaysSpec();
-        wd.setTradingDaysType(TradingDaysType.WorkingDays);
-        wd.setLeapYear(true);
-        wd.setRegressionTestType(RegressionTestType.Separate_T);
-
-        TradingDaysSpec td = new TradingDaysSpec();
-        td.setTradingDaysType(TradingDaysType.TradingDays);
-        td.setLeapYear(true);
-        td.setRegressionTestType(RegressionTestType.Separate_T);
-
-        TradingDaysSpec dc = td.clone();
-        dc.setAutomatic(true);
-        EasterSpec ec = e.clone();
-        ec.setOption(EasterSpec.Type.IncludeEaster);
-        ec.setTest(true);
-
-        RegressionSpec rwd = new RegressionSpec();
-        CalendarSpec cwd = new CalendarSpec();
-        cwd.setEaster(e);
-        cwd.setTradingDays(wd);
-        rwd.setCalendar(cwd);
-        RegressionSpec rtd = new RegressionSpec();
-        CalendarSpec ctd = new CalendarSpec();
-        ctd.setEaster(e);
-        ctd.setTradingDays(td);
-        rtd.setCalendar(ctd);
-        RegressionSpec rc = new RegressionSpec();
-        CalendarSpec cc = new CalendarSpec();
-        cc.setEaster(ec);
-        cc.setTradingDays(dc);
-        rc.setCalendar(cc);
-
-        OutlierSpec o = new OutlierSpec();
-        o.setAo(true);
-        o.setTc(true);
-        o.setLs(true);
-
-        TR1.setTransform(tr);
-        TR1.setOutliers(o);
-
-        TR2.setTransform(tr);
-        TR2.setOutliers(o);
-        TR2.setRegression(rwd);
-
-        TR3.setTransform(tr);
-        TR3.setOutliers(o);
-        TR3.setUsingAutoModel(true);
-
-        TR4.setTransform(tr);
-        TR4.setOutliers(o);
-        TR4.setRegression(rwd);
-        TR4.setUsingAutoModel(true);
-
-        TR5.setTransform(tr);
-        TR5.setOutliers(o);
-        TR5.setRegression(rtd);
-        TR5.setUsingAutoModel(true);
-
-        TRfull.setTransform(tr);
-        TRfull.setOutliers(o);
-        TRfull.setRegression(rc);
-        TRfull.setUsingAutoModel(true);
-    }
-
-    public static final TramoSpec[] allSpecifications() {
-        return new TramoSpec[]{TR0, TR1, TR2, TR3, TR4, TR5, TRfull};
-    }
-
-    @lombok.NonNull
-    private SarimaSpec arima;
-    @lombok.NonNull
-    private TransformSpec transform;
-    @lombok.NonNull
-    private AutoModelSpec automdl;
-    @lombok.NonNull
-    private EstimateSpec estimate;
-    @lombok.NonNull
-    private OutlierSpec outlier;
-    @lombok.NonNull
-    private RegressionSpec regression;
+    private static final TramoSpec DEFAULT = TramoSpec.builder().build();
 
     /**
-     * Creates a new default specification. No transformation, no regression
-     * variables, no outliers detection, default airline model (without mean).
+     * Gets the predefined Arima specification. The AutoModel and the Arima
+     * properties are mutually exclusive specifications: Related TRAMO options:
+     * P, D, Q, BP, BD, BQ, IMEAN, JPR, JPS, JQR, JQS, INIT.
+     *
+     * @return the Arima specifications
      */
-    public TramoSpec() {
-        transform = new TransformSpec();
-        estimate = new EstimateSpec();
-        automdl = new AutoModelSpec(false);
-        outlier = new OutlierSpec();
-        arima = new SarimaSpec(SarimaValidator.VALIDATOR);
-        arima.airlineWithMean();
-        regression = new RegressionSpec();
-    }
-
-    @Override
-    public TramoSpec clone() {
-        try {
-            TramoSpec c = (TramoSpec) super.clone();
-            c.transform = transform.clone();
-            c.estimate = estimate.clone();
-            c.automdl = automdl.clone();
-            c.outlier = outlier.clone();
-            c.arima = arima.clone();
-            c.regression = regression.clone();
-            return c;
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
-        }
-    }
+    @lombok.NonNull
+    private SarimaSpec arima;
 
     /**
      * Gets the specifications related to the transformation of the original
-     * series. Related TRAMO options: LAM, FCT, UNITS
-     *
-     * @return The transform specifications
-     */
-    public TransformSpec getTransform() {
-        return transform;
-    }
-
-    /**
+     * series. Related TRAMO options: LAM, FCT, UNITS.
+     * -- SETTER --
      * Sets the specifications related to the transformation of the original
      * series.
      *
-     * @param value The new transform specifications. Should not be null
+     * @return The transform specifications
+     * @param transform The new transform specifications. Should not be null
      */
-    public void setTransform(@Nonnull TransformSpec value) {
-        transform = value;
-    }
+    @lombok.NonNull
+    private TransformSpec transform;
 
     /**
      * Gets the specifications related to the automatic ARIMA modelling (AMI).
      * The AutoModelSpec and the ArimaSpec are mutually exclusive
      * specifications: Related TRAMO options: IDIF, INIC, UB1, UB2, CANCEL,
-     * TSIG, PR, PCR
+     * TSIG, PR, PCR.
      *
      * @return The AMI specifications
      */
-    public AutoModelSpec getAutoModel() {
-        return automdl;
-    }
+    @lombok.NonNull
+    private AutoModelSpec autoModel;
 
     /**
-     * Sets the specifications related to the automatic ARIMA modelling (AMI).
+     * Gets options related to the estimation routine Related TRAMO options:
+     * TOL, TYPE.
+     * -- SETTER --
+     * Sets new options for the estimation routine.
      *
-     * @param value The new AMI. Should not be null.
+     * @param estimate The new options
+     * @return
      */
-    public void setAutoModel(@Nonnull AutoModelSpec value) {
-        automdl = value;
-        automdl.setEnabled(true);
+    @lombok.NonNull
+    private EstimateSpec estimate;
+
+    /**
+     * Gets the options for the automatic outliers detection Related TRAMO
+     * options: IATIP, AIO, TC, VA
+     * -- SETTER --
+     * Sets the options for the automatic outliers detection.
+     *
+     * @return the options for automatic outliers detection.
+     * @param outliers The new specifications.
+     */
+    @lombok.NonNull
+    private OutlierSpec outliers;
+
+    /**
+     * Gets the specifications for the regression model (including calendar
+     * effects).
+     * -- SETTER --
+     * Sets the specifications for the regression model.
+     *
+     * @param regression The new regression specifications.
+     * @return The specifications for the regression model.
+     */
+    @lombok.NonNull
+    private RegressionSpec regression;
+
+    /**
+     * Creates a new default specification builder. No transformation, no
+     * regression
+     * variables, no outliers detection, default airline model (without mean).
+     *
+     * @return the builder initialized with default parameters
+     */
+    @LombokWorkaround
+    public static Builder builder() {
+        SarimaSpec sarima = new SarimaSpec(SarimaValidator.VALIDATOR);
+        sarima.airlineWithMean();
+        return new Builder()
+                .transform(TransformSpec.builder().build())
+                .estimate(EstimateSpec.builder().build())
+                .autoModel(AutoModelSpec.builder().build())
+                .outliers(OutlierSpec.builder().build())
+                .arima(sarima)
+                .regression(RegressionSpec.builder().build());
+    }
+
+    @Override
+    public TramoSpec validate() throws IllegalArgumentException {
+        autoModel.validate();
+        estimate.validate();
+        outliers.validate();
+        regression.validate();
+        transform.validate();
+        return this;
     }
 
     /**
@@ -212,213 +144,146 @@ public final class TramoSpec implements Cloneable {
      * @return true if the AMI spec is enabled, false otherwise.
      */
     public boolean isUsingAutoModel() {
-        return automdl.isEnabled();
+        return autoModel.isEnabled();
     }
 
-    /**
-     * Enables/disables the AMI.
-     *
-     * @param enableAutoModel
-     */
-    public void setUsingAutoModel(boolean enableAutoModel) {
-        automdl.setEnabled(enableAutoModel);
+    public boolean isDefault() {
+        return this.equals(DEFAULT);
     }
 
-    /**
-     * Gets the predefined Arima specification. The AutoModel and the Arima
-     * properties are mutually exclusive specifications: Related TRAMO options:
-     * P, D, Q, BP, BD, BQ, IMEAN, JPR, JPS, JQR, JQS, INIT
-     *
-     * @return
-     */
-    public SarimaSpec getArima() {
-        return arima;
-    }
+    public static class Builder implements Validatable.Builder<TramoSpec> {
 
-    /**
-     * Sets a predefined Arima specification. The AMI is disabled.
-     *
-     * @param value The new Arima specifications
-     */
-    public void setArima(@Nonnull SarimaSpec value) {
-        arima = value;
-        setUsingAutoModel(false);
-    }
-
-    /**
-     * Gets options related to the estimation routine Related TRAMO options:
-     * TOL, TYPE
-     *
-     * @return
-     */
-    public EstimateSpec getEstimate() {
-        return estimate;
-    }
-
-    /**
-     * Sets new options for the estimation routine
-     *
-     * @param value The new options
-     */
-    public void setEstimate(@Nonnull EstimateSpec value) {
-        estimate = value;
-    }
-
-    /**
-     * Gets the options for the automatic outliers detection Related TRAMO
-     * options: IATIP, AIO, TC, VA
-     *
-     * @return
-     */
-    public OutlierSpec getOutliers() {
-        return outlier;
-    }
-
-    /**
-     * Sets the options for the automatic outliers detection.
-     *
-     * @param value The new specifications.
-     */
-    public void setOutliers(@Nonnull OutlierSpec value) {
-        outlier = value;
-    }
-
-    /**
-     * Gets the specifications for the regression model (including calendar
-     * effects).
-     *
-     * @return The specifications for the regression model.
-     */
-    public RegressionSpec getRegression() {
-        return regression;
-    }
-
-    /**
-     * Sets the specifications for the regression model.
-     *
-     * @param value The new specifications.
-     */
-    public void setRegression(@Nonnull RegressionSpec value) {
-        regression = value;
-    }
-
-    /**
-     * Checks that specifications are one of the pre-defined ones.
-     *
-     * @param spec The inspected specifications
-     * @return true if the specifications object is one of the pre-defined ones.
-     */
-    public static boolean isSystem(TramoSpec spec) {
-        return spec == TR0 || spec == TR1 || spec == TR2
-                || spec == TR3 || spec == TR4 || spec == TR5 || spec == TRfull;
-    }
-
-    /**
-     * Checks that specifications correspond to one of the pre-defined ones. It
-     * can be a pre-defined object or it can be equal to a pre-defined object.
-     *
-     * @param spec The inspected specifications
-     * @return true if the specifications object corresponds to the pre-defined
-     * ones.
-     */
-    public static TramoSpec matchSystem(TramoSpec spec) {
-        if (spec == TR0 || spec == TR1 || spec == TR2
-                || spec == TR3 || spec == TR4 || spec == TR5 || spec == TRfull) {
-            return spec;
+        /**
+         * Enables/disables the AMI.
+         *
+         * @param enableAutoModel
+         */
+        public Builder usingAutoModel(boolean enableAutoModel) {
+            this.autoModel = autoModel.toBuilder().enabled(enableAutoModel).build();
+            return this;
         }
-        if (spec.equals(TR0)) {
-            return TR0;
-        }
-        if (spec.equals(TR1)) {
-            return TR1;
-        } else if (spec.equals(TR2)) {
-            return TR2;
-        } else if (spec.equals(TR3)) {
-            return TR3;
-        } else if (spec.equals(TR4)) {
-            return TR4;
-        } else if (spec.equals(TR5)) {
-            return TR5;
-        } else if (spec.equals(TRfull)) {
-            return TRfull;
-        } else {
-            return null;
+
+        /**
+         * Sets a predefined Sarima specification. The AMI is disabled.
+         *
+         * @param sarima new Sarima spec
+         * @return
+         */
+        public Builder arima(@NonNull SarimaSpec sarima) {
+            this.arima = sarima.clone();
+            if (this.autoModel == null) {
+                this.autoModel = AutoModelSpec.builder().build();
+            }
+
+            return this;
         }
     }
 
-    @Override
-    public String toString() {
-        if (this == TR0) {
-            return "TR0";
-        }
-        if (this == TR1) {
-            return "TR1";
-        }
-        if (this == TR2) {
-            return "TR2";
-        }
-        if (this == TR3) {
-            return "TR3";
-        }
-        if (this == TR4) {
-            return "TR4";
-        }
-        if (this == TR5) {
-            return "TR5";
-        }
-        if (equals(TR0)) {
-            return "TR0";
-        }
-        if (equals(TR1)) {
-            return "TR1";
-        }
-        if (equals(TR2)) {
-            return "TR2";
-        }
-        if (equals(TR3)) {
-            return "TR3";
-        }
-        if (equals(TR4)) {
-            return "TR4";
-        }
-        if (equals(TR5)) {
-            return "TR5";
-        }
-        if (equals(TRfull)) {
-            return "TRfull";
-        }
-        return "TR";
+    //<editor-fold defaultstate="collapsed" desc="Default Specifications">
+    public static final TramoSpec TR0, TR1, TR2, TR3, TR4, TR5, TRfull;
+
+    public static final TramoSpec[] allSpecifications() {
+        return new TramoSpec[]{TR0, TR1, TR2, TR3, TR4, TR5, TRfull};
     }
 
-    public String toLongString() {
-        String s = toString();
-        if ("TR".equals(s)) {
-            return s;
-        } else {
-            StringBuilder builder = new StringBuilder();
-            builder.append("TR[").append(s).append(']');
-            return builder.toString();
-        }
-    }
+    static {
+        TR0 = TramoSpec.builder().build();
 
-    public static TramoSpec fromString(String name) {
-        switch (name) {
-            case "TR0":
-                return TR0;
-            case "TR1":
-                return TR1;
-            case "TR2":
-                return TR2;
-            case "TR3":
-                return TR3;
-            case "TR4":
-                return TR4;
-            case "TR5":
-                return TR5;
-            case "TRfull":
-                return TRfull;
-            default:
-                return new TramoSpec();
-        }
+        TransformSpec tr = TransformSpec.builder()
+                .function(TransformationType.Auto)
+                .build();
+
+        EasterSpec e = EasterSpec.builder()
+                .type(EasterSpec.Type.Standard)
+                .test(true)
+                .build();
+
+        TradingDaysSpec wd = TradingDaysSpec.builder()
+                .tradingDaysType(TradingDaysType.WorkingDays)
+                .leapYear(true)
+                .regressionTestType(RegressionTestType.Separate_T)
+                .build();
+
+        TradingDaysSpec td = TradingDaysSpec.builder()
+                .tradingDaysType(TradingDaysType.TradingDays)
+                .leapYear(true)
+                .regressionTestType(RegressionTestType.Separate_T)
+                .build();
+
+        TradingDaysSpec dc = td.toBuilder()
+                .automatic(true)
+                .build();
+        EasterSpec ec = e.toBuilder()
+                .type(EasterSpec.Type.IncludeEaster)
+                .test(true)
+                .build();
+
+        CalendarSpec cwd = CalendarSpec.builder()
+                .easter(e)
+                .tradingDays(wd)
+                .build();
+        RegressionSpec rwd = RegressionSpec.builder()
+                .calendar(cwd)
+                .build();
+
+        OutlierSpec o = OutlierSpec.builder()
+                .ao(true)
+                .tc(true)
+                .ls(true).build();
+
+        TR1 = TramoSpec.builder()
+                .transform(tr)
+                .outliers(o)
+                .build();
+
+        TR2 = TramoSpec.builder()
+                .transform(tr)
+                .outliers(o)
+                .regression(rwd)
+                .build();
+
+        TR3 = TramoSpec.builder()
+                .transform(tr)
+                .outliers(o)
+                .usingAutoModel(true)
+                .build();
+
+        TR4 = TramoSpec.builder()
+                .transform(tr)
+                .outliers(o)
+                .regression(rwd)
+                .usingAutoModel(true)
+                .build();
+
+        CalendarSpec ctd = CalendarSpec.builder()
+                .easter(e)
+                .tradingDays(td)
+                .build();
+
+        RegressionSpec rtd = RegressionSpec.builder()
+                .calendar(ctd)
+                .build();
+
+        TR5 = TramoSpec.builder()
+                .transform(tr)
+                .outliers(o)
+                .regression(rtd)
+                .usingAutoModel(true)
+                .build();
+
+        CalendarSpec cc = CalendarSpec.builder()
+                .easter(ec)
+                .tradingDays(dc)
+                .build();
+        RegressionSpec rc = RegressionSpec.builder()
+                .calendar(cc)
+                .build();
+        TRfull = TramoSpec.builder()
+                .transform(tr)
+                .outliers(o)
+                .regression(rc)
+                .usingAutoModel(true)
+                .build();
     }
+    //</editor-fold>
 }
