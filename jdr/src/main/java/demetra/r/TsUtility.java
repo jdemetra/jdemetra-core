@@ -17,6 +17,9 @@ import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.HolidaysUtility;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  *
@@ -77,7 +80,7 @@ public class TsUtility {
         return new int[]{freq, year, 1 + (mon - 1) / c};
     }
 
-    public boolean add( Holidays all, String holiday, int offset, double weight, boolean julian) {
+    public boolean add(Holidays all, String holiday, int offset, double weight, boolean julian) {
         try {
             PrespecifiedHoliday cur = new PrespecifiedHoliday(DayEvent.valueOf(holiday), offset, weight, julian);
             return all.add(cur);
@@ -94,7 +97,7 @@ public class TsUtility {
     public MatrixType holidays(Holidays all, String date, int length, String type) {
         LocalDate start = LocalDate.parse(date);
         Matrix m = Matrix.make(length, all.elements().length);
-        switch (type){
+        switch (type) {
             case "SkipSundays":
                 HolidaysUtility.fillDays(all.elements(), m, start, true);
                 break;
@@ -108,5 +111,32 @@ public class TsUtility {
                 HolidaysUtility.fillDays(all.elements(), m, start, false);
         }
         return m.unmodifiable();
+    }
+
+    public static class Dictionary {
+
+        static Dictionary of(Map<String, TsData> rslt) {
+            Dictionary dic=new Dictionary();
+            dic.dictionary.putAll(rslt);
+            return dic;
+        }
+
+        private final Map<String, TsData> dictionary = new LinkedHashMap<>();
+
+        public void add(String name, TsData s) {
+            dictionary.put(name, s);
+        }
+
+        public String[] names() {
+            return dictionary.keySet().toArray(new String[dictionary.size()]);
+        }
+
+        public TsData get(String name) {
+            return dictionary.get(name);
+        }
+        
+        public Map<String, TsData> data(){
+            return Collections.unmodifiableMap(dictionary);
+        }
     }
 }

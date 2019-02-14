@@ -16,10 +16,10 @@ import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.QuadraticForm;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.r.mapping.DiffuseLikelihoodInfo;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.descriptors.arima.SarimaDescriptor;
+import demetra.descriptors.stats.DiffuseConcentratedLikelihoodDescriptor;
 import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.SsfFunction;
@@ -75,9 +75,9 @@ public class TimeVaryingRegression {
 
         static {
             MAPPING.delegate(ARIMA0, SarimaDescriptor.getMapping(), r -> r.getArima0().toType());
-            MAPPING.delegate(LL0, DiffuseLikelihoodInfo.getMapping(), r -> r.getLl0());
+            MAPPING.delegate(LL0, DiffuseConcentratedLikelihoodDescriptor.getMapping(), r -> r.getLl0());
             MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getArima().toType());
-            MAPPING.delegate(LL, DiffuseLikelihoodInfo.getMapping(), r -> r.getLl());
+            MAPPING.delegate(LL, DiffuseConcentratedLikelihoodDescriptor.getMapping(), r -> r.getLl());
             MAPPING.set("aic0", Double.class, r -> r.getLl0().AIC(2));
             MAPPING.set("aic", Double.class, r -> r.getLl().AIC(3));
             MAPPING.set("tdvar", Double.class, r -> r.getNvar());

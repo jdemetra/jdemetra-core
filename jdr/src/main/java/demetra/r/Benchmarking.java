@@ -5,12 +5,18 @@
  */
 package demetra.r;
 
+import demetra.benchmarking.multivariate.ContemporaneousConstraint;
+import demetra.benchmarking.multivariate.MultivariateCholette;
+import demetra.benchmarking.multivariate.MultivariateCholetteSpec;
+import demetra.benchmarking.multivariate.TemporalConstraint;
 import demetra.benchmarking.univariate.CholetteSpec;
 import demetra.benchmarking.univariate.DentonSpec;
 import demetra.benchmarking.univariate.Cholette;
 import demetra.benchmarking.univariate.Denton;
 import demetra.data.AggregationType;
+import demetra.r.TsUtility.Dictionary;
 import demetra.timeseries.TsData;
+import java.util.Map;
 
 /**
  *
@@ -38,5 +44,24 @@ public class Benchmarking {
                 .bias(CholetteSpec.BiasCorrection.valueOf(bias))
                 .build();
         return Cholette.benchmark(source, bench, spec);
+    }
+    
+    public Dictionary multiCholette(Dictionary input, String[] temporalConstraints, String[] contemporaneousConstraints, double rho, double lambda, String conversion){
+        MultivariateCholetteSpec.Builder builder = MultivariateCholetteSpec.builder()
+                .rho(rho)
+                .lambda(lambda)
+                .aggregationType(AggregationType.valueOf(conversion));
+        if (temporalConstraints != null){
+            for (int i=0; i<temporalConstraints.length; ++i){
+                builder.temporalConstraint(TemporalConstraint.parse(temporalConstraints[i]));
+            }
+        }
+        if (contemporaneousConstraints != null){
+            for (int i=0; i<contemporaneousConstraints.length; ++i){
+                builder.contemporaneousConstraint(ContemporaneousConstraint.parse(contemporaneousConstraints[i]));
+            }
+        }
+        Map<String, TsData> rslt = MultivariateCholette.benchmark(input.data(), builder.build());
+        return Dictionary.of(rslt);
     }
 }
