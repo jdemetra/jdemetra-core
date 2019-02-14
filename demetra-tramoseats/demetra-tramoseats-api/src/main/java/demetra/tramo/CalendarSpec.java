@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -17,14 +17,19 @@
 package demetra.tramo;
 
 import demetra.design.Development;
+import demetra.design.LombokWorkaround;
+import demetra.util.Validatable;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
-@lombok.Data
-public final class CalendarSpec implements Cloneable {
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class CalendarSpec implements Validatable<CalendarSpec> {
+
+    private final static CalendarSpec DEFAULT = CalendarSpec.builder().build();
 
     public static final String TD = "td", EASTER = "easter";
 
@@ -34,21 +39,11 @@ public final class CalendarSpec implements Cloneable {
     @lombok.NonNull
     private EasterSpec easter;
 
-    public CalendarSpec() {
-        tradingDays = new TradingDaysSpec();
-        easter = new EasterSpec();
-    }
-
-    @Override
-    public CalendarSpec clone() {
-        try {
-            CalendarSpec c = (CalendarSpec) super.clone();
-            c.tradingDays = tradingDays.clone();
-            c.easter = easter.clone();
-            return c;
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
-        }
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .tradingDays(TradingDaysSpec.builder().build())
+                .easter(EasterSpec.builder().build());
     }
 
     public boolean isUsed() {
@@ -56,7 +51,16 @@ public final class CalendarSpec implements Cloneable {
     }
 
     public boolean isDefault() {
-        return easter.isDefault()
-                && tradingDays.isDefault();
+        return this.equals(DEFAULT);
+    }
+
+    @Override
+    public CalendarSpec validate() throws IllegalArgumentException {
+        tradingDays.validate();
+        easter.validate();
+        return this;
+    }
+
+    public static class Builder implements Validatable.Builder<CalendarSpec> {
     }
 }

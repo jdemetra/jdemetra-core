@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -17,12 +17,14 @@
 package demetra.tramo;
 
 import demetra.design.Development;
+import demetra.design.LombokWorkaround;
 import demetra.modelling.regression.InterventionVariable;
 import demetra.modelling.regression.Ramp;
 import demetra.modelling.regression.UserVariable;
 import demetra.modelling.regression.IOutlier;
-import java.util.Collections;
+import demetra.util.Validatable;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,92 +32,67 @@ import java.util.Map;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
-@lombok.Data
-public final class RegressionSpec implements Cloneable {
-
-    private static final IOutlier[] NOOUTLIER = new IOutlier[0];
-    private static final Ramp[] NORAMP = new Ramp[0];
-    private static final InterventionVariable[] NOII = new InterventionVariable[0];
-    private static final UserVariable[] NOUSER = new UserVariable[0];
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class RegressionSpec implements Validatable<RegressionSpec> {
 
     private CalendarSpec calendar;
-    private IOutlier[] outliers = NOOUTLIER;
-    private Ramp[] ramps = NORAMP;
-    private InterventionVariable[] interventionVariables = NOII;
-    private UserVariable[] userDefinedVariables = NOUSER;
+    @lombok.Singular
+    private List<IOutlier> outliers;
+    @lombok.Singular
+    private List<Ramp> ramps;
+    @lombok.Singular
+    private List<InterventionVariable> interventionVariables;
+    @lombok.Singular
+    private List<UserVariable> userDefinedVariables;
+
     // the maps with the coefficients use short names...
-    private Map<String, double[]> fixedCoefficients = new LinkedHashMap<>();
-    private Map<String, double[]> coefficients = new LinkedHashMap<>();
-    
-    private static final RegressionSpec DEFAULT=new RegressionSpec();
+    private Map<String, double[]> fixedCoefficients;
+    private Map<String, double[]> coefficients;
 
-    public RegressionSpec() {
-        calendar = new CalendarSpec();
-    }
+    private static final RegressionSpec DEFAULT = RegressionSpec.builder().build();
 
-    @Override
-    public RegressionSpec clone() {
-        try {
-            RegressionSpec c = (RegressionSpec) super.clone();
-            c.calendar = calendar.clone();
-            c.coefficients=new LinkedHashMap();
-            c.coefficients.putAll(coefficients);
-            c.fixedCoefficients=new LinkedHashMap();
-            c.fixedCoefficients.putAll(fixedCoefficients);
-            return c;
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
-        }
-    }
-
-    public void reset() {
-        outliers = NOOUTLIER;
-        ramps = NORAMP;
-        interventionVariables = NOII;
-        userDefinedVariables = NOUSER;
-        coefficients.clear();
-        fixedCoefficients.clear();
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .fixedCoefficients(new LinkedHashMap<>())
+                .coefficients(new LinkedHashMap<>())
+                .calendar(CalendarSpec.builder().build());
     }
 
     public boolean isUsed() {
-        return calendar.isUsed() || outliers.length > 0
-                || ramps.length > 0 || interventionVariables.length > 0 || userDefinedVariables.length > 0;
+        return calendar.isUsed() && !outliers.isEmpty()
+                && !ramps.isEmpty() && !interventionVariables.isEmpty() 
+                && !userDefinedVariables.isEmpty();
     }
 
     public boolean isDefault() {
         return this.equals(DEFAULT);
     }
 
-    public int getUserDefinedVariablesCount() {
-        return userDefinedVariables.length;
+    @Override
+    public RegressionSpec validate() throws IllegalArgumentException {
+        return this;
     }
 
-    public UserVariable getUserDefinedVariable(int idx) {
-        return userDefinedVariables[idx];
-    }
+    public static class Builder implements Validatable.Builder<RegressionSpec> {
 
-     public int getOutliersCount() {
-        return outliers.length;
-    }
+        @LombokWorkaround
+        public Builder fixedCoefficient(String key, double[] value) {
+            if (fixedCoefficients == null) {
+                fixedCoefficients = new LinkedHashMap<>();
+            }
+            fixedCoefficients.put(key, value);
+            return this;
+        }
 
-    public IOutlier getOutlier(int idx) {
-        return outliers[idx];
+        @LombokWorkaround
+        public Builder coefficient(String key, double[] value) {
+            if (coefficients == null) {
+                coefficients = new LinkedHashMap<>();
+            }
+            coefficients.put(key, value);
+            return this;
+        }
     }
-
-    public int getInterventionVariablesCount() {
-        return interventionVariables.length;
-    }
-
-    public InterventionVariable getInterventionVariable(int idx) {
-        return interventionVariables[idx];
-    }
-
-    public int getRampsCount() {
-        return ramps.length;
-    }
-
-    public Ramp getRamp(int idx) {
-        return ramps[idx];
-    }
-
 }

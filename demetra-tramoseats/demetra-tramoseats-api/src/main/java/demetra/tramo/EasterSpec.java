@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -17,17 +17,19 @@
 package demetra.tramo;
 
 import demetra.design.Development;
+import demetra.design.LombokWorkaround;
+import demetra.util.Validatable;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
-@lombok.Data
-public final class EasterSpec implements Cloneable {
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class EasterSpec implements Validatable<EasterSpec> {
 
     public static enum Type {
-
         Unused, Standard, IncludeEaster, IncludeEasterMonday;
 
         public boolean containsEaster() {
@@ -43,51 +45,27 @@ public final class EasterSpec implements Cloneable {
     public static boolean DEF_JULIAN = false;
 
     private boolean test;
-    private int duration = DEF_IDUR;
-    private Type type = Type.Unused;
-    private boolean julian = DEF_JULIAN;
-    
-    private static final EasterSpec DEFAULT=new EasterSpec();
+    private int duration;
+    private Type type;
+    private boolean julian;
 
-    public EasterSpec() {
+    private static final EasterSpec DEFAULT = EasterSpec.builder().build();
+
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .test(false)
+                .julian(DEF_JULIAN)
+                .type(Type.Unused)
+                .duration(DEF_IDUR);
     }
 
     @Override
-    public EasterSpec clone() {
-        try {
-            return (EasterSpec) super.clone();
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
+    public EasterSpec validate() throws IllegalArgumentException {
+        if (duration <= 0 || duration > 15) {
+            throw new IllegalArgumentException("Duration should be inside [1, 15]");
         }
-    }
-
-    public void reset() {
-        test = false;
-        duration = DEF_IDUR;
-        type = Type.Unused;
-    }
-
-    public boolean isTest() {
-        return test;
-    }
-
-    public void setTest(boolean value) {
-        test = value;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int value) {
-        if (value <= 0 || value > 15) {
-            throw new TramoException("Duration should be inside [1, 15]");
-        }
-        duration = value;
-    }
-
-    public Type getOption() {
-        return type;
+        return this;
     }
 
     public boolean isUsed() {
@@ -98,20 +76,10 @@ public final class EasterSpec implements Cloneable {
         return type != Type.Unused && !test;
     }
 
-    public void setOption(Type type) {
-        this.type = type;
-    }
-
-    public boolean isJulian() {
-        return julian;
-    }
-
-    public void setJulian(boolean julian) {
-        this.julian = julian;
-    }
-
     public boolean isDefault() {
         return this.equals(DEFAULT);
     }
 
+    public static class Builder implements Validatable.Builder<EasterSpec> {
+    }
 }

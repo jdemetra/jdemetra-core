@@ -97,8 +97,8 @@ public class TramoProcessor implements IPreprocessor {
     private boolean needOutliers;
     private boolean needAutoModelling;
 
-    private TramoProcessor(TramoSpec spec, ModellingContext context) {
-        this.spec = spec.clone();
+    private TramoProcessor(TramoSpec spec, ModellingContext context) {        
+        this.spec = spec;
         this.modellingContext = context;
         this.options = readAmiOptions(spec);
         TradingDaysSpec td = spec.getRegression().getCalendar().getTradingDays();

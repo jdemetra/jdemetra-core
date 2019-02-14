@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -16,7 +16,9 @@
  */
 package demetra.sa.benchmarking;
 
-import java.util.Map;
+import demetra.design.Development;
+import demetra.design.LombokWorkaround;
+import demetra.util.Validatable;
 
 /**
  * This class specifies the way the uni-variate benchmarking routine (Cholette)
@@ -29,8 +31,10 @@ import java.util.Map;
  *
  * @author Jean Palate
  */
-@lombok.Data
-public final class SaBenchmarkingSpec implements Cloneable {
+@Development(status = Development.Status.Beta)
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class SaBenchmarkingSpec implements Validatable<SaBenchmarkingSpec> {
 
     public static double DEF_LAMBDA = 1, DEF_RHO = 1;
     public static final String ENABLED = "enabled",
@@ -41,37 +45,44 @@ public final class SaBenchmarkingSpec implements Cloneable {
             BIAS = "bias";
 
     public static enum Target {
-
         Original,
         CalendarAdjusted
     }
 
     public static enum BiasCorrection {
-
         None, Additive, Multiplicative
     };
 
-    private boolean enabled = false, forecast = false;
+    private boolean enabled, forecast;
     @lombok.NonNull
-    private Target target = Target.CalendarAdjusted;
-    private double rho = DEF_RHO;
-    private double lambda = DEF_LAMBDA;
+    private Target target;
+    private double rho;
+    private double lambda;
     @lombok.NonNull
-    private BiasCorrection biasCorrection = BiasCorrection.None;
-    
-    private static final SaBenchmarkingSpec DEFAULT=new SaBenchmarkingSpec();
+    private BiasCorrection biasCorrection;
+
+    private static final SaBenchmarkingSpec DEFAULT = SaBenchmarkingSpec.builder().build();
+
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .enabled(false)
+                .forecast(false)
+                .target(Target.CalendarAdjusted)
+                .rho(DEF_RHO)
+                .lambda(DEF_LAMBDA)
+                .biasCorrection(BiasCorrection.None);
+    }
 
     @Override
-    public SaBenchmarkingSpec clone() {
-        try {
-            return (SaBenchmarkingSpec) super.clone();
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
-        }
+    public SaBenchmarkingSpec validate() throws IllegalArgumentException {
+        return this;
     }
-    
-    public boolean isDefault(){
+
+    public boolean isDefault() {
         return this.equals(DEFAULT);
     }
 
+    public static class Builder implements Validatable.Builder<SaBenchmarkingSpec> {
+    }
 }

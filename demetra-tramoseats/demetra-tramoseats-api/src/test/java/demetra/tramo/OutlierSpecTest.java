@@ -1,13 +1,13 @@
 /*
  * Copyright 2019 National Bank of Belgium
- *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * 
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- *
+ * 
  * http://ec.europa.eu/idabc/eupl
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,23 +16,18 @@
  */
 package demetra.tramo;
 
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
- * @author palatej
+ * @author Mats Maggi
  */
-public class CalendarSpecTest {
-
-    public CalendarSpecTest() {
-    }
-
+public class OutlierSpecTest {
+    
     @Test
     public void testClone() {
-        CalendarSpec spec = CalendarSpec.builder().build();
-        CalendarSpec cspec = spec.toBuilder().build();
-        assertTrue(spec.equals(cspec));
+        OutlierSpec spec = OutlierSpec.builder().build();
+        assertEquals(spec, spec.toBuilder().build());
     }
-
 }

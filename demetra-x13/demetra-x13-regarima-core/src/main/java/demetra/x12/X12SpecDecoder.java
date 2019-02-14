@@ -1,11 +1,21 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2019 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package demetra.x12;
 
-import demetra.regarima.MovingHolidaySpec;
 import demetra.regarima.SingleOutlierSpec;
 import demetra.regarima.EstimateSpec;
 import demetra.regarima.OutlierSpec;
@@ -19,7 +29,6 @@ import demetra.modelling.regression.AdditiveOutlier;
 import demetra.modelling.regression.LevelShift;
 import demetra.modelling.regression.ModellingContext;
 import demetra.modelling.regression.PeriodicOutlier;
-import demetra.modelling.regression.RegressionTestType;
 import demetra.modelling.regression.TransitoryChange;
 import demetra.regarima.regular.AICcComparator;
 import demetra.regarima.regular.RegressionVariablesTest;
@@ -27,6 +36,8 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.x12.X12Preprocessor.AmiOptions;
 import javax.annotation.Nonnull;
 import demetra.modelling.regression.IEasterVariable;
+import demetra.regarima.EasterSpec;
+import java.util.List;
 
 /**
  * The Tramo processing builder initializes the regarima processing, which
@@ -65,9 +76,9 @@ final class X12SpecDecoder {
         TradingDaysSpec tdspec = spec.getRegression().getTradingDays();
         if (tspec.getFunction() == TransformationType.Auto) {
             builder.logLevel(LogLevelModule.builder()
-                    .comparator(tspec.getAICDiff())
+                    .comparator(tspec.getAicDiff())
                     .estimationPrecision(espec.getTol())
-                    .adjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriod() : LengthOfPeriodType.None)
+                    .adjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriodTime() : LengthOfPeriodType.None)
                     .build());
         }
     }
@@ -75,9 +86,9 @@ final class X12SpecDecoder {
     private void readAutoModel(final RegArimaSpec spec) {
         AutoModelSpec amiSpec = spec.getAutoModel();
         DifferencingModule diff = DifferencingModule.builder()
-                .cancel(amiSpec.getCancelationLimit())
-                .ub1(amiSpec.getInitialUnitRootLimit())
-                .ub2(amiSpec.getFinalUnitRootLimit())
+                .cancel(amiSpec.getCancel())
+                .ub1(amiSpec.getUb1())
+                .ub2(amiSpec.getUb2())
                 .build();
         ArmaModule arma = ArmaModule.builder()
                 .balanced(amiSpec.isBalanced())
@@ -94,9 +105,9 @@ final class X12SpecDecoder {
             return;
         }
         OutliersDetectionModule.Builder obuilder = OutliersDetectionModule.builder();
-        SingleOutlierSpec[] types = outliers.getTypes();
-        for (int i = 0; i < types.length; ++i) {
-            switch (types[i].getType()) {
+        List<SingleOutlierSpec> types = outliers.getTypes();
+        for (int i = 0; i < types.size(); ++i) {
+            switch (types.get(i).getType()) {
                 case AdditiveOutlier.CODE:
                     obuilder.ao(true);
                     break;
@@ -113,28 +124,28 @@ final class X12SpecDecoder {
         }
         builder.outliers(
                 obuilder.span(outliers.getSpan())
-                        .maxRound(outliers.getMaxIter())
-                        .tcrate(outliers.getMonthlyTCRate())
-                        .build());
+                .maxRound(outliers.getMaxIter())
+                .tcrate(outliers.getMonthlyTCRate())
+                .build());
     }
 
     private void readRegression(final RegArimaSpec spec, ModellingContext context) {
         TradingDaysSpec tdspec = spec.getRegression().getTradingDays();
-        AICcComparator comparator = new AICcComparator(spec.getRegression().getAICCDiff());
+        AICcComparator comparator = new AICcComparator(spec.getRegression().getAicDiff());
         if (tdspec.getTest() != RegressionTestSpec.None) {
             CalendarEffectsDetectionModule cal = CalendarEffectsDetectionModule.builder()
                     .tradingDays(X12ModelBuilder.tradingDays(spec, context))
                     .leapYear(X12ModelBuilder.leapYear(tdspec))
-                    .adjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriod() : LengthOfPeriodType.None)
+                    .adjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriodTime() : LengthOfPeriodType.None)
                     .modelComparator(comparator)
                     .build();
             builder.calendarTest(cal);
         }
-        MovingHolidaySpec espec = spec.getRegression().getEaster();
+        EasterSpec espec = spec.getRegression().getEaster();
         if (espec != null && espec.getTest() != RegressionTestSpec.None) {
             int[] w;
             if (espec.getTest() == RegressionTestSpec.Remove) {
-                w = new int[]{espec.getW()};
+                w = new int[]{espec.getDuration()};
             } else {
                 w = new int[]{1, 8, 15};
             }
@@ -171,13 +182,13 @@ final class X12SpecDecoder {
         AutoModelSpec ami = spec.getAutoModel();
         builder.options(
                 AmiOptions.builder()
-                        .precision(spec.getEstimate().getTol())
-                        .va(spec.getOutliers().getDefaultCriticalValue())
-                        .reduceVa(ami.getPercentReductionCV())
-                        .ljungBoxLimit(ami.getLjungBoxLimit())
-                        .checkMu(spec.isUsingAutoModel())
-                        .mixedModel(ami.isMixed())
-                        .build());
+                .precision(spec.getEstimate().getTol())
+                .va(spec.getOutliers().getDefaultCriticalValue())
+                .reduceVa(ami.getPredcv())
+                .ljungBoxLimit(ami.getLjungBoxLimit())
+                .checkMu(spec.isUsingAutoModel())
+                .mixedModel(ami.isMixed())
+                .build());
 
     }
 

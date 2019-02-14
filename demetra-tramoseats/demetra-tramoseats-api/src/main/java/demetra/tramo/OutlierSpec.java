@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -17,97 +17,38 @@
 package demetra.tramo;
 
 import demetra.design.Development;
+import demetra.design.LombokWorkaround;
 import demetra.timeseries.TimeSelector;
+import demetra.util.Validatable;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
-@lombok.Data
-public final class OutlierSpec implements Cloneable {
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class OutlierSpec implements Validatable<OutlierSpec> {
 
     public static final double DEF_DELTATC = .7;
     public static final boolean DEF_EML = false;
 
-    private static final OutlierSpec DEFAULT = new OutlierSpec();
+    private static final OutlierSpec DEFAULT = OutlierSpec.builder().build();
 
     private boolean ao, ls, tc, so;
-    private double deltaTC = DEF_DELTATC;
-    private boolean maximumLikelihood = DEF_EML;
-    private double criticalValue = 0;
+    private double deltaTC;
+    private boolean maximumLikelihood;
+    private double criticalValue;
     @lombok.NonNull
-    private TimeSelector span = TimeSelector.all();
+    private TimeSelector span;
 
-    public OutlierSpec() {
-    }
-
-    @Override
-    public OutlierSpec clone() {
-        try {
-            OutlierSpec c = (OutlierSpec) super.clone();
-            c.span = span.clone();
-            return c;
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
-        }
-    }
-
-    public void reset() {
-        ao = false;
-        ls = false;
-        tc = false;
-        so = false;
-        deltaTC = DEF_DELTATC;
-        maximumLikelihood = false;
-        criticalValue = 0;
-        span = TimeSelector.all();
-    }
-
-    public void setDeltaTC(double value) {
-        if (value != 0 && value < .3 || value >= 1) {
-            throw new TramoException("TC should belong to [0.3, 1.0[");
-        }
-        deltaTC = value;
-    }
-
-    public void setCriticalValue(double value) {
-        if (value != 0 && value < 2) {
-            throw new TramoException("Critical value should be greater than 2.0");
-        }
-        criticalValue = value;
-    }
-
-    public int getAIO() {
-        if (ao && ls && !tc) {
-            return 3;
-        } else if (ao && tc && !ls) {
-            return 1;
-        } else {
-            return 2;
-        }
-    }
-
-    public void setAIO(int value) {
-        ao = false;
-        ls = false;
-        tc = false;
-        so = false;
-        switch (value) {
-            case 1:
-                ao = true;
-                tc = true;
-                break;
-            case 2:
-                ao = true;
-                tc = true;
-                ls = true;
-                break;
-            case 3:
-                ao = true;
-                ls = true;
-                break;
-        }
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .deltaTC(DEF_DELTATC)
+                .maximumLikelihood(DEF_EML)
+                .criticalValue(0)
+                .span(TimeSelector.all());
     }
 
     public boolean isDefault() {
@@ -118,4 +59,17 @@ public final class OutlierSpec implements Cloneable {
         return ao || ls || tc || so;
     }
 
+    @Override
+    public OutlierSpec validate() throws IllegalArgumentException {
+        if (deltaTC != 0 && deltaTC < .3 || deltaTC >= 1) {
+            throw new IllegalArgumentException("TC should belong to [0.3, 1.0[");
+        }
+        if (criticalValue != 0 && criticalValue < 2) {
+            throw new IllegalArgumentException("Critical value should be greater than 2.0");
+        }
+        return this;
+    }
+
+    public static class Builder implements Validatable.Builder<OutlierSpec> {
+    }
 }

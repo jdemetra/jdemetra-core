@@ -1,5 +1,5 @@
 /*
-* Copyright 2013 National Bank of Belgium
+* Copyright 2019 National Bank of Belgium
 *
 * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -17,42 +17,36 @@
 package demetra.tramo;
 
 import demetra.design.Development;
+import demetra.design.LombokWorkaround;
 import demetra.timeseries.TimeSelector;
-import java.util.Objects;
-import javax.annotation.Nonnull;
+import demetra.util.Validatable;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
-@lombok.Data
-public final class EstimateSpec implements Cloneable{
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class EstimateSpec implements Validatable<EstimateSpec> {
 
     public static final double DEF_TOL = 1e-7, DEF_UBP = .96;
-    
+
     @lombok.NonNull
-    private TimeSelector span = TimeSelector.all();
-    private boolean maximumLikelihood = true;
-    private double tol = DEF_TOL, ubp = DEF_UBP;
+    private TimeSelector span;
+    private boolean maximumLikelihood;
+    private double tol;
+    private double ubp;
 
-    private static final EstimateSpec DEFAULT=new EstimateSpec();
-    
-    public EstimateSpec() {
-    }
+    private static final EstimateSpec DEFAULT = EstimateSpec.builder().build();
 
-    public void reset() {
-        span=TimeSelector.all();
-        maximumLikelihood = true;
-        tol = DEF_TOL;
-        ubp = DEF_UBP;
-    }
-
-    public void setTol(double value) {
-        if (value <= 0 || value > 1e-2) {
-            throw new TramoException("Invalid Tol parameter");
-        }
-        tol = value;
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .span(TimeSelector.all())
+                .maximumLikelihood(true)
+                .tol(DEF_TOL)
+                .ubp(DEF_UBP);
     }
 
     public boolean isDefault() {
@@ -60,13 +54,13 @@ public final class EstimateSpec implements Cloneable{
     }
 
     @Override
-    public EstimateSpec clone() {
-        try {
-            EstimateSpec spec = (EstimateSpec) super.clone();
-            spec.span = span.clone();
-            return spec;
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
+    public EstimateSpec validate() throws IllegalArgumentException {
+        if (tol <= 0 || tol > 1e-2) {
+            throw new IllegalArgumentException("Invalid Tol parameter");
         }
+        return this;
+    }
+
+    public static class Builder implements Validatable.Builder<EstimateSpec> {
     }
 }

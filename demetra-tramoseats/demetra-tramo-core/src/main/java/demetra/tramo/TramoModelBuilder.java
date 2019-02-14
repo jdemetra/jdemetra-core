@@ -105,8 +105,8 @@ class TramoModelBuilder implements IModelBuilder {
         }
         Map<String, double[]> preadjustment = regSpec.getFixedCoefficients();
         initializeCalendar(model, regSpec.getCalendar(), preadjustment);
-        if (regSpec.getOutliersCount() > 0) {
-            initializeOutliers(model, regSpec.getOutliers(), preadjustment);
+        if (regSpec.getOutliers().size() > 0) {
+            initializeOutliers(model, regSpec.getOutliers().toArray(new IOutlier[0]), preadjustment);
         }
 //        if (regSpec.getUserDefinedVariablesCount() > 0) {
 //            initializeUsers(model, regSpec.getUserDefinedVariables(), preadjustment);
@@ -194,7 +194,7 @@ class TramoModelBuilder implements IModelBuilder {
                     v = null;
             }
             if (v != null) {
-                String name=IOutlier.defaultName(code, pos, model.getDomain());
+                String name = IOutlier.defaultName(code, pos, model.getDomain());
                 double[] c = preadjustment.get(name);
                 if (c != null) {
                     model.addPreadjustmentVariable(new PreadjustmentVariable(v, name, c));
@@ -260,7 +260,7 @@ class TramoModelBuilder implements IModelBuilder {
         add(model, holidays(td, context), "td", preadjustment);
         add(model, leapYear(td), "lp", preadjustment);
     }
-    
+
     private void initializeUserTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
         add(model, userTradingDays(td, context), "usertd", preadjustment);
     }
@@ -331,8 +331,9 @@ class TramoModelBuilder implements IModelBuilder {
             return null;
         }
         TradingDaysType tdType = td.getTradingDaysType();
-        if (td.isAutomatic())
-            tdType=TradingDaysType.WorkingDays;
+        if (td.isAutomatic()) {
+            tdType = TradingDaysType.WorkingDays;
+        }
         DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return new GenericTradingDaysVariable(gtd);
@@ -343,16 +344,17 @@ class TramoModelBuilder implements IModelBuilder {
             return null;
         }
         TradingDaysType tdType = td.getTradingDaysType();
-        if (td.isAutomatic())
-            tdType=TradingDaysType.WorkingDays;
+        if (td.isAutomatic()) {
+            tdType = TradingDaysType.WorkingDays;
+        }
         DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars());
-            return new HolidaysCorrectedTradingDays(gtd, corrector);
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars());
+        return new HolidaysCorrectedTradingDays(gtd, corrector);
     }
 
     private static ITradingDaysVariable userTradingDays(TradingDaysSpec td, ModellingContext context) {
-        String[] userVariables = td.getUserVariables();
+        String[] userVariables = td.getUserVariables().toArray(new String[0]);
         return UserTradingDays.of(userVariables, context);
     }
 
@@ -370,10 +372,10 @@ class TramoModelBuilder implements IModelBuilder {
             return null;
         }
         if (espec.isJulian()) {
-            return new JulianEasterVariable(espec.getDuration(),true);
+            return new JulianEasterVariable(espec.getDuration(), true);
         } else {
             int endpos;
-            switch (espec.getOption()) {
+            switch (espec.getType()) {
                 case IncludeEaster:
                     endpos = 0;
                     break;

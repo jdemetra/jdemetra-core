@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -16,54 +16,56 @@
  */
 package demetra.regarima;
 
+import demetra.design.Development;
+import demetra.design.LombokWorkaround;
 import demetra.timeseries.TimeSelector;
-import demetra.util.Comparator;
+import demetra.util.Validatable;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Objects;
-import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  *
  * @author Jean Palate
  */
-public class OutlierSpec {
+@Development(status = Development.Status.Beta)
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class OutlierSpec implements Validatable<OutlierSpec> {
 
     public static enum Method {
-
         AddOne,
         AddAll
     }
-    private ArrayList<SingleOutlierSpec> types = new ArrayList<>();
-    private int lsrun = 0;
-    private Method method = Method.AddOne;
-    private double tc = DEF_TCRATE, defcv = 0;
-    private TimeSelector span = TimeSelector.all();
-    private int nmax = DEF_NMAX;
+
+    private static final OutlierSpec DEFAULT = OutlierSpec.builder().build();
+
     public static final double DEF_TCRATE = .7, DEF_VA = 4.0;
     public static final int DEF_NMAX = 30;
 
-    public OutlierSpec() {
+    @lombok.Singular
+    private List<SingleOutlierSpec> types;
+    private int lsRun;
+    private Method method;
+    private double monthlyTCRate, defaultCriticalValue;
+    @lombok.NonNull
+    private TimeSelector span;
+    private int maxIter;
+
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .lsRun(0)
+                .method(Method.AddOne)
+                .monthlyTCRate(DEF_TCRATE)
+                .defaultCriticalValue(0)
+                .span(TimeSelector.all())
+                .maxIter(DEF_NMAX);
     }
 
-    public OutlierSpec(OutlierSpec other) {
-        this.defcv=other.defcv;
-        this.lsrun=other.lsrun;
-        this.method=other.method;
-        this.nmax=other.nmax;
-        this.span=other.span;
-        this.tc=other.tc;
-        other.types.forEach(types::add);
-    }
-
-    public void reset() {
-        types.clear();
-        lsrun = 0;
-        method = Method.AddOne;
-        tc = DEF_TCRATE;
-        defcv = 0;
-        span = TimeSelector.all();
-        nmax = DEF_NMAX;
+    @Override
+    public OutlierSpec validate() throws IllegalArgumentException {
+        types.forEach(SingleOutlierSpec::validate);
+        return this;
     }
 
     public boolean isUsed() {
@@ -72,43 +74,6 @@ public class OutlierSpec {
 
     public int getTypesCount() {
         return types.size();
-    }
-
-    public SingleOutlierSpec[] getTypes() {
-        return types.toArray(new SingleOutlierSpec[types.size()]);
-    }
-
-    public void setTypes(SingleOutlierSpec[] value) {
-        types.clear();
-        if (value != null) {
-            for (SingleOutlierSpec sspec : value) {
-                add(sspec);
-            }
-        }
-    }
-
-    public void clearTypes() {
-        types.clear();
-    }
-
-    public void add(String type) {
-        SingleOutlierSpec spec = new SingleOutlierSpec(type, defcv);
-        add(spec);
-    }
-
-    public void add(SingleOutlierSpec spec) {
-        int pos = -1;
-        for (int i = 0; i < types.size(); ++i) {
-            if (types.get(i).getType().equals(spec.getType())) {
-                pos = i;
-                break;
-            }
-        }
-        if (pos == -1) {
-            types.add(spec);
-        } else {
-            types.set(pos, spec);
-        }
     }
 
     public SingleOutlierSpec search(String type) {
@@ -120,95 +85,32 @@ public class OutlierSpec {
         return null;
     }
 
-    public void remove(String type) {
-        for (SingleOutlierSpec s : types) {
-            if (s.getType().equals(type)) {
-                types.remove(s);
-                return;
+    public boolean isDefault() {
+        return this.equals(DEFAULT);
+    }
+
+    public static class Builder implements Validatable.Builder<OutlierSpec> {
+
+        /**
+         * When the default critical value is changed, all the current outliers'
+         * critical values are accordingly modified
+         *
+         * @param defaultCriticalValue New critical value
+         * @return Builder with the new critical value applied
+         */
+        public Builder defaultCriticalValue(double defaultCriticalValue) {
+            if (types == null) {
+                types = new ArrayList<>();
             }
+
+            for (int i = 0; i < types.size(); i++) {
+                types.set(i, types.get(i).toBuilder()
+                        .criticalValue(defaultCriticalValue)
+                        .build());
+            }
+
+            this.defaultCriticalValue = defaultCriticalValue;
+            return this;
         }
     }
-
-    public int getLSRun() {
-        return lsrun;
-    }
-
-    public void setLSRun(int value) {
-        lsrun = value;
-    }
-
-    public int getMaxIter() {
-        return nmax;
-    }
-
-    @Deprecated
-    public void seMaxIter(int value) {
-        nmax = value;
-    }
-
-    public void setMaxIter(int value) {
-        nmax = value;
-    }
-
-    public Method getMethod() {
-        return method;
-    }
-
-    public void setMethod(Method value) {
-        method = value;
-    }
-
-    public TimeSelector getSpan() {
-        return span;
-    }
-
-    public void setSpan(@Nonnull TimeSelector value) {
-            span = value;
-    }
-
-    public double getMonthlyTCRate() {
-        return tc;
-    }
-
-    public void setMonthlyTCRate(double value) {
-        tc = value;
-    }
-
-    /// <summary>
-    /// When the default critical value is changed, all the current outliers' critical values are accordingly modified
-    /// </summary>
-    public double getDefaultCriticalValue() {
-        return defcv;
-    }
-
-    public void setDefaultCriticalValue(double value) {
-        double old=defcv;
-        defcv = value;
-        for (int i=0; i<types.size(); ++i){
-            SingleOutlierSpec cur = types.get(i);
-            if (cur.getCriticalValue() == old){
-                types.set(i, new SingleOutlierSpec(cur.getType(), defcv));
-            }
-        }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof OutlierSpec && equals((OutlierSpec) obj));
-    }
-
-    private boolean equals(OutlierSpec other) {
-        return defcv == other.defcv && lsrun == other.lsrun && method == other.method && Objects.equals(span, other.span)
-                && nmax == other.nmax && tc == other.tc && Comparator.equals(types, other.types);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 71 * hash + Objects.hashCode(this.method);
-        hash = 71 * hash + Double.hashCode(this.tc);
-        hash = 71 * hash + Double.hashCode(this.defcv);
-        return hash;
-    }
-
 }

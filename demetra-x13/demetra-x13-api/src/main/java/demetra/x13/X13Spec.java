@@ -1,14 +1,107 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2019 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package demetra.x13;
+
+import demetra.design.Development;
+import demetra.design.LombokWorkaround;
+import demetra.regarima.RegArimaSpec;
+import demetra.sa.DecompositionMode;
+import demetra.sa.benchmarking.SaBenchmarkingSpec;
+import demetra.util.Validatable;
+import demetra.x11.X11Spec;
 
 /**
  *
  * @author palatej
  */
-public class X13Spec {
-    
+@Development(status = Development.Status.Beta)
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public class X13Spec implements Validatable<X13Spec> {
+
+    private static final X13Spec DEFAULT = X13Spec.builder().build();
+
+    private RegArimaSpec regArima;
+    private X11Spec x11;
+    @lombok.NonNull
+    private SaBenchmarkingSpec benchmarking;
+
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .regArima(RegArimaSpec.builder().build())
+                .x11(X11Spec.builder().build())
+                .benchmarking(SaBenchmarkingSpec.builder().build());
+    }
+
+    public boolean isDefault() {
+        return this.equals(DEFAULT);
+    }
+
+    @Override
+    public X13Spec validate() throws IllegalArgumentException {
+        regArima.validate();
+        x11.validate();
+        benchmarking.validate();
+        return this;
+    }
+
+    public static class Builder implements Validatable.Builder<X13Spec> {
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="Default specifications">
+    public static final X13Spec RSAX11, RSA0, RSA1, RSA2, RSA3, RSA4, RSA5;
+
+    public static final X13Spec[] allSpecifications() {
+        return new X13Spec[]{RSAX11, RSA0, RSA1, RSA2, RSA3, RSA4, RSA5};
+    }
+
+    static {
+        RSAX11 = X13Spec.builder()
+                .regArima(RegArimaSpec.RGDISABLED)
+                .x11(X11Spec.builder()
+                        .mode(DecompositionMode.Multiplicative)
+                        .forecasts(0)
+                        .build())
+                .build();
+        RSA0 = X13Spec.builder()
+                .regArima(RegArimaSpec.RG0)
+                .x11(X11Spec.builder().build())
+                .build();
+        RSA1 = X13Spec.builder()
+                .regArima(RegArimaSpec.RG1)
+                .x11(X11Spec.builder().build())
+                .build();
+        RSA2 = X13Spec.builder()
+                .regArima(RegArimaSpec.RG2)
+                .x11(X11Spec.builder().build())
+                .build();
+        RSA3 = X13Spec.builder()
+                .regArima(RegArimaSpec.RG3)
+                .x11(X11Spec.builder().build())
+                .build();
+        RSA4 = X13Spec.builder()
+                .regArima(RegArimaSpec.RG4)
+                .x11(X11Spec.builder().build())
+                .build();
+        RSA5 = X13Spec.builder()
+                .regArima(RegArimaSpec.RG5)
+                .x11(X11Spec.builder().build())
+                .build();
+    }
+    //</editor-fold>
 }
