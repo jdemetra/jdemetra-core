@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -17,53 +17,48 @@
 package demetra.tramo;
 
 import demetra.design.Development;
+import demetra.design.LombokWorkaround;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.TimeSelector;
-import java.util.Map;
-import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.Nonnull;
+import demetra.util.Validatable;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-@lombok.Data
-public final class TransformSpec implements Cloneable{
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class TransformSpec implements Validatable<TransformSpec> {
 
     public static final double DEF_FCT = 0.95;
 
     @lombok.NonNull
-    private TimeSelector span = TimeSelector.all();
-    private double fct = DEF_FCT;
-    private boolean preliminaryCheck = true;
-    private TransformationType function = TransformationType.None;
-    
-    private static final TransformSpec DEFAULT=new TransformSpec();
+    private TimeSelector span;
+    private double fct;
+    private boolean preliminaryCheck;
+    private TransformationType function;
 
-    public TransformSpec() {
-    }
+    private static final TransformSpec DEFAULT = TransformSpec.builder().build();
 
-    @Override
-    public TransformSpec clone() {
-        try {
-            return (TransformSpec) super.clone();
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
-        }
-    }
-
-    public void reset() {
-        span=TimeSelector.all();
-        fct = DEF_FCT;
-        preliminaryCheck = true;
-        function = TransformationType.None;
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .span(TimeSelector.all())
+                .fct(DEF_FCT)
+                .preliminaryCheck(true)
+                .function(TransformationType.None);
     }
 
     public boolean isDefault() {
         return this.equals(DEFAULT);
     }
 
+    @Override
+    public TransformSpec validate() throws IllegalArgumentException {
+        return this;
+    }
+
+    public static class Builder implements Validatable.Builder<TransformSpec> {
+    }
 }

@@ -1,5 +1,5 @@
 /*
-* Copyright 2013 National Bank of Belgium
+* Copyright 2019 National Bank of Belgium
 *
 * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -13,23 +13,18 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package demetra.regarima;
 
 import demetra.design.Development;
-
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status=Development.Status.Preliminary)
+@Development(status = Development.Status.Preliminary)
 public class X13Exception extends RuntimeException {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -8351066904274802554L;
 
     final static String ATIP_E = "Failure in the outliers identification procedure";
@@ -40,32 +35,30 @@ public class X13Exception extends RuntimeException {
 
     final static String IDDIF_E = "Failure in the identification of the differencing orders";
 
-
     /**
      *
      */
     public X13Exception() {
     }
 
-    // / <summary>
-    // / Constructor for a time series exception with a specific message
-    // / </summary>
-    // / <param name="msg">Message of the exception</param>
     /**
-     * 
-     * @param msg
+     * Constructor for a time series exception with a specific message
+     *
+     * @param msg Message of the exception
      */
     public X13Exception(String msg) {
-	super(msg);
+        super(msg);
     }
 
     /**
-     * 
-     * @param message
-     * @param innerException
+     * Constructor for a time series exception with a specific message and inner
+     * exception
+     *
+     * @param message Message of the exception
+     * @param innerException Inner exception
      */
     public X13Exception(final String message, final Exception innerException) {
-	super(message, innerException);
+        super(message, innerException);
     }
 
 }

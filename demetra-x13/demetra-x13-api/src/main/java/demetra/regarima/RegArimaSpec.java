@@ -17,355 +17,171 @@
 package demetra.regarima;
 
 import demetra.design.Development;
+import demetra.design.LombokWorkaround;
 import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.modelling.regression.TradingDaysType;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import java.util.Map;
-import java.util.Objects;
-import javax.annotation.Nonnull;
+import demetra.util.Validatable;
+import lombok.NonNull;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
-public class RegArimaSpec{
+@Development(status = Development.Status.Beta)
+@lombok.Value
 
-    public static final RegArimaSpec RGDISABLED, RG0, RG1, RG2, RG3, RG4, RG5;
- 
-    private static final String SMETHOD = "RG";
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class RegArimaSpec implements Validatable<RegArimaSpec> {
 
-    static {
+    private static final RegArimaSpec DEFAULT = RegArimaSpec.builder().build();
 
-        RGDISABLED = new RegArimaSpec();
-        RG0 = new RegArimaSpec();
-        RG1 = new RegArimaSpec();
-        RG2 = new RegArimaSpec();
-        RG3 = new RegArimaSpec();
-        RG4 = new RegArimaSpec();
-        RG5 = new RegArimaSpec();
-
-        RGDISABLED.getBasic().setPreprocessing(false);
-
-        TransformSpec tr = new TransformSpec();
-        tr.setFunction(TransformationType.Auto);
-
-        MovingHolidaySpec easter = MovingHolidaySpec.easterSpec(true);
-
-        TradingDaysSpec wd = new TradingDaysSpec();
-        wd.setTradingDaysType(TradingDaysType.WorkingDays);
-        wd.setLengthOfPeriod(LengthOfPeriodType.LeapYear);
-        wd.setTest(RegressionTestSpec.Remove);
-
-        TradingDaysSpec td = new TradingDaysSpec();
-        td.setTradingDaysType(TradingDaysType.TradingDays);
-        td.setLengthOfPeriod(LengthOfPeriodType.LeapYear);
-        td.setTest(RegressionTestSpec.Remove);
-
-        RegressionSpec rwd = new RegressionSpec();
-        rwd.add(easter);
-        rwd.setTradingDays(wd);
-        RegressionSpec rtd = new RegressionSpec();
-        rtd.add(easter);
-        rtd.setTradingDays(td);
-
-        OutlierSpec o = new OutlierSpec();
-        o.add("AO");
-        o.add("TC");
-        o.add("LS");
-
-        RG1.setTransform(tr);
-        RG1.setOutliers(o);
-
-        RG2.setTransform(tr);
-        RG2.setOutliers(o);
-        RG2.setRegression(rwd);
-
-        RG3.setTransform(tr);
-        RG3.setOutliers(o);
-        RG3.setUsingAutoModel(true);
-
-        RG4.setTransform(tr);
-        RG4.setOutliers(o);
-        RG4.setRegression(rwd);
-        RG4.setUsingAutoModel(true);
-
-        RG5.setTransform(tr);
-        RG5.setOutliers(o);
-        RG5.setRegression(rtd);
-        RG5.setUsingAutoModel(true);
-    }
     private BasicSpec basic;
     private TransformSpec transform;
     private RegressionSpec regression;
     private OutlierSpec outliers;
-    private AutoModelSpec automdl;
+    private AutoModelSpec autoModel;
     private SarimaSpec arima;
     private EstimateSpec estimate;
+
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .basic(BasicSpec.builder().build())
+                .transform(TransformSpec.builder().build())
+                .estimate(EstimateSpec.builder().build())
+                .autoModel(AutoModelSpec.builder().build())
+                .outliers(OutlierSpec.builder().build())
+                .arima(new SarimaSpec(SarimaValidator.VALIDATOR))
+                .regression(RegressionSpec.builder().build());
+    }
+
+    public boolean isUsingAutoModel() {
+        return autoModel.isEnabled();
+    }
+
+    @Override
+    public RegArimaSpec validate() throws IllegalArgumentException {
+        basic.validate();
+        transform.validate();
+        regression.validate();
+        outliers.validate();
+        autoModel.validate();
+        estimate.validate();
+        return this;
+    }
+
+    public boolean isDefault() {
+        return this.equals(DEFAULT);
+    }
+
+    public static class Builder implements Validatable.Builder<RegArimaSpec> {
+
+        public Builder usingAutoModel(boolean enableAutoModel) {
+            this.autoModel = autoModel.toBuilder().enabled(enableAutoModel).build();
+            return this;
+        }
+
+        public Builder autoModel(@NonNull AutoModelSpec autoModelSpec) {
+            this.autoModel = autoModelSpec.toBuilder().enabled(true).build();
+            return this;
+        }
+
+        public Builder arima(@NonNull SarimaSpec sarima) {
+            this.arima = sarima.clone();
+            if (this.autoModel == null) {
+                this.autoModel = AutoModelSpec.builder()
+                        .enabled(false)
+                        .build();
+            } else {
+                this.autoModel = this.autoModel.toBuilder()
+                        .enabled(false)
+                        .build();
+            }
+            return this;
+        }
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="Default specifications">
+    public static final RegArimaSpec RGDISABLED, RG0, RG1, RG2, RG3, RG4, RG5;
 
     public static final RegArimaSpec[] allSpecifications() {
         return new RegArimaSpec[]{RG0, RG1, RG2, RG3, RG4, RG5};
     }
 
-    public RegArimaSpec() {
-        basic = new BasicSpec();
-        transform = new TransformSpec();
-        estimate = new EstimateSpec();
-        automdl = new AutoModelSpec(false);
-        outliers = new OutlierSpec();
-        arima = new SarimaSpec(SarimaValidator.VALIDATOR);
-        regression = new RegressionSpec();
-    }
-    
-    public RegArimaSpec(RegArimaSpec other){
-        basic=new BasicSpec(other.basic);
-        transform=new TransformSpec(other.transform);
-        estimate=new EstimateSpec(other.estimate);
-        automdl=new AutoModelSpec(other.automdl);
-        outliers=new OutlierSpec(other.outliers);
-        arima=other.arima.clone();
-        regression=new RegressionSpec(other.regression);
-    }
+    static {
+        RGDISABLED = RegArimaSpec.builder()
+                .basic(BasicSpec.builder().preProcessing(false).build())
+                .build();
 
-    public BasicSpec getBasic() {
-        return basic;
-    }
+        TransformSpec tr = TransformSpec.builder()
+                .function(TransformationType.Auto)
+                .build();
 
-    /**
-     * @return the outliers_
-     */
-    public OutlierSpec getOutliers() {
-        return outliers;
-    }
+        EasterSpec easter = EasterSpec.builder()
+                .easterSpec(true)
+                .build();
 
-    /**
-     * @param value
-     */
-    public void setOutliers(@Nonnull OutlierSpec value) {
-        this.outliers = value;
-    }
+        TradingDaysSpec wd = TradingDaysSpec.builder()
+                .type(TradingDaysType.WorkingDays)
+                .lengthOfPeriodTime(LengthOfPeriodType.LeapYear)
+                .test(RegressionTestSpec.Remove)
+                .build();
 
-    /**
-     * @return the automdl_
-     */
-    public AutoModelSpec getAutoModel() {
-        return automdl;
-    }
+        TradingDaysSpec td = TradingDaysSpec.builder()
+                .type(TradingDaysType.TradingDays)
+                .lengthOfPeriodTime(LengthOfPeriodType.LeapYear)
+                .test(RegressionTestSpec.Remove)
+                .build();
 
-    /**
-     * @param automdl
-     */
-    public void setAutoModel(@Nonnull AutoModelSpec automdl) {
-        this.automdl = automdl;
-        this.automdl.setEnabled(true);
-    }
+        RegressionSpec rwd = RegressionSpec.builder()
+                .easter(easter)
+                .tradingDays(wd)
+                .build();
 
-    /**
-     * @return the arima_
-     */
-    public SarimaSpec getArima() {
-        return arima;
-    }
+        RegressionSpec rtd = RegressionSpec.builder()
+                .easter(easter)
+                .tradingDays(td)
+                .build();
 
-    /**
-     * @param arima
-     */
-    public void setArima(@Nonnull SarimaSpec arima) {
-         this.arima = arima;
-        automdl.setEnabled(false);
-    }
+        OutlierSpec o = OutlierSpec.builder()
+                .type(SingleOutlierSpec.builder().type("AO").build())
+                .type(SingleOutlierSpec.builder().type("TC").build())
+                .type(SingleOutlierSpec.builder().type("LS").build())
+                .build();
 
-    /**
-     * @return the transform_
-     */
-    public TransformSpec getTransform() {
-        return transform;
-    }
+        RG0 = RegArimaSpec.builder()
+                .build();
 
-    /**
-     * @param value
-     */
-    public void setTransform(@Nonnull TransformSpec value) {
-         this.transform = value;
-    }
+        RG1 = RegArimaSpec.builder()
+                .transform(tr)
+                .outliers(o)
+                .build();
 
-    /**
-     * @return the regression_
-     */
-    public RegressionSpec getRegression() {
-        return regression;
-    }
+        RG2 = RegArimaSpec.builder()
+                .transform(tr)
+                .outliers(o)
+                .regression(rwd)
+                .build();
+        RG3 = RegArimaSpec.builder()
+                .transform(tr)
+                .outliers(o)
+                .usingAutoModel(true)
+                .build();
+        RG4 = RegArimaSpec.builder()
+                .transform(tr)
+                .outliers(o)
+                .regression(rwd)
+                .usingAutoModel(true)
+                .build();
 
-    /**
-     * @param value
-     */
-    public void setRegression(@Nonnull RegressionSpec value) {
-         this.regression = value;
+        RG5 = RegArimaSpec.builder()
+                .transform(tr)
+                .outliers(o)
+                .regression(rtd)
+                .usingAutoModel(true)
+                .build();
     }
-
-    /**
-     * @return the estimate_
-     */
-    public EstimateSpec getEstimate() {
-        return estimate;
-    }
-
-    /**
-     * @param value the estimate_ to set
-     */
-    public void setEstimate(@Nonnull EstimateSpec value) {
-         this.estimate = value;
-    }
-
-    public boolean isUsingAutoModel() {
-        return automdl.isEnabled();
-    }
-
-    public void setUsingAutoModel(boolean enableAutoModel) {
-        automdl.setEnabled(enableAutoModel);
-    }
-
-    public static enum Default {
-
-        NONE, RG0, RG1, RG2, RG3, RG4, RG5;
-    }
-
-    public static boolean isSystem(RegArimaSpec spec) {
-        return spec == RGDISABLED || spec == RG0 || spec == RG1 || spec == RG2
-                || spec == RG3 || spec == RG4 || spec == RG5;
-    }
-
-    public static RegArimaSpec matchSystem(RegArimaSpec spec) {
-        if (spec == RGDISABLED || spec == RG0 || spec == RG1 || spec == RG2
-                || spec == RG3 || spec == RG4 || spec == RG5) {
-            return spec;
-        }
-        if (spec.equals(RGDISABLED)) {
-            return RGDISABLED;
-        } else if (spec.equals(RG0)) {
-            return RG0;
-        } else if (spec.equals(RG1)) {
-            return RG1;
-        } else if (spec.equals(RG2)) {
-            return RG2;
-        } else if (spec.equals(RG3)) {
-            return RG3;
-        } else if (spec.equals(RG4)) {
-            return RG4;
-        } else if (spec.equals(RG5)) {
-            return RG5;
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof RegArimaSpec && equals((RegArimaSpec) obj));
-    }
-
-    private boolean equals(RegArimaSpec spec) {
-        if (isUsingAutoModel() != spec.isUsingAutoModel()) {
-            return false;
-        }
-        if (!isUsingAutoModel() && !Objects.equals(spec.arima, arima)) {
-            return false;
-        }
-        if (isUsingAutoModel() && !Objects.equals(spec.automdl, automdl)) {
-            return false;
-        }
-        return Objects.equals(spec.basic, basic)
-                && Objects.equals(spec.transform, transform)
-                && Objects.equals(spec.regression, regression)
-                && Objects.equals(spec.outliers, outliers)
-                && Objects.equals(spec.estimate, estimate);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 23 * hash + basic.hashCode();
-        hash = 23 * hash + transform.hashCode();
-        hash = 23 * hash + regression.hashCode();
-        hash = 23 * hash + outliers.hashCode();
-        if (isUsingAutoModel()) {
-            hash = 23 * hash + automdl.hashCode();
-        } else {
-            hash = 23 * hash + arima.hashCode();
-        }
-        hash = 23 * hash + estimate.hashCode();
-        return hash;
-    }
-
-    @Override
-    public String toString() {
-        if (this == RG0) {
-            return "RG0";
-        }
-        if (this == RG1) {
-            return "RG1";
-        }
-        if (this == RG2) {
-            return "RG2c";
-        }
-        if (this == RG3) {
-            return "RG3";
-        }
-        if (this == RG4) {
-            return "RG4c";
-        }
-        if (this == RG5) {
-            return "RG5c";
-        }
-        if (equals(RG0)) {
-            return "RG0";
-        }
-        if (equals(RG1)) {
-            return "RG1";
-        }
-        if (equals(RG2)) {
-            return "RG2c";
-        }
-        if (equals(RG3)) {
-            return "RG3";
-        }
-        if (equals(RG4)) {
-            return "RG4c";
-        }
-        if (equals(RG5)) {
-            return "RG5c";
-        }
-        return SMETHOD;
-    }
-
-    public String toLongString() {
-        String s = toString();
-        if (SMETHOD.equals(s)) {
-            return s;
-        } else {
-            StringBuilder builder = new StringBuilder();
-            builder.append("RG[").append(s).append(']');
-            return builder.toString();
-        }
-    }
-
-    public static RegArimaSpec fromString(String name) {
-        switch (name) {
-            case "RG0":
-                return RG0;
-            case "RG1":
-                return RG1;
-            case "RG2c":
-                return RG2;
-            case "RG3":
-                return RG3;
-            case "RG4c":
-                return RG4;
-            case "RG5c":
-                return RG5;
-            default:
-                return new RegArimaSpec();
-        }
-    }
+    //</editor-fold>
 }

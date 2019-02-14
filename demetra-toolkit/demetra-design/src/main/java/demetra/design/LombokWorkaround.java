@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 National Bank of Belgium
+ * Copyright 2018 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,25 +14,23 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramo;
+package demetra.design;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * Annotation identifying methods created as a workaround to a current
+ * limitation or bug of Lombok with Netbeans IDE.
  *
- * @author palatej
+ * @author Mats Maggi
  */
-public class CalendarSpecTest {
-
-    public CalendarSpecTest() {
-    }
-
-    @Test
-    public void testClone() {
-        CalendarSpec spec = CalendarSpec.builder().build();
-        CalendarSpec cspec = spec.toBuilder().build();
-        assertTrue(spec.equals(cspec));
-    }
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.SOURCE)
+@Documented
+public @interface LombokWorkaround {
 
 }

@@ -1,5 +1,5 @@
 /*
-* Copyright 2013 National Bank of Belgium
+* Copyright 2019 National Bank of Belgium
 *
 * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -13,49 +13,35 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package demetra.regarima;
 
-import java.util.Objects;
+import demetra.design.Development;
+import demetra.util.Validatable;
 
 /**
  *
- * @author Jean Palate
+ * @author Jean Palate, Mats Maggi
  */
-public class SingleOutlierSpec {
+@Development(status = Development.Status.Beta)
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class SingleOutlierSpec implements Validatable<SingleOutlierSpec> {
 
-    private final String type;
-    private final double cv;
+    private static final SingleOutlierSpec DEFAULT = SingleOutlierSpec.builder().build();
 
-    public SingleOutlierSpec(String type, double cv) {
-        this.type = type;
-        this.cv=cv;
-    }
-    
-    public String getType() {
-        return type;
-    }
-
-    public double getCriticalValue() {
-        return cv;
-    }
+    private String type;
+    private double criticalValue;
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.type);
-        hash = 79 * hash + Double.hashCode(this.cv);
-        return hash;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof SingleOutlierSpec && equals((SingleOutlierSpec) obj));
-    }
-    
-    private boolean equals(SingleOutlierSpec other) {
-        return other.cv == cv && other.type.equals(type);
+    public SingleOutlierSpec validate() throws IllegalArgumentException {
+        return this;
     }
 
+    public boolean isDefault() {
+        return this.equals(DEFAULT);
+    }
+
+    public static class Builder implements Validatable.Builder<SingleOutlierSpec> {
+    }
 }

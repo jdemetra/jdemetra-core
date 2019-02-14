@@ -16,81 +16,44 @@
  */
 package demetra.regarima;
 
+import demetra.design.Development;
+import demetra.design.LombokWorkaround;
 import demetra.timeseries.TimeSelector;
-import java.util.Objects;
-import javax.annotation.Nonnull;
+import demetra.util.Validatable;
 
 /**
  *
- * @author Jean Palate
+ * @author Jean Palate, Mats Maggi
  */
-public class BasicSpec{
+@Development(status = Development.Status.Beta)
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class BasicSpec implements Validatable<BasicSpec> {
 
-    private TimeSelector span = TimeSelector.all();
-    private boolean preprocess = true;
-    private boolean preliminaryCheck = true;
+    private static final BasicSpec DEFAULT = BasicSpec.builder().build();
 
-    public BasicSpec() {
+    @lombok.NonNull
+    private TimeSelector span;
+    private boolean preProcessing;
+    private boolean preliminaryCheck;
+
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .span(TimeSelector.all())
+                .preProcessing(true)
+                .preliminaryCheck(true);
     }
 
-    public BasicSpec(BasicSpec other) {
-        this.span=other.span;
-        this.preliminaryCheck=other.preliminaryCheck;
-        this.preprocess=other.preprocess;
-    }
-
-    public void reset() {
-        span = TimeSelector.all();
-        preprocess = true;
-        preliminaryCheck = true;
-    }
-
-    public TimeSelector getSpan() {
-        return span;
-    }
-
-    public void setSpan(@Nonnull TimeSelector value) {
-            span = value;
-    }
-
-    public boolean isPreprocessing() {
-        return preprocess;
-    }
-
-    public void setPreprocessing(boolean value) {
-        preprocess = value;
-    }
-
-    public boolean isPreliminaryCheck() {
-        return preliminaryCheck;
-    }
-
-    public void setPreliminaryCheck(boolean value) {
-        preliminaryCheck = value;
+    @Override
+    public BasicSpec validate() throws IllegalArgumentException {
+        return this;
     }
 
     public boolean isDefault() {
-        if (span.getType() != TimeSelector.SelectionType.All) {
-            return false;
-        }
-        return preprocess && preliminaryCheck;
+        return this.equals(DEFAULT);
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 83 * hash + Objects.hashCode(this.span);
-        hash = 83 * hash + (this.preprocess ? 1 : 0);
-        return hash;
+    public static class Builder implements Validatable.Builder<BasicSpec> {
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof BasicSpec && equals((BasicSpec) obj));
-    }
-
-    private boolean equals(BasicSpec spec) {
-        return Objects.equals(spec.span, span) && preprocess == spec.preprocess && preliminaryCheck == spec.preliminaryCheck;
-    }
-
 }

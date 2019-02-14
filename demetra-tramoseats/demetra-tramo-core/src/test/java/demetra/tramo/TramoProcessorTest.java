@@ -141,15 +141,29 @@ public class TramoProcessorTest {
     @Test
     public void testInseeFullc() {
         TsData[] all = Data.insee();
-        TramoSpec spec = TramoSpec.TRfull.clone();
-        ModellingContext context=new ModellingContext();
+        TramoSpec spec = TramoSpec.TRfull;
+        ModellingContext context = new ModellingContext();
         context.getCalendars().set("france", france);
-        spec.getRegression().getCalendar().getTradingDays().setHolidays("france");
+
+        RegressionSpec regSpec = spec.getRegression();
+        CalendarSpec calSpec = regSpec.getCalendar();
+        TradingDaysSpec tdSpec = calSpec.getTradingDays()
+                .toBuilder()
+                .holidays("france")
+                .build();
+        spec = spec.toBuilder()
+                .regression(regSpec.toBuilder()
+                        .calendar(calSpec.toBuilder()
+                                .tradingDays(tdSpec)
+                                .build())
+                        .build())
+                .build();
+
         TramoProcessor processor = TramoProcessor.of(spec, context);
-        
-        ec.tstoolkit.algorithm.ProcessingContext ocontext=new ec.tstoolkit.algorithm.ProcessingContext();
+
+        ec.tstoolkit.algorithm.ProcessingContext ocontext = new ec.tstoolkit.algorithm.ProcessingContext();
         ocontext.getGregorianCalendars().set("france", new ec.tstoolkit.timeseries.calendars.NationalCalendarProvider(ofrance));
-        ec.tstoolkit.modelling.arima.tramo.TramoSpecification ospec=ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.clone();
+        ec.tstoolkit.modelling.arima.tramo.TramoSpecification ospec = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.clone();
         ospec.getRegression().getCalendar().getTradingDays().setHolidays("france");
         IPreprocessor oprocessor = ospec.build(ocontext);
         int n = 0;
@@ -256,7 +270,7 @@ public class TramoProcessorTest {
         System.out.println(n);
         assertTrue(n > .9 * all.length);
     }
-    
+
     @Test
     public void testInsee3() {
         TsData[] all = Data.insee();
@@ -283,7 +297,7 @@ public class TramoProcessorTest {
         System.out.println(n);
         assertTrue(n > .9 * all.length);
     }
-    
+
     @Test
     public void testInsee4() {
         TsData[] all = Data.insee();
@@ -349,8 +363,22 @@ public class TramoProcessorTest {
 
 //    @Test
     public void testProdWald() {
-        TramoSpec nspec = TramoSpec.TRfull.clone();
-        nspec.getRegression().getCalendar().getTradingDays().setAutomaticMethod(TradingDaysSpec.AutoMethod.WaldTest);
+        TramoSpec nspec = TramoSpec.TRfull;
+
+        RegressionSpec regSpec = nspec.getRegression();
+        CalendarSpec calSpec = regSpec.getCalendar();
+        TradingDaysSpec tdSpec = calSpec.getTradingDays()
+                .toBuilder()
+                .automaticMethod(TradingDaysSpec.AutoMethod.WaldTest)
+                .build();
+        nspec = nspec.toBuilder()
+                .regression(regSpec.toBuilder()
+                        .calendar(calSpec.toBuilder()
+                                .tradingDays(tdSpec)
+                                .build())
+                        .build())
+                .build();
+
         TramoProcessor processor = TramoProcessor.of(nspec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, DoubleSequence.ofInternal(data));

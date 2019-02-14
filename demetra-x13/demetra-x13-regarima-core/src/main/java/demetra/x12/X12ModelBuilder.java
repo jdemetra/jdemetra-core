@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -16,7 +16,7 @@
  */
 package demetra.x12;
 
-import demetra.regarima.MovingHolidaySpec;
+import demetra.regarima.EasterSpec;
 import demetra.regarima.RegressionSpec;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.TradingDaysSpec;
@@ -48,7 +48,6 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.simplets.TsDataToolkit;
-import demetra.regarima.MovingHolidaySpec.Type;
 import java.time.LocalDateTime;
 import java.util.Map;
 import demetra.modelling.regression.ILengthOfPeriodVariable;
@@ -59,8 +58,10 @@ import demetra.modelling.regression.LevelShiftFactory;
 import demetra.modelling.regression.PeriodicOutlierFactory;
 import demetra.modelling.regression.TransitoryChangeFactory;
 import demetra.modelling.regression.UserTradingDays;
+import demetra.regarima.EasterSpec.Type;
 import demetra.regarima.SarimaSpec;
 import demetra.timeseries.calendars.GenericTradingDays;
+import java.util.List;
 
 /**
  *
@@ -110,7 +111,7 @@ class X12ModelBuilder implements IModelBuilder {
         if (!regSpec.isUsed()) {
             return;
         }
-        Map<String, double[]> preadjustment = regSpec.getAllFixedCoefficients();
+        Map<String, double[]> preadjustment = regSpec.getFixedCoefficients();
         initializeCalendar(model, regSpec, preadjustment);
         if (regSpec.getOutliersCount() > 0) {
             initializeOutliers(model, regSpec.getOutliers(), preadjustment);
@@ -169,21 +170,21 @@ class X12ModelBuilder implements IModelBuilder {
         }
     }
 
-    private void initializeEaster(ModelDescription model, MovingHolidaySpec easter, Map<String, double[]> preadjustment) {
+    private void initializeEaster(ModelDescription model, EasterSpec easter, Map<String, double[]> preadjustment) {
         if (easter == null || easter.getTest() == RegressionTestSpec.Add) {
             return;
         }
-        add(model, easter(easter.getType(), easter.getW()), "easter", easter.getTest() == RegressionTestSpec.None, preadjustment);
+        add(model, easter(easter.getType(), easter.getDuration()), "easter", easter.getTest() == RegressionTestSpec.None, preadjustment);
     }
 
-    private void initializeOutliers(ModelDescription model, IOutlier[] outliers, Map<String, double[]> preadjustment) {
+    private void initializeOutliers(ModelDescription model, List<IOutlier> outliers, Map<String, double[]> preadjustment) {
         int freq = model.getAnnualFrequency();
-        IOutlier[] vars = new IOutlier[outliers.length];
+        IOutlier[] vars = new IOutlier[outliers.size()];
         TransitoryChangeFactory tc = new TransitoryChangeFactory(spec.getOutliers().getMonthlyTCRate());
         PeriodicOutlierFactory so = new PeriodicOutlierFactory(freq, false);
-        for (int i = 0; i < outliers.length; ++i) {
-            String code = outliers[i].getCode();
-            LocalDateTime pos = outliers[i].getPosition();
+        for (int i = 0; i < outliers.size(); ++i) {
+            String code = outliers.get(i).getCode();
+            LocalDateTime pos = outliers.get(i).getPosition();
             IOutlier v;
             switch (code) {
                 case AdditiveOutlier.CODE:
@@ -202,7 +203,7 @@ class X12ModelBuilder implements IModelBuilder {
                     v = null;
             }
             if (v != null) {
-                String name=IOutlier.defaultName(code, pos, model.getDomain());
+                String name = IOutlier.defaultName(code, pos, model.getDomain());
                 double[] c = preadjustment.get(name);
                 if (c != null) {
                     model.addPreadjustmentVariable(new PreadjustmentVariable(v, name, c));
@@ -303,7 +304,7 @@ class X12ModelBuilder implements IModelBuilder {
         add(model, defaultTradingDays(td), "td", td.getTest() == RegressionTestSpec.None, preadjustment);
         add(model, leapYear(td), "lp", td.getTest() == RegressionTestSpec.None, preadjustment);
         if (td.isAutoAdjust()) {
-            model.setTransformation(td.getLengthOfPeriod());
+            model.setTransformation(td.getLengthOfPeriodTime());
         } else {
             add(model, leapYear(td), "lp", td.getTest() == RegressionTestSpec.None, preadjustment);
         }
@@ -364,25 +365,25 @@ class X12ModelBuilder implements IModelBuilder {
     }
 
     private static ITradingDaysVariable defaultTradingDays(TradingDaysSpec td) {
-        if (td.getTradingDaysType() == TradingDaysType.None) {
+        if (td.getType() == TradingDaysType.None) {
             return null;
         }
-        TradingDaysType tdType = td.getTradingDaysType();
+        TradingDaysType tdType = td.getType();
         DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return new GenericTradingDaysVariable(gtd);
     }
 
     private static ITradingDaysVariable userTradingDays(TradingDaysSpec td, ModellingContext context) {
-        String[] userVariables = td.getUserVariables();
+        String[] userVariables = td.getUserVariables().toArray(new String[0]);
         return UserTradingDays.of(userVariables, context);
     }
 
     public static ILengthOfPeriodVariable leapYear(TradingDaysSpec tdspec) {
-        if (tdspec.getLengthOfPeriod() == LengthOfPeriodType.None) {
+        if (tdspec.getLengthOfPeriodTime() == LengthOfPeriodType.None) {
             return null;
         } else {
-            return new LengthOfPeriod(tdspec.getLengthOfPeriod());
+            return new LengthOfPeriod(tdspec.getLengthOfPeriodTime());
         }
     }
 

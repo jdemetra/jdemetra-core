@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -19,8 +19,8 @@ package demetra.x12;
 import demetra.regarima.RegArimaSpec;
 import demetra.data.Data;
 import demetra.data.DoubleSequence;
+import demetra.regarima.OutlierSpec;
 import demetra.regarima.regular.PreprocessingModel;
-import demetra.regarima.regular.RegArimaModelling;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
@@ -51,7 +51,7 @@ public class X12PreprocessorTest {
         X12Preprocessor processor = X12Preprocessor.of(RegArimaSpec.RG5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, DoubleSequence.ofInternal(datamissing));
-        PreprocessingModel rslt=processor.process(s, null);
+        PreprocessingModel rslt = processor.process(s, null);
         System.out.println("New");
         System.out.println(rslt.getEstimation().getConcentratedLikelihood().logLikelihood());
     }
@@ -67,8 +67,15 @@ public class X12PreprocessorTest {
 
     //@Test
     public void testProd() {
-        RegArimaSpec spec = new RegArimaSpec(RegArimaSpec.RG5);
-        spec.getOutliers().setDefaultCriticalValue(3);
+        RegArimaSpec spec = RegArimaSpec.RG5;
+        OutlierSpec outlierSpec = spec.getOutliers().toBuilder()
+                .defaultCriticalValue(3)
+                .build();
+
+        spec = spec.toBuilder()
+                .outliers(outlierSpec)
+                .build();
+
         X12Preprocessor processor = X12Preprocessor.of(spec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, DoubleSequence.ofInternal(data));
@@ -95,7 +102,7 @@ public class X12PreprocessorTest {
         System.out.println("legacy: " + (t1 - t0));
         t0 = System.currentTimeMillis();
         for (int i = 0; i < 250; ++i) {
-            RegArimaSpec spec = new RegArimaSpec(RegArimaSpec.RG5);
+            RegArimaSpec spec = RegArimaSpec.RG5;
             X12Preprocessor processor = X12Preprocessor.of(spec, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);
             TsData s = TsData.of(start, DoubleSequence.ofInternal(data));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -16,68 +16,44 @@
  */
 package demetra.regarima;
 
+import demetra.design.Development;
+import demetra.design.LombokWorkaround;
 import demetra.timeseries.TimeSelector;
-import demetra.timeseries.TimeSelector.SelectionType;
-import java.util.Map;
-import java.util.Objects;
-import javax.annotation.Nonnull;
+import demetra.util.Validatable;
 
 /**
  *
- * @author Jean Palate
+ * @author Jean Palate, Mats Maggi
  */
-public class EstimateSpec {
+@Development(status = Development.Status.Beta)
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class EstimateSpec implements Validatable<EstimateSpec> {
 
-    private TimeSelector span = TimeSelector.all();
-    private double tol = DEF_TOL;
+    private static final EstimateSpec DEFAULT = EstimateSpec.builder().build();
+
     public static final double DEF_TOL = 1e-7;
 
-    public EstimateSpec() {
+    @lombok.NonNull
+    private TimeSelector span;
+    private double tol;
+
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .span(TimeSelector.all())
+                .tol(DEF_TOL);
     }
 
-    public void reset() {
-        span = TimeSelector.all();
-        tol = DEF_TOL;
-    }
-
-    public EstimateSpec(EstimateSpec spec) {
-        tol = spec.tol;
-    }
-
-    public TimeSelector getSpan() {
-        return span;
-    }
-
-    public void setSpan(@Nonnull TimeSelector value) {
-             span = value;
-    }
-
-    public double getTol() {
-        return tol;
-    }
-
-    public void setTol(double value) {
-        tol = value;
+    @Override
+    public EstimateSpec validate() throws IllegalArgumentException {
+        return this;
     }
 
     public boolean isDefault() {
-        return tol == DEF_TOL && span.getType() == SelectionType.All;
+        return this.equals(DEFAULT);
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 29 * hash + Double.hashCode(this.tol);
-        return hash;
+    public static class Builder implements Validatable.Builder<EstimateSpec> {
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof EstimateSpec && equals((EstimateSpec) obj));
-    }
-
-    private boolean equals(EstimateSpec other) {
-        return other.tol == tol && Objects.equals(other.span, span);
-    }
-
 }
