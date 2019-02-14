@@ -16,6 +16,7 @@
  */
 package demetra.tramo;
 
+import demetra.regarima.SarimaSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -24,9 +25,25 @@ import static org.junit.Assert.*;
  * @author palatej
  */
 public class TramoSpecTest {
-
+    
     @Test
     public void testClone() {
+        TramoSpec spec = TramoSpec.builder().build();
+        assertEquals(spec, spec.toBuilder().build());
+    }
+    
+    @Test
+    public void testClone2() {
+        SarimaSpec sarima = new SarimaSpec(SarimaValidator.VALIDATOR);
+        sarima.airlineWithMean();
+        
+        SarimaSpec clone = sarima.clone();
+        
+        assertEquals(sarima, clone);
+    }
+
+    @Test
+    public void testCloneDefaults() {
         assertEquals(TramoSpec.TR0, TramoSpec.TR0.toBuilder().build());
         assertEquals(TramoSpec.TR1, TramoSpec.TR1.toBuilder().build());
         assertEquals(TramoSpec.TR2, TramoSpec.TR2.toBuilder().build());

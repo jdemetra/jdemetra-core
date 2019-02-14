@@ -164,17 +164,6 @@ public final class TramoSpec implements Validatable<TramoSpec> {
         }
 
         /**
-         * Sets the specifications related to the automatic ARIMA modelling
-         * (AMI).
-         *
-         * @param autoModelSpec The new AMI. Should not be null.
-         */
-        public Builder autoModel(@NonNull AutoModelSpec autoModelSpec) {
-            this.autoModel = autoModelSpec.toBuilder().enabled(true).build();
-            return this;
-        }
-
-        /**
          * Sets a predefined Sarima specification. The AMI is disabled.
          *
          * @param sarima new Sarima spec
@@ -183,13 +172,7 @@ public final class TramoSpec implements Validatable<TramoSpec> {
         public Builder arima(@NonNull SarimaSpec sarima) {
             this.arima = sarima.clone();
             if (this.autoModel == null) {
-                this.autoModel = AutoModelSpec.builder()
-                        .enabled(false)
-                        .build();
-            } else {
-                this.autoModel = this.autoModel.toBuilder()
-                        .enabled(false)
-                        .build();
+                this.autoModel = AutoModelSpec.builder().build();
             }
 
             return this;

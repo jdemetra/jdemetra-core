@@ -83,21 +83,10 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
             return this;
         }
 
-        public Builder autoModel(@NonNull AutoModelSpec autoModelSpec) {
-            this.autoModel = autoModelSpec.toBuilder().enabled(true).build();
-            return this;
-        }
-
         public Builder arima(@NonNull SarimaSpec sarima) {
             this.arima = sarima.clone();
             if (this.autoModel == null) {
-                this.autoModel = AutoModelSpec.builder()
-                        .enabled(false)
-                        .build();
-            } else {
-                this.autoModel = this.autoModel.toBuilder()
-                        .enabled(false)
-                        .build();
+                this.autoModel = AutoModelSpec.builder().build();
             }
             return this;
         }

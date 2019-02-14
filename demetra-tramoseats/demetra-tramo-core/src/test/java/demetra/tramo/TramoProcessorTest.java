@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
 
 /**
  *
@@ -111,7 +112,7 @@ public class TramoProcessorTest {
         System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
     }
 
-    @Test
+    @Ignore
     public void testInseeFull() {
         TsData[] all = Data.insee();
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
@@ -138,7 +139,7 @@ public class TramoProcessorTest {
         assertTrue(n > .9 * all.length);
     }
 
-    @Test
+    @Ignore
     public void testInseeFullc() {
         TsData[] all = Data.insee();
         TramoSpec spec = TramoSpec.TRfull;
