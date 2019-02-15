@@ -1,25 +1,27 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2019 National Bank of Belgium.
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ *      https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package demetra.r;
+package demetra.timeseries.r;
 
 import demetra.data.AggregationType;
-import demetra.maths.MatrixType;
-import demetra.maths.matrices.Matrix;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.calendars.DayEvent;
-import demetra.timeseries.calendars.FixedDay;
-import demetra.timeseries.calendars.HolidaysUtility;
-import demetra.timeseries.calendars.PrespecifiedHoliday;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  *
@@ -80,37 +82,5 @@ public class TsUtility {
         return new int[]{freq, year, 1 + (mon - 1) / c};
     }
 
-    public boolean add(Holidays all, String holiday, int offset, double weight, boolean julian) {
-        try {
-            PrespecifiedHoliday cur = new PrespecifiedHoliday(DayEvent.valueOf(holiday), offset, weight, julian);
-            return all.add(cur);
-        } catch (Exception err) {
-            return false;
-        }
-    }
-
-    public boolean addFixedDay(Holidays all, int month, int day, double weight, boolean julian) {
-        FixedDay cur = new FixedDay(month, day, weight);
-        return all.add(cur);
-    }
-
-    public MatrixType holidays(Holidays all, String date, int length, String type) {
-        LocalDate start = LocalDate.parse(date);
-        Matrix m = Matrix.make(length, all.elements().length);
-        switch (type) {
-            case "SkipSundays":
-                HolidaysUtility.fillDays(all.elements(), m, start, true);
-                break;
-            case "NextWorkingDay":
-                HolidaysUtility.fillNextWorkingDays(all.elements(), m, start, 0);
-                break;
-            case "PreviousWorkingDay":
-                HolidaysUtility.fillPreviousWorkingDays(all.elements(), m, start, 0);
-                break;
-            default:
-                HolidaysUtility.fillDays(all.elements(), m, start, false);
-        }
-        return m.unmodifiable();
-    }
 
 }

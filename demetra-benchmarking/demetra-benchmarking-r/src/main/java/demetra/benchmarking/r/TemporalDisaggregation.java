@@ -1,9 +1,20 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2019 National Bank of Belgium.
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ *      https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package demetra.r;
+package demetra.benchmarking.r;
 
 import demetra.benchmarking.descriptors.TemporalDisaggregationDescriptor;
 import demetra.data.AggregationType;
@@ -11,7 +22,6 @@ import demetra.data.ParameterSpec;
 import demetra.information.InformationMapping;
 import demetra.processing.ProcResults;
 import demetra.ssf.SsfAlgorithm;
-import demetra.tempdisagg.univariate.TemporalDisaggregation;
 import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
 import demetra.timeseries.TsData;
@@ -26,11 +36,12 @@ import java.util.Map;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-public class TempDisagg {
+public class TemporalDisaggregation {
 
     public Results process(TsData y, boolean constant, boolean trend, TsData[] indicators,
-            String model, String aggregation, double rho, boolean fixedrho, double truncatedRho, boolean diffuseregs,
-            String algorithm, int obspos, int freq) {
+            String model, int freq, String aggregation, int obspos, 
+            double rho, boolean fixedrho, double truncatedRho, 
+            String algorithm, boolean zeroinit, boolean diffuseregs) {
         TemporalDisaggregationSpec.Builder builder = TemporalDisaggregationSpec.builder()
                 .constant(constant)
                 .trend(trend)
@@ -39,6 +50,7 @@ public class TempDisagg {
                 .parameter(fixedrho ? ParameterSpec.fixed(rho) : ParameterSpec.initial(rho))
                 .truncatedParameter(truncatedRho <= -1 ? null : truncatedRho)
                 .algorithm(SsfAlgorithm.valueOf(algorithm))
+                .zeroInitialization(zeroinit)
                 .diffuseRegressors(diffuseregs)
                 .rescale(true);
         if (aggregation.equals("UserDefined")) {
@@ -49,9 +61,9 @@ public class TempDisagg {
             TsPeriod start = TsPeriod.of(unit, y.getStart().start());
             TsPeriod end = TsPeriod.of(unit, y.getDomain().end());
             TsDomain all = TsDomain.of(start, start.until(end) + 2 * freq);
-            return new Results(TemporalDisaggregation.process(y, all, builder.build()));
+            return new Results(demetra.tempdisagg.univariate.TemporalDisaggregation.process(y, all, builder.build()));
         } else {
-            return new Results(TemporalDisaggregation.process(y, indicators, builder.build()));
+            return new Results(demetra.tempdisagg.univariate.TemporalDisaggregation.process(y, indicators, builder.build()));
         }
     }
 

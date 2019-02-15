@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.r;
+package demetra.benchmarking.r;
 
 import demetra.benchmarking.multivariate.ContemporaneousConstraint;
 import demetra.benchmarking.multivariate.MultivariateCholette;
@@ -14,8 +14,8 @@ import demetra.benchmarking.univariate.DentonSpec;
 import demetra.benchmarking.univariate.Cholette;
 import demetra.benchmarking.univariate.Denton;
 import demetra.data.AggregationType;
-import demetra.r.TsUtility.Dictionary;
 import demetra.timeseries.TsData;
+import demetra.util.r.Dictionary;
 import java.util.Map;
 
 /**
