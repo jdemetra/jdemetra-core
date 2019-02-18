@@ -6,10 +6,10 @@
         <artifactId>demetra-x13</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>demetra-x13-api</artifactId>
+    <artifactId>demetra-x13-x11</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>JD3 - X13 - API</name>
+    <name>JD3 - X13 - X11</name>
 
     <dependencies>
         <!-- compile only -->
@@ -31,6 +31,12 @@
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-toolkit-basic</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- test only -->
@@ -43,6 +49,21 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-data-tests</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tstoolkit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>demetra-x13-api</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>
