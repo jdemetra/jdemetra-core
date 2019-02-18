@@ -108,12 +108,13 @@ public class X11DStep {
         IExtremeValuesCorrector ecorr = context.getExtremeValuesCorrector();
         if (ecorr instanceof PeriodSpecificExtremeValuesCorrector && context.getCalendarSigma() != CalendarSigmaOption.Signif) {
             d9 = ecorr.computeCorrections(d8.drop(0, context.getForecastHorizon()));
-            d9g = ecorr.applyCorrections(d8, d9);
+            DoubleSequence ds = d9.extend(0, context.getForecastHorizon());
+            d9g = ecorr.applyCorrections(d8, ds);
             d9_g_bis = d9g;
         } else {
             d9bis = context.remove(d1, d7);
             DoubleSequence d9temp = DoubleSequence.onMapping(d9bis.length(), i -> Math.abs(d9bis.get(i) - d8.get(i)));
-            d9 = DoubleSequence.onMapping(d9temp.length(), i -> d9temp.get(i) < EPS ? Double.NaN : d9bis.get(i));
+            d9 = DoubleSequence.onMapping(d9temp.length() - context.getForecastHorizon(), i -> d9temp.get(i) < EPS ? Double.NaN : d9bis.get(i));
             d9_g_bis = d9bis;
         }
 

@@ -30,9 +30,13 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
      */
     @Override
     protected double[] calcStdev(DoubleSequence s) {
-        DataBlock db = DataBlock.of(s);
+
         double[] stdev;
 
+        if (excludeFcast) {
+            s = s.drop(0, forecastHorizon);
+        }
+        DataBlock db = DataBlock.of(s);
 //      one value for each period
         stdev = new double[period];
         for (int i = 0; i < period; i++) {

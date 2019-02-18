@@ -13,6 +13,7 @@ import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.sa.DecompositionMode;
 import demetra.x11.extremevaluecorrector.Cochran;
 import demetra.x11.extremevaluecorrector.DefaultExtremeValuesCorrector;
+import demetra.x11.extremevaluecorrector.GroupSpecificExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.IExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.PeriodSpecificExtremeValuesCorrector;
 import java.util.function.IntToDoubleFunction;
@@ -39,6 +40,7 @@ public class X11Context {
     CalendarSigmaOption calendarSigma;
     SigmavecOption[] sigmavecOptions;
     int forecastHorizon;
+    int firstPeriod;
     /**
      * Excludefcast is true if the forecast should be excluded for the calculation of the standard deviation of the extreme values
      */
@@ -172,7 +174,7 @@ public class X11Context {
                 case Signif:
                     break;
                 case Select:
-                    // TODO Christiane: IMPLEMENT!!kann noch nicht implementiert werden da man für die Zuordnung der Periode, die Startperiode benötigt
+                    extremeValuesCorrector = new GroupSpecificExtremeValuesCorrector(sigmavecOptions);
                     break;
                 default:
                     extremeValuesCorrector = new DefaultExtremeValuesCorrector();

@@ -57,7 +57,8 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
     protected double lsigma = 1.5, usigma = 2.5;
     protected DoubleSequence scur, sweights;
     private static final int NPERIODS = 5;// window of 5 years
-
+protected int forecastHorizon;
+    protected boolean excludeFcast;
     /**
      * Searches the extreme values in a given series
      *
@@ -73,6 +74,8 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
         sweights = null;
         period = context.getPeriod();
         mul = context.getMode().isMultiplicative();
+        forecastHorizon = context.getForecastHorizon();
+        excludeFcast = context.isExcludefcast();
         // compute standard deviations
         double[] stdev = calcStdev(scur);
         sweights = outliersDetection(scur, stdev);
@@ -104,6 +107,10 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
     }
 
     protected double[] calcStdev(DoubleSequence s) {
+
+        if (excludeFcast) {
+            s = s.drop(0, forecastHorizon);
+        }
 
         int n = s.length();
         int nfy = (n - start) / period;

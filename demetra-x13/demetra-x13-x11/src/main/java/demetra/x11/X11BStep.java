@@ -68,7 +68,7 @@ public class X11BStep {
         b4d = context.remove(b3, b4anorm);
         IExtremeValuesCorrector ecorr = context.selectExtremeValuesCorrector(b4d);
 
-        ecorr.setStart(b2drop);
+        ecorr.setStart(b2drop + context.getFirstPeriod());
         ecorr.analyse(b4d, context);
 
         b4 = ecorr.computeCorrections(b3);
@@ -126,7 +126,7 @@ public class X11BStep {
         DoubleSequence b9c = DefaultSeasonalNormalizer.normalize(b9a, 0, context);
         DoubleSequence b9d = context.remove(b8, b9c);
         IExtremeValuesCorrector ecorr = context.getExtremeValuesCorrector();
-        ecorr.setStart(0);
+        ecorr.setStart(context.getFirstPeriod());
         ecorr.analyse(b9d, context);
 
         b9 = ecorr.computeCorrections(b8);
@@ -141,7 +141,7 @@ public class X11BStep {
         b13 = context.remove(b11, b7);
 
         IExtremeValuesCorrector ecorr = context.selectExtremeValuesCorrector(b13);
-        ecorr.setStart(0);
+        ecorr.setStart(context.getFirstPeriod());
         ecorr.analyse(b13, context);
         b17 = ecorr.getObservationWeights();
         b20 = ecorr.getCorrectionFactors();
