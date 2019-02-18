@@ -16,21 +16,20 @@
  */
 package demetra.tempdisagg.univariate;
 
-import demetra.likelihood.DiffuseConcentratedLikelihood;
-import demetra.likelihood.MaximumLogLikelihood;
+import demetra.stats.TestResult;
 import demetra.timeseries.TsData;
 
 /**
  *
- * @author Jean Palate <jean.palate@nbb.be>
+ * @author Jean Palate
  */
 @lombok.Value
 @lombok.Builder(builderClassName="Builder")
-public class TemporalDisaggregationResults {
-    private @lombok.NonNull TsData disaggregatedSeries;
-    private @lombok.NonNull TsData stdevDisaggregatedSeries;
-    private TsData regressionEffects, residuals;
-    private MaximumLogLikelihood maximum;
-    private DiffuseConcentratedLikelihood concentratedLikelihood;
-    private ResidualsDiagnostics residualsDiagnostics;
+public class ResidualsDiagnostics {
+    
+    TsData fullResiduals;
+    TestResult ljungBox, mean, 
+            doornikHansen, skewness, kurtosis, runsNumber, runsLength,
+            udRunsNumber, udRunsLength;
+    double durbinWatson;
 }

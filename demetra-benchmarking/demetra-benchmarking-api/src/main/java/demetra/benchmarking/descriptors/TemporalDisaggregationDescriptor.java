@@ -31,14 +31,15 @@ import demetra.timeseries.TsData;
 public class TemporalDisaggregationDescriptor {
     
     public final String LIKELIHOOD="likelihood", DISAGG="disagg", EDISAGG="edisagg",
-            RES="residuals", FRES="fullresiduals", WNRES="wnresiduals";
+            RES="residuals";
     
     final InformationMapping<TemporalDisaggregationResults> MAPPING = new InformationMapping<>(TemporalDisaggregationResults.class);
 
     static {
-        MAPPING.delegate(LIKELIHOOD, DiffuseConcentratedLikelihoodDescriptor.getMapping(), source->source.getConcentratedLikelihood());
         MAPPING.set(DISAGG, TsData.class, source->source.getDisaggregatedSeries());
         MAPPING.set(EDISAGG, TsData.class, source->source.getStdevDisaggregatedSeries());
+        MAPPING.delegate(LIKELIHOOD, DiffuseConcentratedLikelihoodDescriptor.getMapping(), source->source.getConcentratedLikelihood());
+        MAPPING.delegate(RES, ResidualsDiagnosticsDescriptor.getMapping(), source->source.getResidualsDiagnostics());
     }
 
     public InformationMapping<TemporalDisaggregationResults> getMapping() {

@@ -21,6 +21,7 @@ import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
+import demetra.maths.matrices.Matrix;
 import demetra.modelling.regression.Constant;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.LinearTrend;
@@ -28,6 +29,7 @@ import demetra.modelling.regression.UserVariable;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.akf.AkfToolkit;
+import demetra.ssf.dk.DefaultDiffuseFilteringResults;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.dk.SsfFunctionPoint;
@@ -37,10 +39,13 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.univariate.SsfData;
 import demetra.ssf.univariate.SsfRegressionModel;
+import demetra.stats.tests.NiidTests;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec.Model;
+import demetra.timeseries.TsPeriod;
+import demetra.timeseries.TsUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -184,11 +189,20 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
                 vyh[i] = v <= 0 ? 0 : sigma * Math.sqrt(v);
             }
         }
+        TsData regeffect=regeffect(model, dll.coefficients());
+        if (regeffect != null){
+            regeffect=regeffect.multiply(f);
+        }
+        TsData res=hresiduals(model, dll.coefficients());
+        res=res.multiply(f);
         return TemporalDisaggregationResults.builder()
                 .maximum(ml)
                 .concentratedLikelihood(dll.rescale(model.getYfactor(), model.getXfactor()))
                 .disaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), yh))
                 .stdevDisaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), vyh))
+                .regressionEffects(regeffect)
+                .residuals(res)
+                .residualsDiagnostics(diagnostic(res, Ssf.of(nssf, 0), model.getYUnit()))
                 .build();
     }
 
@@ -258,16 +272,23 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
             double v = loading.ZVZ(i, srslts.P(i).extract(1, dim, 1, dim));
             vyh[i] = v <= 0 ? 0 : sigma * Math.sqrt(v);
         }
+        TsData regeffect=regeffect(model, dll.coefficients());
+        if (regeffect != null){
+            regeffect=regeffect.multiply(yfac);
+        }
         dll=dll.rescale(yfac, xfac);
         // full residuals are obtained by applying the filter on the series without the
         // regression effects
-         
-        
+        TsData res=hresiduals(model, dll.coefficients());
+        res=res.multiply(yfac);
         return TemporalDisaggregationResults.builder()
                 .maximum(ml)
                 .concentratedLikelihood(dll)
                 .disaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), yh))
                 .stdevDisaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), vyh))
+                .regressionEffects(regeffect)
+                .residuals(res)
+                .residualsDiagnostics(diagnostic(res, SsfDisaggregation.of(nssf, model.getFrequencyRatio()), model.getYUnit()))
                 .build();
     }
 
@@ -314,6 +335,50 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
             }
         }
         return diffuse;
+    }
+
+    private TsData regeffect(DisaggregationModel model, DoubleSequence coeff) {
+        if (model.getHX() == null)
+            return null;
+        DataBlock regs=DataBlock.make(model.getHX().getRowsCount());
+        regs.product(model.getHX().columnsIterator(), DataBlock.of(coeff));
+        return TsData.ofInternal(model.getHDom().getStartPeriod(), regs);
+    }
+
+    private TsData hresiduals(DisaggregationModel model, DoubleSequence coeff){
+        double[] y=new double[model.getHEDom().length()];
+        double[] hy = model.getHEY();
+        Matrix hx=model.getHEX();
+        for (int i=0; i<hy.length; ++i){
+            if (Double.isFinite(hy[i])){
+                y[i]=hy[i]-hx.row(i).dot(coeff);
+            }else
+                y[i]=Double.NaN;
+        }
+        return TsData.ofInternal(model.getLEDom().getStartPeriod(), hy);
+    }
+
+    private ResidualsDiagnostics diagnostic(TsData res, ISsf ssf, TsUnit unit) {
+        DiffuseConcentratedLikelihood ll = DkToolkit.concentratedLikelihoodComputer().compute(ssf, new SsfData(res.getValues()));
+        DoubleSequence e = ll.e();
+        TsPeriod pstart=TsPeriod.of(unit, res.getStart().start());
+        pstart=pstart.plus(ll.ndiffuse());
+        TsData fres=TsData.ofInternal(pstart, e);
+        NiidTests tests = NiidTests.builder()
+                .data(e)
+                .period(unit.getAnnualFrequency())
+                .seasonal(false)
+                .build();
+        return ResidualsDiagnostics.builder()
+                .mean(tests.meanTest().toSummary())
+                .skewness(tests.skewness().toSummary())
+                .kurtosis(tests.kurtosis().toSummary())
+                .doornikHansen(tests.normalityTest().toSummary())
+                .ljungBox(tests.ljungBox().toSummary())
+                .fullResiduals(fres)
+                .runsNumber(tests.runs().toSummary())
+                .udRunsNumber(tests.upAndDownRuns().toSummary())
+                .build();
     }
 
     private static class Mapping implements IParametricMapping<Parameter> {

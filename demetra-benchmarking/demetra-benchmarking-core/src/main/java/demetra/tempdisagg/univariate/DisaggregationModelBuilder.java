@@ -57,7 +57,7 @@ class DisaggregationModelBuilder {
     // local information used in the building operation
     double[] hO, hY, hEY;
     Matrix hX, hEX;
-    TsDomain hDom, hEDom;
+    TsDomain lEDom, hDom, hEDom;
     int frequencyRatio;
     double yfactor = 1;
     double[] xfactor;
@@ -215,11 +215,12 @@ class DisaggregationModelBuilder {
 
         // Number of common lowfreq data
         int ny = cStart.until(cEnd);
+        
         // TODO: should be adjusted for diffuse orders
         if (ny < regressors.size()) {
             throw new IllegalArgumentException("Empty model"); //To change body of generated methods, choose Tools | Templates.
         }
-
+        lEDom=TsDomain.of(cStart, ny);
         // estimation domain in high frequency (start include, end excluded)
         // the "estimation" data of the indicators will correspond to the "estimation domain".
         // it is as small as possible.

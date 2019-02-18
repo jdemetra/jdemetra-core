@@ -16,13 +16,10 @@
  */
 package demetra.tempdisagg.univariate;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.data.normalizer.IDataNormalizer;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsUnit;
 import javax.annotation.Nonnull;
 
 /**
@@ -32,6 +29,9 @@ import javax.annotation.Nonnull;
 @Development(status = Development.Status.Beta)
 @lombok.Value
 class DisaggregationModel {
+    
+    @Nonnull
+    TsUnit yUnit;
 
     @Nonnull
     double[] hO;
@@ -55,12 +55,21 @@ class DisaggregationModel {
      */
     Matrix hEX;
     /**
-     * High level domain. Same length as hX, The results correspond to that
+     * low-frequency domain. Domain of y
+     */
+    TsDomain lDom;
+    /**
+     * High frequency domain. Same length as hX, The results correspond to that
      * domain.
      */
     TsDomain hDom;
     /**
-     * High level estimation domain. Same length as hEX. Corresponds to the
+     * Low-level estimation domain. Corresponds to the low-frequency
+     * domain taken into account in the estimation procedure.
+     */
+    TsDomain lEDom;
+    /**
+     * High frequency estimation domain. Same length as hEX. Corresponds to the
      * domain taken into account in the estimation procedure.
      */
     TsDomain hEDom;
@@ -78,11 +87,14 @@ class DisaggregationModel {
     double[] xfactor;
     
     DisaggregationModel(DisaggregationModelBuilder builder){
+        this.yUnit=builder.y.getTsUnit();
         this.hO=builder.hO;
         this.hY=builder.hY;
         this.hEY=builder.hEY;
         this.hX=builder.hX;
         this.hEX=builder.hEX;
+        this.lDom=builder.y.getDomain();
+        this.lEDom=builder.lEDom;
         this.hDom=builder.hDom;
         this.hEDom=builder.hEDom;
         this.frequencyRatio=builder.frequencyRatio;
