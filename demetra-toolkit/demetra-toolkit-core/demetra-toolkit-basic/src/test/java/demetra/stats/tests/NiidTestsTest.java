@@ -57,8 +57,8 @@ public class NiidTestsTest {
         assertEquals(oldTests.getNormalityTest().getValue(), newTests.normalityTest().getValue(), 1e-9);
         assertEquals(oldTests.getSkewness().getValue(), newTests.skewness().getValue(), 1e-9);
         assertEquals(oldTests.getKurtosis().getValue(), newTests.kurtosis().getValue(), 1e-9);
-        assertEquals(oldTests.getRuns().getValue(), newTests.runs().getValue(), 1e-9);
-        assertEquals(oldTests.getUpAndDownRuns().getValue(), newTests.upAndDownRuns().getValue(), 1e-9);
+        assertEquals(oldTests.getRuns().getValue(), newTests.runsNumber().getValue(), 1e-9);
+        assertEquals(oldTests.getUpAndDownRuns().getValue(), newTests.upAndDownRunsNumbber().getValue(), 1e-9);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class NiidTestsTest {
         assertEquals(oldTests.getNormalityTest().getValue(), newTests.normalityTest().getValue(), 1e-9);
         assertEquals(oldTests.getSkewness().getValue(), newTests.skewness().getValue(), 1e-9);
         assertEquals(oldTests.getKurtosis().getValue(), newTests.kurtosis().getValue(), 1e-9);
-        assertEquals(oldTests.getRuns().getValue(), newTests.runs().getValue(), 1e-9);
-        assertEquals(oldTests.getUpAndDownRuns().getValue(), newTests.upAndDownRuns().getValue(), 1e-9);
+        assertEquals(oldTests.getRuns().getValue(), newTests.runsNumber().getValue(), 1e-9);
+        assertEquals(oldTests.getUpAndDownRuns().getValue(), newTests.upAndDownRunsNumbber().getValue(), 1e-9);
     }
 }

@@ -32,4 +32,7 @@ public class MaximumLikelihoodDescriptor {
                 source.getHessian() == null ? null : source.getHessian());
     }
 
+    public InformationMapping<MaximumLogLikelihood> getMapping() {
+        return MAPPING;
+    }
 }

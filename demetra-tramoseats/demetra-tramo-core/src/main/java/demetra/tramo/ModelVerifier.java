@@ -53,7 +53,7 @@ public class ModelVerifier {
             return false;
         }
         // runs
-        if (niid.runs().getValue() > RUNS) {
+        if (niid.runsNumber().getValue() > RUNS) {
             return false;
         }
         // mean

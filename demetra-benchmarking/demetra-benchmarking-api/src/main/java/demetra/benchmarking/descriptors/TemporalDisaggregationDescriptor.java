@@ -17,6 +17,7 @@
 package demetra.benchmarking.descriptors;
 
 import demetra.descriptors.stats.DiffuseConcentratedLikelihoodDescriptor;
+import demetra.descriptors.stats.MaximumLikelihoodDescriptor;
 import demetra.design.Development;
 import demetra.information.InformationMapping;
 import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
@@ -31,13 +32,16 @@ import demetra.timeseries.TsData;
 public class TemporalDisaggregationDescriptor {
     
     public final String LIKELIHOOD="likelihood", DISAGG="disagg", EDISAGG="edisagg",
-            RES="residuals";
+            RES="residuals", ML="ml", REGEFFECT="regeffect" ;
+    
     
     final InformationMapping<TemporalDisaggregationResults> MAPPING = new InformationMapping<>(TemporalDisaggregationResults.class);
 
     static {
         MAPPING.set(DISAGG, TsData.class, source->source.getDisaggregatedSeries());
         MAPPING.set(EDISAGG, TsData.class, source->source.getStdevDisaggregatedSeries());
+        MAPPING.set(REGEFFECT, TsData.class, source->source.getRegressionEffects());
+        MAPPING.delegate(ML, MaximumLikelihoodDescriptor.getMapping(), source->source.getMaximum());
         MAPPING.delegate(LIKELIHOOD, DiffuseConcentratedLikelihoodDescriptor.getMapping(), source->source.getConcentratedLikelihood());
         MAPPING.delegate(RES, ResidualsDiagnosticsDescriptor.getMapping(), source->source.getResidualsDiagnostics());
     }

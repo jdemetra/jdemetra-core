@@ -27,7 +27,7 @@ import demetra.maths.MatrixType;
 @lombok.experimental.UtilityClass
 public class DiffuseConcentratedLikelihoodDescriptor {
 
-    private final String LL = "ll", LDET="ldet", DCOR="diffusecorrection", SSQ = "ssqerr", SER = "ser", SIGMA = "sigma", COEF = "coeff", VAR = "cvar", RES="residuals";
+    private final String LL = "ll", LDET="ldet", DCOR="diffusecorrection", SSQ = "ssqerr", SER = "ser", SIGMA = "sigma", COEF = "coeff", VAR = "unscaledvariance", RES="residuals";
 
     private final InformationMapping<DiffuseConcentratedLikelihood> MAPPING = new InformationMapping<>(DiffuseConcentratedLikelihood.class);
 

@@ -274,16 +274,15 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
         }
         TsData regeffect=regeffect(model, dll.coefficients());
         if (regeffect != null){
-            regeffect=regeffect.multiply(yfac);
+            regeffect=regeffect.divide(yfac);
         }
-        dll=dll.rescale(yfac, xfac);
         // full residuals are obtained by applying the filter on the series without the
         // regression effects
         TsData res=hresiduals(model, dll.coefficients());
-        res=res.multiply(yfac);
+        res=res.divide(yfac);
         return TemporalDisaggregationResults.builder()
                 .maximum(ml)
-                .concentratedLikelihood(dll)
+                .concentratedLikelihood(dll.rescale(yfac, xfac))
                 .disaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), yh))
                 .stdevDisaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), vyh))
                 .regressionEffects(regeffect)
@@ -341,7 +340,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
         if (model.getHX() == null)
             return null;
         DataBlock regs=DataBlock.make(model.getHX().getRowsCount());
-        regs.product(model.getHX().columnsIterator(), DataBlock.of(coeff));
+        regs.product(model.getHX().rowsIterator(), DataBlock.of(coeff));
         return TsData.ofInternal(model.getHDom().getStartPeriod(), regs);
     }
 
@@ -370,14 +369,16 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
                 .seasonal(false)
                 .build();
         return ResidualsDiagnostics.builder()
-                .mean(tests.meanTest().toSummary())
-                .skewness(tests.skewness().toSummary())
-                .kurtosis(tests.kurtosis().toSummary())
-                .doornikHansen(tests.normalityTest().toSummary())
-                .ljungBox(tests.ljungBox().toSummary())
+                .mean(tests.meanTest()==null ? null :tests.meanTest().toSummary())
+                .skewness(tests.skewness()==null ? null :tests.skewness().toSummary())
+                .kurtosis(tests.kurtosis()==null ? null :tests.kurtosis().toSummary())
+                .doornikHansen(tests.normalityTest()==null ? null :tests.normalityTest().toSummary())
+                .ljungBox(tests.ljungBox()==null ? null :tests.ljungBox().toSummary())
                 .fullResiduals(fres)
-                .runsNumber(tests.runs().toSummary())
-                .udRunsNumber(tests.upAndDownRuns().toSummary())
+                .runsNumber(tests.runsNumber()==null ? null :tests.runsNumber().toSummary())
+                .udRunsNumber(tests.upAndDownRunsNumbber()==null ? null :tests.upAndDownRunsNumbber().toSummary())
+                .runsLength(tests.runsLength()==null ? null :tests.runsLength().toSummary())
+                .udRunsLength(tests.upAndDownRunsLength()==null ? null :tests.upAndDownRunsLength().toSummary())
                 .build();
     }
 

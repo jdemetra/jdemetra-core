@@ -78,6 +78,8 @@ public class TemporalDisaggregationProcessorTest {
     public void testChowLin2() {
         TsData y = TsData.of(TsPeriod.yearly(1977), DoubleSequence.ofInternal(Data.PCRA));
         TsData q = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSequence.ofInternal(Data.IND_PCR));
+        System.out.println(y);
+        System.out.println(q);
         TemporalDisaggregationSpec spec1 = TemporalDisaggregationSpec.builder()
                 .aggregationType(AggregationType.Average)
                 .residualsModel(TemporalDisaggregationSpec.Model.Ar1)

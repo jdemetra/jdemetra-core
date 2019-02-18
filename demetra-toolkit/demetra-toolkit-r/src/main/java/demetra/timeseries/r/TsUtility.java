@@ -38,7 +38,7 @@ public class TsUtility {
                 return TsData.ofInternal(TsPeriod.monthly(year, start), data);
             default:
                 int c = 12 / freq;
-                TsPeriod pstart = TsPeriod.of(TsUnit.MONTH, LocalDate.of(year, (start - 1) * c + 1, 1));
+                TsPeriod pstart = TsPeriod.of(TsUnit.ofAnnualFrequency(freq), LocalDate.of(year, (start - 1) * c + 1, 1));
                 return TsData.ofInternal(pstart, data);
         }
     }
