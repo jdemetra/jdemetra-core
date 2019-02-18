@@ -39,8 +39,8 @@ import java.util.Map;
 public class TemporalDisaggregation {
 
     public Results process(TsData y, boolean constant, boolean trend, TsData[] indicators,
-            String model, int freq, String aggregation, int obspos, 
-            double rho, boolean fixedrho, double truncatedRho, 
+            String model, int freq, String aggregation, int obspos,
+            double rho, boolean fixedrho, double truncatedRho,
             String algorithm, boolean zeroinit, boolean diffuseregs) {
         TemporalDisaggregationSpec.Builder builder = TemporalDisaggregationSpec.builder()
                 .constant(constant)
@@ -63,6 +63,9 @@ public class TemporalDisaggregation {
             TsDomain all = TsDomain.of(start, start.until(end) + 2 * freq);
             return new Results(demetra.tempdisagg.univariate.TemporalDisaggregation.process(y, all, builder.build()));
         } else {
+            for (int i = 0; i < indicators.length; ++i) {
+                indicators[i] = indicators[i].cleanExtremities();
+            }
             return new Results(demetra.tempdisagg.univariate.TemporalDisaggregation.process(y, indicators, builder.build()));
         }
     }
