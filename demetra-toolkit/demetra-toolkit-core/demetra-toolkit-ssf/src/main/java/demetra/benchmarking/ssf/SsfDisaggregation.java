@@ -39,6 +39,10 @@ public class SsfDisaggregation {
         return Ssf.of(new Initialization(s.initialization()), new Dynamics(s, conversion), new Loading(s, conversion));
     }
 
+    public Ssf of(SsfComponent s, int conversion, int start) {
+        return Ssf.of(new Initialization(s.initialization()), new Dynamics(s, conversion, start), new Loading(s, conversion, start));
+    }
+
     static class Initialization implements ISsfInitialization {
 
         private final ISsfInitialization initialization;
@@ -89,11 +93,20 @@ public class SsfDisaggregation {
         private final ISsfDynamics dynamics;
         private final ISsfLoading loading;
         private final int conversion;
+        private final int start;
 
         Dynamics(SsfComponent ssf, int conversion) {
             this.dynamics = ssf.dynamics();
             this.loading = ssf.loading();
             this.conversion = conversion;
+            this.start = 0;
+        }
+
+        Dynamics(SsfComponent ssf, int conversion, int start) {
+            this.dynamics = ssf.dynamics();
+            this.loading = ssf.loading();
+            this.conversion = conversion;
+            this.start = start;
         }
 
         @Override
@@ -124,9 +137,9 @@ public class SsfDisaggregation {
         @Override
         public void T(int pos, Matrix tr) {
             dynamics.T(pos, tr.dropTopLeft(1, 1));
-            if ((pos + 1) % conversion != 0) {
+            if ((start + pos + 1) % conversion != 0) {
                 loading.Z(pos, tr.row(0).drop(1, 0));
-                if (pos % conversion != 0) {
+                if ((start + pos) % conversion != 0) {
                     tr.set(0, 0, 1);
                 }
             }
@@ -136,9 +149,9 @@ public class SsfDisaggregation {
         public void TX(int pos, DataBlock x) {
             DataBlock xc = x.drop(1, 0);
 
-            if ((pos + 1) % conversion != 0) {
+            if ((start + pos + 1) % conversion != 0) {
                 double s = loading.ZX(pos, xc);
-                if (pos % conversion == 0) {
+                if ((start + pos) % conversion == 0) {
                     x.set(0, s);
                 } else {
                     x.add(0, s);
@@ -152,13 +165,13 @@ public class SsfDisaggregation {
         @Override
         public void TVT(int pos, Matrix vm) {
             Matrix v = vm.dropTopLeft(1, 1);
-            if (pos % conversion == 0) {
+            if ((start + pos) % conversion == 0) {
                 DataBlock v0 = vm.row(0).drop(1, 0);
                 loading.ZM(pos, v, v0);
                 vm.set(0, 0, loading.ZX(pos, v0));
                 dynamics.TX(pos, v0);
                 vm.column(0).drop(1, 0).copy(v0);
-            } else if ((pos + 1) % conversion != 0) {
+            } else if ((start + pos + 1) % conversion != 0) {
                 DataBlock r0 = vm.row(0).drop(1, 0);
                 double zv0 = loading.ZX(pos, r0);
                 loading.ZM(pos, v, r0);
@@ -189,9 +202,9 @@ public class SsfDisaggregation {
         public void XT(int pos, DataBlock x) {
             DataBlock xc = x.drop(1, 0);
             dynamics.XT(pos, xc);
-            if ((pos + 1) % conversion != 0) {
+            if ((start + pos + 1) % conversion != 0) {
                 loading.XpZd(pos, xc, x.get(0));
-                if (pos % conversion == 0) {
+                if ((start + pos) % conversion == 0) {
                     x.set(0, 0);
                 }
             } else {
@@ -214,15 +227,23 @@ public class SsfDisaggregation {
 
         private final ISsfLoading measurement;
         private final int conversion;
+        private final int start;
 
         Loading(SsfComponent s, int conversion) {
             this.measurement = s.loading();
             this.conversion = conversion;
+            this.start = 0;
+        }
+
+        Loading(SsfComponent s, int conversion, int start) {
+            this.measurement = s.loading();
+            this.conversion = conversion;
+            this.start = start;
         }
 
         @Override
         public void Z(int pos, DataBlock z) {
-            if (pos % conversion != 0) {
+            if ((start + pos) % conversion != 0) {
                 z.set(0, 1);
             }
             measurement.Z(pos, z.drop(1, 0));
@@ -230,13 +251,13 @@ public class SsfDisaggregation {
 
         @Override
         public double ZX(int pos, DataBlock x) {
-            double r = (pos % conversion == 0) ? 0 : x.get(0);
+            double r = ((start + pos) % conversion == 0) ? 0 : x.get(0);
             return r + measurement.ZX(pos, x.drop(1, 0));
         }
 
         @Override
         public void ZM(int pos, Matrix m, DataBlock zm) {
-            if (pos % conversion == 0) {
+            if ((start + pos) % conversion == 0) {
                 zm.set(0);
             } else {
                 zm.copy(m.row(0));
@@ -252,7 +273,7 @@ public class SsfDisaggregation {
         @Override
         public double ZVZ(int pos, Matrix vm) {
             Matrix v = vm.dropTopLeft(1, 1);
-            if (pos % conversion == 0) {
+            if ((start + pos) % conversion == 0) {
                 return measurement.ZVZ(pos, v);
             } else {
                 double r = vm.get(0, 0);
@@ -266,7 +287,7 @@ public class SsfDisaggregation {
         public void VpZdZ(int pos, Matrix vm, double d) {
             Matrix v = vm.dropTopLeft(1, 1);
             measurement.VpZdZ(pos, v, d);
-            if (pos % conversion != 0) {
+            if ((start + pos) % conversion != 0) {
                 vm.add(0, 0, d);
                 measurement.XpZd(pos, vm.column(0).drop(1, 0), d);
                 measurement.XpZd(pos, vm.row(0).drop(1, 0), d);
@@ -276,7 +297,7 @@ public class SsfDisaggregation {
         @Override
         public void XpZd(int pos, DataBlock x, double d) {
             measurement.XpZd(pos, x.drop(1, 0), d);
-            if (pos % conversion != 0) {
+            if ((start + pos) % conversion != 0) {
                 x.add(0, d);
             }
         }

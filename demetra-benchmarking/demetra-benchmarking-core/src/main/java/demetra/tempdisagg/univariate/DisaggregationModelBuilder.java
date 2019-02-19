@@ -61,6 +61,7 @@ class DisaggregationModelBuilder {
     int frequencyRatio;
     double yfactor = 1;
     double[] xfactor;
+    int start;
 
     DisaggregationModelBuilder(TsData y) {
         this.y = y;
@@ -117,6 +118,7 @@ class DisaggregationModelBuilder {
         frequencyRatio = 0;
         yfactor = 1;
         xfactor = null;
+        start = 0;
     }
 
     private void startDataPreparation() {
@@ -155,7 +157,6 @@ class DisaggregationModelBuilder {
         // common periods in lFreq. First, we start from hdom and then we adjust for ldom
         TsPeriod cStart = TsPeriod.of(lUnit, hStart.start());
         TsPeriod cEnd = TsPeriod.of(lUnit, hEnd.previous().start()).next();
-
 
         // adjust start and end...
         switch (aType) {
@@ -215,12 +216,12 @@ class DisaggregationModelBuilder {
 
         // Number of common lowfreq data
         int ny = cStart.until(cEnd);
-        
+
         // TODO: should be adjusted for diffuse orders
         if (ny < regressors.size()) {
             throw new IllegalArgumentException("Empty model"); //To change body of generated methods, choose Tools | Templates.
         }
-        lEDom=TsDomain.of(cStart, ny);
+        lEDom = TsDomain.of(cStart, ny);
         // estimation domain in high frequency (start include, end excluded)
         // the "estimation" data of the indicators will correspond to the "estimation domain".
         // it is as small as possible.
@@ -254,6 +255,12 @@ class DisaggregationModelBuilder {
         hX = Regression.matrix(disaggregationDomain, regressors.toArray(new ITsVariable[regressors.size()]));
 
         int pos = hDom.indexOf(hEDom.getStartPeriod());
+        int del = pos % frequencyRatio;
+        if (del != 0) {
+            start = frequencyRatio - del;
+        } else {
+            start = 0;
+        }
         if (aType != AggregationType.Average
                 && aType != AggregationType.Sum) {
             hEX = hX.extract(pos, hEDom.length(), 0, hX.getColumnsCount());

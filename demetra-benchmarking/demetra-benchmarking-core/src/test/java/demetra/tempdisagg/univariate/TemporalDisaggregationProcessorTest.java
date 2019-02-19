@@ -26,8 +26,8 @@ public class TemporalDisaggregationProcessorTest {
 
     @Test
     public void testChowLin() {
-        TsData y = TsData.of(TsPeriod.yearly(1977), DoubleSequence.ofInternal(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSequence.ofInternal(Data.IND_PCR));
+        TsData y = TsData.of(TsPeriod.yearly(1978), DoubleSequence.ofInternal(Data.PCRA));
+        TsData q = TsData.of(TsPeriod.quarterly(1977, 2), DoubleSequence.ofInternal(Data.IND_PCR));
         TemporalDisaggregationSpec spec1 = TemporalDisaggregationSpec.builder()
                 .aggregationType(AggregationType.Sum)
                 .residualsModel(TemporalDisaggregationSpec.Model.Ar1)

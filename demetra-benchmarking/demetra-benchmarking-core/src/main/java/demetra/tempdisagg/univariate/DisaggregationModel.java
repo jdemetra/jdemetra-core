@@ -86,6 +86,8 @@ class DisaggregationModel {
      */
     double[] xfactor;
     
+    int start;
+    
     DisaggregationModel(DisaggregationModelBuilder builder){
         this.yUnit=builder.y.getTsUnit();
         this.hO=builder.hO;
@@ -100,6 +102,7 @@ class DisaggregationModel {
         this.frequencyRatio=builder.frequencyRatio;
         this.yfactor=builder.yfactor;
         this.xfactor=builder.xfactor;
+        this.start=builder.start;
     }
 
     int nx() {

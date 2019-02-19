@@ -245,7 +245,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
         // A square root form of the diffuse smoothing should also be investigated.
         SsfComponent rssf = RegSsf.of(nssf, model.getHX());
         SsfData ssfdata = new SsfData(model.getHY());
-        ssf = SsfDisaggregation.of(rssf, model.getFrequencyRatio());
+        ssf = SsfDisaggregation.of(rssf, model.getFrequencyRatio(), model.getStart());
         DefaultSmoothingResults srslts;
         switch (spec.getAlgorithm()) {
             case Augmented:
