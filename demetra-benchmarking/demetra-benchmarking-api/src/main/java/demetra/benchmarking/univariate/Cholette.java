@@ -16,12 +16,11 @@
  */
 package demetra.benchmarking.univariate;
 
-import demetra.design.Algorithm;
+import demetra.benchmarking.spi.ICholette;
 import demetra.timeseries.TsData;
 import demetra.util.ServiceLookup;
 import java.util.concurrent.atomic.AtomicReference;
 import demetra.design.Development;
-import demetra.design.ServiceDefinition;
 
 /**
  *
@@ -31,21 +30,14 @@ import demetra.design.ServiceDefinition;
 @lombok.experimental.UtilityClass
 public class Cholette {
 
-    @Algorithm
-    @ServiceDefinition
-    @FunctionalInterface
-    public static interface Processor {
 
-        TsData benchmark(TsData source, TsData target, CholetteSpec spec);
-    }
+    private final AtomicReference<ICholette> PROCESSOR = ServiceLookup.firstMutable(ICholette.class);
 
-    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
-
-    public void setProcessor(Processor algorithm) {
+    public void setProcessor(ICholette algorithm) {
         PROCESSOR.set(algorithm);
     }
 
-    public Processor getProcessor() {
+    public ICholette getProcessor() {
         return PROCESSOR.get();
     }
 

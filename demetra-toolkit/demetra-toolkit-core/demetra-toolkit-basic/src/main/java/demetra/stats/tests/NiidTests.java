@@ -121,8 +121,8 @@ public class NiidTests {
     private StatisticalTest doornikHansen;
     private StatisticalTest skewness;
     private StatisticalTest kurtosis;
-    private StatisticalTest runs;
-    private StatisticalTest upAndDownRuns;
+    private StatisticalTest runsNumber, runsLength;
+    private StatisticalTest upAndDownRunsNumber, upAndDownRunsLength;
 
     // Data
     private final DoubleSequence data, data2;
@@ -354,34 +354,60 @@ public class NiidTests {
      *
      * @return
      */
-    public StatisticalTest runs() {
-        if (runs == null) {
+    public StatisticalTest runsNumber() {
+        if (runsNumber == null) {
             try {
-                runs = new TestOfRuns(stat)
+                runsNumber = new TestOfRuns(stat)
                         .testNumber();
             } catch (StatException | DStatException ex) {
-                runs = null;
+                runsNumber = null;
                 return null;
             }
         }
-        return runs;
+        return runsNumber;
+    }
+
+    public StatisticalTest runsLength() {
+        if (runsLength == null) {
+            try {
+                runsLength = new TestOfRuns(stat)
+                        .testLength();
+            } catch (StatException | DStatException ex) {
+                runsLength = null;
+                return null;
+            }
+        }
+        return runsLength;
     }
 
     /**
      *
      * @return
      */
-    public StatisticalTest upAndDownRuns() {
-        if (upAndDownRuns == null) {
+    public StatisticalTest upAndDownRunsNumbber() {
+        if (upAndDownRunsNumber == null) {
             try {
-                upAndDownRuns = new TestOfUpDownRuns(data)
+                upAndDownRunsNumber = new TestOfUpDownRuns(data)
                         .testNumber();
             } catch (StatException | DStatException ex) {
-                upAndDownRuns = null;
+                upAndDownRunsNumber = null;
                 return null;
             }
         }
-        return upAndDownRuns;
+        return upAndDownRunsNumber;
+    }
+
+    public StatisticalTest upAndDownRunsLength() {
+        if (upAndDownRunsLength == null) {
+            try {
+                upAndDownRunsLength = new TestOfUpDownRuns(data)
+                        .testNumber();
+            } catch (StatException | DStatException ex) {
+                upAndDownRunsLength = null;
+                return null;
+            }
+        }
+        return upAndDownRunsLength;
     }
 
     /**

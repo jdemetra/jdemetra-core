@@ -15,6 +15,7 @@
     <modules>
         <module>demetra-benchmarking-api</module>
         <module>demetra-benchmarking-core</module>
+        <module>demetra-benchmarking-r</module>
     </modules>
   
     <properties>
@@ -64,6 +65,11 @@
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-toolkit-sa</artifactId>
+                <version>${jd3-toolkit.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-toolkit-r</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
             <dependency>

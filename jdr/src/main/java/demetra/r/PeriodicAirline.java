@@ -12,7 +12,7 @@ import demetra.fractionalairline.MultiPeriodicAirlineMapping;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.descriptors.stats.LikelihoodDescriptor;
+import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.modelling.regression.AdditiveOutlierFactory;
@@ -55,7 +55,7 @@ public class PeriodicAirline {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(LL, LikelihoodDescriptor.getMapping(), r -> r.statistics);
+            MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
             MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
             MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters());

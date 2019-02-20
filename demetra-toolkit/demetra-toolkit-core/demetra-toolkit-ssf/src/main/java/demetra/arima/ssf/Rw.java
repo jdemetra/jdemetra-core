@@ -69,16 +69,18 @@ public class Rw {
 
         @Override
         public boolean isDiffuse() {
-            return false;
+            return !data.zeroinit;
         }
 
         @Override
         public int getDiffuseDim() {
-            return 0;
+            return data.zeroinit ? 0 : 1;
         }
 
         @Override
         public void diffuseConstraints(Matrix b) {
+            if (!data.zeroinit)
+                b.set(1);
         }
 
         @Override
@@ -92,6 +94,12 @@ public class Rw {
             }
         }
 
+        @Override
+        public void Pi0(Matrix pi0) {
+            if (!data.zeroinit) {
+                pi0.set(0, 0, 1);
+            }
+        }
     }
 
     static class Dynamics implements ISsfDynamics {

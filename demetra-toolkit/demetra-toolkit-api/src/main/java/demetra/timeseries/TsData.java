@@ -414,6 +414,31 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
         return lag == 0 ? this : TsData.ofInternal(getStart().plus(lag), values);
     }
 
+    /**
+     * Erases the Missing values at the extremities of this series.
+     *
+     * @return A new series is returned.
+     */
+    public TsData cleanExtremities() {
+        int n = values.length(), nm = values.count(x->!Double.isFinite(x));
+        if (n == nm) {
+            return drop(0, n);
+        }
+        int nf = 0, nl = 0;
+        while (nf < n) {
+            if (Double.isFinite(values.get(nf))) {
+                break;
+            }
+            ++nf;
+        }
+        while (nl < n) {
+            if (Double.isFinite(values.get(n - nl - 1))) {
+                break;
+            }
+            ++nl;
+        }
+        return drop(nf, nl);
+    }
 
     @Override
     public String toString() {

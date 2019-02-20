@@ -14,9 +14,8 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.r;
+package demetra.benchmarking.r;
 
-import demetra.benchmarking.univariate.DentonSpec;
 import demetra.data.DataBlock;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
@@ -45,7 +44,7 @@ public class BenchmarkingTest {
         TsData s = TsData.of(q, x);
 
         TsData qs = Benchmarking.denton(s, t, 1, true, true, "Sum");
-        
+        assertTrue(qs != null);
         
     }
 

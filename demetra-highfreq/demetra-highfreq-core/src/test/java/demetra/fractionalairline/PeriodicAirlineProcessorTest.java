@@ -6,6 +6,7 @@
 package demetra.fractionalairline;
 
 import demetra.arima.ArimaModel;
+import demetra.data.Data;
 import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.data.MatrixSerializer;
@@ -43,7 +44,7 @@ public class PeriodicAirlineProcessorTest {
     @Test
     @Ignore
     public void testDaily() throws URISyntaxException, IOException {
-        URI uri = MultiPeriodicAirlineMapping.class.getResource("/edf.txt").toURI();
+        URI uri = Data.class.getResource("/edf.txt").toURI();
         MatrixType edf = MatrixSerializer.read(new File(uri));
         Holiday[] france = france();
         Matrix hol = Matrix.make(edf.getRowsCount(), france.length);

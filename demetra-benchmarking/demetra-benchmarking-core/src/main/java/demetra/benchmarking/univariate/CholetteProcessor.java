@@ -16,6 +16,7 @@
  */
 package demetra.benchmarking.univariate;
 
+import demetra.benchmarking.spi.ICholette;
 import demetra.benchmarking.ssf.SsfCholette;
 import demetra.benchmarking.univariate.CholetteSpec;
 import demetra.benchmarking.univariate.CholetteSpec.BiasCorrection;
@@ -42,8 +43,8 @@ import static demetra.timeseries.simplets.TsDataToolkit.subtract;
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = Cholette.Processor.class)
-public class CholetteProcessor implements Cholette.Processor {
+@ServiceProvider(service = ICholette.class)
+public class CholetteProcessor implements ICholette {
     
     public static final CholetteProcessor PROCESSOR=new CholetteProcessor();
 

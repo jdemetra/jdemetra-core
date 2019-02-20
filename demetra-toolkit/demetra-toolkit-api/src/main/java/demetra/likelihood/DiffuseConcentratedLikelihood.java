@@ -295,7 +295,7 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
         return new DiffuseConcentratedLikelihood(nobs, nd, ssqerr / (yfactor * yfactor), nldet, nlddet, nb, nbvar, nres, legacy, scalingFactor);
     }
 
-    public double getDiffuseCorrection() {
+    public double diffuseCorrection() {
         return lddet;
     }
 
@@ -306,7 +306,7 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
         builder.append("n=").append(this.dim()).append(System.lineSeparator());
         builder.append("ssq=").append(this.ssq()).append(System.lineSeparator());
         builder.append("ldet=").append(this.logDeterminant()).append(System.lineSeparator());
-        builder.append("dcorr=").append(this.getDiffuseCorrection()).append(System.lineSeparator());
+        builder.append("dcorr=").append(this.diffuseCorrection()).append(System.lineSeparator());
         return builder.toString();
     }
 }

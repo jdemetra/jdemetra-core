@@ -16,6 +16,7 @@
  */
 package demetra.benchmarking.univariate;
 
+import demetra.benchmarking.spi.IDenton;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
@@ -28,8 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = Denton.Processor.class)
-public class DentonProcessor implements Denton.Processor {
+@ServiceProvider(service = IDenton.class)
+public class DentonProcessor implements IDenton {
 
     public static final DentonProcessor PROCESSOR=new DentonProcessor();
 

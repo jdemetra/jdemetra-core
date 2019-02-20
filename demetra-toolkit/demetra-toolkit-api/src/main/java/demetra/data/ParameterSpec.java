@@ -34,5 +34,9 @@ public class ParameterSpec {
         return new ParameterSpec(value, 0, ParameterType.Fixed);
     }
     
+    public static ParameterSpec initial(double value){
+        return new ParameterSpec(value, 0, ParameterType.Initial);
+    }
+
     private static final ParameterSpec UNDEFINED =new ParameterSpec(0,0,ParameterType.Undefined);
 }

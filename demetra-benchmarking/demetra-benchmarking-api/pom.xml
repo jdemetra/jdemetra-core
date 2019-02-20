@@ -14,7 +14,6 @@
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-design</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -33,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tstoolkit</artifactId>
+            <artifactId>demetra-data-tests</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
