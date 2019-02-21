@@ -19,6 +19,8 @@ package demetra.data;
 import demetra.design.Development;
 import demetra.design.Internal;
 import demetra.util.IntList;
+import demetra.util.function.BiDoublePredicate;
+import internal.data.InternalDoubleSeq;
 import java.text.DecimalFormat;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
@@ -28,8 +30,6 @@ import java.util.function.IntToDoubleFunction;
 import java.util.stream.DoubleStream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import demetra.util.function.BiDoublePredicate;
-import internal.data.InternalDoubleSeq;
 
 /**
  *
@@ -647,7 +647,60 @@ public interface DoubleSequence extends BaseSequence<Double> {
         }
         return ns;
     }
+    public default DoubleSequence log() {
+        DoubleSequence ns = this;
+        ns = ns.fn(x -> Math.log(x));
 
+        return ns;
+    }
+
+    public default DoubleSequence exp() {
+        DoubleSequence ns = this;
+        ns = ns.fn(x -> Math.exp(x));
+
+        return ns;
+    }
+
+    /**
+     * Replace negative values with either the mean of the two nearest positive
+     * replacements before and after the value, or the nearest value if it is on
+     * the ends of the series.
+     *
+     * @param s
+     * @return new Double Sequence
+     */
+    public default DoubleSequence makePositivity() throws Exception {
+        double[] stc = this.toArray();
+        int n = this.length();
+        boolean changed = false;
+        for (int i = 0; i < n; ++i) {
+            if (stc[i] <= 0) {
+                changed = true;
+                int before = i - 1;
+                while (before >= 0 && stc[before] <= 0) {
+                    --before;
+                }
+                int after = i + 1;
+                while (after < n && stc[after] <= 0) {
+                    ++after;
+                }
+                double m;
+                if (before < 0 && after >= n) {
+                    throw new Exception("Negative series"); // Can't find an exception here, dont't know where to put the whole mehtod
+                }
+                if (before >= 0 && after < n) {
+                    m = (stc[before] + stc[after]) / 2;
+                } else if (after >= n) {
+                    m = stc[before];
+                } else {
+                    m = stc[after];
+                }
+                stc[i] = m;
+            }
+        }
+        return DoubleSequence.of(stc);
+
+    }
     public default DoubleSequence op(DoubleSequence b, DoubleBinaryOperator op) {
         double[] data = toArray();
         DoubleReader reader = b.reader();

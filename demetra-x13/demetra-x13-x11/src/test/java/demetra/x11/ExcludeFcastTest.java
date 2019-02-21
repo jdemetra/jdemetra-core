@@ -29,7 +29,7 @@ public class ExcludeFcastTest {
     SigmavecOption[] sigmavecOptions = new SigmavecOption[12];
 
     @Test
-    public void excludeFcastFalseSelectTest() {
+    public void excludeFcastFalseSelectTest() throws Exception {
         for (int i = 0; i < 12; i++) {
             sigmavecOptions[i] = SigmavecOption.Group2;
         }
@@ -40,36 +40,36 @@ public class ExcludeFcastTest {
     }
 
     @Test
-    public void excludeFcastFalseAllTest() {
+    public void excludeFcastFalseAllTest() throws Exception {
         excludeFcastTest(CalendarSigmaOption.All, false, sigmavecOptions);
     }
 
     @Test
-    public void excludeFcastFalseSignifTest() {
+    public void excludeFcastFalseSignifTest() throws Exception {
         excludeFcastTest(CalendarSigmaOption.Signif, false, sigmavecOptions);
     }
 
     @Test
-    public void excludeFcastTrueSignifTest() {
+    public void excludeFcastTrueSignifTest() throws Exception {
         excludeFcastTest(CalendarSigmaOption.Signif, true, sigmavecOptions);
     }
 
     @Test
-    public void excludeFcastFalseNoneTest() {
+    public void excludeFcastFalseNoneTest() throws Exception {
         excludeFcastTest(CalendarSigmaOption.None, false, sigmavecOptions);
     }
 
     @Test
-    public void excludeFcastTrueAllTest() {
+    public void excludeFcastTrueAllTest() throws Exception {
         excludeFcastTest(CalendarSigmaOption.All, true, sigmavecOptions);
     }
 
     @Test
-    public void excludeFcastTrueNoneTest() {
+    public void excludeFcastTrueNoneTest() throws Exception {
         excludeFcastTest(CalendarSigmaOption.None, true, sigmavecOptions);
     }
 
-    private void excludeFcastTest(CalendarSigmaOption option, boolean excludeFcast, SigmavecOption[] sigmavecOptions) {
+    private void excludeFcastTest(CalendarSigmaOption option, boolean excludeFcast, SigmavecOption[] sigmavecOptions) throws Exception {
 
         DoubleSequence b1 = DoubleSequence.of(B1);
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
@@ -123,6 +123,14 @@ public class ExcludeFcastTest {
         double[] actual_B4 = bStep.getB4().toArray();
         double[] B4_old = old_Results.getData("b-tables.b4", TsData.class).internalStorage();
         Assert.assertArrayEquals("Error in B4", B4_old, actual_B4, 0.00000000051);
+
+        double[] actual_B20 = bStep.getB20().toArray();
+        double[] B20_old = old_Results.getData("b-tables.b20", TsData.class).internalStorage();
+        Assert.assertArrayEquals("Error in B20", B20_old, actual_B20, 0.00000000051);
+
+        double[] actual_C1 = cStep.getC1().toArray();
+        double[] C1_old = old_Results.getData("c-tables.c1", TsData.class).internalStorage();
+        Assert.assertArrayEquals("Error in C1", C1_old, actual_C1, 0.00000000051);
 
         double[] actual_D9 = instance.getD9().toArray();
         double[] D9_old = old_Results.getData("d-tables.d9", TsData.class).internalStorage();

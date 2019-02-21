@@ -10,6 +10,7 @@ import demetra.data.DoubleSequence;
 import demetra.design.VisibleForTesting;
 import demetra.dstats.F;
 import demetra.dstats.ProbabilityType;
+import demetra.sa.DecompositionMode;
 import demetra.x11.X11Context;
 import lombok.AccessLevel;
 
@@ -21,7 +22,7 @@ public class Cochran {
 
     public Cochran(DoubleSequence ds, X11Context context) {
         input = DataBlock.of(ds);
-        isMulti = context.getMode().isMultiplicative();
+        isMulti = (context.getMode() == DecompositionMode.Multiplicative || context.getMode() == DecompositionMode.PseudoAdditive);
         period = context.getPeriod();
         standardDeviation = new double[period]; //original PSP first remains empty 0,...,Ny-1
         calcCochranTest();

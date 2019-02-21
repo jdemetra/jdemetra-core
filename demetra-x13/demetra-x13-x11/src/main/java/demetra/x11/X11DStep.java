@@ -37,7 +37,7 @@ public class X11DStep {
     @lombok.Getter(AccessLevel.NONE)
     private DoubleSequence refSeries;
 
-    public void process(DoubleSequence refSeries, DoubleSequence input, X11Context context) {
+    public void process(DoubleSequence refSeries, DoubleSequence input, X11Context context) throws Exception {
         this.refSeries = refSeries;
         d1 = input;
         d2(context);
@@ -74,7 +74,7 @@ public class X11DStep {
         d6 = context.remove(d1, d5);
     }
 
-    private void d7(X11Context context) {
+    private void d7(X11Context context) throws Exception {
         SymmetricFilter filter;
         if (context.isAutomaticHenderson()) {
             double icr = AutomaticHenderson.calcICR(context, d6);
@@ -95,8 +95,8 @@ public class X11DStep {
         AsymmetricEndPoints aep = new AsymmetricEndPoints(asymmetricFilter, 0);
         aep.process(d6, DataBlock.ofInternal(x));
         d7 = DoubleSequence.ofInternal(x);
-        if (d7.anyMatch(z -> z <= 0)) {
-            throw new X11Exception(X11Exception.ERR_NEG);
+        if (context.isMultiplicative()) {
+            d7 = d7.makePositivity();
         }
     }
 
@@ -120,7 +120,7 @@ public class X11DStep {
 
     }
 
-    private void dfinal(X11Context context) {
+    private void dfinal(X11Context context) throws Exception {
         IFiltering filter = msr(context, d9_g_bis);
         d10bis = filter.process(d9_g_bis);
         d10 = DefaultSeasonalNormalizer.normalize(d10bis, 0, context);
@@ -149,8 +149,8 @@ public class X11DStep {
         AsymmetricEndPoints aep = new AsymmetricEndPoints(asymmetricFilter, 0);
         aep.process(d11bis, DataBlock.ofInternal(x));
         d12 = DoubleSequence.ofInternal(x);
-        if (d12.anyMatch(z -> z <= 0)) {
-            throw new X11Exception(X11Exception.ERR_NEG);
+        if (context.isMultiplicative()) {
+            d12 = d12.makePositivity();
         }
 
         d13 = context.remove(d11, d12);

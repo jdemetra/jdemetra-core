@@ -34,7 +34,7 @@ public class X11CStep {
     private DoubleSequence refSeries;
     private int c2drop;
 
-    public void process(DoubleSequence refSeries, DoubleSequence input, X11Context context) {
+    public void process(DoubleSequence refSeries, DoubleSequence input, X11Context context) throws Exception {
         this.refSeries = refSeries;
         c1 = input;
         c2(context);
@@ -70,7 +70,7 @@ public class X11CStep {
         c6 = context.remove(c1, c5);
     }
 
-    private void c7(X11Context context) {
+    private void c7(X11Context context) throws Exception {
         SymmetricFilter filter;
         if (context.isAutomaticHenderson()) {
             double icr = AutomaticHenderson.calcICR(context, c6);
@@ -91,8 +91,8 @@ public class X11CStep {
         AsymmetricEndPoints aep = new AsymmetricEndPoints(asymmetricFilter, 0);
         aep.process(c6, DataBlock.ofInternal(x));
         c7 = DoubleSequence.ofInternal(x);
-        if (c7.anyMatch(z -> z <= 0)) {
-            throw new X11Exception(X11Exception.ERR_NEG);
+        if (context.isMultiplicative()) {
+            c7 = c7.makePositivity();
         }
     }
 

@@ -18,6 +18,7 @@ package demetra.x11plus;
 
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.sa.DecompositionMode;
 import java.util.Arrays;
 
 /**
@@ -70,7 +71,7 @@ class DefaultExtremeValuesCorrector {
         scur = s;
         sweights = null;
         period = context.getPeriod().intValue();
-        mul = context.getMode().isMultiplicative();
+        mul = (context.getMode() == DecompositionMode.Multiplicative);
         // compute standard deviations
         double[] stdev = calcStdev(scur);
         sweights = outliersDetection(scur, stdev);

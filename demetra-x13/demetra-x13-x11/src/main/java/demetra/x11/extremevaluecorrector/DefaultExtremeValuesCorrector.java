@@ -18,6 +18,7 @@ package demetra.x11.extremevaluecorrector;
 
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.sa.DecompositionMode;
 import demetra.x11.X11Context;
 import java.util.Arrays;
 
@@ -73,7 +74,7 @@ protected int forecastHorizon;
         scur = s;
         sweights = null;
         period = context.getPeriod();
-        mul = context.getMode().isMultiplicative();
+        mul = (context.getMode() == DecompositionMode.Multiplicative || context.getMode() == DecompositionMode.PseudoAdditive);
         forecastHorizon = context.getForecastHorizon();
         excludeFcast = context.isExcludefcast();
         // compute standard deviations

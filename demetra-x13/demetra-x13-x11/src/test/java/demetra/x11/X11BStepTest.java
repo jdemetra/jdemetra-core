@@ -31,7 +31,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_Multiplicative() {
+    public void testProcess_Multiplicative() throws Exception {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 13;
@@ -41,7 +41,7 @@ public class X11BStepTest {
 
     @Test
     @Ignore
-    public void testProcess_Multiplicative_Halfyearly() {
+    public void testProcess_Multiplicative_Halfyearly() throws Exception {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 5;
@@ -50,7 +50,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_Additive_Quarterly() {
+    public void testProcess_Additive_Quarterly() throws Exception {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 13;
@@ -59,7 +59,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_Multiplicative2() {
+    public void testProcess_Multiplicative2() throws Exception {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 13;
@@ -68,7 +68,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_AutoHenderson() {
+    public void testProcess_AutoHenderson() throws Exception {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 0;
@@ -77,7 +77,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_AutoHenderson2() {
+    public void testProcess_AutoHenderson2() throws Exception {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 0;
@@ -86,7 +86,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_AutoHenderson_Quarterly() {
+    public void testProcess_AutoHenderson_Quarterly() throws Exception {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 0;
@@ -96,7 +96,7 @@ public class X11BStepTest {
 
     @Test
     @Ignore
-    public void testProcess_AutoHenderson_Halfyearly() {
+    public void testProcess_AutoHenderson_Halfyearly() throws Exception {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 0;
@@ -106,7 +106,7 @@ public class X11BStepTest {
 
     @Test
     @Ignore
-    public void testProcess_LogAdd() {
+    public void testProcess_LogAdd() throws Exception {
         String modeName = DecompositionMode.LogAdditive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 13;
@@ -115,7 +115,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_S3X15_Add() {
+    public void testProcess_S3X15_Add() throws Exception {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X15.name();
         int filterLength = 13;
@@ -124,7 +124,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_S3X9_Add() {
+    public void testProcess_S3X9_Add() throws Exception {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X9.name();
         int filterLength = 13;
@@ -133,7 +133,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_S3X5_Add() {
+    public void testProcess_S3X5_Add() throws Exception {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 13;
@@ -142,7 +142,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_S3X3_Add() {
+    public void testProcess_S3X3_Add() throws Exception {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X3.name();
         int filterLength = 13;
@@ -151,7 +151,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_S3X1_Add() {
+    public void testProcess_S3X1_Add() throws Exception {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X1.name();
         int filterLength = 13;
@@ -161,7 +161,7 @@ public class X11BStepTest {
 
     @Test
     @Ignore
-    public void testProcess_Msr_Add() {
+    public void testProcess_Msr_Add() throws Exception {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
         int filterLength = 13;
@@ -170,7 +170,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_X11Default_Add() {
+    public void testProcess_X11Default_Add() throws Exception {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.X11Default.name();
         int filterLength = 13;
@@ -179,7 +179,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_Stable_Add() {
+    public void testProcess_Stable_Add() throws Exception {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Stable.name();
         int filterLength = 13;
@@ -188,7 +188,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_Henderson9_S3X5_Add() {
+    public void testProcess_Henderson9_S3X5_Add() throws Exception {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 9;
@@ -196,12 +196,12 @@ public class X11BStepTest {
         testB(modeName, seasonalFilterOptionName, filterLength, frequency, A);
     }
 
-    private void process(X11BStep instance, X11Context context, double[] input) {
+    private void process(X11BStep instance, X11Context context, double[] input) throws Exception {
         DoubleSequence b1 = DoubleSequence.of(input);
         instance.process(b1, context);
     }
 
-    private void testB(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values) {
+    private void testB(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values) throws Exception {
         X11BStep instance = new X11BStep();
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(DecompositionMode.valueOf(modeName))
