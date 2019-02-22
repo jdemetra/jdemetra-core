@@ -25,7 +25,7 @@ import demetra.design.Development;
  * @author Kristof Bayens, Christiane Hofer
  */
 @Development(status = Development.Status.Beta)
-public enum CalendarSigma {
+public enum CalendarSigmaOption {
 
     None,
     Signif, 

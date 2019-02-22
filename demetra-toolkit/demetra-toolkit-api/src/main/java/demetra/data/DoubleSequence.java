@@ -1,17 +1,17 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.data;
@@ -19,6 +19,8 @@ package demetra.data;
 import demetra.design.Development;
 import demetra.design.Internal;
 import demetra.util.IntList;
+import demetra.util.function.BiDoublePredicate;
+import internal.data.InternalDoubleSeq;
 import java.text.DecimalFormat;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
@@ -28,8 +30,6 @@ import java.util.function.IntToDoubleFunction;
 import java.util.stream.DoubleStream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import demetra.util.function.BiDoublePredicate;
-import internal.data.InternalDoubleSeq;
 
 /**
  *
@@ -45,6 +45,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      * can break immutability.
      *
      * @param data
+     *
      * @return
      */
     @Internal
@@ -58,6 +59,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      * @param data Storage
      * @param start Position of the first item (non negative)
      * @param len Number of items (non negative)
+     *
      * @return
      */
     @Internal
@@ -73,6 +75,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      * @param start Position of the first item (non negative)
      * @param len Number of items (non negative)
      * @param inc Increment in the underlying storage of two succesive items
+     *
      * @return
      */
     @Internal
@@ -132,6 +135,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      * as for array indexing.
      *
      * @param index the index of the <code>double</code> value to be returned
+     *
      * @return the specified <code>double</code> value
      * @throws IndexOutOfBoundsException if the <tt>index</tt> argument is
      * negative or not less than <tt>length()</tt>
@@ -156,6 +160,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      * @param length The number of extracted items. The size of the result could
      * be smaller than length, if the data block doesn't contain enough items.
      * Cannot be null.
+     *
      * @return A new (read only) toArray block. Cannot be null (but the length
      * of the result could be 0.
      */
@@ -207,6 +212,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
 
     /**
      * @param pred
+     *
      * @return
      * @see DoubleStream#allMatch(java.util.function.DoublePredicate))
      */
@@ -217,6 +223,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
     /**
      * @param seq
      * @param pred
+     *
      * @return
      */
     default boolean allMatch(@Nonnull DoubleSequence seq, @Nonnull BiDoublePredicate pred) {
@@ -225,6 +232,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
 
     /**
      * @param pred
+     *
      * @return
      * @see DoubleStream#anyMatch(java.util.function.DoublePredicate))
      */
@@ -236,6 +244,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      *
      * @param initial
      * @param fn
+     *
      * @return
      * @see DoubleStream#reduce(double, java.util.function.DoubleBinaryOperator)
      */
@@ -260,6 +269,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      *
      * @param beg The number of items dropped at the beginning
      * @param end The number of items dropped at the end
+     *
      * @return The shortened array
      */
     default DoubleSequence drop(int beg, int end) {
@@ -271,6 +281,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      *
      * @param beg The first item
      * @param end The last item
+     *
      * @return
      */
     default DoubleSequence range(int beg, int end) {
@@ -648,6 +659,14 @@ public interface DoubleSequence extends BaseSequence<Double> {
         return ns;
     }
 
+    public default DoubleSequence log() {
+        return fn(x -> Math.log(x));
+    }
+
+    public default DoubleSequence exp() {
+        return fn(x -> Math.exp(x));
+    }
+
     public default DoubleSequence op(DoubleSequence b, DoubleBinaryOperator op) {
         double[] data = toArray();
         DoubleReader reader = b.reader();
@@ -665,6 +684,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
     public default DoubleSequence commit() {
         return DoubleSequence.ofInternal(toArray());
     }
+
     static boolean equals(double a, double b, double epsilon) {
         return a > b ? (a - epsilon <= b) : (b - epsilon <= a);
     }
