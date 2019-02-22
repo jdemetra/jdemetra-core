@@ -34,7 +34,7 @@ public class X11BStep {
     public X11BStep() {
     }
 
-    public void process(DoubleSequence input, X11Context context) throws Exception {
+    public void process(DoubleSequence input, X11Context context) {
 
         b1 = input;
         b2(context);
@@ -86,7 +86,7 @@ public class X11BStep {
         b6 = context.remove(b1, b5);
     }
 
-    private void b7(X11Context context) throws Exception {
+    private void b7(X11Context context) {
         SymmetricFilter filter;
         if (context.isAutomaticHenderson()) {
             double icr = AutomaticHenderson.calcICR(context, b6);
@@ -113,7 +113,7 @@ public class X11BStep {
         aep.process(b6, DataBlock.ofInternal(x));
         b7 = DoubleSequence.ofInternal(x);
         if (context.isMultiplicative()) {
-            b7 = b7.makePositivity();
+            b7 = context.makePositivity(b7);
         }
     }
 
@@ -147,4 +147,4 @@ public class X11BStep {
         b17 = ecorr.getObservationWeights();
         b20 = ecorr.getCorrectionFactors();
     }
-    }
+}

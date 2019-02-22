@@ -24,7 +24,7 @@ public class X11 {
     @ServiceDefinition
     public static interface Processor {
 
-        X11Results process(TsData timeSeries, X11Spec spec);
+        X11Results process(@lombok.NonNull TsData timeSeries, @lombok.NonNull X11Spec spec);
 
     }
 
@@ -38,7 +38,7 @@ public class X11 {
         return PROCESSOR.get();
     }
 
-    public X11Results process(TsData timeSeries, X11Spec spec) {
+    public X11Results process(@lombok.NonNull TsData timeSeries, @lombok.NonNull X11Spec spec) {
         return PROCESSOR.get().process(timeSeries, spec);
     }
 

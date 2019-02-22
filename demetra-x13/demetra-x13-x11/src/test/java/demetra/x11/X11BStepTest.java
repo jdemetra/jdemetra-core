@@ -31,7 +31,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_Multiplicative() throws Exception {
+    public void testProcess_Multiplicative() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 13;
@@ -41,7 +41,7 @@ public class X11BStepTest {
 
     @Test
     @Ignore
-    public void testProcess_Multiplicative_Halfyearly() throws Exception {
+    public void testProcess_Multiplicative_Halfyearly() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 5;
@@ -50,7 +50,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_Additive_Quarterly() throws Exception {
+    public void testProcess_Additive_Quarterly() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 13;
@@ -59,7 +59,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_Multiplicative2() throws Exception {
+    public void testProcess_Multiplicative2() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 13;
@@ -68,7 +68,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_AutoHenderson() throws Exception {
+    public void testProcess_AutoHenderson() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 0;
@@ -77,7 +77,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_AutoHenderson2() throws Exception {
+    public void testProcess_AutoHenderson2() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 0;
@@ -86,7 +86,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_AutoHenderson_Quarterly() throws Exception {
+    public void testProcess_AutoHenderson_Quarterly() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 0;
@@ -96,7 +96,7 @@ public class X11BStepTest {
 
     @Test
     @Ignore
-    public void testProcess_AutoHenderson_Halfyearly() throws Exception {
+    public void testProcess_AutoHenderson_Halfyearly() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 0;
@@ -105,8 +105,7 @@ public class X11BStepTest {
     }
 
     @Test
-    @Ignore
-    public void testProcess_LogAdd() throws Exception {
+    public void testProcess_LogAdd() {
         String modeName = DecompositionMode.LogAdditive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 13;
@@ -115,7 +114,17 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_S3X15_Add() throws Exception {
+    @Ignore
+    public void testProcess_PseudoAdd() {
+        String modeName = DecompositionMode.PseudoAdditive.name();
+        String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
+        int filterLength = 13;
+        int frequency = 12;
+        testB(modeName, seasonalFilterOptionName, filterLength, frequency, A);
+    }
+
+    @Test
+    public void testProcess_S3X15_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X15.name();
         int filterLength = 13;
@@ -124,7 +133,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_S3X9_Add() throws Exception {
+    public void testProcess_S3X9_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X9.name();
         int filterLength = 13;
@@ -133,7 +142,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_S3X5_Add() throws Exception {
+    public void testProcess_S3X5_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 13;
@@ -142,7 +151,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_S3X3_Add() throws Exception {
+    public void testProcess_S3X3_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X3.name();
         int filterLength = 13;
@@ -151,7 +160,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_S3X1_Add() throws Exception {
+    public void testProcess_S3X1_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X1.name();
         int filterLength = 13;
@@ -161,7 +170,7 @@ public class X11BStepTest {
 
     @Test
     @Ignore
-    public void testProcess_Msr_Add() throws Exception {
+    public void testProcess_Msr_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
         int filterLength = 13;
@@ -170,7 +179,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_X11Default_Add() throws Exception {
+    public void testProcess_X11Default_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.X11Default.name();
         int filterLength = 13;
@@ -179,7 +188,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_Stable_Add() throws Exception {
+    public void testProcess_Stable_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Stable.name();
         int filterLength = 13;
@@ -188,7 +197,7 @@ public class X11BStepTest {
     }
 
     @Test
-    public void testProcess_Henderson9_S3X5_Add() throws Exception {
+    public void testProcess_Henderson9_S3X5_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 9;
@@ -196,12 +205,15 @@ public class X11BStepTest {
         testB(modeName, seasonalFilterOptionName, filterLength, frequency, A);
     }
 
-    private void process(X11BStep instance, X11Context context, double[] input) throws Exception {
+    private void process(X11BStep instance, X11Context context, double[] input) {
         DoubleSequence b1 = DoubleSequence.of(input);
+        if (context.isLogAdd()) {
+            b1 = b1.log();
+        }
         instance.process(b1, context);
     }
 
-    private void testB(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values) throws Exception {
+    private void testB(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values) {
         X11BStep instance = new X11BStep();
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(DecompositionMode.valueOf(modeName))
@@ -223,43 +235,43 @@ public class X11BStepTest {
         X11Results old_Results = old.process(new TsData(TsFrequency.valueOf(frequency), 1999, 0, values, true));
 
         double[] expected_B1 = old_Results.getData("b-tables.b1", TsData.class).internalStorage();
-        double[] actual_B1 = instance.getB1().toArray();
+        double[] actual_B1 = prepareForCompare(instance.getB1(), context);
         Assert.assertArrayEquals("Error in B1", expected_B1, actual_B1, DELTA);
 
         double[] expected_B2 = old_Results.getData("b-tables.b2", TsData.class).internalStorage();
-        double[] actual_B2 = instance.getB2().toArray();
+        double[] actual_B2 = prepareForCompare(instance.getB2(), context);
         Assert.assertArrayEquals("Error in B2", expected_B2, actual_B2, DELTA);
 
         double[] expected_B4 = old_Results.getData("b-tables.b4", TsData.class).internalStorage();
-        double[] actual_B4 = instance.getB4().toArray();
+        double[] actual_B4 = prepareForCompare(instance.getB4(), context);
         Assert.assertArrayEquals("Error in B4", expected_B4, actual_B4, DELTA);
 
         double[] expected_B5 = old_Results.getData("b-tables.b5", TsData.class).internalStorage();
-        double[] actual_B5 = instance.getB5().toArray();
+        double[] actual_B5 = prepareForCompare(instance.getB5(), context);
         Assert.assertArrayEquals("Error in B5", expected_B5, actual_B5, DELTA);
 
         double[] expected_B6 = old_Results.getData("b-tables.b6", TsData.class).internalStorage();
-        double[] actual_B6 = instance.getB6().toArray();
+        double[] actual_B6 = prepareForCompare(instance.getB6(), context);
         Assert.assertArrayEquals("Error in B6", expected_B6, actual_B6, DELTA);
 
         double[] expected_B7 = old_Results.getData("b-tables.b7", TsData.class).internalStorage();
-        double[] actual_B7 = instance.getB7().toArray();
+        double[] actual_B7 = prepareForCompare(instance.getB7(), context);
         Assert.assertArrayEquals("Error in B7", expected_B7, actual_B7, DELTA);
 
         double[] expected_B9 = old_Results.getData("b-tables.b9", TsData.class).internalStorage();
-        double[] actual_B9 = instance.getB9().toArray();
+        double[] actual_B9 = prepareForCompare(instance.getB9(), context);
         Assert.assertArrayEquals("Error in B9", expected_B9, actual_B9, DELTA);
 
         double[] expected_B10 = old_Results.getData("b-tables.b10", TsData.class).internalStorage();
-        double[] actual_B10 = instance.getB10().toArray();
+        double[] actual_B10 = prepareForCompare(instance.getB10(), context);
         Assert.assertArrayEquals("Error in B10", expected_B10, actual_B10, DELTA);
 
         double[] expected_B11 = old_Results.getData("b-tables.b11", TsData.class).internalStorage();
-        double[] actual_B11 = instance.getB11().toArray();
+        double[] actual_B11 = prepareForCompare(instance.getB11(), context);
         Assert.assertArrayEquals("Error in B11", expected_B11, actual_B11, DELTA);
 
         double[] expected_B13 = old_Results.getData("b-tables.b13", TsData.class).internalStorage();
-        double[] actual_B13 = instance.getB13().toArray();
+        double[] actual_B13 = prepareForCompare(instance.getB13(), context);
         Assert.assertArrayEquals("Error in B13", expected_B13, actual_B13, DELTA);
 
         double[] expected_B17 = old_Results.getData("b-tables.b17", TsData.class).internalStorage();
@@ -267,8 +279,16 @@ public class X11BStepTest {
         Assert.assertArrayEquals("Error in B17", expected_B17, actual_B17, DELTA);
 
         double[] expected_B20 = old_Results.getData("b-tables.b20", TsData.class).internalStorage();
-        double[] actual_B20 = instance.getB20().toArray();
+        double[] actual_B20 = prepareForCompare(instance.getB20(), context);
         Assert.assertArrayEquals("Error in B20", expected_B20, actual_B20, DELTA);
+    }
+
+    private double[] prepareForCompare(final DoubleSequence in, X11Context context) {
+        DoubleSequence ds = in;
+        if (context.isLogAdd()) {
+            ds = ds.exp();
+        }
+        return ds.toArray();
     }
 
 }

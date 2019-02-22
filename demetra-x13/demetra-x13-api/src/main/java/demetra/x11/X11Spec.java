@@ -99,6 +99,7 @@ public final class X11Spec implements Validatable<X11Spec> {
     private CalendarSigmaOption calendarSigma;
     private List<SigmavecOption> sigmavec;
     private boolean excludeForecast;
+    private BiasCorrection bias;
 
     private static final X11Spec DEFAULT = X11Spec.builder().build();
 
@@ -107,6 +108,7 @@ public final class X11Spec implements Validatable<X11Spec> {
         return new Builder()
                 .calendarSigma(CalendarSigmaOption.None)
                 .excludeForecast(false)
+                .bias(BiasCorrection.Legacy)
                 .hendersonFilterLength(0)
                 .forecastHorizon(DEFAULT_FORECAST_HORIZON)
                 .backcastHorizon(DEFAULT_BACKCAST_HORIZON)

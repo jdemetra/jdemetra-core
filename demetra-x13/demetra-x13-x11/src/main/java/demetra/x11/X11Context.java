@@ -90,7 +90,7 @@ public class X11Context {
     }
 
     public DoubleSequence remove(DoubleSequence l, DoubleSequence r) {
-        if (mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive) {
+        if (isMultiplicative()) {
             return DoubleSequence.onMapping(l.length(), i -> l.get(i) / r.get(i));
         } else {
             return DoubleSequence.onMapping(l.length(), i -> l.get(i) - r.get(i));
@@ -98,7 +98,7 @@ public class X11Context {
     }
 
     public DoubleSequence add(DoubleSequence l, DoubleSequence r) {
-        if (mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive) {
+        if (isMultiplicative()) {
             return DoubleSequence.onMapping(l.length(), i -> l.get(i) * r.get(i));
         } else {
             return DoubleSequence.onMapping(l.length(), i -> l.get(i) + r.get(i));
@@ -106,7 +106,7 @@ public class X11Context {
     }
 
     public void remove(DoubleSequence l, DoubleSequence r, DataBlock q) {
-        if (mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive) {
+        if (isMultiplicative()) {
             q.set(l, r, (x, y) -> x / y);
         } else {
             q.set(l, r, (x, y) -> x - y);
@@ -114,7 +114,7 @@ public class X11Context {
     }
 
     public void add(DoubleSequence l, DoubleSequence r, DataBlock q) {
-        if (mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive) {
+        if (isMultiplicative()) {
             q.set(l, r, (x, y) -> x * y);
         } else {
             q.set(l, r, (x, y) -> x + y);
@@ -206,5 +206,44 @@ public class X11Context {
             return SeasonalFilterOption.S3X5;
         }
         return finalSeasonalFilter;
+    }
+
+    /**
+     * Replace negative values of a Double Sequence with either the mean of the two
+     * nearest positive replacements before and after the value, or the nearest value
+     * if it is on the ends of the series.
+     *
+     * @param in
+     *
+     * @return new DoubleSequence
+     */
+    public DoubleSequence makePositivity(DoubleSequence in) {
+        double[] stc = in.toArray();
+        int n = in.length();
+        for (int i = 0; i < n; ++i) {
+            if (stc[i] <= 0) {
+                int before = i - 1;
+                while (before >= 0 && stc[before] <= 0) {
+                    --before;
+                }
+                int after = i + 1;
+                while (after < n && stc[after] <= 0) {
+                    ++after;
+                }
+                double m;
+                if (before < 0 && after >= n) {
+                    throw new X11Exception("Negative series");
+                }
+                if (before >= 0 && after < n) {
+                    m = (stc[before] + stc[after]) / 2;
+                } else if (after >= n) {
+                    m = stc[before];
+                } else {
+                    m = stc[after];
+                }
+                stc[i] = m;
+            }
+        }
+        return DoubleSequence.of(stc);
     }
 }
