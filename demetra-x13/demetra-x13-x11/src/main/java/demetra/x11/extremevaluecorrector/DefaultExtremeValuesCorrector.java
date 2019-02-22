@@ -18,7 +18,6 @@ package demetra.x11.extremevaluecorrector;
 
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
-import demetra.sa.DecompositionMode;
 import demetra.x11.X11Context;
 import java.util.Arrays;
 
@@ -58,14 +57,14 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
     protected double lsigma = 1.5, usigma = 2.5;
     protected DoubleSequence scur, sweights;
     private static final int NPERIODS = 5;// window of 5 years
-protected int forecastHorizon;
+    protected int forecastHorizon;
     protected boolean excludeFcast;
+
     /**
      * Searches the extreme values in a given series
      *
      * @param s The analysed series
      *
-     * @return The number of extreme values that have been detected (>= 0)
      */
     @Override
     public void analyse(final DoubleSequence s, X11Context context) {
@@ -74,7 +73,7 @@ protected int forecastHorizon;
         scur = s;
         sweights = null;
         period = context.getPeriod();
-        mul = (context.getMode() == DecompositionMode.Multiplicative || context.getMode() == DecompositionMode.PseudoAdditive);
+        mul = context.isMultiplicative();
         forecastHorizon = context.getForecastHorizon();
         excludeFcast = context.isExcludefcast();
         // compute standard deviations
@@ -90,14 +89,14 @@ protected int forecastHorizon;
     /**
      * Applies the detected corrections to the original series
      *
-     * @param sorig       The original series
+     * @param original The original series
      * @param corrections The corrections
      *
      * @return The corrected series. A new time series is always returned.
      */
     @Override
-    public DoubleSequence applyCorrections(DoubleSequence sorig, DoubleSequence corrections) {
-        double[] ns = sorig.toArray();
+    public DoubleSequence applyCorrections(DoubleSequence original, DoubleSequence corrections) {
+        double[] ns = original.toArray();
         for (int i = 0; i < ns.length; ++i) {
             double x = corrections.get(i);
             if (!Double.isNaN(x)) {
@@ -249,7 +248,7 @@ protected int forecastHorizon;
 
     /**
      *
-     * @param cur   The series being
+     * @param cur The series being
      * @param stdev
      *
      * @return The weights corresponding to the series
@@ -295,7 +294,7 @@ protected int forecastHorizon;
         double[] cin = in.toArray();
 
         for (int i = 0; i < cin.length; ++i) {
-            if (sweights.get(i) == 0) {
+            if (weights.get(i) == 0) {
                 cin[i] = Double.NaN;
             }
         }
@@ -372,7 +371,7 @@ protected int forecastHorizon;
      * @param lsig The low sigma value
      * @param usig The high sigma value
      *
-     * @throws An exception is thrown when the limits are invalid (usig <= lsig or lsig <= 0.5).
+     * @throws IllegalArgumentException An exception is thrown when the limits are invalid (usig <= lsig or lsig <= 0.5).
      */
     @Override
     public void setSigma(double lsig, double usig) {

@@ -11,6 +11,7 @@ import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.FiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.sa.DecompositionMode;
+import demetra.timeseries.TsData;
 import demetra.x11.extremevaluecorrector.Cochran;
 import demetra.x11.extremevaluecorrector.DefaultExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.GroupSpecificExtremeValuesCorrector;
@@ -59,13 +60,15 @@ public class X11Context {
         builder.calendarSigma = CalendarSigmaOption.None;
         builder.lowerSigma = 1.5;
         builder.upperSigma = 2.5;
+        builder.firstPeriod = 0;
         return builder;
     }
 
-    public static X11Context of(X11Spec spec, int frequency) {
+    public static X11Context of(X11Spec spec, TsData data) {
         return builder().mode(spec.getMode())
                 .trendFilterLength(spec.getHendersonFilterLength())
-                .period(frequency)
+                .period(data.getAnnualFrequency())
+                .firstPeriod(data.getStart().annualPosition())
                 .lowerSigma(spec.getLowerSigma())
                 .upperSigma(spec.getUpperSigma())
                 .calendarSigma(spec.getCalendarSigma())

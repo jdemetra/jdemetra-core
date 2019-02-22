@@ -1,18 +1,18 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 package demetra.x11.filter;
 
@@ -69,6 +69,7 @@ public class MusgraveFilterFactory {
      *
      * @param length Length of the filter
      * @param frequency Annual frequency of the series
+     *
      * @return Ratio for Musgrave filters
      */
     public static double findR(final int length, final int frequency) {
@@ -87,6 +88,7 @@ public class MusgraveFilterFactory {
      *
      * @param filter
      * @param ic
+     *
      * @return
      */
     public static FiniteFilter[] makeFilters(IFiniteFilter filter, double ic) {
@@ -110,6 +112,7 @@ public class MusgraveFilterFactory {
      *
      * @param len Length of the Henderson filter.
      * @param freq Annual frequency of the series
+     *
      * @return
      */
     public static synchronized IFiniteFilter[] makeFiltersForHenderson(int len,

@@ -16,17 +16,9 @@
  */
 package demetra.x11.filter;
 
-import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
-import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.polynomials.Polynomial;
-import demetra.sa.DecompositionMode;
-import demetra.x11.SeasonalFilterOption;
-import demetra.x11.SeriesEvolution;
-import demetra.x11.X11Context;
-import static demetra.x11.X11Kernel.table;
 
 /**
  *
@@ -115,42 +107,4 @@ public final class X11FilterFactory {
         c[ilen] = we;
         return SymmetricFilter.ofInternal(c);
     }
-
-    public SeasonalFilterOption calcRatioIS(DoubleSequence series, X11Context context) {
-
-        SymmetricFilter filter = X11FilterFactory.makeSymmetricFilter(7);
-        int drop = filter.length() / 2;
-        double[] x = table(series.length() - 2 * drop, Double.NaN);
-        DataBlock out = DataBlock.ofInternal(x, 0, x.length);
-        filter.apply(i -> series.get(i), IFilterOutput.of(out, drop));
-        DoubleSequence seas = DoubleSequence.ofInternal(x);
-
-        DoubleSequence irr = context.remove(series.drop(drop, drop), seas);
-
-        double i = SeriesEvolution.calcAbsMeanVariation(
-                irr,
-                context.getPeriod(),
-                DecompositionMode.Multiplicative.equals(context.getMode())
-        );
-        double s = SeriesEvolution.calcAbsMeanVariation(
-                seas,
-                context.getPeriod(),
-                DecompositionMode.Multiplicative.equals(context.getMode())
-        );
-
-        double msr = i / s;
-
-        if (msr < 2.5) {
-            return SeasonalFilterOption.S3X3;
-        } else if (msr >= 2.5 && msr < 3.5) {
-            return null;
-        } else if (msr >= 3.5 && msr < 5.5) {
-            return SeasonalFilterOption.S3X5;
-        } else if (msr >= 5.5 && msr < 6.5) {
-            return null;
-        } else {
-            return SeasonalFilterOption.S3X9;
-        }
-    }
-
 }

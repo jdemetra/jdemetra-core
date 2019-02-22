@@ -169,7 +169,6 @@ public class X11BStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_Msr_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();

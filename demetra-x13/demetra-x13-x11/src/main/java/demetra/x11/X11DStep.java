@@ -16,6 +16,7 @@ import demetra.x11.extremevaluecorrector.PeriodSpecificExtremeValuesCorrector;
 import demetra.x11.filter.AutomaticHenderson;
 import demetra.x11.filter.DefaultSeasonalNormalizer;
 import demetra.x11.filter.IFiltering;
+import demetra.x11.filter.MsrFilterSelection;
 import demetra.x11.filter.MusgraveFilterFactory;
 import demetra.x11.filter.X11FilterFactory;
 import demetra.x11.filter.X11SeasonalFiltersFactory;
@@ -34,6 +35,7 @@ public class X11DStep {
     private DoubleSequence d1, d2, d4, d5, d6, d7, d8, d9, d9g, d9bis, d9_g_bis, d10, d10bis, d11, d11bis, d12, d13;
     private int d2drop, finalHendersonFilterLength;
     private double iCRatio;
+    private SeasonalFilterOption seasFilter;
     @lombok.Getter(AccessLevel.NONE)
     private DoubleSequence refSeries;
 
@@ -121,7 +123,13 @@ public class X11DStep {
     }
 
     private void dfinal(X11Context context) {
-        IFiltering filter = msr(context, d9_g_bis);
+        if (context.isMSR()) {
+            MsrFilterSelection msr = new MsrFilterSelection();
+            seasFilter = msr.doMSR(d9_g_bis, context);
+        } else {
+            seasFilter = context.getFinalSeasonalFilter();
+        }
+        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), seasFilter);
         d10bis = filter.process(d9_g_bis);
         d10 = DefaultSeasonalNormalizer.normalize(d10bis, 0, context);
 
@@ -155,17 +163,5 @@ public class X11DStep {
 
         d13 = context.remove(d11, d12);
 
-    }
-
-    private IFiltering msr(X11Context context, DoubleSequence input) {
-        SeasonalFilterOption seasFilter;
-        if (context.isMSR()) {
-            seasFilter = X11FilterFactory.calcRatioIS(input, context);
-            System.out.println("MSR: " + seasFilter.name());
-        } else {
-            seasFilter = context.getFinalSeasonalFilter();
-        }
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), seasFilter);
-        return filter;
     }
 }

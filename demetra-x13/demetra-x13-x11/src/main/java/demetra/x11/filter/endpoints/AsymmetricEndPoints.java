@@ -18,7 +18,6 @@ package demetra.x11.filter.endpoints;
 
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
-import static demetra.data.Doubles.average;
 import demetra.design.Development;
 import demetra.maths.linearfilters.IFiniteFilter;
 
@@ -35,10 +34,10 @@ public class AsymmetricEndPoints implements IEndPointsProcessor {
     /**
      *
      * @param filters
-     * @param pos     -1 for left, 1 for right, 0 for both
+     * @param pos -1 for left, 1 for right, 0 for both
      */
     public AsymmetricEndPoints(IFiniteFilter[] filters, int pos) {
-        this.filters = filters;
+        this.filters = filters.clone();
         this.pos = pos;
     }
 
@@ -70,7 +69,7 @@ public class AsymmetricEndPoints implements IEndPointsProcessor {
         }
 
         if (istart < n) {
-            double av = average(in);
+            double av = in.average();
             out.range(istart, plen - istart).set(av);
         } else {
             if (pos <= 0) {

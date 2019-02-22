@@ -15,7 +15,7 @@ import demetra.x11.SigmavecOption;
  */
 public class GroupSpecificExtremeValuesCorrector extends PeriodSpecificExtremeValuesCorrector {
 
-    private static SigmavecOption[] sigmavecOption_;
+    private final SigmavecOption[] sigmavecOption_;
 
     public GroupSpecificExtremeValuesCorrector(SigmavecOption[] sigmavecOption) {
         super();
@@ -43,8 +43,7 @@ public class GroupSpecificExtremeValuesCorrector extends PeriodSpecificExtremeVa
             if (sigmavecOption_[i].equals(SigmavecOption.Group1)) {
                 for (int k = 0; k < dbPeriod.length(); k++) {
                     double x = dbPeriod.get(k);
-                    if (Double.isNaN(x)) {
-                    } else {
+                    if (!Double.isNaN(x)) {
                         nGroup1 = nGroup1 + 1;
                         if (mul) {
                             x -= 1;
@@ -56,8 +55,7 @@ public class GroupSpecificExtremeValuesCorrector extends PeriodSpecificExtremeVa
             } else if (sigmavecOption_[i].equals(SigmavecOption.Group2)) {
                 for (int k = 0; k < dbPeriod.length(); k++) {
                     double x = dbPeriod.get(k);
-                    if (Double.isNaN(x)) {
-                    } else {
+                    if (!Double.isNaN(x)) {
                         nGroup2 = nGroup2 + 1;
                         if (mul) {
                             x -= 1;

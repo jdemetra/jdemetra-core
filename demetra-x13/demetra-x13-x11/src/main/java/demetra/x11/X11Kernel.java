@@ -39,7 +39,7 @@ public class X11Kernel implements X11.Processor {
         }
         input = timeSeries;
         DoubleSequence data = input.getValues();
-        context = X11Context.of(spec, frequency);
+        context = X11Context.of(spec, input);
         if (context.isLogAdd()) {
             data = data.log();
         }
