@@ -7,7 +7,6 @@ package demetra.x11;
 
 import demetra.design.Development;
 
-
 /**
  *
  * @author palatej
@@ -17,5 +16,5 @@ public enum BiasCorrection {
     None,
     Legacy,
     Smooth,
-    Ratio    
+    Ratio
 }

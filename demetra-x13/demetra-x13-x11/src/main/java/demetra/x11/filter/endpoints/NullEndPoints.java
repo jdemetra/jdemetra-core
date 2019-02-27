@@ -14,23 +14,23 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package demetra.x11;
+package demetra.x11.filter.endpoints;
 
+import demetra.data.DataBlock;
+import demetra.data.DoubleSequence;
 import demetra.design.Development;
 
 /**
+ * A "do nothing" processor. The module pre-suppose that
+ * the missing end points in the output buffer have been set to 0.
  *
  * @author Frank Osaer, Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-public enum SeasonalFilterOption {
+@Development(status = Development.Status.Release)
+public class NullEndPoints implements IEndPointsProcessor {
 
-    S3X1,
-    S3X3,
-    S3X5,
-    S3X9,
-    S3X15,
-    Stable,
-    X11Default,
-    Msr;
+    @Override
+    public void process(DoubleSequence in, DataBlock out) {
+    }
+
 }

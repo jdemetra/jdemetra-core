@@ -51,7 +51,7 @@ public class X11Context {
     }
 
     public DoubleSequence remove(DoubleSequence l, DoubleSequence r) {
-        if (mode.isMultiplicative()) {
+        if (mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive) {
             return DoubleSequence.onMapping(l.length(), i -> l.get(i) / r.get(i));
         } else {
             return DoubleSequence.onMapping(l.length(), i -> l.get(i) - r.get(i));
@@ -59,7 +59,7 @@ public class X11Context {
     }
 
     public DoubleSequence add(DoubleSequence l, DoubleSequence r) {
-        if (mode.isMultiplicative()) {
+        if (mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive) {
             return DoubleSequence.onMapping(l.length(), i -> l.get(i) * r.get(i));
         } else {
             return DoubleSequence.onMapping(l.length(), i -> l.get(i) + r.get(i));
@@ -67,7 +67,7 @@ public class X11Context {
     }
 
     public void remove(DoubleSequence l, DoubleSequence r, DataBlock q) {
-        if (mode.isMultiplicative()) {
+        if (mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive) {
             q.set(l, r, (x, y) -> x / y);
         } else {
             q.set(l, r, (x, y) -> x - y);
@@ -75,7 +75,7 @@ public class X11Context {
     }
 
     public void add(DoubleSequence l, DoubleSequence r, DataBlock q) {
-        if (mode.isMultiplicative()) {
+        if (mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive) {
             q.set(l, r, (x, y) -> x * y);
         } else {
             q.set(l, r, (x, y) -> x + y);
