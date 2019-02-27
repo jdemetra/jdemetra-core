@@ -38,4 +38,18 @@ public class Math2 {
         }
         return a;
     }
+
+    /**
+     * Checks if Math#exp(double) has been intrinsified. For your information:
+     * StrictMath insures portability by returning the same results on every
+     * platform while Math might be optimized by the VM to improve performance.
+     * In some edge cases (and if intrinsified), Math results are slightly
+     * different.
+     *
+     * @return true if Math is currently intrinsified, false otherwise
+     */
+    public static boolean isMathExpIntrinsifiedByVM() {
+        double edgeCase = 0.12585918361184556;
+        return Math.exp(edgeCase) != StrictMath.exp(edgeCase);
+    }
 }

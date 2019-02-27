@@ -6,6 +6,7 @@
 package demetra.x11;
 
 import demetra.data.DoubleSequence;
+import demetra.maths.Math2;
 import demetra.sa.DecompositionMode;
 import ec.satoolkit.x11.BiasCorrection;
 import ec.satoolkit.x11.X11Results;
@@ -14,6 +15,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -142,6 +144,8 @@ public class X11DStepTest {
 
     @Test
     public void testProcess_Msr_LogAdd() {
+        Assume.assumeTrue("This test expects Math#exp(double) to be intrinsified", Math2.isMathExpIntrinsifiedByVM());
+        
         String modeName = DecompositionMode.LogAdditive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
         int filterLength = 13;
