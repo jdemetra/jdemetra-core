@@ -16,7 +16,7 @@
  */
 package demetra.design;
 
-import java.util.Arrays;
+import internal.TypeProcessing;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -24,9 +24,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -38,29 +36,14 @@ import org.openide.util.lookup.ServiceProvider;
 @SupportedAnnotationTypes("demetra.design.Algorithm")
 public final class AlgorithmProcessor extends AbstractProcessor {
 
+    private final TypeProcessing processing = TypeProcessing
+            .builder()
+            .check(TypeProcessing.IS_INTERFACE)
+            .check(TypeProcessing.IS_PUBLIC)
+            .build();
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        if (roundEnv.processingOver()) {
-            return false;
-        }
-
-        annotations.stream()
-                .flatMap(o -> roundEnv.getElementsAnnotatedWith(o).stream())
-                .forEach(o -> checkElement((TypeElement) o));
-
-        return true;
-    }
-
-    private void checkElement(TypeElement e) {
-        if (!e.getKind().isInterface()) {
-            reportError("Service '%s' must be an interface", e.getQualifiedName());
-        }
-        if (!e.getModifiers().containsAll(Arrays.asList(Modifier.PUBLIC))) {
-            reportError("Service '%s' must be public", e.getQualifiedName());
-        }
-    }
-
-    private void reportError(String format, Object... args) {
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format(format, args));
+        return processing.process(annotations, roundEnv, processingEnv);
     }
 }

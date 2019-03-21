@@ -16,7 +16,7 @@
  */
 package demetra.design;
 
-import java.util.Arrays;
+import internal.TypeProcessing;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -24,11 +24,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.tools.Diagnostic;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -40,35 +36,15 @@ import org.openide.util.lookup.ServiceProvider;
 @SupportedAnnotationTypes("demetra.design.DirectImpl")
 public final class DirectImplProcessor extends AbstractProcessor {
 
+    private final TypeProcessing processing = TypeProcessing
+            .builder()
+            .check(TypeProcessing.IS_FINAL)
+            .check(TypeProcessing.DO_NOT_EXTEND_CLASS)
+            .check(TypeProcessing.DO_NOT_CONTAIN_PUBLIC_VARS)
+            .build();
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        if (roundEnv.processingOver()) {
-            return false;
-        }
-
-        annotations.stream()
-                .flatMap(o -> roundEnv.getElementsAnnotatedWith(o).stream())
-                .forEach(o -> checkElement((TypeElement) o));
-
-        return true;
-    }
-
-    void checkElement(TypeElement e) {
-        if (!e.getModifiers().containsAll(Arrays.asList(Modifier.FINAL))) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format("Class '%s' must be final", e.getQualifiedName()));
-        }
-        if (!e.getSuperclass().toString().equals(Object.class.getName())) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format("Class '%s' may not extend another class", e.getQualifiedName()));
-        }
-        if (e.getEnclosedElements().stream().anyMatch(o -> isVariableNotStaticButPublic(o))) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format("Class '%s' may not contain public vars", e.getQualifiedName()));
-        }
-    }
-
-    private static boolean isVariableNotStaticButPublic(Element e) {
-        Set<Modifier> modifiers = e.getModifiers();
-        return e instanceof VariableElement
-                && !modifiers.contains(Modifier.STATIC)
-                && modifiers.contains(Modifier.PUBLIC);
+        return processing.process(annotations, roundEnv, processingEnv);
     }
 }
