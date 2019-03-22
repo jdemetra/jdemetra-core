@@ -27,7 +27,7 @@ import demetra.design.AlgorithmImplementation;
 @AlgorithmImplementation(algorithm = QRSolver.class)
 public class AdvancedQRSolver implements QRSolver {
 
-    @BuilderPattern(QRSolver.class)
+    @BuilderPattern(AdvancedQRSolver.class)
     public static class Builder {
 
         private final IQRDecomposition qr;

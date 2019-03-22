@@ -20,17 +20,22 @@ import internal.Processors;
 import internal.TypeProcessing;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Philippe Charles
  */
-//@ServiceProvider(service = Processor.class)
-//@SupportedSourceVersion(SourceVersion.RELEASE_8)
-//@SupportedAnnotationTypes("demetra.design.BuilderPattern")
+@ServiceProvider(service = Processor.class)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedAnnotationTypes("demetra.design.BuilderPattern")
 public final class BuilderPatternProcessor extends AbstractProcessor {
 
     private final TypeProcessing processing = TypeProcessing
