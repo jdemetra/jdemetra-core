@@ -17,6 +17,7 @@
 package demetra.design;
 
 import internal.TypeProcessing;
+import static internal.TypeProcessing.*;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -38,13 +39,23 @@ public final class DirectImplProcessor extends AbstractProcessor {
 
     private final TypeProcessing processing = TypeProcessing
             .builder()
-            .check(TypeProcessing.IS_FINAL)
-            .check(TypeProcessing.DO_NOT_EXTEND_CLASS)
-            .check(TypeProcessing.DO_NOT_CONTAIN_PUBLIC_VARS)
+            .check(IS_FINAL)
+            .check(DO_NOT_EXTEND_CLASS)
+            .check(DO_NOT_CONTAIN_PUBLIC_VARS)
+            .check(EXTEND_AT_LEAST_ONE_INTERFACE)
             .build();
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         return processing.process(annotations, roundEnv, processingEnv);
+    }
+
+    private static final Check EXTEND_AT_LEAST_ONE_INTERFACE = Check.of(
+            DirectImplProcessor::extendAtLeastOneInterface,
+            "'%s' must extend at least one interface"
+    );
+
+    private static boolean extendAtLeastOneInterface(TypeElement type) {
+        return !type.getInterfaces().isEmpty();
     }
 }

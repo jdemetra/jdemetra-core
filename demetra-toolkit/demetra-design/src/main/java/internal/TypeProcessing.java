@@ -32,7 +32,7 @@ import javax.tools.Diagnostic;
  *
  * @author Philippe Charles
  */
-@lombok.Builder
+@lombok.Builder(builderClassName = "Builder")
 public final class TypeProcessing {
 
     @lombok.Singular

@@ -16,8 +16,9 @@
  */
 package demetra.design;
 
-import internal.Processors;
+import static internal.Processors.*;
 import internal.TypeProcessing;
+import static internal.TypeProcessing.*;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -40,7 +41,7 @@ public final class BuilderPatternProcessor extends AbstractProcessor {
 
     private final TypeProcessing processing = TypeProcessing
             .builder()
-            .check(TypeProcessing.Check.of(BuilderPatternProcessor::hasBuildMethod, "Cannot find build method in '%s'"))
+            .check(HAS_BUILD_METHOD)
             .build();
 
     @Override
@@ -48,14 +49,16 @@ public final class BuilderPatternProcessor extends AbstractProcessor {
         return processing.process(annotations, roundEnv, processingEnv);
     }
 
+    private static final Check HAS_BUILD_METHOD = Check.of(BuilderPatternProcessor::hasBuildMethod, "Cannot find build method in '%s'");
+
     private static boolean hasBuildMethod(TypeElement e) {
         BuilderPattern annotation = e.getAnnotation(BuilderPattern.class);
         return e.getEnclosedElements().stream().anyMatch(o -> hasBuildMethod(o, annotation));
     }
 
     private static boolean hasBuildMethod(Element e, BuilderPattern annotation) {
-        return Processors.isMethodWithName(e, annotation.buildMethodName())
-                && Processors.isMethodWithoutParameter(e)
-                && Processors.isMethodWithReturnInstanceOf(e, annotation::value);
+        return isMethodWithName(e, annotation.buildMethodName())
+                && isMethodWithoutParameter(e)
+                && isMethodWithReturnInstanceOf(e, annotation::value);
     }
 }

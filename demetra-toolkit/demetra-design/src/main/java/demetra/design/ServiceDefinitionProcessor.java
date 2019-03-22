@@ -17,6 +17,7 @@
 package demetra.design;
 
 import internal.TypeProcessing;
+import static internal.TypeProcessing.*;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -38,8 +39,8 @@ public final class ServiceDefinitionProcessor extends AbstractProcessor {
 
     private final TypeProcessing processing = TypeProcessing
             .builder()
-            .check(TypeProcessing.IS_INTERFACE)
-            .check(TypeProcessing.IS_PUBLIC)
+            .check(IS_INTERFACE)
+            .check(IS_PUBLIC)
             .build();
 
     @Override
