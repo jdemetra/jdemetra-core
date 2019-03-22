@@ -26,7 +26,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.tools.Diagnostic;
 
 /**
  *
@@ -57,7 +56,7 @@ public final class TypeProcessing {
         static Check of(Predicate<? super TypeElement> condition, String formattedMessage) {
             return (env, type) -> {
                 if (!condition.test(type)) {
-                    error(env, type, formattedMessage);
+                    Processors.error(env, type, formattedMessage);
                 }
             };
         }
@@ -94,9 +93,5 @@ public final class TypeProcessing {
         return e instanceof VariableElement
                 && !modifiers.contains(Modifier.STATIC)
                 && modifiers.contains(Modifier.PUBLIC);
-    }
-
-    private static void error(ProcessingEnvironment env, TypeElement type, String formattedMessage) {
-        env.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format(formattedMessage, type), type);
     }
 }

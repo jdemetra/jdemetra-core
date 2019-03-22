@@ -25,7 +25,7 @@ import demetra.design.MightBePromoted;
  *
  * @author Philippe Charles
  */
-@MightBePromoted
+@MightBePromoted(packagePattern = "_util(\\.\\w+)+")
 public final class TsCursorUtil {
 
     public static int readAll(TsCursor<?> cursor) throws IOException {

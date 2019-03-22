@@ -16,12 +16,17 @@
  */
 package demetra.design;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * Specifies that the annotated code might be part of API in the future if
  * proven useful.
  *
  * @author Philippe Charles
  */
+@Retention(RetentionPolicy.SOURCE)
 public @interface MightBePromoted {
 
+    String packagePattern() default "^(?:\\w+\\.)?(?:internal|impl)(?:\\.\\w+)?$";
 }

@@ -19,6 +19,7 @@ package internal;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -28,6 +29,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import javax.tools.Diagnostic;
 
 /**
  *
@@ -36,10 +38,14 @@ import javax.lang.model.type.TypeVariable;
 @lombok.experimental.UtilityClass
 public class Processors {
 
-    public Stream<TypeElement> typeStreamOf(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+    public Stream<Element> streamOf(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         return annotations.stream()
                 .map(roundEnv::getElementsAnnotatedWith)
-                .flatMap(Set::stream)
+                .flatMap(Set::stream);
+    }
+
+    public Stream<TypeElement> typeStreamOf(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        return streamOf(annotations, roundEnv)
                 .map(TypeElement.class::cast);
     }
 
@@ -89,5 +95,9 @@ public class Processors {
             return current.toString().startsWith(to.toString());
         }
         return to.equals(current);
+    }
+
+    public static void error(ProcessingEnvironment env, Element type, String formattedMessage) {
+        env.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format(formattedMessage, type), type);
     }
 }
