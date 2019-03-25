@@ -16,7 +16,7 @@
  */
 package demetra.design;
 
-import internal.Processors;
+import internal.Processing;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -24,9 +24,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -38,30 +36,19 @@ import org.openide.util.lookup.ServiceProvider;
 @SupportedAnnotationTypes("demetra.design.AlgorithmImplementation")
 public final class AlgorithmImplementationProcessor extends AbstractProcessor {
 
+    private final Processing<TypeElement> processing = Processing.<TypeElement>builder().build();
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        if (roundEnv.processingOver()) {
-            return false;
-        }
-
-        annotations.stream()
-                .flatMap(o -> roundEnv.getElementsAnnotatedWith(o).stream())
-                .forEach(o -> checkElement((TypeElement) o));
-
-        return false;
+        return processing.process(annotations, roundEnv, processingEnv);
     }
 
-    private void checkElement(TypeElement e) {
+//    private void checkElement(TypeElement e) {
 //        AlgorithmImplementation annotation = e.getAnnotation(AlgorithmImplementation.class);
 //        processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, annotation.algorithm().getCanonicalName());
-        // TODO
+    // TODO
 //        if (! annotation.algorithm().isAssignableFrom(e.getClass())){
 //            reportError("The algorithm is not implemented in '%s'", e);
 //        }
-    }
-
-
-    private void reportError(String format, Object... args) {
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format(format, args));
-    }
+//    }
 }

@@ -16,7 +16,9 @@
  */
 package demetra.design;
 
-import internal.Processors;
+import internal.Check;
+import internal.Processing;
+import static internal.Processors.*;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -26,46 +28,37 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Philippe Charles
  */
-//@ServiceProvider(service = Processor.class)
-//@SupportedSourceVersion(SourceVersion.RELEASE_8)
-//@SupportedAnnotationTypes("demetra.design.BuilderPattern")
+@ServiceProvider(service = Processor.class)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedAnnotationTypes("demetra.design.BuilderPattern")
 public final class BuilderPatternProcessor extends AbstractProcessor {
+
+    private final Processing<TypeElement> processing = Processing
+            .<TypeElement>builder()
+            .check(HAS_BUILD_METHOD)
+            .build();
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        if (roundEnv.processingOver()) {
-            return false;
-        }
-
-        annotations.stream()
-                .flatMap(o -> roundEnv.getElementsAnnotatedWith(o).stream())
-                .forEach(o -> checkElement((TypeElement) o));
-
-        return true;
+        return processing.process(annotations, roundEnv, processingEnv);
     }
 
-    private void checkElement(TypeElement e) {
+    private static final Check<TypeElement> HAS_BUILD_METHOD = Check.of(BuilderPatternProcessor::hasBuildMethod, "Cannot find build method in '%s'");
+
+    private static boolean hasBuildMethod(TypeElement e) {
         BuilderPattern annotation = e.getAnnotation(BuilderPattern.class);
-
-        if (e.getEnclosedElements().stream().noneMatch(o -> hasBuildMethod(o, annotation))) {
-            reportError("Cannot find build method in '%s'", e.getQualifiedName());
-        }
+        return e.getEnclosedElements().stream().anyMatch(o -> hasBuildMethodOn(o, annotation));
     }
 
-    private boolean hasBuildMethod(Element e, BuilderPattern annotation) {
-        return Processors.isMethodWithName(e, annotation.buildMethodName())
-                && Processors.isMethodWithoutParameter(e)
-                && Processors.isMethodWithReturnInstanceOf(e, annotation::value);
-    }
-
-    private void reportError(String format, Object... args) {
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format(format, args));
+    private static boolean hasBuildMethodOn(Element e, BuilderPattern annotation) {
+        return isMethodWithName(e, annotation.buildMethodName())
+                && isMethodWithoutParameter(e)
+                && isMethodWithReturnInstanceOf(e, annotation::value);
     }
 }

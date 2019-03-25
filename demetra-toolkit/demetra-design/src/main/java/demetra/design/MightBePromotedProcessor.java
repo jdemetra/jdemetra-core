@@ -17,15 +17,18 @@
 package demetra.design;
 
 import internal.Check;
-import static internal.Check.*;
 import internal.Processing;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -35,15 +38,12 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Processor.class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-@SupportedAnnotationTypes("demetra.design.DirectImpl")
-public final class DirectImplProcessor extends AbstractProcessor {
+@SupportedAnnotationTypes("demetra.design.MightBePromoted")
+public final class MightBePromotedProcessor extends AbstractProcessor {
 
-    private final Processing<TypeElement> processing = Processing
-            .<TypeElement>builder()
-            .check(IS_FINAL)
-            .check(DO_NOT_EXTEND_CLASS)
-            .check(DO_NOT_CONTAIN_PUBLIC_VARS)
-            .check(EXTEND_AT_LEAST_ONE_INTERFACE)
+    private final Processing<Element> processing = Processing
+            .builder()
+            .check(INTERNAL_OR_NOT_PUBLIC)
             .build();
 
     @Override
@@ -51,12 +51,27 @@ public final class DirectImplProcessor extends AbstractProcessor {
         return processing.process(annotations, roundEnv, processingEnv);
     }
 
-    private static final Check EXTEND_AT_LEAST_ONE_INTERFACE = Check.of(
-            DirectImplProcessor::extendAtLeastOneInterface,
-            "'%s' must extend at least one interface"
+    private static final Check<Element> INTERNAL_OR_NOT_PUBLIC = Check.of(
+            MightBePromotedProcessor::isInternalOrNotPublic,
+            "'%s' must be in internal package or not public"
     );
 
-    private static boolean extendAtLeastOneInterface(TypeElement type) {
-        return !type.getInterfaces().isEmpty();
+    private static boolean isInternalOrNotPublic(ProcessingEnvironment env, Element element) {
+        return isTypeInInternalPackage(env, element) || isNotPublic(env, element);
+    }
+
+    private static boolean isTypeInInternalPackage(ProcessingEnvironment env, Element element) {
+        if (element instanceof TypeElement) {
+            TypeElement type = (TypeElement) element;
+            PackageElement pkg = env.getElementUtils().getPackageOf(type);
+            String fullname = pkg.getQualifiedName().toString();
+            String packagePattern = type.getAnnotation(MightBePromoted.class).packagePattern();
+            return fullname.matches(packagePattern);
+        }
+        return false;
+    }
+
+    public static boolean isNotPublic(ProcessingEnvironment env, Element element) {
+        return !element.getModifiers().contains(Modifier.PUBLIC);
     }
 }

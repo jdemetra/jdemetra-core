@@ -31,7 +31,7 @@ public class FastRegressionTest implements IRegressionModule {
         return new Builder();
     }
 
-    @BuilderPattern(DefaultRegressionTest.class)
+    @BuilderPattern(FastRegressionTest.class)
     public static class Builder {
 
         private double tmean = CVAL, tvar = CVAL;
