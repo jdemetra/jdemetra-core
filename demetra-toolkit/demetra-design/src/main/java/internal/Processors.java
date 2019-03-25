@@ -44,11 +44,6 @@ public class Processors {
                 .flatMap(Set::stream);
     }
 
-    public Stream<TypeElement> typeStreamOf(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        return streamOf(annotations, roundEnv)
-                .map(TypeElement.class::cast);
-    }
-
     public boolean isMethod(Element e) {
         return e.getKind().equals(ElementKind.METHOD);
     }

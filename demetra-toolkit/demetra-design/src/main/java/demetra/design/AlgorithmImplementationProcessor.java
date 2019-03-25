@@ -16,7 +16,7 @@
  */
 package demetra.design;
 
-import internal.TypeProcessing;
+import internal.Processing;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -36,9 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
 @SupportedAnnotationTypes("demetra.design.AlgorithmImplementation")
 public final class AlgorithmImplementationProcessor extends AbstractProcessor {
 
-    private final TypeProcessing processing = TypeProcessing
-            .builder()
-            .build();
+    private final Processing<TypeElement> processing = Processing.<TypeElement>builder().build();
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {

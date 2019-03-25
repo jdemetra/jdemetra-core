@@ -16,8 +16,8 @@
  */
 package demetra.design;
 
-import internal.TypeProcessing;
-import static internal.TypeProcessing.*;
+import static internal.Check.*;
+import internal.Processing;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -37,8 +37,8 @@ import org.openide.util.lookup.ServiceProvider;
 @SupportedAnnotationTypes("demetra.design.Algorithm")
 public final class AlgorithmProcessor extends AbstractProcessor {
 
-    private final TypeProcessing processing = TypeProcessing
-            .builder()
+    private final Processing<TypeElement> processing = Processing
+            .<TypeElement>builder()
             .check(IS_INTERFACE)
             .check(IS_PUBLIC)
             .build();

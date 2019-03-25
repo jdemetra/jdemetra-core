@@ -16,7 +16,8 @@
  */
 package demetra.design;
 
-import internal.Processors;
+import internal.Check;
+import internal.Processing;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -40,25 +41,26 @@ import org.openide.util.lookup.ServiceProvider;
 @SupportedAnnotationTypes("demetra.design.MightBePromoted")
 public final class MightBePromotedProcessor extends AbstractProcessor {
 
+    private final Processing<Element> processing = Processing
+            .builder()
+            .check(INTERNAL_OR_NOT_PUBLIC)
+            .build();
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        if (roundEnv.processingOver()) {
-            return false;
-        }
-        Processors.streamOf(annotations, roundEnv)
-                .forEach(element -> {
-                    if (!isInternalOrNotPublic(element, processingEnv)) {
-                        Processors.error(processingEnv, element, "'%s' must be in internal package or not public");
-                    }
-                });
-        return true;
+        return processing.process(annotations, roundEnv, processingEnv);
     }
 
-    private static boolean isInternalOrNotPublic(Element element, ProcessingEnvironment env) {
-        return isTypeInInternalPackage(element, env) || isNotPublic(element, env);
+    private static final Check<Element> INTERNAL_OR_NOT_PUBLIC = Check.of(
+            MightBePromotedProcessor::isInternalOrNotPublic,
+            "'%s' must be in internal package or not public"
+    );
+
+    private static boolean isInternalOrNotPublic(ProcessingEnvironment env, Element element) {
+        return isTypeInInternalPackage(env, element) || isNotPublic(env, element);
     }
 
-    private static boolean isTypeInInternalPackage(Element element, ProcessingEnvironment env) {
+    private static boolean isTypeInInternalPackage(ProcessingEnvironment env, Element element) {
         if (element instanceof TypeElement) {
             TypeElement type = (TypeElement) element;
             PackageElement pkg = env.getElementUtils().getPackageOf(type);
@@ -69,7 +71,7 @@ public final class MightBePromotedProcessor extends AbstractProcessor {
         return false;
     }
 
-    public static boolean isNotPublic(Element element, ProcessingEnvironment env) {
+    public static boolean isNotPublic(ProcessingEnvironment env, Element element) {
         return !element.getModifiers().contains(Modifier.PUBLIC);
     }
 }
