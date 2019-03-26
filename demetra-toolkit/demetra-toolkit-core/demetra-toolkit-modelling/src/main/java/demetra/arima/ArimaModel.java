@@ -42,9 +42,9 @@ import javax.annotation.Nonnull;
  *
  * @author Jean Palate
  */
-@Immutable
+@Immutable(lazy = true)
 @Development(status = Development.Status.Alpha)
-public class ArimaModel extends AbstractArimaModel {
+public final class ArimaModel extends AbstractArimaModel {
 
     public static final ArimaModel ONE = whiteNoise(), NULL = whiteNoise(0);
 

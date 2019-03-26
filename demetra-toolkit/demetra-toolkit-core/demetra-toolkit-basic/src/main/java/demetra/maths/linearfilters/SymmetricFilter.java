@@ -36,7 +36,7 @@ import demetra.data.DoubleSequence;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public class SymmetricFilter extends AbstractFiniteFilter {
+public final class SymmetricFilter extends AbstractFiniteFilter {
 
     /**
      *

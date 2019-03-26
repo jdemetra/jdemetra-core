@@ -30,6 +30,6 @@ public class InformationComparer<S> implements java.util.Comparator<Information<
 
     @Override
     public int compare(Information<S> o1, Information<S> o2) {
-        return Long.compare(o1.index, o2.index);
+        return Long.compare(o1.getIndex(), o2.getIndex());
     }
 }

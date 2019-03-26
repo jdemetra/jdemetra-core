@@ -33,7 +33,7 @@ import demetra.maths.polynomials.spi.RootsSolver;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public class ForeFilter extends AbstractFiniteFilter {
+public final class ForeFilter extends AbstractFiniteFilter {
 
     /**
      *

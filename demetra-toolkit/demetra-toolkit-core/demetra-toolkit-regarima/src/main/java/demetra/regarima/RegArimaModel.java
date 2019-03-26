@@ -35,8 +35,8 @@ import javax.annotation.Nonnull;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@Immutable
-public class RegArimaModel<M extends IArimaModel> {
+@Immutable(lazy = true)
+public final class RegArimaModel<M extends IArimaModel> {
 
     @BuilderPattern(RegArimaModel.class)
     public static class Builder<M extends IArimaModel> {

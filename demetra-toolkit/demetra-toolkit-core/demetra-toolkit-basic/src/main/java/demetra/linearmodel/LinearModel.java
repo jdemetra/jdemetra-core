@@ -32,7 +32,7 @@ import demetra.design.Internal;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @Immutable
-public class LinearModel implements LinearModelType{
+public final class LinearModel implements LinearModelType{
 
     public static class Builder {
 

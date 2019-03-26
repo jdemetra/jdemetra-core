@@ -40,7 +40,7 @@ import demetra.data.DoubleSequence;
  */
 @Development(status = Development.Status.Release)
 @Immutable
-public class Spectrum {
+public final class Spectrum {
 
     private final static double EPS = 1e-7;
     private final static double EPS2 = 1e-9;

@@ -29,7 +29,7 @@ import java.util.function.IntToDoubleFunction;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public class RationalForeFilter implements IRationalFilter {
+public final class RationalForeFilter implements IRationalFilter {
 
     public static final RationalForeFilter ZERO=new RationalForeFilter();
 

@@ -31,7 +31,7 @@ import demetra.random.RandomNumberGenerator;
  */
 @Development(status = Development.Status.Release)
 @Immutable
-public class F implements ContinuousDistribution {
+public final class F implements ContinuousDistribution {
 
     private final double k1;
     private final double k2;

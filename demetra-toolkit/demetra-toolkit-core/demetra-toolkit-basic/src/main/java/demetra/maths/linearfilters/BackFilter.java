@@ -34,7 +34,7 @@ import demetra.maths.polynomials.spi.RootsSolver;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public class BackFilter extends AbstractFiniteFilter {
+public final class BackFilter extends AbstractFiniteFilter {
     
     /**
      * BackFilter(0)

@@ -36,7 +36,7 @@ import demetra.random.RandomNumberGenerator;
  * @author Jean Palate
  */
 @Immutable
-public class ArimaSeriesGenerator {
+public final class ArimaSeriesGenerator {
     
     @BuilderPattern(ArimaSeriesGenerator.class)
     public static class Builder {

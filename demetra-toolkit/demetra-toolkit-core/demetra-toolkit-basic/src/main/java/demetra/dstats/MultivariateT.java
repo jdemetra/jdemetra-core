@@ -32,8 +32,8 @@ import demetra.random.RandomNumberGenerator;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-@Immutable
-public class MultivariateT {
+@Immutable(lazy = true)
+public final class MultivariateT {
 
     private static final Normal N=new Normal(0,1);
 

@@ -16,12 +16,14 @@
  */
 package internal;
 
+import demetra.design.SkipProcessing;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic;
 
 /**
  *
@@ -40,7 +42,26 @@ public final class Processing<T extends Element> {
         }
         Processors.streamOf(annotations, roundEnv)
                 .map(element -> (T) element)
-                .forEach(element -> checks.forEach(check -> check.check(env, element)));
+                .filter(element -> !isSkipRequired(element, env))
+                .forEach(element -> checkAll(element, env));
         return true;
+    }
+
+    private void checkAll(T element, ProcessingEnvironment env) {
+        checks.forEach(check -> check.check(env, element));
+    }
+
+    private boolean isSkipRequired(Element element, ProcessingEnvironment env) {
+        SkipProcessing skip = element.getAnnotation(SkipProcessing.class);
+        if (skip != null) {
+            env.getMessager().printMessage(Diagnostic.Kind.WARNING, "Processing skipped on '" + element + "'; reason: '" + skip.reason() + "'", element);
+            return true;
+            //FIXME: make the following work without throwing exception
+//            if (element.getAnnotation(skip.target()) != null) {
+//                env.getMessager().printMessage(Diagnostic.Kind.WARNING, "Processing skipped on '" + element + "'", element);
+//                return true;
+//            }
+        }
+        return false;
     }
 }

@@ -18,6 +18,7 @@ package demetra.arima;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
+import demetra.design.SkipProcessing;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.FiniteFilter;
 import demetra.maths.linearfilters.ForeFilter;
@@ -31,7 +32,8 @@ import demetra.maths.linearfilters.RationalFilter;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public class CrossCovarianceFunction {
+@SkipProcessing(target = Immutable.class, reason = "field m_c is not final")
+public final class CrossCovarianceFunction {
 
     /**
      * 

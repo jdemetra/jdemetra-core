@@ -36,7 +36,7 @@ import demetra.arima.estimation.ArmaFilter;
  * @author Jean Palate
  */
 @Immutable
-public class ConcentratedLikelihoodComputer {
+public final class ConcentratedLikelihoodComputer {
 
     private final ArmaFilter filter;
     private final IQRDecomposition qr;

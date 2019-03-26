@@ -22,6 +22,7 @@ import demetra.maths.Constants;
 import java.util.Arrays;
 import java.util.function.DoublePredicate;
 import demetra.data.DoubleSequence;
+import demetra.design.SkipProcessing;
 
 /**
  *
@@ -29,6 +30,7 @@ import demetra.data.DoubleSequence;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
+@SkipProcessing(target = Immutable.class, reason = "fields skewness & kurtosis are not final")
 public final class DescriptiveStatistics {
 
 

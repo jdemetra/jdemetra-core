@@ -16,7 +16,6 @@
  */
 package internal;
 
-import java.util.Arrays;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -59,11 +58,23 @@ public interface Check<T extends Element> {
     static final Check<TypeElement> DO_NOT_CONTAIN_PUBLIC_VARS = Check.of(Check::doNotContainPublicVars, "'%s' may not contain public vars");
 
     static boolean isPublic(Element type) {
-        return type.getModifiers().containsAll(Arrays.asList(Modifier.PUBLIC));
+        return type.getModifiers().contains(Modifier.PUBLIC);
     }
 
     static boolean isFinal(Element type) {
-        return type.getModifiers().containsAll(Arrays.asList(Modifier.FINAL));
+        return type.getModifiers().contains(Modifier.FINAL);
+    }
+
+    static boolean isVolatile(Element type) {
+        return type.getModifiers().contains(Modifier.VOLATILE);
+    }
+
+    static boolean isStatic(Element type) {
+        return type.getModifiers().contains(Modifier.STATIC);
+    }
+
+    static boolean isPrivate(Element type) {
+        return type.getModifiers().contains(Modifier.PRIVATE);
     }
 
     static boolean isInterface(TypeElement type) {

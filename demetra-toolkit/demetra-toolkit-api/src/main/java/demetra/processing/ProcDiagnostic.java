@@ -46,9 +46,9 @@ public class ProcDiagnostic {
         List<Information<InformationSet>> subsets = summary.select(InformationSet.class);
 
         for (Information<InformationSet> subset : subsets) {
-            List<Information<ProcDiagnostic>> infos = subset.value.select(ProcDiagnostic.class);
+            List<Information<ProcDiagnostic>> infos = subset.getValue().select(ProcDiagnostic.class);
             for (Information<ProcDiagnostic> info : infos) {
-                ProcQuality quality = info.value.quality;
+                ProcQuality quality = info.getValue().quality;
                 switch (quality) {
                     case Error:
                         summary.set(QUALITY, ProcQuality.Error);

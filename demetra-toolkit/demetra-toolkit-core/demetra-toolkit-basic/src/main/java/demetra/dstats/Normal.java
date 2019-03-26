@@ -32,7 +32,7 @@ import demetra.random.RandomNumberGenerator;
  */
 @Development(status = Development.Status.Release)
 @Immutable
-public class Normal implements ContinuousDistribution {
+public final class Normal implements ContinuousDistribution {
 
     private final double mean;
     private final double stdev;
