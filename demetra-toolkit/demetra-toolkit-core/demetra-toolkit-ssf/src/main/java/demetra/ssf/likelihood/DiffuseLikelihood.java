@@ -32,7 +32,7 @@ import demetra.maths.Constants;
  * @author Jean Palate
  */
 @Immutable
-public class DiffuseLikelihood implements ILikelihood {
+public final class DiffuseLikelihood implements ILikelihood {
 
     public static Builder builder(int n, int nd) {
         return new Builder(n, nd);

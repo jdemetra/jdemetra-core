@@ -260,11 +260,11 @@ public final class InformationSet implements Cloneable {
             return false;
 
         }
-        if (info == null || info.value == null) {
+        if (info == null || info.getValue() == null) {
             return false;
 
         }
-        information_.put(info.name, new IndexedObject(info.value));
+        information_.put(info.getName(), new IndexedObject(info.getValue()));
         return true;
     }
 
@@ -282,15 +282,15 @@ public final class InformationSet implements Cloneable {
             return false;
 
         }
-        if (info == null || info.value == null) {
+        if (info == null || info.getValue() == null) {
             return false;
 
         }
-        String name = info.name;
+        String name = info.getName();
         while (information_.containsKey(name)) {
             name += "_";
         }
-        information_.put(name, new IndexedObject(info.value));
+        information_.put(name, new IndexedObject(info.getValue()));
         return true;
     }
 
@@ -418,7 +418,7 @@ public final class InformationSet implements Cloneable {
         }
         List<Information<InformationSet>> subsets = select(InformationSet.class);
         for (Information<InformationSet> subset : subsets) {
-            allitems.addAll(subset.value.allItems(name));
+            allitems.addAll(subset.getValue().allItems(name));
 
         }
         return allitems;
@@ -489,7 +489,7 @@ public final class InformationSet implements Cloneable {
 
             } else {
                 for (Information<InformationSet> subset : subsets) {
-                    S rslt = subset.value.deepSearch(name, sclass);
+                    S rslt = subset.getValue().deepSearch(name, sclass);
                     if (rslt != null) {
                         return rslt;
 
@@ -511,7 +511,7 @@ public final class InformationSet implements Cloneable {
         List<Information<InformationSet>> subsets = set.select(InformationSet.class);
         if (!subsets.isEmpty()) {
             for (Information<InformationSet> subset : subsets) {
-                fillSelection(item(path, subset.name), subset.value, sel, sclass);
+                fillSelection(item(path, subset.getName()), subset.getValue(), sel, sclass);
             }
         }
     }
@@ -529,7 +529,7 @@ public final class InformationSet implements Cloneable {
         List<Information<InformationSet>> subsets = set.select(InformationSet.class);
         if (!subsets.isEmpty()) {
             for (Information<InformationSet> subset : subsets) {
-                fillSelection(item(path, subset.name), subset.value, sel, wc, sclass);
+                fillSelection(item(path, subset.getName()), subset.getValue(), sel, wc, sclass);
             }
         }
     }

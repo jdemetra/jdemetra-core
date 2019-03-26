@@ -31,8 +31,8 @@ import demetra.maths.polynomials.Polynomial;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@Immutable
-public class Model implements IModel {
+@Immutable(lazy = true)
+public final class Model implements IModel {
 
     private final RationalFilter rf;
     private final double var;

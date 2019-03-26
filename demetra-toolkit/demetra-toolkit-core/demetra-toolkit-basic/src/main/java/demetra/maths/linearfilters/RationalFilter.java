@@ -19,6 +19,7 @@ package demetra.maths.linearfilters;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
+import demetra.design.SkipProcessing;
 import demetra.util.Arrays2;
 import demetra.maths.Complex;
 import demetra.maths.matrices.Matrix;
@@ -46,7 +47,8 @@ import demetra.linearsystem.LinearSystemSolver;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public class RationalFilter implements IRationalFilter {
+@SkipProcessing(target = Immutable.class, reason = "fields are not final")
+public final class RationalFilter implements IRationalFilter {
 
     private RationalBackFilter m_rb;
     private RationalForeFilter m_rf;

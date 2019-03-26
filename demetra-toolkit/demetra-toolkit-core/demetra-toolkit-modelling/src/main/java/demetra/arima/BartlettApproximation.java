@@ -24,7 +24,7 @@ import demetra.design.Immutable;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public class BartlettApproximation {
+public final class BartlettApproximation {
 
     private static final int TRUNCATION_LIMIT = 1000;
 

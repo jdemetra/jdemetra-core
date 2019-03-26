@@ -36,7 +36,7 @@ import javax.annotation.Nonnull;
  * @author Jean Palate
  */
 @Immutable
-public class LeastSquaresResults {
+public final class LeastSquaresResults {
 
     @BuilderPattern(LeastSquaresResults.class)
     public static class Builder {

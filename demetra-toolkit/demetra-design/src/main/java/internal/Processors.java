@@ -25,10 +25,12 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
 
 /**
@@ -94,5 +96,12 @@ public class Processors {
 
     public static void error(ProcessingEnvironment env, Element type, String formattedMessage) {
         env.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format(formattedMessage, type), type);
+    }
+
+    public static Stream<VariableElement> getNonStaticFields(TypeElement type) {
+        return ElementFilter
+                .fieldsIn(type.getEnclosedElements())
+                .stream()
+                .filter(field -> !Check.isStatic(field));
     }
 }

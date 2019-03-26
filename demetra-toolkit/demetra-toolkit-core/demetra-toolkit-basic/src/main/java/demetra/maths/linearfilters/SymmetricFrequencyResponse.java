@@ -36,7 +36,7 @@ import demetra.maths.polynomials.spi.RootsSolver;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public class SymmetricFrequencyResponse {
+public final class SymmetricFrequencyResponse {
 
     /**
      *

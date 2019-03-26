@@ -18,6 +18,7 @@ package demetra.maths.polynomials;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
+import demetra.design.SkipProcessing;
 import demetra.maths.Complex;
 import demetra.maths.Constants;
 import demetra.maths.polynomials.spi.RootsSolver;
@@ -29,9 +30,10 @@ import demetra.maths.polynomials.spi.RootsSolver;
  */
 @Immutable
 @Development(status = Development.Status.Alpha)
-public class RationalFunction {
-    
-    private static final RationalFunction ZERO=new RationalFunction(), ONE=RationalFunction.of(Polynomial.ONE, Polynomial.ONE);
+@SkipProcessing(target = Immutable.class, reason = "coeff field is not thread safe")
+public final class RationalFunction {
+
+    private static final RationalFunction ZERO = new RationalFunction(), ONE = RationalFunction.of(Polynomial.ONE, Polynomial.ONE);
 
     private double[] coeff;
     private final Polynomial num;
@@ -41,18 +43,18 @@ public class RationalFunction {
     public static RationalFunction of(Polynomial num, Polynomial denom) {
         return new RationalFunction(num, denom, false);
     }
-    
+
     public static RationalFunction zero() {
         return ZERO;
     }
 
-   public static RationalFunction one() {
+    public static RationalFunction one() {
         return ONE;
     }
 
-   private RationalFunction(){
-        num=Polynomial.ZERO;
-        denom=Polynomial.ONE;
+    private RationalFunction() {
+        num = Polynomial.ZERO;
+        denom = Polynomial.ONE;
     }
 
     /**

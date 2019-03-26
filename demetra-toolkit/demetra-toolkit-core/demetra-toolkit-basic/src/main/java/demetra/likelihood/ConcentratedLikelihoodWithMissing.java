@@ -36,7 +36,7 @@ import javax.annotation.Nonnull;
  *
  * @author Jean Palate
  */
-@Immutable
+@Immutable(lazy = true)
 public final class ConcentratedLikelihoodWithMissing implements IConcentratedLikelihood {
 
     public static Builder builder() {

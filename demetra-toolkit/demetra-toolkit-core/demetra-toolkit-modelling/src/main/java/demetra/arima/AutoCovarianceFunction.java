@@ -39,9 +39,9 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author Jean Palate
  */
-@Immutable
+@Immutable(lazy = true)
 @Development(status = Development.Status.Alpha)
-public class AutoCovarianceFunction {
+public final class AutoCovarianceFunction {
 
     @FunctionalInterface
     public static interface Computer {

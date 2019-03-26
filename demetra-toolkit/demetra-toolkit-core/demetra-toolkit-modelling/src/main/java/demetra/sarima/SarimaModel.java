@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
+import demetra.design.SkipProcessing;
 import demetra.maths.PolynomialType;
 
 /**
@@ -43,7 +44,8 @@ import demetra.maths.PolynomialType;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public class SarimaModel extends AbstractArimaModel {
+@SkipProcessing(target = Immutable.class, reason = "fields are not final")
+public final class SarimaModel extends AbstractArimaModel {
 
     @BuilderPattern(SarimaModel.class)
     public static class Builder {

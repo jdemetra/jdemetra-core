@@ -32,12 +32,17 @@ public final class Information<S> {
     /**
      * Name of information
      */
-    public final String name;
+    @lombok.Getter
+    private final String name;
+
     /**
      * Information itself
      */
-    public final S value;
-    final long index;
+    @lombok.Getter
+    private final S value;
+
+    @lombok.Getter
+    private final long index;
 
     /**
      * Creates a new named information object. The name is case sensitive.

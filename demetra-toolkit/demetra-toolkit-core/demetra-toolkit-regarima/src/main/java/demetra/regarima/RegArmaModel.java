@@ -10,7 +10,6 @@ import demetra.arima.StationaryTransformation;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSequence;
-import demetra.design.Immutable;
 import demetra.eco.EcoException;
 import demetra.linearmodel.LinearModel;
 import demetra.maths.linearfilters.BackFilter;
@@ -28,7 +27,6 @@ import demetra.maths.MatrixType;
  * @author Jean Palate <jean.palate@nbb.be>
  * @param <M>
  */
-@Immutable
 @lombok.Value
 public class RegArmaModel<M extends IArimaModel> {
 
