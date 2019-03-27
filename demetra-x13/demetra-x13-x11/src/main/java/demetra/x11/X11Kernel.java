@@ -5,9 +5,14 @@
  */
 package demetra.x11;
 
+import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
+import demetra.maths.linearfilters.FiniteFilter;
+import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
+import demetra.x11.filter.MusgraveFilterFactory;
+import demetra.x11.filter.endpoints.AsymmetricEndPoints;
 import java.util.Arrays;
 
 /**
@@ -22,6 +27,7 @@ public class X11Kernel implements X11.Processor {
     private X11DStep dstep;
     private TsData input;
     private X11Context context;
+    private DoubleSequence kernelD13;
 
     public static double[] table(int n, double value) {
         double[] x = new double[n];
@@ -102,8 +108,8 @@ public class X11Kernel implements X11.Processor {
                 .d9(TsData.ofInternal(start, prepare(dstep.getD9())))
                 .d10(TsData.ofInternal(start, prepare(dstep.getD10())))
                 .d11(TsData.ofInternal(start, prepare(dstep.getD11())))
-                .d12(TsData.ofInternal(start, prepare(dstep.getD12())))
-                .d13(TsData.ofInternal(start, prepare(dstep.getD13())))
+                .d12(TsData.ofInternal(start, prepare(dstep.getD12(), dstep.getD10(), cstep.getC13())))
+                .d13(TsData.ofInternal(start, kernelD13))
                 //Final
                 .iCRatio(dstep.getICRatio())
                 .mode(spec.getMode())
@@ -112,10 +118,49 @@ public class X11Kernel implements X11.Processor {
     }
 
     private DoubleSequence prepare(final DoubleSequence in) {
-        DoubleSequence ds = in;
-        if (context.isLogAdd()) {
-            ds = ds.exp();
-        }
-        return ds;
+        return prepare(in, null, null);
     }
+
+    private DoubleSequence prepare(final DoubleSequence t, final DoubleSequence s, final DoubleSequence i) {
+        DoubleSequence dsT = t;
+        if (context.isLogAdd()) {
+            dsT = dsT.exp();
+            if (s != null && i != null) {
+                dsT = legacyBiasCorrection(dsT, s, i);
+                DoubleSequence dsTpos = context.makePositivity(dsT);
+                DoubleSequence dsS = DoubleSequence.onMapping(s.length(), l -> bstep.getB1().exp().get(l) / s.exp().get(l));
+                kernelD13 = DoubleSequence.onMapping(dsTpos.length(), k -> dsS.get(k) / dsTpos.get(k));
+            }
+        } else {
+            kernelD13 = dstep.getD13();
+        }
+        return dsT;
+    }
+
+    private DoubleSequence legacyBiasCorrection(DoubleSequence t, DoubleSequence s, DoubleSequence i) {
+        s = prepare(s);
+        i = prepare(i);
+        double issq = i.log().ssq();
+        double sig = Math.exp(issq / (2 * i.length()));
+        int ifreq = context.getPeriod();
+        int length = 2 * ifreq - 1;
+
+        double[] x = table(s.length(), Double.NaN);
+        int ndrop = length / 2;
+        DataBlock out = DataBlock.ofInternal(x, ndrop, x.length - ndrop);
+
+        SymmetricFilter smoother = context.trendFilter(length);
+        smoother.apply(s, out);
+        FiniteFilter[] musgraveFilters = MusgraveFilterFactory.makeFilters(smoother, 4.5);
+        AsymmetricEndPoints aepFilter = new AsymmetricEndPoints(musgraveFilters, 0);
+        DataBlock dbout2 = out.extend(ndrop, ndrop);
+        aepFilter.process(s, dbout2);
+
+        DoubleSequence hs = DoubleSequence.ofInternal(dbout2.toArray());
+
+        int n = t.length();
+
+        return DoubleSequence.onMapping(n, j -> t.get(j) * hs.get(j) * sig);
+    }
+
 }
