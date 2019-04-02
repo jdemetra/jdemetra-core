@@ -15,36 +15,29 @@ import demetra.maths.functions.ParamValidation;
  *
  * @author palatej
  */
-public class VarianceParameter implements IMstsParametersBlock {
+public final class LoadingInterpreter implements ParameterInterpreter {
 
-    private static final double DEF_STDE = .1;
+    private static final double DEF_VALUE = .1;
 
-    private double stde;
+    private double c;
     private boolean fixed;
     private final String name;
-    private final boolean nullable;
 
-    public VarianceParameter(final String name, boolean nullable) {
+    public LoadingInterpreter(final String name) {
         this.name = name;
-        this.nullable = nullable;
-        stde = DEF_STDE;
+        c = DEF_VALUE;
         fixed = false;
     }
 
-    public VarianceParameter(final String name, double var, boolean fixed, boolean nullable) {
-        stde = Math.sqrt(var);
-        this.fixed = fixed;
+    public LoadingInterpreter(final String name, double loading, boolean fixed) {
         this.name = name;
-        this.nullable = nullable;
+        this.c = loading;
+        this.fixed = fixed;
     }
-    
-     
+
     @Override
-    public VarianceParameter duplicate(){
-        VarianceParameter p = new VarianceParameter(name, nullable);
-        p.stde=stde;
-        p.fixed=fixed;
-        return p;
+    public LoadingInterpreter duplicate() {
+        return new LoadingInterpreter(name, c, fixed);
     }
 
     @Override
@@ -52,44 +45,26 @@ public class VarianceParameter implements IMstsParametersBlock {
         return name;
     }
 
-    public boolean isNullable() {
-        return true;
+    public double fix(double val) {
+        double oldval = c;
+        c = val;
+        fixed = true;
+        return oldval;
+    }
+
+    public double value() {
+        return c;
     }
 
     @Override
-    public boolean isPotentialInstability() {
-        return true;
+    public void free() {
+        fixed = false;
     }
 
     @Override
     public void fixModelParameter(DoubleReader reader) {
-        stde = Math.sqrt(reader.next());
+        c = reader.next();
         fixed = true;
-    }
-
-    @Override
-    public void free(){
-        fixed=false;
-    }
-
-    public double fixStde(double e) {
-        double olde = stde;
-        stde = Math.abs(e);
-        fixed = true;
-        return olde;
-    }
-
-    public void freeStde(double e) {
-        fixed = false;
-        stde = e;
-    }
-
-    public double stde() {
-        return stde;
-    }
-
-    public double variance() {
-        return stde*stde;
     }
 
     @Override
@@ -105,21 +80,20 @@ public class VarianceParameter implements IMstsParametersBlock {
     @Override
     public int decode(DoubleReader input, double[] buffer, int pos) {
         if (!fixed) {
-            double e = input.next();
-            buffer[pos] = e * e;
+            buffer[pos] = input.next();
         } else {
-            buffer[pos] = stde * stde;
+            buffer[pos] = c;
         }
         return pos + 1;
     }
 
     @Override
     public int encode(DoubleReader input, double[] buffer, int pos) {
-        double v = input.next();
         if (!fixed) {
-            buffer[pos] = Math.sqrt(v);
+            buffer[pos] = input.next();
             return pos + 1;
         } else {
+            input.skip(1);
             return pos;
         }
     }
@@ -127,11 +101,21 @@ public class VarianceParameter implements IMstsParametersBlock {
     @Override
     public int fillDefault(double[] buffer, int pos) {
         if (!fixed) {
-            buffer[pos] = stde;
+            buffer[pos] = c;
             return pos + 1;
         } else {
             return pos;
         }
+    }
+
+    @Override
+    public boolean isScaleSensitive(boolean variance) {
+        return true;
+    }
+
+    @Override
+    public int rescaleVariances(double factor, double[] buffer, int pos) {
+        return pos+1;
     }
 
     static class Domain implements IParametersDomain {
@@ -142,17 +126,17 @@ public class VarianceParameter implements IMstsParametersBlock {
         public boolean checkBoundaries(DoubleSequence inparams) {
             return true;
         }
-        
-        private static final double EPS=1e-6;
+
+        private static final double EPS = 1e-4;
 
         @Override
         public double epsilon(DoubleSequence inparams, int idx) {
-            double c=inparams.get(0);
-            if (c >= 0)
+            double c = inparams.get(0);
+            if (c >= 0) {
                 return Math.max(EPS, c * EPS);
-            else
+            } else {
                 return -Math.max(EPS, -c * EPS);
-                
+            }
         }
 
         @Override
@@ -167,7 +151,7 @@ public class VarianceParameter implements IMstsParametersBlock {
 
         @Override
         public double ubound(int idx) {
-            return -Double.MIN_VALUE;
+            return Double.MAX_VALUE;
         }
 
         @Override
@@ -175,4 +159,5 @@ public class VarianceParameter implements IMstsParametersBlock {
             return ParamValidation.Valid;
         }
     }
+
 }

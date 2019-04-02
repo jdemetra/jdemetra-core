@@ -7,16 +7,16 @@ package demetra.msts.internal;
 
 import demetra.arima.ArimaModel;
 import demetra.arima.ssf.SsfArima;
-import demetra.msts.IMstsParametersBlock;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
-import demetra.msts.SarimaParameters;
-import demetra.msts.VarianceParameter;
+import demetra.msts.SarimaInterpreter;
+import demetra.msts.VarianceInterpreter;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.ssf.StateComponent;
 import java.util.Arrays;
 import java.util.List;
+import demetra.msts.ParameterInterpreter;
 
 /**
  *
@@ -24,8 +24,8 @@ import java.util.List;
  */
 public class SarimaItem extends AbstractModelItem {
 
-    private final VarianceParameter v;
-    private final SarimaParameters p;
+    private final VarianceInterpreter v;
+    private final SarimaInterpreter p;
 
     public SarimaItem(final String name, int period, int[] orders, int[] seasonal, double[] parameters, boolean fixed, double var, boolean fixedvar) {
         super(name);
@@ -38,8 +38,8 @@ public class SarimaItem extends AbstractModelItem {
             spec.setBd(seasonal[1]);
             spec.setBq(seasonal[2]);
         }
-        v = new VarianceParameter(name + ".var", var, fixedvar, true);
-        p = new SarimaParameters(name, spec, parameters, fixed);
+        v = new VarianceInterpreter(name + ".var", var, fixedvar, true);
+        p = new SarimaInterpreter(name, spec, parameters, fixed);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class SarimaItem extends AbstractModelItem {
     }
 
     @Override
-    public List<IMstsParametersBlock> parameters() {
+    public List<ParameterInterpreter> parameters() {
         return Arrays.asList(v, p);
     }
 

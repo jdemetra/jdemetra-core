@@ -19,13 +19,13 @@ public class ModelEquation implements ModelItem {
     private final String name;
     private final List<Item> items = new ArrayList<>();
 
-    private final VarianceParameter var;
+    private final VarianceInterpreter var;
 
     @lombok.Value
     public static class Item {
 
         String cmp;
-        LoadingParameter c;
+        LoadingInterpreter c;
         ISsfLoading loading;
 
         Item(String cmp) {
@@ -34,12 +34,14 @@ public class ModelEquation implements ModelItem {
             loading = null;
         }
 
-        Item(String cmp, double p, boolean fixed, ISsfLoading loading) {
+        Item(String eq, String cmp, double p, boolean fixed, ISsfLoading loading) {
             this.cmp = cmp;
             if (p == 1 && fixed) {
                 this.c = null;
             } else {
-                this.c = new LoadingParameter(cmp + ".c", p, fixed);
+                StringBuilder fullname = new StringBuilder();
+                fullname.append(eq).append('.').append(cmp);
+                this.c = new LoadingInterpreter(fullname.toString(), p, fixed);
             }
             this.loading = loading;
         }
@@ -50,10 +52,11 @@ public class ModelEquation implements ModelItem {
         if (var == 0 && fixed) {
             this.var = null;
         } else {
-            this.var = new VarianceParameter(name + ".var", var, fixed, var == 0);
+            this.var = new VarianceInterpreter(name + ".var", var, fixed, var == 0);
         }
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -63,7 +66,7 @@ public class ModelEquation implements ModelItem {
     }
 
     public void add(String item, double coeff, boolean fixed, ISsfLoading loading) {
-        items.add(new Item(item, coeff, fixed, loading));
+        items.add(new Item(name, item, coeff, fixed, loading));
     }
 
     public void free() {
@@ -115,11 +118,11 @@ public class ModelEquation implements ModelItem {
     }
 
     @Override
-    public List<IMstsParametersBlock> parameters() {
-        ArrayList<IMstsParametersBlock> list = new ArrayList<>();
+    public List<ParameterInterpreter> parameters() {
+        ArrayList<ParameterInterpreter> list = new ArrayList<>();
         list.add(var);
         for (Item item : items) {
-            if (!item.c.isFixed()) {
+            if (item.c != null) {
                 list.add(item.c);
             }
         }

@@ -5,13 +5,13 @@
  */
 package demetra.msts.internal;
 
-import demetra.msts.IMstsParametersBlock;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
-import demetra.msts.VarianceParameter;
+import demetra.msts.VarianceInterpreter;
 import demetra.ssf.SsfComponent;
 import java.util.Arrays;
 import java.util.List;
+import demetra.msts.ParameterInterpreter;
 
 /**
  *
@@ -19,12 +19,12 @@ import java.util.List;
  */
 public class LocalLinearTrendItem extends AbstractModelItem {
 
-    public final VarianceParameter lv, sv;
+    public final VarianceInterpreter lv, sv;
 
     public LocalLinearTrendItem(final String name, double lvar, double svar, boolean lfixed, boolean sfixed) {
         super(name);
-        lv = new VarianceParameter(name + ".lvar", lvar, lfixed, true);
-        sv = new VarianceParameter(name + ".svar", svar, sfixed, true);
+        lv = new VarianceInterpreter(name + ".lvar", lvar, lfixed, true);
+        sv = new VarianceInterpreter(name + ".svar", svar, sfixed, true);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class LocalLinearTrendItem extends AbstractModelItem {
     }
 
     @Override
-    public List<IMstsParametersBlock> parameters() {
+    public List<ParameterInterpreter> parameters() {
         return Arrays.asList(lv, sv);
     }
 

@@ -9,14 +9,14 @@ import demetra.arima.ArimaModel;
 import demetra.arima.ssf.SsfArima;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.polynomials.Polynomial;
-import demetra.msts.IMstsParametersBlock;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
-import demetra.msts.StablePolynomial;
-import demetra.msts.VarianceParameter;
+import demetra.msts.StablePolynomialInterpreter;
+import demetra.msts.VarianceInterpreter;
 import demetra.ssf.StateComponent;
 import java.util.ArrayList;
 import java.util.List;
+import demetra.msts.ParameterInterpreter;
 
 /**
  *
@@ -24,23 +24,23 @@ import java.util.List;
  */
 public class ArimaItem extends AbstractModelItem {
 
-    private final StablePolynomial par, pma;
-    private final VarianceParameter v;
+    private final StablePolynomialInterpreter par, pma;
+    private final VarianceInterpreter v;
     private final BackFilter bdiff;
 
     public ArimaItem(String name, double[] ar, boolean fixedar, double[] diff, double[] ma, boolean fixedma, double var, boolean fixedvar) {
         super(name);
         if (ar != null) {
-            par = new StablePolynomial(name + ".ar", ar, fixedar);
+            par = new StablePolynomialInterpreter(name + ".ar", ar, fixedar);
         } else {
             par = null;
         }
         if (ma != null) {
-            pma = new StablePolynomial(name + ".ma", ma, fixedma);
+            pma = new StablePolynomialInterpreter(name + ".ma", ma, fixedma);
         } else {
             pma = null;
         }
-        v = new VarianceParameter(name + ".var", var, fixedvar, true);
+        v = new VarianceInterpreter(name + ".var", var, fixedvar, true);
         if (diff != null) {
             Polynomial pdiff = Polynomial.valueOf(1, diff);
             bdiff = new BackFilter(pdiff);
@@ -82,8 +82,8 @@ public class ArimaItem extends AbstractModelItem {
     }
 
     @Override
-    public List<IMstsParametersBlock> parameters() {
-        List<IMstsParametersBlock> list = new ArrayList<>();
+    public List<ParameterInterpreter> parameters() {
+        List<ParameterInterpreter> list = new ArrayList<>();
         if (par != null) {
             list.add(par);
         }

@@ -23,6 +23,7 @@ import demetra.ssf.dk.SsfFunctionPoint;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
 import demetra.arima.ssf.SsfAr;
+import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.sts.LocalLevel;
 import demetra.sts.LocalLinearTrend;
 import demetra.ssf.multivariate.M2uAdapter;
@@ -70,21 +71,21 @@ public class MstsMappingTest {
         // add the parameters
         // 0=tuvar, 1=tyvar, 2=tpivar, 3=tpicorevar, 4=eq2var, 5=eq3var, 6=eq4var
         for (int i = 0; i < 7; ++i) {
-            mapping.add(new VarianceParameter("", true));
+            mapping.add(new VarianceInterpreter("", true));
         }
         // loading
         // 7=l-eq1, 8=l-eq2, 9=l-eq3, 10=l-eq4
         for (int i = 0; i < 4; ++i) {
-            mapping.add(new LoadingParameter(""));
+            mapping.add(new LoadingInterpreter(""));
         }
 
         // AR 11 - 12
         mapping.add(new GenericParameters("", new ARDomain(), new double[]{-.1, -.1}, false));
 
         // fixed parameters var cycle and var eq1
-        VarianceParameter vc = new VarianceParameter("", 1, true, false);
+        VarianceInterpreter vc = new VarianceInterpreter("", 1, true, false);
         mapping.add(vc);
-        VarianceParameter v1 = new VarianceParameter("", 1, true, false);
+        VarianceInterpreter v1 = new VarianceInterpreter("", 1, true, false);
         mapping.add(v1);
 
         // Builder
@@ -127,8 +128,8 @@ public class MstsMappingTest {
                 .useMaximumLikelihood(true)
                 .build();
 
-        MinPackMinimizer lm = new MinPackMinimizer();
-//        LevenbergMarquardtMinimizer lm = new LevenbergMarquardtMinimizer();
+//        MinPackMinimizer lm = new MinPackMinimizer();
+        LevenbergMarquardtMinimizer lm = new LevenbergMarquardtMinimizer();
         lm.setMaxIter(1000);
         boolean ok = lm.minimize(fn.evaluate(mapping.getDefaultParameters()));
         SsfFunctionPoint rslt = (SsfFunctionPoint) lm.getResult();

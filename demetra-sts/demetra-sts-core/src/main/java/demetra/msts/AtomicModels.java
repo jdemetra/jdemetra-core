@@ -15,6 +15,7 @@ import demetra.msts.internal.LocalLevelItem;
 import demetra.msts.internal.LocalLinearTrendItem;
 import demetra.msts.internal.MsaeItem;
 import demetra.msts.internal.MsaeItem2;
+import demetra.msts.internal.MsaeItem3;
 import demetra.msts.internal.NoiseItem;
 import demetra.msts.internal.RegressionItem;
 import demetra.msts.internal.SaeItem;
@@ -107,14 +108,16 @@ public class AtomicModels {
 //        };
 //    }
 
-    // ONS-like
     public ModelItem waveSpecificSurveyError(String name, int nwaves, MatrixType ar, boolean fixedar, int lag) {
         return new MsaeItem(name, nwaves, ar, fixedar, lag);
     }
 
-    // ONS-like
     public ModelItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, MatrixType ar, boolean fixedar, int lag) {
         return new MsaeItem2(name, var, fixedVar, ar, fixedar, lag);
+    }
+
+    public ModelItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, double[] ar, boolean fixedar, MatrixType k, int lag) {
+        return new MsaeItem3(name, var, fixedVar, ar, fixedar, k, lag);
     }
 
     public ModelItem ar(String name, double[] ar, boolean fixedar, double var, boolean fixedvar, int nlags, int nfcasts) {

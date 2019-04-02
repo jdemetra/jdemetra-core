@@ -5,14 +5,14 @@
  */
 package demetra.msts.internal;
 
-import demetra.msts.IMstsParametersBlock;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
-import demetra.msts.VarianceParameter;
+import demetra.msts.VarianceInterpreter;
 import demetra.ssf.SsfComponent;
 import demetra.sts.Noise;
 import java.util.Collections;
 import java.util.List;
+import demetra.msts.ParameterInterpreter;
 
 /**
  *
@@ -20,11 +20,11 @@ import java.util.List;
  */
 public class NoiseItem extends AbstractModelItem {
 
-    private final VarianceParameter v;
+    private final VarianceInterpreter v;
 
     public NoiseItem(String name, double var, boolean fixed) {
         super(name);
-        this.v = new VarianceParameter(name + ".var", var, fixed, true);
+        this.v = new VarianceInterpreter(name + ".var", var, fixed, true);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class NoiseItem extends AbstractModelItem {
     }
 
     @Override
-    public List<IMstsParametersBlock> parameters() {
+    public List<ParameterInterpreter> parameters() {
         return Collections.singletonList(v);
     }
 

@@ -12,7 +12,7 @@ import demetra.maths.functions.IParametersDomain;
  *
  * @author palatej
  */
-public class GenericParameters implements IMstsParametersBlock {
+public class GenericParameters implements ParameterInterpreter {
 
     private boolean fixed;
     private final double[] parameters;
@@ -97,4 +97,15 @@ public class GenericParameters implements IMstsParametersBlock {
             return pos;
         }
     }
+    
+    @Override
+    public int rescaleVariances(double factor, double[] buffer, int pos) {
+        return pos+parameters.length;
+    }
+
+    @Override
+    public boolean isScaleSensitive(boolean variance) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

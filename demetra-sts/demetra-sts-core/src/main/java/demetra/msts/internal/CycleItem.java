@@ -5,14 +5,14 @@
  */
 package demetra.msts.internal;
 
-import demetra.msts.BoundedParameter;
-import demetra.msts.IMstsParametersBlock;
+import demetra.msts.BoundedParameterInterpreter;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
-import demetra.msts.VarianceParameter;
+import demetra.msts.VarianceInterpreter;
 import demetra.sts.CyclicalComponent;
 import java.util.Arrays;
 import java.util.List;
+import demetra.msts.ParameterInterpreter;
 
 /**
  *
@@ -20,22 +20,22 @@ import java.util.List;
  */
 public class CycleItem extends AbstractModelItem {
 
-    private final BoundedParameter factor, period;
-    private final VarianceParameter v;
+    private final BoundedParameterInterpreter factor, period;
+    private final VarianceInterpreter v;
 
     public CycleItem(String name, double dumpingFactor, double cyclicalPeriod, boolean fixedcycle, double cvar, boolean fixedvar) {
         super(name);
-        factor = BoundedParameter.builder()
+        factor = BoundedParameterInterpreter.builder()
                 .name(name + ".factor")
                 .value(cvar, fixedcycle)
                 .bounds(0, 1, true)
                 .build();
-        period = BoundedParameter.builder()
+        period = BoundedParameterInterpreter.builder()
                 .name(name + ".period")
                 .value(cyclicalPeriod, fixedcycle)
                 .bounds(2, Double.MAX_VALUE, false)
                 .build();
-        v = new VarianceParameter(name + ".var", cvar, fixedvar, true);
+        v = new VarianceInterpreter(name + ".var", cvar, fixedvar, true);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CycleItem extends AbstractModelItem {
     }
 
     @Override
-    public List<IMstsParametersBlock> parameters() {
+    public List<ParameterInterpreter> parameters() {
         return Arrays.asList(factor, period, v);
     }
 

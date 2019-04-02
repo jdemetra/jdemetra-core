@@ -7,15 +7,15 @@ package demetra.msts.internal;
 
 import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
-import demetra.msts.ArParameters;
-import demetra.msts.IMstsParametersBlock;
+import demetra.msts.ArInterpreter;
 import demetra.msts.MstsMapping;
-import demetra.msts.VarianceParameter;
+import demetra.msts.VarianceInterpreter;
 import demetra.msts.survey.WaveSpecificSurveyErrors2;
 import demetra.ssf.StateComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import demetra.msts.ParameterInterpreter;
 
 /**
  *
@@ -23,10 +23,10 @@ import java.util.List;
  */
 public class MsaeItem2 extends AbstractModelItem {
     
-    private final VarianceParameter[] v;
+    private final VarianceInterpreter[] v;
     private final int lag;
     private final int[] lar;
-    private final ArParameters[] par;
+    private final ArInterpreter[] par;
     
     public MsaeItem2(String name, double[] v, boolean fixedVar, MatrixType ar, boolean fixedar, int lag) {
         super(name);
@@ -34,10 +34,10 @@ public class MsaeItem2 extends AbstractModelItem {
         this.lag = lag;
         final int nar = ar.getColumnsCount();
         lar = new int[nar];
-        par = new ArParameters[nar];
-        this.v=new VarianceParameter[nwaves];
+        par = new ArInterpreter[nar];
+        this.v=new VarianceInterpreter[nwaves];
         for (int i=0; i<nwaves; ++i){
-            this.v[i]=new VarianceParameter(name + ".var" + (i+1), v[i], fixedVar, true);
+            this.v[i]=new VarianceInterpreter(name + ".var" + (i+1), v[i], fixedVar, true);
         }
         for (int i = 0; i < nar; ++i) {
             int j = 0;
@@ -49,7 +49,7 @@ public class MsaeItem2 extends AbstractModelItem {
             }
             lar[i] = j;
             double[] car = ar.column(i).extract(0, j).toArray();
-            par[i] = new ArParameters(name + ".wae" + (i + 1), car, fixedar);
+            par[i] = new ArInterpreter(name + ".wae" + (i + 1), car, fixedar);
         }
     }
     
@@ -86,8 +86,8 @@ public class MsaeItem2 extends AbstractModelItem {
     }
     
     @Override
-    public List<IMstsParametersBlock> parameters() {
-        List<IMstsParametersBlock> all=new ArrayList<>();
+    public List<ParameterInterpreter> parameters() {
+        List<ParameterInterpreter> all=new ArrayList<>();
         for (int i=0; i<v.length; ++i)
             all.add(v[i]);
         for (int i=0; i<par.length; ++i)

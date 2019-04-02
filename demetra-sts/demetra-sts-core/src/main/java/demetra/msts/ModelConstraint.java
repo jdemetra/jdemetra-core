@@ -5,9 +5,9 @@
  */
 package demetra.msts;
 
-import demetra.msts.LoadingParameter;
+import demetra.msts.LoadingInterpreter;
 import demetra.msts.MstsMapping;
-import demetra.msts.VarianceParameter;
+import demetra.msts.VarianceInterpreter;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class ModelConstraint implements ModelItem {
     }
 
     @Override
-    public List<IMstsParametersBlock> parameters() {
+    public List<ParameterInterpreter> parameters() {
         return Collections.EMPTY_LIST;
     }
 

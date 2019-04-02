@@ -5,18 +5,15 @@
  */
 package demetra.msts;
 
-import demetra.data.DataBlock;
 import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
 import demetra.maths.functions.IParametersDomain;
-import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.ParametersRange;
 
 /**
  *
  * @author palatej
  */
-public class BoundedParameter implements IMstsParametersBlock {
+public class BoundedParameterInterpreter implements ParameterInterpreter {
 
     public static Builder builder() {
         return new Builder();
@@ -24,32 +21,32 @@ public class BoundedParameter implements IMstsParametersBlock {
 
     public static class Builder {
 
-        private double lbound=0, ubound=Double.MAX_VALUE;
-        private boolean open=true;
-        private double value=.5;
-        private boolean fixed=false;
-        private String name="";
-        
-        public Builder bounds(double lbound, double ubound, boolean open){
-            this.lbound=lbound;
-            this.ubound=ubound;
-            this.open=open;
-            return this;
-        }
-        
-        public Builder value(double value, boolean fixed){
-            this.value=value;
-            this.fixed=fixed;
+        private double lbound = 0, ubound = Double.MAX_VALUE;
+        private boolean open = true;
+        private double value = .5;
+        private boolean fixed = false;
+        private String name = "";
+
+        public Builder bounds(double lbound, double ubound, boolean open) {
+            this.lbound = lbound;
+            this.ubound = ubound;
+            this.open = open;
             return this;
         }
 
-        public Builder name(String name){
-            this.name=name;
+        public Builder value(double value, boolean fixed) {
+            this.value = value;
+            this.fixed = fixed;
             return this;
         }
 
-        public BoundedParameter build(){
-            return new BoundedParameter(name, value, fixed, lbound, ubound, open);
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public BoundedParameterInterpreter build() {
+            return new BoundedParameterInterpreter(name, value, fixed, lbound, ubound, open);
         }
     }
 
@@ -60,16 +57,16 @@ public class BoundedParameter implements IMstsParametersBlock {
     private boolean fixed;
     private final String name;
 
-    private BoundedParameter(final String name, double value, boolean fixed, double lbound, double ubound, boolean open) {
+    private BoundedParameterInterpreter(final String name, double value, boolean fixed, double lbound, double ubound, boolean open) {
         this.name = name;
-        this.value=value;
+        this.value = value;
         this.fixed = fixed;
-        this.range=new ParametersRange(lbound, ubound, open);
+        this.range = new ParametersRange(lbound, ubound, open);
     }
-    
+
     @Override
-    public BoundedParameter duplicate(){
-        return new BoundedParameter(name, value, fixed, range.getA(), range.getB(), range.isOpen());
+    public BoundedParameterInterpreter duplicate() {
+        return new BoundedParameterInterpreter(name, value, fixed, range.getA(), range.getB(), range.isOpen());
     }
 
     @Override
@@ -98,11 +95,6 @@ public class BoundedParameter implements IMstsParametersBlock {
     @Override
     public boolean isFixed() {
         return fixed;
-    }
-
-    @Override
-    public boolean isPotentialInstability() {
-        return false;
     }
 
     @Override
@@ -139,6 +131,16 @@ public class BoundedParameter implements IMstsParametersBlock {
         } else {
             return pos;
         }
+    }
+
+    @Override
+    public boolean isScaleSensitive(boolean variance) {
+        return false;
+    }
+
+    @Override
+    public int rescaleVariances(double factor, double[] buffer, int pos) {
+        return pos+1;
     }
 
 }

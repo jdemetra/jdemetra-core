@@ -9,15 +9,15 @@ import demetra.arima.ArimaModel;
 import demetra.arima.ssf.SsfArima;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.polynomials.Polynomial;
-import demetra.msts.IMstsParametersBlock;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
-import demetra.msts.StablePolynomial;
-import demetra.msts.VarianceParameter;
+import demetra.msts.StablePolynomialInterpreter;
+import demetra.msts.VarianceInterpreter;
 import demetra.ssf.StateComponent;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import demetra.msts.ParameterInterpreter;
 
 /**
  *
@@ -25,23 +25,23 @@ import java.util.List;
  */
 public class ArmaItem extends AbstractModelItem{
 
-    private final StablePolynomial par, pma;
-    private final VarianceParameter v;
+    private final StablePolynomialInterpreter par, pma;
+    private final VarianceInterpreter v;
 
     public ArmaItem(final String name, double[] ar, double[] ma, double var, boolean fixed) {
         super(name);
         int nar = ar == null ? 0 : ar.length, nma = ma == null ? 0 : ma.length;
         if (nar > 0) {
-            par = new StablePolynomial(name + ".ar", ar, fixed);
+            par = new StablePolynomialInterpreter(name + ".ar", ar, fixed);
         } else {
             par = null;
         }
         if (nma > 0) {
-            pma = new StablePolynomial(name + ".ma", ma, fixed);
+            pma = new StablePolynomialInterpreter(name + ".ma", ma, fixed);
         } else {
             pma = null;
         }
-        v = new VarianceParameter(name + ".var", var, true, true);
+        v = new VarianceInterpreter(name + ".var", var, true, true);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ArmaItem extends AbstractModelItem{
     }
 
     @Override
-    public List<IMstsParametersBlock> parameters() {
+    public List<ParameterInterpreter> parameters() {
         return Arrays.asList(par, pma, v);
     }
 }

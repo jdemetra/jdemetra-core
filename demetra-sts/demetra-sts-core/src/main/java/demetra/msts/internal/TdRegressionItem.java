@@ -11,10 +11,9 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.modelling.regression.GenericTradingDaysVariable;
 import demetra.modelling.regression.Regression;
 import demetra.modelling.regression.RegressionUtility;
-import demetra.msts.IMstsParametersBlock;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
-import demetra.msts.VarianceParameter;
+import demetra.msts.VarianceInterpreter;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.implementations.RegSsf;
 import demetra.timeseries.TsDomain;
@@ -23,6 +22,7 @@ import demetra.modelling.regression.GenericTradingDaysFactory;
 import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.Collections;
 import java.util.List;
+import demetra.msts.ParameterInterpreter;
 
 /**
  *
@@ -32,7 +32,7 @@ public class TdRegressionItem extends AbstractModelItem {
 
     private final Matrix x;
     private final Matrix mvar;
-    private final VarianceParameter v;
+    private final VarianceInterpreter v;
 
     public TdRegressionItem(String name, TsDomain domain, int[] groups, final boolean contrast, final double var, final boolean fixed) {
         super(name);
@@ -40,7 +40,7 @@ public class TdRegressionItem extends AbstractModelItem {
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         this.x = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
         this.mvar = generateVar(dc, contrast);
-        this.v = new VarianceParameter(name + ".var", var, fixed, true);
+        this.v = new VarianceInterpreter(name + ".var", var, fixed, true);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class TdRegressionItem extends AbstractModelItem {
     }
 
     @Override
-    public List<IMstsParametersBlock> parameters() {
+    public List<ParameterInterpreter> parameters() {
         return Collections.singletonList(v);
     }
 

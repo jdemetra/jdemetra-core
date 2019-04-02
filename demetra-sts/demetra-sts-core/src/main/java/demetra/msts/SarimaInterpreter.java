@@ -5,12 +5,7 @@
  */
 package demetra.msts;
 
-import demetra.data.DataBlock;
 import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
-import demetra.maths.functions.IParametersDomain;
-import demetra.maths.functions.ParamValidation;
-import demetra.maths.polynomials.Polynomial;
 import demetra.sarima.estimation.SarimaMapping;
 import demetra.sarima.SarimaSpecification;
 
@@ -18,7 +13,7 @@ import demetra.sarima.SarimaSpecification;
  *
  * @author palatej
  */
-public final class SarimaParameters implements IMstsParametersBlock {
+public final class SarimaInterpreter implements ParameterInterpreter {
 
     private final String name;
     private double[] values;
@@ -26,7 +21,7 @@ public final class SarimaParameters implements IMstsParametersBlock {
     private final int np;
     private boolean fixed;
 
-    public SarimaParameters(final String name, final SarimaSpecification spec, final double[] p, final boolean fixed) {
+    public SarimaInterpreter(final String name, final SarimaSpecification spec, final double[] p, final boolean fixed) {
         this.name = name;
         this.mapping = SarimaMapping.of(spec);
         this.values = p == null ? mapping.getDefaultParameters().toArray() : p;
@@ -35,8 +30,8 @@ public final class SarimaParameters implements IMstsParametersBlock {
     }
 
     @Override
-    public SarimaParameters duplicate(){
-        return new SarimaParameters(name, mapping.getSpec(), values.clone(), fixed);
+    public SarimaInterpreter duplicate(){
+        return new SarimaInterpreter(name, mapping.getSpec(), values.clone(), fixed);
     }
 
     @Override
@@ -103,6 +98,16 @@ public final class SarimaParameters implements IMstsParametersBlock {
         } else {
             return pos;
         }
+    }
+
+    @Override
+    public boolean isScaleSensitive(boolean variance) {
+        return false;
+    }
+
+    @Override
+    public int rescaleVariances(double factor, double[] buffer, int pos) {
+        return pos+values.length;
     }
 
 }
