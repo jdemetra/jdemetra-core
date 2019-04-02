@@ -5,16 +5,16 @@
  */
 package demetra.msts.internal;
 
-import demetra.msts.ArParameters;
-import demetra.msts.IMstsParametersBlock;
+import demetra.msts.ArInterpreter;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
-import demetra.msts.VarianceParameter;
+import demetra.msts.VarianceInterpreter;
 import demetra.ssf.SsfComponent;
 import demetra.arima.ssf.SsfAr;
 import demetra.arima.ssf.SsfAr2;
 import java.util.Arrays;
 import java.util.List;
+import demetra.msts.ParameterInterpreter;
 
 /**
  *
@@ -22,16 +22,16 @@ import java.util.List;
  */
 public class ArItem extends AbstractModelItem {
 
-    private final ArParameters ar;
-    private final VarianceParameter v;
+    private final ArInterpreter ar;
+    private final VarianceInterpreter v;
     private final int nlags;
     private final boolean zeroinit;
 
     public ArItem(String name, double[] ar, boolean fixedar, double var, boolean fixedvar, int nlags, boolean zeroinit) {
         super(name);
         this.nlags = nlags;
-        this.ar = new ArParameters(name + ".ar", ar, fixedar);
-        this.v = new VarianceParameter(name + ".var", var, fixedvar, true);
+        this.ar = new ArInterpreter(name + ".ar", ar, fixedar);
+        this.v = new VarianceInterpreter(name + ".var", var, fixedvar, true);
         this.zeroinit = zeroinit;
     }
 
@@ -50,7 +50,7 @@ public class ArItem extends AbstractModelItem {
     }
 
     @Override
-    public List<IMstsParametersBlock> parameters() {
+    public List<ParameterInterpreter> parameters() {
         return Arrays.asList(ar, v);
     }
 

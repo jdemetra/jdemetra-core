@@ -7,13 +7,13 @@ package demetra.msts.internal;
 
 import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
-import demetra.msts.ArParameters;
-import demetra.msts.IMstsParametersBlock;
+import demetra.msts.ArInterpreter;
 import demetra.msts.MstsMapping;
 import demetra.msts.survey.WaveSpecificSurveyErrors;
 import demetra.ssf.StateComponent;
 import java.util.Arrays;
 import java.util.List;
+import demetra.msts.ParameterInterpreter;
 
 /**
  *
@@ -24,7 +24,7 @@ public class MsaeItem extends AbstractModelItem {
     private final int nwaves;
     private final int lag;
     private final int[] lar;
-    private final ArParameters[] par;
+    private final ArInterpreter[] par;
     
     public MsaeItem(String name, int nwaves, MatrixType ar, boolean fixedar, int lag) {
         super(name);
@@ -32,7 +32,7 @@ public class MsaeItem extends AbstractModelItem {
         this.lag = lag;
         final int nar = ar.getColumnsCount();
         lar = new int[nar];
-        par = new ArParameters[nar];
+        par = new ArInterpreter[nar];
         for (int i = 0; i < nar; ++i) {
             int j = 0;
             for (; j <= i && j < ar.getRowsCount(); ++j) {
@@ -43,7 +43,7 @@ public class MsaeItem extends AbstractModelItem {
             }
             lar[i] = j;
             double[] car = ar.column(i).extract(0, j).toArray();
-            par[i] = new ArParameters(name + ".wae" + (i + 1), car, fixedar);
+            par[i] = new ArInterpreter(name + ".wae" + (i + 1), car, fixedar);
         }
     }
     
@@ -72,7 +72,7 @@ public class MsaeItem extends AbstractModelItem {
     }
     
     @Override
-    public List<IMstsParametersBlock> parameters() {
+    public List<ParameterInterpreter> parameters() {
         return Arrays.asList(par);
     }
     

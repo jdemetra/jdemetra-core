@@ -10,14 +10,12 @@ import demetra.data.DoubleReader;
 import demetra.data.DoubleSequence;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParamValidation;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author palatej
  */
-public final class LoadingParameter implements IMstsParametersBlock {
+public final class LoadingInterpreter implements ParameterInterpreter {
 
     private static final double DEF_VALUE = .1;
 
@@ -25,21 +23,21 @@ public final class LoadingParameter implements IMstsParametersBlock {
     private boolean fixed;
     private final String name;
 
-    public LoadingParameter(final String name) {
+    public LoadingInterpreter(final String name) {
         this.name = name;
         c = DEF_VALUE;
         fixed = false;
     }
 
-    public LoadingParameter(final String name, double loading, boolean fixed) {
+    public LoadingInterpreter(final String name, double loading, boolean fixed) {
         this.name = name;
         this.c = loading;
         this.fixed = fixed;
     }
-    
+
     @Override
-    public LoadingParameter duplicate(){
-        return new LoadingParameter(name, c, fixed);
+    public LoadingInterpreter duplicate() {
+        return new LoadingInterpreter(name, c, fixed);
     }
 
     @Override
@@ -48,13 +46,13 @@ public final class LoadingParameter implements IMstsParametersBlock {
     }
 
     public double fix(double val) {
-        double oldval=c;
+        double oldval = c;
         c = val;
         fixed = true;
         return oldval;
     }
-    
-    public double value(){
+
+    public double value() {
         return c;
     }
 
@@ -72,11 +70,6 @@ public final class LoadingParameter implements IMstsParametersBlock {
     @Override
     public boolean isFixed() {
         return fixed;
-    }
-
-    @Override
-    public boolean isPotentialInstability() {
-        return true;
     }
 
     @Override
@@ -115,6 +108,16 @@ public final class LoadingParameter implements IMstsParametersBlock {
         }
     }
 
+    @Override
+    public boolean isScaleSensitive(boolean variance) {
+        return true;
+    }
+
+    @Override
+    public int rescaleVariances(double factor, double[] buffer, int pos) {
+        return pos+1;
+    }
+
     static class Domain implements IParametersDomain {
 
         static final Domain INSTANCE = new Domain();
@@ -124,16 +127,16 @@ public final class LoadingParameter implements IMstsParametersBlock {
             return true;
         }
 
-        private static final double EPS=1e-6;
+        private static final double EPS = 1e-4;
 
         @Override
         public double epsilon(DoubleSequence inparams, int idx) {
-            double c=inparams.get(0);
-            if (c >= 0)
+            double c = inparams.get(0);
+            if (c >= 0) {
                 return Math.max(EPS, c * EPS);
-            else
+            } else {
                 return -Math.max(EPS, -c * EPS);
-                
+            }
         }
 
         @Override
@@ -148,7 +151,7 @@ public final class LoadingParameter implements IMstsParametersBlock {
 
         @Override
         public double ubound(int idx) {
-            return -Double.MIN_VALUE;
+            return Double.MAX_VALUE;
         }
 
         @Override

@@ -5,14 +5,14 @@
  */
 package demetra.msts.internal;
 
-import demetra.msts.IMstsParametersBlock;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
-import demetra.msts.VarianceParameter;
+import demetra.msts.VarianceInterpreter;
 import demetra.ssf.SsfComponent;
 import demetra.sts.LocalLevel;
 import java.util.Collections;
 import java.util.List;
+import demetra.msts.ParameterInterpreter;
 
 /**
  *
@@ -20,13 +20,13 @@ import java.util.List;
  */
 public class LocalLevelItem extends AbstractModelItem {
 
-    public final VarianceParameter v;
+    public final VarianceInterpreter v;
     public final double initial;
 
     public LocalLevelItem(String name, final double lvar, final boolean fixed, final double initial) {
         super(name);
         this.initial = initial;
-        this.v = new VarianceParameter(name + ".var", lvar, fixed, true);
+        this.v = new VarianceInterpreter(name + ".var", lvar, fixed, true);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class LocalLevelItem extends AbstractModelItem {
     }
 
     @Override
-    public List<IMstsParametersBlock> parameters() {
+    public List<ParameterInterpreter> parameters() {
         return Collections.singletonList(v);
     }
 

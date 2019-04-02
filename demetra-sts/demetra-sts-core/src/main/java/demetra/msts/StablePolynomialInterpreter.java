@@ -18,14 +18,14 @@ import javax.annotation.Nonnull;
  *
  * @author palatej
  */
-public class StablePolynomial implements IMstsParametersBlock {
+public class StablePolynomialInterpreter implements ParameterInterpreter {
 
     private final String name;
     private final double[] values;
     private final Domain domain;
     private boolean fixed;
 
-    public StablePolynomial(final String name, @Nonnull double[] values, boolean fixed) {
+    public StablePolynomialInterpreter(final String name, @Nonnull double[] values, boolean fixed) {
         this.name = name;
         this.values = values;
         this.fixed = fixed;
@@ -33,8 +33,8 @@ public class StablePolynomial implements IMstsParametersBlock {
     }
     
     @Override
-    public StablePolynomial duplicate(){
-        return new StablePolynomial(name, values.clone(), fixed);
+    public StablePolynomialInterpreter duplicate(){
+        return new StablePolynomialInterpreter(name, values.clone(), fixed);
     }
 
     @Override
@@ -45,6 +45,16 @@ public class StablePolynomial implements IMstsParametersBlock {
     @Override
     public boolean isFixed() {
         return fixed;
+    }
+    
+    @Override
+    public boolean isScaleSensitive(boolean variance){
+        return false;
+    }
+
+    @Override
+    public int rescaleVariances(double factor, double[] buffer, int pos) {
+        return pos+values.length;
     }
 
     @Override

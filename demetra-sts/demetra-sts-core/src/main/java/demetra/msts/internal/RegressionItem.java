@@ -7,15 +7,15 @@ package demetra.msts.internal;
 
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
-import demetra.msts.IMstsParametersBlock;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
-import demetra.msts.VarianceParameter;
+import demetra.msts.VarianceInterpreter;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.implementations.RegSsf;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import demetra.msts.ParameterInterpreter;
 
 /**
  *
@@ -24,7 +24,7 @@ import java.util.List;
 public class RegressionItem extends AbstractModelItem {
 
     public final Matrix x;
-    public final VarianceParameter[] v;
+    public final VarianceInterpreter[] v;
 
     public RegressionItem(String name, MatrixType x, final double[] vars, final boolean fixed) {
         super(name);
@@ -32,12 +32,12 @@ public class RegressionItem extends AbstractModelItem {
         if (vars == null) {
             v = null;
         } else {
-            v = new VarianceParameter[vars.length];
+            v = new VarianceInterpreter[vars.length];
             if (v.length == 1) {
-                v[0] = new VarianceParameter(name + ".var", vars[0], fixed, true);
+                v[0] = new VarianceInterpreter(name + ".var", vars[0], fixed, true);
             } else {
                 for (int i = 0; i < v.length; ++i) {
-                    v[i] = new VarianceParameter(name + ".var" + (i + 1), vars[i], fixed, true);
+                    v[i] = new VarianceInterpreter(name + ".var" + (i + 1), vars[i], fixed, true);
                 }
             }
         }
@@ -67,7 +67,7 @@ public class RegressionItem extends AbstractModelItem {
     }
 
     @Override
-    public List<IMstsParametersBlock> parameters() {
+    public List<ParameterInterpreter> parameters() {
         if (v == null) {
             return Collections.EMPTY_LIST;
         } else if (v.length == 1) {

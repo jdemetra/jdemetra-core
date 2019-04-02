@@ -7,14 +7,14 @@ package demetra.msts.internal;
 
 import demetra.arima.AutoCovarianceFunction;
 import demetra.maths.polynomials.Polynomial;
-import demetra.msts.ArParameters;
-import demetra.msts.IMstsParametersBlock;
+import demetra.msts.ArInterpreter;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
 import demetra.ssf.SsfComponent;
 import demetra.arima.ssf.SsfAr;
 import java.util.Collections;
 import java.util.List;
+import demetra.msts.ParameterInterpreter;
 
 /**
  *
@@ -22,13 +22,13 @@ import java.util.List;
  */
 public class SaeItem extends AbstractModelItem {
 
-    private final ArParameters ar;
+    private final ArInterpreter ar;
     private final int lag;
     private final boolean zeroinit;
 
     public SaeItem(String name, double[] ar, boolean fixedar, int lag, boolean zeroinit) {
         super(name);
-        this.ar = new ArParameters(name + ".sae", ar, fixedar);
+        this.ar = new ArInterpreter(name + ".sae", ar, fixedar);
         this.lag = lag;
         this.zeroinit = zeroinit;
     }
@@ -55,7 +55,7 @@ public class SaeItem extends AbstractModelItem {
     }
 
     @Override
-    public List<IMstsParametersBlock> parameters() {
+    public List<ParameterInterpreter> parameters() {
         return Collections.singletonList(ar);
     }
 

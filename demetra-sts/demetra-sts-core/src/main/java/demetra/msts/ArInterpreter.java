@@ -18,21 +18,21 @@ import javax.annotation.Nonnull;
  *
  * @author palatej
  */
-public class ArParameters implements IMstsParametersBlock {
+public class ArInterpreter implements ParameterInterpreter {
 
     private final String name;
     private final double[] values;
     private boolean fixed;
     private final Domain domain;
 
-    public ArParameters(@Nonnull final String name, @Nonnull double[] values, boolean fixed) {
+    public ArInterpreter(@Nonnull final String name, @Nonnull double[] values, boolean fixed) {
         this.name = name;
         this.values = values;
         this.fixed = fixed;
         this.domain = new Domain(values.length);
     }
 
-    public ArParameters(final String name, int degree, double defValue) {
+    public ArInterpreter(final String name, int degree, double defValue) {
         this.name = name;
         this.values = new double[degree];
         for (int i = 0; i < degree; ++i) {
@@ -40,10 +40,10 @@ public class ArParameters implements IMstsParametersBlock {
         }
         this.domain = new Domain(degree);
     }
-    
+
     @Override
-    public ArParameters duplicate(){
-        return new ArParameters(name, values.clone(), fixed);
+    public ArInterpreter duplicate() {
+        return new ArInterpreter(name, values.clone(), fixed);
     }
 
     @Override
@@ -63,10 +63,10 @@ public class ArParameters implements IMstsParametersBlock {
         }
         fixed = true;
     }
-    
+
     @Override
-    public void free(){
-        fixed=false;
+    public void free() {
+        fixed = false;
     }
 
     @Override
@@ -111,6 +111,17 @@ public class ArParameters implements IMstsParametersBlock {
             return pos;
         }
     }
+
+    @Override
+    public boolean isScaleSensitive(boolean variance) {
+        return false;
+    }
+
+    @Override
+    public int rescaleVariances(double factor, double[] buffer, int pos) {
+        return pos+values.length;
+    }
+
 
     static class Domain implements IParametersDomain {
 
