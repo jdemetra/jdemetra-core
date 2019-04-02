@@ -42,6 +42,10 @@ public class CompositeModel {
     public ModelItem getItem(int pos) {
         return items.get(pos);
     }
+    
+    public String[] getCmpsName(){
+        return items.stream().map(item->item.getName()).toArray(n->new String[n]);
+    }
 
     public ModelEquation getEquation(int pos) {
         return equations.get(pos);

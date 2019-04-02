@@ -39,8 +39,6 @@ public class MultivariateCholetteSpec implements ProcSpecification, Validatable<
     private double rho;
     private double lambda;
     @lombok.NonNull
-    private AggregationType aggregationType;
-    @lombok.NonNull
     @lombok.Singular
     private List<ContemporaneousConstraint> contemporaneousConstraints;
     @lombok.NonNull
@@ -65,8 +63,7 @@ public class MultivariateCholetteSpec implements ProcSpecification, Validatable<
     public static Builder builder(){
         return new Builder()
                 .lambda(DEF_LAMBDA)
-                .rho(DEF_RHO)
-                .aggregationType(AggregationType.Sum);
+                .rho(DEF_RHO);
     }
 
 }

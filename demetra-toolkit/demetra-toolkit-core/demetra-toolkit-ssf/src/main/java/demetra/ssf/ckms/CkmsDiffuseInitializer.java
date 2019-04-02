@@ -43,7 +43,7 @@ import demetra.ssf.ISsfLoading;
 @Development(status = Development.Status.Alpha)
 public class CkmsDiffuseInitializer implements CkmsFilter.IFastFilterInitializer {
 
-    private final OrdinaryFilter.FilterInitializer initializer;
+    private final OrdinaryFilter.Initializer initializer;
 
     public CkmsDiffuseInitializer() {
         initializer = null;
@@ -53,7 +53,7 @@ public class CkmsDiffuseInitializer implements CkmsFilter.IFastFilterInitializer
      *
      * @param initializer
      */
-    public CkmsDiffuseInitializer(OrdinaryFilter.FilterInitializer initializer) {
+    public CkmsDiffuseInitializer(OrdinaryFilter.Initializer initializer) {
         this.initializer = initializer;
     }
 

@@ -42,7 +42,7 @@ public class MaximumLogLikelihood {
     private DoubleSequence gradient;
     /**
      * Hessian of the log likelihood function at its maximum. 
-     * E(hessian)=Information. The gien hessian is an approximation of the information matrix
+     * E(hessian)=Information. The hessian is an approximation of the information matrix
      */
     private MatrixType hessian;
 }

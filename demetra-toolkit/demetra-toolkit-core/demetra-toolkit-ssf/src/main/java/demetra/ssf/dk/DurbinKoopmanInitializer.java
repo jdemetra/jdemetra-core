@@ -34,7 +34,7 @@ import demetra.ssf.univariate.OrdinaryFilter;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class DurbinKoopmanInitializer implements OrdinaryFilter.FilterInitializer {
+public class DurbinKoopmanInitializer implements OrdinaryFilter.Initializer {
 
     private final IDiffuseFilteringResults results;
     private DiffuseState state;

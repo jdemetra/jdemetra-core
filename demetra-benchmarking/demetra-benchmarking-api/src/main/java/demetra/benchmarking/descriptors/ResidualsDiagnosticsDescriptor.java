@@ -16,7 +16,6 @@
  */
 package demetra.benchmarking.descriptors;
 
-import demetra.descriptors.stats.DiffuseConcentratedLikelihoodDescriptor;
 import demetra.design.Development;
 import demetra.information.InformationMapping;
 import demetra.stats.TestResult;

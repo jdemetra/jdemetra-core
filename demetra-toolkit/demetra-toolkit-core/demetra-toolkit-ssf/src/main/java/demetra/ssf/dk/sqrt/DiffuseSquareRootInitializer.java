@@ -42,7 +42,7 @@ import demetra.ssf.univariate.ISsfMeasurement;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class DiffuseSquareRootInitializer implements OrdinaryFilter.FilterInitializer {
+public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer {
 
     public interface Transformation {
 

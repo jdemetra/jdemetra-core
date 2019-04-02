@@ -27,7 +27,7 @@ public class TemporalDisaggregationProcessorTest {
     @Test
     public void testChowLin() {
         TsData y = TsData.of(TsPeriod.yearly(1978), DoubleSequence.ofInternal(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 2), DoubleSequence.ofInternal(Data.IND_PCR));
+        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSequence.ofInternal(Data.IND_PCR));
         TemporalDisaggregationSpec spec1 = TemporalDisaggregationSpec.builder()
                 .aggregationType(AggregationType.Sum)
                 .residualsModel(TemporalDisaggregationSpec.Model.Ar1)
@@ -63,23 +63,21 @@ public class TemporalDisaggregationProcessorTest {
                 .algorithm(SsfAlgorithm.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getConcentratedLikelihood().coefficients().distance(rslt3.getConcentratedLikelihood().coefficients()) < 1e-6);
-        assertTrue(rslt1.getConcentratedLikelihood().unscaledCovariance().diagonal()
-                .distance(rslt3.getConcentratedLikelihood().unscaledCovariance().diagonal()) < 1e-6);
-        System.out.println("CL");
-        System.out.println(rslt2.getDisaggregatedSeries().getValues());
-        System.out.println(rslt2.getStdevDisaggregatedSeries().getValues());
-        System.out.println(rslt2.getConcentratedLikelihood().coefficients());
-        System.out.println(rslt2.getConcentratedLikelihood().e());
-        System.out.println(rslt2.getConcentratedLikelihood().logLikelihood());
+        assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
+        assertTrue(rslt1.getEstimation().getCovariance().diagonal()
+                .distance(rslt3.getEstimation().getCovariance().diagonal()) < 1e-6);
+//        System.out.println("CL");
+//        System.out.println(rslt2.getDisaggregatedSeries().getValues());
+//        System.out.println(rslt2.getStdevDisaggregatedSeries().getValues());
+//        System.out.println(rslt2.getConcentratedLikelihood().coefficients());
+//        System.out.println(rslt2.getConcentratedLikelihood().e());
+//        System.out.println(rslt2.getConcentratedLikelihood().logLikelihood());
     }
 
     @Test
     public void testChowLin2() {
         TsData y = TsData.of(TsPeriod.yearly(1977), DoubleSequence.ofInternal(Data.PCRA));
         TsData q = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSequence.ofInternal(Data.IND_PCR));
-        System.out.println(y);
-        System.out.println(q);
         TemporalDisaggregationSpec spec1 = TemporalDisaggregationSpec.builder()
                 .aggregationType(AggregationType.Average)
                 .residualsModel(TemporalDisaggregationSpec.Model.Ar1)
@@ -115,15 +113,15 @@ public class TemporalDisaggregationProcessorTest {
                 .algorithm(SsfAlgorithm.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getConcentratedLikelihood().coefficients().distance(rslt3.getConcentratedLikelihood().coefficients()) < 1e-6);
-        assertTrue(rslt1.getConcentratedLikelihood().unscaledCovariance().diagonal()
-                .distance(rslt3.getConcentratedLikelihood().unscaledCovariance().diagonal()) < 1e-6);
-        System.out.println("CL-average");
-        System.out.println(rslt2.getDisaggregatedSeries().getValues());
-        System.out.println(rslt2.getStdevDisaggregatedSeries().getValues());
-        System.out.println(rslt2.getConcentratedLikelihood().coefficients());
-        System.out.println(rslt2.getConcentratedLikelihood().e());
-        System.out.println(rslt2.getConcentratedLikelihood().logLikelihood());
+        assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
+        assertTrue(rslt1.getEstimation().getCovariance().diagonal()
+                .distance(rslt3.getEstimation().getCovariance().diagonal()) < 1e-6);
+//        System.out.println("CL-average");
+//        System.out.println(rslt2.getDisaggregatedSeries().getValues());
+//        System.out.println(rslt2.getStdevDisaggregatedSeries().getValues());
+//        System.out.println(rslt2.getConcentratedLikelihood().coefficients());
+//        System.out.println(rslt2.getConcentratedLikelihood().e());
+//        System.out.println(rslt2.getConcentratedLikelihood().logLikelihood());
     }
 
     @Test
@@ -156,9 +154,9 @@ public class TemporalDisaggregationProcessorTest {
                 .algorithm(SsfAlgorithm.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getConcentratedLikelihood().coefficients().distance(rslt3.getConcentratedLikelihood().coefficients()) < 1e-6);
-        assertTrue(rslt1.getConcentratedLikelihood().unscaledCovariance().diagonal()
-                .distance(rslt3.getConcentratedLikelihood().unscaledCovariance().diagonal()) < 1e-6);
+        assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
+        assertTrue(rslt1.getEstimation().getCovariance().diagonal()
+                .distance(rslt3.getEstimation().getCovariance().diagonal()) < 1e-6);
 //        System.out.println("RW");
 //        System.out.println(rslt1.getDisaggregatedSeries().getValues());
 //        System.out.println(rslt1.getStdevDisaggregatedSeries().getValues());
@@ -200,9 +198,9 @@ public class TemporalDisaggregationProcessorTest {
                 .algorithm(SsfAlgorithm.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getConcentratedLikelihood().coefficients().distance(rslt3.getConcentratedLikelihood().coefficients()) < 1e-6);
-        assertTrue(rslt1.getConcentratedLikelihood().unscaledCovariance().diagonal()
-                .distance(rslt3.getConcentratedLikelihood().unscaledCovariance().diagonal()) < 1e-6);
+        assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
+        assertTrue(rslt1.getEstimation().getCovariance().diagonal()
+                .distance(rslt3.getEstimation().getCovariance().diagonal()) < 1e-6);
     }
 
     @Test
@@ -244,12 +242,12 @@ public class TemporalDisaggregationProcessorTest {
                 .algorithm(SsfAlgorithm.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getConcentratedLikelihood().coefficients().distance(rslt3.getConcentratedLikelihood().coefficients()) < 1e-6);
-        assertTrue(rslt1.getConcentratedLikelihood().unscaledCovariance().diagonal()
-                .distance(rslt3.getConcentratedLikelihood().unscaledCovariance().diagonal()) < 1e-6);
-        System.out.println("ar1");
-        System.out.println(rslt1.getDisaggregatedSeries().getValues());
-        System.out.println(rslt1.getStdevDisaggregatedSeries().getValues());
+        assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
+        assertTrue(rslt1.getEstimation().getCovariance().diagonal()
+                .distance(rslt3.getEstimation().getCovariance().diagonal()) < 1e-6);
+//        System.out.println("ar1");
+//        System.out.println(rslt1.getDisaggregatedSeries().getValues());
+//        System.out.println(rslt1.getStdevDisaggregatedSeries().getValues());
     }
 
     @Test
@@ -282,9 +280,9 @@ public class TemporalDisaggregationProcessorTest {
                 .algorithm(SsfAlgorithm.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getConcentratedLikelihood().coefficients().distance(rslt3.getConcentratedLikelihood().coefficients()) < 1e-6);
-        assertTrue(rslt1.getConcentratedLikelihood().unscaledCovariance().diagonal()
-                .distance(rslt3.getConcentratedLikelihood().unscaledCovariance().diagonal()) < 1e-6);
+        assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
+        assertTrue(rslt1.getEstimation().getCovariance().diagonal()
+                .distance(rslt3.getEstimation().getCovariance().diagonal()) < 1e-6);
 //        System.out.println("rw");
 //        System.out.println(rslt1.getDisaggregatedSeries().getValues());
 //        System.out.println(rslt1.getStdevDisaggregatedSeries().getValues());
@@ -326,9 +324,9 @@ public class TemporalDisaggregationProcessorTest {
                 .algorithm(SsfAlgorithm.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getConcentratedLikelihood().coefficients().distance(rslt3.getConcentratedLikelihood().coefficients()) < 1e-6);
-        assertTrue(rslt1.getConcentratedLikelihood().unscaledCovariance().diagonal()
-                .distance(rslt3.getConcentratedLikelihood().unscaledCovariance().diagonal()) < 1e-6);
+        assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
+        assertTrue(rslt1.getEstimation().getCovariance().diagonal()
+                .distance(rslt3.getEstimation().getCovariance().diagonal()) < 1e-6);
 //        System.out.println("rwar1");
 //        System.out.println(rslt1.getDisaggregatedSeries().getValues());
 //        System.out.println(rslt1.getStdevDisaggregatedSeries().getValues());

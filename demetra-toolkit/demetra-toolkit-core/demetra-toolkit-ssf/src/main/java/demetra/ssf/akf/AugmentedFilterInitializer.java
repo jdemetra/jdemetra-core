@@ -25,7 +25,7 @@ import demetra.ssf.univariate.OrdinaryFilter;
  *
  * @author Jean Palate
  */
-public class AugmentedFilterInitializer implements OrdinaryFilter.FilterInitializer{
+public class AugmentedFilterInitializer implements OrdinaryFilter.Initializer{
     
     private final IAugmentedFilteringResults results;
     

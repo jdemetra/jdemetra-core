@@ -32,12 +32,12 @@ import demetra.ssf.StateInfo;
  */
 public class OrdinaryFilter {
 
-    public static interface FilterInitializer {
+    public static interface Initializer {
 
         int initializeFilter(State state, ISsf ssf, ISsfData data);
     }
 
-    private final FilterInitializer initializer;
+    private final Initializer initializer;
     private State state;
     private UpdateInformation updinfo;
     private ISsfLoading loading;
@@ -49,7 +49,7 @@ public class OrdinaryFilter {
      *
      * @param initializer
      */
-    public OrdinaryFilter(FilterInitializer initializer) {
+    public OrdinaryFilter(Initializer initializer) {
         this.initializer = initializer;
     }
 

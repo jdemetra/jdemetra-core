@@ -22,7 +22,6 @@ import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.implementations.Loading;
-import demetra.ssf.univariate.Ssf;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
 import demetra.arima.ssf.AR1.Data;
@@ -64,7 +63,7 @@ public class Arima_1_1_0 {
 
         @Override
         public int getStateDim() {
-            return 21;
+            return 2;
         }
 
         @Override
@@ -91,9 +90,9 @@ public class Arima_1_1_0 {
         @Override
         public void Pf0(Matrix pf0) {
             if (data.zeroinit) {
-                pf0.set(0, 0, data.var);
+                pf0.set(1, 1, data.var);
             } else {
-                pf0.set(0, 0, data.var / (1 - data.rho * data.rho));
+                pf0.set(1, 1, data.var / (1 - data.rho * data.rho));
             }
         }
 

@@ -53,7 +53,7 @@ public class MultivariateArrayFilter {
 
     /**
      */
-    protected void error() {
+    private void error() {
         DataBlock U = perrors.getTransformedPredictionErrors();
         Matrix L = perrors.getCholeskyFactor();
         U.set(0);
