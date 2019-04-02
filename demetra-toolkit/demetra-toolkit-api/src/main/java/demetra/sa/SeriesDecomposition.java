@@ -16,58 +16,85 @@ package demetra.sa;
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-
-
 import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.design.Immutable;
 import demetra.modelling.ComponentInformation;
+import java.util.Collections;
 import java.util.EnumMap;
+import java.util.Map;
 
 /**
  *
  * @author Jean Palate
  */
+@Immutable
 @Development(status = Development.Status.Beta)
-public class SeriesDecomposition {
+public final class SeriesDecomposition {
+
+    public static class Builder {
+
+        private final DecompositionMode mode;
+        private final EnumMap<ComponentType, DoubleSequence> cmps = new EnumMap<>(ComponentType.class),
+                fcmps = new EnumMap<>(ComponentType.class),
+                ecmps = new EnumMap<>(ComponentType.class),
+                efcmps = new EnumMap<>(ComponentType.class);
+
+        private Builder(DecompositionMode mode) {
+            this.mode = mode;
+        }
+
+        /**
+         *
+         * @param cmp
+         * @param data
+         * @return 
+         */
+        public Builder add(DoubleSequence data, ComponentType cmp) {
+            return add(data, cmp, ComponentInformation.Value);
+        }
+
+        public Builder add(DoubleSequence data, ComponentType cmp, ComponentInformation info) {
+            switch (info) {
+                case Stdev:
+                    ecmps.put(cmp, data);
+                    break;
+                case Forecast:
+                    fcmps.put(cmp, data);
+                    break;
+                case StdevForecast:
+                    efcmps.put(cmp, data);
+                    break;
+                default:
+                    cmps.put(cmp, data);
+                    break;
+            }
+            return this;
+        }
+        
+        public SeriesDecomposition build(){
+            return new SeriesDecomposition(this);
+        }
+
+    }
+    
+    public static Builder builder(DecompositionMode mode){
+        return new Builder(mode);
+    }
 
     private final DecompositionMode mode;
-    private final EnumMap<ComponentType, DoubleSequence> cmps = new EnumMap<>(ComponentType.class),
-            fcmps = new EnumMap<>(ComponentType.class),
-            ecmps = new EnumMap<>(ComponentType.class),
-            efcmps = new EnumMap<>(ComponentType.class);
+    private final Map<ComponentType, DoubleSequence> cmps , fcmps, ecmps, efcmps;
 
     /**
      *
      * @param mode
      */
-    public SeriesDecomposition(DecompositionMode mode) {
-        this.mode = mode;
-    }
-
-    /**
-     *
-     * @param cmp
-     * @param data
-     */
-    public void add(DoubleSequence data, ComponentType cmp) {
-        add(data, cmp, ComponentInformation.Value);
-    }
-
-    public void add(DoubleSequence data, ComponentType cmp, ComponentInformation info) {
-        switch (info) {
-            case Stdev:
-                ecmps.put(cmp, data);
-                break;
-            case Forecast:
-                fcmps.put(cmp, data);
-                break;
-            case StdevForecast:
-                efcmps.put(cmp, data);
-                break;
-            default:
-                cmps.put(cmp, data);
-                break;
-        }
+    private SeriesDecomposition(Builder builder) {
+        this.mode = builder.mode;
+        this.cmps=Collections.unmodifiableMap(builder.cmps);
+        this.fcmps=Collections.unmodifiableMap(builder.fcmps);
+        this.ecmps=Collections.unmodifiableMap(builder.ecmps);
+        this.efcmps=Collections.unmodifiableMap(builder.efcmps);
     }
 
     /**
@@ -85,7 +112,7 @@ public class SeriesDecomposition {
      * @return
      */
     public DoubleSequence getSeries(ComponentType cmp, ComponentInformation info) {
- 
+
         switch (info) {
             case Stdev:
                 return ecmps.get(cmp);

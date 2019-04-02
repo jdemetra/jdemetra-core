@@ -18,7 +18,6 @@ package demetra.descriptors.stats;
 
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihood;
-import demetra.likelihood.LikelihoodStatistics;
 import demetra.maths.MatrixType;
 
 /**

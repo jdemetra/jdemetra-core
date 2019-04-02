@@ -25,10 +25,8 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Description of a contemporaneous constraint. The constraint may be binding 
- * y = w1*x1+...+wn*xn 
- * or free 
- * constant = w1*x1+...+wn*xn
+ * Description of a contemporaneous constraint. The constraint may be binding y
+ * = w1*x1+...+wn*xn or free constant = w1*x1+...+wn*xn
  *
  * @author Jean Palate
  */
@@ -59,8 +57,7 @@ public class ContemporaneousConstraint {
      * @return
      */
     public ContemporaneousConstraint expand(Collection<String> input) {
-        ContemporaneousConstraintBuilder builder
-                = builder()
+        ContemporaneousConstraintBuilder builder = builder()
                 .constant(constant)
                 .constraint(constraint);
         for (WeightedItem<String> ws : components) {
@@ -69,7 +66,7 @@ public class ContemporaneousConstraint {
                 WildCards wc = new WildCards(ws.getItem());
                 for (String i : input) {
                     if (!i.equals(constraint) && wc.match(i)) {
-                        builder.component(new WeightedItem<>(i, w));
+                        builder.component(new WeightedItem<>(i, w));;
                     }
                 }
             } else {
@@ -111,14 +108,14 @@ public class ContemporaneousConstraint {
     }
 
     /**
-     * Parse a string to a contemporaneous constraint
-     * The string should have the following form
-     * -  "y" = [w1*]"x1"+...+[wn*]"xn"
-     * -  constant = [w1*]"x1"+...+[wn*]"xn"
-     * 
+     * Parse a string to a contemporaneous constraint The string should have the
+     * following form - "y" = [w1*]"x1"+...+[wn*]"xn" - constant =
+     * [w1*]"x1"+...+[wn*]"xn"
+     *
      * (+ can be replaced by -)
+     *
      * @param s
-     * @return 
+     * @return
      */
     public static ContemporaneousConstraint parse(String s) {
         try {
@@ -187,7 +184,7 @@ public class ContemporaneousConstraint {
                         double w = Double.parseDouble(cur.substring(0, wpos));
                         cmps.add(new WeightedItem<>(cmp, plus ? w : -w));
                     } catch (NumberFormatException err) {
-                        return false;
+                        cmps.add(new WeightedItem<>(cur.trim(), plus ? 1 : -1));
                     }
                 }
                 pos = npos;

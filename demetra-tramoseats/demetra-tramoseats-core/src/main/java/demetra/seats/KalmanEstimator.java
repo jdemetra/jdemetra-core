@@ -44,8 +44,7 @@ public class KalmanEstimator implements IComponentsEstimator {
      */
     @Override
     public SeriesDecomposition decompose(SeatsModel model) {
-        SeriesDecomposition decomposition = new SeriesDecomposition(
-                DecompositionMode.Additive);
+        SeriesDecomposition.Builder builder = SeriesDecomposition.builder(DecompositionMode.Additive);
         DoubleSequence s = model.getSeries();
         int n = s.length(), nf = model.getForecastsCount(), nb = model.getBackcastsCount();
 
@@ -62,21 +61,21 @@ public class KalmanEstimator implements IComponentsEstimator {
             ComponentType type = model.getTypes()[i];
             DoubleSequence cmp = DoubleSequence.of(srslts.getComponent(pos[i]));
             if (nb > 0) {
-                decomposition.add(cmp.range(0, nb), type, ComponentInformation.Backcast);
+                builder.add(cmp.range(0, nb), type, ComponentInformation.Backcast);
             }
             if (nf > 0) {
-                decomposition.add(cmp.extract(nb + n, nf), type, ComponentInformation.Forecast);
+                builder.add(cmp.extract(nb + n, nf), type, ComponentInformation.Forecast);
             }
-            decomposition.add(cmp.extract(nb, n), type);
+            builder.add(cmp.extract(nb, n), type);
             cmp = DoubleSequence.of(srslts.getComponentVariance(pos[i]));
             if (nb > 0) {
-                decomposition.add(cmp.range(0, nb), type, ComponentInformation.StdevBackcast);
+                builder.add(cmp.range(0, nb), type, ComponentInformation.StdevBackcast);
             }
             if (nf > 0) {
-                decomposition.add(cmp.extract(nb + n, nf), type, ComponentInformation.StdevForecast);
+                builder.add(cmp.extract(nb + n, nf), type, ComponentInformation.StdevForecast);
             }
-            decomposition.add(cmp.extract(nb, n), type, ComponentInformation.Stdev);
+            builder.add(cmp.extract(nb, n), type, ComponentInformation.Stdev);
         }
-        return decomposition;
+        return builder.build();
     }
 }

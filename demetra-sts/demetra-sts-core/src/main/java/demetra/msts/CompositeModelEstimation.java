@@ -41,6 +41,7 @@ public class CompositeModelEstimation {
         rslt.parameters = monitor.getParameters().toArray();
         rslt.fullParameters = monitor.fullParameters().toArray();
         rslt.parametersName = model.getMapping().parametersName();
+        rslt.cmpName=model.getCmpsName();
         return rslt;
     }
 
@@ -48,10 +49,11 @@ public class CompositeModelEstimation {
         CompositeModelEstimation rslt = new CompositeModelEstimation();
         rslt.data = data;
         rslt.fullParameters = fullParameters.toArray();
-        DoubleSequence fp = model.getMapping().functionParameters(fullParameters);
-        rslt.parameters = fp.toArray();
-        rslt.ssf = model.getMapping().map(fp);
+        model.getMapping().fixModelParameters(p->true, fullParameters);
+        rslt.parameters = DoubleSequence.EMPTYARRAY;
+        rslt.ssf = model.getMapping().map(DoubleSequence.empty());
         rslt.cmpPos = rslt.getSsf().componentsPosition();
+        rslt.cmpName=model.getMapping().parametersName();
         rslt.parametersName = model.getMapping().parametersName();
         if (marginal) {
             rslt.likelihood = AkfToolkit.marginalLikelihoodComputer(concentrated).
@@ -67,7 +69,7 @@ public class CompositeModelEstimation {
     private int[] cmpPos;
     private Matrix data;
     private double[] fullParameters, parameters;
-    private String[] parametersName;
+    private String[] parametersName, cmpName;
     private StateStorage smoothedStates, filteredStates, filteringStates;
 
     public StateStorage getSmoothedStates() {
@@ -152,6 +154,12 @@ public class CompositeModelEstimation {
         return cmpPos;
     }
 
+    /**
+     * @return the cmpPos
+     */
+    public String[] getCmpName() {
+        return cmpName;
+    }
     /**
      * @return the data
      */

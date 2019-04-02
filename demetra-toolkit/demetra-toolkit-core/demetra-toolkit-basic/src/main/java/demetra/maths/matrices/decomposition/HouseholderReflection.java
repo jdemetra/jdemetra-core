@@ -53,22 +53,6 @@ public class HouseholderReflection implements IVectorTransformation {
     }
 
     /**
-     * Creates a new Householder reflection that transform the given array to 
-     * [a 0...0]
-     *
-     * @param v The vector used to compute the transformation. The vector
-     * is modified "in place". The vector v is rescaled so that v(0)=1.
-     * @return 
-     */
-    public static HouseholderReflection inPlace(DataBlock v) {
-        HouseholderReflection reflection = new HouseholderReflection();
-        reflection.vector=v;
-        reflection.prepare();
-        return reflection;
-
-    }
-
-    /**
      * Gets the reflection vector (v)
      *
      * @return

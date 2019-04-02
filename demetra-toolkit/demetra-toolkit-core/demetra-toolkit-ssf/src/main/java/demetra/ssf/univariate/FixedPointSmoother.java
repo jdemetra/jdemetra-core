@@ -117,7 +117,7 @@ public class FixedPointSmoother {
         return filter.process(xssf, xdata, frslts);
     }
 
-    static class Initializer implements OrdinaryFilter.FilterInitializer {
+    static class Initializer implements OrdinaryFilter.Initializer {
 
         private final int fixpos;
         private final Matrix M;

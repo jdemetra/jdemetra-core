@@ -39,8 +39,7 @@ public class MatrixEstimator implements IComponentsEstimator {
     @Override
     public SeriesDecomposition decompose(SeatsModel model) {
         DoubleSequence s = model.getSeries();
-        SeriesDecomposition decomposition = new SeriesDecomposition(
-                DecompositionMode.Additive);
+        SeriesDecomposition.Builder builder = SeriesDecomposition.builder(DecompositionMode.Additive);
         UcarimaModel ucm = model.getUcarimaModel();
         McElroyEstimates mc = new McElroyEstimates();
         mc.setForecastsCount(model.getForecastsCount());
@@ -50,21 +49,21 @@ public class MatrixEstimator implements IComponentsEstimator {
         for (int i = 0; i < ucm.getComponentsCount(); ++i) {
             ComponentType type=model.getTypes()[i];
             double[] tmp = mc.getComponent(i);
-            decomposition.add(DoubleSequence.ofInternal(tmp), type);
+            builder.add(DoubleSequence.ofInternal(tmp), type);
             tmp = mc.stdevEstimates(i);
             for (int j=0; j<tmp.length; ++j){
                 tmp[j]*=ser;
             }
-            decomposition.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.Stdev);
+            builder.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.Stdev);
             tmp = mc.getForecasts(i);
-            decomposition.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.Forecast);
+            builder.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.Forecast);
             tmp = mc.stdevForecasts(i);
             for (int j=0; j<tmp.length; ++j){
                 tmp[j]*=ser;
             }
-            decomposition.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.StdevForecast);
+            builder.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.StdevForecast);
         }
-        decomposition.add(s, ComponentType.Series);
-        return decomposition;
+        builder.add(s, ComponentType.Series);
+        return builder.build();
     }
 }

@@ -54,6 +54,19 @@ public interface IConcentratedLikelihood extends ILikelihood {
      */
     MatrixType unscaledCovariance();
 
+    default MatrixType covariance(int nhp, boolean unbiased) {
+
+        if (nx() == 0) {
+            return MatrixType.EMPTY;
+        }
+        
+        double[] v = unscaledCovariance().toArray();
+        int ndf = unbiased ? dim() - nx() - nhp : dim();
+        double sig2=ssq()/ndf;
+        for (int i=0; i<v.length; ++i)
+            v[i]*=sig2;
+        return MatrixType.ofInternal(v, nx(), nx());
+    }
     /**
      * Number of regression variables
      *

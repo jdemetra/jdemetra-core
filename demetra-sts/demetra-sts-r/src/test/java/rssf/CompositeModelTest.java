@@ -76,13 +76,12 @@ public class CompositeModelTest {
         x.column(3).copy(data.column(3));
         x.column(4).copy(data.column(5));
         x.column(5).copy(data.column(6));
-        
+
         DataBlockIterator cols = x.columnsIterator();
         while (cols.hasNext()) {
             DataBlock col = cols.next();
             col.normalize();
         }
-        
 
         CompositeModel model = new CompositeModel();
 // create the components and add them to the model
@@ -117,17 +116,27 @@ public class CompositeModelTest {
         model.add(eq5);
         ModelEquation eq6 = new ModelEquation("eq6", .01, false);
         eq6.add("tc");
-        eq6.add("cycle", .1, false, Loading.from(new int[]{5,6,7,8}, new double[]{1,1,1,1}));
+        eq6.add("cycle", .1, false, Loading.from(new int[]{5, 6, 7, 8}, new double[]{1, 1, 1, 1}));
         model.add(eq6);
         //estimate the model
         double[] dp = model.fullDefaultParameters();
         CompositeModelEstimation rslt = model.estimate(x, 1e-15, false, true, null);
-        System.out.println(rslt.getLikelihood().logLikelihood());
-        System.out.println(DataBlock.ofInternal(rslt.getFullParameters()));
-        System.out.println(rslt.getLikelihood().sigma());
-        System.out.println(rslt.getFilteringStates().getComponent(0));
-        System.out.println(rslt.getFilteredStates().getComponent(0));
-        System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
-        System.out.println(rslt.getSmoothedStates().getComponentVariance(1));
+//        System.out.println(rslt.getLikelihood().logLikelihood());
+//        System.out.println(DataBlock.ofInternal(rslt.getFullParameters()));
+////        System.out.println(rslt.getLikelihood().sigma());
+////        System.out.println(rslt.getFilteringStates().getComponent(0));
+////        System.out.println(rslt.getFilteredStates().getComponent(0));
+////        System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
+////        System.out.println(rslt.getSmoothedStates().getComponentVariance(1));
+//        double[] parameters = rslt.getFullParameters().clone();
+//        for (int i = 0; i <= 1000; ++i) {
+//            double j=(i-500)*.001;
+//            parameters[5] =  j*j;
+////        for (int i = 0; i <= 500; ++i) {
+////            double j=i*.0005;
+////            parameters[5] =  j;
+//            double ll = model.compute(x, parameters, false, true).getLikelihood().logLikelihood();
+//            System.out.println(ll);
+//        }
     }
 }

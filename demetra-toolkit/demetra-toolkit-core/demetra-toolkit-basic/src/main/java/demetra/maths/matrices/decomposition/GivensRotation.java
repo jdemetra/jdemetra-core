@@ -18,7 +18,7 @@ package demetra.maths.matrices.decomposition;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-
+import demetra.maths.Constants;
 
 /**
  *
@@ -28,21 +28,27 @@ import demetra.design.Development;
 public class GivensRotation implements IVectorTransformation {
 
     private final int lentry, rentry;
-    private final double d, ro;
+    private final double d, ro, h;
 
-    public static GivensRotation of(DataBlock vector, int lentry, int rentry){
-        return new GivensRotation(vector, lentry, rentry);
-    }
-    
-    public static GivensRotation of(DataBlock vector, int entry){
-        return new GivensRotation(vector, 0, entry);
+    public static GivensRotation of(DataBlock vector, int lentry, int rentry) {
+        double a = vector.get(lentry), b = vector.get(rentry);
+        if (Math.abs(b) < Constants.getEpsilon()) {
+            vector.set(rentry, 0);
+            return null;
+        }
+        GivensRotation gr = new GivensRotation(a, lentry, b, rentry);
+        vector.set(rentry, 0);
+        vector.set(lentry, gr.h);
+        return gr;
     }
 
-    private GivensRotation(DataBlock vector, int lentry, int rentry) {
+    public static GivensRotation of(DataBlock vector, int entry) {
+        return of(vector, 0, entry);
+    }
+
+    private GivensRotation(double a, int lentry, double b, int rentry) {
         this.lentry = lentry;
         this.rentry = rentry;
-        double a = vector.get(lentry), b = vector.get(rentry);
-        double h;
         if (a != 0) {
             h = ElementaryTransformations.hypotenuse(a, b);
             ro = b / h;
@@ -56,8 +62,6 @@ public class GivensRotation implements IVectorTransformation {
             ro = 1;
             h = b;
         }
-        vector.set(rentry, 0);
-        vector.set(lentry, h);
     }
 
     @Override

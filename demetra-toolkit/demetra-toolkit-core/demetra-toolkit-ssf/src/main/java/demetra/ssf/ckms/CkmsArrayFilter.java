@@ -24,10 +24,51 @@ import demetra.design.Development;
 @Development(status = Development.Status.Alpha)
 public class CkmsArrayFilter {
 
-    private int m_pos, m_end, m_dim, m_ndiffuse;
-    private final UMatrix m_matrix = new UMatrix();
-    private CkmsState m_state;
-    private CkmsInitializer m_initializer;
+    static class UMatrix {
+
+        double R, Z;
+        double[] K, L;
+        private static final double EPS = 1e-15;
+
+        UMatrix() {
+        }
+
+        // fails if ...
+        boolean triangularize() {
+            // Compute 2-norm of k-th row .
+            double jsigma = -Z * Z;
+            //
+            if (-jsigma <= EPS) {
+                return true;
+            }
+            double xJx = jsigma + R * R;
+            if (xJx <= 0) {
+                return false;
+            }
+
+            double jnrm = Math.sqrt(xJx);
+            double v = -jsigma / (R + jnrm), w = Z;
+
+            R = jnrm;
+            Z = 0;
+
+            double beta = 2 / (jsigma + v * v);
+
+            // updating the remaining rows:
+            // A P = A - w v', with w = b * A J v
+            int nr = K.length;
+            for (int k = 0; k < nr; ++k) {
+                double s = (K[k] * v - L[k] * w) * beta;
+                K[k] -= s * v;
+                L[k] -= s * w;
+            }
+            return true;
+        }
+
+        private int pos, end, dim, ndiffuse;
+        private final UMatrix matrix = new UMatrix();
+        private CkmsState state;
+        private CkmsInitializer initializer;
 //
 //    private F m_ssf;
 //
@@ -164,4 +205,5 @@ public class CkmsArrayFilter {
 //	m_state.e = y - m_ssf.ZX(m_pos, m_state.A);
 //	m_state.r = m_matrix.R;
 //    }
+    }
 }

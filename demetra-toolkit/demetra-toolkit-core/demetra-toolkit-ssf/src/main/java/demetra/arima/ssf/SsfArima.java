@@ -94,7 +94,7 @@ public class SsfArima {
         return new CkmsDiffuseInitializer(diffuseInitializer(arima)).initializeFilter(state, upd, ssf, data);
     }
 
-    private OrdinaryFilter.FilterInitializer diffuseInitializer(IArimaModel arima) {
+    private OrdinaryFilter.Initializer diffuseInitializer(IArimaModel arima) {
         return (State state, ISsf ssf, ISsfData data) -> {
             ArimaInitialization initialization = (ArimaInitialization) ssf.initialization();
             ISsfMeasurement m = ssf.measurement();

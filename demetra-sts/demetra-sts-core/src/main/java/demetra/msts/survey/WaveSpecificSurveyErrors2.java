@@ -5,10 +5,8 @@
  */
 package demetra.msts.survey;
 
-import demetra.arima.AutoCovarianceFunction;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.maths.polynomials.Polynomial;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.StateComponent;

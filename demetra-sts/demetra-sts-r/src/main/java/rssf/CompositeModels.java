@@ -48,8 +48,9 @@ public class CompositeModels {
             MAPPING.set("scalingfactor", Double.class, source -> source.getLikelihood().sigma());
             MAPPING.set("ssf.ncmps", Integer.class, source -> source.getCmpPos().length);
             MAPPING.set("ssf.cmppos", int[].class, source -> source.getCmpPos());
+            MAPPING.set("ssf.cmpnames", String[].class, source -> source.getCmpName());
             MAPPING.set("parameters", double[].class, source -> source.getFullParameters());
-            MAPPING.set("parametersname", String[].class, source -> source.getParametersName());
+            MAPPING.set("parameternames", String[].class, source -> source.getParametersName());
             MAPPING.set("fn.parameters", double[].class, source -> source.getParameters());
             MAPPING.setArray("ssf.T", 0, 10000, MatrixType.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();

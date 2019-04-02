@@ -29,12 +29,22 @@ public class HyperbolicRotation implements IVectorTransformation {
 
     static final double XEPS = 1e-12;
     private final int lentry, rentry;
-    private final double d, ro, a, b;
+    private final double d, rho, a, b;
 
     public static HyperbolicRotation of(DataBlock vector, int entry) {
         return of(vector, 0, entry);
     }
 
+    /**
+     * 
+     * @param vector
+     * @param lentry
+     * @param rentry
+     * @return null if no rotation is needed (vector[rentry] is (nearly) zero).
+     * The requested rotation that can be applied to other Datablocks. An MatrixException
+     * is thrown if the rotation doesn't exist (v[a]*v[a]-v[b]*v[b] &lt 0).
+     * It should be noted that the given vector is also transformed 
+     */
     public static HyperbolicRotation of(DataBlock vector, int lentry, int rentry) {
         double a = vector.get(lentry), b = vector.get(rentry);
         HyperbolicRotation r;
@@ -64,9 +74,9 @@ public class HyperbolicRotation implements IVectorTransformation {
         this.lentry = lentry;
         this.rentry = rentry;
         if (same) {
-            ro = 1;
+            rho = 1;
         } else {
-            ro = -1;
+            rho = -1;
         }
         a=0;
         b=0;
@@ -78,13 +88,13 @@ public class HyperbolicRotation implements IVectorTransformation {
         this.rentry = rentry;
         // (l, r) -> (e, 0) with l*l - r*r = e*e
         if (a == 0 || b == 0) {
-            ro = 0;
+            rho = 0;
             d = 1;
             this.b = 0;
             this.a = 1;
         } else if (Math.abs(a) > Math.abs(b)) {
-            ro = b / a;
-            double q = Math.sqrt(1 - ro * ro);
+            rho = b / a;
+            double q = Math.sqrt(1 - rho * rho);
             if (a < 0) {
                 d = -q;
             } else {
@@ -94,8 +104,8 @@ public class HyperbolicRotation implements IVectorTransformation {
             this.b = b;
         } else {
             // (l, r) -> (0, e) with l*l - r*r = e*e
-            ro = a / b;
-            double q = Math.sqrt(1 - ro * ro);
+            rho = a / b;
+            double q = Math.sqrt(1 - rho * rho);
             if (b < 0) {
                 d = -q;
             } else {
@@ -113,7 +123,7 @@ public class HyperbolicRotation implements IVectorTransformation {
         // compute a1 
         if (d == 0) {
             double s;
-            if (ro == 1) {
+            if (rho == 1) {
                 s = l - r;
                 vector.set(lentry, s);
                 vector.set(rentry, -s);
@@ -145,11 +155,11 @@ public class HyperbolicRotation implements IVectorTransformation {
             r = it;
         }
 
-        double z = ro * y / x, e;
+        double z = rho * y / x, e;
         if (z < .5) {
             e = 1 - z;
         } else {
-            double d1 = 1 - Math.abs(ro), d2 = 1 - ry / rx;
+            double d1 = 1 - Math.abs(rho), d2 = 1 - ry / rx;
             e = d1 + d2 - d1 * d2;
         }
 

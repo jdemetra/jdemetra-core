@@ -146,10 +146,11 @@ public class MultivariateCholetteProcessor implements IMultivariateCholette {
         }
         if (cnt.hasWildCards()) {
             cnt = cnt.expand(inputs.keySet());
-        }
-        for (WeightedItem<String> ws : cnt.getComponents()) {
-            if (!inputs.containsKey(ws.getItem())) {
-                throw new IllegalArgumentException("Invalid contemporaneous constraint: " + ws.getItem());
+        } else {
+            for (WeightedItem<String> ws : cnt.getComponents()) {
+                if (!inputs.containsKey(ws.getItem())) {
+                    throw new IllegalArgumentException("Invalid contemporaneous constraint: " + ws.getItem());
+                }
             }
         }
         contemporaneousConstraints.add(cnt);

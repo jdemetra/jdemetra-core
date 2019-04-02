@@ -45,7 +45,7 @@ public class SsfAr {
         if (nlags < ar.length) {
             nlags = ar.length;
         }
-        Data data = new Data(ar, var, nlags);
+        Data data = new Data(ar, var, nlags+1);
         return new SsfComponent(new Initialization(data, zeroinit), new Dynamics(data), Loading.fromPosition(0));
     }
 
@@ -54,7 +54,7 @@ public class SsfAr {
 
         double[] phi;
         double var;
-        int nlags;
+        int dim;
 
         Polynomial ar() {
             double[] c = new double[1 + phi.length];
@@ -66,7 +66,7 @@ public class SsfAr {
         }
 
         int dim() {
-            return Math.max(phi.length, nlags);
+            return dim;
         }
     }
 
@@ -127,7 +127,7 @@ public class SsfAr {
     private static class Dynamics implements ISsfDynamics {
 
         private final Data info;
-        private DataBlock z;
+        private final DataBlock z;
 
         Dynamics(final Data info) {
             this.info = info;
@@ -167,13 +167,13 @@ public class SsfAr {
 
         @Override
         public void TX(int pos, DataBlock x) {
-            double z = 0;
+            double y = 0;
             DoubleReader reader = x.reader();
             for (int i = 0; i < info.phi.length; ++i) {
-                z += info.phi[i] * reader.next();
+                y += info.phi[i] * reader.next();
             }
             x.fshift(1);
-            x.set(0, z);
+            x.set(0, y);
         }
 
         @Override

@@ -45,20 +45,23 @@ public class Benchmarking {
                 .build();
         return Cholette.benchmark(source, bench, spec);
     }
-    
-    public Dictionary multiCholette(Dictionary input, String[] temporalConstraints, String[] contemporaneousConstraints, double rho, double lambda, String conversion){
+
+    public Dictionary multiCholette(Dictionary input, String[] temporalConstraints, String[] contemporaneousConstraints, double rho, double lambda) {
         MultivariateCholetteSpec.Builder builder = MultivariateCholetteSpec.builder()
                 .rho(rho)
-                .lambda(lambda)
-                .aggregationType(AggregationType.valueOf(conversion));
-        if (temporalConstraints != null){
-            for (int i=0; i<temporalConstraints.length; ++i){
-                builder.temporalConstraint(TemporalConstraint.parse(temporalConstraints[i]));
+                .lambda(lambda);
+        if (temporalConstraints != null) {
+            for (int i = 0; i < temporalConstraints.length; ++i) {
+                if (temporalConstraints[i].length() > 0) {
+                    builder.temporalConstraint(TemporalConstraint.parse(temporalConstraints[i]));
+                }
             }
         }
-        if (contemporaneousConstraints != null){
-            for (int i=0; i<contemporaneousConstraints.length; ++i){
-                builder.contemporaneousConstraint(ContemporaneousConstraint.parse(contemporaneousConstraints[i]));
+        if (contemporaneousConstraints != null) {
+            for (int i = 0; i < contemporaneousConstraints.length; ++i) {
+                if (contemporaneousConstraints[i].length() > 0) {
+                    builder.contemporaneousConstraint(ContemporaneousConstraint.parse(contemporaneousConstraints[i]));
+                }
             }
         }
         Map<String, TsData> rslt = MultivariateCholette.benchmark(input.data(), builder.build());

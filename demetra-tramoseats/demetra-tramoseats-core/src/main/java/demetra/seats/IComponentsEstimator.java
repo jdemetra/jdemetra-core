@@ -18,10 +18,8 @@
 
 package demetra.seats;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.sa.SeriesDecomposition;
-import demetra.ucarima.UcarimaModel;
 
 
 /**

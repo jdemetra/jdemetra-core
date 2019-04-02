@@ -38,8 +38,7 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
      */
     @Override
     public SeriesDecomposition decompose(SeatsModel model) {
-        SeriesDecomposition decomposition = new SeriesDecomposition(
-                DecompositionMode.Additive);
+        SeriesDecomposition.Builder builder = SeriesDecomposition.builder(DecompositionMode.Additive);
         BurmanEstimates burman = new BurmanEstimates();
 
         DoubleSequence s = model.getSeries();
@@ -59,28 +58,28 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
 
         for (int i = 0; i < ncmps; ++i) {
             ComponentType type = model.getTypes()[i];
-            process(decomposition, burman, i, true, type);
+            process(builder, burman, i, true, type);
             if (type == ComponentType.Seasonal) {
-                process(decomposition, burman, i, false, ComponentType.SeasonallyAdjusted);
+                process(builder, burman, i, false, ComponentType.SeasonallyAdjusted);
             }
         }
-        return decomposition;
+        return builder.build();
     }
 
-    private void process(SeriesDecomposition decomposition, BurmanEstimates burman, int i, boolean b, ComponentType type) {
+    private void process(SeriesDecomposition.Builder builder, BurmanEstimates burman, int i, boolean b, ComponentType type) {
         double[] tmp = burman.estimates(i, true);
-        decomposition.add(DoubleSequence.ofInternal(tmp), type);
+        builder.add(DoubleSequence.ofInternal(tmp), type);
         tmp = burman.stdevEstimates(i);
         if (tmp != null) {
-            decomposition.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.Stdev);
+            builder.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.Stdev);
         }
         tmp = burman.forecasts(i, true);
         if (tmp != null) {
-            decomposition.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.Forecast);
+            builder.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.Forecast);
         }
         tmp = burman.stdevForecasts(i, true);
         if (tmp != null) {
-            decomposition.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.StdevForecast);
+            builder.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.StdevForecast);
         }
     }
 
