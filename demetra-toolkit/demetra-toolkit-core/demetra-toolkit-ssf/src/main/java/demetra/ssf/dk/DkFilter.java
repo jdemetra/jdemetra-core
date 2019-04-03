@@ -18,15 +18,15 @@ package demetra.ssf.dk;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.maths.linearfilters.ILinearProcess;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
-import demetra.data.DoubleSequence;
 import demetra.ssf.State;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -72,7 +72,7 @@ public class DkFilter implements ILinearProcess {
     }
 
     @Override
-    public boolean transform(DoubleSequence in, DataBlock out) {
+    public boolean transform(DoubleSeq in, DataBlock out) {
         return new FastDiffuseFilter1().transform(in, out);
     }
 
@@ -151,10 +151,10 @@ public class DkFilter implements ILinearProcess {
                 if (!missing) {
                     // update the states
                     scols.reset();
-                    DoubleReader reader = row.reader();
+                    DoubleSeqCursor reader = row.cursor();
                     while (scols.hasNext()) {
                         DataBlock scol = scols.next();
-                        scol.addAY(reader.next() / w, K);
+                        scol.addAY(reader.getAndNext() / w, K);
                         dynamics.TX(i, scol);
                     }
                 }
@@ -234,7 +234,7 @@ public class DkFilter implements ILinearProcess {
             return e;
         }
 
-        boolean transform(DoubleSequence in, DataBlock out) {
+        boolean transform(DoubleSeq in, DataBlock out) {
             if (in.length() > end - start) {
                 return false;
             }

@@ -18,7 +18,6 @@ package demetra.tramo.internal;
 
 import demetra.arima.internal.FastKalmanFilter;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
@@ -42,6 +41,7 @@ import demetra.sarima.SarimaSpecification;
 import demetra.tramo.TramoException;
 import java.util.Optional;
 import java.util.stream.Stream;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -431,7 +431,7 @@ public class DifferencingModule implements IDifferencingModule {
      * @return 
      */
     @VisibleForTesting
-    public boolean process(DoubleSequence data, int period, int d, int bd, boolean seasonal) {
+    public boolean process(DoubleSeq data, int period, int d, int bd, boolean seasonal) {
         clear();
         y = data.toArray();
         spec = new SarimaSpecification(period);
@@ -519,11 +519,11 @@ public class DifferencingModule implements IDifferencingModule {
             }
 
             int nvars = (int) desc.variables().filter(var -> var.isOutlier(false)).count();
-            DoubleSequence res = RegArimaUtility.interpolatedData(desc.regarima(), estimation.getConcentratedLikelihood());
+            DoubleSeq res = RegArimaUtility.interpolatedData(desc.regarima(), estimation.getConcentratedLikelihood());
             if (nvars > 0) {
                 Optional<Variable> first = desc.variables().filter(var -> var.isOutlier(false)).findFirst();
                 // remove the outliers effects
-                DoubleSequence outs = RegArimaUtility.regressionEffect(desc.regarima(), estimation.getConcentratedLikelihood(), desc.findPosition(first.get().getVariable()), nvars);
+                DoubleSeq outs = RegArimaUtility.regressionEffect(desc.regarima(), estimation.getConcentratedLikelihood(), desc.findPosition(first.get().getVariable()), nvars);
                 res = Doubles.op(res, outs, (a, b) -> a - b);
             }
             SarimaSpecification curspec = desc.getSpecification();

@@ -12,7 +12,7 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.ssf.SsfException;
 import javax.annotation.Nonnull;
 
@@ -309,9 +309,9 @@ public class DisturbanceSmoother {
     }
 
     private void subZ(DataBlockIterator rows, DataBlock b) {
-        DoubleReader x = b.reader();
+        DoubleSeqCursor x = b.cursor();
         while (rows.hasNext()) {
-            double cur = x.next();
+            double cur = x.getAndNext();
             if (cur != 0) {
                 loading.XpZd(pos, rows.next(), -cur);
             }

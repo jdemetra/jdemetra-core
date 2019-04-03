@@ -21,7 +21,6 @@ import demetra.arima.estimation.ResidualsComputer;
 import demetra.arima.internal.AnsleyFilter;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.leastsquares.QRSolvers;
 import demetra.linearmodel.LinearModel;
@@ -33,6 +32,7 @@ import demetra.regarima.RegArmaModel;
 import demetra.leastsquares.QRSolver;
 import javax.annotation.Nonnull;
 import demetra.arima.estimation.ArmaFilter;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -157,7 +157,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
             }
 
             int nx = Xl.getColumnsCount();
-            DoubleSequence B = qr.coefficients();
+            DoubleSeq B = qr.coefficients();
             b = B.toArray();
             w = new double[nx];
             L = qr.R().transpose();
@@ -231,7 +231,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
         }
     }
 
-    protected DoubleSequence filter(DoubleSequence res) {
+    protected DoubleSeq filter(DoubleSeq res) {
         return resComputer.residuals(this.getRegArima().differencedModel().getArma(), res);
     }
 

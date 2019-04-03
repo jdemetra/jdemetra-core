@@ -17,11 +17,11 @@
 
 package demetra.tramo;
 
-import demetra.data.DoubleSequence;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.stats.tests.NiidTests;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -67,7 +67,7 @@ public class ModelVerifier {
                 return false;
             }
             // Seasonality
-            DoubleSequence res = estimation.getConcentratedLikelihood().e();
+            DoubleSeq res = estimation.getConcentratedLikelihood().e();
             SeasonalityTests stests = SeasonalityTests.residualSeasonalityTest(res, period);
             if (stests.getScore() > 1) {
                 return false;

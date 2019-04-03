@@ -5,9 +5,9 @@
  */
 package demetra.data;
 
-import demetra.data.DoubleSequence;
 import demetra.maths.IntUtility;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSeq;
 
 /**
  *

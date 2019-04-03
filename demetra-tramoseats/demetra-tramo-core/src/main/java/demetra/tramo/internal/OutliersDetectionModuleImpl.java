@@ -17,7 +17,6 @@
 package demetra.tramo.internal;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
@@ -45,6 +44,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import demetra.regarima.ami.IGenericOutliersDetectionModule;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -129,7 +129,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
     // festim = true if the model has to be re-estimated
     private boolean rflag, backwardStep, exit, estimationStep;
     private int[] lastremoved;
-    private DoubleSequence coeff, res;
+    private DoubleSeq coeff, res;
     //
 
     private OutliersDetectionModuleImpl(final SingleOutlierDetector sod, final IRegArimaProcessor<SarimaModel> processor,
@@ -355,12 +355,12 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         addOutlier(pos, type);
         double[] tmp;
         if (coeff == null) {
-            coeff = DoubleSequence.of(c);
+            coeff = DoubleSeq.of(c);
         } else {
             tmp = new double[coeff.length() + 1];
             coeff.copyTo(tmp, 0);
             tmp[coeff.length()] = c;
-            coeff = DoubleSequence.ofInternal(tmp);
+            coeff = DoubleSeq.of(tmp);
         }
         backwardStep = true;
     }
@@ -399,7 +399,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
             for (int i = opos + 1; i < coeff.length(); ++i) {
                 tmp[i - 1] = coeff.get(i);
             }
-            coeff = DoubleSequence.ofInternal(tmp);
+            coeff = DoubleSeq.of(tmp);
         }
     }
 

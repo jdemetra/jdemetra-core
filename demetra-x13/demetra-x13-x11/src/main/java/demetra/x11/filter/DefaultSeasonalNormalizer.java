@@ -17,13 +17,13 @@
 package demetra.x11.filter;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.x11.X11Context;
 import demetra.x11.filter.endpoints.CopyEndPoints;
 import demetra.x11.filter.endpoints.CopyPeriodicEndPoints;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -33,7 +33,7 @@ import demetra.x11.filter.endpoints.CopyPeriodicEndPoints;
 @lombok.experimental.UtilityClass
 public class DefaultSeasonalNormalizer {
 
-    public DoubleSequence normalize(DoubleSequence in, int nextend, X11Context context) {
+    public DoubleSeq normalize(DoubleSeq in, int nextend, X11Context context) {
         SymmetricFilter filter = X11FilterFactory.makeSymmetricFilter(context.getPeriod());
         int ndrop = filter.length() / 2;
 
@@ -43,8 +43,8 @@ public class DefaultSeasonalNormalizer {
 
         CopyEndPoints cp = new CopyEndPoints(ndrop);
         cp.process(in, DataBlock.ofInternal(x));
-        DoubleSequence t = DoubleSequence.ofInternal(x);
-        DoubleSequence tmp = context.remove(in, t);
+        DoubleSeq t = DoubleSeq.of(x);
+        DoubleSeq tmp = context.remove(in, t);
         if (nextend == 0) {
             return tmp;
         } else {
@@ -52,7 +52,7 @@ public class DefaultSeasonalNormalizer {
             tmp.copyTo(x, nextend);
             CopyPeriodicEndPoints cpp = new CopyPeriodicEndPoints(nextend, context.getPeriod());
             cpp.process(null, DataBlock.ofInternal(x));
-            return DoubleSequence.ofInternal(x);
+            return DoubleSeq.of(x);
         }
     }
 }

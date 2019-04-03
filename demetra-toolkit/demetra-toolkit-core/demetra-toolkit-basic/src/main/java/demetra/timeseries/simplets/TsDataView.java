@@ -17,7 +17,6 @@
 package demetra.timeseries.simplets;
 
 import demetra.timeseries.TsData;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.timeseries.TsDomain;
@@ -25,6 +24,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsUnit;
+import demetra.data.DoubleSeq;
 
 /**
  * A TsDataView is a view on equally spaced observations in a time series. Users
@@ -36,7 +36,7 @@ import demetra.timeseries.TsUnit;
 @Immutable
 public final class TsDataView {
 
-    private final DoubleSequence data;
+    private final DoubleSeq data;
     private final int inc;
     private final TsPeriod start;
 
@@ -62,7 +62,7 @@ public final class TsDataView {
         int nend = TsDomain.splitOf(end.withUnit(TsUnit.YEAR), end.getUnit(), true).indexOf(end);
         int len = series.length() - nend - nbeg;
         final int beg = nbeg;
-        return new TsDataView(start.plus(nbeg), DoubleSequence.onMapping(len, i -> series.getValue(beg + i)), 1);
+        return new TsDataView(start.plus(nbeg), DoubleSeq.onMapping(len, i -> series.getValue(beg + i)), 1);
     }
 
     /**
@@ -80,7 +80,7 @@ public final class TsDataView {
         }
         TsPeriod start = series.getStart(), dstart = domain.getStartPeriod();
         int del = start.until(dstart);
-        return new TsDataView(dstart, DoubleSequence.onMapping(domain.length(), i -> series.getValue(del + i)), 1);
+        return new TsDataView(dstart, DoubleSeq.onMapping(domain.length(), i -> series.getValue(del + i)), 1);
     }
 
     /**
@@ -98,7 +98,7 @@ public final class TsDataView {
         }
         TsPeriod start = series.getStart(), dstart = domain.getStartPeriod();
         int del = start.until(dstart);
-        return new TsDataView(dstart, DoubleSequence.onMapping(domain.length(), i -> series.getValue(del + i)), 1);
+        return new TsDataView(dstart, DoubleSeq.onMapping(domain.length(), i -> series.getValue(del + i)), 1);
     }
 
     /**
@@ -131,7 +131,7 @@ public final class TsDataView {
         return start.plus(inc * i);
     }
 
-    TsDataView(TsPeriod start, DoubleSequence data, int inc) {
+    TsDataView(TsPeriod start, DoubleSeq data, int inc) {
         this.start = start;
         this.data = data;
         this.inc = inc;
@@ -140,7 +140,7 @@ public final class TsDataView {
     /**
      * @return the data
      */
-    public DoubleSequence getData() {
+    public DoubleSeq getData() {
         return data;
     }
 

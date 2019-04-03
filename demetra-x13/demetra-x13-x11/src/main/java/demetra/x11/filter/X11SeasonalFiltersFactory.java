@@ -6,13 +6,13 @@
 package demetra.x11.filter;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.FiniteFilter;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.x11.SeasonalFilterOption;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
 import demetra.x11.filter.endpoints.IEndPointsProcessor;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -67,7 +67,7 @@ public class X11SeasonalFiltersFactory {
         }
 
         @Override
-        public DoubleSequence process(DoubleSequence in) {
+        public DoubleSeq process(DoubleSeq in) {
             double[] x = new double[in.length()];
             DataBlock out = DataBlock.ofInternal(x);
             DataBlock input = DataBlock.of(in);
@@ -80,7 +80,7 @@ public class X11SeasonalFiltersFactory {
                     endpoints.process(cin, cout);
                 }
             }
-            return DoubleSequence.ofInternal(x);
+            return DoubleSeq.of(x);
         }
 
     }
@@ -94,7 +94,7 @@ public class X11SeasonalFiltersFactory {
         }
 
         @Override
-        public DoubleSequence process(DoubleSequence in) {
+        public DoubleSeq process(DoubleSeq in) {
 
             double[] x = new double[in.length()];
             DataBlock out = DataBlock.ofInternal(x);
@@ -104,7 +104,7 @@ public class X11SeasonalFiltersFactory {
                 DataBlock cout = out.extract(i, -1, period);
                 cout.set(cin.average());
             }
-            return DoubleSequence.ofInternal(x);
+            return DoubleSeq.of(x);
 
         }
     }

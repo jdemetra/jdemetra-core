@@ -5,10 +5,10 @@
  */
 package demetra.x11;
 
-import demetra.data.DoubleSequence;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import java.util.Arrays;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -38,7 +38,7 @@ public class X11Kernel implements X11.Processor {
             throw new IllegalArgumentException("Frequency of the time series must be compatible with years");
         }
         input = timeSeries;
-        DoubleSequence data = input.getValues();
+        DoubleSeq data = input.getValues();
         context = X11Context.of(spec, input);
         if (context.isLogAdd()) {
             data = data.log();
@@ -111,8 +111,8 @@ public class X11Kernel implements X11.Processor {
                 .build();
     }
 
-    private DoubleSequence prepare(final DoubleSequence in) {
-        DoubleSequence ds = in;
+    private DoubleSeq prepare(final DoubleSeq in) {
+        DoubleSeq ds = in;
         if (context.isLogAdd()) {
             ds = ds.exp();
         }

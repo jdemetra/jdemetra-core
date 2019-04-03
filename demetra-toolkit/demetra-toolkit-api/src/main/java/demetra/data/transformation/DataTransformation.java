@@ -17,8 +17,8 @@
 
 package demetra.data.transformation;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.data.DoubleSeq;
 
 /**
  * Interface for transformation of a time series
@@ -44,7 +44,7 @@ public interface DataTransformation {
      * @param logjacobian I/O parameter. The log of the Jacobian of this transformation
      * @return The transformed data. Null if the transformation was not successful
      */
-    DoubleSequence transform(DoubleSequence data, LogJacobian logjacobian);
+    DoubleSeq transform(DoubleSeq data, LogJacobian logjacobian);
     
     double transform(double value);
 }

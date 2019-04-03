@@ -16,8 +16,8 @@
  */
 package demetra.timeseries;
 
-import demetra.data.DoubleSequence;
 import java.util.List;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -26,7 +26,7 @@ import java.util.List;
 public class CalendarTimeSeries implements TimeSeriesData<CalendarPeriod, CalendarPeriodObs> {
 
     private final CalendarPeriods domain;
-    private final DoubleSequence values;
+    private final DoubleSeq values;
 
     public static CalendarTimeSeries of(List<CalendarPeriodObs> data) {
         int n = data.size();
@@ -38,10 +38,10 @@ public class CalendarTimeSeries implements TimeSeriesData<CalendarPeriod, Calend
             periods[pos] = obs.getPeriod();
             v[pos++] = obs.getValue();
         }
-        return new CalendarTimeSeries(CalendarPeriods.of(periods), DoubleSequence.ofInternal(v));
+        return new CalendarTimeSeries(CalendarPeriods.of(periods), DoubleSeq.of(v));
     }
 
-    private CalendarTimeSeries(CalendarPeriods domain, DoubleSequence values) {
+    private CalendarTimeSeries(CalendarPeriods domain, DoubleSeq values) {
         this.domain = domain;
         this.values = values;
     }
@@ -52,7 +52,7 @@ public class CalendarTimeSeries implements TimeSeriesData<CalendarPeriod, Calend
     }
 
     @Override
-    public DoubleSequence getValues() {
+    public DoubleSeq getValues() {
         return values;
     }
 

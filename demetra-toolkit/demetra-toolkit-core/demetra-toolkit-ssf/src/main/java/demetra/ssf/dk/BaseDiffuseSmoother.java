@@ -22,7 +22,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISmoothingResults;
 import demetra.ssf.univariate.ISsf;
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfLoading;
 
 /**
@@ -150,10 +150,10 @@ public abstract class BaseDiffuseSmoother {
         xQi(pos, tmp1);
 
         DataBlockIterator n1cols=N1.columnsIterator(), n2cols=N2.columnsIterator();
-        DoubleReader z=Z.reader();
+        DoubleSeqCursor z=Z.cursor();
         double h=kn0k - f / (fi * fi);
         while (n1cols.hasNext()){
-            double zx=z.next();
+            double zx=z.getAndNext();
             if (zx != 0){
                 loading.XpZd(pos, n1cols.next(), zx/fi);
                 loading.XpZd(pos, n2cols.next(), zx*h);
@@ -177,9 +177,9 @@ public abstract class BaseDiffuseSmoother {
     }
 
     private void subZ(int pos, DataBlockIterator rows, DataBlock b) {
-        DoubleReader cell = b.reader();
+        DoubleSeqCursor cell = b.cursor();
         while (rows.hasNext()) {
-            double cur = cell.next();
+            double cur = cell.getAndNext();
             DataBlock row = rows.next();
             if (cur != 0) {
                 loading.XpZd(pos, row, -cur);

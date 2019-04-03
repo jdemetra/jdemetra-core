@@ -16,9 +16,9 @@
  */
 package demetra.likelihood;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.maths.MatrixType;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -34,12 +34,12 @@ public class MaximumLogLikelihood {
     /**
      * Parameters that maximize the likelihood
      */
-    private DoubleSequence parameters;
+    private DoubleSeq parameters;
     /**
      * Gradient of the log likelihood function (=score) at its maximum.
      * Should be very near 0
      */
-    private DoubleSequence gradient;
+    private DoubleSeq gradient;
     /**
      * Hessian of the log likelihood function at its maximum. 
      * E(hessian)=Information. The hessian is an approximation of the information matrix

@@ -28,11 +28,12 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 /**
+ * Describes a generic sequence of elements.
  *
  * @author Philippe Charles
  * @param <E>
  */
-public interface Sequence<E> extends BaseSequence<E>, Iterable<E> {
+public interface Seq<E> extends BaseSeq, Iterable<E> {
 
     /**
      * Returns the value at the specified index. An index ranges from zero to

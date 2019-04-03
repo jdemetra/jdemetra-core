@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -37,14 +37,14 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
     
     private static final int NTHREADS = Runtime.getRuntime().availableProcessors();
     
-    private DoubleSequence[] m_ep, m_em, m_de;
+    private DoubleSeq[] m_ep, m_em, m_de;
     private double[] m_epsp;
     private double[] m_epsm;
     private double[] m_grad;
     private Matrix m_h;
     private final ISsqFunction fn;
-    private DoubleSequence m_pt;
-    private DoubleSequence m_ecur;
+    private DoubleSeq m_pt;
+    private DoubleSeq m_ecur;
     private final boolean m_sym, m_mt;
     private static int g_nsteps = 2;
 
@@ -78,12 +78,12 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         int n = m_pt.length();
         m_grad = new double[n];
         m_epsp = new double[n];
-        m_ep = new DoubleSequence[n];
+        m_ep = new DoubleSeq[n];
         if (m_sym) {
             m_epsm = new double[n];
-            m_em = new DoubleSequence[n];
+            m_em = new DoubleSeq[n];
         }
-        m_de = new DoubleSequence[n];
+        m_de = new DoubleSeq[n];
         if (!m_mt || n < 2) {
             for (int i = 0; i < n; ++i) {
                 m_epsp[i] = fn.getDomain().epsilon(m_pt, i);
@@ -115,8 +115,8 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         }
         int ne = m_ecur.length();
         for (int i = 0; i < n; ++i) {
-            DoubleSequence ep = m_ep[i];
-            DoubleSequence em = m_ep[i];
+            DoubleSeq ep = m_ep[i];
+            DoubleSeq em = m_ep[i];
             DataBlock de = DataBlock.make(ne);
             if (m_sym) {
                 final double eps = m_epsp[i] - m_epsm[i];
@@ -138,14 +138,14 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         m_h = Matrix.square(n);
         // compute first the diagonal
         for (int i = 0; i < n; ++i) {
-            DoubleSequence de = m_de[i];
+            DoubleSeq de = m_de[i];
             m_h.set(i, i, 2 * Doubles.ssq(de));
         }
         // other elements
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < i; ++j) {
-                DoubleSequence dei = m_de[i];
-                DoubleSequence dej = m_de[j];
+                DoubleSeq dei = m_de[i];
+                DoubleSeq dej = m_de[j];
                 double z=2 * Doubles.dot(dei, dej);
                 m_h.set(i, j, z);
                 m_h.set(j, i, z);
@@ -213,14 +213,14 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @return
      */
     @Override
-    public DoubleSequence dEdX(int idx) {
+    public DoubleSeq dEdX(int idx) {
         if (m_de == null) {
             calcgrad();
         }
         return m_de[idx];
     }
     
-    private DoubleSequence err(int i, double dx) {
+    private DoubleSeq err(int i, double dx) {
         try {
             if (dx == 0) {
                 return m_ecur;
@@ -240,7 +240,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @return
      */
     @Override
-    public DoubleSequence gradient() {
+    public DoubleSeq gradient() {
         if (m_grad == null) {
             calcgrad();
         }
@@ -292,11 +292,11 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
     
     private class Err implements Callable<Void> {
         
-        DoubleSequence[] rslt;
+        DoubleSeq[] rslt;
         int pos;
         double eps;
         
-        private Err(DoubleSequence[] rslt, int pos, double eps) {
+        private Err(DoubleSeq[] rslt, int pos, double eps) {
             this.rslt = rslt;
             this.pos = pos;
             this.eps = eps;

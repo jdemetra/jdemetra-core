@@ -5,8 +5,8 @@
  */
 package demetra.x11plus;
 
-import demetra.data.DoubleSequence;
 import java.util.Arrays;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -26,7 +26,7 @@ public class X11Kernel {
         return x;
     }
     
-    public void process(DoubleSequence data, X11Context context) {
+    public void process(DoubleSeq data, X11Context context) {
         clear();
         bstep = new X11BStep();
         bstep.process(data, context);

@@ -38,7 +38,7 @@ import demetra.ssf.univariate.OrdinaryFilter;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.UpdateInformation;
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.StateComponent;
@@ -436,9 +436,9 @@ public class SsfArima {
         public void TX(final int pos, final DataBlock x) {
             double z = 0;
             if (data.phi.length > 1) {
-                DoubleReader reader = x.reverseReader();
+                DoubleSeqCursor reader = x.reverseReader();
                 for (int i = 1; i < data.phi.length; ++i) {
-                    z -= data.phi[i] * reader.next();
+                    z -= data.phi[i] * reader.getAndNext();
                 }
             }
             x.bshift(1);

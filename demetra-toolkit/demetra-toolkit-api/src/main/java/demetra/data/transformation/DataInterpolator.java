@@ -17,10 +17,10 @@
 
 package demetra.data.transformation;
 
-import demetra.data.DoubleSequence;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.util.IntList;
+import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -41,5 +41,5 @@ public interface DataInterpolator
      * missing values (which have been replaced)
      * @return The interpolated series
      */
-    double[] interpolate(DoubleSequence input, IntList missingpos);
+    double[] interpolate(DoubleSeq input, IntList missingpos);
 }

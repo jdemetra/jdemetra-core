@@ -16,9 +16,9 @@
  */
 package demetra.x11.extremevaluecorrector;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.x11.X11Context;
+import demetra.data.DoubleSeq;
 
 /**
  * Corrects a time series for its extreme values.
@@ -44,7 +44,7 @@ public interface IExtremeValuesCorrector {
      * @param s The considered series
      * @param context
      */
-    void analyse(DoubleSequence s, X11Context context);
+    void analyse(DoubleSeq s, X11Context context);
 
     /**
      * Computes the corrections for a given series (tables B4, B9)
@@ -55,7 +55,7 @@ public interface IExtremeValuesCorrector {
      * values for the periods that should not be corrected and the actual
      * corrections for the other periods
      */
-    DoubleSequence computeCorrections(DoubleSequence s);
+    DoubleSeq computeCorrections(DoubleSeq s);
 
     /**
      * Apply the corrections computed with the computeCorrections method (tables
@@ -66,7 +66,7 @@ public interface IExtremeValuesCorrector {
      *
      * @return The corrected series
      */
-    DoubleSequence applyCorrections(DoubleSequence s, DoubleSequence corrections);
+    DoubleSeq applyCorrections(DoubleSeq s, DoubleSeq corrections);
 
     /**
      * Gets the weights of the observations, which are used in the tables B17,
@@ -75,14 +75,14 @@ public interface IExtremeValuesCorrector {
      *
      * @return The weights of the observations
      */
-    DoubleSequence getObservationWeights();
+    DoubleSeq getObservationWeights();
 
     /**
      * Gets the correction factors, which are used in the tables B20, C20
      *
      * @return
      */
-    DoubleSequence getCorrectionFactors();
+    DoubleSeq getCorrectionFactors();
 
     /**
      * Sets the limits for the detection of extreme values.

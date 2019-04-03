@@ -25,8 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 import demetra.data.DataBlockIterator;
 import demetra.ssf.ISsfLoading;
-import demetra.data.DoubleCell;
 import demetra.maths.matrices.QuadraticForm;
+import demetra.data.DoubleVectorCursor;
 
 /**
  *

@@ -16,11 +16,11 @@
  */
 package demetra.regarima;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.linearmodel.LinearModelType;
 import demetra.maths.MatrixType;
 import demetra.sarima.SarimaType;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -39,7 +39,7 @@ public class RegSarimaModelType {
     private SarimaType sarima;
     
     //<editor-fold defaultstate="collapsed" desc="delegate to model">
-    public DoubleSequence getY() {
+    public DoubleSeq getY() {
         return model.getY();
     }
     

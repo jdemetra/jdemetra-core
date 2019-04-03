@@ -16,9 +16,9 @@
  */
 package demetra.x11plus;
 
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -27,7 +27,7 @@ import demetra.design.Development;
 @Development(status = Development.Status.Alpha)
 public class SeriesEvolution {
 
-    public static double[] calcAbsMeanVariations(DoubleSequence x, int nlags, boolean mul) {
+    public static double[] calcAbsMeanVariations(DoubleSeq x, int nlags, boolean mul) {
         double[] mean = new double[nlags];
 
         int n = x.length();
@@ -46,7 +46,7 @@ public class SeriesEvolution {
         return mean;
     }
 
-    public static double calcAbsMeanVariation(DoubleSequence x, int lag, boolean mul) {
+    public static double calcAbsMeanVariation(DoubleSeq x, int lag, boolean mul) {
         double sum = 0;
         int n = x.length();
         for (int i = lag; i < n; ++i) {
@@ -60,7 +60,7 @@ public class SeriesEvolution {
         return sum / (n - lag);
     }
 
-    public static double[] calcMeanVariations(DoubleSequence x, int nlags, boolean mul) {
+    public static double[] calcMeanVariations(DoubleSeq x, int nlags, boolean mul) {
         double[] mean = new double[nlags];
         int n = x.length();
 
@@ -79,7 +79,7 @@ public class SeriesEvolution {
         return mean;
     }
 
-    public static double calcMeanVariation(DoubleSequence x, int lag, boolean mul) {
+    public static double calcMeanVariation(DoubleSeq x, int lag, boolean mul) {
         int n = x.length();
 
         double sum = 0;
@@ -94,24 +94,24 @@ public class SeriesEvolution {
         return sum / (n - lag);
     }
 
-    public static double Adr(DoubleSequence x, boolean mul) {
+    public static double Adr(DoubleSeq x, boolean mul) {
         if (x.length() < 2) {
             return 0;
         }
 
         int n = x.length() - 1;
         double[] d = new double[n];
-        DoubleReader reader = x.reader();
-        double s0 = reader.next();
+        DoubleSeqCursor reader = x.cursor();
+        double s0 = reader.getAndNext();
         if (mul) {
             for (int i = 0; i < n; ++i) {
-                double s1 = reader.next();
+                double s1 = reader.getAndNext();
                 d[i] = (s1 - s0) / s0;
                 s0 = s1;
             }
         } else {
             for (int i = 0; i < n; ++i) {
-                double s1 = reader.next();
+                double s1 = reader.getAndNext();
                 d[i] = s1 - s0;
                 s0 = s1;
             }

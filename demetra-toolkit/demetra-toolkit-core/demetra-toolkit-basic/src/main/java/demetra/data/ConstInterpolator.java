@@ -55,7 +55,7 @@ public class ConstInterpolator implements DataInterpolator {
     }
 
     @Override
-    public double[] interpolate(DoubleSequence data, IntList missingpos) {
+    public double[] interpolate(DoubleSeq data, IntList missingpos) {
         double[] ndata = data.toArray();
         double nval = value;
         if (!Double.isFinite(nval)) { // use the average

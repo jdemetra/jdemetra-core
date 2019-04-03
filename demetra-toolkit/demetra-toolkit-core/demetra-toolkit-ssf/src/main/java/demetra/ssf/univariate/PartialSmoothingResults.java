@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -59,12 +59,12 @@ public class PartialSmoothingResults implements ISmoothingResults {
     }
 
     @Override
-    public DoubleSequence getComponent(int item) {
+    public DoubleSeq getComponent(int item) {
         return core.getComponent(item);
     }
 
     @Override
-    public DoubleSequence getComponentVariance(int item) {
+    public DoubleSeq getComponentVariance(int item) {
         return core.getComponentVariance(item);
     }
 

@@ -17,7 +17,6 @@
 package demetra.tramo.internal;
 
 import demetra.arima.internal.FastKalmanFilter;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -104,7 +104,7 @@ class ArmaModuleImpl {
          *
          * @param hr
          */
-        FastBIC(final DoubleSequence data, final SarimaModel arma) {
+        FastBIC(final DoubleSeq data, final SarimaModel arma) {
             this.arma = arma;
             FastKalmanFilter fkf = new FastKalmanFilter(arma);
             bic = fkf.fastProcessing(data, arma.getParametersCount());
@@ -141,7 +141,7 @@ class ArmaModuleImpl {
          * @param specs
          * @return
          */
-        static FastBIC[] sort(final DoubleSequence data, final SarmaSpecification[] specs) {
+        static FastBIC[] sort(final DoubleSeq data, final SarmaSpecification[] specs) {
             List<FastBIC> hrs = new ArrayList<FastBIC>();
             for (int i = 0; i < specs.length; ++i) {
                 HannanRissanen hr = HannanRissanen.builder().build();
@@ -240,7 +240,7 @@ class ArmaModuleImpl {
      * @param bd
      * @return
      */
-    SarmaSpecification select(DoubleSequence data, final int d, final int bd) {
+    SarmaSpecification select(DoubleSeq data, final int d, final int bd) {
         int idmax = nmodels;
         while (hrModels[idmax - 1] == null || hrModels[idmax - 1].getArma() == null && idmax > 0) {
             --idmax;
@@ -322,7 +322,7 @@ class ArmaModuleImpl {
      * @return
      */
     @VisibleForTesting
-    public SarmaSpecification process(final DoubleSequence data, final int period, final int d, final int bd, final boolean seas) {
+    public SarmaSpecification process(final DoubleSeq data, final int period, final int d, final int bd, final boolean seas) {
         clear();
         // step I
 

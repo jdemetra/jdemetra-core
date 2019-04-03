@@ -17,8 +17,8 @@
 package demetra.x11.filter.endpoints;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.data.DoubleSeq;
 
 /**
  * A "do nothing" processor. The module pre-suppose that
@@ -30,7 +30,7 @@ import demetra.design.Development;
 public class NullEndPoints implements IEndPointsProcessor {
 
     @Override
-    public void process(DoubleSequence in, DataBlock out) {
+    public void process(DoubleSeq in, DataBlock out) {
     }
 
 }

@@ -6,7 +6,6 @@
 package demetra.x11;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
@@ -20,6 +19,7 @@ import demetra.x11.filter.X11FilterFactory;
 import demetra.x11.filter.X11SeasonalFiltersFactory;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
 import lombok.AccessLevel;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -28,13 +28,13 @@ import lombok.AccessLevel;
 @lombok.Getter
 public class X11CStep {
 
-    private DoubleSequence c1, c2, c4, c5a, c5, c6, c7, c9, c10a, c10, c11, c13, c17, c20;
+    private DoubleSeq c1, c2, c4, c5a, c5, c6, c7, c9, c10a, c10, c11, c13, c17, c20;
 
     @lombok.Getter(AccessLevel.NONE)
-    private DoubleSequence refSeries;
+    private DoubleSeq refSeries;
     private int c2drop;
 
-    public void process(DoubleSequence refSeries, DoubleSequence input, X11Context context) {
+    public void process(DoubleSeq refSeries, DoubleSeq input, X11Context context) {
         this.refSeries = refSeries;
         c1 = input;
         c2(context);
@@ -53,7 +53,7 @@ public class X11CStep {
         double[] x = table(c1.length() - 2 * c2drop, Double.NaN);
         DataBlock out = DataBlock.ofInternal(x, 0, x.length);
         filter.apply(i -> c1.get(i), IFilterOutput.of(out, c2drop));
-        c2 = DoubleSequence.ofInternal(x);
+        c2 = DoubleSeq.of(x);
     }
 
     private void c4(X11Context context) {
@@ -90,7 +90,7 @@ public class X11CStep {
         IFiniteFilter[] asymmetricFilter = context.asymmetricTrendFilters(filter, r);
         AsymmetricEndPoints aep = new AsymmetricEndPoints(asymmetricFilter, 0);
         aep.process(c6, DataBlock.ofInternal(x));
-        c7 = DoubleSequence.ofInternal(x);
+        c7 = DoubleSeq.of(x);
         if (context.isMultiplicative()) {
             c7 = context.makePositivity(c7);
         }

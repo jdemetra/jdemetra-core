@@ -6,12 +6,12 @@
 package demetra.x11.extremevaluecorrector;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.VisibleForTesting;
 import demetra.dstats.F;
 import demetra.dstats.ProbabilityType;
 import demetra.x11.X11Context;
 import lombok.AccessLevel;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -19,7 +19,7 @@ import lombok.AccessLevel;
  */
 public class Cochran {
 
-    public Cochran(DoubleSequence ds, X11Context context) {
+    public Cochran(DoubleSeq ds, X11Context context) {
         input = DataBlock.of(ds);
         isMulti = context.isMultiplicative();
         period = context.getPeriod();

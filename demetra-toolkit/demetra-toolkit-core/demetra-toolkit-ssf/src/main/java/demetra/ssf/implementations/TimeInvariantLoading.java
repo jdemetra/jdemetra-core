@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import java.text.DecimalFormat;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.Matrix;
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsfMeasurement;
 
@@ -71,10 +71,10 @@ public class TimeInvariantLoading implements ISsfLoading {
     public void VpZdZ(int pos, Matrix V, double d) {
 
         DataBlockIterator cols = V.columnsIterator();
-        DoubleReader z=Z.reader();
+        DoubleSeqCursor z=Z.cursor();
         int i = 0;
         while (cols.hasNext()) {
-            cols.next().addAY(d * z.next(), Z);
+            cols.next().addAY(d * z.getAndNext(), Z);
         }
     }
 

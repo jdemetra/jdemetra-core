@@ -16,7 +16,6 @@
  */
 package demetra.x12;
 
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArimaUtility;
@@ -27,6 +26,7 @@ import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarmaSpecification;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -101,7 +101,7 @@ public class ArmaModule implements IArmaModule {
     public ProcessingResult process(RegArimaModelling context) {
         ModelDescription desc = context.getDescription();
         SarimaSpecification curspec = desc.getSpecification();
-        DoubleSequence res = RegArimaUtility.olsResiduals(desc.regarima());
+        DoubleSeq res = RegArimaUtility.olsResiduals(desc.regarima());
         ArmaModuleImpl impl = createModule();
         SarmaSpecification nspec = impl.process(res, curspec.getPeriod(), curspec.getD(), curspec.getBd(), desc.getAnnualFrequency()>1);
         if (nspec.equals(curspec.doStationary())) {
@@ -115,7 +115,7 @@ public class ArmaModule implements IArmaModule {
 
     public SarimaSpecification process(RegArimaModel<SarimaModel> regarima, boolean seas) {
         SarimaSpecification curSpec = regarima.arima().specification();
-        DoubleSequence res = RegArimaUtility.olsResiduals(regarima);
+        DoubleSeq res = RegArimaUtility.olsResiduals(regarima);
         ArmaModuleImpl impl = createModule();
         SarmaSpecification spec = impl.process(res, curSpec.getPeriod(), curSpec.getD(), curSpec.getBd(), curSpec.getPeriod() > 1);
         if (spec == null) {

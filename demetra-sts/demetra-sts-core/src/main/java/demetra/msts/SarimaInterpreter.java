@@ -5,7 +5,7 @@
  */
 package demetra.msts;
 
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.sarima.estimation.SarimaMapping;
 import demetra.sarima.SarimaSpecification;
 
@@ -45,10 +45,10 @@ public final class SarimaInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public int decode(DoubleReader reader, double[] buffer, int pos) {
+    public int decode(DoubleSeqCursor reader, double[] buffer, int pos) {
         if (!fixed) {
             for (int i = 0; i < np; ++i) {
-                buffer[pos++] = reader.next();
+                buffer[pos++] = reader.getAndNext();
             }
         } else {
             for (int i = 0; i < np; ++i) {
@@ -59,10 +59,10 @@ public final class SarimaInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public int encode(DoubleReader reader, double[] buffer, int pos) {
+    public int encode(DoubleSeqCursor reader, double[] buffer, int pos) {
         if (!fixed) {
             for (int i = 0; i < np; ++i) {
-                buffer[pos++] = reader.next();
+                buffer[pos++] = reader.getAndNext();
             }
         } else {
             reader.skip(np);
@@ -71,9 +71,9 @@ public final class SarimaInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public void fixModelParameter(DoubleReader reader) {
+    public void fixModelParameter(DoubleSeqCursor reader) {
         for (int i = 0; i < values.length; ++i) {
-            values[i] = reader.next();
+            values[i] = reader.getAndNext();
         }
         fixed = true;
     }

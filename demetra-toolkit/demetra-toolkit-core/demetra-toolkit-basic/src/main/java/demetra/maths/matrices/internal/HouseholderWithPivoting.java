@@ -23,7 +23,7 @@ import demetra.maths.Constants;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.MatrixException;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -79,7 +79,7 @@ public class HouseholderWithPivoting implements IQRDecomposition {
     }
 
     @Override
-    public DoubleSequence rdiagonal(boolean compact) {
+    public DoubleSeq rdiagonal(boolean compact) {
         double[] diag;
         if (compact) {
             diag = new double[n];
@@ -242,7 +242,7 @@ public class HouseholderWithPivoting implements IQRDecomposition {
     }
 
     @Override
-    public void leastSquares(DoubleSequence x, DataBlock b, DataBlock res) {
+    public void leastSquares(DoubleSeq x, DataBlock b, DataBlock res) {
         double[] y = new double[x.length()];
         x.copyTo(y, 0);
         Qt(y);

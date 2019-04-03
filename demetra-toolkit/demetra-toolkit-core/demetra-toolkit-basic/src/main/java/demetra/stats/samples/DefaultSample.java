@@ -5,8 +5,8 @@
  */
 package demetra.stats.samples;
 
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -14,7 +14,7 @@ import demetra.data.DoubleSequence;
  */
 public class DefaultSample implements Sample {
 
-    private final DoubleSequence data;
+    private final DoubleSeq data;
     private final double mean, var, ssq;
     private final Population population;
 
@@ -23,14 +23,14 @@ public class DefaultSample implements Sample {
      * @param population The underlying population. Might be null, which means
      * that the population is unknown.
      */
-    public DefaultSample(DoubleSequence data, Population population) {
+    public DefaultSample(DoubleSeq data, Population population) {
         this.data = data;
         this.population = population == null ? Population.UNKNOWN : population;
         double sx = 0, sxx = 0;
-        DoubleReader reader = data.reader();
+        DoubleSeqCursor reader = data.cursor();
         int n = data.length();
         for (int i = 0; i < n; ++i) {
-            double x = reader.next();
+            double x = reader.getAndNext();
             sx += x;
             sxx += x * x;
         }
@@ -39,7 +39,7 @@ public class DefaultSample implements Sample {
         ssq = sxx;
     }
 
-    public DoubleSequence data() {
+    public DoubleSeq data() {
         return data;
     }
 

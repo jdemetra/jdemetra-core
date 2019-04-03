@@ -7,8 +7,8 @@ package demetra.leastsquares;
 
 import demetra.maths.matrices.Matrix;
 import demetra.design.Algorithm;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.data.DoubleSeq;
 
 /**
  * 
@@ -29,19 +29,19 @@ public interface LeastSquaresSolver {
      * @param X 
      * @return True if the system was successfully solved
      */
-    boolean solve(DoubleSequence y, Matrix X);
+    boolean solve(DoubleSeq y, Matrix X);
 
     /**
      * Returns b
      * @return 
      */
-    DoubleSequence coefficients();
+    DoubleSeq coefficients();
 
     /**
      * Returns e
      * @return 
      */
-    DoubleSequence residuals();
+    DoubleSeq residuals();
 
     /**
      * Computes e'*e = y'My

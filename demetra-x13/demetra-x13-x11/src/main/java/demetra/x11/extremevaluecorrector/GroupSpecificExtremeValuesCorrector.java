@@ -6,8 +6,8 @@
 package demetra.x11.extremevaluecorrector;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.x11.SigmavecOption;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -23,7 +23,7 @@ public class GroupSpecificExtremeValuesCorrector extends PeriodSpecificExtremeVa
     }
 
     @Override
-    protected double[] calcStdev(DoubleSequence s) {
+    protected double[] calcStdev(DoubleSeq s) {
         DataBlock db = DataBlock.of(s);
         if (excludeFcast) {
             db = db.drop(0, forecastHorizon);

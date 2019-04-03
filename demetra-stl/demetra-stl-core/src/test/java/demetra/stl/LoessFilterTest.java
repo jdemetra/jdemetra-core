@@ -19,7 +19,7 @@ package demetra.stl;
 import demetra.data.Data;
 import org.junit.Test;
 import org.junit.Ignore;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -33,7 +33,7 @@ public class LoessFilterTest {
     @Test
     @Ignore
     public void testNormal() {
-        DoubleSequence s = DoubleSequence.of(Data.EXPORTS);
+        DoubleSeq s = DoubleSeq.copyOf(Data.EXPORTS);
         double[] d = s.toArray();
         LoessSpecification spec = LoessSpecification.of(25, 0,1, null);
         LoessFilter filter=new LoessFilter(spec);
@@ -45,7 +45,7 @@ public class LoessFilterTest {
     
     @Test
     public void testBF() {
-        DoubleSequence s = DoubleSequence.of(Data.EXPORTS);
+        DoubleSeq s = DoubleSeq.copyOf(Data.EXPORTS);
         double[] d = s.toArray();
         LoessSpecification spec = LoessSpecification.of(25, 1, 5, null);
         LoessFilter filter=new LoessFilter(spec);

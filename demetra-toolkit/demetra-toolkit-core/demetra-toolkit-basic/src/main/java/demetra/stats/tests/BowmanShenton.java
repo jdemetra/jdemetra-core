@@ -16,11 +16,11 @@
 */
 package demetra.stats.tests;
 
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.dstats.Chi2;
 import demetra.stats.DescriptiveStatistics;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -36,7 +36,7 @@ public class BowmanShenton
     /**
      * 
      */
-    public BowmanShenton(DoubleSequence data)
+    public BowmanShenton(DoubleSeq data)
     {
         stats=DescriptiveStatistics.of(data);
     }

@@ -16,8 +16,8 @@
  */
 package demetra.linearmodel;
 
-import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -32,8 +32,8 @@ public class LinearModelEstimation {
     Coefficient[] coefficients;
     private MatrixType covariance;
 
-    public DoubleSequence values() {
-        return DoubleSequence.onMapping(coefficients.length, i -> coefficients[i].getValue());
+    public DoubleSeq values() {
+        return DoubleSeq.onMapping(coefficients.length, i -> coefficients[i].getValue());
     }
 
     public double ser(int var) {

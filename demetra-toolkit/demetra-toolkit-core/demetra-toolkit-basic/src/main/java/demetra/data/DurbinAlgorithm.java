@@ -54,7 +54,7 @@ public class DurbinAlgorithm {
         return taper;
     }
 
-    public boolean solve(DoubleSequence x, int l) {
+    public boolean solve(DoubleSeq x, int l) {
         this.x = new double[x.length()];
         x.copyTo(this.x, 0);
         return calc(l);
@@ -121,7 +121,7 @@ public class DurbinAlgorithm {
 
     private boolean calcCov(int l) {
         cxx = new double[l + 1];
-        IntToDoubleFunction acf = AutoCovariances.autoCovarianceFunction(DoubleSequence.ofInternal(x), 0);
+        IntToDoubleFunction acf = AutoCovariances.autoCovarianceFunction(DoubleSeq.of(x), 0);
         for (int i = 0; i <= l; ++i) {
             cxx[i] = acf.applyAsDouble(i);
         }

@@ -17,7 +17,7 @@
 package demetra.regarima.ami;
 
 import demetra.arima.IArimaModel;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -27,7 +27,7 @@ import demetra.data.DoubleSequence;
 
 public interface IGenericDifferencingModule<M extends IArimaModel> {
     
-    int[] process(DoubleSequence data, int[] periods, int[] differencing);
+    int[] process(DoubleSeq data, int[] periods, int[] differencing);
     boolean isMeanCorrection();
     
 }

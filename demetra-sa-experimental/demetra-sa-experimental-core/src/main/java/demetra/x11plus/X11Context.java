@@ -7,11 +7,11 @@ package demetra.x11plus;
 
 import demetra.data.DataBlock;
 import demetra.data.DiscreteKernel;
-import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.FiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.sa.DecompositionMode;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -50,23 +50,23 @@ public class X11Context {
         return builder;
     }
 
-    public DoubleSequence remove(DoubleSequence l, DoubleSequence r) {
+    public DoubleSeq remove(DoubleSeq l, DoubleSeq r) {
         if (mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive) {
-            return DoubleSequence.onMapping(l.length(), i -> l.get(i) / r.get(i));
+            return DoubleSeq.onMapping(l.length(), i -> l.get(i) / r.get(i));
         } else {
-            return DoubleSequence.onMapping(l.length(), i -> l.get(i) - r.get(i));
+            return DoubleSeq.onMapping(l.length(), i -> l.get(i) - r.get(i));
         }
     }
 
-    public DoubleSequence add(DoubleSequence l, DoubleSequence r) {
+    public DoubleSeq add(DoubleSeq l, DoubleSeq r) {
         if (mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive) {
-            return DoubleSequence.onMapping(l.length(), i -> l.get(i) * r.get(i));
+            return DoubleSeq.onMapping(l.length(), i -> l.get(i) * r.get(i));
         } else {
-            return DoubleSequence.onMapping(l.length(), i -> l.get(i) + r.get(i));
+            return DoubleSeq.onMapping(l.length(), i -> l.get(i) + r.get(i));
         }
     }
 
-    public void remove(DoubleSequence l, DoubleSequence r, DataBlock q) {
+    public void remove(DoubleSeq l, DoubleSeq r, DataBlock q) {
         if (mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive) {
             q.set(l, r, (x, y) -> x / y);
         } else {
@@ -74,7 +74,7 @@ public class X11Context {
         }
     }
 
-    public void add(DoubleSequence l, DoubleSequence r, DataBlock q) {
+    public void add(DoubleSeq l, DoubleSeq r, DataBlock q) {
         if (mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive) {
             q.set(l, r, (x, y) -> x * y);
         } else {

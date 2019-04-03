@@ -17,7 +17,6 @@
 package demetra.linearmodel;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
 import demetra.dstats.F;
@@ -28,6 +27,7 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -36,17 +36,17 @@ import javax.annotation.Nonnull;
 @BuilderPattern(StatisticalTest.class)
 public class JointTest {
 
-    private final DoubleSequence b;
+    private final DoubleSeq b;
     private final Matrix bvar;
     private final double rss;
     private final int n;
     private int hyperParameters;
     private Matrix R;
-    private DoubleSequence alpha;
+    private DoubleSeq alpha;
     private int[] coef;
     private boolean blue = true, deterministicRegressors = true;
 
-    public JointTest(final DoubleSequence coefficients, final Matrix unscaledVariance, final double rss, final int n) {
+    public JointTest(final DoubleSeq coefficients, final Matrix unscaledVariance, final double rss, final int n) {
         this.b = coefficients;
         this.bvar = unscaledVariance;
         this.rss = rss;
@@ -77,7 +77,7 @@ public class JointTest {
         return this;
     }
 
-    public JointTest constraints(@Nonnull Matrix R, @Nonnull DoubleSequence alpha) {
+    public JointTest constraints(@Nonnull Matrix R, @Nonnull DoubleSeq alpha) {
         if (R.getRowsCount() != alpha.length()) {
             throw new IllegalArgumentException();
         }

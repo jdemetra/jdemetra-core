@@ -17,7 +17,6 @@
 package demetra.tramo;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.maths.Complex;
@@ -29,6 +28,7 @@ import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -170,7 +170,7 @@ class FinalEstimator implements IModelEstimator {
 //            return 0;
 //        }
 
-        DoubleSequence pm = m.parameters();
+        DoubleSeq pm = m.parameters();
 //        int start = 0, len = spec.getP();
 //        boolean dpr = Utilities.checkRoots(pm.rextract(start, len), 1 / cmod);// (m.RegularAR.Roots,
 //        start += len;

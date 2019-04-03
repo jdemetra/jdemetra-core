@@ -5,11 +5,11 @@
  */
 package demetra.r;
 
-import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
 import org.junit.Test;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -40,7 +40,7 @@ public class TimeVaryingRegressionTest {
 
     @Test
     public void testTD() {
-        TsData s=TsData.of(TsPeriod.monthly(1992, 1), DoubleSequence.ofInternal(FURNITURE));
+        TsData s=TsData.of(TsPeriod.monthly(1992, 1), DoubleSeq.of(FURNITURE));
 //        TsData s=TsData.of(TsPeriod.monthly(1982, 4), DoubleSequence.ofInternal(Data.ABS_RETAIL));
 //        long t0=System.currentTimeMillis();
         TimeVaryingRegression.Results regarima = TimeVaryingRegression.regarima(s, "TD7", "Default", 0);

@@ -17,9 +17,9 @@
 package demetra.ssf.multivariate;
 
 import demetra.ssf.State;
-import demetra.data.DoubleSequence;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.ISsfState;
+import demetra.data.DoubleSeq;
 
 /**
  *

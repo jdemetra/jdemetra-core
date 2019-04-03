@@ -19,7 +19,7 @@ package demetra.maths.linearfilters;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import java.util.function.IntToDoubleFunction;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -120,9 +120,9 @@ public interface IFiniteFilter extends IFilter {
      * @param in The input, which must have the same length as the filter
      * @return The product of the filter and of the input
      */
-    double apply(DoubleSequence in);
+    double apply(DoubleSeq in);
 
-    default void apply(DoubleSequence in, DataBlock out) {
+    default void apply(DoubleSeq in, DataBlock out) {
         int lb = getLowerBound(), ub = getUpperBound();
         int nw = ub - lb + 1;
         int nin = in.length();

@@ -16,12 +16,12 @@
  */
 package demetra.timeseries;
 
-import demetra.data.DoubleSequence;
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 public class DailyTimeSeries implements TimeSeriesData<Day, DayObs> {
     
     private final LocalDate[] domain;
-    private final DoubleSequence values;
+    private final DoubleSeq values;
     
     public static DailyTimeSeries of(List<DayObs> data) {
         int n = data.size();
@@ -42,10 +42,10 @@ public class DailyTimeSeries implements TimeSeriesData<Day, DayObs> {
             days[pos] = obs.getDate();
             v[pos++] = obs.getValue();
         }
-        return new DailyTimeSeries(days, DoubleSequence.ofInternal(v));
+        return new DailyTimeSeries(days, DoubleSeq.of(v));
     }
     
-    private DailyTimeSeries(LocalDate[] domain, DoubleSequence values) {
+    private DailyTimeSeries(LocalDate[] domain, DoubleSeq values) {
         this.domain = domain;
         this.values = values;
     }
@@ -56,7 +56,7 @@ public class DailyTimeSeries implements TimeSeriesData<Day, DayObs> {
     }
     
     @Override
-    public DoubleSequence getValues() {
+    public DoubleSeq getValues() {
         return values;
     }
     

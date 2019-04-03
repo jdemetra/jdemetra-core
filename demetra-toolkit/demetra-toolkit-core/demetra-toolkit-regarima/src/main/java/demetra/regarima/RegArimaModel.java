@@ -18,7 +18,6 @@ package demetra.regarima;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.Immutable;
@@ -28,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -41,16 +41,16 @@ public final class RegArimaModel<M extends IArimaModel> {
     @BuilderPattern(RegArimaModel.class)
     public static class Builder<M extends IArimaModel> {
 
-        private DoubleSequence y;
+        private DoubleSeq y;
         private M arima;
         private boolean mean;
-        private final ArrayList<DoubleSequence> x = new ArrayList<>();
+        private final ArrayList<DoubleSeq> x = new ArrayList<>();
         private int[] missing;
 
         private Builder() {
         }
 
-        public Builder y(DoubleSequence y) {
+        public Builder y(DoubleSeq y) {
             this.y = y;
             return this;
         }
@@ -77,7 +77,7 @@ public final class RegArimaModel<M extends IArimaModel> {
             return this;
         }
 
-        public Builder addX(@Nonnull DoubleSequence var) {
+        public Builder addX(@Nonnull DoubleSeq var) {
             if (var.length() != y.length()) {
                 throw new RuntimeException("Incompatible dimensions");
             }
@@ -85,8 +85,8 @@ public final class RegArimaModel<M extends IArimaModel> {
             return this;
         }
 
-        public Builder addX(@Nonnull DoubleSequence... vars) {
-            for (DoubleSequence var : vars) {
+        public Builder addX(@Nonnull DoubleSeq... vars) {
+            for (DoubleSeq var : vars) {
                 if (var.length() != y.length()) {
                     throw new RuntimeException("Incompatible dimensions");
                 }
@@ -95,8 +95,8 @@ public final class RegArimaModel<M extends IArimaModel> {
             return this;
         }
 
-        public Builder addX(@Nonnull Collection<DoubleSequence> vars) {
-            for (DoubleSequence var : vars) {
+        public Builder addX(@Nonnull Collection<DoubleSeq> vars) {
+            for (DoubleSeq var : vars) {
                 if (var.length() != y.length()) {
                     throw new RuntimeException("Incompatible dimensions");
                 }
@@ -123,10 +123,10 @@ public final class RegArimaModel<M extends IArimaModel> {
         }
     }
 
-    private final DoubleSequence y;
+    private final DoubleSeq y;
     private final M arima;
     private final boolean mean;
-    private final List<DoubleSequence> x;
+    private final List<DoubleSeq> x;
     private final int[] missing;
     private volatile RegArmaModel<M> dmodel;
 
@@ -150,7 +150,7 @@ public final class RegArimaModel<M extends IArimaModel> {
     /**
      *
      */
-    private RegArimaModel(DoubleSequence y, final M arima, final boolean mean, final List<DoubleSequence> x, final int[] missing, final RegArmaModel<M> dmodel) {
+    private RegArimaModel(DoubleSeq y, final M arima, final boolean mean, final List<DoubleSeq> x, final int[] missing, final RegArmaModel<M> dmodel) {
         this.y = y;
         this.arima = arima;
         this.mean = mean;
@@ -204,7 +204,7 @@ public final class RegArimaModel<M extends IArimaModel> {
      * @return the y
      */
     @Nonnull
-    public DoubleSequence getY() {
+    public DoubleSeq getY() {
         return y;
     }
 
@@ -212,7 +212,7 @@ public final class RegArimaModel<M extends IArimaModel> {
      * @return the x
      */
     @Nonnull
-    public List<DoubleSequence> getX() {
+    public List<DoubleSeq> getX() {
         return x;
     }
 
@@ -237,7 +237,7 @@ public final class RegArimaModel<M extends IArimaModel> {
                 .meanCorrection(mean)
                 .missing(missing);
 
-        for (DoubleSequence v : x) {
+        for (DoubleSeq v : x) {
             builder.addX(v);
         }
         return builder;

@@ -18,7 +18,6 @@
 package demetra.tramo;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.Complex;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
@@ -27,6 +26,7 @@ import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.tramo.internal.DifferencingModule;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -71,7 +71,7 @@ class RegularUnderDifferencingTest extends ModelController {
         }
     }
 
-    private boolean checkResiduals(DoubleSequence e) {
+    private boolean checkResiduals(DoubleSeq e) {
         DataBlock res = DataBlock.of(e);
         double rm = res.sum(), rv = res.ssq();
         int n = res.length();

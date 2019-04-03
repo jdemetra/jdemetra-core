@@ -16,13 +16,13 @@
  */
 package demetra.tramo;
 
-import demetra.data.DoubleSequence;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.PreprocessingModel;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.SarimaSpecification;
 import demetra.stats.AutoCovariances;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -60,7 +60,7 @@ class RegularUnderDifferencingTest2 extends ModelController {
     }
 
     private boolean needProcessing(RegArimaModelling context) {
-        DoubleSequence y = context.getEstimation().getConcentratedLikelihood().e();
+        DoubleSeq y = context.getEstimation().getConcentratedLikelihood().e();
         int npos0 = 0;
         int imax = Math.min(24, y.length() - 1);
         double[] ac = AutoCovariances.autoCovariancesWithZeroMean(y, imax);

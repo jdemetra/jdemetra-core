@@ -17,7 +17,6 @@
 package demetra.timeseries;
 
 import static demetra.data.AggregationType.*;
-import demetra.data.DoubleSequence;
 import static demetra.timeseries.TsUnit.*;
 import demetra.design.Demo;
 import java.time.LocalDate;
@@ -25,6 +24,7 @@ import java.time.LocalDateTime;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.*;
 import static demetra.timeseries.TsPeriod.DEFAULT_EPOCH;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -34,7 +34,7 @@ public class TsDataTest {
 
     @Demo
     public static void main(String[] args) {
-        TsData ts = TsData.of(TsPeriod.yearly(2001), DoubleSequence.of(3.14, 7));
+        TsData ts = TsData.of(TsPeriod.yearly(2001), DoubleSeq.copyOf(3.14, 7));
 
         System.out.println("\n[Tests ...]");
         System.out.println(ts.toString());
@@ -93,21 +93,21 @@ public class TsDataTest {
         assertThatNullPointerException().isThrownBy(() -> TsData.empty(null, cause));
         assertThatNullPointerException().isThrownBy(() -> TsData.empty(start, null));
 
-        x = TsData.of(start, DoubleSequence.of(values));
+        x = TsData.of(start, DoubleSeq.copyOf(values));
         assertThat(x.getStart()).isEqualTo(start);
         assertThat(x.getValues().toArray()).containsExactly(values);
         assertThat(x.getCause()).isNull();
 
-        assertThatNullPointerException().isThrownBy(() -> TsData.of(null, DoubleSequence.of(values)));
+        assertThatNullPointerException().isThrownBy(() -> TsData.of(null, DoubleSeq.copyOf(values)));
         assertThatNullPointerException().isThrownBy(() -> TsData.of(start, null));
 
-        x = TsData.ofInternal(start, DoubleSequence.of(values));
+        x = TsData.ofInternal(start, DoubleSeq.copyOf(values));
         assertThat(x.getStart()).isEqualTo(start);
         assertThat(x.getValues().toArray()).containsExactly(values);
         assertThat(x.getCause()).isNull();
 
-        assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(null, DoubleSequence.of(values)));
-        assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(start, (DoubleSequence) null));
+        assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(null, DoubleSeq.copyOf(values)));
+        assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(start, (DoubleSeq) null));
 
         x = TsData.ofInternal(start, values);
         assertThat(x.getStart()).isEqualTo(start);
@@ -124,8 +124,8 @@ public class TsDataTest {
                 .isEqualTo(TsData.empty(TsPeriod.yearly(2001), "abc"))
                 .isNotEqualTo(TsData.empty(TsPeriod.yearly(2001), "xyz"));
         
-        assertThat(TsData.of(TsPeriod.yearly(2001), DoubleSequence.of(1, 2, 3)))
-                .isEqualTo(TsData.of(TsPeriod.yearly(2001), DoubleSequence.of(1, 2, 3)));
+        assertThat(TsData.of(TsPeriod.yearly(2001), DoubleSeq.copyOf(1, 2, 3)))
+                .isEqualTo(TsData.of(TsPeriod.yearly(2001), DoubleSeq.copyOf(1, 2, 3)));
     }
 
     @Test
@@ -212,11 +212,11 @@ public class TsDataTest {
     }
 
     private static TsData monthlyTs(LocalDateTime start, int count) {
-        return TsData.of(TsPeriod.of(TsUnit.MONTH, start), DoubleSequence.onMapping(count, i -> i + start.getMonthValue()));
+        return TsData.of(TsPeriod.of(TsUnit.MONTH, start), DoubleSeq.onMapping(count, i -> i + start.getMonthValue()));
     }
 
     private static TsData monthlyTs(LocalDate start, int count) {
-        return TsData.of(TsPeriod.of(TsUnit.MONTH, start), DoubleSequence.onMapping(count, i -> i + start.getMonthValue()));
+        return TsData.of(TsPeriod.of(TsUnit.MONTH, start), DoubleSeq.onMapping(count, i -> i + start.getMonthValue()));
     }
 
     private static TsObs y(int year, double val) {

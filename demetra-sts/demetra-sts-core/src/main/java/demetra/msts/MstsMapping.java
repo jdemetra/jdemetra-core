@@ -6,8 +6,7 @@
 package demetra.msts;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.ssf.SsfException;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -39,7 +39,7 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
         return parameters.stream();
     }
 
-    public List<VarianceInterpreter> smallVariances(DoubleSequence cur, double eps) {
+    public List<VarianceInterpreter> smallVariances(DoubleSeq cur, double eps) {
         List<VarianceInterpreter> small = new ArrayList<>();
         double max = maxVariance(cur);
         int pos = 0;
@@ -60,11 +60,11 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
         return small;
     }
 
-    public void fixModelParameters(Predicate<ParameterInterpreter> selection, DoubleSequence fullParameters) {
+    public void fixModelParameters(Predicate<ParameterInterpreter> selection, DoubleSeq fullParameters) {
         ParameterInterpreter.fixModelParameters(parameters, selection, fullParameters);
     }
 
-    public double maxVariance(DoubleSequence cur) {
+    public double maxVariance(DoubleSeq cur) {
         double max = 0;
         int pos = 0;
         for (ParameterInterpreter p : parameters) {
@@ -115,8 +115,8 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
      * @param input
      * @return
      */
-    public DoubleSequence modelParameters(DoubleSequence input) {
-        return DoubleSequence.ofInternal(ParameterInterpreter.decode(parameters, input));
+    public DoubleSeq modelParameters(DoubleSeq input) {
+        return DoubleSeq.of(ParameterInterpreter.decode(parameters, input));
     }
 
     /**
@@ -125,14 +125,14 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
      * @param input
      * @return
      */
-    public DoubleSequence functionParameters(DoubleSequence input) {
-        return DoubleSequence.ofInternal(ParameterInterpreter.encode(parameters, input));
+    public DoubleSeq functionParameters(DoubleSeq input) {
+        return DoubleSeq.of(ParameterInterpreter.encode(parameters, input));
     }
 
     @Override
-    public MultivariateCompositeSsf map(DoubleSequence p) {
+    public MultivariateCompositeSsf map(DoubleSeq p) {
         MultivariateCompositeSsf.Builder builder = MultivariateCompositeSsf.builder();
-        DoubleSequence fp = modelParameters(p);
+        DoubleSeq fp = modelParameters(p);
         for (IMstsBuilder decoder : builders) {
             int np = decoder.decode(fp, builder);
             fp = fp.drop(np, 0);
@@ -141,17 +141,17 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
     }
 
     @Override
-    public DoubleSequence getDefaultParameters() {
+    public DoubleSeq getDefaultParameters() {
         double[] buffer = new double[getDim()];
         int pos = 0;
         for (ParameterInterpreter p : parameters) {
             pos = p.fillDefault(buffer, pos);
         }
-        return DoubleSequence.ofInternal(buffer);
+        return DoubleSeq.of(buffer);
     }
 
     @Override
-    public boolean checkBoundaries(DoubleSequence inparams) {
+    public boolean checkBoundaries(DoubleSeq inparams) {
         int pos = 0;
         for (ParameterInterpreter p : parameters) {
             if (!p.isFixed()) {
@@ -166,7 +166,7 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
     }
 
     @Override
-    public double epsilon(DoubleSequence inparams, int idx) {
+    public double epsilon(DoubleSeq inparams, int idx) {
         int pos = 0;
         for (ParameterInterpreter p : parameters) {
             if (!p.isFixed()) {

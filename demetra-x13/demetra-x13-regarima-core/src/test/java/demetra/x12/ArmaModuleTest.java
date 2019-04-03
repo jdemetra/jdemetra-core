@@ -18,13 +18,13 @@ package demetra.x12;
 
 import demetra.x12.ArmaModuleImpl;
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import ec.tstoolkit.sarima.SarmaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -38,7 +38,7 @@ public class ArmaModuleTest {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
         SarimaSpecification nspec = test.process(regarima, true);
         System.out.println("Prod");
         System.out.println(nspec);
@@ -50,7 +50,7 @@ public class ArmaModuleTest {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.EXPORTS)).arima(sarima).build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSeq.copyOf(Data.EXPORTS)).arima(sarima).build();
         SarimaSpecification nspec = test.process(regarima, true);
         System.out.println("X");
         System.out.println(nspec);

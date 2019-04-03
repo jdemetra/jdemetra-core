@@ -19,8 +19,8 @@
 package demetra.x11plus;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -48,7 +48,7 @@ public final class CopyEndPoints implements IEndPointsProcessor {
     }
 
     @Override
-    public void process(final DoubleSequence in, final DataBlock out) {
+    public void process(final DoubleSeq in, final DataBlock out) {
 	out.range(0, npoints).set(out.get(npoints));
 	int n = out.length();
 	out.range(n - npoints, n).set(out.get(n - npoints - 1));

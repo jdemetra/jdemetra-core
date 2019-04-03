@@ -18,10 +18,10 @@ package demetra.maths.matrices.internal;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleSequence;
 import demetra.maths.Constants;
 import demetra.maths.MatrixException;
 import demetra.maths.matrices.Matrix;
+import demetra.data.DoubleSeq;
 
 /**
  * Householder transformation with partial pivoting. R-like
@@ -257,7 +257,7 @@ public class HouseholderR {
         return b;
     }
 
-    public void partialLeastSquares(DoubleSequence x, DataBlock b, DataBlock res) throws MatrixException {
+    public void partialLeastSquares(DoubleSeq x, DataBlock b, DataBlock res) throws MatrixException {
         double[] data = matrix.getStorage();
         double[] y = x.toArray();
         int rc = b.length();
@@ -311,7 +311,7 @@ public class HouseholderR {
         return ncols;
     }
 
-    public DoubleSequence rdiagonal() {
+    public DoubleSeq rdiagonal() {
             return matrix.diagonal();
     }
 
@@ -327,7 +327,7 @@ public class HouseholderR {
         return n;
     }
 
-    public void leastSquares(DoubleSequence x, DataBlock b, DataBlock res) throws MatrixException {
+    public void leastSquares(DoubleSeq x, DataBlock b, DataBlock res) throws MatrixException {
         double[] data = matrix.getStorage();
         double[] y = new double[x.length()];
         x.copyTo(y, 0);

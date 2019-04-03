@@ -17,7 +17,6 @@
 package demetra.dfm.internal;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.dfm.IDfmMeasurement;
 import demetra.dfm.MeasurementDescriptor;
 import demetra.maths.matrices.Matrix;
@@ -26,6 +25,7 @@ import demetra.ssf.ISsfLoading;
 import demetra.ssf.implementations.MeasurementsError;
 import demetra.ssf.multivariate.ISsfErrors;
 import demetra.ssf.multivariate.ISsfMeasurements;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -110,7 +110,7 @@ class Measurements implements ISsfMeasurements {
 
     @Override
     public ISsfErrors errors() {
-        return MeasurementsError.of(DoubleSequence.onMapping(mdesc.length, i -> mdesc[i].getVar()));
+        return MeasurementsError.of(DoubleSeq.onMapping(mdesc.length, i -> mdesc[i].getVar()));
     }
 
     class Loading implements ISsfLoading {

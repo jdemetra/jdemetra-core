@@ -16,13 +16,13 @@
  */
 package demetra.timeseries;
 
-import demetra.data.DoubleSequence;
 import demetra.data.Range;
-import demetra.data.Sequence;
 import java.time.LocalDateTime;
 import java.util.function.ObjDoubleConsumer;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
+import demetra.data.Seq;
 
 /**
  *
@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
  * @param <P> period type
  * @param <O> observation type
  */
-public interface TimeSeriesData<P extends Range<LocalDateTime>, O extends TimeSeriesObs<P>> extends Sequence<O> {
+public interface TimeSeriesData<P extends Range<LocalDateTime>, O extends TimeSeriesObs<P>> extends Seq<O> {
 
     /**
      * Retrieves the time domain of this time series
@@ -46,7 +46,7 @@ public interface TimeSeriesData<P extends Range<LocalDateTime>, O extends TimeSe
      * @return The content of this time series.
      */
     @Nonnull
-    DoubleSequence getValues();
+    DoubleSeq getValues();
 
     @Nonnegative
     @Override

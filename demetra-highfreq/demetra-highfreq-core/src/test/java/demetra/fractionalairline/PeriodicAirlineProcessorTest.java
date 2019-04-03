@@ -7,7 +7,6 @@ package demetra.fractionalairline;
 
 import demetra.arima.ArimaModel;
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
@@ -31,6 +30,7 @@ import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -53,7 +53,7 @@ public class PeriodicAirlineProcessorTest {
         assertTrue(rslt != null);
         ConcentratedLikelihoodWithMissing cll = rslt.getConcentratedLikelihood();
         System.out.println(cll.coefficients());
-        System.out.println(DoubleSequence.ofInternal(cll.tstats(0, false)));
+        System.out.println(DoubleSeq.of(cll.tstats(0, false)));
         System.out.println(cll.logLikelihood());
 
         rslt = PeriodicAirlineProcessor.process(Doubles.fastFn(edf.column(0), z->Math.log(z)), null, new double[]{7, 365.25}, 1e-12);
@@ -63,7 +63,7 @@ public class PeriodicAirlineProcessorTest {
 
     //@Test
     public void testWeekly() {
-        double ll = PeriodicAirlineProcessor.process(DoubleSequence.of(WeeklyData.US_CLAIMS), null, 365.25 / 7, 1e-9).getConcentratedLikelihood().logLikelihood();
+        double ll = PeriodicAirlineProcessor.process(DoubleSeq.copyOf(WeeklyData.US_CLAIMS), null, 365.25 / 7, 1e-9).getConcentratedLikelihood().logLikelihood();
     }
 
     private static void addDefault(List<IHoliday> holidays) {

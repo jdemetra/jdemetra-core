@@ -19,7 +19,7 @@ package demetra.linearmodel;
 import demetra.data.DataSets;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -35,14 +35,14 @@ public class OlsTest {
         double[] y = DataSets.Longley.y;
 
         LinearModel model = LinearModel.builder()
-                .y(DoubleSequence.ofInternal(y))
+                .y(DoubleSeq.of(y))
                 .meanCorrection(true)
-                .addX(DoubleSequence.ofInternal(DataSets.Longley.x1))
-                .addX(DoubleSequence.ofInternal(DataSets.Longley.x2))
-                .addX(DoubleSequence.ofInternal(DataSets.Longley.x3))
-                .addX(DoubleSequence.ofInternal(DataSets.Longley.x4))
-                .addX(DoubleSequence.ofInternal(DataSets.Longley.x5))
-                .addX(DoubleSequence.ofInternal(DataSets.Longley.x6))
+                .addX(DoubleSeq.of(DataSets.Longley.x1))
+                .addX(DoubleSeq.of(DataSets.Longley.x2))
+                .addX(DoubleSeq.of(DataSets.Longley.x3))
+                .addX(DoubleSeq.of(DataSets.Longley.x4))
+                .addX(DoubleSeq.of(DataSets.Longley.x5))
+                .addX(DoubleSeq.of(DataSets.Longley.x6))
                 .build();
 
         Ols ols = new Ols();
@@ -57,20 +57,20 @@ public class OlsTest {
     @Test
     public void testFilip() {
         double[] y = DataSets.Filip.y;
-        DoubleSequence x=DoubleSequence.ofInternal(DataSets.Filip.x);
+        DoubleSeq x=DoubleSeq.of(DataSets.Filip.x);
         LinearModel model = LinearModel.builder()
-                .y(DoubleSequence.ofInternal(y))
+                .y(DoubleSeq.of(y))
                 .meanCorrection(true)
                 .addX(x)
-                .addX(DoubleSequence.onMapping(x, a -> a * a))
-                .addX(DoubleSequence.onMapping(x, a -> a * a * a))
-                .addX(DoubleSequence.onMapping(x, a -> a * a * a * a))
-                .addX(DoubleSequence.onMapping(x, a -> a * a * a * a * a))
-                .addX(DoubleSequence.onMapping(x, a -> a * a * a * a * a * a))
-                .addX(DoubleSequence.onMapping(x, a -> a * a * a * a * a * a * a))
-                .addX(DoubleSequence.onMapping(x, a -> a * a * a * a * a * a * a * a))
-                .addX(DoubleSequence.onMapping(x, a -> a * a * a * a * a * a * a * a * a))
-                .addX(DoubleSequence.onMapping(x, a -> a * a * a * a * a * a * a * a * a * a))
+                .addX(DoubleSeq.onMapping(x, a -> a * a))
+                .addX(DoubleSeq.onMapping(x, a -> a * a * a))
+                .addX(DoubleSeq.onMapping(x, a -> a * a * a * a))
+                .addX(DoubleSeq.onMapping(x, a -> a * a * a * a * a))
+                .addX(DoubleSeq.onMapping(x, a -> a * a * a * a * a * a))
+                .addX(DoubleSeq.onMapping(x, a -> a * a * a * a * a * a * a))
+                .addX(DoubleSeq.onMapping(x, a -> a * a * a * a * a * a * a * a))
+                .addX(DoubleSeq.onMapping(x, a -> a * a * a * a * a * a * a * a * a))
+                .addX(DoubleSeq.onMapping(x, a -> a * a * a * a * a * a * a * a * a * a))
                 .build();
 
         Ols ols = new Ols();

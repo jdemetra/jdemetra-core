@@ -7,8 +7,8 @@ package demetra.maths.functions.bfgs;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
+import demetra.data.DoubleSeq;
 import demetra.maths.MatrixException;
 import demetra.maths.functions.FunctionException;
 import demetra.maths.functions.IFunction;
@@ -124,7 +124,7 @@ public class Bfgs implements IFunctionMinimizer {
     private double Fmin;
     private double[] btry;
     private Matrix H;
-    private DoubleSequence g;
+    private DoubleSeq g;
 
     public Bfgs(Builder builder) {
         this.abstol = builder.abstol;
@@ -137,7 +137,7 @@ public class Bfgs implements IFunctionMinimizer {
         this.trace = builder.trace;
     }
 
-    private void vmmin(DoubleSequence b, IFunction fn) {
+    private void vmmin(DoubleSeq b, IFunction fn) {
         boolean accpoint, enough;
         double[] t, X, c;
         Matrix B;
@@ -188,7 +188,7 @@ public class Bfgs implements IFunctionMinimizer {
             c = g.toArray();
             gradproj = 0.0;
             DataBlockIterator bcols = B.columnsIterator();
-            DoubleReader gcur = g.reader();
+            DoubleSeqCursor gcur = g.reader();
             for (i = 0; i < n; i++) {
                 s = -bcols.next().dot(g);
                 t[i] = s;
@@ -208,7 +208,7 @@ public class Bfgs implements IFunctionMinimizer {
                         }
                     }
                     if (count < n) {
-                        DoubleSequence Btry = DoubleSequence.ofInternal(btry);
+                        DoubleSeq Btry = DoubleSeq.ofInternal(btry);
                         if (fn.getDomain().checkBoundaries(Btry)) {
                             fcur = fn.evaluate(Btry);
                             f = fcur.getValue();
@@ -338,7 +338,7 @@ public class Bfgs implements IFunctionMinimizer {
     }
 
     @Override
-    public DoubleSequence gradientAtMinimum() {
+    public DoubleSeq gradientAtMinimum() {
         return g;
     }
 

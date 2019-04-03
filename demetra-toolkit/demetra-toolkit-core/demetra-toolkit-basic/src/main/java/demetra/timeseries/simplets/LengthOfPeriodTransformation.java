@@ -16,7 +16,6 @@
  */
 package demetra.timeseries.simplets;
 
-import demetra.data.DoubleSequence;
 import demetra.data.transformation.LogJacobian;
 import demetra.design.Development;
 import demetra.timeseries.TsData;
@@ -28,6 +27,7 @@ import demetra.timeseries.calendars.CalendarUtility;
 import static demetra.timeseries.calendars.CalendarUtility.daysCount;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.transformation.TimeSeriesTransformation;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -83,7 +83,7 @@ class LengthOfPeriodTransformation implements TsDataTransformation {
     @Override
     public double transform(TsPeriod p, double value){
         // TODO: optimize        
-        TsData s=TsData.of(p, DoubleSequence.of(value));
+        TsData s=TsData.of(p, DoubleSeq.of(value));
         TsData t = transform(s, null);
         return t.getValue(0);
     }
@@ -111,7 +111,7 @@ class LengthOfPeriodTransformation implements TsDataTransformation {
                 }
             }
         }
-        return TsData.of(tsdata.getStart(), DoubleSequence.ofInternal(data));
+        return TsData.of(tsdata.getStart(), DoubleSeq.of(data));
     }
 
     private TsData lp(TsData tsdata, int freq, LogJacobian lj) {
@@ -168,6 +168,6 @@ class LengthOfPeriodTransformation implements TsDataTransformation {
                 idx += freq;
             }
         }
-        return TsData.of(start, DoubleSequence.ofInternal(data));
+        return TsData.of(start, DoubleSeq.of(data));
     }
 }

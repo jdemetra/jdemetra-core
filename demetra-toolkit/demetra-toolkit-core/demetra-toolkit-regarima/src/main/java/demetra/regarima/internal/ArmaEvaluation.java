@@ -18,13 +18,13 @@ package demetra.regarima.internal;
 
 import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
+import demetra.data.DoubleSeq;
 
 /**
  * @author Jean Palate
@@ -35,11 +35,11 @@ class ArmaEvaluation<S extends IArimaModel> implements ISsqFunctionPoint,
         IFunctionPoint {
 
     final ArmaFunction<S> fn;
-    final DoubleSequence p;
+    final DoubleSeq p;
     final S arma;
     final ConcentratedLikelihoodWithMissing ll;
 
-    public ArmaEvaluation(ArmaFunction<S> fn, DoubleSequence p) {
+    public ArmaEvaluation(ArmaFunction<S> fn, DoubleSeq p) {
         this.fn = fn;
         this.p = p;
         this.arma = fn.mapping.map(p);
@@ -48,7 +48,7 @@ class ArmaEvaluation<S extends IArimaModel> implements ISsqFunctionPoint,
     }
 
     @Override
-    public DoubleSequence getE() {
+    public DoubleSeq getE() {
         return fn.errors.apply(ll);
     }
 
@@ -57,7 +57,7 @@ class ArmaEvaluation<S extends IArimaModel> implements ISsqFunctionPoint,
     }
 
     @Override
-    public DoubleSequence getParameters() {
+    public DoubleSeq getParameters() {
         return p;
     }
 

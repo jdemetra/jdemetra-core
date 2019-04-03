@@ -19,12 +19,12 @@ package demetra.benchmarking.univariate;
 import demetra.data.AggregationType;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleSequence;
 import demetra.linearsystem.LinearSystemSolver;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.UnitRoots;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -97,7 +97,7 @@ public class MatrixDenton {
         }
     }
 
-    public double[] process(DoubleSequence highSeries, DoubleSequence lowSeries) {
+    public double[] process(DoubleSeq highSeries, DoubleSeq lowSeries) {
 
         DataBlock x = DataBlock.of(highSeries), y = DataBlock.of(lowSeries);
         if (type == AggregationType.Average) {
@@ -135,7 +135,7 @@ public class MatrixDenton {
         return rslt.toArray();
     }
 
-    public double[] process(DoubleSequence lowSeries) {
+    public double[] process(DoubleSeq lowSeries) {
         int ny = lowSeries.length();
         int n = ny * conversion;
 

@@ -17,8 +17,7 @@
 package demetra.regarima.regular;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
 import demetra.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
@@ -27,6 +26,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.simplets.TsDataToolkit;
 import demetra.timeseries.simplets.TsDataTransformation;
 import java.util.List;
+import demetra.data.DoubleSeq;
 
 /**
  * The pre-processing model contains all information on the estimated regarima
@@ -180,13 +180,13 @@ public class PreprocessingModel {
             if (!bTransformed) {
                 back = description.backTransformations();
             }
-            DoubleSequence m = estimation.getConcentratedLikelihood().missingEstimates();
-            DoubleReader reader = m.reader();
+            DoubleSeq m = estimation.getConcentratedLikelihood().missingEstimates();
+            DoubleSeqCursor reader = m.cursor();
             double[] tmp = data.getValues().toArray();
             for (int i = 0; i < missings.length; ++i) {
                 int pos = missings[i];
                 TsPeriod p = description.getDomain().get(pos);
-                double val = reader.next();
+                double val = reader.getAndNext();
                 if (!bTransformed) {
                     tmp[pos] = backTransform(p, val);
                 } else {
@@ -234,8 +234,8 @@ public class PreprocessingModel {
             return null;
         }
         final int n=domain.getLength();
-        DoubleSequence coeffs = estimation.getConcentratedLikelihood().coefficients();
-        DoubleReader reader = coeffs.reader();
+        DoubleSeq coeffs = estimation.getConcentratedLikelihood().coefficients();
+        DoubleSeqCursor reader = coeffs.cursor();
         DataBlock r = DataBlock.make(n);
         if (description.isEstimatedMean()) {
             reader.skip(1);

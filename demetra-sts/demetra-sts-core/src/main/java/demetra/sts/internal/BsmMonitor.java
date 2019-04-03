@@ -17,7 +17,6 @@
 package demetra.sts.internal;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.design.Development;
 import demetra.maths.functions.IFunction;
@@ -39,6 +38,7 @@ import demetra.sts.Component;
 import demetra.sts.BsmSpec;
 import demetra.sts.SsfBsm2;
 import demetra.sts.internal.BsmMapping.Transformation;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -108,7 +108,7 @@ public class BsmMonitor {
             fmin.setMaxIter(10);
             for (int i = 0; i < 3; ++i) {
                 fn_ = buildFunction(null, scalingFactor);
-                DoubleSequence parameters = mapping.map(m_bsm);
+                DoubleSeq parameters = mapping.map(m_bsm);
                 fmin.minimize(fn_.evaluate(parameters));
                 m_bconverged = fmin.getIterCount() < fmin.getMaxIter();
                 fnmax_ = (SsfFunctionPoint<BasicStructuralModel, SsfBsm2>) fmin.getResult();
@@ -127,7 +127,7 @@ public class BsmMonitor {
         if (!scalingFactor || !m_bconverged) {
             fmin.setMaxIter(100);
             fn_ = buildFunction(null, scalingFactor);
-            DoubleSequence parameters = mapping.map(m_bsm);
+            DoubleSeq parameters = mapping.map(m_bsm);
             fmin.minimize(fn_.evaluate(parameters));
             m_bconverged = fmin.getIterCount() < fmin.getMaxIter();
             fnmax_ = (SsfFunctionPoint<BasicStructuralModel, SsfBsm2>) fmin.getResult();
@@ -147,7 +147,7 @@ public class BsmMonitor {
             updateSpec(m_bsm);
             // update the likelihood !
             fn_ = buildFunction(null, scalingFactor);
-            DoubleSequence parameters = mapping.map(m_bsm);
+            DoubleSeq parameters = mapping.map(m_bsm);
             fnmax_ = (SsfFunctionPoint<BasicStructuralModel, SsfBsm2>) fn_.evaluate(parameters);
             m_ll = fnmax_.getLikelihood();
             ok = false;
@@ -203,7 +203,7 @@ public class BsmMonitor {
             mapper.setFixedComponent(mapping.getFixedComponent());
         }
         SsfFunction<BasicStructuralModel, SsfBsm2> fn = buildFunction(mapper, scalingFactor);
-        DoubleSequence p = mapper.map(model);
+        DoubleSeq p = mapper.map(model);
         SsfFunctionPoint instance = new SsfFunctionPoint(fn, p);
         double ll = instance.getLikelihood().logLikelihood();
         int nvar = mapper.getVarsCount();
@@ -311,7 +311,7 @@ public class BsmMonitor {
         SsfFunction<BasicStructuralModel, SsfBsm2> fn = buildFunction(mapping,
                 true);
         
-        DoubleSequence p = mapping.map(start);
+        DoubleSeq p = mapping.map(start);
         SsfFunctionPoint instance = new SsfFunctionPoint(fn, p);
         double lmax = instance.getLikelihood().logLikelihood();
         int imax = -1;
@@ -373,7 +373,7 @@ public class BsmMonitor {
      * @param freq
      * @return
      */
-    public boolean process(DoubleSequence y, int freq) {
+    public boolean process(DoubleSeq y, int freq) {
         return process(y, null, freq);
     }
 
@@ -384,7 +384,7 @@ public class BsmMonitor {
      * @param freq
      * @return
      */
-    public boolean process(DoubleSequence y, Matrix x, int freq) {
+    public boolean process(DoubleSeq y, Matrix x, int freq) {
         m_y = y.toArray();
         m_x = x;
         period = freq;

@@ -30,7 +30,7 @@ import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.NumericalDerivatives;
 import demetra.maths.functions.ParametersRange;
 import java.util.function.IntToDoubleFunction;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  * The (pseudo-)spectrum is the Fourier transform of the auto-covariance
@@ -185,8 +185,8 @@ public final class Spectrum {
             }
 
             @Override
-            public DoubleSequence getParameters() {
-                return DoubleSequence.of(pt);
+            public DoubleSeq getParameters() {
+                return DoubleSeq.of(pt);
             }
 
             @Override
@@ -218,7 +218,7 @@ public final class Spectrum {
             }
 
             @Override
-            public IFunctionPoint evaluate(DoubleSequence parameters) {
+            public IFunctionPoint evaluate(DoubleSeq parameters) {
                 return new SpectrumFunctionInstance(spec, parameters.get(0));
             }
 

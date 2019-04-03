@@ -17,7 +17,7 @@
 package internal.timeseries;
 
 import demetra.data.AggregationType;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -26,7 +26,7 @@ import demetra.data.DoubleSequence;
 @FunctionalInterface
 public interface InternalAggregator {
 
-    double aggregate(DoubleSequence values, int start, int end);
+    double aggregate(DoubleSeq values, int start, int end);
 
     static InternalAggregator of(AggregationType type) {
         switch (type) {
@@ -49,11 +49,11 @@ public interface InternalAggregator {
         }
     }
 
-    static double none(DoubleSequence values, int start, int end) {
+    static double none(DoubleSeq values, int start, int end) {
         return Double.NaN;
     }
 
-    static double sum(DoubleSequence values, int start, int end) {
+    static double sum(DoubleSeq values, int start, int end) {
         double sum = 0;
         for (int i = start; i < end; i++) {
             double val = values.get(i);
@@ -64,7 +64,7 @@ public interface InternalAggregator {
         return sum;
     }
 
-    static double average(DoubleSequence values, int start, int end) {
+    static double average(DoubleSeq values, int start, int end) {
         double sum = 0;
         double count = 0;
         for (int i = start; i < end; i++) {
@@ -77,7 +77,7 @@ public interface InternalAggregator {
         return count != 0 ? sum / count : Double.NaN;
     }
 
-    static double first(DoubleSequence values, int start, int end) {
+    static double first(DoubleSeq values, int start, int end) {
         for (int i = start; i < end; i++) {
             double val = values.get(i);
             if (Double.isFinite(val)) {
@@ -87,7 +87,7 @@ public interface InternalAggregator {
         return Double.NaN;
     }
 
-    static double last(DoubleSequence values, int start, int end) {
+    static double last(DoubleSeq values, int start, int end) {
         double last = Double.NaN;
         for (int i = start; i < end; i++) {
             double val = values.get(i);
@@ -98,7 +98,7 @@ public interface InternalAggregator {
         return last;
     }
 
-    static double min(DoubleSequence values, int start, int end) {
+    static double min(DoubleSeq values, int start, int end) {
         double min = Double.MAX_VALUE;
         for (int i = start; i < end; i++) {
             double val = values.get(i);
@@ -111,7 +111,7 @@ public interface InternalAggregator {
         return min != Double.MAX_VALUE ? min : Double.NaN;
     }
 
-    static double max(DoubleSequence values, int start, int end) {
+    static double max(DoubleSeq values, int start, int end) {
         double max = Double.MIN_VALUE;
         for (int i = start; i < end; i++) {
             double val = values.get(i);

@@ -17,15 +17,15 @@
 package demetra.timeseries;
 
 import demetra.data.Range;
-import demetra.data.Sequence;
 import java.time.LocalDateTime;
+import demetra.data.Seq;
 
 /**
  *
  * @author Philippe Charles
  * @param <P>
  */
-public interface TimeSeriesDomain<P extends Range<LocalDateTime>> extends Range<LocalDateTime>, Sequence<P> {
+public interface TimeSeriesDomain<P extends Range<LocalDateTime>> extends Range<LocalDateTime>, Seq<P> {
 
     /**
      *

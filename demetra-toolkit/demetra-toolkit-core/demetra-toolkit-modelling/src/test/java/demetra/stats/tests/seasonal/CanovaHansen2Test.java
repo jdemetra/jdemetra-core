@@ -16,7 +16,6 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.data.WeeklyData;
 import demetra.stats.AutoCovariances;
@@ -26,6 +25,7 @@ import demetra.stats.samples.SamplesUtility;
 import java.util.function.IntToDoubleFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -44,7 +44,7 @@ public class CanovaHansen2Test {
         }
 //        double[] x=WeeklyData.US_CLAIMS;
          for (int i=2; i<=553; ++i){
-            double z = CanovaHansen2.of(DoubleSequence.ofInternal(x))
+            double z = CanovaHansen2.of(DoubleSeq.of(x))
                     .periodicity(i)
                     .compute();
 //            System.out.println(z);

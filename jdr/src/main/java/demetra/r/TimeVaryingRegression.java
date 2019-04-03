@@ -7,7 +7,6 @@ package demetra.r;
 
 import demetra.arima.ssf.SsfArima;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
 import demetra.maths.MatrixType;
 import demetra.maths.functions.IParametricMapping;
@@ -39,6 +38,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDays;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -281,7 +281,7 @@ public class TimeVaryingRegression {
         }
 
         @Override
-        public Airline map(DoubleSequence p) {
+        public Airline map(DoubleSeq p) {
             Airline airline = new Airline();
             airline.setTd(td);
             airline.setTheta(p.get(0));
@@ -294,18 +294,18 @@ public class TimeVaryingRegression {
             return airline;
         }
 
-        public DoubleSequence parametersOf(Airline t) {
+        public DoubleSeq parametersOf(Airline t) {
             double[] p = new double[fixed ? 2 : 3];
             p[0] = t.getTheta();
             p[1] = t.getBtheta();
             if (!fixed) {
                 p[2] = t.getRegVariance();
             }
-            return DoubleSequence.ofInternal(p);
+            return DoubleSeq.of(p);
         }
 
         @Override
-        public boolean checkBoundaries(DoubleSequence inparams) {
+        public boolean checkBoundaries(DoubleSeq inparams) {
             if (fixed) {
                 return airlineMapping.checkBoundaries(inparams.extract(0, 2));
             } else {
@@ -314,7 +314,7 @@ public class TimeVaryingRegression {
         }
 
         @Override
-        public double epsilon(DoubleSequence inparams, int idx) {
+        public double epsilon(DoubleSeq inparams, int idx) {
             if (idx < 2) {
                 return airlineMapping.epsilon(inparams, idx);
             }
@@ -375,8 +375,8 @@ public class TimeVaryingRegression {
         }
 
         @Override
-        public DoubleSequence getDefaultParameters() {
-            return fixed ? DoubleSequence.of(-.6, -.6) : DoubleSequence.of(-.6, -.6, .001);
+        public DoubleSeq getDefaultParameters() {
+            return fixed ? DoubleSeq.copyOf(-.6, -.6) : DoubleSeq.copyOf(-.6, -.6, .001);
         }
     }
 

@@ -17,7 +17,6 @@
 package demetra.tramo;
 
 import demetra.tramo.internal.TramoUtility;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.TransformationType;
@@ -30,6 +29,7 @@ import demetra.sarima.SarimaModel;
 import demetra.regarima.regular.ILogLevelModule;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.RegArimaModelling;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -167,7 +167,7 @@ public class LogLevelModule implements ILogLevelModule {
      * @param seas
      * @return
      */
-    public boolean process(DoubleSequence data, int frequency, boolean seas) {
+    public boolean process(DoubleSeq data, int frequency, boolean seas) {
         return process(RegArimaUtility.airlineModel(data, true, frequency, seas));
     }
     
@@ -193,7 +193,7 @@ public class LogLevelModule implements ILogLevelModule {
 
         
         RegArimaModel<SarimaModel> logModel = model.toBuilder()
-                .y(DoubleSequence.ofInternal(lx))
+                .y(DoubleSeq.of(lx))
                 .build();
         el = processor.process(logModel);
 
@@ -215,7 +215,7 @@ public class LogLevelModule implements ILogLevelModule {
         if (desc.isLogTransformation())
             return ProcessingResult.Unprocessed;
         double[] data=desc.transformation().getData();
-        if (! process(DoubleSequence.ofInternal(data), desc.getAnnualFrequency(), seasonal))
+        if (! process(DoubleSeq.of(data), desc.getAnnualFrequency(), seasonal))
             return ProcessingResult.Failed;
         if (isChoosingLog()){
             desc.setLogTransformation(true);

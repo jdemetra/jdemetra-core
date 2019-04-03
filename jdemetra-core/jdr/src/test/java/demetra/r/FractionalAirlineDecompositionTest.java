@@ -6,7 +6,7 @@
 package demetra.r;
 
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
 import demetra.maths.MatrixType;
@@ -31,9 +31,9 @@ public class FractionalAirlineDecompositionTest {
         MatrixType M = MatrixSerializer.read(new File("c://highfreq/data/births.txt"));
         FractionalAirlineDecomposition.Results rslt = FractionalAirlineDecomposition.process(M.column(0).toArray(), 365.25, true, true);
         double[] s = rslt.getData("s", double[].class);
-        System.out.println(DoubleSequence.ofInternal(s));
+        System.out.println(DoubleSeq.ofInternal(s));
         double[] n = rslt.getData("n", double[].class);
-        System.out.println(DoubleSequence.ofInternal(n));
+        System.out.println(DoubleSeq.ofInternal(n));
     }
 
     @Test

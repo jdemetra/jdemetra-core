@@ -16,11 +16,11 @@
  */
 package demetra.stats.tests;
 
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.dstats.T;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -45,7 +45,7 @@ public class Mean {
      * @param data
      * @return
      */
-    public static Mean zeroMean(DoubleSequence data) {
+    public static Mean zeroMean(DoubleSeq data) {
         int nmissing = data.count(x -> !Double.isFinite(x));
         int m = data.length() - nmissing;
         if (nmissing > 0) {
@@ -65,7 +65,7 @@ public class Mean {
      * @param mu
      * @return
      */
-    public static Mean mean(DoubleSequence data, final double mu) {
+    public static Mean mean(DoubleSeq data, final double mu) {
         int nmissing = data.count(x -> !Double.isFinite(x));
         int m = data.length() - nmissing;
         if (nmissing > 0) {

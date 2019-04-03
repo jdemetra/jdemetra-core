@@ -5,7 +5,6 @@
  */
 package demetra.msts.internal;
 
-import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
 import demetra.msts.ArInterpreter;
 import demetra.msts.MstsMapping;
@@ -14,6 +13,7 @@ import demetra.ssf.StateComponent;
 import java.util.Arrays;
 import java.util.List;
 import demetra.msts.ParameterInterpreter;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -54,7 +54,7 @@ public class MsaeItem extends AbstractModelItem {
         }
         mapping.add((p, builder) -> {
             double[][] w = new double[nwaves][];
-            w[0] = DoubleSequence.EMPTYARRAY;
+            w[0] = DoubleSeq.EMPTYARRAY;
             int pos = 0;
             int nar = lar.length;
             for (int i = 0; i < nar; ++i) {

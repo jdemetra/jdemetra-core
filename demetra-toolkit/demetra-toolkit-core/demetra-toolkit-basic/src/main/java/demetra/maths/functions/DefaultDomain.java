@@ -19,7 +19,7 @@ package demetra.maths.functions;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -48,12 +48,12 @@ public class DefaultDomain implements IParametersDomain {
      * @return
      */
     @Override
-    public boolean checkBoundaries(DoubleSequence inparams) {
+    public boolean checkBoundaries(DoubleSeq inparams) {
 	return true;
     }
 
     @Override
-    public double epsilon(DoubleSequence inparams, int idx) {
+    public double epsilon(DoubleSeq inparams, int idx) {
 	return inparams.get(idx) * epsilon;
     }
 

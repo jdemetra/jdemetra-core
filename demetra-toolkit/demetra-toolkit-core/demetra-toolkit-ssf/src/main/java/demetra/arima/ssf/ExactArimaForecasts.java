@@ -26,9 +26,9 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.ssf.ckms.CkmsFilter;
 import demetra.ssf.univariate.PredictionErrorDecomposition;
 import demetra.ssf.univariate.SsfData;
-import demetra.data.DoubleSequence;
 import demetra.ssf.univariate.Ssf;
 import demetra.arima.estimation.ArimaForecasts;
+import demetra.data.DoubleSeq;
 
 /**
  * @author Jean Palate
@@ -104,10 +104,10 @@ public class ExactArimaForecasts implements ArimaForecasts{
      * @return
      */
     @Override
-    public DoubleSequence forecasts(DoubleSequence data, int nf)
+    public DoubleSeq forecasts(DoubleSeq data, int nf)
     {
 	SsfData sd = new SsfData(data);
-	return DoubleSequence.ofInternal(fcasts(sd, nf));
+	return DoubleSeq.of(fcasts(sd, nf));
     }
 
     @Override

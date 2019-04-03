@@ -25,11 +25,11 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.Utility;
 import demetra.maths.polynomials.Polynomial;
 import javax.annotation.Nonnull;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
 import demetra.design.SkipProcessing;
 import demetra.maths.PolynomialType;
+import demetra.data.DoubleSeq;
 
 /**
  * Box-Jenkins seasonal arima model AR(B)* SAR(B)*D(B)*SD(B) y(t) =
@@ -120,19 +120,19 @@ public final class SarimaModel extends AbstractArimaModel {
             return this;
         }
 
-        public Builder parameters(DoubleSequence p) {
-            DoubleReader reader = p.reader();
+        public Builder parameters(DoubleSeq p) {
+            DoubleSeqCursor reader = p.cursor();
             for (int i = 0; i < phi.length; ++i) {
-                phi[i] = reader.next();
+                phi[i] = reader.getAndNext();
             }
             for (int i = 0; i < bphi.length; ++i) {
-                bphi[i] = reader.next();
+                bphi[i] = reader.getAndNext();
             }
             for (int i = 0; i < th.length; ++i) {
-                th[i] = reader.next();
+                th[i] = reader.getAndNext();
             }
             for (int i = 0; i < bth.length; ++i) {
-                bth[i] = reader.next();
+                bth[i] = reader.getAndNext();
             }
             return this;
         }
@@ -257,7 +257,7 @@ public final class SarimaModel extends AbstractArimaModel {
         this.bth = builder.bth;
     }
 
-    public DoubleSequence parameters() {
+    public DoubleSeq parameters() {
         double[] p = new double[phi.length + bphi.length + th.length + bth.length];
         int pos = 0;
         if (phi.length > 0) {
@@ -275,7 +275,7 @@ public final class SarimaModel extends AbstractArimaModel {
         if (bth.length > 0) {
             System.arraycopy(bth, 0, p, pos, bth.length);
         }
-        return DoubleSequence.ofInternal(p);
+        return DoubleSeq.of(p);
     }
 
     /**

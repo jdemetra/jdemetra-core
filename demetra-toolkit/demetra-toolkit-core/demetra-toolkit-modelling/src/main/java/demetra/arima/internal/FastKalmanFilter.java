@@ -26,10 +26,10 @@ import demetra.likelihood.DeterminantalTerm;
 import demetra.likelihood.Likelihood;
 import demetra.maths.matrices.Matrix;
 import demetra.util.SubArrayOfInt;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;
+import demetra.data.DoubleSeq;
 
 /**
  * The FastKalmanFilter class provides fast computation of Regression models
@@ -73,7 +73,7 @@ public class FastKalmanFilter {
      * @param y
      * @return
      */
-    public DataBlock fastFilter(final DoubleSequence y) {
+    public DataBlock fastFilter(final DoubleSeq y) {
         double[] C = c0.clone();
         double h = h0;
 
@@ -172,7 +172,7 @@ public class FastKalmanFilter {
      * @param nparams
      * @return BIC statistics
      */
-    public double fastProcessing(final DoubleSequence y, int nparams) {
+    public double fastProcessing(final DoubleSeq y, int nparams) {
         DataBlock yl = fastFilter(y);
         int n = yl.length();
         double ssqerr = yl.ssq();
@@ -203,7 +203,7 @@ public class FastKalmanFilter {
      * @param stde
      * @return
      */
-    public boolean process(final DoubleSequence y, final DataBlock res,
+    public boolean process(final DoubleSeq y, final DataBlock res,
             final DataBlock stde) {
         fast = false;
         DeterminantalTerm det = new DeterminantalTerm();
@@ -278,7 +278,7 @@ public class FastKalmanFilter {
      * successful.
      * @return True if the processing is successful, false otherwise.
      */
-    public Likelihood process(final DoubleSequence y) {
+    public Likelihood process(final DoubleSeq y) {
         fast = false;
         DeterminantalTerm det = new DeterminantalTerm();
         double[] C = c0.clone();
@@ -337,7 +337,7 @@ public class FastKalmanFilter {
             }
 
         } while (++pos < n);
-        DoubleSequence dy = DoubleSequence.ofInternal(yl);
+        DoubleSeq dy = DoubleSeq.of(yl);
         return Likelihood.builder(n)
                 .ssqErr(Doubles.ssq(dy))
                 .residuals(dy)
@@ -353,7 +353,7 @@ public class FastKalmanFilter {
      * @param ll
      * @return
      */
-    public ConcentratedLikelihoodWithMissing process(final DoubleSequence y, final SubArrayOfInt ao,
+    public ConcentratedLikelihoodWithMissing process(final DoubleSeq y, final SubArrayOfInt ao,
             final Matrix x) {
         fast = false;
         DeterminantalTerm det = new DeterminantalTerm();

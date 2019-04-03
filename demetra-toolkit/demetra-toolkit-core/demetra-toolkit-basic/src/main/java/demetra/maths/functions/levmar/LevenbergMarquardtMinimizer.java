@@ -25,7 +25,7 @@ import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -50,7 +50,7 @@ public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
     private DataBlock ecur;
     private double Fcur_, Ftry_;
     private Matrix J, V;
-    private DoubleSequence G;
+    private DoubleSeq G;
     //private SubMatrix J, K;
     private double scale_, scale2_;
     ///////////////////////////////////////////
@@ -90,7 +90,7 @@ public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
     }
 
     @Override
-    public DoubleSequence gradientAtMinimum() {
+    public DoubleSeq gradientAtMinimum() {
         if (G == null) {
             ISsqFunctionDerivatives derivatives = fcur_.ssqDerivatives();
             V = derivatives.hessian();

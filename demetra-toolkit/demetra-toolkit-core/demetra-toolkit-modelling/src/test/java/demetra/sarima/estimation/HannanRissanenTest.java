@@ -21,9 +21,9 @@ import demetra.arima.ArimaSeriesGenerator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
-import demetra.data.DoubleSequence;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarmaSpecification;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -31,7 +31,7 @@ import demetra.sarima.SarmaSpecification;
  */
 public class HannanRissanenTest {
 
-    static final DoubleSequence airlineData, data;
+    static final DoubleSeq airlineData, data;
 
     static {
         SarmaSpecification spec = new SarmaSpecification(12);
@@ -42,14 +42,14 @@ public class HannanRissanenTest {
                 .btheta(1, -.8)
                 .build();
         ArimaSeriesGenerator generator = new ArimaSeriesGenerator();
-        airlineData = DoubleSequence.ofInternal(generator.generate(arima, 120));
+        airlineData = DoubleSeq.of(generator.generate(arima, 120));
         spec.setP(3);
         arima = SarimaModel.builder(spec)
                 .theta(1, -.6)
                 .btheta(1, -.8)
                 .phi(-.2, -.3, .4)
                 .build();
-        data = DoubleSequence.ofInternal(generator.generate(arima, 120));
+        data = DoubleSeq.of(generator.generate(arima, 120));
     }
 
     public HannanRissanenTest() {

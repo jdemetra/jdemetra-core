@@ -6,11 +6,11 @@
 package demetra.sarima;
 
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -33,7 +33,7 @@ public class RegSarimaProcessorTest {
                 .setDefault()
                 .build();
         RegArimaModel model = RegArimaModel.builder(SarimaModel.class)
-                .y(DoubleSequence.ofInternal(Data.PROD))
+                .y(DoubleSeq.of(Data.PROD))
                 .arima(arima)
                 .meanCorrection(true)
                 .build();

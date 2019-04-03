@@ -5,7 +5,7 @@
  */
 package demetra.msts;
 
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParametersRange;
 
@@ -87,8 +87,8 @@ public class BoundedParameterInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public void fixModelParameter(DoubleReader reader) {
-        value = reader.next();
+    public void fixModelParameter(DoubleSeqCursor reader) {
+        value = reader.getAndNext();
         fixed = true;
     }
 
@@ -103,9 +103,9 @@ public class BoundedParameterInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public int decode(DoubleReader input, double[] buffer, int pos) {
+    public int decode(DoubleSeqCursor input, double[] buffer, int pos) {
         if (!fixed) {
-            buffer[pos] = input.next();
+            buffer[pos] = input.getAndNext();
         } else {
             buffer[pos] = value;
         }
@@ -113,9 +113,9 @@ public class BoundedParameterInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public int encode(DoubleReader input, double[] buffer, int pos) {
+    public int encode(DoubleSeqCursor input, double[] buffer, int pos) {
         if (!fixed) {
-            buffer[pos] = input.next();
+            buffer[pos] = input.getAndNext();
             return pos + 1;
         } else {
             input.skip(1);

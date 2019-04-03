@@ -17,10 +17,10 @@
 package demetra.tramo;
 
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import ec.tstoolkit.modelling.DefaultTransformationType;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -40,7 +40,7 @@ public class LogLeveModuleTest {
             LogLevelModule ll = LogLevelModule.builder()
                     .estimationPrecision(1e-7)
                     .build();
-            ll.process(DoubleSequence.ofInternal(Data.PROD), 12, true);
+            ll.process(DoubleSeq.of(Data.PROD), 12, true);
             assertTrue(ll.isChoosingLog());
 //        System.out.println(ll.getLevelLL());
 //        System.out.println(ll.getLogCorrection());

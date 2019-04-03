@@ -17,8 +17,8 @@
 package demetra.x11plus;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -38,5 +38,5 @@ public interface IEndPointsProcessor
      * which have to be completed.
      * The input and the output buffers should have the same size.
      */
-    public void process(DoubleSequence in, DataBlock out);
+    public void process(DoubleSeq in, DataBlock out);
 }

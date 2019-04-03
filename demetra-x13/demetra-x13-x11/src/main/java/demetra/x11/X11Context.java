@@ -7,7 +7,6 @@ package demetra.x11;
 
 import demetra.data.DataBlock;
 import demetra.data.DiscreteKernel;
-import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.FiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.sa.DecompositionMode;
@@ -19,6 +18,7 @@ import demetra.x11.extremevaluecorrector.IExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.PeriodSpecificExtremeValuesCorrector;
 import java.util.function.IntToDoubleFunction;
 import lombok.experimental.NonFinal;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -92,23 +92,23 @@ public class X11Context {
         return mode == DecompositionMode.LogAdditive;
     }
 
-    public DoubleSequence remove(DoubleSequence l, DoubleSequence r) {
+    public DoubleSeq remove(DoubleSeq l, DoubleSeq r) {
         if (isMultiplicative()) {
-            return DoubleSequence.onMapping(l.length(), i -> l.get(i) / r.get(i));
+            return DoubleSeq.onMapping(l.length(), i -> l.get(i) / r.get(i));
         } else {
-            return DoubleSequence.onMapping(l.length(), i -> l.get(i) - r.get(i));
+            return DoubleSeq.onMapping(l.length(), i -> l.get(i) - r.get(i));
         }
     }
 
-    public DoubleSequence add(DoubleSequence l, DoubleSequence r) {
+    public DoubleSeq add(DoubleSeq l, DoubleSeq r) {
         if (isMultiplicative()) {
-            return DoubleSequence.onMapping(l.length(), i -> l.get(i) * r.get(i));
+            return DoubleSeq.onMapping(l.length(), i -> l.get(i) * r.get(i));
         } else {
-            return DoubleSequence.onMapping(l.length(), i -> l.get(i) + r.get(i));
+            return DoubleSeq.onMapping(l.length(), i -> l.get(i) + r.get(i));
         }
     }
 
-    public void remove(DoubleSequence l, DoubleSequence r, DataBlock q) {
+    public void remove(DoubleSeq l, DoubleSeq r, DataBlock q) {
         if (isMultiplicative()) {
             q.set(l, r, (x, y) -> x / y);
         } else {
@@ -116,7 +116,7 @@ public class X11Context {
         }
     }
 
-    public void add(DoubleSequence l, DoubleSequence r, DataBlock q) {
+    public void add(DoubleSeq l, DoubleSeq r, DataBlock q) {
         if (isMultiplicative()) {
             q.set(l, r, (x, y) -> x * y);
         } else {
@@ -156,7 +156,7 @@ public class X11Context {
      *
      * @return
      */
-    public IExtremeValuesCorrector selectExtremeValuesCorrector(DoubleSequence dsToTest) {
+    public IExtremeValuesCorrector selectExtremeValuesCorrector(DoubleSeq dsToTest) {
         if (calendarSigma == CalendarSigmaOption.Signif) {
             Cochran cochranTest = new Cochran(dsToTest, this);
             boolean testResult = cochranTest.getTestResult();
@@ -218,9 +218,9 @@ public class X11Context {
      *
      * @param in
      *
-     * @return new DoubleSequence
+     * @return new DoubleSeq
      */
-    public DoubleSequence makePositivity(DoubleSequence in) {
+    public DoubleSeq makePositivity(DoubleSeq in) {
         double[] stc = in.toArray();
         int n = in.length();
         for (int i = 0; i < n; ++i) {
@@ -247,6 +247,6 @@ public class X11Context {
                 stc[i] = m;
             }
         }
-        return DoubleSequence.of(stc);
+        return DoubleSeq.copyOf(stc);
     }
 }

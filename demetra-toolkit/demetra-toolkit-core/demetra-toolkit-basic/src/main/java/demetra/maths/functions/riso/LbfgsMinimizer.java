@@ -24,8 +24,8 @@ import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.IFunctionMinimizer;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.matrices.Matrix;
-import demetra.data.DoubleSequence;
 import demetra.maths.functions.ParamValidation;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -71,7 +71,7 @@ public class LbfgsMinimizer implements IFunctionMinimizer {
     }
 
     @Override
-    public DoubleSequence gradientAtMinimum() {
+    public DoubleSeq gradientAtMinimum() {
         return fpt.derivatives().gradient();
     }
     // / <param name="eps">Determines the accuracy with which the solution
@@ -148,7 +148,7 @@ public class LbfgsMinimizer implements IFunctionMinimizer {
         fpt = start;
         converged = false;
 
-        DoubleSequence px = fpt.getParameters();
+        DoubleSeq px = fpt.getParameters();
         int n = px.length();
         if (n == 0) {
             return true;

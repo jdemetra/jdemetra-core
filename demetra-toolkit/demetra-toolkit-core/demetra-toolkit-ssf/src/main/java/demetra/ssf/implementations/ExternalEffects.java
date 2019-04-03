@@ -22,7 +22,7 @@ import demetra.data.DataWindow;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixWindow;
 import demetra.maths.matrices.QuadraticForm;
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsfMeasurement;
 
@@ -87,9 +87,9 @@ public class ExternalEffects implements ISsfLoading {
         v.vnext(nx);
         DataBlockIterator rows=v.rowsIterator();
         DataBlock xrow=data.row(pos);
-        DoubleReader cell = xrow.reader();
+        DoubleSeqCursor cell = xrow.cursor();
         while (rows.hasNext()){
-            loading.XpZd(pos, rows.next(), d*cell.next());
+            loading.XpZd(pos, rows.next(), d*cell.getAndNext());
         }
         vtmp.copy(v.transpose());
         v.hnext(nx);

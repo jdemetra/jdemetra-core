@@ -8,11 +8,11 @@ package demetra.arima.estimation;
 import demetra.arima.IArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.internal.FastArimaForecasts;
-import demetra.data.DoubleSequence;
 import demetra.design.Algorithm;
 import demetra.design.Development;
 import demetra.design.ServiceDefinition;
 import demetra.design.ThreadSafe;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -46,9 +46,9 @@ public interface ArimaForecasts {
      * @param nforecasts The number of forecasts
      * @return The forecasts
      */
-    DoubleSequence forecasts(DoubleSequence data, final int nforecasts);
+    DoubleSeq forecasts(DoubleSeq data, final int nforecasts);
     
-    default DoubleSequence backcasts(DoubleSequence data, final int nbackcasts){
+    default DoubleSeq backcasts(DoubleSeq data, final int nbackcasts){
         return forecasts(data.reverse(), nbackcasts).reverse();
     }
     

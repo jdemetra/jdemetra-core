@@ -16,13 +16,13 @@
  */
 package demetra.data;
 
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.util.IntList;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -32,24 +32,24 @@ import javax.annotation.Nonnegative;
 @Deprecated
 public class Doubles {
 
-    public int[] search(final DoubleSequence d, final DoublePredicate pred) {
+    public int[] search(final DoubleSeq d, final DoublePredicate pred) {
         IntList list = new IntList();
         int n = d.length();
-        DoubleReader cell = d.reader();
+        DoubleSeqCursor cell = d.cursor();
         for (int j = 0; j < n; ++j) {
-            if (pred.test(cell.next())) {
+            if (pred.test(cell.getAndNext())) {
                 list.add(j);
             }
         }
         return list.toArray();
     }
 
-    public int search(final DoubleSequence d, final DoublePredicate pred, final int[] first) {
+    public int search(final DoubleSeq d, final DoublePredicate pred, final int[] first) {
         int n = d.length();
-        DoubleReader cell = d.reader();
+        DoubleSeqCursor cell = d.cursor();
         int cur = 0;
         for (int j = 0; j < n; ++j) {
-            if (pred.test(cell.next())) {
+            if (pred.test(cell.getAndNext())) {
                 first[cur++] = j;
                 if (cur == first.length) {
                     return cur;
@@ -61,31 +61,31 @@ public class Doubles {
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Descriptive statistics (with default implementations">
-    public double sum(final DoubleSequence d) {
+    public double sum(final DoubleSeq d) {
         return d.reduce(0, (s, x) -> s + x);
     }
 
-    public double average(final DoubleSequence d) {
+    public double average(final DoubleSeq d) {
         return d.reduce(0, (s, x) -> s + x) / d.length();
     }
 
-    public double ssq(final DoubleSequence d) {
+    public double ssq(final DoubleSeq d) {
         return d.reduce(0, (s, x) -> s + x * x);
     }
 
-    public double ssqc(final DoubleSequence d, double mean) {
+    public double ssqc(final DoubleSeq d, double mean) {
         return d.reduce(0, (s, x) -> {
             x -= mean;
             return s + x * x;
         });
     }
 
-    public double sumWithMissing(final DoubleSequence d) {
+    public double sumWithMissing(final DoubleSeq d) {
         int n = d.length();
         double s = 0;
-        DoubleReader cell = d.reader();
+        DoubleSeqCursor cell = d.cursor();
         for (int i = 0; i < n; i++) {
-            double cur = cell.next();
+            double cur = cell.getAndNext();
             if (Double.isFinite(cur)) {
                 s += cur;
             }
@@ -93,12 +93,12 @@ public class Doubles {
         return s;
     }
 
-    public double ssqWithMissing(final DoubleSequence d) {
+    public double ssqWithMissing(final DoubleSeq d) {
         int n = d.length();
         double s = 0;
-        DoubleReader cell = d.reader();
+        DoubleSeqCursor cell = d.cursor();
         for (int i = 0; i < n; i++) {
-            double cur = cell.next();
+            double cur = cell.getAndNext();
             if (Double.isFinite(cur)) {
                 s += cur * cur;
             }
@@ -106,12 +106,12 @@ public class Doubles {
         return s;
     }
 
-    public double ssqcWithMissing(final DoubleSequence d, final double mean) {
+    public double ssqcWithMissing(final DoubleSeq d, final double mean) {
         int n = d.length();
         double s = 0;
-        DoubleReader cell = d.reader();
+        DoubleSeqCursor cell = d.cursor();
         for (int i = 0; i < n; i++) {
-            double cur = cell.next() - mean;
+            double cur = cell.getAndNext() - mean;
             if (Double.isFinite(cur)) {
                 s += cur * cur;
             }
@@ -119,13 +119,13 @@ public class Doubles {
         return s;
     }
 
-    public double averageWithMissing(final DoubleSequence d) {
+    public double averageWithMissing(final DoubleSeq d) {
         int n = d.length();
         int m = 0;
         double s = 0;
-        DoubleReader cell = d.reader();
+        DoubleSeqCursor cell = d.cursor();
         for (int i = 0; i < n; i++) {
-            double cur = cell.next();
+            double cur = cell.getAndNext();
             if (Double.isFinite(cur)) {
                 s += cur;
             } else {
@@ -135,12 +135,12 @@ public class Doubles {
         return s / (n - m);
     }
 
-    public double norm1(final DoubleSequence d) {
+    public double norm1(final DoubleSeq d) {
         int n = d.length();
         double nrm = 0;
-        DoubleReader cur = d.reader();
+        DoubleSeqCursor cur = d.cursor();
         for (int i = 0; i < n; ++i) {
-            nrm += Math.abs(cur.next());
+            nrm += Math.abs(cur.getAndNext());
         }
         return nrm;
     }
@@ -152,7 +152,7 @@ public class Doubles {
      * @param d
      * @return The euclidian norm (&gt=0).
      */
-    public double norm2(final DoubleSequence d) {
+    public double norm2(final DoubleSeq d) {
         int n = d.length();
         switch (n) {
             case 0:
@@ -162,9 +162,9 @@ public class Doubles {
             default:
                 double scale = 0;
                 double ssq = 1;
-                DoubleReader cell = d.reader();
+                DoubleSeqCursor cell = d.cursor();
                 for (int i = 0; i < n; ++i) {
-                    double cur = cell.next();
+                    double cur = cell.getAndNext();
                     if (cur != 0) {
                         double absxi = Math.abs(cur);
                         if (scale < absxi) {
@@ -181,7 +181,7 @@ public class Doubles {
         }
     }
 
-    public double fastNorm2(final DoubleSequence d) {
+    public double fastNorm2(final DoubleSeq d) {
         int n = d.length();
         switch (n) {
             case 0:
@@ -189,10 +189,10 @@ public class Doubles {
             case 1:
                 return Math.abs(d.get(0));
             default:
-                DoubleReader cell = d.reader();
+                DoubleSeqCursor cell = d.cursor();
                 double ssq = 0;
                 for (int i = 0; i < n; ++i) {
-                    double cur = cell.next();
+                    double cur = cell.getAndNext();
                     if (cur != 0) {
                         ssq += cur * cur;
                     }
@@ -206,15 +206,15 @@ public class Doubles {
      *
      * @return Returns min{|src(i)|}
      */
-    public double normInf(final DoubleSequence d) {
+    public double normInf(final DoubleSeq d) {
         int n = d.length();
         if (n == 0) {
             return 0;
         } else {
             double nrm = Math.abs(d.get(0));
-            DoubleReader cell = d.reader();
+            DoubleSeqCursor cell = d.cursor();
             for (int i = 1; i < n; ++i) {
-                double tmp = Math.abs(cell.next());
+                double tmp = Math.abs(cell.getAndNext());
                 if (tmp > nrm) {
                     nrm = tmp;
                 }
@@ -228,13 +228,13 @@ public class Doubles {
      *
      * @return Missing values are omitted.
      */
-    public int getRepeatCount(final DoubleSequence d) {
+    public int getRepeatCount(final DoubleSeq d) {
         int i = 0;
         int n = d.length();
-        DoubleReader cell = d.reader();
+        DoubleSeqCursor cell = d.cursor();
         double prev = 0;
         while (i++ < n) {
-            prev = cell.next();
+            prev = cell.getAndNext();
             if (Double.isFinite(prev)) {
                 break;
             }
@@ -244,7 +244,7 @@ public class Doubles {
         }
         int c = 0;
         for (; i < n; ++i) {
-            double cur = cell.next();
+            double cur = cell.getAndNext();
             if (Double.isFinite(cur)) {
                 if (cur == prev) {
                     ++c;
@@ -256,39 +256,39 @@ public class Doubles {
         return c;
     }
 
-    public double dot(final DoubleSequence d, DoubleSequence data) {
+    public double dot(final DoubleSeq d, DoubleSeq data) {
         int n = d.length();
         double s = 0;
-        DoubleReader cur = d.reader();
-        DoubleReader xcur = data.reader();
+        DoubleSeqCursor cur = d.cursor();
+        DoubleSeqCursor xcur = data.cursor();
         for (int i = 0; i < n; i++) {
-            s += cur.next() * xcur.next();
+            s += cur.getAndNext() * xcur.getAndNext();
         }
         return s;
     }
 
-    public double jdot(final DoubleSequence doubles, DoubleSequence data, int pos) {
+    public double jdot(final DoubleSeq doubles, DoubleSeq data, int pos) {
         int n = doubles.length();
         double s = 0;
-        DoubleReader cur = doubles.reader();
-        DoubleReader xcur = data.reader();
+        DoubleSeqCursor cur = doubles.cursor();
+        DoubleSeqCursor xcur = data.cursor();
         for (int i = 0; i < pos; i++) {
-            s += cur.next() * xcur.next();
+            s += cur.getAndNext() * xcur.getAndNext();
         }
         for (int i = pos; i < n; i++) {
-            s -= cur.next() * xcur.next();
+            s -= cur.getAndNext() * xcur.getAndNext();
         }
         return s;
     }
 
-    public double distance(final DoubleSequence doubles, DoubleSequence data) {
+    public double distance(final DoubleSeq doubles, DoubleSeq data) {
         double scale = 0;
         double ssq = 1;
-        DoubleReader cur = doubles.reader();
-        DoubleReader xcur = data.reader();
+        DoubleSeqCursor cur = doubles.cursor();
+        DoubleSeqCursor xcur = data.cursor();
         int n = doubles.length();
         for (int i = 0; i < n; ++i) {
-            double x = cur.next(), y = xcur.next();
+            double x = cur.getAndNext(), y = xcur.getAndNext();
             if (Double.compare(x, y) != 0) {
                 double d = x - y;
                 if (d != 0) {
@@ -307,7 +307,7 @@ public class Doubles {
         return scale * Math.sqrt(ssq);
     }
 
-    public DoubleSequence select(DoubleSequence data, DoublePredicate pred) {
+    public DoubleSeq select(DoubleSeq data, DoublePredicate pred) {
         double[] x = data.toArray();
         int cur = 0;
         for (int i = 0; i < x.length; ++i) {
@@ -319,15 +319,15 @@ public class Doubles {
             }
         }
         if (cur == x.length) {
-            return DoubleSequence.ofInternal(x);
+            return DoubleSeq.of(x);
         } else {
             double[] xc = new double[cur];
             System.arraycopy(x, 0, xc, 0, cur);
-            return DoubleSequence.ofInternal(xc);
+            return DoubleSeq.of(xc);
         }
     }
 
-    public static DoubleSequence removeMean(DoubleSequence x) {
+    public static DoubleSeq removeMean(DoubleSeq x) {
         double[] y = x.toArray();
         double s = 0;
         for (int i = 0; i < y.length; ++i) {
@@ -337,22 +337,22 @@ public class Doubles {
         for (int i = 0; i < y.length; ++i) {
             y[i] -= s;
         }
-        return DoubleSequence.ofInternal(y);
+        return DoubleSeq.of(y);
     }
 
-    public DoubleSequence fn(DoubleSequence s, DoubleUnaryOperator fn) {
+    public DoubleSeq fn(DoubleSeq s, DoubleUnaryOperator fn) {
         double[] data = s.toArray();
         for (int i = 0; i < data.length; ++i) {
             data[i] = fn.applyAsDouble(data[i]);
         }
-        return DoubleSequence.ofInternal(data);
+        return DoubleSeq.of(data);
     }
 
-    public DoubleSequence fastFn(DoubleSequence s, DoubleUnaryOperator fn) {
-        return DoubleSequence.onMapping(s.length(), i -> fn.applyAsDouble(s.get(i)));
+    public DoubleSeq fastFn(DoubleSeq s, DoubleUnaryOperator fn) {
+        return DoubleSeq.onMapping(s.length(), i -> fn.applyAsDouble(s.get(i)));
     }
 
-    public DoubleSequence fn(DoubleSequence s, int lag, DoubleBinaryOperator fn) {
+    public DoubleSeq fn(DoubleSeq s, int lag, DoubleBinaryOperator fn) {
         int n = s.length() - lag;
         if (n <= 0) {
             return null;
@@ -366,10 +366,10 @@ public class Doubles {
                 prev = next;
             }
         }
-        return DoubleSequence.ofInternal(nvalues);
+        return DoubleSeq.of(nvalues);
     }
 
-    public DoubleSequence extend(DoubleSequence s, @Nonnegative int nbeg, @Nonnegative int nend) {
+    public DoubleSeq extend(DoubleSeq s, @Nonnegative int nbeg, @Nonnegative int nend) {
         int n = s.length() + nbeg + nend;
         double[] nvalues = new double[n];
         for (int i = 0; i < nbeg; ++i) {
@@ -379,36 +379,36 @@ public class Doubles {
         for (int i = n - nend; i < n; ++i) {
             nvalues[i] = Double.NaN;
         }
-        return DoubleSequence.ofInternal(nvalues);
+        return DoubleSeq.of(nvalues);
     }
 
-    public DoubleSequence delta(DoubleSequence s, int lag) {
+    public DoubleSeq delta(DoubleSeq s, int lag) {
         return fn(s, lag, (x, y) -> y - x);
     }
 
-    public DoubleSequence delta(DoubleSequence s, int lag, int pow) {
-        DoubleSequence ns = s;
+    public DoubleSeq delta(DoubleSeq s, int lag, int pow) {
+        DoubleSeq ns = s;
         for (int i = 0; i < pow; ++i) {
             ns = fn(ns, lag, (x, y) -> y - x);
         }
         return ns;
     }
 
-    public DoubleSequence op(DoubleSequence a, DoubleSequence b, DoubleBinaryOperator op) {
+    public DoubleSeq op(DoubleSeq a, DoubleSeq b, DoubleBinaryOperator op) {
         double[] data = a.toArray();
-        DoubleReader reader = b.reader();
+        DoubleSeqCursor reader = b.cursor();
         for (int i = 0; i < data.length; ++i) {
-            data[i] = op.applyAsDouble(data[i], reader.next());
+            data[i] = op.applyAsDouble(data[i], reader.getAndNext());
         }
-        return DoubleSequence.ofInternal(data);
+        return DoubleSeq.of(data);
     }
 
-    public DoubleSequence fastOp(DoubleSequence a, DoubleSequence b, DoubleBinaryOperator op) {
+    public DoubleSeq fastOp(DoubleSeq a, DoubleSeq b, DoubleBinaryOperator op) {
         int n = a.length();
-        return DoubleSequence.onMapping(n, i -> a.get(i) + b.get(i));
+        return DoubleSeq.onMapping(n, i -> a.get(i) + b.get(i));
     }
 
-    public DoubleSequence commit(DoubleSequence s) {
-        return DoubleSequence.ofInternal(s.toArray());
+    public DoubleSeq commit(DoubleSeq s) {
+        return DoubleSeq.of(s.toArray());
     }
 }

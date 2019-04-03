@@ -29,8 +29,8 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
 import demetra.ucarima.UcarimaModel;
-import demetra.data.DoubleSequence;
 import demetra.arima.estimation.ArmaFilter;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -77,7 +77,7 @@ public class McElroyEstimates {
         clear();
     }
 
-    public void setData(DoubleSequence data) {
+    public void setData(DoubleSeq data) {
         data_=data.toArray();
         clear();
     }

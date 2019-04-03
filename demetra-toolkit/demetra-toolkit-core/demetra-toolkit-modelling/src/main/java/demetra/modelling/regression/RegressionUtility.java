@@ -7,10 +7,10 @@ package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.maths.matrices.Matrix;
 import demetra.timeseries.TimeSeriesDomain;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -19,12 +19,12 @@ import demetra.timeseries.TimeSeriesDomain;
 @lombok.experimental.UtilityClass
 public class RegressionUtility {
 
-    public <D extends TimeSeriesDomain> void addAY(D domain, DataBlock rslt, double a, DoubleSequence c, ITsVariable... var) {
+    public <D extends TimeSeriesDomain> void addAY(D domain, DataBlock rslt, double a, DoubleSeq c, ITsVariable... var) {
         Matrix x = Regression.matrix(domain, var);
-        DoubleReader reader = c.reader();
+        DoubleSeqCursor reader = c.cursor();
         DataBlockIterator columns = x.columnsIterator();
         while (columns.hasNext()) {
-            rslt.addAY(a * reader.next(), columns.next());
+            rslt.addAY(a * reader.getAndNext(), columns.next());
         }
     }
    

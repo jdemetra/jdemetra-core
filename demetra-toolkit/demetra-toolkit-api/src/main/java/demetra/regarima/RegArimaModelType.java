@@ -17,10 +17,10 @@
 package demetra.regarima;
 
 import demetra.arima.ArimaType;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.linearmodel.LinearModelType;
 import demetra.maths.MatrixType;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -39,7 +39,7 @@ public class RegArimaModelType {
     private ArimaType arima;
     
     //<editor-fold defaultstate="collapsed" desc="delegate to model">
-    public DoubleSequence getY() {
+    public DoubleSeq getY() {
         return model.getY();
     }
     

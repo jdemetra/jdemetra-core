@@ -21,8 +21,8 @@ import demetra.maths.ComplexMath;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
-import demetra.data.DoubleSequence;
 import demetra.maths.polynomials.spi.RootsSolver;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -36,7 +36,7 @@ public class PolynomialTest {
     @Test
     public void testEvaluate() {
         final int n = 100;
-        double[] array = DoubleSequence.onMapping(n, i -> 1).toArray();
+        double[] array = DoubleSeq.onMapping(n, i -> 1).toArray();
         Polynomial p = Polynomial.ofInternal(array);
         Complex x = Complex.cart(-.99, .1);
         Complex x1 = p.evaluateAt(x);
@@ -51,9 +51,9 @@ public class PolynomialTest {
     @Test
     public void testAdd() {
         final int n1 = 100, n2 = 10;
-        double[] array1 = DoubleSequence.onMapping(n1, i -> i).toArray();
+        double[] array1 = DoubleSeq.onMapping(n1, i -> i).toArray();
         Polynomial p1 = Polynomial.ofInternal(array1);
-        double[] array2 = DoubleSequence.onMapping(n2, i -> i + 2).toArray();
+        double[] array2 = DoubleSeq.onMapping(n2, i -> i + 2).toArray();
         Polynomial p2 = Polynomial.ofInternal(array2);
 
         Polynomial s1 = p1.plus(p2);
@@ -66,9 +66,9 @@ public class PolynomialTest {
     @Test
     public void testSub() {
         final int n1 = 100, n2 = 10;
-        double[] array1 = DoubleSequence.onMapping(n1, i -> i).toArray();
+        double[] array1 = DoubleSeq.onMapping(n1, i -> i).toArray();
         Polynomial p1 = Polynomial.ofInternal(array1);
-        double[] array2 = DoubleSequence.onMapping(n2, i -> i + 2).toArray();
+        double[] array2 = DoubleSeq.onMapping(n2, i -> i + 2).toArray();
         Polynomial p2 = Polynomial.ofInternal(array2);
 
         Polynomial s1 = p1.minus(p2);

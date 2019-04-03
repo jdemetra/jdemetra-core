@@ -24,8 +24,8 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.Ssf;
-import demetra.data.DoubleCell;
 import demetra.ssf.SsfComponent;
+import demetra.data.DoubleVectorCursor;
 
 /**
  *
@@ -264,7 +264,7 @@ public class SsfDisaggregation {
             }
             Matrix q = m.dropTopLeft(1, 0);
             DataBlockIterator cols = q.columnsIterator();
-            DoubleCell cur = zm.cells();
+            DoubleVectorCursor cur = zm.cursor();
             while (cols.hasNext()) {
                 cur.applyAndNext(x -> x + measurement.ZX(pos, cols.next()));
             }

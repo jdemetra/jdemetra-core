@@ -21,8 +21,8 @@ import demetra.design.Immutable;
 import demetra.maths.Constants;
 import java.util.Arrays;
 import java.util.function.DoublePredicate;
-import demetra.data.DoubleSequence;
 import demetra.design.SkipProcessing;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -44,7 +44,7 @@ public final class DescriptiveStatistics {
     private double skewness, kurtosis;
     private volatile double[] obs, sortedObs;
 
-    public static DescriptiveStatistics of(DoubleSequence data) {
+    public static DescriptiveStatistics of(DoubleSeq data) {
         return new DescriptiveStatistics(data.toArray());
     }
 
@@ -587,19 +587,19 @@ public final class DescriptiveStatistics {
      *
      * @return
      */
-    public DoubleSequence sortedObservations() {
-        return DoubleSequence.ofInternal(sortObs());
+    public DoubleSeq sortedObservations() {
+        return DoubleSeq.of(sortObs());
     }
 
     /**
      *
      * @return
      */
-    public DoubleSequence observations() {
-        return DoubleSequence.ofInternal(obs());
+    public DoubleSeq observations() {
+        return DoubleSeq.of(obs());
     }
 
-    public DoubleSequence data() {
-        return DoubleSequence.ofInternal(data);
+    public DoubleSeq data() {
+        return DoubleSeq.of(data);
     }
 }

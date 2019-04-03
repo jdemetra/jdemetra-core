@@ -29,8 +29,8 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
-import demetra.data.DoubleSequence;
 import demetra.arima.estimation.ArmaFilter;
+import demetra.data.DoubleSeq;
 
 /**
  * @author Jean Palate
@@ -49,7 +49,7 @@ public class ModifiedLjungBoxFilter implements ArmaFilter {
     private Matrix m_L, m_C;
 
     @Override
-    public void apply(DoubleSequence rw, DataBlock wl) {
+    public void apply(DoubleSeq rw, DataBlock wl) {
 	DataBlock w = DataBlock.of(rw);
 	// step 1. AR filter w, if necessary
 	DataBlock z = w;

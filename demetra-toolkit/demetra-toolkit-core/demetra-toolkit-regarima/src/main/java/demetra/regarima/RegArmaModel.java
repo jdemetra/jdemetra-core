@@ -9,13 +9,13 @@ import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleSequence;
 import demetra.eco.EcoException;
 import demetra.linearmodel.LinearModel;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
 import java.util.List;
 import demetra.maths.MatrixType;
+import demetra.data.DoubleSeq;
 
 /**
  * Linear model with stationary ARMA process
@@ -52,9 +52,9 @@ public class RegArmaModel<M extends IArimaModel> {
             throw new EcoException(EcoException.NOT_ENOUGH_OBS);
         }
 
-        DoubleSequence y = regarima.getY();
+        DoubleSeq y = regarima.getY();
         boolean mean = regarima.isMean();
-        List<DoubleSequence> x = regarima.getX();
+        List<DoubleSeq> x = regarima.getX();
         int[] missing = regarima.missing();
         int nx = regarima.getMissingValuesCount() + regarima.getVariablesCount();
         Matrix dx = Matrix.make(ndy, nx);
@@ -71,7 +71,7 @@ public class RegArmaModel<M extends IArimaModel> {
             DataBlockIterator cols = dx.columnsIterator();
             if (d > 0) {
                 if (missing.length > 0) {
-                    DoubleSequence coeff = ur.asPolynomial().coefficients().reverse();
+                    DoubleSeq coeff = ur.asPolynomial().coefficients().reverse();
                     for (int i = 0; i < missing.length; ++i) {
                         DataBlock col = cols.next();
                         if (missing[i] >= dy.length) {
@@ -86,7 +86,7 @@ public class RegArmaModel<M extends IArimaModel> {
                 if (mean) {
                     cols.next().set(1);
                 }
-                for (DoubleSequence var : x) {
+                for (DoubleSeq var : x) {
                     ur.apply(var, cols.next());
                 }
             } else {
@@ -96,12 +96,12 @@ public class RegArmaModel<M extends IArimaModel> {
                 if (mean) {
                     cols.next().set(1);
                 }
-                for (DoubleSequence var : x) {
+                for (DoubleSeq var : x) {
                     ur.apply(var, cols.next());
                 }
             }
         }
-        return new RegArmaModel<>(DoubleSequence.ofInternal(dy), arma, dx, missing.length);
+        return new RegArmaModel<>(DoubleSeq.of(dy), arma, dx, missing.length);
 
     }
 
@@ -110,7 +110,7 @@ public class RegArmaModel<M extends IArimaModel> {
      * (handled by additive outliers)
      */
     @lombok.NonNull
-    DoubleSequence y;
+    DoubleSeq y;
     /**
      * The stationary model
      */

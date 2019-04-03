@@ -16,10 +16,10 @@
  */
 package demetra.regarima.outlier;
 
-import demetra.data.DoubleSequence;
 import demetra.dstats.Normal;
 import demetra.dstats.ProbabilityType;
 import java.util.Arrays;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -32,7 +32,7 @@ public interface RobustStandardDeviationComputer {
      * @param data
      * @return
      */
-    double compute(DoubleSequence data);
+    double compute(DoubleSeq data);
 
     public static RobustStandardDeviationComputer mad() {
         return new Mad2(50);
@@ -65,7 +65,7 @@ public interface RobustStandardDeviationComputer {
         }
 
         @Override
-        public double compute(DoubleSequence e) {
+        public double compute(DoubleSeq e) {
             double[] a = e.toArray();
             int n = a.length;
             for (int i = 0; i < n; ++i) {
@@ -98,7 +98,7 @@ public interface RobustStandardDeviationComputer {
         }
 
         @Override
-        public double compute(DoubleSequence data) {
+        public double compute(DoubleSeq data) {
             double[] e = data.toArray();
             int n = e.length;
             Arrays.sort(e);

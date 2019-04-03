@@ -18,7 +18,6 @@ package demetra.regarima.internal;
 
 import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.DefaultLikelihoodEvaluation;
@@ -29,6 +28,7 @@ import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.matrices.Matrix;
 import java.util.function.ToDoubleFunction;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -45,13 +45,13 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
         private ConcentratedLikelihoodComputer cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER;
         private boolean mt = false;
         // model
-        private final DoubleSequence dy;
+        private final DoubleSeq dy;
         private Matrix x;
         private int nmissing;
         // mapping
         private IParametricMapping<S> mapping;
 
-        private Builder(final DoubleSequence dy) {
+        private Builder(final DoubleSeq dy) {
             this.dy = dy;
         }
 
@@ -87,7 +87,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
     }
 
     // model
-    final DoubleSequence dy;
+    final DoubleSeq dy;
     final Matrix x;
     final int nmissing;
     // mapping
@@ -97,7 +97,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
     final ToDoubleFunction<ILikelihood> ll;
     final boolean mt;
 
-    private RegArmaFunction(final DoubleSequence dy,
+    private RegArmaFunction(final DoubleSeq dy,
             final Matrix x,
             final int nm,
             final IParametricMapping<S> mapping,
@@ -119,18 +119,18 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
     }
 
     @Override
-    public IFunctionPoint evaluate(DoubleSequence parameters) {
+    public IFunctionPoint evaluate(DoubleSeq parameters) {
         return new Evaluation(this, parameters);
     }
 
     public static class Evaluation<S extends IArimaModel> implements IFunctionPoint {
 
         final RegArmaFunction<S> fn;
-        final DoubleSequence p;
+        final DoubleSeq p;
         final S arma;
         final ConcentratedLikelihoodWithMissing ll;
 
-        public Evaluation(RegArmaFunction<S> fn, DoubleSequence p) {
+        public Evaluation(RegArmaFunction<S> fn, DoubleSeq p) {
             this.fn = fn;
             this.p = p;
             this.arma = fn.mapping.map(p);
@@ -143,7 +143,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
         }
 
         @Override
-        public DoubleSequence getParameters() {
+        public DoubleSeq getParameters() {
             return p;
         }
 

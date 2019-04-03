@@ -18,7 +18,6 @@
 package demetra.stats.tests;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.dstats.F;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.linearmodel.LinearModel;
@@ -29,6 +28,7 @@ import demetra.maths.matrices.internal.Householder;
 import demetra.maths.matrices.internal.HouseholderR;
 import java.util.Arrays;
 import java.util.List;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -90,7 +90,7 @@ public class Anova {
         return Arrays.asList(rows);
     }
 
-    private ConcentratedLikelihoodWithMissing likelihood(HouseholderR qr, DoubleSequence y, int nvars) {
+    private ConcentratedLikelihoodWithMissing likelihood(HouseholderR qr, DoubleSeq y, int nvars) {
         int rank = qr.rank(nvars);
         int n = qr.getRowsCount();
         DataBlock res = DataBlock.make(n - rank);
@@ -107,7 +107,7 @@ public class Anova {
                 .build();
      }
 
-    private ConcentratedLikelihoodWithMissing[] nestedModelsEstimation(boolean mean, HouseholderR qr, DoubleSequence y, int[] groups) {
+    private ConcentratedLikelihoodWithMissing[] nestedModelsEstimation(boolean mean, HouseholderR qr, DoubleSeq y, int[] groups) {
         ConcentratedLikelihoodWithMissing[] ll = new ConcentratedLikelihoodWithMissing[groups.length + 1];
         int n = mean ? 1 : 0;
         ll[0] = likelihood(qr, y, n);

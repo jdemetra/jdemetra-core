@@ -17,12 +17,12 @@
 package demetra.r;
 
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import static demetra.timeseries.simplets.TsDataToolkit.log;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *

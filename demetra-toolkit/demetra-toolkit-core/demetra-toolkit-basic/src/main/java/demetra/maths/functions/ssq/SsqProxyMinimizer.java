@@ -19,7 +19,7 @@ package demetra.maths.functions.ssq;
 import demetra.design.Development;
 import demetra.maths.functions.IFunctionMinimizer;
 import demetra.maths.matrices.Matrix;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -66,7 +66,7 @@ public class SsqProxyMinimizer implements ISsqFunctionMinimizer {
      * @return
      */
     @Override
-    public DoubleSequence gradientAtMinimum() {
+    public DoubleSeq gradientAtMinimum() {
         return minimizer.gradientAtMinimum();
     }
 

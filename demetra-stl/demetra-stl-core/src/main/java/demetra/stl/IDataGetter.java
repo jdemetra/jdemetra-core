@@ -5,7 +5,7 @@
  */
 package demetra.stl;
 
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -47,7 +47,7 @@ public interface IDataGetter {
         };
     }
 
-    static IDataGetter of(final DoubleSequence data) {
+    static IDataGetter of(final DoubleSeq data) {
         return new IDataGetter() {
             @Override
             public double get(int idx) {

@@ -25,7 +25,7 @@ import demetra.ssf.univariate.DisturbanceSmoother;
 import demetra.ssf.univariate.IDisturbanceSmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
@@ -308,9 +308,9 @@ public class DiffuseDisturbanceSmoother {
     }
 
     private void subZ(DataBlockIterator rows, DataBlock b) {
-        DoubleReader cell = b.reader();
+        DoubleSeqCursor cell = b.cursor();
         while (rows.hasNext()) {
-            loading.XpZd(pos, rows.next(), -cell.next());
+            loading.XpZd(pos, rows.next(), -cell.getAndNext());
         }
     }
 

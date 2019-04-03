@@ -21,8 +21,8 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
-import demetra.data.DoubleSequence;
 import demetra.linearsystem.LinearSystemSolver;
+import demetra.data.DoubleSeq;
 
 /**
  *

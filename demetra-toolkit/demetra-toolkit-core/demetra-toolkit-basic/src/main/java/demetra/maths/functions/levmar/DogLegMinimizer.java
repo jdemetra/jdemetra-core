@@ -24,7 +24,7 @@ import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.MatrixException;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -80,7 +80,7 @@ public class DogLegMinimizer implements ISsqFunctionMinimizer {
     }
 
     @Override
-    public DoubleSequence gradientAtMinimum() {
+    public DoubleSeq gradientAtMinimum() {
         return fcur_.ssqDerivatives().gradient();
     }
 

@@ -18,7 +18,6 @@ package demetra.sarima.estimation;
 
 import demetra.arima.estimation.IArimaMapping;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.functions.FunctionException;
@@ -26,6 +25,7 @@ import demetra.maths.functions.ParamValidation;
 import demetra.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -63,7 +63,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
         }
     }
 
-    public static boolean checkStability(DoubleSequence c) {
+    public static boolean checkStability(DoubleSeq c) {
         int nc = c.length();
         while (nc > 0 && c.get(nc - 1) == 0) {
             --nc;
@@ -208,7 +208,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
      * @return
      */
     @Override
-    public boolean checkBoundaries(DoubleSequence p) {
+    public boolean checkBoundaries(DoubleSeq p) {
         int start = 0;
         if (spec.getP() > 0) {
             if (!checkStability(p.extract(0, spec.getP()))) {
@@ -237,7 +237,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
     }
 
     @Override
-    public double epsilon(DoubleSequence inparams, int idx) {
+    public double epsilon(DoubleSeq inparams, int idx) {
         double p = inparams.get(idx);
         if (p < 0) {
             return eps * Math.max(1, -p);
@@ -304,7 +304,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
     }
 
     @Override
-    public SarimaModel map(DoubleSequence p) {
+    public SarimaModel map(DoubleSeq p) {
         if (p.length() != spec.getParametersCount()) {
             throw new FunctionException(FunctionException.DIM_ERR);
         }
@@ -374,7 +374,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
     }
 
     @Override
-    public DoubleSequence getDefaultParameters() {
+    public DoubleSeq getDefaultParameters() {
         double[] p = new double[spec.getParametersCount()];
         int nar = spec.getP() + spec.getBp();
         for (int i = 0; i < nar; ++i) {
@@ -383,11 +383,11 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
         for (int i = nar; i < p.length; ++i) {
             p[i] = -.2;
         }
-        return DoubleSequence.ofInternal(p);
+        return DoubleSeq.of(p);
     }
 
     @Override
-    public DoubleSequence parametersOf(SarimaModel m) {
+    public DoubleSeq parametersOf(SarimaModel m) {
         return m.parameters();
     }
 

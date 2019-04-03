@@ -18,7 +18,6 @@ package demetra.r;
 
 import demetra.data.Data;
 import demetra.data.DataBlockStorage;
-import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
 import static demetra.r.TimeVaryingRegressionTest.FURNITURE;
 import demetra.sarima.SarimaModel;
@@ -38,6 +37,7 @@ import demetra.ucarima.UcarimaModel;
 import demetra.ucarima.ssf.SsfUcarima;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -50,7 +50,7 @@ public class TradingDaysTestsTest {
 
     @Test
     public void testTD() {
-        TsData s = log(TsData.of(TsPeriod.monthly(1992, 1), DoubleSequence.ofInternal(Data.ABS_RETAIL)));
+        TsData s = log(TsData.of(TsPeriod.monthly(1992, 1), DoubleSeq.of(Data.ABS_RETAIL)));
         TimeVaryingRegression.Results regarima = TimeVaryingRegression.regarima(s, "TD7", "Default", 1e-7);
         TsData rtd = regarima.getData("tdeffect", TsData.class);
 

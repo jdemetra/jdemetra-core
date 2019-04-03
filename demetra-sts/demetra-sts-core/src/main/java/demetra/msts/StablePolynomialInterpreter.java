@@ -6,13 +6,13 @@
 package demetra.msts;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.polynomials.Polynomial;
 import demetra.sarima.estimation.SarimaMapping;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -58,10 +58,10 @@ public class StablePolynomialInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public int decode(DoubleReader reader, double[] buffer, int pos) {
+    public int decode(DoubleSeqCursor reader, double[] buffer, int pos) {
         if (!fixed) {
             for (int i = 0; i < values.length; ++i) {
-                buffer[pos++] = reader.next();
+                buffer[pos++] = reader.getAndNext();
             }
         } else {
             for (int i = 0; i < values.length; ++i) {
@@ -72,10 +72,10 @@ public class StablePolynomialInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public int encode(DoubleReader reader, double[] buffer, int pos) {
+    public int encode(DoubleSeqCursor reader, double[] buffer, int pos) {
         if (!fixed) {
             for (int i = 0; i < values.length; ++i) {
-                buffer[pos++] = reader.next();
+                buffer[pos++] = reader.getAndNext();
             }
         } else {
             reader.skip(values.length);
@@ -84,9 +84,9 @@ public class StablePolynomialInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public void fixModelParameter(DoubleReader reader) {
+    public void fixModelParameter(DoubleSeqCursor reader) {
         for (int i = 0; i < values.length; ++i) {
-            values[i] = reader.next();
+            values[i] = reader.getAndNext();
         }
         fixed = true;
     }
@@ -122,12 +122,12 @@ public class StablePolynomialInterpreter implements ParameterInterpreter {
         }
 
         @Override
-        public boolean checkBoundaries(DoubleSequence inparams) {
+        public boolean checkBoundaries(DoubleSeq inparams) {
             return SarimaMapping.checkStability(inparams);
         }
 
         @Override
-        public double epsilon(DoubleSequence inparams, int idx) {
+        public double epsilon(DoubleSeq inparams, int idx) {
             return 1e-6;
         }
 

@@ -18,8 +18,8 @@ package demetra.maths.matrices;
 
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.Matrix;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -32,7 +32,7 @@ public class MatrixComparator {
         if (o.getRowsCount() != nrows) {
             return Double.MAX_VALUE;
         }
-        DoubleSequence delta = DoubleSequence.onMapping(o.getColumnsCount() * o.getRowsCount(),
+        DoubleSeq delta = DoubleSeq.onMapping(o.getColumnsCount() * o.getRowsCount(),
                 i -> m.get(i % nrows, i / nrows) - o.get(i % nrows, i / nrows));
         return Doubles.normInf(delta);
     }
@@ -42,7 +42,7 @@ public class MatrixComparator {
         if (o.getRowsCount() != nrows) {
             return Double.MAX_VALUE;
         }
-        DoubleSequence delta = DoubleSequence.onMapping(o.getColumnsCount() * o.getRowsCount(),
+        DoubleSeq delta = DoubleSeq.onMapping(o.getColumnsCount() * o.getRowsCount(),
                 i -> m.get(i % nrows, i / nrows) - o.get(i % nrows, i / nrows));
         return Doubles.normInf(delta);
     }

@@ -25,13 +25,13 @@ import demetra.maths.matrices.Matrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfBuilder;
 import demetra.ssf.univariate.ISsfData;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.likelihood.ILikelihoodFunction;
 import demetra.ssf.likelihood.MarginalLikelihood;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfBuilder;
 import demetra.ssf.univariate.ISsfData;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -127,7 +127,7 @@ public class MarginalLikelihoodFunction<S, F extends ISsf> implements ILikelihoo
     }
 
     @Override
-    public MarginalLikelihoodFunctionPoint<S, F> evaluate(DoubleSequence parameters) {
+    public MarginalLikelihoodFunctionPoint<S, F> evaluate(DoubleSeq parameters) {
         return new MarginalLikelihoodFunctionPoint<>(this, parameters);
     }
 
@@ -141,7 +141,7 @@ public class MarginalLikelihoodFunction<S, F extends ISsf> implements ILikelihoo
     }
 
     @Override
-    public MarginalLikelihoodFunctionPoint<S, F> ssqEvaluate(DoubleSequence parameters) {
+    public MarginalLikelihoodFunctionPoint<S, F> ssqEvaluate(DoubleSeq parameters) {
         return new MarginalLikelihoodFunctionPoint<>(this, parameters);
     }
 

@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import demetra.data.DataBlockIterator;
 import demetra.ssf.ISsfLoading;
-import demetra.data.DoubleCell;
+import demetra.data.DoubleVectorCursor;
 
 /**
  *
@@ -104,9 +104,9 @@ class CompositeLoading implements ISsfLoading {
         tmp.set(0);
         Z(pos, tmp);
         DataBlockIterator cols = V.columnsIterator();
-        DoubleCell cell = tmp.cells();
+        DoubleVectorCursor cell = tmp.cursor();
         while (cols.hasNext()) {
-            cols.next().addAY(cell.next(), tmp);
+            cols.next().addAY(cell.getAndNext(), tmp);
         }
     }
 

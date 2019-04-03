@@ -19,7 +19,7 @@ package demetra.maths.functions;
 
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -37,7 +37,7 @@ public interface IFunctionDerivatives {
      * 
      * @return
      */
-    DoubleSequence gradient();
+    DoubleSeq gradient();
 
     /**
      * 

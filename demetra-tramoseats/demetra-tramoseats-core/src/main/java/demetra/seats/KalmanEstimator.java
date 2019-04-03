@@ -16,7 +16,6 @@
  */
 package demetra.seats;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
@@ -30,6 +29,7 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.SsfData;
 import demetra.ucarima.UcarimaModel;
 import demetra.ucarima.ssf.SsfUcarima;
+import demetra.data.DoubleSeq;
 
 /**
  * @author Jean Palate
@@ -45,7 +45,7 @@ public class KalmanEstimator implements IComponentsEstimator {
     @Override
     public SeriesDecomposition decompose(SeatsModel model) {
         SeriesDecomposition.Builder builder = SeriesDecomposition.builder(DecompositionMode.Additive);
-        DoubleSequence s = model.getSeries();
+        DoubleSeq s = model.getSeries();
         int n = s.length(), nf = model.getForecastsCount(), nb = model.getBackcastsCount();
 
         CompositeSsf ssf = SsfUcarima.of(model.getUcarimaModel());
@@ -59,7 +59,7 @@ public class KalmanEstimator implements IComponentsEstimator {
         int[] pos = ssf.componentsPosition();
         for (int i = 0; i < ucm.getComponentsCount(); ++i) {
             ComponentType type = model.getTypes()[i];
-            DoubleSequence cmp = DoubleSequence.of(srslts.getComponent(pos[i]));
+            DoubleSeq cmp = srslts.getComponent(pos[i]);
             if (nb > 0) {
                 builder.add(cmp.range(0, nb), type, ComponentInformation.Backcast);
             }
@@ -67,7 +67,7 @@ public class KalmanEstimator implements IComponentsEstimator {
                 builder.add(cmp.extract(nb + n, nf), type, ComponentInformation.Forecast);
             }
             builder.add(cmp.extract(nb, n), type);
-            cmp = DoubleSequence.of(srslts.getComponentVariance(pos[i]));
+            cmp = srslts.getComponentVariance(pos[i]);
             if (nb > 0) {
                 builder.add(cmp.range(0, nb), type, ComponentInformation.StdevBackcast);
             }

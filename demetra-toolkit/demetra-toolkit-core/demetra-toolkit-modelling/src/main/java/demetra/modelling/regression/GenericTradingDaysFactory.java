@@ -22,7 +22,6 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
-import demetra.data.DoubleCell;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixWindow;
 import demetra.timeseries.TimeSeriesDomain;
@@ -31,6 +30,7 @@ import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.HashMap;
 import java.util.Map;
+import demetra.data.DoubleVectorCursor;
 
 /**
  *
@@ -150,9 +150,9 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
 
         int[][] groups = clustering.allPositions();
         int ng = groups.length;
-        DoubleCell[] cells = new DoubleCell[ng];
+        DoubleVectorCursor[] cells = new DoubleVectorCursor[ng];
         for (int i = 0; i < cells.length; ++i) {
-            cells[i] = buffer.column(i).cells();
+            cells[i] = buffer.column(i).cursor();
         }
         for (int i = 0; i < n; ++i) {
             for (int ig = 0; ig < ng; ++ig) {
@@ -187,10 +187,10 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         rotate(groups);
         int ng = groups.length - 1;
         int[] cgroup = groups[ng];
-        DoubleCell[] cells = new DoubleCell[ng];
+        DoubleVectorCursor[] cells = new DoubleVectorCursor[ng];
         Matrix data = Matrix.make(n, ng);
         for (int i = 0; i < cells.length; ++i) {
-            cells[i] = data.column(i).cells();
+            cells[i] = data.column(i).cursor();
         }
         for (int i = 0; i < n; ++i) {
             int csum = days[cgroup[0]][i];
@@ -226,9 +226,9 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         rotate(groups);
         int ng = groups.length - 1;
         int[] cgroup = groups[ng];
-        DoubleCell[] cells = new DoubleCell[ng];
+        DoubleVectorCursor[] cells = new DoubleVectorCursor[ng];
         for (int i = 0; i < cells.length; ++i) {
-            cells[i] = data.column(i).cells();
+            cells[i] = data.column(i).cursor();
         }
         for (int i = 0; i < n; ++i) {
             DataBlock rdays = days.row(i);
@@ -273,9 +273,9 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         }
         int[][] groups = clustering.allPositions();
         int ng = groups.length;
-        DoubleCell[] cells = new DoubleCell[ng];
+        DoubleVectorCursor[] cells = new DoubleVectorCursor[ng];
         for (int i = 0; i < cells.length; ++i) {
-            cells[i] = data.column(i).cells();
+            cells[i] = data.column(i).cursor();
         }
         for (int i = 0; i < n; ++i) {
             DataBlock rdays = days.row(i);

@@ -24,8 +24,8 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.dstats.Normal;
 import demetra.maths.matrices.Matrix;
-import demetra.data.DoubleSequence;
 import demetra.stats.AutoCovariances;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -122,7 +122,7 @@ public final class WienerKolmogorovDiagnostics {
 //                AutoCorrelations ac = new AutoCorrelations(stats);
 //                ac.setCorrectedForMean(true);
 //                double evar = stats.getVar() / (err * err);
-                    double evar = AutoCovariances.varianceNoMissing(DoubleSequence.ofInternal(itmp), 0) / (err * err);
+                    double evar = AutoCovariances.varianceNoMissing(DoubleSeq.of(itmp), 0) / (err * err);
                     double var = stmodels[i].getAutoCovarianceFunction().get(0);
                     m_tac.set(i, i, var);
                     m_eac.set(i, i, evar);
@@ -144,8 +144,8 @@ public final class WienerKolmogorovDiagnostics {
                             BartlettApproximation.CrossCorrelation cbartlett = new BartlettApproximation.CrossCorrelation(stmodels[i], stmodels[j]);
                             double cov = cbartlett.get(0);
                             double sdcov = cbartlett.standardDeviation(0, nc);
-                            DoubleSequence di = DoubleSequence.ofInternal(itmp, si, nc);
-                            DoubleSequence dj = DoubleSequence.ofInternal(jtmp, sj, nc);
+                            DoubleSeq di = DoubleSeq.of(itmp, si, nc);
+                            DoubleSeq dj = DoubleSeq.of(jtmp, sj, nc);
                             double vi = AutoCovariances.varianceNoMissing(di,0);
                             double vj = AutoCovariances.varianceNoMissing(dj,0);
                             double cvij = AutoCovariances.covarianceWithZeroMean(di, dj);
@@ -235,7 +235,7 @@ public final class WienerKolmogorovDiagnostics {
         return m_stest[i];
     }
 
-    public DoubleSequence getStationaryEstimate(int i) {
-        return DoubleSequence.ofInternal(m_stdata[i]);
+    public DoubleSeq getStationaryEstimate(int i) {
+        return DoubleSeq.of(m_stdata[i]);
     }
 }

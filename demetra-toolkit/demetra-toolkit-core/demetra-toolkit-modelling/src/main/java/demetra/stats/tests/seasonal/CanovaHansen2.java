@@ -5,7 +5,6 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.DoubleSequence;
 import demetra.data.TrigonometricSeries;
 import demetra.data.WindowFunction;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
@@ -14,6 +13,7 @@ import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
 import demetra.maths.matrices.Matrix;
 import demetra.stats.RobustCovarianceComputer;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -21,17 +21,17 @@ import demetra.stats.RobustCovarianceComputer;
  */
 public class CanovaHansen2 {
     
-    public static CanovaHansen2 of(DoubleSequence s){
+    public static CanovaHansen2 of(DoubleSeq s){
         return new CanovaHansen2(s);
     }
 
-    private final DoubleSequence s;
+    private final DoubleSeq s;
     private boolean trend = false;
     private double period;
     private WindowFunction winFunction = WindowFunction.Bartlett;
     private int truncationLag = 12;
 
-    private CanovaHansen2(DoubleSequence s) {
+    private CanovaHansen2(DoubleSeq s) {
         this.s = s;
     }
 
@@ -60,7 +60,7 @@ public class CanovaHansen2 {
         LinearModel lm = buildModel(x);
         Ols ols = new Ols();
         LeastSquaresResults olsResults = ols.compute(lm);
-        DoubleSequence e = lm.calcResiduals(olsResults.getCoefficients());
+        DoubleSeq e = lm.calcResiduals(olsResults.getCoefficients());
         double rvar = RobustCovarianceComputer.covariance(e, winFunction, truncationLag);
         Matrix xe = x.deepClone();
         int n=lm.getObservationsCount();
@@ -87,7 +87,7 @@ public class CanovaHansen2 {
         LinearModel.Builder builder = LinearModel.builder();
         builder.y(s);
         if (trend) {
-            builder.addX(DoubleSequence.onMapping(s.length(), i -> i));
+            builder.addX(DoubleSeq.onMapping(s.length(), i -> i));
         }
         builder.addX(sx)
                 .meanCorrection(true);

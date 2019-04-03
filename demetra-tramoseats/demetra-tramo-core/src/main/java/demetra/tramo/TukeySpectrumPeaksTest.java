@@ -17,10 +17,10 @@
 package demetra.tramo;
 
 import demetra.data.DiscreteWindowFunction;
-import demetra.data.DoubleSequence;
 import demetra.data.SmoothedPeriodogram;
 import demetra.dstats.internal.SpecialFunctions;
 import demetra.timeseries.TsData;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -134,7 +134,7 @@ public class TukeySpectrumPeaksTest {
          int[] indSmid;
         int indTD = -1;
         int indPI = -1;
-        DoubleSequence s = spectrum.spectrumValues();
+        DoubleSeq s = spectrum.spectrumValues();
 
         switch (windowLength) {
             case 112:
@@ -222,7 +222,7 @@ public class TukeySpectrumPeaksTest {
         return retVal;
     }
 
-    public boolean test(DoubleSequence s, int period) {
+    public boolean test(DoubleSeq s, int period) {
         clear();
         int n=s.length();
         int windowLength=windowLength(n, period);

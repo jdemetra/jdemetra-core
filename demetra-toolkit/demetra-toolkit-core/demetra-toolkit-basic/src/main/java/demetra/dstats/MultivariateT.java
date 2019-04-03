@@ -17,7 +17,6 @@
 package demetra.dstats;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Constants;
@@ -26,6 +25,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import lombok.NonNull;
 import demetra.random.RandomNumberGenerator;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -52,7 +52,7 @@ public final class MultivariateT {
      * @param scale V
      * @param df degrees of freedom of the Chi2
      */
-    public MultivariateT(DoubleSequence location, Matrix scale, double df){
+    public MultivariateT(DoubleSeq location, Matrix scale, double df){
         this.location=DataBlock.of(location);
         this.scale=scale.deepClone();
         this.chi2=new Chi2(df);

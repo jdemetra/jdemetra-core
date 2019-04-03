@@ -18,9 +18,9 @@
 package demetra.tramo;
 
 import demetra.data.AutoRegressiveSpectrum;
-import demetra.data.DoubleSequence;
 import demetra.data.Periodogram;
 import demetra.stats.DescriptiveStatistics;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -101,7 +101,7 @@ public class AutoRegressiveSpectrumTest {
     }
 
     // settings
-    public boolean test(DoubleSequence data, int period) {
+    public boolean test(DoubleSeq data, int period) {
         if (!computeARSpectrum(data, period)) {
             return false;
         }
@@ -221,7 +221,7 @@ public class AutoRegressiveSpectrumTest {
         }
     }
 
-    private boolean computeARSpectrum(DoubleSequence data, int period) {
+    private boolean computeARSpectrum(DoubleSeq data, int period) {
         int n = data.length();
         int nar = arcount(n, period);
         if (nar >= n) {

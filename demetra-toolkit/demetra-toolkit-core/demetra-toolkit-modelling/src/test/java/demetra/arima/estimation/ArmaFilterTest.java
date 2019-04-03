@@ -14,8 +14,8 @@ import demetra.sarima.SarimaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
-import demetra.data.DoubleSequence;
 import demetra.sarima.SarimaUtility;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -24,7 +24,7 @@ import demetra.sarima.SarimaUtility;
 public class ArmaFilterTest {
 
     private static final SarimaModel airline, arima;
-    private static final DoubleSequence data;
+    private static final DoubleSeq data;
 
     static {
         SarimaSpecification spec = new SarimaSpecification(12);
@@ -280,7 +280,7 @@ public class ArmaFilterTest {
         st.getUnitRoots().apply(DataBlock.ofInternal(ao), DataBlock.ofInternal(dao));
         int m = filter.prepare((IArimaModel) st.getStationaryModel(), dao.length);
         DataBlock s = DataBlock.make(m);
-        filter.apply(DoubleSequence.ofInternal(dao), s);
+        filter.apply(DoubleSeq.of(dao), s);
         System.out.println(s);
         double[] coefficients = st.getStationaryModel().getPiWeights().getRationalFunction().coefficients(120);
         double[] q=coefficients.clone();
@@ -293,7 +293,7 @@ public class ArmaFilterTest {
                 }
             }
         }
-        System.out.println(DoubleSequence.ofInternal(q));
+        System.out.println(DoubleSeq.of(q));
     }
 
     @Test
@@ -310,7 +310,7 @@ public class ArmaFilterTest {
         st.getUnitRoots().apply(DataBlock.ofInternal(ls), DataBlock.ofInternal(dls));
         int m = filter.prepare((IArimaModel) st.getStationaryModel(), dls.length);
         DataBlock s = DataBlock.make(m);
-        filter.apply(DoubleSequence.ofInternal(dls), s);
+        filter.apply(DoubleSeq.of(dls), s);
         System.out.println(s);
         double[] coefficients = st.getStationaryModel().getPiWeights().getRationalFunction().coefficients(120);
         double[] q=coefficients.clone();
@@ -323,6 +323,6 @@ public class ArmaFilterTest {
                 }
             }
         }
-        System.out.println(DoubleSequence.ofInternal(q));
+        System.out.println(DoubleSeq.of(q));
     }
 }

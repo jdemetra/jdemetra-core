@@ -16,10 +16,10 @@
  */
 package demetra.x11.extremevaluecorrector;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.x11.X11Context;
 import java.util.Arrays;
+import demetra.data.DoubleSeq;
 
 /**
  * Default implementation for the correction of extreme values
@@ -36,7 +36,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
      *
      * @return An array of doubles (length = annual frequency), with the averages for each period (months/quarters) of the year.
      */
-    public static double[] periodAverages(DoubleSequence s, int period) {
+    public static double[] periodAverages(DoubleSeq s, int period) {
         double[] outs = new double[period];
         int n = s.length();
         for (int i = 0; i < period; ++i) {
@@ -55,7 +55,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
     protected int period; // (approximated) period of the series
     protected int start; // position of the first "complete"/considered period
     protected double lsigma = 1.5, usigma = 2.5;
-    protected DoubleSequence scur, sweights;
+    protected DoubleSeq scur, sweights;
     private static final int NPERIODS = 5;// window of 5 years
     protected int forecastHorizon;
     protected boolean excludeFcast;
@@ -67,7 +67,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
      *
      */
     @Override
-    public void analyse(final DoubleSequence s, X11Context context) {
+    public void analyse(final DoubleSeq s, X11Context context) {
         lsigma = context.getLowerSigma();
         usigma = context.getUpperSigma();
         scur = s;
@@ -80,7 +80,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
         double[] stdev = calcStdev(scur);
         sweights = outliersDetection(scur, stdev);
         if (sweights.anyMatch(x -> x < 1)) {
-            DoubleSequence corr = removeExtremes(scur, sweights);
+            DoubleSeq corr = removeExtremes(scur, sweights);
             stdev = calcStdev(corr);
             sweights = outliersDetection(scur, stdev);
         }
@@ -95,7 +95,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
      * @return The corrected series. A new time series is always returned.
      */
     @Override
-    public DoubleSequence applyCorrections(DoubleSequence original, DoubleSequence corrections) {
+    public DoubleSeq applyCorrections(DoubleSeq original, DoubleSeq corrections) {
         double[] ns = original.toArray();
         for (int i = 0; i < ns.length; ++i) {
             double x = corrections.get(i);
@@ -103,10 +103,10 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
                 ns[i] = x;
             }
         }
-        return DoubleSequence.ofInternal(ns);
+        return DoubleSeq.of(ns);
     }
 
-    protected double[] calcStdev(DoubleSequence s) {
+    protected double[] calcStdev(DoubleSeq s) {
 
         if (excludeFcast) {
             s = s.drop(0, forecastHorizon);
@@ -138,7 +138,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
         }
         int ibeg = start, iend = ibeg + NPERIODS * period;
         while (iend <= n) {
-            DoubleSequence cur = s.range(ibeg, iend);
+            DoubleSeq cur = s.range(ibeg, iend);
             e = calcSingleStdev(cur);
             stdev[ie++] = e;
             ibeg += period;
@@ -147,7 +147,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
         // the last block is too short...
         if (cend) {
             ibeg -= period;
-            DoubleSequence cur = s.range(ibeg, n);
+            DoubleSeq cur = s.range(ibeg, n);
             e = calcSingleStdev(cur);
         } else {
             e = stdev[ie - 1];
@@ -159,7 +159,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
         return stdev;
     }
 
-    protected double calcSingleStdev(DoubleSequence data) {
+    protected double calcSingleStdev(DoubleSeq data) {
         int n = data.length();
         int nm = 0;
         double e = 0;
@@ -185,7 +185,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
      * @return A new time series is always returned. It will contain missing values for the periods that should not be corrected and the actual corrections for the other periods
      */
     @Override
-    public DoubleSequence computeCorrections(DoubleSequence s) {
+    public DoubleSeq computeCorrections(DoubleSeq s) {
         int n = s.length();
         double[] ns = new double[n];
         int beg = start;
@@ -214,7 +214,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
                 }
             }
         }
-        return DoubleSequence.ofInternal(ns);
+        return DoubleSeq.of(ns);
     }
 
     /**
@@ -223,7 +223,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
      * @return A new series is always returned
      */
     @Override
-    public DoubleSequence getCorrectionFactors() {
+    public DoubleSeq getCorrectionFactors() {
         int n = sweights.length();
         double[] ns = new double[n];
         Arrays.fill(ns, mul ? 1 : 0);
@@ -238,11 +238,11 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
                 }
             }
         }
-        return DoubleSequence.ofInternal(ns);
+        return DoubleSeq.of(ns);
     }
 
     @Override
-    public DoubleSequence getObservationWeights() {
+    public DoubleSeq getObservationWeights() {
         return sweights;
     }
 
@@ -253,7 +253,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
      *
      * @return The weights corresponding to the series
      */
-    protected DoubleSequence outliersDetection(DoubleSequence cur, double[] stdev) {
+    protected DoubleSeq outliersDetection(DoubleSeq cur, double[] stdev) {
         int n = cur.length();
 
         double[] w = new double[n];
@@ -287,10 +287,10 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
                 iend = n;
             }
         }
-        return DoubleSequence.of(w);
+        return DoubleSeq.copyOf(w);
     }
 
-    private DoubleSequence removeExtremes(DoubleSequence in, DoubleSequence weights) {
+    private DoubleSeq removeExtremes(DoubleSeq in, DoubleSeq weights) {
         double[] cin = in.toArray();
 
         for (int i = 0; i < cin.length; ++i) {
@@ -298,7 +298,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
                 cin[i] = Double.NaN;
             }
         }
-        return DoubleSequence.of(cin);
+        return DoubleSeq.copyOf(cin);
     }
 
     private int[] searchPositionsForOutlierCorrection(int p, final int period) {

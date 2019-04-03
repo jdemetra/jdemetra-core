@@ -18,7 +18,7 @@
 package demetra.maths.functions;
 
 import demetra.design.Development;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -48,12 +48,12 @@ public interface IMFunctionPoint {
      * Gets the parameters of the evaluation
      * @return A read only set of parameters.
      */
-    DoubleSequence getParameters();
+    DoubleSeq getParameters();
 
     /**
      * Gets the value of the function for the set of parameters of the
      * IFunctionInstance
      * @return A Double value. May be Double.Nan
      */
-    DoubleSequence getValues();
+    DoubleSeq getValues();
 }

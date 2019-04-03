@@ -6,12 +6,12 @@
 package demetra.x11.filter;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.x11.SeasonalFilterOption;
 import demetra.x11.X11Context;
 import static demetra.x11.X11Kernel.table;
 import demetra.x11.filter.endpoints.FilteredMeanEndPoints;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -22,17 +22,17 @@ public class MsrFilterSelection {
     private static final double[] C = {1.00000e0, 1.02584e0, 1.01779e0, 1.01383e0,
         1.00000e0, 3.00000e0, 1.55291e0, 1.30095e0};
 
-    private DoubleSequence seas;
-    private DoubleSequence irr;
+    private DoubleSeq seas;
+    private DoubleSeq irr;
 
     private double[] s;
     private double[] i;
     private double[] n;
 
-    public SeasonalFilterOption doMSR(DoubleSequence data, X11Context context) {
+    public SeasonalFilterOption doMSR(DoubleSeq data, X11Context context) {
         SeasonalFilterOption seasFilter = null;
         // 0. complete year
-        DoubleSequence series = completeYear(data, context);
+        DoubleSeq series = completeYear(data, context);
         double msr;
         do {
             // 1. calc Components
@@ -51,8 +51,8 @@ public class MsrFilterSelection {
         return seasFilter;
     }
 
-    private DoubleSequence completeYear(DoubleSequence series, X11Context context) {
-        DoubleSequence seriesCopy;
+    private DoubleSeq completeYear(DoubleSeq series, X11Context context) {
+        DoubleSeq seriesCopy;
         //check incomplete year
         int cut = (series.length() + context.getFirstPeriod()) % context.getPeriod();
         if (cut != 0) {
@@ -63,7 +63,7 @@ public class MsrFilterSelection {
         return seriesCopy;
     }
 
-    private void calcComponents(DoubleSequence series, X11Context context) {
+    private void calcComponents(DoubleSeq series, X11Context context) {
         // 0. Remove fore- and backcast
 
         //TODO

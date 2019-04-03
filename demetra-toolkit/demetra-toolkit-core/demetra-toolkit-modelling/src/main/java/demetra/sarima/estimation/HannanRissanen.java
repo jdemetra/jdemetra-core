@@ -21,13 +21,13 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;
 import demetra.ar.AutoRegressiveEstimation;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarmaSpecification;
+import demetra.data.DoubleSeq;
 
 /**
  * The Hannan-Rissanen procedure is performed as in TRAMO. See
@@ -112,7 +112,7 @@ public class HannanRissanen {
     private final Initialization initialization;
 
     private double[] m_data, m_a, m_pi;
-    private DoubleSequence m_odata;
+    private DoubleSeq m_odata;
     private double bic;
 
     private static final int MAXNPI = 50;
@@ -127,7 +127,7 @@ public class HannanRissanen {
     private double[] ls(Matrix mat, double[] y, boolean bbic) {
         QRSolver solver = QRSolvers.fastSolver();
         solver.solve(DataBlock.ofInternal(y), mat);
-        DoubleSequence pi = solver.coefficients();
+        DoubleSeq pi = solver.coefficients();
         int n = y.length, m = pi.count(x -> x != 0);
         if (bbic) {
             bic = Math.log(solver.ssqerr() / n) + Math.log(n) * m / n;
@@ -269,7 +269,7 @@ public class HannanRissanen {
      *
      * @return
      */
-    public DoubleSequence getData() {
+    public DoubleSeq getData() {
         return m_odata;
     }
 
@@ -318,7 +318,7 @@ public class HannanRissanen {
                 ar=AutoRegressiveEstimation.levinson();
                 break;
         }
-        ar.estimate(DoubleSequence.of(m_data), npi());
+        ar.estimate(DoubleSeq.copyOf(m_data), npi());
         m_a=ar.residuals().toArray();
     }
 
@@ -373,7 +373,7 @@ public class HannanRissanen {
      * @param spec
      * @return
      */
-    public boolean process(final DoubleSequence value, SarmaSpecification spec) {
+    public boolean process(final DoubleSeq value, SarmaSpecification spec) {
         clear();
         m_spec = spec.clone();
         m_odata = value;

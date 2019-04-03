@@ -16,7 +16,6 @@
  */
 package demetra.regarima.regular.diagnostics;
 
-import demetra.data.DoubleSequence;
 import demetra.data.Periodogram;
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
@@ -26,6 +25,7 @@ import demetra.stats.tests.NiidTests;
 import demetra.stats.tests.StatisticalTest;
 import java.util.ArrayList;
 import java.util.List;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -71,7 +71,7 @@ public class ResidualsDiagnostics implements Diagnostics {
 
     private boolean testRegarima(PreprocessingModel regarima) {
         try {
-            DoubleSequence res = RegArimaUtility.fullResiduals(regarima.getDescription().regarima(), regarima.getEstimation().getConcentratedLikelihood());
+            DoubleSeq res = RegArimaUtility.fullResiduals(regarima.getDescription().regarima(), regarima.getEstimation().getConcentratedLikelihood());
             freq = regarima.getDescription().getAnnualFrequency();
             stats = regarima.getEstimation().getTests();
             periodogram = Periodogram.of(res);

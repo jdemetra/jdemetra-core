@@ -5,7 +5,7 @@
  */
 package demetra.msts;
 
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 import demetra.likelihood.ILikelihood;
 import demetra.likelihood.ILikelihoodFunction;
 import demetra.likelihood.ILikelihoodFunctionPoint;
@@ -130,7 +130,7 @@ public class MstsMonitor {
     private Matrix data;
     private MstsMapping model;
     private MultivariateCompositeSsf ssf;
-    private DoubleSequence fullp;
+    private DoubleSeq fullp;
     private ILikelihood ll;
     private VarianceInterpreter fixedVariance;
 
@@ -184,7 +184,7 @@ public class MstsMonitor {
                 .count() == 0;
     }
 
-    public void process(Matrix data, MstsMapping model, DoubleSequence fullInitial) {
+    public void process(Matrix data, MstsMapping model, DoubleSeq fullInitial) {
         fixedVariance = null;
         this.data = data;
         this.model = model;
@@ -194,21 +194,21 @@ public class MstsMonitor {
         }
         int fniter = 30;
         if (needFixedVariance()) {
-            DoubleSequence p = model.functionParameters(fullp);
+            DoubleSeq p = model.functionParameters(fullp);
             ILikelihoodFunction fn = function(false);
             ILikelihoodFunctionPoint rslt = min(fn, false, precision3, 30, p);
             ll = rslt.getLikelihood();
             p = rslt.getParameters();
             double[] mp = model.modelParameters(p).toArray();
             fixedVariance = model.fixMaxVariance(mp, 1);
-            fullp = DoubleSequence.ofInternal(mp);
+            fullp = DoubleSeq.ofInternal(mp);
         }
 
         double curll = 0;
         for (int k = 0; k < NITER; ++k) {
             int niter = 0;
             do {
-                DoubleSequence p = model.functionParameters(fullp);
+                DoubleSeq p = model.functionParameters(fullp);
                 ILikelihoodFunction fn = function(concentratedLikelihood);
                 ILikelihoodFunctionPoint rslt = min(fn, concentratedLikelihood, curll == 0 ? precision3 : precision2, fniter, p);
                 ll = rslt.getLikelihood();
@@ -230,8 +230,8 @@ public class MstsMonitor {
                         vp.freeStde(smallStde);
                     }
                     smallVariances.clear();
-                    fullp=DoubleSequence.ofInternal(mp);
-                    DoubleSequence p = model.functionParameters(fullp);
+                    fullp=DoubleSeq.ofInternal(mp);
+                    DoubleSeq p = model.functionParameters(fullp);
                     ll = function(concentratedLikelihood).evaluate(p).getLikelihood();
                 }
             }
@@ -243,10 +243,10 @@ public class MstsMonitor {
             model.fixModelParameters(p -> p.isScaleSensitive(true), fullp);
             if (model.parameters().filter(p -> !p.isFixed()).count() > 0) {
                 ILikelihoodFunction fn = function(concentratedLikelihood);
-                DoubleSequence curp = model.functionParameters(fullp);
+                DoubleSeq curp = model.functionParameters(fullp);
                 ILikelihoodFunctionPoint rslt = min(fn, concentratedLikelihood, curll == 0 ? precision3 : precision2, fniter, curp);
                 ll = rslt.getLikelihood();
-                DoubleSequence np = rslt.getParameters();
+                DoubleSeq np = rslt.getParameters();
                 fullp = model.modelParameters(np);
             }
             // Free the fixed parameters
@@ -260,7 +260,7 @@ public class MstsMonitor {
                 curll = ll.logLikelihood();
             }
         }
-        DoubleSequence p = model.functionParameters(fullp);
+        DoubleSeq p = model.functionParameters(fullp);
         // Final estimation. To do anyway
         ILikelihoodFunction fn = function(concentratedLikelihood);
         ILikelihoodFunctionPoint rslt = min(fn, concentratedLikelihood, precision, this.maxIterOptimzer, p);
@@ -270,7 +270,7 @@ public class MstsMonitor {
         ssf = model.map(p);
     }
 
-    private ILikelihoodFunctionPoint min(ILikelihoodFunction fn, boolean concentrated, double eps, int niter, DoubleSequence start) {
+    private ILikelihoodFunctionPoint min(ILikelihoodFunction fn, boolean concentrated, double eps, int niter, DoubleSeq start) {
         if (fn.getDomain().getDim() == 0) {
             return fn.evaluate(start);
         }
@@ -299,7 +299,7 @@ public class MstsMonitor {
         for (VarianceInterpreter small : smallVariances) {
             small.fixStde(smallStde);
             try {
-                DoubleSequence nprslts = model.functionParameters(fullp);
+                DoubleSeq nprslts = model.functionParameters(fullp);
                 ILikelihood nll = function(concentratedLikelihood).evaluate(nprslts).getLikelihood();
                 double d = nll.logLikelihood() - ll.logLikelihood();
                 if (d > dll) {
@@ -338,7 +338,7 @@ public class MstsMonitor {
         for (VarianceInterpreter small : svar) {
             double olde = small.fixStde(0);
             try {
-                DoubleSequence p = model.functionParameters(fullp);
+                DoubleSeq p = model.functionParameters(fullp);
                 ILikelihood nll = function(concentratedLikelihood).evaluate(p).getLikelihood();
                 double ndll = nll.logLikelihood() - ll.logLikelihood();
                 if (ndll > dll) {
@@ -383,7 +383,7 @@ public class MstsMonitor {
     /**
      * @return the prslts
      */
-    public DoubleSequence getParameters() {
+    public DoubleSeq getParameters() {
         return model.functionParameters(fullp);
     }
 
@@ -394,7 +394,7 @@ public class MstsMonitor {
         return ll;
     }
 
-    public DoubleSequence fullParameters() {
+    public DoubleSeq fullParameters() {
         return fullp;
     }
 }

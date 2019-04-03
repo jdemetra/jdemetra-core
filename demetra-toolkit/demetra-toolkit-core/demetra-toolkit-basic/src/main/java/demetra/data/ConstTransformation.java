@@ -103,7 +103,7 @@ public final class ConstTransformation implements DataTransformation {
      * @return
      */
     @Override
-    public DoubleSequence transform(DoubleSequence data, LogJacobian ljacobian) {
+    public DoubleSeq transform(DoubleSeq data, LogJacobian ljacobian) {
         double[] x = data.toArray();
         DataBlock X = DataBlock.ofInternal(x);
         switch (op) {
@@ -134,7 +134,7 @@ public final class ConstTransformation implements DataTransformation {
             default:
                 return data;
         }
-        return DoubleSequence.ofInternal(x);
+        return DoubleSeq.of(x);
     }
 
     @Override

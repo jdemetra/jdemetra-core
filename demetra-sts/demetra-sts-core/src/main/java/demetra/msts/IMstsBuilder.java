@@ -5,13 +5,13 @@
  */
 package demetra.msts;
 
-import demetra.data.DoubleSequence;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
+import demetra.data.DoubleSeq;
 
 /**
  *
  * @author palatej
  */
 public interface IMstsBuilder {
-    int decode(DoubleSequence parameters, MultivariateCompositeSsf.Builder builder);
+    int decode(DoubleSeq parameters, MultivariateCompositeSsf.Builder builder);
 }

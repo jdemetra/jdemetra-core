@@ -17,7 +17,6 @@
 package demetra.r;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
@@ -30,6 +29,7 @@ import demetra.stats.tests.seasonal.CanovaHansen;
 import demetra.stats.tests.seasonal.CanovaHansen2;
 import demetra.stats.tests.seasonal.PeriodicLjungBox;
 import demetra.modelling.regression.PeriodicContrastsFactory;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -40,7 +40,7 @@ public class SeasonalityTests {
 
     public TestResult fTest(double[] s, int period, boolean ar, int ny) {
 
-        DoubleSequence y = DoubleSequence.ofInternal(s);
+        DoubleSeq y = DoubleSeq.of(s);
         if (ar) {
             if (ny != 0) {
                 y = y.drop(Math.max(0, s.length - period * ny - 1), 0);
@@ -51,7 +51,7 @@ public class SeasonalityTests {
             for (int i = 0; i < ds.length; ++i) {
                 ds[i] = s[i + 1] - s[i];
             }
-            y = DoubleSequence.ofInternal(ds);
+            y = DoubleSeq.of(ds);
             if (ny != 0) {
                 y = y.drop(Math.max(0, s.length - period * ny), 0);
             }
@@ -64,7 +64,7 @@ public class SeasonalityTests {
         for (int i = s.length - 1; i > 0; --i) {
             s[i] -= s[i - 1];
         }
-        DoubleSequence y = DoubleSequence.ofInternal(s, 1, s.length - 1);
+        DoubleSeq y = DoubleSeq.of(s, 1, s.length - 1);
         if (ny != 0) {
             y = y.drop(Math.max(0, y.length() - period * ny), 0);
         }
@@ -77,12 +77,12 @@ public class SeasonalityTests {
     }
 
     public TestResult periodicQsTest(double[] s, double[] periods) {
-        DoubleSequence y;
+        DoubleSeq y;
         if (periods.length == 1) {
             for (int j = s.length - 1; j > 0; --j) {
                 s[j] -= s[j - 1];
             }
-            y = DoubleSequence.ofInternal(s, 1, s.length - 1);
+            y = DoubleSeq.of(s, 1, s.length - 1);
         } else {
             int del = 0;
             for (int i = 1; i < periods.length; ++i) {
@@ -92,7 +92,7 @@ public class SeasonalityTests {
                     s[j] -= s[j - p];
                 }
             }
-            y = DoubleSequence.ofInternal(s, del, s.length - del);
+            y = DoubleSeq.of(s, del, s.length - del);
         }
         StatisticalTest test = new PeriodicLjungBox(y, 0)
                 .lags(periods[0], 2)
@@ -103,7 +103,7 @@ public class SeasonalityTests {
 
     public double[] canovaHansenTest(double[] s, int start, int end, boolean original) {
         double[] rslt = new double[end - start];
-        DoubleSequence x = DoubleSequence.ofInternal(s);
+        DoubleSeq x = DoubleSeq.of(s);
         for (int i = start; i < end; ++i) {
             if (original){
                 rslt[i - start] = CanovaHansen.test(x)
@@ -119,7 +119,7 @@ public class SeasonalityTests {
         return rslt;
     }
 
-    private TestResult process(DoubleSequence s, int freq) {
+    private TestResult process(DoubleSeq s, int freq) {
         try {
             DataBlock y = DataBlock.of(s);
             y.sub(y.average());
@@ -137,7 +137,7 @@ public class SeasonalityTests {
         }
     }
 
-    private TestResult processAr(DoubleSequence s, int freq) {
+    private TestResult processAr(DoubleSeq s, int freq) {
         try {
             PeriodicContrasts var = new PeriodicContrasts(freq);
 

@@ -18,7 +18,6 @@ package demetra.regarima.internal;
 
 import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
@@ -32,6 +31,7 @@ import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import demetra.maths.MatrixType;
 import demetra.arima.estimation.IArimaMapping;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -49,13 +49,13 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
         private ConcentratedLikelihoodComputer cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER;
         private boolean mt = false;
         // model
-        private final DoubleSequence dy;
+        private final DoubleSeq dy;
         private MatrixType x;
         private int nmissing;
         // mapping
         private IArimaMapping<S> mapping;
 
-        private SsqBuilder(final DoubleSequence dy) {
+        private SsqBuilder(final DoubleSeq dy) {
             this.dy = dy;
         }
 
@@ -96,12 +96,12 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
         }
     }
 
-    public static <S extends IArimaModel> SsqBuilder<S> builder(DoubleSequence y){
+    public static <S extends IArimaModel> SsqBuilder<S> builder(DoubleSeq y){
         return new SsqBuilder<>(y);
     }
     
     // model
-    final DoubleSequence dy;
+    final DoubleSeq dy;
     final MatrixType x;
     final int nmissing;
     // mapping
@@ -109,15 +109,15 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
     // algorithms
     final ConcentratedLikelihoodComputer cll;
     final ToDoubleFunction<ILikelihood> ssqll;
-    final Function<ILikelihood, DoubleSequence> errors;
+    final Function<ILikelihood, DoubleSeq> errors;
     final boolean mt;
 
-    private RegArmaSsqFunction(final DoubleSequence dy,
+    private RegArmaSsqFunction(final DoubleSeq dy,
             final MatrixType x,
             final int nm,
             final IParametricMapping<S> mapping,
             final ConcentratedLikelihoodComputer cll,
-            final Function<ILikelihood, DoubleSequence> errors,
+            final Function<ILikelihood, DoubleSeq> errors,
             final ToDoubleFunction<ILikelihood> ssqll,
             final boolean mt) {
         this.dy = dy;
@@ -136,18 +136,18 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
     }
 
     @Override
-    public Evaluation<S> ssqEvaluate(DoubleSequence parameters) {
+    public Evaluation<S> ssqEvaluate(DoubleSeq parameters) {
         return new Evaluation<>(this, parameters);
     }
 
     static class Evaluation<S extends IArimaModel> implements ISsqFunctionPoint {
 
         final RegArmaSsqFunction<S> fn;
-        final DoubleSequence p;
+        final DoubleSeq p;
         final S arma;
         final ConcentratedLikelihoodWithMissing ll;
 
-        public Evaluation(RegArmaSsqFunction<S> fn, DoubleSequence p) {
+        public Evaluation(RegArmaSsqFunction<S> fn, DoubleSeq p) {
             this.fn = fn;
             this.p = p;
             this.arma = fn.mapping.map(p);
@@ -156,7 +156,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
         }
 
         @Override
-        public DoubleSequence getE() {
+        public DoubleSeq getE() {
             return fn.errors.apply(ll);
         }
 
@@ -165,7 +165,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
         }
 
         @Override
-        public DoubleSequence getParameters() {
+        public DoubleSeq getParameters() {
             return p;
         }
 

@@ -6,7 +6,6 @@
 package demetra.r;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
 import demetra.maths.linearfilters.HendersonFilters;
 import demetra.maths.linearfilters.IFilterOutput;
@@ -23,6 +22,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -36,7 +36,7 @@ public class X11Decomposition {
     public static class Results implements ProcResults {
 
         boolean multiplicative;
-        DoubleSequence y;
+        DoubleSeq y;
         X11Kernel kernel;
 
         @Override
@@ -134,7 +134,7 @@ public class X11Decomposition {
                 .upperSigma(usig)
                 .build();
         X11Kernel kernel = new X11Kernel();
-        DoubleSequence y = DoubleSequence.ofInternal(data);
+        DoubleSeq y = DoubleSeq.of(data);
         kernel.process(y, context);
 
         return Results.builder()
@@ -147,18 +147,18 @@ public class X11Decomposition {
 
     // diagnostics
     public double icratio(double[] s, double[] sc, boolean mul) {
-        DoubleSequence SC = DoubleSequence.ofInternal(sc);
+        DoubleSeq SC = DoubleSeq.of(sc);
         double gc = SeriesEvolution.calcAbsMeanVariation(SC, 1, mul);
-        double gi = SeriesEvolution.calcAbsMeanVariation(mul ? DoubleSequence.onMapping(s.length, i -> s[i] / sc[i])
-                : DoubleSequence.onMapping(s.length, i -> s[i] - sc[i]), 1, mul);
+        double gi = SeriesEvolution.calcAbsMeanVariation(mul ? DoubleSeq.onMapping(s.length, i -> s[i] / sc[i])
+                : DoubleSeq.onMapping(s.length, i -> s[i] - sc[i]), 1, mul);
         return gi / gc;
     }
 
     public double[] icratios(double[] s, double[] sc, int n, boolean mul) {
-        DoubleSequence SC = DoubleSequence.ofInternal(sc);
+        DoubleSeq SC = DoubleSeq.of(sc);
         double[] gc = SeriesEvolution.calcAbsMeanVariations(SC, n, mul);
-        double[] gi = SeriesEvolution.calcAbsMeanVariations(mul ? DoubleSequence.onMapping(s.length, i -> s[i] / sc[i])
-                : DoubleSequence.onMapping(s.length, i -> s[i] - sc[i]), n, mul);
+        double[] gi = SeriesEvolution.calcAbsMeanVariations(mul ? DoubleSeq.onMapping(s.length, i -> s[i] / sc[i])
+                : DoubleSeq.onMapping(s.length, i -> s[i] - sc[i]), n, mul);
         double[] icr = new double[n];
         for (int i = 0; i < n; ++i) {
             icr[i] = gi[i] / gc[i];
@@ -178,7 +178,7 @@ public class X11Decomposition {
             // apply the musgrave filters
             IFiniteFilter[] f = MusgraveFilterFactory.makeFilters(filter, ic);
             AsymmetricEndPoints aep = new AsymmetricEndPoints(f, 0);
-            aep.process(DoubleSequence.ofInternal(s), DataBlock.ofInternal(x));
+            aep.process(DoubleSeq.of(s), DataBlock.ofInternal(x));
         }
         return x;
     }

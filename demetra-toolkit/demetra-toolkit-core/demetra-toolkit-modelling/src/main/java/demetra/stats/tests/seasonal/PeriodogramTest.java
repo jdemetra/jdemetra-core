@@ -5,12 +5,12 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.DoubleSequence;
 import demetra.data.Periodogram;
 import demetra.dstats.Chi2;
 import demetra.dstats.F;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -20,10 +20,10 @@ public class PeriodogramTest {
 
     private static final double D = .01;
 
-    private final DoubleSequence sample;
+    private final DoubleSeq sample;
     private final int period;
 
-    public PeriodogramTest(DoubleSequence sample, int period) {
+    public PeriodogramTest(DoubleSeq sample, int period) {
         this.sample = sample;
         this.period = period;
     }
@@ -64,18 +64,18 @@ public class PeriodogramTest {
         return new StatisticalTest(chi2, xsum, TestType.Upper, true);
     }
 
-    private DoubleSequence expand(DoubleSequence data) {
+    private DoubleSeq expand(DoubleSeq data) {
         int n = data.length();
         if (n % period == 0) {
             return data;
         } else {
             double[] nd = new double[(1 + n / period) * period];
             data.copyTo(nd, 0);
-            return DoubleSequence.ofInternal(nd);
+            return DoubleSeq.of(nd);
         }
     }
 
-    private DoubleSequence shrink(DoubleSequence data) {
+    private DoubleSeq shrink(DoubleSeq data) {
         int n = data.length();
         if (n % period == 0) {
             return data;
@@ -83,7 +83,7 @@ public class PeriodogramTest {
             int nc = n - n % period;
             double[] nd = new double[nc];
             data.extract(n - nc, nc).copyTo(nd, 0);
-            return DoubleSequence.ofInternal(nd);
+            return DoubleSeq.of(nd);
         }
     }
 
@@ -93,7 +93,7 @@ public class PeriodogramTest {
      * @return F test
      */
     public StatisticalTest buildF() {
-        DoubleSequence data = shrink(sample);
+        DoubleSeq data = shrink(sample);
         Periodogram periodogram = Periodogram.of(data);
         double[] p = periodogram.getP();
         double xsum = 0;

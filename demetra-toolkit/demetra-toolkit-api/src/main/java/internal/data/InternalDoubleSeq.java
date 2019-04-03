@@ -16,11 +16,9 @@
  */
 package internal.data;
 
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.util.function.BiDoublePredicate;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -30,6 +28,7 @@ import java.util.function.DoublePredicate;
 import java.util.function.IntToDoubleFunction;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -41,7 +40,7 @@ public class InternalDoubleSeq {
     @lombok.RequiredArgsConstructor
     public static final class DoubleIterator implements PrimitiveIterator.OfDouble {
 
-        private final DoubleSequence seq;
+        private final DoubleSeq seq;
         private int cur = 0;
 
         @Override
@@ -66,83 +65,83 @@ public class InternalDoubleSeq {
         }
     }
 
-    public void forEach(DoubleSequence seq, DoubleConsumer action) {
+    public void forEach(DoubleSeq seq, DoubleConsumer action) {
         for (int i = 0; i < seq.length(); i++) {
             action.accept(seq.get(i));
         }
     }
 
-    public Spliterator.OfDouble spliterator(DoubleSequence seq) {
+    public Spliterator.OfDouble spliterator(DoubleSeq seq) {
         return Spliterators.spliterator(new DoubleIterator(seq), seq.length(), Spliterator.ORDERED);
     }
 
-    public void copyTo(DoubleSequence seq, double[] buffer, int offset) {
+    public void copyTo(DoubleSeq seq, double[] buffer, int offset) {
         int n = seq.length();
-        DoubleReader reader = seq.reader();
+        DoubleSeqCursor reader = seq.cursor();
         for (int i = 0; i < n; ++i) {
-            buffer[offset + i] = reader.next();
+            buffer[offset + i] = reader.getAndNext();
         }
     }
 
-    public double[] toArray(DoubleSequence seq) {
+    public double[] toArray(DoubleSeq seq) {
         double[] result = new double[seq.length()];
-        DoubleReader reader = seq.reader();
+        DoubleSeqCursor reader = seq.cursor();
         for (int i = 0; i < result.length; ++i) {
-            result[i] = reader.next();
+            result[i] = reader.getAndNext();
         }
         return result;
     }
 
-    public DoubleStream stream(DoubleSequence seq) {
+    public DoubleStream stream(DoubleSeq seq) {
         return StreamSupport.doubleStream(spliterator(seq), false);
     }
 
-    public boolean allMatch(DoubleSequence seq, DoublePredicate pred) {
+    public boolean allMatch(DoubleSeq seq, DoublePredicate pred) {
         int n = seq.length();
-        DoubleReader reader = seq.reader();
+        DoubleSeqCursor reader = seq.cursor();
         for (int i = 0; i < n; ++i) {
-            if (!pred.test(reader.next())) {
+            if (!pred.test(reader.getAndNext())) {
                 return false;
             }
         }
         return true;
     }
 
-    public boolean allMatch(DoubleSequence seq1, DoubleSequence seq2, BiDoublePredicate pred) {
+    public boolean allMatch(DoubleSeq seq1, DoubleSeq seq2, BiDoublePredicate pred) {
         int n = seq1.length();
-        DoubleReader reader1 = seq1.reader();
-        DoubleReader reader2 = seq2.reader();
+        DoubleSeqCursor reader1 = seq1.cursor();
+        DoubleSeqCursor reader2 = seq2.cursor();
         for (int i = 0; i < n; ++i) {
-            if (!pred.test(reader1.next(), reader2.next())) {
+            if (!pred.test(reader1.getAndNext(), reader2.getAndNext())) {
                 return false;
             }
         }
         return true;
     }
 
-    public boolean anyMatch(DoubleSequence seq, DoublePredicate pred) {
+    public boolean anyMatch(DoubleSeq seq, DoublePredicate pred) {
         int n = seq.length();
-        DoubleReader reader = seq.reader();
+        DoubleSeqCursor reader = seq.cursor();
         for (int i = 0; i < n; ++i) {
-            if (pred.test(reader.next())) {
+            if (pred.test(reader.getAndNext())) {
                 return true;
             }
         }
         return false;
     }
 
-    public int firstIndexOf(DoubleSequence seq, DoublePredicate pred) {
+    public int firstIndexOf(DoubleSeq seq, DoublePredicate pred) {
         int n = seq.length();
-        DoubleReader reader = seq.reader();
+        DoubleSeqCursor reader = seq.cursor();
         for (int i = 0; i < n; ++i) {
-            if (pred.test(reader.next())) {
+            if (pred.test(reader.getAndNext())) {
                 return i;
             }
         }
         return n;
     }
 
-    public int lastIndexOf(DoubleSequence seq, DoublePredicate pred) {
+    public int lastIndexOf(DoubleSeq seq, DoublePredicate pred) {
         int n = seq.length();
         for (int i = n - 1; i >= 0; --i) {
             if (pred.test(seq.get(i))) {
@@ -152,152 +151,36 @@ public class InternalDoubleSeq {
         return -1;
     }
 
-    public double reduce(DoubleSequence seq, double initial, DoubleBinaryOperator fn) {
+    public double reduce(DoubleSeq seq, double initial, DoubleBinaryOperator fn) {
         double cur = initial;
         int n = seq.length();
-        DoubleReader reader = seq.reader();
+        DoubleSeqCursor reader = seq.cursor();
         for (int i = 0; i < n; ++i) {
-            cur = fn.applyAsDouble(cur, reader.next());
+            cur = fn.applyAsDouble(cur, reader.getAndNext());
         }
         return cur;
     }
 
-    public int count(DoubleSequence seq, DoublePredicate pred) {
+    public int count(DoubleSeq seq, DoublePredicate pred) {
         int n = seq.length();
         int c = 0;
-        DoubleReader reader = seq.reader();
+        DoubleSeqCursor reader = seq.cursor();
         for (int i = n - 1; i >= 0; --i) {
-            if (pred.test(reader.next())) {
+            if (pred.test(reader.getAndNext())) {
                 ++c;
             }
         }
         return c;
     }
 
-    public enum DoubleSeq0 implements DoubleSequence {
-        INSTANCE;
-
-        @Override
-        public int length() {
-            return 0;
-        }
-
-        @Override
-        public double get(int index) throws IndexOutOfBoundsException {
-            throw new IndexOutOfBoundsException(String.valueOf(index));
-        }
-
-        @Override
-        public double[] toArray() {
-            return new double[0];
-        }
-
-        @Override
-        public void copyTo(double[] buffer, int offset) {
-            Objects.requireNonNull(buffer);
-        }
-    }
-
     @lombok.AllArgsConstructor
-    public static final class DoubleSeq1 implements DoubleSequence {
-
-        private final double value;
-
-        @Override
-        public int length() {
-            return 1;
-        }
-
-        @Override
-        public double get(int index) throws IndexOutOfBoundsException {
-            if (index == 0) {
-                return value;
-            }
-            throw new IndexOutOfBoundsException(String.valueOf(index));
-        }
-
-        @Override
-        public double[] toArray() {
-            return new double[]{value};
-        }
-
-        @Override
-        public void copyTo(double[] buffer, int offset) {
-            buffer[offset] = value;
-        }
-    }
-
-    @lombok.AllArgsConstructor
-    @lombok.EqualsAndHashCode
-    public static final class DoubleSeqN implements DoubleSequence {
-
-        @lombok.NonNull
-        private final double[] values;
-
-        @Override
-        public int length() {
-            return values.length;
-        }
-
-        @Override
-        public double get(int index) {
-            return values[index];
-        }
-
-        @Override
-        public double[] toArray() {
-            return values.clone();
-        }
-
-        @Override
-        public void copyTo(double[] buffer, int offset) {
-            System.arraycopy(values, 0, buffer, offset, values.length);
-        }
-
-        @Override
-        public DoubleReader reader() {
-            return new Cell();
-        }
-
-        @Override
-        public DoubleSequence extract(int start, int length) {
-            return new PartialDoubleArray(values, start, length);
-        }
-
-        @Override
-        public String toString() {
-            return DoubleSequence.format(this);
-        }
-
-        private final class Cell implements DoubleReader {
-
-            private int pos = 0;
-
-            @Override
-            public double next() {
-                return values[pos++];
-            }
-
-            @Override
-            public void skip(int n) {
-                pos += n;
-            }
-
-            @Override
-            public void setPosition(int npos) {
-                pos = npos;
-            }
-        }
-    }
-
-    @lombok.AllArgsConstructor
-    public static final class PartialDoubleArray implements DoubleSequence {
+    public static final class PartialDoubleArray implements DoubleSeq {
 
         private final double[] data;
         private final int beg, len;
 
         @Override
-        public DoubleReader reader() {
+        public DoubleSeqCursor cursor() {
             return new Cell();
         }
 
@@ -319,21 +202,21 @@ public class InternalDoubleSeq {
         }
 
         @Override
-        public DoubleSequence extract(int start, int length) {
+        public DoubleSeq extract(int start, int length) {
             return new PartialDoubleArray(data, this.beg + start, length);
         }
 
         @Override
         public String toString() {
-            return DoubleSequence.format(this);
+            return DoubleSeq.format(this);
         }
 
-        private final class Cell implements DoubleReader {
+        private final class Cell implements DoubleSeqCursor {
 
             private int pos = beg;
 
             @Override
-            public double next() {
+            public double getAndNext() {
                 return data[pos++];
             }
 
@@ -343,14 +226,14 @@ public class InternalDoubleSeq {
             }
 
             @Override
-            public void setPosition(int npos) {
+            public void moveTo(int npos) {
                 pos = beg + npos;
             }
         }
     }
 
     @lombok.AllArgsConstructor
-    public static final class IntToDoubleSequence implements DoubleSequence {
+    public static final class IntToDoubleSequence implements DoubleSeq {
 
         private final int length;
         private final IntToDoubleFunction fn;
@@ -366,26 +249,26 @@ public class InternalDoubleSeq {
         }
 
         @Override
-        public DoubleSequence extract(final int start, final int length) {
+        public DoubleSeq extract(final int start, final int length) {
             return new IntToDoubleSequence(length, i -> fn.applyAsDouble(i + start));
         }
 
         @Override
-        public DoubleReader reader() {
+        public DoubleSeqCursor cursor() {
             return new Cell();
         }
 
         @Override
         public String toString() {
-            return DoubleSequence.format(this);
+            return DoubleSeq.format(this);
         }
 
-        private final class Cell implements DoubleReader {
+        private final class Cell implements DoubleSeqCursor {
 
             private int pos = 0;
 
             @Override
-            public double next() {
+            public double getAndNext() {
                 return fn.applyAsDouble(pos++);
             }
 
@@ -395,20 +278,20 @@ public class InternalDoubleSeq {
             }
 
             @Override
-            public void setPosition(int npos) {
+            public void moveTo(int npos) {
                 pos = npos;
             }
         }
     }
 
     @lombok.AllArgsConstructor
-    public static final class RegularlySpacedDoubles implements DoubleSequence {
+    public static final class RegularlySpacedDoubles implements DoubleSeq {
 
         private final double[] data;
         private final int beg, len, inc;
 
         @Override
-        public DoubleReader reader() {
+        public DoubleSeqCursor cursor() {
             return new Cell();
         }
 
@@ -432,21 +315,21 @@ public class InternalDoubleSeq {
         }
 
         @Override
-        public DoubleSequence extract(int start, int length) {
+        public DoubleSeq extract(int start, int length) {
             return new RegularlySpacedDoubles(data, this.beg + start * inc, length, inc);
         }
 
         @Override
         public String toString() {
-            return DoubleSequence.format(this);
+            return DoubleSeq.format(this);
         }
 
-        private final class Cell implements DoubleReader {
+        private final class Cell implements DoubleSeqCursor {
 
             private int pos = beg;
 
             @Override
-            public double next() {
+            public double getAndNext() {
                 double val = data[pos];
                 pos += inc;
                 return val;
@@ -458,7 +341,7 @@ public class InternalDoubleSeq {
             }
 
             @Override
-            public void setPosition(int npos) {
+            public void moveTo(int npos) {
                 pos = beg + npos * inc;
             }
         }

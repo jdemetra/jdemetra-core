@@ -38,13 +38,13 @@ import demetra.util.IntList;
 @lombok.Value
 public class Periodogram {
 
-    public static Periodogram of(DoubleSequence y) {
+    public static Periodogram of(DoubleSeq y) {
         int T = y.length(), T1 = (1 + T) / 2, T2 = 1 + T / 2;
         double sy = 0, sy2 = 0;
-        DoubleReader reader = y.reader();
+        DoubleSeqCursor reader = y.cursor();
         int n = 0;
         for (int i = 0; i < T; ++i) {
-            double cur = reader.next();
+            double cur = reader.getAndNext();
             if (!Double.isNaN(cur)) {
                 ++n;
                 sy += cur;
@@ -68,14 +68,14 @@ public class Periodogram {
             a = 0;
             b = 0;
             double c = 1, s = 0;
-            reader.setPosition(0);
+            reader.moveTo(0);
             for (int j = 0; j < T; ++j) {
                 // compute next c, s ...
                 ctmp = c;
                 stmp = s;
                 s = cos * stmp + sin * ctmp;
                 c = -sin * stmp + cos * ctmp;
-                double cur = reader.next();
+                double cur = reader.getAndNext();
                 if (!Double.isNaN(cur)) {
                     a += c * cur;
                     b += s * cur;
@@ -87,9 +87,9 @@ public class Periodogram {
         if (T1 != T2) // T even
         {
             a = 0;
-            reader.setPosition(0);
+            reader.moveTo(0);
             for (int i = 0; i < T; ++i) {
-                double cur = reader.next();
+                double cur = reader.getAndNext();
                 if (!Double.isNaN(cur)) {
                     if (i % 2 == 0) {
                         a += cur;

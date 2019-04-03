@@ -6,8 +6,8 @@
 package demetra.maths.functions;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -20,14 +20,14 @@ public class PartialMapping<S> implements IParametricMapping<S> {
     private boolean[] fp;
     private int nfixed;
 
-    public PartialMapping(final IParametricMapping<S> mapping, DoubleSequence p, DoubleSequence pfixed) {
+    public PartialMapping(final IParametricMapping<S> mapping, DoubleSeq p, DoubleSeq pfixed) {
         this.mapping = mapping;
         this.refp = pfixed.toArray();
         this.fp = new boolean[refp.length];
         int n = 0;
-        DoubleReader reader = p.reader();
+        DoubleSeqCursor reader = p.cursor();
         for (int i = 0; i < refp.length; ++i) {
-            if (this.refp[i] != reader.next()) {
+            if (this.refp[i] != reader.getAndNext()) {
                 fp[i] = true;
                 ++n;
             }
@@ -35,12 +35,12 @@ public class PartialMapping<S> implements IParametricMapping<S> {
         nfixed = n;
     }
 
-    private double[] narray(DoubleSequence p) {
+    private double[] narray(DoubleSeq p) {
         double[] np = refp.clone();
-        DoubleReader reader = p.reader();
+        DoubleSeqCursor reader = p.cursor();
         for (int i = 0; i < np.length; ++i) {
             if (!fp[i]) {
-                np[i] = reader.next();
+                np[i] = reader.getAndNext();
             }
         }
         return np;
@@ -51,8 +51,8 @@ public class PartialMapping<S> implements IParametricMapping<S> {
      * @param p
      * @return 
      */
-    public DoubleSequence convert(DoubleSequence p) {
-        return DoubleSequence.ofInternal(narray(p));
+    public DoubleSeq convert(DoubleSeq p) {
+        return DoubleSeq.of(narray(p));
     }
 
     private int pos(int idx) {
@@ -69,22 +69,22 @@ public class PartialMapping<S> implements IParametricMapping<S> {
     }
 
     @Override
-    public S map(DoubleSequence p) {
+    public S map(DoubleSeq p) {
         return mapping.map(convert(p));
     }
 
     @Override
-    public DoubleSequence getDefaultParameters() {
+    public DoubleSeq getDefaultParameters() {
         return convert(mapping.getDefaultParameters());
     }
 
     @Override
-    public boolean checkBoundaries(DoubleSequence inparams) {
+    public boolean checkBoundaries(DoubleSeq inparams) {
         return mapping.checkBoundaries(convert(inparams));
     }
 
     @Override
-    public double epsilon(DoubleSequence inparams, int idx) {
+    public double epsilon(DoubleSeq inparams, int idx) {
         return mapping.epsilon(convert(inparams), pos(idx));
     }
 

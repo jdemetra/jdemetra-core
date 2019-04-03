@@ -17,10 +17,10 @@
 package demetra.regarima.ami;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
 import demetra.regarima.outlier.RobustStandardDeviationComputer;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -101,7 +101,7 @@ public class FastDifferencingModule implements IGenericDifferencingModule {
         return Math.abs(tmean) > tstat;
     }
 
-    private double std(DoubleSequence z) {
+    private double std(DoubleSeq z) {
         if (!mad) {
             return Math.sqrt(Doubles.ssqc(z, Doubles.average(z)) / z.length());
         } else {
@@ -118,7 +118,7 @@ public class FastDifferencingModule implements IGenericDifferencingModule {
      * @return
      */
     @Override
-    public int[] process(DoubleSequence x, int[] periods, int[] start) {
+    public int[] process(DoubleSeq x, int[] periods, int[] start) {
         DataBlock z = DataBlock.of(x);
         if (start != null) {
             for (int j = 0; j < periods.length; ++j) {
@@ -157,7 +157,7 @@ public class FastDifferencingModule implements IGenericDifferencingModule {
         return d;
     }
 
-    private void testMean(DoubleSequence z) {
+    private void testMean(DoubleSeq z) {
         double s = Doubles.sum(z), s2 = Doubles.ssq(z);
         int n = z.length();
         tmean = s / Math.sqrt((s2 * n - s * s) / n);

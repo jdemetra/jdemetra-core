@@ -27,11 +27,11 @@ public class DoublesTest {
         Matrix m = Matrix.make(200, 20);
         Random rnd = new Random();
         m.set(rnd::nextDouble);
-        DoubleSequence a = m.column(0);
+        DoubleSeq a = m.column(0);
         for (int i = 1; i < m.getColumnsCount(); ++i) {
             a = op(a, m.column(i), (x, y) -> x + y);
         }
-        DoubleSequence b = m.column(0);
+        DoubleSeq b = m.column(0);
         for (int i = 1; i < m.getColumnsCount(); ++i) {
             b = fastOp(b, m.column(i), (x, y) -> x + y);
         }
@@ -47,7 +47,7 @@ public class DoublesTest {
         m.set(rnd::nextDouble);
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
-            DoubleSequence a = m.column(0);
+            DoubleSeq a = m.column(0);
             for (int i = 1; i < m.getColumnsCount(); ++i) {
                 a = op(a, m.column(i), (x, y) -> x + y);
             }
@@ -56,7 +56,7 @@ public class DoublesTest {
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
-            DoubleSequence b = m.column(0);
+            DoubleSeq b = m.column(0);
             for (int i = 1; i < m.getColumnsCount(); ++i) {
                 b = fastOp(b, m.column(i), (x, y) -> x + y);
             }

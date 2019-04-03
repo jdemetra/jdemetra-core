@@ -5,12 +5,12 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.State;
 import demetra.ssf.multivariate.ISsfErrors;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -23,7 +23,7 @@ public class MeasurementsError {
         return new Errors(H, R);
     }
 
-    public ISsfErrors of(DoubleSequence var) {
+    public ISsfErrors of(DoubleSeq var) {
         double[] v = var.toArray();
         for (int i = 0; i < v.length; ++i) {
             if (v[i] > 0) {

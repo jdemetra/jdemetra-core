@@ -18,7 +18,6 @@ package demetra.benchmarking.ssf;
 
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
@@ -27,6 +26,7 @@ import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -58,7 +58,7 @@ public class SsfCholette {
             return this;
         }
 
-        public Builder weights(final DoubleSequence weights) {
+        public Builder weights(final DoubleSeq weights) {
             if (weights != null) {
                 this.weights = weights.toArray();
             } else {

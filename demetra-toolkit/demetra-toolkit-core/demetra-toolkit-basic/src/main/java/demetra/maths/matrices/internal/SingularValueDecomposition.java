@@ -22,8 +22,8 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.MatrixException;
 import demetra.data.DataBlockIterator;
 import demetra.maths.Constants;
-import demetra.data.DoubleSequence;
 import demetra.maths.matrices.decomposition.ElementaryTransformations;
+import demetra.data.DoubleSeq;
 
 /**
  * The singularValueDecomposition decomposes a matrix M in M = U * S * V' with:
@@ -489,8 +489,8 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
      * @return
      */
     @Override
-    public DoubleSequence S() {
-        return DoubleSequence.of(m_s);
+    public DoubleSeq S() {
+        return DoubleSeq.copyOf(m_s);
     }
 
     public double norm2() {
@@ -554,7 +554,7 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
     /// </summary>
     private int m_m, m_n;
 
-    public void solve(DoubleSequence xin, DataBlock xout) throws MatrixException {
+    public void solve(DoubleSeq xin, DataBlock xout) throws MatrixException {
         double[] data = new double[xin.length()];
         xin.copyTo(data, 0);
         double[] rslt = solve(data);

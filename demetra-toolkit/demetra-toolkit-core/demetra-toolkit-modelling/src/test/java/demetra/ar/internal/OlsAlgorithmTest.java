@@ -20,8 +20,8 @@ import static demetra.ar.internal.BurgAlgorithmTest.X;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.data.DoubleSequence;
 import demetra.ar.AutoRegressiveEstimation;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -29,7 +29,7 @@ import demetra.ar.AutoRegressiveEstimation;
  */
 public class OlsAlgorithmTest {
 
-    public static final DoubleSequence X;
+    public static final DoubleSeq X;
 
     static {
         double[] x = new double[120];
@@ -39,7 +39,7 @@ public class OlsAlgorithmTest {
         for (int i = 2; i < 120; ++i) {
             x[i] = x[i - 1] * .8 - x[i - 2] * .4 + rnd.nextGaussian();
         }
-        X = DoubleSequence.ofInternal(x);
+        X = DoubleSeq.of(x);
     }
 
     public OlsAlgorithmTest() {

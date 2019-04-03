@@ -24,12 +24,12 @@ import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.matrices.Matrix;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -41,7 +41,7 @@ public final class LeastSquaresResults {
     @BuilderPattern(LeastSquaresResults.class)
     public static class Builder {
 
-        private Builder(DoubleSequence y, final Matrix X) {
+        private Builder(DoubleSeq y, final Matrix X) {
             this.y = y;
             this.X = X;
         }
@@ -51,7 +51,7 @@ public final class LeastSquaresResults {
             return this;
         }
 
-        public Builder estimation(DoubleSequence coefficients, Matrix ucov) {
+        public Builder estimation(DoubleSeq coefficients, Matrix ucov) {
             this.coefficients = coefficients;
             this.ucov = ucov;
             return this;
@@ -62,7 +62,7 @@ public final class LeastSquaresResults {
             return this;
         }
 
-        public Builder residuals(DoubleSequence res) {
+        public Builder residuals(DoubleSeq res) {
             this.res = res;
             if (ssq == 0) {
                 ssq = Doubles.ssq(res);
@@ -75,10 +75,10 @@ public final class LeastSquaresResults {
             return this;
         }
 
-        private final DoubleSequence y;
+        private final DoubleSeq y;
         private final Matrix X;
         private boolean mean;
-        private DoubleSequence coefficients, res;
+        private DoubleSeq coefficients, res;
         private double ssq, ldet;
         private Matrix ucov;
 
@@ -87,11 +87,11 @@ public final class LeastSquaresResults {
         }
     }
 
-    public static Builder builder(@Nonnull DoubleSequence Y, Matrix X) {
+    public static Builder builder(@Nonnull DoubleSeq Y, Matrix X) {
         return new Builder(Y, X);
     }
 
-    private LeastSquaresResults(DoubleSequence Y, Matrix X, boolean mean, DoubleSequence coefficients, Matrix unscaledCov, double ssq, double ldet) {
+    private LeastSquaresResults(DoubleSeq Y, Matrix X, boolean mean, DoubleSeq coefficients, Matrix unscaledCov, double ssq, double ldet) {
         this.y = Y;
         this.X = X;
         this.mean = mean;
@@ -107,11 +107,11 @@ public final class LeastSquaresResults {
         bxy = y2 - ssq;
     }
 
-    private final DoubleSequence y;
+    private final DoubleSeq y;
     private final Matrix X;
     private final boolean mean;
     private final int n, nx;
-    private final DoubleSequence coefficients;
+    private final DoubleSeq coefficients;
     private final double ssq, ldet;
     private final Matrix ucov;
     // auxiliary results
@@ -120,7 +120,7 @@ public final class LeastSquaresResults {
     /**
      * @return the coefficients
      */
-    public DoubleSequence getCoefficients() {
+    public DoubleSeq getCoefficients() {
         return coefficients;
     }
 

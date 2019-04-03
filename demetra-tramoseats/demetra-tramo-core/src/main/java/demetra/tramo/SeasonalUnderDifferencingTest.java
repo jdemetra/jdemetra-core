@@ -16,7 +16,6 @@
  */
 package demetra.tramo;
 
-import demetra.data.DoubleSequence;
 import demetra.modelling.regression.ModellingContext;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.PreprocessingModel;
@@ -24,6 +23,7 @@ import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -63,7 +63,7 @@ class SeasonalUnderDifferencingTest extends ModelController {
     }
 
     private boolean isUnderDiff(RegArimaModelling modelling, TramoProcessor.Context context) {
-        DoubleSequence res = modelling.getEstimation().getConcentratedLikelihood().e();
+        DoubleSeq res = modelling.getEstimation().getConcentratedLikelihood().e();
         SeasonalityTests tests
                 = SeasonalityTests.residualSeasonalityTest(res, modelling.getDescription().getAnnualFrequency());
         return tests.getScore() > 1 || (tests.getScore() == 1 && context.seasonal);

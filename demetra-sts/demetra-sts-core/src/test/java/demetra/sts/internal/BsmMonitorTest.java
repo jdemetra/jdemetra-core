@@ -17,7 +17,6 @@
 package demetra.sts.internal;
 
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import demetra.maths.Optimizer;
 import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
@@ -27,6 +26,7 @@ import ec.tstoolkit.structural.ComponentUse;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -47,7 +47,7 @@ public class BsmMonitorTest {
 //        bspec.setOptimizer(BsmSpecification.Optimizer.LBFGS);
         mspec.setSeasonalModel(SeasonalModel.Crude);
         monitor.setSpecifications(mspec, bspec);
-        monitor.process(DoubleSequence.ofInternal(Data.PROD), 12);
+        monitor.process(DoubleSeq.of(Data.PROD), 12);
         System.out.println("New");
         System.out.println(monitor.getLikelihood().logLikelihood());
 //        System.out.println(monitor.getLikelihood().ser());
@@ -64,13 +64,13 @@ public class BsmMonitorTest {
 //        bspec.setOptimizer(BsmSpecification.Optimizer.LBFGS);
         mspec.setSeasonalModel(SeasonalModel.Crude);
         monitor.setSpecifications(mspec, bspec);
-        monitor.process(DoubleSequence.ofInternal(Data.PROD), 12);
+        monitor.process(DoubleSeq.of(Data.PROD), 12);
 //        System.out.println("New no scaling");
 //        System.out.println(monitor.getLikelihood().legacy(true).logLikelihood());
 //        System.out.println(monitor.getLikelihood().ser());
         mspec.fixComponent(5, Component.Noise);
         monitor.setSpecifications(mspec, bspec);
-        monitor.process(DoubleSequence.ofInternal(Data.PROD), 12);
+        monitor.process(DoubleSeq.of(Data.PROD), 12);
         System.out.println("New no scaling; fixed noise var = "+mspec.getNoiseVar());
         System.out.println(monitor.getLikelihood().logLikelihood());
 //        System.out.println(monitor.getLikelihood().ser());
@@ -99,7 +99,7 @@ public class BsmMonitorTest {
             BsmSpec mspec = new BsmSpec();
             bspec.setOptimizer(Optimizer.MinPack);
             monitor.setSpecifications(mspec, bspec);
-            monitor.process(DoubleSequence.ofInternal(Data.PROD), 12);
+            monitor.process(DoubleSeq.of(Data.PROD), 12);
         }
         long t1 = System.currentTimeMillis();
         System.out.println("New");

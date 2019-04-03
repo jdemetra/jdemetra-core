@@ -26,10 +26,10 @@ import demetra.ssf.DataBlocksResults;
 import demetra.ssf.DataResults;
 import demetra.ssf.StateInfo;
 import demetra.ssf.akf.AugmentedState;
-import demetra.data.DoubleSequence;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.dk.BaseDiffuseFilteringResults;
+import demetra.data.DoubleSeq;
 
 /**
  *

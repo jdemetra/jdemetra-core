@@ -12,7 +12,6 @@ import demetra.benchmarking.spi.ITemporalDisaggregation;
 import demetra.benchmarking.ssf.SsfDisaggregation;
 import demetra.data.AggregationType;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.dstats.ProbabilityType;
@@ -54,6 +53,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.util.ArrayList;
 import java.util.List;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -145,9 +145,9 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
             ISsqFunctionMinimizer fmin = new LevenbergMarquardtMinimizer();
             double start = spec.getParameter().getType() == ParameterType.Undefined
                     ? .9 : spec.getParameter().getValue();
-            fmin.minimize(fn.ssqEvaluate(DoubleSequence.of(start)));
+            fmin.minimize(fn.ssqEvaluate(DoubleSeq.of(start)));
             SsfFunctionPoint<Parameter, Ssf> rslt = (SsfFunctionPoint<Parameter, Ssf>) fmin.getResult();
-            DoubleSequence p = rslt.getParameters();
+            DoubleSeq p = rslt.getParameters();
             dll = rslt.getLikelihood();
             double c=2*rslt.getSsqE()/(dll.dim()-dll.nx()-1);
             ml = new MaximumLogLikelihood(rslt.getLikelihood().logLikelihood(),
@@ -232,9 +232,9 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
             ISsqFunctionMinimizer fmin = new LevenbergMarquardtMinimizer();
             double start = spec.getParameter().getType() == ParameterType.Undefined
                     ? .9 : spec.getParameter().getValue();
-            fmin.minimize(fn.ssqEvaluate(DoubleSequence.of(start)));
+            fmin.minimize(fn.ssqEvaluate(DoubleSeq.of(start)));
             SsfFunctionPoint<Parameter, Ssf> rslt = (SsfFunctionPoint<Parameter, Ssf>) fmin.getResult();
-            DoubleSequence p = rslt.getParameters();
+            DoubleSeq p = rslt.getParameters();
             dll = rslt.getLikelihood();
             double c=.5*(dll.dim()-dll.nx()-1)/rslt.getSsqE();
             ml = new MaximumLogLikelihood(rslt.getLikelihood().logLikelihood(),
@@ -349,7 +349,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
         return diffuse;
     }
 
-    private TsData regeffect(DisaggregationModel model, DoubleSequence coeff) {
+    private TsData regeffect(DisaggregationModel model, DoubleSeq coeff) {
         if (model.getHX() == null) {
             return null;
         }
@@ -358,7 +358,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
         return TsData.ofInternal(model.getHDom().getStartPeriod(), regs);
     }
 
-    private TsData hresiduals(DisaggregationModel model, DoubleSequence coeff) {
+    private TsData hresiduals(DisaggregationModel model, DoubleSeq coeff) {
         double[] y = new double[model.getHEDom().length()];
         double[] hy = model.getHEY();
         Matrix hx = model.getHEX();
@@ -374,7 +374,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
 
     private ResidualsDiagnostics diagnostic(TsData res, ISsf ssf, TsUnit unit) {
         DiffuseConcentratedLikelihood ll = DkToolkit.concentratedLikelihoodComputer().compute(ssf, new SsfData(res.getValues()));
-        DoubleSequence e = ll.e();
+        DoubleSeq e = ll.e();
         TsPeriod pstart = TsPeriod.of(unit, res.getStart().start());
         pstart = pstart.plus(ll.ndiffuse());
         TsData fres = TsData.ofInternal(pstart, e);
@@ -413,9 +413,9 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
         int pos=0;
         int nparams=spec.isParameterEstimation() ? 1 : 0;
         T tstat=new T(dll.dim()-dll.nx()-nparams);
-        DoubleSequence coefficients = dll.coefficients();
+        DoubleSeq coefficients = dll.coefficients();
         MatrixType cov = dll.covariance(nparams, true);
-        DoubleSequence ser = cov.diagonal();
+        DoubleSeq ser = cov.diagonal();
         if (spec.isConstant()){
             double ccur=coefficients.get(pos), ecur=Math.sqrt(ser.get(pos));
             double pval=2*tstat.getProbability(Math.abs(ccur/ecur), ProbabilityType.Upper);
@@ -444,17 +444,17 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
         }
 
         @Override
-        public Parameter map(DoubleSequence p) {
+        public Parameter map(DoubleSeq p) {
             return new Parameter(p.get(0), ParameterType.Estimated); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        public DoubleSequence getDefaultParameters() {
-            return DoubleSequence.of(.9);
+        public DoubleSeq getDefaultParameters() {
+            return DoubleSeq.of(.9);
         }
 
         @Override
-        public boolean checkBoundaries(DoubleSequence inparams) {
+        public boolean checkBoundaries(DoubleSeq inparams) {
             double p = inparams.get(0);
             if (lbound == -1) {
                 return p > -1 && p < 1;
@@ -464,7 +464,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
         }
 
         @Override
-        public double epsilon(DoubleSequence inparams, int idx) {
+        public double epsilon(DoubleSeq inparams, int idx) {
             return 1e-8;
         }
 

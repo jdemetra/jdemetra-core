@@ -6,9 +6,9 @@
 package demetra.x11.extremevaluecorrector;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import java.util.Arrays;
+import demetra.data.DoubleSeq;
 
 /**
  * This extremvalueCorrector uses period specific Standarddeviation for the detection of extremevalues, used for Calendarsigma.All or Calendarsigma.Signif if Cochran false
@@ -29,7 +29,7 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
      * @return Standarddeviation for each period
      */
     @Override
-    protected double[] calcStdev(DoubleSequence s) {
+    protected double[] calcStdev(DoubleSeq s) {
 
         double[] stdev;
 
@@ -51,7 +51,7 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
     }
 
     @Override
-    protected DoubleSequence outliersDetection(DoubleSequence cur, double[] stdev) {
+    protected DoubleSeq outliersDetection(DoubleSeq cur, double[] stdev) {
         int n = cur.length();
 
         double[] w = new double[n];
@@ -76,6 +76,6 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
             }
 
         }
-        return DoubleSequence.of(w);
+        return DoubleSeq.copyOf(w);
     }
 }

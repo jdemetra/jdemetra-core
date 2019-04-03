@@ -22,7 +22,7 @@ import demetra.maths.functions.FunctionException;
 import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.functions.ssq.ISsqFunctionDerivatives;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 import demetra.maths.functions.ParamValidation;
 
 /**
@@ -237,7 +237,7 @@ public class SsqEstimationProblem implements IEstimationProblem {
         }
     }
 
-    public DoubleSequence gradient() {
+    public DoubleSeq gradient() {
         if (ftry == null) {
             return null;
         } else {

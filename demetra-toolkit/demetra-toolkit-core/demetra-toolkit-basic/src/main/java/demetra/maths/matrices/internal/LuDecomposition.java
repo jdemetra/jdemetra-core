@@ -24,7 +24,7 @@ import demetra.maths.Constants;
 import demetra.maths.matrices.decomposition.ILUDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.MatrixException;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -142,7 +142,7 @@ public abstract class LuDecomposition implements ILUDecomposition {
     /// <returns>A double value representing the determinant</returns>
     @Override
     public LogSign determinant() {
-        return LogSign.of(DoubleSequence.onMapping(n, i->get(i,i)), pivSign<0);
+        return LogSign.of(DoubleSeq.onMapping(n, i->get(i,i)), pivSign<0);
     }
 
     /// <summary>

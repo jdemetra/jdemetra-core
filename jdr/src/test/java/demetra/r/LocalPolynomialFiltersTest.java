@@ -17,9 +17,9 @@
 package demetra.r;
 
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *

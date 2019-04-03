@@ -18,11 +18,11 @@ package demetra.linearmodel;
 
 import demetra.data.DataBlock;
 import demetra.data.DataSets;
-import demetra.data.DoubleSequence;
 import demetra.data.WindowFunction;
 import demetra.maths.matrices.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -38,14 +38,14 @@ public class RobustCovarianceEstimatorsTest {
         double[] y = DataSets.Longley.y;
 
         LinearModel model = LinearModel.builder()
-                .y(DoubleSequence.ofInternal(y))
+                .y(DoubleSeq.of(y))
                 .meanCorrection(true)
-                .addX(DoubleSequence.ofInternal(DataSets.Longley.x1))
-                .addX(DoubleSequence.ofInternal(DataSets.Longley.x2))
-                .addX(DoubleSequence.ofInternal(DataSets.Longley.x3))
-                .addX(DoubleSequence.ofInternal(DataSets.Longley.x4))
-                .addX(DoubleSequence.ofInternal(DataSets.Longley.x5))
-                .addX(DoubleSequence.ofInternal(DataSets.Longley.x6))
+                .addX(DoubleSeq.of(DataSets.Longley.x1))
+                .addX(DoubleSeq.of(DataSets.Longley.x2))
+                .addX(DoubleSeq.of(DataSets.Longley.x3))
+                .addX(DoubleSeq.of(DataSets.Longley.x4))
+                .addX(DoubleSeq.of(DataSets.Longley.x5))
+                .addX(DoubleSeq.of(DataSets.Longley.x6))
                 .build();
 
         Ols ols = new Ols();

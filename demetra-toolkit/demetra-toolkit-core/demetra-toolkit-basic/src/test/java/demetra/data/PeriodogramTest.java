@@ -25,7 +25,7 @@ public class PeriodogramTest {
 
     @Test
     public void testDFT() {
-        Periodogram p1 = Periodogram.of(DoubleSequence.ofInternal(data));
+        Periodogram p1 = Periodogram.of(DoubleSeq.of(data));
         ec.tstoolkit.data.Periodogram p2=new ec.tstoolkit.data.Periodogram(new ec.tstoolkit.data.ReadDataBlock(data), false);
         for (int i=0; i<p1.getP().length; ++i){
             assertEquals(p1.getP()[i], p2.getP()[i], 1e-9);

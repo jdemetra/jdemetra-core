@@ -17,9 +17,9 @@
 package demetra.x11.filter.endpoints;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.maths.linearfilters.IFiniteFilter;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -42,7 +42,7 @@ public class AsymmetricEndPoints implements IEndPointsProcessor {
     }
 
     @Override
-    public void process(DoubleSequence in, DataBlock out) {
+    public void process(DoubleSeq in, DataBlock out) {
         int n = filters.length;
         // complete the missing items...
         int plen = in.length();
@@ -81,7 +81,7 @@ public class AsymmetricEndPoints implements IEndPointsProcessor {
         }
     }
 
-    private void processLeft(DoubleSequence in, DataBlock out) {
+    private void processLeft(DoubleSeq in, DataBlock out) {
         int n = filters.length;
         // complete the missing items...
         int plen = in.length();
@@ -109,7 +109,7 @@ public class AsymmetricEndPoints implements IEndPointsProcessor {
         }
 
         int rlen = 2 * n - ifilter;
-        DoubleSequence beg = in.reverse().extract(plen - rlen, rlen);
+        DoubleSeq beg = in.reverse().extract(plen - rlen, rlen);
         int icur = istart;
         while (icur > 0) {
             IFiniteFilter f = filters[ifilter++];
@@ -118,7 +118,7 @@ public class AsymmetricEndPoints implements IEndPointsProcessor {
         }
     }
 
-    private void processRight(DoubleSequence in, DataBlock out) {
+    private void processRight(DoubleSeq in, DataBlock out) {
         int n = filters.length;
         // complete the missing items...
         int plen = in.length();
@@ -146,7 +146,7 @@ public class AsymmetricEndPoints implements IEndPointsProcessor {
         }
 
         int rlen = 2 * n - ifilter;
-        DoubleSequence end = in.extract(plen - rlen, rlen);
+        DoubleSeq end = in.extract(plen - rlen, rlen);
         int icur = istart;
         while (icur > 0) {
             IFiniteFilter f = filters[ifilter++];

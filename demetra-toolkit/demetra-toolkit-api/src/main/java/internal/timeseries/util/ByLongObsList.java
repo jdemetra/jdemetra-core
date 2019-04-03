@@ -16,7 +16,6 @@
  */
 package internal.timeseries.util;
 
-import demetra.data.DoubleSequence;
 import demetra.design.VisibleForTesting;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDateTime;
@@ -24,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.IntUnaryOperator;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -162,8 +162,8 @@ interface ByLongObsList extends ObsList {
         }
 
         @Override
-        public DoubleSequence getValues() {
-            return DoubleSequence.ofInternal(Arrays.copyOf(values, size));
+        public DoubleSeq getValues() {
+            return DoubleSeq.of(Arrays.copyOf(values, size));
         }
     }
 }

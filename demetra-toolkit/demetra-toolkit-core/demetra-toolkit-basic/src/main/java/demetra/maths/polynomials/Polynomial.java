@@ -28,9 +28,9 @@ import demetra.maths.ComplexMath;
 import demetra.maths.Simplifying;
 import demetra.util.Arrays2;
 import lombok.NonNull;
-import demetra.data.DoubleSequence;
 import demetra.maths.PolynomialType;
 import demetra.maths.polynomials.spi.RootsSolver;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -249,8 +249,8 @@ public final class Polynomial implements PolynomialType {
     }
     
     @Override
-    public DoubleSequence coefficients(){
-        return DoubleSequence.ofInternal(coeff);
+    public DoubleSeq coefficients(){
+        return DoubleSeq.of(coeff);
     }
     
     @Override
@@ -339,7 +339,7 @@ public final class Polynomial implements PolynomialType {
             return false;
         }
         for (int i = 0; i < coeff.length; ++i) {
-            if (!DoubleSequence.equals(get(i), other.get(i), epsilon)) {
+            if (!DoubleSeq.equals(get(i), other.get(i), epsilon)) {
                 return false;
             }
         }
@@ -634,7 +634,7 @@ public final class Polynomial implements PolynomialType {
         double[] result = coefficients().toArray();
         for (int i = 0; i < result.length; ++i) {
             double c = Math.round(result[i]);
-            if (DoubleSequence.equals(c, result[i], EPSILON)) {
+            if (DoubleSeq.equals(c, result[i], EPSILON)) {
                 result[i] = c;
             }
         }

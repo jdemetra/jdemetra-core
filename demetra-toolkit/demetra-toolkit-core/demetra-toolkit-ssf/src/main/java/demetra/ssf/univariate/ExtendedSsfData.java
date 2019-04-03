@@ -17,7 +17,7 @@
 package demetra.ssf.univariate;
 
 import demetra.design.Development;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 
 /**

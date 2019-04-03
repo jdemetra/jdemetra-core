@@ -22,7 +22,7 @@ import demetra.design.Development;
 import demetra.maths.Complex;
 import java.util.Formatter;
 import java.util.function.IntToDoubleFunction;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -106,7 +106,7 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
     }
 
     @Override
-    public double apply(DoubleSequence in) {
+    public double apply(DoubleSeq in) {
         IntToDoubleFunction weights = weights();
         int lb = getLowerBound(), ub = getUpperBound();
         double s = 0;

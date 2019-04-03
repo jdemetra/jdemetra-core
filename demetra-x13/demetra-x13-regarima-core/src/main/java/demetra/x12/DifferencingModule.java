@@ -17,7 +17,6 @@
 package demetra.x12;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.maths.Complex;
@@ -39,6 +38,7 @@ import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarmaSpecification;
 import demetra.regarima.X13Exception;
 import demetra.x12.X12Utility;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -441,7 +441,7 @@ public class DifferencingModule implements IDifferencingModule {
      * @param period
      * @return
      */
-    public boolean process(DoubleSequence data, int period) {
+    public boolean process(DoubleSeq data, int period) {
         clear();
         x = data.toArray();
         spec = new SarimaSpecification(period);
@@ -531,7 +531,7 @@ public class DifferencingModule implements IDifferencingModule {
         SarimaSpecification spec = this.spec.clone();
         RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class
         )
-                .y(DoubleSequence.ofInternal(x))
+                .y(DoubleSeq.of(x))
                 .meanCorrection(true)
                 .arima(SarimaModel.builder(spec).setDefault().build())
                 .build();
@@ -570,7 +570,7 @@ public class DifferencingModule implements IDifferencingModule {
         SarimaSpecification curspec = desc.getSpecification();
         try {
             // get residuals
-            DoubleSequence res = RegArimaUtility.linearizedData(desc.regarima(), est.getConcentratedLikelihood());
+            DoubleSeq res = RegArimaUtility.linearizedData(desc.regarima(), est.getConcentratedLikelihood());
             if (!process(res, freq)) {
                 return airline(context);
             }

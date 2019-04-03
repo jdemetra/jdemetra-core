@@ -16,7 +16,6 @@
  */
 package internal.timeseries.util;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.timeseries.TsData;
 import demetra.data.AggregationType;
@@ -26,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntUnaryOperator;
+import demetra.data.DoubleSeq;
 
 /**
  * A TsDataCollector collects time observations (identified by pairs of
@@ -152,7 +152,7 @@ class TsDataCollector {
         // check if the series is continuous and complete.
         int l = lastId - firstId + 1;
         if (l == ncur + 1) {
-            return TsData.of(start, DoubleSequence.ofInternal(ncur + 1 == n ? vals : Arrays.copyOf(vals, ncur + 1)));
+            return TsData.of(start, DoubleSeq.of(ncur + 1 == n ? vals : Arrays.copyOf(vals, ncur + 1)));
         } else {
             return TsData.of(start, expand(ncur + 1, l, ids, o -> vals[o]));
         }
@@ -247,13 +247,13 @@ class TsDataCollector {
         }
     }
 
-    private DoubleSequence expand(int currentSize, int expectedSize, int[] ids, IntToDoubleFunction valueFunc) {
+    private DoubleSeq expand(int currentSize, int expectedSize, int[] ids, IntToDoubleFunction valueFunc) {
         double[] result = new double[expectedSize];
         Arrays.fill(result, Double.NaN);
         result[0] = valueFunc.applyAsDouble(0);
         for (int j = 1; j < currentSize; ++j) {
             result[ids[j] - ids[0]] = valueFunc.applyAsDouble(j);
         }
-        return DoubleSequence.ofInternal(result);
+        return DoubleSeq.of(result);
     }
 }

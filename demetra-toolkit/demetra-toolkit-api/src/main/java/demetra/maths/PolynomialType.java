@@ -5,10 +5,10 @@
  */
 package demetra.maths;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import java.util.Formatter;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -59,7 +59,7 @@ public interface PolynomialType {
      * Gets all the coefficients (increasing power)
      * @return 
      */
-    DoubleSequence coefficients();
+    DoubleSeq coefficients();
     
     default void copyTo(double[] buffer, int startpos){
         coefficients().copyTo(buffer, startpos);

@@ -8,7 +8,6 @@ package demetra.r;
 import demetra.regarima.RegArimaModel;
 import demetra.arima.ssf.SsfArima;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.Matrix;
@@ -25,6 +24,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.arima.internal.FastArimaForecasts;
 import demetra.arima.ssf.ExactArimaForecasts;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -38,8 +38,10 @@ public class ArimaForecasts {
     public static class Results implements ProcResults {
 
         RegArimaModel<SarimaModel> regarima;
-        DoubleSequence forecasts, forecastsErrors;
-        DoubleSequence backcasts, backcastsErrors;
+        DoubleSeq forecasts;
+        DoubleSeq forecastsErrors;
+        DoubleSeq backcasts;
+        DoubleSeq backcastsErrors;
 
         private static final String FCASTS = "forecasts", EFCASTS = "forecasts.se",
                 BCASTS = "backcasts", EBCASTS = "backcasts.se";
@@ -99,7 +101,7 @@ public class ArimaForecasts {
 
     private Results ssfcompute(RegArimaModel regarima, int nf, int nb) {
         ISsf arima = SsfArima.of(regarima.arima());
-        DoubleSequence y = regarima.getY();
+        DoubleSeq y = regarima.getY();
         double[] yc = new double[y.length() + nf + nb];
         for (int i = 0; i < nb; ++i) {
             yc[i] = Double.NaN;
@@ -132,7 +134,7 @@ public class ArimaForecasts {
                 b[i] = loading.ZX(i, ss.a(i));
                 eb[i] = Math.sqrt(loading.ZVZ(i, ss.P(i)));
             }
-            builder.backcasts(DoubleSequence.ofInternal(b)).backcastsErrors(DoubleSequence.ofInternal(eb));
+            builder.backcasts(DoubleSeq.of(b)).backcastsErrors(DoubleSeq.of(eb));
         }
         if (nf > 0) {
             double[] f = new double[nf], ef = new double[nf];
@@ -140,7 +142,7 @@ public class ArimaForecasts {
                 f[i] = loading.ZX(j, ss.a(j));
                 ef[i] = Math.sqrt(loading.ZVZ(j, ss.P(j)));
             }
-            builder.forecasts(DoubleSequence.ofInternal(f)).forecastsErrors(DoubleSequence.ofInternal(ef));
+            builder.forecasts(DoubleSeq.of(f)).forecastsErrors(DoubleSeq.of(ef));
         }
         return builder.build();
     }

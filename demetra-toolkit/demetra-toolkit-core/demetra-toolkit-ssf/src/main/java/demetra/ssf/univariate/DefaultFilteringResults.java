@@ -28,8 +28,8 @@ import demetra.ssf.MatrixResults;
 import demetra.ssf.ResultsRange;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
-import demetra.data.DoubleSequence;
 import demetra.likelihood.DeterminantalTerm;
+import demetra.data.DoubleSeq;
 
 /**
  * Will contain the following items at position t: a(t|t-1)
@@ -108,7 +108,7 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
         return f.get(pos);
     }
 
-    public DoubleSequence errors(boolean normalized, boolean clean) {
+    public DoubleSeq errors(boolean normalized, boolean clean) {
         DataBlock r = e.all();
         if (normalized) {
             r = DataBlock.of(r);
@@ -129,11 +129,11 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
         return P.item(pos, pos);
     }
 
-    public DoubleSequence errors() {
+    public DoubleSeq errors() {
         return e.asDoublesReader(true);
     }
 
-    public DoubleSequence errorVariances() {
+    public DoubleSeq errorVariances() {
         return f.asDoublesReader(true);
     }
 

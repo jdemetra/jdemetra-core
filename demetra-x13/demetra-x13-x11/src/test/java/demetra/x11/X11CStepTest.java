@@ -5,7 +5,6 @@
  */
 package demetra.x11;
 
-import demetra.data.DoubleSequence;
 import demetra.sa.DecompositionMode;
 import ec.satoolkit.x11.X11Results;
 import ec.satoolkit.x11.X11Specification;
@@ -15,6 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -176,7 +176,7 @@ public class X11CStepTest {
     }
 
     private void process(X11CStep instance, X11Context context, double[] input) {
-        DoubleSequence b1 = DoubleSequence.of(input);
+        DoubleSeq b1 = DoubleSeq.copyOf(input);
         if (context.isLogAdd()) {
             b1 = b1.log();
         }
@@ -255,8 +255,8 @@ public class X11CStepTest {
         Assert.assertArrayEquals("Error in C20", expected_C20, actual_C20, DELTA);
     }
 
-    private double[] prepareForCompare(final DoubleSequence in, X11Context context) {
-        DoubleSequence ds = in;
+    private double[] prepareForCompare(final DoubleSeq in, X11Context context) {
+        DoubleSeq ds = in;
         if (context.isLogAdd()) {
             ds = ds.exp();
         }
