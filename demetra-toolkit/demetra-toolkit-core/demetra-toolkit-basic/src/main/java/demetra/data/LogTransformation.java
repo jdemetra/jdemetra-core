@@ -34,7 +34,7 @@ public class LogTransformation implements DataTransformation {
      * @param data
      * @return
      */
-    public boolean canTransform(DoubleSequence data) {
+    public boolean canTransform(DoubleSeq data) {
         return data.allMatch(x -> Double.isFinite(x) ? x > 0 : true);
     }
 
@@ -54,7 +54,7 @@ public class LogTransformation implements DataTransformation {
      * @return
      */
     @Override
-    public DoubleSequence transform(DoubleSequence data, LogJacobian ljacobian) {
+    public DoubleSeq transform(DoubleSeq data, LogJacobian ljacobian) {
         double[] x = data.toArray();
         for (int i = 0; i < x.length; ++i) {
             if (Double.isFinite(x[i])) {
@@ -70,7 +70,7 @@ public class LogTransformation implements DataTransformation {
             }
             ljacobian.value -= s;
         }
-        return DoubleSequence.ofInternal(x);
+        return DoubleSeq.of(x);
     }
 
     @Override

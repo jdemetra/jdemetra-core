@@ -9,8 +9,8 @@ import demetra.arima.IArimaModel;
 import demetra.arima.internal.KalmanFilter;
 import demetra.arima.internal.ModifiedLjungBoxFilter;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.arima.estimation.ArmaFilter;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -19,7 +19,7 @@ import demetra.arima.estimation.ArmaFilter;
  */
 public interface ResidualsComputer {
 
-    DoubleSequence residuals(IArimaModel arma, DoubleSequence y);
+    DoubleSeq residuals(IArimaModel arma, DoubleSeq y);
 
     public static ResidualsComputer mlComputer() {
         return (arma, y) -> {

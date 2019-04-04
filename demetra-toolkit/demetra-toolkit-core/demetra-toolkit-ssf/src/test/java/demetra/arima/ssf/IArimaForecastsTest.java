@@ -13,8 +13,8 @@ import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.data.DoubleSequence;
 import static demetra.data.Doubles.distance;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -23,7 +23,7 @@ import static demetra.data.Doubles.distance;
 public class IArimaForecastsTest {
 
     private static final SarimaModel airline, arima;
-    private static final DoubleSequence data;
+    private static final DoubleSeq data;
 
     static {
         SarimaSpecification spec = new SarimaSpecification(12);
@@ -41,12 +41,12 @@ public class IArimaForecastsTest {
     public void testAirline() {
         ExactArimaForecasts ef = new ExactArimaForecasts();
         ef.prepare(airline, false);
-        DoubleSequence forecasts = ef.forecasts(data, 36);
-        DoubleSequence backcasts = ef.backcasts(data, 36);
+        DoubleSeq forecasts = ef.forecasts(data, 36);
+        DoubleSeq backcasts = ef.backcasts(data, 36);
         FastArimaForecasts ff = new FastArimaForecasts();
         ff.prepare(airline, false);
-        DoubleSequence aforecasts = ff.forecasts(data, 36);
-        DoubleSequence abackcasts = ff.backcasts(data, 36);
+        DoubleSeq aforecasts = ff.forecasts(data, 36);
+        DoubleSeq abackcasts = ff.backcasts(data, 36);
 
 //        System.out.println(forecasts);
 //        System.out.println(backcasts);
@@ -60,8 +60,8 @@ public class IArimaForecastsTest {
     public void testMeanAirline() {
         ExactArimaForecasts ef = new ExactArimaForecasts();
         ef.prepare(airline, true);
-        DoubleSequence forecasts = ef.forecasts(data, 36);
-        DoubleSequence backcasts = ef.backcasts(data, 36);
+        DoubleSeq forecasts = ef.forecasts(data, 36);
+        DoubleSeq backcasts = ef.backcasts(data, 36);
 //        FastArimaForecasts ff=new FastArimaForecasts();
 //        ff.prepare(airline, true);
 //        DoubleSequence aforecasts = ff.forecasts(data, 36);
@@ -77,12 +77,12 @@ public class IArimaForecastsTest {
     public void testArima() {
         ExactArimaForecasts ef = new ExactArimaForecasts();
         ef.prepare(arima, false);
-        DoubleSequence forecasts = ef.forecasts(data, 36);
-        DoubleSequence backcasts = ef.backcasts(data, 36);
+        DoubleSeq forecasts = ef.forecasts(data, 36);
+        DoubleSeq backcasts = ef.backcasts(data, 36);
         FastArimaForecasts ff = new FastArimaForecasts();
         ff.prepare(arima, false);
-        DoubleSequence aforecasts = ff.forecasts(data, 36);
-        DoubleSequence abackcasts = ff.backcasts(data, 36);
+        DoubleSeq aforecasts = ff.forecasts(data, 36);
+        DoubleSeq abackcasts = ff.backcasts(data, 36);
 
 //        System.out.println(forecasts);
 //        System.out.println(backcasts);

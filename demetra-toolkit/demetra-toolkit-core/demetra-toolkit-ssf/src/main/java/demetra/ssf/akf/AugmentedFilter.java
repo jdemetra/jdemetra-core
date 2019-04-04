@@ -25,7 +25,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import java.util.Iterator;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
@@ -101,9 +101,9 @@ public class AugmentedFilter {
         // a = a + (M)* F^-1 * v
         state.a().addAY(e / v, pe.M());
         DataBlockIterator acols = state.B().columnsIterator();
-        DoubleReader cell = pe.E().reader();
+        DoubleSeqCursor cell = pe.E().cursor();
         while (acols.hasNext()) {
-            acols.next().addAY(cell.next() / v, pe.M());
+            acols.next().addAY(cell.getAndNext() / v, pe.M());
         }
         update(state.P(), v, pe.M());
     }

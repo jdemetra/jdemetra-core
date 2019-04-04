@@ -18,13 +18,13 @@ package demetra.ssf.multivariate;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleSequence;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import javax.annotation.Nullable;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -84,7 +84,7 @@ public class MultivariateUpdateInformation {
         return K;
     }
 
-    public void compute(IMultivariateSsf ssf, int t, State state, DoubleSequence x, int[] equations) {
+    public void compute(IMultivariateSsf ssf, int t, State state, DoubleSeq x, int[] equations) {
         ISsfMeasurements measurements = ssf.measurements();
         ISsfErrors errors = ssf.errors();
 

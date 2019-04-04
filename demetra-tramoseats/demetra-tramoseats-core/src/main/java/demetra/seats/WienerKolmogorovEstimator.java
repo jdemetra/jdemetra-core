@@ -16,7 +16,6 @@
  */
 package demetra.seats;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
@@ -24,6 +23,7 @@ import demetra.sa.DecompositionMode;
 import demetra.sa.SeriesDecomposition;
 import demetra.ucarima.UcarimaModel;
 import demetra.ucarima.estimation.BurmanEstimates;
+import demetra.data.DoubleSeq;
 
 /**
  * @author Jean Palate
@@ -41,7 +41,7 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
         SeriesDecomposition.Builder builder = SeriesDecomposition.builder(DecompositionMode.Additive);
         BurmanEstimates burman = new BurmanEstimates();
 
-        DoubleSequence s = model.getSeries();
+        DoubleSeq s = model.getSeries();
         burman.setForecastsCount(model.getForecastsCount());
 
         UcarimaModel ucm = model.getUcarimaModel();
@@ -68,18 +68,18 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
 
     private void process(SeriesDecomposition.Builder builder, BurmanEstimates burman, int i, boolean b, ComponentType type) {
         double[] tmp = burman.estimates(i, true);
-        builder.add(DoubleSequence.ofInternal(tmp), type);
+        builder.add(DoubleSeq.of(tmp), type);
         tmp = burman.stdevEstimates(i);
         if (tmp != null) {
-            builder.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.Stdev);
+            builder.add(DoubleSeq.of(tmp), type, ComponentInformation.Stdev);
         }
         tmp = burman.forecasts(i, true);
         if (tmp != null) {
-            builder.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.Forecast);
+            builder.add(DoubleSeq.of(tmp), type, ComponentInformation.Forecast);
         }
         tmp = burman.stdevForecasts(i, true);
         if (tmp != null) {
-            builder.add(DoubleSequence.ofInternal(tmp), type, ComponentInformation.StdevForecast);
+            builder.add(DoubleSeq.of(tmp), type, ComponentInformation.StdevForecast);
         }
     }
 

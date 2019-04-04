@@ -6,11 +6,11 @@
 package demetra.x11plus;
 
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import demetra.data.WeeklyData;
 import demetra.sa.DecompositionMode;
 import ec.satoolkit.x11.X11Results;
 import org.junit.Test;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -41,7 +41,7 @@ public class X11KernelTest {
                 .initialSeasonalFilter(SeasonalFilterOption.S3X1)
                 .finalSeasonalFilter(SeasonalFilterOption.S3X9)
                 .build();
-        kernel.process(DoubleSequence.ofInternal(WeeklyData.US_CLAIMS2), context1);
+        kernel.process(DoubleSeq.of(WeeklyData.US_CLAIMS2), context1);
 //        System.out.println(kernel.getDstep().getD11());
 //        System.out.println("Rounded");
         X11Context context2=X11Context.builder()
@@ -50,7 +50,7 @@ public class X11KernelTest {
                 .initialSeasonalFilter(SeasonalFilterOption.S3X1)
                 .finalSeasonalFilter(SeasonalFilterOption.S3X9)
                 .build();
-        kernel.process(DoubleSequence.ofInternal(WeeklyData.US_CLAIMS2), context2);
+        kernel.process(DoubleSeq.of(WeeklyData.US_CLAIMS2), context2);
 //        System.out.println(kernel.getDstep().getD11());
     }
     
@@ -62,7 +62,7 @@ public class X11KernelTest {
                 .period(12)
                 .trendFilterLength(13)
                 .build();
-        kernel.process(DoubleSequence.ofInternal(Data.PROD), context1);
+        kernel.process(DoubleSeq.of(Data.PROD), context1);
 //        System.out.println(kernel.getDstep().getD13());
         ec.satoolkit.x11.X11Specification spec=new ec.satoolkit.x11.X11Specification();
         spec.setMode(ec.satoolkit.DecompositionMode.Multiplicative);

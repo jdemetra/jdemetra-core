@@ -41,7 +41,7 @@ public class AutoRegressiveSpectrum {
         method_ = m;
     }
 
-    public boolean process(DoubleSequence data, final int nar) {
+    public boolean process(DoubleSeq data, final int nar) {
         clear();
         int nlags = nar == 0 ? computeDefaultLags(data.length()) : nar;
         if (nlags < 0) {
@@ -62,7 +62,7 @@ public class AutoRegressiveSpectrum {
         sig = 0;
     }
 
-    private void computeDurbin(DoubleSequence data, int nar) {
+    private void computeDurbin(DoubleSeq data, int nar) {
         DurbinAlgorithm durbin = new DurbinAlgorithm();
         if (durbin.solve(data, nar)) {
             ar = durbin.getCoefficients();
@@ -83,7 +83,7 @@ public class AutoRegressiveSpectrum {
         return npi;
     }
 
-    private void computeOls(DoubleSequence data, int nar) {
+    private void computeOls(DoubleSeq data, int nar) {
         try {
             clear();
             // OLS on the data
@@ -148,7 +148,7 @@ public class AutoRegressiveSpectrum {
         return sig; //To change body of generated methods, choose Tools | Templates.
     }
 
-    public DoubleSequence getCoefficients() {
-        return ar != null ?  DoubleSequence.ofInternal(ar) : DataBlock.EMPTY;
+    public DoubleSeq getCoefficients() {
+        return ar != null ?  DoubleSeq.of(ar) : DataBlock.EMPTY;
     }
 }

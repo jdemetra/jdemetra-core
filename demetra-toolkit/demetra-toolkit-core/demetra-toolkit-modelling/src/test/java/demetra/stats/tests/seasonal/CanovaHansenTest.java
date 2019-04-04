@@ -17,11 +17,11 @@
 package demetra.stats.tests.seasonal;
 
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import demetra.data.WeeklyData;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
 import static demetra.timeseries.simplets.TsDataToolkit.log;
 import org.junit.Test;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -35,7 +35,7 @@ public class CanovaHansenTest {
     @Test
     public void testUnempl_dummy() {
 //        System.out.println("dummies");
-        CanovaHansen ch = CanovaHansen.test(DoubleSequence.of(Data.US_UNEMPL))
+        CanovaHansen ch = CanovaHansen.test(DoubleSeq.copyOf(Data.US_UNEMPL))
                 .dummies(4)
                 .truncationLag(4)
                 .build();
@@ -49,7 +49,7 @@ public class CanovaHansenTest {
     @Test
     public void testUnempl_trig() {
 //        System.out.println("trig");
-        CanovaHansen ch = CanovaHansen.test(DoubleSequence.of(Data.US_UNEMPL))
+        CanovaHansen ch = CanovaHansen.test(DoubleSeq.copyOf(Data.US_UNEMPL))
                 .trigonometric(4)
                 .truncationLag(4)
                 .build();
@@ -60,7 +60,7 @@ public class CanovaHansenTest {
 
     @Test
     public void testP_dummy() {
-        DoubleSequence y = delta(log(Data.TS_PROD), 1).getValues();
+        DoubleSeq y = delta(log(Data.TS_PROD), 1).getValues();
 //        System.out.println("dummies");
         CanovaHansen ch = CanovaHansen.test(y)
                 .dummies(12)
@@ -78,7 +78,7 @@ public class CanovaHansenTest {
 
     @Test
     public void testP_trig() {
-        DoubleSequence y = delta(log(Data.TS_PROD), 1).getValues();
+        DoubleSeq y = delta(log(Data.TS_PROD), 1).getValues();
 //        System.out.println("dummies");
         CanovaHansen ch = CanovaHansen
                 .test(y)
@@ -101,7 +101,7 @@ public class CanovaHansenTest {
         for (int i = 0; i < x.length; ++i) {
             x[i] = Math.log(WeeklyData.US_CLAIMS[i + 1]) - Math.log(WeeklyData.US_CLAIMS[i]);
         }
-         DoubleSequence y = DoubleSequence.ofInternal(x);
+         DoubleSeq y = DoubleSeq.of(x);
            CanovaHansen ch = CanovaHansen.test(y)
                     .lag1(false)
                     .truncationLag(5)
@@ -123,7 +123,7 @@ public class CanovaHansenTest {
             x[i] = Math.log(WeeklyData.US_CLAIMS[i + 1]) - Math.log(WeeklyData.US_CLAIMS[i]);
         }
 //        double[] x=WeeklyData.US_CLAIMS;
-DoubleSequence y = DoubleSequence.ofInternal(x);
+DoubleSeq y = DoubleSeq.of(x);
           for (int i = 2; i <= 553; ++i) {
          CanovaHansen ch = CanovaHansen.test(y)
                     .lag1(false)

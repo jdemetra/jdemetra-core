@@ -18,10 +18,10 @@ package demetra.x12;
 
 import demetra.x12.DifferencingModule;
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import ec.tstoolkit.modelling.DefaultTransformationType;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -35,7 +35,7 @@ public class DifferencingModuleTest {
     @Test
     public void testProd() {
         DifferencingModule test = DifferencingModule.builder().build();
-        test.process(DoubleSequence.of(Data.PROD), 12);
+        test.process(DoubleSeq.copyOf(Data.PROD), 12);
         assertTrue(test.getD() == 1 && test.getBd() == 1);
 //        System.out.println(diff[0]);
 //        System.out.println(diff[1]);
@@ -45,7 +45,7 @@ public class DifferencingModuleTest {
     @Test
     public void testX() {
         DifferencingModule test = DifferencingModule.builder().build();
-        test.process(DoubleSequence.of(Data.EXPORTS), 12);
+        test.process(DoubleSeq.copyOf(Data.EXPORTS), 12);
         assertTrue(test.getD() == 0 && test.getBd() == 1);
 //        System.out.println(diff[0]);
 //        System.out.println(diff[1]);

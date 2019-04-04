@@ -16,7 +16,7 @@
  */
 package demetra.x11plus;
 
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -30,7 +30,7 @@ public class DummySeasonalNormalizer  {
     private DummySeasonalNormalizer() {
     }
 
-    public DoubleSequence normalize(DoubleSequence in, int start, int end) {
+    public DoubleSeq normalize(DoubleSeq in, int start, int end) {
         return in;
     }
 

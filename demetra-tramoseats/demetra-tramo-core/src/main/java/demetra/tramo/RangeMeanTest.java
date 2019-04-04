@@ -16,7 +16,6 @@
  */
 package demetra.tramo;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
@@ -25,6 +24,7 @@ import demetra.modelling.TransformationType;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.SarimaModel;
 import java.util.Arrays;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -39,7 +39,7 @@ public class RangeMeanTest {
 
     public boolean process(RegArimaModel<SarimaModel> model) {
 
-        DoubleSequence data = model.getY();
+        DoubleSeq data = model.getY();
 
         if (data.anyMatch(x -> x <= 0)) {
             return false;
@@ -134,7 +134,7 @@ public class RangeMeanTest {
      * @param data
      * @return
      */
-    public boolean useLogs(int freq, DoubleSequence data) {
+    public boolean useLogs(int freq, DoubleSeq data) {
         int n = data.length();
         isj = 0;
         itrim = 0;
@@ -162,8 +162,8 @@ public class RangeMeanTest {
         try {
             Ols ols = new Ols();
             LinearModel model = LinearModel.builder()
-                    .y(DoubleSequence.ofInternal(range))
-                    .addX(DoubleSequence.ofInternal(smean))
+                    .y(DoubleSeq.of(range))
+                    .addX(DoubleSeq.of(smean))
                     .meanCorrection(true)
                     .build();
             LeastSquaresResults rslt = ols.compute(model);

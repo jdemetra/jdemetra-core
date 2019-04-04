@@ -8,7 +8,6 @@ package demetra.r;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.MatrixType;
@@ -26,7 +25,6 @@ import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.modelling.regression.GenericTradingDaysVariable;
 import demetra.modelling.regression.Regression;
-import demetra.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.fitToDomain;
 import java.util.ArrayList;
@@ -120,7 +118,7 @@ public class MovingRegression {
                 .precision(1e-12)
                 .build();
         RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.builder(SarimaModel.class)
-                .y(DoubleSequence.of(s.getValues()))
+                .y(s.getValues())
                 .arima(arima);
         x.columns().forEach(xx -> rbuilder.addX(xx));
 
@@ -134,7 +132,7 @@ public class MovingRegression {
             Matrix mtd = generate(dom, dc);
             TsData yc = fitToDomain(s, dom);
             RegArimaModel.Builder<SarimaModel> builder = RegArimaModel.builder(SarimaModel.class)
-                    .y(DoubleSequence.of(yc.getValues()))
+                    .y(yc.getValues())
                     .arima(arima);
             mtd.columns().forEach(xx -> builder.addX(xx));
             ConcentratedLikelihoodWithMissing cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(builder.build());

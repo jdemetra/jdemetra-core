@@ -6,13 +6,13 @@
 package demetra.msts.survey;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.StateComponent;
+import demetra.data.DoubleSeq;
 
 /**
  * Model described in the paper of Duncan Elliot
@@ -88,15 +88,15 @@ public class WaveSpecificSurveyErrors3 {
                 return vc;
             } else {
                 double[] kvc = vc.clone();
-                DoubleReader reader = k(pos).reader();
+                DoubleSeqCursor reader = k(pos).cursor();
                 for (int i = 0; i < kvc.length; ++i) {
-                    kvc[i] *= reader.next();
+                    kvc[i] *= reader.getAndNext();
                 }
                 return kvc;
             }
         }
 
-        private DoubleSequence k(int pos) {
+        private DoubleSeq k(int pos) {
             if (pos < 0) {
                 return k.row(0);
             } else if (pos >= k.getRowsCount()) {

@@ -18,7 +18,6 @@ package demetra.r;
 
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
@@ -37,6 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import demetra.processing.ProcResults;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -84,13 +84,13 @@ public class ArimaEstimation {
         IntList missings = new IntList();
         demetra.data.AverageInterpolator.cleanMissings(y, missings);
         RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.builder(SarimaModel.class)
-                .y(DoubleSequence.of(y))
+                .y(DoubleSeq.copyOf(y))
                 .arima(arima)
                 .meanCorrection(mean)
                 .missing(missings.toArray());
 
         for (double[] x : xreg) {
-            rbuilder.addX(DoubleSequence.ofInternal(x));
+            rbuilder.addX(DoubleSeq.of(x));
         }
 
         RegArimaEstimation<SarimaModel> rslt = monitor.process(rbuilder.build());
@@ -122,13 +122,13 @@ public class ArimaEstimation {
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
             MAPPING.set(B, double[].class, source
                     -> {
-                DoubleSequence b = source.getConcentratedLogLikelihood().coefficients();
+                DoubleSeq b = source.getConcentratedLogLikelihood().coefficients();
                 return b.toArray();
             });
             MAPPING.set(MEAN, Double.class, source
                     -> {
                 if (source.getRegarima().isMean()) {
-                    DoubleSequence b = source.getConcentratedLogLikelihood().coefficients();
+                    DoubleSeq b = source.getConcentratedLogLikelihood().coefficients();
                     int mpos = source.getRegarima().getMissingValuesCount();
                     return b.get(mpos);
                 } else {

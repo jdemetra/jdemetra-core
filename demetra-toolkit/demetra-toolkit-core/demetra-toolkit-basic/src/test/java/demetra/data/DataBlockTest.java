@@ -6,7 +6,6 @@
 package demetra.data;
 
 import demetra.data.accumulator.KahanAccumulator;
-import static demetra.data.DataBlock.ofInternal;
 import demetra.maths.matrices.Matrix;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
@@ -14,13 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import org.junit.Ignore;
-import static demetra.data.DataBlock.ofInternal;
-import static demetra.data.DataBlock.ofInternal;
-import static demetra.data.DataBlock.ofInternal;
-import static demetra.data.DataBlock.ofInternal;
-import static demetra.data.DataBlock.ofInternal;
-import static demetra.data.DataBlock.ofInternal;
-import static demetra.data.DataBlock.ofInternal;
 import static demetra.data.DataBlock.ofInternal;
 import static demetra.data.DataBlock.ofInternal;
 import static demetra.data.DataBlock.ofInternal;
@@ -158,7 +150,7 @@ public class DataBlockTest {
     }
 
     @Test
-    public void testCopyOfDoubleSequence() {
+    public void testCopyOfDoubleSeq() {
         assertThat(ofInternal(getSample(10), 0, 10, 1)).satisfies(o -> {
             assertThat(DataBlock.of(o).toArray()).containsExactly(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
             assertThat(DataBlock.of(o).getStorage()).containsExactly(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
@@ -195,7 +187,7 @@ public class DataBlockTest {
 
     @Test
     public void testSelect() {
-        DoubleSequence data = DoubleSequence.ofInternal(getSample(10));
+        DoubleSeq data = DoubleSeq.of(getSample(10));
         DoublePredicate dp = (d) -> d > 0;
         assertThat(DataBlock.select(data, dp))
                 .isInstanceOf(DataBlock.class);
@@ -213,12 +205,12 @@ public class DataBlockTest {
 
     @Test
     public void testReader() {
-        assertThat(ofInternal(getSample(10), 0, 10, 1).reader()).isInstanceOf(DoubleReader.class);
+        assertThat(ofInternal(getSample(10), 0, 10, 1).cursor()).isInstanceOf(DoubleSeqCursor.class);
     }
 
     @Test
     public void testCells() {
-        assertThat(ofInternal(getSample(10), 0, 10, 1).cells()).isInstanceOf(DoubleCell.class);
+        assertThat(ofInternal(getSample(10), 0, 10, 1).cursor()).isInstanceOf(DoubleVectorCursor.class);
     }
 
     @Test
@@ -1698,56 +1690,56 @@ public class DataBlockTest {
     @Test
     public void testCopyDouble() {
         assertThat(ofInternal(getSample(10), 0, 10, 1)).satisfies(o -> {
-            DoubleSequence x = DoubleSequence.ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
+            DoubleSeq x = DoubleSeq.of(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
             o.copy(x);
             assertThat(o.toArray()).containsExactly(11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
             assertThat(o.getStorage()).containsExactly(11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
         });
 
         assertThat(ofInternal(getSample(10), 0, 10, 2)).satisfies(o -> {
-            DoubleSequence x = DoubleSequence.ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
+            DoubleSeq x = DoubleSeq.of(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
             o.copy(x);
             assertThat(o.toArray()).containsExactly(11, 12, 13, 14, 15);
             assertThat(o.getStorage()).containsExactly(11, 2, 12, 4, 13, 6, 14, 8, 15, 10);
         });
 
         assertThat(ofInternal(getSample(10), 2, 10, 1)).satisfies(o -> {
-            DoubleSequence x = DoubleSequence.ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
+            DoubleSeq x = DoubleSeq.of(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
             o.copy(x);
             assertThat(o.toArray()).containsExactly(11, 12, 13, 14, 15, 16, 17, 18);
             assertThat(o.getStorage()).containsExactly(1, 2, 11, 12, 13, 14, 15, 16, 17, 18);
         });
 
         assertThat(ofInternal(getSample(10), 2, 10, 2)).satisfies(o -> {
-            DoubleSequence x = DoubleSequence.ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
+            DoubleSeq x = DoubleSeq.of(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
             o.copy(x);
             assertThat(o.toArray()).containsExactly(11, 12, 13, 14);
             assertThat(o.getStorage()).containsExactly(1, 2, 11, 4, 12, 6, 13, 8, 14, 10);
         });
 
         assertThat(ofInternal(getSample(10), 9, -1, -1)).satisfies(o -> {
-            DoubleSequence x = DoubleSequence.ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
+            DoubleSeq x = DoubleSeq.of(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
             o.copy(x);
             assertThat(o.toArray()).containsExactly(11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
             assertThat(o.getStorage()).containsExactly(20, 19, 18, 17, 16, 15, 14, 13, 12, 11);
         });
 
         assertThat(ofInternal(getSample(10), 9, -1, -2)).satisfies(o -> {
-            DoubleSequence x = DoubleSequence.ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
+            DoubleSeq x = DoubleSeq.of(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
             o.copy(x);
             assertThat(o.toArray()).containsExactly(11, 12, 13, 14, 15);
             assertThat(o.getStorage()).containsExactly(1, 15, 3, 14, 5, 13, 7, 12, 9, 11);
         });
 
         assertThat(ofInternal(getSample(10), 9, 1, -1)).satisfies(o -> {
-            DoubleSequence x = DoubleSequence.ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
+            DoubleSeq x = DoubleSeq.of(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
             o.copy(x);
             assertThat(o.toArray()).containsExactly(11, 12, 13, 14, 15, 16, 17, 18);
             assertThat(o.getStorage()).containsExactly(1, 2, 18, 17, 16, 15, 14, 13, 12, 11);
         });
 
         assertThat(ofInternal(getSample(10), 9, 1, -2)).satisfies(o -> {
-            DoubleSequence x = DoubleSequence.ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
+            DoubleSeq x = DoubleSeq.of(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0, 10);
             o.copy(x);
             assertThat(o.toArray()).containsExactly(11, 12, 13, 14);
             assertThat(o.getStorage()).containsExactly(1, 2, 3, 14, 5, 13, 7, 12, 9, 11);
@@ -2619,56 +2611,56 @@ public class DataBlockTest {
     @Test
     public void testApplyDoublesDoubleBinaryOPerator() {
         assertThat(ofInternal(getSample(10), 0, 10, 1)).satisfies(o -> {
-            DoubleSequence d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.apply(d, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(12, 14, 16, 18, 20, 22, 24, 26, 28, 30);
             assertThat(o.getStorage()).containsExactly(12, 14, 16, 18, 20, 22, 24, 26, 28, 30);
         });
 
         assertThat(ofInternal(getSample(10), 2, 10, 1)).satisfies(o -> {
-            DoubleSequence d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.apply(d, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(14, 16, 18, 20, 22, 24, 26, 28);
             assertThat(o.getStorage()).containsExactly(1, 2, 14, 16, 18, 20, 22, 24, 26, 28);
         });
 
         assertThat(ofInternal(getSample(10), 0, 10, 2)).satisfies(o -> {
-            DoubleSequence d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.apply(d, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(12, 15, 18, 21, 24);
             assertThat(o.getStorage()).containsExactly(12, 2, 15, 4, 18, 6, 21, 8, 24, 10);
         });
 
         assertThat(ofInternal(getSample(10), 2, 10, 2)).satisfies(o -> {
-            DoubleSequence d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.apply(d, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(14, 17, 20, 23);
             assertThat(o.getStorage()).containsExactly(1, 2, 14, 4, 17, 6, 20, 8, 23, 10);
         });
 
         assertThat(ofInternal(getSample(10), 9, -1, -1)).satisfies(o -> {
-            DoubleSequence d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.apply(d, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(21, 21, 21, 21, 21, 21, 21, 21, 21, 21);
             assertThat(o.getStorage()).containsExactly(21, 21, 21, 21, 21, 21, 21, 21, 21, 21);
         });
 
         assertThat(ofInternal(getSample(10), 9, 1, -1)).satisfies(o -> {
-            DoubleSequence d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.apply(d, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(21, 21, 21, 21, 21, 21, 21, 21);
             assertThat(o.getStorage()).containsExactly(1, 2, 21, 21, 21, 21, 21, 21, 21, 21);
         });
 
         assertThat(ofInternal(getSample(10), 9, -1, -2)).satisfies(o -> {
-            DoubleSequence d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.apply(d, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(21, 20, 19, 18, 17);
             assertThat(o.getStorage()).containsExactly(1, 17, 3, 18, 5, 19, 7, 20, 9, 21);
         });
 
         assertThat(ofInternal(getSample(10), 9, 1, -2)).satisfies(o -> {
-            DoubleSequence d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq d = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.apply(d, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(21, 20, 19, 18);
             assertThat(o.getStorage()).containsExactly(1, 2, 3, 18, 5, 19, 7, 20, 9, 21);
@@ -3100,56 +3092,56 @@ public class DataBlockTest {
     @Test
     public void testSetDoublesDoubleUnaryOperator() {
         assertThat(ofInternal(getSample(10), 0, 10, 1)).satisfies(o -> {
-            DoubleSequence x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.set(x, (y) -> y * 2);
             assertThat(o.toArray()).containsExactly(22, 24, 26, 28, 30, 32, 34, 36, 38, 40);
             assertThat(o.getStorage()).containsExactly(22, 24, 26, 28, 30, 32, 34, 36, 38, 40);
         });
 
         assertThat(ofInternal(getSample(10), 2, 10, 1)).satisfies(o -> {
-            DoubleSequence x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.set(x, (y) -> y * 2);
             assertThat(o.toArray()).containsExactly(22, 24, 26, 28, 30, 32, 34, 36);
             assertThat(o.getStorage()).containsExactly(1, 2, 22, 24, 26, 28, 30, 32, 34, 36);
         });
 
         assertThat(ofInternal(getSample(10), 0, 10, 2)).satisfies(o -> {
-            DoubleSequence x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.set(x, (y) -> y * 2);
             assertThat(o.toArray()).containsExactly(22, 24, 26, 28, 30);
             assertThat(o.getStorage()).containsExactly(22, 2, 24, 4, 26, 6, 28, 8, 30, 10);
         });
 
         assertThat(ofInternal(getSample(10), 2, 10, 2)).satisfies(o -> {
-            DoubleSequence x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.set(x, (y) -> y * 2);
             assertThat(o.toArray()).containsExactly(22, 24, 26, 28);
             assertThat(o.getStorage()).containsExactly(1, 2, 22, 4, 24, 6, 26, 8, 28, 10);
         });
 
         assertThat(ofInternal(getSample(10), 9, -1, -1)).satisfies(o -> {
-            DoubleSequence x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.set(x, (y) -> y * 2);
             assertThat(o.toArray()).containsExactly(22, 24, 26, 28, 30, 32, 34, 36, 38, 40);
             assertThat(o.getStorage()).containsExactly(40, 38, 36, 34, 32, 30, 28, 26, 24, 22);
         });
 
         assertThat(ofInternal(getSample(10), 9, 1, -1)).satisfies(o -> {
-            DoubleSequence x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.set(x, (y) -> y * 2);
             assertThat(o.toArray()).containsExactly(22, 24, 26, 28, 30, 32, 34, 36);
             assertThat(o.getStorage()).containsExactly(1, 2, 36, 34, 32, 30, 28, 26, 24, 22);
         });
 
         assertThat(ofInternal(getSample(10), 9, -1, -2)).satisfies(o -> {
-            DoubleSequence x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.set(x, (y) -> y * 2);
             assertThat(o.toArray()).containsExactly(22, 24, 26, 28, 30);
             assertThat(o.getStorage()).containsExactly(1, 30, 3, 28, 5, 26, 7, 24, 9, 22);
         });
 
         assertThat(ofInternal(getSample(10), 9, 1, -2)).satisfies(o -> {
-            DoubleSequence x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq x = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
             o.set(x, (y) -> y * 2);
             assertThat(o.toArray()).containsExactly(22, 24, 26, 28);
             assertThat(o.getStorage()).containsExactly(1, 2, 3, 28, 5, 26, 7, 24, 9, 22);
@@ -3159,64 +3151,64 @@ public class DataBlockTest {
     @Test
     public void testSetDoublesDoublesDoubleBinaryOperator() {
         assertThat(ofInternal(getSample(10), 0, 10, 1)).satisfies(o -> {
-            DoubleSequence db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
-            DoubleSequence db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
+            DoubleSeq db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
             o.set(db1, db2, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(32, 34, 36, 38, 40, 42, 44, 46, 48, 50);
             assertThat(o.getStorage()).containsExactly(32, 34, 36, 38, 40, 42, 44, 46, 48, 50);
         });
 
         assertThat(ofInternal(getSample(10), 2, 10, 1)).satisfies(o -> {
-            DoubleSequence db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
-            DoubleSequence db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
+            DoubleSeq db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
             o.set(db1, db2, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(32, 34, 36, 38, 40, 42, 44, 46);
             assertThat(o.getStorage()).containsExactly(1, 2, 32, 34, 36, 38, 40, 42, 44, 46);
         });
 
         assertThat(ofInternal(getSample(10), 0, 10, 2)).satisfies(o -> {
-            DoubleSequence db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
-            DoubleSequence db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
+            DoubleSeq db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
             o.set(db1, db2, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(32, 34, 36, 38, 40);
             assertThat(o.getStorage()).containsExactly(32, 2, 34, 4, 36, 6, 38, 8, 40, 10);
         });
 
         assertThat(ofInternal(getSample(10), 2, 10, 2)).satisfies(o -> {
-            DoubleSequence db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
-            DoubleSequence db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
+            DoubleSeq db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
             o.set(db1, db2, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(32, 34, 36, 38);
             assertThat(o.getStorage()).containsExactly(1, 2, 32, 4, 34, 6, 36, 8, 38, 10);
         });
 
         assertThat(ofInternal(getSample(10), 9, -1, -1)).satisfies(o -> {
-            DoubleSequence db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
-            DoubleSequence db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
+            DoubleSeq db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
             o.set(db1, db2, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(32, 34, 36, 38, 40, 42, 44, 46, 48, 50);
             assertThat(o.getStorage()).containsExactly(50, 48, 46, 44, 42, 40, 38, 36, 34, 32);
         });
 
         assertThat(ofInternal(getSample(10), 9, 1, -1)).satisfies(o -> {
-            DoubleSequence db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
-            DoubleSequence db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
+            DoubleSeq db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
             o.set(db1, db2, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(32, 34, 36, 38, 40, 42, 44, 46);
             assertThat(o.getStorage()).containsExactly(1, 2, 46, 44, 42, 40, 38, 36, 34, 32);
         });
 
         assertThat(ofInternal(getSample(10), 9, -1, -2)).satisfies(o -> {
-            DoubleSequence db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
-            DoubleSequence db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
+            DoubleSeq db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
             o.set(db1, db2, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(32, 34, 36, 38, 40);
             assertThat(o.getStorage()).containsExactly(1, 40, 3, 38, 5, 36, 7, 34, 9, 32);
         });
 
         assertThat(ofInternal(getSample(10), 9, 1, -2)).satisfies(o -> {
-            DoubleSequence db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
-            DoubleSequence db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
+            DoubleSeq db1 = ofInternal(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+            DoubleSeq db2 = ofInternal(new double[]{21, 22, 23, 24, 25, 26, 27, 28, 29, 30});
             o.set(db1, db2, (x, y) -> x + y);
             assertThat(o.toArray()).containsExactly(32, 34, 36, 38);
             assertThat(o.getStorage()).containsExactly(1, 2, 3, 38, 5, 36, 7, 34, 9, 32);

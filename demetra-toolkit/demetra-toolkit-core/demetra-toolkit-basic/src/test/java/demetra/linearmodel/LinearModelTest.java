@@ -21,7 +21,7 @@ import demetra.data.DataBlock;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -43,7 +43,7 @@ public class LinearModelTest {
                 .meanCorrection(true)
                 .build();
         assertTrue(lm != null);
-        assertTrue(lm.calcResiduals(DoubleSequence.of(.5)) != null);
+        assertTrue(lm.calcResiduals(DoubleSeq.of(.5)) != null);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class LinearModelTest {
                 .addX(x1, x2)
                 .build();
         assertTrue(lm != null);
-        assertTrue(lm.calcResiduals(DoubleSequence.of(.5, -.2, .3)) != null);
+        assertTrue(lm.calcResiduals(DoubleSeq.copyOf(.5, -.2, .3)) != null);
     }
 
     @Test
@@ -76,11 +76,11 @@ public class LinearModelTest {
         DataBlock x2 = DataBlock.make(10);
         x2.set(rnd::nextDouble);
         LinearModel lm = LinearModel.builder()
-                .y(DoubleSequence.onMapping(y, z->Math.log(z)))
+                .y(DoubleSeq.onMapping(y, z->Math.log(z)))
                 .addX(x1, x2)
                 .build();
         assertTrue(lm != null);
-        assertTrue(lm.calcResiduals(DoubleSequence.of(-.002, .003)) != null);
+        assertTrue(lm.calcResiduals(DoubleSeq.copyOf(-.002, .003)) != null);
     }
 
 }

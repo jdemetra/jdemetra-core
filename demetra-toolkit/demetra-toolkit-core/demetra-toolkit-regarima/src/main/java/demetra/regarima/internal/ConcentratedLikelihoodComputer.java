@@ -21,7 +21,6 @@ import demetra.arima.IArimaModel;
 import demetra.arima.internal.KalmanFilter;
 import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
@@ -30,6 +29,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.maths.MatrixType;
 import demetra.arima.estimation.ArmaFilter;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -57,7 +57,7 @@ public final class ConcentratedLikelihoodComputer {
     }
 
     public <M extends IArimaModel> ConcentratedLikelihoodWithMissing compute(RegArmaModel<M> dmodel) {
-        DoubleSequence dy = dmodel.getY();
+        DoubleSeq dy = dmodel.getY();
         int n = dy.length();
         int nl = filter.prepare(dmodel.getArma(), n);
         try {
@@ -68,7 +68,7 @@ public final class ConcentratedLikelihoodComputer {
 
     }
 
-    private <M extends IArimaModel> ConcentratedLikelihoodWithMissing process(DoubleSequence dy, MatrixType x, int nl, int nm) {
+    private <M extends IArimaModel> ConcentratedLikelihoodWithMissing process(DoubleSeq dy, MatrixType x, int nl, int nm) {
 
         DataBlock y = DataBlock.of(dy);
         int n = y.length();

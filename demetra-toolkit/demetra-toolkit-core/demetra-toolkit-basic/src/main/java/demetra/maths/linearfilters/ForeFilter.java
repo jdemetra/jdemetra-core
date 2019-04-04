@@ -24,8 +24,8 @@ import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.PolynomialException;
 import demetra.maths.polynomials.internal.UnitRootsSolver;
 import java.util.function.IntToDoubleFunction;
-import demetra.data.DoubleSequence;
 import demetra.maths.polynomials.spi.RootsSolver;
+import demetra.data.DoubleSeq;
 
 /**
  *

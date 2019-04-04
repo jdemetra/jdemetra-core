@@ -25,7 +25,6 @@ import demetra.regarima.internal.RegArmaEstimation;
 import demetra.regarima.RegArmaModel;
 import demetra.regarima.internal.RegArmaProcessor;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
@@ -38,6 +37,7 @@ import demetra.arima.estimation.IArimaMapping;
 import demetra.regarima.RegArimaMapping;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import java.util.function.Function;
+import demetra.data.DoubleSeq;
 
 /**
  *

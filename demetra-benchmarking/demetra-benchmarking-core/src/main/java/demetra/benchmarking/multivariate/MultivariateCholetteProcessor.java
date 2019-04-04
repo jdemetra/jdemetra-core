@@ -22,7 +22,6 @@ import demetra.benchmarking.univariate.CholetteProcessor;
 import demetra.data.AggregationType;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockStorage;
-import demetra.data.DoubleSequence;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.multivariate.IMultivariateSsf;
@@ -43,6 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -393,7 +393,7 @@ public class MultivariateCholetteProcessor implements IMultivariateCholette {
             TsData s = inputs.get(rcnt.get(i));
             TsDataView sc = TsDataView.select(s, idomain);
             double[] y = sc.getData().toArray();
-            DoubleSequence t = states.item(2 * i + 1);
+            DoubleSeq t = states.item(2 * i + 1);
             for (int j = 0; j < y.length; ++j) {
                 y[j] += t.get(j * neq) * weights[i][j];
             }

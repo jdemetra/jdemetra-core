@@ -6,15 +6,15 @@
 package demetra.ar;
 
 import demetra.arima.ArimaModel;
-import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.BackFilter;
+import demetra.data.DoubleSeq;
 
 /**
  *
  * @author PALATEJ
  */
 public class ArBuilder {
-    private double[] ar=DoubleSequence.EMPTYARRAY;
+    private double[] ar=DoubleSeq.EMPTYARRAY;
     private double var=1;
     
     /**

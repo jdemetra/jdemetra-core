@@ -24,7 +24,6 @@ import static demetra.data.AggregationType.Max;
 import static demetra.data.AggregationType.Min;
 import static demetra.data.AggregationType.None;
 import static demetra.data.AggregationType.Sum;
-import demetra.data.DoubleSequence;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import static demetra.timeseries.TsUnit.*;
@@ -55,6 +54,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import static demetra.timeseries.TsPeriod.DEFAULT_EPOCH;
+import static java.util.EnumSet.of;
+import demetra.data.DoubleSeq;
+import static java.util.EnumSet.of;
+import static java.util.EnumSet.of;
 import static java.util.EnumSet.of;
 
 /**
@@ -380,7 +383,7 @@ public class TsDataBuilderTest {
     }
 
     private static TsData data(TsUnit unit, LocalDateTime reference, LocalDateTime date, double... values) {
-        return TsData.of(TsPeriod.builder().unit(unit).epoch(reference).date(date).build(), DoubleSequence.ofInternal(values));
+        return TsData.of(TsPeriod.builder().unit(unit).epoch(reference).date(date).build(), DoubleSeq.of(values));
     }
 
     private static TsData data(TsUnit unit, LocalDateTime reference, int year, double... values) {

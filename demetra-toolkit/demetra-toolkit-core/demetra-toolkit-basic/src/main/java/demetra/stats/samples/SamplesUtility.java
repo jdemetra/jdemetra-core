@@ -16,9 +16,9 @@
  */
 package demetra.stats.samples;
 
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -34,15 +34,15 @@ public class SamplesUtility {
      * @param y
      * @return
      */
-    public double cov(DoubleSequence x, DoubleSequence y) {
+    public double cov(DoubleSeq x, DoubleSeq y) {
         double v = 0;
         int nm = 0;
         int n = x.length();
-        DoubleReader xcur = x.reader();
-        DoubleReader ycur = y.reader();
+        DoubleSeqCursor xcur = x.cursor();
+        DoubleSeqCursor ycur = y.cursor();
         for (int i = 0; i < n; ++i) {
-            double xval = xcur.next();
-            double yval = ycur.next();
+            double xval = xcur.getAndNext();
+            double yval = ycur.getAndNext();
             if (Double.isFinite(xval) && Double.isFinite(yval)) {
                 v += xval * yval;
             } else {
@@ -63,7 +63,7 @@ public class SamplesUtility {
      * @param y
      * @return
      */
-    public double covNoMissing(DoubleSequence x, DoubleSequence y) {
+    public double covNoMissing(DoubleSeq x, DoubleSeq y) {
         return Doubles.dot(x, y);
     }
 

@@ -25,7 +25,7 @@ import demetra.maths.MatrixException;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.data.accumulator.NeumaierAccumulator;
 import java.util.function.Supplier;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -82,7 +82,7 @@ public class RobustHouseholder implements IQRDecomposition {
     }
 
     @Override
-    public DoubleSequence rdiagonal(boolean compact) {
+    public DoubleSeq rdiagonal(boolean compact) {
         return DataBlock.ofInternal(rdiag);
     }
 
@@ -221,7 +221,7 @@ public class RobustHouseholder implements IQRDecomposition {
     // / <returns>The solution b as an array copyOf double</returns>
     // /
     @Override
-    public void leastSquares(DoubleSequence x, DataBlock b, DataBlock res) {
+    public void leastSquares(DoubleSeq x, DataBlock b, DataBlock res) {
         // if (x.Length != m)
         // throw new MatrixException(MatrixException.IncompatibleDimensions);
         // if (!IsFullRank)

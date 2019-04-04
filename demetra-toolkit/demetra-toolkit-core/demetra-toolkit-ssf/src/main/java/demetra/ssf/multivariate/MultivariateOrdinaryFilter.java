@@ -17,12 +17,12 @@
 package demetra.ssf.multivariate;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -79,7 +79,7 @@ public class MultivariateOrdinaryFilter {
      */
     protected void error(int pos) {
         int dim = ssf.getStateDim();
-        DoubleSequence x=data.get(pos);
+        DoubleSeq x=data.get(pos);
         int nmissing = x.count(y -> Double.isInfinite(y));
         int nobs = x.length() - nmissing;
         if (nobs == 0)

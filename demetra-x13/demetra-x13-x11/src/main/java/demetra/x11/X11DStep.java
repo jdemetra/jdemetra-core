@@ -6,7 +6,6 @@
 package demetra.x11;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
@@ -22,6 +21,7 @@ import demetra.x11.filter.X11FilterFactory;
 import demetra.x11.filter.X11SeasonalFiltersFactory;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
 import lombok.AccessLevel;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -32,14 +32,14 @@ public class X11DStep {
 
     private static final double EPS = 1e-9;
 
-    private DoubleSequence d1, d2, d4, d5, d6, d7, d8, d9, d9g, d9bis, d9_g_bis, d10, d10bis, d11, d11bis, d12, d13;
+    private DoubleSeq d1, d2, d4, d5, d6, d7, d8, d9, d9g, d9bis, d9_g_bis, d10, d10bis, d11, d11bis, d12, d13;
     private int d2drop, finalHendersonFilterLength;
     private double iCRatio;
     private SeasonalFilterOption seasFilter;
     @lombok.Getter(AccessLevel.NONE)
-    private DoubleSequence refSeries;
+    private DoubleSeq refSeries;
 
-    public void process(DoubleSequence refSeries, DoubleSequence input, X11Context context) {
+    public void process(DoubleSeq refSeries, DoubleSeq input, X11Context context) {
         this.refSeries = refSeries;
         d1 = input;
         d2(context);
@@ -59,7 +59,7 @@ public class X11DStep {
         double[] x = table(d1.length() - 2 * d2drop, Double.NaN);
         DataBlock out = DataBlock.ofInternal(x, 0, x.length);
         filter.apply(i -> d1.get(i), IFilterOutput.of(out, d2drop));
-        d2 = DoubleSequence.ofInternal(x);
+        d2 = DoubleSeq.of(x);
     }
 
     private void d4(X11Context context) {
@@ -68,7 +68,7 @@ public class X11DStep {
 
     private void d5(X11Context context) {
         IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
-        DoubleSequence d5a = filter.process(d4);
+        DoubleSeq d5a = filter.process(d4);
         d5 = DefaultSeasonalNormalizer.normalize(d5a, d2drop, context);
     }
 
@@ -96,7 +96,7 @@ public class X11DStep {
         IFiniteFilter[] asymmetricFilter = context.asymmetricTrendFilters(filter, r);
         AsymmetricEndPoints aep = new AsymmetricEndPoints(asymmetricFilter, 0);
         aep.process(d6, DataBlock.ofInternal(x));
-        d7 = DoubleSequence.ofInternal(x);
+        d7 = DoubleSeq.of(x);
         if (context.isMultiplicative()) {
             d7 = context.makePositivity(d7);
         }
@@ -110,13 +110,13 @@ public class X11DStep {
         IExtremeValuesCorrector ecorr = context.getExtremeValuesCorrector();
         if (ecorr instanceof PeriodSpecificExtremeValuesCorrector && context.getCalendarSigma() != CalendarSigmaOption.Signif) {
             d9 = ecorr.computeCorrections(d8.drop(0, context.getForecastHorizon()));
-            DoubleSequence ds = d9.extend(0, context.getForecastHorizon());
+            DoubleSeq ds = d9.extend(0, context.getForecastHorizon());
             d9g = ecorr.applyCorrections(d8, ds);
             d9_g_bis = d9g;
         } else {
             d9bis = context.remove(d1, d7);
-            DoubleSequence d9temp = DoubleSequence.onMapping(d9bis.length(), i -> Math.abs(d9bis.get(i) - d8.get(i)));
-            d9 = DoubleSequence.onMapping(d9temp.length() - context.getForecastHorizon(), i -> d9temp.get(i) < EPS ? Double.NaN : d9bis.get(i));
+            DoubleSeq d9temp = DoubleSeq.onMapping(d9bis.length(), i -> Math.abs(d9bis.get(i) - d8.get(i)));
+            d9 = DoubleSeq.onMapping(d9temp.length() - context.getForecastHorizon(), i -> d9temp.get(i) < EPS ? Double.NaN : d9bis.get(i));
             d9_g_bis = d9bis;
         }
 
@@ -156,7 +156,7 @@ public class X11DStep {
         IFiniteFilter[] asymmetricFilter = context.asymmetricTrendFilters(hfilter, r);
         AsymmetricEndPoints aep = new AsymmetricEndPoints(asymmetricFilter, 0);
         aep.process(d11bis, DataBlock.ofInternal(x));
-        d12 = DoubleSequence.ofInternal(x);
+        d12 = DoubleSeq.of(x);
         if (context.isMultiplicative()) {
             d12 = context.makePositivity(d12);
         }

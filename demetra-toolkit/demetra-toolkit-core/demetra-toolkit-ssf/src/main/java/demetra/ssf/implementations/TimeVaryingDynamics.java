@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  * Dynamics for time varying coefficients
@@ -32,7 +32,7 @@ public class TimeVaryingDynamics {
         return new TimeVaryingCDiag(n, var);
     }
 
-    public static ISsfDynamics of(DoubleSequence dvar) {
+    public static ISsfDynamics of(DoubleSeq dvar) {
         return new TimeVaryingDiag(dvar);
     }
 
@@ -132,7 +132,7 @@ public class TimeVaryingDynamics {
             std.apply(x -> Math.sqrt(x));
         }
 
-        TimeVaryingDiag(final DoubleSequence var) {
+        TimeVaryingDiag(final DoubleSeq var) {
             this.var = DataBlock.of(var);
             this.std = DataBlock.of(var);
             std.apply(x -> Math.sqrt(x));

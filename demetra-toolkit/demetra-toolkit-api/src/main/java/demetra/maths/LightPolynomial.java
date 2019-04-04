@@ -5,9 +5,9 @@
  */
 package demetra.maths;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import java.util.Arrays;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -68,8 +68,8 @@ class LightPolynomial implements PolynomialType {
     }
 
     @Override
-    public DoubleSequence coefficients() {
-        return DoubleSequence.ofInternal(c);
+    public DoubleSeq coefficients() {
+        return DoubleSeq.of(c);
     }
 
     @Override

@@ -45,7 +45,6 @@ import demetra.ssf.univariate.ISsfBuilder;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.OrdinaryFilter;
 import demetra.ssf.univariate.SsfRegressionModel;
-import demetra.data.DoubleSequence;
 import demetra.data.LogSign;
 import demetra.ssf.StateInfo;
 import demetra.ssf.StateStorage;
@@ -56,6 +55,7 @@ import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.M2uAdapter;
 import demetra.ssf.multivariate.SsfMatrix;
 import demetra.ssf.univariate.IFilteringResults;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -364,7 +364,7 @@ public class DkToolkit {
             pe.prepare(model.getSsf(), n);
             ILinearProcess lp = filteringResults(model.getSsf(), y, pe);
             DiffuseLikelihood ll = pe.likelihood();
-            DoubleSequence yl = pe.errors(true, true);
+            DoubleSeq yl = pe.errors(true, true);
             int nl = yl.length();
             Matrix xl = xl(model, lp, nl);
             if (xl == null) {
@@ -403,7 +403,7 @@ public class DkToolkit {
                     int[] idiffuse = model.getDiffuseElements();
                     double ldet = ll.logDeterminant(), dcorr = ll.getDiffuseCorrection();
                     if (idiffuse != null) {
-                        DoubleSequence rdiag = qr.rdiagonal(true);
+                        DoubleSeq rdiag = qr.rdiagonal(true);
                         double lregdet = 0;
                         int ndc = 0;
                         for (int i = 0; i < idiffuse.length; ++i) {

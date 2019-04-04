@@ -17,7 +17,6 @@
 package demetra.stats.tests.seasonal;
 
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleSequence;
 import static demetra.data.Doubles.sum;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
@@ -26,6 +25,7 @@ import demetra.dstats.F;
 import demetra.maths.matrices.Matrix;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
+import demetra.data.DoubleSeq;
 
 /**
  * @author Jean Palate
@@ -42,14 +42,14 @@ public class Friedman {
     private double sse;
     private double t;
 
-    public Friedman(DoubleSequence all, final int period) {
+    public Friedman(DoubleSeq all, final int period) {
         // gets complete years:
         int nall = all.length();
         this.period = period;
         n = nall / period;
 
-        DoubleSequence x = all.drop(nall - n * this.period, 0);
-        DoubleSequence y = x.extract(0, period);
+        DoubleSeq x = all.drop(nall - n * this.period, 0);
+        DoubleSeq y = x.extract(0, period);
         Matrix R = Matrix.make(n, this.period);
 
         // computes the ranks on each year:

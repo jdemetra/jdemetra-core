@@ -27,7 +27,7 @@ import demetra.ssf.univariate.ISmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.OrdinarySmoother;
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 
@@ -236,10 +236,10 @@ public class AugmentedSmoother {
             loading.XpZd(pos, R, c);
             // apply the same to the colums copyOf Rd
             DataBlockIterator rcols = Rd.columnsIterator();
-            DoubleReader cell = E.reader();
+            DoubleSeqCursor cell = E.cursor();
             while (rcols.hasNext()) {
                 DataBlock rcol = rcols.next();
-                c = (cell.next() - rcol.dot(C)) / f;
+                c = (cell.getAndNext() - rcol.dot(C)) / f;
                 loading.XpZd(pos, rcol, c);
             }
         }

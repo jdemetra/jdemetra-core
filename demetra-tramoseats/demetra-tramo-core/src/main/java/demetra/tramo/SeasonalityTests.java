@@ -17,7 +17,6 @@
 package demetra.tramo;
 
 import demetra.data.DiscreteWindowFunction;
-import demetra.data.DoubleSequence;
 import demetra.data.SmoothedPeriodogram;
 import demetra.modelling.DifferencingResults;
 import demetra.stats.tests.StatisticalTest;
@@ -26,6 +25,7 @@ import demetra.stats.tests.seasonal.PeriodogramTest;
 import demetra.stats.tests.seasonal.Qs;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsException;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -42,7 +42,7 @@ public class SeasonalityTests {
      * @param period
      * @return
      */
-    public static SeasonalityTests residualSeasonalityTest(DoubleSequence res, int period) {
+    public static SeasonalityTests residualSeasonalityTest(DoubleSeq res, int period) {
         SeasonalityTests tests = new SeasonalityTests();
         tests.testResiduals(res, period);
         // compute the score
@@ -121,7 +121,7 @@ public class SeasonalityTests {
         clear();
     }
 
-    private void testResiduals(DoubleSequence res, int period) {
+    private void testResiduals(DoubleSeq res, int period) {
         delta = DifferencingResults.of(res, period, 0, false);
         this.period=period;
         clear();
@@ -163,7 +163,7 @@ public class SeasonalityTests {
 
     public SmoothedPeriodogram getSmoothedPeriodogram() {
         if (btSpectrum == null) {
-            DoubleSequence d = delta.getDifferenced();
+            DoubleSeq d = delta.getDifferenced();
             int n = d.length();
             int wlen = 3 * n / 4 / period;
             if (wlen > 11) {
@@ -182,7 +182,7 @@ public class SeasonalityTests {
     public AutoRegressiveSpectrumTest getArPeaks() {
         if (arpeaks == null) {
             arpeaks = new AutoRegressiveSpectrumTest();
-            DoubleSequence dlast = delta.getDifferenced();
+            DoubleSeq dlast = delta.getDifferenced();
 //            if (dlast.getLength()> SPEC_LENGTH){
 //                dlast=dlast.drop(dlast.getLength()-SPEC_LENGTH, 0);
 //            }

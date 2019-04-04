@@ -18,9 +18,9 @@ package demetra.maths.matrices.decomposition;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.data.DoubleSequence;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.MatrixException;
+import demetra.data.DoubleSeq;
 
 /**
  * Decomposes a matrix A as A = applyQ*R
@@ -56,7 +56,7 @@ public interface IQRDecomposition {
      * false otherwise. Redundant variables are given by unused
      * @return
      */
-    DoubleSequence rdiagonal(boolean compact);
+    DoubleSeq rdiagonal(boolean compact);
 
     int rank();
 
@@ -79,7 +79,7 @@ public interface IQRDecomposition {
      * @param res
      * @throws MatrixException
      */
-    void leastSquares(DoubleSequence x, DataBlock b, DataBlock res)
+    void leastSquares(DoubleSeq x, DataBlock b, DataBlock res)
             throws MatrixException;
 
     /**

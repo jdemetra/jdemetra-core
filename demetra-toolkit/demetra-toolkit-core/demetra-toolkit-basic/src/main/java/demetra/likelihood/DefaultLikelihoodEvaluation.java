@@ -16,10 +16,10 @@
  */
 package demetra.likelihood;
 
-import demetra.data.DoubleSequence;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -44,11 +44,11 @@ public class DefaultLikelihoodEvaluation {
         return likelihood->Math.log(likelihood.ssq());
     }
 
-    public static Function<ILikelihood, DoubleSequence> errors(){
+    public static Function<ILikelihood, DoubleSeq> errors(){
         return likelihood->likelihood.e();
     }
     
-    public static Function<ILikelihood, DoubleSequence> v(){
+    public static Function<ILikelihood, DoubleSeq> v(){
         return likelihood->likelihood.deviances();
     }
     

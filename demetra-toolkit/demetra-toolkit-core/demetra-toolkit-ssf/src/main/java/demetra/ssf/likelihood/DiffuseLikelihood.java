@@ -18,10 +18,10 @@ package demetra.ssf.likelihood;
 
 import demetra.likelihood.ILikelihood;
 import demetra.design.Immutable;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
+import demetra.data.DoubleSeq;
 
 /**
  * The diffuse likelihood follows the definition provided in the paper:
@@ -77,7 +77,7 @@ public final class DiffuseLikelihood implements ILikelihood {
             return this;
         }
 
-        public Builder residuals(DoubleSequence residuals) {
+        public Builder residuals(DoubleSeq residuals) {
             if (residuals == null) {
                 return this;
             }
@@ -202,8 +202,8 @@ public final class DiffuseLikelihood implements ILikelihood {
     }
 
     @Override
-    public DoubleSequence e() {
-        return res == null ? null : DoubleSequence.ofInternal(res);
+    public DoubleSeq e() {
+        return res == null ? null : DoubleSeq.of(res);
     }
 
     @Override

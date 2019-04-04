@@ -22,7 +22,7 @@ import java.text.NumberFormat;
 import demetra.maths.polynomials.Polynomial;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  * 

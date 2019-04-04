@@ -6,9 +6,9 @@
 package demetra.maths.matrices.decomposition;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  */
 public class HouseholderReflectionTest {
     
-    private static DoubleSequence X=DoubleSequence.of(1,2,3,4,5);
+    private static DoubleSeq X=DoubleSeq.copyOf(1,2,3,4,5);
     
     public HouseholderReflectionTest() {
     }

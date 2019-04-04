@@ -17,10 +17,10 @@
 package demetra.pca;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.decomposition.ISingularValueDecomposition;
 import demetra.maths.matrices.internal.SingularValueDecomposition;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -68,7 +68,7 @@ public class PrincipalComponents {
         return svd;
     }
     
-    public DoubleSequence getSingularValues(){
+    public DoubleSeq getSingularValues(){
         return svd.S();
     }
     

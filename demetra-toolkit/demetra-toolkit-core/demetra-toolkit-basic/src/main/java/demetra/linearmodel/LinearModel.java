@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.MatrixWindow;
 import javax.annotation.Nonnull;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.design.Internal;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -38,7 +38,7 @@ public final class LinearModel implements LinearModelType{
 
         private double[] y;
         private boolean mean;
-        private final ArrayList<DoubleSequence> x = new ArrayList<>();
+        private final ArrayList<DoubleSeq> x = new ArrayList<>();
 
         private Builder() {
         }
@@ -48,12 +48,12 @@ public final class LinearModel implements LinearModelType{
             return this;
         }
 
-        public Builder y(@Nonnull DoubleSequence y) {
+        public Builder y(@Nonnull DoubleSeq y) {
             this.y = y.toArray();
             return this;
         }
 
-        public Builder addX(@Nonnull DoubleSequence var) {
+        public Builder addX(@Nonnull DoubleSeq var) {
             x.add(var);
             return this;
         }
@@ -63,8 +63,8 @@ public final class LinearModel implements LinearModelType{
             return this;
         }
 
-        public Builder addX(@Nonnull DoubleSequence... vars) {
-            for (DoubleSequence var : vars) {
+        public Builder addX(@Nonnull DoubleSeq... vars) {
+            for (DoubleSeq var : vars) {
                 x.add(var);
             }
             return this;
@@ -78,7 +78,7 @@ public final class LinearModel implements LinearModelType{
             Matrix X = Matrix.make(y.length, x.size());
             if (!X.isEmpty()) {
                 DataBlockIterator cols = X.columnsIterator();
-                for (DoubleSequence xcur : x) {
+                for (DoubleSeq xcur : x) {
                     if (xcur.length() != y.length) {
                         throw new RuntimeException("Incompatible dimensions");
                     }
@@ -120,7 +120,7 @@ public final class LinearModel implements LinearModelType{
      * @param b The coefficients of the mean and of the regression variables
      * @return
      */
-    public DataBlock calcResiduals(final DoubleSequence b) {
+    public DataBlock calcResiduals(final DoubleSeq b) {
         if (getVariablesCount() != b.length()) {
             throw new RuntimeException("Incompatible dimensions");
         }
@@ -128,13 +128,13 @@ public final class LinearModel implements LinearModelType{
         DataBlock res = DataBlock.make(y.length);
         res.copyFrom(y, 0);
 
-        DoubleReader cell = b.reader();
+        DoubleSeqCursor cell = b.cursor();
         if (mean) {
-            res.add(-cell.next());
+            res.add(-cell.getAndNext());
         }
         DataBlockIterator columns = x.columnsIterator();
         while (columns.hasNext()) {
-            res.addAY(-cell.next(), columns.next());
+            res.addAY(-cell.getAndNext(), columns.next());
         }
         return res;
     }
@@ -172,8 +172,8 @@ public final class LinearModel implements LinearModelType{
      * @return
      */
     @Override
-    public DoubleSequence getY() {
-        return DoubleSequence.of(y);
+    public DoubleSeq getY() {
+        return DoubleSeq.copyOf(y);
     }
 
     /**
@@ -211,7 +211,7 @@ public final class LinearModel implements LinearModelType{
      * @param idx
      * @return
      */
-    public DoubleSequence X(final int idx) {
+    public DoubleSeq X(final int idx) {
         return x.column(idx);
     }
 

@@ -16,9 +16,9 @@
  */
 package demetra.maths.polynomials.internal;
 
-import demetra.data.DoubleSequence;
 import demetra.maths.Complex;
 import demetra.maths.polynomials.Polynomial;
+import demetra.data.DoubleSeq;
 
 /**
  * This class search the actual root of a polynomial, starting from an

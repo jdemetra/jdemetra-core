@@ -7,7 +7,6 @@ package demetra.ssf.implementations;
 
 import demetra.ssf.CompositeInitialization;
 import demetra.ssf.CompositeDynamics;
-import demetra.data.DoubleSequence;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
@@ -20,6 +19,7 @@ import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.MultivariateSsf;
 import java.util.ArrayList;
 import java.util.List;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -137,7 +137,7 @@ public class MultivariateCompositeSsf extends MultivariateSsf {
             }
             ISsfErrors errors = measurementsError;
             if (errors == null) {
-                errors = MeasurementsError.of(DoubleSequence.onMapping(neq, k -> equations.get(k).getMeasurementError()));
+                errors = MeasurementsError.of(DoubleSeq.onMapping(neq, k -> equations.get(k).getMeasurementError()));
             }
             // creates the equations
             ISsfLoading[] loadings = new ISsfLoading[neq];

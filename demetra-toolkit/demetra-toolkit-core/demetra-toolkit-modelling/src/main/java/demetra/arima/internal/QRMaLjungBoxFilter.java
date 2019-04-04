@@ -26,8 +26,8 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
-import demetra.data.DoubleSequence;
 import demetra.arima.estimation.ArmaFilter;
+import demetra.data.DoubleSeq;
 
 /**
  * @author Jean Palate
@@ -49,7 +49,7 @@ public class QRMaLjungBoxFilter {
     // / </summary>
     // / <param name="w"></param>
     // / <returns></returns>
-    private double[] calca0(DoubleSequence w) {
+    private double[] calca0(DoubleSeq w) {
 	double[] a0 = new double[w.length()];
 	w.copyTo(a0, 0);
 	rma(a0);
@@ -122,7 +122,7 @@ public class QRMaLjungBoxFilter {
 	rma(v);
     }
 
-    public void filter(DoubleSequence w, DataBlock wl) {
+    public void filter(DoubleSeq w, DataBlock wl) {
 	// compute a0=Mw
 	double[] a0 = calca0(w);
 	double[] g = calcg(a0);
@@ -140,9 +140,9 @@ public class QRMaLjungBoxFilter {
      * 
      * @return
      */
-    public DoubleSequence getInitialResiduals()
+    public DoubleSeq getInitialResiduals()
     {
-	return DoubleSequence.ofInternal(u);
+	return DoubleSeq.of(u);
     }
 
     // / <summary>

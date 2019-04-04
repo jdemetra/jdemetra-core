@@ -18,9 +18,9 @@ package demetra.likelihood;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
+import demetra.data.DoubleSeq;
 
 /**
  * Log-Likelihood of a multi-variate gaussian distribution. For a N(0, sig2*V)
@@ -73,7 +73,7 @@ public final class Likelihood implements ILikelihood {
             return this;
         }
 
-        public Builder residuals(DoubleSequence residuals) {
+        public Builder residuals(DoubleSeq residuals) {
             if (residuals == null)
                 return this;
             this.res = residuals.toArray();
@@ -155,8 +155,8 @@ public final class Likelihood implements ILikelihood {
     }
 
     @Override
-    public DoubleSequence e() {
-        return DoubleSequence.of(res);
+    public DoubleSeq e() {
+        return DoubleSeq.copyOf(res);
     }
 
     /**

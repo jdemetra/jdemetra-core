@@ -16,8 +16,8 @@
  */
 package demetra.maths;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -49,28 +49,28 @@ class LightMatrix implements MatrixType {
     }
 
     @Override
-    public DoubleSequence row(int irow) {
+    public DoubleSeq row(int irow) {
         if (irow < 0 || irow >= nrows) {
             throw new IndexOutOfBoundsException();
         }
-        return DoubleSequence.ofInternal(storage, irow, ncolumns, nrows);
+        return DoubleSeq.of(storage, irow, ncolumns, nrows);
     }
 
     @Override
-    public DoubleSequence column(int icolumn) {
+    public DoubleSeq column(int icolumn) {
         if (icolumn < 0 || icolumn >= ncolumns) {
             throw new IndexOutOfBoundsException();
         }
-        return DoubleSequence.ofInternal(storage, icolumn * nrows, nrows);
+        return DoubleSeq.of(storage, icolumn * nrows, nrows);
     }
 
     @Override
-    public DoubleSequence subDiagonal(int pos) {
+    public DoubleSeq subDiagonal(int pos) {
         if (pos >= ncolumns) {
-            return DoubleSequence.empty();
+            return DoubleSeq.empty();
         }
         if (-pos >= nrows) {
-            return DoubleSequence.empty();
+            return DoubleSeq.empty();
         }
         int beg = 0, inc = 1 + nrows;
         int n;
@@ -83,14 +83,14 @@ class LightMatrix implements MatrixType {
         } else {
             n = Math.min(nrows, ncolumns);
         }
-        return DoubleSequence.ofInternal(storage, beg, n, inc);
+        return DoubleSeq.of(storage, beg, n, inc);
     }
 
     @Override
-    public DoubleSequence diagonal() {
+    public DoubleSeq diagonal() {
         int inc = 1 + nrows;
         int n = Math.min(nrows, ncolumns);
-        return DoubleSequence.ofInternal(storage, 0, n, inc);
+        return DoubleSeq.of(storage, 0, n, inc);
     }
 
     @Override

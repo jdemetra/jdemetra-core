@@ -17,9 +17,9 @@
 package demetra.likelihood;
 
 import demetra.design.Development;
-import demetra.data.DoubleSequence;
 import demetra.eco.EcoException;
 import demetra.maths.Constants;
+import demetra.data.DoubleSeq;
 
 /**
  * The ILikelihood interface formalizes the likelihood of a usual gaussian
@@ -147,7 +147,7 @@ public interface ILikelihood {
      * factor of the (unscaled) covariance matrix. May be null if the e are not
      * stored
      */
-    DoubleSequence e();
+    DoubleSeq e();
 
     /**
      * @return The determinantal factor (n-th root). Not used if the likelihood
@@ -164,14 +164,14 @@ public interface ILikelihood {
      * @return The deviances. = e*sqrt(factor) Not used if the likelihood is not
      * concentrated.
      */
-    default DoubleSequence deviances() {
+    default DoubleSeq deviances() {
         double f = factor();
-        DoubleSequence e = e();
+        DoubleSeq e = e();
         if (f == 1) {
             return e;
         } else {
             final double sf = Math.sqrt(f);
-            return DoubleSequence.onMapping(e, x -> x * sf);
+            return DoubleSeq.onMapping(e, x -> x * sf);
         }
     }
 

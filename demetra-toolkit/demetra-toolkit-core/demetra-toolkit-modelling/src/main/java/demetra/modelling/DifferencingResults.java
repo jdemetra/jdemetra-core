@@ -17,12 +17,12 @@
 
 package demetra.modelling;
 
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.stats.AutoCovariances;
 import demetra.timeseries.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -31,7 +31,7 @@ import java.util.function.IntToDoubleFunction;
  */
 public class DifferencingResults{
 
-    private static int searchOrder(DoubleSequence data, int period) {
+    private static int searchOrder(DoubleSeq data, int period) {
         IntToDoubleFunction cov=AutoCovariances.autoCovarianceFunction(data, 0);
         if (period < 6) {
             for (int i = 1; i < period; ++i) {
@@ -65,8 +65,8 @@ public class DifferencingResults{
      * order is automatically identified)
      * @return 
      */
-    public static DifferencingResults of(DoubleSequence input, int period, int delta, boolean mean) {
-        DoubleSequence diff;
+    public static DifferencingResults of(DoubleSeq input, int period, int delta, boolean mean) {
+        DoubleSeq diff;
         int del;
         boolean bmean;
         if (delta < 0) {
@@ -85,11 +85,11 @@ public class DifferencingResults{
         return new DifferencingResults(input, diff, bmean);
     }
 
-    private final DoubleSequence original;
-    private final DoubleSequence differenced;
+    private final DoubleSeq original;
+    private final DoubleSeq differenced;
     private final boolean mean;
 
-    private DifferencingResults(DoubleSequence orig, DoubleSequence diff, boolean mean) {
+    private DifferencingResults(DoubleSeq orig, DoubleSeq diff, boolean mean) {
         original = orig;
         differenced = diff;
         this.mean = mean;
@@ -99,21 +99,21 @@ public class DifferencingResults{
         return original.length() - differenced.length();
     }
     
-    public DoubleSequence getRestrictedOriginal(){
+    public DoubleSeq getRestrictedOriginal(){
         return original.drop(getDifferencingOrder(), 0);
     }
     
     /**
      * @return the original
      */
-    public DoubleSequence getOriginal() {
+    public DoubleSeq getOriginal() {
         return original;
     }
 
     /**
      * @return the differenced
      */
-    public DoubleSequence getDifferenced() {
+    public DoubleSeq getDifferenced() {
         return differenced;
     }
 

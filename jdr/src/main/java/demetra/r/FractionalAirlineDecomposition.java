@@ -24,7 +24,6 @@ import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockStorage;
-import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
@@ -44,6 +43,7 @@ import demetra.ucarima.ssf.SsfUcarima;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -131,7 +131,7 @@ public class FractionalAirlineDecomposition {
         ArimaModel arima = mapping.getDefault();
         RegArimaModel<ArimaModel> regarima
                 = RegArimaModel.builder(ArimaModel.class)
-                        .y(DoubleSequence.of(s))
+                        .y(DoubleSeq.copyOf(s))
                         .arima(arima)
                         .build();
         GlsArimaProcessor<ArimaModel> monitor = builder.build();
@@ -220,7 +220,7 @@ class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
     }
 
     @Override
-    public ArimaModel map(DoubleSequence p) {
+    public ArimaModel map(DoubleSeq p) {
         double th = p.get(0), bth = p.get(1);
         double[] ma = new double[]{1, -th};
         double[] dma = new double[adjust ? p0 + 2 : p0 + 1];
@@ -259,7 +259,7 @@ class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
     }
 
     @Override
-    public DoubleSequence parametersOf(ArimaModel t) {
+    public DoubleSeq parametersOf(ArimaModel t) {
         BackFilter ma = t.getMA();
         double[] p = new double[2];
         p[0] = -ma.get(1);
@@ -268,16 +268,16 @@ class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
         } else {
             p[1] = -ma.get(p0);
         }
-        return DoubleSequence.of(p);
+        return DoubleSeq.copyOf(p);
     }
 
     @Override
-    public boolean checkBoundaries(DoubleSequence inparams) {
+    public boolean checkBoundaries(DoubleSeq inparams) {
         return inparams.allMatch(x -> Math.abs(x) < .999);
     }
 
     @Override
-    public double epsilon(DoubleSequence inparams, int idx) {
+    public double epsilon(DoubleSeq inparams, int idx) {
         return 1e-6;
     }
 
@@ -318,8 +318,8 @@ class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
     }
 
     @Override
-    public DoubleSequence getDefaultParameters() {
-        return DoubleSequence.of(.9, .9);
+    public DoubleSeq getDefaultParameters() {
+        return DoubleSeq.copyOf(.9, .9);
     }
 
     @Override

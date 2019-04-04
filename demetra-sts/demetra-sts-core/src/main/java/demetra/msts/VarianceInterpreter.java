@@ -6,10 +6,10 @@
 package demetra.msts;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParamValidation;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -75,8 +75,8 @@ public class VarianceInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public void fixModelParameter(DoubleReader reader) {
-        stde = Math.sqrt(reader.next());
+    public void fixModelParameter(DoubleSeqCursor reader) {
+        stde = Math.sqrt(reader.getAndNext());
         fixed = true;
     }
 
@@ -116,9 +116,9 @@ public class VarianceInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public int decode(DoubleReader input, double[] buffer, int pos) {
+    public int decode(DoubleSeqCursor input, double[] buffer, int pos) {
         if (!fixed) {
-            double e = input.next();
+            double e = input.getAndNext();
             buffer[pos] = e * e;
         } else {
             buffer[pos] = stde * stde;
@@ -127,8 +127,8 @@ public class VarianceInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public int encode(DoubleReader input, double[] buffer, int pos) {
-        double v = input.next();
+    public int encode(DoubleSeqCursor input, double[] buffer, int pos) {
+        double v = input.getAndNext();
         if (!fixed) {
             buffer[pos] = Math.sqrt(v);
             return pos + 1;
@@ -152,14 +152,14 @@ public class VarianceInterpreter implements ParameterInterpreter {
         static final Domain INSTANCE = new Domain();
 
         @Override
-        public boolean checkBoundaries(DoubleSequence inparams) {
+        public boolean checkBoundaries(DoubleSeq inparams) {
             return true;
         }
 
         private static final double EPS = 1e-4;
 
         @Override
-        public double epsilon(DoubleSequence inparams, int idx) {
+        public double epsilon(DoubleSeq inparams, int idx) {
             double c=inparams.get(0);
             if (c >= 0)
                 return Math.max(EPS, c * EPS);

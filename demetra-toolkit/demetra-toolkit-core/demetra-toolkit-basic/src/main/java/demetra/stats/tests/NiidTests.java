@@ -16,7 +16,6 @@
  */
 package demetra.stats.tests;
 
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
@@ -25,6 +24,7 @@ import demetra.stats.AutoCovariances;
 import demetra.stats.DescriptiveStatistics;
 import demetra.stats.StatException;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -62,12 +62,12 @@ public class NiidTests {
         }
 
         // Data
-        private DoubleSequence data;
+        private DoubleSeq data;
         private int period, hyperParameters = 0;
         private int k = 24, ks = 2;
         private boolean seasonal = true, defaultTestsLength = true;
 
-        public Builder data(DoubleSequence data) {
+        public Builder data(DoubleSeq data) {
             this.data = data;
             return this;
         }
@@ -125,7 +125,7 @@ public class NiidTests {
     private StatisticalTest upAndDownRunsNumber, upAndDownRunsLength;
 
     // Data
-    private final DoubleSequence data, data2;
+    private final DoubleSeq data, data2;
     private final DescriptiveStatistics stat, stat2;
     private final int period, hyperParameters;
     private final int k, ks;
@@ -138,7 +138,7 @@ public class NiidTests {
      * @param nhp
      * @param seas
      */
-    private NiidTests(final DoubleSequence data, final int period, final int nhp,
+    private NiidTests(final DoubleSeq data, final int period, final int nhp,
             final int k, final int ks, final boolean seas) {
         this.data = data;
         this.stat = DescriptiveStatistics.of(data);
@@ -157,7 +157,7 @@ public class NiidTests {
                 d2[i] = Double.NaN;
             }
         }
-        this.data2 = DoubleSequence.ofInternal(d2);
+        this.data2 = DoubleSeq.of(d2);
         this.stat2 = DescriptiveStatistics.of(data2);
     }
 

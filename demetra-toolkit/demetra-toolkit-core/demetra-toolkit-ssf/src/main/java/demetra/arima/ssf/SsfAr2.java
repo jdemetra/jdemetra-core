@@ -8,7 +8,7 @@ package demetra.arima.ssf;
 import demetra.arima.AutoCovarianceFunction;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
@@ -205,9 +205,9 @@ public class SsfAr2 {
         @Override
         public void TX(final int pos, final DataBlock x) {
             double z = 0;
-            DoubleReader reader = x.reverseReader();
+            DoubleSeqCursor reader = x.reverseReader();
             for (int i = 0; i < data.phi.length; ++i) {
-                z += data.phi[i] * reader.next();
+                z += data.phi[i] * reader.getAndNext();
             }
             x.bshift(1);
             x.set(data.last(), z);

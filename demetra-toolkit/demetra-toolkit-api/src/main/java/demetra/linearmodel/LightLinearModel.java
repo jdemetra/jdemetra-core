@@ -5,9 +5,9 @@
  */
 package demetra.linearmodel;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.maths.MatrixType;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -21,7 +21,7 @@ class LightLinearModel implements LinearModelType{
     /**
      * Exogenous variable
      */
-    private DoubleSequence y;
+    private DoubleSeq y;
 
     /**
      * Mean correction

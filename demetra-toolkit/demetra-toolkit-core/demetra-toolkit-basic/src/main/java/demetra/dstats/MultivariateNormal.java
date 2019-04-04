@@ -17,7 +17,6 @@
 package demetra.dstats;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Constants;
@@ -26,6 +25,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import lombok.NonNull;
 import demetra.random.RandomNumberGenerator;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -41,7 +41,7 @@ public final class MultivariateNormal {
     private final Matrix cov;
     private volatile Matrix lchol;
 
-    public MultivariateNormal(DoubleSequence mean, Matrix cov) {
+    public MultivariateNormal(DoubleSeq mean, Matrix cov) {
         this.mean = DataBlock.of(mean);
         this.cov = cov.deepClone();
     }

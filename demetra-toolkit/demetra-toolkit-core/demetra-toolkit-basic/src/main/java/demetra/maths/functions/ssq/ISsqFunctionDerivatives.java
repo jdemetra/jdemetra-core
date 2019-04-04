@@ -20,7 +20,7 @@ package demetra.maths.functions.ssq;
 import demetra.design.Development;
 import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.matrices.Matrix;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  * 
@@ -34,7 +34,7 @@ public interface ISsqFunctionDerivatives extends IFunctionDerivatives {
      * @param idx
      * @return
      */
-    DoubleSequence dEdX(int idx);
+    DoubleSeq dEdX(int idx);
     
     /**
      * Returns the Jacobian of the function at the current point.

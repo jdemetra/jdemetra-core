@@ -21,8 +21,8 @@ import demetra.maths.Complex;
 import demetra.maths.polynomials.Polynomial;
 import demetra.util.Ref;
 import java.util.function.IntToDoubleFunction;
-import demetra.data.DoubleSequence;
 import demetra.maths.ComplexBuilder;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -62,7 +62,7 @@ public class Utility {
      * @param rmin The limit ofFunction the roots
      * @return
      */
-    public boolean checkRoots(final DoubleSequence c, final double rmin) {
+    public boolean checkRoots(final DoubleSeq c, final double rmin) {
         int nc = c.length();
         switch (nc) {
             case 0:
@@ -97,7 +97,7 @@ public class Utility {
      * @param c
      * @return
      */
-    public boolean checkStability(final DoubleSequence c) {
+    public boolean checkStability(final DoubleSeq c) {
         int nc = c.length();
         if (nc == 0) {
             return true;
@@ -129,7 +129,7 @@ public class Utility {
         return true;
     }
 
-    public boolean checkQuasiStability(final DoubleSequence c, double rtol) {
+    public boolean checkQuasiStability(final DoubleSeq c, double rtol) {
         int nc = c.length();
         if (nc == 0) {
             return true;

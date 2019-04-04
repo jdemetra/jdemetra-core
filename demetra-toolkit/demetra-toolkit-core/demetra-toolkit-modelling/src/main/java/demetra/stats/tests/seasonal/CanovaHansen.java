@@ -5,7 +5,6 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.DoubleSequence;
 import demetra.data.TrigonometricSeries;
 import demetra.data.WindowFunction;
 import demetra.design.BuilderPattern;
@@ -19,6 +18,7 @@ import demetra.modelling.regression.PeriodicDummies;
 import demetra.stats.RobustCovarianceComputer;
 import demetra.modelling.regression.PeriodicDummiesFactory;
 import demetra.modelling.regression.Regression;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -31,14 +31,14 @@ public class CanovaHansen {
         Dummy, Trigonometric, UserDefined
     }
 
-    public static Builder test(DoubleSequence s) {
+    public static Builder test(DoubleSeq s) {
         return new Builder(s);
     }
 
     @BuilderPattern(CanovaHansen.class)
     public static class Builder {
 
-        private final DoubleSequence s;
+        private final DoubleSeq s;
         private double period;
         private boolean lag1 = true;
         private Variables type = Variables.Dummy;
@@ -47,7 +47,7 @@ public class CanovaHansen {
         private int startPosition;
         private int nh;
 
-        private Builder(DoubleSequence s) {
+        private Builder(DoubleSeq s) {
             this.s = s;
         }
 
@@ -149,12 +149,12 @@ public class CanovaHansen {
     /**
      * @return the e
      */
-    public DoubleSequence getE() {
+    public DoubleSeq getE() {
         return u;
     }
 
     private final Matrix x, xe, cxe, omega;
-    private final DoubleSequence c, u;
+    private final DoubleSeq c, u;
 
     private CanovaHansen(final Matrix x, final LinearModel lm, final WindowFunction winFunction, int truncationLag) {
         this.x = x;

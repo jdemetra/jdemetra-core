@@ -20,7 +20,6 @@ package demetra.x12;
 import demetra.arima.IArimaModel;
 import demetra.arima.internal.ModifiedLjungBoxFilter;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.linearmodel.LinearModel;
 import demetra.regarima.RegArimaModel;
@@ -32,6 +31,7 @@ import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.SarimaModel;
 import demetra.stats.tests.LjungBox;
 import demetra.stats.tests.StatisticalTest;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -59,7 +59,7 @@ public class ModelController implements IAmiController {
         ModelDescription desc = context.getDescription();
         ModelEstimation estimation = context.getEstimation();
         
-        DoubleSequence coeff = estimation.getConcentratedLikelihood().allCoefficients();
+        DoubleSeq coeff = estimation.getConcentratedLikelihood().allCoefficients();
         RegArmaModel<SarimaModel> dmodel = desc.regarima().differencedModel();
         LinearModel lm = dmodel.asLinearModel();
         DataBlock res = lm.calcResiduals(coeff);

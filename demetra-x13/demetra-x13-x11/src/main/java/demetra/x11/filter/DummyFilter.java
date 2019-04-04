@@ -17,8 +17,8 @@
 
 package demetra.x11.filter;
 
-import demetra.data.DoubleSequence;
 import java.util.Arrays;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -36,7 +36,7 @@ public class DummyFilter{
         this.mul=mul;
     }
 
-    public int[] process(DoubleSequence s, double[] out) {
+    public int[] process(DoubleSeq s, double[] out) {
         Arrays.fill(out, mul ? 1 : 0);
         return new int[] {0, out.length};
     }

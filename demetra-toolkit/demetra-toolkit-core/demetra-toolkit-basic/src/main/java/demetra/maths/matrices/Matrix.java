@@ -18,8 +18,7 @@ import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.LogSign;
 import demetra.design.BuilderPattern;
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import java.util.List;
 import demetra.maths.MatrixType;
 import demetra.maths.matrices.internal.Householder;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -130,7 +130,7 @@ public class Matrix implements MatrixType {
         return i;
     }
 
-    public static Matrix diagonal(DoubleSequence d) {
+    public static Matrix diagonal(DoubleSeq d) {
         Matrix i = square(d.length());
         i.diagonal().copy(d);
         return i;
@@ -408,9 +408,9 @@ public class Matrix implements MatrixType {
         if (colInc == 1) {
             DataBlockIterator rows = rowsIterator();
             while (rows.hasNext()) {
-                DoubleReader cell = rows.next().reader();
+                DoubleSeqCursor cell = rows.next().cursor();
                 for (int i = 0; i < ncols; ++i) {
-                    double cur = cell.next();
+                    double cur = cell.getAndNext();
                     if (cur != 0) {
                         double absxi = Math.abs(cur);
                         if (scale < absxi) {
@@ -427,9 +427,9 @@ public class Matrix implements MatrixType {
         } else {
             DataBlockIterator columns = columnsIterator();
             while (columns.hasNext()) {
-                DoubleReader cell = columns.next().reader();
+                DoubleSeqCursor cell = columns.next().cursor();
                 for (int i = 0; i < nrows; ++i) {
-                    double cur = cell.next();
+                    double cur = cell.getAndNext();
                     if (cur != 0) {
                         double absxi = Math.abs(cur);
                         if (scale < absxi) {

@@ -6,8 +6,8 @@
 package demetra.msts;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
+import demetra.data.DoubleSeq;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParamValidation;
 
@@ -62,7 +62,7 @@ public final class LoadingInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public void fixModelParameter(DoubleReader reader) {
+    public void fixModelParameter(DoubleSeqCursor reader) {
         c = reader.next();
         fixed = true;
     }
@@ -78,7 +78,7 @@ public final class LoadingInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public int decode(DoubleReader input, double[] buffer, int pos) {
+    public int decode(DoubleSeqCursor input, double[] buffer, int pos) {
         if (!fixed) {
             buffer[pos] = input.next();
         } else {
@@ -88,7 +88,7 @@ public final class LoadingInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public int encode(DoubleReader input, double[] buffer, int pos) {
+    public int encode(DoubleSeqCursor input, double[] buffer, int pos) {
         if (!fixed) {
             buffer[pos] = input.next();
             return pos + 1;
@@ -123,14 +123,14 @@ public final class LoadingInterpreter implements ParameterInterpreter {
         static final Domain INSTANCE = new Domain();
 
         @Override
-        public boolean checkBoundaries(DoubleSequence inparams) {
+        public boolean checkBoundaries(DoubleSeq inparams) {
             return true;
         }
 
         private static final double EPS = 1e-4;
 
         @Override
-        public double epsilon(DoubleSequence inparams, int idx) {
+        public double epsilon(DoubleSeq inparams, int idx) {
             double c = inparams.get(0);
             if (c >= 0) {
                 return Math.max(EPS, c * EPS);

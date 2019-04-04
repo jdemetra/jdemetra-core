@@ -19,7 +19,7 @@ package demetra.ssf.implementations;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.maths.matrices.QuadraticForm;
 import demetra.ssf.ISsfLoading;
 import demetra.util.IntList;
@@ -37,12 +37,12 @@ public class Loading {
         DataBlock z = DataBlock.make(len);
         l.Z(0, z);
         IntList c = new IntList();
-        DoubleReader reader = z.reader();
+        DoubleSeqCursor reader = z.cursor();
         double cur = 0;
         boolean same = true;
         int n0 = 0;
         for (int k = 0; k < len; ++k) {
-            double x = reader.next();
+            double x = reader.getAndNext();
             if (x == 0) {
                 ++n0;
             } else if (same) {

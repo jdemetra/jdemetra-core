@@ -17,7 +17,6 @@
 package demetra.x12;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.linearmodel.LeastSquaresResults;
@@ -35,6 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 import demetra.x12.X12Utility;
 import java.util.Collections;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -112,7 +112,7 @@ public class ArmaModuleImpl {
         }
     }
 
-    public SarmaSpecification process(DoubleSequence data, int period, int d, int bd, boolean seas) {
+    public SarmaSpecification process(DoubleSeq data, int period, int d, int bd, boolean seas) {
         return select(data, period, d, bd);
     }
 
@@ -147,7 +147,7 @@ public class ArmaModuleImpl {
          * @param spec
          * @param eps
          */
-        RegArmaBic(final DoubleSequence data, final SarmaSpecification spec, double eps) {
+        RegArmaBic(final DoubleSeq data, final SarmaSpecification spec, double eps) {
             IRegArimaProcessor processor = X12Utility.processor(true, eps);
             RegArimaModel<SarimaModel> model
                     = RegArimaModel.builder(SarimaModel.class)
@@ -218,7 +218,7 @@ public class ArmaModuleImpl {
             }
         }
 
-        public static RegArmaBic[] sort(final DoubleSequence data, final SarmaSpecification[] specs, double eps) {
+        public static RegArmaBic[] sort(final DoubleSeq data, final SarmaSpecification[] specs, double eps) {
             List<RegArmaBic> all = new ArrayList<>();
             for (int i = 0; i < specs.length; ++i) {
                 RegArmaBic cur = new RegArmaBic(data, specs[i], eps);
@@ -279,7 +279,7 @@ public class ArmaModuleImpl {
      * @param bd
      * @return
      */
-    public SarmaSpecification select(DoubleSequence data, final int d, final int bd) {
+    public SarmaSpecification select(DoubleSeq data, final int d, final int bd) {
         int idmax = nmod;
         while (estimations[idmax - 1].getBIC() == NO_BIC) {
             --idmax;
@@ -368,7 +368,7 @@ public class ArmaModuleImpl {
      * @param bd
      * @return
      */
-    public SarmaSpecification select(final DoubleSequence data, final int freq, final int d, final int bd) {
+    public SarmaSpecification select(final DoubleSeq data, final int freq, final int d, final int bd) {
         clear();
         // step I
 

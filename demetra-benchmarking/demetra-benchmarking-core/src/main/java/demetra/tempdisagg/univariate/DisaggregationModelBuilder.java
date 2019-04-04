@@ -20,7 +20,7 @@ import demetra.data.Cumulator;
 import demetra.data.AggregationType;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.data.normalizer.IDataNormalizer;
 import demetra.design.BuilderPattern;
@@ -289,11 +289,11 @@ class DisaggregationModelBuilder {
             hy[i] = Double.NaN;
         }
 
-        DoubleReader reader = y.getValues().reader();
+        DoubleSeqCursor reader = y.getValues().cursor();
         int k = y.getStart().until(yDom.getStartPeriod());
-        reader.setPosition(k);
+        reader.moveTo(k);
         for (int j = pos, i = 0; i < ny; ++i, j += frequencyRatio) {
-            hy[j] = reader.next();
+            hy[j] = reader.getAndNext();
         }
         hEY = hy;
 

@@ -7,12 +7,12 @@ package demetra.regarima;
 
 import demetra.data.Data;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import ec.tstoolkit.data.DescriptiveStatistics;
 import org.junit.Ignore;
 import org.junit.Test;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -27,7 +27,7 @@ public class RegArimaModelTest {
     public void testMissing() {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
-        DoubleSequence y = DataBlock.ofInternal(Data.PROD);
+        DoubleSeq y = DataBlock.ofInternal(Data.PROD);
         int[] missingPos = new int[30];
         for (int i = 0; i < missingPos.length - 15; ++i) {
             missingPos[i] = i;
@@ -52,7 +52,7 @@ public class RegArimaModelTest {
 
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
-        DoubleSequence y = DataBlock.ofInternal(Data.PROD);
+        DoubleSeq y = DataBlock.ofInternal(Data.PROD);
         int[] missingPos = new int[15];
         for (int i = 0; i < missingPos.length; ++i) {
             missingPos[i] = 2 * i;
@@ -99,7 +99,7 @@ public class RegArimaModelTest {
 
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
-        DoubleSequence y = DataBlock.ofInternal(Data.PROD);
+        DoubleSeq y = DataBlock.ofInternal(Data.PROD);
         int[] missingPos = new int[15];
         for (int i = 0; i < missingPos.length; ++i) {
             missingPos[i] = 2 * i;

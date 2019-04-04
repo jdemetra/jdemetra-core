@@ -16,11 +16,11 @@
  */
 package demetra.likelihood;
 
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
 import demetra.eco.EcoException;
 import demetra.maths.MatrixType;
+import demetra.data.DoubleSeq;
 
 /**
  * This class represents the concentrated likelihood of a linear regression
@@ -37,7 +37,7 @@ public interface IConcentratedLikelihood extends ILikelihood {
      *
      * @return
      */
-    DoubleSequence coefficients();
+    DoubleSeq coefficients();
 
     /**
      * The coefficient of the i-th regression variables (0-based). The first one
@@ -104,12 +104,12 @@ public interface IConcentratedLikelihood extends ILikelihood {
     default double[] ser(int nhp, boolean unbiased) {
 
         if (nx() == 0) {
-            return DoubleSequence.EMPTYARRAY;
+            return DoubleSeq.EMPTYARRAY;
         }
         double[] e = unscaledCovariance().diagonal().toArray();
         int ndf = unbiased ? dim() - nx() - nhp : dim();
         double ssq = ssq();
-        DoubleSequence b = coefficients();
+        DoubleSeq b = coefficients();
         for (int i = 0; i < e.length; ++i) {
             e[i] = Math.sqrt(e[i] * ssq / ndf);
         }
@@ -140,9 +140,9 @@ public interface IConcentratedLikelihood extends ILikelihood {
             throw new EcoException(EcoException.UNEXPECTEDOPERATION);
         }
         double[] t = ser(nhp, unbiased);
-        DoubleReader reader = coefficients().reader();
+        DoubleSeqCursor reader = coefficients().cursor();
         for (int i = 0; i < t.length; ++i) {
-            t[i] = reader.next() / t[i];
+            t[i] = reader.getAndNext() / t[i];
         }
         return t;
     }

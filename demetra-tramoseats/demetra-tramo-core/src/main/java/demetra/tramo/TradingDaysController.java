@@ -6,7 +6,6 @@
 package demetra.tramo;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
@@ -21,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import demetra.modelling.regression.ITradingDaysVariable;
 import demetra.modelling.regression.Regression;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -74,7 +74,7 @@ class TradingDaysController extends ModelController {
     }
 
     private boolean needProcessing(RegArimaModelling context) {
-        DoubleSequence res = context.getEstimation().getConcentratedLikelihood().e();
+        DoubleSeq res = context.getEstimation().getConcentratedLikelihood().e();
         LinearModel.Builder builder = LinearModel.builder();
         builder.y(res);
         

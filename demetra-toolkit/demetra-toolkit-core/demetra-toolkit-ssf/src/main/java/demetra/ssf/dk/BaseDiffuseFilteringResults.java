@@ -22,10 +22,10 @@ import demetra.ssf.univariate.DefaultFilteringResults;
 import demetra.ssf.DataBlockResults;
 import demetra.ssf.DataResults;
 import demetra.ssf.StateInfo;
-import demetra.data.DoubleSequence;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.State;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -73,12 +73,12 @@ public class BaseDiffuseFilteringResults extends DefaultFilteringResults impleme
     }
 
     @Override
-    public DoubleSequence errors(boolean normalized, boolean clean) {
+    public DoubleSeq errors(boolean normalized, boolean clean) {
         DataBlock r = DataBlock.of(errors());
         // set diffuse elements to Double.NaN
         r.range(0, enddiffuse).apply(fi.extract(0, enddiffuse), (x,y)->y!=0 ? Double.NaN : x);
         if (normalized) {
-            DoubleSequence allf = errorVariances();
+            DoubleSeq allf = errorVariances();
             r.apply(allf, (x, y) -> Double.isFinite(x) && Double.isFinite(y) ? x / Math.sqrt(y) : Double.NaN);
         }
         if (clean){

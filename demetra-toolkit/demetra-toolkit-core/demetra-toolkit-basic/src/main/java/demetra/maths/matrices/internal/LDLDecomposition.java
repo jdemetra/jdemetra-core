@@ -5,10 +5,10 @@
  */
 package demetra.maths.matrices.internal;
 
-import demetra.data.DoubleSequence;
 import demetra.maths.MatrixException;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
+import demetra.data.DoubleSeq;
 
 /**
  * Computes for a given symmetric matrix X a LDL decomposition, which is defined
@@ -83,7 +83,7 @@ public class LDLDecomposition {
         return Matrix.diagonal(M.diagonal());
     }
 
-    DoubleSequence diagonal() {
+    DoubleSeq diagonal() {
         return M.diagonal().unmodifiable();
     }
 

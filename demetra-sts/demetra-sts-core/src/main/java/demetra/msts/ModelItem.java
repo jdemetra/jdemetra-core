@@ -5,7 +5,7 @@
  */
 package demetra.msts;
 
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import java.util.List;
 
 /**

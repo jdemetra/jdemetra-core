@@ -17,7 +17,6 @@
 package demetra.regarima.regular;
 
 import demetra.arima.IArimaModel;
-import demetra.data.DoubleSequence;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
@@ -30,6 +29,7 @@ import demetra.sarima.estimation.SarimaMapping;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import java.util.Arrays;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -518,7 +518,7 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
         return p;
     }
 
-    public void setFreeParameters(DoubleSequence p, DoubleSequence stde, ParameterType type) {
+    public void setFreeParameters(DoubleSeq p, DoubleSeq stde, ParameterType type) {
         int j = 0;
         if (phi != null) {
             for (int i = 0; i < phi.length; ++i, ++j) {
@@ -606,7 +606,7 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
         if (getFixedParametersCount() == 0) {
             return SarimaMapping.of(getSpecification());
         } else {
-            return new SarimaFixedMapping(getSpecification(), DoubleSequence.ofInternal(parameters()), fixedConstraints());
+            return new SarimaFixedMapping(getSpecification(), DoubleSeq.of(parameters()), fixedConstraints());
         }
     }
 

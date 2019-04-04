@@ -6,8 +6,8 @@
 package demetra.arima.estimation;
 
 import demetra.arima.IArimaModel;
-import demetra.data.DoubleSequence;
 import demetra.maths.functions.IParametricMapping;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -22,5 +22,5 @@ public interface IArimaMapping<M extends IArimaModel> extends IParametricMapping
      * @param t
      * @return 
      */
-    DoubleSequence parametersOf(M t);
+    DoubleSeq parametersOf(M t);
 }

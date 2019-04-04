@@ -17,8 +17,8 @@
 package demetra.x11.filter.endpoints;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.data.DoubleSeq;
 
 /**
  * Computes the endpoints of a smoothing algorithm.
@@ -38,5 +38,5 @@ public interface IEndPointsProcessor {
      * which have to be completed.
      * The input and the output buffers should have the same size.
      */
-    void process(DoubleSequence in, DataBlock out);
+    void process(DoubleSeq in, DataBlock out);
 }

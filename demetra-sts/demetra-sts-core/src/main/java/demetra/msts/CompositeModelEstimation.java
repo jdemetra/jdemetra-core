@@ -5,7 +5,6 @@
  */
 package demetra.msts;
 
-import demetra.data.DoubleSequence;
 import demetra.likelihood.ILikelihood;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.StateInfo;
@@ -19,6 +18,7 @@ import demetra.ssf.multivariate.SsfMatrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.StateFilteringResults;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -34,7 +34,7 @@ public class CompositeModelEstimation {
                 .concentratedLikelihood(concentrated)
                 .precision(eps)
                 .build();
-        monitor.process(data, model.getMapping(), parameters == null ? null : DoubleSequence.ofInternal(parameters));
+        monitor.process(data, model.getMapping(), parameters == null ? null : DoubleSeq.of(parameters));
         rslt.likelihood = monitor.getLikelihood();
         rslt.ssf = monitor.getSsf();
         rslt.cmpPos = rslt.getSsf().componentsPosition();
@@ -45,13 +45,13 @@ public class CompositeModelEstimation {
         return rslt;
     }
 
-    public static CompositeModelEstimation computationOf(CompositeModel model, Matrix data, DoubleSequence fullParameters, boolean marginal, boolean concentrated) {
+    public static CompositeModelEstimation computationOf(CompositeModel model, Matrix data, DoubleSeq fullParameters, boolean marginal, boolean concentrated) {
         CompositeModelEstimation rslt = new CompositeModelEstimation();
         rslt.data = data;
         rslt.fullParameters = fullParameters.toArray();
         model.getMapping().fixModelParameters(p->true, fullParameters);
-        rslt.parameters = DoubleSequence.EMPTYARRAY;
-        rslt.ssf = model.getMapping().map(DoubleSequence.empty());
+        rslt.parameters = DoubleSeq.EMPTYARRAY;
+        rslt.ssf = model.getMapping().map(DoubleSeq.empty());
         rslt.cmpPos = rslt.getSsf().componentsPosition();
         rslt.cmpName=model.getMapping().parametersName();
         rslt.parametersName = model.getMapping().parametersName();

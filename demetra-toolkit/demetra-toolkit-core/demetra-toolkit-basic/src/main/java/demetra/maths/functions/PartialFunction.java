@@ -5,7 +5,7 @@
  */
 package demetra.maths.functions;
 
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -23,9 +23,9 @@ public class PartialFunction implements IFunction {
 
     class Point implements IFunctionPoint {
 
-        private final DoubleSequence pt;
+        private final DoubleSeq pt;
 
-        Point(DoubleSequence pt) {
+        Point(DoubleSeq pt) {
             this.pt = pt;
         }
 
@@ -35,7 +35,7 @@ public class PartialFunction implements IFunction {
         }
 
         @Override
-        public DoubleSequence getParameters() {
+        public DoubleSeq getParameters() {
             return pt;
         }
 
@@ -47,7 +47,7 @@ public class PartialFunction implements IFunction {
     }
 
     @Override
-    public IFunctionPoint evaluate(DoubleSequence parameters) {
+    public IFunctionPoint evaluate(DoubleSeq parameters) {
         return new Point(parameters);
     }
 

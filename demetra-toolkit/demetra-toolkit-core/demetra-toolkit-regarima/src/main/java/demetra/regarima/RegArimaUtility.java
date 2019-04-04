@@ -21,8 +21,7 @@ import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
 import demetra.arima.internal.FastKalmanFilter;
 import demetra.data.DataBlock;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.Likelihood;
 import demetra.linearmodel.LeastSquaresResults;
@@ -37,6 +36,7 @@ import demetra.sarima.SarimaSpecification;
 import demetra.sarima.internal.HannanRissanenInitializer;
 import java.util.List;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -53,21 +53,21 @@ public class RegArimaUtility {
      * @param concentratedLikelihood
      * @return
      */
-    public <M extends IArimaModel> DoubleSequence linearizedData(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
+    public <M extends IArimaModel> DoubleSeq linearizedData(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
         double[] res = model.getY().toArray();
 
         // handle missing values
         int[] missing = model.missing();
         if (missing.length > 0) {
-            DoubleSequence missingEstimates = concentratedLikelihood.missingEstimates();
+            DoubleSeq missingEstimates = concentratedLikelihood.missingEstimates();
             for (int i = 0; i < missing.length; ++i) {
                 res[missing[i]] -= missingEstimates.get(i);
             }
         }
-        DoubleSequence b = concentratedLikelihood.coefficients();
+        DoubleSeq b = concentratedLikelihood.coefficients();
         DataBlock e = DataBlock.ofInternal(res);
         if (b.length() > 0) {
-            List<DoubleSequence> x = model.getX();
+            List<DoubleSeq> x = model.getX();
             int cur = model.isMean() ? 1 : 0;
             for (int i = 0; i < x.size(); ++i) {
                 double bcur = b.get(cur++);
@@ -77,7 +77,7 @@ public class RegArimaUtility {
         return e;
     }
     
-    public <M extends IArimaModel> DoubleSequence interpolatedData(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
+    public <M extends IArimaModel> DoubleSeq interpolatedData(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
         int[] missing = model.missing();
         if (missing.length == 0) {
             return model.getY();
@@ -85,11 +85,11 @@ public class RegArimaUtility {
         double[] y = model.getY().toArray();
 
         // handle missing values
-        DoubleReader reader = concentratedLikelihood.missingEstimates().reader();
+        DoubleSeqCursor reader = concentratedLikelihood.missingEstimates().cursor();
         for (int i = 0; i < missing.length; ++i) {
-            y[missing[i]] -= reader.next();
+            y[missing[i]] -= reader.getAndNext();
         }
-        return DoubleSequence.ofInternal(y);
+        return DoubleSeq.of(y);
     }
 
     /**
@@ -104,17 +104,17 @@ public class RegArimaUtility {
      * @param nvars Number of removed regression variable
      * @return
      */
-    public <M extends IArimaModel> DoubleSequence regressionEffect(@Nonnull RegArimaModel<M> model,
+    public <M extends IArimaModel> DoubleSeq regressionEffect(@Nonnull RegArimaModel<M> model,
             @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood, int startPos, int nvars) {
-        DoubleSequence b = concentratedLikelihood.coefficients();
+        DoubleSeq b = concentratedLikelihood.coefficients();
         DataBlock e = DataBlock.make(model.getObservationsCount());
         if (b.length() > 0) {
-            List<DoubleSequence> x = model.getX();
-            DoubleReader reader = b.reader();
-            reader.setPosition(model.isMean() ? startPos + 1 : startPos);
+            List<DoubleSeq> x = model.getX();
+            DoubleSeqCursor reader = b.cursor();
+            reader.moveTo(model.isMean() ? startPos + 1 : startPos);
             int i0 = startPos, i1 = startPos + nvars;
             for (int i = i0; i < i1; ++i) {
-                double bcur = reader.next();
+                double bcur = reader.getAndNext();
                 e.apply(x.get(i), (u, v) -> u + bcur * v);
             }
         }
@@ -127,7 +127,7 @@ public class RegArimaUtility {
      * @param model
      * @return
      */
-    public <M extends IArimaModel> DoubleSequence olsResiduals(@Nonnull RegArimaModel<M> model) {
+    public <M extends IArimaModel> DoubleSeq olsResiduals(@Nonnull RegArimaModel<M> model) {
         LinearModel lm = model.differencedModel().asLinearModel();
         Ols ols = new Ols();
         LeastSquaresResults lsr = ols.compute(lm);
@@ -141,13 +141,13 @@ public class RegArimaUtility {
      * @param concentratedLikelihood
      * @return
      */
-    public <M extends IArimaModel> DoubleSequence fullResiduals(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
+    public <M extends IArimaModel> DoubleSeq fullResiduals(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
         // compute the residuals...
         if (model.getVariablesCount() == 0) {
             return concentratedLikelihood.e();
         }
         
-        DoubleSequence ld = linearizedData(model, concentratedLikelihood);
+        DoubleSeq ld = linearizedData(model, concentratedLikelihood);
         StationaryTransformation st = model.arima().stationaryTransformation();
         DataBlock dld;
         
@@ -181,7 +181,7 @@ public class RegArimaUtility {
                 .build();
     }
     
-    public RegArimaModel<SarimaModel> airlineModel(DoubleSequence data, boolean mean, int ifreq, boolean seas) {
+    public RegArimaModel<SarimaModel> airlineModel(DoubleSeq data, boolean mean, int ifreq, boolean seas) {
         // use airline model with mean
         SarimaSpecification spec = new SarimaSpecification(ifreq);
         spec.airline(seas);

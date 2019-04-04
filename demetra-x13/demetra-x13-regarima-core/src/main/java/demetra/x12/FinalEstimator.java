@@ -17,7 +17,6 @@
 package demetra.x12;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.maths.functions.IParametricMapping;
 import static demetra.maths.linearfilters.Utility.checkRoots;
@@ -154,6 +153,7 @@ import static demetra.maths.linearfilters.Utility.checkRoots;
 import static demetra.maths.linearfilters.Utility.checkRoots;
 import static demetra.maths.linearfilters.Utility.checkRoots;
 import static demetra.maths.linearfilters.Utility.checkRoots;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -209,7 +209,7 @@ public class FinalEstimator implements IModelEstimator {
 
         SarimaModel m = desc.arima();
         SarimaSpecification spec = m.specification();
-        DoubleSequence pm = m.parameters();
+        DoubleSeq pm = m.parameters();
         int start = 0, len = spec.getP();
         boolean dpr = checkRoots(pm.extract(start, len), 1 / cmod);// (m.RegularAR.Roots,
         start += len;

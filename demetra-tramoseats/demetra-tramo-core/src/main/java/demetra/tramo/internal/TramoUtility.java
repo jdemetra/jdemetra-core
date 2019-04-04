@@ -16,7 +16,6 @@
  */
 package demetra.tramo.internal;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.modelling.regression.AdditiveOutlier;
 import demetra.regarima.IRegArimaProcessor;
@@ -29,6 +28,7 @@ import demetra.sarima.SarimaSpecification;
 import demetra.sarima.internal.HannanRissanenInitializer;
 import demetra.stats.tests.LjungBox;
 import demetra.stats.tests.StatisticalTest;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -91,7 +91,7 @@ public class TramoUtility {
             final int hp) {
         int n = calcLBLength(freq);
 
-        StatisticalTest lb = new LjungBox(DoubleSequence.ofInternal(res))
+        StatisticalTest lb = new LjungBox(DoubleSeq.of(res))
                 .hyperParametersCount(hp)
                 .lag(n)
                 .build();

@@ -17,7 +17,6 @@
 package demetra.regarima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.DefaultLikelihoodEvaluation;
@@ -29,6 +28,7 @@ import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.matrices.Matrix;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
+import demetra.data.DoubleSeq;
 
 /**
  * @author Jean Palate
@@ -41,23 +41,23 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
     public static class Builder<S extends IArimaModel> {
 
         public static final ToDoubleFunction<ILikelihood> LL = DefaultLikelihoodEvaluation.ml();
-        public static final Function<ILikelihood, DoubleSequence> ERRORS = DefaultLikelihoodEvaluation.v();
+        public static final Function<ILikelihood, DoubleSeq> ERRORS = DefaultLikelihoodEvaluation.v();
         public static final ToDoubleFunction<ILikelihood> SSQLL = DefaultLikelihoodEvaluation.deviance();
 
         // algorithms
         private ToDoubleFunction<ILikelihood> ll = LL;
         private ToDoubleFunction<ILikelihood> ssqll = SSQLL;
-        private Function<ILikelihood, DoubleSequence> errors = ERRORS;
+        private Function<ILikelihood, DoubleSeq> errors = ERRORS;
         private ConcentratedLikelihoodComputer cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER;
         private boolean mt = false;
         // model
-        private final DoubleSequence dy;
+        private final DoubleSeq dy;
         private Matrix x;
         private int nmissing;
         // mapping
         private IParametricMapping<S> mapping;
 
-        private Builder(final DoubleSequence dy) {
+        private Builder(final DoubleSeq dy) {
             this.dy = dy;
         }
 
@@ -86,7 +86,7 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
             return this;
         }
 
-     public Builder evaluation(Function<ILikelihood, DoubleSequence> errors) {
+     public Builder evaluation(Function<ILikelihood, DoubleSeq> errors) {
             this.errors = errors;
             return this;
         }
@@ -102,12 +102,12 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
 
     }
 
-    public static <S extends IArimaModel> Builder<S> builder(DoubleSequence dy) {
+    public static <S extends IArimaModel> Builder<S> builder(DoubleSeq dy) {
         return new Builder<>(dy);
     }
 
     // model
-    final DoubleSequence dy;
+    final DoubleSeq dy;
     final Matrix x;
     final int nmissing;
     // mapping
@@ -115,17 +115,17 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
     // algorithms
     final ConcentratedLikelihoodComputer cll;
     final ToDoubleFunction<ILikelihood> ll, ssqll;
-    final Function<ILikelihood, DoubleSequence> errors;
+    final Function<ILikelihood, DoubleSeq> errors;
     final boolean mt;
 
-    private ArmaFunction(final DoubleSequence dy,
+    private ArmaFunction(final DoubleSeq dy,
             final Matrix x,
             final int nm,
             final IParametricMapping<S> mapping,
             final ConcentratedLikelihoodComputer cll,
             final ToDoubleFunction<ILikelihood> ll,
             final ToDoubleFunction<ILikelihood> ssqll,
-            final Function<ILikelihood, DoubleSequence> errors,
+            final Function<ILikelihood, DoubleSeq> errors,
             final boolean mt) {
         this.dy = dy;
         this.x = x;
@@ -139,7 +139,7 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
     }
 
     @Override
-    public ArmaEvaluation<S> evaluate(DoubleSequence parameters) {
+    public ArmaEvaluation<S> evaluate(DoubleSeq parameters) {
          return new ArmaEvaluation<>(this, parameters);
     }
 
@@ -149,7 +149,7 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
     }
 
     @Override
-    public ArmaEvaluation<S> ssqEvaluate(DoubleSequence parameters) {
+    public ArmaEvaluation<S> ssqEvaluate(DoubleSeq parameters) {
         return new ArmaEvaluation<>(this, parameters);
     }
 

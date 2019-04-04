@@ -16,7 +16,6 @@
  */
 package demetra.tramo;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.regarima.regular.PreprocessingModel;
@@ -29,6 +28,7 @@ import demetra.stats.tests.StatisticalTest;
 import demetra.tramo.internal.TramoUtility;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSeq;
 
 /**
  * @author Jean Palate
@@ -60,7 +60,7 @@ public class ModelStatistics {
 
     public static ModelStatistics of(PreprocessingModel m) {
         LikelihoodStatistics stats = m.getEstimation().getStatistics();
-        DoubleSequence e = m.getEstimation().getConcentratedLikelihood().e();
+        DoubleSeq e = m.getEstimation().getConcentratedLikelihood().e();
         int p = m.getDescription().getAnnualFrequency();
         int n = TramoUtility.calcLBLength(p);
         int nres = e.length();
@@ -91,8 +91,8 @@ public class ModelStatistics {
         }
         int nres2 = (1 + nres) / 2;
         int nlast = Math.min(nres2, 10 * p);
-        DoubleSequence data0 = e.range(0, nres - nlast);
-        DoubleSequence data1 = e.range(nlast, nres);
+        DoubleSeq data0 = e.range(0, nres - nlast);
+        DoubleSeq data1 = e.range(nlast, nres);
         
         Sample s0 = Sample.ofResiduals(data1);
         Sample s1 = Sample.ofResiduals(data1);

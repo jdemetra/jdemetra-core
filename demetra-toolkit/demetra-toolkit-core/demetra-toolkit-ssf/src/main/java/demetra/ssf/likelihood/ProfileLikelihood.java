@@ -19,7 +19,7 @@ package demetra.ssf.likelihood;
 import demetra.data.DataBlock;
 import demetra.likelihood.ILikelihood;
 import demetra.maths.matrices.Matrix;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -82,7 +82,7 @@ public class ProfileLikelihood implements ILikelihood {
     }
 
     @Override
-    public DoubleSequence e() {
+    public DoubleSeq e() {
         return DataBlock.EMPTY;
     }
 
@@ -165,7 +165,7 @@ public class ProfileLikelihood implements ILikelihood {
         calcll();
     }
 
-    public DoubleSequence getDiffuseEffects() {
+    public DoubleSeq getDiffuseEffects() {
         return b;
     }
 

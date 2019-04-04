@@ -20,8 +20,8 @@ import demetra.arima.IArimaModel;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.polynomials.Polynomial;
-import demetra.data.DoubleSequence;
 import demetra.arima.estimation.ArimaForecasts;
+import demetra.data.DoubleSeq;
 
 /**
  * Computes the forecasts of an Arima model using the approach followed in
@@ -75,7 +75,7 @@ public class FastArimaForecasts implements ArimaForecasts {
      * @return
      */
     @Override
-    public DoubleSequence forecasts(DoubleSequence data, int nf) {
+    public DoubleSeq forecasts(DoubleSeq data, int nf) {
         try {
             DataBlock res = residuals(data);
             // residuals i correspond to t=i+p-q
@@ -111,14 +111,14 @@ public class FastArimaForecasts implements ArimaForecasts {
                 }
                 fcasts[i] = s;
             }
-            return DoubleSequence.ofInternal(fcasts);
+            return DoubleSeq.of(fcasts);
         } catch (Exception err) {
             return null;
         }
     }
 
     // computes the residuals;
-    private DataBlock residuals(DoubleSequence data) {
+    private DataBlock residuals(DoubleSeq data) {
         DataBlock w = DataBlock.of(data);
         try {
             // step 1. AR filter w, if necessary

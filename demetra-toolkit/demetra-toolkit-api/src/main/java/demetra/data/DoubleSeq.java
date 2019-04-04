@@ -18,9 +18,14 @@ package demetra.data;
 
 import demetra.design.Development;
 import demetra.design.Internal;
+import demetra.design.ReturnNew;
 import demetra.util.IntList;
 import demetra.util.function.BiDoublePredicate;
+import internal.data.ArrayBaseSeq;
+import internal.data.InternalDefaultCursors;
 import internal.data.InternalDoubleSeq;
+import internal.data.EmptyBaseSeq;
+import internal.data.SingleBaseSeq;
 import java.text.DecimalFormat;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
@@ -32,101 +37,12 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 /**
+ * Describes a sequence of doubles.
  *
  * @author Philippe Charles
  */
 @Development(status = Development.Status.Release)
-public interface DoubleSequence extends BaseSequence<Double> {
-
-    static final double[] EMPTYARRAY = new double[0];
-
-    /**
-     * Creates a new value using an array of doubles. Internal use only since it
-     * can break immutability.
-     *
-     * @param data
-     *
-     * @return
-     */
-    @Internal
-    @Nonnull
-    static DoubleSequence ofInternal(@Nonnull double[] data) {
-        return new InternalDoubleSeq.DoubleSeqN(data);
-    }
-
-    /**
-     *
-     * @param data Storage
-     * @param start Position of the first item (non negative)
-     * @param len Number of items (non negative)
-     *
-     * @return
-     */
-    @Internal
-    @Nonnull
-    static DoubleSequence ofInternal(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int len) {
-        return new InternalDoubleSeq.PartialDoubleArray(data, start, len);
-    }
-
-    /**
-     * Makes a sequence of regularly spaced doubles
-     *
-     * @param data Storage
-     * @param start Position of the first item (non negative)
-     * @param len Number of items (non negative)
-     * @param inc Increment in the underlying storage of two succesive items
-     *
-     * @return
-     */
-    @Internal
-    @Nonnull
-    static DoubleSequence ofInternal(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int len, int inc) {
-        return new InternalDoubleSeq.RegularlySpacedDoubles(data, start, len, inc);
-    }
-
-    @Nonnull
-    static DoubleSequence empty() {
-        return InternalDoubleSeq.DoubleSeq0.INSTANCE;
-    }
-
-    @Nonnull
-    static DoubleSequence of(double value) {
-        return new InternalDoubleSeq.DoubleSeq1(value);
-    }
-
-    @Nonnull
-    static DoubleSequence of(@Nonnull double... data) {
-        switch (data.length) {
-            case 0:
-                return empty();
-            case 1:
-                return of(data[0]);
-            default:
-                return ofInternal(data.clone());
-        }
-    }
-
-    @Nonnull
-    static DoubleSequence of(@Nonnull DoubleStream stream) {
-        return ofInternal(stream.toArray());
-    }
-
-    @Nonnull
-    static DoubleSequence of(@Nonnull DoubleSequence seq) {
-        return seq instanceof InternalDoubleSeq.DoubleSeqN
-                ? (InternalDoubleSeq.DoubleSeqN) seq
-                : ofInternal(seq.toArray());
-    }
-
-    @Nonnull
-    static DoubleSequence onMapping(@Nonnegative int length, @Nonnull IntToDoubleFunction fn) {
-        return new InternalDoubleSeq.IntToDoubleSequence(length, fn);
-    }
-
-    @Nonnull
-    static DoubleSequence onMapping(@Nonnull DoubleSequence source, @Nonnull DoubleUnaryOperator fn) {
-        return new InternalDoubleSeq.IntToDoubleSequence(source.length(), i -> fn.applyAsDouble(source.get(i)));
-    }
+public interface DoubleSeq extends BaseSeq {
 
     /**
      * Returns the <code>double</code> value at the specified index. An index
@@ -143,14 +59,14 @@ public interface DoubleSequence extends BaseSequence<Double> {
     double get(@Nonnegative int index) throws IndexOutOfBoundsException;
 
     /**
-     * The cell reader at the beginning of this object. The first data will be
-     * retrieved by "next".
+     * Creates a new cursor at the beginning of this object. The first data will
+     * be retrieved by "next".
      *
      * @return
      */
     @Nonnull
-    default DoubleReader reader() {
-        return DoubleReader.of(this);
+    default DoubleSeqCursor cursor() {
+        return new InternalDefaultCursors.DefaultDoubleSeqCursor(this);
     }
 
     /**
@@ -165,13 +81,13 @@ public interface DoubleSequence extends BaseSequence<Double> {
      * of the result could be 0.
      */
     @Nonnull
-    default DoubleSequence extract(@Nonnegative final int start, @Nonnegative final int length) {
-        return DoubleSequence.onMapping(length, i -> get(start + i));
+    default DoubleSeq extract(@Nonnegative final int start, @Nonnegative final int length) {
+        return DoubleSeq.onMapping(length, i -> get(start + i));
     }
 
     @Nonnull
-    default DoubleSequence extract(@Nonnegative final int start, @Nonnegative final int length, final int increment) {
-        return DoubleSequence.onMapping(length, i -> get(start + i * increment));
+    default DoubleSeq extract(@Nonnegative final int start, @Nonnegative final int length, final int increment) {
+        return DoubleSeq.onMapping(length, i -> get(start + i * increment));
     }
 
     /**
@@ -190,6 +106,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
     /**
      * @return @see DoubleStream#toArray()
      */
+    @ReturnNew
     @Nonnull
     default double[] toArray() {
         return InternalDoubleSeq.toArray(this);
@@ -226,7 +143,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      *
      * @return
      */
-    default boolean allMatch(@Nonnull DoubleSequence seq, @Nonnull BiDoublePredicate pred) {
+    default boolean allMatch(@Nonnull DoubleSeq seq, @Nonnull BiDoublePredicate pred) {
         return InternalDoubleSeq.allMatch(this, seq, pred);
     }
 
@@ -272,7 +189,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      *
      * @return The shortened array
      */
-    default DoubleSequence drop(int beg, int end) {
+    default DoubleSeq drop(int beg, int end) {
         return extract(beg, length() - beg - end);
     }
 
@@ -284,8 +201,8 @@ public interface DoubleSequence extends BaseSequence<Double> {
      *
      * @return
      */
-    default DoubleSequence range(int beg, int end) {
-        return end <= beg ? DoubleSequence.empty() : extract(beg, end - beg);
+    default DoubleSeq range(int beg, int end) {
+        return end <= beg ? DoubleSeq.empty() : extract(beg, end - beg);
     }
 
     /**
@@ -293,29 +210,29 @@ public interface DoubleSequence extends BaseSequence<Double> {
      *
      * @return
      */
-    default DoubleSequence reverse() {
+    default DoubleSeq reverse() {
         final int n = length();
         return new InternalDoubleSeq.IntToDoubleSequence(n, i -> get(n - 1 - i));
     }
 
-    public default int[] search(final DoublePredicate pred) {
+    default int[] search(final DoublePredicate pred) {
         IntList list = new IntList();
         int n = length();
-        DoubleReader cell = reader();
+        DoubleSeqCursor cell = cursor();
         for (int j = 0; j < n; ++j) {
-            if (pred.test(cell.next())) {
+            if (pred.test(cell.getAndNext())) {
                 list.add(j);
             }
         }
         return list.toArray();
     }
 
-    public default int search(final DoublePredicate pred, final int[] first) {
+    default int search(final DoublePredicate pred, final int[] first) {
         int n = length();
-        DoubleReader cell = reader();
+        DoubleSeqCursor cell = cursor();
         int cur = 0;
         for (int j = 0; j < n; ++j) {
-            if (pred.test(cell.next())) {
+            if (pred.test(cell.getAndNext())) {
                 first[cur++] = j;
                 if (cur == first.length) {
                     return cur;
@@ -327,31 +244,31 @@ public interface DoubleSequence extends BaseSequence<Double> {
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Descriptive statistics (with default implementations">
-    public default double sum() {
+    default double sum() {
         return reduce(0, (s, x) -> s + x);
     }
 
-    public default double average() {
+    default double average() {
         return reduce(0, (s, x) -> s + x) / length();
     }
 
-    public default double ssq() {
+    default double ssq() {
         return reduce(0, (s, x) -> s + x * x);
     }
 
-    public default double ssqc(double mean) {
+    default double ssqc(double mean) {
         return reduce(0, (s, x) -> {
             x -= mean;
             return s + x * x;
         });
     }
 
-    public default double sumWithMissing() {
+    default double sumWithMissing() {
         int n = length();
         double s = 0;
-        DoubleReader cell = reader();
+        DoubleSeqCursor cell = cursor();
         for (int i = 0; i < n; i++) {
-            double cur = cell.next();
+            double cur = cell.getAndNext();
             if (Double.isFinite(cur)) {
                 s += cur;
             }
@@ -359,12 +276,12 @@ public interface DoubleSequence extends BaseSequence<Double> {
         return s;
     }
 
-    public default double ssqWithMissing() {
+    default double ssqWithMissing() {
         int n = length();
         double s = 0;
-        DoubleReader cell = reader();
+        DoubleSeqCursor cell = cursor();
         for (int i = 0; i < n; i++) {
-            double cur = cell.next();
+            double cur = cell.getAndNext();
             if (Double.isFinite(cur)) {
                 s += cur * cur;
             }
@@ -372,12 +289,12 @@ public interface DoubleSequence extends BaseSequence<Double> {
         return s;
     }
 
-    public default double ssqcWithMissing(final double mean) {
+    default double ssqcWithMissing(final double mean) {
         int n = length();
         double s = 0;
-        DoubleReader cell = reader();
+        DoubleSeqCursor cell = cursor();
         for (int i = 0; i < n; i++) {
-            double cur = cell.next() - mean;
+            double cur = cell.getAndNext() - mean;
             if (Double.isFinite(cur)) {
                 s += cur * cur;
             }
@@ -385,13 +302,13 @@ public interface DoubleSequence extends BaseSequence<Double> {
         return s;
     }
 
-    public default double averageWithMissing() {
+    default double averageWithMissing() {
         int n = length();
         int m = 0;
         double s = 0;
-        DoubleReader cell = reader();
+        DoubleSeqCursor cell = cursor();
         for (int i = 0; i < n; i++) {
-            double cur = cell.next();
+            double cur = cell.getAndNext();
             if (Double.isFinite(cur)) {
                 s += cur;
             } else {
@@ -404,9 +321,9 @@ public interface DoubleSequence extends BaseSequence<Double> {
     public default double norm1() {
         int n = length();
         double nrm = 0;
-        DoubleReader cur = reader();
+        DoubleSeqCursor cur = cursor();
         for (int i = 0; i < n; ++i) {
-            nrm += Math.abs(cur.next());
+            nrm += Math.abs(cur.getAndNext());
         }
         return nrm;
     }
@@ -417,7 +334,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
      *
      * @return The euclidian norm (&gt=0).
      */
-    public default double norm2() {
+    default double norm2() {
         int n = length();
         switch (n) {
             case 0:
@@ -427,9 +344,9 @@ public interface DoubleSequence extends BaseSequence<Double> {
             default:
                 double scale = 0;
                 double ssq = 1;
-                DoubleReader cell = reader();
+                DoubleSeqCursor cell = cursor();
                 for (int i = 0; i < n; ++i) {
-                    double cur = cell.next();
+                    double cur = cell.getAndNext();
                     if (cur != 0) {
                         double absxi = Math.abs(cur);
                         if (scale < absxi) {
@@ -446,7 +363,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
         }
     }
 
-    public default double fastNorm2() {
+    default double fastNorm2() {
         int n = length();
         switch (n) {
             case 0:
@@ -454,10 +371,10 @@ public interface DoubleSequence extends BaseSequence<Double> {
             case 1:
                 return Math.abs(get(0));
             default:
-                DoubleReader cell = reader();
+                DoubleSeqCursor cell = cursor();
                 double ssq = 0;
                 for (int i = 0; i < n; ++i) {
-                    double cur = cell.next();
+                    double cur = cell.getAndNext();
                     if (cur != 0) {
                         ssq += cur * cur;
                     }
@@ -471,15 +388,15 @@ public interface DoubleSequence extends BaseSequence<Double> {
      *
      * @return Returns min{|src(i)|}
      */
-    public default double normInf() {
+    default double normInf() {
         int n = length();
         if (n == 0) {
             return 0;
         } else {
             double nrm = Math.abs(get(0));
-            DoubleReader cell = reader();
+            DoubleSeqCursor cell = cursor();
             for (int i = 1; i < n; ++i) {
-                double tmp = Math.abs(cell.next());
+                double tmp = Math.abs(cell.getAndNext());
                 if (tmp > nrm) {
                     nrm = tmp;
                 }
@@ -493,13 +410,13 @@ public interface DoubleSequence extends BaseSequence<Double> {
      *
      * @return Missing values are omitted.
      */
-    public default int getRepeatCount() {
+    default int getRepeatCount() {
         int i = 0;
         int n = length();
-        DoubleReader cell = reader();
+        DoubleSeqCursor cell = cursor();
         double prev = 0;
         while (i++ < n) {
-            prev = cell.next();
+            prev = cell.getAndNext();
             if (Double.isFinite(prev)) {
                 break;
             }
@@ -509,7 +426,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
         }
         int c = 0;
         for (; i < n; ++i) {
-            double cur = cell.next();
+            double cur = cell.getAndNext();
             if (Double.isFinite(cur)) {
                 if (cur == prev) {
                     ++c;
@@ -521,39 +438,39 @@ public interface DoubleSequence extends BaseSequence<Double> {
         return c;
     }
 
-    public default double dot(DoubleSequence data) {
+    default double dot(DoubleSeq data) {
         int n = length();
         double s = 0;
-        DoubleReader cur = reader();
-        DoubleReader xcur = data.reader();
+        DoubleSeqCursor cur = cursor();
+        DoubleSeqCursor xcur = data.cursor();
         for (int i = 0; i < n; i++) {
-            s += cur.next() * xcur.next();
+            s += cur.getAndNext() * xcur.getAndNext();
         }
         return s;
     }
 
-    public default double jdot(DoubleSequence data, int pos) {
+    default double jdot(DoubleSeq data, int pos) {
         int n = length();
         double s = 0;
-        DoubleReader cur = reader();
-        DoubleReader xcur = data.reader();
+        DoubleSeqCursor cur = cursor();
+        DoubleSeqCursor xcur = data.cursor();
         for (int i = 0; i < pos; i++) {
-            s += cur.next() * xcur.next();
+            s += cur.getAndNext() * xcur.getAndNext();
         }
         for (int i = pos; i < n; i++) {
-            s -= cur.next() * xcur.next();
+            s -= cur.getAndNext() * xcur.getAndNext();
         }
         return s;
     }
 
-    public default double distance(DoubleSequence data) {
+    default double distance(DoubleSeq data) {
         double scale = 0;
         double ssq = 1;
-        DoubleReader cur = reader();
-        DoubleReader xcur = data.reader();
+        DoubleSeqCursor cur = cursor();
+        DoubleSeqCursor xcur = data.cursor();
         int n = length();
         for (int i = 0; i < n; ++i) {
-            double x = cur.next(), y = xcur.next();
+            double x = cur.getAndNext(), y = xcur.getAndNext();
             if (Double.compare(x, y) != 0) {
                 double d = x - y;
                 if (d != 0) {
@@ -572,7 +489,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
         return scale * Math.sqrt(ssq);
     }
 
-    public default DoubleSequence select(DoublePredicate pred) {
+    default DoubleSeq select(DoublePredicate pred) {
         double[] x = toArray();
         int cur = 0;
         for (int i = 0; i < x.length; ++i) {
@@ -584,15 +501,15 @@ public interface DoubleSequence extends BaseSequence<Double> {
             }
         }
         if (cur == x.length) {
-            return DoubleSequence.ofInternal(x);
+            return DoubleSeq.of(x);
         } else {
             double[] xc = new double[cur];
             System.arraycopy(x, 0, xc, 0, cur);
-            return DoubleSequence.ofInternal(xc);
+            return DoubleSeq.of(xc);
         }
     }
 
-    public default DoubleSequence removeMean() {
+    default DoubleSeq removeMean() {
         double[] y = toArray();
         double s = 0;
         for (int i = 0; i < y.length; ++i) {
@@ -602,22 +519,22 @@ public interface DoubleSequence extends BaseSequence<Double> {
         for (int i = 0; i < y.length; ++i) {
             y[i] -= s;
         }
-        return DoubleSequence.ofInternal(y);
+        return DoubleSeq.of(y);
     }
 
-    public default DoubleSequence fn(DoubleUnaryOperator fn) {
+    default DoubleSeq fn(DoubleUnaryOperator fn) {
         double[] data = toArray();
         for (int i = 0; i < data.length; ++i) {
             data[i] = fn.applyAsDouble(data[i]);
         }
-        return DoubleSequence.ofInternal(data);
+        return DoubleSeq.of(data);
     }
 
-    public default DoubleSequence fastFn(DoubleUnaryOperator fn) {
-        return DoubleSequence.onMapping(length(), i -> fn.applyAsDouble(get(i)));
+    default DoubleSeq fastFn(DoubleUnaryOperator fn) {
+        return DoubleSeq.onMapping(length(), i -> fn.applyAsDouble(get(i)));
     }
 
-    public default DoubleSequence fn(int lag, DoubleBinaryOperator fn) {
+    default DoubleSeq fn(int lag, DoubleBinaryOperator fn) {
         int n = length() - lag;
         if (n <= 0) {
             return null;
@@ -631,10 +548,10 @@ public interface DoubleSequence extends BaseSequence<Double> {
                 prev = next;
             }
         }
-        return DoubleSequence.ofInternal(nvalues);
+        return DoubleSeq.of(nvalues);
     }
 
-    public default DoubleSequence extend(@Nonnegative int nbeg, @Nonnegative int nend) {
+    default DoubleSeq extend(@Nonnegative int nbeg, @Nonnegative int nend) {
         int n = length() + nbeg + nend;
         double[] nvalues = new double[n];
         for (int i = 0; i < nbeg; ++i) {
@@ -644,52 +561,52 @@ public interface DoubleSequence extends BaseSequence<Double> {
         for (int i = n - nend; i < n; ++i) {
             nvalues[i] = Double.NaN;
         }
-        return DoubleSequence.ofInternal(nvalues);
+        return DoubleSeq.of(nvalues);
     }
 
-    public default DoubleSequence delta(int lag) {
+    default DoubleSeq delta(int lag) {
         return fn(lag, (x, y) -> y - x);
     }
 
-    public default DoubleSequence delta(int lag, int pow) {
-        DoubleSequence ns = this;
+    default DoubleSeq delta(int lag, int pow) {
+        DoubleSeq ns = this;
         for (int i = 0; i < pow; ++i) {
             ns = ns.fn(lag, (x, y) -> y - x);
         }
         return ns;
     }
 
-    public default DoubleSequence log() {
+    default DoubleSeq log() {
         return fn(x -> Math.log(x));
     }
 
-    public default DoubleSequence exp() {
+    default DoubleSeq exp() {
         return fn(x -> Math.exp(x));
     }
 
-    public default DoubleSequence op(DoubleSequence b, DoubleBinaryOperator op) {
+    default DoubleSeq op(DoubleSeq b, DoubleBinaryOperator op) {
         double[] data = toArray();
-        DoubleReader reader = b.reader();
+        DoubleSeqCursor reader = b.cursor();
         for (int i = 0; i < data.length; ++i) {
-            data[i] = op.applyAsDouble(data[i], reader.next());
+            data[i] = op.applyAsDouble(data[i], reader.getAndNext());
         }
-        return DoubleSequence.ofInternal(data);
+        return DoubleSeq.of(data);
     }
 
-    public default DoubleSequence fastOp(DoubleSequence b, DoubleBinaryOperator op) {
+    default DoubleSeq fastOp(DoubleSeq b, DoubleBinaryOperator op) {
         int n = length();
-        return DoubleSequence.onMapping(n, i -> get(i) + b.get(i));
+        return DoubleSeq.onMapping(n, i -> get(i) + b.get(i));
     }
 
-    public default DoubleSequence commit() {
-        return DoubleSequence.ofInternal(toArray());
+    default DoubleSeq commit() {
+        return DoubleSeq.of(toArray());
     }
 
     static boolean equals(double a, double b, double epsilon) {
         return a > b ? (a - epsilon <= b) : (b - epsilon <= a);
     }
 
-    static String format(DoubleSequence rd) {
+    static String format(DoubleSeq rd) {
         StringBuilder builder = new StringBuilder();
         int n = rd.length();
         if (n > 0) {
@@ -701,7 +618,7 @@ public interface DoubleSequence extends BaseSequence<Double> {
         return builder.toString();
     }
 
-    static String format(DoubleSequence rd, String fmt) {
+    static String format(DoubleSeq rd, String fmt) {
         StringBuilder builder = new StringBuilder();
         int n = rd.length();
         if (n > 0) {
@@ -732,4 +649,84 @@ public interface DoubleSequence extends BaseSequence<Double> {
         return r;
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Factories">
+    static final double[] EMPTYARRAY = new double[0];
+
+    /**
+     * Creates a new value using an array of doubles.
+     *
+     * @param data
+     *
+     * @return
+     */
+    @Nonnull
+    static DoubleSeq of(@Nonnull double[] data) {
+        return new ArrayBaseSeq.ArrayDoubleSeq(data);
+    }
+
+    /**
+     *
+     * @param data Storage
+     * @param start Position of the first item (non negative)
+     * @param len Number of items (non negative)
+     *
+     * @return
+     */
+    @Nonnull
+    static DoubleSeq of(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int len) {
+        return new InternalDoubleSeq.PartialDoubleArray(data, start, len);
+    }
+
+    /**
+     * Makes a sequence of regularly spaced doubles
+     *
+     * @param data Storage
+     * @param start Position of the first item (non negative)
+     * @param len Number of items (non negative)
+     * @param inc Increment in the underlying storage of two succesive items
+     *
+     * @return
+     */
+    @Nonnull
+    static DoubleSeq of(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int len, int inc) {
+        return new InternalDoubleSeq.RegularlySpacedDoubles(data, start, len, inc);
+    }
+
+    @Nonnull
+    static DoubleSeq empty() {
+        return EmptyBaseSeq.EmptyDoubleSeq.DOUBLE_SEQ;
+    }
+
+    @Nonnull
+    static DoubleSeq of(double value) {
+        return new SingleBaseSeq.SingleDoubleSeq(value);
+    }
+
+    @Nonnull
+    static DoubleSeq copyOf(@Nonnull double... data) {
+        switch (data.length) {
+            case 0:
+                return empty();
+            case 1:
+                return DoubleSeq.of(data[0]);
+            default:
+                return of(data.clone());
+        }
+    }
+
+    @Nonnull
+    static DoubleSeq copyOf(@Nonnull DoubleStream stream) {
+        return of(stream.toArray());
+    }
+
+    @Nonnull
+    static DoubleSeq onMapping(@Nonnegative int length, @Nonnull IntToDoubleFunction fn) {
+        return new InternalDoubleSeq.IntToDoubleSequence(length, fn);
+    }
+
+    @Nonnull
+    static DoubleSeq onMapping(@Nonnull DoubleSeq source, @Nonnull DoubleUnaryOperator fn) {
+        return new InternalDoubleSeq.IntToDoubleSequence(source.length(), i -> fn.applyAsDouble(source.get(i)));
+    }
+    //</editor-fold>
 }

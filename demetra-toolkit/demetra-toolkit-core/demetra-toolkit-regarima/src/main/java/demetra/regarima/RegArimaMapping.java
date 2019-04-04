@@ -18,9 +18,9 @@ package demetra.regarima;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -38,17 +38,17 @@ public class RegArimaMapping<M extends IArimaModel> implements IParametricMappin
     }
 
     @Override
-    public RegArimaModel<M> map(DoubleSequence p) {
+    public RegArimaModel<M> map(DoubleSeq p) {
         return builder.arima(mapping.map(p)).build();
     }
 
     @Override
-    public boolean checkBoundaries(DoubleSequence inparams) {
+    public boolean checkBoundaries(DoubleSeq inparams) {
         return mapping.checkBoundaries(inparams);
     }
 
     @Override
-    public double epsilon(DoubleSequence inparams, int idx) {
+    public double epsilon(DoubleSeq inparams, int idx) {
         return mapping.epsilon(inparams, idx);
     }
 
@@ -73,7 +73,7 @@ public class RegArimaMapping<M extends IArimaModel> implements IParametricMappin
     }
 
     @Override
-    public DoubleSequence getDefaultParameters() {
+    public DoubleSeq getDefaultParameters() {
         return mapping.getDefaultParameters();
     }
 

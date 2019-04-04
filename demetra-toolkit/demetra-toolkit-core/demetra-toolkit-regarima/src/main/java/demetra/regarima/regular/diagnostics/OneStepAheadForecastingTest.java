@@ -18,7 +18,6 @@ package demetra.regarima.regular.diagnostics;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import static demetra.data.Doubles.ssq;
 import static demetra.data.Doubles.sum;
 import demetra.dstats.F;
@@ -31,6 +30,7 @@ import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.stats.tests.SampleMean;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -42,7 +42,7 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
     private final IRegArimaProcessor<M> processor;
     private final int nback;
     // results
-    private DoubleSequence residuals;
+    private DoubleSeq residuals;
     private double meanIn, meanOut, mseIn, mseOut;
     private int inSampleSize;
     private boolean mean;
@@ -79,7 +79,8 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
         if (n <= nback + 2) {
             return false;
         }
-        DoubleSequence in = residuals.drop(0, nback), out = residuals.range(in.length(), n);
+        DoubleSeq in = residuals.drop(0, nback);
+        DoubleSeq out = residuals.range(in.length(), n);
         inSampleSize = mean ? in.length() - 1 : in.length();
         meanIn = sum(in) / in.length();
         mseIn = ssq(in) / inSampleSize;
@@ -96,7 +97,7 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
                 .build();
     }
 
-    public DoubleSequence getInSampleResiduals() {
+    public DoubleSeq getInSampleResiduals() {
         return residuals.drop(0, nback);
     }
 
@@ -116,7 +117,7 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
         return mseOut;
     }
 
-    public DoubleSequence getOutOfSampleResiduals() {
+    public DoubleSeq getOutOfSampleResiduals() {
         int n = residuals.length();
         return residuals.range(n - nback, n);
     }
@@ -142,7 +143,7 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
         }
 
         ConcentratedLikelihoodWithMissing concentratedLikelihood = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
-        DoubleSequence linearizedData = RegArimaUtility.linearizedData(regarima, concentratedLikelihood);
+        DoubleSeq linearizedData = RegArimaUtility.linearizedData(regarima, concentratedLikelihood);
 
         mean = regarima.isMean();
         return RegArimaModel.builder(regarima.arima().getClass())
@@ -166,13 +167,13 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
         return processor.optimize(model);
     }
 
-    protected DoubleSequence computeResiduals(RegArimaModel<M> regarima) {
+    protected DoubleSeq computeResiduals(RegArimaModel<M> regarima) {
         try {
             RegArimaEstimation<M> est = inSampleEstimate(regarima);
             if (est == null) {
                 return null;
             }
-            DoubleSequence y = regarima.getY();
+            DoubleSeq y = regarima.getY();
             if (regarima.isMean()) {
                 DataBlock yc = DataBlock.of(regarima.getY());
                 double[] m = RegArimaUtility.meanRegressionVariable(regarima.arima().getNonStationaryAR(), yc.length());

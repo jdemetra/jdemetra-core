@@ -5,12 +5,12 @@
  */
 package demetra.maths.matrices.internal;
 
-import demetra.data.DoubleSequence;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -37,7 +37,7 @@ public class LDLDecompositionTest {
                     L.column(i).range(i + 1, n).set(0);
                 }
             }
-            Matrix D = Matrix.diagonal(DoubleSequence.ofInternal(d));
+            Matrix D = Matrix.diagonal(DoubleSeq.of(d));
             Matrix S = SymmetricMatrix.XSXt(D, L);
             LDLDecomposition ldl = new LDLDecomposition();
             ldl.decompose(S, 1e-9);
@@ -58,7 +58,7 @@ public class LDLDecompositionTest {
                     L.column(i).range(i + 1, n).set(0);
                 }
             }
-            Matrix D = Matrix.diagonal(DoubleSequence.ofInternal(d));
+            Matrix D = Matrix.diagonal(DoubleSeq.of(d));
             Matrix S = SymmetricMatrix.XSXt(D, L);
             LDLDecomposition ldl = new LDLDecomposition();
             ldl.decompose(S, 1e-9);

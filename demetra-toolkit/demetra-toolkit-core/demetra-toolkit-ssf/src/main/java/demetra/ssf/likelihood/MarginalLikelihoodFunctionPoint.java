@@ -19,7 +19,6 @@ package demetra.ssf.likelihood;
 import demetra.data.DataBlock;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.ssq.ISsqFunction;
-import demetra.data.DoubleSequence;
 import demetra.likelihood.ILikelihoodFunctionPoint;
 import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.NumericalDerivatives;
@@ -28,6 +27,7 @@ import demetra.maths.functions.ssq.SsqNumericalDerivatives;
 import demetra.ssf.likelihood.MarginalLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.ISsf;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -56,7 +56,7 @@ public class MarginalLikelihoodFunctionPoint<S, F extends ISsf> implements
      * @param fn
      * @param p
      */
-    public MarginalLikelihoodFunctionPoint(MarginalLikelihoodFunction<S, F> fn, DoubleSequence p) {
+    public MarginalLikelihoodFunctionPoint(MarginalLikelihoodFunction<S, F> fn, DoubleSeq p) {
         this.fn = fn;
         this.p = DataBlock.of(p);
         current=fn.getMapping().map(p);
@@ -75,9 +75,9 @@ public class MarginalLikelihoodFunctionPoint<S, F extends ISsf> implements
     }
 
     @Override
-    public DoubleSequence getE() {
+    public DoubleSeq getE() {
         if (E == null) {
-            DoubleSequence res = ll.e();
+            DoubleSeq res = ll.e();
             if (res == null) {
                 return null;
             } else {
@@ -101,7 +101,7 @@ public class MarginalLikelihoodFunctionPoint<S, F extends ISsf> implements
     }
 
     @Override
-    public DoubleSequence getParameters() {
+    public DoubleSeq getParameters() {
         return p;
     }
 

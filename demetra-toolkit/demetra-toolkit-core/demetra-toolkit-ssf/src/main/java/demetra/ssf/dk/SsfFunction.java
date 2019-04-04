@@ -23,9 +23,9 @@ import demetra.maths.matrices.Matrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfBuilder;
 import demetra.ssf.univariate.ISsfData;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.likelihood.ILikelihoodFunction;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -143,7 +143,7 @@ public class SsfFunction<S, F extends ISsf> implements ILikelihoodFunction<Diffu
     }
 
     @Override
-    public SsfFunctionPoint<S, F> evaluate(DoubleSequence parameters) {
+    public SsfFunctionPoint<S, F> evaluate(DoubleSeq parameters) {
         return new SsfFunctionPoint<>(this, parameters);
     }
 
@@ -157,7 +157,7 @@ public class SsfFunction<S, F extends ISsf> implements ILikelihoodFunction<Diffu
     }
 
     @Override
-    public SsfFunctionPoint<S, F> ssqEvaluate(DoubleSequence parameters) {
+    public SsfFunctionPoint<S, F> ssqEvaluate(DoubleSeq parameters) {
         return new SsfFunctionPoint<>(this, parameters);
     }
 

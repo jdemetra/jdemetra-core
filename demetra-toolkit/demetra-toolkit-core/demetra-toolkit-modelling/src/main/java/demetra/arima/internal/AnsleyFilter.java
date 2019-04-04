@@ -30,8 +30,8 @@ import demetra.maths.MatrixException;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
 import org.openide.util.lookup.ServiceProvider;
-import demetra.data.DoubleSequence;
 import demetra.arima.estimation.ArmaFilter;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -53,7 +53,7 @@ public class AnsleyFilter implements ArmaFilter {
      * @param y
      * @return
      */
-    public double[] filter(DoubleSequence y) {
+    public double[] filter(DoubleSeq y) {
         double[] e = new double[y.length()];
         y.copyTo(e, 0);
         int p = m_ar.length-1;
@@ -87,7 +87,7 @@ public class AnsleyFilter implements ArmaFilter {
      * @param yf
      */
     @Override
-    public void apply(DoubleSequence y, DataBlock yf) {
+    public void apply(DoubleSeq y, DataBlock yf) {
         double[] e = filter(y);
         yf.copyFrom(e, 0);
     }

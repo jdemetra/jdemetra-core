@@ -16,15 +16,15 @@
  */
 package demetra.ssf.univariate;
 
-import demetra.data.DoubleSequence;
-import demetra.data.Sequence;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeq;
+import demetra.data.Seq;
 
 /**
  *
  * @author Jean Palate
  */
-public interface ISsfData extends DoubleSequence{
+public interface ISsfData extends DoubleSeq{
 
 
      /**

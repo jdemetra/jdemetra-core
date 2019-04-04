@@ -20,12 +20,14 @@ import demetra.design.Development;
 import javax.annotation.Nonnegative;
 
 /**
+ * Describes an abstract sequence of elements. A sequence is an ordered
+ * collection where duplicates are permitted and elements can be accessed by
+ * their position.
  *
  * @author Philippe Charles
- * @param <E>
  */
 @Development(status = Development.Status.Release)
-public interface BaseSequence<E> {
+public interface BaseSeq {
 
     /**
      * Returns the length of this sequence.
@@ -35,6 +37,11 @@ public interface BaseSequence<E> {
     @Nonnegative
     int length();
 
+    /**
+     * Checks if this sequence is empty
+     *
+     * @return true if empty, false otherwise
+     */
     default boolean isEmpty() {
         return length() == 0;
     }

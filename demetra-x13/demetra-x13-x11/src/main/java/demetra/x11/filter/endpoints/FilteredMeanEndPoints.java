@@ -6,8 +6,8 @@
 package demetra.x11.filter.endpoints;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.SymmetricFilter;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -26,7 +26,7 @@ public class FilteredMeanEndPoints implements IEndPointsProcessor {
     }
 
     @Override
-    public void process(DoubleSequence in, DataBlock out) {
+    public void process(DoubleSeq in, DataBlock out) {
         int len = filter.length() / 2;
         int n = in.length();
 
@@ -36,7 +36,8 @@ public class FilteredMeanEndPoints implements IEndPointsProcessor {
         in.copyTo(tmp, len);
 
         // computes the means
-        DoubleSequence rbeg = in.range(0, len), rend = in.range(n - len, n);
+        DoubleSeq rbeg = in.range(0, len);
+        DoubleSeq rend = in.range(n - len, n);
 
         double beg = DataBlock.of(rbeg).sum() / len;
         double end = DataBlock.of(rend).sum() / len;

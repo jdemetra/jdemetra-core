@@ -37,7 +37,7 @@ public class SmoothedPeriodogramTest {
     @Test
     public void testBlackmanTukey() {
         SmoothedPeriodogram periodogram = SmoothedPeriodogram.builder()
-                .data(DoubleSequence.of(data))
+                .data(DoubleSeq.copyOf(data))
                 .taper(new TukeyHanningTaper(.1))
                 .windowLength(45)
                 .windowFunction(DiscreteWindowFunction.Tukey)

@@ -18,14 +18,14 @@
 
 package demetra.stats.tests.seasonal;
 
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.dstats.F;
 import demetra.stats.tests.FTest;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -40,7 +40,7 @@ public class SeasonalityTest  {
      * @param mul
      * @return
      */
-    public static FTest evolutiveSeasonality(final DoubleSequence ts, int period, boolean mul)
+    public static FTest evolutiveSeasonality(final DoubleSeq ts, int period, boolean mul)
     {
 	// determine "full cycles"
 
@@ -59,9 +59,9 @@ public class SeasonalityTest  {
 
 	double[] tmp = new double[ny * period];
 
-        DoubleReader reader=ts.reader();
+        DoubleSeqCursor reader=ts.cursor();
 	for (int i = 0; i < tmp.length; i++)
-	    tmp[i] = Math.abs(reader.next() - xbar);
+	    tmp[i] = Math.abs(reader.getAndNext() - xbar);
 
 	for (int i = 0, mm = 0; i < ny; i++) {
 	    for (int j = 0; j < period; j++, mm++) {
@@ -103,7 +103,7 @@ public class SeasonalityTest  {
      * @param period
      * @return
      */
-    public static FTest stableSeasonality(DoubleSequence ts, int period)
+    public static FTest stableSeasonality(DoubleSeq ts, int period)
     {
 	// compute mean
 	double mm = Doubles.average(ts);
@@ -111,9 +111,9 @@ public class SeasonalityTest  {
 	// compute total SSQ
 	double SSQ = 0.0;
         int n=ts.length();
-        DoubleReader reader = ts.reader();
+        DoubleSeqCursor reader = ts.cursor();
 	for (int i = 0; i < n; i++){
-            double cur=reader.next();
+            double cur=reader.getAndNext();
 	    SSQ += (cur - mm) * (cur - mm);
         }
         

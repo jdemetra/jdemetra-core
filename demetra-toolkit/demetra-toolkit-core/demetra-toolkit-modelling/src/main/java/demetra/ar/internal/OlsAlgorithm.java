@@ -20,10 +20,10 @@ import demetra.data.DataBlockIterator;
 import demetra.design.AlgorithmImplementation;
 import demetra.maths.matrices.Matrix;
 import org.openide.util.lookup.ServiceProvider;
-import demetra.data.DoubleSequence;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;
 import demetra.ar.AutoRegressiveEstimation;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -36,7 +36,7 @@ public class OlsAlgorithm implements AutoRegressiveEstimation {
     private double[] y, a;
 
     @Override
-    public boolean estimate(DoubleSequence Y, int nar) {
+    public boolean estimate(DoubleSeq Y, int nar) {
         y=Y.toArray();
         int n = y.length;
         
@@ -46,22 +46,22 @@ public class OlsAlgorithm implements AutoRegressiveEstimation {
             cols.next().copy(Y.drop(nar-i-1, n));
         }
         QRSolver solver = QRSolvers.fastSolver();
-        DoubleSequence yc = Y.drop(nar, 0);
+        DoubleSeq yc = Y.drop(nar, 0);
         if (!solver.solve(yc, M)) {
             return false;
         }
-        DoubleSequence c = solver.coefficients();
+        DoubleSeq c = solver.coefficients();
         a=c.toArray();
         return true;
     }
 
     @Override
-    public DoubleSequence coefficients() {
-        return DoubleSequence.ofInternal(a);
+    public DoubleSeq coefficients() {
+        return DoubleSeq.of(a);
     }
 
     @Override
-    public DoubleSequence data() {
-        return DoubleSequence.ofInternal(y);
+    public DoubleSeq data() {
+        return DoubleSeq.of(y);
     }
 }

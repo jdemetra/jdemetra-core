@@ -17,10 +17,10 @@
 package demetra.x12;
 
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import ec.tstoolkit.modelling.DefaultTransformationType;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *

@@ -38,7 +38,7 @@ public class SmoothedPeriodogram {
         private int winLen = 44;
         private int resolution = 0;
         private Taper taper = null;
-        private DoubleSequence data;
+        private DoubleSeq data;
 
         private Builder() {
         }
@@ -48,7 +48,7 @@ public class SmoothedPeriodogram {
          * @param data Input data
          * @return
          */
-        public Builder data(DoubleSequence data) {
+        public Builder data(DoubleSeq data) {
             this.data = data;
             return this;
         }
@@ -120,7 +120,7 @@ public class SmoothedPeriodogram {
                 taper.process(x);
             }
 
-            DoubleSequence datac = DoubleSequence.ofInternal(x);
+            DoubleSeq datac = DoubleSeq.of(x);
             double[] ac = AutoCovariances.autoCovariancesWithZeroMean(datac, winLen - 1);
 
             double[] cwnd = win.discreteWindow(winLen);
@@ -171,7 +171,7 @@ public class SmoothedPeriodogram {
         }
     }
 
-    public DoubleSequence spectrumValues() {
-        return DoubleSequence.ofInternal(p);
+    public DoubleSeq spectrumValues() {
+        return DoubleSeq.of(p);
     }
 }

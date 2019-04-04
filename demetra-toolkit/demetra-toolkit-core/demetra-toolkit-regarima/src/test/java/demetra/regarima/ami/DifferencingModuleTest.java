@@ -17,9 +17,9 @@
 package demetra.regarima.ami;
 
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -33,7 +33,7 @@ public class DifferencingModuleTest {
     @Test
     public void testProd() {
         FastDifferencingModule test = FastDifferencingModule.builder().build();
-        int[] diff = test.process(DoubleSequence.of(Data.PROD), new int[]{1, 12}, null);
+        int[] diff = test.process(DoubleSeq.copyOf(Data.PROD), new int[]{1, 12}, null);
         assertTrue(diff[0] == 1 && diff[1] == 1);
 //        System.out.println(diff[0]);
 //        System.out.println(diff[1]);
@@ -43,7 +43,7 @@ public class DifferencingModuleTest {
     @Test
     public void testProd2() {
         FastDifferencingModule test = FastDifferencingModule.builder().build();
-        int[] diff = test.process(DoubleSequence.of(Data.PROD), new int[]{12, 1}, null);
+        int[] diff = test.process(DoubleSeq.copyOf(Data.PROD), new int[]{12, 1}, null);
 //        System.out.println(diff[0]);
 //        System.out.println(diff[1]);
 //        System.out.println(test.isMeanCorrection());
@@ -53,7 +53,7 @@ public class DifferencingModuleTest {
     public void testExports() {
         FastDifferencingModule test = FastDifferencingModule.builder()
                 .k(0.9).build();
-        int[] diff = test.process(DoubleSequence.of(Data.EXPORTS), new int[]{1, 12}, null);
+        int[] diff = test.process(DoubleSeq.copyOf(Data.EXPORTS), new int[]{1, 12}, null);
 //        System.out.println(diff[0]);
 //        System.out.println(diff[1]);
 //        System.out.println(test.isMeanCorrection());
@@ -62,7 +62,7 @@ public class DifferencingModuleTest {
     @Test
     public void testExports2() {
         FastDifferencingModule test = FastDifferencingModule.builder().k(0.9).build();
-        int[] diff = test.process(DoubleSequence.of(Data.EXPORTS), new int[]{12, 1}, null);
+        int[] diff = test.process(DoubleSeq.copyOf(Data.EXPORTS), new int[]{12, 1}, null);
 //        System.out.println(diff[0]);
 //        System.out.println(diff[1]);
 //        System.out.println(test.isMeanCorrection());

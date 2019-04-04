@@ -19,7 +19,7 @@ package demetra.maths.functions;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -82,7 +82,7 @@ public class GridSearch implements IFunctionMinimizer {
     }
 
     @Override
-    public DoubleSequence gradientAtMinimum() {
+    public DoubleSeq gradientAtMinimum() {
         return new NumericalDerivatives(m_ftry, false).gradient();
     }
 

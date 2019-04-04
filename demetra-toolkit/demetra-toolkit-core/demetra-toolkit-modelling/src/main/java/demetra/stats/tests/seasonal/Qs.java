@@ -16,10 +16,10 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.stats.tests.LjungBox;
 import demetra.stats.tests.StatisticalTest;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -30,7 +30,7 @@ public class Qs {
 
     private final LjungBox lb;
     
-    public Qs(DoubleSequence sample, int seasLag){
+    public Qs(DoubleSeq sample, int seasLag){
         lb=new LjungBox(sample)
                 .lag(seasLag)
                 .autoCorrelationsCount(3)

@@ -52,10 +52,10 @@ public class DoublesUtilityTest {
         }
         for (int k = 0; k < K; ++k) {
             double s = 0;
-            DoubleReader cur = a.reader();
-            DoubleReader xcur = b.reader();
+            DoubleSeqCursor cur = a.cursor();
+            DoubleSeqCursor xcur = b.cursor();
             for (int i = 0; i < N; i++) {
-                s += cur.next() * xcur.next();
+                s += cur.getAndNext() * xcur.getAndNext();
             }
         }
         K=50000000;
@@ -63,15 +63,15 @@ public class DoublesUtilityTest {
         long t0=System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             double s = 0;
-            DoubleReader cur = a.reader();
-            DoubleReader xcur = b.reader();
+            DoubleSeqCursor cur = a.cursor();
+            DoubleSeqCursor xcur = b.cursor();
             for (int i = 0; i < N; i++) {
-                s += cur.next() * xcur.next();
+                s += cur.getAndNext() * xcur.getAndNext();
             }
-            cur = c.reader();
-            xcur = b.reader();
+            cur = c.cursor();
+            xcur = b.cursor();
            for (int i = 0; i < N; i++) {
-                s += cur.next() * xcur.next();
+                s += cur.getAndNext() * xcur.getAndNext();
             }
         }
         long t1=System.currentTimeMillis();

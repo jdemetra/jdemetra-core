@@ -16,10 +16,10 @@
  */
 package demetra.msts;
 
-import demetra.data.DoubleSequence;
 import demetra.maths.matrices.Matrix;
 import java.util.ArrayList;
 import java.util.List;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -100,6 +100,6 @@ public class CompositeModel {
         if (mapping == null) {
             build();
         }
-        return CompositeModelEstimation.computationOf(this, data, DoubleSequence.ofInternal(parameters), marginal, concentrated);
+        return CompositeModelEstimation.computationOf(this, data, DoubleSeq.of(parameters), marginal, concentrated);
     }
 }

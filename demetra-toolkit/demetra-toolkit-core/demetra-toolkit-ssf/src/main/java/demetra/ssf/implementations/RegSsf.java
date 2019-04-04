@@ -25,8 +25,7 @@ import demetra.maths.matrices.QuadraticForm;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
@@ -34,6 +33,7 @@ import demetra.ssf.SsfComponent;
 import demetra.ssf.SsfException;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Measurement;
+import demetra.data.DoubleSeq;
 
 /**
  * SSF extended by regression variables with fixed or time varying coefficients.
@@ -54,7 +54,7 @@ public class RegSsf {
         return new SsfComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(X.getColumnsCount(), var), Loading.regression(X));
     }
 
-    public SsfComponent ofTimeVarying(Matrix X, DoubleSequence vars) {
+    public SsfComponent ofTimeVarying(Matrix X, DoubleSeq vars) {
         int nx = X.getColumnsCount();
         if (vars.length() == 1) {
             return new SsfComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(nx, vars.get(0)), Loading.regression(X));
@@ -436,9 +436,9 @@ public class RegSsf {
             v.vnext(nx);
             DataBlockIterator rows = v.rowsIterator();
             DataBlock xrow = data.row(pos);
-            DoubleReader x = xrow.reader();
+            DoubleSeqCursor x = xrow.cursor();
             while (rows.hasNext()) {
-                loading.XpZd(pos, rows.next(), d * x.next());
+                loading.XpZd(pos, rows.next(), d * x.getAndNext());
             }
             vtmp.copy(v.transpose());
             v.hnext(nx);

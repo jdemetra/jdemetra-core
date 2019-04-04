@@ -18,7 +18,6 @@ package demetra.benchmarking.ssf;
 
 import demetra.benchmarking.ssf.SsfSpline;
 import demetra.data.DataBlockStorage;
-import demetra.data.DoubleSequence;
 import demetra.maths.functions.CubicSpline;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;
@@ -28,6 +27,7 @@ import java.util.function.DoubleUnaryOperator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -49,15 +49,15 @@ public class SsfSplineTest {
             s[(i + 1) * 5] = x[i];
         }
         ISsf ssf = SsfSpline.of(0, 1);
-        DataBlockStorage sr = DkToolkit.fastSmooth(ssf, new SsfData(DoubleSequence.ofInternal(s)));
-        DoubleSequence component = sr.item(0);
+        DataBlockStorage sr = DkToolkit.fastSmooth(ssf, new SsfData(DoubleSeq.of(s)));
+        DoubleSeq component = sr.item(0);
 
         DoubleUnaryOperator fn = CubicSpline.of(new double[]{5, 10, 15, 20}, x);
 
         for (int i = 0; i < 25; ++i) {
             assertEquals(component.get(i), fn.applyAsDouble(i), 1e-9);
         }
-        DefaultSmoothingResults r = DkToolkit.smooth(ssf, new SsfData(DoubleSequence.ofInternal(s)), true, true);
+        DefaultSmoothingResults r = DkToolkit.smooth(ssf, new SsfData(DoubleSeq.of(s)), true, true);
         System.out.println(r.getComponentVariance(1));
     }
 
@@ -78,8 +78,8 @@ public class SsfSplineTest {
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             ISsf ssf = SsfSpline.of(0, 1);
-            DataBlockStorage sr = DkToolkit.fastSmooth(ssf, new SsfData(DoubleSequence.ofInternal(s)));
-            DoubleSequence component = sr.item(0);
+            DataBlockStorage sr = DkToolkit.fastSmooth(ssf, new SsfData(DoubleSeq.of(s)));
+            DoubleSeq component = sr.item(0);
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

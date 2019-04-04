@@ -6,7 +6,6 @@
 package demetra.x11;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
@@ -19,6 +18,7 @@ import demetra.x11.filter.MusgraveFilterFactory;
 import demetra.x11.filter.X11FilterFactory;
 import demetra.x11.filter.X11SeasonalFiltersFactory;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -27,14 +27,14 @@ import demetra.x11.filter.endpoints.AsymmetricEndPoints;
 @lombok.Getter
 public class X11BStep {
 
-    private DoubleSequence b1, b2, b3, b4, b4a, b4anorm, b4d, b4g, b5, b6,
+    private DoubleSeq b1, b2, b3, b4, b4a, b4anorm, b4d, b4g, b5, b6,
             b7, b8, b9, b9g, b10, b11, b13, b17, b20;
     private int b2drop;
 
     public X11BStep() {
     }
 
-    public void process(DoubleSequence input, X11Context context) {
+    public void process(DoubleSeq input, X11Context context) {
 
         b1 = input;
         b2(context);
@@ -55,7 +55,7 @@ public class X11BStep {
         double[] x = table(b1.length() - 2 * b2drop, Double.NaN);
         DataBlock out = DataBlock.ofInternal(x, 0, x.length);
         filter.apply(i -> b1.get(i), IFilterOutput.of(out, b2drop));
-        b2 = DoubleSequence.ofInternal(x);
+        b2 = DoubleSeq.of(x);
     }
 
     private void b3(X11Context context) {
@@ -78,7 +78,7 @@ public class X11BStep {
 
     private void b5(X11Context context) {
         IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
-        DoubleSequence b5a = filter.process(b4g);
+        DoubleSeq b5a = filter.process(b4g);
         b5 = DefaultSeasonalNormalizer.normalize(b5a, b2drop, context);
     }
 
@@ -111,7 +111,7 @@ public class X11BStep {
         IFiniteFilter[] asymmetricFilter = context.asymmetricTrendFilters(filter, r);
         AsymmetricEndPoints aep = new AsymmetricEndPoints(asymmetricFilter, 0);
         aep.process(b6, DataBlock.ofInternal(x));
-        b7 = DoubleSequence.ofInternal(x);
+        b7 = DoubleSeq.of(x);
         if (context.isMultiplicative()) {
             b7 = context.makePositivity(b7);
         }
@@ -123,9 +123,9 @@ public class X11BStep {
 
     private void b9(X11Context context) {
         IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
-        DoubleSequence b9a = filter.process(b8);
-        DoubleSequence b9c = DefaultSeasonalNormalizer.normalize(b9a, 0, context);
-        DoubleSequence b9d = context.remove(b8, b9c);
+        DoubleSeq b9a = filter.process(b8);
+        DoubleSeq b9c = DefaultSeasonalNormalizer.normalize(b9a, 0, context);
+        DoubleSeq b9d = context.remove(b8, b9c);
         IExtremeValuesCorrector ecorr = context.getExtremeValuesCorrector();
         ecorr.setStart(context.getFirstPeriod());
         ecorr.analyse(b9d, context);
@@ -136,7 +136,7 @@ public class X11BStep {
 
     private void bfinal(X11Context context) {
         IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
-        DoubleSequence b10a = filter.process(b9g);
+        DoubleSeq b10a = filter.process(b9g);
         b10 = DefaultSeasonalNormalizer.normalize(b10a, 0, context);
         b11 = context.remove(b1, b10);
         b13 = context.remove(b11, b7);

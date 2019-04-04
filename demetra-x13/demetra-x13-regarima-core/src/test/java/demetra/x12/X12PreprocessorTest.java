@@ -18,7 +18,6 @@ package demetra.x12;
 
 import demetra.regarima.RegArimaSpec;
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import demetra.regarima.OutlierSpec;
 import demetra.regarima.regular.PreprocessingModel;
 import demetra.timeseries.TsData;
@@ -28,6 +27,7 @@ import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 import org.junit.Test;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -50,7 +50,7 @@ public class X12PreprocessorTest {
     public void testProdMissing() {
         X12Preprocessor processor = X12Preprocessor.of(RegArimaSpec.RG5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        TsData s = TsData.of(start, DoubleSequence.ofInternal(datamissing));
+        TsData s = TsData.of(start, DoubleSeq.of(datamissing));
         PreprocessingModel rslt = processor.process(s, null);
         System.out.println("New");
         System.out.println(rslt.getEstimation().getConcentratedLikelihood().logLikelihood());
@@ -78,7 +78,7 @@ public class X12PreprocessorTest {
 
         X12Preprocessor processor = X12Preprocessor.of(spec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        TsData s = TsData.of(start, DoubleSequence.ofInternal(data));
+        TsData s = TsData.of(start, DoubleSeq.of(data));
         PreprocessingModel rslt = processor.process(s, null);
         RegArimaSpecification ospec = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.clone();
         ospec.getOutliers().setDefaultCriticalValue(3);
@@ -105,7 +105,7 @@ public class X12PreprocessorTest {
             RegArimaSpec spec = RegArimaSpec.RG5;
             X12Preprocessor processor = X12Preprocessor.of(spec, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);
-            TsData s = TsData.of(start, DoubleSequence.ofInternal(data));
+            TsData s = TsData.of(start, DoubleSeq.of(data));
             PreprocessingModel rslt = processor.process(s, null);
         }
         t1 = System.currentTimeMillis();

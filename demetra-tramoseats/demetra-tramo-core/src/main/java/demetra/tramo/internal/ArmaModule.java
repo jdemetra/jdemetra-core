@@ -16,7 +16,6 @@
  */
 package demetra.tramo.internal;
 
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArimaUtility;
@@ -27,6 +26,7 @@ import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarmaSpecification;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -227,7 +227,7 @@ public class ArmaModule implements IArmaModule {
         }
         SarimaSpecification maxspec = calcmaxspec(desc.getAnnualFrequency(),
                 inic, curspec.getD(), curspec.getBd(), seasonal);
-        DoubleSequence res = RegArimaUtility.olsResiduals(desc.regarima());
+        DoubleSeq res = RegArimaUtility.olsResiduals(desc.regarima());
         ArmaModuleImpl impl = createModule(maxspec);
         SarmaSpecification nspec = impl.process(res, desc.getAnnualFrequency(), maxspec.getD(), maxspec.getBd(), seasonal);
         if (nspec.equals(curspec.doStationary())) {
@@ -247,7 +247,7 @@ public class ArmaModule implements IArmaModule {
             return curSpec;
         }
         SarimaSpecification maxspec = calcmaxspec(curSpec.getPeriod(), inic, curSpec.getD(), curSpec.getBd(), seas);
-        DoubleSequence res = RegArimaUtility.olsResiduals(regarima);
+        DoubleSeq res = RegArimaUtility.olsResiduals(regarima);
         ArmaModuleImpl impl = createModule(maxspec);
         SarmaSpecification spec = impl.process(res, curSpec.getPeriod(), curSpec.getD(), curSpec.getBd(), curSpec.getPeriod() > 1);
         if (spec == null) {

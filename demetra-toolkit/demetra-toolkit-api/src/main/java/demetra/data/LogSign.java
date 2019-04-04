@@ -18,9 +18,9 @@
 
 package demetra.data;
 
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -34,13 +34,13 @@ public class LogSign {
     private double value;
     private boolean positive;
     
-    public static LogSign of(DoubleSequence reader){
+    public static LogSign of(DoubleSeq reader){
         double value = 0;
         boolean pos = true;
-        DoubleReader cell = reader.reader();
+        DoubleSeqCursor cell = reader.cursor();
         int n=reader.length();
         for (int i = 0; i <n; ++i) {
-            double x = cell.next();
+            double x = cell.getAndNext();
             if (x < 0) {
                 pos = !pos;
                 x = -x;
@@ -51,13 +51,13 @@ public class LogSign {
        
     }
     
-    public static LogSign of(DoubleSequence reader, boolean chs){
+    public static LogSign of(DoubleSeq reader, boolean chs){
         double value = 0;
         boolean pos = true;
-        DoubleReader cell = reader.reader();
+        DoubleSeqCursor cell = reader.cursor();
         int n=reader.length();
         for (int i = 0; i <n; ++i) {
-            double x = cell.next();
+            double x = cell.getAndNext();
             if (x < 0) {
                 pos = !pos;
                 x = -x;

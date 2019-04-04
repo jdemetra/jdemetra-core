@@ -16,11 +16,11 @@
 */
 package demetra.stats.tests;
 
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.dstats.Normal;
 import demetra.stats.DescriptiveStatistics;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -33,7 +33,7 @@ public class Kurtosis {
 
     private final DescriptiveStatistics stats;
     
-    public Kurtosis(DoubleSequence data)
+    public Kurtosis(DoubleSeq data)
     {
         this.stats=DescriptiveStatistics.of(data);
     }

@@ -17,13 +17,13 @@
 package demetra.benchmarking.univariate;
 
 import demetra.benchmarking.ssf.SsfCholette;
-import demetra.data.DoubleSequence;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.SsfData;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -44,9 +44,9 @@ public class SsfCholetteTest {
         }
         
         
-        ISsf ssf = SsfCholette.builder(4).start(2).rho(.8).weights(DoubleSequence.ofInternal(w)).build();
+        ISsf ssf = SsfCholette.builder(4).start(2).rho(.8).weights(DoubleSeq.of(w)).build();
         DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(data), true, true);
-        DoubleSequence c0 = rslts.getComponent(1);
+        DoubleSeq c0 = rslts.getComponent(1);
         
         ec.benchmarking.ssf.SsfCholette ossf=new ec.benchmarking.ssf.SsfCholette(4, 2, .8, w);
         ec.tstoolkit.ssf.Smoother smoother=new ec.tstoolkit.ssf.Smoother();
@@ -69,9 +69,9 @@ public class SsfCholetteTest {
         }
         
         
-        ISsf ssf = SsfCholette.builder(4).start(2).rho(1).weights(DoubleSequence.ofInternal(w)).build();
+        ISsf ssf = SsfCholette.builder(4).start(2).rho(1).weights(DoubleSeq.of(w)).build();
         DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(data), true, true);
-        DoubleSequence c0 = rslts.getComponent(1);
+        DoubleSeq c0 = rslts.getComponent(1);
         
         ec.benchmarking.ssf.SsfDenton ossf=new ec.benchmarking.ssf.SsfDenton(4, 2, w);
         ec.tstoolkit.ssf.Smoother smoother=new ec.tstoolkit.ssf.Smoother();

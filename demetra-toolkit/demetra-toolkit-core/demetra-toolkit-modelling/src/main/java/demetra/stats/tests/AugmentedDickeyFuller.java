@@ -18,10 +18,10 @@ package demetra.stats.tests;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.internal.Householder;
+import demetra.data.DoubleSeq;
 
 /**
  * Augmented Dickey-Fuller test
@@ -39,9 +39,9 @@ public class AugmentedDickeyFuller {
 
         private int k = 1; // number of lags. 
         private boolean cnt, trend;
-        private DoubleSequence y;
+        private DoubleSeq y;
 
-        public Builder data(DoubleSequence y) {
+        public Builder data(DoubleSeq y) {
             this.y = y;
             return this;
         }
@@ -106,11 +106,11 @@ public class AugmentedDickeyFuller {
 
     private final boolean cnt, trend;
     private final Matrix x;
-    private final DoubleSequence y;
+    private final DoubleSeq y;
     private final DataBlock b, e;
     private final double t;
 
-    private AugmentedDickeyFuller(DoubleSequence y, Matrix x, boolean cnt, boolean trend) {
+    private AugmentedDickeyFuller(DoubleSeq y, Matrix x, boolean cnt, boolean trend) {
         this.x = x;
         this.y = y;
         this.cnt = cnt;

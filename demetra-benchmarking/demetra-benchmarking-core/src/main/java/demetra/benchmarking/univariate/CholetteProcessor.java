@@ -21,7 +21,6 @@ import demetra.benchmarking.ssf.SsfCholette;
 import demetra.benchmarking.univariate.CholetteSpec;
 import demetra.benchmarking.univariate.CholetteSpec.BiasCorrection;
 import demetra.data.AggregationType;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;
@@ -38,6 +37,7 @@ import demetra.benchmarking.univariate.Cholette;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.multiply;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -147,7 +147,7 @@ public class CholetteProcessor implements ICholette {
             ISsf ssf = SsfCholette.builder(ratio)
                     .start(head)
                     .rho(spec.getRho())
-                    .weights(w == null ? null : DoubleSequence.ofInternal(w))
+                    .weights(w == null ? null : DoubleSeq.of(w))
                     .build();
             DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false, false);
 
@@ -164,7 +164,7 @@ public class CholetteProcessor implements ICholette {
             ISsf ssf = SsfCholette.builder(ratio)
                     .start(head)
                     .rho(spec.getRho())
-                    .weights(w == null ? null : DoubleSequence.ofInternal(w))
+                    .weights(w == null ? null : DoubleSeq.of(w))
                     .build();
             DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false, false);
             double[] b = new double[s.length()];

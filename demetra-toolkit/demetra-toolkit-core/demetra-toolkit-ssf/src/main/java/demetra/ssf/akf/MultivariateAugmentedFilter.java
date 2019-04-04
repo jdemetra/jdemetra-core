@@ -18,7 +18,6 @@ package demetra.ssf.akf;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
@@ -26,6 +25,7 @@ import demetra.ssf.StateInfo;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.ISsfMeasurements;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -77,7 +77,7 @@ public class MultivariateAugmentedFilter {
      */
     private void error(int pos) {
         int dim = ssf.getStateDim();
-        DoubleSequence x=data.get(pos);
+        DoubleSeq x=data.get(pos);
         int nmissing = x.count(y -> Double.isInfinite(y));
         int nobs = x.length() - nmissing;
         if (nobs == 0)

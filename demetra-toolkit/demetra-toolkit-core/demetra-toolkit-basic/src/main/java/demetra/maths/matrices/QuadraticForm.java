@@ -20,9 +20,9 @@ import demetra.data.DataBlock;
 import demetra.design.Unsafe;
 import java.util.Iterator;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -49,12 +49,12 @@ public class QuadraticForm {
         return new QuadraticForm(s);
     }
 
-    public double apply(DoubleSequence x) {
+    public double apply(DoubleSeq x) {
         DataBlockIterator columns = S.columnsIterator();
-        DoubleReader cell = x.reader();
+        DoubleSeqCursor cell = x.cursor();
         double s = 0;
         while (columns.hasNext()) {
-            s += cell.next() * Doubles.dot(columns.next(), x);
+            s += cell.getAndNext() * Doubles.dot(columns.next(), x);
         }
         return s;
     }

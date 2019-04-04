@@ -5,7 +5,7 @@
  */
 package demetra.x11.filter;
 
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -18,5 +18,5 @@ public interface IFiltering {
      * @param in
      * @return 
      */
-    DoubleSequence process(DoubleSequence in);
+    DoubleSeq process(DoubleSeq in);
 }

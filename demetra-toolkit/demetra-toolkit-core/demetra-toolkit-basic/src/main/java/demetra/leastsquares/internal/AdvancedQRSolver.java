@@ -13,12 +13,12 @@ import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
 import demetra.leastsquares.QRSolver;
-import demetra.data.DoubleCell;
 import demetra.design.AlgorithmImplementation;
+import demetra.data.DoubleSeq;
+import demetra.data.DoubleVectorCursor;
 
 /**
  *
@@ -81,7 +81,7 @@ public class AdvancedQRSolver implements QRSolver {
     }
 
     @Override
-    public boolean solve(DoubleSequence y, Matrix x) {
+    public boolean solve(DoubleSeq y, Matrix x) {
         try {
             clear();
             compute(y, x);
@@ -98,7 +98,7 @@ public class AdvancedQRSolver implements QRSolver {
         res = null;
     }
 
-    private void compute(DoubleSequence y, Matrix x) {
+    private void compute(DoubleSeq y, Matrix x) {
 
         // X'X, X'y
         n = y.length();
@@ -124,21 +124,21 @@ public class AdvancedQRSolver implements QRSolver {
     }
 
     @Override
-    public DoubleSequence coefficients() {
+    public DoubleSeq coefficients() {
         if (used.length == m) {
-            return DoubleSequence.ofInternal(b);
+            return DoubleSeq.of(b);
         } else {
             // expand the coefficients
             double[] c = new double[m];
             for (int i = 0; i < used.length; ++i) {
                 c[used[i]] = b[i];
             }
-            return DoubleSequence.ofInternal(c);
+            return DoubleSeq.of(c);
         }
     }
 
-    public DoubleSequence residuals() {
-        return DoubleSequence.ofInternal(res);
+    public DoubleSeq residuals() {
+        return DoubleSeq.of(res);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class AdvancedQRSolver implements QRSolver {
      * @param X
      * @param B
      */
-    private void iterativeEstimation(DoubleSequence Y, Matrix X) {
+    private void iterativeEstimation(DoubleSeq Y, Matrix X) {
         DataBlock F = DataBlock.make(n);
         DataBlock G = DataBlock.make(m);
 
@@ -163,15 +163,16 @@ public class AdvancedQRSolver implements QRSolver {
         // step 1
         int iter = 0;
         do {
-            DoubleCell f = F.cells();
-            DoubleCell g = G.cells(), e = E.cells();
-            DoubleReader y = Y.reader();
+            DoubleVectorCursor f = F.cursor();
+            DoubleVectorCursor g = G.cursor();
+            DoubleVectorCursor e = E.cursor();
+            DoubleSeqCursor y = Y.cursor();
             NeumaierAccumulator acc = new NeumaierAccumulator();
             DataBlockIterator rows = X.rowsIterator();
             // f = y - r - X*b
             while (rows.hasNext()) {
-                acc.set(-y.next());
-                acc.add(e.next());
+                acc.set(-y.getAndNext());
+                acc.add(e.getAndNext());
                 rows.next().robustDot(B, acc);
                 f.setAndNext(-acc.sum());
             }
@@ -200,10 +201,10 @@ public class AdvancedQRSolver implements QRSolver {
         } while (++iter < niter);
     }
 
-    private void iterativeEstimation2(DoubleSequence Y, Matrix X) {
+    private void iterativeEstimation2(DoubleSeq Y, Matrix X) {
 
         DataBlock B = DataBlock.ofInternal(b), E = DataBlock.ofInternal(res);
-        DoubleSequence W = Y;
+        DoubleSeq W = Y;
         for (int i = 0; i < niter; ++i) {
             DataBlock db = DataBlock.make(b.length), de = DataBlock.make(res.length);
             qr.leastSquares(W, db, de);
@@ -216,13 +217,13 @@ public class AdvancedQRSolver implements QRSolver {
             ssqerr = ssq;
 
             DataBlock Err = DataBlock.make(n);
-            DoubleCell err = Err.cells();
-            DoubleReader y = Y.reader();
+            DoubleVectorCursor err = Err.cursor();
+            DoubleSeqCursor y = Y.cursor();
             NeumaierAccumulator acc = new NeumaierAccumulator();
             DataBlockIterator rows = X.rowsIterator();
             // f = y - r - X*b
             while (rows.hasNext()) {
-                acc.set(-y.next());
+                acc.set(-y.getAndNext());
                 rows.next().robustDot(B, acc);
                 err.setAndNext(-acc.sum());
             }

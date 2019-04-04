@@ -16,11 +16,11 @@
  */
 package demetra.r;
 
-import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.FiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.data.DiscreteKernel;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -66,7 +66,7 @@ public class LocalPolynomialFilters {
             }
         }
 
-        DoubleSequence rslt = demetra.maths.linearfilters.LocalPolynomialFilters.filter(DoubleSequence.ofInternal(data), filter, afilters);
+        DoubleSeq rslt = demetra.maths.linearfilters.LocalPolynomialFilters.filter(DoubleSeq.of(data), filter, afilters);
         return rslt.toArray();
     }
 

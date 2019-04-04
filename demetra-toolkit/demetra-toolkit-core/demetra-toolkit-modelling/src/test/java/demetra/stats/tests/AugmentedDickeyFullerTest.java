@@ -17,7 +17,6 @@
 package demetra.stats.tests;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.dstats.Normal;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
@@ -29,6 +28,7 @@ import java.util.Arrays;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -48,7 +48,7 @@ public class AugmentedDickeyFullerTest {
         int N = 10000;
         double[] T = new double[N];
         for (int i = 0; i < N; ++i) {
-            DoubleSequence data = test(600);
+            DoubleSeq data = test(600);
             AugmentedDickeyFuller adf = AugmentedDickeyFuller.builder()
                     .data(data)
                     .numberOfLags(1)
@@ -114,7 +114,7 @@ public class AugmentedDickeyFullerTest {
         }
     }
 
-    public static DoubleSequence test(int n) {
+    public static DoubleSeq test(int n) {
 
         Normal N = new Normal();
         MersenneTwister rnd = MersenneTwister.fromSystemNanoTime();
@@ -127,7 +127,7 @@ public class AugmentedDickeyFullerTest {
     public static double[] simulate(int N, int len, boolean cnt, boolean trend) {
         double[] T = new double[N];
         Arrays.parallelSetAll(T, i -> {
-            DoubleSequence data = test(len);
+            DoubleSeq data = test(len);
             AugmentedDickeyFuller adf = AugmentedDickeyFuller.builder()
                     .data(data)
                     .numberOfLags(1)
@@ -147,7 +147,7 @@ public class AugmentedDickeyFullerTest {
 
     @Test
     public void tesTable() {
-        DoubleSequence data = test(600);
+        DoubleSeq data = test(600);
             AugmentedDickeyFuller adf = AugmentedDickeyFuller.builder()
                     .data(data)
                     .numberOfLags(1)

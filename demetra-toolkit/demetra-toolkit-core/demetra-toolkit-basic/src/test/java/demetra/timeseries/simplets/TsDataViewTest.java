@@ -18,13 +18,13 @@ package demetra.timeseries.simplets;
 
 import demetra.timeseries.TsData;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Assert;
 import org.junit.Test;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -50,12 +50,12 @@ public class TsDataViewTest {
             }
         }
 
-        TsData d1 = TsData.of(TsPeriod.monthly(2010, 1), DoubleSequence.onMapping(2 * 12, i -> 1 + i));
+        TsData d1 = TsData.of(TsPeriod.monthly(2010, 1), DoubleSeq.onMapping(2 * 12, i -> 1 + i));
         assertThat(TsDataView.fullYears(d1))
                 .extracting(o -> o.getStart(), o -> o.getData().toArray())
                 .containsExactly(d1.getStart(), d1.getValues().toArray());
 
-        TsData d2 = TsData.of(TsPeriod.monthly(2010, 2), DoubleSequence.onMapping(2 * 12, i -> 1 + i));
+        TsData d2 = TsData.of(TsPeriod.monthly(2010, 2), DoubleSeq.onMapping(2 * 12, i -> 1 + i));
         assertThat(TsDataView.fullYears(d2))
                 .extracting(o -> o.getStart(), o -> o.getData().toArray())
                 .containsExactly(d2.getStart().plus(11), d2.getValues().drop(11, 1).toArray());

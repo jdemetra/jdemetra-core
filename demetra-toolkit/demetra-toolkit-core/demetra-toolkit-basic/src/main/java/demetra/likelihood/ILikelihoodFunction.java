@@ -5,9 +5,9 @@
  */
 package demetra.likelihood;
 
-import demetra.data.DoubleSequence;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.ssq.ISsqFunction;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -16,9 +16,9 @@ import demetra.maths.functions.ssq.ISsqFunction;
  */
 public interface ILikelihoodFunction<L extends ILikelihood> extends IFunction, ISsqFunction {
     @Override
-    ILikelihoodFunctionPoint<L> evaluate(DoubleSequence p);
+    ILikelihoodFunctionPoint<L> evaluate(DoubleSeq p);
     
     @Override
-    ILikelihoodFunctionPoint<L> ssqEvaluate(DoubleSequence p);
+    ILikelihoodFunctionPoint<L> ssqEvaluate(DoubleSeq p);
     
 }

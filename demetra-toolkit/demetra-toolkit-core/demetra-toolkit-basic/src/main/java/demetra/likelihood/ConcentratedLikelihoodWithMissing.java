@@ -18,7 +18,6 @@ package demetra.likelihood;
 
 import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.data.LogSign;
 import demetra.design.BuilderPattern;
@@ -28,6 +27,7 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.MatrixType;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
 
 /**
  * This class represents the concentrated likelihood of a linear regression
@@ -104,7 +104,7 @@ public final class ConcentratedLikelihoodWithMissing implements IConcentratedLik
             return this;
         }
 
-        public Builder residuals(DoubleSequence residuals) {
+        public Builder residuals(DoubleSeq residuals) {
             if (residuals == null) {
                 return this;
             }
@@ -115,7 +115,7 @@ public final class ConcentratedLikelihoodWithMissing implements IConcentratedLik
             return this;
         }
 
-        public Builder coefficients(DoubleSequence coeff) {
+        public Builder coefficients(DoubleSeq coeff) {
             if (coeff != null) {
                 b = coeff.toArray();
             }
@@ -188,24 +188,24 @@ public final class ConcentratedLikelihoodWithMissing implements IConcentratedLik
         return nmissing;
     }
 
-    public DoubleSequence missingEstimates() {
-        return nmissing == 0 ? DoubleSequence.empty() : DoubleSequence.ofInternal(b, 0, nmissing);
+    public DoubleSeq missingEstimates() {
+        return nmissing == 0 ? DoubleSeq.empty() : DoubleSeq.of(b, 0, nmissing);
     }
 
-    public DoubleSequence missingUnscaledVariances() {
+    public DoubleSeq missingUnscaledVariances() {
         if (nmissing == 0) {
-            return DoubleSequence.empty();
+            return DoubleSeq.empty();
         }
         bvariance();
-        return DoubleSequence.ofInternal(bvar.data(), 0, nmissing, bvar.getRowsCount() + 1);
+        return DoubleSeq.of(bvar.data(), 0, nmissing, bvar.getRowsCount() + 1);
     }
 
     /**
      * Returns all the coefficients, including the missing values
      * @return 
      */
-    public DoubleSequence allCoefficients() {
-        return DoubleSequence.ofInternal(b);
+    public DoubleSeq allCoefficients() {
+        return DoubleSeq.of(b);
     }
     
     @Override
@@ -247,14 +247,14 @@ public final class ConcentratedLikelihoodWithMissing implements IConcentratedLik
     }
 
     @Override
-    public DoubleSequence e() {
-        return DoubleSequence.ofInternal(res);
+    public DoubleSeq e() {
+        return DoubleSeq.of(res);
     }
 
     @Override
     @Nonnull
-    public DoubleSequence coefficients() {
-        return DoubleSequence.ofInternal(b, nmissing, b.length - nmissing);
+    public DoubleSeq coefficients() {
+        return DoubleSeq.of(b, nmissing, b.length - nmissing);
     }
 
     @Override

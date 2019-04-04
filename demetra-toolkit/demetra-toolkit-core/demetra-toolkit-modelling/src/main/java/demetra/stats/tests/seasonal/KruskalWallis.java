@@ -16,7 +16,6 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.dstats.Chi2;
@@ -24,6 +23,7 @@ import demetra.stats.StatException;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
 import java.util.Arrays;
+import demetra.data.DoubleSeq;
 
 /**
  * @author Jean Palate
@@ -40,7 +40,7 @@ public class KruskalWallis {
      * @param sample
      * @param period
      */
-    public KruskalWallis(DoubleSequence sample, final int period) {
+    public KruskalWallis(DoubleSeq sample, final int period) {
         this.period = period;
         if (period <= 1) {
             throw new StatException();

@@ -32,7 +32,7 @@ import demetra.data.transformation.DataInterpolator;
 public class AverageInterpolator {
 
     public DataInterpolator interpolator() {
-        return (DoubleSequence data, IntList missingpos)
+        return (DoubleSeq data, IntList missingpos)
                 -> {
             double[] ndata = data.toArray();
             if (cleanMissings(ndata, missingpos)) {

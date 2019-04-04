@@ -20,8 +20,7 @@ import demetra.arima.estimation.IArimaMapping;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.arima.IArimaModel;
 import demetra.data.DataBlock;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
@@ -30,6 +29,7 @@ import demetra.sarima.SarimaModel;
 import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -112,36 +112,36 @@ public class RegArimaEstimation<M extends IArimaModel> {
         return new RegArimaEstimation<>(model, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model), nparams);
     }
 
-    public DoubleSequence interpolatedSeries() {
-        DoubleSequence y = model.getY();
+    public DoubleSeq interpolatedSeries() {
+        DoubleSeq y = model.getY();
         int[] missing = model.missing();
         if (missing.length == 0) {
             return y;
         } else {
             double[] dy = y.toArray();
-            DoubleSequence missingEstimates = concentratedLikelihood.missingEstimates();
-            DoubleReader reader = missingEstimates.reader();
+            DoubleSeq missingEstimates = concentratedLikelihood.missingEstimates();
+            DoubleSeqCursor reader = missingEstimates.cursor();
             for (int i = 0; i < missing.length; ++i) {
-                dy[missing[i]] = reader.next();
+                dy[missing[i]] = reader.getAndNext();
             }
-            return DoubleSequence.ofInternal(dy);
+            return DoubleSeq.of(dy);
         }
     }
 
-    public DoubleSequence linearizedSeries() {
-        DoubleSequence y = interpolatedSeries();
-        List<DoubleSequence> x = model.getX();
+    public DoubleSeq linearizedSeries() {
+        DoubleSeq y = interpolatedSeries();
+        List<DoubleSeq> x = model.getX();
         if (x.isEmpty()) {
             return y;
         }
-        DoubleSequence coefficients = concentratedLikelihood.coefficients();
-        DoubleReader reader = coefficients.reader();
+        DoubleSeq coefficients = concentratedLikelihood.coefficients();
+        DoubleSeqCursor reader = coefficients.cursor();
         DataBlock ylin = DataBlock.of(y);
         if (model.isMean()) {
-            reader.next();
+            reader.getAndNext();
         }
-        for (DoubleSequence cur : x) {
-            ylin.addAY(-reader.next(), DataBlock.of(cur));
+        for (DoubleSeq cur : x) {
+            ylin.addAY(-reader.getAndNext(), DataBlock.of(cur));
         }
         return ylin.unmodifiable();
     }

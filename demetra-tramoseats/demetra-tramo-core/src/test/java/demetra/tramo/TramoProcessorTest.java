@@ -17,7 +17,6 @@
 package demetra.tramo;
 
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import demetra.modelling.regression.ModellingContext;
 import demetra.regarima.regular.PreprocessingModel;
 import demetra.timeseries.TsData;
@@ -33,6 +32,7 @@ import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -87,7 +87,7 @@ public class TramoProcessorTest {
     public void testProdMissing() {
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TR5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        TsData s = TsData.of(start, DoubleSequence.ofInternal(datamissing));
+        TsData s = TsData.of(start, DoubleSeq.of(datamissing));
         demetra.regarima.regular.PreprocessingModel rslt = processor.process(s, null);
         System.out.println("JD3 with missing");
         System.out.println(rslt.getEstimation().getStatistics().getLogLikelihood());
@@ -106,7 +106,7 @@ public class TramoProcessorTest {
     public void testProd() {
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        TsData s = TsData.of(start, DoubleSequence.ofInternal(data));
+        TsData s = TsData.of(start, DoubleSeq.of(data));
         PreprocessingModel rslt = processor.process(s, null);
         System.out.println("JD3");
         System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
@@ -382,7 +382,7 @@ public class TramoProcessorTest {
 
         TramoProcessor processor = TramoProcessor.of(nspec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        TsData s = TsData.of(start, DoubleSequence.ofInternal(data));
+        TsData s = TsData.of(start, DoubleSeq.of(data));
         PreprocessingModel rslt = processor.process(s, null);
         System.out.println("JD3 wald");
         System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
@@ -405,7 +405,7 @@ public class TramoProcessorTest {
         for (int i = 0; i < 1000; ++i) {
             TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);
-            TsData s = TsData.of(start, DoubleSequence.ofInternal(data));
+            TsData s = TsData.of(start, DoubleSeq.of(data));
             PreprocessingModel rslt = processor.process(s, null);
         }
         long t1 = System.currentTimeMillis();

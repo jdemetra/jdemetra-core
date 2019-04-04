@@ -17,8 +17,7 @@
 package demetra.sts.internal;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Parameter;
 import demetra.design.Development;
 import demetra.maths.functions.IParametricMapping;
@@ -26,6 +25,7 @@ import demetra.maths.functions.ParamValidation;
 import demetra.sts.BasicStructuralModel;
 import demetra.sts.Component;
 import demetra.sts.BsmSpec;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -136,7 +136,7 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
     }
 
     @Override
-    public boolean checkBoundaries(DoubleSequence p) {
+    public boolean checkBoundaries(DoubleSeq p) {
         int pc = pCycle();
         int nvar = p.length() - pc;
         if (transformation == Transformation.None) {
@@ -171,7 +171,7 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
     }
 
     @Override
-    public double epsilon(DoubleSequence p, int idx) {
+    public double epsilon(DoubleSeq p, int idx) {
         int pc = pCycle();
         int nvar = p.length() - pc;
         if (idx < nvar) {
@@ -246,7 +246,7 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
                 : Double.NEGATIVE_INFINITY;
     }
 
-    public DoubleSequence map(BasicStructuralModel t) {
+    public DoubleSeq map(BasicStructuralModel t) {
         double[] p = new double[getDim()];
         int idx = 0;
 
@@ -265,30 +265,30 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
                 p[idx++] = t.getCyclicalPeriod() / (6 * freq);
             }
         }
-        return DoubleSequence.ofInternal(p);
+        return DoubleSeq.of(p);
     }
 
     @Override
-    public BasicStructuralModel map(DoubleSequence p) {
+    public BasicStructuralModel map(DoubleSeq p) {
         BasicStructuralModel t = new BasicStructuralModel(spec, freq);
         int idx = 0;
-        DoubleReader reader = p.reader();
+        DoubleSeqCursor reader = p.cursor();
         for (int i = 0; i < CMPS.length; ++i) {
             if (hasFreeComponent(CMPS[i])) {
-                t.setVariance(CMPS[i], inparam(reader.next()));
+                t.setVariance(CMPS[i], inparam(reader.getAndNext()));
             }
         }
         if (spec.hasCycle()) {
             double cdump, clen;
             double pm = spec.getCycleDumpingFactor();
             if (pm == 0) {
-                cdump = reader.next();
+                cdump = reader.getAndNext();
             } else {
                 cdump = pm;
             }
             pm = spec.getCycleLength();
             if (pm == 0) {
-                clen = 6 * freq * reader.next();
+                clen = 6 * freq * reader.getAndNext();
             } else {
                 clen = freq * pm;
             }
@@ -392,11 +392,11 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
     }
 
     @Override
-    public DoubleSequence getDefaultParameters() {
+    public DoubleSeq getDefaultParameters() {
         double[] x = new double[getDim()];
         for (int i = 0; i < x.length; ++i) {
             x[i] = outparam(.2);
         }
-        return DoubleSequence.ofInternal(x);
+        return DoubleSeq.of(x);
     }
 }

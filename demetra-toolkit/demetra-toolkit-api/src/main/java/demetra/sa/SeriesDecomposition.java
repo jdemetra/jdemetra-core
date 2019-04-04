@@ -16,13 +16,13 @@ package demetra.sa;
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.modelling.ComponentInformation;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -35,7 +35,7 @@ public final class SeriesDecomposition {
     public static class Builder {
 
         private final DecompositionMode mode;
-        private final EnumMap<ComponentType, DoubleSequence> cmps = new EnumMap<>(ComponentType.class),
+        private final EnumMap<ComponentType, DoubleSeq> cmps = new EnumMap<>(ComponentType.class),
                 fcmps = new EnumMap<>(ComponentType.class),
                 ecmps = new EnumMap<>(ComponentType.class),
                 efcmps = new EnumMap<>(ComponentType.class);
@@ -50,11 +50,11 @@ public final class SeriesDecomposition {
          * @param data
          * @return 
          */
-        public Builder add(DoubleSequence data, ComponentType cmp) {
+        public Builder add(DoubleSeq data, ComponentType cmp) {
             return add(data, cmp, ComponentInformation.Value);
         }
 
-        public Builder add(DoubleSequence data, ComponentType cmp, ComponentInformation info) {
+        public Builder add(DoubleSeq data, ComponentType cmp, ComponentInformation info) {
             switch (info) {
                 case Stdev:
                     ecmps.put(cmp, data);
@@ -83,7 +83,7 @@ public final class SeriesDecomposition {
     }
 
     private final DecompositionMode mode;
-    private final Map<ComponentType, DoubleSequence> cmps , fcmps, ecmps, efcmps;
+    private final Map<ComponentType, DoubleSeq> cmps , fcmps, ecmps, efcmps;
 
     /**
      *
@@ -111,7 +111,7 @@ public final class SeriesDecomposition {
      * @param info
      * @return
      */
-    public DoubleSequence getSeries(ComponentType cmp, ComponentInformation info) {
+    public DoubleSeq getSeries(ComponentType cmp, ComponentInformation info) {
 
         switch (info) {
             case Stdev:

@@ -5,7 +5,6 @@
  */
 package demetra.x11;
 
-import demetra.data.DoubleSequence;
 import demetra.maths.Math2;
 import demetra.sa.DecompositionMode;
 import ec.satoolkit.x11.BiasCorrection;
@@ -18,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Ignore;
 import org.junit.Test;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -268,7 +268,7 @@ public class X11DStepTest {
     }
 
     private void process(X11DStep instance, X11Context context, double[] input) {
-        DoubleSequence b1 = DoubleSequence.of(input);
+        DoubleSeq b1 = DoubleSeq.copyOf(input);
         if (context.isLogAdd()) {
             b1 = b1.log();
         }
@@ -339,8 +339,8 @@ public class X11DStepTest {
         Assert.assertArrayEquals("Error in D13", expected_D13, actual_D13, DELTA);
     }
 
-    private double[] prepareForCompare(final DoubleSequence in, X11Context context) {
-        DoubleSequence ds = in;
+    private double[] prepareForCompare(final DoubleSeq in, X11Context context) {
+        DoubleSeq ds = in;
         if (context.isLogAdd()) {
             ds = ds.exp();
         }

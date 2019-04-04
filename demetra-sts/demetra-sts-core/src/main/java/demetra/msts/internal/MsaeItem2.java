@@ -5,7 +5,6 @@
  */
 package demetra.msts.internal;
 
-import demetra.data.DoubleSequence;
 import demetra.maths.MatrixType;
 import demetra.msts.ArInterpreter;
 import demetra.msts.MstsMapping;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import demetra.msts.ParameterInterpreter;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -69,7 +69,7 @@ public class MsaeItem2 extends AbstractModelItem {
                 var[i]=p.get(pos++);
             }
             double[][] w = new double[nwaves][];
-            w[0] = DoubleSequence.EMPTYARRAY;
+            w[0] = DoubleSeq.EMPTYARRAY;
             int nar = lar.length;
             for (int i = 0; i < nar; ++i) {
                 w[i + 1] = p.extract(pos, lar[i]).toArray();

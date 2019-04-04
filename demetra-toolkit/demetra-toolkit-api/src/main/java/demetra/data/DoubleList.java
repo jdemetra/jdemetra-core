@@ -33,7 +33,7 @@ import java.util.stream.DoubleStream;
  */
 @Development(status = Development.Status.Release)
 @PrimitiveReplacementOf(generic = List.class, primitive = double.class)
-public final class DoubleList implements DoubleSequence {
+public final class DoubleList implements DoubleVector {
 
     private static final int DEFAULT_SIZE = 128;
 
@@ -58,11 +58,11 @@ public final class DoubleList implements DoubleSequence {
     }
 
     /**
-     * create a copy of an existing DoubleSequence
+     * create a copy of an existing DoubleSeq
      *
-     * @param list the existing DoubleSequence
+     * @param list the existing DoubleSeq
      */
-    public DoubleList(DoubleSequence list) {
+    public DoubleList(DoubleSeq list) {
         values = list.toArray();
         length = values.length;
     }
@@ -103,18 +103,18 @@ public final class DoubleList implements DoubleSequence {
     }
 
     @Override
-    public DoubleReader reader() {
+    public DoubleVectorCursor cursor() {
         return new Cell();
     }
 
     @Override
-    public DoubleSequence extract(int start, int elength) {
+    public DoubleSeq extract(int start, int elength) {
         return new InternalDoubleSeq.PartialDoubleArray(values, start, elength);
     }
 
     @Override
     public String toString() {
-        return DoubleSequence.format(this);
+        return DoubleSeq.format(this);
     }
 
     /**
@@ -170,7 +170,7 @@ public final class DoubleList implements DoubleSequence {
      *
      * @return true if this list changed as a result of the call.
      */
-    public boolean addAll(DoubleSequence c) {
+    public boolean addAll(DoubleSeq c) {
         if (!c.isEmpty()) {
             if ((length + c.length()) > values.length) {
                 growArray(length + c.length());
@@ -200,7 +200,7 @@ public final class DoubleList implements DoubleSequence {
      * @exception IndexOutOfBoundsException if the index is out of range (index
      * < 0 || index > size())
      */
-    public boolean addAll(int index, DoubleSequence c) {
+    public boolean addAll(int index, DoubleSeq c) {
         if (index > length) {
             throw new IndexOutOfBoundsException();
         }
@@ -249,7 +249,7 @@ public final class DoubleList implements DoubleSequence {
      * @return true if this list contains all of the elements of the specified
      * collection.
      */
-    public boolean containsAll(DoubleSequence c) {
+    public boolean containsAll(DoubleSeq c) {
         return this != c ? allMatch(o -> contains(o)) : true;
     }
 
@@ -397,7 +397,7 @@ public final class DoubleList implements DoubleSequence {
      *
      * @return true if this list changed as a result of the call.
      */
-    public boolean removeAll(DoubleSequence c) {
+    public boolean removeAll(DoubleSeq c) {
         boolean rval = false;
 
         for (int j = 0; j < c.length(); j++) {
@@ -438,19 +438,15 @@ public final class DoubleList implements DoubleSequence {
      * @param index index of element to replace.
      * @param element element to be stored at the specified position.
      *
-     * @return the element previously at the specified position.
-     *
      * @exception IndexOutOfBoundsException if the index is out of range (index
      * < 0 || index >= size()).
      */
-    public double set(int index, double element) {
+    @Override
+    public void set(int index, double element) {
         if (index >= length) {
             throw new IndexOutOfBoundsException();
         }
-        double rval = values[index];
-
         values[index] = element;
-        return rval;
     }
 
     /**
@@ -544,16 +540,12 @@ public final class DoubleList implements DoubleSequence {
         values = newArray;
     }
 
-    class Cell implements DoubleReader {
+    private final class Cell implements DoubleVectorCursor {
 
-        private int pos;
-
-        Cell() {
-            pos = 0;
-        }
+        private int pos = 0;
 
         @Override
-        public double next() {
+        public double getAndNext() {
             return values[pos++];
         }
 
@@ -563,9 +555,19 @@ public final class DoubleList implements DoubleSequence {
         }
 
         @Override
-        public void setPosition(int npos) {
+        public void moveTo(int npos) {
             pos = npos;
         }
-    }
 
+        @Override
+        public void setAndNext(double newValue) throws IndexOutOfBoundsException {
+            values[pos++] = newValue;
+        }
+
+        @Override
+        public void applyAndNext(DoubleUnaryOperator fn) throws IndexOutOfBoundsException {
+            values[pos] = fn.applyAsDouble(values[pos]);
+            pos++;
+        }
+    }
 }

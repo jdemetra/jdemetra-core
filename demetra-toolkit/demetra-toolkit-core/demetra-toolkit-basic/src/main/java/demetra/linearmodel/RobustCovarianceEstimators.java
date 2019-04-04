@@ -16,12 +16,12 @@
  */
 package demetra.linearmodel;
 
-import demetra.data.DoubleSequence;
 import demetra.data.WindowFunction;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.stats.RobustCovarianceComputer;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -30,9 +30,9 @@ import java.util.function.IntToDoubleFunction;
 @lombok.experimental.UtilityClass
 public class RobustCovarianceEstimators {
 
-    public Matrix hac(final LinearModel model, final DoubleSequence olsCoefficients, final WindowFunction w, final int truncationLag) {
+    public Matrix hac(final LinearModel model, final DoubleSeq olsCoefficients, final WindowFunction w, final int truncationLag) {
         Matrix x = model.variables();
-        DoubleSequence u = model.calcResiduals(olsCoefficients);
+        DoubleSeq u = model.calcResiduals(olsCoefficients);
         Matrix xx = SymmetricMatrix.XtX(x);
         int n = x.getRowsCount();
         xx.div(n);
@@ -51,10 +51,10 @@ public class RobustCovarianceEstimators {
         return omega;
     }
     
-    public Matrix hc(final LinearModel model, final DoubleSequence olsCoefficients, final IntToDoubleFunction w) {
+    public Matrix hc(final LinearModel model, final DoubleSeq olsCoefficients, final IntToDoubleFunction w) {
 
         Matrix x = model.variables();
-        DoubleSequence u = model.calcResiduals(olsCoefficients);
+        DoubleSeq u = model.calcResiduals(olsCoefficients);
         Matrix xx = SymmetricMatrix.XtX(x);
         int n = x.getRowsCount();
         xx.div(n);

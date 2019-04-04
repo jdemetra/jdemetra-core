@@ -17,7 +17,7 @@
 package demetra.r;
 
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 import static demetra.timeseries.simplets.TsDataToolkit.log;
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -16,13 +16,13 @@
 */
 package demetra.stats.tests;
 
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.dstats.Chi2;
 import demetra.dstats.Normal;
 import demetra.stats.StatException;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -41,14 +41,14 @@ public class TestOfUpDownRuns
 	return x;
     }
 
-    public TestOfUpDownRuns(DoubleSequence data)
+    public TestOfUpDownRuns(DoubleSeq data)
     {
         obs=Doubles.select(data, x->Double.isFinite(x));
     }
 
     private int nruns;
     private int[] runLengths;
-    private DoubleSequence obs;
+    private DoubleSeq obs;
 
     private void races() {
         if (runLengths!=null)
@@ -58,13 +58,13 @@ public class TestOfUpDownRuns
 	nruns = 1;
 	if (n < 2)
 	    throw new StatException(StatException.NOT_ENOUGH_DATA);
-        DoubleReader reader = obs.reader();
-        double o0=reader.next(), o1=reader.next();
+        DoubleSeqCursor reader = obs.cursor();
+        double o0=reader.getAndNext(), o1=reader.getAndNext();
 	boolean up = o1 >= o0;
 	int curlength = 1;
 	for (int i = 2; i < n; ++i) {
             o0=o1;
-            o1=reader.next();
+            o1=reader.getAndNext();
 	    boolean curup = o1 >= o0;
 	    if (up != curup) {
 		++nruns;

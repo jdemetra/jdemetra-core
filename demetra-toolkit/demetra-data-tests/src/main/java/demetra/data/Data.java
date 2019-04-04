@@ -403,10 +403,10 @@ public class Data {
     public static final TsData TS_ABS_RETAIL, TS_ABS_RETAIL2;
 
     static {
-        TS_PROD = TsData.of(TsPeriod.monthly(1967, 1), DoubleSequence.ofInternal(PROD));
-        TS_ABS_RETAIL = TsData.of(TsPeriod.monthly(1982, 4), DoubleSequence.ofInternal(ABS_RETAIL));
-        TS_ABS_RETAIL2 = TsData.of(TsPeriod.monthly(1982, 4), DoubleSequence.ofInternal(ABS_RETAIL2));
-        DAILY_CONTINUOUS = TsData.of(TsPeriod.daily(2004, 1, 1), DoubleSequence.ofInternal(US_UNEMPL));
+        TS_PROD = TsData.of(TsPeriod.monthly(1967, 1), DoubleSeq.of(PROD));
+        TS_ABS_RETAIL = TsData.of(TsPeriod.monthly(1982, 4), DoubleSeq.of(ABS_RETAIL));
+        TS_ABS_RETAIL2 = TsData.of(TsPeriod.monthly(1982, 4), DoubleSeq.of(ABS_RETAIL2));
+        DAILY_CONTINUOUS = TsData.of(TsPeriod.daily(2004, 1, 1), DoubleSeq.of(US_UNEMPL));
     }
 
     public static File copyToTempFile(URL url) throws IOException {

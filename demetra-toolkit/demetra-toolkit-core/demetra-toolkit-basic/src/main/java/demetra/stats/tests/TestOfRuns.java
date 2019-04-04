@@ -16,12 +16,12 @@
 */
 package demetra.stats.tests;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.dstats.Chi2;
 import demetra.dstats.Normal;
 import demetra.stats.DescriptiveStatistics;
 import demetra.stats.StatException;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -34,7 +34,7 @@ public class TestOfRuns
     private final DescriptiveStatistics stats;
     private boolean mean = true;
     
-    public TestOfRuns(DoubleSequence data)
+    public TestOfRuns(DoubleSeq data)
     {
         this.stats=DescriptiveStatistics.of(data);
     }

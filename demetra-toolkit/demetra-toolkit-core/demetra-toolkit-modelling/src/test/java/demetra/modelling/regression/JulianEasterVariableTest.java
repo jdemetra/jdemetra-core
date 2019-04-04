@@ -7,12 +7,12 @@ package demetra.modelling.regression;
 
 import demetra.timeseries.TsPeriod;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.matrices.Matrix;
 import demetra.timeseries.TsDomain;
 import java.util.Collections;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -35,7 +35,7 @@ public class JulianEasterVariableTest {
             TsPeriod start = TsPeriod.monthly(2000, 1);
             TsDomain dom = TsDomain.of(start, i);
             DataBlock data = Regression.x(dom, var);
-            assertTrue(data.distance(DoubleSequence.ofInternal(odata.getData())) < 1e-9);
+            assertTrue(data.distance(DoubleSeq.of(odata.getData())) < 1e-9);
         }
     }
 
@@ -51,7 +51,7 @@ public class JulianEasterVariableTest {
             TsPeriod start = TsPeriod.quarterly(2000, 1);
             TsDomain dom = TsDomain.of(start, i);
             DataBlock data = Regression.x(dom, var);
-            assertTrue(data.distance(DoubleSequence.ofInternal(odata.getData())) < 1e-9);
+            assertTrue(data.distance(DoubleSeq.of(odata.getData())) < 1e-9);
         }
     }
 }

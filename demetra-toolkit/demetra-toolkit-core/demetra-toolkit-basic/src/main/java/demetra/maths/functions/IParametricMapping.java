@@ -19,7 +19,7 @@
 package demetra.maths.functions;
 
 import demetra.design.Development;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -35,9 +35,9 @@ public interface IParametricMapping<T> extends IParametersDomain {
      * @param p
      * @return A new object, based on the parameters provided by p.
      */
-    T map(DoubleSequence p);
+    T map(DoubleSeq p);
 
-    DoubleSequence getDefaultParameters();
+    DoubleSeq getDefaultParameters();
     
     default T getDefault(){
         return map(getDefaultParameters());

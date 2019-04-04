@@ -18,10 +18,10 @@ package demetra.fractionalairline;
 
 import demetra.arima.ArimaModel;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.arima.estimation.IArimaMapping;
+import demetra.data.DoubleSeq;
 
 public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
 
@@ -63,7 +63,7 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
     }
 
     @Override
-    public ArimaModel map(DoubleSequence p) {
+    public ArimaModel map(DoubleSeq p) {
         double th = p.get(0);
         double[] ma = new double[]{1, -th};
         BackFilter fma = BackFilter.ofInternal(ma), fs = BackFilter.ONE,
@@ -99,7 +99,7 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
     }
 
     @Override
-    public DoubleSequence parametersOf(ArimaModel t) {
+    public DoubleSeq parametersOf(ArimaModel t) {
         BackFilter ma = t.getMA();
         double[] p = new double[p0.length + 1];
         p[0] = -ma.get(1);
@@ -110,16 +110,16 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
                 p[i + 1] = -ma.get(p0[i]);
             }
         }
-        return DoubleSequence.of(p);
+        return DoubleSeq.copyOf(p);
     }
 
     @Override
-    public boolean checkBoundaries(DoubleSequence inparams) {
+    public boolean checkBoundaries(DoubleSeq inparams) {
         return inparams.allMatch(x -> Math.abs(x) < .999);
     }
 
     @Override
-    public double epsilon(DoubleSequence inparams, int idx) {
+    public double epsilon(DoubleSeq inparams, int idx) {
         return 1e-6;
     }
 
@@ -157,12 +157,12 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
     }
 
     @Override
-    public DoubleSequence getDefaultParameters() {
+    public DoubleSeq getDefaultParameters() {
         double[] p = new double[getDim()];
         for (int i = 0; i < p.length; ++i) {
             p[i] = .2;
         }
-        return DoubleSequence.ofInternal(p);
+        return DoubleSeq.of(p);
     }
 
     @Override

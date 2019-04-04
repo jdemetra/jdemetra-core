@@ -19,16 +19,16 @@ package demetra.arima.internal;
 import demetra.arima.ArimaException;
 import demetra.arima.IArimaModel;
 import demetra.data.DataBlock;
-import demetra.data.DoubleReader;
+import demetra.data.DoubleSeqCursor;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Fast;
 import demetra.design.Development;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
-import demetra.data.DoubleSequence;
-import demetra.data.DoubleCell;
 import demetra.arima.estimation.ArmaFilter;
+import demetra.data.DoubleSeq;
+import demetra.data.DoubleVectorCursor;
 
 /**
  * @author Jean Palate
@@ -192,7 +192,7 @@ public class KalmanFilter implements ArmaFilter {
      * @param outrc
      */
     @Override
-    public void apply(DoubleSequence y, DataBlock outrc) {
+    public void apply(DoubleSeq y, DataBlock outrc) {
         if (multiUse) {
             mfilter(y, outrc);
         } else {
@@ -225,15 +225,15 @@ public class KalmanFilter implements ArmaFilter {
         return length;
     }
 
-    private void mfilter(DoubleSequence y, DataBlock yf) {
+    private void mfilter(DoubleSeq y, DataBlock yf) {
 
         double[] a = new double[dim];
         // iteration
-        DoubleReader yreader = y.reader();
-        DoubleCell yfwriter = yf.cells();
+        DoubleSeqCursor yreader = y.cursor();
+        DoubleVectorCursor yfwriter = yf.cursor();
         int pos = 0, cpos = 0, ilast = dim - 1;
         double s = this.s[pos];
-        double e = yreader.next() / s;
+        double e = yreader.getAndNext() / s;
         boolean started = e != 0;
         yfwriter.setAndNext(e);
         while (++pos < n) {
@@ -253,7 +253,7 @@ public class KalmanFilter implements ArmaFilter {
                 cpos += dim;
             }
             s = this.s[pos];
-            e = (yreader.next() - a[0]) / s;
+            e = (yreader.getAndNext() - a[0]) / s;
             yfwriter.setAndNext(e);
             if (e != 0) {
                 started = true;
@@ -261,7 +261,7 @@ public class KalmanFilter implements ArmaFilter {
         }
     }
 
-    private void sfilter(DoubleSequence y, DataBlock outrc) {
+    private void sfilter(DoubleSeq y, DataBlock outrc) {
         DeterminantalTerm det = new DeterminantalTerm();
         double[] C = C0.clone();
         double[] L = C.clone();

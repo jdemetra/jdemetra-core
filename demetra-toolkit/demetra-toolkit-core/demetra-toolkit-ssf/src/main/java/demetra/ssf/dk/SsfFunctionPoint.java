@@ -23,12 +23,12 @@ import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.IConcentratedLikelihoodComputer;
 import demetra.ssf.univariate.SsfRegressionModel;
-import demetra.data.DoubleSequence;
 import demetra.likelihood.ILikelihoodFunctionPoint;
 import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.NumericalDerivatives;
 import demetra.maths.functions.ssq.ISsqFunctionDerivatives;
 import demetra.maths.functions.ssq.SsqNumericalDerivatives;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -58,7 +58,7 @@ public class SsfFunctionPoint<S, F extends ISsf> implements
      * @param fn
      * @param p
      */
-    public SsfFunctionPoint(SsfFunction<S, F> fn, DoubleSequence p) {
+    public SsfFunctionPoint(SsfFunction<S, F> fn, DoubleSeq p) {
         this.fn = fn;
         this.p = DataBlock.of(p);
         current=fn.getMapping().map(p);
@@ -80,9 +80,9 @@ public class SsfFunctionPoint<S, F extends ISsf> implements
     }
 
     @Override
-    public DoubleSequence getE() {
+    public DoubleSeq getE() {
         if (E == null) {
-            DoubleSequence res = ll.e();
+            DoubleSeq res = ll.e();
             if (res == null) {
                 return null;
             } else {
@@ -106,7 +106,7 @@ public class SsfFunctionPoint<S, F extends ISsf> implements
     }
 
     @Override
-    public DoubleSequence getParameters() {
+    public DoubleSeq getParameters() {
         return p;
     }
 

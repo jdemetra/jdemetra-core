@@ -18,7 +18,6 @@ package demetra.regarima;
 
 import demetra.arima.estimation.IArimaMapping;
 import demetra.arima.IArimaModel;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.LogLikelihoodFunction;
@@ -29,6 +28,7 @@ import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.regarima.internal.RegArmaEstimation;
 import demetra.regarima.internal.RegArmaProcessor;
 import java.util.function.Function;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -169,7 +169,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
         RegArmaProcessor processor = new RegArmaProcessor(ml, mt, fast);
         int ndf = dmodel.getY().length() - dmodel.getX().getColumnsCount();// - mapping.getDim();
         RegArmaEstimation<M> rslt = processor.compute(dmodel, stmapping.parametersOf(arma), stmapping, min, ndf);
-        M nmodel = mapping.map(DoubleSequence.ofInternal(rslt.getParameters()));
+        M nmodel = mapping.map(DoubleSeq.of(rslt.getParameters()));
         RegArimaModel<M> nregs = regs.toBuilder().arima(nmodel).build();
 
         return new RegArimaEstimation(nregs, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nregs),

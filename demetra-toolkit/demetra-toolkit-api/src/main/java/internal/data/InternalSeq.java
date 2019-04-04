@@ -16,11 +16,11 @@
  */
 package internal.data;
 
-import demetra.data.Sequence;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
+import demetra.data.Seq;
 
 /**
  * Support class of Sequence.
@@ -33,7 +33,7 @@ public class InternalSeq {
     @lombok.RequiredArgsConstructor
     public static final class SequenceIterator<E> implements Iterator<E> {
 
-        private final Sequence<E> seq;
+        private final Seq<E> seq;
         private int cur = 0;
 
         @Override
@@ -51,13 +51,13 @@ public class InternalSeq {
         }
     }
 
-    public <E> void forEach(Sequence<E> seq, Consumer<? super E> action) {
+    public <E> void forEach(Seq<E> seq, Consumer<? super E> action) {
         for (int i = 0; i < seq.length(); i++) {
             action.accept(seq.get(i));
         }
     }
 
-    public <E> E[] toArray(Sequence<E> seq, IntFunction<E[]> generator) {
+    public <E> E[] toArray(Seq<E> seq, IntFunction<E[]> generator) {
         E[] result = generator.apply(seq.length());
         for (int i = 0; i < result.length; i++) {
             result[i] = seq.get(i);

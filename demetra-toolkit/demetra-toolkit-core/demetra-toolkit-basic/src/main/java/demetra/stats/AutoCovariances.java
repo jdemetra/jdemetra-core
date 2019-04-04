@@ -5,9 +5,9 @@
  */
 package demetra.stats;
 
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -17,11 +17,11 @@ public class AutoCovariances {
 
     public static final double SMALL = 1e-38;
 
-    public static double[] autoCovariancesWithZeroMean(DoubleSequence data, int maxLag) {
+    public static double[] autoCovariancesWithZeroMean(DoubleSeq data, int maxLag) {
         return autoCovariances(data, 0, maxLag);
     }
 
-    public static double[] autoCovariances(DoubleSequence data, double mean, int maxLag) {
+    public static double[] autoCovariances(DoubleSeq data, double mean, int maxLag) {
         double[] cov = new double[maxLag + 1];
         if (data.anyMatch(x -> !Double.isFinite(x))) {
             cov[0] = variance(data, mean);
@@ -48,7 +48,7 @@ public class AutoCovariances {
      * @param t The delay between the two arrays
      * @return The covariance; covariance = sum((x(i)*y(i+t)/n)
      */
-    public static double covarianceWithZeroMean(DoubleSequence x, DoubleSequence y, int t) {
+    public static double covarianceWithZeroMean(DoubleSeq x, DoubleSeq y, int t) {
         // x and y must have the same Length...
         if (t < 0) {
             return covarianceWithZeroMean(y, x, -t);
@@ -56,12 +56,12 @@ public class AutoCovariances {
         double v = 0;
         int n = x.length() - t;
         int nm = 0;
-        DoubleReader xr = x.reader();
-        DoubleReader yr = y.reader();
-        yr.setPosition(t);
+        DoubleSeqCursor xr = x.cursor();
+        DoubleSeqCursor yr = y.cursor();
+        yr.moveTo(t);
         for (int i = 0; i < n; ++i) {
-            double xcur = xr.next();
-            double ycur = yr.next();
+            double xcur = xr.getAndNext();
+            double ycur = yr.getAndNext();
             if (Double.isFinite(xcur) && Double.isFinite(ycur)) {
                 v += xcur * ycur;
             } else {
@@ -75,27 +75,27 @@ public class AutoCovariances {
         return v / m;
     }
 
-    public static double covarianceWithZeroMean(DoubleSequence x, DoubleSequence y) {
+    public static double covarianceWithZeroMean(DoubleSeq x, DoubleSeq y) {
         return covarianceWithZeroMean(x, y, 0);
     }
 
-    public static double covarianceWithZeroMeanAndNoMissing(DoubleSequence x, DoubleSequence y, int t) {
+    public static double covarianceWithZeroMeanAndNoMissing(DoubleSeq x, DoubleSeq y, int t) {
         // x and y must have the same Length...
         if (t < 0) {
             return covarianceWithZeroMeanAndNoMissing(y, x, -t);
         }
         double v = 0;
         int n = x.length() - t;
-        DoubleReader xr = x.reader();
-        DoubleReader yr = y.reader();
-        yr.setPosition(t);
+        DoubleSeqCursor xr = x.cursor();
+        DoubleSeqCursor yr = y.cursor();
+        yr.moveTo(t);
         for (int i = 0; i < n; ++i) {
-            v += xr.next() * yr.next();
+            v += xr.getAndNext() * yr.getAndNext();
         }
         return v / x.length();
     }
 
-    public static IntToDoubleFunction autoCorrelationFunction(DoubleSequence data, double mean) {
+    public static IntToDoubleFunction autoCorrelationFunction(DoubleSeq data, double mean) {
         if (data.anyMatch(x -> !Double.isFinite(x))) {
             final double var = variance(data, mean);
             return i -> var < SMALL ? 0 : cov(data, mean, i) / var;
@@ -105,7 +105,7 @@ public class AutoCovariances {
         }
     }
 
-    public static IntToDoubleFunction autoCovarianceFunction(DoubleSequence data, double mean) {
+    public static IntToDoubleFunction autoCovarianceFunction(DoubleSeq data, double mean) {
         if (data.anyMatch(x -> !Double.isFinite(x))) {
             return i -> cov(data, mean, i);
         } else {
@@ -113,16 +113,16 @@ public class AutoCovariances {
         }
     }
 
-    private static double cov(DoubleSequence data, double mean, int lag) {
+    private static double cov(DoubleSeq data, double mean, int lag) {
         double v = 0;
         int n = data.length() - lag;
         int nm = 0;
-        DoubleReader xr = data.reader();
-        DoubleReader yr = data.reader();
-        yr.setPosition(lag);
+        DoubleSeqCursor xr = data.cursor();
+        DoubleSeqCursor yr = data.cursor();
+        yr.moveTo(lag);
         for (int j = 0; j < n; ++j) {
-            double xcur = xr.next();
-            double ycur = yr.next();
+            double xcur = xr.getAndNext();
+            double ycur = yr.getAndNext();
             if (Double.isFinite(xcur) && Double.isFinite(ycur)) {
                 v += (xcur - mean) * (ycur - mean);
             } else {
@@ -137,13 +137,13 @@ public class AutoCovariances {
         }
     }
 
-    public static double variance(DoubleSequence data, double mean) {
+    public static double variance(DoubleSeq data, double mean) {
         double v = 0;
         int n = data.length();
         int nm = 0;
-        DoubleReader xr = data.reader();
+        DoubleSeqCursor xr = data.cursor();
         for (int j = 0; j < n; ++j) {
-            double xcur = xr.next();
+            double xcur = xr.getAndNext();
             if (Double.isFinite(xcur)) {
                 v += (xcur - mean) * (xcur - mean);
             } else {
@@ -158,32 +158,32 @@ public class AutoCovariances {
         }
     }
 
-    private static double covNoMissing(DoubleSequence data, double mean, int lag) {
+    private static double covNoMissing(DoubleSeq data, double mean, int lag) {
         int n = data.length() - lag;
         if (n <= 0) {
             return 0;
         }
         double v = 0;
-        DoubleReader xr = data.reader();
-        DoubleReader yr = data.reader();
-        yr.setPosition(lag);
+        DoubleSeqCursor xr = data.cursor();
+        DoubleSeqCursor yr = data.cursor();
+        yr.moveTo(lag);
         for (int j = 0; j < n; ++j) {
-            double xcur = xr.next();
-            double ycur = yr.next();
+            double xcur = xr.getAndNext();
+            double ycur = yr.getAndNext();
             v += (xcur - mean) * (ycur - mean);
         }
         return v / data.length();
     }
 
-    public static double varianceNoMissing(DoubleSequence data, double mean) {
+    public static double varianceNoMissing(DoubleSeq data, double mean) {
         int n = data.length();
         if (n == 0) {
             return 0;
         }
         double v = 0;
-        DoubleReader xr = data.reader();
+        DoubleSeqCursor xr = data.cursor();
         for (int j = 0; j < n; ++j) {
-            double xcur = xr.next();
+            double xcur = xr.getAndNext();
             v += (xcur - mean) * (xcur - mean);
         }
         return v / n;

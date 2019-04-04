@@ -18,7 +18,6 @@ package demetra.sarima.estimation;
 
 import demetra.arima.estimation.IArimaMapping;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.functions.FunctionException;
@@ -27,6 +26,7 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -52,7 +52,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
      * @param fixed Indicates the fixed parameters. The array must have the same 
      * length as the parameters (given by the specification) 
      */
-    public SarimaFixedMapping(SarimaSpecification spec, DoubleSequence p,
+    public SarimaFixedMapping(SarimaSpecification spec, DoubleSeq p,
             boolean[] fixed) {
         mapper = SarimaMapping.of(spec);
         fixedItems = fixed.clone();
@@ -60,12 +60,12 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
     }
 
     @Override
-    public boolean checkBoundaries(DoubleSequence inparams) {
+    public boolean checkBoundaries(DoubleSeq inparams) {
         return mapper.checkBoundaries(fullParameters(inparams));
     }
 
     @Override
-    public double epsilon(DoubleSequence inparams, int idx) {
+    public double epsilon(DoubleSeq inparams, int idx) {
         return mapper.epsilon(fullParameters(inparams), fullIndex(idx));
     }
 
@@ -84,7 +84,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
      * @param allParams
      * @return
      */
-    public DataBlock freeParameters(DoubleSequence allParams) {
+    public DataBlock freeParameters(DoubleSeq allParams) {
         DataBlock free = DataBlock.make(getDim());
         save(allParams, free);
         return free;
@@ -111,7 +111,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
      * @param freeParams
      * @return
      */
-    public DataBlock fullParameters(DoubleSequence freeParams) {
+    public DataBlock fullParameters(DoubleSeq freeParams) {
         double[] buffer = parameters.clone();
         for (int i = 0, j = 0; i < freeParams.length(); ++i, ++j) {
             while (fixedItems[j]) {
@@ -133,16 +133,16 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
     }
 
     @Override
-    public SarimaModel map(DoubleSequence p) {
+    public SarimaModel map(DoubleSeq p) {
         return mapper.map(fullParameters(p));
     }
 
     @Override
-    public DoubleSequence parametersOf(SarimaModel t) {
+    public DoubleSeq parametersOf(SarimaModel t) {
         return freeParameters(mapper.parametersOf(t));
     }
 
-    private void save(DoubleSequence all, DataBlock free) {
+    private void save(DoubleSeq all, DataBlock free) {
         for (int i = 0, j = 0; i < fixedItems.length; ++i) {
             if (!fixedItems[i]) {
                 free.set(j++, all.get(i));
@@ -363,7 +363,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
     }
 
     @Override
-    public DoubleSequence getDefaultParameters() {
+    public DoubleSeq getDefaultParameters() {
         SarimaSpecification spec = mapper.getSpec();
         double[] p = new double[getDim()];
         int nar = spec.getP() + spec.getBp();
@@ -378,11 +378,11 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
                 p[j++] = -.2;
             }
         }
-        return DoubleSequence.ofInternal(p);
+        return DoubleSeq.of(p);
     }
 
     @Override
     public IArimaMapping<SarimaModel> stationaryMapping() {
-        return new SarimaFixedMapping(SarimaSpecification.stationary(mapper.getSpec()), DoubleSequence.ofInternal(parameters), this.fixedItems);
+        return new SarimaFixedMapping(SarimaSpecification.stationary(mapper.getSpec()), DoubleSeq.of(parameters), this.fixedItems);
     }
 }

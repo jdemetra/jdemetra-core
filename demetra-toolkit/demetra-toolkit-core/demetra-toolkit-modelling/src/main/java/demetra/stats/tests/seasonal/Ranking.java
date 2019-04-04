@@ -18,16 +18,16 @@
 package demetra.stats.tests.seasonal;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import java.util.Arrays;
+import demetra.data.DoubleSeq;
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 class Ranking {
-    static void sort(DoubleSequence data, DataBlock r) {
+    static void sort(DoubleSeq data, DataBlock r) {
 	int n = data.length();
 	Item[] items = new Item[n];
 	for (int i = 0; i < n; ++i)

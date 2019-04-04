@@ -6,9 +6,9 @@
 package demetra.ssf.univariate;
 
 import demetra.data.Doubles;
-import demetra.data.Sequence;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
+import demetra.data.DoubleSeq;
+import demetra.data.Seq;
 
 
 /**
@@ -17,14 +17,14 @@ import demetra.data.DoubleSequence;
  */
 public class SsfData implements ISsfData  {
 
-    private final DoubleSequence data;
+    private final DoubleSeq data;
 
-    public SsfData(DoubleSequence x) {
+    public SsfData(DoubleSeq x) {
         data = x;
     }
 
     public SsfData(double[] x) {
-        data = DoubleSequence.onMapping(x.length, i->x[i]);
+        data = DoubleSeq.onMapping(x.length, i->x[i]);
     }
 
     @Override
@@ -56,12 +56,12 @@ public class SsfData implements ISsfData  {
         data.copyTo(buffer, start);
     }
 
-    public DoubleSequence extract(int start, int length) {
+    public DoubleSeq extract(int start, int length) {
         return data.extract(start, length);
     }
     
     @Override
     public String toString(){
-        return DoubleSequence.format(data);
+        return DoubleSeq.format(data);
     }
 }

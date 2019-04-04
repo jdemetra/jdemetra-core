@@ -16,9 +16,9 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.timeseries.TimeSeriesDomain;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -54,8 +54,8 @@ public final class PreadjustmentVariable {
     /**
      * @return the coefficients
      */
-    public DoubleSequence getCoefficients() {
-        return DoubleSequence.ofInternal(coefficients);
+    public DoubleSeq getCoefficients() {
+        return DoubleSeq.of(coefficients);
     }
 
     // main types

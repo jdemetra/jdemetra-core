@@ -17,11 +17,11 @@
 package demetra.maths;
 
 import demetra.data.BaseTable;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import java.util.stream.DoubleStream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -57,18 +57,18 @@ public interface MatrixType extends BaseTable<Double> {
      * @param irow
      * @return
      */
-    DoubleSequence row(@Nonnull int irow);
+    DoubleSeq row(@Nonnull int irow);
 
-    DoubleSequence diagonal();
+    DoubleSeq diagonal();
 
-    DoubleSequence subDiagonal(int pos);
+    DoubleSeq subDiagonal(int pos);
 
     /**
      *
      * @param icolumn
      * @return
      */
-    DoubleSequence column(@Nonnull int icolumn);
+    DoubleSeq column(@Nonnull int icolumn);
 
     default MatrixType extract(@Nonnegative final int rstart, @Nonnegative final int nr,
             @Nonnegative final int cstart, @Nonnegative final int nc) {
@@ -109,12 +109,12 @@ public interface MatrixType extends BaseTable<Double> {
     public static String toString(MatrixType matrix, String fmt) {
         StringBuilder builder = new StringBuilder();
         if (!matrix.isEmpty()) {
-            DoubleSequence row = matrix.row(0);
-            builder.append(DoubleSequence.format(row, fmt));
+            DoubleSeq row = matrix.row(0);
+            builder.append(DoubleSeq.format(row, fmt));
             for (int i = 1; i < matrix.getRowsCount(); ++i) {
                 builder.append(System.lineSeparator());
                 row = matrix.row(i);
-                builder.append(DoubleSequence.format(row, fmt));
+                builder.append(DoubleSeq.format(row, fmt));
             }
         }
         return builder.toString();
@@ -124,10 +124,10 @@ public interface MatrixType extends BaseTable<Double> {
         StringBuilder builder = new StringBuilder();
         int nrows=m.getRowsCount();
         if (nrows>0) {
-            builder.append(DoubleSequence.format(m.row(0), fmt));
+            builder.append(DoubleSeq.format(m.row(0), fmt));
             for (int r=1; r<nrows; ++r) {
                 builder.append(System.lineSeparator());
-                builder.append(DoubleSequence.format(m.row(r), fmt));
+                builder.append(DoubleSeq.format(m.row(r), fmt));
             }
         }
         return builder.toString();
@@ -137,10 +137,10 @@ public interface MatrixType extends BaseTable<Double> {
         StringBuilder builder = new StringBuilder();
         int nrows=m.getRowsCount();
         if (nrows>0) {
-            builder.append(DoubleSequence.format(m.row(0)));
+            builder.append(DoubleSeq.format(m.row(0)));
             for (int r=1; r<nrows; ++r) {
                 builder.append(System.lineSeparator());
-                builder.append(DoubleSequence.format(m.row(r)));
+                builder.append(DoubleSeq.format(m.row(r)));
             }
         }
         return builder.toString();

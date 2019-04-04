@@ -33,7 +33,7 @@ import demetra.util.function.BiDoublePredicate;
  *
  * @author Jean Palate
  */
-public final class DataBlock implements DoubleSequence {
+public final class DataBlock implements DoubleVector {
 
     @FunctionalInterface
     public static interface DataBlockFunction {
@@ -49,7 +49,7 @@ public final class DataBlock implements DoubleSequence {
         double apply(@Nonnull DataBlock data);
     }
 
-    public static final DataBlock EMPTY = new DataBlock(DoubleSequence.EMPTYARRAY, 0, 0, 1);
+    public static final DataBlock EMPTY = new DataBlock(DoubleSeq.EMPTYARRAY, 0, 0, 1);
 
     //<editor-fold defaultstate="collapsed" desc="Static factories">
     /**
@@ -121,12 +121,12 @@ public final class DataBlock implements DoubleSequence {
     }
 
     /**
-     * Envelope around a copy of read-only DoubleSequence.
+     * Envelope around a copy of read-only DoubleSeq.
      *
-     * @param data The DoubleSequence being copied
+     * @param data The DoubleSeq being copied
      * @return
      */
-    public static DataBlock of(@Nonnull DoubleSequence data) {
+    public static DataBlock of(@Nonnull DoubleSeq data) {
         double[] x = new double[data.length()];
         data.copyTo(x, 0);
         return new DataBlock(x, 0, x.length, 1);
@@ -158,7 +158,7 @@ public final class DataBlock implements DoubleSequence {
      * @param pred The selection criterion
      * @return
      */
-    public static DataBlock select(@Nonnull DoubleSequence data, @Nonnull DoublePredicate pred) {
+    public static DataBlock select(@Nonnull DoubleSeq data, @Nonnull DoublePredicate pred) {
         DoubleList list = new DoubleList();
         int n = data.length();
         for (int i = 0; i < n; ++i) {
@@ -187,27 +187,19 @@ public final class DataBlock implements DoubleSequence {
      */
     @Override
     public String toString() {
-        return DoubleSequence.format(this);
+        return DoubleSeq.format(this);
     }
 
     /**
      * {@inheritDoc}
      */
+    public DoubleSeqCursor reverseReader() {
+        return DoubleSeqCursor.of(data, end - inc, -inc);
+    }
+
     @Override
-    public DoubleReader reader() {
-        return DoubleReader.of(data, beg, inc);
-    }
-
-    public DoubleReader reverseReader() {
-        return DoubleReader.of(data, end - inc, -inc);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public DoubleCell cells() {
-        return DoubleCell.of(data, beg, inc);
+    public DoubleVectorCursor cursor() {
+        return DoubleVectorCursor.of(data, beg, inc);
     }
 
     /**
@@ -409,7 +401,7 @@ public final class DataBlock implements DoubleSequence {
         return new DataBlock(data, end - inc, beg - inc, -inc);
     }
 
-    public double distance(DoubleSequence seq) {
+    public double distance(DoubleSeq seq) {
         return Doubles.distance(this, seq);
     }
 
@@ -667,14 +659,9 @@ public final class DataBlock implements DoubleSequence {
     }
 
     //</editor-fold>
-    /**
-     * Sets the given value in the ith position
-     *
-     *
-     * @param idx The considered cell
-     * @param value The new value
-     */
-    public void set(@Nonnegative int idx, double value) {
+
+    @Override
+    public void set(int idx, double value) {
         data[beg + idx * inc] = value;
     }
 
@@ -925,10 +912,10 @@ public final class DataBlock implements DoubleSequence {
      *
      * @param x The data being copied. Could be larger than the current buffer
      */
-    public void copy(DoubleSequence x) {
-        DoubleReader cell = x.reader();
+    public void copy(DoubleSeq x) {
+        DoubleSeqCursor cell = x.cursor();
         for (int i = beg; i != end; i += inc) {
-            data[i] = cell.next();
+            data[i] = cell.getAndNext();
         }
     }
 
@@ -1157,10 +1144,10 @@ public final class DataBlock implements DoubleSequence {
      * @param x
      * @param fn The operator
      */
-    public void apply(@Nonnull DoubleSequence x, @Nonnull DoubleBinaryOperator fn) {
-        DoubleReader cell = x.reader();
+    public void apply(@Nonnull DoubleSeq x, @Nonnull DoubleBinaryOperator fn) {
+        DoubleSeqCursor cell = x.cursor();
         for (int i = beg; i != end; i += inc) {
-            data[i] = fn.applyAsDouble(data[i], cell.next());
+            data[i] = fn.applyAsDouble(data[i], cell.getAndNext());
         }
     }
 
@@ -1314,10 +1301,10 @@ public final class DataBlock implements DoubleSequence {
      * @param x
      * @param fn
      */
-    public void set(@Nonnull DoubleSequence x, @Nonnull DoubleUnaryOperator fn) {
-        DoubleReader xcell = x.reader();
+    public void set(@Nonnull DoubleSeq x, @Nonnull DoubleUnaryOperator fn) {
+        DoubleSeqCursor xcell = x.cursor();
         for (int i = beg; i != end; i += inc) {
-            data[i] = fn.applyAsDouble(xcell.next());
+            data[i] = fn.applyAsDouble(xcell.getAndNext());
         }
     }
 
@@ -1328,10 +1315,10 @@ public final class DataBlock implements DoubleSequence {
      * @param y
      * @param fn
      */
-    public void set(@Nonnull DoubleSequence x, @Nonnull DoubleSequence y, @Nonnull DoubleBinaryOperator fn) {
-        DoubleReader xcell = x.reader(), ycell = y.reader();
+    public void set(@Nonnull DoubleSeq x, @Nonnull DoubleSeq y, @Nonnull DoubleBinaryOperator fn) {
+        DoubleSeqCursor xcell = x.cursor(), ycell = y.cursor();
         for (int i = beg; i != end; i += inc) {
-            data[i] = fn.applyAsDouble(xcell.next(), ycell.next());
+            data[i] = fn.applyAsDouble(xcell.getAndNext(), ycell.getAndNext());
         }
     }
 
@@ -1628,12 +1615,12 @@ public final class DataBlock implements DoubleSequence {
         }
     }
 
-    public DoubleSequence unmodifiable() {
-        return DoubleSequence.onMapping(this.length(), i -> get(i));
+    public DoubleSeq unmodifiable() {
+        return DoubleSeq.onMapping(this.length(), i -> get(i));
     }
 
     public String toString(String fmt) {
-        return DoubleSequence.format(this, fmt);
+        return DoubleSeq.format(this, fmt);
     }
 
     void slide(int del) {

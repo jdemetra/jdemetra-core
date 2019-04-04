@@ -18,8 +18,8 @@
 package demetra.maths.functions.ssq;
 
 import demetra.design.Development;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -50,13 +50,13 @@ public interface ISsqFunctionPoint {
      * 
      * @return Returns e(t,p)
      */
-    DoubleSequence getE();
+    DoubleSeq getE();
 
     /**
      * 
      * @return Returns p
      */
-    DoubleSequence getParameters();
+    DoubleSeq getParameters();
 
     /**
      * Gets the value of the function

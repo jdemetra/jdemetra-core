@@ -6,12 +6,12 @@
 package demetra.x11.filter;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.x11.SeriesEvolution;
 import demetra.x11.X11Context;
 import static demetra.x11.X11Kernel.table;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -19,7 +19,7 @@ import static demetra.x11.X11Kernel.table;
  */
 public class AutomaticHenderson {
 
-    public static double calcICR(X11Context context, DoubleSequence s) {
+    public static double calcICR(X11Context context, DoubleSeq s) {
         int freq = context.getPeriod();
         int filterLength = freq + 1;
         SymmetricFilter trendFilter = context.trendFilter(filterLength);
@@ -29,8 +29,8 @@ public class AutomaticHenderson {
         DataBlock out = DataBlock.ofInternal(x, ndrop, x.length - ndrop);
         trendFilter.apply(i -> s.get(i), IFilterOutput.of(out, ndrop));
 
-        DoubleSequence sc = DoubleSequence.of(out);
-        DoubleSequence si = context.remove(s.extract(ndrop, sc.length()), sc);
+        DoubleSeq sc = out;
+        DoubleSeq si = context.remove(s.extract(ndrop, sc.length()), sc);
         int nf = context.getForecastHorizon();
 //        int nb = context.getBackcastHorizon();
         sc = sc.drop(0, nf);

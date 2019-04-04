@@ -6,11 +6,11 @@
 package demetra.x11plus;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import static demetra.x11plus.X11Kernel.table;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -21,46 +21,46 @@ public class X11BStep {
     /**
      * @return the b4a
      */
-    public DoubleSequence getB4a() {
+    public DoubleSeq getB4a() {
         return b4a;
     }
 
     /**
      * @return the b4anorm
      */
-    public DoubleSequence getB4anorm() {
+    public DoubleSeq getB4anorm() {
         return b4anorm;
     }
 
     /**
      * @return the b4d
      */
-    public DoubleSequence getB4d() {
+    public DoubleSeq getB4d() {
         return b4d;
     }
 
     /**
      * @return the b4g
      */
-    public DoubleSequence getB4g() {
+    public DoubleSeq getB4g() {
         return b4g;
     }
 
     /**
      * @return the b9g
      */
-    public DoubleSequence getB9g() {
+    public DoubleSeq getB9g() {
         return b9g;
     }
 
-    private DoubleSequence b1, b2, b3, b4, b4a, b4anorm, b4d, b4g, b5, b6,
+    private DoubleSeq b1, b2, b3, b4, b4a, b4anorm, b4d, b4g, b5, b6,
             b7, b8, b9, b9g, b10, b11, b13, b17, b20;
     private int b2drop;
 
     public X11BStep() {
     }
 
-    public void process(DoubleSequence input, X11Context context) {
+    public void process(DoubleSeq input, X11Context context) {
         b1 = input;
         b2(context);
         b3(context);
@@ -80,7 +80,7 @@ public class X11BStep {
         double[] x = table(b1.length() - 2 * b2drop, Double.NaN);
         DataBlock out = DataBlock.ofInternal(x, 0, x.length);
         filter.apply(i -> b1.get(i), IFilterOutput.of(out, b2drop));
-        b2 = DoubleSequence.ofInternal(x);
+        b2 = DoubleSeq.of(x);
     }
 
     private void b3(X11Context context) {
@@ -103,7 +103,7 @@ public class X11BStep {
     
     private void b5(X11Context context) {
         IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
-        DoubleSequence b5a = filter.process(b4g);
+        DoubleSeq b5a = filter.process(b4g);
         b5=DefaultSeasonalNormalizer.normalize(b5a, b2drop, context);
     }
     
@@ -127,7 +127,7 @@ public class X11BStep {
         aep.process(b6, DataBlock.ofInternal(x));
         aep=new AsymmetricEndPoints(rf, 1);
         aep.process(b6, DataBlock.ofInternal(x));
-        b7 = DoubleSequence.ofInternal(x);
+        b7 = DoubleSeq.of(x);
         if (b7.anyMatch(z->z <=0))
             throw new X11Exception(X11Exception.ERR_NEG);
     }
@@ -138,9 +138,9 @@ public class X11BStep {
     
     private void b9(X11Context context) {
         IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
-        DoubleSequence b9a = filter.process(b8);
-        DoubleSequence b9c=DefaultSeasonalNormalizer.normalize(b9a, 0, context);
-        DoubleSequence b9d=context.remove(b8, b9c);
+        DoubleSeq b9a = filter.process(b8);
+        DoubleSeq b9c=DefaultSeasonalNormalizer.normalize(b9a, 0, context);
+        DoubleSeq b9d=context.remove(b8, b9c);
         DefaultExtremeValuesCorrector ecorr=new DefaultExtremeValuesCorrector();
         ecorr.setStart(0);
         ecorr.analyse(b9d, context);
@@ -151,7 +151,7 @@ public class X11BStep {
 
     private void bfinal(X11Context context) {
         IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
-        DoubleSequence b10a = filter.process(b9g);
+        DoubleSeq b10a = filter.process(b9g);
         b10=DefaultSeasonalNormalizer.normalize(b10a, 0, context);
         b11=context.remove(b1, b10);
         b13=context.remove(b11, b7);
@@ -167,102 +167,102 @@ public class X11BStep {
     /**
      * @return the b1
      */
-    public DoubleSequence getB1() {
+    public DoubleSeq getB1() {
         return b1;
     }
 
     /**
      * @return the b2
      */
-    public DoubleSequence getB2() {
+    public DoubleSeq getB2() {
         return b2;
     }
 
     /**
      * @return the b3
      */
-    public DoubleSequence getB3() {
+    public DoubleSeq getB3() {
         return b3;
     }
 
-    public DoubleSequence getB4() {
+    public DoubleSeq getB4() {
         return b4;
     }
 
     /**
      * @return the b5
      */
-    public DoubleSequence getB5() {
+    public DoubleSeq getB5() {
         return b5;
     }
 
     /**
      * @return the b6
      */
-    public DoubleSequence getB6() {
+    public DoubleSeq getB6() {
         return b6;
     }
 
     /**
      * @return the b7
      */
-    public DoubleSequence getB7() {
+    public DoubleSeq getB7() {
         return b7;
     }
 
     /**
      * @return the b8
      */
-    public DoubleSequence getB8() {
+    public DoubleSeq getB8() {
         return b8;
     }
 
     /**
      * @return the b9
      */
-    public DoubleSequence getB9() {
+    public DoubleSeq getB9() {
         return b9;
     }
 
     /**
      * @return the b10
      */
-    public DoubleSequence getB10() {
+    public DoubleSeq getB10() {
         return b10;
     }
 
     /**
      * @return the b11
      */
-    public DoubleSequence getB11() {
+    public DoubleSeq getB11() {
         return b11;
     }
 
     /**
      * @return the b13
      */
-    public DoubleSequence getB13() {
+    public DoubleSeq getB13() {
         return b13;
     }
 
     /**
      * @return the b19
      */
-    public DoubleSequence getB17() {
+    public DoubleSeq getB17() {
         return b17;
     }
 
     /**
      * @return the b20
      */
-    public DoubleSequence getB20() {
+    public DoubleSeq getB20() {
         return b20;
     }
 
     /**
      * @param b20 the b20 to set
      */
-    public void setB20(DoubleSequence b20) {
+    public void setB20(DoubleSeq b20) {
         this.b20 = b20;
     }
 }

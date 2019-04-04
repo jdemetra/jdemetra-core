@@ -18,9 +18,9 @@ package demetra.ssf;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.maths.matrices.QuadraticForm;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -77,26 +77,26 @@ public class StateStorage implements IStateResults {
         }
     }
 
-    public DoubleSequence getComponent(int pos) {
+    public DoubleSeq getComponent(int pos) {
         return A.item(pos);
     }
 
-    public DoubleSequence zcomponent(DoubleSequence z) {
+    public DoubleSeq zcomponent(DoubleSeq z) {
         double[] a=new double[this.size()];
         for (int i=0; i<a.length; ++i)
             a[i]=Doubles.dot(A.datablock(i), z);
-        return DoubleSequence.ofInternal(a);
+        return DoubleSeq.of(a);
     }
 
-    public DoubleSequence zvariance(DoubleSequence z) {
+    public DoubleSeq zvariance(DoubleSeq z) {
         DataBlock b=DataBlock.of(z);
         double[] a=new double[this.size()];
         for (int i=0; i<a.length; ++i)
             a[i]=QuadraticForm.apply(P.matrix(i), b);
-        return DoubleSequence.ofInternal(a);
+        return DoubleSeq.of(a);
     }
 
-    public DoubleSequence getComponentVariance(int pos) {
+    public DoubleSeq getComponentVariance(int pos) {
         return P.item(pos, pos);
     }
 

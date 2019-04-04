@@ -5,13 +5,13 @@
  */
 package demetra.stats.samples;
 
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.dstats.F;
 import demetra.dstats.T;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
 import java.util.stream.DoubleStream;
+import demetra.data.DoubleSeq;
 
 /**
  * Basic statistics on a sample. The items of the sample can be retrieved by a
@@ -21,16 +21,16 @@ import java.util.stream.DoubleStream;
  */
 public interface Sample {
 
-    public static Sample of(DoubleSequence data) {
+    public static Sample of(DoubleSeq data) {
         return new DefaultSample(data, Population.UNKNOWN);
     }
 
-    public static Sample ofResiduals(DoubleSequence data) {
+    public static Sample ofResiduals(DoubleSeq data) {
         double sx = 0, sxx = 0;
-        DoubleReader reader = data.reader();
+        DoubleSeqCursor reader = data.cursor();
         int n = data.length();
         for (int i = 0; i < n; ++i) {
-            double x = reader.next();
+            double x = reader.getAndNext();
             sx += x;
             sxx += x * x;
         }

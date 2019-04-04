@@ -25,7 +25,6 @@ import static demetra.timeseries.simplets.TsDataToolkit.commit;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
 import static demetra.timeseries.simplets.TsDataToolkit.normalize;
 import static demetra.timeseries.simplets.TsDataToolkit.pctVariation;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import static demetra.data.Doubles.average;
 import demetra.maths.linearfilters.HendersonFilters;
@@ -36,6 +35,7 @@ import demetra.design.Demo;
 import org.junit.Ignore;
 import static demetra.timeseries.simplets.TsDataToolkit.*;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -84,7 +84,7 @@ public class TsDataToolkitTest {
         t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             TsData s = delta(normalize(log(add(series, drop(series, 20, 50)))), 12);
-            DoubleSequence values = DoubleSequence.of(s.getValues());
+            DoubleSeq values = s.getValues();
             double v = average(values);
             if (k == 0) {
                 System.out.println(v);
@@ -144,7 +144,7 @@ public class TsDataToolkitTest {
     }
 
     private double distance(TsData s1, ec.tstoolkit.timeseries.simplets.TsData s2) {
-        return Doubles.distance(s1.getValues(), DoubleSequence.ofInternal(s2.internalStorage()));
+        return Doubles.distance(s1.getValues(), DoubleSeq.of(s2.internalStorage()));
     }
 
 }

@@ -19,8 +19,8 @@
 package demetra.x11plus;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.data.DoubleSeq;
 
 /**
  * Complete a smoothing algorithms by copying the smoothed values (at the
@@ -48,7 +48,7 @@ public final class CopyPeriodicEndPoints implements IEndPointsProcessor {
     }
 
     @Override
-    public void process(DoubleSequence in, DataBlock out) {
+    public void process(DoubleSeq in, DataBlock out) {
 	for (int i = npoints - 1, j = out.length() - npoints; i >= 0; --i, ++j) {
 	    out.set(i, out.get(i + period));
 	    out.set(j, out.get(j - period));

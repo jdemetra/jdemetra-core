@@ -12,9 +12,9 @@ import demetra.maths.linearfilters.ILinearProcess;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.ssf.State;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -74,9 +74,9 @@ public class FastFilter implements ILinearProcess {
                 DataBlock C = frslts.M(i);
                 // process by column
                 scols.reset();
-                DoubleReader r = row.reader();
+                DoubleSeqCursor r = row.cursor();
                 while (scols.hasNext()) {
-                    scols.next().addAY(r.next() / f, C);
+                    scols.next().addAY(r.getAndNext() / f, C);
                 }
             }
             row.mul(1 / Math.sqrt(f));
@@ -88,7 +88,7 @@ public class FastFilter implements ILinearProcess {
     }
 
     @Override
-    public boolean transform(DoubleSequence in, DataBlock out) {
+    public boolean transform(DoubleSeq in, DataBlock out) {
         if (in.length() > end - start) {
             return false;
         }

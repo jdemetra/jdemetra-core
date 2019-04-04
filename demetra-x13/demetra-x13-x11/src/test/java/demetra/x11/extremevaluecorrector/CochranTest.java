@@ -6,12 +6,12 @@
 package demetra.x11.extremevaluecorrector;
 
 import demetra.x11.extremevaluecorrector.Cochran;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.x11.X11Context;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -41,7 +41,7 @@ public class CochranTest {
         133.6, 131.1, 90.7, 68.8, 80.8, 112.6, 123.8, 121.6, 130.2, 133.5, 125.8, 136.3,
         135.8};
 
-    public static final DoubleSequence INPUT_DS = DoubleSequence.ofInternal(INPUT);
+    public static final DoubleSeq INPUT_DS = DoubleSeq.of(INPUT);
 
     @Test
     public void CochranTest() {
@@ -69,7 +69,7 @@ public class CochranTest {
                 .mode(demetra.sa.DecompositionMode.Multiplicative)
                 .period(12)
                 .build();
-        DoubleSequence missingValuesStartEnd = Doubles.extend(INPUT_DS, 6, 6);
+        DoubleSeq missingValuesStartEnd = Doubles.extend(INPUT_DS, 6, 6);
         cochran = new Cochran(missingValuesStartEnd, context);
 
         double[] actualStandardDeviation = cochran.getStandardDeviation();

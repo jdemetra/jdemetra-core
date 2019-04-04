@@ -7,7 +7,6 @@ package demetra.x12;
 
 import demetra.x12.OutliersDetectionModuleImpl;
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArimaUtility;
 import demetra.sarima.estimation.SarimaMapping;
@@ -20,6 +19,7 @@ import java.util.List;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.Ignore;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -42,7 +42,7 @@ public class OutliersDetectionModuleTest {
                 .criticalValue(3)
                 .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
                 .build();
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());
         od.process(regarima);
         int[][] outliers = od.getOutliers();
@@ -68,7 +68,7 @@ public class OutliersDetectionModuleTest {
                 .criticalValue(3)
                 .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
                 .build();
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());
         od.process(regarima);
         int[][] outliers = od.getOutliers();
@@ -115,7 +115,7 @@ public class OutliersDetectionModuleTest {
                     .criticalValue(3)
                     .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
                     .build();
-            RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+            RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
             od.prepare(regarima.getObservationsCount());
             od.process(regarima);
             int[][] outliers = od.getOutliers();

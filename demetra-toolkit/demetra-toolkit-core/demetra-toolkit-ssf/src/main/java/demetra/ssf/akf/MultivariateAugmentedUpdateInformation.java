@@ -17,12 +17,12 @@
 package demetra.ssf.akf;
 
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleSequence;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.State;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.MultivariateUpdateInformation;
+import demetra.data.DoubleSeq;
 
 /**
  * The augmented state only contains information on non missing values. So, it
@@ -57,7 +57,7 @@ public class MultivariateAugmentedUpdateInformation extends MultivariateUpdateIn
         return E.isZero(State.ZERO);
     }
 
-    public void compute(IMultivariateSsf ssf, int t, AugmentedState state, DoubleSequence x, int[] equations) {
+    public void compute(IMultivariateSsf ssf, int t, AugmentedState state, DoubleSeq x, int[] equations) {
 
         super.compute(ssf, t, state, x, equations);
         // E is ndiffuse x nobs. Each column contains the diffuse effects

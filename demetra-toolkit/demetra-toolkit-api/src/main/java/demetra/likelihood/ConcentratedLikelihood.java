@@ -17,11 +17,11 @@
 package demetra.likelihood;
 
 import demetra.design.Immutable;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
 import demetra.maths.MatrixType;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
 
 /**
  * This class represents the concentrated likelihood of a linear regression
@@ -84,7 +84,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
             return this;
         }
 
-        public Builder residuals(DoubleSequence residuals) {
+        public Builder residuals(DoubleSeq residuals) {
             if (residuals == null) {
                 return this;
             }
@@ -95,7 +95,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
             return this;
         }
 
-        public Builder coefficients(DoubleSequence coeff) {
+        public Builder coefficients(DoubleSeq coeff) {
             if (coeff != null) {
                 b = coeff.toArray();
             }
@@ -180,14 +180,14 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     @Override
-    public DoubleSequence e() {
-        return DoubleSequence.ofInternal(res);
+    public DoubleSeq e() {
+        return DoubleSeq.of(res);
     }
 
     @Override
     @Nonnull
-    public DoubleSequence coefficients() {
-        return DoubleSequence.ofInternal(b);
+    public DoubleSeq coefficients() {
+        return DoubleSeq.of(b);
     }
 
     @Override

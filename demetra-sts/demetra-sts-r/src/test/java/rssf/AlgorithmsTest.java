@@ -9,11 +9,10 @@ import demetra.msts.AtomicModels;
 import demetra.msts.ModelEquation;
 import demetra.data.Data;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
 import demetra.msts.CompositeModel;
 import demetra.msts.CompositeModelEstimation;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -210,8 +209,8 @@ public class AlgorithmsTest {
         double[] z=new double[30];
         z[0]=1;
         z[1]=1;
-        System.out.println(rslt.getFilteredStates().zvariance(DoubleSequence.ofInternal(z)));
-        System.out.println(rslt.getSmoothedStates().zvariance(DoubleSequence.ofInternal(z)));
+        System.out.println(rslt.getFilteredStates().zvariance(DoubleSeq.of(z)));
+        System.out.println(rslt.getSmoothedStates().zvariance(DoubleSeq.of(z)));
         System.out.println(rslt.getFilteredStates().getComponentVariance(3));
         System.out.println(rslt.getSmoothedStates().getComponentVariance(3));
         System.out.println(rslt.getFilteredStates().getComponentVariance(14));

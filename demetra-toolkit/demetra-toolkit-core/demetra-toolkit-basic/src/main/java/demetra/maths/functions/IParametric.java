@@ -18,7 +18,7 @@
 package demetra.maths.functions;
 
 import demetra.design.Development;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -39,7 +39,7 @@ public interface IParametric extends Cloneable {
      * 
      * @return
      */
-    DoubleSequence getParameters();
+    DoubleSeq getParameters();
 
     /**
      * 
@@ -58,5 +58,5 @@ public interface IParametric extends Cloneable {
      * 
      * @param parameters
      */
-    void setParameters(DoubleSequence parameters);
+    void setParameters(DoubleSeq parameters);
 }

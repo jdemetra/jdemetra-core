@@ -16,12 +16,12 @@
  */
 package demetra.stats.tests;
 
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.dstats.Chi2;
 import demetra.stats.AutoCovariances;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -39,7 +39,7 @@ public class LjungBox {
     private final IntToDoubleFunction autoCorrelations;
     private final int n;
 
-    public LjungBox(DoubleSequence sample) {
+    public LjungBox(DoubleSeq sample) {
         this.autoCorrelations = AutoCovariances.autoCorrelationFunction(sample, 0);
         this.n = sample.length();
     }

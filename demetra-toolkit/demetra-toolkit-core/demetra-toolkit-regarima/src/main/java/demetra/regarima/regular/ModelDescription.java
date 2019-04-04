@@ -19,8 +19,7 @@ package demetra.regarima.regular;
 import demetra.modelling.regression.Variable;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.transformation.LogJacobian;
 import demetra.data.ParameterType;
 import demetra.data.transformation.DataInterpolator;
@@ -52,6 +51,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -169,10 +169,10 @@ public final class ModelDescription {
                 final TsDomain domain = tmp.getDomain();
                 preadjustmentVariables.forEach(v -> {
                     Matrix m = Regression.matrix(domain, v.getVariable());
-                    DoubleReader reader = v.getCoefficients().reader();
+                    DoubleSeqCursor reader = v.getCoefficients().cursor();
                     DataBlockIterator columns = m.columnsIterator();
                     while (columns.hasNext()) {
-                        ndata.addAY(reader.next(), columns.next());
+                        ndata.addAY(reader.getAndNext(), columns.next());
                     }
                 });
                 tmp = TsData.ofInternal(domain.getStartPeriod(), ndata.getStorage());
@@ -191,7 +191,7 @@ public final class ModelDescription {
             buildTransformation();
             buildRegressionVariables();
             RegArimaModel.Builder builder = RegArimaModel.builder(SarimaModel.class)
-                    .y(DoubleSequence.ofInternal(transformedSeries.data))
+                    .y(DoubleSeq.of(transformedSeries.data))
                     .missing(transformedSeries.missing)
                     .arima(arima.getModel())
                     .meanCorrection(arima.isMean());
@@ -559,11 +559,11 @@ public final class ModelDescription {
         int p = this.getAnnualFrequency();
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
         Matrix J = Matrix.EMPTY;
-        DoubleSequence score = DoubleSequence.empty();
+        DoubleSeq score = DoubleSeq.empty();
         if (max != null) {
             double[] gradient = max.getGradient();
             Matrix hessian = rslt.getMax().getHessian();
-            score = DoubleSequence.ofInternal(gradient == null ? DoubleSequence.EMPTYARRAY : gradient);
+            score = DoubleSeq.of(gradient == null ? DoubleSeq.EMPTYARRAY : gradient);
             J = hessian == null ? null : SymmetricMatrix.inverse(hessian);
             if (np < allp) {
                 J = expand(J);

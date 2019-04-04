@@ -16,7 +16,6 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.dstats.Chi2;
@@ -26,6 +25,7 @@ import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
 import java.util.function.IntToDoubleFunction;
 import demetra.ar.AutoRegressiveEstimation;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -42,7 +42,7 @@ public class PeriodicLjungBox {
     private final IntToDoubleFunction autoCorrelations;
     private final int n;
 
-    public PeriodicLjungBox(DoubleSequence sample, int nar) {
+    public PeriodicLjungBox(DoubleSeq sample, int nar) {
         if (nar > 0) {
             AutoRegressiveEstimation burg = AutoRegressiveEstimation.burg();
             burg.estimate(sample, nar);

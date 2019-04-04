@@ -20,7 +20,7 @@ package demetra.maths.functions;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -36,7 +36,7 @@ public interface IParametersDomain {
      * @param inparams
      * @return
      */
-    boolean checkBoundaries(DoubleSequence inparams);
+    boolean checkBoundaries(DoubleSeq inparams);
 
     /**
      * 
@@ -44,7 +44,7 @@ public interface IParametersDomain {
      * @param idx
      * @return
      */
-    double epsilon(DoubleSequence inparams, int idx);
+    double epsilon(DoubleSeq inparams, int idx);
 
     /**
      * 

@@ -17,7 +17,6 @@
 package demetra.sarima.internal;
 
 import demetra.regarima.RegArmaModel;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
@@ -30,6 +29,7 @@ import demetra.sarima.SarmaSpecification;
 import demetra.sarima.estimation.HannanRissanen;
 import demetra.sarima.IArmaInitializer;
 import demetra.sarima.estimation.SarimaMapping;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -83,7 +83,7 @@ public class HannanRissanenInitializer implements IArmaInitializer {
     private static final double EPS = 1e-9;
 
     private final boolean usedefault, stabilize, failifunstable;
-    private DoubleSequence dy_;
+    private DoubleSeq dy_;
 
     public boolean isStabilizing() {
         return stabilize;

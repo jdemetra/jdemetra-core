@@ -25,7 +25,7 @@ import demetra.ssf.IPredictionErrorDecomposition;
 import demetra.likelihood.ResidualsCumulator;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -55,7 +55,7 @@ public class PredictionErrorDecomposition implements
         return bres;
     }
 
-    public DoubleSequence errors(boolean normalized, boolean clean) {
+    public DoubleSeq errors(boolean normalized, boolean clean) {
         if (!bres || !normalized) {
             return null;
         }

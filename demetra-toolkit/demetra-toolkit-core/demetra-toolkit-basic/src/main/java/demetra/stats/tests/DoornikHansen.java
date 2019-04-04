@@ -16,12 +16,12 @@
 */
 package demetra.stats.tests;
 
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.dstats.Chi2;
 import demetra.stats.DescriptiveStatistics;
 import demetra.stats.StatException;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -34,7 +34,7 @@ public class DoornikHansen
 {
     private final DescriptiveStatistics stats;
     
-    public DoornikHansen(DoubleSequence data)
+    public DoornikHansen(DoubleSeq data)
     {
         this.stats=DescriptiveStatistics.of(data);
     }

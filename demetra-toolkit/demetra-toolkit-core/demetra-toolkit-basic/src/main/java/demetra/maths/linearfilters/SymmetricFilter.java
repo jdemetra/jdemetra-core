@@ -28,7 +28,7 @@ import demetra.maths.polynomials.Polynomial;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntToDoubleFunction;
 import javax.annotation.Nonnull;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -97,7 +97,7 @@ public final class SymmetricFilter extends AbstractFiniteFilter {
      * moreover, they should be symmetric (w[i] == w[w.getDegree()-i]).
      * @return The corresponding
      */
-    public static SymmetricFilter createFromWeights(final DoubleSequence w) {
+    public static SymmetricFilter createFromWeights(final DoubleSeq w) {
         int d = w.length() - 1;
         if (d % 2 != 0) {
             throw new LinearFilterException(

@@ -5,13 +5,13 @@
  */
 package demetra.msts;
 
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.maths.functions.IParametersDomain;
 import demetra.ssf.SsfException;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -37,10 +37,10 @@ public interface ParameterInterpreter {
      * @param inparams
      * @return Contains fixed model parameters, initialized with default values
      */
-    public static double[] decode(List<ParameterInterpreter> blocks, DoubleSequence inparams) {
+    public static double[] decode(List<ParameterInterpreter> blocks, DoubleSeq inparams) {
         double[] buffer = new double[fullDim(blocks.stream())];
         int pos = 0;
-        DoubleReader reader = inparams.reader();
+        DoubleSeqCursor reader = inparams.cursor();
         for (ParameterInterpreter p : blocks) {
             pos = p.decode(reader, buffer, pos);
         }
@@ -55,8 +55,8 @@ public interface ParameterInterpreter {
      * @param test
      * @param inparams
      */
-    public static void fixModelParameters(List<ParameterInterpreter> blocks, Predicate<ParameterInterpreter> test, DoubleSequence inparams) {
-        DoubleReader reader = inparams.reader();
+    public static void fixModelParameters(List<ParameterInterpreter> blocks, Predicate<ParameterInterpreter> test, DoubleSeq inparams) {
+        DoubleSeqCursor reader = inparams.cursor();
         for (ParameterInterpreter p : blocks) {
             if (test.test(p)) {
                 p.fixModelParameter(reader);
@@ -74,10 +74,10 @@ public interface ParameterInterpreter {
      * @param inparams
      * @return
      */
-    public static double[] encode(List<ParameterInterpreter> blocks, DoubleSequence inparams) {
+    public static double[] encode(List<ParameterInterpreter> blocks, DoubleSeq inparams) {
         double[] buffer = new double[dim(blocks.stream())];
         int pos = 0;
-        DoubleReader reader = inparams.reader();
+        DoubleSeqCursor reader = inparams.cursor();
         for (ParameterInterpreter p : blocks) {
             pos = p.encode(reader, buffer, pos);
         }
@@ -119,7 +119,7 @@ public interface ParameterInterpreter {
      *
      * @param reader The current parameters
      */
-    void fixModelParameter(DoubleReader reader);
+    void fixModelParameter(DoubleSeqCursor reader);
 
     void free();
 
@@ -132,7 +132,7 @@ public interface ParameterInterpreter {
      * @param pos The current position in the buffer
      * @return The new position in the buffer
      */
-    int decode(DoubleReader reader, double[] buffer, int pos);
+    int decode(DoubleSeqCursor reader, double[] buffer, int pos);
 
     /**
      * Transforms true parameters into function parameters (skipping fixed
@@ -143,7 +143,7 @@ public interface ParameterInterpreter {
      * @param pos
      * @return
      */
-    int encode(DoubleReader reader, double[] buffer, int pos);
+    int encode(DoubleSeqCursor reader, double[] buffer, int pos);
 
     IParametersDomain getDomain();
 

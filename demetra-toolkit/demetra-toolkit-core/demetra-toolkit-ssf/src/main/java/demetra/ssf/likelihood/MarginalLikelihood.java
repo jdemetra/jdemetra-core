@@ -18,10 +18,10 @@ package demetra.ssf.likelihood;
 
 import demetra.data.DataBlock;
 import demetra.likelihood.ILikelihood;
-import demetra.data.DoubleSequence;
 import demetra.data.Doubles;
 import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -47,7 +47,7 @@ public class MarginalLikelihood implements ILikelihood {
             this.nd = nd;
         }
 
-        public Builder residuals(DoubleSequence residuals) {
+        public Builder residuals(DoubleSeq residuals) {
             if (residuals == null) {
                 return this;
             }
@@ -156,7 +156,7 @@ public class MarginalLikelihood implements ILikelihood {
     }
     
     public static MarginalLikelihood of(DiffuseLikelihood dl, double mcorr){
-        DoubleSequence e = dl.e();
+        DoubleSeq e = dl.e();
         return new MarginalLikelihood(dl.isScalingFactor(), dl.dim(), dl.getD(), dl.ssq(), dl.logDeterminant(), dl.getDiffuseCorrection(), mcorr, e == null ? null : e.toArray(), dl.isLegacy());
     }
 
@@ -275,8 +275,8 @@ public class MarginalLikelihood implements ILikelihood {
     }
 
     @Override
-    public DoubleSequence e() {
-        return res == null ? null : DoubleSequence.ofInternal(res);
+    public DoubleSeq e() {
+        return res == null ? null : DoubleSeq.of(res);
     }
 
     public MarginalLikelihood add(ILikelihood ll) {

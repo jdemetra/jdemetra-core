@@ -18,7 +18,7 @@ package demetra.maths.functions.ssq;
 
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -70,7 +70,7 @@ public interface ISsqFunctionMinimizer {
      */
     ISsqFunctionPoint getResult();
 
-    DoubleSequence gradientAtMinimum();
+    DoubleSeq gradientAtMinimum();
 
     double getObjective();
 

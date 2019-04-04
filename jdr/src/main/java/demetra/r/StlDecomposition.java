@@ -5,7 +5,6 @@
  */
 package demetra.r;
 
-import demetra.data.DoubleSequence;
 import demetra.information.InformationMapping;
 import demetra.stl.IDataGetter;
 import demetra.stl.IDataSelector;
@@ -16,6 +15,7 @@ import demetra.stl.StlPlusSpecification;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -29,7 +29,8 @@ public class StlDecomposition {
     public static class Results implements ProcResults {
 
         boolean multiplicative;
-        DoubleSequence y, t, s, i;
+        DoubleSeq y;
+        DoubleSeq t, s, i;
 
         @Override
         public boolean contains(String id) {
@@ -63,11 +64,12 @@ public class StlDecomposition {
             MAPPING.set(I, double[].class, source -> source.getI().toArray());
             MAPPING.set(SA, double[].class, source
                     -> {
-                DoubleSequence y = source.getY(), s = source.getS();
+                DoubleSeq y = source.getY();
+                DoubleSeq s = source.getS();
                 if (source.isMultiplicative()) {
-                    return DoubleSequence.onMapping(y.length(), i -> y.get(i) / s.get(i)).toArray();
+                    return DoubleSeq.onMapping(y.length(), i -> y.get(i) / s.get(i)).toArray();
                 } else {
-                    return DoubleSequence.onMapping(y.length(), i -> y.get(i) - s.get(i)).toArray();
+                    return DoubleSeq.onMapping(y.length(), i -> y.get(i) - s.get(i)).toArray();
                 }
             }
             );
@@ -82,14 +84,14 @@ public class StlDecomposition {
         }
         spec.setMultiplicative(mul);
         StlPlus stl = spec.build();
-        DoubleSequence y = DoubleSequence.ofInternal(data);
+        DoubleSeq y = DoubleSeq.of(data);
         stl.process(y);
 
         return Results.builder()
                 .y(y)
-                .t(DoubleSequence.ofInternal(stl.getTrend()))
-                .s(DoubleSequence.ofInternal(stl.getSeason(0)))
-                .i(DoubleSequence.ofInternal(stl.getIrr()))
+                .t(DoubleSeq.of(stl.getTrend()))
+                .s(DoubleSeq.of(stl.getSeason(0)))
+                .i(DoubleSeq.of(stl.getIrr()))
                 .multiplicative(mul)
                 .build();
 

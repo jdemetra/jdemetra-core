@@ -17,11 +17,11 @@
 package demetra.seats;
 
 import demetra.arima.IArimaModel;
-import demetra.data.DoubleSequence;
 import demetra.sa.ComponentType;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.SarimaModel;
 import demetra.ucarima.UcarimaModel;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -30,7 +30,7 @@ import demetra.ucarima.UcarimaModel;
 @lombok.Data()
 public class SeatsModel {
 
-    public static SeatsModel of(DoubleSequence series, SarimaModel originalModel, boolean meanCorrection) {
+    public static SeatsModel of(DoubleSeq series, SarimaModel originalModel, boolean meanCorrection) {
         SeatsModel model = new SeatsModel();
         model.series = series;
         model.originalModel = originalModel;
@@ -39,7 +39,7 @@ public class SeatsModel {
         return model;
     }
 
-    private DoubleSequence series;
+    private DoubleSeq series;
     private SarimaModel originalModel;
     private boolean meanCorrection;
     private int forecastsCount, backcastsCount;

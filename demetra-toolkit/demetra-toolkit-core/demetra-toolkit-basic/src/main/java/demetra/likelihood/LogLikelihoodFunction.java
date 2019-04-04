@@ -16,7 +16,6 @@
  */
 package demetra.likelihood;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IFunctionDerivatives;
@@ -26,6 +25,7 @@ import demetra.maths.functions.IParametricMapping;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import java.util.function.Function;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -56,7 +56,7 @@ public class LogLikelihoodFunction<T, L extends ILikelihood> implements IFunctio
     }
 
     @Override
-    public IFunctionPoint evaluate(DoubleSequence parameters) {
+    public IFunctionPoint evaluate(DoubleSeq parameters) {
         return new llPoint(parameters);
     }
 
@@ -67,10 +67,10 @@ public class LogLikelihoodFunction<T, L extends ILikelihood> implements IFunctio
 
     private class llPoint implements IFunctionPoint {
 
-        private final DoubleSequence parameters;
+        private final DoubleSeq parameters;
         private final T t;
 
-        llPoint(DoubleSequence parameters) {
+        llPoint(DoubleSeq parameters) {
             this.parameters = parameters;
             this.t = mapping.map(parameters);
         }
@@ -81,7 +81,7 @@ public class LogLikelihoodFunction<T, L extends ILikelihood> implements IFunctio
         }
 
         @Override
-        public DoubleSequence getParameters() {
+        public DoubleSeq getParameters() {
             return parameters;
         }
 
@@ -96,7 +96,7 @@ public class LogLikelihoodFunction<T, L extends ILikelihood> implements IFunctio
         }
     }
     
-    public Point point(DoubleSequence parameters){
+    public Point point(DoubleSeq parameters){
         IFunctionDerivatives d = this.evaluate(parameters).derivatives();
         return new Point(this, parameters.toArray(), d.gradient().toArray(), SymmetricMatrix.inverse(d.hessian()));
     }

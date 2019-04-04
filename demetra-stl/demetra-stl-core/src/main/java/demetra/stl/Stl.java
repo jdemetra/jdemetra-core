@@ -18,8 +18,8 @@ package demetra.stl;
 
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
-import demetra.data.DoubleSequence;
 import java.util.function.DoubleUnaryOperator;
+import demetra.data.DoubleSeq;
 
 /**
  * Java implementation of the original FORTRAN routine
@@ -56,7 +56,7 @@ public class Stl {
         this.spec = spec;
     }
 
-    public boolean process(DoubleSequence data) {
+    public boolean process(DoubleSeq data) {
 
         if (!initializeProcessing(data)) {
             return false;
@@ -99,7 +99,7 @@ public class Stl {
         return true;
     }
 
-    private boolean initializeProcessing(DoubleSequence data) {
+    private boolean initializeProcessing(DoubleSeq data) {
         int n = data.length();
         y = new double[n];
         data.copyTo(y, 0);

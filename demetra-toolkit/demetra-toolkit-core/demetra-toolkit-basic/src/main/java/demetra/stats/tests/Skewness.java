@@ -19,8 +19,8 @@ package demetra.stats.tests;
 import demetra.design.Development;
 import demetra.dstats.Normal;
 import demetra.stats.DescriptiveStatistics;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
+import demetra.data.DoubleSeq;
 
 
 /**
@@ -33,7 +33,7 @@ public class Skewness
 {
     private final DescriptiveStatistics stats;
     
-    public Skewness(DoubleSequence data)
+    public Skewness(DoubleSeq data)
     {
         this.stats=DescriptiveStatistics.of(data);
     }

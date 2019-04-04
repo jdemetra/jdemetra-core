@@ -18,10 +18,10 @@ package demetra.fractionalairline;
 
 import demetra.arima.ArimaModel;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.arima.estimation.IArimaMapping;
+import demetra.data.DoubleSeq;
 
 public class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
 
@@ -56,7 +56,7 @@ public class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
     }
 
     @Override
-    public ArimaModel map(DoubleSequence p) {
+    public ArimaModel map(DoubleSeq p) {
         double th = p.get(0), bth = p.get(1);
         double[] ma = new double[]{1, -th};
         double[] dma = new double[adjust ? p0 + 2 : p0 + 1];
@@ -95,7 +95,7 @@ public class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
     }
 
     @Override
-    public DoubleSequence parametersOf(ArimaModel t) {
+    public DoubleSeq parametersOf(ArimaModel t) {
         BackFilter ma = t.getMA();
         double[] p = new double[2];
         p[0] = -ma.get(1);
@@ -104,16 +104,16 @@ public class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
         } else {
             p[1] = -ma.get(p0);
         }
-        return DoubleSequence.of(p);
+        return DoubleSeq.copyOf(p);
     }
 
     @Override
-    public boolean checkBoundaries(DoubleSequence inparams) {
+    public boolean checkBoundaries(DoubleSeq inparams) {
         return inparams.allMatch(x -> Math.abs(x) < .999);
     }
 
     @Override
-    public double epsilon(DoubleSequence inparams, int idx) {
+    public double epsilon(DoubleSeq inparams, int idx) {
         return 1e-6;
     }
 
@@ -154,8 +154,8 @@ public class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
     }
 
     @Override
-    public DoubleSequence getDefaultParameters() {
-        return DoubleSequence.of(.9, .9);
+    public DoubleSeq getDefaultParameters() {
+        return DoubleSeq.copyOf(.9, .9);
     }
 
     @Override

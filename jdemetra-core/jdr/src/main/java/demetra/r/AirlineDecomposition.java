@@ -24,7 +24,7 @@ import demetra.descriptors.arima.UcarimaDescriptor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlockStorage;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
@@ -136,7 +136,7 @@ public class AirlineDecomposition {
 
         RegArimaModel<SarimaModel> regarima
                 = RegArimaModel.builder(SarimaModel.class)
-                        .y(DoubleSequence.of(s.getValues()))
+                        .y(DoubleSeq.of(s.getValues()))
                         .arima(arima)
                         .build();
         RegArimaEstimation<SarimaModel> rslt = monitor.process(regarima);

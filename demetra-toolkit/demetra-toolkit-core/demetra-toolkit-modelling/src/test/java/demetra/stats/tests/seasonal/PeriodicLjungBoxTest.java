@@ -17,12 +17,12 @@
 package demetra.stats.tests.seasonal;
 
 import demetra.stats.tests.seasonal.PeriodicLjungBox;
-import demetra.data.DoubleSequence;
 import demetra.data.WeeklyData;
 import demetra.stats.tests.StatisticalTest;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -47,14 +47,14 @@ public class PeriodicLjungBoxTest {
     @Test
     public void testRandom() {
         Random rnd = new Random();
-        PeriodicLjungBox lb = new PeriodicLjungBox(DoubleSequence.onMapping(1000, i -> rnd.nextGaussian()), 0);
+        PeriodicLjungBox lb = new PeriodicLjungBox(DoubleSeq.onMapping(1000, i -> rnd.nextGaussian()), 0);
 //        for (int i = 3; i < 20; ++i) {
 //            StatisticalTest test = lb.lags(365.25 / i, 10).useAllAutocorrelations().build();
 //            System.out.println(test.getValue());
 //        }
     }
 
-    private DoubleSequence ldel(final double[] x) {
+    private DoubleSeq ldel(final double[] x) {
         final double[] lx = new double[x.length];
         for (int i = 0; i < lx.length; ++i) {
             lx[i] = Math.log(x[i]);
@@ -69,10 +69,10 @@ public class PeriodicLjungBoxTest {
         for (int i = 0; i < dlx.length; ++i) {
             dlx[i] -= s;
         }
-        return DoubleSequence.onMapping(dlx.length, i -> dlx[i]);
+        return DoubleSeq.onMapping(dlx.length, i -> dlx[i]);
     }
 
-    private DoubleSequence log(final double[] x) {
+    private DoubleSeq log(final double[] x) {
         final double[] lx = new double[x.length];
         int s = 0;
         for (int i = 0; i < lx.length; ++i) {
@@ -83,6 +83,6 @@ public class PeriodicLjungBoxTest {
         for (int i = 0; i < lx.length; ++i) {
             lx[i] -= s;
         }
-        return DoubleSequence.onMapping(lx.length, i -> lx[i]);
+        return DoubleSeq.onMapping(lx.length, i -> lx[i]);
     }
 }

@@ -14,9 +14,9 @@ import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import demetra.data.DoubleSequence;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.leastsquares.QRSolver;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -44,7 +44,7 @@ public class Ols implements IOls {
 
     @Override
     public LeastSquaresResults compute(LinearModel model) {
-        DoubleSequence y = model.getY();
+        DoubleSeq y = model.getY();
         Matrix x = model.variables();
         if (!solver.solve(y, x)) {
             throw new EcoException(EcoException.OLS_FAILED);

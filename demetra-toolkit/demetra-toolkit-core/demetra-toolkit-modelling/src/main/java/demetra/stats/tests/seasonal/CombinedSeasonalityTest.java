@@ -17,10 +17,10 @@
 
 package demetra.stats.tests.seasonal;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.stats.tests.FTest;
 import demetra.stats.tests.StatisticalTest;
+import demetra.data.DoubleSeq;
 
 /**
  * @author Jean Palate
@@ -72,7 +72,7 @@ public class CombinedSeasonalityTest {
      * @param ts
      * @param mul
      */
-    public CombinedSeasonalityTest(DoubleSequence ts, int period, boolean mul)
+    public CombinedSeasonalityTest(DoubleSeq ts, int period, boolean mul)
     {
 	kruskallwallis = new KruskalWallis(ts, period);
 	stable = SeasonalityTest.stableSeasonality(ts, period);

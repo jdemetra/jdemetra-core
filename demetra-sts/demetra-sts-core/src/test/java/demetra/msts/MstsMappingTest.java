@@ -8,7 +8,6 @@ package demetra.msts;
 import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DoubleSequence;
 import demetra.data.MatrixSerializer;
 import demetra.maths.MatrixType;
 import demetra.maths.functions.IParametersDomain;
@@ -35,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import org.junit.Test;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -158,13 +158,13 @@ public class MstsMappingTest {
 class ARDomain implements IParametersDomain {
 
     @Override
-    public boolean checkBoundaries(DoubleSequence inparams) {
+    public boolean checkBoundaries(DoubleSeq inparams) {
         // only for ar parameters at pos 8,9
         return SarimaMapping.checkStability(-inparams.get(1), -inparams.get(0));
     }
 
     @Override
-    public double epsilon(DoubleSequence inparams, int idx) {
+    public double epsilon(DoubleSeq inparams, int idx) {
         return 1e-6;
     }
 

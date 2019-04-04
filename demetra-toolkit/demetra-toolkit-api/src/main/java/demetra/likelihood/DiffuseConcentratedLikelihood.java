@@ -18,10 +18,10 @@ package demetra.likelihood;
 
 import demetra.maths.MatrixType;
 import java.util.function.Supplier;
-import demetra.data.DoubleSequence;
 import demetra.design.BuilderPattern;
 import demetra.eco.EcoException;
 import demetra.maths.Constants;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -74,7 +74,7 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
             return this;
         }
 
-        public Builder residuals(DoubleSequence residuals) {
+        public Builder residuals(DoubleSeq residuals) {
             if (residuals == null) {
                 return this;
             }
@@ -85,7 +85,7 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
             return this;
         }
 
-        public Builder coefficients(DoubleSequence coeff) {
+        public Builder coefficients(DoubleSeq coeff) {
             if (coeff != null) {
                 b = coeff.toArray();
             }
@@ -191,8 +191,8 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     @Override
-    public DoubleSequence e() {
-        return res == null ? null : DoubleSequence.ofInternal(res);
+    public DoubleSeq e() {
+        return res == null ? null : DoubleSeq.of(res);
     }
 
     @Override
@@ -220,8 +220,8 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     @Override
-    public DoubleSequence coefficients() {
-        return DoubleSequence.ofInternal(b);
+    public DoubleSeq coefficients() {
+        return DoubleSeq.of(b);
     }
 
     @Override

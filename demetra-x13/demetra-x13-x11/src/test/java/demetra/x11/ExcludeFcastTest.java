@@ -5,7 +5,6 @@
  */
 package demetra.x11;
 
-import demetra.data.DoubleSequence;
 import demetra.sa.DecompositionMode;
 import ec.satoolkit.algorithm.implementation.X13ProcessingFactory;
 import ec.satoolkit.x11.CalendarSigma;
@@ -18,6 +17,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import org.junit.Assert;
 import org.junit.Test;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -72,7 +72,7 @@ public class ExcludeFcastTest {
 
     private void excludeFcastTest(CalendarSigmaOption option, boolean excludeFcast, SigmavecOption[] sigmavecOptions) {
 
-        DoubleSequence b1 = DoubleSequence.of(B1);
+        DoubleSeq b1 = DoubleSeq.copyOf(B1);
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(DecompositionMode.Additive)
                 .finalSeasonalFilter(SeasonalFilterOption.S3X3)

@@ -19,8 +19,8 @@ package demetra.ar.internal;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Fast;
 import org.openide.util.lookup.ServiceProvider;
-import demetra.data.DoubleSequence;
 import demetra.ar.AutoRegressiveEstimation;
+import demetra.data.DoubleSeq;
 
 /**
  * This class implements the Durbin's algorithm, which fits recursively
@@ -38,20 +38,20 @@ public class LevinsonAlgorithm implements AutoRegressiveEstimation {
     private double[] a;
 
     @Override
-    public boolean estimate(DoubleSequence y, int m) {
+    public boolean estimate(DoubleSeq y, int m) {
         this.y = new double[y.length()];
         y.copyTo(this.y, 0);
         return calc(m);
     }
 
     @Override
-    public DoubleSequence coefficients() {
-        return DoubleSequence.ofInternal(a);
+    public DoubleSeq coefficients() {
+        return DoubleSeq.of(a);
     }
 
     @Override
-    public DoubleSequence data() {
-        return DoubleSequence.of(y);
+    public DoubleSeq data() {
+        return DoubleSeq.copyOf(y);
     }
 
     private boolean calc(int m) {

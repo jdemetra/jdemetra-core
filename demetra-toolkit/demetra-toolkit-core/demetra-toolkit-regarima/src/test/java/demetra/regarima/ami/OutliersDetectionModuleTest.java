@@ -17,7 +17,6 @@
 package demetra.regarima.ami;
 
 import demetra.data.Data;
-import demetra.data.DoubleSequence;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.outlier.ExactSingleOutlierDetector;
 import demetra.sarima.FastSarimaProcessor;
@@ -29,6 +28,7 @@ import demetra.timeseries.TsPeriod;
 import java.util.function.Consumer;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -55,7 +55,7 @@ public class OutliersDetectionModuleTest {
         System.out.println("Full");
 //        Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
 //        Consumer<int[]> rhook = a -> System.out.println("Remove outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
 //        od.setAddHook(hook);
 //        od.setRemoveHook(rhook);
         long t0 = System.currentTimeMillis();
@@ -83,7 +83,7 @@ public class OutliersDetectionModuleTest {
         System.out.println("Fast");
 //        Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
 //        Consumer<int[]> rhook = a -> System.out.println("Remove outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSequence.of(Data.PROD)).arima(sarima).build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
 //        od.setAddHook(hook);
 //        od.setRemoveHook(rhook);
         long t0 = System.currentTimeMillis();

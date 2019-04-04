@@ -16,8 +16,8 @@
  */
 package demetra.maths;
 
-import demetra.data.DoubleSequence;
 import demetra.design.Development;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -46,7 +46,7 @@ class LightSubMatrix implements MatrixType {
     }
 
     @Override
-    public DoubleSequence row(int irow) {
+    public DoubleSeq row(int irow) {
         if (irow < 0 || irow >= nr) {
             throw new IndexOutOfBoundsException();
         }
@@ -54,7 +54,7 @@ class LightSubMatrix implements MatrixType {
     }
 
     @Override
-    public DoubleSequence column(int icolumn) {
+    public DoubleSeq column(int icolumn) {
         if (icolumn < 0 || icolumn >= nc) {
             throw new IndexOutOfBoundsException();
         }
@@ -72,20 +72,20 @@ class LightSubMatrix implements MatrixType {
     }
 
     @Override
-    public DoubleSequence diagonal() {
-        DoubleSequence d = core.subDiagonal(c0 - r0);
+    public DoubleSeq diagonal() {
+        DoubleSeq d = core.subDiagonal(c0 - r0);
         int start = Math.min(r0, c0);
         int n = Math.min(nr, nc);
         return d.extract(start, n);
     }
 
     @Override
-    public DoubleSequence subDiagonal(int pos) {
+    public DoubleSeq subDiagonal(int pos) {
         if (pos > nc || pos < -nr) {
-            return DoubleSequence.empty();
+            return DoubleSeq.empty();
         }
         int del = c0 - r0;
-        DoubleSequence d = core.subDiagonal(del + pos);
+        DoubleSeq d = core.subDiagonal(del + pos);
         int start = 0;
         int n;
         if (pos > 0) {

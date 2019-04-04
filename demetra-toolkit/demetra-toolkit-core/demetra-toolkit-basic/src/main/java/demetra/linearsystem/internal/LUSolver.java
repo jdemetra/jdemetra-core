@@ -23,10 +23,10 @@ import demetra.design.BuilderPattern;
 import demetra.maths.matrices.decomposition.ILUDecomposition;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.MatrixException;
-import demetra.data.DoubleCell;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import demetra.linearsystem.LinearSystemSolver;
+import demetra.data.DoubleVectorCursor;
 
 /**
  *
@@ -88,7 +88,7 @@ public class LUSolver implements LinearSystemSolver {
 
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
-            DoubleCell cells = b.cells();
+            DoubleVectorCursor cells = b.cursor();
             while (rows.hasNext()) {
                 DataBlock row = rows.next();
                 double norm = row.norm2()/Math.sqrt(row.length());

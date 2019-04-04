@@ -7,7 +7,6 @@ package demetra.r;
 
 import demetra.arima.ArimaModel;
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.fractionalairline.MultiPeriodicAirlineMapping;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
@@ -28,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import demetra.processing.ProcResults;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -61,7 +61,7 @@ public class PeriodicAirline {
             MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters());
             MAPPING.set(B, double[].class, source
                     -> {
-                DoubleSequence b = source.getConcentratedLogLikelihood().coefficients();
+                DoubleSeq b = source.getConcentratedLogLikelihood().coefficients();
                 return b.toArray();
             });
             MAPPING.set(T, double[].class, source
@@ -72,7 +72,7 @@ public class PeriodicAirline {
             MAPPING.set(MEAN, Double.class, source
                     -> {
                 if (source.getRegarima().isMean()) {
-                    DoubleSequence b = source.getConcentratedLogLikelihood().coefficients();
+                    DoubleSeq b = source.getConcentratedLogLikelihood().coefficients();
                     int mpos = source.getRegarima().getMissingValuesCount();
                     return b.get(mpos);
                 } else {
@@ -93,11 +93,11 @@ public class PeriodicAirline {
             });
             MAPPING.set(REGRESSORS, MatrixType.class, source
                     -> {
-                List<DoubleSequence> x = source.regarima.getX();
+                List<DoubleSeq> x = source.regarima.getX();
                 int n=source.regarima.getY().length(), m=x.size();
                 double[] all=new double[n*m];
                 int pos=0;
-                for (DoubleSequence xcur: x){
+                for (DoubleSeq xcur: x){
                     xcur.copyTo(all, pos);
                     pos+=n;
                 }
@@ -137,7 +137,7 @@ public class PeriodicAirline {
     public Results process(double[] y, MatrixType x, boolean mean, double[] periods, String[] outliers, double cv) {
         final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(periods, true, false);
         RegArimaModel.Builder builder = RegArimaModel.builder(ArimaModel.class)
-                .y(DoubleSequence.ofInternal(y))
+                .y(DoubleSeq.of(y))
                 .addX(Matrix.of(x))
                 .arima(mapping.getDefault())
                 .meanCorrection(mean);

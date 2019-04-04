@@ -18,8 +18,7 @@ package demetra.timeseries.simplets;
 
 import demetra.timeseries.TsData;
 import demetra.data.DataBlock;
-import demetra.data.DoubleReader;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.timeseries.TsDomain;
@@ -29,6 +28,7 @@ import demetra.timeseries.TimeSelector;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -42,7 +42,7 @@ public class TsDataToolkit {
     }
 
     public TsData fastFn(TsData s, DoubleUnaryOperator fn) {
-        return TsData.ofInternal(s.getStart(), DoubleSequence.onMapping(s.length(), i -> fn.applyAsDouble(s.getValue(i))));
+        return TsData.ofInternal(s.getStart(), DoubleSeq.onMapping(s.length(), i -> fn.applyAsDouble(s.getValue(i))));
     }
 
     public TsData commit(TsData s) {
@@ -58,7 +58,7 @@ public class TsDataToolkit {
         }
         TsPeriod istart = iDomain.getStartPeriod();
         int li = lDomain.indexOf(istart), ri = rDomain.indexOf(istart);
-        return TsData.ofInternal(istart, DoubleSequence.onMapping(iDomain.length(),
+        return TsData.ofInternal(istart, DoubleSeq.onMapping(iDomain.length(),
                 i -> fn.applyAsDouble(left.getValue(li + i), right.getValue(ri + i))));
     }
 
@@ -73,11 +73,11 @@ public class TsDataToolkit {
         TsPeriod istart = iDomain.getStartPeriod();
         int li = lDomain.indexOf(istart), ri = rDomain.indexOf(istart);
         double[] data = new double[iDomain.length()];
-        DoubleReader lreader = left.getValues().reader(), rreader = right.getValues().reader();
-        lreader.setPosition(li);
-        rreader.setPosition(ri);
+        DoubleSeqCursor lreader = left.getValues().cursor(), rreader = right.getValues().cursor();
+        lreader.moveTo(li);
+        rreader.moveTo(ri);
         for (int i = 0; i < data.length; ++i) {
-            data[i] = fn.applyAsDouble(lreader.next(), rreader.next());
+            data[i] = fn.applyAsDouble(lreader.getAndNext(), rreader.getAndNext());
         }
         return TsData.ofInternal(istart, data);
     }
@@ -189,7 +189,7 @@ public class TsDataToolkit {
     }
 
     public double distance(TsData l, TsData r) {
-        DoubleSequence diff = subtract(l, r).getValues();
+        DoubleSeq diff = subtract(l, r).getValues();
         int n=diff.count(x->Double.isFinite(x));
         if (n == 0)
             return Double.NaN;
