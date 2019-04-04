@@ -109,7 +109,7 @@ public final class DoubleList implements DoubleVector {
 
     @Override
     public DoubleSeq extract(int start, int elength) {
-        return new InternalDoubleSeq.PartialDoubleArray(values, start, elength);
+        return new InternalDoubleSeq.SubDoubleSeq(values, start, elength);
     }
 
     @Override

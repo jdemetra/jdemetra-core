@@ -17,7 +17,7 @@
 package demetra.data;
 
 import demetra.design.Development;
-import internal.data.InternalDefaultCursors;
+import internal.data.InternalDoubleVectorCursor;
 import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
 
@@ -44,6 +44,6 @@ public interface DoubleVector extends DoubleSeq {
 
     @Override
     default DoubleVectorCursor cursor() {
-        return new InternalDefaultCursors.DefaultDoubleVectorCursor(this);
+        return new InternalDoubleVectorCursor.DefaultDoubleVectorCursor(this);
     }
 }

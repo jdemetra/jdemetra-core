@@ -151,7 +151,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
             dll = rslt.getLikelihood();
             double c=2*rslt.getSsqE()/(dll.dim()-dll.nx()-1);
             ml = new MaximumLogLikelihood(rslt.getLikelihood().logLikelihood(),
-                    p, fmin.gradientAtMinimum().fastFn(z->-z/c), fmin.curvatureAtMinimum().times(1/c));
+                    p, fmin.gradientAtMinimum().map(z->-z/c), fmin.curvatureAtMinimum().times(1/c));
 
             if (spec.getResidualsModel() == Model.Ar1) {
                 nssf = AR1.of(p.get(0), 1, spec.isZeroInitialization());
@@ -238,7 +238,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
             dll = rslt.getLikelihood();
             double c=.5*(dll.dim()-dll.nx()-1)/rslt.getSsqE();
             ml = new MaximumLogLikelihood(rslt.getLikelihood().logLikelihood(),
-                    p, fmin.gradientAtMinimum().fastFn(z->-z*c), fmin.curvatureAtMinimum().times(c));
+                    p, fmin.gradientAtMinimum().map(z->-z*c), fmin.curvatureAtMinimum().times(c));
 
             if (spec.getResidualsModel() == Model.Ar1) {
                 nssf = AR1.of(p.get(0), 1, spec.isZeroInitialization());

@@ -144,7 +144,7 @@ public class CalendarizationProcessor implements ICalendarization {
             DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(SsfCalendarization.of(starts, w), new SsfData(x), true, true);
             double[] c = srslts.getComponent(1).toArray();
             double[] e = srslts.getComponentVariance(1)
-                    .fastFn(q -> q <= 0 ? 0 : Math.sqrt(q))
+                    .map(q -> q <= 0 ? 0 : Math.sqrt(q))
                     .toArray();
             if (w != null) {
                 for (int i = 0; i < c.length; ++i) {
@@ -179,7 +179,7 @@ public class CalendarizationProcessor implements ICalendarization {
             
             if (esdays == null) {
                 double[] e = srslts.getComponentVariance(2)
-                        .fastFn(q -> q <= 0 ? 0 : Math.sqrt(q))
+                        .map(q -> q <= 0 ? 0 : Math.sqrt(q))
                         .toArray();
                 if (w != null) {
                     for (int i = 0; i < e.length; ++i) {

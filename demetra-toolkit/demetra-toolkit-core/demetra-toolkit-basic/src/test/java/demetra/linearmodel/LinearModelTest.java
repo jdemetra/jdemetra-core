@@ -16,7 +16,6 @@
  */
 package demetra.linearmodel;
 
-import demetra.linearmodel.LinearModel;
 import demetra.data.DataBlock;
 import java.util.Random;
 import org.junit.Test;
@@ -76,7 +75,7 @@ public class LinearModelTest {
         DataBlock x2 = DataBlock.make(10);
         x2.set(rnd::nextDouble);
         LinearModel lm = LinearModel.builder()
-                .y(DoubleSeq.onMapping(y, z->Math.log(z)))
+                .y(y.map(Math::log))
                 .addX(x1, x2)
                 .build();
         assertTrue(lm != null);

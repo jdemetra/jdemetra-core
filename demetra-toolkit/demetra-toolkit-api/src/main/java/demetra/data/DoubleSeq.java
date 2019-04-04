@@ -17,15 +17,12 @@
 package demetra.data;
 
 import demetra.design.Development;
-import demetra.design.Internal;
 import demetra.design.ReturnNew;
 import demetra.util.IntList;
 import demetra.util.function.BiDoublePredicate;
-import internal.data.ArrayBaseSeq;
-import internal.data.InternalDefaultCursors;
 import internal.data.InternalDoubleSeq;
-import internal.data.EmptyBaseSeq;
-import internal.data.SingleBaseSeq;
+import internal.data.InternalDoubleSeqCursor;
+import internal.data.InternalDoubleSeqMath;
 import java.text.DecimalFormat;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
@@ -66,28 +63,7 @@ public interface DoubleSeq extends BaseSeq {
      */
     @Nonnull
     default DoubleSeqCursor cursor() {
-        return new InternalDefaultCursors.DefaultDoubleSeqCursor(this);
-    }
-
-    /**
-     * Makes an extract of this data block.
-     *
-     * @param start The position of the first extracted item.
-     * @param length The number of extracted items. The size of the result could
-     * be smaller than length, if the data block doesn't contain enough items.
-     * Cannot be null.
-     *
-     * @return A new (read only) toArray block. Cannot be null (but the length
-     * of the result could be 0.
-     */
-    @Nonnull
-    default DoubleSeq extract(@Nonnegative final int start, @Nonnegative final int length) {
-        return DoubleSeq.onMapping(length, i -> get(start + i));
-    }
-
-    @Nonnull
-    default DoubleSeq extract(@Nonnegative final int start, @Nonnegative final int length, final int increment) {
-        return DoubleSeq.onMapping(length, i -> get(start + i * increment));
+        return new InternalDoubleSeqCursor.DefaultDoubleSeqCursor(this);
     }
 
     /**
@@ -100,7 +76,7 @@ public interface DoubleSeq extends BaseSeq {
      * array.
      */
     default void copyTo(@Nonnull double[] buffer, @Nonnegative int offset) {
-        InternalDoubleSeq.copyTo(this, buffer, offset);
+        InternalDoubleSeq.copyToByCursor(this, buffer, offset);
     }
 
     /**
@@ -109,7 +85,7 @@ public interface DoubleSeq extends BaseSeq {
     @ReturnNew
     @Nonnull
     default double[] toArray() {
-        return InternalDoubleSeq.toArray(this);
+        return InternalDoubleSeq.toArrayByCursor(this);
     }
 
     /**
@@ -134,7 +110,7 @@ public interface DoubleSeq extends BaseSeq {
      * @see DoubleStream#allMatch(java.util.function.DoublePredicate))
      */
     default boolean allMatch(@Nonnull DoublePredicate pred) {
-        return InternalDoubleSeq.allMatch(this, pred);
+        return InternalDoubleSeq.allMatchByCursor(this, pred);
     }
 
     /**
@@ -144,7 +120,7 @@ public interface DoubleSeq extends BaseSeq {
      * @return
      */
     default boolean allMatch(@Nonnull DoubleSeq seq, @Nonnull BiDoublePredicate pred) {
-        return InternalDoubleSeq.allMatch(this, seq, pred);
+        return InternalDoubleSeq.allMatchByCursor(this, seq, pred);
     }
 
     /**
@@ -154,7 +130,7 @@ public interface DoubleSeq extends BaseSeq {
      * @see DoubleStream#anyMatch(java.util.function.DoublePredicate))
      */
     default boolean anyMatch(@Nonnull DoublePredicate pred) {
-        return InternalDoubleSeq.anyMatch(this, pred);
+        return InternalDoubleSeq.anyMatchByCursor(this, pred);
     }
 
     /**
@@ -166,11 +142,11 @@ public interface DoubleSeq extends BaseSeq {
      * @see DoubleStream#reduce(double, java.util.function.DoubleBinaryOperator)
      */
     default double reduce(double initial, @Nonnull DoubleBinaryOperator fn) {
-        return InternalDoubleSeq.reduce(this, initial, fn);
+        return InternalDoubleSeq.reduceByCursor(this, initial, fn);
     }
 
     default int indexOf(@Nonnull DoublePredicate pred) {
-        return InternalDoubleSeq.firstIndexOf(this, pred);
+        return InternalDoubleSeq.firstIndexOfByCursor(this, pred);
     }
 
     default int lastIndexOf(@Nonnull DoublePredicate pred) {
@@ -178,7 +154,33 @@ public interface DoubleSeq extends BaseSeq {
     }
 
     default int count(DoublePredicate pred) {
-        return InternalDoubleSeq.count(this, pred);
+        return InternalDoubleSeq.countByCursor(this, pred);
+    }
+
+    @Nonnull
+    default DoubleSeq map(@Nonnull DoubleUnaryOperator fn) {
+        return new InternalDoubleSeq.IntToDoubleSequence(length(), i -> fn.applyAsDouble(get(i)));
+    }
+
+    /**
+     * Makes an extract of this data block.
+     *
+     * @param start The position of the first extracted item.
+     * @param length The number of extracted items. The size of the result could
+     * be smaller than length, if the data block doesn't contain enough items.
+     * Cannot be null.
+     *
+     * @return A new (read only) toArray block. Cannot be null (but the length
+     * of the result could be 0.
+     */
+    @Nonnull
+    default DoubleSeq extract(@Nonnegative final int start, @Nonnegative final int length) {
+        return DoubleSeq.onMapping(length, i -> get(start + i));
+    }
+
+    @Nonnull
+    default DoubleSeq extract(@Nonnegative final int start, @Nonnegative final int length, final int increment) {
+        return DoubleSeq.onMapping(length, i -> get(start + i * increment));
     }
 
     /**
@@ -242,251 +244,42 @@ public interface DoubleSeq extends BaseSeq {
         return cur;
     }
 
-    //</editor-fold>
-    //<editor-fold defaultstate="collapsed" desc="Descriptive statistics (with default implementations">
-    default double sum() {
-        return reduce(0, (s, x) -> s + x);
+    default DoubleSeq fn(DoubleUnaryOperator fn) {
+        double[] data = toArray();
+        for (int i = 0; i < data.length; ++i) {
+            data[i] = fn.applyAsDouble(data[i]);
+        }
+        return DoubleSeq.of(data);
     }
 
-    default double average() {
-        return reduce(0, (s, x) -> s + x) / length();
-    }
-
-    default double ssq() {
-        return reduce(0, (s, x) -> s + x * x);
-    }
-
-    default double ssqc(double mean) {
-        return reduce(0, (s, x) -> {
-            x -= mean;
-            return s + x * x;
-        });
-    }
-
-    default double sumWithMissing() {
-        int n = length();
-        double s = 0;
-        DoubleSeqCursor cell = cursor();
-        for (int i = 0; i < n; i++) {
-            double cur = cell.getAndNext();
-            if (Double.isFinite(cur)) {
-                s += cur;
+    default DoubleSeq fn(int lag, DoubleBinaryOperator fn) {
+        int n = length() - lag;
+        if (n <= 0) {
+            return null;
+        }
+        double[] result = new double[n];
+        for (int j = 0; j < lag; ++j) {
+            double prev = get(j);
+            for (int i = j; i < n; i += lag) {
+                double next = get(i + lag);
+                result[i] = fn.applyAsDouble(prev, next);
+                prev = next;
             }
         }
-        return s;
+        return DoubleSeq.of(result);
     }
 
-    default double ssqWithMissing() {
-        int n = length();
-        double s = 0;
-        DoubleSeqCursor cell = cursor();
-        for (int i = 0; i < n; i++) {
-            double cur = cell.getAndNext();
-            if (Double.isFinite(cur)) {
-                s += cur * cur;
-            }
+    default DoubleSeq extend(@Nonnegative int nbeg, @Nonnegative int nend) {
+        int n = length() + nbeg + nend;
+        double[] result = new double[n];
+        for (int i = 0; i < nbeg; ++i) {
+            result[i] = Double.NaN;
         }
-        return s;
-    }
-
-    default double ssqcWithMissing(final double mean) {
-        int n = length();
-        double s = 0;
-        DoubleSeqCursor cell = cursor();
-        for (int i = 0; i < n; i++) {
-            double cur = cell.getAndNext() - mean;
-            if (Double.isFinite(cur)) {
-                s += cur * cur;
-            }
+        copyTo(result, nbeg);
+        for (int i = n - nend; i < n; ++i) {
+            result[i] = Double.NaN;
         }
-        return s;
-    }
-
-    default double averageWithMissing() {
-        int n = length();
-        int m = 0;
-        double s = 0;
-        DoubleSeqCursor cell = cursor();
-        for (int i = 0; i < n; i++) {
-            double cur = cell.getAndNext();
-            if (Double.isFinite(cur)) {
-                s += cur;
-            } else {
-                m++;
-            }
-        }
-        return s / (n - m);
-    }
-
-    public default double norm1() {
-        int n = length();
-        double nrm = 0;
-        DoubleSeqCursor cur = cursor();
-        for (int i = 0; i < n; ++i) {
-            nrm += Math.abs(cur.getAndNext());
-        }
-        return nrm;
-    }
-
-    /**
-     * Computes the euclidian norm of the src block. Based on the "dnrm2" Lapack
-     * function.
-     *
-     * @return The euclidian norm (&gt=0).
-     */
-    default double norm2() {
-        int n = length();
-        switch (n) {
-            case 0:
-                return 0;
-            case 1:
-                return Math.abs(get(0));
-            default:
-                double scale = 0;
-                double ssq = 1;
-                DoubleSeqCursor cell = cursor();
-                for (int i = 0; i < n; ++i) {
-                    double cur = cell.getAndNext();
-                    if (cur != 0) {
-                        double absxi = Math.abs(cur);
-                        if (scale < absxi) {
-                            double s = scale / absxi;
-                            ssq = 1 + ssq * s * s;
-                            scale = absxi;
-                        } else {
-                            double s = absxi / scale;
-                            ssq += s * s;
-                        }
-                    }
-                }
-                return scale * Math.sqrt(ssq);
-        }
-    }
-
-    default double fastNorm2() {
-        int n = length();
-        switch (n) {
-            case 0:
-                return 0;
-            case 1:
-                return Math.abs(get(0));
-            default:
-                DoubleSeqCursor cell = cursor();
-                double ssq = 0;
-                for (int i = 0; i < n; ++i) {
-                    double cur = cell.getAndNext();
-                    if (cur != 0) {
-                        ssq += cur * cur;
-                    }
-                }
-                return Math.sqrt(ssq);
-        }
-    }
-
-    /**
-     * Computes the infinite-norm of this src block
-     *
-     * @return Returns min{|src(i)|}
-     */
-    default double normInf() {
-        int n = length();
-        if (n == 0) {
-            return 0;
-        } else {
-            double nrm = Math.abs(get(0));
-            DoubleSeqCursor cell = cursor();
-            for (int i = 1; i < n; ++i) {
-                double tmp = Math.abs(cell.getAndNext());
-                if (tmp > nrm) {
-                    nrm = tmp;
-                }
-            }
-            return nrm;
-        }
-    }
-
-    /**
-     * Counts the number of identical consecutive values.
-     *
-     * @return Missing values are omitted.
-     */
-    default int getRepeatCount() {
-        int i = 0;
-        int n = length();
-        DoubleSeqCursor cell = cursor();
-        double prev = 0;
-        while (i++ < n) {
-            prev = cell.getAndNext();
-            if (Double.isFinite(prev)) {
-                break;
-            }
-        }
-        if (i == n) {
-            return 0;
-        }
-        int c = 0;
-        for (; i < n; ++i) {
-            double cur = cell.getAndNext();
-            if (Double.isFinite(cur)) {
-                if (cur == prev) {
-                    ++c;
-                } else {
-                    prev = cur;
-                }
-            }
-        }
-        return c;
-    }
-
-    default double dot(DoubleSeq data) {
-        int n = length();
-        double s = 0;
-        DoubleSeqCursor cur = cursor();
-        DoubleSeqCursor xcur = data.cursor();
-        for (int i = 0; i < n; i++) {
-            s += cur.getAndNext() * xcur.getAndNext();
-        }
-        return s;
-    }
-
-    default double jdot(DoubleSeq data, int pos) {
-        int n = length();
-        double s = 0;
-        DoubleSeqCursor cur = cursor();
-        DoubleSeqCursor xcur = data.cursor();
-        for (int i = 0; i < pos; i++) {
-            s += cur.getAndNext() * xcur.getAndNext();
-        }
-        for (int i = pos; i < n; i++) {
-            s -= cur.getAndNext() * xcur.getAndNext();
-        }
-        return s;
-    }
-
-    default double distance(DoubleSeq data) {
-        double scale = 0;
-        double ssq = 1;
-        DoubleSeqCursor cur = cursor();
-        DoubleSeqCursor xcur = data.cursor();
-        int n = length();
-        for (int i = 0; i < n; ++i) {
-            double x = cur.getAndNext(), y = xcur.getAndNext();
-            if (Double.compare(x, y) != 0) {
-                double d = x - y;
-                if (d != 0) {
-                    double absxi = Math.abs(d);
-                    if (scale < absxi) {
-                        double s = scale / absxi;
-                        ssq = 1 + ssq * s * s;
-                        scale = absxi;
-                    } else {
-                        double s = absxi / scale;
-                        ssq += s * s;
-                    }
-                }
-            }
-        }
-        return scale * Math.sqrt(ssq);
+        return DoubleSeq.of(result);
     }
 
     default DoubleSeq select(DoublePredicate pred) {
@@ -509,86 +302,11 @@ public interface DoubleSeq extends BaseSeq {
         }
     }
 
-    default DoubleSeq removeMean() {
-        double[] y = toArray();
-        double s = 0;
-        for (int i = 0; i < y.length; ++i) {
-            s += y[i];
-        }
-        s /= y.length;
-        for (int i = 0; i < y.length; ++i) {
-            y[i] -= s;
-        }
-        return DoubleSeq.of(y);
-    }
-
-    default DoubleSeq fn(DoubleUnaryOperator fn) {
-        double[] data = toArray();
-        for (int i = 0; i < data.length; ++i) {
-            data[i] = fn.applyAsDouble(data[i]);
-        }
-        return DoubleSeq.of(data);
-    }
-
-    default DoubleSeq fastFn(DoubleUnaryOperator fn) {
-        return DoubleSeq.onMapping(length(), i -> fn.applyAsDouble(get(i)));
-    }
-
-    default DoubleSeq fn(int lag, DoubleBinaryOperator fn) {
-        int n = length() - lag;
-        if (n <= 0) {
-            return null;
-        }
-        double[] nvalues = new double[n];
-        for (int j = 0; j < lag; ++j) {
-            double prev = get(j);
-            for (int i = j; i < n; i += lag) {
-                double next = get(i + lag);
-                nvalues[i] = fn.applyAsDouble(prev, next);
-                prev = next;
-            }
-        }
-        return DoubleSeq.of(nvalues);
-    }
-
-    default DoubleSeq extend(@Nonnegative int nbeg, @Nonnegative int nend) {
-        int n = length() + nbeg + nend;
-        double[] nvalues = new double[n];
-        for (int i = 0; i < nbeg; ++i) {
-            nvalues[i] = Double.NaN;
-        }
-        copyTo(nvalues, nbeg);
-        for (int i = n - nend; i < n; ++i) {
-            nvalues[i] = Double.NaN;
-        }
-        return DoubleSeq.of(nvalues);
-    }
-
-    default DoubleSeq delta(int lag) {
-        return fn(lag, (x, y) -> y - x);
-    }
-
-    default DoubleSeq delta(int lag, int pow) {
-        DoubleSeq ns = this;
-        for (int i = 0; i < pow; ++i) {
-            ns = ns.fn(lag, (x, y) -> y - x);
-        }
-        return ns;
-    }
-
-    default DoubleSeq log() {
-        return fn(x -> Math.log(x));
-    }
-
-    default DoubleSeq exp() {
-        return fn(x -> Math.exp(x));
-    }
-
     default DoubleSeq op(DoubleSeq b, DoubleBinaryOperator op) {
         double[] data = toArray();
-        DoubleSeqCursor reader = b.cursor();
+        DoubleSeqCursor cursor = b.cursor();
         for (int i = 0; i < data.length; ++i) {
-            data[i] = op.applyAsDouble(data[i], reader.getAndNext());
+            data[i] = op.applyAsDouble(data[i], cursor.getAndNext());
         }
         return DoubleSeq.of(data);
     }
@@ -600,6 +318,106 @@ public interface DoubleSeq extends BaseSeq {
 
     default DoubleSeq commit() {
         return DoubleSeq.of(toArray());
+    }
+
+    default double sum() {
+        return InternalDoubleSeqMath.sum(this);
+    }
+
+    default double average() {
+        return InternalDoubleSeqMath.average(this);
+    }
+
+    default double ssq() {
+        return InternalDoubleSeqMath.ssq(this);
+    }
+
+    default double ssqc(double mean) {
+        return InternalDoubleSeqMath.ssqc(this, mean);
+    }
+
+    default double sumWithMissing() {
+        return InternalDoubleSeqMath.sumWithMissing(this);
+    }
+
+    default double ssqWithMissing() {
+        return InternalDoubleSeqMath.ssqWithMissing(this);
+    }
+
+    default double ssqcWithMissing(final double mean) {
+        return InternalDoubleSeqMath.ssqcWithMissing(this, mean);
+    }
+
+    default double averageWithMissing() {
+        return InternalDoubleSeqMath.averageWithMissing(this);
+    }
+
+    public default double norm1() {
+        return InternalDoubleSeqMath.norm1(this);
+    }
+
+    /**
+     * Computes the euclidian norm of the src block. Based on the "dnrm2" Lapack
+     * function.
+     *
+     * @return The euclidian norm (&gt=0).
+     */
+    default double norm2() {
+        return InternalDoubleSeqMath.norm2(this);
+    }
+
+    default double fastNorm2() {
+        return InternalDoubleSeqMath.fastNorm2(this);
+    }
+
+    /**
+     * Computes the infinite-norm of this src block
+     *
+     * @return Returns min{|src(i)|}
+     */
+    default double normInf() {
+        return InternalDoubleSeqMath.normInf(this);
+    }
+
+    /**
+     * Counts the number of identical consecutive values.
+     *
+     * @return Missing values are omitted.
+     */
+    default int getRepeatCount() {
+        return InternalDoubleSeqMath.getRepeatCount(this);
+    }
+
+    default double dot(DoubleSeq data) {
+        return InternalDoubleSeqMath.dot(this, data);
+    }
+
+    default double jdot(DoubleSeq data, int pos) {
+        return InternalDoubleSeqMath.jdot(this, data, pos);
+    }
+
+    default double distance(DoubleSeq data) {
+        return InternalDoubleSeqMath.distance(this, data);
+    }
+
+    default DoubleSeq removeMean() {
+        return InternalDoubleSeqMath.removeMean(this);
+    }
+
+    default DoubleSeq delta(int lag) {
+        return InternalDoubleSeqMath.delta(this, lag);
+    }
+
+    default DoubleSeq delta(int lag, int pow) {
+        return InternalDoubleSeqMath.delta(this, lag, pow);
+    }
+
+    default DoubleSeq log() {
+        return InternalDoubleSeqMath.log(this);
+    }
+
+    default DoubleSeq exp() {
+        return InternalDoubleSeqMath.exp(this);
     }
 
     static boolean equals(double a, double b, double epsilon) {
@@ -619,12 +437,13 @@ public interface DoubleSeq extends BaseSeq {
     }
 
     static String format(DoubleSeq rd, String fmt) {
+        DecimalFormat df = new DecimalFormat(fmt);
         StringBuilder builder = new StringBuilder();
         int n = rd.length();
         if (n > 0) {
-            builder.append(new DecimalFormat(fmt).format(rd.get(0)));
+            builder.append(df.format(rd.get(0)));
             for (int i = 1; i < n; ++i) {
-                builder.append('\t').append(new DecimalFormat(fmt).format(rd.get(i)));
+                builder.append('\t').append(df.format(rd.get(i)));
             }
         }
         return builder.toString();
@@ -661,7 +480,7 @@ public interface DoubleSeq extends BaseSeq {
      */
     @Nonnull
     static DoubleSeq of(@Nonnull double[] data) {
-        return new ArrayBaseSeq.ArrayDoubleSeq(data);
+        return new InternalDoubleSeq.MultiDoubleSeq(data);
     }
 
     /**
@@ -674,7 +493,7 @@ public interface DoubleSeq extends BaseSeq {
      */
     @Nonnull
     static DoubleSeq of(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int len) {
-        return new InternalDoubleSeq.PartialDoubleArray(data, start, len);
+        return new InternalDoubleSeq.SubDoubleSeq(data, start, len);
     }
 
     /**
@@ -694,12 +513,12 @@ public interface DoubleSeq extends BaseSeq {
 
     @Nonnull
     static DoubleSeq empty() {
-        return EmptyBaseSeq.EmptyDoubleSeq.DOUBLE_SEQ;
+        return InternalDoubleSeq.EmptyDoubleSeq.DOUBLE_SEQ;
     }
 
     @Nonnull
     static DoubleSeq of(double value) {
-        return new SingleBaseSeq.SingleDoubleSeq(value);
+        return new InternalDoubleSeq.SingleDoubleSeq(value);
     }
 
     @Nonnull
@@ -722,11 +541,6 @@ public interface DoubleSeq extends BaseSeq {
     @Nonnull
     static DoubleSeq onMapping(@Nonnegative int length, @Nonnull IntToDoubleFunction fn) {
         return new InternalDoubleSeq.IntToDoubleSequence(length, fn);
-    }
-
-    @Nonnull
-    static DoubleSeq onMapping(@Nonnull DoubleSeq source, @Nonnull DoubleUnaryOperator fn) {
-        return new InternalDoubleSeq.IntToDoubleSequence(source.length(), i -> fn.applyAsDouble(source.get(i)));
     }
     //</editor-fold>
 }
