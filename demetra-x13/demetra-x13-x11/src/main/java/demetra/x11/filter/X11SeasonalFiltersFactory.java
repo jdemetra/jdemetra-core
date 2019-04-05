@@ -6,7 +6,6 @@
 package demetra.x11.filter;
 
 import demetra.data.DataBlock;
-import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.FiniteFilter;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
@@ -21,37 +20,47 @@ import demetra.x11.filter.endpoints.IEndPointsProcessor;
 @lombok.experimental.UtilityClass
 public class X11SeasonalFiltersFactory {
 
-    public IFiltering filter(int period, SeasonalFilterOption option) {
+    public X11SeasonalFilterProcessor filter(int period, SeasonalFilterOption[] option) {
+//IFilterning als Array
+        IFiltering[] result = new IFiltering[period];
 
-        SymmetricFilter sfilter = null;
-        IFiniteFilter[] efilters = null;
+        for (int i = 0; i < period; i++) {
+            //array mit allen perioden option
+            SymmetricFilter sfilter = null;
+            IFiniteFilter[] efilters = null;
 
-        switch (option) {
-            case S3X1:
-                sfilter = S3X1;
-                efilters = FC1;
-                break;
-            case S3X3:
-                sfilter = S3X3;
-                efilters = FC3;
-                break;
-            case S3X5:
-                sfilter = S3X5;
-                efilters = FC5;
-                break;
-            case S3X9:
-                sfilter = S3X9;
-                efilters = FC9;
-                break;
-            case S3X15:
-                sfilter = S3X15;
-                efilters = FC15;
-                break;
-            case Stable:
-                return new StableFilter(period);
+            switch (option[i]) {
+                case S3X1:
+                    sfilter = S3X1;
+                    efilters = FC1;
+                    result[i] = new DefaultFilter(period, sfilter, new AsymmetricEndPoints(efilters, 0));
+
+                    break;
+                case S3X3:
+                    sfilter = S3X3;
+                    efilters = FC3;
+                    result[i] = new DefaultFilter(period, sfilter, new AsymmetricEndPoints(efilters, 0));
+                    break;
+                case S3X5:
+                    sfilter = S3X5;
+                    efilters = FC5;
+                    result[i] = new DefaultFilter(period, sfilter, new AsymmetricEndPoints(efilters, 0));
+                    break;
+                case S3X9:
+                    sfilter = S3X9;
+                    efilters = FC9;
+                    result[i] = new DefaultFilter(period, sfilter, new AsymmetricEndPoints(efilters, 0));
+                    break;
+                case S3X15:
+                    sfilter = S3X15;
+                    efilters = FC15;
+                    result[i] = new DefaultFilter(period, sfilter, new AsymmetricEndPoints(efilters, 0));
+                    break;
+                case Stable:
+                    result[i] = new StableFilter(period);
+            }
         }
-
-        return new DefaultFilter(period, sfilter, new AsymmetricEndPoints(efilters, 0));
+        return new X11SeasonalFilterProcessor(result);
     }
 
     static class DefaultFilter implements IFiltering {
@@ -60,6 +69,14 @@ public class X11SeasonalFiltersFactory {
         private final IEndPointsProcessor endpoints;
         private final int period;
 
+        public SymmetricFilter getSfilter() {
+            return sfilter;
+        }
+
+        public IEndPointsProcessor getEndpoints() {
+            return endpoints;
+        }
+
         DefaultFilter(final int period, final SymmetricFilter sfilter, final IEndPointsProcessor endpoints) {
             this.period = period;
             this.sfilter = sfilter;
@@ -67,22 +84,16 @@ public class X11SeasonalFiltersFactory {
         }
 
         @Override
-        public DoubleSequence process(DoubleSequence in) {
-            double[] x = new double[in.length()];
-            DataBlock out = DataBlock.ofInternal(x);
-            DataBlock input = DataBlock.of(in);
-            int n = sfilter.length() / 2;
-            for (int i = 0; i < period; ++i) {
-                DataBlock cin = input.extract(i, -1, period);
-                DataBlock cout = out.extract(i, -1, period);
-                sfilter.apply(cin, cout.drop(n, n));
-                if (endpoints != null) {
-                    endpoints.process(cin, cout);
-                }
-            }
-            return DoubleSequence.ofInternal(x);
-        }
+        public DataBlock process(DataBlock cin) {
 
+            DataBlock cout = DataBlock.ofInternal(new double[cin.length()]);
+            int n = sfilter.length() / 2;
+            sfilter.apply(cin, cout.drop(n, n));
+            if (endpoints != null) {
+                endpoints.process(cin, cout);
+            }
+            return cout;
+        }
     }
 
     static class StableFilter implements IFiltering {
@@ -94,17 +105,11 @@ public class X11SeasonalFiltersFactory {
         }
 
         @Override
-        public DoubleSequence process(DoubleSequence in) {
+        public DataBlock process(DataBlock cin) {
 
-            double[] x = new double[in.length()];
-            DataBlock out = DataBlock.ofInternal(x);
-            DataBlock input = DataBlock.of(in);
-            for (int i = 0; i < period; ++i) {
-                DataBlock cin = input.extract(i, -1, period);
-                DataBlock cout = out.extract(i, -1, period);
-                cout.set(cin.average());
-            }
-            return DoubleSequence.ofInternal(x);
+            DataBlock cout = DataBlock.ofInternal(new double[cin.length()]);
+            cout.set(cin.average());
+            return cout;
 
         }
     }
@@ -188,8 +193,8 @@ public class X11SeasonalFiltersFactory {
     final FiniteFilter[] FC3 = new FiniteFilter[]{M_2X1, M_2X0};
     final FiniteFilter[] FC5 = new FiniteFilter[]{M_3X2, M_3X1, M_3X0};
     final FiniteFilter[] FC9 = new FiniteFilter[]{M_5X4, M_5X3, M_5X2,
-        M_5X1, M_5X0};
+                                                  M_5X1, M_5X0};
     final FiniteFilter[] FC15 = new FiniteFilter[]{M_8X7, M_8X6,
-        M_8X5, M_8X4, M_8X3, M_8X2, M_8X1, M_8X0};
+                                                   M_8X5, M_8X4, M_8X3, M_8X2, M_8X1, M_8X0};
 
 }

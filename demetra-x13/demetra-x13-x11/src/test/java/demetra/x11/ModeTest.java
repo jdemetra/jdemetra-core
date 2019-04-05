@@ -29,8 +29,8 @@ public class ModeTest {
         DoubleSequence b1 = DoubleSequence.of(B1);
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(DecompositionMode.PseudoAdditive)
-                .finalSeasonalFilter(SeasonalFilterOption.S3X3)
-                .initialSeasonalFilter(SeasonalFilterOption.S3X3)
+                //                .finalSeasonalFilter(SeasonalFilterOption.S3X3)
+                //                .initialSeasonalFilter(SeasonalFilterOption.S3X3)
                 .trendFilterLength(5)
                 .forecastHorizon(0)
                 .period(12)
@@ -88,8 +88,8 @@ public class ModeTest {
         DoubleSequence b1 = DoubleSequence.of(B1);
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(DecompositionMode.LogAdditive)
-                .finalSeasonalFilter(SeasonalFilterOption.S3X3)
-                .initialSeasonalFilter(SeasonalFilterOption.S3X3)
+                //                .finalSeasonalFilter(SeasonalFilterOption.S3X3)
+                //                .initialSeasonalFilter(SeasonalFilterOption.S3X3)
                 .calendarSigma(CalendarSigmaOption.All)
                 .trendFilterLength(5)
                 .forecastHorizon(0)

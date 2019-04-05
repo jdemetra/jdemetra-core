@@ -21,9 +21,11 @@ import demetra.data.DoubleSequence;
 import demetra.design.Development;
 import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.SymmetricFilter;
+import demetra.x11.SeasonalFilterOption;
 import demetra.x11.X11Context;
 import demetra.x11.filter.endpoints.CopyEndPoints;
 import demetra.x11.filter.endpoints.CopyPeriodicEndPoints;
+import java.util.ArrayList;
 
 /**
  *
@@ -34,6 +36,16 @@ import demetra.x11.filter.endpoints.CopyPeriodicEndPoints;
 public class DefaultSeasonalNormalizer {
 
     public DoubleSequence normalize(DoubleSequence in, int nextend, X11Context context) {
+
+        ArrayList<Integer> stable_index = new ArrayList<>();
+        SeasonalFilterOption[] filters = context.getFinalSeasonalFilter();
+        for (int i = 0; i < context.getPeriod(); i++) {
+            if (SeasonalFilterOption.Stable.equals(filters[i])) {
+                stable_index.add(i);
+            }
+        }
+
+        int start_period_input = (nextend + context.getFirstPeriod()) % context.getPeriod();
         SymmetricFilter filter = X11FilterFactory.makeSymmetricFilter(context.getPeriod());
         int ndrop = filter.length() / 2;
 
@@ -41,8 +53,27 @@ public class DefaultSeasonalNormalizer {
         DataBlock out = DataBlock.ofInternal(x, ndrop, x.length - ndrop);
         filter.apply(i -> in.get(i), IFilterOutput.of(out, ndrop));
 
+        // needed because series is too short for filter
         CopyEndPoints cp = new CopyEndPoints(ndrop);
         cp.process(in, DataBlock.ofInternal(x));
+
+        if (!stable_index.isEmpty()) {
+            int index = 0;
+            for (int period = start_period_input; period < start_period_input + ndrop; period++) {
+                if (stable_index.contains(period % context.getPeriod())) {
+                    x[index] = x[index + context.getPeriod()];
+                }
+                index++;
+            }
+            int end_period_input = (in.length() - 1 - start_period_input) % context.getPeriod();
+            index = in.length() - 1;
+            for (int period = end_period_input; period > end_period_input - ndrop; period--) {
+                if (stable_index.contains(period % context.getPeriod())) {
+                    x[index] = x[index - context.getPeriod()];
+                }
+                index--;
+            }
+        }
         DoubleSequence t = DoubleSequence.ofInternal(x);
         DoubleSequence tmp = context.remove(in, t);
         if (nextend == 0) {
@@ -54,5 +85,6 @@ public class DefaultSeasonalNormalizer {
             cpp.process(null, DataBlock.ofInternal(x));
             return DoubleSequence.ofInternal(x);
         }
+
     }
 }

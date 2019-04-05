@@ -15,10 +15,10 @@ import demetra.x11.extremevaluecorrector.IExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.PeriodSpecificExtremeValuesCorrector;
 import demetra.x11.filter.AutomaticHenderson;
 import demetra.x11.filter.DefaultSeasonalNormalizer;
-import demetra.x11.filter.IFiltering;
 import demetra.x11.filter.MsrFilterSelection;
 import demetra.x11.filter.MusgraveFilterFactory;
 import demetra.x11.filter.X11FilterFactory;
+import demetra.x11.filter.X11SeasonalFilterProcessor;
 import demetra.x11.filter.X11SeasonalFiltersFactory;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
 import lombok.AccessLevel;
@@ -35,7 +35,7 @@ public class X11DStep {
     private DoubleSequence d1, d2, d4, d5, d6, d7, d8, d9, d9g, d9bis, d9_g_bis, d10, d10bis, d11, d11bis, d12, d13;
     private int d2drop, finalHendersonFilterLength;
     private double iCRatio;
-    private SeasonalFilterOption seasFilter;
+    private SeasonalFilterOption[] seasFilter;
     @lombok.Getter(AccessLevel.NONE)
     private DoubleSequence refSeries;
 
@@ -67,8 +67,8 @@ public class X11DStep {
     }
 
     private void d5(X11Context context) {
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
-        DoubleSequence d5a = filter.process(d4);
+        X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
+        DoubleSequence d5a = processor.process(d4, (context.getFirstPeriod() + d2drop) % context.getPeriod());
         d5 = DefaultSeasonalNormalizer.normalize(d5a, d2drop, context);
     }
 
@@ -123,14 +123,14 @@ public class X11DStep {
     }
 
     private void dfinal(X11Context context) {
+        seasFilter = context.getFinalSeasonalFilter();
         if (context.isMSR()) {
             MsrFilterSelection msr = new MsrFilterSelection();
             seasFilter = msr.doMSR(d9_g_bis, context);
-        } else {
-            seasFilter = context.getFinalSeasonalFilter();
+            //nur die MSR-Perioden ersetzten, sonst aus context übernehmen
         }
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), seasFilter);
-        d10bis = filter.process(d9_g_bis);
+        X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), seasFilter);
+        d10bis = processor.process(d9_g_bis, context.getFirstPeriod());
         d10 = DefaultSeasonalNormalizer.normalize(d10bis, 0, context);
 
         d11bis = context.remove(d1, d10);

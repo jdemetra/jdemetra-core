@@ -287,8 +287,8 @@ public class X11DStepTest {
         X11DStep instance = new X11DStep();
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(DecompositionMode.valueOf(modeName))
-                .initialSeasonalFilter(SeasonalFilterOption.valueOf(seasonalFilterOptionName))
-                .finalSeasonalFilter(SeasonalFilterOption.valueOf(seasonalFilterOptionName))
+                //                .initialSeasonalFilter(SeasonalFilterOption.valueOf(seasonalFilterOptionName))
+                //                .finalSeasonalFilter(SeasonalFilterOption.valueOf(seasonalFilterOptionName))
                 .calendarSigma(CalendarSigmaOption.valueOf(calendarSigma))
                 .trendFilterLength(filterLength)
                 .period(frequency)

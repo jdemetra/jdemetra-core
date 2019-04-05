@@ -14,9 +14,9 @@ import static demetra.x11.X11Kernel.table;
 import demetra.x11.extremevaluecorrector.IExtremeValuesCorrector;
 import demetra.x11.filter.AutomaticHenderson;
 import demetra.x11.filter.DefaultSeasonalNormalizer;
-import demetra.x11.filter.IFiltering;
 import demetra.x11.filter.MusgraveFilterFactory;
 import demetra.x11.filter.X11FilterFactory;
+import demetra.x11.filter.X11SeasonalFilterProcessor;
 import demetra.x11.filter.X11SeasonalFiltersFactory;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
 
@@ -63,8 +63,8 @@ public class X11BStep {
     }
 
     private void b4(X11Context context) {
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
-        b4a = filter.process(b3);
+        X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
+        b4a = processor.process(b3, context.getFirstPeriod());
         b4anorm = DefaultSeasonalNormalizer.normalize(b4a, 0, context);
         b4d = context.remove(b3, b4anorm);
         IExtremeValuesCorrector ecorr = context.selectExtremeValuesCorrector(b4d);
@@ -77,9 +77,11 @@ public class X11BStep {
     }
 
     private void b5(X11Context context) {
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
-        DoubleSequence b5a = filter.process(b4g);
+        X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
+        DoubleSequence b5a = processor.process(b4g, (context.getFirstPeriod() + b2drop) % context.getPeriod());
         b5 = DefaultSeasonalNormalizer.normalize(b5a, b2drop, context);
+        System.out.println("B5A NEU");
+        System.out.println(b5a.toString());
     }
 
     private void b6(X11Context context) {
@@ -122,8 +124,8 @@ public class X11BStep {
     }
 
     private void b9(X11Context context) {
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
-        DoubleSequence b9a = filter.process(b8);
+        X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
+        DoubleSequence b9a = processor.process(b8, context.getFirstPeriod());
         DoubleSequence b9c = DefaultSeasonalNormalizer.normalize(b9a, 0, context);
         DoubleSequence b9d = context.remove(b8, b9c);
         IExtremeValuesCorrector ecorr = context.getExtremeValuesCorrector();
@@ -135,8 +137,8 @@ public class X11BStep {
     }
 
     private void bfinal(X11Context context) {
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
-        DoubleSequence b10a = filter.process(b9g);
+        X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
+        DoubleSequence b10a = processor.process(b9g, context.getFirstPeriod());
         b10 = DefaultSeasonalNormalizer.normalize(b10a, 0, context);
         b11 = context.remove(b1, b10);
         b13 = context.remove(b11, b7);

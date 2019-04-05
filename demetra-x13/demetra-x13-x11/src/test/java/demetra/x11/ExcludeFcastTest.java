@@ -75,8 +75,8 @@ public class ExcludeFcastTest {
         DoubleSequence b1 = DoubleSequence.of(B1);
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(DecompositionMode.Additive)
-                .finalSeasonalFilter(SeasonalFilterOption.S3X3)
-                .initialSeasonalFilter(SeasonalFilterOption.S3X3)
+                //                .finalSeasonalFilter(SeasonalFilterOption.S3X3)
+                //                .initialSeasonalFilter(SeasonalFilterOption.S3X3)
                 .trendFilterLength(5)
                 .period(12)
                 .calendarSigma(option)

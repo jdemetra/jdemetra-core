@@ -29,7 +29,8 @@ public class MsrFilterSelection {
     private double[] i;
     private double[] n;
 
-    public SeasonalFilterOption doMSR(DoubleSequence data, X11Context context) {
+    public SeasonalFilterOption[] doMSR(DoubleSequence data, X11Context context) {
+        SeasonalFilterOption[] result = context.getFinalSeasonalFilter();
         SeasonalFilterOption seasFilter = null;
         // 0. complete year
         DoubleSequence series = completeYear(data, context);
@@ -48,7 +49,14 @@ public class MsrFilterSelection {
         if (seasFilter == null) {
             seasFilter = SeasonalFilterOption.S3X5;
         }
-        return seasFilter;
+
+        for (int i = 0; i < context.getPeriod(); i++) {
+            if (SeasonalFilterOption.Msr.equals(result[i])) {
+                result[i] = seasFilter;
+            }
+        }
+
+        return result;
     }
 
     private DoubleSequence completeYear(DoubleSequence series, X11Context context) {
