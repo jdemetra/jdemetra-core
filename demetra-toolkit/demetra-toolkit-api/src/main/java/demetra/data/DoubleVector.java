@@ -17,9 +17,14 @@
 package demetra.data;
 
 import demetra.design.Development;
-import internal.data.InternalDefaultCursors;
+import demetra.util.function.IntDoubleConsumer;
+import internal.data.InternalDoubleVector;
+import internal.data.InternalDoubleVectorCursor;
 import java.util.function.DoubleUnaryOperator;
+import java.util.function.IntToDoubleFunction;
+import java.util.function.IntUnaryOperator;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 
 /**
  * Describes a writable sequence of doubles.
@@ -44,6 +49,47 @@ public interface DoubleVector extends DoubleSeq {
 
     @Override
     default DoubleVectorCursor cursor() {
-        return new InternalDefaultCursors.DefaultDoubleVectorCursor(this);
+        return new InternalDoubleVectorCursor.DefaultDoubleVectorCursor(this);
+    }
+
+    @Override
+    default DoubleVectorView map(int length, IntUnaryOperator indexMapper) {
+        return onMapping(length, i -> get(indexMapper.applyAsInt(i)), (i, v) -> set(indexMapper.applyAsInt(i), v));
+    }
+
+    @Override
+    default DoubleVectorView extract(int start, int length) {
+        return map(length, i -> start + i);
+    }
+
+    @Override
+    default DoubleVectorView extract(int start, int length, int increment) {
+        return map(length, i -> start + i * increment);
+    }
+
+    @Override
+    default DoubleVectorView drop(int beg, int end) {
+        return extract(beg, length() - beg - end);
+    }
+
+    @Override
+    default DoubleVectorView range(int beg, int end) {
+        return end <= beg ? map(0, i -> -1) : extract(beg, end - beg);
+    }
+
+    @Override
+    default DoubleVectorView reverse() {
+        final int n = length();
+        return map(n, i -> n - 1 - i);
+    }
+
+    @Nonnull
+    static DoubleVector of(@Nonnull double[] values) {
+        return new InternalDoubleVector.MultiDoubleVector(values);
+    }
+
+    @Nonnull
+    static DoubleVectorView onMapping(@Nonnegative int length, @Nonnull IntToDoubleFunction getter, @Nonnull IntDoubleConsumer setter) {
+        return new InternalDoubleVector.MappingDoubleVector(length, getter, setter);
     }
 }
