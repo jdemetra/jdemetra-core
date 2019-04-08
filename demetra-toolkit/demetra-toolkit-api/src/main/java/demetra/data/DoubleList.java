@@ -19,7 +19,6 @@ package demetra.data;
 import demetra.design.Development;
 import demetra.design.PrimitiveReplacementOf;
 import demetra.util.IntList;
-import internal.data.InternalDoubleSeq;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.DoublePredicate;
@@ -105,11 +104,6 @@ public final class DoubleList implements DoubleVector {
     @Override
     public DoubleVectorCursor cursor() {
         return new Cell();
-    }
-
-    @Override
-    public DoubleSeq extract(int start, int elength) {
-        return new InternalDoubleSeq.SubDoubleSeq(values, start, elength);
     }
 
     @Override

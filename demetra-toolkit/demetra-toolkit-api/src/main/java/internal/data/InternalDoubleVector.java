@@ -16,8 +16,12 @@
  */
 package internal.data;
 
+import demetra.data.DoubleSeq;
 import demetra.data.DoubleVector;
 import demetra.data.DoubleVectorCursor;
+import demetra.data.DoubleVectorView;
+import demetra.util.function.IntDoubleConsumer;
+import java.util.function.IntToDoubleFunction;
 
 /**
  *
@@ -96,6 +100,31 @@ public class InternalDoubleVector {
         @Override
         public DoubleVectorCursor cursor() {
             return new InternalDoubleVectorCursor.SubDoubleVectorCursor(values, begin);
+        }
+    }
+
+    public static class MappingDoubleVector extends InternalDoubleSeq.MappingDoubleSeq implements DoubleVectorView {
+
+        private final IntDoubleConsumer setter;
+
+        public MappingDoubleVector(int length, IntToDoubleFunction getter, IntDoubleConsumer setter) {
+            super(length, getter);
+            this.setter = setter;
+        }
+
+        @Override
+        public void set(int index, double value) throws IndexOutOfBoundsException {
+            setter.accept(index, value);
+        }
+
+        @Override
+        public DoubleVectorCursor cursor() {
+            return new InternalDoubleVectorCursor.DefaultDoubleVectorCursor(this);
+        }
+
+        @Override
+        public String toString() {
+            return DoubleSeq.format(this);
         }
     }
 }

@@ -29,6 +29,7 @@ import java.util.function.IntToDoubleFunction;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqView;
 import java.util.Objects;
 
 /**
@@ -265,11 +266,6 @@ public class InternalDoubleSeq {
         }
 
         @Override
-        public DoubleSeq extract(int start, int length) {
-            return new InternalDoubleSeq.SubDoubleSeq(values, start, length);
-        }
-
-        @Override
         public String toString() {
             return DoubleSeq.format(this);
         }
@@ -302,65 +298,33 @@ public class InternalDoubleSeq {
         }
 
         @Override
-        public DoubleSeq extract(int start, int length) {
-            return new SubDoubleSeq(values, this.begin + start, length);
-        }
-
-        @Override
         public String toString() {
             return DoubleSeq.format(this);
         }
     }
 
-    @lombok.AllArgsConstructor
-    public static final class IntToDoubleSequence implements DoubleSeq {
+    public static class MappingDoubleSeq extends InternalBaseSeq.MappingBaseSeq implements DoubleSeqView {
 
-        private final int length;
-        private final IntToDoubleFunction fn;
+        protected final IntToDoubleFunction getter;
+
+        public MappingDoubleSeq(int length, IntToDoubleFunction getter) {
+            super(length);
+            this.getter = getter;
+        }
 
         @Override
         public double get(int idx) {
-            return fn.applyAsDouble(idx);
-        }
-
-        @Override
-        public int length() {
-            return length;
-        }
-
-        @Override
-        public DoubleSeq extract(final int start, final int length) {
-            return new IntToDoubleSequence(length, i -> fn.applyAsDouble(i + start));
+            return getter.applyAsDouble(idx);
         }
 
         @Override
         public DoubleSeqCursor cursor() {
-            return new Cell();
+            return new InternalDoubleSeqCursor.DefaultDoubleSeqCursor(this);
         }
 
         @Override
         public String toString() {
             return DoubleSeq.format(this);
-        }
-
-        private final class Cell implements DoubleSeqCursor {
-
-            private int pos = 0;
-
-            @Override
-            public double getAndNext() {
-                return fn.applyAsDouble(pos++);
-            }
-
-            @Override
-            public void skip(int n) {
-                pos += n;
-            }
-
-            @Override
-            public void moveTo(int npos) {
-                pos = npos;
-            }
         }
     }
 
@@ -392,11 +356,6 @@ public class InternalDoubleSeq {
                 ndata[i] = data[j];
             }
             return ndata;
-        }
-
-        @Override
-        public DoubleSeq extract(int start, int length) {
-            return new RegularlySpacedDoubles(data, this.beg + start * inc, length, inc);
         }
 
         @Override
