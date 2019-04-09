@@ -21,7 +21,7 @@ import demetra.benchmarking.ssf.SsfCholette;
 import demetra.benchmarking.univariate.CholetteSpec;
 import demetra.benchmarking.univariate.CholetteSpec.BiasCorrection;
 import demetra.data.AggregationType;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ISsf;
@@ -67,9 +67,9 @@ public class CholetteProcessor implements ICholette {
         //  TsDataBlock.all(sy).data.sum() is the sum of the averages or sums of the original series
         BiasCorrection bias = spec.getBias();
         if (bias == BiasCorrection.Multiplicative) {
-            return multiply(s, Doubles.sum(target.getValues()) / Doubles.sum(sy.getValues()));
+            return multiply(s, DeprecatedDoubles.sum(target.getValues()) / DeprecatedDoubles.sum(sy.getValues()));
         } else {
-            double b = (Doubles.sum(target.getValues()) - Doubles.sum(sy.getValues())) / target.length();
+            double b = (DeprecatedDoubles.sum(target.getValues()) - DeprecatedDoubles.sum(sy.getValues())) / target.length();
             if (agg == AggregationType.Average) {
                 b *= s.getTsUnit().ratioOf(target.getTsUnit());
             }

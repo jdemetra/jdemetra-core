@@ -44,6 +44,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -319,7 +320,7 @@ class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
 
     @Override
     public DoubleSeq getDefaultParameters() {
-        return DoubleSeq.copyOf(.9, .9);
+        return Doubles.of(new double[]{.9, .9});
     }
 
     @Override

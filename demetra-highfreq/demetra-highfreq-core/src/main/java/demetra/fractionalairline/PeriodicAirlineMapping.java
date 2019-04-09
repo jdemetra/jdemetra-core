@@ -155,7 +155,7 @@ public class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
 
     @Override
     public DoubleSeq getDefaultParameters() {
-        return DoubleSeq.copyOf(.9, .9);
+        return DoubleSeq.copyOf(new double[]{.9, .9});
     }
 
     @Override

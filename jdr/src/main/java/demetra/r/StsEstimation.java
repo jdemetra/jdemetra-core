@@ -16,6 +16,7 @@
  */
 package demetra.r;
 
+import demetra.data.Doubles;
 import demetra.descriptors.stats.DiffuseConcentratedLikelihoodDescriptor;
 import demetra.information.InformationMapping;
 import demetra.maths.MatrixType;
@@ -142,23 +143,23 @@ public class StsEstimation {
         mspec=bsm.specification();
         if (mspec.hasLevel()) {
             int pos = SsfBsm.searchPosition(bsm, Component.Level);
-            t = TsData.of(start, sr.getComponent(pos));
+            t = TsData.of(start, Doubles.of(sr.getComponent(pos)));
         }
         if (mspec.hasSlope()) {
             int pos = SsfBsm.searchPosition(bsm, Component.Slope);
-            s = TsData.of(start, sr.getComponent(pos));
+            s = TsData.of(start, Doubles.of(sr.getComponent(pos)));
         }
         if (mspec.hasCycle()) {
             int pos = SsfBsm.searchPosition(bsm, Component.Cycle);
-            c = TsData.of(start, sr.getComponent(pos));
+            c = TsData.of(start, Doubles.of(sr.getComponent(pos)));
         }
         if (mspec.hasSeasonal()) {
             int pos = SsfBsm.searchPosition(bsm, Component.Seasonal);
-            seas = TsData.of(start, sr.getComponent(pos));
+            seas = TsData.of(start, Doubles.of(sr.getComponent(pos)));
         }
         if (mspec.hasNoise()) {
             int pos = SsfBsm.searchPosition(bsm, Component.Noise);
-            n = TsData.of(start, sr.getComponent(pos));
+            n = TsData.of(start, Doubles.of(sr.getComponent(pos)));
         }
 
         IFunctionPoint ml = monitor.maxLikelihoodFunction();

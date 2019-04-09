@@ -16,7 +16,7 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.data.WeeklyData;
 import demetra.stats.AutoCovariances;
 import demetra.stats.samples.DefaultSample;

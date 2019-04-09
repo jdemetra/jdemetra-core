@@ -6,14 +6,11 @@
 package demetra.r;
 
 import demetra.data.Data;
-import demetra.maths.MatrixType;
-import static demetra.r.TimeVaryingRegressionTest.FURNITURE;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
 import static demetra.timeseries.simplets.TsDataToolkit.log;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -26,7 +23,7 @@ public class MovingRegressionTest {
 
     @Test
     public void testSomeMethod() {
-        TsData s=TsData.of(TsPeriod.monthly(1982, 4), DoubleSeq.of(Data.ABS_RETAIL));
+        TsData s=TsData.of(TsPeriod.monthly(1982, 4), Doubles.of(Data.ABS_RETAIL));
 //        long t0=System.currentTimeMillis();
         MovingRegression.Results regarima = MovingRegression.regarima(log(s), "TD7", 10);
 //        System.out.println(regarima.getData("tdeffect", TsData.class));

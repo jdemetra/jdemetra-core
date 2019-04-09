@@ -17,6 +17,7 @@
 package demetra.benchmarking.r;
 
 import demetra.data.DataBlock;
+import demetra.data.Doubles;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
 import org.junit.Test;
@@ -40,8 +41,8 @@ public class BenchmarkingTest {
 
         TsPeriod q = TsPeriod.quarterly(1978, 4);
         TsPeriod a = TsPeriod.yearly(1980);
-        TsData t = TsData.of(a, y);
-        TsData s = TsData.of(q, x);
+        TsData t = TsData.of(a, Doubles.of(y));
+        TsData s = TsData.of(q, Doubles.of(x));
 
         TsData qs = Benchmarking.denton(s, t, 1, true, true, "Sum");
         assertTrue(qs != null);

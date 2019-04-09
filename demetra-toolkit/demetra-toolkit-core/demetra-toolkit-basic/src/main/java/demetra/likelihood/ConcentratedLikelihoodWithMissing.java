@@ -18,7 +18,7 @@ package demetra.likelihood;
 
 import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.data.LogSign;
 import demetra.design.BuilderPattern;
 import demetra.eco.EcoException;
@@ -28,6 +28,7 @@ import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.MatrixType;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  * This class represents the concentrated likelihood of a linear regression
@@ -109,7 +110,7 @@ public final class ConcentratedLikelihoodWithMissing implements IConcentratedLik
                 return this;
             }
             if (ssqerr == 0) {
-                ssqerr = Doubles.ssq(residuals);
+                ssqerr = DeprecatedDoubles.ssq(residuals);
             }
             this.res = residuals.toArray();
             return this;
@@ -189,12 +190,12 @@ public final class ConcentratedLikelihoodWithMissing implements IConcentratedLik
     }
 
     public DoubleSeq missingEstimates() {
-        return nmissing == 0 ? DoubleSeq.empty() : DoubleSeq.of(b, 0, nmissing);
+        return nmissing == 0 ? Doubles.EMPTY : DoubleSeq.of(b, 0, nmissing);
     }
 
     public DoubleSeq missingUnscaledVariances() {
         if (nmissing == 0) {
-            return DoubleSeq.empty();
+            return Doubles.EMPTY;
         }
         bvariance();
         return DoubleSeq.of(bvar.data(), 0, nmissing, bvar.getRowsCount() + 1);

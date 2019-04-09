@@ -54,10 +54,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import static demetra.timeseries.TsPeriod.DEFAULT_EPOCH;
-import static java.util.EnumSet.of;
-import demetra.data.DoubleSeq;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.of;
+import demetra.data.Doubles;
 import static java.util.EnumSet.of;
 
 /**
@@ -383,7 +380,7 @@ public class TsDataBuilderTest {
     }
 
     private static TsData data(TsUnit unit, LocalDateTime reference, LocalDateTime date, double... values) {
-        return TsData.of(TsPeriod.builder().unit(unit).epoch(reference).date(date).build(), DoubleSeq.of(values));
+        return TsData.of(TsPeriod.builder().unit(unit).epoch(reference).date(date).build(), Doubles.of(values));
     }
 
     private static TsData data(TsUnit unit, LocalDateTime reference, int year, double... values) {

@@ -159,12 +159,12 @@ public interface DoubleSeq extends BaseSeq {
     }
 
     @Nonnull
-    default DoubleSeqView map(@Nonnull DoubleUnaryOperator fn) {
+    default DoubleSeq map(@Nonnull DoubleUnaryOperator fn) {
         return onMapping(length(), i -> fn.applyAsDouble(get(i)));
     }
 
     @Nonnull
-    default DoubleSeqView map(@Nonnegative int length, @Nonnull IntUnaryOperator indexMapper) {
+    default DoubleSeq map(@Nonnegative int length, @Nonnull IntUnaryOperator indexMapper) {
         return onMapping(length, i -> get(indexMapper.applyAsInt(i)));
     }
 
@@ -180,12 +180,12 @@ public interface DoubleSeq extends BaseSeq {
      * of the result could be 0.
      */
     @Nonnull
-    default DoubleSeqView extract(@Nonnegative int start, @Nonnegative int length) {
+    default DoubleSeq extract(@Nonnegative int start, @Nonnegative int length) {
         return map(length, i -> start + i);
     }
 
     @Nonnull
-    default DoubleSeqView extract(@Nonnegative int start, @Nonnegative int length, int increment) {
+    default DoubleSeq extract(@Nonnegative int start, @Nonnegative int length, int increment) {
         return map(length, i -> start + i * increment);
     }
 
@@ -197,7 +197,7 @@ public interface DoubleSeq extends BaseSeq {
      *
      * @return The shortened array
      */
-    default DoubleSeqView drop(int beg, int end) {
+    default DoubleSeq drop(int beg, int end) {
         return extract(beg, length() - beg - end);
     }
 
@@ -209,7 +209,7 @@ public interface DoubleSeq extends BaseSeq {
      *
      * @return
      */
-    default DoubleSeqView range(int beg, int end) {
+    default DoubleSeq range(int beg, int end) {
         return end <= beg ? map(0, i -> -1) : extract(beg, end - beg);
     }
 
@@ -218,7 +218,7 @@ public interface DoubleSeq extends BaseSeq {
      *
      * @return
      */
-    default DoubleSeqView reverse() {
+    default DoubleSeq reverse() {
         final int n = length();
         return map(n, i -> n - 1 - i);
     }
@@ -251,11 +251,11 @@ public interface DoubleSeq extends BaseSeq {
     }
 
     default DoubleSeq fn(DoubleUnaryOperator fn) {
-        double[] data = toArray();
-        for (int i = 0; i < data.length; ++i) {
-            data[i] = fn.applyAsDouble(data[i]);
+        double[] safeArray = toArray();
+        for (int i = 0; i < safeArray.length; ++i) {
+            safeArray[i] = fn.applyAsDouble(safeArray[i]);
         }
-        return DoubleSeq.of(data);
+        return Doubles.ofInternal(safeArray);
     }
 
     default DoubleSeq fn(int lag, DoubleBinaryOperator fn) {
@@ -263,29 +263,29 @@ public interface DoubleSeq extends BaseSeq {
         if (n <= 0) {
             return null;
         }
-        double[] result = new double[n];
+        double[] safeArray = new double[n];
         for (int j = 0; j < lag; ++j) {
             double prev = get(j);
             for (int i = j; i < n; i += lag) {
                 double next = get(i + lag);
-                result[i] = fn.applyAsDouble(prev, next);
+                safeArray[i] = fn.applyAsDouble(prev, next);
                 prev = next;
             }
         }
-        return DoubleSeq.of(result);
+        return Doubles.ofInternal(safeArray);
     }
 
     default DoubleSeq extend(@Nonnegative int nbeg, @Nonnegative int nend) {
         int n = length() + nbeg + nend;
-        double[] result = new double[n];
+        double[] safeArray = new double[n];
         for (int i = 0; i < nbeg; ++i) {
-            result[i] = Double.NaN;
+            safeArray[i] = Double.NaN;
         }
-        copyTo(result, nbeg);
+        copyTo(safeArray, nbeg);
         for (int i = n - nend; i < n; ++i) {
-            result[i] = Double.NaN;
+            safeArray[i] = Double.NaN;
         }
-        return DoubleSeq.of(result);
+        return Doubles.ofInternal(safeArray);
     }
 
     default DoubleSeq select(DoublePredicate pred) {
@@ -300,24 +300,24 @@ public interface DoubleSeq extends BaseSeq {
             }
         }
         if (cur == x.length) {
-            return DoubleSeq.of(x);
+            return Doubles.ofInternal(x);
         } else {
             double[] xc = new double[cur];
             System.arraycopy(x, 0, xc, 0, cur);
-            return DoubleSeq.of(xc);
+            return Doubles.ofInternal(xc);
         }
     }
 
     default DoubleSeq op(DoubleSeq b, DoubleBinaryOperator op) {
-        double[] data = toArray();
+        double[] safeArray = toArray();
         DoubleSeqCursor cursor = b.cursor();
-        for (int i = 0; i < data.length; ++i) {
-            data[i] = op.applyAsDouble(data[i], cursor.getAndNext());
+        for (int i = 0; i < safeArray.length; ++i) {
+            safeArray[i] = op.applyAsDouble(safeArray[i], cursor.getAndNext());
         }
-        return DoubleSeq.of(data);
+        return Doubles.ofInternal(safeArray);
     }
 
-    default DoubleSeqView fastOp(DoubleSeq b, DoubleBinaryOperator op) {
+    default DoubleSeq fastOp(DoubleSeq b, DoubleBinaryOperator op) {
         int n = length();
         return onMapping(n, i -> get(i) + b.get(i));
     }
@@ -422,6 +422,19 @@ public interface DoubleSeq extends BaseSeq {
         return InternalDoubleSeqMath.exp(this);
     }
 
+    default boolean hasSameContentAs(DoubleSeq that) {
+        return InternalDoubleSeq.hasSameContentAs(this, that);
+    }
+
+    static int getHashCode(DoubleSeq values) {
+        int result = 1;
+        for (int i = 0; i < values.length(); i++) {
+            long bits = Double.doubleToLongBits(values.get(i));
+            result = 31 * result + (int) (bits ^ (bits >>> 32));
+        }
+        return result;
+    }
+
     static boolean equals(double a, double b, double epsilon) {
         return a > b ? (a - epsilon <= b) : (b - epsilon <= a);
     }
@@ -513,35 +526,32 @@ public interface DoubleSeq extends BaseSeq {
         return new InternalDoubleSeq.RegularlySpacedDoubles(data, start, len, inc);
     }
 
+    @Deprecated
     @Nonnull
-    static DoubleSeq empty() {
-        return InternalDoubleSeq.EmptyDoubleSeq.DOUBLE_SEQ;
+    static Doubles empty() {
+        return Doubles.EMPTY;
+    }
+
+    @Deprecated
+    @Nonnull
+    static Doubles of(double value) {
+        return Doubles.of(value);
+    }
+
+    @Deprecated
+    @Nonnull
+    static Doubles copyOf(@Nonnull double[] data) {
+        return Doubles.of(data);
+    }
+
+    @Deprecated
+    @Nonnull
+    static Doubles copyOf(@Nonnull DoubleStream stream) {
+        return Doubles.of(stream);
     }
 
     @Nonnull
-    static DoubleSeq of(double value) {
-        return new InternalDoubleSeq.SingleDoubleSeq(value);
-    }
-
-    @Nonnull
-    static DoubleSeq copyOf(@Nonnull double... data) {
-        switch (data.length) {
-            case 0:
-                return empty();
-            case 1:
-                return DoubleSeq.of(data[0]);
-            default:
-                return of(data.clone());
-        }
-    }
-
-    @Nonnull
-    static DoubleSeq copyOf(@Nonnull DoubleStream stream) {
-        return of(stream.toArray());
-    }
-
-    @Nonnull
-    static DoubleSeqView onMapping(@Nonnegative int length, @Nonnull IntToDoubleFunction getter) {
+    static DoubleSeq onMapping(@Nonnegative int length, @Nonnull IntToDoubleFunction getter) {
         return new InternalDoubleSeq.MappingDoubleSeq(length, getter);
     }
     //</editor-fold>

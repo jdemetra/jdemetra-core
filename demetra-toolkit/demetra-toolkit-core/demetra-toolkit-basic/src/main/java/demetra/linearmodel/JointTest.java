@@ -17,7 +17,7 @@
 package demetra.linearmodel;
 
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.design.BuilderPattern;
 import demetra.dstats.F;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
@@ -137,7 +137,7 @@ public class JointTest {
         } else {
             rb = new double[R.getRowsCount()];
             for (int i = 0; i < rb.length; ++i) {
-                rb[i] = Doubles.dot(R.row(i), b) - alpha.get(i);
+                rb[i] = DeprecatedDoubles.dot(R.row(i), b) - alpha.get(i);
             }
         }
         return DataBlock.ofInternal(rb);

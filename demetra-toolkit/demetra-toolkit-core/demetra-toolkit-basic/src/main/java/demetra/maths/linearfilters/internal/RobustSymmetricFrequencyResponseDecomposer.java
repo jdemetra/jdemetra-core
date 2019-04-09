@@ -16,7 +16,7 @@
  */
 package demetra.maths.linearfilters.internal;
 
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.linearfilters.BackFilter;
@@ -113,7 +113,7 @@ public class RobustSymmetricFrequencyResponseDecomposer  {
         m_bf = m_bf.normalize();
         
         Polynomial coeff = m_bf.asPolynomial();
-        m_var=var /Doubles.ssq(coeff.coefficients());
+        m_var=var /DeprecatedDoubles.ssq(coeff.coefficients());
         return m_var>=0;
     }
 

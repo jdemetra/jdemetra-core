@@ -18,8 +18,8 @@ package demetra.x11plus;
 
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;
-import static demetra.data.Doubles.average;
-import static demetra.data.Doubles.sum;
+import static demetra.data.DeprecatedDoubles.average;
+import static demetra.data.DeprecatedDoubles.sum;
 import demetra.design.Development;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.data.DoubleSeq;

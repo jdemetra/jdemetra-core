@@ -16,7 +16,7 @@ import demetra.data.DoubleSeq;
  */
 public class HouseholderReflectionTest {
     
-    private static DoubleSeq X=DoubleSeq.copyOf(1,2,3,4,5);
+    private static DoubleSeq X=DoubleSeq.copyOf(new double[]{1,2,3,4,5});
     
     public HouseholderReflectionTest() {
     }

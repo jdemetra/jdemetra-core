@@ -17,7 +17,7 @@
 package demetra.stats.tests.seasonal;
 
 import demetra.data.DataBlockIterator;
-import static demetra.data.Doubles.sum;
+import static demetra.data.DeprecatedDoubles.sum;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.dstats.Chi2;

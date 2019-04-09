@@ -29,7 +29,6 @@ import java.util.function.IntToDoubleFunction;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleSeqView;
 import java.util.Objects;
 
 /**
@@ -175,6 +174,14 @@ public class InternalDoubleSeq {
         return result;
     }
 
+    public boolean hasSameContentAs(DoubleSeq left, DoubleSeq that) {
+        return left == that || (left.length() == that.length() && left.allMatch(that, InternalDoubleSeq::isSameValue));
+    }
+
+    private boolean isSameValue(double left, double right) {
+        return Double.doubleToLongBits(left) == Double.doubleToLongBits(right);
+    }
+
     public static class EmptyDoubleSeq extends InternalBaseSeq.EmptyBaseSeq implements DoubleSeq {
 
         public static final EmptyDoubleSeq DOUBLE_SEQ = new EmptyDoubleSeq();
@@ -303,7 +310,7 @@ public class InternalDoubleSeq {
         }
     }
 
-    public static class MappingDoubleSeq extends InternalBaseSeq.MappingBaseSeq implements DoubleSeqView {
+    public static class MappingDoubleSeq extends InternalBaseSeq.MappingBaseSeq implements DoubleSeq {
 
         protected final IntToDoubleFunction getter;
 

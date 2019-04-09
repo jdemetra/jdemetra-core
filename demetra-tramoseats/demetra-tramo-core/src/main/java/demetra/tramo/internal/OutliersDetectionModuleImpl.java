@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.List;
 import demetra.regarima.ami.IGenericOutliersDetectionModule;
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -355,7 +356,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         addOutlier(pos, type);
         double[] tmp;
         if (coeff == null) {
-            coeff = DoubleSeq.of(c);
+            coeff = Doubles.of(c);
         } else {
             tmp = new double[coeff.length() + 1];
             coeff.copyTo(tmp, 0);

@@ -53,32 +53,32 @@ public interface DoubleVector extends DoubleSeq {
     }
 
     @Override
-    default DoubleVectorView map(int length, IntUnaryOperator indexMapper) {
+    default DoubleVector map(int length, IntUnaryOperator indexMapper) {
         return onMapping(length, i -> get(indexMapper.applyAsInt(i)), (i, v) -> set(indexMapper.applyAsInt(i), v));
     }
 
     @Override
-    default DoubleVectorView extract(int start, int length) {
+    default DoubleVector extract(int start, int length) {
         return map(length, i -> start + i);
     }
 
     @Override
-    default DoubleVectorView extract(int start, int length, int increment) {
+    default DoubleVector extract(int start, int length, int increment) {
         return map(length, i -> start + i * increment);
     }
 
     @Override
-    default DoubleVectorView drop(int beg, int end) {
+    default DoubleVector drop(int beg, int end) {
         return extract(beg, length() - beg - end);
     }
 
     @Override
-    default DoubleVectorView range(int beg, int end) {
+    default DoubleVector range(int beg, int end) {
         return end <= beg ? map(0, i -> -1) : extract(beg, end - beg);
     }
 
     @Override
-    default DoubleVectorView reverse() {
+    default DoubleVector reverse() {
         final int n = length();
         return map(n, i -> n - 1 - i);
     }
@@ -89,7 +89,7 @@ public interface DoubleVector extends DoubleSeq {
     }
 
     @Nonnull
-    static DoubleVectorView onMapping(@Nonnegative int length, @Nonnull IntToDoubleFunction getter, @Nonnull IntDoubleConsumer setter) {
+    static DoubleVector onMapping(@Nonnegative int length, @Nonnull IntToDoubleFunction getter, @Nonnull IntDoubleConsumer setter) {
         return new InternalDoubleVector.MappingDoubleVector(length, getter, setter);
     }
 }

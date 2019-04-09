@@ -18,8 +18,8 @@ package demetra.regarima.regular.diagnostics;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DataBlock;
-import static demetra.data.Doubles.ssq;
-import static demetra.data.Doubles.sum;
+import static demetra.data.DeprecatedDoubles.ssq;
+import static demetra.data.DeprecatedDoubles.sum;
 import demetra.dstats.F;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.regarima.IRegArimaProcessor;

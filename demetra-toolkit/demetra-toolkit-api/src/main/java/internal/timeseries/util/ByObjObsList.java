@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.IntUnaryOperator;
-import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -98,8 +98,8 @@ interface ByObjObsList<T> extends ObsList {
         }
 
         @Override
-        public DoubleSeq getValues() {
-            return DoubleSeq.of(Arrays.copyOf(values, size));
+        public Doubles getValues() {
+            return Doubles.ofInternal(Arrays.copyOf(values, size));
         }
     }
 

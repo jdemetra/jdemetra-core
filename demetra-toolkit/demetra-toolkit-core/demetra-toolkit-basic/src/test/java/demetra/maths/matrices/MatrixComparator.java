@@ -18,7 +18,7 @@ package demetra.maths.matrices;
 
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.Matrix;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.data.DoubleSeq;
 
 /**
@@ -34,7 +34,7 @@ public class MatrixComparator {
         }
         DoubleSeq delta = DoubleSeq.onMapping(o.getColumnsCount() * o.getRowsCount(),
                 i -> m.get(i % nrows, i / nrows) - o.get(i % nrows, i / nrows));
-        return Doubles.normInf(delta);
+        return DeprecatedDoubles.normInf(delta);
     }
 
     public static double distance(final Matrix m, final Matrix o) {
@@ -44,7 +44,7 @@ public class MatrixComparator {
         }
         DoubleSeq delta = DoubleSeq.onMapping(o.getColumnsCount() * o.getRowsCount(),
                 i -> m.get(i % nrows, i / nrows) - o.get(i % nrows, i / nrows));
-        return Doubles.normInf(delta);
+        return DeprecatedDoubles.normInf(delta);
     }
 
     public static ec.tstoolkit.maths.matrices.Matrix toLegacy(Matrix M) {

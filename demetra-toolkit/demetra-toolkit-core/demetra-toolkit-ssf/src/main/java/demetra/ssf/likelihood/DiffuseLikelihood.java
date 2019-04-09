@@ -18,7 +18,7 @@ package demetra.ssf.likelihood;
 
 import demetra.likelihood.ILikelihood;
 import demetra.design.Immutable;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
 import demetra.data.DoubleSeq;
@@ -82,7 +82,7 @@ public final class DiffuseLikelihood implements ILikelihood {
                 return this;
             }
             if (ssqerr == 0) {
-                this.ssqerr = Doubles.ssq(residuals);
+                this.ssqerr = DeprecatedDoubles.ssq(residuals);
             }
             this.res = residuals.toArray();
             return this;

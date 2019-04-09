@@ -18,7 +18,7 @@
 package demetra.maths.functions.ssq;
 
 import demetra.design.Development;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.data.DoubleSeq;
 
 
@@ -63,6 +63,6 @@ public interface ISsqFunctionPoint {
      * @return 
      */
     default double getSsqE(){
-        return Doubles.ssq(getE());
+        return DeprecatedDoubles.ssq(getE());
     };
 }

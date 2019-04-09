@@ -19,7 +19,7 @@ package internal.timeseries.util;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDateTime;
 import java.util.function.IntUnaryOperator;
-import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  * @author Philippe Charles
@@ -34,11 +34,11 @@ interface ObsList {
 
     double getValue(int index) throws IndexOutOfBoundsException;
 
-    default DoubleSeq getValues() {
-        double[] result = new double[size()];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = getValue(i);
+    default Doubles getValues() {
+        double[] safeArray = new double[size()];
+        for (int i = 0; i < safeArray.length; i++) {
+            safeArray[i] = getValue(i);
         }
-        return DoubleSeq.of(result);
+        return Doubles.ofInternal(safeArray);
     }
 }

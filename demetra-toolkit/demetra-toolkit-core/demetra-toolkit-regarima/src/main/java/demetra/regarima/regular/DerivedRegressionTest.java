@@ -17,7 +17,7 @@
 
 package demetra.regarima.regular;
 
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.information.InformationSet;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.matrices.Matrix;
@@ -47,7 +47,7 @@ public class DerivedRegressionTest implements IRegressionTest {
 
     @Override
     public boolean accept(ConcentratedLikelihoodWithMissing ll, int nhp, int ireg, int nregs, InformationSet info) {
-        vcur=-Doubles.sum(ll.coefficients().extract(ireg, nregs));
+        vcur=-DeprecatedDoubles.sum(ll.coefficients().extract(ireg, nregs));
         
         Matrix V=Matrix.of(ll.unscaledCovariance().extract(ireg, nregs, ireg, nregs));
         int ndf = ml ? ll.dim() : ll.degreesOfFreedom()-nhp;

@@ -7,13 +7,12 @@ package demetra.tempdisagg.univariate;
 
 import demetra.data.AggregationType;
 import demetra.data.Data;
-import demetra.data.ParameterSpec;
 import demetra.ssf.SsfAlgorithm;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -26,8 +25,8 @@ public class TemporalDisaggregationProcessorTest {
 
     @Test
     public void testChowLin() {
-        TsData y = TsData.of(TsPeriod.yearly(1978), DoubleSeq.of(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSeq.of(Data.IND_PCR));
+        TsData y = TsData.of(TsPeriod.yearly(1978), Doubles.of(Data.PCRA));
+        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationSpec spec1 = TemporalDisaggregationSpec.builder()
                 .aggregationType(AggregationType.Sum)
                 .residualsModel(TemporalDisaggregationSpec.Model.Ar1)
@@ -76,8 +75,8 @@ public class TemporalDisaggregationProcessorTest {
 
     @Test
     public void testChowLin2() {
-        TsData y = TsData.of(TsPeriod.yearly(1977), DoubleSeq.of(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSeq.of(Data.IND_PCR));
+        TsData y = TsData.of(TsPeriod.yearly(1977), Doubles.of(Data.PCRA));
+        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationSpec spec1 = TemporalDisaggregationSpec.builder()
                 .aggregationType(AggregationType.Average)
                 .residualsModel(TemporalDisaggregationSpec.Model.Ar1)
@@ -126,8 +125,8 @@ public class TemporalDisaggregationProcessorTest {
 
     @Test
     public void testFernandez() {
-        TsData y = TsData.of(TsPeriod.yearly(1977), DoubleSeq.of(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSeq.of(Data.IND_PCR));
+        TsData y = TsData.of(TsPeriod.yearly(1977), Doubles.of(Data.PCRA));
+        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationSpec spec1 = TemporalDisaggregationSpec.builder()
                 .aggregationType(AggregationType.Sum)
                 .residualsModel(TemporalDisaggregationSpec.Model.Rw)
@@ -164,8 +163,8 @@ public class TemporalDisaggregationProcessorTest {
 
     @Test
     public void testLitterman() {
-        TsData y = TsData.of(TsPeriod.yearly(1977), DoubleSeq.of(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSeq.of(Data.IND_PCR));
+        TsData y = TsData.of(TsPeriod.yearly(1977), Doubles.of(Data.PCRA));
+        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationSpec spec1 = TemporalDisaggregationSpec.builder()
                 .aggregationType(AggregationType.Sum)
                 .residualsModel(TemporalDisaggregationSpec.Model.RwAr1)
@@ -205,8 +204,8 @@ public class TemporalDisaggregationProcessorTest {
 
     @Test
     public void testAr1() {
-        TsData y = TsData.of(TsPeriod.yearly(1977), DoubleSeq.of(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSeq.of(Data.IND_PCR));
+        TsData y = TsData.of(TsPeriod.yearly(1977), Doubles.of(Data.PCRA));
+        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationSpec spec1 = TemporalDisaggregationSpec.builder()
                 .aggregationType(AggregationType.Last)
                 .residualsModel(TemporalDisaggregationSpec.Model.Ar1)
@@ -252,8 +251,8 @@ public class TemporalDisaggregationProcessorTest {
 
     @Test
     public void testRw() {
-        TsData y = TsData.of(TsPeriod.yearly(1977), DoubleSeq.of(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSeq.of(Data.IND_PCR));
+        TsData y = TsData.of(TsPeriod.yearly(1977), Doubles.of(Data.PCRA));
+        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationSpec spec1 = TemporalDisaggregationSpec.builder()
                 .aggregationType(AggregationType.Last)
                 .residualsModel(TemporalDisaggregationSpec.Model.Rw)
@@ -290,8 +289,8 @@ public class TemporalDisaggregationProcessorTest {
 
     @Test
     public void testRwAr1() {
-        TsData y = TsData.of(TsPeriod.yearly(1977), DoubleSeq.of(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSeq.of(Data.IND_PCR));
+        TsData y = TsData.of(TsPeriod.yearly(1977), Doubles.of(Data.PCRA));
+        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationSpec spec1 = TemporalDisaggregationSpec.builder()
                 .aggregationType(AggregationType.Last)
                 .residualsModel(TemporalDisaggregationSpec.Model.RwAr1)
@@ -341,16 +340,16 @@ public class TemporalDisaggregationProcessorTest {
                 .rescale(true)
                 .algorithm(SsfAlgorithm.SqrtDiffuse)
                 .build();
-        TsData y1 = TsData.of(TsPeriod.yearly(1976), DoubleSeq.of(Data.PCRA));
-        TsData q1 = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSeq.of(Data.IND_PCR));
+        TsData y1 = TsData.of(TsPeriod.yearly(1976), Doubles.of(Data.PCRA));
+        TsData q1 = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationResults rslt1 = TemporalDisaggregationProcessor.PROCESSOR.process(y1, new TsData[]{q1}, spec);
         assertTrue(rslt1 != null);
-        TsData y2 = TsData.of(TsPeriod.yearly(1979), DoubleSeq.of(Data.PCRA));
-        TsData q2 = TsData.of(TsPeriod.quarterly(1977, 3), DoubleSeq.of(Data.IND_PCR));
+        TsData y2 = TsData.of(TsPeriod.yearly(1979), Doubles.of(Data.PCRA));
+        TsData q2 = TsData.of(TsPeriod.quarterly(1977, 3), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationResults rslt2 = TemporalDisaggregationProcessor.PROCESSOR.process(y2, new TsData[]{q2}, spec);
         assertTrue(rslt2 != null);
-        TsData y3 = TsData.of(TsPeriod.yearly(1979), DoubleSeq.of(Data.PCRA));
-        TsData q3 = TsData.of(TsPeriod.quarterly(1977, 3), DoubleSeq.of(Data.IND_PCR)).drop(0, 30);
+        TsData y3 = TsData.of(TsPeriod.yearly(1979), Doubles.of(Data.PCRA));
+        TsData q3 = TsData.of(TsPeriod.quarterly(1977, 3), Doubles.of(Data.IND_PCR)).drop(0, 30);
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y3, new TsData[]{q3}, spec);
         assertTrue(rslt3 != null);
     }
@@ -364,16 +363,16 @@ public class TemporalDisaggregationProcessorTest {
                 .rescale(true)
                 .algorithm(SsfAlgorithm.Augmented)
                 .build();
-        TsData y1 = TsData.of(TsPeriod.yearly(1976), DoubleSeq.of(Data.PCRA));
-        TsData q1 = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSeq.of(Data.IND_PCR));
+        TsData y1 = TsData.of(TsPeriod.yearly(1976), Doubles.of(Data.PCRA));
+        TsData q1 = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationResults rslt1 = TemporalDisaggregationProcessor.PROCESSOR.process(y1, new TsData[]{q1}, spec);
         assertTrue(rslt1 != null);
-        TsData y2 = TsData.of(TsPeriod.yearly(1979), DoubleSeq.of(Data.PCRA));
-        TsData q2 = TsData.of(TsPeriod.quarterly(1977, 3), DoubleSeq.of(Data.IND_PCR));
+        TsData y2 = TsData.of(TsPeriod.yearly(1979), Doubles.of(Data.PCRA));
+        TsData q2 = TsData.of(TsPeriod.quarterly(1977, 3), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationResults rslt2 = TemporalDisaggregationProcessor.PROCESSOR.process(y2, new TsData[]{q2}, spec);
         assertTrue(rslt2 != null);
-        TsData y3 = TsData.of(TsPeriod.yearly(1979), DoubleSeq.of(Data.PCRA));
-        TsData q3 = TsData.of(TsPeriod.quarterly(1977, 3), DoubleSeq.of(Data.IND_PCR)).drop(0, 30);
+        TsData y3 = TsData.of(TsPeriod.yearly(1979), Doubles.of(Data.PCRA));
+        TsData q3 = TsData.of(TsPeriod.quarterly(1977, 3), Doubles.of(Data.IND_PCR)).drop(0, 30);
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y3, new TsData[]{q3}, spec);
         assertTrue(rslt3 != null);
     }
@@ -387,16 +386,16 @@ public class TemporalDisaggregationProcessorTest {
                 .rescale(true)
                 .algorithm(SsfAlgorithm.Diffuse)
                 .build();
-        TsData y1 = TsData.of(TsPeriod.yearly(1976), DoubleSeq.of(Data.PCRA));
-        TsData q1 = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSeq.of(Data.IND_PCR));
+        TsData y1 = TsData.of(TsPeriod.yearly(1976), Doubles.of(Data.PCRA));
+        TsData q1 = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationResults rslt1 = TemporalDisaggregationProcessor.PROCESSOR.process(y1, new TsData[]{q1}, spec);
         assertTrue(rslt1 != null);
-        TsData y2 = TsData.of(TsPeriod.yearly(1979), DoubleSeq.of(Data.PCRA));
-        TsData q2 = TsData.of(TsPeriod.quarterly(1977, 3), DoubleSeq.of(Data.IND_PCR));
+        TsData y2 = TsData.of(TsPeriod.yearly(1979), Doubles.of(Data.PCRA));
+        TsData q2 = TsData.of(TsPeriod.quarterly(1977, 3), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationResults rslt2 = TemporalDisaggregationProcessor.PROCESSOR.process(y2, new TsData[]{q2}, spec);
         assertTrue(rslt2 != null);
-        TsData y3 = TsData.of(TsPeriod.yearly(1979), DoubleSeq.of(Data.PCRA));
-        TsData q3 = TsData.of(TsPeriod.quarterly(1977, 3), DoubleSeq.of(Data.IND_PCR)).drop(0, 30);
+        TsData y3 = TsData.of(TsPeriod.yearly(1979), Doubles.of(Data.PCRA));
+        TsData q3 = TsData.of(TsPeriod.quarterly(1977, 3), Doubles.of(Data.IND_PCR)).drop(0, 30);
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y3, new TsData[]{q3}, spec);
         assertTrue(rslt3 != null);
     }
@@ -410,16 +409,16 @@ public class TemporalDisaggregationProcessorTest {
                 .rescale(true)
                 .algorithm(SsfAlgorithm.SqrtDiffuse)
                 .build();
-        TsData y1 = TsData.of(TsPeriod.yearly(1976), DoubleSeq.of(Data.PCRA));
-        TsData q1 = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSeq.of(Data.IND_PCR));
+        TsData y1 = TsData.of(TsPeriod.yearly(1976), Doubles.of(Data.PCRA));
+        TsData q1 = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationResults rslt1 = TemporalDisaggregationProcessor.PROCESSOR.process(y1, new TsData[]{q1}, spec);
         assertTrue(rslt1 != null);
-        TsData y2 = TsData.of(TsPeriod.yearly(1979), DoubleSeq.of(Data.PCRA));
-        TsData q2 = TsData.of(TsPeriod.quarterly(1977, 3), DoubleSeq.of(Data.IND_PCR));
+        TsData y2 = TsData.of(TsPeriod.yearly(1979), Doubles.of(Data.PCRA));
+        TsData q2 = TsData.of(TsPeriod.quarterly(1977, 3), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationResults rslt2 = TemporalDisaggregationProcessor.PROCESSOR.process(y2, new TsData[]{q2}, spec);
         assertTrue(rslt2 != null);
-        TsData y3 = TsData.of(TsPeriod.yearly(1979), DoubleSeq.of(Data.PCRA));
-        TsData q3 = TsData.of(TsPeriod.quarterly(1977, 3), DoubleSeq.of(Data.IND_PCR)).drop(0, 30);
+        TsData y3 = TsData.of(TsPeriod.yearly(1979), Doubles.of(Data.PCRA));
+        TsData q3 = TsData.of(TsPeriod.quarterly(1977, 3), Doubles.of(Data.IND_PCR)).drop(0, 30);
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y3, new TsData[]{q3}, spec);
         assertTrue(rslt3 != null);
     }

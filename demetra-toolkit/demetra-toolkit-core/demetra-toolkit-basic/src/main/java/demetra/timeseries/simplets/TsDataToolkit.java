@@ -19,7 +19,7 @@ package demetra.timeseries.simplets;
 import demetra.timeseries.TsData;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
@@ -29,6 +29,7 @@ import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -38,7 +39,7 @@ import demetra.data.DoubleSeq;
 public class TsDataToolkit {
 
     public TsData fn(TsData s, DoubleUnaryOperator fn) {
-        return TsData.of(s.getStart(), Doubles.fn(s.getValues(), fn));
+        return TsData.of(s.getStart(), Doubles.of(DeprecatedDoubles.fn(s.getValues(), fn)));
     }
 
     public TsData fastFn(TsData s, DoubleUnaryOperator fn) {
@@ -46,7 +47,7 @@ public class TsDataToolkit {
     }
 
     public TsData commit(TsData s) {
-        return TsData.of(s.getStart(), s.getValues());
+        return TsData.of(s.getStart(), Doubles.of(s.getValues()));
     }
 
     public TsData fastFn(TsData left, TsData right, DoubleBinaryOperator fn) {
@@ -83,24 +84,24 @@ public class TsDataToolkit {
     }
 
     public TsData fn(TsData s, int lag, DoubleBinaryOperator fn) {
-        return TsData.of(s.getStart().plus(lag), Doubles.fn(s.getValues(), lag, fn));
+        return TsData.of(s.getStart().plus(lag), Doubles.of(DeprecatedDoubles.fn(s.getValues(), lag, fn)));
     }
 
     public TsData drop(TsData s, @Nonnegative int nbeg, @Nonnegative int nend) {
         int len=s.length()-nbeg-nend;
         TsPeriod start = s.getStart().plus(nbeg);
-        return TsData.of(start, s.getValues().extract(nbeg, Math.max(0, len)));
+        return TsData.of(start, Doubles.of(s.getValues().extract(nbeg, Math.max(0, len))));
     }
 
     public TsData extend(TsData s, @Nonnegative int nbeg, @Nonnegative int nend) {
         TsPeriod start = s.getStart().plus(-nbeg);
-        return TsData.ofInternal(start, Doubles.extend(s.getValues(), nbeg, nend));
+        return TsData.ofInternal(start, DeprecatedDoubles.extend(s.getValues(), nbeg, nend));
     }
 
     public TsData select(TsData s, TimeSelector selector) {
         TsDomain ndomain = s.getDomain().select(selector);
         final int beg = s.getStart().until(ndomain.getStartPeriod());
-        return TsData.of(ndomain.getStartPeriod(), s.getValues().extract(beg, ndomain.length()));
+        return TsData.of(ndomain.getStartPeriod(), Doubles.of(s.getValues().extract(beg, ndomain.length())));
     }
 
     /**
@@ -193,7 +194,7 @@ public class TsDataToolkit {
         int n=diff.count(x->Double.isFinite(x));
         if (n == 0)
             return Double.NaN;
-        return Math.sqrt(Doubles.ssqWithMissing(diff)/n);
+        return Math.sqrt(DeprecatedDoubles.ssqWithMissing(diff)/n);
     }
      
     public TsData subtract(double d, TsData l) {

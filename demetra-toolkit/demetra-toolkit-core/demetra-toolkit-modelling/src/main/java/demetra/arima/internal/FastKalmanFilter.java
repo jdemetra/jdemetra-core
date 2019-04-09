@@ -26,7 +26,7 @@ import demetra.likelihood.DeterminantalTerm;
 import demetra.likelihood.Likelihood;
 import demetra.maths.matrices.Matrix;
 import demetra.util.SubArrayOfInt;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;
 import demetra.data.DoubleSeq;
@@ -339,7 +339,7 @@ public class FastKalmanFilter {
         } while (++pos < n);
         DoubleSeq dy = DoubleSeq.of(yl);
         return Likelihood.builder(n)
-                .ssqErr(Doubles.ssq(dy))
+                .ssqErr(DeprecatedDoubles.ssq(dy))
                 .residuals(dy)
                 .logDeterminant(det.getLogDeterminant())
                 .build();

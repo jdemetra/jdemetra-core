@@ -18,6 +18,7 @@ package internal.data;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
+import demetra.data.Doubles;
 
 /**
  *
@@ -272,16 +273,16 @@ public class InternalDoubleSeqMath {
     }
 
     public DoubleSeq removeMean(DoubleSeq src) {
-        double[] y = src.toArray();
+        double[] safeArray = src.toArray();
         double s = 0;
-        for (int i = 0; i < y.length; ++i) {
-            s += y[i];
+        for (int i = 0; i < safeArray.length; ++i) {
+            s += safeArray[i];
         }
-        s /= y.length;
-        for (int i = 0; i < y.length; ++i) {
-            y[i] -= s;
+        s /= safeArray.length;
+        for (int i = 0; i < safeArray.length; ++i) {
+            safeArray[i] -= s;
         }
-        return DoubleSeq.of(y);
+        return Doubles.ofInternal(safeArray);
     }
 
     public DoubleSeq delta(DoubleSeq src, int lag) {

@@ -13,7 +13,7 @@ import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static demetra.data.Doubles.distance;
+import static demetra.data.DeprecatedDoubles.distance;
 import demetra.data.DoubleSeq;
 
 /**

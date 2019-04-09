@@ -17,7 +17,6 @@
 package internal.data;
 
 import demetra.data.BaseSeq;
-import demetra.data.BaseSeqView;
 
 /**
  *
@@ -72,7 +71,7 @@ public class InternalBaseSeq {
         }
     }
 
-    public static abstract class MappingBaseSeq implements BaseSeqView {
+    public static abstract class MappingBaseSeq implements BaseSeq {
 
         protected final int length;
 

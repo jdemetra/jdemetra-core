@@ -21,8 +21,7 @@ import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -35,22 +34,22 @@ public class TemporalDisaggregationTest {
 
     @Test
     public void testChowLin() {
-        TsData y = TsData.of(TsPeriod.yearly(1977), DoubleSeq.of(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSeq.of(Data.IND_PCR));
+        TsData y = TsData.of(TsPeriod.yearly(1977), Doubles.of(Data.PCRA));
+        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationResults rslt = TemporalDisaggregation.process(y, true, false, new TsData[]{q}, "Ar1", 0, "Sum", 0, 0, false, 0, false, "Diffuse", false);
     }
     
     @Test
     public void testLitterman() {
-        TsData y = TsData.of(TsPeriod.yearly(1977), DoubleSeq.of(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSeq.of(Data.IND_PCR));
+        TsData y = TsData.of(TsPeriod.yearly(1977), Doubles.of(Data.PCRA));
+        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationResults rslt = TemporalDisaggregation.process(y, false, false, new TsData[]{q}, "RwAr1", 0, "Sum", 0, 0, false, 0, false, "Augmented", false);
     }
 
     @Test
     public void testFernandez() {
-        TsData y = TsData.of(TsPeriod.yearly(1977), DoubleSeq.of(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), DoubleSeq.of(Data.IND_PCR));
+        TsData y = TsData.of(TsPeriod.yearly(1977), Doubles.of(Data.PCRA));
+        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationResults rslt = TemporalDisaggregation.process(y, false, false, new TsData[]{q}, "Rw", 0, "Sum", 0, 0, false, 0, false, "Augmented", false);
     }
 }

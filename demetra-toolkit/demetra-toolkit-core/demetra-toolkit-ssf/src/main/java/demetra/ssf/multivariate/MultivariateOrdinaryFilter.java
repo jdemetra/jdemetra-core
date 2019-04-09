@@ -17,7 +17,7 @@
 package demetra.ssf.multivariate;
 
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
@@ -87,7 +87,7 @@ public class MultivariateOrdinaryFilter {
         int[] obs;
         if (nmissing != 0) {
             obs = new int[nobs];
-            Doubles.search(x, y -> Double.isFinite(y), obs);
+            DeprecatedDoubles.search(x, y -> Double.isFinite(y), obs);
         } else {
             obs = null;
         }

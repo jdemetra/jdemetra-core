@@ -50,10 +50,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -155,9 +152,9 @@ public class AirlineDecomposition {
         int[] pos = ssf.componentsPosition();
         return Results.builder()
                 .y(s)
-                .t(TsData.of(start, ds.item(pos[0])))
-                .s(TsData.of(start, ds.item(pos[1])))
-                .i(TsData.of(start, ds.item(pos[2])))
+                .t(TsData.of(start, Doubles.of(ds.item(pos[0]))))
+                .s(TsData.of(start, Doubles.of(ds.item(pos[1]))))
+                .i(TsData.of(start, Doubles.of(ds.item(pos[2]))))
                 .ucarima(new UcarimaType(sum, new ArimaType[]{mt, ms, mi}))
                 .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
                 .regarima(rslt.getModel())

@@ -17,7 +17,7 @@
 
 package demetra.modelling;
 
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.stats.AutoCovariances;
 import demetra.timeseries.TsData;
 import demetra.timeseries.simplets.TsDataToolkit;
@@ -78,9 +78,9 @@ public class DifferencingResults{
             bmean = mean;
         }
 
-        diff = Doubles.delta(input, 1, del);
+        diff = DeprecatedDoubles.delta(input, 1, del);
         if (bmean) {
-            diff=Doubles.removeMean(diff);
+            diff=DeprecatedDoubles.removeMean(diff);
         }
         return new DifferencingResults(input, diff, bmean);
     }

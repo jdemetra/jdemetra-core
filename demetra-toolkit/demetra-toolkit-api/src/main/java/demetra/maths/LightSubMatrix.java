@@ -18,6 +18,7 @@ package demetra.maths;
 
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -82,7 +83,7 @@ class LightSubMatrix implements MatrixType {
     @Override
     public DoubleSeq subDiagonal(int pos) {
         if (pos > nc || pos < -nr) {
-            return DoubleSeq.empty();
+            return Doubles.EMPTY;
         }
         int del = c0 - r0;
         DoubleSeq d = core.subDiagonal(del + pos);

@@ -34,7 +34,6 @@ import demetra.modelling.regression.UserVariable;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.akf.AkfToolkit;
-import demetra.ssf.dk.DefaultDiffuseFilteringResults;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.dk.SsfFunctionPoint;
@@ -54,6 +53,7 @@ import demetra.timeseries.TsUnit;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -145,7 +145,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
             ISsqFunctionMinimizer fmin = new LevenbergMarquardtMinimizer();
             double start = spec.getParameter().getType() == ParameterType.Undefined
                     ? .9 : spec.getParameter().getValue();
-            fmin.minimize(fn.ssqEvaluate(DoubleSeq.of(start)));
+            fmin.minimize(fn.ssqEvaluate(Doubles.of(start)));
             SsfFunctionPoint<Parameter, Ssf> rslt = (SsfFunctionPoint<Parameter, Ssf>) fmin.getResult();
             DoubleSeq p = rslt.getParameters();
             dll = rslt.getLikelihood();
@@ -232,7 +232,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
             ISsqFunctionMinimizer fmin = new LevenbergMarquardtMinimizer();
             double start = spec.getParameter().getType() == ParameterType.Undefined
                     ? .9 : spec.getParameter().getValue();
-            fmin.minimize(fn.ssqEvaluate(DoubleSeq.of(start)));
+            fmin.minimize(fn.ssqEvaluate(Doubles.of(start)));
             SsfFunctionPoint<Parameter, Ssf> rslt = (SsfFunctionPoint<Parameter, Ssf>) fmin.getResult();
             DoubleSeq p = rslt.getParameters();
             dll = rslt.getLikelihood();
@@ -450,7 +450,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
 
         @Override
         public DoubleSeq getDefaultParameters() {
-            return DoubleSeq.of(.9);
+            return Doubles.of(.9);
         }
 
         @Override

@@ -59,7 +59,7 @@ public class ConstInterpolator implements DataInterpolator {
         double[] ndata = data.toArray();
         double nval = value;
         if (!Double.isFinite(nval)) { // use the average
-            nval = Doubles.averageWithMissing(data);
+            nval = DeprecatedDoubles.averageWithMissing(data);
         }
         for (int i = 0; i < ndata.length; ++i) {
             if (!Double.isFinite(ndata[i])) {
