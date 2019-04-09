@@ -5,11 +5,7 @@
  */
 package demetra.ssf.univariate;
 
-import demetra.data.Doubles;
-import demetra.data.DoubleSeqCursor;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleSeqView;
-import demetra.data.Seq;
 
 
 /**
@@ -57,7 +53,7 @@ public class SsfData implements ISsfData  {
         data.copyTo(buffer, start);
     }
 
-    public DoubleSeqView extract(int start, int length) {
+    public DoubleSeq extract(int start, int length) {
         return data.extract(start, length);
     }
     

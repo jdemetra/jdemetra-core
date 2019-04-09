@@ -19,7 +19,6 @@ package internal.data;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleVector;
 import demetra.data.DoubleVectorCursor;
-import demetra.data.DoubleVectorView;
 import demetra.util.function.IntDoubleConsumer;
 import java.util.function.IntToDoubleFunction;
 
@@ -103,7 +102,7 @@ public class InternalDoubleVector {
         }
     }
 
-    public static class MappingDoubleVector extends InternalDoubleSeq.MappingDoubleSeq implements DoubleVectorView {
+    public static class MappingDoubleVector extends InternalDoubleSeq.MappingDoubleSeq implements DoubleVector {
 
         private final IntDoubleConsumer setter;
 

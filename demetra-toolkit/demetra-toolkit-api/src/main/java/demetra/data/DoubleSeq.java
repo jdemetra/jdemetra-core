@@ -159,12 +159,12 @@ public interface DoubleSeq extends BaseSeq {
     }
 
     @Nonnull
-    default DoubleSeqView map(@Nonnull DoubleUnaryOperator fn) {
+    default DoubleSeq map(@Nonnull DoubleUnaryOperator fn) {
         return onMapping(length(), i -> fn.applyAsDouble(get(i)));
     }
 
     @Nonnull
-    default DoubleSeqView map(@Nonnegative int length, @Nonnull IntUnaryOperator indexMapper) {
+    default DoubleSeq map(@Nonnegative int length, @Nonnull IntUnaryOperator indexMapper) {
         return onMapping(length, i -> get(indexMapper.applyAsInt(i)));
     }
 
@@ -180,12 +180,12 @@ public interface DoubleSeq extends BaseSeq {
      * of the result could be 0.
      */
     @Nonnull
-    default DoubleSeqView extract(@Nonnegative int start, @Nonnegative int length) {
+    default DoubleSeq extract(@Nonnegative int start, @Nonnegative int length) {
         return map(length, i -> start + i);
     }
 
     @Nonnull
-    default DoubleSeqView extract(@Nonnegative int start, @Nonnegative int length, int increment) {
+    default DoubleSeq extract(@Nonnegative int start, @Nonnegative int length, int increment) {
         return map(length, i -> start + i * increment);
     }
 
@@ -197,7 +197,7 @@ public interface DoubleSeq extends BaseSeq {
      *
      * @return The shortened array
      */
-    default DoubleSeqView drop(int beg, int end) {
+    default DoubleSeq drop(int beg, int end) {
         return extract(beg, length() - beg - end);
     }
 
@@ -209,7 +209,7 @@ public interface DoubleSeq extends BaseSeq {
      *
      * @return
      */
-    default DoubleSeqView range(int beg, int end) {
+    default DoubleSeq range(int beg, int end) {
         return end <= beg ? map(0, i -> -1) : extract(beg, end - beg);
     }
 
@@ -218,7 +218,7 @@ public interface DoubleSeq extends BaseSeq {
      *
      * @return
      */
-    default DoubleSeqView reverse() {
+    default DoubleSeq reverse() {
         final int n = length();
         return map(n, i -> n - 1 - i);
     }
@@ -317,7 +317,7 @@ public interface DoubleSeq extends BaseSeq {
         return DoubleSeq.of(data);
     }
 
-    default DoubleSeqView fastOp(DoubleSeq b, DoubleBinaryOperator op) {
+    default DoubleSeq fastOp(DoubleSeq b, DoubleBinaryOperator op) {
         int n = length();
         return onMapping(n, i -> get(i) + b.get(i));
     }
@@ -541,7 +541,7 @@ public interface DoubleSeq extends BaseSeq {
     }
 
     @Nonnull
-    static DoubleSeqView onMapping(@Nonnegative int length, @Nonnull IntToDoubleFunction getter) {
+    static DoubleSeq onMapping(@Nonnegative int length, @Nonnull IntToDoubleFunction getter) {
         return new InternalDoubleSeq.MappingDoubleSeq(length, getter);
     }
     //</editor-fold>

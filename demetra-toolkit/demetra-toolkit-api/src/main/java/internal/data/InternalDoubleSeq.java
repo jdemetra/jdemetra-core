@@ -29,7 +29,6 @@ import java.util.function.IntToDoubleFunction;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleSeqView;
 import java.util.Objects;
 
 /**
@@ -303,7 +302,7 @@ public class InternalDoubleSeq {
         }
     }
 
-    public static class MappingDoubleSeq extends InternalBaseSeq.MappingBaseSeq implements DoubleSeqView {
+    public static class MappingDoubleSeq extends InternalBaseSeq.MappingBaseSeq implements DoubleSeq {
 
         protected final IntToDoubleFunction getter;
 

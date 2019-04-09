@@ -33,7 +33,7 @@ import demetra.util.function.BiDoublePredicate;
  *
  * @author Jean Palate
  */
-public final class DataBlock implements DoubleVector, DoubleVectorView {
+public final class DataBlock implements DoubleVector {
 
     @FunctionalInterface
     public static interface DataBlockFunction {
