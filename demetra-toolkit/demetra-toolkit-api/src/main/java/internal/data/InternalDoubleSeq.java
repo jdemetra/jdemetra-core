@@ -174,6 +174,14 @@ public class InternalDoubleSeq {
         return result;
     }
 
+    public boolean hasSameContentAs(DoubleSeq left, DoubleSeq that) {
+        return left == that || (left.length() == that.length() && left.allMatch(that, InternalDoubleSeq::isSameValue));
+    }
+
+    private boolean isSameValue(double left, double right) {
+        return Double.doubleToLongBits(left) == Double.doubleToLongBits(right);
+    }
+
     public static class EmptyDoubleSeq extends InternalBaseSeq.EmptyBaseSeq implements DoubleSeq {
 
         public static final EmptyDoubleSeq DOUBLE_SEQ = new EmptyDoubleSeq();

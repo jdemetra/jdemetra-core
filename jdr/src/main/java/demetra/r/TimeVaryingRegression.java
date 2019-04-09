@@ -39,6 +39,7 @@ import demetra.processing.ProcResults;
 import demetra.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -143,16 +144,16 @@ public class TimeVaryingRegression {
         air0.setRegVariance(.001);
         min.minimize(fn.ssqEvaluate(mapping.parametersOf(air0)));
         SsfFunctionPoint<Airline, ISsf> rfn = (SsfFunctionPoint<Airline, ISsf>) min.getResult();
-        
+
         // compute AIC
         double aic0 = rfn0.getLikelihood().AIC(2);
         double aic = rfn.getLikelihood().AIC(3);
         ISsf ssf;
-         if (aic+aicdiff < aic0){
-            ssf=rfn.getSsf();
+        if (aic + aicdiff < aic0) {
+            ssf = rfn.getSsf();
+        } else {
+            ssf = rfn0.getSsf();
         }
-        else
-            ssf=rfn0.getSsf();
 
         DefaultSmoothingResults fs = DkToolkit.sqrtSmooth(ssf, data, true, true);
         Matrix c = Matrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
@@ -173,8 +174,8 @@ public class TimeVaryingRegression {
             ec.set(i, z.length, QuadraticForm.apply(var, Z));
         }
         ec.apply(x -> x <= 0 ? 0 : Math.sqrt(x));
-        
-        Airline air=rfn.getCore();
+
+        Airline air = rfn.getCore();
 
         SarimaModel arima0 = SarimaModel.builder(spec)
                 .theta(air0.theta)
@@ -266,8 +267,8 @@ public class TimeVaryingRegression {
         private static final SarimaMapping airlineMapping;
 
         static {
-        SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline(true);
+            SarimaSpecification spec = new SarimaSpecification(12);
+            spec.airline(true);
             airlineMapping = SarimaMapping.of(spec);
         }
 
@@ -376,7 +377,7 @@ public class TimeVaryingRegression {
 
         @Override
         public DoubleSeq getDefaultParameters() {
-            return fixed ? DoubleSeq.copyOf(-.6, -.6) : DoubleSeq.copyOf(-.6, -.6, .001);
+            return fixed ? Doubles.of(new double[]{-.6, -.6}) : Doubles.of(new double[]{-.6, -.6, .001});
         }
     }
 

@@ -18,13 +18,10 @@ package demetra.r;
 
 import demetra.data.Data;
 import demetra.data.DataBlockStorage;
-import demetra.maths.MatrixType;
-import static demetra.r.TimeVaryingRegressionTest.FURNITURE;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.CompositeSsf;
-import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.SsfData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
@@ -36,8 +33,7 @@ import demetra.ucarima.TrendCycleSelector;
 import demetra.ucarima.UcarimaModel;
 import demetra.ucarima.ssf.SsfUcarima;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -50,7 +46,7 @@ public class TradingDaysTestsTest {
 
     @Test
     public void testTD() {
-        TsData s = log(TsData.of(TsPeriod.monthly(1992, 1), DoubleSeq.of(Data.ABS_RETAIL)));
+        TsData s = log(TsData.of(TsPeriod.monthly(1992, 1), Doubles.of(Data.ABS_RETAIL)));
         TimeVaryingRegression.Results regarima = TimeVaryingRegression.regarima(s, "TD7", "Default", 1e-7);
         TsData rtd = regarima.getData("tdeffect", TsData.class);
 
@@ -60,11 +56,11 @@ public class TradingDaysTestsTest {
         SsfData data = new SsfData(s.getValues());
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
         int[] pos = ssf.componentsPosition();
-        TsData i1 = TsData.of(s.getStart(), ds.item(pos[2]));
+        TsData i1 = TsData.of(s.getStart(), Doubles.of(ds.item(pos[2])));
         
         data = new SsfData(TsDataToolkit.subtract(s, rtd).getValues());
         ds = DkToolkit.fastSmooth(ssf, data);
-        TsData i2 = TsData.of(s.getStart(), ds.item(pos[2]));
+        TsData i2 = TsData.of(s.getStart(), Doubles.of(ds.item(pos[2])));
        
 //        System.out.println(TradingDaysTests.ftest(i1, true, 0));
 //        System.out.println(TradingDaysTests.ftest(i1, false, 0));

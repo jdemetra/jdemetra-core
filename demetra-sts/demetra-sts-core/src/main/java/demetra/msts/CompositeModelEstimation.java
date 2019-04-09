@@ -19,6 +19,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.StateFilteringResults;
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -51,7 +52,7 @@ public class CompositeModelEstimation {
         rslt.fullParameters = fullParameters.toArray();
         model.getMapping().fixModelParameters(p->true, fullParameters);
         rslt.parameters = DoubleSeq.EMPTYARRAY;
-        rslt.ssf = model.getMapping().map(DoubleSeq.empty());
+        rslt.ssf = model.getMapping().map(Doubles.EMPTY);
         rslt.cmpPos = rslt.getSsf().componentsPosition();
         rslt.cmpName=model.getMapping().parametersName();
         rslt.parametersName = model.getMapping().parametersName();

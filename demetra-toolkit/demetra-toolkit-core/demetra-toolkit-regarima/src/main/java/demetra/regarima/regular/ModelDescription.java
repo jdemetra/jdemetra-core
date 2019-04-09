@@ -52,6 +52,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -559,7 +560,7 @@ public final class ModelDescription {
         int p = this.getAnnualFrequency();
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
         Matrix J = Matrix.EMPTY;
-        DoubleSeq score = DoubleSeq.empty();
+        DoubleSeq score = Doubles.EMPTY;
         if (max != null) {
             double[] gradient = max.getGradient();
             Matrix hessian = rslt.getMax().getHessian();

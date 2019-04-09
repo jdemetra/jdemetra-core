@@ -51,8 +51,8 @@ public class DoubleSeqTest {
         assertThat(DoubleSeq.of(new double[]{3.14}).length()).isEqualTo(1);
         assertThatThrownBy(() -> DoubleSeq.of(null)).isInstanceOf(NullPointerException.class);
 
-        assertThat(DoubleSeq.empty().length()).isEqualTo(0);
-        assertThat(DoubleSeq.of(3.14).length()).isEqualTo(1);
+        assertThat(Doubles.EMPTY.length()).isEqualTo(0);
+        assertThat(Doubles.of(3.14).length()).isEqualTo(1);
         assertThatThrownBy(() -> DoubleSeq.copyOf((double[]) null)).isInstanceOf(NullPointerException.class);
 
         assertThat(DoubleSeq.copyOf(DoubleStream.of()).length()).isEqualTo(0);
@@ -62,32 +62,32 @@ public class DoubleSeqTest {
 
     @Test
     public void testEquals() {
-        assertThat(DoubleSeq.empty()).isEqualTo(DoubleSeq.empty()).isNotEqualTo(PI);
-        assertThat(PI).isEqualTo(PI).isNotEqualTo(DoubleSeq.empty());
+        assertThat(Doubles.EMPTY).isEqualTo(Doubles.EMPTY).isNotEqualTo(PI);
+        assertThat(PI).isEqualTo(PI).isNotEqualTo(Doubles.EMPTY);
     }
 
     @Test
     public void testHashcode() {
-        assertThat(DoubleSeq.empty().hashCode()).isEqualTo(DoubleSeq.empty().hashCode()).isNotEqualTo(PI.hashCode());
-        assertThat(PI.hashCode()).isEqualTo(PI.hashCode()).isNotEqualTo(DoubleSeq.empty().hashCode());
+        assertThat(Doubles.EMPTY.hashCode()).isEqualTo(Doubles.EMPTY.hashCode()).isNotEqualTo(PI.hashCode());
+        assertThat(PI.hashCode()).isEqualTo(PI.hashCode()).isNotEqualTo(Doubles.EMPTY.hashCode());
     }
 
     @Test
     public void testLength() {
-        assertThat(DoubleSeq.empty().length()).isEqualTo(0);
+        assertThat(Doubles.EMPTY.length()).isEqualTo(0);
         assertThat(PI.length()).isEqualTo(1);
     }
 
     @Test
     public void testDoubleAt() {
         assertThat(PI.get(0)).isEqualTo(Math.PI);
-        assertThatThrownBy(() -> DoubleSeq.empty().get(0)).isInstanceOf(IndexOutOfBoundsException.class);
-        assertThatThrownBy(() -> DoubleSeq.empty().get(-1)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> Doubles.EMPTY.get(0)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> Doubles.EMPTY.get(-1)).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
     public void testToArray() {
-        assertThat(DoubleSeq.empty().toArray()).isEmpty();
+        assertThat(Doubles.EMPTY.toArray()).isEmpty();
         assertThat(PI.toArray())
                 .containsExactly(Math.PI)
                 .isNotSameAs(PI.toArray());
@@ -99,10 +99,16 @@ public class DoubleSeqTest {
         assertThat(copy(PI, new double[]{666, 777}, 1)).containsExactly(666, Math.PI);
     }
 
-    private static final DoubleSeq PI = DoubleSeq.of(Math.PI);
+    private static final Doubles PI = Doubles.of(Math.PI);
 
     private static double[] copy(DoubleSeq o, double[] buffer, int offset) {
         o.copyTo(buffer, offset);
         return buffer;
+    }
+    
+    @Test
+    public void testHasSameContentAs() {
+        assertThat(PI.hasSameContentAs(Doubles.of(Math.PI))).isTrue();
+        assertThat(Doubles.of(Double.NaN).hasSameContentAs(Doubles.of(Double.NaN))).isTrue();
     }
 }

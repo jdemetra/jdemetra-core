@@ -28,6 +28,7 @@ import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.MatrixType;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  * This class represents the concentrated likelihood of a linear regression
@@ -189,12 +190,12 @@ public final class ConcentratedLikelihoodWithMissing implements IConcentratedLik
     }
 
     public DoubleSeq missingEstimates() {
-        return nmissing == 0 ? DoubleSeq.empty() : DoubleSeq.of(b, 0, nmissing);
+        return nmissing == 0 ? Doubles.EMPTY : DoubleSeq.of(b, 0, nmissing);
     }
 
     public DoubleSeq missingUnscaledVariances() {
         if (nmissing == 0) {
-            return DoubleSeq.empty();
+            return Doubles.EMPTY;
         }
         bvariance();
         return DoubleSeq.of(bvar.data(), 0, nmissing, bvar.getRowsCount() + 1);

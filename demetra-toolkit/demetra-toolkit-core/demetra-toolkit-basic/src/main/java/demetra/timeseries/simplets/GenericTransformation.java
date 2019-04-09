@@ -5,12 +5,11 @@
  */
 package demetra.timeseries.simplets;
 
+import demetra.data.Doubles;
 import demetra.data.transformation.DataTransformation;
 import demetra.data.transformation.LogJacobian;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsObs;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.transformation.TimeSeriesTransformation;
 
 /**
  *
@@ -31,7 +30,7 @@ public class GenericTransformation implements TsDataTransformation {
 
     @Override
     public TsData transform(TsData data, LogJacobian logjacobian) {
-        return TsData.of(data.getStart(), dataTransformation.transform(data.getValues(), logjacobian));
+        return TsData.of(data.getStart(), Doubles.of(dataTransformation.transform(data.getValues(), logjacobian)));
     }
 
     @Override

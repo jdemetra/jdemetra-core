@@ -21,6 +21,7 @@ import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 
 /**
  *
@@ -42,7 +43,7 @@ public class LinearModelTest {
                 .meanCorrection(true)
                 .build();
         assertTrue(lm != null);
-        assertTrue(lm.calcResiduals(DoubleSeq.of(.5)) != null);
+        assertTrue(lm.calcResiduals(Doubles.of(.5)) != null);
     }
 
     @Test
