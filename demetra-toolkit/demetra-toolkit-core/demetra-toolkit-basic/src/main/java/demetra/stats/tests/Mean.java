@@ -16,7 +16,7 @@
  */
 package demetra.stats.tests;
 
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.dstats.T;
@@ -49,12 +49,12 @@ public class Mean {
         int nmissing = data.count(x -> !Double.isFinite(x));
         int m = data.length() - nmissing;
         if (nmissing > 0) {
-            double av = Doubles.sumWithMissing(data) / m;
-            double v = Doubles.ssqWithMissing(data) / m;
+            double av = DeprecatedDoubles.sumWithMissing(data) / m;
+            double v = DeprecatedDoubles.ssqWithMissing(data) / m;
             return new Mean(av, 0, v, m);
         } else {
-            double av = Doubles.sum(data) / m;
-            double v = Doubles.ssq(data) / m;
+            double av = DeprecatedDoubles.sum(data) / m;
+            double v = DeprecatedDoubles.ssq(data) / m;
             return new Mean(av, 0, v, m);
         }
     }
@@ -69,12 +69,12 @@ public class Mean {
         int nmissing = data.count(x -> !Double.isFinite(x));
         int m = data.length() - nmissing;
         if (nmissing > 0) {
-            double av = Doubles.sumWithMissing(data) / m;
-            double v = Doubles.ssqcWithMissing(data, mu) / m;
+            double av = DeprecatedDoubles.sumWithMissing(data) / m;
+            double v = DeprecatedDoubles.ssqcWithMissing(data, mu) / m;
             return new Mean(av, mu, v, m);
         } else {
-            double av = Doubles.sum(data) / m;
-            double v = Doubles.ssqc(data, mu) / m;
+            double av = DeprecatedDoubles.sum(data) / m;
+            double v = DeprecatedDoubles.ssqc(data, mu) / m;
             return new Mean(av, mu, v, m);
         }
     }

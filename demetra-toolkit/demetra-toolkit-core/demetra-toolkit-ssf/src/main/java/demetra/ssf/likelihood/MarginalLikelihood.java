@@ -18,7 +18,7 @@ package demetra.ssf.likelihood;
 
 import demetra.data.DataBlock;
 import demetra.likelihood.ILikelihood;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
 import demetra.data.DoubleSeq;
@@ -52,7 +52,7 @@ public class MarginalLikelihood implements ILikelihood {
                 return this;
             }
             if (ssqerr == 0) {
-                this.ssqerr = Doubles.ssq(residuals);
+                this.ssqerr = DeprecatedDoubles.ssq(residuals);
             }
             this.res = residuals.toArray();
             return this;

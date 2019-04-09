@@ -402,7 +402,7 @@ public final class DataBlock implements DoubleVector {
     }
 
     public double distance(DoubleSeq seq) {
-        return Doubles.distance(this, seq);
+        return DeprecatedDoubles.distance(this, seq);
     }
 
     /**

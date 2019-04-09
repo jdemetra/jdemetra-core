@@ -29,7 +29,7 @@ public class DoubleSeqTest {
 
     @Demo
     public static void main(String[] args) {
-        DoubleSeq values = DoubleSeq.copyOf(3.14, 3, 5, 7);
+        DoubleSeq values = DoubleSeq.copyOf(new double[]{3.14, 3, 5, 7});
         System.out.println(DoubleSeq.copyOf(values.stream().skip(1).map(o -> o * 2)));
 
         double[] tmp = values.toArray();
@@ -51,7 +51,7 @@ public class DoubleSeqTest {
         assertThat(DoubleSeq.of(new double[]{3.14}).length()).isEqualTo(1);
         assertThatThrownBy(() -> DoubleSeq.of(null)).isInstanceOf(NullPointerException.class);
 
-        assertThat(DoubleSeq.copyOf().length()).isEqualTo(0);
+        assertThat(DoubleSeq.empty().length()).isEqualTo(0);
         assertThat(DoubleSeq.of(3.14).length()).isEqualTo(1);
         assertThatThrownBy(() -> DoubleSeq.copyOf((double[]) null)).isInstanceOf(NullPointerException.class);
 

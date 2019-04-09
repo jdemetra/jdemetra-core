@@ -6,7 +6,7 @@
 package demetra.regarima.ami;
 
 import demetra.data.Data;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.timeseries.TsData;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -28,7 +28,7 @@ public class FastDifferencingModuleTest {
                 .build();
 
         for (int i = 0; i < insee.length; ++i) {
-            int[] del = d.process(Doubles.fn(insee[i].getValues(), x->Math.log(x)), new int[]{1, 12}, null);
+            int[] del = d.process(DeprecatedDoubles.fn(insee[i].getValues(), x->Math.log(x)), new int[]{1, 12}, null);
             System.out.print(del[0]);
             System.out.print('\t');
             System.out.println(del[1]);

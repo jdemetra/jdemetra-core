@@ -34,7 +34,7 @@ public class TsDataTest {
 
     @Demo
     public static void main(String[] args) {
-        TsData ts = TsData.of(TsPeriod.yearly(2001), DoubleSeq.copyOf(3.14, 7));
+        TsData ts = TsData.of(TsPeriod.yearly(2001), DoubleSeq.copyOf(new double[]{3.14, 7}));
 
         System.out.println("\n[Tests ...]");
         System.out.println(ts.toString());
@@ -123,9 +123,9 @@ public class TsDataTest {
         assertThat(TsData.empty(TsPeriod.yearly(2001), "abc"))
                 .isEqualTo(TsData.empty(TsPeriod.yearly(2001), "abc"))
                 .isNotEqualTo(TsData.empty(TsPeriod.yearly(2001), "xyz"));
-        
-        assertThat(TsData.of(TsPeriod.yearly(2001), DoubleSeq.copyOf(1, 2, 3)))
-                .isEqualTo(TsData.of(TsPeriod.yearly(2001), DoubleSeq.copyOf(1, 2, 3)));
+
+        assertThat(TsData.of(TsPeriod.yearly(2001), DoubleSeq.copyOf(new double[]{1, 2, 3})))
+                .isEqualTo(TsData.of(TsPeriod.yearly(2001), DoubleSeq.copyOf(new double[]{1, 2, 3})));
     }
 
     @Test

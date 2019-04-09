@@ -21,7 +21,7 @@ import demetra.design.Unsafe;
 import java.util.Iterator;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.data.DoubleSeq;
 
 /**
@@ -54,7 +54,7 @@ public class QuadraticForm {
         DoubleSeqCursor cell = x.cursor();
         double s = 0;
         while (columns.hasNext()) {
-            s += cell.getAndNext() * Doubles.dot(columns.next(), x);
+            s += cell.getAndNext() * DeprecatedDoubles.dot(columns.next(), x);
         }
         return s;
     }

@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.data.DoubleSeq;
 
 /**
@@ -125,7 +125,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
                 final double eps = m_epsp[i];
                 de.set(ep, m_ecur, (x, y) -> (x - y) / eps);
             }
-            m_grad[i] = 2 * Doubles.dot(m_ecur, de);
+            m_grad[i] = 2 * DeprecatedDoubles.dot(m_ecur, de);
             m_de[i] = de;
         }
     }
@@ -139,14 +139,14 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         // compute first the diagonal
         for (int i = 0; i < n; ++i) {
             DoubleSeq de = m_de[i];
-            m_h.set(i, i, 2 * Doubles.ssq(de));
+            m_h.set(i, i, 2 * DeprecatedDoubles.ssq(de));
         }
         // other elements
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < i; ++j) {
                 DoubleSeq dei = m_de[i];
                 DoubleSeq dej = m_de[j];
-                double z=2 * Doubles.dot(dei, dej);
+                double z=2 * DeprecatedDoubles.dot(dei, dej);
                 m_h.set(i, j, z);
                 m_h.set(j, i, z);
             }

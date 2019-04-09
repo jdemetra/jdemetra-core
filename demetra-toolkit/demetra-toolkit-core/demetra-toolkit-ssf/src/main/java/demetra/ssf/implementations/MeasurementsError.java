@@ -5,7 +5,7 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.State;

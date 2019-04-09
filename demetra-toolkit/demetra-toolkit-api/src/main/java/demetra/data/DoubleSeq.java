@@ -524,7 +524,7 @@ public interface DoubleSeq extends BaseSeq {
     }
 
     @Nonnull
-    static DoubleSeq copyOf(@Nonnull double... data) {
+    static DoubleSeq copyOf(@Nonnull double[] data) {
         switch (data.length) {
             case 0:
                 return empty();

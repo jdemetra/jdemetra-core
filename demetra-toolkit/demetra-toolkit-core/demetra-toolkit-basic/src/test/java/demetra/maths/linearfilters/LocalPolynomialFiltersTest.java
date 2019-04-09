@@ -17,7 +17,7 @@
 package demetra.maths.linearfilters;
 
 import demetra.data.DiscreteKernel;
-import static demetra.data.Doubles.sum;
+import static demetra.data.DeprecatedDoubles.sum;
 import demetra.maths.matrices.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;

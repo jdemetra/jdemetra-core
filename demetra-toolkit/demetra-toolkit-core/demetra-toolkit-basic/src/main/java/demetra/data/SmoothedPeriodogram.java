@@ -109,7 +109,7 @@ public class SmoothedPeriodogram {
 
             double[] x = data.toArray();
             // correct for mean
-            double mean = Doubles.averageWithMissing(data);
+            double mean = DeprecatedDoubles.averageWithMissing(data);
             if (mean != 0) {
                 for (int i = 0; i < x.length; ++i) {
                     x[i] -= mean;

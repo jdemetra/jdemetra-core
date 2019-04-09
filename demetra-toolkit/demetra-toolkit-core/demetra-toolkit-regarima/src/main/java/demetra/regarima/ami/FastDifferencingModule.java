@@ -17,7 +17,7 @@
 package demetra.regarima.ami;
 
 import demetra.data.DataBlock;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.design.BuilderPattern;
 import demetra.regarima.outlier.RobustStandardDeviationComputer;
 import demetra.data.DoubleSeq;
@@ -103,7 +103,7 @@ public class FastDifferencingModule implements IGenericDifferencingModule {
 
     private double std(DoubleSeq z) {
         if (!mad) {
-            return Math.sqrt(Doubles.ssqc(z, Doubles.average(z)) / z.length());
+            return Math.sqrt(DeprecatedDoubles.ssqc(z, DeprecatedDoubles.average(z)) / z.length());
         } else {
             return RobustStandardDeviationComputer.mad(centile, mad).compute(z);
         }
@@ -158,7 +158,7 @@ public class FastDifferencingModule implements IGenericDifferencingModule {
     }
 
     private void testMean(DoubleSeq z) {
-        double s = Doubles.sum(z), s2 = Doubles.ssq(z);
+        double s = DeprecatedDoubles.sum(z), s2 = DeprecatedDoubles.ssq(z);
         int n = z.length();
         tmean = s / Math.sqrt((s2 * n - s * s) / n);
     }

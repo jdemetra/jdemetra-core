@@ -18,7 +18,7 @@ package demetra.ssf;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.Matrix;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.maths.matrices.QuadraticForm;
 import demetra.data.DoubleSeq;
 
@@ -84,7 +84,7 @@ public class StateStorage implements IStateResults {
     public DoubleSeq zcomponent(DoubleSeq z) {
         double[] a=new double[this.size()];
         for (int i=0; i<a.length; ++i)
-            a[i]=Doubles.dot(A.datablock(i), z);
+            a[i]=DeprecatedDoubles.dot(A.datablock(i), z);
         return DoubleSeq.of(a);
     }
 

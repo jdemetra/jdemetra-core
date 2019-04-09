@@ -25,8 +25,8 @@ import static demetra.timeseries.simplets.TsDataToolkit.commit;
 import static demetra.timeseries.simplets.TsDataToolkit.delta;
 import static demetra.timeseries.simplets.TsDataToolkit.normalize;
 import static demetra.timeseries.simplets.TsDataToolkit.pctVariation;
-import demetra.data.Doubles;
-import static demetra.data.Doubles.average;
+import demetra.data.DeprecatedDoubles;
+import static demetra.data.DeprecatedDoubles.average;
 import demetra.maths.linearfilters.HendersonFilters;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.timeseries.TsDomain;
@@ -53,7 +53,7 @@ public class TsDataToolkitTest {
     public void testUnaryOperator() {
         TsData t1 = fn(series, x -> Math.log(x));
         TsData t2 = fastFn(series, x -> Math.log(x));
-        assertTrue(Doubles.distance(t1.getValues(), t2.getValues()) == 0);
+        assertTrue(DeprecatedDoubles.distance(t1.getValues(), t2.getValues()) == 0);
     }
 
     @Test
@@ -144,7 +144,7 @@ public class TsDataToolkitTest {
     }
 
     private double distance(TsData s1, ec.tstoolkit.timeseries.simplets.TsData s2) {
-        return Doubles.distance(s1.getValues(), DoubleSeq.of(s2.internalStorage()));
+        return DeprecatedDoubles.distance(s1.getValues(), DoubleSeq.of(s2.internalStorage()));
     }
 
 }

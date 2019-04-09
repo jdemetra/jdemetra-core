@@ -16,13 +16,11 @@
  */
 package demetra.data;
 
-import demetra.data.DoubleSeqCursor;
 import demetra.util.IntList;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
-import demetra.data.DoubleSeq;
 
 /**
  *
@@ -30,7 +28,7 @@ import demetra.data.DoubleSeq;
  */
 @lombok.experimental.UtilityClass
 @Deprecated
-public class Doubles {
+public class DeprecatedDoubles {
 
     public int[] search(final DoubleSeq d, final DoublePredicate pred) {
         IntList list = new IntList();

@@ -18,7 +18,7 @@ package demetra.likelihood;
 
 import demetra.design.Immutable;
 import demetra.maths.matrices.Matrix;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.data.LogSign;
 import demetra.design.BuilderPattern;
 import demetra.eco.EcoException;
@@ -109,7 +109,7 @@ public final class ConcentratedLikelihoodWithMissing implements IConcentratedLik
                 return this;
             }
             if (ssqerr == 0) {
-                ssqerr = Doubles.ssq(residuals);
+                ssqerr = DeprecatedDoubles.ssq(residuals);
             }
             this.res = residuals.toArray();
             return this;

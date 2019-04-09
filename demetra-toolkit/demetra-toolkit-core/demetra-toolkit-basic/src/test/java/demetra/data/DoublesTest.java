@@ -5,8 +5,8 @@
  */
 package demetra.data;
 
-import static demetra.data.Doubles.op;
-import static demetra.data.Doubles.fastOp;
+import static demetra.data.DeprecatedDoubles.op;
+import static demetra.data.DeprecatedDoubles.fastOp;
 import demetra.maths.matrices.Matrix;
 import java.util.Random;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class DoublesTest {
         for (int i = 1; i < m.getColumnsCount(); ++i) {
             b = fastOp(b, m.column(i), (x, y) -> x + y);
         }
-        assertTrue(Doubles.distance(a, b) < 1e-12);
+        assertTrue(DeprecatedDoubles.distance(a, b) < 1e-12);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class DoublesTest {
             for (int i = 1; i < m.getColumnsCount(); ++i) {
                 b = fastOp(b, m.column(i), (x, y) -> x + y);
             }
-            Doubles.commit(b);
+            DeprecatedDoubles.commit(b);
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

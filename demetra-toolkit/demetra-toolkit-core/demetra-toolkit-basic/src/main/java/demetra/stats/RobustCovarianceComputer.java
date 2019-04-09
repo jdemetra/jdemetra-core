@@ -5,8 +5,8 @@
  */
 package demetra.stats;
 
-import demetra.data.Doubles;
-import demetra.data.Doubles;
+import demetra.data.DeprecatedDoubles;
+import demetra.data.DeprecatedDoubles;
 import demetra.data.WindowFunction;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
@@ -51,7 +51,7 @@ public class RobustCovarianceComputer {
 
     public double covariance(DoubleSeq x, WindowFunction winFunction, int truncationLag) {
         DoubleUnaryOperator w = winFunction.window();
-        DoubleSeq y=Doubles.removeMean(x);
+        DoubleSeq y=DeprecatedDoubles.removeMean(x);
         IntToDoubleFunction acf = AutoCovariances.autoCovarianceFunction(y, 0);
         double s = acf.applyAsDouble(0);
         double q = 1+truncationLag;
