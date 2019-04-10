@@ -56,13 +56,7 @@ public interface DoubleSeq extends BaseSeq {
      */
     double get(@Nonnegative int index) throws IndexOutOfBoundsException;
 
-    /**
-     * Creates a new cursor at the beginning of this object. The first data will
-     * be retrieved by "next".
-     *
-     * @return
-     */
-    @Nonnull
+    @Override
     default DoubleSeqCursor cursor() {
         return new InternalDoubleSeqCursor.DefaultDoubleSeqCursor(this);
     }
