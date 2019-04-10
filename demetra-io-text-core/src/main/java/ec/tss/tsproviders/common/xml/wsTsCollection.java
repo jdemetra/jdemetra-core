@@ -13,34 +13,11 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tss.tsproviders.common.xml;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
-import ec.tss.TsCollection;
-
-@XmlRootElement(name = "tscollection")
-@XmlType(name = "tscollection")
 class wsTsCollection {
 
-    @XmlAttribute
     String name;
-    @XmlElement(name = "ts")
-    @XmlElementWrapper(name = "data")
     wsTs[] tslist;
-
-    void copy(TsCollection c) {
-	name = c.getName();
-	tslist = new wsTs[c.getCount()];
-	for (int i = 0; i < tslist.length; ++i) {
-	    tslist[i] = new wsTs();
-	    tslist[i].copy(c.get(i));
-	}
-    }
 }

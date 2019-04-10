@@ -17,29 +17,12 @@
 
 package ec.tss.tsproviders.common.xml;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
-import ec.tss.Ts;
-
 /**
  * 
  * @author Jean Palate
  */
-@XmlRootElement(name = "ts")
-@XmlType(name = "ts")
 class wsTs {
 
-    @XmlAttribute
     public String name;
-    @XmlElement
     public wsTsData tsdata;
-
-    void copy(Ts s) {
-	name = s.getName();
-	tsdata = new wsTsData();
-	tsdata.copy(s.getTsData());
-    }
 }

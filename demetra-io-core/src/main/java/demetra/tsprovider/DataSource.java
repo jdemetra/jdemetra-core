@@ -19,23 +19,15 @@ package demetra.tsprovider;
 import demetra.design.Immutable;
 import demetra.design.VisibleForTesting;
 import demetra.tsprovider.util.IConfig;
-import demetra.tsprovider.util.ParamBean;
 import demetra.util.UriBuilder;
 import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
 import javax.annotation.Nonnull;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import demetra.util.Parser;
 import demetra.util.Formatter;
 import internal.util.SortedMaps;
-import internal.util.Strings;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,14 +37,12 @@ import java.util.HashMap;
  * any resource.<p>
  * This object doesn't hold data but only the parameters used to get the
  * data.<br>It is immutable and therefore thread-safe.<br>It is created by a
- * builder.<br>A default xml serializer is provided but its use is not
- * mandatory.
+ * builder.
  *
  * @author Philippe Charles
  * @since 1.0.0
  */
 @Immutable
-@XmlJavaTypeAdapter(DataSource.XmlAdapter.class)
 @lombok.ToString
 @lombok.EqualsAndHashCode
 public final class DataSource implements IConfig {
@@ -94,15 +84,6 @@ public final class DataSource implements IConfig {
         return new Builder(providerName, version).putAll(params);
     }
 
-    @VisibleForTesting
-    DataSourceBean toBean() {
-        DataSourceBean bean = new DataSourceBean();
-        bean.providerName = providerName;
-        bean.version = version;
-        bean.params = ParamBean.fromSortedMap(params);
-        return bean;
-    }
-
     @Nonnull
     public static DataSource of(@Nonnull String providerName, @Nonnull String version) {
         Objects.requireNonNull(providerName, "providerName");
@@ -129,35 +110,6 @@ public final class DataSource implements IConfig {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
         return new Builder(providerName, version);
-    }
-
-    /**
-     * Returns a convenient DataSource formatter that produces xml output.<p>
-     * This formatter is not thread-safe but unique per thread. To use it
-     * thread-safely, don't store it but use it directly.
-     * <br><code>DataSource.xmlFormatter().format(...)</code>
-     *
-     * @param formattedOutput
-     * @see ThreadLocal
-     * @return a DataSource formatter
-     */
-    @Nonnull
-    public static Formatter<DataSource> xmlFormatter(boolean formattedOutput) {
-        return formattedOutput ? XML.get().formattedOutputFormatter : XML.get().defaultFormatter;
-    }
-
-    /**
-     * Returns a convenient DataSource parser that consumes xml input.<p>
-     * This parser is not thread-safe but unique per thread. To use it
-     * thread-safely, don't store it but use it directly.
-     * <br><code>DataSource.xmlParser().parse(...)</code>
-     *
-     * @see ThreadLocal
-     * @return a DataSource parser
-     */
-    @Nonnull
-    public static Parser<DataSource> xmlParser() {
-        return XML.get().defaultParser;
     }
 
     /**
@@ -214,57 +166,7 @@ public final class DataSource implements IConfig {
         }
     }
 
-    public static class XmlAdapter extends javax.xml.bind.annotation.adapters.XmlAdapter<DataSourceBean, DataSource> {
-
-        @Override
-        public DataSource unmarshal(DataSourceBean v) throws Exception {
-            return v.toId();
-        }
-
-        @Override
-        public DataSourceBean marshal(DataSource v) throws Exception {
-            return v.toBean();
-        }
-    }
-
-    @XmlRootElement(name = "dataSource")
-    public static class DataSourceBean {
-
-        @XmlAttribute(name = "providerName")
-        public String providerName;
-        @XmlAttribute(name = "version")
-        public String version;
-        @XmlElement(name = "param")
-        public ParamBean[] params;
-
-        public DataSource toId() {
-            return new DataSource(
-                    Strings.nullToEmpty(providerName),
-                    Strings.nullToEmpty(version),
-                    ParamBean.toSortedMap(params));
-        }
-    }
-
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    private static final ThreadLocal<Xml> XML = ThreadLocal.withInitial(Xml::new);
-
-    private static final class Xml {
-
-        final static JAXBContext BEAN_CONTEXT;
-
-        static {
-            try {
-                BEAN_CONTEXT = JAXBContext.newInstance(DataSourceBean.class);
-            } catch (JAXBException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        final Parser<DataSource> defaultParser = Parser.<DataSourceBean>onJAXB(BEAN_CONTEXT).andThen(DataSourceBean::toId);
-        final Formatter<DataSource> defaultFormatter = Formatter.<DataSourceBean>onJAXB(BEAN_CONTEXT, false).compose(DataSource::toBean);
-        final Formatter<DataSource> formattedOutputFormatter = Formatter.<DataSourceBean>onJAXB(BEAN_CONTEXT, true).compose(DataSource::toBean);
-    }
-
     private static final String SCHEME = "demetra";
     private static final String HOST = "tsprovider";
 

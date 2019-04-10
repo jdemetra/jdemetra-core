@@ -32,9 +32,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 
 /**
  * Defines a class that creates an object from a {@link CharSequence}.<br> For
@@ -102,36 +99,6 @@ public interface Parser<T> {
             T tmp = parse(o);
             return tmp != null ? after.apply(tmp) : null;
         };
-    }
-
-    /**
-     * Creates a new parser using
-     * {@link JAXBContext#newInstance(java.lang.Class[])}.
-     * <p>
-     * Note that "<i>{@link JAXBContext} is thread-safe and should only be
-     * created once and reused to avoid the cost of initializing the metadata
-     * multiple times. {@link Marshaller} and {@link Unmarshaller} are not
-     * thread-safe, but are lightweight to create and could be created per
-     * operation (<a
-     * href="http://stackoverflow.com/a/7400735">http://stackoverflow.com/a/7400735</a>)".</i>
-     *
-     * @param <T>
-     * @param classToBeParsed
-     * @return
-     */
-    @Nonnull
-    static <T> Parser<T> onJAXB(@Nonnull Class<T> classToBeParsed) {
-        return onJAXB(InternalParser.newUnmarshaller(classToBeParsed));
-    }
-
-    @Nonnull
-    static <T> Parser<T> onJAXB(@Nonnull JAXBContext context) {
-        return onJAXB(InternalParser.newUnmarshaller(context));
-    }
-
-    @Nonnull
-    static <T> Parser<T> onJAXB(@Nonnull Unmarshaller unmarshaller) {
-        return o -> InternalParser.unmarshal(unmarshaller, o);
     }
 
     @Nonnull
