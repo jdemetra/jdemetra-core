@@ -21,7 +21,6 @@ package demetra.maths;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.util.Arrays2;
-import java.io.Serializable;
 
 /**
  * Complex number
@@ -30,7 +29,7 @@ import java.io.Serializable;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public final class Complex implements Serializable, ComplexType {
+public final class Complex implements ComplexType {
 
      /**
      * A constant representing i

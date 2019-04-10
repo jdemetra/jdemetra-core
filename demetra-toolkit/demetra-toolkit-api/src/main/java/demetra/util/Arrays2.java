@@ -293,9 +293,8 @@ public class Arrays2 {
     }
 
     private static class UnmodifiableList<E> extends AbstractList<E>
-            implements RandomAccess, java.io.Serializable {
+            implements RandomAccess {
 
-        private static final long serialVersionUID = -2764017481108945198L;
         private final E[] a;
 
         UnmodifiableList(E[] array) {
