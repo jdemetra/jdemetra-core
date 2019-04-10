@@ -45,7 +45,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex acos(final Complex c) {
+    public static Complex acos(final ComplexType c) {
 	// acos(c) = -i * log(c + i*sqrt(1 - c*c))
 	double cr = c.getRe(), ci = c.getIm();
 
@@ -81,7 +81,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex acosec(final Complex c) {
+    public static Complex acosec(final ComplexType c) {
 	// acosec(c) = asin(1/c)
 
 	ComplexBuilder tmp = new ComplexBuilder(c);
@@ -94,7 +94,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex acosh(final Complex c) {
+    public static Complex acosh(final ComplexType c) {
 	// acosh(c) = log(c + sqrt(c*c - 1))
 	double cr = c.getRe(), ci = c.getIm();
 	// c*c + 1
@@ -125,7 +125,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex acot(final Complex c) {
+    public static Complex acot(final ComplexType c) {
 	// acot(c) = -i/2 * log( (ic-1)/(ic+1) )
 	double cr = c.getRe(), ci = c.getIm();
 	ComplexBuilder tmp = new ComplexBuilder(-ci - 1, cr);
@@ -142,7 +142,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex acoth(final Complex c) {
+    public static Complex acoth(final ComplexType c) {
 	// atanh(z) = 1/2 * log( (c+1)/(c-1) )
 	double cr = c.getRe(), ci = c.getIm();
 
@@ -163,7 +163,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex asec(final Complex c)
+    public static Complex asec(final ComplexType c)
     {
 	// asec(c) = -i * log(1/c + i*sqrt(1 - 1/c*c))
 	// asec(c) = acos(1/c)
@@ -178,7 +178,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex asin(final Complex c) {
+    public static Complex asin(final ComplexType c) {
 	// asin(c) = -i * log(i*c + sqrt(1 - c*c))
 
 	double cr = c.getRe(), ci = c.getIm();
@@ -215,7 +215,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex asinh(final Complex c) {
+    public static Complex asinh(final ComplexType c) {
 	// asinh(c) = log(c + sqrt(c*c + 1))
 	double cr = c.getRe(), ci = c.getIm();
 	// c*c + 1
@@ -246,7 +246,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex atan(final Complex c) {
+    public static Complex atan(final ComplexType c) {
 	// atan(c) = -i/2 * log( (i-c)/(i+c) )
 	double cr = c.getRe(), ci = c.getIm();
 	ComplexBuilder tmp = new ComplexBuilder(-cr, 1 - ci);
@@ -263,7 +263,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex atanh(final Complex c) {
+    public static Complex atanh(final ComplexType c) {
 	// atanh(z) = 1/2 * log( (1+c)/(1-c) )
 	double cr = c.getRe(), ci = c.getIm();
 
@@ -280,7 +280,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex cos(final Complex c)
+    public static Complex cos(final ComplexType c)
     {
 	// cos(c) = ( e(ic)+e(-ic)) / 2
 
@@ -309,7 +309,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex cosec(final Complex c) {
+    public static Complex cosec(final ComplexType c) {
 	// cosec(c) = 1 / sin(c)
 	ComplexBuilder builder = new ComplexBuilder(sin(c));
 	builder.inv();
@@ -321,7 +321,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex cosh(final Complex c) {
+    public static Complex cosh(final ComplexType c) {
 	// cosh(c) = ( exp(c) + exp(-c) ) / 2
 
 	double rc = c.getRe(), ic = c.getIm();
@@ -348,7 +348,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex cot(final Complex c) {
+    public static Complex cot(final ComplexType c) {
 	// cot(c) = cos(c) / sin(c)
 	// cos(c) = ( e(ic)+e(-ic)) / 2
 	// sin(c) = ( e(ic)-e(-ic)) / (2*i)
@@ -381,7 +381,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex coth(final Complex c) {
+    public static Complex coth(final ComplexType c) {
 	// cosh(c) = ( exp(c) + exp(-c) ) / 2
 	// sinh(c) = ( exp(c) - exp(-c) ) / 2
 	// coth(c) = cosh(c) / sinh(c)
@@ -414,7 +414,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex exp(final Complex c) {
+    public static Complex exp(final ComplexType c) {
 	return exp(c.getRe(), c.getIm());
     }
 
@@ -430,7 +430,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex log(final Complex c)
+    public static Complex log(final ComplexType c)
     {
 	return Complex.cart(Math.log(c.abs()), c.arg()); // principal value
     }
@@ -446,7 +446,7 @@ public final class ComplexMath {
      * @param exponent
      * @return
      */
-    public static Complex pow(final Complex c, final Complex exponent)
+    public static Complex pow(final ComplexType c, final ComplexType exponent)
     {
 	double re = Math.log(c.abs());
 	double im = c.arg();
@@ -465,7 +465,7 @@ public final class ComplexMath {
      * @param exponent
      * @return
      */
-    public static Complex pow(final Complex c, final double exponent) {
+    public static Complex pow(final ComplexType c, final double exponent) {
 	double re = exponent * Math.log(c.abs());
 	double im = exponent * c.arg();
 
@@ -479,7 +479,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex sec(final Complex c) {
+    public static Complex sec(final ComplexType c) {
 	// sec(c) = 1 / cos(c)
 	ComplexBuilder builder = new ComplexBuilder(cos(c));
 	builder.inv();
@@ -491,7 +491,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex sin(final Complex c)
+    public static Complex sin(final ComplexType c)
     {
 	// sin(c) = ( e(ic)-e(-ic)) / (2*i)
 
@@ -520,7 +520,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex sinh(final Complex c) {
+    public static Complex sinh(final ComplexType c) {
 	// sinh(c) = ( exp(c) - exp(-c) ) / 2
 
 	double rc = c.getRe(), ic = c.getIm();
@@ -549,7 +549,7 @@ public final class ComplexMath {
      * @deprecated use {@link Complex#sqrt()} instead
      */
     @Deprecated
-    public static Complex sqrt(final Complex c) {
+    public static Complex sqrt(final ComplexType c) {
 	return sqrt(c.getRe(), c.getIm());
     }
 
@@ -577,7 +577,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex tan(final Complex c) {
+    public static Complex tan(final ComplexType c) {
 	// tan(c) = sin(c) / cos(c)
 	// cos(c) = ( e(ic)+e(-ic)) / 2
 	// sin(c) = ( e(ic)-e(-ic)) / (2*i)
@@ -610,7 +610,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public static Complex tanh(final Complex c) {
+    public static Complex tanh(final ComplexType c) {
 	// cosh(c) = ( exp(c) + exp(-c) ) / 2
 	// sinh(c) = ( exp(c) - exp(-c) ) / 2
 	// tanh(c) = sinh(c) / cosh(c)

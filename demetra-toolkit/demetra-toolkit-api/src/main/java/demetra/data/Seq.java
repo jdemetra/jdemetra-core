@@ -17,6 +17,7 @@
 package demetra.data;
 
 import internal.data.InternalSeq;
+import internal.data.InternalSeqCursor;
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -46,6 +47,11 @@ public interface Seq<E> extends BaseSeq, Iterable<E> {
      * negative or not less than <tt>length()</tt>
      */
     E get(@Nonnegative int index) throws IndexOutOfBoundsException;
+
+    @Override
+    default SeqCursor<E> cursor() {
+        return new InternalSeqCursor.DefaultSeqCursor(this);
+    }
 
     @Override
     default Iterator<E> iterator() {

@@ -21,7 +21,6 @@ package demetra.maths;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.util.Arrays2;
-import java.io.Serializable;
 
 /**
  * Complex number
@@ -30,7 +29,7 @@ import java.io.Serializable;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public final class Complex implements Serializable, ComplexType {
+public final class Complex implements ComplexType {
 
      /**
      * A constant representing i
@@ -414,15 +413,6 @@ public final class Complex implements Serializable, ComplexType {
     }
 
     /**
-     * 
-     * @return
-     */
-    @Override
-    public double abs() {
-	return ComplexMath.abs(re, im);
-    }
-
-    /**
      * Returns the square of the "length" of a Complex number. Norm(x + i*y) =
      * x*x + y*y. Always non-negative.
      * 
@@ -434,16 +424,6 @@ public final class Complex implements Serializable, ComplexType {
 
     public Complex sqrt() {
 	return ComplexMath.sqrt(re, im);
-    }
-    
-    /**
-     * Returns the argument of this complex number.
-     * 
-     * @return
-     */
-    @Override
-    public double arg() {
-	return Math.atan2(im, re);
     }
 
     /**

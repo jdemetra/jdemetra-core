@@ -21,7 +21,6 @@ import demetra.design.VisibleForTesting;
 import demetra.tsprovider.util.IConfig;
 import demetra.tsprovider.util.ParamBean;
 import demetra.util.UriBuilder;
-import java.io.Serializable;
 import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
@@ -56,7 +55,7 @@ import java.util.HashMap;
 @XmlJavaTypeAdapter(DataSource.XmlAdapter.class)
 @lombok.ToString
 @lombok.EqualsAndHashCode
-public final class DataSource implements IConfig, Serializable {
+public final class DataSource implements IConfig {
 
     private final String providerName;
     private final String version;

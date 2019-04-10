@@ -22,7 +22,6 @@ import demetra.tsprovider.util.IConfig;
 import demetra.design.Immutable;
 import demetra.design.VisibleForTesting;
 import demetra.tsprovider.DataSource.DataSourceBean;
-import java.io.Serializable;
 import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
@@ -56,7 +55,7 @@ import java.util.HashMap;
 @XmlJavaTypeAdapter(DataSet.XmlAdapter.class)
 @lombok.ToString
 @lombok.EqualsAndHashCode
-public final class DataSet implements IConfig, Serializable {
+public final class DataSet implements IConfig {
 
     /**
      * Defines a DataSet kind.

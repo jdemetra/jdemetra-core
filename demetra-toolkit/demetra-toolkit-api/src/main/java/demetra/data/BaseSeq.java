@@ -18,6 +18,7 @@ package demetra.data;
 
 import demetra.design.Development;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 
 /**
  * Describes an abstract sequence of elements. A sequence is an ordered
@@ -45,4 +46,12 @@ public interface BaseSeq {
     default boolean isEmpty() {
         return length() == 0;
     }
+    
+    /**
+     * Creates a new cursor at the beginning of this object.
+     *
+     * @return
+     */
+    @Nonnull
+    BaseSeqCursor cursor();
 }
