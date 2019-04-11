@@ -20,13 +20,14 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleVector;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IFiniteFilter extends IFilter {
+public interface IFiniteFilter extends IFilter, ILinearProcess {
 
     /**
      * Length of the filter
@@ -35,6 +36,11 @@ public interface IFiniteFilter extends IFilter {
      */
     default int length() {
         return getUpperBound() - getLowerBound() + 1;
+    }
+    
+    @Override
+    default int getOutputLength(int inputLength){
+        return inputLength-getUpperBound() - getLowerBound();
     }
 
     ;
@@ -105,16 +111,6 @@ public interface IFiniteFilter extends IFilter {
     }
 
     /**
-     * Apply the filter on a block of doubles and store the results in the output.
-     *
-     *
-     * @param in
-     * @param out
-     * @return
-     */
-    void apply(DataBlock in, DataBlock out);
-
-    /**
      * Applies the filter on the input
      *
      * @param in The input, which must have the same length as the filter
@@ -122,11 +118,11 @@ public interface IFiniteFilter extends IFilter {
      */
     double apply(DoubleSeq in);
 
-    default void apply(DoubleSeq in, DataBlock out) {
+    @Override
+    default void apply(DoubleSeq in, DoubleVector out) {
         int lb = getLowerBound(), ub = getUpperBound();
         int nw = ub - lb + 1;
         int nin = in.length();
-        int nout = out.length();
         if (nin < nw || out.length() != nin - nw + 1) {
             throw new LinearFilterException(LinearFilterException.LENGTH);
         }
