@@ -76,24 +76,6 @@ public class DataSetTest {
     }
 
     @Test
-    public void testXmlFormatter() {
-        DataSet dataSet = newSample();
-        Formatter<DataSet> formatter = DataSet.xmlFormatter(false);
-        Assert.assertNotNull(formatter.format(dataSet));
-        //System.err.println(DataSet.xmlFormatter(false).format(dataSet));
-
-        DataSet d1 = new DataSet(id, DataSet.Kind.COLLECTION, content);
-        DataSet d2 = new DataSet(id, DataSet.Kind.COLLECTION, content);
-        Assert.assertEquals(formatter.format(d1), formatter.format(d2));
-    }
-
-    @Test
-    public void testXmlParser() {
-        DataSet dataSet = newSample();
-        Assert.assertEquals(dataSet, DataSet.xmlParser().parse(DataSet.xmlFormatter(false).formatValue(dataSet).get()));
-    }
-
-    @Test
     public void testUriFormatter() {
         DataSet dataSet = newSample();
         Formatter<DataSet> formatter = DataSet.uriFormatter();

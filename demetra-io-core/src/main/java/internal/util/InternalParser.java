@@ -18,7 +18,6 @@ package internal.util;
 
 import demetra.util.Parser;
 import java.io.File;
-import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.text.DateFormat;
@@ -35,9 +34,6 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 /**
  *
@@ -152,30 +148,6 @@ public class InternalParser {
 
     public File parseFile(CharSequence input) {
         return new File(input.toString());
-    }
-
-    public <T> T unmarshal(Unmarshaller unmarshaller, CharSequence input) {
-        try {
-            return (T) unmarshaller.unmarshal(new StringReader(input.toString()));
-        } catch (JAXBException ex) {
-            return null;
-        }
-    }
-
-    public <T> Unmarshaller newUnmarshaller(Class<T> classToBeParsed) {
-        try {
-            return JAXBContext.newInstance(classToBeParsed).createUnmarshaller();
-        } catch (JAXBException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    public Unmarshaller newUnmarshaller(JAXBContext context) {
-        try {
-            return context.createUnmarshaller();
-        } catch (JAXBException ex) {
-            throw new RuntimeException(ex);
-        }
     }
 
     public Date parseDate(DateFormat dateFormat, CharSequence input) {

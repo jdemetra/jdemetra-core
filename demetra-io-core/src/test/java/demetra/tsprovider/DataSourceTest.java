@@ -135,25 +135,6 @@ public class DataSourceTest {
     }
 
     @Test
-    public void testXmlFormatter() {
-        Formatter<DataSource> formatter = DataSource.xmlFormatter(false);
-
-        assertThat(formatter.format(newSample()))
-                .isNotEmpty()
-                .isEqualTo(formatter.format(newSample()))
-                .isEqualTo(formatter.format(new DataSource(PNAME, VERSION, ImmutableSortedMap.of(K3, V3, K2, V2, K1, V1))))
-                .isNotEqualTo(formatter.format(ZERO));
-    }
-
-    @Test
-    public void testXmlParser() {
-        Formatter<DataSource> formatter = DataSource.xmlFormatter(false);
-        Parser<DataSource> parser = DataSource.xmlParser();
-
-        assertThat(parser.parse(formatter.formatValue(newSample()).get())).isEqualTo(newSample());
-    }
-
-    @Test
     public void testUriFormatter() {
         Formatter<DataSource> formatter = DataSource.uriFormatter();
 

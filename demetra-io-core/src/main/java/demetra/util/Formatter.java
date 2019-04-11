@@ -31,9 +31,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 
 /**
  * Defines a class that creates a {@link CharSequence} from an object.<br> For
@@ -124,37 +121,6 @@ public interface Formatter<T> {
             T tmp = before.apply(o);
             return tmp != null ? format(tmp) : null;
         };
-    }
-
-    /**
-     * Creates a new formatter using {@link JAXBContext#newInstance(java.lang.Class[])
-     * }.
-     * <p>
-     * Note that "<i>{@link JAXBContext} is thread-safe and should only be
-     * created once and reused to avoid the cost of initializing the metadata
-     * multiple times. {@link Marshaller} and {@link Unmarshaller} are not
-     * thread-safe, but are lightweight to create and could be created per
-     * operation (<a
-     * href="http://stackoverflow.com/a/7400735">http://stackoverflow.com/a/7400735</a>)".</i>
-     *
-     * @param <T>
-     * @param classToBeFormatted
-     * @param formattedOutput
-     * @return
-     */
-    @Nonnull
-    static <T> Formatter<T> onJAXB(@Nonnull Class<T> classToBeFormatted, boolean formattedOutput) {
-        return onJAXB(InternalFormatter.newMarshaller(classToBeFormatted, formattedOutput));
-    }
-
-    @Nonnull
-    static <T> Formatter<T> onJAXB(@Nonnull JAXBContext context, boolean formattedOutput) {
-        return onJAXB(InternalFormatter.newMarshaller(context, formattedOutput));
-    }
-
-    @Nonnull
-    static <T> Formatter<T> onJAXB(@Nonnull Marshaller marshaller) {
-        return o -> InternalFormatter.marshal(marshaller, o);
     }
 
     @Nonnull

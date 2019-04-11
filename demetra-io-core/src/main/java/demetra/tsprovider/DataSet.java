@@ -17,22 +17,14 @@
 package demetra.tsprovider;
 
 import demetra.util.UriBuilder;
-import demetra.tsprovider.util.ParamBean;
 import demetra.tsprovider.util.IConfig;
 import demetra.design.Immutable;
 import demetra.design.VisibleForTesting;
-import demetra.tsprovider.DataSource.DataSourceBean;
 import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
 import javax.annotation.Nonnull;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import demetra.util.Parser;
 import demetra.util.Formatter;
 import internal.util.SortedMaps;
@@ -52,7 +44,6 @@ import java.util.HashMap;
  * @since 1.0.0
  */
 @Immutable
-@XmlJavaTypeAdapter(DataSet.XmlAdapter.class)
 @lombok.ToString
 @lombok.EqualsAndHashCode
 public final class DataSet implements IConfig {
@@ -114,15 +105,6 @@ public final class DataSet implements IConfig {
         return new Builder(dataSource, kind).putAll(params);
     }
 
-    @VisibleForTesting
-    DataSetBean toBean() {
-        DataSetBean bean = new DataSetBean();
-        bean.dataSource = dataSource.toBean();
-        bean.kind = kind;
-        bean.params = ParamBean.fromSortedMap(params);
-        return bean;
-    }
-
     @Nonnull
     public static DataSet of(@Nonnull DataSource dataSource, @Nonnull Kind kind) {
         Objects.requireNonNull(dataSource, "dataSource");
@@ -149,35 +131,6 @@ public final class DataSet implements IConfig {
         Objects.requireNonNull(dataSource, "dataSource");
         Objects.requireNonNull(kind, "kind");
         return new Builder(dataSource, kind);
-    }
-
-    /**
-     * Returns a convenient DataSet formatter that produces xml output.<p>
-     * This formatter is not thread-safe but unique per thread. To use it
-     * thread-safely, don't store it but use it directly.
-     * <br><code>DataSet.xmlFormatter().format(...)</code>
-     *
-     * @param formattedOutput
-     * @see ThreadLocal
-     * @return a DataSet formatter
-     */
-    @Nonnull
-    public static Formatter<DataSet> xmlFormatter(boolean formattedOutput) {
-        return formattedOutput ? XML.get().formattedOutputFormatter : XML.get().defaultFormatter;
-    }
-
-    /**
-     * Returns a convenient DataSet parser that consumes xml input.<p>
-     * This parser is not thread-safe but unique per thread. To use it
-     * thread-safely, don't store it but use it directly.
-     * <br><code>DataSet.xmlParser().parse(...)</code>
-     *
-     * @see ThreadLocal
-     * @return a DataSet parser
-     */
-    @Nonnull
-    public static Parser<DataSet> xmlParser() {
-        return XML.get().defaultParser;
     }
 
     /**
@@ -234,57 +187,7 @@ public final class DataSet implements IConfig {
         }
     }
 
-    public static class XmlAdapter extends javax.xml.bind.annotation.adapters.XmlAdapter<DataSetBean, DataSet> {
-
-        @Override
-        public DataSet unmarshal(DataSetBean v) throws Exception {
-            return v.toId();
-        }
-
-        @Override
-        public DataSetBean marshal(DataSet v) throws Exception {
-            return v.toBean();
-        }
-    }
-
-    @XmlRootElement(name = "dataSet")
-    public static class DataSetBean {
-
-        @XmlElement(name = "dataSource")
-        public DataSourceBean dataSource;
-        @XmlAttribute(name = "kind")
-        public Kind kind;
-        @XmlElement(name = "param")
-        public ParamBean[] params;
-
-        public DataSet toId() {
-            return new DataSet(
-                    dataSource.toId(),
-                    kind != null ? kind : Kind.DUMMY,
-                    ParamBean.toSortedMap(params));
-        }
-    }
-
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    private static final ThreadLocal<Xml> XML = ThreadLocal.withInitial(Xml::new);
-
-    private static final class Xml {
-
-        final static JAXBContext BEAN_CONTEXT;
-
-        static {
-            try {
-                BEAN_CONTEXT = JAXBContext.newInstance(DataSetBean.class);
-            } catch (JAXBException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        final Parser<DataSet> defaultParser = Parser.<DataSetBean>onJAXB(BEAN_CONTEXT).andThen(DataSetBean::toId);
-        final Formatter<DataSet> defaultFormatter = Formatter.<DataSetBean>onJAXB(BEAN_CONTEXT, false).compose(DataSet::toBean);
-        final Formatter<DataSet> formattedOutputFormatter = Formatter.<DataSetBean>onJAXB(BEAN_CONTEXT, true).compose(DataSet::toBean);
-    }
-
     private static final String SCHEME = "demetra";
     private static final String HOST = "tsprovider";
 
