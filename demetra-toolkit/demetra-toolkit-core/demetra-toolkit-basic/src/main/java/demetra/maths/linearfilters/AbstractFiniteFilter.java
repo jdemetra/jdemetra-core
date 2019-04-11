@@ -23,6 +23,7 @@ import demetra.maths.Complex;
 import java.util.Formatter;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleVector;
 
 /**
  *
@@ -38,7 +39,8 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
      * @param lb
      * @param ub
      */
-    protected void defaultFilter(DataBlock in, DataBlock out, int lb, int ub) {
+    protected void defaultFilter(DataBlock in, DoubleVector out) {
+        int lb=getLowerBound(), ub=getUpperBound();
         int nw = ub - lb + 1;
         DataWindow cur = in.left();
         int len = in.length() - nw + 1;
@@ -58,13 +60,13 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
      * @param lb
      * @param ub
      */
-    protected void exFilter(final DataBlock in, final DataBlock out,
-            final int lb, final int ub) {
+    protected void exFilter(final DataBlock in, final DoubleVector out) {
+        int lb = getLowerBound(), ub = getUpperBound();
         if (lb > 0 || ub < 0) {
             throw new LinearFilterException(
                     LinearFilterException.SFILTER);
         }
-        defaultFilter(in, out.drop(-lb, ub), lb, ub);
+        defaultFilter(in, out.drop(-lb, ub));
     }
 
     /**
@@ -72,7 +74,7 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
      * @param in
      * @param out
      */
-    public void extendedFilter(final DataBlock in, final DataBlock out) {
+    public void extendedFilter(final DataBlock in, final DoubleVector out) {
         int lb = getLowerBound(), ub = getUpperBound();
         int nw = ub - lb + 1;
         IntToDoubleFunction weights = weights();
@@ -90,7 +92,7 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
      * @return
      */
     @Override
-    public void apply(DataBlock in, DataBlock out) {
+    public void apply(DoubleSeq in, DoubleVector out) {
         int lb = getLowerBound(), ub = getUpperBound();
         int nw = ub - lb + 1;
         int nin = in.length();
@@ -101,7 +103,7 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
             if (nin < nw || out.length() != nin - nw + 1) {
                 throw new LinearFilterException(LinearFilterException.LENGTH);
             }
-            defaultFilter(in, out, lb, ub);
+            defaultFilter(in, out);
         }
     }
 

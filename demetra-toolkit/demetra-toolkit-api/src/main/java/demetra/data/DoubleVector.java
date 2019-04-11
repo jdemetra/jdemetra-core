@@ -20,6 +20,8 @@ import demetra.design.Development;
 import demetra.util.function.IntDoubleConsumer;
 import internal.data.InternalDoubleVector;
 import internal.data.InternalDoubleVectorCursor;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntUnaryOperator;
@@ -43,8 +45,12 @@ public interface DoubleVector extends DoubleSeq {
      */
     void set(@Nonnegative int index, double value) throws IndexOutOfBoundsException;
 
-    default void apply(@Nonnegative int index, DoubleUnaryOperator fn) throws IndexOutOfBoundsException {
-        set(index, fn.applyAsDouble(get(index)));
+    default void set(double value) {
+        DoubleVectorCursor cursor = cursor();
+        int n = length();
+        for (int i = 0; i < n; ++i) {
+            cursor.setAndNext(value);
+        }
     }
 
     @Override
@@ -92,4 +98,125 @@ public interface DoubleVector extends DoubleSeq {
     static DoubleVector onMapping(@Nonnegative int length, @Nonnull IntToDoubleFunction getter, @Nonnull IntDoubleConsumer setter) {
         return new InternalDoubleVector.MappingDoubleVector(length, getter, setter);
     }
+
+    //<editor-fold defaultstate="collapsed" desc="Lambda expressions">
+    default void apply(@Nonnegative int index, DoubleUnaryOperator fn) throws IndexOutOfBoundsException {
+        set(index, fn.applyAsDouble(get(index)));
+    }
+
+    default void set(DoubleSupplier fn) throws IndexOutOfBoundsException {
+        DoubleVectorCursor cur = cursor();
+        int n = length();
+        for (int i = 0; i < n; ++i) {
+            cur.setAndNext(fn.getAsDouble());
+        }
+    }
+
+    default void set(IntToDoubleFunction fn) throws IndexOutOfBoundsException {
+        DoubleVectorCursor cur = cursor();
+        int n = length();
+        for (int i = 0; i < n; ++i) {
+            cur.setAndNext(fn.applyAsDouble(i));
+        }
+    }
+
+    default void set(DoubleSeq z) throws IndexOutOfBoundsException {
+        DoubleVectorCursor cur = cursor();
+        DoubleSeqCursor zcur = z.cursor();
+        int n = length();
+        for (int i = 0; i < n; ++i) {
+            cur.setAndNext(zcur.getAndNext());
+        }
+    }
+
+    default void set(DoubleSeq z, DoubleUnaryOperator fn) throws IndexOutOfBoundsException {
+        DoubleVectorCursor cur = cursor();
+        DoubleSeqCursor zcur = z.cursor();
+        int n = length();
+        for (int i = 0; i < n; ++i) {
+            cur.setAndNext(fn.applyAsDouble(zcur.getAndNext()));
+        }
+    }
+
+    default void apply(DoubleUnaryOperator fn) {
+        DoubleVectorCursor cursor = cursor();
+        int n = length();
+        for (int i = 0; i < n; ++i) {
+            cursor.applyAndNext(fn);
+        }
+    }
+
+    default void apply(DoubleSeq z, DoubleBinaryOperator fn) throws IndexOutOfBoundsException {
+        DoubleVectorCursor cur = cursor();
+        DoubleSeqCursor zcur = z.cursor();
+        int n = length();
+        for (int i = 0; i < n; ++i) {
+            cur.applyAndNext(x -> fn.applyAsDouble(x, zcur.getAndNext()));
+        }
+    }
+
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Common operations">
+    default void add(double a) {
+        if (a != 0) {
+            apply(x -> x + a);
+        }
+    }
+
+    default void sub(double a) {
+        if (a != 0) {
+            apply(x -> x - a);
+        }
+    }
+
+    default void chs() {
+        apply(x -> -x);
+    }
+
+    default void mul(double a) {
+        if (a == 0) {
+            set(0);
+        } else if (a == -1) {
+            chs();
+        } else {
+            apply(x -> x * a);
+        }
+    }
+
+    default void div(double a) {
+        if (a == 0) {
+            set(Double.NaN);
+        } else if (a == -1) {
+            chs();
+        } else {
+            apply(x -> x * a);
+        }
+    }
+
+    default void add(DoubleSeq y) throws IndexOutOfBoundsException {
+        apply(y, (a, b) -> a + b);
+    }
+
+    default void addAY(double a, DoubleSeq y) throws IndexOutOfBoundsException {
+        if (a == 1)
+            add(y);
+        else if (a == -1)
+            sub(y);
+        else if (a != 0)
+        apply(y, (a, b) -> a + b);
+    }
+
+    default void sub(DoubleSeq y) throws IndexOutOfBoundsException {
+        apply(y, (a, b) -> a - b);
+    }
+
+    default void mul(DoubleSeq y) throws IndexOutOfBoundsException {
+        apply(y, (a, b) -> a * b);
+    }
+
+    default void div(DoubleSeq y) throws IndexOutOfBoundsException {
+        apply(y, (a, b) -> a / b);
+    }
+
+    //</editor-fold>
 }

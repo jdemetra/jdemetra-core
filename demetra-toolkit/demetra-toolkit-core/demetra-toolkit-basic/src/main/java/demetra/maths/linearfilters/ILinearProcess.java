@@ -19,6 +19,7 @@ package demetra.maths.linearfilters;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleVector;
 
 
 /**
@@ -33,7 +34,15 @@ public interface ILinearProcess {
      * @param out
      * @return
      */
-    boolean transform(DoubleSeq in, DataBlock out);
+    @Deprecated
+    default boolean transform(DoubleSeq in, DataBlock out){
+        if (out.length() != getOutputLength(in.length()))
+            return false;
+        apply(in, out);
+        return true;
+    }
+    
+    void apply(DoubleSeq in, DoubleVector out);
     
     int getOutputLength(int inputLength);
 }
