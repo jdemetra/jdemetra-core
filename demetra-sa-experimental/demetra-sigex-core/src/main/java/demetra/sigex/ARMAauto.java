@@ -6,7 +6,7 @@
 package demetra.sigex;
 
 import demetra.arima.AutoCovarianceFunction;
-import demetra.data.DoubleSequence;
+import demetra.data.DoubleSeq;
 import demetra.maths.polynomials.Polynomial;
 import javax.annotation.Nonnull;
 
@@ -16,10 +16,10 @@ import javax.annotation.Nonnull;
  */
 @lombok.experimental.UtilityClass
 public class ARMAauto {
-    DoubleSequence compute(@Nonnull DoubleSequence ar, @Nonnull DoubleSequence ma, int maxlag){
+    DoubleSeq compute(@Nonnull DoubleSeq ar, @Nonnull DoubleSeq ma, int maxlag){
         double[] dar=new double[1+ar.length()];
         dar[0]=1;
-        ar.fastFn(x->-x).copyTo(dar, 1);
+        ar.fn(x->-x).copyTo(dar, 1);
         
         double[] dma=new double[1+ma.length()];
         dma[0]=1;
@@ -27,6 +27,6 @@ public class ARMAauto {
         Polynomial MA=Polynomial.of(dma), AR=Polynomial.of(dar);
         
         AutoCovarianceFunction acf=new AutoCovarianceFunction(MA, AR, 1);
-        return DoubleSequence.of(acf.values(maxlag+1));
+        return DoubleSeq.of(acf.values(maxlag+1));
     }
 }

@@ -22,8 +22,6 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
 import demetra.maths.linearfilters.internal.SymmetricFilterAlgorithms;
-import demetra.maths.matrices.*;
-import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.polynomials.Polynomial;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntToDoubleFunction;
@@ -71,6 +69,7 @@ public final class SymmetricFilter extends AbstractFiniteFilter {
      * Computes the symmetric filter defined by f*f.mirror()
      *
      * @param f The initial filter
+     * @param scaling
      * @return f * f.mirror()
      */
     public static SymmetricFilter fromFilter(IFiniteFilter f, final double scaling) {
@@ -93,8 +92,9 @@ public final class SymmetricFilter extends AbstractFiniteFilter {
     /**
      * Creates a symmetric filter using the given weights
      *
-     * @param w The full weights ofFunction the filter. The number ofFunction weights should be odd.
-     * moreover, they should be symmetric (w[i] == w[w.getDegree()-i]).
+     * @param w The full weights ofFunction the filter. The number ofFunction
+     * weights should be odd. moreover, they should be symmetric (w[i] ==
+     * w[w.getDegree()-i]).
      * @return The corresponding
      */
     public static SymmetricFilter createFromWeights(final DoubleSeq w) {
@@ -185,16 +185,9 @@ public final class SymmetricFilter extends AbstractFiniteFilter {
         return DEF_DECOMPOSER.get().decompose(this, Q);
     }
 
-    /**
-     *
-     * @param in
-     * @param out
-     * @param lb
-     * @param ub
-     */
-    @Override
-    protected void defaultFilter(DataBlock in, DataBlock out, int lb, int ub) {
+    public void defaultFilter(DataBlock in, DataBlock out) {
         double[] pin = in.getStorage(), pout = out.getStorage();
+        int ub = getUpperBound();
         int istart = in.getStartPosition(), iinc = in.getIncrement();
         int ostart = out.getStartPosition(), oend = out.getEndPosition(), oinc = out.getIncrement();
         if (iinc == 1 && oinc == 1) {
@@ -250,8 +243,9 @@ public final class SymmetricFilter extends AbstractFiniteFilter {
     }
 
     /**
-     * Returns the coefficients of the symmetric filter, in the form of a polynomial
-     * The polynomial corresponds to the weights of the filter, from 0 to n
+     * Returns the coefficients of the symmetric filter, in the form of a
+     * polynomial The polynomial corresponds to the weights of the filter, from
+     * 0 to n
      *
      * @return
      */
@@ -413,9 +407,9 @@ public final class SymmetricFilter extends AbstractFiniteFilter {
     }
 
     /**
-     * Generic interface that describe the following factorization problem: Given a
-     * symmetric filter S(B, F), find D(B), D(F), v such that S(B, F) = v * D(B) *
-     * D(F), D(0) = 1
+     * Generic interface that describe the following factorization problem:
+     * Given a symmetric filter S(B, F), find D(B), D(F), v such that S(B, F) =
+     * v * D(B) * D(F), D(0) = 1
      *
      * @author Jean Palate
      */

@@ -157,6 +157,16 @@ public interface DoubleVector extends DoubleSeq {
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Common operations">
+    default void setAY(double a, DoubleSeq y) throws IndexOutOfBoundsException {
+        if (a == 1) {
+            set(y);
+        } else if (a == -1) {
+            set(y, s -> -s);
+        } else if (a != 0) {
+            set(y, s -> a * s);
+        }
+    }
+
     default void add(double a) {
         if (a != 0) {
             apply(x -> x + a);
@@ -198,12 +208,13 @@ public interface DoubleVector extends DoubleSeq {
     }
 
     default void addAY(double a, DoubleSeq y) throws IndexOutOfBoundsException {
-        if (a == 1)
+        if (a == 1) {
             add(y);
-        else if (a == -1)
+        } else if (a == -1) {
             sub(y);
-        else if (a != 0)
-        apply(y, (a, b) -> a + b);
+        } else if (a != 0) {
+            apply(y, (s, t) -> s + a * t);
+        }
     }
 
     default void sub(DoubleSeq y) throws IndexOutOfBoundsException {

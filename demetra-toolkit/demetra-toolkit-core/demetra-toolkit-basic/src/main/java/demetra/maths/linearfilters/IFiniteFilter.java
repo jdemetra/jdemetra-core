@@ -21,6 +21,7 @@ import demetra.design.Development;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleVector;
+import demetra.data.DoubleVectorCursor;
 
 /**
  *
@@ -37,17 +38,16 @@ public interface IFiniteFilter extends IFilter, ILinearProcess {
     default int length() {
         return getUpperBound() - getLowerBound() + 1;
     }
-    
-    @Override
-    default int getOutputLength(int inputLength){
-        return inputLength-getUpperBound() - getLowerBound();
-    }
 
-    ;
+    @Override
+    default int getOutputLength(int inputLength) {
+        return inputLength - getUpperBound() - getLowerBound();
+    }
 
     // FiniteFilterDecomposition Decompose();
     /**
      * Lower bound of the filter (included)
+     *
      * @return
      */
     int getLowerBound();
@@ -60,8 +60,8 @@ public interface IFiniteFilter extends IFilter, ILinearProcess {
     int getUpperBound();
 
     /**
-     * Weights of the filter; the function is defined for index ranging
-     * from the lower bound to the upper bound (included)
+     * Weights of the filter; the function is defined for index ranging from the
+     * lower bound to the upper bound (included)
      *
      * @return
      */
@@ -90,10 +90,11 @@ public interface IFiniteFilter extends IFilter, ILinearProcess {
     IFiniteFilter mirror();
 
     /**
-     * Apply the filter on the input and store the results in the output
-     * The range of the input is implicitly defined by the filter and by the output.
-     * If the filter is defined by w{lb)...w(ub) and the filter output is defined for [start, end[,
-     * the input should be defined for [start-lb, end+ub[
+     * Apply the filter on the input and store the results in the output The
+     * range of the input is implicitly defined by the filter and by the output.
+     * If the filter is defined by w{lb)...w(ub) and the filter output is
+     * defined for [start, end[, the input should be defined for [start-lb,
+     * end+ub[
      *
      * @param in
      * @param out
@@ -118,6 +119,63 @@ public interface IFiniteFilter extends IFilter, ILinearProcess {
      */
     double apply(DoubleSeq in);
 
+    /**
+     * Applies the filter on the input y(t)
+     *
+     * @param in The buffer containing the input
+     * @param pos The position of y(t) in the buffer
+     * @param inc The increment between two successive inputs.
+     * y(t+k)=buffer[pos+k*inc]
+     * @return sum(w(k)* buffer[pos+k*inc]), k in [-lb, ub]
+     */
+    default double apply(double[] in, int pos, int inc) {
+        IntToDoubleFunction weights = weights();
+        int lb = getLowerBound(), ub = getUpperBound();
+        double s = 0;
+        if (inc == 1) {
+            for (int k = lb, t = pos + lb; k <= ub; ++k, ++t) {
+                s += in[t] * weights.applyAsDouble(k);
+            }
+        } else {
+            for (int k = lb, t = pos + lb * inc; k <= ub; ++k, t += inc) {
+                s += in[t] * weights.applyAsDouble(k);
+            }
+        }
+        return s;
+    }
+
+    /**
+     * Filters in and sets the result in out. More exactly, in contains x(-lb,
+     * n+ub) and out contains y(0, n) with y(t) = f(t-lb,...,t+ub).
+     *
+     * @param in Input. Should not be modified
+     * @param out Output
+     */
+    default void filter(DataBlock in, DoubleVector out) {
+        double[] w = weightsToArray();
+        double[] xin = in.getStorage();
+        int start = in.getStartPosition(), inc = in.getIncrement();
+        int n = out.length();
+        DoubleVectorCursor cursor = out.cursor();
+        if (inc == 1) {
+            for (int i = 0, j = start; i < n; ++i, ++j) {
+                double s = 0;
+                for (int k = 0, t = j; k < w.length; ++k, ++t) {
+                    s += xin[t] * w[k];
+                }
+                cursor.setAndNext(s);
+            }
+        } else {
+            for (int i = 0, j = start; i < n; ++i, j+=inc) {
+                double s = 0;
+                for (int k = 0, t = j; k < w.length; ++k, t+=inc) {
+                    s += xin[t] * w[k];
+                }
+                cursor.setAndNext(s);
+            }
+        }
+    }
+
     @Override
     default void apply(DoubleSeq in, DoubleVector out) {
         int lb = getLowerBound(), ub = getUpperBound();
@@ -137,4 +195,5 @@ public interface IFiniteFilter extends IFilter, ILinearProcess {
             }
         }
     }
+
 }

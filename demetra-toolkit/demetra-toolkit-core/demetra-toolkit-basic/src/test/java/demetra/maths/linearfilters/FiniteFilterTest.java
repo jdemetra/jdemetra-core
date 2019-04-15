@@ -21,7 +21,7 @@ public class FiniteFilterTest {
 
     public FiniteFilterTest() {
         filter = new FiniteFilter(new double[]{1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8}, -9);
-        in = DataBlock.make(240);
+        in = DataBlock.make(360);
         in.set(i -> 1 / (1 + i));
     }
 
@@ -37,7 +37,7 @@ public class FiniteFilterTest {
     }
 
     @Test
-    @Ignore
+//    @Ignore
     public void stressTestApply() {
         int K = 1000000;
         long t0 = System.currentTimeMillis();
@@ -48,13 +48,19 @@ public class FiniteFilterTest {
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
 
+
+        t0 = System.currentTimeMillis();
+        for (int k = 0; k < K; ++k) {
+            DataBlock out = DataBlock.make(in.length() - filter.length() + 1);
+            filter.apply(in, out);
+        }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
 
         t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             DataBlock out = DataBlock.make(in.length() - filter.length() + 1);
-            filter.apply(in, out);
+            filter.filter(in, out);
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

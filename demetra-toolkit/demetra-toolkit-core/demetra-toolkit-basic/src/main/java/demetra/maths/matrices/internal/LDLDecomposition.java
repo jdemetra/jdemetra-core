@@ -73,17 +73,17 @@ public class LDLDecomposition {
         LowerTriangularMatrix.toLower(M);
     }
 
-    Matrix L() {
+    public Matrix L() {
         Matrix L = M.deepClone();
         L.diagonal().set(1);
         return L;
     }
 
-    Matrix D() {
+    public Matrix D() {
         return Matrix.diagonal(M.diagonal());
     }
 
-    DoubleSeq diagonal() {
+    public DoubleSeq diagonal() {
         return M.diagonal().unmodifiable();
     }
 

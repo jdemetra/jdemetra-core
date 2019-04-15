@@ -527,7 +527,7 @@ public interface DoubleSeq extends BaseSeq {
      * @return
      */
     @Nonnull
-    static DoubleSeq of(@Nonnull double[] data) {
+    static DoubleSeq of(@Nonnull double... data) {
         return new InternalDoubleSeq.MultiDoubleSeq(data);
     }
 
@@ -563,12 +563,6 @@ public interface DoubleSeq extends BaseSeq {
     @Nonnull
     static Doubles empty() {
         return Doubles.EMPTY;
-    }
-
-    @Deprecated
-    @Nonnull
-    static Doubles of(double value) {
-        return Doubles.of(value);
     }
 
     @Deprecated
