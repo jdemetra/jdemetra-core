@@ -36,20 +36,17 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
      *
      * @param in
      * @param out
-     * @param lb
-     * @param ub
      */
-    protected void defaultFilter(DataBlock in, DoubleVector out) {
-        int lb=getLowerBound(), ub=getUpperBound();
+    protected void defaultFilter(DoubleSeq in, DoubleVector out) {
+        int lb = getLowerBound(), ub = getUpperBound();
         int nw = ub - lb + 1;
-        DataWindow cur = in.left();
         int len = in.length() - nw + 1;
         IntToDoubleFunction weights = weights();
         double w = weights.applyAsDouble(lb);
-        out.setAY(w, cur.next(len));
+        out.setAY(w, in.range(0, len));
         for (int j = 1; j < nw; ++j) {
             w = weights.applyAsDouble(lb + j);
-            out.addAY(w, cur.move(1));
+            out.addAY(w, in.range(j, len + j));
         }
     }
 
@@ -57,10 +54,8 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
      *
      * @param in
      * @param out
-     * @param lb
-     * @param ub
      */
-    protected void exFilter(final DataBlock in, final DoubleVector out) {
+    protected void exFilter(final DoubleSeq in, final DoubleVector out) {
         int lb = getLowerBound(), ub = getUpperBound();
         if (lb > 0 || ub < 0) {
             throw new LinearFilterException(
@@ -74,14 +69,14 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
      * @param in
      * @param out
      */
-    public void extendedFilter(final DataBlock in, final DoubleVector out) {
+    public void extendedFilter(final DoubleSeq in, final DoubleVector out) {
         int lb = getLowerBound(), ub = getUpperBound();
         int nw = ub - lb + 1;
         IntToDoubleFunction weights = weights();
         out.setAY(weights.applyAsDouble(ub--), in);
-        DataWindow wout = out.window(), win = in.window();
+        int len = out.length();
         for (int j = 1; j < nw; ++j) {
-            wout.bshrink().addAY(weights.applyAsDouble(ub--), win.eshrink());
+            out.range(j, len).addAY(weights.applyAsDouble(ub--), in.range(0, len - j));
         }
     }
 
@@ -89,7 +84,6 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
      *
      * @param in
      * @param out
-     * @return
      */
     @Override
     public void apply(DoubleSeq in, DoubleVector out) {
@@ -118,7 +112,6 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
         return s;
     }
 
- 
     /**
      *
      * @param freq
@@ -162,64 +155,64 @@ public abstract class AbstractFiniteFilter implements IFiniteFilter {
         return true;
     }
 
-    /**
-     * Solves recursively the relationship: F * out = in, considering that the
-     * initial values are 0.
-     *
-     * @param in
-     * @param out
-     */
-    public void solve(final double[] in, final double[] out) {
-        int n = in.length;
-
-        double[] w = weightsToArray();
-        int u = w.length - 1;
-
-        // initial iterations
-        int nmax = Math.min(w.length, n);
-        double a = w[u];
-        for (int i = 0; i < nmax; ++i) {
-            double z = in[i];
-            for (int j = 1; j <= i; ++j) {
-                z -= out[i - j] * w[u - j];
-            }
-            out[i] = z / a;
-        }
-        for (int i = w.length; i < n; ++i) {
-            double z = in[i];
-            for (int j = 1; j <= u; ++j) {
-                z -= out[i - j] * w[u - j];
-            }
-            out[i] = z / a;
-        }
-
-    }
-
-    public void solve(final DataBlock in, final DataBlock out) {
-        int n = in.length();
-
-        double[] w = weightsToArray();
-        int u = w.length - 1;
-
-        // initial iterations
-        int nmax = Math.min(w.length, n);
-        double a = w[u];
-        for (int i = 0; i < nmax; ++i) {
-            double z = in.get(i);
-            for (int j = 1; j <= i; ++j) {
-                z -= out.get(i - j) * w[u - j];
-            }
-            out.set(i, z / a);
-        }
-        for (int i = w.length; i < n; ++i) {
-            double z = in.get(i);
-            for (int j = 1; j <= u; ++j) {
-                z -= out.get(i - j) * w[u - j];
-            }
-            out.set(i, z / a);
-        }
-    }
-
+//    /**
+//     * Solves recursively the relationship: F * out = in, considering that the
+//     * initial values are 0.
+//     *
+//     * @param in
+//     * @param out
+//     */
+//    public void solve(final double[] in, final double[] out) {
+//        int n = in.length;
+//
+//        double[] w = weightsToArray();
+//        int u = w.length - 1;
+//
+//        // initial iterations
+//        int nmax = Math.min(w.length, n);
+//        double a = w[u];
+//        for (int i = 0; i < nmax; ++i) {
+//            double z = in[i];
+//            for (int j = 1; j <= i; ++j) {
+//                z -= out[i - j] * w[u - j];
+//            }
+//            out[i] = z / a;
+//        }
+//        for (int i = w.length; i < n; ++i) {
+//            double z = in[i];
+//            for (int j = 1; j <= u; ++j) {
+//                z -= out[i - j] * w[u - j];
+//            }
+//            out[i] = z / a;
+//        }
+//
+//    }
+//
+//    public void solve(final DataBlock in, final DataBlock out) {
+//        int n = in.length();
+//
+//        double[] w = weightsToArray();
+//        int u = w.length - 1;
+//
+//        // initial iterations
+//        int nmax = Math.min(w.length, n);
+//        double a = w[u];
+//        for (int i = 0; i < nmax; ++i) {
+//            double z = in.get(i);
+//            for (int j = 1; j <= i; ++j) {
+//                z -= out.get(i - j) * w[u - j];
+//            }
+//            out.set(i, z / a);
+//        }
+//        for (int i = w.length; i < n; ++i) {
+//            double z = in.get(i);
+//            for (int j = 1; j <= u; ++j) {
+//                z -= out.get(i - j) * w[u - j];
+//            }
+//            out.set(i, z / a);
+//        }
+//    }
+//
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
