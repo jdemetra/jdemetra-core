@@ -31,30 +31,19 @@ public class X11SeasonalFiltersFactory {
 
             switch (option[i]) {
                 case S3X1:
-                    sfilter = S3X1;
-                    efilters = FC1;
-                    result[i] = new DefaultFilter(period, sfilter, new AsymmetricEndPoints(efilters, 0));
-
+                    result[i] = new DefaultFilter(period, S3X1, new AsymmetricEndPoints(FC1, 0));
                     break;
                 case S3X3:
-                    sfilter = S3X3;
-                    efilters = FC3;
-                    result[i] = new DefaultFilter(period, sfilter, new AsymmetricEndPoints(efilters, 0));
+                    result[i] = new DefaultFilter(period, S3X3, new AsymmetricEndPoints(FC3, 0));
                     break;
                 case S3X5:
-                    sfilter = S3X5;
-                    efilters = FC5;
-                    result[i] = new DefaultFilter(period, sfilter, new AsymmetricEndPoints(efilters, 0));
+                    result[i] = new DefaultFilter(period, S3X5, new AsymmetricEndPoints(FC5, 0));
                     break;
                 case S3X9:
-                    sfilter = S3X9;
-                    efilters = FC9;
-                    result[i] = new DefaultFilter(period, sfilter, new AsymmetricEndPoints(efilters, 0));
+                    result[i] = new DefaultFilter(period, S3X9, new AsymmetricEndPoints(FC9, 0));
                     break;
                 case S3X15:
-                    sfilter = S3X15;
-                    efilters = FC15;
-                    result[i] = new DefaultFilter(period, sfilter, new AsymmetricEndPoints(efilters, 0));
+                    result[i] = new DefaultFilter(period, S3X15, new AsymmetricEndPoints(FC15, 0));
                     break;
                 case Stable:
                     result[i] = new StableFilter(period);

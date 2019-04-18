@@ -32,7 +32,7 @@ public class X11SeasonalFilterProcessor {
         DataBlock out = DataBlock.ofInternal(x);
         DataBlock in = DataBlock.of(input);
         int period = filters.length;
-        int index = start;
+        int index ; //= start;
         for (int i = 0; i < period; ++i) {
             index = (start + i) % period;
             DataBlock cin = in.extract(i, -1, period);
