@@ -60,11 +60,11 @@ public class AtomicModels {
     }
 
     public ModelItem timeVaryingRegression(String name, MatrixType x, double var, boolean fixed) {
-        return new RegressionItem(name, x, new double[]{var}, true);
+        return new RegressionItem(name, x, new double[]{var}, fixed);
     }
 
     public ModelItem timeVaryingRegression(String name, MatrixType x, final double[] vars, final boolean fixed) {
-         return new RegressionItem(name, x, vars, true);
+         return new RegressionItem(name, x, vars, fixed);
     }
 
     public ModelItem tdRegression(String name, TsDomain domain, int[] groups, final boolean contrast, final double var, final boolean fixed) {

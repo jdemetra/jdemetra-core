@@ -52,12 +52,16 @@ public class RegressionItem extends AbstractModelItem {
                 return 0;
             });
         } else if (v.length == 1) {
+            mapping.add(v[0]);
             mapping.add((p, builder) -> {
                 SsfComponent cmp = RegSsf.ofTimeVarying(x, p.get(0));
                 builder.add(name, cmp);
                 return 1;
             });
         } else {
+            for (int i = 0; i < v.length; ++i) {
+                mapping.add(v[i]);
+            }
             mapping.add((p, builder) -> {
                 SsfComponent cmp = RegSsf.ofTimeVarying(x, p.extract(0, v.length));
                 builder.add(name, cmp);
