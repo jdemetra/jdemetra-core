@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package internal.data;
+package demetra.data;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
@@ -25,7 +25,7 @@ import demetra.data.Doubles;
  * @author Philippe Charles
  */
 @lombok.experimental.UtilityClass
-public class InternalDoubleSeqMath {
+public class DoublesMath {
 
     public double sum(DoubleSeq src) {
         return src.reduce(0, (s, x) -> s + x);
@@ -113,7 +113,8 @@ public class InternalDoubleSeqMath {
 
     /**
      * Computes the euclidian norm of the src block. Based on the "dnrm2" Lapack
-     * function.
+     * function. Should be used to avoid possible overflow. Otherwise, consider
+     * fastNorm2, which is sigificantly faster.
      *
      * @return The euclidian norm (&gt=0).
      */
@@ -221,22 +222,22 @@ public class InternalDoubleSeqMath {
         return c;
     }
 
-    public double dot(DoubleSeq src, DoubleSeq data) {
-        int n = src.length();
+    public double dot(DoubleSeq a, DoubleSeq b) {
+        int n = a.length();
         double s = 0;
-        DoubleSeqCursor cur = src.cursor();
-        DoubleSeqCursor xcur = data.cursor();
+        DoubleSeqCursor cur = a.cursor();
+        DoubleSeqCursor xcur = b.cursor();
         for (int i = 0; i < n; i++) {
             s += cur.getAndNext() * xcur.getAndNext();
         }
         return s;
     }
 
-    public double jdot(DoubleSeq src, DoubleSeq data, int pos) {
-        int n = src.length();
+    public double jdot(DoubleSeq a, DoubleSeq b, int pos) {
+        int n = a.length();
         double s = 0;
-        DoubleSeqCursor cur = src.cursor();
-        DoubleSeqCursor xcur = data.cursor();
+        DoubleSeqCursor cur = a.cursor();
+        DoubleSeqCursor xcur = b.cursor();
         for (int i = 0; i < pos; i++) {
             s += cur.getAndNext() * xcur.getAndNext();
         }
@@ -246,12 +247,12 @@ public class InternalDoubleSeqMath {
         return s;
     }
 
-    public double distance(DoubleSeq src, DoubleSeq data) {
+    public double distance(DoubleSeq a, DoubleSeq b) {
         double scale = 0;
         double ssq = 1;
-        DoubleSeqCursor cur = src.cursor();
-        DoubleSeqCursor xcur = data.cursor();
-        int n = src.length();
+        DoubleSeqCursor cur = a.cursor();
+        DoubleSeqCursor xcur = b.cursor();
+        int n = a.length();
         for (int i = 0; i < n; ++i) {
             double x = cur.getAndNext(), y = xcur.getAndNext();
             if (Double.compare(x, y) != 0) {
@@ -304,4 +305,5 @@ public class InternalDoubleSeqMath {
     public DoubleSeq exp(DoubleSeq src) {
         return src.fn(Math::exp);
     }
+   
 }

@@ -14,13 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import org.junit.Ignore;
 import static demetra.data.DataBlock.ofInternal;
-import static demetra.data.DataBlock.ofInternal;
-import static demetra.data.DataBlock.ofInternal;
-import static demetra.data.DataBlock.ofInternal;
-import static demetra.data.DataBlock.ofInternal;
-import static demetra.data.DataBlock.ofInternal;
-import static demetra.data.DataBlock.ofInternal;
-import static demetra.data.DataBlock.ofInternal;
+import java.util.Random;
 
 /**
  *
@@ -3832,37 +3826,37 @@ public class DataBlockTest {
         assertThat(ofInternal(getSample(10), 9, -1, -2).max()).isEqualTo(10);
         assertThat(ofInternal(getSample(10), 9, 1, -2).max()).isEqualTo(10);
     }
-    
+
     @Test
-    public void testAutoApply(){
-        double[] data=new double[100];
-        DataBlock A=DataBlock.ofInternal(data, 2, 102, 10);
-        A.set(i->i+1);
-        A.autoApply(-1, (a,b)->(a-b));
-        assertThat(A.drop(1,0).allMatch(x->x==1)).isTrue();
-        A.set(i->i+1);
-        A.autoApply(1, (a,b)->(b-a));
-        assertThat(A.drop(0,1).allMatch(x->x==1)).isTrue();
-        A.set(i->i+1);
-        A.autoApply(-2, (a,b)->(a-b));
-        assertThat(A.drop(2,0).allMatch(x->x==2)).isTrue();
-        A.set(i->i+1);
-        A.autoApply(2, (a,b)->(b-a));
-        assertThat(A.drop(0,2).allMatch(x->x==2)).isTrue();
+    public void testAutoApply() {
+        double[] data = new double[100];
+        DataBlock A = DataBlock.ofInternal(data, 2, 102, 10);
+        A.set(i -> i + 1);
+        A.autoApply(-1, (a, b) -> (a - b));
+        assertThat(A.drop(1, 0).allMatch(x -> x == 1)).isTrue();
+        A.set(i -> i + 1);
+        A.autoApply(1, (a, b) -> (b - a));
+        assertThat(A.drop(0, 1).allMatch(x -> x == 1)).isTrue();
+        A.set(i -> i + 1);
+        A.autoApply(-2, (a, b) -> (a - b));
+        assertThat(A.drop(2, 0).allMatch(x -> x == 2)).isTrue();
+        A.set(i -> i + 1);
+        A.autoApply(2, (a, b) -> (b - a));
+        assertThat(A.drop(0, 2).allMatch(x -> x == 2)).isTrue();
     }
 
     @Test
-    public void testApplyRecursively(){
-        double[] data=new double[100];
-        DataBlock A=DataBlock.ofInternal(data, 2, 102, 10);
-        A.set(i->1);
-        A.applyRecursively(1, (a,b)->(a+b));
+    public void testApplyRecursively() {
+        double[] data = new double[100];
+        DataBlock A = DataBlock.ofInternal(data, 2, 102, 10);
+        A.set(i -> 1);
+        A.applyRecursively(1, (a, b) -> (a + b));
         assertThat(A.last() == A.length()).isTrue();
-        A.set(i->1);
-        A.applyRecursively(-1, (a,b)->(a+b));
+        A.set(i -> 1);
+        A.applyRecursively(-1, (a, b) -> (a + b));
         assertThat(A.first() == A.length()).isTrue();
     }
-    
+
     private double[] getSample(int size) {
         double[] result = new double[size];
         for (int i = 0; i < size; i++) {
@@ -3870,5 +3864,4 @@ public class DataBlockTest {
         }
         return result;
     }
-
 }

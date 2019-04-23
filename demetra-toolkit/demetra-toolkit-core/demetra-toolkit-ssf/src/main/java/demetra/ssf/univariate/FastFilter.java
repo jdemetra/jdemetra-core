@@ -15,6 +15,7 @@ import demetra.ssf.ResultsRange;
 import demetra.data.DoubleSeqCursor;
 import demetra.ssf.State;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleVector;
 
 /**
  *
@@ -87,11 +88,16 @@ public class FastFilter implements ILinearProcess {
         //  
     }
 
-    @Override
     public boolean transform(DoubleSeq in, DataBlock out) {
         if (in.length() > end - start) {
             return false;
         }
+        apply(in, out);
+        return true;
+    }
+    
+    @Override
+    public void apply(DoubleSeq in, DoubleVector out) {
         int dim = ssf.getStateDim(), n = in.length();
         DataBlock state = DataBlock.make(dim);
         int pos = start, ipos = 0, opos = 0;
@@ -112,7 +118,6 @@ public class FastFilter implements ILinearProcess {
             }
             dynamics.TX(pos++, state);
         } while (++ipos < n);
-        return true;
     }
 
     @Override

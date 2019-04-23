@@ -21,14 +21,12 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.LogSign;
 import demetra.design.AlgorithmImplementation;
-import static demetra.design.AlgorithmImplementation.Feature.Fast;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.MatrixException;
 import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.RationalFunction;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
@@ -54,8 +52,7 @@ public class AnsleyFilter implements ArmaFilter {
      * @return
      */
     public double[] filter(DoubleSeq y) {
-        double[] e = new double[y.length()];
-        y.copyTo(e, 0);
+        double[] e = y.toArray();
         int p = m_ar.length-1;
         int q = m_ma.length-1;
         if (m_wnoptimize && p == 0 && q == 0) {

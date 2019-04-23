@@ -22,7 +22,6 @@ import demetra.util.IntList;
 import demetra.util.function.BiDoublePredicate;
 import internal.data.InternalDoubleSeq;
 import internal.data.InternalDoubleSeqCursor;
-import internal.data.InternalDoubleSeqMath;
 import java.text.DecimalFormat;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
@@ -244,6 +243,12 @@ public interface DoubleSeq extends BaseSeq {
         return cur;
     }
 
+    /**
+     * Computes y(t)=fn(x(t))
+     *
+     * @param fn The applied function
+     * @return A new sequence of doubles
+     */
     default DoubleSeq fn(DoubleUnaryOperator fn) {
         double[] safeArray = toArray();
         for (int i = 0; i < safeArray.length; ++i) {
@@ -252,18 +257,52 @@ public interface DoubleSeq extends BaseSeq {
         return Doubles.ofInternal(safeArray);
     }
 
+    /**
+     * Computes y(t)=fn(x(t))
+     *
+     * @param y
+     * @param fn The applied function
+     * @return A new sequence of doubles
+     */
+    default DoubleSeq fn(DoubleSeq y, DoubleBinaryOperator fn) {
+        double[] safeArray = toArray();
+        DoubleSeqCursor ycur = y.cursor();
+        for (int i = 0; i < safeArray.length; ++i) {
+            safeArray[i] = fn.applyAsDouble(safeArray[i], ycur.getAndNext());
+        }
+        return Doubles.ofInternal(safeArray);
+    }
+    
+    /**
+     * Computes y(t)=fn(x(t-lag), x(t))
+     *
+     * @param lag The lag
+     * @param fn The applied function
+     * @return A n-lag sequence of doubles, where n is the length of the initial
+     * array.
+     */
     default DoubleSeq fn(int lag, DoubleBinaryOperator fn) {
         int n = length() - lag;
         if (n <= 0) {
             return null;
         }
         double[] safeArray = new double[n];
-        for (int j = 0; j < lag; ++j) {
-            double prev = get(j);
-            for (int i = j; i < n; i += lag) {
-                double next = get(i + lag);
+        if (lag == 1) {
+            DoubleSeqCursor cursor = cursor();
+            double prev = cursor.getAndNext();
+            for (int i = 0; i < n; ++i) {
+                double next = cursor.getAndNext();
                 safeArray[i] = fn.applyAsDouble(prev, next);
                 prev = next;
+            }
+        } else {
+            for (int j = 0; j < lag; ++j) {
+                double prev = get(j);
+                for (int i = j; i < n; i += lag) {
+                    double next = get(i + lag);
+                    safeArray[i] = fn.applyAsDouble(prev, next);
+                    prev = next;
+                }
             }
         }
         return Doubles.ofInternal(safeArray);
@@ -317,39 +356,39 @@ public interface DoubleSeq extends BaseSeq {
     }
 
     default double sum() {
-        return InternalDoubleSeqMath.sum(this);
+        return DoublesMath.sum(this);
     }
 
     default double average() {
-        return InternalDoubleSeqMath.average(this);
+        return DoublesMath.average(this);
     }
 
     default double ssq() {
-        return InternalDoubleSeqMath.ssq(this);
+        return DoublesMath.ssq(this);
     }
 
     default double ssqc(double mean) {
-        return InternalDoubleSeqMath.ssqc(this, mean);
+        return DoublesMath.ssqc(this, mean);
     }
 
     default double sumWithMissing() {
-        return InternalDoubleSeqMath.sumWithMissing(this);
+        return DoublesMath.sumWithMissing(this);
     }
 
     default double ssqWithMissing() {
-        return InternalDoubleSeqMath.ssqWithMissing(this);
+        return DoublesMath.ssqWithMissing(this);
     }
 
     default double ssqcWithMissing(final double mean) {
-        return InternalDoubleSeqMath.ssqcWithMissing(this, mean);
+        return DoublesMath.ssqcWithMissing(this, mean);
     }
 
     default double averageWithMissing() {
-        return InternalDoubleSeqMath.averageWithMissing(this);
+        return DoublesMath.averageWithMissing(this);
     }
 
     public default double norm1() {
-        return InternalDoubleSeqMath.norm1(this);
+        return DoublesMath.norm1(this);
     }
 
     /**
@@ -359,11 +398,11 @@ public interface DoubleSeq extends BaseSeq {
      * @return The euclidian norm (&gt=0).
      */
     default double norm2() {
-        return InternalDoubleSeqMath.norm2(this);
+        return DoublesMath.norm2(this);
     }
 
     default double fastNorm2() {
-        return InternalDoubleSeqMath.fastNorm2(this);
+        return DoublesMath.fastNorm2(this);
     }
 
     /**
@@ -372,7 +411,7 @@ public interface DoubleSeq extends BaseSeq {
      * @return Returns min{|src(i)|}
      */
     default double normInf() {
-        return InternalDoubleSeqMath.normInf(this);
+        return DoublesMath.normInf(this);
     }
 
     /**
@@ -381,39 +420,39 @@ public interface DoubleSeq extends BaseSeq {
      * @return Missing values are omitted.
      */
     default int getRepeatCount() {
-        return InternalDoubleSeqMath.getRepeatCount(this);
+        return DoublesMath.getRepeatCount(this);
     }
 
     default double dot(DoubleSeq data) {
-        return InternalDoubleSeqMath.dot(this, data);
+        return DoublesMath.dot(this, data);
     }
 
     default double jdot(DoubleSeq data, int pos) {
-        return InternalDoubleSeqMath.jdot(this, data, pos);
+        return DoublesMath.jdot(this, data, pos);
     }
 
     default double distance(DoubleSeq data) {
-        return InternalDoubleSeqMath.distance(this, data);
+        return DoublesMath.distance(this, data);
     }
 
     default DoubleSeq removeMean() {
-        return InternalDoubleSeqMath.removeMean(this);
+        return DoublesMath.removeMean(this);
     }
 
     default DoubleSeq delta(int lag) {
-        return InternalDoubleSeqMath.delta(this, lag);
+        return DoublesMath.delta(this, lag);
     }
 
     default DoubleSeq delta(int lag, int pow) {
-        return InternalDoubleSeqMath.delta(this, lag, pow);
+        return DoublesMath.delta(this, lag, pow);
     }
 
     default DoubleSeq log() {
-        return InternalDoubleSeqMath.log(this);
+        return DoublesMath.log(this);
     }
 
     default DoubleSeq exp() {
-        return InternalDoubleSeqMath.exp(this);
+        return DoublesMath.exp(this);
     }
 
     default boolean hasSameContentAs(DoubleSeq that) {
@@ -488,7 +527,7 @@ public interface DoubleSeq extends BaseSeq {
      * @return
      */
     @Nonnull
-    static DoubleSeq of(@Nonnull double[] data) {
+    static DoubleSeq of(@Nonnull double... data) {
         return new InternalDoubleSeq.MultiDoubleSeq(data);
     }
 
@@ -524,12 +563,6 @@ public interface DoubleSeq extends BaseSeq {
     @Nonnull
     static Doubles empty() {
         return Doubles.EMPTY;
-    }
-
-    @Deprecated
-    @Nonnull
-    static Doubles of(double value) {
-        return Doubles.of(value);
     }
 
     @Deprecated

@@ -32,7 +32,7 @@ import java.util.stream.DoubleStream;
  */
 @Development(status = Development.Status.Release)
 @PrimitiveReplacementOf(generic = List.class, primitive = double.class)
-public final class DoubleList implements DoubleVector {
+public final class DoubleList implements DoubleSeq {
 
     private static final int DEFAULT_SIZE = 128;
 
@@ -425,23 +425,23 @@ public final class DoubleList implements DoubleVector {
         return rval;
     }
 
-    /**
-     * Replaces the element at the specified position in this list with the
-     * specified element
-     *
-     * @param index index of element to replace.
-     * @param element element to be stored at the specified position.
-     *
-     * @exception IndexOutOfBoundsException if the index is out of range (index
-     * < 0 || index >= size()).
-     */
-    @Override
-    public void set(int index, double element) {
-        if (index >= length) {
-            throw new IndexOutOfBoundsException();
-        }
-        values[index] = element;
-    }
+//    /**
+//     * Replaces the element at the specified position in this list with the
+//     * specified element
+//     *
+//     * @param index index of element to replace.
+//     * @param element element to be stored at the specified position.
+//     *
+//     * @exception IndexOutOfBoundsException if the index is out of range (index
+//     * < 0 || index >= size()).
+//     */
+//    @Override
+//    public void set(int index, double element) {
+//        if (index >= length) {
+//            throw new IndexOutOfBoundsException();
+//        }
+//        values[index] = element;
+//    }
 
     /**
      * Returns the number of elements in this list. If this list contains more
