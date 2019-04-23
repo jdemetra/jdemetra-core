@@ -21,16 +21,13 @@ import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataBlockStorage;
-import demetra.likelihood.DeterminantalTerm;
 import demetra.maths.functions.IParametricMapping;
-import demetra.maths.linearfilters.ILinearProcess;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import demetra.ssf.ResultsRange;
-import demetra.ssf.State;
 import demetra.ssf.ckms.CkmsDiffuseInitializer;
 import demetra.ssf.ckms.CkmsFilter;
 import demetra.ssf.dk.sqrt.CompositeDiffuseSquareRootFilteringResults;
@@ -53,7 +50,6 @@ import demetra.ssf.likelihood.MarginalLikelihood;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.M2uAdapter;
-import demetra.ssf.multivariate.SsfMatrix;
 import demetra.ssf.univariate.IFilteringResults;
 import demetra.data.DoubleSeq;
 
@@ -362,11 +358,11 @@ public class DkToolkit {
             int n = y.length();
             DiffusePredictionErrorDecomposition pe = new DiffusePredictionErrorDecomposition(true);
             pe.prepare(model.getSsf(), n);
-            ILinearProcess lp = filteringResults(model.getSsf(), y, pe);
+            DkFilter filter = filteringResults(model.getSsf(), y, pe);
             DiffuseLikelihood ll = pe.likelihood();
             DoubleSeq yl = pe.errors(true, true);
             int nl = yl.length();
-            Matrix xl = xl(model, lp, nl);
+            Matrix xl = xl(model, filter, nl);
             if (xl == null) {
                 return DiffuseConcentratedLikelihood.builder(ll.dim(), ll.getD())
                         .ssqErr(ll.ssq())
@@ -473,7 +469,7 @@ public class DkToolkit {
             return bvar;
         }
 
-        private ILinearProcess filteringResults(ISsf ssf, ISsfData data, DiffusePredictionErrorDecomposition pe) {
+        private DkFilter filteringResults(ISsf ssf, ISsfData data, DiffusePredictionErrorDecomposition pe) {
             if (sqr) {
                 DefaultDiffuseSquareRootFilteringResults fr = DefaultDiffuseSquareRootFilteringResults.light();
                 fr.prepare(ssf, 0, data.length());
@@ -511,7 +507,7 @@ public class DkToolkit {
             }
         }
 
-        private Matrix xl(SsfRegressionModel model, ILinearProcess lp, int nl) {
+        private Matrix xl(SsfRegressionModel model, DkFilter lp, int nl) {
             Matrix x = model.getX();
             if (x == null) {
                 return null;
@@ -520,7 +516,7 @@ public class DkToolkit {
             DataBlockIterator lcols = xl.columnsIterator();
             DataBlockIterator cols = x.columnsIterator();
             while (cols.hasNext() && lcols.hasNext()) {
-                lp.transform(cols.next(), lcols.next());
+                lp.apply(cols.next(), lcols.next());
             }
             return xl;
         }

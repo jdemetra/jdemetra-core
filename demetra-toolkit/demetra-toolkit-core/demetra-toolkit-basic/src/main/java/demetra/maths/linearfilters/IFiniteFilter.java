@@ -23,13 +23,15 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.DoubleVector;
 import demetra.data.DoubleVectorCursor;
+import demetra.maths.Complex;
+import java.util.Formatter;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IFiniteFilter extends IFilter, ILinearProcess {
+public interface IFiniteFilter extends IFilter {
 
     /**
      * Length of the filter
@@ -39,10 +41,15 @@ public interface IFiniteFilter extends IFilter, ILinearProcess {
     default int length() {
         return getUpperBound() - getLowerBound() + 1;
     }
+    
+    @Override
+    default boolean hasLowerBound(){
+        return true;
+    }
 
     @Override
-    default int getOutputLength(int inputLength) {
-        return inputLength - getUpperBound() - getLowerBound();
+    default boolean hasUpperBound(){
+        return true;
     }
 
     // FiniteFilterDecomposition Decompose();
@@ -82,6 +89,11 @@ public interface IFiniteFilter extends IFilter, ILinearProcess {
         return w;
     }
 
+    @Override
+    default Complex frequencyResponse(final double freq) {
+        return Utility.frequencyResponse(weights(), getLowerBound(), getUpperBound(), freq);
+    }
+
     /**
      * If this filter is w(l)B^(-l)+...+w(u)F^u Its mirror is
      * w(-u)B^(u)+...+w(-l)F^(-l)
@@ -91,34 +103,21 @@ public interface IFiniteFilter extends IFilter, ILinearProcess {
     IFiniteFilter mirror();
 
     /**
-     * Apply the filter on the input and store the results in the output The
-     * range of the input is implicitly defined by the filter and by the output.
-     * If the filter is defined by w{lb)...w(ub) and the filter output is
-     * defined for [start, end[, the input should be defined for [start-lb,
-     * end+ub[
-     *
-     * @param in
-     * @param out
-     */
-    default void apply(IntToDoubleFunction in, IFilterOutput out) {
-        IntToDoubleFunction weights = weights();
-        int lb = getLowerBound(), ub = getUpperBound();
-        for (int i = out.getStart(); i < out.getEnd(); ++i) {
-            double s = 0;
-            for (int j = lb; j <= ub; ++j) {
-                s += weights.applyAsDouble(j) * in.applyAsDouble(i + j);
-            }
-            out.set(i, s);
-        }
-    }
-
-    /**
      * Applies the filter on the input
      *
      * @param in The input, which must have the same length as the filter
      * @return The product of the filter and of the input
      */
-    double apply(DoubleSeq in);
+    default double apply(DoubleSeq in) {
+        IntToDoubleFunction weights = weights();
+        int lb = getLowerBound(), ub = getUpperBound();
+        double s = 0;
+        DoubleSeqCursor cursor = in.cursor();
+        for (int j = lb; j <= ub; ++j) {
+            s += weights.applyAsDouble(j) * cursor.getAndNext();
+        }
+        return s;
+    }
 
     /**
      * Applies the filter on the input y(t)
@@ -149,10 +148,52 @@ public interface IFiniteFilter extends IFilter, ILinearProcess {
      * Filters in and sets the result in out. More exactly, in contains x(-lb,
      * n+ub) and out contains y(0, n) with y(t) = f(t-lb,...,t+ub).
      *
+     * @param in Input.
+     * @param out Output
+     */
+    default void apply(DoubleSeq in, DoubleVector out) {
+        double[] w = weightsToArray();
+        int nz = 0, nw = w.length, nw2 = nw >> 1;
+        boolean sparse = true;
+        for (int i = 0; i < nw; ++i) {
+            if (w[i] != 0 && ++nz > nw2) {
+                sparse = false;
+                break;
+            }
+        }
+        if (sparse) {
+            int len = in.length() - w.length + 1;
+            out.setAY(w[0], in.range(0, len));
+            for (int j = 1; j < nw; ++j) {
+                if (w[j] != 0) {
+                    out.addAY(w[j], in.range(j, len + j));
+                }
+            }
+        } else {
+            int n = out.length();
+
+            DoubleVectorCursor cursor = out.cursor();
+            DoubleSeqCursor icur = in.cursor();
+            for (int i = 0; i < n; ++i) {
+                icur.moveTo(i);
+                double s = 0;
+                for (int k = 0; k < nw; ++k) {
+                    s += icur.getAndNext() * w[k];
+                }
+                cursor.setAndNext(s);
+            }
+        }
+    }
+
+    /**
+     * Filters in and sets the result in out. More exactly, in contains x(-lb,
+     * n+ub) and out contains y(0, n) with y(t) = f(t-lb,...,t+ub). Faster
+     * variant of the generic "apply" method
+     *
      * @param in Input. Should not be modified
      * @param out Output
      */
-    default void filter(DataBlock in, DoubleVector out) {
+    default void apply(DataBlock in, DoubleVector out) {
         double[] w = weightsToArray();
         double[] xin = in.getStorage();
         int start = in.getStartPosition(), inc = in.getIncrement();
@@ -167,9 +208,9 @@ public interface IFiniteFilter extends IFilter, ILinearProcess {
                 cursor.setAndNext(s);
             }
         } else {
-            for (int i = 0, j = start; i < n; ++i, j+=inc) {
+            for (int i = 0, j = start; i < n; ++i, j += inc) {
                 double s = 0;
-                for (int k = 0, t = j; k < w.length; ++k, t+=inc) {
+                for (int k = 0, t = j; k < w.length; ++k, t += inc) {
                     s += xin[t] * w[k];
                 }
                 cursor.setAndNext(s);
@@ -177,19 +218,34 @@ public interface IFiniteFilter extends IFilter, ILinearProcess {
         }
     }
 
-    default void apply2(DoubleSeq in, DoubleVector out) {
-        double[] w = weightsToArray();
-        int n = out.length();
-        DoubleVectorCursor cursor = out.cursor();
-        DoubleSeqCursor icur = in.cursor();
-            for (int i = 0; i < n; ++i) {
-                icur.moveTo(i);
-                double s = 0;
-                for (int k = 0; k < w.length; ++k) {
-                    s += icur.getAndNext() * w[k];
+    static String toString(IFiniteFilter filter) {
+        StringBuilder sb = new StringBuilder();
+        String fmt = "%6g";
+        boolean sign = false;
+        IntToDoubleFunction weights = filter.weights();
+        for (int i = filter.getLowerBound(); i <= filter.getUpperBound(); ++i) {
+            double v = weights.applyAsDouble(i);
+            double av = Math.abs(v);
+            if (av >= 1e-6) {
+                if (av > v) {
+                    sb.append(" - ");
+                } else if (sign) {
+                    sb.append(" + ");
                 }
-                cursor.setAndNext(s);
+                if ((av != 1) || (i == 0)) {
+                    sb.append(new Formatter().format(fmt, av).toString());
+                }
+                sign = true;
+                if (i < 0) {
+                    sb.append("(t-").append(-i).append(')');
+                } else if (i > 0) {
+                    sb.append("(t+").append(i).append(')');
+                } else {
+                    sb.append("(t)");
+                }
             }
-    }
+        }
+        return sb.toString();
 
+    }
 }

@@ -130,7 +130,7 @@ public class HouseholderR {
             }
 //           compute the householder transformation for column l.
             int nl = nrows - l;
-            double nrmxl = DataBlock.ofInternal(x, lq, lq + nl).norm2();
+            double nrmxl = DataBlock.of(x, lq, lq + nl).norm2();
             if (nrmxl == 0) {
                 continue;
             }
@@ -158,7 +158,7 @@ public class HouseholderR {
                     double z = x[jc] / qrauxilary[j];
                     double tt = Math.max(0, 1 - z * z);
                     if (tt < 1e-6) {
-                        qrauxilary[j] = DataBlock.ofInternal(x, jc + 1, jc + nl).norm2();
+                        qrauxilary[j] = DataBlock.of(x, jc + 1, jc + nl).norm2();
                         tmp1[j] = qrauxilary[j];
                     } else {
                         qrauxilary[j] *= Math.sqrt(tt);

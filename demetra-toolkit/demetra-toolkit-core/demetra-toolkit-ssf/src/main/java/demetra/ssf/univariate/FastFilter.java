@@ -8,7 +8,6 @@ package demetra.ssf.univariate;
 import demetra.ssf.ISsfLoading;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.maths.linearfilters.ILinearProcess;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
@@ -21,7 +20,7 @@ import demetra.data.DoubleVector;
  *
  * @author Jean Palate
  */
-public class FastFilter implements ILinearProcess {
+public class FastFilter {
 
     private final DefaultFilteringResults frslts;
     private final ISsf ssf;
@@ -88,15 +87,6 @@ public class FastFilter implements ILinearProcess {
         //  
     }
 
-    public boolean transform(DoubleSeq in, DataBlock out) {
-        if (in.length() > end - start) {
-            return false;
-        }
-        apply(in, out);
-        return true;
-    }
-    
-    @Override
     public void apply(DoubleSeq in, DoubleVector out) {
         int dim = ssf.getStateDim(), n = in.length();
         DataBlock state = DataBlock.make(dim);
@@ -120,7 +110,6 @@ public class FastFilter implements ILinearProcess {
         } while (++ipos < n);
     }
 
-    @Override
     public int getOutputLength(int inputLength) {
         int n = 0;
         int imax = start + inputLength;

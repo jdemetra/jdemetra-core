@@ -6,7 +6,6 @@
 package demetra.x11.filter;
 
 import demetra.data.DataBlock;
-import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.x11.SeriesEvolution;
 import demetra.x11.X11Context;
@@ -26,8 +25,8 @@ public class AutomaticHenderson {
 
         int ndrop = filterLength / 2;
         double[] x = table(s.length(), Double.NaN);
-        DataBlock out = DataBlock.ofInternal(x, ndrop, x.length - ndrop);
-        trendFilter.apply(i -> s.get(i), IFilterOutput.of(out, ndrop));
+        DataBlock out = DataBlock.of(x, ndrop, x.length - ndrop);
+        trendFilter.apply(s, out);
 
         DoubleSeq sc = out;
         DoubleSeq si = context.remove(s.extract(ndrop, sc.length()), sc);

@@ -6,6 +6,7 @@
 package demetra.maths.linearfilters;
 
 import demetra.data.DataBlock;
+import demetra.data.DoubleSeq;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -21,7 +22,7 @@ public class FiniteFilterTest {
 
     public FiniteFilterTest() {
         filter = new FiniteFilter(new double[]{1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8}, -9);
-        in = DataBlock.make(360);
+        in = DataBlock.make(240);
         in.set(i -> 1 / (1 + i));
     }
 
@@ -31,19 +32,19 @@ public class FiniteFilterTest {
         filter.apply(in, out);
 
         DataBlock out2 = DataBlock.make(in.length() - filter.length() + 1);
-        filter.apply(i -> in.get(i+3), IFilterOutput.of(out2, 6));
+        filter.apply((DoubleSeq)in, out2);
 
         assertTrue(out.distance(out2) < 1e-9);
     }
 
     @Test
-//    @Ignore
+    @Ignore
     public void stressTestApply() {
-        int K = 30000;
+        int K = 1000000;
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
-            DataBlock out2 = DataBlock.make(in.length() - filter.length() + 1);
-            filter.apply(i -> in.get(i + 9), IFilterOutput.of(out2, 0));
+            DataBlock out = DataBlock.make(in.length() - filter.length() + 1);
+            filter.apply(in, out);
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
@@ -52,23 +53,7 @@ public class FiniteFilterTest {
         t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             DataBlock out = DataBlock.make(in.length() - filter.length() + 1);
-            filter.apply(in, out);
-        }
-        t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
-
-        t0 = System.currentTimeMillis();
-        for (int k = 0; k < K; ++k) {
-            DataBlock out = DataBlock.make(in.length() - filter.length() + 1);
-            filter.apply2(in, out);
-        }
-        t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
-
-        t0 = System.currentTimeMillis();
-        for (int k = 0; k < K; ++k) {
-            DataBlock out = DataBlock.make(in.length() - filter.length() + 1);
-            filter.filter(in, out);
+            filter.apply((DoubleSeq)in, out);
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

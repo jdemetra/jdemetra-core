@@ -91,7 +91,7 @@ public class QRFilter {
         int n = ffilter.getOutputLength(X.getRowsCount());
         Xl = Matrix.make(n, X.getColumnsCount());
         for (int i = 0; i < X.getColumnsCount(); ++i) {
-            ffilter.transform(X.column(i), Xl.column(i));
+            ffilter.apply(X.column(i), Xl.column(i));
         }
         return true;
     }

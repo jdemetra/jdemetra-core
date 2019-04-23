@@ -24,7 +24,6 @@ import demetra.util.Arrays2;
 import demetra.maths.Complex;
 import demetra.maths.matrices.Matrix;
 import demetra.maths.MatrixException;
-import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
 import demetra.linearsystem.LinearSystemSolver;

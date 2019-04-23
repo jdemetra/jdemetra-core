@@ -153,7 +153,7 @@ public class HouseholderWithPivoting implements IQRDecomposition {
             // Compute norm2 copyOf the current column
             int k0 = ck * m, k1 = k0 + m;
             k0 += k;
-            DataBlock cur = DataBlock.ofInternal(qr, k0, k1);
+            DataBlock cur = DataBlock.of(qr, k0, k1);
             double nrm = cur.norm2();
 
             if (nrm > eps) {
@@ -191,7 +191,7 @@ public class HouseholderWithPivoting implements IQRDecomposition {
                         rdiag[cj] *= Math.sqrt(Math.max(1 - tmp * tmp, 0));
                         tmp = rdiag[cj] / wa[cj];
                         if (.05 * tmp * tmp <= eps) {
-                            rdiag[cj] = DataBlock.ofInternal(qr, j0, j0 + m - k).fastNorm2();
+                            rdiag[cj] = DataBlock.of(qr, j0, j0 + m - k).fastNorm2();
                             wa[cj] = rdiag[cj];
                         }
                     }

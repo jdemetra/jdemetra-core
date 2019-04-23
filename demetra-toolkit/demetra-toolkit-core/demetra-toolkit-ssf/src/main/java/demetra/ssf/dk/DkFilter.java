@@ -19,7 +19,6 @@ package demetra.ssf.dk;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.linearfilters.ILinearProcess;
 import demetra.maths.matrices.Matrix;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsf;
@@ -33,7 +32,7 @@ import demetra.data.DoubleVector;
  *
  * @author Jean Palate
  */
-public class DkFilter implements ILinearProcess {
+public class DkFilter  {
 
     private final BaseDiffuseFilteringResults frslts;
     private final ISsf ssf;
@@ -72,31 +71,8 @@ public class DkFilter implements ILinearProcess {
         enddiffuse = frslts.getEndDiffusePosition();
     }
 
-    @Override
     public void apply(DoubleSeq in, DoubleVector out) {
         new FastDiffuseFilter1().apply(in, out);
-    }
-
-    @Override
-    public int getOutputLength(int inputLength) {
-        int n = 0;
-        int imax = start + inputLength;
-        if (imax > end) {
-            return -1;
-        }
-        for (int i = start; i < enddiffuse; ++i) {
-            double e = frslts.error(i), v = frslts.errorVariance(i);
-            if (Double.isFinite(e) && v != 0 && frslts.diffuseNorm2(i) == 0) {
-                ++n;
-            }
-        }
-        for (int i = enddiffuse; i < imax; ++i) {
-            double e = frslts.error(i), v = frslts.errorVariance(i);
-            if (Double.isFinite(e) && v != 0) {
-                ++n;
-            }
-        }
-        return n;
     }
 
     class FastDiffuseFilterN {

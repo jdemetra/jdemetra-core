@@ -85,7 +85,7 @@ public final class DataBlock implements DoubleVector {
      *
      * FIXME: check bounds? FIXME: What if start = end?
      */
-    public static DataBlock ofInternal(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int end) {
+    public static DataBlock of(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int end) {
         if (end < start) {
             throw new IllegalArgumentException("Invalid DoubleArray");
         }
@@ -108,7 +108,7 @@ public final class DataBlock implements DoubleVector {
      */
     public static DataBlock ofInternal(@Nonnull double[] data, @Nonnegative int start, int end, int inc) {
         if (inc == 1) {
-            return ofInternal(data, start, end);
+            return of(data, start, end);
         }
         Objects.requireNonNull(data);
         if ((end - start) % inc != 0) {

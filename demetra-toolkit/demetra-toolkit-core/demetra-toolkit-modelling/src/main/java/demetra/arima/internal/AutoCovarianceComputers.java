@@ -47,7 +47,7 @@ public class AutoCovarianceComputers {
             double[] cr = rfe.coefficients(q+1);
 
             Matrix M = Matrix.square(r0);
-            DataBlock x = DataBlock.ofInternal(c, 0, r0);
+            DataBlock x = DataBlock.of(c, 0, r0);
             for (int i = 0; i <= q; ++i) {
                 double s = 0;
                 for (int j = i; j <= q; ++j) {

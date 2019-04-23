@@ -8,7 +8,6 @@ package demetra.r;
 import demetra.data.DataBlock;
 import demetra.information.InformationMapping;
 import demetra.maths.linearfilters.HendersonFilters;
-import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.sa.DecompositionMode;
@@ -172,8 +171,8 @@ public class X11Decomposition {
 
         double[] x = new double[s.length];
         Arrays.fill(x, Double.NaN);
-        DataBlock out = DataBlock.ofInternal(x, ndrop, x.length - ndrop);
-        filter.apply(i -> s[i], IFilterOutput.of(out, ndrop));
+        DataBlock out = DataBlock.of(x, ndrop, x.length - ndrop);
+        filter.apply(DoubleSeq.of(s), out);
         if (musgrave) {
             // apply the musgrave filters
             IFiniteFilter[] f = MusgraveFilterFactory.makeFilters(filter, ic);

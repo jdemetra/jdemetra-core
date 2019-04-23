@@ -6,7 +6,6 @@
 package demetra.x11;
 
 import demetra.data.DataBlock;
-import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import static demetra.x11.X11Kernel.table;
@@ -57,8 +56,8 @@ public class X11DStep {
         d2drop = filter.length() / 2;
 
         double[] x = table(d1.length() - 2 * d2drop, Double.NaN);
-        DataBlock out = DataBlock.ofInternal(x, 0, x.length);
-        filter.apply(i -> d1.get(i), IFilterOutput.of(out, d2drop));
+        DataBlock out = DataBlock.of(x, 0, x.length);
+        filter.apply(d1, out);
         d2 = DoubleSeq.of(x);
     }
 
@@ -88,8 +87,8 @@ public class X11DStep {
         int ndrop = filter.length() / 2;
 
         double[] x = table(d6.length(), Double.NaN);
-        DataBlock out = DataBlock.ofInternal(x, ndrop, x.length - ndrop);
-        filter.apply(i -> d6.get(i), IFilterOutput.of(out, ndrop));
+        DataBlock out = DataBlock.of(x, ndrop, x.length - ndrop);
+        filter.apply(d6, out);
 
         // apply asymmetric filters
         double r = MusgraveFilterFactory.findR(filter.length(), context.getPeriod());
@@ -148,8 +147,8 @@ public class X11DStep {
         int ndrop = hfilter.length() / 2;
 
         double[] x = table(d11bis.length(), Double.NaN);
-        DataBlock out = DataBlock.ofInternal(x, ndrop, x.length - ndrop);
-        hfilter.apply(i -> d11bis.get(i), IFilterOutput.of(out, ndrop));
+        DataBlock out = DataBlock.of(x, ndrop, x.length - ndrop);
+        hfilter.apply(d11bis, out);
 
         // apply asymmetric filters
         double r = MusgraveFilterFactory.findR(hfilter.length(), context.getPeriod());

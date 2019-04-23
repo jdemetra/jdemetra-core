@@ -45,10 +45,10 @@ public class LocalPolynomialFilters {
     };
 
     public DoubleSeq filter(DoubleSeq input, final SymmetricFilter filter, final FiniteFilter[] afilters) {
-        double[] x = input.toArray();
+        double[] x = new double[input.length()];
         int h = filter.getUpperBound();
-        DataBlock out = DataBlock.ofInternal(x, h, x.length - h);
-        filter.apply(i -> input.get(i), IFilterOutput.of(out, h));
+        DataBlock out = DataBlock.of(x, h, x.length - h);
+        filter.apply(input, out);
 
         // apply the endpoints filters
         if (afilters != null) {
@@ -329,8 +329,8 @@ public class LocalPolynomialFilters {
         double[] w = sw.weightsToArray();
         int h = w.length / 2;
         int nv = h + p + 1;
-        DataBlock wp = DataBlock.ofInternal(w, 0, nv);
-        DataBlock wf = DataBlock.ofInternal(w, nv, w.length);
+        DataBlock wp = DataBlock.of(w, 0, nv);
+        DataBlock wf = DataBlock.of(w, nv, w.length);
         Matrix Zp = z(-h, p, u + 1, u + dz.length);
         Matrix Zf = z(p + 1, h, u + 1, u + dz.length);
         Matrix Up = z(-h, p, 0, u);

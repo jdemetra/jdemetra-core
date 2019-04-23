@@ -34,7 +34,7 @@ import demetra.data.DoubleSeq;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public final class BackFilter extends AbstractFiniteFilter {
+public final class BackFilter implements IFiniteFilter {
     
     /**
      * BackFilter(0)

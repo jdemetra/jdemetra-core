@@ -13,8 +13,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import org.junit.Ignore;
-import static demetra.data.DataBlock.ofInternal;
 import java.util.Random;
+import static demetra.data.DataBlock.of;
+import static demetra.data.DataBlock.ofInternal;
 
 /**
  *
@@ -89,12 +90,12 @@ public class DataBlockTest {
 
     @Test
     public void testOfInternalStartEnd() {
-        assertThat(DataBlock.ofInternal(getSample(10), 0, 10)).isNotNull();
-        assertThat(DataBlock.ofInternal(getSample(10), 0, 10)).isExactlyInstanceOf(DataBlock.class);
-        assertThat(DataBlock.ofInternal(getSample(10), 0, 0)).isExactlyInstanceOf(DataBlock.class);
-        assertThat(DataBlock.ofInternal(getSample(10), 5, 5)).isExactlyInstanceOf(DataBlock.class);
-        assertThatThrownBy(() -> DataBlock.ofInternal(getSample(10), 1, -2)).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> DataBlock.ofInternal(getSample(10), 5, 4)).isInstanceOf(IllegalArgumentException.class);
+        assertThat(DataBlock.of(getSample(10), 0, 10)).isNotNull();
+        assertThat(DataBlock.of(getSample(10), 0, 10)).isExactlyInstanceOf(DataBlock.class);
+        assertThat(DataBlock.of(getSample(10), 0, 0)).isExactlyInstanceOf(DataBlock.class);
+        assertThat(DataBlock.of(getSample(10), 5, 5)).isExactlyInstanceOf(DataBlock.class);
+        assertThatThrownBy(() -> DataBlock.of(getSample(10), 1, -2)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> DataBlock.of(getSample(10), 5, 4)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -248,21 +249,21 @@ public class DataBlockTest {
                     .containsExactly(7.77, 8.88, 9.99, 10.10);
         });
 
-        assertThat(ofInternal(getSample(10), 2, 10)).satisfies(o -> {
+        assertThat(of(getSample(10), 2, 10)).satisfies(o -> {
             o.copyFrom(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}, 0);
             assertThat(o.toArray())
                     .describedAs("o.beg!=0 && o.end==data.length")
                     .containsExactly(11, 12, 13, 14, 15, 16, 17, 18);
         });
 
-        assertThat(ofInternal(getSample(10), 2, 6)).satisfies(o -> {
+        assertThat(of(getSample(10), 2, 6)).satisfies(o -> {
             o.copyFrom(new double[]{11, 12, 13, 14, 15, 16, 17, 18}, 0);
             assertThat(o.toArray())
                     .describedAs("o.beg!=0 && o.end<data.length")
                     .containsExactly(11, 12, 13, 14);
         });
 
-        assertThat(ofInternal(getSample(10), 2, 6)).satisfies(o -> {
+        assertThat(of(getSample(10), 2, 6)).satisfies(o -> {
             o.copyFrom(new double[]{11, 12, 13, 14, 15, 16, 17, 18}, 2);
             assertThat(o.toArray())
                     .describedAs("o.beg!=0 && o.end<data.length && buffer.start < 0")
@@ -364,14 +365,14 @@ public class DataBlockTest {
         });
 
         assertThat(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}).satisfies(b -> {
-            ofInternal(getSample(10), 0, 10).copyTo(b, 0);
+            of(getSample(10), 0, 10).copyTo(b, 0);
             assertThat(b)
                     .describedAs("buffer.length = data.length && data with bounds")
                     .containsExactly(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         });
 
         assertThat(new double[]{11, 12, 13, 14, 15, 16, 17, 18, 19, 20}).satisfies(b -> {
-            ofInternal(getSample(10), 2, 8).copyTo(b, 0);
+            of(getSample(10), 2, 8).copyTo(b, 0);
             assertThat(b)
                     .describedAs("buffer.length = data.length && data.beg<0 && data.end<data.length")
                     .containsExactly(3, 4, 5, 6, 7, 8, 17, 18, 19, 20);
@@ -432,17 +433,17 @@ public class DataBlockTest {
             assertThat(db.toArray()).isNullOrEmpty();
         });
 
-        assertThat(ofInternal(getSample(10), 0, 5).extract(0, 5)).satisfies(db -> {
+        assertThat(of(getSample(10), 0, 5).extract(0, 5)).satisfies(db -> {
             assertThat(db.toArray())
                     .containsExactly(1, 2, 3, 4, 5);
         });
 
-        assertThat(ofInternal(getSample(10), 0, 5).extract(0, 10)).satisfies(db -> {
+        assertThat(of(getSample(10), 0, 5).extract(0, 10)).satisfies(db -> {
             assertThat(db.toArray())
                     .containsExactly(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         });
 
-        assertThat(ofInternal(getSample(10), 2, 10).extract(0, 5)).satisfies(db -> {
+        assertThat(of(getSample(10), 2, 10).extract(0, 5)).satisfies(db -> {
             assertThat(db.toArray())
                     .containsExactly(3, 4, 5, 6, 7);
         });

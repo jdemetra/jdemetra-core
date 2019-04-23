@@ -6,7 +6,6 @@
 package demetra.x11plus;
 
 import demetra.data.DataBlock;
-import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import static demetra.x11plus.X11Kernel.table;
@@ -78,8 +77,8 @@ public class X11BStep {
         b2drop = filter.length() / 2;
 
         double[] x = table(b1.length() - 2 * b2drop, Double.NaN);
-        DataBlock out = DataBlock.ofInternal(x, 0, x.length);
-        filter.apply(i -> b1.get(i), IFilterOutput.of(out, b2drop));
+        DataBlock out = DataBlock.of(x, 0, x.length);
+        filter.apply(b1, out);
         b2 = DoubleSeq.of(x);
     }
 
@@ -116,8 +115,8 @@ public class X11BStep {
         int ndrop = filter.length() / 2;
 
         double[] x = table(b6.length(), Double.NaN);
-        DataBlock out = DataBlock.ofInternal(x, ndrop, x.length-ndrop);
-        filter.apply(i -> b6.get(i), IFilterOutput.of(out, ndrop));
+        DataBlock out = DataBlock.of(x, ndrop, x.length-ndrop);
+        filter.apply(b6, out);
         
         // apply asymmetric filters
         double r=MusgraveFilterFactory.findR(filter.length(), context.getPeriod().intValue());

@@ -27,6 +27,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntToDoubleFunction;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleVector;
+import demetra.data.DoubleVectorCursor;
 
 /**
  *
@@ -34,7 +36,7 @@ import demetra.data.DoubleSeq;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public final class SymmetricFilter extends AbstractFiniteFilter {
+public final class SymmetricFilter implements IFiniteFilter {
 
     /**
      *
@@ -185,26 +187,29 @@ public final class SymmetricFilter extends AbstractFiniteFilter {
         return DEF_DECOMPOSER.get().decompose(this, Q);
     }
 
-    public void defaultFilter(DataBlock in, DataBlock out) {
-        double[] pin = in.getStorage(), pout = out.getStorage();
+    @Override
+    public void apply(DataBlock in, DoubleVector out) {
+        double[] pin = in.getStorage();
         int ub = getUpperBound();
         int istart = in.getStartPosition(), iinc = in.getIncrement();
-        int ostart = out.getStartPosition(), oend = out.getEndPosition(), oinc = out.getIncrement();
-        if (iinc == 1 && oinc == 1) {
-            for (int i = istart + ub, j = ostart; j < oend; ++i, ++j) {
+        DoubleVectorCursor cursor = out.cursor();
+        if (iinc == 1) {
+            int imax = in.getEndPosition() - ub;
+            for (int i = istart + ub; i < imax; ++i) {
                 double s = pin[i] * polynomial.get(0);
                 for (int k = 1; k <= ub; ++k) {
                     s += polynomial.get(k) * (pin[i - k] + pin[i + k]);
                 }
-                pout[j] = s;
+                cursor.setAndNext(s);
             }
         } else {
-            for (int i = istart + ub * iinc, j = ostart; j != oend; i += iinc, j += oinc) {
+            int imax = in.getEndPosition() - ub * iinc;
+            for (int i = istart + ub * iinc; i != imax; i += iinc) {
                 double s = pin[i] * polynomial.get(0);
                 for (int k = 1, l = iinc; k <= ub; ++k, l += iinc) {
                     s += polynomial.get(k) * (pin[i - l] + pin[i + l]);
                 }
-                pout[j] = s;
+                cursor.setAndNext(s);
             }
         }
 
