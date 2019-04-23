@@ -39,7 +39,7 @@ public class FiniteFilterTest {
     @Test
 //    @Ignore
     public void stressTestApply() {
-        int K = 1000000;
+        int K = 30000;
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             DataBlock out2 = DataBlock.make(in.length() - filter.length() + 1);
@@ -53,6 +53,14 @@ public class FiniteFilterTest {
         for (int k = 0; k < K; ++k) {
             DataBlock out = DataBlock.make(in.length() - filter.length() + 1);
             filter.apply(in, out);
+        }
+        t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+
+        t0 = System.currentTimeMillis();
+        for (int k = 0; k < K; ++k) {
+            DataBlock out = DataBlock.make(in.length() - filter.length() + 1);
+            filter.apply2(in, out);
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

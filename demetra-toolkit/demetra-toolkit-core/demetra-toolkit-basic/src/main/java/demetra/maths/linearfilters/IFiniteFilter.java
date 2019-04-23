@@ -20,6 +20,7 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.DoubleVector;
 import demetra.data.DoubleVectorCursor;
 
@@ -176,24 +177,19 @@ public interface IFiniteFilter extends IFilter, ILinearProcess {
         }
     }
 
-    @Override
-    default void apply(DoubleSeq in, DoubleVector out) {
-        int lb = getLowerBound(), ub = getUpperBound();
-        int nw = ub - lb + 1;
-        int nin = in.length();
-        if (nin < nw || out.length() != nin - nw + 1) {
-            throw new LinearFilterException(LinearFilterException.LENGTH);
-        }
-        int len = in.length() - nw + 1;
-        IntToDoubleFunction weights = weights();
-        double w0 = weights.applyAsDouble(lb);
-        out.set(in.extract(0, len), a -> w0 * a);
-        for (int i = lb + 1; i <= ub; ++i) {
-            double wcur = weights.applyAsDouble(i);
-            if (wcur != 0) {
-                out.apply(in.extract(i - lb, len), (a, b) -> a + wcur * b);
+    default void apply2(DoubleSeq in, DoubleVector out) {
+        double[] w = weightsToArray();
+        int n = out.length();
+        DoubleVectorCursor cursor = out.cursor();
+        DoubleSeqCursor icur = in.cursor();
+            for (int i = 0; i < n; ++i) {
+                icur.moveTo(i);
+                double s = 0;
+                for (int k = 0; k < w.length; ++k) {
+                    s += icur.getAndNext() * w[k];
+                }
+                cursor.setAndNext(s);
             }
-        }
     }
 
 }
