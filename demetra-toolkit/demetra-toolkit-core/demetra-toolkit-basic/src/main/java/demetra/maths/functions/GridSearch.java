@@ -205,13 +205,13 @@ public class GridSearch implements IFunctionMinimizer {
                 return false;
             }
         }
-        m_ftry = fn.evaluate(DataBlock.ofInternal(new double[]{curX}));
+        m_ftry = fn.evaluate(DataBlock.of(new double[]{curX}));
         return true;
     }
 
     private double evaluate(double x) {
         try {
-            IFunctionPoint fx = this.fn.evaluate(DataBlock.ofInternal(new double[]{x}));
+            IFunctionPoint fx = this.fn.evaluate(DataBlock.of(new double[]{x}));
             return fx.getValue();
         } catch (Exception err) {
             return Double.NaN;

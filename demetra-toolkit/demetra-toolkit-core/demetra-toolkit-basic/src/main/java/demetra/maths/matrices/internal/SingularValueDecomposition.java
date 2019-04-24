@@ -68,7 +68,7 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
         m_V = new double[m_n * m_n];
         // trivial case
         if (m_n == 1) {
-            DataBlock a = DataBlock.ofInternal(A);
+            DataBlock a = DataBlock.of(A);
             m_s[0] = a.norm2();
             for (int i = 0; i < m_m; ++i) {
                 m_U[i] = A[i] / m_s[0];

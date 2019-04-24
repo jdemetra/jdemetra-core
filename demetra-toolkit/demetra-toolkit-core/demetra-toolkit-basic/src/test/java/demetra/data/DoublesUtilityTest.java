@@ -37,7 +37,7 @@ public class DoublesUtilityTest {
         DataBlock a = DataBlock.make(N);
         DataBlock b = DataBlock.make(N).reverse();
         double[] pc=new double[N*3];
-        DataBlock c=DataBlock.ofInternal(pc, 0, pc.length, 3);
+        DataBlock c=DataBlock.of(pc, 0, pc.length, 3);
         a.set(i->i);
         b.set(i->i);
         c.set(i->i*i+1);

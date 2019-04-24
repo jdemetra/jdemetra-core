@@ -117,7 +117,7 @@ public class AdvancedQRSolver implements QRSolver {
             }
         } else {
             res = new double[n - qr.rank()];
-            DataBlock B = DataBlock.ofInternal(b), E = DataBlock.ofInternal(res);
+            DataBlock B = DataBlock.of(b), E = DataBlock.of(res);
             qr.leastSquares(y, B, E);
             ssqerr = E.ssq();
         }
@@ -158,7 +158,7 @@ public class AdvancedQRSolver implements QRSolver {
         DataBlock F = DataBlock.make(n);
         DataBlock G = DataBlock.make(m);
 
-        DataBlock B = DataBlock.ofInternal(b);
+        DataBlock B = DataBlock.of(b);
         DataBlock E = DataBlock.make(n);
         // step 1
         int iter = 0;
@@ -203,7 +203,7 @@ public class AdvancedQRSolver implements QRSolver {
 
     private void iterativeEstimation2(DoubleSeq Y, Matrix X) {
 
-        DataBlock B = DataBlock.ofInternal(b), E = DataBlock.ofInternal(res);
+        DataBlock B = DataBlock.of(b), E = DataBlock.of(res);
         DoubleSeq W = Y;
         for (int i = 0; i < niter; ++i) {
             DataBlock db = DataBlock.make(b.length), de = DataBlock.make(res.length);

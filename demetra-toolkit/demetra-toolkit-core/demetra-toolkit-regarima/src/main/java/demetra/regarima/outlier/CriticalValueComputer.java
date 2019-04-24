@@ -76,7 +76,7 @@ public class CriticalValueComputer {
             // solve X b = y
             Householder qr = new Householder(false);
             qr.decompose(X);
-            qr.solve(DataBlock.ofInternal(y));
+            qr.solve(DataBlock.of(y));
 
             double acv = Math.sqrt(2 * Math.log(n));
             double bcv = (Math.log(Math.log(n)) + Math.log(4 * Math.PI))

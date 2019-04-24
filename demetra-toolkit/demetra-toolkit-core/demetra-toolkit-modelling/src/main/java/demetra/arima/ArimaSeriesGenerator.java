@@ -210,7 +210,7 @@ public final class ArimaSeriesGenerator {
                 RationalBackFilter psi = starima.getPsiWeights();
                 int nw = Math.min(q, p);
                 psi.prepare(q);
-                DataBlock w = DataBlock.ofInternal(psi.getWeights(q));
+                DataBlock w = DataBlock.of(psi.getWeights(q));
                 for (int i = 0; i < nw; ++i) {
                     qp.column(i).drop(i, 0).copy(w.drop(0, i));
                 }
@@ -222,7 +222,7 @@ public final class ArimaSeriesGenerator {
             for (int i = 0; i < x.length; ++i) {
                 x[i] = distribution.random(rng);
             }
-            LowerTriangularMatrix.lmul(ac, DataBlock.ofInternal(x));
+            LowerTriangularMatrix.lmul(ac, DataBlock.of(x));
             System.arraycopy(x, 0, y, 0, p);
             if (q > 0) {
                 System.arraycopy(x, p, e, 0, q);

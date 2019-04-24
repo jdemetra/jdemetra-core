@@ -79,7 +79,7 @@ public class Householder implements IQRDecomposition {
 
     @Override
     public DoubleSeq rdiagonal(boolean compact) {
-        return DataBlock.ofInternal(rdiag);
+        return DataBlock.of(rdiag);
     }
 
     /**
@@ -116,7 +116,7 @@ public class Householder implements IQRDecomposition {
         int len = qr.length;
         for (int k = 0, k0 = 0, k1 = m; k < n; ++k) {
             // Compute 2-norm copyOf k-th column .
-            DataBlock col = DataBlock.ofInternal(qr, k0, k1, 1);
+            DataBlock col = DataBlock.of(qr, k0, k1, 1);
             double nrm = fast ? col.fastNorm2() : col.norm2();
 
             if (nrm > eps) {

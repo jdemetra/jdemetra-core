@@ -88,7 +88,7 @@ public class X11CStep {
         double r = MusgraveFilterFactory.findR(filter.length(), context.getPeriod());
         IFiniteFilter[] asymmetricFilter = context.asymmetricTrendFilters(filter, r);
         AsymmetricEndPoints aep = new AsymmetricEndPoints(asymmetricFilter, 0);
-        aep.process(c6, DataBlock.ofInternal(x));
+        aep.process(c6, DataBlock.of(x));
         c7 = DoubleSeq.of(x);
         if (context.isMultiplicative()) {
             c7 = context.makePositivity(c7);

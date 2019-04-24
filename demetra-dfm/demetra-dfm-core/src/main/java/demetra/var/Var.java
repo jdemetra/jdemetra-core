@@ -72,7 +72,7 @@ public class Var {
             }
         }
 
-        LinearSystemSolver.robustSolver().solve(M, DataBlock.ofInternal(b));
+        LinearSystemSolver.robustSolver().solve(M, DataBlock.of(b));
 
         for (int i = 0, j = 0; i < n; i++) {
             cov.column(i).drop(i, 0).copyFrom(b, j);

@@ -55,7 +55,7 @@ public class LeastSquaresDivision {
             Householder qr = new Householder();
             qr.decompose(m);
             DataBlock E = DataBlock.make(d - 1);
-            qr.leastSquares(N, DataBlock.ofInternal(coeff), E);
+            qr.leastSquares(N, DataBlock.of(coeff), E);
             this.err = E.norm2() / d;
             return true;
         } catch (MatrixException error) {

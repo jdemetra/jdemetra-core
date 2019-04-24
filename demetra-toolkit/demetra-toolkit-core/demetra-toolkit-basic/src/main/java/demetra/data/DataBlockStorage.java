@@ -89,7 +89,7 @@ public class DataBlockStorage {
      */
     public DataBlock block(final int pos) {
         int start = dim * pos;
-        return DataBlock.ofInternal(storage, start, start + dim, 1);
+        return DataBlock.of(storage, start, start + dim, 1);
     }
 
     /**
@@ -122,7 +122,7 @@ public class DataBlockStorage {
      * @return
      */
     public DataBlock item(final int index) {
-        return DataBlock.ofInternal(storage, index, index + dim * nused, dim);
+        return DataBlock.of(storage, index, index + dim * nused, dim);
     }
 
     /**
@@ -188,7 +188,7 @@ public class DataBlockStorage {
      */
     public DataBlock storage(int start, int end) {
         int p0 = dim * start, p1 = dim * end;
-        return DataBlock.ofInternal(storage, p0, p1, 1);
+        return DataBlock.of(storage, p0, p1, 1);
 
     }
 

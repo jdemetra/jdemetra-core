@@ -24,7 +24,7 @@ public class RegArimaUtilityTest {
         BackFilter d = RegArimaUtility.differencingFilter(12, 2, 1);
         double[] var = RegArimaUtility.meanRegressionVariable(d, 100);
         DataBlock out=DataBlock.make(100-d.getDegree());
-        d.apply(DataBlock.ofInternal(var), out);
+        d.apply(DataBlock.of(var), out);
         assertTrue(out.isConstant(1));
     }
     

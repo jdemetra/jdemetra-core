@@ -91,7 +91,7 @@ public class ExactArimaForecasts implements ArimaForecasts{
 	    filter.getFinalState().a().range(0, nf).copyTo(f, 0);
         if (bmean){
             DataBlock s=DataBlock.make(f.length-bar.getDegree());
-            bar.apply(DataBlock.ofInternal(f), s);
+            bar.apply(DataBlock.of(f), s);
             mean=s.get(s.length()-1);
         }
 	return f;

@@ -244,7 +244,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         if (m_grad == null) {
             calcgrad();
         }
-        return DataBlock.ofInternal(m_grad);
+        return DataBlock.of(m_grad);
     }
 
     /**

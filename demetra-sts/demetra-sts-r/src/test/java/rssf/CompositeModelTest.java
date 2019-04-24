@@ -61,7 +61,7 @@ public class CompositeModelTest {
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, 1e-15, false, true, null);
-        System.out.println(DataBlock.ofInternal(rslt.getFullParameters()));
+        System.out.println(DataBlock.of(rslt.getFullParameters()));
         System.out.println(rslt.getSmoothedStates().getComponent(0));
         System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
         System.out.println(rslt.getLikelihood().logLikelihood());

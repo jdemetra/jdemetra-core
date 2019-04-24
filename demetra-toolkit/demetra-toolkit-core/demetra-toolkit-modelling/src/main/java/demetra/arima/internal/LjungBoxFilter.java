@@ -180,7 +180,7 @@ public class LjungBoxFilter implements ArmaFilter {
             double[] a0 = calca0(w);
             double[] g = calcg(a0);
             m_u = calch(g);
-            DataBlock U = DataBlock.ofInternal(m_u);
+            DataBlock U = DataBlock.of(m_u);
             LowerTriangularMatrix.rsolve(m_X, U);
             LowerTriangularMatrix.lsolve(m_X, U);
             double[] v = new double[w.length()];

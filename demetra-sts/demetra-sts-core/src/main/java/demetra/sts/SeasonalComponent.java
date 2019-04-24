@@ -500,7 +500,7 @@ public class SeasonalComponent {
         public HarrisonStevensData(final double[] var) {
             period = var.length;
             this.var = var.clone();
-            DataBlock xvar = DataBlock.ofInternal(var);
+            DataBlock xvar = DataBlock.of(var);
             V = Matrix.square(period - 1);
             double mvar = xvar.sum() / (period * period);
             double dp = 2.0 / period;

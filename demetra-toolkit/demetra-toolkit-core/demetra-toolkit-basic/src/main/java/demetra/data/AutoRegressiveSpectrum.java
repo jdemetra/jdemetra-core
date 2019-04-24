@@ -117,7 +117,7 @@ public class AutoRegressiveSpectrum {
             Householder qr = new Householder(false);
             qr.decompose(M);
             ar = new double[nar];
-            DataBlock c = DataBlock.ofInternal(ar);
+            DataBlock c = DataBlock.of(ar);
             DataBlock e = DataBlock.make(nc - nar);
             qr.leastSquares(new DataBlock(all, nar, n, 1), c, e);
             c.chs();

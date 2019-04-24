@@ -121,7 +121,7 @@ public class RandomGenerator {
             resdim = dynamics.getInnovationsDim();
             if (error != null) {
                 measurementErrors = new double[n];
-                generateMeasurementRandoms(DataBlock.ofInternal(measurementErrors));
+                generateMeasurementRandoms(DataBlock.of(measurementErrors));
             } else {
                 measurementErrors = null;
             }

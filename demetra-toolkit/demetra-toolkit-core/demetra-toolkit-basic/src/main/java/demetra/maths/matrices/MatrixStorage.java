@@ -98,7 +98,7 @@ public class MatrixStorage {
     public DataBlock item(final int row, final int col){
         int start=row+m_nr*col;
         int end=start+m_nused*m_size;
-        return DataBlock.ofInternal(m_data, start, end, m_size);
+        return DataBlock.of(m_data, start, end, m_size);
     }
 
     /**

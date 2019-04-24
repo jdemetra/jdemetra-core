@@ -40,7 +40,7 @@ class DefaultSeasonalNormalizer {
         filter.apply(in, out);
        
         CopyEndPoints cp=new CopyEndPoints(ndrop);
-        cp.process(in, DataBlock.ofInternal(x));
+        cp.process(in, DataBlock.of(x));
         DoubleSeq t= DoubleSeq.of(x);
         DoubleSeq tmp=context.remove(in, t);
         if (nextend == 0)
@@ -49,7 +49,7 @@ class DefaultSeasonalNormalizer {
             x=new double[x.length+2*nextend];
             tmp.copyTo(x, nextend);
             CopyPeriodicEndPoints cpp=new CopyPeriodicEndPoints(nextend, context.getPeriod().intValue());
-            cpp.process(null, DataBlock.ofInternal(x));
+            cpp.process(null, DataBlock.of(x));
             return DoubleSeq.of(x);
         }
     }

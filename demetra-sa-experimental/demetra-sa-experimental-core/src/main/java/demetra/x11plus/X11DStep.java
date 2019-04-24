@@ -70,9 +70,9 @@ public class X11DStep {
         IFiniteFilter[] lf = context.leftAsymmetricTrendFilters(filter, r); 
         IFiniteFilter[] rf = context.rightAsymmetricTrendFilters(filter, r); 
         AsymmetricEndPoints aep=new AsymmetricEndPoints(lf, -1);
-        aep.process(d6, DataBlock.ofInternal(x));
+        aep.process(d6, DataBlock.of(x));
         aep=new AsymmetricEndPoints(rf, 1);
-        aep.process(d6, DataBlock.ofInternal(x));
+        aep.process(d6, DataBlock.of(x));
         d7 = DoubleSeq.of(x);
         if (d7.anyMatch(z -> z <= 0)) {
             throw new X11Exception(X11Exception.ERR_NEG);
@@ -106,9 +106,9 @@ public class X11DStep {
         IFiniteFilter[] lf = context.leftAsymmetricTrendFilters(hfilter, r); 
         IFiniteFilter[] rf = context.rightAsymmetricTrendFilters(hfilter, r); 
         AsymmetricEndPoints aep=new AsymmetricEndPoints(lf, -1);
-        aep.process(d11bis, DataBlock.ofInternal(x));
+        aep.process(d11bis, DataBlock.of(x));
         aep=new AsymmetricEndPoints(rf, 1);
-        aep.process(d11bis, DataBlock.ofInternal(x));
+        aep.process(d11bis, DataBlock.of(x));
         d12 = DoubleSeq.of(x);
         if (d12.anyMatch(z -> z <= 0)) {
             throw new X11Exception(X11Exception.ERR_NEG);

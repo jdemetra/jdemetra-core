@@ -115,7 +115,7 @@ public class Regression {
             throw new IllegalArgumentException();
         }
         Matrix m = matrix(domain, vars);
-        return DataBlock.ofInternal(m.getStorage());
+        return DataBlock.of(m.getStorage());
     }
 
 }

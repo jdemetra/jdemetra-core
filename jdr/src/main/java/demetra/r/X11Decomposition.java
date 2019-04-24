@@ -177,7 +177,7 @@ public class X11Decomposition {
             // apply the musgrave filters
             IFiniteFilter[] f = MusgraveFilterFactory.makeFilters(filter, ic);
             AsymmetricEndPoints aep = new AsymmetricEndPoints(f, 0);
-            aep.process(DoubleSeq.of(s), DataBlock.ofInternal(x));
+            aep.process(DoubleSeq.of(s), DataBlock.of(x));
         }
         return x;
     }

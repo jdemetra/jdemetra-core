@@ -440,7 +440,7 @@ public class DkToolkit {
                     ++j;
                 }
             }
-            return DataBlock.ofInternal(bc);
+            return DataBlock.of(bc);
         }
 
         private Matrix expand(Matrix v, int[] unused) {

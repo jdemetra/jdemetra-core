@@ -22,7 +22,7 @@ public class TukeyHanningTaperTest {
     @Demo
     public void testRandom() {
         double[] x=new double[60];
-        DataBlock X=DataBlock.ofInternal(x);
+        DataBlock X=DataBlock.of(x);
         Random rnd=new Random();
         X.set(rnd::nextGaussian);
         TukeyHanningTaper taper=new TukeyHanningTaper(.5);

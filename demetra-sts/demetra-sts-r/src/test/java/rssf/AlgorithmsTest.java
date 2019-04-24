@@ -155,7 +155,7 @@ public class AlgorithmsTest {
 
         double[] p = rslt.getFullParameters();
         System.out.println("SAE+TD");
-        System.out.println(DataBlock.ofInternal(p));
+        System.out.println(DataBlock.of(p));
         System.out.println(rslt.getLikelihood().logLikelihood());
         System.out.println(rslt.getLikelihood().sigma());
     }
@@ -204,7 +204,7 @@ public class AlgorithmsTest {
 
         double[] p = rslt.getFullParameters();
         System.out.println("SUTSE");
-        System.out.println(DataBlock.ofInternal(p));
+        System.out.println(DataBlock.of(p));
         System.out.println(rslt.getLikelihood().logLikelihood());
         double[] z=new double[30];
         z[0]=1;
@@ -237,7 +237,7 @@ public class AlgorithmsTest {
 
         double[] p = rslt.getFullParameters();
         System.out.println("Airline+TD");
-        System.out.println(DataBlock.ofInternal(p));
+        System.out.println(DataBlock.of(p));
         System.out.println(rslt.getLikelihood().logLikelihood());
     }
 
@@ -258,7 +258,7 @@ public class AlgorithmsTest {
 
         double[] p = rslt.getFullParameters();
         System.out.println("Crude");
-        System.out.println(DataBlock.ofInternal(p));
+        System.out.println(DataBlock.of(p));
         System.out.println(rslt.getLikelihood().logLikelihood());
     }
     
@@ -283,7 +283,7 @@ public class AlgorithmsTest {
 
         double[] p = rslt.getFullParameters();
         System.out.println("Dummy-non concentrated");
-        System.out.println(DataBlock.ofInternal(p));
+        System.out.println(DataBlock.of(p));
         System.out.println(rslt.getLikelihood().logLikelihood());
     }
 
@@ -304,7 +304,7 @@ public class AlgorithmsTest {
 
         double[] p = rslt.getFullParameters();
         System.out.println("Crude-Non concentrated");
-        System.out.println(DataBlock.ofInternal(p));
+        System.out.println(DataBlock.of(p));
         System.out.println(rslt.getLikelihood().logLikelihood());
     }
 }

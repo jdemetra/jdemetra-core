@@ -65,7 +65,7 @@ public class RegArimaUtility {
             }
         }
         DoubleSeq b = concentratedLikelihood.coefficients();
-        DataBlock e = DataBlock.ofInternal(res);
+        DataBlock e = DataBlock.of(res);
         if (b.length() > 0) {
             List<DoubleSeq> x = model.getX();
             int cur = model.isMean() ? 1 : 0;

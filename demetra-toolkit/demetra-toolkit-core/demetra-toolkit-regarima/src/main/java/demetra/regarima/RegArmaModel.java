@@ -62,7 +62,7 @@ public class RegArmaModel<M extends IArimaModel> {
         // dy
         if (d > 0) {
             dy = new double[y.length() - d];
-            ur.apply(y, DataBlock.ofInternal(dy));
+            ur.apply(y, DataBlock.of(dy));
         } else {
             dy = y.toArray();
         }

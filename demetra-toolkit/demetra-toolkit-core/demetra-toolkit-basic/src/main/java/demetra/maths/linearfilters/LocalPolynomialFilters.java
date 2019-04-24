@@ -162,7 +162,7 @@ public class LocalPolynomialFilters {
         }
         double[] u = new double[d + 1];
         u[0] = 1;
-        LinearSystemSolver.robustSolver().solve(xkx, DataBlock.ofInternal(u));
+        LinearSystemSolver.robustSolver().solve(xkx, DataBlock.of(u));
         double[] w = new double[h + 1];
         for (int i = 0; i <= h; ++i) {
             double s = u[0];
@@ -286,7 +286,7 @@ public class LocalPolynomialFilters {
         u[0] = 1;
         Householder hous=new Householder();
         hous.decompose(xkx);
-        hous.solve(DataBlock.ofInternal(u));
+        hous.solve(DataBlock.of(u));
         double[] w = new double[h + q + 1];
         w[h] = u[0] * k.applyAsDouble(0);
         for (int i = 1; i <= q; ++i) {
@@ -335,7 +335,7 @@ public class LocalPolynomialFilters {
         Matrix Zf = z(p + 1, h, u + 1, u + dz.length);
         Matrix Up = z(-h, p, 0, u);
         Matrix Uf = z(p + 1, h, 0, u);
-        DataBlock d = DataBlock.ofInternal(dz);
+        DataBlock d = DataBlock.of(dz);
 
         Matrix H = SymmetricMatrix.XtX(Up);
 

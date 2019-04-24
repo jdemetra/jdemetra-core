@@ -69,7 +69,7 @@ public final class DataBlock implements DoubleVector {
      * modified externally).
      * @return
      */
-    public static DataBlock ofInternal(@Nonnull double[] data) {
+    public static DataBlock of(@Nonnull double[] data) {
         return new DataBlock(data, 0, data.length, 1);
     }
 
@@ -103,10 +103,8 @@ public final class DataBlock implements DoubleVector {
      * @return
      * @throws (end-start) must be a positive multiple of inc.
      *
-     * FIXME: check bounds? FIXME: What if start = end? FIXME: Why is end
-     * @Nonnegative?
      */
-    public static DataBlock ofInternal(@Nonnull double[] data, @Nonnegative int start, int end, int inc) {
+    public static DataBlock of(@Nonnull double[] data, @Nonnegative int start, int end, int inc) {
         if (inc == 1) {
             return of(data, start, end);
         }
@@ -167,7 +165,7 @@ public final class DataBlock implements DoubleVector {
                 list.add(cur);
             }
         }
-        return DataBlock.ofInternal(list.toArray());
+        return DataBlock.of(list.toArray());
     }
 
     //</editor-fold>

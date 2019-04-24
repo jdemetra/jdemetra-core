@@ -168,7 +168,7 @@ public class TimeVaryingRegression {
             z[i] = dc.getGroupCount(i + 1) / nwe;
             c.column(z.length).addAY(-z[i], c.column(i));
         }
-        DataBlock Z = DataBlock.ofInternal(z);
+        DataBlock Z = DataBlock.of(z);
         for (int i = 0; i < c.getRowsCount(); ++i) {
             Matrix var = fs.P(i).dropTopLeft(del, del);
             ec.set(i, z.length, QuadraticForm.apply(var, Z));

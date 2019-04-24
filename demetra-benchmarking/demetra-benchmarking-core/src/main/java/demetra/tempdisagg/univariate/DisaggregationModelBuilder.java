@@ -311,7 +311,7 @@ class DisaggregationModelBuilder {
     private void scale(IDataNormalizer normalizer) {
         if (normalizer != null) {
             hO = hY.clone();
-            yfactor = normalizer.normalize(DataBlock.ofInternal(hY));
+            yfactor = normalizer.normalize(DataBlock.of(hY));
             for (int i = 0; i < hEY.length; ++i) {
                 if (Double.isFinite(hEY[i])) {
                     hEY[i] *= yfactor;

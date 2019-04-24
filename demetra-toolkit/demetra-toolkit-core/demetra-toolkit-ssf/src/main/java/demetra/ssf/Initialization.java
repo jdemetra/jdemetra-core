@@ -82,7 +82,7 @@ public class Initialization implements ISsfInitialization {
         if (a0 == null) {
             builder.append("a0:").append(System.lineSeparator()).append("0");
         } else {
-            DataBlock a = DataBlock.ofInternal(a0);
+            DataBlock a = DataBlock.of(a0);
             builder.append(a.toString(ISsfState.FMT));
         }
         builder.append(System.lineSeparator());

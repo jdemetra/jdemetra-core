@@ -145,7 +145,7 @@ public class SsfAr2 {
         private final Matrix V;
 
         static Matrix v(double var, double[] psi) {
-            Matrix v = SymmetricMatrix.xxt(DataBlock.ofInternal(psi));
+            Matrix v = SymmetricMatrix.xxt(DataBlock.of(psi));
             v.mul(var);
             return v;
         }
@@ -272,14 +272,14 @@ public class SsfAr2 {
 
         @Override
         public void XS(int pos, DataBlock x, DataBlock sx) {
-            double a = x.drop(data.nlags, 0).dot(DataBlock.ofInternal(data.psi)) * data.se();
+            double a = x.drop(data.nlags, 0).dot(DataBlock.of(data.psi)) * data.se();
             sx.set(0, a);
         }
 
         @Override
         public void addSU(int pos, DataBlock x, DataBlock u) {
             double a = u.get(data.nlags) * data.se();
-            x.addAY(a, DataBlock.ofInternal(data.psi));
+            x.addAY(a, DataBlock.of(data.psi));
         }
     }
 

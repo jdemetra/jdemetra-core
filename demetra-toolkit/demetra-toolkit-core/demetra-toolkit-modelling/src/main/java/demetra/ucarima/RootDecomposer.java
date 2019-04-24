@@ -140,7 +140,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
         for (int i = 0; i <= q; ++i) {
             sq[i] = n[i];
         }
-        LinearSystemSolver.robustSolver().solve(m, DataBlock.ofInternal(sq));
+        LinearSystemSolver.robustSolver().solve(m, DataBlock.of(sq));
 
         double[] rcs = new double[xs];
         double[] rcn = new double[xn];

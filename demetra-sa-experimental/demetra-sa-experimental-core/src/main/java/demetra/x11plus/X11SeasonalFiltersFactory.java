@@ -68,7 +68,7 @@ public class X11SeasonalFiltersFactory {
         @Override
         public DoubleSeq process(DoubleSeq in) {
             double[] x = new double[in.length()];
-            DataBlock out = DataBlock.ofInternal(x);
+            DataBlock out = DataBlock.of(x);
             DataBlock input = DataBlock.of(in);
             int n = sfilter.length() / 2;
             for (int i = 0; i < period; ++i) {

@@ -83,7 +83,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
                     int pstart = start.annualPosition();
                     DataBlock[] Mean = new DataBlock[freq];
                     for (int i = 0; i < freq; ++i) {
-                        Mean[i] = mean[i] == null ? null : DataBlock.ofInternal(mean[i]);
+                        Mean[i] = mean[i] == null ? null : DataBlock.of(mean[i]);
                     }
                     int n = Mc.getRowsCount();
                     for (int i = 0; i < n; ++i) {

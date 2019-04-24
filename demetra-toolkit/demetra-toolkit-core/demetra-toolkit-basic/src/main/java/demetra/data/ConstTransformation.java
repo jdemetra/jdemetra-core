@@ -105,7 +105,7 @@ public final class ConstTransformation implements DataTransformation {
     @Override
     public DoubleSeq transform(DoubleSeq data, LogJacobian ljacobian) {
         double[] x = data.toArray();
-        DataBlock X = DataBlock.ofInternal(x);
+        DataBlock X = DataBlock.of(x);
         switch (op) {
             case Diff:
                 X.sub(value);

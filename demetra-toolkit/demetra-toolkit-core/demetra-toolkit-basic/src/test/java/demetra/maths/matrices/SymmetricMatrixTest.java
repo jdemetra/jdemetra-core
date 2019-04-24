@@ -19,6 +19,7 @@ package demetra.maths.matrices;
 import demetra.data.LogSign;
 import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.maths.Constants;
+import demetra.maths.matrices.internal.FastSymmetricMatrixAlgorithms;
 import demetra.random.MersenneTwister;
 import java.util.Random;
 import org.junit.Test;
@@ -133,16 +134,30 @@ public class SymmetricMatrixTest {
         SymmetricMatrix.reenforceSymmetry(Q);
         assertTrue(Q.isSymmetric(0));
     }
-    
+
     @Test
-    public void testDeterminant(){
-        Matrix X=Matrix.make(30, 50);
-        Random rnd=new Random(0);
+    public void testDeterminant() {
+        Matrix X = Matrix.make(30, 50);
+        Random rnd = new Random(0);
         X.set(rnd::nextDouble);
-        Matrix S=SymmetricMatrix.XXt(X);
-        LogSign d1=Matrix.logDeterminant(S);
-        LogSign d2=SymmetricMatrix.logDeterminant(S);
+        Matrix S = SymmetricMatrix.XXt(X);
+        LogSign d1 = Matrix.logDeterminant(S);
+        LogSign d2 = SymmetricMatrix.logDeterminant(S);
         assertEquals(d1.getValue(), d2.getValue(), 1e-6);
     }
-    
+
+    @Test
+    public void stressTestCholesky() {
+        Matrix A = Matrix.make(60, 10);
+        Random rnd = new Random();
+        A.set(rnd::nextDouble);
+        long t0=System.currentTimeMillis();
+        for (int i = 0; i < 1000000; ++i) {
+            Matrix X = SymmetricMatrix.XtX(A);
+            SymmetricMatrix.lcholesky(X, Constants.getEpsilon());
+        }
+        long t1=System.currentTimeMillis();
+        System.out.println(t1-t0);
+    }
+
 }

@@ -180,7 +180,7 @@ public class WaveSpecificSurveyErrors3 {
         @Override
         public void addV(int pos, Matrix p) {
             DataBlock d = p.diagonal().range(0, info.nwaves());
-            d.add(DataBlock.ofInternal(info.vc(pos)));
+            d.add(DataBlock.of(info.vc(pos)));
         }
 
         @Override

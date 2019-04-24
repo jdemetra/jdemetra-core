@@ -119,7 +119,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
             }
             buffer[j] = freeParams.get(i);
         }
-        return DataBlock.ofInternal(buffer);
+        return DataBlock.of(buffer);
     }
 
     @Override

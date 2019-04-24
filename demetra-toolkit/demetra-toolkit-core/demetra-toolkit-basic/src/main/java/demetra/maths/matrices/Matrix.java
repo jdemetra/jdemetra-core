@@ -55,11 +55,12 @@ public class Matrix implements MatrixType {
     }
 
     /**
-     * This version try to return the current object if its type is Matrix. 
-     * To be used with caution, only when the returned object is a temporary object
+     * This version try to return the current object if its type is Matrix. To
+     * be used with caution, only when the returned object is a temporary object
      * that is not modified. For optimization only.
+     *
      * @param matrix
-     * @return 
+     * @return
      */
     public static Matrix ofInternal(MatrixType matrix) {
         if (matrix == null) {
@@ -510,7 +511,7 @@ public class Matrix implements MatrixType {
     @Override
     public final DataBlock diagonal() {
         int n = Math.min(nrows, ncols), inc = rowInc + colInc;
-        return DataBlock.ofInternal(storage, start, start + inc * n, inc);
+        return DataBlock.of(storage, start, start + inc * n, inc);
     }
 
     /**
@@ -537,7 +538,7 @@ public class Matrix implements MatrixType {
         } else {
             n = Math.min(nrows, ncols);
         }
-        return DataBlock.ofInternal(storage, beg, beg + inc * n, inc);
+        return DataBlock.of(storage, beg, beg + inc * n, inc);
     }
 
     public final Matrix deepClone() {
@@ -1098,13 +1099,9 @@ public class Matrix implements MatrixType {
     }
 
     public Matrix plus(double d) {
-        if (d == 0) {
-            return Matrix.make(nrows, ncols);
-        } else {
-            Matrix r = deepClone();
-            r.apply(x -> x + d);
-            return r;
-        }
+        Matrix r = deepClone();
+        r.apply(x -> x + d);
+        return r;
     }
 
     public Matrix plus(Matrix B) {
@@ -1114,13 +1111,9 @@ public class Matrix implements MatrixType {
     }
 
     public Matrix minus(double d) {
-        if (d == 0) {
-            return Matrix.make(nrows, ncols);
-        } else {
-            Matrix r = deepClone();
-            r.apply(x -> x - d);
-            return r;
-        }
+        Matrix r = deepClone();
+        r.apply(x -> x - d);
+        return r;
     }
 
     public Matrix minus(Matrix B) {
@@ -1144,7 +1137,7 @@ public class Matrix implements MatrixType {
     @Override
     public final DataBlock column(final int c) {
         int beg = start + c * colInc, end = beg + rowInc * nrows;
-        return DataBlock.ofInternal(storage, beg, end, rowInc);
+        return DataBlock.of(storage, beg, end, rowInc);
     }
 
     /**
@@ -1155,7 +1148,7 @@ public class Matrix implements MatrixType {
     @Override
     public final DataBlock row(final int r) {
         int beg = start + r * rowInc, end = beg + colInc * ncols;
-        return DataBlock.ofInternal(storage, beg, end, colInc);
+        return DataBlock.of(storage, beg, end, colInc);
     }
 
     public final Iterable<DataBlock> rows() {
@@ -1292,7 +1285,7 @@ public class Matrix implements MatrixType {
      * @return An empty sub-matrix
      */
     public MatrixWindow bottomRight() {
-        int nstart = nrows * rowInc + ncols * colInc;
+        int nstart = start + nrows * rowInc + ncols * colInc;
         return new MatrixWindow(storage, nstart, 0, 0, rowInc, colInc);
     }
 
@@ -1304,7 +1297,7 @@ public class Matrix implements MatrixType {
      * @return A nr src nc sub-matrix
      */
     public MatrixWindow bottomRight(int nr, int nc) {
-        int nstart = (nrows - nr) * rowInc + (ncols - nc) * colInc;
+        int nstart = start + (nrows - nr) * rowInc + (ncols - nc) * colInc;
         return new MatrixWindow(storage, nstart, nr, nc, rowInc, colInc);
     }
 
@@ -1350,22 +1343,22 @@ public class Matrix implements MatrixType {
 
     DataBlock topOutside() {
         int beg = start - rowInc;
-        return DataBlock.ofInternal(storage, beg, beg + ncols * colInc, colInc);
+        return DataBlock.of(storage, beg, beg + ncols * colInc, colInc);
     }
 
     DataBlock leftOutside() {
         int beg = start - colInc;
-        return DataBlock.ofInternal(storage, beg, beg + nrows * rowInc, rowInc);
+        return DataBlock.of(storage, beg, beg + nrows * rowInc, rowInc);
     }
 
     DataBlock bottomOutside() {
         int beg = start + rowInc * nrows;
-        return DataBlock.ofInternal(storage, beg, beg + ncols * colInc, colInc);
+        return DataBlock.of(storage, beg, beg + ncols * colInc, colInc);
     }
 
     DataBlock rightOutside() {
         int beg = start + colInc * ncols;
-        return DataBlock.ofInternal(storage, beg, beg + nrows * rowInc, rowInc);
+        return DataBlock.of(storage, beg, beg + nrows * rowInc, rowInc);
     }
 
     //</editor-fold>    
@@ -1424,7 +1417,7 @@ public class Matrix implements MatrixType {
             if (pos++ > 0) {
                 start += Matrix.this.rowInc;
             }
-            return DataBlock.ofInternal(Matrix.this.storage, start, start + len, Matrix.this.colInc);
+            return DataBlock.of(Matrix.this.storage, start, start + len, Matrix.this.colInc);
         }
     }
 
@@ -1449,7 +1442,7 @@ public class Matrix implements MatrixType {
             if (pos++ > 0) {
                 start += Matrix.this.colInc;
             }
-            return DataBlock.ofInternal(Matrix.this.storage, start, start + len, Matrix.this.rowInc);
+            return DataBlock.of(Matrix.this.storage, start, start + len, Matrix.this.rowInc);
         }
     }
 

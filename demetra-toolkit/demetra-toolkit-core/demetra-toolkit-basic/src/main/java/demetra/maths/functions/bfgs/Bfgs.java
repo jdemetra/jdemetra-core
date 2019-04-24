@@ -243,7 +243,7 @@ public class Bfgs implements IFunctionMinimizer {
                     if (D1 > 0) {
                         D2 = 0.0;
                         bcols.begin();
-                        DataBlock C = DataBlock.ofInternal(c);
+                        DataBlock C = DataBlock.of(c);
                         for (i = 0; i < n; i++) {
                             s = bcols.next().dot(C);
                             X[i] = s;

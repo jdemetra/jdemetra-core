@@ -74,8 +74,8 @@ public final class WienerKolmogorovDiagnostics {
                     }
                     StationaryTransformation stmodel = cur.stationaryTransformation();
                     double[] curst = new double[ndata - stmodel.getUnitRoots().getDegree()];
-                    DataBlock out = DataBlock.ofInternal(curst);
-                    stmodel.getUnitRoots().apply(DataBlock.ofInternal(data[i]), out);
+                    DataBlock out = DataBlock.of(curst);
+                    stmodel.getUnitRoots().apply(DataBlock.of(data[i]), out);
                     out.sub(out.sum() / out.length());
                     stdata[i] = curst;
                     emodels[i] = (Model) wk.finalStationaryEstimator(icmp, signal).getStationaryModel();

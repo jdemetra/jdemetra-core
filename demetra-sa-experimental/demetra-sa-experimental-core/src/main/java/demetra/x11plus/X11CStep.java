@@ -69,9 +69,9 @@ public class X11CStep {
         IFiniteFilter[] lf = context.leftAsymmetricTrendFilters(filter, r); 
         IFiniteFilter[] rf = context.rightAsymmetricTrendFilters(filter, r); 
         AsymmetricEndPoints aep=new AsymmetricEndPoints(lf, -1);
-        aep.process(c6, DataBlock.ofInternal(x));
+        aep.process(c6, DataBlock.of(x));
         aep=new AsymmetricEndPoints(rf, 1);
-        aep.process(c6, DataBlock.ofInternal(x));
+        aep.process(c6, DataBlock.of(x));
         c7 = DoubleSeq.of(x);
         if (c7.anyMatch(z->z <=0))
             throw new X11Exception(X11Exception.ERR_NEG);

@@ -140,7 +140,7 @@ public class JointTest {
                 rb[i] = DeprecatedDoubles.dot(R.row(i), b) - alpha.get(i);
             }
         }
-        return DataBlock.ofInternal(rb);
+        return DataBlock.of(rb);
     }
 
     private int df() {

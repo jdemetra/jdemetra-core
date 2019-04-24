@@ -75,7 +75,7 @@ public final class SymmetricFrequencyResponse {
         // then compute the transformation to (cos t)^n.
         if (q > 2) {
             Matrix u = _transform(q);
-            UpperTriangularMatrix.rmul(u, DataBlock.ofInternal(c));
+            UpperTriangularMatrix.rmul(u, DataBlock.of(c));
         }
     }
 
@@ -90,7 +90,7 @@ public final class SymmetricFrequencyResponse {
         int q = c.length;
         if (q > 2) {
             Matrix u = _transform(q);
-            UpperTriangularMatrix.rsolve(u, DataBlock.ofInternal(c));
+            UpperTriangularMatrix.rsolve(u, DataBlock.of(c));
         }
         for (int i = 1; i < q; ++i) {
             c[i] /= 2;

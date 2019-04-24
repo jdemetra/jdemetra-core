@@ -157,7 +157,7 @@ public class SsfArima {
 
         ArmaInitialization(IArimaModel arima) {
             data = new ArimaData(arima);
-            acgf = DataBlock.ofInternal(arima.getAutoCovarianceFunction().values(data.dim));
+            acgf = DataBlock.of(arima.getAutoCovarianceFunction().values(data.dim));
             P0 = p0(data.var, acgf, data.psi);
             V = v(data.var, data.psi);
         }
@@ -228,9 +228,9 @@ public class SsfArima {
             //
             StationaryTransformation<IArimaModel> starima = arima.stationaryTransformation();
             dif = starima.getUnitRoots().asPolynomial().toArray();
-            stacgf = DataBlock.ofInternal(starima.getStationaryModel().getAutoCovarianceFunction().values(data.dim));
+            stacgf = DataBlock.of(starima.getStationaryModel().getAutoCovarianceFunction().values(data.dim));
             RationalFunction rf = starima.getStationaryModel().getPsiWeights().getRationalFunction();
-            stpsi = DataBlock.ofInternal(rf.coefficients(data.dim));
+            stpsi = DataBlock.of(rf.coefficients(data.dim));
             Matrix stvar = ArmaInitialization.p0(data.var, stacgf, stpsi);
             Matrix L = Matrix.square(data.dim);
             sigma(L, dif);
@@ -255,7 +255,7 @@ public class SsfArima {
                 return;
             }
 
-            DataBlock D = DataBlock.ofInternal(d, d.length - 1, 0, -1);
+            DataBlock D = DataBlock.of(d, d.length - 1, 0, -1);
             for (int i = 0; i < nd; ++i) {
                 DataBlock C = b.column(i);
                 DataWindow R = C.window(0, nd);
@@ -360,7 +360,7 @@ public class SsfArima {
             Polynomial ma = arima.getMA().asPolynomial();
             phi = ar.toArray();
             dim = Math.max(ar.degree(), ma.degree() + 1);
-            psi = DataBlock.ofInternal(RationalFunction.of(ma, ar).coefficients(dim));
+            psi = DataBlock.of(RationalFunction.of(ma, ar).coefficients(dim));
             se = Math.sqrt(var);
         }
 

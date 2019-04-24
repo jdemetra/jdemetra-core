@@ -390,7 +390,7 @@ public class BsmMonitor {
         period = freq;
         if (scalingFactor) {
             AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
-            DataBlock Y = DataBlock.ofInternal(m_y);
+            DataBlock Y = DataBlock.of(m_y);
 //            m_factor = normalizer.normalize(Y);
         } else {
 //            m_factor = 1;

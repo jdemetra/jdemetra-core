@@ -27,7 +27,7 @@ public class Measurements {
     }
 
     public ISsfMeasurement of(double[] Z, double var) {
-        return new Measurement(new TimeInvariantLoading(DataBlock.ofInternal(Z)), var);
+        return new Measurement(new TimeInvariantLoading(DataBlock.of(Z)), var);
     }
 
     public ISsfMeasurements of(MatrixType Z, MatrixType H) {

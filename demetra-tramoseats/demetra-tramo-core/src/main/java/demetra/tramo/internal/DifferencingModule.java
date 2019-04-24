@@ -312,7 +312,7 @@ public class DifferencingModule implements IDifferencingModule {
         DataBlock data;
         if (ur.getDegree() > 0) {
             data = DataBlock.make(y.length - ur.getDegree());
-            ur.apply(DataBlock.ofInternal(y), data);
+            ur.apply(DataBlock.of(y), data);
         } else {
             data = DataBlock.copyOf(y);
         }
@@ -487,7 +487,7 @@ public class DifferencingModule implements IDifferencingModule {
     private void computeTMean() {
         DataBlock res = null;
         if (spec.getD() == 0 && spec.getBd() == 0) {
-            res = DataBlock.ofInternal(y);
+            res = DataBlock.of(y);
         } else {
             if (lastModel == null) {
                 throw new TramoException(TramoException.IDDIF_E);
@@ -497,7 +497,7 @@ public class DifferencingModule implements IDifferencingModule {
             FastKalmanFilter kf = new FastKalmanFilter(lastModel);
             BackFilter D = RegArimaUtility.differencingFilter(spec.getPeriod(), spec.getD(), spec.getBd());
             res = DataBlock.make(y.length - D.getDegree());
-            D.apply(DataBlock.ofInternal(y), res);
+            D.apply(DataBlock.of(y), res);
             res = kf.fastFilter(res);
         }
         double s = res.sum(), s2 = res.ssq();

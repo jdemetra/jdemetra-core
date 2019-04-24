@@ -161,7 +161,7 @@ public class FastKalmanFilter {
             yl[i] = x;
         }
 
-        return DataBlock.ofInternal(yl);
+        return DataBlock.of(yl);
     }
 
     /**
@@ -443,7 +443,7 @@ public class FastKalmanFilter {
         }
 
         QRSolver solver = QRSolvers.fastSolver();
-        solver.solve(DataBlock.ofInternal(yl), xl);
+        solver.solve(DataBlock.of(yl), xl);
         Matrix R = solver.R();
         double ssqerr = solver.ssqerr();
 

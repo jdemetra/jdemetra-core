@@ -277,7 +277,7 @@ public class ArmaFilterTest {
         ArmaFilter filter = ArmaFilter.ansley();
         StationaryTransformation<SarimaModel> st = airline.stationaryTransformation();
         double[] dao = new double[ao.length - st.getUnitRoots().getDegree()];
-        st.getUnitRoots().apply(DataBlock.ofInternal(ao), DataBlock.ofInternal(dao));
+        st.getUnitRoots().apply(DataBlock.of(ao), DataBlock.of(dao));
         int m = filter.prepare((IArimaModel) st.getStationaryModel(), dao.length);
         DataBlock s = DataBlock.make(m);
         filter.apply(DoubleSeq.of(dao), s);
@@ -307,7 +307,7 @@ public class ArmaFilterTest {
         ArmaFilter filter = ArmaFilter.ansley();
         StationaryTransformation<SarimaModel> st = airline.stationaryTransformation();
         double[] dls = new double[ls.length - st.getUnitRoots().getDegree()];
-        st.getUnitRoots().apply(DataBlock.ofInternal(ls), DataBlock.ofInternal(dls));
+        st.getUnitRoots().apply(DataBlock.of(ls), DataBlock.of(dls));
         int m = filter.prepare((IArimaModel) st.getStationaryModel(), dls.length);
         DataBlock s = DataBlock.make(m);
         filter.apply(DoubleSeq.of(dls), s);

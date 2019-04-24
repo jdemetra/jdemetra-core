@@ -116,7 +116,7 @@ public class HannanRissanen {
     private double bic;
 
     private static final int MAXNPI = 50;
-    private static final double OVERFLOW = 1e16, EPS = 1e-6;
+    private static final double OVERFLOW = 1e16;
 
     private HannanRissanen(Builder builder){
         initialization=builder.initialization;
@@ -126,7 +126,7 @@ public class HannanRissanen {
     
     private double[] ls(Matrix mat, double[] y, boolean bbic) {
         QRSolver solver = QRSolvers.fastSolver();
-        solver.solve(DataBlock.ofInternal(y), mat);
+        solver.solve(DataBlock.of(y), mat);
         DoubleSeq pi = solver.coefficients();
         int n = y.length, m = pi.count(x -> x != 0);
         if (bbic) {
@@ -221,7 +221,7 @@ public class HannanRissanen {
         int p = m_spec.getP() + m_spec.getPeriod() * m_spec.getBp();
         int q = m_spec.getQ() + m_spec.getPeriod() * m_spec.getBq();
         if (p == 0 && q == 0) {
-            bic = Math.log(DataBlock.ofInternal(m_data).ssq() / m_data.length);
+            bic = Math.log(DataBlock.of(m_data).ssq() / m_data.length);
             return true;
         }
 
@@ -243,7 +243,7 @@ public class HannanRissanen {
     private void finalcorrection() {
         BackFilter ar = m_model.getAR();
         DataBlock ndata = DataBlock.make(m_data.length - ar.getDegree());
-        ar.apply(DataBlock.ofInternal(m_data), ndata);
+        ar.apply(DataBlock.of(m_data), ndata);
         HannanRissanen hr=HannanRissanen.builder()
                 .biasCorrection(biascorrection)
                 .finalCorrection(false)
@@ -379,7 +379,7 @@ public class HannanRissanen {
         m_odata = value;
         m_data=value.toArray();
         AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
-        normalizer.normalize(DataBlock.ofInternal(m_data));
+        normalizer.normalize(DataBlock.of(m_data));
         return calc();
     }
 

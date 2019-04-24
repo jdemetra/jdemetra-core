@@ -204,7 +204,7 @@ public final class RationalFilter implements IRationalFilter {
         }
         
         try {
-            LinearSystemSolver.robustSolver().solve(m, DataBlock.ofInternal(nc));
+            LinearSystemSolver.robustSolver().solve(m, DataBlock.of(nc));
         } catch (MatrixException e) {
             throw new LinearFilterException(
                     "Invalid decomposition of rational filter");

@@ -127,7 +127,7 @@ public class QRMaLjungBoxFilter {
 	double[] a0 = calca0(w);
 	double[] g = calcg(a0);
 	u = calch(g);
-        DataBlock U=DataBlock.ofInternal(u);
+        DataBlock U=DataBlock.of(u);
 	LowerTriangularMatrix.rsolve(X, U);
 	LowerTriangularMatrix.lsolve(X, U);
 	double[] v = new double[w.length()];

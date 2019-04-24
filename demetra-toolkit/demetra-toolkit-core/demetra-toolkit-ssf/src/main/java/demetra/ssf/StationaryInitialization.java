@@ -62,7 +62,7 @@ public class StationaryInitialization {
                 }
             }
         }
-        LinearSystemSolver.fastSolver().solve(M, DataBlock.ofInternal(b));
+        LinearSystemSolver.fastSolver().solve(M, DataBlock.of(b));
 //        Householder hous = new Householder();
 //        hous.decompose(M);
 //        boolean ok = hous.solve(DataBlock.ofInternal(b));

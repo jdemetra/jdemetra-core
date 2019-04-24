@@ -91,7 +91,7 @@ public class GenericTradingDaysTest {
 
     private double distance(DataBlock column, ec.tstoolkit.data.DataBlock column0) {
         return column.distance(
-                DataBlock.ofInternal(column0.getData(), column0.getStartPosition(), column0.getEndPosition(), column0.getIncrement()));
+                DataBlock.of(column0.getData(), column0.getStartPosition(), column0.getEndPosition(), column0.getIncrement()));
     }
 
 }

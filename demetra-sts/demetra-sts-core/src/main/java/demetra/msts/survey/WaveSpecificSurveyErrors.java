@@ -271,7 +271,7 @@ public class WaveSpecificSurveyErrors {
         }
 
         DataBlock v() {
-            return DataBlock.ofInternal(v);
+            return DataBlock.of(v);
         }
 
         // 

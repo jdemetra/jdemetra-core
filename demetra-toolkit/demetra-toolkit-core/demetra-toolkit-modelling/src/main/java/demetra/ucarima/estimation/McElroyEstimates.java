@@ -247,7 +247,7 @@ public class McElroyEstimates {
         }
         K_[cmp] = Q.extract(0, n, n - ds.degree(), Q.getColumnsCount()-n + ds.degree()).deepClone();
         DataBlock yd = DataBlock.make(n - dn.degree());
-        noise.getNonStationaryAR().apply(DataBlock.ofInternal(data_), yd);
+        noise.getNonStationaryAR().apply(DataBlock.of(data_), yd);
         DataBlock yl = DataBlock.make(yd.length());
         N.apply(yd, yl);
         // compute K'n x yl. Don't forget: Q is arranged in reverse order !
@@ -259,8 +259,8 @@ public class McElroyEstimates {
         // triangularize by means of Givens rotations
         ElementaryTransformations.fastGivensTriangularize(Q);
         Matrix L = Q.extract(0, n, 0, n).deepClone();
-        LowerTriangularMatrix.rsolve(L, DataBlock.ofInternal(z));
-        LowerTriangularMatrix.lsolve(L, DataBlock.ofInternal(z));
+        LowerTriangularMatrix.rsolve(L, DataBlock.of(z));
+        LowerTriangularMatrix.lsolve(L, DataBlock.of(z));
         L_[cmp] = L;
         cmps_[cmp] = z;
         // computes M^-1, 
@@ -349,7 +349,7 @@ public class McElroyEstimates {
         }
         DataBlock f = DataBlock.make(nf_);
         double[] data = fs ? data_ : getComponent(cmp);
-        f.product(D.rowsIterator(), DataBlock.ofInternal(data));
+        f.product(D.rowsIterator(), DataBlock.of(data));
         fcmps_[cmp] = f.getStorage();
         Matrix G = SymmetricMatrix.XXt(V);
         G.chs();

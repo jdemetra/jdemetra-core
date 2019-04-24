@@ -26,12 +26,12 @@ public class SymmetricFilterTest {
         int N = 300, K = 13;
         SymmetricFilter sf = HendersonFilters.ofLength(K);
         double[] z = new double[N];
-        DataBlock Z = DataBlock.ofInternal(z);
+        DataBlock Z = DataBlock.of(z);
         Random rnd = new Random();
         Z.set(rnd::nextDouble);
         double[] q = new double[N - K + 1];
         double[] q2 = new double[N - K + 1];
-        DataBlock Q = DataBlock.ofInternal(q2);
+        DataBlock Q = DataBlock.of(q2);
         DoubleVector GQ = DoubleVector.of(q);
         sf.apply((DoubleSeq)Z, GQ);
         sf.apply(Z, Q);

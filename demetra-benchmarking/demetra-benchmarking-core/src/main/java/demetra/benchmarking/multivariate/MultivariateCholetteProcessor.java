@@ -309,9 +309,9 @@ public class MultivariateCholetteProcessor implements IMultivariateCholette {
                 }
             }
             // correct the constraints to fit the state space representation
-            DataBlock z = DataBlock.ofInternal(lcntData[i]);
+            DataBlock z = DataBlock.of(lcntData[i]);
             for (int j = 0; j < cur.index.length; ++j) {
-                z.addAY(-cur.weights[j], DataBlock.ofInternal(rcntData[cur.index[j]]));
+                z.addAY(-cur.weights[j], DataBlock.of(rcntData[cur.index[j]]));
             }
         }
     }

@@ -93,7 +93,7 @@ public class HouseholderWithPivoting implements IQRDecomposition {
                 diag[col[i]] = rdiag[i];
             }
         }
-        return DataBlock.ofInternal(diag);
+        return DataBlock.of(diag);
     }
 
     private static final int[] EMPTY = new int[0];

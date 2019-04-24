@@ -83,7 +83,7 @@ public class RobustHouseholder implements IQRDecomposition {
 
     @Override
     public DoubleSeq rdiagonal(boolean compact) {
-        return DataBlock.ofInternal(rdiag);
+        return DataBlock.of(rdiag);
     }
 
     /**
@@ -128,7 +128,7 @@ public class RobustHouseholder implements IQRDecomposition {
                     qr[q] += del[q];
                 }
             }
-            DataBlock col = DataBlock.ofInternal(qr, k0, k1, 1);
+            DataBlock col = DataBlock.of(qr, k0, k1, 1);
             double nrm = fast ? col.fastNorm2() : col.norm2();
 
             if (nrm > eps) {

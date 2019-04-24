@@ -253,7 +253,7 @@ public class HouseholderR {
             throw new MatrixException(MatrixException.SINGULAR);
         }
         double[] b = new double[rank];
-        leastSquares(DataBlock.ofInternal(x), DataBlock.ofInternal(b), null);
+        leastSquares(DataBlock.of(x), DataBlock.of(b), null);
         return b;
     }
 
