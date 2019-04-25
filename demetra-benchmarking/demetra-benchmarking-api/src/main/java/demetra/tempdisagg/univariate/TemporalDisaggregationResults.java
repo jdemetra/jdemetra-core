@@ -24,7 +24,7 @@ import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.MaximumLogLikelihood;
 import demetra.linearmodel.Coefficient;
 import demetra.linearmodel.LinearModelEstimation;
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import java.util.LinkedHashMap;

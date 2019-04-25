@@ -28,7 +28,7 @@ import org.junit.Test;
 public class LowerTriangularMatrixTest {
 
     int N = 30, K = 5000000;
-    Matrix M;
+    FastMatrix M;
 
     public LowerTriangularMatrixTest() {
         double[] x = new double[N * N];
@@ -36,7 +36,7 @@ public class LowerTriangularMatrixTest {
         for (int i = 0; i < x.length; ++i) {
             x[i] = rnd.nextDouble();
         }
-        M = Matrix.builder(x).nrows(N).ncolumns(N).build();
+        M = FastMatrix.builder(x).nrows(N).ncolumns(N).build();
     }
 
     @Test

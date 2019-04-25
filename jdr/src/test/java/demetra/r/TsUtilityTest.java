@@ -5,7 +5,7 @@
  */
 package demetra.r;
 
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.IHoliday;

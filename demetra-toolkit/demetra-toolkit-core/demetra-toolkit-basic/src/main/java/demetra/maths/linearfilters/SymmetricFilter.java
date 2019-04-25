@@ -16,7 +16,7 @@
  */
 package demetra.maths.linearfilters;
 
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.MatrixException;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;

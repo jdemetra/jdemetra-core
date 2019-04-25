@@ -7,7 +7,7 @@ package demetra.modelling.regression;
 
 import demetra.timeseries.TsPeriod;
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TsDomain;
 import java.util.Collections;
 import org.junit.Test;

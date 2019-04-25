@@ -18,9 +18,6 @@ import demetra.design.Development;
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-
-
-
 /**
  * Some useful constants. The classes "Double" and "Math" provide other
  * important constants. For compatibility issues, this class continues to
@@ -64,4 +61,17 @@ public class Constants {
         return MACHEP;
     }
 
- }
+    /**
+     * Checks if Math#exp(double) has been intrinsified. For your information:
+     * StrictMath insures portability by returning the same results on every
+     * platform while Math might be optimized by the VM to improve performance.
+     * In some edge cases (and if intrinsified), Math results are slightly
+     * different.
+     *
+     * @return true if Math is currently intrinsified, false otherwise
+     */
+    public boolean isMathExpIntrinsifiedByVM() {
+        double edgeCase = 0.12585918361184556;
+        return Math.exp(edgeCase) != StrictMath.exp(edgeCase);
+    }
+}

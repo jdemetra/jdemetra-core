@@ -5,7 +5,7 @@
  */
 package demetra.modelling.regression;
 
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 
@@ -20,13 +20,13 @@ class ConstantFactory implements RegressionVariableFactory<Constant>{
     private ConstantFactory(){}
 
     @Override
-    public boolean fill(Constant var, TsPeriod start, Matrix buffer) {
+    public boolean fill(Constant var, TsPeriod start, FastMatrix buffer) {
         buffer.set(1);
         return true;
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(Constant var, D domain, Matrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(Constant var, D domain, FastMatrix buffer) {
         buffer.set(1);
         return true;
     }

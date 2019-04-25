@@ -20,7 +20,7 @@ package demetra.ssf.univariate;
 
 import demetra.ssf.UpdateInformation;
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.DataBlockResults;
 import demetra.ssf.DataResults;
 import demetra.ssf.IStateResults;
@@ -145,7 +145,7 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
         return C.datablock(pos);
     }
 
-    public Matrix P(int pos) {
+    public FastMatrix P(int pos) {
         return P.matrix(pos);
     }
 

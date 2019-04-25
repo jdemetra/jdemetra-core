@@ -1,23 +1,27 @@
 /*
-* Copyright 2017 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
+ * Copyright 2019 National Bank of Belgium.
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ *      https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package demetra.maths;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.maths.Complex;
+import demetra.maths.Complex;
+import demetra.maths.ComplexType;
+import demetra.maths.ComplexType;
 
 /**
  * Encapsulation of some operators on complex numbers. The use of this class is
@@ -38,6 +42,16 @@ public final class ComplexBuilder implements ComplexType {
      * Imaginary part
      */
     private double im;
+    
+    @Override
+    public double getRe(){
+        return re;
+    }
+    
+    @Override
+    public double getIm(){
+        return im;
+    }
 
     /**
      * Creates a new object from a complex number
@@ -68,16 +82,6 @@ public final class ComplexBuilder implements ComplexType {
     public ComplexBuilder(final double re, final double im) {
         this.re = re;
         this.im = im;
-    }
-
-    @Override
-    public double getRe() {
-        return re;
-    }
-
-    @Override
-    public double getIm() {
-        return im;
     }
 
     /**
@@ -206,7 +210,7 @@ public final class ComplexBuilder implements ComplexType {
      * @param c The right operand
      * @return This object is returned
      */
-    public ComplexBuilder mul(final Complex c) {
+    public ComplexBuilder mul(final ComplexType c) {
         return mul(c.getRe(), c.getIm());
     }
 
@@ -247,7 +251,7 @@ public final class ComplexBuilder implements ComplexType {
      * @param c The right operand
      * @return This object is returned
      */
-    public ComplexBuilder sub(final Complex c) {
+    public ComplexBuilder sub(final ComplexType c) {
         re -= c.getRe();
         im -= c.getIm();
         return this;

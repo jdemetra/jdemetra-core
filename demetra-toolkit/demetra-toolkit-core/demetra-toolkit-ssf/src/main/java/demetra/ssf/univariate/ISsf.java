@@ -20,7 +20,7 @@ import demetra.ssf.ISsfLoading;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.ssf.ISsfDynamics;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.ISsfState;
@@ -66,7 +66,7 @@ public interface ISsf extends ISsfState {
         loading().XpZd(pos, x, -x.dot(m) / f);
     }
 
-    default void XL(int pos, Matrix M, DataBlock m, double f) {
+    default void XL(int pos, FastMatrix M, DataBlock m, double f) {
         // MT - [(MT)*m]/f * z
         ISsfDynamics dynamics = dynamics();
         ISsfLoading loading = loading();
@@ -95,7 +95,7 @@ public interface ISsf extends ISsfState {
         dynamics().XT(pos, x);
     }
 
-    default void LM(int pos, Matrix M, DataBlock m, double f) {
+    default void LM(int pos, FastMatrix M, DataBlock m, double f) {
         // TX - T*m/f * z * X
         // TX - T * m * (zX)/f)
         // T (X - m*(zX/f))
@@ -108,7 +108,7 @@ public interface ISsf extends ISsfState {
         });
     }
 
-    default boolean diffuseEffects(Matrix effects) {
+    default boolean diffuseEffects(FastMatrix effects) {
         ISsfDynamics dynamics = dynamics();
         ISsfLoading loading = loading();
         ISsfInitialization initializer = initialization();
@@ -117,7 +117,7 @@ public interface ISsf extends ISsfState {
         if (d == 0 || d != effects.getColumnsCount()) {
             return false;
         }
-        Matrix matrix = Matrix.make(n, d);
+        FastMatrix matrix = FastMatrix.make(n, d);
         // initialization
         initializer.diffuseConstraints(matrix);
         DataBlockIterator rows = effects.rowsIterator();

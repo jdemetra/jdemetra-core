@@ -17,7 +17,7 @@
 package demetra.sts;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
@@ -63,7 +63,7 @@ public class Noise {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
         }
 
         @Override
@@ -71,7 +71,7 @@ public class Noise {
         }
 
         @Override
-        public void Pf0(Matrix pf0) {
+        public void Pf0(FastMatrix pf0) {
             pf0.set(0, 0, var);
         }
 
@@ -92,12 +92,12 @@ public class Noise {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             qm.set(0, 0, var);
         }
 
         @Override
-        public void S(int pos, Matrix cm) {
+        public void S(int pos, FastMatrix cm) {
             cm.set(0, 0, e);
         }
 
@@ -112,7 +112,7 @@ public class Noise {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
         }
 
         @Override
@@ -121,7 +121,7 @@ public class Noise {
         }
 
         @Override
-        public void TVT(int pos, Matrix v) {
+        public void TVT(int pos, FastMatrix v) {
             v.set(0,0,0);
         }
 
@@ -131,7 +131,7 @@ public class Noise {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.add(0, 0, var);
         }
 

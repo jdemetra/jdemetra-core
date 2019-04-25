@@ -5,13 +5,13 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.TrigonometricSeries;
-import demetra.data.WindowFunction;
+import demetra.data.analysis.TrigonometricSeries;
+import demetra.data.analysis.WindowFunction;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.stats.RobustCovarianceComputer;
 import demetra.data.DoubleSeq;
 
@@ -56,18 +56,18 @@ public class CanovaHansen2 {
     }
 
     public double compute() {
-        Matrix x = sx();
+        FastMatrix x = sx();
         LinearModel lm = buildModel(x);
         Ols ols = new Ols();
         LeastSquaresResults olsResults = ols.compute(lm);
         DoubleSeq e = lm.calcResiduals(olsResults.getCoefficients());
         double rvar = RobustCovarianceComputer.covariance(e, winFunction, truncationLag);
-        Matrix xe = x.deepClone();
+        FastMatrix xe = x.deepClone();
         int n=lm.getObservationsCount();
         
         // multiply the columns of x by e
         xe.applyByColumns(c -> c.apply(e, (a, b) -> (a * b)/n));
-        Matrix cxe = xe.deepClone();
+        FastMatrix cxe = xe.deepClone();
         cxe.applyByColumns(c -> c.cumul());
         if (cxe.getColumnsCount() == 1)
             return cxe.column(0).ssq()/rvar;
@@ -76,13 +76,13 @@ public class CanovaHansen2 {
         }
     }
 
-    private Matrix sx() {
+    private FastMatrix sx() {
         int len = s.length();
         TrigonometricSeries vars = TrigonometricSeries.specific(period);
         return vars.matrix(len, 0);
     }
 
-    private LinearModel buildModel(Matrix sx) {
+    private LinearModel buildModel(FastMatrix sx) {
 
         LinearModel.Builder builder = LinearModel.builder();
         builder.y(s);

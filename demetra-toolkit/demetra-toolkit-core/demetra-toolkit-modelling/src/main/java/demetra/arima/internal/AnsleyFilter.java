@@ -24,8 +24,8 @@ import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.arima.estimation.ArmaFilter;
@@ -40,7 +40,7 @@ import demetra.data.DoubleSeq;
 @ServiceProvider(service=ArmaFilter.class)
 public class AnsleyFilter implements ArmaFilter {
 
-    private Matrix m_bL;
+    private FastMatrix m_bL;
     private double[] m_ar, m_ma;
     private double m_var;
     private int m_n;
@@ -128,7 +128,7 @@ public class AnsleyFilter implements ArmaFilter {
 
         Polynomial sma = SymmetricFilter.fromFilter(ma, m_var).coefficientsAsPolynomial();
 
-        m_bL = Matrix.make(r, n);
+        m_bL = FastMatrix.make(r, n);
         // complete the matrix
         // if (i >= j) m(i, j) = lband[i-j, j]; if i-j >= r, m(i, j) =0
         // if (i < j) m(i, j) = lband(j-i, i)
@@ -144,7 +144,7 @@ public class AnsleyFilter implements ArmaFilter {
             }
         }
 
-        Matrix M = m_bL.extract(0, q + 1, p, n-p);
+        FastMatrix M = m_bL.extract(0, q + 1, p, n-p);
         DataBlockIterator rows = M.rowsIterator();
 
         int pos=0;
@@ -248,9 +248,9 @@ public class AnsleyFilter implements ArmaFilter {
         }
     }
 
-    public Matrix getCholeskyFactor() {
+    public FastMatrix getCholeskyFactor() {
         if (m_bL == null) {
-            Matrix l = Matrix.make(1, m_n);
+            FastMatrix l = FastMatrix.make(1, m_n);
             l.set(Math.sqrt(m_var));
             return l;
         } else {

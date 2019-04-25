@@ -17,7 +17,7 @@
 package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
@@ -41,7 +41,7 @@ public class AdditiveOutlierTest {
         final int pos = 25;
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2000, 1), 100);
         AdditiveOutlier ao = new AdditiveOutlier(domain.get(pos).start());
-        Matrix M = Regression.matrix(domain, ao);
+        FastMatrix M = Regression.matrix(domain, ao);
         DataBlock buffer = M.column(0);
         assertTrue(buffer.indexOf(x -> x != 0) == pos);
         assertTrue(buffer.lastIndexOf(x -> x == 1) == pos);

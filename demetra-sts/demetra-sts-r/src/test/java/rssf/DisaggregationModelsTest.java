@@ -18,7 +18,7 @@ package rssf;
 
 import demetra.data.Data;
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.implementations.RegSsf;
@@ -47,7 +47,7 @@ public class DisaggregationModelsTest {
         int m = Data.PCRA.length;
         int n = Data.IND_PCR.length;
         DataBlock edata = DataBlock.make(n);
-        Matrix x = Matrix.make(n, 2);
+        FastMatrix x = FastMatrix.make(n, 2);
         x.column(0).set(1);
         x.column(1).copyFrom(Data.IND_PCR, 0);
         edata.set(Double.NaN);
@@ -70,7 +70,7 @@ public class DisaggregationModelsTest {
         int m = Data.PCRA.length;
         int n = Data.IND_PCR.length;
         DataBlock edata = DataBlock.make(n);
-        Matrix x = Matrix.make(n, 2);
+        FastMatrix x = FastMatrix.make(n, 2);
         x.column(0).set(1);
         x.column(1).copyFrom(Data.IND_PCR, 0);
         edata.set(Double.NaN);

@@ -19,7 +19,7 @@ package demetra.likelihood;
 import demetra.design.Immutable;
 import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
 

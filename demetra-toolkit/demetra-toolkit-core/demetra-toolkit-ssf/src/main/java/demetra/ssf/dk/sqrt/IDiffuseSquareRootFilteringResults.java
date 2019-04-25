@@ -16,7 +16,7 @@
  */
 package demetra.ssf.dk.sqrt;
 
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.StateInfo;
 import demetra.ssf.akf.AugmentedState;
 import demetra.ssf.dk.DiffuseUpdateInformation;

@@ -7,7 +7,7 @@ package demetra.data;
 
 import static demetra.data.DeprecatedDoubles.op;
 import static demetra.data.DeprecatedDoubles.fastOp;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -24,7 +24,7 @@ public class DoublesTest {
 
     @Test
     public void testOp() {
-        Matrix m = Matrix.make(200, 20);
+        FastMatrix m = FastMatrix.make(200, 20);
         Random rnd = new Random();
         m.set(rnd::nextDouble);
         DoubleSeq a = m.column(0);
@@ -42,7 +42,7 @@ public class DoublesTest {
     @Ignore
     public void stressTestOp() {
         int K = 100000;
-        Matrix m = Matrix.make(200, 20);
+        FastMatrix m = FastMatrix.make(200, 20);
         Random rnd = new Random();
         m.set(rnd::nextDouble);
         long t0 = System.currentTimeMillis();

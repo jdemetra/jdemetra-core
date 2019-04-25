@@ -5,14 +5,11 @@
  */
 package demetra.maths.matrices;
 
-import demetra.maths.MatrixException;
-import demetra.maths.matrices.spi.SymmetricMatrixAlgorithms;
-import java.util.concurrent.atomic.AtomicReference;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.LogSign;
-import demetra.data.transformation.DoubleAccumulator;
-import demetra.util.ServiceLookup;
+import demetra.data.accumulator.DoubleAccumulator;
+import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.random.RandomNumberGenerator;
 
 /**
@@ -22,62 +19,380 @@ import demetra.random.RandomNumberGenerator;
 @lombok.experimental.UtilityClass
 public class SymmetricMatrix {
 
-    private final AtomicReference<SymmetricMatrixAlgorithms> IMPL = ServiceLookup.firstMutable(SymmetricMatrixAlgorithms.class);
-
-    public void setImplementation(SymmetricMatrixAlgorithms algorithms) {
-        IMPL.set(algorithms);
+    public void randomize(FastMatrix M, RandomNumberGenerator rng) {
+        if (!M.isSquare()) {
+            throw new MatrixException(MatrixException.SQUARE);
+        }
+        int n = M.getRowsCount();
+        if (n == 1) {
+            return;
+        }
+        int rinc = M.getRowIncrement(), cinc = M.getColumnIncrement(), start = M.getStartPosition();
+        double[] x = M.getStorage();
+        for (int c = 0, id = start; c < n; ++c, id += rinc + cinc) {
+            x[id] = rng.nextDouble();
+            for (int r = c + 1, il = id, iu = id; r < n; ++r) {
+                il += rinc;
+                iu += cinc;
+                double q = rng.nextDouble();
+                x[iu] = q;
+                x[il] = q;
+            }
+        }
     }
 
-    public SymmetricMatrixAlgorithms getImplementation() {
-        return IMPL.get();
+    public void lcholesky(FastMatrix M, double zero) {
+        if (M.getRowIncrement() == 1) {
+            lcholesky_1(M, zero);
+        } else {
+            lcholesky_def(M, zero);
+        }
     }
 
-    // Static calls to the current implementation
-    public void randomize(Matrix M, RandomNumberGenerator rng) {
-        IMPL.get().randomize(M, rng);
+    private void lcholesky_1(FastMatrix M, double zero) {
+        double[] data = M.getStorage();
+        int n = M.getRowsCount(), cinc = M.getColumnIncrement(), dinc = 1 + cinc;
+        int start = M.getStartPosition(), end = start + n * dinc;
+        for (int idiag = start, irow = start, cend = start + n; idiag != end; ++irow, idiag += dinc, cend += cinc) {
+            // compute aii;
+            double aii = data[idiag];
+            for (int j = irow; j != idiag; j += cinc) {
+                double x = data[j];
+                aii -= x * x;
+            }
+            if (aii < -zero) { // negative
+                throw new MatrixException(MatrixException.CHOLESKY);
+            } else if (aii <= zero) { // quasi-zero
+                data[idiag] = 0;
+                // compute elements i+1 : n of column i
+                for (int jx = irow; jx != idiag; jx += cinc) {
+                    double temp = data[jx];
+                    if (temp != 0) {
+                        for (int ia = jx + 1, iy = idiag + 1; iy < cend; ++ia, ++iy) {
+                            data[iy] -= temp * data[ia];
+                        }
+                    }
+                }
+                for (int iy = idiag + 1; iy < cend; ++iy) {
+                    if (Math.abs(data[iy]) > zero) {
+                        throw new MatrixException(MatrixException.CHOLESKY);
+                    } else {
+                        data[iy] = 0;
+                    }
+                }
+            } else {
+                aii = Math.sqrt(aii);
+                data[idiag] = aii;
+                // compute elements i+1 : n of column i
+                for (int jx = irow; jx != idiag; jx += cinc) {
+                    double temp = data[jx];
+                    if (temp != 0) {
+                        for (int ia = jx + 1, iy = idiag + 1; iy < cend; ++ia, ++iy) {
+                            data[iy] -= temp * data[ia];
+                        }
+                    }
+                }
+                for (int iy = idiag + 1; iy < cend; ++iy) {
+                    data[iy] /= aii;
+                }
+            }
+        }
+        LowerTriangularMatrix.toLower(M);
+    }
+
+    private void lcholesky_def(FastMatrix M, double zero) {
+        double[] data = M.getStorage();
+        int n = M.getRowsCount(), rinc = M.getRowIncrement(), cinc = M.getColumnIncrement(), dinc = rinc + cinc;
+        int start = M.getStartPosition(), end = start + n * dinc;
+        for (int idiag = start, irow = start, cend = start + n * rinc; idiag != end; irow += rinc, idiag += dinc, cend += cinc) {
+            // compute aii;
+            double aii = data[idiag];
+            for (int j = irow; j != idiag; j += cinc) {
+                double x = data[j];
+                aii -= x * x;
+            }
+            if (aii < -zero) { // negative
+                throw new MatrixException(MatrixException.CHOLESKY);
+            } else if (aii <= zero) { // quasi-zero
+                data[idiag] = 0;
+                // compute elements i+1 : n of column i
+                for (int jx = irow; jx != idiag; jx += cinc) {
+                    double temp = data[jx];
+                    if (temp != 0) {
+                        for (int ia = jx + rinc, iy = idiag + rinc; iy != cend; ia += rinc, iy += rinc) {
+                            data[iy] -= temp * data[ia];
+                        }
+                    }
+                }
+                for (int iy = idiag + rinc; iy != cend; iy += rinc) {
+                    if (Math.abs(data[iy]) > zero) {
+                        throw new MatrixException(MatrixException.CHOLESKY);
+                    } else {
+                        data[iy] = 0;
+                    }
+                }
+            } else {
+                aii = Math.sqrt(aii);
+                data[idiag] = aii;
+                // compute elements i+1 : n of column i
+                for (int jx = irow; jx != idiag; jx += cinc) {
+                    double temp = data[jx];
+                    if (temp != 0) {
+                        for (int ia = jx + rinc, iy = idiag + rinc; iy != cend; ia += rinc, iy += rinc) {
+                            data[iy] -= temp * data[ia];
+                        }
+                    }
+                }
+                for (int iy = idiag + rinc; iy != cend; iy += rinc) {
+                    data[iy] /= aii;
+                }
+            }
+        }
+        LowerTriangularMatrix.toLower(M);
+    }
+
+    public void xxt(DataBlock x, FastMatrix M) {
+        int nr = x.length(), xinc = x.getIncrement();
+        int mcinc = M.getColumnIncrement(), mrinc = M.getRowIncrement();
+        double[] px = x.getStorage(), pm = M.getStorage();
+        if (xinc == 1) {
+            for (int i = 0, ix = x.getStartPosition(), im = M.getStartPosition(); i < nr; ++i, ++ix, im += mrinc + mcinc) {
+                for (int j = i, kx = ix, km = im, ks = im; j < nr; ++j, ++kx, km += mrinc, ks += mcinc) {
+                    double z = px[ix] * px[kx];
+                    pm[km] = z;
+                    if (ks != km) {
+                        pm[ks] = z;
+                    }
+                }
+            }
+        } else {
+            for (int i = 0, ix = x.getStartPosition(), im = M.getStartPosition(); i < nr; ++i, ix += xinc, im += mrinc + mcinc) {
+                for (int j = i, kx = ix, km = im, ks = im; j < nr; ++j, kx += xinc, km += mrinc, ks += mcinc) {
+                    double z = px[ix] * px[kx];
+                    pm[km] = z;
+                    if (ks != km) {
+                        pm[ks] = z;
+                    }
+                }
+            }
+        }
+    }
+
+    public void XXt(final FastMatrix X, final FastMatrix M) {
+        int nr = X.getRowsCount(), nc = X.getColumnsCount(), xcinc = X.getColumnIncrement(), xrinc = X.getRowIncrement();
+        int mcinc = M.getColumnIncrement(), mrinc = M.getRowIncrement();
+        double[] px = X.getStorage(), pm = M.getStorage();
+        if (xcinc != 1) {
+            for (int i = 0, ix = X.getStartPosition(), im = M.getStartPosition(); i < nr; ++i, ix += xrinc, im += mrinc + mcinc) {
+                for (int j = i, kx = ix, km = im, ks = im; j < nr; ++j, kx += xrinc, km += mrinc, ks += mcinc) {
+                    double z = 0;
+                    for (int c = 0, jx = ix, lx = kx; c < nc; ++c, jx += xcinc, lx += xcinc) {
+                        z += px[jx] * px[lx];
+                    }
+                    pm[km] = z;
+                    if (ks != km) {
+                        pm[ks] = z;
+                    }
+                }
+            }
+        } else {
+            for (int i = 0, ix = X.getStartPosition(), im = M.getStartPosition(); i < nr; ++i, ix += xrinc, im += mrinc + mcinc) {
+                for (int j = i, kx = ix, km = im, ks = im; j < nr; ++j, kx += xrinc, km += mrinc, ks += mcinc) {
+                    double z = 0;
+                    for (int c = 0, jx = ix, lx = kx; c < nc; ++c, ++jx, ++lx) {
+                        z += px[jx] * px[lx];
+                    }
+                    pm[km] = z;
+                    if (ks != km) {
+                        pm[ks] = z;
+                    }
+                }
+            }
+        }
+    }
+
+    public void LLt(FastMatrix L, FastMatrix M) {
+        int nr = L.getRowsCount(), nc = L.getColumnsCount(), lcinc = L.getColumnIncrement(), lrinc = L.getRowIncrement();
+        int mcinc = M.getColumnIncrement(), mrinc = M.getRowIncrement();
+        double[] pl = L.getStorage(), pm = M.getStorage();
+        if (lcinc == 1) {
+            for (int i = 0, ix = L.getStartPosition(), im = M.getStartPosition(); i < nr; ++i, ix += lrinc, im += mrinc + mcinc) {
+                for (int j = i, kx = ix, km = im, ks = im; j < nr; ++j, kx += lrinc, km += mrinc, ks += mcinc) {
+                    double z = 0;
+                    for (int jx = ix, lx = kx; jx <= im; ++jx, ++lx) {
+                        z += pl[jx] * pl[lx];
+                    }
+                    pm[km] = z;
+                    if (ks != km) {
+                        pm[ks] = z;
+                    }
+                }
+            }
+        } else {
+            for (int i = 0, ix = L.getStartPosition(), im = M.getStartPosition(); i < nr; ++i, ix += lrinc, im += mrinc + mcinc) {
+                for (int j = i, kx = ix, km = im, ks = im; j < nr; ++j, kx += lrinc, km += mrinc, ks += mcinc) {
+                    double z = 0;
+                    int max = im + lcinc;
+                    for (int jx = ix, lx = kx; jx != max; jx += lcinc, lx += lcinc) {
+                        z += pl[jx] * pl[lx];
+                    }
+                    pm[km] = z;
+                    if (ks != km) {
+                        pm[ks] = z;
+                    }
+                }
+            }
+        }
+    }
+
+     public void UUt(FastMatrix L, FastMatrix M) {
+        int nr = L.getRowsCount(), nc = L.getColumnsCount(), lcinc = L.getColumnIncrement(), lrinc = L.getRowIncrement();
+        int mcinc = M.getColumnIncrement(), mrinc = M.getRowIncrement();
+        double[] pl = L.getStorage(), pm = M.getStorage();
+        for (int i = 0, ix = L.getStartPosition(), imax = ix + nc * lcinc, im = M.getStartPosition(); i < nr; ++i, ix += lrinc + lcinc, im += mrinc + mcinc, imax += lrinc) {
+            // ix = position of the first item of row i, imax = end of row i
+            for (int j = i, kx = ix, ixc = ix, km = im, ks = im; j < nr; ++j, kx += lrinc + lcinc, km += mrinc, ks += mcinc, ixc += lcinc) {
+                // kx = position of the first item of column k ixc first used item of row i
+                double z = 0;
+                for (int jx = ixc, lx = kx; jx != imax; jx += lcinc, lx += lcinc) {
+                    z += pl[jx] * pl[lx];
+                }
+                pm[km] = z;
+                if (ks != km) {
+                    pm[ks] = z;
+                }
+            }
+        }
+    }
+
+    public void XtSX(FastMatrix S, FastMatrix X, FastMatrix M) {
+        FastMatrix SX = S.times(X);
+        DataBlockIterator rows = SX.columnsIterator(), cols = X.columnsIterator(), mcols = M.columnsIterator();
+        int c = 0;
+        while (cols.hasNext()) {
+            int idx = c;
+            rows.reset(c++);
+            DataBlock mcol = mcols.next();
+            DataBlock col = cols.next();
+            while (rows.hasNext()) {
+                mcol.set(idx++, rows.next().dot(col));
+            }
+        }
+        SymmetricMatrix.fromLower(M);
+    }
+
+   public FastMatrix inverse(FastMatrix S) {
+        try {
+            FastMatrix lower = S.deepClone();
+            lcholesky(lower);
+            lower = LowerTriangularMatrix.inverse(lower);
+            return LtL(lower);
+        } catch (MatrixException e) {
+            CroutDoolittle cr = new CroutDoolittle();
+            cr.decompose(S);
+            FastMatrix I = FastMatrix.identity(S.getRowsCount());
+            cr.solve(I);
+            return I;
+        }
+    }
+
+    public FastMatrix xxt(final DataBlock x) {
+        FastMatrix M = FastMatrix.square(x.length());
+        xxt(x, M);
+        return M;
+    }
+
+public void XtX(final FastMatrix X, final FastMatrix M) {
+        XXt(X.transpose(), M);
+    }
+
+    public FastMatrix XXt(final FastMatrix X) {
+        FastMatrix M = FastMatrix.square(X.getRowsCount());
+        XXt(X, M);
+        return M;
+    }
+
+    public FastMatrix XtX(final FastMatrix X) {
+        FastMatrix M = FastMatrix.square(X.getColumnsCount());
+        XXt(X.transpose(), M);
+        return M;
+    }
+
+    public void UtU(final FastMatrix U, final FastMatrix M) {
+        LLt(U.transpose(), M);
+    }
+
+    public void LtL(final FastMatrix L, final FastMatrix M) {
+        UUt(L.transpose(), M);
+    }
+
+    public FastMatrix LLt(final FastMatrix L) {
+        FastMatrix M = FastMatrix.square(L.getRowsCount());
+        LLt(L, M);
+        return M;
+    }
+
+    public FastMatrix UtU(final FastMatrix U) {
+        FastMatrix M = FastMatrix.square(U.getColumnsCount());
+        LLt(U.transpose(), M);
+        return M;
+    }
+
+    public FastMatrix LtL(final FastMatrix L) {
+        FastMatrix M = FastMatrix.square(L.getRowsCount());
+        UUt(L.transpose(), M);
+        return M;
+    }
+
+    public FastMatrix UUt(final FastMatrix U) {
+        FastMatrix M = FastMatrix.square(U.getColumnsCount());
+        UUt(U, M);
+        return M;
+    }
+
+      /**
+     * Returns XSX'
+     *
+     * @param X
+     * @param S
+     * @return
+     */
+    public FastMatrix XSXt(final FastMatrix S, final FastMatrix X) {
+        return XtSX(S, X.transpose());
     }
 
     /**
-     * Computes xx' and stores the results in m. The routines doesn't verify the
-     * conditions on the dimensions.
+     * M = X'SX
      *
-     * @param x r column array
-     * @param M r x r sub-matrix.
+     * @param X
+     * @param S
+     * @param M
      */
-    public void xxt(final DataBlock x, final Matrix M) {
-        IMPL.get().xxt(x, M);
-    }
-
-    public Matrix xxt(final DataBlock x) {
-        return IMPL.get().xxt(x);
+    public void XSXt(final FastMatrix S, final FastMatrix X, final FastMatrix M) {
+        XtSX(S, X.transpose(), M);
     }
 
     /**
-     * Computes XX' and stores the results in m. The routines doesn't verify the
-     * conditions on the dimensions copyOf the sub-matrices.
+     * Returns X'SX
      *
-     * @param X r x c sub-matrix
-     * @param M r x r sub-matrix.
+     * @param X
+     * @param S
+     * @return
      */
-    public void XXt(final Matrix X, final Matrix M) {
-        IMPL.get().XXt(X, M);
-    }
-
-    public void XtX(final Matrix X, final Matrix M) {
-        IMPL.get().XtX(X, M);
-    }
-
-    public Matrix XXt(final Matrix X) {
-        return IMPL.get().XXt(X);
-    }
-
-    public Matrix XtX(final Matrix X) {
-        return IMPL.get().XtX(X);
-    }
-
-    public Matrix robustXtX(final Matrix X, DoubleAccumulator acc) {
+    public FastMatrix XtSX(final FastMatrix S, final FastMatrix X) {
         int n = X.getColumnsCount();
-        Matrix z = Matrix.square(n);
+        FastMatrix M = FastMatrix.square(n);
+        XtSX(S, X, M);
+        return M;
+    }
+
+     public void lcholesky(final FastMatrix M) {
+        lcholesky(M, 0);
+    }
+
+    public FastMatrix robustXtX(final FastMatrix X, DoubleAccumulator acc) {
+        int n = X.getColumnsCount();
+        FastMatrix z = FastMatrix.square(n);
         DataBlockIterator rows = X.columnsIterator(), columns = X.columnsIterator();
         int irow = 0;
         while (rows.hasNext()) {
@@ -100,102 +415,7 @@ public class SymmetricMatrix {
         return z;
     }
 
-    /**
-     * Computes L*L'
-     *
-     * @param L The lower triangular matrix (L). The routine just use the lower
-     * part copyOf the input matrix.
-     * @param M Output. Will contain LLt after the function call
-     */
-    public void LLt(final Matrix L, final Matrix M) {
-        IMPL.get().LLt(L, M);
-    }
-
-    public void UUt(final Matrix U, final Matrix M) {
-        IMPL.get().UUt(U, M);
-    }
-
-    public void UtU(final Matrix U, final Matrix M) {
-        IMPL.get().UtU(U, M);
-    }
-
-    public void LtL(final Matrix L, final Matrix M) {
-        IMPL.get().LtL(L, M);
-    }
-
-    public Matrix LLt(final Matrix L) {
-        return IMPL.get().LLt(L);
-    }
-
-    public Matrix UtU(final Matrix U) {
-        return IMPL.get().UtU(U);
-    }
-
-    public Matrix LtL(final Matrix L) {
-        return IMPL.get().LtL(L);
-    }
-
-    public Matrix UUt(final Matrix U) {
-        return IMPL.get().UUt(U);
-    }
-
-    /**
-     * M = XSX'
-     *
-     * @param X
-     * @param S
-     * @param M
-     */
-    public void XSXt(final Matrix S, final Matrix X, final Matrix M) {
-        IMPL.get().XSXt(S, X, M);
-    }
-
-    /**
-     * Returns XSX'
-     *
-     * @param X
-     * @param S
-     * @return
-     */
-    public Matrix XSXt(final Matrix S, final Matrix X) {
-        return IMPL.get().XSXt(S, X);
-    }
-
-    /**
-     * M = X'SX
-     *
-     * @param X
-     * @param S
-     * @param M
-     */
-    public void XtSX(final Matrix S, final Matrix X, final Matrix M) {
-        IMPL.get().XtSX(S, X, M);
-    }
-
-    /**
-     * Returns X'SX
-     *
-     * @param X
-     * @param S
-     * @return
-     */
-    public Matrix XtSX(final Matrix S, final Matrix X) {
-        return IMPL.get().XtSX(S, X);
-    }
-
-    public void lcholesky(final Matrix M, final double zero) {
-        IMPL.get().lcholesky(M, zero);
-    }
-
-    public void lcholesky(final Matrix M) {
-        IMPL.get().lcholesky(M);
-    }
-
-    public Matrix inverse(Matrix S) {
-        return IMPL.get().inverse(S);
-    }
-
-    public void reenforceSymmetry(Matrix S) {
+    public void reenforceSymmetry(FastMatrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -216,7 +436,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public void fromLower(Matrix S) {
+    public void fromLower(FastMatrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -235,7 +455,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public void fromUpper(Matrix S) {
+    public void fromUpper(FastMatrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -254,24 +474,25 @@ public class SymmetricMatrix {
         }
     }
     
-    public LogSign logDeterminant(Matrix S){
-        Matrix s = S.deepClone();
+    public LogSign logDeterminant(FastMatrix S){
+        FastMatrix s = S.deepClone();
         try{
             lcholesky(s);
             DataBlock diagonal = s.diagonal();
             LogSign ls = LogSign.of(diagonal);
             return new LogSign(ls.getValue()*2, true);
         }catch (MatrixException e){
-            return Matrix.logDeterminant(S);
+            return FastMatrix.logDeterminant(S);
         }
     }
     
-    public double determinant(Matrix L){
+    public double determinant(FastMatrix L){
         LogSign ls=logDeterminant(L);
         if (ls == null)
             return 0;
         double val=Math.exp(ls.getValue());
         return ls.isPositive() ? val : -val;
     }
+
 
 }

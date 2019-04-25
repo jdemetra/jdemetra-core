@@ -21,8 +21,8 @@ import demetra.data.DataBlockIterator;
 import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.design.BuilderPattern;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import demetra.linearsystem.LinearSystemSolver;
@@ -74,7 +74,7 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(Matrix A, DataBlock b) {
+    public void solve(FastMatrix A, DataBlock b) {
         if (!A.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -82,7 +82,7 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
             throw new MatrixException(MatrixException.DIM);
         }
         // we normalize b
-        Matrix An;
+        FastMatrix An;
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
@@ -114,7 +114,7 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(Matrix A, Matrix B) {
+    public void solve(FastMatrix A, FastMatrix B) {
         if (!A.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -122,7 +122,7 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
             throw new MatrixException(MatrixException.DIM);
         }
         // we normalize b
-        Matrix An;
+        FastMatrix An;
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
@@ -140,13 +140,13 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
         if (!qr.isFullRank()) {
             throw new MatrixException(MatrixException.SINGULAR);
         }
-        Matrix B0 = improve ? B.deepClone() : null;
+        FastMatrix B0 = improve ? B.deepClone() : null;
         B.applyByColumns(col -> qr.leastSquares(col, col, null));
         if (!improve) {
             return;
         }
         // improve the result
-        Matrix DB = Matrix.make(B.getRowsCount(), B.getColumnsCount());
+        FastMatrix DB = FastMatrix.make(B.getRowsCount(), B.getColumnsCount());
         DB.robustProduct(An, B, new NeumaierAccumulator());
         DB.sub(B0);
         DB.applyByColumns(col -> qr.leastSquares(col, col, null));

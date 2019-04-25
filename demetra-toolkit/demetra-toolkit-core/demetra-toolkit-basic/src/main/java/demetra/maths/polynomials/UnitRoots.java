@@ -19,6 +19,7 @@ package demetra.maths.polynomials;
 import demetra.design.Development;
 import java.util.Arrays;
 import demetra.maths.Complex;
+import demetra.maths.ComplexUtility;
 import demetra.maths.IntUtility;
 import demetra.maths.Simplifying;
 import demetra.util.IntList;
@@ -198,7 +199,7 @@ public class UnitRoots implements Cloneable {
         // computes the roots...
         int nroots = lag * d;
         Complex[] roots = new Complex[nroots];
-        Complex[] ur = Complex.unitRoots(lag);
+        Complex[] ur = ComplexUtility.unitRoots(lag);
         for (int i = 0, k = 0; i < d; ++i) {
             for (int j = 0; j < lag; ++j, ++k) {
                 roots[k] = ur[j];
@@ -348,7 +349,7 @@ public class UnitRoots implements Cloneable {
         }
         Polynomial P = Polynomial.ofInternal(p);
         if (d == 1) {
-            Complex[] roots = Complex.unitRoots(freq);
+            Complex[] roots = ComplexUtility.unitRoots(freq);
             Complex[] nroots=new Complex[roots.length-1];
             System.arraycopy(roots, 1, nroots, 0, nroots.length);
             P.setRoots(nroots);

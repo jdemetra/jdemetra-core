@@ -17,7 +17,7 @@
 package demetra.ssf.dk;
 
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.ISsfInitialization;
@@ -46,7 +46,7 @@ public class DiffuseState extends State {
     /**
      * Pi is the covariance matrix of the diffuse part
      */
-    private final Matrix Pi;
+    private final FastMatrix Pi;
 
     /**
      *
@@ -55,13 +55,13 @@ public class DiffuseState extends State {
      */
     public DiffuseState(final int dim) {
         super(dim);
-        Pi = Matrix.square(dim);
+        Pi = FastMatrix.square(dim);
     }
 
     /**
      * @return the Pi
      */
-    public Matrix Pi() {
+    public FastMatrix Pi() {
         return Pi;
     }
 

@@ -20,8 +20,8 @@ package demetra.maths.matrices.internal;
 /// <summary>
 import demetra.maths.Complex;
 import demetra.maths.matrices.decomposition.IEigenSystem;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 
 /// The class represents routines for finding EigenValues and EigenVectors of matrices. The
 /// routines are available as static members.  The routines are based on code found in
@@ -623,7 +623,7 @@ public class EigenSystem {
     /// <param name="im">An IMatrix interface pointer</param>
     /// <returns>An IEigenSystem interface pointer</returns>
 
-    public static IEigenSystem create(Matrix m, boolean symmetric) {
+    public static IEigenSystem create(FastMatrix m, boolean symmetric) {
         if (symmetric) {
             return new SymmetricEigenSystem(m);
         } else {
@@ -631,7 +631,7 @@ public class EigenSystem {
         }
     }
 
-    public static IEigenSystem create(Matrix m) {
+    public static IEigenSystem create(FastMatrix m) {
         if (isSymmetric(m)) {
             return new SymmetricEigenSystem(m);
         } else {
@@ -639,7 +639,7 @@ public class EigenSystem {
         }
     }
 
-    public static boolean isSymmetric(Matrix m) {
+    public static boolean isSymmetric(FastMatrix m) {
         if (m.getRowsCount() != m.getColumnsCount()) {
             return false;
         }
@@ -654,7 +654,7 @@ public class EigenSystem {
         return true;
     }
 
-    public static double[] convertToArray(Matrix m) {
+    public static double[] convertToArray(FastMatrix m) {
         return m.data();
     }
 }
@@ -664,7 +664,7 @@ class SymmetricEigenSystem implements IEigenSystem {
     public SymmetricEigenSystem() {
     }
 
-    public SymmetricEigenSystem(Matrix m) {
+    public SymmetricEigenSystem(FastMatrix m) {
         m_sm = m.deepClone();
     }
 
@@ -693,7 +693,7 @@ class SymmetricEigenSystem implements IEigenSystem {
         // compute the eigenvalues and - if m_bVec == true - the eigenvectors of the reduction
         EigenRoutines.triQL(m_ev, m_sm.getRowsCount(), data, m_bVec);
 
-        m_eivec = Matrix.builder(data).nrows(m_sm.getRowsCount()).ncolumns(m_sm.getColumnsCount()).build();
+        m_eivec = FastMatrix.builder(data).nrows(m_sm.getRowsCount()).ncolumns(m_sm.getColumnsCount()).build();
         m_bCalc = true;
     }
 
@@ -735,18 +735,18 @@ class SymmetricEigenSystem implements IEigenSystem {
     }
 
     @Override
-    public Matrix getEigenVectors() {
+    public FastMatrix getEigenVectors() {
         if (!m_bVec) {
             throw new MatrixException(IEigenSystem.EIGENINIT);
         }
         calc();
 
-        Matrix iout = m_eivec.deepClone();
+        FastMatrix iout = m_eivec.deepClone();
         return iout;
     }
 
     @Override
-    public Matrix getEigenVectors(int m) {
+    public FastMatrix getEigenVectors(int m) {
         if (!m_bVec) {
             throw new MatrixException(IEigenSystem.EIGENINIT);
         }
@@ -754,7 +754,7 @@ class SymmetricEigenSystem implements IEigenSystem {
 
         int n = m_eivec.getRowsCount();
         int mel = Math.min(m, m_eivec.getColumnsCount());
-        Matrix sm = Matrix.make(n, mel);
+        FastMatrix sm = FastMatrix.make(n, mel);
         for (int i = 0; i < sm.getRowsCount(); i++) {
             for (int j = 0; j < mel; j++) {
                 sm.set(i, j, m_eivec.get(i, j));
@@ -791,9 +791,9 @@ class SymmetricEigenSystem implements IEigenSystem {
         m_bVec = value;
         m_bCalc = false;
     }
-    private Matrix m_sm;
+    private FastMatrix m_sm;
     private double[] m_ev;
-    private Matrix m_eivec;
+    private FastMatrix m_eivec;
     private boolean m_bCalc;
     private double m_zero = 1.0e-6;
     private int m_maxiter = 30;
@@ -802,7 +802,7 @@ class SymmetricEigenSystem implements IEigenSystem {
 
 class GeneralEigenSystem implements IEigenSystem {
 
-    public GeneralEigenSystem(Matrix im) {
+    public GeneralEigenSystem(FastMatrix im) {
         m_std = im.deepClone();
     }
 
@@ -865,12 +865,12 @@ class GeneralEigenSystem implements IEigenSystem {
     }
 
     @Override
-    public Matrix getEigenVectors() {
+    public FastMatrix getEigenVectors() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Matrix getEigenVectors(int n) {
+    public FastMatrix getEigenVectors(int n) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
@@ -895,7 +895,7 @@ class GeneralEigenSystem implements IEigenSystem {
 
         m_bCalc = true;
     }
-    private Matrix m_std;
+    private FastMatrix m_std;
     private Complex[] m_ev;
     private double m_zero = 1.0e-6;
     private int m_maxiter = 30;

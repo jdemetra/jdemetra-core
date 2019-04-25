@@ -17,7 +17,7 @@
 package demetra.ssf;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.linearsystem.LinearSystemSolver;
 
@@ -28,20 +28,20 @@ import demetra.linearsystem.LinearSystemSolver;
 @lombok.experimental.UtilityClass
 public class StationaryInitialization {
 
-    public Matrix of(ISsfDynamics dynamics, int dim) {
+    public FastMatrix of(ISsfDynamics dynamics, int dim) {
         if (!dynamics.isTimeInvariant()) {
             return null;
         }
-        Matrix cov = Matrix.square(dim);
+        FastMatrix cov = FastMatrix.square(dim);
 //            // We have to solve the steady state equation:
 //            // V = T V T' + Q
 
-        Matrix T = Matrix.square(dim);
-        Matrix Q = Matrix.square(dim);
+        FastMatrix T = FastMatrix.square(dim);
+        FastMatrix Q = FastMatrix.square(dim);
         dynamics.T(0, T);
         dynamics.V(0, Q);
         int np = (dim * (dim + 1)) / 2;
-        Matrix M = Matrix.square(np);
+        FastMatrix M = FastMatrix.square(np);
         double[] b = new double[np];
         for (int c = 0, i = 0; c < dim; ++c) {
             for (int r = c; r < dim; ++r, ++i) {

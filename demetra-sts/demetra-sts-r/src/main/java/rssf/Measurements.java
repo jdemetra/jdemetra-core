@@ -6,8 +6,8 @@
 package rssf;
 
 import demetra.data.DataBlock;
-import demetra.maths.MatrixType;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.implementations.TimeInvariantLoading;
 import demetra.ssf.implementations.TimeInvariantMeasurements;
@@ -31,7 +31,7 @@ public class Measurements {
     }
 
     public ISsfMeasurements of(MatrixType Z, MatrixType H) {
-        return new TimeInvariantMeasurements(Matrix.of(Z), Matrix.of(H), null);
+        return new TimeInvariantMeasurements(FastMatrix.of(Z), FastMatrix.of(H), null);
     }
 
 }

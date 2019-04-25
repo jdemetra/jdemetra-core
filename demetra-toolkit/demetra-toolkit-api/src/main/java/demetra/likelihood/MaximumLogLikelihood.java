@@ -17,7 +17,7 @@
 package demetra.likelihood;
 
 import demetra.design.Development;
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.data.DoubleSeq;
 
 /**

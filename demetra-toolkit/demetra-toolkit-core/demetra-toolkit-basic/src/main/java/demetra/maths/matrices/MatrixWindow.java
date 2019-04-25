@@ -9,7 +9,7 @@ package demetra.maths.matrices;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public final class MatrixWindow extends Matrix implements Cloneable{
+public final class MatrixWindow extends FastMatrix implements Cloneable{
     
    /**
      *
@@ -35,8 +35,8 @@ public final class MatrixWindow extends Matrix implements Cloneable{
         }
     }
 
-    public Matrix fix(){
-        return new Matrix(storage, start, nrows, ncols, rowInc, colInc);
+    public FastMatrix fix(){
+        return new FastMatrix(storage, start, nrows, ncols, rowInc, colInc);
     }
 
     @Override

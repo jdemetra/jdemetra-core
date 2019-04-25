@@ -22,8 +22,8 @@ import demetra.design.Immutable;
 import demetra.design.SkipProcessing;
 import demetra.util.Arrays2;
 import demetra.maths.Complex;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.maths.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
 import demetra.linearsystem.LinearSystemSolver;
@@ -187,7 +187,7 @@ public final class RationalFilter implements IRationalFilter {
 
         double[] db = bd.weightsToArray(), df = fd.weightsToArray();
 
-        Matrix m = Matrix.square(ne);
+        FastMatrix m = FastMatrix.square(ne);
         // initialisation of the matrix
         // left/up block [k+1]
         for (int i = 0; i <= ndf; ++i) {

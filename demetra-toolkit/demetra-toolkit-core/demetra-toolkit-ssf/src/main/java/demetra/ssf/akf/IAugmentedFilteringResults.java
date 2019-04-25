@@ -17,7 +17,7 @@
 package demetra.ssf.akf;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.StateInfo;
 import demetra.ssf.univariate.IFilteringResults;
 
@@ -48,7 +48,7 @@ public interface IAugmentedFilteringResults extends IFilteringResults {
      */
     void save(int t, AugmentedState state, StateInfo info);
 
-    default Matrix B(int pos) {
+    default FastMatrix B(int pos) {
         return null;
     }
 

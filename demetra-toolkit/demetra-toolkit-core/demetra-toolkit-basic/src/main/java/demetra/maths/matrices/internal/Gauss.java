@@ -19,18 +19,18 @@ package demetra.maths.matrices.internal;
 
 import demetra.design.Development;
 import demetra.maths.Constants;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class Gauss extends LuDecomposition {
+public class Gauss extends AbstractLuDecomposition {
 
     @Override
-    public void decompose(Matrix m) {
+    public void decompose(FastMatrix m) {
         init(m);
         gauss();
     }

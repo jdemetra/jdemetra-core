@@ -19,7 +19,7 @@ package demetra.ssf.univariate;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.UpdateInformation;
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.SsfException;
 import demetra.ssf.State;

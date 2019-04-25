@@ -19,7 +19,7 @@ package demetra.regarima;
 import demetra.arima.ArimaType;
 import demetra.design.Development;
 import demetra.linearmodel.LinearModelType;
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.data.DoubleSeq;
 
 

@@ -17,7 +17,7 @@
 package demetra.dfm.internal;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.linearsystem.LinearSystemSolver;
@@ -29,17 +29,18 @@ import demetra.linearsystem.LinearSystemSolver;
 @lombok.Value
 class Initialization implements ISsfInitialization {
 
-    static Matrix unconditional(Dynamics dynamics) {
+    static FastMatrix unconditional(Dynamics dynamics) {
          int nl = dynamics.nl(), nf=dynamics.nf();
         // We have to solve the steady state equation:
         // V = T V T' + Q
         // We consider first the [nl*nf, nl*nf] sub-system
-        Matrix v = dynamics.getV(), t = dynamics.getT();
+        FastMatrix v = dynamics.getV();
+        FastMatrix t = dynamics.getT();
 
         int n = nf * nl;
-        Matrix cov = Matrix.square(n);
+        FastMatrix cov = FastMatrix.square(n);
         int np = (n * (n + 1)) / 2;
-        Matrix M = Matrix.square(np);
+        FastMatrix M = FastMatrix.square(np);
         double[] b = new double[np];
         // fill the matrix
         for (int c = 0, i = 0; c < n; ++c) {
@@ -83,7 +84,7 @@ class Initialization implements ISsfInitialization {
             return cov;
         }
         int dim = nlx*nf;
-        Matrix fullCov = Matrix.square(dim);
+        FastMatrix fullCov = FastMatrix.square(dim);
 
         for (int r = 0; r < nf; ++r) {
             for (int c = 0; c < nf; ++c) {
@@ -98,7 +99,7 @@ class Initialization implements ISsfInitialization {
     }
 
     int dim;
-    Matrix V0;
+    FastMatrix V0;
 
     @Override
     public int getStateDim() {
@@ -116,7 +117,7 @@ class Initialization implements ISsfInitialization {
     }
 
     @Override
-    public void diffuseConstraints(Matrix b) {
+    public void diffuseConstraints(FastMatrix b) {
     }
 
     @Override
@@ -124,7 +125,7 @@ class Initialization implements ISsfInitialization {
     }
 
     @Override
-    public void Pf0(Matrix pf0) {
+    public void Pf0(FastMatrix pf0) {
         if (V0 != null) {
             pf0.copy(V0);
         }

@@ -19,7 +19,7 @@ package demetra.ssf.akf;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.StateInfo;
@@ -45,8 +45,8 @@ public class AugmentedSmoother {
 
     private double e, f;
     private DataBlock C, E, R;
-    private Matrix N, Rd, U, V, RNA, S;
-    private Matrix Psi;
+    private FastMatrix N, Rd, U, V, RNA, S;
+    private FastMatrix Psi;
     private DataBlock delta;
     private boolean missing, hasinfo, calcvar = true;
 
@@ -86,13 +86,13 @@ public class AugmentedSmoother {
         R = DataBlock.make(dim);
         C = DataBlock.make(dim);
         E = DataBlock.make(nd);
-        Rd = Matrix.make(dim, nd);
-        U = Matrix.make(dim, nd);
+        Rd = FastMatrix.make(dim, nd);
+        U = FastMatrix.make(dim, nd);
 
         if (calcvar) {
-            N = Matrix.square(dim);
-            V = Matrix.make(dim, nd);
-            RNA = Matrix.make(dim, nd);
+            N = FastMatrix.square(dim);
+            V = FastMatrix.make(dim, nd);
+            RNA = FastMatrix.make(dim, nd);
         }
     }
 
@@ -172,17 +172,17 @@ public class AugmentedSmoother {
     }
 
     private void updateP() {
-        Matrix P = state.P();
+        FastMatrix P = state.P();
         // normal iteration
-        Matrix PNP = SymmetricMatrix.XtSX(N, P);
+        FastMatrix PNP = SymmetricMatrix.XtSX(N, P);
         P.sub(PNP);
         // diffuse correction
-        Matrix UPsiU = SymmetricMatrix.XSXt(Psi, U);
+        FastMatrix UPsiU = SymmetricMatrix.XSXt(Psi, U);
         P.add(UPsiU);
         LowerTriangularMatrix.rsolve(S, U.transpose());
         LowerTriangularMatrix.rsolve(S, V.transpose());
         // compute U*V'
-        Matrix UV = Matrix.square(U.getRowsCount());
+        FastMatrix UV = FastMatrix.square(U.getRowsCount());
         UV.product(U, V.transpose());
         P.sub(UV);
         P.sub(UV.transpose());
@@ -280,7 +280,7 @@ public class AugmentedSmoother {
         // delta = a'^-1*a^-1(-a*b' + B'*R)
         // delta = - (b * a^-1)' + a'^-1*a^-1*B'*r = a'^-1 * (a^-1*B'*r - b)
         // Psi = = a'^-1*(I - a^-1*B'*N*B*a'^-1)* a^-1
-        Matrix B = q.B(); // B*a^-1'
+        FastMatrix B = q.B(); // B*a^-1'
         S = q.a().deepClone();
         // computes a^-1*B'*r (or r*B*a^-1')
         delta = DataBlock.make(B.getColumnsCount());

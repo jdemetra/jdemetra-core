@@ -18,7 +18,7 @@ package demetra.dfm.internal;
 
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 
 /**
@@ -28,7 +28,7 @@ import demetra.ssf.ISsfDynamics;
 @lombok.Data(staticConstructor = "of")
 public class Dynamics implements ISsfDynamics {
 
-    public static Dynamics of(Matrix T, Matrix V, int nlx) {
+    public static Dynamics of(FastMatrix T, FastMatrix V, int nlx) {
         Dynamics dyn = new Dynamics(nlx, T, V);
         int nf=V.getRowsCount();
         dyn.ttmp = new double[nf];
@@ -37,7 +37,7 @@ public class Dynamics implements ISsfDynamics {
     }
 
     final int nlx;
-    final Matrix T, V;
+    final FastMatrix T, V;
     double[] ttmp, xtmp;
 
     int nl() {
@@ -54,12 +54,12 @@ public class Dynamics implements ISsfDynamics {
     }
 
     @Override
-    public void V(int pos, Matrix qm) {
+    public void V(int pos, FastMatrix qm) {
         qm.copy(V);
     }
 
     @Override
-    public void S(int pos, Matrix cm) {
+    public void S(int pos, FastMatrix cm) {
         int nf = nf();
         for (int i = 0, r = 0; i < nf; ++i, r += nlx) {
             cm.set(r, i, 1);
@@ -77,11 +77,11 @@ public class Dynamics implements ISsfDynamics {
     }
 
     @Override
-    public void T(int pos, Matrix tr) {
+    public void T(int pos, FastMatrix tr) {
         int nl = nl(), nf = nf();
         for (int i = 0, r = 0; i < nf; ++i, r += nlx) {
             for (int j = 0, c = 0; j < nf; ++j, c += nlx) {
-                Matrix B = tr.extract(r, r + nlx, c, c + nlx);
+                FastMatrix B = tr.extract(r, r + nlx, c, c + nlx);
                 if (i == j) {
                     B.subDiagonal(-1).set(1);
                 }
@@ -114,7 +114,7 @@ public class Dynamics implements ISsfDynamics {
     }
 
     @Override
-    public void addV(int pos, Matrix p) {
+    public void addV(int pos, FastMatrix p) {
         int nf = nf();
         for (int i = 0; i < nf; ++i) {
             DataBlock cv = p.column(i * nlx).extract(0, nf, nlx);

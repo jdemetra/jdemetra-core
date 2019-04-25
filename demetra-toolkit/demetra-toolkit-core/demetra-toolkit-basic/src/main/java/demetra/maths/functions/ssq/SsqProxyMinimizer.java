@@ -18,7 +18,7 @@ package demetra.maths.functions.ssq;
 
 import demetra.design.Development;
 import demetra.maths.functions.IFunctionMinimizer;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
 
 /**
@@ -57,7 +57,7 @@ public class SsqProxyMinimizer implements ISsqFunctionMinimizer {
      * @return
      */
     @Override
-    public Matrix curvatureAtMinimum() {
+    public FastMatrix curvatureAtMinimum() {
         return minimizer.curvatureAtMinimum();
     }
 

@@ -5,7 +5,7 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.Periodogram;
+import demetra.data.analysis.Periodogram;
 import demetra.dstats.Chi2;
 import demetra.dstats.F;
 import demetra.stats.tests.StatisticalTest;

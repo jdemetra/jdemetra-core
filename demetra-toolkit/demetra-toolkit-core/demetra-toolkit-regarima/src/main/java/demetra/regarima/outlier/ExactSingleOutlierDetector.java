@@ -26,7 +26,7 @@ import demetra.leastsquares.QRSolvers;
 import demetra.linearmodel.LinearModel;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArmaModel;
 import demetra.leastsquares.QRSolver;
@@ -76,7 +76,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
 
     private ArmaFilter filter;
     private final ResidualsComputer resComputer;
-    private Matrix L, Xl;
+    private FastMatrix L, Xl;
     private double[] yl, b, w;
     private int n;
     private double mad;
@@ -138,13 +138,13 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
             DataBlock Yl = DataBlock.of(yl);
             filter.apply(model.getY(), Yl);
 
-            Matrix regs = lm.variables();
+            FastMatrix regs = lm.variables();
             if (regs.isEmpty()) {
                 mad = getStandardDeviationComputer().compute(filter(model.getY()));
                 return true;
             }
 
-            Xl = Matrix.make(n, regs.getColumnsCount());
+            Xl = FastMatrix.make(n, regs.getColumnsCount());
             DataBlockIterator rcols = regs.columnsIterator(), drcols = Xl.columnsIterator();
             while (rcols.hasNext()) {
                 filter.apply(rcols.next(), drcols.next());

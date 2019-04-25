@@ -19,7 +19,7 @@ package demetra.benchmarking.ssf;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
@@ -67,7 +67,7 @@ public class SsfDisaggregation {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
             initialization.diffuseConstraints(b.dropTopLeft(1, 0));
         }
 
@@ -77,12 +77,12 @@ public class SsfDisaggregation {
         }
 
         @Override
-        public void Pf0(Matrix pf0) {
+        public void Pf0(FastMatrix pf0) {
             initialization.Pf0(pf0.dropTopLeft(1, 1));
         }
 
         @Override
-        public void Pi0(Matrix pi0) {
+        public void Pi0(FastMatrix pi0) {
             initialization.Pi0(pi0.dropTopLeft(1, 1));
         }
 
@@ -120,12 +120,12 @@ public class SsfDisaggregation {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             dynamics.V(pos, qm.dropTopLeft(1, 1));
         }
 
         @Override
-        public void S(int pos, Matrix s) {
+        public void S(int pos, FastMatrix s) {
             dynamics.S(pos, s.dropTopLeft(1, 0));
         }
 
@@ -135,7 +135,7 @@ public class SsfDisaggregation {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             dynamics.T(pos, tr.dropTopLeft(1, 1));
             if ((start + pos + 1) % conversion != 0) {
                 loading.Z(pos, tr.row(0).drop(1, 0));
@@ -163,8 +163,8 @@ public class SsfDisaggregation {
         }
 
         @Override
-        public void TVT(int pos, Matrix vm) {
-            Matrix v = vm.dropTopLeft(1, 1);
+        public void TVT(int pos, FastMatrix vm) {
+            FastMatrix v = vm.dropTopLeft(1, 1);
             if ((start + pos) % conversion == 0) {
                 DataBlock v0 = vm.row(0).drop(1, 0);
                 loading.ZM(pos, v, v0);
@@ -194,7 +194,7 @@ public class SsfDisaggregation {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             dynamics.addV(pos, p.dropTopLeft(1, 1));
         }
 
@@ -256,13 +256,13 @@ public class SsfDisaggregation {
         }
 
         @Override
-        public void ZM(int pos, Matrix m, DataBlock zm) {
+        public void ZM(int pos, FastMatrix m, DataBlock zm) {
             if ((start + pos) % conversion == 0) {
                 zm.set(0);
             } else {
                 zm.copy(m.row(0));
             }
-            Matrix q = m.dropTopLeft(1, 0);
+            FastMatrix q = m.dropTopLeft(1, 0);
             DataBlockIterator cols = q.columnsIterator();
             DoubleVectorCursor cur = zm.cursor();
             while (cols.hasNext()) {
@@ -271,8 +271,8 @@ public class SsfDisaggregation {
         }
 
         @Override
-        public double ZVZ(int pos, Matrix vm) {
-            Matrix v = vm.dropTopLeft(1, 1);
+        public double ZVZ(int pos, FastMatrix vm) {
+            FastMatrix v = vm.dropTopLeft(1, 1);
             if ((start + pos) % conversion == 0) {
                 return measurement.ZVZ(pos, v);
             } else {
@@ -284,8 +284,8 @@ public class SsfDisaggregation {
         }
 
         @Override
-        public void VpZdZ(int pos, Matrix vm, double d) {
-            Matrix v = vm.dropTopLeft(1, 1);
+        public void VpZdZ(int pos, FastMatrix vm, double d) {
+            FastMatrix v = vm.dropTopLeft(1, 1);
             measurement.VpZdZ(pos, v, d);
             if ((start + pos) % conversion != 0) {
                 vm.add(0, 0, d);

@@ -5,7 +5,7 @@
  */
 package demetra.modelling.regression;
 
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;

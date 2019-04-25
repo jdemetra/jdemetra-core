@@ -19,7 +19,7 @@ package demetra.ssf.array;
 import demetra.data.DataBlock;
 import demetra.maths.matrices.decomposition.ElementaryTransformations;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.ISsfMeasurements;
@@ -43,7 +43,7 @@ public class MultivariateArrayFilter {
     private ISsfDynamics dynamics;
     private IMultivariateSsfData data;
     private int pos, end, nm, dim, nres;
-    private Matrix A;
+    private FastMatrix A;
 
     /**
      *
@@ -55,7 +55,7 @@ public class MultivariateArrayFilter {
      */
     private void error() {
         DataBlock U = perrors.getTransformedPredictionErrors();
-        Matrix L = perrors.getCholeskyFactor();
+        FastMatrix L = perrors.getCholeskyFactor();
         U.set(0);
         for (int i = 0; i < nm; ++i) {
             double y = data.get(pos, i);
@@ -70,7 +70,7 @@ public class MultivariateArrayFilter {
         nm = measurements.getCount();
         nres = dynamics.getInnovationsDim();
         dim = ssf.getStateDim();
-        A = Matrix.make(dim + nm, dim + nm + nres);
+        A = FastMatrix.make(dim + nm, dim + nm + nres);
         return true;
     }
 
@@ -79,7 +79,7 @@ public class MultivariateArrayFilter {
         perrors = new MultivariateUpdateInformation(dim, nm);
         
         ssf.initialization().a0(state.a);
-        Matrix P0 = Matrix.make(dim, dim);
+        FastMatrix P0 = FastMatrix.make(dim, dim);
         ssf.initialization().Pf0(P0);
         SymmetricMatrix.lcholesky(P0, State.ZERO);
         state.L.copy(P0);
@@ -138,23 +138,23 @@ public class MultivariateArrayFilter {
 
     }
 
-    private Matrix R() {
+    private FastMatrix R() {
         return A.extract(0, nm, 0, nm);
     }
 
-    private Matrix K() {
+    private FastMatrix K() {
         return A.extract(nm, dim, 0, nm);
     }
 
-    private Matrix ZL() {
+    private FastMatrix ZL() {
         return A.extract(0, nm, nm, dim);
     }
 
-    private Matrix L() {
+    private FastMatrix L() {
         return A.extract(nm, dim, nm, dim);
     }
 
-    private Matrix U() {
+    private FastMatrix U() {
         return A.extract(nm, dim, nm + dim, A.getColumnsCount()-nm-dim);
     }
 }

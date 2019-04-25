@@ -91,7 +91,7 @@ public interface IFiniteFilter extends IFilter {
 
     @Override
     default Complex frequencyResponse(final double freq) {
-        return Utility.frequencyResponse(weights(), getLowerBound(), getUpperBound(), freq);
+        return FilterUtility.frequencyResponse(weights(), getLowerBound(), getUpperBound(), freq);
     }
 
     /**

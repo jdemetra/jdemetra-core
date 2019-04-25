@@ -19,11 +19,11 @@ package demetra.r;
 import demetra.data.Doubles;
 import demetra.descriptors.stats.DiffuseConcentratedLikelihoodDescriptor;
 import demetra.information.InformationMapping;
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.NumericalDerivatives;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;
@@ -44,6 +44,8 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
  *
@@ -59,7 +61,7 @@ public class StsEstimation {
         TsData y, t, s, i;
         BasicStructuralModel bsm;
         DiffuseConcentratedLikelihood likelihood;
-        Matrix parametersCovariance;
+        FastMatrix parametersCovariance;
         double[] score;
 
         @Override
@@ -166,7 +168,7 @@ public class StsEstimation {
         IFunctionDerivatives derivatives = new NumericalDerivatives(ml, false);
         int ndf = y.length();
         double objective = ml.getValue();
-        Matrix hessian = derivatives.hessian();
+        FastMatrix hessian = derivatives.hessian();
         double[] score = derivatives.gradient().toArray();
         hessian.mul((.5 * ndf) / objective);
         for (int i = 0; i < score.length; ++i) {

@@ -5,7 +5,7 @@
  */
 package demetra.timeseries.calendars;
 
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.timeseries.TsDomain;
 
 /**

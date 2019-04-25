@@ -19,6 +19,7 @@ package demetra.ucarima;
 
 import demetra.design.Development;
 import demetra.maths.Complex;
+import demetra.maths.ComplexUtility;
 import demetra.maths.polynomials.Polynomial;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,8 +82,8 @@ public abstract class AbstractRootSelector implements IRootSelector {
 		Complex[] rs =sel.toArray(new Complex[sel.size()]);
 		Complex[] rn = nsel.toArray(new Complex[sel.size()]);
 
-		Complex.lejaOrder(rs);
-		Complex.lejaOrder(rn);
+		ComplexUtility.lejaOrder(rs);
+		ComplexUtility.lejaOrder(rn);
 		selected = Polynomial.fromComplexRoots(rs);
 		selected = selected.times(p.get(0) / selected.get(0));
 		notSelected = Polynomial.fromComplexRoots(rn);

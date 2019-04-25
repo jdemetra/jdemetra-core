@@ -5,7 +5,7 @@
  */
 package demetra.modelling.regression;
 
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 
@@ -20,12 +20,12 @@ class IVFactory implements RegressionVariableFactory<InterventionVariable>{
     private IVFactory(){}
 
     @Override
-    public boolean fill(InterventionVariable var, TsPeriod start, Matrix buffer) {
+    public boolean fill(InterventionVariable var, TsPeriod start, FastMatrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(InterventionVariable var, D domain, Matrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(InterventionVariable var, D domain, FastMatrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

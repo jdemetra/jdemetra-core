@@ -7,8 +7,8 @@ package demetra.leastsquares.internal;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.maths.matrices.UpperTriangularMatrix;
@@ -63,7 +63,7 @@ public class AdvancedQRSolver implements QRSolver {
     }
     private double ssqerr;
     private double[] b, res;
-    private Matrix R;
+    private FastMatrix R;
     private int[] used;
     private int n, m;
     private final IQRDecomposition qr;
@@ -81,7 +81,7 @@ public class AdvancedQRSolver implements QRSolver {
     }
 
     @Override
-    public boolean solve(DoubleSeq y, Matrix x) {
+    public boolean solve(DoubleSeq y, FastMatrix x) {
         try {
             clear();
             compute(y, x);
@@ -98,7 +98,7 @@ public class AdvancedQRSolver implements QRSolver {
         res = null;
     }
 
-    private void compute(DoubleSeq y, Matrix x) {
+    private void compute(DoubleSeq y, FastMatrix x) {
 
         // X'X, X'y
         n = y.length();
@@ -154,7 +154,7 @@ public class AdvancedQRSolver implements QRSolver {
      * @param X
      * @param B
      */
-    private void iterativeEstimation(DoubleSeq Y, Matrix X) {
+    private void iterativeEstimation(DoubleSeq Y, FastMatrix X) {
         DataBlock F = DataBlock.make(n);
         DataBlock G = DataBlock.make(m);
 
@@ -201,7 +201,7 @@ public class AdvancedQRSolver implements QRSolver {
         } while (++iter < niter);
     }
 
-    private void iterativeEstimation2(DoubleSeq Y, Matrix X) {
+    private void iterativeEstimation2(DoubleSeq Y, FastMatrix X) {
 
         DataBlock B = DataBlock.of(b), E = DataBlock.of(res);
         DoubleSeq W = Y;
@@ -235,7 +235,7 @@ public class AdvancedQRSolver implements QRSolver {
      * @return the R
      */
     @Override
-    public Matrix R() {
+    public FastMatrix R() {
         return qr.r(false);
     }
 }

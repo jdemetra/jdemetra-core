@@ -21,8 +21,8 @@ import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
 
@@ -49,7 +49,7 @@ public class DogLegMinimizer implements ISsqFunctionMinimizer {
     private ISsqFunctionPoint fcur_, ftry_;
     private DataBlock ecur_;
     private double Fcur_, Ftry_;
-    private Matrix J, JtJ;
+    private FastMatrix J, JtJ;
     private double scale_, scale2_;
     ///////////////////////////////////////////
     private int stop;
@@ -71,7 +71,7 @@ public class DogLegMinimizer implements ISsqFunctionMinimizer {
     }
 
     @Override
-    public Matrix curvatureAtMinimum() {
+    public FastMatrix curvatureAtMinimum() {
         if (JtJ == null) {
             fcur_.ssqDerivatives().jacobian(J);
             JtJ = SymmetricMatrix.XtX(J);
@@ -164,7 +164,7 @@ public class DogLegMinimizer implements ISsqFunctionMinimizer {
 
         double k = 0;
         do {
-            Matrix A = JtJ.deepClone();
+            FastMatrix A = JtJ.deepClone();
             if (k == 0) {
                 k = 1e-6 * jdiag_ninf;
             } else {
@@ -287,7 +287,7 @@ public class DogLegMinimizer implements ISsqFunctionMinimizer {
         int n = ecur_.length(), m = fn_.getDomain().getDim();
 
         // Jacobian
-        J = Matrix.make(n, m);
+        J = FastMatrix.make(n, m);
         g_ = DataBlock.make(m);
         while (iterate() && iter < itmax) {
             ++iter;

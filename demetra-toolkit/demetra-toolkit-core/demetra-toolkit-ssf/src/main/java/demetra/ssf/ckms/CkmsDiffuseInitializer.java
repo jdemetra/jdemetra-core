@@ -18,7 +18,7 @@ package demetra.ssf.ckms;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.SsfException;
 import demetra.ssf.State;
@@ -79,7 +79,7 @@ public class CkmsDiffuseInitializer implements CkmsFilter.IFastFilterInitializer
         ISsfDynamics dynamics = ssf.dynamics();
         ISsfLoading loading = ssf.loading();
         ISsfError error = ssf.measurementError();
-        Matrix P = state.P();
+        FastMatrix P = state.P();
         DataBlock k = upd.M();
         double f = loading.ZVZ(0, P);
         if (error != null) {
@@ -93,7 +93,7 @@ public class CkmsDiffuseInitializer implements CkmsFilter.IFastFilterInitializer
         dynamics.TX(0, l);
 
         // L0: computes next iteration. TVT'-KK'*var + Q -V = - L(var)^-1 L'
-        Matrix TVT = P.deepClone();
+        FastMatrix TVT = P.deepClone();
         dynamics.TVT(0, TVT);
         dynamics.addV(0, TVT);
         TVT.sub(P);

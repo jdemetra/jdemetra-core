@@ -5,6 +5,7 @@
  */
 package demetra.data;
 
+import demetra.data.analysis.DFT;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;

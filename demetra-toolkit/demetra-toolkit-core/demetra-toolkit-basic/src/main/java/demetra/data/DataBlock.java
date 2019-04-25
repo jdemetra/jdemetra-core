@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.data.transformation.DoubleAccumulator;
+import demetra.data.accumulator.DoubleAccumulator;
 import demetra.design.Unsafe;
 import java.util.Iterator;
 import java.util.Objects;
@@ -33,7 +33,7 @@ import demetra.util.function.BiDoublePredicate;
  *
  * @author Jean Palate
  */
-public final class DataBlock implements DoubleVector {
+public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
 
     @FunctionalInterface
     public static interface DataBlockFunction {

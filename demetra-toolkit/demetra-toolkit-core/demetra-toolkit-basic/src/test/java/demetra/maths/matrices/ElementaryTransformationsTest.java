@@ -35,9 +35,9 @@ public class ElementaryTransformationsTest {
     @Test
     public void testQRGivens() {
         Random rnd=new Random(0);
-        Matrix M=Matrix.make(20, 5);
+        FastMatrix M=FastMatrix.make(20, 5);
         M.set(rnd::nextDouble);
-        Matrix cur=M;
+        FastMatrix cur=M;
         for (int i=0; i<M.getColumnsCount()-1; ++i){
             ElementaryTransformations.columnGivens(cur);
             cur=cur.extract(1, cur.getRowsCount()-1, 1, cur.getColumnsCount()-1);
@@ -47,7 +47,7 @@ public class ElementaryTransformationsTest {
         System.out.println(b);
         
         rnd=new Random(0);
-        M=Matrix.make(20, 5);
+        M=FastMatrix.make(20, 5);
         M.set(rnd::nextDouble);
         
         Householder qr=new Householder();

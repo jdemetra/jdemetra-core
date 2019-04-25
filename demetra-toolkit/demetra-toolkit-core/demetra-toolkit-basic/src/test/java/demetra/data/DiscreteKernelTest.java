@@ -5,18 +5,20 @@
  */
 package demetra.data;
 
-import static demetra.data.DiscreteKernel.biweight;
-import static demetra.data.DiscreteKernel.henderson;
-import static demetra.data.DiscreteKernel.parabolic;
-import static demetra.data.DiscreteKernel.triangular;
-import static demetra.data.DiscreteKernel.tricube;
-import static demetra.data.DiscreteKernel.triweight;
-import static demetra.data.DiscreteKernel.uniform;
-import demetra.maths.matrices.Matrix;
+import demetra.data.analysis.DiscreteKernel;
+import static demetra.data.analysis.DiscreteKernel.biweight;
+import static demetra.data.analysis.DiscreteKernel.henderson;
+import static demetra.data.analysis.DiscreteKernel.parabolic;
+import static demetra.data.analysis.DiscreteKernel.triangular;
+import static demetra.data.analysis.DiscreteKernel.tricube;
+import static demetra.data.analysis.DiscreteKernel.triweight;
+import static demetra.data.analysis.DiscreteKernel.uniform;
+import demetra.maths.matrices.FastMatrix;
 import java.util.function.IntToDoubleFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static demetra.data.DiscreteKernel.distance;
+import static demetra.data.analysis.DiscreteKernel.distance;
+import static demetra.data.analysis.DiscreteKernel.distance;
 
 /**
  *
@@ -133,7 +135,7 @@ public class DiscreteKernelTest {
         k[4] = triweight(K);
         k[5] = tricube(K);
         k[6] = henderson(K);
-        Matrix D = Matrix.square(k.length);
+        FastMatrix D = FastMatrix.square(k.length);
 
         for (int i = 0; i < k.length; ++i) {
             for (int j = 0; j < k.length; ++j) {

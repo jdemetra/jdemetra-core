@@ -17,8 +17,8 @@
 package rssf;
 
 import demetra.information.InformationMapping;
-import demetra.maths.MatrixType;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.FastMatrix;
 import demetra.msts.CompositeModel;
 import demetra.msts.CompositeModelEstimation;
 import demetra.ssf.StateStorage;
@@ -54,20 +54,20 @@ public class CompositeModels {
             MAPPING.set("fn.parameters", double[].class, source -> source.getParameters());
             MAPPING.setArray("ssf.T", 0, 10000, MatrixType.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();
-                Matrix T = Matrix.square(dim);
+                FastMatrix T = FastMatrix.square(dim);
                 source.getSsf().dynamics().T(t, T);
                 return T;
             });
             MAPPING.setArray("ssf.V", 0, 10000, MatrixType.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();
-                Matrix V = Matrix.square(dim);
+                FastMatrix V = FastMatrix.square(dim);
                 source.getSsf().dynamics().V(t, V);
                 return V;
             });
             MAPPING.setArray("ssf.Z", 0, 10000, MatrixType.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();
                 int m = source.getSsf().measurementsCount();
-                Matrix M = Matrix.make(m, dim);
+                FastMatrix M = FastMatrix.make(m, dim);
                 for (int i = 0; i < m; ++i) {
                     source.getSsf().loading(i).Z(t, M.row(i));
                 }
@@ -78,7 +78,7 @@ public class CompositeModels {
                     return null;
                 }
                 int dim = source.getSsf().getStateDim();
-                Matrix T = Matrix.square(dim);
+                FastMatrix T = FastMatrix.square(dim);
                 source.getSsf().dynamics().T(0, T);
                 return T;
             });
@@ -87,20 +87,20 @@ public class CompositeModels {
                     return null;
                 }
                 int dim = source.getSsf().getStateDim();
-                Matrix V = Matrix.square(dim);
+                FastMatrix V = FastMatrix.square(dim);
                 source.getSsf().dynamics().V(0, V);
                 return V;
             });
             MAPPING.set("ssf.P0", MatrixType.class, source -> {
                 int dim = source.getSsf().getStateDim();
-                Matrix V = Matrix.square(dim);
+                FastMatrix V = FastMatrix.square(dim);
                 source.getSsf().initialization().Pf0(V);
                 return V;
             });
             MAPPING.set("ssf.B0", MatrixType.class, source -> {
                 int dim = source.getSsf().getStateDim();
                 int nd = source.getSsf().initialization().getDiffuseDim();
-                Matrix V = Matrix.make(dim, nd);
+                FastMatrix V = FastMatrix.make(dim, nd);
                 source.getSsf().initialization().diffuseConstraints(V);
                 return V;
             });
@@ -110,7 +110,7 @@ public class CompositeModels {
                 }
                 int dim = source.getSsf().getStateDim();
                 int m = source.getSsf().measurementsCount();
-                Matrix M = Matrix.make(m, dim);
+                FastMatrix M = FastMatrix.make(m, dim);
                 for (int i = 0; i < m; ++i) {
                     source.getSsf().loading(i).Z(0, M.row(i));
                 }
@@ -269,10 +269,10 @@ public class CompositeModels {
     }
 
     public Results estimate(CompositeModel model, MatrixType data, double eps, boolean marginal, boolean rescaling, double[] parameters) {
-        return new Results(model.estimate(Matrix.of(data), eps, marginal, rescaling, parameters));
+        return new Results(model.estimate(FastMatrix.of(data), eps, marginal, rescaling, parameters));
     }
 
     public Results compute(CompositeModel model, MatrixType data, double[] parameters, boolean marginal, boolean concentrated) {
-        return new Results(model.compute(Matrix.of(data), parameters, marginal, concentrated));
+        return new Results(model.compute(FastMatrix.of(data), parameters, marginal, concentrated));
     }
 }

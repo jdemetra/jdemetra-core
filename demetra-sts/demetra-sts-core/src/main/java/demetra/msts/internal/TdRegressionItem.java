@@ -5,8 +5,8 @@
  */
 package demetra.msts.internal;
 
-import demetra.maths.MatrixType;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.modelling.regression.GenericTradingDaysVariable;
 import demetra.modelling.regression.Regression;
@@ -30,8 +30,8 @@ import demetra.msts.ParameterInterpreter;
  */
 public class TdRegressionItem extends AbstractModelItem {
 
-    private final Matrix x;
-    private final Matrix mvar;
+    private final FastMatrix x;
+    private final FastMatrix mvar;
     private final VarianceInterpreter v;
 
     public TdRegressionItem(String name, TsDomain domain, int[] groups, final boolean contrast, final double var, final boolean fixed) {
@@ -48,7 +48,7 @@ public class TdRegressionItem extends AbstractModelItem {
         mapping.add(v);
         mapping.add((p, builder) -> {
             double pvar = p.get(0);
-            Matrix xvar = mvar.deepClone();
+            FastMatrix xvar = mvar.deepClone();
             xvar.mul(pvar);
             SsfComponent cmp = RegSsf.ofTimeVarying(x, xvar);
             builder.add(name, cmp);
@@ -64,25 +64,25 @@ public class TdRegressionItem extends AbstractModelItem {
     public static MatrixType tdContrasts(TsDomain domain, int[] groups) {
         DayClustering dc = DayClustering.of(groups);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        Matrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
+        FastMatrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
         return td.unmodifiable();
     }
 
     public static MatrixType rawTd(TsDomain domain, int[] groups) {
         DayClustering dc = DayClustering.of(groups);
         GenericTradingDays gtd = GenericTradingDays.of(dc);
-        Matrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
+        FastMatrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
         return td.unmodifiable();
     }
 
-    public static Matrix generateVar(DayClustering dc, boolean contrasts) {
+    public static FastMatrix generateVar(DayClustering dc, boolean contrasts) {
         int groupsCount = dc.getGroupsCount();
-        Matrix full = Matrix.square(7);
+        FastMatrix full = FastMatrix.square(7);
         if (!contrasts) {
             full.set(-1.0 / 7.0);
         }
         full.diagonal().add(1);
-        Matrix Q = Matrix.make(groupsCount - 1, 7);
+        FastMatrix Q = FastMatrix.make(groupsCount - 1, 7);
         int[] gdef = dc.getGroupsDefinition();
         for (int i = 1; i < groupsCount; ++i) {
             for (int j = 0; j < 7; ++j) {

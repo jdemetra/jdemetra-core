@@ -19,7 +19,7 @@ package demetra.benchmarking.multivariate;
 import demetra.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
@@ -132,7 +132,7 @@ class MultivariateSsfCholette {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
             if (info.rho == 1) {
                 for (int j = 1, k = 0; j < 2 * info.nvars; j += 2, ++k) {
                     b.set(j, k, 1);
@@ -145,7 +145,7 @@ class MultivariateSsfCholette {
         }
 
         @Override
-        public void Pf0(Matrix pf0) {
+        public void Pf0(FastMatrix pf0) {
             if (info.rho != 1) {
                 double v = 1 / (1 - info.rho * info.rho);
                 pf0.diagonal().extract(1, -1, 2).set(v);
@@ -153,7 +153,7 @@ class MultivariateSsfCholette {
         }
 
         @Override
-        public void Pi0(Matrix pi0) {
+        public void Pi0(FastMatrix pi0) {
             if (info.rho == 1) {
                 pi0.diagonal().extract(1, -1, 2).set(1);
             }
@@ -174,12 +174,12 @@ class MultivariateSsfCholette {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             qm.diagonal().extract(1, -1, 2).set(1);
         }
 
         @Override
-        public void S(int pos, Matrix cm) {
+        public void S(int pos, FastMatrix cm) {
             for (int i = 0; i < info.nvars; ++i) {
                 cm.set(2 * i + 1, i, 1);
             }
@@ -196,7 +196,7 @@ class MultivariateSsfCholette {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             // TO DO : optimization
             for (int i = 0; i < 2 * info.nvars; i += 2) {
                 tr.set(i + 1, i + 1, info.rho);
@@ -235,7 +235,7 @@ class MultivariateSsfCholette {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.diagonal().extract(1, -1, 2).add(1);
         }
 
@@ -353,7 +353,7 @@ class MultivariateSsfCholette {
         }
 
         @Override
-        public void ZM(int pos, Matrix m, DataBlock x) {
+        public void ZM(int pos, FastMatrix m, DataBlock x) {
             if (v < info.nvars) {
                 int iv = 2 * v;
                 if ((pos + 1) % info.c == 0) {
@@ -373,7 +373,7 @@ class MultivariateSsfCholette {
         }
 
         @Override
-        public double ZVZ(int pos, Matrix vm) {
+        public double ZVZ(int pos, FastMatrix vm) {
             int iv = 2 * v;
             if (v < info.nvars) {
                 double dv = info.weight(pos, v), dw = info.weight(pos, v);
@@ -405,7 +405,7 @@ class MultivariateSsfCholette {
 
 
         @Override
-        public void VpZdZ(int pos, Matrix vm, double d) {
+        public void VpZdZ(int pos, FastMatrix vm, double d) {
             int iv = 2 * v;
             if (v < info.nvars) {
                 double dv = info.weight(pos, v), dw = info.weight(pos, v);

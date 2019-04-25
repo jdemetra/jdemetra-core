@@ -9,7 +9,7 @@ import demetra.data.DataBlock;
 import demetra.eco.EcoException;
 import lombok.NonNull;
 import demetra.leastsquares.internal.AdvancedQRSolver;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
@@ -45,9 +45,9 @@ public class Gls implements IGls {
     }
 
     @Override
-    public LeastSquaresResults compute(LinearModel model, Matrix cov) {
+    public LeastSquaresResults compute(LinearModel model, FastMatrix cov) {
 
-        Matrix L = cov.deepClone();
+        FastMatrix L = cov.deepClone();
         try {
             SymmetricMatrix.lcholesky(L);
         } catch (Exception err) {
@@ -57,14 +57,14 @@ public class Gls implements IGls {
         DataBlock yl = DataBlock.of(model.getY());
         LowerTriangularMatrix.rsolve(L, yl);
 
-        Matrix xl = model.variables();
+        FastMatrix xl = model.variables();
         LowerTriangularMatrix.rsolve(L, xl);
 
         if (!solver.solve(yl, xl)) {
             throw new EcoException(EcoException.GLS_FAILED);
         }
-        Matrix R = solver.R();
-        Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
+        FastMatrix R = solver.R();
+        FastMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(R));
         return LeastSquaresResults.builder(yl, xl)
                 .mean(model.isMeanCorrection())

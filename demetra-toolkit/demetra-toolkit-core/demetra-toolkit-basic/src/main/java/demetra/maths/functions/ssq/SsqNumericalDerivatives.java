@@ -19,7 +19,7 @@ package demetra.maths.functions.ssq;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.functions.IFunction;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -41,7 +41,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
     private double[] m_epsp;
     private double[] m_epsm;
     private double[] m_grad;
-    private Matrix m_h;
+    private FastMatrix m_h;
     private final ISsqFunction fn;
     private DoubleSeq m_pt;
     private DoubleSeq m_ecur;
@@ -135,7 +135,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
             calcgrad();
         }
         int n = m_grad.length;
-        m_h = Matrix.square(n);
+        m_h = FastMatrix.square(n);
         // compute first the diagonal
         for (int i = 0; i < n; ++i) {
             DoubleSeq de = m_de[i];
@@ -253,7 +253,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @return
      */
     @Override
-    public void jacobian(Matrix m) {
+    public void jacobian(FastMatrix m) {
         if (m_de == null) {
             calcgrad();
         }
@@ -270,7 +270,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @param h
      */
     @Override
-    public void hessian(Matrix h) {
+    public void hessian(FastMatrix h) {
         if (m_h == null) {
             calch();
         }

@@ -22,7 +22,7 @@ import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.linearfilters.SymmetricFrequencyResponse;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.leastsquares.QRSolver;
 import demetra.linearsystem.LinearSystemSolver;
@@ -96,7 +96,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
 
         int xs = qs + 1, xn = qn + 1, x = xs + xn;
 
-        Matrix m = Matrix.square(x);
+        FastMatrix m = FastMatrix.square(x);
 
         // modify the arrays to get the frequency response (and not the agf)
         n[0] /= 2;

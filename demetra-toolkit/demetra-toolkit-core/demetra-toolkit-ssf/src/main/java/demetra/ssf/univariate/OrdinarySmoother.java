@@ -20,7 +20,7 @@ package demetra.ssf.univariate;
 
 import demetra.ssf.ISsfLoading;
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
@@ -79,7 +79,7 @@ public class OrdinarySmoother {
 
     private double err, errVariance, u, uVariance;
     private DataBlock M, R;
-    private Matrix N;
+    private FastMatrix N;
     private boolean missing;
     private int stop;
 
@@ -146,7 +146,7 @@ public class OrdinarySmoother {
         return R;
     }
 
-    public Matrix getFinalN() {
+    public FastMatrix getFinalN() {
         return N;
     }
 
@@ -158,7 +158,7 @@ public class OrdinarySmoother {
         M = DataBlock.make(dim);
 
         if (calcvar) {
-            N = Matrix.square(dim);
+            N = FastMatrix.square(dim);
         }
     }
 
@@ -175,7 +175,7 @@ public class OrdinarySmoother {
             iterateN(pos);
         }
         DataBlock fa = frslts.a(pos);
-        Matrix fP = frslts.P(pos);
+        FastMatrix fP = frslts.P(pos);
         if (fP == null) {
             return false;
         }
@@ -185,9 +185,9 @@ public class OrdinarySmoother {
         a.addProduct(R, fP.columnsIterator());
         if (calcvar) {
             // P = P-PNP
-            Matrix P = state.P();
+            FastMatrix P = state.P();
             P.copy(fP);
-            Matrix V = SymmetricMatrix.XtSX(N, P);
+            FastMatrix V = SymmetricMatrix.XtSX(N, P);
             P.sub(V);
         }
         return true;

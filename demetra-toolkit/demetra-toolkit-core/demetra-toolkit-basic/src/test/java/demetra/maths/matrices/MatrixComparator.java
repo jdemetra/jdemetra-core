@@ -16,8 +16,6 @@
  */
 package demetra.maths.matrices;
 
-import demetra.maths.matrices.Matrix;
-import demetra.maths.matrices.Matrix;
 import demetra.data.DeprecatedDoubles;
 import demetra.data.DoubleSeq;
 
@@ -27,7 +25,7 @@ import demetra.data.DoubleSeq;
  */
 public class MatrixComparator {
 
-    public static double distance(final Matrix m, final ec.tstoolkit.maths.matrices.Matrix o) {
+    public static double distance(final FastMatrix m, final ec.tstoolkit.maths.matrices.Matrix o) {
         final int nrows = m.getRowsCount();
         if (o.getRowsCount() != nrows) {
             return Double.MAX_VALUE;
@@ -37,7 +35,7 @@ public class MatrixComparator {
         return DeprecatedDoubles.normInf(delta);
     }
 
-    public static double distance(final Matrix m, final Matrix o) {
+    public static double distance(final FastMatrix m, final FastMatrix o) {
         final int nrows = m.getRowsCount();
         if (o.getRowsCount() != nrows) {
             return Double.MAX_VALUE;
@@ -47,7 +45,7 @@ public class MatrixComparator {
         return DeprecatedDoubles.normInf(delta);
     }
 
-    public static ec.tstoolkit.maths.matrices.Matrix toLegacy(Matrix M) {
+    public static ec.tstoolkit.maths.matrices.Matrix toLegacy(FastMatrix M) {
         int nrows = M.getRowsCount(), ncols = M.getColumnsCount();
         ec.tstoolkit.maths.matrices.Matrix O = new ec.tstoolkit.maths.matrices.Matrix(nrows, ncols);
         for (int c = 0; c < ncols; ++c) {
@@ -58,9 +56,9 @@ public class MatrixComparator {
         return O;
     }
 
-    public static Matrix fromLegacy(ec.tstoolkit.maths.matrices.Matrix M) {
+    public static FastMatrix fromLegacy(ec.tstoolkit.maths.matrices.Matrix M) {
         int nrows = M.getRowsCount(), ncols = M.getColumnsCount();
-        Matrix N = Matrix.make(nrows, ncols);
+        FastMatrix N = FastMatrix.make(nrows, ncols);
         for (int c = 0; c < ncols; ++c) {
             for (int r = 0; r < nrows; ++r) {
                 N.set(r, c, M.get(r, c));

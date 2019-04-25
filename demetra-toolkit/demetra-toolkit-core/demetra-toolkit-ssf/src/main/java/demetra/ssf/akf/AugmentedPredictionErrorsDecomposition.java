@@ -19,7 +19,7 @@ package demetra.ssf.akf;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.IPredictionErrorDecomposition;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
@@ -48,7 +48,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
     // -s = a * b'
     // s' * S^-1 * s = b * a' * S^-1 * a * b' = b * b'
     // q - s' * S^-1 * s = c * c
-    private Matrix Q, B;
+    private FastMatrix Q, B;
     private int n, nd;
     
     /**
@@ -79,7 +79,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         // update the state vector
         B = state.B().deepClone();
         int d = B.getColumnsCount();
-        Matrix S = a().deepClone();
+        FastMatrix S = a().deepClone();
         LowerTriangularMatrix.rsolve(S, B.transpose());
         DataBlock D = DataBlock.of(b());
         LowerTriangularMatrix.lsolve(S, D);
@@ -92,7 +92,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         return true;
     }
 
-    public Matrix a() {
+    public FastMatrix a() {
         return Q.extract(0, nd, 0, nd);
     }
 
@@ -108,7 +108,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
      * B*a^-1'
      * @return 
      */
-    public Matrix B(){
+    public FastMatrix B(){
         return B;
     }
 
@@ -120,15 +120,15 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         this.det=0;
         this.n = 0;
         this.nd = nd;
-        Q = Matrix.make(nd + 1, nd + 1+nvars);
+        Q = FastMatrix.make(nd + 1, nd + 1+nvars);
     }
 
     @Override
     public void save(final int t, final MultivariateAugmentedUpdateInformation pe) {
         DataBlock U = pe.getTransformedPredictionErrors();
-        Matrix L=pe.getCholeskyFactor();
+        FastMatrix L=pe.getCholeskyFactor();
         DataBlock D=L.diagonal();
-        Matrix E = pe.E();
+        FastMatrix E = pe.E();
         int nvars=E.getColumnsCount();
         n+=nvars;
         LogSign sld = LogSign.of(D);
@@ -138,7 +138,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         ElementaryTransformations.fastGivensTriangularize(Q);
     }
 
-    public Matrix getFinalQ() {
+    public FastMatrix getFinalQ() {
         return Q;
     }
 

@@ -5,7 +5,7 @@
  */
 package demetra.msts.internal;
 
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.msts.ArInterpreter;
 import demetra.msts.MstsMapping;
 import demetra.msts.VarianceInterpreter;

@@ -22,7 +22,7 @@ import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.functions.FunctionException;
 import demetra.maths.functions.ParamValidation;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
@@ -217,7 +217,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
         // number of invalid coefficients
     }
 
-    public Matrix expandCovariance(Matrix cov) {
+    public FastMatrix expandCovariance(FastMatrix cov) {
         int dim = getDim();
         if (cov.getColumnsCount() != dim) {
             return null;
@@ -228,7 +228,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
                 idx[j++] = i;
             }
         }
-        Matrix ecov = Matrix.make(fixedItems.length, fixedItems.length);
+        FastMatrix ecov = FastMatrix.make(fixedItems.length, fixedItems.length);
         for (int i = 0; i < dim; ++i) {
             for (int j = 0; j <= i; ++j) {
                 double s = cov.get(i, j);

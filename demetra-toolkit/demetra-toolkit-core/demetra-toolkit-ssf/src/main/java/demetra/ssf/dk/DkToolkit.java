@@ -22,7 +22,7 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataBlockStorage;
 import demetra.maths.functions.IParametricMapping;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
@@ -269,7 +269,7 @@ public class DkToolkit {
             filter.process(ssf, data, pe);
             DiffuseLikelihood likelihood = pe.likelihood();
             int collapsing = pe.getEndDiffusePosition();
-            Matrix M = Matrix.make(collapsing, ssf.getDiffuseDim());
+            FastMatrix M = FastMatrix.make(collapsing, ssf.getDiffuseDim());
             ssf.diffuseEffects(M);
             int j = 0;
             for (int i = 0; i < collapsing; ++i) {
@@ -316,7 +316,7 @@ public class DkToolkit {
             filter.process(ssf, data, pe);
             DiffuseLikelihood likelihood = pe.likelihood();
             int collapsing = pe.getEndDiffusePosition();
-            Matrix M = Matrix.make(collapsing, ssf.getDiffuseDim());
+            FastMatrix M = FastMatrix.make(collapsing, ssf.getDiffuseDim());
             ssf.diffuseEffects(M);
             int j = 0;
             for (int i = 0; i < collapsing; ++i) {
@@ -362,7 +362,7 @@ public class DkToolkit {
             DiffuseLikelihood ll = pe.likelihood();
             DoubleSeq yl = pe.errors(true, true);
             int nl = yl.length();
-            Matrix xl = xl(model, filter, nl);
+            FastMatrix xl = xl(model, filter, nl);
             if (xl == null) {
                 return DiffuseConcentratedLikelihood.builder(ll.dim(), ll.getD())
                         .ssqErr(ll.ssq())
@@ -388,7 +388,7 @@ public class DkToolkit {
                     DataBlock res = DataBlock.make(nl - rank);
                     qr.leastSquares(yl, b, res);
                     double ssqerr = res.ssq();
-                    Matrix u = UpperTriangularMatrix.inverse(qr.r(true));
+                    FastMatrix u = UpperTriangularMatrix.inverse(qr.r(true));
                     int[] unused = qr.unused();
                     // expand the results, if need be
                     b = expand(b, unused);
@@ -413,7 +413,7 @@ public class DkToolkit {
                         dcorr += lregdet;
                         d += ndc;
                     }
-                    Matrix bvar = SymmetricMatrix.UUt(u);
+                    FastMatrix bvar = SymmetricMatrix.UUt(u);
                     return DiffuseConcentratedLikelihood.builder(nobs, d)
                             .ssqErr(ssqerr)
                             .logDeterminant(ldet)
@@ -443,12 +443,12 @@ public class DkToolkit {
             return DataBlock.of(bc);
         }
 
-        private Matrix expand(Matrix v, int[] unused) {
+        private FastMatrix expand(FastMatrix v, int[] unused) {
             if (unused == null) {
                 return v;
             }
             int nx = v.getColumnsCount() + unused.length;
-            Matrix bvar = Matrix.square(nx);
+            FastMatrix bvar = FastMatrix.square(nx);
             for (int i = 0, j = 0, k = 0; i < nx; ++i) {
                 if (k < unused.length && i == unused[k]) {
                     ++k;
@@ -507,12 +507,12 @@ public class DkToolkit {
             }
         }
 
-        private Matrix xl(SsfRegressionModel model, DkFilter lp, int nl) {
-            Matrix x = model.getX();
+        private FastMatrix xl(SsfRegressionModel model, DkFilter lp, int nl) {
+            FastMatrix x = model.getX();
             if (x == null) {
                 return null;
             }
-            Matrix xl = Matrix.make(nl, x.getColumnsCount());
+            FastMatrix xl = FastMatrix.make(nl, x.getColumnsCount());
             DataBlockIterator lcols = xl.columnsIterator();
             DataBlockIterator cols = x.columnsIterator();
             while (cols.hasNext() && lcols.hasNext()) {

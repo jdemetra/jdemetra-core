@@ -6,7 +6,7 @@
 package demetra.r;
 
 import demetra.data.WeeklyData;
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

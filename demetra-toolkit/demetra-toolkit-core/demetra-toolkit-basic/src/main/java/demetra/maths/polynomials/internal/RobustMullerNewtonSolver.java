@@ -21,6 +21,7 @@ import static demetra.design.AlgorithmImplementation.Feature.Robust;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
 import demetra.maths.Complex;
+import demetra.maths.ComplexMath;
 import demetra.maths.polynomials.LeastSquaresDivision;
 import demetra.maths.polynomials.Polynomial;
 import demetra.util.Ref;
@@ -34,7 +35,7 @@ import demetra.maths.polynomials.spi.RootsSolver;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@AlgorithmImplementation(algorithm=RootsSolver.class, feature=Robust)
+@AlgorithmImplementation(algorithm = RootsSolver.class, feature = Robust)
 public class RobustMullerNewtonSolver implements RootsSolver {
 
     private double[] polynomial;
@@ -583,7 +584,7 @@ public class RobustMullerNewtonSolver implements RootsSolver {
         final Complex C2 = computeC2(q2, f2);
 
         /* discr = B2^2 - 4A2C2 */
-        final Complex rdiscr = computeDiscr(B2, A2, C2).sqrt();
+        final Complex rdiscr = ComplexMath.sqrt(computeDiscr(B2, A2, C2));
 
         /* denominators ofInternal q2 */
         final Complex N1 = B2.minus(rdiscr);

@@ -16,7 +16,7 @@
  */
 package demetra.tempdisagg.univariate;
 
-import demetra.data.Cumulator;
+import demetra.data.transformation.Cumulator;
 import demetra.data.AggregationType;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
@@ -25,7 +25,7 @@ import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.data.normalizer.IDataNormalizer;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.Regression;
 import demetra.timeseries.TsData;
@@ -56,7 +56,8 @@ class DisaggregationModelBuilder {
 
     // local information used in the building operation
     double[] hO, hY, hEY;
-    Matrix hX, hEX;
+    FastMatrix hX;
+    FastMatrix hEX;
     TsDomain lEDom, hDom, hEDom;
     int frequencyRatio;
     double yfactor = 1;

@@ -22,7 +22,7 @@ import demetra.data.DataBlock;
 import demetra.linearsystem.internal.QRLinearSystemSolver;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
@@ -46,7 +46,7 @@ public class AutoCovarianceComputers {
             RationalFunction rfe = RationalFunction.of(ma, ar);
             double[] cr = rfe.coefficients(q+1);
 
-            Matrix M = Matrix.square(r0);
+            FastMatrix M = FastMatrix.square(r0);
             DataBlock x = DataBlock.of(c, 0, r0);
             for (int i = 0; i <= q; ++i) {
                 double s = 0;

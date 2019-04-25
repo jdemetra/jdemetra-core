@@ -18,7 +18,7 @@ package demetra.ssf;
 
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.MatrixWindow;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.multivariate.IMultivariateSsf;
@@ -79,7 +79,7 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void V(int pos, Matrix qm) {
+    public void V(int pos, FastMatrix qm) {
         MatrixWindow cur = qm.topLeft();
         for (int i = 0; i < dyn.length; ++i) {
             cur.next(dim[i], dim[i]);
@@ -98,7 +98,7 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void S(int pos, Matrix sm) {
+    public void S(int pos, FastMatrix sm) {
         MatrixWindow cur = sm.topLeft();
         for (int i = 0; i < dyn.length; ++i) {
             int rcount = dim[i];
@@ -137,7 +137,7 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void T(int pos, Matrix tr) {
+    public void T(int pos, FastMatrix tr) {
         MatrixWindow cur = tr.topLeft();
         for (int i = 0, j = 0; i < dyn.length; ++i) {
             cur.next(dim[i], dim[i]);
@@ -155,7 +155,7 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void TM(int pos, Matrix x) {
+    public void TM(int pos, FastMatrix x) {
         MatrixWindow cur = x.top(dim[0]);
         dyn[0].TM(pos, cur);
         for (int i = 1; i < dyn.length; ++i) {
@@ -173,7 +173,7 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void TVT(int pos, Matrix v) {
+    public void TVT(int pos, FastMatrix v) {
         MatrixWindow D = v.topLeft();
         for (int i = 0; i < dyn.length; ++i) {
             int ni = dim[i];
@@ -184,7 +184,7 @@ public class CompositeDynamics implements ISsfDynamics {
                 int nj = dim[j];
                 C.vnext(nj);
                 R.hnext(nj);
-                Matrix Ct = C.transpose();
+                FastMatrix Ct = C.transpose();
                 dyn[j].TM(pos, C);
                 dyn[i].TM(pos, Ct);
                 R.copy(Ct);
@@ -193,7 +193,7 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void addV(int pos, Matrix p
+    public void addV(int pos, FastMatrix p
     ) {
         MatrixWindow cur = p.topLeft();
         for (int i = 0; i < dyn.length; ++i) {

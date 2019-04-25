@@ -11,8 +11,8 @@ import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
-import demetra.maths.MatrixType;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.FastMatrix;
 import demetra.msts.CompositeModel;
 import demetra.msts.CompositeModelEstimation;
 import demetra.ssf.implementations.Loading;
@@ -58,7 +58,7 @@ public class CompositeModelTest {
         eq.add("n", .1, false, null);
         model.add(eq);
         int len = Data.ABS_RETAIL.length;
-        Matrix M = Matrix.make(len, 1);
+        FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, 1e-15, false, true, null);
         System.out.println(DataBlock.of(rslt.getFullParameters()));
@@ -69,7 +69,7 @@ public class CompositeModelTest {
 
     @Test
     public void testX() {
-        Matrix x = Matrix.make(data.getRowsCount(), 6);
+        FastMatrix x = FastMatrix.make(data.getRowsCount(), 6);
         x.column(0).copy(data.column(0));
         x.column(1).copy(data.column(9));
         x.column(2).copy(data.column(2));

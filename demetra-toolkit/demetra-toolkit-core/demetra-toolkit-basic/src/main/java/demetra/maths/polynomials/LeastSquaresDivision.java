@@ -19,8 +19,8 @@ package demetra.maths.polynomials;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.Constants;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.internal.Householder;
 import demetra.data.DoubleSeq;
 
@@ -45,7 +45,7 @@ public class LeastSquaresDivision {
             }
             int q = n - d + 1;
             coeff = new double[q];
-            Matrix m = Matrix.make(n, q);
+            FastMatrix m = FastMatrix.make(n, q);
             DataBlockIterator columns = m.columnsIterator();
             int c = 0;
             while (columns.hasNext()) {

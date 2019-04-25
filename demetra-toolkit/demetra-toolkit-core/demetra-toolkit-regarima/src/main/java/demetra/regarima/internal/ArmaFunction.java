@@ -25,7 +25,7 @@ import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ssq.ISsqFunction;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import demetra.data.DoubleSeq;
@@ -52,7 +52,7 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
         private boolean mt = false;
         // model
         private final DoubleSeq dy;
-        private Matrix x;
+        private FastMatrix x;
         private int nmissing;
         // mapping
         private IParametricMapping<S> mapping;
@@ -61,7 +61,7 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
             this.dy = dy;
         }
 
-        public Builder variables(Matrix x) {
+        public Builder variables(FastMatrix x) {
             this.x = x;
             return this;
         }
@@ -108,7 +108,7 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
 
     // model
     final DoubleSeq dy;
-    final Matrix x;
+    final FastMatrix x;
     final int nmissing;
     // mapping
     final IParametricMapping<S> mapping;
@@ -119,7 +119,7 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
     final boolean mt;
 
     private ArmaFunction(final DoubleSeq dy,
-            final Matrix x,
+            final FastMatrix x,
             final int nm,
             final IParametricMapping<S> mapping,
             final ConcentratedLikelihoodComputer cll,

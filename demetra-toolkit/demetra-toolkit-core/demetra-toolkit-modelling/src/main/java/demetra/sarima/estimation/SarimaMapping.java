@@ -78,7 +78,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
             return checkStability(c.get(1), c.get(0));
         }
 
-        return demetra.maths.linearfilters.Utility.checkStability(c.extract(0, nc));
+        return demetra.maths.linearfilters.FilterUtility.checkStability(c.extract(0, nc));
     }
 
     private static boolean stabilize(boolean all, SarimaSpecification spec, DataBlock p) {

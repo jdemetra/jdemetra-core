@@ -18,7 +18,7 @@ package demetra.ssf.array;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.decomposition.ElementaryTransformations;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
@@ -45,7 +45,7 @@ public class ArrayFilter {
     private ISsfDynamics dynamics;
     private ISsfData data_;
     private int curPos, end, dim_, nres_;
-    private Matrix A;
+    private FastMatrix A;
 
     /**
      *
@@ -66,7 +66,7 @@ public class ArrayFilter {
         end = data_.length();
         nres_ = dynamics.getInnovationsDim();
         dim_ = ssf.getStateDim();
-        A = Matrix.make(dim_ + 1, dim_ + 1 + nres_);
+        A = FastMatrix.make(dim_ + 1, dim_ + 1 + nres_);
         return true;
     }
 
@@ -75,7 +75,7 @@ public class ArrayFilter {
         predictionError = new UpdateInformation(dim_);
         ISsfInitialization initialization = ssf.initialization();
         initialization.a0(state_.a);
-        Matrix P0 = Matrix.make(dim_, dim_);
+        FastMatrix P0 = FastMatrix.make(dim_, dim_);
         initialization.Pf0(P0);
         SymmetricMatrix.lcholesky(P0, State.ZERO);
         state_.L.copy(P0);
@@ -142,11 +142,11 @@ public class ArrayFilter {
         return A.row(0).range(1, 1 + dim_);
     }
 
-    private Matrix L() {
+    private FastMatrix L() {
         return A.extract(1, dim_, 1, dim_);
     }
 
-    private Matrix U() {
+    private FastMatrix U() {
         return A.extract(1, dim_, 1 + dim_, A.getColumnsCount()-dim_-1);
     }
 }

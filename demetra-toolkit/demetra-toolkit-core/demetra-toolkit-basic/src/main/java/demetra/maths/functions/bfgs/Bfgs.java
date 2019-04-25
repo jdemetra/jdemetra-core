@@ -8,12 +8,12 @@ package demetra.maths.functions.bfgs;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.MatrixException;
 import demetra.maths.functions.FunctionException;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IFunctionMinimizer;
 import demetra.maths.functions.IFunctionPoint;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
 
@@ -123,7 +123,7 @@ public class Bfgs implements IFunctionMinimizer {
     private IFunctionPoint fcur;
     private double Fmin;
     private double[] btry;
-    private Matrix H;
+    private FastMatrix H;
     private DoubleSeq g;
 
     public Bfgs(Builder builder) {
@@ -140,7 +140,7 @@ public class Bfgs implements IFunctionMinimizer {
     private void vmmin(DoubleSeq b, IFunction fn) {
         boolean accpoint, enough;
         double[] t, X, c;
-        Matrix B;
+        FastMatrix B;
         int count, funcount, gradcount;
         double f, gradproj;
         int i, j, ilast;
@@ -163,7 +163,7 @@ public class Bfgs implements IFunctionMinimizer {
             throw new FunctionException("REPORT must be > 0 (method = \"BFGS\")");
         }
         t = new double[n];
-        B = Matrix.square(n);
+        B = FastMatrix.square(n);
 
         if (!Double.isFinite(f)) {
             throw new FunctionException("initial value in 'vmmin' is not finite");
@@ -333,7 +333,7 @@ public class Bfgs implements IFunctionMinimizer {
     }
 
     @Override
-    public Matrix curvatureAtMinimum() {
+    public FastMatrix curvatureAtMinimum() {
         return H;
     }
 

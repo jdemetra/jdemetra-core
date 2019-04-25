@@ -31,6 +31,7 @@ import lombok.NonNull;
 import demetra.maths.PolynomialType;
 import demetra.maths.polynomials.spi.RootsSolver;
 import demetra.data.DoubleSeq;
+import demetra.maths.ComplexUtility;
 
 /**
  *
@@ -188,7 +189,7 @@ public final class Polynomial implements PolynomialType {
         p[0] = 1;
         p[n] = -c;
         Polynomial F = Polynomial.ofInternal(p);
-        Complex[] ur = Complex.unitRoots(n);
+        Complex[] ur = ComplexUtility.unitRoots(n);
         if (c > 0 || n % 2 == 1) {
             double rc;
             if (c > 0) {

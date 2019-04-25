@@ -10,8 +10,8 @@ import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlock;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.maths.MatrixType;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.sarima.SarimaModel;
@@ -43,7 +43,7 @@ public class MovingRegression {
     @lombok.Data
     static class Airline {
 
-        Matrix td;
+        FastMatrix td;
         double regVariance;
         double theta, btheta;
     }
@@ -109,7 +109,7 @@ public class MovingRegression {
 
         DayClustering dc = days(td);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        Matrix x = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(gtd));
+        FastMatrix x = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(gtd));
 
         RegSarimaProcessor monitor = RegSarimaProcessor.builder()
                 .useParallelProcessing(true)
@@ -129,7 +129,7 @@ public class MovingRegression {
         TimeSelector sel = TimeSelector.first(nyears * period);
         TsDomain dom = s.getDomain().select(sel);
         while (dom.end().isBefore(s.getDomain().end())) {
-            Matrix mtd = generate(dom, dc);
+            FastMatrix mtd = generate(dom, dc);
             TsData yc = fitToDomain(s, dom);
             RegArimaModel.Builder<SarimaModel> builder = RegArimaModel.builder(SarimaModel.class)
                     .y(yc.getValues())
@@ -145,7 +145,7 @@ public class MovingRegression {
 //        for (int i = 1; i < xi.length; ++i) {
 //            xi[i] = xi[i - 1] + period;
 //        }
-        Matrix cl = Matrix.make(s.length(), x.getColumnsCount());
+        FastMatrix cl = FastMatrix.make(s.length(), x.getColumnsCount());
         cl.set(Double.NaN);
         int j = 0;
         for (; j < (period * nyears) / 2; ++j) {
@@ -196,19 +196,19 @@ public class MovingRegression {
         return dc;
     }
 
-    private Matrix generate(TsDomain domain, DayClustering dc) {
+    private FastMatrix generate(TsDomain domain, DayClustering dc) {
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
     }
 
-    private Matrix generateVar(DayClustering dc, String var) {
+    private FastMatrix generateVar(DayClustering dc, String var) {
         int groupsCount = dc.getGroupsCount();
-        Matrix full = Matrix.square(7);
+        FastMatrix full = FastMatrix.square(7);
         if (!var.equalsIgnoreCase("Contrasts")) {
             full.set(-1.0 / 7.0);
         }
         full.diagonal().add(1);
-        Matrix Q = Matrix.make(groupsCount - 1, 7);
+        FastMatrix Q = FastMatrix.make(groupsCount - 1, 7);
         int[] gdef = dc.getGroupsDefinition();
         for (int i = 1; i < groupsCount; ++i) {
             for (int j = 0; j < 7; ++j) {

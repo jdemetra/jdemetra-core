@@ -17,7 +17,7 @@
 package demetra.tempdisagg.univariate;
 
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import javax.annotation.Nonnull;
@@ -48,12 +48,12 @@ class DisaggregationModel {
     /**
      * Regression variables. Defined on the high level domain. Could be null
      */
-    Matrix hX;
+    FastMatrix hX;
     /**
      * Regression variables transformed to match the aggregation mode
      * (cumulative variables). Defined on the high level domain.
      */
-    Matrix hEX;
+    FastMatrix hEX;
     /**
      * low-frequency domain. Domain of y
      */

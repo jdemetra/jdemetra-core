@@ -16,7 +16,7 @@
  */
 package demetra.data.normalizer;
 
-import demetra.data.transformation.DoubleAccumulator;
+import demetra.data.accumulator.DoubleAccumulator;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Robust;
 import java.math.BigDecimal;

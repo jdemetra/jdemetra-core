@@ -5,6 +5,7 @@
  */
 package demetra.data;
 
+import demetra.data.analysis.TukeyHanningTaper;
 import demetra.design.Demo;
 import java.util.Random;
 import org.junit.Test;

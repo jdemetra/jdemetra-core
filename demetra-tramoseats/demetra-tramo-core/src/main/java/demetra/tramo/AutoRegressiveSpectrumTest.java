@@ -17,8 +17,8 @@
 
 package demetra.tramo;
 
-import demetra.data.AutoRegressiveSpectrum;
-import demetra.data.Periodogram;
+import demetra.data.analysis.AutoRegressiveSpectrum;
+import demetra.data.analysis.Periodogram;
 import demetra.stats.DescriptiveStatistics;
 import demetra.data.DoubleSeq;
 

@@ -16,7 +16,7 @@
  */
 package demetra.r;
 
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import org.junit.Test;

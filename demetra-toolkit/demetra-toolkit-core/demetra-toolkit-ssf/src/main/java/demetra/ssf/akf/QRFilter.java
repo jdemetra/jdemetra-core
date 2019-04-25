@@ -21,7 +21,7 @@ import demetra.ssf.likelihood.MarginalLikelihood;
 import demetra.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.likelihood.DeterminantalTerm;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
@@ -47,7 +47,7 @@ public class QRFilter {
     private MarginalLikelihood mll;
     private DiffuseLikelihood dll;
     private ISsfData o;
-    private Matrix R, X, Xl;
+    private FastMatrix R, X, Xl;
     private DataBlock yl, b, e;
     private double ldet, ssq, dcorr, pcorr, mcorr;
 
@@ -84,12 +84,12 @@ public class QRFilter {
         ldet = det.getLogDeterminant();
 
         // apply the filter on the diffuse effects
-        X = Matrix.make(data.length(), ssf.getDiffuseDim());
+        X = FastMatrix.make(data.length(), ssf.getDiffuseDim());
         ssf.diffuseEffects(X);
         yl = DataBlock.of(fr.errors(true, true));
         FastFilter ffilter = new FastFilter(ssf, fr, new ResultsRange(0, data.length()));
         int n = ffilter.getOutputLength(X.getRowsCount());
-        Xl = Matrix.make(n, X.getColumnsCount());
+        Xl = FastMatrix.make(n, X.getColumnsCount());
         for (int i = 0; i < X.getColumnsCount(); ++i) {
             ffilter.apply(X.column(i), Xl.column(i));
         }
@@ -105,7 +105,7 @@ public class QRFilter {
             return null;
         int collapsing = pe.getCollapsingPosition();
         DiffuseLikelihood likelihood = pe.likelihood();
-        Matrix M = Matrix.make(collapsing, ssf.getDiffuseDim());
+        FastMatrix M = FastMatrix.make(collapsing, ssf.getDiffuseDim());
         ssf.diffuseEffects(M);
         int j = 0;
         for (int i = 0; i < collapsing; ++i) {
@@ -136,9 +136,9 @@ public class QRFilter {
         }
 
         Householder housx = new Householder();
-        Matrix Q = X;
+        FastMatrix Q = X;
         if (X.getRowsCount() != Xl.getRowsCount()) {
-            Q = Matrix.make(Xl.getRowsCount(), X.getColumnsCount());
+            Q = FastMatrix.make(Xl.getRowsCount(), X.getColumnsCount());
             for (int i = 0, j = 0; i < o.length(); ++i) {
                 if (!o.isMissing(i)) {
                     Q.row(j++).copy(X.row(i));
@@ -181,7 +181,7 @@ public class QRFilter {
         }
 
         int n = Xl.getRowsCount();
-        Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
+        FastMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(R));
         bvar.mul(ssq / n);
         pll = new ProfileLikelihood();

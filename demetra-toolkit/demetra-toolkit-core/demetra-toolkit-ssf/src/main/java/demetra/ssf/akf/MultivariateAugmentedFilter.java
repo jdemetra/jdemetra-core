@@ -19,7 +19,7 @@ package demetra.ssf.akf;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DeprecatedDoubles;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.StateInfo;
 import demetra.ssf.multivariate.IMultivariateSsf;
@@ -104,9 +104,9 @@ public class MultivariateAugmentedFilter {
         // P = P - (M)* F^-1 *(M)' --> Symmetric
         // PZ'(LL')^-1 ZP' =PZ'L'^-1*L^-1*ZP'
         // A = a + (M)* F^-1 * v
-        Matrix P = state.P();
+        FastMatrix P = state.P();
         DataBlock U = updinfo.getTransformedPredictionErrors();
-        Matrix K = updinfo.getK();
+        FastMatrix K = updinfo.getK();
         for (int i = 0; i < n; ++i) {
             state.a().addAY(U.get(i), K.column(i));
             P.addXaXt(-1, K.column(i));//, state_.K.column(i));

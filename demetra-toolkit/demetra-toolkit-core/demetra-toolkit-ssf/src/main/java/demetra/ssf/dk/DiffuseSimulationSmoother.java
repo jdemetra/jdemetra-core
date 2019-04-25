@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockStorage;
 import demetra.dstats.Normal;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.random.JdkRNG;
 import demetra.ssf.ISsfDynamics;
@@ -58,7 +58,7 @@ public class DiffuseSimulationSmoother {
 
     private static final double EPS = 1e-8;
 
-    private Matrix LA;
+    private FastMatrix LA;
     private final ISsf ssf;
     private final ISsfData data;
     private final ISsfDynamics dynamics;
@@ -96,7 +96,7 @@ public class DiffuseSimulationSmoother {
 
     private void initSsf() {
         int dim = ssf.getStateDim();
-        LA = Matrix.square(dim);
+        LA = FastMatrix.square(dim);
         ssf.initialization().Pf0(LA);
         SymmetricMatrix.lcholesky(LA, EPS);
 
@@ -239,7 +239,7 @@ public class DiffuseSimulationSmoother {
         private void computeInitialState() {
             // initial state
             a0 = DataBlock.make(dim);
-            Matrix Pf0 = Matrix.square(dim);
+            FastMatrix Pf0 = FastMatrix.square(dim);
             ISsfInitialization initializer = ssf.initialization();
             initializer.a0(a0);
             initializer.Pf0(Pf0);
@@ -248,7 +248,7 @@ public class DiffuseSimulationSmoother {
 
             // non stationary initialisation
             if (initializer.isDiffuse()) {
-                Matrix Pi0 = Matrix.square(dim);
+                FastMatrix Pi0 = FastMatrix.square(dim);
                 initializer.Pi0(Pi0);
                 a0.addProduct(Ri, Pi0.columnsIterator());
             }

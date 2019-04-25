@@ -6,8 +6,8 @@
 package demetra.r;
 
 import demetra.data.AggregationType;
-import demetra.maths.MatrixType;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
@@ -96,7 +96,7 @@ public class TsUtility {
 
     public MatrixType holidays(Holidays all, String date, int length, String type) {
         LocalDate start = LocalDate.parse(date);
-        Matrix m = Matrix.make(length, all.elements().length);
+        FastMatrix m = FastMatrix.make(length, all.elements().length);
         switch (type) {
             case "SkipSundays":
                 HolidaysUtility.fillDays(all.elements(), m, start, true);

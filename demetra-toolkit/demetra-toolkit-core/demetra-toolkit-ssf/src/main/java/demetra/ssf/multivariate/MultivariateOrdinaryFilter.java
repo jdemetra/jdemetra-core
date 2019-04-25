@@ -18,7 +18,7 @@ package demetra.ssf.multivariate;
 
 import demetra.data.DataBlock;
 import demetra.data.DeprecatedDoubles;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
@@ -106,8 +106,8 @@ public class MultivariateOrdinaryFilter {
         // P = P - (M)* F^-1 *(M)' --> Symmetric
         // PZ'(LL')^-1 ZP' =PZ'L'^-1*L^-1*ZP'
         // A = a + (M)* F^-1 * v
-        Matrix P = state.P();
-        Matrix K = updinfo.getK();
+        FastMatrix P = state.P();
+        FastMatrix K = updinfo.getK();
         DataBlock U = updinfo.getTransformedPredictionErrors();
         for (int i = 0; i < n; ++i) {
             P.addXaXt(-1, K.column(i));//, state_.K.column(i));

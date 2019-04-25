@@ -20,7 +20,7 @@ import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.design.BuilderPattern;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;
@@ -124,7 +124,7 @@ public class HannanRissanen {
         this.biascorrection=builder.biascorrection;
     }
     
-    private double[] ls(Matrix mat, double[] y, boolean bbic) {
+    private double[] ls(FastMatrix mat, double[] y, boolean bbic) {
         QRSolver solver = QRSolvers.fastSolver();
         solver.solve(DataBlock.of(y), mat);
         DoubleSeq pi = solver.coefficients();
@@ -147,7 +147,7 @@ public class HannanRissanen {
         double[] a1 = new double[n];
         double[] a2 = new double[n];
         double[] res = new double[n];
-        Matrix mat = Matrix.make(n, np + nq);
+        FastMatrix mat = FastMatrix.make(n, np + nq);
         double[] mdata = mat.getStorage();
         for (int i = 0; i < n; ++i) {
             int picur = 0;
@@ -335,7 +335,7 @@ public class HannanRissanen {
         int np = m_spec.getP() + m_spec.getBp() * (1 + m_spec.getP());
         int nq = m_spec.getQ() + m_spec.getBq() * (1 + m_spec.getQ());
 
-        Matrix mat =  Matrix.make(nc, np + nq);
+        FastMatrix mat =  FastMatrix.make(nc, np + nq);
         double[] dmat = mat.getStorage();
         double[] data = new double[nc];
         System.arraycopy(m_data, m, data, 0, nc);

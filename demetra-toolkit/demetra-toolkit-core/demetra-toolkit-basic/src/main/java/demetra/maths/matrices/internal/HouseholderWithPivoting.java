@@ -20,8 +20,8 @@ import demetra.data.DataBlock;
 import demetra.data.DataWindow;
 import demetra.design.Development;
 import demetra.maths.Constants;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.data.DoubleSeq;
 
@@ -52,7 +52,7 @@ public class HouseholderWithPivoting implements IQRDecomposition {
      * @param m
      */
     @Override
-    public void decompose(Matrix m) {
+    public void decompose(FastMatrix m) {
         init(m);
         householder();
     }
@@ -67,13 +67,13 @@ public class HouseholderWithPivoting implements IQRDecomposition {
     }
 
     @Override
-    public Matrix r(boolean compact) {
+    public FastMatrix r(boolean compact) {
         if (compact) {
-            Matrix r = Matrix.square(n);
+            FastMatrix r = FastMatrix.square(n);
             return r;
 
         } else {
-            Matrix r = Matrix.square(norig);
+            FastMatrix r = FastMatrix.square(norig);
             return r;
         }
     }
@@ -212,7 +212,7 @@ public class HouseholderWithPivoting implements IQRDecomposition {
 
     }
 
-    private void init(Matrix M) {
+    private void init(FastMatrix M) {
         m = M.getRowsCount();
         norig = n = M.getColumnsCount();
         qr = M.data();

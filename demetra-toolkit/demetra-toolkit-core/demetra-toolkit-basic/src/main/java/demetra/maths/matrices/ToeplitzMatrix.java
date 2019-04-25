@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.data.DataWindow;
 import demetra.design.Development;
 import demetra.maths.Complex;
-import demetra.data.FFT;
+import demetra.data.analysis.FFT;
 import demetra.design.Immutable;
 import demetra.util.Arrays2;
 
@@ -127,8 +127,8 @@ public final class ToeplitzMatrix {
         this.r = r.clone();
     }
     
-    public Matrix asMatrix() {
-        Matrix T = Matrix.square(r.length);
+    public FastMatrix asMatrix() {
+        FastMatrix T = FastMatrix.square(r.length);
         DataBlock diag = T.diagonal();
         diag.set(r[0]);
         DataWindow ldiag = diag.window();
@@ -145,9 +145,9 @@ public final class ToeplitzMatrix {
      *
      * @return
      */
-    public Matrix inverse() {
+    public FastMatrix inverse() {
         int n = r.length, nc = n - 1;
-        Matrix m = Matrix.square(n);
+        FastMatrix m = FastMatrix.square(n);
         // double[] rc = new double[nc];
         // Array.Copy(m_r, rc, nc);
         double[] y = solveDurbinSystem(r);

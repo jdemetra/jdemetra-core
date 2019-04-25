@@ -18,7 +18,7 @@
  */
 package demetra.sts;
 
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 
 /**
@@ -68,9 +68,9 @@ public class BasicStructuralModel {
         return spec;
     }
 
-    private static void svar(int freq, Matrix O) {
+    private static void svar(int freq, FastMatrix O) {
         int n = freq - 1;
-        Matrix H = Matrix.make(freq, n);
+        FastMatrix H = FastMatrix.make(freq, n);
         // should be improved
         for (int i = 0; i < freq; ++i) {
             double z = 2 * Math.PI * (i + 1) / freq;

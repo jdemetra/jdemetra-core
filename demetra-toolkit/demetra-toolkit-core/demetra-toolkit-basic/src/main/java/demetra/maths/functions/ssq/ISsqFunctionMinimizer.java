@@ -17,7 +17,7 @@
 package demetra.maths.functions.ssq;
 
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
 
 
@@ -50,7 +50,7 @@ public interface ISsqFunctionMinimizer {
      *
      * @return
      */
-    Matrix curvatureAtMinimum();
+    FastMatrix curvatureAtMinimum();
 
     /**
      *

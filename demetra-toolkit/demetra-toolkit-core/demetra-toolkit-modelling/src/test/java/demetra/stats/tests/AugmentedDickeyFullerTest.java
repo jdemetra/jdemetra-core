@@ -21,7 +21,7 @@ import demetra.dstats.Normal;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.random.MersenneTwister;
 import java.io.IOException;
 import java.util.Arrays;
@@ -86,8 +86,8 @@ public class AugmentedDickeyFullerTest {
                 L[i] = lprev + 100;
             }
         }
-        Matrix X = Matrix.make(M * S, 3);
-        Matrix Y = Matrix.make(M * S, 9);
+        FastMatrix X = FastMatrix.make(M * S, 3);
+        FastMatrix Y = FastMatrix.make(M * S, 9);
         for (int i = 0, k = 0; i < M; ++i) {
             for (int j = 0; j < S; ++j, ++k) {
                 double[] pct = simulate(R, L[i], false, false);

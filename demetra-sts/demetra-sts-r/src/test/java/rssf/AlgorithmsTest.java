@@ -10,7 +10,7 @@ import demetra.msts.ModelEquation;
 import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.msts.CompositeModel;
 import demetra.msts.CompositeModelEstimation;
 import org.junit.Test;
@@ -128,7 +128,7 @@ public class AlgorithmsTest {
     @Test
     public void testBsm() {
         int len = BUG.length;
-        Matrix M = Matrix.make(len, 1);
+        FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(BUG, 0);
 //        M.column(0).apply(q->Math.log(q));
         
@@ -164,7 +164,7 @@ public class AlgorithmsTest {
     //@Ignore
     public void testSutse() {
         int len = Data.ABS63.length;
-        Matrix M = Matrix.make(len, 2);
+        FastMatrix M = FastMatrix.make(len, 2);
         M.column(0).copyFrom(Data.ABS63, 0);
         M.column(1).copyFrom(Data.ABS68, 0);
         
@@ -230,7 +230,7 @@ public class AlgorithmsTest {
 //        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
 
         int len = Data.ABS_RETAIL.length;
-        Matrix M = Matrix.make(len, 1);
+        FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         M.column(0).apply(q->Math.log(q));
         CompositeModelEstimation rslt = model.estimate(M, 1e-12, true, true, null);
@@ -252,7 +252,7 @@ public class AlgorithmsTest {
         model.add(eq);
 
         int len = Data.ABS_RETAIL.length;
-        Matrix M = Matrix.make(len, 1);
+        FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, 1e-12, false, true, null);
 
@@ -277,7 +277,7 @@ public class AlgorithmsTest {
 //        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
 
         int len = Data.ABS_RETAIL.length;
-        Matrix M = Matrix.make(len, 1);
+        FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, 1e-12, false, false, null);
 
@@ -298,7 +298,7 @@ public class AlgorithmsTest {
         model.add(eq);
 
         int len = Data.ABS_RETAIL.length;
-        Matrix M = Matrix.make(len, 1);
+        FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, 1e-12, false, false, null);
 

@@ -19,7 +19,7 @@ package demetra.dfm.internal;
 import demetra.data.DataBlock;
 import demetra.dfm.IDfmMeasurement;
 import demetra.dfm.MeasurementDescriptor;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.QuadraticForm;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.implementations.MeasurementsError;
@@ -39,11 +39,11 @@ class Measurements implements ISsfMeasurements {
 
     private final MeasurementDescriptor[] mdesc;
     private final int nf, c;
-    private final Matrix Z;
+    private final FastMatrix Z;
 
-    private static Matrix Z(MeasurementDescriptor[] mdesc, int nf, int c) {
+    private static FastMatrix Z(MeasurementDescriptor[] mdesc, int nf, int c) {
         int mdim = nf * c, vdim = mdesc.length;
-        Matrix Z = Matrix.make(vdim, mdim);
+        FastMatrix Z = FastMatrix.make(vdim, mdim);
         // Measurement
         for (int i = 0; i < vdim; ++i) {
             MeasurementDescriptor zdesc = mdesc[i];
@@ -61,8 +61,8 @@ class Measurements implements ISsfMeasurements {
 
     }
 
-    private static Matrix H(MeasurementDescriptor[] mdesc) {
-        Matrix h = Matrix.square(mdesc.length);
+    private static FastMatrix H(MeasurementDescriptor[] mdesc) {
+        FastMatrix h = FastMatrix.square(mdesc.length);
 
         DataBlock diagonal = h.diagonal();
         for (int i = 0; i < mdesc.length; ++i) {
@@ -71,8 +71,8 @@ class Measurements implements ISsfMeasurements {
         return h;
     }
 
-    private static Matrix R(MeasurementDescriptor[] mdesc) {
-        Matrix r = Matrix.square(mdesc.length);
+    private static FastMatrix R(MeasurementDescriptor[] mdesc) {
+        FastMatrix r = FastMatrix.square(mdesc.length);
 
         DataBlock diagonal = r.diagonal();
         for (int i = 0; i < mdesc.length; ++i) {
@@ -141,12 +141,12 @@ class Measurements implements ISsfMeasurements {
         }
 
         @Override
-        public double ZVZ(int pos, Matrix V) {
+        public double ZVZ(int pos, FastMatrix V) {
             return QuadraticForm.apply(V, Z.row(var));
         }
 
         @Override
-        public void VpZdZ(int pos, Matrix V, double d) {
+        public void VpZdZ(int pos, FastMatrix V, double d) {
             V.addXaXt(d, Z.row(var));
         }
 

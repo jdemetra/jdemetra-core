@@ -8,7 +8,7 @@ package demetra.descriptors.stats;
 import demetra.design.Development;
 import demetra.information.InformationMapping;
 import demetra.likelihood.MaximumLogLikelihood;
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *

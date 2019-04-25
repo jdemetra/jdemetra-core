@@ -19,7 +19,7 @@ package demetra.ssf.implementations;
 import demetra.data.DataBlock;
 import java.text.DecimalFormat;
 import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsfMeasurement;
@@ -61,14 +61,14 @@ public class TimeInvariantLoading implements ISsfLoading {
     }
 
     @Override
-    public double ZVZ(int pos, Matrix V) {
+    public double ZVZ(int pos, FastMatrix V) {
         DataBlock zv = DataBlock.make(V.getColumnsCount());
         zv.product(Z, V.columnsIterator());
         return zv.dot(Z);
     }
 
     @Override
-    public void VpZdZ(int pos, Matrix V, double d) {
+    public void VpZdZ(int pos, FastMatrix V, double d) {
 
         DataBlockIterator cols = V.columnsIterator();
         DoubleSeqCursor z=Z.cursor();

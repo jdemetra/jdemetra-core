@@ -19,7 +19,7 @@ package demetra.ssf.ckms;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.decomposition.GivensRotation;
 import demetra.maths.matrices.decomposition.HyperbolicRotation;
 import demetra.ssf.ISsfDynamics;
@@ -46,12 +46,12 @@ public class MultivariateCkmsArrayFilter {
      */
     static class UMatrix {
 
-        final Matrix M;
-        final Matrix R, Z;
-        final Matrix K, L;
+        final FastMatrix M;
+        final FastMatrix R, Z;
+        final FastMatrix K, L;
 
         UMatrix(int stateDim, int varDim, int lDim) {
-            M = Matrix.make(varDim + stateDim, varDim + lDim);
+            M = FastMatrix.make(varDim + stateDim, varDim + lDim);
             R = M.extract(0, varDim, 0, varDim);
             Z = M.extract(0, varDim, varDim, lDim);
             K = M.extract(varDim, stateDim, 0, varDim);
@@ -150,7 +150,7 @@ public class MultivariateCkmsArrayFilter {
     
     private void error(int t) {
         DataBlock U = perrors.getTransformedPredictionErrors();
-        Matrix L = perrors.getCholeskyFactor();
+        FastMatrix L = perrors.getCholeskyFactor();
         U.set(0);
         for (int i = 0; i < nm; ++i) {
             double y = data.get(t, i);

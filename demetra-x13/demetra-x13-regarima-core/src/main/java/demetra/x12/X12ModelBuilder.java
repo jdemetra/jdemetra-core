@@ -21,7 +21,7 @@ import demetra.regarima.RegressionSpec;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.TradingDaysSpec;
 import demetra.regarima.TransformSpec;
-import demetra.data.AverageInterpolator;
+import demetra.data.interpolation.AverageInterpolator;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.modelling.regression.PreadjustmentVariable;

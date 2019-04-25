@@ -18,7 +18,7 @@ package demetra.var;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 
@@ -28,10 +28,10 @@ import demetra.ssf.ISsfDynamics;
  */
 public class VarDynamics implements ISsfDynamics {
 
-    private final Matrix V, T;
+    private final FastMatrix V, T;
     private final int nvars, nl, nlx;
     private final DataBlock ttmp, xtmp;
-    private Matrix L;
+    private FastMatrix L;
 
     public static VarDynamics of(final VarDescriptor desc) {
         int nlx = desc.getVarMatrix().getColumnsCount();
@@ -64,7 +64,7 @@ public class VarDynamics implements ISsfDynamics {
         return nlx;
     }
 
-    private Matrix L() {
+    private FastMatrix L() {
         if (L == null) {
             L = V.deepClone();
             SymmetricMatrix.lcholesky(L, 1e-9);
@@ -83,7 +83,7 @@ public class VarDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void V(int pos, Matrix qm) {
+    public void V(int pos, FastMatrix qm) {
         qm.topLeft(nvars, nvars).copy(V);
     }
 
@@ -93,7 +93,7 @@ public class VarDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void S(int pos, Matrix sm) {
+    public void S(int pos, FastMatrix sm) {
         sm.topLeft(nvars, nvars).copy(L());
     }
 
@@ -111,7 +111,7 @@ public class VarDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void T(int pos, Matrix tr) {
+    public void T(int pos, FastMatrix tr) {
         tr.topLeft(nvars, nvars * nl).copy(T);
         tr.subDiagonal(-nvars).set(1);
     }
@@ -139,7 +139,7 @@ public class VarDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void addV(final int pos, final Matrix v) {
+    public void addV(final int pos, final FastMatrix v) {
         v.topLeft(nvars, nvars).add(V);
     }
 

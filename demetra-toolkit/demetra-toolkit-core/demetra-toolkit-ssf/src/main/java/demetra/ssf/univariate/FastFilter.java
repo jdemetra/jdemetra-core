@@ -8,7 +8,7 @@ package demetra.ssf.univariate;
 import demetra.ssf.ISsfLoading;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.data.DoubleSeqCursor;
@@ -27,7 +27,7 @@ public class FastFilter {
     private final ISsfLoading loading;
     private final ISsfDynamics dynamics;
     private final int start, end;
-    private Matrix states;
+    private FastMatrix states;
     // temporaries
     private DataBlock tmp;
     private DataBlockIterator scols;
@@ -41,12 +41,12 @@ public class FastFilter {
         end = range.getEnd();
     }
 
-    public boolean filter(Matrix x) {
+    public boolean filter(FastMatrix x) {
         if (end - start < x.getRowsCount()) {
             return false;
         }
         int dim = ssf.getStateDim();
-        states = Matrix.make(dim, x.getColumnsCount());
+        states = FastMatrix.make(dim, x.getColumnsCount());
         prepareTmp();
         DataBlockIterator rows = x.rowsIterator();
         int pos = start;

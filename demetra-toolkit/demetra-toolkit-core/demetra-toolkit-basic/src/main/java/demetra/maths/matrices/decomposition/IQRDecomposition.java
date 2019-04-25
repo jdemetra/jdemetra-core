@@ -18,8 +18,8 @@ package demetra.maths.matrices.decomposition;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
 
 /**
@@ -38,7 +38,7 @@ public interface IQRDecomposition {
     /**
      * @param m A matrix
      */
-    void decompose(Matrix m) throws MatrixException;
+    void decompose(FastMatrix m) throws MatrixException;
 
     /**
      * Gets the R matrix
@@ -47,7 +47,7 @@ public interface IQRDecomposition {
      * false otherwise
      * @return
      */
-    Matrix r(boolean compact);
+    FastMatrix r(boolean compact);
 
     /**
      * Gets the diagonal of the R matrix

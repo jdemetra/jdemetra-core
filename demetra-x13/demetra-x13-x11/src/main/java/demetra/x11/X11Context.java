@@ -6,7 +6,7 @@
 package demetra.x11;
 
 import demetra.data.DataBlock;
-import demetra.data.DiscreteKernel;
+import demetra.data.analysis.DiscreteKernel;
 import demetra.maths.linearfilters.FiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.sa.DecompositionMode;

@@ -19,7 +19,7 @@
 package demetra.maths.functions.minpack;
 
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 
 /**
  *
@@ -37,14 +37,14 @@ public interface IEstimator {
      * @param problem
      * @return
      */
-    Matrix covariance(IEstimationProblem problem);
+    FastMatrix covariance(IEstimationProblem problem);
 
     /**
      * 
      * @param problem
      * @return
      */
-    Matrix curvature(IEstimationProblem problem);
+    FastMatrix curvature(IEstimationProblem problem);
 
     // / <summary>
     // / Solve an estimation problem.

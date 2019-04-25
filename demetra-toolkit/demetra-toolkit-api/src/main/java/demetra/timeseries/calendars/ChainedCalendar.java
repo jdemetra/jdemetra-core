@@ -6,7 +6,7 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.timeseries.TsDomain;
 import java.time.LocalDate;
 

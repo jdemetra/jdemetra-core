@@ -6,7 +6,7 @@
 package rssf;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfError;
 
@@ -17,14 +17,14 @@ import demetra.ssf.univariate.ISsfError;
 @lombok.experimental.UtilityClass
 public class SsfTools {
 
-    public Matrix transitionMatrix(ISsf ssf, int pos) {
-        Matrix m = Matrix.square(ssf.getStateDim());
+    public FastMatrix transitionMatrix(ISsf ssf, int pos) {
+        FastMatrix m = FastMatrix.square(ssf.getStateDim());
         ssf.dynamics().T(pos, m);
         return m;
     }
 
-    public Matrix innovationMatrix(ISsf ssf, int pos) {
-        Matrix m = Matrix.square(ssf.getStateDim());
+    public FastMatrix innovationMatrix(ISsf ssf, int pos) {
+        FastMatrix m = FastMatrix.square(ssf.getStateDim());
         ssf.dynamics().V(pos, m);
         return m;
     }
@@ -46,26 +46,26 @@ public class SsfTools {
         return m.getStorage();
     }
 
-    public Matrix stationaryInitialVariance(ISsf ssf) {
-        Matrix m = Matrix.square(ssf.getStateDim());
+    public FastMatrix stationaryInitialVariance(ISsf ssf) {
+        FastMatrix m = FastMatrix.square(ssf.getStateDim());
         ssf.initialization().Pf0(m);
         return m;
     }
 
-    public Matrix diffuseInitialConstraint(ISsf ssf) {
+    public FastMatrix diffuseInitialConstraint(ISsf ssf) {
         if (!ssf.initialization().isDiffuse()) {
             return null;
         }
-        Matrix m = Matrix.make(ssf.getStateDim(), ssf.getDiffuseDim());
+        FastMatrix m = FastMatrix.make(ssf.getStateDim(), ssf.getDiffuseDim());
         ssf.initialization().diffuseConstraints(m);
         return m;
     }
 
-    public Matrix diffuseInitialVariance(ISsf ssf) {
+    public FastMatrix diffuseInitialVariance(ISsf ssf) {
         if (!ssf.initialization().isDiffuse()) {
             return null;
         }
-        Matrix m = Matrix.square(ssf.getStateDim());
+        FastMatrix m = FastMatrix.square(ssf.getStateDim());
         ssf.initialization().Pi0(m);
         return m;
     }

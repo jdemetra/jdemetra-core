@@ -29,7 +29,7 @@ import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.arima.estimation.IArimaMapping;
 import demetra.data.DoubleSeq;
 
