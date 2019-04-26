@@ -8,7 +8,6 @@ package demetra.modelling.regression;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.design.Development;
-import demetra.maths.matrices.MatrixType;
 import demetra.maths.matrices.FastMatrix;
 import demetra.modelling.regression.HolidaysCorrectedTradingDays.HolidaysCorrector;
 import demetra.timeseries.TimeSeriesDomain;
@@ -23,6 +22,7 @@ import demetra.timeseries.calendars.DayClustering;
 import demetra.util.WeightedItem;
 import java.time.LocalDate;
 import demetra.timeseries.calendars.CalendarDefinition;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -73,7 +73,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
      */
     public static HolidaysCorrector corrector(final Calendar calendar) {
         return (TsDomain domain) -> {
-            MatrixType M = CalendarUtility.holidays(calendar.getHolidays(), domain);
+            Matrix M = CalendarUtility.holidays(calendar.getHolidays(), domain);
             FastMatrix Mc = FastMatrix.of(M);
             if (calendar.isMeanCorrection()) {
                 TsPeriod start = domain.getStartPeriod();
@@ -114,8 +114,8 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
             int n = domain.getLength();
             int pos = domain.indexOf(breakDate.atStartOfDay());
             if (pos > 0) {
-                MatrixType M1 = beg.holidaysCorrection(domain.range(0, pos));
-                MatrixType M2 = end.holidaysCorrection(domain.range(pos, n));
+                Matrix M1 = beg.holidaysCorrection(domain.range(0, pos));
+                Matrix M2 = end.holidaysCorrection(domain.range(pos, n));
                 return FastMatrix.rowBind(M1, M2);
             } else if (pos >= -1) {
                 return end.holidaysCorrection(domain);
@@ -146,7 +146,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
         TsDomain domain = TsDomain.of(start, n);
         FastMatrix days = FastMatrix.make(n, 7);
         GenericTradingDaysFactory.fillTdMatrix(start, days);
-        MatrixType corr = var.getCorrector().holidaysCorrection(domain);
+        Matrix corr = var.getCorrector().holidaysCorrection(domain);
         for (int i = 0; i < 7; ++i) {
             days.column(i).apply(corr.column(i), (a, b) -> a + b);
         }

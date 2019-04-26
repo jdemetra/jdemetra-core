@@ -5,13 +5,13 @@
  */
 package demetra.timeseries.calendars;
 
-import demetra.maths.matrices.MatrixType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -42,7 +42,7 @@ public class CalendarTest {
 
     @Test
     public void testBelgium() {
-        MatrixType holidays = CalendarUtility.holidays(belgium.getHolidays(), TsDomain.of(TsPeriod.monthly(1980, 1), 360));
+        Matrix holidays = CalendarUtility.holidays(belgium.getHolidays(), TsDomain.of(TsPeriod.monthly(1980, 1), 360));
 //        System.out.println(MatrixType.format(holidays));
         double[][] z = CalendarUtility.longTermMean(belgium.getHolidays(), 12);
         assertEquals(sum(z), belgium.getHolidays().length, 1e-9);

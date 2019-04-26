@@ -28,38 +28,48 @@ import demetra.data.DoubleSeq;
  * @author Philippe Charles
  */
 @Development(status = Development.Status.Release)
-public interface MatrixType extends BaseTable<Double> {
-    
-    interface Mutable extends MatrixType{
-        
-    @Override
-    DoubleSeq.Mutable row(@Nonnull int irow);
+public interface Matrix extends BaseTable<Double> {
 
-    @Override
-    DoubleSeq.Mutable diagonal();
+    interface Mutable extends Matrix {
 
-    @Override
-    DoubleSeq.Mutable subDiagonal(int pos);
+        @Override
+        DoubleSeq.Mutable row(@Nonnull int irow);
 
-    @Override
-    DoubleSeq.Mutable column(@Nonnull int icolumn);
+        @Override
+        DoubleSeq.Mutable diagonal();
 
-    @Override
-    MatrixType.Mutable extract(@Nonnegative final int rstart, @Nonnegative final int nr,
-            @Nonnegative final int cstart, @Nonnegative final int nc);
-         
+        @Override
+        DoubleSeq.Mutable subDiagonal(int pos);
+
+        @Override
+        DoubleSeq.Mutable column(@Nonnull int icolumn);
+
+        @Override
+        Matrix.Mutable extract(@Nonnegative final int rstart, @Nonnegative final int nr,
+                @Nonnegative final int cstart, @Nonnegative final int nc);
+
+        /**
+         * Sets the <code>double</code> value at the specified row/column.
+         *
+         * @param row
+         * @param column
+         * @param value
+         * @throws IndexOutOfBoundsException
+         */
+        void set(@Nonnegative int row, @Nonnegative int column, double value) throws IndexOutOfBoundsException;
+
     }
 
-    static MatrixType EMPTY = new LightMatrix(null, 0, 0);
+    static Matrix EMPTY = new LightMatrix(null, 0, 0);
 
-    static MatrixType ofInternal(@Nonnull double[] data, @Nonnegative int nrows, @Nonnegative int ncolumns) {
+    static Matrix ofInternal(@Nonnull double[] data, @Nonnegative int nrows, @Nonnegative int ncolumns) {
         if (data.length < nrows * ncolumns) {
             throw new IllegalArgumentException();
         }
         return new LightMatrix(data, nrows, ncolumns);
     }
 
-    static MatrixType copyOf(@Nonnull MatrixType matrix) {
+    static Matrix copyOf(@Nonnull Matrix matrix) {
         return new LightMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
     }
 
@@ -90,7 +100,7 @@ public interface MatrixType extends BaseTable<Double> {
      */
     DoubleSeq column(@Nonnull int icolumn);
 
-    default MatrixType extract(@Nonnegative final int rstart, @Nonnegative final int nr,
+    default Matrix extract(@Nonnegative final int rstart, @Nonnegative final int nr,
             @Nonnegative final int cstart, @Nonnegative final int nc) {
         return new LightSubMatrix(this, rstart, nr, cstart, nc);
     }
@@ -100,9 +110,9 @@ public interface MatrixType extends BaseTable<Double> {
      *
      * @param buffer The buffer that will receive the data.
      * @param offset The start position in the buffer for the copy. The matrix
-     * will be copied in the buffer by columns at the indexes [start, start+size()[.
-     * The length of the buffer is not checked (it could be larger than this
-     * array.
+     * will be copied in the buffer by columns at the indexes [start,
+     * start+size()[. The length of the buffer is not checked (it could be
+     * larger than this array.
      */
     default void copyTo(@Nonnull double[] buffer, @Nonnegative int offset) {
         int pos = offset, nr = getRowsCount(), nc = getColumnsCount();
@@ -126,7 +136,7 @@ public interface MatrixType extends BaseTable<Double> {
         return all;
     }
 
-    public static String toString(MatrixType matrix, String fmt) {
+    public static String toString(Matrix matrix, String fmt) {
         StringBuilder builder = new StringBuilder();
         if (!matrix.isEmpty()) {
             DoubleSeq row = matrix.row(0);
@@ -140,25 +150,25 @@ public interface MatrixType extends BaseTable<Double> {
         return builder.toString();
     }
 
-    public static String format(MatrixType m, String fmt) {
+    public static String format(Matrix m, String fmt) {
         StringBuilder builder = new StringBuilder();
-        int nrows=m.getRowsCount();
-        if (nrows>0) {
+        int nrows = m.getRowsCount();
+        if (nrows > 0) {
             builder.append(DoubleSeq.format(m.row(0), fmt));
-            for (int r=1; r<nrows; ++r) {
+            for (int r = 1; r < nrows; ++r) {
                 builder.append(System.lineSeparator());
                 builder.append(DoubleSeq.format(m.row(r), fmt));
             }
         }
         return builder.toString();
     }
-    
-        public static String format(MatrixType m) {
+
+    public static String format(Matrix m) {
         StringBuilder builder = new StringBuilder();
-        int nrows=m.getRowsCount();
-        if (nrows>0) {
+        int nrows = m.getRowsCount();
+        if (nrows > 0) {
             builder.append(DoubleSeq.format(m.row(0)));
-            for (int r=1; r<nrows; ++r) {
+            for (int r = 1; r < nrows; ++r) {
                 builder.append(System.lineSeparator());
                 builder.append(DoubleSeq.format(m.row(r)));
             }

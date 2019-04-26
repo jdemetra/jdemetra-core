@@ -16,12 +16,12 @@
  */
 package demetra.likelihood;
 
-import demetra.maths.matrices.MatrixType;
 import java.util.function.Supplier;
 import demetra.design.BuilderPattern;
 import demetra.eco.EcoException;
 import demetra.maths.Constants;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -41,7 +41,7 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
         private double[] res;
         private boolean legacy;
         private double[] b;
-        private MatrixType bvar;
+        private Matrix bvar;
         private boolean scalingFactor = true;
 
         Builder(int n, int nd) {
@@ -92,7 +92,7 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
             return this;
         }
 
-        public Builder unscaledCovariance(MatrixType var) {
+        public Builder unscaledCovariance(Matrix var) {
             bvar = var;
             return this;
         }
@@ -106,12 +106,12 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
     private final int nobs, nd;
     private final double[] res;
     private final double[] b;
-    private final MatrixType bvar;
+    private final Matrix bvar;
     private final boolean legacy;
     private final boolean scalingFactor;
 
     private DiffuseConcentratedLikelihood(final int n, final int nd, final double ssqerr, final double ldet, final double lddet,
-            final double[] b, final MatrixType bvar, final double[] res, final boolean legacy, final boolean scalingFactor) {
+            final double[] b, final Matrix bvar, final double[] res, final boolean legacy, final boolean scalingFactor) {
         this.nobs = n;
         this.nd = nd;
         this.ssqerr = ssqerr;
@@ -230,7 +230,7 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
     }
 
     @Override
-    public MatrixType unscaledCovariance() {
+    public Matrix unscaledCovariance() {
         return bvar;
     }
 
@@ -258,7 +258,7 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
             }
         }
         double[] nb = null;
-        MatrixType nbvar = null;
+        Matrix nbvar = null;
         if (b != null) {
             int nx = b.length;
             if (xfactor != null) {
@@ -274,7 +274,7 @@ public class DiffuseConcentratedLikelihood implements IConcentratedLikelihood {
                     }
                     nbv[i * (nx + 1)] *= ifactor * ifactor;
                 }
-                nbvar = MatrixType.ofInternal(nbv, nx, nx);
+                nbvar = Matrix.ofInternal(nbv, nx, nx);
             } else if (yfactor != 1) {
                 nb = new double[nx];
                 for (int i = 0; i < nx; ++i) {

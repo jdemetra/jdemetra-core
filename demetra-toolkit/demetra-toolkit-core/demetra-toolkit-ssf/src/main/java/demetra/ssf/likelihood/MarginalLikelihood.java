@@ -17,17 +17,17 @@
 package demetra.ssf.likelihood;
 
 import demetra.data.DataBlock;
-import demetra.likelihood.ILikelihood;
 import demetra.data.DeprecatedDoubles;
 import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
 import demetra.data.DoubleSeq;
+import demetra.likelihood.Likelihood;
 
 /**
  *
  * @author Jean Palate
  */
-public class MarginalLikelihood implements ILikelihood {
+public class MarginalLikelihood implements Likelihood {
 
     public static Builder builder(int n, int nd) {
         return new Builder(n, nd);
@@ -279,7 +279,7 @@ public class MarginalLikelihood implements ILikelihood {
         return res == null ? null : DoubleSeq.of(res);
     }
 
-    public MarginalLikelihood add(ILikelihood ll) {
+    public MarginalLikelihood add(Likelihood ll) {
         return MarginalLikelihood.builder(nobs+ll.dim(), nd)
                 .ssqErr(ssqerr+ll.ssq())
                 .logDeterminant(ldet+ll.logDeterminant())

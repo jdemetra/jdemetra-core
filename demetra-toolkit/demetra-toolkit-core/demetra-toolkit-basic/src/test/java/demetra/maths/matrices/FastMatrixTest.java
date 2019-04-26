@@ -17,19 +17,18 @@
 package demetra.maths.matrices;
 
 import java.util.Random;
-import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 import org.junit.Test;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  *
  * @author Jean Palate
  */
-public class MatrixTest {
+public class FastMatrixTest {
 
-    public MatrixTest() {
+    public FastMatrixTest() {
     }
 
     @Test

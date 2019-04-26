@@ -16,12 +16,12 @@
  */
 package demetra.ssf;
 
-import demetra.likelihood.ILikelihood;
+import demetra.likelihood.Likelihood;
 
 /**
  *
  * @author Jean Palate
  */
 public interface IPredictionErrorDecomposition {
-    ILikelihood likelihood();
+    Likelihood likelihood();
 }

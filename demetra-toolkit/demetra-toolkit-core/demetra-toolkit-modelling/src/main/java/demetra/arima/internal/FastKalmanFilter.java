@@ -23,13 +23,13 @@ import demetra.data.DataBlockIterator;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.DeterminantalTerm;
-import demetra.likelihood.Likelihood;
 import demetra.maths.matrices.FastMatrix;
 import demetra.util.SubArrayOfInt;
 import demetra.data.DeprecatedDoubles;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;
 import demetra.data.DoubleSeq;
+import demetra.likelihood.Likelihood;
 
 /**
  * The FastKalmanFilter class provides fast computation of Regression models

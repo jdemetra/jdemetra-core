@@ -18,9 +18,9 @@ package demetra.regarima;
 
 import demetra.design.Development;
 import demetra.linearmodel.LinearModelType;
-import demetra.maths.matrices.MatrixType;
 import demetra.sarima.SarimaType;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 
 /**
@@ -47,7 +47,7 @@ public class RegSarimaModelType {
         return model.isMeanCorrection();
     }
     
-    public MatrixType getX() {
+    public Matrix getX() {
         return model.getX();
     }
    

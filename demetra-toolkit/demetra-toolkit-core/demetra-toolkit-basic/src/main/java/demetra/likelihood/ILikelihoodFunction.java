@@ -14,7 +14,7 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate <jean.palate@nbb.be>
  * @param <L>
  */
-public interface ILikelihoodFunction<L extends ILikelihood> extends IFunction, ISsqFunction {
+public interface ILikelihoodFunction<L extends Likelihood> extends IFunction, ISsqFunction {
     @Override
     ILikelihoodFunctionPoint<L> evaluate(DoubleSeq p);
     

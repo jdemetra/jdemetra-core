@@ -1,52 +1,75 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
+ * Copyright 2017 National Bank copyOf Belgium
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package demetra.likelihood;
 
 import demetra.design.Development;
-import demetra.design.Immutable;
-import demetra.design.BuilderPattern;
+import demetra.eco.EcoException;
 import demetra.maths.Constants;
 import demetra.data.DoubleSeq;
+import demetra.design.BuilderPattern;
 
 /**
- * Log-Likelihood of a multi-variate gaussian distribution. For a N(0, sig2*V)
- * distribution (dim = n), the log-likelihood is given by
- * -.5*[n*log(2*pi)+log(det(V)*sig2^n)+(1/sig2)*y'(V^-1)y] = If we factorize V
- * as LL' (L is the Cholesky factor of V) and if we write e=L^-1*y, we get
- * ll=-.5*[n*log(2*pi)+log(det(V))+n*log(sig2)+(1/sig2)*e'e] det(V) is then the
- * square of the product of the main diagonal of L.
- *
- * We consider that sig2 is concentrated out of the likelihood and that it is
- * given by its max-likelihood estimator: sig2=e'e/n where e'e= y*(V^-1)y.
- *
- * So, we get: ll=-.5[n*log(2*pi)+n*(log(ssq/n)+1)+ldet]
- *
- * The likelihood is initialized by means of - its dimension: n - the log of the
- * determinantal term: ldet - the sum of the squares: ssq
+ * The ILikelihood interface formalizes the likelihood of a usual gaussian
+ * model. If isConcentratedScalingFactor is true, we suppose that the scaling
+ * factor (sig2) is part of the parameters and that it is concentrated out of
+ * the likelihood In the other case, we can suppose that sig2 = 1.
+ * <br>
+ * For a N(0, [sig2*]V) distribution (dim = n), the log-likelihood is then given
+ * by
+ * <br>
+ * -.5*[n*log(2*pi)+log(det(V)[*sig2^n])+[(1/sig2)*]y'(V^-1)y].
+ * <br>
+ * If we factorize V as LL' (L is the Cholesky factor of V) and if we write
+ * e=L^-1*y, we get
+ * <br>
+ * ll=-.5*[n*log(2*pi)+log(det(V))[+n*log(sig2)]+[(1/sig2)*]e'e]
+ * <br>
+ * To be noted that det(V) is then the square of the product of the main
+ * diagonal of L.
+ * <br>
+ * The ML estimator of sig2 is given by sig2=e'e/n
+ * <br>
+ * If we concentrate it out of the likelihood, we get:
+ * <br>
+ * ll=-.5[n*log(2*pi)+n*(log(ssq/n)+1)+ldet]
+ * <br>
+ * So, the likelihood is defined by means of:
+ * <br> - n = dim()
+ * <br> - ldet = logDeterminant()
+ * <br> - ssq = ssq()
+ * <br> -sig2 =ssq/n is given by sigma()
+ * <br>
+ * Maximizing the concentrated likelihood is equivalent to minimizing the
+ * function:
+ * <br>
+ * ssq * det^1/n (= ssq*factor)
+ * <br>
+ * if e are the e and v = e*det^1/(2n), we try to minimize the sum of squares
+ * defined by vv'. This last formulation will be used in optimization procedures
+ * based like Levenberg-Marquardt or similar algorithms.
  */
 @Development(status = Development.Status.Release)
-@Immutable
-public final class Likelihood implements ILikelihood {
+public interface Likelihood {
 
     public static Builder builder(int n) {
         return new Builder(n);
     }
 
-    @BuilderPattern(Likelihood.class)
+    @BuilderPattern(InternalLikelihood.class)
     public static class Builder {
 
         private final int n;
@@ -80,129 +103,119 @@ public final class Likelihood implements ILikelihood {
             return this;
         }
 
-        public Likelihood build() {
-            return new Likelihood(n, ssqerr, ldet, res, scalingFactor);
+        public InternalLikelihood build() {
+            return new InternalLikelihood(n, ssqerr, ldet, res, scalingFactor);
         }
     }
-
-    private final double ll, ssqerr, ldet;
-    private final int n;
-    private final double[] res;
-    private final boolean scalingFactor;
+    /**
+     * Aikake Information Criterion for a given number of (hyper-)parameters
+     * AIC=2*nparams-2*ll
+     *
+     * @param nparams The number of parameters
+     * @return The AIC. Models with lower AIC shoud be preferred.
+     */
+    default double AIC(final int nparams) {
+        return -2 * logLikelihood() + 2 * nparams;
+    }
 
     /**
-     * Initializes the likelihood/ See the description of the class for further
-     * information.
      *
-     * @param ssqerr The sum of the squares of the (transformed) observations.
-     * @param ldet The log of the determinantal term
-     * @param ndim The number of observations
-     * @param res
+     * @param nparams
+     * @return
      */
-    private Likelihood(final int ndim, final double ssqerr, final double ldet, final double[] res, final boolean scalingFactor) {
-        this.scalingFactor = scalingFactor;
-        if (scalingFactor) {
-            this.ll = -.5
-                    * (ndim * Constants.LOGTWOPI + ndim
-                    * (1 + Math.log(ssqerr / ndim)) + ldet);
+    default double BIC(final int nparams) {
+        return -2 * logLikelihood() + nparams * Math.log(dim());
+    }
+
+    /**
+     * @return Log of the likelihood
+     */
+    default double logLikelihood() {
+        int n = dim();
+        if (isScalingFactor()) {
+            return -.5 * (n * Constants.LOGTWOPI + n * (1 + Math.log(ssq() / n)) + logDeterminant());
         } else {
-            this.ll = -.5 * (ndim * Constants.LOGTWOPI + ssqerr + ldet);
+            return -.5 * (n * Constants.LOGTWOPI + ssq() + logDeterminant());
         }
-        this.ssqerr = ssqerr;
-        this.ldet = ldet;
-        this.n = ndim;
-        this.res = res;
-    }
-
-    @Override
-    public double logDeterminant() {
-        return ldet;
     }
 
     /**
-     * Computes the factor of the likelihood. The log-likelihood is:
-     * ll=-.5[n*log(2*pi)+n*(log(ssq/n)+1)+ldet]
-     * =-.5[n*log(2*pi)+n+n*(log(ssq/n)+ldet/n)] So, for a given n, maximizing
-     * the likelihood is equivalent to minimizing sigma*factor where:
-     * sigma=ssq/n factor=exp(ldet/n)=exp(log(det(V)^1/n)=(det(L)^1/n)^2
-     *
-     * So, the factor is the square of the geometric mean of the main diagonal
-     * of the Cholesky factor.
-     *
-     * @return The factor of the likelihood.
+     * @return Square root of Sigma.
      */
-    @Override
-    public double factor() {
-        return Math.exp(ldet / n);
-    }
+    int dim();
 
     /**
+     * Return the log-determinant
      *
      * @return
      */
-    @Override
-    public double logLikelihood() {
-        return ll;
-    }
+    double logDeterminant();
 
     /**
+     * True if there is a scaling factor in the distribution. The scaling factor
+     * is then concentrated out of the likelihood and replaced by its ML
+     * estimate. So the likelihood is then in fact the concentrated likelihood.
      *
      * @return
      */
-    @Override
-    public int dim() {
-        return n;
-    }
-
-    @Override
-    public DoubleSeq e() {
-        return DoubleSeq.copyOf(res);
+    default boolean isScalingFactor() {
+        return true;
     }
 
     /**
-     * Gets the sum of the squares of the (transformed) observations.
+     * Gets the sqrt of sigma.
      *
-     * @return A positive number.
+     * @return A positive number. 1 if the likelihood is not concentrated.
      */
-    @Override
-    public double ssq() {
-        return ssqerr;
+    default double ser() {
+        return isScalingFactor() ? Math.sqrt(ssq() / dim()) : 1;
     }
 
     /**
-     * Adjust the likelihood if the toArray have been pre-multiplied by a given
-     * scaling factor
+     * Gets the ML estimate of the scaling factor. sigma=ssq/n
      *
-     * @param factor The scaling factor
-     * @return
+     * @return A positive number. 1 if the likelihood is not concentrated.
      */
-    public Likelihood rescale(final double factor) {
-        if (factor == 1) {
-            return this;
-        }
-        double nssqerr = ssqerr / factor * factor;
-        double[] nres = null;
-        if (res != null) {
-            nres = new double[res.length];
-            for (int i = 0; i < res.length; ++i) {
-                nres[i] = res[i] / factor;
-            }
-        }
-        double nldet = ldet;
-        if (!scalingFactor) {
-            nldet += n * Math.log(factor);
-        }
-        return new Likelihood(n, nssqerr, nldet, nres, scalingFactor);
+    default double sigma() {
+        return isScalingFactor() ? ssq() / dim() : 1;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("ll=").append(this.logLikelihood()).append("\r\n");
-        builder.append("n=").append(this.dim()).append("\r\n");
-        builder.append("ssq=").append(this.ssq()).append("\r\n");
-        builder.append("ldet=").append(this.logDeterminant()).append("\r\n");
-        return builder.toString();
+    /**
+     * @return Sum of the squared standardized innovations
+     */
+    double ssq();
+
+    /**
+     * @return The Standardized innovations. =L^-1 * y where L is the Cholesky
+     * factor of the (unscaled) covariance matrix. May be null if the e are not
+     * stored
+     */
+    DoubleSeq e();
+
+    /**
+     * @return The determinantal factor (n-th root). Not used if the likelihood
+     * is not concentrated
+     */
+    default double factor() {
+        if (!isScalingFactor()) {
+            throw new EcoException(EcoException.UNEXPECTEDOPERATION);
+        }
+        return Math.exp(logDeterminant() / dim());
     }
 
+    /**
+     * @return The deviances. = e*sqrt(factor) Not used if the likelihood is not
+     * concentrated.
+     */
+    default DoubleSeq deviances() {
+        double f = factor();
+        DoubleSeq e = e();
+        if (f == 1) {
+            return e;
+        } else {
+            final double sf = Math.sqrt(f);
+            return e.map(x -> x * sf);
+        }
+    }
+    
 }

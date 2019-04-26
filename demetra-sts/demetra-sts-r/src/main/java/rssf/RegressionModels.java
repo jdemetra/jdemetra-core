@@ -5,10 +5,10 @@
  */
 package rssf;
 
-import demetra.maths.matrices.MatrixType;
 import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.implementations.RegSsf;
 import demetra.ssf.univariate.ISsf;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -16,15 +16,15 @@ import demetra.ssf.univariate.ISsf;
  */
 @lombok.experimental.UtilityClass
 public class RegressionModels {
-    public ISsf fixed(ISsf ssf, MatrixType x){
+    public ISsf fixed(ISsf ssf, Matrix x){
         return RegSsf.of(ssf, FastMatrix.of(x));
     }
 
-    public ISsf timeVarying(ISsf ssf, MatrixType x, MatrixType v){
+    public ISsf timeVarying(ISsf ssf, Matrix x, Matrix v){
         return RegSsf.ofTimeVaryingFactor(ssf, FastMatrix.of(x), FastMatrix.of(v));
     }
 
-    public ISsf timeVarying(ISsf ssf, MatrixType x, double v){
+    public ISsf timeVarying(ISsf ssf, Matrix x, double v){
         FastMatrix V = FastMatrix.square(x.getColumnsCount());
         V.diagonal().set(v);
         return RegSsf.ofTimeVaryingFactor(ssf, FastMatrix.of(x), V);

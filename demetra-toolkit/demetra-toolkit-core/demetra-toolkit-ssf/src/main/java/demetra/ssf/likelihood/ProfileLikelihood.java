@@ -17,15 +17,15 @@
 package demetra.ssf.likelihood;
 
 import demetra.data.DataBlock;
-import demetra.likelihood.ILikelihood;
 import demetra.maths.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
+import demetra.likelihood.Likelihood;
 
 /**
  *
  * @author Jean Palate
  */
-public class ProfileLikelihood implements ILikelihood {
+public class ProfileLikelihood implements Likelihood {
 
     /**
      * Respectively: diffuse log-likelihood sum of the squared residuals log
@@ -158,7 +158,7 @@ public class ProfileLikelihood implements ILikelihood {
 
     }
 
-    public void add(ILikelihood ll) {
+    public void add(Likelihood ll) {
         n += ll.dim();
         ssqerr += ll.ssq();
         ldet += ll.logDeterminant();

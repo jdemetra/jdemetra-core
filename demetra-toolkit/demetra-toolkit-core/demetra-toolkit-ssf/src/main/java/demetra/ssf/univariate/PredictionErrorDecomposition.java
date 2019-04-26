@@ -19,13 +19,13 @@ package demetra.ssf.univariate;
 import demetra.ssf.UpdateInformation;
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.likelihood.ILikelihood;
 import demetra.likelihood.Likelihood;
 import demetra.ssf.IPredictionErrorDecomposition;
 import demetra.likelihood.ResidualsCumulator;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.data.DoubleSeq;
+import demetra.likelihood.Likelihood;
 
 /**
  *
@@ -114,7 +114,7 @@ public class PredictionErrorDecomposition implements
     }
 
     @Override
-    public ILikelihood likelihood() {
+    public Likelihood likelihood() {
         return Likelihood.builder(cumulator.getObsCount())
                 .ssqErr(cumulator.getSsqErr())
                 .logDeterminant(cumulator.getLogDeterminant())

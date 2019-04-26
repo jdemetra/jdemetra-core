@@ -22,16 +22,16 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.DefaultLikelihoodEvaluation;
-import demetra.likelihood.ILikelihood;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
-import demetra.maths.matrices.MatrixType;
 import demetra.arima.estimation.IArimaMapping;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
+import demetra.likelihood.Likelihood;
 
 /**
  *
@@ -50,7 +50,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
         private boolean mt = false;
         // model
         private final DoubleSeq dy;
-        private MatrixType x;
+        private Matrix x;
         private int nmissing;
         // mapping
         private IArimaMapping<S> mapping;
@@ -59,7 +59,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
             this.dy = dy;
         }
 
-        SsqBuilder variables(MatrixType x) {
+        SsqBuilder variables(Matrix x) {
             this.x = x;
             return this;
         }
@@ -102,23 +102,23 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
     
     // model
     final DoubleSeq dy;
-    final MatrixType x;
+    final Matrix x;
     final int nmissing;
     // mapping
     final IParametricMapping<S> mapping;
     // algorithms
     final ConcentratedLikelihoodComputer cll;
-    final ToDoubleFunction<ILikelihood> ssqll;
-    final Function<ILikelihood, DoubleSeq> errors;
+    final ToDoubleFunction<Likelihood> ssqll;
+    final Function<Likelihood, DoubleSeq> errors;
     final boolean mt;
 
     private RegArmaSsqFunction(final DoubleSeq dy,
-            final MatrixType x,
+            final Matrix x,
             final int nm,
             final IParametricMapping<S> mapping,
             final ConcentratedLikelihoodComputer cll,
-            final Function<ILikelihood, DoubleSeq> errors,
-            final ToDoubleFunction<ILikelihood> ssqll,
+            final Function<Likelihood, DoubleSeq> errors,
+            final ToDoubleFunction<Likelihood> ssqll,
             final boolean mt) {
         this.dy = dy;
         this.x = x;

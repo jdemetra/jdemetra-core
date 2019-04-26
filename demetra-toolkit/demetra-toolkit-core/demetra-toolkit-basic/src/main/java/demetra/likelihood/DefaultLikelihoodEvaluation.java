@@ -28,27 +28,27 @@ import demetra.data.DoubleSeq;
  */
 public class DefaultLikelihoodEvaluation {
     
-    public static ToDoubleFunction<ILikelihood> ml(){
+    public static ToDoubleFunction<Likelihood> ml(){
         return likelihood->likelihood.logLikelihood();
     }
 
-    public static ToDoubleFunction<ILikelihood> deviance(){
+    public static ToDoubleFunction<Likelihood> deviance(){
         return likelihood->likelihood.ssq() * likelihood.factor();
     }
 
-    public static ToDoubleFunction<ILikelihood> ssq(){
+    public static ToDoubleFunction<Likelihood> ssq(){
         return likelihood->likelihood.ssq();
     }
 
-    public static ToDoubleFunction<ILikelihood> logSsq(){
+    public static ToDoubleFunction<Likelihood> logSsq(){
         return likelihood->Math.log(likelihood.ssq());
     }
 
-    public static Function<ILikelihood, DoubleSeq> errors(){
+    public static Function<Likelihood, DoubleSeq> errors(){
         return likelihood->likelihood.e();
     }
     
-    public static Function<ILikelihood, DoubleSeq> v(){
+    public static Function<Likelihood, DoubleSeq> v(){
         return likelihood->likelihood.deviances();
     }
     

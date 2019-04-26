@@ -21,7 +21,6 @@ import demetra.arima.IArimaModel;
 import demetra.design.BuilderPattern;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.DefaultLikelihoodEvaluation;
-import demetra.likelihood.ILikelihood;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.IParametersDomain;
@@ -29,6 +28,7 @@ import demetra.maths.functions.IParametricMapping;
 import demetra.maths.matrices.FastMatrix;
 import java.util.function.ToDoubleFunction;
 import demetra.data.DoubleSeq;
+import demetra.likelihood.Likelihood;
 
 /**
  *
@@ -94,7 +94,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
     final IParametricMapping<S> mapping;
     // algorithms
     final ConcentratedLikelihoodComputer cll;
-    final ToDoubleFunction<ILikelihood> ll;
+    final ToDoubleFunction<Likelihood> ll;
     final boolean mt;
 
     private RegArmaFunction(final DoubleSeq dy,
@@ -102,7 +102,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
             final int nm,
             final IParametricMapping<S> mapping,
             final ConcentratedLikelihoodComputer cll,
-            final ToDoubleFunction<ILikelihood> ll,
+            final ToDoubleFunction<Likelihood> ll,
             final boolean mt) {
         this.dy = dy;
         this.x = x;

@@ -18,13 +18,13 @@
  */
 package demetra.ssf.univariate;
 
-import demetra.likelihood.ILikelihood;
+import demetra.likelihood.Likelihood;
 
 /**
  *
  * @author Jean Palate
  * @param <L>
  */
-public interface ILikelihoodComputer<L extends ILikelihood> {
+public interface ILikelihoodComputer<L extends Likelihood> {
     L compute(ISsf ssf, ISsfData data);
 }

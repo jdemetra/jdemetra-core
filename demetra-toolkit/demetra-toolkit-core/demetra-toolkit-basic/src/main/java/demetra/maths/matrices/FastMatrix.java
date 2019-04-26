@@ -31,7 +31,7 @@ import demetra.data.DoubleSeq;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public class FastMatrix implements MatrixType.Mutable {
+public class FastMatrix implements Matrix.Mutable {
 
     public static final FastMatrix EMPTY = new FastMatrix(new double[0], 0, 0);
 
@@ -45,7 +45,7 @@ public class FastMatrix implements MatrixType.Mutable {
         return new FastMatrix(data, nrows, ncols);
     }
 
-    public static FastMatrix of(MatrixType matrix) {
+    public static FastMatrix of(Matrix matrix) {
         if (matrix == null) {
             return null;
         }
@@ -60,7 +60,7 @@ public class FastMatrix implements MatrixType.Mutable {
      * @param matrix
      * @return
      */
-    public static FastMatrix ofInternal(MatrixType matrix) {
+    public static FastMatrix ofInternal(Matrix matrix) {
         if (matrix == null) {
             return null;
         }
@@ -71,7 +71,7 @@ public class FastMatrix implements MatrixType.Mutable {
         }
     }
 
-    public static FastMatrix rowBind(@Nonnull MatrixType... M) {
+    public static FastMatrix rowBind(@Nonnull Matrix... M) {
         int nr = 0;
         int nc = 0;
         for (int i = 0; i < M.length; ++i) {
@@ -97,7 +97,7 @@ public class FastMatrix implements MatrixType.Mutable {
         return all;
     }
 
-    public static FastMatrix columnBind(@Nonnull MatrixType... M) {
+    public static FastMatrix columnBind(@Nonnull Matrix... M) {
         int nr = 0;
         int nc = 0;
         for (int i = 0; i < M.length; ++i) {
@@ -498,6 +498,7 @@ public class FastMatrix implements MatrixType.Mutable {
         }
     }
 
+    @Override
     public final void set(int row, int col, double value) {
         storage[start + row * rowInc + col * colInc] = value;
     }
@@ -688,9 +689,9 @@ public class FastMatrix implements MatrixType.Mutable {
         return isSymmetric(0);
     }
 
-    public MatrixType unmodifiable() {
+    public Matrix unmodifiable() {
         if (isFull()) {
-            return MatrixType.ofInternal(storage, nrows, ncols);
+            return Matrix.ofInternal(storage, nrows, ncols);
         } else {
             return extract(0, nrows, 0, ncols);
         }

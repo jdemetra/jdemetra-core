@@ -20,10 +20,10 @@ import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.data.DataBlock;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.ssf.StateInfo;
-import demetra.likelihood.ILikelihood;
 import demetra.ssf.akf.AugmentedState;
 import demetra.ssf.dk.sqrt.IDiffuseSquareRootFilteringResults;
 import demetra.ssf.univariate.PredictionErrorDecomposition;
+import demetra.likelihood.Likelihood;
 
 /**
  *

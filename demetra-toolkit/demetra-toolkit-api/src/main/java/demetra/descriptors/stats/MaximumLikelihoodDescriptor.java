@@ -8,7 +8,7 @@ package demetra.descriptors.stats;
 import demetra.design.Development;
 import demetra.information.InformationMapping;
 import demetra.likelihood.MaximumLogLikelihood;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -28,7 +28,7 @@ public class MaximumLikelihoodDescriptor {
                 source.getParameters() == null ? null : source.getParameters().toArray());
         MAPPING.set(GRADIENT, double[].class, source -> 
                 source.getGradient() == null ? null : source.getGradient().toArray());
-        MAPPING.set(HESSIAN, MatrixType.class, source -> 
+        MAPPING.set(HESSIAN, Matrix.class, source -> 
                 source.getHessian() == null ? null : source.getHessian());
     }
 

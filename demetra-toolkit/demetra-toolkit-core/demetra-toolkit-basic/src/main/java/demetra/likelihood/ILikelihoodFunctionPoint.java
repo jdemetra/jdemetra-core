@@ -12,6 +12,6 @@ import demetra.maths.functions.ssq.ISsqFunctionPoint;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 
-public interface ILikelihoodFunctionPoint<L extends ILikelihood> extends IFunctionPoint, ISsqFunctionPoint{
+public interface ILikelihoodFunctionPoint<L extends Likelihood> extends IFunctionPoint, ISsqFunctionPoint{
     L getLikelihood();
 }

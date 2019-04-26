@@ -19,7 +19,7 @@ package demetra.maths;
 import demetra.design.Development;
 
 /**
- * Uitlities on integer numbers
+ * Utilities on integer numbers
  *
  * @author Jean Palate
  */
@@ -63,43 +63,6 @@ public final class IntUtility {
         return idx;
     }
 
-//    /**
-//     * 
-//     * @param a
-//     * @param b
-//     * @return
-//     */
-//    public static int PGCD(final int a, final int b) {
-//	return (b == 0) ? a : PGCD(b, a % b);
-//    }
-//
-//    /**
-//     * 
-//     * @param a
-//     * @param b
-//     * @return
-//     */
-//    public static int PPCM(int a, int b)
-//    {
-//	int r = 1;
-//	int div = 2;
-//	while ((a != 1) || (b != 1)) {
-//	    boolean ok = false;
-//	    if (a % div == 0) {
-//		a /= div;
-//		ok = true;
-//	    }
-//	    if (b % div == 0) {
-//		b /= div;
-//		ok = true;
-//	    }
-//	    if (ok)
-//		r *= div;
-//	    if (!ok)
-//		++div;
-//	}
-//	return r;
-//    }
     /**
      * Computes the greatest common divisor of two integers.
      *

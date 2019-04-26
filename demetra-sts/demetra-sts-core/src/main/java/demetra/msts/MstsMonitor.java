@@ -5,7 +5,6 @@
  */
 package demetra.msts;
 
-import demetra.likelihood.ILikelihood;
 import demetra.likelihood.ILikelihoodFunction;
 import demetra.likelihood.ILikelihoodFunctionPoint;
 import demetra.maths.functions.IFunctionMinimizer;
@@ -25,6 +24,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import demetra.data.DoubleSeq;
+import demetra.likelihood.Likelihood;
 
 /**
  *
@@ -131,7 +131,7 @@ public class MstsMonitor {
     private MstsMapping model;
     private MultivariateCompositeSsf ssf;
     private DoubleSeq fullp;
-    private ILikelihood ll;
+    private Likelihood ll;
     private VarianceInterpreter fixedVariance;
 
     private final List<VarianceInterpreter> smallVariances = new ArrayList<>();
@@ -300,7 +300,7 @@ public class MstsMonitor {
             small.fixStde(smallStde);
             try {
                 DoubleSeq nprslts = model.functionParameters(fullp);
-                ILikelihood nll = function(concentratedLikelihood).evaluate(nprslts).getLikelihood();
+                Likelihood nll = function(concentratedLikelihood).evaluate(nprslts).getLikelihood();
                 double d = nll.logLikelihood() - ll.logLikelihood();
                 if (d > dll) {
                     dll = d;
@@ -339,7 +339,7 @@ public class MstsMonitor {
             double olde = small.fixStde(0);
             try {
                 DoubleSeq p = model.functionParameters(fullp);
-                ILikelihood nll = function(concentratedLikelihood).evaluate(p).getLikelihood();
+                Likelihood nll = function(concentratedLikelihood).evaluate(p).getLikelihood();
                 double ndll = nll.logLikelihood() - ll.logLikelihood();
                 if (ndll > dll) {
                     dll = ndll;
@@ -390,7 +390,7 @@ public class MstsMonitor {
     /**
      * @return the ll
      */
-    public ILikelihood getLikelihood() {
+    public Likelihood getLikelihood() {
         return ll;
     }
 

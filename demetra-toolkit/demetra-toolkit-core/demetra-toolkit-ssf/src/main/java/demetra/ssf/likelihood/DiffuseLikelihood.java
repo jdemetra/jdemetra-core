@@ -16,12 +16,12 @@
  */
 package demetra.ssf.likelihood;
 
-import demetra.likelihood.ILikelihood;
 import demetra.design.Immutable;
 import demetra.data.DeprecatedDoubles;
 import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
 import demetra.data.DoubleSeq;
+import demetra.likelihood.Likelihood;
 
 /**
  * The diffuse likelihood follows the definition provided in the paper:
@@ -32,7 +32,7 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate
  */
 @Immutable
-public final class DiffuseLikelihood implements ILikelihood {
+public final class DiffuseLikelihood implements Likelihood {
 
     public static Builder builder(int n, int nd) {
         return new Builder(n, nd);
@@ -256,7 +256,7 @@ public final class DiffuseLikelihood implements ILikelihood {
         return dcorr;
     }
     
-            public DiffuseLikelihood add(ILikelihood ll) {
+            public DiffuseLikelihood add(Likelihood ll) {
         return DiffuseLikelihood.builder(nobs+ll.dim(), nd)
                 .ssqErr(ssqerr+ll.ssq())
                 .logDeterminant(ldet+ll.logDeterminant())

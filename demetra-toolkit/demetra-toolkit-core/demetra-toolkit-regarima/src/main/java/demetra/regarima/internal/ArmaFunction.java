@@ -20,7 +20,6 @@ import demetra.arima.IArimaModel;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.DefaultLikelihoodEvaluation;
-import demetra.likelihood.ILikelihood;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.IParametricMapping;
@@ -29,6 +28,7 @@ import demetra.maths.matrices.FastMatrix;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import demetra.data.DoubleSeq;
+import demetra.likelihood.Likelihood;
 
 /**
  * @author Jean Palate
@@ -40,14 +40,14 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
     @BuilderPattern(ArmaFunction.class)
     public static class Builder<S extends IArimaModel> {
 
-        public static final ToDoubleFunction<ILikelihood> LL = DefaultLikelihoodEvaluation.ml();
-        public static final Function<ILikelihood, DoubleSeq> ERRORS = DefaultLikelihoodEvaluation.v();
-        public static final ToDoubleFunction<ILikelihood> SSQLL = DefaultLikelihoodEvaluation.deviance();
+        public static final ToDoubleFunction<Likelihood> LL = DefaultLikelihoodEvaluation.ml();
+        public static final Function<Likelihood, DoubleSeq> ERRORS = DefaultLikelihoodEvaluation.v();
+        public static final ToDoubleFunction<Likelihood> SSQLL = DefaultLikelihoodEvaluation.deviance();
 
         // algorithms
-        private ToDoubleFunction<ILikelihood> ll = LL;
-        private ToDoubleFunction<ILikelihood> ssqll = SSQLL;
-        private Function<ILikelihood, DoubleSeq> errors = ERRORS;
+        private ToDoubleFunction<Likelihood> ll = LL;
+        private ToDoubleFunction<Likelihood> ssqll = SSQLL;
+        private Function<Likelihood, DoubleSeq> errors = ERRORS;
         private ConcentratedLikelihoodComputer cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER;
         private boolean mt = false;
         // model
@@ -76,17 +76,17 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
             return this;
         }
 
-        public Builder evaluation(ToDoubleFunction<ILikelihood> ll) {
+        public Builder evaluation(ToDoubleFunction<Likelihood> ll) {
             this.ll = ll;
             return this;
         }
 
-     public Builder ssqEvaluation(ToDoubleFunction<ILikelihood> ssqll) {
+     public Builder ssqEvaluation(ToDoubleFunction<Likelihood> ssqll) {
             this.ssqll = ssqll;
             return this;
         }
 
-     public Builder evaluation(Function<ILikelihood, DoubleSeq> errors) {
+     public Builder evaluation(Function<Likelihood, DoubleSeq> errors) {
             this.errors = errors;
             return this;
         }
@@ -114,8 +114,8 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
     final IParametricMapping<S> mapping;
     // algorithms
     final ConcentratedLikelihoodComputer cll;
-    final ToDoubleFunction<ILikelihood> ll, ssqll;
-    final Function<ILikelihood, DoubleSeq> errors;
+    final ToDoubleFunction<Likelihood> ll, ssqll;
+    final Function<Likelihood, DoubleSeq> errors;
     final boolean mt;
 
     private ArmaFunction(final DoubleSeq dy,
@@ -123,9 +123,9 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
             final int nm,
             final IParametricMapping<S> mapping,
             final ConcentratedLikelihoodComputer cll,
-            final ToDoubleFunction<ILikelihood> ll,
-            final ToDoubleFunction<ILikelihood> ssqll,
-            final Function<ILikelihood, DoubleSeq> errors,
+            final ToDoubleFunction<Likelihood> ll,
+            final ToDoubleFunction<Likelihood> ssqll,
+            final Function<Likelihood, DoubleSeq> errors,
             final boolean mt) {
         this.dy = dy;
         this.x = x;

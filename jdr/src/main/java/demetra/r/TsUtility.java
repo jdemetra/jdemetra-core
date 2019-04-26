@@ -6,7 +6,6 @@
 package demetra.r;
 
 import demetra.data.AggregationType;
-import demetra.maths.matrices.MatrixType;
 import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
@@ -20,6 +19,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -94,7 +94,7 @@ public class TsUtility {
         return all.add(cur);
     }
 
-    public MatrixType holidays(Holidays all, String date, int length, String type) {
+    public Matrix holidays(Holidays all, String date, int length, String type) {
         LocalDate start = LocalDate.parse(date);
         FastMatrix m = FastMatrix.make(length, all.elements().length);
         switch (type) {

@@ -5,7 +5,6 @@
  */
 package demetra.msts;
 
-import demetra.likelihood.ILikelihood;
 import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.StateInfo;
 import demetra.ssf.StateStorage;
@@ -20,6 +19,7 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.StateFilteringResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import demetra.likelihood.Likelihood;
 
 /**
  *
@@ -65,7 +65,7 @@ public class CompositeModelEstimation {
         return rslt;
     }
 
-    private ILikelihood likelihood;
+    private Likelihood likelihood;
     private MultivariateCompositeSsf ssf;
     private int[] cmpPos;
     private FastMatrix data;
@@ -137,7 +137,7 @@ public class CompositeModelEstimation {
     /**
      * @return the likelihood
      */
-    public ILikelihood getLikelihood() {
+    public Likelihood getLikelihood() {
         return likelihood;
     }
 

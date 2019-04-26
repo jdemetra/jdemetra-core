@@ -10,7 +10,6 @@ import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlock;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.maths.matrices.MatrixType;
 import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
@@ -32,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import demetra.processing.ProcResults;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -53,8 +53,8 @@ public class MovingRegression {
     public static class Results implements ProcResults {
 
         TsDomain domain;
-        MatrixType variables;
-        MatrixType coefficients;
+        Matrix variables;
+        Matrix coefficients;
         SarimaModel arima;
 
         private static final String ARIMA = "arima", LL = "likelihood", COEFF = "coefficients", TD = "td", TDEFFECT = "tdeffect";
@@ -62,8 +62,8 @@ public class MovingRegression {
 
         static {
             MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getArima().toType());
-            MAPPING.set(COEFF, MatrixType.class, r -> r.getCoefficients());
-            MAPPING.set(TD, MatrixType.class, r -> r.getVariables());
+            MAPPING.set(COEFF, Matrix.class, r -> r.getCoefficients());
+            MAPPING.set(TD, Matrix.class, r -> r.getVariables());
             MAPPING.set(TDEFFECT, TsData.class, r
                     -> {
                 DataBlock tmp = DataBlock.make(r.getDomain().length());
