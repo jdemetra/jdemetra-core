@@ -23,7 +23,6 @@ import demetra.arima.internal.FastKalmanFilter;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.likelihood.Likelihood;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
@@ -37,6 +36,7 @@ import demetra.sarima.internal.HannanRissanenInitializer;
 import java.util.List;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
+import demetra.likelihood.Likelihood;
 
 /**
  *

@@ -14,8 +14,8 @@ import demetra.linearmodel.LinearModel;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.FastMatrix;
 import java.util.List;
-import demetra.maths.matrices.MatrixType;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  * Linear model with stationary ARMA process
@@ -122,7 +122,7 @@ public class RegArmaModel<M extends IArimaModel> {
      * the constant
      * the other regression variables
      */
-    MatrixType x;
+    Matrix x;
     /**
      * Number of missing observations (additive outliers at the beginning of x)
      */

@@ -6,8 +6,8 @@
 package demetra.linearmodel;
 
 import demetra.design.Development;
-import demetra.maths.matrices.MatrixType;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -31,6 +31,6 @@ class LightLinearModel implements LinearModelType{
     /**
      * 
      */
-    private MatrixType X;
+    private Matrix X;
     
 }

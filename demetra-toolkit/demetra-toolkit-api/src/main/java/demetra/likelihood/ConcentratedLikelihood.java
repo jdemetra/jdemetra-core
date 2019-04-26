@@ -19,9 +19,9 @@ package demetra.likelihood;
 import demetra.design.Immutable;
 import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
-import demetra.maths.matrices.MatrixType;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  * This class represents the concentrated likelihood of a linear regression
@@ -46,7 +46,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         private double ssqerr, ldet;
         private double[] res;
         private double[] b = B_EMPTY;
-        private MatrixType bvar;
+        private Matrix bvar;
         private boolean scalingFactor = true;
 
         private Builder() {
@@ -102,7 +102,7 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
             return this;
         }
 
-        public Builder unscaledCovariance(MatrixType var) {
+        public Builder unscaledCovariance(Matrix var) {
             bvar = var;
             return this;
         }
@@ -120,11 +120,11 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
     private final double ll, ssqerr, ldet;
     private final double[] res;
     private final double[] b;
-    private final MatrixType bvar;
+    private final Matrix bvar;
     private final boolean scalingFactor;
 
     private ConcentratedLikelihood(final int n, final double ssqerr, final double ldet, final double[] res,
-            final double[] b, final MatrixType bvar, final boolean scalingFactor) {
+            final double[] b, final Matrix bvar, final boolean scalingFactor) {
         this.n = n;
         this.ldet = ldet;
         this.ssqerr = ssqerr;
@@ -197,9 +197,9 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
 
     @Override
     @Nonnull
-    public MatrixType unscaledCovariance() {
+    public Matrix unscaledCovariance() {
         if (bvar == null) {
-            return MatrixType.EMPTY;
+            return Matrix.EMPTY;
         } else {
             return bvar;
         }

@@ -9,7 +9,6 @@ import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
-import demetra.maths.matrices.MatrixType;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.minpack.MinPackMinimizer;
@@ -35,6 +34,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import org.junit.Test;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -49,7 +49,7 @@ public class MstsMappingTest {
     public void testSimple() throws URISyntaxException, IOException {
 
         File file = Data.copyToTempFile(MultivariateCompositeSsf.class.getResource("/mssf1"));
-        MatrixType data = MatrixSerializer.read(file, "\t|,");
+        Matrix data = MatrixSerializer.read(file, "\t|,");
 
         FastMatrix D = FastMatrix.make(data.getRowsCount(), 4);
         D.column(0).copy(data.column(0));

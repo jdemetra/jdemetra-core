@@ -5,11 +5,11 @@
  */
 package rssf;
 
-import demetra.maths.matrices.MatrixType;
 import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.implementations.TimeInvariantDynamics;
 import demetra.ssf.implementations.TimeInvariantDynamics.Innovations;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -17,7 +17,7 @@ import demetra.ssf.implementations.TimeInvariantDynamics.Innovations;
  */
 @lombok.experimental.UtilityClass
 public class Dynamics {
-    public ISsfDynamics of(MatrixType T, MatrixType V, MatrixType S){
+    public ISsfDynamics of(Matrix T, Matrix V, Matrix S){
         return new TimeInvariantDynamics(FastMatrix.of(T), new Innovations(FastMatrix.of(V), FastMatrix.of(S)));
     }
 }

@@ -3,11 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.data;
+package demetra.data.accumulator;
 
-import demetra.data.accumulator.KahanAccumulator;
-import demetra.data.accumulator.DoubleAccumulator;
-import demetra.data.accumulator.NeumaierAccumulator;
+import demetra.data.DataBlock;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -19,11 +17,14 @@ import static org.junit.Assert.*;
 public  class DoubleAccumulatorTest {
     
     public DoubleAccumulatorTest() {
-        Random rnd=new Random();
+    }
+
+    @Test
+    public void testSomeMethod() {
         int N=1000;
         double s=0;
         DataBlock block=DataBlock.make(N);
-        block.set(()->rnd.nextDouble()-.5);
+        block.set(i-> (i+1)/7999.0);
         DoubleAccumulator acc=new NeumaierAccumulator();
         DoubleAccumulator acc2=new KahanAccumulator();
         for (int i=0; i<N; ++i){
@@ -32,10 +33,9 @@ public  class DoubleAccumulatorTest {
             acc.add(t);
             acc2.add(t);
         }
-    }
-
-    @Test
-    public void testSomeMethod() {
+        double r=1001*500/7999.0;
+        assertTrue(Math.abs(acc.sum()-r)<Math.abs(s-r));
+        assertTrue(Math.abs(acc2.sum()-r)<Math.abs(s-r));
     }
     
 }

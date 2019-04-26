@@ -25,10 +25,10 @@ import demetra.eco.EcoException;
 import demetra.maths.Constants;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
-import demetra.maths.matrices.MatrixType;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import demetra.maths.matrices.Matrix;
 
 /**
  * This class represents the concentrated likelihood of a linear regression
@@ -265,10 +265,10 @@ public final class ConcentratedLikelihoodWithMissing implements IConcentratedLik
  
     @Override
     @Nonnull
-    public MatrixType unscaledCovariance() {
+    public Matrix unscaledCovariance() {
         bvariance();
         if (bvar == null) {
-            return MatrixType.EMPTY;
+            return Matrix.EMPTY;
         }
         if (nmissing == 0) {
             return bvar.unmodifiable();

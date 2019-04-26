@@ -8,7 +8,6 @@ package demetra.r;
 import demetra.arima.ssf.SsfArima;
 import demetra.data.DataBlock;
 import demetra.information.InformationMapping;
-import demetra.maths.matrices.MatrixType;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
@@ -40,6 +39,7 @@ import demetra.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -61,9 +61,9 @@ public class TimeVaryingRegression {
     public static class Results implements ProcResults {
 
         TsDomain domain;
-        MatrixType variables;
-        MatrixType coefficients;
-        MatrixType coefficientsStde;
+        Matrix variables;
+        Matrix coefficients;
+        Matrix coefficientsStde;
         SarimaModel arima0, arima;
         DiffuseConcentratedLikelihood ll0;
         DiffuseConcentratedLikelihood ll;
@@ -82,9 +82,9 @@ public class TimeVaryingRegression {
             MAPPING.set("aic0", Double.class, r -> r.getLl0().AIC(2));
             MAPPING.set("aic", Double.class, r -> r.getLl().AIC(3));
             MAPPING.set("tdvar", Double.class, r -> r.getNvar());
-            MAPPING.set(COEFF, MatrixType.class, r -> r.getCoefficients());
-            MAPPING.set(STDCOEFF, MatrixType.class, r -> r.getCoefficientsStde());
-            MAPPING.set(TD, MatrixType.class, r -> r.getVariables());
+            MAPPING.set(COEFF, Matrix.class, r -> r.getCoefficients());
+            MAPPING.set(STDCOEFF, Matrix.class, r -> r.getCoefficientsStde());
+            MAPPING.set(TD, Matrix.class, r -> r.getVariables());
             MAPPING.set(TDEFFECT, TsData.class, r
                     -> {
                 DataBlock tmp = DataBlock.make(r.getDomain().length());

@@ -34,7 +34,7 @@ import demetra.data.DoubleSeq;
  * @param <L>
  */
 @Development(status = Development.Status.Release)
-public class LogLikelihoodFunction<T, L extends ILikelihood> implements IFunction {
+public class LogLikelihoodFunction<T, L extends Likelihood> implements IFunction {
 
     /**
      * Mapping from T to the parameters Theta
@@ -87,7 +87,7 @@ public class LogLikelihoodFunction<T, L extends ILikelihood> implements IFunctio
 
         @Override
         public double getValue() {
-            ILikelihood l = function.apply(t);
+            Likelihood l = function.apply(t);
             if (l == null) {
                 return Double.NaN;
             } else {
@@ -102,7 +102,7 @@ public class LogLikelihoodFunction<T, L extends ILikelihood> implements IFunctio
     }
 
     @lombok.Value
-    public static class Point<T, L extends ILikelihood> {
+    public static class Point<T, L extends Likelihood> {
 
         private LogLikelihoodFunction<T, L> function;
         private double[] parameters, gradient;

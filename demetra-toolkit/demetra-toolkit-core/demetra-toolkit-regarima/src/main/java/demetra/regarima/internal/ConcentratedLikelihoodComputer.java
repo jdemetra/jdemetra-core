@@ -27,9 +27,9 @@ import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.internal.Householder;
-import demetra.maths.matrices.MatrixType;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -68,7 +68,7 @@ public final class ConcentratedLikelihoodComputer {
 
     }
 
-    private <M extends IArimaModel> ConcentratedLikelihoodWithMissing process(DoubleSeq dy, MatrixType x, int nl, int nm) {
+    private <M extends IArimaModel> ConcentratedLikelihoodWithMissing process(DoubleSeq dy, Matrix x, int nl, int nm) {
 
         DataBlock y = DataBlock.of(dy);
         int n = y.length();

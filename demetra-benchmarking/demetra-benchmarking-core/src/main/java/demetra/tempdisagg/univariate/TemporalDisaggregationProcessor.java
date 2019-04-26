@@ -21,7 +21,6 @@ import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.MaximumLogLikelihood;
 import demetra.linearmodel.Coefficient;
 import demetra.linearmodel.LinearModelEstimation;
-import demetra.maths.matrices.MatrixType;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
@@ -54,6 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -414,7 +414,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
         int nparams=spec.isParameterEstimation() ? 1 : 0;
         T tstat=new T(dll.dim()-dll.nx()-nparams);
         DoubleSeq coefficients = dll.coefficients();
-        MatrixType cov = dll.covariance(nparams, true);
+        Matrix cov = dll.covariance(nparams, true);
         DoubleSeq ser = cov.diagonal();
         if (spec.isConstant()){
             double ccur=coefficients.get(pos), ecur=Math.sqrt(ser.get(pos));

@@ -16,8 +16,8 @@
  */
 package demetra.linearmodel;
 
-import demetra.maths.matrices.MatrixType;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -26,11 +26,11 @@ import demetra.data.DoubleSeq;
 @lombok.Value
 public class LinearModelEstimation {
 
-    public static final LinearModelEstimation EMPTY=new LinearModelEstimation(new Coefficient[0], MatrixType.EMPTY);
+    public static final LinearModelEstimation EMPTY=new LinearModelEstimation(new Coefficient[0], Matrix.EMPTY);
     
     private @lombok.NonNull
     Coefficient[] coefficients;
-    private MatrixType covariance;
+    private Matrix covariance;
 
     public DoubleSeq values() {
         return DoubleSeq.onMapping(coefficients.length, i -> coefficients[i].getValue());

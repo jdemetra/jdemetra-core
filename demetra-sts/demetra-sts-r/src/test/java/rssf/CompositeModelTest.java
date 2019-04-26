@@ -11,7 +11,6 @@ import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
-import demetra.maths.matrices.MatrixType;
 import demetra.maths.matrices.FastMatrix;
 import demetra.msts.CompositeModel;
 import demetra.msts.CompositeModelEstimation;
@@ -23,6 +22,7 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Test;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -30,10 +30,10 @@ import org.junit.Test;
  */
 public class CompositeModelTest {
 
-    static final MatrixType data;
+    static final Matrix data;
 
     static {
-        MatrixType tmp = null;
+        Matrix tmp = null;
         try {
             URI uri = CompositeModels.class.getResource("/mssf1").toURI();
             tmp = MatrixSerializer.read(new File(uri), "\t|,");

@@ -21,7 +21,6 @@ import demetra.arima.StationaryTransformation;
 import demetra.arima.internal.FastKalmanFilter;
 import demetra.data.DataBlock;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.likelihood.Likelihood;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.maths.polynomials.Polynomial;
@@ -30,6 +29,7 @@ import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.modelling.regression.IOutlier;
 import demetra.modelling.regression.IOutlierFactory;
 import demetra.data.DoubleSeq;
+import demetra.likelihood.Likelihood;
 
 /**
  *

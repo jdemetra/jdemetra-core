@@ -17,7 +17,6 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.maths.matrices.MatrixType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
@@ -27,6 +26,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -196,7 +196,7 @@ public class CalendarUtility {
      * @return The (weighted) number of holidays for each period of the domain.
      * The different columns of the matrix correspond to Mondays...Sundays
      */
-    public MatrixType holidays(Holiday[] holidays, TsDomain domain) {
+    public Matrix holidays(Holiday[] holidays, TsDomain domain) {
         int n = domain.getLength();
         double[] h = new double[7 * n];
 
@@ -229,7 +229,7 @@ public class CalendarUtility {
                 }
             }
         }
-        return MatrixType.ofInternal(h, n, 7);
+        return Matrix.ofInternal(h, n, 7);
     }
 
     /**

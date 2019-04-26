@@ -16,20 +16,31 @@
  */
 package demetra.data.analysis;
 
-import demetra.design.Development;
+import demetra.data.DataBlock;
+import demetra.design.Demo;
+import java.util.Random;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
- * Tapering consists of altering the ends of the (mean-adjusted) series so that 
- * they taper gradually down to zero.
- * @author Jean Palate
+ *
+ * @author Jean Palate <jean.palate@nbb.be>
  */
-@Development(status = Development.Status.Release)
-@FunctionalInterface
-public interface Taper {
+public class TukeyHanningTaperTest {
+    
+    public TukeyHanningTaperTest() {
+    }
 
-    /**
-     * Tapers the given data.
-     * @param data After the output, the data are modified.
-     */
-    void process(double[] data);
+    @Demo
+    public void testRandom() {
+        double[] x=new double[60];
+        DataBlock X=DataBlock.of(x);
+        Random rnd=new Random();
+        X.set(rnd::nextGaussian);
+        TukeyHanningTaper taper=new TukeyHanningTaper(.5);
+        System.out.println(X);
+        taper.process(x);
+        System.out.println(X);
+    }
+    
 }
