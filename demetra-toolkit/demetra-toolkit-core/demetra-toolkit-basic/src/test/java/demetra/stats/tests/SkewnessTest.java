@@ -34,7 +34,7 @@ public class SkewnessTest {
     public void testLegacy() {
         int N=100;
         double[] data=new double[N];
-        DataBlock X=DataBlock.ofInternal(data);
+        DataBlock X=DataBlock.of(data);
         Random rnd=new Random();
         X.set(rnd::nextDouble);
         

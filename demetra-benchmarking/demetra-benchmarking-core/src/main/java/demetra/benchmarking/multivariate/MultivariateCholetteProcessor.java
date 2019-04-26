@@ -22,7 +22,7 @@ import demetra.benchmarking.univariate.CholetteProcessor;
 import demetra.data.AggregationType;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockStorage;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.M2uAdapter;
@@ -197,7 +197,7 @@ public class MultivariateCholetteProcessor implements IMultivariateCholette {
                 .build();
 
         // build the observations
-        Matrix M = Matrix.make(idomain.getLength(), ncnts);
+        FastMatrix M = FastMatrix.make(idomain.getLength(), ncnts);
         for (int i = 0; i < ncnts; ++i) {
             M.column(i).copyFrom(lcntData[i], 0);
         }
@@ -309,9 +309,9 @@ public class MultivariateCholetteProcessor implements IMultivariateCholette {
                 }
             }
             // correct the constraints to fit the state space representation
-            DataBlock z = DataBlock.ofInternal(lcntData[i]);
+            DataBlock z = DataBlock.of(lcntData[i]);
             for (int j = 0; j < cur.index.length; ++j) {
-                z.addAY(-cur.weights[j], DataBlock.ofInternal(rcntData[cur.index[j]]));
+                z.addAY(-cur.weights[j], DataBlock.of(rcntData[cur.index[j]]));
             }
         }
     }
@@ -369,7 +369,7 @@ public class MultivariateCholetteProcessor implements IMultivariateCholette {
                 .weights(weights)
                 .build();
         // build the observations
-        Matrix M = Matrix.make(len, nvars + ncnts);
+        FastMatrix M = FastMatrix.make(len, nvars + ncnts);
         M.set(Double.NaN);
 
         // fill the matrix: first rows with temporal constraints

@@ -16,7 +16,6 @@
  */
 package demetra.timeseries;
 
-import demetra.maths.Math2;
 import java.time.Duration;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
@@ -72,8 +71,8 @@ public class TsUnit implements TemporalAmount {
     /**
      * Gets the number of periods in one year.
      *
-     * @return The number of periods in 1 year or -1 if the unit is not compatible 
-     * with years
+     * @return The number of periods in 1 year or -1 if the unit is not
+     * compatible with years
      */
     public int getAnnualFrequency() {
         switch (chronoUnit) {
@@ -240,9 +239,18 @@ public class TsUnit implements TemporalAmount {
             amount = getLowestAmount(amount, chronoUnit, b.getChronoUnit());
             chronoUnit = b.getChronoUnit();
         }
-        amount = Math2.gcd(amount, b.getAmount());
+        amount = gcd(amount, b.getAmount());
 
         return TsUnit.of(amount, chronoUnit);
+    }
+
+    private static long gcd(long a, long b) {
+        while (b > 0) {
+            long temp = b;
+            b = a % b; // % is remainder  
+            a = temp;
+        }
+        return a;
     }
 
     private static TsUnit ofMillennia(long amount) {

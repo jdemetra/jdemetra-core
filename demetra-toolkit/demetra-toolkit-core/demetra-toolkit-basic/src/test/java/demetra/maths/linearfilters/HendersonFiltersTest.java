@@ -16,7 +16,6 @@
  */
 package demetra.maths.linearfilters;
 
-import demetra.data.DataBlock;
 import java.util.function.DoubleUnaryOperator;
 import org.junit.Test;
 import static org.junit.Assert.*;

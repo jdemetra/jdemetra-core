@@ -16,7 +16,7 @@
  */
 package demetra.modelling.regression;
 
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
@@ -37,7 +37,7 @@ public class PeriodicContrastsTest {
     public void testMonthly() {
         PeriodicContrasts vars = new PeriodicContrasts(12);
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2017, 8), 120);
-        Matrix M=Regression.matrix(domain, vars);
+        FastMatrix M=Regression.matrix(domain, vars);
         //System.out.println(M);
         assertTrue(M.columnList().stream().allMatch(col->col.sum()==0));
     }

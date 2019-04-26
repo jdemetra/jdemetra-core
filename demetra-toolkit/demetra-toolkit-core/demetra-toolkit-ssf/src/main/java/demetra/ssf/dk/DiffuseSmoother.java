@@ -17,7 +17,7 @@
 package demetra.ssf.dk;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.StateInfo;
 import demetra.ssf.univariate.ISmoothingResults;
@@ -109,9 +109,9 @@ public class DiffuseSmoother extends BaseDiffuseSmoother {
             tmp0 = DataBlock.make(dim);
             tmp1 = DataBlock.make(dim);
             Z = DataBlock.make(dim);
-            N0 = Matrix.square(dim);
-            N1 = Matrix.square(dim);
-            N2 = Matrix.square(dim);
+            N0 = FastMatrix.square(dim);
+            N1 = FastMatrix.square(dim);
+            N2 = FastMatrix.square(dim);
         }
     }
 
@@ -158,12 +158,12 @@ public class DiffuseSmoother extends BaseDiffuseSmoother {
 
     @Override
     protected void updateP(int pos) {
-        Matrix P = state.P();
-        Matrix PN0P = SymmetricMatrix.XtSX(N0, P);
-        Matrix Pi = state.Pi();
-        Matrix PN2P = SymmetricMatrix.XtSX(N2, Pi);
-        Matrix PN1 = P.times(N1);
-        Matrix PN1Pi = PN1.times(Pi);
+        FastMatrix P = state.P();
+        FastMatrix PN0P = SymmetricMatrix.XtSX(N0, P);
+        FastMatrix Pi = state.Pi();
+        FastMatrix PN2P = SymmetricMatrix.XtSX(N2, Pi);
+        FastMatrix PN1 = P.times(N1);
+        FastMatrix PN1Pi = PN1.times(Pi);
         P.sub(PN0P);
         P.sub(PN2P);
         P.sub(PN1Pi);

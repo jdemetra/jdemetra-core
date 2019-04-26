@@ -21,7 +21,7 @@ import demetra.design.Development;
 import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
 
 
@@ -55,7 +55,7 @@ public class MinPackMinimizer implements ISsqFunctionMinimizer {
      * @return
      */
     @Override
-    public Matrix curvatureAtMinimum() {
+    public FastMatrix curvatureAtMinimum() {
         try{
 	return m_estimator.curvature(m_problem);
         }

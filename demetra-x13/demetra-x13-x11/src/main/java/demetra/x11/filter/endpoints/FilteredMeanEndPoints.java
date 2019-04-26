@@ -46,6 +46,6 @@ public class FilteredMeanEndPoints implements IEndPointsProcessor {
             tmp[i] = beg;
             tmp[j] = end;
         }
-        filter.apply(DataBlock.ofInternal(tmp), out);
+        filter.apply(DataBlock.of(tmp), out);
     }
 }

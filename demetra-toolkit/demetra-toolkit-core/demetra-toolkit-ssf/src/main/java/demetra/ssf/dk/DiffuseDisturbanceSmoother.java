@@ -18,7 +18,7 @@ package demetra.ssf.dk;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.DisturbanceSmoother;
@@ -79,7 +79,7 @@ public class DiffuseDisturbanceSmoother {
 
     private double e, f, esm, esmVariance, h, fi;
     private DataBlock C, Ci, R, Ri, U;
-    private Matrix N, UVar, S;
+    private FastMatrix N, UVar, S;
     private boolean missing;
     private int pos;
     // temporary
@@ -147,11 +147,11 @@ public class DiffuseDisturbanceSmoother {
         Ri = DataBlock.make(dim);
         Ci = DataBlock.make(dim);
         U = DataBlock.make(resdim);
-        S = Matrix.make(dim, resdim);
+        S = FastMatrix.make(dim, resdim);
         if (calcvar) {
-            N = Matrix.square(dim);
+            N = FastMatrix.square(dim);
             tmp = DataBlock.make(dim);
-            UVar = Matrix.square(resdim);
+            UVar = FastMatrix.square(resdim);
             if (error != null && error.isTimeInvariant()) {
                 h = error.at(0);
             } else {
@@ -296,7 +296,7 @@ public class DiffuseDisturbanceSmoother {
         }
     }
 
-    private void tvt(Matrix N) {
+    private void tvt(FastMatrix N) {
         DataBlockIterator columns = N.columnsIterator();
         while (columns.hasNext()) {
             dynamics.XT(pos, columns.next());
@@ -340,7 +340,7 @@ public class DiffuseDisturbanceSmoother {
         return Ri;
     }
 
-    public Matrix getFinalN() {
+    public FastMatrix getFinalN() {
         return N;
     }
 
@@ -350,14 +350,14 @@ public class DiffuseDisturbanceSmoother {
         int n = initialization.getStateDim();
         // initial state
         DataBlock a = DataBlock.make(n);
-        Matrix Pf0 = Matrix.square(n);
+        FastMatrix Pf0 = FastMatrix.square(n);
         initialization.a0(a);
         initialization.Pf0(Pf0);
         // stationary initialization
         a.addProduct(R, Pf0.columnsIterator());
 
         // non stationary initialisation
-        Matrix Pi0 = Matrix.square(n);
+        FastMatrix Pi0 = FastMatrix.square(n);
         initialization.Pi0(Pi0);
         a.addProduct(Ri, Pi0.columnsIterator());
         return a;

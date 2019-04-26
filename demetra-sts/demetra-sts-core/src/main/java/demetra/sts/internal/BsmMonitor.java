@@ -27,7 +27,7 @@ import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.functions.minpack.MinPackMinimizer;
 import demetra.maths.functions.riso.LbfgsMinimizer;
 import demetra.maths.functions.ssq.ProxyMinimizer;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.dk.SsfFunctionPoint;
@@ -47,7 +47,7 @@ import demetra.data.DoubleSeq;
 @Development(status = Development.Status.Preliminary)
 public class BsmMonitor {
     
-    private Matrix m_x;
+    private FastMatrix m_x;
     
     private double[] m_y;
 
@@ -384,13 +384,13 @@ public class BsmMonitor {
      * @param freq
      * @return
      */
-    public boolean process(DoubleSeq y, Matrix x, int freq) {
+    public boolean process(DoubleSeq y, FastMatrix x, int freq) {
         m_y = y.toArray();
         m_x = x;
         period = freq;
         if (scalingFactor) {
             AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
-            DataBlock Y = DataBlock.ofInternal(m_y);
+            DataBlock Y = DataBlock.of(m_y);
 //            m_factor = normalizer.normalize(Y);
         } else {
 //            m_factor = 1;

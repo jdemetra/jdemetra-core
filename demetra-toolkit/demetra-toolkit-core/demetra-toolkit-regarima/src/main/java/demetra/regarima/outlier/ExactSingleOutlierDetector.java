@@ -26,7 +26,7 @@ import demetra.leastsquares.QRSolvers;
 import demetra.linearmodel.LinearModel;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArmaModel;
 import demetra.leastsquares.QRSolver;
@@ -76,7 +76,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
 
     private ArmaFilter filter;
     private final ResidualsComputer resComputer;
-    private Matrix L, Xl;
+    private FastMatrix L, Xl;
     private double[] yl, b, w;
     private int n;
     private double mad;
@@ -135,16 +135,16 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
         try {
             LinearModel lm = model.asLinearModel();
             yl = new double[n];
-            DataBlock Yl = DataBlock.ofInternal(yl);
+            DataBlock Yl = DataBlock.of(yl);
             filter.apply(model.getY(), Yl);
 
-            Matrix regs = lm.variables();
+            FastMatrix regs = lm.variables();
             if (regs.isEmpty()) {
                 mad = getStandardDeviationComputer().compute(filter(model.getY()));
                 return true;
             }
 
-            Xl = Matrix.make(n, regs.getColumnsCount());
+            Xl = FastMatrix.make(n, regs.getColumnsCount());
             DataBlockIterator rcols = regs.columnsIterator(), drcols = Xl.columnsIterator();
             while (rcols.hasNext()) {
                 filter.apply(rcols.next(), drcols.next());
@@ -166,7 +166,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
             for (int i = 0; i < Xl.getColumnsCount(); ++i) {
                 w[i] = drcols.next().dot(Yl);
             }
-            LowerTriangularMatrix.rsolve(L, DataBlock.ofInternal(w));
+            LowerTriangularMatrix.rsolve(L, DataBlock.of(w));
 
 //	    calcMAD(E);
             DataBlock e = lm.calcResiduals(B);
@@ -187,15 +187,15 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
         BackFilter df = regArima.arima().getNonStationaryAR();
         int d = df.getDegree();
         double[] o = new double[2 * len];
-        DataBlock O = DataBlock.ofInternal(o);
+        DataBlock O = DataBlock.of(o);
         getOutlierFactory(idx).fill(len, O);
         double[] od = new double[o.length - d];
-        DataBlock OD = DataBlock.ofInternal(od);
+        DataBlock OD = DataBlock.of(od);
         df.apply(O, OD);
-        DataBlock Yl = DataBlock.ofInternal(yl);
+        DataBlock Yl = DataBlock.of(yl);
 
         for (int i = lbound; i < ubound; ++i) {
-            O = DataBlock.ofInternal(od, len - i, 2 * len - d - i, 1);
+            O = DataBlock.of(od, len - i, 2 * len - d - i, 1);
             if (isAllowed(i, idx)) {
                 DataBlock Ol = DataBlock.make(n);
                 filter.apply(O, Ol);
@@ -207,7 +207,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
                     for (int q = 0; q < Xl.getColumnsCount(); ++q) {
                         l[q] = xcols.next().dot(Ol);
                     }
-                    DataBlock M = DataBlock.ofInternal(l);
+                    DataBlock M = DataBlock.of(l);
                     // K=A^-1*L
                     // lA * lA' * K = L
                     // l'AA^-1l = |l' * lA'^-1|
@@ -219,7 +219,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
                     if (c <= 0) {
                         exclude(i, idx);
                     } else {
-                        setT(i, idx, (xy - DataBlock.ofInternal(w).dot(M))
+                        setT(i, idx, (xy - DataBlock.of(w).dot(M))
                                 / (Math.sqrt(c)) / mad);
                     }
                 } else if (xx <= 0) {

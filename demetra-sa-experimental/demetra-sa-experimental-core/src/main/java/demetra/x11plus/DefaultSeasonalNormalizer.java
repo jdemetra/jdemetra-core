@@ -19,7 +19,6 @@ package demetra.x11plus;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.data.DoubleSeq;
 
@@ -37,11 +36,11 @@ class DefaultSeasonalNormalizer {
         int ndrop = filter.length() / 2;
 
         double[] x = new double[in.length()];
-        DataBlock out = DataBlock.ofInternal(x, ndrop, x.length-ndrop);
-        filter.apply(i -> in.get(i), IFilterOutput.of(out, ndrop));
+        DataBlock out = DataBlock.of(x, ndrop, x.length-ndrop);
+        filter.apply(in, out);
        
         CopyEndPoints cp=new CopyEndPoints(ndrop);
-        cp.process(in, DataBlock.ofInternal(x));
+        cp.process(in, DataBlock.of(x));
         DoubleSeq t= DoubleSeq.of(x);
         DoubleSeq tmp=context.remove(in, t);
         if (nextend == 0)
@@ -50,7 +49,7 @@ class DefaultSeasonalNormalizer {
             x=new double[x.length+2*nextend];
             tmp.copyTo(x, nextend);
             CopyPeriodicEndPoints cpp=new CopyPeriodicEndPoints(nextend, context.getPeriod().intValue());
-            cpp.process(null, DataBlock.ofInternal(x));
+            cpp.process(null, DataBlock.of(x));
             return DoubleSeq.of(x);
         }
     }

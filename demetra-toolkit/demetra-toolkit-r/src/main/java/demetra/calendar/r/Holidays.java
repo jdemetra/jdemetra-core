@@ -16,8 +16,8 @@
  */
 package demetra.calendar.r;
 
-import demetra.maths.MatrixType;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.calendars.DayEvent;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
@@ -67,7 +67,7 @@ public class Holidays {
     public MatrixType holidays(String date, int length, String type) {
         LocalDate start = LocalDate.parse(date);
         Holiday[] elements = elements();
-        Matrix m = Matrix.make(length, elements.length);
+        FastMatrix m = FastMatrix.make(length, elements.length);
         switch (type) {
             case "SkipSundays":
                 HolidaysUtility.fillDays(elements, m, start, true);

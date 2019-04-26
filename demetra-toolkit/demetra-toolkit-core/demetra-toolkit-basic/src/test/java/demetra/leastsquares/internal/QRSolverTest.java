@@ -9,7 +9,7 @@ import demetra.leastsquares.internal.AdvancedQRSolver;
 import demetra.data.DataBlock;
 import demetra.data.DataSets;
 import static demetra.data.DataSets.lre;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.maths.matrices.internal.HouseholderWithPivoting;
 import demetra.maths.matrices.internal.RobustHouseholder;
@@ -32,12 +32,12 @@ public class QRSolverTest {
     @Test
     public void testNorris() {
         double[] y=DataSets.Norris.y;
-        Matrix M = Matrix.make(y.length, 2);
-        DataBlock x = DataBlock.ofInternal(DataSets.Norris.x);
+        FastMatrix M = FastMatrix.make(y.length, 2);
+        DataBlock x = DataBlock.of(DataSets.Norris.x);
         M.column(0).set(1);
         M.column(1).copy(x);
 
-        solver.solve(DataBlock.ofInternal(y), M);
+        solver.solve(DataBlock.of(y), M);
         DoubleSeq beta = solver.coefficients();
         System.out.println("Norris");
         System.out.println(beta);
@@ -51,13 +51,13 @@ public class QRSolverTest {
     @Test
     public void testPontius() {
         double[] y=DataSets.Pontius.y;
-        Matrix M = Matrix.make(y.length, 3);
-        DataBlock x = DataBlock.ofInternal(DataSets.Pontius.x);
+        FastMatrix M = FastMatrix.make(y.length, 3);
+        DataBlock x = DataBlock.of(DataSets.Pontius.x);
         M.column(0).set(1);
         M.column(1).copy(x);
         M.column(2).set(x, a -> a * a);
 
-        solver.solve(DataBlock.ofInternal(y), M);
+        solver.solve(DataBlock.of(y), M);
         DoubleSeq beta = solver.coefficients();
         System.out.println("Pontius");
         System.out.println(beta);
@@ -71,10 +71,10 @@ public class QRSolverTest {
     @Test
     public void testNoInt1() {
         double[] y=DataSets.NoInt1.y;
-        Matrix M = Matrix.make(y.length, 1);
+        FastMatrix M = FastMatrix.make(y.length, 1);
         M.column(0).copyFrom(DataSets.NoInt1.x, 0);
 
-         solver.solve(DataBlock.ofInternal(y), M);
+         solver.solve(DataBlock.of(y), M);
         DoubleSeq beta = solver.coefficients();
         System.out.println("NoInt1");
         System.out.println(beta);
@@ -88,11 +88,11 @@ public class QRSolverTest {
     @Test
     public void testNoInt2() {
         double[] y=DataSets.NoInt2.y;
-        Matrix M = Matrix.make(y.length, 1);
-        DataBlock x = DataBlock.ofInternal(DataSets.NoInt2.x);
+        FastMatrix M = FastMatrix.make(y.length, 1);
+        DataBlock x = DataBlock.of(DataSets.NoInt2.x);
         M.column(0).copy(x);
 
-         solver.solve(DataBlock.ofInternal(y), M);
+         solver.solve(DataBlock.of(y), M);
         DoubleSeq beta = solver.coefficients();
         System.out.println("NoInt2");
         System.out.println(beta);
@@ -106,8 +106,8 @@ public class QRSolverTest {
     @Test
     public void testFilip() {
         double[] y=DataSets.Filip.y;
-        Matrix M = Matrix.make(y.length, 11);
-        DataBlock x = DataBlock.ofInternal(DataSets.Filip.x);
+        FastMatrix M = FastMatrix.make(y.length, 11);
+        DataBlock x = DataBlock.of(DataSets.Filip.x);
         M.column(0).set(1);
         M.column(1).copy(x);
         M.column(2).set(x, a -> a * a);
@@ -120,7 +120,7 @@ public class QRSolverTest {
         M.column(9).set(x, a -> a * a * a * a * a * a * a * a * a);
         M.column(10).set(x, a -> a * a * a * a * a * a * a * a * a * a);
 
-        solver.solve(DataBlock.ofInternal(y), M);
+        solver.solve(DataBlock.of(y), M);
         DoubleSeq beta = solver.coefficients();
         System.out.println("Filip");
         System.out.println(beta);
@@ -134,7 +134,7 @@ public class QRSolverTest {
     @Test
     public void testLongley() {
         double[] y=DataSets.Longley.y;
-        Matrix M = Matrix.make(y.length, 7);
+        FastMatrix M = FastMatrix.make(y.length, 7);
         M.column(0).set(1);
         M.column(1).copyFrom(DataSets.Longley.x1, 0);
         M.column(2).copyFrom(DataSets.Longley.x2, 0);
@@ -143,7 +143,7 @@ public class QRSolverTest {
         M.column(5).copyFrom(DataSets.Longley.x5, 0);
         M.column(6).copyFrom(DataSets.Longley.x6, 0);
 
-        solver.solve(DataBlock.ofInternal(y), M);
+        solver.solve(DataBlock.of(y), M);
         DoubleSeq beta = solver.coefficients();
         System.out.println("Longley");
         System.out.println(beta);
@@ -157,8 +157,8 @@ public class QRSolverTest {
     @Test
     public void testWampler1() {
         double[] y=DataSets.Wampler1.y;
-        Matrix M = Matrix.make(y.length, 6);
-        DataBlock x = DataBlock.ofInternal(DataSets.Wampler1.x);
+        FastMatrix M = FastMatrix.make(y.length, 6);
+        DataBlock x = DataBlock.of(DataSets.Wampler1.x);
         M.column(0).set(1);
         M.column(1).copy(x);
         M.column(2).set(x, a -> a * a);
@@ -166,7 +166,7 @@ public class QRSolverTest {
         M.column(4).set(x, a -> a * a * a * a);
         M.column(5).set(x, a -> a * a * a * a * a);
 
-        solver.solve(DataBlock.ofInternal(y), M);
+        solver.solve(DataBlock.of(y), M);
         DoubleSeq beta = solver.coefficients();
         System.out.println("Wampler1");
         System.out.println(beta);
@@ -180,8 +180,8 @@ public class QRSolverTest {
     @Test
     public void testWampler2() {
         double[] y=DataSets.Wampler2.y;
-        Matrix M = Matrix.make(y.length, 6);
-        DataBlock x = DataBlock.ofInternal(DataSets.Wampler2.x);
+        FastMatrix M = FastMatrix.make(y.length, 6);
+        DataBlock x = DataBlock.of(DataSets.Wampler2.x);
         M.column(0).set(1);
         M.column(1).copy(x);
         M.column(2).set(x, a -> a * a);
@@ -189,7 +189,7 @@ public class QRSolverTest {
         M.column(4).set(x, a -> a * a * a * a);
         M.column(5).set(x, a -> a * a * a * a * a);
 
-        solver.solve(DataBlock.ofInternal(y), M);
+        solver.solve(DataBlock.of(y), M);
         DoubleSeq beta = solver.coefficients();
 
         System.out.println("Wampler2");
@@ -204,8 +204,8 @@ public class QRSolverTest {
     @Test
     public void testWampler3() {
         double[] y=DataSets.Wampler3.y;
-        Matrix M = Matrix.make(y.length, 6);
-        DataBlock x = DataBlock.ofInternal(DataSets.Wampler3.x);
+        FastMatrix M = FastMatrix.make(y.length, 6);
+        DataBlock x = DataBlock.of(DataSets.Wampler3.x);
         M.column(0).set(1);
         M.column(1).copy(x);
         M.column(2).set(x, a -> a * a);
@@ -213,7 +213,7 @@ public class QRSolverTest {
         M.column(4).set(x, a -> a * a * a * a);
         M.column(5).set(x, a -> a * a * a * a * a);
 
-        solver.solve(DataBlock.ofInternal(y), M);
+        solver.solve(DataBlock.of(y), M);
         DoubleSeq beta = solver.coefficients();
         System.out.println("Wampler3");
         System.out.println(beta);
@@ -227,8 +227,8 @@ public class QRSolverTest {
     @Test
     public void testWampler4() {
         double[] y=DataSets.Wampler4.y;
-        Matrix M = Matrix.make(y.length, 6);
-        DataBlock x = DataBlock.ofInternal(DataSets.Wampler4.x);
+        FastMatrix M = FastMatrix.make(y.length, 6);
+        DataBlock x = DataBlock.of(DataSets.Wampler4.x);
         M.column(0).set(1);
         M.column(1).copy(x);
         M.column(2).set(x, a -> a * a);
@@ -236,7 +236,7 @@ public class QRSolverTest {
         M.column(4).set(x, a -> a * a * a * a);
         M.column(5).set(x, a -> a * a * a * a * a);
 
-        solver.solve(DataBlock.ofInternal(y), M);
+        solver.solve(DataBlock.of(y), M);
         DoubleSeq beta = solver.coefficients();
         System.out.println("Wampler4");
         System.out.println(beta);
@@ -250,8 +250,8 @@ public class QRSolverTest {
     @Test
     public void testWampler5() {
         double[] y=DataSets.Wampler5.y;
-        Matrix M = Matrix.make(y.length, 6);
-        DataBlock x = DataBlock.ofInternal(DataSets.Wampler5.x);
+        FastMatrix M = FastMatrix.make(y.length, 6);
+        DataBlock x = DataBlock.of(DataSets.Wampler5.x);
         M.column(0).set(1);
         M.column(1).copy(x);
         M.column(2).set(x, a -> a * a);
@@ -259,7 +259,7 @@ public class QRSolverTest {
         M.column(4).set(x, a -> a * a * a * a);
         M.column(5).set(x, a -> a * a * a * a * a);
 
-        solver.solve(DataBlock.ofInternal(y), M);
+        solver.solve(DataBlock.of(y), M);
         DoubleSeq beta = solver.coefficients();
 
         System.out.println("Wampler5");

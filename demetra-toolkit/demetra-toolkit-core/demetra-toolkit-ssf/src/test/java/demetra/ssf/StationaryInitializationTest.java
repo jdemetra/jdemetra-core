@@ -8,7 +8,7 @@ package demetra.ssf;
 import demetra.arima.ssf.SsfArima;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -33,8 +33,8 @@ public class StationaryInitializationTest {
                 .build();
         StateComponent cmp = SsfArima.componentOf(arima);
         int dim = cmp.initialization().getStateDim();
-        Matrix I = StationaryInitialization.of(cmp.dynamics(), dim);
-        Matrix P = Matrix.square(dim);
+        FastMatrix I = StationaryInitialization.of(cmp.dynamics(), dim);
+        FastMatrix P = FastMatrix.square(dim);
         cmp.initialization().Pf0(P);
         assertTrue(I.minus(P).frobeniusNorm() < 1e-12);
     }
@@ -53,7 +53,7 @@ public class StationaryInitializationTest {
         int dim = cmp.initialization().getStateDim();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 10000; ++i) {
-            Matrix I = StationaryInitialization.of(cmp.dynamics(), dim);
+            FastMatrix I = StationaryInitialization.of(cmp.dynamics(), dim);
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1-t0);

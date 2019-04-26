@@ -17,7 +17,7 @@
 package demetra.maths.linearfilters;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.function.IntToDoubleFunction;
@@ -45,10 +45,10 @@ public class LocalPolynomialFilters {
     };
 
     public DoubleSeq filter(DoubleSeq input, final SymmetricFilter filter, final FiniteFilter[] afilters) {
-        double[] x = input.toArray();
+        double[] x = new double[input.length()];
         int h = filter.getUpperBound();
-        DataBlock out = DataBlock.ofInternal(x, h, x.length - h);
-        filter.apply(i -> input.get(i), IFilterOutput.of(out, h));
+        DataBlock out = DataBlock.of(x, h, x.length - h);
+        filter.apply(input, out);
 
         // apply the endpoints filters
         if (afilters != null) {
@@ -149,7 +149,7 @@ public class LocalPolynomialFilters {
     SymmetricFilter ofDefault(int h, int d, IntToDoubleFunction k) {
         // w = KX (X'K X)^-1 e1
         // (X'K X)^-1 e1 = u <-> (X'K X) u = e1
-        Matrix xkx = Matrix.square(d + 1);
+        FastMatrix xkx = FastMatrix.square(d + 1);
         for (int i = 0; i <= d; ++i) {
             xkx.set(i, i, S_hd(h, 2 * i, k));
             for (int j = 0; j < i; ++j) {
@@ -162,7 +162,7 @@ public class LocalPolynomialFilters {
         }
         double[] u = new double[d + 1];
         u[0] = 1;
-        LinearSystemSolver.robustSolver().solve(xkx, DataBlock.ofInternal(u));
+        LinearSystemSolver.robustSolver().solve(xkx, DataBlock.of(u));
         double[] w = new double[h + 1];
         for (int i = 0; i <= h; ++i) {
             double s = u[0];
@@ -271,7 +271,7 @@ public class LocalPolynomialFilters {
     FiniteFilter defaultDirectAsymmetricFilter(int h, int q, int d, IntToDoubleFunction k) {
         // w = KpXp (Xp'Kp Xp)^-1 e1
         // (Xp'Kp Xp)^-1 e1 = u <-> (Xp'Kp Xp) u = e1
-        Matrix xkx = Matrix.square(d + 1);
+        FastMatrix xkx = FastMatrix.square(d + 1);
         for (int i = 0; i <= d; ++i) {
             xkx.set(i, i, S_hqd(h, q, 2 * i, k));
             for (int j = 0; j < i; ++j) {
@@ -286,7 +286,7 @@ public class LocalPolynomialFilters {
         u[0] = 1;
         Householder hous=new Householder();
         hous.decompose(xkx);
-        hous.solve(DataBlock.ofInternal(u));
+        hous.solve(DataBlock.of(u));
         double[] w = new double[h + q + 1];
         w[h] = u[0] * k.applyAsDouble(0);
         for (int i = 1; i <= q; ++i) {
@@ -329,15 +329,15 @@ public class LocalPolynomialFilters {
         double[] w = sw.weightsToArray();
         int h = w.length / 2;
         int nv = h + p + 1;
-        DataBlock wp = DataBlock.ofInternal(w, 0, nv);
-        DataBlock wf = DataBlock.ofInternal(w, nv, w.length);
-        Matrix Zp = z(-h, p, u + 1, u + dz.length);
-        Matrix Zf = z(p + 1, h, u + 1, u + dz.length);
-        Matrix Up = z(-h, p, 0, u);
-        Matrix Uf = z(p + 1, h, 0, u);
-        DataBlock d = DataBlock.ofInternal(dz);
+        DataBlock wp = DataBlock.of(w, 0, nv);
+        DataBlock wf = DataBlock.of(w, nv, w.length);
+        FastMatrix Zp = z(-h, p, u + 1, u + dz.length);
+        FastMatrix Zf = z(p + 1, h, u + 1, u + dz.length);
+        FastMatrix Up = z(-h, p, 0, u);
+        FastMatrix Uf = z(p + 1, h, 0, u);
+        DataBlock d = DataBlock.of(dz);
 
-        Matrix H = SymmetricMatrix.XtX(Up);
+        FastMatrix H = SymmetricMatrix.XtX(Up);
 
         DataBlock a1 = DataBlock.make(u + 1);
         a1.product(Uf.columnsIterator(), wf); // U'f x wf
@@ -373,7 +373,7 @@ public class LocalPolynomialFilters {
 
         DataBlock a10 = DataBlock.make(dz.length);
         a10.product(Zp.columnsIterator(), a9);
-        Matrix C = Matrix.square(dz.length);
+        FastMatrix C = FastMatrix.square(dz.length);
         for (int i = 0; i < dz.length; ++i) {
             for (int j = 0; j < dz.length; ++j) {
                 double x = a10.get(i) * dz[j];
@@ -403,7 +403,7 @@ public class LocalPolynomialFilters {
      * @param u included (positive)
      * @return
      */
-    synchronized Matrix z(int l, int u, int d0, int d1) {
+    synchronized FastMatrix z(int l, int u, int d0, int d1) {
         int nh = Math.max(Math.abs(l), Math.abs(u));
         if (Z == null || Z.getRowsCount() / 2 < nh || Z.getColumnsCount() < d1+1) {
             Z = createZ(nh, d1);
@@ -411,8 +411,8 @@ public class LocalPolynomialFilters {
         return Z.extract(l + nh, u - l + 1, d0, d1 - d0 + 1);
     }
 
-    private Matrix createZ(int h, int d) {
-        Matrix M = Matrix.make(2 * h + 1, d + 1);
+    private FastMatrix createZ(int h, int d) {
+        FastMatrix M = FastMatrix.make(2 * h + 1, d + 1);
         M.column(0).set(1);
         if (d >= 1) {
             DataBlock c1 = M.column(1);
@@ -424,5 +424,5 @@ public class LocalPolynomialFilters {
         return M;
     }
 
-    private Matrix Z;
+    private FastMatrix Z;
 }

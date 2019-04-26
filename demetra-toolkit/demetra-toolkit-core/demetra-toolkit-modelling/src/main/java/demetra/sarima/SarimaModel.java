@@ -22,7 +22,7 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.linearfilters.Utility;
+import demetra.maths.linearfilters.FilterUtility;
 import demetra.maths.polynomials.Polynomial;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeqCursor;
@@ -570,8 +570,8 @@ public final class SarimaModel extends AbstractArimaModel {
 
     @Override
     public boolean isInvertible() {
-        return Utility.checkStability(getRegularMA())
-                && Utility.checkStability(getSeasonalMA());
+        return FilterUtility.checkStability(getRegularMA())
+                && FilterUtility.checkStability(getSeasonalMA());
     }
 
     @Override
@@ -586,17 +586,17 @@ public final class SarimaModel extends AbstractArimaModel {
      */
     public boolean isStable(boolean checkMA) {
         int pos = 0;
-        if (phi.length > 0 && !Utility.checkStability(DataBlock.ofInternal(phi))) {
+        if (phi.length > 0 && !FilterUtility.checkStability(DataBlock.of(phi))) {
             return false;
         }
-        if (bphi.length > 0 && !Utility.checkStability(DataBlock.ofInternal(bphi))) {
+        if (bphi.length > 0 && !FilterUtility.checkStability(DataBlock.of(bphi))) {
             return false;
         }
         if (checkMA) {
-            if (th.length > 0 && !Utility.checkStability(DataBlock.ofInternal(th))) {
+            if (th.length > 0 && !FilterUtility.checkStability(DataBlock.of(th))) {
                 return false;
             }
-            if (bth.length > 0 && !Utility.checkStability(DataBlock.ofInternal(bth))) {
+            if (bth.length > 0 && !FilterUtility.checkStability(DataBlock.of(bth))) {
                 return false;
             }
         }

@@ -17,7 +17,7 @@
 package demetra.ssf.akf;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
@@ -169,7 +169,7 @@ public class AugmentedFilter {
     }
 
     // P -= c*r
-    private void update(Matrix P, double v, DataBlock C) {
+    private void update(FastMatrix P, double v, DataBlock C) {
         P.addXaXt(-1 / v, C);
     }
 

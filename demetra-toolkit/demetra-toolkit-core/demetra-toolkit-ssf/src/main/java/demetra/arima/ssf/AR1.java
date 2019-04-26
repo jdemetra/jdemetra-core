@@ -19,7 +19,7 @@
 package demetra.arima.ssf;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.univariate.Ssf;
@@ -84,7 +84,7 @@ public class AR1 {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
         }
 
         @Override
@@ -92,7 +92,7 @@ public class AR1 {
         }
 
         @Override
-        public void Pf0(Matrix pf0) {
+        public void Pf0(FastMatrix pf0) {
             if (data.zeroinit) {
                 pf0.set(0, 0, data.var);
             } else {
@@ -121,7 +121,7 @@ public class AR1 {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             qm.set(0, 0, data.var);
         }
 
@@ -136,7 +136,7 @@ public class AR1 {
         }
 
         @Override
-        public void S(int pos, Matrix sm) {
+        public void S(int pos, FastMatrix sm) {
             sm.set(0, 0, data.std());
         }
 
@@ -151,7 +151,7 @@ public class AR1 {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             tr.set(0, 0, data.rho);
         }
 
@@ -161,7 +161,7 @@ public class AR1 {
         }
 
         @Override
-        public void TVT(int pos, Matrix v) {
+        public void TVT(int pos, FastMatrix v) {
             v.mul(0, 0, data.rho * data.rho);
         }
 
@@ -171,7 +171,7 @@ public class AR1 {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.add(0, 0, data.var);
         }
     }

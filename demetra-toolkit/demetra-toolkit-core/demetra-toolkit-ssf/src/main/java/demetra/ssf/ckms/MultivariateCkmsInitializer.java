@@ -18,7 +18,7 @@ package demetra.ssf.ckms;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsf;

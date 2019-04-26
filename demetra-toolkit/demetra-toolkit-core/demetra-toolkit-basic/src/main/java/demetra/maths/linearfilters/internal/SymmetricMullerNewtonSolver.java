@@ -19,6 +19,7 @@ package demetra.maths.linearfilters.internal;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
 import demetra.maths.Complex;
+import demetra.maths.ComplexMath;
 import demetra.maths.polynomials.LeastSquaresDivision;
 import demetra.maths.polynomials.Polynomial;
 import demetra.util.Ref;
@@ -309,7 +310,7 @@ public class SymmetricMullerNewtonSolver implements RootsSolver {
     }
 
     private boolean isSymmetric(Polynomial p) {
-        int d=p.degree();
+        int d = p.degree();
         for (int i = 0; i <= d / 2; ++i) {
             if (Math.abs(p.get(i) - p.get(d - i)) > 1e-9) {
                 return false;
@@ -507,7 +508,7 @@ public class SymmetricMullerNewtonSolver implements RootsSolver {
 
     private boolean newtonnull() {
 
-         m_maxerr = 0;
+        m_maxerr = 0;
         /* initialize max. error of determined roots */
  /* check input of the polynomial */
 
@@ -531,7 +532,7 @@ public class SymmetricMullerNewtonSolver implements RootsSolver {
             final Complex ns = muller();
             /* Newton method */
             Complex nroot = optimizer.root(ns);
-            double newerr=optimizer.getError();
+            double newerr = optimizer.getError();
             /* stores max. error of all roots */
             if (newerr > m_maxerr) {
                 m_maxerr = newerr;
@@ -628,7 +629,7 @@ public class SymmetricMullerNewtonSolver implements RootsSolver {
         final Complex C2 = computeC2(q2, f2.val);
 
         /* discr = B2^2 - 4A2C2 */
-        final Complex rdiscr = computeDiscr(B2, A2, C2).sqrt();
+        final Complex rdiscr = ComplexMath.sqrt(computeDiscr(B2, A2, C2));
 
         /* denominators of q2 */
         final Complex N1 = B2.minus(rdiscr);

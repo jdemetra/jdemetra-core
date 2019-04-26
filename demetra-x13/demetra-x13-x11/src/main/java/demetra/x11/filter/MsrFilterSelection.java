@@ -72,7 +72,7 @@ public class MsrFilterSelection {
         FilteredMeanEndPoints f = new FilteredMeanEndPoints(filter);
 
         double[] x = table(series.length(), Double.NaN);
-        DataBlock out = DataBlock.ofInternal(x);
+        DataBlock out = DataBlock.of(x);
 
         for (int j = 0; j < context.getPeriod(); j++) {
             DataBlock bin = DataBlock.of(series).extract(j, -1, context.getPeriod());

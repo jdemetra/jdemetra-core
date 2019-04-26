@@ -5,7 +5,7 @@
  */
 package demetra.data;
 
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
 import java.io.File;

@@ -22,7 +22,7 @@ import demetra.likelihood.DeterminantalTerm;
 import demetra.likelihood.ILikelihood;
 import demetra.maths.matrices.decomposition.ElementaryTransformations;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.State;
 import demetra.ssf.likelihood.DiffuseLikelihood;
 
@@ -44,14 +44,14 @@ public class QAugmentation {
     // s' * S^-1 * s = b * a' * S^-1 * a * b' = b * b'
     // q - s' * S^-1 * s = c * c
     // s' * S^-1 = b * a' * S^-1 = b * a^-1 
-    private Matrix Q, B;
+    private FastMatrix Q, B;
     private int n, nd;
     private DeterminantalTerm det = new DeterminantalTerm();
 
     public void prepare(final int nd, final int nvars) {
         clear();
         this.nd = nd;
-        Q = Matrix.make(nd + 1, nd + 1 + nvars);
+        Q = FastMatrix.make(nd + 1, nd + 1 + nvars);
     }
 
     public void clear() {
@@ -84,7 +84,7 @@ public class QAugmentation {
         ElementaryTransformations.fastGivensTriangularize(Q);
     }
 
-    public Matrix a() {
+    public FastMatrix a() {
         return Q.extract(0, nd, 0, nd);
     }
 
@@ -101,7 +101,7 @@ public class QAugmentation {
  More exactly, we provide B*a^-1'
      * @return 
      */
-    public Matrix B(){
+    public FastMatrix B(){
         return B;
     }
 
@@ -129,7 +129,7 @@ public class QAugmentation {
         // update the state vector
         B =state.B().deepClone();
         int d = B.getColumnsCount();
-        Matrix S = a().deepClone();
+        FastMatrix S = a().deepClone();
         // aC'=B' <-> Ca'=B <-> C=B*a'^-1
         LowerTriangularMatrix.rsolve(S, B.transpose());
         for (int i = 0; i < d; ++i) {

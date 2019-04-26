@@ -19,8 +19,8 @@ package demetra.maths.matrices.internal;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.Constants;
-import demetra.maths.MatrixException;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixException;
+import demetra.maths.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
 
 /**
@@ -31,7 +31,7 @@ import demetra.data.DoubleSeq;
 public class HouseholderR {
 
     private double[] qrauxilary;
-    private Matrix matrix;
+    private FastMatrix matrix;
     private int[] pivot;
     private int nrows, ncols;
     private int rank;
@@ -51,7 +51,7 @@ public class HouseholderR {
      *
      * @param m
      */
-    public void decompose(Matrix m) {
+    public void decompose(FastMatrix m) {
         init(m.deepClone());
         householder();
     }
@@ -64,7 +64,7 @@ public class HouseholderR {
         return rank;
     }
 
-    private void init(Matrix m) {
+    private void init(FastMatrix m) {
         matrix = m;
         nrows = m.getRowsCount();
         ncols = m.getColumnsCount();
@@ -130,7 +130,7 @@ public class HouseholderR {
             }
 //           compute the householder transformation for column l.
             int nl = nrows - l;
-            double nrmxl = DataBlock.ofInternal(x, lq, lq + nl).norm2();
+            double nrmxl = DataBlock.of(x, lq, lq + nl).norm2();
             if (nrmxl == 0) {
                 continue;
             }
@@ -158,7 +158,7 @@ public class HouseholderR {
                     double z = x[jc] / qrauxilary[j];
                     double tt = Math.max(0, 1 - z * z);
                     if (tt < 1e-6) {
-                        qrauxilary[j] = DataBlock.ofInternal(x, jc + 1, jc + nl).norm2();
+                        qrauxilary[j] = DataBlock.of(x, jc + 1, jc + nl).norm2();
                         tmp1[j] = qrauxilary[j];
                     } else {
                         qrauxilary[j] *= Math.sqrt(tt);
@@ -253,7 +253,7 @@ public class HouseholderR {
             throw new MatrixException(MatrixException.SINGULAR);
         }
         double[] b = new double[rank];
-        leastSquares(DataBlock.ofInternal(x), DataBlock.ofInternal(b), null);
+        leastSquares(DataBlock.of(x), DataBlock.of(b), null);
         return b;
     }
 
@@ -290,10 +290,10 @@ public class HouseholderR {
         }
     }
 
-    public Matrix r() {
+    public FastMatrix r() {
        double[] x = matrix.getStorage();
         int rank = getRank();
-        Matrix r = Matrix.square(rank);
+        FastMatrix r = FastMatrix.square(rank);
         double[] data = r.getStorage();
         for (int i = 0, k = 0, l = 0; i < rank; ++i, k += rank, l += nrows) {
             for (int j = 0; j <= i; ++j) {

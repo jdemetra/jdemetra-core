@@ -6,7 +6,7 @@
 package demetra.msts.survey;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.StateComponent;
@@ -67,7 +67,7 @@ public class WaveSpecificSurveyErrors2 {
         }
 
         DataBlock v() {
-            return DataBlock.ofInternal(v);
+            return DataBlock.of(v);
         }
 
         // 
@@ -121,13 +121,13 @@ public class WaveSpecificSurveyErrors2 {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             DataBlock d = qm.diagonal().range(0, info.nwaves());
             d.copyFrom(info.v, 0);
         }
 
         @Override
-        public void S(int pos, Matrix cm) {
+        public void S(int pos, FastMatrix cm) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
@@ -142,7 +142,7 @@ public class WaveSpecificSurveyErrors2 {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             int k = info.nwaves() * (info.lag - 1);
             int nar = info.nar();
             for (int j = 1; j <= nar; ++j, k += info.lag * info.nwaves()) {
@@ -183,7 +183,7 @@ public class WaveSpecificSurveyErrors2 {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             DataBlock d = p.diagonal().range(0, info.nwaves());
             d.add(info.v());
         }
@@ -240,7 +240,7 @@ public class WaveSpecificSurveyErrors2 {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
         }
 
         @Override
@@ -248,11 +248,11 @@ public class WaveSpecificSurveyErrors2 {
         }
 
         @Override
-        public void Pi0(Matrix pi0) {
+        public void Pi0(FastMatrix pi0) {
         }
 
         @Override
-        public void Pf0(Matrix pf0) {
+        public void Pf0(FastMatrix pf0) {
             Dynamics dyn = new Dynamics(info);
             dyn.addV(0, pf0);
             for (int i = 1; i < info.nwaves(); ++i) {

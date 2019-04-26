@@ -22,8 +22,8 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
 import demetra.maths.Simplifying;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.spi.RootsSolver;
@@ -42,9 +42,9 @@ public final class SymmetricFrequencyResponse {
      *
      */
     public static final double TwoPi = Math.PI * 2;
-    private static Matrix g_u;
+    private static FastMatrix g_u;
 
-    private static synchronized Matrix _transform(final int r) {
+    private static synchronized FastMatrix _transform(final int r) {
         if (g_u == null || g_u.getRowsCount() < r) {
             g_u = transform(r);
         }
@@ -74,8 +74,8 @@ public final class SymmetricFrequencyResponse {
         }
         // then compute the transformation to (cos t)^n.
         if (q > 2) {
-            Matrix u = _transform(q);
-            UpperTriangularMatrix.rmul(u, DataBlock.ofInternal(c));
+            FastMatrix u = _transform(q);
+            UpperTriangularMatrix.rmul(u, DataBlock.of(c));
         }
     }
 
@@ -89,8 +89,8 @@ public final class SymmetricFrequencyResponse {
     private static void SFR2D(final double[] c) throws MatrixException {
         int q = c.length;
         if (q > 2) {
-            Matrix u = _transform(q);
-            UpperTriangularMatrix.rsolve(u, DataBlock.ofInternal(c));
+            FastMatrix u = _transform(q);
+            UpperTriangularMatrix.rsolve(u, DataBlock.of(c));
         }
         for (int i = 1; i < q; ++i) {
             c[i] /= 2;
@@ -109,7 +109,7 @@ public final class SymmetricFrequencyResponse {
         }
     }
 
-    static Matrix transform(final int rank) {
+    static FastMatrix transform(final int rank) {
         if (rank <= 53) {
             return ltransform(rank);
         } else {
@@ -117,13 +117,13 @@ public final class SymmetricFrequencyResponse {
         }
     }
     
-    static Matrix dtransform(final int rank) {
+    static FastMatrix dtransform(final int rank) {
         // use the usual recurrence : cos (k+1)w + cos (k-1)w= 2*cos kw *cos w
         // cos kw = -cos (k-2)w + 2* cos (k-1)w * cos w
         // C[k] = [- C[k-2], 0 ] + 2 * [ 0, C[k-1]]
         // Initial values: C[0] = 1, C[1] = 1
 
-        Matrix U = Matrix.square(rank);
+        FastMatrix U = FastMatrix.square(rank);
         U.set(0, 0, 1);
         U.set(1, 1, 1);
         for (int c = 2; c < rank; ++c) {
@@ -137,13 +137,13 @@ public final class SymmetricFrequencyResponse {
         return U;
     }
 
-    static Matrix ltransform(final int rank) {
+    static FastMatrix ltransform(final int rank) {
         // use the usual recurrence : cos (k+1)w + cos (k-1)w= 2*cos kw *cos w
         // cos kw = -cos (k-2)w + 2* cos (k-1)w * cos w
         // C[k] = [- C[k-2], 0 ] + 2 * [ 0, C[k-1]]
         // Initial values: C[0] = 1, C[1] = 1
 
-        Matrix U = Matrix.square(rank);
+        FastMatrix U = FastMatrix.square(rank);
         TableOfLong V = new TableOfLong(rank, rank);
         V.set(0, 0, 1);
         V.set(1, 1, 1);

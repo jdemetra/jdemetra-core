@@ -19,8 +19,8 @@ package demetra.maths.matrices.internal;
 import demetra.maths.Constants;
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.data.DoubleSeq;
 
@@ -59,14 +59,14 @@ public class Householder implements IQRDecomposition {
      * @param m
      */
     @Override
-    public void decompose(Matrix m) {
+    public void decompose(FastMatrix m) {
         init(m);
         householder();
     }
 
     @Override
-    public Matrix r(boolean compact) {
-        Matrix r = Matrix.square(n);
+    public FastMatrix r(boolean compact) {
+        FastMatrix r = FastMatrix.square(n);
         double[] data = r.getStorage();
         for (int i = 0, k = 0, l = 0; i < n; ++i, k += n, l += m) {
             for (int j = 0; j < i; ++j) {
@@ -79,7 +79,7 @@ public class Householder implements IQRDecomposition {
 
     @Override
     public DoubleSeq rdiagonal(boolean compact) {
-        return DataBlock.ofInternal(rdiag);
+        return DataBlock.of(rdiag);
     }
 
     /**
@@ -116,7 +116,7 @@ public class Householder implements IQRDecomposition {
         int len = qr.length;
         for (int k = 0, k0 = 0, k1 = m; k < n; ++k) {
             // Compute 2-norm copyOf k-th column .
-            DataBlock col = DataBlock.ofInternal(qr, k0, k1, 1);
+            DataBlock col = DataBlock.of(qr, k0, k1, 1);
             double nrm = fast ? col.fastNorm2() : col.norm2();
 
             if (nrm > eps) {
@@ -165,7 +165,7 @@ public class Householder implements IQRDecomposition {
         }
     }
 
-    private void init(Matrix m) {
+    private void init(FastMatrix m) {
         this.m = m.getRowsCount();
         norig = n = m.getColumnsCount();
         qr = m.data();

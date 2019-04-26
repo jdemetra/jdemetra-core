@@ -274,7 +274,7 @@ public class TsDataToolkit {
 
     public TsData normalize(TsData s) {
         double[] data = s.getValues().toArray();
-        DataBlock values = DataBlock.ofInternal(data);
+        DataBlock values = DataBlock.of(data);
         final double mean = values.average();
         double ssqc = values.ssqc(mean);
         final double std = Math.sqrt(ssqc / values.length());
@@ -295,7 +295,7 @@ public class TsDataToolkit {
     public TsData apply(IFiniteFilter filter, TsData s) {
         double[] data = s.getValues().toArray();
         double[] result = new double[data.length - filter.length() + 1];
-        filter.apply(DataBlock.ofInternal(data), DataBlock.ofInternal(result));
+        filter.apply(DataBlock.of(data), DataBlock.of(result));
         return TsData.ofInternal(s.getStart().plus(-filter.getLowerBound()), result);
     }
 }

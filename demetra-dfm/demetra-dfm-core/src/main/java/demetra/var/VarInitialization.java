@@ -17,7 +17,7 @@
 package demetra.var;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfInitialization;
 
 /**
@@ -27,9 +27,9 @@ import demetra.ssf.ISsfInitialization;
 public class VarInitialization implements ISsfInitialization {
 
     private final int dim;
-    private final Matrix V0;
+    private final FastMatrix V0;
 
-    public VarInitialization(int dim, Matrix V0) {
+    public VarInitialization(int dim, FastMatrix V0) {
         this.dim = dim;
         this.V0 = V0;
     }
@@ -45,7 +45,7 @@ public class VarInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void diffuseConstraints(Matrix b) {
+    public void diffuseConstraints(FastMatrix b) {
     }
 
     @Override
@@ -53,7 +53,7 @@ public class VarInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void Pf0(Matrix pf0) {
+    public void Pf0(FastMatrix pf0) {
         if (V0 != null) {
             int nvars = V0.getRowsCount();
             pf0.topLeft(nvars, nvars).copy(V0);

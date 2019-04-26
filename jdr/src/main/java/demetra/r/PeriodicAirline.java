@@ -12,8 +12,8 @@ import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import demetra.maths.MatrixType;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.FastMatrix;
 import demetra.modelling.regression.AdditiveOutlierFactory;
 import demetra.modelling.regression.IOutlierFactory;
 import demetra.modelling.regression.LevelShiftFactory;
@@ -44,7 +44,7 @@ public class PeriodicAirline {
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
         OutlierDescriptor[] outliers;
-        Matrix parametersCovariance;
+        FastMatrix parametersCovariance;
         double[] score;
         double[] parameters;
         double[] linearized;
@@ -138,7 +138,7 @@ public class PeriodicAirline {
         final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(periods, true, false);
         RegArimaModel.Builder builder = RegArimaModel.builder(ArimaModel.class)
                 .y(DoubleSeq.of(y))
-                .addX(Matrix.of(x))
+                .addX(FastMatrix.of(x))
                 .arima(mapping.getDefault())
                 .meanCorrection(mean);
         OutlierDescriptor[] o = null;

@@ -17,7 +17,7 @@
 package demetra.stats;
 
 import demetra.data.DataBlock;
-import demetra.data.WindowFunction;
+import demetra.data.analysis.WindowFunction;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;

@@ -16,7 +16,7 @@
  */
 package demetra.regarima.regular.diagnostics;
 
-import demetra.data.Periodogram;
+import demetra.data.analysis.Periodogram;
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import demetra.regarima.RegArimaUtility;

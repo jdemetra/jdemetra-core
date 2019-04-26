@@ -6,7 +6,7 @@
 package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.MatrixWindow;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
@@ -81,10 +81,10 @@ public class Regression {
         }
     }
 
-    public <D extends TimeSeriesDomain> Matrix matrix(@Nonnull D domain, @Nonnull ITsVariable... vars) {
+    public <D extends TimeSeriesDomain> FastMatrix matrix(@Nonnull D domain, @Nonnull ITsVariable... vars) {
         int nvars = ITsVariable.dim(vars);
         int nobs = domain.length();
-        Matrix M = Matrix.make(nobs, nvars);
+        FastMatrix M = FastMatrix.make(nobs, nvars);
 
         MatrixWindow wnd = M.left(0);
         if (domain instanceof TsDomain) {
@@ -114,8 +114,8 @@ public class Regression {
         if (vars.dim() != 1) {
             throw new IllegalArgumentException();
         }
-        Matrix m = matrix(domain, vars);
-        return DataBlock.ofInternal(m.getStorage());
+        FastMatrix m = matrix(domain, vars);
+        return DataBlock.of(m.getStorage());
     }
 
 }

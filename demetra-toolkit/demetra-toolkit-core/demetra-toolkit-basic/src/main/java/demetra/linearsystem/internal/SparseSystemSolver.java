@@ -22,8 +22,8 @@ import java.util.Arrays;
 import demetra.data.DataBlock;
 import demetra.design.AlgorithmImplementation;
 import demetra.maths.Constants;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.linearsystem.LinearSystemSolver;
 
 /**
@@ -43,7 +43,7 @@ public final class SparseSystemSolver implements LinearSystemSolver {
      * @param B
      * @return
      */
-    private static boolean solve(double[] A, Matrix B) {
+    private static boolean solve(double[] A, FastMatrix B) {
         int n=B.getRowsCount(), nl=n+B.getColumnsCount();
 	int[] m = new int[nl];
         Arrays.fill(m, -1);
@@ -98,19 +98,19 @@ public final class SparseSystemSolver implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(Matrix A, DataBlock b) throws MatrixException {
+    public void solve(FastMatrix A, DataBlock b) throws MatrixException {
 	int n = A.getRowsCount();
         if (b.length() != n)
             throw new MatrixException(MatrixException.DIM);
         double[] X=new double[n*(n+1)];
         A.copyTo(X, 0);
         b.copyTo(X, n*n);
-        if (! solve(X, Matrix.columnOf(b)))
+        if (! solve(X, FastMatrix.columnOf(b)))
             throw new MatrixException(MatrixException.SINGULAR);
     }
 
     @Override
-    public void solve(Matrix A, Matrix B) throws MatrixException {
+    public void solve(FastMatrix A, FastMatrix B) throws MatrixException {
 	int n = A.getRowsCount(), l = B.getColumnsCount(), nl = l + n;
         if (B.getRowsCount() != n)
             throw new MatrixException(MatrixException.DIM);

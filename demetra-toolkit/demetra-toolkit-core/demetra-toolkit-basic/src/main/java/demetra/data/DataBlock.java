@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.data.transformation.DoubleAccumulator;
+import demetra.data.accumulator.DoubleAccumulator;
 import demetra.design.Unsafe;
 import java.util.Iterator;
 import java.util.Objects;
@@ -33,7 +33,7 @@ import demetra.util.function.BiDoublePredicate;
  *
  * @author Jean Palate
  */
-public final class DataBlock implements DoubleVector {
+public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
 
     @FunctionalInterface
     public static interface DataBlockFunction {
@@ -69,7 +69,7 @@ public final class DataBlock implements DoubleVector {
      * modified externally).
      * @return
      */
-    public static DataBlock ofInternal(@Nonnull double[] data) {
+    public static DataBlock of(@Nonnull double[] data) {
         return new DataBlock(data, 0, data.length, 1);
     }
 
@@ -85,7 +85,7 @@ public final class DataBlock implements DoubleVector {
      *
      * FIXME: check bounds? FIXME: What if start = end?
      */
-    public static DataBlock ofInternal(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int end) {
+    public static DataBlock of(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int end) {
         if (end < start) {
             throw new IllegalArgumentException("Invalid DoubleArray");
         }
@@ -103,12 +103,10 @@ public final class DataBlock implements DoubleVector {
      * @return
      * @throws (end-start) must be a positive multiple of inc.
      *
-     * FIXME: check bounds? FIXME: What if start = end? FIXME: Why is end
-     * @Nonnegative?
      */
-    public static DataBlock ofInternal(@Nonnull double[] data, @Nonnegative int start, int end, int inc) {
+    public static DataBlock of(@Nonnull double[] data, @Nonnegative int start, int end, int inc) {
         if (inc == 1) {
-            return ofInternal(data, start, end);
+            return of(data, start, end);
         }
         Objects.requireNonNull(data);
         if ((end - start) % inc != 0) {
@@ -167,7 +165,7 @@ public final class DataBlock implements DoubleVector {
                 list.add(cur);
             }
         }
-        return DataBlock.ofInternal(list.toArray());
+        return DataBlock.of(list.toArray());
     }
 
     //</editor-fold>

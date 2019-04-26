@@ -22,7 +22,7 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
@@ -99,7 +99,7 @@ public class SsfArima {
             ArimaInitialization initialization = (ArimaInitialization) ssf.initialization();
             ISsfMeasurement m = ssf.measurement();
             int nr = ssf.getStateDim(), nd = initialization.getDiffuseDim();
-            Matrix A = Matrix.make(nr + nd, nd);
+            FastMatrix A = FastMatrix.make(nr + nd, nd);
             double[] dif = arima.getNonStationaryAR().asPolynomial().toArray();
             for (int j = 0; j < nd; ++j) {
                 A.set(j, j, 1);
@@ -119,9 +119,9 @@ public class SsfArima {
                 }
                 state.a().set(i, c);
             }
-            Matrix stV = Matrix.square(nr);
+            FastMatrix stV = FastMatrix.square(nr);
             ArimaInitialization.stVar(stV, initialization.stpsi, initialization.stacgf, initialization.data.var);
-            Matrix K = Matrix.square(nr);
+            FastMatrix K = FastMatrix.square(nr);
             ArimaInitialization.sigma(K, initialization.dif);
             SymmetricMatrix.XSXt(stV, K, state.P());
             return nd;
@@ -153,24 +153,24 @@ public class SsfArima {
 
         final ArimaData data;
         private final DataBlock acgf;
-        private final Matrix P0, V;
+        private final FastMatrix P0, V;
 
         ArmaInitialization(IArimaModel arima) {
             data = new ArimaData(arima);
-            acgf = DataBlock.ofInternal(arima.getAutoCovarianceFunction().values(data.dim));
+            acgf = DataBlock.of(arima.getAutoCovarianceFunction().values(data.dim));
             P0 = p0(data.var, acgf, data.psi);
             V = v(data.var, data.psi);
         }
 
-        static Matrix v(double var, DataBlock psi) {
-            Matrix v = SymmetricMatrix.xxt(psi);
+        static FastMatrix v(double var, DataBlock psi) {
+            FastMatrix v = SymmetricMatrix.xxt(psi);
             v.mul(var);
             return v;
         }
 
-        private static Matrix p0(double var, final DataBlock acgf, final DataBlock psi) {
+        private static FastMatrix p0(double var, final DataBlock acgf, final DataBlock psi) {
             int dim = acgf.length();
-            Matrix P = Matrix.square(dim);
+            FastMatrix P = FastMatrix.square(dim);
             P.column(0).copy(acgf);
             for (int j = 0; j < dim - 1; ++j) {
                 double psij = psi.get(j);
@@ -194,7 +194,7 @@ public class SsfArima {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
         }
 
         @Override
@@ -202,12 +202,12 @@ public class SsfArima {
         }
 
         @Override
-        public void Pf0(Matrix pf0) {
+        public void Pf0(FastMatrix pf0) {
             pf0.copy(P0);
         }
 
         @Override
-        public void Pi0(Matrix pi0) {
+        public void Pi0(FastMatrix pi0) {
         }
 
         @Override
@@ -221,18 +221,18 @@ public class SsfArima {
         final ArimaData data;
         final double[] dif;
         private final DataBlock stpsi, stacgf;
-        private final Matrix P0;
+        private final FastMatrix P0;
 
         ArimaInitialization(IArimaModel arima) {
             data = new ArimaData(arima);
             //
             StationaryTransformation<IArimaModel> starima = arima.stationaryTransformation();
             dif = starima.getUnitRoots().asPolynomial().toArray();
-            stacgf = DataBlock.ofInternal(starima.getStationaryModel().getAutoCovarianceFunction().values(data.dim));
+            stacgf = DataBlock.of(starima.getStationaryModel().getAutoCovarianceFunction().values(data.dim));
             RationalFunction rf = starima.getStationaryModel().getPsiWeights().getRationalFunction();
-            stpsi = DataBlock.ofInternal(rf.coefficients(data.dim));
-            Matrix stvar = ArmaInitialization.p0(data.var, stacgf, stpsi);
-            Matrix L = Matrix.square(data.dim);
+            stpsi = DataBlock.of(rf.coefficients(data.dim));
+            FastMatrix stvar = ArmaInitialization.p0(data.var, stacgf, stpsi);
+            FastMatrix L = FastMatrix.square(data.dim);
             sigma(L, dif);
             P0 = SymmetricMatrix.XSXt(stvar, L);
 
@@ -244,7 +244,7 @@ public class SsfArima {
          * @param b B
          * @param d The coefficients of the differencing polynomial
          */
-        static void B0(final Matrix b, final double[] d) {
+        static void B0(final FastMatrix b, final double[] d) {
             int nd = d.length - 1;
             if (nd == 0) {
                 return;
@@ -255,7 +255,7 @@ public class SsfArima {
                 return;
             }
 
-            DataBlock D = DataBlock.ofInternal(d, d.length - 1, 0, -1);
+            DataBlock D = DataBlock.of(d, d.length - 1, 0, -1);
             for (int i = 0; i < nd; ++i) {
                 DataBlock C = b.column(i);
                 DataWindow R = C.window(0, nd);
@@ -271,7 +271,7 @@ public class SsfArima {
          * @param X
          * @param dif
          */
-        static void sigma(final Matrix X, final double[] dif) {
+        static void sigma(final FastMatrix X, final double[] dif) {
             int n = X.getRowsCount();
             double[] lambda = RationalFunction.of(Polynomial.ONE, Polynomial.of(dif)).coefficients(n);
 
@@ -289,7 +289,7 @@ public class SsfArima {
          * @param stacgf
          * @param var
          */
-        static void stVar(final Matrix stV, final DataBlock stpsi,
+        static void stVar(final FastMatrix stV, final DataBlock stpsi,
                 final DataBlock stacgf, final double var) {
             int n = stV.getRowsCount();
 
@@ -317,7 +317,7 @@ public class SsfArima {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
             int d = dif.length - 1;
             if (d == 0) {
                 return;
@@ -330,13 +330,13 @@ public class SsfArima {
         }
 
         @Override
-        public void Pf0(Matrix pf0) {
+        public void Pf0(FastMatrix pf0) {
             pf0.copy(P0);
         }
 
         @Override
-        public void Pi0(Matrix pi0) {
-            Matrix B = Matrix.make(data.dim, dif.length - 1);
+        public void Pi0(FastMatrix pi0) {
+            FastMatrix B = FastMatrix.make(data.dim, dif.length - 1);
             B0(B, dif);
             SymmetricMatrix.XXt(B, pi0);
         }
@@ -360,7 +360,7 @@ public class SsfArima {
             Polynomial ma = arima.getMA().asPolynomial();
             phi = ar.toArray();
             dim = Math.max(ar.degree(), ma.degree() + 1);
-            psi = DataBlock.ofInternal(RationalFunction.of(ma, ar).coefficients(dim));
+            psi = DataBlock.of(RationalFunction.of(ma, ar).coefficients(dim));
             se = Math.sqrt(var);
         }
 
@@ -370,7 +370,7 @@ public class SsfArima {
 
         private final ArimaData data;
         private final DataBlock z;
-        private final Matrix V;
+        private final FastMatrix V;
 
         public ArimaDynamics(ArimaData data) {
             this.data = data;
@@ -384,7 +384,7 @@ public class SsfArima {
          * @param tr
          */
         @Override
-        public void T(final int pos, final Matrix tr) {
+        public void T(final int pos, final FastMatrix tr) {
             T(tr);
         }
 
@@ -392,7 +392,7 @@ public class SsfArima {
          *
          * @param tr
          */
-        public void T(final Matrix tr) {
+        public void T(final FastMatrix tr) {
             tr.set(0);
             for (int i = 1; i < data.dim; ++i) {
                 tr.set(i - 1, i, 1);
@@ -408,7 +408,7 @@ public class SsfArima {
          * @param vm
          */
         @Override
-        public void TVT(final int pos, final Matrix vm) {
+        public void TVT(final int pos, final FastMatrix vm) {
             if (data.phi.length == 1) {
                 vm.upLeftShift(1);
                 vm.column(data.dim - 1).set(0);
@@ -480,12 +480,12 @@ public class SsfArima {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             qm.copy(V);
         }
 
         @Override
-        public void S(int pos, Matrix sm) {
+        public void S(int pos, FastMatrix sm) {
             sm.column(0).copy(data.psi);
             if (data.se != 1) {
                 sm.mul(data.se);
@@ -498,7 +498,7 @@ public class SsfArima {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.add(V);
         }
 

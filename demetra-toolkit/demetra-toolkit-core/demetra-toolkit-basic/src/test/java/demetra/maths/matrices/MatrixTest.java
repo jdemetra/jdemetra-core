@@ -35,7 +35,7 @@ public class MatrixTest {
     @Test
     public void testBuilder() {
         double[] z = new double[200];
-        Matrix A = Matrix.builder(z)
+        FastMatrix A = FastMatrix.builder(z)
                 .nrows(10)
                 .ncolumns(15)
                 .build();
@@ -47,12 +47,12 @@ public class MatrixTest {
     public void testulshift() {
         int m=10, n=15;
         double[] z = new double[m*n];
-        Matrix A = Matrix.builder(z)
+        FastMatrix A = FastMatrix.builder(z)
                 .nrows(m)
                 .ncolumns(n)
                 .build();
         A.set((i, j) -> i + 10 * j);
-        Matrix B=A.deepClone();
+        FastMatrix B=A.deepClone();
         int del=3;
         A.upLeftShift(del);
         assertTrue(A.extract(0, m-del, 0, n-del).minus(B.extract(del, m, del, n)).isZero(1e15));
@@ -62,12 +62,12 @@ public class MatrixTest {
     public void testdrshift() {
         int m=8, n=6;
         double[] z = new double[m*n];
-        Matrix A = Matrix.builder(z)
+        FastMatrix A = FastMatrix.builder(z)
                 .nrows(m)
                 .ncolumns(n)
                 .build();
         A.set((i, j) -> i + 10 * j);
-        Matrix B=A.deepClone();
+        FastMatrix B=A.deepClone();
         int del=2;
         A.downRightShift(del);
         assertTrue(A.extract(del, m-del, del, n-del).minus(B.extract(0, m-del, 0, n-del)).isZero(1e15));
@@ -79,7 +79,7 @@ public class MatrixTest {
     //@Test
     public void stressColumnsTest() {
         System.out.println("Columns");
-        Matrix m = Matrix.make(N, M);
+        FastMatrix m = FastMatrix.make(N, M);
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             m.applyByColumns(x -> x.set(10));
@@ -119,7 +119,7 @@ public class MatrixTest {
     //@Test
     public void stressRowsTest() {
         System.out.println("Rows");
-        Matrix m = Matrix.make(N, M);
+        FastMatrix m = FastMatrix.make(N, M);
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             m.applyByRows(x -> x.set(0));
@@ -158,18 +158,18 @@ public class MatrixTest {
 
     //@Test
     public void testRC() {
-        Matrix A = Matrix.make(10, 10);
+        FastMatrix A = FastMatrix.make(10, 10);
         A.rows().forEach(row -> row.set(i -> row.getStartPosition() + i));
         System.out.println(A);
-        A = Matrix.make(10, 10);
+        A = FastMatrix.make(10, 10);
         A.columns().forEach(col -> col.set(i -> col.getStartPosition() - i));
         System.out.println(A);
     }
 
     @Test
     public void testProduct() {
-        Matrix A = Matrix.make(3, 4), B = Matrix.make(4, 2);
-        Matrix C = Matrix.make(A.getRowsCount(), B.getColumnsCount());
+        FastMatrix A = FastMatrix.make(3, 4), B = FastMatrix.make(4, 2);
+        FastMatrix C = FastMatrix.make(A.getRowsCount(), B.getColumnsCount());
         A.set((i, j) -> i + j);
         B.set((i, j) -> (i + 1) * (j + 1));
 
@@ -182,8 +182,8 @@ public class MatrixTest {
 
     @Test
     public void testProduct2() {
-        Matrix A = Matrix.make(3, 4), B = Matrix.make(2, 4);
-        Matrix C = Matrix.make(A.getRowsCount(), B.getRowsCount());
+        FastMatrix A = FastMatrix.make(3, 4), B = FastMatrix.make(2, 4);
+        FastMatrix C = FastMatrix.make(A.getRowsCount(), B.getRowsCount());
         A.set((i, j) -> i + j);
         B.set((j, i) -> (i + 1) * (j + 1));
 
@@ -196,8 +196,8 @@ public class MatrixTest {
 
     @Test
     public void testProduct3() {
-        Matrix A = Matrix.make(3, 4), B = Matrix.make(4, 2);
-        Matrix C = Matrix.make(A.getRowsCount(), B.getColumnsCount());
+        FastMatrix A = FastMatrix.make(3, 4), B = FastMatrix.make(4, 2);
+        FastMatrix C = FastMatrix.make(A.getRowsCount(), B.getColumnsCount());
         A.set((i, j) -> i + j);
         B.set((i, j) -> (i + 1) * (j + 1));
 
@@ -211,8 +211,8 @@ public class MatrixTest {
     @Test
     @Ignore
     public void stressTestProduct() {
-        Matrix A = Matrix.make(200, 5), B = Matrix.make(5, 10);
-        Matrix C = Matrix.make(A.getRowsCount(), B.getColumnsCount());
+        FastMatrix A = FastMatrix.make(200, 5), B = FastMatrix.make(5, 10);
+        FastMatrix C = FastMatrix.make(A.getRowsCount(), B.getColumnsCount());
         Random rnd = new Random(0);
         A.set((i, j) -> rnd.nextDouble());
         B.set((i, j) -> rnd.nextDouble());
@@ -241,22 +241,22 @@ public class MatrixTest {
     @Test
     public void testDeterminant(){
         double[] x=new double[]{1, 5, 4, -3};
-        Matrix X=Matrix.builder(x)
+        FastMatrix X=FastMatrix.builder(x)
                 .nrows(2)
                 .ncolumns(2)
                 .build();
-        double d=Matrix.determinant(X);
+        double d=FastMatrix.determinant(X);
         assertEquals(x[0]*x[3]-x[1]*x[2], d, 1e-9);
     }
 
     @Test
     public void testSingular(){
         double[] x=new double[]{1, 5, 4, 20};
-        Matrix X=Matrix.builder(x)
+        FastMatrix X=FastMatrix.builder(x)
                 .nrows(2)
                 .ncolumns(2)
                 .build();
-        double d=Matrix.determinant(X);
+        double d=FastMatrix.determinant(X);
         assertTrue(d==0);
     }
 }

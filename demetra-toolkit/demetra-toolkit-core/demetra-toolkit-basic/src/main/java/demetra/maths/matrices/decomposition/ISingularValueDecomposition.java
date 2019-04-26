@@ -5,8 +5,8 @@
  */
 package demetra.maths.matrices.decomposition;
 
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
 
 /**
@@ -14,13 +14,13 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public interface ISingularValueDecomposition {
-    void decompose(Matrix A)throws MatrixException;
+    void decompose(FastMatrix A)throws MatrixException;
     
-    Matrix U();
+    FastMatrix U();
     
     DoubleSeq S();
     
-    Matrix V();
+    FastMatrix V();
     
     boolean isFullRank();
     

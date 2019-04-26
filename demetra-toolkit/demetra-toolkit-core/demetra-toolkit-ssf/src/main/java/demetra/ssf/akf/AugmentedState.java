@@ -17,7 +17,7 @@
 package demetra.ssf.akf;
 
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.univariate.ISsf;
@@ -49,7 +49,7 @@ public class AugmentedState extends State {
      * B contains the states of the constraints. Its interpretation depends on
      * the considered step
      */
-    private final Matrix B;
+    private final FastMatrix B;
     private int ndropped = 0;
 
     /**
@@ -60,14 +60,14 @@ public class AugmentedState extends State {
      */
     public AugmentedState(final int dim, final int ndiffuse) {
         super(dim);
-        B = Matrix.make(dim, ndiffuse);
+        B = FastMatrix.make(dim, ndiffuse);
     }
 
-    public final Matrix B() {
+    public final FastMatrix B() {
         return B.extract(0, B.getRowsCount(), ndropped, B.getColumnsCount()-ndropped);
     }
 
-    public void restoreB(Matrix b) {
+    public void restoreB(FastMatrix b) {
         int n = b.getColumnsCount(), m = B.getColumnsCount();
         ndropped = m - n;
         B().copy(b);

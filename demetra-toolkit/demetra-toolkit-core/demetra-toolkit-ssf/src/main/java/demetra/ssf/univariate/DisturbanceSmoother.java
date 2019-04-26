@@ -7,7 +7,7 @@ package demetra.ssf.univariate;
 
 import demetra.ssf.ISsfLoading;
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.data.DataBlockIterator;
@@ -67,7 +67,7 @@ public class DisturbanceSmoother {
 
     private double err, errVariance, esm, esmVariance, h;
     private DataBlock K, R, U;
-    private Matrix N, UVar, S;
+    private FastMatrix N, UVar, S;
     private boolean missing;
     private int pos, stop;
     // temporary
@@ -187,7 +187,7 @@ public class DisturbanceSmoother {
         return R;
     }
 
-    public Matrix getFinalN() {
+    public FastMatrix getFinalN() {
         return N;
     }
 
@@ -199,10 +199,10 @@ public class DisturbanceSmoother {
         K = DataBlock.make(dim);
         U = DataBlock.make(resdim);
         if (calcvar) {
-            S = Matrix.make(dim, resdim);
-            N = Matrix.square(dim);
+            S = FastMatrix.make(dim, resdim);
+            N = FastMatrix.square(dim);
             tmp = DataBlock.make(dim);
-            UVar = Matrix.square(resdim);
+            UVar = FastMatrix.square(resdim);
             if (error == null) {
                 h = 0;
             } else if (error.isTimeInvariant()) {
@@ -303,7 +303,7 @@ public class DisturbanceSmoother {
         }
     }
 
-    private void tvt(Matrix N) {
+    private void tvt(FastMatrix N) {
         N.columns().forEach(col -> dynamics.XT(pos, col));
         N.rows().forEach(row -> dynamics.XT(pos, row));
     }
@@ -322,7 +322,7 @@ public class DisturbanceSmoother {
         int n = ssf.getStateDim();
         // initial state
         DataBlock a = DataBlock.make(n);
-        Matrix Pf0 = Matrix.square(n);
+        FastMatrix Pf0 = FastMatrix.square(n);
         ssf.initialization().a0(a);
         ssf.initialization().Pf0(Pf0);
         // stationary initialization

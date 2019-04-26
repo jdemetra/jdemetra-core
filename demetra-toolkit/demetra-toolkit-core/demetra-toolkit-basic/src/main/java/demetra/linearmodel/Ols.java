@@ -8,7 +8,7 @@ package demetra.linearmodel;
 import demetra.eco.EcoException;
 import lombok.NonNull;
 import demetra.leastsquares.internal.AdvancedQRSolver;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
@@ -45,12 +45,12 @@ public class Ols implements IOls {
     @Override
     public LeastSquaresResults compute(LinearModel model) {
         DoubleSeq y = model.getY();
-        Matrix x = model.variables();
+        FastMatrix x = model.variables();
         if (!solver.solve(y, x)) {
             throw new EcoException(EcoException.OLS_FAILED);
         }
-        Matrix R = solver.R();
-        Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
+        FastMatrix R = solver.R();
+        FastMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(R));
         return LeastSquaresResults.builder(y, x)
                 .mean(model.isMeanCorrection())

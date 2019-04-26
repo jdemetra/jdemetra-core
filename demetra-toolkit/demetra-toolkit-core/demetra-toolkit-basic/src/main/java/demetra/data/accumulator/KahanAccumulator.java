@@ -16,7 +16,6 @@
  */
 package demetra.data.accumulator;
 
-import demetra.data.transformation.DoubleAccumulator;
 import demetra.data.normalizer.IDataNormalizer;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Fast;

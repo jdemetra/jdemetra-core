@@ -17,7 +17,7 @@
 package demetra.ssf.dk.sqrt;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.DefaultFilteringResults;
 import demetra.ssf.dk.DiffuseUpdateInformation;
@@ -74,7 +74,7 @@ public class DefaultDiffuseSquareRootFilteringResults extends BaseDiffuseFilteri
 
     }
 
-    public Matrix B(int pos) {
+    public FastMatrix B(int pos) {
         return B.matrix(pos);
     }
 

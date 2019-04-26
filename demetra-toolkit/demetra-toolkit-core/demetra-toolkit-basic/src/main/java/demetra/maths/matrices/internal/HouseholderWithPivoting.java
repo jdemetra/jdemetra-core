@@ -20,8 +20,8 @@ import demetra.data.DataBlock;
 import demetra.data.DataWindow;
 import demetra.design.Development;
 import demetra.maths.Constants;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.data.DoubleSeq;
 
@@ -52,7 +52,7 @@ public class HouseholderWithPivoting implements IQRDecomposition {
      * @param m
      */
     @Override
-    public void decompose(Matrix m) {
+    public void decompose(FastMatrix m) {
         init(m);
         householder();
     }
@@ -67,13 +67,13 @@ public class HouseholderWithPivoting implements IQRDecomposition {
     }
 
     @Override
-    public Matrix r(boolean compact) {
+    public FastMatrix r(boolean compact) {
         if (compact) {
-            Matrix r = Matrix.square(n);
+            FastMatrix r = FastMatrix.square(n);
             return r;
 
         } else {
-            Matrix r = Matrix.square(norig);
+            FastMatrix r = FastMatrix.square(norig);
             return r;
         }
     }
@@ -93,7 +93,7 @@ public class HouseholderWithPivoting implements IQRDecomposition {
                 diag[col[i]] = rdiag[i];
             }
         }
-        return DataBlock.ofInternal(diag);
+        return DataBlock.of(diag);
     }
 
     private static final int[] EMPTY = new int[0];
@@ -153,7 +153,7 @@ public class HouseholderWithPivoting implements IQRDecomposition {
             // Compute norm2 copyOf the current column
             int k0 = ck * m, k1 = k0 + m;
             k0 += k;
-            DataBlock cur = DataBlock.ofInternal(qr, k0, k1);
+            DataBlock cur = DataBlock.of(qr, k0, k1);
             double nrm = cur.norm2();
 
             if (nrm > eps) {
@@ -191,7 +191,7 @@ public class HouseholderWithPivoting implements IQRDecomposition {
                         rdiag[cj] *= Math.sqrt(Math.max(1 - tmp * tmp, 0));
                         tmp = rdiag[cj] / wa[cj];
                         if (.05 * tmp * tmp <= eps) {
-                            rdiag[cj] = DataBlock.ofInternal(qr, j0, j0 + m - k).fastNorm2();
+                            rdiag[cj] = DataBlock.of(qr, j0, j0 + m - k).fastNorm2();
                             wa[cj] = rdiag[cj];
                         }
                     }
@@ -212,7 +212,7 @@ public class HouseholderWithPivoting implements IQRDecomposition {
 
     }
 
-    private void init(Matrix M) {
+    private void init(FastMatrix M) {
         m = M.getRowsCount();
         norig = n = M.getColumnsCount();
         qr = M.data();

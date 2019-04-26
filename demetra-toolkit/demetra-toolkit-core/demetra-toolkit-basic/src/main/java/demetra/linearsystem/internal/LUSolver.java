@@ -20,13 +20,13 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.design.BuilderPattern;
-import demetra.maths.matrices.decomposition.ILUDecomposition;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import demetra.linearsystem.LinearSystemSolver;
 import demetra.data.DoubleVectorCursor;
+import demetra.maths.matrices.decomposition.LUDecomposition;
 
 /**
  *
@@ -39,10 +39,10 @@ public class LUSolver implements LinearSystemSolver {
     @BuilderPattern(LUSolver.class)
     public static class Builder {
 
-        private final ILUDecomposition lu;
+        private final LUDecomposition lu;
         private boolean improve, normalize;
 
-        private Builder(ILUDecomposition lu) {
+        private Builder(LUDecomposition lu) {
             this.lu = lu;
         }
 
@@ -61,21 +61,21 @@ public class LUSolver implements LinearSystemSolver {
         }
     }
 
-    public static Builder builder(ILUDecomposition lu) {
+    public static Builder builder(LUDecomposition lu) {
         return new Builder(lu);
     }
 
-    private final ILUDecomposition lu;
+    private final LUDecomposition lu;
     private final boolean improve, normalize;
 
-    private LUSolver(ILUDecomposition lu, boolean normalize, boolean improve) {
+    private LUSolver(LUDecomposition lu, boolean normalize, boolean improve) {
         this.lu = lu;
         this.improve = improve;
         this.normalize = normalize;
     }
 
     @Override
-    public void solve(Matrix A, DataBlock b) {
+    public void solve(FastMatrix A, DataBlock b) {
         if (!A.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -83,7 +83,7 @@ public class LUSolver implements LinearSystemSolver {
             throw new MatrixException(MatrixException.DIM);
         }
         // we normalize b
-        Matrix An;
+        FastMatrix An;
         if (normalize) {
 
             An = A.deepClone();
@@ -116,7 +116,7 @@ public class LUSolver implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(Matrix A, Matrix B) {
+    public void solve(FastMatrix A, FastMatrix B) {
         if (!A.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -124,7 +124,7 @@ public class LUSolver implements LinearSystemSolver {
             throw new MatrixException(MatrixException.DIM);
         }
         // we normalize b 
-        Matrix An;
+        FastMatrix An;
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
@@ -139,13 +139,13 @@ public class LUSolver implements LinearSystemSolver {
             An = A;
         }
         lu.decompose(An);
-        Matrix B0 = improve ? B.deepClone() : null;
+        FastMatrix B0 = improve ? B.deepClone() : null;
         lu.solve(B);
         if (!improve) {
             return;
         }
         // improve the result
-        Matrix DB = Matrix.make(B.getRowsCount(), B.getColumnsCount());
+        FastMatrix DB = FastMatrix.make(B.getRowsCount(), B.getColumnsCount());
         DB.robustProduct(An, B, new NeumaierAccumulator());
         DB.sub(B0);
         lu.solve(DB);

@@ -53,7 +53,7 @@ public class DataResults {
     }
 
     public DataBlock all() {
-        return DataBlock.ofInternal(data, 0, nused, 1);
+        return DataBlock.of(data, 0, nused, 1);
     }
 
     /**
@@ -63,7 +63,7 @@ public class DataResults {
      * @return 
      */
     public DataBlock extract(int beg, int n) {
-        return DataBlock.ofInternal(data, beg, beg+n, 1);
+        return DataBlock.of(data, beg, beg+n, 1);
     }
     /**
      *

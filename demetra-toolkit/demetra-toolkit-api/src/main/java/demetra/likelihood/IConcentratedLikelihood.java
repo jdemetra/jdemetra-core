@@ -19,7 +19,7 @@ package demetra.likelihood;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
 import demetra.eco.EcoException;
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.data.DoubleSeq;
 
 /**

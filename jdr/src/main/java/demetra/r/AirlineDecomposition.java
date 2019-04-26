@@ -28,8 +28,8 @@ import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import demetra.maths.MatrixType;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.FastMatrix;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.SarimaType;
@@ -51,6 +51,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import demetra.data.Doubles;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
  *
@@ -69,7 +70,7 @@ public class AirlineDecomposition {
         SarimaType sarima;
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
-        Matrix parametersCovariance;
+        FastMatrix parametersCovariance;
         double[] score;
 
         @Override

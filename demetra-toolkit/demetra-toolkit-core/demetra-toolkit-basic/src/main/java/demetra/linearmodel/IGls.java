@@ -8,7 +8,7 @@ package demetra.linearmodel;
 import demetra.design.Algorithm;
 import demetra.design.Development;
 import demetra.design.ServiceDefinition;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 
 /**
  *
@@ -18,7 +18,7 @@ import demetra.maths.matrices.Matrix;
 @ServiceDefinition()
 @Development(status=Development.Status.Alpha)
 public interface IGls {
-    LeastSquaresResults compute(LinearModel model, Matrix cov);
+    LeastSquaresResults compute(LinearModel model, FastMatrix cov);
     
     
 }

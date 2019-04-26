@@ -40,14 +40,4 @@ public interface ComplexType {
         }
     }
 
-    public static ComplexType of(double re, double im) {
-        return new LightComplex(re, im);
-    }
-
-    @lombok.Value
-    @lombok.AllArgsConstructor(access = lombok.AccessLevel.PACKAGE)
-    static class LightComplex implements ComplexType {
-
-        private double re, im;
-    }
 }

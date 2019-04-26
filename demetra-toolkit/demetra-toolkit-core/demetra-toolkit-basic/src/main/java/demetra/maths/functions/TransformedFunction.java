@@ -18,7 +18,7 @@ package demetra.maths.functions;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
 
 
@@ -94,9 +94,9 @@ public class TransformedFunction implements IFunction {
          * @return
          */
         @Override
-        public void hessian(Matrix H) {
+        public void hessian(FastMatrix H) {
             int n = getDomain().getDim();
-            Matrix h = Matrix.square(n);
+            FastMatrix h = FastMatrix.square(n);
             dfx.hessian(h);
             DoubleSeq grad = dfx.gradient();
             double dt = t.df(fx), d2t = t.d2f(fx);

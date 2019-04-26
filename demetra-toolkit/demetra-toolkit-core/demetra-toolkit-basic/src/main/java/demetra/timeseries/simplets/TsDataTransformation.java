@@ -8,7 +8,7 @@ package demetra.timeseries.simplets;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsObs;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.transformation.TimeSeriesTransformation;
+import demetra.timeseries.TimeSeriesTransformation;
 
 /**
  *

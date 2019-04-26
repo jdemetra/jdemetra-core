@@ -18,7 +18,7 @@ package demetra.maths.functions;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -36,7 +36,7 @@ public class NumericalDerivatives implements IFunctionDerivatives {
     private static final int NTHREADS = Runtime.getRuntime().availableProcessors();
 
     private double[] eps, fp, fm, grad;
-    private Matrix hessian;
+    private FastMatrix hessian;
     
     private final IFunction fn;
     private final DoubleSeq x;
@@ -122,7 +122,7 @@ public class NumericalDerivatives implements IFunctionDerivatives {
         for (int i = 0; i < n; ++i) {
             e[i] = Math.sqrt(Math.abs(eps[i]));
          }
-        hessian = Matrix.square(n);
+        hessian = FastMatrix.square(n);
         // compute the diagonal
         // df/di(x) = (f(x+ei)-f(x))/ei
         // d2f/di2(x) = (df/di(x)-df/di(x-ei))/ei=(f(x+ei)-f(x)-f(x)+f(x-ei))/ei*ei
@@ -207,7 +207,7 @@ public class NumericalDerivatives implements IFunctionDerivatives {
      * @param h
      */
     @Override
-    public void hessian(Matrix h) {
+    public void hessian(FastMatrix h) {
         if (hessian == null) {
             calch();
         }

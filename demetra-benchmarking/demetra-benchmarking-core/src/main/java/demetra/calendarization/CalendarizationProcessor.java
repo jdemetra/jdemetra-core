@@ -193,7 +193,7 @@ public class CalendarizationProcessor implements ICalendarization {
                 aends[i - 1] = astarts[i] - 1;
             }
             aends[aends.length - 1] = sdays.length - 1;
-            DataBlock Z = DataBlock.ofInternal(new double[]{0, 1, 1});
+            DataBlock Z = DataBlock.of(new double[]{0, 1, 1});
             Z.set(1, 1);
             Z.set(2, 1);
             double[] ax = new double[aends.length],

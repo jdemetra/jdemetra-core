@@ -18,7 +18,7 @@ package demetra.leastsquares;
 
 import demetra.design.Algorithm;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 
 /**
  * Solves a least squares problem by means of the QR algorithm.
@@ -33,6 +33,6 @@ public interface QRSolver extends LeastSquaresSolver {
      *    
      * @return The R matrix. Might be singular. 
      */
-    Matrix R();
+    FastMatrix R();
 }
 

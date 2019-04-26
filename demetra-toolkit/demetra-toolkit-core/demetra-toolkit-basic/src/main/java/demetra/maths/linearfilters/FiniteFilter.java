@@ -22,14 +22,13 @@ import java.text.NumberFormat;
 import demetra.maths.polynomials.Polynomial;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
-import demetra.data.DoubleSeq;
 
 /**
  * 
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
+public class FiniteFilter implements IFiniteFilter, Cloneable {
 
     /**
      * 
@@ -160,11 +159,10 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
 	return FiniteFilter.ofInternal(p, lb);
     }
 
-    private int m_lb;
+    private final int lb;
+    private final Polynomial w;
 
-    private Polynomial m_w;
-
-    private static final double g_epsilon = 1e-4;
+    private static final double EPS = 1e-4;
 
     // private static final double g_epsilon2 = g_epsilon * g_epsilon;
 
@@ -174,8 +172,8 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      * @param lb
      */
     public FiniteFilter(final double[] c, final int lb) {
-	m_lb = lb;
-	m_w = Polynomial.of(c);
+	this.lb = lb;
+	w = Polynomial.of(c);
     }
 
         /**
@@ -184,8 +182,8 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      * @param lb
      */
     public FiniteFilter(final Polynomial c, final int lb) {
-	m_lb = lb;
-	m_w = c;
+	this.lb = lb;
+	w = c;
     }
 
     /**
@@ -194,8 +192,8 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      */
     public FiniteFilter(final IFiniteFilter f) {
 	double[] w = f.weightsToArray();
-	m_w = Polynomial.ofInternal(w);
-	m_lb = f.getLowerBound();
+	this.w = Polynomial.ofInternal(w);
+	lb = f.getLowerBound();
     }
 
     /**
@@ -203,52 +201,10 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      * @param n
      */
     public FiniteFilter(final int n) {
-	double[] w = new double[n];
-        Arrays.fill(w, 1);
-	m_w = Polynomial.ofInternal(w);
-    }
-
-    /**
-     * 
-     * @param npast
-     * @param nfuture
-     */
-    public FiniteFilter(int npast, int nfuture)
-    {
-	m_lb = -npast;
-	double[] w = new double[npast + nfuture + 1];
-	Polynomial.ofInternal(w); // FIXME: nothing usefull done here
-    }
-
-    /**
-     * 
-     * @param n
-     */
-    public void backShift(final int n) {
-	m_lb -= n;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public boolean center() {
-	int d = m_w.degree();
-	if (d % 2 != 0)
-	    return false;
-	m_lb = -d / 2;
-	return true;
-    }
-
-    @Override
-    public FiniteFilter clone() {
-	try {
-	    FiniteFilter f = (FiniteFilter) super.clone();
-            f.m_w = m_w;
-            return f;
-	} catch (CloneNotSupportedException err) {
-            throw new AssertionError();
-	}
+	double[] weights = new double[n];
+        Arrays.fill(weights, 1);
+	w = Polynomial.ofInternal(weights);
+        lb=0;
     }
 
     /**
@@ -257,7 +213,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      */
     @Override
     public int length() {
-	return m_w.degree() + 1;
+	return w.degree() + 1;
     }
 
     /**
@@ -266,12 +222,12 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      */
     @Override
     public int getLowerBound() {
-	return m_lb;
+	return lb;
     }
 
     @Override
     public int getUpperBound() {
-	return m_lb + m_w.degree();
+	return lb + w.degree();
     }
 
     /**
@@ -280,7 +236,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      */
     @Override
     public IntToDoubleFunction weights() {
-	return i->m_w.get(i-m_lb);
+	return i->w.get(i-lb);
     }
 
     /**
@@ -289,7 +245,7 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      */
     public boolean isIdentity()
     {
-	return m_w.isIdentity();
+	return w.isIdentity();
     }
 
     /**
@@ -297,11 +253,11 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      * @return
      */
     public boolean isSymmetric() {
-	int d = m_w.degree();
-	if (d % 2 != 0 || d != -m_lb)
+	int d = w.degree();
+	if (d % 2 != 0 || d != -lb)
 	    return false;
 	for (int i = 0; i < d / 2; ++i)
-	    if (Math.abs(m_w.get(i) - m_w.get(d - i)) > g_epsilon)
+	    if (Math.abs(w.get(i) - w.get(d - i)) > EPS)
 		return false;
 	return true;
     }
@@ -310,50 +266,24 @@ public class FiniteFilter extends AbstractFiniteFilter implements Cloneable {
      * 
      * @return
      */
+    @Override
     public FiniteFilter mirror() {
-        Polynomial w = m_w.mirror();
-	int lb = 1 - m_lb - (w.degree() + 1);
-	return new FiniteFilter(w, lb);
-    }
-
-    /**
-     * 
-     * @param d
-     */
-    public void mul(final double d) {
-	m_w = m_w.times(d);
-    }
-
-    /**
-     * 
-     * @param center
-     * @return
-     */
-    public boolean normalize(final boolean center) {
-	double s = 0;
-	for (int i = 0; i <= m_w.degree(); ++i)
-	    s += m_w.get(i);
-	if (s == 0)
-	    return false;
-	if (s != 1)
-	    m_w = m_w.divide(s);
-
-	if (center)
-	    return center();
-	return true;
+        Polynomial mw = w.mirror();
+	int mlb = lb - w.degree();
+	return new FiniteFilter(mw, mlb);
     }
 
 
     @Override
     public String toString() {
-	Polynomial p = m_w.smooth();
+	Polynomial p = w.smooth();
 	NumberFormat format = NumberFormat.getNumberInstance();
 	format.setMaximumFractionDigits(4);
 	format.setMinimumFractionDigits(4);
 	// info.NumberDecimalSeparator = "";
 
 	StringBuilder buffer = new StringBuilder(512);
-	int curp = m_lb;
+	int curp = lb;
 	int n = p.degree();
 	for (int i = 0; i <= n; ++i, ++curp) {
 	    double v = Math.abs(p.get(i));

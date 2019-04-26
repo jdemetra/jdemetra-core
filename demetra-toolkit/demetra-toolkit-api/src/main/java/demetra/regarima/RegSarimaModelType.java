@@ -18,7 +18,7 @@ package demetra.regarima;
 
 import demetra.design.Development;
 import demetra.linearmodel.LinearModelType;
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.sarima.SarimaType;
 import demetra.data.DoubleSeq;
 

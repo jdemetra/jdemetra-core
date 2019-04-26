@@ -22,7 +22,7 @@ import demetra.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.design.Development;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
@@ -40,7 +40,7 @@ public class QRMaLjungBoxFilter {
     private Polynomial ma;
     private double[] u;
 
-    private Matrix G, X, V1;
+    private FastMatrix G, X, V1;
 
     private double m_t;
 
@@ -82,7 +82,7 @@ public class QRMaLjungBoxFilter {
     private void calcg(int m) {
 	RationalFunction rf = RationalFunction.of(Polynomial.ONE, ma);
 	double[] pi = rf.coefficients(n);
-	Matrix gg = Matrix.square(m);
+	FastMatrix gg = FastMatrix.square(m);
 
 	// compute first column
 	for (int i = 0; i < m; ++i) {
@@ -127,7 +127,7 @@ public class QRMaLjungBoxFilter {
 	double[] a0 = calca0(w);
 	double[] g = calcg(a0);
 	u = calch(g);
-        DataBlock U=DataBlock.ofInternal(u);
+        DataBlock U=DataBlock.of(u);
 	LowerTriangularMatrix.rsolve(X, U);
 	LowerTriangularMatrix.lsolve(X, U);
 	double[] v = new double[w.length()];
@@ -160,7 +160,7 @@ public class QRMaLjungBoxFilter {
 
 	// compute V1' * G * V1 = X' X and V (covar model)
 
-	V1 = Matrix.square(q);
+	V1 = FastMatrix.square(q);
 
 	if (q > 0) {
 	    V1.diagonal().set(ma.get(q));

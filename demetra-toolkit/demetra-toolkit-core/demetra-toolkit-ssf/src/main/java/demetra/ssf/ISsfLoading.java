@@ -17,7 +17,7 @@
 package demetra.ssf;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 
 /**
  *
@@ -46,7 +46,7 @@ public interface ISsfLoading extends ISsfRoot {
      */
     double ZX(int pos, DataBlock m);
 
-    default void ZM(int pos, Matrix m, DataBlock zm) {
+    default void ZM(int pos, FastMatrix m, DataBlock zm) {
         zm.set(m.columnsIterator(), x->ZX(pos, x));
     }
 
@@ -57,7 +57,7 @@ public interface ISsfLoading extends ISsfRoot {
      * @param V Matrix (statedim x statedim)
      * @return
      */
-    double ZVZ(int pos, Matrix V);
+    double ZVZ(int pos, FastMatrix V);
 
 //</editor-fold>    
 //<editor-fold defaultstate="collapsed" desc="backward operations">
@@ -67,7 +67,7 @@ public interface ISsfLoading extends ISsfRoot {
      * @param V
      * @param d
      */
-    void VpZdZ(int pos, Matrix V, double d);
+    void VpZdZ(int pos, FastMatrix V, double d);
 
     /**
      * Computes x = x + Z * D

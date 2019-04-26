@@ -7,7 +7,7 @@ package demetra.benchmarking.univariate;
 
 import demetra.benchmarking.univariate.DentonSpec;
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import org.junit.Test;
 
 /**

@@ -16,10 +16,6 @@
  */
 package demetra.data;
 
-import demetra.data.DoubleSeq;
-import demetra.data.DoubleSeqCursor;
-import demetra.data.Doubles;
-
 /**
  *
  * @author Philippe Charles
@@ -116,6 +112,7 @@ public class DoublesMath {
      * function. Should be used to avoid possible overflow. Otherwise, consider
      * fastNorm2, which is sigificantly faster.
      *
+     * @param src
      * @return The euclidian norm (&gt=0).
      */
     public double norm2(DoubleSeq src) {
@@ -147,6 +144,12 @@ public class DoublesMath {
         }
     }
 
+    /**
+     * Computes the euclidian norm of the src. 
+     *
+     * @param src The data
+     * @return The euclidian norm (&gt=0).
+     */
     public double fastNorm2(DoubleSeq src) {
         int n = src.length();
         switch (n) {
@@ -168,8 +171,9 @@ public class DoublesMath {
     }
 
     /**
-     * Computes the infinite-norm of this src block
+     * Computes the infinite-norm of this src 
      *
+     * @param src The source 
      * @return Returns min{|src(i)|}
      */
     public double normInf(DoubleSeq src) {
@@ -192,6 +196,7 @@ public class DoublesMath {
     /**
      * Counts the number of identical consecutive values.
      *
+     * @param src The source 
      * @return Missing values are omitted.
      */
     public int getRepeatCount(DoubleSeq src) {

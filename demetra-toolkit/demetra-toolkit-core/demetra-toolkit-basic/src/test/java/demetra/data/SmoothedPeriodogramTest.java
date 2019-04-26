@@ -16,6 +16,9 @@
  */
 package demetra.data;
 
+import demetra.data.analysis.SmoothedPeriodogram;
+import demetra.data.analysis.DiscreteWindowFunction;
+import demetra.data.analysis.TukeyHanningTaper;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

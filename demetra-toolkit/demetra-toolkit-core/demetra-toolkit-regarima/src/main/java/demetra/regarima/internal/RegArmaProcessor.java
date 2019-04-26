@@ -23,7 +23,7 @@ import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.NumericalDerivatives;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.functions.ssq.SsqProxyFunctionPoint;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.arima.estimation.IArimaMapping;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
@@ -55,7 +55,7 @@ public class RegArmaProcessor {
         boolean ok = minimizer.minimize(fn.ssqEvaluate(start));
         RegArmaSsqFunction.Evaluation<S> rslt = (RegArmaSsqFunction.Evaluation<S>) minimizer.getResult();
         double objective = rslt.getSsqE();
-        Matrix hessian;
+        FastMatrix hessian;
         double[] gradient;
         if (fast) {
             gradient = minimizer.gradientAtMinimum().toArray();

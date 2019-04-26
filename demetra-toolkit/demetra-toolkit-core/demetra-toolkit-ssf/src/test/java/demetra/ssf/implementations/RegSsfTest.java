@@ -7,7 +7,7 @@ package demetra.ssf.implementations;
 
 import demetra.arima.ssf.SsfArima;
 import demetra.data.Data;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.modelling.regression.GenericTradingDaysVariable;
 import demetra.modelling.regression.Regression;
 import demetra.sarima.SarimaModel;
@@ -46,7 +46,7 @@ public class RegSsfTest {
         TsData s = Data.TS_PROD;
         SsfData y = new SsfData(s.getValues());
         GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD7);
-        Matrix X = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(td));
+        FastMatrix X = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(td));
         ISsf rssf1 = RegSsf.of(ssf, X);
         CompositeSsf rssf2 = CompositeSsf.builder()
                 .add(cmp1, Loading.fromPosition(0))

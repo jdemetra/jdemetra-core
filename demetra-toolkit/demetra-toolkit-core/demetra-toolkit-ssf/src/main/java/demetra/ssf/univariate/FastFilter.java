@@ -8,8 +8,7 @@ package demetra.ssf.univariate;
 import demetra.ssf.ISsfLoading;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.maths.linearfilters.ILinearProcess;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.data.DoubleSeqCursor;
@@ -21,14 +20,14 @@ import demetra.data.DoubleVector;
  *
  * @author Jean Palate
  */
-public class FastFilter implements ILinearProcess {
+public class FastFilter {
 
     private final DefaultFilteringResults frslts;
     private final ISsf ssf;
     private final ISsfLoading loading;
     private final ISsfDynamics dynamics;
     private final int start, end;
-    private Matrix states;
+    private FastMatrix states;
     // temporaries
     private DataBlock tmp;
     private DataBlockIterator scols;
@@ -42,12 +41,12 @@ public class FastFilter implements ILinearProcess {
         end = range.getEnd();
     }
 
-    public boolean filter(Matrix x) {
+    public boolean filter(FastMatrix x) {
         if (end - start < x.getRowsCount()) {
             return false;
         }
         int dim = ssf.getStateDim();
-        states = Matrix.make(dim, x.getColumnsCount());
+        states = FastMatrix.make(dim, x.getColumnsCount());
         prepareTmp();
         DataBlockIterator rows = x.rowsIterator();
         int pos = start;
@@ -88,15 +87,6 @@ public class FastFilter implements ILinearProcess {
         //  
     }
 
-    public boolean transform(DoubleSeq in, DataBlock out) {
-        if (in.length() > end - start) {
-            return false;
-        }
-        apply(in, out);
-        return true;
-    }
-    
-    @Override
     public void apply(DoubleSeq in, DoubleVector out) {
         int dim = ssf.getStateDim(), n = in.length();
         DataBlock state = DataBlock.make(dim);
@@ -120,7 +110,6 @@ public class FastFilter implements ILinearProcess {
         } while (++ipos < n);
     }
 
-    @Override
     public int getOutputLength(int inputLength) {
         int n = 0;
         int imax = start + inputLength;

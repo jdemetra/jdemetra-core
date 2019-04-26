@@ -16,7 +16,7 @@
  */
 package demetra.likelihood;
 
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import java.util.function.Supplier;
 import demetra.design.BuilderPattern;
 import demetra.eco.EcoException;

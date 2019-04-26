@@ -22,11 +22,11 @@ import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.transformation.LogJacobian;
 import demetra.data.ParameterType;
-import demetra.data.transformation.DataInterpolator;
+import demetra.data.interpolation.DataInterpolator;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LogLikelihoodFunction;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.modelling.regression.PreadjustmentVariable;
 import demetra.modelling.regression.ITsVariable;
@@ -169,7 +169,7 @@ public final class ModelDescription {
                 final DataBlock ndata = DataBlock.of(tmp.getValues());
                 final TsDomain domain = tmp.getDomain();
                 preadjustmentVariables.forEach(v -> {
-                    Matrix m = Regression.matrix(domain, v.getVariable());
+                    FastMatrix m = Regression.matrix(domain, v.getVariable());
                     DoubleSeqCursor reader = v.getCoefficients().cursor();
                     DataBlockIterator columns = m.columnsIterator();
                     while (columns.hasNext()) {
@@ -315,7 +315,7 @@ public final class ModelDescription {
         return logTransformation && lpTransformation != LengthOfPeriodType.None;
     }
 
-    private Matrix getX(ITsVariable variable) {
+    private FastMatrix getX(ITsVariable variable) {
         return Regression.matrix(series.getDomain(), variable);
     }
 
@@ -559,11 +559,11 @@ public final class ModelDescription {
         regarima = rslt.getModel();
         int p = this.getAnnualFrequency();
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
-        Matrix J = Matrix.EMPTY;
+        FastMatrix J = FastMatrix.EMPTY;
         DoubleSeq score = Doubles.EMPTY;
         if (max != null) {
             double[] gradient = max.getGradient();
-            Matrix hessian = rslt.getMax().getHessian();
+            FastMatrix hessian = rslt.getMax().getHessian();
             score = DoubleSeq.of(gradient == null ? DoubleSeq.EMPTYARRAY : gradient);
             J = hessian == null ? null : SymmetricMatrix.inverse(hessian);
             if (np < allp) {
@@ -591,7 +591,7 @@ public final class ModelDescription {
                 .build();
     }
 
-    private Matrix expand(Matrix cov) {
+    private FastMatrix expand(FastMatrix cov) {
         boolean[] fixedItems = arima.fixedConstraints();
         int dim = cov.getColumnsCount();
         int[] idx = new int[dim];
@@ -600,7 +600,7 @@ public final class ModelDescription {
                 idx[j++] = i;
             }
         }
-        Matrix ecov = Matrix.make(fixedItems.length, fixedItems.length);
+        FastMatrix ecov = FastMatrix.make(fixedItems.length, fixedItems.length);
         for (int i = 0; i < dim; ++i) {
             for (int j = 0; j <= i; ++j) {
                 double s = cov.get(i, j);

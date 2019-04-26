@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

@@ -18,7 +18,7 @@ package demetra.ssf.multivariate;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.ISsfRoot;
 
@@ -47,7 +47,7 @@ public interface ISsfMeasurements extends ISsfRoot {
 
 //</editor-fold>
 
-    default void ZM(int pos, Matrix L, Matrix ZL){
+    default void ZM(int pos, FastMatrix L, FastMatrix ZL){
         DataBlockIterator rows = ZL.rowsIterator();
         int r=0;
         while (rows.hasNext())

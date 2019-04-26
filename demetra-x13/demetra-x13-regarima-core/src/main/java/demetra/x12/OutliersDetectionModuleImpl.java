@@ -179,7 +179,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         int[] o = new int[]{pos, type};
         outliers.add(o);
         double[] xo = new double[regarima.getObservationsCount()];
-        DataBlock XO = DataBlock.ofInternal(xo);
+        DataBlock XO = DataBlock.of(xo);
         sod.factory(type).fill(pos, XO);
         regarima = regarima.toBuilder().addX(XO).build();
         sod.exclude(pos, type);

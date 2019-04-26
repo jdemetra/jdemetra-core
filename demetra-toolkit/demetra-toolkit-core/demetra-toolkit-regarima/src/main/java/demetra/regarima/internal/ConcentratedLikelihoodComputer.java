@@ -25,9 +25,9 @@ import demetra.design.Immutable;
 import demetra.eco.EcoException;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.matrices.decomposition.IQRDecomposition;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.internal.Householder;
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 
@@ -83,9 +83,9 @@ public final class ConcentratedLikelihoodComputer {
         DataBlock yl = DataBlock.make(nl);
         filter.apply(y, yl);
         int nx = x.getColumnsCount();
-        Matrix xl;
+        FastMatrix xl;
         if (nx > 0) {
-            xl = Matrix.make(nl, nx);
+            xl = FastMatrix.make(nl, nx);
             for (int i=0; i<nx; ++i){
                 filter.apply(x.column(i), xl.column(i));
             }
@@ -109,7 +109,7 @@ public final class ConcentratedLikelihoodComputer {
                 DataBlock b = DataBlock.make(qr.rank());
                 DataBlock res = DataBlock.make(nl - qr.rank());
                 qr.leastSquares(yl, b, res);
-                Matrix R = qr.r(false);
+                FastMatrix R = qr.r(false);
                 double ssqerr = res.ssq();
                 double ldet = filter.getLogDeterminant();
 

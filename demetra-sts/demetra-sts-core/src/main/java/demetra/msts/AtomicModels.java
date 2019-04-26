@@ -5,7 +5,7 @@
  */
 package demetra.msts;
 
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.msts.internal.ArItem;
 import demetra.msts.internal.ArItem2;
 import demetra.msts.internal.ArimaItem;

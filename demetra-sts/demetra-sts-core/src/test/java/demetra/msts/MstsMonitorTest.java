@@ -9,8 +9,8 @@ import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
-import demetra.maths.MatrixType;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.StateStorage;
 import demetra.ssf.dk.DkToolkit;
@@ -42,7 +42,7 @@ public class MstsMonitorTest {
         File file = Data.copyToTempFile(MultivariateCompositeSsf.class.getResource("/bematrix.txt"));
         MatrixType data = MatrixSerializer.read(file, "\t|,");
 
-        Matrix D = Matrix.make(data.getRowsCount(), 4);
+        FastMatrix D = FastMatrix.make(data.getRowsCount(), 4);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));
@@ -76,7 +76,7 @@ public class MstsMonitorTest {
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
         MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
 
-        Matrix D = Matrix.make(data.getRowsCount(), 6);
+        FastMatrix D = FastMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));
@@ -116,7 +116,7 @@ public class MstsMonitorTest {
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
         MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
 
-        Matrix D = Matrix.make(data.getRowsCount(), 6);
+        FastMatrix D = FastMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));
@@ -156,7 +156,7 @@ public class MstsMonitorTest {
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
         MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
 
-        Matrix D = Matrix.make(data.getRowsCount(), 6);
+        FastMatrix D = FastMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));

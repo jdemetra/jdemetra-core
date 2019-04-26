@@ -20,7 +20,7 @@ import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.data.Data;
 import demetra.data.MatrixSerializer;
-import demetra.maths.MatrixType;
+import demetra.maths.matrices.MatrixType;
 import demetra.modelling.regression.AdditiveOutlierFactory;
 import demetra.modelling.regression.LevelShiftFactory;
 import demetra.modelling.regression.SwitchOutlierFactory;

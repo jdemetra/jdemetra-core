@@ -20,7 +20,7 @@ import demetra.data.AggregationType;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.linearsystem.LinearSystemSolver;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.UnitRoots;
@@ -45,7 +45,7 @@ public class MatrixDenton {
         this.type = spec.getAggregationType();
     }
 
-    private void J(Matrix M) {
+    private void J(FastMatrix M) {
         int j = offset;
         DataBlockIterator rows = M.rowsIterator();
         while (rows.hasNext()) {
@@ -65,7 +65,7 @@ public class MatrixDenton {
         }
     }
 
-    private Matrix D(DataBlock x) {
+    private FastMatrix D(DataBlock x) {
         Polynomial pd = UnitRoots.D(1, differencing);
         int d = pd.degree();
         int n = x.length();
@@ -75,7 +75,7 @@ public class MatrixDenton {
         }
 
         if (modified) {
-            Matrix D = Matrix.make(n - d, n);
+            FastMatrix D = FastMatrix.make(n - d, n);
             for (int i = 0; i <= d; ++i) {
                 if (multiplicative) {
                     D.subDiagonal(i).setAY(pd.get(d - i), x.drop(i, d - i));
@@ -85,7 +85,7 @@ public class MatrixDenton {
             }
             return D;
         } else {
-            Matrix D = Matrix.square(n);
+            FastMatrix D = FastMatrix.square(n);
             for (int i = 0; i <= d; ++i) {
                 if (multiplicative) {
                     D.subDiagonal(-i).setAY(pd.get(i), x.drop(0, i));
@@ -109,13 +109,13 @@ public class MatrixDenton {
         double xm = x.sum() / x.length();
         x.mul(1 / xm);
 
-        Matrix D = D(x);
+        FastMatrix D = D(x);
 
-        Matrix A = Matrix.square(n + ny);
+        FastMatrix A = FastMatrix.square(n + ny);
 
         SymmetricMatrix.XtX(D, A.extract(0, n, 0, n));
         J(A.extract(n, ny, 0, n));
-        Matrix B = A.deepClone();
+        FastMatrix B = A.deepClone();
         J(A.extract(0, n, n, ny).transpose());
         B.diagonal().drop(n, 0).set(1);
 
@@ -146,12 +146,12 @@ public class MatrixDenton {
         if (multiplicative) {
             x.set(1);
         }
-        Matrix D = D(x);
-        Matrix A = Matrix.square(n + ny);
+        FastMatrix D = D(x);
+        FastMatrix A = FastMatrix.square(n + ny);
 
         SymmetricMatrix.XtX(D, A.extract(0, n, 0, n));
         J(A.extract(n, ny, 0, n));
-        Matrix B = A.deepClone();
+        FastMatrix B = A.deepClone();
         J(A.extract(0, n, n, ny).transpose());
         B.diagonal().drop(n, 0).set(1);
 

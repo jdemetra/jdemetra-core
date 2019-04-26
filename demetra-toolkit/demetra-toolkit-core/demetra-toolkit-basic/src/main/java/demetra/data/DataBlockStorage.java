@@ -18,7 +18,7 @@ package demetra.data;
 
 //import ec.tstoolkit.maths.matrices.*;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import java.util.Arrays;
 
 /**
@@ -89,7 +89,7 @@ public class DataBlockStorage {
      */
     public DataBlock block(final int pos) {
         int start = dim * pos;
-        return DataBlock.ofInternal(storage, start, start + dim, 1);
+        return DataBlock.of(storage, start, start + dim, 1);
     }
 
     /**
@@ -122,7 +122,7 @@ public class DataBlockStorage {
      * @return
      */
     public DataBlock item(final int index) {
-        return DataBlock.ofInternal(storage, index, index + dim * nused, dim);
+        return DataBlock.of(storage, index, index + dim * nused, dim);
     }
 
     /**
@@ -188,7 +188,7 @@ public class DataBlockStorage {
      */
     public DataBlock storage(int start, int end) {
         int p0 = dim * start, p1 = dim * end;
-        return DataBlock.ofInternal(storage, p0, p1, 1);
+        return DataBlock.of(storage, p0, p1, 1);
 
     }
 
@@ -204,8 +204,8 @@ public class DataBlockStorage {
      * @param end Last position (excluded)
      * @return
      */
-    public Matrix matrix(final int start, final int end) {
-        return Matrix.builder(storage).nrows(dim).ncolumns(end-start).start(dim*start).columnIncrement(dim).build();
+    public FastMatrix matrix(final int start, final int end) {
+        return FastMatrix.builder(storage).nrows(dim).ncolumns(end-start).start(dim*start).columnIncrement(dim).build();
     }
     
     /**
@@ -213,8 +213,8 @@ public class DataBlockStorage {
      * The successive data blocks are stored in the columns copyOf the sub-matrix
      * @return
      */
-    public Matrix matrix() {
-        return Matrix.builder(storage).nrows(dim).ncolumns(nused).columnIncrement(dim).build();
+    public FastMatrix matrix() {
+        return FastMatrix.builder(storage).nrows(dim).ncolumns(nused).columnIncrement(dim).build();
     }
 
     /**

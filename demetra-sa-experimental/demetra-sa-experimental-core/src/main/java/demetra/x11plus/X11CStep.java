@@ -6,8 +6,6 @@
 package demetra.x11plus;
 
 import demetra.data.DataBlock;
-import demetra.maths.linearfilters.HendersonFilters;
-import demetra.maths.linearfilters.IFilterOutput;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import static demetra.x11plus.X11Kernel.table;
@@ -39,8 +37,8 @@ public class X11CStep {
         c2drop = filter.length() / 2;
 
         double[] x = table(c1.length() - 2 * c2drop, Double.NaN);
-        DataBlock out = DataBlock.ofInternal(x, 0, x.length);
-        filter.apply(i -> c1.get(i), IFilterOutput.of(out, c2drop));
+        DataBlock out = DataBlock.of(x, 0, x.length);
+        filter.apply(c1, out);
         c2 = DoubleSeq.of(x);
     }
 
@@ -63,17 +61,17 @@ public class X11CStep {
         int ndrop = filter.length() / 2;
 
         double[] x = table(c6.length(), Double.NaN);
-        DataBlock out = DataBlock.ofInternal(x, ndrop, x.length-ndrop);
-        filter.apply(i -> c6.get(i), IFilterOutput.of(out, ndrop));
+        DataBlock out = DataBlock.of(x, ndrop, x.length-ndrop);
+        filter.apply(c6, out);
         
        // apply asymmetric filters
         double r=MusgraveFilterFactory.findR(filter.length(), context.getPeriod().intValue());
         IFiniteFilter[] lf = context.leftAsymmetricTrendFilters(filter, r); 
         IFiniteFilter[] rf = context.rightAsymmetricTrendFilters(filter, r); 
         AsymmetricEndPoints aep=new AsymmetricEndPoints(lf, -1);
-        aep.process(c6, DataBlock.ofInternal(x));
+        aep.process(c6, DataBlock.of(x));
         aep=new AsymmetricEndPoints(rf, 1);
-        aep.process(c6, DataBlock.ofInternal(x));
+        aep.process(c6, DataBlock.of(x));
         c7 = DoubleSeq.of(x);
         if (c7.anyMatch(z->z <=0))
             throw new X11Exception(X11Exception.ERR_NEG);

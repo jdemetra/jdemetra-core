@@ -18,7 +18,7 @@ package demetra.ar.internal;
 
 import demetra.data.DataBlockIterator;
 import demetra.design.AlgorithmImplementation;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;
@@ -40,7 +40,7 @@ public class OlsAlgorithm implements AutoRegressiveEstimation {
         y=Y.toArray();
         int n = y.length;
         
-        Matrix M = Matrix.make(n-nar, nar);
+        FastMatrix M = FastMatrix.make(n-nar, nar);
         DataBlockIterator cols = M.columnsIterator();
         for (int i = 0; i < nar; ++i) {
             cols.next().copy(Y.drop(nar-i-1, n));

@@ -18,7 +18,7 @@ package demetra.linearmodel;
 
 import demetra.data.DataBlock;
 import demetra.design.Immutable;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import java.util.ArrayList;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.MatrixWindow;
@@ -58,7 +58,7 @@ public final class LinearModel implements LinearModelType{
             return this;
         }
 
-        public Builder addX(@Nonnull Matrix X) {
+        public Builder addX(@Nonnull FastMatrix X) {
             X.columns().forEach(col -> x.add(col));
             return this;
         }
@@ -75,7 +75,7 @@ public final class LinearModel implements LinearModelType{
                 throw new RuntimeException("Missing y");
             }
 
-            Matrix X = Matrix.make(y.length, x.size());
+            FastMatrix X = FastMatrix.make(y.length, x.size());
             if (!X.isEmpty()) {
                 DataBlockIterator cols = X.columnsIterator();
                 for (DoubleSeq xcur : x) {
@@ -91,14 +91,14 @@ public final class LinearModel implements LinearModelType{
 
     private final double[] y;
     private final boolean mean;
-    private final Matrix x;
+    private final FastMatrix x;
 
     public static Builder builder() {
         return new Builder();
     }
     
     public static LinearModel of(LinearModelType model){
-        return new LinearModel(model.getY().toArray(), model.isMeanCorrection(), Matrix.of(model.getX()));
+        return new LinearModel(model.getY().toArray(), model.isMeanCorrection(), FastMatrix.of(model.getX()));
     }
 
     /**
@@ -108,7 +108,7 @@ public final class LinearModel implements LinearModelType{
      * @param x X doesn't contain the mean !!
      */
     @Internal
-    public LinearModel(double[] y, final boolean mean, final Matrix x) {
+    public LinearModel(double[] y, final boolean mean, final FastMatrix x) {
         this.y = y;
         this.mean = mean;
         this.x = x;
@@ -185,7 +185,7 @@ public final class LinearModel implements LinearModelType{
         return mean;
     }
     
-    public Matrix getX(){
+    public FastMatrix getX(){
         return x;
     }
 
@@ -193,11 +193,11 @@ public final class LinearModel implements LinearModelType{
      *
      * @return
      */
-    public Matrix variables() {
+    public FastMatrix variables() {
         if (!mean) {
             return x.deepClone();
         } else {
-            Matrix vars = Matrix.make(x.getRowsCount(), x.getColumnsCount() + 1);
+            FastMatrix vars = FastMatrix.make(x.getRowsCount(), x.getColumnsCount() + 1);
             MatrixWindow left = vars.left(1);
             left.set(1);
             left.hnext(x.getColumnsCount());

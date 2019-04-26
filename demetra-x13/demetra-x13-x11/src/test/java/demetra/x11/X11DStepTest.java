@@ -5,7 +5,7 @@
  */
 package demetra.x11;
 
-import demetra.maths.Math2;
+import demetra.maths.Constants;
 import demetra.sa.DecompositionMode;
 import ec.satoolkit.x11.BiasCorrection;
 import ec.satoolkit.x11.X11Results;
@@ -144,7 +144,7 @@ public class X11DStepTest {
 
     @Test
     public void testProcess_Msr_LogAdd() {
-        Assume.assumeTrue("This test expects Math#exp(double) to be intrinsified", Math2.isMathExpIntrinsifiedByVM());
+        Assume.assumeTrue("This test expects Math#exp(double) to be intrinsified", Constants.isMathExpIntrinsifiedByVM());
         
         String modeName = DecompositionMode.LogAdditive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();

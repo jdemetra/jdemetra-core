@@ -332,7 +332,7 @@ public class KalmanFilter implements ArmaFilter {
         } while (++pos < n);
 
         ldet = det.getLogDeterminant();
-        outrc.copy(DataBlock.ofInternal(yf));
+        outrc.copy(DataBlock.of(yf));
 
     }
 

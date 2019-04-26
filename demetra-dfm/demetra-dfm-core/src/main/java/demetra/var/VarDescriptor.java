@@ -17,7 +17,7 @@
 package demetra.var;
 
 import demetra.dfm.DfmException;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 
 /**
  *
@@ -36,11 +36,11 @@ public class VarDescriptor {
      * c(i,k) of fi(t): fi(t)= c(i,0)f0(t-1)+...+c(i,n)fn(t-1)+...
      * +c(i,(n-1)*l)f0(t-l)...+c(i,n*l-1)fn(t-l))
      */
-    private final Matrix varMatrix;
+    private final FastMatrix varMatrix;
     /**
      * Covariance matrix of the innovations
      */
-    private final Matrix covar;
+    private final FastMatrix covar;
 
     /**
      * Creates a new descriptor of the transition equation (VAR).
@@ -49,8 +49,8 @@ public class VarDescriptor {
      * @param nlags Number of lags in the VAR model
      */
     public VarDescriptor(int nvars, int nlags) {
-        varMatrix = Matrix.make(nvars, nvars * nlags);
-        covar = Matrix.square(nvars);
+        varMatrix = FastMatrix.make(nvars, nvars * nlags);
+        covar = FastMatrix.square(nvars);
         this.nlags = nlags;
         this.nvars = nvars;
         setDefault();
@@ -74,11 +74,11 @@ public class VarDescriptor {
         return nvars;
     }
 
-    public Matrix getVarMatrix() {
+    public FastMatrix getVarMatrix() {
         return varMatrix;
     }
 
-    public Matrix getInnovationsVariance() {
+    public FastMatrix getInnovationsVariance() {
         return covar;
     }
 
@@ -93,7 +93,7 @@ public class VarDescriptor {
      * @return The corresponding square sub-matrix is returned. That sub-matrix is a view of the underlying
      * parameters
      */
-    public Matrix getA(int lag) {
+    public FastMatrix getA(int lag) {
         int c0 = (lag - 1) * nvars;
         return varMatrix.extract(0, nvars, c0, nvars);
     }
@@ -104,7 +104,7 @@ public class VarDescriptor {
      * @param lag The lag in the var equation. Should belong to [1, nlags]
      * @param a The matrix
      */
-    public void setA(int lag, Matrix a) {
+    public void setA(int lag, FastMatrix a) {
         int n = varMatrix.getRowsCount();
         for (int i = 0, j = lag - 1; i < n; ++i, j += nlags) {
             varMatrix.column(j).copy(a.column(i));

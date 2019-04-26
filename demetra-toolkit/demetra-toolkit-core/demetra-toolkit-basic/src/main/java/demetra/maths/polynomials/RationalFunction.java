@@ -1,18 +1,18 @@
 /*
-* Copyright 2013 National Bank ofInternal Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions ofInternal the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy ofInternal the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
+ * Copyright 2019 National Bank of Belgium.
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ *      https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package demetra.maths.polynomials;
 
@@ -20,6 +20,7 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.design.SkipProcessing;
 import demetra.maths.Complex;
+import demetra.maths.ComplexMath;
 import demetra.maths.Constants;
 import demetra.maths.polynomials.spi.RootsSolver;
 
@@ -181,13 +182,13 @@ public final class RationalFunction {
      * The method evaluates the rational function for a given complex value x.
      *
      * @param c A complex value
-     * @return The value ofInternal p1(x)/p2(x) as a complex
+     * @return The value of p1(x)/p2(x) as a complex
      * @throws PolynomialException Thrown when p2 evaluates to zero at value x
      */
     public Complex evaluateAt(final Complex c) {
         final Complex nx = num.evaluateAt(c);
         final Complex dx = denom.evaluateAt(c);
-        if (dx.minus(Complex.cart(0.0)).abs() <= Constants.getEpsilon()) {
+        if (dx.abs() <= Constants.getEpsilon()) {
             throw new PolynomialException(PolynomialException.POLE);
         }
         return nx.div(dx);
@@ -317,7 +318,7 @@ public final class RationalFunction {
     }
 
     /**
-     * The method computes the weights ofInternal the power series expansion
+     * The method computes the weights ofInternal the power series expansion 
      *
      * @param degree
      */

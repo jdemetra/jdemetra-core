@@ -6,7 +6,7 @@
 package demetra.ssf.implementations;
 
 import demetra.data.DeprecatedDoubles;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.State;
 import demetra.ssf.multivariate.ISsfErrors;
@@ -19,7 +19,7 @@ import demetra.data.DoubleSeq;
 @lombok.experimental.UtilityClass
 public class MeasurementsError {
 
-    public ISsfErrors of(Matrix H, Matrix R) {
+    public ISsfErrors of(FastMatrix H, FastMatrix R) {
         return new Errors(H, R);
     }
 
@@ -39,9 +39,9 @@ public class MeasurementsError {
 
     private static class Errors implements ISsfErrors {
 
-        private final Matrix H, R;
+        private final FastMatrix H, R;
 
-        private Errors(final Matrix H, Matrix R) {
+        private Errors(final FastMatrix H, FastMatrix R) {
             if (H != null) {
                 this.H = H;
             } else {
@@ -62,17 +62,17 @@ public class MeasurementsError {
         }
 
         @Override
-        public void H(int pos, Matrix h) {
+        public void H(int pos, FastMatrix h) {
             h.copy(H);
         }
 
         @Override
-        public void R(int pos, Matrix r) {
+        public void R(int pos, FastMatrix r) {
             r.copy(R);
         }
 
         @Override
-        public void addH(int pos, Matrix V) {
+        public void addH(int pos, FastMatrix V) {
             V.add(H);
         }
 
@@ -101,17 +101,17 @@ public class MeasurementsError {
         }
 
         @Override
-        public void H(int pos, Matrix h) {
+        public void H(int pos, FastMatrix h) {
             h.diagonal().copyFrom(v, 0);
         }
 
         @Override
-        public void R(int pos, Matrix r) {
+        public void R(int pos, FastMatrix r) {
             r.diagonal().copyFrom(e, 0);
         }
 
         @Override
-        public void addH(int pos, Matrix V) {
+        public void addH(int pos, FastMatrix V) {
             V.diagonal().apply(pos, x -> x + v[pos]);
         }
 
@@ -137,17 +137,17 @@ public class MeasurementsError {
         }
 
         @Override
-        public void H(int pos, Matrix h) {
+        public void H(int pos, FastMatrix h) {
             h.diagonal().set(v);
         }
 
         @Override
-        public void R(int pos, Matrix r) {
+        public void R(int pos, FastMatrix r) {
             r.diagonal().set(e);
         }
 
         @Override
-        public void addH(int pos, Matrix V) {
+        public void addH(int pos, FastMatrix V) {
             V.diagonal().add(v);
         }
 

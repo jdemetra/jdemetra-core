@@ -17,7 +17,7 @@
 package demetra.regarima.regular;
 
 import demetra.linearmodel.JointTest;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.modelling.regression.PeriodicContrasts;
 import demetra.modelling.regression.Regression;
 import demetra.regarima.RegArimaEstimation;
@@ -95,7 +95,7 @@ public class SeasonalFTest {
     private void addSeasonalDummies(RegArimaModel.Builder builder, TsDomain domain) {
         // makes seasonal dummies
         PeriodicContrasts dummies = new PeriodicContrasts(domain.getAnnualFrequency());
-        Matrix x = Regression.matrix(domain, dummies);
+        FastMatrix x = Regression.matrix(domain, dummies);
         builder.addX(x);
         regarima = builder.build();
         nseas = dummies.dim();

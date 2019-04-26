@@ -91,14 +91,14 @@ public class MatrixStorage {
      * @param pos
      * @return
      */
-    public Matrix matrix(final int pos) {
-        return new Matrix(m_data, m_size * pos, m_nr, m_nc, 1, m_nr);
+    public FastMatrix matrix(final int pos) {
+        return new FastMatrix(m_data, m_size * pos, m_nr, m_nc, 1, m_nr);
     }
     
     public DataBlock item(final int row, final int col){
         int start=row+m_nr*col;
         int end=start+m_nused*m_size;
-        return DataBlock.ofInternal(m_data, start, end, m_size);
+        return DataBlock.of(m_data, start, end, m_size);
     }
 
     /**
@@ -121,7 +121,7 @@ public class MatrixStorage {
      * @param pos
      * @param m
      */
-    public void save(final int pos, final Matrix m) {
+    public void save(final int pos, final FastMatrix m) {
         m.copyTo(m_data, pos * m_size);
         if (pos >= m_nused) {
             m_nused = pos + 1;

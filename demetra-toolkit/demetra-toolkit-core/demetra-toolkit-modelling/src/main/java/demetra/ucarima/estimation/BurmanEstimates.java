@@ -24,9 +24,8 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.matrices.decomposition.ILUDecomposition;
-import demetra.maths.matrices.Matrix;
-import demetra.maths.MatrixException;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.UnitRoots;
@@ -35,6 +34,7 @@ import demetra.ucarima.WienerKolmogorovEstimators;
 import java.util.Arrays;
 import demetra.arima.estimation.ArimaForecasts;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.decomposition.LUDecomposition;
 
 /**
  * Estimation of the components of an UCARIMA model using a variant of the
@@ -61,7 +61,7 @@ public class BurmanEstimates {
     private double[][] m_e, m_f;
     private DoubleSeq m_xb, m_xf;
     private boolean m_bmean;
-    private ILUDecomposition solver;
+    private LUDecomposition solver;
     private ArimaForecasts forecaster=new FastArimaForecasts();
 
     /**
@@ -149,7 +149,7 @@ public class BurmanEstimates {
             ww[i] = w1[ntmp + i];
         }
         if (ww.length >0)
-            solver.solve(DataBlock.ofInternal(ww));
+            solver.solve(DataBlock.of(ww));
         double[] mx = ww.length == 0 ? new double[0] : ww;
         int nx1 = n + Math.max(2 * qstar, nf);
         double[] x1 = new double[nx1];
@@ -179,7 +179,7 @@ public class BurmanEstimates {
             ww[i] = w2[pstar - i - 1];
         }
         if (ww.length>0)
-            solver.solve(DataBlock.ofInternal(ww));
+            solver.solve(DataBlock.of(ww));
         mx = ww.length == 0 ? new double[0] : ww;
         int nx2 = n + 2 * qstar + Math.max(nf, 2 * qstar);
         double[] x2 = new double[nx2];
@@ -298,8 +298,8 @@ public class BurmanEstimates {
             nf = m_ar.degree() + 1;
         }
         forecaster.prepare(m_wk.getUcarimaModel().getModel(), m_bmean);
-        m_xf = forecaster.forecasts(DataBlock.ofInternal(m_data), nf);
-        m_xb = forecaster.backcasts(DataBlock.ofInternal(m_data), nf);
+        m_xf = forecaster.forecasts(DataBlock.of(m_data), nf);
+        m_xb = forecaster.backcasts(DataBlock.of(m_data), nf);
         if (m_bmean) {
             m_mean = forecaster.getMean();
         } else {
@@ -537,7 +537,7 @@ public class BurmanEstimates {
         //////////////////////////////////
 //         Complete z, the original series
 //         z is the extended series with forecasts and backcasts
-        Matrix m = Matrix.square(pstar + qstar);
+        FastMatrix m = FastMatrix.square(pstar + qstar);
         for (int i = 0; i < pstar; ++i) {
             for (int j = 0; j <= ma.degree(); ++j) {
                 m.set(i, i + j, ma.get(j));

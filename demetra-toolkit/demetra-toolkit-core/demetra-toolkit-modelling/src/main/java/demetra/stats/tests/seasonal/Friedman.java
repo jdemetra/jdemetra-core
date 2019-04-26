@@ -22,7 +22,7 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.dstats.Chi2;
 import demetra.dstats.F;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
 import demetra.data.DoubleSeq;
@@ -50,7 +50,7 @@ public class Friedman {
 
         DoubleSeq x = all.drop(nall - n * this.period, 0);
         DoubleSeq y = x.extract(0, period);
-        Matrix R = Matrix.make(n, this.period);
+        FastMatrix R = FastMatrix.make(n, this.period);
 
         // computes the ranks on each year:
         int row = 0;

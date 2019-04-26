@@ -18,7 +18,7 @@ package demetra.r;
 
 import demetra.maths.linearfilters.FiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.data.DiscreteKernel;
+import demetra.data.analysis.DiscreteKernel;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 

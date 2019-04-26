@@ -7,7 +7,7 @@ package demetra.ssf.implementations;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsf;
@@ -59,7 +59,7 @@ public class CompactSsf {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
             initialization.diffuseConstraints(b.dropTopLeft(1, 0));
         }
 
@@ -69,12 +69,12 @@ public class CompactSsf {
         }
 
         @Override
-        public void Pf0(Matrix pf0) {
+        public void Pf0(FastMatrix pf0) {
             initialization.Pf0(pf0.dropTopLeft(1, 1));
         }
 
         @Override
-        public void Pi0(Matrix pi0) {
+        public void Pi0(FastMatrix pi0) {
             initialization.Pi0(pi0.dropTopLeft(1, 1));
         }
 
@@ -111,13 +111,13 @@ public class CompactSsf {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             dynamics.V(pos, qm.dropTopLeft(1, 1));
             qm.set(0, 0, error.at(pos));
         }
 
         @Override
-        public void S(int pos, Matrix s) {
+        public void S(int pos, FastMatrix s) {
             dynamics.S(pos, s.dropTopLeft(1, 1));
             s.set(0, 0, err(pos));
         }
@@ -128,7 +128,7 @@ public class CompactSsf {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             dynamics.T(pos, tr.dropTopLeft(1, 1));
         }
 
@@ -139,7 +139,7 @@ public class CompactSsf {
         }
 
         @Override
-        public void TVT(int pos, Matrix vm) {
+        public void TVT(int pos, FastMatrix vm) {
             dynamics.TVT(pos, vm.dropTopLeft(1, 1));
             vm.row(0).set(0);
             vm.column(0).set(0);
@@ -152,7 +152,7 @@ public class CompactSsf {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             dynamics.addV(pos, p.dropTopLeft(1, 1));
             p.add(0, 0, error.at(pos));
         }
@@ -196,9 +196,9 @@ public class CompactSsf {
         }
 
         @Override
-        public void ZM(int pos, Matrix m, DataBlock zm) {
+        public void ZM(int pos, FastMatrix m, DataBlock zm) {
             zm.copy(m.row(0));
-            Matrix q = m.dropTopLeft(1, 0);
+            FastMatrix q = m.dropTopLeft(1, 0);
             DataBlockIterator cols = q.columnsIterator();
             DoubleVectorCursor cur = zm.cursor();
             while (cols.hasNext()) {
@@ -207,7 +207,7 @@ public class CompactSsf {
         }
 
         @Override
-        public double ZVZ(int pos, Matrix vm) {
+        public double ZVZ(int pos, FastMatrix vm) {
             double r = vm.get(0, 0);
             r += 2 * loading.ZX(pos, vm.row(0).drop(1, 0));
             r += loading.ZVZ(pos, vm.dropTopLeft(1, 1));
@@ -215,7 +215,7 @@ public class CompactSsf {
         }
 
         @Override
-        public void VpZdZ(int pos, Matrix vm, double d) {
+        public void VpZdZ(int pos, FastMatrix vm, double d) {
             loading.VpZdZ(pos, vm.dropTopLeft(1, 1), d);
             vm.add(0, 0, d);
             loading.XpZd(pos, vm.column(0).drop(1, 0), d);

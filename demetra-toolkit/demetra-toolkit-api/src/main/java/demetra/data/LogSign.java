@@ -18,9 +18,7 @@
 
 package demetra.data;
 
-import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
-import demetra.data.DoubleSeq;
 
 
 /**

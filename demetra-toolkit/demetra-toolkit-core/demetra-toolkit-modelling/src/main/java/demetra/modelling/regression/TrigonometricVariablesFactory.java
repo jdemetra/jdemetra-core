@@ -17,7 +17,7 @@
 package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 
@@ -29,9 +29,9 @@ import demetra.timeseries.TsPeriod;
  */
 public class TrigonometricVariablesFactory implements RegressionVariableFactory<TrigonometricVariables> {
 
-    public static Matrix matrix(TrigonometricVariables var, int length, int start) {
+    public static FastMatrix matrix(TrigonometricVariables var, int length, int start) {
         double[] freq = var.getFrequencies();
-        Matrix m = Matrix.make(length, var.dim());
+        FastMatrix m = FastMatrix.make(length, var.dim());
         int nlast = freq.length - 1;
         if (freq[nlast] != 1) {
             ++nlast;
@@ -55,7 +55,7 @@ public class TrigonometricVariablesFactory implements RegressionVariableFactory<
     private TrigonometricVariablesFactory(){}
 
     @Override
-    public boolean fill(TrigonometricVariables var, TsPeriod start, Matrix buffer) {
+    public boolean fill(TrigonometricVariables var, TsPeriod start, FastMatrix buffer) {
         TsPeriod refPeriod = start.withDate(var.getReference());
         long istart = start.getId() - refPeriod.getId();
         double[] freq = var.getFrequencies();
@@ -78,7 +78,7 @@ public class TrigonometricVariablesFactory implements RegressionVariableFactory<
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(TrigonometricVariables var, D domain, Matrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(TrigonometricVariables var, D domain, FastMatrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

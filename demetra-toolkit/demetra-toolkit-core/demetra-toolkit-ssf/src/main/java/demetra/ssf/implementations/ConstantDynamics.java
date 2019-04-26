@@ -17,7 +17,7 @@
 package demetra.ssf.implementations;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 
 /**
@@ -45,7 +45,7 @@ public class ConstantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void V(int pos, Matrix qm) {
+    public void V(int pos, FastMatrix qm) {
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ConstantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void S(int pos, Matrix sm) {
+    public void S(int pos, FastMatrix sm) {
     }
 
 //    @Override
@@ -63,7 +63,7 @@ public class ConstantDynamics implements ISsfDynamics {
 //    }
 //
     @Override
-    public void T(int pos, Matrix tr) {
+    public void T(int pos, FastMatrix tr) {
         tr.diagonal().set(1);
     }
 
@@ -72,7 +72,7 @@ public class ConstantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void TM(int pos, Matrix m) {
+    public void TM(int pos, FastMatrix m) {
     }
 
     @Override
@@ -88,14 +88,14 @@ public class ConstantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void TVT(int pos, Matrix v) {
+    public void TVT(int pos, FastMatrix v) {
     }
 
     @Override
-    public void addV(int pos, Matrix p) {
+    public void addV(int pos, FastMatrix p) {
     }
 
     @Override
-    public void MT(int pos, Matrix x) {
+    public void MT(int pos, FastMatrix x) {
     }
 }

@@ -22,7 +22,7 @@ import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.IParametricMapping;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import java.util.function.Function;
 import demetra.data.DoubleSeq;
@@ -106,7 +106,7 @@ public class LogLikelihoodFunction<T, L extends ILikelihood> implements IFunctio
 
         private LogLikelihoodFunction<T, L> function;
         private double[] parameters, gradient;
-        private Matrix hessian;
+        private FastMatrix hessian;
 
     }
 }

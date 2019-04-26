@@ -18,7 +18,7 @@ package demetra.sts;
 
 import demetra.ssf.ISsfDynamics;
 import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.implementations.Loading;
@@ -72,7 +72,7 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
         }
 
         @Override
@@ -80,7 +80,7 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void Pf0(Matrix p) {
+        public void Pf0(FastMatrix p) {
             double q = data.var / (1 - data.cdump * data.cdump);
             p.diagonal().set(q);
         }
@@ -106,12 +106,12 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void V(int pos, Matrix v) {
+        public void V(int pos, FastMatrix v) {
             v.diagonal().set(data.var);
         }
 
         @Override
-        public void S(int pos, Matrix s) {
+        public void S(int pos, FastMatrix s) {
             s.diagonal().set(e);
         }
 
@@ -126,7 +126,7 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             tr.set(0, 0, ccos);
             tr.set(1, 1, ccos);
             tr.set(0, 1, csin);
@@ -146,7 +146,7 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.diagonal().add(data.var);
         }
 

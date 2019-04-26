@@ -5,13 +5,12 @@
  */
 package demetra.timeseries.simplets;
 
-import demetra.data.ConstTransformation;
-import demetra.data.ExpTransformation;
-import demetra.data.LogTransformation;
+import demetra.data.transformation.ConstTransformation;
+import demetra.data.transformation.ExpTransformation;
+import demetra.data.transformation.LogTransformation;
 import demetra.data.OperationType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.transformation.TimeSeriesTransformation;
 
 /**
  *

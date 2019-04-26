@@ -5,12 +5,9 @@
  */
 package demetra.maths.matrices;
 
-import demetra.maths.MatrixException;
-import demetra.maths.matrices.spi.UpperTriangularMatrixAlgorithms;
-import java.util.concurrent.atomic.AtomicReference;
 import demetra.data.DataBlock;
+import demetra.data.DataBlockIterator;
 import demetra.data.LogSign;
-import demetra.util.ServiceLookup;
 import demetra.random.RandomNumberGenerator;
 
 /**
@@ -20,17 +17,7 @@ import demetra.random.RandomNumberGenerator;
 @lombok.experimental.UtilityClass
 public class UpperTriangularMatrix {
 
-    private final AtomicReference<UpperTriangularMatrixAlgorithms> IMPL = ServiceLookup.firstMutable(UpperTriangularMatrixAlgorithms.class);
-
-    public void setImplementation(UpperTriangularMatrixAlgorithms algorithms) {
-        IMPL.set(algorithms);
-    }
-
-    public UpperTriangularMatrixAlgorithms getImplementation() {
-        return IMPL.get();
-    }
-
-    public void toUpper(Matrix S) {
+    public void toUpper(FastMatrix S) {
         int m = S.getColumnsCount(), n = S.getRowsCount();
         if (n == 1) {
             return;
@@ -46,115 +33,126 @@ public class UpperTriangularMatrix {
         }
     }
 
-    public void randomize(Matrix M, RandomNumberGenerator rng) {
+    public void randomize(FastMatrix M, RandomNumberGenerator rng) {
         M.set((r, c) -> (r < c) ? 0 : rng.nextDouble());
     }
 
-    public void rsolve(Matrix M, DataBlock x, double zero) throws MatrixException {
-        IMPL.get().rsolve(M, x, zero);
+    public void rsolve(FastMatrix M, DataBlock x, double zero) throws MatrixException {
+        LowerTriangularMatrix.lsolve(M.transpose(), x, zero);
     }
 
-    public void rsolve(Matrix M, DataBlock x) throws MatrixException {
-        IMPL.get().rsolve(M, x, 0);
+    public void lsolve(FastMatrix M, DataBlock x, double zero) throws MatrixException {
+        LowerTriangularMatrix.rsolve(M.transpose(), x, zero);
     }
 
-    public void lsolve(Matrix M, DataBlock x, double zero) throws MatrixException {
-        IMPL.get().lsolve(M, x, zero);
+    public void rmul(FastMatrix M, DataBlock x) {
+        LowerTriangularMatrix.lmul(M.transpose(), x);
     }
 
-    public void lsolve(Matrix M, DataBlock x) throws MatrixException {
-        IMPL.get().lsolve(M, x);
+    public void lmul(FastMatrix M, DataBlock x) {
+        LowerTriangularMatrix.rmul(M.transpose(), x);
     }
 
-    public void rmul(Matrix M, DataBlock x) {
-        IMPL.get().rmul(M, x);
+    public void rsolve(FastMatrix M, DataBlock x) throws MatrixException {
+        rsolve(M, x, 0);
     }
 
-    public void lmul(Matrix M, DataBlock x) {
-        IMPL.get().lmul(M, x);
+    public void lsolve(FastMatrix M, DataBlock x) throws MatrixException {
+        lsolve(M, x, 0);
     }
 
     // Matrix versions
     /**
-     * Solves the set of equations X*U = B
+     * Solves the set of equations X*L = B
      *
-     * @param U The upper triangular matrix
+     * @param L The lower triangular matrix
      * @param B On entry the left hand side of the equation. Contains the
      * solution x on returning.
      * @param zero Small positive value identifying 0. Can be 0.
      * @throws MatrixException Thrown when the Length of b is larger than the
      * number of rows of the matrix.
      */
-    public void lsolve(final Matrix U, final Matrix B, double zero)
-            throws MatrixException {
-        IMPL.get().lsolve(U, B, zero);
+    public void lsolve(final FastMatrix L, final FastMatrix B, double zero) throws MatrixException {
+        DataBlockIterator rows = B.rowsIterator();
+        while (rows.hasNext()) {
+            lsolve(L, rows.next(), zero);
+        }
     }
 
-    public void lsolve(final Matrix U, final Matrix B)
-            throws MatrixException {
-        IMPL.get().lsolve(U, B);
+    public void lsolve(final FastMatrix L, final FastMatrix B) throws MatrixException {
+        lsolve(L, B, 0);
     }
 
     /**
      * Solves the set of equations LX = B where X and B are matrices with a
-     * number of rows less than or equal to the number of columns of U. The
+     * number of rows less than or equal to the number of columns of L. The
      * solution is returned in place i.e. the solution X replaces the right hand
      * side B. Column version
      *
-     * @param U U. Upper triangular matrix
+     * @param L L. Lower triangular matrix
      * @param B On entry the right hand side of the equation. Contains the
      * solution X on returning.
      * @param zero Small positive value identifying 0. Can be 0.
      * @throws MatrixException Thrown when the system cannot be solved.
      */
-    public void rsolve(final Matrix U, final Matrix B, final double zero)
-            throws MatrixException {
-        IMPL.get().rsolve(U, B, zero);
+    public void rsolve(final FastMatrix L, final FastMatrix B, final double zero) throws MatrixException {
+        DataBlockIterator columns = B.columnsIterator();
+        while (columns.hasNext()) {
+            rsolve(L, columns.next(), zero);
+        }
     }
 
-    public void rsolve(final Matrix U, final Matrix B)
-            throws MatrixException {
-        IMPL.get().rsolve(U, B);
+    public void rsolve(final FastMatrix L, final FastMatrix B) throws MatrixException {
+        rsolve(L, B, 0);
     }
 
     /**
-     * Computes B = U * B
+     * Computes B = L * B
      *
-     * @param U
+     * @param L
      * @param B
      */
-    public void rmul(final Matrix U, final Matrix B) {
-        IMPL.get().rmul(U, B);
+    public void rmul(final FastMatrix L, final FastMatrix B) {
+        DataBlockIterator columns = B.columnsIterator();
+        while (columns.hasNext()) {
+            rmul(L, columns.next());
+        }
     }
 
     /**
-     * Computes B = B * U
+     * Computes B = B * L
      *
-     * @param U
+     * @param L
      * @param B
      * @throws MatrixException
      */
-    public void lmul(final Matrix U, final Matrix B) {
-        IMPL.get().lmul(U, B);
+    public void lmul(final FastMatrix L, final FastMatrix B) {
+        DataBlockIterator rows = B.rowsIterator();
+        while (rows.hasNext()) {
+            lmul(L, rows.next());
+        }
     }
 
     /**
      * Computes the inverse of a triangular matrix R = U^-1
      *
-     * @param U The triangular matrix being inverted
+     * @param U The upper matrix being inverted
      * @return The inverse
      * @throws MatrixException when the matrix is non invertible (some elements
      * of the diagonal are 0).
      */
-    public Matrix inverse(final Matrix U) throws MatrixException {
-        return IMPL.get().inverse(U);
+    public FastMatrix inverse(final FastMatrix U) throws MatrixException {
+        int n = U.getRowsCount();
+        FastMatrix IU = FastMatrix.identity(n);
+        rsolve(U, IU);
+        return IU;
     }
-
-    public LogSign logDeterminant(Matrix L) {
+    
+    public LogSign logDeterminant(FastMatrix L) {
         return LogSign.of(L.diagonal());
     }
 
-    public double determinant(Matrix L) {
+    public double determinant(FastMatrix L) {
         LogSign ls = logDeterminant(L);
         if (ls == null) {
             return 0;

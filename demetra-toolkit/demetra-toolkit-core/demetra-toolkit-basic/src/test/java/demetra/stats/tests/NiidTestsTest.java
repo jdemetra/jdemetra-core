@@ -33,7 +33,7 @@ public class NiidTestsTest {
     @Test
     public void testRandom() {
         double[] data = new double[120];
-        DataBlock X = DataBlock.ofInternal(data);
+        DataBlock X = DataBlock.of(data);
         Random rnd = new Random(0);
         X.set(rnd::nextDouble);
 
@@ -64,7 +64,7 @@ public class NiidTestsTest {
     @Test
     public void testRandomWithMissing() {
         double[] data = new double[120];
-        DataBlock X = DataBlock.ofInternal(data);
+        DataBlock X = DataBlock.of(data);
         Random rnd = new Random(0);
         X.set(rnd::nextDouble);
         X.set(2, Double.NaN);

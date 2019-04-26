@@ -125,16 +125,16 @@ public class PolynomialTest {
         int N = 1000;
         double[] p = new double[N + 1];
         p[0] = 1;
-        p[N] = -1.0/3;
- 
+        p[N] = -1.0 / 3;
+
         double w = Math.pow(3, 1.0 / N);
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < 10; ++k) {
             Polynomial P = Polynomial.ofInternal(p);
-            P=P.times(P);
+            P = P.times(P);
             Complex[] roots = P.roots();
             for (Complex root : roots) {
-                assertEquals(w, root.abs() , 1e-7);
+                assertEquals(w, root.abs(), 1e-7);
                 double arg = root.arg() * N / (2 * Math.PI);
                 assertEquals(0, arg - Math.round(arg), 1e-6);
             }
@@ -144,10 +144,10 @@ public class PolynomialTest {
         t0 = System.currentTimeMillis();
         for (int k = 0; k < 10; ++k) {
             Polynomial P = Polynomial.ofInternal(p);
-            P=P.times(P);
+            P = P.times(P);
             Complex[] rroots = P.roots(RootsSolver.robustSolver());
             for (Complex root : rroots) {
-                assertEquals(w, root.abs() , 1e-7);
+                assertEquals(w, root.abs(), 1e-7);
                 double arg = root.arg() * N / (2 * Math.PI);
                 assertEquals(0, arg - Math.round(arg), 1e-7);
             }

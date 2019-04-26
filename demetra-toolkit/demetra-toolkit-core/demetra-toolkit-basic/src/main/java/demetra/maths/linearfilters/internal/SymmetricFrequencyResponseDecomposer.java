@@ -18,6 +18,7 @@ package demetra.maths.linearfilters.internal;
 
 import demetra.design.Development;
 import demetra.maths.Complex;
+import demetra.maths.ComplexMath;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.linearfilters.SymmetricFrequencyResponse;
@@ -166,7 +167,7 @@ class SymmetricFrequencyResponseDecomposer  {
                             }
 //                        }
                     } else {
-                        Complex ro = r[i].times(r[i]).minus(1).sqrt();
+                        Complex ro = ComplexMath.sqrt(r[i].times(r[i]).minus(1));
                         Complex c0 = r[i].plus(ro);
                         Complex c1 = r[i].minus(ro);
                         if (c1.absSquare() < c0.absSquare()) {

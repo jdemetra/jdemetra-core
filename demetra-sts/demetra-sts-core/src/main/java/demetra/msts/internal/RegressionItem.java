@@ -5,8 +5,8 @@
  */
 package demetra.msts.internal;
 
-import demetra.maths.MatrixType;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.FastMatrix;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
 import demetra.msts.VarianceInterpreter;
@@ -23,12 +23,12 @@ import demetra.msts.ParameterInterpreter;
  */
 public class RegressionItem extends AbstractModelItem {
 
-    public final Matrix x;
+    public final FastMatrix x;
     public final VarianceInterpreter[] v;
 
     public RegressionItem(String name, MatrixType x, final double[] vars, final boolean fixed) {
         super(name);
-        this.x = Matrix.of(x);
+        this.x = FastMatrix.of(x);
         if (vars == null) {
             v = null;
         } else {

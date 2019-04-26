@@ -21,6 +21,8 @@ import static demetra.design.AlgorithmImplementation.Feature.Balanced;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
 import demetra.maths.Complex;
+import demetra.maths.ComplexBuilder;
+import demetra.maths.ComplexMath;
 import demetra.maths.polynomials.Polynomial;
 import demetra.util.Ref;
 import demetra.util.Ref.BooleanRef;
@@ -33,10 +35,9 @@ import demetra.maths.polynomials.spi.RootsSolver;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-@AlgorithmImplementation(algorithm=RootsSolver.class, feature=Balanced)
+@AlgorithmImplementation(algorithm = RootsSolver.class, feature = Balanced)
 public class MullerNewtonSolver implements RootsSolver {
 
-    
     private double[] polynomial;
     private double[] reducedPolynomial;
     private Complex[] roots;
@@ -175,8 +176,7 @@ public class MullerNewtonSolver implements RootsSolver {
         f.val = Complex.cart(fr, fi);
     }
     /**
-     * if the imaginary part ofl the root is smaller than BOUND5 => real
-     * root
+     * if the imaginary part ofl the root is smaller than BOUND5 => real root
      */
     private final double NBOUND;
     /**
@@ -783,7 +783,7 @@ public class MullerNewtonSolver implements RootsSolver {
         final Complex C2 = computeC2(q2, f2.val);
 
         /* discr = B2^2 - 4A2C2 */
-        final Complex rdiscr = computeDiscr(B2, A2, C2).sqrt();
+        final Complex rdiscr = ComplexMath.sqrt(computeDiscr(B2, A2, C2));
 
         /* denominators ofInternal q2 */
         final Complex N1 = B2.minus(rdiscr);
@@ -792,9 +792,9 @@ public class MullerNewtonSolver implements RootsSolver {
         double N2_abs = N2.abs();
         /* choose denominater with largest modulus */
         if ((N1_abs > N2_abs) && (N1_abs > DBL_EPSILON)) {
-            q2 = C2.times(-2).div(N1);
+            q2 = new ComplexBuilder(C2).mul(-2).div(N1).build();
         } else if (N2_abs > DBL_EPSILON) {
-            q2 = C2.times(-2).div(N2);
+            q2 = new ComplexBuilder(C2).mul(-2).div(N2).build();
         } else {
             q2 = getComplexForIterationCounter(iter);
         }

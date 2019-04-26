@@ -23,7 +23,7 @@ import demetra.maths.functions.ssq.ISsqFunctionDerivatives;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
 
@@ -49,7 +49,7 @@ public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
     private ISsqFunctionPoint fcur_, ftry_;
     private DataBlock ecur;
     private double Fcur_, Ftry_;
-    private Matrix J, V;
+    private FastMatrix J, V;
     private DoubleSeq G;
     //private SubMatrix J, K;
     private double scale_, scale2_;
@@ -80,7 +80,7 @@ public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
     }
 
     @Override
-    public Matrix curvatureAtMinimum() {
+    public FastMatrix curvatureAtMinimum() {
         if (V == null) {
             ISsqFunctionDerivatives derivatives = fcur_.ssqDerivatives();
             V = derivatives.hessian();
@@ -171,7 +171,7 @@ public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
         int kiter = 0;
         while (kiter++ < 100) {
             DataBlock dp = null;
-            Matrix K = V.deepClone();
+            FastMatrix K = V.deepClone();
             if (mu > 0) {
                 K.diagonal().add(mu);
             }
@@ -305,7 +305,7 @@ public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
         scale2_ = Fcur_;
         scale_ = Math.sqrt(Fcur_);
         int n = ecur.length(), m = fn_.getDomain().getDim();
-        J = Matrix.make(n, m);
+        J = FastMatrix.make(n, m);
         Jte = DataBlock.make(m);
         while (iter++ < itmax) {
             if (!iterate()) {

@@ -17,7 +17,7 @@
 package demetra.ssf.univariate;
 
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import java.util.Arrays;
 
 /**
@@ -32,7 +32,7 @@ public class SsfRegressionModel<F extends ISsf> {
 
     private final ISsfData y;
 
-    private final Matrix X;
+    private final FastMatrix X;
 
     private final int[] diffuseElements;
 
@@ -50,7 +50,7 @@ public class SsfRegressionModel<F extends ISsf> {
      * @param DiffuseX The 0-based positions of the diffuse regression
      * coefficients. May be null.
      */
-    public SsfRegressionModel(final F ssf, final ISsfData data, final Matrix X,
+    public SsfRegressionModel(final F ssf, final ISsfData data, final FastMatrix X,
             final int[] DiffuseX) {
         this.ssf = ssf;
         y = data;
@@ -108,7 +108,7 @@ public class SsfRegressionModel<F extends ISsf> {
      * @return The internal object containing the regression variables. May be
      * null.
      */
-    public Matrix getX() {
+    public FastMatrix getX() {
         return X;
     }
 

@@ -16,7 +16,7 @@
  */
 package demetra.modelling.regression;
 
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.DayClustering;
@@ -46,7 +46,7 @@ public class GenericTradingDaysVariableTest {
         GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD7);
         TsDomain dom = TsDomain.of(TsPeriod.monthly(1980, 5), 360);
         GenericTradingDaysVariable vars = new GenericTradingDaysVariable(td.getClustering(), td.isContrast(), td.isNormalized());
-        Matrix m = Regression.matrix(dom, vars);
+        FastMatrix m = Regression.matrix(dom, vars);
         for (int r = 0; r < m.getRowsCount(); ++r) {
             for (int c = 0; c < m.getColumnsCount(); ++c) {
                 assertEquals(m.get(r, c), om.get(r, c), 1e-9);
@@ -66,7 +66,7 @@ public class GenericTradingDaysVariableTest {
         GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD2);
         TsDomain dom = TsDomain.of(TsPeriod.quarterly(1980, 3), 360);
         GenericTradingDaysVariable vars = new GenericTradingDaysVariable(td.getClustering(), td.isContrast(), td.isNormalized());
-        Matrix m = Regression.matrix(dom, vars);
+        FastMatrix m = Regression.matrix(dom, vars);
         for (int r = 0; r < m.getRowsCount(); ++r) {
             assertEquals(m.get(r, 0), om.get(r, 0), 1e-9);
         }

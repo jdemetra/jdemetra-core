@@ -316,7 +316,7 @@ public class DifferencingModule implements IDifferencingModule {
         DataBlock data;
         if (ur.getDegree() > 0) {
             data = DataBlock.make(x.length - ur.getDegree());
-            ur.apply(DataBlock.ofInternal(x), data);
+            ur.apply(DataBlock.of(x), data);
         } else {
             data = DataBlock.copyOf(x);
         }

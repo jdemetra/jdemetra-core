@@ -22,8 +22,8 @@ import java.util.function.DoubleFunction;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- * Generic interface of linear filter with real coefficients. A linear filter W
- * is a sequence (perhaps infinite) of real weights (..., w(-n),...,w(m),...)
+ * Generic interface of time invariant linear filter with real coefficients. 
+ * A linear filter W is a sequence (perhaps infinite) of real weights (..., w(-n),...,w(m),...)
  * that can be applied on an other sequence of values (y(t)). so that W(y(t)) =
  * ... + w(-n)y(t-n) + ... + w(m) y(t+m)
  *
@@ -56,7 +56,7 @@ public interface IFilter {
      */
     boolean hasUpperBound();
 
-    default DoubleFunction<Complex> frequencyResponse() {
+    default DoubleFunction<Complex> frequencyResponseFunction() {
         return (x -> frequencyResponse(x));
     }
 

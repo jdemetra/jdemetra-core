@@ -20,7 +20,7 @@ import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.design.BuilderPattern;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;
@@ -116,7 +116,7 @@ public class HannanRissanen {
     private double bic;
 
     private static final int MAXNPI = 50;
-    private static final double OVERFLOW = 1e16, EPS = 1e-6;
+    private static final double OVERFLOW = 1e16;
 
     private HannanRissanen(Builder builder){
         initialization=builder.initialization;
@@ -124,9 +124,9 @@ public class HannanRissanen {
         this.biascorrection=builder.biascorrection;
     }
     
-    private double[] ls(Matrix mat, double[] y, boolean bbic) {
+    private double[] ls(FastMatrix mat, double[] y, boolean bbic) {
         QRSolver solver = QRSolvers.fastSolver();
-        solver.solve(DataBlock.ofInternal(y), mat);
+        solver.solve(DataBlock.of(y), mat);
         DoubleSeq pi = solver.coefficients();
         int n = y.length, m = pi.count(x -> x != 0);
         if (bbic) {
@@ -147,7 +147,7 @@ public class HannanRissanen {
         double[] a1 = new double[n];
         double[] a2 = new double[n];
         double[] res = new double[n];
-        Matrix mat = Matrix.make(n, np + nq);
+        FastMatrix mat = FastMatrix.make(n, np + nq);
         double[] mdata = mat.getStorage();
         for (int i = 0; i < n; ++i) {
             int picur = 0;
@@ -221,7 +221,7 @@ public class HannanRissanen {
         int p = m_spec.getP() + m_spec.getPeriod() * m_spec.getBp();
         int q = m_spec.getQ() + m_spec.getPeriod() * m_spec.getBq();
         if (p == 0 && q == 0) {
-            bic = Math.log(DataBlock.ofInternal(m_data).ssq() / m_data.length);
+            bic = Math.log(DataBlock.of(m_data).ssq() / m_data.length);
             return true;
         }
 
@@ -243,7 +243,7 @@ public class HannanRissanen {
     private void finalcorrection() {
         BackFilter ar = m_model.getAR();
         DataBlock ndata = DataBlock.make(m_data.length - ar.getDegree());
-        ar.apply(DataBlock.ofInternal(m_data), ndata);
+        ar.apply(DataBlock.of(m_data), ndata);
         HannanRissanen hr=HannanRissanen.builder()
                 .biasCorrection(biascorrection)
                 .finalCorrection(false)
@@ -335,7 +335,7 @@ public class HannanRissanen {
         int np = m_spec.getP() + m_spec.getBp() * (1 + m_spec.getP());
         int nq = m_spec.getQ() + m_spec.getBq() * (1 + m_spec.getQ());
 
-        Matrix mat =  Matrix.make(nc, np + nq);
+        FastMatrix mat =  FastMatrix.make(nc, np + nq);
         double[] dmat = mat.getStorage();
         double[] data = new double[nc];
         System.arraycopy(m_data, m, data, 0, nc);
@@ -379,7 +379,7 @@ public class HannanRissanen {
         m_odata = value;
         m_data=value.toArray();
         AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
-        normalizer.normalize(DataBlock.ofInternal(m_data));
+        normalizer.normalize(DataBlock.of(m_data));
         return calc();
     }
 

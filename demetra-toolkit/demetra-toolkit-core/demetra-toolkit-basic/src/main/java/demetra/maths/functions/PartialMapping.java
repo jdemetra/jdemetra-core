@@ -106,7 +106,7 @@ public class PartialMapping<S> implements IParametricMapping<S> {
     @Override
     public ParamValidation validate(DataBlock ioparams) {
         double[] narray = narray(ioparams);
-        DataBlock a=DataBlock.ofInternal(narray);
+        DataBlock a=DataBlock.of(narray);
         ParamValidation rslt = mapping.validate(a);
         if (rslt == ParamValidation.Changed){
             int nj=narray.length-nfixed;

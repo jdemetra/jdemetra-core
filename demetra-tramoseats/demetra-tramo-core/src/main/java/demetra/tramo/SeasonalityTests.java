@@ -16,8 +16,8 @@
  */
 package demetra.tramo;
 
-import demetra.data.DiscreteWindowFunction;
-import demetra.data.SmoothedPeriodogram;
+import demetra.data.analysis.DiscreteWindowFunction;
+import demetra.data.analysis.SmoothedPeriodogram;
 import demetra.modelling.DifferencingResults;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.seasonal.Friedman;

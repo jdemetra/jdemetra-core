@@ -24,7 +24,7 @@ import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.likelihood.Likelihood;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.util.SubArrayOfInt;
 import demetra.data.DeprecatedDoubles;
 import demetra.leastsquares.QRSolvers;
@@ -161,7 +161,7 @@ public class FastKalmanFilter {
             yl[i] = x;
         }
 
-        return DataBlock.ofInternal(yl);
+        return DataBlock.of(yl);
     }
 
     /**
@@ -354,7 +354,7 @@ public class FastKalmanFilter {
      * @return
      */
     public ConcentratedLikelihoodWithMissing process(final DoubleSeq y, final SubArrayOfInt ao,
-            final Matrix x) {
+            final FastMatrix x) {
         fast = false;
         DeterminantalTerm det = new DeterminantalTerm();
         double[] c = c0.clone();
@@ -367,7 +367,7 @@ public class FastKalmanFilter {
         int n = y.length();
         double[] yl = new double[n];
         // double[] xa = new double[nx * dim];
-        Matrix xl = Matrix.make(n, nx);
+        FastMatrix xl = FastMatrix.make(n, nx);
         double[][] A = new double[nx][];
         double[] px = xl.getStorage();
 
@@ -443,8 +443,8 @@ public class FastKalmanFilter {
         }
 
         QRSolver solver = QRSolvers.fastSolver();
-        solver.solve(DataBlock.ofInternal(yl), xl);
-        Matrix R = solver.R();
+        solver.solve(DataBlock.of(yl), xl);
+        FastMatrix R = solver.R();
         double ssqerr = solver.ssqerr();
 
         double ldet = det.getLogDeterminant();

@@ -9,7 +9,7 @@ import demetra.data.DataBlock;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.modelling.regression.Variable;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.PreprocessingModel;
@@ -82,7 +82,7 @@ class TradingDaysController extends ModelController {
         // drop the number of data corresponding to the number of regression variables 
         domain = domain.drop(domain.getLength() - res.length(), 0);
         if (td != null){
-            Matrix mtd = Regression.matrix(domain, td);
+            FastMatrix mtd = Regression.matrix(domain, td);
             builder.addX(mtd);
         }
             

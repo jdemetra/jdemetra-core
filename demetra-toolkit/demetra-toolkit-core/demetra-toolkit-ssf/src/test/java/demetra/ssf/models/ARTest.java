@@ -6,7 +6,7 @@
 package demetra.ssf.models;
 
 import demetra.arima.ssf.SsfAr;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.SsfComponent;
 import demetra.maths.matrices.SymmetricMatrix;
 import java.util.Random;
@@ -25,11 +25,11 @@ public class ARTest {
     @Test
     public void testTVT() {
         SsfComponent cmp = SsfAr.of(new double[]{.3, -.4, .2}, 0.7, 10);
-        Matrix z=Matrix.square(cmp.initialization().getStateDim());
+        FastMatrix z=FastMatrix.square(cmp.initialization().getStateDim());
         Random rnd=new Random();
         z.set(rnd::nextDouble);
-        Matrix V=SymmetricMatrix.XXt(z);
-        Matrix W=V.deepClone();
+        FastMatrix V=SymmetricMatrix.XXt(z);
+        FastMatrix W=V.deepClone();
         cmp.dynamics().TVT(0, V);
         cmp.dynamics().TM(0, W);
         cmp.dynamics().TM(0, W.transpose());
