@@ -18,7 +18,6 @@ package demetra.likelihood;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
 import demetra.data.DoubleSeq;
 

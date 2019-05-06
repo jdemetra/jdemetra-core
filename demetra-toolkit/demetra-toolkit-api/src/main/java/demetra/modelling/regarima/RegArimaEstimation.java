@@ -16,9 +16,9 @@
  */
 package demetra.modelling.regarima;
 
-import demetra.likelihood.IConcentratedLikelihood;
 import demetra.likelihood.MaximumLogLikelihood;
 import demetra.regarima.RegSarimaModelType;
+import demetra.likelihood.ConcentratedLikelihood;
 
 /**
  *
@@ -29,6 +29,6 @@ import demetra.regarima.RegSarimaModelType;
 public class RegArimaEstimation {
     
     private RegSarimaModelType regarima;
-    private IConcentratedLikelihood likelihood;
+    private ConcentratedLikelihood likelihood;
     private MaximumLogLikelihood maximumLogLikelihood;
 }

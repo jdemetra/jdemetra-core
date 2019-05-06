@@ -69,7 +69,7 @@ public interface Likelihood {
         return new Builder(n);
     }
 
-    @BuilderPattern(InternalLikelihood.class)
+    @BuilderPattern(Likelihood.class)
     public static class Builder {
 
         private final int n;
@@ -103,7 +103,7 @@ public interface Likelihood {
             return this;
         }
 
-        public InternalLikelihood build() {
+        public Likelihood build() {
             return new InternalLikelihood(n, ssqerr, ldet, res, scalingFactor);
         }
     }

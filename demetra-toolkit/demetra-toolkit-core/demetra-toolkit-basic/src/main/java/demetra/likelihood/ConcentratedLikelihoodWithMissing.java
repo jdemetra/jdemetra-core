@@ -38,7 +38,7 @@ import demetra.maths.matrices.Matrix;
  * @author Jean Palate
  */
 @Immutable(lazy = true)
-public final class ConcentratedLikelihoodWithMissing implements IConcentratedLikelihood {
+public final class ConcentratedLikelihoodWithMissing implements ConcentratedLikelihood {
 
     public static Builder builder() {
         return new Builder();

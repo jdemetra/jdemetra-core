@@ -16,11 +16,11 @@
  */
 package demetra.likelihood;
 
-import demetra.design.Immutable;
-import demetra.design.BuilderPattern;
-import demetra.maths.Constants;
-import javax.annotation.Nonnull;
+import demetra.data.DoubleSeqCursor;
+import demetra.design.Development;
+import demetra.eco.EcoException;
 import demetra.data.DoubleSeq;
+import demetra.design.BuilderPattern;
 import demetra.maths.matrices.Matrix;
 
 /**
@@ -30,8 +30,8 @@ import demetra.maths.matrices.Matrix;
  *
  * @author Jean Palate
  */
-@Immutable
-public final class ConcentratedLikelihood implements IConcentratedLikelihood {
+@Development(status = Development.Status.Release)
+public interface ConcentratedLikelihood extends Likelihood {
 
     public static Builder builder() {
         return new Builder();
@@ -108,124 +108,123 @@ public final class ConcentratedLikelihood implements IConcentratedLikelihood {
         }
 
         public ConcentratedLikelihood build() {
-            return new ConcentratedLikelihood(n, ssqerr, ldet, res, b, bvar, scalingFactor);
+            return new InternalConcentratedLikelihood(n, ssqerr, ldet, res, b, bvar, scalingFactor);
         }
 
     }
+    /**
+     * The coefficients of the regression variables
+     *
+     * @return
+     */
+    DoubleSeq coefficients();
 
     /**
-     * n = number of actual observations, nmissing = number of missing values
+     * The coefficient of the i-th regression variables (0-based). The first one
+     * is the mean correction, if any.
+     *
+     * @param idx Position of the variable
+     * @return
      */
-    private final int n;
-    private final double ll, ssqerr, ldet;
-    private final double[] res;
-    private final double[] b;
-    private final Matrix bvar;
-    private final boolean scalingFactor;
-
-    private ConcentratedLikelihood(final int n, final double ssqerr, final double ldet, final double[] res,
-            final double[] b, final Matrix bvar, final boolean scalingFactor) {
-        this.n = n;
-        this.ldet = ldet;
-        this.ssqerr = ssqerr;
-        this.b = b;
-        this.bvar = bvar;
-        this.res = res;
-        this.scalingFactor = scalingFactor;
-        if (scalingFactor) {
-            this.ll = -.5
-                    * (n * Constants.LOGTWOPI + n
-                    * (1 + Math.log(ssqerr / n)) + ldet);
-        } else {
-            this.ll = -.5 * (n * Constants.LOGTWOPI + ssqerr + ldet);
-        }
-    }
-
-    @Override
-    public boolean isScalingFactor() {
-        return scalingFactor;
-    }
-
-    @Override
-    public double logDeterminant() {
-        return ldet;
-    }
+    double coefficient(int idx);
 
     /**
      *
      * @return
      */
-    @Override
-    public double logLikelihood() {
-        return ll;
-    }
+    Matrix unscaledCovariance();
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public int dim() {
-        return n;
-    }
+    default Matrix covariance(int nhp, boolean unbiased) {
 
-    /**
-     * Number of coefficients (excluding missing value estimates)
-     *
-     * @return
-     */
-    @Override
-    public int nx() {
-        return b.length;
-    }
-
-    @Override
-    public DoubleSeq e() {
-        return DoubleSeq.of(res);
-    }
-
-    @Override
-    @Nonnull
-    public DoubleSeq coefficients() {
-        return DoubleSeq.of(b);
-    }
-
-    @Override
-    public double coefficient(int pos) {
-        return b[pos];
-    }
-
-    @Override
-    @Nonnull
-    public Matrix unscaledCovariance() {
-        if (bvar == null) {
+        if (nx() == 0) {
             return Matrix.EMPTY;
-        } else {
-            return bvar;
         }
+        
+        double[] v = unscaledCovariance().toArray();
+        int ndf = unbiased ? dim() - nx() - nhp : dim();
+        double sig2=ssq()/ndf;
+        for (int i=0; i<v.length; ++i)
+            v[i]*=sig2;
+        return Matrix.ofInternal(v, nx(), nx());
+    }
+    /**
+     * Number of regression variables
+     *
+     * @return
+     */
+    default int nx() {
+        return coefficients().length();
     }
 
     /**
-     * Gets the sum of the squares of the (transformed) observations.
+     * Gets the standard deviation for the given regression variable (including
+     * mean, excluding missing identified by additive outliers)
      *
-     * @return A positive number.
+     * @param ix Position of the variable
+     * @param nhp Number of hyper-parameters (for correction of the degrees of
+     * freedom)
+     * @param unbiased True for use of unbiased variance estimate, false for ML
+     * variance estimate
+     * @return
      */
-    @Override
-    public double ssq() {
-        return ssqerr;
+    default double ser(int ix, int nhp, boolean unbiased) {
+
+        double e = unscaledCovariance().get(ix, ix);
+        if (e == 0) {
+            return Double.NaN;
+        }
+        double b = coefficients().get(ix);
+        if (b == 0) {
+            return 0;
+        }
+        int ndf = unbiased ? dim() - nx() - nhp : dim();
+        return Math.sqrt(e * ssq() / ndf);
     }
 
-    public int degreesOfFreedom() {
-        return n - nx();
+    default double[] ser(int nhp, boolean unbiased) {
+
+        if (nx() == 0) {
+            return DoubleSeq.EMPTYARRAY;
+        }
+        double[] e = unscaledCovariance().diagonal().toArray();
+        int ndf = unbiased ? dim() - nx() - nhp : dim();
+        double ssq = ssq();
+        DoubleSeq b = coefficients();
+        for (int i = 0; i < e.length; ++i) {
+            e[i] = Math.sqrt(e[i] * ssq / ndf);
+        }
+        return e;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("log-likelihood: ").append(this.ll)
-                .append(", sigma2: ").append(this.ssqerr / this.n);
-
-        return builder.toString();
-
+    /**
+     * Gets the T-Stat of the given variable. This method is only defined
+     * when the likelihood contains a scaling factor. In the other case,
+     * the user should use the corresponding ser() method.
+     * When it is defined T(i) = coefficient(i)/ser(i)
+     * @param ix The 0-based position of the variable. 0 for mean correction, if any
+     * @param nhp The number of hyper-parameters; used to correct the degrees 
+     * of freedom (unused if we use the ML (biased) estimator.
+     * @param unbiased True if the estimator of the scaling factor is unbiased. False
+     * if we use the (biased) ML estimator.
+     * @return 
+     */
+    default double tstat(int ix, int nhp, boolean unbiased) {
+        if (!isScalingFactor()) {
+            throw new EcoException(EcoException.UNEXPECTEDOPERATION);
+        }
+        return coefficient(ix) / ser(ix, nhp, unbiased);
     }
+
+    default double[] tstats(int nhp, boolean unbiased) {
+        if (!isScalingFactor()) {
+            throw new EcoException(EcoException.UNEXPECTEDOPERATION);
+        }
+        double[] t = ser(nhp, unbiased);
+        DoubleSeqCursor reader = coefficients().cursor();
+        for (int i = 0; i < t.length; ++i) {
+            t[i] = reader.getAndNext() / t[i];
+        }
+        return t;
+    }
+
 }
