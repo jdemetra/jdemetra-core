@@ -22,7 +22,6 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.normalizer.AbsMeanNormalizer;
-import demetra.data.normalizer.IDataNormalizer;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.maths.matrices.FastMatrix;
@@ -38,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
+import demetra.data.normalizer.DataNormalizer;
 
 /**
  *
@@ -309,7 +309,7 @@ class DisaggregationModelBuilder {
         }
     }
 
-    private void scale(IDataNormalizer normalizer) {
+    private void scale(DataNormalizer normalizer) {
         if (normalizer != null) {
             hO = hY.clone();
             yfactor = normalizer.normalize(DataBlock.of(hY));

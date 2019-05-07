@@ -17,7 +17,6 @@
 package demetra.stats.tests.seasonal;
 
 import demetra.data.DataBlockIterator;
-import static demetra.data.DeprecatedDoubles.sum;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.dstats.Chi2;
@@ -66,7 +65,7 @@ public class Friedman {
         sst = 0;
         DataBlockIterator cols = R.columnsIterator();
         while (cols.hasNext()) {
-            double tmp = sum(cols.next()) / n - rmean;
+            double tmp = cols.next().sum() / n - rmean;
             sst += tmp * tmp;
         }
         sst *= n;

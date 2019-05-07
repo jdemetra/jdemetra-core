@@ -14,7 +14,6 @@ import demetra.ssf.ResultsRange;
 import demetra.data.DoubleSeqCursor;
 import demetra.ssf.State;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleVector;
 
 /**
  *
@@ -87,7 +86,7 @@ public class FastFilter {
         //  
     }
 
-    public void apply(DoubleSeq in, DoubleVector out) {
+    public void apply(DoubleSeq in, DataBlock out) {
         int dim = ssf.getStateDim(), n = in.length();
         DataBlock state = DataBlock.make(dim);
         int pos = start, ipos = 0, opos = 0;

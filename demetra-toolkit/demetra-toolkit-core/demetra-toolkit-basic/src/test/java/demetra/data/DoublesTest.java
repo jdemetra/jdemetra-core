@@ -5,8 +5,6 @@
  */
 package demetra.data;
 
-import static demetra.data.DeprecatedDoubles.op;
-import static demetra.data.DeprecatedDoubles.fastOp;
 import demetra.maths.matrices.FastMatrix;
 import java.util.Random;
 import org.junit.Test;
@@ -29,13 +27,13 @@ public class DoublesTest {
         m.set(rnd::nextDouble);
         DoubleSeq a = m.column(0);
         for (int i = 1; i < m.getColumnsCount(); ++i) {
-            a = op(a, m.column(i), (x, y) -> x + y);
+            a = a.op(m.column(i), (x, y) -> x + y);
         }
         DoubleSeq b = m.column(0);
         for (int i = 1; i < m.getColumnsCount(); ++i) {
-            b = fastOp(b, m.column(i), (x, y) -> x + y);
+            b = b.fastOp(m.column(i), (x, y) -> x + y);
         }
-        assertTrue(DeprecatedDoubles.distance(a, b) < 1e-12);
+        assertTrue(a.distance(b) < 1e-12);
     }
 
     @Test
@@ -49,7 +47,7 @@ public class DoublesTest {
         for (int k = 0; k < K; ++k) {
             DoubleSeq a = m.column(0);
             for (int i = 1; i < m.getColumnsCount(); ++i) {
-                a = op(a, m.column(i), (x, y) -> x + y);
+                a = a.op(m.column(i), (x, y) -> x + y);
             }
         }
         long t1 = System.currentTimeMillis();
@@ -58,9 +56,9 @@ public class DoublesTest {
         for (int k = 0; k < K; ++k) {
             DoubleSeq b = m.column(0);
             for (int i = 1; i < m.getColumnsCount(); ++i) {
-                b = fastOp(b, m.column(i), (x, y) -> x + y);
+                b = b.fastOp(m.column(i), (x, y) -> x + y);
             }
-            DeprecatedDoubles.commit(b);
+            b=Doubles.of(b);
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

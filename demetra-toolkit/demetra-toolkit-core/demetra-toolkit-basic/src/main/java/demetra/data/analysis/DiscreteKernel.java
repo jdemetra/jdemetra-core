@@ -19,11 +19,13 @@ package demetra.data.analysis;
 import demetra.maths.IntUtility;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
+import demetra.design.Development;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Development(status=Development.Status.Release)
 public enum DiscreteKernel {
 
     Uniform,

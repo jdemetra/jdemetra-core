@@ -33,7 +33,7 @@ import demetra.util.function.BiDoublePredicate;
  *
  * @author Jean Palate
  */
-public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
+public final class DataBlock implements DoubleSeq.Mutable {
 
     @FunctionalInterface
     public static interface DataBlockFunction {
@@ -196,8 +196,8 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
     }
 
     @Override
-    public DoubleVectorCursor cursor() {
-        return DoubleVectorCursor.of(data, beg, inc);
+    public DoubleSeqCursor.OnMutable cursor() {
+        return DoubleSeqCursor.OnMutable.of(data, beg, inc);
     }
 
     /**
@@ -248,6 +248,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
      *
      * @return The euclidian norm (&gt=0).
      */
+    @Override
     public double norm2() {
         int n = length();
         switch (n) {
@@ -276,6 +277,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
         }
     }
 
+    @Override
     public double norm1() {
         int n = length();
         switch (n) {
@@ -292,6 +294,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
         }
     }
 
+    @Override
     public double normInf() {
         int n = length();
         switch (n) {
@@ -317,6 +320,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
      *
      * @return The euclidian norm (&gt=0).
      */
+    @Override
     public double fastNorm2() {
         int n = length();
         switch (n) {
@@ -399,10 +403,6 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
         return new DataBlock(data, end - inc, beg - inc, -inc);
     }
 
-    public double distance(DoubleSeq seq) {
-        return DeprecatedDoubles.distance(this, seq);
-    }
-
     /**
      * Extends the current DataBlock. The underlying data buffer should be long
      * enough
@@ -411,6 +411,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
      * @param end The number of cells added at the end
      * @return
      */
+    @Override
     public DataBlock extend(int beg, int end) {
         return new DataBlock(data, this.beg - beg * inc, this.end + end * inc, inc);
     }
@@ -657,7 +658,6 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
     }
 
     //</editor-fold>
-
     @Override
     public void set(int idx, double value) {
         data[beg + idx * inc] = value;
@@ -838,6 +838,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
         }
     }
 
+    @Override
     public double sum() {
         double s = 0;
         for (int i = beg; i != end; i += inc) {
@@ -854,6 +855,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
         sub(s);
     }
 
+    @Override
     public double ssq() {
         int n = length();
         double s = 0;
@@ -866,6 +868,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
         return s;
     }
 
+    @Override
     public double ssqc(double mean) {
         int n = length();
         double s = 0;
@@ -879,6 +882,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
         return s;
     }
 
+    @Override
     public double average() {
         int n = length();
         int m = 0;
@@ -1024,6 +1028,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
      * @param pos The position of the data being modified
      * @param fn The unary operator
      */
+    @Override
     public void apply(final @Nonnegative int pos, final @Nonnull DoubleUnaryOperator fn) {
         int idx = beg + pos * inc;
         data[idx] = fn.applyAsDouble(data[idx]);
@@ -1142,10 +1147,17 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
      * @param x
      * @param fn The operator
      */
+    @Override
     public void apply(@Nonnull DoubleSeq x, @Nonnull DoubleBinaryOperator fn) {
         DoubleSeqCursor cell = x.cursor();
-        for (int i = beg; i != end; i += inc) {
-            data[i] = fn.applyAsDouble(data[i], cell.getAndNext());
+        if (inc == 1) {
+            for (int i = beg; i < end; ++i) {
+                data[i] = fn.applyAsDouble(data[i], cell.getAndNext());
+            }
+        } else {
+            for (int i = beg; i != end; i += inc) {
+                data[i] = fn.applyAsDouble(data[i], cell.getAndNext());
+            }
         }
     }
 
@@ -1154,6 +1166,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
      *
      * @param fn The operator
      */
+    @Override
     public void apply(@Nonnull final DoubleUnaryOperator fn) {
         if (inc == 1) {
             for (int i = beg; i < end; ++i) {
@@ -1171,6 +1184,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
      *
      * @param d
      */
+    @Override
     public void add(double d) {
         if (d == 0) {
             return;
@@ -1189,6 +1203,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
     /**
      * Changes the sign of the data
      */
+    @Override
     public void chs() {
         if (inc == 1) {
             for (int i = beg; i < end; ++i) {
@@ -1207,6 +1222,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
      *
      * @param d
      */
+    @Override
     public void sub(double d) {
         if (d == 0) {
             return;
@@ -1227,6 +1243,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
      *
      * @param d The multiplier
      */
+    @Override
     public void mul(double d) {
         if (d == 1) {
             return;
@@ -1247,6 +1264,7 @@ public final class DataBlock implements DoubleVector, DoubleSeq.Mutable {
      *
      * @param d The divisor
      */
+    @Override
     public void div(double d) {
         if (d == 1) {
             return;

@@ -17,6 +17,7 @@
 package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
+import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
@@ -30,7 +31,6 @@ import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.HashMap;
 import java.util.Map;
-import demetra.data.DoubleVectorCursor;
 
 /**
  *
@@ -150,7 +150,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
 
         int[][] groups = clustering.allPositions();
         int ng = groups.length;
-        DoubleVectorCursor[] cells = new DoubleVectorCursor[ng];
+        DoubleSeqCursor.OnMutable[] cells = new DoubleSeqCursor.OnMutable[ng];
         for (int i = 0; i < cells.length; ++i) {
             cells[i] = buffer.column(i).cursor();
         }
@@ -187,7 +187,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         rotate(groups);
         int ng = groups.length - 1;
         int[] cgroup = groups[ng];
-        DoubleVectorCursor[] cells = new DoubleVectorCursor[ng];
+        DoubleSeqCursor.OnMutable[] cells = new DoubleSeqCursor.OnMutable[ng];
         FastMatrix data = FastMatrix.make(n, ng);
         for (int i = 0; i < cells.length; ++i) {
             cells[i] = data.column(i).cursor();
@@ -226,7 +226,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         rotate(groups);
         int ng = groups.length - 1;
         int[] cgroup = groups[ng];
-        DoubleVectorCursor[] cells = new DoubleVectorCursor[ng];
+        DoubleSeqCursor.OnMutable[] cells = new DoubleSeqCursor.OnMutable[ng];
         for (int i = 0; i < cells.length; ++i) {
             cells[i] = data.column(i).cursor();
         }
@@ -273,7 +273,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         }
         int[][] groups = clustering.allPositions();
         int ng = groups.length;
-        DoubleVectorCursor[] cells = new DoubleVectorCursor[ng];
+        DoubleSeqCursor.OnMutable[] cells = new DoubleSeqCursor.OnMutable[ng];
         for (int i = 0; i < cells.length; ++i) {
             cells[i] = data.column(i).cursor();
         }

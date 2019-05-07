@@ -27,8 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntToDoubleFunction;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleVector;
-import demetra.data.DoubleVectorCursor;
+import demetra.data.DoubleSeqCursor;
 
 /**
  *
@@ -188,11 +187,11 @@ public final class SymmetricFilter implements IFiniteFilter {
     }
 
     @Override
-    public void apply(DataBlock in, DoubleVector out) {
+    public void apply(DataBlock in, DataBlock out) {
         double[] pin = in.getStorage();
         int ub = getUpperBound();
         int istart = in.getStartPosition(), iinc = in.getIncrement();
-        DoubleVectorCursor cursor = out.cursor();
+        DoubleSeqCursor.OnMutable cursor = out.cursor();
         if (iinc == 1) {
             int imax = in.getEndPosition() - ub;
             for (int i = istart + ub; i < imax; ++i) {

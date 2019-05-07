@@ -16,6 +16,7 @@
  */
 package demetra.data.analysis;
 
+import demetra.design.Development;
 import demetra.maths.Constants;
 
 /**
@@ -24,6 +25,7 @@ import demetra.maths.Constants;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
+@Development(status=Development.Status.Release)
 public class DFT {
 
     /**

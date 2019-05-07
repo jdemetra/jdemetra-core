@@ -17,6 +17,7 @@
 package demetra.data.analysis;
 
 import demetra.data.DataBlock;
+import demetra.design.Development;
 import demetra.maths.Constants;
 import demetra.maths.matrices.FastMatrix;
 
@@ -25,6 +26,7 @@ import demetra.maths.matrices.FastMatrix;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Development(status=Development.Status.Release)
 public class TrigonometricSeries {
 
     private final double[] w;

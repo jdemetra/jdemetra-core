@@ -20,6 +20,7 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
 import demetra.data.DoubleSeq;
+import demetra.design.Development;
 import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.internal.Householder;
@@ -29,6 +30,7 @@ import demetra.maths.matrices.internal.Householder;
  *
  * @author Jean Palate
  */
+@Development(status=Development.Status.Release)
 public class AutoRegressiveSpectrum {
 
     public static final int MAX_AR = 50;

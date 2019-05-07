@@ -18,7 +18,6 @@ package demetra.tramo.internal;
 
 import demetra.arima.internal.FastKalmanFilter;
 import demetra.data.DataBlock;
-import demetra.data.DeprecatedDoubles;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
@@ -524,7 +523,7 @@ public class DifferencingModule implements IDifferencingModule {
                 Optional<Variable> first = desc.variables().filter(var -> var.isOutlier(false)).findFirst();
                 // remove the outliers effects
                 DoubleSeq outs = RegArimaUtility.regressionEffect(desc.regarima(), estimation.getConcentratedLikelihood(), desc.findPosition(first.get().getVariable()), nvars);
-                res = DeprecatedDoubles.op(res, outs, (a, b) -> a - b);
+                res = res.op(outs, (a, b) -> a - b);
             }
             SarimaSpecification curspec = desc.getSpecification();
             // get residuals

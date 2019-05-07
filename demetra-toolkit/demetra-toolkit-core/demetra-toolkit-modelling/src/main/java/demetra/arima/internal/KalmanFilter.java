@@ -24,11 +24,9 @@ import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Fast;
 import demetra.design.Development;
 import demetra.likelihood.DeterminantalTerm;
-import demetra.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleVectorCursor;
 
 /**
  * @author Jean Palate
@@ -230,7 +228,7 @@ public class KalmanFilter implements ArmaFilter {
         double[] a = new double[dim];
         // iteration
         DoubleSeqCursor yreader = y.cursor();
-        DoubleVectorCursor yfwriter = yf.cursor();
+        DoubleSeqCursor.OnMutable yfwriter = yf.cursor();
         int pos = 0, cpos = 0, ilast = dim - 1;
         double s = this.s[pos];
         double e = yreader.getAndNext() / s;

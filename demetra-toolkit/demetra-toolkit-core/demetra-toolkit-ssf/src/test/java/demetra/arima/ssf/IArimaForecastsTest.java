@@ -6,14 +6,12 @@
 package demetra.arima.ssf;
 
 import demetra.arima.internal.FastArimaForecasts;
-import demetra.arima.ssf.ExactArimaForecasts;
 import demetra.data.Data;
 import demetra.data.DataBlock;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static demetra.data.DeprecatedDoubles.distance;
 import demetra.data.DoubleSeq;
 
 /**
@@ -52,8 +50,8 @@ public class IArimaForecastsTest {
 //        System.out.println(backcasts);
 //        System.out.println(aforecasts);
 //        System.out.println(abackcasts);
-        assertTrue(distance(forecasts, aforecasts) < 1e-8);
-        assertTrue(distance(backcasts, abackcasts) < 1e-8);
+        assertTrue(forecasts.distance(aforecasts) < 1e-8);
+        assertTrue(backcasts.distance(abackcasts) < 1e-8);
     }
 
     @Test

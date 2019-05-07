@@ -18,7 +18,6 @@ import demetra.design.BuilderPattern;
 import demetra.leastsquares.QRSolver;
 import demetra.design.AlgorithmImplementation;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleVectorCursor;
 
 /**
  *
@@ -163,9 +162,9 @@ public class AdvancedQRSolver implements QRSolver {
         // step 1
         int iter = 0;
         do {
-            DoubleVectorCursor f = F.cursor();
-            DoubleVectorCursor g = G.cursor();
-            DoubleVectorCursor e = E.cursor();
+            DoubleSeqCursor.OnMutable f = F.cursor();
+            DoubleSeqCursor.OnMutable g = G.cursor();
+            DoubleSeqCursor.OnMutable e = E.cursor();
             DoubleSeqCursor y = Y.cursor();
             NeumaierAccumulator acc = new NeumaierAccumulator();
             DataBlockIterator rows = X.rowsIterator();
@@ -217,7 +216,7 @@ public class AdvancedQRSolver implements QRSolver {
             ssqerr = ssq;
 
             DataBlock Err = DataBlock.make(n);
-            DoubleVectorCursor err = Err.cursor();
+            DoubleSeqCursor.OnMutable err = Err.cursor();
             DoubleSeqCursor y = Y.cursor();
             NeumaierAccumulator acc = new NeumaierAccumulator();
             DataBlockIterator rows = X.rowsIterator();

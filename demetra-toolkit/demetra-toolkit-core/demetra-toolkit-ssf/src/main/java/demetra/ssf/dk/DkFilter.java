@@ -26,7 +26,6 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.ssf.State;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleVector;
 
 /**
  *
@@ -71,7 +70,7 @@ public class DkFilter  {
         enddiffuse = frslts.getEndDiffusePosition();
     }
 
-    public void apply(DoubleSeq in, DoubleVector out) {
+    public void apply(DoubleSeq in, DataBlock out) {
         new FastDiffuseFilter1().apply(in, out);
     }
 
@@ -211,7 +210,7 @@ public class DkFilter  {
             return e;
         }
 
-        boolean apply(DoubleSeq in, DoubleVector out) {
+        boolean apply(DoubleSeq in, DataBlock out) {
             if (in.length() > end - start) {
                 return false;
             }

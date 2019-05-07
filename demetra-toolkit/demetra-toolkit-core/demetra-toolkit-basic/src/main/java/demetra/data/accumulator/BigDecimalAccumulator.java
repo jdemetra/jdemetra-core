@@ -14,19 +14,20 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.data.normalizer;
+package demetra.data.accumulator;
 
 import demetra.data.accumulator.DoubleAccumulator;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Robust;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import demetra.data.normalizer.DataNormalizer;
 
 /**
  *
  * @author Jean Palate
  */
-@AlgorithmImplementation(algorithm=IDataNormalizer.class, feature=Robust)
+@AlgorithmImplementation(algorithm=DataNormalizer.class, feature=Robust)
 public strictfp class BigDecimalAccumulator implements DoubleAccumulator {
 
     private BigDecimal sum;

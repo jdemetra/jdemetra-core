@@ -17,7 +17,6 @@
 package demetra.maths.linearfilters;
 
 import demetra.data.analysis.DiscreteKernel;
-import static demetra.data.DeprecatedDoubles.sum;
 import demetra.maths.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -52,7 +51,7 @@ public class LocalPolynomialFiltersTest {
         int h = 11;
         for (int i = 0; i <= h; ++i) {
             FiniteFilter f = LocalPolynomialFilters.directAsymmetricFilter(h, i, 3, DiscreteKernel.henderson(h));
-            assertEquals(sum(DoubleSeq.of(f.weightsToArray())), 1, 1e-9);
+            assertEquals(DoubleSeq.of(f.weightsToArray()).sum(), 1, 1e-9);
 //            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
         }
 //        SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernels.henderson(h));
@@ -64,7 +63,7 @@ public class LocalPolynomialFiltersTest {
         int h = 11;
         for (int i = 0; i <= h; ++i) {
             FiniteFilter f = LocalPolynomialFilters.directAsymmetricFilter(h, i, 1, DiscreteKernel.tricube(h));
-            assertEquals(sum(DoubleSeq.of(f.weightsToArray())), 1, 1e-9);
+            assertEquals(DoubleSeq.of(f.weightsToArray()).sum(), 1, 1e-9);
 //           System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
         }
 //        SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernels.biweight(h));
@@ -83,7 +82,7 @@ public class LocalPolynomialFiltersTest {
         SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernel.henderson(h));
         for (int i = 0; i <= h; ++i) {
             FiniteFilter f = LocalPolynomialFilters.asymmetricFilter(lp, i, 0, new double[]{.4}, DiscreteKernel.triweight(h));
-            assertEquals(sum(DoubleSeq.of(f.weightsToArray())), 1, 1e-9);
+            assertEquals(DoubleSeq.of(f.weightsToArray()).sum(), 1, 1e-9);
 //            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
         }
     }

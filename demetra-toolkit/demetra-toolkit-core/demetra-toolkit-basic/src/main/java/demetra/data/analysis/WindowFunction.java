@@ -16,13 +16,15 @@
  */
 package demetra.data.analysis;
 
+import demetra.design.Development;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 
 /**
  *
- * @author gianluca
+ * @author Jean Palate
  */
+@Development(status=Development.Status.Release)
 public enum WindowFunction {
 
     Square,
@@ -33,9 +35,11 @@ public enum WindowFunction {
     Parzen;
 
     /**
-     * Returns the window function, defined on [0, 1[ 
-     * The window function is even, so that f(-x)=f(x);
-     * @return 
+     * Returns the window function, defined on ]-1, 1[ 
+     * The window function is strictly positive,  even (f(-x)=f(x)) and
+     * reaches its max at 0, with f(0)=1
+     * 
+     * @return The function
      */
     public DoubleUnaryOperator window() {
         switch (this) {
@@ -74,9 +78,10 @@ public enum WindowFunction {
     
     /**
      * Applies the window on a given even function
-     * @param fn
+     * @param fn An even function (f(x)=f(-x))
      * @param windowLength 
-     * @return w[-len]f(-len)+...+w[0]f(0)+...w[len]f(len)
+     * @return w[-len]f(-len)+...+w[0]f(0)+...w[len]f(len) =
+     *    w[0]f(0)+2*w[1]f(1)+...+2*w[len]f(len)
      */
     public double computeSymmetric(IntToDoubleFunction fn, int windowLength){
         double[] window=discreteWindow(windowLength);
@@ -87,12 +92,17 @@ public enum WindowFunction {
         return v;
     }
     
+    /**
+     * Applies the window on a given function
+     * @param fn A function
+     * @param windowLength 
+     * @return w[-len]f(-len)+...+w[0]f(0)+...w[len]f(len) 
+      */
     public double compute(IntToDoubleFunction fn, int windowLength){
         double[] window=discreteWindow(windowLength);
         double v=fn.applyAsDouble(0)*window[0];
         for (int i=1; i<windowLength; ++i){
-            v+=window[i]*fn.applyAsDouble(i);
-            v+=window[i]*fn.applyAsDouble(-i);
+            v+=window[i]*(fn.applyAsDouble(i)+fn.applyAsDouble(-i));
         }
         return v;
     }

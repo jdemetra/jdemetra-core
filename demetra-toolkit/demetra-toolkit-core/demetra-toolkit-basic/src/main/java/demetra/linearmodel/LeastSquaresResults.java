@@ -24,7 +24,6 @@ import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.matrices.FastMatrix;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
-import demetra.data.DeprecatedDoubles;
 import demetra.design.BuilderPattern;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
@@ -65,7 +64,7 @@ public final class LeastSquaresResults {
         public Builder residuals(DoubleSeq res) {
             this.res = res;
             if (ssq == 0) {
-                ssq = DeprecatedDoubles.ssq(res);
+                ssq = res.ssq();
             }
             return this;
         }
@@ -102,8 +101,8 @@ public final class LeastSquaresResults {
         this.ucov = unscaledCov;
         this.nx = ucov == null ? 0 : ucov.diagonal().count(x -> x != 0);
         // compute auxiliaries
-        y2 = DeprecatedDoubles.ssq(y);
-        ym = DeprecatedDoubles.average(y);
+        y2 = y.ssq();
+        ym = y.average();
         bxy = y2 - ssq;
     }
 

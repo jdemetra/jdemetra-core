@@ -17,7 +17,6 @@
 package demetra.stats.samples;
 
 import demetra.data.DoubleSeqCursor;
-import demetra.data.DeprecatedDoubles;
 import demetra.data.DoubleSeq;
 
 /**
@@ -64,7 +63,7 @@ public class SamplesUtility {
      * @return
      */
     public double covNoMissing(DoubleSeq x, DoubleSeq y) {
-        return DeprecatedDoubles.dot(x, y);
+        return x.dot(y);
     }
 
 }

@@ -7,6 +7,7 @@ package demetra.ssf.implementations;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
+import demetra.data.DoubleSeqCursor;
 import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
@@ -14,8 +15,6 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.Ssf;
-import demetra.ssf.univariate.Measurement;
-import demetra.data.DoubleVectorCursor;
 
 /**
  * This class provides algorithms that integrate the measurement errors into the
@@ -200,7 +199,7 @@ public class CompactSsf {
             zm.copy(m.row(0));
             FastMatrix q = m.dropTopLeft(1, 0);
             DataBlockIterator cols = q.columnsIterator();
-            DoubleVectorCursor cur = zm.cursor();
+            DoubleSeqCursor.OnMutable cur = zm.cursor();
             while (cols.hasNext()) {
                 cur.applyAndNext(x -> x + loading.ZX(pos, cols.next()));
             }

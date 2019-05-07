@@ -17,7 +17,6 @@
 package demetra.stats.tests;
 
 import demetra.data.DoubleSeqCursor;
-import demetra.data.DeprecatedDoubles;
 import demetra.design.Development;
 import demetra.dstats.Chi2;
 import demetra.dstats.Normal;
@@ -43,7 +42,7 @@ public class TestOfUpDownRuns
 
     public TestOfUpDownRuns(DoubleSeq data)
     {
-        obs=DeprecatedDoubles.select(data, x->Double.isFinite(x));
+        obs=data.select( x->Double.isFinite(x));
     }
 
     private int nruns;

@@ -17,6 +17,7 @@
 package demetra.data.analysis;
 
 import demetra.data.DoubleSeq;
+import demetra.design.Development;
 import demetra.stats.AutoCovariances;
 import demetra.stats.DescriptiveStatistics;
 import java.util.function.IntToDoubleFunction;
@@ -27,6 +28,7 @@ import java.util.function.IntToDoubleFunction;
  *
  * @author Jean Palate
  */
+@Development(status=Development.Status.Release)
 public class DurbinAlgorithm {
 
     private double[] cxx;//, cn_;

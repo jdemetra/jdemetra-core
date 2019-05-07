@@ -18,7 +18,6 @@ package demetra.ssf.akf;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.data.DeprecatedDoubles;
 import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.StateInfo;
@@ -85,7 +84,7 @@ public class MultivariateAugmentedFilter {
         int[] obs;
         if (nmissing != 0) {
             obs = new int[nobs];
-            DeprecatedDoubles.search(x, y -> Double.isFinite(y), obs);
+            x.search(y -> Double.isFinite(y), obs);
         } else {
             obs = null;
         }

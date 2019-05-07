@@ -18,6 +18,7 @@ package demetra.data.analysis;
 
 import demetra.design.Development;
 import demetra.maths.Complex;
+import demetra.maths.ComplexBuilder;
 import demetra.maths.Constants;
 import demetra.util.Arrays2;
 
@@ -43,8 +44,45 @@ public class FFT {
 	    n *= 2;
 	}
     }
-
+    
     /**
+     * Expand an array so that its length is a power of two.
+     * Padding with 0.
+     * @param data
+     * @return The input array or a new array
+     */
+    public Complex[] expand(final Complex[] data){
+        int n=1; 
+        while (n<data.length)
+            n=n<<1;
+        if (n == data.length)
+            return data;
+        Complex[] ndata=new Complex[n];
+        System.arraycopy(data, 0, ndata, 0, data.length);
+        for (int i=data.length; i<n; ++i)
+            ndata[i]=Complex.ZERO;
+        return ndata;
+    }
+
+    /*
+     * Expand an array so that its length is a power of two.
+     * Padding with 0.
+     * @param data
+     * @return The input array or a new array
+     */
+    public double[] expand(final double[] data){
+        int n=1; 
+        while (n<data.length)
+            n=n<<1;
+        if (n == data.length)
+            return data;
+        double[] ndata=new double[n];
+        System.arraycopy(data, 0, ndata, 0, data.length);
+        return ndata;
+    }
+    /**
+     * Back transformation.
+     * The length of the array should be a power of 2 (not checked)
      * 
      * @param data
      */
@@ -53,12 +91,39 @@ public class FFT {
     }
 
     /**
+     * Transformation.
+     * The length of the array should be a power of 2 (not checked)
      * 
      * @param data
      */
     public void transform(final Complex[] data)
     {
 	transform(data, false);
+    }
+
+    /**
+     * Transformation.
+     * The length of the array should be a power of 2 (not checked)
+     * 
+     * @param rdata Real part
+     * @param idata Imaginary part
+     * 
+     */
+    public void transform(final double[] rdata, final double[] idata)
+    {
+	transform(rdata, idata, false);
+    }
+
+    /**
+     * Back transformation.
+     * The length of the array should be a power of 2 (not checked)
+     * @param rdata Real part. 
+     * @param idata Imaginary part
+     * 
+     */
+    public void backTransform(final double[] rdata, final double[] idata)
+    {
+	transform(rdata, idata, true);
     }
 
     private void transform(final Complex[] data, final boolean back) {
@@ -99,6 +164,56 @@ public class FFT {
 	    final double v = 1.0 / n;
 	    for (int i = 0; i < n; ++i)
 		data[i] = data[i].times(v);
+	}
+    }
+
+    private void transform(final double[] rdata, final double[] idata, final boolean back) {
+	final int n = rdata.length;
+	for (int i = 0, j = 0; i < n; ++i) {
+	    if (j > i){
+		Arrays2.swap(rdata, i, j);
+		Arrays2.swap(idata, i, j);
+            }
+	    int q = n >> 1;
+	    while (q >= 1 && j >= q) {
+		j -= q;
+		q >>= 1;
+	    }
+	    j += q;
+	}
+	// Danielson-Lanzcos routine
+	int m = 1, s = 0;
+	// external loop
+	while (m < n) {
+	    int tm = m << 1;
+            double rwm=COS_ARRAY[s], iwm=back ? -SIN_ARRAY[s]: SIN_ARRAY[s];
+            double rw=1, iw=0;
+	    // internal loops
+	    for (int j = 0; j < m; ++j) {
+		for (int k = j; k < n; k += tm) {
+		    int l = k + m;
+                    // t
+                    double rt=rw*rdata[l]-iw*idata[l];
+                    double it=rw*idata[l]+iw*rdata[l];
+                    double ru=rdata[k], iu=idata[k];
+		    rdata[k] = ru+rt;
+		    idata[k] = iu+it;
+		    rdata[l] = ru-rt;
+		    idata[l] = iu-it;
+		}
+                double r=rw,i=iw;
+                rw=r*rwm-i*iwm;
+                iw=r*iwm+i*rwm;
+	    }
+	    m = tm;
+	    ++s;
+	}
+	if (back) {
+	    final double v = 1.0 / n;
+	    for (int i = 0; i < n; ++i){
+		rdata[i] *= v;
+		idata[i] *= v;
+            }
 	}
     }
 }

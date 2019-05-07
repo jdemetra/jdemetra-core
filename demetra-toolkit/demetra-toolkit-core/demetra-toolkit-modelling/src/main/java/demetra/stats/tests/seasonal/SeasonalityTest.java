@@ -19,12 +19,8 @@
 package demetra.stats.tests.seasonal;
 
 import demetra.data.DoubleSeqCursor;
-import demetra.data.DeprecatedDoubles;
 import demetra.design.Development;
-import demetra.dstats.F;
 import demetra.stats.tests.FTest;
-import demetra.stats.tests.StatisticalTest;
-import demetra.stats.tests.TestType;
 import demetra.data.DoubleSeq;
 
 
@@ -106,7 +102,7 @@ public class SeasonalityTest  {
     public static FTest stableSeasonality(DoubleSeq ts, int period)
     {
 	// compute mean
-	double mm = DeprecatedDoubles.average(ts);
+	double mm = ts.average();
 
 	// compute total SSQ
 	double SSQ = 0.0;

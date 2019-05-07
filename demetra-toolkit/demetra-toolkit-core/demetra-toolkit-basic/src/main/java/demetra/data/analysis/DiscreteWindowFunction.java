@@ -16,6 +16,7 @@
  */
 package demetra.data.analysis;
 
+import demetra.design.Development;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 
@@ -23,6 +24,7 @@ import java.util.function.IntToDoubleFunction;
  *
  * @author Jean Palate
  */
+@Development(status=Development.Status.Release)
 public enum DiscreteWindowFunction {
 
     Square,

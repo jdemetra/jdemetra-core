@@ -18,6 +18,7 @@ package demetra.benchmarking.ssf;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
+import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
 import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
@@ -25,7 +26,6 @@ import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.SsfComponent;
-import demetra.data.DoubleVectorCursor;
 
 /**
  *
@@ -264,7 +264,7 @@ public class SsfDisaggregation {
             }
             FastMatrix q = m.dropTopLeft(1, 0);
             DataBlockIterator cols = q.columnsIterator();
-            DoubleVectorCursor cur = zm.cursor();
+            DoubleSeqCursor.OnMutable cur = zm.cursor();
             while (cols.hasNext()) {
                 cur.applyAndNext(x -> x + measurement.ZX(pos, cols.next()));
             }

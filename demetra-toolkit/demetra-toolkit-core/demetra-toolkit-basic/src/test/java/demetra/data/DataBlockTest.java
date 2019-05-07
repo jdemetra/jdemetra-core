@@ -5,7 +5,6 @@
  */
 package demetra.data;
 
-import static demetra.data.DataBlock.of;
 import demetra.data.accumulator.KahanAccumulator;
 import demetra.maths.matrices.FastMatrix;
 import java.util.function.DoubleBinaryOperator;
@@ -14,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import org.junit.Ignore;
+import static demetra.data.DataBlock.of;
 import static demetra.data.DataBlock.of;
 
 /**
@@ -204,7 +204,7 @@ public class DataBlockTest {
 
     @Test
     public void testCells() {
-        assertThat(of(getSample(10), 0, 10, 1).cursor()).isInstanceOf(DoubleVectorCursor.class);
+        assertThat(of(getSample(10), 0, 10, 1).cursor()).isInstanceOf(DoubleSeqCursor.OnMutable.class);
     }
 
     @Test

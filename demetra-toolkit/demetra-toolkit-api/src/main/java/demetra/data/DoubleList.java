@@ -102,7 +102,7 @@ public final class DoubleList implements DoubleSeq {
     }
 
     @Override
-    public DoubleVectorCursor cursor() {
+    public DoubleSeqCursor.OnMutable cursor() {
         return new Cell();
     }
 
@@ -534,7 +534,7 @@ public final class DoubleList implements DoubleSeq {
         values = newArray;
     }
 
-    private final class Cell implements DoubleVectorCursor {
+    private final class Cell implements DoubleSeqCursor.OnMutable {
 
         private int pos = 0;
 

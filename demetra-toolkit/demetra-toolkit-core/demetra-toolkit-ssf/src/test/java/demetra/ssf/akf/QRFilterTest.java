@@ -8,7 +8,6 @@ package demetra.ssf.akf;
 import demetra.ssf.likelihood.MarginalLikelihood;
 import demetra.arima.ssf.SsfArima;
 import demetra.data.Data;
-import demetra.data.DeprecatedDoubles;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.ssf.univariate.Ssf;
@@ -53,8 +52,6 @@ public class QRFilterTest {
         MarginalLikelihood ml21 = filter.getMarginalLikelihood();
         MarginalLikelihood ml22 = QRFilter.ml(ssf2, ssfData, true);
         assertEquals(ml11.logLikelihood() - ml12.logLikelihood(), ml21.logLikelihood() - ml22.logLikelihood(), 1e-6);
-        double ssq = DeprecatedDoubles.ssq(ml12.e());
-        assertEquals(DeprecatedDoubles.ssq(ml12.e()), ml12.ssq(), 1e-9);
     }
 
 }

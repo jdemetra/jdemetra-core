@@ -25,7 +25,6 @@ import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.maths.matrices.FastMatrix;
 import demetra.util.SubArrayOfInt;
-import demetra.data.DeprecatedDoubles;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;
 import demetra.data.DoubleSeq;
@@ -339,7 +338,7 @@ public class FastKalmanFilter {
         } while (++pos < n);
         DoubleSeq dy = DoubleSeq.of(yl);
         return Likelihood.builder(n)
-                .ssqErr(DeprecatedDoubles.ssq(dy))
+                .ssqErr(dy.ssq())
                 .residuals(dy)
                 .logDeterminant(det.getLogDeterminant())
                 .build();
@@ -350,7 +349,6 @@ public class FastKalmanFilter {
      * @param ao Positions of AO outliers corresponding to missing values int
      * the regressors. Can be null
      * @param x
-     * @param ll
      * @return
      */
     public ConcentratedLikelihoodWithMissing process(final DoubleSeq y, final SubArrayOfInt ao,
