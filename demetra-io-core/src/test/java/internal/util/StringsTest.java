@@ -27,12 +27,12 @@ public class StringsTest {
 
     @Test
     public void testIterator() {
-        assertThat(Strings.splitToIterator(',', "")).containsExactly("");
-        assertThat(Strings.splitToIterator(',', "hello")).containsExactly("hello");
-        assertThat(Strings.splitToIterator(',', "hello,world")).containsExactly("hello", "world");
-        assertThat(Strings.splitToIterator(',', ",world")).containsExactly("", "world");
-        assertThat(Strings.splitToIterator(',', "hello,")).containsExactly("hello", "");
-        assertThat(Strings.splitToIterator(',', ",")).containsExactly("", "");
-        assertThat(Strings.splitToIterator(',', ",,")).containsExactly("", "", "");
+        assertThat(Strings.splitToIterator(',', "")).toIterable().containsExactly("");
+        assertThat(Strings.splitToIterator(',', "hello")).toIterable().containsExactly("hello");
+        assertThat(Strings.splitToIterator(',', "hello,world")).toIterable().containsExactly("hello", "world");
+        assertThat(Strings.splitToIterator(',', ",world")).toIterable().containsExactly("", "world");
+        assertThat(Strings.splitToIterator(',', "hello,")).toIterable().containsExactly("hello", "");
+        assertThat(Strings.splitToIterator(',', ",")).toIterable().containsExactly("", "");
+        assertThat(Strings.splitToIterator(',', ",,")).toIterable().containsExactly("", "", "");
     }
 }
