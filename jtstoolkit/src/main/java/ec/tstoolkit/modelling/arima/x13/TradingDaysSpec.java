@@ -154,6 +154,7 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
             type_ = TradingDaysType.None;
             lp_ = LengthOfPeriodType.None;
             autoAdjust_ = false;
+            w_ = 0;
         }
     }
 
