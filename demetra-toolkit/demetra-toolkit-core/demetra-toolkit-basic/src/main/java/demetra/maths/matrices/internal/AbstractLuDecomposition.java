@@ -75,7 +75,7 @@ public abstract class AbstractLuDecomposition implements LUDecomposition {
         if (M.getRowsCount() != M.getColumnsCount()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
-        lu=M.data();
+        lu=M.toArray();
         n = M.getRowsCount();
         piv = new int[n];
         for (int i = 0; i < n; i++) {

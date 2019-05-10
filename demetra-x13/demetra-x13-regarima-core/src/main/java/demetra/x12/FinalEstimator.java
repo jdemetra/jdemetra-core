@@ -27,6 +27,7 @@ import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
+import static demetra.maths.linearfilters.FilterUtility.checkRoots;
 
 /**
  *

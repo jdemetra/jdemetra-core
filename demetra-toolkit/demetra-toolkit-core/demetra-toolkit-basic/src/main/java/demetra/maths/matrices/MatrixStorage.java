@@ -92,7 +92,7 @@ public class MatrixStorage {
      * @return
      */
     public FastMatrix matrix(final int pos) {
-        return new FastMatrix(m_data, m_size * pos, m_nr, m_nc, 1, m_nr);
+        return new SubMatrix(m_data, m_size * pos, m_nr, m_nc, 1, m_nr);
     }
     
     public DataBlock item(final int row, final int col){

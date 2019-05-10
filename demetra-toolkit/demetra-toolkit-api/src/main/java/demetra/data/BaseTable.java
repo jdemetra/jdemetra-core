@@ -47,6 +47,18 @@ public interface BaseTable<E> {
         return getColumnsCount() == 0 || getRowsCount() == 0;
     }
     
+    default boolean isSquare() {
+        return getRowsCount() == getColumnsCount();
+    }
+
+    default boolean isRow() {
+        return 1 == getRowsCount();
+    }
+
+    default boolean isColumn() {
+        return 1 == getColumnsCount();
+    }
+
     default int size(){
         return getColumnsCount()*getRowsCount();
     }

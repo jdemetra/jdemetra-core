@@ -168,7 +168,7 @@ public class Householder implements IQRDecomposition {
     private void init(FastMatrix m) {
         this.m = m.getRowsCount();
         norig = n = m.getColumnsCount();
-        qr = m.data();
+        qr = m.toArray();
         rdiag = new double[n];
     }
 

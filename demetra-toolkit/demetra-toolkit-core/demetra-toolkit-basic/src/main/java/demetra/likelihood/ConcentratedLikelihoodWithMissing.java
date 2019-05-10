@@ -198,7 +198,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
             return Doubles.EMPTY;
         }
         bvariance();
-        return DoubleSeq.of(bvar.data(), 0, nmissing, bvar.getRowsCount() + 1);
+        return DoubleSeq.of(bvar.toArray(), 0, nmissing, bvar.getRowsCount() + 1);
     }
 
     /**

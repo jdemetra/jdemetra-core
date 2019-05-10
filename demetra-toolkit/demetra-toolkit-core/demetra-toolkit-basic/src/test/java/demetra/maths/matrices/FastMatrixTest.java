@@ -72,11 +72,10 @@ public class FastMatrixTest {
         assertTrue(A.extract(del, m-del, del, n-del).minus(B.extract(0, m-del, 0, n-del)).isZero(1e15));
     }
 
-    int N = 20, M = 50;
-    int K = 10000000, K2 = 1000000;
+   static  int N = 20, M = 50;
+    static int K = 10000000, K2 = 1000000;
 
-    //@Test
-    public void stressColumnsTest() {
+    public static void stressColumnsTest() {
         System.out.println("Columns");
         FastMatrix m = FastMatrix.make(N, M);
         long t0 = System.currentTimeMillis();
@@ -95,13 +94,6 @@ public class FastMatrixTest {
         System.out.println("Iterator of DataBlock");
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
-        for (int k = 0; k < K; ++k) {
-            m.fastColumns().forEach(col -> col.set(10));
-        }
-        t1 = System.currentTimeMillis();
-        System.out.println("Fast DataBlock");
-        System.out.println(t1 - t0);
-        t0 = System.currentTimeMillis();
         ec.tstoolkit.maths.matrices.Matrix O = new ec.tstoolkit.maths.matrices.Matrix(N, M);
         for (int k = 0; k < K; ++k) {
             ec.tstoolkit.data.DataBlockIterator columns = O.columns();
@@ -115,8 +107,7 @@ public class FastMatrixTest {
         System.out.println(t1 - t0);
     }
 
-    //@Test
-    public void stressRowsTest() {
+     public static void stressRowsTest() {
         System.out.println("Rows");
         FastMatrix m = FastMatrix.make(N, M);
         long t0 = System.currentTimeMillis();
@@ -135,13 +126,6 @@ public class FastMatrixTest {
         System.out.println("Iterator of DataBlock");
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
-        for (int k = 0; k < K; ++k) {
-            m.fastRows().forEach(col -> col.set(10));
-        }
-        t1 = System.currentTimeMillis();
-        System.out.println("Fast DataBlock");
-        System.out.println(t1 - t0);
-        t0 = System.currentTimeMillis();
         ec.tstoolkit.maths.matrices.Matrix O = new ec.tstoolkit.maths.matrices.Matrix(N, M);
         for (int k = 0; k < K; ++k) {
             ec.tstoolkit.data.DataBlockIterator rows = O.rows();
@@ -155,7 +139,7 @@ public class FastMatrixTest {
         System.out.println(t1 - t0);
     }
 
-    //@Test
+    @Test
     public void testRC() {
         FastMatrix A = FastMatrix.make(10, 10);
         A.rows().forEach(row -> row.set(i -> row.getStartPosition() + i));
@@ -207,10 +191,9 @@ public class FastMatrixTest {
         assertTrue(MatrixComparator.distance(C, OA.times(OB)) < 1e-9);
     }
 
-    @Test
-    @Ignore
-    public void stressTestProduct() {
-        FastMatrix A = FastMatrix.make(200, 5), B = FastMatrix.make(5, 10);
+    public static void stressProductTest() {
+        System.out.println("Product");
+        FastMatrix A = FastMatrix.make(100, 10), B = FastMatrix.make(10, 20);
         FastMatrix C = FastMatrix.make(A.getRowsCount(), B.getColumnsCount());
         Random rnd = new Random(0);
         A.set((i, j) -> rnd.nextDouble());
@@ -227,12 +210,14 @@ public class FastMatrixTest {
             C.product(A, B);
         }
         long t1 = System.currentTimeMillis();
+        System.out.println("New");
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int k = 0; k < K2; ++k) {
             OC.all().product(OA.all(), OB.all());
         }
         t1 = System.currentTimeMillis();
+        System.out.println("Old");
         System.out.println(t1 - t0);
     }
     
@@ -257,5 +242,11 @@ public class FastMatrixTest {
                 .build();
         double d=FastMatrix.determinant(X);
         assertTrue(d==0);
+    }
+    
+    public static void main(String[] arg){
+        stressRowsTest();
+        stressColumnsTest();
+        stressProductTest();
     }
 }

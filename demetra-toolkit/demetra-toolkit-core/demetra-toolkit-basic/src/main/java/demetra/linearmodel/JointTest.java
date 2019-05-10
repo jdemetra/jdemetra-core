@@ -27,6 +27,7 @@ import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.MatrixFactory;
 
 /**
  *
@@ -120,7 +121,7 @@ public class JointTest {
 
     private FastMatrix rwr() {
         if (coef != null) {
-            return bvar.select(coef, coef);
+            return MatrixFactory.select(bvar, coef, coef);
         } else {
             return SymmetricMatrix.XSXt(bvar, R);
         }

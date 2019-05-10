@@ -655,7 +655,7 @@ public class EigenSystem {
     }
 
     public static double[] convertToArray(FastMatrix m) {
-        return m.data();
+        return m.toArray();
     }
 }
 

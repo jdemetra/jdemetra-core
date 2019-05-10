@@ -40,11 +40,17 @@ import demetra.data.Doubles;
  */
 public class TramoProcessorTest {
 
-    private final double[] data, datamissing;
+    private static final double[] data, datamissing;
     public static final Calendar france;
     public static final ec.tstoolkit.timeseries.calendars.NationalCalendar ofrance;
 
     static {
+        data = Data.PROD.clone();
+        datamissing = Data.PROD.clone();
+        datamissing[2] = Double.NaN;
+        datamissing[100] = Double.NaN;
+        datamissing[101] = Double.NaN;
+        datamissing[102] = Double.NaN;
         List<Holiday> holidays = new ArrayList<>();
         holidays.add(new Holiday(new FixedDay(7, 14)));
         holidays.add(new Holiday(new FixedDay(5, 8)));
@@ -75,12 +81,6 @@ public class TramoProcessorTest {
     }
 
     public TramoProcessorTest() {
-        data = Data.PROD.clone();
-        datamissing = Data.PROD.clone();
-        datamissing[2] = Double.NaN;
-        datamissing[100] = Double.NaN;
-        datamissing[101] = Double.NaN;
-        datamissing[102] = Double.NaN;
     }
 
 //    @Test
@@ -399,8 +399,7 @@ public class TramoProcessorTest {
         System.out.println(rslt.estimation.getStatistics().adjustedLogLikelihood);
     }
 
-    //@Test
-    public void stressTestProd() {
+    public static void stressTestProd() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000; ++i) {
             TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
@@ -422,4 +421,7 @@ public class TramoProcessorTest {
         System.out.println(t1 - t0);
     }
 
+    public static void main(String[] arg){
+        stressTestProd();
+    }
 }

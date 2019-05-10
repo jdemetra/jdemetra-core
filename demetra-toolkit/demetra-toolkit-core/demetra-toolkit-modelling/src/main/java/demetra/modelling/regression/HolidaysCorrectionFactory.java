@@ -23,6 +23,7 @@ import demetra.util.WeightedItem;
 import java.time.LocalDate;
 import demetra.timeseries.calendars.CalendarDefinition;
 import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixFactory;
 
 /**
  *
@@ -116,7 +117,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
             if (pos > 0) {
                 Matrix M1 = beg.holidaysCorrection(domain.range(0, pos));
                 Matrix M2 = end.holidaysCorrection(domain.range(pos, n));
-                return FastMatrix.rowBind(M1, M2);
+                return MatrixFactory.rowBind(M1, M2);
             } else if (pos >= -1) {
                 return end.holidaysCorrection(domain);
             } else {

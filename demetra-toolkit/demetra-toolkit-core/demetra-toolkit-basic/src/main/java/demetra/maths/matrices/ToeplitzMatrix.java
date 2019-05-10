@@ -95,7 +95,7 @@ public final class ToeplitzMatrix {
                 x[i] += mu * y[k - i];
             }
             x[k + 1] = mu;
-            
+
             if (k < n - 2) {
                 tmp = 0;
                 for (int i = k; i >= 0; --i) {
@@ -116,7 +116,7 @@ public final class ToeplitzMatrix {
         }
         return x;
     }
-    
+
     private final double[] r;
 
     /**
@@ -126,16 +126,16 @@ public final class ToeplitzMatrix {
     public ToeplitzMatrix(final double[] r) {
         this.r = r.clone();
     }
-    
-    public FastMatrix asMatrix() {
-        FastMatrix T = FastMatrix.square(r.length);
+
+    public CanonicalMatrix asMatrix() {
+        CanonicalMatrix T = new CanonicalMatrix(r.length, r.length);
         DataBlock diag = T.diagonal();
         diag.set(r[0]);
         DataWindow ldiag = diag.window();
         DataWindow udiag = diag.window();
         for (int i = 1; i < r.length; ++i) {
-            ldiag.slideAndShrink(T.rowInc).set(r[i]);
-            udiag.slideAndShrink(T.colInc).set(r[i]);
+            ldiag.slideAndShrink(1).set(r[i]);
+            udiag.slideAndShrink(r.length).set(r[i]);
         }
         return T;
     }
@@ -145,9 +145,9 @@ public final class ToeplitzMatrix {
      *
      * @return
      */
-    public FastMatrix inverse() {
+    public CanonicalMatrix inverse() {
         int n = r.length, nc = n - 1;
-        FastMatrix m = FastMatrix.square(n);
+        CanonicalMatrix m = new CanonicalMatrix(n, n);
         // double[] rc = new double[nc];
         // Array.Copy(m_r, rc, nc);
         double[] y = solveDurbinSystem(r);
@@ -213,6 +213,6 @@ public final class ToeplitzMatrix {
                 x.set(i, fx[i].getRe());
             }
         }
-        
+
     }
 }

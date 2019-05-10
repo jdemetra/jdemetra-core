@@ -9,10 +9,8 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
 import demetra.data.accumulator.DoubleAccumulator;
-import java.util.Iterator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import demetra.design.Unsafe;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
@@ -21,35 +19,91 @@ import demetra.data.DoubleSeqCursor;
 import demetra.data.LogSign;
 import demetra.design.BuilderPattern;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import demetra.maths.matrices.internal.Householder;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
+import java.util.Iterator;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public class FastMatrix implements Matrix.Mutable {
+public interface FastMatrix extends Matrix.Mutable {
+    
+    public static final FastMatrix EMPTY = new CanonicalMatrix(new double[0], 0, 0);
 
-    public static final FastMatrix EMPTY = new FastMatrix(new double[0], 0, 0);
-
+   
+    @BuilderPattern(FastMatrix.class)
+    public static class Builder {
+        
+        private final double[] storage;
+        private int row_inc = 1, col_inc = 0;
+        private int start = 0, nrows = 1, ncols = 1;
+        
+        private Builder(double[] data) {
+            this.storage = data;
+        }
+        
+        public Builder start(final int start) {
+            this.start = start;
+            return this;
+        }
+        
+        public Builder nrows(final int nrows) {
+            this.nrows = nrows;
+            return this;
+        }
+        
+        public Builder ncolumns(final int ncols) {
+            this.ncols = ncols;
+            return this;
+        }
+        
+        public Builder square(final int n) {
+            this.nrows = n;
+            this.ncols = n;
+            return this;
+        }
+        
+        public Builder rowIncrement(final int rowinc) {
+            this.row_inc = rowinc;
+            return this;
+        }
+        
+        public Builder columnIncrement(final int colinc) {
+            this.col_inc = colinc;
+            return this;
+        }
+        
+        public FastMatrix build() {
+            if (start == 0 && row_inc == 1 && storage.length == nrows * ncols) {
+                return new CanonicalMatrix(storage, nrows, ncols);
+            } else {
+                return new SubMatrix(storage, start, nrows, ncols, row_inc, col_inc == 0 ? nrows : col_inc);
+            }
+        }
+    }
+    
+    public static Builder builder(double[] data) {
+        return new Builder(data);
+    }
+    
     public static FastMatrix square(int n) {
         double[] data = new double[n * n];
-        return new FastMatrix(data, n, n);
+        return new CanonicalMatrix(data, n, n);
     }
-
+    
     public static FastMatrix make(int nrows, int ncols) {
         double[] data = new double[nrows * ncols];
-        return new FastMatrix(data, nrows, ncols);
+        return new CanonicalMatrix(data, nrows, ncols);
     }
-
+    
     public static FastMatrix of(Matrix matrix) {
         if (matrix == null) {
             return null;
         }
-        return new FastMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
+        return new CanonicalMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
     }
 
     /**
@@ -67,138 +121,30 @@ public class FastMatrix implements Matrix.Mutable {
         if (matrix instanceof FastMatrix) {
             return (FastMatrix) matrix;
         } else {
-            return new FastMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
+            return new CanonicalMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
         }
     }
-
-    public static FastMatrix rowBind(@Nonnull Matrix... M) {
-        int nr = 0;
-        int nc = 0;
-        for (int i = 0; i < M.length; ++i) {
-            if (M[i] != null) {
-                nr += M[i].getRowsCount();
-                if (nc == 0) {
-                    nc = M[i].getColumnsCount();
-                } else if (M[i].getColumnsCount() != nc) {
-                    throw new MatrixException(MatrixException.DIM);
-                }
-            }
-        }
-        FastMatrix all = FastMatrix.make(nr, nc);
-        DataBlockIterator rows = all.rowsIterator();
-        for (int i = 0; i < M.length; ++i) {
-            if (M[i] != null) {
-                int ncur = M[i].getRowsCount();
-                for (int j = 0; j < ncur; ++j) {
-                    rows.next().copy(M[i].row(j));
-                }
-            }
-        }
-        return all;
-    }
-
-    public static FastMatrix columnBind(@Nonnull Matrix... M) {
-        int nr = 0;
-        int nc = 0;
-        for (int i = 0; i < M.length; ++i) {
-            if (M[i] != null) {
-                nc += M[i].getColumnsCount();
-                if (nr == 0) {
-                    nr = M[i].getRowsCount();
-                } else if (M[i].getRowsCount() != nr) {
-                    throw new MatrixException(MatrixException.DIM);
-                }
-            }
-        }
-        FastMatrix all = FastMatrix.make(nr, nc);
-        DataBlockIterator cols = all.columnsIterator();
-        for (int i = 0; i < M.length; ++i) {
-            if (M[i] != null) {
-                int ncur = M[i].getColumnsCount();
-                for (int j = 0; j < ncur; ++j) {
-                    cols.next().copy(M[i].column(j));
-                }
-            }
-        }
-        return all;
-    }
-
+    
     public static FastMatrix identity(int n) {
         FastMatrix i = square(n);
         i.diagonal().set(1);
         return i;
     }
-
+    
     public static FastMatrix diagonal(DoubleSeq d) {
         FastMatrix i = square(d.length());
         i.diagonal().copy(d);
         return i;
     }
-
+    
     public static FastMatrix rowOf(DataBlock x) {
-        return new FastMatrix(x.getStorage(), x.getStartPosition(), 1, x.length(), 1, x.getIncrement());
+        return new SubMatrix(x.getStorage(), x.getStartPosition(), 1, x.length(), 1, x.getIncrement());
     }
-
+    
     public static FastMatrix columnOf(DataBlock x) {
-        return new FastMatrix(x.getStorage(), x.getStartPosition(), x.length(), 1, x.getIncrement(), 1);
+        return new SubMatrix(x.getStorage(), x.getStartPosition(), x.length(), 1, x.getIncrement(), 1);
     }
-
-    @BuilderPattern(FastMatrix.class)
-    public static class Builder {
-
-        private final double[] storage;
-        private int row_inc = 1, col_inc = 0;
-        private int start = 0, nrows = 1, ncols = 1;
-
-        private Builder(double[] data) {
-            this.storage = data;
-        }
-
-        public Builder start(final int start) {
-            this.start = start;
-            return this;
-        }
-
-        public Builder nrows(final int nrows) {
-            this.nrows = nrows;
-            return this;
-        }
-
-        public Builder ncolumns(final int ncols) {
-            this.ncols = ncols;
-            return this;
-        }
-
-        public Builder square(final int n) {
-            this.nrows = n;
-            this.ncols = n;
-            return this;
-        }
-
-        public Builder rowIncrement(final int rowinc) {
-            this.row_inc = rowinc;
-            return this;
-        }
-
-        public Builder columnIncrement(final int colinc) {
-            this.col_inc = colinc;
-            return this;
-        }
-
-        public FastMatrix build() {
-            // TODO Add some controls on the state 
-            return new FastMatrix(storage, start, nrows, ncols, row_inc, col_inc == 0 ? nrows : col_inc);
-        }
-    }
-
-    public static Builder builder(double[] data) {
-        return new Builder(data);
-    }
-
-    final double[] storage;
-    final int rowInc, colInc;
-    int start, nrows, ncols;
-
+    
     @FunctionalInterface
     public static interface MatrixFunction {
 
@@ -211,97 +157,88 @@ public class FastMatrix implements Matrix.Mutable {
          */
         double apply(int row, int column);
     }
-
-    /**
-     * Creates a new instance of SubMatrix
-     *
-     * @param data
-     * @param nrows
-     * @param ncols
-     */
-    FastMatrix(final double[] data, final int nrows, final int ncols) {
-        this.storage = data;
-        this.nrows = nrows;
-        this.ncols = ncols;
-        rowInc = 1;
-        colInc = nrows;
+    
+    double[] getStorage();
+    
+    int getRowIncrement();
+    
+    int getColumnIncrement();
+    
+    int getStartPosition();
+    
+    int getPosition(int row, int col);
+    
+    int getLastPosition();
+    
+    void apply(int row, int col, DoubleUnaryOperator fn);
+    
+    String toString(String FMT);
+ 
+    @Override
+    DataBlock row(@Nonnull int irow);
+    
+    @Override
+    DataBlock diagonal();
+    
+    @Override
+    DataBlock subDiagonal(int pos);
+    
+    @Override
+    DataBlock column(@Nonnull int icolumn);
+    
+    CanonicalMatrix asCanonical();
+    
+    SubMatrix asSubMatrix();
+    
+    default void set(final double d) {
+        DataBlockIterator cols = columnsIterator();
+        while (cols.hasNext()) {
+            cols.next().set(d);
+        }
     }
-
-    /**
-     *
-     * @param data
-     * @param start
-     * @param nrows
-     * @param ncols
-     * @param rowinc
-     * @param colinc
-     */
-    FastMatrix(final double[] data, final int start, final int nrows,
-            final int ncols, final int rowinc, final int colinc) {
-        this.storage = data;
-        this.start = start;
-        this.nrows = nrows;
-        this.ncols = ncols;
-        rowInc = rowinc;
-        colInc = colinc;
+    
+    default void set(final DoubleSupplier fn) {
+        DataBlockIterator cols = columnsIterator();
+        while (cols.hasNext()) {
+            cols.next().set(fn);
+        }
     }
-
-    public final void set(final double d) {
-        columns().forEach(r -> r.set(d));
-    }
-
-    public final void set(final DoubleSupplier fn) {
-        columns().forEach(r -> r.set(fn));
-    }
-
-    public final void set(final MatrixFunction fn) {
+    
+    default void set(final MatrixFunction fn) {
         int c = 0;
-        for (DataBlock col : columns()) {
+        DataBlockIterator cols = columnsIterator();
+        while (cols.hasNext()) {
             final int cur = c++;
-            col.set(r -> fn.apply(r, cur));
+            cols.next().set(r -> fn.apply(r, cur));
         }
     }
-
-    public void apply(int row, int col, DoubleUnaryOperator fn) {
-        int idx = start + row * rowInc + col * colInc;
-        storage[idx] = fn.applyAsDouble(storage[idx]);
-    }
-
-    public void add(int row, int col, double d) {
+    
+    default void add(int row, int col, double d) {
         if (d != 0) {
-            storage[start + row * rowInc + col * colInc] += d;
+            apply(row, col, x -> x + d);
         }
     }
-
-    public void sub(int row, int col, double d) {
+    
+    default void sub(int row, int col, double d) {
         if (d != 0) {
-            storage[start + row * rowInc + col * colInc] -= d;
+            apply(row, col, x -> x - d);
         }
     }
-
-    public void mul(int row, int col, double d) {
+    
+    default void mul(int row, int col, double d) {
         if (d != 1) {
-            storage[start + row * rowInc + col * colInc] *= d;
+            apply(row, col, x -> x * d);
         }
     }
-
-    public void div(int row, int col, double d) {
+    
+    default void div(int row, int col, double d) {
         if (d != 1) {
-            storage[start + row * rowInc + col * colInc] /= d;
+            apply(row, col, x -> x / d);
         }
     }
-
-    public final void apply(final DoubleUnaryOperator fn) {
-        if (isEmpty()) {
-            return;
-        }
-        if (isFull()) {
-            for (int i = 0; i < storage.length; ++i) {
-                storage[i] = fn.applyAsDouble(storage[i]);
-            }
-            return;
-        }
-        if (colInc == 1) {
+    
+    default void apply(final DoubleUnaryOperator fn) {
+        if (getColumnIncrement() == 1) {
             DataBlockIterator rows = rowsIterator();
             while (rows.hasNext()) {
                 rows.next().apply(fn);
@@ -313,49 +250,42 @@ public class FastMatrix implements Matrix.Mutable {
             }
         }
     }
-
-    public final void applyByRows(final Consumer<DataBlock> fn) {
+    
+    default void applyByRows(final Consumer<DataBlock> fn) {
         DataBlockIterator rows = rowsIterator();
         while (rows.hasNext()) {
             fn.accept(rows.next());
         }
     }
-
-    public final void applyByColumns(final Consumer<DataBlock> fn) {
+    
+    default void applyByColumns(final Consumer<DataBlock> fn) {
         DataBlockIterator cols = columnsIterator();
         while (cols.hasNext()) {
             fn.accept(cols.next());
         }
     }
-
-    public final void applyByRows(final FastMatrix M, final BiConsumer<DataBlock, DataBlock> fn) {
+    
+    default void applyByRows(final FastMatrix M, final BiConsumer<DataBlock, DataBlock> fn) {
         DataBlockIterator rows = rowsIterator();
         DataBlockIterator mrows = M.rowsIterator();
         while (rows.hasNext()) {
             fn.accept(rows.next(), mrows.next());
         }
     }
-
-    public final void applyByColumns(final FastMatrix M, final BiConsumer<DataBlock, DataBlock> fn) {
+    
+    default void applyByColumns(final FastMatrix M, final BiConsumer<DataBlock, DataBlock> fn) {
         DataBlockIterator cols = columnsIterator();
         DataBlockIterator mcols = M.columnsIterator();
         while (cols.hasNext()) {
             fn.accept(cols.next(), mcols.next());
         }
     }
-
-    public final double sum() {
+    
+    default double sum() {
         if (isEmpty()) {
             return 0;
         }
-        if (isFull()) {
-            double s = 0;
-            for (int i = 0; i < storage.length; ++i) {
-                s += storage[i];
-            }
-            return s;
-        }
-        if (colInc == 1) {
+        if (getColumnIncrement() == 1) {
             double s = 0;
             DataBlockIterator rows = rowsIterator();
             while (rows.hasNext()) {
@@ -371,20 +301,12 @@ public class FastMatrix implements Matrix.Mutable {
             return s;
         }
     }
-
-    public final double ssq() {
+    
+    default double ssq() {
         if (isEmpty()) {
             return 0;
         }
-        if (isFull()) {
-            double s = 0;
-            for (int i = 0; i < storage.length; ++i) {
-                double c = storage[i];
-                s += c * c;
-            }
-            return s;
-        }
-        if (colInc == 1) {
+        if (getColumnIncrement() == 1) {
             double s = 0;
             DataBlockIterator rows = rowsIterator();
             while (rows.hasNext()) {
@@ -400,11 +322,13 @@ public class FastMatrix implements Matrix.Mutable {
             return s;
         }
     }
-
-    public final double frobeniusNorm() {
+    
+    default double frobeniusNorm() {
         double scale = 0;
         double ssq = 1;
-        if (colInc == 1) {
+        
+        if (getColumnIncrement() == 1) {
+            int ncols = getColumnsCount();
             DataBlockIterator rows = rowsIterator();
             while (rows.hasNext()) {
                 DoubleSeqCursor cell = rows.next().cursor();
@@ -424,6 +348,7 @@ public class FastMatrix implements Matrix.Mutable {
                 }
             }
         } else {
+            int nrows = getRowsCount();
             DataBlockIterator columns = columnsIterator();
             while (columns.hasNext()) {
                 DoubleSeqCursor cell = columns.next().cursor();
@@ -444,42 +369,42 @@ public class FastMatrix implements Matrix.Mutable {
             }
         }
         return scale * Math.sqrt(ssq);
-
+        
     }
-
-    public final void add(final double d) {
+    
+    default void add(final double d) {
         if (d != 0) {
             apply(x -> x + d);
         }
     }
-
-    public final void sub(final double d) {
+    
+    default void sub(final double d) {
         if (d != 0) {
             apply(x -> x - d);
         }
     }
-
-    public final void mul(final double d) {
+    
+    default void mul(final double d) {
         if (d == 0) {
             set(0);
         } else if (d != 1) {
             apply(x -> x * d);
         }
     }
-
-    public final void div(final double d) {
+    
+    default void div(final double d) {
         if (d == 0) {
             set(Double.NaN);
         } else if (d != 1) {
             apply(x -> x / d);
         }
     }
-
-    public final boolean test(final DoublePredicate pred) {
+    
+    default boolean test(final DoublePredicate pred) {
         if (isEmpty()) {
             return true;
         }
-        if (colInc == 1) {
+        if (getColumnIncrement() == 1) {
             DataBlockIterator rows = rowsIterator();
             while (rows.hasNext()) {
                 if (!rows.next().allMatch(pred)) {
@@ -497,86 +422,27 @@ public class FastMatrix implements Matrix.Mutable {
             return true;
         }
     }
-
+    
+    default CanonicalMatrix deepClone() {
+        return new CanonicalMatrix(toArray(), getRowsCount(), getColumnsCount());
+    }
+    
     @Override
-    public final void set(int row, int col, double value) {
-        storage[start + row * rowInc + col * colInc] = value;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public final DataBlock diagonal() {
-        int n = Math.min(nrows, ncols), inc = rowInc + colInc;
-        return DataBlock.of(storage, start, start + inc * n, inc);
-    }
-
-    /**
-     *
-     * @param pos
-     * @return
-     */
-    @Override
-    public final DataBlock subDiagonal(int pos) {
-        if (pos >= ncols) {
-            return DataBlock.EMPTY;
-        }
-        if (-pos >= nrows) {
-            return DataBlock.EMPTY;
-        }
-        int beg = start, inc = rowInc + colInc;
-        int n;
-        if (pos > 0) {
-            beg += pos * colInc;
-            n = Math.min(nrows, ncols - pos);
-        } else if (pos < 0) {
-            beg -= pos * rowInc;
-            n = Math.min(nrows + pos, ncols);
-        } else {
-            n = Math.min(nrows, ncols);
-        }
-        return DataBlock.of(storage, beg, beg + inc * n, inc);
-    }
-
-    public final FastMatrix deepClone() {
-        return new FastMatrix(data(), nrows, ncols);
-    }
-
-    public final double[] data() {
-        if (isFull()) {
-            return storage.clone();
-        } else {
-            double[] data = new double[nrows * ncols];
-            copyTo(data, 0);
-            return data;
-        }
-    }
-
-    @Override
-    public final void copyTo(double[] data, final int start) {
+    default void copyTo(double[] data, final int start) {
         int pos = start;
+        int nrows = getRowsCount();
         DataBlockIterator cols = columnsIterator();
         while (cols.hasNext()) {
             cols.next().copyTo(data, pos);
             pos += nrows;
         }
     }
-
-    public final void copy(FastMatrix M) {
-        if (colInc == 1 && M.colInc == 1) {
-            DataBlockIterator rows = rowsIterator();
-            DataBlockIterator mrows = M.rowsIterator();
-            while (rows.hasNext()) {
-                rows.next().copy(mrows.next());
-            }
-        } else {
-            DataBlockIterator cols = columnsIterator();
-            DataBlockIterator mcols = M.columnsIterator();
-            while (cols.hasNext()) {
-                cols.next().copy(mcols.next());
-            }
+    
+    default void copy(FastMatrix M) {
+        DataBlockIterator cols = columnsIterator();
+        DataBlockIterator mcols = M.columnsIterator();
+        while (cols.hasNext()) {
+            cols.next().copy(mcols.next());
         }
     }
 
@@ -584,40 +450,24 @@ public class FastMatrix implements Matrix.Mutable {
      *
      * @return
      */
-    public FastMatrix transpose() {
-        return new FastMatrix(storage, start, ncols, nrows, colInc, rowInc);
+    default FastMatrix transpose() {
+        return new SubMatrix(getStorage(), getStartPosition(),
+                getColumnsCount(), getRowsCount(),
+                getColumnIncrement(), getRowIncrement());
     }
-
-    @Override
-    public final boolean isEmpty() {
-        return nrows <= 0 || ncols <= 0;
-    }
-
-    public final boolean isSquare() {
-        return nrows == ncols;
-    }
-
-    public final boolean isRow() {
-        return 1 == nrows;
-    }
-
-    public final boolean isColumn() {
-        return 1 == ncols;
-    }
-
-    public final boolean isFull() {
-        return start == 0 && rowInc == 1 && storage.length == nrows * ncols;
-    }
-
-    public boolean isDiagonal(double zero) {
+    
+    boolean isCanonical();
+    
+    default boolean isDiagonal(double zero) {
+        int nrows = getRowsCount(), ncols = getColumnsCount();
         if (ncols != nrows) {
             return false;
         }
         if (nrows == 1) {
             return true;
         }
-
-        int n = Math.min(nrows, ncols), inc = rowInc + colInc;
+        
+        int rowInc = getRowIncrement(), colInc = getColumnIncrement();
         DataBlock diag = diagonal();
         DataWindow ldiag = diag.window();
         DataWindow udiag = diag.window();
@@ -631,19 +481,20 @@ public class FastMatrix implements Matrix.Mutable {
         }
         return true;
     }
-
-    public boolean isIdentity() {
+    
+    default boolean isIdentity() {
+        int nrows = getRowsCount(), ncols = getColumnsCount();
         if (ncols != nrows) {
             return false;
         }
         if (nrows == 1) {
-            return storage[start] == 1;
+            return get(0, 0) == 1;
         }
         if (diagonal().anyMatch(x -> x != 1)) {
             return false;
         }
-
-        int n = Math.min(nrows, ncols), inc = rowInc + colInc;
+        
+        int rowInc = getRowIncrement(), colInc = getColumnIncrement();
         DataBlock diag = diagonal();
         DataWindow ldiag = diag.window();
         DataWindow udiag = diag.window();
@@ -657,16 +508,17 @@ public class FastMatrix implements Matrix.Mutable {
         }
         return true;
     }
-
-    public boolean isDiagonal() {
+    
+    default boolean isDiagonal() {
         return isDiagonal(0);
     }
-
-    public boolean isZero(double eps) {
+    
+    default boolean isZero(double eps) {
         return test(x -> Math.abs(x) <= eps);
     }
-
-    public boolean isSymmetric(double eps) {
+    
+    default boolean isSymmetric(double eps) {
+        int nrows = getRowsCount(), ncols = getColumnsCount();
         if (nrows != ncols) {
             return false;
         }
@@ -676,6 +528,7 @@ public class FastMatrix implements Matrix.Mutable {
         DataBlock diag = diagonal();
         DataWindow ldiag = diag.window();
         DataWindow udiag = diag.window();
+        int rowInc = getRowIncrement(), colInc = getColumnIncrement();
         for (int i = 1; i < nrows; ++i) {
             if (!ldiag.slideAndShrink(rowInc).allMatch(udiag.slideAndShrink(colInc),
                     (x, y) -> Math.abs(x - y) <= eps)) {
@@ -684,43 +537,30 @@ public class FastMatrix implements Matrix.Mutable {
         }
         return true;
     }
-
-    public boolean isSymmetric() {
+    
+    default boolean isSymmetric() {
         return isSymmetric(0);
     }
-
-    public Matrix unmodifiable() {
-        if (isFull()) {
-            return Matrix.ofInternal(storage, nrows, ncols);
-        } else {
-            return extract(0, nrows, 0, ncols);
-        }
+    
+    default Matrix unmodifiable() {
+        return Matrix.ofInternal(toArray(), getRowsCount(), getColumnsCount());
     }
 
     /**
      *
      * @param r0
-     * @param nr
+     * @param nrows
+     * @param ncols
      * @param c0
-     * @param nc
      * @return
      */
     @Override
-    public FastMatrix extract(final int r0, final int nr, final int c0, final int nc) {
-        return new FastMatrix(storage, start + r0 * rowInc + c0 * colInc,
-                nr, nc, rowInc, colInc);
-    }
-
-    public FastMatrix dropTopLeft(int nr, int nc) {
-        return new FastMatrix(storage, start + nr * rowInc + nc * colInc,
-                nrows - nr, ncols - nc, rowInc, colInc);
-
-    }
-
-    public FastMatrix dropBottomRight(int nr, int nc) {
-        return new FastMatrix(storage, start,
-                nrows - nr, ncols - nc, rowInc, colInc);
-
+    default FastMatrix extract(final int r0, final int nrows, final int c0, final int ncols) {
+        double[] storage = getStorage();
+        int start = getStartPosition(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
+        return new SubMatrix(storage, start + r0 * rowInc + c0 * colInc,
+                nrows, ncols, rowInc, colInc);
     }
 
     /**
@@ -733,255 +573,83 @@ public class FastMatrix implements Matrix.Mutable {
      * @param colinc
      * @return
      */
-    public final FastMatrix extract(final int r0, final int c0, final int nrows,
+    default FastMatrix extract(final int r0, final int c0, final int nrows,
             final int ncols, final int rowinc, final int colinc) {
-        return new FastMatrix(storage, start + r0 * rowInc + c0 * colInc,
+        double[] storage = getStorage();
+        int start = getStartPosition(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
+        return new SubMatrix(storage, start + r0 * rowInc + c0 * colInc,
                 nrows, ncols, rowInc * rowinc, colInc * colinc);
     }
-
-    public final FastMatrix select(final int[] selectedRows, final int[] selectedColumns) {
-        // TODO optimization
-        FastMatrix m = FastMatrix.make(selectedRows.length, selectedColumns.length);
-        for (int c = 0; c < selectedRows.length; ++c) {
-            for (int r = 0; r < selectedRows.length; ++r) {
-                m.set(r, c, get(selectedRows[r], selectedColumns[c]));
-            }
-        }
-        return m;
+    
+    default FastMatrix dropTopLeft(int nr, int nc) {
+        double[] storage = getStorage();
+        int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
+        return new SubMatrix(storage, start + nr * rowInc + nc * colInc,
+                nrows - nr, ncols - nc, rowInc, colInc);
+        
     }
-
-    /**
-     * Creates a new matrix which doesn't contain given rows/columns
-     *
-     * @param excludedRows
-     * @param excludedColumns
-     * @return A new matrix, based on another storage, is returned.
-     */
-    public final FastMatrix exclude(final int[] excludedRows, final int[] excludedColumns) {
-        int[] srx = excludedRows.clone();
-        Arrays.sort(srx);
-        int[] scx = excludedColumns.clone();
-        Arrays.sort(scx);
-        boolean[] rx = new boolean[nrows], cx = new boolean[ncols];
-        int nrx = 0, ncx = 0;
-        for (int i = 0; i < srx.length; ++i) {
-            int cur = srx[i];
-            if (!rx[cur]) {
-                rx[cur] = true;
-                nrx++;
-            }
-        }
-        for (int i = 0; i < scx.length; ++i) {
-            int cur = scx[i];
-            if (!cx[cur]) {
-                cx[cur] = true;
-                ncx++;
-            }
-        }
-        if (nrx == 0 && ncx == 0) {
-            return deepClone();
-        }
-
-        FastMatrix m = FastMatrix.make(nrows - nrx, ncols - ncx);
-        for (int c = 0, nc = 0; c < ncols; ++c) {
-            if (cx[c]) {
-                for (int r = 0, nr = 0; r < nrows; ++r) {
-                    if (rx[r]) {
-                        m.set(nr, nc, get(r, c));
-                        ++nr;
-                    }
-                }
-                ++nc;
-            }
-        }
-        return m;
-    }
-
-    /**
-     * Creates a new matrix which contains the current matrix at given row/col
-     * position
-     *
-     * @param nr
-     * @param rowPos
-     * @param nc
-     * @param colPos
-     * @return A new matrix, based on another storage, is returned.
-     */
-    public final FastMatrix expand(final int nr, final int[] rowPos, final int nc, final int[] colPos) {
-        if (rowPos.length != nr || colPos.length != nc) {
-            throw new MatrixException(MatrixException.DIM);
-        }
-        FastMatrix m = FastMatrix.make(nr, nc);
-        for (int c = 0; c < ncols; ++c) {
-            for (int r = 0; r < nrows; ++r) {
-                m.set(rowPos[r], colPos[c], get(r, c));
-            }
-        }
-        return m;
-    }
-
-    /**
-     *
-     * @param row
-     * @param col
-     * @return
-     */
-    @Override
-    public final double get(final int row, final int col) {
-        return storage[start + row * rowInc + col * colInc];
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public final int getColumnsCount() {
-        return ncols;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public final int getRowsCount() {
-
-        return nrows;
-    }
-
-    @Unsafe
-    public final double[] getStorage() {
-        return storage;
-    }
-
-    /**
-     * Position of the top-reader cell
-     *
-     * @return
-     */
-    public final int getStartPosition() {
-        return start;
-    }
-
-    public final int getRowIncrement() {
-        return rowInc;
-    }
-
-    /**
-     * Position of the bottom-right cell
-     *
-     * @return
-     */
-    public final int getLastPosition() {
-        return start + (nrows - 1) * rowInc + (ncols - 1) * colInc;
-    }
-
-    public final int getColumnIncrement() {
-        return colInc;
+    
+    default FastMatrix dropBottomRight(int nr, int nc) {
+        double[] storage = getStorage();
+        int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
+        return new SubMatrix(storage, start,
+                nrows - nr, ncols - nc, rowInc, colInc);
+        
     }
 
     //<editor-fold defaultstate="collapsed" desc="In place operations">
-    public final void setAY(double a, FastMatrix Y) {
+    default void setAY(double a, FastMatrix Y) {
         if (a != 0) {
-            if (colInc == 1 && Y.colInc == 1) {
+            if (getColumnIncrement() == 1 && Y.getColumnIncrement() == 1) {
                 applyByRows(Y, (x, y) -> x.setAY(a, y));
             } else {
                 applyByColumns(Y, (x, y) -> x.setAY(a, y));
             }
         }
     }
-
-    public final void addAY(double a, FastMatrix Y) {
+    
+    default void addAY(double a, FastMatrix Y) {
         if (a != 0) {
-            if (colInc == 1 && Y.colInc == 1) {
+            if (getColumnIncrement() == 1 && Y.getColumnIncrement() == 1) {
                 applyByRows(Y, (x, y) -> x.addAY(a, y));
             } else {
                 applyByColumns(Y, (x, y) -> x.addAY(a, y));
             }
         }
     }
-
-    public final void add(FastMatrix X) {
-        if (isFull() && X.isFull()) {
-            for (int i = 0; i < storage.length; ++i) {
-                storage[i] += X.storage[i];
-            }
-
-        } else if (colInc == 1 && X.colInc == 1) {
+    
+    default void add(FastMatrix X) {
+        if (getColumnIncrement() == 1 && X.getColumnIncrement() == 1) {
             applyByRows(X, (x, y) -> x.add(y));
         } else {
             applyByColumns(X, (x, y) -> x.add(y));
         }
     }
-
-    public final void sub(FastMatrix X) {
-        if (isFull() && X.isFull()) {
-            for (int i = 0; i < storage.length; ++i) {
-                storage[i] -= X.storage[i];
-            }
-        } else if (colInc == 1 && X.colInc == 1) {
+    
+    default void sub(FastMatrix X) {
+        if (getColumnIncrement() == 1 && X.getColumnIncrement() == 1) {
             applyByRows(X, (x, y) -> x.sub(y));
         } else {
             applyByColumns(X, (x, y) -> x.sub(y));
         }
     }
-
-    private static final int PROD_THRESHOLD = 6;
+    
+    static final int PROD_THRESHOLD = 6;
 
     /**
      *
      * @param lm
      * @param rm
      */
-    public final void product(final FastMatrix lm, final FastMatrix rm) {
-//        if (lm.getColumnsCount() < PROD_THRESHOLD * (lm.getRowsCount())) {
-//            // fast processing. The usual case
-//            if (rowInc == 1 && lm.rowInc == 1) {
-//                for (int c = 0, ix = reader, ir = rm.reader; c < ncols; ++c, ix += colInc, ir += rm.colInc) {
-//                    int jr = ir;
-//                    double a = rm.storage[jr];
-//                    jr += rm.rowInc;
-//                    for (int r = 0, jx = ix, jl = lm.reader; r < nrows; ++r, ++jx, ++jl) {
-//                        storage[jx] = a * lm.storage[jl];
-//                    }
-//                    for (int lc = 1, jl = lm.reader + lm.colInc; lc < lm.ncols; ++lc, jl += lm.colInc) {
-//                        a = rm.storage[jr];
-//                        jr += rm.rowInc;
-//                        if (a != 0) {
-//                            for (int r = 0, kx = ix, kl = jl; r < nrows; ++r, ++kx, ++kl) {
-//                                storage[kx] += a * lm.storage[kl];
-//                            }
-//                        }
-//                    }
-//                }
-//            } else if (colInc == 1 && rm.colInc == 1) {
-//                transpose().product(rm.transpose(), lm.transpose());
-//            } else {
-//                for (int c = 0, ix = reader, ir = rm.reader; c < ncols; ++c, ix += colInc, ir += rm.colInc) {
-//                    int jr = ir;
-//                    double a = rm.storage[jr];
-//                    jr += rm.rowInc;
-//                    for (int r = 0, jx = ix, jl = lm.reader; r < nrows; ++r, jx += rowInc, jl += lm.rowInc) {
-//                        storage[jx] = a * lm.storage[jl];
-//                    }
-//                    for (int lc = 1, jl = lm.reader + lm.colInc; lc < lm.ncols; ++lc) {
-//                        a = rm.storage[jr];
-//                        jr += rm.rowInc;
-//                        if (a != 0) {
-//                            for (int r = 0, kx = ix, kl = jl; r < nrows; ++r, kx += rowInc, kl += lm.rowInc) {
-//                                storage[kx] += a * lm.storage[kl];
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        } else {
+    default void product(final FastMatrix lm, final FastMatrix rm) {
         if (lm.getColumnsCount() < PROD_THRESHOLD * (lm.getRowsCount())) {
             DataBlockIterator cols = columnsIterator();
             DataBlockIterator rcols = rm.columnsIterator();
             DataBlockIterator lcols = lm.columnsIterator();
-            double[] rx = rm.storage;
+            double[] rx = rm.getStorage();
             while (cols.hasNext()) {
                 lcols.reset();
                 DataBlock col = cols.next(), rcol = rcols.next();
@@ -1000,10 +668,9 @@ public class FastMatrix implements Matrix.Mutable {
                 cur.set(riter, row -> col.dot(row));
             }
         }
-//        }
     }
-
-    public final void robustProduct(final FastMatrix lm, final FastMatrix rm, DoubleAccumulator acc) {
+    
+    default void robustProduct(final FastMatrix lm, final FastMatrix rm, DoubleAccumulator acc) {
         DataBlockIterator iter = columnsIterator(), riter = lm.rowsIterator(), citer = rm.columnsIterator();
         while (iter.hasNext()) {
             riter.reset();
@@ -1015,11 +682,14 @@ public class FastMatrix implements Matrix.Mutable {
             });
         }
     }
-
-    public void addXaXt(final double a, final DataBlock x) {
+    
+    default void addXaXt(final double a, final DataBlock x) {
         if (a == 0) {
             return;
         }
+        double[] storage = getStorage();
+        int start = getStartPosition(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
         int nr = x.length(), xinc = x.getIncrement();
         double[] px = x.getStorage();
         if (xinc == 1) {
@@ -1048,138 +718,108 @@ public class FastMatrix implements Matrix.Mutable {
             }
         }
     }
-
-    /**
-     * Computes the kronecker product ofFunction two matrix. This object will
-     * contain the results. The dimensions ofFunction this object must be equal
-     * to the product ofFunction the dimensions ofFunction the operands. For
-     * optimisation purpose, the code consider that the resulting sub-matrix is
-     * set to 0 at the entry ofFunction the code
-     *
-     * @param m The left operand
-     * @param n The right operand
-     */
-    public void kronecker(final FastMatrix m, final FastMatrix n) {
-        int rm = m.getRowsCount(), cm = m.getColumnsCount();
-        int rn = n.getRowsCount(), cn = n.getColumnsCount();
-        for (int r = 0, i = 0; r < rm; ++r, i += rn) {
-            for (int c = 0, j = 0; c < cm; ++c, j += cn) {
-                FastMatrix cur = extract(i, rn, j, cn);
-                double e = m.get(r, c);
-                if (e != 0) {
-                    cur.setAY(e, n);
-                }
-            }
+    
+    default void addXaYt(final double a, final DataBlock x, final DataBlock y) {
+        if (a == 0) {
+            return;
+        }
+        DataBlockIterator cols = columnsIterator();
+        DoubleSeqCursor.OnMutable cursor = y.cursor();
+        while (cols.hasNext()) {
+            cols.next().addAY(a * cursor.getAndNext(), x);
         }
     }
-
-    public void chs() {
+    
+    default void addXY(final FastMatrix X, final FastMatrix Y) {
+        // Raw gaxpy implementation
+        DataBlockIterator cols = X.columnsIterator();
+        DataBlockIterator rows = Y.rowsIterator();
+        while (cols.hasNext()) {
+            addXaYt(1, cols.next(), rows.next());
+        }
+    }
+    
+    default void chs() {
         apply(x -> -x);
     }
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Operations">
-    public FastMatrix times(FastMatrix B) {
-        FastMatrix AB = FastMatrix.make(nrows, B.getColumnsCount());
-        AB.product(this, B);
+    default CanonicalMatrix times(FastMatrix B) {
+        CanonicalMatrix AB = new CanonicalMatrix(getRowsCount(), B.getColumnsCount());
+        if (isCanonical() && B.isCanonical()) {
+            AB.addXY(asCanonical(), B.asCanonical());
+        } else {
+            AB.product(this, B);
+        }
         return AB;
     }
-
-    public FastMatrix times(double d) {
+    
+    default CanonicalMatrix times(double d) {
         if (d == 0) {
-            return FastMatrix.make(nrows, ncols);
+            return new CanonicalMatrix(getRowsCount(), getColumnsCount());
         } else if (d == 1) {
             return deepClone();
         } else {
-            FastMatrix r = deepClone();
-            r.apply(x -> x * d);
+            CanonicalMatrix r = deepClone();
+            r.mul(d);
             return r;
         }
     }
-
-    public FastMatrix plus(double d) {
-        FastMatrix r = deepClone();
-        r.apply(x -> x + d);
+    
+    default CanonicalMatrix plus(double d) {
+        CanonicalMatrix r = deepClone();
+        r.add(d);
         return r;
     }
-
-    public FastMatrix plus(FastMatrix B) {
-        FastMatrix AB = deepClone();
-        AB.add(B);
+    
+    default CanonicalMatrix plus(FastMatrix B) {
+        CanonicalMatrix AB = deepClone();
+        if (B.isCanonical()) {
+            AB.add(B.asCanonical());
+        } else {
+            AB.add(B);
+        }
         return AB;
     }
-
-    public FastMatrix minus(double d) {
-        FastMatrix r = deepClone();
-        r.apply(x -> x - d);
+    
+    default CanonicalMatrix minus(double d) {
+        CanonicalMatrix r = deepClone();
+        r.sub(d);
         return r;
     }
-
-    public FastMatrix minus(FastMatrix B) {
-        FastMatrix AB = deepClone();
-        AB.sub(B);
+    
+    default CanonicalMatrix minus(FastMatrix B) {
+        CanonicalMatrix AB = deepClone();
+        if (B.isCanonical()) {
+            AB.sub(B.asCanonical());
+        } else {
+            AB.sub(B);
+        }
         return AB;
     }
-
-    public FastMatrix minus() {
-        FastMatrix r = deepClone();
+    
+    default CanonicalMatrix minus() {
+        CanonicalMatrix r = deepClone();
         r.apply(x -> -x);
         return r;
     }
 
     //</editor-fold>
-    /**
-     *
-     * @param c
-     * @return
-     */
-    @Override
-    public final DataBlock column(final int c) {
-        int beg = start + c * colInc, end = beg + rowInc * nrows;
-        return DataBlock.of(storage, beg, end, rowInc);
+    DataBlockIterator rowsIterator();
+    
+    DataBlockIterator reverseRowsIterator();
+    
+    DataBlockIterator columnsIterator();
+    
+    DataBlockIterator reverseColumnsIterator();
+    
+    default Iterable<DataBlock> rows() {
+        return () -> new Rows(this);
     }
-
-    /**
-     *
-     * @param r
-     * @return
-     */
-    @Override
-    public final DataBlock row(final int r) {
-        int beg = start + r * rowInc, end = beg + colInc * ncols;
-        return DataBlock.of(storage, beg, end, colInc);
-    }
-
-    public final Iterable<DataBlock> rows() {
-        return () -> new Rows();
-    }
-
-    public final Iterable<DataBlock> columns() {
-        return () -> new Columns();
-    }
-
-    public final Iterable<DataBlock> fastRows() {
-        return () -> rowsIterator();
-    }
-
-    public final Iterable<DataBlock> fastColumns() {
-        return () -> columnsIterator();
-    }
-
-    public final DataBlockIterator rowsIterator() {
-        return new RCIterator(topOutside(), nrows, rowInc);
-    }
-
-    public final DataBlockIterator reverseRowsIterator() {
-        return new RCIterator(bottomOutside(), nrows, -rowInc);
-    }
-
-    public final DataBlockIterator columnsIterator() {
-        return new RCIterator(leftOutside(), ncols, colInc);
-    }
-
-    public final DataBlockIterator reverseColumnsIterator() {
-        return new RCIterator(rightOutside(), ncols, -colInc);
+    
+    default Iterable<DataBlock> columns() {
+        return () -> new Columns(this);
     }
 
     /**
@@ -1187,9 +827,12 @@ public class FastMatrix implements Matrix.Mutable {
      *
      * @return The list of all the columns.
      */
-    public List<DataBlock> columnList() {
+    default List<DataBlock> columnList() {
         ArrayList<DataBlock> rc = new ArrayList<>();
-        columns().forEach(col -> rc.add(col));
+        int ncols = getColumnsCount();
+        for (int i = 0; i < ncols; ++i) {
+            rc.add(column(i));
+        }
         return rc;
     }
 
@@ -1198,9 +841,12 @@ public class FastMatrix implements Matrix.Mutable {
      *
      * @return The list of all the columns.
      */
-    public List<DataBlock> rowList() {
+    default List<DataBlock> rowList() {
         ArrayList<DataBlock> rc = new ArrayList<>();
-        rows().forEach(row -> rc.add(row));
+        int nrows = getRowsCount();
+        for (int i = 0; i < nrows; ++i) {
+            rc.add(row(i));
+        }
         return rc;
     }
 
@@ -1211,7 +857,10 @@ public class FastMatrix implements Matrix.Mutable {
      *
      * @param n The displacement (n cells left and n cells up)
      */
-    public void upLeftShift(@Nonnegative final int n) {
+    default void upLeftShift(@Nonnegative final int n) {
+        double[] storage = getStorage();
+        int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
         int del = (rowInc + colInc) * n;
         for (int c = 0, i = start; c < ncols - n; ++c, i += colInc) {
             for (int r = 0, j = i; r < nrows - n; ++r, j += rowInc) {
@@ -1227,7 +876,10 @@ public class FastMatrix implements Matrix.Mutable {
      *
      * @param n The displacement (n cells right and n cells down)
      */
-    public void downRightShift(@Nonnegative final int n) {
+    default void downRightShift(@Nonnegative final int n) {
+        double[] storage = getStorage();
+        int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
         int del = (rowInc + colInc) * n;
         for (int c = n, i = start + (nrows - 1) * rowInc
                 + (ncols - 1) * colInc; c < ncols; ++c, i -= colInc) {
@@ -1243,7 +895,10 @@ public class FastMatrix implements Matrix.Mutable {
      *
      * @return An empty sub-matrix
      */
-    public MatrixWindow topLeft() {
+    default MatrixWindow topLeft() {
+        double[] storage = getStorage();
+        int start = getStartPosition(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
         return new MatrixWindow(storage, start, 0, 0, rowInc, colInc);
     }
 
@@ -1254,7 +909,10 @@ public class FastMatrix implements Matrix.Mutable {
      * @param nc Number of columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
-    public MatrixWindow topLeft(int nr, int nc) {
+    default MatrixWindow topLeft(int nr, int nc) {
+        double[] storage = getStorage();
+        int start = getStartPosition(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
         return new MatrixWindow(storage, start, nr, nc, rowInc, colInc);
     }
 
@@ -1264,7 +922,10 @@ public class FastMatrix implements Matrix.Mutable {
      * @param nr Number of rows. Could be 0.
      * @return A nr src nc sub-matrix
      */
-    public MatrixWindow top(int nr) {
+    default MatrixWindow top(int nr) {
+        double[] storage = getStorage();
+        int start = getStartPosition(), ncols = getColumnsCount(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
         return new MatrixWindow(storage, start, nr, ncols, rowInc, colInc);
     }
 
@@ -1274,7 +935,10 @@ public class FastMatrix implements Matrix.Mutable {
      * @param nc Number of columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
-    public MatrixWindow left(int nc) {
+    default MatrixWindow left(int nc) {
+        double[] storage = getStorage();
+        int start = getStartPosition(), nrows = getRowsCount(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
         return new MatrixWindow(storage, start, nrows, nc, rowInc, colInc);
     }
 
@@ -1283,7 +947,10 @@ public class FastMatrix implements Matrix.Mutable {
      *
      * @return An empty sub-matrix
      */
-    public MatrixWindow bottomRight() {
+    default MatrixWindow bottomRight() {
+        double[] storage = getStorage();
+        int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
         int nstart = start + nrows * rowInc + ncols * colInc;
         return new MatrixWindow(storage, nstart, 0, 0, rowInc, colInc);
     }
@@ -1295,7 +962,10 @@ public class FastMatrix implements Matrix.Mutable {
      * @param nc Number of columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
-    public MatrixWindow bottomRight(int nr, int nc) {
+    default MatrixWindow bottomRight(int nr, int nc) {
+        double[] storage = getStorage();
+        int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
         int nstart = start + (nrows - nr) * rowInc + (ncols - nc) * colInc;
         return new MatrixWindow(storage, nstart, nr, nc, rowInc, colInc);
     }
@@ -1306,7 +976,10 @@ public class FastMatrix implements Matrix.Mutable {
      * @param nr Number of rows. Could be 0.
      * @return The last n rows
      */
-    public MatrixWindow bottom(int nr) {
+    default MatrixWindow bottom(int nr) {
+        double[] storage = getStorage();
+        int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
         return new MatrixWindow(storage, start + nrows - nr, nr, ncols, rowInc, colInc);
     }
 
@@ -1316,135 +989,45 @@ public class FastMatrix implements Matrix.Mutable {
      * @param nc Number of columns. Could be 0.
      * @return The nc right columns
      */
-    public MatrixWindow right(int nc) {
+    default MatrixWindow right(int nc) {
+        double[] storage = getStorage();
+        int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
         return new MatrixWindow(storage, start + (ncols - nc) * colInc, nrows, nc, rowInc, colInc);
     }
 
     //</editor-fold>    
     //<editor-fold defaultstate="collapsed" desc="toArray range">
-    public DataWindow top() {
+    default DataWindow top() {
+        double[] storage = getStorage();
+        int start = getStartPosition(), ncols = getColumnsCount(),
+                colInc = getColumnIncrement();
         return DataWindow.windowOf(storage, start, start + ncols * colInc, colInc);
     }
-
-    public DataWindow left() {
+    
+    default DataWindow left() {
+        double[] storage = getStorage();
+        int start = getStartPosition(), nrows = getRowsCount(),
+                rowInc = getRowIncrement();
         return DataWindow.windowOf(storage, start, start + nrows * rowInc, rowInc);
     }
-
-    public DataWindow bottom() {
+    
+    default DataWindow bottom() {
+        double[] storage = getStorage();
+        int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
         int beg = start + (nrows - 1) * rowInc;
         return DataWindow.windowOf(storage, beg, beg + ncols * colInc, colInc);
     }
-
-    public DataWindow right() {
+    
+    default DataWindow right() {
+        double[] storage = getStorage();
+        int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
         int beg = start + (ncols - 1) * colInc;
         return DataWindow.windowOf(storage, beg, beg + nrows * rowInc, rowInc);
     }
-
-    DataBlock topOutside() {
-        int beg = start - rowInc;
-        return DataBlock.of(storage, beg, beg + ncols * colInc, colInc);
-    }
-
-    DataBlock leftOutside() {
-        int beg = start - colInc;
-        return DataBlock.of(storage, beg, beg + nrows * rowInc, rowInc);
-    }
-
-    DataBlock bottomOutside() {
-        int beg = start + rowInc * nrows;
-        return DataBlock.of(storage, beg, beg + ncols * colInc, colInc);
-    }
-
-    DataBlock rightOutside() {
-        int beg = start + colInc * ncols;
-        return DataBlock.of(storage, beg, beg + nrows * rowInc, rowInc);
-    }
-
-    //</editor-fold>    
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        if (!isEmpty()) {
-            DataBlockIterator rows = this.rowsIterator();
-            builder.append(rows.next());
-            while (rows.hasNext()) {
-                builder.append(System.lineSeparator());
-                builder.append(rows.next());
-            }
-        }
-        return builder.toString();
-    }
-
-    public String toString(String fmt) {
-        StringBuilder builder = new StringBuilder();
-        if (!isEmpty()) {
-            DataBlockIterator rows = this.rowsIterator();
-            builder.append(rows.next().toString(fmt));
-            while (rows.hasNext()) {
-                builder.append(System.lineSeparator());
-                builder.append(rows.next().toString(fmt));
-            }
-        }
-        return builder.toString();
-    }
-
-    private static class RCIterator extends DataBlockIterator {
-
-        private RCIterator(final DataBlock start, int niter, int inc) {
-            super(start, niter, inc);
-        }
-    }
-
-    private class Rows implements Iterator<DataBlock> {
-
-        private int start, pos;
-        private final int len;
-
-        Rows() {
-            pos = 0;
-            start = FastMatrix.this.start;
-            len = FastMatrix.this.colInc * FastMatrix.this.ncols;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return pos < FastMatrix.this.nrows;
-        }
-
-        @Override
-        public DataBlock next() {
-            if (pos++ > 0) {
-                start += FastMatrix.this.rowInc;
-            }
-            return DataBlock.of(FastMatrix.this.storage, start, start + len, FastMatrix.this.colInc);
-        }
-    }
-
-    private class Columns implements Iterator<DataBlock> {
-
-        private int start, pos;
-        private final int len;
-
-        Columns() {
-            pos = 0;
-            len = FastMatrix.this.rowInc * FastMatrix.this.nrows;
-            start = FastMatrix.this.start;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return pos < FastMatrix.this.ncols;
-        }
-
-        @Override
-        public DataBlock next() {
-            if (pos++ > 0) {
-                start += FastMatrix.this.colInc;
-            }
-            return DataBlock.of(FastMatrix.this.storage, start, start + len, FastMatrix.this.rowInc);
-        }
-    }
-
+    
     public static LogSign logDeterminant(FastMatrix X) {
         if (!X.isSquare()) {
             throw new IllegalArgumentException();
@@ -1456,7 +1039,7 @@ public class FastMatrix implements Matrix.Mutable {
         }
         return LogSign.of(hous.rdiagonal(false));
     }
-
+    
     public static double determinant(FastMatrix X) {
         LogSign ls = logDeterminant(X);
         if (ls == null) {
@@ -1464,5 +1047,48 @@ public class FastMatrix implements Matrix.Mutable {
         }
         double val = Math.exp(ls.getValue());
         return ls.isPositive() ? val : -val;
+    }
+    
+}
+
+class Rows implements Iterator<DataBlock> {
+    
+    private int pos;
+    private final FastMatrix M;
+    
+    Rows(FastMatrix M) {
+        pos = 0;
+        this.M = M;
+    }
+    
+    @Override
+    public boolean hasNext() {
+        return pos < M.getRowsCount();
+    }
+    
+    @Override
+    public DataBlock next() {
+        return M.row(pos++);
+    }
+}
+
+class Columns implements Iterator<DataBlock> {
+    
+    private int pos;
+    private final FastMatrix M;
+    
+    Columns(FastMatrix M) {
+        pos = 0;
+        this.M = M;
+    }
+    
+    @Override
+    public boolean hasNext() {
+        return pos < M.getColumnsCount();
+    }
+    
+    @Override
+    public DataBlock next() {
+        return M.column(pos++);
     }
 }

@@ -56,7 +56,7 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
     }
 
     private void init(FastMatrix matrix) {
-        double[] A = matrix.data();
+        double[] A = matrix.toArray();
         m_m = matrix.getRowsCount();
         m_n = matrix.getColumnsCount();
 

@@ -215,7 +215,7 @@ public class HouseholderWithPivoting implements IQRDecomposition {
     private void init(FastMatrix M) {
         m = M.getRowsCount();
         norig = n = M.getColumnsCount();
-        qr = M.data();
+        qr = M.toArray();
         rdiag = new double[n];
         norm = new double[n];
         wa = new double[n];

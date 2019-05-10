@@ -28,6 +28,7 @@ import java.util.function.IntToDoubleFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static demetra.data.analysis.DiscreteKernel.distance;
+import static demetra.data.analysis.DiscreteKernel.distance;
 
 /**
  *

@@ -15,6 +15,8 @@ import org.junit.Test;
 import org.junit.Ignore;
 import static demetra.data.DataBlock.of;
 import static demetra.data.DataBlock.of;
+import static demetra.data.DataBlock.of;
+import static demetra.data.DataBlock.of;
 
 /**
  *
