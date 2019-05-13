@@ -17,6 +17,7 @@
 package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
@@ -32,9 +33,9 @@ import demetra.timeseries.TsPeriod;
  */
 public class PeriodicContrastsFactory implements RegressionVariableFactory<PeriodicContrasts> {
 
-    public static FastMatrix matrix(PeriodicContrasts var, int length, int start) {
+    public static CanonicalMatrix matrix(PeriodicContrasts var, int length, int start) {
         int period = var.getPeriod();
-        FastMatrix M = FastMatrix.make(length, period - 1);
+        CanonicalMatrix M = CanonicalMatrix.make(length, period - 1);
         int lstart = period - start - 1;
         if (lstart < 0) {
             lstart += period;

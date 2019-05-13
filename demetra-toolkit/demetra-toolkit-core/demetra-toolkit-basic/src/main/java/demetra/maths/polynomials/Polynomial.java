@@ -16,6 +16,7 @@
  */
 package demetra.maths.polynomials;
 
+import demetra.maths.PolynomialException;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.concurrent.atomic.AtomicReference;
@@ -23,7 +24,7 @@ import java.util.function.IntToDoubleFunction;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
-import demetra.maths.ComplexBuilder;
+import demetra.maths.ComplexComputer;
 import demetra.maths.ComplexMath;
 import demetra.maths.Simplifying;
 import demetra.util.Arrays2;
@@ -31,6 +32,7 @@ import lombok.NonNull;
 import demetra.maths.PolynomialType;
 import demetra.maths.polynomials.spi.RootsSolver;
 import demetra.data.DoubleSeq;
+import demetra.design.Unsafe;
 import demetra.maths.ComplexUtility;
 
 /**
@@ -447,11 +449,11 @@ public final class Polynomial implements PolynomialType {
      * @return
      */
     public Complex evaluateAtFrequency(final double w) {
-        ComplexBuilder f = new ComplexBuilder(get(0));
+        ComplexComputer f = new ComplexComputer(get(0));
         for (int i = 1; i < coeff.length; ++i) {
             f.add(Complex.polar(coeff[i], w * i));
         }
-        return f.build();
+        return f.result();
     }
 
     @Override
@@ -600,6 +602,7 @@ public final class Polynomial implements PolynomialType {
      *
      * @param roots
      */
+    @Unsafe
     void setRoots(Complex[] roots) {
         this.defRoots.set(roots);
     }

@@ -19,6 +19,7 @@ package demetra.data;
 //import ec.tstoolkit.maths.matrices.*;
 import demetra.design.Development;
 import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.SubMatrix;
 import java.util.Arrays;
 
 /**
@@ -204,8 +205,8 @@ public class DataBlockStorage {
      * @param end Last position (excluded)
      * @return
      */
-    public FastMatrix matrix(final int start, final int end) {
-        return FastMatrix.builder(storage).nrows(dim).ncolumns(end-start).start(dim*start).columnIncrement(dim).build();
+    public SubMatrix matrix(final int start, final int end) {
+        return SubMatrix.builder(storage).nrows(dim).ncolumns(end-start).start(dim*start).columnIncrement(dim).build();
     }
     
     /**
@@ -213,8 +214,8 @@ public class DataBlockStorage {
      * The successive data blocks are stored in the columns copyOf the sub-matrix
      * @return
      */
-    public FastMatrix matrix() {
-        return FastMatrix.builder(storage).nrows(dim).ncolumns(nused).columnIncrement(dim).build();
+    public SubMatrix matrix() {
+        return SubMatrix.builder(storage).nrows(dim).ncolumns(nused).columnIncrement(dim).build();
     }
 
     /**

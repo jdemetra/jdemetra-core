@@ -375,58 +375,58 @@ public final class BackFilter implements IFiniteFilter {
 	}
     }
 
-    /**
-     * 
-     */
-    public static class StationaryTransformation
-    {
-
-        /**
-         *
-         */
-        /**
-         *
-         */
-        public BackFilter unitRoots, stationaryFilter;
-
-	private int freq;
-
-        /**
-         * 
-         */
-        public StationaryTransformation()
-        {
-	    this.freq = 0;
-	}
-
-        /**
-         * 
-         * @param freq
-         */
-        public StationaryTransformation(int freq)
-        {
-	    this.freq = freq;
-	}
-
-        /**
-         * 
-         * @param f
-         * @return
-         */
-        public boolean transform(BackFilter f)
-        {
-	    UnitRootsSolver urs = freq == 0 ? new UnitRootsSolver()
-		    : new UnitRootsSolver(freq);
-	    urs.factorize(f.polynomial);
-	    unitRoots = new BackFilter(urs.getUnitRoots().toPolynomial());
-	    if (unitRoots.getDegree() == 0) {
-		stationaryFilter = f;
-		return false;
-	    } else {
-		stationaryFilter = new BackFilter(urs.remainder());
-		return true;
-	    }
-	}
-    }
-
+//    /**
+//     * 
+//     */
+//    public static class StationaryTransformation
+//    {
+//
+//        /**
+//         *
+//         */
+//        /**
+//         *
+//         */
+//        public BackFilter unitRoots, stationaryFilter;
+//
+//	private int freq;
+//
+//        /**
+//         * 
+//         */
+//        public StationaryTransformation()
+//        {
+//	    this.freq = 0;
+//	}
+//
+//        /**
+//         * 
+//         * @param freq
+//         */
+//        public StationaryTransformation(int freq)
+//        {
+//	    this.freq = freq;
+//	}
+//
+//        /**
+//         * 
+//         * @param f
+//         * @return
+//         */
+//        public boolean transform(BackFilter f)
+//        {
+//	    UnitRootsSolver urs = freq == 0 ? new UnitRootsSolver()
+//		    : new UnitRootsSolver(freq);
+//	    urs.factorize(f.polynomial);
+//	    unitRoots = new BackFilter(urs.getUnitRoots().toPolynomial());
+//	    if (unitRoots.getDegree() == 0) {
+//		stationaryFilter = f;
+//		return false;
+//	    } else {
+//		stationaryFilter = new BackFilter(urs.remainder());
+//		return true;
+//	    }
+//	}
+//    }
+//
 }

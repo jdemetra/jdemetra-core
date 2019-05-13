@@ -112,7 +112,7 @@ public class TramoProcessorTest {
         System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
     }
 
-    @Ignore
+    @Test
     public void testInseeFull() {
         TsData[] all = Data.insee();
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
@@ -139,8 +139,7 @@ public class TramoProcessorTest {
         assertTrue(n > .9 * all.length);
     }
 
-    @Ignore
-    public void testInseeFullc() {
+    public static void testInseeFullc() {
         TsData[] all = Data.insee();
         TramoSpec spec = TramoSpec.TRfull;
         ModellingContext context = new ModellingContext();
@@ -188,7 +187,7 @@ public class TramoProcessorTest {
         System.out.println(n);
 
 // The old implementation was bugged. 
-        assertTrue(n > .6 * all.length);
+//        assertTrue(n > .6 * all.length);
     }
 
     @Test
@@ -422,6 +421,8 @@ public class TramoProcessorTest {
     }
 
     public static void main(String[] arg){
+//        testInseeFull();
+        testInseeFullc();
         stressTestProd();
     }
 }

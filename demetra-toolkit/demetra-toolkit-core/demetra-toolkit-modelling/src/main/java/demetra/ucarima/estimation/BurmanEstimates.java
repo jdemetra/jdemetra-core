@@ -34,6 +34,7 @@ import demetra.ucarima.WienerKolmogorovEstimators;
 import java.util.Arrays;
 import demetra.arima.estimation.ArimaForecasts;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.decomposition.LUDecomposition;
 
 /**
@@ -537,7 +538,7 @@ public class BurmanEstimates {
         //////////////////////////////////
 //         Complete z, the original series
 //         z is the extended series with forecasts and backcasts
-        FastMatrix m = FastMatrix.square(pstar + qstar);
+        CanonicalMatrix m = CanonicalMatrix.square(pstar + qstar);
         for (int i = 0; i < pstar; ++i) {
             for (int j = 0; j <= ma.degree(); ++j) {
                 m.set(i, i + j, ma.get(j));

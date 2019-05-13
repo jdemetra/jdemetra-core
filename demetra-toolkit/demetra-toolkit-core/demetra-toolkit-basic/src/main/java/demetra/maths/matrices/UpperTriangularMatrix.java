@@ -141,9 +141,9 @@ public class UpperTriangularMatrix {
      * @throws MatrixException when the matrix is non invertible (some elements
      * of the diagonal are 0).
      */
-    public FastMatrix inverse(final FastMatrix U) throws MatrixException {
+    public CanonicalMatrix inverse(final FastMatrix U) throws MatrixException {
         int n = U.getRowsCount();
-        FastMatrix IU = FastMatrix.identity(n);
+        CanonicalMatrix IU = CanonicalMatrix.identity(n);
         rsolve(U, IU);
         return IU;
     }

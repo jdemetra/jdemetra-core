@@ -5,7 +5,7 @@
  */
 package demetra.data;
 
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -22,7 +22,7 @@ public class DoublesTest {
 
     @Test
     public void testOp() {
-        FastMatrix m = FastMatrix.make(200, 20);
+        CanonicalMatrix m = CanonicalMatrix.make(200, 20);
         Random rnd = new Random();
         m.set(rnd::nextDouble);
         DoubleSeq a = m.column(0);
@@ -40,7 +40,7 @@ public class DoublesTest {
     @Ignore
     public void stressTestOp() {
         int K = 100000;
-        FastMatrix m = FastMatrix.make(200, 20);
+        CanonicalMatrix m = CanonicalMatrix.make(200, 20);
         Random rnd = new Random();
         m.set(rnd::nextDouble);
         long t0 = System.currentTimeMillis();

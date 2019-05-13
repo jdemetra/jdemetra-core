@@ -17,7 +17,8 @@
 package demetra.maths;
 
 import demetra.design.Development;
-import static demetra.maths.Complex.abs;
+import static demetra.maths.ComplexType.abs;
+import static demetra.maths.ComplexType.arg;
 
 /**
  * Mathematical functions on complex numbers
@@ -78,9 +79,9 @@ public final class ComplexMath {
     public Complex acosec(final ComplexType c) {
         // acosec(c) = asin(1/c)
 
-        ComplexBuilder tmp = new ComplexBuilder(c);
+        ComplexComputer tmp = new ComplexComputer(c);
         tmp.inv();
-        return asin(tmp.build());
+        return asin(tmp.result());
     }
 
     /**
@@ -88,7 +89,7 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public Complex acosh(final Complex c) {
+    public Complex acosh(final ComplexType c) {
         // acosh(c) = log(c + sqrt(c*c - 1))
         double cr = c.getRe(), ci = c.getIm();
         // c*c + 1
@@ -121,13 +122,13 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public ComplexType acot(final Complex c) {
+    public Complex acot(final ComplexType c) {
         // acot(c) = -i/2 * log( (ic-1)/(ic+1) )
         double cr = c.getRe(), ci = c.getIm();
-        ComplexBuilder tmp = new ComplexBuilder(-ci - 1, cr);
+        ComplexComputer tmp = new ComplexComputer(-ci - 1, cr);
         tmp.div(1 - ci, cr);
 
-        Complex ltmp = tmp.build();
+        Complex ltmp = tmp.result();
         // -i/2*log
         double re = ltmp.getRe(), im = ltmp.getIm();
         return Complex.cart(0.5 * arg(re, im), -0.5 * Math.log(abs(re, im)));
@@ -142,15 +143,11 @@ public final class ComplexMath {
         // atanh(z) = 1/2 * log( (c+1)/(c-1) )
         double cr = c.getRe(), ci = c.getIm();
 
-        ComplexBuilder tmp = new ComplexBuilder(cr + 1, ci);
+        ComplexComputer tmp = new ComplexComputer(cr + 1, ci);
         tmp.div(cr - 1, ci);
 
         return Complex.cart(0.5 * Math.log(tmp.abs()), 0.5 * tmp.arg()); // principal
         // value
-    }
-
-    double arg(final double re, final double im) {
-        return Math.atan2(im, re);
     }
 
     /**
@@ -158,13 +155,13 @@ public final class ComplexMath {
      * @param c
      * @return
      */
-    public Complex asec(final ComplexType c) {
+    public Complex asec(final Complex c) {
         // asec(c) = -i * log(1/c + i*sqrt(1 - 1/c*c))
         // asec(c) = acos(1/c)
 
-        ComplexBuilder tmp = new ComplexBuilder(c);
+        ComplexComputer tmp = new ComplexComputer(c);
         tmp.inv();
-        return acos(tmp.build());
+        return acos(tmp.result());
     }
 
     /**
@@ -247,10 +244,10 @@ public final class ComplexMath {
     public Complex atan(final ComplexType c) {
         // atan(c) = -i/2 * log( (i-c)/(i+c) )
         double cr = c.getRe(), ci = c.getIm();
-        ComplexBuilder tmp = new ComplexBuilder(-cr, 1 - ci);
+        ComplexComputer tmp = new ComplexComputer(-cr, 1 - ci);
         tmp.div(cr, 1 + ci);
 
-        Complex ltmp = tmp.build();
+        Complex ltmp = tmp.result();
         // -i*log
         double re = ltmp.getRe(), im = ltmp.getIm();
         return Complex.cart(0.5 * arg(re, im), -0.5 * Math.log(abs(re, im)));
@@ -265,7 +262,7 @@ public final class ComplexMath {
         // atanh(z) = 1/2 * log( (1+c)/(1-c) )
         double cr = c.getRe(), ci = c.getIm();
 
-        ComplexBuilder tmp = new ComplexBuilder(cr + 1, ci);
+        ComplexComputer tmp = new ComplexComputer(cr + 1, ci);
         tmp.div(1 - cr, -ci);
 
         return Complex.cart(0.5 * Math.log(tmp.abs()), 0.5 * tmp.arg()); // principal
@@ -307,9 +304,9 @@ public final class ComplexMath {
      */
     public Complex cosec(final ComplexType c) {
         // cosec(c) = 1 / sin(c)
-        ComplexBuilder builder = new ComplexBuilder(sin(c));
+        ComplexComputer builder = new ComplexComputer(sin(c));
         builder.inv();
-        return builder.build();
+        return builder.result();
     }
 
     /**
@@ -366,10 +363,10 @@ public final class ComplexMath {
         double im2 = scalar * (-siic);
 
         // 
-        ComplexBuilder result = new ComplexBuilder(0.5 * (re1 + re2),
+        ComplexComputer result = new ComplexComputer(0.5 * (re1 + re2),
                 0.5 * (im1 + im2));
         result.div(0.5 * (im1 - im2), -0.5 * (re1 - re2));
-        return result.build();
+        return result.result();
     }
 
     /**
@@ -399,9 +396,9 @@ public final class ComplexMath {
         double re2 = scalar * cic;
         double im2 = scalar * (-sic);
 
-        ComplexBuilder result = new ComplexBuilder(re1 + re2, im1 + im2);
+        ComplexComputer result = new ComplexComputer(re1 + re2, im1 + im2);
         result.div(re1 - re2, im1 - im2);
-        return result.build();
+        return result.result();
     }
 
     // exp, log, pow, sqrt
@@ -475,9 +472,9 @@ public final class ComplexMath {
      */
     public Complex sec(final ComplexType c) {
         // sec(c) = 1 / cos(c)
-        ComplexBuilder builder = new ComplexBuilder(cos(c));
+        ComplexComputer builder = new ComplexComputer(cos(c));
         builder.inv();
-        return builder.build();
+        return builder.result();
     }
 
     /**
@@ -592,10 +589,10 @@ public final class ComplexMath {
         double im2 = scalar * (-siic);
 
         // 
-        ComplexBuilder result = new ComplexBuilder(0.5 * (im1 - im2), -0.5
+        ComplexComputer result = new ComplexComputer(0.5 * (im1 - im2), -0.5
                 * (re1 - re2));
         result.div(0.5 * (re1 + re2), 0.5 * (im1 + im2));
-        return result.build();
+        return result.result();
     }
 
     /**
@@ -625,9 +622,9 @@ public final class ComplexMath {
         double re2 = scalar * cic;
         double im2 = scalar * (-sic);
 
-        ComplexBuilder result = new ComplexBuilder(re1 - re2, im1 - im2);
+        ComplexComputer result = new ComplexComputer(re1 - re2, im1 - im2);
         result.div(re1 + re2, im1 + im2);
-        return result.build();
+        return result.result();
     }
 
 

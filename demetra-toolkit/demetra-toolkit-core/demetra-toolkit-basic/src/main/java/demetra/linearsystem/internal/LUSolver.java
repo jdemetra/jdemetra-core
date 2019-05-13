@@ -26,6 +26,7 @@ import demetra.maths.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import demetra.linearsystem.LinearSystemSolver;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.decomposition.LUDecomposition;
 
 /**
@@ -139,13 +140,13 @@ public class LUSolver implements LinearSystemSolver {
             An = A;
         }
         lu.decompose(An);
-        FastMatrix B0 = improve ? B.deepClone() : null;
+        CanonicalMatrix B0 = improve ? B.deepClone() : null;
         lu.solve(B);
         if (!improve) {
             return;
         }
         // improve the result
-        FastMatrix DB = FastMatrix.make(B.getRowsCount(), B.getColumnsCount());
+        CanonicalMatrix DB = CanonicalMatrix.make(B.getRowsCount(), B.getColumnsCount());
         DB.robustProduct(An, B, new NeumaierAccumulator());
         DB.sub(B0);
         lu.solve(DB);

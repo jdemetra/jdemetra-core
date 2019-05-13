@@ -20,17 +20,18 @@ import demetra.data.DataBlock;
 import demetra.data.DataWindow;
 import demetra.design.Development;
 import demetra.maths.Constants;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.decomposition.QRDecomposition;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class HouseholderWithPivoting implements IQRDecomposition {
+public class HouseholderWithPivoting implements QRDecomposition {
 
     private double[] qr, rdiag, norm, wa;
     private int[] unused;
@@ -67,13 +68,13 @@ public class HouseholderWithPivoting implements IQRDecomposition {
     }
 
     @Override
-    public FastMatrix r(boolean compact) {
+    public CanonicalMatrix r(boolean compact) {
         if (compact) {
-            FastMatrix r = FastMatrix.square(n);
+            CanonicalMatrix r = CanonicalMatrix.square(n);
             return r;
 
         } else {
-            FastMatrix r = FastMatrix.square(norig);
+            CanonicalMatrix r = CanonicalMatrix.square(norig);
             return r;
         }
     }

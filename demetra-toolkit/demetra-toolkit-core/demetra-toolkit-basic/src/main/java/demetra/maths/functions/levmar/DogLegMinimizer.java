@@ -25,6 +25,7 @@ import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.CanonicalMatrix;
 
 /**
  *
@@ -287,7 +288,7 @@ public class DogLegMinimizer implements ISsqFunctionMinimizer {
         int n = ecur_.length(), m = fn_.getDomain().getDim();
 
         // Jacobian
-        J = FastMatrix.make(n, m);
+        J = CanonicalMatrix.make(n, m);
         g_ = DataBlock.make(m);
         while (iterate() && iter < itmax) {
             ++iter;

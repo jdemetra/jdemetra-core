@@ -25,7 +25,7 @@ import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Legacy;
 import demetra.design.Development;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
@@ -46,7 +46,7 @@ public class ModifiedLjungBoxFilter implements ArmaFilter {
 
     private double m_s;
     private MaLjungBoxFilter m_malb;
-    private FastMatrix m_L, m_C;
+    private CanonicalMatrix m_L, m_C;
 
     @Override
     public void apply(DoubleSeq rw, DataBlock wl) {
@@ -101,7 +101,7 @@ public class ModifiedLjungBoxFilter implements ArmaFilter {
 	// Compute the covariance matrix V
 
 	if (m_p > 0) {
-	    m_L = FastMatrix.square(m_p);
+	    m_L = CanonicalMatrix.square(m_p);
 
 	    // W = var(y)
 	    double[] cov = arima.getAutoCovarianceFunction().values(m_p);
@@ -112,8 +112,8 @@ public class ModifiedLjungBoxFilter implements ArmaFilter {
 	    if (m_q > 0) {
 		double[] psi = arima.getPsiWeights().getRationalFunction()
 			.coefficients(m_q);
-		FastMatrix C = FastMatrix.make(m_n - m_p, m_p);
-		m_C = FastMatrix.make(m_n + m_q - m_p, m_p);
+		CanonicalMatrix C = CanonicalMatrix.make(m_n - m_p, m_p);
+		m_C = CanonicalMatrix.make(m_n + m_q - m_p, m_p);
 		// fill in the columns of m_C and filter them
 		for (int c = 0; c < m_p; ++c) {
 		    DataBlock col = C.column(c);

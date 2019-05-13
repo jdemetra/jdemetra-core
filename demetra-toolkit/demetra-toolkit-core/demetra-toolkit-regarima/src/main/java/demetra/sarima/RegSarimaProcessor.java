@@ -52,7 +52,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         private IArimaMapping<SarimaModel> mapping;
         private double eps = DEF_EPS, feps = DEF_INTERNAL_EPS;
         private boolean ml = true, mt = false, cdf = true, fast = true;
-        private StartingPoint start = StartingPoint.Multiple;
+        private StartingPoint start = StartingPoint.HannanRissanen;
         private ISsqFunctionMinimizer min = new LevenbergMarquardtMinimizer();
 
         public Builder mapping(IArimaMapping<SarimaModel> mapping) {

@@ -24,7 +24,7 @@ import demetra.design.BuilderPattern;
 import demetra.maths.matrices.Matrix;
 
 /**
- * This class represents the concentrated likelihood of a linear regression
+ * This interface represents the concentrated likelihood of a linear regression
  * model.
  *
  *

@@ -17,7 +17,7 @@
 package demetra.pca;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.decomposition.ISingularValueDecomposition;
 import demetra.maths.matrices.internal.SingularValueDecomposition;
 import demetra.data.DoubleSeq;
@@ -28,16 +28,16 @@ import demetra.data.DoubleSeq;
  */
 public class PrincipalComponents {
 
-    private FastMatrix data;
+    private CanonicalMatrix data;
     private ISingularValueDecomposition svd;
     private double scaling;
 
-    public boolean process(FastMatrix data) {
+    public boolean process(CanonicalMatrix data) {
         clear();
         this.data = data;
         svd=new SingularValueDecomposition();
        
-        FastMatrix ndata;
+        CanonicalMatrix ndata;
         if (data.getColumnsCount() == 1){
             ndata=data;
             scaling=1;
@@ -60,7 +60,7 @@ public class PrincipalComponents {
         return scaling;
     }
 
-    public FastMatrix getData() {
+    public CanonicalMatrix getData() {
         return data;
     }
     
@@ -72,7 +72,7 @@ public class PrincipalComponents {
         return svd.S();
     }
     
-    public FastMatrix getEigenVectors(){
+    public CanonicalMatrix getEigenVectors(){
         return svd.V();
     }
     

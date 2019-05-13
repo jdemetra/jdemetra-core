@@ -18,7 +18,7 @@ package demetra.data.analysis;
 
 import demetra.design.Development;
 import demetra.maths.Complex;
-import demetra.maths.ComplexBuilder;
+import demetra.maths.ComplexComputer;
 import demetra.maths.Constants;
 import demetra.util.Arrays2;
 

@@ -10,13 +10,14 @@ import demetra.regarima.RegArimaModel;
 import demetra.data.DataBlock;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.descriptors.arima.SarimaDescriptor;
+import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsUnit;
@@ -43,7 +44,7 @@ public class MovingRegression {
     @lombok.Data
     static class Airline {
 
-        FastMatrix td;
+        CanonicalMatrix td;
         double regVariance;
         double theta, btheta;
     }
@@ -145,7 +146,7 @@ public class MovingRegression {
 //        for (int i = 1; i < xi.length; ++i) {
 //            xi[i] = xi[i - 1] + period;
 //        }
-        FastMatrix cl = FastMatrix.make(s.length(), x.getColumnsCount());
+        CanonicalMatrix cl = CanonicalMatrix.make(s.length(), x.getColumnsCount());
         cl.set(Double.NaN);
         int j = 0;
         for (; j < (period * nyears) / 2; ++j) {
@@ -201,14 +202,14 @@ public class MovingRegression {
         return Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
     }
 
-    private FastMatrix generateVar(DayClustering dc, String var) {
+    private CanonicalMatrix generateVar(DayClustering dc, String var) {
         int groupsCount = dc.getGroupsCount();
-        FastMatrix full = FastMatrix.square(7);
+        CanonicalMatrix full = CanonicalMatrix.square(7);
         if (!var.equalsIgnoreCase("Contrasts")) {
             full.set(-1.0 / 7.0);
         }
         full.diagonal().add(1);
-        FastMatrix Q = FastMatrix.make(groupsCount - 1, 7);
+        CanonicalMatrix Q = CanonicalMatrix.make(groupsCount - 1, 7);
         int[] gdef = dc.getGroupsDefinition();
         for (int i = 1; i < groupsCount; ++i) {
             for (int j = 0; j < 7; ++j) {

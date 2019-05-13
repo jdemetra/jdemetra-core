@@ -33,6 +33,7 @@ import demetra.leastsquares.QRSolver;
 import javax.annotation.Nonnull;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.CanonicalMatrix;
 
 /**
  *
@@ -144,7 +145,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
                 return true;
             }
 
-            Xl = FastMatrix.make(n, regs.getColumnsCount());
+            Xl = CanonicalMatrix.make(n, regs.getColumnsCount());
             DataBlockIterator rcols = regs.columnsIterator(), drcols = Xl.columnsIterator();
             while (rcols.hasNext()) {
                 filter.apply(rcols.next(), drcols.next());

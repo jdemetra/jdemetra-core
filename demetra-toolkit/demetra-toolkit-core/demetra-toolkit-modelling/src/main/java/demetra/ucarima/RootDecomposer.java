@@ -26,6 +26,7 @@ import demetra.maths.matrices.FastMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.leastsquares.QRSolver;
 import demetra.linearsystem.LinearSystemSolver;
+import demetra.maths.matrices.CanonicalMatrix;
 
 /**
  *
@@ -96,7 +97,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
 
         int xs = qs + 1, xn = qn + 1, x = xs + xn;
 
-        FastMatrix m = FastMatrix.square(x);
+        CanonicalMatrix m = CanonicalMatrix.square(x);
 
         // modify the arrays to get the frequency response (and not the agf)
         n[0] /= 2;

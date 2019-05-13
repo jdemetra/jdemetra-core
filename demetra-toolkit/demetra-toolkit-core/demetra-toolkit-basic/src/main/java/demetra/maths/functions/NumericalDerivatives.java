@@ -25,6 +25,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.CanonicalMatrix;
 
 /**
  *
@@ -122,7 +123,7 @@ public class NumericalDerivatives implements IFunctionDerivatives {
         for (int i = 0; i < n; ++i) {
             e[i] = Math.sqrt(Math.abs(eps[i]));
          }
-        hessian = FastMatrix.square(n);
+        hessian = CanonicalMatrix.square(n);
         // compute the diagonal
         // df/di(x) = (f(x+ei)-f(x))/ei
         // d2f/di2(x) = (df/di(x)-df/di(x-ei))/ei=(f(x+ei)-f(x)-f(x)+f(x-ei))/ei*ei

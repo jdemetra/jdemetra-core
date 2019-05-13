@@ -103,7 +103,7 @@ public class LowerTriangularMatrix {
      */
     public FastMatrix inverse(final FastMatrix L) throws MatrixException {
         int n = L.getRowsCount();
-        FastMatrix IL = FastMatrix.identity(n);
+        FastMatrix IL = CanonicalMatrix.identity(n);
         rsolve(L, IL);
         return IL;
     }

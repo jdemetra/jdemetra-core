@@ -21,9 +21,11 @@ import demetra.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.design.Development;
 import demetra.maths.Constants;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.CanonicalMatrix;
+import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.decomposition.LUDecomposition;
 
 
@@ -84,8 +86,8 @@ public abstract class AbstractLuDecomposition implements LUDecomposition {
         pivSign = 1;
     }
 
-    public FastMatrix l() {
-        FastMatrix l = FastMatrix.square(n);
+    public CanonicalMatrix l() {
+        CanonicalMatrix l = CanonicalMatrix.square(n);
         double[] lx = l.getStorage();
         for (int c = 0, idx = 0; c < n; c++) {
             lx[idx] = 1.0;
@@ -97,8 +99,8 @@ public abstract class AbstractLuDecomposition implements LUDecomposition {
         return l;
     }
 
-    public FastMatrix u() {
-        FastMatrix u = FastMatrix.square(n);
+    public CanonicalMatrix u() {
+        CanonicalMatrix u = CanonicalMatrix.square(n);
         double[] ux=u.getStorage();
         for (int c = 0, idx = 0; c < n; c++) {
             for (int r = 0; r <= c; r++, ++idx) {

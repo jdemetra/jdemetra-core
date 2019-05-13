@@ -20,19 +20,20 @@ import demetra.maths.Constants;
 import demetra.data.DataBlock;
 import demetra.data.accumulator.DoubleAccumulator;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.data.accumulator.NeumaierAccumulator;
 import java.util.function.Supplier;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.decomposition.QRDecomposition;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class RobustHouseholder implements IQRDecomposition {
+public class RobustHouseholder implements QRDecomposition {
 
     private final boolean fast;
     private double[] qr, rdiag;
@@ -69,8 +70,8 @@ public class RobustHouseholder implements IQRDecomposition {
     }
 
     @Override
-    public FastMatrix r(boolean compact) {
-        FastMatrix r = FastMatrix.square(n);
+    public CanonicalMatrix r(boolean compact) {
+        CanonicalMatrix r = CanonicalMatrix.square(n);
         double[] data = r.getStorage();
         for (int i = 0, k = 0, l = 0; i < n; ++i, k += n, l += m) {
             for (int j = 0; j < i; ++j) {

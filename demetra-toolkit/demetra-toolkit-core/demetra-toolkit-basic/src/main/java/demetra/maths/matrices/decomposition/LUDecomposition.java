@@ -19,6 +19,7 @@ package demetra.maths.matrices.decomposition;
 import demetra.design.Development;
 import demetra.data.DataBlock;
 import demetra.data.LogSign;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.MatrixException;
 

@@ -21,7 +21,7 @@ import demetra.maths.Complex;
 import demetra.maths.polynomials.Polynomial;
 import demetra.util.Ref;
 import java.util.function.IntToDoubleFunction;
-import demetra.maths.ComplexBuilder;
+import demetra.maths.ComplexComputer;
 import demetra.data.DoubleSeq;
 import demetra.maths.ComplexMath;
 
@@ -197,7 +197,7 @@ public class FilterUtility {
         int idx = lb;
         // sum (w(j)e(-i jw)), j: lb->ub
         Complex c0 = Complex.cart(Math.cos(w * idx), -Math.sin(w * idx));
-        ComplexBuilder rslt = new ComplexBuilder(c0)
+        ComplexComputer rslt = new ComplexComputer(c0)
                 .mul(c.applyAsDouble(idx++));
 
         // computed by the iteration procedure:
@@ -207,17 +207,17 @@ public class FilterUtility {
             Complex c1 = Complex.cart(Math.cos(w * idx), -Math.sin(w * idx));
             rslt.addAC(c.applyAsDouble(idx++), c1);
             while (idx <= ub) {
-                Complex eiw=new ComplexBuilder(c1)
+                Complex eiw=new ComplexComputer(c1)
                         .mul(2*cos)
                         .sub(c0)
-                        .build();
+                        .result();
                 rslt.addAC(c.applyAsDouble(idx++), eiw);
                 c0 = c1;
                 c1 = eiw;
             }
         }
         
-        return rslt.build();
+        return rslt.result();
     }
 
     /**

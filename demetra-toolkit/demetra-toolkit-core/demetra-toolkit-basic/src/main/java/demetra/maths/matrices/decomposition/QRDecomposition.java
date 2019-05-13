@@ -18,9 +18,10 @@ package demetra.maths.matrices.decomposition;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.FastMatrix;
 
 /**
  * Decomposes a matrix A as A = applyQ*R
@@ -29,7 +30,7 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IQRDecomposition {
+public interface QRDecomposition {
 
     void setPrecision(double eps);
 
@@ -47,7 +48,7 @@ public interface IQRDecomposition {
      * false otherwise
      * @return
      */
-    FastMatrix r(boolean compact);
+    CanonicalMatrix r(boolean compact);
 
     /**
      * Gets the diagonal of the R matrix

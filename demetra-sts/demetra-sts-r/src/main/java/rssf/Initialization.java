@@ -5,7 +5,7 @@
  */
 package rssf;
 
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.maths.matrices.Matrix;
 
@@ -24,7 +24,7 @@ public class Initialization {
         return demetra.ssf.Initialization.builder()
                 .dim(P.getRowsCount())
                 .a0(a)
-                .Pf(FastMatrix.of(P))
+                .Pf(CanonicalMatrix.of(P))
                 .build();
     }
     
@@ -39,9 +39,9 @@ public class Initialization {
                 .dim(P.getRowsCount())
                 .diffuseDim(B.getColumnsCount())
                 .a0(a)
-                .Pf(FastMatrix.of(P))
-                .B(B==null ? null : FastMatrix.of(B))
-                .Pi(Pi==null ? null : FastMatrix.of(Pi))
+                .Pf(CanonicalMatrix.of(P))
+                .B(B==null ? null : CanonicalMatrix.of(B))
+                .Pi(Pi==null ? null : CanonicalMatrix.of(Pi))
                 .build();
     }
 }

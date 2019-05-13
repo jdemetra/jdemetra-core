@@ -7,7 +7,7 @@ package demetra.maths.matrices.internal;
 
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.data.DoubleSeq;
 
 /**
@@ -20,9 +20,9 @@ import demetra.data.DoubleSeq;
  */
 public class LDLDecomposition {
 
-    private FastMatrix M;
+    private CanonicalMatrix M;
 
-    public void decompose(FastMatrix S, double zero) {
+    public void decompose(CanonicalMatrix S, double zero) {
         M = S.deepClone();
         double[] data = M.getStorage();
         int n = M.getRowsCount(), cinc = M.getColumnIncrement(), dinc = 1 + cinc;
@@ -73,14 +73,14 @@ public class LDLDecomposition {
         LowerTriangularMatrix.toLower(M);
     }
 
-    public FastMatrix L() {
-        FastMatrix L = M.deepClone();
+    public CanonicalMatrix L() {
+        CanonicalMatrix L = M.deepClone();
         L.diagonal().set(1);
         return L;
     }
 
-    public FastMatrix D() {
-        return FastMatrix.diagonal(M.diagonal());
+    public CanonicalMatrix D() {
+        return CanonicalMatrix.diagonal(M.diagonal());
     }
 
     public DoubleSeq diagonal() {

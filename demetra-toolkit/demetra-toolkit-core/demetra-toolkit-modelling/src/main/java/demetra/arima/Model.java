@@ -49,29 +49,29 @@ public final class Model implements IModel {
         this.var = var;
     }
 
-    /**
-     *
-     * @return
-     */
-    public Model doStationary() {
-        RationalBackFilter rb = rf.getRationalBackFilter();
-        BackFilter bdenom = rb.getDenominator();
-        BackFilter.StationaryTransformation bst = new BackFilter.StationaryTransformation();
-        if (bst.transform(bdenom)) {
-            bdenom = bst.stationaryFilter;
-        }
-
-        RationalForeFilter rf = this.rf.getRationalForeFilter();
-        ForeFilter fdenom = rf.getDenominator();
-        ForeFilter.StationaryTransformation fst = new ForeFilter.StationaryTransformation();
-        if (fst.transform(fdenom)) {
-            fdenom = fst.stationaryFilter;
-        }
-
-        RationalFilter stfilter = new RationalFilter(this.rf.getNumerator(), bdenom, fdenom);
-        return new Model(stfilter, var);
-    }
-
+//    /**
+//     *
+//     * @return
+//     */
+//    public Model doStationary() {
+//        RationalBackFilter rb = rf.getRationalBackFilter();
+//        BackFilter bdenom = rb.getDenominator();
+//        BackFilter.StationaryTransformation bst = new BackFilter.StationaryTransformation();
+//        if (bst.transform(bdenom)) {
+//            bdenom = bst.stationaryFilter;
+//        }
+//
+//        RationalForeFilter rf = this.rf.getRationalForeFilter();
+//        ForeFilter fdenom = rf.getDenominator();
+//        ForeFilter.StationaryTransformation fst = new ForeFilter.StationaryTransformation();
+//        if (fst.transform(fdenom)) {
+//            fdenom = fst.stationaryFilter;
+//        }
+//
+//        RationalFilter stfilter = new RationalFilter(this.rf.getNumerator(), bdenom, fdenom);
+//        return new Model(stfilter, var);
+//    }
+//
     /**
      *
      * @return

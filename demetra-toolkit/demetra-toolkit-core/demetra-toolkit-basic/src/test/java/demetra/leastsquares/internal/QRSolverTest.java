@@ -9,7 +9,7 @@ import demetra.leastsquares.internal.AdvancedQRSolver;
 import demetra.data.DataBlock;
 import demetra.data.DataSets;
 import static demetra.data.DataSets.lre;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.maths.matrices.internal.HouseholderWithPivoting;
 import demetra.maths.matrices.internal.RobustHouseholder;
@@ -32,7 +32,7 @@ public class QRSolverTest {
     @Test
     public void testNorris() {
         double[] y=DataSets.Norris.y;
-        FastMatrix M = FastMatrix.make(y.length, 2);
+        CanonicalMatrix M = CanonicalMatrix.make(y.length, 2);
         DataBlock x = DataBlock.of(DataSets.Norris.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -51,7 +51,7 @@ public class QRSolverTest {
     @Test
     public void testPontius() {
         double[] y=DataSets.Pontius.y;
-        FastMatrix M = FastMatrix.make(y.length, 3);
+        CanonicalMatrix M = CanonicalMatrix.make(y.length, 3);
         DataBlock x = DataBlock.of(DataSets.Pontius.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -71,7 +71,7 @@ public class QRSolverTest {
     @Test
     public void testNoInt1() {
         double[] y=DataSets.NoInt1.y;
-        FastMatrix M = FastMatrix.make(y.length, 1);
+        CanonicalMatrix M = CanonicalMatrix.make(y.length, 1);
         M.column(0).copyFrom(DataSets.NoInt1.x, 0);
 
          solver.solve(DataBlock.of(y), M);
@@ -88,7 +88,7 @@ public class QRSolverTest {
     @Test
     public void testNoInt2() {
         double[] y=DataSets.NoInt2.y;
-        FastMatrix M = FastMatrix.make(y.length, 1);
+        CanonicalMatrix M = CanonicalMatrix.make(y.length, 1);
         DataBlock x = DataBlock.of(DataSets.NoInt2.x);
         M.column(0).copy(x);
 
@@ -106,7 +106,7 @@ public class QRSolverTest {
     @Test
     public void testFilip() {
         double[] y=DataSets.Filip.y;
-        FastMatrix M = FastMatrix.make(y.length, 11);
+        CanonicalMatrix M = CanonicalMatrix.make(y.length, 11);
         DataBlock x = DataBlock.of(DataSets.Filip.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -134,7 +134,7 @@ public class QRSolverTest {
     @Test
     public void testLongley() {
         double[] y=DataSets.Longley.y;
-        FastMatrix M = FastMatrix.make(y.length, 7);
+        CanonicalMatrix M = CanonicalMatrix.make(y.length, 7);
         M.column(0).set(1);
         M.column(1).copyFrom(DataSets.Longley.x1, 0);
         M.column(2).copyFrom(DataSets.Longley.x2, 0);
@@ -157,7 +157,7 @@ public class QRSolverTest {
     @Test
     public void testWampler1() {
         double[] y=DataSets.Wampler1.y;
-        FastMatrix M = FastMatrix.make(y.length, 6);
+        CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler1.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -180,7 +180,7 @@ public class QRSolverTest {
     @Test
     public void testWampler2() {
         double[] y=DataSets.Wampler2.y;
-        FastMatrix M = FastMatrix.make(y.length, 6);
+        CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler2.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -204,7 +204,7 @@ public class QRSolverTest {
     @Test
     public void testWampler3() {
         double[] y=DataSets.Wampler3.y;
-        FastMatrix M = FastMatrix.make(y.length, 6);
+        CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler3.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -227,7 +227,7 @@ public class QRSolverTest {
     @Test
     public void testWampler4() {
         double[] y=DataSets.Wampler4.y;
-        FastMatrix M = FastMatrix.make(y.length, 6);
+        CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler4.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -250,7 +250,7 @@ public class QRSolverTest {
     @Test
     public void testWampler5() {
         double[] y=DataSets.Wampler5.y;
-        FastMatrix M = FastMatrix.make(y.length, 6);
+        CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler5.x);
         M.column(0).set(1);
         M.column(1).copy(x);

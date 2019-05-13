@@ -20,6 +20,7 @@ package demetra.maths.functions;
 import demetra.design.Development;
 import demetra.maths.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.CanonicalMatrix;
 
 
 /**
@@ -45,9 +46,9 @@ public interface IFunctionDerivatives {
      */
     void hessian(FastMatrix hessian);
     
-    default FastMatrix hessian(){
+    default CanonicalMatrix hessian(){
         int n=getFunction().getDomain().getDim();
-        FastMatrix H=FastMatrix.square(n);
+        CanonicalMatrix H=CanonicalMatrix.square(n);
         hessian(H);
         return H;
     }

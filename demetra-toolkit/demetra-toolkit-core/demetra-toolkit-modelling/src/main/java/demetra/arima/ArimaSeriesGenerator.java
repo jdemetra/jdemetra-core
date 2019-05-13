@@ -29,6 +29,7 @@ import demetra.maths.polynomials.Polynomial;
 import demetra.random.XorshiftRNG;
 import javax.annotation.Nonnull;
 import demetra.dstats.Distribution;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.random.RandomNumberGenerator;
 
 /**
@@ -194,7 +195,7 @@ public final class ArimaSeriesGenerator {
                 e[i] = distribution.random(rng);
             }
         } else {
-            FastMatrix ac = FastMatrix.square(p + q);
+            CanonicalMatrix ac = CanonicalMatrix.square(p + q);
             AutoCovarianceFunction acf = starima.getAutoCovarianceFunction();
             acf.prepare(p);
             // fill the p part

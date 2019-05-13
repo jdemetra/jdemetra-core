@@ -19,17 +19,18 @@ package demetra.maths.matrices.internal;
 import demetra.maths.Constants;
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.decomposition.QRDecomposition;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class Householder implements IQRDecomposition {
+public class Householder implements QRDecomposition {
 
     private final boolean fast;
     private double[] qr, rdiag;
@@ -65,8 +66,8 @@ public class Householder implements IQRDecomposition {
     }
 
     @Override
-    public FastMatrix r(boolean compact) {
-        FastMatrix r = FastMatrix.square(n);
+    public CanonicalMatrix r(boolean compact) {
+        CanonicalMatrix r = CanonicalMatrix.square(n);
         double[] data = r.getStorage();
         for (int i = 0, k = 0, l = 0; i < n; ++i, k += n, l += m) {
             for (int j = 0; j < i; ++j) {

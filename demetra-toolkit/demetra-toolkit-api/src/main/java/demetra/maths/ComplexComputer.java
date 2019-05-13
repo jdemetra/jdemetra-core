@@ -16,12 +16,7 @@
  */
 package demetra.maths;
 
-import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.maths.Complex;
-import demetra.maths.Complex;
-import demetra.maths.ComplexType;
-import demetra.maths.ComplexType;
 
 /**
  * Encapsulation of some operators on complex numbers. The use of this class is
@@ -30,9 +25,8 @@ import demetra.maths.ComplexType;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-@BuilderPattern(Complex.class)
-public final class ComplexBuilder implements ComplexType {
+@Development(status = Development.Status.Release)
+public final class ComplexComputer  implements ComplexType{
 
     /**
      * Real part
@@ -43,22 +37,12 @@ public final class ComplexBuilder implements ComplexType {
      */
     private double im;
     
-    @Override
-    public double getRe(){
-        return re;
-    }
-    
-    @Override
-    public double getIm(){
-        return im;
-    }
-
     /**
      * Creates a new object from a complex number
      *
      * @param c
      */
-    public ComplexBuilder(final ComplexType c) {
+    public ComplexComputer(final ComplexType c) {
         re = c.getRe();
         im = c.getIm();
     }
@@ -68,7 +52,7 @@ public final class ComplexBuilder implements ComplexType {
      *
      * @param re
      */
-    public ComplexBuilder(final double re) {
+    public ComplexComputer(final double re) {
         this.re = re;
         im = 0;
     }
@@ -79,18 +63,27 @@ public final class ComplexBuilder implements ComplexType {
      * @param re Real part
      * @param im Imaginary part
      */
-    public ComplexBuilder(final double re, final double im) {
+    public ComplexComputer(final double re, final double im) {
         this.re = re;
         this.im = im;
     }
+    
+    @Override
+    public double getRe(){
+        return re;
+    }
 
+    @Override
+    public double getIm(){
+        return im;
+    }
     /**
      * Adds a complex number to this object
      *
      * @param c A complex number
      * @return This object is returned
      */
-    public ComplexBuilder add(final ComplexType c) {
+    public ComplexComputer add(final ComplexType c) {
         re += c.getRe();
         im += c.getIm();
         return this;
@@ -103,7 +96,7 @@ public final class ComplexBuilder implements ComplexType {
      * @param c A complex number
      * @return This object is returned
      */
-    public ComplexBuilder addAC(final double a, final ComplexType c) {
+    public ComplexComputer addAC(final double a, final ComplexType c) {
         re += a * c.getRe();
         im += a * c.getIm();
         return this;
@@ -115,7 +108,7 @@ public final class ComplexBuilder implements ComplexType {
      * @param a A real number
      * @return This object is returned
      */
-    public ComplexBuilder add(final double a) {
+    public ComplexComputer add(final double a) {
         re += a;
         return this;
     }
@@ -125,7 +118,7 @@ public final class ComplexBuilder implements ComplexType {
      *
      * @return This object is returned
      */
-    public ComplexBuilder chs() {
+    public ComplexComputer chs() {
         re = -re;
         im = -im;
         return this;
@@ -137,7 +130,7 @@ public final class ComplexBuilder implements ComplexType {
      * @param c The right operand
      * @return This object is returned
      */
-    public ComplexBuilder div(final ComplexType c) {
+    public ComplexComputer div(final ComplexType c) {
         return div(c.getRe(), c.getIm());
     }
 
@@ -147,7 +140,7 @@ public final class ComplexBuilder implements ComplexType {
      * @param r The right operand
      * @return This object is returned
      */
-    public ComplexBuilder div(final double r) {
+    public ComplexComputer div(final double r) {
         re /= r;
         im /= r;
         return this;
@@ -160,7 +153,7 @@ public final class ComplexBuilder implements ComplexType {
      * @param y The imaginary part
      * @return This object is returned
      */
-    protected ComplexBuilder div(final double x, final double y) {
+    protected ComplexComputer div(final double x, final double y) {
         double dRe, dIm;
         double scalar;
 
@@ -186,7 +179,7 @@ public final class ComplexBuilder implements ComplexType {
      *
      * @return This object is returned
      */
-    public ComplexBuilder inv() {
+    public ComplexComputer inv() {
         double scalar, zRe, zIm;
         if (Math.abs(re) >= Math.abs(im)) {
             scalar = 1.0 / (re + im * (im / re));
@@ -210,7 +203,7 @@ public final class ComplexBuilder implements ComplexType {
      * @param c The right operand
      * @return This object is returned
      */
-    public ComplexBuilder mul(final ComplexType c) {
+    public ComplexComputer mul(final ComplexType c) {
         return mul(c.getRe(), c.getIm());
     }
 
@@ -220,7 +213,7 @@ public final class ComplexBuilder implements ComplexType {
      * @param r The right operand
      * @return This object is returned
      */
-    public ComplexBuilder mul(final double r) {
+    public ComplexComputer mul(final double r) {
         if (r == 0) {
             re = 0;
             im = 0;
@@ -238,7 +231,7 @@ public final class ComplexBuilder implements ComplexType {
      * @param y The imaginary part
      * @return This object is returned
      */
-    public ComplexBuilder mul(final double x, final double y) {
+    public ComplexComputer mul(final double x, final double y) {
         final double tmp = re * x - im * y;
         im = re * y + im * x;
         re = tmp;
@@ -251,7 +244,7 @@ public final class ComplexBuilder implements ComplexType {
      * @param c The right operand
      * @return This object is returned
      */
-    public ComplexBuilder sub(final ComplexType c) {
+    public ComplexComputer sub(final ComplexType c) {
         re -= c.getRe();
         im -= c.getIm();
         return this;
@@ -263,12 +256,12 @@ public final class ComplexBuilder implements ComplexType {
      * @param r The right operand
      * @return This object is returned
      */
-    public ComplexBuilder sub(final double r) {
+    public ComplexComputer sub(final double r) {
         re -= r;
         return this;
     }
 
-    public Complex build() {
+    public Complex result() {
         return Complex.cart(re, im);
     }
 }

@@ -7,6 +7,7 @@ package demetra.maths.matrices;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
+import demetra.design.BuilderPattern;
 import demetra.design.Unsafe;
 import java.util.function.DoubleUnaryOperator;
 
@@ -16,6 +17,65 @@ import java.util.function.DoubleUnaryOperator;
  */
 public class SubMatrix implements FastMatrix {
 
+    @BuilderPattern(SubMatrix.class)
+    public static class Builder {
+        
+        private final double[] storage;
+        private int row_inc = 1, col_inc = 0;
+        private int start = 0, nrows = 1, ncols = 1;
+        
+        private Builder(double[] data) {
+            this.storage = data;
+        }
+        
+        public Builder start(final int start) {
+            this.start = start;
+            return this;
+        }
+        
+        public Builder nrows(final int nrows) {
+            this.nrows = nrows;
+            return this;
+        }
+        
+        public Builder ncolumns(final int ncols) {
+            this.ncols = ncols;
+            return this;
+        }
+        
+        public Builder square(final int n) {
+            this.nrows = n;
+            this.ncols = n;
+            return this;
+        }
+        
+        public Builder rowIncrement(final int rowinc) {
+            this.row_inc = rowinc;
+            return this;
+        }
+        
+        public Builder columnIncrement(final int colinc) {
+            this.col_inc = colinc;
+            return this;
+        }
+        
+        public SubMatrix build() {
+                return new SubMatrix(storage, start, nrows, ncols, row_inc, col_inc == 0 ? nrows : col_inc);
+        }
+    }
+    
+    public static Builder builder(double[] data) {
+        return new Builder(data);
+    }
+    
+    public static SubMatrix rowOf(DataBlock x) {
+        return new SubMatrix(x.getStorage(), x.getStartPosition(), 1, x.length(), 1, x.getIncrement());
+    }
+    
+    public static SubMatrix columnOf(DataBlock x) {
+        return new SubMatrix(x.getStorage(), x.getStartPosition(), x.length(), 1, x.getIncrement(), 1);
+    }
+    
     protected final double[] storage;
     protected int start, nrows, ncols;
     protected final int rowInc, colInc;

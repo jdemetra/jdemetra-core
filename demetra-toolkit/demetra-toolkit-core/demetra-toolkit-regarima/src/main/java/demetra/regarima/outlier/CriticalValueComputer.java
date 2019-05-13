@@ -19,7 +19,7 @@ package demetra.regarima.outlier;
 import demetra.data.DataBlock;
 import demetra.dstats.Normal;
 import demetra.dstats.ProbabilityType;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.function.IntToDoubleFunction;
 
@@ -59,7 +59,7 @@ public class CriticalValueComputer {
             double n = len;
             double[] y = new double[3];
             int[] x = new int[]{2, 100, 200};
-            FastMatrix X = FastMatrix.square(3);
+            CanonicalMatrix X = CanonicalMatrix.square(3);
 
             for (int i = 0; i < 3; ++i) {
                 X.set(i, 0, 1);

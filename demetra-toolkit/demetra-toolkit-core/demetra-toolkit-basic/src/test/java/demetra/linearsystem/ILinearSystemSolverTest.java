@@ -11,6 +11,7 @@ import demetra.linearsystem.internal.LUSolver;
 import java.util.Random;
 import demetra.data.DataBlock;
 import demetra.data.accumulator.NeumaierAccumulator;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.matrices.internal.Gauss;
@@ -45,7 +46,7 @@ public class ILinearSystemSolverTest {
                 .normalize(true).improve(true).build();
         SparseSystemSolver sparse = new SparseSystemSolver();
         for (int N = 1; N <= 50; ++N) {
-            FastMatrix M = FastMatrix.square(N);
+            FastMatrix M = CanonicalMatrix.square(N);
             Random rnd = new Random();
             DataBlock x = DataBlock.make(N);
             double[] del = new double[6];

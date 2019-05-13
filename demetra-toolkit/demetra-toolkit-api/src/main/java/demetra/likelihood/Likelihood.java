@@ -23,7 +23,7 @@ import demetra.data.DoubleSeq;
 import demetra.design.BuilderPattern;
 
 /**
- * The ILikelihood interface formalizes the likelihood of a usual gaussian
+ * The Likelihood interface formalizes the likelihood of a usual gaussian
  * model. If isConcentratedScalingFactor is true, we suppose that the scaling
  * factor (sig2) is part of the parameters and that it is concentrated out of
  * the likelihood In the other case, we can suppose that sig2 = 1.

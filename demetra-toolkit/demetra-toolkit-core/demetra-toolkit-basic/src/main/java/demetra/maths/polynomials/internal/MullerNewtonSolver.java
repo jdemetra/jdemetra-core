@@ -21,7 +21,7 @@ import static demetra.design.AlgorithmImplementation.Feature.Balanced;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
 import demetra.maths.Complex;
-import demetra.maths.ComplexBuilder;
+import demetra.maths.ComplexComputer;
 import demetra.maths.ComplexMath;
 import demetra.maths.polynomials.Polynomial;
 import demetra.util.Ref;
@@ -792,9 +792,9 @@ public class MullerNewtonSolver implements RootsSolver {
         double N2_abs = N2.abs();
         /* choose denominater with largest modulus */
         if ((N1_abs > N2_abs) && (N1_abs > DBL_EPSILON)) {
-            q2 = new ComplexBuilder(C2).mul(-2).div(N1).build();
+            q2 = new ComplexComputer(C2).mul(-2).div(N1).result();
         } else if (N2_abs > DBL_EPSILON) {
-            q2 = new ComplexBuilder(C2).mul(-2).div(N2).build();
+            q2 = new ComplexComputer(C2).mul(-2).div(N2).result();
         } else {
             q2 = getComplexForIterationCounter(iter);
         }

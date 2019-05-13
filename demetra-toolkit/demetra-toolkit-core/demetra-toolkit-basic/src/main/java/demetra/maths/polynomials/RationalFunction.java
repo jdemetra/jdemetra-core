@@ -16,6 +16,7 @@
  */
 package demetra.maths.polynomials;
 
+import demetra.maths.PolynomialException;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.design.SkipProcessing;

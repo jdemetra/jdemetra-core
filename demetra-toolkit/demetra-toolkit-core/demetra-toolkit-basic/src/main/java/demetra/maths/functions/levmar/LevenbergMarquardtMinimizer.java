@@ -26,6 +26,7 @@ import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.CanonicalMatrix;
 
 /**
  *
@@ -305,7 +306,7 @@ public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
         scale2_ = Fcur_;
         scale_ = Math.sqrt(Fcur_);
         int n = ecur.length(), m = fn_.getDomain().getDim();
-        J = FastMatrix.make(n, m);
+        J = CanonicalMatrix.make(n, m);
         Jte = DataBlock.make(m);
         while (iter++ < itmax) {
             if (!iterate()) {

@@ -27,6 +27,7 @@ import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.MatrixFactory;
 
 /**
@@ -37,16 +38,16 @@ import demetra.maths.matrices.MatrixFactory;
 public class JointTest {
 
     private final DoubleSeq b;
-    private final FastMatrix bvar;
+    private final CanonicalMatrix bvar;
     private final double rss;
     private final int n;
     private int hyperParameters;
-    private FastMatrix R;
+    private CanonicalMatrix R;
     private DoubleSeq alpha;
     private int[] coef;
     private boolean blue = true, deterministicRegressors = true;
 
-    public JointTest(final DoubleSeq coefficients, final FastMatrix unscaledVariance, final double rss, final int n) {
+    public JointTest(final DoubleSeq coefficients, final CanonicalMatrix unscaledVariance, final double rss, final int n) {
         this.b = coefficients;
         this.bvar = unscaledVariance;
         this.rss = rss;
@@ -55,7 +56,7 @@ public class JointTest {
 
     public JointTest(final ConcentratedLikelihoodWithMissing ll) {
         this.b = ll.coefficients();
-        this.bvar = FastMatrix.of(ll.unscaledCovariance());
+        this.bvar = CanonicalMatrix.of(ll.unscaledCovariance());
         this.rss = ll.ssq();
         this.n = ll.dim();
     }
@@ -77,7 +78,7 @@ public class JointTest {
         return this;
     }
 
-    public JointTest constraints(@Nonnull FastMatrix R, @Nonnull DoubleSeq alpha) {
+    public JointTest constraints(@Nonnull CanonicalMatrix R, @Nonnull DoubleSeq alpha) {
         if (R.getRowsCount() != alpha.length()) {
             throw new IllegalArgumentException();
         }

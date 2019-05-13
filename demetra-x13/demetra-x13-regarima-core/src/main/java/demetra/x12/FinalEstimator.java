@@ -54,7 +54,7 @@ public class FinalEstimator implements IModelEstimator {
                 int ndim = mapping.getDim();
                 RegSarimaProcessor processor = RegSarimaProcessor.builder()
                         .precision(eps)
-                        .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+//                        .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
                         .build();
                 context.estimate(processor);
                 if (ndim == 0) {

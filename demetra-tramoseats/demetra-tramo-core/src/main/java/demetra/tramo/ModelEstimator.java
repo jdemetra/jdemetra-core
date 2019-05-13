@@ -39,10 +39,9 @@ class ModelEstimator implements IModelEstimator {
     }
 
     private boolean calc(RegArimaModelling context) {
-        IParametricMapping<SarimaModel> mapping = context.getDescription().getArimaComponent().defaultMapping();
         RegSarimaProcessor processor = RegSarimaProcessor.builder()
                 .precision(eps)
-                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+//                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
                 .build();
         context.estimate(processor);
         return true;

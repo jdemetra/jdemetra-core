@@ -5,9 +5,10 @@
  */
 package demetra.maths.matrices.decomposition;
 
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.FastMatrix;
 
 /**
  * A = U*S*V'
@@ -16,11 +17,11 @@ import demetra.data.DoubleSeq;
 public interface ISingularValueDecomposition {
     void decompose(FastMatrix A)throws MatrixException;
     
-    FastMatrix U();
+    CanonicalMatrix U();
     
     DoubleSeq S();
     
-    FastMatrix V();
+    CanonicalMatrix V();
     
     boolean isFullRank();
     

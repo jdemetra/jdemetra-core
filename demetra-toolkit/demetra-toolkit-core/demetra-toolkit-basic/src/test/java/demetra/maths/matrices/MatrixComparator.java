@@ -24,7 +24,7 @@ import demetra.data.DoubleSeq;
  */
 public class MatrixComparator {
 
-    public static double distance(final FastMatrix m, final ec.tstoolkit.maths.matrices.Matrix o) {
+    public static double distance(final CanonicalMatrix m, final ec.tstoolkit.maths.matrices.Matrix o) {
         final int nrows = m.getRowsCount();
         if (o.getRowsCount() != nrows) {
             return Double.MAX_VALUE;
@@ -34,7 +34,7 @@ public class MatrixComparator {
         return delta.normInf();
     }
 
-    public static double distance(final FastMatrix m, final FastMatrix o) {
+    public static double distance(final CanonicalMatrix m, final CanonicalMatrix o) {
         final int nrows = m.getRowsCount();
         if (o.getRowsCount() != nrows) {
             return Double.MAX_VALUE;
@@ -55,9 +55,9 @@ public class MatrixComparator {
         return O;
     }
 
-    public static FastMatrix fromLegacy(ec.tstoolkit.maths.matrices.Matrix M) {
+    public static CanonicalMatrix fromLegacy(ec.tstoolkit.maths.matrices.Matrix M) {
         int nrows = M.getRowsCount(), ncols = M.getColumnsCount();
-        FastMatrix N = FastMatrix.make(nrows, ncols);
+        CanonicalMatrix N = CanonicalMatrix.make(nrows, ncols);
         for (int c = 0; c < ncols; ++c) {
             for (int r = 0; r < nrows; ++r) {
                 N.set(r, c, M.get(r, c));

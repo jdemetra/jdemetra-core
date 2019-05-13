@@ -19,6 +19,7 @@ import demetra.stats.RobustCovarianceComputer;
 import demetra.modelling.regression.PeriodicDummiesFactory;
 import demetra.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.CanonicalMatrix;
 
 /**
  *
@@ -186,7 +187,7 @@ public class CanovaHansen {
         int n = cx.getRowsCount(), nx = cx.getColumnsCount();
         // compute tr( O^-1*xe'*xe)
         // cusum
-        FastMatrix FF = FastMatrix.square(nx);
+        CanonicalMatrix FF = CanonicalMatrix.square(nx);
         for (int i = 0; i < n; ++i) {
             FF.addXaXt(1, cx.row(i));
         }

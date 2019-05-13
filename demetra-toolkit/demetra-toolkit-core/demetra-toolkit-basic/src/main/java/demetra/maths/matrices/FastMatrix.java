@@ -32,80 +32,7 @@ import java.util.Iterator;
 public interface FastMatrix extends Matrix.Mutable {
     
     public static final FastMatrix EMPTY = new CanonicalMatrix(new double[0], 0, 0);
-
-   
-    @BuilderPattern(FastMatrix.class)
-    public static class Builder {
-        
-        private final double[] storage;
-        private int row_inc = 1, col_inc = 0;
-        private int start = 0, nrows = 1, ncols = 1;
-        
-        private Builder(double[] data) {
-            this.storage = data;
-        }
-        
-        public Builder start(final int start) {
-            this.start = start;
-            return this;
-        }
-        
-        public Builder nrows(final int nrows) {
-            this.nrows = nrows;
-            return this;
-        }
-        
-        public Builder ncolumns(final int ncols) {
-            this.ncols = ncols;
-            return this;
-        }
-        
-        public Builder square(final int n) {
-            this.nrows = n;
-            this.ncols = n;
-            return this;
-        }
-        
-        public Builder rowIncrement(final int rowinc) {
-            this.row_inc = rowinc;
-            return this;
-        }
-        
-        public Builder columnIncrement(final int colinc) {
-            this.col_inc = colinc;
-            return this;
-        }
-        
-        public FastMatrix build() {
-            if (start == 0 && row_inc == 1 && storage.length == nrows * ncols) {
-                return new CanonicalMatrix(storage, nrows, ncols);
-            } else {
-                return new SubMatrix(storage, start, nrows, ncols, row_inc, col_inc == 0 ? nrows : col_inc);
-            }
-        }
-    }
     
-    public static Builder builder(double[] data) {
-        return new Builder(data);
-    }
-    
-    public static FastMatrix square(int n) {
-        double[] data = new double[n * n];
-        return new CanonicalMatrix(data, n, n);
-    }
-    
-    public static FastMatrix make(int nrows, int ncols) {
-        double[] data = new double[nrows * ncols];
-        return new CanonicalMatrix(data, nrows, ncols);
-    }
-    
-    public static FastMatrix of(Matrix matrix) {
-        if (matrix == null) {
-            return null;
-        }
-        return new CanonicalMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
-    }
-
     /**
      * This version try to return the current object if its type is Matrix. To
      * be used with caution, only when the returned object is a temporary object
@@ -123,26 +50,6 @@ public interface FastMatrix extends Matrix.Mutable {
         } else {
             return new CanonicalMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
         }
-    }
-    
-    public static FastMatrix identity(int n) {
-        FastMatrix i = square(n);
-        i.diagonal().set(1);
-        return i;
-    }
-    
-    public static FastMatrix diagonal(DoubleSeq d) {
-        FastMatrix i = square(d.length());
-        i.diagonal().copy(d);
-        return i;
-    }
-    
-    public static FastMatrix rowOf(DataBlock x) {
-        return new SubMatrix(x.getStorage(), x.getStartPosition(), 1, x.length(), 1, x.getIncrement());
-    }
-    
-    public static FastMatrix columnOf(DataBlock x) {
-        return new SubMatrix(x.getStorage(), x.getStartPosition(), x.length(), 1, x.getIncrement(), 1);
     }
     
     @FunctionalInterface
@@ -555,7 +462,7 @@ public interface FastMatrix extends Matrix.Mutable {
      * @return
      */
     @Override
-    default FastMatrix extract(final int r0, final int nrows, final int c0, final int ncols) {
+    default SubMatrix extract(final int r0, final int nrows, final int c0, final int ncols) {
         double[] storage = getStorage();
         int start = getStartPosition(),
                 rowInc = getRowIncrement(), colInc = getColumnIncrement();
@@ -573,7 +480,7 @@ public interface FastMatrix extends Matrix.Mutable {
      * @param colinc
      * @return
      */
-    default FastMatrix extract(final int r0, final int c0, final int nrows,
+    default SubMatrix extract(final int r0, final int c0, final int nrows,
             final int ncols, final int rowinc, final int colinc) {
         double[] storage = getStorage();
         int start = getStartPosition(),
@@ -582,7 +489,7 @@ public interface FastMatrix extends Matrix.Mutable {
                 nrows, ncols, rowInc * rowinc, colInc * colinc);
     }
     
-    default FastMatrix dropTopLeft(int nr, int nc) {
+    default SubMatrix dropTopLeft(int nr, int nc) {
         double[] storage = getStorage();
         int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
                 rowInc = getRowIncrement(), colInc = getColumnIncrement();
@@ -591,7 +498,7 @@ public interface FastMatrix extends Matrix.Mutable {
         
     }
     
-    default FastMatrix dropBottomRight(int nr, int nc) {
+    default SubMatrix dropBottomRight(int nr, int nc) {
         double[] storage = getStorage();
         int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
                 rowInc = getRowIncrement(), colInc = getColumnIncrement();

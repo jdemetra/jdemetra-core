@@ -24,12 +24,12 @@ import demetra.data.DataBlock;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.maths.matrices.decomposition.IQRDecomposition;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.decomposition.QRDecomposition;
 
 /**
  *
@@ -39,14 +39,14 @@ import demetra.maths.matrices.Matrix;
 public final class ConcentratedLikelihoodComputer {
 
     private final ArmaFilter filter;
-    private final IQRDecomposition qr;
+    private final QRDecomposition qr;
     private final boolean scaling;
     
     public static final ConcentratedLikelihoodComputer DEFAULT_COMPUTER=
             new ConcentratedLikelihoodComputer(null, null, true);
 
 
-    public ConcentratedLikelihoodComputer(final ArmaFilter filter, final IQRDecomposition qr, final boolean scaling) {
+    public ConcentratedLikelihoodComputer(final ArmaFilter filter, final QRDecomposition qr, final boolean scaling) {
         this.filter = filter == null ? new KalmanFilter(true) : filter;
         this.qr = qr == null ? new Householder() : qr;
         this.scaling = scaling;
@@ -83,9 +83,9 @@ public final class ConcentratedLikelihoodComputer {
         DataBlock yl = DataBlock.make(nl);
         filter.apply(y, yl);
         int nx = x.getColumnsCount();
-        FastMatrix xl;
+        CanonicalMatrix xl;
         if (nx > 0) {
-            xl = FastMatrix.make(nl, nx);
+            xl = CanonicalMatrix.make(nl, nx);
             for (int i=0; i<nx; ++i){
                 filter.apply(x.column(i), xl.column(i));
             }
@@ -109,7 +109,7 @@ public final class ConcentratedLikelihoodComputer {
                 DataBlock b = DataBlock.make(qr.rank());
                 DataBlock res = DataBlock.make(nl - qr.rank());
                 qr.leastSquares(yl, b, res);
-                FastMatrix R = qr.r(false);
+                CanonicalMatrix R = qr.r(false);
                 double ssqerr = res.ssq();
                 double ldet = filter.getLogDeterminant();
 

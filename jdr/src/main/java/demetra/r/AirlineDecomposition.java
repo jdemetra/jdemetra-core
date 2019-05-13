@@ -131,7 +131,7 @@ public class AirlineDecomposition {
                 .useMaximumLikelihood(true)
                 .useCorrectedDegreesOfFreedom(false) // compatibility with R
                 .precision(1e-12)
-                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+//                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
                 .build();
 
         RegArimaModel<SarimaModel> regarima

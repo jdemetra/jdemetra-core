@@ -38,7 +38,7 @@ public class KalmanFilter implements ArmaFilter {
 
     private double[] C0, C, s;
 
-    private boolean multiUse;
+    private final boolean multiUse;
 
     private double[] phi;
 
@@ -52,6 +52,7 @@ public class KalmanFilter implements ArmaFilter {
      *
      */
     public KalmanFilter() {
+        multiUse=false;
     }
 
     /**

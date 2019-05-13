@@ -7,9 +7,8 @@ package demetra.leastsquares.internal;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.decomposition.IQRDecomposition;
 import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
@@ -18,6 +17,8 @@ import demetra.design.BuilderPattern;
 import demetra.leastsquares.QRSolver;
 import demetra.design.AlgorithmImplementation;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.decomposition.QRDecomposition;
 
 /**
  *
@@ -29,11 +30,11 @@ public class AdvancedQRSolver implements QRSolver {
     @BuilderPattern(AdvancedQRSolver.class)
     public static class Builder {
 
-        private final IQRDecomposition qr;
+        private final QRDecomposition qr;
         private int niter = 1;
         private boolean simple;
 
-        private Builder(IQRDecomposition qr) {
+        private Builder(QRDecomposition qr) {
             this.qr = qr;
         }
 
@@ -57,15 +58,15 @@ public class AdvancedQRSolver implements QRSolver {
         }
     }
 
-    public static Builder builder(IQRDecomposition qr) {
+    public static Builder builder(QRDecomposition qr) {
         return new Builder(qr);
     }
     private double ssqerr;
     private double[] b, res;
-    private FastMatrix R;
+    private CanonicalMatrix R;
     private int[] used;
     private int n, m;
-    private final IQRDecomposition qr;
+    private final QRDecomposition qr;
     private final boolean simple;
     private final int niter;
     
@@ -73,7 +74,7 @@ public class AdvancedQRSolver implements QRSolver {
         this(new Householder(), 1, false);
     }
     
-    private AdvancedQRSolver(IQRDecomposition qr, int niter, boolean simple) {
+    private AdvancedQRSolver(QRDecomposition qr, int niter, boolean simple) {
         this.qr = qr;
         this.niter = niter;
         this.simple = simple;
@@ -234,7 +235,7 @@ public class AdvancedQRSolver implements QRSolver {
      * @return the R
      */
     @Override
-    public FastMatrix R() {
+    public CanonicalMatrix R() {
         return qr.r(false);
     }
 }

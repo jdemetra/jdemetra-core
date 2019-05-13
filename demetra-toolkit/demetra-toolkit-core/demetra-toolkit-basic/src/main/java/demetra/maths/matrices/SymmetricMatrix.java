@@ -42,7 +42,9 @@ public class SymmetricMatrix {
     }
 
     public void lcholesky(FastMatrix M, double zero) {
-        if (M.getRowIncrement() == 1) {
+        if (M.isCanonical()) {
+            SymmetricCanonicalMatrix.lcholesky2(M.asCanonical(), zero);
+        } else if (M.getRowIncrement() == 1) {
             lcholesky_1(M, zero);
         } else {
             lcholesky_def(M, zero);
@@ -212,110 +214,95 @@ public class SymmetricMatrix {
     }
 
     public void LLt(FastMatrix L, FastMatrix M) {
-        int nr = L.getRowsCount(), nc = L.getColumnsCount(), lcinc = L.getColumnIncrement(), lrinc = L.getRowIncrement();
-        int mcinc = M.getColumnIncrement(), mrinc = M.getRowIncrement();
-        double[] pl = L.getStorage(), pm = M.getStorage();
-        if (lcinc == 1) {
-            for (int i = 0, ix = L.getStartPosition(), im = M.getStartPosition(); i < nr; ++i, ix += lrinc, im += mrinc + mcinc) {
-                for (int j = i, kx = ix, km = im, ks = im; j < nr; ++j, kx += lrinc, km += mrinc, ks += mcinc) {
-                    double z = 0;
-                    for (int jx = ix, lx = kx; jx <= im; ++jx, ++lx) {
-                        z += pl[jx] * pl[lx];
-                    }
-                    pm[km] = z;
-                    if (ks != km) {
-                        pm[ks] = z;
+        if (L.isCanonical() && M.isCanonical()) {
+            SymmetricCanonicalMatrix.LLt(L.asCanonical(), M.asCanonical());
+        } else {
+            int nr = L.getRowsCount(), nc = L.getColumnsCount(), lcinc = L.getColumnIncrement(), lrinc = L.getRowIncrement();
+            int mcinc = M.getColumnIncrement(), mrinc = M.getRowIncrement();
+            double[] pl = L.getStorage(), pm = M.getStorage();
+            if (lcinc == 1) {
+                for (int i = 0, ix = L.getStartPosition(), im = M.getStartPosition(); i < nr; ++i, ix += lrinc, im += mrinc + mcinc) {
+                    for (int j = i, kx = ix, km = im, ks = im; j < nr; ++j, kx += lrinc, km += mrinc, ks += mcinc) {
+                        double z = 0;
+                        for (int jx = ix, lx = kx; jx <= im; ++jx, ++lx) {
+                            z += pl[jx] * pl[lx];
+                        }
+                        pm[km] = z;
+                        if (ks != km) {
+                            pm[ks] = z;
+                        }
                     }
                 }
-            }
-        } else {
-            for (int i = 0, ix = L.getStartPosition(), im = M.getStartPosition(); i < nr; ++i, ix += lrinc, im += mrinc + mcinc) {
-                for (int j = i, kx = ix, km = im, ks = im; j < nr; ++j, kx += lrinc, km += mrinc, ks += mcinc) {
-                    double z = 0;
-                    int max = im + lcinc;
-                    for (int jx = ix, lx = kx; jx != max; jx += lcinc, lx += lcinc) {
-                        z += pl[jx] * pl[lx];
-                    }
-                    pm[km] = z;
-                    if (ks != km) {
-                        pm[ks] = z;
+            } else {
+                for (int i = 0, ix = L.getStartPosition(), im = M.getStartPosition(); i < nr; ++i, ix += lrinc, im += mrinc + mcinc) {
+                    for (int j = i, kx = ix, km = im, ks = im; j < nr; ++j, kx += lrinc, km += mrinc, ks += mcinc) {
+                        double z = 0;
+                        int max = im + lcinc;
+                        for (int jx = ix, lx = kx; jx != max; jx += lcinc, lx += lcinc) {
+                            z += pl[jx] * pl[lx];
+                        }
+                        pm[km] = z;
+                        if (ks != km) {
+                            pm[ks] = z;
+                        }
                     }
                 }
             }
         }
     }
 
-     public void UUt(FastMatrix L, FastMatrix M) {
-        int nr = L.getRowsCount(), nc = L.getColumnsCount(), lcinc = L.getColumnIncrement(), lrinc = L.getRowIncrement();
-        int mcinc = M.getColumnIncrement(), mrinc = M.getRowIncrement();
-        double[] pl = L.getStorage(), pm = M.getStorage();
-        for (int i = 0, ix = L.getStartPosition(), imax = ix + nc * lcinc, im = M.getStartPosition(); i < nr; ++i, ix += lrinc + lcinc, im += mrinc + mcinc, imax += lrinc) {
-            // ix = position of the first item of row i, imax = end of row i
-            for (int j = i, kx = ix, ixc = ix, km = im, ks = im; j < nr; ++j, kx += lrinc + lcinc, km += mrinc, ks += mcinc, ixc += lcinc) {
-                // kx = position of the first item of column k ixc first used item of row i
-                double z = 0;
-                for (int jx = ixc, lx = kx; jx != imax; jx += lcinc, lx += lcinc) {
-                    z += pl[jx] * pl[lx];
-                }
-                pm[km] = z;
-                if (ks != km) {
-                    pm[ks] = z;
+    public void UUt(FastMatrix U, FastMatrix M) {
+        if (U.isCanonical() && M.isCanonical()) {
+            SymmetricCanonicalMatrix.UUt(U.asCanonical(), M.asCanonical());
+        } else {
+            int nr = U.getRowsCount(), nc = U.getColumnsCount(), lcinc = U.getColumnIncrement(), lrinc = U.getRowIncrement();
+            int mcinc = M.getColumnIncrement(), mrinc = M.getRowIncrement();
+            double[] pl = U.getStorage(), pm = M.getStorage();
+            for (int i = 0, ix = U.getStartPosition(), imax = ix + nc * lcinc, im = M.getStartPosition(); i < nr; ++i, ix += lrinc + lcinc, im += mrinc + mcinc, imax += lrinc) {
+                // ix = position of the first item of row i, imax = end of row i
+                for (int j = i, kx = ix, ixc = ix, km = im, ks = im; j < nr; ++j, kx += lrinc + lcinc, km += mrinc, ks += mcinc, ixc += lcinc) {
+                    // kx = position of the first item of column k ixc first used item of row i
+                    double z = 0;
+                    for (int jx = ixc, lx = kx; jx != imax; jx += lcinc, lx += lcinc) {
+                        z += pl[jx] * pl[lx];
+                    }
+                    pm[km] = z;
+                    if (ks != km) {
+                        pm[ks] = z;
+                    }
                 }
             }
         }
     }
 
     public void XtSX(FastMatrix S, FastMatrix X, FastMatrix M) {
-        FastMatrix SX = S.times(X);
-        DataBlockIterator rows = SX.columnsIterator(), cols = X.columnsIterator(), mcols = M.columnsIterator();
-        int c = 0;
-        while (cols.hasNext()) {
-            int idx = c;
-            rows.reset(c++);
-            DataBlock mcol = mcols.next();
-            DataBlock col = cols.next();
-            while (rows.hasNext()) {
-                mcol.set(idx++, rows.next().dot(col));
+        if (S.isCanonical() && X.isCanonical() && M.isCanonical()) {
+            SymmetricCanonicalMatrix.XtSX(S.asCanonical(), X.asCanonical(), M.asCanonical());
+        } else {
+            FastMatrix SX = S.times(X);
+            DataBlockIterator rows = SX.columnsIterator(), cols = X.columnsIterator(), mcols = M.columnsIterator();
+            int c = 0;
+            while (cols.hasNext()) {
+                int idx = c;
+                rows.reset(c++);
+                DataBlock mcol = mcols.next();
+                DataBlock col = cols.next();
+                while (rows.hasNext()) {
+                    mcol.set(idx++, rows.next().dot(col));
+                }
             }
-        }
-        SymmetricMatrix.fromLower(M);
-    }
-
-   public FastMatrix inverse(FastMatrix S) {
-        try {
-            FastMatrix lower = S.deepClone();
-            lcholesky(lower);
-            lower = LowerTriangularMatrix.inverse(lower);
-            return LtL(lower);
-        } catch (MatrixException e) {
-            CroutDoolittle cr = new CroutDoolittle();
-            cr.decompose(S);
-            FastMatrix I = FastMatrix.identity(S.getRowsCount());
-            cr.solve(I);
-            return I;
+            SymmetricMatrix.fromLower(M);
         }
     }
 
     public FastMatrix xxt(final DataBlock x) {
-        FastMatrix M = FastMatrix.square(x.length());
+        FastMatrix M = CanonicalMatrix.square(x.length());
         xxt(x, M);
         return M;
     }
 
-public void XtX(final FastMatrix X, final FastMatrix M) {
+    public void XtX(final FastMatrix X, final FastMatrix M) {
         XXt(X.transpose(), M);
-    }
-
-    public FastMatrix XXt(final FastMatrix X) {
-        FastMatrix M = FastMatrix.square(X.getRowsCount());
-        XXt(X, M);
-        return M;
-    }
-
-    public FastMatrix XtX(final FastMatrix X) {
-        FastMatrix M = FastMatrix.square(X.getColumnsCount());
-        XXt(X.transpose(), M);
-        return M;
     }
 
     public void UtU(final FastMatrix U, final FastMatrix M) {
@@ -326,38 +313,87 @@ public void XtX(final FastMatrix X, final FastMatrix M) {
         UUt(L.transpose(), M);
     }
 
-    public FastMatrix LLt(final FastMatrix L) {
-        FastMatrix M = FastMatrix.square(L.getRowsCount());
+    public CanonicalMatrix inverse(FastMatrix S) {
+        try {
+            CanonicalMatrix lower = S.deepClone();
+            lcholesky(lower);
+            lower = LowerTriangularCanonicalMatrix.inverse(lower);
+            return LtL(lower);
+        } catch (MatrixException e) {
+            CroutDoolittle cr = new CroutDoolittle();
+            cr.decompose(S);
+            CanonicalMatrix I = CanonicalMatrix.identity(S.getRowsCount());
+            cr.solve(I);
+            return I;
+        }
+    }
+
+    public CanonicalMatrix XXt(final FastMatrix X) {
+        if (X.isCanonical()) {
+            return SymmetricCanonicalMatrix.XXt(X.asCanonical());
+        }
+        CanonicalMatrix M = CanonicalMatrix.square(X.getRowsCount());
+        XXt(X, M);
+        return M;
+    }
+
+    public CanonicalMatrix XtX(final FastMatrix X) {
+        if (X.isCanonical()) {
+            return SymmetricCanonicalMatrix.XtX(X.asCanonical());
+        }
+        CanonicalMatrix M = CanonicalMatrix.square(X.getColumnsCount());
+        XXt(X.transpose(), M);
+        return M;
+    }
+
+    public CanonicalMatrix LLt(final FastMatrix L) {
+        if (L.isCanonical()) {
+            return SymmetricCanonicalMatrix.LLt(L.asCanonical());
+        }
+
+        CanonicalMatrix M = CanonicalMatrix.square(L.getRowsCount());
         LLt(L, M);
         return M;
     }
 
-    public FastMatrix UtU(final FastMatrix U) {
-        FastMatrix M = FastMatrix.square(U.getColumnsCount());
+    public CanonicalMatrix UtU(final FastMatrix U) {
+        if (U.isCanonical()) {
+            return SymmetricCanonicalMatrix.UtU(U.asCanonical());
+        }
+        CanonicalMatrix M = CanonicalMatrix.square(U.getColumnsCount());
         LLt(U.transpose(), M);
         return M;
     }
 
-    public FastMatrix LtL(final FastMatrix L) {
-        FastMatrix M = FastMatrix.square(L.getRowsCount());
+    public CanonicalMatrix LtL(final FastMatrix L) {
+        if (L.isCanonical()) {
+            return SymmetricCanonicalMatrix.LtL(L.asCanonical());
+        }
+        CanonicalMatrix M = CanonicalMatrix.square(L.getRowsCount());
         UUt(L.transpose(), M);
         return M;
     }
 
-    public FastMatrix UUt(final FastMatrix U) {
-        FastMatrix M = FastMatrix.square(U.getColumnsCount());
+    public CanonicalMatrix UUt(final FastMatrix U) {
+        if (U.isCanonical()) {
+            return SymmetricCanonicalMatrix.UUt(U.asCanonical());
+        }
+        CanonicalMatrix M = CanonicalMatrix.square(U.getColumnsCount());
         UUt(U, M);
         return M;
     }
 
-      /**
+    /**
      * Returns XSX'
      *
      * @param X
      * @param S
      * @return
      */
-    public FastMatrix XSXt(final FastMatrix S, final FastMatrix X) {
+    public CanonicalMatrix XSXt(final FastMatrix S, final FastMatrix X) {
+        if (S.isCanonical() && X.isCanonical()) {
+            return SymmetricCanonicalMatrix.XSXt(S.asCanonical(), X.asCanonical());
+        }
         return XtSX(S, X.transpose());
     }
 
@@ -369,7 +405,11 @@ public void XtX(final FastMatrix X, final FastMatrix M) {
      * @param M
      */
     public void XSXt(final FastMatrix S, final FastMatrix X, final FastMatrix M) {
-        XtSX(S, X.transpose(), M);
+        if (S.isCanonical() && X.isCanonical() && M.isCanonical()) {
+            SymmetricCanonicalMatrix.XSXt(S.asCanonical(), X.asCanonical(), M.asCanonical());
+        } else {
+            XtSX(S, X.transpose(), M);
+        }
     }
 
     /**
@@ -379,20 +419,23 @@ public void XtX(final FastMatrix X, final FastMatrix M) {
      * @param S
      * @return
      */
-    public FastMatrix XtSX(final FastMatrix S, final FastMatrix X) {
+    public CanonicalMatrix XtSX(final FastMatrix S, final FastMatrix X) {
+        if (S.isCanonical() && X.isCanonical()) {
+            return SymmetricCanonicalMatrix.XtSX(S.asCanonical(), X.asCanonical());
+        }
         int n = X.getColumnsCount();
-        FastMatrix M = FastMatrix.square(n);
+        CanonicalMatrix M = CanonicalMatrix.square(n);
         XtSX(S, X, M);
         return M;
     }
 
-     public void lcholesky(final FastMatrix M) {
+    public void lcholesky(final FastMatrix M) {
         lcholesky(M, 0);
     }
 
-    public FastMatrix robustXtX(final FastMatrix X, DoubleAccumulator acc) {
+    public CanonicalMatrix robustXtX(final FastMatrix X, DoubleAccumulator acc) {
         int n = X.getColumnsCount();
-        FastMatrix z = FastMatrix.square(n);
+        CanonicalMatrix z = CanonicalMatrix.square(n);
         DataBlockIterator rows = X.columnsIterator(), columns = X.columnsIterator();
         int irow = 0;
         while (rows.hasNext()) {
@@ -419,19 +462,23 @@ public void XtX(final FastMatrix X, final FastMatrix M) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
-        int n = S.getRowsCount();
-        if (n == 1) {
-            return;
-        }
-        int rinc = S.getRowIncrement(), cinc = S.getColumnIncrement(), start = S.getStartPosition();
-        double[] x = S.getStorage();
-        for (int c = 0, id = start; c < n; ++c, id += rinc + cinc) {
-            for (int r = c + 1, il = id, iu = id; r < n; ++r) {
-                il += rinc;
-                iu += cinc;
-                double q = (x[iu] + x[il]) / 2;
-                x[iu] = q;
-                x[il] = q;
+        if (S.isCanonical()) {
+            SymmetricCanonicalMatrix.reenforceSymmetry(S.asCanonical());
+        } else {
+            int n = S.getRowsCount();
+            if (n == 1) {
+                return;
+            }
+            int rinc = S.getRowIncrement(), cinc = S.getColumnIncrement(), start = S.getStartPosition();
+            double[] x = S.getStorage();
+            for (int c = 0, id = start; c < n; ++c, id += rinc + cinc) {
+                for (int r = c + 1, il = id, iu = id; r < n; ++r) {
+                    il += rinc;
+                    iu += cinc;
+                    double q = (x[iu] + x[il]) / 2;
+                    x[iu] = q;
+                    x[il] = q;
+                }
             }
         }
     }
@@ -440,17 +487,21 @@ public void XtX(final FastMatrix X, final FastMatrix M) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
-        int n = S.getRowsCount();
-        if (n == 1) {
-            return;
-        }
-        int rinc = S.getRowIncrement(), cinc = S.getColumnIncrement(), start = S.getStartPosition();
-        double[] x = S.getStorage();
-        for (int c = 0, id = start; c < n; ++c, id += rinc + cinc) {
-            for (int r = c + 1, il = id, iu = id; r < n; ++r) {
-                il += rinc;
-                iu += cinc;
-                x[iu] = x[il];
+        if (S.isCanonical()) {
+            SymmetricCanonicalMatrix.fromLower(S.asCanonical());
+        } else {
+            int n = S.getRowsCount();
+            if (n == 1) {
+                return;
+            }
+            int rinc = S.getRowIncrement(), cinc = S.getColumnIncrement(), start = S.getStartPosition();
+            double[] x = S.getStorage();
+            for (int c = 0, id = start; c < n; ++c, id += rinc + cinc) {
+                for (int r = c + 1, il = id, iu = id; r < n; ++r) {
+                    il += rinc;
+                    iu += cinc;
+                    x[iu] = x[il];
+                }
             }
         }
     }
@@ -459,40 +510,44 @@ public void XtX(final FastMatrix X, final FastMatrix M) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
-        int n = S.getRowsCount();
-        if (n == 1) {
-            return;
-        }
-        int rinc = S.getRowIncrement(), cinc = S.getColumnIncrement(), start = S.getStartPosition();
-        double[] x = S.getStorage();
-        for (int c = 0, id = start; c < n; ++c, id += rinc + cinc) {
-            for (int r = c + 1, il = id, iu = id; r < n; ++r) {
-                il += rinc;
-                iu += cinc;
-                x[il] = x[iu];
+        if (S.isCanonical()) {
+            SymmetricCanonicalMatrix.fromUpper(S.asCanonical());
+        } else {
+            int n = S.getRowsCount();
+            if (n == 1) {
+                return;
+            }
+            int rinc = S.getRowIncrement(), cinc = S.getColumnIncrement(), start = S.getStartPosition();
+            double[] x = S.getStorage();
+            for (int c = 0, id = start; c < n; ++c, id += rinc + cinc) {
+                for (int r = c + 1, il = id, iu = id; r < n; ++r) {
+                    il += rinc;
+                    iu += cinc;
+                    x[il] = x[iu];
+                }
             }
         }
     }
-    
-    public LogSign logDeterminant(FastMatrix S){
+
+    public LogSign logDeterminant(FastMatrix S) {
         FastMatrix s = S.deepClone();
-        try{
+        try {
             lcholesky(s);
             DataBlock diagonal = s.diagonal();
             LogSign ls = LogSign.of(diagonal);
-            return new LogSign(ls.getValue()*2, true);
-        }catch (MatrixException e){
+            return new LogSign(ls.getValue() * 2, true);
+        } catch (MatrixException e) {
             return FastMatrix.logDeterminant(S);
         }
     }
-    
-    public double determinant(FastMatrix L){
-        LogSign ls=logDeterminant(L);
-        if (ls == null)
+
+    public double determinant(FastMatrix L) {
+        LogSign ls = logDeterminant(L);
+        if (ls == null) {
             return 0;
-        double val=Math.exp(ls.getValue());
+        }
+        double val = Math.exp(ls.getValue());
         return ls.isPositive() ? val : -val;
     }
-
 
 }

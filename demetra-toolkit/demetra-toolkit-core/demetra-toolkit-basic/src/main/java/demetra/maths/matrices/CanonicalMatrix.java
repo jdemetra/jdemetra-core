@@ -7,6 +7,7 @@ package demetra.maths.matrices;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
+import demetra.data.DoubleSeq;
 import demetra.design.Unsafe;
 import java.util.function.DoubleUnaryOperator;
 
@@ -19,6 +20,43 @@ public final class CanonicalMatrix implements FastMatrix {
     private final double[] storage;
     private final int nrows, ncols;
 
+    public static CanonicalMatrix square(int n) {
+        double[] data = new double[n * n];
+        return new CanonicalMatrix(data, n, n);
+    }
+    
+    public static CanonicalMatrix make(int nrows, int ncols) {
+        double[] data = new double[nrows * ncols];
+        return new CanonicalMatrix(data, nrows, ncols);
+    }
+    
+    public static CanonicalMatrix of(Matrix matrix) {
+        if (matrix == null) {
+            return null;
+        }
+        return new CanonicalMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
+    }
+
+    public static CanonicalMatrix identity(int n) {
+        CanonicalMatrix i = square(n);
+        i.diagonal().set(1);
+        return i;
+    }
+    
+    public static CanonicalMatrix diagonal(DoubleSeq d) {
+        CanonicalMatrix i = square(d.length());
+        i.diagonal().copy(d);
+        return i;
+    }
+    
+    public static CanonicalMatrix rowOf(DataBlock x) {
+        return new CanonicalMatrix(x.toArray(), 1, x.length());
+    }
+    
+    public static CanonicalMatrix columnOf(DataBlock x) {
+        return new CanonicalMatrix(x.toArray(), x.length(), 1);
+    }
+    
     /**
      * Creates a new instance of SubMatrix
      *
@@ -26,7 +64,7 @@ public final class CanonicalMatrix implements FastMatrix {
      * @param nrows
      * @param ncols
      */
-    CanonicalMatrix(final double[] data, final int nrows, final int ncols) {
+    public CanonicalMatrix(final double[] data, final int nrows, final int ncols) {
         this.storage = data;
         this.nrows = nrows;
         this.ncols = ncols;

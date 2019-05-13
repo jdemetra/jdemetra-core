@@ -18,12 +18,13 @@ package demetra.maths.matrices.internal;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.decomposition.ISingularValueDecomposition;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.data.DataBlockIterator;
 import demetra.maths.Constants;
 import demetra.maths.matrices.decomposition.ElementaryTransformations;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.FastMatrix;
 
 /**
  * The singularValueDecomposition decomposes a matrix M in M = U * S * V' with:
@@ -471,13 +472,13 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
     }
 
     @Override
-    public FastMatrix U() {
-        return FastMatrix.builder(m_U).nrows(m_m).ncolumns(Math.min(m_m, m_n)).build();
+    public CanonicalMatrix U() {
+        return new CanonicalMatrix(m_U, m_m, Math.min(m_m, m_n));
     }
 
     @Override
-    public FastMatrix V() {
-        return FastMatrix.builder(m_V).square(m_n).build();
+    public CanonicalMatrix V() {
+        return new CanonicalMatrix(m_V, m_n, m_n);
     }
 
     public double[] getSingularValues() {
@@ -564,7 +565,7 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
     /*
      * Solves A X = B
      */
-    public void solve(FastMatrix B, FastMatrix X) {
+    public void solve(CanonicalMatrix B, CanonicalMatrix X) {
         DataBlockIterator b = B.columnsIterator(), x = X.columnsIterator();
         while (b.hasNext()) {
             solve(b.next(), x.next());

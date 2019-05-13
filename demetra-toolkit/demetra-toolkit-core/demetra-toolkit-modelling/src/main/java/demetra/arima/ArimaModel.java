@@ -77,30 +77,30 @@ public final class ArimaModel extends AbstractArimaModel {
         return new ArimaModel(BackFilter.ONE, BackFilter.ONE, BackFilter.ONE, var);
     }
 
-    public ArimaModel of(final Polynomial fullAR, final Polynomial MA,
-            final double var) {
-        try {
-            double x = fullAR.get(0), y = MA.get(0);
-
-            BackFilter ar = new BackFilter(fullAR);
-            if (x != 1) {
-                ar = ar.normalize();
-            }
-            BackFilter ur = BackFilter.ONE;
-            BackFilter.StationaryTransformation st = new BackFilter.StationaryTransformation();
-            if (st.transform(ar)) {
-                ar = st.stationaryFilter;
-                ur = st.unitRoots;
-            }
-            BackFilter ma = new BackFilter(MA);
-            if (y != 1) {
-                ma = ma.normalize();
-            }
-            return new ArimaModel(ar, ur, ma, var * y / x * y / x);
-        } catch (RuntimeException ex) {
-            return null;
-        }
-    }
+//    public ArimaModel of(final Polynomial fullAR, final Polynomial MA,
+//            final double var) {
+//        try {
+//            double x = fullAR.get(0), y = MA.get(0);
+//
+//            BackFilter ar = new BackFilter(fullAR);
+//            if (x != 1) {
+//                ar = ar.normalize();
+//            }
+//            BackFilter ur = BackFilter.ONE;
+//            BackFilter.StationaryTransformation st = new BackFilter.StationaryTransformation();
+//            if (st.transform(ar)) {
+//                ar = st.stationaryFilter;
+//                ur = st.unitRoots;
+//            }
+//            BackFilter ma = new BackFilter(MA);
+//            if (y != 1) {
+//                ma = ma.normalize();
+//            }
+//            return new ArimaModel(ar, ur, ma, var * y / x * y / x);
+//        } catch (RuntimeException ex) {
+//            return null;
+//        }
+//    }
 
     public static ArimaModel copyOf(IArimaModel arima) {
         return new ArimaModel(arima.getStationaryAR(), arima.getNonStationaryAR(),

@@ -24,9 +24,6 @@ import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 
 /**
- * This class represents the concentrated likelihood of a linear regression
- * model.
- *
  *
  * @author Jean Palate
  */

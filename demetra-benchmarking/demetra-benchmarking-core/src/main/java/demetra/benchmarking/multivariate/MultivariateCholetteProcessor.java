@@ -22,7 +22,7 @@ import demetra.benchmarking.univariate.CholetteProcessor;
 import demetra.data.AggregationType;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockStorage;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.M2uAdapter;
@@ -197,7 +197,7 @@ public class MultivariateCholetteProcessor implements IMultivariateCholette {
                 .build();
 
         // build the observations
-        FastMatrix M = FastMatrix.make(idomain.getLength(), ncnts);
+        CanonicalMatrix M = CanonicalMatrix.make(idomain.getLength(), ncnts);
         for (int i = 0; i < ncnts; ++i) {
             M.column(i).copyFrom(lcntData[i], 0);
         }
@@ -369,7 +369,7 @@ public class MultivariateCholetteProcessor implements IMultivariateCholette {
                 .weights(weights)
                 .build();
         // build the observations
-        FastMatrix M = FastMatrix.make(len, nvars + ncnts);
+        CanonicalMatrix M = CanonicalMatrix.make(len, nvars + ncnts);
         M.set(Double.NaN);
 
         // fill the matrix: first rows with temporal constraints

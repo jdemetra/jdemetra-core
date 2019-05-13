@@ -20,7 +20,7 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.Constants;
 import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.data.DoubleSeq;
 
 /**
@@ -31,7 +31,7 @@ import demetra.data.DoubleSeq;
 public class HouseholderR {
 
     private double[] qrauxilary;
-    private FastMatrix matrix;
+    private CanonicalMatrix matrix;
     private int[] pivot;
     private int nrows, ncols;
     private int rank;
@@ -51,7 +51,7 @@ public class HouseholderR {
      *
      * @param m
      */
-    public void decompose(FastMatrix m) {
+    public void decompose(CanonicalMatrix m) {
         init(m.deepClone());
         householder();
     }
@@ -64,7 +64,7 @@ public class HouseholderR {
         return rank;
     }
 
-    private void init(FastMatrix m) {
+    private void init(CanonicalMatrix m) {
         matrix = m;
         nrows = m.getRowsCount();
         ncols = m.getColumnsCount();
@@ -290,10 +290,10 @@ public class HouseholderR {
         }
     }
 
-    public FastMatrix r() {
+    public CanonicalMatrix r() {
        double[] x = matrix.getStorage();
         int rank = getRank();
-        FastMatrix r = FastMatrix.square(rank);
+        CanonicalMatrix r = CanonicalMatrix.square(rank);
         double[] data = r.getStorage();
         for (int i = 0, k = 0, l = 0; i < rank; ++i, k += rank, l += nrows) {
             for (int j = 0; j <= i; ++j) {

@@ -12,6 +12,7 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
+import demetra.maths.matrices.CanonicalMatrix;
 
 /**
  *
@@ -29,12 +30,12 @@ public class RobustCovarianceComputer {
      * @param truncationLag Truncation lag (excluded from the computation)
      * @return
      */
-    public FastMatrix covariance(FastMatrix x, WindowFunction winFunction, int truncationLag) {
+    public CanonicalMatrix covariance(FastMatrix x, WindowFunction winFunction, int truncationLag) {
         DoubleUnaryOperator w = winFunction.window();
         int n = x.getRowsCount(), nx = x.getColumnsCount();
-        FastMatrix s = SymmetricMatrix.XtX(x);
+        CanonicalMatrix s = SymmetricMatrix.XtX(x);
         s.mul(w.applyAsDouble(0));
-        FastMatrix ol = FastMatrix.square(nx);
+        CanonicalMatrix ol = CanonicalMatrix.square(nx);
         double q = 1+truncationLag;
         for (int l = 1; l <= truncationLag; ++l) {
             double wl = w.applyAsDouble(l / q);

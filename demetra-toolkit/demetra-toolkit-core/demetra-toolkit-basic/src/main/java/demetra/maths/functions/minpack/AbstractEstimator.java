@@ -19,7 +19,7 @@ package demetra.maths.functions.minpack;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.functions.FunctionException;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.SymmetricMatrix;
 
@@ -114,8 +114,8 @@ public abstract class AbstractEstimator implements IEstimator {
     }
 
     @Override
-    public FastMatrix covariance(IEstimationProblem problem) {
-        FastMatrix cur = curvature(problem);
+    public CanonicalMatrix covariance(IEstimationProblem problem) {
+        CanonicalMatrix cur = curvature(problem);
         try {
             return SymmetricMatrix.inverse(cur);
         } catch (MatrixException ex) {
@@ -130,7 +130,7 @@ public abstract class AbstractEstimator implements IEstimator {
      * @return covariance matrix
      */
     @Override
-    public FastMatrix curvature(IEstimationProblem problem) {
+    public CanonicalMatrix curvature(IEstimationProblem problem) {
 
         // set up the jacobian
         updateJacobian(problem);
@@ -147,7 +147,7 @@ public abstract class AbstractEstimator implements IEstimator {
         int rows = problem.getMeasurementsCount();
         int cols = problem.getParametersCount();
         int Max = cols * rows;
-        FastMatrix jTj = FastMatrix.square(cols);
+        CanonicalMatrix jTj = CanonicalMatrix.square(cols);
         for (int i = 0; i < cols; ++i) {
             for (int j = i; j < cols; ++j) {
                 double sum = 0;
@@ -237,7 +237,7 @@ public abstract class AbstractEstimator implements IEstimator {
         }
         double[] errors = new double[p];
         double c = Math.sqrt(chiSquare(problem) / (m - p));
-        FastMatrix covar = covariance(problem);
+        CanonicalMatrix covar = covariance(problem);
         DataBlock diag = covar.diagonal();
         for (int i = 0; i < errors.length; ++i) {
             errors[i] = Math.sqrt(diag.get(i)) * c;

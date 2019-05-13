@@ -6,7 +6,7 @@
 package rssf;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfError;
 
@@ -17,14 +17,14 @@ import demetra.ssf.univariate.ISsfError;
 @lombok.experimental.UtilityClass
 public class SsfTools {
 
-    public FastMatrix transitionMatrix(ISsf ssf, int pos) {
-        FastMatrix m = FastMatrix.square(ssf.getStateDim());
+    public CanonicalMatrix transitionMatrix(ISsf ssf, int pos) {
+        CanonicalMatrix m = CanonicalMatrix.square(ssf.getStateDim());
         ssf.dynamics().T(pos, m);
         return m;
     }
 
-    public FastMatrix innovationMatrix(ISsf ssf, int pos) {
-        FastMatrix m = FastMatrix.square(ssf.getStateDim());
+    public CanonicalMatrix innovationMatrix(ISsf ssf, int pos) {
+        CanonicalMatrix m = CanonicalMatrix.square(ssf.getStateDim());
         ssf.dynamics().V(pos, m);
         return m;
     }
@@ -46,26 +46,26 @@ public class SsfTools {
         return m.getStorage();
     }
 
-    public FastMatrix stationaryInitialVariance(ISsf ssf) {
-        FastMatrix m = FastMatrix.square(ssf.getStateDim());
+    public CanonicalMatrix stationaryInitialVariance(ISsf ssf) {
+        CanonicalMatrix m = CanonicalMatrix.square(ssf.getStateDim());
         ssf.initialization().Pf0(m);
         return m;
     }
 
-    public FastMatrix diffuseInitialConstraint(ISsf ssf) {
+    public CanonicalMatrix diffuseInitialConstraint(ISsf ssf) {
         if (!ssf.initialization().isDiffuse()) {
             return null;
         }
-        FastMatrix m = FastMatrix.make(ssf.getStateDim(), ssf.getDiffuseDim());
+        CanonicalMatrix m = CanonicalMatrix.make(ssf.getStateDim(), ssf.getDiffuseDim());
         ssf.initialization().diffuseConstraints(m);
         return m;
     }
 
-    public FastMatrix diffuseInitialVariance(ISsf ssf) {
+    public CanonicalMatrix diffuseInitialVariance(ISsf ssf) {
         if (!ssf.initialization().isDiffuse()) {
             return null;
         }
-        FastMatrix m = FastMatrix.square(ssf.getStateDim());
+        CanonicalMatrix m = CanonicalMatrix.square(ssf.getStateDim());
         ssf.initialization().Pi0(m);
         return m;
     }
