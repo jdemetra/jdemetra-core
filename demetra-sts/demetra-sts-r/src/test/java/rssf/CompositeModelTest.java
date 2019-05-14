@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Test;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -30,10 +30,10 @@ import demetra.maths.matrices.Matrix;
  */
 public class CompositeModelTest {
 
-    static final Matrix data;
+    static final MatrixType data;
 
     static {
-        Matrix tmp = null;
+        MatrixType tmp = null;
         try {
             URI uri = CompositeModels.class.getResource("/mssf1").toURI();
             tmp = MatrixSerializer.read(new File(uri), "\t|,");

@@ -18,6 +18,7 @@ package demetra.benchmarking.ssf;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.DiffuseInitialization;
@@ -51,17 +52,17 @@ public class SsfSpline {
     static class SimpleDynamics implements ISsfDynamics {
 
         private final double d;
-        private final FastMatrix vm, sm;
+        private final CanonicalMatrix vm, sm;
 
         SimpleDynamics(double d) {
             this.d = d;
             double d2 = d * d, d3 = d2 * d;
-            vm = FastMatrix.square(2);
+            vm = CanonicalMatrix.square(2);
             vm.set(0, 0, d3 / 3);
             vm.set(0, 1, d2 / 2);
             vm.set(1, 0, d2 / 2);
             vm.set(1, 1, d);
-            sm = FastMatrix.square(2);
+            sm = CanonicalMatrix.square(2);
             sm.copy(vm);
             SymmetricMatrix.lcholesky(sm);
         }

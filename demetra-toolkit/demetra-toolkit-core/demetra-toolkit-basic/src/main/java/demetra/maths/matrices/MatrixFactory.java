@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 @lombok.experimental.UtilityClass
 public class MatrixFactory {
 
-    public CanonicalMatrix rowBind(@Nonnull Matrix... M) {
+    public CanonicalMatrix rowBind(@Nonnull MatrixType... M) {
         int nr = 0;
         int nc = 0;
         for (int i = 0; i < M.length; ++i) {
@@ -42,7 +42,7 @@ public class MatrixFactory {
         return all;
     }
 
-    public CanonicalMatrix columnBind(@Nonnull Matrix... M) {
+    public CanonicalMatrix columnBind(@Nonnull MatrixType... M) {
         int nr = 0;
         int nc = 0;
         for (int i = 0; i < M.length; ++i) {

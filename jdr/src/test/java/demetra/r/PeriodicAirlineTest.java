@@ -8,7 +8,7 @@ package demetra.r;
 import demetra.data.WeeklyData;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *

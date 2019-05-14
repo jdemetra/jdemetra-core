@@ -30,7 +30,7 @@ public final class CanonicalMatrix implements FastMatrix {
         return new CanonicalMatrix(data, nrows, ncols);
     }
     
-    public static CanonicalMatrix of(Matrix matrix) {
+    public static CanonicalMatrix of(MatrixType matrix) {
         if (matrix == null) {
             return null;
         }
@@ -483,12 +483,12 @@ public final class CanonicalMatrix implements FastMatrix {
 
     @Override
     public String toString(String fmt){
-        return Matrix.format(this, fmt);
+        return MatrixType.format(this, fmt);
     }
     
     @Override
     public String toString(){
-        return Matrix.format(this);
+        return MatrixType.format(this);
     }
     
 }

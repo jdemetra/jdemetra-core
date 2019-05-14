@@ -53,7 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -414,7 +414,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
         int nparams=spec.isParameterEstimation() ? 1 : 0;
         T tstat=new T(dll.dim()-dll.nx()-nparams);
         DoubleSeq coefficients = dll.coefficients();
-        Matrix cov = dll.covariance(nparams, true);
+        MatrixType cov = dll.covariance(nparams, true);
         DoubleSeq ser = cov.diagonal();
         if (spec.isConstant()){
             double ccur=coefficients.get(pos), ecur=Math.sqrt(ser.get(pos));

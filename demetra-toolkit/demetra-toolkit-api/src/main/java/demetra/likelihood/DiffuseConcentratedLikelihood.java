@@ -19,7 +19,7 @@ package demetra.likelihood;
 import demetra.design.BuilderPattern;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -40,7 +40,7 @@ public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
         private double[] res;
         private boolean legacy;
         private double[] b;
-        private Matrix bvar;
+        private MatrixType bvar;
         private boolean scalingFactor = true;
 
         Builder(int n, int nd) {
@@ -91,7 +91,7 @@ public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
             return this;
         }
 
-        public Builder unscaledCovariance(Matrix var) {
+        public Builder unscaledCovariance(MatrixType var) {
             bvar = var;
             return this;
         }

@@ -30,6 +30,7 @@ import demetra.likelihood.DeterminantalTerm;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.dk.BaseDiffuseFilteringResults;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.SubMatrix;
 
 /**
  *
@@ -74,7 +75,7 @@ public class DefaultDiffuseSquareRootFilteringResults extends BaseDiffuseFilteri
 
     }
 
-    public FastMatrix B(int pos) {
+    public SubMatrix B(int pos) {
         return B.matrix(pos);
     }
 

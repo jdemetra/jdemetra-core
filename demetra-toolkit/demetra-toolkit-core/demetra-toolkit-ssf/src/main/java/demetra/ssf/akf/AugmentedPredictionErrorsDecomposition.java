@@ -26,6 +26,7 @@ import demetra.ssf.StateInfo;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.data.LogSign;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.decomposition.ElementaryTransformations;
 import demetra.ssf.likelihood.DiffuseLikelihood;
 
@@ -48,7 +49,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
     // -s = a * b'
     // s' * S^-1 * s = b * a' * S^-1 * a * b' = b * b'
     // q - s' * S^-1 * s = c * c
-    private FastMatrix Q, B;
+    private CanonicalMatrix Q, B;
     private int n, nd;
     
     /**
@@ -79,7 +80,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         // update the state vector
         B = state.B().deepClone();
         int d = B.getColumnsCount();
-        FastMatrix S = a().deepClone();
+        CanonicalMatrix S = a().deepClone();
         LowerTriangularMatrix.rsolve(S, B.transpose());
         DataBlock D = DataBlock.of(b());
         LowerTriangularMatrix.lsolve(S, D);
@@ -108,7 +109,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
      * B*a^-1'
      * @return 
      */
-    public FastMatrix B(){
+    public CanonicalMatrix B(){
         return B;
     }
 
@@ -120,13 +121,13 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         this.det=0;
         this.n = 0;
         this.nd = nd;
-        Q = FastMatrix.make(nd + 1, nd + 1+nvars);
+        Q = CanonicalMatrix.make(nd + 1, nd + 1+nvars);
     }
 
     @Override
     public void save(final int t, final MultivariateAugmentedUpdateInformation pe) {
         DataBlock U = pe.getTransformedPredictionErrors();
-        FastMatrix L=pe.getCholeskyFactor();
+        CanonicalMatrix L=pe.getCholeskyFactor();
         DataBlock D=L.diagonal();
         FastMatrix E = pe.E();
         int nvars=E.getColumnsCount();

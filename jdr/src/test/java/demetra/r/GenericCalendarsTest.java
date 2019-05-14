@@ -20,7 +20,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -33,7 +33,7 @@ public class GenericCalendarsTest {
 
     @Test
     public void testTD() {
-        Matrix m = GenericCalendars.td(TsDomain.of(TsPeriod.monthly(1980, 1), 600), new int[]{1, 2, 3, 4, 5, 6, 0}, true);
+        MatrixType m = GenericCalendars.td(TsDomain.of(TsPeriod.monthly(1980, 1), 600), new int[]{1, 2, 3, 4, 5, 6, 0}, true);
         double[] all = m.toArray();
         assertTrue(!m.isEmpty());
     }

@@ -21,10 +21,9 @@ import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.LowerTriangularMatrix;
 import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
-import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
-import javax.annotation.Nullable;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.CanonicalMatrix;
 
 /**
  *
@@ -42,12 +41,12 @@ public class MultivariateUpdateInformation {
      * =(ZPZ'+H)^1/2 Cholesky factor of the variance/covariance matrix of the
      * prediction errors (lower triangular). nvars x nvars
      */
-    private final FastMatrix R;
+    private final CanonicalMatrix R;
 
     /**
      * K = P Z' L'^-1 dim x nvars
      */
-    private final FastMatrix K;
+    private final CanonicalMatrix K;
 
     /**
      *
@@ -56,31 +55,31 @@ public class MultivariateUpdateInformation {
      */
     public MultivariateUpdateInformation(final int dim, final int nvars) {
         U = DataBlock.make(nvars);
-        R = FastMatrix.square(nvars);
-        K = FastMatrix.make(dim, nvars);
+        R = CanonicalMatrix.square(nvars);
+        K = CanonicalMatrix.make(dim, nvars);
     }
 
     public DataBlock getTransformedPredictionErrors() {
         return U;
     }
 
-    public FastMatrix getPredictionErrorCovariance() {
+    public CanonicalMatrix getPredictionErrorCovariance() {
         if (R.getRowsCount() == 1) {
             double l = R.get(0, 0);
-            return FastMatrix.builder(new double[]{l * l}).nrows(1).ncolumns(1).build();
+            return new CanonicalMatrix(new double[]{l * l}, 1, 1);
         } else {
             return SymmetricMatrix.LLt(R);
         }
     }
 
-    public FastMatrix getCholeskyFactor() {
+    public CanonicalMatrix getCholeskyFactor() {
         return R;
     }
 
     /**
      * @return the K
      */
-    public FastMatrix getK() {
+    public CanonicalMatrix getK() {
         return K;
     }
 
@@ -155,7 +154,7 @@ public class MultivariateUpdateInformation {
         if (equations == null) {
             errors.addH(t, P);
         } else {
-            FastMatrix H = FastMatrix.square(P.getColumnsCount());
+            CanonicalMatrix H = CanonicalMatrix.square(P.getColumnsCount());
             errors.H(t, H);
             for (int i = 0; i < equations.length; ++i) {
                 for (int j = 0; j < i; ++j) {

@@ -22,8 +22,7 @@ import demetra.data.DoubleSeq;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceProvider(service = IOls.class)
-public class Ols implements IOls {
+public class Ols {
 
     private static AtomicReference<Supplier<QRSolver>> QR_FACTORY = new AtomicReference<>(()
             -> AdvancedQRSolver.builder(new Householder()).build());
@@ -42,7 +41,6 @@ public class Ols implements IOls {
         this.solver = solver;
     }
 
-    @Override
     public LeastSquaresResults compute(LinearModel model) {
         DoubleSeq y = model.getY();
         FastMatrix x = model.variables();

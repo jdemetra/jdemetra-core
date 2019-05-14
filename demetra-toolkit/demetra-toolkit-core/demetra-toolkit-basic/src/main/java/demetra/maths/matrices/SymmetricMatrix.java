@@ -295,8 +295,8 @@ public class SymmetricMatrix {
         }
     }
 
-    public FastMatrix xxt(final DataBlock x) {
-        FastMatrix M = CanonicalMatrix.square(x.length());
+    public CanonicalMatrix xxt(final DataBlock x) {
+        CanonicalMatrix M = CanonicalMatrix.square(x.length());
         xxt(x, M);
         return M;
     }

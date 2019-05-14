@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.junit.Test;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -40,7 +40,7 @@ public class MstsMonitorTest {
     public void testSimple() throws URISyntaxException, IOException {
 
         File file = Data.copyToTempFile(MultivariateCompositeSsf.class.getResource("/bematrix.txt"));
-        Matrix data = MatrixSerializer.read(file, "\t|,");
+        MatrixType data = MatrixSerializer.read(file, "\t|,");
 
         CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 4);
         D.column(0).copy(data.column(0));
@@ -74,7 +74,7 @@ public class MstsMonitorTest {
     public void testSimpleX() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
-        Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
+        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
 
         CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
@@ -114,7 +114,7 @@ public class MstsMonitorTest {
     public void testSimpleX2() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
-        Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
+        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
 
         CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
@@ -154,7 +154,7 @@ public class MstsMonitorTest {
     public void testSimpleXbis() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
-        Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
+        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
 
         CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));

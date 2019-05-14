@@ -23,7 +23,7 @@ import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.IFunctionMinimizer;
 import demetra.maths.functions.IFunctionPoint;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.functions.ParamValidation;
 import demetra.data.DoubleSeq;
 
@@ -66,7 +66,7 @@ public class LbfgsMinimizer implements IFunctionMinimizer {
     }
 
     @Override
-    public FastMatrix curvatureAtMinimum() {
+    public CanonicalMatrix curvatureAtMinimum() {
         return fpt.derivatives().hessian();
     }
 

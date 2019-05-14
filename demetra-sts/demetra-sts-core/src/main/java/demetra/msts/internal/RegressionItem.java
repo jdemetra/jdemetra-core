@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import demetra.msts.ParameterInterpreter;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -26,7 +26,7 @@ public class RegressionItem extends AbstractModelItem {
     public final CanonicalMatrix x;
     public final VarianceInterpreter[] v;
 
-    public RegressionItem(String name, Matrix x, final double[] vars, final boolean fixed) {
+    public RegressionItem(String name, MatrixType x, final double[] vars, final boolean fixed) {
         super(name);
         this.x = CanonicalMatrix.of(x);
         if (vars == null) {

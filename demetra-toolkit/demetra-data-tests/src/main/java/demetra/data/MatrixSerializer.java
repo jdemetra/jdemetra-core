@@ -28,7 +28,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -38,21 +38,21 @@ public class MatrixSerializer {
     
     
 
-    public static Matrix read(File file, String separators) throws FileNotFoundException, IOException {
+    public static MatrixType read(File file, String separators) throws FileNotFoundException, IOException {
         return read(file, Locale.ROOT, separators);
     }
 
-    public static Matrix read(File file) throws FileNotFoundException, IOException {
+    public static MatrixType read(File file) throws FileNotFoundException, IOException {
         return read(file, Locale.ROOT, "\\s+|,");
     }
 
-    public static void write(Matrix m, File file) throws FileNotFoundException, IOException {
+    public static void write(MatrixType m, File file) throws FileNotFoundException, IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(m.toString());
         }
     }
 
-    public static Matrix read(File file, Locale locale, String separators) throws FileNotFoundException, IOException {
+    public static MatrixType read(File file, Locale locale, String separators) throws FileNotFoundException, IOException {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             List<double[]> data = new ArrayList<>();
@@ -81,7 +81,7 @@ public class MatrixSerializer {
                     all[i + j * nrows] = cur[j];
                 }
             }
-            return Matrix.ofInternal(all, nrows, ncols);
+            return MatrixType.ofInternal(all, nrows, ncols);
         }
     }
 

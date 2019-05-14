@@ -17,7 +17,6 @@ import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.LogSign;
-import demetra.design.BuilderPattern;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.maths.matrices.internal.Householder;
@@ -29,9 +28,9 @@ import java.util.Iterator;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public interface FastMatrix extends Matrix.Mutable {
+public interface FastMatrix extends MatrixType.Mutable {
     
-    public static final FastMatrix EMPTY = new CanonicalMatrix(new double[0], 0, 0);
+    public static final CanonicalMatrix EMPTY = new CanonicalMatrix(new double[0], 0, 0);
     
     /**
      * This version try to return the current object if its type is Matrix. To
@@ -41,7 +40,7 @@ public interface FastMatrix extends Matrix.Mutable {
      * @param matrix
      * @return
      */
-    public static FastMatrix ofInternal(Matrix matrix) {
+    public static FastMatrix ofInternal(MatrixType matrix) {
         if (matrix == null) {
             return null;
         }
@@ -449,8 +448,8 @@ public interface FastMatrix extends Matrix.Mutable {
         return isSymmetric(0);
     }
     
-    default Matrix unmodifiable() {
-        return Matrix.ofInternal(toArray(), getRowsCount(), getColumnsCount());
+    default MatrixType unmodifiable() {
+        return MatrixType.ofInternal(toArray(), getRowsCount(), getColumnsCount());
     }
 
     /**

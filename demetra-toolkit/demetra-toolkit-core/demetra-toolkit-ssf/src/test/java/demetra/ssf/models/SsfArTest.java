@@ -7,7 +7,7 @@ package demetra.ssf.models;
 
 import demetra.arima.ssf.SsfAr;
 import demetra.arima.AutoCovarianceFunction;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.StationaryInitialization;
@@ -27,8 +27,8 @@ public class SsfArTest {
     public void testInitialization() {
                 SsfComponent cmp = SsfAr.of(new double[]{1.2, -.6}, 1, 5);
         int dim = cmp.initialization().getStateDim();
-        FastMatrix I = StationaryInitialization.of(cmp.dynamics(), dim);
-        FastMatrix P = FastMatrix.square(dim);
+        CanonicalMatrix I = StationaryInitialization.of(cmp.dynamics(), dim);
+        CanonicalMatrix P = CanonicalMatrix.square(dim);
         cmp.initialization().Pf0(P);
         assertTrue(I.minus(P).frobeniusNorm() < 1e-12);
 

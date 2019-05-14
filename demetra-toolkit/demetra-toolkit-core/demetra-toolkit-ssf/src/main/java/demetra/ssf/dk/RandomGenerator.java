@@ -19,7 +19,7 @@ package demetra.ssf.dk;
 import demetra.data.DataBlock;
 import demetra.dstats.Normal;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.random.JdkRNG;
 import demetra.ssf.ISsfDynamics;
@@ -49,7 +49,7 @@ public class RandomGenerator {
 
     private static final double EPS = 1e-8;
 
-    private FastMatrix LA;
+    private CanonicalMatrix LA;
     private final ISsf ssf;
     private final ISsfDynamics dynamics;
     private final ISsfLoading loading;
@@ -78,7 +78,7 @@ public class RandomGenerator {
 
     private void initSsf() {
         int dim = ssf.getStateDim();
-        LA = FastMatrix.square(dim);
+        LA = CanonicalMatrix.square(dim);
         ssf.initialization().Pf0(LA);
         SymmetricMatrix.lcholesky(LA, EPS);
 
@@ -105,7 +105,7 @@ public class RandomGenerator {
             fillRandoms(b);
             double dstd = Math.sqrt(dvar);
             b.mul(dstd);
-            FastMatrix B= FastMatrix.make(a.length(), b.length());
+            CanonicalMatrix B= CanonicalMatrix.make(a.length(), b.length());
             initialization.diffuseConstraints(B);
             a.addProduct(B.rowsIterator(), b);
         }

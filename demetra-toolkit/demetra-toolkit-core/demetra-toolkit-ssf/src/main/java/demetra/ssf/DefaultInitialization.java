@@ -17,6 +17,7 @@
 package demetra.ssf;
 
 import demetra.data.DataBlock;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.FastMatrix;
 import java.util.function.Consumer;
 
@@ -120,7 +121,7 @@ public class DefaultInitialization implements ISsfInitialization {
         if (Pf == null) {
             builder.append("Pf0:").append(System.lineSeparator()).append("0");
         } else {
-            FastMatrix M = FastMatrix.square(dim);
+            CanonicalMatrix M = CanonicalMatrix.square(dim);
             Pf.accept(M);
             builder.append(M.toString(ISsfState.FMT));
         }
@@ -128,7 +129,7 @@ public class DefaultInitialization implements ISsfInitialization {
         if (B == null) {
             builder.append("B:").append(System.lineSeparator()).append("0");
         } else {
-            FastMatrix M = FastMatrix.make(dim, ndiffuse);
+            CanonicalMatrix M = CanonicalMatrix.make(dim, ndiffuse);
             B.accept(M);
             builder.append(M.toString(ISsfState.FMT));
         }

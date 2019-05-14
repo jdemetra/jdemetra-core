@@ -19,7 +19,8 @@ package demetra.dfm;
 import demetra.data.DataWindow;
 import demetra.dfm.internal.SsfDfm;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
+import demetra.maths.matrices.SubMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.multivariate.IMultivariateSsf;
@@ -39,7 +40,7 @@ public class DynamicFactorModel  {
     private VarDescriptor vdesc;
     private ISsfInitialization.Type initialization = ISsfInitialization.Type.Unconditional;
     private List<MeasurementDescriptor> mdesc = new ArrayList<>();
-    private FastMatrix V0;
+    private CanonicalMatrix V0;
 
     /**
      * Creates a new dynamic factors model
@@ -129,7 +130,7 @@ public class DynamicFactorModel  {
         int nf=vdesc.getVariablesCount(), nl=vdesc.getLagsCount();
         if (vdesc.getInnovationsVariance().isIdentity())
             return;
-        FastMatrix L = vdesc.getInnovationsVariance().deepClone();
+        CanonicalMatrix L = vdesc.getInnovationsVariance().deepClone();
         SymmetricMatrix.lcholesky(L);
         // L contains the Cholesky factor
 
@@ -163,7 +164,7 @@ public class DynamicFactorModel  {
         // C=L^-1*A*L <-> LC=AL
         
         for (int i = 1; i <= nl; ++i) {
-            FastMatrix A = vdesc.getA(i);
+            SubMatrix A = vdesc.getA(i);
             // AL
             LowerTriangularMatrix.lmul(L, A);
             // LC = (AL)
@@ -174,10 +175,10 @@ public class DynamicFactorModel  {
         vdesc.getInnovationsVariance().diagonal().set(1);
         if (V0 != null) {
             // L^-1*V*L^-1' =W <-> L(WL')=V <-> LX=V, WL'=X or LW'=X'
-            FastMatrix V0 = FastMatrix.square(nf * nlx);
+            CanonicalMatrix V0 = CanonicalMatrix.square(nf * nlx);
             for (int i = 0; i < nlx; ++i) {
                 for (int j = 0; j <nlx; ++j) {
-                    FastMatrix t = FastMatrix.square(nf);
+                    CanonicalMatrix t = CanonicalMatrix.square(nf);
                     for (int k = 0; k < nf; ++k) {
                         for (int l = 0; l < nf; ++l) {
                             t.set(k, l, this.V0.get(k * nlx + i, l * nlx + j));
@@ -404,7 +405,7 @@ public class DynamicFactorModel  {
      *
      * @param v0
      */
-    public void setInitialCovariance(FastMatrix v0) {
+    public void setInitialCovariance(CanonicalMatrix v0) {
         V0 = v0.deepClone();
         initialization = ISsfInitialization.Type.UserDefined;
     }

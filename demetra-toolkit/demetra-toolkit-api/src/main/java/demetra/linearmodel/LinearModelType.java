@@ -18,7 +18,7 @@ package demetra.linearmodel;
 
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  * Describes the linear model: y = a + b * X
@@ -29,7 +29,7 @@ import demetra.maths.matrices.Matrix;
 @Development(status = Development.Status.Release)
 public interface LinearModelType {
     
-    public static LinearModelType of(DoubleSeq y, boolean mean, Matrix x){
+    public static LinearModelType of(DoubleSeq y, boolean mean, MatrixType x){
         return new LightLinearModel(y, mean, x);
     }
 
@@ -45,6 +45,6 @@ public interface LinearModelType {
      * 
      * @return 
      */
-    Matrix getX();
+    MatrixType getX();
 
 }

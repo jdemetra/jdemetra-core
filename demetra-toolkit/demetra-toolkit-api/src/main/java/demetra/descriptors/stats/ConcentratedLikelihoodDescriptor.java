@@ -17,8 +17,8 @@
 package demetra.descriptors.stats;
 
 import demetra.information.InformationMapping;
-import demetra.maths.matrices.Matrix;
 import demetra.likelihood.ConcentratedLikelihood;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -35,7 +35,7 @@ public class ConcentratedLikelihoodDescriptor {
         MAPPING.set(SER, Double.class, source -> source.ser());
         MAPPING.set(SIGMA, Double.class, source -> source.sigma());
         MAPPING.set(COEF, double[].class, source -> source.coefficients().toArray());
-        MAPPING.set(VAR, Matrix.class, source -> source.unscaledCovariance());
+        MAPPING.set(VAR, MatrixType.class, source -> source.unscaledCovariance());
         MAPPING.set(LL, Double.class, source -> source.logLikelihood());
         MAPPING.set(LDET, Double.class, source -> source.logDeterminant());
         MAPPING.set(SSQ, Double.class, source -> source.ssq());

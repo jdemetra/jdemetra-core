@@ -13,6 +13,7 @@ import demetra.ssf.ResultsRange;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeqCursor;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.ssf.SsfException;
 import javax.annotation.Nonnull;
 
@@ -67,7 +68,7 @@ public class DisturbanceSmoother {
 
     private double err, errVariance, esm, esmVariance, h;
     private DataBlock K, R, U;
-    private FastMatrix N, UVar, S;
+    private CanonicalMatrix N, UVar, S;
     private boolean missing;
     private int pos, stop;
     // temporary
@@ -187,7 +188,7 @@ public class DisturbanceSmoother {
         return R;
     }
 
-    public FastMatrix getFinalN() {
+    public CanonicalMatrix getFinalN() {
         return N;
     }
 
@@ -199,10 +200,10 @@ public class DisturbanceSmoother {
         K = DataBlock.make(dim);
         U = DataBlock.make(resdim);
         if (calcvar) {
-            S = FastMatrix.make(dim, resdim);
-            N = FastMatrix.square(dim);
+            S = CanonicalMatrix.make(dim, resdim);
+            N = CanonicalMatrix.square(dim);
             tmp = DataBlock.make(dim);
-            UVar = FastMatrix.square(resdim);
+            UVar = CanonicalMatrix.square(resdim);
             if (error == null) {
                 h = 0;
             } else if (error.isTimeInvariant()) {
@@ -322,7 +323,7 @@ public class DisturbanceSmoother {
         int n = ssf.getStateDim();
         // initial state
         DataBlock a = DataBlock.make(n);
-        FastMatrix Pf0 = FastMatrix.square(n);
+        CanonicalMatrix Pf0 = CanonicalMatrix.square(n);
         ssf.initialization().a0(a);
         ssf.initialization().Pf0(Pf0);
         // stationary initialization

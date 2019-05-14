@@ -32,7 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import demetra.processing.ProcResults;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -54,8 +54,8 @@ public class MovingRegression {
     public static class Results implements ProcResults {
 
         TsDomain domain;
-        Matrix variables;
-        Matrix coefficients;
+        MatrixType variables;
+        MatrixType coefficients;
         SarimaModel arima;
 
         private static final String ARIMA = "arima", LL = "likelihood", COEFF = "coefficients", TD = "td", TDEFFECT = "tdeffect";
@@ -63,8 +63,8 @@ public class MovingRegression {
 
         static {
             MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getArima().toType());
-            MAPPING.set(COEFF, Matrix.class, r -> r.getCoefficients());
-            MAPPING.set(TD, Matrix.class, r -> r.getVariables());
+            MAPPING.set(COEFF, MatrixType.class, r -> r.getCoefficients());
+            MAPPING.set(TD, MatrixType.class, r -> r.getVariables());
             MAPPING.set(TDEFFECT, TsData.class, r
                     -> {
                 DataBlock tmp = DataBlock.make(r.getDomain().length());

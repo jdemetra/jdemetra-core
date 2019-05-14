@@ -19,6 +19,7 @@ package demetra.dfm.internal;
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;
 import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
 
 /**
@@ -28,7 +29,7 @@ import demetra.ssf.ISsfDynamics;
 @lombok.Data(staticConstructor = "of")
 public class Dynamics implements ISsfDynamics {
 
-    public static Dynamics of(FastMatrix T, FastMatrix V, int nlx) {
+    public static Dynamics of(CanonicalMatrix T, CanonicalMatrix V, int nlx) {
         Dynamics dyn = new Dynamics(nlx, T, V);
         int nf=V.getRowsCount();
         dyn.ttmp = new double[nf];
@@ -37,7 +38,7 @@ public class Dynamics implements ISsfDynamics {
     }
 
     final int nlx;
-    final FastMatrix T, V;
+    final CanonicalMatrix T, V;
     double[] ttmp, xtmp;
 
     int nl() {

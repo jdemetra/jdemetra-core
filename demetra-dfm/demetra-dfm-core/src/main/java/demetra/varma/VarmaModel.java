@@ -5,7 +5,7 @@
  */
 package demetra.varma;
 
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 
 /**
  *
@@ -13,13 +13,13 @@ import demetra.maths.matrices.FastMatrix;
  */
 public class VarmaModel {
 
-    private static final FastMatrix[] EMPTY = new FastMatrix[0];
+    private static final CanonicalMatrix[] EMPTY = new CanonicalMatrix[0];
 
     private int n_;
-    private final FastMatrix[] phi_, th_;
-    private final FastMatrix sig_;
+    private final CanonicalMatrix[] phi_, th_;
+    private final CanonicalMatrix sig_;
     
-     public VarmaModel(FastMatrix[] phi, FastMatrix[] th, FastMatrix noise) {
+     public VarmaModel(CanonicalMatrix[] phi, CanonicalMatrix[] th, CanonicalMatrix noise) {
         if (phi == null || phi.length == 0) {
             phi_ = EMPTY;
         } else {
@@ -33,7 +33,7 @@ public class VarmaModel {
             n_ = th[0].getRowsCount();
         }
         if (noise == null) {
-            sig_ = FastMatrix.identity(n_);
+            sig_ = CanonicalMatrix.identity(n_);
         } else {
             sig_ = noise;
         }
@@ -47,15 +47,15 @@ public class VarmaModel {
         return th_.length;
     }
     
-    public final FastMatrix sig(){
+    public final CanonicalMatrix sig(){
         return sig_;
     }
 
-    public final FastMatrix phi(int lag) {
+    public final CanonicalMatrix phi(int lag) {
         return phi_[lag - 1];
     }
 
-    public final FastMatrix th(int lag) {
+    public final CanonicalMatrix th(int lag) {
         return th_[lag - 1];
     }
 

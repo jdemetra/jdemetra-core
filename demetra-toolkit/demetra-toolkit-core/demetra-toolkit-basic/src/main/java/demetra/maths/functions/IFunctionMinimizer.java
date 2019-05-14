@@ -18,7 +18,7 @@
 package demetra.maths.functions;
 
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.data.DoubleSeq;
 
 
@@ -50,7 +50,7 @@ public interface IFunctionMinimizer {
      * 
      * @return
      */
-    FastMatrix curvatureAtMinimum();
+    CanonicalMatrix curvatureAtMinimum();
     
     DoubleSeq gradientAtMinimum();
 

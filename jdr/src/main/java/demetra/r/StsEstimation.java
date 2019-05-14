@@ -45,7 +45,6 @@ import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import demetra.maths.matrices.Matrix;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
@@ -58,6 +57,7 @@ import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -119,7 +119,7 @@ public class StsEstimation {
             MAPPING.set(I, TsData.class, source -> source.getI());
             MAPPING.set(SA, TsData.class, source -> subtract(source.getY(), source.getS()));
             MAPPING.delegate(LL, DiffuseConcentratedLikelihoodDescriptor.getMapping(), r -> r.getLikelihood());
-            MAPPING.set(PCOV, Matrix.class, source -> source.getParametersCovariance());
+            MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
         }
 

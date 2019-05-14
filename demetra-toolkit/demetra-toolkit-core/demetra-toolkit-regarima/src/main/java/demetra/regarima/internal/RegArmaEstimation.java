@@ -18,7 +18,7 @@ package demetra.regarima.internal;
 
 import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 
 /**
  *
@@ -33,6 +33,6 @@ public class RegArmaEstimation<S extends IArimaModel> {
     private boolean converged;
     private double[] parameters;
     private double[] gradient;
-    private FastMatrix hessian;
+    private CanonicalMatrix hessian;
     private int degreesOfFreedom;
 }

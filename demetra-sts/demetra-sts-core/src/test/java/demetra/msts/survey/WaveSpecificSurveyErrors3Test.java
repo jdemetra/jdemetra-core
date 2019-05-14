@@ -12,7 +12,7 @@ import demetra.ssf.StateComponent;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -25,7 +25,7 @@ public class WaveSpecificSurveyErrors3Test {
 
     @Test
     public void testLag3() {
-        Matrix M=Matrix.ofInternal(new double[]{1,1,1,1,1}, 1, 5);
+        MatrixType M=MatrixType.ofInternal(new double[]{1,1,1,1,1}, 1, 5);
         StateComponent cmp = WaveSpecificSurveyErrors3.of(new double[]{1,2,3,4,5}, new double[]{.2,.3,.4,.5}, M, 3);
         int dim=cmp.initialization().getStateDim();
         ISsfDynamics dyn = cmp.dynamics();
@@ -48,7 +48,7 @@ public class WaveSpecificSurveyErrors3Test {
     
     @Test
     public void testLag1() {
-        Matrix M=Matrix.ofInternal(new double[]{1,1,1,1,1}, 1, 5);
+        MatrixType M=MatrixType.ofInternal(new double[]{1,1,1,1,1}, 1, 5);
         StateComponent cmp = WaveSpecificSurveyErrors3.of(new double[]{1,2,3,4,5}, new double[]{.2,.3,.4,.5}, M, 1);
         int dim=cmp.initialization().getStateDim();
         ISsfDynamics dyn = cmp.dynamics();

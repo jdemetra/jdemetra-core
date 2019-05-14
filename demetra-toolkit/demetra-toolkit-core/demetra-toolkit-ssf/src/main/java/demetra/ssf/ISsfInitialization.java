@@ -17,6 +17,7 @@
 package demetra.ssf;
 
 import demetra.data.DataBlock;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 
@@ -102,7 +103,7 @@ public interface ISsfInitialization {
             return;
         }
         int n = pi0.getColumnsCount();
-        FastMatrix B = FastMatrix.make(n, nd);
+        CanonicalMatrix B = CanonicalMatrix.make(n, nd);
         this.diffuseConstraints(B);
         SymmetricMatrix.XXt(B, pi0);
     }

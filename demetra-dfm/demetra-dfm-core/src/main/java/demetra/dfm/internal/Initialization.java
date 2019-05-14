@@ -21,6 +21,7 @@ import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.linearsystem.LinearSystemSolver;
+import demetra.maths.matrices.CanonicalMatrix;
 
 /**
  *
@@ -29,18 +30,18 @@ import demetra.linearsystem.LinearSystemSolver;
 @lombok.Value
 class Initialization implements ISsfInitialization {
 
-    static FastMatrix unconditional(Dynamics dynamics) {
+    static CanonicalMatrix unconditional(Dynamics dynamics) {
          int nl = dynamics.nl(), nf=dynamics.nf();
         // We have to solve the steady state equation:
         // V = T V T' + Q
         // We consider first the [nl*nf, nl*nf] sub-system
-        FastMatrix v = dynamics.getV();
-        FastMatrix t = dynamics.getT();
+        CanonicalMatrix v = dynamics.getV();
+        CanonicalMatrix t = dynamics.getT();
 
         int n = nf * nl;
-        FastMatrix cov = FastMatrix.square(n);
+        CanonicalMatrix cov = CanonicalMatrix.square(n);
         int np = (n * (n + 1)) / 2;
-        FastMatrix M = FastMatrix.square(np);
+        CanonicalMatrix M = CanonicalMatrix.square(np);
         double[] b = new double[np];
         // fill the matrix
         for (int c = 0, i = 0; c < n; ++c) {
@@ -84,7 +85,7 @@ class Initialization implements ISsfInitialization {
             return cov;
         }
         int dim = nlx*nf;
-        FastMatrix fullCov = FastMatrix.square(dim);
+        CanonicalMatrix fullCov = CanonicalMatrix.square(dim);
 
         for (int r = 0; r < nf; ++r) {
             for (int c = 0; c < nf; ++c) {
@@ -99,7 +100,7 @@ class Initialization implements ISsfInitialization {
     }
 
     int dim;
-    FastMatrix V0;
+    CanonicalMatrix V0;
 
     @Override
     public int getStateDim() {

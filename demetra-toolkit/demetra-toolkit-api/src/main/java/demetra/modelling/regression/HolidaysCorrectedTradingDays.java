@@ -8,7 +8,7 @@ package demetra.modelling.regression;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -28,7 +28,7 @@ public class HolidaysCorrectedTradingDays implements ITradingDaysVariable {
          * domain. The different columns of the matrix correspond to
          * Mondays...Sundays
          */
-        Matrix holidaysCorrection(TsDomain domain);
+        MatrixType holidaysCorrection(TsDomain domain);
 
     }
 

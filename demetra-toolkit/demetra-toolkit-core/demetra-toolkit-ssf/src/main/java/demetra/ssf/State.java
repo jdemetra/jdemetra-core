@@ -18,7 +18,7 @@ package demetra.ssf;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.ssf.univariate.ISsf;
 
 /**
@@ -50,7 +50,7 @@ public class State {
      * P is the covariance copyOf the state vector. Its interpretation depends
      * on the considered step
      */
-    private final FastMatrix P;
+    private final CanonicalMatrix P;
 
     /**
      *
@@ -59,10 +59,10 @@ public class State {
      */
     public State(final int dim) {
         a = DataBlock.make(dim);
-        P = FastMatrix.square(dim);
+        P = CanonicalMatrix.square(dim);
     }
 
-    public State(final DataBlock a, final FastMatrix P) {
+    public State(final DataBlock a, final CanonicalMatrix P) {
         this.a = a;
         this.P = P;
     }
@@ -98,7 +98,7 @@ public class State {
     /**
      * @return the P
      */
-    public final FastMatrix P() {
+    public final CanonicalMatrix P() {
         return P;
     }
 

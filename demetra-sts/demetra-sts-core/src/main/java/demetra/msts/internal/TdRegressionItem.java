@@ -19,7 +19,7 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.Collections;
 import java.util.List;
 import demetra.msts.ParameterInterpreter;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -58,14 +58,14 @@ public class TdRegressionItem extends AbstractModelItem {
         return Collections.singletonList(v);
     }
 
-    public static Matrix tdContrasts(TsDomain domain, int[] groups) {
+    public static MatrixType tdContrasts(TsDomain domain, int[] groups) {
         DayClustering dc = DayClustering.of(groups);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         CanonicalMatrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
         return td.unmodifiable();
     }
 
-    public static Matrix rawTd(TsDomain domain, int[] groups) {
+    public static MatrixType rawTd(TsDomain domain, int[] groups) {
         DayClustering dc = DayClustering.of(groups);
         GenericTradingDays gtd = GenericTradingDays.of(dc);
         CanonicalMatrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));

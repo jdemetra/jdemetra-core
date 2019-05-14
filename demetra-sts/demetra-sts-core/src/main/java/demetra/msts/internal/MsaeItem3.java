@@ -13,7 +13,7 @@ import demetra.ssf.StateComponent;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.msts.ParameterInterpreter;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -22,11 +22,11 @@ import demetra.maths.matrices.Matrix;
 public class MsaeItem3 extends AbstractModelItem {
     
     private final VarianceInterpreter[] v;
-    private final Matrix k;
+    private final MatrixType k;
     private final int lag;
     private final ArInterpreter[] par;
     
-    public MsaeItem3(String name, double[] v, boolean fixedVar, double[] ar, boolean fixedar, Matrix k, int lag) {
+    public MsaeItem3(String name, double[] v, boolean fixedVar, double[] ar, boolean fixedar, MatrixType k, int lag) {
         super(name);
         int nwaves = v.length;
         this.lag = lag;

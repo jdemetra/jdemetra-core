@@ -28,6 +28,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.OrdinarySmoother;
 import demetra.data.DoubleSeqCursor;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 
@@ -45,8 +46,8 @@ public class AugmentedSmoother {
 
     private double e, f;
     private DataBlock C, E, R;
-    private FastMatrix N, Rd, U, V, RNA, S;
-    private FastMatrix Psi;
+    private CanonicalMatrix N, Rd, U, V, RNA, S;
+    private CanonicalMatrix Psi;
     private DataBlock delta;
     private boolean missing, hasinfo, calcvar = true;
 
@@ -86,13 +87,13 @@ public class AugmentedSmoother {
         R = DataBlock.make(dim);
         C = DataBlock.make(dim);
         E = DataBlock.make(nd);
-        Rd = FastMatrix.make(dim, nd);
-        U = FastMatrix.make(dim, nd);
+        Rd = CanonicalMatrix.make(dim, nd);
+        U = CanonicalMatrix.make(dim, nd);
 
         if (calcvar) {
-            N = FastMatrix.square(dim);
-            V = FastMatrix.make(dim, nd);
-            RNA = FastMatrix.make(dim, nd);
+            N = CanonicalMatrix.square(dim);
+            V = CanonicalMatrix.make(dim, nd);
+            RNA = CanonicalMatrix.make(dim, nd);
         }
     }
 
@@ -172,17 +173,17 @@ public class AugmentedSmoother {
     }
 
     private void updateP() {
-        FastMatrix P = state.P();
+        CanonicalMatrix P = state.P();
         // normal iteration
-        FastMatrix PNP = SymmetricMatrix.XtSX(N, P);
+        CanonicalMatrix PNP = SymmetricMatrix.XtSX(N, P);
         P.sub(PNP);
         // diffuse correction
-        FastMatrix UPsiU = SymmetricMatrix.XSXt(Psi, U);
+        CanonicalMatrix UPsiU = SymmetricMatrix.XSXt(Psi, U);
         P.add(UPsiU);
         LowerTriangularMatrix.rsolve(S, U.transpose());
         LowerTriangularMatrix.rsolve(S, V.transpose());
         // compute U*V'
-        FastMatrix UV = FastMatrix.square(U.getRowsCount());
+        CanonicalMatrix UV = CanonicalMatrix.square(U.getRowsCount());
         UV.product(U, V.transpose());
         P.sub(UV);
         P.sub(UV.transpose());

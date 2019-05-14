@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.data.DoublesMath;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  * This class represents the concentrated likelihood of a linear regression
@@ -265,10 +265,10 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
  
     @Override
     @Nonnull
-    public Matrix unscaledCovariance() {
+    public MatrixType unscaledCovariance() {
         bvariance();
         if (bvar == null) {
-            return Matrix.EMPTY;
+            return MatrixType.EMPTY;
         }
         if (nmissing == 0) {
             return bvar.unmodifiable();

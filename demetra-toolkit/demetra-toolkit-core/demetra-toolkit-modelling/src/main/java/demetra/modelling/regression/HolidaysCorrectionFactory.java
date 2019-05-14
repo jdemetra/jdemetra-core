@@ -21,8 +21,8 @@ import demetra.timeseries.calendars.CompositeCalendar;
 import demetra.util.WeightedItem;
 import java.time.LocalDate;
 import demetra.timeseries.calendars.CalendarDefinition;
-import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.MatrixFactory;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -73,7 +73,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
      */
     public static HolidaysCorrector corrector(final Calendar calendar) {
         return (TsDomain domain) -> {
-            Matrix M = CalendarUtility.holidays(calendar.getHolidays(), domain);
+            MatrixType M = CalendarUtility.holidays(calendar.getHolidays(), domain);
             CanonicalMatrix Mc = CanonicalMatrix.of(M);
             if (calendar.isMeanCorrection()) {
                 TsPeriod start = domain.getStartPeriod();
@@ -114,8 +114,8 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
             int n = domain.getLength();
             int pos = domain.indexOf(breakDate.atStartOfDay());
             if (pos > 0) {
-                Matrix M1 = beg.holidaysCorrection(domain.range(0, pos));
-                Matrix M2 = end.holidaysCorrection(domain.range(pos, n));
+                MatrixType M1 = beg.holidaysCorrection(domain.range(0, pos));
+                MatrixType M2 = end.holidaysCorrection(domain.range(pos, n));
                 return MatrixFactory.rowBind(M1, M2);
             } else if (pos >= -1) {
                 return end.holidaysCorrection(domain);
@@ -146,7 +146,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
         TsDomain domain = TsDomain.of(start, n);
         CanonicalMatrix days = CanonicalMatrix.make(n, 7);
         GenericTradingDaysFactory.fillTdMatrix(start, days);
-        Matrix corr = var.getCorrector().holidaysCorrection(domain);
+        MatrixType corr = var.getCorrector().holidaysCorrection(domain);
         for (int i = 0; i < 7; ++i) {
             days.column(i).apply(corr.column(i), (a, b) -> a + b);
         }

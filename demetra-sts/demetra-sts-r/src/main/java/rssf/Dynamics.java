@@ -9,7 +9,7 @@ import demetra.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.implementations.TimeInvariantDynamics;
 import demetra.ssf.implementations.TimeInvariantDynamics.Innovations;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -17,7 +17,7 @@ import demetra.maths.matrices.Matrix;
  */
 @lombok.experimental.UtilityClass
 public class Dynamics {
-    public ISsfDynamics of(Matrix T, Matrix V, Matrix S){
+    public ISsfDynamics of(MatrixType T, MatrixType V, MatrixType S){
         return new TimeInvariantDynamics(CanonicalMatrix.of(T), new Innovations(CanonicalMatrix.of(V), CanonicalMatrix.of(S)));
     }
 }

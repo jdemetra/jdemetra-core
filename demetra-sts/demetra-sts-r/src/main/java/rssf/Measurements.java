@@ -13,7 +13,7 @@ import demetra.ssf.implementations.TimeInvariantMeasurements;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Measurement;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -30,7 +30,7 @@ public class Measurements {
         return new Measurement(new TimeInvariantLoading(DataBlock.of(Z)), var);
     }
 
-    public ISsfMeasurements of(Matrix Z, Matrix H) {
+    public ISsfMeasurements of(MatrixType Z, MatrixType H) {
         return new TimeInvariantMeasurements(CanonicalMatrix.of(Z), CanonicalMatrix.of(H), null);
     }
 

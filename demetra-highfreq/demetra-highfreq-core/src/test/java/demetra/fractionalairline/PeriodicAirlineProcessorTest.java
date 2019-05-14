@@ -29,7 +29,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -44,7 +44,7 @@ public class PeriodicAirlineProcessorTest {
     @Ignore
     public void testDaily() throws URISyntaxException, IOException {
         URI uri = Data.class.getResource("/edf.txt").toURI();
-        Matrix edf = MatrixSerializer.read(new File(uri));
+        MatrixType edf = MatrixSerializer.read(new File(uri));
         Holiday[] france = france();
         CanonicalMatrix hol = CanonicalMatrix.make(edf.getRowsCount(), france.length);
         HolidaysUtility.fillDays(france, hol, LocalDate.of(1996, 1, 1), false);

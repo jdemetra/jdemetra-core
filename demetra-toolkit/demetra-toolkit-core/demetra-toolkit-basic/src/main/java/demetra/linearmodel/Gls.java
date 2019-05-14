@@ -24,8 +24,7 @@ import demetra.leastsquares.QRSolver;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceProvider(service = IGls.class)
-public class Gls implements IGls {
+public class Gls {
 
     private static AtomicReference<Supplier<QRSolver>> QR_FACTORY = new AtomicReference<>(()
             -> AdvancedQRSolver.builder(new Householder()).build());
@@ -44,7 +43,6 @@ public class Gls implements IGls {
         this.solver = solver;
     }
 
-    @Override
     public LeastSquaresResults compute(LinearModel model, FastMatrix cov) {
 
         FastMatrix L = cov.deepClone();

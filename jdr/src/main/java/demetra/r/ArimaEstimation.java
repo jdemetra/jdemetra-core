@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -118,7 +118,7 @@ public class ArimaEstimation {
         static {
             MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getArima());
             MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
-            MAPPING.set(PCOV, Matrix.class, source -> source.getParametersCovariance());
+            MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
             MAPPING.set(B, double[].class, source
                     -> {
@@ -135,7 +135,7 @@ public class ArimaEstimation {
                     return 0.0;
                 }
             });
-            MAPPING.set(UNSCALEDBVAR, Matrix.class, source -> source.getConcentratedLogLikelihood().unscaledCovariance());
+            MAPPING.set(UNSCALEDBVAR, MatrixType.class, source -> source.getConcentratedLogLikelihood().unscaledCovariance());
         }
 
         @Override

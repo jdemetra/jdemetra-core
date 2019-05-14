@@ -12,7 +12,7 @@ import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.modelling.regression.AdditiveOutlierFactory;
 import demetra.modelling.regression.IOutlierFactory;
 import demetra.modelling.regression.LevelShiftFactory;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -44,7 +44,7 @@ public class PeriodicAirline {
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
         OutlierDescriptor[] outliers;
-        FastMatrix parametersCovariance;
+        CanonicalMatrix parametersCovariance;
         double[] score;
         double[] parameters;
         double[] linearized;
@@ -56,7 +56,7 @@ public class PeriodicAirline {
 
         static {
             MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
-            MAPPING.set(PCOV, Matrix.class, source -> source.getParametersCovariance());
+            MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
             MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters());
             MAPPING.set(B, double[].class, source
@@ -79,7 +79,7 @@ public class PeriodicAirline {
                     return 0.0;
                 }
             });
-            MAPPING.set(UNSCALEDBVAR, Matrix.class, source -> source.getConcentratedLogLikelihood().unscaledCovariance());
+            MAPPING.set(UNSCALEDBVAR, MatrixType.class, source -> source.getConcentratedLogLikelihood().unscaledCovariance());
             MAPPING.set(OUTLIERS, String[].class, source -> {
                 OutlierDescriptor[] o = source.getOutliers();
                 if (o == null) {
@@ -91,7 +91,7 @@ public class PeriodicAirline {
                 }
                 return no;
             });
-            MAPPING.set(REGRESSORS, Matrix.class, source
+            MAPPING.set(REGRESSORS, MatrixType.class, source
                     -> {
                 List<DoubleSeq> x = source.regarima.getX();
                 int n=source.regarima.getY().length(), m=x.size();
@@ -101,7 +101,7 @@ public class PeriodicAirline {
                     xcur.copyTo(all, pos);
                     pos+=n;
                 }
-                return Matrix.ofInternal(all, n, m);
+                return MatrixType.ofInternal(all, n, m);
             });
             
             MAPPING.set(LIN, double[].class, source
@@ -134,11 +134,11 @@ public class PeriodicAirline {
 
     }
 
-    public Results process(double[] y, Matrix x, boolean mean, double[] periods, String[] outliers, double cv) {
+    public Results process(double[] y, MatrixType x, boolean mean, double[] periods, String[] outliers, double cv) {
         final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(periods, true, false);
         RegArimaModel.Builder builder = RegArimaModel.builder(ArimaModel.class)
                 .y(DoubleSeq.of(y))
-                .addX(FastMatrix.of(x))
+                .addX(CanonicalMatrix.of(x))
                 .arima(mapping.getDefault())
                 .meanCorrection(mean);
         OutlierDescriptor[] o = null;

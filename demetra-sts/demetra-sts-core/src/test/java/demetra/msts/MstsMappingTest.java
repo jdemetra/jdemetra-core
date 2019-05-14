@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import org.junit.Test;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -49,7 +49,7 @@ public class MstsMappingTest {
     public void testSimple() throws URISyntaxException, IOException {
 
         File file = Data.copyToTempFile(MultivariateCompositeSsf.class.getResource("/mssf1"));
-        Matrix data = MatrixSerializer.read(file, "\t|,");
+        MatrixType data = MatrixSerializer.read(file, "\t|,");
 
         CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 4);
         D.column(0).copy(data.column(0));

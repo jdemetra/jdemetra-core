@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -42,7 +42,7 @@ public class CalendarTest {
 
     @Test
     public void testBelgium() {
-        Matrix holidays = CalendarUtility.holidays(belgium.getHolidays(), TsDomain.of(TsPeriod.monthly(1980, 1), 360));
+        MatrixType holidays = CalendarUtility.holidays(belgium.getHolidays(), TsDomain.of(TsPeriod.monthly(1980, 1), 360));
 //        System.out.println(MatrixType.format(holidays));
         double[][] z = CalendarUtility.longTermMean(belgium.getHolidays(), 12);
         assertEquals(sum(z), belgium.getHolidays().length, 1e-9);

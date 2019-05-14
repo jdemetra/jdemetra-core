@@ -5,7 +5,7 @@
  */
 package demetra.varma;
 
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.CanonicalMatrix;
 import java.util.ArrayList;
 
 /**
@@ -14,8 +14,8 @@ import java.util.ArrayList;
  */
 public class AutoCovarianceFunction {
 
-    private final ArrayList<FastMatrix> covs_ = new ArrayList<>();
-    private final ArrayList<FastMatrix> g_ = new ArrayList<>();
+    private final ArrayList<CanonicalMatrix> covs_ = new ArrayList<>();
+    private final ArrayList<CanonicalMatrix> g_ = new ArrayList<>();
     private final VarmaModel varma_;
 
     public AutoCovarianceFunction(VarmaModel varma) {
@@ -25,7 +25,7 @@ public class AutoCovarianceFunction {
 
     }
     
-    public FastMatrix cov(int lag) {
+    public CanonicalMatrix cov(int lag) {
         
         if (lag >= covs_.size()) {
             compute(lag);
@@ -50,12 +50,12 @@ public class AutoCovarianceFunction {
             return;
         }
         for (int i = g_.size(); i <= lag; ++i) {
-            FastMatrix g = FastMatrix.square(n);
+            CanonicalMatrix g = CanonicalMatrix.square(n);
             if (i <= q) {
                 g = varma_.th(i).times(varma_.sig());
             }
             for (int j = 1; j <= Math.min(i, p); ++j) {
-                FastMatrix tmp = varma_.phi(j).times(g_.get(i-j));
+                CanonicalMatrix tmp = varma_.phi(j).times(g_.get(i-j));
                 g.sub(tmp);
             }
             g_.add(g);
@@ -64,7 +64,7 @@ public class AutoCovarianceFunction {
 
     private void calcCov(int k) {
         int n=varma_.getDim(), p=varma_.getP(), q=varma_.getQ();
-        FastMatrix cov=g_.get(k).deepClone();
+        CanonicalMatrix cov=g_.get(k).deepClone();
         for (int i=1; i<=q; ++i){
             cov.add(g_.get(k-i).times(varma_.th(k-i)));
         }

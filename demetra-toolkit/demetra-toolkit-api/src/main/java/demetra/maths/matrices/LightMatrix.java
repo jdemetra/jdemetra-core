@@ -25,7 +25,7 @@ import demetra.data.Doubles;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-class LightMatrix implements Matrix {
+class LightMatrix implements MatrixType {
 
     private final double[] storage;
     private final int nrows, ncolumns;

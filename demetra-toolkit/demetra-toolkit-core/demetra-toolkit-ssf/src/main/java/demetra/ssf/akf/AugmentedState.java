@@ -17,6 +17,7 @@
 package demetra.ssf.akf;
 
 import demetra.design.Development;
+import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
@@ -49,7 +50,7 @@ public class AugmentedState extends State {
      * B contains the states of the constraints. Its interpretation depends on
      * the considered step
      */
-    private final FastMatrix B;
+    private final CanonicalMatrix B;
     private int ndropped = 0;
 
     /**
@@ -60,7 +61,7 @@ public class AugmentedState extends State {
      */
     public AugmentedState(final int dim, final int ndiffuse) {
         super(dim);
-        B = FastMatrix.make(dim, ndiffuse);
+        B = CanonicalMatrix.make(dim, ndiffuse);
     }
 
     public final FastMatrix B() {

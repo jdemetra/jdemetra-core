@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -31,8 +31,8 @@ public class TsUtilityTest {
 //        TsUtility.add(holidays, "Easter", -1, 1, false);
         TsUtility.add(holidays, "Easter", 0, 1, false);
         TsUtility.add(holidays, "EasterMonday", 0, 1, false);
-        Matrix rslt = TsUtility.holidays(holidays, "2002-12-31", 600, "Default");
-        System.out.println(Matrix.format(rslt));
+        MatrixType rslt = TsUtility.holidays(holidays, "2002-12-31", 600, "Default");
+        System.out.println(MatrixType.format(rslt));
     }
     
     private static void addDefault( List<IHoliday> holidays) {

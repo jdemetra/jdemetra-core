@@ -30,8 +30,8 @@ import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import demetra.arima.estimation.IArimaMapping;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
 import demetra.likelihood.Likelihood;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -50,7 +50,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
         private boolean mt = false;
         // model
         private final DoubleSeq dy;
-        private Matrix x;
+        private MatrixType x;
         private int nmissing;
         // mapping
         private IArimaMapping<S> mapping;
@@ -59,7 +59,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
             this.dy = dy;
         }
 
-        SsqBuilder variables(Matrix x) {
+        SsqBuilder variables(MatrixType x) {
             this.x = x;
             return this;
         }
@@ -102,7 +102,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
     
     // model
     final DoubleSeq dy;
-    final Matrix x;
+    final MatrixType x;
     final int nmissing;
     // mapping
     final IParametricMapping<S> mapping;
@@ -113,7 +113,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
     final boolean mt;
 
     private RegArmaSsqFunction(final DoubleSeq dy,
-            final Matrix x,
+            final MatrixType x,
             final int nm,
             final IParametricMapping<S> mapping,
             final ConcentratedLikelihoodComputer cll,

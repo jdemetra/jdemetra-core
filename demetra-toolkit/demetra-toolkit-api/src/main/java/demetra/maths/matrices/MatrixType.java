@@ -28,9 +28,9 @@ import demetra.data.DoubleSeq;
  * @author Philippe Charles
  */
 @Development(status = Development.Status.Release)
-public interface Matrix extends BaseTable<Double> {
+public interface MatrixType extends BaseTable<Double> {
 
-    interface Mutable extends Matrix {
+    interface Mutable extends MatrixType {
 
         @Override
         DoubleSeq.Mutable row(@Nonnull int irow);
@@ -45,7 +45,7 @@ public interface Matrix extends BaseTable<Double> {
         DoubleSeq.Mutable column(@Nonnull int icolumn);
 
         @Override
-        Matrix.Mutable extract(@Nonnegative final int rstart, @Nonnegative final int nr,
+        MatrixType.Mutable extract(@Nonnegative final int rstart, @Nonnegative final int nr,
                 @Nonnegative final int cstart, @Nonnegative final int nc);
 
         /**
@@ -60,16 +60,16 @@ public interface Matrix extends BaseTable<Double> {
 
     }
 
-    static Matrix EMPTY = new LightMatrix(null, 0, 0);
+    static MatrixType EMPTY = new LightMatrix(null, 0, 0);
 
-    static Matrix ofInternal(@Nonnull double[] data, @Nonnegative int nrows, @Nonnegative int ncolumns) {
+    static MatrixType ofInternal(@Nonnull double[] data, @Nonnegative int nrows, @Nonnegative int ncolumns) {
         if (data.length < nrows * ncolumns) {
             throw new IllegalArgumentException();
         }
         return new LightMatrix(data, nrows, ncolumns);
     }
 
-    static Matrix copyOf(@Nonnull Matrix matrix) {
+    static MatrixType copyOf(@Nonnull MatrixType matrix) {
         return new LightMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
     }
 
@@ -100,7 +100,7 @@ public interface Matrix extends BaseTable<Double> {
      */
     DoubleSeq column(@Nonnull int icolumn);
 
-    default Matrix extract(@Nonnegative final int rstart, @Nonnegative final int nr,
+    default MatrixType extract(@Nonnegative final int rstart, @Nonnegative final int nr,
             @Nonnegative final int cstart, @Nonnegative final int nc) {
         return new LightSubMatrix(this, rstart, nr, cstart, nc);
     }
@@ -136,7 +136,7 @@ public interface Matrix extends BaseTable<Double> {
         return all;
     }
 
-    public static String toString(Matrix matrix, String fmt) {
+    public static String toString(MatrixType matrix, String fmt) {
         StringBuilder builder = new StringBuilder();
         if (!matrix.isEmpty()) {
             DoubleSeq row = matrix.row(0);
@@ -150,7 +150,7 @@ public interface Matrix extends BaseTable<Double> {
         return builder.toString();
     }
 
-    public static String format(Matrix m, String fmt) {
+    public static String format(MatrixType m, String fmt) {
         StringBuilder builder = new StringBuilder();
         int nrows = m.getRowsCount();
         if (nrows > 0) {
@@ -163,7 +163,7 @@ public interface Matrix extends BaseTable<Double> {
         return builder.toString();
     }
 
-    public static String format(Matrix m) {
+    public static String format(MatrixType m) {
         StringBuilder builder = new StringBuilder();
         int nrows = m.getRowsCount();
         if (nrows > 0) {

@@ -20,7 +20,7 @@ import demetra.arima.ArimaType;
 import demetra.design.Development;
 import demetra.linearmodel.LinearModelType;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 
 /**
@@ -47,7 +47,7 @@ public class RegArimaModelType {
         return model.isMeanCorrection();
     }
     
-    public Matrix getX() {
+    public MatrixType getX() {
         return model.getX();
     }
     //</editor-fold>

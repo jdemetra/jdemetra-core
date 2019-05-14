@@ -12,7 +12,7 @@ import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.StateComponent;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  * Model described in the paper of Duncan Elliot
@@ -31,7 +31,7 @@ public class WaveSpecificSurveyErrors3 {
      * @param lag Lag between two observations in a given panel
      * @return
      */
-    public StateComponent of(double[] v, double[] ar, Matrix k, int lag) {
+    public StateComponent of(double[] v, double[] ar, MatrixType k, int lag) {
         Data info = new Data(v, ar, k, lag);
         return new StateComponent(new Initialization(info), new Dynamics(info));
     }
@@ -41,10 +41,10 @@ public class WaveSpecificSurveyErrors3 {
 
         double[] v, vc;
         double[] ar;
-        Matrix k;
+        MatrixType k;
         int lag;
 
-        Data(double[] v, double[] ar, Matrix k, int lag) {
+        Data(double[] v, double[] ar, MatrixType k, int lag) {
             this.v = v;
             this.ar = ar;
             this.lag = lag;

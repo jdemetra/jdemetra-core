@@ -40,8 +40,8 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.SubMatrix;
+import demetra.maths.matrices.MatrixType;
 
 /**
  *
@@ -63,9 +63,9 @@ public class TimeVaryingRegression {
     public static class Results implements ProcResults {
 
         TsDomain domain;
-        Matrix variables;
-        Matrix coefficients;
-        Matrix coefficientsStde;
+        MatrixType variables;
+        MatrixType coefficients;
+        MatrixType coefficientsStde;
         SarimaModel arima0, arima;
         DiffuseConcentratedLikelihood ll0;
         DiffuseConcentratedLikelihood ll;
@@ -84,9 +84,9 @@ public class TimeVaryingRegression {
             MAPPING.set("aic0", Double.class, r -> r.getLl0().AIC(2));
             MAPPING.set("aic", Double.class, r -> r.getLl().AIC(3));
             MAPPING.set("tdvar", Double.class, r -> r.getNvar());
-            MAPPING.set(COEFF, Matrix.class, r -> r.getCoefficients());
-            MAPPING.set(STDCOEFF, Matrix.class, r -> r.getCoefficientsStde());
-            MAPPING.set(TD, Matrix.class, r -> r.getVariables());
+            MAPPING.set(COEFF, MatrixType.class, r -> r.getCoefficients());
+            MAPPING.set(STDCOEFF, MatrixType.class, r -> r.getCoefficientsStde());
+            MAPPING.set(TD, MatrixType.class, r -> r.getVariables());
             MAPPING.set(TDEFFECT, TsData.class, r
                     -> {
                 DataBlock tmp = DataBlock.make(r.getDomain().length());

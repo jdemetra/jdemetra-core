@@ -307,12 +307,12 @@ public class SubMatrix implements FastMatrix {
 
     @Override
     public String toString(String fmt) {
-        return Matrix.format(this, fmt);
+        return MatrixType.format(this, fmt);
     }
 
     @Override
     public String toString() {
-        return Matrix.format(this);
+        return MatrixType.format(this);
     }
 
 }
