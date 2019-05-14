@@ -22,24 +22,21 @@ import demetra.design.Development;
  *
  * @author Jean Palate
  */
-@lombok.Value
 @Development(status = Development.Status.Release)
-public class UcarimaType {
+public interface UcarimaType {
 
-    private ArimaType sum;
-    @lombok.NonNull 
-    private ArimaType[] components;
+    ArimaType getSum();
     
-    public int size(){
-        return components.length;
+    default ArimaType[] getComponents(){
+        ArimaType[] all = new ArimaType[size()];
+        for (int i=0; i<all.length; ++i){
+            all[i]=getComponent(i);
+        }
+        return all;
     }
     
-    public ArimaType[] getComponents(){
-        return components.clone();
-    }
+    int size();
     
-    public ArimaType getComponent(int i){
-        return components[i];
-    }
+    ArimaType getComponent(int i);
 
 }

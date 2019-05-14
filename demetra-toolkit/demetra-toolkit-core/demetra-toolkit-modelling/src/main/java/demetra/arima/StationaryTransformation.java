@@ -29,7 +29,7 @@ import demetra.maths.linearfilters.BackFilter;
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
-public class StationaryTransformation<S extends IModel> {
+public class StationaryTransformation<S extends ILinearProcess> {
 
     /**
      * Stationary model. Same class as the original model

@@ -21,13 +21,13 @@ import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.design.BuilderPattern;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import demetra.linearsystem.LinearSystemSolver;
 import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.decomposition.LUDecomposition;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -76,7 +76,7 @@ public class LUSolver implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(FastMatrix A, DataBlock b) {
+    public void solve(Matrix A, DataBlock b) {
         if (!A.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -84,7 +84,7 @@ public class LUSolver implements LinearSystemSolver {
             throw new MatrixException(MatrixException.DIM);
         }
         // we normalize b
-        FastMatrix An;
+        Matrix An;
         if (normalize) {
 
             An = A.deepClone();
@@ -117,7 +117,7 @@ public class LUSolver implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(FastMatrix A, FastMatrix B) {
+    public void solve(Matrix A, Matrix B) {
         if (!A.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -125,7 +125,7 @@ public class LUSolver implements LinearSystemSolver {
             throw new MatrixException(MatrixException.DIM);
         }
         // we normalize b 
-        FastMatrix An;
+        Matrix An;
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();

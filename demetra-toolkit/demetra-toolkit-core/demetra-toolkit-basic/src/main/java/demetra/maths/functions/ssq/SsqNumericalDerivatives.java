@@ -26,7 +26,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -253,7 +253,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @return
      */
     @Override
-    public void jacobian(FastMatrix m) {
+    public void jacobian(Matrix m) {
         if (m_de == null) {
             calcgrad();
         }
@@ -270,7 +270,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @param h
      */
     @Override
-    public void hessian(FastMatrix h) {
+    public void hessian(Matrix h) {
         if (m_h == null) {
             calch();
         }

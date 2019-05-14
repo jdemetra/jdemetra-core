@@ -19,8 +19,8 @@
 package demetra.ssf;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.MatrixStorage;
+import demetra.maths.matrices.Matrix;
 
 
 /**
@@ -90,7 +90,7 @@ public class MatrixResults {
      * @param t
      * @return
      */
-    public FastMatrix matrix(final int t) {
+    public Matrix matrix(final int t) {
         if (data_ == null || t < start_) {
             return null;
         } else {
@@ -102,7 +102,7 @@ public class MatrixResults {
         return data_.item(row, col);
     }
 
-    public void save(final int t, final FastMatrix P) {
+    public void save(final int t, final Matrix P) {
         int st = t - start_;
         if (st < 0) {
             return;

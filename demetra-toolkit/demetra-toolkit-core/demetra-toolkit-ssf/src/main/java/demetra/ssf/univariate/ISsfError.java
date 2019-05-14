@@ -18,8 +18,8 @@ package demetra.ssf.univariate;
 
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfRoot;
+import demetra.maths.matrices.Matrix;
 
 /**
  *

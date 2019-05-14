@@ -6,13 +6,13 @@
 package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.Easter;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -55,7 +55,7 @@ class JulianEasterFactory implements RegressionVariableFactory<JulianEasterVaria
     private JulianEasterFactory(){}
 
     @Override
-    public boolean fill(JulianEasterVariable var, TsPeriod start, FastMatrix buffer) {
+    public boolean fill(JulianEasterVariable var, TsPeriod start, Matrix buffer) {
         // very inefficient code.Should be improved
         DataBlock data=buffer.column(0);
         int freq = start.getUnit().getAnnualFrequency();
@@ -115,7 +115,7 @@ class JulianEasterFactory implements RegressionVariableFactory<JulianEasterVaria
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(JulianEasterVariable var, D domain, FastMatrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(JulianEasterVariable var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported."); //To change body of generated methods, choose Tools | Templates.
     }
     

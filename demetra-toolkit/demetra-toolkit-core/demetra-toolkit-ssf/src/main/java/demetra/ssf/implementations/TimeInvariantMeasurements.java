@@ -17,12 +17,12 @@
 package demetra.ssf.implementations;
 
 import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.multivariate.ISsfErrors;
 import demetra.ssf.univariate.ISsfError;
+import demetra.maths.matrices.Matrix;
 
 /**
  *

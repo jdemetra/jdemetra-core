@@ -19,7 +19,7 @@ import demetra.random.RandomNumberGenerator;
 @lombok.experimental.UtilityClass
 public class SymmetricMatrix {
 
-    public void randomize(FastMatrix M, RandomNumberGenerator rng) {
+    public void randomize(Matrix M, RandomNumberGenerator rng) {
         if (!M.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -41,7 +41,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public void lcholesky(FastMatrix M, double zero) {
+    public void lcholesky(Matrix M, double zero) {
         if (M.isCanonical()) {
             SymmetricCanonicalMatrix.lcholesky2(M.asCanonical(), zero);
         } else if (M.getRowIncrement() == 1) {
@@ -51,7 +51,7 @@ public class SymmetricMatrix {
         }
     }
 
-    private void lcholesky_1(FastMatrix M, double zero) {
+    private void lcholesky_1(Matrix M, double zero) {
         double[] data = M.getStorage();
         int n = M.getRowsCount(), cinc = M.getColumnIncrement(), dinc = 1 + cinc;
         int start = M.getStartPosition(), end = start + n * dinc;
@@ -102,7 +102,7 @@ public class SymmetricMatrix {
         LowerTriangularMatrix.toLower(M);
     }
 
-    private void lcholesky_def(FastMatrix M, double zero) {
+    private void lcholesky_def(Matrix M, double zero) {
         double[] data = M.getStorage();
         int n = M.getRowsCount(), rinc = M.getRowIncrement(), cinc = M.getColumnIncrement(), dinc = rinc + cinc;
         int start = M.getStartPosition(), end = start + n * dinc;
@@ -153,7 +153,7 @@ public class SymmetricMatrix {
         LowerTriangularMatrix.toLower(M);
     }
 
-    public void xxt(DataBlock x, FastMatrix M) {
+    public void xxt(DataBlock x, Matrix M) {
         int nr = x.length(), xinc = x.getIncrement();
         int mcinc = M.getColumnIncrement(), mrinc = M.getRowIncrement();
         double[] px = x.getStorage(), pm = M.getStorage();
@@ -180,7 +180,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public void XXt(final FastMatrix X, final FastMatrix M) {
+    public void XXt(final Matrix X, final Matrix M) {
         int nr = X.getRowsCount(), nc = X.getColumnsCount(), xcinc = X.getColumnIncrement(), xrinc = X.getRowIncrement();
         int mcinc = M.getColumnIncrement(), mrinc = M.getRowIncrement();
         double[] px = X.getStorage(), pm = M.getStorage();
@@ -213,7 +213,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public void LLt(FastMatrix L, FastMatrix M) {
+    public void LLt(Matrix L, Matrix M) {
         if (L.isCanonical() && M.isCanonical()) {
             SymmetricCanonicalMatrix.LLt(L.asCanonical(), M.asCanonical());
         } else {
@@ -251,7 +251,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public void UUt(FastMatrix U, FastMatrix M) {
+    public void UUt(Matrix U, Matrix M) {
         if (U.isCanonical() && M.isCanonical()) {
             SymmetricCanonicalMatrix.UUt(U.asCanonical(), M.asCanonical());
         } else {
@@ -275,11 +275,11 @@ public class SymmetricMatrix {
         }
     }
 
-    public void XtSX(FastMatrix S, FastMatrix X, FastMatrix M) {
+    public void XtSX(Matrix S, Matrix X, Matrix M) {
         if (S.isCanonical() && X.isCanonical() && M.isCanonical()) {
             SymmetricCanonicalMatrix.XtSX(S.asCanonical(), X.asCanonical(), M.asCanonical());
         } else {
-            FastMatrix SX = S.times(X);
+            Matrix SX = S.times(X);
             DataBlockIterator rows = SX.columnsIterator(), cols = X.columnsIterator(), mcols = M.columnsIterator();
             int c = 0;
             while (cols.hasNext()) {
@@ -301,19 +301,19 @@ public class SymmetricMatrix {
         return M;
     }
 
-    public void XtX(final FastMatrix X, final FastMatrix M) {
+    public void XtX(final Matrix X, final Matrix M) {
         XXt(X.transpose(), M);
     }
 
-    public void UtU(final FastMatrix U, final FastMatrix M) {
+    public void UtU(final Matrix U, final Matrix M) {
         LLt(U.transpose(), M);
     }
 
-    public void LtL(final FastMatrix L, final FastMatrix M) {
+    public void LtL(final Matrix L, final Matrix M) {
         UUt(L.transpose(), M);
     }
 
-    public CanonicalMatrix inverse(FastMatrix S) {
+    public CanonicalMatrix inverse(Matrix S) {
         try {
             CanonicalMatrix lower = S.deepClone();
             lcholesky(lower);
@@ -328,7 +328,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public CanonicalMatrix XXt(final FastMatrix X) {
+    public CanonicalMatrix XXt(final Matrix X) {
         if (X.isCanonical()) {
             return SymmetricCanonicalMatrix.XXt(X.asCanonical());
         }
@@ -337,7 +337,7 @@ public class SymmetricMatrix {
         return M;
     }
 
-    public CanonicalMatrix XtX(final FastMatrix X) {
+    public CanonicalMatrix XtX(final Matrix X) {
         if (X.isCanonical()) {
             return SymmetricCanonicalMatrix.XtX(X.asCanonical());
         }
@@ -346,7 +346,7 @@ public class SymmetricMatrix {
         return M;
     }
 
-    public CanonicalMatrix LLt(final FastMatrix L) {
+    public CanonicalMatrix LLt(final Matrix L) {
         if (L.isCanonical()) {
             return SymmetricCanonicalMatrix.LLt(L.asCanonical());
         }
@@ -356,7 +356,7 @@ public class SymmetricMatrix {
         return M;
     }
 
-    public CanonicalMatrix UtU(final FastMatrix U) {
+    public CanonicalMatrix UtU(final Matrix U) {
         if (U.isCanonical()) {
             return SymmetricCanonicalMatrix.UtU(U.asCanonical());
         }
@@ -365,7 +365,7 @@ public class SymmetricMatrix {
         return M;
     }
 
-    public CanonicalMatrix LtL(final FastMatrix L) {
+    public CanonicalMatrix LtL(final Matrix L) {
         if (L.isCanonical()) {
             return SymmetricCanonicalMatrix.LtL(L.asCanonical());
         }
@@ -374,7 +374,7 @@ public class SymmetricMatrix {
         return M;
     }
 
-    public CanonicalMatrix UUt(final FastMatrix U) {
+    public CanonicalMatrix UUt(final Matrix U) {
         if (U.isCanonical()) {
             return SymmetricCanonicalMatrix.UUt(U.asCanonical());
         }
@@ -390,7 +390,7 @@ public class SymmetricMatrix {
      * @param S
      * @return
      */
-    public CanonicalMatrix XSXt(final FastMatrix S, final FastMatrix X) {
+    public CanonicalMatrix XSXt(final Matrix S, final Matrix X) {
         if (S.isCanonical() && X.isCanonical()) {
             return SymmetricCanonicalMatrix.XSXt(S.asCanonical(), X.asCanonical());
         }
@@ -404,7 +404,7 @@ public class SymmetricMatrix {
      * @param S
      * @param M
      */
-    public void XSXt(final FastMatrix S, final FastMatrix X, final FastMatrix M) {
+    public void XSXt(final Matrix S, final Matrix X, final Matrix M) {
         if (S.isCanonical() && X.isCanonical() && M.isCanonical()) {
             SymmetricCanonicalMatrix.XSXt(S.asCanonical(), X.asCanonical(), M.asCanonical());
         } else {
@@ -419,7 +419,7 @@ public class SymmetricMatrix {
      * @param S
      * @return
      */
-    public CanonicalMatrix XtSX(final FastMatrix S, final FastMatrix X) {
+    public CanonicalMatrix XtSX(final Matrix S, final Matrix X) {
         if (S.isCanonical() && X.isCanonical()) {
             return SymmetricCanonicalMatrix.XtSX(S.asCanonical(), X.asCanonical());
         }
@@ -429,11 +429,11 @@ public class SymmetricMatrix {
         return M;
     }
 
-    public void lcholesky(final FastMatrix M) {
+    public void lcholesky(final Matrix M) {
         lcholesky(M, 0);
     }
 
-    public CanonicalMatrix robustXtX(final FastMatrix X, DoubleAccumulator acc) {
+    public CanonicalMatrix robustXtX(final Matrix X, DoubleAccumulator acc) {
         int n = X.getColumnsCount();
         CanonicalMatrix z = CanonicalMatrix.square(n);
         DataBlockIterator rows = X.columnsIterator(), columns = X.columnsIterator();
@@ -458,7 +458,7 @@ public class SymmetricMatrix {
         return z;
     }
 
-    public void reenforceSymmetry(FastMatrix S) {
+    public void reenforceSymmetry(Matrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -483,7 +483,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public void fromLower(FastMatrix S) {
+    public void fromLower(Matrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -506,7 +506,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public void fromUpper(FastMatrix S) {
+    public void fromUpper(Matrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -529,19 +529,19 @@ public class SymmetricMatrix {
         }
     }
 
-    public LogSign logDeterminant(FastMatrix S) {
-        FastMatrix s = S.deepClone();
+    public LogSign logDeterminant(Matrix S) {
+        Matrix s = S.deepClone();
         try {
             lcholesky(s);
             DataBlock diagonal = s.diagonal();
             LogSign ls = LogSign.of(diagonal);
             return new LogSign(ls.getValue() * 2, true);
         } catch (MatrixException e) {
-            return FastMatrix.logDeterminant(S);
+            return Matrix.logDeterminant(S);
         }
     }
 
-    public double determinant(FastMatrix L) {
+    public double determinant(Matrix L) {
         LogSign ls = logDeterminant(L);
         if (ls == null) {
             return 0;

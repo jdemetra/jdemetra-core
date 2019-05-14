@@ -18,8 +18,8 @@ package demetra.ssf;
 
 import demetra.data.DataBlockIterator;
 import demetra.data.DataBlockStorage;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SubMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -88,7 +88,7 @@ public class DataBlocksResults {
         }
     }
 
-    public void save(final int t, final FastMatrix P) {
+    public void save(final int t, final Matrix P) {
         int st = t - start;
         if (st < 0) {
             return;

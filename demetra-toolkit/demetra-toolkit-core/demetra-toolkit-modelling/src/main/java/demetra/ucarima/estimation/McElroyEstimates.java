@@ -24,7 +24,6 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.matrices.decomposition.ElementaryTransformations;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
@@ -32,6 +31,7 @@ import demetra.ucarima.UcarimaModel;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.CanonicalMatrix;
+import demetra.maths.matrices.Matrix;
 
 
 /**
@@ -48,7 +48,7 @@ public class McElroyEstimates {
     private double[] data_;
     // (LL')=M
     // M^-1 * K'K =F
-    private FastMatrix[] M_, F_, L_, K_, D_;
+    private Matrix[] M_, F_, L_, K_, D_;
     private double[][] cmps_, fcmps_;
     private int nf_;
     private ArmaFilter[] filters_;
@@ -127,7 +127,7 @@ public class McElroyEstimates {
 
     public double[] stdevForecasts(int cmp) {
         fcalc(cmp);
-        FastMatrix m = D_[cmp];
+        Matrix m = D_[cmp];
         DataBlock var = m.diagonal();
         double[] e = new double[var.length()];
         var.copyTo(e, 0);
@@ -138,7 +138,7 @@ public class McElroyEstimates {
     }
 
     public double[] stdevEstimates(final int cmp) {
-        FastMatrix m = M(cmp);
+        Matrix m = M(cmp);
         DataBlock var = m.diagonal();
         double[] e = new double[var.length()];
         var.copyTo(e, 0);
@@ -148,10 +148,10 @@ public class McElroyEstimates {
         return e;
     }
 
-    public FastMatrix M(final int cmp) {
+    public Matrix M(final int cmp) {
         calc(cmp);
         if (M_[cmp] == null) {
-            FastMatrix L = L_[cmp];
+            Matrix L = L_[cmp];
             if (L == null) {
                 return null;
             }
@@ -166,18 +166,18 @@ public class McElroyEstimates {
         return M_[cmp];
     }
 
-    public FastMatrix F(final int cmp) {
+    public Matrix F(final int cmp) {
         calc(cmp);
         if (F_[cmp] == null) {
-            FastMatrix L = L_[cmp];
-            FastMatrix K = K_[cmp];
+            Matrix L = L_[cmp];
+            Matrix K = K_[cmp];
             if (L == null || K == null) {
                 return null;
             }
             // F = (LL')^-1 * K'K = L'^-1*L^-1*K'K
 
             // compute K'K
-            FastMatrix KK = SymmetricMatrix.XtX(K);
+            Matrix KK = SymmetricMatrix.XtX(K);
             // compute X=L^-1*K'K
             // LX = K'K 
             LowerTriangularMatrix.rsolve(L, KK);
@@ -196,10 +196,10 @@ public class McElroyEstimates {
         }
         if (M_ == null) {
             int ncmps = ucm_.getComponentsCount();
-            K_ = new FastMatrix[ncmps];
-            L_ = new FastMatrix[ncmps];
-            M_ = new FastMatrix[ncmps];
-            F_ = new FastMatrix[ncmps];
+            K_ = new Matrix[ncmps];
+            L_ = new Matrix[ncmps];
+            M_ = new Matrix[ncmps];
+            F_ = new Matrix[ncmps];
             cmps_ = new double[ncmps][];
             filters_ = new ArmaFilter[ncmps + 1];
         } else if (cmps_[cmp] != null) {
@@ -260,7 +260,7 @@ public class McElroyEstimates {
         }
         // triangularize by means of Givens rotations
         ElementaryTransformations.fastGivensTriangularize(Q);
-        FastMatrix L = Q.extract(0, n, 0, n).deepClone();
+        Matrix L = Q.extract(0, n, 0, n).deepClone();
         LowerTriangularMatrix.rsolve(L, DataBlock.of(z));
         LowerTriangularMatrix.lsolve(L, DataBlock.of(z));
         L_[cmp] = L;
@@ -286,7 +286,7 @@ public class McElroyEstimates {
         }
         if (fcmps_ == null) {
             fcmps_ = new double[ncmps + 1][];
-            D_ = new FastMatrix[ncmps + 1];
+            D_ = new Matrix[ncmps + 1];
         } else if (fcmps_[cmp] != null) {
             return;
         }
@@ -371,7 +371,7 @@ public class McElroyEstimates {
             G = SymmetricMatrix.XSXt(G, B);
         }
         if (!fs) {
-            FastMatrix m = M(cmp);
+            Matrix m = M(cmp);
             m = SymmetricMatrix.XSXt(m, D);
             G.add(m);
         }

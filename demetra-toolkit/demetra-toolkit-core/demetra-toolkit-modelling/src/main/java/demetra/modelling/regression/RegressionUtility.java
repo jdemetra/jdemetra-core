@@ -8,9 +8,9 @@ package demetra.modelling.regression;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -20,7 +20,7 @@ import demetra.data.DoubleSeq;
 public class RegressionUtility {
 
     public <D extends TimeSeriesDomain> void addAY(D domain, DataBlock rslt, double a, DoubleSeq c, ITsVariable... var) {
-        FastMatrix x = Regression.matrix(domain, var);
+        Matrix x = Regression.matrix(domain, var);
         DoubleSeqCursor reader = c.cursor();
         DataBlockIterator columns = x.columnsIterator();
         while (columns.hasNext()) {

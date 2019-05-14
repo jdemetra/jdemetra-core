@@ -18,7 +18,6 @@ package demetra.linearmodel;
 
 import demetra.data.DataBlock;
 import demetra.design.Immutable;
-import demetra.maths.matrices.FastMatrix;
 import java.util.ArrayList;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.MatrixWindow;
@@ -27,6 +26,7 @@ import demetra.data.DoubleSeqCursor;
 import demetra.design.Internal;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.CanonicalMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -59,7 +59,7 @@ public final class LinearModel implements LinearModelType{
             return this;
         }
 
-        public Builder addX(@Nonnull FastMatrix X) {
+        public Builder addX(@Nonnull Matrix X) {
             X.columns().forEach(col -> x.add(col));
             return this;
         }

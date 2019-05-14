@@ -17,7 +17,7 @@ import demetra.random.RandomNumberGenerator;
 @lombok.experimental.UtilityClass
 public class LowerTriangularMatrix {
 
-    public void randomize(FastMatrix M, RandomNumberGenerator rng) {
+    public void randomize(Matrix M, RandomNumberGenerator rng) {
         M.set((r, c) -> (c > r) ? 0 : rng.nextDouble());
     }
  
@@ -32,14 +32,14 @@ public class LowerTriangularMatrix {
      * @throws MatrixException Thrown when the Length of b is larger than the
      * number of rows of the matrix.
      */
-    public void lsolve(final FastMatrix L, final FastMatrix B, double zero) throws MatrixException {
+    public void lsolve(final Matrix L, final Matrix B, double zero) throws MatrixException {
         DataBlockIterator rows = B.rowsIterator();
         while (rows.hasNext()) {
             lsolve(L, rows.next(), zero);
         }
     }
 
-    public void lsolve(final FastMatrix L, final FastMatrix B) throws MatrixException {
+    public void lsolve(final Matrix L, final Matrix B) throws MatrixException {
         lsolve(L, B, 0);
     }
 
@@ -55,14 +55,14 @@ public class LowerTriangularMatrix {
      * @param zero Small positive value identifying 0. Can be 0.
      * @throws MatrixException Thrown when the system cannot be solved.
      */
-    public void rsolve(final FastMatrix L, final FastMatrix B, final double zero) throws MatrixException {
+    public void rsolve(final Matrix L, final Matrix B, final double zero) throws MatrixException {
         DataBlockIterator columns = B.columnsIterator();
         while (columns.hasNext()) {
             rsolve(L, columns.next(), zero);
         }
     }
 
-    public void rsolve(final FastMatrix L, final FastMatrix B) throws MatrixException {
+    public void rsolve(final Matrix L, final Matrix B) throws MatrixException {
         rsolve(L, B, 0);
     }
 
@@ -72,7 +72,7 @@ public class LowerTriangularMatrix {
      * @param L
      * @param B
      */
-    public void rmul(final FastMatrix L, final FastMatrix B) {
+    public void rmul(final Matrix L, final Matrix B) {
         DataBlockIterator columns = B.columnsIterator();
         while (columns.hasNext()) {
             rmul(L, columns.next());
@@ -86,7 +86,7 @@ public class LowerTriangularMatrix {
      * @param B
      * @throws MatrixException
      */
-    public void lmul(final FastMatrix L, final FastMatrix B) {
+    public void lmul(final Matrix L, final Matrix B) {
         DataBlockIterator rows = B.rowsIterator();
         while (rows.hasNext()) {
             lmul(L, rows.next());
@@ -101,9 +101,9 @@ public class LowerTriangularMatrix {
      * @throws MatrixException when the matrix is non invertible (some elements
      * of the diagonal are 0).
      */
-    public FastMatrix inverse(final FastMatrix L) throws MatrixException {
+    public Matrix inverse(final Matrix L) throws MatrixException {
         int n = L.getRowsCount();
-        FastMatrix IL = CanonicalMatrix.identity(n);
+        Matrix IL = CanonicalMatrix.identity(n);
         rsolve(L, IL);
         return IL;
     }
@@ -120,7 +120,7 @@ public class LowerTriangularMatrix {
      * @param zero Small positive value identifying 0. Can be 0.
      * @throws MatrixException Thrown when the system cannot be solved
      */
-    public void rsolve(FastMatrix L, final DataBlock b, double zero) throws MatrixException {
+    public void rsolve(Matrix L, final DataBlock b, double zero) throws MatrixException {
         if (L.getRowIncrement() == 1) {
             rsolve_column(L, b, zero);
         } else {
@@ -128,7 +128,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    public void rsolve(FastMatrix M, DataBlock x) throws MatrixException {
+    public void rsolve(Matrix M, DataBlock x) throws MatrixException {
         rsolve(M, x, 0);
     }
 
@@ -147,7 +147,7 @@ public class LowerTriangularMatrix {
      * @throws MatrixException The exception is thrown when the system cannot be
      * solved
      */
-    public void lsolve(FastMatrix L, DataBlock x, double zero) throws MatrixException {
+    public void lsolve(Matrix L, DataBlock x, double zero) throws MatrixException {
         if (L.getRowIncrement() == 1) {
             lsolve_column(L, x, zero);
         } else {
@@ -155,7 +155,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    public void lsolve(FastMatrix M, DataBlock x) throws MatrixException {
+    public void lsolve(Matrix M, DataBlock x) throws MatrixException {
         lsolve(M, x, 0);
     }
 
@@ -168,7 +168,7 @@ public class LowerTriangularMatrix {
      * @param x
      * @param r An array of double
      */
-    public void rmul(FastMatrix L, DataBlock x) {
+    public void rmul(Matrix L, DataBlock x) {
         if (L.getRowIncrement() == 1) {
             rmul_column(L, x);
         } else {
@@ -176,7 +176,7 @@ public class LowerTriangularMatrix {
         }
     }
     
-    public void lmul(FastMatrix L, DataBlock x) {
+    public void lmul(Matrix L, DataBlock x) {
         if (L.getRowIncrement() == 1) {
             lmul_column(L, x);
         } else {
@@ -184,7 +184,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    public void toLower(FastMatrix M) {
+    public void toLower(Matrix M) {
         int m = M.getColumnsCount(), n = M.getRowsCount();
         if (m == 1) {
             return;
@@ -201,11 +201,11 @@ public class LowerTriangularMatrix {
     }
 
     
-    public LogSign logDeterminant(FastMatrix L){
+    public LogSign logDeterminant(Matrix L){
         return LogSign.of(L.diagonal());
     }
     
-    public double determinant(FastMatrix L){
+    public double determinant(Matrix L){
         LogSign ls=logDeterminant(L);
         if (ls == null)
             return 0;
@@ -226,7 +226,7 @@ public class LowerTriangularMatrix {
      * @param zero Small positive value identifying 0. Can be 0.
      * @throws MatrixException Thrown when the system cannot be solved
      */
-    public void rsolve_row(FastMatrix L, final DataBlock b, double zero) throws MatrixException {
+    public void rsolve_row(Matrix L, final DataBlock b, double zero) throws MatrixException {
         double[] data = L.getStorage();
         double[] x = b.getStorage();
         int xbeg = b.getStartPosition();
@@ -272,7 +272,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    public void rsolve_column(final FastMatrix L, final DataBlock b, double zero) throws MatrixException {
+    public void rsolve_column(final Matrix L, final DataBlock b, double zero) throws MatrixException {
         double[] data = L.getStorage();
 
         double[] x = b.getStorage();
@@ -333,7 +333,7 @@ public class LowerTriangularMatrix {
     }
 
 
-    public void lsolve_row(final FastMatrix L, final DataBlock b, double zero)
+    public void lsolve_row(final Matrix L, final DataBlock b, double zero)
             throws MatrixException {
         double[] data = L.getStorage();
 
@@ -391,7 +391,7 @@ public class LowerTriangularMatrix {
      * @throws MatrixException The exception is thrown when the system cannot be
      * solved
      */
-    public void lsolve_column(final FastMatrix L, final DataBlock b, double zero)
+    public void lsolve_column(final Matrix L, final DataBlock b, double zero)
             throws MatrixException {
         double[] data = L.getStorage();
         int rinc = L.getRowIncrement(), cinc = L.getColumnIncrement();
@@ -444,7 +444,7 @@ public class LowerTriangularMatrix {
     }
 
 
-    void rmul_column(final FastMatrix L, final DataBlock r) {
+    void rmul_column(final Matrix L, final DataBlock r) {
         double[] data = L.getStorage();
         int rinc = L.getRowIncrement(), cinc = L.getColumnIncrement();
 
@@ -475,7 +475,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    void rmul_row(final FastMatrix L, final DataBlock r) {
+    void rmul_row(final Matrix L, final DataBlock r) {
         double[] data = L.getStorage();
         int rinc = L.getRowIncrement(), cinc = L.getColumnIncrement();
 
@@ -503,7 +503,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    void lmul_column(final FastMatrix L, final DataBlock r) {
+    void lmul_column(final Matrix L, final DataBlock r) {
         double[] data = L.getStorage();
         int rinc = L.getRowIncrement(), cinc = L.getColumnIncrement();
 
@@ -531,7 +531,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    void lmul_row(final FastMatrix L, final DataBlock r) {
+    void lmul_row(final Matrix L, final DataBlock r) {
         double[] data = L.getStorage();
         int rinc = L.getRowIncrement(), cinc = L.getColumnIncrement();
 

@@ -21,13 +21,13 @@ import demetra.arima.StationaryTransformation;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.maths.matrices.FastMatrix;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -65,7 +65,7 @@ public final class RegArimaModel<M extends IArimaModel> {
             return this;
         }
 
-        public Builder addX(FastMatrix X) {
+        public Builder addX(Matrix X) {
             if (X != null) {
                 if (y.length() != X.getRowsCount()) {
                     throw new RuntimeException("Incompatible dimensions");

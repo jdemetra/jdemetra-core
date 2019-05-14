@@ -31,7 +31,6 @@ import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.matrices.FastMatrix;
 import static demetra.r.AirlineDecomposition.ucm;
 import demetra.regarima.GlsArimaProcessor;
 import demetra.arima.estimation.IArimaMapping;
@@ -45,6 +44,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -62,7 +62,7 @@ public class FractionalAirlineDecomposition {
         UcarimaType ucarima;
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
-        FastMatrix parametersCovariance;
+        Matrix parametersCovariance;
         double[] parameters, score;
 
         @Override

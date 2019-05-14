@@ -18,11 +18,11 @@ package demetra.ssf.implementations;
 
 import demetra.data.DataBlock;
 import demetra.data.DataWindow;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.MatrixWindow;
 import demetra.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfLoading;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -75,7 +75,7 @@ class CompositeLoading implements ISsfLoading {
     }
 
     @Override
-    public double ZVZ(int pos, FastMatrix v) {
+    public double ZVZ(int pos, Matrix v) {
         MatrixWindow D = v.topLeft();
         double x = 0;
         for (int i = 0; i < loadings.length; ++i) {
@@ -97,7 +97,7 @@ class CompositeLoading implements ISsfLoading {
     }
 
     @Override
-    public void VpZdZ(int pos, FastMatrix V, double d) {
+    public void VpZdZ(int pos, Matrix V, double d) {
         tmp.set(0);
         Z(pos, tmp);
         DataBlockIterator cols = V.columnsIterator();

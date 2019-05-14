@@ -9,7 +9,6 @@ import demetra.data.DataBlock;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
-import demetra.maths.matrices.FastMatrix;
 import demetra.modelling.regression.Variable;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.PreprocessingModel;
@@ -21,6 +20,7 @@ import java.util.Optional;
 import demetra.modelling.regression.ITradingDaysVariable;
 import demetra.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -82,7 +82,7 @@ class TradingDaysController extends ModelController {
         // drop the number of data corresponding to the number of regression variables 
         domain = domain.drop(domain.getLength() - res.length(), 0);
         if (td != null){
-            FastMatrix mtd = Regression.matrix(domain, td);
+            Matrix mtd = Regression.matrix(domain, td);
             builder.addX(mtd);
         }
             

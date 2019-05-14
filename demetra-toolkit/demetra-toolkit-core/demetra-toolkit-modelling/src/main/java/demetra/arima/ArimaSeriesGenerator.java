@@ -23,7 +23,6 @@ import demetra.dstats.Normal;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.random.XorshiftRNG;
@@ -31,6 +30,7 @@ import javax.annotation.Nonnull;
 import demetra.dstats.Distribution;
 import demetra.maths.matrices.CanonicalMatrix;
 import demetra.random.RandomNumberGenerator;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -199,15 +199,15 @@ public final class ArimaSeriesGenerator {
             AutoCovarianceFunction acf = starima.getAutoCovarianceFunction();
             acf.prepare(p);
             // fill the p part
-            FastMatrix pm = ac.extract(0, p, 0, p);
+            Matrix pm = ac.extract(0, p, 0, p);
             pm.diagonal().set(acf.get(0));
             for (int i = 1; i < p; ++i) {
                 pm.subDiagonal(-i).set(acf.get(i));
             }
             if (q > 0) {
-                FastMatrix qm = ac.extract(p, q, p, q);
+                Matrix qm = ac.extract(p, q, p, q);
                 qm.diagonal().set(starima.getInnovationVariance());
-                FastMatrix qp = ac.extract(p, q, 0, p);
+                Matrix qp = ac.extract(p, q, 0, p);
                 RationalBackFilter psi = starima.getPsiWeights();
                 int nw = Math.min(q, p);
                 psi.prepare(q);

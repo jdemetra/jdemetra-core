@@ -14,31 +14,35 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.modelling.regression;
+package demetra.arima;
 
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsPeriod;
-import java.time.LocalDate;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import demetra.maths.matrices.Matrix;
+import demetra.design.Development;
 
 /**
  *
  * @author Jean Palate
  */
-public class PeriodicDummiesTest {
+@lombok.Value
+@Development(status = Development.Status.Release)
+public class LightUcarimaType implements UcarimaType{
+
+    private ArimaType sum;
+    @lombok.NonNull 
+    private ArimaType[] components;
     
-    public PeriodicDummiesTest() {
+    @Override
+    public int size(){
+        return components.length;
+    }
+    
+    @Override
+    public ArimaType[] getComponents(){
+        return components.clone();
+    }
+    
+    @Override
+    public ArimaType getComponent(int i){
+        return components[i];
     }
 
-    @Test
-    public void testMonthly() {
-        PeriodicDummies vars = new PeriodicDummies(12);
-        TsDomain domain = TsDomain.of(TsPeriod.monthly(2017, 8), 180);
-        Matrix M=Regression.matrix(domain, vars);
-        //System.out.println(M);
-        assertTrue(M.columnList().stream().allMatch(col->col.sum()==15));
-    }
-    
 }

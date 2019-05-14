@@ -140,7 +140,7 @@ public class SymmetricMatrixTest {
         Random rnd = new Random(0);
         X.set(rnd::nextDouble);
         CanonicalMatrix S = SymmetricMatrix.XXt(X);
-        LogSign d1 = FastMatrix.logDeterminant(S);
+        LogSign d1 = Matrix.logDeterminant(S);
         LogSign d2 = SymmetricMatrix.logDeterminant(S);
         assertEquals(d1.getValue(), d2.getValue(), 1e-6);
     }

@@ -18,11 +18,11 @@ package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Easter;
 import java.time.LocalDate;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -54,7 +54,7 @@ class EasterFactory implements RegressionVariableFactory<EasterVariable>  {
     private EasterFactory(){}
 
     @Override
-    public boolean fill(EasterVariable var, TsPeriod start, FastMatrix buffer) {
+    public boolean fill(EasterVariable var, TsPeriod start, Matrix buffer) {
         int duration =var.getDuration();
         int endPosition=var.getEndPosition();
         EasterVariable.Correction meanCorrection = var.getMeanCorrection();
@@ -178,7 +178,7 @@ class EasterFactory implements RegressionVariableFactory<EasterVariable>  {
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(EasterVariable var, D domain, FastMatrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(EasterVariable var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported."); //To change body of generated methods, choose Tools | Templates.
     }
 

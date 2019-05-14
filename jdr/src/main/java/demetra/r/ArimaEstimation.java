@@ -22,7 +22,6 @@ import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
@@ -37,6 +36,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -104,7 +104,7 @@ public class ArimaEstimation {
         RegArimaModel<SarimaModel> regarima;
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
-        FastMatrix parametersCovariance;
+        Matrix parametersCovariance;
         double[] score;
 
         public SarimaType getArima() {

@@ -52,7 +52,7 @@ import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.M2uAdapter;
 import demetra.ssf.univariate.IFilteringResults;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -509,7 +509,7 @@ public class DkToolkit {
         }
 
         private CanonicalMatrix xl(SsfRegressionModel model, DkFilter lp, int nl) {
-            FastMatrix x = model.getX();
+            Matrix x = model.getX();
             if (x == null) {
                 return null;
             }

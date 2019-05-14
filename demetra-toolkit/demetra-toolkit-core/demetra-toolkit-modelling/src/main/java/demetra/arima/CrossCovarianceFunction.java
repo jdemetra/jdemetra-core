@@ -61,7 +61,7 @@ public final class CrossCovarianceFunction {
      * @param m1
      * @param m2
      */
-    public CrossCovarianceFunction(final IModel m1, final IModel m2) {
+    public CrossCovarianceFunction(final ILinearProcess m1, final ILinearProcess m2) {
 	IRationalFilter f1 = m1.getFilter();
 	IRationalFilter f2 = m2.getFilter();
 	// m_r = f1*f2.Mirror...

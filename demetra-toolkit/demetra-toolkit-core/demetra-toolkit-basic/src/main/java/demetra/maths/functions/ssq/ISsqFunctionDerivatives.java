@@ -19,8 +19,8 @@ package demetra.maths.functions.ssq;
 
 import demetra.design.Development;
 import demetra.maths.functions.IFunctionDerivatives;
-import demetra.maths.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  * 
@@ -42,6 +42,6 @@ public interface ISsqFunctionDerivatives extends IFunctionDerivatives {
      * the matrix J is n x m and J(i, j) = dE(i)/dp(j)
      * @param matrix
      */
-    void jacobian(FastMatrix matrix);
+    void jacobian(Matrix matrix);
     
 }

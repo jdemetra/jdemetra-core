@@ -19,11 +19,11 @@ package demetra.ssf.multivariate;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.State;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.CanonicalMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -122,7 +122,7 @@ public class MultivariateUpdateInformation {
      * @param M
      * @param zm
      */
-    protected void ZM(int t, ISsfMeasurements measurements, int[] equations, FastMatrix M, FastMatrix zm) {
+    protected void ZM(int t, ISsfMeasurements measurements, int[] equations, Matrix M, Matrix zm) {
         DataBlockIterator zrows = zm.rowsIterator();
         if (equations == null) {
             int eq = 0;
@@ -147,7 +147,7 @@ public class MultivariateUpdateInformation {
      * to null.
      * @param P The covariance matrix of the prediction errors
      */
-    private void addH(int t, ISsfErrors errors, int[] equations, FastMatrix P) {
+    private void addH(int t, ISsfErrors errors, int[] equations, Matrix P) {
         if (errors == null) {
             return;
         }

@@ -16,10 +16,10 @@
  */
 package demetra.msts;
 
-import demetra.maths.matrices.FastMatrix;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -89,14 +89,14 @@ public class CompositeModel {
         return mapping.modelParameters(mapping.getDefaultParameters()).toArray();
     }
 
-    public CompositeModelEstimation estimate(FastMatrix data, double eps, boolean marginal, boolean rescaling, double[] parameters) {
+    public CompositeModelEstimation estimate(Matrix data, double eps, boolean marginal, boolean rescaling, double[] parameters) {
         if (mapping == null) {
             build();
         }
         return CompositeModelEstimation.estimationOf(this, data, eps, marginal, rescaling, parameters);
     }
 
-    public CompositeModelEstimation compute(FastMatrix data, double[] parameters, boolean marginal, boolean concentrated) {
+    public CompositeModelEstimation compute(Matrix data, double[] parameters, boolean marginal, boolean concentrated) {
         if (mapping == null) {
             build();
         }

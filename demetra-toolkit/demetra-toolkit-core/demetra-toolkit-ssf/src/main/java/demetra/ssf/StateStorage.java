@@ -17,9 +17,9 @@
 package demetra.ssf;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.QuadraticForm;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -65,7 +65,7 @@ public class StateStorage implements IStateResults {
         }
     }
 
-    public void save(final int t, final DataBlock a, final FastMatrix p) {
+    public void save(final int t, final DataBlock a, final Matrix p) {
         if (info != this.info) {
             return;
         }
@@ -103,7 +103,7 @@ public class StateStorage implements IStateResults {
         return A.datablock(pos);
     }
 
-    public FastMatrix P(int pos) {
+    public Matrix P(int pos) {
         return P == null ? null : P.matrix(pos);
     }
 

@@ -17,10 +17,10 @@
 package demetra.ssf.univariate;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -49,7 +49,7 @@ public class PartialSmoothingResults implements ISmoothingResults {
     }
 
     @Override
-    public FastMatrix P(int pos) {
+    public Matrix P(int pos) {
         return core.P(pos);
     }
 

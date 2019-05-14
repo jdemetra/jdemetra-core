@@ -17,8 +17,8 @@
 package demetra.ssf;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -47,13 +47,13 @@ public interface ISsfDynamics extends ISsfRoot {
      * @param pos
      * @param qm
      */
-    void V(int pos, FastMatrix qm);
+    void V(int pos, Matrix qm);
 
     /**
      * @param pos
      * @param cm
      */
-    void S(int pos, FastMatrix cm);
+    void S(int pos, Matrix cm);
 
     /**
      *
@@ -72,7 +72,7 @@ public interface ISsfDynamics extends ISsfRoot {
      * responsibility to provide a clean sub-matrix, so that the callee can
      * safely set only the non zero values.
      */
-    void T(int pos, FastMatrix tr);
+    void T(int pos, Matrix tr);
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="forward operations">
@@ -100,7 +100,7 @@ public interface ISsfDynamics extends ISsfRoot {
      * @param pos
      * @param M
      */
-    default void TM(int pos, FastMatrix M) {
+    default void TM(int pos, Matrix M) {
         M.applyByColumns(x->TX(pos, x));
     }
 
@@ -110,7 +110,7 @@ public interface ISsfDynamics extends ISsfRoot {
      * @param pos The position of the model
      * @param vm
      */
-    default void TVT(int pos, FastMatrix vm) {
+    default void TVT(int pos, Matrix vm) {
         TM(pos, vm);
         TM(pos, vm.transpose());
         SymmetricMatrix.reenforceSymmetry(vm);
@@ -122,7 +122,7 @@ public interface ISsfDynamics extends ISsfRoot {
      * @param pos
      * @param p
      */
-    void addV(int pos, FastMatrix p);
+    void addV(int pos, Matrix p);
 
     //</editor-fold>  
     //<editor-fold defaultstate="collapsed" desc="backward operations">
@@ -140,7 +140,7 @@ public interface ISsfDynamics extends ISsfRoot {
      * @param pos
      * @param M
      */
-    default void MT(int pos, FastMatrix M) {
+    default void MT(int pos, Matrix M) {
         M.applyByRows(row->XT(pos, row));
     }
 

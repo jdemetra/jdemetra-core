@@ -542,7 +542,7 @@ public final class ArimaModel extends AbstractArimaModel {
     }
     
     public ArimaType toType(String desc){
-        return ArimaType.builder()
+        return LightArimaType.builder()
                 .ar(PolynomialType.of(getStationaryAR().asPolynomial().toArray()))
                 .delta(PolynomialType.of(getNonStationaryAR().asPolynomial().toArray()))
                 .ma(PolynomialType.of(getMA().asPolynomial().toArray()))

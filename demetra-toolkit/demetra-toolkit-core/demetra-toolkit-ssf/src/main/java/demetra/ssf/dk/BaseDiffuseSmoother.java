@@ -18,12 +18,12 @@ package demetra.ssf.dk;
 
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfLoading;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -39,7 +39,7 @@ public abstract class BaseDiffuseSmoother {
 
     protected double e, f, fi;
     protected DataBlock C, Ci, Rf, Ri, tmp0, tmp1, Z;
-    protected FastMatrix N0, N1, N2;
+    protected Matrix N0, N1, N2;
     protected boolean missing, hasinfo;
     
     protected BaseDiffuseSmoother(ISsf ssf, boolean calcvar, boolean rescalevar){
@@ -171,7 +171,7 @@ public abstract class BaseDiffuseSmoother {
         subZ(pos, N2.columnsIterator(), tmp1);
     }
 
-    private void tvt(int pos, FastMatrix N) {
+    private void tvt(int pos, Matrix N) {
         dynamics.MT(pos, N);
         dynamics.MT(pos, N.transpose());
     }

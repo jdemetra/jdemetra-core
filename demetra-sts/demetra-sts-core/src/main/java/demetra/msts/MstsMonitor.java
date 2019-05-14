@@ -13,7 +13,6 @@ import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.functions.minpack.MinPackMinimizer;
 import demetra.maths.functions.riso.LbfgsMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.likelihood.MarginalLikelihoodFunction;
 import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
@@ -25,6 +24,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -127,7 +127,7 @@ public class MstsMonitor {
     private final boolean bfgs, lbfgs;
     private final boolean minpack;
 
-    private FastMatrix data;
+    private Matrix data;
     private MstsMapping model;
     private MultivariateCompositeSsf ssf;
     private DoubleSeq fullp;
@@ -184,7 +184,7 @@ public class MstsMonitor {
                 .count() == 0;
     }
 
-    public void process(FastMatrix data, MstsMapping model, DoubleSeq fullInitial) {
+    public void process(Matrix data, MstsMapping model, DoubleSeq fullInitial) {
         fixedVariance = null;
         this.data = data;
         this.model = model;
@@ -362,7 +362,7 @@ public class MstsMonitor {
     /**
      * @return the data
      */
-    public FastMatrix getData() {
+    public Matrix getData() {
         return data;
     }
 

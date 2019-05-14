@@ -26,29 +26,29 @@ import demetra.data.DataBlockIterator;
 @lombok.experimental.UtilityClass
 class LowerTriangularCanonicalMatrix {
 
-    void lsolve(final CanonicalMatrix L, final FastMatrix B, double zero) throws MatrixException {
+    void lsolve(final CanonicalMatrix L, final Matrix B, double zero) throws MatrixException {
         DataBlockIterator rows = B.rowsIterator();
         while (rows.hasNext()) {
             lsolve(L, rows.next(), zero);
         }
     }
 
-    void lsolve(final CanonicalMatrix L, final FastMatrix B) throws MatrixException {
+    void lsolve(final CanonicalMatrix L, final Matrix B) throws MatrixException {
         lsolve(L, B, 0);
     }
 
-    void rsolve(final CanonicalMatrix L, final FastMatrix B, final double zero) throws MatrixException {
+    void rsolve(final CanonicalMatrix L, final Matrix B, final double zero) throws MatrixException {
         DataBlockIterator columns = B.columnsIterator();
         while (columns.hasNext()) {
             rsolve(L, columns.next(), zero);
         }
     }
 
-    void rsolve(final CanonicalMatrix L, final FastMatrix B) throws MatrixException {
+    void rsolve(final CanonicalMatrix L, final Matrix B) throws MatrixException {
         rsolve(L, B, 0);
     }
 
-    void rmul(final CanonicalMatrix L, final FastMatrix B) {
+    void rmul(final CanonicalMatrix L, final Matrix B) {
         DataBlockIterator columns = B.columnsIterator();
         while (columns.hasNext()) {
             rmul(L, columns.next());

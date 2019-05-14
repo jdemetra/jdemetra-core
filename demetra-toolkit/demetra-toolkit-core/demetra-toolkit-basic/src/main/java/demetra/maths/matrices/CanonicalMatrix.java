@@ -15,7 +15,7 @@ import java.util.function.DoubleUnaryOperator;
  *
  * @author Jean Palate
  */
-public final class CanonicalMatrix implements FastMatrix {
+public final class CanonicalMatrix implements Matrix {
 
     private final double[] storage;
     private final int nrows, ncols;
@@ -300,11 +300,11 @@ public final class CanonicalMatrix implements FastMatrix {
     }
 
     @Override
-    public void add(FastMatrix M) {
+    public void add(Matrix M) {
         if (M.isCanonical())
             add(M.asCanonical());
         else
-            FastMatrix.super.add(M);
+            Matrix.super.add(M);
     }
 
     @Override
@@ -323,11 +323,11 @@ public final class CanonicalMatrix implements FastMatrix {
     }
 
     @Override
-    public void sub(FastMatrix M) {
+    public void sub(Matrix M) {
         if (M.isCanonical())
             sub(M.asCanonical());
         else
-            FastMatrix.super.sub(M);
+            Matrix.super.sub(M);
     }
 
     @Override
@@ -366,11 +366,11 @@ public final class CanonicalMatrix implements FastMatrix {
     }
     
     @Override
-    public void product(final FastMatrix lm, final FastMatrix rm) {
+    public void product(final Matrix lm, final Matrix rm) {
         if (lm.isCanonical() && rm.isCanonical()){
             addXY(lm.asCanonical(), rm.asCanonical());
         }else
-            FastMatrix.super.product(lm, rm);
+            Matrix.super.product(lm, rm);
     }
     /**
      * This = This + X*Y

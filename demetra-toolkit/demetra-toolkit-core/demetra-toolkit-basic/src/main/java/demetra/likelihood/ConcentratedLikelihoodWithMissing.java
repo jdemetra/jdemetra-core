@@ -17,7 +17,6 @@
 package demetra.likelihood;
 
 import demetra.design.Immutable;
-import demetra.maths.matrices.FastMatrix;
 import demetra.data.LogSign;
 import demetra.design.BuilderPattern;
 import demetra.eco.EcoException;
@@ -29,6 +28,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.data.DoublesMath;
 import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  * This class represents the concentrated likelihood of a linear regression
@@ -54,7 +54,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
         private double ssqerr, ldet;
         private double[] res;
         private double[] b = B_EMPTY;
-        private FastMatrix bvar, r;
+        private Matrix bvar, r;
         private boolean scalingFactor = true;
 
         private Builder() {
@@ -123,7 +123,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
             return this;
         }
 
-        public Builder unscaledCovariance(FastMatrix var) {
+        public Builder unscaledCovariance(Matrix var) {
             bvar = var;
             return this;
         }
@@ -134,7 +134,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
          * @param r An upper triangular matrix
          * @return
          */
-        public Builder rfactor(FastMatrix r) {
+        public Builder rfactor(Matrix r) {
             this.r = r;
             return this;
         }
@@ -161,12 +161,12 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
     private final double ll, ssqerr, ldet;
     private final double[] res;
     private final double[] b;
-    private volatile FastMatrix bvar;
-    private final FastMatrix r;
+    private volatile Matrix bvar;
+    private final Matrix r;
     private final boolean scalingFactor;
 
     private ConcentratedLikelihoodWithMissing(final int n, final int nmissing, final double ssqerr, final double ldet, final double[] res,
-            final double[] b, final FastMatrix bvar, final FastMatrix r, final boolean scalingFactor) {
+            final double[] b, final Matrix bvar, final Matrix r, final boolean scalingFactor) {
         this.n = n;
         this.nmissing = nmissing;
         this.ldet = ldet;
@@ -279,12 +279,12 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
     }
 
     private void bvariance() {
-        FastMatrix tmp = bvar;
+        Matrix tmp = bvar;
         if (tmp == null && r != null) {
             synchronized (this) {
                 tmp = bvar;
                 if (tmp == null) {
-                    FastMatrix u = UpperTriangularMatrix.inverse(r);
+                    Matrix u = UpperTriangularMatrix.inverse(r);
                     tmp = SymmetricMatrix.UUt(u);
                     bvar = tmp;
                 }
@@ -321,8 +321,8 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
             }
         }
         double[] nb = null;
-        FastMatrix nbvar = null;
-        FastMatrix nr = null;
+        Matrix nbvar = null;
+        Matrix nr = null;
         if (b != null) {
             nb = new double[b.length];
             if (xfactor == null) {

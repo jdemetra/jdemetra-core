@@ -20,7 +20,6 @@ package demetra.ssf.univariate;
 
 import demetra.ssf.UpdateInformation;
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.DataBlockResults;
 import demetra.ssf.DataResults;
 import demetra.ssf.IStateResults;
@@ -30,6 +29,7 @@ import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  * Will contain the following items at position t: a(t|t-1)
@@ -145,7 +145,7 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
         return C.datablock(pos);
     }
 
-    public FastMatrix P(int pos) {
+    public Matrix P(int pos) {
         return P.matrix(pos);
     }
 

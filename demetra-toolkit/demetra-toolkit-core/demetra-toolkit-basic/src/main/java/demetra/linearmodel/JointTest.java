@@ -21,7 +21,6 @@ import demetra.design.BuilderPattern;
 import demetra.dstats.F;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
@@ -29,6 +28,7 @@ import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.MatrixFactory;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -111,7 +111,7 @@ public class JointTest {
     public StatisticalTest build() {
         final double f;
         DataBlock rb = rb();
-        FastMatrix rwr = rwr();
+        Matrix rwr = rwr();
         int nx = rb.length(), df = df();
         SymmetricMatrix.lcholesky(rwr);
         LowerTriangularMatrix.rsolve(rwr, rb);
@@ -120,7 +120,7 @@ public class JointTest {
         return new StatisticalTest(fdist, f, TestType.Upper, !deterministicRegressors);
     }
 
-    private FastMatrix rwr() {
+    private Matrix rwr() {
         if (coef != null) {
             return MatrixFactory.select(bvar, coef, coef);
         } else {

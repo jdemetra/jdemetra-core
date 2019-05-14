@@ -18,7 +18,6 @@ package demetra.ssf.ckms;
 
 import demetra.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.SsfException;
 import demetra.ssf.State;
@@ -30,6 +29,7 @@ import demetra.ssf.UpdateInformation;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
+import demetra.maths.matrices.Matrix;
 
 /**
  * Automatic initialization of diffuse time invariant models. The algorithm
@@ -79,7 +79,7 @@ public class CkmsDiffuseInitializer implements CkmsFilter.IFastFilterInitializer
         ISsfDynamics dynamics = ssf.dynamics();
         ISsfLoading loading = ssf.loading();
         ISsfError error = ssf.measurementError();
-        FastMatrix P = state.P();
+        Matrix P = state.P();
         DataBlock k = upd.M();
         double f = loading.ZVZ(0, P);
         if (error != null) {
@@ -93,7 +93,7 @@ public class CkmsDiffuseInitializer implements CkmsFilter.IFastFilterInitializer
         dynamics.TX(0, l);
 
         // L0: computes next iteration. TVT'-KK'*var + Q -V = - L(var)^-1 L'
-        FastMatrix TVT = P.deepClone();
+        Matrix TVT = P.deepClone();
         dynamics.TVT(0, TVT);
         dynamics.addV(0, TVT);
         TVT.sub(P);

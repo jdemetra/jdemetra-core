@@ -25,7 +25,7 @@ import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.UnitRoots;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -46,7 +46,7 @@ public class MatrixDenton {
         this.type = spec.getAggregationType();
     }
 
-    private void J(FastMatrix M) {
+    private void J(Matrix M) {
         int j = offset;
         DataBlockIterator rows = M.rowsIterator();
         while (rows.hasNext()) {

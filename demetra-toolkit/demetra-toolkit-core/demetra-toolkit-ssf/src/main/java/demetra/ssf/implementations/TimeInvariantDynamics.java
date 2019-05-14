@@ -21,10 +21,10 @@ import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -107,7 +107,7 @@ public class TimeInvariantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void V(int pos, FastMatrix qm) {
+    public void V(int pos, Matrix qm) {
         qm.copy(V);
     }
 
@@ -117,7 +117,7 @@ public class TimeInvariantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void S(int pos, FastMatrix sm) {
+    public void S(int pos, Matrix sm) {
         checkS();
         sm.copy(S);
     }
@@ -135,12 +135,12 @@ public class TimeInvariantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void T(int pos, FastMatrix tr) {
+    public void T(int pos, Matrix tr) {
         tr.copy(T);
     }
 
     @Override
-    public void TM(int pos, FastMatrix tm) {
+    public void TM(int pos, Matrix tm) {
         DataBlock tx = DataBlock.make(T.getColumnsCount());
         DataBlockIterator cols = tm.columnsIterator();
         while (cols.hasNext()) {
@@ -151,7 +151,7 @@ public class TimeInvariantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void TVT(int pos, FastMatrix tvt) {
+    public void TVT(int pos, Matrix tvt) {
         CanonicalMatrix V = tvt.deepClone();
         SymmetricMatrix.XSXt(V, T, tvt);
     }
@@ -171,7 +171,7 @@ public class TimeInvariantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void addV(int pos, FastMatrix p) {
+    public void addV(int pos, Matrix p) {
         p.add(V);
     }
 

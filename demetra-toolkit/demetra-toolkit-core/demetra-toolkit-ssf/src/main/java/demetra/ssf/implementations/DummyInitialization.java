@@ -17,8 +17,8 @@
 package demetra.ssf.implementations;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfInitialization;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -48,7 +48,7 @@ public class DummyInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void diffuseConstraints(FastMatrix b) {
+    public void diffuseConstraints(Matrix b) {
     }
 
     @Override
@@ -56,7 +56,7 @@ public class DummyInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void Pf0(FastMatrix pf0) {
+    public void Pf0(Matrix pf0) {
     }
 
 }

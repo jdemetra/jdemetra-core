@@ -7,7 +7,6 @@ package demetra.ssf.univariate;
 
 import demetra.ssf.ISsfLoading;
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.data.DataBlockIterator;
@@ -16,6 +15,7 @@ import demetra.data.DoubleSeqCursor;
 import demetra.maths.matrices.CanonicalMatrix;
 import demetra.ssf.SsfException;
 import javax.annotation.Nonnull;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -304,7 +304,7 @@ public class DisturbanceSmoother {
         }
     }
 
-    private void tvt(FastMatrix N) {
+    private void tvt(Matrix N) {
         N.columns().forEach(col -> dynamics.XT(pos, col));
         N.rows().forEach(row -> dynamics.XT(pos, row));
     }

@@ -20,8 +20,8 @@ import java.util.Iterator;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.MatrixException;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -43,11 +43,11 @@ public class ElementaryTransformations {
      *
      * @param m
      */
-    public void rowHouseholder(FastMatrix m) {
+    public void rowHouseholder(Matrix m) {
         householder(m.rowsIterator());
     }
 
-    public void rowHouseholder(final DataBlock row, final FastMatrix X) {
+    public void rowHouseholder(final DataBlock row, final Matrix X) {
         DataBlockIterator rows = X.rowsIterator();
         HouseholderReflection reflection = HouseholderReflection.of(row);
         while (rows.hasNext()) {
@@ -55,10 +55,10 @@ public class ElementaryTransformations {
         }
     }
 
-    public boolean givensTriangularize(final FastMatrix X) {
+    public boolean givensTriangularize(final Matrix X) {
         try {
             int r = X.getRowsCount(), c = X.getColumnsCount();
-            FastMatrix L = X;
+            Matrix L = X;
             do {
                 //ElementaryTransformations.rowHouseholder(L);
                 rowGivens(L);
@@ -70,7 +70,7 @@ public class ElementaryTransformations {
         }
     }
 
-    public boolean fastRowGivens(final DataBlock row, final FastMatrix X) {
+    public boolean fastRowGivens(final DataBlock row, final Matrix X) {
         try {
             int nr = X.getRowsCount(), rinc = X.getRowIncrement(), cinc = X.getColumnIncrement(), beg = X.getStartPosition();
             double[] x = X.getStorage();
@@ -115,7 +115,7 @@ public class ElementaryTransformations {
         }
     }
 
-    public boolean fastGivensTriangularize(final FastMatrix X) {
+    public boolean fastGivensTriangularize(final Matrix X) {
         try {
             int nr = X.getRowsCount(), nc = X.getColumnsCount(), rinc = X.getRowIncrement(),
                     cinc = X.getColumnIncrement(), beg = X.getStartPosition();
@@ -160,10 +160,10 @@ public class ElementaryTransformations {
         }
     }
 
-    public boolean householderTriangularize(final FastMatrix X) {
+    public boolean householderTriangularize(final Matrix X) {
         try {
             int r = X.getRowsCount(), c = X.getColumnsCount();
-            FastMatrix L = X;
+            Matrix L = X;
             do {
                 rowHouseholder(L);
                 L = L.extract(1, --r, 1, --c);
@@ -179,7 +179,7 @@ public class ElementaryTransformations {
      *
      * @param m
      */
-    public void rowGivens(FastMatrix m) {
+    public void rowGivens(Matrix m) {
         givens(m.rowsIterator(), m.getColumnsCount());
     }
 
@@ -189,7 +189,7 @@ public class ElementaryTransformations {
      *
      * @param m
      */
-    public void columnHouseholder(FastMatrix m) {
+    public void columnHouseholder(Matrix m) {
         householder(m.columnsIterator());
     }
 
@@ -199,7 +199,7 @@ public class ElementaryTransformations {
      *
      * @param m
      */
-    public void columnGivens(FastMatrix m) {
+    public void columnGivens(Matrix m) {
         givens(m.columnsIterator(), m.getRowsCount());
     }
 

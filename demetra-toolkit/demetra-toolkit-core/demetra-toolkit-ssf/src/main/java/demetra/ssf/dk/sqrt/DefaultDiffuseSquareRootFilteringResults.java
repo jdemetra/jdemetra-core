@@ -17,7 +17,6 @@
 package demetra.ssf.dk.sqrt;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.DefaultFilteringResults;
 import demetra.ssf.dk.DiffuseUpdateInformation;
@@ -31,6 +30,7 @@ import demetra.ssf.ISsfInitialization;
 import demetra.ssf.dk.BaseDiffuseFilteringResults;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.SubMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  *

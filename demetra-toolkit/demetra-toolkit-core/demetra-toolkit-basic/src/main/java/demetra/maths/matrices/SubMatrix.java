@@ -15,7 +15,7 @@ import java.util.function.DoubleUnaryOperator;
  *
  * @author Jean Palate
  */
-public class SubMatrix implements FastMatrix {
+public class SubMatrix implements Matrix {
 
     @BuilderPattern(SubMatrix.class)
     public static class Builder {

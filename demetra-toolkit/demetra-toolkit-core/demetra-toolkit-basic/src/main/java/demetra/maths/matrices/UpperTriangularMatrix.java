@@ -17,7 +17,7 @@ import demetra.random.RandomNumberGenerator;
 @lombok.experimental.UtilityClass
 public class UpperTriangularMatrix {
 
-    public void toUpper(FastMatrix S) {
+    public void toUpper(Matrix S) {
         int m = S.getColumnsCount(), n = S.getRowsCount();
         if (n == 1) {
             return;
@@ -33,31 +33,31 @@ public class UpperTriangularMatrix {
         }
     }
 
-    public void randomize(FastMatrix M, RandomNumberGenerator rng) {
+    public void randomize(Matrix M, RandomNumberGenerator rng) {
         M.set((r, c) -> (r < c) ? 0 : rng.nextDouble());
     }
 
-    public void rsolve(FastMatrix M, DataBlock x, double zero) throws MatrixException {
+    public void rsolve(Matrix M, DataBlock x, double zero) throws MatrixException {
         LowerTriangularMatrix.lsolve(M.transpose(), x, zero);
     }
 
-    public void lsolve(FastMatrix M, DataBlock x, double zero) throws MatrixException {
+    public void lsolve(Matrix M, DataBlock x, double zero) throws MatrixException {
         LowerTriangularMatrix.rsolve(M.transpose(), x, zero);
     }
 
-    public void rmul(FastMatrix M, DataBlock x) {
+    public void rmul(Matrix M, DataBlock x) {
         LowerTriangularMatrix.lmul(M.transpose(), x);
     }
 
-    public void lmul(FastMatrix M, DataBlock x) {
+    public void lmul(Matrix M, DataBlock x) {
         LowerTriangularMatrix.rmul(M.transpose(), x);
     }
 
-    public void rsolve(FastMatrix M, DataBlock x) throws MatrixException {
+    public void rsolve(Matrix M, DataBlock x) throws MatrixException {
         rsolve(M, x, 0);
     }
 
-    public void lsolve(FastMatrix M, DataBlock x) throws MatrixException {
+    public void lsolve(Matrix M, DataBlock x) throws MatrixException {
         lsolve(M, x, 0);
     }
 
@@ -72,14 +72,14 @@ public class UpperTriangularMatrix {
      * @throws MatrixException Thrown when the Length of b is larger than the
      * number of rows of the matrix.
      */
-    public void lsolve(final FastMatrix L, final FastMatrix B, double zero) throws MatrixException {
+    public void lsolve(final Matrix L, final Matrix B, double zero) throws MatrixException {
         DataBlockIterator rows = B.rowsIterator();
         while (rows.hasNext()) {
             lsolve(L, rows.next(), zero);
         }
     }
 
-    public void lsolve(final FastMatrix L, final FastMatrix B) throws MatrixException {
+    public void lsolve(final Matrix L, final Matrix B) throws MatrixException {
         lsolve(L, B, 0);
     }
 
@@ -95,14 +95,14 @@ public class UpperTriangularMatrix {
      * @param zero Small positive value identifying 0. Can be 0.
      * @throws MatrixException Thrown when the system cannot be solved.
      */
-    public void rsolve(final FastMatrix L, final FastMatrix B, final double zero) throws MatrixException {
+    public void rsolve(final Matrix L, final Matrix B, final double zero) throws MatrixException {
         DataBlockIterator columns = B.columnsIterator();
         while (columns.hasNext()) {
             rsolve(L, columns.next(), zero);
         }
     }
 
-    public void rsolve(final FastMatrix L, final FastMatrix B) throws MatrixException {
+    public void rsolve(final Matrix L, final Matrix B) throws MatrixException {
         rsolve(L, B, 0);
     }
 
@@ -112,7 +112,7 @@ public class UpperTriangularMatrix {
      * @param L
      * @param B
      */
-    public void rmul(final FastMatrix L, final FastMatrix B) {
+    public void rmul(final Matrix L, final Matrix B) {
         DataBlockIterator columns = B.columnsIterator();
         while (columns.hasNext()) {
             rmul(L, columns.next());
@@ -126,7 +126,7 @@ public class UpperTriangularMatrix {
      * @param B
      * @throws MatrixException
      */
-    public void lmul(final FastMatrix L, final FastMatrix B) {
+    public void lmul(final Matrix L, final Matrix B) {
         DataBlockIterator rows = B.rowsIterator();
         while (rows.hasNext()) {
             lmul(L, rows.next());
@@ -141,18 +141,18 @@ public class UpperTriangularMatrix {
      * @throws MatrixException when the matrix is non invertible (some elements
      * of the diagonal are 0).
      */
-    public CanonicalMatrix inverse(final FastMatrix U) throws MatrixException {
+    public CanonicalMatrix inverse(final Matrix U) throws MatrixException {
         int n = U.getRowsCount();
         CanonicalMatrix IU = CanonicalMatrix.identity(n);
         rsolve(U, IU);
         return IU;
     }
     
-    public LogSign logDeterminant(FastMatrix L) {
+    public LogSign logDeterminant(Matrix L) {
         return LogSign.of(L.diagonal());
     }
 
-    public double determinant(FastMatrix L) {
+    public double determinant(Matrix L) {
         LogSign ls = logDeterminant(L);
         if (ls == null) {
             return 0;

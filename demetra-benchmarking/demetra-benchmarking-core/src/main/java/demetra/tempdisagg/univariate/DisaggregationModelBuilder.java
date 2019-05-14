@@ -24,7 +24,6 @@ import demetra.data.DoubleSeqCursor;
 import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.Regression;
 import demetra.timeseries.TsData;
@@ -38,6 +37,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
 import demetra.data.normalizer.DataNormalizer;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -56,8 +56,8 @@ class DisaggregationModelBuilder {
 
     // local information used in the building operation
     double[] hO, hY, hEY;
-    FastMatrix hX;
-    FastMatrix hEX;
+    Matrix hX;
+    Matrix hEX;
     TsDomain lEDom, hDom, hEDom;
     int frequencyRatio;
     double yfactor = 1;

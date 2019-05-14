@@ -17,9 +17,9 @@
 package demetra.ssf.implementations;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.maths.matrices.Matrix;
 
 /**
  * Shifted measurement: Zshift(t) = Z(pos + shift) 

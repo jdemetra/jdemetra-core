@@ -28,7 +28,7 @@ import java.util.Iterator;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public interface FastMatrix extends MatrixType.Mutable {
+public interface Matrix extends MatrixType.Mutable {
     
     public static final CanonicalMatrix EMPTY = new CanonicalMatrix(new double[0], 0, 0);
     
@@ -40,12 +40,12 @@ public interface FastMatrix extends MatrixType.Mutable {
      * @param matrix
      * @return
      */
-    public static FastMatrix ofInternal(MatrixType matrix) {
+    public static Matrix ofInternal(MatrixType matrix) {
         if (matrix == null) {
             return null;
         }
-        if (matrix instanceof FastMatrix) {
-            return (FastMatrix) matrix;
+        if (matrix instanceof Matrix) {
+            return (Matrix) matrix;
         } else {
             return new CanonicalMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
         }
@@ -171,7 +171,7 @@ public interface FastMatrix extends MatrixType.Mutable {
         }
     }
     
-    default void applyByRows(final FastMatrix M, final BiConsumer<DataBlock, DataBlock> fn) {
+    default void applyByRows(final Matrix M, final BiConsumer<DataBlock, DataBlock> fn) {
         DataBlockIterator rows = rowsIterator();
         DataBlockIterator mrows = M.rowsIterator();
         while (rows.hasNext()) {
@@ -179,7 +179,7 @@ public interface FastMatrix extends MatrixType.Mutable {
         }
     }
     
-    default void applyByColumns(final FastMatrix M, final BiConsumer<DataBlock, DataBlock> fn) {
+    default void applyByColumns(final Matrix M, final BiConsumer<DataBlock, DataBlock> fn) {
         DataBlockIterator cols = columnsIterator();
         DataBlockIterator mcols = M.columnsIterator();
         while (cols.hasNext()) {
@@ -344,7 +344,7 @@ public interface FastMatrix extends MatrixType.Mutable {
         }
     }
     
-    default void copy(FastMatrix M) {
+    default void copy(Matrix M) {
         DataBlockIterator cols = columnsIterator();
         DataBlockIterator mcols = M.columnsIterator();
         while (cols.hasNext()) {
@@ -356,7 +356,7 @@ public interface FastMatrix extends MatrixType.Mutable {
      *
      * @return
      */
-    default FastMatrix transpose() {
+    default Matrix transpose() {
         return new SubMatrix(getStorage(), getStartPosition(),
                 getColumnsCount(), getRowsCount(),
                 getColumnIncrement(), getRowIncrement());
@@ -507,7 +507,7 @@ public interface FastMatrix extends MatrixType.Mutable {
     }
 
     //<editor-fold defaultstate="collapsed" desc="In place operations">
-    default void setAY(double a, FastMatrix Y) {
+    default void setAY(double a, Matrix Y) {
         if (a != 0) {
             if (getColumnIncrement() == 1 && Y.getColumnIncrement() == 1) {
                 applyByRows(Y, (x, y) -> x.setAY(a, y));
@@ -517,7 +517,7 @@ public interface FastMatrix extends MatrixType.Mutable {
         }
     }
     
-    default void addAY(double a, FastMatrix Y) {
+    default void addAY(double a, Matrix Y) {
         if (a != 0) {
             if (getColumnIncrement() == 1 && Y.getColumnIncrement() == 1) {
                 applyByRows(Y, (x, y) -> x.addAY(a, y));
@@ -527,7 +527,7 @@ public interface FastMatrix extends MatrixType.Mutable {
         }
     }
     
-    default void add(FastMatrix X) {
+    default void add(Matrix X) {
         if (getColumnIncrement() == 1 && X.getColumnIncrement() == 1) {
             applyByRows(X, (x, y) -> x.add(y));
         } else {
@@ -535,7 +535,7 @@ public interface FastMatrix extends MatrixType.Mutable {
         }
     }
     
-    default void sub(FastMatrix X) {
+    default void sub(Matrix X) {
         if (getColumnIncrement() == 1 && X.getColumnIncrement() == 1) {
             applyByRows(X, (x, y) -> x.sub(y));
         } else {
@@ -550,7 +550,7 @@ public interface FastMatrix extends MatrixType.Mutable {
      * @param lm
      * @param rm
      */
-    default void product(final FastMatrix lm, final FastMatrix rm) {
+    default void product(final Matrix lm, final Matrix rm) {
         if (lm.getColumnsCount() < PROD_THRESHOLD * (lm.getRowsCount())) {
             DataBlockIterator cols = columnsIterator();
             DataBlockIterator rcols = rm.columnsIterator();
@@ -576,7 +576,7 @@ public interface FastMatrix extends MatrixType.Mutable {
         }
     }
     
-    default void robustProduct(final FastMatrix lm, final FastMatrix rm, DoubleAccumulator acc) {
+    default void robustProduct(final Matrix lm, final Matrix rm, DoubleAccumulator acc) {
         DataBlockIterator iter = columnsIterator(), riter = lm.rowsIterator(), citer = rm.columnsIterator();
         while (iter.hasNext()) {
             riter.reset();
@@ -636,7 +636,7 @@ public interface FastMatrix extends MatrixType.Mutable {
         }
     }
     
-    default void addXY(final FastMatrix X, final FastMatrix Y) {
+    default void addXY(final Matrix X, final Matrix Y) {
         // Raw gaxpy implementation
         DataBlockIterator cols = X.columnsIterator();
         DataBlockIterator rows = Y.rowsIterator();
@@ -651,7 +651,7 @@ public interface FastMatrix extends MatrixType.Mutable {
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Operations">
-    default CanonicalMatrix times(FastMatrix B) {
+    default CanonicalMatrix times(Matrix B) {
         CanonicalMatrix AB = new CanonicalMatrix(getRowsCount(), B.getColumnsCount());
         if (isCanonical() && B.isCanonical()) {
             AB.addXY(asCanonical(), B.asCanonical());
@@ -679,7 +679,7 @@ public interface FastMatrix extends MatrixType.Mutable {
         return r;
     }
     
-    default CanonicalMatrix plus(FastMatrix B) {
+    default CanonicalMatrix plus(Matrix B) {
         CanonicalMatrix AB = deepClone();
         if (B.isCanonical()) {
             AB.add(B.asCanonical());
@@ -695,7 +695,7 @@ public interface FastMatrix extends MatrixType.Mutable {
         return r;
     }
     
-    default CanonicalMatrix minus(FastMatrix B) {
+    default CanonicalMatrix minus(Matrix B) {
         CanonicalMatrix AB = deepClone();
         if (B.isCanonical()) {
             AB.sub(B.asCanonical());
@@ -934,7 +934,7 @@ public interface FastMatrix extends MatrixType.Mutable {
         return DataWindow.windowOf(storage, beg, beg + nrows * rowInc, rowInc);
     }
     
-    public static LogSign logDeterminant(FastMatrix X) {
+    public static LogSign logDeterminant(Matrix X) {
         if (!X.isSquare()) {
             throw new IllegalArgumentException();
         }
@@ -946,7 +946,7 @@ public interface FastMatrix extends MatrixType.Mutable {
         return LogSign.of(hous.rdiagonal(false));
     }
     
-    public static double determinant(FastMatrix X) {
+    public static double determinant(Matrix X) {
         LogSign ls = logDeterminant(X);
         if (ls == null) {
             return 0;
@@ -960,9 +960,9 @@ public interface FastMatrix extends MatrixType.Mutable {
 class Rows implements Iterator<DataBlock> {
     
     private int pos;
-    private final FastMatrix M;
+    private final Matrix M;
     
-    Rows(FastMatrix M) {
+    Rows(Matrix M) {
         pos = 0;
         this.M = M;
     }
@@ -981,9 +981,9 @@ class Rows implements Iterator<DataBlock> {
 class Columns implements Iterator<DataBlock> {
     
     private int pos;
-    private final FastMatrix M;
+    private final Matrix M;
     
-    Columns(FastMatrix M) {
+    Columns(Matrix M) {
         pos = 0;
         this.M = M;
     }

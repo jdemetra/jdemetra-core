@@ -19,7 +19,6 @@ package demetra.ssf.univariate;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.UpdateInformation;
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.MatrixWindow;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
@@ -29,6 +28,7 @@ import demetra.ssf.StateInfo;
 import demetra.ssf.StateStorage;
 import demetra.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import demetra.ssf.implementations.DummyInitialization;
+import demetra.maths.matrices.Matrix;
 
 /**
  * /**
@@ -46,7 +46,7 @@ public class FixedPointSmoother {
 
     private final ISsf ssf;
     private final int fixpos;
-    private final FastMatrix M;
+    private final Matrix M;
     private StateStorage states;
 
     /**
@@ -86,7 +86,7 @@ public class FixedPointSmoother {
      * @param M The transformation matrix. May be null; in that case, M is
      * considered to be I.
      */
-    public FixedPointSmoother(final ISsf ssf, final int fixpos, final FastMatrix M) {
+    public FixedPointSmoother(final ISsf ssf, final int fixpos, final Matrix M) {
 
         if (M != null && ssf.getStateDim() != M.getColumnsCount()) {
             throw new SsfException("Invalid fixed point argument");
@@ -96,7 +96,7 @@ public class FixedPointSmoother {
         this.M = M;
     }
 
-    public FastMatrix getTransformationMatrix() {
+    public Matrix getTransformationMatrix() {
         return M;
     }
 
@@ -120,10 +120,10 @@ public class FixedPointSmoother {
     static class Initializer implements OrdinaryFilter.Initializer {
 
         private final int fixpos;
-        private final FastMatrix M;
+        private final Matrix M;
         private final ISsf core;
 
-        Initializer(final ISsf core, final int fixpos, final FastMatrix M) {
+        Initializer(final ISsf core, final int fixpos, final Matrix M) {
             this.fixpos = fixpos;
             this.M = M;
             this.core = core;
@@ -140,7 +140,7 @@ public class FixedPointSmoother {
             }
             int r = core.getStateDim();
             DataBlock a = filter.getFinalState().a();
-            FastMatrix P = filter.getFinalState().P();
+            Matrix P = filter.getFinalState().P();
             state.a().range(0, r).copy(a);
             MatrixWindow cur = state.P().topLeft(r, r);
             cur.copy(P);
@@ -188,7 +188,7 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
+        public double ZVZ(int pos, Matrix V) {
             return core.ZVZ(pos, V.topLeft(cdim, cdim));
         }
 
@@ -198,7 +198,7 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
+        public void VpZdZ(int pos, Matrix V, double d) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body copyOf generated methods, choose Tools | Templates.
         }
 
@@ -225,12 +225,12 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             core.V(pos, qm.topLeft(cdim, cdim));
         }
 
         @Override
-        public void S(int pos, FastMatrix cm) {
+        public void S(int pos, Matrix cm) {
             core.S(pos, cm.top(cdim));
         }
 
@@ -245,7 +245,7 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             core.T(pos, tr.topLeft(cdim, cdim));
             tr.bottomRight(mdim, mdim).diagonal().set(1);
         }
@@ -261,7 +261,7 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             core.addV(pos, p.topLeft(cdim, cdim));
         }
 

@@ -19,7 +19,6 @@ package demetra.ssf.implementations;
 import demetra.data.DataBlock;
 import demetra.data.DataBlockIterator;
 import demetra.data.DataWindow;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.MatrixWindow;
 import demetra.maths.matrices.QuadraticForm;
 import demetra.ssf.ISsfDynamics;
@@ -34,6 +33,7 @@ import demetra.ssf.SsfException;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Measurement;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  * SSF extended by regression variables with fixed or time varying coefficients.
@@ -44,17 +44,17 @@ import demetra.data.DoubleSeq;
 @lombok.experimental.UtilityClass
 public class RegSsf {
 
-    public SsfComponent of(FastMatrix X) {
+    public SsfComponent of(Matrix X) {
         int nx = X.getColumnsCount();
         return new SsfComponent(new ConstantInitialization(nx), new ConstantDynamics(), Loading.regression(X));
     }
 
-    public SsfComponent ofTimeVarying(FastMatrix X, double var) {
+    public SsfComponent ofTimeVarying(Matrix X, double var) {
         int nx = X.getColumnsCount();
         return new SsfComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(X.getColumnsCount(), var), Loading.regression(X));
     }
 
-    public SsfComponent ofTimeVarying(FastMatrix X, DoubleSeq vars) {
+    public SsfComponent ofTimeVarying(Matrix X, DoubleSeq vars) {
         int nx = X.getColumnsCount();
         if (vars.length() == 1) {
             return new SsfComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(nx, vars.get(0)), Loading.regression(X));
@@ -65,12 +65,12 @@ public class RegSsf {
         }
     }
 
-    public SsfComponent ofTimeVarying(FastMatrix X, FastMatrix vars) {
+    public SsfComponent ofTimeVarying(Matrix X, Matrix vars) {
         int nx = X.getColumnsCount();
         return new SsfComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(vars), Loading.regression(X));
     }
 
-    public ISsf of(ISsf model, FastMatrix X) {
+    public ISsf of(ISsf model, Matrix X) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();
         }
@@ -80,7 +80,7 @@ public class RegSsf {
                 new Xloading(mdim, model.loading(), X), model.measurementError());
     }
 
-    public SsfComponent of(SsfComponent model, FastMatrix X) {
+    public SsfComponent of(SsfComponent model, Matrix X) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();
         }
@@ -99,12 +99,12 @@ public class RegSsf {
      * @param cvar The covariance of the coefficients
      * @return
      */
-    public ISsf ofTimeVarying(ISsf model, FastMatrix X, FastMatrix cvar) {
+    public ISsf ofTimeVarying(ISsf model, Matrix X, Matrix cvar) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();
         }
         int mdim = model.getStateDim();
-        FastMatrix s = cvar.deepClone();
+        Matrix s = cvar.deepClone();
         SymmetricMatrix.lcholesky(s, 1e-12);
         return Ssf.of(new Xinitializer(model.initialization(), X.getColumnsCount()),
                 new Xvardynamics(mdim, model.dynamics(), cvar, s),
@@ -120,12 +120,12 @@ public class RegSsf {
      * @param s The Cholesky factor of the covariance of the coefficients
      * @return
      */
-    public ISsf ofTimeVaryingFactor(ISsf model, FastMatrix X, FastMatrix s) {
+    public ISsf ofTimeVaryingFactor(ISsf model, Matrix X, Matrix s) {
         if (X.isEmpty()) {
             throw new IllegalArgumentException();
         }
         int mdim = model.getStateDim();
-        FastMatrix var = SymmetricMatrix.XXt(s);
+        Matrix var = SymmetricMatrix.XXt(s);
         return Ssf.of(new Xinitializer(model.initialization(), X.getColumnsCount()),
                 new Xvardynamics(mdim, model.dynamics(), var, s),
                 new Xloading(mdim, model.loading(), X), model.measurementError());
@@ -148,12 +148,12 @@ public class RegSsf {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             dyn.V(pos, qm.topLeft(n, n));
         }
 
         @Override
-        public void S(int pos, FastMatrix cm) {
+        public void S(int pos, Matrix cm) {
             dyn.S(pos, cm.top(n));
         }
 
@@ -168,7 +168,7 @@ public class RegSsf {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             dyn.T(pos, tr.topLeft(n, n));
             tr.diagonal().drop(n, 0).set(1);
         }
@@ -179,12 +179,12 @@ public class RegSsf {
         }
 
         @Override
-        public void TM(int pos, FastMatrix m) {
+        public void TM(int pos, Matrix m) {
             dyn.TM(pos, m.top(n));
         }
 
         @Override
-        public void TVT(int pos, FastMatrix m) {
+        public void TVT(int pos, Matrix m) {
             MatrixWindow z = m.topLeft(n, n);
             dyn.TVT(pos, z);
             MatrixWindow zc = z.clone();
@@ -210,7 +210,7 @@ public class RegSsf {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             dyn.addV(pos, p.topLeft(n, n));
         }
 
@@ -225,9 +225,9 @@ public class RegSsf {
 
         private final int n, nx;
         private final ISsfDynamics dyn;
-        private final FastMatrix var, s;
+        private final Matrix var, s;
 
-        Xvardynamics(int n, ISsfDynamics dyn, FastMatrix xvar, FastMatrix xs) {
+        Xvardynamics(int n, ISsfDynamics dyn, Matrix xvar, Matrix xs) {
             this.dyn = dyn;
             this.n = n;
             this.nx = xvar.getColumnsCount();
@@ -241,7 +241,7 @@ public class RegSsf {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             MatrixWindow cur = qm.topLeft(n, n);
             dyn.V(pos, cur);
             cur.next(nx, nx);
@@ -249,7 +249,7 @@ public class RegSsf {
         }
 
         @Override
-        public void S(int pos, FastMatrix cm) {
+        public void S(int pos, Matrix cm) {
             MatrixWindow cur = cm.topLeft(n, dyn.getInnovationsDim());
             dyn.S(pos, cur);
             cur.next(nx, s.getColumnsCount());
@@ -267,7 +267,7 @@ public class RegSsf {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             dyn.T(pos, tr.topLeft(n, n));
             tr.diagonal().drop(n, 0).set(1);
         }
@@ -278,12 +278,12 @@ public class RegSsf {
         }
 
         @Override
-        public void TM(int pos, FastMatrix m) {
+        public void TM(int pos, Matrix m) {
             dyn.TM(pos, m.top(n));
         }
 
         @Override
-        public void TVT(int pos, FastMatrix m) {
+        public void TVT(int pos, Matrix m) {
             MatrixWindow z = m.topLeft(n, n);
             dyn.TVT(pos, z);
             MatrixWindow zc = z.clone();
@@ -311,7 +311,7 @@ public class RegSsf {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             MatrixWindow cur = p.topLeft(n, n);
             dyn.addV(pos, cur);
             cur.next(nx, nx);
@@ -351,7 +351,7 @@ public class RegSsf {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
             int nd = dyn.getDiffuseDim();
             MatrixWindow tmp = b.topLeft(n, nd);
             if (nd > 0) {
@@ -367,12 +367,12 @@ public class RegSsf {
         }
 
         @Override
-        public void Pf0(FastMatrix pf0) {
+        public void Pf0(Matrix pf0) {
             dyn.Pf0(pf0.topLeft(n, n));
         }
 
         @Override
-        public void Pi0(FastMatrix pi0) {
+        public void Pi0(Matrix pi0) {
             MatrixWindow tmp = pi0.topLeft(n, n);
             dyn.Pi0(tmp);
             tmp.next(nx, nx);
@@ -383,11 +383,11 @@ public class RegSsf {
     static class Xloading implements ISsfLoading {
 
         private final ISsfLoading loading;
-        private final FastMatrix data;
+        private final Matrix data;
         private final int n, nx;
         private final DataBlock tmp;
 
-        private Xloading(final int n, final ISsfLoading loading, final FastMatrix data) {
+        private Xloading(final int n, final ISsfLoading loading, final Matrix data) {
             this.data = data;
             this.loading = loading;
             this.n = n;
@@ -415,7 +415,7 @@ public class RegSsf {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
+        public double ZVZ(int pos, Matrix V) {
             MatrixWindow v = V.topLeft(n, n);
             double v00 = loading.ZVZ(pos, v);
             v.hnext(nx);
@@ -428,7 +428,7 @@ public class RegSsf {
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
+        public void VpZdZ(int pos, Matrix V, double d) {
             MatrixWindow v = V.topLeft(n, n);
             loading.VpZdZ(pos, v, d);
             MatrixWindow vtmp = v.clone();

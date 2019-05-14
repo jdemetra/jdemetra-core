@@ -17,9 +17,9 @@
 package demetra.ssf.likelihood;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -46,7 +46,7 @@ public class ProfileLikelihood implements Likelihood {
     ldet;
     private int n;
     private DataBlock b;
-    private FastMatrix varB;
+    private Matrix varB;
 
     /**
      *
@@ -140,7 +140,7 @@ public class ProfileLikelihood implements Likelihood {
      * @param n The number of observations
      * @return
      */
-    public boolean set(final double ssqerr, final double ldet, final DataBlock b, final FastMatrix varB,
+    public boolean set(final double ssqerr, final double ldet, final DataBlock b, final Matrix varB,
             final int n) {
         this.ssqerr = ssqerr;
         this.ldet = ldet;
@@ -169,7 +169,7 @@ public class ProfileLikelihood implements Likelihood {
         return b;
     }
 
-    public FastMatrix getVarianceOfDiffuseEffects() {
+    public Matrix getVarianceOfDiffuseEffects() {
         return varB;
     }
 

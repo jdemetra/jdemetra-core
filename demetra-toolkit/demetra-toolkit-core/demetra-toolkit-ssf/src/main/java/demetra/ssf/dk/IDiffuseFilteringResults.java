@@ -16,8 +16,8 @@
  */
 package demetra.ssf.dk;
 
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.StateInfo;
+import demetra.maths.matrices.Matrix;
 
 /**
  *

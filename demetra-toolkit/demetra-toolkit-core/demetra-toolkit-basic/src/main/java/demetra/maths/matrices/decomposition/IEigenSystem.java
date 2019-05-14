@@ -18,7 +18,7 @@
 package demetra.maths.matrices.decomposition;
 
 import demetra.maths.Complex;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.Matrix;
 
 
 /**
@@ -72,7 +72,7 @@ public interface IEigenSystem {
      *
      * @return
      */
-    FastMatrix getEigenVectors();
+    Matrix getEigenVectors();
 
     /**
      * The method returns the first n eigenvectors as an IMatrix. Each eigenvector takes a column of the
@@ -81,7 +81,7 @@ public interface IEigenSystem {
      * @param n
      * @return
      */
-    FastMatrix getEigenVectors(int n);
+    Matrix getEigenVectors(int n);
     /// <summary>
     /// The property sets/gets the treshold for small values
     /// </summary>

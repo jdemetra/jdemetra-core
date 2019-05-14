@@ -39,9 +39,9 @@ import demetra.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SubMatrix;
 import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *

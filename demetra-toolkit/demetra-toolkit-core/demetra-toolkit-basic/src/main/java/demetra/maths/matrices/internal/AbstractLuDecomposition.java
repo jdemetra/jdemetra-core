@@ -25,8 +25,8 @@ import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.decomposition.LUDecomposition;
+import demetra.maths.matrices.Matrix;
 
 
 /**
@@ -73,7 +73,7 @@ public abstract class AbstractLuDecomposition implements LUDecomposition {
     public AbstractLuDecomposition() {
     }
 
-    void init(FastMatrix M) {
+    void init(Matrix M) {
         if (M.getRowsCount() != M.getColumnsCount()) {
             throw new MatrixException(MatrixException.SQUARE);
         }

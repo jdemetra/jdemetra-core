@@ -8,10 +8,10 @@ package demetra.modelling.regression;
 import demetra.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -75,14 +75,14 @@ class TCFactory implements RegressionVariableFactory<TransitoryChange> {
     private TCFactory(){}
 
     @Override
-    public boolean fill(TransitoryChange var, TsPeriod start, FastMatrix m) {
+    public boolean fill(TransitoryChange var, TsPeriod start, Matrix m) {
         TsPeriod p = start.withDate(var.getPosition());
         fill(var, start.until(p), m.column(0));
         return true;
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(TransitoryChange var, D domain, FastMatrix m) {
+    public <D extends TimeSeriesDomain> boolean fill(TransitoryChange var, D domain, Matrix m) {
         fill(var, domain.indexOf(var.getPosition()), m.column(0));
         return true;
     }

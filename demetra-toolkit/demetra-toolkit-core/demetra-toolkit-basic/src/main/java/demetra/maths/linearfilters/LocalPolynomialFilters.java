@@ -23,7 +23,7 @@ import demetra.maths.matrices.internal.Householder;
 import java.util.function.IntToDoubleFunction;
 import demetra.linearsystem.LinearSystemSolver;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  * The local polynomial filter is defined as follows: h is the number of lags
@@ -332,13 +332,13 @@ public class LocalPolynomialFilters {
         int nv = h + p + 1;
         DataBlock wp = DataBlock.of(w, 0, nv);
         DataBlock wf = DataBlock.of(w, nv, w.length);
-        FastMatrix Zp = z(-h, p, u + 1, u + dz.length);
-        FastMatrix Zf = z(p + 1, h, u + 1, u + dz.length);
-        FastMatrix Up = z(-h, p, 0, u);
-        FastMatrix Uf = z(p + 1, h, 0, u);
+        Matrix Zp = z(-h, p, u + 1, u + dz.length);
+        Matrix Zf = z(p + 1, h, u + 1, u + dz.length);
+        Matrix Up = z(-h, p, 0, u);
+        Matrix Uf = z(p + 1, h, 0, u);
         DataBlock d = DataBlock.of(dz);
 
-        FastMatrix H = SymmetricMatrix.XtX(Up);
+        Matrix H = SymmetricMatrix.XtX(Up);
 
         DataBlock a1 = DataBlock.make(u + 1);
         a1.product(Uf.columnsIterator(), wf); // U'f x wf
@@ -404,7 +404,7 @@ public class LocalPolynomialFilters {
      * @param u included (positive)
      * @return
      */
-    synchronized FastMatrix z(int l, int u, int d0, int d1) {
+    synchronized Matrix z(int l, int u, int d0, int d1) {
         int nh = Math.max(Math.abs(l), Math.abs(u));
         if (Z == null || Z.getRowsCount() / 2 < nh || Z.getColumnsCount() < d1+1) {
             Z = createZ(nh, d1);

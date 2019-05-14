@@ -229,7 +229,7 @@ public class FastMatrixTest {
                 .nrows(2)
                 .ncolumns(2)
                 .build();
-        double d=FastMatrix.determinant(X);
+        double d=Matrix.determinant(X);
         assertEquals(x[0]*x[3]-x[1]*x[2], d, 1e-9);
     }
 
@@ -240,7 +240,7 @@ public class FastMatrixTest {
                 .nrows(2)
                 .ncolumns(2)
                 .build();
-        double d=FastMatrix.determinant(X);
+        double d=Matrix.determinant(X);
         assertTrue(d==0);
     }
     

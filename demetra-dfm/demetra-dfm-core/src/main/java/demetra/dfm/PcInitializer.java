@@ -16,8 +16,8 @@
  */
 package demetra.dfm;
 
-import demetra.maths.matrices.FastMatrix;
 import java.util.Arrays;
+import demetra.maths.matrices.Matrix;
 
 /**
  *

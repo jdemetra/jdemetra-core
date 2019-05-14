@@ -18,7 +18,6 @@ package demetra.ssf.multivariate;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
@@ -28,6 +27,7 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.univariate.Measurement;
 import demetra.ssf.univariate.Ssf;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -127,12 +127,12 @@ public class M2uAdapter {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
+        public double ZVZ(int pos, Matrix V) {
             return measurements.loading(pos % nvars).ZVZ(pos / nvars, V);
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
+        public void VpZdZ(int pos, Matrix V, double d) {
             measurements.loading(pos % nvars).VpZdZ(pos / nvars, V, d);
         }
 
@@ -200,7 +200,7 @@ public class M2uAdapter {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.V(pos / nstep, qm);
             }
@@ -221,7 +221,7 @@ public class M2uAdapter {
         }
 
         @Override
-        public void S(int pos, FastMatrix sm) {
+        public void S(int pos, Matrix sm) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.S(pos / nstep, sm);
             }
@@ -244,7 +244,7 @@ public class M2uAdapter {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.T(pos / nstep, tr);
             } else {
@@ -260,14 +260,14 @@ public class M2uAdapter {
         }
 
         @Override
-        public void TM(int pos, FastMatrix m) {
+        public void TM(int pos, Matrix m) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.TM(pos / nstep, m);
             }
         }
 
         @Override
-        public void TVT(int pos, FastMatrix m) {
+        public void TVT(int pos, Matrix m) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.TVT(pos / nstep, m);
             }
@@ -281,14 +281,14 @@ public class M2uAdapter {
         }
 
         @Override
-        public void MT(int pos, FastMatrix m) {
+        public void MT(int pos, Matrix m) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.MT(pos / nstep, m);
             }
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.addV(pos / nstep, p);
             }

@@ -17,7 +17,7 @@
 
 package demetra.maths.matrices.decomposition;
 
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.Matrix;
 
 
 /**
@@ -25,5 +25,5 @@ import demetra.maths.matrices.FastMatrix;
  * @author Jean Palate
  */
 public interface IGeneralizedInverse {
-    FastMatrix inverse(FastMatrix m);
+    Matrix inverse(Matrix m);
 }

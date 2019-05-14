@@ -19,7 +19,6 @@
 package demetra.sts;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
@@ -27,6 +26,7 @@ import demetra.ssf.implementations.Loading;
 import demetra.ssf.univariate.Measurement;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.univariate.ISsfMeasurement;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -140,7 +140,7 @@ public class SsfBsm extends Ssf {
 
     static class BsmData {
 
-        final FastMatrix tsvar, ltsvar;
+        final Matrix tsvar, ltsvar;
         final double lVar, sVar, seasVar, cVar, nVar, cDump;
         final double ccos, csin;
         final int period;
@@ -223,7 +223,7 @@ public class SsfBsm extends Ssf {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
             int sdim = getStateDim();
             int istart = data.nVar > 0 ? 1 : 0;
             if (data.cVar >= 0) {
@@ -236,7 +236,7 @@ public class SsfBsm extends Ssf {
         }
 
         @Override
-        public void Pi0(FastMatrix p) {
+        public void Pi0(Matrix p) {
             int sdim = getStateDim();
             int istart = data.nVar > 0 ? 1 : 0;
             if (data.cVar >= 0) {
@@ -253,7 +253,7 @@ public class SsfBsm extends Ssf {
         }
 
         @Override
-        public void Pf0(FastMatrix p) {
+        public void Pf0(Matrix p) {
             int i = 0;
             if (data.nVar > 0) {
                 p.set(0, 0, data.nVar);
@@ -333,7 +333,7 @@ public class SsfBsm extends Ssf {
         }
 
         @Override
-        public void V(int pos, FastMatrix v) {
+        public void V(int pos, Matrix v) {
             int i = 0;
             if (data.nVar > 0) {
                 v.set(i, i, data.nVar);
@@ -373,7 +373,7 @@ public class SsfBsm extends Ssf {
         }
 
         @Override
-        public void S(int pos, FastMatrix s) {
+        public void S(int pos, Matrix s) {
             int i = 0, j = 0;
             if (data.nVar > 0) {
                 s.set(i++, j++, Math.sqrt(data.nVar));
@@ -487,7 +487,7 @@ public class SsfBsm extends Ssf {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             int i = 0;
             if (data.nVar > 0) {
                 ++i;
@@ -509,7 +509,7 @@ public class SsfBsm extends Ssf {
                 ++i;
             }
             if (data.seasVar >= 0) {
-                FastMatrix seas = tr.extract(i, data.period - 1, i, data.period - 1);
+                Matrix seas = tr.extract(i, data.period - 1, i, data.period - 1);
                 seas.row(0).set(-1);
                 seas.subDiagonal(-1).set(1);
             }
@@ -575,7 +575,7 @@ public class SsfBsm extends Ssf {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             int i = 0;
             if (data.nVar > 0) {
                 p.add(i, i, data.nVar);

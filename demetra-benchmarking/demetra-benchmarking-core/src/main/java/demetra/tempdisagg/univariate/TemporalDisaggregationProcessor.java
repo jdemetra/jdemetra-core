@@ -25,7 +25,6 @@ import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
-import demetra.maths.matrices.FastMatrix;
 import demetra.modelling.regression.Constant;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.LinearTrend;
@@ -54,6 +53,7 @@ import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -361,7 +361,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
     private TsData hresiduals(DisaggregationModel model, DoubleSeq coeff) {
         double[] y = new double[model.getHEDom().length()];
         double[] hy = model.getHEY();
-        FastMatrix hx = model.getHEX();
+        Matrix hx = model.getHEX();
         for (int i = 0; i < hy.length; ++i) {
             if (Double.isFinite(hy[i])) {
                 y[i] = hy[i] - hx.row(i).dot(coeff);

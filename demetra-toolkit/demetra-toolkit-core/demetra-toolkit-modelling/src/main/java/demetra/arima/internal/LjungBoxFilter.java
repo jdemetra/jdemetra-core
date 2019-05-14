@@ -23,7 +23,6 @@ import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Legacy;
 import demetra.design.Development;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.RationalFunction;
@@ -31,6 +30,7 @@ import org.openide.util.lookup.ServiceProvider;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.CanonicalMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  * @author Jean Palate
@@ -219,13 +219,13 @@ public class LjungBoxFilter implements ArmaFilter {
             m_V1 = CanonicalMatrix.make(m, m_p + m_q);
             if (m_p > 0) {
                 double[] cov = arima.getAutoCovarianceFunction().values(m_p);
-                FastMatrix W = m_L.extract(0, m_p, 0, m_p);
+                Matrix W = m_L.extract(0, m_p, 0, m_p);
                 W.diagonal().set(cov[0]);
 
                 for (int i = 1; i < m_p; ++i) {
                     W.subDiagonal(i).set(cov[i]);
                 }
-                FastMatrix P = m_V1.extract(0, m_p, 0, m_p);
+                Matrix P = m_V1.extract(0, m_p, 0, m_p);
                 P.diagonal().set(-m_ar.get(m_p));
                 for (int i = 1; i < m_p; ++i) {
                     P.subDiagonal(i).set(-m_ar.get(m_p - i));
@@ -233,7 +233,7 @@ public class LjungBoxFilter implements ArmaFilter {
             }
 
             if (m_q > 0) {
-                FastMatrix Q = m_V1.extract(0, m_q, m_p, m_q);
+                Matrix Q = m_V1.extract(0, m_q, m_p, m_q);
                 Q.diagonal().set(m_ma.get(m_q));
 
                 for (int i = 1; i < m_q; ++i) {
@@ -243,7 +243,7 @@ public class LjungBoxFilter implements ArmaFilter {
 
             if (m_q > 0 && m_p > 0) {
                 double[] psi = RationalFunction.of(m_ma, m_ar).coefficients(m_q);
-                FastMatrix W = m_L.extract(0, m_p, m_p, m_q);
+                Matrix W = m_L.extract(0, m_p, m_p, m_q);
                 int imin = m_q - m_p;
                 for (int i = 0; i < m_q; ++i) {
                     W.subDiagonal(imin - i).set(psi[i]);

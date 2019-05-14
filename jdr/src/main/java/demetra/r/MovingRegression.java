@@ -17,7 +17,6 @@ import demetra.sarima.SarimaModel;
 import demetra.sarima.SarimaSpecification;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.descriptors.arima.SarimaDescriptor;
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsUnit;
@@ -33,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -110,7 +110,7 @@ public class MovingRegression {
 
         DayClustering dc = days(td);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        FastMatrix x = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(gtd));
+        Matrix x = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(gtd));
 
         RegSarimaProcessor monitor = RegSarimaProcessor.builder()
                 .useParallelProcessing(true)
@@ -130,7 +130,7 @@ public class MovingRegression {
         TimeSelector sel = TimeSelector.first(nyears * period);
         TsDomain dom = s.getDomain().select(sel);
         while (dom.end().isBefore(s.getDomain().end())) {
-            FastMatrix mtd = generate(dom, dc);
+            Matrix mtd = generate(dom, dc);
             TsData yc = fitToDomain(s, dom);
             RegArimaModel.Builder<SarimaModel> builder = RegArimaModel.builder(SarimaModel.class)
                     .y(yc.getValues())
@@ -197,7 +197,7 @@ public class MovingRegression {
         return dc;
     }
 
-    private FastMatrix generate(TsDomain domain, DayClustering dc) {
+    private Matrix generate(TsDomain domain, DayClustering dc) {
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
     }

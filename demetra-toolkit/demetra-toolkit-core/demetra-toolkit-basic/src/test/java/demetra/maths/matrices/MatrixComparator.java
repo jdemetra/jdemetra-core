@@ -44,7 +44,7 @@ public class MatrixComparator {
         return delta.normInf();
     }
 
-    public static ec.tstoolkit.maths.matrices.Matrix toLegacy(FastMatrix M) {
+    public static ec.tstoolkit.maths.matrices.Matrix toLegacy(Matrix M) {
         int nrows = M.getRowsCount(), ncols = M.getColumnsCount();
         ec.tstoolkit.maths.matrices.Matrix O = new ec.tstoolkit.maths.matrices.Matrix(nrows, ncols);
         for (int c = 0; c < ncols; ++c) {

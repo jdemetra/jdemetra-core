@@ -21,11 +21,11 @@ import demetra.data.LogSign;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.maths.matrices.decomposition.ElementaryTransformations;
 import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.State;
 import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.likelihood.Likelihood;
 import demetra.maths.matrices.CanonicalMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -85,7 +85,7 @@ public class QAugmentation {
         ElementaryTransformations.fastGivensTriangularize(Q);
     }
 
-    public FastMatrix a() {
+    public Matrix a() {
         return Q.extract(0, nd, 0, nd);
     }
 

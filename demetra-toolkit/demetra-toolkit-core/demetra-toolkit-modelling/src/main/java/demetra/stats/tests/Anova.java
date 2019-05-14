@@ -21,7 +21,6 @@ import demetra.data.DataBlock;
 import demetra.dstats.F;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.linearmodel.LinearModel;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
@@ -29,6 +28,7 @@ import demetra.maths.matrices.internal.HouseholderR;
 import java.util.Arrays;
 import java.util.List;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *

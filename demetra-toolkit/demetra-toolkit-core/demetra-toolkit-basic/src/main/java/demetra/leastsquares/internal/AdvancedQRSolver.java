@@ -17,8 +17,8 @@ import demetra.design.BuilderPattern;
 import demetra.leastsquares.QRSolver;
 import demetra.design.AlgorithmImplementation;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.decomposition.QRDecomposition;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -81,7 +81,7 @@ public class AdvancedQRSolver implements QRSolver {
     }
 
     @Override
-    public boolean solve(DoubleSeq y, FastMatrix x) {
+    public boolean solve(DoubleSeq y, Matrix x) {
         try {
             clear();
             compute(y, x);
@@ -98,7 +98,7 @@ public class AdvancedQRSolver implements QRSolver {
         res = null;
     }
 
-    private void compute(DoubleSeq y, FastMatrix x) {
+    private void compute(DoubleSeq y, Matrix x) {
 
         // X'X, X'y
         n = y.length();
@@ -154,7 +154,7 @@ public class AdvancedQRSolver implements QRSolver {
      * @param X
      * @param B
      */
-    private void iterativeEstimation(DoubleSeq Y, FastMatrix X) {
+    private void iterativeEstimation(DoubleSeq Y, Matrix X) {
         DataBlock F = DataBlock.make(n);
         DataBlock G = DataBlock.make(m);
 
@@ -201,7 +201,7 @@ public class AdvancedQRSolver implements QRSolver {
         } while (++iter < niter);
     }
 
-    private void iterativeEstimation2(DoubleSeq Y, FastMatrix X) {
+    private void iterativeEstimation2(DoubleSeq Y, Matrix X) {
 
         DataBlock B = DataBlock.of(b), E = DataBlock.of(res);
         DoubleSeq W = Y;

@@ -18,7 +18,7 @@
 package demetra.maths.functions;
 
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.Matrix;
 
 
 /**
@@ -45,5 +45,5 @@ public interface IMFunctionDerivatives {
      * J(i, j)=partialDerivatives(i,j)
      * @param jacobian
      */
-    void getJacobian(FastMatrix jacobian);
+    void getJacobian(Matrix jacobian);
 }

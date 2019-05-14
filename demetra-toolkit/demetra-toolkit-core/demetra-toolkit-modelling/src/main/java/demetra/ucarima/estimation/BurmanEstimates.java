@@ -24,7 +24,6 @@ import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.polynomials.Polynomial;
@@ -36,6 +35,7 @@ import demetra.arima.estimation.ArimaForecasts;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.decomposition.LUDecomposition;
+import demetra.maths.matrices.Matrix;
 
 /**
  * Estimation of the components of an UCARIMA model using a variant of the

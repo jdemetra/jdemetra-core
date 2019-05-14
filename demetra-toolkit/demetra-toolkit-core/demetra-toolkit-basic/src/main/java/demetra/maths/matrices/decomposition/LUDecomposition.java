@@ -20,8 +20,8 @@ import demetra.design.Development;
 import demetra.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.MatrixException;
+import demetra.maths.matrices.Matrix;
 
 /**
  * Computes the L-U decomposition of a matrix M = L * U where L is a lower
@@ -42,7 +42,7 @@ public interface LUDecomposition {
     /**
      * @param m A square matrix
      */
-    void decompose(FastMatrix m)throws MatrixException;
+    void decompose(Matrix m)throws MatrixException;
     
     /**
      * if M = L*U, solves M * x = b
@@ -50,7 +50,7 @@ public interface LUDecomposition {
      */
     void solve(DataBlock b);
     
-    default void solve(FastMatrix B){
+    default void solve(Matrix B){
         B.applyByColumns(col->solve(col));
     }
 

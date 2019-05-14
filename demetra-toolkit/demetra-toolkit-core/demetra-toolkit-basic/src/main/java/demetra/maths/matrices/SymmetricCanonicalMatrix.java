@@ -390,7 +390,7 @@ class SymmetricCanonicalMatrix {
             LogSign ls = LogSign.of(diagonal);
             return new LogSign(ls.getValue() * 2, true);
         } catch (MatrixException e) {
-            return FastMatrix.logDeterminant(S);
+            return Matrix.logDeterminant(S);
         }
     }
 

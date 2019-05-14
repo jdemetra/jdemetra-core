@@ -18,9 +18,9 @@ package demetra.data;
 
 //import ec.tstoolkit.maths.matrices.*;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.SubMatrix;
 import java.util.Arrays;
+import demetra.maths.matrices.Matrix;
 
 /**
  *

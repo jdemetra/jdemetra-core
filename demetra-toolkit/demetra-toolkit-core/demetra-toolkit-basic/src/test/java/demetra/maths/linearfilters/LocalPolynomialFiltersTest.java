@@ -17,10 +17,10 @@
 package demetra.maths.linearfilters;
 
 import demetra.data.analysis.DiscreteKernel;
-import demetra.maths.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -72,7 +72,7 @@ public class LocalPolynomialFiltersTest {
 
     @Test
     public void testZ() {
-        FastMatrix z = LocalPolynomialFilters.z(-12, 2, 0, 3);
+        Matrix z = LocalPolynomialFilters.z(-12, 2, 0, 3);
         assertTrue(z.sum() != 0);
     }
 

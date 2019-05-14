@@ -18,8 +18,8 @@ package demetra.ssf;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.FastMatrix;
 import java.util.function.Consumer;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -29,7 +29,7 @@ public class DefaultInitialization implements ISsfInitialization {
     
     private final int dim, ndiffuse;
     private Consumer<DataBlock> a0;
-    private Consumer<FastMatrix> Pf, Pi, B;
+    private Consumer<Matrix> Pf, Pi, B;
     
     public DefaultInitialization(int dim, int ndiffuse) {
         this.dim = dim;
@@ -41,12 +41,12 @@ public class DefaultInitialization implements ISsfInitialization {
         return this;
     }
     
-    public DefaultInitialization Pf(Consumer<FastMatrix> Pf) {
+    public DefaultInitialization Pf(Consumer<Matrix> Pf) {
         this.Pf = Pf;
         return this;
     }
     
-    public DefaultInitialization Pi(Consumer<FastMatrix> Pi) {
+    public DefaultInitialization Pi(Consumer<Matrix> Pi) {
         if (ndiffuse == 0) {
             throw new SsfException(SsfException.INITIALIZATION);
         }
@@ -54,7 +54,7 @@ public class DefaultInitialization implements ISsfInitialization {
         return this;
     }
     
-    public DefaultInitialization B(Consumer<FastMatrix> B) {
+    public DefaultInitialization B(Consumer<Matrix> B) {
         if (ndiffuse == 0) {
             throw new SsfException(SsfException.INITIALIZATION);
         }
@@ -78,7 +78,7 @@ public class DefaultInitialization implements ISsfInitialization {
     }
     
     @Override
-    public void diffuseConstraints(FastMatrix b) {
+    public void diffuseConstraints(Matrix b) {
         if (B != null) {
             B.accept(b);
         }
@@ -92,14 +92,14 @@ public class DefaultInitialization implements ISsfInitialization {
     }
     
     @Override
-    public void Pf0(FastMatrix pf) {
+    public void Pf0(Matrix pf) {
         if (Pf != null) {
             Pf.accept(pf);
         }
     }
     
     @Override
-    public void Pi0(FastMatrix pi) {
+    public void Pi0(Matrix pi) {
         if (Pi != null) {
             Pi.accept(pi);
         } else {

@@ -69,7 +69,7 @@ public class MatrixFactory {
     }
 
 
-    public CanonicalMatrix select(FastMatrix M, final int[] selectedRows, final int[] selectedColumns) {
+    public CanonicalMatrix select(Matrix M, final int[] selectedRows, final int[] selectedColumns) {
         // TODO optimization
         CanonicalMatrix m = new CanonicalMatrix(selectedRows.length, selectedColumns.length);
         for (int c = 0; c < selectedRows.length; ++c) {
@@ -88,7 +88,7 @@ public class MatrixFactory {
      * @param excludedColumns
      * @return A new matrix, based on another storage, is returned.
      */
-    public CanonicalMatrix  exclude(FastMatrix M, final int[] excludedRows, final int[] excludedColumns) {
+    public CanonicalMatrix  exclude(Matrix M, final int[] excludedRows, final int[] excludedColumns) {
         int[] srx = excludedRows.clone();
         Arrays.sort(srx);
         int[] scx = excludedColumns.clone();
@@ -140,7 +140,7 @@ public class MatrixFactory {
      * @param colPos
      * @return A new matrix, based on another storage, is returned.
      */
-    public CanonicalMatrix expand(FastMatrix M, final int nr, final int[] rowPos, final int nc, final int[] colPos) {
+    public CanonicalMatrix expand(Matrix M, final int nr, final int[] rowPos, final int nc, final int[] colPos) {
         if (rowPos.length != nr || colPos.length != nc) {
             throw new MatrixException(MatrixException.DIM);
         }

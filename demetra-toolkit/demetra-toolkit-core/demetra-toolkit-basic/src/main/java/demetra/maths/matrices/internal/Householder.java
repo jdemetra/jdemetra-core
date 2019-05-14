@@ -22,8 +22,8 @@ import demetra.design.Development;
 import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.matrices.decomposition.QRDecomposition;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -60,7 +60,7 @@ public class Householder implements QRDecomposition {
      * @param m
      */
     @Override
-    public void decompose(FastMatrix m) {
+    public void decompose(Matrix m) {
         init(m);
         householder();
     }
@@ -166,7 +166,7 @@ public class Householder implements QRDecomposition {
         }
     }
 
-    private void init(FastMatrix m) {
+    private void init(Matrix m) {
         this.m = m.getRowsCount();
         norig = n = m.getColumnsCount();
         qr = m.toArray();

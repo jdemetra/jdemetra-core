@@ -24,7 +24,7 @@ import demetra.data.DataBlockIterator;
 import demetra.maths.Constants;
 import demetra.maths.matrices.decomposition.ElementaryTransformations;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  * The singularValueDecomposition decomposes a matrix M in M = U * S * V' with:
@@ -52,11 +52,11 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
      * @throws MatrixException
      */
     @Override
-    public void decompose(FastMatrix A) throws MatrixException {
+    public void decompose(Matrix A) throws MatrixException {
         init(A);
     }
 
-    private void init(FastMatrix matrix) {
+    private void init(Matrix matrix) {
         double[] A = matrix.toArray();
         m_m = matrix.getRowsCount();
         m_n = matrix.getColumnsCount();

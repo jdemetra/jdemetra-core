@@ -18,12 +18,12 @@ package demetra.ssf.akf;
 
 import demetra.design.Development;
 import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfState;
+import demetra.maths.matrices.Matrix;
 
 /**
  * Represents x* = x + A d, where x is a usual state vector and A is a matrix of
@@ -64,11 +64,11 @@ public class AugmentedState extends State {
         B = CanonicalMatrix.make(dim, ndiffuse);
     }
 
-    public final FastMatrix B() {
+    public final Matrix B() {
         return B.extract(0, B.getRowsCount(), ndropped, B.getColumnsCount()-ndropped);
     }
 
-    public void restoreB(FastMatrix b) {
+    public void restoreB(Matrix b) {
         int n = b.getColumnsCount(), m = B.getColumnsCount();
         ndropped = m - n;
         B().copy(b);

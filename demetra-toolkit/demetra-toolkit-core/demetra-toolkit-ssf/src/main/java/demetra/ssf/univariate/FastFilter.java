@@ -14,7 +14,7 @@ import demetra.ssf.ResultsRange;
 import demetra.data.DoubleSeqCursor;
 import demetra.ssf.State;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -41,7 +41,7 @@ public class FastFilter {
         end = range.getEnd();
     }
 
-    public boolean filter(FastMatrix x) {
+    public boolean filter(Matrix x) {
         if (end - start < x.getRowsCount()) {
             return false;
         }

@@ -35,7 +35,7 @@ public final class MatrixWindow extends SubMatrix implements Cloneable{
         }
     }
 
-    public FastMatrix fix(){
+    public Matrix fix(){
         return new SubMatrix(storage, start, nrows, ncols, rowInc, colInc);
     }
 

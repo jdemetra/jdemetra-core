@@ -21,7 +21,7 @@ import demetra.design.Development;
 import demetra.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  * Decomposes a matrix A as A = applyQ*R
@@ -39,7 +39,7 @@ public interface QRDecomposition {
     /**
      * @param m A matrix
      */
-    void decompose(FastMatrix m) throws MatrixException;
+    void decompose(Matrix m) throws MatrixException;
 
     /**
      * Gets the R matrix

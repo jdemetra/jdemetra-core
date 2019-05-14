@@ -19,10 +19,10 @@ package demetra.linearmodel;
 import demetra.data.DataBlock;
 import demetra.data.DataSets;
 import demetra.data.analysis.WindowFunction;
-import demetra.maths.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -51,10 +51,10 @@ public class RobustCovarianceEstimatorsTest {
         Ols ols = new Ols();
         LeastSquaresResults rslts = ols.compute(model);
 //        System.out.println(rslts.covariance());
-        FastMatrix hac=RobustCovarianceEstimators.hac(model, rslts.getCoefficients(), WindowFunction.Bartlett, 5);
+        Matrix hac=RobustCovarianceEstimators.hac(model, rslts.getCoefficients(), WindowFunction.Bartlett, 5);
 //        System.out.println(hac);
         DataBlock u = model.calcResiduals(rslts.getCoefficients());
-        FastMatrix hc=RobustCovarianceEstimators.hc(model, rslts.getCoefficients(), i->u.get(i));
+        Matrix hc=RobustCovarianceEstimators.hc(model, rslts.getCoefficients(), i->u.get(i));
 //        System.out.println(hc);
     }
 

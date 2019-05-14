@@ -5,7 +5,6 @@
  */
 package demetra.modelling.regression;
 
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Calendar;
@@ -19,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -64,7 +64,7 @@ public class HolidaysCorrectionFactoryTest {
     public void testTD7_12() {
         HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium);
         HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD7), corrector);
-        FastMatrix td6 = Regression.matrix(TsDomain.of(TsPeriod.monthly(1980, 1), 360), var);
+        Matrix td6 = Regression.matrix(TsDomain.of(TsPeriod.monthly(1980, 1), 360), var);
         ec.tstoolkit.timeseries.calendars.NationalCalendarProvider provider
                 = new ec.tstoolkit.timeseries.calendars.NationalCalendarProvider(obelgium);
         ec.tstoolkit.timeseries.regression.GregorianCalendarVariables ovar
@@ -82,7 +82,7 @@ public class HolidaysCorrectionFactoryTest {
     public void testTD2_12() {
         HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium);
         HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD2), corrector);
-        FastMatrix td2 = Regression.matrix(TsDomain.of(TsPeriod.monthly(1980, 1), 360), var);
+        Matrix td2 = Regression.matrix(TsDomain.of(TsPeriod.monthly(1980, 1), 360), var);
         ec.tstoolkit.timeseries.calendars.NationalCalendarProvider provider
                 = new ec.tstoolkit.timeseries.calendars.NationalCalendarProvider(obelgium);
         ec.tstoolkit.timeseries.regression.GregorianCalendarVariables ovar
@@ -102,7 +102,7 @@ public class HolidaysCorrectionFactoryTest {
     public void testTD7_4() {
         HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium);
         HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD7), corrector);
-        FastMatrix td6 = Regression.matrix(TsDomain.of(TsPeriod.quarterly(1980, 1), 360), var);
+        Matrix td6 = Regression.matrix(TsDomain.of(TsPeriod.quarterly(1980, 1), 360), var);
         ec.tstoolkit.timeseries.calendars.NationalCalendarProvider provider
                 = new ec.tstoolkit.timeseries.calendars.NationalCalendarProvider(obelgium);
         ec.tstoolkit.timeseries.regression.GregorianCalendarVariables ovar
@@ -120,7 +120,7 @@ public class HolidaysCorrectionFactoryTest {
     public void testTD2_4() {
         HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium);
         HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD2), corrector);
-        FastMatrix td2 = Regression.matrix(TsDomain.of(TsPeriod.quarterly(1980, 1), 360), var);
+        Matrix td2 = Regression.matrix(TsDomain.of(TsPeriod.quarterly(1980, 1), 360), var);
         ec.tstoolkit.timeseries.calendars.NationalCalendarProvider provider
                 = new ec.tstoolkit.timeseries.calendars.NationalCalendarProvider(obelgium);
         ec.tstoolkit.timeseries.regression.GregorianCalendarVariables ovar
@@ -142,7 +142,7 @@ public class HolidaysCorrectionFactoryTest {
         for (int i = 0; i < 1000; ++i) {
             HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium);
             HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD2), corrector);
-            FastMatrix td2 = Regression.matrix(TsDomain.of(TsPeriod.monthly(1980, 1), 360), var);
+            Matrix td2 = Regression.matrix(TsDomain.of(TsPeriod.monthly(1980, 1), 360), var);
         }
         long t1 = System.currentTimeMillis();
         System.out.println("New: " + (t1 - t0));

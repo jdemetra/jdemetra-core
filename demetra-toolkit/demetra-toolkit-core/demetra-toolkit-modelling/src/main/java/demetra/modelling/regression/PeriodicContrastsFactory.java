@@ -18,10 +18,10 @@ package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
+import demetra.maths.matrices.Matrix;
 
 /**
  * The periodic contrasts are defined as follows:
@@ -59,7 +59,7 @@ public class PeriodicContrastsFactory implements RegressionVariableFactory<Perio
     private PeriodicContrastsFactory(){}
 
     @Override
-    public boolean fill(PeriodicContrasts var, TsPeriod start, FastMatrix buffer) {
+    public boolean fill(PeriodicContrasts var, TsPeriod start, Matrix buffer) {
         int period = var.getPeriod();
         TsPeriod refPeriod = start.withDate(var.getReference());
         long del = start.getId() - refPeriod.getId();
@@ -83,7 +83,7 @@ public class PeriodicContrastsFactory implements RegressionVariableFactory<Perio
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(PeriodicContrasts var, D domain, FastMatrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(PeriodicContrasts var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

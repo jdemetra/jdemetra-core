@@ -17,8 +17,8 @@
 package demetra.ssf;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import java.util.function.Consumer;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -48,7 +48,7 @@ public class DiffuseInitialization implements ISsfInitialization {
     }
     
     @Override
-    public void diffuseConstraints(FastMatrix b) {
+    public void diffuseConstraints(Matrix b) {
         b.diagonal().set(1);
     }
     
@@ -57,11 +57,11 @@ public class DiffuseInitialization implements ISsfInitialization {
     }
     
     @Override
-    public void Pf0(FastMatrix pf) {
+    public void Pf0(Matrix pf) {
     }
     
     @Override
-    public void Pi0(FastMatrix pi) {
+    public void Pi0(Matrix pi) {
         pi.diagonal().set(1);
     }
 }

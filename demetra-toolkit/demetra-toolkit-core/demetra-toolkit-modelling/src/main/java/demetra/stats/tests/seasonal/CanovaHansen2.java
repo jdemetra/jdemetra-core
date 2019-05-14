@@ -11,9 +11,9 @@ import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
-import demetra.maths.matrices.FastMatrix;
 import demetra.stats.RobustCovarianceComputer;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -56,18 +56,18 @@ public class CanovaHansen2 {
     }
 
     public double compute() {
-        FastMatrix x = sx();
+        Matrix x = sx();
         LinearModel lm = buildModel(x);
         Ols ols = new Ols();
         LeastSquaresResults olsResults = ols.compute(lm);
         DoubleSeq e = lm.calcResiduals(olsResults.getCoefficients());
         double rvar = RobustCovarianceComputer.covariance(e, winFunction, truncationLag);
-        FastMatrix xe = x.deepClone();
+        Matrix xe = x.deepClone();
         int n=lm.getObservationsCount();
         
         // multiply the columns of x by e
         xe.applyByColumns(c -> c.apply(e, (a, b) -> (a * b)/n));
-        FastMatrix cxe = xe.deepClone();
+        Matrix cxe = xe.deepClone();
         cxe.applyByColumns(c -> c.cumul());
         if (cxe.getColumnsCount() == 1)
             return cxe.column(0).ssq()/rvar;
@@ -76,13 +76,13 @@ public class CanovaHansen2 {
         }
     }
 
-    private FastMatrix sx() {
+    private Matrix sx() {
         int len = s.length();
         TrigonometricSeries vars = TrigonometricSeries.specific(period);
         return vars.matrix(len, 0);
     }
 
-    private LinearModel buildModel(FastMatrix sx) {
+    private LinearModel buildModel(Matrix sx) {
 
         LinearModel.Builder builder = LinearModel.builder();
         builder.y(s);

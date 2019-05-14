@@ -19,9 +19,9 @@ package demetra.regarima.regular;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.maths.matrices.FastMatrix;
 import demetra.stats.tests.NiidTests;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -35,6 +35,6 @@ public class ModelEstimation {
     private ConcentratedLikelihoodWithMissing concentratedLikelihood;
     private LikelihoodStatistics statistics;
     private DoubleSeq score;
-    private FastMatrix parametersCovariance;
+    private Matrix parametersCovariance;
     private NiidTests tests;
 }

@@ -6,11 +6,11 @@
 package demetra.fractionalairline;
 
 import demetra.arima.ArimaModel;
-import demetra.maths.matrices.FastMatrix;
 import demetra.regarima.GlsArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -19,7 +19,7 @@ import demetra.data.DoubleSeq;
 @lombok.experimental.UtilityClass
 public class PeriodicAirlineProcessor {
 
-    public RegArimaEstimation<ArimaModel> process(DoubleSeq y, FastMatrix x, double[] periods, double precision) {
+    public RegArimaEstimation<ArimaModel> process(DoubleSeq y, Matrix x, double[] periods, double precision) {
         final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(periods, true, false);
         GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
                 .mapping(mapping)
@@ -33,7 +33,7 @@ public class PeriodicAirlineProcessor {
         return processor.process(regarima);
     }
 
-    public RegArimaEstimation<ArimaModel> process(DoubleSeq y, FastMatrix x, double period, double precision) {
+    public RegArimaEstimation<ArimaModel> process(DoubleSeq y, Matrix x, double period, double precision) {
         final PeriodicAirlineMapping mapping = new PeriodicAirlineMapping(period, true, false);
         GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
                 .mapping(mapping)

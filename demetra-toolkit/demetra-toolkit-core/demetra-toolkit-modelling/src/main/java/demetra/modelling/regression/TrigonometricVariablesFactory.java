@@ -18,9 +18,9 @@ package demetra.modelling.regression;
 
 import demetra.data.DataBlock;
 import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
+import demetra.maths.matrices.Matrix;
 
 /**
  * Computes trigonometric variables: sin(wt), cos(wt) at given frequencies if w
@@ -56,7 +56,7 @@ public class TrigonometricVariablesFactory implements RegressionVariableFactory<
     private TrigonometricVariablesFactory(){}
 
     @Override
-    public boolean fill(TrigonometricVariables var, TsPeriod start, FastMatrix buffer) {
+    public boolean fill(TrigonometricVariables var, TsPeriod start, Matrix buffer) {
         TsPeriod refPeriod = start.withDate(var.getReference());
         long istart = start.getId() - refPeriod.getId();
         double[] freq = var.getFrequencies();
@@ -79,7 +79,7 @@ public class TrigonometricVariablesFactory implements RegressionVariableFactory<
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(TrigonometricVariables var, D domain, FastMatrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(TrigonometricVariables var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

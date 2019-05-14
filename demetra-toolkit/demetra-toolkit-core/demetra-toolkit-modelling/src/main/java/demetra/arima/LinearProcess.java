@@ -18,12 +18,8 @@ package demetra.arima;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.linearfilters.ForeFilter;
 import demetra.maths.linearfilters.IRationalFilter;
-import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.maths.linearfilters.RationalFilter;
-import demetra.maths.linearfilters.RationalForeFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.polynomials.Polynomial;
 
@@ -32,7 +28,7 @@ import demetra.maths.polynomials.Polynomial;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable(lazy = true)
-public final class Model implements IModel {
+public final class LinearProcess implements ILinearProcess {
 
     private final RationalFilter rf;
     private final double var;
@@ -44,7 +40,7 @@ public final class Model implements IModel {
      * @param rf
      * @param var
      */
-    public Model(final RationalFilter rf, final double var) {
+    public LinearProcess(final RationalFilter rf, final double var) {
         this.rf = rf;
         this.var = var;
     }

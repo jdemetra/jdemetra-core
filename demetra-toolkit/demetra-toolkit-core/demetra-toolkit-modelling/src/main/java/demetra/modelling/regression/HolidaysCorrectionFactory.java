@@ -8,7 +8,6 @@ package demetra.modelling.regression;
 import demetra.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.FastMatrix;
 import demetra.modelling.regression.HolidaysCorrectedTradingDays.HolidaysCorrector;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
@@ -23,6 +22,7 @@ import java.time.LocalDate;
 import demetra.timeseries.calendars.CalendarDefinition;
 import demetra.maths.matrices.MatrixFactory;
 import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -141,7 +141,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
     }
 
     @Override
-    public boolean fill(HolidaysCorrectedTradingDays var, TsPeriod start,FastMatrix buffer) {
+    public boolean fill(HolidaysCorrectedTradingDays var, TsPeriod start,Matrix buffer) {
         int n = buffer.getRowsCount();
         TsDomain domain = TsDomain.of(start, n);
         CanonicalMatrix days = CanonicalMatrix.make(n, 7);
@@ -159,7 +159,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(HolidaysCorrectedTradingDays var, D domain, FastMatrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(HolidaysCorrectedTradingDays var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -22,11 +22,11 @@ import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.linearfilters.SymmetricFrequencyResponse;
-import demetra.maths.matrices.FastMatrix;
 import demetra.maths.polynomials.Polynomial;
 import demetra.leastsquares.QRSolver;
 import demetra.linearsystem.LinearSystemSolver;
 import demetra.maths.matrices.CanonicalMatrix;
+import demetra.maths.matrices.Matrix;
 
 /**
  *

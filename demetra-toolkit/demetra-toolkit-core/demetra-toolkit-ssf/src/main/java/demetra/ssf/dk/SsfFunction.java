@@ -19,13 +19,13 @@ package demetra.ssf.dk;
 import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.IParametricMapping;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfBuilder;
 import demetra.ssf.univariate.ISsfData;
 import demetra.design.BuilderPattern;
 import demetra.likelihood.ILikelihoodFunction;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -41,7 +41,7 @@ public class SsfFunction<S, F extends ISsf> implements ILikelihoodFunction<Diffu
         private final IParametricMapping<S> mapping;
         private final ISsfBuilder<S, F> builder;
         private final ISsfData data;
-        private FastMatrix X;
+        private Matrix X;
         private int[] diffuseX;
         private boolean ml = true, log = false, fast = false, mt = false, sym = false, scalingFactor=true;
 
@@ -51,7 +51,7 @@ public class SsfFunction<S, F extends ISsf> implements ILikelihoodFunction<Diffu
             this.mapping = mapping;
         }
 
-        public Builder regression(final FastMatrix X, final int[] diffuseX) {
+        public Builder regression(final Matrix X, final int[] diffuseX) {
             this.X = X;
             this.diffuseX = diffuseX;
             return this;
@@ -102,11 +102,11 @@ public class SsfFunction<S, F extends ISsf> implements ILikelihoodFunction<Diffu
     private final ISsfBuilder<S, F> builder; // mapping from an object S to a given ssf
     private final ISsfData data;
     private final boolean missing;
-    private final FastMatrix X;
+    private final Matrix X;
     private final int[] diffuseX;
     private final boolean ml, log, fast, mt, sym, scaling;
 
-    private SsfFunction(ISsfData data, FastMatrix X, int[] diffuseX, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
+    private SsfFunction(ISsfData data, Matrix X, int[] diffuseX, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
             final boolean ml, final boolean log, final boolean fast, final boolean mt, final boolean sym, final boolean scaling) {
         this.data = data;
         this.mapping = mapper;
@@ -185,7 +185,7 @@ public class SsfFunction<S, F extends ISsf> implements ILikelihoodFunction<Diffu
     /**
      * @return the X
      */
-    public FastMatrix getX() {
+    public Matrix getX() {
         return X;
     }
 

@@ -17,10 +17,10 @@
 package demetra.var;
 
 import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.multivariate.ISsfErrors;
 import demetra.ssf.multivariate.ISsfMeasurements;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -74,12 +74,12 @@ class VarMeasurements implements ISsfMeasurements {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
+        public double ZVZ(int pos, Matrix V) {
             return V.get(var, var);
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
+        public void VpZdZ(int pos, Matrix V, double d) {
             V.add(var, var, d);
         }
 

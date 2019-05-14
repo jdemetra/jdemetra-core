@@ -16,11 +16,11 @@
  */
 package demetra.ssf.dk;
 
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.MatrixResults;
 import demetra.ssf.StateInfo;
 import demetra.ssf.ISsfInitialization;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -64,7 +64,7 @@ public class DefaultDiffuseFilteringResults extends BaseDiffuseFilteringResults{
         }
     }
 
-    public FastMatrix Pi(int pos) {
+    public Matrix Pi(int pos) {
         return Pi.matrix(pos);
     }
 

@@ -22,7 +22,6 @@ import demetra.information.InformationMapping;
 import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.NumericalDerivatives;
-import demetra.maths.matrices.FastMatrix;
 import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;
@@ -58,6 +57,23 @@ import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static demetra.timeseries.simplets.TsDataToolkit.add;
+import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
  *
@@ -73,7 +89,7 @@ public class StsEstimation {
         TsData y, t, s, i;
         BasicStructuralModel bsm;
         DiffuseConcentratedLikelihood likelihood;
-        FastMatrix parametersCovariance;
+        Matrix parametersCovariance;
         double[] score;
 
         @Override
@@ -180,7 +196,7 @@ public class StsEstimation {
         IFunctionDerivatives derivatives = new NumericalDerivatives(ml, false);
         int ndf = y.length();
         double objective = ml.getValue();
-        FastMatrix hessian = derivatives.hessian();
+        Matrix hessian = derivatives.hessian();
         double[] score = derivatives.gradient().toArray();
         hessian.mul((.5 * ndf) / objective);
         for (int i = 0; i < score.length; ++i) {

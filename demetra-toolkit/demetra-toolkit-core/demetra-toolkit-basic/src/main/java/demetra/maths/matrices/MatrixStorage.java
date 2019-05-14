@@ -91,7 +91,7 @@ public class MatrixStorage {
      * @param pos
      * @return
      */
-    public FastMatrix matrix(final int pos) {
+    public Matrix matrix(final int pos) {
         return new SubMatrix(m_data, m_size * pos, m_nr, m_nc, 1, m_nr);
     }
     
@@ -121,7 +121,7 @@ public class MatrixStorage {
      * @param pos
      * @param m
      */
-    public void save(final int pos, final FastMatrix m) {
+    public void save(final int pos, final Matrix m) {
         m.copyTo(m_data, pos * m_size);
         if (pos >= m_nused) {
             m_nused = pos + 1;

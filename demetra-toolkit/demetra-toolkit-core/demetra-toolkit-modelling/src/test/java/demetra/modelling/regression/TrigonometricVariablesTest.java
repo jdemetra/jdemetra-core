@@ -16,11 +16,11 @@
  */
 package demetra.modelling.regression;
 
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -35,7 +35,7 @@ public class TrigonometricVariablesTest {
     public void testMonthly() {
         TrigonometricVariables vars = TrigonometricVariables.regular(12);
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2017, 8), 180);
-        FastMatrix M = Regression.matrix(domain, vars);
+        Matrix M = Regression.matrix(domain, vars);
         //System.out.println(M);
         assertTrue(M.columnList().stream().allMatch(col->Math.abs(col.sum())<1e-6));
     }
