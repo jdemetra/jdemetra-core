@@ -17,12 +17,12 @@
 package demetra.linearmodel;
 
 import demetra.data.analysis.WindowFunction;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.stats.RobustCovarianceComputer;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -46,7 +46,7 @@ public class RobustCovarianceEstimators {
         return sandwich(phi, ixx, n);
     }
 
-    public CanonicalMatrix sandwich(Matrix meat, Matrix bread, int n) {
+    public CanonicalMatrix sandwich(FastMatrix meat, FastMatrix bread, int n) {
         CanonicalMatrix omega = SymmetricMatrix.XtSX(meat, bread);
         omega.div(n);
         return omega;

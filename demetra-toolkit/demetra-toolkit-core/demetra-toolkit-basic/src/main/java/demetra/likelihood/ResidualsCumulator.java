@@ -16,11 +16,11 @@
  */
 package demetra.likelihood;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.LowerTriangularMatrix;
+import jd.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.FastMatrix;
 
 
 /**
@@ -42,11 +42,11 @@ public class ResidualsCumulator {
     public ResidualsCumulator() {
     }
 
-    public void add(final DataBlock e, final Matrix var) {
+    public void add(final DataBlock e, final FastMatrix var) {
         if (e.length() == 1) {
             add(e.get(0), var.get(0, 0));
         } else {
-            Matrix l = var.deepClone();
+            FastMatrix l = var.deepClone();
             SymmetricMatrix.lcholesky(l, 1e-9);
             DataBlock el = DataBlock.of(e);
             // L^-1*e=el <-> e=L*el

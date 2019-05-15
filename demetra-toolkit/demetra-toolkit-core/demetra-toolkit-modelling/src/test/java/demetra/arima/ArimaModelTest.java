@@ -6,7 +6,6 @@
 package demetra.arima;
 
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -38,7 +37,7 @@ public class ArimaModelTest {
         ArimaModel wn = ArimaModel.whiteNoise();
         ArimaModel sum = ArimaModel.add(sarima, wn);
 //        System.out.println(sum);
-        ArimaModel m = ArimaModel.subtract(sum, ArimaModel.copyOf(sarima));
+        ArimaModel m = ArimaModel.subtract(sum, ArimaModel.of(sarima));
         m=m.simplifyUr();
 //        System.out.println();
         assertTrue(m.isWhiteNoise());

@@ -16,6 +16,7 @@
  */
 package demetra.maths.polynomials;
 
+import jp.maths.polynomials.Polynomial;
 import demetra.maths.Complex;
 import demetra.maths.ComplexMath;
 import org.junit.Test;

@@ -11,7 +11,7 @@ import demetra.arima.ssf.Rw;
 import demetra.benchmarking.spi.ITemporalDisaggregation;
 import demetra.benchmarking.ssf.SsfDisaggregation;
 import demetra.data.AggregationType;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.dstats.ProbabilityType;
@@ -52,8 +52,8 @@ import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import demetra.maths.matrices.MatrixType;
 import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -361,7 +361,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
     private TsData hresiduals(DisaggregationModel model, DoubleSeq coeff) {
         double[] y = new double[model.getHEDom().length()];
         double[] hy = model.getHEY();
-        Matrix hx = model.getHEX();
+        FastMatrix hx = model.getHEX();
         for (int i = 0; i < hy.length; ++i) {
             if (Double.isFinite(hy[i])) {
                 y[i] = hy[i] - hx.row(i).dot(coeff);
@@ -414,7 +414,7 @@ public class TemporalDisaggregationProcessor implements ITemporalDisaggregation 
         int nparams=spec.isParameterEstimation() ? 1 : 0;
         T tstat=new T(dll.dim()-dll.nx()-nparams);
         DoubleSeq coefficients = dll.coefficients();
-        MatrixType cov = dll.covariance(nparams, true);
+        Matrix cov = dll.covariance(nparams, true);
         DoubleSeq ser = cov.diagonal();
         if (spec.isConstant()){
             double ccur=coefficients.get(pos), ecur=Math.sqrt(ser.get(pos));

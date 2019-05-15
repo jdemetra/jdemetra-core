@@ -16,15 +16,15 @@
  */
 package demetra.maths.matrices.internal;
 
-import demetra.data.DataBlock;
-import demetra.data.DataWindow;
+import jd.data.DataBlock;
+import jd.data.DataWindow;
 import demetra.design.Development;
 import demetra.maths.Constants;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.MatrixException;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.decomposition.QRDecomposition;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.decomposition.QRDecomposition;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -53,7 +53,7 @@ public class HouseholderWithPivoting implements QRDecomposition {
      * @param m
      */
     @Override
-    public void decompose(Matrix m) {
+    public void decompose(FastMatrix m) {
         init(m);
         householder();
     }
@@ -213,7 +213,7 @@ public class HouseholderWithPivoting implements QRDecomposition {
 
     }
 
-    private void init(Matrix M) {
+    private void init(FastMatrix M) {
         m = M.getRowsCount();
         norig = n = M.getColumnsCount();
         qr = M.toArray();

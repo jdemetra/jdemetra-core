@@ -16,12 +16,12 @@
  */
 package demetra.ssf.ckms;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.decomposition.GivensRotation;
-import demetra.maths.matrices.decomposition.HyperbolicRotation;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.LowerTriangularMatrix;
+import jd.maths.matrices.decomposition.GivensRotation;
+import jd.maths.matrices.decomposition.HyperbolicRotation;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.array.LState;
@@ -30,7 +30,7 @@ import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.MultivariateUpdateInformation;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -48,8 +48,8 @@ public class MultivariateCkmsArrayFilter {
     static class UMatrix {
 
         final CanonicalMatrix M;
-        final Matrix R, Z;
-        final Matrix K, L;
+        final FastMatrix R, Z;
+        final FastMatrix K, L;
 
         UMatrix(int stateDim, int varDim, int lDim) {
             M = CanonicalMatrix.make(varDim + stateDim, varDim + lDim);

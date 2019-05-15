@@ -29,7 +29,7 @@ import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.maths.linearfilters.RationalFilter;
 import demetra.maths.linearfilters.RationalForeFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.matrices.MatrixException;
+import jd.maths.matrices.MatrixException;
 import java.util.function.IntToDoubleFunction;
 import demetra.arima.ILinearProcess;
 
@@ -112,7 +112,7 @@ public class WienerKolmogorovEstimators {
         BackFilter nar = m_ucm.getModel().getStationaryAr(), dar = s.getStationaryAr();
         BackFilter nur = m_ucm.getModel().getNonStationaryAr(), dur = s.getNonStationaryAr();
 
-        BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool(false);
+        BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool();
         // we computes P'(B), Ps'(B) (respectively in nar, dar)
         if (smp.simplify(nar, dar)) {
             nar = smp.getLeft();
@@ -213,7 +213,7 @@ public class WienerKolmogorovEstimators {
         BackFilter nar = m_ucm.getModel().getStationaryAr(), dar = a.getStationaryAr();
         BackFilter nur = m_ucm.getModel().getNonStationaryAr(), dur = a.getNonStationaryAr();
 
-        BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool(false);
+        BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool();
         if (smp.simplify(nar, dar)) {
             nar = smp.getLeft();
             dar = smp.getRight();

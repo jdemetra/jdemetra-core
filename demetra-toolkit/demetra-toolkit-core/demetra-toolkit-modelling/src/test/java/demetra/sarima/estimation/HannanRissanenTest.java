@@ -22,7 +22,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarmaSpecification;
+import demetra.arima.SarmaSpecification;
 import demetra.data.DoubleSeq;
 
 /**

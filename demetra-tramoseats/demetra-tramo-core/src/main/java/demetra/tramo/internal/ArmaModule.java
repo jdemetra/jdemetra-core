@@ -24,8 +24,8 @@ import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
-import demetra.sarima.SarmaSpecification;
+import demetra.arima.SarimaSpecification;
+import demetra.arima.SarmaSpecification;
 import demetra.data.DoubleSeq;
 
 /**

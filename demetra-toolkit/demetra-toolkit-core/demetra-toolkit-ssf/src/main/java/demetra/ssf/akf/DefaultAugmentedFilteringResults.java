@@ -16,14 +16,14 @@
  */
 package demetra.ssf.akf;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.DefaultFilteringResults;
 import demetra.ssf.DataBlockResults;
 import demetra.ssf.MatrixResults;
 import demetra.ssf.StateInfo;
 import demetra.ssf.ISsfInitialization;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -81,7 +81,7 @@ public class DefaultAugmentedFilteringResults extends DefaultFilteringResults im
     }
 
     @Override
-    public Matrix B(int pos) {
+    public FastMatrix B(int pos) {
         return B.matrix(pos);
     }
 

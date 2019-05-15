@@ -22,7 +22,7 @@ import demetra.maths.Complex;
 import demetra.maths.PolynomialType;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.polynomials.Polynomial;
+import jp.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.internal.UnitRootsSolver;
 import javax.annotation.Nonnull;
 
@@ -49,23 +49,62 @@ public final class ArimaModel extends AbstractArimaModel {
     public static final ArimaModel ONE = whiteNoise(), NULL = whiteNoise(0);
 
     private static final double EPS = 1e-6;
-    private final Polynomial ar;// stationary part
-    private final Polynomial delta; // non stationary ar
-    private final Polynomial ma;
+    private final BackFilter ar;// stationary part
+    private final BackFilter delta; // non stationary ar
+    private final BackFilter ma;
     private final double var;
-    private final SymmetricFilter sma;
+    private final SymmetricFilter sma; // stationary part
 
     // Computed elements
     private volatile SymmetricFilter.Factorization smaFactorization;
     private volatile SymmetricFilter sar, derivedsma; // stationary part
 
     /**
-     * Creates a white noise.
+     * Creates a white noise, with variance 1.
      *
-     * @param var The variance of the wn
+     * @return
+     */
+    public static ArimaModel whiteNoise() {
+        return new ArimaModel(BackFilter.ONE, BackFilter.ONE, BackFilter.ONE, 1);
+    }
+
+    /**
+     * Creates a white noise, with variance 1.
+     *
+     * @param var
      */
     public static ArimaModel whiteNoise(double var) {
-        return new ArimaModel(Polynomial.ONE, Polynomial.ONE, Polynomial.ONE, var);
+        return new ArimaModel(BackFilter.ONE, BackFilter.ONE, BackFilter.ONE, var);
+    }
+
+//    public ArimaModel of(final Polynomial fullAR, final Polynomial MA,
+//            final double var) {
+//        try {
+//            double x = fullAR.get(0), y = MA.get(0);
+//
+//            BackFilter ar = new BackFilter(fullAR);
+//            if (x != 1) {
+//                ar = ar.normalize();
+//            }
+//            BackFilter ur = BackFilter.ONE;
+//            BackFilter.StationaryTransformation st = new BackFilter.StationaryTransformation();
+//            if (st.transform(ar)) {
+//                ar = st.stationaryFilter;
+//                ur = st.unitRoots;
+//            }
+//            BackFilter ma = new BackFilter(MA);
+//            if (y != 1) {
+//                ma = ma.normalize();
+//            }
+//            return new ArimaModel(ar, ur, ma, var * y / x * y / x);
+//        } catch (RuntimeException ex) {
+//            return null;
+//        }
+//    }
+
+    public static ArimaModel of(IArimaModel arima) {
+        return new ArimaModel(arima.getStationaryAr(), arima.getNonStationaryAr(),
+                arima.getMa(), arima.getInnovationVariance());
     }
 
     /**
@@ -76,7 +115,7 @@ public final class ArimaModel extends AbstractArimaModel {
      * @param ma The moving average polynomial
      * @param var The innovation variance
      */
-    public ArimaModel(@Nonnull final Polynomial ar, @Nonnull final Polynomial delta, @Nonnull final Polynomial ma,
+    public ArimaModel(@Nonnull final BackFilter ar, @Nonnull final BackFilter delta, @Nonnull final BackFilter ma,
             final double var) {
         this.var = var;
         this.ar = ar;
@@ -92,7 +131,7 @@ public final class ArimaModel extends AbstractArimaModel {
      * @param delta The non stationary auto-regressive polynomial D(B)
      * @param sma A symmetric filter corresponding to var*Q(B)*Q(F)
      */
-    public ArimaModel(@Nonnull final Polynomial ar, @Nonnull final Polynomial delta,
+    public ArimaModel(@Nonnull final BackFilter ar, @Nonnull final BackFilter delta,
             @Nonnull final SymmetricFilter sma) {
         this.ar = ar;
         this.delta = delta;
@@ -112,15 +151,6 @@ public final class ArimaModel extends AbstractArimaModel {
      */
     public static ArimaModel add(final double var, final ArimaModel arima) {
         return arima.plus(var);
-    }
-
-    public static ArimaModel of(IArimaModel model) {
-        if (model instanceof ArimaModel) {
-            return (ArimaModel) model;
-        } else {
-            return new ArimaModel(model.getStationaryAr(), model.getNonStationaryAr(),
-                    model.getMa(), model.getInnovationVariance());
-        }
     }
 
     /**
@@ -176,13 +206,13 @@ public final class ArimaModel extends AbstractArimaModel {
         if (Math.abs(lm.getInnovationVariance() - rm.getInnovationVariance()) > eps) {
             return false;
         }
-        if (!lm.getNonStationaryAr().equals(rm.getNonStationaryAr(), eps)) {
+        if (!lm.getNonStationaryAr().asPolynomial().equals(rm.getNonStationaryAr().asPolynomial(), eps)) {
             return false;
         }
-        if (!lm.getStationaryAr().equals(rm.getStationaryAr(), eps)) {
+        if (!lm.getStationaryAr().asPolynomial().equals(rm.getStationaryAr().asPolynomial(), eps)) {
             return false;
         }
-        if (!lm.getMa().equals(rm.getMa(), eps)) {
+        if (!lm.getMa().asPolynomial().equals(rm.getMa().asPolynomial(), eps)) {
             return false;
         }
         return true;
@@ -236,9 +266,9 @@ public final class ArimaModel extends AbstractArimaModel {
         }
 
         // compute the denominator
-        Polynomial lar = l.ar, rar = r.ar, ar;
+        BackFilter lar = l.ar, rar = r.ar, ar;
         // BFilter lar = l.bar(), rar = r.bar(), ar = null;
-        Polynomial.SimplifyingTool smp = new Polynomial.SimplifyingTool();
+        BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool();
         if (smp.simplify(lar, rar)) {
             ar = lar.times(smp.getRight());
             lar = smp.getLeft();
@@ -247,8 +277,8 @@ public final class ArimaModel extends AbstractArimaModel {
             ar = lar.times(rar);
         }
 
-        Polynomial lur = l.delta, rur = r.delta, ur;
-        BackFilter.SimplifyingTool smpur = new BackFilter.SimplifyingTool(true);
+        BackFilter lur = l.delta, rur = r.delta, ur;
+        BackFilter.SimplifyingTool smpur = new BackFilter.SimplifyingTool();
         if (smpur.simplify(lur, rur)) {
             ur = lur.times(smpur.getRight());
             lar = lar.times(smpur.getLeft());
@@ -398,7 +428,7 @@ public final class ArimaModel extends AbstractArimaModel {
             return true;
         }
         return delta.getDegree() == 0
-                && (sma != null ? sma.isNull() : Math.abs(var) < EPS);
+                && (sma != null ? sma.isNull() : Math.abs(var)<EPS);
     }
 
     /**
@@ -446,9 +476,8 @@ public final class ArimaModel extends AbstractArimaModel {
      */
     public ArimaModel minus(final double v) {
         if (isWhiteNoise()) {
-            if (Math.abs(var - getInnovationVariance()) < EPS) {
-                return NULL;
-            }
+            if (Math.abs(var-getInnovationVariance())<EPS)
+            return NULL;
         }
         // use SymmetricFilter for the numerator.
         SymmetricFilter sma = symmetricMa(), sar = symmetricAr();
@@ -497,18 +526,14 @@ public final class ArimaModel extends AbstractArimaModel {
      * @throws ArimaException
      */
     public ArimaModel plus(final IArimaModel r) throws ArimaException {
-        ArimaModel m = ArimaModel.copyOf(r);
-        if (m == null) {
-            throw new ArimaException("+ operation failed");
-        }
-        return plus(m);
+        return plus(of(r));
     }
-
-    public ArimaType toType(String desc) {
-        return ArimaType.builder()
-                .ar(PolynomialType.of(getStationaryAr().toArray()))
-                .delta(PolynomialType.of(getNonStationaryAr().toArray()))
-                .ma(PolynomialType.of(getMa().toArray()))
+    
+    public ArimaProcess toType(String desc){
+        return ArimaProcess.builder()
+                .ar(PolynomialType.of(getStationaryAr().asPolynomial().toArray()))
+                .delta(PolynomialType.of(getNonStationaryAr().asPolynomial().toArray()))
+                .ma(PolynomialType.of(getMa().asPolynomial().toArray()))
                 .innovationVariance(getInnovationVariance())
                 .name(desc)
                 .build();
@@ -546,7 +571,7 @@ public final class ArimaModel extends AbstractArimaModel {
      */
     public ArimaModel simplifyAr() {
         try {
-            BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool(false);
+            BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool();
             if (smp.simplify(ar, getMa())) {
                 BackFilter nar = smp.getLeft();
                 BackFilter nma = smp.getRight();
@@ -568,11 +593,11 @@ public final class ArimaModel extends AbstractArimaModel {
     public ArimaModel simplifyUr() {
         try {
             UnitRootsSolver urs = new UnitRootsSolver();
-            if (!urs.factorize(getMa())) {
+            if (!urs.factorize(getMa().asPolynomial())) {
                 return this;
             }
             Polynomial.SimplifyingTool smp = new Polynomial.SimplifyingTool();
-            if (smp.simplify(urs.getUnitRoots().toPolynomial(), delta)) {
+            if (smp.simplify(urs.getUnitRoots().toPolynomial(), delta.asPolynomial())) {
                 BackFilter ndelta = new BackFilter(smp.getRight());
                 BackFilter nma = new BackFilter(smp.getLeft().times(urs.remainder()));
                 return new ArimaModel(getStationaryAr(), ndelta, nma, getInnovationVariance());

@@ -16,12 +16,12 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlockIterator;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.dstats.Chi2;
 import demetra.dstats.F;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
 import demetra.data.DoubleSeq;

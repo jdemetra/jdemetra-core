@@ -5,20 +5,21 @@
  */
 package demetra.linearmodel;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.eco.EcoException;
 import lombok.NonNull;
 import demetra.leastsquares.internal.AdvancedQRSolver;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.UpperTriangularMatrix;
+import jd.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.data.LogSign;
-import demetra.maths.matrices.LowerTriangularMatrix;
+import jd.maths.matrices.LowerTriangularMatrix;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.leastsquares.QRSolver;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -43,9 +44,9 @@ public class Gls {
         this.solver = solver;
     }
 
-    public LeastSquaresResults compute(LinearModel model, Matrix cov) {
+    public LeastSquaresResults compute(LinearModel model, FastMatrix cov) {
 
-        Matrix L = cov.deepClone();
+        CanonicalMatrix L = cov.deepClone();
         try {
             SymmetricMatrix.lcholesky(L);
         } catch (Exception err) {
@@ -55,14 +56,14 @@ public class Gls {
         DataBlock yl = DataBlock.of(model.getY());
         LowerTriangularMatrix.rsolve(L, yl);
 
-        Matrix xl = model.variables();
+        FastMatrix xl = model.variables();
         LowerTriangularMatrix.rsolve(L, xl);
 
         if (!solver.solve(yl, xl)) {
             throw new EcoException(EcoException.GLS_FAILED);
         }
-        Matrix R = solver.R();
-        Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
+        FastMatrix R = solver.R();
+        CanonicalMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(R));
         return LeastSquaresResults.builder(yl, xl)
                 .mean(model.isMeanCorrection())

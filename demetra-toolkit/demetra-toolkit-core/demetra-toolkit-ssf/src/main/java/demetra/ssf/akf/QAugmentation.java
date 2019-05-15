@@ -16,16 +16,16 @@
  */
 package demetra.ssf.akf;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.likelihood.DeterminantalTerm;
-import demetra.maths.matrices.decomposition.ElementaryTransformations;
-import demetra.maths.matrices.LowerTriangularMatrix;
+import jd.maths.matrices.decomposition.ElementaryTransformations;
+import jd.maths.matrices.LowerTriangularMatrix;
 import demetra.ssf.State;
 import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.likelihood.Likelihood;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -85,7 +85,7 @@ public class QAugmentation {
         ElementaryTransformations.fastGivensTriangularize(Q);
     }
 
-    public Matrix a() {
+    public FastMatrix a() {
         return Q.extract(0, nd, 0, nd);
     }
 

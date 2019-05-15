@@ -17,16 +17,16 @@
 package demetra.ucarima;
 
 import demetra.arima.ArimaModel;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.linearfilters.SymmetricFrequencyResponse;
-import demetra.maths.polynomials.Polynomial;
+import jp.maths.polynomials.Polynomial;
 import demetra.leastsquares.QRSolver;
 import demetra.linearsystem.LinearSystemSolver;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *

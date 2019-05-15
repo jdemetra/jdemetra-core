@@ -17,16 +17,16 @@
 package demetra.sarima.estimation;
 
 import demetra.data.normalizer.AbsMeanNormalizer;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.design.BuilderPattern;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;
 import demetra.ar.AutoRegressiveEstimation;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarmaSpecification;
+import demetra.arima.SarmaSpecification;
 import demetra.data.DoubleSeq;
 
 /**

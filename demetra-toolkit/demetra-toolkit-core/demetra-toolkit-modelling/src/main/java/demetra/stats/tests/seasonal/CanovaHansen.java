@@ -11,15 +11,15 @@ import demetra.design.BuilderPattern;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.LowerTriangularMatrix;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.modelling.regression.PeriodicDummies;
 import demetra.stats.RobustCovarianceComputer;
 import demetra.modelling.regression.PeriodicDummiesFactory;
 import demetra.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -92,12 +92,12 @@ public class CanovaHansen {
         }
 
         public CanovaHansen build() {
-            Matrix x = sx();
+            FastMatrix x = sx();
             LinearModel lm = buildModel(x);
             return new CanovaHansen(x, lm, winFunction, truncationLag);
         }
 
-        private Matrix sx() {
+        private FastMatrix sx() {
             int len = s.length();
             int pos = startPosition;
             if (lag1) {
@@ -120,7 +120,7 @@ public class CanovaHansen {
 
         }
 
-        private LinearModel buildModel(Matrix sx) {
+        private LinearModel buildModel(FastMatrix sx) {
 
             LinearModel.Builder builder = LinearModel.builder();
             if (lag1) {
@@ -154,10 +154,10 @@ public class CanovaHansen {
         return u;
     }
 
-    private final Matrix x, xe, cxe, omega;
+    private final FastMatrix x, xe, cxe, omega;
     private final DoubleSeq c, u;
 
-    private CanovaHansen(final Matrix x, final LinearModel lm, final WindowFunction winFunction, int truncationLag) {
+    private CanovaHansen(final FastMatrix x, final LinearModel lm, final WindowFunction winFunction, int truncationLag) {
         this.x = x;
         Ols ols = new Ols();
         LeastSquaresResults olsResults = ols.compute(lm);
@@ -183,7 +183,7 @@ public class CanovaHansen {
         return computeStat(omega, cxe);
     }
 
-    private double computeStat(Matrix O, Matrix cx) {
+    private double computeStat(FastMatrix O, FastMatrix cx) {
         int n = cx.getRowsCount(), nx = cx.getColumnsCount();
         // compute tr( O^-1*xe'*xe)
         // cusum
@@ -192,7 +192,7 @@ public class CanovaHansen {
             FF.addXaXt(1, cx.row(i));
         }
         // LL'^-1 * xe2 = L'^-1* L^-1 xe2 = L'^-1*a <-> a=L^-1 xe2 <->La=xe2
-        Matrix sig = O.deepClone();
+        FastMatrix sig = O.deepClone();
         SymmetricMatrix.lcholesky(sig);
         LowerTriangularMatrix.rsolve(sig, FF);
         // b=L'^-1*a <-> L'b=a <->b'L = a'
@@ -201,16 +201,16 @@ public class CanovaHansen {
         return tr / (n * n);
     }
 
-    private Matrix robustCovarianceOfCoefficients() {
-        Matrix Lo = omega.deepClone();
+    private FastMatrix robustCovarianceOfCoefficients() {
+        FastMatrix Lo = omega.deepClone();
         SymmetricMatrix.lcholesky(Lo);
 
-        Matrix Lx = SymmetricMatrix.XtX(x);
+        FastMatrix Lx = SymmetricMatrix.XtX(x);
         SymmetricMatrix.lcholesky(Lx);
         LowerTriangularMatrix.rsolve(Lx, Lo);
         LowerTriangularMatrix.lsolve(Lx, Lo.transpose());
 
-        Matrix XXt = SymmetricMatrix.XXt(Lo);
+        FastMatrix XXt = SymmetricMatrix.XXt(Lo);
         XXt.mul(xe.getRowsCount());
         return XXt;
     }

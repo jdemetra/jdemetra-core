@@ -23,7 +23,7 @@ import demetra.arima.internal.AnsleyFilter;
 import demetra.arima.internal.KalmanFilter;
 import demetra.arima.internal.LjungBoxFilter;
 import demetra.arima.internal.ModifiedLjungBoxFilter;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Algorithm;
 import demetra.design.Development;
 import demetra.data.DoubleSeq;

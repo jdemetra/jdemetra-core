@@ -16,10 +16,10 @@
  */
 package demetra.stats.tests;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
 import demetra.design.BuilderPattern;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.data.DoubleSeq;
 

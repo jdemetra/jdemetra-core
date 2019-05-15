@@ -6,16 +6,16 @@
 package demetra.r;
 
 import demetra.arima.ssf.SsfArima;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.information.InformationMapping;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.QuadraticForm;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.QuadraticForm;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.descriptors.stats.DiffuseConcentratedLikelihoodDescriptor;
 import demetra.likelihood.DiffuseConcentratedLikelihood;
@@ -39,9 +39,9 @@ import demetra.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import demetra.maths.matrices.SubMatrix;
-import demetra.maths.matrices.MatrixType;
+import jd.maths.matrices.SubMatrix;
 import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -63,9 +63,9 @@ public class TimeVaryingRegression {
     public static class Results implements ProcResults {
 
         TsDomain domain;
-        MatrixType variables;
-        MatrixType coefficients;
-        MatrixType coefficientsStde;
+        FastMatrix variables;
+        FastMatrix coefficients;
+        FastMatrix coefficientsStde;
         SarimaModel arima0, arima;
         DiffuseConcentratedLikelihood ll0;
         DiffuseConcentratedLikelihood ll;
@@ -84,9 +84,9 @@ public class TimeVaryingRegression {
             MAPPING.set("aic0", Double.class, r -> r.getLl0().AIC(2));
             MAPPING.set("aic", Double.class, r -> r.getLl().AIC(3));
             MAPPING.set("tdvar", Double.class, r -> r.getNvar());
-            MAPPING.set(COEFF, MatrixType.class, r -> r.getCoefficients());
-            MAPPING.set(STDCOEFF, MatrixType.class, r -> r.getCoefficientsStde());
-            MAPPING.set(TD, MatrixType.class, r -> r.getVariables());
+            MAPPING.set(COEFF, FastMatrix.class, r -> r.getCoefficients());
+            MAPPING.set(STDCOEFF, FastMatrix.class, r -> r.getCoefficientsStde());
+            MAPPING.set(TD, FastMatrix.class, r -> r.getVariables());
             MAPPING.set(TDEFFECT, TsData.class, r
                     -> {
                 DataBlock tmp = DataBlock.make(r.getDomain().length());

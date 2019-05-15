@@ -8,7 +8,7 @@ package demetra.maths.linearfilters.internal;
 import demetra.maths.Complex;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.polynomials.Polynomial;
+import jp.maths.polynomials.Polynomial;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

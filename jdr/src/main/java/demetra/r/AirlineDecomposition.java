@@ -17,20 +17,20 @@
 package demetra.r;
 
 import demetra.arima.ArimaModel;
-import demetra.arima.ArimaType;
+import demetra.arima.ArimaProcess;
 import demetra.arima.IArimaModel;
-import demetra.arima.UcarimaType;
+import demetra.arima.UcarimaProcess;
 import demetra.descriptors.arima.UcarimaDescriptor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.data.DataBlockStorage;
+import jd.data.DataBlockStorage;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
-import demetra.sarima.SarimaType;
+import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaProcess;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.ssf.dk.DkToolkit;
@@ -47,16 +47,8 @@ import demetra.ucarima.ssf.SsfUcarima;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import demetra.data.Doubles;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import demetra.maths.matrices.MatrixType;
-import demetra.maths.matrices.Matrix;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import jd.maths.matrices.FastMatrix;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
@@ -71,12 +63,12 @@ public class AirlineDecomposition {
     public static class Results implements ProcResults {
 
         TsData y, t, s, i;
-        UcarimaType ucarima;
+        UcarimaProcess ucarima;
         RegArimaModel<SarimaModel> regarima;
-        SarimaType sarima;
+        SarimaProcess sarima;
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
-        Matrix parametersCovariance;
+        FastMatrix parametersCovariance;
         double[] score;
 
         @Override
@@ -113,10 +105,10 @@ public class AirlineDecomposition {
             MAPPING.set(I, TsData.class, source -> source.getI());
             MAPPING.set(SA, TsData.class, source -> subtract(source.getY(), source.getS()));
             MAPPING.delegate(UCARIMA, UcarimaDescriptor.getMapping(), source -> source.getUcarima());
-            MAPPING.set(UCM, UcarimaType.class, source -> source.getUcarima());
+            MAPPING.set(UCM, UcarimaProcess.class, source -> source.getUcarima());
             MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getSarima());
             MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
-            MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
+            MAPPING.set(PCOV, FastMatrix.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
         }
     }
@@ -152,17 +144,17 @@ public class AirlineDecomposition {
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
         TsPeriod start = s.getStart();
 
-        ArimaType sum = ArimaModel.copyOf(ucm.getModel()).toType(null);
-        ArimaType mt = ArimaModel.copyOf(ucm.getComponent(0)).toType("trend");
-        ArimaType ms = ArimaModel.copyOf(ucm.getComponent(1)).toType("seasonal");
-        ArimaType mi = ArimaModel.copyOf(ucm.getComponent(2)).toType("irregular");
+        ArimaProcess sum = ArimaModel.of(ucm.getModel()).toType(null);
+        ArimaProcess mt = ArimaModel.of(ucm.getComponent(0)).toType("trend");
+        ArimaProcess ms = ArimaModel.of(ucm.getComponent(1)).toType("seasonal");
+        ArimaProcess mi = ArimaModel.of(ucm.getComponent(2)).toType("irregular");
         int[] pos = ssf.componentsPosition();
         return Results.builder()
                 .y(s)
                 .t(TsData.of(start, Doubles.of(ds.item(pos[0]))))
                 .s(TsData.of(start, Doubles.of(ds.item(pos[1]))))
                 .i(TsData.of(start, Doubles.of(ds.item(pos[2]))))
-                .ucarima(UcarimaType.of(sum, new ArimaType[]{mt, ms, mi}))
+                .ucarima(new UcarimaProcess(sum, new ArimaProcess[]{mt, ms, mi}))
                 .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
                 .regarima(rslt.getModel())
                 .sarima(rslt.getModel().arima().toType())

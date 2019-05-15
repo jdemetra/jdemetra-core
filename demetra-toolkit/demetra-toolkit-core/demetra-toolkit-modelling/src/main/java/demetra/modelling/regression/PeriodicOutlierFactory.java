@@ -5,14 +5,14 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.maths.polynomials.UnitRoots;
+import jp.maths.polynomials.UnitRoots;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -100,7 +100,7 @@ class SOFactory implements RegressionVariableFactory<PeriodicOutlier> {
     private SOFactory(){}
 
     @Override
-    public boolean fill(PeriodicOutlier var, TsPeriod start, Matrix buffer) {
+    public boolean fill(PeriodicOutlier var, TsPeriod start, FastMatrix buffer) {
         PeriodicOutlierFactory fac = new PeriodicOutlierFactory(var.getPeriod(), var.isZeroEnded());
         TsPeriod p = start.withDate(var.getPosition());
         int opos = start.until(p);
@@ -109,7 +109,7 @@ class SOFactory implements RegressionVariableFactory<PeriodicOutlier> {
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(PeriodicOutlier var, D domain, Matrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(PeriodicOutlier var, D domain, FastMatrix buffer) {
         throw new UnsupportedOperationException("Not supported.");
     }
 

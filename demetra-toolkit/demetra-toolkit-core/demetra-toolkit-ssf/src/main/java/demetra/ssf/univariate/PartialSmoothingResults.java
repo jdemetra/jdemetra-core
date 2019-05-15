@@ -16,11 +16,11 @@
  */
 package demetra.ssf.univariate;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -49,7 +49,7 @@ public class PartialSmoothingResults implements ISmoothingResults {
     }
 
     @Override
-    public Matrix P(int pos) {
+    public FastMatrix P(int pos) {
         return core.P(pos);
     }
 

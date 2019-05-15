@@ -16,24 +16,24 @@
  */
 package demetra.linearmodel;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Immutable;
 import java.util.ArrayList;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.MatrixWindow;
+import jd.data.DataBlockIterator;
+import jd.maths.matrices.MatrixWindow;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Internal;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @Immutable
-public final class LinearModel implements LinearModelType{
+public final class LinearModel{
 
     public static class Builder {
 
@@ -59,7 +59,7 @@ public final class LinearModel implements LinearModelType{
             return this;
         }
 
-        public Builder addX(@Nonnull Matrix X) {
+        public Builder addX(@Nonnull FastMatrix X) {
             X.columns().forEach(col -> x.add(col));
             return this;
         }
@@ -98,10 +98,6 @@ public final class LinearModel implements LinearModelType{
         return new Builder();
     }
     
-    public static LinearModel of(LinearModelType model){
-        return new LinearModel(model.getY().toArray(), model.isMeanCorrection(), CanonicalMatrix.of(model.getX()));
-    }
-
     /**
      *
      * @param y
@@ -172,7 +168,6 @@ public final class LinearModel implements LinearModelType{
      *
      * @return
      */
-    @Override
     public DoubleSeq getY() {
         return DoubleSeq.of(y);
     }
@@ -181,12 +176,10 @@ public final class LinearModel implements LinearModelType{
      *
      * @return
      */
-    @Override
     public boolean isMeanCorrection() {
         return mean;
     }
     
-    @Override
     public CanonicalMatrix getX(){
         return x;
     }

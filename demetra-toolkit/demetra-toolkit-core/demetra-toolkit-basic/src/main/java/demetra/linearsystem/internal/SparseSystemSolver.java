@@ -19,13 +19,13 @@ package demetra.linearsystem.internal;
 
 import demetra.design.Development;
 import java.util.Arrays;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.AlgorithmImplementation;
 import demetra.maths.Constants;
-import demetra.maths.matrices.MatrixException;
+import jd.maths.matrices.MatrixException;
 import demetra.linearsystem.LinearSystemSolver;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  * This class is a translation ofInternal the code used in Seats (routine MLTSOL)
@@ -44,7 +44,7 @@ public final class SparseSystemSolver implements LinearSystemSolver {
      * @param B
      * @return
      */
-    private static boolean solve(double[] A, Matrix B) {
+    private static boolean solve(double[] A, FastMatrix B) {
         int n=B.getRowsCount(), nl=n+B.getColumnsCount();
 	int[] m = new int[nl];
         Arrays.fill(m, -1);
@@ -99,7 +99,7 @@ public final class SparseSystemSolver implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(Matrix A, DataBlock b) throws MatrixException {
+    public void solve(FastMatrix A, DataBlock b) throws MatrixException {
 	int n = A.getRowsCount();
         if (b.length() != n)
             throw new MatrixException(MatrixException.DIM);
@@ -111,7 +111,7 @@ public final class SparseSystemSolver implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(Matrix A, Matrix B) throws MatrixException {
+    public void solve(FastMatrix A, FastMatrix B) throws MatrixException {
 	int n = A.getRowsCount(), l = B.getColumnsCount(), nl = l + n;
         if (B.getRowsCount() != n)
             throw new MatrixException(MatrixException.DIM);

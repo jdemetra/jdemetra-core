@@ -16,11 +16,11 @@
  */
 package demetra.regarima;
 
-import demetra.arima.ArimaType;
+import demetra.arima.ArimaProcess;
 import demetra.design.Development;
 import demetra.linearmodel.LinearModelType;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 
 /**
@@ -36,7 +36,7 @@ public class RegArimaModelType {
     private LinearModelType model;
     
     @lombok.NonNull
-    private ArimaType arima;
+    private ArimaProcess arima;
     
     //<editor-fold defaultstate="collapsed" desc="delegate to model">
     public DoubleSeq getY() {
@@ -47,7 +47,7 @@ public class RegArimaModelType {
         return model.isMeanCorrection();
     }
     
-    public MatrixType getX() {
+    public Matrix getX() {
         return model.getX();
     }
     //</editor-fold>

@@ -16,11 +16,11 @@
  */
 package demetra.r;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.stats.TestResult;
 import demetra.stats.tests.StatisticalTest;
 import demetra.timeseries.TsDomain;

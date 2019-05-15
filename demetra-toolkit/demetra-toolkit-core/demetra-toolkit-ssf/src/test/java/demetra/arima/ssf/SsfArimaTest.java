@@ -19,7 +19,7 @@ package demetra.arima.ssf;
 import demetra.arima.ssf.SsfArima;
 import demetra.data.Data;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.TimeInvariantSsf;

@@ -18,7 +18,7 @@ package demetra.regarima.outlier;
 
 import demetra.arima.IArimaModel;
 import demetra.data.DoubleList;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.regarima.RegArimaModel;
 import demetra.modelling.regression.IOutlierFactory;
 import demetra.util.TableOfBoolean;

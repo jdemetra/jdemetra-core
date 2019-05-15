@@ -18,7 +18,7 @@ package demetra.descriptors.linearmodel;
 
 import demetra.information.InformationMapping;
 import demetra.linearmodel.LinearModelType;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -32,7 +32,7 @@ public class LinearModelDescriptor {
 
     static {
         MAPPING.set(Y, double[].class, source -> source.getY().toArray());
-        MAPPING.set(X, MatrixType.class, source -> source.getX());
+        MAPPING.set(X, Matrix.class, source -> source.getX());
         MAPPING.set(MEAN, Boolean.class, source -> source.isMeanCorrection());
     }
      

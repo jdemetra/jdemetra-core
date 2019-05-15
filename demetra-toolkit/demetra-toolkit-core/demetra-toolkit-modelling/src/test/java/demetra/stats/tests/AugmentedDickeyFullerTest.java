@@ -16,12 +16,12 @@
  */
 package demetra.stats.tests;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.dstats.Normal;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.random.MersenneTwister;
 import java.io.IOException;
 import java.util.Arrays;

@@ -20,10 +20,10 @@ import demetra.arima.ArimaModel;
 import demetra.arima.BartlettApproximation;
 import demetra.arima.LinearProcess;
 import demetra.arima.StationaryTransformation;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.dstats.Normal;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.stats.AutoCovariances;
 import demetra.data.DoubleSeq;
 

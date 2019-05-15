@@ -7,14 +7,14 @@ package demetra.r;
 
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.timeseries.TsDomain;
@@ -31,8 +31,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import demetra.processing.ProcResults;
-import demetra.maths.matrices.MatrixType;
 import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -54,8 +54,8 @@ public class MovingRegression {
     public static class Results implements ProcResults {
 
         TsDomain domain;
-        MatrixType variables;
-        MatrixType coefficients;
+        FastMatrix variables;
+        FastMatrix coefficients;
         SarimaModel arima;
 
         private static final String ARIMA = "arima", LL = "likelihood", COEFF = "coefficients", TD = "td", TDEFFECT = "tdeffect";
@@ -63,8 +63,8 @@ public class MovingRegression {
 
         static {
             MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getArima().toType());
-            MAPPING.set(COEFF, MatrixType.class, r -> r.getCoefficients());
-            MAPPING.set(TD, MatrixType.class, r -> r.getVariables());
+            MAPPING.set(COEFF, FastMatrix.class, r -> r.getCoefficients());
+            MAPPING.set(TD, FastMatrix.class, r -> r.getVariables());
             MAPPING.set(TDEFFECT, TsData.class, r
                     -> {
                 DataBlock tmp = DataBlock.make(r.getDomain().length());
@@ -110,7 +110,7 @@ public class MovingRegression {
 
         DayClustering dc = days(td);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        Matrix x = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(gtd));
+        FastMatrix x = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(gtd));
 
         RegSarimaProcessor monitor = RegSarimaProcessor.builder()
                 .useParallelProcessing(true)
@@ -130,7 +130,7 @@ public class MovingRegression {
         TimeSelector sel = TimeSelector.first(nyears * period);
         TsDomain dom = s.getDomain().select(sel);
         while (dom.end().isBefore(s.getDomain().end())) {
-            Matrix mtd = generate(dom, dc);
+            FastMatrix mtd = generate(dom, dc);
             TsData yc = fitToDomain(s, dom);
             RegArimaModel.Builder<SarimaModel> builder = RegArimaModel.builder(SarimaModel.class)
                     .y(yc.getValues())
@@ -197,7 +197,7 @@ public class MovingRegression {
         return dc;
     }
 
-    private Matrix generate(TsDomain domain, DayClustering dc) {
+    private FastMatrix generate(TsDomain domain, DayClustering dc) {
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
     }

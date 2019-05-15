@@ -16,6 +16,7 @@
  */
 package demetra.sarima;
 
+import demetra.arima.SarimaSpecification;
 import demetra.sarima.estimation.SarimaMapping;
 import demetra.sarima.internal.HannanRissanenInitializer;
 import demetra.regarima.IRegArimaProcessor;
@@ -24,7 +25,7 @@ import demetra.regarima.RegArimaModel;
 import demetra.regarima.internal.RegArmaEstimation;
 import demetra.regarima.RegArmaModel;
 import demetra.regarima.internal.RegArmaProcessor;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;

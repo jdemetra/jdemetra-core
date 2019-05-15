@@ -40,7 +40,7 @@ import java.util.function.Consumer;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -54,7 +54,7 @@ public class MultiPeriodicAirlineMappingTest {
     //@Test
     public void testDaily() throws IOException, URISyntaxException {
         URI uri = Data.class.getResource("/edf.txt").toURI();
-        MatrixType edf = MatrixSerializer.read(new File(uri));
+        Matrix edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, false);
         GlsArimaProcessor<ArimaModel> processor=GlsArimaProcessor.builder(ArimaModel.class)
                 .mapping(mapping)
@@ -75,7 +75,7 @@ public class MultiPeriodicAirlineMappingTest {
     //@Test
     public void testDaily2() throws IOException, URISyntaxException {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/edf.txt").toURI();
-        MatrixType edf = MatrixSerializer.read(new File(uri));
+        Matrix edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365}, true, false);
         GlsArimaProcessor<ArimaModel> processor=GlsArimaProcessor.builder(ArimaModel.class)
                 .mapping(mapping )
@@ -97,7 +97,7 @@ public class MultiPeriodicAirlineMappingTest {
     @Ignore
     public void testOutliers() throws IOException, URISyntaxException {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/births.txt").toURI();
-        MatrixType edf = MatrixSerializer.read(new File(uri));
+        Matrix edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, false);
         GlsArimaProcessor<ArimaModel> processor=GlsArimaProcessor.builder(ArimaModel.class)
                 .mapping(mapping )

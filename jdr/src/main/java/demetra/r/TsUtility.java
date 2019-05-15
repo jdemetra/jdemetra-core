@@ -6,7 +6,7 @@
 package demetra.r;
 
 import demetra.data.AggregationType;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
@@ -16,7 +16,7 @@ import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.HolidaysUtility;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
 import java.time.LocalDate;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -91,7 +91,7 @@ public class TsUtility {
         return all.add(cur);
     }
 
-    public MatrixType holidays(Holidays all, String date, int length, String type) {
+    public Matrix holidays(Holidays all, String date, int length, String type) {
         LocalDate start = LocalDate.parse(date);
         CanonicalMatrix m = CanonicalMatrix.make(length, all.elements().length);
         switch (type) {

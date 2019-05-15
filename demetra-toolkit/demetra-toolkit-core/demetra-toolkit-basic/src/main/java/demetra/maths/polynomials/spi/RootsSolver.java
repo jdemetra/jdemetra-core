@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.design.Development;
 import demetra.maths.Complex;
-import demetra.maths.polynomials.Polynomial;
+import jp.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.internal.RobustMullerNewtonSolver;
 import demetra.maths.polynomials.internal.MullerNewtonSolver;
 

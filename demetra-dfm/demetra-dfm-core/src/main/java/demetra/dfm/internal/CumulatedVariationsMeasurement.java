@@ -16,7 +16,7 @@
  */
 package demetra.dfm.internal;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.dfm.IDfmMeasurement;
 
 /**

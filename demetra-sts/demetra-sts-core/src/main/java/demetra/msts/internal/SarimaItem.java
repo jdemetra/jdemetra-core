@@ -12,7 +12,7 @@ import demetra.msts.MstsMapping;
 import demetra.msts.SarimaInterpreter;
 import demetra.msts.VarianceInterpreter;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.ssf.StateComponent;
 import java.util.Arrays;
 import java.util.List;

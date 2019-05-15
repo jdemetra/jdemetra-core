@@ -16,10 +16,10 @@
  */
 package demetra.ssf;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.data.DataBlock;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -76,7 +76,7 @@ public interface ISsfInitialization {
      *
      * @param b
      */
-    void diffuseConstraints(Matrix b);
+    void diffuseConstraints(FastMatrix b);
 
     /**
      * Initial state
@@ -90,14 +90,14 @@ public interface ISsfInitialization {
      *
      * @param pf0
      */
-    void Pf0(Matrix pf0);
+    void Pf0(FastMatrix pf0);
 
     /**
      * Modelling of the non stationary part of the initial state P(-1, inf)
      *
      * @param pi0
      */
-    default void Pi0(Matrix pi0) {
+    default void Pi0(FastMatrix pi0) {
         int nd = this.getDiffuseDim();
         if (nd == 0) {
             return;

@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -422,7 +422,7 @@ public class Data {
     public static final TsData[] insee() {
         try {
             File file = copyToTempFile(Data.class.getResource("/insee.txt"));
-            MatrixType insee = MatrixSerializer.read(file);
+            Matrix insee = MatrixSerializer.read(file);
             TsData[] all = new TsData[insee.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1990, 1);
             for (int i = 0; i < all.length; ++i) {

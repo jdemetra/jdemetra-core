@@ -16,7 +16,7 @@
  */
 package demetra.calendar.r;
 
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.timeseries.calendars.DayEvent;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
@@ -26,7 +26,7 @@ import demetra.timeseries.calendars.PrespecifiedHoliday;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -64,7 +64,7 @@ public class Holidays {
         return add(cur);
     }
 
-    public MatrixType holidays(String date, int length, String type) {
+    public Matrix holidays(String date, int length, String type) {
         LocalDate start = LocalDate.parse(date);
         Holiday[] elements = elements();
         CanonicalMatrix m = CanonicalMatrix.make(length, elements.length);

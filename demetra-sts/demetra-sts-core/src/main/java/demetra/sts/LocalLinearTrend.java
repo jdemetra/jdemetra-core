@@ -16,12 +16,12 @@
  */
 package demetra.sts;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.implementations.Loading;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  * Usual local linear trend y(t)=l(t)+n(t) l(t+1)=s(t)+l(t)+u(t)
@@ -71,7 +71,7 @@ public class LocalLinearTrend {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
             b.diagonal().set(1);
         }
 
@@ -80,7 +80,7 @@ public class LocalLinearTrend {
         }
 
         @Override
-        public void Pf0(Matrix pf0) {
+        public void Pf0(FastMatrix pf0) {
 //            if (data.lv > 0) {
 //                pf0.set(0, 0, data.lv);
 //            }
@@ -90,7 +90,7 @@ public class LocalLinearTrend {
         }
 
         @Override
-        public void Pi0(Matrix pi0) {
+        public void Pi0(FastMatrix pi0) {
             pi0.diagonal().set(1);
         }
 
@@ -127,7 +127,7 @@ public class LocalLinearTrend {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             if (data.lv > 0) {
                 qm.set(0, 0, data.lv);
             }
@@ -142,7 +142,7 @@ public class LocalLinearTrend {
         }
 
         @Override
-        public void S(int pos, Matrix s) {
+        public void S(int pos, FastMatrix s) {
             if (data.lv != 0 && data.sv != 0) {
                 s.set(0, 0, Math.sqrt(data.lv));
                 s.set(1, 1, Math.sqrt(data.sv));
@@ -178,7 +178,7 @@ public class LocalLinearTrend {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             tr.set(0, 0, 1);
             tr.set(0, 1, 1);
             tr.set(1, 1, 1);
@@ -190,7 +190,7 @@ public class LocalLinearTrend {
         }
 
         @Override
-        public void TVT(int pos, Matrix vm) {
+        public void TVT(int pos, FastMatrix vm) {
             double v01 = vm.get(0, 1), v11 = vm.get(1, 1);
             vm.add(0, 0, 2 * v01 + v11);
             vm.add(0, 1, v11);
@@ -203,7 +203,7 @@ public class LocalLinearTrend {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             if (data.lv > 0) {
                 p.add(0, 0, data.lv);
             }

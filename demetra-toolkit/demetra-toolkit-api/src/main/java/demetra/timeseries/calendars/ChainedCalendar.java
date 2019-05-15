@@ -8,7 +8,7 @@ package demetra.timeseries.calendars;
 import demetra.design.Development;
 import demetra.timeseries.TsDomain;
 import java.time.LocalDate;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *

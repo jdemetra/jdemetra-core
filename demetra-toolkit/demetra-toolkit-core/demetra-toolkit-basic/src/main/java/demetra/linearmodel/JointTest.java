@@ -16,19 +16,18 @@
  */
 package demetra.linearmodel;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.dstats.F;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.LowerTriangularMatrix;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.MatrixFactory;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.MatrixFactory;
 
 /**
  *
@@ -111,7 +110,7 @@ public class JointTest {
     public StatisticalTest build() {
         final double f;
         DataBlock rb = rb();
-        Matrix rwr = rwr();
+        CanonicalMatrix rwr = rwr();
         int nx = rb.length(), df = df();
         SymmetricMatrix.lcholesky(rwr);
         LowerTriangularMatrix.rsolve(rwr, rb);
@@ -120,7 +119,7 @@ public class JointTest {
         return new StatisticalTest(fdist, f, TestType.Upper, !deterministicRegressors);
     }
 
-    private Matrix rwr() {
+    private CanonicalMatrix rwr() {
         if (coef != null) {
             return MatrixFactory.select(bvar, coef, coef);
         } else {

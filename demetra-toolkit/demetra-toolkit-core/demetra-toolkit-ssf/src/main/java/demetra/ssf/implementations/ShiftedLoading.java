@@ -16,10 +16,10 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsfMeasurement;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  * Shifted measurement: Zshift(t) = Z(pos + shift) 
@@ -52,12 +52,12 @@ public class ShiftedLoading implements ISsfLoading {
     }
     
     @Override
-    public double ZVZ(int pos, Matrix V) {
+    public double ZVZ(int pos, FastMatrix V) {
         return loading.ZVZ(pos + shift, V);
     }
     
     @Override
-    public void VpZdZ(int pos, Matrix V, double d) {
+    public void VpZdZ(int pos, FastMatrix V, double d) {
         loading.VpZdZ(pos + shift, V, d);
     }
     

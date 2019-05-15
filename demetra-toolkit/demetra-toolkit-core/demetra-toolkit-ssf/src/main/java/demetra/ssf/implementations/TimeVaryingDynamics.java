@@ -16,11 +16,11 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.data.DataBlock;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  * Dynamics for time varying coefficients
@@ -36,7 +36,7 @@ public class TimeVaryingDynamics {
         return new TimeVaryingDiag(dvar);
     }
 
-    public static ISsfDynamics of(Matrix var) {
+    public static ISsfDynamics of(FastMatrix var) {
         return new TimeVaryingFull(var);
     }
 
@@ -67,7 +67,7 @@ public class TimeVaryingDynamics {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             qm.diagonal().set(var);
         }
 
@@ -77,7 +77,7 @@ public class TimeVaryingDynamics {
         }
 
         @Override
-        public void S(int pos, Matrix sm) {
+        public void S(int pos, FastMatrix sm) {
             sm.diagonal().set(std);
         }
 
@@ -99,7 +99,7 @@ public class TimeVaryingDynamics {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             tr.diagonal().set(1);
         }
 
@@ -112,11 +112,11 @@ public class TimeVaryingDynamics {
         }
 
         @Override
-        public void TVT(int pos, Matrix v) {
+        public void TVT(int pos, FastMatrix v) {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.diagonal().add(var);
         }
     }
@@ -154,7 +154,7 @@ public class TimeVaryingDynamics {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             qm.diagonal().copy(var);
         }
 
@@ -164,7 +164,7 @@ public class TimeVaryingDynamics {
         }
 
         @Override
-        public void S(int pos, Matrix sm) {
+        public void S(int pos, FastMatrix sm) {
             sm.diagonal().copy(std);
         }
 
@@ -186,7 +186,7 @@ public class TimeVaryingDynamics {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             tr.diagonal().set(1);
         }
 
@@ -199,26 +199,26 @@ public class TimeVaryingDynamics {
         }
 
         @Override
-        public void TVT(int pos, Matrix v) {
+        public void TVT(int pos, FastMatrix v) {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.diagonal().add(var);
         }
     }
 
     static class TimeVaryingFull implements ISsfDynamics {
 
-        private final Matrix var, s;
+        private final FastMatrix var, s;
 
-        TimeVaryingFull(final Matrix var) {
+        TimeVaryingFull(final FastMatrix var) {
             this.var = var;
             s = var.deepClone();
             SymmetricMatrix.lcholesky(s, 1e-9);
         }
 
-        TimeVaryingFull(final Matrix var, final Matrix s) {
+        TimeVaryingFull(final FastMatrix var, final FastMatrix s) {
             this.var = var;
             this.s = s;
         }
@@ -238,7 +238,7 @@ public class TimeVaryingDynamics {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             qm.copy(var);
         }
 
@@ -248,7 +248,7 @@ public class TimeVaryingDynamics {
         }
 
         @Override
-        public void S(int pos, Matrix sm) {
+        public void S(int pos, FastMatrix sm) {
             sm.copy(s);
         }
 
@@ -263,7 +263,7 @@ public class TimeVaryingDynamics {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             tr.diagonal().set(1);
         }
 
@@ -276,11 +276,11 @@ public class TimeVaryingDynamics {
         }
 
         @Override
-        public void TVT(int pos, Matrix v) {
+        public void TVT(int pos, FastMatrix v) {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.add(var);
         }
     }

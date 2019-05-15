@@ -21,10 +21,10 @@
 package demetra.calendarization;
 
 import demetra.benchmarking.spi.ICalendarization;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockStorage;
+import jd.data.DataBlock;
+import jd.data.DataBlockStorage;
 import demetra.design.Development;
-import demetra.maths.matrices.QuadraticForm;
+import jd.maths.matrices.QuadraticForm;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.SsfData;

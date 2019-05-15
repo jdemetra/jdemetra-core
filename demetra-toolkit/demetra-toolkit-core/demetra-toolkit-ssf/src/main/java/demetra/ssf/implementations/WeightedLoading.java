@@ -16,11 +16,11 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.ssf.ISsfLoading;
 import java.util.function.IntToDoubleFunction;
 import demetra.ssf.univariate.ISsfMeasurement;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -62,13 +62,13 @@ public class WeightedLoading implements ISsfLoading {
     }
 
     @Override
-    public double ZVZ(int pos, Matrix V) {
+    public double ZVZ(int pos, FastMatrix V) {
         double w = weights.applyAsDouble(pos);
         return loading.ZVZ(pos, V) * w * w;
     }
 
     @Override
-    public void VpZdZ(int pos, Matrix V, double d) {
+    public void VpZdZ(int pos, FastMatrix V, double d) {
         double w = weights.applyAsDouble(pos);
         loading.VpZdZ(pos, V, w * w * d);
     }

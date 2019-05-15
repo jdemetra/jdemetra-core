@@ -5,20 +5,20 @@
  */
 package demetra.leastsquares.internal;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.MatrixException;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.MatrixException;
 import demetra.data.accumulator.NeumaierAccumulator;
-import demetra.maths.matrices.UpperTriangularMatrix;
+import jd.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
 import demetra.leastsquares.QRSolver;
 import demetra.design.AlgorithmImplementation;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.decomposition.QRDecomposition;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.decomposition.QRDecomposition;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -81,7 +81,7 @@ public class AdvancedQRSolver implements QRSolver {
     }
 
     @Override
-    public boolean solve(DoubleSeq y, Matrix x) {
+    public boolean solve(DoubleSeq y, FastMatrix x) {
         try {
             clear();
             compute(y, x);
@@ -98,7 +98,7 @@ public class AdvancedQRSolver implements QRSolver {
         res = null;
     }
 
-    private void compute(DoubleSeq y, Matrix x) {
+    private void compute(DoubleSeq y, FastMatrix x) {
 
         // X'X, X'y
         n = y.length();
@@ -154,7 +154,7 @@ public class AdvancedQRSolver implements QRSolver {
      * @param X
      * @param B
      */
-    private void iterativeEstimation(DoubleSeq Y, Matrix X) {
+    private void iterativeEstimation(DoubleSeq Y, FastMatrix X) {
         DataBlock F = DataBlock.make(n);
         DataBlock G = DataBlock.make(m);
 
@@ -201,7 +201,7 @@ public class AdvancedQRSolver implements QRSolver {
         } while (++iter < niter);
     }
 
-    private void iterativeEstimation2(DoubleSeq Y, Matrix X) {
+    private void iterativeEstimation2(DoubleSeq Y, FastMatrix X) {
 
         DataBlock B = DataBlock.of(b), E = DataBlock.of(res);
         DoubleSeq W = Y;

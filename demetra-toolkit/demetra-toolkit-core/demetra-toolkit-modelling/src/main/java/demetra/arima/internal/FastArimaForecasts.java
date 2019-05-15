@@ -17,9 +17,9 @@
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.polynomials.Polynomial;
+import jp.maths.polynomials.Polynomial;
 import demetra.arima.estimation.ArimaForecasts;
 import demetra.data.DoubleSeq;
 

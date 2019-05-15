@@ -5,10 +5,10 @@
  */
 package demetra.ssf.multivariate;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
 import demetra.ssf.ISsfRoot;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -32,7 +32,7 @@ public interface ISsfErrors extends ISsfRoot{
      * @param h The matrix that will contain the variance. Should be 0 on entry.
  The matrix must have the size of the measurements (=getCount(pos)).
      */
-    void H(int pos, Matrix h);
+    void H(int pos, FastMatrix h);
 
     /**
      * Gets the Cholesky factor of the variance of the measurements error at a
@@ -43,7 +43,7 @@ public interface ISsfErrors extends ISsfRoot{
  entry. The matrix must have the size of the measurements
  (=getCount(pos)).
      */
-    void R(int pos, Matrix r);
+    void R(int pos, FastMatrix r);
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="forward operations">
@@ -54,7 +54,7 @@ public interface ISsfErrors extends ISsfRoot{
      * @param pos
      * @param V
      */
-    void addH(int pos, Matrix V);
+    void addH(int pos, FastMatrix V);
 //</editor-fold>    
 
 }

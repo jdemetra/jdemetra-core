@@ -16,15 +16,15 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.data.DataWindow;
-import demetra.maths.matrices.MatrixWindow;
-import demetra.maths.matrices.QuadraticForm;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
+import jd.data.DataWindow;
+import jd.maths.matrices.MatrixWindow;
+import jd.maths.matrices.QuadraticForm;
 import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsfMeasurement;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -34,11 +34,11 @@ public class ExternalEffects implements ISsfLoading {
 
 
     private final ISsfLoading loading;
-    private final Matrix data;
+    private final FastMatrix data;
     private final int nm, nx;
     private final DataBlock tmp;
 
-    ExternalEffects(final int dim, final ISsfLoading loading, final Matrix data) {
+    ExternalEffects(final int dim, final ISsfLoading loading, final FastMatrix data) {
         this.data = data;
         this.loading = loading;
         nm = dim;
@@ -66,7 +66,7 @@ public class ExternalEffects implements ISsfLoading {
     }
 
     @Override
-    public double ZVZ(int pos, Matrix V) {
+    public double ZVZ(int pos, FastMatrix V) {
         MatrixWindow v = V.topLeft(nm, nm);
         double v00 = loading.ZVZ(pos, v);
         v.vnext(nx);
@@ -79,7 +79,7 @@ public class ExternalEffects implements ISsfLoading {
     }
 
     @Override
-    public void VpZdZ(int pos, Matrix V, double d) {
+    public void VpZdZ(int pos, FastMatrix V, double d) {
         MatrixWindow v = V.topLeft(nm, nm);
         loading.VpZdZ(pos, v, d);
         MatrixWindow vtmp = v.clone();

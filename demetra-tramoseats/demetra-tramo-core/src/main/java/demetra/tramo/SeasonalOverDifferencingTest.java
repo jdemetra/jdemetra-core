@@ -19,7 +19,7 @@ package demetra.tramo;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.regarima.regular.SeasonalFTest;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.timeseries.TsData;
 
 /**

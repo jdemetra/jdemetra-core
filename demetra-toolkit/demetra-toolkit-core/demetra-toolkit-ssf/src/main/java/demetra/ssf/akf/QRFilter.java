@@ -18,11 +18,11 @@ package demetra.ssf.akf;
 
 import demetra.ssf.likelihood.ProfileLikelihood;
 import demetra.ssf.likelihood.MarginalLikelihood;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.likelihood.DeterminantalTerm;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.UpperTriangularMatrix;
+import jd.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.ssf.ResultsRange;
 import demetra.ssf.univariate.DefaultFilteringResults;
@@ -32,7 +32,7 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.OrdinaryFilter;
 import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 
 /**
  * QR variant copyOf the augmented Kalman filter. See for instance

@@ -16,12 +16,12 @@
  */
 package demetra.dfm.internal;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.data.DataBlock;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.linearsystem.LinearSystemSolver;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -118,7 +118,7 @@ class Initialization implements ISsfInitialization {
     }
 
     @Override
-    public void diffuseConstraints(Matrix b) {
+    public void diffuseConstraints(FastMatrix b) {
     }
 
     @Override
@@ -126,7 +126,7 @@ class Initialization implements ISsfInitialization {
     }
 
     @Override
-    public void Pf0(Matrix pf0) {
+    public void Pf0(FastMatrix pf0) {
         if (V0 != null) {
             pf0.copy(V0);
         }

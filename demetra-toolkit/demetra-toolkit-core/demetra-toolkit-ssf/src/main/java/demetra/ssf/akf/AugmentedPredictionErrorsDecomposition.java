@@ -16,19 +16,19 @@
  */
 package demetra.ssf.akf;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.LowerTriangularMatrix;
+import jd.maths.matrices.LowerTriangularMatrix;
 import demetra.ssf.IPredictionErrorDecomposition;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.data.LogSign;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.decomposition.ElementaryTransformations;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.decomposition.ElementaryTransformations;
 import demetra.ssf.likelihood.DiffuseLikelihood;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -93,7 +93,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         return true;
     }
 
-    public Matrix a() {
+    public FastMatrix a() {
         return Q.extract(0, nd, 0, nd);
     }
 
@@ -129,7 +129,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         DataBlock U = pe.getTransformedPredictionErrors();
         CanonicalMatrix L=pe.getCholeskyFactor();
         DataBlock D=L.diagonal();
-        Matrix E = pe.E();
+        FastMatrix E = pe.E();
         int nvars=E.getColumnsCount();
         n+=nvars;
         LogSign sld = LogSign.of(D);
@@ -139,7 +139,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         ElementaryTransformations.fastGivensTriangularize(Q);
     }
 
-    public Matrix getFinalQ() {
+    public FastMatrix getFinalQ() {
         return Q;
     }
 

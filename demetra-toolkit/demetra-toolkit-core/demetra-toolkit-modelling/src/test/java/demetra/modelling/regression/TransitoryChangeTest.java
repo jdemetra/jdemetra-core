@@ -16,7 +16,7 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;

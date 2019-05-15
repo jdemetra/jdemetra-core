@@ -16,11 +16,11 @@
  */
 package demetra.dfm.internal;
 
-import demetra.data.DataBlock;
-import demetra.data.DataWindow;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.data.DataBlock;
+import jd.data.DataWindow;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -55,12 +55,12 @@ public class Dynamics implements ISsfDynamics {
     }
 
     @Override
-    public void V(int pos, Matrix qm) {
+    public void V(int pos, FastMatrix qm) {
         qm.copy(V);
     }
 
     @Override
-    public void S(int pos, Matrix cm) {
+    public void S(int pos, FastMatrix cm) {
         int nf = nf();
         for (int i = 0, r = 0; i < nf; ++i, r += nlx) {
             cm.set(r, i, 1);
@@ -78,11 +78,11 @@ public class Dynamics implements ISsfDynamics {
     }
 
     @Override
-    public void T(int pos, Matrix tr) {
+    public void T(int pos, FastMatrix tr) {
         int nl = nl(), nf = nf();
         for (int i = 0, r = 0; i < nf; ++i, r += nlx) {
             for (int j = 0, c = 0; j < nf; ++j, c += nlx) {
-                Matrix B = tr.extract(r, r + nlx, c, c + nlx);
+                FastMatrix B = tr.extract(r, r + nlx, c, c + nlx);
                 if (i == j) {
                     B.subDiagonal(-1).set(1);
                 }
@@ -115,7 +115,7 @@ public class Dynamics implements ISsfDynamics {
     }
 
     @Override
-    public void addV(int pos, Matrix p) {
+    public void addV(int pos, FastMatrix p) {
         int nf = nf();
         for (int i = 0; i < nf; ++i) {
             DataBlock cv = p.column(i * nlx).extract(0, nf, nlx);

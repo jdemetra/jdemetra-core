@@ -5,16 +5,16 @@
  */
 package demetra.maths.functions.bfgs;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.matrices.MatrixException;
+import jd.maths.matrices.MatrixException;
 import demetra.maths.functions.FunctionException;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IFunctionMinimizer;
 import demetra.maths.functions.IFunctionPoint;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
 
 /**

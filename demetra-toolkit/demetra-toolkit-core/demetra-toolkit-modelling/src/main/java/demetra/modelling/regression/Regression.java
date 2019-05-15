@@ -5,16 +5,15 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.MatrixWindow;
+import jd.data.DataBlock;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.MatrixWindow;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import demetra.maths.matrices.Matrix;
 
 /**
  *

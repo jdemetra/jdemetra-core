@@ -16,10 +16,10 @@
  */
 package demetra.ssf.dk;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.DisturbanceSmoother;
 import demetra.ssf.univariate.IDisturbanceSmoothingResults;

@@ -18,10 +18,10 @@
  */
 package demetra.ssf.univariate;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.ssf.IStateResults;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -31,7 +31,7 @@ public interface ISmoothingResults extends IStateResults {
 
     DataBlock a(int pos);
 
-    Matrix P(int pos);
+    FastMatrix P(int pos);
 
     void rescaleVariances(double factor);
 

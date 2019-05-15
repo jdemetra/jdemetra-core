@@ -16,16 +16,16 @@
  */
 package demetra.maths.functions.levmar;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.LowerTriangularMatrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.MatrixException;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 
 /**
  *

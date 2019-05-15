@@ -5,12 +5,12 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -20,7 +20,7 @@ import demetra.maths.matrices.Matrix;
 public class RegressionUtility {
 
     public <D extends TimeSeriesDomain> void addAY(D domain, DataBlock rslt, double a, DoubleSeq c, ITsVariable... var) {
-        Matrix x = Regression.matrix(domain, var);
+        FastMatrix x = Regression.matrix(domain, var);
         DoubleSeqCursor reader = c.cursor();
         DataBlockIterator columns = x.columnsIterator();
         while (columns.hasNext()) {

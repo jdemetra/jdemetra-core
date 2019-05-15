@@ -17,16 +17,16 @@
 
 package demetra.maths.matrices.internal;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.design.Development;
 import demetra.maths.Constants;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.MatrixException;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.decomposition.LUDecomposition;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.decomposition.LUDecomposition;
+import jd.maths.matrices.FastMatrix;
 
 
 /**
@@ -73,7 +73,7 @@ public abstract class AbstractLuDecomposition implements LUDecomposition {
     public AbstractLuDecomposition() {
     }
 
-    void init(Matrix M) {
+    void init(FastMatrix M) {
         if (M.getRowsCount() != M.getColumnsCount()) {
             throw new MatrixException(MatrixException.SQUARE);
         }

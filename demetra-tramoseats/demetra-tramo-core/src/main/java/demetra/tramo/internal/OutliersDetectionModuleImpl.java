@@ -16,7 +16,7 @@
  */
 package demetra.tramo.internal;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
@@ -34,8 +34,8 @@ import demetra.regarima.outlier.FastOutlierDetector;
 import demetra.sarima.estimation.HannanRissanen;
 import demetra.sarima.estimation.SarimaMapping;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
-import demetra.sarima.SarmaSpecification;
+import demetra.arima.SarimaSpecification;
+import demetra.arima.SarmaSpecification;
 import demetra.modelling.regression.IOutlierFactory;
 import demetra.modelling.regression.LevelShiftFactory;
 import demetra.modelling.regression.TransitoryChangeFactory;

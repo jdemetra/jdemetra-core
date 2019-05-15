@@ -22,7 +22,7 @@ import demetra.msts.internal.SarimaItem;
 import demetra.msts.internal.SeasonalComponentItem;
 import demetra.msts.internal.TdRegressionItem;
 import demetra.timeseries.TsDomain;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -55,15 +55,15 @@ public class AtomicModels {
         return new NoiseItem(name, var, fixed);
     }
 
-    public ModelItem regression(String name, MatrixType x) {
+    public ModelItem regression(String name, Matrix x) {
         return new RegressionItem(name, x, null, true);
     }
 
-    public ModelItem timeVaryingRegression(String name, MatrixType x, double var, boolean fixed) {
+    public ModelItem timeVaryingRegression(String name, Matrix x, double var, boolean fixed) {
         return new RegressionItem(name, x, new double[]{var}, fixed);
     }
 
-    public ModelItem timeVaryingRegression(String name, MatrixType x, final double[] vars, final boolean fixed) {
+    public ModelItem timeVaryingRegression(String name, Matrix x, final double[] vars, final boolean fixed) {
          return new RegressionItem(name, x, vars, fixed);
     }
 
@@ -108,15 +108,15 @@ public class AtomicModels {
 //        };
 //    }
 
-    public ModelItem waveSpecificSurveyError(String name, int nwaves, MatrixType ar, boolean fixedar, int lag) {
+    public ModelItem waveSpecificSurveyError(String name, int nwaves, Matrix ar, boolean fixedar, int lag) {
         return new MsaeItem(name, nwaves, ar, fixedar, lag);
     }
 
-    public ModelItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, MatrixType ar, boolean fixedar, int lag) {
+    public ModelItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, Matrix ar, boolean fixedar, int lag) {
         return new MsaeItem2(name, var, fixedVar, ar, fixedar, lag);
     }
 
-    public ModelItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, double[] ar, boolean fixedar, MatrixType k, int lag) {
+    public ModelItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, double[] ar, boolean fixedar, Matrix k, int lag) {
         return new MsaeItem3(name, var, fixedVar, ar, fixedar, k, lag);
     }
 

@@ -16,7 +16,7 @@
  */
 package demetra.x12;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.linearmodel.LeastSquaresResults;
@@ -27,8 +27,8 @@ import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArimaUtility;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
-import demetra.sarima.SarmaSpecification;
+import demetra.arima.SarimaSpecification;
+import demetra.arima.SarmaSpecification;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

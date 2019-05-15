@@ -17,8 +17,8 @@
 package demetra.ucarima;
 
 import demetra.maths.Complex;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.UnitRoots;
+import jp.maths.polynomials.Polynomial;
+import jp.maths.polynomials.UnitRoots;
 
 /**
  * 

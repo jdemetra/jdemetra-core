@@ -6,9 +6,9 @@
 package demetra.ssf.models;
 
 import demetra.arima.ssf.SsfAr;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.ssf.SsfComponent;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.SymmetricMatrix;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;

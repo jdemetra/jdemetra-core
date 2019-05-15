@@ -16,20 +16,20 @@
  */
 package demetra.ssf.akf;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import java.util.Iterator;
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsfMeasurement;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -169,7 +169,7 @@ public class AugmentedFilter {
     }
 
     // P -= c*r
-    private void update(Matrix P, double v, DataBlock C) {
+    private void update(FastMatrix P, double v, DataBlock C) {
         P.addXaXt(-1 / v, C);
     }
 

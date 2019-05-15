@@ -16,9 +16,9 @@
  */
 package demetra.ssf;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.data.DataBlock;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.linearsystem.LinearSystemSolver;
 
 /**

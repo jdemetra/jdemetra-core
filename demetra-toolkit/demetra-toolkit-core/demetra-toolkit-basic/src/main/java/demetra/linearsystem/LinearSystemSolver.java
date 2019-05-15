@@ -21,14 +21,14 @@ import demetra.linearsystem.internal.QRLinearSystemSolver;
 import demetra.linearsystem.internal.LUSolver;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Algorithm;
 import demetra.design.Development;
 import demetra.design.ServiceDefinition;
-import demetra.maths.matrices.MatrixException;
+import jd.maths.matrices.MatrixException;
 import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.matrices.internal.Householder;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  * Defines algorithms that solve linear system
@@ -65,7 +65,7 @@ public interface LinearSystemSolver {
           On exit, it contains the results of the system (x).
      * @throws MatrixException
      */
-    void solve(Matrix A, DataBlock b) throws MatrixException;
+    void solve(FastMatrix A, DataBlock b) throws MatrixException;
 
     /**
      * Solves AX=B
@@ -75,7 +75,7 @@ public interface LinearSystemSolver {
           On exit, it contains the results of the system (X).
      * @throws MatrixException
      */
-    void solve(Matrix A, Matrix B) throws MatrixException;
+    void solve(FastMatrix A, FastMatrix B) throws MatrixException;
 }
 
 class LS_Factory{

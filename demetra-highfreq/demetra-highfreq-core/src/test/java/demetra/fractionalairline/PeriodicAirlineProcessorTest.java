@@ -10,7 +10,7 @@ import demetra.data.Data;
 import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.regarima.RegArimaEstimation;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
@@ -29,7 +29,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -44,7 +44,7 @@ public class PeriodicAirlineProcessorTest {
     @Ignore
     public void testDaily() throws URISyntaxException, IOException {
         URI uri = Data.class.getResource("/edf.txt").toURI();
-        MatrixType edf = MatrixSerializer.read(new File(uri));
+        Matrix edf = MatrixSerializer.read(new File(uri));
         Holiday[] france = france();
         CanonicalMatrix hol = CanonicalMatrix.make(edf.getRowsCount(), france.length);
         HolidaysUtility.fillDays(france, hol, LocalDate.of(1996, 1, 1), false);

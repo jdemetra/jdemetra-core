@@ -6,16 +6,16 @@
 package demetra.ssf.univariate;
 
 import demetra.ssf.ISsfLoading;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.data.DataBlockIterator;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.ssf.SsfException;
 import javax.annotation.Nonnull;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -304,7 +304,7 @@ public class DisturbanceSmoother {
         }
     }
 
-    private void tvt(Matrix N) {
+    private void tvt(FastMatrix N) {
         N.columns().forEach(col -> dynamics.XT(pos, col));
         N.rows().forEach(row -> dynamics.XT(pos, row));
     }

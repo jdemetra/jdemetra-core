@@ -16,13 +16,13 @@
  */
 package demetra.maths.linearfilters;
 
-import demetra.maths.matrices.MatrixException;
-import demetra.data.DataBlock;
+import jd.maths.matrices.MatrixException;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
 import demetra.maths.linearfilters.internal.SymmetricFilterAlgorithms;
-import demetra.maths.polynomials.Polynomial;
+import jp.maths.polynomials.Polynomial;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntToDoubleFunction;
 import javax.annotation.Nonnull;

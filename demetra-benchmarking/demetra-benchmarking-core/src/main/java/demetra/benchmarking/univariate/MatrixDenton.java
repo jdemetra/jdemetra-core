@@ -17,15 +17,15 @@
 package demetra.benchmarking.univariate;
 
 import demetra.data.AggregationType;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
 import demetra.linearsystem.LinearSystemSolver;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.UnitRoots;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SymmetricMatrix;
+import jp.maths.polynomials.Polynomial;
+import jp.maths.polynomials.UnitRoots;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -46,7 +46,7 @@ public class MatrixDenton {
         this.type = spec.getAggregationType();
     }
 
-    private void J(Matrix M) {
+    private void J(FastMatrix M) {
         int j = offset;
         DataBlockIterator rows = M.rowsIterator();
         while (rows.hasNext()) {

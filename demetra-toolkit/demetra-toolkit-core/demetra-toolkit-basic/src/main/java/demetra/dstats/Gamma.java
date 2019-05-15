@@ -23,7 +23,7 @@
 package demetra.dstats;
 
 import demetra.maths.Constants;
-import demetra.maths.polynomials.Polynomial;
+import jp.maths.polynomials.Polynomial;
 import demetra.random.RandomNumberGenerator;
 
 

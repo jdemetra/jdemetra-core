@@ -16,7 +16,7 @@
  */
 package demetra.stl;
 
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.WeeklyData;

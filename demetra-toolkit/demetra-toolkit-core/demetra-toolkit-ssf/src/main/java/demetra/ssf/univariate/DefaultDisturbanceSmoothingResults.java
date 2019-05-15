@@ -16,12 +16,12 @@
  */
 package demetra.ssf.univariate;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.ssf.DataBlockResults;
 import demetra.ssf.DataResults;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.MatrixResults;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -58,7 +58,7 @@ public class DefaultDisturbanceSmoothingResults implements IDisturbanceSmoothing
     }
 
     @Override
-    public void saveSmoothedTransitionDisturbances(int t, DataBlock u, Matrix uvar) {
+    public void saveSmoothedTransitionDisturbances(int t, DataBlock u, FastMatrix uvar) {
         U.save(t, u);
 
         if (UVar != null && uvar != null) {
@@ -99,7 +99,7 @@ public class DefaultDisturbanceSmoothingResults implements IDisturbanceSmoothing
     }
 
     @Override
-    public Matrix uVar(int pos) {
+    public FastMatrix uVar(int pos) {
         return UVar == null ? null : UVar.matrix(pos);
     }
 

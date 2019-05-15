@@ -16,17 +16,17 @@
  */
 package demetra.benchmarking.ssf;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.ssf.DiffuseInitialization;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  * State space representation of a non parametric spline model
@@ -73,12 +73,12 @@ public class SsfSpline {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             qm.copy(vm);
         }
 
         @Override
-        public void S(int pos, Matrix m) {
+        public void S(int pos, FastMatrix m) {
             m.copy(sm);
         }
 
@@ -93,7 +93,7 @@ public class SsfSpline {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             tr.diagonal().set(1);
             tr.set(0, 1, d);
         }
@@ -109,7 +109,7 @@ public class SsfSpline {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.add(vm);
         }
 
@@ -145,7 +145,7 @@ public class SsfSpline {
         }
 
         @Override
-        public void V(int pos, Matrix vm) {
+        public void V(int pos, FastMatrix vm) {
             double d1 = d[pos];
             double d2 = d1 * d1, d3 = d2 * d1;
             vm.set(0, 0, d3 / 3);
@@ -165,7 +165,7 @@ public class SsfSpline {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             tr.diagonal().set(1);
             tr.set(0, 1, d[pos]);
         }
@@ -176,7 +176,7 @@ public class SsfSpline {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             double d1 = d[pos];
             double d2 = d1 * d1, d3 = d2 * d1;
             p.add(0, 0, d3 / 3);
@@ -196,7 +196,7 @@ public class SsfSpline {
         }
 
         @Override
-        public void S(int pos, Matrix cm) {
+        public void S(int pos, FastMatrix cm) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 

@@ -17,7 +17,7 @@
 package demetra.tramo.internal;
 
 import demetra.arima.internal.FastKalmanFilter;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
@@ -36,7 +36,7 @@ import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.estimation.HannanRissanen;
 import demetra.sarima.estimation.SarimaMapping;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.tramo.TramoException;
 import java.util.Optional;
 import java.util.stream.Stream;

@@ -16,10 +16,10 @@
  */
 package demetra.ssf.akf;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
+import jd.maths.matrices.LowerTriangularMatrix;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.StateInfo;
 import demetra.ssf.univariate.ISmoothingResults;
@@ -27,10 +27,10 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.OrdinarySmoother;
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -281,7 +281,7 @@ public class AugmentedSmoother {
         // delta = a'^-1*a^-1(-a*b' + B'*R)
         // delta = - (b * a^-1)' + a'^-1*a^-1*B'*r = a'^-1 * (a^-1*B'*r - b)
         // Psi = = a'^-1*(I - a^-1*B'*N*B*a'^-1)* a^-1
-        Matrix B = q.B(); // B*a^-1'
+        FastMatrix B = q.B(); // B*a^-1'
         S = q.a().deepClone();
         // computes a^-1*B'*r (or r*B*a^-1')
         delta = DataBlock.make(B.getColumnsCount());

@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -65,7 +65,7 @@ public final class RegArimaModel<M extends IArimaModel> {
             return this;
         }
 
-        public Builder addX(Matrix X) {
+        public Builder addX(FastMatrix X) {
             if (X != null) {
                 if (y.length() != X.getRowsCount()) {
                     throw new RuntimeException("Incompatible dimensions");

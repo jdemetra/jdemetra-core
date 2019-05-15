@@ -16,10 +16,10 @@
  */
 package demetra.regarima.outlier;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarmaSpecification;
+import demetra.arima.SarmaSpecification;
 import demetra.modelling.regression.AdditiveOutlier;
 import demetra.modelling.regression.AdditiveOutlierFactory;
 import demetra.modelling.regression.LevelShift;

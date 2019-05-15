@@ -16,18 +16,18 @@
  */
 package demetra.linearsystem.internal;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.design.BuilderPattern;
-import demetra.maths.matrices.MatrixException;
+import jd.maths.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import demetra.linearsystem.LinearSystemSolver;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.decomposition.LUDecomposition;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.decomposition.LUDecomposition;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -76,7 +76,7 @@ public class LUSolver implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(Matrix A, DataBlock b) {
+    public void solve(FastMatrix A, DataBlock b) {
         if (!A.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -84,7 +84,7 @@ public class LUSolver implements LinearSystemSolver {
             throw new MatrixException(MatrixException.DIM);
         }
         // we normalize b
-        Matrix An;
+        FastMatrix An;
         if (normalize) {
 
             An = A.deepClone();
@@ -117,7 +117,7 @@ public class LUSolver implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(Matrix A, Matrix B) {
+    public void solve(FastMatrix A, FastMatrix B) {
         if (!A.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -125,7 +125,7 @@ public class LUSolver implements LinearSystemSolver {
             throw new MatrixException(MatrixException.DIM);
         }
         // we normalize b 
-        Matrix An;
+        FastMatrix An;
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();

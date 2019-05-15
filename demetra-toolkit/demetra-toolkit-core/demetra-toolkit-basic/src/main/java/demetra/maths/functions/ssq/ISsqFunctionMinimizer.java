@@ -17,7 +17,7 @@
 package demetra.maths.functions.ssq;
 
 import demetra.design.Development;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.data.DoubleSeq;
 
 

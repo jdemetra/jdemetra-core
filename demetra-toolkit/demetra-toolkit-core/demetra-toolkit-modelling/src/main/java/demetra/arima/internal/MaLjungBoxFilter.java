@@ -18,14 +18,14 @@
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.design.Development;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.RationalFunction;
+import jd.maths.matrices.LowerTriangularMatrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SymmetricMatrix;
+import jp.maths.polynomials.Polynomial;
+import jp.maths.polynomials.RationalFunction;
 import demetra.data.DoubleSeq;
 
 /**

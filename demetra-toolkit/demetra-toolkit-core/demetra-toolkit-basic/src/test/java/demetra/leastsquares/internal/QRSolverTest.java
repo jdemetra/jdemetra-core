@@ -6,10 +6,10 @@
 package demetra.leastsquares.internal;
 
 import demetra.leastsquares.internal.AdvancedQRSolver;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.data.DataSets;
 import static demetra.data.DataSets.lre;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.maths.matrices.internal.HouseholderWithPivoting;
 import demetra.maths.matrices.internal.RobustHouseholder;

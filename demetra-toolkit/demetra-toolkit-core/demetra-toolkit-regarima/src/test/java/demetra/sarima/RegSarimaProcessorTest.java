@@ -5,6 +5,7 @@
  */
 package demetra.sarima;
 
+import demetra.arima.SarimaSpecification;
 import demetra.data.Data;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;

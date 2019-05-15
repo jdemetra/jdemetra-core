@@ -7,15 +7,15 @@ package demetra.regarima;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
 import demetra.eco.EcoException;
 import demetra.linearmodel.LinearModel;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import java.util.List;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  * Linear model with stationary ARMA process
@@ -122,7 +122,7 @@ public class RegArmaModel<M extends IArimaModel> {
      * the constant
      * the other regression variables
      */
-    MatrixType x;
+    Matrix x;
     /**
      * Number of missing observations (additive outliers at the beginning of x)
      */

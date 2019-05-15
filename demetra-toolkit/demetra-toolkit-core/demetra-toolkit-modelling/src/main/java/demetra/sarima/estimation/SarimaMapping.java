@@ -17,14 +17,14 @@
 package demetra.sarima.estimation;
 
 import demetra.arima.estimation.IArimaMapping;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.functions.FunctionException;
 import demetra.maths.functions.ParamValidation;
-import demetra.maths.polynomials.Polynomial;
+import jp.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.data.DoubleSeq;
 
 /**

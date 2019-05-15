@@ -17,8 +17,8 @@
 
 package demetra.data.transformation;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 
 /**

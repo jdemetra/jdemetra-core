@@ -7,7 +7,7 @@ package demetra.modelling.regression;
 
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -20,14 +20,14 @@ class LinearTrendFactory implements RegressionVariableFactory<LinearTrend>{
     private LinearTrendFactory(){}
 
     @Override
-    public boolean fill(LinearTrend var, TsPeriod start, Matrix buffer) {
+    public boolean fill(LinearTrend var, TsPeriod start, FastMatrix buffer) {
         int del=TsPeriod.of(start.getUnit(), var.getStart()).until(start);
         buffer.column(0).set(r->r+del);
         return true;
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(LinearTrend var, D domain, Matrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(LinearTrend var, D domain, FastMatrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

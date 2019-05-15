@@ -16,10 +16,10 @@
  */
 package demetra.ssf.univariate;
 
-import demetra.data.DataBlock;
-import demetra.data.DataWindow;
+import jd.data.DataBlock;
+import jd.data.DataWindow;
 import demetra.ssf.ISsfRoot;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *

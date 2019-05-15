@@ -17,14 +17,14 @@
 package demetra.ssf.univariate;
 
 import demetra.ssf.ISsfLoading;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.ISsfState;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -67,7 +67,7 @@ public interface ISsf extends ISsfState {
         loading().XpZd(pos, x, -x.dot(m) / f);
     }
 
-    default void XL(int pos, Matrix M, DataBlock m, double f) {
+    default void XL(int pos, FastMatrix M, DataBlock m, double f) {
         // MT - [(MT)*m]/f * z
         ISsfDynamics dynamics = dynamics();
         ISsfLoading loading = loading();
@@ -96,7 +96,7 @@ public interface ISsf extends ISsfState {
         dynamics().XT(pos, x);
     }
 
-    default void LM(int pos, Matrix M, DataBlock m, double f) {
+    default void LM(int pos, FastMatrix M, DataBlock m, double f) {
         // TX - T*m/f * z * X
         // TX - T * m * (zX)/f)
         // T (X - m*(zX/f))
@@ -109,7 +109,7 @@ public interface ISsf extends ISsfState {
         });
     }
 
-    default boolean diffuseEffects(Matrix effects) {
+    default boolean diffuseEffects(FastMatrix effects) {
         ISsfDynamics dynamics = dynamics();
         ISsfLoading loading = loading();
         ISsfInitialization initializer = initialization();

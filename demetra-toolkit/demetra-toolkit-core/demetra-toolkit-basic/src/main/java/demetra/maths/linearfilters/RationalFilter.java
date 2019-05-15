@@ -16,17 +16,17 @@
  */
 package demetra.maths.linearfilters;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.design.SkipProcessing;
 import demetra.util.Arrays2;
 import demetra.maths.Complex;
-import demetra.maths.matrices.MatrixException;
-import demetra.maths.polynomials.Polynomial;
+import jd.maths.matrices.MatrixException;
+import jp.maths.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
 import demetra.linearsystem.LinearSystemSolver;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 
 /**
  * Rational filters are the ratio of two filters. They are defined in

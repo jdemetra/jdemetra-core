@@ -16,14 +16,17 @@
  */
 package demetra.sarima;
 
+import demetra.arima.SarmaSpecification;
+import demetra.arima.SarimaProcess;
+import demetra.arima.SarimaSpecification;
 import demetra.arima.AbstractArimaModel;
 import demetra.arima.StationaryTransformation;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.FilterUtility;
-import demetra.maths.polynomials.Polynomial;
+import jp.maths.polynomials.Polynomial;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
@@ -646,8 +649,8 @@ public final class SarimaModel extends AbstractArimaModel {
         }
     }
 
-    public SarimaType toType(){
-        return SarimaType.builder()
+    public SarimaProcess toType(){
+        return SarimaProcess.builder()
                 .period(s)
                 .d(d)
                 .bd(bd)

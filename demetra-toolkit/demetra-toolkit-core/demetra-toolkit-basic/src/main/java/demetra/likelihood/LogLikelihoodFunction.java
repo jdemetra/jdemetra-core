@@ -22,8 +22,8 @@ import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.IParametricMapping;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SymmetricMatrix;
 import java.util.function.Function;
 import demetra.data.DoubleSeq;
 

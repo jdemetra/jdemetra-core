@@ -18,7 +18,7 @@ package demetra.arima.internal;
 
 import demetra.arima.ArimaException;
 import demetra.arima.IArimaModel;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Fast;

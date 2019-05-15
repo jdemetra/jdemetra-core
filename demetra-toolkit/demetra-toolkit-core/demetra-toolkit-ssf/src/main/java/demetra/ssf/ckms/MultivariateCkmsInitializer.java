@@ -16,7 +16,7 @@
  */
 package demetra.ssf.ckms;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
@@ -29,7 +29,7 @@ import demetra.ssf.array.LState;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.MultivariateUpdateInformation;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *

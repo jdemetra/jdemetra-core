@@ -16,22 +16,22 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
-import demetra.maths.matrices.MatrixWindow;
+import jd.maths.matrices.MatrixWindow;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.calendars.CalendarUtility;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.HashMap;
 import java.util.Map;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -57,7 +57,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
 
     private static final Map<Entry, Data> CACHE = new HashMap<>();
 
-    private static Matrix dataFor(DayClustering clustering, TsDomain domain) {
+    private static FastMatrix dataFor(DayClustering clustering, TsDomain domain) {
         synchronized (CACHE) {
             TsPeriod start = domain.getStartPeriod();
             Entry entry = new Entry(clustering, domain.getAnnualFrequency());
@@ -114,7 +114,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
     private GenericTradingDaysFactory() {
     }
 
-    public boolean fill(GenericTradingDays var, TsPeriod start, Matrix buffer) {
+    public boolean fill(GenericTradingDays var, TsPeriod start, FastMatrix buffer) {
 
         if (var.isContrast()) {
             dataContrast(var.getClustering(), start, buffer);
@@ -125,7 +125,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
     }
 
     @Override
-    public boolean fill(GenericTradingDaysVariable var, TsPeriod start, Matrix buffer) {
+    public boolean fill(GenericTradingDaysVariable var, TsPeriod start, FastMatrix buffer) {
 
         if (var.isContrast()) {
             dataContrast(var.getClustering(), start, buffer);
@@ -136,14 +136,14 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(GenericTradingDaysVariable var, D domain, Matrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(GenericTradingDaysVariable var, D domain, FastMatrix buffer) {
         throw new UnsupportedOperationException("Not supported.");
     }
 
     private static final double[] MDAYS = new double[]{31.0, 28.25, 31.0, 30.0, 31.0, 30.0, 31.0, 31.0, 30.0, 31.0, 30.0, 31.0};
 
     private void dataNoContrast(DayClustering clustering, boolean normalized,
-            TsPeriod start, Matrix buffer) {
+            TsPeriod start, FastMatrix buffer) {
         int n = buffer.getRowsCount();
         TsDomain domain = TsDomain.of(start, n);
         int[][] days = tdCount(domain);
@@ -175,8 +175,8 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         }
     }
 
-    private void dataContrast(DayClustering clustering, TsPeriod start, Matrix buffer) {
-        Matrix m = dataFor(clustering, TsDomain.of(start, buffer.getRowsCount()));
+    private void dataContrast(DayClustering clustering, TsPeriod start, FastMatrix buffer) {
+        FastMatrix m = dataFor(clustering, TsDomain.of(start, buffer.getRowsCount()));
         buffer.copy(m);
     }
 
@@ -215,13 +215,13 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         return data;
     }
 
-    public static CanonicalMatrix generateContrasts(DayClustering clustering, Matrix days) {
+    public static CanonicalMatrix generateContrasts(DayClustering clustering, FastMatrix days) {
         CanonicalMatrix m = CanonicalMatrix.make(days.getRowsCount(), clustering.getGroupsCount() - 1);
         fillContrasts(clustering, days, m);
         return m;
     }
 
-    public static Matrix fillContrasts(DayClustering clustering, Matrix days, Matrix data) {
+    public static FastMatrix fillContrasts(DayClustering clustering, FastMatrix days, FastMatrix data) {
         int n = days.getRowsCount();
         int[][] groups = clustering.allPositions();
         rotate(groups);
@@ -259,13 +259,13 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
     }
 
     public static CanonicalMatrix generateNoContrast(DayClustering clustering, TsPeriod start,
-            Matrix days) {
+            FastMatrix days) {
         CanonicalMatrix m = CanonicalMatrix.make(days.getRowsCount(), clustering.getGroupsCount());
         fillNoContrasts(clustering, start, days, m);
         return m;
     }
 
-    public static Matrix fillNoContrasts(DayClustering clustering, TsPeriod start, Matrix days, Matrix data) {
+    public static FastMatrix fillNoContrasts(DayClustering clustering, TsPeriod start, FastMatrix days, FastMatrix data) {
         int n = days.getRowsCount();
         double[] mdays = null;
         if (start != null) {
@@ -350,7 +350,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         return rslt;
     }
 
-    public static void fillTdMatrix(TsPeriod start, Matrix mtd) {
+    public static void fillTdMatrix(TsPeriod start, FastMatrix mtd) {
         int[][] td = tdCount(TsDomain.of(start, mtd.getRowsCount()));
         for (int i = 0; i < 7; ++i) {
             int[] curtd = td[i];

@@ -16,8 +16,8 @@
  */
 package demetra.ssf.univariate;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import jd.data.DataBlock;
+import jd.maths.matrices.FastMatrix;
 
 
 /**
@@ -38,13 +38,13 @@ public interface IDisturbanceSmoothingResults {
         return null;
     }
 
-    default Matrix uVar(int pos) {
+    default FastMatrix uVar(int pos) {
         return null;
     }
     
     void prepare(ISsf ssf, int start, int end);
     
-    void saveSmoothedTransitionDisturbances(int pos, DataBlock u, Matrix uVar);
+    void saveSmoothedTransitionDisturbances(int pos, DataBlock u, FastMatrix uVar);
     
     void saveSmoothedMeasurementDisturbance(int pos, double e, double evar);
     

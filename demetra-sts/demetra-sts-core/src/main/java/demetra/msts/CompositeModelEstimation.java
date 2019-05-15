@@ -19,7 +19,7 @@ import demetra.ssf.univariate.StateFilteringResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.likelihood.Likelihood;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -27,7 +27,7 @@ import demetra.maths.matrices.Matrix;
  */
 public class CompositeModelEstimation {
 
-    public static CompositeModelEstimation estimationOf(CompositeModel model, Matrix data, double eps, boolean marginal, boolean concentrated, double[] parameters) {
+    public static CompositeModelEstimation estimationOf(CompositeModel model, FastMatrix data, double eps, boolean marginal, boolean concentrated, double[] parameters) {
         CompositeModelEstimation rslt = new CompositeModelEstimation();
         rslt.data = data;
         MstsMonitor monitor = MstsMonitor.builder()
@@ -46,7 +46,7 @@ public class CompositeModelEstimation {
         return rslt;
     }
 
-    public static CompositeModelEstimation computationOf(CompositeModel model, Matrix data, DoubleSeq fullParameters, boolean marginal, boolean concentrated) {
+    public static CompositeModelEstimation computationOf(CompositeModel model, FastMatrix data, DoubleSeq fullParameters, boolean marginal, boolean concentrated) {
         CompositeModelEstimation rslt = new CompositeModelEstimation();
         rslt.data = data;
         rslt.fullParameters = fullParameters.toArray();
@@ -68,7 +68,7 @@ public class CompositeModelEstimation {
     private Likelihood likelihood;
     private MultivariateCompositeSsf ssf;
     private int[] cmpPos;
-    private Matrix data;
+    private FastMatrix data;
     private double[] fullParameters, parameters;
     private String[] parametersName, cmpName;
     private StateStorage smoothedStates, filteredStates, filteringStates;
@@ -164,7 +164,7 @@ public class CompositeModelEstimation {
     /**
      * @return the data
      */
-    public Matrix getData() {
+    public FastMatrix getData() {
         return data;
     }
 

@@ -16,7 +16,7 @@
  */
 package demetra.ssf.dk;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.SsfException;
@@ -27,7 +27,7 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.univariate.OrdinaryFilter;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -164,7 +164,7 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.Initializer {
         return true;
     }
 
-    private boolean isZero(final Matrix P) {
+    private boolean isZero(final FastMatrix P) {
         return P.isZero(1e-6 * norm);
     }
 

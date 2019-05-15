@@ -5,13 +5,13 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -63,7 +63,7 @@ class AOFactory implements RegressionVariableFactory<AdditiveOutlier> {
     private AOFactory(){}
 
     @Override
-    public boolean fill(AdditiveOutlier var, TsPeriod start, Matrix buffer) {
+    public boolean fill(AdditiveOutlier var, TsPeriod start, FastMatrix buffer) {
         TsPeriod p = start.withDate(var.getPosition());
         int opos = start.until(p);
         if (opos >= 0 && opos < buffer.getRowsCount()) {
@@ -73,7 +73,7 @@ class AOFactory implements RegressionVariableFactory<AdditiveOutlier> {
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(AdditiveOutlier var, D domain, Matrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(AdditiveOutlier var, D domain, FastMatrix buffer) {
         long pos = domain.indexOf(var.getPosition());
         if (pos >= 0) {
             buffer.set((int) pos, 0, 1);

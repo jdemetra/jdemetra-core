@@ -17,16 +17,16 @@
 package demetra.maths.matrices.internal;
 
 import demetra.maths.Constants;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.data.accumulator.DoubleAccumulator;
 import demetra.design.Development;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.MatrixException;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.MatrixException;
 import demetra.data.accumulator.NeumaierAccumulator;
 import java.util.function.Supplier;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.decomposition.QRDecomposition;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.decomposition.QRDecomposition;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -64,7 +64,7 @@ public class RobustHouseholder implements QRDecomposition {
      * @param m
      */
     @Override
-    public void decompose(Matrix m) {
+    public void decompose(FastMatrix m) {
         init(m);
         householder();
     }
@@ -194,7 +194,7 @@ public class RobustHouseholder implements QRDecomposition {
         }
     }
 
-    private void init(Matrix m) {
+    private void init(FastMatrix m) {
         this.m = m.getRowsCount();
         norig = n = m.getColumnsCount();
         qr = m.toArray();

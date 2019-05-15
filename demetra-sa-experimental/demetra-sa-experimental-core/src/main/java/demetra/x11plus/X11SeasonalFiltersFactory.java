@@ -5,7 +5,7 @@
  */
 package demetra.x11plus;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.maths.linearfilters.FiniteFilter;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;

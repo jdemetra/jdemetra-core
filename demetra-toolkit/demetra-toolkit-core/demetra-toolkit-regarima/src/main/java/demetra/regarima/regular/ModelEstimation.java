@@ -21,7 +21,7 @@ import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.stats.tests.NiidTests;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -35,6 +35,6 @@ public class ModelEstimation {
     private ConcentratedLikelihoodWithMissing concentratedLikelihood;
     private LikelihoodStatistics statistics;
     private DoubleSeq score;
-    private Matrix parametersCovariance;
+    private FastMatrix parametersCovariance;
     private NiidTests tests;
 }

@@ -17,9 +17,9 @@
 package demetra.var;
 
 import demetra.dfm.DfmException;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SubMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SubMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -106,7 +106,7 @@ public class VarDescriptor {
      * @param lag The lag in the var equation. Should belong to [1, nlags]
      * @param a The matrix
      */
-    public void setA(int lag, Matrix a) {
+    public void setA(int lag, FastMatrix a) {
         int n = varMatrix.getRowsCount();
         for (int i = 0, j = lag - 1; i < n; ++i, j += nlags) {
             varMatrix.column(j).copy(a.column(i));

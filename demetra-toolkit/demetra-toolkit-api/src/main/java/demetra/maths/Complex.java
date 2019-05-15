@@ -27,6 +27,7 @@ import demetra.design.Development;
 @lombok.Value
 public class Complex implements ComplexType{
 
+    private final double TWOPI = 2 * Math.PI;
     /**
      * A constant representing i
      */

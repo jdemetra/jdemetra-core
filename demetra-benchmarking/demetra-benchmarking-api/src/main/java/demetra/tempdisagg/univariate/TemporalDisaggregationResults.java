@@ -28,7 +28,7 @@ import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -86,7 +86,7 @@ public class TemporalDisaggregationResults implements ProcResults {
         });
         MAPPING.set(NX, Integer.class, source->source.estimation.nx());
         MAPPING.set(C, double[].class, source->source.getEstimation().values().toArray());
-        MAPPING.set(COVAR, MatrixType.class, source->source.getEstimation().getCovariance());
+        MAPPING.set(COVAR, Matrix.class, source->source.getEstimation().getCovariance());
         MAPPING.delegate(LIKELIHOOD, LikelihoodStatisticsDescriptor.getMapping(), source -> source.getLikelihood());
         MAPPING.delegate(RES, ResidualsDiagnosticsDescriptor.getMapping(), source -> source.getResidualsDiagnostics());
     }

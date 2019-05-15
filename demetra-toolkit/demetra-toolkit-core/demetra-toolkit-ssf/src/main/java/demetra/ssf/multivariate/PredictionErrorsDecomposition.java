@@ -16,8 +16,8 @@
  */
 package demetra.ssf.multivariate;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockStorage;
+import jd.data.DataBlock;
+import jd.data.DataBlockStorage;
 import demetra.design.Development;
 import demetra.likelihood.Likelihood;
 import demetra.ssf.IPredictionErrorDecomposition;

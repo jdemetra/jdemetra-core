@@ -8,7 +8,7 @@ package demetra.leastsquares;
 import demetra.design.Algorithm;
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  * 
@@ -29,7 +29,7 @@ public interface LeastSquaresSolver {
      * @param X 
      * @return True if the system was successfully solved
      */
-    boolean solve(DoubleSeq y, Matrix X);
+    boolean solve(DoubleSeq y, FastMatrix X);
 
     /**
      * Returns b

@@ -16,11 +16,11 @@
  */
 package demetra.maths.functions;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.FastMatrix;
 
 
 /**
@@ -95,7 +95,7 @@ public class TransformedFunction implements IFunction {
          * @return
          */
         @Override
-        public void hessian(Matrix H) {
+        public void hessian(FastMatrix H) {
             int n = getDomain().getDim();
             CanonicalMatrix h = CanonicalMatrix.square(n);
             dfx.hessian(h);

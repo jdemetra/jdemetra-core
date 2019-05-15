@@ -17,7 +17,7 @@
 package demetra.dfm;
 
 import java.util.Arrays;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *

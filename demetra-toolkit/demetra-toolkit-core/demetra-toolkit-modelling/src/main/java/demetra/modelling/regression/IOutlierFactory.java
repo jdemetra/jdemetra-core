@@ -5,7 +5,7 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.RationalBackFilter;
 import java.time.LocalDateTime;

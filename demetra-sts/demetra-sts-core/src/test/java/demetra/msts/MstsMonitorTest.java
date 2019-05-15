@@ -6,10 +6,10 @@
 package demetra.msts;
 
 import demetra.data.Data;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.StateStorage;
 import demetra.ssf.dk.DkToolkit;
@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.junit.Test;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -40,7 +40,7 @@ public class MstsMonitorTest {
     public void testSimple() throws URISyntaxException, IOException {
 
         File file = Data.copyToTempFile(MultivariateCompositeSsf.class.getResource("/bematrix.txt"));
-        MatrixType data = MatrixSerializer.read(file, "\t|,");
+        Matrix data = MatrixSerializer.read(file, "\t|,");
 
         CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 4);
         D.column(0).copy(data.column(0));
@@ -74,7 +74,7 @@ public class MstsMonitorTest {
     public void testSimpleX() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
-        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
+        Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
 
         CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
@@ -114,7 +114,7 @@ public class MstsMonitorTest {
     public void testSimpleX2() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
-        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
+        Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
 
         CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
@@ -154,7 +154,7 @@ public class MstsMonitorTest {
     public void testSimpleXbis() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
-        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
+        Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
 
         CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));

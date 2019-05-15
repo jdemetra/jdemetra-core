@@ -16,15 +16,15 @@
  */
 package demetra.maths.matrices.internal;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.decomposition.ISingularValueDecomposition;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.MatrixException;
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlock;
+import jd.maths.matrices.decomposition.ISingularValueDecomposition;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.MatrixException;
+import jd.data.DataBlockIterator;
 import demetra.maths.Constants;
-import demetra.maths.matrices.decomposition.ElementaryTransformations;
+import jd.maths.matrices.decomposition.ElementaryTransformations;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  * The singularValueDecomposition decomposes a matrix M in M = U * S * V' with:
@@ -52,11 +52,11 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
      * @throws MatrixException
      */
     @Override
-    public void decompose(Matrix A) throws MatrixException {
+    public void decompose(FastMatrix A) throws MatrixException {
         init(A);
     }
 
-    private void init(Matrix matrix) {
+    private void init(FastMatrix matrix) {
         double[] A = matrix.toArray();
         m_m = matrix.getRowsCount();
         m_n = matrix.getColumnsCount();

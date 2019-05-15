@@ -8,15 +8,15 @@ package demetra.linearmodel;
 import demetra.eco.EcoException;
 import lombok.NonNull;
 import demetra.leastsquares.internal.AdvancedQRSolver;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.UpperTriangularMatrix;
+import jd.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.leastsquares.QRSolver;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -43,12 +43,12 @@ public class Ols {
 
     public LeastSquaresResults compute(LinearModel model) {
         DoubleSeq y = model.getY();
-        Matrix x = model.variables();
+        FastMatrix x = model.variables();
         if (!solver.solve(y, x)) {
             throw new EcoException(EcoException.OLS_FAILED);
         }
-        Matrix R = solver.R();
-        Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
+        FastMatrix R = solver.R();
+        FastMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(R));
         return LeastSquaresResults.builder(y, x)
                 .mean(model.isMeanCorrection())

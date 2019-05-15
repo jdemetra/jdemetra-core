@@ -18,7 +18,7 @@ package demetra.x12;
 
 import demetra.arima.estimation.ResidualsComputer;
 import demetra.arima.internal.AnsleyFilter;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.regarima.IRegArimaProcessor;

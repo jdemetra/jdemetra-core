@@ -5,16 +5,16 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.SubMatrix;
+import jd.data.DataBlock;
+import jd.maths.matrices.SubMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.util.Collections;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -35,7 +35,7 @@ public class StockTradingDaysVariablesTest {
 
             StockTradingDays var = new StockTradingDays(-3);
             TsPeriod start = TsPeriod.monthly(2000, 1);
-            Matrix m = Regression.matrix(TsDomain.of(start, i), var);
+            FastMatrix m = Regression.matrix(TsDomain.of(start, i), var);
             SubMatrix mc = SubMatrix.builder(om.internalStorage()).nrows(i).ncolumns(6).build();
             assertTrue(m.minus(mc).isZero(1e-9));
         }
@@ -51,7 +51,7 @@ public class StockTradingDaysVariablesTest {
 
             StockTradingDays var = new StockTradingDays(-3);
             TsPeriod start = TsPeriod.quarterly(2000, 1);
-            Matrix m = Regression.matrix(TsDomain.of(start, i), var);
+            FastMatrix m = Regression.matrix(TsDomain.of(start, i), var);
             SubMatrix mc = SubMatrix.builder(om.internalStorage()).nrows(i).ncolumns(6).build();
             assertTrue(m.minus(mc).isZero(1e-9));
         }
@@ -67,7 +67,7 @@ public class StockTradingDaysVariablesTest {
 
             StockTradingDays var = new StockTradingDays(17);
             TsPeriod start = TsPeriod.monthly(2000, 1);
-            Matrix m = Regression.matrix(TsDomain.of(start, i), var);
+            FastMatrix m = Regression.matrix(TsDomain.of(start, i), var);
             SubMatrix mc = SubMatrix.builder(om.internalStorage()).nrows(i).ncolumns(6).build();
             assertTrue(m.minus(mc).isZero(1e-9));
         }
@@ -83,7 +83,7 @@ public class StockTradingDaysVariablesTest {
 
             StockTradingDays var = new StockTradingDays(30);
             TsPeriod start = TsPeriod.quarterly(2000, 1);
-            Matrix m = Regression.matrix(TsDomain.of(start, i), var);
+            FastMatrix m = Regression.matrix(TsDomain.of(start, i), var);
             SubMatrix mc = SubMatrix.builder(om.internalStorage()).nrows(i).ncolumns(6).build();
             assertTrue(m.minus(mc).isZero(1e-9));
         }

@@ -18,16 +18,16 @@
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.data.DataBlock;
-import demetra.data.DataWindow;
+import jd.data.DataBlock;
+import jd.data.DataWindow;
 import demetra.data.LogSign;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Legacy;
 import demetra.design.Development;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.polynomials.Polynomial;
+import jd.maths.matrices.LowerTriangularMatrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SymmetricMatrix;
+import jp.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;

@@ -8,10 +8,10 @@ package rssf;
 import demetra.msts.AtomicModels;
 import demetra.msts.ModelEquation;
 import demetra.data.Data;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.msts.CompositeModel;
 import demetra.msts.CompositeModelEstimation;
 import demetra.ssf.implementations.Loading;
@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Test;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -30,10 +30,10 @@ import demetra.maths.matrices.MatrixType;
  */
 public class CompositeModelTest {
 
-    static final MatrixType data;
+    static final Matrix data;
 
     static {
-        MatrixType tmp = null;
+        Matrix tmp = null;
         try {
             URI uri = CompositeModels.class.getResource("/mssf1").toURI();
             tmp = MatrixSerializer.read(new File(uri), "\t|,");

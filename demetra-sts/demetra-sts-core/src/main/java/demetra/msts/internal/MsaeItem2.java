@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import demetra.msts.ParameterInterpreter;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -28,7 +28,7 @@ public class MsaeItem2 extends AbstractModelItem {
     private final int[] lar;
     private final ArInterpreter[] par;
     
-    public MsaeItem2(String name, double[] v, boolean fixedVar, MatrixType ar, boolean fixedar, int lag) {
+    public MsaeItem2(String name, double[] v, boolean fixedVar, Matrix ar, boolean fixedar, int lag) {
         super(name);
         int nwaves = v.length;
         this.lag = lag;

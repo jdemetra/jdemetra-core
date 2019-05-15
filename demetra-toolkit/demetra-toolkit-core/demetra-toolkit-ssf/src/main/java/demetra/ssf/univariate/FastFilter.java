@@ -6,15 +6,15 @@
 package demetra.ssf.univariate;
 
 import demetra.ssf.ISsfLoading;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.data.DoubleSeqCursor;
 import demetra.ssf.State;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -41,7 +41,7 @@ public class FastFilter {
         end = range.getEnd();
     }
 
-    public boolean filter(Matrix x) {
+    public boolean filter(FastMatrix x) {
         if (end - start < x.getRowsCount()) {
             return false;
         }

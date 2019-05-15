@@ -5,7 +5,7 @@
  */
 package demetra.x11.filter;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.x11.SeasonalFilterOption;
 import demetra.x11.X11Context;

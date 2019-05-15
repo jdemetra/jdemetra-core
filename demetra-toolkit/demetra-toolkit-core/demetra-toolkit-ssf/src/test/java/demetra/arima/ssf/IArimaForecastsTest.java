@@ -7,9 +7,9 @@ package demetra.arima.ssf;
 
 import demetra.arima.internal.FastArimaForecasts;
 import demetra.data.Data;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;

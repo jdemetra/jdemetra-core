@@ -21,7 +21,7 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
 import demetra.maths.Constants;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -35,12 +35,12 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
     private final int nobs, nd;
     private final double[] res;
     private final double[] b;
-    private final MatrixType bvar;
+    private final Matrix bvar;
     private final boolean legacy;
     private final boolean scalingFactor;
 
     InternalDiffuseConcentratedLikelihood(final int n, final int nd, final double ssqerr, final double ldet, final double lddet,
-            final double[] b, final MatrixType bvar, final double[] res, final boolean legacy, final boolean scalingFactor) {
+            final double[] b, final Matrix bvar, final double[] res, final boolean legacy, final boolean scalingFactor) {
         this.nobs = n;
         this.nd = nd;
         this.ssqerr = ssqerr;
@@ -142,7 +142,7 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
     }
 
     @Override
-    public MatrixType unscaledCovariance() {
+    public Matrix unscaledCovariance() {
         return bvar;
     }
 
@@ -171,7 +171,7 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
             }
         }
         double[] nb = null;
-        MatrixType nbvar = null;
+        Matrix nbvar = null;
         if (b != null) {
             int nx = b.length;
             if (xfactor != null) {
@@ -187,7 +187,7 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
                     }
                     nbv[i * (nx + 1)] *= ifactor * ifactor;
                 }
-                nbvar = MatrixType.ofInternal(nbv, nx, nx);
+                nbvar = Matrix.ofInternal(nbv, nx, nx);
             } else if (yfactor != 1) {
                 nb = new double[nx];
                 for (int i = 0; i < nx; ++i) {

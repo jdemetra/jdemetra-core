@@ -24,7 +24,7 @@ import demetra.regarima.outlier.FastOutlierDetector;
 import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.sarima.internal.HannanRissanenInitializer;
 import demetra.stats.tests.LjungBox;
 import demetra.stats.tests.StatisticalTest;

@@ -17,14 +17,14 @@
 package demetra.ssf.implementations;
 
 import java.util.Iterator;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -107,7 +107,7 @@ public class TimeInvariantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void V(int pos, Matrix qm) {
+    public void V(int pos, FastMatrix qm) {
         qm.copy(V);
     }
 
@@ -117,7 +117,7 @@ public class TimeInvariantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void S(int pos, Matrix sm) {
+    public void S(int pos, FastMatrix sm) {
         checkS();
         sm.copy(S);
     }
@@ -135,12 +135,12 @@ public class TimeInvariantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void T(int pos, Matrix tr) {
+    public void T(int pos, FastMatrix tr) {
         tr.copy(T);
     }
 
     @Override
-    public void TM(int pos, Matrix tm) {
+    public void TM(int pos, FastMatrix tm) {
         DataBlock tx = DataBlock.make(T.getColumnsCount());
         DataBlockIterator cols = tm.columnsIterator();
         while (cols.hasNext()) {
@@ -151,7 +151,7 @@ public class TimeInvariantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void TVT(int pos, Matrix tvt) {
+    public void TVT(int pos, FastMatrix tvt) {
         CanonicalMatrix V = tvt.deepClone();
         SymmetricMatrix.XSXt(V, T, tvt);
     }
@@ -171,7 +171,7 @@ public class TimeInvariantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void addV(int pos, Matrix p) {
+    public void addV(int pos, FastMatrix p) {
         p.add(V);
     }
 

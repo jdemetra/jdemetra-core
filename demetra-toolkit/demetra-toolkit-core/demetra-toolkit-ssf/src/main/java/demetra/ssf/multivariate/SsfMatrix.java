@@ -5,9 +5,9 @@
  */
 package demetra.ssf.multivariate;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 
 /**
@@ -16,9 +16,9 @@ import demetra.maths.matrices.Matrix;
  */
 public class SsfMatrix implements IMultivariateSsfData {
 
-    private final Matrix x_;
+    private final FastMatrix x_;
 
-    public SsfMatrix(Matrix x) {
+    public SsfMatrix(FastMatrix x) {
         x_ = x;
     }
 

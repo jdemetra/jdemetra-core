@@ -5,13 +5,13 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.CalendarUtility;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -24,7 +24,7 @@ class LPFactory implements RegressionVariableFactory<LengthOfPeriod> {
     private LPFactory(){}
     
     @Override
-    public boolean fill(LengthOfPeriod var, TsPeriod start, Matrix buffer) {
+    public boolean fill(LengthOfPeriod var, TsPeriod start, FastMatrix buffer) {
         switch (var.getType()) {
             case LeapYear:
                 lp(TsDomain.of(start, buffer.getRowsCount()), buffer.column(0));
@@ -38,7 +38,7 @@ class LPFactory implements RegressionVariableFactory<LengthOfPeriod> {
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(LengthOfPeriod var, D domain, Matrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(LengthOfPeriod var, D domain, FastMatrix buffer) {
         throw new UnsupportedOperationException("Not supported.");
     }
 

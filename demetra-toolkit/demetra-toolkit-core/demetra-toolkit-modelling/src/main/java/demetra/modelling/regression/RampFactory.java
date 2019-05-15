@@ -5,12 +5,12 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -23,13 +23,13 @@ class RampFactory implements RegressionVariableFactory<Ramp> {
     private RampFactory(){}
 
     @Override
-    public boolean fill(Ramp var, TsPeriod start, Matrix buffer) {
+    public boolean fill(Ramp var, TsPeriod start, FastMatrix buffer) {
         data(var, TsDomain.of(start, buffer.getRowsCount()), buffer.column(0));
         return true;
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(Ramp var, D domain, Matrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(Ramp var, D domain, FastMatrix buffer) {
         data(var, domain, buffer.column(0));
         return true;
     }

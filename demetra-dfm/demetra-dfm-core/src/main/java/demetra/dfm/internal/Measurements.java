@@ -16,17 +16,17 @@
  */
 package demetra.dfm.internal;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.dfm.IDfmMeasurement;
 import demetra.dfm.MeasurementDescriptor;
-import demetra.maths.matrices.QuadraticForm;
+import jd.maths.matrices.QuadraticForm;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.implementations.MeasurementsError;
 import demetra.ssf.multivariate.ISsfErrors;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -142,12 +142,12 @@ class Measurements implements ISsfMeasurements {
         }
 
         @Override
-        public double ZVZ(int pos, Matrix V) {
+        public double ZVZ(int pos, FastMatrix V) {
             return QuadraticForm.apply(V, Z.row(var));
         }
 
         @Override
-        public void VpZdZ(int pos, Matrix V, double d) {
+        public void VpZdZ(int pos, FastMatrix V, double d) {
             V.addXaXt(d, Z.row(var));
         }
 

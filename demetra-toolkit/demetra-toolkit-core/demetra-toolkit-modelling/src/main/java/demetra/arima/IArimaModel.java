@@ -19,8 +19,6 @@ package demetra.arima;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.RationalFunction;
 
 
 /**
@@ -33,7 +31,7 @@ import demetra.maths.polynomials.RationalFunction;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IArimaModel extends ILinearProcess, ArimaType
+public interface IArimaModel extends ILinearProcess
 {
 
     /**
@@ -42,8 +40,7 @@ public interface IArimaModel extends ILinearProcess, ArimaType
      * represented by a new BackFilter object
      * @see(ec.tstoolkit.maths.linearfilters.BackFilter).
      */
-    @Override
-    Polynomial getAr();
+    BackFilter getAr();
 
     /**
      * Gets the degree of the AR polynomial. 0 if the auto-regressive polynomial
@@ -58,8 +55,7 @@ public interface IArimaModel extends ILinearProcess, ArimaType
      * represented by a new BackFilter object
      * @see(ec.tstoolkit.maths.linearfilters.BackFilter).
      */
-    @Override
-    Polynomial getMa();
+    BackFilter getMa();
 
     /**
      * Gets the degree of the MA polynomial. 0 if the moving average polynomial
@@ -74,7 +70,7 @@ public interface IArimaModel extends ILinearProcess, ArimaType
      * represented by a new BackFilter object
      * @see(ec.tstoolkit.maths.linearfilters.BackFilter).
      */
-    Polynomial getNonStationaryAr();
+    BackFilter getNonStationaryAr();
 
     /**
      * Gets the degree of the non stationary AR polynomial (or, equivalently, the 
@@ -88,7 +84,7 @@ public interface IArimaModel extends ILinearProcess, ArimaType
      * 
      * @return
      */
-    Polynomial getStationaryAr();
+    BackFilter getStationaryAr();
 
     /**
      * Gets the degree of the stationary (without unit roots) AR polynomial. 
@@ -102,7 +98,7 @@ public interface IArimaModel extends ILinearProcess, ArimaType
      * 
      * @return The pi-weights are represented by a rational polynomial in the back-shift operator.
      */
-    RationalFunction getPiWeights();
+    RationalBackFilter getPiWeights();
 
     /**
      * Gets the psi-weights of the model.
@@ -110,7 +106,7 @@ public interface IArimaModel extends ILinearProcess, ArimaType
      * 
      * @return The psi-weights are represented by a rational polynomial in the back-shift operator.
      */
-    RationalFunction getPsiWeights();
+    RationalBackFilter getPsiWeights();
 
 
     /**

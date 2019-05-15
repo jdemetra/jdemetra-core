@@ -5,11 +5,11 @@
  */
 package demetra.msts;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParamValidation;
-import demetra.maths.polynomials.Polynomial;
+import jp.maths.polynomials.Polynomial;
 import demetra.sarima.estimation.SarimaMapping;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;

@@ -20,7 +20,6 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.IRationalFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.polynomials.RationalFunction;
 
 /**
  * This class caches all the properties of the final ArimaModel
@@ -29,16 +28,16 @@ import demetra.maths.polynomials.RationalFunction;
  */
 public abstract class AbstractArimaModel implements IArimaModel {
 
-    private volatile RationalFunction pi, psi;
+    private volatile RationalBackFilter pi, psi;
     private volatile Spectrum spectrum;
     private volatile AutoCovarianceFunction acf;
 
     protected SymmetricFilter symmetricMa(){
-        return SymmetricFilter.convolutionOf(getMa(), getInnovationVariance());
+        return SymmetricFilter.fromFilter(getMa(), getInnovationVariance());
     }
 
     protected SymmetricFilter symmetricAr(){
-        return SymmetricFilter.convolutionOf(getAr(), 1);
+        return SymmetricFilter.fromFilter(getAr());
     }
 
     @Override
@@ -66,7 +65,7 @@ public abstract class AbstractArimaModel implements IArimaModel {
             synchronized (this) {
                 fn = acf;
                 if (fn == null) {
-                    fn = new AutoCovarianceFunction(getMa(), getStationaryAr(), getInnovationVariance());
+                    fn = new AutoCovarianceFunction(getMa().asPolynomial(), getStationaryAr().asPolynomial(), getInnovationVariance());
                     acf = fn;
                 }
             }
@@ -75,13 +74,13 @@ public abstract class AbstractArimaModel implements IArimaModel {
     }
 
     @Override
-    public RationalFunction getPiWeights() {
-        RationalFunction filter = pi;
+    public RationalBackFilter getPiWeights() {
+        RationalBackFilter filter = pi;
         if (filter == null) {
             synchronized (this) {
                 filter = pi;
                 if (filter == null) {
-                    filter = new RationalFunction(getAr(), getMa(), false);
+                    filter = new RationalBackFilter(getAr(), getMa(), 0);
                     pi = filter;
                 }
             }
@@ -90,13 +89,13 @@ public abstract class AbstractArimaModel implements IArimaModel {
     }
 
     @Override
-    public RationalFunction getPsiWeights() {
-        RationalFunction filter = psi;
+    public RationalBackFilter getPsiWeights() {
+        RationalBackFilter filter = psi;
         if (filter == null) {
             synchronized (this) {
                 filter = psi;
                 if (filter == null) {
-                    filter = new RationalFunction(getMa(), getAr(), false);
+                    filter = new RationalBackFilter(getMa(), getAr(), 0);
                     psi = filter;
                 }
             }
@@ -106,7 +105,7 @@ public abstract class AbstractArimaModel implements IArimaModel {
 
     @Override
     public IRationalFilter getFilter() throws ArimaException {
-        return new RationalBackFilter(getPsiWeights(), 0);
+        return getPsiWeights();
     }
 
     @Override

@@ -5,7 +5,7 @@
  */
 package demetra.maths.linearfilters;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.data.DoubleSeq;
 import java.util.Random;
 import org.junit.Test;

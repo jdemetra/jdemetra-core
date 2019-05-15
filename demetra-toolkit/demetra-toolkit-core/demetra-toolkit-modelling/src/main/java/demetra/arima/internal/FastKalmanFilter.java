@@ -18,12 +18,12 @@ package demetra.arima.internal;
 
 import demetra.arima.ArimaException;
 import demetra.arima.IArimaModel;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.DeterminantalTerm;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.util.SubArrayOfInt;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;

@@ -6,7 +6,7 @@
 package demetra.msts.internal;
 
 import demetra.arima.AutoCovarianceFunction;
-import demetra.maths.polynomials.Polynomial;
+import jp.maths.polynomials.Polynomial;
 import demetra.msts.ArInterpreter;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;

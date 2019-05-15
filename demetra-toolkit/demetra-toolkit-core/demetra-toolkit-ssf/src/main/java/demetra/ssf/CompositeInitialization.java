@@ -16,13 +16,13 @@
  */
 package demetra.ssf;
 
-import demetra.data.DataBlock;
-import demetra.data.DataWindow;
-import demetra.maths.matrices.MatrixWindow;
+import jd.data.DataBlock;
+import jd.data.DataWindow;
+import jd.maths.matrices.MatrixWindow;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfInitialization;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -69,7 +69,7 @@ public class CompositeInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void diffuseConstraints(Matrix b) {
+    public void diffuseConstraints(FastMatrix b) {
         // statedim * diffusedim
         MatrixWindow cur = b.topLeft();
         for (int i = 0; i < initializers.length; ++i) {
@@ -92,7 +92,7 @@ public class CompositeInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void Pf0(Matrix p) {
+    public void Pf0(FastMatrix p) {
         MatrixWindow cur = p.topLeft();
         for (int i = 0; i < initializers.length; ++i) {
             cur.next(dim[i], dim[i]);
@@ -101,7 +101,7 @@ public class CompositeInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void Pi0(Matrix p) {
+    public void Pi0(FastMatrix p) {
         MatrixWindow cur = p.topLeft();
         for (int i = 0; i < initializers.length; ++i) {
             cur.next(dim[i], dim[i]);

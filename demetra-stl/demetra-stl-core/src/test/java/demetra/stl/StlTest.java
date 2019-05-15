@@ -17,7 +17,7 @@
 package demetra.stl;
 
 import demetra.data.Data;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import java.util.Random;
 import org.junit.Ignore;
 import org.junit.Test;

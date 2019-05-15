@@ -9,7 +9,7 @@ import demetra.ssf.likelihood.MarginalLikelihood;
 import demetra.arima.ssf.SsfArima;
 import demetra.data.Data;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.univariate.SsfData;
 import org.junit.Test;

@@ -7,8 +7,8 @@ package demetra.ssf.models;
 
 import demetra.arima.ssf.SsfAr;
 import demetra.arima.AutoCovarianceFunction;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.polynomials.Polynomial;
+import jd.maths.matrices.CanonicalMatrix;
+import jp.maths.polynomials.Polynomial;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.StationaryInitialization;
 import org.junit.Test;

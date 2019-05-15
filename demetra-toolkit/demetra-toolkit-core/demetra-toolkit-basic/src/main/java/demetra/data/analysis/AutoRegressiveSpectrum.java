@@ -16,13 +16,13 @@
  */
 package demetra.data.analysis;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.data.DataWindow;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
+import jd.data.DataWindow;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.MatrixException;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.MatrixException;
 import demetra.maths.matrices.internal.Householder;
 
 

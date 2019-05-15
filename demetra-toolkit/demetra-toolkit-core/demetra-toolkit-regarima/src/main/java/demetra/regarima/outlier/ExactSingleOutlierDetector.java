@@ -19,21 +19,21 @@ package demetra.regarima.outlier;
 import demetra.arima.IArimaModel;
 import demetra.arima.estimation.ResidualsComputer;
 import demetra.arima.internal.AnsleyFilter;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
 import demetra.design.Development;
 import demetra.leastsquares.QRSolvers;
 import demetra.linearmodel.LinearModel;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.matrices.LowerTriangularMatrix;
+import jd.maths.matrices.LowerTriangularMatrix;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArmaModel;
 import demetra.leastsquares.QRSolver;
 import javax.annotation.Nonnull;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -77,7 +77,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
 
     private ArmaFilter filter;
     private final ResidualsComputer resComputer;
-    private Matrix L, Xl;
+    private FastMatrix L, Xl;
     private double[] yl, b, w;
     private int n;
     private double mad;
@@ -139,7 +139,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
             DataBlock Yl = DataBlock.of(yl);
             filter.apply(model.getY(), Yl);
 
-            Matrix regs = lm.variables();
+            FastMatrix regs = lm.variables();
             if (regs.isEmpty()) {
                 mad = getStandardDeviationComputer().compute(filter(model.getY()));
                 return true;

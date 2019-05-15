@@ -18,13 +18,13 @@ package demetra.ssf.dk;
 
 import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.ssf.likelihood.DiffuseLikelihood;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.data.DataBlockStorage;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
+import jd.data.DataBlockStorage;
 import demetra.maths.functions.IParametricMapping;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.UpperTriangularMatrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import demetra.ssf.ResultsRange;
@@ -52,7 +52,7 @@ import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.M2uAdapter;
 import demetra.ssf.univariate.IFilteringResults;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -509,7 +509,7 @@ public class DkToolkit {
         }
 
         private CanonicalMatrix xl(SsfRegressionModel model, DkFilter lp, int nl) {
-            Matrix x = model.getX();
+            FastMatrix x = model.getX();
             if (x == null) {
                 return null;
             }

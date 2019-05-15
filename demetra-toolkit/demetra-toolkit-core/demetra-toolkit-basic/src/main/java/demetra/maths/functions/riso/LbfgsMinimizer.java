@@ -18,12 +18,12 @@
  */
 package demetra.maths.functions.riso;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IFunctionDerivatives;
 import demetra.maths.functions.IFunctionMinimizer;
 import demetra.maths.functions.IFunctionPoint;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.maths.functions.ParamValidation;
 import demetra.data.DoubleSeq;
 

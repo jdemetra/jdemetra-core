@@ -16,8 +16,8 @@
  */
 package demetra.dfm;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.Matrix;
+import jd.data.DataBlock;
+import jd.maths.matrices.FastMatrix;
 
 
 /**

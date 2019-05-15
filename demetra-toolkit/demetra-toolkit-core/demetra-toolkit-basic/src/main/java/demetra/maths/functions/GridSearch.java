@@ -16,9 +16,9 @@
  */
 package demetra.maths.functions;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.data.DoubleSeq;
 
 

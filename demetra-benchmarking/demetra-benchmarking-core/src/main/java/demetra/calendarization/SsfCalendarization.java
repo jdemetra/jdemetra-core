@@ -16,7 +16,7 @@
  */
 package demetra.calendarization;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
@@ -25,7 +25,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 import java.util.HashSet;
 import javax.annotation.Nonnull;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  * State space form for calendarization. State vector: 0: Cumulative (weighted) sum (from
@@ -125,7 +125,7 @@ public class SsfCalendarization {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
             b.set(1, 0, 1);
         }
 
@@ -161,7 +161,7 @@ public class SsfCalendarization {
          * @param pf0
          */
         @Override
-        public void Pf0(Matrix pf0) {
+        public void Pf0(FastMatrix pf0) {
             // pf0.set(1, 1, 1);
         }
 
@@ -175,7 +175,7 @@ public class SsfCalendarization {
          * @param pi0
          */
         @Override
-        public void Pi0(Matrix pi0) {
+        public void Pi0(FastMatrix pi0) {
             pi0.set(1, 1, 1);
         }
 
@@ -195,7 +195,7 @@ public class SsfCalendarization {
          * @param qm
          */
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             qm.set(1, 1, 1);
         }
 
@@ -205,7 +205,7 @@ public class SsfCalendarization {
         }
 
         @Override
-        public void S(int pos, Matrix cm) {
+        public void S(int pos, FastMatrix cm) {
             cm.set(1, 0, 1);
         }
 
@@ -220,7 +220,7 @@ public class SsfCalendarization {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             tr.set(1, 1, 1);
             int postype = info.posType(pos);
             if (postype != info.weight(pos));
@@ -249,7 +249,7 @@ public class SsfCalendarization {
         }
 
         @Override
-        public void TVT(int pos, Matrix vm) {
+        public void TVT(int pos, FastMatrix vm) {
             int postype = info.posType(pos);
             switch (postype) {
                 case LAST:
@@ -283,7 +283,7 @@ public class SsfCalendarization {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.add(1, 1, 1);
         }
 
@@ -328,7 +328,7 @@ public class SsfCalendarization {
         }
 
         @Override
-        public void VpZdZ(int pos, Matrix vm, double d) {
+        public void VpZdZ(int pos, FastMatrix vm, double d) {
 
             vm.add(1, 1, info.mweight2(pos, d));
             int postype = info.posType(pos);
@@ -367,7 +367,7 @@ public class SsfCalendarization {
         }
 
         @Override
-        public void ZM(int pos, Matrix m, DataBlock x) {
+        public void ZM(int pos, FastMatrix m, DataBlock x) {
             x.setAY(info.weight(pos), m.row(1));
             int postype = info.posType(pos);
             if (postype != FIRST) {
@@ -382,7 +382,7 @@ public class SsfCalendarization {
          * @return
          */
         @Override
-        public double ZVZ(int pos, Matrix vm) {
+        public double ZVZ(int pos, FastMatrix vm) {
             int postype = info.posType(pos);
             if (postype == FIRST) {
                 return info.mweight2(pos, vm.get(1, 1));

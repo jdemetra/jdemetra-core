@@ -16,8 +16,8 @@
  */
 package demetra.descriptors.arima;
 
-import demetra.arima.ArimaType;
-import demetra.arima.UcarimaType;
+import demetra.arima.ArimaProcess;
+import demetra.arima.UcarimaProcess;
 import demetra.design.Development;
 import demetra.information.InformationMapping;
 
@@ -33,19 +33,19 @@ public class UcarimaDescriptor {
             SUM="sum",  // Reduced model
             SIZE="size";  // Number of components
 
-    static final InformationMapping<UcarimaType> MAPPING = new InformationMapping<>(UcarimaType.class);
+    static final InformationMapping<UcarimaProcess> MAPPING = new InformationMapping<>(UcarimaProcess.class);
 
     static {
         MAPPING.set(SIZE, Integer.class, source->source.size());
-        MAPPING.set(REDUCEDMODEL, ArimaType.class, source->source.getSum());
+        MAPPING.set(REDUCEDMODEL, ArimaProcess.class, source->source.getSum());
         MAPPING.delegate(SUM, ArimaDescriptor.getMapping(), source->source.getSum());
         MAPPING.delegateArray(COMPONENT, 1, 10, ArimaDescriptor.getMapping(), (source, i)
                 -> i>source.size() ? null : source.getComponent(i-1));
-        MAPPING.setArray(MODEL, 1, 10, ArimaType.class, (source, i)
+        MAPPING.setArray(MODEL, 1, 10, ArimaProcess.class, (source, i)
                 -> i>source.size() ? null : source.getComponent(i-1));
     }
 
-    public InformationMapping<UcarimaType> getMapping() {
+    public InformationMapping<UcarimaProcess> getMapping() {
         return MAPPING;
     }
     

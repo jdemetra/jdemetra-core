@@ -18,8 +18,8 @@ package demetra.tempdisagg.univariate;
 
 import demetra.data.transformation.Cumulator;
 import demetra.data.AggregationType;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jd.data.DataBlock;
+import jd.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.design.BuilderPattern;
@@ -37,7 +37,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
 import demetra.data.normalizer.DataNormalizer;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -56,8 +56,8 @@ class DisaggregationModelBuilder {
 
     // local information used in the building operation
     double[] hO, hY, hEY;
-    Matrix hX;
-    Matrix hEX;
+    FastMatrix hX;
+    FastMatrix hEX;
     TsDomain lEDom, hDom, hEDom;
     int frequencyRatio;
     double yfactor = 1;

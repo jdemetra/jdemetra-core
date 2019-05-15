@@ -7,7 +7,7 @@ package demetra.modelling.regression;
 
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -15,7 +15,7 @@ import demetra.maths.matrices.Matrix;
  * @param <X>
  */
 public interface RegressionVariableFactory <X extends ITsVariable> {
-    boolean fill(X var, TsPeriod start, Matrix buffer);
+    boolean fill(X var, TsPeriod start, FastMatrix buffer);
     
-    <D extends TimeSeriesDomain> boolean fill(X var, D domain, Matrix buffer);
+    <D extends TimeSeriesDomain> boolean fill(X var, D domain, FastMatrix buffer);
 }

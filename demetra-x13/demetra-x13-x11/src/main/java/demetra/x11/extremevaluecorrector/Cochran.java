@@ -5,7 +5,7 @@
  */
 package demetra.x11.extremevaluecorrector;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.VisibleForTesting;
 import demetra.dstats.F;
 import demetra.dstats.ProbabilityType;

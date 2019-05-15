@@ -20,16 +20,16 @@ import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.internal.KalmanFilter;
 import demetra.regarima.RegArimaModel;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.decomposition.QRDecomposition;
-import demetra.maths.matrices.MatrixType;
+import jd.maths.matrices.decomposition.QRDecomposition;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -68,7 +68,7 @@ public final class ConcentratedLikelihoodComputer {
 
     }
 
-    private <M extends IArimaModel> ConcentratedLikelihoodWithMissing process(DoubleSeq dy, MatrixType x, int nl, int nm) {
+    private <M extends IArimaModel> ConcentratedLikelihoodWithMissing process(DoubleSeq dy, Matrix x, int nl, int nm) {
 
         DataBlock y = DataBlock.of(dy);
         int n = y.length();

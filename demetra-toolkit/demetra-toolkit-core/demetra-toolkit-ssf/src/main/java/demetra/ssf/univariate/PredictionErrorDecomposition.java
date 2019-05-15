@@ -17,7 +17,7 @@
 package demetra.ssf.univariate;
 
 import demetra.ssf.UpdateInformation;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.likelihood.Likelihood;
 import demetra.ssf.IPredictionErrorDecomposition;

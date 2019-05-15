@@ -5,9 +5,9 @@
  */
 package rssf;
 
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfInitialization;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -16,7 +16,7 @@ import demetra.maths.matrices.MatrixType;
 @lombok.experimental.UtilityClass
 public class Initialization {
     
-    public ISsfInitialization of(double[] a, MatrixType P) {
+    public ISsfInitialization of(double[] a, Matrix P) {
         if (P == null) {
             throw new IllegalArgumentException();
         }
@@ -28,7 +28,7 @@ public class Initialization {
                 .build();
     }
     
-    public ISsfInitialization ofDiffuse(double[] a, MatrixType P, MatrixType B, MatrixType Pi) {
+    public ISsfInitialization ofDiffuse(double[] a, Matrix P, Matrix B, Matrix Pi) {
         if (B == null && Pi == null) {
             return of(a, P);
         }

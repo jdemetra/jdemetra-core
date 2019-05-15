@@ -16,7 +16,7 @@
  */
 package demetra.ssf.dk;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.DefaultFilteringResults;
 import demetra.ssf.DataBlockResults;

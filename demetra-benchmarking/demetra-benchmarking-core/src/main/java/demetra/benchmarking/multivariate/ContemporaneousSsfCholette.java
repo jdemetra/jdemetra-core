@@ -16,7 +16,7 @@
  */
 package demetra.benchmarking.multivariate;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.ssf.ISsfDynamics;
@@ -26,7 +26,7 @@ import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.ISsfErrors;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.MultivariateSsf;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -125,7 +125,7 @@ class ContemporaneousSsfCholette {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
             if (info.rho == 1) {
                 b.diagonal().set(1);
             }
@@ -136,7 +136,7 @@ class ContemporaneousSsfCholette {
         }
 
         @Override
-        public void Pf0(Matrix pf0) {
+        public void Pf0(FastMatrix pf0) {
             if (info.rho != 1) {
                 double v = 1 / (1 - info.rho * info.rho);
                 pf0.diagonal().set(v);
@@ -144,7 +144,7 @@ class ContemporaneousSsfCholette {
         }
 
         @Override
-        public void Pi0(Matrix pi0) {
+        public void Pi0(FastMatrix pi0) {
             if (info.rho == 1) {
                 pi0.diagonal().set(1);
             }
@@ -165,12 +165,12 @@ class ContemporaneousSsfCholette {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             qm.diagonal().set(1);
         }
 
         @Override
-        public void S(int pos, Matrix cm) {
+        public void S(int pos, FastMatrix cm) {
             cm.diagonal().set(1);
         }
 
@@ -185,7 +185,7 @@ class ContemporaneousSsfCholette {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             tr.diagonal().set(info.rho);
         }
 
@@ -195,12 +195,12 @@ class ContemporaneousSsfCholette {
         }
 
         @Override
-        public void TM(int pos, Matrix m) {
+        public void TM(int pos, FastMatrix m) {
             m.mul(info.rho);
         }
 
         @Override
-        public void TVT(int pos, Matrix v) {
+        public void TVT(int pos, FastMatrix v) {
             if (info.rho != 1) {
                 v.mul(info.rho * info.rho);
             }
@@ -212,7 +212,7 @@ class ContemporaneousSsfCholette {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.diagonal().add(1);
         }
 
@@ -222,7 +222,7 @@ class ContemporaneousSsfCholette {
         }
 
         @Override
-        public void MT(int pos, Matrix m) {
+        public void MT(int pos, FastMatrix m) {
             m.mul(info.rho);
         }
 
@@ -296,7 +296,7 @@ class ContemporaneousSsfCholette {
         }
 
         @Override
-        public void ZM(int pos, Matrix m, DataBlock x) {
+        public void ZM(int pos, FastMatrix m, DataBlock x) {
             x.set(0);
             for (int i = 0; i < cnt.index.length; ++i) {
                 int l = cnt.index[i];
@@ -305,7 +305,7 @@ class ContemporaneousSsfCholette {
         }
 
         @Override
-        public double ZVZ(int pos, Matrix vm) {
+        public double ZVZ(int pos, FastMatrix vm) {
             double s = 0;
             for (int i = 0; i < cnt.index.length; ++i) {
                 int k = cnt.index[i];
@@ -320,7 +320,7 @@ class ContemporaneousSsfCholette {
         }
 
         @Override
-        public void VpZdZ(int pos, Matrix vm, double d) {
+        public void VpZdZ(int pos, FastMatrix vm, double d) {
             for (int i = 0; i < cnt.index.length; ++i) {
                 int k = cnt.index[i];
                 double dk = info.mweight(pos, k, cnt.weights[i]);

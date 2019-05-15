@@ -19,14 +19,14 @@
 package demetra.ssf.univariate;
 
 import demetra.ssf.ISsfLoading;
-import demetra.data.DataBlock;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.data.DataBlock;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -175,7 +175,7 @@ public class OrdinarySmoother {
             iterateN(pos);
         }
         DataBlock fa = frslts.a(pos);
-        Matrix fP = frslts.P(pos);
+        FastMatrix fP = frslts.P(pos);
         if (fP == null) {
             return false;
         }

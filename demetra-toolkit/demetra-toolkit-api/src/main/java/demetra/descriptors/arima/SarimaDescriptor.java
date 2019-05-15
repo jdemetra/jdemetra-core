@@ -17,8 +17,8 @@
 package demetra.descriptors.arima;
 
 import demetra.information.InformationMapping;
-import demetra.sarima.SarimaType;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaProcess;
+import demetra.arima.SarimaSpecification;
 import java.util.function.Function;
 
 /**
@@ -34,7 +34,7 @@ public class SarimaDescriptor {
             PHI="phi", THETA="theta",BPHI="bphi", BTHETA="btheta",
             PERIOD = "period";
 
-    static final InformationMapping<SarimaType> MAPPING = new InformationMapping<>(SarimaType.class);
+    static final InformationMapping<SarimaProcess> MAPPING = new InformationMapping<>(SarimaProcess.class);
 
     static {
         MAPPING.set(P, Integer.class, source -> source.getPhi().degree());
@@ -73,7 +73,7 @@ public class SarimaDescriptor {
 
     }
 
-    public InformationMapping<SarimaType> getMapping() {
+    public InformationMapping<SarimaProcess> getMapping() {
         return MAPPING;
     }
 

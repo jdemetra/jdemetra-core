@@ -16,8 +16,8 @@
  */
 package demetra.sts;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.data.DataBlock;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.univariate.ISsf;
@@ -25,8 +25,8 @@ import demetra.ssf.univariate.Ssf;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
 import demetra.linearsystem.LinearSystemSolver;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -322,12 +322,12 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
             b.diagonal().set(1);
         }
 
         @Override
-        public void Pi0(Matrix p) {
+        public void Pi0(FastMatrix p) {
             p.diagonal().set(1);
         }
 
@@ -336,7 +336,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void Pf0(Matrix p) {
+        public void Pf0(FastMatrix p) {
             if (data.seasVar > 0) {
                 if (data.seasModel == SeasonalModel.Dummy) {
                     p.set(0, 0, data.seasVar);
@@ -380,7 +380,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void V(int pos, Matrix v) {
+        public void V(int pos, FastMatrix v) {
             if (data.seasVar > 0) {
                 if (data.seasModel == SeasonalModel.Dummy) {
                     v.set(0, 0, data.seasVar);
@@ -396,7 +396,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void S(int pos, Matrix s) {
+        public void S(int pos, FastMatrix s) {
             if (null != data.seasModel) {
                 switch (data.seasModel) {
                     case Crude:
@@ -443,7 +443,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             if (data.seasVar >= 0) {
                 tr.row(data.period - 2).set(-1);
                 tr.subDiagonal(1).set(1);
@@ -466,7 +466,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             switch (data.seasModel) {
                 case Fixed:
                     return;
@@ -487,7 +487,7 @@ public class SeasonalComponent {
 
         private final int period;
         private final double[] var;
-        private final Matrix V;
+        private final FastMatrix V;
 
         public HarrisonStevensData(final int period, final double v) {
             this.period = period;
@@ -543,12 +543,12 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
             b.diagonal().set(1);
         }
 
         @Override
-        public void Pi0(Matrix b) {
+        public void Pi0(FastMatrix b) {
             b.diagonal().set(1);
         }
 
@@ -557,7 +557,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void Pf0(Matrix p) {
+        public void Pf0(FastMatrix p) {
             if (data.V != null) {
                 p.copy(data.V);
             }
@@ -589,7 +589,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             if (data.V != null) {
                 qm.copy(data.V);
             }
@@ -601,7 +601,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void S(int pos, Matrix s) {
+        public void S(int pos, FastMatrix s) {
             //TODO
         }
 
@@ -616,7 +616,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             tr.diagonal().set(1);
         }
 
@@ -629,7 +629,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.add(data.V);
         }
 

@@ -17,7 +17,7 @@
 package demetra.timeseries.simplets;
 
 import demetra.timeseries.TsData;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.timeseries.TsDomain;

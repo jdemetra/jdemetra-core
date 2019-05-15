@@ -18,7 +18,7 @@ package demetra.likelihood;
 
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.MatrixType;
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -44,5 +44,5 @@ public class MaximumLogLikelihood {
      * Hessian of the log likelihood function at its maximum. 
      * E(hessian)=Information. The hessian is an approximation of the information matrix
      */
-    private MatrixType hessian;
+    private Matrix hessian;
 }

@@ -19,7 +19,7 @@ package demetra.regarima;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 
 /**
  *

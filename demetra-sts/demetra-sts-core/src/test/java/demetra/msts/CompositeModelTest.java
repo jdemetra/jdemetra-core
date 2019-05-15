@@ -5,8 +5,8 @@
  */
 package demetra.msts;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.data.DataBlock;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import org.junit.Test;

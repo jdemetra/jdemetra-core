@@ -16,9 +16,9 @@
  */
 package demetra.ssf;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.Matrix;
+import jd.data.DataBlock;
+import jd.maths.matrices.SymmetricMatrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -47,13 +47,13 @@ public interface ISsfDynamics extends ISsfRoot {
      * @param pos
      * @param qm
      */
-    void V(int pos, Matrix qm);
+    void V(int pos, FastMatrix qm);
 
     /**
      * @param pos
      * @param cm
      */
-    void S(int pos, Matrix cm);
+    void S(int pos, FastMatrix cm);
 
     /**
      *
@@ -72,7 +72,7 @@ public interface ISsfDynamics extends ISsfRoot {
      * responsibility to provide a clean sub-matrix, so that the callee can
      * safely set only the non zero values.
      */
-    void T(int pos, Matrix tr);
+    void T(int pos, FastMatrix tr);
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="forward operations">
@@ -100,7 +100,7 @@ public interface ISsfDynamics extends ISsfRoot {
      * @param pos
      * @param M
      */
-    default void TM(int pos, Matrix M) {
+    default void TM(int pos, FastMatrix M) {
         M.applyByColumns(x->TX(pos, x));
     }
 
@@ -110,7 +110,7 @@ public interface ISsfDynamics extends ISsfRoot {
      * @param pos The position of the model
      * @param vm
      */
-    default void TVT(int pos, Matrix vm) {
+    default void TVT(int pos, FastMatrix vm) {
         TM(pos, vm);
         TM(pos, vm.transpose());
         SymmetricMatrix.reenforceSymmetry(vm);
@@ -122,7 +122,7 @@ public interface ISsfDynamics extends ISsfRoot {
      * @param pos
      * @param p
      */
-    void addV(int pos, Matrix p);
+    void addV(int pos, FastMatrix p);
 
     //</editor-fold>  
     //<editor-fold defaultstate="collapsed" desc="backward operations">
@@ -140,7 +140,7 @@ public interface ISsfDynamics extends ISsfRoot {
      * @param pos
      * @param M
      */
-    default void MT(int pos, Matrix M) {
+    default void MT(int pos, FastMatrix M) {
         M.applyByRows(row->XT(pos, row));
     }
 

@@ -16,16 +16,16 @@
  */
 package demetra.maths.linearfilters;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.util.TableOfLong;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
 import demetra.maths.Simplifying;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.UpperTriangularMatrix;
-import demetra.maths.polynomials.Polynomial;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.MatrixException;
+import jd.maths.matrices.UpperTriangularMatrix;
+import jp.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.spi.RootsSolver;
 
 /**

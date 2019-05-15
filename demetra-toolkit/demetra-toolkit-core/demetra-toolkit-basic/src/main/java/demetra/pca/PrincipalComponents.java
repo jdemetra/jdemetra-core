@@ -16,9 +16,9 @@
  */
 package demetra.pca;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.decomposition.ISingularValueDecomposition;
+import jd.data.DataBlock;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.decomposition.ISingularValueDecomposition;
 import demetra.maths.matrices.internal.SingularValueDecomposition;
 import demetra.data.DoubleSeq;
 

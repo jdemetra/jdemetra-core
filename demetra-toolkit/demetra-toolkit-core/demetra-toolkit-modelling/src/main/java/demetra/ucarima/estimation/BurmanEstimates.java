@@ -20,22 +20,22 @@ import demetra.arima.ArimaException;
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.internal.FastArimaForecasts;
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.matrices.MatrixException;
+import jd.maths.matrices.MatrixException;
 import demetra.maths.matrices.internal.CroutDoolittle;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.UnitRoots;
+import jp.maths.polynomials.Polynomial;
+import jp.maths.polynomials.UnitRoots;
 import demetra.ucarima.UcarimaModel;
 import demetra.ucarima.WienerKolmogorovEstimators;
 import java.util.Arrays;
 import demetra.arima.estimation.ArimaForecasts;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.decomposition.LUDecomposition;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.decomposition.LUDecomposition;
+import jd.maths.matrices.FastMatrix;
 
 /**
  * Estimation of the components of an UCARIMA model using a variant of the
@@ -482,7 +482,7 @@ public class BurmanEstimates {
                     BackFilter umar = model.getNonStationaryAr(), ucar = cmp.getNonStationaryAr();
                     BackFilter nar = umar.divide(ucar);
                     BackFilter smar = model.getStationaryAr(), scar = cmp.getStationaryAr();
-                    BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool(true);
+                    BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool();
                     if (smp.simplify(smar, scar)) {
                         smar = smp.getLeft();
                         scar = smp.getRight();

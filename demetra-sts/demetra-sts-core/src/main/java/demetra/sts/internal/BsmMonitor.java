@@ -16,7 +16,7 @@
  */
 package demetra.sts.internal;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.design.Development;
 import demetra.maths.functions.IFunction;
@@ -38,7 +38,7 @@ import demetra.sts.BsmSpec;
 import demetra.sts.SsfBsm2;
 import demetra.sts.internal.BsmMapping.Transformation;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -47,7 +47,7 @@ import demetra.maths.matrices.Matrix;
 @Development(status = Development.Status.Preliminary)
 public class BsmMonitor {
     
-    private Matrix m_x;
+    private FastMatrix m_x;
     
     private double[] m_y;
 
@@ -384,7 +384,7 @@ public class BsmMonitor {
      * @param freq
      * @return
      */
-    public boolean process(DoubleSeq y, Matrix x, int freq) {
+    public boolean process(DoubleSeq y, FastMatrix x, int freq) {
         m_y = y.toArray();
         m_x = x;
         period = freq;

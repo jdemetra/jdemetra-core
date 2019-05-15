@@ -16,11 +16,11 @@
  */
 package demetra.ssf.array;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.decomposition.ElementaryTransformations;
-import demetra.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.SubMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jd.data.DataBlock;
+import jd.maths.matrices.decomposition.ElementaryTransformations;
+import jd.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.SubMatrix;
+import jd.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.univariate.IFilteringResults;

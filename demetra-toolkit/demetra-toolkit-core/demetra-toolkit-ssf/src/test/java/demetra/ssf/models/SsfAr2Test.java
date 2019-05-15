@@ -6,7 +6,7 @@
 package demetra.ssf.models;
 
 import demetra.arima.ssf.SsfAr2;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.StationaryInitialization;
 import org.junit.Test;

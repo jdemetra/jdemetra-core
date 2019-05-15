@@ -17,7 +17,7 @@
 package demetra.ssf.dk;
 
 import demetra.design.Development;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.ISsfInitialization;

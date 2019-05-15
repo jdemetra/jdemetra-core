@@ -72,7 +72,7 @@ public class ModelDecomposer
      */
     public UcarimaModel decompose(final IArimaModel m) {
 	try {
-	    ArimaModel arima = ArimaModel.copyOf(m);
+	    ArimaModel arima = ArimaModel.of(m);
 	    if (arima == null)
 		return null;
 	    int n = m_smds.size();

@@ -16,17 +16,17 @@
  */
 package demetra.maths.functions.ssq;
 
-import demetra.data.DataBlock;
+import jd.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.functions.IFunction;
-import demetra.maths.matrices.CanonicalMatrix;
+import jd.maths.matrices.CanonicalMatrix;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import jd.maths.matrices.FastMatrix;
 
 /**
  *
@@ -253,7 +253,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @return
      */
     @Override
-    public void jacobian(Matrix m) {
+    public void jacobian(FastMatrix m) {
         if (m_de == null) {
             calcgrad();
         }
@@ -270,7 +270,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @param h
      */
     @Override
-    public void hessian(Matrix h) {
+    public void hessian(FastMatrix h) {
         if (m_h == null) {
             calch();
         }
