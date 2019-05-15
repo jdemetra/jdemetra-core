@@ -241,7 +241,7 @@ public class HannanRissanen {
     }
 
     private void finalcorrection() {
-        BackFilter ar = m_model.getAR();
+        BackFilter ar = m_model.getAr();
         DataBlock ndata = DataBlock.make(m_data.length - ar.getDegree());
         ar.apply(DataBlock.of(m_data), ndata);
         HannanRissanen hr=HannanRissanen.builder()

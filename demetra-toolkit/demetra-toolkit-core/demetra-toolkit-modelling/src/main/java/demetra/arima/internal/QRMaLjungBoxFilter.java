@@ -154,7 +154,7 @@ public class QRMaLjungBoxFilter {
     }
 
     public int initialize(IArimaModel arima, int n) {
-	ma = arima.getMA().asPolynomial();
+	ma = arima.getMa().asPolynomial();
 	this.n = n;
 	q = ma.degree();
 

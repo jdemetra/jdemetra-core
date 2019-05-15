@@ -109,8 +109,8 @@ public class WienerKolmogorovEstimators {
         IArimaModel a = m_ucm.getComponent(cmp);
         IArimaModel s = signal ? a : m_ucm.getComplement(cmp);
 
-        BackFilter nar = m_ucm.getModel().getStationaryAR(), dar = s.getStationaryAR();
-        BackFilter nur = m_ucm.getModel().getNonStationaryAR(), dur = s.getNonStationaryAR();
+        BackFilter nar = m_ucm.getModel().getStationaryAr(), dar = s.getStationaryAr();
+        BackFilter nur = m_ucm.getModel().getNonStationaryAr(), dur = s.getNonStationaryAr();
 
         BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool(false);
         // we computes P'(B), Ps'(B) (respectively in nar, dar)
@@ -123,9 +123,9 @@ public class WienerKolmogorovEstimators {
         nar = nar.times(nur);
         // nar is P'(B)Dn(B)
 
-        BackFilter denom = m_ucm.getModel().getMA().times(dar);
+        BackFilter denom = m_ucm.getModel().getMa().times(dar);
         // denom is Q(B)Ps'(B)
-        BackFilter num = s.getMA().times(nar);
+        BackFilter num = s.getMa().times(nar);
         // num is Qs(B)P'(B)Dn(B)
         SymmetricFilter c = SymmetricFilter.fromFilter(num);
         double svar = s.getInnovationVariance(), mvar = m_ucm.getModel().getInnovationVariance();
@@ -135,7 +135,7 @@ public class WienerKolmogorovEstimators {
         RationalBackFilter rb = new RationalBackFilter(gf, denom, 0);
 
         RationalFilter f = new RationalFilter(rb, rb.mirror(), c, SymmetricFilter.fromFilter(denom));
-        RationalFilter mf = new RationalFilter(s.getMA().times(svar / mvar), s.getAR(), num.mirror(), denom.mirror());
+        RationalFilter mf = new RationalFilter(s.getMa().times(svar / mvar), s.getAr(), num.mirror(), denom.mirror());
         LinearProcess m = new LinearProcess(mf, mvar);
 
         m_final[cmp][k] = new WienerKolmogorovEstimator(f, m);
@@ -162,8 +162,8 @@ public class WienerKolmogorovEstimators {
         }
         ArimaModel n = m_ucm.getComplement(cmp);
         IArimaModel model = m_ucm.getModel();
-        BackFilter ar = model.getMA();
-        SymmetricFilter ss = s.symmetricMA(), sn = n.symmetricMA();
+        BackFilter ar = model.getMa();
+        SymmetricFilter ss = s.symmetricMa(), sn = n.symmetricMa();
         SymmetricFilter num = ss.times(sn);
         return new ArimaModel(ar, null, num);
     }
@@ -210,8 +210,8 @@ public class WienerKolmogorovEstimators {
 
         // stationary model: Ka * MAa(B)/Stationary(ARa(B))
         // *MAa(F)/MA(F)*[AR(F)/ARa(F)], ur=ARa(B)
-        BackFilter nar = m_ucm.getModel().getStationaryAR(), dar = a.getStationaryAR();
-        BackFilter nur = m_ucm.getModel().getNonStationaryAR(), dur = a.getNonStationaryAR();
+        BackFilter nar = m_ucm.getModel().getStationaryAr(), dar = a.getStationaryAr();
+        BackFilter nur = m_ucm.getModel().getNonStationaryAr(), dur = a.getNonStationaryAr();
 
         BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool(false);
         if (smp.simplify(nar, dar)) {
@@ -220,12 +220,12 @@ public class WienerKolmogorovEstimators {
         }
         nur = nur.divide(dur);
         nar = nar.times(nur);
-        BackFilter denom = model.getMA().times(dar);
-        BackFilter num = a.getMA().times(nar);
+        BackFilter denom = model.getMa().times(dar);
+        BackFilter num = a.getMa().times(nar);
         double avar = a.getInnovationVariance(), mvar = model.getInnovationVariance();
-        BackFilter star = a.getStationaryAR();
-        ur = a.getNonStationaryAR();
-        RationalFilter mf = new RationalFilter(a.getMA().times(avar / mvar), star, num.mirror(), denom.mirror());
+        BackFilter star = a.getStationaryAr();
+        ur = a.getNonStationaryAr();
+        RationalFilter mf = new RationalFilter(a.getMa().times(avar / mvar), star, num.mirror(), denom.mirror());
 
         return new StationaryTransformation<>(new LinearProcess(mf, mvar), ur);
     }

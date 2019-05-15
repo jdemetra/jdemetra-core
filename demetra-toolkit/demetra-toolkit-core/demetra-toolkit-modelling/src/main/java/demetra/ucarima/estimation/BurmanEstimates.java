@@ -315,7 +315,7 @@ public class BurmanEstimates {
     // compute mean/P(1), where P is the stationary AR 
     private double correctedMean() {
         IArimaModel arima = model();
-        return m_mean / arima.getStationaryAR().asPolynomial().evaluateAt(1);
+        return m_mean / arima.getStationaryAr().asPolynomial().evaluateAt(1);
     }
 
 //    private void extendSeriesOld() {
@@ -467,21 +467,21 @@ public class BurmanEstimates {
         m_f = new double[ncmps][];
         m_g = new Polynomial[ncmps];
 
-        m_ma = model.getMA().asPolynomial();
+        m_ma = model.getMa().asPolynomial();
         double v = model.getInnovationVariance();
         if (v != 1) {
             m_ma = m_ma.times(Math.sqrt(v));
         }
-        m_ar = model.getAR().asPolynomial();
+        m_ar = model.getAr().asPolynomial();
 
         for (int i = 0; i < ncmps; ++i) {
             ArimaModel cmp = ucm.getComponent(i);
             if (!cmp.isNull()) {
-                SymmetricFilter sma = cmp.symmetricMA();
+                SymmetricFilter sma = cmp.symmetricMa();
                 if (!sma.isNull()) {
-                    BackFilter umar = model.getNonStationaryAR(), ucar = cmp.getNonStationaryAR();
+                    BackFilter umar = model.getNonStationaryAr(), ucar = cmp.getNonStationaryAr();
                     BackFilter nar = umar.divide(ucar);
-                    BackFilter smar = model.getStationaryAR(), scar = cmp.getStationaryAR();
+                    BackFilter smar = model.getStationaryAr(), scar = cmp.getStationaryAr();
                     BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool(true);
                     if (smp.simplify(smar, scar)) {
                         smar = smp.getLeft();
@@ -513,13 +513,13 @@ public class BurmanEstimates {
 
     private boolean useD1() {
         // we use D1 correction when there is a mean and UR in the AR part of the model
-        return m_bmean && model().getNonStationaryAROrder()> 0;
+        return m_bmean && model().getNonStationaryArOrder()> 0;
     }
 
     private boolean useMean() {
         // we use the mean if there is a mean and if we don't use D1 correction
         // it appens when the model doesn't contain non stationary roots
-        return m_bmean && model().getNonStationaryAROrder()== 0;
+        return m_bmean && model().getNonStationaryArOrder()== 0;
     }
 
     private boolean isTrendConstant() {

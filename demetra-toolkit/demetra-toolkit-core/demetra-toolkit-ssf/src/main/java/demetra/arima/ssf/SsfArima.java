@@ -101,7 +101,7 @@ public class SsfArima {
             ISsfMeasurement m = ssf.measurement();
             int nr = ssf.getStateDim(), nd = initialization.getDiffuseDim();
             CanonicalMatrix A = CanonicalMatrix.make(nr + nd, nd);
-            double[] dif = arima.getNonStationaryAR().asPolynomial().toArray();
+            double[] dif = arima.getNonStationaryAr().asPolynomial().toArray();
             for (int j = 0; j < nd; ++j) {
                 A.set(j, j, 1);
                 for (int i = nd; i < nd + nr; ++i) {
@@ -357,8 +357,8 @@ public class SsfArima {
 
         ArimaData(IArimaModel arima) {
             var = arima.getInnovationVariance();
-            Polynomial ar = arima.getAR().asPolynomial();
-            Polynomial ma = arima.getMA().asPolynomial();
+            Polynomial ar = arima.getAr().asPolynomial();
+            Polynomial ma = arima.getMa().asPolynomial();
             phi = ar.toArray();
             dim = Math.max(ar.degree(), ma.degree() + 1);
             psi = DataBlock.of(RationalFunction.of(ma, ar).coefficients(dim));

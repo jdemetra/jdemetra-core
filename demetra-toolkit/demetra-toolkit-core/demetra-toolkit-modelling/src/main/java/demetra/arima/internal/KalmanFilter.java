@@ -211,8 +211,8 @@ public class KalmanFilter implements ArmaFilter {
     public int prepare(final IArimaModel model, int length) {
         var = model.getInnovationVariance();
         ldet = Double.NaN;
-        phi = model.getAR().asPolynomial().toArray();
-        dim = Math.max(model.getAROrder(), model.getMAOrder() + 1);
+        phi = model.getAr().asPolynomial().toArray();
+        dim = Math.max(model.getArOrder(), model.getMaOrder() + 1);
         C0 = model.getAutoCovarianceFunction().values(dim);
         h0 = C0[0];
         n = length;

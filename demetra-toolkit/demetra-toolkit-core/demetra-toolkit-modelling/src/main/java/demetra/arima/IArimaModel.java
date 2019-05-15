@@ -19,6 +19,8 @@ package demetra.arima;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
+import demetra.maths.polynomials.Polynomial;
+import demetra.maths.polynomials.RationalFunction;
 
 
 /**
@@ -31,7 +33,7 @@ import demetra.maths.linearfilters.RationalBackFilter;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IArimaModel extends ILinearProcess
+public interface IArimaModel extends ILinearProcess, ArimaType
 {
 
     /**
@@ -40,14 +42,15 @@ public interface IArimaModel extends ILinearProcess
      * represented by a new BackFilter object
      * @see(ec.tstoolkit.maths.linearfilters.BackFilter).
      */
-    BackFilter getAR();
+    @Override
+    Polynomial getAr();
 
     /**
      * Gets the degree of the AR polynomial. 0 if the auto-regressive polynomial
      * is missing.
      * @return The degree of the AR polynomial. >= 0.
      */
-    int getAROrder();
+    int getArOrder();
 
     /**
      * Gets the moving average polynomial
@@ -55,14 +58,15 @@ public interface IArimaModel extends ILinearProcess
      * represented by a new BackFilter object
      * @see(ec.tstoolkit.maths.linearfilters.BackFilter).
      */
-    BackFilter getMA();
+    @Override
+    Polynomial getMa();
 
     /**
      * Gets the degree of the MA polynomial. 0 if the moving average polynomial
      * is missing.
      * @return The degree of the MA polynomial. >= 0.
      */
-    int getMAOrder();
+    int getMaOrder();
 
     /**
      * Gets the non stationary (containing only unit roots) auto-regressive polynomial
@@ -70,7 +74,7 @@ public interface IArimaModel extends ILinearProcess
      * represented by a new BackFilter object
      * @see(ec.tstoolkit.maths.linearfilters.BackFilter).
      */
-    BackFilter getNonStationaryAR();
+    Polynomial getNonStationaryAr();
 
     /**
      * Gets the degree of the non stationary AR polynomial (or, equivalently, the 
@@ -78,19 +82,19 @@ public interface IArimaModel extends ILinearProcess
      * 0 if there is no unit roots.
      * @return The number of unit roots. 0 if the model is stationary.
      */
-    int getNonStationaryAROrder();
+    int getNonStationaryArOrder();
 
     /**
      * 
      * @return
      */
-    BackFilter getStationaryAR();
+    Polynomial getStationaryAr();
 
     /**
      * Gets the degree of the stationary (without unit roots) AR polynomial. 
      * @return The degree of the stationary AR polynomial.
      */
-    int getStationaryAROrder();
+    int getStationaryArOrder();
 
     /**
      * Gets the pi-weights of the model.
@@ -98,7 +102,7 @@ public interface IArimaModel extends ILinearProcess
      * 
      * @return The pi-weights are represented by a rational polynomial in the back-shift operator.
      */
-    RationalBackFilter getPiWeights();
+    RationalFunction getPiWeights();
 
     /**
      * Gets the psi-weights of the model.
@@ -106,7 +110,7 @@ public interface IArimaModel extends ILinearProcess
      * 
      * @return The psi-weights are represented by a rational polynomial in the back-shift operator.
      */
-    RationalBackFilter getPsiWeights();
+    RationalFunction getPsiWeights();
 
 
     /**

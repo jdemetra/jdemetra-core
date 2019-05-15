@@ -212,7 +212,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
 
     // search for possible common UR in MA and AR
     private void simplifyMA() {
-        m_sma = model.symmetricMA();
+        m_sma = model.symmetricMa();
         //SymmetricFrequencyResponse.SimplifyingTool smp = new SymmetricFrequencyResponse.SimplifyingTool();
         SymmetricFrequencyResponse sfma = new SymmetricFrequencyResponse(m_sma);
         if (m_sur != null) {
@@ -257,7 +257,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
     }
 
     private void splitRoots() {
-        m_selector.select(model.getStationaryAR().asPolynomial());
+        m_selector.select(model.getStationaryAr().asPolynomial());
         if (m_selector.getSelection() != null) {
             m_sar = new BackFilter(m_selector.getSelection());
         } else {
@@ -269,7 +269,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
             m_nar = BackFilter.ONE;
         }
 
-        m_selector.selectUnitRoots(model.getNonStationaryAR().asPolynomial());
+        m_selector.selectUnitRoots(model.getNonStationaryAr().asPolynomial());
         if (m_selector.getSelection() != null) {
             m_sur = new BackFilter(m_selector.getSelection());
         } else {

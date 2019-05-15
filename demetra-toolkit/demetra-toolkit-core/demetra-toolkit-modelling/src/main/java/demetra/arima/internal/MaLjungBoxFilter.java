@@ -153,7 +153,7 @@ public class MaLjungBoxFilter {
     }
 
     public int prepare(IArimaModel arima, int n) {
-	m_ma = arima.getMA().asPolynomial();
+	m_ma = arima.getMa().asPolynomial();
 	m_n = n;
 	m_q = m_ma.degree();
 

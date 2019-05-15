@@ -71,7 +71,7 @@ public final class X11FilterFactory {
     public SymmetricFilter makeSymmetricFilter(final int m, final int n) {
         Polynomial M = simpleFilter(m);
         Polynomial N = simpleFilter(n);
-        return SymmetricFilter.createFromWeights(M.times(N).coefficients());
+        return SymmetricFilter.of(M.times(N).coefficients());
 
     }
 

@@ -138,7 +138,7 @@ public final class RegArimaModel<M extends IArimaModel> {
         RegArmaModel<M> dm = oldModel.dmodel;
         if (dm != null) {
             StationaryTransformation st = newArima.stationaryTransformation();
-            if (st.getUnitRoots().equals(oldModel.arima.getNonStationaryAR())) {
+            if (st.getUnitRoots().equals(oldModel.arima.getNonStationaryAr())) {
                 dm = RegArmaModel.of(dm, (M) st.getStationaryModel());
             } else {
                 dm = null;

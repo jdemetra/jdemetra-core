@@ -104,8 +104,8 @@ public class AnsleyFilter implements ArmaFilter {
     public int prepare(final IArimaModel arima, int n) {
         m_n = n;
         m_bL = null;
-        m_ar = arima.getAR().asPolynomial().toArray();
-        BackFilter ma = arima.getMA();
+        m_ar = arima.getAr().asPolynomial().toArray();
+        BackFilter ma = arima.getMa();
         m_var = arima.getInnovationVariance();
         m_ma = ma.asPolynomial().toArray();
         int p = m_ar.length-1, q = m_ma.length-1;

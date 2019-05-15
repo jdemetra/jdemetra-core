@@ -20,6 +20,7 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.IRationalFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
+import demetra.maths.polynomials.RationalFunction;
 
 /**
  * This class caches all the properties of the final ArimaModel
@@ -28,16 +29,16 @@ import demetra.maths.linearfilters.SymmetricFilter;
  */
 public abstract class AbstractArimaModel implements IArimaModel {
 
-    private volatile RationalBackFilter pi, psi;
+    private volatile RationalFunction pi, psi;
     private volatile Spectrum spectrum;
     private volatile AutoCovarianceFunction acf;
 
-    protected SymmetricFilter symmetricMA(){
-        return SymmetricFilter.fromFilter(getMA(), getInnovationVariance());
+    protected SymmetricFilter symmetricMa(){
+        return SymmetricFilter.convolutionOf(getMa(), getInnovationVariance());
     }
 
-    protected SymmetricFilter symmetricAR(){
-        return SymmetricFilter.fromFilter(getAR());
+    protected SymmetricFilter symmetricAr(){
+        return SymmetricFilter.convolutionOf(getAr(), 1);
     }
 
     @Override
@@ -47,7 +48,7 @@ public abstract class AbstractArimaModel implements IArimaModel {
             synchronized (this) {
                 s = spectrum;
                 if (s == null) {
-                    s = new Spectrum(symmetricMA(), symmetricAR());
+                    s = new Spectrum(symmetricMa(), symmetricAr());
                     spectrum = s;
                 }
             }
@@ -65,7 +66,7 @@ public abstract class AbstractArimaModel implements IArimaModel {
             synchronized (this) {
                 fn = acf;
                 if (fn == null) {
-                    fn = new AutoCovarianceFunction(getMA().asPolynomial(), getStationaryAR().asPolynomial(), getInnovationVariance());
+                    fn = new AutoCovarianceFunction(getMa(), getStationaryAr(), getInnovationVariance());
                     acf = fn;
                 }
             }
@@ -74,13 +75,13 @@ public abstract class AbstractArimaModel implements IArimaModel {
     }
 
     @Override
-    public RationalBackFilter getPiWeights() {
-        RationalBackFilter filter = pi;
+    public RationalFunction getPiWeights() {
+        RationalFunction filter = pi;
         if (filter == null) {
             synchronized (this) {
                 filter = pi;
                 if (filter == null) {
-                    filter = new RationalBackFilter(getAR(), getMA(), 0);
+                    filter = new RationalFunction(getAr(), getMa(), false);
                     pi = filter;
                 }
             }
@@ -89,13 +90,13 @@ public abstract class AbstractArimaModel implements IArimaModel {
     }
 
     @Override
-    public RationalBackFilter getPsiWeights() {
-        RationalBackFilter filter = psi;
+    public RationalFunction getPsiWeights() {
+        RationalFunction filter = psi;
         if (filter == null) {
             synchronized (this) {
                 filter = psi;
                 if (filter == null) {
-                    filter = new RationalBackFilter(getMA(), getAR(), 0);
+                    filter = new RationalFunction(getMa(), getAr(), false);
                     psi = filter;
                 }
             }
@@ -105,20 +106,20 @@ public abstract class AbstractArimaModel implements IArimaModel {
 
     @Override
     public IRationalFilter getFilter() throws ArimaException {
-        return getPsiWeights();
+        return new RationalBackFilter(getPsiWeights(), 0);
     }
 
     @Override
     public boolean isStationary() {
-        return getNonStationaryAROrder() == 0;
+        return getNonStationaryArOrder() == 0;
     }
 
     @Override
     public String toString() {
         try {
             StringBuilder builder = new StringBuilder();
-            builder.append("AR = ").append(getAR().toString()).append("; ");
-            builder.append("MA = ").append(getMA().toString()).append("; ");
+            builder.append("AR = ").append(getAr().toString()).append("; ");
+            builder.append("MA = ").append(getMa().toString()).append("; ");
             builder.append("var =").append(getInnovationVariance());
             return builder.toString();
         } catch (ArimaException ex) {

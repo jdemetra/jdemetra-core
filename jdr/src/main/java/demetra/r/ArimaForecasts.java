@@ -121,7 +121,7 @@ public class ArimaForecasts {
         if (nx > 0) {
             CanonicalMatrix x = CanonicalMatrix.make(yc.length, nx);
             if (regarima.isMean()) {
-                generateMeanEffect(regarima.arima().getNonStationaryAR(), x.column(0));
+                generateMeanEffect(regarima.arima().getNonStationaryAr(), x.column(0));
             }
             ssf = RegSsf.of(ssf, x);
         }

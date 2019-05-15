@@ -13,22 +13,8 @@ import demetra.maths.PolynomialType;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @Development(status = Development.Status.Release)
-@lombok.Builder(builderClassName="Builder")
 @lombok.Value
 public class LightArimaType implements ArimaType{
-
-//    @lombok.Builder.Default
-//    private double innovationVariance = 1;
-//    @lombok.NonNull
-//    @lombok.Builder.Default
-//    private PolynomialType ar = PolynomialType.ONE;
-//    @lombok.NonNull
-//    @lombok.Builder.Default
-//    private PolynomialType delta = PolynomialType.ONE;
-//    @lombok.NonNull
-//    @lombok.Builder.Default
-//    private PolynomialType ma = PolynomialType.ONE;
-//    private String name;
 
     private double innovationVariance;
     @lombok.NonNull
@@ -39,12 +25,4 @@ public class LightArimaType implements ArimaType{
     private PolynomialType ma;
     private String name;
     
-    public static Builder builder(){
-        Builder builder=new Builder();
-        builder.innovationVariance=1;
-        builder.ar = PolynomialType.ONE;
-        builder.delta = PolynomialType.ONE;
-        builder.ma = PolynomialType.ONE;
-        return builder;
-    }
 }

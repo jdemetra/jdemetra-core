@@ -57,7 +57,7 @@ public class SarimaItem extends AbstractModelItem {
             if (var == 1) {
                 cmp = SsfArima.componentOf(sarima);
             } else {
-                ArimaModel arima = new ArimaModel(sarima.getStationaryAR(), sarima.getNonStationaryAR(), sarima.getMA(), var);
+                ArimaModel arima = new ArimaModel(sarima.getStationaryAr(), sarima.getNonStationaryAr(), sarima.getMa(), var);
                 cmp = SsfArima.componentOf(arima);
             }
             builder.add(name, cmp, null);

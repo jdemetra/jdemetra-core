@@ -92,7 +92,7 @@ public class FastKalmanFilter {
         // iteration
         int ilast = dim - 1;
 
-        double[] theta = arma.getMA().asPolynomial().toArray();
+        double[] theta = arma.getMa().asPolynomial().toArray();
         int np = phi.length - 1, nq = theta.length - 1;
         int im = np > nq ? np : nq;
 
@@ -184,9 +184,9 @@ public class FastKalmanFilter {
             throw new ArimaException(ArimaException.NONSTATIONARY);
         }
         this.arma = arma;
-        phi = this.arma.getAR().asPolynomial().toArray();
+        phi = this.arma.getAr().asPolynomial().toArray();
         if (statedim == 0) {
-            statedim = Math.max(arma.getAROrder(), arma.getMAOrder() + 1);
+            statedim = Math.max(arma.getArOrder(), arma.getMaOrder() + 1);
         }
         dim = statedim;
         c0 = this.arma.getAutoCovarianceFunction().values(dim);

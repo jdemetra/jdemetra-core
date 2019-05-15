@@ -17,6 +17,7 @@
 package demetra.arima;
 
 import demetra.design.Development;
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -38,5 +39,15 @@ public interface UcarimaType {
     int size();
     
     ArimaType getComponent(int i);
+    
+    /**
+     * 
+     * @param sum Sum of the components. Could be null (unknown)
+     * @param cmps Components of the model. Some of the components could be null
+     * @return A light implementation of the UcarimaType
+     */
+    public static UcarimaType of(ArimaType sum, @Nonnull ArimaType[] cmps){
+        return new LightUcarimaType(sum, cmps);
+    }
 
 }

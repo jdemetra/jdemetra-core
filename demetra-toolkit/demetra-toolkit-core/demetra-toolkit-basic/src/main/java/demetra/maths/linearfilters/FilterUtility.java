@@ -24,6 +24,8 @@ import java.util.function.IntToDoubleFunction;
 import demetra.maths.ComplexComputer;
 import demetra.data.DoubleSeq;
 import demetra.maths.ComplexMath;
+import demetra.maths.Simplifying;
+import demetra.maths.polynomials.UnitRootSelector;
 
 /**
  *
@@ -185,6 +187,7 @@ public class FilterUtility {
 
     /**
      * Computes the frequency response
+     *
      * @param c
      * @param lb Lower bound (included)
      * @param w Upper bound (included)
@@ -207,8 +210,8 @@ public class FilterUtility {
             Complex c1 = Complex.cart(Math.cos(w * idx), -Math.sin(w * idx));
             rslt.addAC(c.applyAsDouble(idx++), c1);
             while (idx <= ub) {
-                Complex eiw=new ComplexComputer(c1)
-                        .mul(2*cos)
+                Complex eiw = new ComplexComputer(c1)
+                        .mul(2 * cos)
                         .sub(c0)
                         .result();
                 rslt.addAC(c.applyAsDouble(idx++), eiw);
@@ -216,7 +219,7 @@ public class FilterUtility {
                 c1 = eiw;
             }
         }
-        
+
         return rslt.result();
     }
 
@@ -301,6 +304,80 @@ public class FilterUtility {
             return true;
         } else {
             np.val = p;
+            return false;
+        }
+    }
+
+    /**
+     * Specialized class of polynomials simplifiers. Those simplifiers will be
+     * able to normalize the polynomials (p[0]=1) and/or to avoid the
+     * simplification of unit roots
+     */
+    public static class PolynomialSimplifier extends Simplifying<Polynomial> {
+
+        private final boolean simplifyUR, normalize;
+        private final int urPeriodicity;
+
+        /**
+         *
+         * @param normalize Normalize the left/right polynomials (p[0]=1)
+         * @param simplifyUR Simplify or not the unit roots
+         * @param urPeriodicity The periodicity of possible unit roots. 
+         * Set 0 if unknown (which is identical to urPeriodicity=12). 
+         */
+        public PolynomialSimplifier(final boolean normalize, final boolean simplifyUR, final int urPeriodicity) {
+            this.simplifyUR = simplifyUR;
+            this.normalize = normalize;
+            this.urPeriodicity = urPeriodicity;
+        }
+
+        @Override
+        public boolean simplify(final Polynomial left, final Polynomial right) {
+            clear();
+            if (left.degree() == 0 || right.degree() == 0) {
+                return false;
+            }
+            Polynomial lp = left, rp = right, p;
+            double l0 = lp.get(0), r0 = rp.get(0);
+            Polynomial.SimplifyingTool psimp = new Polynomial.SimplifyingTool();
+            if (psimp.simplify(lp, rp)) {
+                lp = psimp.getLeft();
+                rp = psimp.getRight();
+                p = psimp.getCommon();
+                if (normalize) {
+                    lp = lp.times(l0 / lp.get(0));
+                    rp = rp.times(r0 / rp.get(0));
+                    p = p.divide(p.get(0));
+                }
+
+                if (simplifyUR || p.degree() == 0) {
+
+                    common = p;
+                    simplifiedLeft = lp;
+                    simplifiedRight = rp;
+                    return true;
+                } else {
+                    UnitRootSelector ursel = new UnitRootSelector(urPeriodicity);
+                    if (ursel.select(p)) {
+                        Polynomial pnur = ursel.getOutofSelection();
+                        Polynomial pur = ursel.getSelection();
+
+                        pur = pur.divide(pur.get(0));
+                        pnur = pnur.divide(pnur.get(0));
+
+                        common = pnur;
+                        simplifiedLeft = lp.times(pur);
+                        simplifiedRight = rp.times(pur);
+                        return true;
+                    } else // no unit roots
+                    {
+                        common = p;
+                        simplifiedLeft = lp;
+                        simplifiedRight = rp;
+                        return true;
+                    }
+                }
+            }
             return false;
         }
     }

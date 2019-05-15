@@ -185,7 +185,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
     protected void processOutlier(int idx) {
         RegArimaModel<T> regArima = getRegArima();
         int len = regArima.getY().length();
-        BackFilter df = regArima.arima().getNonStationaryAR();
+        BackFilter df = regArima.arima().getNonStationaryAr();
         int d = df.getDegree();
         double[] o = new double[2 * len];
         DataBlock O = DataBlock.of(o);

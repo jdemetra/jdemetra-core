@@ -24,8 +24,8 @@ import demetra.maths.matrices.MatrixType;
  *
  * @author Jean Palate
  */
-@lombok.Value
 @Development(status=Development.Status.Release)
+@lombok.Value
 public class MaximumLogLikelihood {
     /**
      * Max of the log-likelihood

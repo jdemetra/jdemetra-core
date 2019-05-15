@@ -23,7 +23,6 @@ import demetra.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.UnitRoots;
 import demetra.maths.polynomials.spi.RootsSolver;
 
-
 /**
  *
  * @author Jean Palate
@@ -33,18 +32,15 @@ public class UnitRootsSolver {
 
     private static double pnorm(final Polynomial p, final int n) {
         switch (n) {
-            case 1:
-            {
+            case 1: {
                 double x = p.evaluateAt(1);
                 return Math.abs(x);
             }
-            case 2:
-            {
+            case 2: {
                 double x = p.evaluateAt(-1);
                 return Math.abs(x);
             }
-            default:
-            {
+            default: {
                 double x = Math.PI * 2 / n;
                 final Complex c = Complex.cart(Math.cos(x), Math.sin(x));
                 Complex val = p.evaluateAt(c);
@@ -70,7 +66,9 @@ public class UnitRootsSolver {
      * @param start
      */
     public UnitRootsSolver(final int start) {
-        startDegree = start;
+        if (start != 0) {
+            startDegree = start;
+        }
     }
 
     public boolean factorize(final Polynomial p) {
@@ -122,7 +120,7 @@ public class UnitRootsSolver {
                         --num;
                     }
                 }
-		// else
+                // else
                 // --m_num;
                 tmp.clear();
             } else {

@@ -174,7 +174,7 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
             DoubleSeq y = regarima.getY();
             if (regarima.isMean()) {
                 DataBlock yc = DataBlock.of(regarima.getY());
-                double[] m = RegArimaUtility.meanRegressionVariable(regarima.arima().getNonStationaryAR(), yc.length());
+                double[] m = RegArimaUtility.meanRegressionVariable(regarima.arima().getNonStationaryAr(), yc.length());
                 yc.addAY(-est.getConcentratedLikelihood().coefficient(0), DataBlock.of(m));
                 y = yc;
             }

@@ -16,7 +16,7 @@ import demetra.data.DoubleSeq;
 @Development(status = Development.Status.Release)
 class LightPolynomial implements PolynomialType {
 
-    private double[] c;
+    private final double[] c;
 
     LightPolynomial(double[] c) {
         this.c = c;

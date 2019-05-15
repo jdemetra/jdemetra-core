@@ -204,8 +204,8 @@ public class LjungBoxFilter implements ArmaFilter {
     @Override
     public int prepare(IArimaModel arima, int n) {
         clear();
-        m_ar = arima.getAR().asPolynomial();
-        m_ma = arima.getMA().asPolynomial();
+        m_ar = arima.getAr().asPolynomial();
+        m_ma = arima.getMa().asPolynomial();
         m_n = n;
         m_p = m_ar.degree();
         m_q = m_ma.degree();

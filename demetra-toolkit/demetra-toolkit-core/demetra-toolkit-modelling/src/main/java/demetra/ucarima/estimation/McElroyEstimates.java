@@ -249,7 +249,7 @@ public class McElroyEstimates {
         }
         K_[cmp] = Q.extract(0, n, n - ds.degree(), Q.getColumnsCount()-n + ds.degree()).deepClone();
         DataBlock yd = DataBlock.make(n - dn.degree());
-        noise.getNonStationaryAR().apply(DataBlock.of(data_), yd);
+        noise.getNonStationaryAr().apply(DataBlock.of(data_), yd);
         DataBlock yl = DataBlock.make(yd.length());
         N.apply(yd, yl);
         // compute K'n x yl. Don't forget: Q is arranged in reverse order !

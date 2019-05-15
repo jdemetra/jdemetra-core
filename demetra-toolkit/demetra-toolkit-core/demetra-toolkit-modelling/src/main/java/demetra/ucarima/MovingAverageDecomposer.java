@@ -35,15 +35,15 @@ public class MovingAverageDecomposer extends SimpleModelDecomposer {
     // S(B) * S(F) = R(B) * R(F) * P(B) * P(F) * D(B) * D(R) - Q(B) * Q(F)
     // R*P = Q for Q(n) > (PD(n)
     protected void calc() {
-        BackFilter AR = model.getAR();
+        BackFilter AR = model.getAr();
         Polynomial ar = AR.asPolynomial();
-        Polynomial q = model.getMA().asPolynomial();
+        Polynomial q = model.getMa().asPolynomial();
         if (q.degree() <= ar.degree()) {
             signal = null;
             noise = model;
         } else {
-            BackFilter U = model.getNonStationaryAR();
-            BackFilter P = model.getStationaryAR();
+            BackFilter U = model.getNonStationaryAr();
+            BackFilter P = model.getStationaryAr();
             Polynomial p = P.asPolynomial();
 
             Polynomial.Division div = Polynomial.divide(q, ar);

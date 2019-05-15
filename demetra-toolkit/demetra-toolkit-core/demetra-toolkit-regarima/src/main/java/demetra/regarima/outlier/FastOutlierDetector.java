@@ -107,8 +107,8 @@ public class FastOutlierDetector<T extends IArimaModel> extends
         double[] o = pi.times(representation.filter).getWeights(n);
         double corr = 0;
         if (d == 0 && representation.correction != 0) {
-            Polynomial ar = model.getAR().asPolynomial();
-            Polynomial ma = model.getMA().asPolynomial();
+            Polynomial ar = model.getAr().asPolynomial();
+            Polynomial ma = model.getMa().asPolynomial();
             corr = representation.correction * ar.evaluateAt(1) / ma.evaluateAt(1);
             for (int i = 0; i < n; ++i) {
                 o[i] += corr;

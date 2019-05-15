@@ -162,7 +162,7 @@ public class AirlineDecomposition {
                 .t(TsData.of(start, Doubles.of(ds.item(pos[0]))))
                 .s(TsData.of(start, Doubles.of(ds.item(pos[1]))))
                 .i(TsData.of(start, Doubles.of(ds.item(pos[2]))))
-                .ucarima(new UcarimaType(sum, new ArimaType[]{mt, ms, mi}))
+                .ucarima(UcarimaType.of(sum, new ArimaType[]{mt, ms, mi}))
                 .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
                 .regarima(rslt.getModel())
                 .sarima(rslt.getModel().arima().toType())

@@ -187,7 +187,7 @@ public final class ArimaSeriesGenerator {
     
     public double[] generateStationary(final IArimaModel starima, final double mean, final int n) {
     
-        BackFilter ar = starima.getAR(), ma = starima.getMA();
+        BackFilter ar = starima.getAr(), ma = starima.getMa();
         int p = ar.getDegree(), q = ma.getDegree();
         double[] y = new double[p], e = new double[q];
         if (p == 0) {

@@ -151,13 +151,13 @@ public class FractionalAirlineDecomposition {
         if (sn) {
             ArimaType mn = ArimaModel.copyOf(ucm.getComponent(0)).toType("noise");
             ArimaType ms = ArimaModel.copyOf(ucm.getComponent(1)).toType("signal");
-            ucmt= new UcarimaType(sum, new ArimaType[]{ms, mn});
+            ucmt= UcarimaType.of(sum, new ArimaType[]{ms, mn});
             
         } else {
             ArimaType mt = ArimaModel.copyOf(ucm.getComponent(0)).toType("trend");
             ArimaType ms = ArimaModel.copyOf(ucm.getComponent(1)).toType("seasonal");
             ArimaType mi = ArimaModel.copyOf(ucm.getComponent(2)).toType("irregular");
-            ucmt= new UcarimaType(sum, new ArimaType[]{mt, ms, mi}); 
+            ucmt= UcarimaType.of(sum, new ArimaType[]{mt, ms, mi}); 
         }
         int[] pos = ssf.componentsPosition();
         if (sn)
@@ -261,7 +261,7 @@ class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
 
     @Override
     public DoubleSeq parametersOf(ArimaModel t) {
-        BackFilter ma = t.getMA();
+        BackFilter ma = t.getMa();
         double[] p = new double[2];
         p[0] = -ma.get(1);
         if (adjust) {
