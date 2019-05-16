@@ -17,7 +17,7 @@
 package demetra.benchmarking.univariate;
 
 import demetra.data.AggregationType;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.Doubles;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;

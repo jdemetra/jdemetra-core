@@ -5,8 +5,8 @@
  */
 package demetra.msts.internal;
 
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.modelling.regression.GenericTradingDaysVariable;
 import demetra.modelling.regression.Regression;
 import demetra.msts.MstsMapping;

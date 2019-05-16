@@ -5,10 +5,10 @@
  */
 package demetra.modelling.regression;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.modelling.regression.HolidaysCorrectedTradingDays.HolidaysCorrector;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
@@ -21,8 +21,8 @@ import demetra.timeseries.calendars.CompositeCalendar;
 import demetra.util.WeightedItem;
 import java.time.LocalDate;
 import demetra.timeseries.calendars.CalendarDefinition;
-import jd.maths.matrices.MatrixFactory;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.MatrixFactory;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

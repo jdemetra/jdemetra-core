@@ -16,21 +16,21 @@
  */
 package demetra.arima;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Immutable;
-import demetra.dstats.Normal;
+import jdplus.dstats.Normal;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import jd.maths.matrices.LowerTriangularMatrix;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import jp.maths.polynomials.Polynomial;
 import demetra.random.XorshiftRNG;
 import javax.annotation.Nonnull;
-import demetra.dstats.Distribution;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.dstats.Distribution;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.random.RandomNumberGenerator;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

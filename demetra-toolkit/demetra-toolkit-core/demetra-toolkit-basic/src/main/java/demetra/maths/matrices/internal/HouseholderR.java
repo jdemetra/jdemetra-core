@@ -16,11 +16,11 @@
  */
 package demetra.maths.matrices.internal;
 
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.maths.Constants;
-import jd.maths.matrices.MatrixException;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.data.DoubleSeq;
 
 /**

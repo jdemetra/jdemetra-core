@@ -7,7 +7,7 @@ package demetra.arima.ssf;
 
 import demetra.arima.internal.FastArimaForecasts;
 import demetra.data.Data;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import org.junit.Test;

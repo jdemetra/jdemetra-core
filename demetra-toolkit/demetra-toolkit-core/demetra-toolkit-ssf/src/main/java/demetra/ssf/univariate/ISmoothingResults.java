@@ -18,10 +18,10 @@
  */
 package demetra.ssf.univariate;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.ssf.IStateResults;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

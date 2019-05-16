@@ -20,7 +20,7 @@ import demetra.design.Development;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import javax.annotation.Nonnull;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

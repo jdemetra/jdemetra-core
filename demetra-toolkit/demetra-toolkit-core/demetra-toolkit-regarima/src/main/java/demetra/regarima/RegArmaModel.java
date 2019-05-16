@@ -7,12 +7,12 @@ package demetra.regarima;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.eco.EcoException;
 import demetra.linearmodel.LinearModel;
 import demetra.maths.linearfilters.BackFilter;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;

@@ -17,7 +17,7 @@
 
 package demetra.data.normalizer;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Algorithm;
 import demetra.design.Development;
 

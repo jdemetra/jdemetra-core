@@ -22,7 +22,7 @@ import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.arima.SarimaProcess;
@@ -36,7 +36,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

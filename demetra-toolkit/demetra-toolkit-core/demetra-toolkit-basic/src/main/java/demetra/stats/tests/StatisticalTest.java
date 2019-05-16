@@ -18,10 +18,10 @@ package demetra.stats.tests;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.dstats.ProbabilityType;
+import demetra.stats.ProbabilityType;
 import demetra.stats.StatException;
 import demetra.stats.TestResult;
-import demetra.dstats.Distribution;
+import jdplus.dstats.Distribution;
 
 /**
  *

@@ -16,7 +16,7 @@
  */
 package demetra.ssf.akf;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.ssf.State;
 import demetra.ssf.UpdateInformation;
 

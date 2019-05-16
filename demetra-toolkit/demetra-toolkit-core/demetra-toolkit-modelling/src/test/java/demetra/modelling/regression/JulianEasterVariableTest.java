@@ -6,13 +6,13 @@
 package demetra.modelling.regression;
 
 import demetra.timeseries.TsPeriod;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.timeseries.TsDomain;
 import java.util.Collections;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

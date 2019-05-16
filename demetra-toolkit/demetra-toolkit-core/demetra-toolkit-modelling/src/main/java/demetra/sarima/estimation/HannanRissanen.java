@@ -17,10 +17,10 @@
 package demetra.sarima.estimation;
 
 import demetra.data.normalizer.AbsMeanNormalizer;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.design.BuilderPattern;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;

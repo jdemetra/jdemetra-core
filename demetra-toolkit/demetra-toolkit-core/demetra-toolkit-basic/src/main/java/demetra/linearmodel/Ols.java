@@ -8,15 +8,15 @@ package demetra.linearmodel;
 import demetra.eco.EcoException;
 import lombok.NonNull;
 import demetra.leastsquares.internal.AdvancedQRSolver;
-import jd.maths.matrices.SymmetricMatrix;
-import jd.maths.matrices.UpperTriangularMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.leastsquares.QRSolver;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

@@ -17,7 +17,7 @@
 package demetra.dfm;
 
 import demetra.dfm.internal.CumulMeasurement;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.dfm.internal.CumulatedVariationsMeasurement;
 import demetra.dfm.internal.LevelMeasurement;
 

@@ -16,14 +16,14 @@
  */
 package demetra.maths.linearfilters;
 
-import jd.data.DataBlock;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.function.IntToDoubleFunction;
 import demetra.linearsystem.LinearSystemSolver;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * The local polynomial filter is defined as follows: h is the number of lags

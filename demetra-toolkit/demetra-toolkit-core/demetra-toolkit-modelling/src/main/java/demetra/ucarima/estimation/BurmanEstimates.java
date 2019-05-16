@@ -20,11 +20,11 @@ import demetra.arima.ArimaException;
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.internal.FastArimaForecasts;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import jd.maths.matrices.MatrixException;
+import jdplus.maths.matrices.MatrixException;
 import demetra.maths.matrices.internal.CroutDoolittle;
 import jp.maths.polynomials.Polynomial;
 import jp.maths.polynomials.UnitRoots;
@@ -33,9 +33,9 @@ import demetra.ucarima.WienerKolmogorovEstimators;
 import java.util.Arrays;
 import demetra.arima.estimation.ArimaForecasts;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.decomposition.LUDecomposition;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.decomposition.LUDecomposition;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Estimation of the components of an UCARIMA model using a variant of the

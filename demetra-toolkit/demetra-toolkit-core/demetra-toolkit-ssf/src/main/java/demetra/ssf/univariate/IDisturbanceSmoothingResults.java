@@ -16,8 +16,8 @@
  */
 package demetra.ssf.univariate;
 
-import jd.data.DataBlock;
-import jd.maths.matrices.FastMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.FastMatrix;
 
 
 /**

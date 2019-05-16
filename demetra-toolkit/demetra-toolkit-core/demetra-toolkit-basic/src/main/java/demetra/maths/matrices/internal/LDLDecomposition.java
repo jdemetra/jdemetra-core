@@ -5,11 +5,11 @@
  */
 package demetra.maths.matrices.internal;
 
-import jd.maths.matrices.MatrixException;
-import jd.maths.matrices.LowerTriangularMatrix;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Computes for a given symmetric matrix X a LDL decomposition, which is defined

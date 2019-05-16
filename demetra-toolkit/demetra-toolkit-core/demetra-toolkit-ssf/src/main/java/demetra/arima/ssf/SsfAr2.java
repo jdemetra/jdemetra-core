@@ -6,10 +6,10 @@
 package demetra.arima.ssf;
 
 import demetra.arima.AutoCovarianceFunction;
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import jp.maths.polynomials.Polynomial;
 import jp.maths.polynomials.RationalFunction;
 import demetra.ssf.ISsfDynamics;
@@ -17,7 +17,7 @@ import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.implementations.Loading;
 import javax.annotation.Nonnull;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * State array: y(t-nlags)...y(t)y(t+1|t)...y(t+fcasts|t)

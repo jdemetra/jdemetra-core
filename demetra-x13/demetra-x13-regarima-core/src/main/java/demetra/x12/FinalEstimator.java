@@ -16,7 +16,7 @@
  */
 package demetra.x12;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
 import demetra.maths.functions.IParametricMapping;

@@ -6,13 +6,13 @@
 package demetra.msts;
 
 import demetra.data.Data;
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.minpack.MinPackMinimizer;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import jp.maths.polynomials.Polynomial;
 import demetra.sarima.estimation.SarimaMapping;
 import demetra.ssf.akf.AkfToolkit;

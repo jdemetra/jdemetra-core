@@ -5,7 +5,7 @@
  */
 package demetra.x11.extremevaluecorrector;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import java.util.Arrays;
 import demetra.data.DoubleSeq;

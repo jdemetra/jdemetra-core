@@ -5,11 +5,11 @@
  */
 package demetra.msts.survey;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.StateComponent;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

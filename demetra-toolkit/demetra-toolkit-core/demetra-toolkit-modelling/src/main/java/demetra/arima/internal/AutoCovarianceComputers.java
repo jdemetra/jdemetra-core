@@ -18,11 +18,11 @@ package demetra.arima.internal;
 
 import demetra.arima.ArimaException;
 import demetra.arima.AutoCovarianceFunction;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.linearsystem.internal.QRLinearSystemSolver;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.Householder;
 import jp.maths.polynomials.Polynomial;
 import jp.maths.polynomials.RationalFunction;

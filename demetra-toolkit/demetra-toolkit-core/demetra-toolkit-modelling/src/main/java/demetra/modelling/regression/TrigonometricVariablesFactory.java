@@ -16,11 +16,11 @@
  */
 package demetra.modelling.regression;
 
-import jd.data.DataBlock;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Computes trigonometric variables: sin(wt), cos(wt) at given frequencies if w

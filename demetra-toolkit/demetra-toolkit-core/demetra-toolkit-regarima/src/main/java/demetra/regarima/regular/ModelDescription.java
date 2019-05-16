@@ -17,8 +17,8 @@
 package demetra.regarima.regular;
 
 import demetra.modelling.regression.Variable;
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.transformation.LogJacobian;
 import demetra.data.ParameterType;
@@ -26,8 +26,8 @@ import demetra.data.interpolation.DataInterpolator;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LogLikelihoodFunction;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.modelling.regression.PreadjustmentVariable;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.Regression;

@@ -16,16 +16,16 @@
  */
 package demetra.ssf.akf;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.likelihood.DeterminantalTerm;
-import jd.maths.matrices.decomposition.ElementaryTransformations;
-import jd.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.decomposition.ElementaryTransformations;
+import jdplus.maths.matrices.LowerTriangularMatrix;
 import demetra.ssf.State;
 import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.likelihood.Likelihood;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

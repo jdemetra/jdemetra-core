@@ -18,7 +18,7 @@ package demetra.stats.tests;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.dstats.DStatException;
+import jdplus.dstats.DStatException;
 import demetra.stats.AutoCovariances;
 import demetra.stats.DescriptiveStatistics;
 import demetra.stats.StatException;

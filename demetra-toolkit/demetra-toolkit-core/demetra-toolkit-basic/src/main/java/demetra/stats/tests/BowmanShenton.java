@@ -18,7 +18,7 @@ package demetra.stats.tests;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.dstats.Chi2;
+import jdplus.dstats.Chi2;
 import demetra.stats.DescriptiveStatistics;
 import demetra.data.DoubleSeq;
 

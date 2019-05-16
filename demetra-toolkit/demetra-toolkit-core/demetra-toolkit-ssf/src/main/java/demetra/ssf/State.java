@@ -16,9 +16,9 @@
  */
 package demetra.ssf;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.univariate.ISsf;
 
 /**

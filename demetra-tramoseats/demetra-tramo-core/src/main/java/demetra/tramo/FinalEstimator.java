@@ -16,7 +16,7 @@
  */
 package demetra.tramo;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.maths.Complex;

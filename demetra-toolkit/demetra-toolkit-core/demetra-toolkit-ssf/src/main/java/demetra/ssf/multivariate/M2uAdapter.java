@@ -16,8 +16,8 @@
  */
 package demetra.ssf.multivariate;
 
-import jd.data.DataBlock;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
@@ -27,7 +27,7 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.univariate.Measurement;
 import demetra.ssf.univariate.Ssf;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

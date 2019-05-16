@@ -16,14 +16,14 @@
  */
 package demetra.ssf.multivariate;
 
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
-import jd.maths.matrices.LowerTriangularMatrix;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.ssf.State;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

@@ -16,12 +16,12 @@
  */
 package demetra.modelling.regression;
 
-import jd.data.DataBlock;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * The periodic contrasts are defined as follows:

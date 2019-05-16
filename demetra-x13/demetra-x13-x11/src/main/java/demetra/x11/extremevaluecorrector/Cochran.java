@@ -5,10 +5,10 @@
  */
 package demetra.x11.extremevaluecorrector;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.VisibleForTesting;
-import demetra.dstats.F;
-import demetra.dstats.ProbabilityType;
+import jdplus.dstats.F;
+import demetra.stats.ProbabilityType;
 import demetra.x11.X11Context;
 import lombok.AccessLevel;
 import demetra.data.DoubleSeq;

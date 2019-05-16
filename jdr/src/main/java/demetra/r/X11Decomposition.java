@@ -5,7 +5,7 @@
  */
 package demetra.r;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import demetra.maths.linearfilters.HendersonFilters;
 import demetra.maths.linearfilters.IFiniteFilter;

@@ -5,14 +5,14 @@
  */
 package demetra.modelling.regression;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.Easter;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

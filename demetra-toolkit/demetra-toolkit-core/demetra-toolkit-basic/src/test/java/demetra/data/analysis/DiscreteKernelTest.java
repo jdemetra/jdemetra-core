@@ -23,7 +23,7 @@ import static demetra.data.analysis.DiscreteKernel.triangular;
 import static demetra.data.analysis.DiscreteKernel.tricube;
 import static demetra.data.analysis.DiscreteKernel.triweight;
 import static demetra.data.analysis.DiscreteKernel.uniform;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import java.util.function.IntToDoubleFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;

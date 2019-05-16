@@ -16,10 +16,10 @@
  */
 package demetra.ssf;
 
-import jd.data.DataBlock;
-import jd.maths.matrices.QuadraticForm;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.QuadraticForm;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

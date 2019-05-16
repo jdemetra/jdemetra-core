@@ -16,7 +16,7 @@
  */
 package demetra.regarima.ami;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.regarima.outlier.RobustStandardDeviationComputer;
 import demetra.data.DoubleSeq;

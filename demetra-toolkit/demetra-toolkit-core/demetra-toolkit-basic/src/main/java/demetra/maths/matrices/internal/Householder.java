@@ -17,13 +17,13 @@
 package demetra.maths.matrices.internal;
 
 import demetra.maths.Constants;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.MatrixException;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.decomposition.QRDecomposition;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.decomposition.QRDecomposition;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

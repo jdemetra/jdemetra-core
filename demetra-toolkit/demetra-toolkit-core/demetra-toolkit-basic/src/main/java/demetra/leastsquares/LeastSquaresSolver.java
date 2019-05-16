@@ -8,7 +8,7 @@ package demetra.leastsquares;
 import demetra.design.Algorithm;
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * 

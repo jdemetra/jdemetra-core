@@ -17,7 +17,7 @@
 
 package demetra.tramo;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.maths.Complex;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;

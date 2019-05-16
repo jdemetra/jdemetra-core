@@ -17,7 +17,7 @@
 package demetra.ucarima;
 
 import demetra.arima.ArimaModel;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
@@ -25,8 +25,8 @@ import demetra.maths.linearfilters.SymmetricFrequencyResponse;
 import jp.maths.polynomials.Polynomial;
 import demetra.leastsquares.QRSolver;
 import demetra.linearsystem.LinearSystemSolver;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

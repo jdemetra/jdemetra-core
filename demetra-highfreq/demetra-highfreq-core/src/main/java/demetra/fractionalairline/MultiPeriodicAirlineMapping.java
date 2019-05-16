@@ -17,7 +17,7 @@
 package demetra.fractionalairline;
 
 import demetra.arima.ArimaModel;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.arima.estimation.IArimaMapping;

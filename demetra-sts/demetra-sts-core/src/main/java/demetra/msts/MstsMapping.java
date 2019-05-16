@@ -5,7 +5,7 @@
  */
 package demetra.msts;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;

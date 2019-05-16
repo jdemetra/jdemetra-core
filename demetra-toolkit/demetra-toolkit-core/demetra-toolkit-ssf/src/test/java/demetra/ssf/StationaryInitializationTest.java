@@ -8,7 +8,7 @@ package demetra.ssf;
 import demetra.arima.ssf.SsfArima;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

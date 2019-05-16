@@ -11,11 +11,11 @@ import demetra.arima.ssf.Rw;
 import demetra.benchmarking.spi.ITemporalDisaggregation;
 import demetra.benchmarking.ssf.SsfDisaggregation;
 import demetra.data.AggregationType;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
-import demetra.dstats.ProbabilityType;
-import demetra.dstats.T;
+import demetra.stats.ProbabilityType;
+import jdplus.dstats.T;
 import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.MaximumLogLikelihood;
@@ -53,7 +53,7 @@ import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.maths.matrices.Matrix;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

@@ -16,13 +16,13 @@
  */
 package demetra.ssf.implementations;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import java.text.DecimalFormat;
-import jd.data.DataBlockIterator;
+import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsfMeasurement;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

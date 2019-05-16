@@ -18,7 +18,7 @@ package demetra.leastsquares;
 
 import demetra.design.Algorithm;
 import demetra.design.Development;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 
 /**
  * Solves a least squares problem by means of the QR algorithm.

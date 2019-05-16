@@ -17,12 +17,12 @@
 package demetra.sarima.estimation;
 
 import demetra.arima.estimation.IArimaMapping;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.functions.FunctionException;
 import demetra.maths.functions.ParamValidation;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import jp.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;

@@ -16,7 +16,7 @@
 */
 package demetra.x11plus;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
 

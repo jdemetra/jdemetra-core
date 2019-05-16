@@ -18,13 +18,13 @@
  */
 package demetra.arima.ssf;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

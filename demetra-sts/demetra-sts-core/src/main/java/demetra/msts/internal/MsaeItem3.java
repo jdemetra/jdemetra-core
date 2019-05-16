@@ -14,7 +14,7 @@ import demetra.ssf.StateComponent;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.msts.ParameterInterpreter;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

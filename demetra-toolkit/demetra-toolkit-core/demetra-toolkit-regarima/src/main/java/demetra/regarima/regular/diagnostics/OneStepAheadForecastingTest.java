@@ -17,8 +17,8 @@
 package demetra.regarima.regular.diagnostics;
 
 import demetra.arima.IArimaModel;
-import jd.data.DataBlock;
-import demetra.dstats.F;
+import jdplus.data.DataBlock;
+import jdplus.dstats.F;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;

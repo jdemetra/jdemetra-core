@@ -5,16 +5,16 @@
  */
 package demetra.modelling.regression;
 
-import jd.data.DataBlock;
-import jd.maths.matrices.SubMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.SubMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.util.Collections;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

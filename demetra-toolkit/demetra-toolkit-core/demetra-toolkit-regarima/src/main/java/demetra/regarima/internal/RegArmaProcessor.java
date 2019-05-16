@@ -23,7 +23,7 @@ import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.NumericalDerivatives;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.functions.ssq.SsqProxyFunctionPoint;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.arima.estimation.IArimaMapping;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;

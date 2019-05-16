@@ -5,7 +5,7 @@
  */
 package rssf;
 
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.maths.matrices.Matrix;
 

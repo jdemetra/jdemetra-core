@@ -20,18 +20,18 @@ import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
 import demetra.arima.internal.AnsleyFilter;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jd.maths.matrices.decomposition.ElementaryTransformations;
-import jd.maths.matrices.LowerTriangularMatrix;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.decomposition.ElementaryTransformations;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import jp.maths.polynomials.Polynomial;
 import jp.maths.polynomials.RationalFunction;
 import demetra.ucarima.UcarimaModel;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 
 /**

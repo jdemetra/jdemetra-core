@@ -18,9 +18,9 @@ package demetra.ssf.univariate;
 
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.UpdateInformation;
-import jd.data.DataBlock;
-import jd.maths.matrices.MatrixWindow;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.MatrixWindow;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.SsfException;
 import demetra.ssf.State;
@@ -28,7 +28,7 @@ import demetra.ssf.StateInfo;
 import demetra.ssf.StateStorage;
 import demetra.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import demetra.ssf.implementations.DummyInitialization;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * /**

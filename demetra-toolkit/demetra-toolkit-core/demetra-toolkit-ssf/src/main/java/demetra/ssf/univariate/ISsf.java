@@ -17,14 +17,14 @@
 package demetra.ssf.univariate;
 
 import demetra.ssf.ISsfLoading;
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.ISsfState;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

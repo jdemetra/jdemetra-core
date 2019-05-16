@@ -16,7 +16,7 @@
  */
 package demetra.ssf.likelihood;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.maths.functions.IFunction;
 import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.likelihood.ILikelihoodFunctionPoint;

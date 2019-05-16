@@ -17,7 +17,7 @@
 package demetra.ssf.dk;
 
 import demetra.ssf.StateInfo;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

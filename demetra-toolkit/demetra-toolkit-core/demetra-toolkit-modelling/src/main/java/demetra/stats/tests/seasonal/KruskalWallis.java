@@ -18,7 +18,7 @@ package demetra.stats.tests.seasonal;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.dstats.Chi2;
+import jdplus.dstats.Chi2;
 import demetra.stats.StatException;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;

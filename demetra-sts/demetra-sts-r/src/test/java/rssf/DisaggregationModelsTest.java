@@ -17,8 +17,8 @@
 package rssf;
 
 import demetra.data.Data;
-import jd.data.DataBlock;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.implementations.RegSsf;

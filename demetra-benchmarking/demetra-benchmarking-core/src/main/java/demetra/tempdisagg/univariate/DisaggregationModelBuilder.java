@@ -18,8 +18,8 @@ package demetra.tempdisagg.univariate;
 
 import demetra.data.transformation.Cumulator;
 import demetra.data.AggregationType;
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.design.BuilderPattern;
@@ -37,7 +37,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
 import demetra.data.normalizer.DataNormalizer;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

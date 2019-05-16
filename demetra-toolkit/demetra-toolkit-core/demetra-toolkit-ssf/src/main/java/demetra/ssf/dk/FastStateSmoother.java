@@ -16,8 +16,8 @@
  */
 package demetra.ssf.dk;
 
-import jd.data.DataBlock;
-import jd.data.DataBlockStorage;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockStorage;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.DefaultDisturbanceSmoothingResults;
 import demetra.ssf.univariate.DisturbanceSmoother;

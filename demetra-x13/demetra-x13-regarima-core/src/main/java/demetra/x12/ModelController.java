@@ -19,7 +19,7 @@ package demetra.x12;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.internal.ModifiedLjungBoxFilter;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.linearmodel.LinearModel;
 import demetra.regarima.RegArimaModel;

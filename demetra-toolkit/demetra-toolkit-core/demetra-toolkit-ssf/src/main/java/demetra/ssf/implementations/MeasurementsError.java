@@ -5,11 +5,11 @@
  */
 package demetra.ssf.implementations;
 
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.ssf.State;
 import demetra.ssf.multivariate.ISsfErrors;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

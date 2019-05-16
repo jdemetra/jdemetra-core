@@ -18,7 +18,7 @@ package demetra.stats.tests;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.dstats.T;
+import jdplus.dstats.T;
 import demetra.data.DoubleSeq;
 
 /**

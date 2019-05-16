@@ -16,7 +16,7 @@
  */
 package demetra.regarima.regular;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
 import demetra.modelling.regression.RegressionUtility;

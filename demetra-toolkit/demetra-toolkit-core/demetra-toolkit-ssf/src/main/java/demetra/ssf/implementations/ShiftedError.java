@@ -16,10 +16,10 @@
  */
 package demetra.ssf.implementations;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.univariate.ISsfMeasurement;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Shifted measurement: Zshift(t) = Z(pos + shift) 

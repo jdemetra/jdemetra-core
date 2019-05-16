@@ -16,9 +16,9 @@
  */
 package demetra.ssf.akf;
 
-import jd.data.DataBlockIterator;
-import jd.maths.matrices.LowerTriangularMatrix;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.data.DataBlockIterator;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.State;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.MultivariateUpdateInformation;

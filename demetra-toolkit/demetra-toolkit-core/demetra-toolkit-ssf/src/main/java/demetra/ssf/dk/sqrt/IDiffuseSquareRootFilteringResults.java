@@ -20,7 +20,7 @@ import demetra.ssf.StateInfo;
 import demetra.ssf.akf.AugmentedState;
 import demetra.ssf.dk.DiffuseUpdateInformation;
 import demetra.ssf.dk.IBaseDiffuseFilteringResults;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

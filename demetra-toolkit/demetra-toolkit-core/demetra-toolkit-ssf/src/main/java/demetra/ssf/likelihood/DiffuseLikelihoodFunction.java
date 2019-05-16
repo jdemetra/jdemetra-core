@@ -26,7 +26,7 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.design.BuilderPattern;
 import demetra.likelihood.ILikelihoodFunction;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

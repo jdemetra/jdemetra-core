@@ -6,9 +6,9 @@
 package demetra.benchmarking.univariate;
 
 import demetra.benchmarking.univariate.DentonSpec;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import org.junit.Test;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

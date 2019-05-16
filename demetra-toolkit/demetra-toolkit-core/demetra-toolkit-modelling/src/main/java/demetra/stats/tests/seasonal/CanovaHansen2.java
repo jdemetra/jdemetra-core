@@ -13,7 +13,7 @@ import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
 import demetra.stats.RobustCovarianceComputer;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

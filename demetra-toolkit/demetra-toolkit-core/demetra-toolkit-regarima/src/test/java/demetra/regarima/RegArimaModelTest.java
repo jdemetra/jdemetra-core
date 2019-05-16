@@ -6,7 +6,7 @@
 package demetra.regarima;
 
 import demetra.data.Data;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import ec.tstoolkit.data.DescriptiveStatistics;

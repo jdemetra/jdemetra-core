@@ -5,8 +5,8 @@
  */
 package demetra.msts.survey;
 
-import jd.data.DataBlock;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.StateComponent;
 import java.util.Random;

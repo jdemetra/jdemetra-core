@@ -20,7 +20,7 @@ import demetra.arima.estimation.IArimaMapping;
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
 import demetra.arima.internal.FastKalmanFilter;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.linearmodel.LeastSquaresResults;

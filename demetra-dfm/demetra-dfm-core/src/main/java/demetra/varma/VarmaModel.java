@@ -5,7 +5,7 @@
  */
 package demetra.varma;
 
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 
 /**
  *

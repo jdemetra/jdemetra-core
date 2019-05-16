@@ -16,12 +16,12 @@
  */
 package demetra.maths.functions.minpack;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.functions.FunctionException;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.MatrixException;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
+import jdplus.maths.matrices.SymmetricMatrix;
 
 /**
  * Base class for implementing estimators. This base class handles the

@@ -16,9 +16,9 @@
  */
 package demetra.ar.internal;
 
-import jd.data.DataBlockIterator;
+import jdplus.data.DataBlockIterator;
 import demetra.design.AlgorithmImplementation;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;

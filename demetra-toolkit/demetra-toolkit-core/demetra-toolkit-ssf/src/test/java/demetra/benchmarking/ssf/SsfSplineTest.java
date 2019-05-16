@@ -17,7 +17,7 @@
 package demetra.benchmarking.ssf;
 
 import demetra.benchmarking.ssf.SsfSpline;
-import jd.data.DataBlockStorage;
+import jdplus.data.DataBlockStorage;
 import demetra.maths.functions.CubicSpline;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;

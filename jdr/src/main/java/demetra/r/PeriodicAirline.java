@@ -6,13 +6,13 @@
 package demetra.r;
 
 import demetra.arima.ArimaModel;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.fractionalairline.MultiPeriodicAirlineMapping;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.modelling.regression.AdditiveOutlierFactory;
 import demetra.modelling.regression.IOutlierFactory;
 import demetra.modelling.regression.LevelShiftFactory;

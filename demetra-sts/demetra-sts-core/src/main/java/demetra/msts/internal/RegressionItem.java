@@ -5,7 +5,7 @@
  */
 package demetra.msts.internal;
 
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
 import demetra.msts.VarianceInterpreter;

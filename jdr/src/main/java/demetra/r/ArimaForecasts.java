@@ -7,10 +7,10 @@ package demetra.r;
 
 import demetra.regarima.RegArimaModel;
 import demetra.arima.ssf.SsfArima;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import demetra.maths.linearfilters.BackFilter;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import jp.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaModel;
 import demetra.ssf.ISsfLoading;

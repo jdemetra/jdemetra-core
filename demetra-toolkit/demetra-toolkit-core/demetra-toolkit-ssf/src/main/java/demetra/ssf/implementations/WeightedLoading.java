@@ -16,11 +16,11 @@
  */
 package demetra.ssf.implementations;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.ssf.ISsfLoading;
 import java.util.function.IntToDoubleFunction;
 import demetra.ssf.univariate.ISsfMeasurement;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

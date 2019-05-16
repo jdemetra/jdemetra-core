@@ -16,15 +16,15 @@
  */
 package demetra.maths.matrices.internal;
 
-import jd.data.DataBlock;
-import jd.maths.matrices.decomposition.ISingularValueDecomposition;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.MatrixException;
-import jd.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.decomposition.ISingularValueDecomposition;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
+import jdplus.data.DataBlockIterator;
 import demetra.maths.Constants;
-import jd.maths.matrices.decomposition.ElementaryTransformations;
+import jdplus.maths.matrices.decomposition.ElementaryTransformations;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * The singularValueDecomposition decomposes a matrix M in M = U * S * V' with:

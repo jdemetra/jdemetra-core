@@ -16,7 +16,7 @@
  */
 package demetra.calendar.r;
 
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.modelling.regression.GenericTradingDaysFactory;

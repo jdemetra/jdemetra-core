@@ -16,12 +16,12 @@
  */
 package demetra.ssf.ckms;
 
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.LowerTriangularMatrix;
-import jd.maths.matrices.decomposition.GivensRotation;
-import jd.maths.matrices.decomposition.HyperbolicRotation;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.decomposition.GivensRotation;
+import jdplus.maths.matrices.decomposition.HyperbolicRotation;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.array.LState;
@@ -30,7 +30,7 @@ import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.MultivariateUpdateInformation;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

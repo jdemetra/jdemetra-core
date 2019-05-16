@@ -17,9 +17,9 @@
 package demetra.var;
 
 import demetra.dfm.DfmException;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.SubMatrix;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SubMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

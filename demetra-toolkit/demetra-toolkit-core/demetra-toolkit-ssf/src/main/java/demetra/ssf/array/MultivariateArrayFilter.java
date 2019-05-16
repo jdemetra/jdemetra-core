@@ -16,12 +16,12 @@
  */
 package demetra.ssf.array;
 
-import jd.data.DataBlock;
-import jd.maths.matrices.decomposition.ElementaryTransformations;
-import jd.maths.matrices.LowerTriangularMatrix;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.SubMatrix;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.decomposition.ElementaryTransformations;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SubMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.IMultivariateSsfData;

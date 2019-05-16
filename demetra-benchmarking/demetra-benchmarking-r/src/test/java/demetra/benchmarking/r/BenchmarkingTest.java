@@ -16,7 +16,7 @@
  */
 package demetra.benchmarking.r;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.Doubles;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;

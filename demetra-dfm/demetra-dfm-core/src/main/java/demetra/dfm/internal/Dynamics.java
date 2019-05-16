@@ -16,11 +16,11 @@
  */
 package demetra.dfm.internal;
 
-import jd.data.DataBlock;
-import jd.data.DataWindow;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.data.DataBlock;
+import jdplus.data.DataWindow;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

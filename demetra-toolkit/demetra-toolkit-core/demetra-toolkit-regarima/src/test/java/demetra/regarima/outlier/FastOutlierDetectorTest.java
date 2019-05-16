@@ -16,7 +16,7 @@
  */
 package demetra.regarima.outlier;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarmaSpecification;

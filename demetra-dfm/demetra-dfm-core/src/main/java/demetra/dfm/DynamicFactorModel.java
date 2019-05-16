@@ -16,12 +16,12 @@
  */
 package demetra.dfm;
 
-import jd.data.DataWindow;
+import jdplus.data.DataWindow;
 import demetra.dfm.internal.SsfDfm;
-import jd.maths.matrices.LowerTriangularMatrix;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.SubMatrix;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SubMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.var.VarDescriptor;

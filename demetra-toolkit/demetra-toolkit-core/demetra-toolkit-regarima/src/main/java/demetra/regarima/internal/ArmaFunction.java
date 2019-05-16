@@ -28,7 +28,7 @@ import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * @author Jean Palate

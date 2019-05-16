@@ -20,7 +20,7 @@ package demetra.arima.ssf;
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.ssf.SsfArima;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.ssf.ckms.CkmsFilter;

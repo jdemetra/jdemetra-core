@@ -16,7 +16,7 @@
  */
 package demetra.ssf.ckms;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 
 /**

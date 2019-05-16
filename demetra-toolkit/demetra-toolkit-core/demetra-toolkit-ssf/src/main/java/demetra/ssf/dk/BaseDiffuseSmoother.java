@@ -16,14 +16,14 @@
  */
 package demetra.ssf.dk;
 
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISmoothingResults;
 import demetra.ssf.univariate.ISsf;
 import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfLoading;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

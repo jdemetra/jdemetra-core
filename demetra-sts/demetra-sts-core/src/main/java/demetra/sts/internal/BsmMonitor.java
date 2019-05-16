@@ -16,7 +16,7 @@
  */
 package demetra.sts.internal;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.design.Development;
 import demetra.maths.functions.IFunction;
@@ -38,7 +38,7 @@ import demetra.sts.BsmSpec;
 import demetra.sts.SsfBsm2;
 import demetra.sts.internal.BsmMapping.Transformation;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

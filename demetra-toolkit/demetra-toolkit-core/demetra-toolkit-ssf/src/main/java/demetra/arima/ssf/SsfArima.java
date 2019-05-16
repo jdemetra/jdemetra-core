@@ -18,11 +18,11 @@ package demetra.arima.ssf;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
-import jd.data.DataWindow;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.data.DataWindow;
 import demetra.design.Development;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import jp.maths.polynomials.Polynomial;
 import jp.maths.polynomials.RationalFunction;
 import demetra.ssf.ISsfDynamics;
@@ -38,12 +38,12 @@ import demetra.ssf.univariate.Ssf;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.UpdateInformation;
 import demetra.data.DoubleSeqCursor;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.StateComponent;
 import demetra.ssf.univariate.ISsfMeasurement;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

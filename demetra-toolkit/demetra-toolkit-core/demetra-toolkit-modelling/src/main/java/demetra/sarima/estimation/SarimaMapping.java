@@ -17,7 +17,7 @@
 package demetra.sarima.estimation;
 
 import demetra.arima.estimation.IArimaMapping;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.functions.FunctionException;

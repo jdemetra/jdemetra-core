@@ -18,13 +18,13 @@ package demetra.ssf.dk;
 
 import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.ssf.likelihood.DiffuseLikelihood;
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
-import jd.data.DataBlockStorage;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.data.DataBlockStorage;
 import demetra.maths.functions.IParametricMapping;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.SymmetricMatrix;
-import jd.maths.matrices.UpperTriangularMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import demetra.ssf.ResultsRange;
@@ -52,7 +52,7 @@ import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.M2uAdapter;
 import demetra.ssf.univariate.IFilteringResults;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

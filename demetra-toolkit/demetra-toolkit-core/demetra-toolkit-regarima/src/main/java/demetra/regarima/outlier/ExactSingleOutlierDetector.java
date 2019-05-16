@@ -19,21 +19,21 @@ package demetra.regarima.outlier;
 import demetra.arima.IArimaModel;
 import demetra.arima.estimation.ResidualsComputer;
 import demetra.arima.internal.AnsleyFilter;
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.design.Development;
 import demetra.leastsquares.QRSolvers;
 import demetra.linearmodel.LinearModel;
 import demetra.maths.linearfilters.BackFilter;
-import jd.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.LowerTriangularMatrix;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArmaModel;
 import demetra.leastsquares.QRSolver;
 import javax.annotation.Nonnull;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

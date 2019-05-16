@@ -6,14 +6,14 @@
 package demetra.r;
 
 import demetra.arima.ssf.SsfArima;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.QuadraticForm;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.QuadraticForm;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.descriptors.arima.SarimaDescriptor;
@@ -39,9 +39,9 @@ import demetra.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import jd.maths.matrices.SubMatrix;
+import jdplus.maths.matrices.SubMatrix;
 import demetra.maths.matrices.Matrix;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

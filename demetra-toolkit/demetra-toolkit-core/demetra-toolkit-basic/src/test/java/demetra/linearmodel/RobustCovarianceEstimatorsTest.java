@@ -16,13 +16,13 @@
  */
 package demetra.linearmodel;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.DataSets;
 import demetra.data.analysis.WindowFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

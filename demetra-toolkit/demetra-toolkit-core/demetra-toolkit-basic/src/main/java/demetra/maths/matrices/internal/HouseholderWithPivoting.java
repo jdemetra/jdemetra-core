@@ -16,15 +16,15 @@
  */
 package demetra.maths.matrices.internal;
 
-import jd.data.DataBlock;
-import jd.data.DataWindow;
+import jdplus.data.DataBlock;
+import jdplus.data.DataWindow;
 import demetra.design.Development;
 import demetra.maths.Constants;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.MatrixException;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.decomposition.QRDecomposition;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.decomposition.QRDecomposition;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

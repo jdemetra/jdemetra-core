@@ -16,17 +16,17 @@
  */
 package demetra.dfm.internal;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.dfm.IDfmMeasurement;
 import demetra.dfm.MeasurementDescriptor;
-import jd.maths.matrices.QuadraticForm;
+import jdplus.maths.matrices.QuadraticForm;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.implementations.MeasurementsError;
 import demetra.ssf.multivariate.ISsfErrors;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

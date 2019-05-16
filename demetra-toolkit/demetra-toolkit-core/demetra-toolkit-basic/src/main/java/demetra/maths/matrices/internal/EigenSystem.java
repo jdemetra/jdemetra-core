@@ -19,9 +19,9 @@ package demetra.maths.matrices.internal;
 
 /// <summary>
 import demetra.maths.Complex;
-import jd.maths.matrices.decomposition.IEigenSystem;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.MatrixException;
+import jdplus.maths.matrices.decomposition.IEigenSystem;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
 
 /// The class represents routines for finding EigenValues and EigenVectors of matrices. The
 /// routines are available as static members.  The routines are based on code found in

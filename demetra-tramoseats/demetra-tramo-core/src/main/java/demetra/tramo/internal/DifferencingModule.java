@@ -17,7 +17,7 @@
 package demetra.tramo.internal;
 
 import demetra.arima.internal.FastKalmanFilter;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;

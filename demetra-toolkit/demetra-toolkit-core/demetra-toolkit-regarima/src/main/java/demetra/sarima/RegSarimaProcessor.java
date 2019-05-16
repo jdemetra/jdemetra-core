@@ -25,7 +25,7 @@ import demetra.regarima.RegArimaModel;
 import demetra.regarima.internal.RegArmaEstimation;
 import demetra.regarima.RegArmaModel;
 import demetra.regarima.internal.RegArmaProcessor;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;

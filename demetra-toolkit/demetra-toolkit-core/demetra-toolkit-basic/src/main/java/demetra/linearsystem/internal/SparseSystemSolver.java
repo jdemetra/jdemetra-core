@@ -19,13 +19,13 @@ package demetra.linearsystem.internal;
 
 import demetra.design.Development;
 import java.util.Arrays;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.AlgorithmImplementation;
 import demetra.maths.Constants;
-import jd.maths.matrices.MatrixException;
+import jdplus.maths.matrices.MatrixException;
 import demetra.linearsystem.LinearSystemSolver;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * This class is a translation ofInternal the code used in Seats (routine MLTSOL)

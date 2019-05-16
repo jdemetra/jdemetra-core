@@ -5,20 +5,20 @@
  */
 package demetra.leastsquares.internal;
 
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.MatrixException;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
 import demetra.data.accumulator.NeumaierAccumulator;
-import jd.maths.matrices.UpperTriangularMatrix;
+import jdplus.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
 import demetra.leastsquares.QRSolver;
 import demetra.design.AlgorithmImplementation;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.decomposition.QRDecomposition;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.decomposition.QRDecomposition;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

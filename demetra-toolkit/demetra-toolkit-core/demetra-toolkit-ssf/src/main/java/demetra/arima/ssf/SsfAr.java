@@ -6,8 +6,8 @@
 package demetra.arima.ssf;
 
 import demetra.arima.AutoCovarianceFunction;
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import jp.maths.polynomials.Polynomial;
 import demetra.ssf.ISsfDynamics;
@@ -15,7 +15,7 @@ import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.implementations.Loading;
 import javax.annotation.Nonnull;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Dynamics of the state array for y(t) = ar(0) y(t-1)+ ... + ar(p)y(t-p-1) The

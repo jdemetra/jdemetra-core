@@ -17,13 +17,13 @@
 package demetra.ssf.akf;
 
 import demetra.design.Development;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfState;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Represents x* = x + A d, where x is a usual state vector and A is a matrix of

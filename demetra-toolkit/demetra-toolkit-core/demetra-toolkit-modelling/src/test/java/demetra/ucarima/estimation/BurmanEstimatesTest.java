@@ -17,7 +17,7 @@
 package demetra.ucarima.estimation;
 
 import demetra.data.Data;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.ucarima.UcarimaModel;
 import static demetra.ucarima.UcarimaModelTest.ucmAirline;
 import org.junit.Test;

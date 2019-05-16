@@ -17,12 +17,12 @@
 package demetra.linearmodel;
 
 import demetra.data.analysis.WindowFunction;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.stats.RobustCovarianceComputer;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

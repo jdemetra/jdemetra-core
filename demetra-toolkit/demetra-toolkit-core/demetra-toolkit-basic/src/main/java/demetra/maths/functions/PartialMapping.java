@@ -5,7 +5,7 @@
  */
 package demetra.maths.functions;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.DoubleSeq;
 

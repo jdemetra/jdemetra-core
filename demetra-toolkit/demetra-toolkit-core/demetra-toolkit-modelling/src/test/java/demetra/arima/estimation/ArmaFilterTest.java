@@ -8,7 +8,7 @@ package demetra.arima.estimation;
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
 import demetra.data.Data;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import org.junit.Test;

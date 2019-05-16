@@ -21,7 +21,7 @@ import demetra.arima.SarimaProcess;
 import demetra.arima.SarimaSpecification;
 import demetra.arima.AbstractArimaModel;
 import demetra.arima.StationaryTransformation;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.linearfilters.BackFilter;

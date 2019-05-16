@@ -5,8 +5,8 @@
  */
 package rssf;
 
-import jd.data.DataBlock;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfError;
 

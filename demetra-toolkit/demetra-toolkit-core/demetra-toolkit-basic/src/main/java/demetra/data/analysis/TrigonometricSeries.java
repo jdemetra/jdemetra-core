@@ -16,10 +16,10 @@
  */
 package demetra.data.analysis;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.Constants;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 
 /**
  * Computes cos(tw), sin(tw)

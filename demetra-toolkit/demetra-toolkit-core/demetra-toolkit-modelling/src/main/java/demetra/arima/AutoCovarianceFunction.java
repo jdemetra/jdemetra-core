@@ -25,7 +25,7 @@ import jp.maths.polynomials.Polynomial;
 import jp.maths.polynomials.RationalFunction;
 import java.lang.reflect.Array;
 import java.util.concurrent.atomic.AtomicReference;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * The auto-covariance function provides the auto-covariance of any stationary

@@ -16,8 +16,8 @@
  */
 package demetra.regarima.outlier;
 
-import demetra.dstats.Normal;
-import demetra.dstats.ProbabilityType;
+import jdplus.dstats.Normal;
+import demetra.stats.ProbabilityType;
 import java.util.Arrays;
 import demetra.data.DoubleSeq;
 

@@ -17,7 +17,7 @@
 package rssf;
 
 import demetra.information.InformationMapping;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.msts.CompositeModel;
 import demetra.msts.CompositeModelEstimation;
 import demetra.ssf.StateStorage;

@@ -16,12 +16,12 @@
  */
 package demetra.maths.linearfilters.internal;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import jp.maths.polynomials.Polynomial;
 import demetra.linearsystem.LinearSystemSolver;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 
 /**
  *

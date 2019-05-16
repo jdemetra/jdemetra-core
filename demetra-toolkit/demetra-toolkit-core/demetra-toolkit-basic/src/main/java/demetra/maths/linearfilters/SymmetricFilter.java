@@ -16,8 +16,8 @@
  */
 package demetra.maths.linearfilters;
 
-import jd.maths.matrices.MatrixException;
-import jd.data.DataBlock;
+import jdplus.maths.matrices.MatrixException;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;

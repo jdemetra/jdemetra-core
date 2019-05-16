@@ -16,7 +16,7 @@
  */
 package demetra.calendarization;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
@@ -25,7 +25,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 import java.util.HashSet;
 import javax.annotation.Nonnull;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * See "Calendarization with splines and state space models" B. Quenneville, F.

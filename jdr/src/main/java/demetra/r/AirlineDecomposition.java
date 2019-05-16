@@ -23,7 +23,7 @@ import demetra.arima.UcarimaProcess;
 import demetra.descriptors.arima.UcarimaDescriptor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import jd.data.DataBlockStorage;
+import jdplus.data.DataBlockStorage;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
@@ -48,7 +48,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.Doubles;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 
 /**

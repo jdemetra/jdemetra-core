@@ -16,10 +16,10 @@
  */
 package demetra.regarima.outlier;
 
-import jd.data.DataBlock;
-import demetra.dstats.Normal;
-import demetra.dstats.ProbabilityType;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.data.DataBlock;
+import jdplus.dstats.Normal;
+import demetra.stats.ProbabilityType;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.function.IntToDoubleFunction;
 

@@ -20,15 +20,15 @@ import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.internal.KalmanFilter;
 import demetra.regarima.RegArimaModel;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.decomposition.QRDecomposition;
+import jdplus.maths.matrices.decomposition.QRDecomposition;
 import demetra.maths.matrices.Matrix;
 
 /**

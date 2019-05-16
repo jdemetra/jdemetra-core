@@ -5,8 +5,8 @@
  */
 package demetra.msts.survey;
 
-import jd.data.DataBlock;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;

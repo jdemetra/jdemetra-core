@@ -5,7 +5,7 @@
  */
 package demetra.tramo;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
@@ -20,7 +20,7 @@ import java.util.Optional;
 import demetra.modelling.regression.ITradingDaysVariable;
 import demetra.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

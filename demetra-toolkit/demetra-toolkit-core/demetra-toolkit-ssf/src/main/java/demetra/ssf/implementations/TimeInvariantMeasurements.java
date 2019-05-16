@@ -16,13 +16,13 @@
  */
 package demetra.ssf.implementations;
 
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.multivariate.ISsfErrors;
 import demetra.ssf.univariate.ISsfError;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

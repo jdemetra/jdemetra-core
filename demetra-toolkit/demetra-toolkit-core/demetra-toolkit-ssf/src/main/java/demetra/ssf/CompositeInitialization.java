@@ -16,13 +16,13 @@
  */
 package demetra.ssf;
 
-import jd.data.DataBlock;
-import jd.data.DataWindow;
-import jd.maths.matrices.MatrixWindow;
+import jdplus.data.DataBlock;
+import jdplus.data.DataWindow;
+import jdplus.maths.matrices.MatrixWindow;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfInitialization;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

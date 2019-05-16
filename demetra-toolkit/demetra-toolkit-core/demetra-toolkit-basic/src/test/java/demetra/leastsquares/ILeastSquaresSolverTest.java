@@ -6,15 +6,15 @@
 package demetra.leastsquares;
 
 import demetra.leastsquares.internal.AdvancedQRSolver;
-import jd.data.DataBlock;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.maths.matrices.internal.HouseholderWithPivoting;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

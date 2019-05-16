@@ -18,8 +18,8 @@ package demetra.stats.tests;
 
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
-import demetra.dstats.Chi2;
-import demetra.dstats.Normal;
+import jdplus.dstats.Chi2;
+import jdplus.dstats.Normal;
 import demetra.stats.StatException;
 import demetra.data.DoubleSeq;
 

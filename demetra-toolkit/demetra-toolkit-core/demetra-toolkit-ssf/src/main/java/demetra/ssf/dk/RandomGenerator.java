@@ -16,11 +16,11 @@
  */
 package demetra.ssf.dk;
 
-import jd.data.DataBlock;
-import demetra.dstats.Normal;
-import jd.maths.matrices.LowerTriangularMatrix;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.data.DataBlock;
+import jdplus.dstats.Normal;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.random.JdkRNG;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISsf;

@@ -16,7 +16,7 @@
  */
 package demetra.ssf.dk;
 
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.SsfException;
@@ -27,7 +27,7 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.univariate.OrdinaryFilter;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

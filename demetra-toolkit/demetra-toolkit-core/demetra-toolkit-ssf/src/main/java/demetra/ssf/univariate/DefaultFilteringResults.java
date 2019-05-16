@@ -19,7 +19,7 @@
 package demetra.ssf.univariate;
 
 import demetra.ssf.UpdateInformation;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.ssf.DataBlockResults;
 import demetra.ssf.DataResults;
 import demetra.ssf.IStateResults;
@@ -29,7 +29,7 @@ import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Will contain the following items at position t: a(t|t-1)

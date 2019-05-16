@@ -16,16 +16,16 @@
  */
 package demetra.ssf.implementations;
 
-import jd.data.DataBlock;
-import jd.data.DataBlockIterator;
-import jd.data.DataWindow;
-import jd.maths.matrices.MatrixWindow;
-import jd.maths.matrices.QuadraticForm;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.data.DataWindow;
+import jdplus.maths.matrices.MatrixWindow;
+import jdplus.maths.matrices.QuadraticForm;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 import demetra.data.DoubleSeqCursor;
-import jd.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.SsfComponent;
@@ -33,7 +33,7 @@ import demetra.ssf.SsfException;
 import demetra.ssf.univariate.ISsfMeasurement;
 import demetra.ssf.univariate.Measurement;
 import demetra.data.DoubleSeq;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * SSF extended by regression variables with fixed or time varying coefficients.

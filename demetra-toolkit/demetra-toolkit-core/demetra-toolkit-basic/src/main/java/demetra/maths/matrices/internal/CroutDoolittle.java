@@ -19,9 +19,9 @@ package demetra.maths.matrices.internal;
 
 
 import demetra.design.Development;
-import jd.maths.matrices.CanonicalMatrix;
-import jd.maths.matrices.MatrixException;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * LU decomposition by means of the Crout-Doolittle algorithm

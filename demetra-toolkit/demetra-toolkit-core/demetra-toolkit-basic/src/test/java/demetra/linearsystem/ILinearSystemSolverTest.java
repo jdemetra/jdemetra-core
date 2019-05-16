@@ -9,9 +9,9 @@ import demetra.linearsystem.internal.SparseSystemSolver;
 import demetra.linearsystem.internal.QRLinearSystemSolver;
 import demetra.linearsystem.internal.LUSolver;
 import java.util.Random;
-import jd.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.accumulator.NeumaierAccumulator;
-import jd.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.matrices.internal.Gauss;
 import demetra.maths.matrices.internal.Householder;
@@ -19,7 +19,7 @@ import demetra.maths.matrices.internal.HouseholderWithPivoting;
 import demetra.maths.matrices.internal.RobustHouseholder;
 import org.junit.Ignore;
 import org.junit.Test;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

@@ -21,7 +21,7 @@ import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import jd.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
