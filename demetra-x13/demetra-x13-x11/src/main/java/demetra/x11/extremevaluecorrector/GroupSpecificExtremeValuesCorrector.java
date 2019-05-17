@@ -38,7 +38,7 @@ public class GroupSpecificExtremeValuesCorrector extends PeriodSpecificExtremeVa
         double eGroup1 = 0;
         double eGroup2 = 0;
         for (int i = 0; i < period; i++) {
-            int j = i + start > period - 1 ? i + start - period : i + start;
+            int j = ((period - start) % period + i) % period;
             DataBlock dbPeriod = db.extract(j, -1, period);
             if (sigmavecOption_[i].equals(SigmavecOption.Group1)) {
                 for (int k = 0; k < dbPeriod.length(); k++) {

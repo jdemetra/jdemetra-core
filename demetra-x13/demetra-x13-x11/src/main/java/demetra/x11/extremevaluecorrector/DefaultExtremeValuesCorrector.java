@@ -28,7 +28,7 @@ import java.util.Arrays;
  */
 @Development(status = Development.Status.Beta)
 public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
-
+    private static final double EPS = 1e-15;
     /**
      * Returns the averages by period
      *
@@ -42,9 +42,11 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
         for (int i = 0; i < period; ++i) {
             double a = 0;
             int m = 0;
-            for (int j = i; j < n; ++j) {
+            int j = i;
+            while (j < n) {
                 a += s.get(j);
                 ++m;
+                j = j + period;
             }
             outs[i] = a / m;
         }
@@ -113,7 +115,13 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
         }
 
         int n = s.length();
+        //number of full years, if first and last year sum up to a complete year this ist not a whole year
         int nfy = (n - start) / period;
+        if (start == 0 && (n - start) % period == 0) {
+            nfy = nfy - 1;
+        }
+
+        int nbeg = (period - start) % period;
 
         if (nfy < NPERIODS) {
             return new double[]{calcSingleStdev(s)};
@@ -126,17 +134,17 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
             ++ie;
         }
         boolean cend = false;
-        if ((n - start) % period != 0) {
+        if ((n - nbeg) % period != 0) {
             ++ny;
             cend = true;
         }
         double[] stdev = new double[ny];
         // first years
-        double e = calcSingleStdev(s.range(0, start + NPERIODS * period));
+        double e = calcSingleStdev(s.range(0, nbeg + NPERIODS * period));
         for (int i = 0; i < ie; ++i) {
             stdev[i] = e;
         }
-        int ibeg = start, iend = ibeg + NPERIODS * period;
+        int ibeg = nbeg, iend = ibeg + NPERIODS * period;
         while (iend <= n) {
             DoubleSequence cur = s.range(ibeg, iend);
             e = calcSingleStdev(cur);
@@ -208,9 +216,9 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
                     ns[i] = x;
                 } else {
                     if (avgs == null) {
-                        avgs = periodAverages(s.drop(start, n), period);
+                        avgs = periodAverages(s, period);
                     }
-                    ns[i] = avgs[(beg + i) % period];
+                    ns[i] = avgs[(i) % period];
                 }
             }
         }
@@ -261,7 +269,9 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
 
         double xbar = mul ? 1 : 0;
         int y = 0;
-        int ibeg = 0, iend = start > 0 ? start : period;
+        int nbeg = period - start;
+
+        int ibeg = 0, iend = nbeg;
         while (ibeg < n) {
             double lv, uv;
             if (y > stdev.length - 1) {
@@ -274,9 +284,9 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
 
             for (int i = ibeg; i < iend; i++) {
                 double tt = Math.abs(cur.get(i) - xbar);
-                if (tt > uv) {
+                if (tt - uv > EPS) {
                     w[i] = 0;
-                } else if (tt > lv) {
+                } else if (tt - lv > EPS) {
                     w[i] = (uv - tt) / (uv - lv);
                 }
             }

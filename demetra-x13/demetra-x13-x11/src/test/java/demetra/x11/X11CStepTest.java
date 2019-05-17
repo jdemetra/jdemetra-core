@@ -187,10 +187,17 @@ public class X11CStepTest {
 
     private void testC(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values) {
         X11CStep instance = new X11CStep();
+        SeasonalFilterOption[] filters_new = new SeasonalFilterOption[frequency];
+        ec.satoolkit.x11.SeasonalFilterOption[] filters_old = new ec.satoolkit.x11.SeasonalFilterOption[frequency];
+        for (int i = 0; i < frequency; i++) {
+            filters_new[i] = SeasonalFilterOption.valueOf(seasonalFilterOptionName);
+            filters_old[i] = ec.satoolkit.x11.SeasonalFilterOption.valueOf(seasonalFilterOptionName);
+        }
+
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(DecompositionMode.valueOf(modeName))
-                //                .initialSeasonalFilter(SeasonalFilterOption.valueOf(seasonalFilterOptionName))
-                //                .finalSeasonalFilter(SeasonalFilterOption.valueOf(seasonalFilterOptionName))
+                .initialSeasonalFilter(filters_new)
+                .finalSeasonalFilter(filters_new)
                 .trendFilterLength(filterLength)
                 .period(frequency)
                 .build();
@@ -198,7 +205,7 @@ public class X11CStepTest {
 
         X11Specification oldSpec = new X11Specification();
         oldSpec.setMode(ec.satoolkit.DecompositionMode.valueOf(modeName));
-        oldSpec.setSeasonalFilter(ec.satoolkit.x11.SeasonalFilterOption.valueOf(seasonalFilterOptionName));
+        oldSpec.setSeasonalFilters(filters_old);
         oldSpec.setHendersonFilterLength(filterLength);
         oldSpec.setForecastHorizon(0);
 

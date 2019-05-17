@@ -64,12 +64,13 @@ public class X11BStep {
 
     private void b4(X11Context context) {
         X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
-        b4a = processor.process(b3, context.getFirstPeriod());
-        b4anorm = DefaultSeasonalNormalizer.normalize(b4a, 0, context);
+        b4a = processor.process(b3, (context.getFirstPeriod() + b2drop) % context.getPeriod());
+
+        b4anorm = DefaultSeasonalNormalizer.normalize(b4a, 0, context, b2drop);
         b4d = context.remove(b3, b4anorm);
         IExtremeValuesCorrector ecorr = context.selectExtremeValuesCorrector(b4d);
-
-        ecorr.setStart(b2drop + context.getFirstPeriod());
+        int j = (b2drop + context.getFirstPeriod()) % context.getPeriod();
+        ecorr.setStart(j);
         ecorr.analyse(b4d, context);
 
         b4 = ecorr.computeCorrections(b3);
@@ -80,8 +81,6 @@ public class X11BStep {
         X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
         DoubleSequence b5a = processor.process(b4g, (context.getFirstPeriod() + b2drop) % context.getPeriod());
         b5 = DefaultSeasonalNormalizer.normalize(b5a, b2drop, context);
-        System.out.println("B5A NEU");
-        System.out.println(b5a.toString());
     }
 
     private void b6(X11Context context) {

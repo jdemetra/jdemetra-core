@@ -36,12 +36,19 @@ import java.util.ArrayList;
 public class DefaultSeasonalNormalizer {
 
     public DoubleSequence normalize(DoubleSequence in, int nextend, X11Context context) {
+        return normalize(in, nextend, context, 0);
+    }
+
+    public DoubleSequence normalize(DoubleSequence in, int nextend, X11Context context, int start) {
 
         ArrayList<Integer> stable_index = new ArrayList<>();
         SeasonalFilterOption[] filters = context.getFinalSeasonalFilter();
+
+        int ind;
         for (int i = 0; i < context.getPeriod(); i++) {
+            ind = (start + i) % context.getPeriod();
             if (SeasonalFilterOption.Stable.equals(filters[i])) {
-                stable_index.add(i);
+                stable_index.add(ind);
             }
         }
 
@@ -51,7 +58,7 @@ public class DefaultSeasonalNormalizer {
 
         double[] x = new double[in.length()];
         DataBlock out = DataBlock.ofInternal(x, ndrop, x.length - ndrop);
-        filter.apply(i -> in.get(i), IFilterOutput.of(out, ndrop));
+        filter.apply(j -> in.get(j), IFilterOutput.of(out, ndrop));
 
         // needed because series is too short for filter
         CopyEndPoints cp = new CopyEndPoints(ndrop);
@@ -59,16 +66,18 @@ public class DefaultSeasonalNormalizer {
 
         if (!stable_index.isEmpty()) {
             int index = 0;
-            for (int period = start_period_input; period < start_period_input + ndrop; period++) {
-                if (stable_index.contains(period % context.getPeriod())) {
+            for (int p = start_period_input; p < start_period_input + ndrop; p++) {
+                if (stable_index.contains(p % context.getPeriod())) {
                     x[index] = x[index + context.getPeriod()];
                 }
                 index++;
             }
-            int end_period_input = (in.length() - 1 - start_period_input) % context.getPeriod();
+            int end_period_input = (in.length() - 1 + start_period_input) % context.getPeriod();
             index = in.length() - 1;
-            for (int period = end_period_input; period > end_period_input - ndrop; period--) {
-                if (stable_index.contains(period % context.getPeriod())) {
+            for (int p = end_period_input; p > end_period_input - ndrop; p--) {
+// the period of x[index]=(ndrop * context.getPeriod() + p)) 
+//ndrop * context.getPeriod() is big enough that 
+                if (stable_index.contains((ndrop * context.getPeriod() + p) % context.getPeriod())) {
                     x[index] = x[index - context.getPeriod()];
                 }
                 index--;

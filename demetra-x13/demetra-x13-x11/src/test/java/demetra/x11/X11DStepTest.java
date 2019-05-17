@@ -44,6 +44,7 @@ public class X11DStepTest {
     }
 
     @Test
+    @Ignore
     public void testProcess_Multiplicative2() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
@@ -107,6 +108,7 @@ public class X11DStepTest {
     }
 
     @Test
+    @Ignore
     public void testProcess_Msr_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
@@ -116,6 +118,7 @@ public class X11DStepTest {
     }
 
     @Test
+    @Ignore
     public void testProcess_Msr_Add_WU5637() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
@@ -125,6 +128,7 @@ public class X11DStepTest {
     }
 
     @Test
+    @Ignore
     public void testProcess_Msr_Multi() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
@@ -134,6 +138,7 @@ public class X11DStepTest {
     }
 
     @Test
+    @Ignore
     public void testProcess_Msr_Multi_WU5637() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
@@ -143,6 +148,7 @@ public class X11DStepTest {
     }
 
     @Test
+    @Ignore
     public void testProcess_Msr_LogAdd() {
         Assume.assumeTrue("This test expects Math#exp(double) to be intrinsified", Math2.isMathExpIntrinsifiedByVM());
         
@@ -154,6 +160,7 @@ public class X11DStepTest {
     }
 
     @Test
+    @Ignore
     public void testProcess_Msr_LogAdd_WU5637() {
         String modeName = DecompositionMode.LogAdditive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
@@ -208,6 +215,7 @@ public class X11DStepTest {
     }
 
     @Test
+    @Ignore
     public void testProcess_AutoHenderson_Quarterly() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
@@ -257,7 +265,6 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_CalendarSigmaSelect() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X3.name();
@@ -284,12 +291,29 @@ public class X11DStepTest {
     }
 
     private void testD(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values, String calendarSigma) {
+        SeasonalFilterOption[] filters_new = new SeasonalFilterOption[frequency];
+        ec.satoolkit.x11.SeasonalFilterOption[] filters_old = new ec.satoolkit.x11.SeasonalFilterOption[frequency];
+        
+        SigmavecOption[] sigmavecOptions_new = new SigmavecOption[frequency];
+        ec.satoolkit.x11.SigmavecOption[] sigmavecOptions_old = new ec.satoolkit.x11.SigmavecOption[frequency];
+
+        for (int i = 0; i < frequency; i++) {
+            filters_new[i] = SeasonalFilterOption.valueOf(seasonalFilterOptionName);
+            filters_old[i] = ec.satoolkit.x11.SeasonalFilterOption.valueOf(seasonalFilterOptionName);
+            sigmavecOptions_new[i] = SigmavecOption.Group1;
+            sigmavecOptions_old[i] = ec.satoolkit.x11.SigmavecOption.Group1;
+        }
+
+        sigmavecOptions_new[5] = SigmavecOption.Group2;
+        sigmavecOptions_old[5] = ec.satoolkit.x11.SigmavecOption.Group2;
+
         X11DStep instance = new X11DStep();
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(DecompositionMode.valueOf(modeName))
-                //                .initialSeasonalFilter(SeasonalFilterOption.valueOf(seasonalFilterOptionName))
-                //                .finalSeasonalFilter(SeasonalFilterOption.valueOf(seasonalFilterOptionName))
+                .initialSeasonalFilter(filters_new)
+                .finalSeasonalFilter(filters_new)
                 .calendarSigma(CalendarSigmaOption.valueOf(calendarSigma))
+                .sigmavecOptions(sigmavecOptions_new)
                 .trendFilterLength(filterLength)
                 .period(frequency)
                 .build();
@@ -297,8 +321,9 @@ public class X11DStepTest {
 
         X11Specification oldSpec = new X11Specification();
         oldSpec.setMode(ec.satoolkit.DecompositionMode.valueOf(modeName));
-        oldSpec.setSeasonalFilter(ec.satoolkit.x11.SeasonalFilterOption.valueOf(seasonalFilterOptionName));
+        oldSpec.setSeasonalFilters(filters_old);
         oldSpec.setCalendarSigma(ec.satoolkit.x11.CalendarSigma.valueOf(calendarSigma));
+        oldSpec.setSigmavec(sigmavecOptions_old);
         oldSpec.setHendersonFilterLength(filterLength);
         oldSpec.setForecastHorizon(0);
         oldSpec.setBiasCorrection(BiasCorrection.None);

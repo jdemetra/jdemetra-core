@@ -21,7 +21,7 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
     public PeriodSpecificExtremeValuesCorrector() {
         super();
     }
-
+    private static final double EPS = 1e-15;
     /**
      * Calculates the Standarddeviation for each period
      *
@@ -40,12 +40,10 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
 //      one value for each period
         stdev = new double[period];
         for (int i = 0; i < period; i++) {
-            int j = i + start > period - 1 ? i + start - period : i + start;
+            //   int j = i + start > period - 1 ? i + start - period : i + start;
+            int j = ((period - start) % period + i) % period;
             DataBlock dbPeriod = db.extract(j, -1, period);
             stdev[i] = calcSingleStdev(dbPeriod);
-            // WAs ist der  Unterschied zu
-//               double e =mul ? 1: 0;
-//                Doubles.ssqcWithMissing(dsPeriod, e);
         }
         return stdev;
     }
@@ -62,15 +60,16 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
             lv = stdev[iPeriod] * lsigma;
             uv = stdev[iPeriod] * usigma;
 
-            int j = iPeriod + start > period - 1 ? iPeriod + start - period : iPeriod + start;
+            //int j = iPeriod + start > period - 1 ? iPeriod + start - period : iPeriod + start;
+            int j = ((period - start) % period + iPeriod) % period;
             DataBlock dCur = DataBlock.of(cur);
             DataBlock dsPeriod = dCur.extract(j, -1, period);
 
             for (int i = 0; i < dsPeriod.length(); i++) {
                 double tt = Math.abs(dsPeriod.get(i) - xbar);
-                if (tt > uv) {
+                if (tt - uv > EPS) {
                     w[i * period + j] = 0;
-                } else if (tt > lv) {
+                } else if (tt - lv > EPS) {
                     w[i * period + j] = (uv - tt) / (uv - lv);
                 }
             }

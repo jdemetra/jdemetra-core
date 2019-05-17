@@ -71,12 +71,18 @@ public class ExcludeFcastTest {
     }
 
     private void excludeFcastTest(CalendarSigmaOption option, boolean excludeFcast, SigmavecOption[] sigmavecOptions) {
+        SeasonalFilterOption[] filters_new = new SeasonalFilterOption[12];
+        ec.satoolkit.x11.SeasonalFilterOption[] filters_old = new ec.satoolkit.x11.SeasonalFilterOption[12];
+        for (int i = 0; i < 12; i++) {
+            filters_new[i] = SeasonalFilterOption.S3X3;
+            filters_old[i] = ec.satoolkit.x11.SeasonalFilterOption.S3X3;
+        }
 
         DoubleSequence b1 = DoubleSequence.of(B1);
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(DecompositionMode.Additive)
-                //                .finalSeasonalFilter(SeasonalFilterOption.S3X3)
-                //                .initialSeasonalFilter(SeasonalFilterOption.S3X3)
+                .finalSeasonalFilter(filters_new)
+                .initialSeasonalFilter(filters_new)
                 .trendFilterLength(5)
                 .period(12)
                 .calendarSigma(option)
