@@ -175,9 +175,6 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
         for (int i = ibeg; i < stdev.length; ++i) {
             stdev[i] = e;
 
-            //die nächste Zeile muss wieder gelöscht werden
-            // if(isexcludefcast){
-            //  stdev[ny]=stdev[ny-1];}
         }
     }
 
@@ -291,7 +288,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
     public double[] getStandardDeviations() {
         return stdev;
     }
-
+    private static final double EPS = 1e-15;
     protected int outliersDetection() {
         int nval = 0;
         double lv, uv;
@@ -315,10 +312,10 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
 
             for (int i = 0; i < dbi.getLength(); i++) {
                 double tt = Math.abs(dbi.get(i) - xbar);
-                if (tt > uv) {
+                if (tt - uv > EPS) {
                     dbo.set(i, 0.0);
                     ++nval;
-                } else if (tt > lv) {
+                } else if (tt - lv > EPS) {
                     dbo.set(i, (uv - tt) / (uv - lv));
                 }
             }

@@ -5,6 +5,7 @@
  */
 package ec.satoolkit.x11;
 
+import ec.satoolkit.DecompositionMode;
 import ec.satoolkit.algorithm.implementation.X13ProcessingFactory;
 import ec.satoolkit.x13.X13Specification;
 import ec.tstoolkit.algorithm.CompositeResults;
@@ -20,6 +21,20 @@ import utilities.CompareTsData;
  * @author s4504ch
  */
 public class X11KernelTestHalfYearly {
+
+    @Test
+    public void HKAS_LogAddTest() {
+        TsData ts = DataHalfYearly.HKAS;
+        X13Specification x13spec = SpecHalfYearly.getSpecHKAS();
+        x13spec.getX11Specification().setMode(DecompositionMode.LogAdditive);
+        SequentialProcessing<TsData> processing = X13ProcessingFactory.instance.generateProcessing(x13spec);
+        CompositeResults comprest = processing.process(ts);
+        double d11[]
+                = {37536183.7954008, 42779881.9117029, 40686045.3618075, 26723066.3739840, 20086407.9803598, 26814707.4320941, 36724099.5454980, 43118413.4284516, 39749651.5887306, 36046115.8438464, 40301161.1922987, 37519880.9226034, 33810882.2677716, 39437242.4179417, 36355886.1999183, 44201380.7691870, 37321004.2952891, 25895079.9648566, 32912595.9509640, 33280252.7492370, 46621305.5429592, 52181499.1188171};
+        TsData tsD11 = new TsData(TsFrequency.HalfYearly, 2007, 0, d11, true);
+        Assert.assertTrue("D11 is wrong", CompareTsData.compareTS(tsD11, comprest.getData("d-tables.d11", TsData.class), 0.0000001));
+
+    }
 
     @Test
     public void HKASTest() {

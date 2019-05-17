@@ -7,9 +7,8 @@
 package ec.satoolkit.x11;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
-import ec.tstoolkit.timeseries.simplets.TsData;
-//import ec.tstoolkit.timeseries.simplets.YearIterator;
 import ec.tstoolkit.timeseries.simplets.PeriodIterator;
+import ec.tstoolkit.timeseries.simplets.TsData;
 
 /**
  * This extremvalueCorrector uses period specific standarddeviatio 
@@ -23,7 +22,7 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
         public PeriodSpecificExtremeValuesCorrector() {
             super();
         }
-       
+        private static final double EPS = 1e-15;
 
     /**
      *calculates the Standarddeviation for each period, 
@@ -63,10 +62,10 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
 
                 for (int i = 0; i < dbi.getLength(); i++) {
                     double tt = Math.abs(dbi.get(i) - xbar);
-                    if (tt > uv) {
+                    if (tt - uv > EPS) {
                         dbo.set(i, 0.0);
                         ++nval;
-                    } else if (tt > lv) {
+                    } else if (tt - lv > EPS) {
                         dbo.set(i, (uv - tt) / (uv - lv));
                     }
                 }
