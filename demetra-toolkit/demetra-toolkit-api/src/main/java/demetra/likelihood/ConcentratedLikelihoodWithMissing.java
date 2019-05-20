@@ -17,15 +17,12 @@
 package demetra.likelihood;
 
 import demetra.design.Immutable;
-import demetra.data.LogSign;
 import demetra.design.BuilderPattern;
-import demetra.eco.EcoException;
 import demetra.maths.Constants;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.data.DoublesMath;
-import demetra.likelihood.ConcentratedLikelihood;
 import demetra.maths.matrices.Matrix;
 
 /**
@@ -45,7 +42,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
     @BuilderPattern(ConcentratedLikelihoodWithMissing.class)
     public static class Builder {
 
-        private static double[] B_EMPTY = new double[0];
+        private static final double[] B_EMPTY = new double[0];
 
         private int n;
         private int nmissing = 0;
@@ -68,16 +65,17 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
             this.n = n;
             return this;
         }
-        
+
         public Builder scalingFactor(boolean scalingFactor) {
             this.scalingFactor = scalingFactor;
             return this;
         }
+
         /**
          * Number of missing values, estimated by means of additive outliers.
-         * The regression variables corresponding to the missing values should be put
-         * at the beginning. All information included in the builder contains
-         * the effects of the missing values.
+         * The regression variables corresponding to the missing values should
+         * be put at the beginning. All information included in the builder
+         * contains the effects of the missing values.
          *
          * @param nmissing
          * @return
@@ -137,7 +135,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
 //            } else {
 //                return new ConcentratedLikelihoodWithMissing(n, 0, ssqerr, ldet, res, b, bvar, r, scalingFactor);
 //            }
-                return new ConcentratedLikelihoodWithMissing(n - nmissing, nmissing, ssqerr, ldet, res, b, bvar, scalingFactor);
+            return new ConcentratedLikelihoodWithMissing(n - nmissing, nmissing, ssqerr, ldet, res, b, bvar, scalingFactor);
         }
 
     }
@@ -170,7 +168,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
             this.ll = -.5 * (n * Constants.LOGTWOPI + ssqerr + ldet);
         }
     }
-    
+
     public int nmissing() {
         return nmissing;
     }
@@ -188,18 +186,18 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
 
     /**
      * Returns all the coefficients, including the missing values
-     * @return 
+     *
+     * @return
      */
     public DoubleSeq allCoefficients() {
         return DoubleSeq.of(b);
     }
-    
+
     @Override
-    public boolean isScalingFactor(){
+    public boolean isScalingFactor() {
         return scalingFactor;
     }
 
-    
     @Override
     public double logDeterminant() {
         return ldet;
@@ -225,11 +223,12 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
 
     /**
      * Number of coefficients (excluding missing value estimates)
+     *
      * @return
      */
     @Override
     public int nx() {
-        return b.length-nmissing;
+        return b.length - nmissing;
     }
 
     @Override
@@ -245,9 +244,9 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
 
     @Override
     public double coefficient(int pos) {
-        return b[pos+nmissing];
+        return b[pos + nmissing];
     }
- 
+
     @Override
     @Nonnull
     public Matrix unscaledCovariance() {
@@ -262,20 +261,6 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
         }
     }
 
-//    private void bvariance() {
-//        FastMatrix tmp = bvar;
-//        if (tmp == null && r != null) {
-//            synchronized (this) {
-//                tmp = bvar;
-//                if (tmp == null) {
-//                    FastMatrix u = UpperTriangularMatrix.inverse(r);
-//                    tmp = SymmetricMatrix.UUt(u);
-//                    bvar = tmp;
-//                }
-//            }
-//        }
-//    }
-
     /**
      * Gets the sum of the squares of the (transformed) observations.
      *
@@ -286,70 +271,62 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
         return ssqerr;
     }
 
-//    /**
-//     * Adjust the likelihood if the data have been pre-multiplied by a given
-//     * scaling factor
-//     *
-//     * @param yfactor The scaling factor of y
-//     * @param xfactor The scaling factor of x
-//     * @return
-//     */
-//    public ConcentratedLikelihoodWithMissing rescale(final double yfactor, double[] xfactor) {
-//        // rescale the residuals
-//        double nssqerr = ssqerr / (yfactor * yfactor);
-//        double[] nres = null;
-//        if (res != null) {
-//            nres = new double[res.length];
-//            for (int i = 0; i < res.length; ++i) {
-//                nres[i] = res[i] / yfactor;
-//            }
-//        }
-//        double[] nb = null;
-//        FastMatrix nbvar = null;
-//        FastMatrix nr = null;
-//        if (b != null) {
-//            nb = new double[b.length];
-//            if (xfactor == null) {
-//                // rescale the coefficients (but not the unscaled variances)
-//                for (int i = 0; i < b.length; ++i) {
-//                    nb[i] = b[i] / yfactor;
-//                }
-//                nbvar = bvar;
-//                nr = r;
-//            } else {
-//                // rescale everything
-//                for (int i = 0; i < b.length; ++i) {
-//                    nb[i] = b[i] * xfactor[i] / yfactor;
-//                }
-//                if (nbvar != null) {
-//                    nbvar = bvar.deepClone();
-//                    for (int i = 0; i < b.length; ++i) {
-//                        double ifactor = xfactor[i];
-//                        for (int j = 0; j < i; ++j) {
-//                            double ijfactor = ifactor * xfactor[j];
-//                            nbvar.apply(i, j, x -> x * ijfactor);
-//                            nbvar.apply(j, i, x -> x * ijfactor);
-//                        }
-//                        nbvar.apply(i, i, x -> x * ifactor * ifactor);
-//                    }
-//                }
-//                if (r != null) {
-//                    nr = r.deepClone();
-//                    for (int i = 0; i < b.length; ++i) {
-//                        nr.column(i).div(xfactor[i]);
-//                    }
-//                }
-//            }
-//        }
-//        double nldet=ldet;
-//        if (! scalingFactor){
-//            nldet+=n*Math.log(yfactor);
-//        }
-//        return new ConcentratedLikelihoodWithMissing(n, nmissing, nssqerr, nldet, nres, nb, nbvar, nr, scalingFactor);
-//    }
-//    
-    public int degreesOfFreedom(){
-        return n-nx();
+    /**
+     * Adjust the likelihood if the data have been pre-multiplied by a given
+     * scaling factor
+     *
+     * @param yfactor The scaling factor of y
+     * @param xfactor The scaling factor of x
+     * @return
+     */
+    public ConcentratedLikelihoodWithMissing rescale(final double yfactor, double[] xfactor) {
+        // rescale the residuals
+        double nssqerr = ssqerr / (yfactor * yfactor);
+        double[] nres = null;
+        if (res != null) {
+            nres = new double[res.length];
+            for (int i = 0; i < res.length; ++i) {
+                nres[i] = res[i] / yfactor;
+            }
+        }
+        double[] nb = null;
+        Matrix nbvar = null;
+        if (b != null) {
+            nb = new double[b.length];
+            if (xfactor == null) {
+                // rescale the coefficients (but not the unscaled variances)
+                for (int i = 0; i < b.length; ++i) {
+                    nb[i] = b[i] / yfactor;
+                }
+                nbvar = bvar;
+            } else {
+                // rescale everything
+                for (int i = 0; i < b.length; ++i) {
+                    nb[i] = b[i] * xfactor[i] / yfactor;
+                }
+                Matrix.Mutable tmp = Matrix.Mutable.copyOf(bvar);
+                for (int i = 0; i < b.length; ++i) {
+                    double ifactor = xfactor[i];
+                    for (int j = 0; j < i; ++j) {
+                        double ijfactor = ifactor * xfactor[j];
+                        tmp.apply(i, j, x -> x * ijfactor);
+                        tmp.apply(j, i, x -> x * ijfactor);
+                    }
+                    tmp.apply(i, i, x -> x * ifactor * ifactor);
+                }
+                nbvar=tmp.unmodifiable();
+            }
+        }
+        double nldet = ldet;
+        if (!scalingFactor) {
+            nldet += n * Math.log(yfactor);
+        }
+
+        return new ConcentratedLikelihoodWithMissing(n, nmissing, nssqerr, nldet, nres, nb, nbvar, scalingFactor);
+    }
+
+    public int degreesOfFreedom() {
+        return n - nx();
     }
 
     @Override

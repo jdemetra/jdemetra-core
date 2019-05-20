@@ -30,6 +30,8 @@ import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.decomposition.QRDecomposition;
 import demetra.maths.matrices.Matrix;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.UpperTriangularMatrix;
 
 /**
  *
@@ -41,10 +43,9 @@ public final class ConcentratedLikelihoodComputer {
     private final ArmaFilter filter;
     private final QRDecomposition qr;
     private final boolean scaling;
-    
-    public static final ConcentratedLikelihoodComputer DEFAULT_COMPUTER=
-            new ConcentratedLikelihoodComputer(null, null, true);
 
+    public static final ConcentratedLikelihoodComputer DEFAULT_COMPUTER
+            = new ConcentratedLikelihoodComputer(null, null, true);
 
     public ConcentratedLikelihoodComputer(final ArmaFilter filter, final QRDecomposition qr, final boolean scaling) {
         this.filter = filter == null ? new KalmanFilter(true) : filter;
@@ -86,7 +87,7 @@ public final class ConcentratedLikelihoodComputer {
         CanonicalMatrix xl;
         if (nx > 0) {
             xl = CanonicalMatrix.make(nl, nx);
-            for (int i=0; i<nx; ++i){
+            for (int i = 0; i < nx; ++i) {
                 filter.apply(x.column(i), xl.column(i));
             }
 
@@ -112,12 +113,14 @@ public final class ConcentratedLikelihoodComputer {
                 CanonicalMatrix R = qr.r(false);
                 double ssqerr = res.ssq();
                 double ldet = filter.getLogDeterminant();
+                CanonicalMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
+                        .inverse(R));
 
                 cll = ConcentratedLikelihoodWithMissing.builder()
                         .ndata(n)
                         .nmissing(nm)
                         .coefficients(b)
-                        .rfactor(R)
+                        .unscaledCovariance(bvar)
                         .logDeterminant(ldet)
                         .ssqErr(ssqerr)
                         .residuals(res)

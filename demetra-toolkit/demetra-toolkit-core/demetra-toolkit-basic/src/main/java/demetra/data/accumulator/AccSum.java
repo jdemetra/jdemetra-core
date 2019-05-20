@@ -16,6 +16,10 @@
  */
 package demetra.data.accumulator;
 
+import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
+import demetra.maths.Constants;
+
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
@@ -23,165 +27,146 @@ package demetra.data.accumulator;
 @lombok.experimental.UtilityClass
 public strictfp class AccSum {
 
+    private static final double EPS = Constants.MACHEP, ETA = Double.MIN_VALUE;
+
+    private static final double LOG2 = Math.log(2);
+
+    private static double log2(double x) {
+        return Math.log(x) / LOG2;
+    }
+
+    public static class AccurateDouble {
+
+        public double value;
+        public double error;
+        
+        @Override
+        public String toString(){
+            StringBuilder builder=new StringBuilder();
+            builder.append("value=").append(value).append(", error=").append(error);
+            return builder.toString();
+        }
+
+        /**
+         * Error-free split a=x+y into two parts. x+y=a and both x and y need at
+         * most 26 bits in the mantissa. Follows T.J. Dekker: A floating-point
+         * technique for extending the available precision, Numerische
+         * Mathematik 18:224-242, 1971. Requires 4 flops for scalar input.
+         */
+        public static AccurateDouble split(double a) {
+            AccurateDouble s = new AccurateDouble();
+            double factor = Math.pow(2, Math.ceil(log2(2 / EPS) / 2) + 1);
+            double c = factor * a;
+            double ca = c - a;
+            s.value = c - ca;
+            s.error = a - s.value;
+            return s;
+        }
+    }
+
     /**
      * Error-free transformation of a+b into x+y with x=fl(a+b)
      *
      * @param a
      * @param b
-     * @param xy Out. Array containing x,y
+     * @param sum Out. Array containing x,y
      */
-    public void fastTwoSum(double a, double b, double[] xy) {
+    public void fastTwoSum(double a, double b, AccurateDouble sum) {
         double x = a + b;
         double y = a - x;
-        xy[0] = x;
-        xy[1] = y + b;
+        sum.value = x;
+        sum.error = y + b;
     }
-    
-//    function [res,m] = FastAccSum(p)
-//%FastAccSum   Ultimately fast and accurate summation with faithful rounding
-//%
-//%   res = fastaccsum(p)
-//%
-//%For real or complex input vector, dense or sparse, the result res is
-//%sum(p_i) faithfully rounded. Input vector p must not be of type intval.
-//%
-//%Maximum number of nonzero elements per sum is limited to 67,108,862 in 
-//%double precision, which seems sufficient for Matlab.
-//%
-//%Implements new algorithm in
-//%  S.M. Rump: Ultimately Fast Accurate Summation, submitted for publication, 2008.
-//%
-//%CAUTION: !!! THIS IMPLEMENTATION SUFFERS SEVERELY FROM INTERPRETATION OVERHEAD !!!
-//%!!! IT IS INCLUDED TO SHOW THE PRINCIPLES OF THE NEW METHOD !!!
-//%!!! DO NOT USE FOR LARGE DIMENSIONS !!!
-//%
-//
-//% written  08/28/08     S.M. Rump
-//% modified 09/28/08     S.M. Rump  check for rounding to nearest improved
-//%
-//
-//  res = 0;
-//  m = 0;
-//  if isempty(p)
-//    return
-//  end
-//
-//  % check size
-//  if length(size(p))>2
-//    error('fastaccsum not defined for multi-dimensional arrays.')
-//  end
-//  p = p(:)';                            % form row vector
-//  if size(p,1)~=1
-//    error('fastaccsum only for vector input')
-//  end
-//
-//  % check interval input
-//  if isa(p,'intval')
-//    error('fastaccsum not defined for interval input')
-//  end
-//  
-//  % check improper input
-//  if any(isnan(p)) | any(isinf(p))
-//    res = NaN;
-//    return
-//  end
-//
-//  % take care of complex input
-//  if ~isreal(p)
-//    [resreal,exactreal] = fastaccsum(real(p));
-//    [resimag,exactimag] = fastaccsum(imag(p));
-//    exact = exactreal & exactimag;
-//    res = resreal + sqrt(-1)*resimag;
-//    return
-//  end
-//
-//  % input real, compute sum(p)
-//  e = 1e-30;
-//  if 1+e==1-e                           % fast check for rounding to nearest
-//    rndold = 0;
-//  else
-//    rndold = getround;
-//    setround(0)
-//  end
-//
-//  if issparse(p)
-//    n = nnz(p);                         % initialization
-//  else
-//    n = length(p);
-//  end
-//  
-//  % initialize constants depending on precision
-//  if isa(p,'single')
-//    eps = 2^(-24);
-//    eta = 2^(-149);
-//  else
-//    eps = 2^(-53);
-//    eta = 2^(-1074);
-//  end
-//  
-//  % check dimension
-//  if ((2*n+4)*n+6)*eps>1
-//    error('dimension too large for fastaccsum')
-//  end
-//  
-//  % initialize constants
-//  c1 = 1-n*eps;
-//  c2 = 1-(3*n+1)*eps;
-//  c3 = 2*eps;
-//  c4 = 1-eps;
-//  c5 = 2*n*(n+2)*eps;
-//  c6 = 1-5*eps;
-//  c7 = (1.5+4*eps)*(n*eps);
-//  c8 = 2*n*eps;
-//  c9 = eta/eps;
-//  m = 0;
-//  
-//  T = sum(abs(p))/c1;                   % sum(abs(p)) <= T
-//  if T<=c8                              % no rounding error
-//    res = sum(p)
-//    if rndold, setround(rndold), end
-//    return
-//  end
-//  tp = 0;
-//  while 1
-//    m = m+1;
-//    sigma0 = (2*T)/c2;
-//    P = cumsum([sigma0 p]);             % [sigma_n,p] = ExtractVectorNew(sigma0,p)     
-//    q = P(2:n+1)-P(1:n);
-//    p = p-q;                            % extracted vector
-//    tau = P(n+1)-sigma0;                % tau = sigma_n-sigma0 exact
-//    t = tp;
-//    tp = t + tau;                       % s = t + tau + sum(p)
-//    if tp==0                            % check for zero t+tau
-//      [res,M] = FastAccSum(p(p~=0));    % recursive call, zeros eliminated
-//      m = m+M;
-//      if rndold, setround(rndold), end
-//      return
-//    end
-//    q = sigma0/c3;
-//    u = abs(q/c4 - q);                  % u = ufp(sigma0)
-//    Phi = ( c5*u ) / c6;
-//    T = min( c7*sigma0 , c8*u );        % sum(abs(p)) <= T
-//    if ( abs(tp)>=Phi ) | ( 4*T<= c9 )
-//      tau2 = (t-tp) + tau;              % [tp,tau2] = FastTwoSum(t,tau)
-//      res = tp + ( tau2 + sum(p) );     % faithful.y rounded result
-//      if rndold, setround(rndold), end
-//      return
-//    end
-//  end
 
+    /**
+     * Error free transformation of a*b into x+y with x=fl(a*b) Follows G.W.
+     * Veltkamp, see T.J. Dekker: A floating-point technique for extending the
+     * available precision, Numerische Mathematik 18:224-242, 1971. Requires 17
+     * flops for scalar input.
+     *
+     * @param a
+     * @param b
+     * @param prod
+     */
+    public void twoProduct(double a, double b, AccurateDouble prod) {
+        double x = a * b;
+        AccurateDouble sa = AccurateDouble.split(a), sb = AccurateDouble.split(b);
+        double y = sa.error * sb.error - (((x - sa.value * sb.value) - sa.error * sb.value) - sa.value * sb.error);
+        prod.value = x;
+        prod.error = y;
+    }
+
+    /**
+     * Ultimately fast and accurate summation with faithful rounding. Implements
+     * new algorithm in S.M. Rump: Ultimately Fast Accurate Summation, submitted
+     * for publication, 2008.
+     *
+     * @param seq The input
+     * @return The sum of the input
+     */
+    public double fastAccurateSum(DoubleSeq seq) {
+        int n = seq.length();
+        if (n == 0) {
+            return 0;
+        }
+        if (n == 1) {
+            return seq.get(0);
+        }
+
+        // initialize constants, depending on n
+        // double c1 = 1 - n * EPS;
+        double c2 = 1 - (3 * n + 1) * EPS;
+        double c3 = 2 * EPS;
+        double c4 = 1 - EPS;
+        double c5 = 2 * n * (n + 2) * EPS;
+        double c6 = 1 - 5 * EPS;
+        double c7 = (1.5 + 4 * EPS) * (n * EPS);
+        double c8 = 2 * n * EPS;
+        double c9 = ETA / EPS;
+
+        double T = seq.reduce(0, (x, y) -> x + Math.abs(y));
+        if (T <= c8) {   // no rouding error
+            return T;
+        }
+        double res = seq.sum();
+
+        double tp = 0;
+
+        double[] p = seq.toArray();
+
+        while (true) {
+            double sigma0 = (2 * T) / c2;
+            double z = sigma0;
+            for (int i = 0; i < p.length; ++i) {
+                double z0 = z;
+                z += p[i];
+                double q = z - z0;
+                p[i] -= q;
+            }
+            double tau = z - sigma0;
+            double t = tp;
+            tp = t + tau;
+            DoubleSeq P = DoubleSeq.of(p);
+            if (tp == 0) {
+                return fastAccurateSum(P.select(x -> x != 0));
+            }
+            double nq = sigma0 / c3;
+            double u = Math.abs(nq / c4 - nq);
+            double phi = (c5 * u) / c6;
+            T = Math.min(c7 * sigma0, c8 * u);
+            if (Math.abs(tp) >= phi || 4 * T <= c9) {
+                double tau2 = (t - tp) + tau;
+                res = tp + (tau2 + P.sum());
+                break;
+            }
+        }
+        return res;
+    }
+}
+
+//
 //function [x,y] = Split(a)
-//%SPLIT        Error-free split a=x+y into two parts.
-//%
-//%   [x,y] = Split(a)
-//%
-//%On return, x+y=a and both x and y need at most k bits in the mantissa.
-//%In double precision k=26, in single precision k=12.
-//%Input may be a vector or matrix as well.
-//%
-//%Follows T.J. Dekker: A floating-point technique for extending the available
-//%  precision, Numerische Mathematik 18:224-242, 1971.
-//%Requires 4 flops for scalar input.
+//%SPLIT       
 //%
 //%Reference implementation! Slow due to interpretation!
 //%
@@ -198,7 +183,6 @@ public strictfp class AccSum {
 //  end
 //  x = c - ( c - a );
 //  y = a - x;
-    
 //function [x,y] = TwoProduct(a,b)
 //%TWOPRODUCT   Error free transformation of a+b into x*y with x=fl(a*b)
 //%
@@ -228,7 +212,6 @@ public strictfp class AccSum {
 //  [ah,al] = Split(a);
 //  [bh,bl] = Split(b);
 //  y = al.*bl - ( ( ( x - ah.*bh ) - al.*bh ) - ah.*bl );
-    
 //function res = Dot2(x,y)
 //%DOT2         Dot product 'as if' computed in 2-fold (quadruple) precision
 //%
@@ -255,7 +238,6 @@ public strictfp class AccSum {
 //    s = s + ( q + r );
 //  end
 //  res = p + s;
-
 //function s = DotXBLAS(x,y)
 //%DOTXBLAS     Dot product 'as if' computed in 2-fold precision
 //%
@@ -289,5 +271,4 @@ public strictfp class AccSum {
 //    t2 = t2 + s2;
 //    [s,t] = FastTwoSum(t1,t2);
 //  end
-  
-}
+

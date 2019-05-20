@@ -63,6 +63,10 @@ public interface Matrix extends BaseTable<Double> {
 
         void apply(int row, int col, DoubleUnaryOperator fn);
 
+        default Matrix unmodifiable() {
+            return Matrix.ofInternal(toArray(), getRowsCount(), getColumnsCount());
+        }
+
         static Matrix.Mutable ofInternal(@Nonnull double[] data, @Nonnegative int nrows, @Nonnegative int ncolumns) {
             if (data.length < nrows * ncolumns) {
                 throw new IllegalArgumentException();
@@ -73,6 +77,11 @@ public interface Matrix extends BaseTable<Double> {
         static Matrix.Mutable make(@Nonnegative int nrows, @Nonnegative int ncolumns) {
             return new MutableLightMatrix(new double[nrows * ncolumns], nrows, ncolumns);
         }
+
+        static Matrix.Mutable copyOf(@Nonnull Matrix matrix) {
+            return new MutableLightMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
+        }
+
     }
 
     static Matrix EMPTY = new LightMatrix(null, 0, 0);

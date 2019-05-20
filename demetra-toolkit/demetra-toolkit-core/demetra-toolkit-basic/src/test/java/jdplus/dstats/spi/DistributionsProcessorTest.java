@@ -34,22 +34,22 @@ public class DistributionsProcessorTest {
     @Test
     public void testNormal() {
         Distributions.Processor.Distribution normal = Distributions.normal();
-        long t0 = System.currentTimeMillis();
+//        long t0 = System.currentTimeMillis();
         DataBlock Z = DataBlock.make(1001);
         Z.set(i -> normal.density((i - 501) * .01));
-        long t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
-        System.out.println(Z);
+//        long t1 = System.currentTimeMillis();
+//        System.out.println(t1 - t0);
+//        System.out.println(Z);
     }
 
     @Test
     public void testT() {
         Distributions.Processor.Distribution t = Distributions.t(2);
-        long t0 = System.currentTimeMillis();
+//        long t0 = System.currentTimeMillis();
         DataBlock Z = DataBlock.make(1001);
         Z.set(i -> t.density((i - 501) * .01));
-        long t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
-        System.out.println(Z);
+//        long t1 = System.currentTimeMillis();
+//        System.out.println(t1 - t0);
+//        System.out.println(Z);
     }
 }
