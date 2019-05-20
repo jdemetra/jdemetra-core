@@ -29,6 +29,8 @@ import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.UpperTriangularMatrix;
 
 /**
  * The FastKalmanFilter class provides fast computation of Regression models
@@ -444,6 +446,8 @@ public class FastKalmanFilter {
         solver.solve(DataBlock.of(yl), xl);
         CanonicalMatrix R = solver.R();
         double ssqerr = solver.ssqerr();
+        CanonicalMatrix u = UpperTriangularMatrix.inverse(R);
+        CanonicalMatrix bvar = SymmetricMatrix.UUt(u);
 
         double ldet = det.getLogDeterminant();
         if (ao != null && !ao.isEmpty()) {
@@ -459,7 +463,7 @@ public class FastKalmanFilter {
                 .ssqErr(ssqerr)
                 .logDeterminant(ldet)
                 .residuals(solver.residuals())
-                .rfactor(R)
+                .unscaledCovariance(bvar.unmodifiable())
                 .build();
     }
 

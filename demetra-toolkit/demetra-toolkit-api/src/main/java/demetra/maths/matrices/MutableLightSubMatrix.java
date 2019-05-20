@@ -19,18 +19,19 @@ package demetra.maths.matrices;
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-class LightSubMatrix implements Matrix {
+class MutableLightSubMatrix implements Matrix.Mutable {
 
-    private final Matrix core;
+    private final Matrix.Mutable core;
     private final int r0, nr, c0, nc;
 
-    LightSubMatrix(final Matrix core, int r0, int nr, int c0, int nc) {
+    MutableLightSubMatrix(final Matrix.Mutable core, int r0, int nr, int c0, int nc) {
         this.core = core;
         this.r0 = r0;
         this.nr = nr;
@@ -47,7 +48,23 @@ class LightSubMatrix implements Matrix {
     }
 
     @Override
-    public DoubleSeq row(int irow) {
+    public void set(int row, int column, double value) throws IndexOutOfBoundsException {
+        if (row < 0 || row >= nr || column < 0 || column >= nc) {
+            throw new IndexOutOfBoundsException();
+        }
+        core.set(row + r0, column + c0, value);
+    }
+
+    @Override
+    public void apply(int row, int column, DoubleUnaryOperator fn) throws IndexOutOfBoundsException {
+        if (row < 0 || row >= nr || column < 0 || column >= nc) {
+            throw new IndexOutOfBoundsException();
+        }
+        core.apply(row + r0, column + c0, fn);
+    }
+
+    @Override
+    public DoubleSeq.Mutable row(int irow) {
         if (irow < 0 || irow >= nr) {
             throw new IndexOutOfBoundsException();
         }
@@ -55,7 +72,7 @@ class LightSubMatrix implements Matrix {
     }
 
     @Override
-    public DoubleSeq column(int icolumn) {
+    public DoubleSeq.Mutable column(int icolumn) {
         if (icolumn < 0 || icolumn >= nc) {
             throw new IndexOutOfBoundsException();
         }
@@ -73,30 +90,43 @@ class LightSubMatrix implements Matrix {
     }
 
     @Override
-    public DoubleSeq diagonal() {
-        DoubleSeq d = core.subDiagonal(c0 - r0);
+    public DoubleSeq.Mutable diagonal() {
+        DoubleSeq.Mutable d = core.subDiagonal(c0 - r0);
         int start = Math.min(r0, c0);
         int n = Math.min(nr, nc);
         return d.extract(start, n);
     }
 
     @Override
-    public DoubleSeq subDiagonal(int pos) {
+    public DoubleSeq.Mutable subDiagonal(int pos) {
         if (pos > nc || pos < -nr) {
-            return Doubles.EMPTY;
+            return DoubleSeq.Mutable.EMPTY;
         }
         int del = c0 - r0;
-        DoubleSeq d = core.subDiagonal(del + pos);
+        int cpos=del+pos;
+        DoubleSeq.Mutable d = core.subDiagonal(cpos);
         int start = 0;
         int n;
-        if (pos > 0) {
-            start = Math.min(r0, c0 + pos);
-            n = Math.min(nr, nc - pos);
-        } else if (pos < 0) {
-            start = Math.min(c0, r0 + pos);
+        if (del <= 0){
+            if (pos <= 0)
+                start=c0;
+            else if (pos < -del)
+                start=c0+pos;
+            else
+                start=r0;
+        }
+        else{ // del >O
+            if (pos >= 0)
+                start=r0;
+            else if (pos > -del)
+                start=r0-pos;
+            else
+                start=c0;
+        } 
+        if (pos < 0) {
             n = Math.min(nr + pos, nc);
         } else {
-            n = Math.min(nr, nc);
+            n = Math.min(nr, nc-pos);
         }
         return d.extract(start, n);
     }

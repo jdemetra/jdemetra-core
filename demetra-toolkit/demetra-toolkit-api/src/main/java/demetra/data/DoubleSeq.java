@@ -47,6 +47,8 @@ public interface DoubleSeq extends BaseSeq {
 
     interface Mutable extends DoubleSeq {
 
+        static final Mutable EMPTY = of(Doubles.EMPTYARRAY);
+
         /**
          * Sets <code>double</code> value at the specified index.
          *
@@ -56,14 +58,14 @@ public interface DoubleSeq extends BaseSeq {
          * @param value the specified <code>double</code> value
          */
         void set(@Nonnegative int index, double value) throws IndexOutOfBoundsException;
-        
-        default void set(double value){
+
+        default void set(double value) {
             DoubleSeqCursor.OnMutable cur = cursor();
             int n = length();
             for (int i = 0; i < n; ++i) {
                 cur.setAndNext(value);
             }
-            
+
         }
 
         @Override
@@ -105,6 +107,11 @@ public interface DoubleSeq extends BaseSeq {
         @Nonnull
         static DoubleSeq.Mutable of(@Nonnull double[] values) {
             return new InternalDoubleVector.MultiDoubleVector(values);
+        }
+
+        @Nonnull
+        static DoubleSeq.Mutable of(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int len, int inc) {
+            return new InternalDoubleVector.MappingDoubleVector(len, i -> data[start + i * inc], (i, x) -> data[start + i * inc] = x);
         }
 
         @Nonnull

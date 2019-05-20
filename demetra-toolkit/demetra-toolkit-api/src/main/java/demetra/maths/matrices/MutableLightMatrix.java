@@ -1,36 +1,24 @@
 /*
- * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
- * by the European Commission - subsequent versions of the EUPL (the "Licence");
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
- * 
- * https://joinup.ec.europa.eu/software/page/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the Licence is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
- * limitations under the Licence.
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package demetra.maths.matrices;
 
-import demetra.design.Development;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  *
- * @author Jean Palate
+ * @author Jean Palate <jean.palate@nbb.be>
  */
-@Development(status = Development.Status.Release)
-class LightMatrix implements Matrix {
-    
+class MutableLightMatrix implements Matrix.Mutable{
+
     private final double[] storage;
     private final int nrows, ncolumns;
 
-    LightMatrix(final double[] storage, final int nrows, final int ncolumns) {
+    MutableLightMatrix(final double[] storage, final int nrows, final int ncolumns) {
         this.storage = storage;
         this.nrows = nrows;
         this.ncolumns = ncolumns;
@@ -50,28 +38,45 @@ class LightMatrix implements Matrix {
     }
 
     @Override
-    public DoubleSeq row(int irow) {
+    public void set(int row, int column, double value) throws IndexOutOfBoundsException {
+        if (row < 0 || row >= nrows || column < 0 || column >= ncolumns) {
+            throw new IndexOutOfBoundsException();
+        }
+        storage[row + column * nrows]=value;
+    }
+
+    @Override
+    public void apply(int row, int column, DoubleUnaryOperator fn) throws IndexOutOfBoundsException {
+        if (row < 0 || row >= nrows || column < 0 || column >= ncolumns) {
+            throw new IndexOutOfBoundsException();
+        }
+        int idx=row + column * nrows;
+        storage[idx]=fn.applyAsDouble(storage[idx]);
+    }
+
+    @Override
+    public DoubleSeq.Mutable row(int irow) {
         if (irow < 0 || irow >= nrows) {
             throw new IndexOutOfBoundsException();
         }
-        return DoubleSeq.of(storage, irow, ncolumns, nrows);
+         return DoubleSeq.Mutable.of(storage, irow, ncolumns, nrows);
     }
 
     @Override
-    public DoubleSeq column(int icolumn) {
+    public DoubleSeq.Mutable column(int icolumn) {
         if (icolumn < 0 || icolumn >= ncolumns) {
             throw new IndexOutOfBoundsException();
         }
-        return DoubleSeq.of(storage, icolumn * nrows, nrows);
+        return DoubleSeq.Mutable.of(storage, icolumn * nrows, nrows, 1);
     }
 
     @Override
-    public DoubleSeq subDiagonal(int pos) {
+    public DoubleSeq.Mutable subDiagonal(int pos) {
         if (pos >= ncolumns) {
-            return Doubles.EMPTY;
+            return DoubleSeq.Mutable.EMPTY;
         }
         if (-pos >= nrows) {
-            return Doubles.EMPTY;
+            return DoubleSeq.Mutable.EMPTY;
         }
         int beg = 0, inc = 1 + nrows;
         int n;
@@ -84,14 +89,14 @@ class LightMatrix implements Matrix {
         } else {
             n = Math.min(nrows, ncolumns);
         }
-        return DoubleSeq.of(storage, beg, n, inc);
+        return DoubleSeq.Mutable.of(storage, beg, n, inc);
     }
 
     @Override
-    public DoubleSeq diagonal() {
+    public DoubleSeq.Mutable diagonal() {
         int inc = 1 + nrows;
         int n = Math.min(nrows, ncolumns);
-        return DoubleSeq.of(storage, 0, n, inc);
+        return DoubleSeq.Mutable.of(storage, 0, n, inc);
     }
 
     @Override
@@ -108,4 +113,5 @@ class LightMatrix implements Matrix {
     public String toString(){
         return Matrix.format(this);
     }
+    
 }

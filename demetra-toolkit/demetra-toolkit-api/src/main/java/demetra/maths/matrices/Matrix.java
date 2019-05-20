@@ -46,8 +46,10 @@ public interface Matrix extends BaseTable<Double> {
         DoubleSeq.Mutable column(@Nonnull int icolumn);
 
         @Override
-        Matrix.Mutable extract(@Nonnegative final int rstart, @Nonnegative final int nr,
-                @Nonnegative final int cstart, @Nonnegative final int nc);
+        default Matrix.Mutable extract(@Nonnegative final int rstart, @Nonnegative final int nr,
+                @Nonnegative final int cstart, @Nonnegative final int nc) {
+            return new MutableLightSubMatrix(this, rstart, nr, cstart, nc);
+        }
 
         /**
          * Sets the <code>double</code> value at the specified row/column.
@@ -60,6 +62,17 @@ public interface Matrix extends BaseTable<Double> {
         void set(@Nonnegative int row, @Nonnegative int column, double value) throws IndexOutOfBoundsException;
 
         void apply(int row, int col, DoubleUnaryOperator fn);
+
+        static Matrix.Mutable ofInternal(@Nonnull double[] data, @Nonnegative int nrows, @Nonnegative int ncolumns) {
+            if (data.length < nrows * ncolumns) {
+                throw new IllegalArgumentException();
+            }
+            return new MutableLightMatrix(data, nrows, ncolumns);
+        }
+
+        static Matrix.Mutable make(@Nonnegative int nrows, @Nonnegative int ncolumns) {
+            return new MutableLightMatrix(new double[nrows * ncolumns], nrows, ncolumns);
+        }
     }
 
     static Matrix EMPTY = new LightMatrix(null, 0, 0);
