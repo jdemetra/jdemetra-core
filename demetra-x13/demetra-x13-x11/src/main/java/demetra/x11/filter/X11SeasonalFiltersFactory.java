@@ -7,7 +7,6 @@ package demetra.x11.filter;
 
 import demetra.data.DataBlock;
 import demetra.maths.linearfilters.FiniteFilter;
-import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.x11.SeasonalFilterOption;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
@@ -21,14 +20,9 @@ import demetra.x11.filter.endpoints.IEndPointsProcessor;
 public class X11SeasonalFiltersFactory {
 
     public X11SeasonalFilterProcessor filter(int period, SeasonalFilterOption[] option) {
-//IFilterning als Array
         IFiltering[] result = new IFiltering[period];
 
         for (int i = 0; i < period; i++) {
-            //array mit allen perioden option
-            SymmetricFilter sfilter = null;
-            IFiniteFilter[] efilters = null;
-
             switch (option[i]) {
                 case S3X1:
                     result[i] = new DefaultFilter(period, S3X1, new AsymmetricEndPoints(FC1, 0));

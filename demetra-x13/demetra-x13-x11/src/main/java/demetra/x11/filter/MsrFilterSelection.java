@@ -72,9 +72,8 @@ public class MsrFilterSelection {
     }
 
     private void calcComponents(DoubleSequence series, X11Context context) {
-        // 0. Remove fore- and backcast
+        // TODO: 0. Remove fore- and backcast
 
-        //TODO
         // 1. estimate series component
         SymmetricFilter filter = X11FilterFactory.makeSymmetricFilter(7);
         FilteredMeanEndPoints f = new FilteredMeanEndPoints(filter);

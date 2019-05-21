@@ -127,7 +127,6 @@ public class X11DStep {
         if (context.isMSR()) {
             MsrFilterSelection msr = new MsrFilterSelection();
             seasFilter = msr.doMSR(d9_g_bis, context);
-            //nur die MSR-Perioden ersetzten, sonst aus context übernehmen
         }
         X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), seasFilter);
         d10bis = processor.process(d9_g_bis, context.getFirstPeriod());

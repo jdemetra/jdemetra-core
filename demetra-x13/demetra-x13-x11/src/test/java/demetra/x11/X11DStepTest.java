@@ -44,13 +44,12 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_Multiplicative2() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 13;
         int frequency = 4;
-        testD(modeName, seasonalFilterOptionName, filterLength, frequency, A);
+        testD(modeName, seasonalFilterOptionName, filterLength, frequency, WU5636);
     }
 
     @Test
@@ -108,7 +107,6 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_Msr_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
@@ -128,7 +126,6 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_Msr_Multi() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
@@ -148,7 +145,6 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_Msr_LogAdd() {
         Assume.assumeTrue("This test expects Math#exp(double) to be intrinsified", Math2.isMathExpIntrinsifiedByVM());
         
@@ -215,7 +211,6 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_AutoHenderson_Quarterly() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
@@ -304,8 +299,8 @@ public class X11DStepTest {
             sigmavecOptions_old[i] = ec.satoolkit.x11.SigmavecOption.Group1;
         }
 
-        sigmavecOptions_new[5] = SigmavecOption.Group2;
-        sigmavecOptions_old[5] = ec.satoolkit.x11.SigmavecOption.Group2;
+        sigmavecOptions_new[1] = SigmavecOption.Group2;
+        sigmavecOptions_old[1] = ec.satoolkit.x11.SigmavecOption.Group2;
 
         X11DStep instance = new X11DStep();
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
