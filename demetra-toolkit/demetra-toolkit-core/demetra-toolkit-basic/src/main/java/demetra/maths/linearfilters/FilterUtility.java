@@ -18,14 +18,14 @@ package demetra.maths.linearfilters;
 
 import demetra.design.Development;
 import demetra.maths.Complex;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.util.Ref;
 import java.util.function.IntToDoubleFunction;
 import demetra.maths.ComplexComputer;
 import demetra.data.DoubleSeq;
 import demetra.maths.ComplexMath;
 import demetra.maths.Simplifying;
-import jp.maths.polynomials.UnitRootSelector;
+import jdplus.maths.polynomials.UnitRootSelector;
 
 /**
  *

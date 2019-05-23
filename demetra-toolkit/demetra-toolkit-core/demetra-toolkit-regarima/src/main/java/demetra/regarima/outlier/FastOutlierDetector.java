@@ -23,7 +23,7 @@ import jdplus.data.DataBlock;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.regarima.RegArmaModel;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.modelling.regression.IOutlier;

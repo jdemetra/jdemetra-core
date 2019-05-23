@@ -27,7 +27,7 @@ import demetra.design.Development;
 import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;

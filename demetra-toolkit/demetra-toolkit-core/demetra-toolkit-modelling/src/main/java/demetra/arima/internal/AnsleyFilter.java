@@ -26,7 +26,7 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.MatrixException;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;

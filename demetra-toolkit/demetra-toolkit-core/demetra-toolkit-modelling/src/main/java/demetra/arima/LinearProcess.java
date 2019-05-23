@@ -21,7 +21,7 @@ import demetra.design.Immutable;
 import demetra.maths.linearfilters.IRationalFilter;
 import demetra.maths.linearfilters.RationalFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 
 /**
  * @author Jean Palate

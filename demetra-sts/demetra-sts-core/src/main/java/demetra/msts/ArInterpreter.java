@@ -9,7 +9,7 @@ import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParamValidation;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.sarima.estimation.SarimaMapping;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;

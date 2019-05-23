@@ -22,7 +22,7 @@ import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.functions.FunctionException;
 import demetra.maths.functions.ParamValidation;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.data.DoubleSeq;

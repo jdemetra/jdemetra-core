@@ -22,8 +22,8 @@ import jdplus.data.DataBlockIterator;
 import demetra.linearsystem.LinearSystemSolver;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
-import jp.maths.polynomials.Polynomial;
-import jp.maths.polynomials.UnitRoots;
+import jdplus.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.UnitRoots;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;
 

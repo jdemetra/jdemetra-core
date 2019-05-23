@@ -21,7 +21,7 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.functions.IParametricMapping;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.regarima.regular.IModelEstimator;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.RegArimaModelling;

@@ -1,4 +1,4 @@
-package jp.maths.polynomials;
+package jdplus.maths.polynomials;
 
 /*
 * Copyright 2013 National Bank of Belgium

@@ -25,7 +25,7 @@ import demetra.maths.Simplifying;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.matrices.UpperTriangularMatrix;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.maths.polynomials.spi.RootsSolver;
 
 /**

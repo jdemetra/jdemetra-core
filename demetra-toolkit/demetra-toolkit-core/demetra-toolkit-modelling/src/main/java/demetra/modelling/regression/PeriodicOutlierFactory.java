@@ -8,7 +8,7 @@ package demetra.modelling.regression;
 import jdplus.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import jp.maths.polynomials.UnitRoots;
+import jdplus.maths.polynomials.UnitRoots;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;

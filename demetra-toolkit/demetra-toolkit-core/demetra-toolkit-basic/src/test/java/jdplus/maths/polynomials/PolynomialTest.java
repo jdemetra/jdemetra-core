@@ -14,9 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.maths.polynomials;
+package jdplus.maths.polynomials;
 
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.maths.Complex;
 import demetra.maths.ComplexMath;
 import org.junit.Test;

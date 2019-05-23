@@ -19,7 +19,7 @@ package demetra.maths.linearfilters;
 import demetra.design.Development;
 import java.text.NumberFormat;
 
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 

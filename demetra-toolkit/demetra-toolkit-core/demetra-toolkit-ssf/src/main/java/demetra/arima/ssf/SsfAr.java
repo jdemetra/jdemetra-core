@@ -9,7 +9,7 @@ import demetra.arima.AutoCovarianceFunction;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;

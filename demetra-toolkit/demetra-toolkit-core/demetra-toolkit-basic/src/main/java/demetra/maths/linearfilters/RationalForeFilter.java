@@ -19,8 +19,8 @@ package demetra.maths.linearfilters;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
-import jp.maths.polynomials.Polynomial;
-import jp.maths.polynomials.RationalFunction;
+import jdplus.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.RationalFunction;
 import java.util.function.IntToDoubleFunction;
 
 /**

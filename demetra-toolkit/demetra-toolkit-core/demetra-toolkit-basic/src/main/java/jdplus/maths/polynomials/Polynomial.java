@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jp.maths.polynomials;
+package jdplus.maths.polynomials;
 
 import java.util.Arrays;
 import java.util.Formatter;
@@ -1009,9 +1009,9 @@ public final class Polynomial{
 
     /**
      * This method divides the polynomial by a second polynomial. The quotient
-     * is returned as a new polynomial. The remainder ofFunction the division is
-     * returned in an out parameter. Roots ofFunction the result are only
-     * calculated when the roots ofFunction the instance and ofFunction the
+     * is returned as a new polynomial. The remainder of the division is
+     * returned in an out parameter. Roots of the result are only
+     * calculated when the roots of the instance and of the
      * polynomial p have already been calculated.
      *
      * @param num The numerator polynomial

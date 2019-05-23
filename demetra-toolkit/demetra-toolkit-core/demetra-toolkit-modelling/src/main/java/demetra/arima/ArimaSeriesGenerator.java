@@ -24,7 +24,7 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
 import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.random.XorshiftRNG;
 import javax.annotation.Nonnull;
 import jdplus.dstats.Distribution;

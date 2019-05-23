@@ -7,7 +7,7 @@ package demetra.sigex;
 
 import demetra.arima.AutoCovarianceFunction;
 import demetra.data.DoubleSeq;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import javax.annotation.Nonnull;
 
 /**

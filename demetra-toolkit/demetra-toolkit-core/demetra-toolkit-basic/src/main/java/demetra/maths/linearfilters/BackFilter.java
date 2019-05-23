@@ -20,9 +20,9 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
 import demetra.maths.Simplifying;
-import jp.maths.polynomials.Polynomial;
-import jp.maths.polynomials.UnitRootSelector;
-import jp.maths.polynomials.UnitRoots;
+import jdplus.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.UnitRootSelector;
+import jdplus.maths.polynomials.UnitRoots;
 import java.util.function.IntToDoubleFunction;
 import demetra.maths.polynomials.spi.RootsSolver;
 

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.maths.polynomials;
+package jdplus.maths.polynomials;
 
 import demetra.design.Development;
 import demetra.design.Immutable;

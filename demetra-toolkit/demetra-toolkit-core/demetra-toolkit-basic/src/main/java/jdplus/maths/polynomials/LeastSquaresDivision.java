@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package jp.maths.polynomials;
+package jdplus.maths.polynomials;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;

@@ -24,8 +24,8 @@ import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.Householder;
-import jp.maths.polynomials.Polynomial;
-import jp.maths.polynomials.RationalFunction;
+import jdplus.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.RationalFunction;
 import demetra.linearsystem.LinearSystemSolver;
 
 /**

@@ -19,10 +19,10 @@ package demetra.maths.linearfilters;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
 import demetra.maths.polynomials.spi.RootsSolver;
-import jp.maths.polynomials.PolynomialException;
+import jdplus.maths.polynomials.PolynomialException;
 
 /**
  *

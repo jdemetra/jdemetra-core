@@ -21,7 +21,7 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.linearfilters.BackFilter;
-import jp.maths.polynomials.UnitRoots;
+import jdplus.maths.polynomials.UnitRoots;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;

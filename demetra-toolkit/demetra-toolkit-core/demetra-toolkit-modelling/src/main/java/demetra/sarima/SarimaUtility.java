@@ -18,8 +18,8 @@ package demetra.sarima;
 
 import demetra.arima.SarimaSpecification;
 import demetra.maths.linearfilters.BackFilter;
-import jp.maths.polynomials.Polynomial;
-import jp.maths.polynomials.UnitRoots;
+import jdplus.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.UnitRoots;
 
 /**
  *

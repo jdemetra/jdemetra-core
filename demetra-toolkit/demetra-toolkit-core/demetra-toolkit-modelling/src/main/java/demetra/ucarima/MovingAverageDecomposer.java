@@ -20,7 +20,7 @@ package demetra.ucarima;
 import demetra.arima.ArimaModel;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 
 
 /**

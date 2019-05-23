@@ -17,7 +17,7 @@
 package demetra.maths.polynomials.internal;
 
 import demetra.maths.Complex;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.data.DoubleSeq;
 
 /**

@@ -22,7 +22,7 @@ import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.linearfilters.SymmetricFrequencyResponse;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.leastsquares.QRSolver;
 import demetra.linearsystem.LinearSystemSolver;
 import jdplus.maths.matrices.CanonicalMatrix;

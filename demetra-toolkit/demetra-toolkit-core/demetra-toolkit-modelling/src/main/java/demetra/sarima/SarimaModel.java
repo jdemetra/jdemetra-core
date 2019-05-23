@@ -26,7 +26,7 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.FilterUtility;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;

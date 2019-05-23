@@ -22,7 +22,7 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
 import demetra.maths.linearfilters.internal.SymmetricFilterAlgorithms;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntToDoubleFunction;
 import javax.annotation.Nonnull;

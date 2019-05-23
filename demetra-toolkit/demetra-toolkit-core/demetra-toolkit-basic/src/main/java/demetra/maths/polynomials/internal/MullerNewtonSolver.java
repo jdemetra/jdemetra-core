@@ -23,7 +23,7 @@ import demetra.design.VisibleForTesting;
 import demetra.maths.Complex;
 import demetra.maths.ComplexComputer;
 import demetra.maths.ComplexMath;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.util.Ref;
 import demetra.util.Ref.BooleanRef;
 import demetra.util.Ref.DoubleRef;

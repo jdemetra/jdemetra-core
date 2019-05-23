@@ -11,7 +11,7 @@ import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import demetra.maths.linearfilters.BackFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaModel;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.dk.DkToolkit;

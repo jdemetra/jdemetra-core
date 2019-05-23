@@ -23,7 +23,7 @@ import demetra.design.SkipProcessing;
 import demetra.util.Arrays2;
 import demetra.maths.Complex;
 import jdplus.maths.matrices.MatrixException;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
 import demetra.linearsystem.LinearSystemSolver;
 import jdplus.maths.matrices.CanonicalMatrix;

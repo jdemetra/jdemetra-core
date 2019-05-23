@@ -21,7 +21,7 @@ import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
-import jp.maths.polynomials.UnitRoots;
+import jdplus.maths.polynomials.UnitRoots;
 import demetra.arima.estimation.IArimaMapping;
 import demetra.regarima.ami.AbstractArimaComponent;
 import demetra.sarima.estimation.SarimaFixedMapping;

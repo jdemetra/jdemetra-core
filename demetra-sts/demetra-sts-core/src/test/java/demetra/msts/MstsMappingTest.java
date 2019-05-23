@@ -13,7 +13,7 @@ import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.minpack.MinPackMinimizer;
 import jdplus.maths.matrices.CanonicalMatrix;
-import jp.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.sarima.estimation.SarimaMapping;
 import demetra.ssf.akf.AkfToolkit;
 import demetra.ssf.dk.SsfFunction;

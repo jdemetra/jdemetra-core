@@ -44,6 +44,11 @@ public strictfp class DoubleDoubleComputer implements DoubleDoubleType {
         this.low = x.getLow();
     }
 
+    public DoubleDoubleComputer(double high, double low) {
+        this.high = high;
+        this.low = low;
+    }
+
     @Override
     public double getHigh() {
         return high;

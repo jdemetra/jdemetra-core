@@ -18,8 +18,8 @@ package demetra.ucarima;
 
 import demetra.design.Development;
 import demetra.maths.Complex;
-import jp.maths.polynomials.Polynomial;
-import jp.maths.polynomials.UnitRoots;
+import jdplus.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.UnitRoots;
 
 
 /**
