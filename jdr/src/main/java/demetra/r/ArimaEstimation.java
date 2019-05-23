@@ -135,7 +135,7 @@ public class ArimaEstimation {
                     return 0.0;
                 }
             });
-            MAPPING.set(UNSCALEDBVAR, FastMatrix.class, source -> source.getConcentratedLogLikelihood().unscaledCovariance());
+            MAPPING.set(UNSCALEDBVAR, Matrix.class, source -> source.getConcentratedLogLikelihood().unscaledCovariance());
         }
 
         @Override
