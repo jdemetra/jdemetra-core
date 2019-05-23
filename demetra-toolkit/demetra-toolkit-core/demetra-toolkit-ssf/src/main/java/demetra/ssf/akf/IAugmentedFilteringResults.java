@@ -16,10 +16,10 @@
  */
 package demetra.ssf.akf;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.data.DataBlock;
 import demetra.ssf.StateInfo;
 import demetra.ssf.univariate.IFilteringResults;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

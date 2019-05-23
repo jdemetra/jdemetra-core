@@ -16,11 +16,11 @@
  */
 package demetra.modelling.regression;
 
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

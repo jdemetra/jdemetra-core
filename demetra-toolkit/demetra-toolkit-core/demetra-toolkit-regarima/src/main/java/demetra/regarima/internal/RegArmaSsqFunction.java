@@ -30,8 +30,8 @@ import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import demetra.arima.estimation.IArimaMapping;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
 import demetra.likelihood.Likelihood;
+import demetra.maths.matrices.Matrix;
 
 /**
  *

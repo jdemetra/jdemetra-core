@@ -18,18 +18,19 @@ package demetra.arima.internal;
 
 import demetra.arima.ArimaException;
 import demetra.arima.IArimaModel;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.DeterminantalTerm;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.util.SubArrayOfInt;
-import demetra.data.DeprecatedDoubles;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.UpperTriangularMatrix;
 
 /**
  * The FastKalmanFilter class provides fast computation of Regression models
@@ -93,7 +94,7 @@ public class FastKalmanFilter {
         // iteration
         int ilast = dim - 1;
 
-        double[] theta = arma.getMA().asPolynomial().toArray();
+        double[] theta = arma.getMa().asPolynomial().toArray();
         int np = phi.length - 1, nq = theta.length - 1;
         int im = np > nq ? np : nq;
 
@@ -185,9 +186,9 @@ public class FastKalmanFilter {
             throw new ArimaException(ArimaException.NONSTATIONARY);
         }
         this.arma = arma;
-        phi = this.arma.getAR().asPolynomial().toArray();
+        phi = this.arma.getAr().asPolynomial().toArray();
         if (statedim == 0) {
-            statedim = Math.max(arma.getAROrder(), arma.getMAOrder() + 1);
+            statedim = Math.max(arma.getArOrder(), arma.getMaOrder() + 1);
         }
         dim = statedim;
         c0 = this.arma.getAutoCovarianceFunction().values(dim);
@@ -339,7 +340,7 @@ public class FastKalmanFilter {
         } while (++pos < n);
         DoubleSeq dy = DoubleSeq.of(yl);
         return Likelihood.builder(n)
-                .ssqErr(DeprecatedDoubles.ssq(dy))
+                .ssqErr(dy.ssq())
                 .residuals(dy)
                 .logDeterminant(det.getLogDeterminant())
                 .build();
@@ -350,11 +351,10 @@ public class FastKalmanFilter {
      * @param ao Positions of AO outliers corresponding to missing values int
      * the regressors. Can be null
      * @param x
-     * @param ll
      * @return
      */
     public ConcentratedLikelihoodWithMissing process(final DoubleSeq y, final SubArrayOfInt ao,
-            final FastMatrix x) {
+            final CanonicalMatrix x) {
         fast = false;
         DeterminantalTerm det = new DeterminantalTerm();
         double[] c = c0.clone();
@@ -367,7 +367,7 @@ public class FastKalmanFilter {
         int n = y.length();
         double[] yl = new double[n];
         // double[] xa = new double[nx * dim];
-        FastMatrix xl = FastMatrix.make(n, nx);
+        CanonicalMatrix xl = CanonicalMatrix.make(n, nx);
         double[][] A = new double[nx][];
         double[] px = xl.getStorage();
 
@@ -444,8 +444,10 @@ public class FastKalmanFilter {
 
         QRSolver solver = QRSolvers.fastSolver();
         solver.solve(DataBlock.of(yl), xl);
-        FastMatrix R = solver.R();
+        CanonicalMatrix R = solver.R();
         double ssqerr = solver.ssqerr();
+        CanonicalMatrix u = UpperTriangularMatrix.inverse(R);
+        CanonicalMatrix bvar = SymmetricMatrix.UUt(u);
 
         double ldet = det.getLogDeterminant();
         if (ao != null && !ao.isEmpty()) {
@@ -459,8 +461,9 @@ public class FastKalmanFilter {
                 .ndata(n)
                 .coefficients(solver.coefficients())
                 .ssqErr(ssqerr)
+                .logDeterminant(ldet)
                 .residuals(solver.residuals())
-                .rfactor(R)
+                .unscaledCovariance(bvar.unmodifiable())
                 .build();
     }
 

@@ -16,6 +16,7 @@
  */
 package demetra.sarima;
 
+import demetra.arima.SarimaSpecification;
 import demetra.sarima.estimation.SarimaMapping;
 import demetra.sarima.internal.HannanRissanenInitializer;
 import demetra.regarima.IRegArimaProcessor;
@@ -24,7 +25,7 @@ import demetra.regarima.RegArimaModel;
 import demetra.regarima.internal.RegArmaEstimation;
 import demetra.regarima.RegArmaModel;
 import demetra.regarima.internal.RegArmaProcessor;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
@@ -52,7 +53,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         private IArimaMapping<SarimaModel> mapping;
         private double eps = DEF_EPS, feps = DEF_INTERNAL_EPS;
         private boolean ml = true, mt = false, cdf = true, fast = true;
-        private StartingPoint start = StartingPoint.Multiple;
+        private StartingPoint start = StartingPoint.HannanRissanen;
         private ISsqFunctionMinimizer min = new LevenbergMarquardtMinimizer();
 
         public Builder mapping(IArimaMapping<SarimaModel> mapping) {

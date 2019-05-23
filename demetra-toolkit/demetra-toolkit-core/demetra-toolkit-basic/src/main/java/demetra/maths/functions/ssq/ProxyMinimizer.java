@@ -23,7 +23,7 @@ import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
 import demetra.maths.functions.ssq.ISsqFunction;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.data.DoubleSeq;
 
 /**
@@ -62,7 +62,7 @@ public class ProxyMinimizer implements IFunctionMinimizer {
     }
     
     @Override
-    public FastMatrix curvatureAtMinimum() {
+    public CanonicalMatrix curvatureAtMinimum() {
         return minimizer.curvatureAtMinimum();
     }
     

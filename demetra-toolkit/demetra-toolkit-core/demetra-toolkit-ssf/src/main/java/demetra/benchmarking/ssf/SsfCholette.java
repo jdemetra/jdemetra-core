@@ -17,16 +17,16 @@
 package demetra.benchmarking.ssf;
 
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

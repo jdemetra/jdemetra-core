@@ -18,7 +18,7 @@ package demetra.modelling.regarima;
 
 import demetra.modelling.regression.PreadjustmentVariable;
 import demetra.modelling.regression.Variable;
-import demetra.sarima.SarimaType;
+import demetra.arima.SarimaProcess;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import java.util.List;
@@ -37,6 +37,6 @@ public class RegArimaDescription {
     private List<PreadjustmentVariable> preadjustmentVariables;
     @lombok.Singular
     private List<Variable> variables;
-    private SarimaType arima;
+    private SarimaProcess arima;
     private boolean mean;
 }

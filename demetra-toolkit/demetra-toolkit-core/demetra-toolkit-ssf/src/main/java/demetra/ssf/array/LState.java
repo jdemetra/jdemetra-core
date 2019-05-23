@@ -16,9 +16,9 @@
  */
 package demetra.ssf.array;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 
 /**

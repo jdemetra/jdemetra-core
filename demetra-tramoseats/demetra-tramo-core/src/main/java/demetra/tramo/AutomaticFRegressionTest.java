@@ -17,8 +17,8 @@
 package demetra.tramo;
 
 import demetra.design.BuilderPattern;
-import demetra.dstats.F;
-import demetra.dstats.ProbabilityType;
+import jdplus.dstats.F;
+import demetra.stats.ProbabilityType;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.modelling.regression.Variable;
 import demetra.regarima.IRegArimaProcessor;

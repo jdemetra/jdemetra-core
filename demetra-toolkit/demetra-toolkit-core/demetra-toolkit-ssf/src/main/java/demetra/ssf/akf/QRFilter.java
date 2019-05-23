@@ -18,14 +18,12 @@ package demetra.ssf.akf;
 
 import demetra.ssf.likelihood.ProfileLikelihood;
 import demetra.ssf.likelihood.MarginalLikelihood;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.likelihood.DeterminantalTerm;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.UpperTriangularMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
-import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.ssf.univariate.DefaultFilteringResults;
 import demetra.ssf.univariate.FastFilter;
@@ -34,6 +32,7 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.OrdinaryFilter;
 import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.CanonicalMatrix;
 
 /**
  * QR variant copyOf the augmented Kalman filter. See for instance
@@ -47,7 +46,7 @@ public class QRFilter {
     private MarginalLikelihood mll;
     private DiffuseLikelihood dll;
     private ISsfData o;
-    private FastMatrix R, X, Xl;
+    private CanonicalMatrix R, X, Xl;
     private DataBlock yl, b, e;
     private double ldet, ssq, dcorr, pcorr, mcorr;
 
@@ -84,12 +83,12 @@ public class QRFilter {
         ldet = det.getLogDeterminant();
 
         // apply the filter on the diffuse effects
-        X = FastMatrix.make(data.length(), ssf.getDiffuseDim());
+        X = CanonicalMatrix.make(data.length(), ssf.getDiffuseDim());
         ssf.diffuseEffects(X);
         yl = DataBlock.of(fr.errors(true, true));
         FastFilter ffilter = new FastFilter(ssf, fr, new ResultsRange(0, data.length()));
         int n = ffilter.getOutputLength(X.getRowsCount());
-        Xl = FastMatrix.make(n, X.getColumnsCount());
+        Xl = CanonicalMatrix.make(n, X.getColumnsCount());
         for (int i = 0; i < X.getColumnsCount(); ++i) {
             ffilter.apply(X.column(i), Xl.column(i));
         }
@@ -105,7 +104,7 @@ public class QRFilter {
             return null;
         int collapsing = pe.getCollapsingPosition();
         DiffuseLikelihood likelihood = pe.likelihood();
-        FastMatrix M = FastMatrix.make(collapsing, ssf.getDiffuseDim());
+        CanonicalMatrix M = CanonicalMatrix.make(collapsing, ssf.getDiffuseDim());
         ssf.diffuseEffects(M);
         int j = 0;
         for (int i = 0; i < collapsing; ++i) {
@@ -136,9 +135,9 @@ public class QRFilter {
         }
 
         Householder housx = new Householder();
-        FastMatrix Q = X;
+        CanonicalMatrix Q = X;
         if (X.getRowsCount() != Xl.getRowsCount()) {
-            Q = FastMatrix.make(Xl.getRowsCount(), X.getColumnsCount());
+            Q = CanonicalMatrix.make(Xl.getRowsCount(), X.getColumnsCount());
             for (int i = 0, j = 0; i < o.length(); ++i) {
                 if (!o.isMissing(i)) {
                     Q.row(j++).copy(X.row(i));
@@ -181,7 +180,7 @@ public class QRFilter {
         }
 
         int n = Xl.getRowsCount();
-        FastMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
+        CanonicalMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(R));
         bvar.mul(ssq / n);
         pll = new ProfileLikelihood();

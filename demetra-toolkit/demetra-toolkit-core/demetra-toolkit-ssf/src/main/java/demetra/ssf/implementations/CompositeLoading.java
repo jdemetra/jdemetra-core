@@ -16,16 +16,13 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.DataBlock;
-import demetra.data.DataWindow;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.MatrixWindow;
-import demetra.ssf.univariate.ISsf;
-import java.util.Arrays;
-import java.util.List;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataWindow;
+import jdplus.maths.matrices.MatrixWindow;
+import jdplus.data.DataBlockIterator;
+import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfLoading;
-import demetra.data.DoubleVectorCursor;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -104,7 +101,7 @@ class CompositeLoading implements ISsfLoading {
         tmp.set(0);
         Z(pos, tmp);
         DataBlockIterator cols = V.columnsIterator();
-        DoubleVectorCursor cell = tmp.cursor();
+        DoubleSeqCursor.OnMutable cell = tmp.cursor();
         while (cols.hasNext()) {
             cols.next().addAY(cell.getAndNext(), tmp);
         }

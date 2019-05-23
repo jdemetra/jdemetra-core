@@ -16,17 +16,16 @@
  */
 package demetra.ssf.dk;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ResultsRange;
 import demetra.ssf.State;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleVector;
 
 /**
  *
@@ -49,7 +48,7 @@ public class DkFilter  {
         return normalized;
     }
 
-    public boolean filter(FastMatrix x) {
+    public boolean filter(CanonicalMatrix x) {
         if (x.getColumnsCount() == 1) {
             return new FastDiffuseFilter1().filter(x.column(0), normalized);
         } else {
@@ -71,23 +70,23 @@ public class DkFilter  {
         enddiffuse = frslts.getEndDiffusePosition();
     }
 
-    public void apply(DoubleSeq in, DoubleVector out) {
+    public void apply(DoubleSeq in, DataBlock out) {
         new FastDiffuseFilter1().apply(in, out);
     }
 
     class FastDiffuseFilterN {
 
-        private FastMatrix states;
+        private CanonicalMatrix states;
         // temporaries
         private DataBlock tmp;
         private DataBlockIterator scols;
 
-        boolean filter(FastMatrix x, boolean normalized) {
+        boolean filter(CanonicalMatrix x, boolean normalized) {
             if (x.getRowsCount() > end - start) {
                 return false;
             }
             int dim = ssf.getStateDim();
-            states = FastMatrix.make(dim, x.getColumnsCount());
+            states = CanonicalMatrix.make(dim, x.getColumnsCount());
             prepareTmp();
             DataBlockIterator rows = x.rowsIterator();
             int pos = start;
@@ -211,7 +210,7 @@ public class DkFilter  {
             return e;
         }
 
-        boolean apply(DoubleSeq in, DoubleVector out) {
+        boolean apply(DoubleSeq in, DataBlock out) {
             if (in.length() > end - start) {
                 return false;
             }

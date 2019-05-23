@@ -17,8 +17,8 @@
 package demetra.regarima.regular;
 
 import demetra.modelling.regression.Variable;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.transformation.LogJacobian;
 import demetra.data.ParameterType;
@@ -26,8 +26,8 @@ import demetra.data.interpolation.DataInterpolator;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LogLikelihoodFunction;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.modelling.regression.PreadjustmentVariable;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.Regression;
@@ -36,7 +36,7 @@ import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.ami.TransformedSeries;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.stats.tests.NiidTests;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
@@ -169,7 +169,7 @@ public final class ModelDescription {
                 final DataBlock ndata = DataBlock.of(tmp.getValues());
                 final TsDomain domain = tmp.getDomain();
                 preadjustmentVariables.forEach(v -> {
-                    FastMatrix m = Regression.matrix(domain, v.getVariable());
+                    CanonicalMatrix m = Regression.matrix(domain, v.getVariable());
                     DoubleSeqCursor reader = v.getCoefficients().cursor();
                     DataBlockIterator columns = m.columnsIterator();
                     while (columns.hasNext()) {
@@ -315,7 +315,7 @@ public final class ModelDescription {
         return logTransformation && lpTransformation != LengthOfPeriodType.None;
     }
 
-    private FastMatrix getX(ITsVariable variable) {
+    private CanonicalMatrix getX(ITsVariable variable) {
         return Regression.matrix(series.getDomain(), variable);
     }
 
@@ -559,11 +559,11 @@ public final class ModelDescription {
         regarima = rslt.getModel();
         int p = this.getAnnualFrequency();
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
-        FastMatrix J = FastMatrix.EMPTY;
+        CanonicalMatrix J = CanonicalMatrix.EMPTY;
         DoubleSeq score = Doubles.EMPTY;
         if (max != null) {
             double[] gradient = max.getGradient();
-            FastMatrix hessian = rslt.getMax().getHessian();
+            CanonicalMatrix hessian = rslt.getMax().getHessian();
             score = DoubleSeq.of(gradient == null ? DoubleSeq.EMPTYARRAY : gradient);
             J = hessian == null ? null : SymmetricMatrix.inverse(hessian);
             if (np < allp) {
@@ -591,7 +591,7 @@ public final class ModelDescription {
                 .build();
     }
 
-    private FastMatrix expand(FastMatrix cov) {
+    private CanonicalMatrix expand(CanonicalMatrix cov) {
         boolean[] fixedItems = arima.fixedConstraints();
         int dim = cov.getColumnsCount();
         int[] idx = new int[dim];
@@ -600,7 +600,7 @@ public final class ModelDescription {
                 idx[j++] = i;
             }
         }
-        FastMatrix ecov = FastMatrix.make(fixedItems.length, fixedItems.length);
+        CanonicalMatrix ecov = CanonicalMatrix.make(fixedItems.length, fixedItems.length);
         for (int i = 0; i < dim; ++i) {
             for (int j = 0; j <= i; ++j) {
                 double s = cov.get(i, j);

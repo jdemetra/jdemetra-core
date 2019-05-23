@@ -19,9 +19,9 @@ package demetra.regarima.regular;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.maths.matrices.FastMatrix;
 import demetra.stats.tests.NiidTests;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

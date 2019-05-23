@@ -16,7 +16,7 @@
  */
 package demetra.regarima;
 
-import demetra.arima.ArimaType;
+import demetra.arima.ArimaProcess;
 import demetra.design.Development;
 import demetra.linearmodel.LinearModelType;
 import demetra.data.DoubleSeq;
@@ -36,7 +36,7 @@ public class RegArimaModelType {
     private LinearModelType model;
     
     @lombok.NonNull
-    private ArimaType arima;
+    private ArimaProcess arima;
     
     //<editor-fold defaultstate="collapsed" desc="delegate to model">
     public DoubleSeq getY() {

@@ -17,9 +17,9 @@
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.arima.estimation.ArimaForecasts;
 import demetra.data.DoubleSeq;
 
@@ -48,8 +48,8 @@ public class FastArimaForecasts implements ArimaForecasts {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
         arima = model;
-        ar = arima.getAR().asPolynomial();
-        ma = arima.getMA().asPolynomial();
+        ar = arima.getAr().asPolynomial();
+        ma = arima.getMa().asPolynomial();
         mean = 0;
         return true;
     }
@@ -57,10 +57,10 @@ public class FastArimaForecasts implements ArimaForecasts {
     @Override
     public boolean prepare(IArimaModel model, double mu) {
         arima = model;
-        ar = arima.getAR().asPolynomial();
-        ma = arima.getMA().asPolynomial();
-        if (model.getStationaryAROrder() > 0) {
-            Polynomial c = model.getStationaryAR().asPolynomial();
+        ar = arima.getAr().asPolynomial();
+        ma = arima.getMa().asPolynomial();
+        if (model.getStationaryArOrder() > 0) {
+            Polynomial c = model.getStationaryAr().asPolynomial();
             mean = mu * c.evaluateAt(1);
         } else {
             mean = mu;
@@ -128,7 +128,7 @@ public class FastArimaForecasts implements ArimaForecasts {
             int q = ma.degree();
             if (p > 0) {
                 z = DataBlock.make(w.length() - p);
-                arima.getAR().apply(w, z);
+                arima.getAr().apply(w, z);
             }
             if (mean != 0) {
                 z.sub(mean);

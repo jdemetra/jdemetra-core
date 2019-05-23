@@ -16,16 +16,17 @@
  */
 package demetra.maths.functions.levmar;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.functions.ssq.ISsqFunctionDerivatives;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.CanonicalMatrix;
 
 /**
  *
@@ -49,7 +50,7 @@ public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
     private ISsqFunctionPoint fcur_, ftry_;
     private DataBlock ecur;
     private double Fcur_, Ftry_;
-    private FastMatrix J, V;
+    private CanonicalMatrix J, V;
     private DoubleSeq G;
     //private SubMatrix J, K;
     private double scale_, scale2_;
@@ -80,7 +81,7 @@ public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
     }
 
     @Override
-    public FastMatrix curvatureAtMinimum() {
+    public CanonicalMatrix curvatureAtMinimum() {
         if (V == null) {
             ISsqFunctionDerivatives derivatives = fcur_.ssqDerivatives();
             V = derivatives.hessian();
@@ -171,7 +172,7 @@ public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
         int kiter = 0;
         while (kiter++ < 100) {
             DataBlock dp = null;
-            FastMatrix K = V.deepClone();
+            CanonicalMatrix K = V.deepClone();
             if (mu > 0) {
                 K.diagonal().add(mu);
             }
@@ -305,7 +306,7 @@ public class LevenbergMarquardtMinimizer implements ISsqFunctionMinimizer {
         scale2_ = Fcur_;
         scale_ = Math.sqrt(Fcur_);
         int n = ecur.length(), m = fn_.getDomain().getDim();
-        J = FastMatrix.make(n, m);
+        J = CanonicalMatrix.make(n, m);
         Jte = DataBlock.make(m);
         while (iter++ < itmax) {
             if (!iterate()) {

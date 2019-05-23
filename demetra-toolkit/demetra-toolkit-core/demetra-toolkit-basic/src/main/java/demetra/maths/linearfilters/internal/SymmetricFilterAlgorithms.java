@@ -16,13 +16,12 @@
  */
 package demetra.maths.linearfilters.internal;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.linearsystem.LinearSystemSolver;
-import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.CanonicalMatrix;
 
 /**
  *
@@ -50,7 +49,7 @@ public class SymmetricFilterAlgorithms {
             int nc = c.degree();
             int r = nq > nc ? nq : nc;
 
-            FastMatrix a = FastMatrix.square(r + 1);
+            CanonicalMatrix a = CanonicalMatrix.square(r + 1);
             double[] mc = new double[r + 1];
             for (int i = 0; i <= r; ++i) {
                 mc[r - i] = i <= nc ? c.get(i) : 0;

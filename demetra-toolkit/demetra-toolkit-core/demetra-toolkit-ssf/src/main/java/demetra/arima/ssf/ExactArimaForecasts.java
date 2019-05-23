@@ -20,7 +20,7 @@ package demetra.arima.ssf;
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.ssf.SsfArima;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.ssf.ckms.CkmsFilter;
@@ -58,15 +58,15 @@ public class ExactArimaForecasts implements ArimaForecasts{
         bmean=mean;
 	IArimaModel cmodel = model;
 	if (mean) {
-	    BackFilter ar = model.getStationaryAR(), ur = model
-		    .getNonStationaryAR(), ma = model.getMA();
+	    BackFilter ar = model.getStationaryAr(), ur = model
+		    .getNonStationaryAr(), ma = model.getMa();
             bar=ar.times(ur);
 	    double var = model.getInnovationVariance();
 	    BackFilter D = BackFilter.D1;
 	    cmodel = new ArimaModel(ar, ur.times(D), ma.times(D), var);
 	}
         else
-            bar=model.getAR();
+            bar=model.getAr();
         arima=cmodel;
 	ssf = SsfArima.of(cmodel);
         return true;

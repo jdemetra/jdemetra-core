@@ -16,6 +16,7 @@
  */
 package demetra.data.analysis;
 
+import demetra.design.Development;
 import demetra.maths.Constants;
 
 /**
@@ -25,6 +26,7 @@ import demetra.maths.Constants;
  *
  * @author Jean Palate
  */
+@Development(status=Development.Status.Release)
 public class TukeyHanningTaper implements Taper {
 
     private final double r;

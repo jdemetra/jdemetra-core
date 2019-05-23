@@ -16,11 +16,11 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Dynamics for time varying coefficients

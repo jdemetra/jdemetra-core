@@ -19,7 +19,7 @@ package demetra.stl;
 import demetra.stl.StlPlusSpecification;
 import demetra.stl.StlPlus;
 import demetra.data.Data;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import java.util.Random;
 import org.junit.Test;
 import org.junit.Ignore;

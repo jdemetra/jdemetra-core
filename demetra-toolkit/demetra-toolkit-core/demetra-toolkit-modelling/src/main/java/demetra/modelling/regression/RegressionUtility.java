@@ -5,12 +5,12 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

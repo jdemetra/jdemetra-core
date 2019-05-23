@@ -16,8 +16,8 @@
  */
 package demetra.ssf.multivariate;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
@@ -27,6 +27,7 @@ import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.univariate.Measurement;
 import demetra.ssf.univariate.Ssf;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -58,7 +59,7 @@ public class M2uAdapter {
             ISsfError error = null;
             if (errors != null) {
                 if (errors.isTimeInvariant()) {
-                    FastMatrix h = FastMatrix.square(1);
+                    CanonicalMatrix h = CanonicalMatrix.square(1);
                     errors.H(0, h);
                     error = MeasurementError.of(h.get(0, 0));
                 } else {
@@ -146,13 +147,13 @@ public class M2uAdapter {
 
         private final ISsfErrors errors;
         private final int nvars;
-        private final FastMatrix H;
+        private final CanonicalMatrix H;
         private int hpos = -1;
 
         Error(ISsfErrors errors, int nvars) {
             this.errors = errors.isTimeInvariant() ? null : errors;
             this.nvars = nvars;
-            H = FastMatrix.square(nvars);
+            H = CanonicalMatrix.square(nvars);
             if (errors.isTimeInvariant()) {
                 errors.H(0, H);
             }

@@ -5,9 +5,8 @@
  */
 package demetra.maths.linearfilters;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleVector;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -32,7 +31,7 @@ public class SymmetricFilterTest {
         double[] q = new double[N - K + 1];
         double[] q2 = new double[N - K + 1];
         DataBlock Q = DataBlock.of(q2);
-        DoubleVector GQ = DoubleVector.of(q);
+        DataBlock GQ = DataBlock.of(q);
         sf.apply((DoubleSeq)Z, GQ);
         sf.apply(Z, Q);
         assertTrue(GQ.distance(Q)<1e-9);

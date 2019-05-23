@@ -19,8 +19,8 @@ package demetra.maths.linearfilters;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.RationalFunction;
+import jdplus.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.RationalFunction;
 import java.util.function.IntToDoubleFunction;
 
 /**
@@ -48,14 +48,14 @@ public final class RationalBackFilter implements IRationalFilter {
      * 
      * @param num
      * @param denom
-     * @param fshift
+     * @param bshift
      */
     public RationalBackFilter(final BackFilter num, final BackFilter denom, final int bshift) {
 	rationalFunction = RationalFunction.of(num.asPolynomial(), denom.asPolynomial());
         this.bshift=bshift;
     }
 
-    RationalBackFilter(final RationalFunction rfe, final int bshift) {
+    public RationalBackFilter(final RationalFunction rfe, final int bshift) {
 	rationalFunction = rfe;
         this.bshift=bshift;
     }

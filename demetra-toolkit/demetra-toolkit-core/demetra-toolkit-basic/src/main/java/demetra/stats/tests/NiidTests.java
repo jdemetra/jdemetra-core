@@ -16,10 +16,9 @@
  */
 package demetra.stats.tests;
 
-import demetra.data.DeprecatedDoubles;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.dstats.DStatException;
+import jdplus.dstats.DStatException;
 import demetra.stats.AutoCovariances;
 import demetra.stats.DescriptiveStatistics;
 import demetra.stats.StatException;
@@ -190,7 +189,7 @@ public class NiidTests {
         if (ac2 == null) {
             ac2 = new double[k];
             {
-                double mu = DeprecatedDoubles.averageWithMissing(data2);
+                double mu = data2.averageWithMissing();
                 IntToDoubleFunction acf = AutoCovariances.autoCorrelationFunction(data2, mu);
                 for (int i = 0; i < ac2.length; ++i) {
                     ac2[i] = acf.applyAsDouble(i + 1);

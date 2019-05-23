@@ -16,10 +16,9 @@
  */
 package demetra.ssf.dk.sqrt;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.decomposition.ElementaryTransformations;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.decomposition.ElementaryTransformations;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfException;
@@ -33,6 +32,7 @@ import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.OrdinaryFilter;
 import demetra.ssf.univariate.ISsfMeasurement;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Mixed algorithm based on the diffuse initializer copyOf Durbin-Koopman and on

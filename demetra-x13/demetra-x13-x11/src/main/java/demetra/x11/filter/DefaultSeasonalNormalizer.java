@@ -16,7 +16,7 @@
  */
 package demetra.x11.filter;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.x11.X11Context;

@@ -16,15 +16,8 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.DeprecatedDoubles;
 import demetra.data.WeeklyData;
-import demetra.stats.AutoCovariances;
-import demetra.stats.samples.DefaultSample;
-import demetra.stats.samples.Sample;
-import demetra.stats.samples.SamplesUtility;
-import java.util.function.IntToDoubleFunction;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
 
 /**

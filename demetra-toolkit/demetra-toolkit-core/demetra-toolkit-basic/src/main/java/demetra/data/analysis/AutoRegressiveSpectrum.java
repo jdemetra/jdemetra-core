@@ -16,12 +16,13 @@
  */
 package demetra.data.analysis;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.data.DataWindow;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.data.DataWindow;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.MatrixException;
+import demetra.design.Development;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
 import demetra.maths.matrices.internal.Householder;
 
 
@@ -29,6 +30,7 @@ import demetra.maths.matrices.internal.Householder;
  *
  * @author Jean Palate
  */
+@Development(status=Development.Status.Release)
 public class AutoRegressiveSpectrum {
 
     public static final int MAX_AR = 50;
@@ -111,7 +113,7 @@ public class AutoRegressiveSpectrum {
             if (nc < nar) {
                 return;
             }
-            FastMatrix M = FastMatrix.make(nc, nar);
+            CanonicalMatrix M = CanonicalMatrix.make(nc, nar);
             DataWindow rc = DataWindow.windowOf(all, nar, n, 1);
             DataBlockIterator cols = M.columnsIterator();
             while (cols.hasNext()) {

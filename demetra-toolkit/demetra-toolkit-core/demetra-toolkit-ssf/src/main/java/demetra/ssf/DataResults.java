@@ -16,8 +16,8 @@
  */
 package demetra.ssf;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockStorage;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockStorage;
 import demetra.data.DoubleSeq;
 
 /**

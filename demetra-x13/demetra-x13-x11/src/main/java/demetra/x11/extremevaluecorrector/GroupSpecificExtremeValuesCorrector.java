@@ -5,7 +5,7 @@
  */
 package demetra.x11.extremevaluecorrector;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.x11.SigmavecOption;
 import demetra.data.DoubleSeq;
 

@@ -19,7 +19,7 @@ package demetra.regarima;
 import demetra.arima.estimation.IArimaMapping;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.arima.IArimaModel;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
@@ -84,7 +84,7 @@ public class RegArimaEstimation<M extends IArimaModel> {
     public LikelihoodStatistics statistics(double adj) {
         return LikelihoodStatistics.statistics(concentratedLikelihood.logLikelihood(), model.getObservationsCount() - model.getMissingValuesCount())
                 .llAdjustment(adj)
-                .differencingOrder(model.arima().getNonStationaryAROrder())
+                .differencingOrder(model.arima().getNonStationaryArOrder())
                 .parametersCount(nparams + model.getVariablesCount() + 1)
                 .ssq(concentratedLikelihood.ssq())
                 .build();

@@ -6,7 +6,7 @@
 package demetra.r;
 
 import demetra.data.AggregationType;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
@@ -16,9 +16,6 @@ import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.HolidaysUtility;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import demetra.maths.matrices.Matrix;
 
 /**
@@ -96,7 +93,7 @@ public class TsUtility {
 
     public Matrix holidays(Holidays all, String date, int length, String type) {
         LocalDate start = LocalDate.parse(date);
-        FastMatrix m = FastMatrix.make(length, all.elements().length);
+        CanonicalMatrix m = CanonicalMatrix.make(length, all.elements().length);
         switch (type) {
             case "SkipSundays":
                 HolidaysUtility.fillDays(all.elements(), m, start, true);

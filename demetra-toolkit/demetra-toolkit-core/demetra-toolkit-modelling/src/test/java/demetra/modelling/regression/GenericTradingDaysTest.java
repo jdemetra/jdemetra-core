@@ -17,8 +17,8 @@
 package demetra.modelling.regression;
 
 import demetra.modelling.regression.GenericTradingDaysFactory;
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.DayClustering;
@@ -41,7 +41,7 @@ public class GenericTradingDaysTest {
     @Test
     public void testTD() {
         TsPeriod start = TsPeriod.monthly(1980, 1);
-        FastMatrix M1 = FastMatrix.make(360, 6);
+        CanonicalMatrix M1 = CanonicalMatrix.make(360, 6);
         GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
         GenericTradingDaysFactory.FACTORY.fill(gtd, start, M1);
         ec.tstoolkit.timeseries.simplets.TsDomain omd = new ec.tstoolkit.timeseries.simplets.TsDomain(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1980, 0, 360);
@@ -55,7 +55,7 @@ public class GenericTradingDaysTest {
     @Test
     public void testWD() {
         TsPeriod start = TsPeriod.monthly(1980, 1);
-        FastMatrix M1 = FastMatrix.make(360, 1);
+        CanonicalMatrix M1 = CanonicalMatrix.make(360, 1);
         GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD2);
         GenericTradingDaysFactory.FACTORY.fill(gtd, start, M1);
         ec.tstoolkit.timeseries.simplets.TsDomain omd = new ec.tstoolkit.timeseries.simplets.TsDomain(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1980, 0, 360);
@@ -72,7 +72,7 @@ public class GenericTradingDaysTest {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000000; ++i) {
         TsPeriod start = TsPeriod.monthly(1980, 1);
-        FastMatrix M1 = FastMatrix.make(360, 6);
+        CanonicalMatrix M1 = CanonicalMatrix.make(360, 6);
         GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
         GenericTradingDaysFactory.FACTORY.fill(gtd, start, M1);
         }

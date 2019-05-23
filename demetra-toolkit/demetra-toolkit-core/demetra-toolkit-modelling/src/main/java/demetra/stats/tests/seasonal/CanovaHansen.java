@@ -11,14 +11,15 @@ import demetra.design.BuilderPattern;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.modelling.regression.PeriodicDummies;
 import demetra.stats.RobustCovarianceComputer;
 import demetra.modelling.regression.PeriodicDummiesFactory;
 import demetra.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -186,7 +187,7 @@ public class CanovaHansen {
         int n = cx.getRowsCount(), nx = cx.getColumnsCount();
         // compute tr( O^-1*xe'*xe)
         // cusum
-        FastMatrix FF = FastMatrix.square(nx);
+        CanonicalMatrix FF = CanonicalMatrix.square(nx);
         for (int i = 0; i < n; ++i) {
             FF.addXaXt(1, cx.row(i));
         }

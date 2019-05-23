@@ -18,7 +18,7 @@
 package demetra.maths.functions;
 
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 
 /**

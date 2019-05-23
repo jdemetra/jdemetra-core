@@ -16,9 +16,9 @@
  */
 package demetra.maths.functions;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.data.DoubleSeq;
 
 
@@ -75,8 +75,8 @@ public class GridSearch implements IFunctionMinimizer {
     }
 
     @Override
-    public FastMatrix curvatureAtMinimum() {
-        FastMatrix h = FastMatrix.square(1);
+    public CanonicalMatrix curvatureAtMinimum() {
+        CanonicalMatrix h = CanonicalMatrix.square(1);
         new NumericalDerivatives(m_ftry, false).hessian(h);
         return h;
     }

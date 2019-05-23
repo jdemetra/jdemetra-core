@@ -18,16 +18,16 @@
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.data.DataBlock;
-import demetra.data.DataWindow;
+import jdplus.data.DataBlock;
+import jdplus.data.DataWindow;
 import demetra.data.LogSign;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Legacy;
 import demetra.design.Development;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
@@ -46,7 +46,7 @@ public class ModifiedLjungBoxFilter implements ArmaFilter {
 
     private double m_s;
     private MaLjungBoxFilter m_malb;
-    private FastMatrix m_L, m_C;
+    private CanonicalMatrix m_L, m_C;
 
     @Override
     public void apply(DoubleSeq rw, DataBlock wl) {
@@ -88,8 +88,8 @@ public class ModifiedLjungBoxFilter implements ArmaFilter {
     @Override
     public int prepare(IArimaModel arima, int n) {
         clear();
-	m_ar = arima.getAR().asPolynomial();
-	m_ma = arima.getMA().asPolynomial();
+	m_ar = arima.getAr().asPolynomial();
+	m_ma = arima.getMa().asPolynomial();
 	m_n = n;
 	m_p = m_ar.degree();
 	m_q = m_ma.degree();
@@ -101,7 +101,7 @@ public class ModifiedLjungBoxFilter implements ArmaFilter {
 	// Compute the covariance matrix V
 
 	if (m_p > 0) {
-	    m_L = FastMatrix.square(m_p);
+	    m_L = CanonicalMatrix.square(m_p);
 
 	    // W = var(y)
 	    double[] cov = arima.getAutoCovarianceFunction().values(m_p);
@@ -112,8 +112,8 @@ public class ModifiedLjungBoxFilter implements ArmaFilter {
 	    if (m_q > 0) {
 		double[] psi = arima.getPsiWeights().getRationalFunction()
 			.coefficients(m_q);
-		FastMatrix C = FastMatrix.make(m_n - m_p, m_p);
-		m_C = FastMatrix.make(m_n + m_q - m_p, m_p);
+		CanonicalMatrix C = CanonicalMatrix.make(m_n - m_p, m_p);
+		m_C = CanonicalMatrix.make(m_n + m_q - m_p, m_p);
 		// fill in the columns of m_C and filter them
 		for (int c = 0; c < m_p; ++c) {
 		    DataBlock col = C.column(c);

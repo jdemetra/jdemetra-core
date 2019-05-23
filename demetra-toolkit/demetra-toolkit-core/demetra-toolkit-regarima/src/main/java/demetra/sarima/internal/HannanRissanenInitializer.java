@@ -17,15 +17,14 @@
 package demetra.sarima.internal;
 
 import demetra.regarima.RegArmaModel;
-import demetra.data.DeprecatedDoubles;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
-import demetra.sarima.SarmaSpecification;
+import demetra.arima.SarimaSpecification;
+import demetra.arima.SarmaSpecification;
 import demetra.sarima.estimation.HannanRissanen;
 import demetra.sarima.IArmaInitializer;
 import demetra.sarima.estimation.SarimaMapping;
@@ -132,7 +131,7 @@ public class HannanRissanenInitializer implements IArmaInitializer {
             } else {
                 dy_ = lm.getY();
             }
-            if (Math.sqrt(DeprecatedDoubles.ssq(dy_) / dy_.length()) < EPS) {
+            if (Math.sqrt(dy_.ssq() / dy_.length()) < EPS) {
                 return SarimaModel.builder(spec).setDefault(0, 0).build();
             }
 

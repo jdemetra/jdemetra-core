@@ -5,10 +5,11 @@
  */
 package demetra.maths.matrices.internal;
 
-import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.MatrixException;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Computes for a given symmetric matrix X a LDL decomposition, which is defined
@@ -20,7 +21,7 @@ import demetra.data.DoubleSeq;
  */
 public class LDLDecomposition {
 
-    private FastMatrix M;
+    private CanonicalMatrix M;
 
     public void decompose(FastMatrix S, double zero) {
         M = S.deepClone();
@@ -73,14 +74,14 @@ public class LDLDecomposition {
         LowerTriangularMatrix.toLower(M);
     }
 
-    public FastMatrix L() {
-        FastMatrix L = M.deepClone();
+    public CanonicalMatrix L() {
+        CanonicalMatrix L = M.deepClone();
         L.diagonal().set(1);
         return L;
     }
 
-    public FastMatrix D() {
-        return FastMatrix.diagonal(M.diagonal());
+    public CanonicalMatrix D() {
+        return CanonicalMatrix.diagonal(M.diagonal());
     }
 
     public DoubleSeq diagonal() {

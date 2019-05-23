@@ -101,4 +101,8 @@ class LightSubMatrix implements Matrix {
         return d.extract(start, n);
     }
 
+    @Override
+    public String toString(){
+        return Matrix.format(this);
+    }
 }

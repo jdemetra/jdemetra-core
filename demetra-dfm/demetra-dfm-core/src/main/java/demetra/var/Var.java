@@ -16,9 +16,9 @@
  */
 package demetra.var;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.MultivariateSsf;
 import demetra.linearsystem.LinearSystemSolver;
@@ -30,18 +30,18 @@ import demetra.linearsystem.LinearSystemSolver;
 @lombok.experimental.UtilityClass
 public class Var {
 
-    public FastMatrix unconditionalInitialization(VarDescriptor desc) {
+    public CanonicalMatrix unconditionalInitialization(VarDescriptor desc) {
         int nl = desc.getLagsCount();
         int nvars = desc.getVariablesCount();
         // We have to solve the steady state equation:
         // V = T V T' + Q
         // We consider the nlag*nb, nlag*nb sub-system
-        FastMatrix v = desc.getInnovationsVariance();
-        FastMatrix t = desc.getVarMatrix();
+        CanonicalMatrix v = desc.getInnovationsVariance();
+        CanonicalMatrix t = desc.getVarMatrix();
         int n = nvars * nl;
-        FastMatrix cov = FastMatrix.square(n);
+        CanonicalMatrix cov = CanonicalMatrix.square(n);
         int np = (n * (n + 1)) / 2;
-        FastMatrix M = FastMatrix.square(np);
+        CanonicalMatrix M = CanonicalMatrix.square(np);
         double[] b = new double[np];
         // fill the matrix
         for (int c = 0, i = 0; c < n; ++c) {

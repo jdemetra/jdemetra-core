@@ -7,12 +7,12 @@ package demetra.regarima;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.eco.EcoException;
 import demetra.linearmodel.LinearModel;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
@@ -57,7 +57,7 @@ public class RegArmaModel<M extends IArimaModel> {
         List<DoubleSeq> x = regarima.getX();
         int[] missing = regarima.missing();
         int nx = regarima.getMissingValuesCount() + regarima.getVariablesCount();
-        FastMatrix dx = FastMatrix.make(ndy, nx);
+        CanonicalMatrix dx = CanonicalMatrix.make(ndy, nx);
         double[] dy;
         // dy
         if (d > 0) {
@@ -129,7 +129,7 @@ public class RegArmaModel<M extends IArimaModel> {
     int missingCount;
     
     public LinearModel asLinearModel(){
-        return new LinearModel(y.toArray(), false, FastMatrix.of(x));
+        return new LinearModel(y.toArray(), false, CanonicalMatrix.of(x));
     }
     
 }

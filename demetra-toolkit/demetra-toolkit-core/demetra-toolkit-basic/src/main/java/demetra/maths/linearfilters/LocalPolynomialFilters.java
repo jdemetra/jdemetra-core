@@ -16,13 +16,14 @@
  */
 package demetra.maths.linearfilters;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.function.IntToDoubleFunction;
 import demetra.linearsystem.LinearSystemSolver;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * The local polynomial filter is defined as follows: h is the number of lags
@@ -149,7 +150,7 @@ public class LocalPolynomialFilters {
     SymmetricFilter ofDefault(int h, int d, IntToDoubleFunction k) {
         // w = KX (X'K X)^-1 e1
         // (X'K X)^-1 e1 = u <-> (X'K X) u = e1
-        FastMatrix xkx = FastMatrix.square(d + 1);
+        CanonicalMatrix xkx = CanonicalMatrix.square(d + 1);
         for (int i = 0; i <= d; ++i) {
             xkx.set(i, i, S_hd(h, 2 * i, k));
             for (int j = 0; j < i; ++j) {
@@ -271,7 +272,7 @@ public class LocalPolynomialFilters {
     FiniteFilter defaultDirectAsymmetricFilter(int h, int q, int d, IntToDoubleFunction k) {
         // w = KpXp (Xp'Kp Xp)^-1 e1
         // (Xp'Kp Xp)^-1 e1 = u <-> (Xp'Kp Xp) u = e1
-        FastMatrix xkx = FastMatrix.square(d + 1);
+        CanonicalMatrix xkx = CanonicalMatrix.square(d + 1);
         for (int i = 0; i <= d; ++i) {
             xkx.set(i, i, S_hqd(h, q, 2 * i, k));
             for (int j = 0; j < i; ++j) {
@@ -373,7 +374,7 @@ public class LocalPolynomialFilters {
 
         DataBlock a10 = DataBlock.make(dz.length);
         a10.product(Zp.columnsIterator(), a9);
-        FastMatrix C = FastMatrix.square(dz.length);
+        CanonicalMatrix C = CanonicalMatrix.square(dz.length);
         for (int i = 0; i < dz.length; ++i) {
             for (int j = 0; j < dz.length; ++j) {
                 double x = a10.get(i) * dz[j];
@@ -411,8 +412,8 @@ public class LocalPolynomialFilters {
         return Z.extract(l + nh, u - l + 1, d0, d1 - d0 + 1);
     }
 
-    private FastMatrix createZ(int h, int d) {
-        FastMatrix M = FastMatrix.make(2 * h + 1, d + 1);
+    private CanonicalMatrix createZ(int h, int d) {
+        CanonicalMatrix M = CanonicalMatrix.make(2 * h + 1, d + 1);
         M.column(0).set(1);
         if (d >= 1) {
             DataBlock c1 = M.column(1);
@@ -424,5 +425,5 @@ public class LocalPolynomialFilters {
         return M;
     }
 
-    private FastMatrix Z;
+    private CanonicalMatrix Z;
 }

@@ -21,13 +21,13 @@ import demetra.arima.StationaryTransformation;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.maths.matrices.FastMatrix;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -138,7 +138,7 @@ public final class RegArimaModel<M extends IArimaModel> {
         RegArmaModel<M> dm = oldModel.dmodel;
         if (dm != null) {
             StationaryTransformation st = newArima.stationaryTransformation();
-            if (st.getUnitRoots().equals(oldModel.arima.getNonStationaryAR())) {
+            if (st.getUnitRoots().equals(oldModel.arima.getNonStationaryAr())) {
                 dm = RegArmaModel.of(dm, (M) st.getStationaryModel());
             } else {
                 dm = null;

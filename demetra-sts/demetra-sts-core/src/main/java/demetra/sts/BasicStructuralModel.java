@@ -18,8 +18,8 @@
  */
 package demetra.sts;
 
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 
 /**
  *
@@ -68,9 +68,9 @@ public class BasicStructuralModel {
         return spec;
     }
 
-    private static void svar(int freq, FastMatrix O) {
+    private static void svar(int freq, CanonicalMatrix O) {
         int n = freq - 1;
-        FastMatrix H = FastMatrix.make(freq, n);
+        CanonicalMatrix H = CanonicalMatrix.make(freq, n);
         // should be improved
         for (int i = 0; i < freq; ++i) {
             double z = 2 * Math.PI * (i + 1) / freq;

@@ -8,7 +8,7 @@ package demetra.arima.estimation;
 import demetra.arima.IArimaModel;
 import demetra.arima.internal.KalmanFilter;
 import demetra.arima.internal.ModifiedLjungBoxFilter;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 

@@ -5,7 +5,7 @@
  */
 package demetra.stl;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 
 /**
  *

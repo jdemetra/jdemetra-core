@@ -21,7 +21,7 @@ import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArimaUtility;
 import demetra.sarima.estimation.SarimaMapping;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import java.util.List;

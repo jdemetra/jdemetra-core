@@ -7,11 +7,11 @@ package demetra.r;
 
 import demetra.regarima.RegArimaModel;
 import demetra.arima.ssf.SsfArima;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaModel;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.dk.DkToolkit;
@@ -119,9 +119,9 @@ public class ArimaForecasts {
         ISsf ssf = arima;
         int nx = regarima.getVariablesCount();
         if (nx > 0) {
-            FastMatrix x = FastMatrix.make(yc.length, nx);
+            CanonicalMatrix x = CanonicalMatrix.make(yc.length, nx);
             if (regarima.isMean()) {
-                generateMeanEffect(regarima.arima().getNonStationaryAR(), x.column(0));
+                generateMeanEffect(regarima.arima().getNonStationaryAr(), x.column(0));
             }
             ssf = RegSsf.of(ssf, x);
         }

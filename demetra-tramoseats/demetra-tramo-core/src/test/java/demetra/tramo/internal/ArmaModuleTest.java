@@ -19,7 +19,7 @@ package demetra.tramo.internal;
 import demetra.data.Data;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.tramo.internal.ArmaModule;
 import demetra.tramo.internal.ArmaModuleImpl;
 import org.junit.Test;

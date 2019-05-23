@@ -16,14 +16,17 @@
  */
 package demetra.sarima;
 
+import demetra.arima.SarmaSpecification;
+import demetra.arima.SarimaProcess;
+import demetra.arima.SarimaSpecification;
 import demetra.arima.AbstractArimaModel;
 import demetra.arima.StationaryTransformation;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.FilterUtility;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
@@ -315,9 +318,9 @@ public final class SarimaModel extends AbstractArimaModel {
     }
 
     @Override
-    public BackFilter getAR() {
+    public BackFilter getAr() {
         BackFilter df = SarimaUtility.differencingFilter(s, d, bd);
-        BackFilter st = getStationaryAR();
+        BackFilter st = getStationaryAr();
         return df.times(st);
     }
 
@@ -326,7 +329,7 @@ public final class SarimaModel extends AbstractArimaModel {
      * @return
      */
     @Override
-    public int getAROrder() {
+    public int getArOrder() {
         int n = d + phi.length;
         if (s != 1) {
             n += s * (bd + bphi.length);
@@ -364,7 +367,7 @@ public final class SarimaModel extends AbstractArimaModel {
     }
 
     @Override
-    public BackFilter getMA() {
+    public BackFilter getMa() {
         Polynomial pr = getRegularMA();
         Polynomial ps = seasonalMA();
         return new BackFilter(pr.times(ps, false));
@@ -375,7 +378,7 @@ public final class SarimaModel extends AbstractArimaModel {
      * @return
      */
     @Override
-    public int getMAOrder() {
+    public int getMaOrder() {
         int n = th.length;
         if (s != 1) {
             n += s * bth.length;
@@ -388,7 +391,7 @@ public final class SarimaModel extends AbstractArimaModel {
      * @return
      */
     @Override
-    public BackFilter getNonStationaryAR() {
+    public BackFilter getNonStationaryAr() {
         return SarimaUtility.differencingFilter(s, d, bd);
     }
 
@@ -397,7 +400,7 @@ public final class SarimaModel extends AbstractArimaModel {
      * @return
      */
     @Override
-    public int getNonStationaryAROrder() {
+    public int getNonStationaryArOrder() {
         return getDifferencingOrder();
     }
 
@@ -549,7 +552,7 @@ public final class SarimaModel extends AbstractArimaModel {
      * @return
      */
     @Override
-    public BackFilter getStationaryAR() {
+    public BackFilter getStationaryAr() {
         Polynomial pr = getRegularAR();
         Polynomial ps = seasonalAR();
         return new BackFilter(pr.times(ps, true));
@@ -560,7 +563,7 @@ public final class SarimaModel extends AbstractArimaModel {
      * @return
      */
     @Override
-    public int getStationaryAROrder() {
+    public int getStationaryArOrder() {
         int n = phi.length;
         if (s != 1) {
             n += s * bphi.length;
@@ -629,7 +632,7 @@ public final class SarimaModel extends AbstractArimaModel {
         if (isStationary()) {
             return new StationaryTransformation(this, BackFilter.ONE);
         } else {
-            BackFilter ur = getNonStationaryAR();
+            BackFilter ur = getNonStationaryAr();
             Builder builder = toBuilder();
             builder.differencing(0, 0);
             return new StationaryTransformation(builder.build(), ur);
@@ -646,8 +649,8 @@ public final class SarimaModel extends AbstractArimaModel {
         }
     }
 
-    public SarimaType toType(){
-        return SarimaType.builder()
+    public SarimaProcess toType(){
+        return SarimaProcess.builder()
                 .period(s)
                 .d(d)
                 .bd(bd)

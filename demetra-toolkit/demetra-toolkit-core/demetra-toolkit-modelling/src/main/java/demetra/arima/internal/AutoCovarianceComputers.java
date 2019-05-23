@@ -18,14 +18,14 @@ package demetra.arima.internal;
 
 import demetra.arima.ArimaException;
 import demetra.arima.AutoCovarianceFunction;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.linearsystem.internal.QRLinearSystemSolver;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.Householder;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.RationalFunction;
+import jdplus.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.RationalFunction;
 import demetra.linearsystem.LinearSystemSolver;
 
 /**
@@ -46,7 +46,7 @@ public class AutoCovarianceComputers {
             RationalFunction rfe = RationalFunction.of(ma, ar);
             double[] cr = rfe.coefficients(q+1);
 
-            FastMatrix M = FastMatrix.square(r0);
+            CanonicalMatrix M = CanonicalMatrix.square(r0);
             DataBlock x = DataBlock.of(c, 0, r0);
             for (int i = 0; i <= q; ++i) {
                 double s = 0;

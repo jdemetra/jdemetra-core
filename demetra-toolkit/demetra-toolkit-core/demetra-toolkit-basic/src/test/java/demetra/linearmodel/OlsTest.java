@@ -47,7 +47,7 @@ public class OlsTest {
 
         Ols ols = new Ols();
         LeastSquaresResults rslts = ols.compute(model);
-        System.out.println("Longley");
+//        System.out.println("Longley");
 //        System.out.println(rslts);
         
         assertEquals(Math.abs(rslts.Ttest(0).getValue()), Math.sqrt(rslts.Ftest(0, 1).getValue()), 1e-9 );

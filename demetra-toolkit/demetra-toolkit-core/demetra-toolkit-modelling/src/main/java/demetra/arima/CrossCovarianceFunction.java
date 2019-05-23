@@ -44,7 +44,7 @@ public final class CrossCovarianceFunction {
     public static CrossCovarianceFunction create(final IArimaModel m1, final IArimaModel m2) {
 	try {
 	    return new CrossCovarianceFunction(new RationalFilter(FiniteFilter.multiply(new FiniteFilter(
-		    m1.getMA()), m2.getMA().mirror()), m1.getAR(), m2.getAR()
+		    m1.getMa()), m2.getMa().mirror()), m1.getAr(), m2.getAr()
 		    .mirror()), Math.sqrt(m1.getInnovationVariance()
 		    * m2.getInnovationVariance()));
 	} catch (ArimaException ex) {
@@ -61,7 +61,7 @@ public final class CrossCovarianceFunction {
      * @param m1
      * @param m2
      */
-    public CrossCovarianceFunction(final IModel m1, final IModel m2) {
+    public CrossCovarianceFunction(final ILinearProcess m1, final ILinearProcess m2) {
 	IRationalFilter f1 = m1.getFilter();
 	IRationalFilter f2 = m2.getFilter();
 	// m_r = f1*f2.Mirror...

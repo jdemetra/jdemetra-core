@@ -5,14 +5,14 @@
  */
 package demetra.msts.survey;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.StateComponent;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Model described in the paper of Duncan Elliot

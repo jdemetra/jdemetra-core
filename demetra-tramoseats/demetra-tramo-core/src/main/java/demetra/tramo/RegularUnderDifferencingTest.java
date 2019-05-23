@@ -17,14 +17,14 @@
 
 package demetra.tramo;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.maths.Complex;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.tramo.internal.DifferencingModule;
 import demetra.data.DoubleSeq;
 

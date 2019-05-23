@@ -36,7 +36,7 @@ import demetra.util.IntList;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 @lombok.Value
 public class Periodogram {
 

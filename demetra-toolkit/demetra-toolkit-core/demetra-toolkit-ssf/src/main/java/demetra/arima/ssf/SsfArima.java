@@ -18,14 +18,13 @@ package demetra.arima.ssf;
 
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.data.DataWindow;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.data.DataWindow;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.RationalFunction;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.RationalFunction;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.SsfException;
 import demetra.ssf.State;
@@ -39,10 +38,12 @@ import demetra.ssf.univariate.Ssf;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.UpdateInformation;
 import demetra.data.DoubleSeqCursor;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.StateComponent;
 import demetra.ssf.univariate.ISsfMeasurement;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -99,8 +100,8 @@ public class SsfArima {
             ArimaInitialization initialization = (ArimaInitialization) ssf.initialization();
             ISsfMeasurement m = ssf.measurement();
             int nr = ssf.getStateDim(), nd = initialization.getDiffuseDim();
-            FastMatrix A = FastMatrix.make(nr + nd, nd);
-            double[] dif = arima.getNonStationaryAR().asPolynomial().toArray();
+            CanonicalMatrix A = CanonicalMatrix.make(nr + nd, nd);
+            double[] dif = arima.getNonStationaryAr().asPolynomial().toArray();
             for (int j = 0; j < nd; ++j) {
                 A.set(j, j, 1);
                 for (int i = nd; i < nd + nr; ++i) {
@@ -119,9 +120,9 @@ public class SsfArima {
                 }
                 state.a().set(i, c);
             }
-            FastMatrix stV = FastMatrix.square(nr);
+            CanonicalMatrix stV = CanonicalMatrix.square(nr);
             ArimaInitialization.stVar(stV, initialization.stpsi, initialization.stacgf, initialization.data.var);
-            FastMatrix K = FastMatrix.square(nr);
+            CanonicalMatrix K = CanonicalMatrix.square(nr);
             ArimaInitialization.sigma(K, initialization.dif);
             SymmetricMatrix.XSXt(stV, K, state.P());
             return nd;
@@ -153,7 +154,7 @@ public class SsfArima {
 
         final ArimaData data;
         private final DataBlock acgf;
-        private final FastMatrix P0, V;
+        private final CanonicalMatrix P0, V;
 
         ArmaInitialization(IArimaModel arima) {
             data = new ArimaData(arima);
@@ -162,15 +163,15 @@ public class SsfArima {
             V = v(data.var, data.psi);
         }
 
-        static FastMatrix v(double var, DataBlock psi) {
-            FastMatrix v = SymmetricMatrix.xxt(psi);
+        static CanonicalMatrix v(double var, DataBlock psi) {
+            CanonicalMatrix v = SymmetricMatrix.xxt(psi);
             v.mul(var);
             return v;
         }
 
-        private static FastMatrix p0(double var, final DataBlock acgf, final DataBlock psi) {
+        private static CanonicalMatrix p0(double var, final DataBlock acgf, final DataBlock psi) {
             int dim = acgf.length();
-            FastMatrix P = FastMatrix.square(dim);
+            CanonicalMatrix P = CanonicalMatrix.square(dim);
             P.column(0).copy(acgf);
             for (int j = 0; j < dim - 1; ++j) {
                 double psij = psi.get(j);
@@ -231,8 +232,8 @@ public class SsfArima {
             stacgf = DataBlock.of(starima.getStationaryModel().getAutoCovarianceFunction().values(data.dim));
             RationalFunction rf = starima.getStationaryModel().getPsiWeights().getRationalFunction();
             stpsi = DataBlock.of(rf.coefficients(data.dim));
-            FastMatrix stvar = ArmaInitialization.p0(data.var, stacgf, stpsi);
-            FastMatrix L = FastMatrix.square(data.dim);
+            CanonicalMatrix stvar = ArmaInitialization.p0(data.var, stacgf, stpsi);
+            CanonicalMatrix L = CanonicalMatrix.square(data.dim);
             sigma(L, dif);
             P0 = SymmetricMatrix.XSXt(stvar, L);
 
@@ -336,7 +337,7 @@ public class SsfArima {
 
         @Override
         public void Pi0(FastMatrix pi0) {
-            FastMatrix B = FastMatrix.make(data.dim, dif.length - 1);
+            CanonicalMatrix B = CanonicalMatrix.make(data.dim, dif.length - 1);
             B0(B, dif);
             SymmetricMatrix.XXt(B, pi0);
         }
@@ -356,8 +357,8 @@ public class SsfArima {
 
         ArimaData(IArimaModel arima) {
             var = arima.getInnovationVariance();
-            Polynomial ar = arima.getAR().asPolynomial();
-            Polynomial ma = arima.getMA().asPolynomial();
+            Polynomial ar = arima.getAr().asPolynomial();
+            Polynomial ma = arima.getMa().asPolynomial();
             phi = ar.toArray();
             dim = Math.max(ar.degree(), ma.degree() + 1);
             psi = DataBlock.of(RationalFunction.of(ma, ar).coefficients(dim));
@@ -370,7 +371,7 @@ public class SsfArima {
 
         private final ArimaData data;
         private final DataBlock z;
-        private final FastMatrix V;
+        private final CanonicalMatrix V;
 
         public ArimaDynamics(ArimaData data) {
             this.data = data;

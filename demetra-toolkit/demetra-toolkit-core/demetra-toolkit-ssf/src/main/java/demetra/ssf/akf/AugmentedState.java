@@ -17,12 +17,13 @@
 package demetra.ssf.akf;
 
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfState;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Represents x* = x + A d, where x is a usual state vector and A is a matrix of
@@ -49,7 +50,7 @@ public class AugmentedState extends State {
      * B contains the states of the constraints. Its interpretation depends on
      * the considered step
      */
-    private final FastMatrix B;
+    private final CanonicalMatrix B;
     private int ndropped = 0;
 
     /**
@@ -60,7 +61,7 @@ public class AugmentedState extends State {
      */
     public AugmentedState(final int dim, final int ndiffuse) {
         super(dim);
-        B = FastMatrix.make(dim, ndiffuse);
+        B = CanonicalMatrix.make(dim, ndiffuse);
     }
 
     public final FastMatrix B() {

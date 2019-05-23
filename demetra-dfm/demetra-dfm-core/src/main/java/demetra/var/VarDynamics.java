@@ -16,11 +16,11 @@
  */
 package demetra.var;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

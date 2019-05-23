@@ -19,11 +19,11 @@ package demetra.regarima.outlier;
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
 import demetra.arima.internal.FastKalmanFilter;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.regarima.RegArmaModel;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.modelling.regression.IOutlier;
@@ -107,8 +107,8 @@ public class FastOutlierDetector<T extends IArimaModel> extends
         double[] o = pi.times(representation.filter).getWeights(n);
         double corr = 0;
         if (d == 0 && representation.correction != 0) {
-            Polynomial ar = model.getAR().asPolynomial();
-            Polynomial ma = model.getMA().asPolynomial();
+            Polynomial ar = model.getAr().asPolynomial();
+            Polynomial ma = model.getMa().asPolynomial();
             corr = representation.correction * ar.evaluateAt(1) / ma.evaluateAt(1);
             for (int i = 0; i < n; ++i) {
                 o[i] += corr;

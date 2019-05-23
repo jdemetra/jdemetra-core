@@ -16,16 +16,15 @@
  */
 package demetra.ssf.akf;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.data.DeprecatedDoubles;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.StateInfo;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -85,7 +84,7 @@ public class MultivariateAugmentedFilter {
         int[] obs;
         if (nmissing != 0) {
             obs = new int[nobs];
-            DeprecatedDoubles.search(x, y -> Double.isFinite(y), obs);
+            x.search(y -> Double.isFinite(y), obs);
         } else {
             obs = null;
         }

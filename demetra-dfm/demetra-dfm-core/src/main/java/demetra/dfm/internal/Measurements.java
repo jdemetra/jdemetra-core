@@ -16,16 +16,17 @@
  */
 package demetra.dfm.internal;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.dfm.IDfmMeasurement;
 import demetra.dfm.MeasurementDescriptor;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.QuadraticForm;
+import jdplus.maths.matrices.QuadraticForm;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.implementations.MeasurementsError;
 import demetra.ssf.multivariate.ISsfErrors;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -39,11 +40,11 @@ class Measurements implements ISsfMeasurements {
 
     private final MeasurementDescriptor[] mdesc;
     private final int nf, c;
-    private final FastMatrix Z;
+    private final CanonicalMatrix Z;
 
-    private static FastMatrix Z(MeasurementDescriptor[] mdesc, int nf, int c) {
+    private static CanonicalMatrix Z(MeasurementDescriptor[] mdesc, int nf, int c) {
         int mdim = nf * c, vdim = mdesc.length;
-        FastMatrix Z = FastMatrix.make(vdim, mdim);
+        CanonicalMatrix Z = CanonicalMatrix.make(vdim, mdim);
         // Measurement
         for (int i = 0; i < vdim; ++i) {
             MeasurementDescriptor zdesc = mdesc[i];
@@ -61,8 +62,8 @@ class Measurements implements ISsfMeasurements {
 
     }
 
-    private static FastMatrix H(MeasurementDescriptor[] mdesc) {
-        FastMatrix h = FastMatrix.square(mdesc.length);
+    private static CanonicalMatrix H(MeasurementDescriptor[] mdesc) {
+        CanonicalMatrix h = CanonicalMatrix.square(mdesc.length);
 
         DataBlock diagonal = h.diagonal();
         for (int i = 0; i < mdesc.length; ++i) {
@@ -71,8 +72,8 @@ class Measurements implements ISsfMeasurements {
         return h;
     }
 
-    private static FastMatrix R(MeasurementDescriptor[] mdesc) {
-        FastMatrix r = FastMatrix.square(mdesc.length);
+    private static CanonicalMatrix R(MeasurementDescriptor[] mdesc) {
+        CanonicalMatrix r = CanonicalMatrix.square(mdesc.length);
 
         DataBlock diagonal = r.diagonal();
         for (int i = 0; i < mdesc.length; ++i) {

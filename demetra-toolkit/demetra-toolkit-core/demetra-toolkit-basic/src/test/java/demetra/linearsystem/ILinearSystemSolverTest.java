@@ -9,9 +9,9 @@ import demetra.linearsystem.internal.SparseSystemSolver;
 import demetra.linearsystem.internal.QRLinearSystemSolver;
 import demetra.linearsystem.internal.LUSolver;
 import java.util.Random;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.accumulator.NeumaierAccumulator;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.matrices.internal.Gauss;
 import demetra.maths.matrices.internal.Householder;
@@ -19,6 +19,7 @@ import demetra.maths.matrices.internal.HouseholderWithPivoting;
 import demetra.maths.matrices.internal.RobustHouseholder;
 import org.junit.Ignore;
 import org.junit.Test;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -45,7 +46,7 @@ public class ILinearSystemSolverTest {
                 .normalize(true).improve(true).build();
         SparseSystemSolver sparse = new SparseSystemSolver();
         for (int N = 1; N <= 50; ++N) {
-            FastMatrix M = FastMatrix.square(N);
+            FastMatrix M = CanonicalMatrix.square(N);
             Random rnd = new Random();
             DataBlock x = DataBlock.make(N);
             double[] del = new double[6];

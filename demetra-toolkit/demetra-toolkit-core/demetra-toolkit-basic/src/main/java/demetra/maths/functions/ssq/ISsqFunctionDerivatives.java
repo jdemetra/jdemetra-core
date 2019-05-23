@@ -19,8 +19,8 @@ package demetra.maths.functions.ssq;
 
 import demetra.design.Development;
 import demetra.maths.functions.IFunctionDerivatives;
-import demetra.maths.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * 

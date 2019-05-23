@@ -5,27 +5,27 @@
  */
 package demetra.linearmodel;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.eco.EcoException;
 import lombok.NonNull;
 import demetra.leastsquares.internal.AdvancedQRSolver;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.UpperTriangularMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.data.LogSign;
-import demetra.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.LowerTriangularMatrix;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.leastsquares.QRSolver;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceProvider(service = IGls.class)
-public class Gls implements IGls {
+public class Gls {
 
     private static AtomicReference<Supplier<QRSolver>> QR_FACTORY = new AtomicReference<>(()
             -> AdvancedQRSolver.builder(new Householder()).build());
@@ -44,10 +44,9 @@ public class Gls implements IGls {
         this.solver = solver;
     }
 
-    @Override
     public LeastSquaresResults compute(LinearModel model, FastMatrix cov) {
 
-        FastMatrix L = cov.deepClone();
+        CanonicalMatrix L = cov.deepClone();
         try {
             SymmetricMatrix.lcholesky(L);
         } catch (Exception err) {
@@ -64,7 +63,7 @@ public class Gls implements IGls {
             throw new EcoException(EcoException.GLS_FAILED);
         }
         FastMatrix R = solver.R();
-        FastMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
+        CanonicalMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(R));
         return LeastSquaresResults.builder(yl, xl)
                 .mean(model.isMeanCorrection())

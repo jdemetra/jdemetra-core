@@ -16,9 +16,10 @@
  */
 package demetra.ssf;
 
-import demetra.data.DataBlockIterator;
-import demetra.data.DataBlockStorage;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.data.DataBlockIterator;
+import jdplus.data.DataBlockStorage;
+import jdplus.maths.matrices.SubMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -77,7 +78,7 @@ public class DataBlocksResults {
      * @param t
      * @return
      */
-    public FastMatrix matrix(final int t) {
+    public SubMatrix matrix(final int t) {
         int st = t - start;
         if (st < 0) {
             return null;

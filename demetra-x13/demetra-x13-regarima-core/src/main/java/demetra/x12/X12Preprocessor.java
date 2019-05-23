@@ -39,7 +39,7 @@ import demetra.regarima.regular.IOutliersDetectionModule;
 import demetra.regarima.regular.ModelEstimation;
 import demetra.regarima.regular.RegressionVariablesTest;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 
 /**
  *

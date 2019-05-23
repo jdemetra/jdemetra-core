@@ -17,7 +17,7 @@
 package demetra.dfm.internal;
 
 import demetra.dfm.MeasurementDescriptor;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.var.VarDescriptor;
 import demetra.ssf.multivariate.MultivariateSsf;
 
@@ -28,7 +28,7 @@ import demetra.ssf.multivariate.MultivariateSsf;
 @lombok.experimental.UtilityClass
 public class SsfDfm {
 
-    public MultivariateSsf of(VarDescriptor vdesc, MeasurementDescriptor[] mdesc, FastMatrix v0) {
+    public MultivariateSsf of(VarDescriptor vdesc, MeasurementDescriptor[] mdesc, CanonicalMatrix v0) {
         int nlx = vdesc.getLagsCount();
         for (int i = 0; i < mdesc.length; ++i) {
             int n = mdesc[i].getType().getLength();
@@ -39,7 +39,7 @@ public class SsfDfm {
         return of(vdesc, mdesc, nlx, v0);
     }
 
-    public MultivariateSsf of(VarDescriptor vdesc, MeasurementDescriptor[] mdesc, int nlx, FastMatrix v0) {
+    public MultivariateSsf of(VarDescriptor vdesc, MeasurementDescriptor[] mdesc, int nlx, CanonicalMatrix v0) {
         int nf = vdesc.getVariablesCount();
         Initialization initialization = new Initialization(nf * nlx, v0);
         Dynamics dyn = Dynamics.of(vdesc.getVarMatrix(), vdesc.getInnovationsVariance(), nlx);

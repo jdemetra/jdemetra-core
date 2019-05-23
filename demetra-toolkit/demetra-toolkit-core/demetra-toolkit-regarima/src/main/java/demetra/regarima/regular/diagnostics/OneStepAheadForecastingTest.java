@@ -17,10 +17,8 @@
 package demetra.regarima.regular.diagnostics;
 
 import demetra.arima.IArimaModel;
-import demetra.data.DataBlock;
-import static demetra.data.DeprecatedDoubles.ssq;
-import static demetra.data.DeprecatedDoubles.sum;
-import demetra.dstats.F;
+import jdplus.data.DataBlock;
+import jdplus.dstats.F;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
@@ -82,10 +80,10 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
         DoubleSeq in = residuals.drop(0, nback);
         DoubleSeq out = residuals.range(in.length(), n);
         inSampleSize = mean ? in.length() - 1 : in.length();
-        meanIn = sum(in) / in.length();
-        mseIn = ssq(in) / inSampleSize;
-        meanOut = sum(out) / nback;
-        mseOut = ssq(out) / nback;
+        meanIn = in.sum() / in.length();
+        mseIn = in.ssq() / inSampleSize;
+        meanOut = out.sum() / nback;
+        mseOut = out.ssq() / nback;
         return true;
     }
 
@@ -176,7 +174,7 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
             DoubleSeq y = regarima.getY();
             if (regarima.isMean()) {
                 DataBlock yc = DataBlock.of(regarima.getY());
-                double[] m = RegArimaUtility.meanRegressionVariable(regarima.arima().getNonStationaryAR(), yc.length());
+                double[] m = RegArimaUtility.meanRegressionVariable(regarima.arima().getNonStationaryAr(), yc.length());
                 yc.addAY(-est.getConcentratedLikelihood().coefficient(0), DataBlock.of(m));
                 y = yc;
             }

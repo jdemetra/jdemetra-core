@@ -16,11 +16,11 @@
  */
 package demetra.ssf.dk;
 
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.MatrixResults;
 import demetra.ssf.StateInfo;
 import demetra.ssf.ISsfInitialization;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

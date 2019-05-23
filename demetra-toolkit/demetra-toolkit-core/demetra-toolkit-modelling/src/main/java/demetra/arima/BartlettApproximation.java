@@ -30,10 +30,10 @@ public final class BartlettApproximation {
 
     public static class AutoCorrelation {
 
-        private final IModel model;
+        private final ILinearProcess model;
         private final double[] ac;
 
-        public AutoCorrelation(IModel m) {
+        public AutoCorrelation(ILinearProcess m) {
             this.model = m;
             this.ac = ac(m);
         }
@@ -76,10 +76,10 @@ public final class BartlettApproximation {
 
     public static class CrossCorrelation {
 
-        private final IModel xmodel, ymodel;
+        private final ILinearProcess xmodel, ymodel;
         private final double[] xc, yc, xycp, xycn;
 
-        public CrossCorrelation(IModel X, IModel Y) {
+        public CrossCorrelation(ILinearProcess X, ILinearProcess Y) {
             xmodel = X;
             ymodel = Y;
             xc = ac(xmodel);
@@ -197,7 +197,7 @@ public final class BartlettApproximation {
          *
          * @return
          */
-        public IModel getX() {
+        public ILinearProcess getX() {
             return xmodel;
         }
 
@@ -205,7 +205,7 @@ public final class BartlettApproximation {
          *
          * @return
          */
-        public IModel getY() {
+        public ILinearProcess getY() {
             return ymodel;
         }
     }
@@ -218,7 +218,7 @@ public final class BartlettApproximation {
     private BartlettApproximation() {
     }
 
-    public static double standardDeviationOfVariance(final IModel model, final int samplesize) throws ArimaException {
+    public static double standardDeviationOfVariance(final ILinearProcess model, final int samplesize) throws ArimaException {
         double v = 2;
         AutoCovarianceFunction acf = model.getAutoCovarianceFunction();
         int m = calcTruncationPoint(acf);
@@ -237,7 +237,7 @@ public final class BartlettApproximation {
         return b;
     }
 
-    private static double[] ac(final IModel model) throws ArimaException {
+    private static double[] ac(final ILinearProcess model) throws ArimaException {
         AutoCovarianceFunction acgf = model.getAutoCovarianceFunction();
         int m = calcTruncationPoint(acgf);
         acgf.prepare(m + 1);

@@ -31,7 +31,7 @@ import demetra.maths.linearfilters.RationalBackFilter;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IArimaModel extends IModel
+public interface IArimaModel extends ILinearProcess
 {
 
     /**
@@ -40,14 +40,14 @@ public interface IArimaModel extends IModel
      * represented by a new BackFilter object
      * @see(ec.tstoolkit.maths.linearfilters.BackFilter).
      */
-    BackFilter getAR();
+    BackFilter getAr();
 
     /**
      * Gets the degree of the AR polynomial. 0 if the auto-regressive polynomial
      * is missing.
      * @return The degree of the AR polynomial. >= 0.
      */
-    int getAROrder();
+    int getArOrder();
 
     /**
      * Gets the moving average polynomial
@@ -55,14 +55,14 @@ public interface IArimaModel extends IModel
      * represented by a new BackFilter object
      * @see(ec.tstoolkit.maths.linearfilters.BackFilter).
      */
-    BackFilter getMA();
+    BackFilter getMa();
 
     /**
      * Gets the degree of the MA polynomial. 0 if the moving average polynomial
      * is missing.
      * @return The degree of the MA polynomial. >= 0.
      */
-    int getMAOrder();
+    int getMaOrder();
 
     /**
      * Gets the non stationary (containing only unit roots) auto-regressive polynomial
@@ -70,7 +70,7 @@ public interface IArimaModel extends IModel
      * represented by a new BackFilter object
      * @see(ec.tstoolkit.maths.linearfilters.BackFilter).
      */
-    BackFilter getNonStationaryAR();
+    BackFilter getNonStationaryAr();
 
     /**
      * Gets the degree of the non stationary AR polynomial (or, equivalently, the 
@@ -78,19 +78,19 @@ public interface IArimaModel extends IModel
      * 0 if there is no unit roots.
      * @return The number of unit roots. 0 if the model is stationary.
      */
-    int getNonStationaryAROrder();
+    int getNonStationaryArOrder();
 
     /**
      * 
      * @return
      */
-    BackFilter getStationaryAR();
+    BackFilter getStationaryAr();
 
     /**
      * Gets the degree of the stationary (without unit roots) AR polynomial. 
      * @return The degree of the stationary AR polynomial.
      */
-    int getStationaryAROrder();
+    int getStationaryArOrder();
 
     /**
      * Gets the pi-weights of the model.

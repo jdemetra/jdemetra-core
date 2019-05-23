@@ -18,14 +18,12 @@ package demetra.tempdisagg.univariate;
 
 import demetra.data.transformation.Cumulator;
 import demetra.data.AggregationType;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.normalizer.AbsMeanNormalizer;
-import demetra.data.normalizer.IDataNormalizer;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.Regression;
 import demetra.timeseries.TsData;
@@ -38,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
+import demetra.data.normalizer.DataNormalizer;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -309,7 +309,7 @@ class DisaggregationModelBuilder {
         }
     }
 
-    private void scale(IDataNormalizer normalizer) {
+    private void scale(DataNormalizer normalizer) {
         if (normalizer != null) {
             hO = hY.clone();
             yfactor = normalizer.normalize(DataBlock.of(hY));

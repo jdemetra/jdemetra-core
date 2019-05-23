@@ -5,9 +5,9 @@
  */
 package demetra.ssf.multivariate;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 
 /**

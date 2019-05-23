@@ -5,6 +5,7 @@
  */
 package demetra.msts.internal;
 
+import demetra.maths.matrices.Matrix;
 import demetra.msts.ArInterpreter;
 import demetra.msts.MstsMapping;
 import demetra.msts.VarianceInterpreter;
@@ -13,7 +14,7 @@ import demetra.ssf.StateComponent;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.msts.ParameterInterpreter;
-import demetra.maths.matrices.Matrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

@@ -16,20 +16,21 @@
  */
 package demetra.arima;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Immutable;
-import demetra.dstats.Normal;
+import jdplus.dstats.Normal;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.random.XorshiftRNG;
 import javax.annotation.Nonnull;
-import demetra.dstats.Distribution;
+import jdplus.dstats.Distribution;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.random.RandomNumberGenerator;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -186,7 +187,7 @@ public final class ArimaSeriesGenerator {
     
     public double[] generateStationary(final IArimaModel starima, final double mean, final int n) {
     
-        BackFilter ar = starima.getAR(), ma = starima.getMA();
+        BackFilter ar = starima.getAr(), ma = starima.getMa();
         int p = ar.getDegree(), q = ma.getDegree();
         double[] y = new double[p], e = new double[q];
         if (p == 0) {
@@ -194,7 +195,7 @@ public final class ArimaSeriesGenerator {
                 e[i] = distribution.random(rng);
             }
         } else {
-            FastMatrix ac = FastMatrix.square(p + q);
+            CanonicalMatrix ac = CanonicalMatrix.square(p + q);
             AutoCovarianceFunction acf = starima.getAutoCovarianceFunction();
             acf.prepare(p);
             // fill the p part

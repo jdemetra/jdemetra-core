@@ -16,11 +16,12 @@
  */
 package demetra.ssf.array;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.decomposition.ElementaryTransformations;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.decomposition.ElementaryTransformations;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SubMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.IMultivariateSsfData;
@@ -43,7 +44,7 @@ public class MultivariateArrayFilter {
     private ISsfDynamics dynamics;
     private IMultivariateSsfData data;
     private int pos, end, nm, dim, nres;
-    private FastMatrix A;
+    private CanonicalMatrix A;
 
     /**
      *
@@ -55,7 +56,7 @@ public class MultivariateArrayFilter {
      */
     private void error() {
         DataBlock U = perrors.getTransformedPredictionErrors();
-        FastMatrix L = perrors.getCholeskyFactor();
+        CanonicalMatrix L = perrors.getCholeskyFactor();
         U.set(0);
         for (int i = 0; i < nm; ++i) {
             double y = data.get(pos, i);
@@ -70,7 +71,7 @@ public class MultivariateArrayFilter {
         nm = measurements.getCount();
         nres = dynamics.getInnovationsDim();
         dim = ssf.getStateDim();
-        A = FastMatrix.make(dim + nm, dim + nm + nres);
+        A = CanonicalMatrix.make(dim + nm, dim + nm + nres);
         return true;
     }
 
@@ -79,7 +80,7 @@ public class MultivariateArrayFilter {
         perrors = new MultivariateUpdateInformation(dim, nm);
         
         ssf.initialization().a0(state.a);
-        FastMatrix P0 = FastMatrix.make(dim, dim);
+        CanonicalMatrix P0 = CanonicalMatrix.make(dim, dim);
         ssf.initialization().Pf0(P0);
         SymmetricMatrix.lcholesky(P0, State.ZERO);
         state.L.copy(P0);
@@ -138,23 +139,23 @@ public class MultivariateArrayFilter {
 
     }
 
-    private FastMatrix R() {
+    private SubMatrix R() {
         return A.extract(0, nm, 0, nm);
     }
 
-    private FastMatrix K() {
+    private SubMatrix K() {
         return A.extract(nm, dim, 0, nm);
     }
 
-    private FastMatrix ZL() {
+    private SubMatrix ZL() {
         return A.extract(0, nm, nm, dim);
     }
 
-    private FastMatrix L() {
+    private SubMatrix L() {
         return A.extract(nm, dim, nm, dim);
     }
 
-    private FastMatrix U() {
+    private SubMatrix U() {
         return A.extract(nm, dim, nm + dim, A.getColumnsCount()-nm-dim);
     }
 }

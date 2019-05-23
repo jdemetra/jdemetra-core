@@ -16,17 +16,18 @@
  */
 package demetra.linearsystem.internal;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.design.BuilderPattern;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.MatrixException;
+import jdplus.maths.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import demetra.linearsystem.LinearSystemSolver;
-import demetra.data.DoubleVectorCursor;
-import demetra.maths.matrices.decomposition.LUDecomposition;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.decomposition.LUDecomposition;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -88,7 +89,7 @@ public class LUSolver implements LinearSystemSolver {
 
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
-            DoubleVectorCursor cells = b.cursor();
+            DoubleSeqCursor.OnMutable cells = b.cursor();
             while (rows.hasNext()) {
                 DataBlock row = rows.next();
                 double norm = row.norm2()/Math.sqrt(row.length());
@@ -139,13 +140,13 @@ public class LUSolver implements LinearSystemSolver {
             An = A;
         }
         lu.decompose(An);
-        FastMatrix B0 = improve ? B.deepClone() : null;
+        CanonicalMatrix B0 = improve ? B.deepClone() : null;
         lu.solve(B);
         if (!improve) {
             return;
         }
         // improve the result
-        FastMatrix DB = FastMatrix.make(B.getRowsCount(), B.getColumnsCount());
+        CanonicalMatrix DB = CanonicalMatrix.make(B.getRowsCount(), B.getColumnsCount());
         DB.robustProduct(An, B, new NeumaierAccumulator());
         DB.sub(B0);
         lu.solve(DB);

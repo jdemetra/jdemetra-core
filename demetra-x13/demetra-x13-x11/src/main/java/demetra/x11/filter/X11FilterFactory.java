@@ -18,7 +18,7 @@ package demetra.x11.filter;
 
 import demetra.design.Development;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 
 /**
  *
@@ -71,7 +71,7 @@ public final class X11FilterFactory {
     public SymmetricFilter makeSymmetricFilter(final int m, final int n) {
         Polynomial M = simpleFilter(m);
         Polynomial N = simpleFilter(n);
-        return SymmetricFilter.createFromWeights(M.times(N).coefficients());
+        return SymmetricFilter.of(M.times(N).coefficients());
 
     }
 

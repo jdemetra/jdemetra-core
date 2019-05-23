@@ -23,10 +23,11 @@ import static demetra.data.analysis.DiscreteKernel.triangular;
 import static demetra.data.analysis.DiscreteKernel.tricube;
 import static demetra.data.analysis.DiscreteKernel.triweight;
 import static demetra.data.analysis.DiscreteKernel.uniform;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import java.util.function.IntToDoubleFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static demetra.data.analysis.DiscreteKernel.distance;
 import static demetra.data.analysis.DiscreteKernel.distance;
 
 /**
@@ -144,7 +145,7 @@ public class DiscreteKernelTest {
         k[4] = triweight(K);
         k[5] = tricube(K);
         k[6] = henderson(K);
-        FastMatrix D = FastMatrix.square(k.length);
+        CanonicalMatrix D = CanonicalMatrix.square(k.length);
 
         for (int i = 0; i < k.length; ++i) {
             for (int j = 0; j < k.length; ++j) {

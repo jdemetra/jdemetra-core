@@ -17,9 +17,8 @@
 package demetra.timeseries.simplets;
 
 import demetra.timeseries.TsData;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.DeprecatedDoubles;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
@@ -30,6 +29,7 @@ import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import demetra.data.DoublesMath;
 
 /**
  *
@@ -39,7 +39,7 @@ import demetra.data.Doubles;
 public class TsDataToolkit {
 
     public TsData fn(TsData s, DoubleUnaryOperator fn) {
-        return TsData.of(s.getStart(), Doubles.of(DeprecatedDoubles.fn(s.getValues(), fn)));
+        return TsData.of(s.getStart(), Doubles.of(s.getValues().fn(fn)));
     }
 
     public TsData fastFn(TsData s, DoubleUnaryOperator fn) {
@@ -84,7 +84,7 @@ public class TsDataToolkit {
     }
 
     public TsData fn(TsData s, int lag, DoubleBinaryOperator fn) {
-        return TsData.of(s.getStart().plus(lag), Doubles.of(DeprecatedDoubles.fn(s.getValues(), lag, fn)));
+        return TsData.of(s.getStart().plus(lag), Doubles.of(s.getValues().fn(lag, fn)));
     }
 
     public TsData drop(TsData s, @Nonnegative int nbeg, @Nonnegative int nend) {
@@ -95,7 +95,7 @@ public class TsDataToolkit {
 
     public TsData extend(TsData s, @Nonnegative int nbeg, @Nonnegative int nend) {
         TsPeriod start = s.getStart().plus(-nbeg);
-        return TsData.ofInternal(start, DeprecatedDoubles.extend(s.getValues(), nbeg, nend));
+        return TsData.ofInternal(start, s.getValues().extend(nbeg, nend));
     }
 
     public TsData select(TsData s, TimeSelector selector) {
@@ -194,7 +194,7 @@ public class TsDataToolkit {
         int n=diff.count(x->Double.isFinite(x));
         if (n == 0)
             return Double.NaN;
-        return Math.sqrt(DeprecatedDoubles.ssqWithMissing(diff)/n);
+        return Math.sqrt(diff.ssqWithMissing()/n);
     }
      
     public TsData subtract(double d, TsData l) {

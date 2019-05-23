@@ -5,9 +5,9 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.MatrixWindow;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixWindow;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
@@ -81,10 +81,10 @@ public class Regression {
         }
     }
 
-    public <D extends TimeSeriesDomain> FastMatrix matrix(@Nonnull D domain, @Nonnull ITsVariable... vars) {
+    public <D extends TimeSeriesDomain> CanonicalMatrix matrix(@Nonnull D domain, @Nonnull ITsVariable... vars) {
         int nvars = ITsVariable.dim(vars);
         int nobs = domain.length();
-        FastMatrix M = FastMatrix.make(nobs, nvars);
+        CanonicalMatrix M = CanonicalMatrix.make(nobs, nvars);
 
         MatrixWindow wnd = M.left(0);
         if (domain instanceof TsDomain) {
@@ -114,7 +114,7 @@ public class Regression {
         if (vars.dim() != 1) {
             throw new IllegalArgumentException();
         }
-        FastMatrix m = matrix(domain, vars);
+        CanonicalMatrix m = matrix(domain, vars);
         return DataBlock.of(m.getStorage());
     }
 

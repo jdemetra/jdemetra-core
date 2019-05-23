@@ -17,13 +17,14 @@
 package demetra.ssf.univariate;
 
 import demetra.ssf.ISsfLoading;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.ISsfState;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -117,7 +118,7 @@ public interface ISsf extends ISsfState {
         if (d == 0 || d != effects.getColumnsCount()) {
             return false;
         }
-        FastMatrix matrix = FastMatrix.make(n, d);
+        CanonicalMatrix matrix = CanonicalMatrix.make(n, d);
         // initialization
         initializer.diffuseConstraints(matrix);
         DataBlockIterator rows = effects.rowsIterator();

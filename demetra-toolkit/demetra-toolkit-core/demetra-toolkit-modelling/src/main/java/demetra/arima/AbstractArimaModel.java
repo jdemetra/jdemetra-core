@@ -32,12 +32,12 @@ public abstract class AbstractArimaModel implements IArimaModel {
     private volatile Spectrum spectrum;
     private volatile AutoCovarianceFunction acf;
 
-    protected SymmetricFilter symmetricMA(){
-        return SymmetricFilter.fromFilter(getMA(), getInnovationVariance());
+    protected SymmetricFilter symmetricMa(){
+        return SymmetricFilter.fromFilter(getMa(), getInnovationVariance());
     }
 
-    protected SymmetricFilter symmetricAR(){
-        return SymmetricFilter.fromFilter(getAR());
+    protected SymmetricFilter symmetricAr(){
+        return SymmetricFilter.fromFilter(getAr());
     }
 
     @Override
@@ -47,7 +47,7 @@ public abstract class AbstractArimaModel implements IArimaModel {
             synchronized (this) {
                 s = spectrum;
                 if (s == null) {
-                    s = new Spectrum(symmetricMA(), symmetricAR());
+                    s = new Spectrum(symmetricMa(), symmetricAr());
                     spectrum = s;
                 }
             }
@@ -65,7 +65,7 @@ public abstract class AbstractArimaModel implements IArimaModel {
             synchronized (this) {
                 fn = acf;
                 if (fn == null) {
-                    fn = new AutoCovarianceFunction(getMA().asPolynomial(), getStationaryAR().asPolynomial(), getInnovationVariance());
+                    fn = new AutoCovarianceFunction(getMa().asPolynomial(), getStationaryAr().asPolynomial(), getInnovationVariance());
                     acf = fn;
                 }
             }
@@ -80,7 +80,7 @@ public abstract class AbstractArimaModel implements IArimaModel {
             synchronized (this) {
                 filter = pi;
                 if (filter == null) {
-                    filter = new RationalBackFilter(getAR(), getMA(), 0);
+                    filter = new RationalBackFilter(getAr(), getMa(), 0);
                     pi = filter;
                 }
             }
@@ -95,7 +95,7 @@ public abstract class AbstractArimaModel implements IArimaModel {
             synchronized (this) {
                 filter = psi;
                 if (filter == null) {
-                    filter = new RationalBackFilter(getMA(), getAR(), 0);
+                    filter = new RationalBackFilter(getMa(), getAr(), 0);
                     psi = filter;
                 }
             }
@@ -110,15 +110,15 @@ public abstract class AbstractArimaModel implements IArimaModel {
 
     @Override
     public boolean isStationary() {
-        return getNonStationaryAROrder() == 0;
+        return getNonStationaryArOrder() == 0;
     }
 
     @Override
     public String toString() {
         try {
             StringBuilder builder = new StringBuilder();
-            builder.append("AR = ").append(getAR().toString()).append("; ");
-            builder.append("MA = ").append(getMA().toString()).append("; ");
+            builder.append("AR = ").append(getAr().toString()).append("; ");
+            builder.append("MA = ").append(getMa().toString()).append("; ");
             builder.append("var =").append(getInnovationVariance());
             return builder.toString();
         } catch (ArimaException ex) {

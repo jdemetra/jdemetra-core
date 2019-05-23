@@ -21,14 +21,14 @@ import demetra.linearsystem.internal.QRLinearSystemSolver;
 import demetra.linearsystem.internal.LUSolver;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Algorithm;
 import demetra.design.Development;
 import demetra.design.ServiceDefinition;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.MatrixException;
+import jdplus.maths.matrices.MatrixException;
 import demetra.maths.matrices.internal.CroutDoolittle;
 import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Defines algorithms that solve linear system

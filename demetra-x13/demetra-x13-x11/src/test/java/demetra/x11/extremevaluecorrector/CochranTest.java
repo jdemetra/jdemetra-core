@@ -6,7 +6,6 @@
 package demetra.x11.extremevaluecorrector;
 
 import demetra.x11.extremevaluecorrector.Cochran;
-import demetra.data.DeprecatedDoubles;
 import demetra.x11.X11Context;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
@@ -69,7 +68,7 @@ public class CochranTest {
                 .mode(demetra.sa.DecompositionMode.Multiplicative)
                 .period(12)
                 .build();
-        DoubleSeq missingValuesStartEnd = DeprecatedDoubles.extend(INPUT_DS, 6, 6);
+        DoubleSeq missingValuesStartEnd = INPUT_DS.extend(6, 6);
         cochran = new Cochran(missingValuesStartEnd, context);
 
         double[] actualStandardDeviation = cochran.getStandardDeviation();

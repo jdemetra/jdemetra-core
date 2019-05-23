@@ -16,11 +16,11 @@
  */
 package demetra.ssf.multivariate;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.ISsfRoot;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

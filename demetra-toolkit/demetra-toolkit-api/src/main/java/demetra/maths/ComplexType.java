@@ -5,6 +5,10 @@
  */
 package demetra.maths;
 
+/**
+ *
+ * @author Jean Palate <jean.palate@nbb.be>
+ */
 import demetra.design.Development;
 
 /**
@@ -18,26 +22,38 @@ public interface ComplexType {
 
     double getIm();
 
-    default double arg() {
-        return Math.atan2(getIm(), getRe());
-    }
-
-    default double abs() {
-        double xa = Math.abs(getRe()), xb = Math.abs(getIm());
-        double w, z;
-        if (xa > xb) {
-            w = xa;
-            z = xb;
-        } else {
-            w = xb;
-            z = xa;
+    /**
+     * abs(z) = sqrt(re*re + im*im)
+     *
+     * @param re Real part
+     * @param im Imaginary part
+     * @return Absolute value of re + i * im
+     */
+    public static double abs(final double re, final double im) {
+        if (re == 0 && im == 0) {
+            return 0;
         }
-        if (z == 0.0) {
+        final double absX = Math.abs(re);
+        final double absY = Math.abs(im);
+
+        double w = Math.max(absX, absY);
+        double z = Math.min(absX, absY);
+        if (z == 0) {
             return w;
         } else {
             double zw = z / w;
-            return w * Math.sqrt(1.0 + zw * zw);
+            return w * Math.sqrt(1 + zw * zw);
         }
     }
+    default double abs() {
+        return abs(getRe(), getIm());
+    }
 
+    public static double arg(final double re, final double im) {
+        return Math.atan2(im, re);
+    }
+
+    default double arg(){
+        return arg(getRe(), getIm());
+    }
 }

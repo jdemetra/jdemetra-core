@@ -5,11 +5,11 @@
  */
 package demetra.modelling.regression;
 
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.CalendarUtility;
 import java.time.LocalDate;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

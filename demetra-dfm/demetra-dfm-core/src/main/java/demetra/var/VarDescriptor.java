@@ -17,7 +17,9 @@
 package demetra.var;
 
 import demetra.dfm.DfmException;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SubMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -36,11 +38,11 @@ public class VarDescriptor {
      * c(i,k) of fi(t): fi(t)= c(i,0)f0(t-1)+...+c(i,n)fn(t-1)+...
      * +c(i,(n-1)*l)f0(t-l)...+c(i,n*l-1)fn(t-l))
      */
-    private final FastMatrix varMatrix;
+    private final CanonicalMatrix varMatrix;
     /**
      * Covariance matrix of the innovations
      */
-    private final FastMatrix covar;
+    private final CanonicalMatrix covar;
 
     /**
      * Creates a new descriptor of the transition equation (VAR).
@@ -49,8 +51,8 @@ public class VarDescriptor {
      * @param nlags Number of lags in the VAR model
      */
     public VarDescriptor(int nvars, int nlags) {
-        varMatrix = FastMatrix.make(nvars, nvars * nlags);
-        covar = FastMatrix.square(nvars);
+        varMatrix = CanonicalMatrix.make(nvars, nvars * nlags);
+        covar = CanonicalMatrix.square(nvars);
         this.nlags = nlags;
         this.nvars = nvars;
         setDefault();
@@ -74,11 +76,11 @@ public class VarDescriptor {
         return nvars;
     }
 
-    public FastMatrix getVarMatrix() {
+    public CanonicalMatrix getVarMatrix() {
         return varMatrix;
     }
 
-    public FastMatrix getInnovationsVariance() {
+    public CanonicalMatrix getInnovationsVariance() {
         return covar;
     }
 
@@ -93,7 +95,7 @@ public class VarDescriptor {
      * @return The corresponding square sub-matrix is returned. That sub-matrix is a view of the underlying
      * parameters
      */
-    public FastMatrix getA(int lag) {
+    public SubMatrix getA(int lag) {
         int c0 = (lag - 1) * nvars;
         return varMatrix.extract(0, nvars, c0, nvars);
     }

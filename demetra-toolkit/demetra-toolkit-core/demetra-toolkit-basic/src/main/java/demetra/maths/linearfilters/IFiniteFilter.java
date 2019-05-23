@@ -16,13 +16,11 @@
  */
 package demetra.maths.linearfilters;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.DoubleVector;
-import demetra.data.DoubleVectorCursor;
 import demetra.maths.Complex;
 import java.util.Formatter;
 
@@ -151,7 +149,7 @@ public interface IFiniteFilter extends IFilter {
      * @param in Input.
      * @param out Output
      */
-    default void apply(DoubleSeq in, DoubleVector out) {
+    default void apply(DoubleSeq in, DoubleSeq.Mutable out) {
         double[] w = weightsToArray();
         int nz = 0, nw = w.length, nw2 = nw >> 1;
         boolean sparse = true;
@@ -172,7 +170,7 @@ public interface IFiniteFilter extends IFilter {
         } else {
             int n = out.length();
 
-            DoubleVectorCursor cursor = out.cursor();
+            DoubleSeqCursor.OnMutable cursor = out.cursor();
             DoubleSeqCursor icur = in.cursor();
             for (int i = 0; i < n; ++i) {
                 icur.moveTo(i);
@@ -193,27 +191,28 @@ public interface IFiniteFilter extends IFilter {
      * @param in Input. Should not be modified
      * @param out Output
      */
-    default void apply(DataBlock in, DoubleVector out) {
+    default void apply(DataBlock in, DataBlock out) {
         double[] w = weightsToArray();
         double[] xin = in.getStorage();
         int start = in.getStartPosition(), inc = in.getIncrement();
         int n = out.length();
-        DoubleVectorCursor cursor = out.cursor();
+        double[] xout=out.getStorage();
+        int ostart = out.getStartPosition(), oinc = out.getIncrement();
         if (inc == 1) {
-            for (int i = 0, j = start; i < n; ++i, ++j) {
+            for (int i = 0, j = start, o=ostart; i < n; ++i, ++j, o+=oinc) {
                 double s = 0;
                 for (int k = 0, t = j; k < w.length; ++k, ++t) {
                     s += xin[t] * w[k];
                 }
-                cursor.setAndNext(s);
+                xout[o]=s;
             }
         } else {
-            for (int i = 0, j = start; i < n; ++i, j += inc) {
+            for (int i = 0, j = start, o=ostart; i < n; ++i, j += inc, o+=oinc) {
                 double s = 0;
                 for (int k = 0, t = j; k < w.length; ++k, t += inc) {
                     s += xin[t] * w[k];
                 }
-                cursor.setAndNext(s);
+                xout[o]=s;
             }
         }
     }

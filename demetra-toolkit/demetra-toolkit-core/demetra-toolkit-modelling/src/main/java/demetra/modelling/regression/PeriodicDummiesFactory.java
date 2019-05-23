@@ -16,10 +16,11 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * The periodic contrasts are defined as follows:
@@ -31,9 +32,9 @@ import demetra.timeseries.TsPeriod;
  */
 public class PeriodicDummiesFactory implements RegressionVariableFactory<PeriodicDummies> {
 
-    public static FastMatrix matrix(PeriodicDummies var, int length, int start) {
+    public static CanonicalMatrix matrix(PeriodicDummies var, int length, int start) {
         int period = var.getPeriod();
-        FastMatrix m = FastMatrix.make(length, period);
+        CanonicalMatrix m = CanonicalMatrix.make(length, period);
         int pstart = start % period;
         for (int i = 0; i < period; i++) {
             DataBlock x = m.column(i);

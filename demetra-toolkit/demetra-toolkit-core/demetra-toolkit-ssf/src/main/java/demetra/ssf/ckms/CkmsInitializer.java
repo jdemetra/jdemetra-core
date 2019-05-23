@@ -16,9 +16,9 @@
  */
 package demetra.ssf.ckms;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsf;
@@ -60,7 +60,7 @@ public class CkmsInitializer implements CkmsFilter.IFastFilterInitializer {
         ISsfLoading loading = ssf.loading();
         ISsfError error = ssf.measurementError();
         ISsfInitialization initialization = ssf.initialization();
-        FastMatrix P0 = FastMatrix.square(initialization.getStateDim());
+        CanonicalMatrix P0 = CanonicalMatrix.square(initialization.getStateDim());
         initialization.Pf0(P0);
         DataBlock m = upd.M();
         loading.ZM(0, P0, m);

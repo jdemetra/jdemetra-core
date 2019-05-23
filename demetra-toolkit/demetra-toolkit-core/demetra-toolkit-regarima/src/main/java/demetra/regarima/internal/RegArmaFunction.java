@@ -25,10 +25,10 @@ import demetra.maths.functions.IFunction;
 import demetra.maths.functions.IFunctionPoint;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.IParametricMapping;
-import demetra.maths.matrices.FastMatrix;
 import java.util.function.ToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

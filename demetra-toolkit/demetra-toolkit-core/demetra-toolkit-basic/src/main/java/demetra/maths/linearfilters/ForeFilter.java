@@ -19,11 +19,10 @@ package demetra.maths.linearfilters;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.PolynomialException;
-import demetra.maths.polynomials.internal.UnitRootsSolver;
+import jdplus.maths.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
 import demetra.maths.polynomials.spi.RootsSolver;
+import jdplus.maths.polynomials.PolynomialException;
 
 /**
  *
@@ -292,54 +291,54 @@ public final class ForeFilter implements IFiniteFilter {
         return polynomial.toString('F', true);
     }
 
-    /**
-     *
-     */
-    public static class StationaryTransformation {
-
-        /**
-         *
-         */
-        /**
-         *
-         */
-        public ForeFilter unitRoots, stationaryFilter;
-
-        private int freq;
-
-        /**
-         *
-         */
-        public StationaryTransformation() {
-            this.freq = 0;
-        }
-
-        /**
-         *
-         * @param freq
-         */
-        public StationaryTransformation(int freq) {
-            this.freq = freq;
-        }
-
-        /**
-         *
-         * @param f
-         * @return
-         */
-        public boolean transform(ForeFilter f) {
-            UnitRootsSolver urs = freq == 0 ? new UnitRootsSolver()
-                    : new UnitRootsSolver(freq);
-            urs.factorize(f.polynomial);
-            unitRoots = new ForeFilter(urs.getUnitRoots().toPolynomial());
-            if (unitRoots.getDegree() == 0) {
-                stationaryFilter = f;
-                return false;
-            } else {
-                stationaryFilter = new ForeFilter(urs.remainder());
-                return true;
-            }
-        }
-    }
-
+//    /**
+//     *
+//     */
+//    public static class StationaryTransformation {
+//
+//        /**
+//         *
+//         */
+//        /**
+//         *
+//         */
+//        public ForeFilter unitRoots, stationaryFilter;
+//
+//        private int freq;
+//
+//        /**
+//         *
+//         */
+//        public StationaryTransformation() {
+//            this.freq = 0;
+//        }
+//
+//        /**
+//         *
+//         * @param freq
+//         */
+//        public StationaryTransformation(int freq) {
+//            this.freq = freq;
+//        }
+//
+//        /**
+//         *
+//         * @param f
+//         * @return
+//         */
+//        public boolean transform(ForeFilter f) {
+//            UnitRootsSolver urs = freq == 0 ? new UnitRootsSolver()
+//                    : new UnitRootsSolver(freq);
+//            urs.factorize(f.polynomial);
+//            unitRoots = new ForeFilter(urs.getUnitRoots().toPolynomial());
+//            if (unitRoots.getDegree() == 0) {
+//                stationaryFilter = f;
+//                return false;
+//            } else {
+//                stationaryFilter = new ForeFilter(urs.remainder());
+//                return true;
+//            }
+//        }
+//    }
+//
 }

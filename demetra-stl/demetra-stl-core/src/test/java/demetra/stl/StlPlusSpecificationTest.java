@@ -16,7 +16,7 @@
  */
 package demetra.stl;
 
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.WeeklyData;
@@ -39,7 +39,7 @@ public class StlPlusSpecificationTest {
         spec.setMultiplicative(true);
         StlPlus stl = spec.build();
         stl.process(data);
-        FastMatrix m=FastMatrix.make(data.length(), 4);
+        CanonicalMatrix m=CanonicalMatrix.make(data.length(), 4);
         m.column(0).copyFrom(stl.getY(), 0);
         m.column(1).copyFrom(stl.getTrend(), 0);
         m.column(2).copyFrom(stl.getSeason(0), 0);
@@ -56,7 +56,7 @@ public class StlPlusSpecificationTest {
         StlPlus stl = spec.build();
         
         stl.process(data);
-        FastMatrix m=FastMatrix.make(data.length(), 4);
+        CanonicalMatrix m=CanonicalMatrix.make(data.length(), 4);
         m.column(0).copyFrom(stl.getY(), 0);
         m.column(1).copyFrom(stl.getTrend(), 0);
         m.column(2).copyFrom(stl.getSeason(0), 0);
@@ -78,7 +78,7 @@ public class StlPlusSpecificationTest {
         StlPlus stl = spec.build();
         stl.process(data);
         
-        FastMatrix m=FastMatrix.make(data.length(), 4);
+        CanonicalMatrix m=CanonicalMatrix.make(data.length(), 4);
         m.column(0).copyFrom(stl.getY(), 0);
         m.column(1).copyFrom(stl.getTrend(), 0);
         m.column(2).copyFrom(stl.getSeason(0), 0);

@@ -5,7 +5,7 @@
  */
 package demetra.seats;
 
-import demetra.arima.UcarimaType;
+import demetra.arima.UcarimaProcess;
 import demetra.sa.SeriesDecomposition;
 
 /**
@@ -17,5 +17,5 @@ import demetra.sa.SeriesDecomposition;
 public class SeatsResults {
 
     private SeriesDecomposition initialComponents, finalComponents;
-    private UcarimaType decomposition;
+    private UcarimaProcess decomposition;
 }

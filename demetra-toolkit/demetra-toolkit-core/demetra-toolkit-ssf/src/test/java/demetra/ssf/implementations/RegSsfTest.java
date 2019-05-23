@@ -7,11 +7,10 @@ package demetra.ssf.implementations;
 
 import demetra.arima.ssf.SsfArima;
 import demetra.data.Data;
-import demetra.maths.matrices.FastMatrix;
 import demetra.modelling.regression.GenericTradingDaysVariable;
 import demetra.modelling.regression.Regression;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.ssf.StateComponent;
 import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.ssf.dk.DkToolkit;
@@ -23,6 +22,7 @@ import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

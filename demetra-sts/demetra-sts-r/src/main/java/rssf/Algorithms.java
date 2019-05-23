@@ -6,7 +6,6 @@
 package rssf;
 
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.FastMatrix;
 import demetra.msts.CompositeModel;
 import demetra.msts.MstsMonitor;
 import demetra.ssf.StateStorage;
@@ -19,6 +18,7 @@ import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.SsfMatrix;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.SsfData;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

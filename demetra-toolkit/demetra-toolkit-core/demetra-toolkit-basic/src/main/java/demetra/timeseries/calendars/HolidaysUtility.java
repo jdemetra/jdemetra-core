@@ -17,11 +17,11 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.Iterator;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

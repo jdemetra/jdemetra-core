@@ -16,9 +16,8 @@
  */
 package demetra.ssf.ckms;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.SsfException;
 import demetra.ssf.State;
@@ -30,6 +29,7 @@ import demetra.ssf.UpdateInformation;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Automatic initialization of diffuse time invariant models. The algorithm

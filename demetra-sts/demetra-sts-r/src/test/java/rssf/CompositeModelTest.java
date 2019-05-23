@@ -8,10 +8,10 @@ package rssf;
 import demetra.msts.AtomicModels;
 import demetra.msts.ModelEquation;
 import demetra.data.Data;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.msts.CompositeModel;
 import demetra.msts.CompositeModelEstimation;
 import demetra.ssf.implementations.Loading;
@@ -58,7 +58,7 @@ public class CompositeModelTest {
         eq.add("n", .1, false, null);
         model.add(eq);
         int len = Data.ABS_RETAIL.length;
-        FastMatrix M = FastMatrix.make(len, 1);
+        CanonicalMatrix M = CanonicalMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, 1e-15, false, true, null);
         System.out.println(DataBlock.of(rslt.getFullParameters()));
@@ -69,7 +69,7 @@ public class CompositeModelTest {
 
     @Test
     public void testX() {
-        FastMatrix x = FastMatrix.make(data.getRowsCount(), 6);
+        CanonicalMatrix x = CanonicalMatrix.make(data.getRowsCount(), 6);
         x.column(0).copy(data.column(0));
         x.column(1).copy(data.column(9));
         x.column(2).copy(data.column(2));

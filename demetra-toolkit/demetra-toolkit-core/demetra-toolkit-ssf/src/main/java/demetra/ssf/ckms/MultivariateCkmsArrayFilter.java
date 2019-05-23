@@ -16,12 +16,12 @@
  */
 package demetra.ssf.ckms;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.decomposition.GivensRotation;
-import demetra.maths.matrices.decomposition.HyperbolicRotation;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.decomposition.GivensRotation;
+import jdplus.maths.matrices.decomposition.HyperbolicRotation;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.array.LState;
@@ -30,6 +30,7 @@ import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.IMultivariateSsfData;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.MultivariateUpdateInformation;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -46,12 +47,12 @@ public class MultivariateCkmsArrayFilter {
      */
     static class UMatrix {
 
-        final FastMatrix M;
+        final CanonicalMatrix M;
         final FastMatrix R, Z;
         final FastMatrix K, L;
 
         UMatrix(int stateDim, int varDim, int lDim) {
-            M = FastMatrix.make(varDim + stateDim, varDim + lDim);
+            M = CanonicalMatrix.make(varDim + stateDim, varDim + lDim);
             R = M.extract(0, varDim, 0, varDim);
             Z = M.extract(0, varDim, varDim, lDim);
             K = M.extract(varDim, stateDim, 0, varDim);
@@ -150,7 +151,7 @@ public class MultivariateCkmsArrayFilter {
     
     private void error(int t) {
         DataBlock U = perrors.getTransformedPredictionErrors();
-        FastMatrix L = perrors.getCholeskyFactor();
+        CanonicalMatrix L = perrors.getCholeskyFactor();
         U.set(0);
         for (int i = 0; i < nm; ++i) {
             double y = data.get(t, i);

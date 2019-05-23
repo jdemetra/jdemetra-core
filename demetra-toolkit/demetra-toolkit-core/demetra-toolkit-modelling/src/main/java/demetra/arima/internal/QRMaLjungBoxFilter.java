@@ -18,14 +18,14 @@
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.design.Development;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.RationalFunction;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.RationalFunction;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 
@@ -40,7 +40,7 @@ public class QRMaLjungBoxFilter {
     private Polynomial ma;
     private double[] u;
 
-    private FastMatrix G, X, V1;
+    private CanonicalMatrix G, X, V1;
 
     private double m_t;
 
@@ -82,7 +82,7 @@ public class QRMaLjungBoxFilter {
     private void calcg(int m) {
 	RationalFunction rf = RationalFunction.of(Polynomial.ONE, ma);
 	double[] pi = rf.coefficients(n);
-	FastMatrix gg = FastMatrix.square(m);
+	CanonicalMatrix gg = CanonicalMatrix.square(m);
 
 	// compute first column
 	for (int i = 0; i < m; ++i) {
@@ -154,13 +154,13 @@ public class QRMaLjungBoxFilter {
     }
 
     public int initialize(IArimaModel arima, int n) {
-	ma = arima.getMA().asPolynomial();
+	ma = arima.getMa().asPolynomial();
 	this.n = n;
 	q = ma.degree();
 
 	// compute V1' * G * V1 = X' X and V (covar model)
 
-	V1 = FastMatrix.square(q);
+	V1 = CanonicalMatrix.square(q);
 
 	if (q > 0) {
 	    V1.diagonal().set(ma.get(q));

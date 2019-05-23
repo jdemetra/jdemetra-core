@@ -22,6 +22,7 @@ import java.util.stream.DoubleStream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  *
@@ -45,8 +46,10 @@ public interface Matrix extends BaseTable<Double> {
         DoubleSeq.Mutable column(@Nonnull int icolumn);
 
         @Override
-        Matrix.Mutable extract(@Nonnegative final int rstart, @Nonnegative final int nr,
-                @Nonnegative final int cstart, @Nonnegative final int nc);
+        default Matrix.Mutable extract(@Nonnegative final int rstart, @Nonnegative final int nr,
+                @Nonnegative final int cstart, @Nonnegative final int nc) {
+            return new MutableLightSubMatrix(this, rstart, nr, cstart, nc);
+        }
 
         /**
          * Sets the <code>double</code> value at the specified row/column.
@@ -57,6 +60,27 @@ public interface Matrix extends BaseTable<Double> {
          * @throws IndexOutOfBoundsException
          */
         void set(@Nonnegative int row, @Nonnegative int column, double value) throws IndexOutOfBoundsException;
+
+        void apply(int row, int col, DoubleUnaryOperator fn);
+
+        default Matrix unmodifiable() {
+            return Matrix.ofInternal(toArray(), getRowsCount(), getColumnsCount());
+        }
+
+        static Matrix.Mutable ofInternal(@Nonnull double[] data, @Nonnegative int nrows, @Nonnegative int ncolumns) {
+            if (data.length < nrows * ncolumns) {
+                throw new IllegalArgumentException();
+            }
+            return new MutableLightMatrix(data, nrows, ncolumns);
+        }
+
+        static Matrix.Mutable make(@Nonnegative int nrows, @Nonnegative int ncolumns) {
+            return new MutableLightMatrix(new double[nrows * ncolumns], nrows, ncolumns);
+        }
+
+        static Matrix.Mutable copyOf(@Nonnull Matrix matrix) {
+            return new MutableLightMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
+        }
 
     }
 

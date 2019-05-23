@@ -5,8 +5,8 @@
  */
 package demetra.msts.survey;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -72,7 +72,7 @@ public class WaveSpecificSurveyErrorsTest {
         WaveSpecificSurveyErrors.Dynamics dyn = new WaveSpecificSurveyErrors.Dynamics(data);
         WaveSpecificSurveyErrors.Initialization init = new WaveSpecificSurveyErrors.Initialization(data);
         int dim = init.getStateDim();
-        FastMatrix T = FastMatrix.square(dim);
+        CanonicalMatrix T = CanonicalMatrix.square(dim);
         dyn.T(0, T);
 
         DataBlock x = DataBlock.make(dim);
@@ -89,7 +89,7 @@ public class WaveSpecificSurveyErrorsTest {
         WaveSpecificSurveyErrors.Dynamics dyn = new WaveSpecificSurveyErrors.Dynamics(data);
         WaveSpecificSurveyErrors.Initialization init = new WaveSpecificSurveyErrors.Initialization(data);
         int dim = init.getStateDim();
-        FastMatrix T = FastMatrix.square(dim);
+        CanonicalMatrix T = CanonicalMatrix.square(dim);
         dyn.T(0, T);
 
         DataBlock x = DataBlock.make(dim);
@@ -106,7 +106,7 @@ public class WaveSpecificSurveyErrorsTest {
         WaveSpecificSurveyErrors.Dynamics2 dyn = new WaveSpecificSurveyErrors.Dynamics2(data);
         WaveSpecificSurveyErrors.Initialization2 init = new WaveSpecificSurveyErrors.Initialization2(data);
         int dim = init.getStateDim();
-        FastMatrix T = FastMatrix.square(dim);
+        CanonicalMatrix T = CanonicalMatrix.square(dim);
         dyn.T(0, T);
 //        System.out.println();
 //        System.out.println(T);
@@ -119,7 +119,7 @@ public class WaveSpecificSurveyErrorsTest {
         dyn.TX(0, x);
         assertTrue(y.distance(x) < 1e-9);
         
-        FastMatrix Q = FastMatrix.square(dim);
+        CanonicalMatrix Q = CanonicalMatrix.square(dim);
         init.Pf0(Q);
         System.out.println();
         System.out.println(Q);
@@ -130,7 +130,7 @@ public class WaveSpecificSurveyErrorsTest {
         WaveSpecificSurveyErrors.Dynamics2 dyn = new WaveSpecificSurveyErrors.Dynamics2(data);
         WaveSpecificSurveyErrors.Initialization2 init = new WaveSpecificSurveyErrors.Initialization2(data);
         int dim = init.getStateDim();
-        FastMatrix T = FastMatrix.square(dim);
+        CanonicalMatrix T = CanonicalMatrix.square(dim);
         dyn.T(0, T);
 
         DataBlock x = DataBlock.make(dim);
@@ -157,7 +157,7 @@ public class WaveSpecificSurveyErrorsTest {
         WaveSpecificSurveyErrors.Dynamics2 dyn = new WaveSpecificSurveyErrors.Dynamics2(data);
         WaveSpecificSurveyErrors.Initialization2 init = new WaveSpecificSurveyErrors.Initialization2(data);
         int dim = init.getStateDim();
-        FastMatrix T = FastMatrix.square(dim);
+        CanonicalMatrix T = CanonicalMatrix.square(dim);
         dyn.T(0, T);
 
         DataBlock x = DataBlock.make(dim);

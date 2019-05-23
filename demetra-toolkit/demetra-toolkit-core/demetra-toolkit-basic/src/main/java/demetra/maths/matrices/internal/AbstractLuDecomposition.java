@@ -17,14 +17,16 @@
 
 package demetra.maths.matrices.internal;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.LogSign;
 import demetra.design.Development;
 import demetra.maths.Constants;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.MatrixException;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.decomposition.LUDecomposition;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.decomposition.LUDecomposition;
+import jdplus.maths.matrices.FastMatrix;
 
 
 /**
@@ -75,7 +77,7 @@ public abstract class AbstractLuDecomposition implements LUDecomposition {
         if (M.getRowsCount() != M.getColumnsCount()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
-        lu=M.data();
+        lu=M.toArray();
         n = M.getRowsCount();
         piv = new int[n];
         for (int i = 0; i < n; i++) {
@@ -84,8 +86,8 @@ public abstract class AbstractLuDecomposition implements LUDecomposition {
         pivSign = 1;
     }
 
-    public FastMatrix l() {
-        FastMatrix l = FastMatrix.square(n);
+    public CanonicalMatrix l() {
+        CanonicalMatrix l = CanonicalMatrix.square(n);
         double[] lx = l.getStorage();
         for (int c = 0, idx = 0; c < n; c++) {
             lx[idx] = 1.0;
@@ -97,8 +99,8 @@ public abstract class AbstractLuDecomposition implements LUDecomposition {
         return l;
     }
 
-    public FastMatrix u() {
-        FastMatrix u = FastMatrix.square(n);
+    public CanonicalMatrix u() {
+        CanonicalMatrix u = CanonicalMatrix.square(n);
         double[] ux=u.getStorage();
         for (int c = 0, idx = 0; c < n; c++) {
             for (int r = 0; r <= c; r++, ++idx) {

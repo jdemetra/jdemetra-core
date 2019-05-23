@@ -16,15 +16,16 @@
  */
 package demetra.maths.functions.levmar;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.maths.functions.ssq.ISsqFunction;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionPoint;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.CanonicalMatrix;
 
 /**
  *
@@ -49,7 +50,7 @@ public class DogLegMinimizer implements ISsqFunctionMinimizer {
     private ISsqFunctionPoint fcur_, ftry_;
     private DataBlock ecur_;
     private double Fcur_, Ftry_;
-    private FastMatrix J, JtJ;
+    private CanonicalMatrix J, JtJ;
     private double scale_, scale2_;
     ///////////////////////////////////////////
     private int stop;
@@ -71,7 +72,7 @@ public class DogLegMinimizer implements ISsqFunctionMinimizer {
     }
 
     @Override
-    public FastMatrix curvatureAtMinimum() {
+    public CanonicalMatrix curvatureAtMinimum() {
         if (JtJ == null) {
             fcur_.ssqDerivatives().jacobian(J);
             JtJ = SymmetricMatrix.XtX(J);
@@ -164,7 +165,7 @@ public class DogLegMinimizer implements ISsqFunctionMinimizer {
 
         double k = 0;
         do {
-            FastMatrix A = JtJ.deepClone();
+            CanonicalMatrix A = JtJ.deepClone();
             if (k == 0) {
                 k = 1e-6 * jdiag_ninf;
             } else {
@@ -287,7 +288,7 @@ public class DogLegMinimizer implements ISsqFunctionMinimizer {
         int n = ecur_.length(), m = fn_.getDomain().getDim();
 
         // Jacobian
-        J = FastMatrix.make(n, m);
+        J = CanonicalMatrix.make(n, m);
         g_ = DataBlock.make(m);
         while (iterate() && iter < itmax) {
             ++iter;

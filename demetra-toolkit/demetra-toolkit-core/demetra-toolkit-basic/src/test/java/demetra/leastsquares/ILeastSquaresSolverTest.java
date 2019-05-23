@@ -6,14 +6,15 @@
 package demetra.leastsquares;
 
 import demetra.leastsquares.internal.AdvancedQRSolver;
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.maths.matrices.internal.HouseholderWithPivoting;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -28,7 +29,7 @@ public class ILeastSquaresSolverTest {
     @Ignore
     public void testPerformance() {
         int N=300, M=20, K=10000;
-        FastMatrix A=FastMatrix.make(N, M);
+        FastMatrix A=CanonicalMatrix.make(N, M);
         Random rnd=new Random(0);
         A.set(rnd::nextDouble);
         DataBlock y=DataBlock.make(N);

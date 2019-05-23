@@ -5,10 +5,10 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
+import demetra.maths.matrices.Matrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.modelling.regression.HolidaysCorrectedTradingDays.HolidaysCorrector;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
@@ -18,11 +18,11 @@ import demetra.timeseries.calendars.CalendarManager;
 import demetra.timeseries.calendars.CalendarUtility;
 import demetra.timeseries.calendars.ChainedCalendar;
 import demetra.timeseries.calendars.CompositeCalendar;
-import demetra.timeseries.calendars.DayClustering;
 import demetra.util.WeightedItem;
 import java.time.LocalDate;
 import demetra.timeseries.calendars.CalendarDefinition;
-import demetra.maths.matrices.Matrix;
+import jdplus.maths.matrices.MatrixFactory;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -73,8 +73,8 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
      */
     public static HolidaysCorrector corrector(final Calendar calendar) {
         return (TsDomain domain) -> {
-            Matrix M = CalendarUtility.holidays(calendar.getHolidays(), domain);
-            FastMatrix Mc = FastMatrix.of(M);
+            demetra.maths.matrices.Matrix M = CalendarUtility.holidays(calendar.getHolidays(), domain);
+            CanonicalMatrix Mc = CanonicalMatrix.of(M);
             if (calendar.isMeanCorrection()) {
                 TsPeriod start = domain.getStartPeriod();
                 int freq = domain.getAnnualFrequency();
@@ -114,9 +114,9 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
             int n = domain.getLength();
             int pos = domain.indexOf(breakDate.atStartOfDay());
             if (pos > 0) {
-                Matrix M1 = beg.holidaysCorrection(domain.range(0, pos));
-                Matrix M2 = end.holidaysCorrection(domain.range(pos, n));
-                return FastMatrix.rowBind(M1, M2);
+                demetra.maths.matrices.Matrix M1 = beg.holidaysCorrection(domain.range(0, pos));
+                demetra.maths.matrices.Matrix M2 = end.holidaysCorrection(domain.range(pos, n));
+                return MatrixFactory.rowBind(M1, M2);
             } else if (pos >= -1) {
                 return end.holidaysCorrection(domain);
             } else {
@@ -127,10 +127,10 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
 
     public static HolidaysCorrector corrector(final HolidaysCorrector[] correctors, double[] weights) {
         return (TsDomain domain) -> {
-            FastMatrix M=FastMatrix.of(correctors[0].holidaysCorrection(domain));
+            CanonicalMatrix M=CanonicalMatrix.of(correctors[0].holidaysCorrection(domain));
             M.mul(weights[0]);
             for (int i=1; i<correctors.length; ++i){
-                FastMatrix cur = FastMatrix.ofInternal(correctors[i].holidaysCorrection(domain));
+                CanonicalMatrix cur = CanonicalMatrix.of(correctors[i].holidaysCorrection(domain));
                 M.addAY(weights[i], cur);
              }
             return M;
@@ -141,10 +141,10 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
     }
 
     @Override
-    public boolean fill(HolidaysCorrectedTradingDays var, TsPeriod start, FastMatrix buffer) {
+    public boolean fill(HolidaysCorrectedTradingDays var, TsPeriod start,FastMatrix buffer) {
         int n = buffer.getRowsCount();
         TsDomain domain = TsDomain.of(start, n);
-        FastMatrix days = FastMatrix.make(n, 7);
+        CanonicalMatrix days = CanonicalMatrix.make(n, 7);
         GenericTradingDaysFactory.fillTdMatrix(start, days);
         Matrix corr = var.getCorrector().holidaysCorrection(domain);
         for (int i = 0; i < 7; ++i) {

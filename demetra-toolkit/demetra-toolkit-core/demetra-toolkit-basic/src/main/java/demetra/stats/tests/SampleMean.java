@@ -18,8 +18,8 @@ package demetra.stats.tests;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.dstats.Normal;
-import demetra.dstats.T;
+import jdplus.dstats.Normal;
+import jdplus.dstats.T;
 
 /**
  * Test the mean of a sample. H0: mean(sample) == mean(population), H1:

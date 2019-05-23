@@ -20,7 +20,7 @@ package demetra.ucarima;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.ComplexUtility;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import java.util.ArrayList;
 import java.util.List;
 

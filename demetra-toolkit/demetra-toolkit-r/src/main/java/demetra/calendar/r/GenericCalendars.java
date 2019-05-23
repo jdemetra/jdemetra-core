@@ -16,7 +16,7 @@
  */
 package demetra.calendar.r;
 
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.modelling.regression.GenericTradingDaysFactory;
@@ -34,12 +34,12 @@ public class GenericCalendars {
         DayClustering dc = DayClustering.of(groups);
         if (contrasts) {
             GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-            FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount() - 1);
+            CanonicalMatrix m = CanonicalMatrix.make(domain.getLength(), dc.getGroupsCount() - 1);
             GenericTradingDaysFactory.FACTORY.fill(gtd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         } else {
             GenericTradingDays gtd = GenericTradingDays.of(dc);
-            FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount());
+            CanonicalMatrix m = CanonicalMatrix.make(domain.getLength(), dc.getGroupsCount());
             GenericTradingDaysFactory.FACTORY.fill(gtd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         }

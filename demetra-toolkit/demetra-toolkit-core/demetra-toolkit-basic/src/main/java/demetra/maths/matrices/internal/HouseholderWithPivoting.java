@@ -16,21 +16,22 @@
  */
 package demetra.maths.matrices.internal;
 
-import demetra.data.DataBlock;
-import demetra.data.DataWindow;
+import jdplus.data.DataBlock;
+import jdplus.data.DataWindow;
 import demetra.design.Development;
 import demetra.maths.Constants;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.decomposition.IQRDecomposition;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.decomposition.QRDecomposition;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class HouseholderWithPivoting implements IQRDecomposition {
+public class HouseholderWithPivoting implements QRDecomposition {
 
     private double[] qr, rdiag, norm, wa;
     private int[] unused;
@@ -67,13 +68,13 @@ public class HouseholderWithPivoting implements IQRDecomposition {
     }
 
     @Override
-    public FastMatrix r(boolean compact) {
+    public CanonicalMatrix r(boolean compact) {
         if (compact) {
-            FastMatrix r = FastMatrix.square(n);
+            CanonicalMatrix r = CanonicalMatrix.square(n);
             return r;
 
         } else {
-            FastMatrix r = FastMatrix.square(norig);
+            CanonicalMatrix r = CanonicalMatrix.square(norig);
             return r;
         }
     }
@@ -215,7 +216,7 @@ public class HouseholderWithPivoting implements IQRDecomposition {
     private void init(FastMatrix M) {
         m = M.getRowsCount();
         norig = n = M.getColumnsCount();
-        qr = M.data();
+        qr = M.toArray();
         rdiag = new double[n];
         norm = new double[n];
         wa = new double[n];

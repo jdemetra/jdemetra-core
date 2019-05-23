@@ -17,8 +17,8 @@
 package demetra.ssf.univariate;
 
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
 import java.util.Arrays;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Uni-variate state space regression model y = X b + e e ~ ssf b may contain

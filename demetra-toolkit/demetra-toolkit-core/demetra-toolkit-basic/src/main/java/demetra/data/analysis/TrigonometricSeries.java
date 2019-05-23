@@ -16,15 +16,17 @@
  */
 package demetra.data.analysis;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
+import demetra.design.Development;
 import demetra.maths.Constants;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 
 /**
  * Computes cos(tw), sin(tw)
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Development(status=Development.Status.Release)
 public class TrigonometricSeries {
 
     private final double[] w;
@@ -81,11 +83,11 @@ public class TrigonometricSeries {
         this.w = freq;
     }
 
-    public FastMatrix matrix(int len) {
+    public CanonicalMatrix matrix(int len) {
         return matrix(0, len);
     }
 
-    public FastMatrix matrix(int len, int start) {
+    public CanonicalMatrix matrix(int len, int start) {
         int nlast = w.length - 1;
         int n = w.length * 2;
         boolean zero = false, pi = false;
@@ -98,7 +100,7 @@ public class TrigonometricSeries {
             zero = true;
             --n;
         }
-        FastMatrix m = FastMatrix.make(len, n);
+        CanonicalMatrix m = CanonicalMatrix.make(len, n);
         int icur = 0, ccur = 0;
         if (zero) {
             m.column(ccur++).set(0);

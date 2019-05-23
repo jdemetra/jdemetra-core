@@ -22,8 +22,8 @@ import demetra.maths.ComplexMath;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.linearfilters.SymmetricFrequencyResponse;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.UnitRoots;
+import jdplus.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.UnitRoots;
 import demetra.maths.polynomials.internal.UnitRootsSolver;
 import java.util.function.IntToDoubleFunction;
 

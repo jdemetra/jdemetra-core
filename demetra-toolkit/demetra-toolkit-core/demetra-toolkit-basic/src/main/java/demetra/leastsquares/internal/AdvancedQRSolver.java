@@ -5,20 +5,20 @@
  */
 package demetra.leastsquares.internal;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.MatrixException;
-import demetra.maths.matrices.decomposition.IQRDecomposition;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
 import demetra.data.accumulator.NeumaierAccumulator;
-import demetra.maths.matrices.UpperTriangularMatrix;
+import jdplus.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
 import demetra.leastsquares.QRSolver;
 import demetra.design.AlgorithmImplementation;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleVectorCursor;
+import jdplus.maths.matrices.decomposition.QRDecomposition;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -30,11 +30,11 @@ public class AdvancedQRSolver implements QRSolver {
     @BuilderPattern(AdvancedQRSolver.class)
     public static class Builder {
 
-        private final IQRDecomposition qr;
+        private final QRDecomposition qr;
         private int niter = 1;
         private boolean simple;
 
-        private Builder(IQRDecomposition qr) {
+        private Builder(QRDecomposition qr) {
             this.qr = qr;
         }
 
@@ -58,15 +58,15 @@ public class AdvancedQRSolver implements QRSolver {
         }
     }
 
-    public static Builder builder(IQRDecomposition qr) {
+    public static Builder builder(QRDecomposition qr) {
         return new Builder(qr);
     }
     private double ssqerr;
     private double[] b, res;
-    private FastMatrix R;
+    private CanonicalMatrix R;
     private int[] used;
     private int n, m;
-    private final IQRDecomposition qr;
+    private final QRDecomposition qr;
     private final boolean simple;
     private final int niter;
     
@@ -74,7 +74,7 @@ public class AdvancedQRSolver implements QRSolver {
         this(new Householder(), 1, false);
     }
     
-    private AdvancedQRSolver(IQRDecomposition qr, int niter, boolean simple) {
+    private AdvancedQRSolver(QRDecomposition qr, int niter, boolean simple) {
         this.qr = qr;
         this.niter = niter;
         this.simple = simple;
@@ -163,9 +163,9 @@ public class AdvancedQRSolver implements QRSolver {
         // step 1
         int iter = 0;
         do {
-            DoubleVectorCursor f = F.cursor();
-            DoubleVectorCursor g = G.cursor();
-            DoubleVectorCursor e = E.cursor();
+            DoubleSeqCursor.OnMutable f = F.cursor();
+            DoubleSeqCursor.OnMutable g = G.cursor();
+            DoubleSeqCursor.OnMutable e = E.cursor();
             DoubleSeqCursor y = Y.cursor();
             NeumaierAccumulator acc = new NeumaierAccumulator();
             DataBlockIterator rows = X.rowsIterator();
@@ -217,7 +217,7 @@ public class AdvancedQRSolver implements QRSolver {
             ssqerr = ssq;
 
             DataBlock Err = DataBlock.make(n);
-            DoubleVectorCursor err = Err.cursor();
+            DoubleSeqCursor.OnMutable err = Err.cursor();
             DoubleSeqCursor y = Y.cursor();
             NeumaierAccumulator acc = new NeumaierAccumulator();
             DataBlockIterator rows = X.rowsIterator();
@@ -235,7 +235,7 @@ public class AdvancedQRSolver implements QRSolver {
      * @return the R
      */
     @Override
-    public FastMatrix R() {
+    public CanonicalMatrix R() {
         return qr.r(false);
     }
 }

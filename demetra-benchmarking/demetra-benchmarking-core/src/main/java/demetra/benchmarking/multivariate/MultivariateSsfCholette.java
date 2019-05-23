@@ -16,10 +16,9 @@
  */
 package demetra.benchmarking.multivariate;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.ISsfLoading;
@@ -27,6 +26,7 @@ import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.ISsfErrors;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.MultivariateSsf;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

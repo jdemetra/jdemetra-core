@@ -17,16 +17,16 @@
 package demetra.sarima.estimation;
 
 import demetra.data.normalizer.AbsMeanNormalizer;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.design.BuilderPattern;
 import demetra.leastsquares.QRSolvers;
 import demetra.leastsquares.QRSolver;
 import demetra.ar.AutoRegressiveEstimation;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarmaSpecification;
+import demetra.arima.SarmaSpecification;
 import demetra.data.DoubleSeq;
 
 /**
@@ -124,7 +124,7 @@ public class HannanRissanen {
         this.biascorrection=builder.biascorrection;
     }
     
-    private double[] ls(FastMatrix mat, double[] y, boolean bbic) {
+    private double[] ls(CanonicalMatrix mat, double[] y, boolean bbic) {
         QRSolver solver = QRSolvers.fastSolver();
         solver.solve(DataBlock.of(y), mat);
         DoubleSeq pi = solver.coefficients();
@@ -147,7 +147,7 @@ public class HannanRissanen {
         double[] a1 = new double[n];
         double[] a2 = new double[n];
         double[] res = new double[n];
-        FastMatrix mat = FastMatrix.make(n, np + nq);
+        CanonicalMatrix mat = CanonicalMatrix.make(n, np + nq);
         double[] mdata = mat.getStorage();
         for (int i = 0; i < n; ++i) {
             int picur = 0;
@@ -241,7 +241,7 @@ public class HannanRissanen {
     }
 
     private void finalcorrection() {
-        BackFilter ar = m_model.getAR();
+        BackFilter ar = m_model.getAr();
         DataBlock ndata = DataBlock.make(m_data.length - ar.getDegree());
         ar.apply(DataBlock.of(m_data), ndata);
         HannanRissanen hr=HannanRissanen.builder()
@@ -335,7 +335,7 @@ public class HannanRissanen {
         int np = m_spec.getP() + m_spec.getBp() * (1 + m_spec.getP());
         int nq = m_spec.getQ() + m_spec.getBq() * (1 + m_spec.getQ());
 
-        FastMatrix mat =  FastMatrix.make(nc, np + nq);
+        CanonicalMatrix mat =  CanonicalMatrix.make(nc, np + nq);
         double[] dmat = mat.getStorage();
         double[] data = new double[nc];
         System.arraycopy(m_data, m, data, 0, nc);

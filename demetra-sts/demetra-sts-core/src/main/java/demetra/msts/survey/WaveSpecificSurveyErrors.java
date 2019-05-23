@@ -6,12 +6,12 @@
 package demetra.msts.survey;
 
 import demetra.arima.AutoCovarianceFunction;
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.data.DataBlock;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.StateComponent;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

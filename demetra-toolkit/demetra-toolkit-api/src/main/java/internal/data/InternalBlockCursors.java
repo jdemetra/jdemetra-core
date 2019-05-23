@@ -18,7 +18,6 @@ package internal.data;
 
 import demetra.data.BaseSeqCursor;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.DoubleVectorCursor;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -68,7 +67,7 @@ public class InternalBlockCursors {
         }
     }
 
-    public static class BlockDoubleVectorCursor extends BlockDoubleSeqCursor implements DoubleVectorCursor {
+    public static class BlockDoubleVectorCursor extends BlockDoubleSeqCursor implements DoubleSeqCursor.OnMutable {
 
         public BlockDoubleVectorCursor(double[] data, int inc, int leftPos) {
             super(data, inc, leftPos);
@@ -123,7 +122,7 @@ public class InternalBlockCursors {
         }
     }
 
-    public static class BlockP1DoubleVectorCursor extends BlockP1DoubleSeqCursor implements DoubleVectorCursor {
+    public static class BlockP1DoubleVectorCursor extends BlockP1DoubleSeqCursor implements DoubleSeqCursor.OnMutable {
 
         public BlockP1DoubleVectorCursor(double[] data, int leftPos) {
             super(data, leftPos);
@@ -177,7 +176,7 @@ public class InternalBlockCursors {
         }
     }
 
-    public static class BlockM1DoubleVectorCursor extends BlockM1DoubleSeqCursor implements DoubleVectorCursor {
+    public static class BlockM1DoubleVectorCursor extends BlockM1DoubleSeqCursor implements DoubleSeqCursor.OnMutable {
 
         public BlockM1DoubleVectorCursor(double[] data, int leftPos) {
             super(data, leftPos);

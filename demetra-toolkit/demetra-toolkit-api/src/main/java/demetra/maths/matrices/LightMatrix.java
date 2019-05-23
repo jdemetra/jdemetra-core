@@ -26,7 +26,7 @@ import demetra.data.Doubles;
  */
 @Development(status = Development.Status.Release)
 class LightMatrix implements Matrix {
-
+    
     private final double[] storage;
     private final int nrows, ncolumns;
 
@@ -104,4 +104,8 @@ class LightMatrix implements Matrix {
         return nrows;
     }
 
+    @Override
+    public String toString(){
+        return Matrix.format(this);
+    }
 }

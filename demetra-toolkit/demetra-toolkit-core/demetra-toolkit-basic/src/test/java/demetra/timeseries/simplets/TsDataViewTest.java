@@ -17,7 +17,7 @@
 package demetra.timeseries.simplets;
 
 import demetra.timeseries.TsData;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;

@@ -16,14 +16,14 @@
  */
 package demetra.ssf.univariate;
 
-import demetra.likelihood.IConcentratedLikelihood;
+import demetra.likelihood.ConcentratedLikelihood;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  * @param <L>
  */
-public interface IConcentratedLikelihoodComputer<L extends IConcentratedLikelihood> extends ILikelihoodComputer<L>{
+public interface IConcentratedLikelihoodComputer<L extends ConcentratedLikelihood> extends ILikelihoodComputer<L>{
     L compute(SsfRegressionModel model);
     
     @Override

@@ -5,9 +5,9 @@
  */
 package demetra.modelling.regression;
 
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

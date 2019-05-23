@@ -16,7 +16,7 @@
  */
 package demetra.data.analysis;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Demo;
 import java.util.Random;
 import org.junit.Test;

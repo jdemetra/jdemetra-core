@@ -18,17 +18,15 @@ package demetra.arima.internal;
 
 import demetra.arima.ArimaException;
 import demetra.arima.IArimaModel;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Fast;
 import demetra.design.Development;
 import demetra.likelihood.DeterminantalTerm;
-import demetra.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleVectorCursor;
 
 /**
  * @author Jean Palate
@@ -40,7 +38,7 @@ public class KalmanFilter implements ArmaFilter {
 
     private double[] C0, C, s;
 
-    private boolean multiUse;
+    private final boolean multiUse;
 
     private double[] phi;
 
@@ -54,6 +52,7 @@ public class KalmanFilter implements ArmaFilter {
      *
      */
     public KalmanFilter() {
+        multiUse=false;
     }
 
     /**
@@ -212,8 +211,8 @@ public class KalmanFilter implements ArmaFilter {
     public int prepare(final IArimaModel model, int length) {
         var = model.getInnovationVariance();
         ldet = Double.NaN;
-        phi = model.getAR().asPolynomial().toArray();
-        dim = Math.max(model.getAROrder(), model.getMAOrder() + 1);
+        phi = model.getAr().asPolynomial().toArray();
+        dim = Math.max(model.getArOrder(), model.getMaOrder() + 1);
         C0 = model.getAutoCovarianceFunction().values(dim);
         h0 = C0[0];
         n = length;
@@ -230,7 +229,7 @@ public class KalmanFilter implements ArmaFilter {
         double[] a = new double[dim];
         // iteration
         DoubleSeqCursor yreader = y.cursor();
-        DoubleVectorCursor yfwriter = yf.cursor();
+        DoubleSeqCursor.OnMutable yfwriter = yf.cursor();
         int pos = 0, cpos = 0, ilast = dim - 1;
         double s = this.s[pos];
         double e = yreader.getAndNext() / s;

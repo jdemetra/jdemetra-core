@@ -16,17 +16,18 @@
  */
 package demetra.linearsystem.internal;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.accumulator.NeumaierAccumulator;
 import demetra.design.BuilderPattern;
-import demetra.maths.matrices.decomposition.IQRDecomposition;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.MatrixException;
+import jdplus.maths.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import demetra.linearsystem.LinearSystemSolver;
-import demetra.data.DoubleVectorCursor;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.decomposition.QRDecomposition;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -39,10 +40,10 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
     @BuilderPattern(QRLinearSystemSolver.class)
     public static class Builder {
 
-        private final IQRDecomposition qr;
+        private final QRDecomposition qr;
         private boolean improve, normalize;
 
-        private Builder(IQRDecomposition qr) {
+        private Builder(QRDecomposition qr) {
             this.qr = qr;
         }
 
@@ -61,13 +62,13 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
         }
     }
 
-    public static Builder builder(IQRDecomposition qr) {
+    public static Builder builder(QRDecomposition qr) {
         return new Builder(qr);
     }
-    private final IQRDecomposition qr;
+    private final QRDecomposition qr;
     private final boolean improve, normalize;
 
-    private QRLinearSystemSolver(IQRDecomposition qr, boolean normalize, boolean improve) {
+    private QRLinearSystemSolver(QRDecomposition qr, boolean normalize, boolean improve) {
         this.qr = qr;
         this.normalize = normalize;
         this.improve = improve;
@@ -86,7 +87,7 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
-            DoubleVectorCursor cells = b.cursor();
+            DoubleSeqCursor.OnMutable cells = b.cursor();
             while (rows.hasNext()) {
                 DataBlock row = rows.next();
                 double norm = row.norm2();
@@ -146,7 +147,7 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
             return;
         }
         // improve the result
-        FastMatrix DB = FastMatrix.make(B.getRowsCount(), B.getColumnsCount());
+        CanonicalMatrix DB = CanonicalMatrix.make(B.getRowsCount(), B.getColumnsCount());
         DB.robustProduct(An, B, new NeumaierAccumulator());
         DB.sub(B0);
         DB.applyByColumns(col -> qr.leastSquares(col, col, null));

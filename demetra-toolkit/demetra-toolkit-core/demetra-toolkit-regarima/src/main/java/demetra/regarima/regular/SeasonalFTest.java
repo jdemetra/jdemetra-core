@@ -17,17 +17,17 @@
 package demetra.regarima.regular;
 
 import demetra.linearmodel.JointTest;
-import demetra.maths.matrices.FastMatrix;
 import demetra.modelling.regression.PeriodicContrasts;
 import demetra.modelling.regression.Regression;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

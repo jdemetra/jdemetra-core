@@ -16,7 +16,7 @@
  */
 package demetra.maths.functions.minpack;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.functions.FunctionException;
 import demetra.maths.functions.ssq.ISsqFunction;

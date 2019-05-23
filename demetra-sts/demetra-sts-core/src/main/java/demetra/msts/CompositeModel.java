@@ -16,10 +16,10 @@
  */
 package demetra.msts;
 
-import demetra.maths.matrices.FastMatrix;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

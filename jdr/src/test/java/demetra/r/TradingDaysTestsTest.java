@@ -17,9 +17,9 @@
 package demetra.r;
 
 import demetra.data.Data;
-import demetra.data.DataBlockStorage;
+import jdplus.data.DataBlockStorage;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.univariate.SsfData;

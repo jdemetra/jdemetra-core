@@ -16,12 +16,12 @@
  */
 package demetra.stats.tests;
 
-import demetra.data.DataBlock;
-import demetra.dstats.Normal;
+import jdplus.data.DataBlock;
+import jdplus.dstats.Normal;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.random.MersenneTwister;
 import java.io.IOException;
 import java.util.Arrays;
@@ -86,8 +86,8 @@ public class AugmentedDickeyFullerTest {
                 L[i] = lprev + 100;
             }
         }
-        FastMatrix X = FastMatrix.make(M * S, 3);
-        FastMatrix Y = FastMatrix.make(M * S, 9);
+        CanonicalMatrix X = CanonicalMatrix.make(M * S, 3);
+        CanonicalMatrix Y = CanonicalMatrix.make(M * S, 9);
         for (int i = 0, k = 0; i < M; ++i) {
             for (int j = 0; j < S; ++j, ++k) {
                 double[] pct = simulate(R, L[i], false, false);

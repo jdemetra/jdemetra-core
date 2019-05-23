@@ -17,7 +17,7 @@
 package demetra.ssf.dk;
 
 import demetra.ssf.likelihood.DiffuseLikelihood;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.likelihood.DeterminantalTerm;
 import demetra.ssf.StateInfo;
 import demetra.ssf.akf.AugmentedState;

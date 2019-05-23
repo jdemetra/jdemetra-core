@@ -16,9 +16,10 @@
  */
 package demetra.sarima;
 
+import demetra.arima.SarimaSpecification;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.UnitRoots;
+import jdplus.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.UnitRoots;
 
 /**
  *

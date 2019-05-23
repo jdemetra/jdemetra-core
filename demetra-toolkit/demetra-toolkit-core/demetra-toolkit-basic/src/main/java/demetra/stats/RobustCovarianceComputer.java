@@ -5,13 +5,14 @@
  */
 package demetra.stats;
 
-import demetra.data.DeprecatedDoubles;
 import demetra.data.analysis.WindowFunction;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
+import demetra.data.DoublesMath;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -29,12 +30,12 @@ public class RobustCovarianceComputer {
      * @param truncationLag Truncation lag (excluded from the computation)
      * @return
      */
-    public FastMatrix covariance(FastMatrix x, WindowFunction winFunction, int truncationLag) {
+    public CanonicalMatrix covariance(FastMatrix x, WindowFunction winFunction, int truncationLag) {
         DoubleUnaryOperator w = winFunction.window();
         int n = x.getRowsCount(), nx = x.getColumnsCount();
-        FastMatrix s = SymmetricMatrix.XtX(x);
+        CanonicalMatrix s = SymmetricMatrix.XtX(x);
         s.mul(w.applyAsDouble(0));
-        FastMatrix ol = FastMatrix.square(nx);
+        CanonicalMatrix ol = CanonicalMatrix.square(nx);
         double q = 1+truncationLag;
         for (int l = 1; l <= truncationLag; ++l) {
             double wl = w.applyAsDouble(l / q);
@@ -50,7 +51,7 @@ public class RobustCovarianceComputer {
 
     public double covariance(DoubleSeq x, WindowFunction winFunction, int truncationLag) {
         DoubleUnaryOperator w = winFunction.window();
-        DoubleSeq y=DeprecatedDoubles.removeMean(x);
+        DoubleSeq y=DoublesMath.removeMean(x);
         IntToDoubleFunction acf = AutoCovariances.autoCovarianceFunction(y, 0);
         double s = acf.applyAsDouble(0);
         double q = 1+truncationLag;

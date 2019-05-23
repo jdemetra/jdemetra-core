@@ -16,14 +16,13 @@
  */
 package demetra.maths.linearfilters.internal;
 
-import demetra.data.DeprecatedDoubles;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.polynomials.LeastSquaresDivision;
-import demetra.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.UnitRoots;
+import jdplus.maths.polynomials.LeastSquaresDivision;
+import jdplus.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.UnitRoots;
 import demetra.maths.polynomials.internal.UnitRootsSolver;
 import java.util.function.IntToDoubleFunction;
 
@@ -113,7 +112,7 @@ public class RobustSymmetricFrequencyResponseDecomposer  {
         m_bf = m_bf.normalize();
         
         Polynomial coeff = m_bf.asPolynomial();
-        m_var=var /DeprecatedDoubles.ssq(coeff.coefficients());
+        m_var=var /coeff.coefficients().ssq();
         return m_var>=0;
     }
 

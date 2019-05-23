@@ -17,15 +17,15 @@
 package demetra.sarima.estimation;
 
 import demetra.arima.estimation.IArimaMapping;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.functions.FunctionException;
 import demetra.maths.functions.ParamValidation;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.data.DoubleSeq;
 
 /**
@@ -217,7 +217,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
         // number of invalid coefficients
     }
 
-    public FastMatrix expandCovariance(FastMatrix cov) {
+    public CanonicalMatrix expandCovariance(CanonicalMatrix cov) {
         int dim = getDim();
         if (cov.getColumnsCount() != dim) {
             return null;
@@ -228,7 +228,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
                 idx[j++] = i;
             }
         }
-        FastMatrix ecov = FastMatrix.make(fixedItems.length, fixedItems.length);
+        CanonicalMatrix ecov = CanonicalMatrix.make(fixedItems.length, fixedItems.length);
         for (int i = 0; i < dim; ++i) {
             for (int j = 0; j <= i; ++j) {
                 double s = cov.get(i, j);

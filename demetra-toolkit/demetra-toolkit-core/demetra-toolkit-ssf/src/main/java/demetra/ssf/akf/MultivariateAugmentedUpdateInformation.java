@@ -16,9 +16,9 @@
  */
 package demetra.ssf.akf;
 
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.data.DataBlockIterator;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.State;
 import demetra.ssf.multivariate.IMultivariateSsf;
 import demetra.ssf.multivariate.MultivariateUpdateInformation;
@@ -36,7 +36,7 @@ public class MultivariateAugmentedUpdateInformation extends MultivariateUpdateIn
      * E is the "prediction error" on the diffuse constraints (=(0-Z(t)A(t)) E ~
      * ndiffuse x nvars
      */
-    private final FastMatrix E;
+    private final CanonicalMatrix E;
 
     /**
      *
@@ -46,10 +46,10 @@ public class MultivariateAugmentedUpdateInformation extends MultivariateUpdateIn
      */
     public MultivariateAugmentedUpdateInformation(final int dim, final int nvars, final int ndiffuse) {
         super(dim, nvars);
-        E = FastMatrix.make(ndiffuse, nvars);
+        E = CanonicalMatrix.make(ndiffuse, nvars);
     }
 
-    public FastMatrix E() {
+    public CanonicalMatrix E() {
         return E;
     }
 

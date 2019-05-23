@@ -304,7 +304,7 @@ public class UcarimaModel implements Cloneable {
         }
         IArimaModel nmodel=model;
         if (var < 0 && adjustModel) {
-            nmodel = ArimaModel.add(-var, ArimaModel.copyOf(model));
+            nmodel = ArimaModel.add(-var, ArimaModel.of(model));
         } else {
             ncmps[ncmp]= ncmps[ncmp].plus(var);
         }
@@ -337,7 +337,7 @@ public class UcarimaModel implements Cloneable {
         if (Math.abs(var - 1) < EPS) {
             return this;
         } else {
-            ArimaModel nmodel=ArimaModel.copyOf(model).normalize();
+            ArimaModel nmodel=ArimaModel.of(model).normalize();
             ArimaModel[] ncmps=components.clone();
             for (int i = 0; i < components.length; ++i) {
                 ArimaModel cur = components[i];

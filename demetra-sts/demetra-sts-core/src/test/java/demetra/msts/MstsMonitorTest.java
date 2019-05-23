@@ -6,10 +6,10 @@
 package demetra.msts;
 
 import demetra.data.Data;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.StateStorage;
 import demetra.ssf.dk.DkToolkit;
@@ -42,7 +42,7 @@ public class MstsMonitorTest {
         File file = Data.copyToTempFile(MultivariateCompositeSsf.class.getResource("/bematrix.txt"));
         Matrix data = MatrixSerializer.read(file, "\t|,");
 
-        FastMatrix D = FastMatrix.make(data.getRowsCount(), 4);
+        CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 4);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));
@@ -76,7 +76,7 @@ public class MstsMonitorTest {
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
         Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
 
-        FastMatrix D = FastMatrix.make(data.getRowsCount(), 6);
+        CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));
@@ -116,7 +116,7 @@ public class MstsMonitorTest {
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
         Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
 
-        FastMatrix D = FastMatrix.make(data.getRowsCount(), 6);
+        CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));
@@ -156,7 +156,7 @@ public class MstsMonitorTest {
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
         Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
 
-        FastMatrix D = FastMatrix.make(data.getRowsCount(), 6);
+        CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));

@@ -5,10 +5,10 @@
  */
 package demetra.leastsquares;
 
-import demetra.maths.matrices.FastMatrix;
 import demetra.design.Algorithm;
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * 

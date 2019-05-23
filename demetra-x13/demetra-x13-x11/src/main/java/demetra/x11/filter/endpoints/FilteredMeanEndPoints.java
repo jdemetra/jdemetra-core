@@ -5,7 +5,7 @@
  */
 package demetra.x11.filter.endpoints;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.data.DoubleSeq;
 

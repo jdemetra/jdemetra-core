@@ -16,20 +16,20 @@
  */
 package demetra.ssf.akf;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.data.DataBlock;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfData;
 import java.util.Iterator;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.univariate.ISsfError;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsfMeasurement;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

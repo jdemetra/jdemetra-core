@@ -8,9 +8,9 @@ package demetra.arima.estimation;
 import demetra.arima.IArimaModel;
 import demetra.arima.StationaryTransformation;
 import demetra.data.Data;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -96,9 +96,7 @@ public class ArmaFilterTest {
         assertEquals(ssq, s.ssq(), 1e-6);
     }
 
-    @Test
-    @Ignore
-    public void stressTest() {
+    public static void stressTest() {
         System.out.println("Stress Test 1");
         int K = 100000;
         IArimaModel[] models = new IArimaModel[]{airline, arima};
@@ -190,11 +188,9 @@ public class ArmaFilterTest {
         }
     }
 
-    @Test
-    @Ignore
-    public void stressTest2() {
+    public static void stressTest2() {
         System.out.println("Stress Test 2");
-        int K = 100, L = 10;
+        int K = 10000, L = 10;
         long t0 = System.currentTimeMillis();
         IArimaModel[] models = new IArimaModel[]{airline, arima};
         for (IArimaModel model : models) {
@@ -249,7 +245,7 @@ public class ArmaFilterTest {
         }
     }
 
-    private ec.tstoolkit.arima.IArimaModel toLegacy(IArimaModel model) {
+    private static ec.tstoolkit.arima.IArimaModel toLegacy(IArimaModel model) {
         if (model instanceof SarimaModel) {
             SarimaModel sarima = (SarimaModel) model;
             SarimaSpecification spec = sarima.specification();
@@ -324,5 +320,10 @@ public class ArmaFilterTest {
             }
         }
         System.out.println(DoubleSeq.of(q));
+    }
+    
+    public static void main(String[] arg){
+        stressTest();
+        stressTest2();
     }
 }

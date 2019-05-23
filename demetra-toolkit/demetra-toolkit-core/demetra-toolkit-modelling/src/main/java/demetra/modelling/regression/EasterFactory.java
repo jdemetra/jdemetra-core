@@ -16,13 +16,13 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Easter;
 import java.time.LocalDate;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

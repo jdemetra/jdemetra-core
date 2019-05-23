@@ -21,7 +21,7 @@ import demetra.regarima.RegArimaModel;
 import demetra.regarima.outlier.ExactSingleOutlierDetector;
 import demetra.sarima.FastSarimaProcessor;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.internal.HannanRissanenInitializer;
 import demetra.timeseries.TsPeriod;

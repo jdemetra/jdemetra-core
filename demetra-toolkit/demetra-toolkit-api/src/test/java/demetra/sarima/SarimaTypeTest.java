@@ -5,6 +5,7 @@
  */
 package demetra.sarima;
 
+import demetra.arima.SarimaProcess;
 import demetra.maths.PolynomialType;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -20,7 +21,7 @@ public class SarimaTypeTest {
 
     @Test
     public void testBuilder() {
-        SarimaType arima = SarimaType.builder()
+        SarimaProcess arima = SarimaProcess.builder()
                 .period(12)
                 .d(1)
                 .bd(1)

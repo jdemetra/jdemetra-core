@@ -6,16 +6,16 @@
 package demetra.r;
 
 import demetra.arima.ssf.SsfArima;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import demetra.maths.functions.IParametricMapping;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.QuadraticForm;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.QuadraticForm;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.descriptors.stats.DiffuseConcentratedLikelihoodDescriptor;
 import demetra.likelihood.DiffuseConcentratedLikelihood;
@@ -39,7 +39,9 @@ import demetra.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import jdplus.maths.matrices.SubMatrix;
 import demetra.maths.matrices.Matrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -51,7 +53,7 @@ public class TimeVaryingRegression {
     @lombok.Data
     static class Airline {
 
-        FastMatrix td;
+        CanonicalMatrix td;
         double regVariance;
         double theta, btheta;
     }
@@ -61,9 +63,9 @@ public class TimeVaryingRegression {
     public static class Results implements ProcResults {
 
         TsDomain domain;
-        Matrix variables;
-        Matrix coefficients;
-        Matrix coefficientsStde;
+        FastMatrix variables;
+        FastMatrix coefficients;
+        FastMatrix coefficientsStde;
         SarimaModel arima0, arima;
         DiffuseConcentratedLikelihood ll0;
         DiffuseConcentratedLikelihood ll;
@@ -82,9 +84,9 @@ public class TimeVaryingRegression {
             MAPPING.set("aic0", Double.class, r -> r.getLl0().AIC(2));
             MAPPING.set("aic", Double.class, r -> r.getLl().AIC(3));
             MAPPING.set("tdvar", Double.class, r -> r.getNvar());
-            MAPPING.set(COEFF, Matrix.class, r -> r.getCoefficients());
-            MAPPING.set(STDCOEFF, Matrix.class, r -> r.getCoefficientsStde());
-            MAPPING.set(TD, Matrix.class, r -> r.getVariables());
+            MAPPING.set(COEFF, FastMatrix.class, r -> r.getCoefficients());
+            MAPPING.set(STDCOEFF, FastMatrix.class, r -> r.getCoefficientsStde());
+            MAPPING.set(TD, FastMatrix.class, r -> r.getVariables());
             MAPPING.set(TDEFFECT, TsData.class, r
                     -> {
                 DataBlock tmp = DataBlock.make(r.getDomain().length());
@@ -124,8 +126,8 @@ public class TimeVaryingRegression {
         SarimaSpecification spec = new SarimaSpecification(freq);
         spec.airline(true);
         DayClustering dc = days(td);
-        FastMatrix mtd = generate(s.getDomain(), dc);
-        FastMatrix nvar = generateVar(dc, svar);
+        CanonicalMatrix mtd = generate(s.getDomain(), dc);
+        CanonicalMatrix nvar = generateVar(dc, svar);
         SsfData data = new SsfData(s.getValues());
 
         LevenbergMarquardtMinimizer min = new LevenbergMarquardtMinimizer();
@@ -156,8 +158,8 @@ public class TimeVaryingRegression {
         }
 
         DefaultSmoothingResults fs = DkToolkit.sqrtSmooth(ssf, data, true, true);
-        FastMatrix c = FastMatrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
-        FastMatrix ec = FastMatrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
+        CanonicalMatrix c = CanonicalMatrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
+        CanonicalMatrix ec = CanonicalMatrix.make(mtd.getRowsCount(), mtd.getColumnsCount() + 1);
 
         int del = freq + 2;
         double nwe = dc.getGroupCount(0);
@@ -170,7 +172,7 @@ public class TimeVaryingRegression {
         }
         DataBlock Z = DataBlock.of(z);
         for (int i = 0; i < c.getRowsCount(); ++i) {
-            FastMatrix var = fs.P(i).dropTopLeft(del, del);
+            SubMatrix var = fs.P(i).dropTopLeft(del, del);
             ec.set(i, z.length, QuadraticForm.apply(var, Z));
         }
         ec.apply(x -> x <= 0 ? 0 : Math.sqrt(x));
@@ -198,7 +200,7 @@ public class TimeVaryingRegression {
                 .build();
     }
 
-    private SsfFunction<Airline, ISsf> buildFunction(SsfData data, SarimaSpecification spec, TDvarMapping mapping, FastMatrix mtd, FastMatrix nvar) {
+    private SsfFunction<Airline, ISsf> buildFunction(SsfData data, SarimaSpecification spec, TDvarMapping mapping, CanonicalMatrix mtd, CanonicalMatrix nvar) {
         return SsfFunction.builder(data, mapping,
                 params
                 -> {
@@ -208,7 +210,7 @@ public class TimeVaryingRegression {
                     .build();
             ISsf ssf = SsfArima.of(arima);
             double nv = params.getRegVariance();
-            FastMatrix v = nvar.deepClone();
+            CanonicalMatrix v = nvar.deepClone();
             v.mul(nv);
             return RegSsf.ofTimeVarying(ssf, mtd, v);
         }).build();
@@ -236,19 +238,19 @@ public class TimeVaryingRegression {
         return dc;
     }
 
-    public FastMatrix generate(TsDomain domain, DayClustering dc) {
+    public CanonicalMatrix generate(TsDomain domain, DayClustering dc) {
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
     }
 
-    public FastMatrix generateVar(DayClustering dc, String var) {
+    public CanonicalMatrix generateVar(DayClustering dc, String var) {
         int groupsCount = dc.getGroupsCount();
-        FastMatrix full = FastMatrix.square(7);
+        CanonicalMatrix full = CanonicalMatrix.square(7);
         if (!var.equalsIgnoreCase("Contrasts")) {
             full.set(-1.0 / 7.0);
         }
         full.diagonal().add(1);
-        FastMatrix Q = FastMatrix.make(groupsCount - 1, 7);
+        CanonicalMatrix Q = CanonicalMatrix.make(groupsCount - 1, 7);
         int[] gdef = dc.getGroupsDefinition();
         for (int i = 1; i < groupsCount; ++i) {
             for (int j = 0; j < 7; ++j) {
@@ -262,7 +264,7 @@ public class TimeVaryingRegression {
 
     private static class TDvarMapping implements IParametricMapping<Airline> {
 
-        private final FastMatrix td;
+        private final CanonicalMatrix td;
         private final boolean fixed;
         private static final SarimaMapping airlineMapping;
 
@@ -272,12 +274,12 @@ public class TimeVaryingRegression {
             airlineMapping = SarimaMapping.of(spec);
         }
 
-        TDvarMapping(FastMatrix td, boolean fixed) {
+        TDvarMapping(CanonicalMatrix td, boolean fixed) {
             this.td = td;
             this.fixed = fixed;
         }
 
-        public FastMatrix getTd() {
+        public CanonicalMatrix getTd() {
             return td;
         }
 

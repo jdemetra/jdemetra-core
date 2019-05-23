@@ -18,12 +18,12 @@ package demetra.ssf.univariate;
 
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.UpdateInformation;
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.data.DataBlock;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.SsfException;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Ordinary Kalman filter for univariate time series

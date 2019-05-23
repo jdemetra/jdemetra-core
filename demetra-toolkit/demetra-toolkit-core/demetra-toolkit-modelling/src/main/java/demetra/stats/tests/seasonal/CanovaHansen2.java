@@ -11,9 +11,9 @@ import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
-import demetra.maths.matrices.FastMatrix;
 import demetra.stats.RobustCovarianceComputer;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

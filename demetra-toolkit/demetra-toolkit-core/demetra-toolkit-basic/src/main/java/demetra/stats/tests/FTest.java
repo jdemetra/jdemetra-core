@@ -5,7 +5,7 @@
  */
 package demetra.stats.tests;
 
-import demetra.dstats.F;
+import jdplus.dstats.F;
 
 /**
  *

@@ -16,8 +16,7 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.data.DataBlock;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
@@ -26,6 +25,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

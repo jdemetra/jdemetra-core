@@ -17,19 +17,20 @@
 package demetra.arima.internal;
 
 import demetra.arima.IArimaModel;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.data.LogSign;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.MatrixException;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.MatrixException;
+import jdplus.maths.polynomials.Polynomial;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.SubMatrix;
 
 
 /**
@@ -40,7 +41,7 @@ import demetra.data.DoubleSeq;
 @ServiceProvider(service=ArmaFilter.class)
 public class AnsleyFilter implements ArmaFilter {
 
-    private FastMatrix m_bL;
+    private CanonicalMatrix m_bL;
     private double[] m_ar, m_ma;
     private double m_var;
     private int m_n;
@@ -103,8 +104,8 @@ public class AnsleyFilter implements ArmaFilter {
     public int prepare(final IArimaModel arima, int n) {
         m_n = n;
         m_bL = null;
-        m_ar = arima.getAR().asPolynomial().toArray();
-        BackFilter ma = arima.getMA();
+        m_ar = arima.getAr().asPolynomial().toArray();
+        BackFilter ma = arima.getMa();
         m_var = arima.getInnovationVariance();
         m_ma = ma.asPolynomial().toArray();
         int p = m_ar.length-1, q = m_ma.length-1;
@@ -128,7 +129,7 @@ public class AnsleyFilter implements ArmaFilter {
 
         Polynomial sma = SymmetricFilter.fromFilter(ma, m_var).coefficientsAsPolynomial();
 
-        m_bL = FastMatrix.make(r, n);
+        m_bL = CanonicalMatrix.make(r, n);
         // complete the matrix
         // if (i >= j) m(i, j) = lband[i-j, j]; if i-j >= r, m(i, j) =0
         // if (i < j) m(i, j) = lband(j-i, i)
@@ -144,7 +145,7 @@ public class AnsleyFilter implements ArmaFilter {
             }
         }
 
-        FastMatrix M = m_bL.extract(0, q + 1, p, n-p);
+        SubMatrix M = m_bL.extract(0, q + 1, p, n-p);
         DataBlockIterator rows = M.rowsIterator();
 
         int pos=0;
@@ -248,9 +249,9 @@ public class AnsleyFilter implements ArmaFilter {
         }
     }
 
-    public FastMatrix getCholeskyFactor() {
+    public CanonicalMatrix getCholeskyFactor() {
         if (m_bL == null) {
-            FastMatrix l = FastMatrix.make(1, m_n);
+            CanonicalMatrix l = CanonicalMatrix.make(1, m_n);
             l.set(Math.sqrt(m_var));
             return l;
         } else {

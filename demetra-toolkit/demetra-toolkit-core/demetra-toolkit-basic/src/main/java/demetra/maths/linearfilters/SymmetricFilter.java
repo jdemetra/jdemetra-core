@@ -16,19 +16,19 @@
  */
 package demetra.maths.linearfilters;
 
-import demetra.maths.matrices.MatrixException;
-import demetra.data.DataBlock;
+import jdplus.maths.matrices.MatrixException;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
 import demetra.maths.linearfilters.internal.SymmetricFilterAlgorithms;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntToDoubleFunction;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleVector;
-import demetra.data.DoubleVectorCursor;
+import demetra.data.DoubleSeqCursor;
+import demetra.maths.PolynomialType;
 
 /**
  *
@@ -92,6 +92,29 @@ public final class SymmetricFilter implements IFiniteFilter {
     }
 
     /**
+     * Computes a*f(B)f(F)
+     * @param f 
+     * @param a The scaling factor
+     * @return 
+     */
+    public static SymmetricFilter convolutionOf(PolynomialType f, final double a) {
+        double[] w = f.toArray();
+        double[] c = new double[w.length];
+        for (int i = 0; i < w.length; ++i) {
+            for (int j = i; j < w.length; ++j) {
+                c[j - i] += w[i] * w[j];
+            }
+        }
+        if (a != 1) {
+            for (int i = 0; i < w.length; ++i) {
+                c[i] *= a;
+            }
+        }
+        return SymmetricFilter.ofInternal(c);
+
+    }
+    
+    /**
      * Creates a symmetric filter using the given weights
      *
      * @param w The full weights ofFunction the filter. The number ofFunction
@@ -99,7 +122,7 @@ public final class SymmetricFilter implements IFiniteFilter {
      * w[w.getDegree()-i]).
      * @return The corresponding
      */
-    public static SymmetricFilter createFromWeights(final DoubleSeq w) {
+    public static SymmetricFilter of(final DoubleSeq w) {
         int d = w.length() - 1;
         if (d % 2 != 0) {
             throw new LinearFilterException(
@@ -188,11 +211,11 @@ public final class SymmetricFilter implements IFiniteFilter {
     }
 
     @Override
-    public void apply(DataBlock in, DoubleVector out) {
+    public void apply(DataBlock in, DataBlock out) {
         double[] pin = in.getStorage();
         int ub = getUpperBound();
         int istart = in.getStartPosition(), iinc = in.getIncrement();
-        DoubleVectorCursor cursor = out.cursor();
+        DoubleSeqCursor.OnMutable cursor = out.cursor();
         if (iinc == 1) {
             int imax = in.getEndPosition() - ub;
             for (int i = istart + ub; i < imax; ++i) {

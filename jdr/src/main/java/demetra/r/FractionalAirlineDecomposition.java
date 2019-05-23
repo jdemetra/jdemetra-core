@@ -17,13 +17,13 @@
 package demetra.r;
 
 import demetra.arima.ArimaModel;
-import demetra.arima.ArimaType;
-import demetra.arima.UcarimaType;
+import demetra.arima.ArimaProcess;
+import demetra.arima.UcarimaProcess;
 import demetra.descriptors.arima.UcarimaDescriptor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockStorage;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockStorage;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
@@ -31,7 +31,6 @@ import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.matrices.FastMatrix;
 import static demetra.r.AirlineDecomposition.ucm;
 import demetra.regarima.GlsArimaProcessor;
 import demetra.arima.estimation.IArimaMapping;
@@ -45,6 +44,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -58,8 +58,8 @@ public class FractionalAirlineDecomposition {
     public static class Results implements ProcResults {
 
         double[] y, t, s, i, sa, n;
-        ArimaType arima;
-        UcarimaType ucarima;
+        ArimaProcess arima;
+        UcarimaProcess ucarima;
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
         FastMatrix parametersCovariance;
@@ -106,7 +106,7 @@ public class FractionalAirlineDecomposition {
                 return y;
             });
             MAPPING.delegate(UCARIMA, UcarimaDescriptor.getMapping(), source -> source.getUcarima());
-            MAPPING.set(UCM, UcarimaType.class, source -> source.getUcarima());
+            MAPPING.set(UCM, UcarimaProcess.class, source -> source.getUcarima());
             MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
             //MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters());
@@ -146,18 +146,18 @@ public class FractionalAirlineDecomposition {
         SsfData data = new SsfData(s);
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
 
-        ArimaType sum = ArimaModel.copyOf(ucm.getModel()).toType(null);
-        UcarimaType ucmt;
+        ArimaProcess sum = ArimaModel.of(ucm.getModel()).toType(null);
+        UcarimaProcess ucmt;
         if (sn) {
-            ArimaType mn = ArimaModel.copyOf(ucm.getComponent(0)).toType("noise");
-            ArimaType ms = ArimaModel.copyOf(ucm.getComponent(1)).toType("signal");
-            ucmt= new UcarimaType(sum, new ArimaType[]{ms, mn});
+            ArimaProcess mn = ArimaModel.of(ucm.getComponent(0)).toType("noise");
+            ArimaProcess ms = ArimaModel.of(ucm.getComponent(1)).toType("signal");
+            ucmt= new UcarimaProcess(sum, new ArimaProcess[]{ms, mn});
             
         } else {
-            ArimaType mt = ArimaModel.copyOf(ucm.getComponent(0)).toType("trend");
-            ArimaType ms = ArimaModel.copyOf(ucm.getComponent(1)).toType("seasonal");
-            ArimaType mi = ArimaModel.copyOf(ucm.getComponent(2)).toType("irregular");
-            ucmt= new UcarimaType(sum, new ArimaType[]{mt, ms, mi}); 
+            ArimaProcess mt = ArimaModel.of(ucm.getComponent(0)).toType("trend");
+            ArimaProcess ms = ArimaModel.of(ucm.getComponent(1)).toType("seasonal");
+            ArimaProcess mi = ArimaModel.of(ucm.getComponent(2)).toType("irregular");
+            ucmt= new UcarimaProcess(sum, new ArimaProcess[]{mt, ms, mi}); 
         }
         int[] pos = ssf.componentsPosition();
         if (sn)
@@ -261,7 +261,7 @@ class PeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
 
     @Override
     public DoubleSeq parametersOf(ArimaModel t) {
-        BackFilter ma = t.getMA();
+        BackFilter ma = t.getMa();
         double[] p = new double[2];
         p[0] = -ma.get(1);
         if (adjust) {

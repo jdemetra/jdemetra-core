@@ -17,15 +17,16 @@
 package demetra.ucarima;
 
 import demetra.arima.ArimaModel;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.maths.linearfilters.SymmetricFrequencyResponse;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.leastsquares.QRSolver;
 import demetra.linearsystem.LinearSystemSolver;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -96,7 +97,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
 
         int xs = qs + 1, xn = qn + 1, x = xs + xn;
 
-        FastMatrix m = FastMatrix.square(x);
+        CanonicalMatrix m = CanonicalMatrix.square(x);
 
         // modify the arrays to get the frequency response (and not the agf)
         n[0] /= 2;
@@ -211,7 +212,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
 
     // search for possible common UR in MA and AR
     private void simplifyMA() {
-        m_sma = model.symmetricMA();
+        m_sma = model.symmetricMa();
         //SymmetricFrequencyResponse.SimplifyingTool smp = new SymmetricFrequencyResponse.SimplifyingTool();
         SymmetricFrequencyResponse sfma = new SymmetricFrequencyResponse(m_sma);
         if (m_sur != null) {
@@ -256,7 +257,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
     }
 
     private void splitRoots() {
-        m_selector.select(model.getStationaryAR().asPolynomial());
+        m_selector.select(model.getStationaryAr().asPolynomial());
         if (m_selector.getSelection() != null) {
             m_sar = new BackFilter(m_selector.getSelection());
         } else {
@@ -268,7 +269,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
             m_nar = BackFilter.ONE;
         }
 
-        m_selector.selectUnitRoots(model.getNonStationaryAR().asPolynomial());
+        m_selector.selectUnitRoots(model.getNonStationaryAr().asPolynomial());
         if (m_selector.getSelection() != null) {
             m_sur = new BackFilter(m_selector.getSelection());
         } else {

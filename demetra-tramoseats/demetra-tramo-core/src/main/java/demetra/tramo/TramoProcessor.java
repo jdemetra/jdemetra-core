@@ -31,7 +31,7 @@ import demetra.regarima.regular.SeasonalityDetector;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.regarima.regular.PreprocessingModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import demetra.timeseries.TsData;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.sarima.SarimaModel;

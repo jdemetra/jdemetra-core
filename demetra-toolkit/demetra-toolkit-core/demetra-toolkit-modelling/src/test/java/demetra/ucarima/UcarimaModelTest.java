@@ -7,7 +7,7 @@ package demetra.ucarima;
 
 import demetra.arima.ArimaModel;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

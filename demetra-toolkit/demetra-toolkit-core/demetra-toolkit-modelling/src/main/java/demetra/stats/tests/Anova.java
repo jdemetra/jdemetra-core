@@ -17,18 +17,19 @@
 
 package demetra.stats.tests;
 
-import demetra.data.DataBlock;
-import demetra.dstats.F;
+import jdplus.data.DataBlock;
+import jdplus.dstats.F;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.linearmodel.LinearModel;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.UpperTriangularMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import demetra.maths.matrices.internal.HouseholderR;
 import java.util.Arrays;
 import java.util.List;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -98,12 +99,14 @@ public class Anova {
         qr.partialLeastSquares(y, b, res);
         double ssqerr = res.ssq();
         // initializing the results...
+        CanonicalMatrix u = UpperTriangularMatrix.inverse(qr.r());
+        CanonicalMatrix bvar = SymmetricMatrix.UUt(u);
         return ConcentratedLikelihoodWithMissing.builder()
                 .ndata(n)
                 .ssqErr(ssqerr)
                 .residuals(res)
                 .coefficients(b)
-                .rfactor(qr.r())
+                .unscaledCovariance(bvar)
                 .build();
      }
 

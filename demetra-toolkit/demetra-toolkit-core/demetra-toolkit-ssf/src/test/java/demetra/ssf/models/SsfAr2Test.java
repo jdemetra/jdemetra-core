@@ -6,7 +6,7 @@
 package demetra.ssf.models;
 
 import demetra.arima.ssf.SsfAr2;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.ssf.SsfComponent;
 import demetra.ssf.StationaryInitialization;
 import org.junit.Test;
@@ -25,8 +25,8 @@ public class SsfAr2Test {
     public void testInitialization() {
         SsfComponent cmp = SsfAr2.of(new double[]{1.2, -.6}, 1, 5, 6);
         int dim = cmp.initialization().getStateDim();
-        FastMatrix I = StationaryInitialization.of(cmp.dynamics(), dim);
-        FastMatrix P = FastMatrix.square(dim);
+        CanonicalMatrix I = StationaryInitialization.of(cmp.dynamics(), dim);
+        CanonicalMatrix P = CanonicalMatrix.square(dim);
         cmp.initialization().Pf0(P);
         assertTrue(I.minus(P).frobeniusNorm() < 1e-12);
 

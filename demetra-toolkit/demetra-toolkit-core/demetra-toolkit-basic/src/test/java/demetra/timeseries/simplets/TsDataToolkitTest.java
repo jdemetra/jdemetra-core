@@ -22,11 +22,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static demetra.timeseries.simplets.TsDataToolkit.log;
 import static demetra.timeseries.simplets.TsDataToolkit.commit;
-import static demetra.timeseries.simplets.TsDataToolkit.delta;
 import static demetra.timeseries.simplets.TsDataToolkit.normalize;
 import static demetra.timeseries.simplets.TsDataToolkit.pctVariation;
-import demetra.data.DeprecatedDoubles;
-import static demetra.data.DeprecatedDoubles.average;
 import demetra.maths.linearfilters.HendersonFilters;
 import demetra.maths.linearfilters.SymmetricFilter;
 import demetra.timeseries.TsDomain;
@@ -53,7 +50,7 @@ public class TsDataToolkitTest {
     public void testUnaryOperator() {
         TsData t1 = fn(series, x -> Math.log(x));
         TsData t2 = fastFn(series, x -> Math.log(x));
-        assertTrue(DeprecatedDoubles.distance(t1.getValues(), t2.getValues()) == 0);
+        assertTrue(t1.getValues().distance(t2.getValues()) == 0);
     }
 
     @Test
@@ -85,7 +82,7 @@ public class TsDataToolkitTest {
         for (int k = 0; k < K; ++k) {
             TsData s = delta(normalize(log(add(series, drop(series, 20, 50)))), 12);
             DoubleSeq values = s.getValues();
-            double v = average(values);
+            double v = values.average();
             if (k == 0) {
                 System.out.println(v);
             }
@@ -144,7 +141,7 @@ public class TsDataToolkitTest {
     }
 
     private double distance(TsData s1, ec.tstoolkit.timeseries.simplets.TsData s2) {
-        return DeprecatedDoubles.distance(s1.getValues(), DoubleSeq.of(s2.internalStorage()));
+        return s1.getValues().distance(DoubleSeq.of(s2.internalStorage()));
     }
 
 }

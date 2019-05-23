@@ -16,8 +16,8 @@
  */
 package internal.data;
 
-import demetra.data.DoubleVector;
-import demetra.data.DoubleVectorCursor;
+import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
@@ -29,7 +29,7 @@ import java.util.function.DoubleUnaryOperator;
 @lombok.experimental.UtilityClass
 public class InternalDoubleVectorCursor {
 
-    public static class DefaultDoubleVectorCursor<T extends DoubleVector> extends InternalDoubleSeqCursor.DefaultDoubleSeqCursor<T> implements DoubleVectorCursor {
+    public static class DefaultDoubleVectorCursor<T extends DoubleSeq.Mutable> extends InternalDoubleSeqCursor.DefaultDoubleSeqCursor<T> implements DoubleSeqCursor.OnMutable {
 
         public DefaultDoubleVectorCursor(T data) {
             super(data);
@@ -46,7 +46,7 @@ public class InternalDoubleVectorCursor {
         }
     }
 
-    public static class EmptyDoubleVectorCursor extends InternalDoubleSeqCursor.EmptyDoubleSeqCursor implements DoubleVectorCursor {
+    public static class EmptyDoubleVectorCursor extends InternalDoubleSeqCursor.EmptyDoubleSeqCursor implements DoubleSeqCursor.OnMutable {
 
         public static final EmptyDoubleVectorCursor DOUBLE_VECTOR = new EmptyDoubleVectorCursor();
 
@@ -61,7 +61,7 @@ public class InternalDoubleVectorCursor {
         }
     }
 
-    public static class SingleDoubleVectorCursor extends InternalDoubleSeqCursor.SingleDoubleSeqCursor implements DoubleVectorCursor {
+    public static class SingleDoubleVectorCursor extends InternalDoubleSeqCursor.SingleDoubleSeqCursor implements DoubleSeqCursor.OnMutable {
 
         protected final DoubleConsumer setter;
 
@@ -89,7 +89,7 @@ public class InternalDoubleVectorCursor {
         }
     }
 
-    public static class MultiDoubleVectorCursor extends InternalDoubleSeqCursor.MultiDoubleSeqCursor implements DoubleVectorCursor {
+    public static class MultiDoubleVectorCursor extends InternalDoubleSeqCursor.MultiDoubleSeqCursor implements DoubleSeqCursor.OnMutable {
 
         public MultiDoubleVectorCursor(double[] values) {
             super(values);
@@ -107,7 +107,7 @@ public class InternalDoubleVectorCursor {
         }
     }
 
-    public static class SubDoubleVectorCursor extends InternalDoubleSeqCursor.SubDoubleSeqCursor implements DoubleVectorCursor {
+    public static class SubDoubleVectorCursor extends InternalDoubleSeqCursor.SubDoubleSeqCursor implements DoubleSeqCursor.OnMutable {
 
         public SubDoubleVectorCursor(double[] values, int begin) {
             super(values, begin);

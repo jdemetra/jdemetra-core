@@ -17,8 +17,7 @@
 package internal.data;
 
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleVector;
-import demetra.data.DoubleVectorCursor;
+import demetra.data.DoubleSeqCursor;
 import demetra.util.function.IntDoubleConsumer;
 import java.util.function.IntToDoubleFunction;
 
@@ -29,7 +28,7 @@ import java.util.function.IntToDoubleFunction;
 @lombok.experimental.UtilityClass
 public class InternalDoubleVector {
 
-    public static class EmptyDoubleVector extends InternalDoubleSeq.EmptyDoubleSeq implements DoubleVector {
+    public static class EmptyDoubleVector extends InternalDoubleSeq.EmptyDoubleSeq implements DoubleSeq.Mutable {
 
         public static final EmptyDoubleVector DOUBLE_VECTOR = new EmptyDoubleVector();
 
@@ -39,12 +38,12 @@ public class InternalDoubleVector {
         }
 
         @Override
-        public DoubleVectorCursor cursor() {
+        public DoubleSeqCursor.OnMutable cursor() {
             return InternalDoubleVectorCursor.EmptyDoubleVectorCursor.DOUBLE_VECTOR;
         }
     }
 
-    public static class SingleDoubleVector extends InternalDoubleSeq.SingleDoubleSeq implements DoubleVector {
+    public static class SingleDoubleVector extends InternalDoubleSeq.SingleDoubleSeq implements DoubleSeq.Mutable {
 
         public SingleDoubleVector(double value) {
             super(value);
@@ -63,12 +62,12 @@ public class InternalDoubleVector {
         }
 
         @Override
-        public DoubleVectorCursor cursor() {
+        public DoubleSeqCursor.OnMutable cursor() {
             return new InternalDoubleVectorCursor.SingleDoubleVectorCursor(this::getValue, this::setValue);
         }
     }
 
-    public static class MultiDoubleVector extends InternalDoubleSeq.MultiDoubleSeq implements DoubleVector {
+    public static class MultiDoubleVector extends InternalDoubleSeq.MultiDoubleSeq implements DoubleSeq.Mutable {
 
         public MultiDoubleVector(double[] values) {
             super(values);
@@ -80,12 +79,12 @@ public class InternalDoubleVector {
         }
 
         @Override
-        public DoubleVectorCursor cursor() {
+        public DoubleSeqCursor.OnMutable cursor() {
             return new InternalDoubleVectorCursor.MultiDoubleVectorCursor(values);
         }
     }
 
-    public static class SubDoubleVector extends InternalDoubleSeq.SubDoubleSeq implements DoubleVector {
+    public static class SubDoubleVector extends InternalDoubleSeq.SubDoubleSeq implements DoubleSeq.Mutable {
 
         public SubDoubleVector(double[] values, int begin, int length) {
             super(values, begin, length);
@@ -97,12 +96,12 @@ public class InternalDoubleVector {
         }
 
         @Override
-        public DoubleVectorCursor cursor() {
+        public DoubleSeqCursor.OnMutable cursor() {
             return new InternalDoubleVectorCursor.SubDoubleVectorCursor(values, begin);
         }
     }
 
-    public static class MappingDoubleVector extends InternalDoubleSeq.MappingDoubleSeq implements DoubleVector {
+    public static class MappingDoubleVector extends InternalDoubleSeq.MappingDoubleSeq implements DoubleSeq.Mutable {
 
         private final IntDoubleConsumer setter;
 
@@ -117,7 +116,7 @@ public class InternalDoubleVector {
         }
 
         @Override
-        public DoubleVectorCursor cursor() {
+        public DoubleSeqCursor.OnMutable cursor() {
             return new InternalDoubleVectorCursor.DefaultDoubleVectorCursor(this);
         }
 

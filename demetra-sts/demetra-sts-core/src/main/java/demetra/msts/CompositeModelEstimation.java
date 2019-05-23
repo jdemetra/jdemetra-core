@@ -5,7 +5,6 @@
  */
 package demetra.msts;
 
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.StateInfo;
 import demetra.ssf.StateStorage;
 import demetra.ssf.akf.AkfToolkit;
@@ -20,6 +19,7 @@ import demetra.ssf.univariate.StateFilteringResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.likelihood.Likelihood;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

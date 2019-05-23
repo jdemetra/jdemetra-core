@@ -22,11 +22,10 @@ import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
-import demetra.sarima.SarimaType;
+import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaProcess;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.util.IntList;
@@ -37,6 +36,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -107,7 +107,7 @@ public class ArimaEstimation {
         FastMatrix parametersCovariance;
         double[] score;
 
-        public SarimaType getArima() {
+        public SarimaProcess getArima() {
             return regarima.arima().toType();
         }
 
@@ -118,7 +118,7 @@ public class ArimaEstimation {
         static {
             MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getArima());
             MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
-            MAPPING.set(PCOV, Matrix.class, source -> source.getParametersCovariance());
+            MAPPING.set(PCOV, FastMatrix.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
             MAPPING.set(B, double[].class, source
                     -> {

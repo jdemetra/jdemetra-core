@@ -6,8 +6,8 @@
 package demetra.stats.tests.seasonal;
 
 import demetra.data.analysis.Periodogram;
-import demetra.dstats.Chi2;
-import demetra.dstats.F;
+import jdplus.dstats.Chi2;
+import jdplus.dstats.F;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
 import demetra.data.DoubleSeq;

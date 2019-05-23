@@ -5,13 +5,13 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

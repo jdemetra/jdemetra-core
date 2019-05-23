@@ -16,12 +16,12 @@
  */
 package demetra.x12;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.polynomials.UnitRoots;
+import jdplus.maths.polynomials.UnitRoots;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -34,8 +34,8 @@ import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.estimation.HannanRissanen;
 import demetra.sarima.estimation.SarimaMapping;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
-import demetra.sarima.SarmaSpecification;
+import demetra.arima.SarimaSpecification;
+import demetra.arima.SarmaSpecification;
 import demetra.regarima.X13Exception;
 import demetra.x12.X12Utility;
 import demetra.data.DoubleSeq;

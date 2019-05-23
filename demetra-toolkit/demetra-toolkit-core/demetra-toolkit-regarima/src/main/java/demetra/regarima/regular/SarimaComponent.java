@@ -21,13 +21,13 @@ import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.polynomials.UnitRoots;
+import jdplus.maths.polynomials.UnitRoots;
 import demetra.arima.estimation.IArimaMapping;
 import demetra.regarima.ami.AbstractArimaComponent;
 import demetra.sarima.estimation.SarimaFixedMapping;
 import demetra.sarima.estimation.SarimaMapping;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 import java.util.Arrays;
 import demetra.data.DoubleSeq;
 

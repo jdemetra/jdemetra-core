@@ -16,13 +16,12 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.DataBlockIterator;
-import static demetra.data.DeprecatedDoubles.sum;
+import jdplus.data.DataBlockIterator;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.dstats.Chi2;
-import demetra.dstats.F;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.dstats.Chi2;
+import jdplus.dstats.F;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
 import demetra.data.DoubleSeq;
@@ -36,11 +35,11 @@ public class Friedman {
 
     private boolean useChi2 = true;
 
-    private int n;
-    private int period;
+    private final int n;
+    private final int period;
     private double sst;
-    private double sse;
-    private double t;
+    private final double sse;
+    private final double t;
 
     public Friedman(DoubleSeq all, final int period) {
         // gets complete years:
@@ -50,7 +49,7 @@ public class Friedman {
 
         DoubleSeq x = all.drop(nall - n * this.period, 0);
         DoubleSeq y = x.extract(0, period);
-        FastMatrix R = FastMatrix.make(n, this.period);
+        CanonicalMatrix R = CanonicalMatrix.make(n, this.period);
 
         // computes the ranks on each year:
         int row = 0;
@@ -66,7 +65,7 @@ public class Friedman {
         sst = 0;
         DataBlockIterator cols = R.columnsIterator();
         while (cols.hasNext()) {
-            double tmp = sum(cols.next()) / n - rmean;
+            double tmp = cols.next().sum() / n - rmean;
             sst += tmp * tmp;
         }
         sst *= n;

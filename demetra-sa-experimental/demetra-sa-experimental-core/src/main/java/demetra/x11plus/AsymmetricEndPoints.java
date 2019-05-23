@@ -16,10 +16,7 @@
  */
 package demetra.x11plus;
 
-import demetra.data.DataBlock;
-import demetra.data.DataWindow;
-import static demetra.data.DeprecatedDoubles.average;
-import static demetra.data.DeprecatedDoubles.sum;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.linearfilters.IFiniteFilter;
 import demetra.data.DoubleSeq;
@@ -72,7 +69,7 @@ public class AsymmetricEndPoints implements IEndPointsProcessor {
         }
 
         if (istart < n) {
-            double av = average(in);
+            double av = in.average();
             out.range(istart, plen - istart).set(av);
         } else {
             if (pos <= 0) {

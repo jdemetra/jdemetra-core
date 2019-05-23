@@ -17,10 +17,10 @@
 package demetra.tempdisagg.univariate;
 
 import demetra.design.Development;
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import javax.annotation.Nonnull;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

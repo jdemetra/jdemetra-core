@@ -18,10 +18,8 @@ package demetra.benchmarking.univariate;
 
 import demetra.benchmarking.spi.ICholette;
 import demetra.benchmarking.ssf.SsfCholette;
-import demetra.benchmarking.univariate.CholetteSpec;
 import demetra.benchmarking.univariate.CholetteSpec.BiasCorrection;
 import demetra.data.AggregationType;
-import demetra.data.DeprecatedDoubles;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ISsf;
@@ -33,29 +31,7 @@ import demetra.timeseries.simplets.TsDataToolkit;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import org.openide.util.lookup.ServiceProvider;
-import demetra.benchmarking.univariate.Cholette;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import demetra.data.DoubleSeq;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
-import static demetra.timeseries.simplets.TsDataToolkit.add;
-import static demetra.timeseries.simplets.TsDataToolkit.multiply;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
 import static demetra.timeseries.simplets.TsDataToolkit.add;
 import static demetra.timeseries.simplets.TsDataToolkit.multiply;
 import static demetra.timeseries.simplets.TsDataToolkit.subtract;
@@ -88,9 +64,9 @@ public class CholetteProcessor implements ICholette {
         //  TsDataBlock.all(sy).data.sum() is the sum of the averages or sums of the original series
         BiasCorrection bias = spec.getBias();
         if (bias == BiasCorrection.Multiplicative) {
-            return multiply(s, DeprecatedDoubles.sum(target.getValues()) / DeprecatedDoubles.sum(sy.getValues()));
+            return multiply(s, target.getValues().sum() / sy.getValues().sum());
         } else {
-            double b = (DeprecatedDoubles.sum(target.getValues()) - DeprecatedDoubles.sum(sy.getValues())) / target.length();
+            double b = (target.getValues().sum() - sy.getValues().sum()) / target.length();
             if (agg == AggregationType.Average) {
                 b *= s.getTsUnit().ratioOf(target.getTsUnit());
             }

@@ -18,6 +18,7 @@ package demetra.data;
 
 import demetra.design.Development;
 import internal.data.InternalBlockCursors;
+import java.util.function.DoubleUnaryOperator;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
@@ -70,4 +71,41 @@ public interface DoubleSeqCursor extends BaseSeqCursor {
         }
     }
     //</editor-fold>
+
+    /**
+     * Cursor on sequence of mutable doubles
+     */
+    interface OnMutable extends DoubleSeqCursor{
+
+        /**
+         * Sets the given value at the current position and advance the cursor.
+         *
+         * @param newValue
+         */
+        void setAndNext(double newValue) throws IndexOutOfBoundsException;
+
+        void applyAndNext(DoubleUnaryOperator fn) throws IndexOutOfBoundsException;
+
+        //<editor-fold defaultstate="collapsed" desc="Factories">
+        /**
+         * Creates a cell on an array of doubles
+         *
+         * @param data The array of doubles
+         * @param pos The starting position of the cell
+         * @param inc The distance between two adjacent cells (if c(t)=data[k],
+         * c(t+1)=data[k+inc]).
+         * @return The r/w iterator
+         */
+        static DoubleSeqCursor.OnMutable of(double[] data, int pos, int inc) {
+            switch (inc) {
+                case 1:
+                    return new InternalBlockCursors.BlockP1DoubleVectorCursor(data, pos);
+                case -1:
+                    return new InternalBlockCursors.BlockM1DoubleVectorCursor(data, pos);
+                default:
+                    return new InternalBlockCursors.BlockDoubleVectorCursor(data, inc, pos);
+            }
+        }
+        //</editor-fold>
+    }
 }

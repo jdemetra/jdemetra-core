@@ -5,8 +5,9 @@
  */
 package demetra.sigex;
 
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.maths.matrices.internal.LDLDecomposition;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -14,9 +15,9 @@ import demetra.maths.matrices.internal.LDLDecomposition;
  */
 @lombok.experimental.UtilityClass
 public class MatrixOperations {
-    FastMatrix[] gcd(FastMatrix x, int rank){
+    CanonicalMatrix[] gcd(FastMatrix x, int rank){
         LDLDecomposition ldl=new LDLDecomposition();
         ldl.decompose(x, 1e-9);
-        return new FastMatrix[]{ldl.L(), ldl.D()};
+        return new CanonicalMatrix[]{ldl.L(), ldl.D()};
     }
 }

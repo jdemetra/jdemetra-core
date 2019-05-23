@@ -16,9 +16,10 @@
  */
 package demetra.data.analysis;
 
-import demetra.data.DeprecatedDoubles;
 import demetra.data.DoubleSeq;
+import demetra.data.DoublesMath;
 import demetra.design.BuilderPattern;
+import demetra.design.Development;
 import demetra.maths.Constants;
 import demetra.stats.AutoCovariances;
 
@@ -26,6 +27,7 @@ import demetra.stats.AutoCovariances;
  *
  * @author Jean Palate
  */
+@Development(status=Development.Status.Release)
 public class SmoothedPeriodogram {
 
     public static Builder builder() {
@@ -110,7 +112,7 @@ public class SmoothedPeriodogram {
 
             double[] x = data.toArray();
             // correct for mean
-            double mean = DeprecatedDoubles.averageWithMissing(data);
+            double mean = DoublesMath.averageWithMissing(data);
             if (mean != 0) {
                 for (int i = 0; i < x.length; ++i) {
                     x[i] -= mean;

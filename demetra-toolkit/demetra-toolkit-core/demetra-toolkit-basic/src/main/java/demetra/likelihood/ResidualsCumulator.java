@@ -16,11 +16,11 @@
  */
 package demetra.likelihood;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 
 /**

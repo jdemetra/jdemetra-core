@@ -16,7 +16,7 @@
  */
 package demetra.data.transformation;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
 import demetra.data.OperationType;
 import demetra.design.Development;

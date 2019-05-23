@@ -16,7 +16,6 @@
  */
 package demetra.modelling.regression;
 
-import demetra.maths.matrices.FastMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.DayClustering;
@@ -24,6 +23,7 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

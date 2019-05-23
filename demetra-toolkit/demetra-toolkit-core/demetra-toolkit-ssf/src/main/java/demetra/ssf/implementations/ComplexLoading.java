@@ -16,17 +16,10 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.DataBlock;
-import demetra.data.DataWindow;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.MatrixWindow;
-import demetra.ssf.univariate.ISsf;
-import java.util.Arrays;
-import java.util.List;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.ssf.ISsfLoading;
-import demetra.maths.matrices.QuadraticForm;
-import demetra.data.DoubleVectorCursor;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

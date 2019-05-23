@@ -16,7 +16,7 @@
  */
 package demetra.sts.internal;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.normalizer.AbsMeanNormalizer;
 import demetra.design.Development;
 import demetra.maths.functions.IFunction;
@@ -27,7 +27,6 @@ import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.functions.minpack.MinPackMinimizer;
 import demetra.maths.functions.riso.LbfgsMinimizer;
 import demetra.maths.functions.ssq.ProxyMinimizer;
-import demetra.maths.matrices.FastMatrix;
 import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.dk.SsfFunctionPoint;
@@ -39,6 +38,7 @@ import demetra.sts.BsmSpec;
 import demetra.sts.SsfBsm2;
 import demetra.sts.internal.BsmMapping.Transformation;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

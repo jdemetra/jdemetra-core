@@ -40,11 +40,17 @@ import demetra.data.Doubles;
  */
 public class TramoProcessorTest {
 
-    private final double[] data, datamissing;
+    private static final double[] data, datamissing;
     public static final Calendar france;
     public static final ec.tstoolkit.timeseries.calendars.NationalCalendar ofrance;
 
     static {
+        data = Data.PROD.clone();
+        datamissing = Data.PROD.clone();
+        datamissing[2] = Double.NaN;
+        datamissing[100] = Double.NaN;
+        datamissing[101] = Double.NaN;
+        datamissing[102] = Double.NaN;
         List<Holiday> holidays = new ArrayList<>();
         holidays.add(new Holiday(new FixedDay(7, 14)));
         holidays.add(new Holiday(new FixedDay(5, 8)));
@@ -75,12 +81,6 @@ public class TramoProcessorTest {
     }
 
     public TramoProcessorTest() {
-        data = Data.PROD.clone();
-        datamissing = Data.PROD.clone();
-        datamissing[2] = Double.NaN;
-        datamissing[100] = Double.NaN;
-        datamissing[101] = Double.NaN;
-        datamissing[102] = Double.NaN;
     }
 
 //    @Test
@@ -112,7 +112,7 @@ public class TramoProcessorTest {
         System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
     }
 
-    @Ignore
+    @Test
     public void testInseeFull() {
         TsData[] all = Data.insee();
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
@@ -139,8 +139,7 @@ public class TramoProcessorTest {
         assertTrue(n > .9 * all.length);
     }
 
-    @Ignore
-    public void testInseeFullc() {
+    public static void testInseeFullc() {
         TsData[] all = Data.insee();
         TramoSpec spec = TramoSpec.TRfull;
         ModellingContext context = new ModellingContext();
@@ -188,7 +187,7 @@ public class TramoProcessorTest {
         System.out.println(n);
 
 // The old implementation was bugged. 
-        assertTrue(n > .6 * all.length);
+//        assertTrue(n > .6 * all.length);
     }
 
     @Test
@@ -399,27 +398,31 @@ public class TramoProcessorTest {
         System.out.println(rslt.estimation.getStatistics().adjustedLogLikelihood);
     }
 
-    //@Test
-    public void stressTestProd() {
+    public static void stressTestProd() {
         long t0 = System.currentTimeMillis();
+        for (int i = 0; i < 1000; ++i) {
+            IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
+            ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
+            ec.tstoolkit.modelling.arima.PreprocessingModel rslt = processor.process(s, null);
+        }
+        long t1 = System.currentTimeMillis();
+        System.out.println("Legacy");
+        System.out.println(t1 - t0);
+        t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000; ++i) {
             TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);
             TsData s = TsData.of(start, Doubles.of(data));
             PreprocessingModel rslt = processor.process(s, null);
         }
-        long t1 = System.currentTimeMillis();
-        System.out.println("JD3");
-        System.out.println(t1 - t0);
-        t0 = System.currentTimeMillis();
-        for (int i = 0; i < 1000; ++i) {
-            IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
-            ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
-            ec.tstoolkit.modelling.arima.PreprocessingModel rslt = processor.process(s, null);
-        }
         t1 = System.currentTimeMillis();
-        System.out.println("Legacy");
+        System.out.println("JD3");
         System.out.println(t1 - t0);
     }
 
+    public static void main(String[] arg){
+//        testInseeFull();
+        testInseeFullc();
+        stressTestProd();
+    }
 }

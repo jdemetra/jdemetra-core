@@ -18,7 +18,7 @@ package demetra.seats;
 
 import demetra.maths.Complex;
 import demetra.sarima.SarimaModel;
-import demetra.sarima.SarimaSpecification;
+import demetra.arima.SarimaSpecification;
 
 /**
  * This class is largely based on the program SEATS+ developed by Gianluca Caporello

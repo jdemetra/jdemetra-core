@@ -5,7 +5,7 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.ssf.CompositeInitialization;
 import demetra.ssf.CompositeDynamics;
 import demetra.design.BuilderPattern;

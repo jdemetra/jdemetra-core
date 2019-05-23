@@ -6,14 +6,14 @@
 package demetra.msts;
 
 import demetra.data.Data;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
 import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParamValidation;
 import demetra.maths.functions.minpack.MinPackMinimizer;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.polynomials.Polynomial;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.polynomials.Polynomial;
 import demetra.sarima.estimation.SarimaMapping;
 import demetra.ssf.akf.AkfToolkit;
 import demetra.ssf.dk.SsfFunction;
@@ -51,7 +51,7 @@ public class MstsMappingTest {
         File file = Data.copyToTempFile(MultivariateCompositeSsf.class.getResource("/mssf1"));
         Matrix data = MatrixSerializer.read(file, "\t|,");
 
-        FastMatrix D = FastMatrix.make(data.getRowsCount(), 4);
+        CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 4);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));

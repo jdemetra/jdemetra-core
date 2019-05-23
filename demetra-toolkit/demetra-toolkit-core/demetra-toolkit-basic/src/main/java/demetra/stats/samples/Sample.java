@@ -6,8 +6,8 @@
 package demetra.stats.samples;
 
 import demetra.data.DoubleSeqCursor;
-import demetra.dstats.F;
-import demetra.dstats.T;
+import jdplus.dstats.F;
+import jdplus.dstats.T;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
 import java.util.stream.DoubleStream;

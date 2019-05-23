@@ -16,15 +16,15 @@
  */
 package demetra.ssf.implementations;
 
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.data.DataWindow;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.MatrixWindow;
-import demetra.maths.matrices.QuadraticForm;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.data.DataWindow;
+import jdplus.maths.matrices.MatrixWindow;
+import jdplus.maths.matrices.QuadraticForm;
 import demetra.data.DoubleSeqCursor;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.univariate.ISsfMeasurement;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

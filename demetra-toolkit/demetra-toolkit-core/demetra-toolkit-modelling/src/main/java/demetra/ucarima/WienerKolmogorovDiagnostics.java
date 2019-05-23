@@ -18,12 +18,12 @@ package demetra.ucarima;
 
 import demetra.arima.ArimaModel;
 import demetra.arima.BartlettApproximation;
-import demetra.arima.Model;
+import demetra.arima.LinearProcess;
 import demetra.arima.StationaryTransformation;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.dstats.Normal;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.dstats.Normal;
+import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.stats.AutoCovariances;
 import demetra.data.DoubleSeq;
 
@@ -34,9 +34,9 @@ import demetra.data.DoubleSeq;
 @Development(status = Development.Status.Alpha)
 public final class WienerKolmogorovDiagnostics {
 
-    private FastMatrix m_tac, m_eac, m_sdvar;
+    private CanonicalMatrix m_tac, m_eac, m_sdvar;
     private ArimaModel[] m_stcmp;
-    private Model[] m_stest;
+    private LinearProcess[] m_stest;
     private double[][] m_stdata;
 
     /**
@@ -60,7 +60,7 @@ public final class WienerKolmogorovDiagnostics {
         // creates stationary models
         double[][] stdata = new double[n][];
         ArimaModel[] stmodels = new ArimaModel[n];
-        Model[] emodels = new Model[n];
+        LinearProcess[] emodels = new LinearProcess[n];
         int ndata = data[0].length;
         for (int i = 0; i < n; ++i) {
             if (data[i] != null) {
@@ -78,7 +78,7 @@ public final class WienerKolmogorovDiagnostics {
                     stmodel.getUnitRoots().apply(DataBlock.of(data[i]), out);
                     out.sub(out.sum() / out.length());
                     stdata[i] = curst;
-                    emodels[i] = (Model) wk.finalStationaryEstimator(icmp, signal).getStationaryModel();
+                    emodels[i] = (LinearProcess) wk.finalStationaryEstimator(icmp, signal).getStationaryModel();
                     stmodels[i] = (ArimaModel) stmodel.getStationaryModel();
                 }
             }
@@ -103,15 +103,15 @@ public final class WienerKolmogorovDiagnostics {
      * @param stdata Stationary data, corrected for the mean
      * @return
      */
-    private boolean test(Model[] stmodels, double err, double[][] stdata) {
+    private boolean test(LinearProcess[] stmodels, double err, double[][] stdata) {
         try {
             int n = stmodels.length;
             if (n != stdata.length) {
                 return false;
             }
-            m_eac = FastMatrix.square(n);
-            m_tac = FastMatrix.square(n);
-            m_sdvar = FastMatrix.square(n);
+            m_eac = CanonicalMatrix.square(n);
+            m_tac = CanonicalMatrix.square(n);
+            m_sdvar = CanonicalMatrix.square(n);
 
             for (int i = 0; i < n; ++i) {
                 if (stmodels[i] != null) {
@@ -231,7 +231,7 @@ public final class WienerKolmogorovDiagnostics {
         return m_stcmp[i];
     }
 
-    public Model getStationaryEstimatorModel(int i) {
+    public LinearProcess getStationaryEstimatorModel(int i) {
         return m_stest[i];
     }
 

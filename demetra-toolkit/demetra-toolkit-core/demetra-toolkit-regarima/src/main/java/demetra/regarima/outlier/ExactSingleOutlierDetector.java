@@ -19,20 +19,21 @@ package demetra.regarima.outlier;
 import demetra.arima.IArimaModel;
 import demetra.arima.estimation.ResidualsComputer;
 import demetra.arima.internal.AnsleyFilter;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import demetra.design.Development;
 import demetra.leastsquares.QRSolvers;
 import demetra.linearmodel.LinearModel;
 import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.LowerTriangularMatrix;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArmaModel;
 import demetra.leastsquares.QRSolver;
 import javax.annotation.Nonnull;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -144,7 +145,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
                 return true;
             }
 
-            Xl = FastMatrix.make(n, regs.getColumnsCount());
+            Xl = CanonicalMatrix.make(n, regs.getColumnsCount());
             DataBlockIterator rcols = regs.columnsIterator(), drcols = Xl.columnsIterator();
             while (rcols.hasNext()) {
                 filter.apply(rcols.next(), drcols.next());
@@ -184,7 +185,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
     protected void processOutlier(int idx) {
         RegArimaModel<T> regArima = getRegArima();
         int len = regArima.getY().length();
-        BackFilter df = regArima.arima().getNonStationaryAR();
+        BackFilter df = regArima.arima().getNonStationaryAr();
         int d = df.getDegree();
         double[] o = new double[2 * len];
         DataBlock O = DataBlock.of(o);

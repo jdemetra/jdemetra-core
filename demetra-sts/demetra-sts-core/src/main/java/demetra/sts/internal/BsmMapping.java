@@ -16,7 +16,7 @@
  */
 package demetra.sts.internal;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Parameter;
 import demetra.design.Development;

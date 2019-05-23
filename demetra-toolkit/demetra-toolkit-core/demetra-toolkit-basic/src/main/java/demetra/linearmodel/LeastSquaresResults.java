@@ -16,20 +16,20 @@
  */
 package demetra.linearmodel;
 
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.Immutable;
-import demetra.dstats.F;
-import demetra.dstats.T;
+import jdplus.dstats.F;
+import jdplus.dstats.T;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.maths.matrices.FastMatrix;
 import demetra.stats.tests.StatisticalTest;
 import demetra.stats.tests.TestType;
-import demetra.data.DeprecatedDoubles;
 import demetra.design.BuilderPattern;
-import demetra.maths.matrices.LowerTriangularMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -65,7 +65,7 @@ public final class LeastSquaresResults {
         public Builder residuals(DoubleSeq res) {
             this.res = res;
             if (ssq == 0) {
-                ssq = DeprecatedDoubles.ssq(res);
+                ssq = res.ssq();
             }
             return this;
         }
@@ -102,8 +102,8 @@ public final class LeastSquaresResults {
         this.ucov = unscaledCov;
         this.nx = ucov == null ? 0 : ucov.diagonal().count(x -> x != 0);
         // compute auxiliaries
-        y2 = DeprecatedDoubles.ssq(y);
-        ym = DeprecatedDoubles.average(y);
+        y2 = y.ssq();
+        ym = y.average();
         bxy = y2 - ssq;
     }
 
@@ -203,7 +203,7 @@ public final class LeastSquaresResults {
      * @return
      */
     public StatisticalTest Ftest(int v0, int nvars) {
-        FastMatrix bvar = ucov.extract(v0, nvars, v0, nvars).deepClone();
+        CanonicalMatrix bvar = ucov.extract(v0, nvars, v0, nvars).deepClone();
         SymmetricMatrix.lcholesky(bvar);
         DataBlock b = DataBlock.of(coefficients.extract(v0, nvars));
         LowerTriangularMatrix.rsolve(bvar, b);

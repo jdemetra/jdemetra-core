@@ -17,12 +17,14 @@
 package demetra.ssf.implementations;
 
 import java.util.Iterator;
-import demetra.data.DataBlock;
-import demetra.data.DataBlockIterator;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.ISsfInitialization;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -34,19 +36,19 @@ public class TimeInvariantDynamics implements ISsfDynamics {
 
         private static Innovations of(int stateDim, ISsfDynamics sd) {
             int ne = sd.getInnovationsDim();
-            FastMatrix V = FastMatrix.square(stateDim);
+            CanonicalMatrix V = CanonicalMatrix.square(stateDim);
             sd.V(0, V);
-            FastMatrix S = FastMatrix.make(stateDim, ne);
+            CanonicalMatrix S = CanonicalMatrix.make(stateDim, ne);
             sd.S(0, S);
             return new Innovations(V, S);
         }
 
-        public Innovations(final FastMatrix V) {
+        public Innovations(final CanonicalMatrix V) {
             this.V = V;
             S = null;
         }
 
-        public Innovations(final FastMatrix V, final FastMatrix S) {
+        public Innovations(final CanonicalMatrix V, final CanonicalMatrix S) {
             this.S = S;
             if (V == null && S != null) {
                 this.V = SymmetricMatrix.XXt(S);
@@ -55,14 +57,14 @@ public class TimeInvariantDynamics implements ISsfDynamics {
             }
         }
 
-        public final FastMatrix S, V;
+        public final CanonicalMatrix S, V;
     }
 
-    private final FastMatrix T;
-    private final FastMatrix V;
-    private transient FastMatrix S;
+    private final CanonicalMatrix T;
+    private final CanonicalMatrix V;
+    private transient CanonicalMatrix S;
 
-    public TimeInvariantDynamics(FastMatrix T, Innovations E) {
+    public TimeInvariantDynamics(CanonicalMatrix T, Innovations E) {
         this.T = T;
         this.S = E.S;
         this.V = E.V;
@@ -73,7 +75,7 @@ public class TimeInvariantDynamics implements ISsfDynamics {
         if (!sd.isTimeInvariant()) {
             return null;
         }
-        FastMatrix t = FastMatrix.square(stateDim);
+        CanonicalMatrix t = CanonicalMatrix.square(stateDim);
         sd.T(0, t);
         Innovations e = Innovations.of(stateDim, sd);
         if (e == null) {
@@ -150,7 +152,7 @@ public class TimeInvariantDynamics implements ISsfDynamics {
 
     @Override
     public void TVT(int pos, FastMatrix tvt) {
-        FastMatrix V = tvt.deepClone();
+        CanonicalMatrix V = tvt.deepClone();
         SymmetricMatrix.XSXt(V, T, tvt);
     }
 

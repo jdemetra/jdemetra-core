@@ -20,6 +20,7 @@
         <module>demetra-toolkit-api</module>
         <module>demetra-toolkit-core</module>
         <module>demetra-toolkit-r</module>
+        <module>demetra-toolkit-api-advanced</module>
     </modules>
   
     <properties>
@@ -43,6 +44,11 @@
             <dependency>
                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-toolkit-api</artifactId>
+                <version>${jd3-toolkit.version}</version>            
+            </dependency>
+            <dependency>
+               <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-toolkit-api-advanced</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
             <dependency>

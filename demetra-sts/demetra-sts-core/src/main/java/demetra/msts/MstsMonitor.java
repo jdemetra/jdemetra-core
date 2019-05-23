@@ -13,7 +13,6 @@ import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.maths.functions.minpack.MinPackMinimizer;
 import demetra.maths.functions.riso.LbfgsMinimizer;
 import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
-import demetra.maths.matrices.FastMatrix;
 import demetra.ssf.likelihood.MarginalLikelihoodFunction;
 import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
@@ -25,6 +24,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

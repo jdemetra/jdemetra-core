@@ -8,22 +8,21 @@ package demetra.linearmodel;
 import demetra.eco.EcoException;
 import lombok.NonNull;
 import demetra.leastsquares.internal.AdvancedQRSolver;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.UpperTriangularMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.maths.matrices.UpperTriangularMatrix;
 import demetra.maths.matrices.internal.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import org.openide.util.lookup.ServiceProvider;
 import demetra.leastsquares.QRSolver;
 import demetra.data.DoubleSeq;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceProvider(service = IOls.class)
-public class Ols implements IOls {
+public class Ols {
 
     private static AtomicReference<Supplier<QRSolver>> QR_FACTORY = new AtomicReference<>(()
             -> AdvancedQRSolver.builder(new Householder()).build());
@@ -42,7 +41,6 @@ public class Ols implements IOls {
         this.solver = solver;
     }
 
-    @Override
     public LeastSquaresResults compute(LinearModel model) {
         DoubleSeq y = model.getY();
         FastMatrix x = model.variables();

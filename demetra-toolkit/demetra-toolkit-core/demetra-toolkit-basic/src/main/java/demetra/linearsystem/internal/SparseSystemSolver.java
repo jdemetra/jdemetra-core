@@ -19,12 +19,13 @@ package demetra.linearsystem.internal;
 
 import demetra.design.Development;
 import java.util.Arrays;
-import demetra.data.DataBlock;
+import jdplus.data.DataBlock;
 import demetra.design.AlgorithmImplementation;
 import demetra.maths.Constants;
-import demetra.maths.matrices.FastMatrix;
-import demetra.maths.matrices.MatrixException;
+import jdplus.maths.matrices.MatrixException;
 import demetra.linearsystem.LinearSystemSolver;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 
 /**
  * This class is a translation ofInternal the code used in Seats (routine MLTSOL)
@@ -105,7 +106,7 @@ public final class SparseSystemSolver implements LinearSystemSolver {
         double[] X=new double[n*(n+1)];
         A.copyTo(X, 0);
         b.copyTo(X, n*n);
-        if (! solve(X, FastMatrix.columnOf(b)))
+        if (! solve(X, CanonicalMatrix.columnOf(b)))
             throw new MatrixException(MatrixException.SINGULAR);
     }
 
