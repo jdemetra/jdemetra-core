@@ -26,7 +26,7 @@ import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.matrices.UpperTriangularMatrix;
 import jdplus.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.spi.RootsSolver;
+import jdplus.maths.polynomials.spi.RootsSolver;
 
 /**
  * Considering the symmetric filter P(B)*P(F), where B is the backward operator

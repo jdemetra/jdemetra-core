@@ -14,11 +14,15 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.maths.highprecision;
+package jdplus.maths.highprecision;
 
-import ec.tstoolkit.maths.polynomials.Polynomial;
+import jdplus.maths.highprecision.DoublePolynomial;
+import jdplus.maths.highprecision.DoubleDouble;
+import demetra.maths.Complex;
 import java.util.Random;
 import jdplus.data.DataBlock;
+import jdplus.maths.polynomials.Polynomial;
+import jdplus.maths.polynomials.UnitRoots;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -46,7 +50,6 @@ public class DoublePolynomialTest {
 //        System.out.println(dz);
 //        System.out.println(z - dz.asDouble());
         assertEquals(z, dz.asDouble(), 1e-9);
-
     }
 
     @Test
@@ -75,7 +78,7 @@ public class DoublePolynomialTest {
 //            System.out.print('\t');
 //            System.out.println(dq.getQuotient().get(i));
         }
-        int nr = sq.getRemainder().getDegree();
+        int nr = sq.getRemainder().degree();
         for (int i = 0; i <= nr; ++i) {
             assertEquals(sq.getRemainder().get(i), dq.getRemainder().get(i).asDouble(), 1e-9);
 
@@ -83,5 +86,16 @@ public class DoublePolynomialTest {
 //            System.out.print('\t');
 //            System.out.println(dq.getRemainder().get(i));
         }
+    }
+    
+    @Test
+    public void testProduct() {
+        Complex[] roots = UnitRoots.D(100).roots();
+        Polynomial p=Polynomial.fromComplexRoots(roots);
+        System.out.println(p.coefficients());
+        DoublePolynomial dp=DoublePolynomial.of(roots, 1);
+        System.out.println(dp.toPolynomial().coefficients());
+        DoublePolynomial dp2=DoublePolynomial.of2(roots, 1);
+        System.out.println(dp2.toPolynomial().coefficients());
     }
 }

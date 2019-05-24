@@ -26,8 +26,8 @@ import demetra.util.Ref;
 import demetra.util.Ref.BooleanRef;
 import demetra.util.Ref.DoubleRef;
 import demetra.util.Ref.IntRef;
-import demetra.maths.polynomials.internal.NewtonOptimizer;
-import demetra.maths.polynomials.spi.RootsSolver;
+import jdplus.maths.polynomials.internal.NewtonOptimizer;
+import jdplus.maths.polynomials.spi.RootsSolver;
 
 /**
  * Mueller-Newton solver for symmetric polynomial. A symmetric polynomial is

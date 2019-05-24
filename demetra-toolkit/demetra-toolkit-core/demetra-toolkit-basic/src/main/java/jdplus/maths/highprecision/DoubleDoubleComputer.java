@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.maths.highprecision;
+package jdplus.maths.highprecision;
 
 /**
  *
@@ -59,19 +59,22 @@ public strictfp class DoubleDoubleComputer implements DoubleDoubleType {
         return low;
     }
 
-    public void set(final DoubleDoubleType dd) {
+    public DoubleDoubleComputer set(final DoubleDoubleType dd) {
         this.high = dd.getHigh();
         this.low = dd.getLow();
+        return this;
     }
 
-    public void set(final double high, final double low) {
+    public DoubleDoubleComputer set(final double high, final double low) {
         this.high = high;
         this.low = low;
+        return this;
     }
 
-    public void set(final double d) {
+    public DoubleDoubleComputer set(final double d) {
         this.high = d;
         this.low = 0;
+        return this;
     }
 
     @Override
@@ -109,6 +112,60 @@ public strictfp class DoubleDoubleComputer implements DoubleDoubleType {
         high = zhi;
         low = zlo;
         return this;
+    }
+
+    /**
+     * Adds the product of the argument to the value of <tt>this</tt>.
+     *
+     * @param yhi
+     * @param ylo
+     * @return <tt>this</tt>, with its value incremented by <tt>y</tt>
+     */
+    DoubleDoubleComputer addXY(final double xhi, final double xlo, final double yhi, final double ylo) {
+        double tmpHi=high, tmpLo=low;
+        high=xhi;
+        low=xlo;
+        return mul(yhi, ylo).add(tmpHi, tmpLo);
+    }
+
+    DoubleDoubleComputer addXY(final DoubleDoubleType x, final DoubleDoubleType y) {
+        double tmpHi=high, tmpLo=low;
+        high=x.getHigh();
+        low=x.getLow();
+        return mul(y).add(tmpHi, tmpLo);
+    }
+    /**
+     * Subtracts the product of the argument to the value of <tt>this</tt>.
+     *
+     * @param yhi
+     * @param ylo
+     * @return <tt>this</tt>, with its value incremented by <tt>y</tt>
+     */
+    DoubleDoubleComputer subXY(final double xhi, final double xlo, final double yhi, final double ylo) {
+        double tmpHi=high, tmpLo=low;
+        high=xhi;
+        low=xlo;
+        return mul(yhi, ylo).chs().add(tmpHi, tmpLo);
+    }
+
+    DoubleDoubleComputer subXY(final DoubleDoubleType x, final DoubleDoubleType y) {
+        double tmpHi=high, tmpLo=low;
+        high=x.getHigh();
+        low=x.getLow();
+        return mul(y).chs().add(tmpHi, tmpLo);
+    }
+    /**
+     * Adds the product of the argument to the value of <tt>this</tt>.
+     *
+     * @param yhi
+     * @param ylo
+     * @return <tt>this</tt>, with its value incremented by <tt>y</tt>
+     */
+    DoubleDoubleComputer addaXY(final double a, final double xhi, final double xlo, final double yhi, final double ylo) {
+        double tmpHi=high, tmpLo=low;
+        high=xhi;
+        low=xlo;
+        return mul(yhi, ylo).mul(a).add(tmpHi, tmpLo);
     }
 
     public DoubleDoubleComputer add(final double y) {

@@ -14,12 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.maths.polynomials.internal;
+package jdplus.maths.polynomials.internal;
 
 import demetra.maths.Complex;
 import demetra.maths.Constants;
 import jdplus.maths.polynomials.Polynomial;
-import demetra.data.DoubleSeq;
 
 /**
  *

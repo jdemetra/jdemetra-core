@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.maths.polynomials.internal;
+package jdplus.maths.polynomials.internal;
 
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Balanced;
@@ -28,7 +28,7 @@ import demetra.util.Ref;
 import demetra.util.Ref.BooleanRef;
 import demetra.util.Ref.DoubleRef;
 import demetra.util.Ref.IntRef;
-import demetra.maths.polynomials.spi.RootsSolver;
+import jdplus.maths.polynomials.spi.RootsSolver;
 
 /**
  *

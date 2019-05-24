@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.maths.polynomials.spi;
+package jdplus.maths.polynomials.spi;
 
 import demetra.design.Algorithm;
 import java.util.concurrent.atomic.AtomicReference;
@@ -22,8 +22,8 @@ import java.util.function.Supplier;
 import demetra.design.Development;
 import demetra.maths.Complex;
 import jdplus.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.internal.RobustMullerNewtonSolver;
-import demetra.maths.polynomials.internal.MullerNewtonSolver;
+import jdplus.maths.polynomials.internal.RobustMullerNewtonSolver;
+import jdplus.maths.polynomials.internal.MullerNewtonSolver;
 
 /**
  *
