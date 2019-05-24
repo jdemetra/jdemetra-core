@@ -28,7 +28,7 @@ import demetra.maths.ComplexMath;
 import demetra.maths.Simplifying;
 import demetra.util.Arrays2;
 import lombok.NonNull;
-import demetra.maths.polynomials.spi.RootsSolver;
+import jdplus.maths.polynomials.spi.RootsSolver;
 import demetra.data.DoubleSeq;
 import demetra.design.Unsafe;
 import demetra.maths.ComplexUtility;

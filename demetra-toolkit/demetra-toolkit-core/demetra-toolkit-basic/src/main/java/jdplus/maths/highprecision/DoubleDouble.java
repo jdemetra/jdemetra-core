@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.maths.highprecision;
+package jdplus.maths.highprecision;
 
 /**
  * Immutable, extended-precision floating-point numbers which maintain 106 bits
@@ -467,6 +467,24 @@ public strictfp class DoubleDouble implements DoubleDoubleType, Comparable<Doubl
         }
         DoubleDoubleComputer computer = new DoubleDoubleComputer(this);
         computer.div(dd);
+        return computer.result();
+    }
+
+    public DoubleDouble times(double d) {
+        if (isNan()) {
+            return this;
+        }
+        DoubleDoubleComputer computer = new DoubleDoubleComputer(this);
+        computer.mul(d);
+        return computer.result();
+    }
+
+    public DoubleDouble divide(double d) {
+        if (isNan()) {
+            return this;
+        }
+        DoubleDoubleComputer computer = new DoubleDoubleComputer(this);
+        computer.div(d);
         return computer.result();
     }
 

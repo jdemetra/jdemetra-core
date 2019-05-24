@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.maths.highprecision;
+package jdplus.maths.highprecision;
 
 /**
  *
@@ -27,6 +27,11 @@ public class DoubleComplexComputer {
     public DoubleComplexComputer(DoubleComplex c) {
         re = new DoubleDoubleComputer(c.getReHigh(), c.getReLow());
         im = new DoubleDoubleComputer(c.getImHigh(), c.getImLow());
+    }
+
+    public DoubleComplexComputer(double re, double im) {
+        this.re = new DoubleDoubleComputer(re);
+        this.im = new DoubleDoubleComputer(im);
     }
 
     public DoubleComplexComputer add(DoubleComplex c) {

@@ -23,7 +23,7 @@ import demetra.maths.PolynomialType;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.internal.UnitRootsSolver;
+import jdplus.maths.polynomials.internal.UnitRootsSolver;
 import javax.annotation.Nonnull;
 
 /**

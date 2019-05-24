@@ -24,7 +24,7 @@ import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRootSelector;
 import jdplus.maths.polynomials.UnitRoots;
 import java.util.function.IntToDoubleFunction;
-import demetra.maths.polynomials.spi.RootsSolver;
+import jdplus.maths.polynomials.spi.RootsSolver;
 
 /**
  *

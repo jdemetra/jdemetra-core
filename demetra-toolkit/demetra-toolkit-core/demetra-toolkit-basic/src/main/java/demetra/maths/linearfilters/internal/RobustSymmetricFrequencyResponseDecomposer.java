@@ -23,7 +23,7 @@ import demetra.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.LeastSquaresDivision;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRoots;
-import demetra.maths.polynomials.internal.UnitRootsSolver;
+import jdplus.maths.polynomials.internal.UnitRootsSolver;
 import java.util.function.IntToDoubleFunction;
 
 

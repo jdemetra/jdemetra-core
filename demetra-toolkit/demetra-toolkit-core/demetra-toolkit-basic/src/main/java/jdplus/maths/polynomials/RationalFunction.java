@@ -21,7 +21,7 @@ import demetra.design.Immutable;
 import demetra.design.SkipProcessing;
 import demetra.maths.Complex;
 import demetra.maths.Constants;
-import demetra.maths.polynomials.spi.RootsSolver;
+import jdplus.maths.polynomials.spi.RootsSolver;
 
 /**
  * Rational function expansion, defined by N(x)/D(x)

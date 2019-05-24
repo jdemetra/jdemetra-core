@@ -1,4 +1,4 @@
-package demetra.maths.highprecision;
+package jdplus.maths.highprecision;
 
 import java.io.Serializable;
 

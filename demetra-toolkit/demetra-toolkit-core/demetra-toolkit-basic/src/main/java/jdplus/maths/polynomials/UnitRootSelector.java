@@ -16,7 +16,7 @@
 */
 package jdplus.maths.polynomials;
 
-import demetra.maths.polynomials.internal.UnitRootsSolver;
+import jdplus.maths.polynomials.internal.UnitRootsSolver;
 import demetra.design.Development;
 
 /**
