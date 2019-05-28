@@ -26,12 +26,25 @@ public class UcarimaModelTest {
     }
 
     @Test
+    public void testAirline2() {
+        for (int period = 4; period <= 300; ++period) {
+            UcarimaModel ucm = ucmAirline(period, -.5, -.8);
+            System.out.println(ucm.getComponent(1).getInnovationVariance());
+            assertTrue(ucm.isValid());
+        }
+    }
+
+    @Test
     public void test3111() {
-        assertTrue(ucm3111(new double[]{.2, -.5, .1},-.6, -.8).isValid());
+        assertTrue(ucm3111(new double[]{.2, -.5, .1}, -.6, -.8).isValid());
     }
 
     public static UcarimaModel ucmAirline(double th, double bth) {
-        SarimaSpecification spec = new SarimaSpecification(12);
+        return ucmAirline(12, th, bth);
+    }
+
+    public static UcarimaModel ucmAirline(int period, double th, double bth) {
+        SarimaSpecification spec = new SarimaSpecification(period);
         spec.airline(true);
         SarimaModel sarima = SarimaModel.builder(spec)
                 .theta(1, th)
@@ -39,7 +52,7 @@ public class UcarimaModelTest {
                 .build();
 
         TrendCycleSelector tsel = new TrendCycleSelector();
-        SeasonalSelector ssel = new SeasonalSelector(12);
+        SeasonalSelector ssel = new SeasonalSelector(period);
 
         ModelDecomposer decomposer = new ModelDecomposer();
         decomposer.add(tsel);
@@ -49,7 +62,7 @@ public class UcarimaModelTest {
         ucm = ucm.setVarianceMax(-1, false);
         return ucm;
     }
-    
+
     public static UcarimaModel ucm3111(double[] phi, double th, double bth) {
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
@@ -70,5 +83,5 @@ public class UcarimaModelTest {
         ucm = ucm.setVarianceMax(-1, false);
         return ucm;
     }
-    
+
 }

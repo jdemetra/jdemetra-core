@@ -51,7 +51,7 @@ public class UnitRootsSolver {
 
     private Polynomial remainder;
     private UnitRoots roots;
-    private int startDegree = 12;
+    private int startDegree = 0;
 
     private final static double EPS = 1e-12;
 

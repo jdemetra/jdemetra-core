@@ -246,12 +246,16 @@ public final class SymmetricFilter implements IFiniteFilter {
      */
     @Override
     public Complex frequencyResponse(final double freq) {
+        return Complex.cart(realFrequencyResponse(freq));
+    }
+
+    public double realFrequencyResponse(final double freq) {
         // computed by the iteration procedure : cos (i+1)freq + cos (i-1)freq=
         // 2*cos iw *cos freq
         int idx = 0;
         double r = polynomial.get(idx++);
         if (idx >= polynomial.degree() + 1) {
-            return Complex.cart(r);
+            return r;
         }
 
         double cos0 = 1, cos1 = Math.cos(freq), cos = cos1;
@@ -267,9 +271,8 @@ public final class SymmetricFilter implements IFiniteFilter {
             }
         } while (true);
 
-        return Complex.cart(r);
+        return r;
     }
-
     /**
      * Returns the coefficients of the symmetric filter, in the form of a
      * polynomial The polynomial corresponds to the weights of the filter, from

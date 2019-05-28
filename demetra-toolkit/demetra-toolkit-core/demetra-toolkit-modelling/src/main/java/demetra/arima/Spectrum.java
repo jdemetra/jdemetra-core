@@ -26,6 +26,7 @@ import demetra.maths.functions.IParametersDomain;
 import demetra.maths.functions.ParametersRange;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 
 /**
@@ -70,24 +71,23 @@ public final class Spectrum {
     }
 
     static double value(Spectrum s, double x) {
-        double d = s.denom.frequencyResponse(x).getRe();
-        double n = s.num.frequencyResponse(x).getRe();
+        double d = s.denom.realFrequencyResponse(x);
+        double n = s.num.realFrequencyResponse(x);
         if (Math.abs(d) > EPS2) {
             return n / d;
         } else if (Math.abs(n) < EPS) { // 0/0
-            try{
-            for (int i = 1; i <= 10; ++i) {
-                double dd = new dfr(s.denom, i).evaluate(x);
-                double nd = new dfr(s.num, i).evaluate(x);
-                if (Math.abs(dd) > EPS2) {
-                    return nd / dd;
+            try {
+                for (int i = 1; i <= 10; ++i) {
+                    double dd = new dfr(s.denom, i).evaluate(x);
+                    double nd = new dfr(s.num, i).evaluate(x);
+                    if (Math.abs(dd) > EPS2) {
+                        return nd / dd;
+                    }
+                    if (Math.abs(nd) > EPS) {
+                        break;
+                    }
                 }
-                if (Math.abs(nd) > EPS) {
-                    break;
-                }
-            }
-            }
-            catch(Exception err){
+            } catch (Exception err) {
                 return Double.NaN;
             }
         }
@@ -114,7 +114,7 @@ public final class Spectrum {
                     for (int j = 1; j < d; ++j) {
                         c *= i;
                     }
-                    c *= Math.cos(freq * i)*weights.applyAsDouble(i);
+                    c *= Math.cos(freq * i) * weights.applyAsDouble(i);
                     s += c;
                 }
                 return s;
@@ -125,14 +125,51 @@ public final class Spectrum {
                     for (int j = 1; j < d; ++j) {
                         c *= i;
                     }
-                    c *= Math.sin(freq * i)*weights.applyAsDouble(i);
+                    c *= Math.sin(freq * i) * weights.applyAsDouble(i);
                     s += c;
                 }
                 return s;
             }
         }
     }
-    
+
+    private static class fr {
+
+        final SymmetricFilter filter;
+        private double f, df, d2f;
+
+        fr(SymmetricFilter filter) {
+            this.filter = filter;
+        }
+
+        void evaluate(double freq) {
+            DoubleSeq weights = filter.coefficientsAsPolynomial().coefficients();
+            DoubleSeqCursor cursor = weights.cursor();
+            f = cursor.getAndNext();
+            df = 0;
+            for (int i = 1; i < weights.length(); ++i) {
+                double w=cursor.getAndNext();
+                double wc = 2 * Math.cos(freq * i) * w;
+                double ws = 2 * Math.sin(freq * i) * w;
+                f += wc;
+                df -= i * ws;
+                d2f -= i * i * wc;
+            }
+        }
+
+        double f() {
+            return f;
+        }
+
+        double df() {
+            return df;
+        }
+
+        double d2f() {
+            return d2f;
+        }
+    }
+
     /**
      * The Minimizer class searches the minimum of the spectrum. Since 2.1.0,
      * the implementation is based on a simple grid search (instead of an
@@ -174,10 +211,19 @@ public final class Spectrum {
 
             private final Spectrum spec;
             private final double pt;
+            private final double f, df, d2f;
 
             SpectrumFunctionInstance(Spectrum spec, double pt) {
                 this.spec = spec;
                 this.pt = pt;
+                fr num = new fr(spec.num), denom = new fr(spec.denom);
+                num.evaluate(pt);
+                denom.evaluate(pt);
+                double n = num.f, dn = num.df, d2n = num.d2f,
+                        d = denom.f, dd = denom.df, d2d = denom.d2f;
+                f = n / d;
+                df = (dn * d - n * dd) / (d * d);
+                d2f = ((d2n * d - n * d2d) * d - 2 * (dn * d - n * dd) * dd) / (d * d * d);
             }
 
             @Override
@@ -213,8 +259,48 @@ public final class Spectrum {
                 this.b = b;
             }
 
+            SpectrumFunctionInstance min(final double start) {
+                double fd = spec.denom.realFrequencyResponse(start);
+                double z = start;
+                if (fd < EPS2) {
+                    do {
+                        z = z + EPS;
+                        fd = spec.denom.realFrequencyResponse(z);
+
+                    } while (z <= b && fd < EPS2);
+                    if (z > b) {
+                        return null;
+                    }
+                }
+                int iter = 0;
+                SpectrumFunctionInstance cur = new SpectrumFunctionInstance(spec, z);
+                double s = cur.f;
+                double zcur=z, zprev=z;
+                do {
+                    zprev=zcur;
+                    zcur -= cur.df / cur.d2f;
+                    if (Double.isNaN(zcur))
+                        break;
+                    if (zcur < a) {
+                        zcur = a;
+                    } else if (zcur > b) {
+                        zcur = b;
+                    }
+                    SpectrumFunctionInstance ncur = new SpectrumFunctionInstance(spec, zcur);
+                    double ns = ncur.f;
+                    if (ns < s) {
+                        cur = ncur;
+                        s=ns;
+                    }
+                } while (++iter < 200 && Math.abs(zcur - zprev) > EPS2);
+                if (iter == 100){
+                    iter=0;
+                }
+                return cur;
+            }
+
             @Override
-            public IFunctionPoint evaluate(DoubleSeq parameters) {
+            public SpectrumFunctionInstance evaluate(DoubleSeq parameters) {
                 return new SpectrumFunctionInstance(spec, parameters.get(0));
             }
 
@@ -231,7 +317,7 @@ public final class Spectrum {
          * @param spectrum The spectrum being minimized
          */
         public void minimize(final Spectrum spectrum) {
-            if (spectrum.num.length()==1 && spectrum.denom.length() == 1) {
+            if (spectrum.num.length() == 1 && spectrum.denom.length() == 1) {
                 // constant
                 m_x = 0;
                 m_min = value(spectrum, 0);
@@ -251,24 +337,56 @@ public final class Spectrum {
                 m_min = y;
                 m_x = Math.PI;
             }
-
-            GridSearch search = new GridSearch();
-            search.setBounds(0, Math.PI);
-            search.setMaxIter(1000);
-            int nd = spectrum.num.length() + spectrum.denom.length()-2;
-            search.setInitialGridCount(4 * nd - 1);
-            search.setPrecision(1e-9);
-            search.setFunctionPrecision(1e-7);
-            if (search.minimize(new SpectrumFunctionInstance(spectrum, 0.1))) {
-                SpectrumFunctionInstance fmin = (SpectrumFunctionInstance) search.getResult();
-                double min = fmin.getValue();
-                if (min < m_min) {
-                    m_min = min;
-                    m_x = fmin.pt;
+            int nd = 3*Math.max(spectrum.num.getUpperBound(), spectrum.denom.getUpperBound());
+            double a = 0, step = Math.PI / nd;
+            for (int i = 0; i < nd; ++i, a+=step) {
+                double b = a + step;
+                double f = spectrum.denom.realFrequencyResponse(a);
+                double na = a;
+                while (f <= 0 && na < b) {
+                    na += step/7;
+                    f = spectrum.denom.realFrequencyResponse(na);
                 }
-            }else{
-                throw new ArimaException(ArimaException.MIN_SPECTRUM);
+                if (na >= b) {
+                    continue;
+                }
+                f = spectrum.denom.realFrequencyResponse(b);
+                double nb = b;
+                while (f <= 0 && nb > na) {
+                    nb -= step/7;
+                    f = spectrum.denom.realFrequencyResponse(nb);
+                }
+                if (nb <= na) {
+                    continue;
+                }
+                SpectrumFunction fn = new SpectrumFunction(spectrum, na, nb);
+                SpectrumFunctionInstance min = fn.min((na+nb)/2);
+                if (min != null) {
+                    double cmin = min.f;
+                    if (cmin < m_min) {
+                        m_min = cmin;
+                        m_x = min.pt;
+                    }
+                }
             }
+
+//            GridSearch search = new GridSearch();
+//            search.setBounds(0, Math.PI);
+//            search.setMaxIter(20000);
+//            int nd = Math.max(spectrum.num.length(), spectrum.denom.length());
+//            search.setInitialGridCount(60 * nd);
+//            search.setPrecision(1e-9);
+//            search.setFunctionPrecision(1e-7);
+//            if (search.minimize(new SpectrumFunctionInstance(spectrum, 0.1))) {
+//                SpectrumFunctionInstance fmin = (SpectrumFunctionInstance) search.getResult();
+//                double min = fmin.getValue();
+//                if (min < m_min) {
+//                    m_min = min;
+//                    m_x = fmin.pt;
+//                }
+//            } else {
+//                throw new ArimaException(ArimaException.MIN_SPECTRUM);
+//            }
         }
     }
 

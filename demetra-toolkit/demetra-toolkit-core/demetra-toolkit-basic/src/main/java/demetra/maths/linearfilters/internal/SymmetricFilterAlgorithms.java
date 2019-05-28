@@ -66,7 +66,7 @@ public class SymmetricFilterAlgorithms {
             }
             DataBlock g = DataBlock.of(mc);
             if (solver == null) {
-                LinearSystemSolver.robustSolver().solve(a, g);
+                LinearSystemSolver.fastSolver().solve(a, g);
             } else {
                 solver.solve(a, g);
             }
