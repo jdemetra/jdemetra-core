@@ -17,6 +17,7 @@
 package ec.tstoolkit.utilities;
 
 import com.google.common.io.Closer;
+import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
 import java.sql.Connection;
@@ -34,26 +35,19 @@ import org.slf4j.Logger;
  *
  * @author Philippe Charles
  */
+@Deprecated
 public final class Closeables {
 
     private Closeables() {
         // static class
     }
 
+    @Deprecated
     public static void closeBoth(@Nonnull Closeable first, @Nonnull Closeable second) throws IOException {
-        try {
-            first.close();
-        } catch (IOException ex) {
-            try {
-                second.close();
-            } catch (IOException suppressed) {
-                ex.addSuppressed(suppressed);
-            }
-            throw ex;
-        }
-        second.close();
+        IO.closeBoth(first, second);
     }
-    
+
+    @Deprecated
     public static Closeable asCloseable(final XMLStreamWriter o) {
         return () -> {
             try {

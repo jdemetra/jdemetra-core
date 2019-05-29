@@ -17,37 +17,43 @@
 package ec.demetra.workspace.file.util;
 
 import ec.tss.xml.IXmlConverter;
-import internal.io.JaxbUtil;
+import ioutil.Jaxb;
+import ioutil.Xml;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
+import lombok.AccessLevel;
 
 /**
  *
  * @author Philippe Charles
  * @since 2.2.0
  */
+@lombok.RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class XmlConverterSupport implements FileSupport {
 
     @Nonnull
-    public static FileSupport of(@Nonnull Supplier<? extends IXmlConverter> factory, @Nonnull String repository) {
-        return new XmlConverterSupport(factory, repository);
+    public static <VALUE, XML extends IXmlConverter<VALUE>> FileSupport of(@Nonnull Supplier<XML> factory, @Nonnull String repository) {
+        ValueAdapter<VALUE, XML> adapter = new ValueAdapter<>(factory);
+        try {
+            Xml.Parser<VALUE> parser = Jaxb.Parser.of(adapter.getXmlType()).andThen(adapter::toValue);
+            Xml.Formatter<VALUE> formatter = Jaxb.Formatter.of(adapter.getXmlType()).withFormatted(true).compose(adapter::fromValue);
+            return new XmlConverterSupport(repository, parser, formatter);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
+    @lombok.NonNull
     private final String repository;
-    private final Supplier<? extends IXmlConverter> factory;
-    private final Class<? extends IXmlConverter> type;
 
-    private XmlConverterSupport(Supplier<? extends IXmlConverter> factory, String repository) {
-        this.repository = Objects.requireNonNull(repository);
-        this.factory = Objects.requireNonNull(factory);
-        this.type = factory.get().getClass();
-    }
+    @lombok.NonNull
+    private final Xml.Parser parser;
+
+    @lombok.NonNull
+    private final Xml.Formatter formatter;
 
     @Override
     public Path resolveFile(Path root, String fileName) {
@@ -56,54 +62,49 @@ public final class XmlConverterSupport implements FileSupport {
 
     @Override
     public Object read(Path root, String fileName) throws IOException {
-        try {
-            return readItem(resolveFile(root, fileName), type);
-        } catch (JAXBException ex) {
-            throw new IOException(ex);
-        }
+        return readItem(resolveFile(root, fileName));
     }
 
     @Override
     public void write(Path root, String fileName, Object value) throws IOException {
-        try {
-            writeItem(resolveFile(root, fileName), factory, value);
-        } catch (JAXBException ex) {
-            throw new IOException(ex);
-        }
+        writeItem(resolveFile(root, fileName), value);
     }
 
-    static Object readItem(Path file, Class<? extends IXmlConverter> type) throws IOException, JAXBException {
-        return xmlToItem(unmarshalItem(file, type));
+    private Object readItem(Path file) throws IOException {
+        return parser.parsePath(file);
     }
 
-    static void writeItem(Path file, Supplier<? extends IXmlConverter> factory, Object value) throws IOException, JAXBException {
-        marshalItem(file, itemToXml(factory, value));
+    private void writeItem(Path file, Object value) throws IOException {
+        Files.createDirectories(file.getParent());
+        formatter.formatPath(value, file);
     }
 
     private static String xmlFileName(String fileName) {
         return ec.tstoolkit.utilities.Paths.changeExtension(fileName, "xml");
     }
 
-    private static Object xmlToItem(IXmlConverter xml) throws IOException {
-        Object result = xml.create();
-        if (result == null) {
-            throw new IOException("Cannot create item using " + xml.getClass());
+    private static final class ValueAdapter<VALUE, XML extends IXmlConverter<VALUE>> {
+
+        private final Supplier<XML> xmlFactory;
+        private final Class<XML> xmlType;
+
+        public ValueAdapter(Supplier<XML> xmlFactory) {
+            this.xmlFactory = xmlFactory;
+            this.xmlType = (Class<XML>) xmlFactory.get().getClass();
         }
-        return result;
-    }
 
-    private static IXmlConverter itemToXml(Supplier<? extends IXmlConverter> factory, Object value) throws IOException {
-        IXmlConverter result = factory.get();
-        result.copy(value);
-        return result;
-    }
+        public Class<XML> getXmlType() {
+            return xmlType;
+        }
 
-    private static <X extends IXmlConverter<?>> X unmarshalItem(Path file, Class<X> type) throws JAXBException, IOException {
-        return (X) JaxbUtil.unmarshal(file, JAXBContext.newInstance(type));
-    }
+        public VALUE toValue(XML xml) {
+            return xml.create();
+        }
 
-    private static void marshalItem(Path file, IXmlConverter<?> jaxbElement) throws JAXBException, IOException {
-        Files.createDirectories(file.getParent());
-        JaxbUtil.marshal(file, JAXBContext.newInstance(jaxbElement.getClass()), jaxbElement, true);
+        public XML fromValue(VALUE value) {
+            XML result = xmlFactory.get();
+            result.copy(value);
+            return result;
+        }
     }
 }
