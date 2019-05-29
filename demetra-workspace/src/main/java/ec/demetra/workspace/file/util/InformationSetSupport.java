@@ -19,15 +19,14 @@ package ec.demetra.workspace.file.util;
 import ec.tss.xml.information.XmlInformationSet;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.information.InformationSetSerializable;
-import internal.io.JaxbUtil;
+import ioutil.Jaxb;
+import ioutil.Xml;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 
 /**
  *
@@ -58,27 +57,19 @@ public final class InformationSetSupport implements FileSupport {
 
     @Override
     public Object read(Path root, String fileName) throws IOException {
-        try {
-            return readItem(resolveFile(root, fileName), factory);
-        } catch (JAXBException ex) {
-            throw new IOException(ex);
-        }
+        return readItem(resolveFile(root, fileName), factory);
     }
 
     @Override
     public void write(Path root, String fileName, Object value) throws IOException {
-        try {
-            writeItem(resolveFile(root, fileName), type, value);
-        } catch (JAXBException ex) {
-            throw new IOException(ex);
-        }
+        writeItem(resolveFile(root, fileName), type, value);
     }
 
-    static Object readItem(Path file, Supplier<? extends InformationSetSerializable> factory) throws IOException, JAXBException {
+    static Object readItem(Path file, Supplier<? extends InformationSetSerializable> factory) throws IOException {
         return xmlToItem(factory, unmarshalItem(file));
     }
 
-    static void writeItem(Path file, Class<? extends InformationSetSerializable> type, Object value) throws IOException, JAXBException {
+    static void writeItem(Path file, Class<? extends InformationSetSerializable> type, Object value) throws IOException {
         marshalItem(file, itemToXml(type.cast(value)));
     }
 
@@ -104,14 +95,24 @@ public final class InformationSetSupport implements FileSupport {
         return result;
     }
 
-    private static XmlInformationSet unmarshalItem(Path file) throws IOException, JAXBException {
-        return (XmlInformationSet) JaxbUtil.unmarshal(file, XML_INFORMATION_SET_CONTEXT);
+    private static final Xml.Parser<XmlInformationSet> PARSER;
+    private static final Xml.Formatter<XmlInformationSet> FORMATTER;
+
+    static {
+        try {
+            PARSER = Jaxb.Parser.of(XmlInformationSet.class);
+            FORMATTER = Jaxb.Formatter.of(XmlInformationSet.class).withFormatted(true);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
-    private static void marshalItem(Path file, XmlInformationSet jaxbElement) throws IOException, JAXBException {
+    private static XmlInformationSet unmarshalItem(Path file) throws IOException {
+        return PARSER.parsePath(file);
+    }
+
+    private static void marshalItem(Path file, XmlInformationSet jaxbElement) throws IOException {
         Files.createDirectories(file.getParent());
-        JaxbUtil.marshal(file, XML_INFORMATION_SET_CONTEXT, jaxbElement, true);
+        FORMATTER.formatPath(jaxbElement, file);
     }
-
-    private static final JAXBContext XML_INFORMATION_SET_CONTEXT = JaxbUtil.createContext(XmlInformationSet.class);
 }

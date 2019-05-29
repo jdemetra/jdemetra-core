@@ -16,7 +16,7 @@
  */
 package ec.tss.tsproviders.utils;
 
-import ec.tstoolkit.utilities.Closeables;
+import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Iterator;
@@ -84,7 +84,7 @@ final class IteratorWithIOs {
 
         @Override
         public void close() throws IOException {
-            Closeables.closeBoth(delegate, closeHandler);
+            IO.closeBoth(delegate, closeHandler);
         }
     }
 

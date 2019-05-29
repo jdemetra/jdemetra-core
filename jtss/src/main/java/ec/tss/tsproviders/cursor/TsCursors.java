@@ -19,7 +19,7 @@ package ec.tss.tsproviders.cursor;
 import com.google.common.collect.Iterators;
 import ec.tss.tsproviders.utils.FunctionWithIO;
 import ec.tss.tsproviders.utils.OptionalTsData;
-import ec.tstoolkit.utilities.Closeables;
+import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -260,7 +260,7 @@ final class TsCursors {
 
         @Override
         public void close() throws IOException {
-            Closeables.closeBoth(delegate, closeHandler);
+            IO.closeBoth(delegate, closeHandler);
         }
     }
 
@@ -329,7 +329,7 @@ final class TsCursors {
 
         @Override
         public void close() throws IOException {
-            Closeables.closeBoth(this::flushToCache, delegate::close);
+            IO.closeBoth(this::flushToCache, delegate::close);
         }
 
         private void flushToCache() throws IOException {
@@ -412,7 +412,7 @@ final class TsCursors {
 
         private Closeable compose(Closeable closeHandler) {
             Closeable first = this.closeable;
-            return () -> Closeables.closeBoth(first, closeHandler);
+            return () -> IO.closeBoth(first, closeHandler);
         }
     }
 

@@ -28,14 +28,14 @@ import static ec.demetra.workspace.WorkspaceFamily.UTIL_VAR;
 import internal.workspace.file.xml.XmlLegacyWorkspace;
 import internal.workspace.file.xml.XmlLegacyWorkspaceItem;
 import internal.io.JaxbUtil;
+import ioutil.Jaxb;
+import ioutil.Xml;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
 import java.nio.file.Path;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 
 /**
  *
@@ -49,7 +49,7 @@ final class LegacyIndexer implements Indexer {
             return true;
         } catch (FileSystemException ex) {
             throw ex;
-        } catch (IOException | JAXBException ex) {
+        } catch (IOException ex) {
             return false;
         }
     }
@@ -75,20 +75,12 @@ final class LegacyIndexer implements Indexer {
 
     @Override
     public Index loadIndex() throws IOException {
-        try {
-            return xmlToIndex(unmarshalIndex(file), MoreFiles.getNameWithoutExtension(file));
-        } catch (JAXBException ex) {
-            throw new IOException(ex);
-        }
+        return xmlToIndex(unmarshalIndex(file), MoreFiles.getNameWithoutExtension(file));
     }
 
     @Override
     public void storeIndex(Index index) throws IOException {
-        try {
-            marshalIndex(file, indexToXml(index));
-        } catch (JAXBException ex) {
-            throw new IOException(ex);
-        }
+        marshalIndex(file, indexToXml(index));
     }
 
     @Override
@@ -165,13 +157,23 @@ final class LegacyIndexer implements Indexer {
         return result;
     }
 
-    private static XmlLegacyWorkspace unmarshalIndex(Path file) throws JAXBException, IOException {
-        return (XmlLegacyWorkspace) JaxbUtil.unmarshal(file, XML_WS_CONTEXT);
+    private static final Xml.Parser<XmlLegacyWorkspace> PARSER;
+    private static final Xml.Formatter<XmlLegacyWorkspace> FORMATTER;
+
+    static {
+        try {
+            PARSER = Jaxb.Parser.of(XmlLegacyWorkspace.class);
+            FORMATTER = Jaxb.Formatter.of(XmlLegacyWorkspace.class).withFormatted(true);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
-    private static void marshalIndex(Path file, XmlLegacyWorkspace jaxbElement) throws JAXBException, IOException {
-        JaxbUtil.marshal(file, XML_WS_CONTEXT, jaxbElement, true);
+    private static XmlLegacyWorkspace unmarshalIndex(Path file) throws IOException {
+        return PARSER.parsePath(file);
     }
 
-    private static final JAXBContext XML_WS_CONTEXT = JaxbUtil.createContext(XmlLegacyWorkspace.class);
+    private static void marshalIndex(Path file, XmlLegacyWorkspace jaxbElement) throws IOException {
+        FORMATTER.formatPath(jaxbElement, file);
+    }
 }
