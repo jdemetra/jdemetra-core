@@ -24,10 +24,10 @@ import demetra.maths.Complex;
  */
 @lombok.Value
 public class DoubleComplex {
-    
-    public static final DoubleComplex ZERO=new DoubleComplex(0,0,0,0);
-    public static final DoubleComplex ONE=new DoubleComplex(1,0,0,0);
-    public static final DoubleComplex I=new DoubleComplex(0,0,1,0);
+
+    public static final DoubleComplex ZERO = new DoubleComplex(0, 0, 0, 0);
+    public static final DoubleComplex ONE = new DoubleComplex(1, 0, 0, 0);
+    public static final DoubleComplex I = new DoubleComplex(0, 0, 1, 0);
 
     private double reHigh, reLow, imHigh, imLow;
 
@@ -42,76 +42,95 @@ public class DoubleComplex {
     public static DoubleComplex cart(DoubleDoubleType re, DoubleDoubleType im) {
         return new DoubleComplex(re.getHigh(), re.getLow(), im.getHigh(), im.getLow());
     }
-    
-    public DoubleDouble getRe(){
+
+    public DoubleDouble getRe() {
         return new DoubleDouble(reHigh, reLow);
     }
-    
-    public DoubleDouble getIm(){
+
+    public DoubleDouble getIm() {
         return new DoubleDouble(imHigh, imLow);
     }
-    
-    public DoubleDouble absSquare(){
-        DoubleDoubleComputer re=new DoubleDoubleComputer(reHigh, reLow),
-                im=new DoubleDoubleComputer(imHigh, imLow);
+
+    public DoubleDouble absSquare() {
+        DoubleDoubleComputer re = new DoubleDoubleComputer(reHigh, reLow),
+                im = new DoubleDoubleComputer(imHigh, imLow);
         return re.square().add(im.square()).result();
     }
 
-    public DoubleDouble abs(){
-        DoubleDoubleComputer re=new DoubleDoubleComputer(reHigh, reLow),
-                im=new DoubleDoubleComputer(imHigh, imLow);
+    public DoubleDouble abs() {
+        DoubleDoubleComputer re = new DoubleDoubleComputer(reHigh, reLow),
+                im = new DoubleDoubleComputer(imHigh, imLow);
         return re.square().add(im.square()).sqrt().result();
     }
-    
-    public DoubleComplex plus(DoubleComplex c){
+
+    public DoubleComplex plus(DoubleComplex c) {
         return new DoubleComplexComputer(this).add(c).result();
     }
-    
-    public DoubleComplex minus(DoubleComplex c){
+
+    public DoubleComplex minus(DoubleComplex c) {
         return new DoubleComplexComputer(this).sub(c).result();
     }
 
-    public DoubleComplex times(DoubleComplex c){
+    public DoubleComplex times(DoubleComplex c) {
         return new DoubleComplexComputer(this).mul(c).result();
     }
 
-    public DoubleComplex plus(Complex c){
+    public DoubleComplex dividedBy(DoubleComplex c) {
+        return new DoubleComplexComputer(this).div(c).result();
+    }
+
+    public DoubleComplex plus(Complex c) {
         return new DoubleComplexComputer(this).add(DoubleComplex.of(c)).result();
     }
-    
-    public DoubleComplex minus(Complex c){
+
+    public DoubleComplex minus(Complex c) {
         return new DoubleComplexComputer(this).sub(DoubleComplex.of(c)).result();
     }
 
-    public DoubleComplex times(Complex c){
+    public DoubleComplex times(Complex c) {
         return new DoubleComplexComputer(this).mul(DoubleComplex.of(c)).result();
     }
 
-    public DoubleComplex plus(DoubleDouble r){
+    public DoubleComplex dividedBy(Complex c) {
+        return new DoubleComplexComputer(this).div(DoubleComplex.of(c)).result();
+    }
+
+    public DoubleComplex plus(DoubleDouble r) {
         return new DoubleComplexComputer(this).add(r).result();
     }
-    
-    public DoubleComplex minus(DoubleDouble r){
+
+    public DoubleComplex minus(DoubleDouble r) {
         return new DoubleComplexComputer(this).sub(r).result();
     }
 
-    public DoubleComplex times(DoubleDouble r){
+    public DoubleComplex times(DoubleDouble r) {
         return new DoubleComplexComputer(this).mul(r).result();
     }
-    
-    public DoubleComplex plus(double r){
+
+    public DoubleComplex dividedBy(DoubleDouble r) {
+        return new DoubleComplexComputer(this).div(r).result();
+    }
+
+    public DoubleComplex plus(double r) {
         return new DoubleComplexComputer(this).add(r).result();
     }
-    
-    public DoubleComplex minus(double r){
+
+    public DoubleComplex minus(double r) {
         return new DoubleComplexComputer(this).sub(r).result();
     }
 
-    public DoubleComplex times(double r){
+    public DoubleComplex times(double r) {
         return new DoubleComplexComputer(this).mul(r).result();
     }
-    
-    
+
+    public DoubleComplex dividedBy(double r) {
+        return new DoubleComplexComputer(this).mul(r).result();
+    }
+
+    public Complex asComplex() {
+        return Complex.cart(reHigh + reLow, imHigh + imLow);
+    }
+
 //    public DoubleComplex divide(DoubleComplex c){
 //        return new DoubleComplexComputer(this).div(c).result();
 //    }
@@ -121,7 +140,7 @@ public class DoubleComplex {
         result.append("(");
         result.append(getRe());
 
-        DoubleDouble im = getIm(); 
+        DoubleDouble im = getIm();
         if (im.isNegative()) {
             result.append(" - ").append(im.negate());
         } else if (im.isZero()) {

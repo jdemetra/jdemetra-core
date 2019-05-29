@@ -92,10 +92,22 @@ public class DoublePolynomialTest {
     public void testProduct() {
         Complex[] roots = UnitRoots.D(100).roots();
         Polynomial p=Polynomial.fromComplexRoots(roots);
-        System.out.println(p.coefficients());
+//        System.out.println(p.coefficients());
         DoublePolynomial dp=DoublePolynomial.of(roots, 1);
-        System.out.println(dp.toPolynomial().coefficients());
+//        System.out.println(dp.toPolynomial().coefficients());
         DoublePolynomial dp2=DoublePolynomial.of2(roots, 1);
-        System.out.println(dp2.toPolynomial().coefficients());
+ //       System.out.println(dp2.toPolynomial().coefficients());
     }
+    
+    @Test
+    public void testDerivate() {
+        DataBlock N = DataBlock.make(30);
+        N.set(i -> (1 + i));
+        Polynomial p=Polynomial.of(N.toArray()).derivate();
+        DoublePolynomial dp=DoublePolynomial.of(N).derivate();
+        double z = p.evaluateAt(0.999901);
+        DoubleDouble dz = dp.evaluatAt(0.999901);
+        assertEquals(z, dz.asDouble(), 1e-9);
+     }
+    
 }

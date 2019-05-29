@@ -20,12 +20,14 @@ import demetra.design.Development;
 import demetra.design.VisibleForTesting;
 import demetra.maths.Complex;
 import demetra.maths.ComplexMath;
+import demetra.maths.ComplexUtility;
 import jdplus.maths.polynomials.LeastSquaresDivision;
 import jdplus.maths.polynomials.Polynomial;
 import demetra.util.Ref;
 import demetra.util.Ref.BooleanRef;
 import demetra.util.Ref.DoubleRef;
 import demetra.util.Ref.IntRef;
+import jdplus.maths.highprecision.DoublePolynomial;
 import jdplus.maths.polynomials.internal.NewtonOptimizer;
 import jdplus.maths.polynomials.spi.RootsSolver;
 
@@ -321,7 +323,7 @@ public class SymmetricMullerNewtonSolver implements RootsSolver {
 
     @Override
     public boolean factorize(final Polynomial p) {
-        try {
+//        try {
             // check that p is symmetrical
             if (!isSymmetric(p)) {
                 return false;
@@ -337,9 +339,9 @@ public class SymmetricMullerNewtonSolver implements RootsSolver {
             }
             m_remainder = Polynomial.valueOf(p.get(m_degree));
             return true;
-        } catch (Exception err) {
-            return false;
-        }
+//        } catch (Exception err) {
+//            return false;
+//        }
     }
 
     /**
@@ -545,6 +547,13 @@ public class SymmetricMullerNewtonSolver implements RootsSolver {
             } else if (!update(nroot)) {
                 return false;
             }
+            Polynomial P = Polynomial.of(m_p);
+            Complex[] croots=roots(m_idx/2);
+            ComplexUtility.lejaOrder(croots);
+            Polynomial Pcur=Polynomial.fromComplexRoots(croots);
+            LeastSquaresDivision lsq=new LeastSquaresDivision();
+            lsq.divide(P, Pcur);
+            lsq.getQuotient().copyTo(m_pred, m_idx);
         } while (m_p.length - m_idx > 3);
         return m_idx == m_degree || quadratic();
     }
@@ -779,8 +788,13 @@ public class SymmetricMullerNewtonSolver implements RootsSolver {
 
     @Override
     public Complex[] roots() {
-        Complex[] r = new Complex[m_roots.length * 2];
-        for (int i = 0; i < m_roots.length; ++i) {
+        
+        return roots(m_roots.length);
+    }
+
+    private Complex[] roots(int nr) {
+        Complex[] r = new Complex[nr * 2];
+        for (int i = 0; i < nr; ++i) {
             r[2 * i] = m_roots[i];
             r[2 * i + 1] = m_roots[i].inv();
         }
@@ -844,7 +858,7 @@ public class SymmetricMullerNewtonSolver implements RootsSolver {
         }
     }
 
-    private boolean lqdiv = true;
+    private boolean lqdiv = false;
 
     public boolean isLeastSquaresDivision() {
         return lqdiv;
@@ -906,7 +920,7 @@ public class SymmetricMullerNewtonSolver implements RootsSolver {
             r = -1;
         }
 
-        double a = -(r0 + 1 / r0);
+        double a = -(r + 1 / r);
         if (!lqdiv) {
             m_roots[m_idx / 2] = Complex.cart(r);
             m_idx += 2;

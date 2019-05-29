@@ -337,7 +337,7 @@ public final class Spectrum {
                 m_min = y;
                 m_x = Math.PI;
             }
-            int nd = 3*Math.max(spectrum.num.getUpperBound(), spectrum.denom.getUpperBound());
+            int nd = Math.max(spectrum.num.getUpperBound(), spectrum.denom.getUpperBound());
             double a = 0, step = Math.PI / nd;
             for (int i = 0; i < nd; ++i, a+=step) {
                 double b = a + step;

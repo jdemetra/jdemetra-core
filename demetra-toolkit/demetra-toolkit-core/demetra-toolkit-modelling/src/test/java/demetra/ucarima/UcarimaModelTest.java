@@ -27,9 +27,13 @@ public class UcarimaModelTest {
 
     @Test
     public void testAirline2() {
-        for (int period = 4; period <= 300; ++period) {
-            UcarimaModel ucm = ucmAirline(period, -.5, -.8);
-            System.out.println(ucm.getComponent(1).getInnovationVariance());
+        for (int period = 3; period <= 300; ++period) {
+            UcarimaModel ucm = ucmAirline(period, -.7, -.2);
+            System.out.print(ucm.getComponent(0).getInnovationVariance());
+            System.out.print('\t');
+            System.out.print(ucm.getComponent(1).getInnovationVariance());
+            System.out.print('\t');
+            System.out.println(ucm.getComponent(3).getInnovationVariance());
             assertTrue(ucm.isValid());
         }
     }

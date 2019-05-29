@@ -165,7 +165,7 @@ public class DoublePolynomial {
         return (c.length >> 1) - 1;
     }
 
-    public Polynomial toPolynomial() {
+    public Polynomial asPolynomial() {
         double[] p = new double[c.length >> 1];
         for (int i = 0, j = 0; i < p.length; ++i, j += 2) {
             p[i] = c[j] + c[j + 1];
@@ -177,10 +177,13 @@ public class DoublePolynomial {
         if (c.length == 2) {
             return DoublePolynomial.ZERO;
         }
+//        if (c.length == 4) {
+//            return DoublePolynomial.of(new double[]{c[2]+c[3]});
+//        }
         int n = c.length-2;
         double[] result = new double[n];
         DoubleDoubleComputer cpt=new DoubleDoubleComputer();
-        for (int i = 2; i < c.length; ++i) {
+        for (int i = 2; i <= n; i+=2) {
             cpt.set(c[i], c[i+1]);
             cpt.mul(i>>1);
             result[i - 2] = cpt.getHigh();

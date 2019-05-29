@@ -18,6 +18,7 @@ package demetra.maths.linearfilters.internal;
 
 import demetra.design.Development;
 import demetra.maths.Complex;
+import demetra.maths.ComplexUtility;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.LeastSquaresDivision;
@@ -41,13 +42,12 @@ public class RobustSymmetricFrequencyResponseDecomposer  {
     private BackFilter m_bf;
     private int m_freq;
     private double m_epsilon = 1e-4;
-    private final double m_repsilon = 1e-1;
 
     /**
      *
      */
     public RobustSymmetricFrequencyResponseDecomposer() {
-        m_freq = 12;
+        m_freq = 0;
     }
 
     /**
@@ -105,6 +105,7 @@ public class RobustSymmetricFrequencyResponseDecomposer  {
             return false;
         }
         Complex[] sroots = solver.getStableRoots();
+        ComplexUtility.lejaOrder(sroots);
         Polynomial P2 = Polynomial.fromComplexRoots(sroots);
         BackFilter bf = new BackFilter(P2);
         double v = bf.get(0);

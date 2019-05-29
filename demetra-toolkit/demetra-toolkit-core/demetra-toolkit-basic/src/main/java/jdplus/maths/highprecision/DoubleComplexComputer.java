@@ -124,6 +124,58 @@ public class DoubleComplexComputer {
         return this;
     }
 
+    public DoubleComplexComputer div(final DoubleComplex c) {
+ 
+//        if (Math.abs(x) >= Math.abs(y)) {
+//            scalar = 1.0 / (x + y * (y / x));
+//
+//            dRe = scalar * (re + im * (y / x));
+//            dIm = scalar * (im - re * (y / x));
+//
+//        } else {
+//            scalar = 1.0 / (x * (x / y) + y);
+//
+//            dRe = scalar * (re * (x / y) + im);
+//            dIm = scalar * (im * (x / y) - re);
+//        }// endif
+//        re = dRe;
+//        im = dIm;
+        DoubleDouble x=c.getRe(), y=c.getIm();
+        DoubleDouble scalar, dRe, dIm;
+        if (x.abs().gt(y.abs())) {
+            DoubleDoubleComputer cpt=new DoubleDoubleComputer(y);
+            scalar =cpt.div(x).mul(y).add(x).inv().result();
+            dRe=cpt.set(y).div(x).mul(im).add(re).mul(scalar).result();
+            dIm=cpt.set(y).div(x).mul(re).chs().add(im).mul(scalar).result();
+        } else {
+            DoubleDoubleComputer cpt=new DoubleDoubleComputer(x);
+            scalar =cpt.div(y).mul(x).add(y).inv().result();
+            dRe=cpt.set(x).div(y).mul(re).add(im).mul(scalar).result();
+            dIm=cpt.set(x).div(y).mul(im).sub(re).mul(scalar).result();
+        }
+        re.set(dRe);
+        im.set(dIm);
+        return this;
+    }
+
+    public DoubleComplexComputer div(final DoubleDoubleType c) {
+        re.div(c);
+        im.div(c);
+        return this;
+    }
+
+    public DoubleComplexComputer div(final double xhigh, final double xlow) {
+        re.div(xhigh, xlow);
+        im.div(xhigh, xlow);
+        return this;
+    }
+
+    public DoubleComplexComputer div(final double x) {
+        re.div(x);
+        im.div(x);
+        return this;
+    }
+
     public DoubleComplex result() {
         return new DoubleComplex(re.getHigh(), re.getLow(), im.getHigh(), im.getLow());
     }
