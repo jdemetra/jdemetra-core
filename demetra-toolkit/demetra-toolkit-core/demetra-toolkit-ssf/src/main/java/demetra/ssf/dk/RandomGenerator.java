@@ -21,7 +21,7 @@ import jdplus.dstats.Normal;
 import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
-import demetra.random.JdkRNG;
+import jdplus.random.JdkRNG;
 import demetra.ssf.ISsfDynamics;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.ISsfInitialization;

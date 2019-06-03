@@ -6,7 +6,7 @@
 package demetra.leastsquares;
 
 import demetra.leastsquares.internal.AdvancedQRSolver;
-import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.decomposition.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 

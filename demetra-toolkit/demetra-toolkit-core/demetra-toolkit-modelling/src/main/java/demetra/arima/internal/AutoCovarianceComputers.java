@@ -23,7 +23,7 @@ import demetra.linearsystem.internal.QRLinearSystemSolver;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.decomposition.Householder;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.RationalFunction;
 import demetra.linearsystem.LinearSystemSolver;

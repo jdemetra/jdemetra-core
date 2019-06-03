@@ -25,7 +25,7 @@ import demetra.design.Immutable;
 import demetra.eco.EcoException;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.decomposition.Householder;
 import demetra.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.decomposition.QRDecomposition;

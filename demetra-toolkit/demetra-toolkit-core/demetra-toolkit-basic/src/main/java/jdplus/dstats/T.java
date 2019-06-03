@@ -17,9 +17,6 @@
 package jdplus.dstats;
 
 import demetra.stats.ProbabilityType;
-import jdplus.dstats.internal.SpecialFunctions;
-import jdplus.dstats.internal.ProbInvFinder;
-import jdplus.dstats.internal.Utility;
 import demetra.design.Development;
 import java.util.concurrent.atomic.AtomicReference;
 import demetra.random.RandomNumberGenerator;

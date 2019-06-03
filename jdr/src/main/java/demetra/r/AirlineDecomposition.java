@@ -49,7 +49,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.Doubles;
 import jdplus.maths.matrices.FastMatrix;
-import static demetra.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
  *

@@ -22,7 +22,6 @@ import demetra.maths.ComplexMath;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
-import jdplus.maths.polynomials.spi.RootsSolver;
 import demetra.data.DoubleSeq;
 
 /**

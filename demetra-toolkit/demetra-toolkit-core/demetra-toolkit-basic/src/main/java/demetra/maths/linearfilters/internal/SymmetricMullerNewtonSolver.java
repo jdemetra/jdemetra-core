@@ -28,8 +28,8 @@ import demetra.util.Ref.BooleanRef;
 import demetra.util.Ref.DoubleRef;
 import demetra.util.Ref.IntRef;
 import jdplus.maths.highprecision.DoublePolynomial;
-import jdplus.maths.polynomials.internal.NewtonOptimizer;
-import jdplus.maths.polynomials.spi.RootsSolver;
+import jdplus.maths.polynomials.NewtonOptimizer;
+import jdplus.maths.polynomials.RootsSolver;
 
 /**
  * Mueller-Newton solver for symmetric polynomial. A symmetric polynomial is

@@ -11,7 +11,7 @@ import lombok.NonNull;
 import demetra.leastsquares.internal.AdvancedQRSolver;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.matrices.UpperTriangularMatrix;
-import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.decomposition.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.data.LogSign;

@@ -20,7 +20,7 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.design.BuilderPattern;
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.decomposition.Householder;
 import demetra.data.DoubleSeq;
 
 /**

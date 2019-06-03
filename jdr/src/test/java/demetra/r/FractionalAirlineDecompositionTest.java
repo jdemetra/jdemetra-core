@@ -8,7 +8,7 @@ package demetra.r;
 import demetra.data.Data;
 import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
-import static demetra.timeseries.simplets.TsDataToolkit.log;
+import static jdplus.timeseries.simplets.TsDataToolkit.log;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;

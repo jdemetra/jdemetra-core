@@ -11,7 +11,7 @@ import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.internal.LDLDecomposition;
+import jdplus.maths.matrices.decomposition.LDLDecomposition;
 
 /**
  *

@@ -15,7 +15,7 @@ import demetra.regarima.RegArimaEstimation;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
-import demetra.timeseries.calendars.HolidaysUtility;
+import jdplus.timeseries.calendars.HolidaysUtility;
 import demetra.timeseries.calendars.IHoliday;
 import java.io.File;
 import java.io.IOException;

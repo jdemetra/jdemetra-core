@@ -19,7 +19,7 @@ package demetra.maths.linearfilters;
 import jdplus.data.DataBlock;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
-import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.decomposition.Householder;
 import java.util.function.IntToDoubleFunction;
 import demetra.linearsystem.LinearSystemSolver;
 import demetra.data.DoubleSeq;

@@ -21,7 +21,7 @@ import jdplus.data.DataBlockIterator;
 import demetra.maths.Constants;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.MatrixException;
-import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.decomposition.Householder;
 import demetra.data.DoubleSeq;
 
 /**

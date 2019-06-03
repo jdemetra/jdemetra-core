@@ -5,7 +5,6 @@
  */
 package demetra.ucarima;
 
-import demetra.arima.ArimaModel;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import org.junit.Test;
@@ -25,17 +24,28 @@ public class UcarimaModelTest {
         assertTrue(ucmAirline(-.6, -.8).isValid());
     }
 
-    @Test
-    public void testAirline2() {
-        for (int period = 3; period <= 300; ++period) {
-            UcarimaModel ucm = ucmAirline(period, -.7, -.2);
+    public static void testAirline2(double th, double bth) {
+        for (int period = 3; period <= 100; ++period) {
+            UcarimaModel ucm = ucmAirline(period, th, bth);
             System.out.print(ucm.getComponent(0).getInnovationVariance());
             System.out.print('\t');
             System.out.print(ucm.getComponent(1).getInnovationVariance());
             System.out.print('\t');
             System.out.println(ucm.getComponent(3).getInnovationVariance());
-            assertTrue(ucm.isValid());
         }
+    }
+
+    public static void main(String[] args) {
+//        for (double th = -.2; th >= -.9; th -= .1) {
+            double th=-.6;
+            for (double bth = -.2; bth >= -.95; bth -= .05) {
+                StringBuilder builder=new StringBuilder();
+                builder.append("th=").append(th).append(", bth=").append(bth);
+                System.out.println(builder.toString());
+                testAirline2(th, bth);
+                System.out.println();
+            }
+//         }
     }
 
     @Test

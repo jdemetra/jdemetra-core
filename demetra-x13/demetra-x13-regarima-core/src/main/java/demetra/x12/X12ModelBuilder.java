@@ -47,7 +47,7 @@ import demetra.regarima.regular.SarimaComponent;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.simplets.TsDataToolkit;
+import jdplus.timeseries.simplets.TsDataToolkit;
 import java.time.LocalDateTime;
 import java.util.Map;
 import demetra.modelling.regression.ILengthOfPeriodVariable;

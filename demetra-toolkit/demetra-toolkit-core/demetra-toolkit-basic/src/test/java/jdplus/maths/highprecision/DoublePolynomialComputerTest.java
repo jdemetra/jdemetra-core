@@ -20,7 +20,7 @@ import demetra.maths.Complex;
 import java.util.Random;
 import jdplus.data.DataBlock;
 import jdplus.maths.polynomials.Polynomial;
-import jdplus.maths.polynomials.internal.PolynomialComputer;
+import jdplus.maths.polynomials.PolynomialComputer;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

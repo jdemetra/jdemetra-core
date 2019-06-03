@@ -16,6 +16,7 @@
  */
 package demetra.data.accumulator;
 
+import jdplus.data.accumulator.AccSum;
 import demetra.data.DoubleSeq;
 import org.junit.Test;
 import static org.junit.Assert.*;

@@ -17,12 +17,10 @@
 package jdplus.dstats;
 
 import demetra.stats.ProbabilityType;
-import jdplus.dstats.internal.SpecialFunctions;
-import jdplus.dstats.internal.Utility;
 import demetra.data.Interval;
 import demetra.design.Development;
 import demetra.design.Immutable;
-import jdplus.dstats.internal.Utility.calcProbDelegate;
+import jdplus.dstats.Utility.calcProbDelegate;
 import java.util.Formatter;
 import lombok.NonNull;
 import demetra.random.RandomNumberGenerator;

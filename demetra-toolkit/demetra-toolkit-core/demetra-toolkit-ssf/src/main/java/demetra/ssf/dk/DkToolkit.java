@@ -25,7 +25,7 @@ import demetra.maths.functions.IParametricMapping;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.matrices.UpperTriangularMatrix;
-import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.decomposition.Householder;
 import demetra.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import demetra.ssf.ResultsRange;
 import demetra.ssf.ckms.CkmsDiffuseInitializer;

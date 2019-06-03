@@ -26,8 +26,8 @@ import demetra.design.Algorithm;
 import demetra.design.Development;
 import demetra.design.ServiceDefinition;
 import jdplus.maths.matrices.MatrixException;
-import demetra.maths.matrices.internal.CroutDoolittle;
-import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.decomposition.CroutDoolittle;
+import jdplus.maths.matrices.decomposition.Householder;
 import jdplus.maths.matrices.FastMatrix;
 
 /**

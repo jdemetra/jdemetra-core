@@ -28,8 +28,9 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @lombok.experimental.UtilityClass
 public class MatrixOperations {
+
     private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
-    
+
     public void setProcessor(Processor processor) {
         PROCESSOR.set(processor);
     }
@@ -37,12 +38,76 @@ public class MatrixOperations {
     public Processor getProcessor() {
         return PROCESSOR.get();
     }
-    
+
+    public Matrix plus(Matrix left, Matrix right) {
+        return PROCESSOR.get().plus(left, right);
+    }
+
+    public Matrix plus(Matrix M, double d) {
+        return PROCESSOR.get().plus(M, d);
+    }
+
+    public Matrix minus(Matrix left, Matrix right) {
+        return PROCESSOR.get().minus(left, right);
+    }
+
+    public Matrix minus(Matrix M, double d) {
+        return PROCESSOR.get().minus(M, d);
+    }
+
+    public Matrix times(Matrix left, Matrix right) {
+        return PROCESSOR.get().times(left, right);
+    }
+
+    public Matrix times(Matrix M, double d){
+        return PROCESSOR.get().times(M, d);
+    }
+
+    public Matrix chs(Matrix M){
+        return PROCESSOR.get().chs(M);
+    }
+
+    public Matrix inv(Matrix M){
+        return PROCESSOR.get().inv(M);
+    }
+
+    public Matrix transpose(Matrix M){
+        return PROCESSOR.get().transpose(M);
+    }
+
+    public Matrix XXt(Matrix X){
+        return PROCESSOR.get().XXt(X);
+    }
+
+    public Matrix XtX(Matrix X){
+        return PROCESSOR.get().XtX(X);
+    }
+
     @ServiceDefinition
     @Algorithm
     public static interface Processor {
+
+        Matrix plus(Matrix left, Matrix right);
+
+        Matrix plus(Matrix M, double d);
+
+        Matrix minus(Matrix left, Matrix right);
+
+        Matrix minus(Matrix M, double d);
+
+        Matrix times(Matrix left, Matrix right);
+
+        Matrix times(Matrix M, double d);
+
+        Matrix chs(Matrix M);
+
+        Matrix inv(Matrix M);
+
+        Matrix transpose(Matrix M);
         
-        Matrix plus(Matrix left, Matrix right); 
-    }    
-    
+        Matrix XXt(Matrix X);
+
+        Matrix XtX(Matrix X);
+    }
+
 }

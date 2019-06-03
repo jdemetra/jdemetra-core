@@ -21,7 +21,7 @@ import jdplus.maths.matrices.FastMatrix;
 import jdplus.maths.matrices.UpperTriangularMatrix;
 import jdplus.maths.matrices.decomposition.ElementaryTransformations;
 import jdplus.data.DataBlock;
-import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.decomposition.Householder;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;

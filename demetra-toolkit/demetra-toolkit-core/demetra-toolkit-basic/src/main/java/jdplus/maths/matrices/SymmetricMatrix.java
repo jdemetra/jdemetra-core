@@ -8,8 +8,8 @@ package jdplus.maths.matrices;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.LogSign;
-import demetra.data.accumulator.DoubleAccumulator;
-import demetra.maths.matrices.internal.CroutDoolittle;
+import jdplus.data.accumulator.DoubleAccumulator;
+import jdplus.maths.matrices.decomposition.CroutDoolittle;
 import demetra.random.RandomNumberGenerator;
 
 /**

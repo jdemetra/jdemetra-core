@@ -18,6 +18,8 @@ package demetra.maths.spi;
 
 import demetra.design.Algorithm;
 import demetra.design.ServiceDefinition;
+import demetra.maths.Complex;
+import demetra.maths.PolynomialType;
 import demetra.util.ServiceLookup;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -37,9 +39,16 @@ public class Polynomials {
         return PROCESSOR.get();
     }
     
+    public Complex[] roots(PolynomialType p){
+        return PROCESSOR.get().roots(p);
+    }
+    
     @ServiceDefinition
     @Algorithm
     public static interface Processor {
+        Complex[] roots(PolynomialType p);
+        
+        
     }    
     
 }

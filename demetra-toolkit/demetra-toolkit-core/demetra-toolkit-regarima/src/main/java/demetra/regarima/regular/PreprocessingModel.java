@@ -23,8 +23,8 @@ import demetra.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.simplets.TsDataToolkit;
-import demetra.timeseries.simplets.TsDataTransformation;
+import jdplus.timeseries.simplets.TsDataToolkit;
+import jdplus.timeseries.simplets.TsDataTransformation;
 import java.util.List;
 import demetra.data.DoubleSeq;
 

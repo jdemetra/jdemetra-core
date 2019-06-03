@@ -10,9 +10,9 @@ import jdplus.data.DataBlock;
 import demetra.data.DataSets;
 import static demetra.data.DataSets.lre;
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.internal.Householder;
-import demetra.maths.matrices.internal.HouseholderWithPivoting;
-import demetra.maths.matrices.internal.RobustHouseholder;
+import jdplus.maths.matrices.decomposition.Householder;
+import jdplus.maths.matrices.decomposition.HouseholderWithPivoting;
+import jdplus.maths.matrices.decomposition.RobustHouseholder;
 import org.junit.Test;
 import demetra.data.DoubleSeq;
 

@@ -21,7 +21,7 @@ import demetra.design.Immutable;
 import demetra.maths.Complex;
 import jdplus.maths.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
-import jdplus.maths.polynomials.spi.RootsSolver;
+import jdplus.maths.polynomials.RootsSolver;
 import jdplus.maths.polynomials.PolynomialException;
 
 /**

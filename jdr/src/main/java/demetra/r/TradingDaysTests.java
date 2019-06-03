@@ -30,8 +30,8 @@ import demetra.modelling.regression.GenericTradingDaysVariable;
 import demetra.modelling.regression.Regression;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.GenericTradingDays;
-import static demetra.timeseries.simplets.TsDataToolkit.drop;
-import static demetra.timeseries.simplets.TsDataToolkit.delta;
+import static jdplus.timeseries.simplets.TsDataToolkit.drop;
+import static jdplus.timeseries.simplets.TsDataToolkit.delta;
 
 /**
  *

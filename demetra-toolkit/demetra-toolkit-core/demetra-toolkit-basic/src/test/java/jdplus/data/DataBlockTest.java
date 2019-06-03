@@ -10,7 +10,7 @@ import demetra.data.DoubleSeqCursor;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.DataWindow;
-import demetra.data.accumulator.KahanAccumulator;
+import jdplus.data.accumulator.KahanAccumulator;
 import jdplus.maths.matrices.SubMatrix;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;

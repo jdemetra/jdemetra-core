@@ -18,7 +18,7 @@ package demetra.tramo;
 
 import demetra.data.analysis.DiscreteWindowFunction;
 import demetra.data.analysis.SmoothedPeriodogram;
-import jdplus.dstats.internal.SpecialFunctions;
+import jdplus.dstats.SpecialFunctions;
 import demetra.timeseries.TsData;
 import demetra.data.DoubleSeq;
 

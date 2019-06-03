@@ -25,7 +25,7 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.modelling.regression.GenericTradingDaysVariable;
 import demetra.modelling.regression.Regression;
 import demetra.timeseries.TsData;
-import static demetra.timeseries.simplets.TsDataToolkit.fitToDomain;
+import static jdplus.timeseries.simplets.TsDataToolkit.fitToDomain;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;

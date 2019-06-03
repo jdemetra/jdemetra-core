@@ -19,7 +19,7 @@ package jdplus.data;
 import demetra.data.DoubleList;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.accumulator.DoubleAccumulator;
+import jdplus.data.accumulator.DoubleAccumulator;
 import demetra.design.Unsafe;
 import java.util.Iterator;
 import java.util.Objects;

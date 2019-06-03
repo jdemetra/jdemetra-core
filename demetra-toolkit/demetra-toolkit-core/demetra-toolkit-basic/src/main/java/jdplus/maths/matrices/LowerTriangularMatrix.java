@@ -20,7 +20,7 @@ public class LowerTriangularMatrix {
     public void randomize(FastMatrix M, RandomNumberGenerator rng) {
         M.set((r, c) -> (c > r) ? 0 : rng.nextDouble());
     }
- 
+
     // Matrix versions
     /**
      * Solves the set of equations X*L = B
@@ -33,14 +33,22 @@ public class LowerTriangularMatrix {
      * number of rows of the matrix.
      */
     public void lsolve(final FastMatrix L, final FastMatrix B, double zero) throws MatrixException {
-        DataBlockIterator rows = B.rowsIterator();
-        while (rows.hasNext()) {
-            lsolve(L, rows.next(), zero);
+        if (L.isCanonical()) {
+            LowerTriangularCanonicalMatrix.lsolve(L.asCanonical(), B, zero);
+        } else {
+            DataBlockIterator rows = B.rowsIterator();
+            while (rows.hasNext()) {
+                lsolve(L, rows.next(), zero);
+            }
         }
     }
 
     public void lsolve(final FastMatrix L, final FastMatrix B) throws MatrixException {
-        lsolve(L, B, 0);
+        if (L.isCanonical()) {
+            LowerTriangularCanonicalMatrix.lsolve(L.asCanonical(), B);
+        } else {
+            lsolve(L, B, 0);
+        }
     }
 
     /**
@@ -56,14 +64,22 @@ public class LowerTriangularMatrix {
      * @throws MatrixException Thrown when the system cannot be solved.
      */
     public void rsolve(final FastMatrix L, final FastMatrix B, final double zero) throws MatrixException {
-        DataBlockIterator columns = B.columnsIterator();
-        while (columns.hasNext()) {
-            rsolve(L, columns.next(), zero);
+        if (L.isCanonical()) {
+            LowerTriangularCanonicalMatrix.rsolve(L.asCanonical(), B, zero);
+        } else {
+            DataBlockIterator columns = B.columnsIterator();
+            while (columns.hasNext()) {
+                rsolve(L, columns.next(), zero);
+            }
         }
     }
 
     public void rsolve(final FastMatrix L, final FastMatrix B) throws MatrixException {
-        rsolve(L, B, 0);
+        if (L.isCanonical()) {
+            LowerTriangularCanonicalMatrix.rsolve(L.asCanonical(), B);
+        } else {
+            rsolve(L, B, 0);
+        }
     }
 
     /**
@@ -73,9 +89,13 @@ public class LowerTriangularMatrix {
      * @param B
      */
     public void rmul(final FastMatrix L, final FastMatrix B) {
+        if (L.isCanonical()) {
+            LowerTriangularCanonicalMatrix.rmul(L.asCanonical(), B);
+        } else {
         DataBlockIterator columns = B.columnsIterator();
         while (columns.hasNext()) {
             rmul(L, columns.next());
+        }
         }
     }
 
@@ -175,7 +195,7 @@ public class LowerTriangularMatrix {
             rmul_row(L, x);
         }
     }
-    
+
     public void lmul(FastMatrix L, DataBlock x) {
         if (L.getRowIncrement() == 1) {
             lmul_column(L, x);
@@ -200,19 +220,18 @@ public class LowerTriangularMatrix {
         }
     }
 
-    
-    public LogSign logDeterminant(FastMatrix L){
+    public LogSign logDeterminant(FastMatrix L) {
         return LogSign.of(L.diagonal());
     }
-    
-    public double determinant(FastMatrix L){
-        LogSign ls=logDeterminant(L);
-        if (ls == null)
+
+    public double determinant(FastMatrix L) {
+        LogSign ls = logDeterminant(L);
+        if (ls == null) {
             return 0;
-        double val=Math.exp(ls.getValue());
+        }
+        double val = Math.exp(ls.getValue());
         return ls.isPositive() ? val : -val;
     }
-
 
     /**
      * Solves the set of equations Lx = b where x and b are vectors with a
@@ -332,7 +351,6 @@ public class LowerTriangularMatrix {
         }
     }
 
-
     public void lsolve_row(final FastMatrix L, final DataBlock b, double zero)
             throws MatrixException {
         double[] data = L.getStorage();
@@ -442,7 +460,6 @@ public class LowerTriangularMatrix {
             }
         }
     }
-
 
     void rmul_column(final FastMatrix L, final DataBlock r) {
         double[] data = L.getStorage();

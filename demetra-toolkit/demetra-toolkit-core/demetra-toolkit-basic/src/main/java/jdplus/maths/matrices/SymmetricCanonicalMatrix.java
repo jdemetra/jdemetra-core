@@ -20,8 +20,8 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.LogSign;
-import demetra.maths.matrices.internal.CroutDoolittle;
-import demetra.random.MersenneTwister;
+import jdplus.maths.matrices.decomposition.CroutDoolittle;
+import jdplus.random.MersenneTwister;
 import demetra.random.RandomNumberGenerator;
 
 /**

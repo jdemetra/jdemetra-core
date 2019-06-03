@@ -23,7 +23,7 @@ import demetra.data.DoubleSeq;
 import demetra.design.Development;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.MatrixException;
-import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.decomposition.Householder;
 
 
 /**

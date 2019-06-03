@@ -25,7 +25,7 @@ import demetra.design.Development;
 import demetra.maths.linearfilters.BackFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.matrices.MatrixException;
-import demetra.maths.matrices.internal.CroutDoolittle;
+import jdplus.maths.matrices.decomposition.CroutDoolittle;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRoots;
 import demetra.ucarima.UcarimaModel;

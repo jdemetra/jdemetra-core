@@ -19,7 +19,7 @@ package demetra.linearsystem.internal;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.accumulator.NeumaierAccumulator;
+import jdplus.data.accumulator.NeumaierAccumulator;
 import demetra.design.BuilderPattern;
 import jdplus.maths.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;

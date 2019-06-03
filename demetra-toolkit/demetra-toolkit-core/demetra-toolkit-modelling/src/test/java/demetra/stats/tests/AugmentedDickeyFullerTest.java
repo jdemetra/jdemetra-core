@@ -22,7 +22,7 @@ import demetra.linearmodel.LeastSquaresResults;
 import demetra.linearmodel.LinearModel;
 import demetra.linearmodel.Ols;
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.random.MersenneTwister;
+import jdplus.random.MersenneTwister;
 import java.io.IOException;
 import java.util.Arrays;
 import org.junit.Test;

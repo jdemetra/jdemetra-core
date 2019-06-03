@@ -23,7 +23,7 @@ import demetra.data.LogSign;
 import demetra.likelihood.DeterminantalTerm;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.matrices.UpperTriangularMatrix;
-import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.decomposition.Householder;
 import demetra.ssf.ResultsRange;
 import demetra.ssf.univariate.DefaultFilteringResults;
 import demetra.ssf.univariate.FastFilter;
