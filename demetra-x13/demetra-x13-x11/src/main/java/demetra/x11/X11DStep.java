@@ -98,7 +98,7 @@ public class X11DStep {
         aep.process(d6, DataBlock.ofInternal(x));
         d7 = DoubleSequence.ofInternal(x);
         if (context.isMultiplicative()) {
-            d7 = context.makePositivity(d7);
+            d7 = X11Context.makePositivity(d7);
         }
     }
 
@@ -157,7 +157,7 @@ public class X11DStep {
         aep.process(d11bis, DataBlock.ofInternal(x));
         d12 = DoubleSequence.ofInternal(x);
         if (context.isMultiplicative()) {
-            d12 = context.makePositivity(d12);
+            d12 = X11Context.makePositivity(d12);
         }
 
         d13 = context.remove(d11, d12);

@@ -127,7 +127,7 @@ public class X11Kernel implements X11.Processor {
             dsT = dsT.exp();
             if (s != null && i != null) {
                 dsT = legacyBiasCorrection(dsT, s, i);
-                DoubleSequence dsTpos = context.makePositivity(dsT);
+                DoubleSequence dsTpos = X11Context.makePositivity(dsT);
                 DoubleSequence dsS = DoubleSequence.onMapping(s.length(), l -> bstep.getB1().exp().get(l) / s.exp().get(l));
                 kernelD13 = DoubleSequence.onMapping(dsTpos.length(), k -> dsS.get(k) / dsTpos.get(k));
             }

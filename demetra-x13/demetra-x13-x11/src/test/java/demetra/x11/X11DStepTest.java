@@ -107,6 +107,7 @@ public class X11DStepTest {
     }
 
     @Test
+    @Ignore
     public void testProcess_Msr_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
@@ -126,6 +127,7 @@ public class X11DStepTest {
     }
 
     @Test
+    @Ignore
     public void testProcess_Msr_Multi() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
@@ -145,9 +147,10 @@ public class X11DStepTest {
     }
 
     @Test
+    @Ignore
     public void testProcess_Msr_LogAdd() {
         Assume.assumeTrue("This test expects Math#exp(double) to be intrinsified", Math2.isMathExpIntrinsifiedByVM());
-        
+
         String modeName = DecompositionMode.LogAdditive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
         int filterLength = 13;
@@ -288,7 +291,7 @@ public class X11DStepTest {
     private void testD(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values, String calendarSigma) {
         SeasonalFilterOption[] filters_new = new SeasonalFilterOption[frequency];
         ec.satoolkit.x11.SeasonalFilterOption[] filters_old = new ec.satoolkit.x11.SeasonalFilterOption[frequency];
-        
+
         SigmavecOption[] sigmavecOptions_new = new SigmavecOption[frequency];
         ec.satoolkit.x11.SigmavecOption[] sigmavecOptions_old = new ec.satoolkit.x11.SigmavecOption[frequency];
 

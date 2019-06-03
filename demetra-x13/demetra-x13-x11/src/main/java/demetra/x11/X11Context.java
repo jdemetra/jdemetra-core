@@ -248,7 +248,7 @@ public class X11Context {
      *
      * @return new DoubleSequence
      */
-    public DoubleSequence makePositivity(DoubleSequence in) {
+    public static DoubleSequence makePositivity(DoubleSequence in) {
         double[] stc = in.toArray();
         int n = in.length();
         for (int i = 0; i < n; ++i) {

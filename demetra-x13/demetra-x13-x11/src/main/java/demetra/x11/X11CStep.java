@@ -92,7 +92,7 @@ public class X11CStep {
         aep.process(c6, DataBlock.ofInternal(x));
         c7 = DoubleSequence.ofInternal(x);
         if (context.isMultiplicative()) {
-            c7 = context.makePositivity(c7);
+            c7 = X11Context.makePositivity(c7);
         }
     }
 
