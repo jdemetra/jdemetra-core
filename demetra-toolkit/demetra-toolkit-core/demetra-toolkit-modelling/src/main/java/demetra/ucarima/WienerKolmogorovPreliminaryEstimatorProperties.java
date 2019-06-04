@@ -24,10 +24,10 @@ import demetra.arima.LinearProcess;
 import demetra.arima.StationaryTransformation;
 import demetra.design.Development;
 import demetra.maths.Complex;
-import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.linearfilters.FiniteFilter;
-import demetra.maths.linearfilters.RationalFilter;
-import demetra.maths.linearfilters.RationalForeFilter;
+import jdplus.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.FiniteFilter;
+import jdplus.maths.linearfilters.RationalFilter;
+import jdplus.maths.linearfilters.RationalForeFilter;
 import demetra.arima.ILinearProcess;
 
 

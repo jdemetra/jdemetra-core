@@ -6,7 +6,7 @@
 package demetra.arima.estimation;
 
 import demetra.arima.IArimaModel;
-import demetra.maths.functions.IParametricMapping;
+import jdplus.maths.functions.IParametricMapping;
 import demetra.data.DoubleSeq;
 
 /**

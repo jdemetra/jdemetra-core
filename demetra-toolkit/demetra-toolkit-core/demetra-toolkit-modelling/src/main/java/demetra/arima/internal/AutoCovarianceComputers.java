@@ -19,14 +19,14 @@ package demetra.arima.internal;
 import demetra.arima.ArimaException;
 import demetra.arima.AutoCovarianceFunction;
 import jdplus.data.DataBlock;
-import demetra.linearsystem.internal.QRLinearSystemSolver;
-import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.linearfilters.SymmetricFilter;
+import jdplus.linearsystem.internal.QRLinearSystemSolver;
+import jdplus.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.decomposition.Householder;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.RationalFunction;
-import demetra.linearsystem.LinearSystemSolver;
+import jdplus.linearsystem.LinearSystemSolver;
 
 /**
  *

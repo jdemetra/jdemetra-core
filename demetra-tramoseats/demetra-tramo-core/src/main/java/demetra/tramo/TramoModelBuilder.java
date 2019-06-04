@@ -16,7 +16,7 @@
  */
 package demetra.tramo;
 
-import demetra.data.interpolation.AverageInterpolator;
+import jdplus.data.interpolation.AverageInterpolator;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.modelling.regression.PreadjustmentVariable;

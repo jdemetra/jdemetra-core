@@ -19,7 +19,7 @@ package jdplus.timeseries.simplets;
 import demetra.timeseries.TsData;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.linearfilters.IFiniteFilter;
+import jdplus.maths.linearfilters.IFiniteFilter;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;

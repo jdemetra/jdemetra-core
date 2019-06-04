@@ -8,9 +8,9 @@ package demetra.r;
 import demetra.arima.ssf.SsfArima;
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
-import demetra.maths.functions.IParametricMapping;
-import demetra.maths.functions.ParamValidation;
-import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.maths.functions.IParametricMapping;
+import jdplus.maths.functions.ParamValidation;
+import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.QuadraticForm;
 import jdplus.maths.matrices.SymmetricMatrix;
@@ -130,7 +130,10 @@ public class TimeVaryingRegression {
         CanonicalMatrix nvar = generateVar(dc, svar);
         SsfData data = new SsfData(s.getValues());
 
-        LevenbergMarquardtMinimizer min = new LevenbergMarquardtMinimizer();
+        LevenbergMarquardtMinimizer min = LevenbergMarquardtMinimizer
+                .builder()
+                .functionPrecision(1e-9)
+                .build();
 
         // fixed model
         TDvarMapping mapping0 = new TDvarMapping(mtd, true);

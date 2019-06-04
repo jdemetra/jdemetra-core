@@ -21,7 +21,7 @@ import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.ssf.multivariate.ISsfMeasurements;
 import demetra.ssf.multivariate.MultivariateSsf;
-import demetra.linearsystem.LinearSystemSolver;
+import jdplus.linearsystem.LinearSystemSolver;
 
 /**
  *

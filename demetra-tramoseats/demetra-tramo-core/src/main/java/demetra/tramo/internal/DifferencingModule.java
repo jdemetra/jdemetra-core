@@ -22,7 +22,7 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
 import demetra.maths.Complex;
-import demetra.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.BackFilter;
 import demetra.modelling.regression.Variable;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;

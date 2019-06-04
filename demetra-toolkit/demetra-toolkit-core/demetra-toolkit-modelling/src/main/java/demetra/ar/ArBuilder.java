@@ -6,7 +6,7 @@
 package demetra.ar;
 
 import demetra.arima.ArimaModel;
-import demetra.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.BackFilter;
 import demetra.data.DoubleSeq;
 
 /**

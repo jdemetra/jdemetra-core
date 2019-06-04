@@ -25,9 +25,9 @@ import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArimaUtility;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
-import demetra.stats.tests.SampleMean;
-import demetra.stats.tests.StatisticalTest;
-import demetra.stats.tests.TestType;
+import jdplus.stats.tests.SampleMean;
+import jdplus.stats.tests.StatisticalTest;
+import jdplus.stats.tests.TestType;
 import demetra.data.DoubleSeq;
 
 /**

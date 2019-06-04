@@ -18,17 +18,17 @@ package demetra.ssf.dk;
 
 import demetra.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.data.DataBlock;
-import demetra.maths.functions.IFunction;
-import demetra.maths.functions.ssq.ISsqFunction;
+import jdplus.maths.functions.IFunction;
+import jdplus.maths.functions.ssq.ISsqFunction;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.IConcentratedLikelihoodComputer;
 import demetra.ssf.univariate.SsfRegressionModel;
-import demetra.likelihood.ILikelihoodFunctionPoint;
-import demetra.maths.functions.IFunctionDerivatives;
-import demetra.maths.functions.NumericalDerivatives;
-import demetra.maths.functions.ssq.ISsqFunctionDerivatives;
-import demetra.maths.functions.ssq.SsqNumericalDerivatives;
+import jdplus.maths.functions.IFunctionDerivatives;
+import jdplus.maths.functions.NumericalDerivatives;
+import jdplus.maths.functions.ssq.ISsqFunctionDerivatives;
+import jdplus.maths.functions.ssq.SsqNumericalDerivatives;
 import demetra.data.DoubleSeq;
+import jdplus.likelihood.LikelihoodFunctionPoint;
 
 /**
  *
@@ -37,7 +37,7 @@ import demetra.data.DoubleSeq;
  * @param <F>
  */
 public class SsfFunctionPoint<S, F extends ISsf> implements
-        ILikelihoodFunctionPoint<DiffuseConcentratedLikelihood> {
+        LikelihoodFunctionPoint<DiffuseConcentratedLikelihood> {
 
     /**
      *

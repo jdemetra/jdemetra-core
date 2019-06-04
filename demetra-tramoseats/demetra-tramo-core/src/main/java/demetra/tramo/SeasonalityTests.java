@@ -16,10 +16,10 @@
  */
 package demetra.tramo;
 
-import demetra.data.analysis.DiscreteWindowFunction;
-import demetra.data.analysis.SmoothedPeriodogram;
+import jdplus.data.analysis.DiscreteWindowFunction;
+import jdplus.data.analysis.SmoothedPeriodogram;
 import demetra.modelling.DifferencingResults;
-import demetra.stats.tests.StatisticalTest;
+import jdplus.stats.tests.StatisticalTest;
 import demetra.stats.tests.seasonal.Friedman;
 import demetra.stats.tests.seasonal.PeriodogramTest;
 import demetra.stats.tests.seasonal.Qs;

@@ -20,7 +20,7 @@ import demetra.benchmarking.univariate.DentonSpec;
 import demetra.data.AggregationType;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.linearsystem.LinearSystemSolver;
+import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.polynomials.Polynomial;

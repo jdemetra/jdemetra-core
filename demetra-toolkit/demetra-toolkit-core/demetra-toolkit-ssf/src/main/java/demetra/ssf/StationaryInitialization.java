@@ -19,7 +19,7 @@ package demetra.ssf;
 import jdplus.data.DataBlock;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
-import demetra.linearsystem.LinearSystemSolver;
+import jdplus.linearsystem.LinearSystemSolver;
 
 /**
  *

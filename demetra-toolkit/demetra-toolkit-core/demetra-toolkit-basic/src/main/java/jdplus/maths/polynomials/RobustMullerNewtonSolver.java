@@ -21,7 +21,7 @@ import static demetra.design.AlgorithmImplementation.Feature.Robust;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
 import demetra.maths.Complex;
-import demetra.maths.ComplexMath;
+import jdplus.maths.ComplexMath;
 import demetra.util.Ref;
 import demetra.util.Ref.BooleanRef;
 import demetra.util.Ref.DoubleRef;

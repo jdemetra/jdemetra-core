@@ -6,8 +6,8 @@
 package jdplus.timeseries.simplets;
 
 import demetra.data.Doubles;
-import demetra.data.transformation.DataTransformation;
-import demetra.data.transformation.LogJacobian;
+import jdplus.data.transformation.DataTransformation;
+import jdplus.data.transformation.LogJacobian;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 

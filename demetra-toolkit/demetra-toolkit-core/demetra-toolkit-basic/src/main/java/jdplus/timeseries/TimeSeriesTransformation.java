@@ -18,7 +18,7 @@
 package jdplus.timeseries;
 
 import demetra.data.Range;
-import demetra.data.transformation.LogJacobian;
+import jdplus.data.transformation.LogJacobian;
 import demetra.design.Development;
 import demetra.timeseries.TimeSeriesData;
 import demetra.timeseries.TimeSeriesObs;

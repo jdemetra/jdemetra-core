@@ -25,15 +25,15 @@ import demetra.regarima.RegArmaModel;
 import demetra.regarima.internal.RegArmaProcessor;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.likelihood.LogLikelihoodFunction;
-import demetra.maths.functions.IParametricMapping;
-import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
+import jdplus.likelihood.LogLikelihoodFunction;
+import jdplus.maths.functions.IParametricMapping;
+import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.arima.estimation.IArimaMapping;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaMapping;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import java.util.function.Function;
+import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
 
 /**
  *
@@ -50,7 +50,7 @@ public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         private IArimaMapping<SarimaModel> mapping;
         private IArmaInitializer initializer;
         private double eps = DEF_EPS;
-        private ISsqFunctionMinimizer min;
+        private SsqFunctionMinimizer.Builder min;
         private boolean ml = true, mt = false, fast = true;
 
         public Builder mapping(IArimaMapping<SarimaModel> mapping) {
@@ -63,7 +63,7 @@ public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
             return this;
         }
 
-        public Builder minimizer(ISsqFunctionMinimizer min) {
+        public Builder minimizer(SsqFunctionMinimizer.Builder min) {
             this.min = min;
             return this;
         }
@@ -89,10 +89,13 @@ public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         }
 
         public GlsSarimaProcessor build() {
+            SsqFunctionMinimizer.Builder builder= 
+                    min == null ? LevenbergMarquardtMinimizer.builder() : min;
+            
             return new GlsSarimaProcessor(mapping,
                     initializer == null ? IArmaInitializer.defaultInitializer() : initializer,
-                    min == null ? new LevenbergMarquardtMinimizer() : min,
-                    eps, ml, mt, fast);
+                    builder.functionPrecision(eps).build(),
+                    ml, mt, fast);
         }
 
     }
@@ -103,19 +106,18 @@ public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
     private final IArimaMapping<SarimaModel> mapping;
     private final IArmaInitializer initializer;
-    private final ISsqFunctionMinimizer min;
+    private final SsqFunctionMinimizer min;
     private final boolean ml, mt, fast;
 
     /**
      *
      */
     private GlsSarimaProcessor(IArimaMapping<SarimaModel> mapping,
-            final IArmaInitializer initializer, final ISsqFunctionMinimizer min,
-            final double eps, final boolean ml, final boolean mt, final boolean fast) {
+            final IArmaInitializer initializer, final SsqFunctionMinimizer min,
+            final boolean ml, final boolean mt, final boolean fast) {
         this.mapping = mapping;
         this.initializer = initializer;
         this.min = min;
-        this.min.setFunctionPrecision(eps);
         this.ml = ml;
         this.mt = mt;
         this.fast = fast;

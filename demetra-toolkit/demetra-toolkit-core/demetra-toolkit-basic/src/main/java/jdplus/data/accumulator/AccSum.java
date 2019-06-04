@@ -17,7 +17,7 @@
 package jdplus.data.accumulator;
 
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleSeqCursor;
+import demetra.design.Development;
 import demetra.maths.Constants;
 
 /**
@@ -25,6 +25,7 @@ import demetra.maths.Constants;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.experimental.UtilityClass
+@Development(status = Development.Status.Exploratory)
 public strictfp class AccSum {
 
     private static final double EPS = Constants.MACHEP, ETA = Double.MIN_VALUE;

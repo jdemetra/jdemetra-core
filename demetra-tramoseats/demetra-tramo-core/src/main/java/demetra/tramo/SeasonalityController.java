@@ -12,7 +12,7 @@ import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.regarima.regular.SeasonalFTest;
 import demetra.arima.SarimaSpecification;
-import demetra.stats.tests.StatisticalTest;
+import jdplus.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;
 import static demetra.tramo.SeasonalityTests.MSHORT;
 import static demetra.tramo.SeasonalityTests.SHORT;

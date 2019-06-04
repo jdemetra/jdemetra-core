@@ -325,10 +325,6 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
         return new ConcentratedLikelihoodWithMissing(n, nmissing, nssqerr, nldet, nres, nb, nbvar, scalingFactor);
     }
 
-    public int degreesOfFreedom() {
-        return n - nx();
-    }
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

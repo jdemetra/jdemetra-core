@@ -155,6 +155,10 @@ public interface ConcentratedLikelihood extends Likelihood {
     default int nx() {
         return coefficients().length();
     }
+    
+    default int degreesOfFreedom(){
+        return dim()-nx();
+    }
 
     /**
      * Gets the standard deviation for the given regression variable (including

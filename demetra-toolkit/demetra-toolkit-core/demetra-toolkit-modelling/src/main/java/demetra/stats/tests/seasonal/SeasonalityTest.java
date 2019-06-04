@@ -20,7 +20,7 @@ package demetra.stats.tests.seasonal;
 
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
-import demetra.stats.tests.FTest;
+import jdplus.stats.tests.FTest;
 import demetra.data.DoubleSeq;
 
 

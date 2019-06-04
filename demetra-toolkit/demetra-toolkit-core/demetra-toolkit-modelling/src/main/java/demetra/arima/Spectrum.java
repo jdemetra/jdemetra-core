@@ -18,12 +18,12 @@ package demetra.arima;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.functions.GridSearch;
-import demetra.maths.functions.IFunction;
-import demetra.maths.functions.IFunctionPoint;
-import demetra.maths.functions.IParametersDomain;
-import demetra.maths.functions.ParametersRange;
+import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.maths.functions.GridSearch;
+import jdplus.maths.functions.IFunction;
+import jdplus.maths.functions.IFunctionPoint;
+import jdplus.maths.functions.IParametersDomain;
+import jdplus.maths.functions.ParametersRange;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;

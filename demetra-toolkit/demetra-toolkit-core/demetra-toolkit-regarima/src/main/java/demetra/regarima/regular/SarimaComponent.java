@@ -20,7 +20,7 @@ import demetra.arima.IArimaModel;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
-import demetra.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.polynomials.UnitRoots;
 import demetra.arima.estimation.IArimaMapping;
 import demetra.regarima.ami.AbstractArimaComponent;

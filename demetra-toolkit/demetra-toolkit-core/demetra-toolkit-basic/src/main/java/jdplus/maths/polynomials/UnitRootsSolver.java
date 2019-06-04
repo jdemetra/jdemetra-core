@@ -18,7 +18,7 @@ package jdplus.maths.polynomials;
 
 import demetra.design.Development;
 import demetra.maths.Complex;
-import demetra.maths.IntUtility;
+import jdplus.maths.IntUtility;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRoots;
 

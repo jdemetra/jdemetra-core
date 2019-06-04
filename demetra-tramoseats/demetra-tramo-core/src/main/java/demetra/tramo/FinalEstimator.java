@@ -20,7 +20,7 @@ import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.maths.Complex;
-import demetra.maths.functions.IParametricMapping;
+import jdplus.maths.functions.IParametricMapping;
 import jdplus.maths.polynomials.Polynomial;
 import demetra.regarima.regular.IModelEstimator;
 import demetra.regarima.regular.ModelDescription;
@@ -29,6 +29,7 @@ import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.data.DoubleSeq;
+import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 
 /**
  *
@@ -113,6 +114,7 @@ class FinalEstimator implements IModelEstimator {
             try {
                 IParametricMapping<SarimaModel> mapping = context.getDescription().getArimaComponent().defaultMapping();
                 RegSarimaProcessor processor = RegSarimaProcessor.builder()
+                        .minimizer(LevenbergMarquardtMinimizer.builder())
                         .precision(eps)
 //                        .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
                         .build();

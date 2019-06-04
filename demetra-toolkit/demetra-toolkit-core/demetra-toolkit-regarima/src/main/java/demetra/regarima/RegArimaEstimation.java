@@ -24,7 +24,7 @@ import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.likelihood.LogLikelihoodFunction;
+import jdplus.likelihood.LogLikelihoodFunction;
 import demetra.sarima.SarimaModel;
 import java.util.List;
 import java.util.function.Function;

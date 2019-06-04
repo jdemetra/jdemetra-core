@@ -17,7 +17,7 @@
 package demetra.sarima;
 
 import demetra.arima.SarimaSpecification;
-import demetra.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRoots;
 

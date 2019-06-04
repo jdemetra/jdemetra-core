@@ -19,11 +19,11 @@ package demetra.arima;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.design.SkipProcessing;
-import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.linearfilters.FiniteFilter;
-import demetra.maths.linearfilters.ForeFilter;
-import demetra.maths.linearfilters.IRationalFilter;
-import demetra.maths.linearfilters.RationalFilter;
+import jdplus.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.FiniteFilter;
+import jdplus.maths.linearfilters.ForeFilter;
+import jdplus.maths.linearfilters.IRationalFilter;
+import jdplus.maths.linearfilters.RationalFilter;
 
 
 /**

@@ -5,11 +5,11 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.analysis.Periodogram;
+import jdplus.data.analysis.Periodogram;
 import jdplus.dstats.Chi2;
 import jdplus.dstats.F;
-import demetra.stats.tests.StatisticalTest;
-import demetra.stats.tests.TestType;
+import jdplus.stats.tests.StatisticalTest;
+import jdplus.stats.tests.TestType;
 import demetra.data.DoubleSeq;
 
 /**

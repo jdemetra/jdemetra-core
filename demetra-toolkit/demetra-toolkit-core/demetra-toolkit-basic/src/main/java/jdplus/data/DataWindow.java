@@ -16,10 +16,13 @@
  */
 package jdplus.data;
 
+import demetra.design.Development;
+
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Development(status = Development.Status.Release)
 public class DataWindow  {
     
     private final DataBlock cur;

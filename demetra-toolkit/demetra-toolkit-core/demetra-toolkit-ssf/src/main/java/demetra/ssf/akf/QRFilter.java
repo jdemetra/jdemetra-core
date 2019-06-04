@@ -20,7 +20,7 @@ import demetra.ssf.likelihood.ProfileLikelihood;
 import demetra.ssf.likelihood.MarginalLikelihood;
 import jdplus.data.DataBlock;
 import demetra.data.LogSign;
-import demetra.likelihood.DeterminantalTerm;
+import jdplus.likelihood.DeterminantalTerm;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.matrices.UpperTriangularMatrix;
 import jdplus.maths.matrices.decomposition.Householder;

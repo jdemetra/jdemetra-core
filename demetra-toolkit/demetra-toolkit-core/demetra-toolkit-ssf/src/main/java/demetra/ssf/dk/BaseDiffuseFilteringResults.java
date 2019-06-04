@@ -22,7 +22,7 @@ import demetra.ssf.univariate.DefaultFilteringResults;
 import demetra.ssf.DataBlockResults;
 import demetra.ssf.DataResults;
 import demetra.ssf.StateInfo;
-import demetra.likelihood.DeterminantalTerm;
+import jdplus.likelihood.DeterminantalTerm;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.State;
 import demetra.data.DoubleSeq;

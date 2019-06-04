@@ -20,10 +20,9 @@ import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.MaximumLogLikelihood;
 import demetra.linearmodel.Coefficient;
 import demetra.linearmodel.LinearModelEstimation;
-import demetra.maths.functions.IParametricMapping;
-import demetra.maths.functions.ParamValidation;
-import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
+import jdplus.maths.functions.IParametricMapping;
+import jdplus.maths.functions.ParamValidation;
+import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.modelling.regression.Constant;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.LinearTrend;
@@ -40,7 +39,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.univariate.SsfData;
 import demetra.ssf.univariate.SsfRegressionModel;
-import demetra.stats.tests.NiidTests;
+import jdplus.stats.tests.NiidTests;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import org.openide.util.lookup.ServiceProvider;
@@ -57,6 +56,7 @@ import demetra.tempdisagg.univariate.TemporalDisaggregation;
 import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
 
 /**
  *
@@ -145,7 +145,9 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
             dll = DkToolkit.concentratedLikelihoodComputer().compute(ssfmodel);
         } else {
             SsfFunction<Parameter, Ssf> fn = ssfFunction(model, spec);
-            ISsqFunctionMinimizer fmin = new LevenbergMarquardtMinimizer();
+            SsqFunctionMinimizer fmin = LevenbergMarquardtMinimizer
+                    .builder()
+                    .build();
             double start = spec.getParameter().getType() == ParameterType.Undefined
                     ? .9 : spec.getParameter().getValue();
             fmin.minimize(fn.ssqEvaluate(Doubles.of(start)));
@@ -232,7 +234,9 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
             dll = DkToolkit.concentratedLikelihoodComputer().compute(ssfmodel);
         } else {
             SsfFunction<Parameter, Ssf> fn = ssfFunction(model, spec);
-            ISsqFunctionMinimizer fmin = new LevenbergMarquardtMinimizer();
+            SsqFunctionMinimizer fmin = LevenbergMarquardtMinimizer
+                    .builder()
+                    .build();
             double start = spec.getParameter().getType() == ParameterType.Undefined
                     ? .9 : spec.getParameter().getValue();
             fmin.minimize(fn.ssqEvaluate(Doubles.of(start)));

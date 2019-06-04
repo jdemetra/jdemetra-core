@@ -27,7 +27,7 @@ import demetra.ssf.MatrixResults;
 import demetra.ssf.ResultsRange;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
-import demetra.likelihood.DeterminantalTerm;
+import jdplus.likelihood.DeterminantalTerm;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;
 

@@ -20,10 +20,10 @@ import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.maths.functions.IFunction;
-import demetra.maths.functions.IFunctionPoint;
-import demetra.maths.functions.ssq.ISsqFunction;
-import demetra.maths.functions.ssq.ISsqFunctionPoint;
+import jdplus.maths.functions.IFunction;
+import jdplus.maths.functions.IFunctionPoint;
+import jdplus.maths.functions.ssq.ISsqFunction;
+import jdplus.maths.functions.ssq.ISsqFunctionPoint;
 import demetra.data.DoubleSeq;
 
 /**

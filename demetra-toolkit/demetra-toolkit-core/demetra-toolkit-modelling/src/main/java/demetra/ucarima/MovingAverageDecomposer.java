@@ -18,8 +18,8 @@
 package demetra.ucarima;
 
 import demetra.arima.ArimaModel;
-import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.linearfilters.SymmetricFilter;
+import jdplus.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.Polynomial;
 
 

@@ -16,10 +16,10 @@
  */
 package demetra.arima;
 
-import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.linearfilters.IRationalFilter;
-import demetra.maths.linearfilters.RationalBackFilter;
-import demetra.maths.linearfilters.SymmetricFilter;
+import jdplus.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.IRationalFilter;
+import jdplus.maths.linearfilters.RationalBackFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 
 /**
  * This class caches all the properties of the final ArimaModel

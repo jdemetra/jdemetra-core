@@ -5,7 +5,7 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.transformation.LogJacobian;
+import jdplus.data.transformation.LogJacobian;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import jdplus.timeseries.simplets.TsDataTransformation;

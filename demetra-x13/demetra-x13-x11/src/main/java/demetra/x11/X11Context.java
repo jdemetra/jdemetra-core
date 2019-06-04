@@ -6,9 +6,9 @@
 package demetra.x11;
 
 import jdplus.data.DataBlock;
-import demetra.data.analysis.DiscreteKernel;
-import demetra.maths.linearfilters.FiniteFilter;
-import demetra.maths.linearfilters.SymmetricFilter;
+import jdplus.data.analysis.DiscreteKernel;
+import jdplus.maths.linearfilters.FiniteFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
 import demetra.x11.extremevaluecorrector.Cochran;
@@ -131,7 +131,7 @@ public class X11Context {
     public SymmetricFilter trendFilter(int filterLength) {
         int horizon = filterLength / 2;
         IntToDoubleFunction weights = DiscreteKernel.henderson(horizon);
-        return demetra.maths.linearfilters.LocalPolynomialFilters.of(horizon, localPolynomialDegree, weights);
+        return jdplus.maths.linearfilters.LocalPolynomialFilters.of(horizon, localPolynomialDegree, weights);
     }
 
     private static final double SQRPI = Math.sqrt(Math.PI);
@@ -144,7 +144,7 @@ public class X11Context {
         double[] c = new double[]{d};
         afilters = new FiniteFilter[horizon];
         for (int i = 0; i < afilters.length; ++i) {
-            afilters[horizon - i - 1] = demetra.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(sfilter, i, u, c, null);
+            afilters[horizon - i - 1] = jdplus.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(sfilter, i, u, c, null);
         }
         return afilters;
     }

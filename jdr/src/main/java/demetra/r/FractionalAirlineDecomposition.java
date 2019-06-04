@@ -28,9 +28,9 @@ import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import demetra.maths.functions.ParamValidation;
-import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import demetra.maths.linearfilters.BackFilter;
+import jdplus.maths.functions.ParamValidation;
+import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.maths.linearfilters.BackFilter;
 import static demetra.r.AirlineDecomposition.ucm;
 import demetra.regarima.GlsArimaProcessor;
 import demetra.arima.estimation.IArimaMapping;
@@ -124,7 +124,7 @@ public class FractionalAirlineDecomposition {
 
         GlsArimaProcessor.Builder<ArimaModel> builder = GlsArimaProcessor.builder(ArimaModel.class);
         builder.mapping(mapping)
-                .minimizer(new LevenbergMarquardtMinimizer())
+                .minimizer(LevenbergMarquardtMinimizer.builder())
                 .precision(1e-12)
                 .useMaximumLikelihood(true)
                 .useParallelProcessing(true)

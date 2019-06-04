@@ -20,7 +20,7 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataWindow;
 import demetra.design.Development;
 import demetra.maths.Complex;
-import demetra.data.analysis.FFT;
+import jdplus.data.analysis.FFT;
 import demetra.design.Immutable;
 import demetra.util.Arrays2;
 

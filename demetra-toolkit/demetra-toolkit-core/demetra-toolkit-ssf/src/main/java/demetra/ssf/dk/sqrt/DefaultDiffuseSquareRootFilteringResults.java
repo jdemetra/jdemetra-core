@@ -25,7 +25,7 @@ import demetra.ssf.DataBlocksResults;
 import demetra.ssf.DataResults;
 import demetra.ssf.StateInfo;
 import demetra.ssf.akf.AugmentedState;
-import demetra.likelihood.DeterminantalTerm;
+import jdplus.likelihood.DeterminantalTerm;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.dk.BaseDiffuseFilteringResults;
 import demetra.data.DoubleSeq;

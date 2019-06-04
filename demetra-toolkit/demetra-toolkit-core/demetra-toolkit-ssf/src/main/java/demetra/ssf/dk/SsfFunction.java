@@ -17,15 +17,15 @@
 package demetra.ssf.dk;
 
 import demetra.likelihood.DiffuseConcentratedLikelihood;
-import demetra.maths.functions.IParametersDomain;
-import demetra.maths.functions.IParametricMapping;
+import jdplus.maths.functions.IParametersDomain;
+import jdplus.maths.functions.IParametricMapping;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfBuilder;
 import demetra.ssf.univariate.ISsfData;
 import demetra.design.BuilderPattern;
-import demetra.likelihood.ILikelihoodFunction;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.likelihood.LikelihoodFunction;
 
 /**
  *
@@ -33,7 +33,7 @@ import jdplus.maths.matrices.FastMatrix;
  * @param <S> Type of the underlying object
  * @param <F> Ssf representation of objects of type S
  */
-public class SsfFunction<S, F extends ISsf> implements ILikelihoodFunction<DiffuseConcentratedLikelihood> {
+public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<DiffuseConcentratedLikelihood> {
 
     @BuilderPattern(SsfFunction.class)
     public static class Builder<S, F extends ISsf> {

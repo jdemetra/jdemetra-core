@@ -19,21 +19,15 @@ package demetra.x12;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
-import demetra.maths.functions.IParametricMapping;
-import static demetra.maths.linearfilters.FilterUtility.checkRoots;
+import jdplus.maths.functions.IParametricMapping;
 import demetra.regarima.regular.IModelEstimator;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
-import static demetra.maths.linearfilters.FilterUtility.checkRoots;
-import static demetra.maths.linearfilters.FilterUtility.checkRoots;
-import static demetra.maths.linearfilters.FilterUtility.checkRoots;
-import static demetra.maths.linearfilters.FilterUtility.checkRoots;
-import static demetra.maths.linearfilters.FilterUtility.checkRoots;
-import static demetra.maths.linearfilters.FilterUtility.checkRoots;
-import static demetra.maths.linearfilters.FilterUtility.checkRoots;
+import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import static jdplus.maths.linearfilters.FilterUtility.checkRoots;
 
 /**
  *
@@ -59,6 +53,7 @@ public class FinalEstimator implements IModelEstimator {
                 IParametricMapping<SarimaModel> mapping = context.getDescription().getArimaComponent().defaultMapping();
                 int ndim = mapping.getDim();
                 RegSarimaProcessor processor = RegSarimaProcessor.builder()
+                        .minimizer(LevenbergMarquardtMinimizer.builder())
                         .precision(eps)
 //                        .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
                         .build();

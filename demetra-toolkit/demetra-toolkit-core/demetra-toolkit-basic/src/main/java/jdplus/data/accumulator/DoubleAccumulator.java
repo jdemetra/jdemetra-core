@@ -24,7 +24,7 @@ import demetra.design.Development;
  * @author Jean Palate
  */
 @Algorithm
-@Development(status = Development.Status.Release)
+@Development(status = Development.Status.Exploratory)
 public interface DoubleAccumulator {
     void add(double term);
     

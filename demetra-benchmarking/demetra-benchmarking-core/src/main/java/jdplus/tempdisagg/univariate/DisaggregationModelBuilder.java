@@ -16,12 +16,12 @@
  */
 package jdplus.tempdisagg.univariate;
 
-import demetra.data.transformation.Cumulator;
+import jdplus.data.transformation.Cumulator;
 import demetra.data.AggregationType;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.normalizer.AbsMeanNormalizer;
+import jdplus.data.normalizer.AbsMeanNormalizer;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.regression.ITsVariable;
@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
-import demetra.data.normalizer.DataNormalizer;
+import jdplus.data.normalizer.DataNormalizer;
 import jdplus.maths.matrices.FastMatrix;
 
 /**

@@ -21,7 +21,7 @@ import demetra.ssf.likelihood.DiffuseLikelihood;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.DataBlockStorage;
-import demetra.maths.functions.IParametricMapping;
+import jdplus.maths.functions.IParametricMapping;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.matrices.UpperTriangularMatrix;

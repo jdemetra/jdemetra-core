@@ -6,8 +6,8 @@
 package demetra.x11;
 
 import jdplus.data.DataBlock;
-import demetra.maths.linearfilters.IFiniteFilter;
-import demetra.maths.linearfilters.SymmetricFilter;
+import jdplus.maths.linearfilters.IFiniteFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import static demetra.x11.X11Kernel.table;
 import demetra.x11.extremevaluecorrector.IExtremeValuesCorrector;
 import demetra.x11.filter.AutomaticHenderson;

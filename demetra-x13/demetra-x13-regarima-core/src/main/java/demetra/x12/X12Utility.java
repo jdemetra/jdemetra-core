@@ -22,6 +22,7 @@ import demetra.regarima.outlier.CriticalValueComputer;
 import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.SarimaModel;
 import demetra.sarima.internal.HannanRissanenInitializer;
+import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 
 /**
  *
@@ -46,6 +47,7 @@ public class X12Utility {
         return GlsSarimaProcessor.builder()
                 .initializer(initializer)
                 .useMaximumLikelihood(ml)
+                .minimizer(LevenbergMarquardtMinimizer.builder())
                 .precision(precision)
                 .build();
     }

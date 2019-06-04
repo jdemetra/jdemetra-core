@@ -18,6 +18,7 @@ package jdplus.data.accumulator;
 
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Balanced;
+import demetra.design.Development;
 
 /**
  * Kahan and Babuska summation, Neumaier variant
@@ -25,6 +26,7 @@ import static demetra.design.AlgorithmImplementation.Feature.Balanced;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @AlgorithmImplementation(algorithm=DoubleAccumulator.class, feature=Balanced)
+@Development(status = Development.Status.Exploratory)
 public final class NeumaierAccumulator implements DoubleAccumulator {
 
     private double del, sum;

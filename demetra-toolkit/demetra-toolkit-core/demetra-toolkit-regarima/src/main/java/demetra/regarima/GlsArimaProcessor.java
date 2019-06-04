@@ -20,10 +20,10 @@ import demetra.arima.estimation.IArimaMapping;
 import demetra.arima.IArimaModel;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.likelihood.LogLikelihoodFunction;
-import demetra.maths.functions.IParametricMapping;
-import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
+import jdplus.likelihood.LogLikelihoodFunction;
+import jdplus.maths.functions.IParametricMapping;
+import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.regarima.internal.RegArmaEstimation;
 import demetra.regarima.internal.RegArmaProcessor;
@@ -45,7 +45,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
         private IRegArimaInitializer<M> initializer;
         private IRegArimaFinalizer<M> finalizer;
         private double eps = 1e-9;
-        private ISsqFunctionMinimizer min;
+        private SsqFunctionMinimizer.Builder min;
         private boolean ml = true, mt = false, fast = true;
 
         public Builder<M> mapping(IArimaMapping<M> mapping) {
@@ -63,7 +63,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
             return this;
         }
 
-        public Builder<M> minimizer(ISsqFunctionMinimizer min) {
+        public Builder<M> minimizer(SsqFunctionMinimizer.Builder min) {
             this.min = min;
             return this;
         }
@@ -103,24 +103,24 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
     private final IArimaMapping<M> mapping;
     private final IRegArimaInitializer<M> initializer;
     private final IRegArimaFinalizer<M> finalizer;
-    private final ISsqFunctionMinimizer min;
+    private final SsqFunctionMinimizer.Builder min;
     private final boolean ml, mt, fast;
 
     /**
      *
      */
     private GlsArimaProcessor(IArimaMapping<M> mapping,
-            final IRegArimaInitializer<M> initializer, final IRegArimaFinalizer<M> finalizer, final ISsqFunctionMinimizer min,
+            final IRegArimaInitializer<M> initializer, final IRegArimaFinalizer<M> finalizer, final SsqFunctionMinimizer.Builder min,
             final double eps, final boolean ml, final boolean mt, final boolean fast) {
         this.mapping = mapping;
         this.initializer = initializer;
         this.finalizer = finalizer;
         if (min == null) {
-            this.min = new LevenbergMarquardtMinimizer();
+            this.min = LevenbergMarquardtMinimizer.builder();
         } else {
             this.min = min;
         }
-        this.min.setFunctionPrecision(eps);
+        this.min.functionPrecision(eps);
         this.ml = ml;
         this.mt = mt;
         this.fast = fast;
@@ -168,7 +168,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
         RegArmaModel<M> dmodel = regs.differencedModel();
         RegArmaProcessor processor = new RegArmaProcessor(ml, mt, fast);
         int ndf = dmodel.getY().length() - dmodel.getX().getColumnsCount();// - mapping.getDim();
-        RegArmaEstimation<M> rslt = processor.compute(dmodel, stmapping.parametersOf(arma), stmapping, min, ndf);
+        RegArmaEstimation<M> rslt = processor.compute(dmodel, stmapping.parametersOf(arma), stmapping, min.build(), ndf);
         M nmodel = mapping.map(DoubleSeq.of(rslt.getParameters()));
         RegArimaModel<M> nregs = regs.toBuilder().arima(nmodel).build();
 

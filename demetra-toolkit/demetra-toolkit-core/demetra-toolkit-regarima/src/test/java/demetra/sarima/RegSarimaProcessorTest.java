@@ -12,6 +12,7 @@ import demetra.regarima.RegArimaModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
+import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 
 /**
  *
@@ -39,6 +40,7 @@ public class RegSarimaProcessorTest {
                 .meanCorrection(true)
                 .build();
         RegArimaEstimation<SarimaModel> rslt = RegSarimaProcessor.builder()
+                .minimizer(LevenbergMarquardtMinimizer.builder())
                 .precision(1e-9)
                 .build()
                 .process(model);

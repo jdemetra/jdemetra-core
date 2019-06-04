@@ -9,9 +9,9 @@ import demetra.data.Data;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
-import demetra.maths.functions.IParametersDomain;
-import demetra.maths.functions.ParamValidation;
-import demetra.maths.functions.minpack.MinPackMinimizer;
+import jdplus.maths.functions.IParametersDomain;
+import jdplus.maths.functions.ParamValidation;
+import jdplus.maths.functions.minpack.MinPackMinimizer;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import demetra.sarima.estimation.SarimaMapping;
@@ -21,7 +21,7 @@ import demetra.ssf.dk.SsfFunctionPoint;
 import demetra.ssf.implementations.Loading;
 import demetra.ssf.implementations.MultivariateCompositeSsf;
 import demetra.arima.ssf.SsfAr;
-import demetra.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import demetra.sts.LocalLevel;
 import demetra.sts.LocalLinearTrend;
 import demetra.ssf.multivariate.M2uAdapter;
@@ -129,8 +129,10 @@ public class MstsMappingTest {
                 .build();
 
 //        MinPackMinimizer lm = new MinPackMinimizer();
-        LevenbergMarquardtMinimizer lm = new LevenbergMarquardtMinimizer();
-        lm.setMaxIter(1000);
+        LevenbergMarquardtMinimizer lm = LevenbergMarquardtMinimizer
+                .builder()
+                .maxIter(1000)
+                .build();
         boolean ok = lm.minimize(fn.evaluate(mapping.getDefaultParameters()));
         SsfFunctionPoint rslt = (SsfFunctionPoint) lm.getResult();
         System.out.println(rslt.getLikelihood().logLikelihood());

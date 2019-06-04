@@ -5,9 +5,9 @@
  */
 package jdplus.timeseries.simplets;
 
-import demetra.data.transformation.ConstTransformation;
-import demetra.data.transformation.ExpTransformation;
-import demetra.data.transformation.LogTransformation;
+import jdplus.data.transformation.ConstTransformation;
+import jdplus.data.transformation.ExpTransformation;
+import jdplus.data.transformation.LogTransformation;
 import demetra.data.OperationType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;

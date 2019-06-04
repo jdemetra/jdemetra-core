@@ -16,7 +16,7 @@
  */
 package jdplus.timeseries.simplets;
 
-import demetra.data.transformation.LogJacobian;
+import jdplus.data.transformation.LogJacobian;
 import demetra.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;

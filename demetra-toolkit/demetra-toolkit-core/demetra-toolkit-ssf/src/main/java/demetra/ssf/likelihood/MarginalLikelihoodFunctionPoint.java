@@ -17,17 +17,17 @@
 package demetra.ssf.likelihood;
 
 import jdplus.data.DataBlock;
-import demetra.maths.functions.IFunction;
-import demetra.maths.functions.ssq.ISsqFunction;
-import demetra.likelihood.ILikelihoodFunctionPoint;
-import demetra.maths.functions.IFunctionDerivatives;
-import demetra.maths.functions.NumericalDerivatives;
-import demetra.maths.functions.ssq.ISsqFunctionDerivatives;
-import demetra.maths.functions.ssq.SsqNumericalDerivatives;
+import jdplus.maths.functions.IFunction;
+import jdplus.maths.functions.ssq.ISsqFunction;
+import jdplus.maths.functions.IFunctionDerivatives;
+import jdplus.maths.functions.NumericalDerivatives;
+import jdplus.maths.functions.ssq.ISsqFunctionDerivatives;
+import jdplus.maths.functions.ssq.SsqNumericalDerivatives;
 import demetra.ssf.likelihood.MarginalLikelihood;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.univariate.ISsf;
 import demetra.data.DoubleSeq;
+import jdplus.likelihood.LikelihoodFunctionPoint;
 
 /**
  *
@@ -35,7 +35,7 @@ import demetra.data.DoubleSeq;
  * @param <S>
  */
 public class MarginalLikelihoodFunctionPoint<S, F extends ISsf> implements
-        ILikelihoodFunctionPoint<MarginalLikelihood> {
+        LikelihoodFunctionPoint<MarginalLikelihood> {
 
     /**
      *

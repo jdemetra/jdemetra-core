@@ -19,7 +19,7 @@ package demetra.x11plus;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.linearfilters.SymmetricFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import demetra.data.DoubleSeq;
 
 

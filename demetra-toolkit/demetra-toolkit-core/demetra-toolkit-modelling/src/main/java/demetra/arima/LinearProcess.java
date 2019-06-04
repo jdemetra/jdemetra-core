@@ -18,9 +18,9 @@ package demetra.arima;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.maths.linearfilters.IRationalFilter;
-import demetra.maths.linearfilters.RationalFilter;
-import demetra.maths.linearfilters.SymmetricFilter;
+import jdplus.maths.linearfilters.IRationalFilter;
+import jdplus.maths.linearfilters.RationalFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.Polynomial;
 
 /**

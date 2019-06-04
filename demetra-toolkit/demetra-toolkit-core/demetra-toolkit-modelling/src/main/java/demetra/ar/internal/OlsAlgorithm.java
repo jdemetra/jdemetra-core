@@ -20,8 +20,8 @@ import jdplus.data.DataBlockIterator;
 import demetra.design.AlgorithmImplementation;
 import jdplus.maths.matrices.CanonicalMatrix;
 import org.openide.util.lookup.ServiceProvider;
-import demetra.leastsquares.QRSolvers;
-import demetra.leastsquares.QRSolver;
+import jdplus.leastsquares.QRSolvers;
+import jdplus.leastsquares.QRSolver;
 import demetra.ar.AutoRegressiveEstimation;
 import demetra.data.DoubleSeq;
 

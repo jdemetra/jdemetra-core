@@ -6,8 +6,8 @@
 package demetra.msts;
 
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.functions.IParametersDomain;
-import demetra.maths.functions.ParametersRange;
+import jdplus.maths.functions.IParametersDomain;
+import jdplus.maths.functions.ParametersRange;
 
 /**
  *

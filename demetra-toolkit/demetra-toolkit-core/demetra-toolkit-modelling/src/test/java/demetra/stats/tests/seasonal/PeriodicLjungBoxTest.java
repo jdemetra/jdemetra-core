@@ -18,7 +18,7 @@ package demetra.stats.tests.seasonal;
 
 import demetra.stats.tests.seasonal.PeriodicLjungBox;
 import demetra.data.WeeklyData;
-import demetra.stats.tests.StatisticalTest;
+import jdplus.stats.tests.StatisticalTest;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;

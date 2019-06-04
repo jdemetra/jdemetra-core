@@ -16,22 +16,22 @@
  */
 package demetra.ssf.likelihood;
 
-import demetra.maths.functions.IFunction;
-import demetra.maths.functions.IParametersDomain;
-import demetra.maths.functions.IParametricMapping;
-import demetra.maths.functions.ssq.ISsqFunction;
-import demetra.maths.functions.ssq.ISsqFunctionPoint;
+import jdplus.maths.functions.IFunction;
+import jdplus.maths.functions.IParametersDomain;
+import jdplus.maths.functions.IParametricMapping;
+import jdplus.maths.functions.ssq.ISsqFunction;
+import jdplus.maths.functions.ssq.ISsqFunctionPoint;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfBuilder;
 import demetra.ssf.univariate.ISsfData;
 import demetra.design.BuilderPattern;
-import demetra.likelihood.ILikelihoodFunction;
 import demetra.ssf.likelihood.MarginalLikelihood;
 import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.ISsfBuilder;
 import demetra.ssf.univariate.ISsfData;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.likelihood.LikelihoodFunction;
 
 /**
  *
@@ -39,7 +39,7 @@ import jdplus.maths.matrices.FastMatrix;
  * @param <S> Type of the underlying object
  * @param <F> Ssf representation of objects of type S
  */
-public class MarginalLikelihoodFunction<S, F extends ISsf> implements ILikelihoodFunction<MarginalLikelihood> {
+public class MarginalLikelihoodFunction<S, F extends ISsf> implements LikelihoodFunction<MarginalLikelihood> {
 
 //    @BuilderPattern(AkfFunction.class)
     public static class Builder<S, F extends ISsf> {

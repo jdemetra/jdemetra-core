@@ -17,7 +17,7 @@
 package demetra.arima;
 
 import demetra.design.Development;
-import demetra.maths.linearfilters.IRationalFilter;
+import jdplus.maths.linearfilters.IRationalFilter;
 
 
 /**

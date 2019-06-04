@@ -24,13 +24,13 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
 import demetra.maths.ComplexComputer;
-import demetra.maths.ComplexMath;
-import demetra.maths.Simplifying;
+import jdplus.maths.ComplexMath;
+import jdplus.maths.Simplifying;
 import demetra.util.Arrays2;
 import lombok.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.design.Unsafe;
-import demetra.maths.ComplexUtility;
+import jdplus.maths.ComplexUtility;
 import demetra.maths.PolynomialType;
 
 /**
