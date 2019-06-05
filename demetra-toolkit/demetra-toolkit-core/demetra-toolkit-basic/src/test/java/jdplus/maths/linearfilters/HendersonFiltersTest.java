@@ -19,6 +19,11 @@ package jdplus.maths.linearfilters;
 import jdplus.maths.linearfilters.HendersonFilters;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import java.util.function.DoubleUnaryOperator;
+import jdplus.data.DataBlock;
+import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.SubMatrix;
+import jdplus.maths.matrices.decomposition.Householder;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -54,5 +59,39 @@ public class HendersonFiltersTest {
 //        System.out.println("");
 //        System.out.println(DataBlock.ofInternal(HendersonFilters.instance.create(13).weightsToArray()));
     }
+    
+}
 
+@lombok.experimental.UtilityClass
+class GenericHendersonFilters{
+    /**
+     * Criterion
+     * min sum(D^q(w(k))^2 under sum(w(k))=1, sum(k*w(k))=0
+     * @param nlags
+     * @param nleads
+     * @return 
+     */
+    FiniteFilter make(int nlags, int nleads){
+        int n=nlags+nleads+1;
+        CanonicalMatrix J=CanonicalMatrix.square(n+2);
+        S(J.extract(0, n, 0, n));
+        SubMatrix C = J.extract(n, 2, 0, n);
+        C.row(0).set(1);
+        C.row(1).set(k->k-nlags);
+        J.extract(0, n, n, 2).copy(C.transpose());
+        DataBlock z=DataBlock.make(n+2);
+        z.set(n, 1);
+        Householder hous=new Householder(false);
+        return null;
+    }
+    
+    private double[] W=new double[]{20, -15, 6, -1};
+    
+    private void S(FastMatrix s){
+        s.diagonal().set(W[0]);
+        for (int i=1; i<W.length; ++i){
+            s.subDiagonal(i).set(W[i]);
+            s.subDiagonal(-i).set(W[i]);
+        }
+    }
 }
