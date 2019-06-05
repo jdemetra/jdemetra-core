@@ -17,7 +17,7 @@
 package demetra.ssf.dk;
 
 import jdplus.data.DataBlock;
-import demetra.likelihood.DeterminantalTerm;
+import jdplus.likelihood.DeterminantalTerm;
 import demetra.ssf.State;
 import demetra.ssf.univariate.IFilteringResults;
 

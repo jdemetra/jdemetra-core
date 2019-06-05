@@ -24,14 +24,14 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
 import demetra.maths.ComplexComputer;
-import demetra.maths.ComplexMath;
-import demetra.maths.Simplifying;
+import jdplus.maths.ComplexMath;
+import jdplus.maths.Simplifying;
 import demetra.util.Arrays2;
 import lombok.NonNull;
-import demetra.maths.polynomials.spi.RootsSolver;
 import demetra.data.DoubleSeq;
 import demetra.design.Unsafe;
-import demetra.maths.ComplexUtility;
+import jdplus.maths.ComplexUtility;
+import demetra.maths.PolynomialType;
 
 /**
  *
@@ -112,6 +112,10 @@ public final class Polynomial{
      */
     public static Polynomial of(@NonNull double[] coefficients) {
         return new Polynomial(Coefficients.of(coefficients));
+    }
+    
+    public static Polynomial of(PolynomialType p){
+        return new Polynomial(Coefficients.of(p.toArray()));
     }
 
     /**

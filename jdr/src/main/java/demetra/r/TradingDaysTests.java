@@ -17,12 +17,12 @@
 package demetra.r;
 
 import jdplus.data.DataBlock;
-import demetra.linearmodel.LeastSquaresResults;
-import demetra.linearmodel.LinearModel;
-import demetra.linearmodel.Ols;
+import jdplus.linearmodel.LeastSquaresResults;
+import jdplus.linearmodel.LinearModel;
+import jdplus.linearmodel.Ols;
 import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.stats.TestResult;
-import demetra.stats.tests.StatisticalTest;
+import jdplus.stats.tests.StatisticalTest;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.DayClustering;
@@ -30,8 +30,8 @@ import demetra.modelling.regression.GenericTradingDaysVariable;
 import demetra.modelling.regression.Regression;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.GenericTradingDays;
-import static demetra.timeseries.simplets.TsDataToolkit.drop;
-import static demetra.timeseries.simplets.TsDataToolkit.delta;
+import static jdplus.timeseries.simplets.TsDataToolkit.drop;
+import static jdplus.timeseries.simplets.TsDataToolkit.delta;
 
 /**
  *

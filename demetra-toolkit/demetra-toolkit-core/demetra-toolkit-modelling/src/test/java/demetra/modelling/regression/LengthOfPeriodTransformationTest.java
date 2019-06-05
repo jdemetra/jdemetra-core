@@ -5,12 +5,12 @@
  */
 package demetra.modelling.regression;
 
-import demetra.data.transformation.LogJacobian;
+import jdplus.data.transformation.LogJacobian;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.simplets.TsDataTransformation;
+import jdplus.timeseries.simplets.TsDataTransformation;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.simplets.Transformations;
+import jdplus.timeseries.simplets.Transformations;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;

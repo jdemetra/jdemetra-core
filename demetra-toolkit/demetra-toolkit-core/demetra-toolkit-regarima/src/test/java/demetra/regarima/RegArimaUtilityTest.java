@@ -6,7 +6,7 @@
 package demetra.regarima;
 
 import jdplus.data.DataBlock;
-import demetra.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.BackFilter;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

@@ -6,7 +6,7 @@
 package demetra.sarima;
 
 import demetra.arima.SarimaSpecification;
-import demetra.likelihood.LogLikelihoodFunction;
+import jdplus.likelihood.LogLikelihoodFunction;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;

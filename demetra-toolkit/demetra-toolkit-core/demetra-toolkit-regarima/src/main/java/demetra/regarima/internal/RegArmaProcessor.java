@@ -18,15 +18,15 @@ package demetra.regarima.internal;
 
 import demetra.regarima.RegArmaModel;
 import demetra.arima.IArimaModel;
-import demetra.maths.functions.IFunctionDerivatives;
-import demetra.maths.functions.IParametricMapping;
-import demetra.maths.functions.NumericalDerivatives;
-import demetra.maths.functions.ssq.ISsqFunctionMinimizer;
-import demetra.maths.functions.ssq.SsqProxyFunctionPoint;
+import jdplus.maths.functions.IFunctionDerivatives;
+import jdplus.maths.functions.IParametricMapping;
+import jdplus.maths.functions.NumericalDerivatives;
+import jdplus.maths.functions.ssq.SsqProxyFunctionPoint;
 import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.arima.estimation.IArimaMapping;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
+import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
 
 /**
  *
@@ -42,7 +42,7 @@ public class RegArmaProcessor {
         this.fast = fastDerivatives;
     }
 
-    public <S extends IArimaModel> RegArmaEstimation<S> compute(@Nonnull RegArmaModel<S> model, @Nonnull DoubleSeq start, IArimaMapping<S> mapping, ISsqFunctionMinimizer minimizer, int ndf) {
+    public <S extends IArimaModel> RegArmaEstimation<S> compute(@Nonnull RegArmaModel<S> model, @Nonnull DoubleSeq start, IArimaMapping<S> mapping, SsqFunctionMinimizer minimizer, int ndf) {
         // step 1. Build the function
         RegArmaSsqFunction fn = RegArmaSsqFunction.builder(model.getY())
                 .variables(model.getX())

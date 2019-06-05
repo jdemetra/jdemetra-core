@@ -20,7 +20,7 @@ package demetra.tramo;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
 import demetra.regarima.regular.RegArimaModelling;
-import demetra.stats.tests.NiidTests;
+import jdplus.stats.tests.NiidTests;
 import demetra.data.DoubleSeq;
 
 

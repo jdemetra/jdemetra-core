@@ -6,7 +6,7 @@
 package demetra.sigex;
 
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.internal.LDLDecomposition;
+import jdplus.maths.matrices.decomposition.LDLDecomposition;
 import jdplus.maths.matrices.FastMatrix;
 
 /**

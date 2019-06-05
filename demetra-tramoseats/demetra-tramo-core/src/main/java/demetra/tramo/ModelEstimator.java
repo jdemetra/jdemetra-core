@@ -6,12 +6,13 @@
 package demetra.tramo;
 
 import demetra.design.Development;
-import demetra.maths.functions.IParametricMapping;
+import jdplus.maths.functions.IParametricMapping;
 import demetra.regarima.regular.IModelEstimator;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.SarimaModel;
 import demetra.tramo.internal.OutliersDetectionModule;
+import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 
 @Development(status = Development.Status.Beta)
 class ModelEstimator implements IModelEstimator {
@@ -40,7 +41,8 @@ class ModelEstimator implements IModelEstimator {
 
     private boolean calc(RegArimaModelling context) {
         RegSarimaProcessor processor = RegSarimaProcessor.builder()
-                .precision(eps)
+                .minimizer(LevenbergMarquardtMinimizer.builder())
+                .precision(eps)                
 //                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
                 .build();
         context.estimate(processor);

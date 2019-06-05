@@ -20,13 +20,12 @@ package jdplus.data;
 import demetra.design.Development;
 import jdplus.maths.matrices.SubMatrix;
 import java.util.Arrays;
-import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public class DataBlockStorage {
 
     /**
@@ -131,14 +130,14 @@ public class DataBlockStorage {
      * @param ncapacity
      */
     public void resize(final int ncapacity) {
-        int n = calcSize(ncapacity);
-        if (n <= this.n) {
+        int sz = calcSize(ncapacity);
+        if (sz <= n) {
             return;
         }
-        double[] data = new double[dim * n];
+        double[] data = new double[dim * sz];
         System.arraycopy(storage, 0, data, 0, storage.length);
         storage = data;
-        this.n = n;
+        n = sz;
     }
 
     /**
@@ -147,15 +146,15 @@ public class DataBlockStorage {
      * @param value
      */
     public void resize(final int ncapacity, final double value) {
-        int n = calcSize(ncapacity);
-        if (n <= this.n) {
+        int sz = calcSize(ncapacity);
+        if (sz <= n) {
             return;
         }
-        double[] data = new double[dim * n];
+        double[] data = new double[dim * sz];
         Arrays.fill(data, storage.length, data.length, value);
         System.arraycopy(storage, 0, data, 0, storage.length);
         storage = data;
-        this.n = n;
+        n = sz;
     }
     /**
      *
@@ -225,8 +224,8 @@ public class DataBlockStorage {
     public void rescale(double factor) {
         if (factor == 1)
             return;
-        int n=dim*nused;
-        for (int i=0; i<n; ++i){
+        int sz=dim*nused;
+        for (int i=0; i<sz; ++i){
             storage[i]*=factor;
         }
     }

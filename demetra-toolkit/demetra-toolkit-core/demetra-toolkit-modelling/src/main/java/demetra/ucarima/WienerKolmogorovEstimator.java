@@ -18,7 +18,7 @@ package demetra.ucarima;
 
 import demetra.arima.LinearProcess;
 import demetra.design.Development;
-import demetra.maths.linearfilters.RationalFilter;
+import jdplus.maths.linearfilters.RationalFilter;
 
 /**
  * This class represents the wiener-Kolmogorov estimator of a component of an

@@ -18,7 +18,7 @@ package demetra.ssf.dk;
 
 import demetra.ssf.likelihood.DiffuseLikelihood;
 import jdplus.data.DataBlock;
-import demetra.likelihood.DeterminantalTerm;
+import jdplus.likelihood.DeterminantalTerm;
 import demetra.ssf.StateInfo;
 import demetra.ssf.akf.AugmentedState;
 import demetra.ssf.dk.sqrt.IDiffuseSquareRootFilteringResults;

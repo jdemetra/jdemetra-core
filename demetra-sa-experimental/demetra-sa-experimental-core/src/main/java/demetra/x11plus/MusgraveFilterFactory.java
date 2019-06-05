@@ -17,9 +17,9 @@
 package demetra.x11plus;
 
 import demetra.design.Development;
-import demetra.maths.linearfilters.FiniteFilter;
-import demetra.maths.linearfilters.HendersonFilters;
-import demetra.maths.linearfilters.IFiniteFilter;
+import jdplus.maths.linearfilters.FiniteFilter;
+import jdplus.maths.linearfilters.HendersonFilters;
+import jdplus.maths.linearfilters.IFiniteFilter;
 import jdplus.maths.polynomials.Polynomial;
 import java.util.HashMap;
 import java.util.Map;

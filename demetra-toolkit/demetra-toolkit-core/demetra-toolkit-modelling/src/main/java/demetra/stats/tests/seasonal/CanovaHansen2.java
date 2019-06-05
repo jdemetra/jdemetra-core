@@ -5,13 +5,13 @@
  */
 package demetra.stats.tests.seasonal;
 
-import demetra.data.analysis.TrigonometricSeries;
-import demetra.data.analysis.WindowFunction;
+import jdplus.data.analysis.TrigonometricSeries;
+import jdplus.data.analysis.WindowFunction;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.linearmodel.LeastSquaresResults;
-import demetra.linearmodel.LinearModel;
-import demetra.linearmodel.Ols;
-import demetra.stats.RobustCovarianceComputer;
+import jdplus.linearmodel.LeastSquaresResults;
+import jdplus.linearmodel.LinearModel;
+import jdplus.linearmodel.Ols;
+import jdplus.stats.RobustCovarianceComputer;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;
 

@@ -16,13 +16,11 @@
  */
 package jdplus.maths.polynomials;
 
-import jdplus.maths.polynomials.Polynomial;
 import demetra.maths.Complex;
-import demetra.maths.ComplexMath;
+import jdplus.maths.ComplexMath;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
-import demetra.maths.polynomials.spi.RootsSolver;
 import demetra.data.DoubleSeq;
 
 /**

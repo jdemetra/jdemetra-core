@@ -6,9 +6,9 @@
 package demetra.x11plus;
 
 import jdplus.data.DataBlock;
-import demetra.data.analysis.DiscreteKernel;
-import demetra.maths.linearfilters.FiniteFilter;
-import demetra.maths.linearfilters.SymmetricFilter;
+import jdplus.data.analysis.DiscreteKernel;
+import jdplus.maths.linearfilters.FiniteFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import demetra.sa.DecompositionMode;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
@@ -85,7 +85,7 @@ public class X11Context {
     public SymmetricFilter trendFilter() {
         int horizon = trendFilterLength / 2;
         IntToDoubleFunction weights = weights(horizon, kernel);
-        return demetra.maths.linearfilters.LocalPolynomialFilters.of(horizon, localPolynomialDegree, weights);
+        return jdplus.maths.linearfilters.LocalPolynomialFilters.of(horizon, localPolynomialDegree, weights);
     }
 
     private static final double SQRPI = Math.sqrt(Math.PI);
@@ -108,12 +108,12 @@ public class X11Context {
             IntToDoubleFunction weights = weights(horizon, kernel);
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[horizon-i-1] = demetra.maths.linearfilters.LocalPolynomialFilters.directAsymmetricFilter(horizon, i, localPolynomialDegree, weights);
+                afilters[horizon-i-1] = jdplus.maths.linearfilters.LocalPolynomialFilters.directAsymmetricFilter(horizon, i, localPolynomialDegree, weights);
             }
         } else if (endpoints.equals("CN")) {
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[horizon-i-1] = demetra.maths.linearfilters.LocalPolynomialFilters.cutAndNormalizeFilter(sfilter, i);
+                afilters[horizon-i-1] = jdplus.maths.linearfilters.LocalPolynomialFilters.cutAndNormalizeFilter(sfilter, i);
             }
         } else {
             int u = 0;
@@ -133,7 +133,7 @@ public class X11Context {
             }
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[horizon-i-1] = demetra.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(sfilter, i, u, c, null);
+                afilters[horizon-i-1] = jdplus.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(sfilter, i, u, c, null);
             }
         }
         return afilters;

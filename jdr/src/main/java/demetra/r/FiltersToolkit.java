@@ -6,10 +6,10 @@
 package demetra.r;
 
 import demetra.information.InformationMapping;
-import demetra.maths.linearfilters.FiniteFilter;
-import demetra.maths.linearfilters.IFilter;
-import demetra.maths.linearfilters.IFiniteFilter;
-import demetra.maths.linearfilters.SymmetricFilter;
+import jdplus.maths.linearfilters.FiniteFilter;
+import jdplus.maths.linearfilters.IFilter;
+import jdplus.maths.linearfilters.IFiniteFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import demetra.likelihood.DiffuseConcentratedLikelihood;
 import java.util.LinkedHashMap;
 import java.util.Map;

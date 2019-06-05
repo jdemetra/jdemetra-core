@@ -16,12 +16,14 @@
  */
 package jdplus.data;
 
+import demetra.design.Development;
 import java.util.Iterator;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Development(status = Development.Status.Release)
 public class DataBlockIterator implements Iterator<DataBlock> {
 
     private final DataBlock data;

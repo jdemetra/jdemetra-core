@@ -19,7 +19,7 @@ package jdplus.maths.matrices;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.DataWindow;
-import demetra.data.accumulator.DoubleAccumulator;
+import jdplus.data.accumulator.DoubleAccumulator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
@@ -32,7 +32,7 @@ import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import java.util.ArrayList;
 import java.util.List;
-import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.decomposition.Householder;
 import javax.annotation.Nonnull;
 import java.util.Iterator;
 
@@ -934,6 +934,24 @@ public interface FastMatrix extends Matrix.Mutable{
         return DataWindow.windowOf(storage, beg, beg + nrows * rowInc, rowInc);
     }
     
+    default CanonicalMatrix inv(){
+        if (!isSquare()) {
+            throw new IllegalArgumentException();
+        }
+        Householder hous = new Householder(true);
+        hous.decompose(this);
+        if (!hous.isFullRank()) {
+            return null;
+        }
+        
+        CanonicalMatrix I=CanonicalMatrix.identity(getRowsCount());
+        DataBlockIterator cols=I.columnsIterator();
+        while (cols.hasNext()){
+            hous.solve(cols.next());
+        }
+        return I;
+    }
+    
     public static LogSign logDeterminant(FastMatrix X) {
         if (!X.isSquare()) {
             throw new IllegalArgumentException();
@@ -983,6 +1001,7 @@ public interface FastMatrix extends Matrix.Mutable{
         return builder.toString();
     }
     
+    @Override
     default Matrix unmodifiable(){
         return Matrix.ofInternal(toArray(), getRowsCount(), getColumnsCount());
     }

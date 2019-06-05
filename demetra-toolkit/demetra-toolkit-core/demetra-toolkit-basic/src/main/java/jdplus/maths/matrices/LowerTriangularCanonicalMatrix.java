@@ -69,7 +69,7 @@ class LowerTriangularCanonicalMatrix {
             if (Math.abs(t) > zero) {
                 double d = data[i];
                 if (d == 0) {
-                    for (int xj = xi + xinc, j = i + 1; xj < xend; ++xj, ++j) {
+                    for (int xj = xi + xinc, j = i + 1; xj != xend; xj += xinc, ++j) {
                         if (Math.abs(data[j]) > zero) {
                             throw new MatrixException(MatrixException.SINGULAR);
                         }
@@ -78,7 +78,7 @@ class LowerTriangularCanonicalMatrix {
                 } else {
                     double c = t / d;
                     x[xi] = c;
-                    for (int xj = xi + xinc, j = i + 1; xj < xend; ++xj, ++j) {
+                    for (int xj = xi + xinc, j = i + 1; xj != xend; xj += xinc, ++j) {
                         x[xj] -= c * data[j];
                     }
                 }
@@ -100,8 +100,8 @@ class LowerTriangularCanonicalMatrix {
         int xbeg = b.getStartPosition();
         int xend = b.getEndPosition();
 
-        for (int i = L.getLastPosition(), xi = xend; xi > xbeg; i -= 1 + nr) {
-            int xd = xi - 1;
+        for (int i = L.getLastPosition(), xi = xend; xi != xbeg; i -= 1 + nr) {
+            int xd = xi - xinc;
             double t = x[xd];
             for (int xj = xi, idx = i + 1; xj != xend; xj += xinc, ++idx) {
                 t -= x[xj] * data[idx];

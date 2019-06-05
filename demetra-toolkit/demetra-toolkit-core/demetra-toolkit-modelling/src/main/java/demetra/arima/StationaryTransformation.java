@@ -20,7 +20,7 @@ package demetra.arima;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.BackFilter;
 
 
 /**

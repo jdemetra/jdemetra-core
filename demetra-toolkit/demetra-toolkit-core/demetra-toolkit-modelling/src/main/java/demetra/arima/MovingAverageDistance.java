@@ -18,8 +18,8 @@
  */
 package demetra.arima;
 
-import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.linearfilters.RationalBackFilter;
+import jdplus.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.RationalBackFilter;
 
 
 /**

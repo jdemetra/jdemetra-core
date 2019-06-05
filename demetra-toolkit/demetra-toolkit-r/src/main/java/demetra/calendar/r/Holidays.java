@@ -20,7 +20,7 @@ import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.timeseries.calendars.DayEvent;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
-import demetra.timeseries.calendars.HolidaysUtility;
+import jdplus.timeseries.calendars.HolidaysUtility;
 import demetra.timeseries.calendars.IHoliday;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
 import java.time.LocalDate;

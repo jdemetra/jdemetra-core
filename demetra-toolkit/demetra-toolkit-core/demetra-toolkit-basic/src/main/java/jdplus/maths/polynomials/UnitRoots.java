@@ -19,9 +19,9 @@ package jdplus.maths.polynomials;
 import demetra.design.Development;
 import java.util.Arrays;
 import demetra.maths.Complex;
-import demetra.maths.ComplexUtility;
-import demetra.maths.IntUtility;
-import demetra.maths.Simplifying;
+import jdplus.maths.ComplexUtility;
+import jdplus.maths.IntUtility;
+import jdplus.maths.Simplifying;
 import demetra.util.IntList;
 
 /**

@@ -23,10 +23,10 @@ import demetra.arima.internal.FastKalmanFilter;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.linearmodel.LeastSquaresResults;
-import demetra.linearmodel.LinearModel;
-import demetra.linearmodel.Ols;
-import demetra.maths.linearfilters.BackFilter;
+import jdplus.linearmodel.LeastSquaresResults;
+import jdplus.linearmodel.LinearModel;
+import jdplus.linearmodel.Ols;
+import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRoots;
 import demetra.sarima.GlsSarimaProcessor;
@@ -37,6 +37,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
+import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 
 /**
  *
@@ -167,17 +168,17 @@ public class RegArimaUtility {
         
     }
     
-    public IRegArimaProcessor<SarimaModel> processor(IArimaMapping<SarimaModel> mapping, boolean ml, double precision) {
+    public IRegArimaProcessor<SarimaModel> processor(IArimaMapping<SarimaModel> mapping, boolean ml, double eps) {
         HannanRissanenInitializer initializer = HannanRissanenInitializer.builder()
                 .stabilize(true)
                 .useDefaultIfFailed(true)
                 .build();
-        
         return GlsSarimaProcessor.builder()
                 .mapping(mapping)
+                .minimizer(LevenbergMarquardtMinimizer.builder())
+                .precision(eps)
                 .initializer(initializer)
                 .useMaximumLikelihood(ml)
-                .precision(precision)
                 .build();
     }
     

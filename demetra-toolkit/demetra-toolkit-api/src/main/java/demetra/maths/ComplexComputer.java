@@ -153,7 +153,7 @@ public final class ComplexComputer  implements ComplexType{
      * @param y The imaginary part
      * @return This object is returned
      */
-    protected ComplexComputer div(final double x, final double y) {
+    public ComplexComputer div(final double x, final double y) {
         double dRe, dIm;
         double scalar;
 

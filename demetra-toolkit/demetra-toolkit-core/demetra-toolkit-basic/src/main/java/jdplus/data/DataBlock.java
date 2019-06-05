@@ -19,8 +19,10 @@ package jdplus.data;
 import demetra.data.DoubleList;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.accumulator.DoubleAccumulator;
+import demetra.design.Development;
 import demetra.design.Unsafe;
+import demetra.util.function.BiDoublePredicate;
+import jdplus.data.accumulator.DoubleAccumulator;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.DoubleBinaryOperator;
@@ -30,12 +32,12 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import demetra.util.function.BiDoublePredicate;
 
 /**
  *
  * @author Jean Palate
  */
+@Development(status = Development.Status.Release)
 public final class DataBlock implements DoubleSeq.Mutable {
 
     @FunctionalInterface

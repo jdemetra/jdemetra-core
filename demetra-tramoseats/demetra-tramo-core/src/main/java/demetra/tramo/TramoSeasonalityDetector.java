@@ -16,7 +16,7 @@
  */
 package demetra.tramo;
 
-import demetra.stats.tests.StatisticalTest;
+import jdplus.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.regarima.regular.SeasonalityDetector;
 

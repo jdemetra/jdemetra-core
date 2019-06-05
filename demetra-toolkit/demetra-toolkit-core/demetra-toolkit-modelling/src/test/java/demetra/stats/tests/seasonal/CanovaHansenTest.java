@@ -18,8 +18,8 @@ package demetra.stats.tests.seasonal;
 
 import demetra.data.Data;
 import demetra.data.WeeklyData;
-import static demetra.timeseries.simplets.TsDataToolkit.delta;
-import static demetra.timeseries.simplets.TsDataToolkit.log;
+import static jdplus.timeseries.simplets.TsDataToolkit.delta;
+import static jdplus.timeseries.simplets.TsDataToolkit.log;
 import org.junit.Test;
 import demetra.data.DoubleSeq;
 

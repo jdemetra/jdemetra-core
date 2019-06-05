@@ -16,14 +16,14 @@
  */
 package demetra.sarima.estimation;
 
-import demetra.data.normalizer.AbsMeanNormalizer;
+import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.design.BuilderPattern;
-import demetra.leastsquares.QRSolvers;
-import demetra.leastsquares.QRSolver;
+import jdplus.leastsquares.QRSolvers;
+import jdplus.leastsquares.QRSolver;
 import demetra.ar.AutoRegressiveEstimation;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarmaSpecification;

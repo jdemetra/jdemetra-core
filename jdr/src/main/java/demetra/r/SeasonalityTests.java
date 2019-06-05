@@ -17,14 +17,14 @@
 package demetra.r;
 
 import jdplus.data.DataBlock;
-import demetra.linearmodel.LeastSquaresResults;
-import demetra.linearmodel.LinearModel;
-import demetra.linearmodel.Ols;
+import jdplus.linearmodel.LeastSquaresResults;
+import jdplus.linearmodel.LinearModel;
+import jdplus.linearmodel.Ols;
 import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.modelling.regression.PeriodicContrasts;
 import demetra.stats.TestResult;
-import demetra.stats.tests.LjungBox;
-import demetra.stats.tests.StatisticalTest;
+import jdplus.stats.tests.LjungBox;
+import jdplus.stats.tests.StatisticalTest;
 import demetra.stats.tests.seasonal.CanovaHansen;
 import demetra.stats.tests.seasonal.CanovaHansen2;
 import demetra.stats.tests.seasonal.PeriodicLjungBox;

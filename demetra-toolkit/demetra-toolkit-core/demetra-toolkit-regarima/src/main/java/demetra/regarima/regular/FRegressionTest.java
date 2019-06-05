@@ -19,8 +19,8 @@ package demetra.regarima.regular;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.linearmodel.JointTest;
-import demetra.stats.tests.StatisticalTest;
+import jdplus.linearmodel.JointTest;
+import jdplus.stats.tests.StatisticalTest;
 
 
 /**

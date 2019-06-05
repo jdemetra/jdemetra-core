@@ -38,10 +38,14 @@ public class MatrixDecompositions {
         return PROCESSOR.get();
     }
     
+    public Matrix cholesky(Matrix S){
+        return PROCESSOR.get().cholesky(S);
+    }
+    
     @ServiceDefinition
     @Algorithm
     public static interface Processor {
-        Matrix Cholesky(Matrix matrix);
+        Matrix cholesky(Matrix matrix);
     }    
     
 }

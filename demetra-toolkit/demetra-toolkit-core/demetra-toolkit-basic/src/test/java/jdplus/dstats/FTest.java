@@ -9,7 +9,7 @@ import jdplus.dstats.DStatException;
 import jdplus.dstats.F;
 import jdplus.dstats.Distribution;
 import demetra.stats.ProbabilityType;
-import demetra.random.SystemRNG;
+import jdplus.random.SystemRNG;
 import java.util.Random;
 import org.assertj.core.api.Assertions;
 import static org.assertj.core.api.Assertions.assertThat;

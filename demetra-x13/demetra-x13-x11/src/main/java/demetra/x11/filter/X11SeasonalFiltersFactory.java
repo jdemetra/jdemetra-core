@@ -6,9 +6,9 @@
 package demetra.x11.filter;
 
 import jdplus.data.DataBlock;
-import demetra.maths.linearfilters.FiniteFilter;
-import demetra.maths.linearfilters.IFiniteFilter;
-import demetra.maths.linearfilters.SymmetricFilter;
+import jdplus.maths.linearfilters.FiniteFilter;
+import jdplus.maths.linearfilters.IFiniteFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import demetra.x11.SeasonalFilterOption;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
 import demetra.x11.filter.endpoints.IEndPointsProcessor;

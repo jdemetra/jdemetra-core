@@ -7,9 +7,9 @@ package demetra.r;
 
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
-import demetra.maths.linearfilters.HendersonFilters;
-import demetra.maths.linearfilters.IFiniteFilter;
-import demetra.maths.linearfilters.SymmetricFilter;
+import jdplus.maths.linearfilters.HendersonFilters;
+import jdplus.maths.linearfilters.IFiniteFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import demetra.sa.DecompositionMode;
 import demetra.x11plus.AsymmetricEndPoints;
 import demetra.x11plus.MusgraveFilterFactory;

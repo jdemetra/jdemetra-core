@@ -24,7 +24,7 @@ import demetra.ssf.univariate.ISsf;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.ISsfInitialization;
 import demetra.ssf.SsfComponent;
-import demetra.linearsystem.LinearSystemSolver;
+import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.FastMatrix;
 

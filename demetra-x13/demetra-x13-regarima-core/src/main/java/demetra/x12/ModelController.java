@@ -21,7 +21,7 @@ import demetra.arima.IArimaModel;
 import demetra.arima.internal.ModifiedLjungBoxFilter;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.linearmodel.LinearModel;
+import jdplus.linearmodel.LinearModel;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArmaModel;
 import demetra.regarima.regular.IAmiController;
@@ -29,8 +29,8 @@ import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.SarimaModel;
-import demetra.stats.tests.LjungBox;
-import demetra.stats.tests.StatisticalTest;
+import jdplus.stats.tests.LjungBox;
+import jdplus.stats.tests.StatisticalTest;
 import demetra.data.DoubleSeq;
 
 

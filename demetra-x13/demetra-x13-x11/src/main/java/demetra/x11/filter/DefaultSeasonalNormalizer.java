@@ -18,7 +18,7 @@ package demetra.x11.filter;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.linearfilters.SymmetricFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import demetra.x11.X11Context;
 import demetra.x11.filter.endpoints.CopyEndPoints;
 import demetra.x11.filter.endpoints.CopyPeriodicEndPoints;

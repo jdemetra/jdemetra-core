@@ -18,7 +18,7 @@ package demetra.ssf.akf;
 
 import jdplus.data.DataBlock;
 import demetra.data.LogSign;
-import demetra.likelihood.DeterminantalTerm;
+import jdplus.likelihood.DeterminantalTerm;
 import jdplus.maths.matrices.decomposition.ElementaryTransformations;
 import jdplus.maths.matrices.LowerTriangularMatrix;
 import demetra.ssf.State;

@@ -6,7 +6,7 @@
 package demetra.x11.filter;
 
 import jdplus.data.DataBlock;
-import demetra.maths.linearfilters.SymmetricFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import demetra.x11.SeriesEvolution;
 import demetra.x11.X11Context;
 import static demetra.x11.X11Kernel.table;

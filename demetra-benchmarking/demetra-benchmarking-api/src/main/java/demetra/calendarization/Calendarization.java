@@ -16,8 +16,9 @@
  */
 package demetra.calendarization;
 
-import demetra.benchmarking.spi.ICalendarization;
+import demetra.design.Algorithm;
 import demetra.design.Development;
+import demetra.design.ServiceDefinition;
 import demetra.timeseries.CalendarTimeSeries;
 import demetra.util.ServiceLookup;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,14 +31,13 @@ import java.util.concurrent.atomic.AtomicReference;
 @lombok.experimental.UtilityClass
 public class Calendarization {
 
+    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
 
-    private final AtomicReference<ICalendarization> PROCESSOR = ServiceLookup.firstMutable(ICalendarization.class);
-
-    public void setProcessor(ICalendarization algorithm) {
+    public void setProcessor(Processor algorithm) {
         PROCESSOR.set(algorithm);
     }
 
-    public ICalendarization getProcessor() {
+    public Processor getProcessor() {
         return PROCESSOR.get();
     }
 
@@ -45,4 +45,17 @@ public class Calendarization {
         return PROCESSOR.get().process(data, spec);
     }
 
+    @Algorithm
+    @ServiceDefinition
+    @FunctionalInterface
+    public static interface Processor {
+
+        /**
+         *
+         * @param data
+         * @param spec
+         * @return
+         */
+        CalendarizationResults process(CalendarTimeSeries data, CalendarizationSpec spec);
+    }
 }

@@ -19,7 +19,7 @@ package demetra.stats.tests.seasonal;
 import demetra.stats.tests.seasonal.Qs;
 import demetra.data.Data;
 import demetra.timeseries.TsData;
-import demetra.timeseries.simplets.TsDataToolkit;
+import jdplus.timeseries.simplets.TsDataToolkit;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

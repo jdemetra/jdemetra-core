@@ -22,7 +22,7 @@ import demetra.arima.IArimaModel;
 import demetra.arima.ssf.SsfArima;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.BackFilter;
 import demetra.ssf.ckms.CkmsFilter;
 import demetra.ssf.univariate.PredictionErrorDecomposition;
 import demetra.ssf.univariate.SsfData;

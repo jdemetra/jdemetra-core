@@ -21,7 +21,7 @@ import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.likelihood.Likelihood;
 import demetra.ssf.IPredictionErrorDecomposition;
-import demetra.likelihood.ResidualsCumulator;
+import jdplus.likelihood.ResidualsCumulator;
 import demetra.ssf.State;
 import demetra.ssf.StateInfo;
 import demetra.data.DoubleSeq;

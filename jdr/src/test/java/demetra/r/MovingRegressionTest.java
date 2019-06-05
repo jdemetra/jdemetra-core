@@ -8,7 +8,7 @@ package demetra.r;
 import demetra.data.Data;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
-import static demetra.timeseries.simplets.TsDataToolkit.log;
+import static jdplus.timeseries.simplets.TsDataToolkit.log;
 import org.junit.Test;
 import demetra.data.Doubles;
 

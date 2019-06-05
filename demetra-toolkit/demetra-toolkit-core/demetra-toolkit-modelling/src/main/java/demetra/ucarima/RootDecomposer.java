@@ -19,12 +19,12 @@ package demetra.ucarima;
 import demetra.arima.ArimaModel;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.linearfilters.SymmetricFilter;
-import demetra.maths.linearfilters.SymmetricFrequencyResponse;
+import jdplus.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.maths.linearfilters.SymmetricFrequencyResponse;
 import jdplus.maths.polynomials.Polynomial;
-import demetra.leastsquares.QRSolver;
-import demetra.linearsystem.LinearSystemSolver;
+import jdplus.leastsquares.QRSolver;
+import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.FastMatrix;
 

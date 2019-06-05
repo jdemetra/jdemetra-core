@@ -16,8 +16,9 @@
  */
 package demetra.tempdisagg.univariate;
 
-import demetra.benchmarking.spi.ITemporalDisaggregation;
+import demetra.design.Algorithm;
 import demetra.design.Development;
+import demetra.design.ServiceDefinition;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.util.ServiceLookup;
@@ -32,13 +33,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TemporalDisaggregation {
 
 
-    private final AtomicReference<ITemporalDisaggregation> PROCESSOR = ServiceLookup.firstMutable(ITemporalDisaggregation.class);
+    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
 
-    public void setProcessor(ITemporalDisaggregation algorithm) {
+    public void setProcessor(Processor algorithm) {
         PROCESSOR.set(algorithm);
     }
 
-    public ITemporalDisaggregation getProcessor() {
+    public Processor getProcessor() {
         return PROCESSOR.get();
     }
 
@@ -50,4 +51,12 @@ public class TemporalDisaggregation {
         return PROCESSOR.get().process(aggregatedSeries, domain, spec);
     }
 
+@Algorithm
+@ServiceDefinition
+public interface Processor {
+
+    TemporalDisaggregationResults process(TsData aggregatedSeries, TsData[] indicators, TemporalDisaggregationSpec spec);
+
+    TemporalDisaggregationResults process(TsData aggregatedSeries, TsDomain domain, TemporalDisaggregationSpec spec);
+}
 }

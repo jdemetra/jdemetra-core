@@ -18,8 +18,8 @@
 package demetra.stats.tests.seasonal;
 
 import demetra.design.Development;
-import demetra.stats.tests.FTest;
-import demetra.stats.tests.StatisticalTest;
+import jdplus.stats.tests.FTest;
+import jdplus.stats.tests.StatisticalTest;
 import demetra.data.DoubleSeq;
 
 /**

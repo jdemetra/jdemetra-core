@@ -13,7 +13,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayEvent;
 import demetra.timeseries.calendars.FixedDay;
-import demetra.timeseries.calendars.HolidaysUtility;
+import jdplus.timeseries.calendars.HolidaysUtility;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
 import java.time.LocalDate;
 import demetra.maths.matrices.Matrix;

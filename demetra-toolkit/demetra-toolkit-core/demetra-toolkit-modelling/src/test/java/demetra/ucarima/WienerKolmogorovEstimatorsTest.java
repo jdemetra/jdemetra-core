@@ -18,7 +18,7 @@ package demetra.ucarima;
 
 import demetra.arima.ArimaModel;
 import static demetra.ucarima.UcarimaModelTest.ucmAirline;
-import demetra.maths.linearfilters.RationalFilter;
+import jdplus.maths.linearfilters.RationalFilter;
 import static demetra.ucarima.UcarimaModelTest.ucm3111;
 import org.junit.Test;
 import static org.junit.Assert.*;

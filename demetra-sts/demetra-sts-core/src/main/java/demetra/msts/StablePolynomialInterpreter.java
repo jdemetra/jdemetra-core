@@ -7,8 +7,8 @@ package demetra.msts;
 
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.functions.IParametersDomain;
-import demetra.maths.functions.ParamValidation;
+import jdplus.maths.functions.IParametersDomain;
+import jdplus.maths.functions.ParamValidation;
 import jdplus.maths.polynomials.Polynomial;
 import demetra.sarima.estimation.SarimaMapping;
 import javax.annotation.Nonnull;

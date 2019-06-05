@@ -32,14 +32,13 @@ import demetra.design.ServiceDefinition;
 @lombok.experimental.UtilityClass
 public class Denton {
 
+    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
 
-    private final AtomicReference<demetra.benchmarking.spi.IDenton> PROCESSOR = ServiceLookup.firstMutable(demetra.benchmarking.spi.IDenton.class);
-
-    public void setProcessor(demetra.benchmarking.spi.IDenton algorithm) {
+    public void setProcessor(Processor algorithm) {
         PROCESSOR.set(algorithm);
     }
 
-    public demetra.benchmarking.spi.IDenton getProcessor() {
+    public Processor getProcessor() {
         return PROCESSOR.get();
     }
 
@@ -50,4 +49,14 @@ public class Denton {
     public TsData benchmark(TsUnit highFreq, TsData aggregationConstraint, DentonSpec spec) {
         return PROCESSOR.get().benchmark(highFreq, aggregationConstraint, spec);
     }
+
+    @Algorithm
+    @ServiceDefinition
+    public interface Processor {
+
+        TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, DentonSpec spec);
+
+        TsData benchmark(TsUnit highFreq, TsData aggregationConstraint, DentonSpec spec);
+    }
+
 }

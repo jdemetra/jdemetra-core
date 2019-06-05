@@ -17,18 +17,16 @@
 package demetra.tramo.internal;
 
 import demetra.design.Development;
-import demetra.modelling.regression.AdditiveOutlier;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.outlier.CriticalValueComputer;
-import demetra.regarima.outlier.FastOutlierDetector;
-import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.sarima.GlsSarimaProcessor;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.sarima.internal.HannanRissanenInitializer;
-import demetra.stats.tests.LjungBox;
-import demetra.stats.tests.StatisticalTest;
+import jdplus.stats.tests.LjungBox;
+import jdplus.stats.tests.StatisticalTest;
 import demetra.data.DoubleSeq;
+import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 
 /**
  *
@@ -103,10 +101,10 @@ public class TramoUtility {
                 .stabilize(true)
                 .useDefaultIfFailed(true)
                 .build();
-
         return GlsSarimaProcessor.builder()
                 .initializer(initializer)
                 .useMaximumLikelihood(ml)
+                .minimizer(LevenbergMarquardtMinimizer.builder())
                 .precision(precision)
                 .build();
     }

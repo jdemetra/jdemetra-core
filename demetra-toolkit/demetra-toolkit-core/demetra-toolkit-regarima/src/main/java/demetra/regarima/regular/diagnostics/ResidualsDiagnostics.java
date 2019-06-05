@@ -16,13 +16,13 @@
  */
 package demetra.regarima.regular.diagnostics;
 
-import demetra.data.analysis.Periodogram;
+import jdplus.data.analysis.Periodogram;
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import demetra.regarima.RegArimaUtility;
 import demetra.regarima.regular.PreprocessingModel;
-import demetra.stats.tests.NiidTests;
-import demetra.stats.tests.StatisticalTest;
+import jdplus.stats.tests.NiidTests;
+import jdplus.stats.tests.StatisticalTest;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;

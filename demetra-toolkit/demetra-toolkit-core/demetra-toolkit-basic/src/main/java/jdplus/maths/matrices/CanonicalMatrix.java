@@ -241,6 +241,38 @@ public final class CanonicalMatrix implements FastMatrix {
     }
 
     /**
+     * Gets a given skew-diagonal of the matrix (as opposed to the main
+     * diagonal)
+     *
+     * @param pos The index of the skew-diagonal (in [0, max(rowsCount,
+     * columnsCount)[).
+     * @return The src blocks representing the skew-diagonal. Refers to the
+     * actual src (changing the src block modifies the underlying matrix).
+     */
+    public DataBlock skewDiagonal(int pos) {
+        if (pos < 0) {
+            return null;
+        }
+        int nmax = Math.max(nrows, ncols);
+        if (pos >= nmax) {
+            return null;
+        }
+
+        int beg, inc = nrows - 1;
+        int n;
+        if (pos < nrows) {
+            beg = pos;
+            n = Math.min(pos + 1, ncols);
+        } else {
+            int rlast = nrows - 1;
+            int col = pos - rlast;
+            beg = rlast + nrows * (col); // cell (nrows-1, pos-(nrows-1)) 
+            n = Math.min(nrows, ncols - col);
+        }
+        return DataBlock.of(storage, beg, beg + inc * n, inc);
+    }
+
+    /**
      *
      * @param row
      * @param col

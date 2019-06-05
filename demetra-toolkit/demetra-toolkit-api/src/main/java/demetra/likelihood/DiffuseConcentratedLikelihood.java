@@ -116,4 +116,9 @@ public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
      */
     DiffuseConcentratedLikelihood rescale(final double yfactor, double[] xfactor);
 
+    @Override
+    default int degreesOfFreedom(){
+        return dim()-nx()-ndiffuse();
+    }
+
 }

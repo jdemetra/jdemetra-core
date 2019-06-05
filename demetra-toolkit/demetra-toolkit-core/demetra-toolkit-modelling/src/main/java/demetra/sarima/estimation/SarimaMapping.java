@@ -20,8 +20,8 @@ import demetra.arima.estimation.IArimaMapping;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.Complex;
-import demetra.maths.functions.FunctionException;
-import demetra.maths.functions.ParamValidation;
+import jdplus.maths.functions.FunctionException;
+import jdplus.maths.functions.ParamValidation;
 import jdplus.maths.polynomials.Polynomial;
 import demetra.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
@@ -78,7 +78,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
             return checkStability(c.get(1), c.get(0));
         }
 
-        return demetra.maths.linearfilters.FilterUtility.checkStability(c.extract(0, nc));
+        return jdplus.maths.linearfilters.FilterUtility.checkStability(c.extract(0, nc));
     }
 
     private static boolean stabilize(boolean all, SarimaSpecification spec, DataBlock p) {

@@ -20,7 +20,7 @@ import jdplus.data.DataBlock;
 import jdplus.dstats.Normal;
 import demetra.stats.ProbabilityType;
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.maths.matrices.internal.Householder;
+import jdplus.maths.matrices.decomposition.Householder;
 import java.util.function.IntToDoubleFunction;
 
 /**

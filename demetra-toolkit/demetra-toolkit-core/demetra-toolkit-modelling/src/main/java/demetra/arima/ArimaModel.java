@@ -20,10 +20,10 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
 import demetra.maths.PolynomialType;
-import demetra.maths.linearfilters.BackFilter;
-import demetra.maths.linearfilters.SymmetricFilter;
+import jdplus.maths.linearfilters.BackFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.Polynomial;
-import demetra.maths.polynomials.internal.UnitRootsSolver;
+import jdplus.maths.polynomials.UnitRootsSolver;
 import javax.annotation.Nonnull;
 
 /**
