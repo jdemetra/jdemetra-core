@@ -17,8 +17,8 @@
 
 package demetra.arima.ssf;
 
-import demetra.arima.ArimaModel;
-import demetra.arima.IArimaModel;
+import jdplus.arima.ArimaModel;
+import jdplus.arima.IArimaModel;
 import demetra.arima.ssf.SsfArima;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
@@ -27,7 +27,7 @@ import demetra.ssf.ckms.CkmsFilter;
 import demetra.ssf.univariate.PredictionErrorDecomposition;
 import demetra.ssf.univariate.SsfData;
 import demetra.ssf.univariate.Ssf;
-import demetra.arima.estimation.ArimaForecasts;
+import jdplus.arima.estimation.ArimaForecasts;
 import demetra.data.DoubleSeq;
 
 /**

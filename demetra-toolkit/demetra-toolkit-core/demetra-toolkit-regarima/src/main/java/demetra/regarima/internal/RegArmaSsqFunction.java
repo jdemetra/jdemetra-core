@@ -17,7 +17,7 @@
 package demetra.regarima.internal;
 
 import demetra.regarima.RegArmaModel;
-import demetra.arima.IArimaModel;
+import jdplus.arima.IArimaModel;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
@@ -28,7 +28,7 @@ import jdplus.maths.functions.ssq.ISsqFunction;
 import jdplus.maths.functions.ssq.ISsqFunctionPoint;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
-import demetra.arima.estimation.IArimaMapping;
+import jdplus.arima.estimation.IArimaMapping;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
 import demetra.maths.matrices.Matrix;

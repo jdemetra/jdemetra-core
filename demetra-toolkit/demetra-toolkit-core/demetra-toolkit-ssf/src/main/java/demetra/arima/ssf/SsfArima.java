@@ -16,8 +16,8 @@
  */
 package demetra.arima.ssf;
 
-import demetra.arima.IArimaModel;
-import demetra.arima.StationaryTransformation;
+import jdplus.arima.IArimaModel;
+import jdplus.arima.StationaryTransformation;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.DataWindow;

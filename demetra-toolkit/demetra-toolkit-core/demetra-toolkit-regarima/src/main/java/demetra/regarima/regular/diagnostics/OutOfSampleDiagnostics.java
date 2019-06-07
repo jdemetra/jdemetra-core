@@ -20,7 +20,7 @@ import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import demetra.regarima.regular.PreprocessingModel;
 import demetra.sarima.RegSarimaProcessor;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import java.util.List;
 
 /**

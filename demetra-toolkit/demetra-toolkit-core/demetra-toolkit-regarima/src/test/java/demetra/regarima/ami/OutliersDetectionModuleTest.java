@@ -19,16 +19,14 @@ package demetra.regarima.ami;
 import demetra.data.Data;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.outlier.ExactSingleOutlierDetector;
-import demetra.sarima.FastSarimaProcessor;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.sarima.GlsSarimaProcessor;
-import demetra.sarima.internal.HannanRissanenInitializer;
 import demetra.timeseries.TsPeriod;
-import java.util.function.Consumer;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
+import demetra.sarima.internal.HannanRissanenInitializer;
 
 /**
  *

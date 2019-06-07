@@ -6,7 +6,7 @@
 package demetra.ssf;
 
 import demetra.arima.ssf.SsfArima;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import jdplus.maths.matrices.CanonicalMatrix;
 import org.junit.Test;

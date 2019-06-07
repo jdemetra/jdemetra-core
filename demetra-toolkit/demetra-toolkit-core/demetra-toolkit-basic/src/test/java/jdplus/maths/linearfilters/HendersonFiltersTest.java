@@ -151,7 +151,7 @@ class GenericHendersonFilters {
         return z;
     }
 
-    private double[] W = new double[]{-20, 15, -6, 1};
+    private double[] W = new double[]{20, -15, 6, -1};
 
     private void S(FastMatrix s) {
         s.diagonal().set(W[0]);
@@ -226,7 +226,7 @@ class FidelityCriterion {
 class SmoothnessCriterion {
 
     private final CanonicalMatrix S;
-    private double[] W = new double[]{-20, 15, -6, 1};
+    private double[] W = new double[]{20, -15, 6, -1};
 
     public SmoothnessCriterion(int nlags, int nleads) {
         int n = nlags + nleads + 1;
@@ -285,6 +285,6 @@ class TimelinessCriterion {
     }
 
     void add(double weight, FastMatrix X) {
-        X.addAY(-weight, T);
+        X.addAY(weight, T);
     }
 }

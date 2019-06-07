@@ -16,8 +16,8 @@
  */
 package demetra.regarima;
 
-import demetra.arima.estimation.IArimaMapping;
-import demetra.arima.IArimaModel;
+import jdplus.arima.estimation.IArimaMapping;
+import jdplus.arima.IArimaModel;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import jdplus.likelihood.LogLikelihoodFunction;

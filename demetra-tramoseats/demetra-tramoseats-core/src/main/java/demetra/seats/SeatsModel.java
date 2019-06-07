@@ -16,11 +16,11 @@
  */
 package demetra.seats;
 
-import demetra.arima.IArimaModel;
+import jdplus.arima.IArimaModel;
 import demetra.sa.ComponentType;
 import demetra.regarima.RegArimaModel;
-import demetra.sarima.SarimaModel;
-import demetra.ucarima.UcarimaModel;
+import jdplus.sarima.SarimaModel;
+import jdplus.ucarima.UcarimaModel;
 import demetra.data.DoubleSeq;
 
 /**

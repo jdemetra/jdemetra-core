@@ -16,7 +16,7 @@
  */
 package demetra.sarima;
 
-import demetra.sarima.estimation.SarimaMapping;
+import jdplus.sarima.estimation.SarimaMapping;
 import demetra.design.BuilderPattern;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -28,12 +28,13 @@ import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.maths.functions.IParametricMapping;
 import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import demetra.arima.estimation.IArimaMapping;
+import jdplus.arima.estimation.IArimaMapping;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaMapping;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import java.util.function.Function;
 import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
+import jdplus.sarima.SarimaModel;
 
 /**
  *

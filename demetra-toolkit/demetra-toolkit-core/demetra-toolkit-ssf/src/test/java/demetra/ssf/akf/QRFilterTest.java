@@ -8,7 +8,7 @@ package demetra.ssf.akf;
 import demetra.ssf.likelihood.MarginalLikelihood;
 import demetra.arima.ssf.SsfArima;
 import demetra.data.Data;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.ssf.univariate.Ssf;
 import demetra.ssf.univariate.SsfData;
@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
  */
 public class QRFilterTest {
 
-    static final demetra.sarima.SarimaModel arima1, arima2;
+    static final jdplus.sarima.SarimaModel arima1, arima2;
     static final double[] data;
 
     static {

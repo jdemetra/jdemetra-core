@@ -21,8 +21,8 @@ import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
 import demetra.sa.DecompositionMode;
 import demetra.sa.SeriesDecomposition;
-import demetra.ucarima.UcarimaModel;
-import demetra.ucarima.estimation.BurmanEstimates;
+import jdplus.ucarima.UcarimaModel;
+import jdplus.ucarima.estimation.BurmanEstimates;
 import demetra.data.DoubleSeq;
 
 /**

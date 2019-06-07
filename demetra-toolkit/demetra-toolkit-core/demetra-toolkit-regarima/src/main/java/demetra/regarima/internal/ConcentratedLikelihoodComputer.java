@@ -17,8 +17,8 @@
 package demetra.regarima.internal;
 
 import demetra.regarima.RegArmaModel;
-import demetra.arima.IArimaModel;
-import demetra.arima.internal.KalmanFilter;
+import jdplus.arima.IArimaModel;
+import internal.jdplus.arima.KalmanFilter;
 import demetra.regarima.RegArimaModel;
 import jdplus.data.DataBlock;
 import demetra.design.Immutable;
@@ -26,7 +26,7 @@ import demetra.eco.EcoException;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.decomposition.Householder;
-import demetra.arima.estimation.ArmaFilter;
+import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.decomposition.QRDecomposition;
 import demetra.maths.matrices.Matrix;

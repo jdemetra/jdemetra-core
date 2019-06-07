@@ -14,7 +14,7 @@ import jdplus.maths.functions.ParamValidation;
 import jdplus.maths.functions.minpack.MinPackMinimizer;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.polynomials.Polynomial;
-import demetra.sarima.estimation.SarimaMapping;
+import jdplus.sarima.estimation.SarimaMapping;
 import demetra.ssf.akf.AkfToolkit;
 import demetra.ssf.dk.SsfFunction;
 import demetra.ssf.dk.SsfFunctionPoint;

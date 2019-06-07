@@ -5,7 +5,7 @@
  */
 package demetra.fractionalairline;
 
-import demetra.arima.ArimaModel;
+import jdplus.arima.ArimaModel;
 import demetra.regarima.GlsArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;

@@ -16,17 +16,17 @@
  */
 package demetra.regarima.regular;
 
-import demetra.arima.IArimaModel;
+import jdplus.arima.IArimaModel;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.polynomials.UnitRoots;
-import demetra.arima.estimation.IArimaMapping;
+import jdplus.arima.estimation.IArimaMapping;
 import demetra.regarima.ami.AbstractArimaComponent;
-import demetra.sarima.estimation.SarimaFixedMapping;
-import demetra.sarima.estimation.SarimaMapping;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.estimation.SarimaFixedMapping;
+import jdplus.sarima.estimation.SarimaMapping;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import java.util.Arrays;
 import demetra.data.DoubleSeq;

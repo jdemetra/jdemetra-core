@@ -16,9 +16,9 @@
  */
 package demetra.r;
 
-import demetra.arima.ArimaModel;
+import jdplus.arima.ArimaModel;
 import demetra.arima.ArimaProcess;
-import demetra.arima.IArimaModel;
+import jdplus.arima.IArimaModel;
 import demetra.arima.UcarimaProcess;
 import demetra.descriptors.arima.UcarimaDescriptor;
 import demetra.regarima.RegArimaEstimation;
@@ -28,7 +28,7 @@ import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.arima.SarimaProcess;
 import demetra.sarima.RegSarimaProcessor;
@@ -39,10 +39,10 @@ import demetra.ssf.univariate.SsfData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
-import demetra.ucarima.AllSelector;
-import demetra.ucarima.ModelDecomposer;
-import demetra.ucarima.TrendCycleSelector;
-import demetra.ucarima.UcarimaModel;
+import jdplus.ucarima.AllSelector;
+import jdplus.ucarima.ModelDecomposer;
+import jdplus.ucarima.TrendCycleSelector;
+import jdplus.ucarima.UcarimaModel;
 import demetra.ucarima.ssf.SsfUcarima;
 import java.util.LinkedHashMap;
 import java.util.Map;

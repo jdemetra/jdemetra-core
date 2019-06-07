@@ -22,7 +22,7 @@ import demetra.modelling.regression.Regression;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.GlsSarimaProcessor;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import jdplus.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;

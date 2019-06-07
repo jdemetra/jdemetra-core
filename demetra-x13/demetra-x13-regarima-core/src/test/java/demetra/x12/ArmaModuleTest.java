@@ -19,7 +19,7 @@ package demetra.x12;
 import demetra.x12.ArmaModuleImpl;
 import demetra.data.Data;
 import demetra.regarima.RegArimaModel;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import ec.tstoolkit.sarima.SarmaSpecification;
 import org.junit.Test;

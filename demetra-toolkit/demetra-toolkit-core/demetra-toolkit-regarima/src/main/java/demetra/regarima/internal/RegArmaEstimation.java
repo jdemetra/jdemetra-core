@@ -17,7 +17,7 @@
 package demetra.regarima.internal;
 
 import demetra.regarima.RegArmaModel;
-import demetra.arima.IArimaModel;
+import jdplus.arima.IArimaModel;
 import jdplus.maths.matrices.CanonicalMatrix;
 
 /**

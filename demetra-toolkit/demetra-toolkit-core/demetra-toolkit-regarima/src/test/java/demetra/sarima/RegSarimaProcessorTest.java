@@ -13,6 +13,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
 import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.sarima.SarimaModel;
 
 /**
  *

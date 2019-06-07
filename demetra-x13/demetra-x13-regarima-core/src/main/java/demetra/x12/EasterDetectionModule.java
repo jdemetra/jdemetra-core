@@ -16,7 +16,6 @@
  */
 package demetra.x12;
 
-import demetra.arima.estimation.IArimaMapping;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.regression.Variable;
@@ -30,8 +29,9 @@ import demetra.regarima.regular.IModelComparator;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
 import demetra.regarima.regular.RegArimaModelling;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.modelling.regression.IEasterVariable;
+import jdplus.arima.estimation.IArimaMapping;
 
 /**
  *

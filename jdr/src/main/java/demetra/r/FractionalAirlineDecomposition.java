@@ -16,7 +16,7 @@
  */
 package demetra.r;
 
-import demetra.arima.ArimaModel;
+import jdplus.arima.ArimaModel;
 import demetra.arima.ArimaProcess;
 import demetra.arima.UcarimaProcess;
 import demetra.descriptors.arima.UcarimaDescriptor;
@@ -33,11 +33,11 @@ import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.maths.linearfilters.BackFilter;
 import static demetra.r.AirlineDecomposition.ucm;
 import demetra.regarima.GlsArimaProcessor;
-import demetra.arima.estimation.IArimaMapping;
+import jdplus.arima.estimation.IArimaMapping;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.univariate.SsfData;
-import demetra.ucarima.UcarimaModel;
+import jdplus.ucarima.UcarimaModel;
 import demetra.ucarima.ssf.SsfUcarima;
 import java.util.LinkedHashMap;
 import java.util.Map;

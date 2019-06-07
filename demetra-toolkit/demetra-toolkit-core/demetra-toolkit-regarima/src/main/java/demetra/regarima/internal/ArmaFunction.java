@@ -16,7 +16,7 @@
  */
 package demetra.regarima.internal;
 
-import demetra.arima.IArimaModel;
+import jdplus.arima.IArimaModel;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import jdplus.likelihood.DefaultLikelihoodEvaluation;

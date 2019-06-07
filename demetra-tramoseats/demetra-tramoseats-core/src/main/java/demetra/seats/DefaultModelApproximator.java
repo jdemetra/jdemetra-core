@@ -17,7 +17,7 @@
 package demetra.seats;
 
 import demetra.maths.Complex;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 
 /**

@@ -16,7 +16,7 @@
  */
 package demetra.regarima;
 
-import demetra.arima.IArimaModel;
+import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.maths.functions.IParametricMapping;
 import jdplus.maths.functions.ParamValidation;

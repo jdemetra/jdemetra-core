@@ -5,7 +5,7 @@
  */
 package demetra.fractionalairline;
 
-import demetra.arima.ArimaModel;
+import jdplus.arima.ArimaModel;
 import demetra.data.Data;
 import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;

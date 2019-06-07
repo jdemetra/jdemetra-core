@@ -23,7 +23,7 @@ import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
 import jdplus.maths.matrices.SymmetricMatrix;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.arima.SarimaProcess;
 import demetra.sarima.RegSarimaProcessor;

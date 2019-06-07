@@ -16,13 +16,13 @@
  */
 package demetra.seats;
 
-import demetra.arima.IArimaModel;
+import jdplus.arima.IArimaModel;
 import demetra.design.Development;
 import demetra.seats.SeatsSpec.ApproximationMode;
-import demetra.ucarima.ModelDecomposer;
-import demetra.ucarima.SeasonalSelector;
-import demetra.ucarima.TrendCycleSelector;
-import demetra.ucarima.UcarimaModel;
+import jdplus.ucarima.ModelDecomposer;
+import jdplus.ucarima.SeasonalSelector;
+import jdplus.ucarima.TrendCycleSelector;
+import jdplus.ucarima.UcarimaModel;
 
 /**
  * @author Jean Palate

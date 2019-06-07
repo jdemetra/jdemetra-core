@@ -24,7 +24,7 @@ import jdplus.stats.StatException;
 import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.TestType;
 import java.util.function.IntToDoubleFunction;
-import demetra.ar.AutoRegressiveEstimation;
+import jdplus.ar.AutoRegressiveEstimation;
 import demetra.data.DoubleSeq;
 
 /**

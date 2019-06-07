@@ -7,7 +7,7 @@ package demetra.regarima;
 
 import demetra.data.Data;
 import jdplus.data.DataBlock;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import ec.tstoolkit.data.DescriptiveStatistics;
 import org.junit.Ignore;

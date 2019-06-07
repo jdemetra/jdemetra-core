@@ -20,8 +20,7 @@ import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.sarima.RegSarimaProcessor;
-import demetra.sarima.SarimaModel;
-import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.sarima.SarimaModel;
 
 /**
  *

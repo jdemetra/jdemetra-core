@@ -5,13 +5,13 @@
  */
 package demetra.msts.internal;
 
-import demetra.arima.ArimaModel;
+import jdplus.arima.ArimaModel;
 import demetra.arima.ssf.SsfArima;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
 import demetra.msts.SarimaInterpreter;
 import demetra.msts.VarianceInterpreter;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.ssf.StateComponent;
 import java.util.Arrays;

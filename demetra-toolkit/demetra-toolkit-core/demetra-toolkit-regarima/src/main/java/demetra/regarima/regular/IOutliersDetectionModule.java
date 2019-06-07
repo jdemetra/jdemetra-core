@@ -16,7 +16,7 @@
  */
 package demetra.regarima.regular;
 
-import demetra.arima.IArimaModel;
+import jdplus.arima.IArimaModel;
 import demetra.regarima.RegArimaModel;
 
 /**

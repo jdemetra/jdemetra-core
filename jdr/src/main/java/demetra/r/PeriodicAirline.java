@@ -5,7 +5,7 @@
  */
 package demetra.r;
 
-import demetra.arima.ArimaModel;
+import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
 import demetra.fractionalairline.MultiPeriodicAirlineMapping;
 import demetra.information.InformationMapping;

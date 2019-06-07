@@ -16,9 +16,9 @@
  */
 package demetra.regarima.outlier;
 
-import demetra.arima.IArimaModel;
-import demetra.arima.StationaryTransformation;
-import demetra.arima.internal.FastKalmanFilter;
+import jdplus.arima.IArimaModel;
+import jdplus.arima.StationaryTransformation;
+import internal.jdplus.arima.FastKalmanFilter;
 import jdplus.data.DataBlock;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.maths.linearfilters.BackFilter;

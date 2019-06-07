@@ -5,7 +5,7 @@
  */
 package demetra.msts.internal;
 
-import demetra.arima.ArimaModel;
+import jdplus.arima.ArimaModel;
 import demetra.arima.ssf.SsfArima;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.polynomials.Polynomial;

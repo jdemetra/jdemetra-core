@@ -22,12 +22,12 @@ import demetra.design.Development;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.arima.SarmaSpecification;
-import demetra.sarima.estimation.HannanRissanen;
+import jdplus.sarima.estimation.HannanRissanen;
 import demetra.sarima.IArmaInitializer;
-import demetra.sarima.estimation.SarimaMapping;
+import jdplus.sarima.estimation.SarimaMapping;
 import demetra.data.DoubleSeq;
 
 /**

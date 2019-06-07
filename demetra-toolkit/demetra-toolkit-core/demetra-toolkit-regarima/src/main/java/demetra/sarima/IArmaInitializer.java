@@ -20,9 +20,7 @@ package demetra.sarima;
 
 import demetra.regarima.RegArmaModel;
 import demetra.design.Development;
-import jdplus.maths.functions.IParametricMapping;
-import demetra.sarima.SarimaModel;
-import demetra.data.DoubleSeq;
+import jdplus.sarima.SarimaModel;
 
 /**
  *

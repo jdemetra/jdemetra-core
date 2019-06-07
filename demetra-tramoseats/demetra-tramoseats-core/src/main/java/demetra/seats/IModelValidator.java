@@ -19,7 +19,7 @@
 package demetra.seats;
 
 import demetra.design.Development;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 
 
 /**

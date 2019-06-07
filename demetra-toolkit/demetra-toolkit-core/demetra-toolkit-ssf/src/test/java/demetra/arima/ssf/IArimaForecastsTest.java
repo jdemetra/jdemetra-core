@@ -5,10 +5,10 @@
  */
 package demetra.arima.ssf;
 
-import demetra.arima.internal.FastArimaForecasts;
+import internal.jdplus.arima.FastArimaForecasts;
 import demetra.data.Data;
 import jdplus.data.DataBlock;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import org.junit.Test;
 import static org.junit.Assert.*;

@@ -26,7 +26,7 @@ import demetra.regarima.regular.IModelEstimator;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.sarima.RegSarimaProcessor;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.data.DoubleSeq;
 import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;

@@ -16,11 +16,11 @@
  */
 package demetra.fractionalairline;
 
-import demetra.arima.ArimaModel;
+import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.maths.functions.ParamValidation;
 import jdplus.maths.linearfilters.BackFilter;
-import demetra.arima.estimation.IArimaMapping;
+import jdplus.arima.estimation.IArimaMapping;
 import demetra.data.DoubleSeq;
 
 public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
