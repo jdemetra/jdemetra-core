@@ -39,10 +39,10 @@ public class MsrFilterSelection {
         do {
             if (firstRound) {
                 firstRound = false;
-            }else{
+            } else {
                 series = series.drop(0, context.getPeriod());
             }
-            
+
             // 1. calc Components
             calcComponents(series, context);
             // 2. calc periodic variations
@@ -57,8 +57,11 @@ public class MsrFilterSelection {
             seasFilter = SeasonalFilterOption.S3X5;
         }
 
-        for (int j : context.getMsrIndex()) {
-            result[j] = seasFilter;
+        boolean[] index_msr = context.getMsrIndex();
+        for (int j = 0; j < context.getPeriod(); j++) {
+            if (index_msr[j]) {
+                result[j] = seasFilter;
+            }
         }
         return result;
     }
