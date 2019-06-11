@@ -223,7 +223,6 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_AutoHenderson_Halfyearly() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
@@ -322,7 +321,11 @@ public class X11DStepTest {
         oldSpec.setSeasonalFilters(filters_old);
         oldSpec.setCalendarSigma(ec.satoolkit.x11.CalendarSigma.valueOf(calendarSigma));
         oldSpec.setSigmavec(sigmavecOptions_old);
-        oldSpec.setHendersonFilterLength(filterLength);
+        if (frequency == 2 && filterLength == 0) {
+            oldSpec.setHendersonFilterLength(5);
+        } else {
+            oldSpec.setHendersonFilterLength(filterLength);
+        }
         oldSpec.setForecastHorizon(0);
         oldSpec.setBiasCorrection(BiasCorrection.None);
 

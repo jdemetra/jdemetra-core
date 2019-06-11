@@ -40,7 +40,6 @@ public class X11BStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_Multiplicative_Halfyearly() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
@@ -95,7 +94,6 @@ public class X11BStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_AutoHenderson_Halfyearly() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
@@ -233,7 +231,11 @@ public class X11BStepTest {
         X11Specification oldSpec = new X11Specification();
         oldSpec.setMode(ec.satoolkit.DecompositionMode.valueOf(modeName));
         oldSpec.setSeasonalFilters(filters_old);
-        oldSpec.setHendersonFilterLength(filterLength);
+        if (frequency == 2 && filterLength == 0) {
+            oldSpec.setHendersonFilterLength(5);
+        } else {
+            oldSpec.setHendersonFilterLength(filterLength);
+        }
         oldSpec.setForecastHorizon(0);
 
         ec.satoolkit.x11.X11Kernel old = new ec.satoolkit.x11.X11Kernel();

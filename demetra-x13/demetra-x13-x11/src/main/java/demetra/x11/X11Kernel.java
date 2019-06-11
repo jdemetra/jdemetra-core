@@ -9,6 +9,7 @@ import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.FiniteFilter;
 import demetra.maths.linearfilters.SymmetricFilter;
+import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.x11.filter.MusgraveFilterFactory;
@@ -38,11 +39,8 @@ public class X11Kernel implements X11.Processor {
     @Override
     public X11Results process(@lombok.NonNull TsData timeSeries, @lombok.NonNull X11Spec spec) {
         clear();
+        check(timeSeries, spec);
 
-        int frequency = timeSeries.getAnnualFrequency();
-        if (frequency == -1) {
-            throw new IllegalArgumentException("Frequency of the time series must be compatible with years");
-        }
         input = timeSeries;
         DoubleSequence data = input.getValues();
         context = X11Context.of(spec, input);
@@ -56,6 +54,23 @@ public class X11Kernel implements X11.Processor {
         dstep = new X11DStep();
         dstep.process(data, context.remove(data, cstep.getC20()), context);
         return buildResults(timeSeries.getStart(), spec);
+    }
+
+    private void check(TsData timeSeries, X11Spec spec) throws X11Exception, IllegalArgumentException {
+        int frequency = timeSeries.getAnnualFrequency();
+        if (frequency == -1) {
+            throw new IllegalArgumentException("Frequency of the time series must be compatible with years");
+        }
+        if (timeSeries.getValues().length() < 3 * frequency) {
+            throw new X11Exception(X11Exception.ERR_LENGTH);
+        }
+        if (!timeSeries.getValues().allMatch(Double::isFinite)) {
+            throw new X11Exception(X11Exception.ERR_MISSING);
+        }
+        if (spec.getMode() != DecompositionMode.Additive && spec.getMode() != DecompositionMode.PseudoAdditive
+                && timeSeries.getValues().anyMatch(x -> x <= 0)) {
+            throw new X11Exception(X11Exception.ERR_NEG);
+        }
     }
 
     private void clear() {
@@ -143,7 +158,7 @@ public class X11Kernel implements X11.Processor {
         double issq = i.log().ssq();
         double sig = Math.exp(issq / (2 * i.length()));
         int ifreq = context.getPeriod();
-        int length = 2 * ifreq - 1;
+        int length = (ifreq == 2) ? 5 : 2 * ifreq - 1;;
 
         double[] x = table(s.length(), Double.NaN);
         int ndrop = length / 2;

@@ -34,9 +34,9 @@ public class X11Context {
     int trendFilterLength;
     int localPolynomialDegree;
     @lombok.NonNull
-    SeasonalFilterOption[] initialSeasonalFilter; //Array
+    SeasonalFilterOption[] initialSeasonalFilter;
     @lombok.NonNull
-    SeasonalFilterOption[] finalSeasonalFilter; //array
+    SeasonalFilterOption[] finalSeasonalFilter;
     double lowerSigma, upperSigma;
     CalendarSigmaOption calendarSigma;
     SigmavecOption[] sigmavecOptions;
@@ -67,8 +67,9 @@ public class X11Context {
     }
 
     public static X11Context of(X11Spec spec, TsData data) {
-        SeasonalFilterOption[] filters = new SeasonalFilterOption[data.getAnnualFrequency()];
+        SeasonalFilterOption[] filters;
         if (spec.getFilters().size() == 1) {
+            filters = new SeasonalFilterOption[data.getAnnualFrequency()];
             SeasonalFilterOption filter = spec.getFilters().get(0);
             for (int i = 0; i < data.getAnnualFrequency(); i++) {
                 filters[i] = filter;
@@ -84,7 +85,7 @@ public class X11Context {
                 .lowerSigma(spec.getLowerSigma())
                 .upperSigma(spec.getUpperSigma())
                 .calendarSigma(spec.getCalendarSigma())
-                .sigmavecOptions(spec.getSigmavec().toArray(new SigmavecOption[0]))
+                .sigmavecOptions(spec.getSigmavec() == null ? null : spec.getSigmavec().toArray(new SigmavecOption[0]))
                 .excludefcast(spec.isExcludeForecast())
                 .forecastHorizon(spec.getForecastHorizon())
                 .initialSeasonalFilter(filters)

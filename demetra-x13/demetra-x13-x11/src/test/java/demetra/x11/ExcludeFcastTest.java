@@ -103,7 +103,7 @@ public class ExcludeFcastTest {
         X13Specification x13Specification = X13Specification.RSA0;
         X11Specification oldX11Spec = new X11Specification();
         oldX11Spec.setMode(ec.satoolkit.DecompositionMode.Additive);
-        oldX11Spec.setSeasonalFilter(ec.satoolkit.x11.SeasonalFilterOption.S3X3);
+        oldX11Spec.setSeasonalFilters(filters_old);
         oldX11Spec.setCalendarSigma(CalendarSigma.valueOf(option.name()));
 
         if (option.name().equals(CalendarSigma.Select.name())) {
