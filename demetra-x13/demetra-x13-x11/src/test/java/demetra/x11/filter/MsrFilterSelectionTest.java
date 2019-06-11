@@ -61,8 +61,8 @@ public class MsrFilterSelectionTest {
     @Test
     public void test_cutYears() {
         int freq = 12;
-        int number_of_years = 6;
-        processMSR("Additive", freq, Arrays.copyOfRange(WU5636, 0, freq * number_of_years + 3));
+        int numberOfYears = 6;
+        processMSR("Additive", freq, Arrays.copyOfRange(WU5636, 0, freq * numberOfYears + 3));
     }
 
     /*
@@ -76,9 +76,9 @@ public class MsrFilterSelectionTest {
     public void test_Range1() {
         // Msr = 1.088
         int freq = 4;
-        int number_of_years = 7;
-        int start_of_timeseries_index = 30;
-        processMSR("Multiplicative", freq, Arrays.copyOfRange(WU5636, start_of_timeseries_index, start_of_timeseries_index + freq * number_of_years));
+        int numberOfYears = 7;
+        int startOfTimeseriesIndex = 30;
+        processMSR("Multiplicative", freq, Arrays.copyOfRange(WU5636, startOfTimeseriesIndex, startOfTimeseriesIndex + freq * numberOfYears));
 
     }
 
@@ -86,81 +86,81 @@ public class MsrFilterSelectionTest {
     public void test_Range1_upperLimit() {
         // Msr = 2.49
         int freq = 4;
-        int number_of_years = 41;
-        int start_of_timeseries_index = 13;
-        processMSR("Additive", freq, Arrays.copyOfRange(WU5636, start_of_timeseries_index, start_of_timeseries_index + freq * number_of_years));
+        int numberOfYears = 41;
+        int startOfTimeseriesIndex = 13;
+        processMSR("Additive", freq, Arrays.copyOfRange(WU5636, startOfTimeseriesIndex, startOfTimeseriesIndex + freq * numberOfYears));
     }
 
     @Test
     public void test_Range2_lowerLimit() {
         // Msr = 2.56
         int freq = 12;
-        int number_of_years = 11;
-        int start_of_timeseries_index = 28;
-        processMSR("Additive", freq, Arrays.copyOfRange(WU5637, start_of_timeseries_index, start_of_timeseries_index + freq * number_of_years));
+        int numberOfYears = 11;
+        int startOfTimeseriesIndex = 28;
+        processMSR("Additive", freq, Arrays.copyOfRange(WU5637, startOfTimeseriesIndex, startOfTimeseriesIndex + freq * numberOfYears));
     }
 
     @Test
     public void test_Range2_upperLimit() {
         // Msr = 3.32
         int freq = 4;
-        int number_of_years = 30;
-        int start_of_timeseries_index = 34;
-        processMSR("Additive", freq, Arrays.copyOfRange(WU5637, start_of_timeseries_index, start_of_timeseries_index + freq * number_of_years));
+        int numberOfYears = 30;
+        int startOfTimeseriesIndex = 34;
+        processMSR("Additive", freq, Arrays.copyOfRange(WU5637, startOfTimeseriesIndex, startOfTimeseriesIndex + freq * numberOfYears));
     }
 
     @Test
     public void test_Range3_lowerLimit() {
         // Msr = 3.62
         int freq = 12;
-        int number_of_years = 6;
-        int start_of_timeseries_index = 0;
-        processMSR("Additive", freq, Arrays.copyOf(WU5636, start_of_timeseries_index + freq * number_of_years));
+        int numberOfYears = 6;
+        int startOfTimeseriesIndex = 0;
+        processMSR("Additive", freq, Arrays.copyOf(WU5636, startOfTimeseriesIndex + freq * numberOfYears));
     }
 
     @Test
     public void test_Range3_upperLimit() {
         // Msr = 5.48
         int freq = 4;
-        int number_of_years = 28;
-        int start_of_timeseries_index = 47;
-        processMSR("Additive", freq, Arrays.copyOfRange(WU5637, start_of_timeseries_index, start_of_timeseries_index + freq * number_of_years));
+        int numberOfYears = 28;
+        int startOfTimeseriesIndex = 47;
+        processMSR("Additive", freq, Arrays.copyOfRange(WU5637, startOfTimeseriesIndex, startOfTimeseriesIndex + freq * numberOfYears));
     }
 
     @Test
     public void test_Range4_lowerLimit() {
         // Msr = 5.73
         int freq = 12;
-        int number_of_years = 6;
-        int start_of_timeseries_index = 1;
-        processMSR("Additive", freq, Arrays.copyOfRange(WU5636, start_of_timeseries_index, start_of_timeseries_index + freq * number_of_years));
+        int numberOfYears = 6;
+        int startOfTimeseriesIndex = 1;
+        processMSR("Additive", freq, Arrays.copyOfRange(WU5636, startOfTimeseriesIndex, startOfTimeseriesIndex + freq * numberOfYears));
     }
 
     @Test
     public void test_Range4_upperLimit() {
         // Msr = 6.13
         int freq = 4;
-        int number_of_years = 6;
-        int start_of_timeseries_index = 10;
-        processMSR("Additive", freq, Arrays.copyOfRange(WU5637, start_of_timeseries_index, start_of_timeseries_index + freq * number_of_years));
+        int numberOfYears = 6;
+        int startOfTimeseriesIndex = 10;
+        processMSR("Additive", freq, Arrays.copyOfRange(WU5637, startOfTimeseriesIndex, startOfTimeseriesIndex + freq * numberOfYears));
     }
 
     @Test
     public void test_Range5_lowerLimit() {
         // Msr = 6.53
         int freq = 4;
-        int number_of_years = 12;
-        int start_of_timeseries_index = 3;
-        processMSR("Additive", freq, Arrays.copyOfRange(WU5637, start_of_timeseries_index, start_of_timeseries_index + freq * number_of_years));
+        int numberOfYears = 12;
+        int startOfTimeseriesIndex = 3;
+        processMSR("Additive", freq, Arrays.copyOfRange(WU5637, startOfTimeseriesIndex, startOfTimeseriesIndex + freq * numberOfYears));
     }
 
     @Test
     public void test_Range5() {
         // Msr = 8.49
         int freq = 4;
-        int number_of_years = 7;
-        int start_of_timeseries_index = 0;
-        processMSR("Multiplicative", freq, Arrays.copyOf(WU5637, start_of_timeseries_index + freq * number_of_years));
+        int numberOfYears = 7;
+        int startOfTimeseriesIndex = 0;
+        processMSR("Multiplicative", freq, Arrays.copyOf(WU5637, startOfTimeseriesIndex + freq * numberOfYears));
     }
 
     private void processMSR(String modeName, int frequency, double[] data) {
@@ -176,7 +176,7 @@ public class MsrFilterSelectionTest {
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(demetra.sa.DecompositionMode.valueOf(modeName))
                 .period(frequency)
-                .firstPeriod(1)
+                .firstPeriod(0)
                 .initialSeasonalFilter(filter_new)
                 .finalSeasonalFilter(filter_new)
                 .build();

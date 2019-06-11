@@ -68,7 +68,7 @@ public class MsrFilterSelection {
 
     private DoubleSequence completeYear(DoubleSequence series, X11Context context) {
         //check incomplete year
-        int cut = (series.length() + context.getFirstPeriod() - 1) % context.getPeriod();
+        int cut = (series.length() + context.getFirstPeriod()) % context.getPeriod();
         return series.drop(0, cut);
     }
 
