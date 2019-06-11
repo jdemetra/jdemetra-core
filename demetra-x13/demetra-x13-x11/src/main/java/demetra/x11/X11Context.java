@@ -17,6 +17,8 @@ import demetra.x11.extremevaluecorrector.DefaultExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.GroupSpecificExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.IExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.PeriodSpecificExtremeValuesCorrector;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.IntToDoubleFunction;
 import lombok.experimental.NonFinal;
 
@@ -27,7 +29,7 @@ import lombok.experimental.NonFinal;
 @lombok.Value
 @lombok.Builder
 public class X11Context {
-
+    
     @lombok.NonNull
     DecompositionMode mode;
     int period;
@@ -47,10 +49,10 @@ public class X11Context {
      * calculation of the standard deviation of the extreme values
      */
     boolean excludefcast;
-
+    
     @NonFinal
     IExtremeValuesCorrector extremeValuesCorrector;
-
+    
     public static X11ContextBuilder builder() {
         X11ContextBuilder builder = new X11ContextBuilder();
         builder.mode = DecompositionMode.Multiplicative;
@@ -65,7 +67,7 @@ public class X11Context {
         builder.firstPeriod = 0;
         return builder;
     }
-
+    
     public static X11Context of(X11Spec spec, TsData data) {
         SeasonalFilterOption[] filters = new SeasonalFilterOption[data.getAnnualFrequency()];
         if (spec.getFilters().size() == 1) {
@@ -76,7 +78,7 @@ public class X11Context {
         } else {
             filters = spec.getFilters().toArray(new SeasonalFilterOption[0]);
         }
-
+        
         return builder().mode(spec.getMode())
                 .trendFilterLength(spec.getHendersonFilterLength())
                 .period(data.getAnnualFrequency())
@@ -91,19 +93,19 @@ public class X11Context {
                 .finalSeasonalFilter(filters)
                 .build();
     }
-
+    
     public boolean isAutomaticHenderson() {
         return trendFilterLength == 0;
     }
-
+    
     public boolean isMultiplicative() {
         return mode == DecompositionMode.Multiplicative || mode == DecompositionMode.PseudoAdditive;
     }
-
+    
     public boolean isLogAdd() {
         return mode == DecompositionMode.LogAdditive;
     }
-
+    
     public DoubleSequence remove(DoubleSequence l, DoubleSequence r) {
         if (isMultiplicative()) {
             return DoubleSequence.onMapping(l.length(), i -> l.get(i) / r.get(i));
@@ -111,7 +113,7 @@ public class X11Context {
             return DoubleSequence.onMapping(l.length(), i -> l.get(i) - r.get(i));
         }
     }
-
+    
     public DoubleSequence add(DoubleSequence l, DoubleSequence r) {
         if (isMultiplicative()) {
             return DoubleSequence.onMapping(l.length(), i -> l.get(i) * r.get(i));
@@ -119,7 +121,7 @@ public class X11Context {
             return DoubleSequence.onMapping(l.length(), i -> l.get(i) + r.get(i));
         }
     }
-
+    
     public void remove(DoubleSequence l, DoubleSequence r, DataBlock q) {
         if (isMultiplicative()) {
             q.set(l, r, (x, y) -> x / y);
@@ -127,7 +129,7 @@ public class X11Context {
             q.set(l, r, (x, y) -> x - y);
         }
     }
-
+    
     public void add(DoubleSequence l, DoubleSequence r, DataBlock q) {
         if (isMultiplicative()) {
             q.set(l, r, (x, y) -> x * y);
@@ -135,19 +137,19 @@ public class X11Context {
             q.set(l, r, (x, y) -> x + y);
         }
     }
-
+    
     public SymmetricFilter trendFilter() {
         return trendFilter(trendFilterLength);
     }
-
+    
     public SymmetricFilter trendFilter(int filterLength) {
         int horizon = filterLength / 2;
         IntToDoubleFunction weights = DiscreteKernel.henderson(horizon);
         return demetra.maths.linearfilters.LocalPolynomialFilters.of(horizon, localPolynomialDegree, weights);
     }
-
+    
     private static final double SQRPI = Math.sqrt(Math.PI);
-
+    
     public FiniteFilter[] asymmetricTrendFilters(SymmetricFilter sfilter, double ic) {
         double d = 2 / (SQRPI * ic);
         FiniteFilter[] afilters;
@@ -181,13 +183,13 @@ public class X11Context {
             }
         }
         return getExtremeValuesCorrector();
-
+        
     }
-
+    
     public IExtremeValuesCorrector getExtremeValuesCorrector() {
-
+        
         if (extremeValuesCorrector == null) {
-
+            
             switch (calendarSigma) {
                 case All:
                     extremeValuesCorrector = new PeriodSpecificExtremeValuesCorrector();
@@ -202,11 +204,11 @@ public class X11Context {
                     break;
             }
         }
-
+        
         return extremeValuesCorrector;
-
+        
     }
-
+    
     public boolean isMSR() {
         for (SeasonalFilterOption option : finalSeasonalFilter) {
             if (SeasonalFilterOption.Msr.equals(option)) {
@@ -215,9 +217,22 @@ public class X11Context {
         }
         return false;
     }
-
+    
+    public Integer[] getMsrIndex() {
+        if (isMSR()) {
+            ArrayList<Integer> index = new ArrayList<>();
+            for (int i = 0; i < period; i++) {
+                if (SeasonalFilterOption.Msr.equals(finalSeasonalFilter[i])) {
+                    index.add(i);
+                }
+            }
+            return index.toArray((Integer[]) new Integer[0]);
+        }
+        return null;
+    }
+    
     public SeasonalFilterOption[] getInitialSeasonalFilter() {
-
+        
         SeasonalFilterOption[] result = new SeasonalFilterOption[period];
         for (int i = 0; i < period; i++) {
             result[i] = initialSeasonalFilter[i];
@@ -227,7 +242,7 @@ public class X11Context {
         }
         return result;
     }
-
+    
     public SeasonalFilterOption[] getFinalSeasonalFilter() {
         SeasonalFilterOption[] result = new SeasonalFilterOption[period];
         for (int i = 0; i < period; i++) {

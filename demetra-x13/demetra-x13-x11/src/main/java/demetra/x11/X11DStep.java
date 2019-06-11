@@ -21,6 +21,7 @@ import demetra.x11.filter.X11FilterFactory;
 import demetra.x11.filter.X11SeasonalFilterProcessor;
 import demetra.x11.filter.X11SeasonalFiltersFactory;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
+import java.util.Arrays;
 import lombok.AccessLevel;
 
 /**
@@ -119,7 +120,6 @@ public class X11DStep {
             d9 = DoubleSequence.onMapping(d9temp.length() - context.getForecastHorizon(), i -> d9temp.get(i) < EPS ? Double.NaN : d9bis.get(i));
             d9_g_bis = d9bis;
         }
-
     }
 
     private void dfinal(X11Context context) {

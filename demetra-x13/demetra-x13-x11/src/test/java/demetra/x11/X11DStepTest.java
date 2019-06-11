@@ -116,7 +116,6 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_Msr_Add_WU5637() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
@@ -135,7 +134,6 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_Msr_Multi_WU5637() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
@@ -156,7 +154,6 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_Msr_LogAdd_WU5637() {
         String modeName = DecompositionMode.LogAdditive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
