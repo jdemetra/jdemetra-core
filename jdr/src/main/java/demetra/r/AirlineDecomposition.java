@@ -17,9 +17,9 @@
 package demetra.r;
 
 import jdplus.arima.ArimaModel;
-import demetra.arima.ArimaProcess;
+import demetra.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
-import demetra.arima.UcarimaProcess;
+import demetra.arima.UcarimaModel;
 import demetra.descriptors.arima.UcarimaDescriptor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -30,7 +30,7 @@ import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
-import demetra.arima.SarimaProcess;
+import demetra.arima.SarimaModel;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.ssf.dk.DkToolkit;
@@ -48,7 +48,71 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.Doubles;
+import demetra.modelling.spi.ArimaProcessorUtility;
 import jdplus.maths.matrices.FastMatrix;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
 import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
@@ -63,9 +127,9 @@ public class AirlineDecomposition {
     public static class Results implements ProcResults {
 
         TsData y, t, s, i;
-        UcarimaProcess ucarima;
+        UcarimaModel ucarima;
         RegArimaModel<SarimaModel> regarima;
-        SarimaProcess sarima;
+        SarimaModel sarima;
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
         FastMatrix parametersCovariance;
@@ -105,7 +169,7 @@ public class AirlineDecomposition {
             MAPPING.set(I, TsData.class, source -> source.getI());
             MAPPING.set(SA, TsData.class, source -> subtract(source.getY(), source.getS()));
             MAPPING.delegate(UCARIMA, UcarimaDescriptor.getMapping(), source -> source.getUcarima());
-            MAPPING.set(UCM, UcarimaProcess.class, source -> source.getUcarima());
+            MAPPING.set(UCM, UcarimaModel.class, source -> source.getUcarima());
             MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getSarima());
             MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
             MAPPING.set(PCOV, FastMatrix.class, source -> source.getParametersCovariance());
@@ -144,20 +208,20 @@ public class AirlineDecomposition {
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
         TsPeriod start = s.getStart();
 
-        ArimaProcess sum = ArimaModel.of(ucm.getModel()).toType(null);
-        ArimaProcess mt = ArimaModel.of(ucm.getComponent(0)).toType("trend");
-        ArimaProcess ms = ArimaModel.of(ucm.getComponent(1)).toType("seasonal");
-        ArimaProcess mi = ArimaModel.of(ucm.getComponent(2)).toType("irregular");
+        ArimaModel sum = ArimaModel.of(ucm.getModel()).toType(null);
+        ArimaModel mt = ArimaModel.of(ucm.getComponent(0)).toType("trend");
+        ArimaModel ms = ArimaModel.of(ucm.getComponent(1)).toType("seasonal");
+        ArimaModel mi = ArimaModel.of(ucm.getComponent(2)).toType("irregular");
         int[] pos = ssf.componentsPosition();
         return Results.builder()
                 .y(s)
                 .t(TsData.of(start, Doubles.of(ds.item(pos[0]))))
                 .s(TsData.of(start, Doubles.of(ds.item(pos[1]))))
                 .i(TsData.of(start, Doubles.of(ds.item(pos[2]))))
-                .ucarima(new UcarimaProcess(sum, new ArimaProcess[]{mt, ms, mi}))
+                .ucarima(new UcarimaModel(sum, new ArimaModel[]{mt, ms, mi}))
                 .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
                 .regarima(rslt.getModel())
-                .sarima(rslt.getModel().arima().toType())
+                .sarima(ArimaProcessorUtility.convert(rslt.getModel().arima()))
                 .statistics(rslt.statistics(0))
                 .score(rslt.getMax().getGradient())
                 .parametersCovariance(rslt.getMax().getHessian())

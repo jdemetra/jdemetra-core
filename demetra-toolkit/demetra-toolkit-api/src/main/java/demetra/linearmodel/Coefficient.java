@@ -17,7 +17,7 @@
 package demetra.linearmodel;
 
 /**
- *
+ * 
  * @author Jean Palate
  */
 @lombok.Value

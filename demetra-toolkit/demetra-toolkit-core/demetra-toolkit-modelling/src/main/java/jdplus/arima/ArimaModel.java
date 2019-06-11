@@ -16,11 +16,10 @@
  */
 package jdplus.arima;
 
-import demetra.arima.ArimaProcess;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
-import demetra.maths.PolynomialType;
+import demetra.maths.RealPolynomial;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.Polynomial;
@@ -530,11 +529,11 @@ public final class ArimaModel extends AbstractArimaModel {
         return plus(of(r));
     }
     
-    public ArimaProcess toType(String desc){
-        return ArimaProcess.builder()
-                .ar(PolynomialType.of(getStationaryAr().asPolynomial().toArray()))
-                .delta(PolynomialType.of(getNonStationaryAr().asPolynomial().toArray()))
-                .ma(PolynomialType.of(getMa().asPolynomial().toArray()))
+    public demetra.arima.ArimaModel toType(String desc){
+        return demetra.arima.ArimaModel.builder()
+                .ar(RealPolynomial.of(getStationaryAr().asPolynomial().toArray()))
+                .delta(RealPolynomial.of(getNonStationaryAr().asPolynomial().toArray()))
+                .ma(RealPolynomial.of(getMa().asPolynomial().toArray()))
                 .innovationVariance(getInnovationVariance())
                 .name(desc)
                 .build();

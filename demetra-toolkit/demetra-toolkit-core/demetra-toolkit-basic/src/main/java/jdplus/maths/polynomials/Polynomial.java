@@ -31,7 +31,7 @@ import lombok.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.design.Unsafe;
 import jdplus.maths.ComplexUtility;
-import demetra.maths.PolynomialType;
+import demetra.maths.RealPolynomial;
 
 /**
  *
@@ -114,7 +114,7 @@ public final class Polynomial{
         return new Polynomial(Coefficients.of(coefficients));
     }
     
-    public static Polynomial of(PolynomialType p){
+    public static Polynomial of(RealPolynomial p){
         return new Polynomial(Coefficients.of(p.toArray()));
     }
 

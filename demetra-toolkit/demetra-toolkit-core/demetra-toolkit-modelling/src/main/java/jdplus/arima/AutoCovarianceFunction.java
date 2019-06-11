@@ -16,16 +16,13 @@
  */
 package jdplus.arima;
 
-import internal.jdplus.arima.AutoCovarianceComputers;
+import java.util.concurrent.atomic.AtomicReference;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.Polynomial;
-import jdplus.maths.polynomials.RationalFunction;
-import java.lang.reflect.Array;
-import java.util.concurrent.atomic.AtomicReference;
-import jdplus.maths.matrices.FastMatrix;
+import internal.jdplus.arima.AutoCovarianceComputers;
 
 /**
  * The auto-covariance function provides the auto-covariance of any stationary

@@ -17,7 +17,6 @@
 package jdplus.sarima;
 
 import demetra.arima.SarmaSpecification;
-import demetra.arima.SarimaProcess;
 import demetra.arima.SarimaSpecification;
 import jdplus.arima.AbstractArimaModel;
 import jdplus.arima.StationaryTransformation;
@@ -31,8 +30,9 @@ import javax.annotation.Nonnull;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
 import demetra.design.SkipProcessing;
-import demetra.maths.PolynomialType;
+import demetra.maths.RealPolynomial;
 import demetra.data.DoubleSeq;
+import java.util.Arrays;
 
 /**
  * Box-Jenkins seasonal arima model AR(B)* SAR(B)*D(B)*SD(B) y(t) =
@@ -47,7 +47,6 @@ import demetra.data.DoubleSeq;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-@SkipProcessing(target = Immutable.class, reason = "fields are not final")
 public final class SarimaModel extends AbstractArimaModel {
 
     @BuilderPattern(SarimaModel.class)
@@ -244,8 +243,8 @@ public final class SarimaModel extends AbstractArimaModel {
     private static final double EPS = 1e-6;
 
     private final int s;
-    private int d, bd;
-    private double[] phi, bphi, th, bth;
+    private final int d, bd;
+    private final double[] phi, bphi, th, bth;
 
     /**
      *
@@ -290,6 +289,14 @@ public final class SarimaModel extends AbstractArimaModel {
         return phi[lag - 1];
     }
 
+    private double[] clone(double[] x) {
+        return x == Builder.E ? Builder.E : x.clone();
+    }
+
+    public double[] phi() {
+        return clone(phi);
+    }
+
     /**
      *
      * @param lag
@@ -297,6 +304,10 @@ public final class SarimaModel extends AbstractArimaModel {
      */
     public double bphi(final int lag) {
         return bphi[lag - 1];
+    }
+
+    public double[] bphi() {
+        return clone(bphi);
     }
 
     /**
@@ -308,6 +319,10 @@ public final class SarimaModel extends AbstractArimaModel {
         return th[lag - 1];
     }
 
+    public double[] theta() {
+        return clone(th);
+    }
+
     /**
      *
      * @param lag
@@ -315,6 +330,10 @@ public final class SarimaModel extends AbstractArimaModel {
      */
     public double btheta(final int lag) {
         return bth[lag - 1];
+    }
+
+    public double[] btheta() {
+        return clone(bth);
     }
 
     @Override
@@ -649,15 +668,32 @@ public final class SarimaModel extends AbstractArimaModel {
         }
     }
 
-    public SarimaProcess toType(){
-        return SarimaProcess.builder()
-                .period(s)
-                .d(d)
-                .bd(bd)
-                .phi(PolynomialType.of(1, phi))
-                .bphi(PolynomialType.of(1, bphi))
-                .theta(PolynomialType.of(1, th))
-                .btheta(PolynomialType.of(1, bth))
-                .build();
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof SarimaModel) {
+            SarimaModel m = (SarimaModel) other;
+            return s == m.s && d == m.d && bd == m.bd
+                    && Arrays.equals(phi, m.phi)
+                    && Arrays.equals(bphi, m.bphi)
+                    && Arrays.equals(th, m.th)
+                    && Arrays.equals(bth, m.bth);
+
+        } else {
+            return false;
+        }
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 43 * hash + this.s;
+        hash = 43 * hash + this.d;
+        hash = 43 * hash + this.bd;
+        hash = 43 * hash + Arrays.hashCode(this.phi);
+        hash = 43 * hash + Arrays.hashCode(this.bphi);
+        hash = 43 * hash + Arrays.hashCode(this.th);
+        hash = 43 * hash + Arrays.hashCode(this.bth);
+        return hash;
+    }
+
 }

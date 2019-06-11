@@ -41,6 +41,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import jdplus.maths.matrices.SubMatrix;
 import demetra.maths.matrices.Matrix;
+import demetra.modelling.spi.ArimaProcessorUtility;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -77,9 +78,9 @@ public class TimeVaryingRegression {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA0, SarimaDescriptor.getMapping(), r -> r.getArima0().toType());
+            MAPPING.delegate(ARIMA0,SarimaDescriptor.getMapping(), r ->  ArimaProcessorUtility.convert(r.getArima0()));
             MAPPING.delegate(LL0, DiffuseConcentratedLikelihoodDescriptor.getMapping(), r -> r.getLl0());
-            MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getArima().toType());
+            MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> ArimaProcessorUtility.convert(r.getArima()));
             MAPPING.delegate(LL, DiffuseConcentratedLikelihoodDescriptor.getMapping(), r -> r.getLl());
             MAPPING.set("aic0", Double.class, r -> r.getLl0().AIC(2));
             MAPPING.set("aic", Double.class, r -> r.getLl().AIC(3));

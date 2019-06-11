@@ -13,42 +13,28 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
- */
-package demetra.regarima;
+*/
 
-import demetra.arima.ArimaModel;
+package jdplus.stats.tests.seasonal;
+
 import demetra.design.Development;
-import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
-import demetra.linearmodel.LinearModel;
-
 
 /**
- *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@lombok.Value
-@lombok.Builder(toBuilder=true)
-public class RegArimaModelType {
-    
-    @lombok.NonNull
-    private LinearModel model;
-    
-    @lombok.NonNull
-    private ArimaModel arima;
-    
-    //<editor-fold defaultstate="collapsed" desc="delegate to model">
-    public DoubleSeq getY() {
-        return model.getY();
+class Item implements Comparable<Item> {
+    int pos;
+    double rank;
+    double val;
+
+    Item(int pos, double val) {
+	this.pos = pos;
+	this.val = val;
     }
-    
-    public boolean isMeanCorrection() {
-        return model.isMeanCorrection();
+
+    @Override
+    public int compareTo(Item other) {
+	return Double.compare(val, other.val);
     }
-    
-    public Matrix getX() {
-        return model.getX();
-    }
-    //</editor-fold>
 }

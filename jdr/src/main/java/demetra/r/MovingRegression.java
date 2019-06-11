@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.maths.matrices.Matrix;
+import demetra.modelling.spi.ArimaProcessorUtility;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -62,7 +63,7 @@ public class MovingRegression {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getArima().toType());
+            MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> ArimaProcessorUtility.convert(r.getArima()));
             MAPPING.set(COEFF, FastMatrix.class, r -> r.getCoefficients());
             MAPPING.set(TD, FastMatrix.class, r -> r.getVariables());
             MAPPING.set(TDEFFECT, TsData.class, r

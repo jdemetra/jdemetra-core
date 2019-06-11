@@ -17,7 +17,7 @@
 package demetra.descriptors.arima;
 
 import demetra.information.InformationMapping;
-import demetra.arima.SarimaProcess;
+import demetra.arima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import java.util.function.Function;
 
@@ -34,14 +34,14 @@ public class SarimaDescriptor {
             PHI="phi", THETA="theta",BPHI="bphi", BTHETA="btheta",
             PERIOD = "period";
 
-    static final InformationMapping<SarimaProcess> MAPPING = new InformationMapping<>(SarimaProcess.class);
+    static final InformationMapping<SarimaModel> MAPPING = new InformationMapping<>(SarimaModel.class);
 
     static {
-        MAPPING.set(P, Integer.class, source -> source.getPhi().degree());
+        MAPPING.set(P, Integer.class, source -> source.getP());
         MAPPING.set(D, Integer.class, source -> source.getD());
-        MAPPING.set(Q, Integer.class, source -> source.getTheta().degree());
-        MAPPING.set(BP, Integer.class, source -> source.getBphi().degree());
-        MAPPING.set(BQ, Integer.class, source -> source.getBtheta().degree());
+        MAPPING.set(Q, Integer.class, source -> source.getQ());
+        MAPPING.set(BP, Integer.class, source -> source.getBp());
+        MAPPING.set(BQ, Integer.class, source -> source.getBq());
         MAPPING.set(BD, Integer.class, source -> source.getBd());
         MAPPING.set(PARAMETERS, double[].class,
                 source -> {
@@ -49,31 +49,31 @@ public class SarimaDescriptor {
                     double[] all = new double[spec.getParametersCount()];
                     int pos = 0;
                     for (int i = 1; i <= spec.getP(); ++i) {
-                        all[pos++] = -source.getPhi().get(i);
+                        all[pos++] = -source.phi(i);
                     }
                     for (int i = 1; i <= spec.getQ(); ++i) {
-                        all[pos++] = source.getTheta().get(i);
+                        all[pos++] = source.theta(i);
                     }
                     for (int i = 1; i <= spec.getBp(); ++i) {
-                        all[pos++] = -source.getBphi().get(i);
+                        all[pos++] = -source.bphi(i);
                     }
                     for (int i = 1; i <= spec.getBq(); ++i) {
-                        all[pos++] = source.getBtheta().get(i);
+                        all[pos++] = source.btheta(i);
                     }
                     return all;
                 });
         MAPPING.setArray(PHI, 1, 12, Double.class,
-                (source, i) -> i >source.getPhi().degree() ? 0 : source.getPhi().get(i));
+                (source, i) -> i >source.getP() ? 0 : source.phi(i));
         MAPPING.setArray(BPHI, 1, 12, Double.class,
-                (source, i) -> i >source.getBphi().degree() ? 0 : source.getBphi().get(i));
+                (source, i) -> i >source.getBp() ? 0 : source.bphi(i));
         MAPPING.setArray(THETA, 1, 12, Double.class,
-                (source, i) -> i >source.getTheta().degree() ? 0 : source.getTheta().get(i));
+                (source, i) -> i >source.getQ() ? 0 : source.theta(i));
         MAPPING.setArray(BTHETA, 1, 12, Double.class,
-                (source, i) -> i >source.getBtheta().degree() ? 0 : source.getBtheta().get(i));
+                (source, i) -> i >source.getBq() ? 0 : source.btheta(i));
 
     }
 
-    public InformationMapping<SarimaProcess> getMapping() {
+    public InformationMapping<SarimaModel> getMapping() {
         return MAPPING;
     }
 

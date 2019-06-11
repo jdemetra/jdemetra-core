@@ -13,42 +13,48 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
- */
-package demetra.regarima;
+*/
 
-import demetra.arima.ArimaModel;
+package jdplus.stats.tests.seasonal;
+
+import jdplus.data.DataBlock;
 import demetra.design.Development;
+import java.util.Arrays;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
-import demetra.linearmodel.LinearModel;
-
 
 /**
- *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@lombok.Value
-@lombok.Builder(toBuilder=true)
-public class RegArimaModelType {
-    
-    @lombok.NonNull
-    private LinearModel model;
-    
-    @lombok.NonNull
-    private ArimaModel arima;
-    
-    //<editor-fold defaultstate="collapsed" desc="delegate to model">
-    public DoubleSeq getY() {
-        return model.getY();
+class Ranking {
+    static void sort(DoubleSeq data, DataBlock r) {
+	int n = data.length();
+	Item[] items = new Item[n];
+	for (int i = 0; i < n; ++i)
+	    items[i] = new Item(i, data.get(i));
+
+	Arrays.sort(items);
+
+	// ranking and correction for tied values...
+	int s = 0;
+	while (s < n) {
+	    int j = s;
+	    do
+		++s;
+	    while (s < n && items[s].val == items[s - 1].val);
+
+	    int k = s - j;
+	    if (k == 1)
+		items[j].rank = j + 1;
+	    else {
+		double c = j + (k + 1) * .5;
+		for (; j < s; ++j)
+		    items[j].rank = c;
+	    }
+	}
+
+	for (int i = 0; i < n; ++i)
+	    r.set(items[i].pos, items[i].rank);
     }
-    
-    public boolean isMeanCorrection() {
-        return model.isMeanCorrection();
-    }
-    
-    public Matrix getX() {
-        return model.getX();
-    }
-    //</editor-fold>
+
 }

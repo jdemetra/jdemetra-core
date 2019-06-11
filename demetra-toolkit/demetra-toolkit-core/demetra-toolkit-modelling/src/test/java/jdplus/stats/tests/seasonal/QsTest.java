@@ -14,26 +14,37 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.descriptors.linearmodel;
+package jdplus.stats.tests.seasonal;
 
-import demetra.information.InformationMapping;
-import demetra.maths.matrices.Matrix;
-import demetra.linearmodel.LinearModel;
+import demetra.data.Data;
+import demetra.timeseries.TsData;
+import jdplus.timeseries.simplets.TsDataToolkit;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Jean Palate
  */
-@lombok.experimental.UtilityClass
-public class LinearModelDescriptor {
-   private final String Y = "y", X = "x", MEAN="mean";
-
-    private final InformationMapping<LinearModel> MAPPING = new InformationMapping<>(LinearModel.class);
-
-    static {
-        MAPPING.set(Y, double[].class, source -> source.getY().toArray());
-        MAPPING.set(X, Matrix.class, source -> source.getX());
-        MAPPING.set(MEAN, Boolean.class, source -> source.isMeanCorrection());
+public class QsTest {
+    
+    public QsTest() {
     }
-     
+
+    @Test
+    public void testP1() {
+        TsData s=Data.TS_PROD;
+        s=TsDataToolkit.delta(s, 1);
+        Qs test=new Qs(s.getValues(),12);
+//        System.out.println(test.build());
+    }
+    
+    @Test
+    public void testP12() {
+        TsData s=Data.TS_PROD;
+        s=TsDataToolkit.delta(s, 12);
+        Qs test=new Qs(s.getValues(),12);
+//        System.out.println(test.build());
+//        System.out.println(test.useNegativeAutocorrelations().build());
+    }
 }

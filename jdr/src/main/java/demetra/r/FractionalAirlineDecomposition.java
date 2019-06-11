@@ -17,8 +17,8 @@
 package demetra.r;
 
 import jdplus.arima.ArimaModel;
-import demetra.arima.ArimaProcess;
-import demetra.arima.UcarimaProcess;
+import demetra.arima.ArimaModel;
+import demetra.arima.UcarimaModel;
 import demetra.descriptors.arima.UcarimaDescriptor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -58,8 +58,8 @@ public class FractionalAirlineDecomposition {
     public static class Results implements ProcResults {
 
         double[] y, t, s, i, sa, n;
-        ArimaProcess arima;
-        UcarimaProcess ucarima;
+        ArimaModel arima;
+        UcarimaModel ucarima;
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
         FastMatrix parametersCovariance;
@@ -106,7 +106,7 @@ public class FractionalAirlineDecomposition {
                 return y;
             });
             MAPPING.delegate(UCARIMA, UcarimaDescriptor.getMapping(), source -> source.getUcarima());
-            MAPPING.set(UCM, UcarimaProcess.class, source -> source.getUcarima());
+            MAPPING.set(UCM, UcarimaModel.class, source -> source.getUcarima());
             MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
             //MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters());
@@ -146,18 +146,18 @@ public class FractionalAirlineDecomposition {
         SsfData data = new SsfData(s);
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
 
-        ArimaProcess sum = ArimaModel.of(ucm.getModel()).toType(null);
-        UcarimaProcess ucmt;
+        ArimaModel sum = ArimaModel.of(ucm.getModel()).toType(null);
+        UcarimaModel ucmt;
         if (sn) {
-            ArimaProcess mn = ArimaModel.of(ucm.getComponent(0)).toType("noise");
-            ArimaProcess ms = ArimaModel.of(ucm.getComponent(1)).toType("signal");
-            ucmt= new UcarimaProcess(sum, new ArimaProcess[]{ms, mn});
+            ArimaModel mn = ArimaModel.of(ucm.getComponent(0)).toType("noise");
+            ArimaModel ms = ArimaModel.of(ucm.getComponent(1)).toType("signal");
+            ucmt= new UcarimaModel(sum, new ArimaModel[]{ms, mn});
             
         } else {
-            ArimaProcess mt = ArimaModel.of(ucm.getComponent(0)).toType("trend");
-            ArimaProcess ms = ArimaModel.of(ucm.getComponent(1)).toType("seasonal");
-            ArimaProcess mi = ArimaModel.of(ucm.getComponent(2)).toType("irregular");
-            ucmt= new UcarimaProcess(sum, new ArimaProcess[]{mt, ms, mi}); 
+            ArimaModel mt = ArimaModel.of(ucm.getComponent(0)).toType("trend");
+            ArimaModel ms = ArimaModel.of(ucm.getComponent(1)).toType("seasonal");
+            ArimaModel mi = ArimaModel.of(ucm.getComponent(2)).toType("irregular");
+            ucmt= new UcarimaModel(sum, new ArimaModel[]{mt, ms, mi}); 
         }
         int[] pos = ssf.componentsPosition();
         if (sn)

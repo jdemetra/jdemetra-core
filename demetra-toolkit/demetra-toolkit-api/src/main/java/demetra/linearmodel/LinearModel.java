@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,26 +14,35 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.descriptors.linearmodel;
+package demetra.linearmodel;
 
-import demetra.information.InformationMapping;
+import demetra.design.Development;
+import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
-import demetra.linearmodel.LinearModel;
 
 /**
- *
- * @author Jean Palate
+ * Describes the linear model: y = a + b * X
+ * The constant should be defined explicitly (not included in X)
+ * 
+ * @author Jean Palate <jean.palate@nbb.be>
  */
-@lombok.experimental.UtilityClass
-public class LinearModelDescriptor {
-   private final String Y = "y", X = "x", MEAN="mean";
+@Development(status = Development.Status.Release)
+@lombok.Value
+public class LinearModel {
+    @lombok.NonNull
+    /**
+     * Exogenous variable
+     */
+    private DoubleSeq y;
 
-    private final InformationMapping<LinearModel> MAPPING = new InformationMapping<>(LinearModel.class);
+    /**
+     * Mean correction
+     */
+    private boolean meanCorrection;
 
-    static {
-        MAPPING.set(Y, double[].class, source -> source.getY().toArray());
-        MAPPING.set(X, Matrix.class, source -> source.getX());
-        MAPPING.set(MEAN, Boolean.class, source -> source.isMeanCorrection());
-    }
-     
+    /**
+     * 
+     */
+    private Matrix X;
+    
 }

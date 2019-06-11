@@ -14,26 +14,34 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.descriptors.linearmodel;
+package jdplus.stats.tests.seasonal;
 
-import demetra.information.InformationMapping;
-import demetra.maths.matrices.Matrix;
-import demetra.linearmodel.LinearModel;
+import demetra.data.WeeklyData;
+import org.junit.Test;
+import demetra.data.DoubleSeq;
 
 /**
  *
  * @author Jean Palate
  */
-@lombok.experimental.UtilityClass
-public class LinearModelDescriptor {
-   private final String Y = "y", X = "x", MEAN="mean";
-
-    private final InformationMapping<LinearModel> MAPPING = new InformationMapping<>(LinearModel.class);
-
-    static {
-        MAPPING.set(Y, double[].class, source -> source.getY().toArray());
-        MAPPING.set(X, Matrix.class, source -> source.getX());
-        MAPPING.set(MEAN, Boolean.class, source -> source.isMeanCorrection());
+public class CanovaHansen2Test {
+    
+    public CanovaHansen2Test() {
     }
-     
+
+    @Test
+    public void test_USClaims() {
+         double[] x = new double[WeeklyData.US_CLAIMS.length - 1];
+        for (int i = 0; i < x.length; ++i) {
+            x[i] = Math.log(WeeklyData.US_CLAIMS[i + 1]) - Math.log(WeeklyData.US_CLAIMS[i]);
+        }
+//        double[] x=WeeklyData.US_CLAIMS;
+         for (int i=2; i<=553; ++i){
+            double z = CanovaHansen2.of(DoubleSeq.of(x))
+                    .periodicity(i)
+                    .compute();
+//            System.out.println(z);
+        }
+    }
+    
 }

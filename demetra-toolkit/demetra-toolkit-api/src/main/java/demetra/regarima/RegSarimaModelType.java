@@ -17,10 +17,10 @@
 package demetra.regarima;
 
 import demetra.design.Development;
-import demetra.linearmodel.LinearModelType;
-import demetra.arima.SarimaProcess;
+import demetra.arima.SarimaModel;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
+import demetra.linearmodel.LinearModel;
 
 
 /**
@@ -33,10 +33,10 @@ import demetra.maths.matrices.Matrix;
 public class RegSarimaModelType {
     
     @lombok.NonNull
-    private LinearModelType model;
+    private LinearModel model;
     
     @lombok.NonNull
-    private SarimaProcess sarima;
+    private SarimaModel sarima;
     
     //<editor-fold defaultstate="collapsed" desc="delegate to model">
     public DoubleSeq getY() {
