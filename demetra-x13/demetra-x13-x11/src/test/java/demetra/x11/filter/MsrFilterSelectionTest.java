@@ -43,7 +43,7 @@ public class MsrFilterSelectionTest {
 
         for (int freq : frequencies) {
             for (String mode : decomposition_modes) {
-                processMSR(mode, freq, WU5637);
+                processMSR(mode, freq, A);
                 processMSR(mode, freq, WU5636);
             }
         }

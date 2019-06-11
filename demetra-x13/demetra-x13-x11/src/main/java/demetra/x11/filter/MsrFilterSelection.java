@@ -35,14 +35,7 @@ public class MsrFilterSelection {
         // 0. complete year
         DoubleSequence series = completeYear(data, context);
         double msr;
-        boolean firstRound = true;
         do {
-            if (firstRound) {
-                firstRound = false;
-            } else {
-                series = series.drop(0, context.getPeriod());
-            }
-
             // 1. calc Components
             calcComponents(series, context);
             // 2. calc periodic variations
@@ -51,8 +44,9 @@ public class MsrFilterSelection {
             msr = getGlobalMsr();
             // 4. decision
             seasFilter = decideFilter(msr);
-
-        } while (seasFilter == null && series.length() / context.getPeriod() >= 6);
+            // 5. cut year
+            series = series.drop(0, context.getPeriod());
+        } while (seasFilter == null && series.length() / context.getPeriod() >= 5);
         if (seasFilter == null) {
             seasFilter = SeasonalFilterOption.S3X5;
         }
