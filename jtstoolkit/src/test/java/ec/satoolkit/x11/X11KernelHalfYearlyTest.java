@@ -20,7 +20,7 @@ import utilities.CompareTsData;
  *
  * @author s4504ch
  */
-public class X11KernelTestHalfYearly {
+public class X11KernelHalfYearlyTest {
 
     @Test
     public void HKAS_LogAddTest() {
@@ -47,6 +47,26 @@ public class X11KernelTestHalfYearly {
         TsData tsD11 = new TsData(TsFrequency.HalfYearly, 2007, 0, d11, true);
         Assert.assertTrue("D11 is wrong", CompareTsData.compareTS(tsD11, comprest.getData("d-tables.d11", TsData.class), 0.0000001));
 
+    }
+
+    @Test
+    public void HKASTest_AutoHenderson() {
+        TsData ts = DataHalfYearly.HKAS;
+        X13Specification x13spec_auto = SpecHalfYearly.getSpecHKAS();
+        x13spec_auto.getX11Specification().setHendersonFilterLength(0);//auto
+        SequentialProcessing<TsData> processing_auto = X13ProcessingFactory.instance.generateProcessing(x13spec_auto);
+        CompositeResults comprest_auto = processing_auto.process(ts);
+
+        X13Specification x13spec_5 = SpecHalfYearly.getSpecHKAS();
+        x13spec_auto.getX11Specification().setHendersonFilterLength(5);
+        SequentialProcessing<TsData> processing_5 = X13ProcessingFactory.instance.generateProcessing(x13spec_5);
+        CompositeResults comprest_5 = processing_5.process(ts);
+
+        //  Assert.assertTrue("D11 is wrong", CompareTsData.compareTS(comprest_5.getData("d-tables.d11", TsData.class), comprest_auto.getData("d-tables.d11", TsData.class), 0.0000001));
+    Assert.assertArrayEquals("B6 is wrong", comprest_5.getData("b-tables.b6", TsData.class).internalStorage(), comprest_auto.getData("b-tables.b6", TsData.class).internalStorage(), 0.00000001);
+        Assert.assertArrayEquals("B7 is wrong", comprest_5.getData("b-tables.b7", TsData.class).internalStorage(), comprest_auto.getData("b-tables.b7", TsData.class).internalStorage(), 0.00000001);
+
+        Assert.assertArrayEquals("D11 is wrong", comprest_5.getData("d-tables.d11", TsData.class).internalStorage(), comprest_auto.getData("d-tables.d11", TsData.class).internalStorage(), 0.00000001);
     }
 
     @Test
