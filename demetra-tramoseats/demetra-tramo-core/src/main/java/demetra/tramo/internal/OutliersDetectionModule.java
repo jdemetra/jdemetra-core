@@ -240,7 +240,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         int nparm = Math.max(spec.getD() + spec.getP() + spec.getPeriod()
                 * (spec.getBd() + spec.getBp()), spec.getQ()
                 + spec.getPeriod() * spec.getBq())
-                + (desc.isEstimatedMean() ? 1 : 0)
+                + (desc.isMean() ? 1 : 0)
                 + (15 * n) / 100 + spec.getPeriod();
         if (n - nparm <= 0) {
             return -1;

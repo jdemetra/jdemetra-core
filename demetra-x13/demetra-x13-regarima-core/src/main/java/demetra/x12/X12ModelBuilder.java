@@ -94,7 +94,6 @@ class X12ModelBuilder implements IModelBuilder {
             SarimaComponent cmp = model.getArimaComponent();
             SarimaSpec arima = spec.getArima();
             cmp.setPeriod(freq);
-            cmp.setMu(arima.getMu());
             cmp.setPhi(arima.getPhi());
             cmp.setTheta(arima.getTheta());
             cmp.setD(arima.getD());
@@ -111,6 +110,7 @@ class X12ModelBuilder implements IModelBuilder {
         if (!regSpec.isUsed()) {
             return;
         }
+        model.setMean(regSpec.isMean());
         Map<String, double[]> preadjustment = regSpec.getFixedCoefficients();
         initializeCalendar(model, regSpec, preadjustment);
         if (regSpec.getOutliersCount() > 0) {

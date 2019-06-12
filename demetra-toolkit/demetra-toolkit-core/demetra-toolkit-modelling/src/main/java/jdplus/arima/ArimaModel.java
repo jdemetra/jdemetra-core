@@ -529,16 +529,6 @@ public final class ArimaModel extends AbstractArimaModel {
         return plus(of(r));
     }
     
-    public demetra.arima.ArimaModel toType(String desc){
-        return demetra.arima.ArimaModel.builder()
-                .ar(RealPolynomial.of(getStationaryAr().asPolynomial().toArray()))
-                .delta(RealPolynomial.of(getNonStationaryAr().asPolynomial().toArray()))
-                .ma(RealPolynomial.of(getMa().asPolynomial().toArray()))
-                .innovationVariance(getInnovationVariance())
-                .name(desc)
-                .build();
-    }
-
     @Override
     public SymmetricFilter symmetricAr() {
         SymmetricFilter s = sar;

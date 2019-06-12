@@ -302,7 +302,7 @@ public class TramoProcessor implements IPreprocessor {
         ModelDescription desc = modelling.getDescription();
         boolean changed = false;
         SarimaSpecification curspec = desc.getSpecification();
-        boolean curmu = desc.isMean();
+        boolean curMean = desc.isMean();
         if (needDifferencing(desc)) {
             changed=execDifferencing(modelling) == ProcessingResult.Changed;
             SarimaSpecification nspec = desc.getSpecification();
@@ -315,7 +315,7 @@ public class TramoProcessor implements IPreprocessor {
             execAutoModelling(modelling);
             desc = modelling.getDescription();
             changed = (!desc.getSpecification().equals(curspec))
-                    || desc.isEstimatedMean() != curmu;
+                    || desc.isMean() != curMean;
         }
         if (needOutliers(desc)) {
 

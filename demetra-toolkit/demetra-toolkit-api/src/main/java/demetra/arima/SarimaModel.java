@@ -60,6 +60,7 @@ public class SarimaModel implements ArimaType {
     private double[] bphi;
     @lombok.NonNull
     private double[] btheta;
+    private String name;
 
     public int getP(){
         return phi.length;

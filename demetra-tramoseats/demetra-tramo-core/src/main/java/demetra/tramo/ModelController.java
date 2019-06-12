@@ -47,7 +47,7 @@ abstract class ModelController {
     protected boolean checkMean(RegArimaModelling context) {
         ModelDescription desc = context.getDescription();
         ModelEstimation estimation = context.getEstimation();
-        if (!desc.isEstimatedMean()) {
+        if (!desc.isMean()) {
             return true;
         }
         int nhp = desc.getArimaComponent().getFreeParametersCount();

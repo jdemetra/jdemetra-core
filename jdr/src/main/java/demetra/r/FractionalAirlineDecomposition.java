@@ -16,9 +16,6 @@
  */
 package demetra.r;
 
-import jdplus.arima.ArimaModel;
-import demetra.arima.ArimaModel;
-import demetra.arima.UcarimaModel;
 import demetra.descriptors.arima.UcarimaDescriptor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
@@ -44,6 +41,9 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import demetra.maths.matrices.Matrix;
+import demetra.modelling.spi.ArimaProcessorUtility;
+import jdplus.arima.ArimaModel;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -58,11 +58,11 @@ public class FractionalAirlineDecomposition {
     public static class Results implements ProcResults {
 
         double[] y, t, s, i, sa, n;
-        ArimaModel arima;
-        UcarimaModel ucarima;
+        demetra.arima.ArimaModel arima;
+        demetra.arima.UcarimaModel ucarima;
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
-        FastMatrix parametersCovariance;
+        Matrix parametersCovariance;
         double[] parameters, score;
 
         @Override
@@ -82,7 +82,7 @@ public class FractionalAirlineDecomposition {
             return MAPPING.getData(this, id, tclass);
         }
 
-        static final String Y = "y", T = "t", S = "s", I = "i", SA = "sa", N="n",
+        static final String Y = "y", T = "t", S = "s", I = "i", SA = "sa", N = "n",
                 UCM = "ucm", UCARIMA = "ucarima",
                 LL = "likelihood", PCOV = "pcov", SCORE = "score", PARAMETERS = "parameters";
 
@@ -106,7 +106,6 @@ public class FractionalAirlineDecomposition {
                 return y;
             });
             MAPPING.delegate(UCARIMA, UcarimaDescriptor.getMapping(), source -> source.getUcarima());
-            MAPPING.set(UCM, UcarimaModel.class, source -> source.getUcarima());
             MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
             //MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters());
@@ -132,9 +131,9 @@ public class FractionalAirlineDecomposition {
         ArimaModel arima = mapping.getDefault();
         RegArimaModel<ArimaModel> regarima
                 = RegArimaModel.builder(ArimaModel.class)
-                        .y(DoubleSeq.copyOf(s))
-                        .arima(arima)
-                        .build();
+                .y(DoubleSeq.copyOf(s))
+                .arima(arima)
+                .build();
         GlsArimaProcessor<ArimaModel> monitor = builder.build();
         RegArimaEstimation<ArimaModel> rslt = monitor.process(regarima);
         arima = rslt.getModel().arima();
@@ -146,43 +145,44 @@ public class FractionalAirlineDecomposition {
         SsfData data = new SsfData(s);
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
 
-        ArimaModel sum = ArimaModel.of(ucm.getModel()).toType(null);
-        UcarimaModel ucmt;
+        demetra.arima.ArimaModel sum = ArimaProcessorUtility.convert(ucm.getModel(), "sum");
+        demetra.arima.UcarimaModel ucmt;
         if (sn) {
-            ArimaModel mn = ArimaModel.of(ucm.getComponent(0)).toType("noise");
-            ArimaModel ms = ArimaModel.of(ucm.getComponent(1)).toType("signal");
-            ucmt= new UcarimaModel(sum, new ArimaModel[]{ms, mn});
-            
+            demetra.arima.ArimaModel mn = ArimaProcessorUtility.convert(ucm.getComponent(0), "noise");
+            demetra.arima.ArimaModel ms = ArimaProcessorUtility.convert(ucm.getComponent(1), "signal");
+            ucmt = new demetra.arima.UcarimaModel(sum, new demetra.arima.ArimaModel[]{ms, mn});
+
         } else {
-            ArimaModel mt = ArimaModel.of(ucm.getComponent(0)).toType("trend");
-            ArimaModel ms = ArimaModel.of(ucm.getComponent(1)).toType("seasonal");
-            ArimaModel mi = ArimaModel.of(ucm.getComponent(2)).toType("irregular");
-            ucmt= new UcarimaModel(sum, new ArimaModel[]{mt, ms, mi}); 
+            demetra.arima.ArimaModel mt = ArimaProcessorUtility.convert(ucm.getComponent(0), "trend");
+            demetra.arima.ArimaModel ms = ArimaProcessorUtility.convert(ucm.getComponent(1), "seasonal");
+            demetra.arima.ArimaModel mi = ArimaProcessorUtility.convert(ucm.getComponent(2), "irregular");
+            ucmt = new demetra.arima.UcarimaModel(sum, new demetra.arima.ArimaModel[]{mt, ms, mi});
         }
         int[] pos = ssf.componentsPosition();
-        if (sn)
-        return Results.builder()
-                .y(s)
-                .s(ds.item(pos[1]).toArray())
-                .n(ds.item(pos[0]).toArray())
-                .ucarima(ucmt)
-                .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
-                .parameters(p)
-                .arima(arima.toType("arima"))
-                .statistics(rslt.statistics(0))
-                .build();
-            else
-        return Results.builder()
-                .y(s)
-                .t(ds.item(pos[0]).toArray())
-                .s(ds.item(pos[1]).toArray())
-                .i(ds.item(pos[2]).toArray())
-                .ucarima(ucmt)
-                .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
-                .parameters(p)
-                .arima(arima.toType("arima"))
-                .statistics(rslt.statistics(0))
-                .build();
+        if (sn) {
+            return Results.builder()
+                    .y(s)
+                    .s(ds.item(pos[1]).toArray())
+                    .n(ds.item(pos[0]).toArray())
+                    .ucarima(ucmt)
+                    .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
+                    .parameters(p)
+                    .arima(ArimaProcessorUtility.convert(arima, "airline"))
+                    .statistics(rslt.statistics(0))
+                    .build();
+        } else {
+            return Results.builder()
+                    .y(s)
+                    .t(ds.item(pos[0]).toArray())
+                    .s(ds.item(pos[1]).toArray())
+                    .i(ds.item(pos[2]).toArray())
+                    .ucarima(ucmt)
+                    .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
+                    .parameters(p)
+                    .arima(ArimaProcessorUtility.convert(arima, "airline"))
+                    .statistics(rslt.statistics(0))
+                    .build();
+        }
 
     }
 

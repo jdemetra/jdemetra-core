@@ -26,12 +26,12 @@ import java.util.function.DoubleUnaryOperator;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-class MutableLightSubMatrix implements Matrix.Mutable {
+class LightMutableSubMatrix implements Matrix.Mutable {
 
     private final Matrix.Mutable core;
     private final int r0, nr, c0, nc;
 
-    MutableLightSubMatrix(final Matrix.Mutable core, int r0, int nr, int c0, int nc) {
+    LightMutableSubMatrix(final Matrix.Mutable core, int r0, int nr, int c0, int nc) {
         this.core = core;
         this.r0 = r0;
         this.nr = nr;

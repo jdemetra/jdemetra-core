@@ -237,7 +237,7 @@ public class PreprocessingModel {
         DoubleSeq coeffs = estimation.getConcentratedLikelihood().coefficients();
         DoubleSeqCursor reader = coeffs.cursor();
         DataBlock r = DataBlock.make(n);
-        if (description.isEstimatedMean()) {
+        if (description.isMean()) {
             reader.skip(1);
         }
         

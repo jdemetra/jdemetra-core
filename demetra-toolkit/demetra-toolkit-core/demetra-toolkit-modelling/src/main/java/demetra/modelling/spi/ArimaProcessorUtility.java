@@ -5,6 +5,7 @@
  */
 package demetra.modelling.spi;
 
+import demetra.maths.RealPolynomial;
 
 /**
  *
@@ -12,8 +13,16 @@ package demetra.modelling.spi;
  */
 @lombok.experimental.UtilityClass
 public class ArimaProcessorUtility {
-    
+
     public demetra.arima.SarimaModel convert(jdplus.sarima.SarimaModel sarima) {
+        return convert(sarima, null);
+    }
+
+    public demetra.arima.UcarimaModel convert(jdplus.ucarima.UcarimaModel ucm) {
+        return convert(ucm, null);
+    }
+
+    public demetra.arima.SarimaModel convert(jdplus.sarima.SarimaModel sarima, String name) {
         return demetra.arima.SarimaModel.builder()
                 .period(sarima.getFrequency())
                 .d(sarima.getRegularDifferenceOrder())
@@ -22,6 +31,19 @@ public class ArimaProcessorUtility {
                 .bphi(sarima.bphi())
                 .theta(sarima.theta())
                 .btheta(sarima.btheta())
+                .name(name)
+                .build();
+    }
+
+    public demetra.arima.ArimaModel convert(jdplus.arima.IArimaModel arima, String name) {
+        if (arima == null)
+            return null;
+        return demetra.arima.ArimaModel.builder()
+                .ar(RealPolynomial.ofInternal(arima.getStationaryAr().asPolynomial().toArray()))
+                .delta(RealPolynomial.ofInternal(arima.getNonStationaryAr().asPolynomial().toArray()))
+                .ma(RealPolynomial.ofInternal(arima.getMa().asPolynomial().toArray()))
+                .innovationVariance(arima.getInnovationVariance())
+                .name(name)
                 .build();
     }
 
@@ -35,4 +57,12 @@ public class ArimaProcessorUtility {
                 .build();
     }
 
+    public demetra.arima.UcarimaModel convert(jdplus.ucarima.UcarimaModel ucm, String[] names) {
+        demetra.arima.ArimaModel sum=convert(ucm.getModel(), "sum");
+        demetra.arima.ArimaModel[] cmps=new demetra.arima.ArimaModel[ucm.getComponentsCount()];
+        for (int i=0; i<cmps.length; ++i){
+            cmps[i]=convert(ucm.getComponent(i), names != null ? names[i] : null);
+        }
+        return new demetra.arima.UcarimaModel(sum, cmps);
+    }
 }

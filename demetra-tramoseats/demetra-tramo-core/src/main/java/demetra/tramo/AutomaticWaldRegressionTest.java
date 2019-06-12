@@ -226,7 +226,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
                 current.addVariable(new Variable(aTd, "td", false));
         if (testMean) {
             boolean mean = Math.abs(ll.tstat(0, nhp, true)) > tmean;
-            if (mean != current.getArimaComponent().isMean()) {
+            if (mean != current.isMean()) {
                 current.setMean(mean);
                 changed = true;
             }

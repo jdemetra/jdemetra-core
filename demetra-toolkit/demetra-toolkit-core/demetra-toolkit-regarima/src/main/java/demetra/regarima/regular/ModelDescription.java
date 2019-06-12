@@ -92,6 +92,7 @@ public final class ModelDescription {
      * Arima component (including mean correction
      */
     private final SarimaComponent arima = new SarimaComponent();
+    private boolean mean;
 
     // Caching
     private ITsVariable[] regressionVariables;
@@ -195,7 +196,7 @@ public final class ModelDescription {
                     .y(DoubleSeq.of(transformedSeries.data))
                     .missing(transformedSeries.missing)
                     .arima(arima.getModel())
-                    .meanCorrection(arima.isMean());
+                    .meanCorrection(mean);
             for (ITsVariable v : regressionVariables) {
                 builder.addX(getX(v));
             }
@@ -408,14 +409,7 @@ public final class ModelDescription {
      * @return the mean_
      */
     public boolean isMean() {
-        return arima.isMean();
-    }
-
-    /**
-     * @return the mean_
-     */
-    public boolean isEstimatedMean() {
-        return arima.isEstimatedMean();
+        return mean;
     }
 
     public boolean hasFixedEffects() {
@@ -475,7 +469,7 @@ public final class ModelDescription {
     }
 
     public void setMean(boolean mean) {
-        arima.setMean(mean);
+        this.mean=mean;
         if (regarima != null && mean != regarima.isMean()) {
             regarima = regarima.toBuilder().meanCorrection(mean).build();
         }

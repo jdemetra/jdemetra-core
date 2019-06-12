@@ -47,13 +47,17 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
 
     @LombokWorkaround
     public static Builder builder() {
+        SarimaSpec arima = SarimaSpec.builder()
+                .validator(SarimaValidator.VALIDATOR)
+                .airline()
+                .build();
         return new Builder()
                 .basic(BasicSpec.builder().build())
                 .transform(TransformSpec.builder().build())
                 .estimate(EstimateSpec.builder().build())
                 .autoModel(AutoModelSpec.builder().build())
                 .outliers(OutlierSpec.builder().build())
-                .arima(new SarimaSpec(SarimaValidator.VALIDATOR))
+                .arima(arima)
                 .regression(RegressionSpec.builder().build());
     }
 
@@ -84,7 +88,7 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
         }
 
         public Builder arima(@NonNull SarimaSpec sarima) {
-            this.arima = sarima.clone();
+            this.arima = sarima;
             if (this.autoModel == null) {
                 this.autoModel = AutoModelSpec.builder().build();
             }

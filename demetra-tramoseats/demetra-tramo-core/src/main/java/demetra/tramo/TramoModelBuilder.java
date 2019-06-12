@@ -81,12 +81,10 @@ class TramoModelBuilder implements IModelBuilder {
         boolean yearly = freq == 1;
         if (spec.isUsingAutoModel()) {
             model.setAirline(!yearly);
-            model.setMean(true);
         } else {
             SarimaComponent cmp = model.getArimaComponent();
             SarimaSpec arima = spec.getArima();
             cmp.setPeriod(freq);
-            cmp.setMu(arima.getMu());
             cmp.setPhi(arima.getPhi());
             cmp.setTheta(arima.getTheta());
             cmp.setD(arima.getD());
@@ -103,6 +101,7 @@ class TramoModelBuilder implements IModelBuilder {
         if (!regSpec.isUsed()) {
             return;
         }
+        model.setMean(regSpec.isMean());
         Map<String, double[]> preadjustment = regSpec.getFixedCoefficients();
         initializeCalendar(model, regSpec.getCalendar(), preadjustment);
         if (regSpec.getOutliers().size() > 0) {

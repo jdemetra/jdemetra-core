@@ -23,7 +23,6 @@ import demetra.design.Development;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.polynomials.UnitRoots;
 import jdplus.arima.estimation.IArimaMapping;
-import demetra.regarima.ami.AbstractArimaComponent;
 import jdplus.sarima.estimation.SarimaFixedMapping;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.sarima.SarimaModel;
@@ -36,7 +35,7 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
+public class SarimaComponent  {
 
     private int d, bd, period;
 
@@ -51,7 +50,6 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
     
     
     public void copy(SarimaComponent other){
-        super.copy(other);
         d=other.d;
         bd=other.bd;
         period=other.period;
@@ -167,18 +165,6 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
         setBp(0);
         bd = 1;
         setBq(1);
-        setMean(false);
-    }
-
-    public void airlineWithMean(int freq) {
-        period = freq;
-        setP(0);
-        d = 1;
-        setQ(1);
-        setBp(0);
-        bd = 1;
-        setBq(1);
-        setMean(true);
     }
 
     public int getP() {
@@ -310,7 +296,6 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
         }
     }
 
-    @Override
     public SarimaModel getModel() {
         SarimaSpecification spec = new SarimaSpecification(period);
         spec.setP(getP());
@@ -388,8 +373,7 @@ public class SarimaComponent extends AbstractArimaComponent<SarimaModel> {
         period = spec.getPeriod();
     }
 
-    @Override
-    public void setModel(SarimaModel value) {
+   public void setModel(SarimaModel value) {
         SarimaSpecification spec = value.specification();
         setP(spec.getP());
         d = spec.getD();

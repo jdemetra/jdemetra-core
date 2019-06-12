@@ -13,12 +13,12 @@ import java.util.function.DoubleUnaryOperator;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-class MutableLightMatrix implements Matrix.Mutable{
+class LightMutableMatrix implements Matrix.Mutable{
 
     private final double[] storage;
     private final int nrows, ncolumns;
 
-    MutableLightMatrix(final double[] storage, final int nrows, final int ncolumns) {
+    LightMutableMatrix(final double[] storage, final int nrows, final int ncolumns) {
         this.storage = storage;
         this.nrows = nrows;
         this.ncolumns = ncolumns;

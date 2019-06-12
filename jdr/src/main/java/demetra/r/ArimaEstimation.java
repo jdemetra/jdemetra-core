@@ -22,10 +22,7 @@ import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
-import demetra.arima.SarimaModel;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.util.IntList;
@@ -38,6 +35,8 @@ import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
 import demetra.modelling.spi.ArimaProcessorUtility;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.sarima.SarimaModel;
 
 /**
  *
@@ -108,7 +107,7 @@ public class ArimaEstimation {
         FastMatrix parametersCovariance;
         double[] score;
 
-        public SarimaModel getArima() {
+        public demetra.arima.SarimaModel getArima() {
             return ArimaProcessorUtility.convert(regarima.arima());
         }
 
