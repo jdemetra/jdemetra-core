@@ -18,7 +18,6 @@ import demetra.x11.extremevaluecorrector.GroupSpecificExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.IExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.PeriodSpecificExtremeValuesCorrector;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.IntToDoubleFunction;
 import lombok.experimental.NonFinal;
 
@@ -209,22 +208,26 @@ public class X11Context {
 
     }
 
+    /**
+     * MSR calculation is just for all periods. 
+     * In case of mixed filters and MSR, the MSR defaults will be used. 
+     */
     public boolean isMSR() {
         for (SeasonalFilterOption option : finalSeasonalFilter) {
-            if (SeasonalFilterOption.Msr.equals(option)) {
-                return true;
+            if (!SeasonalFilterOption.Msr.equals(option)) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
-    public boolean[] getMsrIndex() {
+    /*public boolean[] getMsrIndex() {
         boolean[] result = new boolean[period];
         for (int i = 0; i < period; i++) {
             result[i] = SeasonalFilterOption.Msr.equals(finalSeasonalFilter[i]);
         }
         return result;
-    }
+    }*/
 
     public SeasonalFilterOption[] getInitialSeasonalFilter() {
 

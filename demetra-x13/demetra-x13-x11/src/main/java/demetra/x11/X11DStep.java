@@ -126,7 +126,8 @@ public class X11DStep {
         seasFilter = context.getFinalSeasonalFilter();
         if (context.isMSR()) {
             MsrFilterSelection msr = new MsrFilterSelection();
-            seasFilter = msr.doMSR(d9_g_bis, context);
+            SeasonalFilterOption msrFilter = msr.doMSR(d9_g_bis, context);
+            Arrays.fill(seasFilter, msrFilter);
         }
         X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), seasFilter);
         d10bis = processor.process(d9_g_bis, context.getFirstPeriod());

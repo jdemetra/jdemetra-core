@@ -64,7 +64,6 @@ public class MsrFilterSelectionTest {
         int numberOfYears = 6;
         processMSR("Additive", freq, Arrays.copyOfRange(WU5636, 0, freq * numberOfYears + 3));
     }
-
     /*
      * Range 1:     msr < 2.5
      * Range 2:     2.5 <= msr < 3.5 

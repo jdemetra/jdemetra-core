@@ -66,7 +66,7 @@ public class X11Kernel_MixedFilters_Test {
     }
 
     @Test
-    public void test_12_S3XStable_All_Start1_mult() {
+    public void test_12_Msr_All_Start1_mult() {
         String modeName = DecompositionMode.Multiplicative.name();
         int filterLength = 13;
         int frequency = 12;
