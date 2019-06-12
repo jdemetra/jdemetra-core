@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,7 +33,6 @@ public class X11Kernel_MixedFilters_Test {
     private static final double DELTA = 10E-13;
 
     @Test
-    @Ignore
     public void test_4_S3X5S3X1_None_StartAll_Add() {
         String modeName = DecompositionMode.Additive.name();
         int filterLength = 13; //13
@@ -226,7 +224,6 @@ public class X11Kernel_MixedFilters_Test {
     }
 
     @Test
-    @Ignore
     public void test_2_S3X1Stable_AllNone_StartAll_Mult() {
         String modeName = DecompositionMode.Additive.name();
         int filterLength = 5;
