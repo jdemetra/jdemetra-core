@@ -16,7 +16,7 @@
  */
 package demetra.sarima.internal;
 
-import demetra.regarima.RegArmaModel;
+import jdplus.regarima.RegArmaModel;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import jdplus.linearmodel.LeastSquaresResults;

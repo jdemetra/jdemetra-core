@@ -7,8 +7,8 @@ package demetra.msts.survey;
 
 import jdplus.data.DataBlock;
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.ssf.ISsfDynamics;
-import demetra.ssf.StateComponent;
+import jdplus.ssf.ISsfDynamics;
+import jdplus.ssf.StateComponent;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;

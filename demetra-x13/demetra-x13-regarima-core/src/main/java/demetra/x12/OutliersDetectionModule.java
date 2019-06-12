@@ -23,7 +23,7 @@ import demetra.modelling.regression.IOutlier;
 import demetra.modelling.regression.LevelShiftFactory;
 import demetra.modelling.regression.PeriodicOutlierFactory;
 import demetra.modelling.regression.TransitoryChangeFactory;
-import demetra.regarima.RegArimaUtility;
+import jdplus.regarima.RegArimaUtility;
 import demetra.regarima.outlier.ExactSingleOutlierDetector;
 import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.regular.ModelDescription;

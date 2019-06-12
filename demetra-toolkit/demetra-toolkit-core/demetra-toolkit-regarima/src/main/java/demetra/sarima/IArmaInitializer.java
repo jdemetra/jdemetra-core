@@ -18,7 +18,7 @@
 
 package demetra.sarima;
 
-import demetra.regarima.RegArmaModel;
+import jdplus.regarima.RegArmaModel;
 import demetra.design.Development;
 import jdplus.sarima.SarimaModel;
 

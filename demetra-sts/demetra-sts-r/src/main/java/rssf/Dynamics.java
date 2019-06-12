@@ -6,9 +6,9 @@
 package rssf;
 
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.ssf.ISsfDynamics;
-import demetra.ssf.implementations.TimeInvariantDynamics;
-import demetra.ssf.implementations.TimeInvariantDynamics.Innovations;
+import jdplus.ssf.ISsfDynamics;
+import jdplus.ssf.implementations.TimeInvariantDynamics;
+import jdplus.ssf.implementations.TimeInvariantDynamics.Innovations;
 import demetra.maths.matrices.Matrix;
 
 /**

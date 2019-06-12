@@ -17,7 +17,6 @@
 package demetra.modelling.regression;
 
 import demetra.design.Development;
-import demetra.timeseries.TimeSeriesDomain;
 import demetra.data.DoubleSeq;
 
 /**

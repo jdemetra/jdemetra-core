@@ -24,7 +24,7 @@ import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.RationalBackFilter;
 import jdplus.maths.polynomials.Polynomial;
-import demetra.regarima.RegArmaModel;
+import jdplus.regarima.RegArmaModel;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.modelling.regression.IOutlier;
 import demetra.modelling.regression.IOutlierFactory;

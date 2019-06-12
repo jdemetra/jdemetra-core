@@ -20,8 +20,8 @@ package demetra.seats;
 
 import demetra.design.Development;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.regarima.IRegArimaProcessor;
-import demetra.regarima.RegArimaEstimation;
+import jdplus.regarima.IRegArimaProcessor;
+import jdplus.regarima.RegArimaEstimation;
 import demetra.sarima.GlsSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 

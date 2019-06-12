@@ -21,7 +21,7 @@ import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import demetra.modelling.TransformationType;
-import demetra.regarima.RegArimaModel;
+import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
 import java.util.Arrays;
 import demetra.data.DoubleSeq;

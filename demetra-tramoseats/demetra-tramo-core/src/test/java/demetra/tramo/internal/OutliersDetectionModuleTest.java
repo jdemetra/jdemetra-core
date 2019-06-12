@@ -17,8 +17,8 @@
 package demetra.tramo.internal;
 
 import demetra.data.Data;
-import demetra.regarima.RegArimaModel;
-import demetra.regarima.RegArimaUtility;
+import jdplus.regarima.RegArimaModel;
+import jdplus.regarima.RegArimaUtility;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;

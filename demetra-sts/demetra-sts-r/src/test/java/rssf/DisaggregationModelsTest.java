@@ -19,16 +19,16 @@ package rssf;
 import demetra.data.Data;
 import jdplus.data.DataBlock;
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.ssf.dk.DkToolkit;
-import demetra.ssf.implementations.CompositeSsf;
-import demetra.ssf.implementations.RegSsf;
-import demetra.arima.ssf.AR1;
-import demetra.ssf.SsfComponent;
+import jdplus.ssf.dk.DkToolkit;
+import jdplus.ssf.implementations.CompositeSsf;
+import jdplus.ssf.implementations.RegSsf;
+import jdplus.arima.ssf.AR1;
+import jdplus.ssf.SsfComponent;
 import demetra.sts.LocalLevel;
-import demetra.ssf.univariate.DefaultSmoothingResults;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.Ssf;
-import demetra.ssf.univariate.SsfData;
+import jdplus.ssf.univariate.DefaultSmoothingResults;
+import jdplus.ssf.univariate.ISsf;
+import jdplus.ssf.univariate.Ssf;
+import jdplus.ssf.univariate.SsfData;
 import org.junit.Test;
 
 /**

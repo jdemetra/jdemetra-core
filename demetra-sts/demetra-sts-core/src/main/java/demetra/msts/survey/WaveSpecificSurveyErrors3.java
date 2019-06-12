@@ -7,9 +7,9 @@ package demetra.msts.survey;
 
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
-import demetra.ssf.ISsfDynamics;
-import demetra.ssf.ISsfInitialization;
-import demetra.ssf.StateComponent;
+import jdplus.ssf.ISsfDynamics;
+import jdplus.ssf.ISsfInitialization;
+import jdplus.ssf.StateComponent;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;

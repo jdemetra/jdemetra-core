@@ -5,17 +5,17 @@
  */
 package demetra.msts;
 
-import demetra.ssf.StateInfo;
-import demetra.ssf.StateStorage;
-import demetra.ssf.akf.AkfToolkit;
-import demetra.ssf.dk.DkToolkit;
-import demetra.ssf.dk.sqrt.DefaultDiffuseSquareRootFilteringResults;
-import demetra.ssf.implementations.MultivariateCompositeSsf;
-import demetra.ssf.multivariate.M2uAdapter;
-import demetra.ssf.multivariate.SsfMatrix;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.StateFilteringResults;
+import jdplus.ssf.StateInfo;
+import jdplus.ssf.StateStorage;
+import jdplus.ssf.akf.AkfToolkit;
+import jdplus.ssf.dk.DkToolkit;
+import jdplus.ssf.dk.sqrt.DefaultDiffuseSquareRootFilteringResults;
+import jdplus.ssf.implementations.MultivariateCompositeSsf;
+import jdplus.ssf.multivariate.M2uAdapter;
+import jdplus.ssf.multivariate.SsfMatrix;
+import jdplus.ssf.univariate.ISsf;
+import jdplus.ssf.univariate.ISsfData;
+import jdplus.ssf.univariate.StateFilteringResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.likelihood.Likelihood;

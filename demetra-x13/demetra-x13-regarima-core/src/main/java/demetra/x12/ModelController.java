@@ -20,7 +20,7 @@ package demetra.x12;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import jdplus.linearmodel.LinearModel;
-import demetra.regarima.RegArmaModel;
+import jdplus.regarima.RegArmaModel;
 import demetra.regarima.regular.IAmiController;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;

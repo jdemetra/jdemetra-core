@@ -6,8 +6,8 @@
 package rssf;
 
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.ssf.implementations.RegSsf;
-import demetra.ssf.univariate.ISsf;
+import jdplus.ssf.implementations.RegSsf;
+import jdplus.ssf.univariate.ISsf;
 import demetra.maths.matrices.Matrix;
 
 /**

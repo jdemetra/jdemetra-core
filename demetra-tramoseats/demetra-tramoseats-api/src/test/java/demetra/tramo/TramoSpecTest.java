@@ -16,7 +16,7 @@
  */
 package demetra.tramo;
 
-import demetra.regarima.SarimaSpec;
+import demetra.modelling.regsarima.SarimaSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

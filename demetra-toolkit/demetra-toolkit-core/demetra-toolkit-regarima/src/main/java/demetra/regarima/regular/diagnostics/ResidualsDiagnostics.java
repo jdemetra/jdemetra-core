@@ -19,7 +19,7 @@ package demetra.regarima.regular.diagnostics;
 import jdplus.data.analysis.Periodogram;
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
-import demetra.regarima.RegArimaUtility;
+import jdplus.regarima.RegArimaUtility;
 import demetra.regarima.regular.PreprocessingModel;
 import jdplus.stats.tests.NiidTests;
 import jdplus.stats.tests.StatisticalTest;

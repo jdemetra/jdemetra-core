@@ -16,7 +16,7 @@
  */
 package demetra.regarima.internal;
 
-import demetra.regarima.RegArmaModel;
+import jdplus.regarima.RegArmaModel;
 import jdplus.arima.IArimaModel;
 import jdplus.maths.functions.IFunctionDerivatives;
 import jdplus.maths.functions.IParametricMapping;

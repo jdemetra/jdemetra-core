@@ -16,15 +16,15 @@
  */
 package jdplus.benchmarking.univariate;
 
-import demetra.benchmarking.ssf.SsfCholette;
+import jdplus.benchmarking.ssf.SsfCholette;
 import demetra.benchmarking.univariate.Cholette;
 import demetra.benchmarking.univariate.CholetteSpec;
 import demetra.benchmarking.univariate.CholetteSpec.BiasCorrection;
 import demetra.data.AggregationType;
-import demetra.ssf.dk.DkToolkit;
-import demetra.ssf.univariate.DefaultSmoothingResults;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.SsfData;
+import jdplus.ssf.dk.DkToolkit;
+import jdplus.ssf.univariate.DefaultSmoothingResults;
+import jdplus.ssf.univariate.ISsf;
+import jdplus.ssf.univariate.SsfData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsData;

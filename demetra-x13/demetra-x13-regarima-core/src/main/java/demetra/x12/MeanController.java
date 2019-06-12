@@ -20,7 +20,7 @@ package demetra.x12;
 
 import demetra.regarima.regular.IRegressionModule;
 import demetra.regarima.regular.ProcessingResult;
-import demetra.regarima.RegArimaUtility;
+import jdplus.regarima.RegArimaUtility;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
 import demetra.regarima.regular.RegArimaModelling;

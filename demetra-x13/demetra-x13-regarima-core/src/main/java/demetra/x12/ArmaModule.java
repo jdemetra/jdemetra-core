@@ -17,8 +17,8 @@
 package demetra.x12;
 
 import demetra.design.BuilderPattern;
-import demetra.regarima.RegArimaModel;
-import demetra.regarima.RegArimaUtility;
+import jdplus.regarima.RegArimaModel;
+import jdplus.regarima.RegArimaUtility;
 import demetra.regarima.regular.IArmaModule;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ProcessingResult;

@@ -6,9 +6,9 @@
 package demetra.sarima;
 
 import demetra.arima.SarimaSpecification;
-import demetra.regarima.IRegArimaProcessor;
-import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.RegArimaModel;
+import jdplus.regarima.IRegArimaProcessor;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaModel;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.sarima.internal.HannanRissanenInitializer;
 import jdplus.sarima.SarimaModel;

@@ -20,7 +20,7 @@ import demetra.information.InformationMapping;
 import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.msts.CompositeModel;
 import demetra.msts.CompositeModelEstimation;
-import demetra.ssf.StateStorage;
+import jdplus.ssf.StateStorage;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;

@@ -5,7 +5,7 @@
  */
 package demetra.r;
 
-import demetra.arima.ssf.SsfArima;
+import jdplus.arima.ssf.SsfArima;
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import jdplus.maths.functions.IParametricMapping;
@@ -19,13 +19,13 @@ import demetra.arima.SarimaSpecification;
 import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.descriptors.stats.DiffuseConcentratedLikelihoodDescriptor;
 import demetra.likelihood.DiffuseConcentratedLikelihood;
-import demetra.ssf.dk.DkToolkit;
-import demetra.ssf.dk.SsfFunction;
-import demetra.ssf.dk.SsfFunctionPoint;
-import demetra.ssf.implementations.RegSsf;
-import demetra.ssf.univariate.DefaultSmoothingResults;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.SsfData;
+import jdplus.ssf.dk.DkToolkit;
+import jdplus.ssf.dk.SsfFunction;
+import jdplus.ssf.dk.SsfFunctionPoint;
+import jdplus.ssf.implementations.RegSsf;
+import jdplus.ssf.univariate.DefaultSmoothingResults;
+import jdplus.ssf.univariate.ISsf;
+import jdplus.ssf.univariate.SsfData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.DayClustering;

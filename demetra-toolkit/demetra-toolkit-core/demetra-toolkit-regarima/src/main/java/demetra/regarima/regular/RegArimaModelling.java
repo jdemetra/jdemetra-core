@@ -18,7 +18,7 @@ package demetra.regarima.regular;
 
 import demetra.design.Development;
 import demetra.information.InformationSet;
-import demetra.regarima.IRegArimaProcessor;
+import jdplus.regarima.IRegArimaProcessor;
 import demetra.sarima.RegSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 

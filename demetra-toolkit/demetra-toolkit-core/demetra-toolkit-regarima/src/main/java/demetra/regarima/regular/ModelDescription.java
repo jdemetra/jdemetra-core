@@ -31,9 +31,7 @@ import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.modelling.regression.PreadjustmentVariable;
 import demetra.modelling.regression.ITsVariable;
 import demetra.modelling.regression.Regression;
-import demetra.regarima.IRegArimaProcessor;
-import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.RegArimaModel;
+import jdplus.regarima.IRegArimaProcessor;
 import demetra.regarima.ami.TransformedSeries;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
@@ -53,6 +51,8 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaModel;
 
 /**
  *

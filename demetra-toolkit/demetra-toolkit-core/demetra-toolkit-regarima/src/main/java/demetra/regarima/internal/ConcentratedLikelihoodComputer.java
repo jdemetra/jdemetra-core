@@ -16,10 +16,10 @@
  */
 package demetra.regarima.internal;
 
-import demetra.regarima.RegArmaModel;
+import jdplus.regarima.RegArmaModel;
 import jdplus.arima.IArimaModel;
 import internal.jdplus.arima.KalmanFilter;
-import demetra.regarima.RegArimaModel;
+import jdplus.regarima.RegArimaModel;
 import jdplus.data.DataBlock;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;

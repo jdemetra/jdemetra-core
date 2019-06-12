@@ -7,8 +7,8 @@ package demetra.sarima;
 
 import demetra.arima.SarimaSpecification;
 import demetra.data.Data;
-import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.RegArimaModel;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;

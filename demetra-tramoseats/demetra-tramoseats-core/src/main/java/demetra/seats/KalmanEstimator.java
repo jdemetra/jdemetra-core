@@ -21,14 +21,14 @@ import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
 import demetra.sa.DecompositionMode;
 import demetra.sa.SeriesDecomposition;
-import demetra.ssf.dk.DkToolkit;
-import demetra.ssf.implementations.CompositeSsf;
-import demetra.ssf.univariate.DefaultSmoothingResults;
-import demetra.ssf.univariate.ExtendedSsfData;
-import demetra.ssf.univariate.ISsfData;
-import demetra.ssf.univariate.SsfData;
+import jdplus.ssf.dk.DkToolkit;
+import jdplus.ssf.implementations.CompositeSsf;
+import jdplus.ssf.univariate.DefaultSmoothingResults;
+import jdplus.ssf.univariate.ExtendedSsfData;
+import jdplus.ssf.univariate.ISsfData;
+import jdplus.ssf.univariate.SsfData;
 import jdplus.ucarima.UcarimaModel;
-import demetra.ucarima.ssf.SsfUcarima;
+import jdplus.ucarima.ssf.SsfUcarima;
 import demetra.data.DoubleSeq;
 
 /**

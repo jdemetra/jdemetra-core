@@ -6,9 +6,9 @@
 package demetra.fractionalairline;
 
 import jdplus.arima.ArimaModel;
-import demetra.regarima.GlsArimaProcessor;
-import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.RegArimaModel;
+import jdplus.regarima.GlsArimaProcessor;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaModel;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;
 

@@ -8,7 +8,7 @@ package demetra.msts.internal;
 import demetra.msts.ArInterpreter;
 import demetra.msts.MstsMapping;
 import demetra.msts.survey.WaveSpecificSurveyErrors;
-import demetra.ssf.StateComponent;
+import jdplus.ssf.StateComponent;
 import java.util.Arrays;
 import java.util.List;
 import demetra.msts.ParameterInterpreter;

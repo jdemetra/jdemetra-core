@@ -6,14 +6,14 @@
 package demetra.msts.internal;
 
 import jdplus.arima.ArimaModel;
-import demetra.arima.ssf.SsfArima;
+import jdplus.arima.ssf.SsfArima;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.polynomials.Polynomial;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
 import demetra.msts.StablePolynomialInterpreter;
 import demetra.msts.VarianceInterpreter;
-import demetra.ssf.StateComponent;
+import jdplus.ssf.StateComponent;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

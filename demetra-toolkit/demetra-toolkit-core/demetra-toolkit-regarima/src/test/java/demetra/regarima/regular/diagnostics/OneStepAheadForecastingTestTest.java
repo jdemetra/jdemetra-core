@@ -6,7 +6,7 @@
 package demetra.regarima.regular.diagnostics;
 
 import demetra.data.Data;
-import demetra.regarima.RegArimaModel;
+import jdplus.regarima.RegArimaModel;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.RegSarimaProcessorTest;
 import jdplus.sarima.SarimaModel;

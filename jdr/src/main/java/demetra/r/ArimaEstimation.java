@@ -16,8 +16,8 @@
  */
 package demetra.r;
 
-import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.RegArimaModel;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaModel;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;

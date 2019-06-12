@@ -17,7 +17,7 @@
 package demetra.regarima.ami;
 
 import demetra.data.Data;
-import demetra.regarima.RegArimaModel;
+import jdplus.regarima.RegArimaModel;
 import demetra.regarima.outlier.ExactSingleOutlierDetector;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;

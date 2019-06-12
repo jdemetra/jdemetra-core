@@ -19,7 +19,7 @@ package demetra.x12;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.TransformationType;
-import demetra.regarima.IRegArimaProcessor;
+import jdplus.regarima.IRegArimaProcessor;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.ILogLevelModule;
 import demetra.regarima.regular.ModelDescription;

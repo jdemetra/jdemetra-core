@@ -17,7 +17,7 @@
 package demetra.x12;
 
 import demetra.design.Development;
-import demetra.regarima.IRegArimaProcessor;
+import jdplus.regarima.IRegArimaProcessor;
 import demetra.regarima.outlier.CriticalValueComputer;
 import demetra.sarima.GlsSarimaProcessor;
 import jdplus.sarima.SarimaModel;

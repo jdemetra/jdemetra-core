@@ -8,9 +8,9 @@ package demetra.msts.survey;
 import jdplus.arima.AutoCovarianceFunction;
 import jdplus.data.DataBlock;
 import jdplus.maths.polynomials.Polynomial;
-import demetra.ssf.ISsfDynamics;
-import demetra.ssf.ISsfInitialization;
-import demetra.ssf.StateComponent;
+import jdplus.ssf.ISsfDynamics;
+import jdplus.ssf.ISsfInitialization;
+import jdplus.ssf.StateComponent;
 import jdplus.maths.matrices.FastMatrix;
 
 /**

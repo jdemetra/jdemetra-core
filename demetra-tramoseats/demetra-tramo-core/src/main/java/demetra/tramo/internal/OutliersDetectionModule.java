@@ -22,7 +22,7 @@ import demetra.modelling.regression.AdditiveOutlierFactory;
 import demetra.modelling.regression.IOutlier;
 import demetra.modelling.regression.LevelShiftFactory;
 import demetra.modelling.regression.TransitoryChangeFactory;
-import demetra.regarima.RegArimaUtility;
+import jdplus.regarima.RegArimaUtility;
 import demetra.regarima.outlier.FastOutlierDetector;
 import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.regular.ModelDescription;

@@ -59,7 +59,7 @@ import demetra.modelling.regression.PeriodicOutlierFactory;
 import demetra.modelling.regression.TransitoryChangeFactory;
 import demetra.modelling.regression.UserTradingDays;
 import demetra.regarima.EasterSpec.Type;
-import demetra.regarima.SarimaSpec;
+import demetra.modelling.regsarima.SarimaSpec;
 import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.List;
 

@@ -16,11 +16,11 @@
  */
 package jdplus.benchmarking.univariate;
 
-import demetra.benchmarking.ssf.SsfCholette;
-import demetra.ssf.dk.DkToolkit;
-import demetra.ssf.univariate.DefaultSmoothingResults;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.SsfData;
+import jdplus.benchmarking.ssf.SsfCholette;
+import jdplus.ssf.dk.DkToolkit;
+import jdplus.ssf.univariate.DefaultSmoothingResults;
+import jdplus.ssf.univariate.ISsf;
+import jdplus.ssf.univariate.SsfData;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
