@@ -30,7 +30,7 @@ import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.regarima.RegArimaUtility;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import java.util.Optional;
 import demetra.modelling.regression.ILengthOfPeriodVariable;
 import demetra.modelling.regression.ITradingDaysVariable;
@@ -226,7 +226,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
                 current.addVariable(new Variable(aTd, "td", false));
         if (testMean) {
             boolean mean = Math.abs(ll.tstat(0, nhp, true)) > tmean;
-            if (mean != current.getArimaComponent().isMean()) {
+            if (mean != current.isMean()) {
                 current.setMean(mean);
                 changed = true;
             }

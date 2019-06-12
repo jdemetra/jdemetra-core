@@ -9,8 +9,7 @@ import demetra.x12.OutliersDetectionModuleImpl;
 import demetra.data.Data;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArimaUtility;
-import demetra.sarima.estimation.SarimaMapping;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.sarima.internal.HannanRissanenInitializer;
 import demetra.timeseries.TsPeriod;
@@ -20,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.Ignore;
 import demetra.data.DoubleSeq;
+import jdplus.sarima.estimation.SarimaMapping;
 
 /**
  *

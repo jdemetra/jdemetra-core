@@ -25,14 +25,11 @@ import jdplus.linearmodel.Ols;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
-import demetra.regarima.RegArimaUtility;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.arima.SarmaSpecification;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import demetra.x12.X12Utility;
 import java.util.Collections;
 import demetra.data.DoubleSeq;
 

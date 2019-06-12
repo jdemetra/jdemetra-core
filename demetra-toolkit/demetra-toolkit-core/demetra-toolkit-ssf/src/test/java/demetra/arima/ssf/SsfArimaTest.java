@@ -18,7 +18,7 @@ package demetra.arima.ssf;
 
 import demetra.arima.ssf.SsfArima;
 import demetra.data.Data;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.ssf.likelihood.DiffuseLikelihood;
 import demetra.ssf.dk.DkToolkit;
@@ -36,7 +36,7 @@ import org.junit.Ignore;
 public class SsfArimaTest {
 
     private static final int N = 100000, M = 10000;
-    static final demetra.sarima.SarimaModel arima;
+    static final jdplus.sarima.SarimaModel arima;
     static final double[] data;
     
     static{

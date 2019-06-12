@@ -16,8 +16,6 @@
  */
 package demetra.x12;
 
-import demetra.arima.estimation.ResidualsComputer;
-import demetra.arima.internal.AnsleyFilter;
 import demetra.design.BuilderPattern;
 import demetra.modelling.regression.Variable;
 import demetra.modelling.regression.AdditiveOutlierFactory;
@@ -29,7 +27,7 @@ import demetra.regarima.RegArimaUtility;
 import demetra.regarima.outlier.ExactSingleOutlierDetector;
 import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.regular.ModelDescription;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
@@ -37,6 +35,8 @@ import demetra.regarima.regular.IOutliersDetectionModule;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.regarima.outlier.RobustStandardDeviationComputer;
+import internal.jdplus.arima.AnsleyFilter;
+import jdplus.arima.estimation.ResidualsComputer;
 
 /**
  *

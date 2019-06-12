@@ -18,16 +18,16 @@ package demetra.ucarima.ssf;
 
 import demetra.data.Data;
 import jdplus.data.DataBlockStorage;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.SsfData;
-import demetra.ucarima.ModelDecomposer;
-import demetra.ucarima.SeasonalSelector;
-import demetra.ucarima.TrendCycleSelector;
-import demetra.ucarima.UcarimaModel;
+import jdplus.ucarima.ModelDecomposer;
+import jdplus.ucarima.SeasonalSelector;
+import jdplus.ucarima.TrendCycleSelector;
+import jdplus.ucarima.UcarimaModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

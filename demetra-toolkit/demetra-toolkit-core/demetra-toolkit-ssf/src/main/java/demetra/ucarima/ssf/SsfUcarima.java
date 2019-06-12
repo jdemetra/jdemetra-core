@@ -19,17 +19,9 @@
 package demetra.ucarima.ssf;
 
 import demetra.arima.ssf.SsfArima;
-import demetra.ssf.CompositeState;
-import demetra.ssf.ISsfDynamics;
-import demetra.ssf.ISsfInitialization;
-import demetra.ssf.StateComponent;
 import demetra.ssf.implementations.CompositeSsf;
 import demetra.ssf.implementations.Loading;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.Measurement;
-import demetra.ssf.univariate.Ssf;
-import demetra.ucarima.UcarimaModel;
-import demetra.ssf.univariate.ISsfMeasurement;
+import jdplus.ucarima.UcarimaModel;
 
 /**
  *

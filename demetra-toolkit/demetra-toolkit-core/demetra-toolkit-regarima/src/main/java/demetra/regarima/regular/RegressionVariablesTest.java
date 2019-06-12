@@ -21,7 +21,6 @@ import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.modelling.regression.Variable;
 import demetra.modelling.regression.ITsVariable;
-import demetra.timeseries.TsDomain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -163,8 +162,7 @@ public class RegressionVariablesTest {
             }
         }
         
-        if (meanTest
-                != null && desc.isEstimatedMean()) {
+        if (meanTest != null && desc.isMean()) {
             if (!meanTest.accept(ll, -1, 0, 1, null)) {
                 desc.setMean(false);
                 changed = true;

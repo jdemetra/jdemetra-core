@@ -16,8 +16,8 @@
  */
 package demetra.fractionalairline;
 
-import demetra.arima.ArimaModel;
-import demetra.arima.IArimaModel;
+import jdplus.arima.ArimaModel;
+import jdplus.arima.IArimaModel;
 import demetra.data.Data;
 import demetra.data.MatrixSerializer;
 import demetra.modelling.regression.AdditiveOutlierFactory;
@@ -27,11 +27,11 @@ import demetra.regarima.GlsArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.ami.OutliersDetectionModule;
-import demetra.ucarima.AllSelector;
-import demetra.ucarima.ModelDecomposer;
-import demetra.ucarima.SeasonalSelector;
-import demetra.ucarima.TrendCycleSelector;
-import demetra.ucarima.UcarimaModel;
+import jdplus.ucarima.AllSelector;
+import jdplus.ucarima.ModelDecomposer;
+import jdplus.ucarima.SeasonalSelector;
+import jdplus.ucarima.TrendCycleSelector;
+import jdplus.ucarima.UcarimaModel;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;

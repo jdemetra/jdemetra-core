@@ -16,9 +16,9 @@
  */
 package demetra.arima.spi;
 
-import demetra.arima.ArimaProcess;
-import demetra.arima.SarimaProcess;
-import demetra.arima.UcarimaProcess;
+import demetra.arima.ArimaModel;
+import demetra.arima.SarimaModel;
+import demetra.arima.UcarimaModel;
 import demetra.design.Algorithm;
 import demetra.design.ServiceDefinition;
 import demetra.util.ServiceLookup;
@@ -43,43 +43,39 @@ public class ArimaProcesses {
         return PROCESSOR.get();
     }
     
-    public IntToDoubleFunction autoCovarianceFunction(ArimaProcess process){
+    public IntToDoubleFunction autoCovarianceFunction(ArimaModel process){
         return PROCESSOR.get().autoCovarianceFunction(process);
     }
 
-    public DoubleUnaryOperator pseudoSpectrum(ArimaProcess process){
+    public DoubleUnaryOperator pseudoSpectrum(ArimaModel process){
         return PROCESSOR.get().pseudoSpectrum(process);
     }
 
-    public IntToDoubleFunction piWeights(ArimaProcess process){
+    public IntToDoubleFunction piWeights(ArimaModel process){
         return PROCESSOR.get().piWeights(process);
     }
 
-    public IntToDoubleFunction psiWeights(ArimaProcess process){
+    public IntToDoubleFunction psiWeights(ArimaModel process){
         return PROCESSOR.get().psiWeights(process);
     }
         
-    public ArimaProcess plus(ArimaProcess left, ArimaProcess right){
+    public ArimaModel plus(ArimaModel left, ArimaModel right){
         return PROCESSOR.get().plus(left, right);
     }
 
-    public ArimaProcess minus(ArimaProcess left, ArimaProcess right){
+    public ArimaModel minus(ArimaModel left, ArimaModel right){
         return PROCESSOR.get().minus(left, right);
     }
         
-    public ArimaProcess plus(ArimaProcess left, double noise){
+    public ArimaModel plus(ArimaModel left, double noise){
         return PROCESSOR.get().plus(left, noise);
     }
 
-    public ArimaProcess minus(ArimaProcess left, double noise){
+    public ArimaModel minus(ArimaModel left, double noise){
         return PROCESSOR.get().minus(left, noise);
     }
        
-    public ArimaProcess convert(SarimaProcess sarima){
-        return PROCESSOR.get().convert(sarima);
-    }
-        
-    public UcarimaProcess doCanonical(UcarimaProcess ucarima){
+    public UcarimaModel doCanonical(UcarimaModel ucarima){
         return PROCESSOR.get().doCanonical(ucarima);
     }
     
@@ -87,25 +83,23 @@ public class ArimaProcesses {
     @Algorithm
     public static interface Processor {
 
-        IntToDoubleFunction autoCovarianceFunction(ArimaProcess process);
+        IntToDoubleFunction autoCovarianceFunction(ArimaModel process);
 
-        DoubleUnaryOperator pseudoSpectrum(ArimaProcess process);
+        DoubleUnaryOperator pseudoSpectrum(ArimaModel process);
 
-        IntToDoubleFunction piWeights(ArimaProcess process);
+        IntToDoubleFunction piWeights(ArimaModel process);
 
-        IntToDoubleFunction psiWeights(ArimaProcess process);
+        IntToDoubleFunction psiWeights(ArimaModel process);
         
-        ArimaProcess plus(ArimaProcess left, ArimaProcess right);
+        ArimaModel plus(ArimaModel left, ArimaModel right);
 
-        ArimaProcess minus(ArimaProcess left, ArimaProcess right);
+        ArimaModel minus(ArimaModel left, ArimaModel right);
         
-        ArimaProcess plus(ArimaProcess left, double noise);
+        ArimaModel plus(ArimaModel left, double noise);
 
-        ArimaProcess minus(ArimaProcess left, double noise);
+        ArimaModel minus(ArimaModel left, double noise);
        
-        ArimaProcess convert(SarimaProcess sarima);
-        
-        UcarimaProcess doCanonical(UcarimaProcess ucarima);
+        UcarimaModel doCanonical(UcarimaModel ucarima);
 
     }
 }

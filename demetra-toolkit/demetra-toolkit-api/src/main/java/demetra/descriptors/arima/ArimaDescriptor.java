@@ -16,8 +16,7 @@
  */
 package demetra.descriptors.arima;
 
-import demetra.arima.ArimaProcess;
-import demetra.arima.ArimaProcess;
+import demetra.arima.ArimaModel;
 import demetra.design.Development;
 import demetra.information.InformationMapping;
 
@@ -35,7 +34,7 @@ public class ArimaDescriptor {
             VAR = "var", // Innovation variance
             DESC = "desc"; // Optional description/name
 
-    final InformationMapping<ArimaProcess> MAPPING = new InformationMapping<>(ArimaProcess.class);
+    final InformationMapping<ArimaModel> MAPPING = new InformationMapping<>(ArimaModel.class);
 
     static {
         MAPPING.set(AR, double[].class, source->source.getAr().toArray());
@@ -45,7 +44,7 @@ public class ArimaDescriptor {
         MAPPING.set(DESC, String.class, source->source.getName());
     }
 
-    public InformationMapping<ArimaProcess> getMapping() {
+    public InformationMapping<ArimaModel> getMapping() {
         return MAPPING;
     }
 

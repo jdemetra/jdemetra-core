@@ -17,7 +17,7 @@
 package demetra.r;
 
 import jdplus.data.analysis.WindowFunction;
-import demetra.stats.tests.seasonal.CanovaHansen;
+import jdplus.stats.tests.seasonal.CanovaHansen;
 import demetra.data.DoubleSeq;
 
 /**

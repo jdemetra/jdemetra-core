@@ -40,6 +40,7 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
 
     private double aicDiff;
 
+    private boolean mean;
     @lombok.NonNull
     private TradingDaysSpec tradingDays;
     @lombok.NonNull

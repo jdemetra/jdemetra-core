@@ -9,7 +9,7 @@ import demetra.arima.ssf.SsfArima;
 import demetra.data.Data;
 import demetra.modelling.regression.GenericTradingDaysVariable;
 import demetra.modelling.regression.Regression;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.ssf.StateComponent;
 import demetra.ssf.likelihood.DiffuseLikelihood;

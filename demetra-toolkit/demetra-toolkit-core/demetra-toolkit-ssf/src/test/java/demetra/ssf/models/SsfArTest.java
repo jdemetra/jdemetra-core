@@ -6,7 +6,7 @@
 package demetra.ssf.models;
 
 import demetra.arima.ssf.SsfAr;
-import demetra.arima.AutoCovarianceFunction;
+import jdplus.arima.AutoCovarianceFunction;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import demetra.ssf.SsfComponent;

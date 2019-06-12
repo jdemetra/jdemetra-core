@@ -5,7 +5,7 @@
  */
 package demetra.sigex;
 
-import demetra.arima.AutoCovarianceFunction;
+import jdplus.arima.AutoCovarianceFunction;
 import demetra.data.DoubleSeq;
 import jdplus.maths.polynomials.Polynomial;
 import javax.annotation.Nonnull;

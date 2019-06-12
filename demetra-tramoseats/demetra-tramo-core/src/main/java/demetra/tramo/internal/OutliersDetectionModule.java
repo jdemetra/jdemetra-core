@@ -26,7 +26,7 @@ import demetra.regarima.RegArimaUtility;
 import demetra.regarima.outlier.FastOutlierDetector;
 import demetra.regarima.outlier.SingleOutlierDetector;
 import demetra.regarima.regular.ModelDescription;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
@@ -240,7 +240,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         int nparm = Math.max(spec.getD() + spec.getP() + spec.getPeriod()
                 * (spec.getBd() + spec.getBp()), spec.getQ()
                 + spec.getPeriod() * spec.getBq())
-                + (desc.isEstimatedMean() ? 1 : 0)
+                + (desc.isMean() ? 1 : 0)
                 + (15 * n) / 100 + spec.getPeriod();
         if (n - nparm <= 0) {
             return -1;

@@ -117,15 +117,20 @@ public final class TramoSpec implements Validatable<TramoSpec> {
      */
     @LombokWorkaround
     public static Builder builder() {
-        SarimaSpec sarima = new SarimaSpec(SarimaValidator.VALIDATOR);
-        sarima.airlineWithMean();
+        SarimaSpec sarima = SarimaSpec.builder()
+                .validator(SarimaValidator.VALIDATOR)
+                .airline()
+                .build();
+        RegressionSpec regs = RegressionSpec.builder()
+                .mean(true)
+                .build();
         return new Builder()
                 .transform(TransformSpec.builder().build())
                 .estimate(EstimateSpec.builder().build())
                 .autoModel(AutoModelSpec.builder().build())
                 .outliers(OutlierSpec.builder().build())
                 .arima(sarima)
-                .regression(RegressionSpec.builder().build());
+                .regression(regs);
     }
 
     @Override
@@ -170,7 +175,7 @@ public final class TramoSpec implements Validatable<TramoSpec> {
          * @return
          */
         public Builder arima(@NonNull SarimaSpec sarima) {
-            this.arima = sarima.clone();
+            this.arima = sarima;
             if (this.autoModel == null) {
                 this.autoModel = AutoModelSpec.builder().build();
             }
@@ -223,6 +228,7 @@ public final class TramoSpec implements Validatable<TramoSpec> {
                 .tradingDays(wd)
                 .build();
         RegressionSpec rwd = RegressionSpec.builder()
+                .mean(true)
                 .calendar(cwd)
                 .build();
 

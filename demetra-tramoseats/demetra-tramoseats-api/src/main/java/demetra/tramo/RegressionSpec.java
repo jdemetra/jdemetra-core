@@ -36,6 +36,7 @@ import java.util.Map;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public final class RegressionSpec implements Validatable<RegressionSpec> {
 
+    private boolean mean;
     private CalendarSpec calendar;
     @lombok.Singular
     private List<IOutlier> outliers;
@@ -61,9 +62,9 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
     }
 
     public boolean isUsed() {
-        return calendar.isUsed() && !outliers.isEmpty()
-                && !ramps.isEmpty() && !interventionVariables.isEmpty() 
-                && !userDefinedVariables.isEmpty();
+        return mean || calendar.isUsed() || outliers.isEmpty()
+                || !ramps.isEmpty() || !interventionVariables.isEmpty() 
+                || !userDefinedVariables.isEmpty();
     }
 
     public boolean isDefault() {

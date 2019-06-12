@@ -32,13 +32,12 @@ import demetra.regarima.regular.PreprocessingModel;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.timeseries.TsData;
 import javax.annotation.Nonnull;
-import demetra.regarima.ami.IGenericDifferencingModule;
 import demetra.regarima.regular.IArmaModule;
 import demetra.regarima.regular.IDifferencingModule;
 import demetra.regarima.regular.IOutliersDetectionModule;
 import demetra.regarima.regular.ModelEstimation;
 import demetra.regarima.regular.RegressionVariablesTest;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 
 /**
@@ -374,8 +373,8 @@ public class X12Preprocessor implements IPreprocessor {
         SarimaSpecification spec0 = desc0.getSpecification(),
                 spec = desc.getSpecification();
         SarimaModel arima = desc.arima();
-        boolean mu0 = desc0.isEstimatedMean(),
-                mu = desc.isEstimatedMean();
+        boolean mu0 = desc0.isMean(),
+                mu = desc.isMean();
         ModelController controller = new ModelController(.95);
         controller.accept(context);
         double rtval = controller.getRTval();
@@ -516,7 +515,7 @@ public class X12Preprocessor implements IPreprocessor {
         context.estimate(options.precision);
         // check mean
         ModelDescription desc = context.getDescription();
-        if (desc.isEstimatedMean()) {
+        if (desc.isMean()) {
             checkMu(context, false);
         }
         if (desc.variables().filter(v -> v.isOutlier(false)).findAny().isPresent()) {

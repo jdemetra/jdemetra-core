@@ -12,7 +12,7 @@ import demetra.information.InformationMapping;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.polynomials.Polynomial;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.ssf.ISsfLoading;
 import demetra.ssf.dk.DkToolkit;
 import demetra.ssf.implementations.RegSsf;
@@ -22,9 +22,9 @@ import demetra.ssf.univariate.SsfData;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
-import demetra.arima.internal.FastArimaForecasts;
 import demetra.arima.ssf.ExactArimaForecasts;
 import demetra.data.DoubleSeq;
+import internal.jdplus.arima.FastArimaForecasts;
 
 /**
  *
@@ -81,7 +81,7 @@ public class ArimaForecasts {
         if (!method.equalsIgnoreCase("all")) {
             Results.ResultsBuilder builder = Results.builder();
             boolean exact = method.equalsIgnoreCase("exact");
-            demetra.arima.estimation.ArimaForecasts fcasts = exact ? new ExactArimaForecasts() : new FastArimaForecasts();
+            jdplus.arima.estimation.ArimaForecasts fcasts = exact ? new ExactArimaForecasts() : new FastArimaForecasts();
             if (exact) {
                 fcasts.prepare(regarima.arima(), mean != 0);
             } else {

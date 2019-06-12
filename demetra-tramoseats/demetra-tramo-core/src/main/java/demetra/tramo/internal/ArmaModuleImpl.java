@@ -16,12 +16,10 @@
  */
 package demetra.tramo.internal;
 
-import demetra.arima.internal.FastKalmanFilter;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
-import demetra.sarima.estimation.HannanRissanen;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.arima.SarmaSpecification;
 import java.util.ArrayList;
@@ -29,6 +27,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import demetra.data.DoubleSeq;
+import internal.jdplus.arima.FastKalmanFilter;
+import jdplus.sarima.estimation.HannanRissanen;
 
 /**
  *

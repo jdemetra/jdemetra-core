@@ -6,7 +6,7 @@
 package demetra.msts;
 
 import demetra.data.DoubleSeqCursor;
-import demetra.sarima.estimation.SarimaMapping;
+import jdplus.sarima.estimation.SarimaMapping;
 import demetra.arima.SarimaSpecification;
 
 /**

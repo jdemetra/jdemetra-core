@@ -25,7 +25,7 @@ import demetra.regarima.RegArimaEstimation;
 import demetra.regarima.RegArimaModel;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.RegArimaUtility;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.regarima.regular.ILogLevelModule;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.RegArimaModelling;

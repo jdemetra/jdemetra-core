@@ -17,7 +17,7 @@
 package jdplus.sp;
 
 import demetra.maths.Complex;
-import demetra.maths.PolynomialType;
+import demetra.maths.RealPolynomial;
 import demetra.maths.spi.Polynomials;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.PolynomialException;
@@ -32,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class PolynomialsProcessor implements Polynomials.Processor {
     
     @Override
-    public Complex[] roots(PolynomialType p) {
+    public Complex[] roots(RealPolynomial p) {
         RootsSolver solver=RootsSolver.fastSolver();
         Polynomial P=Polynomial.of(p);
         if (solver.factorize(P))

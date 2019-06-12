@@ -16,8 +16,8 @@
  */
 package demetra.regarima;
 
-import demetra.arima.IArimaModel;
-import demetra.arima.StationaryTransformation;
+import jdplus.arima.IArimaModel;
+import jdplus.arima.StationaryTransformation;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.Immutable;

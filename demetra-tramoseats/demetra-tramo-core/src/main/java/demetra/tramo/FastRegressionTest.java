@@ -15,7 +15,7 @@ import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
 import demetra.regarima.regular.TRegressionTest;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import java.util.Optional;
 
 /**

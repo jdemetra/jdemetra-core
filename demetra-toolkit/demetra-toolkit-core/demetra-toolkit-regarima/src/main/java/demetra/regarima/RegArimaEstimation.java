@@ -16,16 +16,16 @@
  */
 package demetra.regarima;
 
-import demetra.arima.estimation.IArimaMapping;
+import jdplus.arima.estimation.IArimaMapping;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
-import demetra.arima.IArimaModel;
+import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import jdplus.likelihood.LogLikelihoodFunction;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nonnull;

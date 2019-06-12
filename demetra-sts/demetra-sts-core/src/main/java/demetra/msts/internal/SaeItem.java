@@ -5,7 +5,7 @@
  */
 package demetra.msts.internal;
 
-import demetra.arima.AutoCovarianceFunction;
+import jdplus.arima.AutoCovarianceFunction;
 import jdplus.maths.polynomials.Polynomial;
 import demetra.msts.ArInterpreter;
 import demetra.msts.ModelItem;

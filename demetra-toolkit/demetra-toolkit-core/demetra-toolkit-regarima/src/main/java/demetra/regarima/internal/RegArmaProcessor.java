@@ -17,13 +17,13 @@
 package demetra.regarima.internal;
 
 import demetra.regarima.RegArmaModel;
-import demetra.arima.IArimaModel;
+import jdplus.arima.IArimaModel;
 import jdplus.maths.functions.IFunctionDerivatives;
 import jdplus.maths.functions.IParametricMapping;
 import jdplus.maths.functions.NumericalDerivatives;
 import jdplus.maths.functions.ssq.SsqProxyFunctionPoint;
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.arima.estimation.IArimaMapping;
+import jdplus.arima.estimation.IArimaMapping;
 import javax.annotation.Nonnull;
 import demetra.data.DoubleSeq;
 import jdplus.maths.functions.ssq.SsqFunctionMinimizer;

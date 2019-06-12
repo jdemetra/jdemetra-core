@@ -17,21 +17,19 @@
 
 package demetra.x12;
 
-import demetra.arima.IArimaModel;
-import demetra.arima.internal.ModifiedLjungBoxFilter;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import jdplus.linearmodel.LinearModel;
-import demetra.regarima.RegArimaModel;
 import demetra.regarima.RegArmaModel;
 import demetra.regarima.regular.IAmiController;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
 import demetra.regarima.regular.RegArimaModelling;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import jdplus.stats.tests.LjungBox;
 import jdplus.stats.tests.StatisticalTest;
 import demetra.data.DoubleSeq;
+import internal.jdplus.arima.ModifiedLjungBoxFilter;
 
 
 /**

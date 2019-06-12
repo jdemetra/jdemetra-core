@@ -9,7 +9,7 @@ import demetra.data.Data;
 import demetra.regarima.RegArimaModel;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.sarima.RegSarimaProcessorTest;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

@@ -22,10 +22,7 @@ import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import jdplus.maths.matrices.SymmetricMatrix;
-import demetra.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
-import demetra.arima.SarimaProcess;
 import demetra.sarima.RegSarimaProcessor;
 import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.util.IntList;
@@ -36,7 +33,10 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
+import demetra.modelling.spi.ArimaProcessorUtility;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.sarima.SarimaModel;
 
 /**
  *
@@ -107,8 +107,8 @@ public class ArimaEstimation {
         FastMatrix parametersCovariance;
         double[] score;
 
-        public SarimaProcess getArima() {
-            return regarima.arima().toType();
+        public demetra.arima.SarimaModel getArima() {
+            return ArimaProcessorUtility.convert(regarima.arima());
         }
 
         private static final String ARIMA = "arima", LL = "likelihood", PCOV = "pcov", SCORE = "score",

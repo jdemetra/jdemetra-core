@@ -48,7 +48,7 @@ public interface Matrix extends BaseTable<Double> {
         @Override
         default Matrix.Mutable extract(@Nonnegative final int rstart, @Nonnegative final int nr,
                 @Nonnegative final int cstart, @Nonnegative final int nc) {
-            return new MutableLightSubMatrix(this, rstart, nr, cstart, nc);
+            return new LightMutableSubMatrix(this, rstart, nr, cstart, nc);
         }
 
         /**
@@ -71,15 +71,15 @@ public interface Matrix extends BaseTable<Double> {
             if (data.length < nrows * ncolumns) {
                 throw new IllegalArgumentException();
             }
-            return new MutableLightMatrix(data, nrows, ncolumns);
+            return new LightMutableMatrix(data, nrows, ncolumns);
         }
 
         static Matrix.Mutable make(@Nonnegative int nrows, @Nonnegative int ncolumns) {
-            return new MutableLightMatrix(new double[nrows * ncolumns], nrows, ncolumns);
+            return new LightMutableMatrix(new double[nrows * ncolumns], nrows, ncolumns);
         }
 
         static Matrix.Mutable copyOf(@Nonnull Matrix matrix) {
-            return new MutableLightMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
+            return new LightMutableMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
         }
 
     }

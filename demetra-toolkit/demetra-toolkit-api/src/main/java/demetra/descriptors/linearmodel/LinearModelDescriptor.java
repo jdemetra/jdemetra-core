@@ -17,8 +17,8 @@
 package demetra.descriptors.linearmodel;
 
 import demetra.information.InformationMapping;
-import demetra.linearmodel.LinearModelType;
 import demetra.maths.matrices.Matrix;
+import demetra.linearmodel.LinearModel;
 
 /**
  *
@@ -28,7 +28,7 @@ import demetra.maths.matrices.Matrix;
 public class LinearModelDescriptor {
    private final String Y = "y", X = "x", MEAN="mean";
 
-    private final InformationMapping<LinearModelType> MAPPING = new InformationMapping<>(LinearModelType.class);
+    private final InformationMapping<LinearModel> MAPPING = new InformationMapping<>(LinearModel.class);
 
     static {
         MAPPING.set(Y, double[].class, source -> source.getY().toArray());

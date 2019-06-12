@@ -23,7 +23,7 @@ import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
 import demetra.regarima.regular.ProcessingResult;
 import demetra.regarima.regular.RegArimaModelling;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.tramo.internal.DifferencingModule;
 import demetra.data.DoubleSeq;
@@ -46,7 +46,7 @@ class RegularUnderDifferencingTest extends ModelController {
         ModelEstimation estimation = modelling.getEstimation();
         SarimaModel cur = desc.arima();
         SarimaSpecification spec = cur.specification();
-        if (spec.getD() == DifferencingModule.MAXD || spec.getP() == 0 || !desc.isEstimatedMean()) {
+        if (spec.getD() == DifferencingModule.MAXD || spec.getP() == 0 || !desc.isMean()) {
             return ProcessingResult.Unchanged;
         }
         if (checkResiduals(estimation.getConcentratedLikelihood().e())) {

@@ -5,7 +5,7 @@
  */
 package demetra.msts.survey;
 
-import demetra.arima.AutoCovarianceFunction;
+import jdplus.arima.AutoCovarianceFunction;
 import jdplus.data.DataBlock;
 import jdplus.maths.polynomials.Polynomial;
 import demetra.ssf.ISsfDynamics;

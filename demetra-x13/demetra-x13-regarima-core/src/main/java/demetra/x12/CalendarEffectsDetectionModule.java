@@ -28,7 +28,7 @@ import demetra.regarima.regular.IModelComparator;
 import demetra.regarima.regular.ModelDescription;
 import demetra.regarima.regular.ModelEstimation;
 import demetra.regarima.regular.RegArimaModelling;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.modelling.regression.ILengthOfPeriodVariable;
 import demetra.modelling.regression.ITradingDaysVariable;

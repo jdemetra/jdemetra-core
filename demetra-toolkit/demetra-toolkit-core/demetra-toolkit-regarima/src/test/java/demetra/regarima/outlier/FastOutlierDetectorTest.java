@@ -18,7 +18,7 @@ package demetra.regarima.outlier;
 
 import jdplus.data.DataBlock;
 import demetra.regarima.RegArimaModel;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarmaSpecification;
 import demetra.modelling.regression.AdditiveOutlier;
 import demetra.modelling.regression.AdditiveOutlierFactory;

@@ -20,165 +20,229 @@ import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
 import demetra.arima.SarimaSpecification;
+import demetra.design.LombokWorkaround;
+import demetra.util.Validatable;
+import java.util.LinkedHashMap;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
-@lombok.Data
-public final class SarimaSpec implements Cloneable{
-    
-    public static interface Validator{
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public final class SarimaSpec implements Validatable<SarimaSpec> {
+
+    @Override
+    public SarimaSpec validate() throws IllegalArgumentException {
+        if (validator != null) {
+            validator.checkP(getP());
+            validator.checkD(getD());
+            validator.checkQ(getQ());
+            validator.checkBp(getBp());
+            validator.checkBd(getBd());
+            validator.checkBq(getBq());
+        }
+        return this;
+    }
+
+    public static interface Validator {
+
         void checkP(int p);
+
         void checkD(int d);
+
         void checkQ(int q);
+
         void checkBp(int bp);
+
         void checkBd(int bd);
+
         void checkBq(int bq);
     }
 
     private final Validator validator;
-    private Parameter mu;
     private int d, bd;
     private Parameter[] phi, theta, bphi, btheta;
-    
-    public SarimaSpec(Validator validator){
-        this.validator=validator;
-    }
 
-    @Override
-    public SarimaSpec clone(){
-        try {
-            SarimaSpec c=(SarimaSpec) super.clone();
-            c.phi = Parameter.clone(phi);
-            c.theta = Parameter.clone(theta);
-            c.bphi = Parameter.clone(bphi);
-            c.btheta = Parameter.clone(btheta);
-            if (mu != null)
-                c.mu=mu.clone();
-            return c;
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
-        }
-    }
+    public static class Builder implements Validatable.Builder<SarimaSpec> {
 
-    public boolean isMean() {
-        return mu != null;
-    }
-
-    public void setMean(boolean mean) {
-        mu = mean ? new Parameter() : null;
-    }
-
-    public void fixMu() {
-        if (mu != null) {
-            mu.setType(ParameterType.Fixed);
-        }
-    }
-
-    public void setParameterType(ParameterType type) {
-        if (phi != null) {
-            for (int i = 0; i < phi.length; ++i) {
-                phi[i].setType(type);
-            }
-        }
-        if (bphi != null) {
-            for (int i = 0; i < bphi.length; ++i) {
-                bphi[i].setType(type);
-            }
-        }
-        if (theta != null) {
-            for (int i = 0; i < theta.length; ++i) {
-                theta[i].setType(type);
-            }
-        }
-        if (btheta != null) {
-            for (int i = 0; i < btheta.length; ++i) {
-                btheta[i].setType(type);
-            }
+        @LombokWorkaround
+        public Builder fixedCoefficient(String key, double[] value) {
+            return this;
         }
 
-    }
-
-    public void setMAParameterType(ParameterType type) {
-        if (theta != null) {
-            for (int i = 0; i < theta.length; ++i) {
-                theta[i].setType(type);
+        public Builder parameterType(ParameterType type) {
+            if (phi != null) {
+                for (int i = 0; i < phi.length; ++i) {
+                    phi[i].setType(type);
+                }
             }
-        }
-        if (btheta != null) {
-            for (int i = 0; i < btheta.length; ++i) {
-                btheta[i].setType(type);
+            if (bphi != null) {
+                for (int i = 0; i < bphi.length; ++i) {
+                    bphi[i].setType(type);
+                }
             }
-        }
-    }
-
-    public void setARParameterType(ParameterType type) {
-        if (phi != null) {
-            for (int i = 0; i < phi.length; ++i) {
-                phi[i].setType(type);
+            if (theta != null) {
+                for (int i = 0; i < theta.length; ++i) {
+                    theta[i].setType(type);
+                }
             }
-        }
-        if (bphi != null) {
-            for (int i = 0; i < bphi.length; ++i) {
-                bphi[i].setType(type);
+            if (btheta != null) {
+                for (int i = 0; i < btheta.length; ++i) {
+                    btheta[i].setType(type);
+                }
             }
-        }
-    }
-
-    public void clearParameters() {
-        if (phi != null) {
-            for (int i = 0; i < phi.length; ++i) {
-                phi[i] = new Parameter();
-            }
-        }
-        if (bphi != null) {
-            for (int i = 0; i < bphi.length; ++i) {
-                bphi[i] = new Parameter();
-            }
-        }
-        if (theta != null) {
-            for (int i = 0; i < theta.length; ++i) {
-                theta[i] = new Parameter();
-            }
-        }
-        if (btheta != null) {
-            for (int i = 0; i < btheta.length; ++i) {
-                btheta[i] = new Parameter();
-            }
+            return this;
         }
 
-    }
+        public Builder maParameterType(ParameterType type) {
+            if (theta != null) {
+                for (int i = 0; i < theta.length; ++i) {
+                    theta[i].setType(type);
+                }
+            }
+            if (btheta != null) {
+                for (int i = 0; i < btheta.length; ++i) {
+                    btheta[i].setType(type);
+                }
+            }
+            return this;
+        }
 
-    public void clearFreeParameters() {
-        if (phi != null) {
-            for (int i = 0; i < phi.length; ++i) {
-                if (!phi[i].isFixed()) {
+        public Builder arParameterType(ParameterType type) {
+            if (phi != null) {
+                for (int i = 0; i < phi.length; ++i) {
+                    phi[i].setType(type);
+                }
+            }
+            if (bphi != null) {
+                for (int i = 0; i < bphi.length; ++i) {
+                    bphi[i].setType(type);
+                }
+            }
+            return this;
+        }
+
+        public Builder clearParameters() {
+            if (phi != null) {
+                for (int i = 0; i < phi.length; ++i) {
                     phi[i] = new Parameter();
                 }
             }
-        }
-        if (bphi != null) {
-            for (int i = 0; i < bphi.length; ++i) {
-                if (!bphi[i].isFixed()) {
+            if (bphi != null) {
+                for (int i = 0; i < bphi.length; ++i) {
                     bphi[i] = new Parameter();
                 }
             }
-        }
-        if (theta != null) {
-            for (int i = 0; i < theta.length; ++i) {
-                if (!theta[i].isFixed()) {
+            if (theta != null) {
+                for (int i = 0; i < theta.length; ++i) {
                     theta[i] = new Parameter();
                 }
             }
-        }
-        if (btheta != null) {
-            for (int i = 0; i < btheta.length; ++i) {
-                if (!btheta[i].isFixed()) {
+            if (btheta != null) {
+                for (int i = 0; i < btheta.length; ++i) {
                     btheta[i] = new Parameter();
                 }
             }
+            return this;
+        }
+
+        public Builder clearFreeParameters() {
+            if (phi != null) {
+                for (int i = 0; i < phi.length; ++i) {
+                    if (!phi[i].isFixed()) {
+                        phi[i] = new Parameter();
+                    }
+                }
+            }
+            if (bphi != null) {
+                for (int i = 0; i < bphi.length; ++i) {
+                    if (!bphi[i].isFixed()) {
+                        bphi[i] = new Parameter();
+                    }
+                }
+            }
+            if (theta != null) {
+                for (int i = 0; i < theta.length; ++i) {
+                    if (!theta[i].isFixed()) {
+                        theta[i] = new Parameter();
+                    }
+                }
+            }
+            if (btheta != null) {
+                for (int i = 0; i < btheta.length; ++i) {
+                    if (!btheta[i].isFixed()) {
+                        btheta[i] = new Parameter();
+                    }
+                }
+            }
+            return this;
+        }
+
+        public Builder airline() {
+            p(0);
+            d = 1;
+            q(1);
+            bp(0);
+            bd = 1;
+            bq(1);
+            return this;
+        }
+
+        public Builder p(int value) {
+            phi = Parameter.create(value);
+            return this;
+        }
+
+        public Builder d(int value) {
+            d = value;
+            return this;
+        }
+
+        public Builder q(int value) {
+            theta = Parameter.create(value);
+            return this;
+        }
+
+        public Builder bp(int value) {
+            bphi = Parameter.create(value);
+            return this;
+        }
+
+        public Builder bd(int value) {
+            bd = value;
+            return this;
+        }
+
+        public Builder bq(int value) {
+            btheta = Parameter.create(value);
+            return this;
+        }
+
+        public Builder phi(Parameter[] value) {
+            phi = Parameter.clone(value);
+            return this;
+        }
+
+        public Builder theta(Parameter[] value) {
+            theta = Parameter.clone(value);
+            return this;
+        }
+
+        public Builder bphi(Parameter[] value) {
+            phi = Parameter.clone(value);
+            return this;
+        }
+
+        public Builder btheta(Parameter[] value) {
+            theta = Parameter.clone(value);
+            return this;
+        }
+
+        public Builder validator(Validator validator) {
+            this.validator = validator;
+            return this;
         }
     }
 
@@ -197,100 +261,20 @@ public final class SarimaSpec implements Cloneable{
                 || Parameter.hasFixedParameters(bphi) || Parameter.hasFixedParameters(btheta);
     }
 
-     public void airline() {
-        setP(0);
-        d = 1;
-        setQ(1);
-        setBp(0);
-        bd = 1;
-        setBq(1);
-        mu = null;
-    }
-
-    public void airlineWithMean() {
-        setP(0);
-        d = 1;
-        setQ(1);
-        setBp(0);
-        bd = 1;
-        setBq(1);
-        mu = new Parameter();
-    }
-
     public int getP() {
         return phi == null ? 0 : phi.length;
-    }
-
-    public void setP(int value) {
-        if (validator != null)
-            validator.checkP(value);
-        phi = Parameter.create(value);
-    }
-
-    public void setD(int value) {
-        if (validator != null)
-            validator.checkD(value);
-        d = value;
     }
 
     public int getQ() {
         return theta == null ? 0 : theta.length;
     }
 
-    public void setQ(int value) {
-        if (validator != null)
-            validator.checkQ(value);
-        theta = Parameter.create(value);
-    }
-
     public int getBp() {
         return bphi == null ? 0 : bphi.length;
     }
 
-    public void setBp(int value) {
-        if (validator != null)
-            validator.checkBp(value);
-        bphi = Parameter.create(value);
-    }
-
-    public void setBd(int value) {
-        if (validator != null)
-            validator.checkBd(value);
-        bd = value;
-    }
-
     public int getBq() {
         return btheta == null ? 0 : btheta.length;
-    }
-
-    public void setBq(int value) {
-        if (validator != null)
-            validator.checkBq(value);
-        btheta = Parameter.create(value);
-    }
-
-    public void setPhi(Parameter[] value) {
-        if (validator != null && value != null)
-            validator.checkP(value.length);
-        phi = value;
-    }
-
-    public void setTheta(Parameter[] value) {
-        if (validator != null && value != null)
-            validator.checkQ(value.length);
-        theta = value;
-    }
-
-    public void setBphi(Parameter[] value) {
-        if (validator != null && value != null)
-            validator.checkBp(value.length);
-        phi = value;
-    }
-
-    public void setBtheta(Parameter[] value) {
-        if (validator != null && value != null)
-            validator.checkBq(value.length);
-        theta = value;
     }
 
     public boolean isAirline() {
@@ -299,7 +283,7 @@ public final class SarimaSpec implements Cloneable{
     }
 
     public boolean isDefault() {
-        return (mu == null) && isAirline()
+        return isAirline()
                 && Parameter.isDefault(phi) && Parameter.isDefault(theta)
                 && Parameter.isDefault(bphi) && Parameter.isDefault(btheta);
     }

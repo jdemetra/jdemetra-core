@@ -16,10 +16,10 @@
  */
 package demetra.regarima;
 
-import demetra.arima.estimation.IArimaMapping;
-import demetra.arima.IArimaModel;
-import demetra.arima.StationaryTransformation;
-import demetra.arima.internal.FastKalmanFilter;
+import jdplus.arima.estimation.IArimaMapping;
+import jdplus.arima.IArimaModel;
+import jdplus.arima.StationaryTransformation;
+import internal.jdplus.arima.FastKalmanFilter;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
@@ -30,7 +30,7 @@ import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRoots;
 import demetra.sarima.GlsSarimaProcessor;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.sarima.internal.HannanRissanenInitializer;
 import java.util.List;

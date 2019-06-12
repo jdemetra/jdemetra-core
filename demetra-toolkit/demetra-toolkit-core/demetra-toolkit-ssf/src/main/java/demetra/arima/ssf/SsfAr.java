@@ -5,7 +5,7 @@
  */
 package demetra.arima.ssf;
 
-import demetra.arima.AutoCovarianceFunction;
+import jdplus.arima.AutoCovarianceFunction;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;

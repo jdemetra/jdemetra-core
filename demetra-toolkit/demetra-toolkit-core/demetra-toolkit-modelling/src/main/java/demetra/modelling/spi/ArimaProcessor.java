@@ -5,9 +5,8 @@
  */
 package demetra.modelling.spi;
 
-import demetra.arima.ArimaProcess;
-import demetra.arima.SarimaProcess;
-import demetra.arima.UcarimaProcess;
+import demetra.arima.ArimaModel;
+import demetra.arima.UcarimaModel;
 import demetra.arima.spi.ArimaProcesses;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
@@ -21,53 +20,48 @@ import org.openide.util.lookup.ServiceProvider;
 public class ArimaProcessor implements ArimaProcesses.Processor {
 
     @Override
-    public IntToDoubleFunction autoCovarianceFunction(ArimaProcess process) {
+    public IntToDoubleFunction autoCovarianceFunction(ArimaModel process) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public DoubleUnaryOperator pseudoSpectrum(ArimaProcess process) {
+    public DoubleUnaryOperator pseudoSpectrum(ArimaModel process) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public IntToDoubleFunction piWeights(ArimaProcess process) {
+    public IntToDoubleFunction piWeights(ArimaModel process) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public IntToDoubleFunction psiWeights(ArimaProcess process) {
+    public IntToDoubleFunction psiWeights(ArimaModel process) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public ArimaProcess plus(ArimaProcess left, ArimaProcess right) {
+    public ArimaModel plus(ArimaModel left, ArimaModel right) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public ArimaProcess minus(ArimaProcess left, ArimaProcess right) {
+    public ArimaModel minus(ArimaModel left, ArimaModel right) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public ArimaProcess plus(ArimaProcess left, double noise) {
+    public ArimaModel plus(ArimaModel left, double noise) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public ArimaProcess minus(ArimaProcess left, double noise) {
+    public ArimaModel minus(ArimaModel left, double noise) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public ArimaProcess convert(SarimaProcess sarima) {
+    public UcarimaModel doCanonical(UcarimaModel ucarima) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public UcarimaProcess doCanonical(UcarimaProcess ucarima) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

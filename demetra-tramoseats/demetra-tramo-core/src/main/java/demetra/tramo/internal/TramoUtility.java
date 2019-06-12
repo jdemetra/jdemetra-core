@@ -20,7 +20,7 @@ import demetra.design.Development;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.outlier.CriticalValueComputer;
 import demetra.sarima.GlsSarimaProcessor;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.sarima.internal.HannanRissanenInitializer;
 import jdplus.stats.tests.LjungBox;

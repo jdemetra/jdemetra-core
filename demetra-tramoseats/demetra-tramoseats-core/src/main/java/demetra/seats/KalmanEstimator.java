@@ -27,7 +27,7 @@ import demetra.ssf.univariate.DefaultSmoothingResults;
 import demetra.ssf.univariate.ExtendedSsfData;
 import demetra.ssf.univariate.ISsfData;
 import demetra.ssf.univariate.SsfData;
-import demetra.ucarima.UcarimaModel;
+import jdplus.ucarima.UcarimaModel;
 import demetra.ucarima.ssf.SsfUcarima;
 import demetra.data.DoubleSeq;
 

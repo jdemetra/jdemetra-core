@@ -23,7 +23,7 @@ import demetra.likelihood.LikelihoodStatistics;
 import demetra.regarima.IRegArimaProcessor;
 import demetra.regarima.RegArimaEstimation;
 import demetra.sarima.GlsSarimaProcessor;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 
 
 /**

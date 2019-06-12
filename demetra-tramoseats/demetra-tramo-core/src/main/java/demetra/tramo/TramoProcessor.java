@@ -20,11 +20,7 @@ import demetra.tramo.internal.TramoUtility;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.modelling.TransformationType;
-import demetra.modelling.regression.AdditiveOutlier;
-import demetra.modelling.regression.LevelShift;
 import demetra.modelling.regression.ModellingContext;
-import demetra.modelling.regression.PeriodicOutlier;
-import demetra.modelling.regression.TransitoryChange;
 import demetra.regarima.regular.IPreprocessor;
 import demetra.regarima.regular.IRegressionModule;
 import demetra.regarima.regular.SeasonalityDetector;
@@ -34,7 +30,7 @@ import demetra.regarima.regular.PreprocessingModel;
 import demetra.arima.SarimaSpecification;
 import demetra.timeseries.TsData;
 import demetra.regarima.regular.ProcessingResult;
-import demetra.sarima.SarimaModel;
+import jdplus.sarima.SarimaModel;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.tramo.internal.ArmaModule;
 import demetra.tramo.internal.DifferencingModule;
@@ -306,7 +302,7 @@ public class TramoProcessor implements IPreprocessor {
         ModelDescription desc = modelling.getDescription();
         boolean changed = false;
         SarimaSpecification curspec = desc.getSpecification();
-        boolean curmu = desc.isMean();
+        boolean curMean = desc.isMean();
         if (needDifferencing(desc)) {
             changed=execDifferencing(modelling) == ProcessingResult.Changed;
             SarimaSpecification nspec = desc.getSpecification();
@@ -319,7 +315,7 @@ public class TramoProcessor implements IPreprocessor {
             execAutoModelling(modelling);
             desc = modelling.getDescription();
             changed = (!desc.getSpecification().equals(curspec))
-                    || desc.isEstimatedMean() != curmu;
+                    || desc.isMean() != curMean;
         }
         if (needOutliers(desc)) {
 
