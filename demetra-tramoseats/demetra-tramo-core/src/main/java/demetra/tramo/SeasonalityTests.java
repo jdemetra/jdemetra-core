@@ -18,7 +18,6 @@ package demetra.tramo;
 
 import jdplus.data.analysis.DiscreteWindowFunction;
 import jdplus.data.analysis.SmoothedPeriodogram;
-import demetra.modelling.DifferencingResults;
 import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.seasonal.Friedman;
 import jdplus.stats.tests.seasonal.PeriodogramTest;

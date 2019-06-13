@@ -19,7 +19,7 @@ package demetra.regarima.regular;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
-import demetra.modelling.regression.RegressionUtility;
+import jdplus.modelling.regression.RegressionUtility;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;

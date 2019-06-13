@@ -18,7 +18,7 @@ package demetra.regarima.regular;
 
 import jdplus.linearmodel.JointTest;
 import demetra.modelling.regression.PeriodicContrasts;
-import demetra.modelling.regression.Regression;
+import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import demetra.sarima.GlsSarimaProcessor;

@@ -33,7 +33,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
-import demetra.modelling.spi.ArimaProcessorUtility;
+import jdplus.modelling.spi.ArimaProcessorUtility;
 import jdplus.maths.matrices.FastMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.sarima.SarimaModel;

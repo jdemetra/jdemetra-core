@@ -18,7 +18,7 @@ import demetra.timeseries.TsDomain;
 import java.util.List;
 import java.util.Optional;
 import demetra.modelling.regression.ITradingDaysVariable;
-import demetra.modelling.regression.Regression;
+import jdplus.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;
 

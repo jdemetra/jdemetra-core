@@ -11,7 +11,7 @@ import jdplus.ssf.implementations.CompositeSsf;
 import jdplus.arima.ssf.SsfArima;
 import demetra.data.Data;
 import demetra.modelling.regression.GenericTradingDaysVariable;
-import demetra.modelling.regression.Regression;
+import jdplus.modelling.regression.Regression;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import jdplus.ssf.StateComponent;

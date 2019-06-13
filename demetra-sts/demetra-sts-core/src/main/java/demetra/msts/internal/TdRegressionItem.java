@@ -8,7 +8,7 @@ package demetra.msts.internal;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.modelling.regression.GenericTradingDaysVariable;
-import demetra.modelling.regression.Regression;
+import jdplus.modelling.regression.Regression;
 import demetra.msts.MstsMapping;
 import demetra.msts.VarianceInterpreter;
 import jdplus.ssf.SsfComponent;

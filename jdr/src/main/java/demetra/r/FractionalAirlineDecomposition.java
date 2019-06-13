@@ -42,7 +42,7 @@ import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.maths.matrices.Matrix;
-import demetra.modelling.spi.ArimaProcessorUtility;
+import jdplus.modelling.spi.ArimaProcessorUtility;
 import jdplus.arima.ArimaModel;
 import jdplus.maths.matrices.FastMatrix;
 

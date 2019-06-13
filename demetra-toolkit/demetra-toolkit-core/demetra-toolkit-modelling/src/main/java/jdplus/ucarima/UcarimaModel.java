@@ -75,8 +75,7 @@ public class UcarimaModel implements Cloneable {
             return this;
         }
 
-        public Builder add(ArimaModel component, @Nonnull ArimaModel... components) {
-            this.components.add(component);
+        public Builder add(@Nonnull ArimaModel... components) {
             for (int i = 0; i < components.length; ++i) {
                 this.components.add(components[i]);
             }

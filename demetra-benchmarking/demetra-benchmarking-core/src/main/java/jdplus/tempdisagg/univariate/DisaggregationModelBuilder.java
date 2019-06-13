@@ -25,7 +25,7 @@ import jdplus.data.normalizer.AbsMeanNormalizer;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.regression.ITsVariable;
-import demetra.modelling.regression.Regression;
+import jdplus.modelling.regression.Regression;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;

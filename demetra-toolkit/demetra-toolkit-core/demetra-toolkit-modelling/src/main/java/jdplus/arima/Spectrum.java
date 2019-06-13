@@ -28,6 +28,7 @@ import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  * The (pseudo-)spectrum is the Fourier transform of the auto-covariance
@@ -92,7 +93,10 @@ public final class Spectrum {
             }
         }
         return Double.NaN;
+    }
 
+    public DoubleUnaryOperator asFunction() {
+        return f -> get(f);
     }
 
     private static class dfr {
@@ -148,7 +152,7 @@ public final class Spectrum {
             f = cursor.getAndNext();
             df = 0;
             for (int i = 1; i < weights.length(); ++i) {
-                double w=cursor.getAndNext();
+                double w = cursor.getAndNext();
                 double wc = 2 * Math.cos(freq * i) * w;
                 double ws = 2 * Math.sin(freq * i) * w;
                 f += wc;
@@ -275,12 +279,13 @@ public final class Spectrum {
                 int iter = 0;
                 SpectrumFunctionInstance cur = new SpectrumFunctionInstance(spec, z);
                 double s = cur.f;
-                double zcur=z, zprev=z;
+                double zcur = z, zprev = z;
                 do {
-                    zprev=zcur;
+                    zprev = zcur;
                     zcur -= cur.df / cur.d2f;
-                    if (Double.isNaN(zcur))
+                    if (Double.isNaN(zcur)) {
                         break;
+                    }
                     if (zcur < a) {
                         zcur = a;
                     } else if (zcur > b) {
@@ -290,11 +295,11 @@ public final class Spectrum {
                     double ns = ncur.f;
                     if (ns < s) {
                         cur = ncur;
-                        s=ns;
+                        s = ns;
                     }
                 } while (++iter < 200 && Math.abs(zcur - zprev) > EPS2);
-                if (iter == 100){
-                    iter=0;
+                if (iter == 100) {
+                    iter = 0;
                 }
                 return cur;
             }
@@ -339,12 +344,12 @@ public final class Spectrum {
             }
             int nd = Math.max(spectrum.num.getUpperBound(), spectrum.denom.getUpperBound());
             double a = 0, step = Math.PI / nd;
-            for (int i = 0; i < nd; ++i, a+=step) {
+            for (int i = 0; i < nd; ++i, a += step) {
                 double b = a + step;
                 double f = spectrum.denom.realFrequencyResponse(a);
                 double na = a;
                 while (f <= 0 && na < b) {
-                    na += step/7;
+                    na += step / 7;
                     f = spectrum.denom.realFrequencyResponse(na);
                 }
                 if (na >= b) {
@@ -353,14 +358,14 @@ public final class Spectrum {
                 f = spectrum.denom.realFrequencyResponse(b);
                 double nb = b;
                 while (f <= 0 && nb > na) {
-                    nb -= step/7;
+                    nb -= step / 7;
                     f = spectrum.denom.realFrequencyResponse(nb);
                 }
                 if (nb <= na) {
                     continue;
                 }
                 SpectrumFunction fn = new SpectrumFunction(spectrum, na, nb);
-                SpectrumFunctionInstance min = fn.min((na+nb)/2);
+                SpectrumFunctionInstance min = fn.min((na + nb) / 2);
                 if (min != null) {
                     double cmin = min.f;
                     if (cmin < m_min) {

@@ -27,7 +27,7 @@ import jdplus.maths.polynomials.Polynomial;
 import jdplus.regarima.RegArmaModel;
 import demetra.regarima.internal.ConcentratedLikelihoodComputer;
 import demetra.modelling.regression.IOutlier;
-import demetra.modelling.regression.IOutlierFactory;
+import jdplus.modelling.regression.IOutlierFactory;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
 

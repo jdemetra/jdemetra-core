@@ -72,6 +72,7 @@ public final class ArimaModel extends AbstractArimaModel {
      * Creates a white noise, with variance 1.
      *
      * @param var
+     * @return 
      */
     public static ArimaModel whiteNoise(double var) {
         return new ArimaModel(BackFilter.ONE, BackFilter.ONE, BackFilter.ONE, var);

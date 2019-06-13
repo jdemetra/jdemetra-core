@@ -23,7 +23,7 @@ import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.modelling.regression.GenericTradingDaysVariable;
-import demetra.modelling.regression.Regression;
+import jdplus.modelling.regression.Regression;
 import demetra.timeseries.TsData;
 import static jdplus.timeseries.simplets.TsDataToolkit.fitToDomain;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.maths.matrices.Matrix;
-import demetra.modelling.spi.ArimaProcessorUtility;
+import jdplus.modelling.spi.ArimaProcessorUtility;
 import jdplus.maths.matrices.FastMatrix;
 
 /**

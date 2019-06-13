@@ -1,28 +1,17 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package demetra.regarima;
 
-import demetra.arima.ArimaModel;
 import demetra.arima.ArimaType;
-import demetra.design.Development;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.design.Development;
+import demetra.likelihood.ConcentratedLikelihood;
+import demetra.likelihood.MaximumLogLikelihood;
 import demetra.linearmodel.LinearModel;
-
+import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -31,26 +20,48 @@ import demetra.linearmodel.LinearModel;
  */
 @Development(status = Development.Status.Alpha)
 @lombok.Value
-@lombok.Builder(toBuilder=true)
 public class RegArimaModel<S extends ArimaType> {
-    
-    @lombok.NonNull
-    private LinearModel model;
-    
-    @lombok.NonNull
-    private S arima;
-    
-    //<editor-fold defaultstate="collapsed" desc="delegate to model">
-    public DoubleSeq getY() {
-        return model.getY();
+
+    @Development(status = Development.Status.Alpha)
+    @lombok.Value
+    public static class Data<T extends ArimaType> {
+
+        @lombok.NonNull
+        private LinearModel model;
+
+        @lombok.NonNull
+        private T arima;
+
+        //<editor-fold defaultstate="collapsed" desc="delegate to model">
+        public DoubleSeq getY() {
+            return model.getY();
+        }
+
+        public boolean isMeanCorrection() {
+            return model.isMeanCorrection();
+        }
+
+        public Matrix getX() {
+            return model.getX();
+        }
+        //</editor-fold>
+    }
+
+    @lombok.Value
+    public static class Estimation {
+
+        /**
+         * Concentrated likelihood
+         */
+        @lombok.NonNull
+        private ConcentratedLikelihood likelihood;
+        /**
+         * Maximum of the likelihood. Could be missing if the arima model
+         * doesn't contain any free parameter
+         */
+        private MaximumLogLikelihood maximumLogLikelihood;
     }
     
-    public boolean isMeanCorrection() {
-        return model.isMeanCorrection();
-    }
-    
-    public Matrix getX() {
-        return model.getX();
-    }
-    //</editor-fold>
+    private Data<S> data;
+    private Estimation estimation;
 }

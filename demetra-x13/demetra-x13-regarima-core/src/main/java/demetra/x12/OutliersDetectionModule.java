@@ -18,11 +18,11 @@ package demetra.x12;
 
 import demetra.design.BuilderPattern;
 import demetra.modelling.regression.Variable;
-import demetra.modelling.regression.AdditiveOutlierFactory;
+import jdplus.modelling.regression.AdditiveOutlierFactory;
 import demetra.modelling.regression.IOutlier;
-import demetra.modelling.regression.LevelShiftFactory;
-import demetra.modelling.regression.PeriodicOutlierFactory;
-import demetra.modelling.regression.TransitoryChangeFactory;
+import jdplus.modelling.regression.LevelShiftFactory;
+import jdplus.modelling.regression.PeriodicOutlierFactory;
+import jdplus.modelling.regression.TransitoryChangeFactory;
 import jdplus.regarima.RegArimaUtility;
 import demetra.regarima.outlier.ExactSingleOutlierDetector;
 import demetra.regarima.outlier.SingleOutlierDetector;

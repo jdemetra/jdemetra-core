@@ -8,7 +8,7 @@ package demetra.tramoseats.spi;
 import demetra.design.Algorithm;
 import demetra.design.ServiceDefinition;
 import demetra.processing.ProcResults;
-import demetra.modelling.regsarima.SarimaSpec;
+import demetra.modelling.regarima.SarimaSpec;
 import demetra.timeseries.TsData;
 import demetra.seats.SeatsSpec;
 import javax.annotation.Nonnull;

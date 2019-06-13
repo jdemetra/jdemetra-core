@@ -18,10 +18,10 @@ package demetra.tramo.internal;
 
 import demetra.design.BuilderPattern;
 import demetra.modelling.regression.Variable;
-import demetra.modelling.regression.AdditiveOutlierFactory;
+import jdplus.modelling.regression.AdditiveOutlierFactory;
 import demetra.modelling.regression.IOutlier;
-import demetra.modelling.regression.LevelShiftFactory;
-import demetra.modelling.regression.TransitoryChangeFactory;
+import jdplus.modelling.regression.LevelShiftFactory;
+import jdplus.modelling.regression.TransitoryChangeFactory;
 import jdplus.regarima.RegArimaUtility;
 import demetra.regarima.outlier.FastOutlierDetector;
 import demetra.regarima.outlier.SingleOutlierDetector;

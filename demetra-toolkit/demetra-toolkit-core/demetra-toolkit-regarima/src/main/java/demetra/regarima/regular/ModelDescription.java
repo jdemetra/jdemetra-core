@@ -30,7 +30,7 @@ import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.modelling.regression.PreadjustmentVariable;
 import demetra.modelling.regression.ITsVariable;
-import demetra.modelling.regression.Regression;
+import jdplus.modelling.regression.Regression;
 import jdplus.regarima.IRegArimaProcessor;
 import demetra.regarima.ami.TransformedSeries;
 import jdplus.sarima.SarimaModel;

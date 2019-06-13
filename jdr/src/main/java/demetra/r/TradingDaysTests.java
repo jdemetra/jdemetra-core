@@ -27,7 +27,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.modelling.regression.GenericTradingDaysVariable;
-import demetra.modelling.regression.Regression;
+import jdplus.modelling.regression.Regression;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.GenericTradingDays;
 import static jdplus.timeseries.simplets.TsDataToolkit.drop;
