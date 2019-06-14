@@ -5,7 +5,6 @@
  */
 package jdplus.regarima;
 
-import jdplus.regarima.RegArimaUtility;
 import jdplus.data.DataBlock;
 import jdplus.maths.linearfilters.BackFilter;
 import org.junit.Test;

@@ -17,7 +17,7 @@
 package jdplus.regarima;
 
 import jdplus.arima.estimation.IArimaMapping;
-import demetra.regarima.internal.ConcentratedLikelihoodComputer;
+import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;

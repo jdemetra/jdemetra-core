@@ -26,7 +26,7 @@ import jdplus.modelling.regression.SwitchOutlierFactory;
 import jdplus.regarima.GlsArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
-import demetra.regarima.ami.OutliersDetectionModule;
+import jdplus.regarima.ami.OutliersDetectionModule;
 import jdplus.ucarima.AllSelector;
 import jdplus.ucarima.ModelDecomposer;
 import jdplus.ucarima.SeasonalSelector;

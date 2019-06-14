@@ -5,13 +5,10 @@
  */
 package jdplus.regarima;
 
-import jdplus.regarima.RegArimaModel;
-import jdplus.regarima.RegArimaEstimation;
 import demetra.data.Data;
 import jdplus.data.DataBlock;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
-import ec.tstoolkit.data.DescriptiveStatistics;
 import org.junit.Ignore;
 import org.junit.Test;
 import demetra.data.DoubleSeq;

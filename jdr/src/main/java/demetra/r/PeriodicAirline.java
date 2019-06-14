@@ -20,7 +20,7 @@ import jdplus.modelling.regression.SwitchOutlierFactory;
 import jdplus.regarima.GlsArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
-import demetra.regarima.ami.OutliersDetectionModule;
+import jdplus.regarima.ami.OutliersDetectionModule;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;

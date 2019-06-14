@@ -20,11 +20,11 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.TransformationType;
 import jdplus.regarima.IRegArimaProcessor;
-import demetra.regarima.regular.ProcessingResult;
-import demetra.regarima.regular.ILogLevelModule;
-import demetra.regarima.regular.ModelDescription;
-import demetra.regarima.regular.ModelEstimation;
-import demetra.regarima.regular.RegArimaModelling;
+import jdplus.regarima.regular.ProcessingResult;
+import jdplus.regarima.regular.ILogLevelModule;
+import jdplus.regarima.regular.ModelDescription;
+import jdplus.regarima.regular.ModelEstimation;
+import jdplus.regarima.regular.RegArimaModelling;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 
 /**

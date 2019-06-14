@@ -17,10 +17,10 @@
 package jdplus.regarima;
 
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.regarima.internal.ConcentratedLikelihoodComputer;
+import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.sarima.SarimaModel;
-import demetra.sarima.GlsSarimaProcessor;
-import demetra.sarima.RegSarimaProcessor;
+import jdplus.regsarima.GlsSarimaProcessor;
+import jdplus.regsarima.RegSarimaProcessor;
 
 /**
  *

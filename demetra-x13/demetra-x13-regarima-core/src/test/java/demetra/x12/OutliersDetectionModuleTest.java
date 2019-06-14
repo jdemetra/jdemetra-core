@@ -11,7 +11,7 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
-import demetra.sarima.internal.HannanRissanenInitializer;
+import jdplus.regsarima.internal.HannanRissanenInitializer;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import java.util.List;

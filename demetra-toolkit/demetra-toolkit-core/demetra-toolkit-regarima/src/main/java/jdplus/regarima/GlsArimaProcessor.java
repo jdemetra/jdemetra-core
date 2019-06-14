@@ -24,9 +24,9 @@ import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.maths.functions.IParametricMapping;
 import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
-import demetra.regarima.internal.ConcentratedLikelihoodComputer;
-import demetra.regarima.internal.RegArmaEstimation;
-import demetra.regarima.internal.RegArmaProcessor;
+import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
+import jdplus.regarima.internal.RegArmaEstimation;
+import jdplus.regarima.internal.RegArmaProcessor;
 import java.util.function.Function;
 import demetra.data.DoubleSeq;
 
