@@ -21,11 +21,11 @@ public class UcarimaModelTest {
 
     @Test
     public void testAirline() {
-        assertTrue(ucmAirline(-.6, -.8).isValid());
+        assertTrue(ucmAirline(-.6, -.6).isValid());
     }
 
     public static void testAirline2(double th, double bth) {
-        for (int period = 3; period <= 100; ++period) {
+        for (int period = 10; period <= 300; period+=10) {
             UcarimaModel ucm = ucmAirline(period, th, bth);
             System.out.print(ucm.getComponent(0).getInnovationVariance());
             System.out.print('\t');

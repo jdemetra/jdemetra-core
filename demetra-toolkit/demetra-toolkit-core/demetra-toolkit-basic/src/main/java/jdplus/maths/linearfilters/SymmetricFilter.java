@@ -97,7 +97,7 @@ public final class SymmetricFilter implements IFiniteFilter {
      * @param a The scaling factor
      * @return 
      */
-    public static SymmetricFilter convolutionOf(RealPolynomial f, final double a) {
+    public static SymmetricFilter convolutionOf(Polynomial f, final double a) {
         double[] w = f.toArray();
         double[] c = new double[w.length];
         for (int i = 0; i < w.length; ++i) {

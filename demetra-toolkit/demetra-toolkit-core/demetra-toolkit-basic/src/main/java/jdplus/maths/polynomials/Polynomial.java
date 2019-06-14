@@ -110,7 +110,7 @@ public final class Polynomial{
      * @param coefficients
      * @return a non-null Polynomial
      */
-    public static Polynomial of(@NonNull double[] coefficients) {
+    public static Polynomial of(@NonNull double...coefficients) {
         return new Polynomial(Coefficients.of(coefficients));
     }
     

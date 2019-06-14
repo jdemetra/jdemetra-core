@@ -568,7 +568,7 @@ class EigenRoutines {
     static void setRadix(double value) {
         m_radix = value;
     }
-    private static int m_maxiter = 100;
+    private static int m_maxiter = 1000;
     private static double m_radix = 2.0;
 }
 
