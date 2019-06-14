@@ -16,39 +16,58 @@
  */
 package demetra.tsprovider.grid;
 
+import demetra.design.LombokWorkaround;
 import demetra.timeseries.TsDataTable;
 import demetra.timeseries.TsDomain;
 import demetra.tsprovider.Ts;
 import demetra.tsprovider.TsCollection;
 import demetra.tsprovider.util.ObsFormat;
 import internal.tsprovider.grid.InternalValueWriter;
-import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import javax.annotation.concurrent.NotThreadSafe;
 import lombok.AccessLevel;
 
 /**
  *
  * @author Philippe Charles
  */
-@NotThreadSafe
-@lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
+@lombok.Value
+@lombok.Builder(builderClassName = "Builder", toBuilder = true)
 public final class GridWriter {
 
-    @Nonnull
-    public static GridWriter of(@Nonnull GridExport options, @Nonnull GridInfo info) {
-        ValueWriters writers = ValueWriters.of(info, options.getFormat());
-        return new GridWriter(writers, options.getLayout(), options.isIncludeNames(), options.isIncludeDates());
+    public static final GridWriter DEFAULT = builder().build();
+
+    @lombok.NonNull
+    private ObsFormat format;
+
+    @lombok.NonNull
+    private GridLayout layout;
+
+    private boolean includeNames;
+
+    private boolean includeDates;
+
+    @LombokWorkaround
+    public static Builder builder() {
+        Builder result = new Builder();
+        result.format = ObsFormat.DEFAULT;
+        result.layout = GridLayout.VERTICAL;
+        result.includeNames = true;
+        result.includeDates = true;
+        return result;
     }
 
-    private final ValueWriters writers;
-    private final GridLayout layout;
-    private final boolean includeNames;
-    private final boolean includeDates;
+    public void write(@Nonnull TsCollection col, @Nonnull GridOutput output) {
+        ValueWriters writers = ValueWriters.of(
+                output::isSupportedDataType,
+                () -> format.dateTimeFormatter()::formatAsString,
+                () -> format.numberFormatter()::formatAsString
+        );
 
-    public void write(@Nonnull TsCollection col, @Nonnull GridOutput output) throws IOException {
         output.setName(col.getName());
 
         TsDataTable table = TsDataTable.of(col.getData(), Ts::getData);
@@ -64,15 +83,15 @@ public final class GridWriter {
         switch (layout) {
             case VERTICAL:
             case UNKNOWN:
-                writePeriodByRow(cursor, names, dates, output);
+                writePeriodByRow(cursor, names, dates, output, writers);
                 break;
             case HORIZONTAL:
-                writeSeriesByRow(cursor, names, dates, output);
+                writeSeriesByRow(cursor, names, dates, output, writers);
                 break;
         }
     }
 
-    private void writePeriodByRow(TsDataTable.Cursor c, IntFunction<String> names, IntFunction<LocalDateTime> dates, GridOutput output) throws IOException {
+    private void writePeriodByRow(TsDataTable.Cursor c, IntFunction<String> names, IntFunction<LocalDateTime> dates, GridOutput output, ValueWriters writers) {
         int row = 0;
 
         if (includeNames) {
@@ -101,7 +120,7 @@ public final class GridWriter {
         }
     }
 
-    private void writeSeriesByRow(TsDataTable.Cursor c, IntFunction<String> names, IntFunction<LocalDateTime> dates, GridOutput output) throws IOException {
+    private void writeSeriesByRow(TsDataTable.Cursor c, IntFunction<String> names, IntFunction<LocalDateTime> dates, GridOutput output, ValueWriters writers) {
         int row = 0;
 
         if (includeDates) {
@@ -149,20 +168,24 @@ public final class GridWriter {
     @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static final class ValueWriters {
 
-        static ValueWriters of(GridInfo info, ObsFormat format) {
-            boolean stringSupported = info.isSupportedDataType(String.class);
+        static ValueWriters of(
+                Predicate<Class<?>> isSupportedDataType,
+                Supplier<Function<LocalDateTime, String>> dateTimeFormatter,
+                Supplier<Function<Number, String>> numberFormatter) {
+
+            boolean stringSupported = isSupportedDataType.test(String.class);
 
             InternalValueWriter<String> string = stringSupported ? InternalValueWriter.onString() : InternalValueWriter.onNull();
 
             InternalValueWriter<LocalDateTime> dateTime
-                    = info.isSupportedDataType(LocalDateTime.class)
+                    = isSupportedDataType.test(LocalDateTime.class)
                     ? InternalValueWriter.onDateTime()
-                    : (stringSupported ? InternalValueWriter.onStringFormatter(format.dateTimeFormatter()) : InternalValueWriter.onNull());
+                    : (stringSupported ? InternalValueWriter.onStringFormatter(dateTimeFormatter.get()) : InternalValueWriter.onNull());
 
             InternalValueWriter<Number> number
-                    = info.isSupportedDataType(Number.class)
+                    = isSupportedDataType.test(Number.class)
                     ? InternalValueWriter.onNumber()
-                    : (stringSupported ? InternalValueWriter.onStringFormatter(format.numberFormatter()) : InternalValueWriter.onNull());
+                    : (stringSupported ? InternalValueWriter.onStringFormatter(numberFormatter.get()) : InternalValueWriter.onNull());
 
             return new ValueWriters(string, dateTime, number);
         }
@@ -171,15 +194,15 @@ public final class GridWriter {
         private final InternalValueWriter<LocalDateTime> dateTime;
         private final InternalValueWriter<Number> number;
 
-        public void writeString(GridOutput grid, int row, int column, String value) throws IOException {
+        public void writeString(GridOutput grid, int row, int column, String value) {
             string.write(grid, row, column, value);
         }
 
-        public void writeDateTime(GridOutput grid, int row, int column, LocalDateTime value) throws IOException {
+        public void writeDateTime(GridOutput grid, int row, int column, LocalDateTime value) {
             dateTime.write(grid, row, column, value);
         }
 
-        public void writeNumber(GridOutput grid, int row, int column, Number value) throws IOException {
+        public void writeNumber(GridOutput grid, int row, int column, Number value) {
             number.write(grid, row, column, value);
         }
     }

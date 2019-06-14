@@ -17,7 +17,6 @@
 package internal.tsprovider.grid;
 
 import demetra.tsprovider.grid.GridInput;
-import java.io.IOException;
 
 /**
  *
@@ -30,22 +29,27 @@ public final class InvGridInput implements GridInput {
     private final GridInput delegate;
 
     @Override
+    public boolean isSupportedDataType(Class<?> type) {
+        return delegate.isSupportedDataType(type);
+    }
+
+    @Override
     public String getName() {
         return delegate.getName();
     }
 
     @Override
-    public int getRowCount() throws IOException {
+    public int getRowCount() {
         return delegate.getColumnCount();
     }
 
     @Override
-    public int getColumnCount() throws IOException {
+    public int getColumnCount() {
         return delegate.getRowCount();
     }
 
     @Override
-    public Object getValue(int row, int column) throws IOException {
+    public Object getValue(int row, int column) {
         return delegate.getValue(column, row);
     }
 }

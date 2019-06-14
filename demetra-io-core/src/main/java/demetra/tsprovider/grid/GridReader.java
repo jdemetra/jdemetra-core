@@ -16,6 +16,7 @@
  */
 package demetra.tsprovider.grid;
 
+import demetra.design.LombokWorkaround;
 import demetra.tsprovider.Ts;
 import demetra.tsprovider.TsCollection;
 import demetra.tsprovider.TsInformationType;
@@ -37,59 +38,92 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import javax.annotation.concurrent.NotThreadSafe;
 import lombok.AccessLevel;
 import internal.tsprovider.grid.InternalValueReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  *
  * @author Philippe Charles
  */
-@NotThreadSafe
-@lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
+@lombok.Value
+@lombok.Builder(builderClassName = "Builder", toBuilder = true)
 public final class GridReader {
 
-    @Nonnull
-    public static GridReader of(@Nonnull GridImport options, @Nonnull GridInfo info) {
-        ValueReaders readers = ValueReaders.of(info, options.getFormat());
-        ObsGathering gathering = options.getGathering();
-        Collector<CharSequence, ?, String> nameJoiner = Collectors.joining(DEFAULT_NAME_SEPARATOR);
-        return new GridReader(readers, gathering, options.getNamePattern(), nameJoiner);
+    public static final GridReader DEFAULT = builder().build();
+
+    @lombok.NonNull
+    private ObsFormat format;
+
+    @lombok.NonNull
+    private ObsGathering gathering;
+
+    @lombok.NonNull
+    private GridLayout layout;
+
+    @lombok.NonNull
+    private String namePattern;
+
+    @lombok.NonNull
+    private String nameSeparator;
+
+    @LombokWorkaround
+    public static Builder builder() {
+        Builder result = new Builder();
+        result.format = ObsFormat.DEFAULT;
+        result.gathering = ObsGathering.DEFAULT;
+        result.layout = GridLayout.UNKNOWN;
+        result.namePattern = "S${index}";
+        result.nameSeparator = MultiLineNameUtil.SEPARATOR;
+        return result;
     }
 
-    private static final String DEFAULT_NAME_SEPARATOR = MultiLineNameUtil.SEPARATOR;
-
-    private final ValueReaders readers;
-    private final ObsGathering gathering;
-    private final String namePattern;
-    private final Collector<CharSequence, ?, String> nameJoiner;
-
     @Nonnull
-    public TsCollection read(@Nonnull GridInput input) throws IOException {
-        DateHeader rowDates = getRowDates(input);
-        DateHeader colDates = getColDates(input);
+    public TsCollection read(@Nonnull GridInput input) {
+        ValueReaders readers = ValueReaders.of(
+                input::isSupportedDataType,
+                () -> format.dateTimeParser()::parse,
+                () -> format.numberParser()::parse
+        );
 
         TsCollection.Builder result = TsCollection.builder()
                 .type(TsInformationType.Data)
                 .name(input.getName());
 
-        if (rowDates.isBetterThan(colDates)) {
-            result.meta("gridLayout", VERTICAL.name());
-            loadVertically(input, rowDates, result::data);
-        } else if (colDates.isBetterThan(rowDates)) {
-            result.meta("gridLayout", HORIZONTAL.name());
-            loadVertically(InvGridInput.of(input), colDates, result::data);
-        } else {
-            result.meta("gridLayout", UNKNOWN.name());
+        switch (layout) {
+            case UNKNOWN:
+                DateHeader rowDates = getRowDates(input, readers);
+                DateHeader colDates = getColDates(input, readers);
+
+                if (rowDates.isBetterThan(colDates)) {
+                    result.meta(LAYOUT_KEY, VERTICAL.name());
+                    loadVertically(input, readers, rowDates, result::data);
+                } else if (colDates.isBetterThan(rowDates)) {
+                    result.meta(LAYOUT_KEY, HORIZONTAL.name());
+                    loadVertically(InvGridInput.of(input), readers, colDates, result::data);
+                } else {
+                    result.meta(LAYOUT_KEY, UNKNOWN.name());
+                }
+
+                break;
+            case HORIZONTAL:
+                result.meta(LAYOUT_KEY, HORIZONTAL.name());
+                loadVertically(InvGridInput.of(input), readers, getColDates(input, readers), result::data);
+                break;
+            case VERTICAL:
+                result.meta(LAYOUT_KEY, VERTICAL.name());
+                loadVertically(input, readers, getRowDates(input, readers), result::data);
+                break;
         }
 
         return result.build();
     }
 
-    private DateHeader getRowDates(GridInput grid) throws IOException {
+    private DateHeader getRowDates(GridInput grid, ValueReaders readers) {
         DateHeader result = new DateHeader(grid.getRowCount());
         for (int i = 0; i < grid.getRowCount(); i++) {
             result.set(i, readers.readDateTime(grid, i, 0));
@@ -97,7 +131,7 @@ public final class GridReader {
         return result;
     }
 
-    private DateHeader getColDates(GridInput grid) throws IOException {
+    private DateHeader getColDates(GridInput grid, ValueReaders readers) {
         DateHeader result = new DateHeader(grid.getColumnCount());
         for (int j = 0; j < grid.getColumnCount(); j++) {
             result.set(j, readers.readDateTime(grid, 0, j));
@@ -105,9 +139,9 @@ public final class GridReader {
         return result;
     }
 
-    private void loadVertically(GridInput grid, DateHeader dates, Consumer<Ts> consumer) throws IOException {
+    private void loadVertically(GridInput grid, ValueReaders readers, DateHeader dates, Consumer<Ts> consumer) {
         List<String> names = new ArrayList<>();
-        loadHorizontalNames(grid, dates.minIndex, names::add);
+        loadHorizontalNames(grid, readers, dates.minIndex, names::add);
 
         TsDataBuilder<LocalDateTime> data = TsDataBuilder.byDateTime(gathering);
         for (int column = 0; column < names.size(); column++) {
@@ -124,24 +158,24 @@ public final class GridReader {
         }
     }
 
-    private void loadHorizontalNames(GridInput grid, int level, Consumer<String> consumer) throws IOException {
+    private void loadHorizontalNames(GridInput grid, ValueReaders readers, int level, Consumer<String> consumer) {
         switch (level) {
             case 0: {
-                loadHorizontalNamesNoheader(grid, consumer);
+                loadHorizontalNamesNoheader(grid, readers, consumer);
                 break;
             }
             case 1: {
-                loadHorizontalNamesSingleheader(grid, consumer);
+                loadHorizontalNamesSingleheader(grid, readers, consumer);
                 break;
             }
             default: {
-                loadHorizontalNamesMultiHeaders(grid, level, consumer);
+                loadHorizontalNamesMultiHeaders(grid, readers, level, consumer);
                 break;
             }
         }
     }
 
-    private void loadHorizontalNamesNoheader(GridInput grid, Consumer<String> consumer) throws IOException {
+    private void loadHorizontalNamesNoheader(GridInput grid, ValueReaders readers, Consumer<String> consumer) {
         Map<String, Object> mapper = new HashMap<>();
         Substitutor substitutor = Substitutor.of(mapper);
         for (int column = FIRST_DATA_COL_IDX; column < grid.getColumnCount(); column++) {
@@ -153,7 +187,7 @@ public final class GridReader {
         }
     }
 
-    private void loadHorizontalNamesSingleheader(GridInput grid, Consumer<String> consumer) throws IOException {
+    private void loadHorizontalNamesSingleheader(GridInput grid, ValueReaders readers, Consumer<String> consumer) {
         for (int column = FIRST_DATA_COL_IDX; column < grid.getColumnCount(); column++) {
             String name = readers.readString(grid, 0, column);
             if (name == null) {
@@ -163,7 +197,9 @@ public final class GridReader {
         }
     }
 
-    private void loadHorizontalNamesMultiHeaders(GridInput grid, int level, Consumer<String> consumer) throws IOException {
+    private void loadHorizontalNamesMultiHeaders(GridInput grid, ValueReaders readers, int level, Consumer<String> consumer) {
+        Collector<CharSequence, ?, String> nameJoiner = Collectors.joining(nameSeparator);
+
         String[] path = new String[level];
         for (int column = FIRST_DATA_COL_IDX; column < grid.getColumnCount(); column++) {
             boolean hasHeader = false;
@@ -179,28 +215,33 @@ public final class GridReader {
             if (!hasHeader) {
                 break;
             }
-            consumer.accept(joinSkippingNulls(path));
+            consumer.accept(joinSkippingNulls(path, nameJoiner));
         }
     }
 
-    private String joinSkippingNulls(String[] items) {
+    private String joinSkippingNulls(String[] items, Collector<CharSequence, ?, String> nameJoiner) {
         return Stream.of(items).filter(Objects::nonNull).collect(nameJoiner);
     }
 
     private static final int FIRST_DATA_COL_IDX = 1;
+    private static final String LAYOUT_KEY = "gridLayout";
 
     @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static final class ValueReaders {
 
-        static ValueReaders of(GridInfo info, ObsFormat format) {
+        static ValueReaders of(
+                Predicate<Class<?>> isSupportedDataType,
+                Supplier<Function<String, LocalDateTime>> dateTimeParser,
+                Supplier<Function<String, Number>> numberParser) {
+
             InternalValueReader<String> string;
             InternalValueReader<LocalDateTime> dateTimeFallback;
             InternalValueReader<Number> numberFallback;
 
-            if (info.isSupportedDataType(String.class)) {
+            if (isSupportedDataType.test(String.class)) {
                 string = InternalValueReader.onString();
-                dateTimeFallback = InternalValueReader.onStringParser(format.dateTimeParser());
-                numberFallback = InternalValueReader.onStringParser(format.numberParser());
+                dateTimeFallback = InternalValueReader.onStringParser(dateTimeParser.get());
+                numberFallback = InternalValueReader.onStringParser(numberParser.get());
             } else {
                 string = InternalValueReader.onNull();
                 dateTimeFallback = InternalValueReader.onNull();
@@ -208,12 +249,12 @@ public final class GridReader {
             }
 
             InternalValueReader<LocalDateTime> dateTime
-                    = info.isSupportedDataType(LocalDateTime.class)
+                    = isSupportedDataType.test(LocalDateTime.class)
                     ? InternalValueReader.onDateTime().or(dateTimeFallback)
                     : dateTimeFallback;
 
             InternalValueReader<Number> number
-                    = info.isSupportedDataType(Number.class)
+                    = isSupportedDataType.test(Number.class)
                     ? InternalValueReader.onNumber().or(numberFallback)
                     : numberFallback;
 
@@ -224,15 +265,15 @@ public final class GridReader {
         private final InternalValueReader<LocalDateTime> dateTime;
         private final InternalValueReader<Number> number;
 
-        public String readString(GridInput grid, int row, int column) throws IOException {
+        public String readString(GridInput grid, int row, int column) {
             return string.read(grid, row, column);
         }
 
-        public LocalDateTime readDateTime(GridInput grid, int row, int column) throws IOException {
+        public LocalDateTime readDateTime(GridInput grid, int row, int column) {
             return dateTime.read(grid, row, column);
         }
 
-        public Number readNumber(GridInput grid, int row, int column) throws IOException {
+        public Number readNumber(GridInput grid, int row, int column) {
             return number.read(grid, row, column);
         }
     }

@@ -17,13 +17,13 @@
 package internal.spreadsheet;
 
 import demetra.tsprovider.TsCollection;
-import demetra.tsprovider.grid.GridImport;
 import internal.spreadsheet.grid.SheetGrid;
 import java.io.File;
 import java.io.IOException;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
 import _test.DataForTest;
+import demetra.tsprovider.grid.GridReader;
 import java.time.Duration;
 import javax.cache.Cache;
 import demetra.tsprovider.util.CacheFactory;
@@ -37,7 +37,7 @@ public class SpreadSheetAccessorTest {
     @Test
     public void testWithCache() throws IOException {
         try (Cache<String, Object> cache = CacheFactory.getTtlCacheByRef(Duration.ofHours(1))) {
-            SpreadSheetAccessor grid = SheetGrid.of(new File(""), DataForTest.FACTORY, GridImport.DEFAULT).withCache(cache);
+            SpreadSheetAccessor grid = SheetGrid.of(new File(""), DataForTest.FACTORY, GridReader.DEFAULT).withCache(cache);
 
             cache.clear();
             assertThat(grid.getSheetByName("s1")).map(TsCollection::getName).contains("s1");

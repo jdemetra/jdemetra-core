@@ -17,8 +17,6 @@
 package internal.tsprovider.grid;
 
 import demetra.tsprovider.grid.GridOutput;
-import demetra.util.Formatter;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -32,10 +30,10 @@ import javax.annotation.Nullable;
 @FunctionalInterface
 public interface InternalValueWriter<T> {
 
-    void write(@Nonnull GridOutput grid, int row, int column, @Nullable T value) throws IOException;
+    void write(@Nonnull GridOutput grid, int row, int column, @Nullable T value);
 
     @Nonnull
-    static <X> InternalValueWriter<X> onStringFormatter(@Nonnull Formatter<X> formatter) {
+    static <X> InternalValueWriter<X> onStringFormatter(@Nonnull Function<X, String> formatter) {
         return FuncWriter.onStringFormatter(formatter);
     }
 
@@ -63,7 +61,7 @@ public interface InternalValueWriter<T> {
         INSTANCE;
 
         @Override
-        public void write(GridOutput grid, int row, int column, Object value) throws IOException {
+        public void write(GridOutput grid, int row, int column, Object value) {
             grid.setValue(row, column, null);
         }
     }
@@ -71,7 +69,7 @@ public interface InternalValueWriter<T> {
     interface FuncWriter<T> extends InternalValueWriter<T>, Function<T, Object> {
 
         @Override
-        default public void write(GridOutput grid, int row, int column, T value) throws IOException {
+        default public void write(GridOutput grid, int row, int column, T value) {
             grid.setValue(row, column, apply(value));
         }
 
@@ -79,8 +77,8 @@ public interface InternalValueWriter<T> {
         static final FuncWriter<Number> NUMBER = o -> o;
         static final FuncWriter<String> STRING = o -> o;
 
-        static <T> FuncWriter<T> onStringFormatter(Formatter<T> parser) {
-            return o -> o != null ? parser.format(o) : null;
+        static <T> FuncWriter<T> onStringFormatter(Function<T, String> parser) {
+            return o -> o != null ? parser.apply(o) : null;
         }
     }
 }

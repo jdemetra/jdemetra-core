@@ -16,7 +16,7 @@
  */
 package internal.spreadsheet;
 
-import demetra.tsprovider.grid.GridImport;
+import demetra.tsprovider.grid.GridReader;
 import ec.util.spreadsheet.Book;
 import ec.util.spreadsheet.od.OpenDocumentBookFactory;
 import ec.util.spreadsheet.poi.ExcelBookFactory;
@@ -39,7 +39,7 @@ import org.junit.Test;
 public class SpreadSheetFactoryTest {
 
     private static void testFactory(Book.Factory bookFactory, File file) throws IOException {
-        testContent(SheetGrid.of(file, bookFactory, GridImport.DEFAULT));
+        testContent(SheetGrid.of(file, bookFactory, GridReader.DEFAULT));
     }
 
     @Test

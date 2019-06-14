@@ -24,6 +24,7 @@ import java.io.IOException;
 import static java.lang.Double.NaN;
 import java.time.LocalDateTime;
 import java.util.Locale;
+import java.util.function.Predicate;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
 import test.tsprovider.grid.ArrayGridOutput;
@@ -37,10 +38,9 @@ public class GridWriterTest {
 
     @Test
     public void testVertical() throws IOException {
-        GridExport.Builder opts = GridExport.builder().layout(VERTICAL);
-        GridInfo all = Object.class::isAssignableFrom;
+        GridWriter.Builder opts = GridWriter.builder().layout(VERTICAL);
 
-        assertThat(toArray(opts.includeNames(true).includeDates(true).build(), all, sample))
+        assertThat(toArray(opts.includeNames(true).includeDates(true).build(), Object.class::isAssignableFrom, sample))
                 .containsExactly(
                         new Object[][]{
                             {null, "G1\nS1", "G1\nS2", "G2\nS1", "S1"},
@@ -49,7 +49,7 @@ public class GridWriterTest {
                             {MAR_2010, 1.03, null, null, 4.03}
                         });
 
-        assertThat(toArray(opts.includeNames(false).includeDates(true).build(), all, sample))
+        assertThat(toArray(opts.includeNames(false).includeDates(true).build(), Object.class::isAssignableFrom, sample))
                 .containsExactly(
                         new Object[][]{
                             {JAN_2010, 1.01, 2.01, 3.01, null},
@@ -57,7 +57,7 @@ public class GridWriterTest {
                             {MAR_2010, 1.03, null, null, 4.03}
                         });
 
-        assertThat(toArray(opts.includeNames(true).includeDates(false).build(), all, sample))
+        assertThat(toArray(opts.includeNames(true).includeDates(false).build(), Object.class::isAssignableFrom, sample))
                 .containsExactly(
                         new Object[][]{
                             {"G1\nS1", "G1\nS2", "G2\nS1", "S1"},
@@ -66,7 +66,7 @@ public class GridWriterTest {
                             {1.03, null, null, 4.03}
                         });
 
-        assertThat(toArray(opts.includeNames(false).includeDates(false).build(), all, sample))
+        assertThat(toArray(opts.includeNames(false).includeDates(false).build(), Object.class::isAssignableFrom, sample))
                 .containsExactly(
                         new Object[][]{
                             {1.01, 2.01, 3.01, null},
@@ -77,10 +77,9 @@ public class GridWriterTest {
 
     @Test
     public void testHorizontal() throws IOException {
-        GridExport.Builder opts = GridExport.builder().layout(HORIZONTAL);
-        GridInfo all = Object.class::isAssignableFrom;
+        GridWriter.Builder opts = GridWriter.builder().layout(HORIZONTAL);
 
-        assertThat(toArray(opts.includeNames(true).includeDates(true).build(), all, sample))
+        assertThat(toArray(opts.includeNames(true).includeDates(true).build(), Object.class::isAssignableFrom, sample))
                 .containsExactly(
                         new Object[][]{
                             {null, JAN_2010, FEB_2010, MAR_2010},
@@ -90,7 +89,7 @@ public class GridWriterTest {
                             {"S1", null, 4.02, 4.03}
                         });
 
-        assertThat(toArray(opts.includeNames(false).includeDates(true).build(), all, sample))
+        assertThat(toArray(opts.includeNames(false).includeDates(true).build(), Object.class::isAssignableFrom, sample))
                 .containsExactly(
                         new Object[][]{
                             {JAN_2010, FEB_2010, MAR_2010},
@@ -100,7 +99,7 @@ public class GridWriterTest {
                             {null, 4.02, 4.03}
                         });
 
-        assertThat(toArray(opts.includeNames(true).includeDates(false).build(), all, sample))
+        assertThat(toArray(opts.includeNames(true).includeDates(false).build(), Object.class::isAssignableFrom, sample))
                 .containsExactly(
                         new Object[][]{
                             {"G1\nS1", 1.01, null, 1.03},
@@ -109,7 +108,7 @@ public class GridWriterTest {
                             {"S1", null, 4.02, 4.03}
                         });
 
-        assertThat(toArray(opts.includeNames(false).includeDates(false).build(), all, sample))
+        assertThat(toArray(opts.includeNames(false).includeDates(false).build(), Object.class::isAssignableFrom, sample))
                 .containsExactly(
                         new Object[][]{
                             {1.01, null, 1.03},
@@ -121,7 +120,7 @@ public class GridWriterTest {
 
     @Test
     public void testValueTypes() throws IOException {
-        GridExport opts = GridExport.builder().format(ObsFormat.of(Locale.ROOT, "yyyy-MM-dd", "00.00")).build();
+        GridWriter opts = GridWriter.builder().format(ObsFormat.of(Locale.ROOT, "yyyy-MM-dd", "00.00")).build();
 
         assertThat(toArray(opts, Object.class::isAssignableFrom, sample))
                 .containsExactly(
@@ -169,9 +168,9 @@ public class GridWriterTest {
                         });
     }
 
-    private static Object[][] toArray(GridExport options, GridInfo info, TsCollection grid) throws IOException {
-        ArrayGridOutput result = new ArrayGridOutput(VERTICAL);
-        GridWriter.of(options, info).write(grid, result);
+    private static Object[][] toArray(GridWriter writer, Predicate<Class<?>> isSupportedDataType, TsCollection grid) throws IOException {
+        ArrayGridOutput result = new ArrayGridOutput(VERTICAL, isSupportedDataType);
+        writer.write(grid, result);
         return result.build();
     }
 
