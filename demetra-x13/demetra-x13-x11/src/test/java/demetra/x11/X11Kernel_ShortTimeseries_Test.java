@@ -23,7 +23,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Christiane Hofer
+ * @author Nina Gonschorreck
  */
 public class X11Kernel_ShortTimeseries_Test {
 
@@ -45,7 +45,7 @@ public class X11Kernel_ShortTimeseries_Test {
 
     private static final int[] FREQUENCIES = new int[]{4, 12};
 
-//    @Test
+    @Test
     public void testProcess_ShortTimeseries() {
         String modeName = DecompositionMode.Additive.name();
         int filterLength = 5;
@@ -54,7 +54,7 @@ public class X11Kernel_ShortTimeseries_Test {
             String[] seasonal_filter = new String[freq];
             for (String filter : SEASONAL_FILTER_TYPES) {
                 Arrays.fill(seasonal_filter, filter);
-                testKernel(modeName, seasonal_filter, filterLength, freq, Arrays.copyOf(WU5636, 3 * freq));
+                testKernel(modeName, seasonal_filter, filterLength, freq, A);
             }
         }
     }
@@ -552,8 +552,8 @@ public class X11Kernel_ShortTimeseries_Test {
                 .hendersonFilterLength(filterLength)
                 .sigmavec(sigmavecOptions)
                 .calendarSigma(CalendarSigmaOption.All)
-                .upperSigma(21)
-                .lowerSigma(20)
+                .upperSigma(2.1)
+                .lowerSigma(2.0)
                 .filters(getNewSeasonalFilter(seasonalFilterOptionName))
                 .buildWithoutValidation();//this has to be removed
 
@@ -565,7 +565,7 @@ public class X11Kernel_ShortTimeseries_Test {
         oldSpec.setMode(ec.satoolkit.DecompositionMode.valueOf(modeName));
         oldSpec.setHendersonFilterLength(filterLength);
         oldSpec.setCalendarSigma(ec.satoolkit.x11.CalendarSigma.All);
-        oldSpec.setSigma(20, 21);
+        oldSpec.setSigma(2.0, 2.1);
 
         oldSpec.setSeasonalFilters(getOldSeasonalFilter(seasonalFilterOptionName));
         oldSpec.setForecastHorizon(0);

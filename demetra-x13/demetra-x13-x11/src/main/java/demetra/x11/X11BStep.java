@@ -80,7 +80,7 @@ public class X11BStep {
     private void b5(X11Context context) {
         X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
         DoubleSequence b5a = processor.process(b4g, (context.getFirstPeriod() + b2drop) % context.getPeriod());
-        b5 = DefaultSeasonalNormalizer.normalize(b5a, b2drop, context);
+        b5 = DefaultSeasonalNormalizer.normalize(b5a, b2drop, context);               
     }
 
     private void b6(X11Context context) {
