@@ -71,14 +71,15 @@ public class AsymmetricEndPoints implements IEndPointsProcessor {
         if (istart < n) {
             double av = in.average();
             out.range(istart, plen - istart).set(av);
-        } else {
+        } 
+//        else {
             if (pos <= 0) {
                 processLeft(in, out);
             }
             if (pos >= 0) {
                 processRight(in, out);
             }
-        }
+//        }
     }
 
     private void processLeft(DoubleSequence in, DataBlock out) {

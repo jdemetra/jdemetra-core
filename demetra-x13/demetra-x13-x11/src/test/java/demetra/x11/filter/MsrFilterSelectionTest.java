@@ -11,8 +11,6 @@ import ec.satoolkit.x11.DefaultSeasonalFilteringStrategy;
 import ec.satoolkit.x11.FilterFactory;
 import ec.satoolkit.x11.FilteredMeanEndPoints;
 import ec.satoolkit.x11.MsrTable;
-import ec.satoolkit.x11.SeasonalFilterFactory;
-import ec.tstoolkit.maths.linearfilters.SymmetricFilter;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
