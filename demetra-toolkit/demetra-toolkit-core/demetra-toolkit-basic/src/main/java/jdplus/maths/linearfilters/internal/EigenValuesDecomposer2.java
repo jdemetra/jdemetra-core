@@ -6,8 +6,10 @@
 package jdplus.maths.linearfilters.internal;
 
 import demetra.maths.Complex;
+import demetra.maths.ComplexComputer;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
+import jdplus.maths.ComplexMath;
 import jdplus.maths.ComplexUtility;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
@@ -24,7 +26,7 @@ import jdplus.maths.polynomials.UnitRootsSolver;
  *
  * @author Jean Palate
  */
-public class EigenValuesDecomposer {
+public class EigenValuesDecomposer2 {
 
     private double fac;
     private BackFilter bf;
@@ -57,21 +59,70 @@ public class EigenValuesDecomposer {
                 }
                 Polynomial P = Polynomial.of(w);
                 P = removeUnitRoots(P);
-                w = P.toArray();
-                int n = P.degree();
+                int n = P.degree() / 2;
                 if (n > 0) {
+                    Polynomial C = Polynomial.ofInternal(P.coefficients().extract(n, n + 1).toArray());
                     CanonicalMatrix M = CanonicalMatrix.square(n);
-                    M.subDiagonal(1).set(1);
                     DataBlock row = M.row(n - 1);
-                    row.setAY(-1 / w[n], DataBlock.of(w, 0, n));
-
+                    double sn = C.get(n);
+                    row.set(i -> -C.get(i) / sn);
+                    if (n > 1) {
+                        M.subDiagonal(1).set(1);
+                        M.set(1, 0, 1);
+                        M.subDiagonal(-1).add(1);
+                    }
                     IEigenSystem es = EigenSystem.create(M, false);
                     Complex[] vals = es.getEigenValues();
-                    Complex[] nvals = new Complex[vals.length / 2];
+                    Complex[] nvals = new Complex[vals.length];
+                    double[] uvals = new double[vals.length / 2];
+                    int k = 0;
                     for (int i = 0, j = 0; i < vals.length; ++i) {
-                        Complex cur = vals[i];
-                        if (cur.abs() > 1) {
-                            nvals[j++] = vals[i];
+                        // solve x^2-ux+1=0
+                        Complex u = vals[i];
+                        if (u.getIm() == 0) {
+                            double r = u.getRe();
+                            double rho = r * r - 4;
+                            if (rho < -EPS) {
+                                Complex c = Complex.cart(r / 2, Math.sqrt(-rho) / 2);
+                                int l = 0;
+                                for (; l < k; ++l) {
+                                    if (Math.abs(r - uvals[l]) < 1e-6) {
+                                        uvals[l] = 0;
+                                        break;
+                                    }
+                                }
+                                if (l == k) {
+                                    uvals[k++] = r;
+                                    nvals[j++] = c;
+                                    nvals[j++] = c.conj();
+                                }
+                                continue;
+                            } else if (rho < 0) {
+                                rho = 0;
+                                r = r < 0 ? -2 : 2;
+                            }
+                            double srho = Math.sqrt(rho);
+                            if (r < 0) {
+                                nvals[j++] = Complex.cart((r - srho) / 2);
+                            } else {
+                                nvals[j++] = Complex.cart((r + srho) / 2);
+                            }
+                        } else if (u.getIm() > 0) {
+                            ComplexComputer computer = new ComplexComputer(u);
+                            computer.mul(u).sub(4);
+                            Complex srho = ComplexMath.sqrt(computer);
+                            ComplexComputer x1 = new ComplexComputer(u);
+                            x1.add(srho).div(2);
+                            ComplexComputer x2 = new ComplexComputer(u);
+                            x2.sub(srho).div(2);
+                            Complex z;
+                            if (x1.abs() > x2.abs()) {
+                                z = x1.result();
+                            } else {
+                                z = x2.result();
+                            }
+                            nvals[j++] = z;
+                            nvals[j++] = z.conj();
                         }
                     }
                     ComplexUtility.lejaOrder(nvals);

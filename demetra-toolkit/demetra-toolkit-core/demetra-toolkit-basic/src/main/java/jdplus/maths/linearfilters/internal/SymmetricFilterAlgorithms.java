@@ -106,12 +106,30 @@ public class SymmetricFilterAlgorithms {
             }
         };
     }
+
+    public static SymmetricFilter.Factorizer evFactorizer2() {
+        return (SymmetricFilter filter) -> {
+            EigenValuesDecomposer2 decomposer = new EigenValuesDecomposer2();
+            if (!decomposer.decompose(filter)) {
+                return null;
+            } else {
+                return new SymmetricFilter.Factorization(decomposer.getBFilter(), decomposer.getFactor());
+            }
+        };
+    }
+
     private static final int ROBUST_LIMIT = 5;
 
     public static SymmetricFilter.Factorizer factorizer() {
-        return filter->evFactorizer().factorize(filter);
-//        return (SymmetricFilter filter) -> filter.length() > ROBUST_LIMIT ? robustFactorizer().factorize(filter)
-//                : fastFactorizer().factorize(filter);
-
+        return filter -> {
+            SymmetricFilter.Factorization fac = evFactorizer2().factorize(filter);
+            if (fac == null) {
+                fac = evFactorizer().factorize(filter);
+            }
+            if (fac == null) {
+                fac = robustFactorizer().factorize(filter);
+            }
+            return fac;
+        };
     }
 }

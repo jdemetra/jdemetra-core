@@ -5,11 +5,17 @@
  */
 package jdplus.maths.matrices.decomposition;
 
+import demetra.data.DoubleSeq;
 import demetra.maths.Complex;
+import demetra.maths.ComplexComputer;
+import ec.tstoolkit.maths.linearfilters.SymmetricFrequencyResponse2;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
+import jdplus.maths.ComplexMath;
 import jdplus.maths.ComplexUtility;
 import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.maths.linearfilters.SymmetricFrequencyResponse;
+import jdplus.maths.linearfilters.internal.SymmetricFilterAlgorithms;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import org.junit.Test;
@@ -25,19 +31,19 @@ public class EigenSystemTest {
 
     @Test
     public void testPolynomialRoots() {
-        int K=50;
-        double[] p=new double[K];
-        double k=1.0/K;
-        for (int i=0; i<K; ++i){
-            p[i]=1-k*i;
+        int K = 50;
+        double[] p = new double[K];
+        double k = 1.0 / K;
+        for (int i = 0; i < K; ++i) {
+            p[i] = 1 - k * i;
         }
-        long t0=System.currentTimeMillis();
+        long t0 = System.currentTimeMillis();
         Polynomial P = Polynomial.of(p);
         SymmetricFilter S = SymmetricFilter.convolutionOf(P, 1);
-        SymmetricFilter.Factorization fac = S.factorize();
-        long t1=System.currentTimeMillis();
-        System.out.println(t1-t0);
-        t0=System.currentTimeMillis();
+        SymmetricFilter.Factorization fac = SymmetricFilterAlgorithms.robustFactorizer().factorize(S);
+        long t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+        t0 = System.currentTimeMillis();
         int n = S.length() - 1, m = S.getLowerBound();
         CanonicalMatrix M = CanonicalMatrix.square(n);
         M.subDiagonal(1).set(1);
@@ -56,11 +62,12 @@ public class EigenSystemTest {
         }
         ComplexUtility.lejaOrder(nvals);
         Polynomial Z = Polynomial.fromComplexRoots(nvals);
-        Z=Z.times(1/Z.get(0));
-        t1=System.currentTimeMillis();
-        System.out.println(t1-t0);
+        Z = Z.times(1 / Z.get(0));
+        t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
         System.out.println(P.coefficients());
         System.out.println(fac.factor.asPolynomial().coefficients());
         System.out.println(Z.coefficients());
     }
-}  
+
+}

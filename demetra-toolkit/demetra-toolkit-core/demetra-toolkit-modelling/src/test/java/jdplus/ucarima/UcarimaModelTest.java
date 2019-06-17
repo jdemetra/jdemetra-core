@@ -25,7 +25,9 @@ public class UcarimaModelTest {
     }
 
     public static void testAirline2(double th, double bth) {
-        for (int period = 10; period <= 300; period+=10) {
+        for (int period = 10; period <= 250; ++period) {
+            System.out.print(period);
+            System.out.print('\t');
             UcarimaModel ucm = ucmAirline(period, th, bth);
             System.out.print(ucm.getComponent(0).getInnovationVariance());
             System.out.print('\t');
@@ -51,6 +53,17 @@ public class UcarimaModelTest {
     @Test
     public void test3111() {
         assertTrue(ucm3111(new double[]{.2, -.5, .1}, -.6, -.8).isValid());
+    }
+
+    @Test
+    public void testHighFreq() {
+            UcarimaModel ucm = ucmAirline(501, -.8, -.9);
+            System.out.print(ucm.getComponent(0).getInnovationVariance());
+            System.out.print('\t');
+            System.out.print(ucm.getComponent(1).getInnovationVariance());
+            System.out.print('\t');
+            System.out.println(ucm.getComponent(3).getInnovationVariance());
+        
     }
 
     public static UcarimaModel ucmAirline(double th, double bth) {
