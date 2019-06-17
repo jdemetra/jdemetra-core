@@ -28,7 +28,9 @@ import java.util.Arrays;
  */
 @Development(status = Development.Status.Beta)
 public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
+
     private static final double EPS = 1e-15;
+
     /**
      * Returns the averages by period
      *
@@ -196,7 +198,6 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
     public DoubleSequence computeCorrections(DoubleSequence s) {
         int n = s.length();
         double[] ns = new double[n];
-        int beg = start;
         double[] avgs = null;
         for (int i = 0; i < n; i++) {
             double e = sweights.get(i);

@@ -31,8 +31,13 @@ public class MsrFilterSelection {
 
     public SeasonalFilterOption doMSR(DoubleSequence data, X11Context context) {
         SeasonalFilterOption seasFilter = null;
+        //0. Remove fore- and backcast
+        int nf = context.getForecastHorizon();
+        int nb = context.getBackcastHorizon();
+        DoubleSequence series = data.drop(nb, nf);
+
         // 0. complete year
-        DoubleSequence series = completeYear(data, context);
+        series = completeYear(series, context);
         double msr;
         do {
             // 1. calc Components
@@ -46,6 +51,7 @@ public class MsrFilterSelection {
             // 5. cut year
             series = series.drop(0, context.getPeriod());
         } while (seasFilter == null && series.length() / context.getPeriod() >= 5);
+
         if (seasFilter == null) {
             seasFilter = SeasonalFilterOption.S3X5;
         }
@@ -59,8 +65,6 @@ public class MsrFilterSelection {
     }
 
     private void calcComponents(DoubleSequence series, X11Context context) {
-        // TODO: 0. Remove fore- and backcast
-
         // 1. estimate series component
         SymmetricFilter filter = X11FilterFactory.makeSymmetricFilter(7);
         FilteredMeanEndPoints f = new FilteredMeanEndPoints(filter);

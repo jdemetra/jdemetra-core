@@ -17,7 +17,6 @@ import demetra.x11.extremevaluecorrector.DefaultExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.GroupSpecificExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.IExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.PeriodSpecificExtremeValuesCorrector;
-import java.util.ArrayList;
 import java.util.function.IntToDoubleFunction;
 import lombok.experimental.NonFinal;
 
@@ -42,6 +41,7 @@ public class X11Context {
     CalendarSigmaOption calendarSigma;
     SigmavecOption[] sigmavecOptions;
     int forecastHorizon;
+    int backcastHorizon;
     int firstPeriod;
     /**
      * Excludefcast is true if the forecast should be excluded for the
@@ -67,7 +67,7 @@ public class X11Context {
         return builder;
     }
 
-    public static X11Context of(X11Spec spec, TsData data) {
+    public static X11Context of(@lombok.NonNull X11Spec spec, @lombok.NonNull TsData data) {
         SeasonalFilterOption[] filters = new SeasonalFilterOption[data.getAnnualFrequency()];
         if (spec.getFilters().size() == 1) {
             SeasonalFilterOption filter = spec.getFilters().get(0);
@@ -88,6 +88,7 @@ public class X11Context {
                 .sigmavecOptions(spec.getSigmavec().toArray(new SigmavecOption[0]))
                 .excludefcast(spec.isExcludeForecast())
                 .forecastHorizon(spec.getForecastHorizon())
+                .backcastHorizon(spec.getBackcastHorizon())
                 .initialSeasonalFilter(filters)
                 .finalSeasonalFilter(filters)
                 .build();
@@ -209,8 +210,8 @@ public class X11Context {
     }
 
     /**
-     * MSR calculation is just for all periods. 
-     * In case of mixed filters and MSR, the MSR defaults will be used. 
+     * MSR calculation is just for all periods.
+     * In case of mixed filters and MSR, the MSR defaults will be used.
      */
     public boolean isMSR() {
         for (SeasonalFilterOption option : finalSeasonalFilter) {
@@ -220,14 +221,6 @@ public class X11Context {
         }
         return true;
     }
-
-    /*public boolean[] getMsrIndex() {
-        boolean[] result = new boolean[period];
-        for (int i = 0; i < period; i++) {
-            result[i] = SeasonalFilterOption.Msr.equals(finalSeasonalFilter[i]);
-        }
-        return result;
-    }*/
 
     public SeasonalFilterOption[] getInitialSeasonalFilter() {
 

@@ -7,12 +7,11 @@ package demetra.x11.filter;
 
 import demetra.data.DoubleSequence;
 import demetra.x11.SeasonalFilterOption;
+import demetra.x11.X11Context;
 import ec.satoolkit.x11.DefaultSeasonalFilteringStrategy;
 import ec.satoolkit.x11.FilterFactory;
 import ec.satoolkit.x11.FilteredMeanEndPoints;
 import ec.satoolkit.x11.MsrTable;
-import ec.satoolkit.x11.SeasonalFilterFactory;
-import ec.tstoolkit.maths.linearfilters.SymmetricFilter;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
@@ -64,12 +63,34 @@ public class MsrFilterSelectionTest {
         int numberOfYears = 6;
         processMSR("Additive", freq, Arrays.copyOfRange(WU5636, 0, freq * numberOfYears + 3));
     }
+
+    @Test
+    public void test_Forecast12() {
+        int freq = 12;
+        int numberOfYears = 6;
+        processMSR("Additive", freq, Arrays.copyOfRange(WU5636, 0, freq * numberOfYears + 3), 12, 0);
+    }
+
+    @Test
+    public void test_Backcast12() {
+        int freq = 12;
+        int numberOfYears = 6;
+        processMSR("Additive", freq, Arrays.copyOfRange(WU5636, 0, freq * numberOfYears + 3), 0, 12);
+    }
+
+    @Test
+    public void test_Forecast12_Backcast12() {
+        int freq = 12;
+        int numberOfYears = 7;
+        processMSR("Additive", freq, Arrays.copyOfRange(WU5636, 0, freq * numberOfYears + 3), 12, 12);
+    }
+
     /*
-     * Range 1:     msr < 2.5
-     * Range 2:     2.5 <= msr < 3.5 
-     * Range 3:     3.5 <= msr < 5.5
-     * Range 4:     5.5 <= msr < 6.5
-     * Range 5:     6.5 <= msr
+     * Range 1: msr < 2.5
+     * Range 2: 2.5 <= msr < 3.5
+     * Range 3: 3.5 <= msr < 5.5
+     * Range 4: 5.5 <= msr < 6.5
+     * Range 5: 6.5 <= msr
      */
     @Test
     public void test_Range1() {
@@ -164,18 +185,22 @@ public class MsrFilterSelectionTest {
 
     private void processMSR(String modeName, int frequency, double[] data) {
 
-        SeasonalFilterOption[] filter_new = new SeasonalFilterOption[frequency];
+        processMSR(modeName, frequency, data, 0, 0);
+    }
 
+    private void processMSR(String modeName, int frequency, double[] data, int forecastHorizon, int backcastHorizon) {
+        SeasonalFilterOption[] filter_new = new SeasonalFilterOption[frequency];
         for (int i = 0; i < frequency; i++) {
             filter_new[i] = SeasonalFilterOption.Msr;
         }
-
         // neu
         DoubleSequence series = DoubleSequence.ofInternal(data);
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(demetra.sa.DecompositionMode.valueOf(modeName))
                 .period(frequency)
                 .firstPeriod(0)
+                .forecastHorizon(forecastHorizon)
+                .backcastHorizon(backcastHorizon)
                 .initialSeasonalFilter(filter_new)
                 .finalSeasonalFilter(filter_new)
                 .build();
@@ -184,16 +209,15 @@ public class MsrFilterSelectionTest {
         table.doMSR(series, context);
 
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(TsFrequency.valueOf(frequency), 1999, 0, data, true);
-        MsrTable oldMsrTable = doOldMSR(s, ec.satoolkit.DecompositionMode.valueOf(modeName));
-
+        MsrTable oldMsrTable = doOldMSR(s, ec.satoolkit.DecompositionMode.valueOf(modeName), context);
         double newMSR = table.getGlobalMsr();
         double oldMSR = oldMsrTable.getGlobalMsr();
         Assert.assertEquals("Error in MSR", oldMSR, newMSR, DELTA);
     }
 
-    private MsrTable doOldMSR(ec.tstoolkit.timeseries.simplets.TsData s, ec.satoolkit.DecompositionMode mode) {
+    private MsrTable doOldMSR(ec.tstoolkit.timeseries.simplets.TsData s, ec.satoolkit.DecompositionMode mode, X11Context context) {
         // remove incomplete year
-        ec.tstoolkit.timeseries.simplets.TsDomain rdomain = s.getDomain();//.drop(context.getBackcastHorizon(), context.getForecastHorizon());
+        ec.tstoolkit.timeseries.simplets.TsDomain rdomain = s.getDomain().drop(context.getBackcastHorizon(), context.getForecastHorizon());
         ec.tstoolkit.maths.linearfilters.SymmetricFilter f7 = FilterFactory.makeSymmetricFilter(7);
         ec.satoolkit.x11.DefaultSeasonalFilteringStrategy fseas = new DefaultSeasonalFilteringStrategy(
                 f7, new FilteredMeanEndPoints(f7));

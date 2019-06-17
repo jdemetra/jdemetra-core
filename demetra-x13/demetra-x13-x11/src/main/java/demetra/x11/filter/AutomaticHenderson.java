@@ -32,9 +32,9 @@ public class AutomaticHenderson {
         DoubleSequence sc = DoubleSequence.of(out);
         DoubleSequence si = context.remove(s.extract(ndrop, sc.length()), sc);
         int nf = context.getForecastHorizon();
-//        int nb = context.getBackcastHorizon();
-        sc = sc.drop(0, nf);
-        si = si.drop(0, nf);
+        int nb = context.getBackcastHorizon();
+        sc = sc.drop(nb, nf);
+        si = si.drop(nb, nf);
         double gc = SeriesEvolution.calcAbsMeanVariation(sc, 1, context.isMultiplicative());
         double gi = SeriesEvolution.calcAbsMeanVariation(si, 1, context.isMultiplicative());
         double icr = gi / gc;
