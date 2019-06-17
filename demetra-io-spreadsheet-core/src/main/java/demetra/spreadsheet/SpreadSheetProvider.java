@@ -28,7 +28,7 @@ import demetra.tsprovider.HasFilePaths;
 import demetra.tsprovider.TsProvider;
 import demetra.tsprovider.cursor.HasTsCursor;
 import demetra.tsprovider.cursor.TsCursorAsProvider;
-import demetra.tsprovider.grid.GridImport;
+import demetra.tsprovider.grid.GridReader;
 import demetra.tsprovider.util.FallbackDataMoniker;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.ResourceMap;
@@ -140,12 +140,12 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
                 throw new IOException("File type not supported");
             }
             return SheetGrid
-                    .of(file, factory, getOptions(bean))
+                    .of(file, factory, getReader(bean))
                     .withCache(CacheFactory.getTtlCacheByRef(key::toString, Duration.ofMinutes(5)));
         }
 
-        private GridImport getOptions(SpreadSheetBean bean) {
-            return GridImport
+        private GridReader getReader(SpreadSheetBean bean) {
+            return GridReader
                     .builder()
                     .format(bean.getObsFormat())
                     .gathering(bean.getObsGathering())

@@ -20,6 +20,7 @@ import demetra.tsprovider.grid.GridLayout;
 import demetra.tsprovider.grid.GridOutput;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  *
@@ -29,7 +30,13 @@ import java.util.List;
 public final class ArrayGridOutput implements GridOutput {
 
     private final GridLayout layout;
+    private final Predicate<Class<?>> isSupportedDataType;
     private final List<Cell> cells = new ArrayList<>();
+
+    @Override
+    public boolean isSupportedDataType(Class<?> type) {
+        return isSupportedDataType.test(type);
+    }
 
     @Override
     public void setName(String name) {

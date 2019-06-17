@@ -21,6 +21,7 @@ import demetra.tsprovider.grid.GridInput;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.function.Predicate;
 
 /**
  *
@@ -30,7 +31,13 @@ import java.util.Date;
 public final class SheetGridInput implements GridInput {
 
     private final Sheet sheet;
+    private final Predicate<Class<?>> isSupportedDataType;
     private final ZoneId zoneId = ZoneId.systemDefault();
+
+    @Override
+    public boolean isSupportedDataType(Class<?> dateType) {
+        return isSupportedDataType.test(dateType);
+    }
 
     @Override
     public String getName() {

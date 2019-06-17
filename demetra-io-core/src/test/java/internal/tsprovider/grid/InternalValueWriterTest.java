@@ -47,7 +47,7 @@ public class InternalValueWriterTest {
 
         GridInput in = ArrayGridInput.of(data);
 
-        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL);
+        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, Object.class::isAssignableFrom);
         for (int i = 0; i < in.getRowCount(); i++) {
             for (int j = 0; j < in.getColumnCount(); j++) {
                 x.write(out, i, j, in.getValue(i, j));
@@ -66,7 +66,7 @@ public class InternalValueWriterTest {
     public void testOnDateTime() throws IOException {
         InternalValueWriter<LocalDateTime> x = onDateTime();
 
-        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL);
+        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, Object.class::isAssignableFrom);
         x.write(out, 0, 0, JAN_2010);
         x.write(out, 0, 1, null);
 
@@ -77,7 +77,7 @@ public class InternalValueWriterTest {
     public void testOnNumber() throws IOException {
         InternalValueWriter<Number> x = onNumber();
 
-        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL);
+        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, Object.class::isAssignableFrom);
         x.write(out, 0, 0, 3.14);
         x.write(out, 0, 1, null);
 
@@ -88,7 +88,7 @@ public class InternalValueWriterTest {
     public void testOnString() throws IOException {
         InternalValueWriter<String> x = onString();
 
-        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL);
+        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, Object.class::isAssignableFrom);
         x.write(out, 0, 0, "S1");
         x.write(out, 0, 1, null);
 
@@ -99,11 +99,11 @@ public class InternalValueWriterTest {
     public void testOnStringFormatter() throws IOException {
         ObsFormat f = ObsFormat.of(Locale.ROOT, "yyyy-MM-dd", "");
 
-        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL);
-        onStringFormatter(f.dateTimeFormatter()).write(out, 0, 0, JAN_2010);
-        onStringFormatter(f.dateTimeFormatter()).write(out, 0, 1, null);
-        onStringFormatter(f.numberFormatter()).write(out, 0, 2, null);
-        onStringFormatter(f.numberFormatter()).write(out, 0, 3, 3.14);
+        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, Object.class::isAssignableFrom);
+        onStringFormatter(f.dateTimeFormatter()::formatAsString).write(out, 0, 0, JAN_2010);
+        onStringFormatter(f.dateTimeFormatter()::formatAsString).write(out, 0, 1, null);
+        onStringFormatter(f.numberFormatter()::formatAsString).write(out, 0, 2, null);
+        onStringFormatter(f.numberFormatter()::formatAsString).write(out, 0, 3, 3.14);
 
         assertThat(out.build()).containsExactly(new Object[]{JAN_2010.format(DateTimeFormatter.ISO_DATE), null, null, "3.14"});
     }

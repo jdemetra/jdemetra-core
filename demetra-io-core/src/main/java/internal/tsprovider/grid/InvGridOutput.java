@@ -17,7 +17,6 @@
 package internal.tsprovider.grid;
 
 import demetra.tsprovider.grid.GridOutput;
-import java.io.IOException;
 
 /**
  *
@@ -30,12 +29,17 @@ public final class InvGridOutput implements GridOutput {
     private final GridOutput delegate;
 
     @Override
+    public boolean isSupportedDataType(Class<?> type) {
+        return delegate.isSupportedDataType(type);
+    }
+
+    @Override
     public void setName(String name) {
         delegate.setName(name);
     }
 
     @Override
-    public void setValue(int row, int column, Object value) throws IOException {
+    public void setValue(int row, int column, Object value) {
         delegate.setValue(column, row, value);
     }
 }

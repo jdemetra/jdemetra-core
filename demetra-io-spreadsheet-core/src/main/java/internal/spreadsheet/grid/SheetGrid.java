@@ -17,13 +17,14 @@
 package internal.spreadsheet.grid;
 
 import demetra.tsprovider.TsCollection;
-import demetra.tsprovider.grid.GridImport;
 import ec.util.spreadsheet.Book;
 import demetra.tsprovider.grid.GridReader;
 import internal.spreadsheet.SpreadSheetAccessor;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,7 +43,7 @@ public class SheetGrid implements SpreadSheetAccessor {
     private final Book.Factory factory;
 
     @lombok.NonNull
-    private final GridImport options;
+    private final GridReader reader;
 
     @Override
     public Optional<TsCollection> getSheetByName(String name) throws IOException {
@@ -73,8 +74,7 @@ public class SheetGrid implements SpreadSheetAccessor {
     private Optional<TsCollection> getSheetByName(Book book, String name) throws IOException {
         for (int i = 0; i < book.getSheetCount(); i++) {
             if (book.getSheetName(i).equals(name)) {
-                GridReader reader = GridReader.of(options, SheetGridInfo.of(factory));
-                return Optional.of(reader.read(SheetGridInput.of(book.getSheet(i))));
+                return Optional.of(reader.read(SheetGridInput.of(book.getSheet(i), this::isSupportedDataType)));
             }
         }
         return Optional.empty();
@@ -89,11 +89,13 @@ public class SheetGrid implements SpreadSheetAccessor {
     }
 
     private List<TsCollection> getSheets(Book book) throws IOException {
-        GridReader reader = GridReader.of(options, SheetGridInfo.of(factory));
         TsCollection[] result = new TsCollection[book.getSheetCount()];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = reader.read(SheetGridInput.of(book.getSheet(i)));
-        }
+        book.parallelForEach((sheet, index) -> result[index] = reader.read(SheetGridInput.of(sheet, this::isSupportedDataType)));
         return Arrays.asList(result);
+    }
+
+    public boolean isSupportedDataType(Class<?> type) {
+        return (LocalDateTime.class.equals(type) && factory.isSupportedDataType(Date.class))
+                || factory.isSupportedDataType(type);
     }
 }

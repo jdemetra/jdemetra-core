@@ -17,8 +17,6 @@
 package internal.tsprovider.grid;
 
 import demetra.tsprovider.grid.GridInput;
-import demetra.util.Parser;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -33,7 +31,7 @@ import javax.annotation.Nullable;
 public interface InternalValueReader<T> {
 
     @Nullable
-    T read(@Nonnull GridInput grid, int row, int column) throws IOException;
+    T read(@Nonnull GridInput grid, int row, int column);
 
     @Nonnull
     default InternalValueReader<T> or(@Nonnull InternalValueReader<T> fallback) {
@@ -41,7 +39,7 @@ public interface InternalValueReader<T> {
     }
 
     @Nonnull
-    static <X> InternalValueReader<X> onStringParser(@Nonnull Parser<X> parser) {
+    static <X> InternalValueReader<X> onStringParser(@Nonnull Function<String, X> parser) {
         return FuncReader.onStringParser(parser);
     }
 
@@ -89,7 +87,7 @@ public interface InternalValueReader<T> {
     interface FuncReader<T> extends InternalValueReader<T>, Function<Object, T> {
 
         @Override
-        default public T read(GridInput grid, int row, int column) throws IOException {
+        default public T read(GridInput grid, int row, int column) {
             return apply(grid.getValue(row, column));
         }
 
@@ -108,8 +106,8 @@ public interface InternalValueReader<T> {
         static final FuncReader<Number> NUMBER = o -> o instanceof Number ? (Number) o : null;
         static final FuncReader<String> STRING = o -> o instanceof String ? (String) o : null;
 
-        static <T> FuncReader<T> onStringParser(Parser<T> parser) {
-            return o -> o instanceof String ? parser.parse((String) o) : null;
+        static <T> FuncReader<T> onStringParser(Function<String, T> parser) {
+            return o -> o instanceof String ? parser.apply((String) o) : null;
         }
 
         static <T> FuncReader<T> compose(FuncReader<T> main, FuncReader<T> fallback) {

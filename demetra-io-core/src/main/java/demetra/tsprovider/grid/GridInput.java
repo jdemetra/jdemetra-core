@@ -16,7 +16,6 @@
  */
 package demetra.tsprovider.grid;
 
-import java.io.IOException;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,16 +26,17 @@ import javax.annotation.Nullable;
  */
 public interface GridInput {
 
+    boolean isSupportedDataType(@Nonnull Class<?> type);
+
     @Nonnull
     String getName();
 
-    // FIXME: allow read byRow/byColumn
     @Nonnegative
-    int getRowCount() throws IOException;
+    int getRowCount();
 
     @Nonnegative
-    int getColumnCount() throws IOException;
+    int getColumnCount();
 
     @Nullable
-    Object getValue(int row, int column) throws IOException;
+    Object getValue(@Nonnegative int row, @Nonnegative int column);
 }
