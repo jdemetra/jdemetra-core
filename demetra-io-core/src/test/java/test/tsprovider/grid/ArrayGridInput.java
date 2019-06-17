@@ -29,6 +29,11 @@ public final class ArrayGridInput implements GridInput {
     private final Object[][] array;
 
     @Override
+    public boolean isSupportedDataType(Class<?> type) {
+        return true;
+    }
+
+    @Override
     public String getName() {
         return "";
     }
