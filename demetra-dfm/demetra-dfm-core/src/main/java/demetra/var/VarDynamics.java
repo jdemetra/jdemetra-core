@@ -19,7 +19,7 @@ package demetra.var;
 import jdplus.data.DataBlock;
 import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
-import demetra.ssf.ISsfDynamics;
+import jdplus.ssf.ISsfDynamics;
 import jdplus.maths.matrices.FastMatrix;
 
 /**

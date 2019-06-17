@@ -5,7 +5,7 @@
  */
 package demetra.calendars;
 
-import demetra.modelling.regression.RegressionVariableFactory;
+import jdplus.modelling.regression.RegressionVariableFactory;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;

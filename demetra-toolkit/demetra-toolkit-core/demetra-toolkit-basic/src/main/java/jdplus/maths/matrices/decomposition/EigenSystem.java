@@ -19,7 +19,6 @@ package jdplus.maths.matrices.decomposition;
 
 /// <summary>
 import demetra.maths.Complex;
-import jdplus.maths.matrices.decomposition.IEigenSystem;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.MatrixException;
 
@@ -247,9 +246,8 @@ class EigenRoutines {
         for (int l = 0, idxld = n, idxle = 0; l < n; l++, idxld++, idxle++) {
             int iter = 0;
             do {
-                int mm = l + n;
                 int idxd, idxe;
-                for (idxd = n + m, m = l, idxe = m; m < n - 1; m++, idxd++, idxe++, mm++) {
+                for (idxd = n + m, m = l, idxe = m; m < n - 1; m++, idxd++, idxe++) {
                     double dd = Math.abs(ev[idxd]) + Math.abs(ev[idxd + 1]);
                     if (Math.abs(ev[idxe]) + dd == dd) {
                         break;
@@ -331,7 +329,7 @@ class EigenRoutines {
         Complex[] eigenval = new Complex[n];
 
         for (int i = 0; i < n; i++) {
-            for (int j = Math.max(i - 1, 0), idx = j * n + i; j < n; j++, idx += n) {
+            for (int j = Math.max(i - 1, 0); j < n; j++) {
                 anorm += Math.abs(std[j * n + i]);
             }
         }
@@ -795,8 +793,8 @@ class SymmetricEigenSystem implements IEigenSystem {
     private double[] m_ev;
     private CanonicalMatrix m_eivec;
     private boolean m_bCalc;
-    private double m_zero = 1.0e-6;
-    private int m_maxiter = 30;
+    private double m_zero = 1.0e-9;
+    private int m_maxiter = 100;
     private boolean m_bVec;
 }
 

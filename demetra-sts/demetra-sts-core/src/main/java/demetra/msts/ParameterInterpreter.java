@@ -7,7 +7,7 @@ package demetra.msts;
 
 import demetra.data.DoubleSeqCursor;
 import jdplus.maths.functions.IParametersDomain;
-import demetra.ssf.SsfException;
+import jdplus.ssf.SsfException;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;

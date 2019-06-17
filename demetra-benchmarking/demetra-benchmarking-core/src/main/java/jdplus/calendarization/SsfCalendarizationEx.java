@@ -18,11 +18,11 @@ package jdplus.calendarization;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.ssf.ISsfDynamics;
-import demetra.ssf.ISsfInitialization;
-import demetra.ssf.ISsfLoading;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.Ssf;
+import jdplus.ssf.ISsfDynamics;
+import jdplus.ssf.ISsfInitialization;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.univariate.ISsf;
+import jdplus.ssf.univariate.Ssf;
 import java.util.HashSet;
 import javax.annotation.Nonnull;
 import jdplus.maths.matrices.FastMatrix;

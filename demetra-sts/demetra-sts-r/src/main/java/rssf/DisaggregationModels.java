@@ -16,9 +16,9 @@
  */
 package rssf;
 
-import demetra.benchmarking.ssf.SsfDisaggregation;
-import demetra.ssf.SsfComponent;
-import demetra.ssf.univariate.ISsf;
+import jdplus.benchmarking.ssf.SsfDisaggregation;
+import jdplus.ssf.SsfComponent;
+import jdplus.ssf.univariate.ISsf;
 
 /**
  *

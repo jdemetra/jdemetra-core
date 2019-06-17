@@ -19,8 +19,8 @@ package demetra.var;
 import jdplus.data.DataBlock;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
-import demetra.ssf.multivariate.ISsfMeasurements;
-import demetra.ssf.multivariate.MultivariateSsf;
+import jdplus.ssf.multivariate.ISsfMeasurements;
+import jdplus.ssf.multivariate.MultivariateSsf;
 import jdplus.linearsystem.LinearSystemSolver;
 
 /**

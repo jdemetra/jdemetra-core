@@ -14,7 +14,7 @@ import demetra.data.MatrixSerializer;
 import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.msts.CompositeModel;
 import demetra.msts.CompositeModelEstimation;
-import demetra.ssf.implementations.Loading;
+import jdplus.ssf.implementations.Loading;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;

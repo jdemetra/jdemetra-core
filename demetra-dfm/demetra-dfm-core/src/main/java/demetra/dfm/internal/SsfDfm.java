@@ -19,7 +19,7 @@ package demetra.dfm.internal;
 import demetra.dfm.MeasurementDescriptor;
 import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.var.VarDescriptor;
-import demetra.ssf.multivariate.MultivariateSsf;
+import jdplus.ssf.multivariate.MultivariateSsf;
 
 /**
  *

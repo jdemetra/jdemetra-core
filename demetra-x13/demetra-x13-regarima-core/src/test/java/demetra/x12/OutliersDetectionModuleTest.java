@@ -7,11 +7,11 @@ package demetra.x12;
 
 import demetra.x12.OutliersDetectionModuleImpl;
 import demetra.data.Data;
-import demetra.regarima.RegArimaModel;
-import demetra.regarima.RegArimaUtility;
+import jdplus.regarima.RegArimaModel;
+import jdplus.regarima.RegArimaUtility;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
-import demetra.sarima.internal.HannanRissanenInitializer;
+import jdplus.regsarima.internal.HannanRissanenInitializer;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import java.util.List;

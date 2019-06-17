@@ -9,7 +9,7 @@ import demetra.msts.ArInterpreter;
 import demetra.msts.MstsMapping;
 import demetra.msts.VarianceInterpreter;
 import demetra.msts.survey.WaveSpecificSurveyErrors2;
-import demetra.ssf.StateComponent;
+import jdplus.ssf.StateComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

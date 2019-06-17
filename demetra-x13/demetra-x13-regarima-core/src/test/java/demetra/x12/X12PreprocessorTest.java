@@ -19,7 +19,7 @@ package demetra.x12;
 import demetra.regarima.RegArimaSpec;
 import demetra.data.Data;
 import demetra.regarima.OutlierSpec;
-import demetra.regarima.regular.PreprocessingModel;
+import jdplus.regarima.regular.PreprocessingModel;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.modelling.arima.IPreprocessor;

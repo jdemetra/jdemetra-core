@@ -18,12 +18,12 @@ package demetra.sts;
 
 import jdplus.data.DataBlock;
 import jdplus.maths.matrices.SymmetricMatrix;
-import demetra.ssf.ISsfDynamics;
-import demetra.ssf.implementations.Loading;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.Ssf;
-import demetra.ssf.ISsfInitialization;
-import demetra.ssf.SsfComponent;
+import jdplus.ssf.ISsfDynamics;
+import jdplus.ssf.implementations.Loading;
+import jdplus.ssf.univariate.ISsf;
+import jdplus.ssf.univariate.Ssf;
+import jdplus.ssf.ISsfInitialization;
+import jdplus.ssf.SsfComponent;
 import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.FastMatrix;

@@ -6,7 +6,7 @@
 package rssf;
 
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.ssf.ISsfInitialization;
+import jdplus.ssf.ISsfInitialization;
 import demetra.maths.matrices.Matrix;
 
 /**
@@ -21,7 +21,7 @@ public class Initialization {
             throw new IllegalArgumentException();
         }
         
-        return demetra.ssf.Initialization.builder()
+        return jdplus.ssf.Initialization.builder()
                 .dim(P.getRowsCount())
                 .a0(a)
                 .Pf(CanonicalMatrix.of(P))
@@ -35,7 +35,7 @@ public class Initialization {
         if (B == null) {
             throw new IllegalArgumentException();
         }
-        return demetra.ssf.Initialization.builder()
+        return jdplus.ssf.Initialization.builder()
                 .dim(P.getRowsCount())
                 .diffuseDim(B.getColumnsCount())
                 .a0(a)

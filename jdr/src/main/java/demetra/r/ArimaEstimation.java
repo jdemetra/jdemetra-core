@@ -16,14 +16,14 @@
  */
 package demetra.r;
 
-import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.RegArimaModel;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaModel;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
 import demetra.arima.SarimaSpecification;
-import demetra.sarima.RegSarimaProcessor;
+import jdplus.regsarima.RegSarimaProcessor;
 import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.util.IntList;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
-import demetra.modelling.spi.ArimaProcessorUtility;
+import jdplus.modelling.spi.ArimaProcessorUtility;
 import jdplus.maths.matrices.FastMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.sarima.SarimaModel;

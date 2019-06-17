@@ -18,7 +18,7 @@ package demetra.dfm.internal;
 
 import jdplus.data.DataBlock;
 import jdplus.maths.matrices.SymmetricMatrix;
-import demetra.ssf.ISsfInitialization;
+import jdplus.ssf.ISsfInitialization;
 import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.FastMatrix;

@@ -17,11 +17,11 @@
 package demetra.x12;
 
 import demetra.design.Development;
-import demetra.regarima.IRegArimaProcessor;
-import demetra.regarima.outlier.CriticalValueComputer;
-import demetra.sarima.GlsSarimaProcessor;
+import jdplus.regarima.IRegArimaProcessor;
+import jdplus.regarima.outlier.CriticalValueComputer;
+import jdplus.regsarima.GlsSarimaProcessor;
 import jdplus.sarima.SarimaModel;
-import demetra.sarima.internal.HannanRissanenInitializer;
+import jdplus.regsarima.internal.HannanRissanenInitializer;
 import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 
 /**

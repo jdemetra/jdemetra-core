@@ -28,7 +28,7 @@ import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.seasonal.CanovaHansen;
 import jdplus.stats.tests.seasonal.CanovaHansen2;
 import jdplus.stats.tests.seasonal.PeriodicLjungBox;
-import demetra.modelling.regression.PeriodicContrastsFactory;
+import jdplus.modelling.regression.PeriodicContrastsFactory;
 import demetra.data.DoubleSeq;
 
 /**

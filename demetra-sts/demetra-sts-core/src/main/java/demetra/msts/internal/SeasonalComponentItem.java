@@ -8,7 +8,7 @@ package demetra.msts.internal;
 import demetra.msts.ModelItem;
 import demetra.msts.MstsMapping;
 import demetra.msts.VarianceInterpreter;
-import demetra.ssf.SsfComponent;
+import jdplus.ssf.SsfComponent;
 import demetra.sts.SeasonalComponent;
 import demetra.sts.SeasonalModel;
 import java.util.Collections;

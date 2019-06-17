@@ -5,24 +5,24 @@
  */
 package demetra.r;
 
-import demetra.regarima.RegArimaModel;
-import demetra.arima.ssf.SsfArima;
+import jdplus.regarima.RegArimaModel;
+import jdplus.arima.ssf.SsfArima;
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
-import demetra.ssf.ISsfLoading;
-import demetra.ssf.dk.DkToolkit;
-import demetra.ssf.implementations.RegSsf;
-import demetra.ssf.univariate.DefaultSmoothingResults;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.SsfData;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.dk.DkToolkit;
+import jdplus.ssf.implementations.RegSsf;
+import jdplus.ssf.univariate.DefaultSmoothingResults;
+import jdplus.ssf.univariate.ISsf;
+import jdplus.ssf.univariate.SsfData;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
-import demetra.arima.ssf.ExactArimaForecasts;
+import jdplus.arima.ssf.ExactArimaForecasts;
 import demetra.data.DoubleSeq;
 import internal.jdplus.arima.FastArimaForecasts;
 

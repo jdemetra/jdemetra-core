@@ -136,7 +136,7 @@ public final class RationalBackFilter implements IRationalFilter {
 	return rationalFunction.get(-bshift-pos);
     }
 
-    public IntToDoubleFunction weights() {
+    public IntToDoubleFunction asFunction() {
         return pos->weight(pos);
     }
 

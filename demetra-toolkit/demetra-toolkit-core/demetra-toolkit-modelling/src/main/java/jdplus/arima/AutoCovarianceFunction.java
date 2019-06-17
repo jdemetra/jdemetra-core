@@ -23,6 +23,7 @@ import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.Polynomial;
 import internal.jdplus.arima.AutoCovarianceComputers;
+import java.util.function.IntToDoubleFunction;
 
 /**
  * The auto-covariance function provides the auto-covariance of any stationary
@@ -200,5 +201,9 @@ public final class AutoCovarianceFunction {
      */
     public boolean hasBound() {
         return ar.degree() + 1 == 1;
+    }
+    
+    public IntToDoubleFunction asFunction(){
+        return i->get(i);
     }
 }

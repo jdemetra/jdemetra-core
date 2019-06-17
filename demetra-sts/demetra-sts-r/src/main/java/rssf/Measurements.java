@@ -7,12 +7,12 @@ package rssf;
 
 import jdplus.data.DataBlock;
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.ssf.implementations.Loading;
-import demetra.ssf.implementations.TimeInvariantLoading;
-import demetra.ssf.implementations.TimeInvariantMeasurements;
-import demetra.ssf.multivariate.ISsfMeasurements;
-import demetra.ssf.univariate.ISsfMeasurement;
-import demetra.ssf.univariate.Measurement;
+import jdplus.ssf.implementations.Loading;
+import jdplus.ssf.implementations.TimeInvariantLoading;
+import jdplus.ssf.implementations.TimeInvariantMeasurements;
+import jdplus.ssf.multivariate.ISsfMeasurements;
+import jdplus.ssf.univariate.ISsfMeasurement;
+import jdplus.ssf.univariate.Measurement;
 import demetra.maths.matrices.Matrix;
 
 /**

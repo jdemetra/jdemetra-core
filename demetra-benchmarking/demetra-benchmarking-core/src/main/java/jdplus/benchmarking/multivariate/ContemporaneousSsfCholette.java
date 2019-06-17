@@ -19,13 +19,13 @@ package jdplus.benchmarking.multivariate;
 import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.ssf.ISsfDynamics;
-import demetra.ssf.ISsfInitialization;
-import demetra.ssf.ISsfLoading;
-import demetra.ssf.multivariate.IMultivariateSsf;
-import demetra.ssf.multivariate.ISsfErrors;
-import demetra.ssf.multivariate.ISsfMeasurements;
-import demetra.ssf.multivariate.MultivariateSsf;
+import jdplus.ssf.ISsfDynamics;
+import jdplus.ssf.ISsfInitialization;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.multivariate.IMultivariateSsf;
+import jdplus.ssf.multivariate.ISsfErrors;
+import jdplus.ssf.multivariate.ISsfMeasurements;
+import jdplus.ssf.multivariate.MultivariateSsf;
 import jdplus.maths.matrices.FastMatrix;
 
 /**

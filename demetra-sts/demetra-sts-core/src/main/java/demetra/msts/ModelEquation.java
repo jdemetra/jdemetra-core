@@ -5,8 +5,8 @@
  */
 package demetra.msts;
 
-import demetra.ssf.ISsfLoading;
-import demetra.ssf.implementations.MultivariateCompositeSsf;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.implementations.MultivariateCompositeSsf;
 import java.util.ArrayList;
 import java.util.List;
 

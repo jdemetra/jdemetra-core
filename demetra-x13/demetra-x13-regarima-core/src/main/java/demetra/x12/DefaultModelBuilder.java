@@ -6,8 +6,8 @@
 package demetra.x12;
 
 import demetra.information.InformationSet;
-import demetra.regarima.regular.IModelBuilder;
-import demetra.regarima.regular.ModelDescription;
+import jdplus.regarima.regular.IModelBuilder;
+import jdplus.regarima.regular.ModelDescription;
 import demetra.timeseries.TsData;
 
 /**

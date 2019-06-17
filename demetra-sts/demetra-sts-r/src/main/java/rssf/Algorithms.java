@@ -8,16 +8,16 @@ package rssf;
 import demetra.data.DoubleSeq;
 import demetra.msts.CompositeModel;
 import demetra.msts.MstsMonitor;
-import demetra.ssf.StateStorage;
-import demetra.ssf.dk.DefaultDiffuseFilteringResults;
-import demetra.ssf.likelihood.DiffuseLikelihood;
-import demetra.ssf.dk.DkToolkit;
-import demetra.ssf.dk.sqrt.DefaultDiffuseSquareRootFilteringResults;
-import demetra.ssf.implementations.MultivariateCompositeSsf;
-import demetra.ssf.multivariate.IMultivariateSsf;
-import demetra.ssf.multivariate.SsfMatrix;
-import demetra.ssf.univariate.ISsf;
-import demetra.ssf.univariate.SsfData;
+import jdplus.ssf.StateStorage;
+import jdplus.ssf.dk.DefaultDiffuseFilteringResults;
+import jdplus.ssf.likelihood.DiffuseLikelihood;
+import jdplus.ssf.dk.DkToolkit;
+import jdplus.ssf.dk.sqrt.DefaultDiffuseSquareRootFilteringResults;
+import jdplus.ssf.implementations.MultivariateCompositeSsf;
+import jdplus.ssf.multivariate.IMultivariateSsf;
+import jdplus.ssf.multivariate.SsfMatrix;
+import jdplus.ssf.univariate.ISsf;
+import jdplus.ssf.univariate.SsfData;
 import jdplus.maths.matrices.FastMatrix;
 
 /**

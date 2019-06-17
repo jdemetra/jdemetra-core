@@ -19,7 +19,7 @@ package demetra.dfm.internal;
 import jdplus.data.DataBlock;
 import jdplus.data.DataWindow;
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.ssf.ISsfDynamics;
+import jdplus.ssf.ISsfDynamics;
 import jdplus.maths.matrices.FastMatrix;
 
 /**

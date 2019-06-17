@@ -41,7 +41,7 @@ public class LinearModel {
     private boolean meanCorrection;
 
     /**
-     * 
+     * Regression vaiables
      */
     private Matrix X;
     

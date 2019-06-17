@@ -21,7 +21,7 @@ import demetra.design.LombokWorkaround;
 import demetra.modelling.TransformationType;
 import demetra.modelling.regression.RegressionTestType;
 import demetra.modelling.regression.TradingDaysType;
-import demetra.regarima.SarimaSpec;
+import demetra.modelling.regarima.SarimaSpec;
 import demetra.util.Validatable;
 import lombok.NonNull;
 

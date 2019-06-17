@@ -17,8 +17,8 @@
 package demetra.r;
 
 import demetra.descriptors.arima.UcarimaDescriptor;
-import demetra.regarima.RegArimaEstimation;
-import demetra.regarima.RegArimaModel;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
 import demetra.information.InformationMapping;
@@ -29,20 +29,20 @@ import jdplus.maths.functions.ParamValidation;
 import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.maths.linearfilters.BackFilter;
 import static demetra.r.AirlineDecomposition.ucm;
-import demetra.regarima.GlsArimaProcessor;
+import jdplus.regarima.GlsArimaProcessor;
 import jdplus.arima.estimation.IArimaMapping;
-import demetra.ssf.dk.DkToolkit;
-import demetra.ssf.implementations.CompositeSsf;
-import demetra.ssf.univariate.SsfData;
+import jdplus.ssf.dk.DkToolkit;
+import jdplus.ssf.implementations.CompositeSsf;
+import jdplus.ssf.univariate.SsfData;
 import jdplus.ucarima.UcarimaModel;
-import demetra.ucarima.ssf.SsfUcarima;
+import jdplus.ucarima.ssf.SsfUcarima;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.maths.matrices.Matrix;
-import demetra.modelling.spi.ArimaProcessorUtility;
+import jdplus.modelling.spi.ArimaProcessorUtility;
 import jdplus.arima.ArimaModel;
 import jdplus.maths.matrices.FastMatrix;
 
