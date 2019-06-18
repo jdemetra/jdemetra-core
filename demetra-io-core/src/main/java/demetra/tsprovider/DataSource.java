@@ -24,7 +24,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.util.Parser;
 import demetra.util.Formatter;
 import internal.util.SortedMaps;
@@ -52,18 +52,18 @@ public final class DataSource implements IConfig {
     private final SortedMap<String, String> params;
 
     @VisibleForTesting
-    DataSource(@Nonnull String providerName, @Nonnull String version, @Nonnull SortedMap<String, String> params) {
+    DataSource(@NonNull String providerName, @NonNull String version, @NonNull SortedMap<String, String> params) {
         this.providerName = providerName;
         this.version = version;
         this.params = params;
     }
 
-    @Nonnull
+    @NonNull
     public String getProviderName() {
         return providerName;
     }
 
-    @Nonnull
+    @NonNull
     public String getVersion() {
         return version;
     }
@@ -79,34 +79,34 @@ public final class DataSource implements IConfig {
      * @return a non-null builder
      * @since 2.2.0
      */
-    @Nonnull
+    @NonNull
     public Builder toBuilder() {
         return new Builder(providerName, version).putAll(params);
     }
 
-    @Nonnull
-    public static DataSource of(@Nonnull String providerName, @Nonnull String version) {
+    @NonNull
+    public static DataSource of(@NonNull String providerName, @NonNull String version) {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
         return new DataSource(providerName, version, Collections.emptySortedMap());
     }
 
-    @Nonnull
-    public static DataSource of(@Nonnull String providerName, @Nonnull String version, @Nonnull String key, @Nonnull String value) {
+    @NonNull
+    public static DataSource of(@NonNull String providerName, @NonNull String version, @NonNull String key, @NonNull String value) {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
         return new DataSource(providerName, version, SortedMaps.immutableOf(key, value));
     }
 
-    @Nonnull
-    public static DataSource deepCopyOf(@Nonnull String providerName, @Nonnull String version, @Nonnull Map<String, String> params) {
+    @NonNull
+    public static DataSource deepCopyOf(@NonNull String providerName, @NonNull String version, @NonNull Map<String, String> params) {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
         return new DataSource(providerName, version, SortedMaps.immutableCopyOf(params));
     }
 
-    @Nonnull
-    public static Builder builder(@Nonnull String providerName, @Nonnull String version) {
+    @NonNull
+    public static Builder builder(@NonNull String providerName, @NonNull String version) {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
         return new Builder(providerName, version);
@@ -118,7 +118,7 @@ public final class DataSource implements IConfig {
      *
      * @return a DataSource formatter
      */
-    @Nonnull
+    @NonNull
     public static Formatter<DataSource> uriFormatter() {
         return DataSource::formatAsUri;
     }
@@ -129,7 +129,7 @@ public final class DataSource implements IConfig {
      *
      * @return a DataSource parser
      */
-    @Nonnull
+    @NonNull
     public static Parser<DataSource> uriParser() {
         return DataSource::parseAsUri;
     }

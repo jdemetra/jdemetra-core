@@ -19,7 +19,7 @@ package demetra.tsprovider.util;
 import demetra.timeseries.TsException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.util.Parser;
 import java.time.LocalDate;
 
@@ -33,7 +33,7 @@ public class StrangeParsers {
      *
      * @return a new parser
      */
-    @Nonnull
+    @NonNull
     public Parser<LocalDate> yearFreqPosParser() {
         return StrangeParsers::parseYearFreqPos;
     }

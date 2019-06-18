@@ -21,8 +21,8 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Provides utility methods for the {@link File} class;
@@ -38,7 +38,7 @@ public class Files2 {
     }
 
     @Nullable
-    public File getAbsoluteFile(@Nonnull File[] paths, @Nonnull File file) {
+    public File getAbsoluteFile(@NonNull File[] paths, @NonNull File file) {
         if (file.isAbsolute()) {
             return file;
         }
@@ -53,7 +53,7 @@ public class Files2 {
     }
 
     @Nullable
-    public File getRelativeFile(@Nonnull File[] paths, @Nonnull File file) {
+    public File getRelativeFile(@NonNull File[] paths, @NonNull File file) {
         if (!file.isAbsolute()) {
             return file;
         }
@@ -92,7 +92,7 @@ public class Files2 {
      * @return
      */
     @Nullable
-    public File extractFile(@Nonnull String path) {
+    public File extractFile(@NonNull String path) {
         File file = new File(path);
         if (file.isFile()) {
             return file;

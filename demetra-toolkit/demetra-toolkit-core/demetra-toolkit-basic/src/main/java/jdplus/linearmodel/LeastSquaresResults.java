@@ -26,7 +26,7 @@ import jdplus.stats.tests.TestType;
 import demetra.design.BuilderPattern;
 import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.FastMatrix;
@@ -87,7 +87,7 @@ public final class LeastSquaresResults {
         }
     }
 
-    public static Builder builder(@Nonnull DoubleSeq Y, FastMatrix X) {
+    public static Builder builder(@NonNull DoubleSeq Y, FastMatrix X) {
         return new Builder(Y, X);
     }
 

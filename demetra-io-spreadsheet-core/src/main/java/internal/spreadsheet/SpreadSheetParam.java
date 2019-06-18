@@ -28,7 +28,7 @@ import static demetra.tsprovider.util.Params.onObsFormat;
 import static demetra.tsprovider.util.Params.onObsGathering;
 import static demetra.tsprovider.util.Params.onString;
 import java.io.File;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -36,13 +36,13 @@ import javax.annotation.Nonnull;
  */
 public interface SpreadSheetParam extends IParam<DataSource, SpreadSheetBean> {
 
-    @Nonnull
+    @NonNull
     String getVersion();
 
-    @Nonnull
+    @NonNull
     IParam<DataSet, String> getSheetParam(DataSource dataSource);
 
-    @Nonnull
+    @NonNull
     IParam<DataSet, String> getSeriesParam(DataSource dataSource);
 
     public static final class V1 implements SpreadSheetParam {

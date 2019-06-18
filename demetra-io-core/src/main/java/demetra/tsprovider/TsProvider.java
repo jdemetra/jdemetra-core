@@ -17,9 +17,9 @@
 package demetra.tsprovider;
 
 import demetra.design.ServiceDefinition;
+import demetra.design.ThreadSafe;
 import java.io.IOException;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Generic interface for providers of time series.
@@ -39,9 +39,9 @@ public interface TsProvider extends AutoCloseable {
     @Override
     void close();
 
-    TsCollection getTsCollection(@Nonnull TsMoniker moniker, @Nonnull TsInformationType type) throws IOException, IllegalArgumentException;
+    TsCollection getTsCollection(@NonNull TsMoniker moniker, @NonNull TsInformationType type) throws IOException, IllegalArgumentException;
 
-    Ts getTs(@Nonnull TsMoniker moniker, @Nonnull TsInformationType type) throws IOException, IllegalArgumentException;
+    Ts getTs(@NonNull TsMoniker moniker, @NonNull TsInformationType type) throws IOException, IllegalArgumentException;
 
     /**
      * Gets the identifier of the source.
@@ -50,7 +50,7 @@ public interface TsProvider extends AutoCloseable {
      * used as first string in the moniker of a series provided by this
      * provider.
      */
-    @Nonnull
+    @NonNull
     String getSource();
 
     /**

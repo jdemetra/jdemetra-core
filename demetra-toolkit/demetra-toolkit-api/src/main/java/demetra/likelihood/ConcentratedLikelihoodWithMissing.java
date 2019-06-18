@@ -19,7 +19,7 @@ package demetra.likelihood;
 import demetra.design.Immutable;
 import demetra.design.BuilderPattern;
 import demetra.maths.Constants;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.data.DoublesMath;
@@ -237,7 +237,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public DoubleSeq coefficients() {
         return DoubleSeq.of(b, nmissing, b.length - nmissing);
     }
@@ -248,7 +248,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public Matrix unscaledCovariance() {
         if (bvar == null) {
             return Matrix.EMPTY;

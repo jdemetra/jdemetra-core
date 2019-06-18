@@ -26,7 +26,7 @@ import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.random.XorshiftRNG;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.dstats.Distribution;
 import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.random.RandomNumberGenerator;
@@ -94,7 +94,7 @@ public final class ArimaSeriesGenerator {
         return new Builder();
     }
     
-    public static Builder builder(@Nonnull RandomNumberGenerator rng){
+    public static Builder builder(@NonNull RandomNumberGenerator rng){
         return new Builder(rng);
     }
 

@@ -24,7 +24,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.util.Parser;
 import demetra.util.Formatter;
 import internal.util.SortedMaps;
@@ -71,18 +71,18 @@ public final class DataSet implements IConfig {
     private final SortedMap<String, String> params;
 
     @VisibleForTesting
-    DataSet(@Nonnull DataSource dataSource, @Nonnull Kind kind, @Nonnull SortedMap<String, String> params) {
+    DataSet(@NonNull DataSource dataSource, @NonNull Kind kind, @NonNull SortedMap<String, String> params) {
         this.dataSource = dataSource;
         this.kind = kind;
         this.params = params;
     }
 
-    @Nonnull
+    @NonNull
     public DataSource getDataSource() {
         return dataSource;
     }
 
-    @Nonnull
+    @NonNull
     public Kind getKind() {
         return kind;
     }
@@ -99,35 +99,35 @@ public final class DataSet implements IConfig {
      * @return a non-null builder
      * @since 2.2.0
      */
-    @Nonnull
-    public Builder toBuilder(@Nonnull Kind kind) {
+    @NonNull
+    public Builder toBuilder(@NonNull Kind kind) {
         Objects.requireNonNull(kind, "kind");
         return new Builder(dataSource, kind).putAll(params);
     }
 
-    @Nonnull
-    public static DataSet of(@Nonnull DataSource dataSource, @Nonnull Kind kind) {
+    @NonNull
+    public static DataSet of(@NonNull DataSource dataSource, @NonNull Kind kind) {
         Objects.requireNonNull(dataSource, "dataSource");
         Objects.requireNonNull(kind, "kind");
         return new DataSet(dataSource, kind, Collections.emptySortedMap());
     }
 
-    @Nonnull
-    public static DataSet of(@Nonnull DataSource dataSource, @Nonnull Kind kind, @Nonnull String key, @Nonnull String value) {
+    @NonNull
+    public static DataSet of(@NonNull DataSource dataSource, @NonNull Kind kind, @NonNull String key, @NonNull String value) {
         Objects.requireNonNull(dataSource, "dataSource");
         Objects.requireNonNull(kind, "kind");
         return new DataSet(dataSource, kind, SortedMaps.immutableOf(key, value));
     }
 
-    @Nonnull
-    public static DataSet deepCopyOf(@Nonnull DataSource dataSource, @Nonnull Kind kind, @Nonnull Map<String, String> params) {
+    @NonNull
+    public static DataSet deepCopyOf(@NonNull DataSource dataSource, @NonNull Kind kind, @NonNull Map<String, String> params) {
         Objects.requireNonNull(dataSource, "dataSource");
         Objects.requireNonNull(kind, "kind");
         return new DataSet(dataSource, kind, SortedMaps.immutableCopyOf(params));
     }
 
-    @Nonnull
-    public static Builder builder(@Nonnull DataSource dataSource, @Nonnull Kind kind) {
+    @NonNull
+    public static Builder builder(@NonNull DataSource dataSource, @NonNull Kind kind) {
         Objects.requireNonNull(dataSource, "dataSource");
         Objects.requireNonNull(kind, "kind");
         return new Builder(dataSource, kind);
@@ -139,7 +139,7 @@ public final class DataSet implements IConfig {
      *
      * @return a DataSource formatter
      */
-    @Nonnull
+    @NonNull
     public static Formatter<DataSet> uriFormatter() {
         return DataSet::formatAsUri;
     }
@@ -150,7 +150,7 @@ public final class DataSet implements IConfig {
      *
      * @return a DataSource parser
      */
-    @Nonnull
+    @NonNull
     public static Parser<DataSet> uriParser() {
         return DataSet::parseAsUri;
     }

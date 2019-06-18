@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import javax.cache.Cache;
 
 /**
@@ -33,17 +33,17 @@ import javax.cache.Cache;
  */
 public interface SpreadSheetAccessor extends Closeable {
 
-    @Nonnull
-    Optional<TsCollection> getSheetByName(@Nonnull String name) throws IOException;
+    @NonNull
+    Optional<TsCollection> getSheetByName(@NonNull String name) throws IOException;
 
-    @Nonnull
+    @NonNull
     List<String> getSheetNames() throws IOException;
 
-    @Nonnull
+    @NonNull
     List<TsCollection> getSheets() throws IOException;
 
-    @Nonnull
-    default SpreadSheetAccessor withCache(@Nonnull Cache cache) {
+    @NonNull
+    default SpreadSheetAccessor withCache(@NonNull Cache cache) {
         SpreadSheetAccessor delegate = this;
         return new SpreadSheetAccessor() {
             @Override

@@ -18,7 +18,7 @@ package internal.util.sql.adodb;
 
 import java.sql.Types;
 import java.util.Arrays;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -27,8 +27,8 @@ import javax.annotation.Nonnull;
  */
 final class AdoResultSetMetaData extends _ResultSetMetaData {
 
-    @Nonnull
-    static AdoResultSetMetaData of(@Nonnull String[] names, @Nonnull String[] dataTypes) throws IllegalArgumentException {
+    @NonNull
+    static AdoResultSetMetaData of(@NonNull String[] names, @NonNull String[] dataTypes) throws IllegalArgumentException {
         if (names.length != dataTypes.length) {
             throw new IllegalArgumentException(String.format("Invalid data type length: expected '%s', found '%s'", names.length, dataTypes.length));
         }

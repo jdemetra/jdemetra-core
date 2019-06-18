@@ -24,7 +24,7 @@ import java.util.AbstractList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -40,13 +40,13 @@ public final class FluentDom {
         // static class
     }
 
-    @Nonnull
-    public static Stream<Node> asStream(@Nonnull NodeList list) {
+    @NonNull
+    public static Stream<Node> asStream(@NonNull NodeList list) {
         return asList(list).stream();
     }
 
-    @Nonnull
-    public static Stream<Node> asStream(@Nonnull NamedNodeMap map) {
+    @NonNull
+    public static Stream<Node> asStream(@NonNull NamedNodeMap map) {
         return asList(map).stream();
     }
 

@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -36,18 +36,18 @@ import javax.annotation.Nonnull;
 @lombok.Builder(builderClassName = "Builder")
 public final class Substitutor {
 
-    @Nonnull
-    public static Substitutor of(@Nonnull Map<? super String, ? extends Object> mapper) {
+    @NonNull
+    public static Substitutor of(@NonNull Map<? super String, ? extends Object> mapper) {
         return builder().mapper(mapper::get).build();
     }
 
-    @Nonnull
-    public static Substitutor of(@Nonnull Function<? super String, ? extends Object> mapper) {
+    @NonNull
+    public static Substitutor of(@NonNull Function<? super String, ? extends Object> mapper) {
         return builder().mapper(mapper).build();
     }
 
-    @Nonnull
-    public static Substitutor ofBean(@Nonnull Object bean) throws IntrospectionException {
+    @NonNull
+    public static Substitutor ofBean(@NonNull Object bean) throws IntrospectionException {
         return builder().mapper(mapperOfBean(bean)).build();
     }
 
@@ -62,8 +62,8 @@ public final class Substitutor {
     @lombok.Builder.Default
     private String suffix = "}";
 
-    @Nonnull
-    public String replace(@Nonnull CharSequence input) {
+    @NonNull
+    public String replace(@NonNull CharSequence input) {
         Objects.requireNonNull(input);
         if (isBlank(input)) {
             return "";
@@ -78,7 +78,7 @@ public final class Substitutor {
         return result.toString();
     }
 
-    public void replaceInto(@Nonnull CharSequence input, @Nonnull Appendable output) throws IOException {
+    public void replaceInto(@NonNull CharSequence input, @NonNull Appendable output) throws IOException {
         Objects.requireNonNull(input);
         Objects.requireNonNull(output);
         if (isBlank(input)) {
@@ -88,7 +88,7 @@ public final class Substitutor {
         fill(input, output);
     }
 
-    public void replaceInto(@Nonnull CharSequence input, @Nonnull StringBuilder output) {
+    public void replaceInto(@NonNull CharSequence input, @NonNull StringBuilder output) {
         Objects.requireNonNull(input);
         Objects.requireNonNull(output);
         if (isBlank(input)) {
@@ -106,7 +106,7 @@ public final class Substitutor {
         return input.length() < prefix.length() + suffix.length();
     }
 
-    private void fill(@Nonnull CharSequence input, @Nonnull Appendable output) throws IOException {
+    private void fill(@NonNull CharSequence input, @NonNull Appendable output) throws IOException {
         int start = 0;
         int end = 0;
         State state = State.TEXT;

@@ -11,7 +11,7 @@ import demetra.modelling.regression.ModellingContext;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.regarima.RegArimaSpec;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -21,5 +21,5 @@ import javax.annotation.Nonnull;
 @ServiceDefinition
 public interface RegArimaProcessor {
 
-    ProcResults process(@Nonnull TsData series, @Nonnull RegArimaSpec spec, ModellingContext context);
+    ProcResults process(@NonNull TsData series, @NonNull RegArimaSpec spec, ModellingContext context);
 }

@@ -26,7 +26,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TimeSelector;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
-import javax.annotation.Nonnegative;
+import org.checkerframework.checker.index.qual.NonNegative;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.data.DoublesMath;
@@ -87,13 +87,13 @@ public class TsDataToolkit {
         return TsData.of(s.getStart().plus(lag), Doubles.of(s.getValues().fn(lag, fn)));
     }
 
-    public TsData drop(TsData s, @Nonnegative int nbeg, @Nonnegative int nend) {
+    public TsData drop(TsData s, @NonNegative int nbeg, @NonNegative int nend) {
         int len=s.length()-nbeg-nend;
         TsPeriod start = s.getStart().plus(nbeg);
         return TsData.of(start, Doubles.of(s.getValues().extract(nbeg, Math.max(0, len))));
     }
 
-    public TsData extend(TsData s, @Nonnegative int nbeg, @Nonnegative int nend) {
+    public TsData extend(TsData s, @NonNegative int nbeg, @NonNegative int nend) {
         TsPeriod start = s.getStart().plus(-nbeg);
         return TsData.ofInternal(start, s.getValues().extend(nbeg, nend));
     }
@@ -284,11 +284,11 @@ public class TsDataToolkit {
         return TsData.ofInternal(s.getStart(), data);
     }
 
-    public TsData lead(TsData s, @Nonnegative int lead) {
+    public TsData lead(TsData s, @NonNegative int lead) {
         return lead == 0 ? s : TsData.ofInternal(s.getStart().plus(-lead), s.getValues());
     }
 
-    public TsData lag(TsData s, @Nonnegative int lag) {
+    public TsData lag(TsData s, @NonNegative int lag) {
         return lag == 0 ? s : TsData.ofInternal(s.getStart().plus(lag), s.getValues());
     }
 

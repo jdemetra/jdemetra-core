@@ -20,7 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import util.sql.SqlConnectionSupplier;
 
 /**
@@ -31,7 +31,7 @@ import util.sql.SqlConnectionSupplier;
 @lombok.AllArgsConstructor(staticName = "of")
 public final class OdbcConnectionSupplier implements SqlConnectionSupplier {
 
-    @Nonnull
+    @NonNull
     public static OdbcConnectionSupplier ofServiceLoader() {
         for (OdbcConnectionSupplierSpi o : ServiceLoader.load(OdbcConnectionSupplierSpi.class)) {
             if (o.isAvailable()) {
@@ -41,7 +41,7 @@ public final class OdbcConnectionSupplier implements SqlConnectionSupplier {
         return noOp();
     }
 
-    @Nonnull
+    @NonNull
     public static OdbcConnectionSupplier noOp() {
         return new OdbcConnectionSupplier(NoOp.INSTANCE);
     }
@@ -49,7 +49,7 @@ public final class OdbcConnectionSupplier implements SqlConnectionSupplier {
     @lombok.NonNull
     private final OdbcConnectionSupplierSpi spi;
 
-    @Nonnull
+    @NonNull
     @SuppressWarnings("null")
     public String getName() {
         String result;

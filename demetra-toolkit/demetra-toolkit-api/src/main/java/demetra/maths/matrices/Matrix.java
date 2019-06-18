@@ -19,8 +19,8 @@ package demetra.maths.matrices;
 import demetra.data.BaseTable;
 import demetra.design.Development;
 import java.util.stream.DoubleStream;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import java.util.function.DoubleUnaryOperator;
 
@@ -34,7 +34,7 @@ public interface Matrix extends BaseTable<Double> {
     interface Mutable extends Matrix {
 
         @Override
-        DoubleSeq.Mutable row(@Nonnull int irow);
+        DoubleSeq.Mutable row(@NonNull int irow);
 
         @Override
         DoubleSeq.Mutable diagonal();
@@ -43,11 +43,11 @@ public interface Matrix extends BaseTable<Double> {
         DoubleSeq.Mutable subDiagonal(int pos);
 
         @Override
-        DoubleSeq.Mutable column(@Nonnull int icolumn);
+        DoubleSeq.Mutable column(@NonNull int icolumn);
 
         @Override
-        default Matrix.Mutable extract(@Nonnegative final int rstart, @Nonnegative final int nr,
-                @Nonnegative final int cstart, @Nonnegative final int nc) {
+        default Matrix.Mutable extract(@NonNegative final int rstart, @NonNegative final int nr,
+                @NonNegative final int cstart, @NonNegative final int nc) {
             return new LightMutableSubMatrix(this, rstart, nr, cstart, nc);
         }
 
@@ -59,7 +59,7 @@ public interface Matrix extends BaseTable<Double> {
          * @param value
          * @throws IndexOutOfBoundsException
          */
-        void set(@Nonnegative int row, @Nonnegative int column, double value) throws IndexOutOfBoundsException;
+        void set(@NonNegative int row, @NonNegative int column, double value) throws IndexOutOfBoundsException;
 
         void apply(int row, int col, DoubleUnaryOperator fn);
 
@@ -67,18 +67,18 @@ public interface Matrix extends BaseTable<Double> {
             return Matrix.ofInternal(toArray(), getRowsCount(), getColumnsCount());
         }
 
-        static Matrix.Mutable ofInternal(@Nonnull double[] data, @Nonnegative int nrows, @Nonnegative int ncolumns) {
+        static Matrix.Mutable ofInternal(@NonNull double[] data, @NonNegative int nrows, @NonNegative int ncolumns) {
             if (data.length < nrows * ncolumns) {
                 throw new IllegalArgumentException();
             }
             return new LightMutableMatrix(data, nrows, ncolumns);
         }
 
-        static Matrix.Mutable make(@Nonnegative int nrows, @Nonnegative int ncolumns) {
+        static Matrix.Mutable make(@NonNegative int nrows, @NonNegative int ncolumns) {
             return new LightMutableMatrix(new double[nrows * ncolumns], nrows, ncolumns);
         }
 
-        static Matrix.Mutable copyOf(@Nonnull Matrix matrix) {
+        static Matrix.Mutable copyOf(@NonNull Matrix matrix) {
             return new LightMutableMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
         }
 
@@ -86,14 +86,14 @@ public interface Matrix extends BaseTable<Double> {
 
     static Matrix EMPTY = new LightMatrix(null, 0, 0);
 
-    static Matrix ofInternal(@Nonnull double[] data, @Nonnegative int nrows, @Nonnegative int ncolumns) {
+    static Matrix ofInternal(@NonNull double[] data, @NonNegative int nrows, @NonNegative int ncolumns) {
         if (data.length < nrows * ncolumns) {
             throw new IllegalArgumentException();
         }
         return new LightMatrix(data, nrows, ncolumns);
     }
 
-    static Matrix copyOf(@Nonnull Matrix matrix) {
+    static Matrix copyOf(@NonNull Matrix matrix) {
         return new LightMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
     }
 
@@ -104,14 +104,14 @@ public interface Matrix extends BaseTable<Double> {
      * @param column
      * @return
      */
-    double get(@Nonnegative int row, @Nonnegative int column) throws IndexOutOfBoundsException;
+    double get(@NonNegative int row, @NonNegative int column) throws IndexOutOfBoundsException;
 
     /**
      *
      * @param irow
      * @return
      */
-    DoubleSeq row(@Nonnull int irow);
+    DoubleSeq row(@NonNull int irow);
 
     DoubleSeq diagonal();
 
@@ -122,10 +122,10 @@ public interface Matrix extends BaseTable<Double> {
      * @param icolumn
      * @return
      */
-    DoubleSeq column(@Nonnull int icolumn);
+    DoubleSeq column(@NonNull int icolumn);
 
-    default Matrix extract(@Nonnegative final int rstart, @Nonnegative final int nr,
-            @Nonnegative final int cstart, @Nonnegative final int nc) {
+    default Matrix extract(@NonNegative final int rstart, @NonNegative final int nr,
+            @NonNegative final int cstart, @NonNegative final int nc) {
         return new LightSubMatrix(this, rstart, nr, cstart, nc);
     }
 
@@ -138,7 +138,7 @@ public interface Matrix extends BaseTable<Double> {
      * start+size()[. The length of the buffer is not checked (it could be
      * larger than this array.
      */
-    default void copyTo(@Nonnull double[] buffer, @Nonnegative int offset) {
+    default void copyTo(@NonNull double[] buffer, @NonNegative int offset) {
         int pos = offset, nr = getRowsCount(), nc = getColumnsCount();
         for (int c = 0; c < nc; ++c) {
             column(c).copyTo(buffer, pos);
@@ -149,7 +149,7 @@ public interface Matrix extends BaseTable<Double> {
     /**
      * @return @see DoubleStream#toArray()
      */
-    @Nonnull
+    @NonNull
     default double[] toArray() {
         double[] all = new double[size()];
         int pos = 0, nr = getRowsCount(), nc = getColumnsCount();

@@ -26,8 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -45,8 +45,8 @@ public class SqlTable {
      * @see DatabaseMetaData#getTables(java.lang.String, java.lang.String,
      * java.lang.String, java.lang.String[])
      */
-    @Nonnull
-    public static List<SqlTable> allOf(@Nonnull DatabaseMetaData md) throws SQLException {
+    @NonNull
+    public static List<SqlTable> allOf(@NonNull DatabaseMetaData md) throws SQLException {
         return allOf(md, null, null, "%", null);
     }
 
@@ -63,12 +63,12 @@ public class SqlTable {
      * @see DatabaseMetaData#getTables(java.lang.String, java.lang.String,
      * java.lang.String, java.lang.String[])
      */
-    @Nonnull
+    @NonNull
     public static List<SqlTable> allOf(
-            @Nonnull DatabaseMetaData md,
+            @NonNull DatabaseMetaData md,
             @Nullable String catalog,
             @Nullable String schemaPattern,
-            @Nonnull String tableNamePattern,
+            @NonNull String tableNamePattern,
             @Nullable String[] types
     ) throws SQLException {
         try (ResultSet rs = md.getTables(catalog, schemaPattern, tableNamePattern, types)) {
@@ -100,8 +100,8 @@ public class SqlTable {
         return columnNames;
     }
 
-    @Nonnull
-    private static SqlTable fromMap(@Nonnull Map<String, String> map) {
+    @NonNull
+    private static SqlTable fromMap(@NonNull Map<String, String> map) {
         return new SqlTable(
                 get(map, "TABLE_CAT", "TABLE_CATALOG"),
                 get(map, "TABLE_SCHEM", "TABLE_SCHEMA"),
@@ -116,7 +116,7 @@ public class SqlTable {
     }
 
     @Nullable
-    private static String get(@Nonnull Map<String, String> map, String... keys) {
+    private static String get(@NonNull Map<String, String> map, String... keys) {
         for (String key : keys) {
             String result = map.get(key);
             if (result != null) {
@@ -146,7 +146,7 @@ public class SqlTable {
      * table type. Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL
      * TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
      */
-    @Nonnull
+    @NonNull
     private String type;
 
     /**

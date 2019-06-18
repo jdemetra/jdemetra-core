@@ -29,7 +29,7 @@ import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArmaModel;
 import jdplus.leastsquares.QRSolver;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.CanonicalMatrix;
@@ -49,17 +49,17 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
         private ResidualsComputer resComputer = null;
         private RobustStandardDeviationComputer madComputer = RobustStandardDeviationComputer.mad();
 
-        public Builder armaFilter(@Nonnull ArmaFilter filter) {
+        public Builder armaFilter(@NonNull ArmaFilter filter) {
             this.filter = filter;
             return this;
         }
 
-        public Builder robustStandardDeviationComputer(@Nonnull RobustStandardDeviationComputer mad) {
+        public Builder robustStandardDeviationComputer(@NonNull RobustStandardDeviationComputer mad) {
             this.madComputer = mad;
             return this;
         }
 
-        public Builder residualsComputer(@Nonnull ResidualsComputer res) {
+        public Builder residualsComputer(@NonNull ResidualsComputer res) {
             this.resComputer = res;
             return this;
         }
@@ -87,7 +87,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
      * @param computer
      * @param filter
      */
-    private ExactSingleOutlierDetector(@Nonnull RobustStandardDeviationComputer computer, @Nonnull ArmaFilter filter, @Nonnull ResidualsComputer res) {
+    private ExactSingleOutlierDetector(@NonNull RobustStandardDeviationComputer computer, @NonNull ArmaFilter filter, @NonNull ResidualsComputer res) {
         super(computer);
         this.filter = filter;
         resComputer = res;

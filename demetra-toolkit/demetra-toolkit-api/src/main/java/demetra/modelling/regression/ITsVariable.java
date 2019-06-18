@@ -5,7 +5,7 @@
  */
 package demetra.modelling.regression;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Root of all regression variable definition. All definitions must contain
@@ -18,7 +18,7 @@ public interface ITsVariable {
 
     int dim();
 
-    public static int dim(@Nonnull ITsVariable... vars) {
+    public static int dim(@NonNull ITsVariable... vars) {
         int nvars = 0;
         for (int i = 0; i < vars.length; ++i) {
             nvars += vars[i].dim();

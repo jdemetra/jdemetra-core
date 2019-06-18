@@ -25,7 +25,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.maths.matrices.Matrix;
 
 /**
@@ -41,7 +41,7 @@ public class CalendarUtility {
      * @param domain
      * @return
      */
-    public int[] daysCount(@Nonnull TsDomain domain) {
+    public int[] daysCount(@NonNull TsDomain domain) {
         int n = domain.length();
         int[] rslt = new int[n];
         LocalDate[] start = new LocalDate[n + 1]; // id of the first day for each period

@@ -16,12 +16,12 @@
  */
 package demetra.tsprovider;
 
+import demetra.design.ThreadSafe;
 import internal.tsprovider.InternalTsProvider;
 import java.util.List;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Defines the ability to watch a list of data sources. Note that the
@@ -33,14 +33,14 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 public interface HasDataSourceList {
 
-    void reload(@Nonnull DataSource dataSource) throws IllegalArgumentException;
+    void reload(@NonNull DataSource dataSource) throws IllegalArgumentException;
 
     /**
      * Gets the DataSources loaded by this provider.
      *
      * @return a list of DataSources; might be empty but never null.
      */
-    @Nonnull
+    @NonNull
     List<DataSource> getDataSources();
 
     /**
@@ -51,7 +51,7 @@ public interface HasDataSourceList {
      *
      * @param listener
      */
-    void addDataSourceListener(@Nonnull DataSourceListener listener);
+    void addDataSourceListener(@NonNull DataSourceListener listener);
 
     /**
      * Removes a listener from the provider if that listener has been added.
@@ -59,20 +59,20 @@ public interface HasDataSourceList {
      *
      * @param listener
      */
-    void removeDataSourceListener(@Nonnull DataSourceListener listener);
+    void removeDataSourceListener(@NonNull DataSourceListener listener);
 
-    @Nonnull
+    @NonNull
     public static HasDataSourceList of(
-            @Nonnull String providerName,
-            @Nonnull Iterable<DataSource> dataSources,
-            @Nonnull Consumer<? super DataSource> cacheCleaner) {
+            @NonNull String providerName,
+            @NonNull Iterable<DataSource> dataSources,
+            @NonNull Consumer<? super DataSource> cacheCleaner) {
         return new InternalTsProvider.DataSourceListSupport(providerName, dataSources, cacheCleaner);
     }
 
-    @Nonnull
+    @NonNull
     public static HasDataSourceList of(
-            @Nonnull String providerName,
-            @Nonnull Iterable<DataSource> dataSources) {
+            @NonNull String providerName,
+            @NonNull Iterable<DataSource> dataSources) {
         return of(providerName, dataSources, InternalTsProvider.DO_NOTHING);
     }
 }

@@ -39,7 +39,7 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -49,8 +49,8 @@ public interface OdbcParam extends IParam<DataSource, OdbcBean> {
 
     String getVersion();
 
-    @Nonnull
-    IParam<DataSet, CubeId> getIdParam(@Nonnull CubeId root);
+    @NonNull
+    IParam<DataSet, CubeId> getIdParam(@NonNull CubeId root);
 
     static final class V1 implements OdbcParam {
 

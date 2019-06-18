@@ -8,7 +8,7 @@ package demetra.sigex;
 import jdplus.arima.AutoCovarianceFunction;
 import demetra.data.DoubleSeq;
 import jdplus.maths.polynomials.Polynomial;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
  */
 @lombok.experimental.UtilityClass
 public class ARMAauto {
-    DoubleSeq compute(@Nonnull DoubleSeq ar, @Nonnull DoubleSeq ma, int maxlag){
+    DoubleSeq compute(@NonNull DoubleSeq ar, @NonNull DoubleSeq ma, int maxlag){
         double[] dar=new double[1+ar.length()];
         dar[0]=1;
         ar.fn(x->-x).copyTo(dar, 1);

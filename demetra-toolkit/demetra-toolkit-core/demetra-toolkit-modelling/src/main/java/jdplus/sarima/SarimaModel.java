@@ -26,7 +26,7 @@ import demetra.design.Immutable;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.FilterUtility;
 import jdplus.maths.polynomials.Polynomial;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
 import demetra.design.SkipProcessing;
@@ -159,22 +159,22 @@ public final class SarimaModel extends AbstractArimaModel {
             return this;
         }
 
-        public Builder phi(@Nonnull double... val) {
+        public Builder phi(@NonNull double... val) {
             System.arraycopy(val, 0, phi, 0, phi.length);
             return this;
         }
 
-        public Builder bphi(@Nonnull double... val) {
+        public Builder bphi(@NonNull double... val) {
             System.arraycopy(val, 0, bphi, 0, bphi.length);
             return this;
         }
 
-        public Builder theta(@Nonnull double... val) {
+        public Builder theta(@NonNull double... val) {
             System.arraycopy(val, 0, th, 0, th.length);
             return this;
         }
 
-        public Builder btheta(@Nonnull double... val) {
+        public Builder btheta(@NonNull double... val) {
             System.arraycopy(val, 0, bth, 0, bth.length);
             return this;
         }

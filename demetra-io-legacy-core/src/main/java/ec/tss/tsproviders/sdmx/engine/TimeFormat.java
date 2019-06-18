@@ -22,7 +22,7 @@ import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Date;
 import java.util.Locale;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * http://stats.oecd.org/SDMXWS/sdmx.asmx
@@ -85,8 +85,7 @@ public enum TimeFormat {
         return aggregationType;
     }
 
-    @Nonnull
-    public final Parsers.Parser<Date> getParser() {
+    public final Parsers.@NonNull Parser<Date> getParser() {
         switch (this) {
             case P1Y:
                 return onStrictDatePattern("yyyy").or(onStrictDatePattern("yyyy'-01'")).or(onStrictDatePattern("yyyy'-A1'"));
@@ -115,8 +114,8 @@ public enum TimeFormat {
         return Parsers.onStrictDatePattern(datePattern, Locale.ROOT);
     }
 
-    @Nonnull
-    public static TimeFormat parseByFrequencyCodeId(@Nonnull String input) {
+    @NonNull
+    public static TimeFormat parseByFrequencyCodeId(@NonNull String input) {
         switch (input) {
             case "A":
                 return P1Y;
@@ -141,8 +140,8 @@ public enum TimeFormat {
         }
     }
 
-    @Nonnull
-    public static TimeFormat parseByTimeFormat(@Nonnull String input) {
+    @NonNull
+    public static TimeFormat parseByTimeFormat(@NonNull String input) {
         switch (input) {
             case "P1Y":
                 return P1Y;

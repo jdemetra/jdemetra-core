@@ -25,7 +25,7 @@ import jdplus.maths.linearfilters.internal.SymmetricFilterAlgorithms;
 import jdplus.maths.polynomials.Polynomial;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntToDoubleFunction;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.maths.RealPolynomial;
@@ -194,7 +194,7 @@ public final class SymmetricFilter implements IFiniteFilter {
 
     private static final AtomicReference<Decomposer> DEF_DECOMPOSER = new AtomicReference<>(SymmetricFilterAlgorithms.decomposer(null));
 
-    public static void setDefaultDecomposer(@Nonnull Decomposer decomposer) {
+    public static void setDefaultDecomposer(@NonNull Decomposer decomposer) {
         DEF_DECOMPOSER.set(decomposer);
     }
 
@@ -453,7 +453,7 @@ public final class SymmetricFilter implements IFiniteFilter {
 
     private static final AtomicReference<Factorizer> DEF_FACTORIZER = new AtomicReference<>(SymmetricFilterAlgorithms.factorizer());
 
-    public static void setDefaultFactorizer(@Nonnull Factorizer factorizer) {
+    public static void setDefaultFactorizer(@NonNull Factorizer factorizer) {
         DEF_FACTORIZER.set(factorizer);
     }
 

@@ -16,6 +16,7 @@
  */
 package internal.util.sql.adodb;
 
+import demetra.design.ThreadSafe;
 import internal.util.sql.ProcessReader;
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,8 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -62,8 +62,8 @@ final class CScript implements Wsh {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
-    @Nonnull
-    private static Process exec(@Nonnull File script, @Nonnull String... args) throws IOException {
+    @NonNull
+    private static Process exec(@NonNull File script, @NonNull String... args) throws IOException {
         // http://technet.microsoft.com/en-us/library/ff920171.aspx
         String[] result = new String[3 + args.length];
         result[0] = "cscript";
@@ -73,12 +73,12 @@ final class CScript implements Wsh {
         return new ProcessBuilder(result).start();
     }
 
-    private static boolean isValidScript(@Nonnull File script) {
+    private static boolean isValidScript(@NonNull File script) {
         return script.exists() && script.isFile() && script.canRead();
     }
 
-    @Nonnull
-    private static File extractResource(@Nonnull String resourceName, @Nonnull String filePrefix, @Nonnull String fileSuffix) throws IOException {
+    @NonNull
+    private static File extractResource(@NonNull String resourceName, @NonNull String filePrefix, @NonNull String fileSuffix) throws IOException {
         File result = File.createTempFile(filePrefix, fileSuffix);
         result.deleteOnExit();
         try (InputStream in = Wsh.class.getResourceAsStream(resourceName)) {

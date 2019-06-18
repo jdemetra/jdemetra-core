@@ -21,9 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents an identifier of a cube resource such as a time series or a
@@ -44,8 +44,8 @@ public final class CubeId {
      * @return a non-null id
      * @throws IllegalArgumentException if one dimension is null
      */
-    @Nonnull
-    public static CubeId root(@Nonnull String... dimensionIds) throws IllegalArgumentException {
+    @NonNull
+    public static CubeId root(@NonNull String... dimensionIds) throws IllegalArgumentException {
         for (String o : dimensionIds) {
             if (o == null) {
                 throw new IllegalArgumentException("Dimensions cannot be null");
@@ -61,8 +61,8 @@ public final class CubeId {
      * @return a non-null id
      * @throws IllegalArgumentException if one dimension is null
      */
-    @Nonnull
-    public static CubeId root(@Nonnull List<String> dimensionIds) throws IllegalArgumentException {
+    @NonNull
+    public static CubeId root(@NonNull List<String> dimensionIds) throws IllegalArgumentException {
         for (String o : dimensionIds) {
             if (o == null) {
                 throw new IllegalArgumentException("Dimensions cannot be null");
@@ -76,37 +76,37 @@ public final class CubeId {
     private final String[] dimensionIds;
     private final String[] dimensionsValues;
 
-    private CubeId(@Nonnull String[] dimensionIds, @Nonnull String[] dimensionsValues) {
+    private CubeId(@NonNull String[] dimensionIds, @NonNull String[] dimensionsValues) {
         this.dimensionsValues = dimensionsValues;
         this.dimensionIds = dimensionIds;
     }
 
-    @Nonnegative
+    @NonNegative
     public int getLevel() {
         return dimensionsValues.length;
     }
 
-    @Nonnegative
+    @NonNegative
     public int getMaxLevel() {
         return dimensionIds.length;
     }
 
-    @Nonnull
-    public String getDimensionValue(@Nonnegative int index) throws IndexOutOfBoundsException {
+    @NonNull
+    public String getDimensionValue(@NonNegative int index) throws IndexOutOfBoundsException {
         return dimensionsValues[index];
     }
 
-    @Nonnull
+    @NonNull
     public Stream<String> getDimensionValueStream() {
         return Stream.of(dimensionsValues);
     }
 
-    @Nonnull
-    public String getDimensionId(@Nonnegative int index) throws IndexOutOfBoundsException {
+    @NonNull
+    public String getDimensionId(@NonNegative int index) throws IndexOutOfBoundsException {
         return dimensionIds[index];
     }
 
-    @Nonnegative
+    @NonNegative
     public int getDepth() {
         return getMaxLevel() - getLevel();
     }
@@ -123,8 +123,8 @@ public final class CubeId {
         return getMaxLevel() == 0;
     }
 
-    @Nonnull
-    public CubeId child(@Nonnull String[] dimensionValues, @Nonnegative int length) throws IllegalArgumentException {
+    @NonNull
+    public CubeId child(@NonNull String[] dimensionValues, @NonNegative int length) throws IllegalArgumentException {
         Objects.requireNonNull(dimensionValues);
         if (length == 0) {
             return this;
@@ -143,12 +143,12 @@ public final class CubeId {
         return new CubeId(dimensionIds, result);
     }
 
-    @Nonnull
-    public CubeId child(@Nonnull String... dimensionValues) throws IllegalArgumentException {
+    @NonNull
+    public CubeId child(@NonNull String... dimensionValues) throws IllegalArgumentException {
         return child(dimensionValues, dimensionValues.length);
     }
 
-    public boolean isAncestorOf(@Nonnull CubeId input) {
+    public boolean isAncestorOf(@NonNull CubeId input) {
         if (!haveSameDimensions(this, input) || getLevel() >= input.getLevel()) {
             return false;
         }
@@ -186,7 +186,7 @@ public final class CubeId {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    private boolean equals(@Nonnull CubeId that) {
+    private boolean equals(@NonNull CubeId that) {
         // reversed values first to fail fast
         return equalsReversed(dimensionsValues, that.dimensionsValues) && Arrays.equals(dimensionIds, that.dimensionIds);
     }

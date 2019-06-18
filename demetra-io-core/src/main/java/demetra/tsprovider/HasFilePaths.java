@@ -16,13 +16,13 @@
  */
 package demetra.tsprovider;
 
+import demetra.design.ThreadSafe;
 import internal.tsprovider.InternalTsProvider;
 import demetra.io.Files2;
 import java.io.File;
 import java.io.FileNotFoundException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Defines the ability to resolve a relative path by using a list of folders.
@@ -47,7 +47,7 @@ public interface HasFilePaths {
      *
      * @return a non-null list of files
      */
-    @Nonnull
+    @NonNull
     File[] getPaths();
 
     /**
@@ -57,8 +57,8 @@ public interface HasFilePaths {
      * @return a non-null file
      * @throws FileNotFoundException if the path cannot be resolved
      */
-    @Nonnull
-    default File resolveFilePath(@Nonnull File file) throws FileNotFoundException {
+    @NonNull
+    default File resolveFilePath(@NonNull File file) throws FileNotFoundException {
         File result = Files2.getAbsoluteFile(getPaths(), file);
         if (result == null) {
             throw new FileNotFoundException("Relative file '" + file.getPath() + "' outside paths");
@@ -74,7 +74,7 @@ public interface HasFilePaths {
      *
      * @return a non-null instance
      */
-    @Nonnull
+    @NonNull
     static HasFilePaths of() {
         return new InternalTsProvider.FilePathSupport(() -> {
             // do nothing
@@ -87,8 +87,8 @@ public interface HasFilePaths {
      * @param onPathsChange a non-null callback to be notified of paths change
      * @return a non-null instance
      */
-    @Nonnull
-    static HasFilePaths of(@Nonnull Runnable onPathsChange) {
+    @NonNull
+    static HasFilePaths of(@NonNull Runnable onPathsChange) {
         return new InternalTsProvider.FilePathSupport(onPathsChange);
     }
 }

@@ -24,7 +24,7 @@ import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.Ssf;
 import java.util.HashSet;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -56,7 +56,7 @@ public class SsfCalendarization {
      * @param weights The weights of each observation
      * @return 
      */
-    public ISsf of(@Nonnull final int[] starts, final double[] weights){
+    public ISsf of(@NonNull final int[] starts, final double[] weights){
         Data data=new Data(starts, weights);
         return Ssf.of(new Initialization(), new Dynamics(data), new Loading(data));
      }

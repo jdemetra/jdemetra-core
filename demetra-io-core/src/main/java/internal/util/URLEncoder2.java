@@ -21,7 +21,7 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.BitSet;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Drop-in replacement of {@link java.net.URLEncoder} to improve performances
@@ -153,18 +153,18 @@ public final class URLEncoder2 {
      * @see URLDecoder#decode(java.lang.String, java.lang.String)
      * @since 1.4
      */
-    @Nonnull
-    public static String encode(@Nonnull String s, @Nonnull String enc) throws UnsupportedEncodingException {
+    @NonNull
+    public static String encode(@NonNull String s, @NonNull String enc) throws UnsupportedEncodingException {
         return encode(s, Charset.forName(enc));
     }
 
-    @Nonnull
-    public static String encode(@Nonnull String s, @Nonnull Charset charset) {
+    @NonNull
+    public static String encode(@NonNull String s, @NonNull Charset charset) {
         return encode(new StringBuilder(), s, charset).toString();
     }
 
-    @Nonnull
-    public static StringBuilder encode(@Nonnull StringBuilder out, @Nonnull CharSequence s, @Nonnull Charset charset) {
+    @NonNull
+    public static StringBuilder encode(@NonNull StringBuilder out, @NonNull CharSequence s, @NonNull Charset charset) {
 
         CustomCharArrayWriter charArrayWriter = TL.get();
 
@@ -254,8 +254,8 @@ public final class URLEncoder2 {
             count = 0;
         }
 
-        @Nonnull
-        private byte[] getBytes(@Nonnull Charset charset) {
+        @NonNull
+        private byte[] getBytes(@NonNull Charset charset) {
             return new String(buf, 0, count).getBytes(charset);
         }
     }

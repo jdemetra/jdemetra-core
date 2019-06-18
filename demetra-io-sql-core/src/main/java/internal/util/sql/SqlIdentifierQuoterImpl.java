@@ -24,8 +24,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import lombok.AccessLevel;
 import util.sql.SqlIdentifierQuoter;
 import util.sql.SqlKeywords;
@@ -37,8 +37,8 @@ import util.sql.SqlKeywords;
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SqlIdentifierQuoterImpl implements SqlIdentifierQuoter {
 
-    @Nonnull
-    public static SqlIdentifierQuoter of(@Nonnull DatabaseMetaData metaData) throws SQLException {
+    @NonNull
+    public static SqlIdentifierQuoter of(@NonNull DatabaseMetaData metaData) throws SQLException {
         return new SqlIdentifierQuoterImpl(
                 getIdentifierQuoteString(metaData),
                 getSqlKeywords(metaData),
@@ -96,15 +96,15 @@ public final class SqlIdentifierQuoterImpl implements SqlIdentifierQuoter {
     }
 
     @VisibleForTesting
-    @Nonnull
-    static String getIdentifierQuoteString(@Nonnull DatabaseMetaData metaData) throws SQLException {
+    @NonNull
+    static String getIdentifierQuoteString(@NonNull DatabaseMetaData metaData) throws SQLException {
         String identifierQuoteString = metaData.getIdentifierQuoteString();
         return !isIdentifierQuotingSupported(identifierQuoteString) ? "\"" : identifierQuoteString;
     }
 
     @VisibleForTesting
-    @Nonnull
-    static Set<String> getSqlKeywords(@Nonnull DatabaseMetaData metaData) throws SQLException {
+    @NonNull
+    static Set<String> getSqlKeywords(@NonNull DatabaseMetaData metaData) throws SQLException {
         return Stream.concat(splitKeywords(metaData.getSQLKeywords()), SqlKeywords.getSql2003ReservedWords().stream()).collect(Collectors.toSet());
     }
 

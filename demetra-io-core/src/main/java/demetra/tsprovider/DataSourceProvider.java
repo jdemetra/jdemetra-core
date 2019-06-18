@@ -16,8 +16,8 @@
  */
 package demetra.tsprovider;
 
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import demetra.design.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Defines a provider that is used to discover and browse DataSources and
@@ -42,7 +42,7 @@ public interface DataSourceProvider extends TsProvider, HasDataSourceList, HasDa
      *
      * @return a non-empty label.
      */
-    @Nonnull
+    @NonNull
     default String getDisplayName() {
         return getSource();
     }

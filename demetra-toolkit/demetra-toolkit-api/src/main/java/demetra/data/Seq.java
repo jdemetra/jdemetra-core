@@ -25,8 +25,8 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Describes a generic sequence of elements.
@@ -46,7 +46,7 @@ public interface Seq<E> extends BaseSeq, Iterable<E> {
      * @throws IndexOutOfBoundsException if the <tt>index</tt> argument is
      * negative or not less than <tt>length()</tt>
      */
-    E get(@Nonnegative int index) throws IndexOutOfBoundsException;
+    E get(@NonNegative int index) throws IndexOutOfBoundsException;
 
     @Override
     default SeqCursor<E> cursor() {
@@ -68,13 +68,13 @@ public interface Seq<E> extends BaseSeq, Iterable<E> {
         return Spliterators.spliterator(iterator(), length(), 0);
     }
 
-    @Nonnull
+    @NonNull
     default Stream<E> stream() {
         return StreamSupport.stream(spliterator(), false);
     }
 
-    @Nonnull
-    default E[] toArray(@Nonnull IntFunction<E[]> generator) {
+    @NonNull
+    default E[] toArray(@NonNull IntFunction<E[]> generator) {
         return InternalSeq.toArray(this, generator);
     }
 }

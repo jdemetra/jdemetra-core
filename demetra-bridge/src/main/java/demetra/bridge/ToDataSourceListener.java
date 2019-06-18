@@ -19,7 +19,7 @@ package demetra.bridge;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceListener;
 import ec.tss.tsproviders.IDataSourceListener;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -31,22 +31,22 @@ public class ToDataSourceListener implements DataSourceListener {
     private final IDataSourceListener delegate;
 
     @Override
-    public void opened(@Nonnull DataSource dataSource) {
+    public void opened(@NonNull DataSource dataSource) {
         delegate.opened(TsConverter.fromDataSource(dataSource));
     }
 
     @Override
-    public void closed(@Nonnull DataSource dataSource) {
+    public void closed(@NonNull DataSource dataSource) {
         delegate.closed(TsConverter.fromDataSource(dataSource));
     }
 
     @Override
-    public void changed(@Nonnull DataSource dataSource) {
+    public void changed(@NonNull DataSource dataSource) {
         delegate.changed(TsConverter.fromDataSource(dataSource));
     }
 
     @Override
-    public void allClosed(@Nonnull String providerName) {
+    public void allClosed(@NonNull String providerName) {
         delegate.allClosed(providerName);
     }
 

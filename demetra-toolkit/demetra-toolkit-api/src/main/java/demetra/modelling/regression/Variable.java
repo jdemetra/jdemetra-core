@@ -17,7 +17,7 @@
 package demetra.modelling.regression;
 
 import demetra.design.Development;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -36,7 +36,7 @@ public final class Variable {
      * @param name
      * @param prespecified
      */
-    public Variable(@Nonnull final ITsVariable variable, @Nonnull final String name, final boolean prespecified) {
+    public Variable(@NonNull final ITsVariable variable, @NonNull final String name, final boolean prespecified) {
         this.variable = variable;
         this.name = name;
         this.prespecified = prespecified;

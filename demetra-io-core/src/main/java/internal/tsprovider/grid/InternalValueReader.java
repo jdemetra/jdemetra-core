@@ -19,8 +19,8 @@ package internal.tsprovider.grid;
 import demetra.tsprovider.grid.GridInput;
 import java.time.LocalDateTime;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -31,34 +31,34 @@ import javax.annotation.Nullable;
 public interface InternalValueReader<T> {
 
     @Nullable
-    T read(@Nonnull GridInput grid, int row, int column);
+    T read(@NonNull GridInput grid, int row, int column);
 
-    @Nonnull
-    default InternalValueReader<T> or(@Nonnull InternalValueReader<T> fallback) {
+    @NonNull
+    default InternalValueReader<T> or(@NonNull InternalValueReader<T> fallback) {
         return compose(this, fallback);
     }
 
-    @Nonnull
-    static <X> InternalValueReader<X> onStringParser(@Nonnull Function<String, X> parser) {
+    @NonNull
+    static <X> InternalValueReader<X> onStringParser(@NonNull Function<String, X> parser) {
         return FuncReader.onStringParser(parser);
     }
 
-    @Nonnull
+    @NonNull
     static InternalValueReader<LocalDateTime> onDateTime() {
         return FuncReader.DATETIME;
     }
 
-    @Nonnull
+    @NonNull
     static InternalValueReader<Number> onNumber() {
         return FuncReader.NUMBER;
     }
 
-    @Nonnull
+    @NonNull
     static InternalValueReader<String> onString() {
         return FuncReader.STRING;
     }
 
-    @Nonnull
+    @NonNull
     static <T> InternalValueReader<T> onNull() {
         return NullReader.INSTANCE;
     }

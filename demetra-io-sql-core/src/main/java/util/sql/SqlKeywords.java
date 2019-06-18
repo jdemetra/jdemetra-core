@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -38,27 +38,27 @@ public class SqlKeywords {
     private static final Set<String> SQL2003_RESERVED_WORDS = loadWords("Sql2003ReservedWords.txt");
     private static final Set<String> SQL2008_RESERVED_WORDS = loadWords("Sql2008ReservedWords.txt");
 
-    @Nonnull
+    @NonNull
     public static Set<String> getSql92ReservedWords() {
         return SQL92_RESERVED_WORDS;
     }
 
-    @Nonnull
+    @NonNull
     public static Set<String> getSql92NonReservedWords() {
         return SQL92_NON_RESERVED_WORDS;
     }
 
-    @Nonnull
+    @NonNull
     public static Set<String> getSql99ReservedWords() {
         return SQL99_RESERVED_WORDS;
     }
 
-    @Nonnull
+    @NonNull
     public static Set<String> getSql2003ReservedWords() {
         return SQL2003_RESERVED_WORDS;
     }
 
-    @Nonnull
+    @NonNull
     public static Set<String> getSql2008ReservedWords() {
         return SQL2008_RESERVED_WORDS;
     }

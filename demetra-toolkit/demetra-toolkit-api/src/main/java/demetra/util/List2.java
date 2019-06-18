@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -37,8 +37,8 @@ public class List2 {
     @NextJdk(NextJdk.JDK9)
     @ReturnImmutable
     @SafeVarargs
-    @Nonnull
-    public <E> List<E> of​(@Nonnull E... elements) {
+    @NonNull
+    public <E> List<E> of​(@NonNull E... elements) {
         switch (elements.length) {
             case 0:
                 return Collections.emptyList();
@@ -55,8 +55,8 @@ public class List2 {
 
     @NextJdk(NextJdk.JDK10)
     @ReturnImmutable
-    @Nonnull
-    public <E> List<E> copyOf​(@Nonnull Collection<? extends E> coll) {
+    @NonNull
+    public <E> List<E> copyOf​(@NonNull Collection<? extends E> coll) {
         switch (coll.size()) {
             case 0:
                 return Collections.emptyList();
@@ -73,7 +73,7 @@ public class List2 {
 
     @NextJdk(NextJdk.JDK10)
     @ReturnImmutable
-    @Nonnull
+    @NonNull
     public <T> Collector<T, ?, List<T>> toUnmodifiableList() {
         return Collector.of((Supplier<List<T>>) ArrayList::new, List2::accumulate, List2::combine, Collections::unmodifiableList);
     }

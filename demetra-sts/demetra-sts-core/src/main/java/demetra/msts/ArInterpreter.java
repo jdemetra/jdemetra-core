@@ -11,7 +11,7 @@ import jdplus.maths.functions.IParametersDomain;
 import jdplus.maths.functions.ParamValidation;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.sarima.estimation.SarimaMapping;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 
 /**
@@ -25,7 +25,7 @@ public class ArInterpreter implements ParameterInterpreter {
     private boolean fixed;
     private final Domain domain;
 
-    public ArInterpreter(@Nonnull final String name, @Nonnull double[] values, boolean fixed) {
+    public ArInterpreter(@NonNull final String name, @NonNull double[] values, boolean fixed) {
         this.name = name;
         this.values = values;
         this.fixed = fixed;

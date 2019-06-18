@@ -19,7 +19,7 @@ package util.sql;
 import internal.util.sql.SqlIdentifierQuoterImpl;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A class that quotes identifiers in SQL queries.
@@ -29,20 +29,20 @@ import javax.annotation.Nonnull;
 @FunctionalInterface
 public interface SqlIdentifierQuoter {
 
-    @Nonnull
-    String quote(@Nonnull String identifier, boolean force);
+    @NonNull
+    String quote(@NonNull String identifier, boolean force);
 
-    @Nonnull
-    default String quote(@Nonnull String identifier) {
+    @NonNull
+    default String quote(@NonNull String identifier) {
         return quote(identifier, false);
     }
 
-    @Nonnull
-    static SqlIdentifierQuoter of(@Nonnull DatabaseMetaData metaData) throws SQLException {
+    @NonNull
+    static SqlIdentifierQuoter of(@NonNull DatabaseMetaData metaData) throws SQLException {
         return SqlIdentifierQuoterImpl.of(metaData);
     }
 
-    @Nonnull
+    @NonNull
     static SqlIdentifierQuoter noOp() {
         return (o, f) -> o;
     }

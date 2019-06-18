@@ -18,7 +18,7 @@ package util.sql;
 
 import java.sql.SQLException;
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -31,19 +31,19 @@ public interface SqlFunc<T, R> {
 
     R applyWithSql(T t) throws SQLException;
 
-    @Nonnull
-    default <V> SqlFunc<V, R> compose(@Nonnull SqlFunc<? super V, ? extends T> before) {
+    @NonNull
+    default <V> SqlFunc<V, R> compose(@NonNull SqlFunc<? super V, ? extends T> before) {
         Objects.requireNonNull(before);
         return (V v) -> applyWithSql(before.applyWithSql(v));
     }
 
-    @Nonnull
-    default <V> SqlFunc<T, V> andThen(@Nonnull SqlFunc<? super R, ? extends V> after) {
+    @NonNull
+    default <V> SqlFunc<T, V> andThen(@NonNull SqlFunc<? super R, ? extends V> after) {
         Objects.requireNonNull(after);
         return (T t) -> after.applyWithSql(applyWithSql(t));
     }
 
-    @Nonnull
+    @NonNull
     static <T> SqlFunc<T, T> identity() {
         return t -> t;
     }

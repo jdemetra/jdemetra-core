@@ -26,8 +26,8 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
 
 /**
@@ -45,14 +45,14 @@ public final class TsDataTable {
         PRESENT, UNUSED, BEFORE, AFTER, EMPTY;
     }
 
-    @Nonnull
-    public static <X> TsDataTable of(@Nonnull List<X> col, @Nonnull Function<? super X, TsData> toData) {
+    @NonNull
+    public static <X> TsDataTable of(@NonNull List<X> col, @NonNull Function<? super X, TsData> toData) {
         TsDomain domain = computeDomain(col.stream().map(toData).map(TsData::getDomain).filter(o -> !o.isEmpty()).iterator());
         return new TsDataTable(domain, col.stream().map(toData).collect(List2.toUnmodifiableList()));
     }
 
-    @Nonnull
-    public static TsDataTable of(@Nonnull List<TsData> col) {
+    @NonNull
+    public static TsDataTable of(@NonNull List<TsData> col) {
         return of(col, Function.identity());
     }
 
@@ -64,14 +64,14 @@ public final class TsDataTable {
     @lombok.Getter
     private final List<TsData> data;
 
-    @Nonnull
-    public Cursor cursor(@Nonnull DistributionType distribution) {
+    @NonNull
+    public Cursor cursor(@NonNull DistributionType distribution) {
         Objects.requireNonNull(distribution);
         return cursor(i -> distribution);
     }
 
-    @Nonnull
-    public Cursor cursor(@Nonnull IntFunction<DistributionType> distribution) {
+    @NonNull
+    public Cursor cursor(@NonNull IntFunction<DistributionType> distribution) {
         Objects.requireNonNull(distribution);
         return new Cursor(getDistributors(data, distribution));
     }
@@ -97,7 +97,7 @@ public final class TsDataTable {
         @lombok.Getter
         private double value = Double.NaN;
 
-        @Nonnull
+        @NonNull
         public Cursor moveTo(int period, int series) {
             if (period <= -1 || period >= domain.getLength()) {
                 throw new IndexOutOfBoundsException("period");
@@ -143,12 +143,12 @@ public final class TsDataTable {
             return index >= 0 && index < ts.length();
         }
 
-        @Nonnegative
+        @NonNegative
         public int getPeriodCount() {
             return domain.getLength();
         }
 
-        @Nonnegative
+        @NonNegative
         public int getSeriesCount() {
             return data.size();
         }

@@ -34,7 +34,7 @@ import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
 import java.util.List;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
 import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
@@ -54,7 +54,7 @@ public class RegArimaUtility {
      * @param concentratedLikelihood
      * @return
      */
-    public <M extends IArimaModel> DoubleSeq linearizedData(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
+    public <M extends IArimaModel> DoubleSeq linearizedData(@NonNull RegArimaModel<M> model, @NonNull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
         double[] res = model.getY().toArray();
 
         // handle missing values
@@ -78,7 +78,7 @@ public class RegArimaUtility {
         return e;
     }
     
-    public <M extends IArimaModel> DoubleSeq interpolatedData(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
+    public <M extends IArimaModel> DoubleSeq interpolatedData(@NonNull RegArimaModel<M> model, @NonNull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
         int[] missing = model.missing();
         if (missing.length == 0) {
             return model.getY();
@@ -105,8 +105,8 @@ public class RegArimaUtility {
      * @param nvars Number of removed regression variable
      * @return
      */
-    public <M extends IArimaModel> DoubleSeq regressionEffect(@Nonnull RegArimaModel<M> model,
-            @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood, int startPos, int nvars) {
+    public <M extends IArimaModel> DoubleSeq regressionEffect(@NonNull RegArimaModel<M> model,
+            @NonNull ConcentratedLikelihoodWithMissing concentratedLikelihood, int startPos, int nvars) {
         DoubleSeq b = concentratedLikelihood.coefficients();
         DataBlock e = DataBlock.make(model.getObservationsCount());
         if (b.length() > 0) {
@@ -128,7 +128,7 @@ public class RegArimaUtility {
      * @param model
      * @return
      */
-    public <M extends IArimaModel> DoubleSeq olsResiduals(@Nonnull RegArimaModel<M> model) {
+    public <M extends IArimaModel> DoubleSeq olsResiduals(@NonNull RegArimaModel<M> model) {
         LinearModel lm = model.differencedModel().asLinearModel();
         Ols ols = new Ols();
         LeastSquaresResults lsr = ols.compute(lm);
@@ -142,7 +142,7 @@ public class RegArimaUtility {
      * @param concentratedLikelihood
      * @return
      */
-    public <M extends IArimaModel> DoubleSeq fullResiduals(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
+    public <M extends IArimaModel> DoubleSeq fullResiduals(@NonNull RegArimaModel<M> model, @NonNull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
         // compute the residuals...
         if (model.getVariablesCount() == 0) {
             return concentratedLikelihood.e();

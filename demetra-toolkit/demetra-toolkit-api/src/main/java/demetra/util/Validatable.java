@@ -16,7 +16,7 @@
  */
 package demetra.util;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Defines the ability of an object to be self-validated.
@@ -32,7 +32,7 @@ public interface Validatable<T> {
      * @return itself
      * @throws IllegalArgumentException if the object is invalid
      */
-    @Nonnull
+    @NonNull
     T validate() throws IllegalArgumentException;
 
     /**
@@ -48,7 +48,7 @@ public interface Validatable<T> {
          * @return a non-null object
          * @throws IllegalArgumentException
          */
-        @Nonnull
+        @NonNull
         default T build() throws IllegalArgumentException {
             return buildWithoutValidation().validate();
         }
@@ -58,7 +58,7 @@ public interface Validatable<T> {
          *
          * @return a non-null object
          */
-        @Nonnull
+        @NonNull
         T buildWithoutValidation();
     }
 }

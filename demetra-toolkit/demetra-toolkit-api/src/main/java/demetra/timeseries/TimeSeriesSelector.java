@@ -18,7 +18,7 @@ package demetra.timeseries;
 
 import demetra.design.Development;
 import java.time.LocalDateTime;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
 
 /**
@@ -113,7 +113,7 @@ public class TimeSeriesSelector implements Cloneable {
      * @param end The ending day
      * @return
      */
-    public static TimeSeriesSelector between(@Nonnull LocalDateTime start, @Nonnull LocalDateTime end) {
+    public static TimeSeriesSelector between(@NonNull LocalDateTime start, @NonNull LocalDateTime end) {
         return new TimeSeriesSelector(SelectionType.Between, start, end, 0, 0);
     }
 
@@ -147,7 +147,7 @@ public class TimeSeriesSelector implements Cloneable {
      * @param d0 The date for the selection
      * @return
      */
-    public static TimeSeriesSelector from(@Nonnull final LocalDateTime d0) {
+    public static TimeSeriesSelector from(@NonNull final LocalDateTime d0) {
         return new TimeSeriesSelector(SelectionType.From, d0, null, 0, 0);
     }
 

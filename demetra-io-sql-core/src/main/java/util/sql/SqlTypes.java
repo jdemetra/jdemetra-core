@@ -19,7 +19,7 @@ package util.sql;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 public class SqlTypes {
 
     // Get all field in java.sql.Types
-    @Nonnull
+    @NonNull
     public Map<Integer, String> getTypeNames() {
         Map<Integer, String> result = new HashMap<>();
         for (Field field : java.sql.Types.class.getFields()) {
@@ -44,13 +44,11 @@ public class SqlTypes {
         return result;
     }
 
-    @Nonnull
-    public java.util.Date getJavaDate(@Nonnull java.sql.Date date) {
+    public java.util.@NonNull Date getJavaDate(java.sql.@NonNull Date date) {
         return new java.util.Date(date.getTime());
     }
 
-    @Nonnull
-    public java.util.Date getJavaDate(@Nonnull java.sql.Timestamp timestamp) {
+    public java.util.@NonNull Date getJavaDate(java.sql.@NonNull Timestamp timestamp) {
         return new java.util.Date(timestamp.getTime() + (timestamp.getNanos() / 1000000));
     }
 }

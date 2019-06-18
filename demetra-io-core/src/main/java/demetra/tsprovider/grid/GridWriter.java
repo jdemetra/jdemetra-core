@@ -28,7 +28,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
 
 /**
@@ -61,7 +61,7 @@ public final class GridWriter {
         return result;
     }
 
-    public void write(@Nonnull TsCollection col, @Nonnull GridOutput output) {
+    public void write(@NonNull TsCollection col, @NonNull GridOutput output) {
         ValueWriters writers = ValueWriters.of(
                 output::isSupportedDataType,
                 () -> format.dateTimeFormatter()::formatAsString,

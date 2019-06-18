@@ -21,7 +21,7 @@ import demetra.design.Immutable;
 import java.util.ArrayList;
 import jdplus.data.DataBlockIterator;
 import jdplus.maths.matrices.MatrixWindow;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Internal;
 import demetra.data.DoubleSeq;
@@ -49,22 +49,22 @@ public final class LinearModel{
             return this;
         }
 
-        public Builder y(@Nonnull DoubleSeq y) {
+        public Builder y(@NonNull DoubleSeq y) {
             this.y = y.toArray();
             return this;
         }
 
-        public Builder addX(@Nonnull DoubleSeq var) {
+        public Builder addX(@NonNull DoubleSeq var) {
             x.add(var);
             return this;
         }
 
-        public Builder addX(@Nonnull FastMatrix X) {
+        public Builder addX(@NonNull FastMatrix X) {
             X.columns().forEach(col -> x.add(col));
             return this;
         }
 
-        public Builder addX(@Nonnull DoubleSeq... vars) {
+        public Builder addX(@NonNull DoubleSeq... vars) {
             for (DoubleSeq var : vars) {
                 x.add(var);
             }

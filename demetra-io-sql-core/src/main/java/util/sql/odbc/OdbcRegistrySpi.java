@@ -19,7 +19,7 @@ package util.sql.odbc;
 import demetra.design.ServiceDefinition;
 import java.io.IOException;
 import java.util.List;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -28,14 +28,14 @@ import javax.annotation.Nonnull;
 @ServiceDefinition(scope = ServiceDefinition.Scope.FRAMEWORK)
 public interface OdbcRegistrySpi {
 
-    @Nonnull
+    @NonNull
     String getName();
 
     boolean isAvailable();
 
-    @Nonnull
-    List<OdbcDataSource> getDataSources(@Nonnull OdbcDataSource.Type... types) throws IOException;
+    @NonNull
+    List<OdbcDataSource> getDataSources(OdbcDataSource.@NonNull Type... types) throws IOException;
 
-    @Nonnull
+    @NonNull
     List<OdbcDriver> getDrivers() throws IOException;
 }

@@ -17,7 +17,7 @@
 package demetra.data;
 
 import demetra.design.Development;
-import javax.annotation.Nonnegative;
+import org.checkerframework.checker.index.qual.NonNegative;
 
 /**
  *
@@ -32,7 +32,7 @@ public interface BaseTable<E> {
      *
      * @return the number of <code>columns</code>s in this matrix
      */
-    @Nonnegative
+    @NonNegative
     int getColumnsCount();
 
     /**
@@ -40,7 +40,7 @@ public interface BaseTable<E> {
      *
      * @return the number of <code>rows</code>s in this matrix
      */
-    @Nonnegative
+    @NonNegative
     int getRowsCount();
 
     default boolean isEmpty() {

@@ -35,7 +35,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.data.normalizer.DataNormalizer;
 import jdplus.maths.matrices.FastMatrix;
 
@@ -89,14 +89,14 @@ class DisaggregationModelBuilder {
         return this;
     }
 
-    DisaggregationModelBuilder addX(@Nonnull ITsVariable... vars) {
+    DisaggregationModelBuilder addX(@NonNull ITsVariable... vars) {
         for (int i = 0; i < vars.length; ++i) {
             regressors.add(vars[i]);
         }
         return this;
     }
 
-    DisaggregationModelBuilder addX(@Nonnull Collection<ITsVariable> vars) {
+    DisaggregationModelBuilder addX(@NonNull Collection<ITsVariable> vars) {
         regressors.addAll(vars);
         return this;
     }

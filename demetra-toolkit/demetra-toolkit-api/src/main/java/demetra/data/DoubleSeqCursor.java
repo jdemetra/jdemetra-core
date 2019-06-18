@@ -19,8 +19,8 @@ package demetra.data;
 import demetra.design.Development;
 import internal.data.InternalBlockCursors;
 import java.util.function.DoubleUnaryOperator;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Describes a double cursor.
@@ -45,8 +45,8 @@ public interface DoubleSeqCursor extends BaseSeqCursor {
      * @param data The underlying array
      * @return
      */
-    @Nonnull
-    static DoubleSeqCursor of(@Nonnull double[] data) {
+    @NonNull
+    static DoubleSeqCursor of(@NonNull double[] data) {
         return of(data, 0, 1);
     }
 
@@ -59,8 +59,8 @@ public interface DoubleSeqCursor extends BaseSeqCursor {
      * @param inc The increment between two successive items. Can be negative.
      * @return
      */
-    @Nonnull
-    static DoubleSeqCursor of(@Nonnull double[] data, @Nonnegative int pos, int inc) {
+    @NonNull
+    static DoubleSeqCursor of(@NonNull double[] data, @NonNegative int pos, int inc) {
         switch (inc) {
             case 1:
                 return new InternalBlockCursors.BlockP1DoubleSeqCursor(data, pos);

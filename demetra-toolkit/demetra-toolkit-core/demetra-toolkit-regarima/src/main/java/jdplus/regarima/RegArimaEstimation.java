@@ -28,7 +28,7 @@ import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.sarima.SarimaModel;
 import java.util.List;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 
 /**
@@ -59,15 +59,15 @@ public class RegArimaEstimation<M extends IArimaModel> {
 
     int nparams;
 
-    public RegArimaEstimation(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood,
-            @Nonnull LogLikelihoodFunction.Point<RegArimaModel<M>, ConcentratedLikelihoodWithMissing> max) {
+    public RegArimaEstimation(@NonNull RegArimaModel<M> model, @NonNull ConcentratedLikelihoodWithMissing concentratedLikelihood,
+            LogLikelihoodFunction.@NonNull Point<RegArimaModel<M>, ConcentratedLikelihoodWithMissing> max) {
         this.model = model;
         this.concentratedLikelihood = concentratedLikelihood;
         this.max = max;
         this.nparams = max.getParameters().length;
     }
 
-    public RegArimaEstimation(@Nonnull RegArimaModel<M> model, @Nonnull ConcentratedLikelihoodWithMissing concentratedLikelihood,
+    public RegArimaEstimation(@NonNull RegArimaModel<M> model, @NonNull ConcentratedLikelihoodWithMissing concentratedLikelihood,
             int nparams) {
         this.model = model;
         this.concentratedLikelihood = concentratedLikelihood;

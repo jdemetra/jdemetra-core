@@ -18,7 +18,7 @@ package demetra.data;
 
 import internal.data.InternalSeqCursor;
 import java.util.function.UnaryOperator;
-import javax.annotation.Nonnegative;
+import org.checkerframework.checker.index.qual.NonNegative;
 
 /**
  * Describes a writable sequence of elements.
@@ -35,9 +35,9 @@ public interface Vector<E> extends Seq<E> {
      * @param index the index of the value to be modified
      * @param value the specified value
      */
-    void set(@Nonnegative int index, E value) throws IndexOutOfBoundsException;
+    void set(@NonNegative int index, E value) throws IndexOutOfBoundsException;
 
-    default void apply(@Nonnegative int index, UnaryOperator<E> fn) throws IndexOutOfBoundsException {
+    default void apply(@NonNegative int index, UnaryOperator<E> fn) throws IndexOutOfBoundsException {
         set(index, fn.apply(get(index)));
     }
 

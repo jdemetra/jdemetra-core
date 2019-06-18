@@ -18,7 +18,7 @@ package demetra.timeseries;
 
 import demetra.data.Range;
 import java.time.LocalDateTime;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
  */
 public interface TimeSeriesObs<P extends Range<LocalDateTime>> {
 
-    @Nonnull
+    @NonNull
     P getPeriod();
 
     double getValue();

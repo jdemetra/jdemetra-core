@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -35,8 +35,8 @@ import javax.annotation.Nullable;
 @lombok.experimental.UtilityClass
 public class RegCommandWrapper {
 
-    @Nonnull
-    public Map<String, List<RegValue>> query(@Nonnull String key) throws IOException {
+    @NonNull
+    public Map<String, List<RegValue>> query(@NonNull String key) throws IOException {
         try (BufferedReader r = ProcessReader.newReader("reg", "query", key, "/s")) {
             Map<String, List<RegValue>> result = new HashMap<>();
             String line;
@@ -68,7 +68,7 @@ public class RegCommandWrapper {
         private static final Pattern PATTERN = Pattern.compile("^[ ]{4}(.+)[ ]{4}(REG_(?:SZ|MULTI_SZ|EXPAND_SZ|DWORD|QWORD|BINARY|NONE))[ ]{4}(.+)$");
 
         @Nullable
-        public static RegValue parse(@Nonnull CharSequence line) {
+        public static RegValue parse(@NonNull CharSequence line) {
             Matcher m = PATTERN.matcher(line);
             return m.matches() ? new RegValue(m.group(1), m.group(3)) : null;
         }

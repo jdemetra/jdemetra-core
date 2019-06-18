@@ -23,7 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -32,8 +32,8 @@ import javax.annotation.Nonnull;
  */
 final class AdoStatement extends _Statement {
 
-    @Nonnull
-    static AdoStatement of(@Nonnull AdoConnection conn) {
+    @NonNull
+    static AdoStatement of(@NonNull AdoConnection conn) {
         return new AdoStatement(Objects.requireNonNull(conn));
     }
 

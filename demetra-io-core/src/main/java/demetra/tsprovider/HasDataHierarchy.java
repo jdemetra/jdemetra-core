@@ -16,11 +16,11 @@
  */
 package demetra.tsprovider;
 
+import demetra.design.ThreadSafe;
 import internal.tsprovider.InternalTsProvider;
 import java.io.IOException;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Defines the ability to browse a DataSource or a DataSet as a hierarchy. Note
@@ -41,8 +41,8 @@ public interface HasDataHierarchy {
      * provider.
      * @throws IOException if an internal exception prevented data retrieval.
      */
-    @Nonnull
-    List<DataSet> children(@Nonnull DataSource dataSource) throws IllegalArgumentException, IOException;
+    @NonNull
+    List<DataSet> children(@NonNull DataSource dataSource) throws IllegalArgumentException, IOException;
 
     /**
      * Gets the children of the specified DataSet.
@@ -53,11 +53,11 @@ public interface HasDataHierarchy {
      * provider.
      * @throws IOException if an internal exception prevented data retrieval.
      */
-    @Nonnull
-    List<DataSet> children(@Nonnull DataSet parent) throws IllegalArgumentException, IOException;
+    @NonNull
+    List<DataSet> children(@NonNull DataSet parent) throws IllegalArgumentException, IOException;
 
-    @Nonnull
-    static HasDataHierarchy noOp(@Nonnull String providerName) {
+    @NonNull
+    static HasDataHierarchy noOp(@NonNull String providerName) {
         return new InternalTsProvider.NoOpDataHierarchy(providerName);
     }
 }

@@ -16,7 +16,8 @@
  */
 package demetra.tsprovider;
 
-import javax.annotation.concurrent.ThreadSafe;
+import demetra.design.ThreadSafe;
+
 
 /**
  * Defines a provider whose content can be changed programmatically.<br>

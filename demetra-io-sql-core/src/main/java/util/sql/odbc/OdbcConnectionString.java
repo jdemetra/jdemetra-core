@@ -25,10 +25,9 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
-import lombok.NonNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * https://msdn.microsoft.com/en-us/library/system.data.odbc.odbcconnection.connectionstring.aspx
@@ -40,7 +39,7 @@ import lombok.NonNull;
 @lombok.Value
 public class OdbcConnectionString {
 
-    @NonNull
+    @lombok.NonNull
     private final Map<String, String> attributes;
 
     @Nullable
@@ -49,7 +48,7 @@ public class OdbcConnectionString {
     }
 
     @Nullable
-    public String get(@Nonnull String key) {
+    public String get(@NonNull String key) {
         return attributes
                 .entrySet()
                 .stream()
@@ -85,8 +84,8 @@ public class OdbcConnectionString {
         }
     }
 
-    @Nonnull
-    public static OdbcConnectionString parse(@Nonnull CharSequence input) {
+    @NonNull
+    public static OdbcConnectionString parse(@NonNull CharSequence input) {
         OdbcConnectionString.Builder result = OdbcConnectionString.builder();
         Matcher m = KEY_VALUE.matcher(input);
         while (m.find()) {
@@ -95,7 +94,7 @@ public class OdbcConnectionString {
         return result.build();
     }
 
-    @Nonnull
+    @NonNull
     public static Builder builder() {
         return new Builder();
     }
@@ -106,14 +105,14 @@ public class OdbcConnectionString {
         private final LinkedHashSet<String> order = new LinkedHashSet<>();
         private final TreeMap<String, String> attributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-        @Nonnull
-        public Builder with(@Nonnull String key, @Nonnull String value) {
+        @NonNull
+        public Builder with(@NonNull String key, @NonNull String value) {
             order.add(key);
             attributes.put(key, value);
             return this;
         }
 
-        @Nonnull
+        @NonNull
         public OdbcConnectionString build() {
             LinkedHashMap<String, String> result = new LinkedHashMap<>();
             order.forEach(o -> result.put(o, attributes.get(o)));

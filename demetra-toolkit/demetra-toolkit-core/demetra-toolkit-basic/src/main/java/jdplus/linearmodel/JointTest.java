@@ -24,7 +24,7 @@ import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.TestType;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.MatrixFactory;
@@ -77,7 +77,7 @@ public class JointTest {
         return this;
     }
 
-    public JointTest constraints(@Nonnull CanonicalMatrix R, @Nonnull DoubleSeq alpha) {
+    public JointTest constraints(@NonNull CanonicalMatrix R, @NonNull DoubleSeq alpha) {
         if (R.getRowsCount() != alpha.length()) {
             throw new IllegalArgumentException();
         }

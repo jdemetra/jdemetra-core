@@ -16,6 +16,7 @@
  */
 package demetra.tsprovider.cube;
 
+import demetra.design.ThreadSafe;
 import demetra.tsprovider.TsInformationType;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
@@ -35,8 +36,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AllArgsConstructor;
 
 /**
@@ -51,11 +51,11 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
     @ThreadSafe
     public interface Resource {
 
-        @Nonnull
-        CubeAccessor getAccessor(@Nonnull DataSource dataSource) throws IOException;
+        @NonNull
+        CubeAccessor getAccessor(@NonNull DataSource dataSource) throws IOException;
 
-        @Nonnull
-        IParam<DataSet, CubeId> getIdParam(@Nonnull CubeId root) throws IOException;
+        @NonNull
+        IParam<DataSet, CubeId> getIdParam(@NonNull CubeId root) throws IOException;
     }
 
     @lombok.NonNull
@@ -175,13 +175,13 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
     }
     //</editor-fold>
 
-    @Nonnull
-    public static IParam<DataSet, CubeId> idByName(@Nonnull CubeId root) {
+    @NonNull
+    public static IParam<DataSet, CubeId> idByName(@NonNull CubeId root) {
         return new ByNameParam(Objects.requireNonNull(root));
     }
 
-    @Nonnull
-    public static IParam<DataSet, CubeId> idBySeparator(@Nonnull CubeId root, @Nonnull String separator, @Nonnull String name) {
+    @NonNull
+    public static IParam<DataSet, CubeId> idBySeparator(@NonNull CubeId root, @NonNull String separator, @NonNull String name) {
         return new BySeparatorParam(Objects.requireNonNull(separator), Objects.requireNonNull(root), Objects.requireNonNull(name));
     }
 

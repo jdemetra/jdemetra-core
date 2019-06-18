@@ -16,10 +16,10 @@
  */
 package demetra.tsprovider;
 
+import demetra.design.ThreadSafe;
 import internal.tsprovider.InternalTsProvider;
 import demetra.tsprovider.util.IParam;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Defines the ability to convert a DataSource from/to a bean. Note that the
@@ -38,7 +38,7 @@ public interface HasDataSourceBean<T> {
      *
      * @return a non-null bean.
      */
-    @Nonnull
+    @NonNull
     T newBean();
 
     /**
@@ -50,8 +50,8 @@ public interface HasDataSourceBean<T> {
      * @throws IllegalArgumentException if the bean doesn't belong to this
      * provider.
      */
-    @Nonnull
-    DataSource encodeBean(@Nonnull Object bean) throws IllegalArgumentException;
+    @NonNull
+    DataSource encodeBean(@NonNull Object bean) throws IllegalArgumentException;
 
     /**
      * Creates a bean by reading the parameters of the specified DataSource.
@@ -61,8 +61,8 @@ public interface HasDataSourceBean<T> {
      * @throws IllegalArgumentException if the DataSource doesn't belong to this
      * provider.
      */
-    @Nonnull
-    T decodeBean(@Nonnull DataSource dataSource) throws IllegalArgumentException;
+    @NonNull
+    T decodeBean(@NonNull DataSource dataSource) throws IllegalArgumentException;
 
     /**
      * Creates a new instance of HasDataSourceBean using a versioned param.
@@ -73,8 +73,8 @@ public interface HasDataSourceBean<T> {
      * @param version a non-null version
      * @return a non-null instance
      */
-    @Nonnull
-    static <T> HasDataSourceBean<T> of(@Nonnull String providerName, @Nonnull IParam<DataSource, T> param, @Nonnull String version) {
+    @NonNull
+    static <T> HasDataSourceBean<T> of(@NonNull String providerName, @NonNull IParam<DataSource, T> param, @NonNull String version) {
         return new InternalTsProvider.DataSourceBeanSupport(providerName, param, version);
     }
 }

@@ -12,7 +12,7 @@ import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.regarima.RegArimaSpec;
 import demetra.x11.X11Spec;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -22,5 +22,5 @@ import javax.annotation.Nonnull;
 @ServiceDefinition
 public interface X11Processor {
 
-    ProcResults process(@Nonnull TsData series, @Nonnull X11Spec spec, ModellingContext context);
+    ProcResults process(@NonNull TsData series, @NonNull X11Spec spec, ModellingContext context);
 }

@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -37,17 +37,17 @@ import javax.annotation.Nonnull;
 @lombok.experimental.UtilityClass
 public class ServiceLookup {
 
-    @Nonnull
-    public <S> S first(@Nonnull Class<S> type) throws ServiceException {
+    @NonNull
+    public <S> S first(@NonNull Class<S> type) throws ServiceException {
         return loadFirst(type, LOADER, LOGGER);
     }
 
-    @Nonnull
-    public <S> AtomicReference<S> firstMutable(@Nonnull Class<S> type) throws ServiceException {
+    @NonNull
+    public <S> AtomicReference<S> firstMutable(@NonNull Class<S> type) throws ServiceException {
         return new AtomicReference<>(loadFirst(type, LOADER, LOGGER));
     }
 
-    @Nonnull
+    @NonNull
     public <S> Supplier<S> firstDynamic(@lombok.NonNull Class<S> type) throws ServiceException {
         return () -> loadFirst(type, LOADER, LOGGER);
     }

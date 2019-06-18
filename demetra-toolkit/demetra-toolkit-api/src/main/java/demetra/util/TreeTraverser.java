@@ -25,8 +25,8 @@ import java.util.LinkedList;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
 
 /**
@@ -38,10 +38,10 @@ import lombok.AccessLevel;
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TreeTraverser<T> {
 
-    @Nonnull
+    @NonNull
     public static <Z> TreeTraverser<Z> of(
-            @Nonnull Z root,
-            @Nonnull Function<? super Z, ? extends Iterable<? extends Z>> children) {
+            @NonNull Z root,
+            @NonNull Function<? super Z, ? extends Iterable<? extends Z>> children) {
         return new TreeTraverser(root, children);
     }
 
@@ -56,12 +56,12 @@ public final class TreeTraverser<T> {
      *
      * @return
      */
-    @Nonnull
+    @NonNull
     public Iterable<T> breadthFirstIterable() {
         return () -> new BreadthFirstIterator(root, children);
     }
 
-    @Nonnull
+    @NonNull
     public Stream<T> breadthFirstStream() {
         return StreamSupport.stream(breadthFirstIterable().spliterator(), false);
     }
@@ -71,20 +71,20 @@ public final class TreeTraverser<T> {
      *
      * @return
      */
-    @Nonnull
+    @NonNull
     public Iterable<T> depthFirstIterable() {
         return () -> new DepthFirstIterator(root, children);
     }
 
-    @Nonnull
+    @NonNull
     public Stream<T> depthFirstStream() {
         return StreamSupport.stream(depthFirstIterable().spliterator(), false);
     }
 
-    @Nonnull
+    @NonNull
     public String prettyPrintToString(
-            @Nonnegative int maxLevel,
-            @Nonnull Function<? super T, ? extends CharSequence> formatter) {
+            @NonNegative int maxLevel,
+            @NonNull Function<? super T, ? extends CharSequence> formatter) {
         StringBuilder result = new StringBuilder();
         try {
             prettyPrintTo(result, maxLevel, formatter);
@@ -94,11 +94,10 @@ public final class TreeTraverser<T> {
         return result.toString();
     }
 
-    @Nonnull
     public void prettyPrintTo(
-            @Nonnull Appendable appendable,
-            @Nonnegative int maxLevel,
-            @Nonnull Function<? super T, ? extends CharSequence> formatter) throws IOException {
+            @NonNull Appendable appendable,
+            @NonNegative int maxLevel,
+            @NonNull Function<? super T, ? extends CharSequence> formatter) throws IOException {
         appendable.append(formatter.apply(root)).append(System.lineSeparator());
         if (maxLevel > 0) {
             for (Iterator<? extends T> i = children.apply(root).iterator(); i.hasNext();) {
@@ -108,11 +107,11 @@ public final class TreeTraverser<T> {
     }
 
     private void prettyPrintTo(
-            @Nonnull Appendable appendable,
-            @Nonnegative int maxLevel,
-            @Nonnull Function<? super T, ? extends CharSequence> formatter,
-            @Nonnull T node,
-            @Nonnull String prefix,
+            @NonNull Appendable appendable,
+            @NonNegative int maxLevel,
+            @NonNull Function<? super T, ? extends CharSequence> formatter,
+            @NonNull T node,
+            @NonNull String prefix,
             boolean last) throws IOException {
         appendable.append(prefix);
         if (last) {

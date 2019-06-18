@@ -14,7 +14,7 @@ import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.Loading;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -27,7 +27,7 @@ import jdplus.maths.matrices.FastMatrix;
 @lombok.experimental.UtilityClass
 public class SsfAr {
 
-    public SsfComponent of(@Nonnull double[] ar, double var, int nlags) {
+    public SsfComponent of(@NonNull double[] ar, double var, int nlags) {
         return of(ar, var, nlags, false);
     }
 
@@ -38,7 +38,7 @@ public class SsfAr {
      * @param zeroinit Zero initialization. Should be false by default
      * @return
      */
-    public SsfComponent of(@Nonnull double[] ar, double var, int nlags, boolean zeroinit) {
+    public SsfComponent of(@NonNull double[] ar, double var, int nlags, boolean zeroinit) {
         if (ar.length == 0) {
             throw new IllegalArgumentException();
         }

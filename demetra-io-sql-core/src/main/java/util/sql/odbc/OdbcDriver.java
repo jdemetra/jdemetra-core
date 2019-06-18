@@ -20,9 +20,8 @@ import java.io.File;
 import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.regex.Pattern;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import lombok.NonNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * https://docs.microsoft.com/en-us/sql/odbc/reference/install/registry-entries-for-odbc-components
@@ -36,13 +35,13 @@ public class OdbcDriver {
     /**
      * Driver name.
      */
-    @NonNull
+    @lombok.NonNull
     private final String name;
 
     /**
      * ODBC interface conformance level supported by the driver.
      */
-    @NonNull
+    @lombok.NonNull
     private final ApiLevel apiLevel;
 
     /**
@@ -65,14 +64,14 @@ public class OdbcDriver {
      * For file-based drivers, a list of extensions of the files the driver can
      * use.
      */
-    @NonNull
+    @lombok.NonNull
     private final List<String> fileExtensions;
 
     /**
      * Value indicating how a file-based driver directly treats files in a data
      * source.
      */
-    @NonNull
+    @lombok.NonNull
     private final FileUsage fileUsage;
 
     /**
@@ -83,7 +82,7 @@ public class OdbcDriver {
     /**
      * SQL-92 grammar supported by the driver.
      */
-    @NonNull
+    @lombok.NonNull
     private final SqlLevel sqlLevel;
 
     private final int usageCount;
@@ -149,7 +148,7 @@ public class OdbcDriver {
         static final Pattern INPUT_PATTERN = Pattern.compile("(Y|N){3}");
 
         @Nullable
-        public static ConnectFunctions parse(@Nonnull CharSequence input, @Nullable ConnectFunctions defaultValue) {
+        public static ConnectFunctions parse(@NonNull CharSequence input, @NonNull ConnectFunctions defaultValue) {
             return INPUT_PATTERN.matcher(input).matches()
                     ? new ConnectFunctions(input.charAt(0) == 'Y', input.charAt(1) == 'Y', input.charAt(2) == 'Y')
                     : defaultValue;

@@ -19,7 +19,7 @@ package jdplus.tempdisagg.univariate;
 import demetra.design.Development;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -30,20 +30,20 @@ import jdplus.maths.matrices.FastMatrix;
 @lombok.Value
 class DisaggregationModel {
     
-    @Nonnull
+    @NonNull
     TsUnit yUnit;
 
-    @Nonnull
+    @NonNull
     double[] hO;
 
-    @Nonnull
+    @NonNull
     double[] hY;
     /**
      * Y expanded to the high frequency (with missing values). hY corresponds to
      * hDom (domain of the set of the indicators or pre-specified domain when
      * indicators are missing). If necessary it is expanded with missing values.
      */
-    @Nonnull
+    @NonNull
     double[] hEY;
     /**
      * Regression variables. Defined on the high level domain. Could be null

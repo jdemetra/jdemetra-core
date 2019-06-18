@@ -24,8 +24,8 @@ import java.io.PrintStream;
 import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.function.Function;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Utility class that simplify the use of Ts providers.
@@ -37,10 +37,10 @@ import javax.annotation.Nonnull;
 public class TsProviders {
 
     public void prettyPrintTree(
-            @Nonnull DataSourceProvider provider,
-            @Nonnull DataSource dataSource,
-            @Nonnegative int maxLevel,
-            @Nonnull PrintStream printStream,
+            @NonNull DataSourceProvider provider,
+            @NonNull DataSource dataSource,
+            @NonNegative int maxLevel,
+            @NonNull PrintStream printStream,
             boolean displayName) throws IOException {
 
         Function<IConfig, String> formatter = displayName

@@ -29,7 +29,7 @@ import demetra.data.DoubleSeqCursor;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.ISsfLoading;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -103,7 +103,7 @@ public class DiffuseDisturbanceSmoother {
      * them!
      * @return
      */
-    public boolean process(final ISsfData data, @Nonnull IDisturbanceSmoothingResults sresults) {
+    public boolean process(final ISsfData data, @NonNull IDisturbanceSmoothingResults sresults) {
         BaseDiffuseFilteringResults fresults = DkToolkit.sqrtFilter(ssf, data, false);
         // rescale the variances
         return process(data.length(), fresults, sresults);
@@ -118,7 +118,7 @@ public class DiffuseDisturbanceSmoother {
      * them!
      * @return
      */
-    public boolean process(final int endpos, BaseDiffuseFilteringResults results, @Nonnull IDisturbanceSmoothingResults sresults) {
+    public boolean process(final int endpos, BaseDiffuseFilteringResults results, @NonNull IDisturbanceSmoothingResults sresults) {
         frslts = results;
         srslts = sresults;
         initSmoother(ssf);

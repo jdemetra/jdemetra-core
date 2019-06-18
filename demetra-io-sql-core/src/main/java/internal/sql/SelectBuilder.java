@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -43,29 +43,29 @@ public final class SelectBuilder {
     private boolean distinct = false;
     private SqlIdentifierQuoter identifierQuoter = SqlIdentifierQuoter.noOp();
 
-    @Nonnull
+    @NonNull
     public SelectBuilder distinct(boolean distinct) {
         this.distinct = distinct;
         return this;
     }
 
-    @Nonnull
-    public SelectBuilder select(@Nonnull String... select) {
+    @NonNull
+    public SelectBuilder select(@NonNull String... select) {
         return addIfNotNullOrEmpty(this.select, select);
     }
 
-    @Nonnull
-    public SelectBuilder filter(@Nonnull String... filter) {
+    @NonNull
+    public SelectBuilder filter(@NonNull String... filter) {
         return addIfNotNullOrEmpty(this.filter, filter);
     }
 
-    @Nonnull
-    public SelectBuilder orderBy(@Nonnull String... order) {
+    @NonNull
+    public SelectBuilder orderBy(@NonNull String... order) {
         return addIfNotNullOrEmpty(this.order, order);
     }
 
-    @Nonnull
-    public SelectBuilder withQuoter(@Nonnull SqlIdentifierQuoter identifierQuoter) {
+    @NonNull
+    public SelectBuilder withQuoter(@NonNull SqlIdentifierQuoter identifierQuoter) {
         this.identifierQuoter = Objects.requireNonNull(identifierQuoter);
         return this;
     }
@@ -105,8 +105,8 @@ public final class SelectBuilder {
         result.append(select.stream().map(identifierQuoter::quote).collect(COMMA_JOINER));
     }
 
-    @Nonnull
-    private SelectBuilder addIfNotNullOrEmpty(@Nonnull List<String> list, @Nonnull String... values) {
+    @NonNull
+    private SelectBuilder addIfNotNullOrEmpty(@NonNull List<String> list, @NonNull String... values) {
         for (String o : values) {
             if (o != null && !o.isEmpty()) {
                 list.add(o);

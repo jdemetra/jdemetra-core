@@ -23,7 +23,7 @@ import demetra.tsprovider.cube.CubeSupport;
 import demetra.tsprovider.util.IConfig;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.Params;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -33,8 +33,8 @@ interface FakeDbParam extends IParam<DataSource, FakeDbBean> {
 
     String getVersion();
 
-    @Nonnull
-    IParam<DataSet, CubeId> getCubeIdParam(@Nonnull CubeId root);
+    @NonNull
+    IParam<DataSet, CubeId> getCubeIdParam(@NonNull CubeId root);
 
     static final class V1 implements FakeDbParam {
 

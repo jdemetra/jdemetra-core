@@ -20,7 +20,7 @@ import demetra.design.Development;
 import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
 
 /**
@@ -118,7 +118,7 @@ public class TimeSelector implements Cloneable {
      * @param end The ending day
      * @return
      */
-    public static TimeSelector between(@Nonnull LocalDateTime start, @Nonnull LocalDateTime end) {
+    public static TimeSelector between(@NonNull LocalDateTime start, @NonNull LocalDateTime end) {
         return new TimeSelector(SelectionType.Between, start, end, 0, 0);
     }
 
@@ -152,7 +152,7 @@ public class TimeSelector implements Cloneable {
      * @param d0 The date for the selection
      * @return
      */
-    public static TimeSelector from(@Nonnull final LocalDateTime d0) {
+    public static TimeSelector from(@NonNull final LocalDateTime d0) {
         return new TimeSelector(SelectionType.From, d0, null, 0, 0);
     }
 

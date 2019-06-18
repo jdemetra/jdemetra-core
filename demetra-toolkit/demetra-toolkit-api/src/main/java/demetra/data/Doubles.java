@@ -20,8 +20,8 @@ import demetra.design.Immutable;
 import demetra.design.Internal;
 import java.util.function.IntToDoubleFunction;
 import java.util.stream.DoubleStream;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
 
 /**
@@ -42,8 +42,8 @@ public final class Doubles implements DoubleSeq {
         return values;
     }
 
-    @Nonnull
-    public static Doubles of(@Nonnegative int length, @Nonnull IntToDoubleFunction generator) {
+    @NonNull
+    public static Doubles of(@NonNegative int length, @NonNull IntToDoubleFunction generator) {
         double[] values = new double[length];
         for (int i = 0; i < values.length; i++) {
             values[i] = generator.applyAsDouble(i);
@@ -51,31 +51,31 @@ public final class Doubles implements DoubleSeq {
         return new Doubles(values);
     }
 
-    @Nonnull
-    public static Doubles of(@Nonnull DoubleStream stream) {
+    @NonNull
+    public static Doubles of(@NonNull DoubleStream stream) {
         return new Doubles(stream.toArray());
     }
 
-    @Nonnull
-    public static Doubles of(@Nonnull DoubleSeq seq) {
+    @NonNull
+    public static Doubles of(@NonNull DoubleSeq seq) {
         return seq instanceof Doubles
                 ? (Doubles) seq
                 : new Doubles(seq.toArray());
     }
 
-    @Nonnull
-    public static Doubles of(@Nonnull double value) {
+    @NonNull
+    public static Doubles of(@NonNull double value) {
         return new Doubles(new double[]{value});
     }
 
-    @Nonnull
-    public static Doubles of(@Nonnull double[] values) {
+    @NonNull
+    public static Doubles of(@NonNull double[] values) {
         return new Doubles(values.clone());
     }
 
     @Internal
-    @Nonnull
-    public static Doubles ofInternal(@Nonnull double[] safeArray) {
+    @NonNull
+    public static Doubles ofInternal(@NonNull double[] safeArray) {
         return new Doubles(safeArray);
     }
 
