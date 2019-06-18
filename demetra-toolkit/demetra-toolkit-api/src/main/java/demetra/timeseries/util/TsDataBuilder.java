@@ -107,8 +107,7 @@ public interface TsDataBuilder<DATE> {
      *
      * @return a non-null OptionalTsData
      */
-    //FIXME: processor
-    //@NonNull
+    @NonNull
     TsData build();
 
     /**

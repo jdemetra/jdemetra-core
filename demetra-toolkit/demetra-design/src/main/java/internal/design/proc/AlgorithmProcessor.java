@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 National Bank of Belgium
+ * Copyright 2015 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,9 +14,10 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.design;
+package internal.design.proc;
 
-import internal.Processing;
+import static internal.proc.Check.*;
+import internal.proc.Processing;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -33,22 +34,17 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Processor.class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-@SupportedAnnotationTypes("demetra.design.AlgorithmImplementation")
-public final class AlgorithmImplementationProcessor extends AbstractProcessor {
+@SupportedAnnotationTypes("demetra.design.Algorithm")
+public final class AlgorithmProcessor extends AbstractProcessor {
 
-    private final Processing<TypeElement> processing = Processing.<TypeElement>builder().build();
+    private final Processing<TypeElement> processing = Processing
+            .<TypeElement>builder()
+            .check(IS_INTERFACE)
+            .check(IS_PUBLIC)
+            .build();
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         return processing.process(annotations, roundEnv, processingEnv);
     }
-
-//    private void checkElement(TypeElement e) {
-//        AlgorithmImplementation annotation = e.getAnnotation(AlgorithmImplementation.class);
-//        processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, annotation.algorithm().getCanonicalName());
-    // TODO
-//        if (! annotation.algorithm().isAssignableFrom(e.getClass())){
-//            reportError("The algorithm is not implemented in '%s'", e);
-//        }
-//    }
 }
