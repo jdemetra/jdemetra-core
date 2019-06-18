@@ -16,7 +16,6 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Assert;
 import org.junit.Assume;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -107,7 +106,6 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_Msr_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
@@ -126,7 +124,6 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_Msr_Multi() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
@@ -145,7 +142,6 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_Msr_LogAdd() {
         Assume.assumeTrue("This test expects Math#exp(double) to be intrinsified", Math2.isMathExpIntrinsifiedByVM());
 
