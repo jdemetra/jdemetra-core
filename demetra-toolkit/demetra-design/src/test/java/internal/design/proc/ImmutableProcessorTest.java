@@ -14,13 +14,15 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.design;
+package internal.design.proc;
 
+import internal.design.proc.ImmutableProcessor;
 import static _util.ProcessorAssert.assertThat;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import demetra.design.Immutable;
 import javax.lang.model.element.Modifier;
 import org.junit.Test;
 

@@ -14,11 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.design;
+package internal.design.proc;
 
-import internal.Check;
-import internal.Processing;
-import static internal.Processors.*;
+import demetra.design.Immutable;
+import internal.proc.Check;
+import static internal.proc.Check.IS_FINAL;
+import internal.proc.Processing;
+import static internal.proc.Processors.getNonStaticFields;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -26,7 +28,6 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -36,12 +37,15 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Processor.class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-@SupportedAnnotationTypes("demetra.design.BuilderPattern")
-public final class BuilderPatternProcessor extends AbstractProcessor {
+@SupportedAnnotationTypes("demetra.design.Immutable")
+public final class ImmutableProcessor extends AbstractProcessor {
 
     private final Processing<TypeElement> processing = Processing
             .<TypeElement>builder()
-            .check(HAS_BUILD_METHOD)
+            .check(IS_FINAL)
+            .check(ARE_FIELDS_FINAL_OR_LAZY)
+            .check(ARE_FIELDS_PRIVATE)
+            .check(HAS_LAZY_FIELD_IF_LAZY)
             .build();
 
     @Override
@@ -49,16 +53,21 @@ public final class BuilderPatternProcessor extends AbstractProcessor {
         return processing.process(annotations, roundEnv, processingEnv);
     }
 
-    private static final Check<TypeElement> HAS_BUILD_METHOD = Check.of(BuilderPatternProcessor::hasBuildMethod, "Cannot find build method in '%s'");
+    private static final Check<TypeElement> ARE_FIELDS_FINAL_OR_LAZY = Check.of(ImmutableProcessor::areFieldsFinalOrLazy, "Fields of '%s' must be final or lazy");
+    private static final Check<TypeElement> ARE_FIELDS_PRIVATE = Check.of(ImmutableProcessor::areFieldsPrivate, "Fields of '%s' must be private");
+    private static final Check<TypeElement> HAS_LAZY_FIELD_IF_LAZY = Check.of(ImmutableProcessor::hasLazyFieldIfLazy, "'%s' must have at least one lazy field");
 
-    private static boolean hasBuildMethod(TypeElement e) {
-        BuilderPattern annotation = e.getAnnotation(BuilderPattern.class);
-        return e.getEnclosedElements().stream().anyMatch(o -> hasBuildMethodOn(o, annotation));
+    private static boolean areFieldsFinalOrLazy(TypeElement type) {
+        boolean lazy = type.getAnnotation(Immutable.class).lazy();
+        return getNonStaticFields(type).allMatch(field -> Check.isFinal(field) || (lazy && Check.isVolatile(field)));
     }
 
-    private static boolean hasBuildMethodOn(Element e, BuilderPattern annotation) {
-        return isMethodWithName(e, annotation.buildMethodName())
-                && isMethodWithoutParameter(e)
-                && isMethodWithReturnInstanceOf(e, annotation::value);
+    private static boolean areFieldsPrivate(TypeElement type) {
+        return getNonStaticFields(type).allMatch(Check::isPrivate);
+    }
+
+    private static boolean hasLazyFieldIfLazy(TypeElement type) {
+        boolean lazy = type.getAnnotation(Immutable.class).lazy();
+        return !lazy || getNonStaticFields(type).anyMatch(Check::isVolatile);
     }
 }

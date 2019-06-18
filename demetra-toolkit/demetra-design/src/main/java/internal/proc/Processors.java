@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal;
+package internal.proc;
 
 import java.util.Set;
 import java.util.function.Supplier;
