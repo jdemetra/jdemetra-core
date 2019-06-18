@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and
 * limitations under the Licence.
-*/
-
+ */
 package jdplus.maths.matrices.decomposition;
 
 /// <summary>
@@ -150,17 +149,18 @@ class EigenRoutines {
         return ev;
     }
 
-    /// <summary>
-    /// The method reduces a real nonsymmetric square matrix to hessenberg form (i.e.Only the first
-    /// subdiagonal is non-zero). The matrix is transformed using Gaussian Elimination with Pivoting.
-    /// The routine is a transcript in C# of the C++ routine elmhes from Press et al. (2002)
-    /// Numerical Recipes in C++
-    /// The hessenberg matrix is returned in std. The cells belows the first subdiagonal will be set
-    /// to zero.
-    /// </summary>
-    /// <param name="std">In/Out An array of double representing a real non-symmetric matrix</param>
-    /// <param name="n">The number of rows of the matrix represented by std</param>
-    /// <exception cref="TSToolkit.Math.Matrix.NotSquareException">Thrown when the matrix is not square</exception>
+    /**
+     * The method reduces a real nonsymmetric square matrix to hessenberg form
+     * (i.e.Only the first subdiagonal is non-zero). The matrix is transformed
+     * using Gaussian Elimination with Pivoting. The routine is a transcript in
+     * C# of the C++ routine elmhes from Press et al. (2002) Numerical Recipes
+     * in C++ The hessenberg matrix is returned in std. The cells belows the
+     * first subdiagonal will be set to zero.
+     *
+     * @param std In/Out An array of double representing a real non-symmetric
+     * matrix
+     * @param n The number of rows of the matrix represented by std
+     */
     static void hessenberg(double[] std, int n) {
         if (std.length != n * n) {
             throw new MatrixException(MatrixException.SQUARE);
@@ -287,7 +287,6 @@ class EigenRoutines {
                         ev[n + i + 1] = g + p;
                         g = c * r - b;
 
-
                         // eigenvectors
                         if (bVec) {
                             for (int k = 0, idxz = i * n, idxzz = idxz + n; k < n; k++, idxz++, idxzz++) {
@@ -310,15 +309,14 @@ class EigenRoutines {
         }
     }
 
-    /// <summary>
-    /// The method computes the eigenvalues of a matrix in Upper hessenberg form.
-    /// No eigenvectors will be computed.
-    /// </summary>
-    /// <param name="std">An array representing the matrix in Upper hessenberg form</param>
-    /// <param name="n">The number of rows of the hessenberg matrix</param>
-    /// <returns>An array of - possibly - complex eigenvalues</returns>
-    /// <exception cref="TSToolkit.Math.Matrix.NotSquareException">Thrown when std.length != n*n</exception>
-    /// <exception cref="System.NullReferenceException">Thrown when std is null</exception>
+    /**
+     * The method computes the eigenvalues of a matrix in Upper hessenberg form.
+     * No eigenvectors will be computed.
+     *
+     * @param std An array representing the matrix in Upper hessenberg form
+     * @param n The number of rows of the hessenberg matrix
+     * @return An array of - possibly - complex eigenvalues
+     */
     static Complex[] hessenbergQR(double[] std, int n) {
         if (std.length != n * n) {
             throw new MatrixException(MatrixException.SQUARE);
@@ -683,7 +681,6 @@ class SymmetricEigenSystem implements IEigenSystem {
         // the rest of the array is a copy of the subdiagonal matrix
         // the matrix m_eivec contains the cumulative transformations needed to compute the eigenvectors
         // the boolean parameter indicates whether eigenvectors will be computed
-
         EigenRoutines.setMaxIter(m_maxiter);
         double[] data = EigenSystem.convertToArray(m_sm);
         m_ev = EigenRoutines.householder(data, m_sm.getRowsCount(), m_bVec);
@@ -871,19 +868,17 @@ class GeneralEigenSystem implements IEigenSystem {
     public CanonicalMatrix getEigenVectors(int n) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     void calc() {
         if (m_bCalc) {
             return;
         }
-
 
         EigenRoutines.setMaxIter(m_maxiter);
 
         // balance the matrix
         double[] data = EigenSystem.convertToArray(m_std);
         EigenRoutines.balance(data, m_std.getRowsCount());
-
 
         // reduce to upper hessenberg form
         EigenRoutines.hessenberg(data, m_std.getRowsCount());
