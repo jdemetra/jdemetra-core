@@ -42,7 +42,7 @@ public class X11DStep {
 
     public void process(DoubleSequence refSeries, DoubleSequence input, X11Context context) {
         this.refSeries = refSeries;
-        d1 = input;
+        d1(context, input);
         d2(context);
         d4(context);
         d5(context);
@@ -51,6 +51,10 @@ public class X11DStep {
         d8(context);
         d9(context);
         dfinal(context);
+    }
+
+    protected void d1(X11Context context, DoubleSequence input) {
+        d1 = context.remove(this.refSeries, input);
     }
 
     private void d2(X11Context context) {
@@ -73,7 +77,7 @@ public class X11DStep {
         d5 = DefaultSeasonalNormalizer.normalize(d5a, d2drop, context);
     }
 
-    private void d6(X11Context context) {
+    protected void d6(X11Context context) {
         d6 = context.remove(d1, d5);
     }
 
@@ -103,7 +107,7 @@ public class X11DStep {
         }
     }
 
-    private void d8(X11Context context) {
+    protected void d8(X11Context context) {
         d8 = context.remove(refSeries, d7);
     }
 
@@ -133,8 +137,8 @@ public class X11DStep {
         d10bis = processor.process(d9_g_bis, context.getFirstPeriod());
         d10 = DefaultSeasonalNormalizer.normalize(d10bis, 0, context);
 
-        d11bis = context.remove(d1, d10);
-        d11 = context.remove(refSeries, d10);
+        d11bis(context);
+        d11(context);
 
         SymmetricFilter hfilter;
         iCRatio = AutomaticHenderson.calcICR(context, d11bis);
@@ -163,5 +167,13 @@ public class X11DStep {
 
         d13 = context.remove(d11, d12);
 
+    }
+
+    protected void d11(X11Context context) {
+        d11 = context.remove(refSeries, d10);
+    }
+
+    protected void d11bis(X11Context context) {
+        d11bis = context.remove(d1, d10);
     }
 }

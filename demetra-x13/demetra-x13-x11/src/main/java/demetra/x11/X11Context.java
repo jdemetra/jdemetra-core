@@ -110,9 +110,8 @@ public class X11Context {
     public DoubleSequence remove(DoubleSequence l, DoubleSequence r) {
         if (isMultiplicative()) {
             return DoubleSequence.onMapping(l.length(), i -> l.get(i) / r.get(i));
-        } else {
-            return DoubleSequence.onMapping(l.length(), i -> l.get(i) - r.get(i));
         }
+        return DoubleSequence.onMapping(l.length(), i -> l.get(i) - r.get(i));
     }
 
     public DoubleSequence add(DoubleSequence l, DoubleSequence r) {
@@ -211,8 +210,8 @@ public class X11Context {
     }
 
     /**
-     * MSR calculation is just for all periods.
-     * In case of mixed filters and MSR, the MSR defaults will be used.
+     * MSR calculation is just for all periods. In case of mixed filters and
+     * MSR, the MSR defaults will be used.
      */
     public boolean isMSR() {
         for (SeasonalFilterOption option : finalSeasonalFilter) {

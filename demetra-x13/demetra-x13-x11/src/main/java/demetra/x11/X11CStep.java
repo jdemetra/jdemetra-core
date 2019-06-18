@@ -36,7 +36,7 @@ public class X11CStep {
 
     public void process(DoubleSequence refSeries, DoubleSequence input, X11Context context) {
         this.refSeries = refSeries;
-        c1 = input;
+        c1(context, this.refSeries, input);
         c2(context);
         c4(context);
         c5(context);
@@ -44,6 +44,10 @@ public class X11CStep {
         c7(context);
         c9(context);
         cfinal(context);
+    }
+
+    protected void c1(X11Context context, DoubleSequence refSeries1, DoubleSequence input) {
+        c1 = context.remove(refSeries1, input);
     }
 
     private void c2(X11Context context) {
@@ -66,7 +70,7 @@ public class X11CStep {
         c5 = DefaultSeasonalNormalizer.normalize(c5a, c2drop, context);
     }
 
-    private void c6(X11Context context) {
+    protected void c6(X11Context context) {
         c6 = context.remove(c1, c5);
     }
 
@@ -104,7 +108,7 @@ public class X11CStep {
         X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
         c10a = processor.process(c9, context.getFirstPeriod());
         c10 = DefaultSeasonalNormalizer.normalize(c10a, 0, context);
-        c11 = context.remove(refSeries, c10);
+        c11(context);
         c13 = context.remove(c11, c7);
 
         IExtremeValuesCorrector ecorr = context.getExtremeValuesCorrector();
@@ -112,5 +116,9 @@ public class X11CStep {
         ecorr.analyse(c13, context);
         c17 = ecorr.getObservationWeights();
         c20 = ecorr.getCorrectionFactors();
+    }
+
+    protected void c11(X11Context context) {
+        c11 = context.remove(refSeries, c10);
     }
 }

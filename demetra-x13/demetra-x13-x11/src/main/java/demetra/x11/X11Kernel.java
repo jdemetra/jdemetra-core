@@ -50,9 +50,9 @@ public class X11Kernel implements X11.Processor {
         bstep = new X11BStep();
         bstep.process(data, context);
         cstep = new X11CStep();
-        cstep.process(data, context.remove(data, bstep.getB20()), context);
+        cstep.process(data, bstep.getB20(), context);
         dstep = new X11DStep();
-        dstep.process(data, context.remove(data, cstep.getC20()), context);
+        dstep.process(data, cstep.getC20(), context);
         return buildResults(timeSeries.getStart(), spec);
     }
 

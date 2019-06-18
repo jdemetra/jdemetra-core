@@ -272,8 +272,8 @@ public class X11DStepTest {
         X11BStep bStep = new X11BStep();
         X11CStep cStep = new X11CStep();
         bStep.process(b1, context);
-        cStep.process(b1, context.remove(b1, bStep.getB20()), context);
-        instance.process(b1, context.remove(b1, cStep.getC20()), context);
+        cStep.process(b1,bStep.getB20(), context);
+        instance.process(b1, cStep.getC20(), context);
     }
 
     private void testD(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values) {
