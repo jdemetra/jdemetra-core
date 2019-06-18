@@ -25,7 +25,7 @@ public class UcarimaModelTest {
     }
 
     public static void testAirline2(double th, double bth) {
-        for (int period = 10; period <= 250; ++period) {
+        for (int period = 3; period <= 100; period++) {
             System.out.print(period);
             System.out.print('\t');
             UcarimaModel ucm = ucmAirline(period, th, bth);

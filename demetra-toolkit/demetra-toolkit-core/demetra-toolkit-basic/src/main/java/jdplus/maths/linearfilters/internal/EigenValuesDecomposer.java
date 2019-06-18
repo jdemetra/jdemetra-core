@@ -60,16 +60,18 @@ public class EigenValuesDecomposer {
                 w = P.toArray();
                 int n = P.degree();
                 if (n > 0) {
-                    CanonicalMatrix M = CanonicalMatrix.square(n);
-                    M.subDiagonal(1).set(1);
-                    DataBlock row = M.row(n - 1);
+                    CanonicalMatrix M = CanonicalMatrix.square(n+1);
+                    M.subDiagonal(1).drop(0,1).set(1);
+                    DataBlock row = M.row(n - 1).drop(0,1);
                     row.setAY(-1 / w[n], DataBlock.of(w, 0, n));
-
+                    M.set(n,0,1);
                     IEigenSystem es = EigenSystem.create(M, false);
                     Complex[] vals = es.getEigenValues();
                     Complex[] nvals = new Complex[vals.length / 2];
                     for (int i = 0, j = 0; i < vals.length; ++i) {
                         Complex cur = vals[i];
+                        if (cur.equals(Complex.ZERO, 1e-9))
+                            continue;
                         if (cur.abs() > 1) {
                             nvals[j++] = vals[i];
                         }
