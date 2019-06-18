@@ -20,6 +20,7 @@ import static _util.ProcessorAssert.assertThat;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 /**
@@ -30,11 +31,6 @@ public class BuilderPatternProcessorTest {
 
     @Test
     public void testHasBuildMethod() {
-        AnnotationSpec byteBuilder = AnnotationSpec
-                .builder(BuilderPattern.class)
-                .addMember("value", "$T.class", Byte.class)
-                .build();
-
         assertThat(BuilderPatternProcessor.class)
                 .succeedsOn(TypeSpec
                         .classBuilder("testHasBuildMethod1")
@@ -70,4 +66,24 @@ public class BuilderPatternProcessorTest {
                         .build())
                 .withMessageContaining("Cannot find build method");
     }
+
+    @Test
+    public void testBuildMethodWithTypeAnnotation() {
+        assertThat(BuilderPatternProcessor.class)
+                .succeedsOn(TypeSpec
+                        .classBuilder("testBuildMethodWithTypeAnnotation")
+                        .addMethod(MethodSpec
+                                .methodBuilder("build")
+                                .returns(Byte.class)
+                                .addStatement("return 0")
+                                .addAnnotation(NonNull.class)
+                                .build())
+                        .addAnnotation(byteBuilder)
+                        .build());
+    }
+
+    private final AnnotationSpec byteBuilder = AnnotationSpec
+            .builder(BuilderPattern.class)
+            .addMember("value", "$T.class", Byte.class)
+            .build();
 }

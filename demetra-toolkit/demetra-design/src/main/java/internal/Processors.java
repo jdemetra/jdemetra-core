@@ -28,6 +28,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypeException;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.ElementFilter;
@@ -77,7 +78,7 @@ public class Processors {
     }
 
     public boolean isAssignableFrom(TypeMirror from, TypeMirror to) {
-        TypeMirror current = from instanceof TypeVariable ? ((TypeVariable) from).getUpperBound() : from;
+        TypeMirror current = from.getKind().equals(TypeKind.TYPEVAR) ? ((TypeVariable) from).getUpperBound() : from;
         while (current instanceof DeclaredType && !isCompatible(to, current)) {
             current = ((DeclaredType) current).getEnclosingType();
         }
@@ -89,7 +90,7 @@ public class Processors {
             // Generic problem such as:
             // demetra.regarima.internal.RegArmaSsqFunction
             // demetra.regarima.internal.RegArmaSsqFunction<S>
-            return current.toString().startsWith(to.toString());
+            return current.toString().contains(to.toString());
         }
         return to.equals(current);
     }

@@ -53,5 +53,10 @@
             <version>${joor-java-8.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
