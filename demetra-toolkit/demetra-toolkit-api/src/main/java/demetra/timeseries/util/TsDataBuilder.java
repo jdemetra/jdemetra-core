@@ -26,9 +26,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import demetra.design.NotThreadSafe;
 
 /**
  * Builder that collects observations in order to create an OptionalTsData.
@@ -45,7 +45,7 @@ public interface TsDataBuilder<DATE> {
      *
      * @return this builder
      */
-    @Nonnull
+    @NonNull
     TsDataBuilder<DATE> clear();
 
     /**
@@ -59,7 +59,7 @@ public interface TsDataBuilder<DATE> {
      * @param value an optional value
      * @return this builder
      */
-    @Nonnull
+    @NonNull
     TsDataBuilder<DATE> add(@Nullable DATE date, @Nullable Number value);
 
     /**
@@ -73,11 +73,11 @@ public interface TsDataBuilder<DATE> {
      * observation
      * @return this builder
      */
-    @Nonnull
+    @NonNull
     default <X> TsDataBuilder<DATE> add(
             @Nullable X obs,
-            @Nonnull Function<? super X, ? extends DATE> dateFunc,
-            @Nonnull Function<? super X, ? extends Number> valueFunc) {
+            @NonNull Function<? super X, ? extends DATE> dateFunc,
+            @NonNull Function<? super X, ? extends Number> valueFunc) {
         DATE date = dateFunc.apply(obs);
         return TsDataBuilder.this.add(date, date != null ? valueFunc.apply(obs) : null);
     }
@@ -93,11 +93,11 @@ public interface TsDataBuilder<DATE> {
      * observation
      * @return this builder
      */
-    @Nonnull
+    @NonNull
     default <X> TsDataBuilder<DATE> addAll(
-            @Nonnull Stream<X> stream,
-            @Nonnull Function<? super X, ? extends DATE> dateFunc,
-            @Nonnull Function<? super X, ? extends Number> valueFunc) {
+            @NonNull Stream<X> stream,
+            @NonNull Function<? super X, ? extends DATE> dateFunc,
+            @NonNull Function<? super X, ? extends Number> valueFunc) {
         stream.forEach(o -> add(o, dateFunc, valueFunc));
         return this;
     }
@@ -107,7 +107,8 @@ public interface TsDataBuilder<DATE> {
      *
      * @return a non-null OptionalTsData
      */
-    @Nonnull
+    //FIXME: processor
+    //@NonNull
     TsData build();
 
     /**
@@ -119,8 +120,8 @@ public interface TsDataBuilder<DATE> {
      * @param characteristics non-null observations characteristics
      * @return non-null builder
      */
-    @Nonnull
-    static TsDataBuilder<Date> byCalendar(@Nonnull Calendar resource, @Nonnull ObsGathering gathering, @Nonnull ObsCharacteristics... characteristics) {
+    @NonNull
+    static TsDataBuilder<Date> byCalendar(@NonNull Calendar resource, @NonNull ObsGathering gathering, @NonNull ObsCharacteristics... characteristics) {
         return ByLongDataBuilder.fromCalendar(resource, gathering, characteristics);
     }
 
@@ -131,8 +132,8 @@ public interface TsDataBuilder<DATE> {
      * @param characteristics non-null observations characteristics
      * @return non-null builder
      */
-    @Nonnull
-    static TsDataBuilder<LocalDate> byDate(@Nonnull ObsGathering gathering, @Nonnull ObsCharacteristics... characteristics) {
+    @NonNull
+    static TsDataBuilder<LocalDate> byDate(@NonNull ObsGathering gathering, @NonNull ObsCharacteristics... characteristics) {
         return ByLongDataBuilder.fromDate(gathering, characteristics);
     }
 
@@ -143,8 +144,8 @@ public interface TsDataBuilder<DATE> {
      * @param characteristics non-null observations characteristics
      * @return non-null builder
      */
-    @Nonnull
-    static TsDataBuilder<LocalDateTime> byDateTime(@Nonnull ObsGathering gathering, @Nonnull ObsCharacteristics... characteristics) {
+    @NonNull
+    static TsDataBuilder<LocalDateTime> byDateTime(@NonNull ObsGathering gathering, @NonNull ObsCharacteristics... characteristics) {
         return ByObjDataBuilder.fromDateTime(gathering, characteristics);
     }
 }

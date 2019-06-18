@@ -31,7 +31,7 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -47,10 +47,10 @@ class WinOdbcRegistryUtil {
             HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
         }
 
-        boolean keyExists(@Nonnull Root root, @Nonnull String key) throws IOException;
+        boolean keyExists(@NonNull Root root, @NonNull String key) throws IOException;
 
-        @Nonnull
-        Map<String, Object> getValues(@Nonnull Root root, @Nonnull String key) throws IOException;
+        @NonNull
+        Map<String, Object> getValues(@NonNull Root root, @NonNull String key) throws IOException;
     }
 
     private static final String DATA_SOURCES_KEY = "SOFTWARE\\ODBC\\ODBC.INI\\ODBC Data Sources";

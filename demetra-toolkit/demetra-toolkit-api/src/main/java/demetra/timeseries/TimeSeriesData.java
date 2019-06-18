@@ -19,8 +19,8 @@ package demetra.timeseries;
 import demetra.data.Range;
 import java.time.LocalDateTime;
 import java.util.function.ObjDoubleConsumer;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.data.Seq;
 
@@ -37,7 +37,7 @@ public interface TimeSeriesData<P extends Range<LocalDateTime>, O extends TimeSe
      *
      * @return
      */
-    @Nonnull
+    @NonNull
     TimeSeriesDomain<P> getDomain();
 
     /**
@@ -45,25 +45,25 @@ public interface TimeSeriesData<P extends Range<LocalDateTime>, O extends TimeSe
      *
      * @return The content of this time series.
      */
-    @Nonnull
+    @NonNull
     DoubleSeq getValues();
 
-    @Nonnegative
+    @NonNegative
     @Override
     default int length() {
         return getValues().length();
     }
 
-    @Nonnull
-    default P getPeriod(@Nonnegative int index) throws IndexOutOfBoundsException {
+    @NonNull
+    default P getPeriod(@NonNegative int index) throws IndexOutOfBoundsException {
         return getDomain().get(index);
     }
 
-    default double getValue(@Nonnegative int index) throws IndexOutOfBoundsException {
+    default double getValue(@NonNegative int index) throws IndexOutOfBoundsException {
         return getValues().get(index);
     }
 
-    default void forEach(@Nonnull ObjDoubleConsumer<P> consumer) {
+    default void forEach(@NonNull ObjDoubleConsumer<P> consumer) {
         for (int i = 0; i < length(); i++) {
             consumer.accept(getPeriod(i), getValue(i));
         }

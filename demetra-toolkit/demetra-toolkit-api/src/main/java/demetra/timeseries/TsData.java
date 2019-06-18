@@ -24,8 +24,8 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
@@ -73,37 +73,37 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
      * @param values
      * @return
      */
-    @Nonnull
-    public static TsData of(@Nonnull TsPeriod start, @Nonnull Doubles values) {
+    @NonNull
+    public static TsData of(@NonNull TsPeriod start, @NonNull Doubles values) {
         TsDomain domain = TsDomain.of(start, values.length());
         return domain.isEmpty()
                 ? new TsData(domain, values, NO_DATA_CAUSE)
                 : new TsData(domain, values, null);
     }
 
-    @Nonnull
-    public static TsData ofInternal(@Nonnull TsPeriod start, @Nonnull DoubleSeq values) {
+    @NonNull
+    public static TsData ofInternal(@NonNull TsPeriod start, @NonNull DoubleSeq values) {
         TsDomain domain = TsDomain.of(start, values.length());
         return domain.isEmpty()
                 ? new TsData(domain, Doubles.EMPTY, NO_DATA_CAUSE)
                 : new TsData(domain, values, null);
     }
 
-    @Nonnull
-    public static TsData ofInternal(@Nonnull TsPeriod start, @Nonnull double[] values) {
+    @NonNull
+    public static TsData ofInternal(@NonNull TsPeriod start, @NonNull double[] values) {
         TsDomain domain = TsDomain.of(start, values.length);
         return domain.isEmpty()
                 ? new TsData(domain, Doubles.EMPTY, NO_DATA_CAUSE)
                 : new TsData(domain, DoubleSeq.of(values), null);
     }
 
-    @Nonnull
-    public static TsData empty(@Nonnull TsPeriod start, @Nonnull String cause) {
+    @NonNull
+    public static TsData empty(@NonNull TsPeriod start, @NonNull String cause) {
         return new TsData(TsDomain.of(start, 0), Doubles.EMPTY, Objects.requireNonNull(cause));
     }
 
-    @Nonnull
-    public static TsData empty(@Nonnull String cause) {
+    @NonNull
+    public static TsData empty(@NonNull String cause) {
         return new TsData(TsDomain.of(TsPeriod.of(TsUnit.YEAR, 0), 0), Doubles.EMPTY, Objects.requireNonNull(cause));
     }
 
@@ -175,7 +175,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
         return TsData.ofInternal(getStart(), values.toArray());
     }
 
-    public TsData fastFn(@Nonnull TsData right, DoubleBinaryOperator fn) {
+    public TsData fastFn(@NonNull TsData right, DoubleBinaryOperator fn) {
         TsDomain rDomain = right.getDomain();
         TsDomain iDomain = domain.intersection(rDomain);
         if (iDomain == null) {
@@ -210,13 +210,13 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
         return TsData.of(getStart().plus(lag), Doubles.of(values.fn(lag, fn)));
     }
 
-    public TsData drop(@Nonnegative int nbeg, @Nonnegative int nend) {
+    public TsData drop(@NonNegative int nbeg, @NonNegative int nend) {
         int len = length() - nbeg - nend;
         TsPeriod start = getStart().plus(nbeg);
         return TsData.of(start, Doubles.of(values.extract(nbeg, Math.max(0, len))));
     }
 
-    public TsData extend(@Nonnegative int nbeg, @Nonnegative int nend) {
+    public TsData extend(@NonNegative int nbeg, @NonNegative int nend) {
         TsPeriod start = getStart().plus(-nbeg);
         return TsData.ofInternal(start, values.extend(nbeg, nend));
     }
@@ -409,11 +409,11 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
         return TsData.ofInternal(getStart(), data);
     }
 
-    public TsData lead(@Nonnegative int lead) {
+    public TsData lead(@NonNegative int lead) {
         return lead == 0 ? this : TsData.ofInternal(getStart().plus(-lead), values);
     }
 
-    public TsData lag(@Nonnegative int lag) {
+    public TsData lag(@NonNegative int lag) {
         return lag == 0 ? this : TsData.ofInternal(getStart().plus(lag), values);
     }
 
@@ -487,7 +487,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
      * series is set to Missing if some data in the original series are Missing.
      * @return A new time series is returned.
      */
-    public TsData aggregate(@Nonnull TsUnit newUnit, @Nonnull AggregationType conversion, boolean complete) {
+    public TsData aggregate(@NonNull TsUnit newUnit, @NonNull AggregationType conversion, boolean complete) {
         int ratio = this.getTsUnit().ratioOf(newUnit);
         switch (ratio) {
             case TsUnit.NO_STRICT_RATIO:

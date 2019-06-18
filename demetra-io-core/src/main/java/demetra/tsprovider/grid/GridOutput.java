@@ -16,9 +16,9 @@
  */
 package demetra.tsprovider.grid;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -26,9 +26,9 @@ import javax.annotation.Nullable;
  */
 public interface GridOutput {
 
-    boolean isSupportedDataType(@Nonnull Class<?> type);
+    boolean isSupportedDataType(@NonNull Class<?> type);
 
-    void setName(@Nonnull String name);
+    void setName(@NonNull String name);
 
-    void setValue(@Nonnegative int row, @Nonnegative int column, @Nullable Object value);
+    void setValue(@NonNegative int row, @NonNegative int column, @Nullable Object value);
 }

@@ -19,8 +19,8 @@ package internal.spreadsheet;
 import ec.util.spreadsheet.Book;
 import java.io.File;
 import java.util.ServiceLoader;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -28,14 +28,13 @@ import javax.annotation.Nullable;
  */
 public interface BookSupplier {
 
-    @Nullable
-    Book.Factory getFactory(@Nonnull File file);
+    Book.@Nullable Factory getFactory(@NonNull File file);
 
-    default boolean hasFactory(@Nonnull File file) {
+    default boolean hasFactory(@NonNull File file) {
         return getFactory(file) != null;
     }
 
-    @Nonnull
+    @NonNull
     static BookSupplier usingServiceLoader() {
         return new BookSupplier() {
             @Override

@@ -23,7 +23,7 @@ import jdplus.arima.Spectrum;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import java.util.ArrayList;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Represents an Unobserved Components Arima model. Such a model is the sum of
@@ -75,7 +75,7 @@ public class UcarimaModel implements Cloneable {
             return this;
         }
 
-        public Builder add(@Nonnull ArimaModel... components) {
+        public Builder add(@NonNull ArimaModel... components) {
             for (int i = 0; i < components.length; ++i) {
                 this.components.add(components[i]);
             }

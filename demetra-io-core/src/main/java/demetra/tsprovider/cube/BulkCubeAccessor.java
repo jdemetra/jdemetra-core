@@ -16,13 +16,13 @@
  */
 package demetra.tsprovider.cube;
 
+import demetra.design.ThreadSafe;
 import demetra.io.IteratorWithIO;
 import demetra.tsprovider.cursor.TsCursor;
 import java.io.IOException;
 import java.util.function.Supplier;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import javax.cache.Cache;
 import lombok.AccessLevel;
 import demetra.tsprovider.util.CacheFactory;
@@ -36,8 +36,8 @@ import ioutil.IO;
 @lombok.AllArgsConstructor(access = AccessLevel.PACKAGE)
 public final class BulkCubeAccessor implements CubeAccessor {
 
-    @Nonnull
-    public static CubeAccessor of(@Nonnull CubeAccessor delegate, @Nonnull BulkCubeConfig options, @Nonnull Supplier<String> cacheName) {
+    @NonNull
+    public static CubeAccessor of(@NonNull CubeAccessor delegate, @NonNull BulkCubeConfig options, @NonNull Supplier<String> cacheName) {
         return options.isCacheEnabled()
                 ? new BulkCubeAccessor(delegate, options.getDepth(), CacheFactory.getTtlCacheByRef(cacheName, options.getTtl()))
                 : delegate;
@@ -46,7 +46,7 @@ public final class BulkCubeAccessor implements CubeAccessor {
     @lombok.NonNull
     private final CubeAccessor delegate;
 
-    @Nonnegative
+    @NonNegative
     private final int depth;
 
     @lombok.NonNull

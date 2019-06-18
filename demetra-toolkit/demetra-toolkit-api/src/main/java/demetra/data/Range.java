@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -30,7 +30,7 @@ public interface Range<E extends Comparable<? super E>> {
      *
      * @return The start of the range.
      */
-    @Nonnull
+    @NonNull
     E start();
 
     /**
@@ -38,10 +38,10 @@ public interface Range<E extends Comparable<? super E>> {
      *
      * @return The end of the range (excluded)
      */
-    @Nonnull
+    @NonNull
     E end();
 
-    boolean contains(@Nonnull E element);
+    boolean contains(@NonNull E element);
 
     public static <E extends Comparable<? super E>> Range<E> of(final E start, final E end) {
         return new Range<E>() {

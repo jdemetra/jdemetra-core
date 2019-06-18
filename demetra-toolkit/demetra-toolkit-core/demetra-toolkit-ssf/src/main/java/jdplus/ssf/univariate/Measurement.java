@@ -7,8 +7,8 @@ package jdplus.ssf.univariate;
 
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.implementations.MeasurementError;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -19,12 +19,12 @@ public class Measurement implements ISsfMeasurement {
     private final ISsfLoading loading;
     private final ISsfError error;
 
-    public Measurement(@Nonnull final ISsfLoading loading, @Nullable final ISsfError error) {
+    public Measurement(@NonNull final ISsfLoading loading, @Nullable final ISsfError error) {
         this.loading = loading;
         this.error = error;
     }
 
-    public Measurement(@Nonnull final ISsfLoading loading, final double var) {
+    public Measurement(@NonNull final ISsfLoading loading, final double var) {
         this.loading = loading;
         this.error = MeasurementError.of(var);
     }

@@ -16,9 +16,9 @@
  */
 package demetra.tsprovider;
 
+import demetra.design.ThreadSafe;
 import java.io.FileFilter;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Defines a specialized provider whose source is a file.
@@ -36,6 +36,6 @@ public interface FileLoader<B extends FileBean> extends DataSourceLoader<B>, Fil
     @Override
     B decodeBean(DataSource dataSource) throws IllegalArgumentException;
 
-    @Nonnull
+    @NonNull
     String getFileDescription();
 }

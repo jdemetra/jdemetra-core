@@ -17,7 +17,7 @@
 package demetra.tsprovider;
 
 import java.util.Map;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -26,18 +26,18 @@ import javax.annotation.Nonnull;
  */
 public interface TsResource<DATA> {
 
-    @Nonnull
+    @NonNull
     TsMoniker getMoniker();
 
-    @Nonnull
+    @NonNull
     TsInformationType getType();
 
-    @Nonnull
+    @NonNull
     String getName();
 
-    @Nonnull
+    @NonNull
     Map<String, String> getMeta();
 
-    @Nonnull
+    @NonNull
     DATA getData();
 }

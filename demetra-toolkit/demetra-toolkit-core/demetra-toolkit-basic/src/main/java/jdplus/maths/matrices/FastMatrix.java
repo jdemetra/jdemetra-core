@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
-import javax.annotation.Nonnegative;
+import org.checkerframework.checker.index.qual.NonNegative;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.LogSign;
 import demetra.design.Development;
@@ -33,7 +33,7 @@ import demetra.maths.matrices.Matrix;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.maths.matrices.decomposition.Householder;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.Iterator;
 
 /**
@@ -94,7 +94,7 @@ public interface FastMatrix extends Matrix.Mutable{
     String toString(String FMT);
  
     @Override
-    DataBlock row(@Nonnull int irow);
+    DataBlock row(@NonNull int irow);
     
     @Override
     DataBlock diagonal();
@@ -103,7 +103,7 @@ public interface FastMatrix extends Matrix.Mutable{
     DataBlock subDiagonal(int pos);
     
     @Override
-    DataBlock column(@Nonnull int icolumn);
+    DataBlock column(@NonNull int icolumn);
     
     CanonicalMatrix asCanonical();
     
@@ -763,7 +763,7 @@ public interface FastMatrix extends Matrix.Mutable{
      *
      * @param n The displacement (n cells left and n cells up)
      */
-    default void upLeftShift(@Nonnegative final int n) {
+    default void upLeftShift(@NonNegative final int n) {
         double[] storage = getStorage();
         int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
                 rowInc = getRowIncrement(), colInc = getColumnIncrement();
@@ -782,7 +782,7 @@ public interface FastMatrix extends Matrix.Mutable{
      *
      * @param n The displacement (n cells right and n cells down)
      */
-    default void downRightShift(@Nonnegative final int n) {
+    default void downRightShift(@NonNegative final int n) {
         double[] storage = getStorage();
         int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
                 rowInc = getRowIncrement(), colInc = getColumnIncrement();

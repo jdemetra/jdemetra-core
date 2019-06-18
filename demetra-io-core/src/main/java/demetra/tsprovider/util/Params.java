@@ -24,7 +24,7 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.util.Parser;
 import demetra.util.Formatter;
 import demetra.util.List2;
@@ -43,81 +43,81 @@ import java.util.stream.Stream;
 @lombok.experimental.UtilityClass
 public class Params {
 
-    @Nonnull
-    public <S extends IConfig> IParam<S, String> onString(@Nonnull String defaultValue, @Nonnull String key) {
+    @NonNull
+    public <S extends IConfig> IParam<S, String> onString(@NonNull String defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parser.onString(), Formatter.onString());
     }
 
-    @Nonnull
-    public <S extends IConfig> IParam<S, File> onFile(@Nonnull File defaultValue, @Nonnull String key) {
+    @NonNull
+    public <S extends IConfig> IParam<S, File> onFile(@NonNull File defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parser.onFile(), Formatter.onFile());
     }
 
-    @Nonnull
-    public <S extends IConfig, X extends Enum<X>> IParam<S, X> onEnum(@Nonnull X defaultValue, @Nonnull String key) {
+    @NonNull
+    public <S extends IConfig, X extends Enum<X>> IParam<S, X> onEnum(@NonNull X defaultValue, @NonNull String key) {
         Class<X> enumClass = (Class<X>) defaultValue.getClass();
         return new SingleParam<>(defaultValue, key, Parser.onEnum(enumClass), Formatter.<X>onEnum());
     }
 
-    @Nonnull
-    public <S extends IConfig> IParam<S, Integer> onInteger(@Nonnull Integer defaultValue, @Nonnull String key) {
+    @NonNull
+    public <S extends IConfig> IParam<S, Integer> onInteger(@NonNull Integer defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parser.onInteger(), Formatter.onInteger());
     }
 
-    @Nonnull
-    public <S extends IConfig> IParam<S, Long> onLong(@Nonnull Long defaultValue, @Nonnull String key) {
+    @NonNull
+    public <S extends IConfig> IParam<S, Long> onLong(@NonNull Long defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parser.onLong(), Formatter.onLong());
     }
 
-    @Nonnull
-    public <S extends IConfig> IParam<S, Boolean> onBoolean(@Nonnull Boolean defaultValue, @Nonnull String key) {
+    @NonNull
+    public <S extends IConfig> IParam<S, Boolean> onBoolean(@NonNull Boolean defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parser.onBoolean(), Formatter.onBoolean());
     }
 
-    @Nonnull
-    public <S extends IConfig> IParam<S, Character> onCharacter(@Nonnull Character defaultValue, @Nonnull String key) {
+    @NonNull
+    public <S extends IConfig> IParam<S, Character> onCharacter(@NonNull Character defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parser.onCharacter(), Formatter.onCharacter());
     }
 
-    @Nonnull
-    public <S extends IConfig> IParam<S, Double> onDouble(@Nonnull Double defaultValue, @Nonnull String key) {
+    @NonNull
+    public <S extends IConfig> IParam<S, Double> onDouble(@NonNull Double defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parser.onDouble(), Formatter.onDouble());
     }
 
-    @Nonnull
-    public <S extends IConfig> IParam<S, Charset> onCharset(@Nonnull Charset defaultValue, @Nonnull String key) {
+    @NonNull
+    public <S extends IConfig> IParam<S, Charset> onCharset(@NonNull Charset defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parser.onCharset(), Formatter.onCharset());
     }
 
-    @Nonnull
-    public <S extends IConfig> IParam<S, ObsFormat> onObsFormat(@Nonnull ObsFormat defaultValue, @Nonnull String localeKey, @Nonnull String datePatternKey, @Nonnull String numberPatternKey) {
+    @NonNull
+    public <S extends IConfig> IParam<S, ObsFormat> onObsFormat(@NonNull ObsFormat defaultValue, @NonNull String localeKey, @NonNull String datePatternKey, @NonNull String numberPatternKey) {
         return new ObsFormatParam(defaultValue, localeKey, datePatternKey, numberPatternKey);
     }
 
-    @Nonnull
-    public <S extends IConfig> IParam<S, double[]> onDoubleArray(@Nonnull String key, @Nonnull double... defaultValues) {
+    @NonNull
+    public <S extends IConfig> IParam<S, double[]> onDoubleArray(@NonNull String key, @NonNull double... defaultValues) {
         return new SingleParam<>(defaultValues, key, Parser.onDoubleArray(), Formatter.onDoubleArray());
     }
 
-    @Nonnull
-    public <S extends IConfig> IParam<S, String[]> onStringArray(@Nonnull String key, @Nonnull String... defaultValues) {
+    @NonNull
+    public <S extends IConfig> IParam<S, String[]> onStringArray(@NonNull String key, @NonNull String... defaultValues) {
         return new SingleParam<>(defaultValues, key, Parser.onStringArray(), Formatter.onStringArray());
     }
 
-    @Nonnull
-    public <S extends IConfig> IParam<S, List<String>> onStringList(@Nonnull List<String> defaultValue, @Nonnull String key,
-            @Nonnull Function<CharSequence, Stream<String>> splitter,
-            @Nonnull Function<Stream<CharSequence>, String> joiner) {
+    @NonNull
+    public <S extends IConfig> IParam<S, List<String>> onStringList(@NonNull List<String> defaultValue, @NonNull String key,
+            @NonNull Function<CharSequence, Stream<String>> splitter,
+            @NonNull Function<Stream<CharSequence>, String> joiner) {
         return new SingleParam<>(List2.copyOf(defaultValue), key, Parser.onStringList(splitter), Formatter.onStringList(joiner));
     }
 
-    @Nonnull
-    public <S extends IConfig> IParam<S, ObsGathering> onObsGathering(@Nonnull ObsGathering defaultValue, @Nonnull String frequencyKey, @Nonnull String aggregationKey, @Nonnull String skipKey) {
+    @NonNull
+    public <S extends IConfig> IParam<S, ObsGathering> onObsGathering(@NonNull ObsGathering defaultValue, @NonNull String frequencyKey, @NonNull String aggregationKey, @NonNull String skipKey) {
         return new ObsGatheringParam(defaultValue, frequencyKey, aggregationKey, skipKey);
     }
 
-    @Nonnull
-    public <S extends IConfig> IParam<S, BulkCubeConfig> onBulkCubeConfig(@Nonnull BulkCubeConfig defaultValue, @Nonnull String ttlKey, @Nonnull String depthKey) {
+    @NonNull
+    public <S extends IConfig> IParam<S, BulkCubeConfig> onBulkCubeConfig(@NonNull BulkCubeConfig defaultValue, @NonNull String ttlKey, @NonNull String depthKey) {
         return new BulkCubeConfigParam(defaultValue, ttlKey, depthKey);
     }
 
@@ -130,17 +130,17 @@ public class Params {
         private final Formatter<P> formatter;
 
         private SingleParam(
-                @Nonnull P defaultValue,
-                @Nonnull String key,
-                @Nonnull Parser<P> parser,
-                @Nonnull Formatter<P> formatter) {
+                @NonNull P defaultValue,
+                @NonNull String key,
+                @NonNull Parser<P> parser,
+                @NonNull Formatter<P> formatter) {
             this.defaultValue = Objects.requireNonNull(defaultValue);
             this.key = Objects.requireNonNull(key);
             this.parser = Objects.requireNonNull(parser);
             this.formatter = Objects.requireNonNull(formatter);
         }
 
-        private boolean isValid(@Nonnull String tmp) {
+        private boolean isValid(@NonNull String tmp) {
             return !tmp.isEmpty();
         }
 
@@ -181,10 +181,10 @@ public class Params {
         private final String numberPatternKey;
 
         private ObsFormatParam(
-                @Nonnull ObsFormat defaultValue,
-                @Nonnull String localeKey,
-                @Nonnull String datePatternKey,
-                @Nonnull String numberPatternKey) {
+                @NonNull ObsFormat defaultValue,
+                @NonNull String localeKey,
+                @NonNull String datePatternKey,
+                @NonNull String numberPatternKey) {
             this.defaultValue = Objects.requireNonNull(defaultValue);
             this.localeKey = Objects.requireNonNull(localeKey);
             this.datePatternKey = Objects.requireNonNull(datePatternKey);
@@ -229,10 +229,10 @@ public class Params {
         private final IParam<S, Boolean> skipMissingValues;
 
         private ObsGatheringParam(
-                @Nonnull ObsGathering defaultValue,
-                @Nonnull String frequencyKey,
-                @Nonnull String aggregationKey,
-                @Nonnull String skipKey) {
+                @NonNull ObsGathering defaultValue,
+                @NonNull String frequencyKey,
+                @NonNull String aggregationKey,
+                @NonNull String skipKey) {
             this.defaultValue = defaultValue;
             this.unit = onString(defaultValue.getUnit().toIsoString(), frequencyKey);
             this.aggregationType = onEnum(defaultValue.getAggregationType(), aggregationKey);
@@ -333,9 +333,9 @@ public class Params {
         private final IParam<S, Integer> cacheDepth;
 
         private BulkCubeConfigParam(
-                @Nonnull BulkCubeConfig defaultValue,
-                @Nonnull String ttlKey,
-                @Nonnull String depthKey) {
+                @NonNull BulkCubeConfig defaultValue,
+                @NonNull String ttlKey,
+                @NonNull String depthKey) {
             this.defaultValue = defaultValue;
             this.cacheTtl = onLong(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES), ttlKey);
             this.cacheDepth = onInteger(1, depthKey);

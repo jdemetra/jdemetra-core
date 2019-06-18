@@ -16,13 +16,13 @@
  */
 package demetra.tsprovider.cube;
 
+import demetra.design.ThreadSafe;
 import demetra.tsprovider.cursor.TsCursor;
 import demetra.io.IteratorWithIO;
 import java.io.Closeable;
 import java.io.IOException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -35,27 +35,27 @@ public interface CubeAccessor extends Closeable {
     @Nullable
     IOException testConnection();
 
-    @Nonnull
+    @NonNull
     CubeId getRoot() throws IOException;
 
-    @Nonnull
-    TsCursor<CubeId> getAllSeries(@Nonnull CubeId id) throws IOException;
+    @NonNull
+    TsCursor<CubeId> getAllSeries(@NonNull CubeId id) throws IOException;
 
-    @Nonnull
-    TsCursor<CubeId> getAllSeriesWithData(@Nonnull CubeId id) throws IOException;
+    @NonNull
+    TsCursor<CubeId> getAllSeriesWithData(@NonNull CubeId id) throws IOException;
 
-    @Nonnull
-    TsCursor<CubeId> getSeriesWithData(@Nonnull CubeId id) throws IOException;
+    @NonNull
+    TsCursor<CubeId> getSeriesWithData(@NonNull CubeId id) throws IOException;
 
-    @Nonnull
-    IteratorWithIO<CubeId> getChildren(@Nonnull CubeId id) throws IOException;
+    @NonNull
+    IteratorWithIO<CubeId> getChildren(@NonNull CubeId id) throws IOException;
 
-    @Nonnull
+    @NonNull
     String getDisplayName() throws IOException;
 
-    @Nonnull
-    String getDisplayName(@Nonnull CubeId id) throws IOException;
+    @NonNull
+    String getDisplayName(@NonNull CubeId id) throws IOException;
 
-    @Nonnull
-    String getDisplayNodeName(@Nonnull CubeId id) throws IOException;
+    @NonNull
+    String getDisplayNodeName(@NonNull CubeId id) throws IOException;
 }

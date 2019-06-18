@@ -34,8 +34,8 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.stream.DoubleStream;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Describes a sequence of doubles.
@@ -57,7 +57,7 @@ public interface DoubleSeq extends BaseSeq {
          * modified
          * @param value the specified <code>double</code> value
          */
-        void set(@Nonnegative int index, double value) throws IndexOutOfBoundsException;
+        void set(@NonNegative int index, double value) throws IndexOutOfBoundsException;
 
         default void set(double value) {
             DoubleSeqCursor.OnMutable cur = cursor();
@@ -104,23 +104,20 @@ public interface DoubleSeq extends BaseSeq {
             return map(n, i -> n - 1 - i);
         }
 
-        @Nonnull
-        static DoubleSeq.Mutable of(@Nonnull double[] values) {
+        static DoubleSeq.@NonNull Mutable of(@NonNull double[] values) {
             return new InternalDoubleVector.MultiDoubleVector(values);
         }
 
-        @Nonnull
-        static DoubleSeq.Mutable of(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int len, int inc) {
+        static DoubleSeq.@NonNull Mutable of(@NonNull double[] data, @NonNegative int start, @NonNegative int len, int inc) {
             return new InternalDoubleVector.MappingDoubleVector(len, i -> data[start + i * inc], (i, x) -> data[start + i * inc] = x);
         }
 
-        @Nonnull
-        static DoubleSeq.Mutable onMapping(@Nonnegative int length, @Nonnull IntToDoubleFunction getter, @Nonnull IntDoubleConsumer setter) {
+        static DoubleSeq.@NonNull Mutable onMapping(@NonNegative int length, @NonNull IntToDoubleFunction getter, @NonNull IntDoubleConsumer setter) {
             return new InternalDoubleVector.MappingDoubleVector(length, getter, setter);
         }
 
         //<editor-fold defaultstate="collapsed" desc="Lambda expressions">
-        default void apply(@Nonnegative int index, DoubleUnaryOperator fn) throws IndexOutOfBoundsException {
+        default void apply(@NonNegative int index, DoubleUnaryOperator fn) throws IndexOutOfBoundsException {
             set(index, fn.applyAsDouble(get(index)));
         }
 
@@ -264,7 +261,7 @@ public interface DoubleSeq extends BaseSeq {
      * @throws IndexOutOfBoundsException if the <tt>index</tt> argument is
      * negative or not less than <tt>length()</tt>
      */
-    double get(@Nonnegative int index) throws IndexOutOfBoundsException;
+    double get(@NonNegative int index) throws IndexOutOfBoundsException;
 
     @Override
     default DoubleSeqCursor cursor() {
@@ -280,7 +277,7 @@ public interface DoubleSeq extends BaseSeq {
      * The length of the buffer is not checked (it could be larger than this
      * array.
      */
-    default void copyTo(@Nonnull double[] buffer, @Nonnegative int offset) {
+    default void copyTo(@NonNull double[] buffer, @NonNegative int offset) {
         InternalDoubleSeq.copyToByCursor(this, buffer, offset);
     }
 
@@ -288,7 +285,7 @@ public interface DoubleSeq extends BaseSeq {
      * @return @see DoubleStream#toArray()
      */
     @ReturnNew
-    @Nonnull
+    @NonNull
     default double[] toArray() {
         return InternalDoubleSeq.toArrayByCursor(this);
     }
@@ -299,12 +296,12 @@ public interface DoubleSeq extends BaseSeq {
      *
      * @return an IntStream of double values from this sequence
      */
-    @Nonnull
+    @NonNull
     default DoubleStream stream() {
         return InternalDoubleSeq.stream(this);
     }
 
-    default void forEach(@Nonnull DoubleConsumer action) {
+    default void forEach(@NonNull DoubleConsumer action) {
         InternalDoubleSeq.forEach(this, action);
     }
 
@@ -314,7 +311,7 @@ public interface DoubleSeq extends BaseSeq {
      * @return
      * @see DoubleStream#allMatch(java.util.function.DoublePredicate))
      */
-    default boolean allMatch(@Nonnull DoublePredicate pred) {
+    default boolean allMatch(@NonNull DoublePredicate pred) {
         return InternalDoubleSeq.allMatchByCursor(this, pred);
     }
 
@@ -324,7 +321,7 @@ public interface DoubleSeq extends BaseSeq {
      *
      * @return
      */
-    default boolean allMatch(@Nonnull DoubleSeq seq, @Nonnull BiDoublePredicate pred) {
+    default boolean allMatch(@NonNull DoubleSeq seq, @NonNull BiDoublePredicate pred) {
         return InternalDoubleSeq.allMatchByCursor(this, seq, pred);
     }
 
@@ -334,7 +331,7 @@ public interface DoubleSeq extends BaseSeq {
      * @return
      * @see DoubleStream#anyMatch(java.util.function.DoublePredicate))
      */
-    default boolean anyMatch(@Nonnull DoublePredicate pred) {
+    default boolean anyMatch(@NonNull DoublePredicate pred) {
         return InternalDoubleSeq.anyMatchByCursor(this, pred);
     }
 
@@ -346,15 +343,15 @@ public interface DoubleSeq extends BaseSeq {
      * @return
      * @see DoubleStream#reduce(double, java.util.function.DoubleBinaryOperator)
      */
-    default double reduce(double initial, @Nonnull DoubleBinaryOperator fn) {
+    default double reduce(double initial, @NonNull DoubleBinaryOperator fn) {
         return InternalDoubleSeq.reduceByCursor(this, initial, fn);
     }
 
-    default int indexOf(@Nonnull DoublePredicate pred) {
+    default int indexOf(@NonNull DoublePredicate pred) {
         return InternalDoubleSeq.firstIndexOfByCursor(this, pred);
     }
 
-    default int lastIndexOf(@Nonnull DoublePredicate pred) {
+    default int lastIndexOf(@NonNull DoublePredicate pred) {
         return InternalDoubleSeq.lastIndexOf(this, pred);
     }
 
@@ -362,13 +359,13 @@ public interface DoubleSeq extends BaseSeq {
         return InternalDoubleSeq.countByCursor(this, pred);
     }
 
-    @Nonnull
-    default DoubleSeq map(@Nonnull DoubleUnaryOperator fn) {
+    @NonNull
+    default DoubleSeq map(@NonNull DoubleUnaryOperator fn) {
         return onMapping(length(), i -> fn.applyAsDouble(get(i)));
     }
 
-    @Nonnull
-    default DoubleSeq map(@Nonnegative int length, @Nonnull IntUnaryOperator indexMapper) {
+    @NonNull
+    default DoubleSeq map(@NonNegative int length, @NonNull IntUnaryOperator indexMapper) {
         return onMapping(length, i -> get(indexMapper.applyAsInt(i)));
     }
 
@@ -383,13 +380,13 @@ public interface DoubleSeq extends BaseSeq {
      * @return A new (read only) toArray block. Cannot be null (but the length
      * of the result could be 0.
      */
-    @Nonnull
-    default DoubleSeq extract(@Nonnegative int start, @Nonnegative int length) {
+    @NonNull
+    default DoubleSeq extract(@NonNegative int start, @NonNegative int length) {
         return map(length, i -> start + i);
     }
 
-    @Nonnull
-    default DoubleSeq extract(@Nonnegative int start, @Nonnegative int length, int increment) {
+    @NonNull
+    default DoubleSeq extract(@NonNegative int start, @NonNegative int length, int increment) {
         return map(length, i -> start + i * increment);
     }
 
@@ -519,7 +516,7 @@ public interface DoubleSeq extends BaseSeq {
         return Doubles.ofInternal(safeArray);
     }
 
-    default DoubleSeq extend(@Nonnegative int nbeg, @Nonnegative int nend) {
+    default DoubleSeq extend(@NonNegative int nbeg, @NonNegative int nend) {
         int n = length() + nbeg + nend;
         double[] safeArray = new double[n];
         for (int i = 0; i < nbeg; ++i) {
@@ -737,8 +734,8 @@ public interface DoubleSeq extends BaseSeq {
      *
      * @return
      */
-    @Nonnull
-    static DoubleSeq of(@Nonnull double... data) {
+    @NonNull
+    static DoubleSeq of(@NonNull double... data) {
         return new InternalDoubleSeq.MultiDoubleSeq(data);
     }
 
@@ -750,8 +747,8 @@ public interface DoubleSeq extends BaseSeq {
      *
      * @return
      */
-    @Nonnull
-    static DoubleSeq of(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int len) {
+    @NonNull
+    static DoubleSeq of(@NonNull double[] data, @NonNegative int start, @NonNegative int len) {
         return new InternalDoubleSeq.SubDoubleSeq(data, start, len);
     }
 
@@ -765,31 +762,31 @@ public interface DoubleSeq extends BaseSeq {
      *
      * @return
      */
-    @Nonnull
-    static DoubleSeq of(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int len, int inc) {
+    @NonNull
+    static DoubleSeq of(@NonNull double[] data, @NonNegative int start, @NonNegative int len, int inc) {
         return new InternalDoubleSeq.RegularlySpacedDoubles(data, start, len, inc);
     }
 
     @Deprecated
-    @Nonnull
+    @NonNull
     static Doubles empty() {
         return Doubles.EMPTY;
     }
 
     @Deprecated
-    @Nonnull
-    static Doubles copyOf(@Nonnull double[] data) {
+    @NonNull
+    static Doubles copyOf(@NonNull double[] data) {
         return Doubles.of(data);
     }
 
     @Deprecated
-    @Nonnull
-    static Doubles copyOf(@Nonnull DoubleStream stream) {
+    @NonNull
+    static Doubles copyOf(@NonNull DoubleStream stream) {
         return Doubles.of(stream);
     }
 
-    @Nonnull
-    static DoubleSeq onMapping(@Nonnegative int length, @Nonnull IntToDoubleFunction getter) {
+    @NonNull
+    static DoubleSeq onMapping(@NonNegative int length, @NonNull IntToDoubleFunction getter) {
         return new InternalDoubleSeq.MappingDoubleSeq(length, getter);
     }
     //</editor-fold>

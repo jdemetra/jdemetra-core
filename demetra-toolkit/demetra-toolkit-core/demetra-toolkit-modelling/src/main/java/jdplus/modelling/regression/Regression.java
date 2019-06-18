@@ -38,7 +38,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -106,7 +106,7 @@ public class Regression {
         }
     }
 
-    public <D extends TimeSeriesDomain> CanonicalMatrix matrix(@Nonnull D domain, @Nonnull ITsVariable... vars) {
+    public <D extends TimeSeriesDomain> CanonicalMatrix matrix(@NonNull D domain, @NonNull ITsVariable... vars) {
         int nvars = ITsVariable.dim(vars);
         int nobs = domain.length();
         CanonicalMatrix M = CanonicalMatrix.make(nobs, nvars);
@@ -135,7 +135,7 @@ public class Regression {
         return M;
     }
 
-    public <D extends TimeSeriesDomain> DataBlock x(@Nonnull D domain, @Nonnull ITsVariable vars) {
+    public <D extends TimeSeriesDomain> DataBlock x(@NonNull D domain, @NonNull ITsVariable vars) {
         if (vars.dim() != 1) {
             throw new IllegalArgumentException();
         }

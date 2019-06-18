@@ -16,6 +16,7 @@
  */
 package demetra.tsprovider.cursor;
 
+import demetra.design.ThreadSafe;
 import demetra.tsprovider.TsCollection;
 import demetra.tsprovider.Ts;
 import demetra.tsprovider.TsInformationType;
@@ -27,8 +28,7 @@ import demetra.tsprovider.TsProvider;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import java.io.IOException;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -46,8 +46,8 @@ public final class TsCursorAsProvider implements TsProvider {
      * @param cacheCleaner
      * @return a non-null instance
      */
-    @Nonnull
-    public static TsCursorAsProvider of(@Nonnull String providerName, @Nonnull HasTsCursor hdc, @Nonnull HasDataMoniker hdm, @Nonnull Runnable cacheCleaner) {
+    @NonNull
+    public static TsCursorAsProvider of(@NonNull String providerName, @NonNull HasTsCursor hdc, @NonNull HasDataMoniker hdm, @NonNull Runnable cacheCleaner) {
         return new TsCursorAsProvider(providerName, hdc, hdm, cacheCleaner);
     }
 

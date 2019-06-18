@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -30,13 +30,13 @@ import javax.annotation.Nonnull;
 @lombok.experimental.UtilityClass
 public class ProcessReader {
 
-    @Nonnull
-    public static BufferedReader newReader(@Nonnull String... args) throws IOException {
+    @NonNull
+    public static BufferedReader newReader(@NonNull String... args) throws IOException {
         return newReader(new ProcessBuilder(args).start());
     }
 
-    @Nonnull
-    public static BufferedReader newReader(@Nonnull Process process) throws IOException {
+    @NonNull
+    public static BufferedReader newReader(@NonNull Process process) throws IOException {
         return new BufferedReader(new InputStreamReader(new ProcessInputStream(process), Charset.defaultCharset()));
     }
 

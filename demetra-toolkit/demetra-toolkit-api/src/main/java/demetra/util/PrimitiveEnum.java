@@ -20,8 +20,7 @@ import java.util.EnumSet;
 import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
 import java.util.function.ToIntFunction;
-import javax.annotation.Nonnull;
-import lombok.NonNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -30,14 +29,14 @@ import lombok.NonNull;
 @lombok.experimental.UtilityClass
 public class PrimitiveEnum {
 
-    @Nonnull
-    public <T extends Enum<T> & IntSupplier> IntFunction<T> ofInt(@NonNull Class<T> enumType) {
+    @NonNull
+    public <T extends Enum<T> & IntSupplier> IntFunction<T> ofInt(@lombok.NonNull Class<T> enumType) {
         EnumSet<T> enumValues = EnumSet.allOf(enumType);
         return value -> get(enumValues, o -> o.getAsInt(), value);
     }
 
-    @Nonnull
-    public <T extends Enum<T>> IntFunction<T> ofInt(@NonNull Class<T> enumType, @NonNull ToIntFunction<T> toInt) {
+    @NonNull
+    public <T extends Enum<T>> IntFunction<T> ofInt(@lombok.NonNull Class<T> enumType, @lombok.NonNull ToIntFunction<T> toInt) {
         EnumSet<T> enumValues = EnumSet.allOf(enumType);
         return value -> get(enumValues, toInt, value);
     }

@@ -19,8 +19,8 @@ package ec.tss;
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -45,19 +45,19 @@ public class TsBypass {
         return new TsCollection(name);
     }
 
-    public TsCollection col(@Nullable String name, @Nonnull TsMoniker moniker) {
+    public TsCollection col(@Nullable String name, @NonNull TsMoniker moniker) {
         return new TsCollection(name, moniker);
     }
 
-    public TsCollection col(@Nullable String name, @Nonnull TsMoniker moniker, @Nullable MetaData md, @Nullable Iterable<Ts> ts) {
+    public TsCollection col(@Nullable String name, @NonNull TsMoniker moniker, @Nullable MetaData md, @Nullable Iterable<Ts> ts) {
         return new TsCollection(name, moniker, md, ts);
     }
 
-    public TsMoniker moniker(boolean dynamic, @Nonnull UUID uuid) {
+    public TsMoniker moniker(boolean dynamic, @NonNull UUID uuid) {
         return TsMoniker.ofInternal(dynamic, uuid);
     }
 
-    public UUID uuid(@Nonnull TsMoniker moniker) {
+    public UUID uuid(@NonNull TsMoniker moniker) {
         return moniker.getUuid();
     }
 }

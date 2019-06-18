@@ -17,7 +17,7 @@
 package demetra.tsprovider.cube;
 
 import java.time.Duration;
-import javax.annotation.Nonnegative;
+import org.checkerframework.checker.index.qual.NonNegative;
 
 /**
  *
@@ -29,7 +29,7 @@ public class BulkCubeConfig {
     @lombok.NonNull
     private Duration ttl;
 
-    @Nonnegative
+    @NonNegative
     private int depth;
 
     public boolean isCacheEnabled() {

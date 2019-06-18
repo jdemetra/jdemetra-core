@@ -20,7 +20,7 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -40,23 +40,23 @@ public final class ResourceWatcher {
         return !resources.isEmpty();
     }
 
-    @Nonnull
-    public Id watch(@Nonnull String name) {
+    @NonNull
+    public Id watch(@NonNull String name) {
         Objects.requireNonNull(name);
         Id result = new Id(name, cpt++);
         resources.add(result);
         return result;
     }
 
-    public void unwatch(@Nonnull Id id) {
+    public void unwatch(@NonNull Id id) {
         Objects.requireNonNull(id);
         if (!resources.remove(id)) {
             throw new IllegalArgumentException(id.toString());
         }
     }
 
-    @Nonnull
-    public Closeable watchAsCloseable(@Nonnull String name) {
+    @NonNull
+    public Closeable watchAsCloseable(@NonNull String name) {
         Id id = watch(name);
         return () -> unwatch(id);
     }

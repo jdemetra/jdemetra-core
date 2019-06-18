@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -34,7 +34,7 @@ import javax.annotation.Nonnull;
 @lombok.AllArgsConstructor(staticName = "of")
 public final class OdbcRegistry {
 
-    @Nonnull
+    @NonNull
     public static OdbcRegistry ofServiceLoader() {
         for (OdbcRegistrySpi o : ServiceLoader.load(OdbcRegistrySpi.class)) {
             if (o.isAvailable()) {
@@ -44,7 +44,7 @@ public final class OdbcRegistry {
         return noOp();
     }
 
-    @Nonnull
+    @NonNull
     public static OdbcRegistry noOp() {
         return new OdbcRegistry(NoOpRegistry.INSTANCE);
     }
@@ -52,7 +52,7 @@ public final class OdbcRegistry {
     @lombok.NonNull
     private final OdbcRegistrySpi spi;
 
-    @Nonnull
+    @NonNull
     @SuppressWarnings("null")
     public String getName() {
         String result;
@@ -72,8 +72,8 @@ public final class OdbcRegistry {
         return result;
     }
 
-    @Nonnull
-    public List<OdbcDataSource> getDataSources(@Nonnull OdbcDataSource.Type... types) throws IOException {
+    @NonNull
+    public List<OdbcDataSource> getDataSources(@NonNull OdbcDataSource.Type... types) throws IOException {
         List<OdbcDataSource> result;
 
         try {
@@ -89,7 +89,7 @@ public final class OdbcRegistry {
         return result;
     }
 
-    @Nonnull
+    @NonNull
     public List<OdbcDriver> getDrivers() throws IOException {
         List<OdbcDriver> result;
 

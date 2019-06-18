@@ -19,7 +19,7 @@ package util.sql.odbc;
 import demetra.design.ServiceDefinition;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -28,11 +28,11 @@ import javax.annotation.Nonnull;
 @ServiceDefinition(scope = ServiceDefinition.Scope.FRAMEWORK)
 public interface OdbcConnectionSupplierSpi {
 
-    @Nonnull
+    @NonNull
     String getName();
 
     boolean isAvailable();
 
-    @Nonnull
-    Connection getConnection(@Nonnull String connectionString) throws SQLException;
+    @NonNull
+    Connection getConnection(@NonNull String connectionString) throws SQLException;
 }

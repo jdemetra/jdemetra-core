@@ -18,7 +18,7 @@ package demetra.data;
 
 import demetra.design.Development;
 import demetra.design.NotThreadSafe;
-import javax.annotation.Nonnegative;
+import org.checkerframework.checker.index.qual.NonNegative;
 
 /**
  * Describes an abstract cursor of elements. A cursor is an iterator with an
@@ -37,12 +37,12 @@ public interface BaseSeqCursor {
      *
      * @param index
      */
-    void moveTo(@Nonnegative int index);
+    void moveTo(@NonNegative int index);
 
     /**
      * Skips n data (advances the cursor by n positions).
      *
      * @param n
      */
-    void skip(@Nonnegative int n);
+    void skip(@NonNegative int n);
 }

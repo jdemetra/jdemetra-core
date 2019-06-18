@@ -26,10 +26,10 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import demetra.design.NotThreadSafe;
+import demetra.design.ThreadSafe;
 
 /**
  *
@@ -46,31 +46,31 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         @Nullable
         Exception testConnection();
 
-        @Nonnull
+        @NonNull
         CubeId getRoot() throws Exception;
 
-        @Nonnull
-        AllSeriesCursor getAllSeriesCursor(@Nonnull CubeId id) throws Exception;
+        @NonNull
+        AllSeriesCursor getAllSeriesCursor(@NonNull CubeId id) throws Exception;
 
-        @Nonnull
-        AllSeriesWithDataCursor<DATE> getAllSeriesWithDataCursor(@Nonnull CubeId id) throws Exception;
+        @NonNull
+        AllSeriesWithDataCursor<DATE> getAllSeriesWithDataCursor(@NonNull CubeId id) throws Exception;
 
-        @Nonnull
-        SeriesWithDataCursor<DATE> getSeriesWithDataCursor(@Nonnull CubeId id) throws Exception;
+        @NonNull
+        SeriesWithDataCursor<DATE> getSeriesWithDataCursor(@NonNull CubeId id) throws Exception;
 
-        @Nonnull
-        ChildrenCursor getChildrenCursor(@Nonnull CubeId id) throws Exception;
+        @NonNull
+        ChildrenCursor getChildrenCursor(@NonNull CubeId id) throws Exception;
 
-        @Nonnull
+        @NonNull
         String getDisplayName() throws Exception;
 
-        @Nonnull
-        String getDisplayName(@Nonnull CubeId id) throws Exception;
+        @NonNull
+        String getDisplayName(@NonNull CubeId id) throws Exception;
 
-        @Nonnull
-        String getDisplayNodeName(@Nonnull CubeId id) throws Exception;
+        @NonNull
+        String getDisplayNodeName(@NonNull CubeId id) throws Exception;
 
-        @Nonnull
+        @NonNull
         TsDataBuilder<DATE> newBuilder();
     }
 
@@ -85,24 +85,24 @@ public final class TableAsCubeAccessor implements CubeAccessor {
     @NotThreadSafe
     public interface SeriesCursor extends TableCursor {
 
-        @Nonnull
+        @NonNull
         Map<String, String> getMetaData() throws Exception;
 
-        @Nonnull
+        @NonNull
         String getLabel() throws Exception;
     }
 
     @NotThreadSafe
     public interface AllSeriesCursor extends SeriesCursor {
 
-        @Nonnull
+        @NonNull
         String[] getDimValues() throws Exception;
     }
 
     @NotThreadSafe
     public interface AllSeriesWithDataCursor<DATE> extends SeriesCursor {
 
-        @Nonnull
+        @NonNull
         String[] getDimValues() throws Exception;
 
         @Nullable
@@ -125,7 +125,7 @@ public final class TableAsCubeAccessor implements CubeAccessor {
     @NotThreadSafe
     public interface ChildrenCursor extends TableCursor {
 
-        @Nonnull
+        @NonNull
         String getChild() throws Exception;
     }
 

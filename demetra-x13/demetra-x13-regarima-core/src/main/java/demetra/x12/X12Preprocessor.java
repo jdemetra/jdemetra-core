@@ -31,7 +31,7 @@ import jdplus.regarima.regular.ModelDescription;
 import jdplus.regarima.regular.PreprocessingModel;
 import jdplus.regarima.regular.RegArimaModelling;
 import demetra.timeseries.TsData;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.regarima.regular.IArmaModule;
 import jdplus.regarima.regular.IDifferencingModule;
 import jdplus.regarima.regular.IOutliersDetectionModule;
@@ -101,7 +101,7 @@ public class X12Preprocessor implements IPreprocessor {
         private RegressionVariablesTest regressionTest0, regressionTest1;
         private AmiOptions options = new AmiOptions(true, 1e-7, 0, .14286, .95, .95, false, true);
 
-        public Builder modelBuilder(@Nonnull IModelBuilder builder) {
+        public Builder modelBuilder(@NonNull IModelBuilder builder) {
             this.modelBuilder = builder;
             return this;
         }

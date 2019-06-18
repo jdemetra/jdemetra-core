@@ -22,7 +22,7 @@ import demetra.modelling.regression.ModellingContext;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.tramoseats.TramoSeatsSpec;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -32,5 +32,5 @@ import javax.annotation.Nonnull;
 @ServiceDefinition
 public interface TramoSeatsProcessor {
 
-    ProcResults process(@Nonnull TsData series, @Nonnull TramoSeatsSpec spec, ModellingContext context);
+    ProcResults process(@NonNull TsData series, @NonNull TramoSeatsSpec spec, ModellingContext context);
 }

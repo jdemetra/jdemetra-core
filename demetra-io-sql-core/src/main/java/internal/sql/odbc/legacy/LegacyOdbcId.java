@@ -19,8 +19,8 @@ package internal.sql.odbc.legacy;
 import demetra.design.DemetraPlusLegacy;
 import internal.util.AbstractIterator;
 import java.util.Iterator;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -82,7 +82,7 @@ class LegacyOdbcId {
     }
 
     @Nullable
-    public static LegacyOdbcId parse(@Nonnull String input) {
+    public static LegacyOdbcId parse(@NonNull String input) {
         LegacyOdbcId.Builder result = LegacyOdbcId.builder();
         Iterator<String> iter = new OdbcIdParser(input);
 

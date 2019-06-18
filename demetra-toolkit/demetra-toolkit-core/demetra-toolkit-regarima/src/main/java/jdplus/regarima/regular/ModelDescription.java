@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import jdplus.regarima.RegArimaEstimation;
@@ -103,7 +103,7 @@ public final class ModelDescription {
         return new ModelDescription();
     }
 
-    public static ModelDescription of(@Nonnull TsData series, @Nonnull ModelDescription model) {
+    public static ModelDescription of(@NonNull TsData series, @NonNull ModelDescription model) {
         ModelDescription nmodel = new ModelDescription(series);
         model.preadjustmentVariables.forEach(nmodel.preadjustmentVariables::add);
         model.variables.forEach(nmodel.variables::add);
@@ -117,11 +117,11 @@ public final class ModelDescription {
         this.series = null;
     }
 
-    public ModelDescription(@Nonnull TsData series) {
+    public ModelDescription(@NonNull TsData series) {
         this.series = series;
     }
 
-    public ModelDescription(@Nonnull ModelDescription desc) {
+    public ModelDescription(@NonNull ModelDescription desc) {
         this.series = desc.series;
         this.interpolatedSeries = desc.interpolatedSeries;
         this.missing = desc.missing;
@@ -454,7 +454,7 @@ public final class ModelDescription {
         return lpTransformation;
     }
 
-    public void interpolate(@Nonnull DataInterpolator interpolator) {
+    public void interpolate(@NonNull DataInterpolator interpolator) {
         if (series.getValues().anyMatch(z -> Double.isNaN(z))) {
             IntList lmissing = new IntList();
             double[] data = interpolator.interpolate(series.getValues(), lmissing);

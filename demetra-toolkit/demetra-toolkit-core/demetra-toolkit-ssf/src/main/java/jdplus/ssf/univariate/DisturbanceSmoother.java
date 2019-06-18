@@ -14,7 +14,7 @@ import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeqCursor;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.ssf.SsfException;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -100,7 +100,7 @@ public class DisturbanceSmoother {
      * necessary for the smoothing.
      * @return
      */
-    public boolean process(@Nonnull DefaultFilteringResults results) {
+    public boolean process(@NonNull DefaultFilteringResults results) {
         ResultsRange range = results.getRange();
         return process(range.getStart(), range.getEnd(), results);
     }
@@ -114,7 +114,7 @@ public class DisturbanceSmoother {
      * necessary for
      * @return
      */
-    public boolean process(int start, int end, @Nonnull DefaultFilteringResults results) {
+    public boolean process(int start, int end, @NonNull DefaultFilteringResults results) {
         IDisturbanceSmoothingResults sresults;
         if (calcvar) {
             sresults = DefaultDisturbanceSmoothingResults.full(ssf.measurement().hasError());
@@ -134,7 +134,7 @@ public class DisturbanceSmoother {
      * @param stop
      * @return
      */
-    public boolean process(ISsfData data, @Nonnull IDisturbanceSmoothingResults sresults, final int stop) {
+    public boolean process(ISsfData data, @NonNull IDisturbanceSmoothingResults sresults, final int stop) {
         OrdinaryFilter filter = new OrdinaryFilter();
         DefaultFilteringResults fresults = DefaultFilteringResults.light();
         fresults.prepare(ssf, stop, data.length());

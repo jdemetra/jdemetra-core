@@ -19,7 +19,7 @@ package util.sql;
 import internal.util.sql.SqlConnectionSuppliers;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A class that supplies opened connections to databases.
@@ -37,25 +37,25 @@ public interface SqlConnectionSupplier {
      * @return A new opened connection.
      * @throws SQLException
      */
-    @Nonnull
-    Connection getConnection(@Nonnull String connectionString) throws SQLException;
+    @NonNull
+    Connection getConnection(@NonNull String connectionString) throws SQLException;
 
-    @Nonnull
-    static SqlConnectionSupplier usingDriverManager(@Nonnull String driverClassName, @Nonnull SqlFunc<String, String> toUrl) {
+    @NonNull
+    static SqlConnectionSupplier usingDriverManager(@NonNull String driverClassName, @NonNull SqlFunc<String, String> toUrl) {
         return new SqlConnectionSuppliers.DriverBasedSupplier(driverClassName, toUrl);
     }
 
-    @Nonnull
-    static SqlConnectionSupplier usingDataSource(@Nonnull SqlFunc<String, javax.sql.DataSource> toDataSource) {
+    @NonNull
+    static SqlConnectionSupplier usingDataSource(@NonNull SqlFunc<String, javax.sql.DataSource> toDataSource) {
         return new SqlConnectionSuppliers.DataSourceBasedSupplier(toDataSource);
     }
 
-    @Nonnull
+    @NonNull
     static SqlConnectionSupplier usingJndi() {
         return SqlConnectionSuppliers.CustomSuppliers.JNDI;
     }
 
-    @Nonnull
+    @NonNull
     static SqlConnectionSupplier noOp() {
         return SqlConnectionSuppliers.CustomSuppliers.NO_OP;
     }

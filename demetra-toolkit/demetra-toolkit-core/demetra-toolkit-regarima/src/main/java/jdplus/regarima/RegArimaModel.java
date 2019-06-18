@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;
 
@@ -77,7 +77,7 @@ public final class RegArimaModel<M extends IArimaModel> {
             return this;
         }
 
-        public Builder addX(@Nonnull DoubleSeq var) {
+        public Builder addX(@NonNull DoubleSeq var) {
             if (var.length() != y.length()) {
                 throw new RuntimeException("Incompatible dimensions");
             }
@@ -85,7 +85,7 @@ public final class RegArimaModel<M extends IArimaModel> {
             return this;
         }
 
-        public Builder addX(@Nonnull DoubleSeq... vars) {
+        public Builder addX(@NonNull DoubleSeq... vars) {
             for (DoubleSeq var : vars) {
                 if (var.length() != y.length()) {
                     throw new RuntimeException("Incompatible dimensions");
@@ -95,7 +95,7 @@ public final class RegArimaModel<M extends IArimaModel> {
             return this;
         }
 
-        public Builder addX(@Nonnull Collection<DoubleSeq> vars) {
+        public Builder addX(@NonNull Collection<DoubleSeq> vars) {
             for (DoubleSeq var : vars) {
                 if (var.length() != y.length()) {
                     throw new RuntimeException("Incompatible dimensions");
@@ -203,7 +203,7 @@ public final class RegArimaModel<M extends IArimaModel> {
     /**
      * @return the y
      */
-    @Nonnull
+    @NonNull
     public DoubleSeq getY() {
         return y;
     }
@@ -211,12 +211,12 @@ public final class RegArimaModel<M extends IArimaModel> {
     /**
      * @return the x
      */
-    @Nonnull
+    @NonNull
     public List<DoubleSeq> getX() {
         return x;
     }
 
-    @Nonnull
+    @NonNull
     public M arima() {
         return arima;
     }
@@ -225,7 +225,7 @@ public final class RegArimaModel<M extends IArimaModel> {
         return mean;
     }
 
-    @Nonnull
+    @NonNull
     public int[] missing() {
         return missing.length == 0 ? NOMISSING : missing.clone();
     }

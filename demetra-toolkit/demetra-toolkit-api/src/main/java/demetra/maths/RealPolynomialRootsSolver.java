@@ -7,7 +7,7 @@ package demetra.maths;
 
 import demetra.design.Algorithm;
 import demetra.design.ServiceDefinition;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -16,6 +16,6 @@ import javax.annotation.Nonnull;
 @Algorithm
 @ServiceDefinition
 public interface RealPolynomialRootsSolver {
-    Complex[] roots(@Nonnull RealPolynomial polynomial);
+    Complex[] roots(@NonNull RealPolynomial polynomial);
     
 }

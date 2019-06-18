@@ -19,7 +19,7 @@ package demetra.tsprovider;
 import internal.util.LombokHelper;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -49,8 +49,8 @@ public class TsCollection implements TsResource<List<Ts>> {
 
     public static final TsCollection EMPTY = TsCollection.builder().build();
 
-    @Nonnull
-    public static TsCollection of(@Nonnull Ts ts) {
+    @NonNull
+    public static TsCollection of(@NonNull Ts ts) {
         return builder().data(ts).build();
     }
     

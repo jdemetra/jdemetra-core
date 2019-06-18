@@ -30,8 +30,8 @@ import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -51,7 +51,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
          * @param data The data
          * @return the function result
          */
-        double apply(@Nonnull DataBlock data);
+        double apply(@NonNull DataBlock data);
     }
 
     public static final DataBlock EMPTY = new DataBlock(DoubleSeq.EMPTYARRAY, 0, 0, 1);
@@ -63,7 +63,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param n The number of elements
      * @return
      */
-    public static DataBlock make(@Nonnegative int n) {
+    public static DataBlock make(@NonNegative int n) {
         return n == 0 ? EMPTY : new DataBlock(new double[n], 0, n, 1);
     }
 
@@ -74,7 +74,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * modified externally).
      * @return
      */
-    public static DataBlock of(@Nonnull double[] data) {
+    public static DataBlock of(@NonNull double[] data) {
         return new DataBlock(data, 0, data.length, 1);
     }
 
@@ -90,7 +90,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      *
      * FIXME: check bounds? FIXME: What if start = end?
      */
-    public static DataBlock of(@Nonnull double[] data, @Nonnegative int start, @Nonnegative int end) {
+    public static DataBlock of(@NonNull double[] data, @NonNegative int start, @NonNegative int end) {
         if (end < start) {
             throw new IllegalArgumentException("Invalid DoubleArray");
         }
@@ -109,7 +109,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @throws (end-start) must be a positive multiple of inc.
      *
      */
-    public static DataBlock of(@Nonnull double[] data, @Nonnegative int start, int end, int inc) {
+    public static DataBlock of(@NonNull double[] data, @NonNegative int start, int end, int inc) {
         if (inc == 1) {
             return of(data, start, end);
         }
@@ -129,13 +129,13 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param data The DoubleSeq being copied
      * @return
      */
-    public static DataBlock of(@Nonnull DoubleSeq data) {
+    public static DataBlock of(@NonNull DoubleSeq data) {
         double[] x = new double[data.length()];
         data.copyTo(x, 0);
         return new DataBlock(x, 0, x.length, 1);
     }
 
-    public static DataBlock of(int n, @Nonnull IntToDoubleFunction fn) {
+    public static DataBlock of(int n, @NonNull IntToDoubleFunction fn) {
         double[] x = new double[n];
         for (int i = 0; i < n; ++i) {
             x[i] = fn.applyAsDouble(i);
@@ -149,7 +149,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param data The array of doubles. the data are copied
      * @return
      */
-    public static DataBlock copyOf(@Nonnull double[] data) {
+    public static DataBlock copyOf(@NonNull double[] data) {
         return new DataBlock(data.clone(), 0, data.length, 1);
     }
 
@@ -161,7 +161,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param pred The selection criterion
      * @return
      */
-    public static DataBlock select(@Nonnull DoubleSeq data, @Nonnull DoublePredicate pred) {
+    public static DataBlock select(@NonNull DoubleSeq data, @NonNull DoublePredicate pred) {
         DoubleList list = new DoubleList();
         int n = data.length();
         for (int i = 0; i < n; ++i) {
@@ -213,7 +213,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param start The position of the first data that will be copied
      *
      */
-    public void copyFrom(@Nonnull double[] buffer, @Nonnegative int start) {
+    public void copyFrom(@NonNull double[] buffer, @NonNegative int start) {
         for (int i = beg, j = start; i != end; i += inc, ++j) {
             data[i] = buffer[j];
         }
@@ -224,7 +224,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      *
      */
     @Override
-    public void copyTo(@Nonnull double[] buffer, @Nonnegative int start) {
+    public void copyTo(@NonNull double[] buffer, @NonNegative int start) {
         for (int i = beg, j = start; i != end; i += inc, ++j) {
             buffer[j] = data[i];
         }
@@ -243,7 +243,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * datablock has end > data.size or end < 0 ?
      */
     @Override
-    public DataBlock extract(@Nonnegative int start, @Nonnegative int length) {
+    public DataBlock extract(@NonNegative int start, @NonNegative int length) {
         return new DataBlock(data, beg + start * inc, beg + (start + length) * inc, inc);
     }
 
@@ -360,12 +360,12 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @return A new block is returned.
      *
      * FIXME: giving negative start don't raise exception. FIXME: giving
-     * negative count should not be permitted due to @Nonnegative but -1 is
+     * negative count should not be permitted due to @NonNegative but -1 is
      * accepted? FIXME: What if count > DataBlock.data.size? FIXME: reverse
      * order, what if count will give negative end? >> Out of bound exception?
      */
     @Override
-    public DataBlock extract(@Nonnegative int start, int count, int inc) {
+    public DataBlock extract(@NonNegative int start, int count, int inc) {
         int i0 = beg + start * this.inc, i1, ninc;
         ninc = inc * this.inc;
         if (count == -1) {
@@ -396,7 +396,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * {@inheritDoc}
      */
     @Override
-    public DataBlock drop(@Nonnegative int beg, @Nonnegative int end) {
+    public DataBlock drop(@NonNegative int beg, @NonNegative int end) {
         return new DataBlock(data, this.beg + beg * inc, this.end - end * inc, inc);
     }
 
@@ -437,7 +437,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param end End of the window (excluded)
      * @return
      */
-    public DataWindow window(@Nonnegative int beg, @Nonnegative int end) {
+    public DataWindow window(@NonNegative int beg, @NonNegative int end) {
         return new DataWindow(data, this.beg + beg * inc, this.beg + end * inc, inc);
     }
 
@@ -555,7 +555,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      *
      * @param n can't be negative or greater than DataBlock.length
      */
-    public void bshift(@Nonnegative int n) {
+    public void bshift(@NonNegative int n) {
         if (inc == 1) {
             int i0 = beg, i1 = end - n;
             for (int i = i0; i < i1; ++i) {
@@ -574,7 +574,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      *
      * @param n can't be negative or greater than DataBlock.length
      */
-    public void fshift(@Nonnegative int n) {
+    public void fshift(@NonNegative int n) {
         if (inc == 1) {
             int i0 = end - inc, i1 = beg + n;
             for (int i = i0; i >= i1; --i) {
@@ -672,7 +672,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * {@inheritDoc}
      */
     @Override
-    public double get(@Nonnegative int idx) {
+    public double get(@NonNegative int idx) {
         return data[beg + idx * inc];
     }
 
@@ -1034,7 +1034,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param fn The unary operator
      */
     @Override
-    public void apply(final @Nonnegative int pos, final @Nonnull DoubleUnaryOperator fn) {
+    public void apply(final @NonNegative int pos, final @NonNull DoubleUnaryOperator fn) {
         int idx = beg + pos * inc;
         data[idx] = fn.applyAsDouble(data[idx]);
     }
@@ -1045,7 +1045,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param pos The position of the data being modified
      * @param d
      */
-    public void add(final @Nonnegative int pos, final double d) {
+    public void add(final @NonNegative int pos, final double d) {
         data[beg + pos * inc] += d;
     }
 
@@ -1055,15 +1055,15 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param pos
      * @param d
      */
-    public void mul(@Nonnegative int pos, double d) {
+    public void mul(@NonNegative int pos, double d) {
         data[beg + pos * inc] *= d;
     }
 
-    public void sub(@Nonnegative int pos, double d) {
+    public void sub(@NonNegative int pos, double d) {
         data[beg + pos * inc] -= d;
     }
 
-    public void div(@Nonnegative int pos, double d) {
+    public void div(@NonNegative int pos, double d) {
         if (d != 1) {
             data[beg + pos * inc] /= d;
         }
@@ -1138,7 +1138,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param x
      * @param fn The operator
      */
-    public void apply(@Nonnull DataBlock x, @Nonnull DoubleBinaryOperator fn) {
+    public void apply(@NonNull DataBlock x, @NonNull DoubleBinaryOperator fn) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
         for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
@@ -1153,7 +1153,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param fn The operator
      */
     @Override
-    public void apply(@Nonnull DoubleSeq x, @Nonnull DoubleBinaryOperator fn) {
+    public void apply(@NonNull DoubleSeq x, @NonNull DoubleBinaryOperator fn) {
         DoubleSeqCursor cell = x.cursor();
         if (inc == 1) {
             for (int i = beg; i < end; ++i) {
@@ -1172,7 +1172,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param fn The operator
      */
     @Override
-    public void apply(@Nonnull final DoubleUnaryOperator fn) {
+    public void apply(@NonNull final DoubleUnaryOperator fn) {
         if (inc == 1) {
             for (int i = beg; i < end; ++i) {
                 data[i] = fn.applyAsDouble(data[i]);
@@ -1291,7 +1291,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param x
      * @param fn
      */
-    public void set(@Nonnull DataBlock x, @Nonnull DoubleUnaryOperator fn) {
+    public void set(@NonNull DataBlock x, @NonNull DoubleUnaryOperator fn) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
         for (int i = beg, j = xbeg; i != end; i += inc, j += xinc) {
@@ -1306,7 +1306,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param y
      * @param fn
      */
-    public void set(@Nonnull DataBlock x, @Nonnull DataBlock y, @Nonnull DoubleBinaryOperator fn) {
+    public void set(@NonNull DataBlock x, @NonNull DataBlock y, @NonNull DoubleBinaryOperator fn) {
         int ybeg = y.getStartPosition(), yinc = y.getIncrement();
         double[] ydata = y.getStorage();
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
@@ -1322,7 +1322,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param x
      * @param fn
      */
-    public void set(@Nonnull DoubleSeq x, @Nonnull DoubleUnaryOperator fn) {
+    public void set(@NonNull DoubleSeq x, @NonNull DoubleUnaryOperator fn) {
         DoubleSeqCursor xcell = x.cursor();
         for (int i = beg; i != end; i += inc) {
             data[i] = fn.applyAsDouble(xcell.getAndNext());
@@ -1336,7 +1336,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param y
      * @param fn
      */
-    public void set(@Nonnull DoubleSeq x, @Nonnull DoubleSeq y, @Nonnull DoubleBinaryOperator fn) {
+    public void set(@NonNull DoubleSeq x, @NonNull DoubleSeq y, @NonNull DoubleBinaryOperator fn) {
         DoubleSeqCursor xcell = x.cursor(), ycell = y.cursor();
         for (int i = beg; i != end; i += inc) {
             data[i] = fn.applyAsDouble(xcell.getAndNext(), ycell.getAndNext());
@@ -1349,7 +1349,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param a
      * @param y
      */
-    public void setAY(final double a, @Nonnull DataBlock y) {
+    public void setAY(final double a, @NonNull DataBlock y) {
         if (a == 0) {
             set(0);
         } else if (a == 1) {
@@ -1373,7 +1373,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param a
      * @param y
      */
-    public void addAY(double a, @Nonnull DataBlock y) {
+    public void addAY(double a, @NonNull DataBlock y) {
         if (a == 0) {
             return;
         } else if (a == 1) {
@@ -1391,7 +1391,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
         }
     }
 
-    public void add(@Nonnull DataBlock x) {
+    public void add(@NonNull DataBlock x) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
         if (inc == 1 && xinc == 1) {
@@ -1405,7 +1405,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
         }
     }
 
-    public void sub(@Nonnull DataBlock x) {
+    public void sub(@NonNull DataBlock x) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
         if (inc == 1 && xinc == 1) {
@@ -1419,7 +1419,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
         }
     }
 
-    public void mul(@Nonnull DataBlock x) {
+    public void mul(@NonNull DataBlock x) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
         if (inc == 1 && xinc == 1) {
@@ -1433,7 +1433,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
         }
     }
 
-    public void div(@Nonnull DataBlock x) {
+    public void div(@NonNull DataBlock x) {
         int xbeg = x.getStartPosition(), xinc = x.getIncrement();
         double[] xdata = x.getStorage();
         if (inc == 1 && xinc == 1) {
@@ -1447,7 +1447,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
         }
     }
 
-    public void set(@Nonnull DoubleSupplier fn) {
+    public void set(@NonNull DoubleSupplier fn) {
         for (int i = beg; i != end; i += inc) {
             data[i] = fn.getAsDouble();
         }
@@ -1490,7 +1490,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
     }
 
     @Override
-    public double reduce(final double initial, @Nonnull DoubleBinaryOperator fn) {
+    public double reduce(final double initial, @NonNull DoubleBinaryOperator fn) {
         double cur = initial;
         for (int i = beg; i != end; i += inc) {
             cur = fn.applyAsDouble(cur, data[i]);
@@ -1507,7 +1507,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param del
      * @param fn
      */
-    public void autoApply(final int del, @Nonnull DoubleBinaryOperator fn) {
+    public void autoApply(final int del, @NonNull DoubleBinaryOperator fn) {
         if (del > 0) {
             if (length() <= del) {
                 return;
@@ -1538,7 +1538,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param del
      * @param fn
      */
-    public void applyRecursively(final int del, @Nonnull DoubleBinaryOperator fn) {
+    public void applyRecursively(final int del, @NonNull DoubleBinaryOperator fn) {
         if (del > 0) {
             if (length() <= del) {
                 return;
@@ -1567,7 +1567,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
         applyRecursively(1, (a, b) -> a + b);
     }
 
-    public boolean allMatch(DataBlock d, @Nonnull BiDoublePredicate p) {
+    public boolean allMatch(DataBlock d, @NonNull BiDoublePredicate p) {
         for (int i = beg, j = d.beg; i != end; i += inc, j += d.inc) {
             if (!p.test(data[i], d.data[j])) {
                 return false;
@@ -1577,7 +1577,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
     }
 
     @Override
-    public boolean allMatch(@Nonnull DoublePredicate p) {
+    public boolean allMatch(@NonNull DoublePredicate p) {
         for (int i = beg; i != end; i += inc) {
             if (!p.test(data[i])) {
                 return false;
@@ -1587,7 +1587,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
     }
 
     @Override
-    public boolean anyMatch(@Nonnull DoublePredicate p) {
+    public boolean anyMatch(@NonNull DoublePredicate p) {
         for (int i = beg; i != end; i += inc) {
             if (p.test(data[i])) {
                 return true;

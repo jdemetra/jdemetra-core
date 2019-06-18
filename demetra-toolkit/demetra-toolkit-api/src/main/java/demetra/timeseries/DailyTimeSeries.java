@@ -19,8 +19,8 @@ package demetra.timeseries;
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 
 /**
@@ -65,9 +65,9 @@ public class DailyTimeSeries implements TimeSeriesData<Day, DayObs> {
         return DayObs.of(domain[index], values.get(index));
     }
     
-    @Nonnull
+    @NonNull
     @Override
-    public Day getPeriod(@Nonnegative int index) throws IndexOutOfBoundsException {
+    public Day getPeriod(@NonNegative int index) throws IndexOutOfBoundsException {
         return Day.of(domain[index]);
     }
     

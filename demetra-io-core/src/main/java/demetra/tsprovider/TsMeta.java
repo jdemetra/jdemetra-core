@@ -26,8 +26,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -36,40 +36,40 @@ import javax.annotation.Nullable;
  */
 public interface TsMeta<T> {
 
-    @Nonnull
+    @NonNull
     String getKey();
 
     @Nullable
-    T load(@Nonnull Function<String, String> meta);
+    T load(@NonNull Function<String, String> meta);
 
     @Nullable
-    default T load(@Nonnull Map<String, String> meta) {
+    default T load(@NonNull Map<String, String> meta) {
         return load(meta::get);
     }
 
-    void store(@Nonnull BiConsumer<String, String> meta, @Nonnull T value);
+    void store(@NonNull BiConsumer<String, String> meta, @NonNull T value);
 
-    default void store(@Nonnull Map<String, String> meta, @Nonnull T value) {
+    default void store(@NonNull Map<String, String> meta, @NonNull T value) {
         store(meta::put, value);
     }
 
-    @Nonnull
-    static <T> TsMeta<T> on(@Nonnull String key, @Nonnull Parser<T> parser, @Nonnull Formatter<T> formatter) {
+    @NonNull
+    static <T> TsMeta<T> on(@NonNull String key, @NonNull Parser<T> parser, @NonNull Formatter<T> formatter) {
         return new DefaultTsMeta<>(key, parser, formatter);
     }
 
-    @Nonnull
-    static TsMeta<String> onString(@Nonnull String key) {
+    @NonNull
+    static TsMeta<String> onString(@NonNull String key) {
         return new DefaultTsMeta<>(key, Parser.onString(), Formatter.onString());
     }
 
-    @Nonnull
-    static TsMeta<LocalDateTime> onDateTime(@Nonnull String key, @Nonnull String datePattern, @Nonnull Locale locale) {
+    @NonNull
+    static TsMeta<LocalDateTime> onDateTime(@NonNull String key, @NonNull String datePattern, @NonNull Locale locale) {
         ObsFormat obsFormat = ObsFormat.of(locale, datePattern, null);
         return new DefaultTsMeta<>(key, obsFormat.dateTimeParser(), obsFormat.dateTimeFormatter());
     }
 
-    @Nonnull
+    @NonNull
     static TsMeta<LocalDateTime> onTimestamp() {
         DateTimeFormatter main = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         ObsFormat legacy = ObsFormat.of(Locale.ROOT, "EEE MMM dd HH:mm:ss zzz yyyy", null);

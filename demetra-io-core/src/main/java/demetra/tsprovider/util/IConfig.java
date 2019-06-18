@@ -17,15 +17,15 @@
 package demetra.tsprovider.util;
 
 import demetra.design.BuilderPattern;
+import demetra.design.Immutable;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Defines an immutable key-value store.
@@ -33,7 +33,8 @@ import javax.annotation.concurrent.Immutable;
  * @author Philippe Charles
  * @since 1.0.0
  */
-@Immutable
+//FIXME: processor
+//@Immutable
 public interface IConfig {
 
     /**
@@ -41,7 +42,7 @@ public interface IConfig {
      *
      * @return a non-null map
      */
-    @Nonnull
+    @NonNull
     SortedMap<String, String> getParams();
 
     /**
@@ -51,7 +52,7 @@ public interface IConfig {
      * @return a parameter if available, null otherwise
      */
     @Nullable
-    default String get(@Nonnull String key) {
+    default String get(@NonNull String key) {
         return getParams().get(key);
     }
 
@@ -62,8 +63,8 @@ public interface IConfig {
      * @return an optional parameter
      * @since 2.2.0
      */
-    @Nonnull
-    default Optional<String> getParam(@Nonnull String key) {
+    @NonNull
+    default Optional<String> getParam(@NonNull String key) {
         return Optional.of(getParams().get(key));
     }
 
@@ -74,7 +75,7 @@ public interface IConfig {
      * @param action The non-null action to be performed for each entry
      * @since 2.2.0
      */
-    default void forEach(@Nonnull BiConsumer<? super String, ? super String> action) {
+    default void forEach(@NonNull BiConsumer<? super String, ? super String> action) {
         getParams().forEach(action);
     }
 
@@ -86,7 +87,7 @@ public interface IConfig {
      * config
      * @since 2.2.0
      */
-    @Nonnull
+    @NonNull
     default Stream<Entry<String, String>> stream() {
         return getParams().entrySet().stream();
     }
@@ -103,32 +104,32 @@ public interface IConfig {
          * @param value a non-null value
          * @return itself
          */
-        @Nonnull
-        THIS put(@Nonnull String key, @Nonnull String value);
+        @NonNull
+        THIS put(@NonNull String key, @NonNull String value);
 
-        @Nonnull
-        default THIS put(@Nonnull String key, int value) {
+        @NonNull
+        default THIS put(@NonNull String key, int value) {
             return put(key, String.valueOf(value));
         }
 
-        @Nonnull
-        default THIS put(@Nonnull String key, boolean value) {
+        @NonNull
+        default THIS put(@NonNull String key, boolean value) {
             return put(key, String.valueOf(value));
         }
 
-        @Nonnull
-        default THIS put(@Nonnull Map.Entry<String, String> entry) {
+        @NonNull
+        default THIS put(Map.@NonNull Entry<String, String> entry) {
             return put(entry.getKey(), entry.getValue());
         }
 
-        @Nonnull
-        default THIS putAll(@Nonnull Map<String, String> map) {
+        @NonNull
+        default THIS putAll(@NonNull Map<String, String> map) {
             map.forEach(this::put);
             return (THIS) this;
         }
 
-        @Nonnull
-        default <V> THIS put(@Nonnull IParam<T, V> param, V value) {
+        @NonNull
+        default <V> THIS put(@NonNull IParam<T, V> param, V value) {
             param.set(this, value);
             return (THIS) this;
         }

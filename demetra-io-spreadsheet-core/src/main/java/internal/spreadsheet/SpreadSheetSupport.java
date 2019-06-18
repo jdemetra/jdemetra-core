@@ -16,6 +16,7 @@
  */
 package internal.spreadsheet;
 
+import demetra.design.ThreadSafe;
 import demetra.timeseries.TsData;
 import demetra.tsprovider.DataSet;
 import static demetra.tsprovider.DataSet.Kind.COLLECTION;
@@ -39,8 +40,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -53,14 +53,14 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
     @ThreadSafe
     public interface Resource {
 
-        @Nonnull
-        SpreadSheetAccessor getAccessor(@Nonnull DataSource dataSource) throws IOException;
+        @NonNull
+        SpreadSheetAccessor getAccessor(@NonNull DataSource dataSource) throws IOException;
 
-        @Nonnull
-        IParam<DataSet, String> getSheetParam(@Nonnull DataSource dataSource);
+        @NonNull
+        IParam<DataSet, String> getSheetParam(@NonNull DataSource dataSource);
 
-        @Nonnull
-        IParam<DataSet, String> getSeriesParam(@Nonnull DataSource dataSource);
+        @NonNull
+        IParam<DataSet, String> getSeriesParam(@NonNull DataSource dataSource);
     }
 
     @lombok.NonNull

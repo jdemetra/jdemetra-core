@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -65,34 +65,34 @@ public interface IteratorWithIO<E> extends Closeable {
         }
     }
 
-    @Nonnull
-    default <Z> IteratorWithIO<Z> map(@Nonnull IO.Function<? super E, ? extends Z> function) {
+    @NonNull
+    default <Z> IteratorWithIO<Z> map(IO.@NonNull Function<? super E, ? extends Z> function) {
         return new InternalWithIO.MappingIterator<>(this, function);
     }
 
-    @Nonnull
-    default IteratorWithIO<E> onClose(@Nonnull Closeable closeHandler) {
+    @NonNull
+    default IteratorWithIO<E> onClose(@NonNull Closeable closeHandler) {
         return new InternalWithIO.OnCloseIterator<>(this, closeHandler);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Factories">
-    @Nonnull
+    @NonNull
     static <E> IteratorWithIO<E> empty() {
         return new InternalWithIO.EmptyIterator<>();
     }
 
-    @Nonnull
-    static <E> IteratorWithIO<E> singleton(@Nonnull E element) {
+    @NonNull
+    static <E> IteratorWithIO<E> singleton(@NonNull E element) {
         return new InternalWithIO.SingletonIterator<>(element);
     }
 
-    @Nonnull
-    static <E> IteratorWithIO<E> checked(@Nonnull Iterator<E> iterator) {
+    @NonNull
+    static <E> IteratorWithIO<E> checked(@NonNull Iterator<E> iterator) {
         return new InternalWithIO.CheckedIterator<>(iterator);
     }
 
-    @Nonnull
-    static <E> Iterator<E> unchecked(@Nonnull IteratorWithIO<E> iterator) {
+    @NonNull
+    static <E> Iterator<E> unchecked(@NonNull IteratorWithIO<E> iterator) {
         return new InternalWithIO.UncheckedIterator<>(iterator);
     }
     //</editor-fold>

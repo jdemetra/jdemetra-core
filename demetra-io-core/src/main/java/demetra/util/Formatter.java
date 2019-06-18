@@ -29,8 +29,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Defines a class that creates a {@link CharSequence} from an object.<br> For
@@ -57,7 +57,7 @@ public interface Formatter<T> {
      * @throws NullPointerException if input is null
      */
     @Nullable
-    CharSequence format(@Nonnull T value);
+    CharSequence format(@NonNull T value);
 
     /**
      * Format an object into a String.
@@ -68,7 +68,7 @@ public interface Formatter<T> {
      * @since 2.2.0
      */
     @Nullable
-    default String formatAsString(@Nonnull T value) {
+    default String formatAsString(@NonNull T value) {
         CharSequence result = format(value);
         return result != null ? result.toString() : null;
     }
@@ -84,8 +84,8 @@ public interface Formatter<T> {
      * @throws NullPointerException if input is null
      * @since 2.2.0
      */
-    @Nonnull
-    default Optional<CharSequence> formatValue(@Nonnull T value) {
+    @NonNull
+    default Optional<CharSequence> formatValue(@NonNull T value) {
         return Optional.ofNullable(format(value));
     }
 
@@ -100,8 +100,8 @@ public interface Formatter<T> {
      * @throws NullPointerException if input is null
      * @since 2.2.0
      */
-    @Nonnull
-    default Optional<String> formatValueAsString(@Nonnull T value) {
+    @NonNull
+    default Optional<String> formatValueAsString(@NonNull T value) {
         return Optional.ofNullable(formatAsString(value));
     }
 
@@ -114,104 +114,104 @@ public interface Formatter<T> {
      * @return a never-null formatter
      * @since 2.2.0
      */
-    @Nonnull
+    @NonNull
     @SuppressWarnings("null")
-    default <Y> Formatter<Y> compose(@Nonnull Function<? super Y, ? extends T> before) {
+    default <Y> Formatter<Y> compose(@NonNull Function<? super Y, ? extends T> before) {
         return o -> {
             T tmp = before.apply(o);
             return tmp != null ? format(tmp) : null;
         };
     }
 
-    @Nonnull
-    static <T extends TemporalAccessor> Formatter<T> onDateTimeFormatter(@Nonnull DateTimeFormatter formatter) {
+    @NonNull
+    static <T extends TemporalAccessor> Formatter<T> onDateTimeFormatter(@NonNull DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter);
         return o -> InternalFormatter.formatTemporalAccessor(formatter, o);
     }
 
-    @Nonnull
-    static Formatter<Date> onDateFormat(@Nonnull DateFormat dateFormat) {
+    @NonNull
+    static Formatter<Date> onDateFormat(@NonNull DateFormat dateFormat) {
         return dateFormat::format;
     }
 
-    @Nonnull
-    static Formatter<Number> onNumberFormat(@Nonnull NumberFormat numberFormat) {
+    @NonNull
+    static Formatter<Number> onNumberFormat(@NonNull NumberFormat numberFormat) {
         Objects.requireNonNull(numberFormat);
         return o -> InternalFormatter.formatNumber(numberFormat, o);
     }
 
-    @Nonnull
+    @NonNull
     static <T> Formatter<T> onConstant(@Nullable CharSequence instance) {
         return o -> InternalFormatter.formatConstant(instance, o);
     }
 
-    @Nonnull
+    @NonNull
     static <T> Formatter<T> onNull() {
         return o -> InternalFormatter.formatNull(o);
     }
 
-    @Nonnull
+    @NonNull
     static Formatter<File> onFile() {
         return File::getPath;
     }
 
-    @Nonnull
+    @NonNull
     static Formatter<Integer> onInteger() {
         return Object::toString;
     }
 
-    @Nonnull
+    @NonNull
     static Formatter<Long> onLong() {
         return Object::toString;
     }
 
-    @Nonnull
+    @NonNull
     static Formatter<Double> onDouble() {
         return Object::toString;
     }
 
-    @Nonnull
+    @NonNull
     static Formatter<Boolean> onBoolean() {
         return Object::toString;
     }
 
-    @Nonnull
+    @NonNull
     static Formatter<Character> onCharacter() {
         return Object::toString;
     }
 
-    @Nonnull
+    @NonNull
     static Formatter<Charset> onCharset() {
         return Charset::name;
     }
 
-    @Nonnull
+    @NonNull
     static <T extends Enum<T>> Formatter<T> onEnum() {
         return Enum::name;
     }
 
-    @Nonnull
+    @NonNull
     static Formatter<String> onString() {
         return Object::toString;
     }
 
-    @Nonnull
+    @NonNull
     static Formatter<double[]> onDoubleArray() {
         return InternalFormatter::formatDoubleArray;
     }
 
-    @Nonnull
+    @NonNull
     static Formatter<String[]> onStringArray() {
         return InternalFormatter::formatStringArray;
     }
 
-    @Nonnull
+    @NonNull
     static Formatter<Object> onObjectToString() {
         return Object::toString;
     }
 
-    @Nonnull
-    static Formatter<List<String>> onStringList(@Nonnull Function<Stream<CharSequence>, String> joiner) {
+    @NonNull
+    static Formatter<List<String>> onStringList(@NonNull Function<Stream<CharSequence>, String> joiner) {
         return o -> InternalFormatter.formatStringList(joiner, o);
     }
 }

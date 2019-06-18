@@ -47,7 +47,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.stream.StreamSupport;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Package-private supporting class for ts providers.
@@ -366,7 +366,7 @@ public class InternalTsProvider {
          *
          * @return
          */
-        @Nonnull
+        @NonNull
         public static DataSourceEventSupport create() {
             Set<DataSourceListener> weakHashSet = Collections.newSetFromMap(new WeakHashMap<>());
             return new DataSourceEventSupport(Collections.synchronizedSet(weakHashSet));
@@ -374,19 +374,19 @@ public class InternalTsProvider {
 
         private final Set<DataSourceListener> listeners;
 
-        private DataSourceEventSupport(@Nonnull Set<DataSourceListener> listeners) {
+        private DataSourceEventSupport(@NonNull Set<DataSourceListener> listeners) {
             this.listeners = listeners;
         }
 
-        public void add(@Nonnull DataSourceListener listener) {
+        public void add(@NonNull DataSourceListener listener) {
             listeners.add(Objects.requireNonNull(listener));
         }
 
-        public void remove(@Nonnull DataSourceListener listener) {
+        public void remove(@NonNull DataSourceListener listener) {
             listeners.remove(Objects.requireNonNull(listener));
         }
 
-        void fireOpened(@Nonnull DataSource dataSource) {
+        void fireOpened(@NonNull DataSource dataSource) {
             listeners.forEach((o) -> {
                 try {
                     o.opened(dataSource);
@@ -396,7 +396,7 @@ public class InternalTsProvider {
             });
         }
 
-        void fireClosed(@Nonnull DataSource dataSource) {
+        void fireClosed(@NonNull DataSource dataSource) {
             listeners.forEach((o) -> {
                 try {
                     o.closed(dataSource);
@@ -406,7 +406,7 @@ public class InternalTsProvider {
             });
         }
 
-        void fireAllClosed(@Nonnull String providerName) {
+        void fireAllClosed(@NonNull String providerName) {
             listeners.forEach((o) -> {
                 try {
                     o.allClosed(providerName);
@@ -416,7 +416,7 @@ public class InternalTsProvider {
             });
         }
 
-        void fireChanged(@Nonnull DataSource dataSource) {
+        void fireChanged(@NonNull DataSource dataSource) {
             listeners.forEach((o) -> {
                 try {
                     o.changed(dataSource);

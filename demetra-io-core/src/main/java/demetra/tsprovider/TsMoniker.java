@@ -17,7 +17,7 @@
 package demetra.tsprovider;
 
 import java.util.UUID;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
 
 /**
@@ -30,13 +30,13 @@ public class TsMoniker {
 
     public static final TsMoniker NULL = TsMoniker.of("", "");
 
-    @Nonnull
+    @NonNull
     public static TsMoniker of() {
         return new TsMoniker("", UUID.randomUUID().toString());
     }
 
-    @Nonnull
-    public static TsMoniker of(@Nonnull String source, @Nonnull String id) {
+    @NonNull
+    public static TsMoniker of(@NonNull String source, @NonNull String id) {
         return new TsMoniker(source, id);
     }
 

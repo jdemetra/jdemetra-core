@@ -20,8 +20,8 @@ import demetra.design.DemetraPlusLegacy;
 import demetra.tsprovider.DataSource;
 import java.io.File;
 import demetra.util.Parser;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -32,17 +32,17 @@ import javax.annotation.Nullable;
 public final class LegacyFileId implements CharSequence {
 
     @Nullable
-    public static LegacyFileId of(@Nonnull File file) {
+    public static LegacyFileId of(@NonNull File file) {
         return parse(file.getAbsolutePath());
     }
 
     @Nullable
-    public static LegacyFileId parse(@Nonnull CharSequence input) {
+    public static LegacyFileId parse(@NonNull CharSequence input) {
         return input instanceof LegacyFileId ? (LegacyFileId) input : parse(input.toString());
     }
 
     @Nullable
-    public static LegacyFileId parse(@Nonnull String input) {
+    public static LegacyFileId parse(@NonNull String input) {
         if (!isDemetraUri(input)) {
             LegacyId id = LegacyId.parse(LegacyId.Handler.PLAIN, input);
             if (id != null && id.getCount() == 1 && isValidPath(new File(id.get(0)))) {
@@ -78,12 +78,12 @@ public final class LegacyFileId implements CharSequence {
         return file.subSequence(start, end);
     }
 
-    public DataSource toDataSource(@Nonnull String providerName, @Nonnull String version) {
+    public DataSource toDataSource(@NonNull String providerName, @NonNull String version) {
         return DataSource.of(providerName, version, "file", file);
     }
 
-    @Nonnull
-    public static Parser<DataSource> asDataSourceParser(@Nonnull String providerName, @Nonnull String version) {
+    @NonNull
+    public static Parser<DataSource> asDataSourceParser(@NonNull String providerName, @NonNull String version) {
         return o -> getDataSource(o, providerName, version);
     }
 

@@ -34,7 +34,7 @@ import jdplus.regarima.regular.AICcComparator;
 import jdplus.regarima.regular.RegressionVariablesTest;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.x12.X12Preprocessor.AmiOptions;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.modelling.regression.IEasterVariable;
 import demetra.regarima.EasterSpec;
 import java.util.List;
@@ -51,7 +51,7 @@ final class X12SpecDecoder {
 
     private final X12Preprocessor.Builder builder = X12Preprocessor.builder();
 
-    X12SpecDecoder(@Nonnull RegArimaSpec spec, ModellingContext context) {
+    X12SpecDecoder(@NonNull RegArimaSpec spec, ModellingContext context) {
         if (context == null) {
             context = ModellingContext.getActiveContext();
         }

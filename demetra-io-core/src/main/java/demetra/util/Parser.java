@@ -30,8 +30,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Defines a class that creates an object from a {@link CharSequence}.<br> For
@@ -57,7 +57,7 @@ public interface Parser<T> {
      * @throws NullPointerException if input is null
      */
     @Nullable
-    T parse(@Nonnull CharSequence input);
+    T parse(@NonNull CharSequence input);
 
     /**
      * Returns an {@link Optional} containing the object that has bean created
@@ -70,8 +70,8 @@ public interface Parser<T> {
      * @throws NullPointerException if input is null
      * @since 2.2.0
      */
-    @Nonnull
-    default Optional<T> parseValue(@Nonnull CharSequence input) {
+    @NonNull
+    default Optional<T> parseValue(@NonNull CharSequence input) {
         return Optional.ofNullable(parse(input));
     }
 
@@ -81,9 +81,9 @@ public interface Parser<T> {
      * @return
      * @since 2.2.0
      */
-    @Nonnull
+    @NonNull
     @SuppressWarnings("null")
-    default Parser<T> orElse(@Nonnull Parser<T> other) {
+    default Parser<T> orElse(@NonNull Parser<T> other) {
         Objects.requireNonNull(other);
         return o -> {
             T result = parse(o);
@@ -91,9 +91,9 @@ public interface Parser<T> {
         };
     }
 
-    @Nonnull
+    @NonNull
     @SuppressWarnings("null")
-    default <X> Parser<X> andThen(@Nonnull Function<? super T, ? extends X> after) {
+    default <X> Parser<X> andThen(@NonNull Function<? super T, ? extends X> after) {
         Objects.requireNonNull(after);
         return o -> {
             T tmp = parse(o);
@@ -101,39 +101,39 @@ public interface Parser<T> {
         };
     }
 
-    @Nonnull
-    static <T> Parser<T> onDateTimeFormatter(@Nonnull DateTimeFormatter formatter, TemporalQuery<T>... queries) {
+    @NonNull
+    static <T> Parser<T> onDateTimeFormatter(@NonNull DateTimeFormatter formatter, TemporalQuery<T>... queries) {
         Objects.requireNonNull(formatter);
         Objects.requireNonNull(queries);
         return o -> InternalParser.parseTemporalAccessor(formatter, queries, o);
     }
 
-    @Nonnull
-    static Parser<Date> onStrictDatePattern(@Nonnull String datePattern, @Nonnull Locale locale) {
+    @NonNull
+    static Parser<Date> onStrictDatePattern(@NonNull String datePattern, @NonNull Locale locale) {
         return new InternalParser.StrictDatePatternParser(datePattern, locale);
     }
 
-    @Nonnull
-    static Parser<Date> onDateFormat(@Nonnull DateFormat dateFormat) {
+    @NonNull
+    static Parser<Date> onDateFormat(@NonNull DateFormat dateFormat) {
         return o -> InternalParser.parseDate(dateFormat, o);
     }
 
-    @Nonnull
-    static Parser<Number> onNumberFormat(@Nonnull NumberFormat numberFormat) {
+    @NonNull
+    static Parser<Number> onNumberFormat(@NonNull NumberFormat numberFormat) {
         return o -> InternalParser.parseNumber(numberFormat, o);
     }
 
-    @Nonnull
+    @NonNull
     static <T> Parser<T> onConstant(@Nullable T instance) {
         return o -> InternalParser.parseConstant(instance, o);
     }
 
-    @Nonnull
+    @NonNull
     static <T> Parser<T> onNull() {
         return InternalParser::parseNull;
     }
 
-    @Nonnull
+    @NonNull
     static Parser<File> onFile() {
         return InternalParser::parseFile;
     }
@@ -144,22 +144,22 @@ public interface Parser<T> {
      *
      * @return a non-null parser
      */
-    @Nonnull
+    @NonNull
     static Parser<Integer> onInteger() {
         return InternalParser::parseInteger;
     }
 
-    @Nonnull
+    @NonNull
     static Parser<Long> onLong() {
         return InternalParser::parseLong;
     }
 
-    @Nonnull
+    @NonNull
     static Parser<Boolean> onBoolean() {
         return InternalParser::parseBoolean;
     }
 
-    @Nonnull
+    @NonNull
     static Parser<Character> onCharacter() {
         return InternalParser::parseCharacter;
     }
@@ -170,42 +170,42 @@ public interface Parser<T> {
      *
      * @return a non-null parser
      */
-    @Nonnull
+    @NonNull
     static Parser<Double> onDouble() {
         return InternalParser::parseDouble;
     }
 
-    @Nonnull
+    @NonNull
     static Parser<Charset> onCharset() {
         return InternalParser::parseCharset;
     }
 
-    @Nonnull
-    static <T extends Enum<T>> Parser<T> onEnum(@Nonnull Class<T> enumClass) {
+    @NonNull
+    static <T extends Enum<T>> Parser<T> onEnum(@NonNull Class<T> enumClass) {
         return o -> InternalParser.parseEnum(enumClass, o);
     }
 
-    @Nonnull
+    @NonNull
     static Parser<String> onString() {
         return Object::toString;
     }
 
-    @Nonnull
+    @NonNull
     static Parser<double[]> onDoubleArray() {
         return InternalParser::parseDoubleArray;
     }
 
-    @Nonnull
+    @NonNull
     static Parser<String[]> onStringArray() {
         return InternalParser::parseStringArray;
     }
 
-    @Nonnull
-    static Parser<List<String>> onStringList(@Nonnull Function<CharSequence, Stream<String>> splitter) {
+    @NonNull
+    static Parser<List<String>> onStringList(@NonNull Function<CharSequence, Stream<String>> splitter) {
         return o -> InternalParser.parseStringList(splitter, o);
     }
 
-    @Nonnull
+    @NonNull
     static Parser<Locale> onLocale() {
         return InternalParser::parseLocale;
     }

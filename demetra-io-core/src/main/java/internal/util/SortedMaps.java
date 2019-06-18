@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -30,8 +30,8 @@ import javax.annotation.Nonnull;
 @lombok.experimental.UtilityClass
 public class SortedMaps {
 
-    @Nonnull
-    public <K, V> SortedMap<K, V> immutableCopyOf(@Nonnull Map<K, V> input) {
+    @NonNull
+    public <K, V> SortedMap<K, V> immutableCopyOf(@NonNull Map<K, V> input) {
         switch (input.size()) {
             case 0:
                 return Collections.emptySortedMap();
@@ -40,8 +40,8 @@ public class SortedMaps {
         }
     }
 
-    @Nonnull
-    public <K, V> SortedMap<K, V> immutableOf(@Nonnull K key, @Nonnull V value) {
+    @NonNull
+    public <K, V> SortedMap<K, V> immutableOf(@NonNull K key, @NonNull V value) {
         Objects.requireNonNull(key);
         Objects.requireNonNull(value);
         SortedMap<K, V> result = new TreeMap<>();

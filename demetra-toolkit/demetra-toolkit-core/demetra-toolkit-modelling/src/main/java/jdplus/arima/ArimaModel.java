@@ -24,7 +24,7 @@ import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRootsSolver;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Box-Jenkins ARIMA model P(B)D(B) y(t) = Q(B) e(t). P(B) is the stationary
@@ -116,7 +116,7 @@ public final class ArimaModel extends AbstractArimaModel {
      * @param ma The moving average polynomial
      * @param var The innovation variance
      */
-    public ArimaModel(@Nonnull final BackFilter ar, @Nonnull final BackFilter delta, @Nonnull final BackFilter ma,
+    public ArimaModel(@NonNull final BackFilter ar, @NonNull final BackFilter delta, @NonNull final BackFilter ma,
             final double var) {
         this.var = var;
         this.ar = ar;
@@ -132,8 +132,8 @@ public final class ArimaModel extends AbstractArimaModel {
      * @param delta The non stationary auto-regressive polynomial D(B)
      * @param sma A symmetric filter corresponding to var*Q(B)*Q(F)
      */
-    public ArimaModel(@Nonnull final BackFilter ar, @Nonnull final BackFilter delta,
-            @Nonnull final SymmetricFilter sma) {
+    public ArimaModel(@NonNull final BackFilter ar, @NonNull final BackFilter delta,
+            @NonNull final SymmetricFilter sma) {
         this.ar = ar;
         this.delta = delta;
         this.sma = sma;

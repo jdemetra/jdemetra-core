@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
 
 /**
@@ -41,7 +41,7 @@ import lombok.AccessLevel;
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TsUnit implements TemporalAmount {
 
-    @Nonnegative
+    @NonNegative
     private long amount;
 
     @lombok.NonNull
@@ -148,8 +148,8 @@ public class TsUnit implements TemporalAmount {
     public static final TsUnit MINUTE = new TsUnit(60, ChronoUnit.SECONDS);
     public static final TsUnit SECOND = new TsUnit(1, ChronoUnit.SECONDS);
 
-    @Nonnull
-    public static TsUnit of(@Nonnegative long amount, @Nonnull ChronoUnit unit) throws UnsupportedTemporalTypeException {
+    @NonNull
+    public static TsUnit of(@NonNegative long amount, @NonNull ChronoUnit unit) throws UnsupportedTemporalTypeException {
         if (amount < 0) {
             throw new IllegalArgumentException("Amount must be non-negative");
         }
@@ -226,8 +226,8 @@ public class TsUnit implements TemporalAmount {
      * @param b
      * @return
      */
-    @Nonnull
-    public static TsUnit gcd(@Nonnull TsUnit a, @Nonnull TsUnit b) {
+    @NonNull
+    public static TsUnit gcd(@NonNull TsUnit a, @NonNull TsUnit b) {
         if (a.equals(b)) {
             return a;
         }

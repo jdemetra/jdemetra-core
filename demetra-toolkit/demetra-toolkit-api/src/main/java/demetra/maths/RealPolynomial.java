@@ -7,7 +7,7 @@ package demetra.maths;
 
 import demetra.design.Development;
 import java.util.Formatter;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import java.util.Arrays;
 
@@ -21,7 +21,7 @@ public class RealPolynomial {
     public static final RealPolynomial ONE = new RealPolynomial(new double[]{1});
     public static final RealPolynomial ZERO = new RealPolynomial(new double[]{0});
     
-    public static RealPolynomial of(@Nonnull double[] coefficients) {
+    public static RealPolynomial of(@NonNull double[] coefficients) {
         int n = coefficients.length;
         while (n > 0 && coefficients[n - 1] == 0) {
             --n;
@@ -52,11 +52,11 @@ public class RealPolynomial {
         }
     }
 
-    public static RealPolynomial ofInternal(@Nonnull double[] coefficients) {
+    public static RealPolynomial ofInternal(@NonNull double[] coefficients) {
         return new RealPolynomial(coefficients);
     }
 
-    private static RealPolynomial ofCoefficients(@Nonnull double[] coefficients) {
+    private static RealPolynomial ofCoefficients(@NonNull double[] coefficients) {
         int n = coefficients.length;
         while (n > 0 && coefficients[n - 1] == 0) {
             --n;

@@ -17,7 +17,7 @@
 package demetra.timeseries;
 
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -25,11 +25,11 @@ import javax.annotation.Nonnull;
  */
 @FunctionalInterface
 public interface TsDataSupplier extends Supplier<TsData>{
-    public static TsDataSupplier of(@Nonnull TsData s){
+    public static TsDataSupplier of(@NonNull TsData s){
         return ()->s;
     }
     
-    public static TsDataSupplier ofDynamic(@Nonnull TsData initial, @Nonnull Supplier<TsData> supplier){
+    public static TsDataSupplier ofDynamic(@NonNull TsData initial, @NonNull Supplier<TsData> supplier){
         return () -> {
             TsData ndata = supplier.get();
             return ndata == null ? initial : ndata;

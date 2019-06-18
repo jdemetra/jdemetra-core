@@ -19,7 +19,7 @@
 package jdplus.regarima.regular;
 
 import demetra.design.Development;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -35,7 +35,7 @@ public interface IModelComparator {
      * @return -1 if the preferred model is the reference, 
      * the index of the alternative model in the array otherwise
      */
-    int compare(ModelEstimation reference, @Nonnull ModelEstimation[] models);
+    int compare(ModelEstimation reference, @NonNull ModelEstimation[] models);
 
     /**
      * 
@@ -43,5 +43,5 @@ public interface IModelComparator {
      * @param alternative Alternative model
      * @return -1 if the preferred model is the reference, 0 otherwise
      */
-    int compare(@Nonnull ModelEstimation reference, @Nonnull ModelEstimation alternative);
+    int compare(@NonNull ModelEstimation reference, @NonNull ModelEstimation alternative);
 }

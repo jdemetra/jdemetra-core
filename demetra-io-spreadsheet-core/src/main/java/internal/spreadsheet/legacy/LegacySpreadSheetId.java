@@ -17,8 +17,8 @@
 package internal.spreadsheet.legacy;
 
 import demetra.design.DemetraPlusLegacy;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -41,23 +41,23 @@ class LegacySpreadSheetId {
 
     private int indexSeries;
 
-    @Nonnull
+    @NonNull
     public static LegacySpreadSheetId collection(String file, String name) {
         return new LegacySpreadSheetId(file, name, null, -1);
     }
 
-    @Nonnull
+    @NonNull
     public static LegacySpreadSheetId series(String file, String sheetName, int spos) {
         return new LegacySpreadSheetId(file, sheetName, null, spos);
     }
 
-    @Nonnull
+    @NonNull
     public static LegacySpreadSheetId series(String file, String sheetName, String sname) {
         return new LegacySpreadSheetId(file, sheetName, sname, -1);
     }
 
     @Nullable
-    public static LegacySpreadSheetId parse(@Nonnull String input) {
+    public static LegacySpreadSheetId parse(@NonNull String input) {
         int beg = input.indexOf(BSEP);
         if (beg != 0) {
             return null;

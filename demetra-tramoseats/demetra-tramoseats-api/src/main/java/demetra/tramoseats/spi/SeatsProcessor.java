@@ -11,7 +11,7 @@ import demetra.processing.ProcResults;
 import demetra.modelling.regarima.SarimaSpec;
 import demetra.timeseries.TsData;
 import demetra.seats.SeatsSpec;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -21,5 +21,5 @@ import javax.annotation.Nonnull;
 @ServiceDefinition
 public interface SeatsProcessor {
 
-    ProcResults process(@Nonnull TsData series, @Nonnull SarimaSpec arima, @Nonnull SeatsSpec spec);
+    ProcResults process(@NonNull TsData series, @NonNull SarimaSpec arima, @NonNull SeatsSpec spec);
 }

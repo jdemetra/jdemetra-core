@@ -19,8 +19,8 @@ package internal.tsprovider.grid;
 import demetra.tsprovider.grid.GridOutput;
 import java.time.LocalDateTime;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -30,29 +30,29 @@ import javax.annotation.Nullable;
 @FunctionalInterface
 public interface InternalValueWriter<T> {
 
-    void write(@Nonnull GridOutput grid, int row, int column, @Nullable T value);
+    void write(@NonNull GridOutput grid, int row, int column, @Nullable T value);
 
-    @Nonnull
-    static <X> InternalValueWriter<X> onStringFormatter(@Nonnull Function<X, String> formatter) {
+    @NonNull
+    static <X> InternalValueWriter<X> onStringFormatter(@NonNull Function<X, String> formatter) {
         return FuncWriter.onStringFormatter(formatter);
     }
 
-    @Nonnull
+    @NonNull
     static InternalValueWriter<LocalDateTime> onDateTime() {
         return FuncWriter.DATETIME;
     }
 
-    @Nonnull
+    @NonNull
     static InternalValueWriter<Number> onNumber() {
         return FuncWriter.NUMBER;
     }
 
-    @Nonnull
+    @NonNull
     static InternalValueWriter<String> onString() {
         return FuncWriter.STRING;
     }
 
-    @Nonnull
+    @NonNull
     static <T> InternalValueWriter<T> onNull() {
         return NullWriter.INSTANCE;
     }

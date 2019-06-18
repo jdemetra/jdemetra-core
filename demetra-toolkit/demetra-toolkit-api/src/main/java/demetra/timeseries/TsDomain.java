@@ -17,8 +17,8 @@
 package demetra.timeseries;
 
 import java.time.LocalDateTime;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -35,7 +35,7 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
      * @return The new domain (never null)
      * @throws TsException is thrown when the decomposition is not possible
      */
-    public static @Nonnull TsDomain splitOf(TsPeriod period, TsUnit hUnit, boolean exact)throws TsException {
+    public static @NonNull TsDomain splitOf(TsPeriod period, TsUnit hUnit, boolean exact)throws TsException {
         LocalDateTime start = period.start(), end = period.end();
         long len = hUnit.getChronoUnit().between(start, end) / hUnit.getAmount();
         TsPeriod pstart = period.withUnit(hUnit);
@@ -51,7 +51,7 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
     @lombok.NonNull
     TsPeriod startPeriod;
 
-    @Nonnegative
+    @NonNegative
     int length;
 
     @Override

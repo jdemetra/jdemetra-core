@@ -20,8 +20,8 @@ import java.util.Iterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
 @lombok.experimental.UtilityClass
 public class Strings {
 
-    @Nonnull
+    @NonNull
     public String nullToEmpty(@Nullable String o) {
         return (o == null) ? "" : o;
     }
@@ -43,25 +43,25 @@ public class Strings {
         return !isNullOrEmpty(o);
     }
 
-    @Nonnull
-    public Stream<String> splitToStream(@Nonnull String separator, @Nonnull CharSequence input) {
+    @NonNull
+    public Stream<String> splitToStream(@NonNull String separator, @NonNull CharSequence input) {
         return separator.length() == 1
                 ? splitToStream(separator.charAt(0), input)
                 : StreamSupport.stream(Spliterators.spliteratorUnknownSize(splitToIterator(separator, input), 0), false);
     }
 
-    @Nonnull
-    public Stream<String> splitToStream(char separator, @Nonnull CharSequence input) {
+    @NonNull
+    public Stream<String> splitToStream(char separator, @NonNull CharSequence input) {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(splitToIterator(separator, input), 0), false);
     }
 
-    @Nonnull
-    public Iterator<String> splitToIterator(@Nonnull String separator, @Nonnull CharSequence input) {
+    @NonNull
+    public Iterator<String> splitToIterator(@NonNull String separator, @NonNull CharSequence input) {
         return asIterator(CharMatcher.of(separator), separator.length(), input);
     }
 
-    @Nonnull
-    public Iterator<String> splitToIterator(char separator, @Nonnull CharSequence input) {
+    @NonNull
+    public Iterator<String> splitToIterator(char separator, @NonNull CharSequence input) {
         return asIterator(CharMatcher.of(separator), 1, input);
     }
 

@@ -19,8 +19,8 @@ package demetra.sql;
 import internal.sql.SqlPropertiesSupport;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import util.sql.SqlConnectionSupplier;
 
 /**
@@ -29,13 +29,13 @@ import util.sql.SqlConnectionSupplier;
  */
 public interface HasSqlProperties {
 
-    @Nonnull
+    @NonNull
     SqlConnectionSupplier getConnectionSupplier();
 
     void setConnectionSupplier(@Nullable SqlConnectionSupplier connectionSupplier);
 
-    @Nonnull
-    static HasSqlProperties of(@Nonnull Supplier<SqlConnectionSupplier> defaultSupplier, @Nonnull Runnable onSupplierChange) {
+    @NonNull
+    static HasSqlProperties of(@NonNull Supplier<SqlConnectionSupplier> defaultSupplier, @NonNull Runnable onSupplierChange) {
         return new SqlPropertiesSupport(
                 defaultSupplier,
                 new AtomicReference<>(defaultSupplier.get()),

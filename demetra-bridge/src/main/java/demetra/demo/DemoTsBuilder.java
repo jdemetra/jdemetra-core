@@ -29,7 +29,7 @@ import java.time.ZoneOffset;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -39,7 +39,7 @@ import javax.annotation.Nonnull;
 @BuilderPattern(Ts.class)
 public final class DemoTsBuilder {
 
-    @Nonnull
+    @NonNull
     public static TsCollection randomTsCollection(int nSeries) {
         XorshiftRNG rng = new XorshiftRNG(0);
         DemoTsBuilder builder = new DemoTsBuilder().obsCount(24).rng(rng);
@@ -68,44 +68,44 @@ public final class DemoTsBuilder {
         this.generator = (x, y) -> generateValues(x, y, start.start().toInstant(ZoneOffset.UTC).toEpochMilli());
     }
 
-    @Nonnull
-    public DemoTsBuilder name(@Nonnull String name) {
+    @NonNull
+    public DemoTsBuilder name(@NonNull String name) {
         this.name = Objects.requireNonNull(name);
         return this;
     }
 
-    @Nonnull
-    public DemoTsBuilder start(@Nonnull TsPeriod start) {
+    @NonNull
+    public DemoTsBuilder start(@NonNull TsPeriod start) {
         this.start = Objects.requireNonNull(start);
         return this;
     }
 
-    @Nonnull
-    public DemoTsBuilder generator(@Nonnull BiFunction<Integer, IRandomNumberGenerator, double[]> generator) {
+    @NonNull
+    public DemoTsBuilder generator(@NonNull BiFunction<Integer, IRandomNumberGenerator, double[]> generator) {
         this.generator = Objects.requireNonNull(generator);
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public DemoTsBuilder forecastCount(int forecastCount) {
         this.forecastCount = forecastCount;
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public DemoTsBuilder missingCount(int missingCount) {
         this.missingCount = missingCount;
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public DemoTsBuilder obsCount(int obsCount) {
         this.obsCount = obsCount;
         return this;
     }
 
-    @Nonnull
-    public DemoTsBuilder rng(@Nonnull IRandomNumberGenerator rng) {
+    @NonNull
+    public DemoTsBuilder rng(@NonNull IRandomNumberGenerator rng) {
         this.rng = Objects.requireNonNull(rng);
         return this;
     }

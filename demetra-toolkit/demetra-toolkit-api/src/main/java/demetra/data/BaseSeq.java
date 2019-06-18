@@ -17,8 +17,8 @@
 package demetra.data;
 
 import demetra.design.Development;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Describes an abstract sequence of elements. A sequence is an ordered
@@ -35,7 +35,7 @@ public interface BaseSeq {
      *
      * @return the number of <code>values</code>s in this sequence
      */
-    @Nonnegative
+    @NonNegative
     int length();
 
     /**
@@ -52,6 +52,6 @@ public interface BaseSeq {
      *
      * @return
      */
-    @Nonnull
+    @NonNull
     BaseSeqCursor cursor();
 }

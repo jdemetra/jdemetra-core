@@ -37,7 +37,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
 import internal.tsprovider.grid.InternalValueReader;
 import java.util.HashMap;
@@ -82,8 +82,8 @@ public final class GridReader {
         return result;
     }
 
-    @Nonnull
-    public TsCollection read(@Nonnull GridInput input) {
+    @NonNull
+    public TsCollection read(@NonNull GridInput input) {
         ValueReaders readers = ValueReaders.of(
                 input::isSupportedDataType,
                 () -> format.dateTimeParser()::parse,

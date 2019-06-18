@@ -25,8 +25,8 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import demetra.util.Parser;
 import demetra.util.Formatter;
 import internal.util.Strings;
@@ -65,7 +65,7 @@ public final class ObsFormat {
      * @see SimpleDateFormat
      * @see DecimalFormat
      */
-    @Nonnull
+    @NonNull
     public static ObsFormat of(@Nullable Locale locale, @Nullable String datePattern, @Nullable String numberPattern) {
         return new ObsFormat(locale, Strings.nullToEmpty(datePattern), Strings.nullToEmpty(numberPattern));
     }
@@ -78,7 +78,7 @@ public final class ObsFormat {
     @lombok.NonNull
     private final String numberPattern;
 
-    @Nonnull
+    @NonNull
     public String getLocaleString() {
         return locale != null ? locale.toString() : "";
     }
@@ -88,7 +88,7 @@ public final class ObsFormat {
         return getLocaleString() + " ~ " + datePattern + " ~ " + numberPattern;
     }
 
-    @Nonnull
+    @NonNull
     public Formatter<LocalDateTime> dateTimeFormatter() {
         try {
             return Formatter.onDateTimeFormatter(newDateTimeFormatter());
@@ -97,7 +97,7 @@ public final class ObsFormat {
         }
     }
 
-    @Nonnull
+    @NonNull
     public Parser<LocalDateTime> dateTimeParser() {
         try {
             return Parser.onDateTimeFormatter(newDateTimeFormatter(), TEMPORAL_QUERIES);
@@ -112,7 +112,7 @@ public final class ObsFormat {
      *
      * @return a non-null formatter
      */
-    @Nonnull
+    @NonNull
     public Formatter<Date> calendarFormatter() {
         try {
             return Formatter.onDateFormat(newDateFormat());
@@ -127,7 +127,7 @@ public final class ObsFormat {
      *
      * @return a non-null parser
      */
-    @Nonnull
+    @NonNull
     public Parser<Date> calendarParser() {
         try {
             return Parser.onDateFormat(newDateFormat());
@@ -142,7 +142,7 @@ public final class ObsFormat {
      *
      * @return a non-null formatter
      */
-    @Nonnull
+    @NonNull
     public Formatter<Number> numberFormatter() {
         try {
             return Formatter.onNumberFormat(newNumberFormat());
@@ -157,7 +157,7 @@ public final class ObsFormat {
      *
      * @return a non-null parser
      */
-    @Nonnull
+    @NonNull
     public Parser<Number> numberParser() {
         try {
             return Parser.onNumberFormat(newNumberFormat());

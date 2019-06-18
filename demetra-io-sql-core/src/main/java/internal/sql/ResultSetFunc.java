@@ -21,8 +21,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import util.sql.SqlFunc;
 import util.sql.SqlTypes;
 
@@ -37,20 +37,20 @@ public interface ResultSetFunc<T> extends SqlFunc<ResultSet, T> {
 
     @Override
     @Nullable
-    T applyWithSql(@Nonnull ResultSet t) throws SQLException;
+    T applyWithSql(@NonNull ResultSet t) throws SQLException;
 
-    @Nonnull
+    @NonNull
     @SuppressWarnings("null")
     static ResultSetFunc<String> onNull() {
         return rs -> null;
     }
 
-    @Nonnull
+    @NonNull
     static ResultSetFunc<String> onGetString(int columnIndex) {
         return rs -> rs.getString(columnIndex);
     }
 
-    @Nonnull
+    @NonNull
     static ResultSetFunc<String[]> onGetStringArray(int firstColumnIndex, int length) {
         return rs -> {
             String[] result = new String[length];
@@ -61,28 +61,28 @@ public interface ResultSetFunc<T> extends SqlFunc<ResultSet, T> {
         };
     }
 
-    @Nonnull
+    @NonNull
     static ResultSetFunc<String> onGetObjectToString(int columnIndex) {
         return rs -> rs.getObject(columnIndex).toString();
     }
 
-    @Nonnull
+    @NonNull
     @SuppressWarnings("null")
-    static <X> ResultSetFunc<X> compose(int columnIndex, @Nonnull Parser<X> parser) {
+    static <X> ResultSetFunc<X> compose(int columnIndex, @NonNull Parser<X> parser) {
         return rs -> {
             Object value = rs.getObject(columnIndex);
             return value != null ? parser.parse(value.toString()) : null;
         };
     }
 
-    @Nonnull
-    static ResultSetFunc<java.util.Date> onDate(@Nonnull ResultSetMetaData meta, int columnIndex, @Nonnull Parser<java.util.Date> dateParser) throws SQLException {
+    @NonNull
+    static ResultSetFunc<java.util.Date> onDate(@NonNull ResultSetMetaData meta, int columnIndex, @NonNull Parser<java.util.Date> dateParser) throws SQLException {
         ResultSetFunc<java.util.Date> result = dateBySqlType(meta.getColumnType(columnIndex), columnIndex);
         return result != null ? result : compose(columnIndex, dateParser);
     }
 
-    @Nonnull
-    static ResultSetFunc<Number> onNumber(@Nonnull ResultSetMetaData meta, int columnIndex, @Nonnull Parser<Number> numberParser) throws SQLException {
+    @NonNull
+    static ResultSetFunc<Number> onNumber(@NonNull ResultSetMetaData meta, int columnIndex, @NonNull Parser<Number> numberParser) throws SQLException {
         ResultSetFunc<Number> result = numberBySqlType(meta.getColumnType(columnIndex), columnIndex);
         return result != null ? result : compose(columnIndex, numberParser);
     }

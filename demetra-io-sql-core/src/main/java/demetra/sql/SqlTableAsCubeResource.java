@@ -16,6 +16,7 @@
  */
 package demetra.sql;
 
+import demetra.design.ThreadSafe;
 import internal.sql.SqlTableAsCubeUtil;
 import internal.sql.SelectBuilder;
 import internal.sql.ResultSetFunc;
@@ -44,9 +45,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.GregorianCalendar;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import util.sql.SqlConnectionSupplier;
 
 /**
@@ -187,10 +187,10 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
          *
          * @return a SQL statement
          */
-        @Nonnull
-        String getQueryString(@Nonnull DatabaseMetaData metaData) throws SQLException;
+        @NonNull
+        String getQueryString(@NonNull DatabaseMetaData metaData) throws SQLException;
 
-        void setParameters(@Nonnull PreparedStatement statement) throws SQLException;
+        void setParameters(@NonNull PreparedStatement statement) throws SQLException;
 
         /**
          * Process the specified ResultSet in order to create the expected
@@ -201,10 +201,10 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
          * @throws SQLException
          */
         @Nullable
-        T process(@Nonnull ResultSet rs, @Nonnull AutoCloseable closeable) throws SQLException;
+        T process(@NonNull ResultSet rs, @NonNull AutoCloseable closeable) throws SQLException;
 
         @Nullable
-        default T call(@Nonnull SqlConnectionSupplier supplier, @Nonnull String connectionString) throws SQLException {
+        default T call(@NonNull SqlConnectionSupplier supplier, @NonNull String connectionString) throws SQLException {
             Connection conn = null;
             PreparedStatement cmd = null;
             ResultSet rs = null;
