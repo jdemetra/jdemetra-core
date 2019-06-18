@@ -71,7 +71,9 @@ public class X11SeasonalFiltersFactory {
 
             DataBlock cout = DataBlock.ofInternal(new double[cin.length()]);
             int n = sfilter.length() / 2;
-            sfilter.apply(cin, cout.drop(n, n));
+            if (2 * n < cin.length()) {
+                sfilter.apply(cin, cout.drop(n, n));
+            }
             if (endpoints != null) {
                 endpoints.process(cin, cout);
             }
@@ -176,8 +178,8 @@ public class X11SeasonalFiltersFactory {
     final FiniteFilter[] FC3 = new FiniteFilter[]{M_2X1, M_2X0};
     final FiniteFilter[] FC5 = new FiniteFilter[]{M_3X2, M_3X1, M_3X0};
     final FiniteFilter[] FC9 = new FiniteFilter[]{M_5X4, M_5X3, M_5X2,
-                                                  M_5X1, M_5X0};
+        M_5X1, M_5X0};
     final FiniteFilter[] FC15 = new FiniteFilter[]{M_8X7, M_8X6,
-                                                   M_8X5, M_8X4, M_8X3, M_8X2, M_8X1, M_8X0};
+        M_8X5, M_8X4, M_8X3, M_8X2, M_8X1, M_8X0};
 
 }

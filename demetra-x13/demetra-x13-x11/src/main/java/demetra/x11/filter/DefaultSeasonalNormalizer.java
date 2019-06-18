@@ -44,10 +44,15 @@ public class DefaultSeasonalNormalizer {
         ArrayList<Integer> stable_index = new ArrayList<>();
         SeasonalFilterOption[] filters = context.getFinalSeasonalFilter();
 
+        // conditions for short time series
+        int ny_all = in.length() / context.getPeriod();
+        int nyr_all = in.length() % context.getPeriod() == 0 ? ny_all : ny_all + 1;
+
         int ind;
         for (int i = 0; i < context.getPeriod(); i++) {
             ind = (start + i) % context.getPeriod();
-            if (SeasonalFilterOption.Stable.equals(filters[i])) {
+            if (SeasonalFilterOption.Stable.equals(filters[i])
+                    || (ny_all < 5 || (SeasonalFilterOption.S3X15.equals(filters[i]) && nyr_all < 20))) { // condition for too short time series
                 stable_index.add(ind);
             }
         }

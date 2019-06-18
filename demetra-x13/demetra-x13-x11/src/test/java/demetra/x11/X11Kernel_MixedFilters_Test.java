@@ -43,8 +43,7 @@ public class X11Kernel_MixedFilters_Test {
         }
         seasonal_filter[1] = SeasonalFilterOption.S3X1.name();
         for (int start = 1; start <= 12; start++) {
-            testKernel(modeName, seasonal_filter, filterLength, frequency, WU5637, 1.1, 1.2, CalendarSigmaOption.None.toString(), start);
-
+            testKernel(modeName, seasonal_filter, filterLength, frequency, WU5636, 1.1, 1.2, CalendarSigmaOption.None.toString(), start);
         }
     }
 
@@ -64,7 +63,7 @@ public class X11Kernel_MixedFilters_Test {
     }
 
     @Test
-    public void test_12_S3XStable_All_Start1_mult() {
+    public void test_12_Msr_All_Start1_mult() {
         String modeName = DecompositionMode.Multiplicative.name();
         int filterLength = 13;
         int frequency = 12;

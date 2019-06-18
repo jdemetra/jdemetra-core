@@ -19,21 +19,25 @@ import demetra.x11.filter.endpoints.FilteredMeanEndPoints;
  */
 public class MsrFilterSelection {
 
-    private static final double[] C = {1.00000e0, 1.02584e0, 1.01779e0, 1.01383e0,
-        1.00000e0, 3.00000e0, 1.55291e0, 1.30095e0};
+    private static final double[] C = {1.00000, 1.02584, 1.01779, 1.01383,
+        1.00000, 3.00000, 1.55291, 1.30095};
 
     private DoubleSequence seas;
     private DoubleSequence irr;
 
     private double[] s;
     private double[] i;
-    private double[] n;
+    private int[] n;
 
-    public SeasonalFilterOption[] doMSR(DoubleSequence data, X11Context context) {
-        SeasonalFilterOption[] result = context.getFinalSeasonalFilter();
+    public SeasonalFilterOption doMSR(DoubleSequence data, X11Context context) {
         SeasonalFilterOption seasFilter = null;
+        //0. Remove fore- and backcast
+        int nf = context.getForecastHorizon();
+        int nb = context.getBackcastHorizon();
+        DoubleSequence series = data.drop(nb, nf);
+
         // 0. complete year
-        DoubleSequence series = completeYear(data, context);
+        series = completeYear(series, context);
         double msr;
         do {
             // 1. calc Components
@@ -44,36 +48,23 @@ public class MsrFilterSelection {
             msr = getGlobalMsr();
             // 4. decision
             seasFilter = decideFilter(msr);
+            // 5. cut year
             series = series.drop(0, context.getPeriod());
-        } while (seasFilter == null && series.length() / context.getPeriod() >= 6);
+        } while (seasFilter == null && series.length() / context.getPeriod() >= 5);
+
         if (seasFilter == null) {
             seasFilter = SeasonalFilterOption.S3X5;
         }
-
-        for (int i = 0; i < context.getPeriod(); i++) {
-            if (SeasonalFilterOption.Msr.equals(result[i])) {
-                result[i] = seasFilter;
-            }
-        }
-
-        return result;
+        return seasFilter;
     }
 
     private DoubleSequence completeYear(DoubleSequence series, X11Context context) {
-        DoubleSequence seriesCopy;
         //check incomplete year
         int cut = (series.length() + context.getFirstPeriod()) % context.getPeriod();
-        if (cut != 0) {
-            seriesCopy = series.drop(0, cut);
-        } else {
-            seriesCopy = series.drop(0, 0);
-        }
-        return seriesCopy;
+        return series.drop(0, cut);
     }
 
     private void calcComponents(DoubleSequence series, X11Context context) {
-        // TODO: 0. Remove fore- and backcast
-
         // 1. estimate series component
         SymmetricFilter filter = X11FilterFactory.makeSymmetricFilter(7);
         FilteredMeanEndPoints f = new FilteredMeanEndPoints(filter);
@@ -101,7 +92,7 @@ public class MsrFilterSelection {
 
         s = new double[period];
         i = new double[period];
-        n = new double[period];
+        n = new int[period];
 
         DataBlock iter_seas = DataBlock.of(seas);
         DataBlock iter_irr = DataBlock.of(irr);
@@ -135,7 +126,7 @@ public class MsrFilterSelection {
         } else if (n < 6) {
             return C[n - 2];
         } else {
-            return n * 12.247449e0 / (73.239334e0 + (n - 6) * 12.247449e0);
+            return n * 12.247449 / (73.239334 + (n - 6) * 12.247449);
         }
     }
 
@@ -145,7 +136,7 @@ public class MsrFilterSelection {
         } else if (n < 6) {
             return C[n + 2];
         } else {
-            return n * 1.732051e0 / (8.485281e0 + (n - 6) * 1.732051e0);
+            return n * 1.732051 / (8.485281 + (n - 6) * 1.732051);
         }
     }
 

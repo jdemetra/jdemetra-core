@@ -9,6 +9,7 @@ import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import ec.satoolkit.x11.X11Specification;
+import ec.satoolkit.x11.X11Toolkit;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.ArrayList;
@@ -57,7 +58,34 @@ public class X11KernelTest {
     }
 
     @Test
+    public void testProcess_LogAdd_Forecast12() {
+        String modeName = DecompositionMode.LogAdditive.name();
+        String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
+        int filterLength = 13;
+        int frequency = 12;
+        testX11Kernel(modeName, seasonalFilterOptionName, filterLength, frequency, WU5636, CalendarSigmaOption.None.name(), 12);
+    }
+
+    @Test
+    public void testProcess_Mult_Forecast12() {
+        String modeName = DecompositionMode.Multiplicative.name();
+        String seasonalFilterOptionName = SeasonalFilterOption.Msr.name();
+        int filterLength = 13;
+        int frequency = 12;
+        testX11Kernel(modeName, seasonalFilterOptionName, filterLength, frequency, WU5636, CalendarSigmaOption.None.name(), 12);
+    }
+
+    @Test
+    public void testProcess_Add_Forecast12() {
+        String modeName = DecompositionMode.Additive.name();
+        String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
+        int filterLength = 13;
+        int frequency = 12;
+        testX11Kernel(modeName, seasonalFilterOptionName, filterLength, frequency, WU5636, CalendarSigmaOption.None.name(), 12);
+    }
+
     @Ignore
+    @Test
     public void testProcess_mult_Halfyearly_autoHenderson() {
         //Test runs only against Version 2.2.3 Snapshoot with Bugfix for autohenderson for halfyearly
         String modeName = DecompositionMode.LogAdditive.name();
@@ -68,6 +96,7 @@ public class X11KernelTest {
     }
 
     @Test
+    @Ignore
     public void testProcess_LogAdd_Halfyearly() {
         String modeName = DecompositionMode.LogAdditive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
@@ -95,6 +124,10 @@ public class X11KernelTest {
     }
 
     private void testX11Kernel(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values, String calendarSigma) {
+        testX11Kernel(modeName, seasonalFilterOptionName, filterLength, frequency, values, calendarSigma, 0);
+    }
+
+    private void testX11Kernel(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values, String calendarSigma, int forecastHorizon) {
         demetra.x11.X11Kernel instanceKernel = new X11Kernel();
         demetra.timeseries.TsData tsData = demetra.timeseries.TsData.ofInternal(TsPeriod.of(TsUnit.ofAnnualFrequency(frequency), 0), values);
         seasonalFilterOptions = new ArrayList<>();
@@ -108,6 +141,7 @@ public class X11KernelTest {
                 .hendersonFilterLength(filterLength)
                 .calendarSigma(CalendarSigmaOption.valueOf(calendarSigma))
                 .filters(seasonalFilterOptions)
+                .forecastHorizon(forecastHorizon)
                 .build();
 
         demetra.x11.X11Results x11Results = instanceKernel.process(tsData, spec);
@@ -117,13 +151,14 @@ public class X11KernelTest {
         oldSpec.setHendersonFilterLength(filterLength);
         oldSpec.setCalendarSigma(ec.satoolkit.x11.CalendarSigma.valueOf(calendarSigma));
         oldSpec.setSeasonalFilter(ec.satoolkit.x11.SeasonalFilterOption.valueOf(seasonalFilterOptionName));
-        oldSpec.setForecastHorizon(0);
+        oldSpec.setForecastHorizon(forecastHorizon);
         oldSpec.setBiasCorrection(ec.satoolkit.x11.BiasCorrection.Legacy);
 
         ec.satoolkit.x11.X11Kernel old = new ec.satoolkit.x11.X11Kernel();
-        old.setToolkit(ec.satoolkit.x11.X11Toolkit.create(oldSpec));
-        ec.satoolkit.x11.X11Results old_Results = old.process(new TsData(TsFrequency.valueOf(frequency), 1970, 0, values, true));
-
+        X11Toolkit toolkit = ec.satoolkit.x11.X11Toolkit.create(oldSpec);
+        toolkit.setPreprocessor(null);
+        old.setToolkit(toolkit);
+        ec.satoolkit.x11.X11Results old_Results = old.process(new TsData(TsFrequency.valueOf(frequency), 1900, 0, values, true));
         double[] expected_B1 = old_Results.getData("b-tables.b1", TsData.class).internalStorage();
         double[] actual_B1 = x11Results.getB1().getValues().toArray();
         Assert.assertArrayEquals("Error in B1", expected_B1, actual_B1, DELTA);
