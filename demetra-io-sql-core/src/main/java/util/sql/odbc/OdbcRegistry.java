@@ -73,7 +73,7 @@ public final class OdbcRegistry {
     }
 
     @NonNull
-    public List<OdbcDataSource> getDataSources(@NonNull OdbcDataSource.Type... types) throws IOException {
+    public List<OdbcDataSource> getDataSources(OdbcDataSource.@NonNull Type... types) throws IOException {
         List<OdbcDataSource> result;
 
         try {

@@ -34,7 +34,7 @@ public interface OdbcRegistrySpi {
     boolean isAvailable();
 
     @NonNull
-    List<OdbcDataSource> getDataSources(@NonNull OdbcDataSource.Type... types) throws IOException;
+    List<OdbcDataSource> getDataSources(OdbcDataSource.@NonNull Type... types) throws IOException;
 
     @NonNull
     List<OdbcDriver> getDrivers() throws IOException;
