@@ -67,7 +67,7 @@ public class X11Kernel implements X11.Processor {
         if (!timeSeries.getValues().allMatch(Double::isFinite)) {
             throw new X11Exception(X11Exception.ERR_MISSING);
         }
-        if (spec.getMode() != DecompositionMode.Additive && spec.getMode() != DecompositionMode.PseudoAdditive
+        if ((spec.getMode() == DecompositionMode.Multiplicative || spec.getMode() == DecompositionMode.LogAdditive)
                 && timeSeries.getValues().anyMatch(x -> x <= 0)) {
             throw new X11Exception(X11Exception.ERR_NEG);
         }

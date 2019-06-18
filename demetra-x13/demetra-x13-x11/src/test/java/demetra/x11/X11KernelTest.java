@@ -13,6 +13,7 @@ import ec.satoolkit.x11.X11Toolkit;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -121,6 +122,64 @@ public class X11KernelTest {
         int filterLength = 5;
         int frequency = 2;
         testX11Kernel(modeName, seasonalFilterOptionName, filterLength, frequency, HKAS, CalendarSigmaOption.None.name());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testProcess_Check_NonannualFrequency() {
+        demetra.x11.X11Kernel instanceKernel = new X11Kernel();
+        X11Spec spec = demetra.x11.X11Spec.builder().build();
+        demetra.timeseries.TsData tsData = demetra.timeseries.TsData.ofInternal(TsPeriod.daily(1990, 1, 1), WU5636);
+        instanceKernel.process(tsData, spec);
+    }
+
+    @Test(expected = X11Exception.class)
+    public void testProcess_Check_TooShort() {
+        demetra.x11.X11Kernel instanceKernel = new X11Kernel();
+        X11Spec spec = demetra.x11.X11Spec.builder().build();
+        double[] copy = Arrays.copyOf(WU5636, 35);
+        demetra.timeseries.TsData tsData = demetra.timeseries.TsData.ofInternal(TsPeriod.monthly(1990, 1), copy);
+        instanceKernel.process(tsData, spec);
+    }
+
+    @Test(expected = X11Exception.class)
+    public void testProcess_Check_MissingValues() {
+        demetra.x11.X11Kernel instanceKernel = new X11Kernel();
+        X11Spec spec = demetra.x11.X11Spec.builder().build();
+        double[] copy = Arrays.copyOf(WU5636, 36);
+        copy[0] = Double.NaN;
+        demetra.timeseries.TsData tsData = demetra.timeseries.TsData.ofInternal(TsPeriod.monthly(1990, 1), copy);
+        instanceKernel.process(tsData, spec);
+    }
+
+    @Test(expected = X11Exception.class)
+    public void testProcess_Check_NegativeValues_Mult() {
+        demetra.x11.X11Kernel instanceKernel = new X11Kernel();
+        X11Spec spec = demetra.x11.X11Spec.builder().mode(DecompositionMode.Multiplicative).build();
+        double[] copy = Arrays.copyOf(WU5636, 36);
+        copy[0] = -1;
+        demetra.timeseries.TsData tsData = demetra.timeseries.TsData.ofInternal(TsPeriod.monthly(1990, 1), copy);
+        instanceKernel.process(tsData, spec);
+    }
+
+    @Test(expected = X11Exception.class)
+    public void testProcess_Check_NegativeValues_LogAdd() {
+        demetra.x11.X11Kernel instanceKernel = new X11Kernel();
+        X11Spec spec = demetra.x11.X11Spec.builder().mode(DecompositionMode.LogAdditive).build();
+        double[] copy = Arrays.copyOf(WU5636, 36);
+        copy[0] = -1;
+        demetra.timeseries.TsData tsData = demetra.timeseries.TsData.ofInternal(TsPeriod.monthly(1990, 1), copy);
+        instanceKernel.process(tsData, spec);
+    }
+
+    @Test
+    public void testProcess_Check_NegativeValues_Add() {
+        double[] copy = Arrays.copyOf(WU5636, WU5636.length);
+        copy[0] = -1;
+        String modeName = DecompositionMode.Additive.name();
+        String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
+        int filterLength = 5;
+        int frequency = 12;
+        testX11Kernel(modeName, seasonalFilterOptionName, filterLength, frequency, copy, CalendarSigmaOption.None.name());
     }
 
     private void testX11Kernel(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values, String calendarSigma) {
