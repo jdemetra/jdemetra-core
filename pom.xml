@@ -44,7 +44,7 @@
             <dependency>
                 <groupId>org.netbeans.api</groupId>
                 <artifactId>org-openide-util-lookup</artifactId>
-                <version>RELEASE82</version>
+                <version>RELEASE110</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -349,13 +349,6 @@
     </profiles>
 
     <repositories>
-        <repository>
-            <id>netbeans-releases</id>
-            <url>http://bits.netbeans.org/nexus/content/groups/netbeans/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
         <repository>
             <id>oss-jfrog-artifactory-releases</id>
             <url>https://oss.jfrog.org/artifactory/oss-release-local</url>
