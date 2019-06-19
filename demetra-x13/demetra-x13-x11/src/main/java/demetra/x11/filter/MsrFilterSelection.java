@@ -44,7 +44,8 @@ public class MsrFilterSelection {
             // 4. decision
             seasFilter = decideFilter(msr);
             series = series.drop(0, context.getPeriod());
-        } while (seasFilter == null && series.length() / context.getPeriod() >= 6);
+//          As we have shortend the series, we must adapt the test on the length (5 instead of 6)
+        } while (seasFilter == null && series.length() / context.getPeriod() >= 5);
         if (seasFilter == null) {
             seasFilter = SeasonalFilterOption.S3X5;
         }
