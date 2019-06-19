@@ -19,8 +19,8 @@ package ec.tss.tsproviders.utils;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Defines a class that creates an object from a {@link CharSequence}.<br> For
@@ -46,7 +46,7 @@ public interface IParser<T> {
      * @throws NullPointerException if input is null
      */
     @Nullable
-    T parse(@Nonnull CharSequence input);
+    T parse(@NonNull CharSequence input);
 
     /**
      * Returns an {@link Optional} containing the object that has bean created
@@ -59,8 +59,8 @@ public interface IParser<T> {
      * @throws NullPointerException if input is null
      * @since 2.2.0
      */
-    @Nonnull
-    default Optional<T> parseValue(@Nonnull CharSequence input) {
+    @NonNull
+    default Optional<T> parseValue(@NonNull CharSequence input) {
         return Optional.ofNullable(parse(input));
     }
 
@@ -70,9 +70,9 @@ public interface IParser<T> {
      * @return
      * @since 2.2.0
      */
-    @Nonnull
+    @NonNull
     @SuppressWarnings("null")
-    default IParser<T> orElse(@Nonnull IParser<T> other) {
+    default IParser<T> orElse(@NonNull IParser<T> other) {
         Objects.requireNonNull(other);
         return o -> {
             T result = parse(o);
@@ -80,9 +80,9 @@ public interface IParser<T> {
         };
     }
 
-    @Nonnull
+    @NonNull
     @SuppressWarnings("null")
-    default <X> IParser<X> andThen(@Nonnull Function<? super T, ? extends X> after) {
+    default <X> IParser<X> andThen(@NonNull Function<? super T, ? extends X> after) {
         Objects.requireNonNull(after);
         return o -> {
             T tmp = parse(o);

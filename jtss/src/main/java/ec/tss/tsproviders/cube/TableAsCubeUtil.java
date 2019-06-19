@@ -19,7 +19,7 @@ package ec.tss.tsproviders.cube;
 import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.stream.Collector;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -29,18 +29,18 @@ import javax.annotation.Nonnull;
 @lombok.experimental.UtilityClass
 public class TableAsCubeUtil {
 
-    @Nonnull
-    public String getDisplayName(@Nonnull String db, @Nonnull String table, @Nonnull String value, @Nonnull ObsGathering obsGathering) {
+    @NonNull
+    public String getDisplayName(@NonNull String db, @NonNull String table, @NonNull String value, @NonNull ObsGathering obsGathering) {
         return String.format("%s ~ %s \u00BB %s %s", db, table, value, toString(obsGathering));
     }
 
-    @Nonnull
-    public String getDisplayName(@Nonnull CubeId id, @Nonnull Collector<? super String, ?, String> joiner) {
+    @NonNull
+    public String getDisplayName(@NonNull CubeId id, @NonNull Collector<? super String, ?, String> joiner) {
         return id.isVoid() ? "All" : id.getDimensionValueStream().collect(joiner);
     }
 
-    @Nonnull
-    public String getDisplayNodeName(@Nonnull CubeId id) {
+    @NonNull
+    public String getDisplayNodeName(@NonNull CubeId id) {
         return id.isVoid() ? "All" : id.getDimensionValue(id.getLevel() - 1);
     }
 

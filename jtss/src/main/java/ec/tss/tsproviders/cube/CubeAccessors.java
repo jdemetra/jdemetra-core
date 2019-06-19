@@ -20,9 +20,9 @@ import ec.tss.tsproviders.cursor.TsCursor;
 import ec.tss.tsproviders.utils.IteratorWithIO;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentMap;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * Package private supporting class for {@link CubeAccessor}.
@@ -102,7 +102,7 @@ final class CubeAccessors {
         private final int cacheLevel;
         private final boolean cacheEnabled;
 
-        BulkCubeAccessor(@Nonnull CubeAccessor delegate, @Nonnegative int depth, @Nonnull ConcurrentMap<CubeId, Object> cache) {
+        BulkCubeAccessor(@NonNull CubeAccessor delegate, @NonNegative int depth, @NonNull ConcurrentMap<CubeId, Object> cache) {
             super(delegate);
             this.cacheLevel = Math.max(0, delegate.getRoot().getMaxLevel() - depth);
             this.cache = cache;

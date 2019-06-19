@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 
 /**
@@ -110,8 +110,8 @@ public abstract class DbProvider<BEAN extends DbBean> extends AbstractDataSource
         }
     }
 
-    @Nonnull
-    private List<DataSet> children(@Nonnull DataSet parent, @Nonnull Dims dims, @Nonnull List<String> values) {
+    @NonNull
+    private List<DataSet> children(@NonNull DataSet parent, @NonNull Dims dims, @NonNull List<String> values) {
         if (values.isEmpty()) {
             return Collections.emptyList();
         }
@@ -171,8 +171,8 @@ public abstract class DbProvider<BEAN extends DbBean> extends AbstractDataSource
         }
     }
 
-    @Nonnull
-    private List<TsInformation> getAll(@Nonnull DataSource dataSource, @Nonnull List<DbSetId> list, @Nonnull TsInformationType type) {
+    @NonNull
+    private List<TsInformation> getAll(@NonNull DataSource dataSource, @NonNull List<DbSetId> list, @NonNull TsInformationType type) {
         if (list.isEmpty()) {
             return Collections.emptyList();
         }
@@ -188,8 +188,8 @@ public abstract class DbProvider<BEAN extends DbBean> extends AbstractDataSource
         return Arrays.asList(result);
     }
 
-    @Nonnull
-    private List<TsInformation> getAllWithData(@Nonnull DataSource dataSource, @Nonnull List<DbSeries> list) {
+    @NonNull
+    private List<TsInformation> getAllWithData(@NonNull DataSource dataSource, @NonNull List<DbSeries> list) {
         if (list.isEmpty()) {
             return Collections.emptyList();
         }
@@ -206,8 +206,8 @@ public abstract class DbProvider<BEAN extends DbBean> extends AbstractDataSource
         return Arrays.asList(result);
     }
 
-    @Nonnull
-    private DbAccessor<BEAN> getAccessor(@Nonnull DataSource dataSource) throws IOException {
+    @NonNull
+    private DbAccessor<BEAN> getAccessor(@NonNull DataSource dataSource) throws IOException {
         return support.getValue(cache, dataSource);
     }
 
@@ -216,11 +216,11 @@ public abstract class DbProvider<BEAN extends DbBean> extends AbstractDataSource
         final String[] dimColumns;
         final String[] dimValues;
 
-        public Dims(@Nonnull String[] dimColumns) {
+        public Dims(@NonNull String[] dimColumns) {
             this(dimColumns, Arrays2.EMPTY_STRING_ARRAY);
         }
 
-        public Dims(@Nonnull String[] dimColumns, @Nonnull String[] dimValues) {
+        public Dims(@NonNull String[] dimColumns, @NonNull String[] dimValues) {
             // dimColumns.length >= dimValues.length
             this.dimColumns = dimColumns;
             this.dimValues = dimValues;
@@ -268,7 +268,7 @@ public abstract class DbProvider<BEAN extends DbBean> extends AbstractDataSource
 
     private static final class ChildrenException extends IOException {
 
-        public ChildrenException(@Nonnull String message, @Nonnull Throwable cause) {
+        public ChildrenException(@NonNull String message, @NonNull Throwable cause) {
             super(message, cause);
         }
     }

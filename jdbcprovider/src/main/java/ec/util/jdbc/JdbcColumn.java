@@ -22,7 +22,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -31,8 +31,8 @@ import javax.annotation.Nonnull;
 @Immutable
 public final class JdbcColumn {
 
-    @Nonnull
-    public static List<JdbcColumn> ofAll(@Nonnull ResultSetMetaData md) throws SQLException {
+    @NonNull
+    public static List<JdbcColumn> ofAll(@NonNull ResultSetMetaData md) throws SQLException {
         JdbcColumn[] result = new JdbcColumn[md.getColumnCount()];
         for (int i = 0; i < result.length; i++) {
             result[i] = of(md, i + 1);
@@ -40,8 +40,8 @@ public final class JdbcColumn {
         return Arrays.asList(result);
     }
 
-    @Nonnull
-    public static JdbcColumn of(@Nonnull ResultSetMetaData md, int columnIndex) throws SQLException {
+    @NonNull
+    public static JdbcColumn of(@NonNull ResultSetMetaData md, int columnIndex) throws SQLException {
         return new JdbcColumn(
                 md.getColumnClassName(columnIndex),
                 md.getColumnDisplaySize(columnIndex),

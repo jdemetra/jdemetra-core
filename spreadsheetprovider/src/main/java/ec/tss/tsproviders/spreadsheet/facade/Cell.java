@@ -17,7 +17,7 @@
 package ec.tss.tsproviders.spreadsheet.facade;
 
 import java.util.Date;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Facade that represents <b>a cell in a spreadsheet</b>.
@@ -32,17 +32,17 @@ import javax.annotation.Nonnull;
 @Deprecated
 public abstract class Cell {
 
-    @Nonnull
+    @NonNull
     public String getString() throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Nonnull
+    @NonNull
     public Date getDate() throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Nonnull
+    @NonNull
     public Number getNumber() throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }

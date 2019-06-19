@@ -20,7 +20,7 @@ import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.utilities.Id;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Defines the kind of data that a workspace might deal with.
@@ -37,8 +37,8 @@ public final class WorkspaceFamily implements Id {
      * @param id a non-null id
      * @return a non-null family
      */
-    @Nonnull
-    public static WorkspaceFamily of(@Nonnull Id id) {
+    @NonNull
+    public static WorkspaceFamily of(@NonNull Id id) {
         if (id instanceof WorkspaceFamily) {
             return (WorkspaceFamily) id;
         }
@@ -54,8 +54,8 @@ public final class WorkspaceFamily implements Id {
      * @param input a non-null string
      * @return a non-null family
      */
-    @Nonnull
-    public static WorkspaceFamily parse(@Nonnull String input) {
+    @NonNull
+    public static WorkspaceFamily parse(@NonNull String input) {
         return !input.isEmpty() ? new WorkspaceFamily(input.split("@", -1)) : EMPTY;
     }
 

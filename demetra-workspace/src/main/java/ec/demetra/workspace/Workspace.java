@@ -19,7 +19,7 @@ package ec.demetra.workspace;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collection;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Defines an abstract way to load/store data from/to a workspace.
@@ -35,7 +35,7 @@ public interface Workspace extends Closeable {
      * @return a non-null name
      * @throws IOException if the operation failed
      */
-    @Nonnull
+    @NonNull
     String getName() throws IOException;
 
     /**
@@ -44,7 +44,7 @@ public interface Workspace extends Closeable {
      * @param name a non-null name
      * @throws IOException if the operation failed
      */
-    void setName(@Nonnull String name) throws IOException;
+    void setName(@NonNull String name) throws IOException;
 
     /**
      * Lists all supported data families.
@@ -52,7 +52,7 @@ public interface Workspace extends Closeable {
      * @return a non-null collection
      * @throws IOException if the operation failed
      */
-    @Nonnull
+    @NonNull
     Collection<WorkspaceFamily> getSupportedFamilies() throws IOException;
 
     /**
@@ -61,7 +61,7 @@ public interface Workspace extends Closeable {
      * @return a non-null collection
      * @throws IOException if the operation failed
      */
-    @Nonnull
+    @NonNull
     Collection<WorkspaceItem> getItems() throws IOException;
 
     /**
@@ -72,8 +72,8 @@ public interface Workspace extends Closeable {
      * @return a non-null data
      * @throws IOException if the operation failed
      */
-    @Nonnull
-    Object load(@Nonnull WorkspaceItem item) throws IOException;
+    @NonNull
+    Object load(@NonNull WorkspaceItem item) throws IOException;
 
     /**
      * Stores the metadata and data of a workspace item. The item is replaced if
@@ -84,7 +84,7 @@ public interface Workspace extends Closeable {
      * @param value a non-null data
      * @throws IOException if the operation failed
      */
-    void store(@Nonnull WorkspaceItem item, @Nonnull Object value) throws IOException;
+    void store(@NonNull WorkspaceItem item, @NonNull Object value) throws IOException;
 
     /**
      * Removes a workspace item if it exists, do nothing otherwise.
@@ -92,7 +92,7 @@ public interface Workspace extends Closeable {
      * @param item a non-null item
      * @throws IOException if the operation failed
      */
-    void delete(@Nonnull WorkspaceItem item) throws IOException;
+    void delete(@NonNull WorkspaceItem item) throws IOException;
 
     /**
      * Copies the content of this workspace to another one.
@@ -100,7 +100,7 @@ public interface Workspace extends Closeable {
      * @param target a non-null workspace
      * @throws IOException if the operation failed
      */
-    default void copyTo(@Nonnull Workspace target) throws IOException {
+    default void copyTo(@NonNull Workspace target) throws IOException {
         target.setName(getName());
         Collection<WorkspaceFamily> families = target.getSupportedFamilies();
         for (WorkspaceItem o : getItems()) {

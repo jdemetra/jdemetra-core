@@ -23,8 +23,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Defines a function that creates a new object from the current ResultSet.
@@ -33,12 +33,12 @@ import javax.annotation.Nullable;
  */
 public abstract class ResultSetFunc<T> implements DbUtil.Func<ResultSet, T, SQLException> {
 
-    @Nonnull
+    @NonNull
     public static ResultSetFunc<String> onNull() {
         return NullResultSetFunc.INSTANCE;
     }
 
-    @Nonnull
+    @NonNull
     public static ResultSetFunc<String> onGetString(final int columnIndex) {
         return new ResultSetFunc<String>() {
             @Override
@@ -48,7 +48,7 @@ public abstract class ResultSetFunc<T> implements DbUtil.Func<ResultSet, T, SQLE
         };
     }
 
-    @Nonnull
+    @NonNull
     public static ResultSetFunc<String[]> onGetStringArray(final int firstColumnIndex, final int length) {
         return new ResultSetFunc<String[]>() {
             @Override
@@ -62,7 +62,7 @@ public abstract class ResultSetFunc<T> implements DbUtil.Func<ResultSet, T, SQLE
         };
     }
 
-    @Nonnull
+    @NonNull
     public static ResultSetFunc<String> onGetObjectToString(final int columnIndex) {
         return new ResultSetFunc<String>() {
             @Override
@@ -72,8 +72,8 @@ public abstract class ResultSetFunc<T> implements DbUtil.Func<ResultSet, T, SQLE
         };
     }
 
-    @Nonnull
-    public static <X> ResultSetFunc<X> compose(final int columnIndex, @Nonnull final IParser<X> parser) {
+    @NonNull
+    public static <X> ResultSetFunc<X> compose(final int columnIndex, @NonNull final IParser<X> parser) {
         return new ResultSetFunc<X>() {
             @Override
             public X apply(ResultSet rs) throws SQLException {
@@ -87,8 +87,8 @@ public abstract class ResultSetFunc<T> implements DbUtil.Func<ResultSet, T, SQLE
         return onDate(rs.getMetaData(), columnIndex, dateParser);
     }
 
-    @Nonnull
-    public static ResultSetFunc<java.util.Date> onDate(@Nonnull ResultSetMetaData metaData, int columnIndex, @Nonnull IParser<java.util.Date> dateParser) throws SQLException {
+    @NonNull
+    public static ResultSetFunc<java.util.Date> onDate(@NonNull ResultSetMetaData metaData, int columnIndex, @NonNull IParser<java.util.Date> dateParser) throws SQLException {
         ResultSetFunc<java.util.Date> result = dateBySqlType(metaData.getColumnType(columnIndex), columnIndex);
         return result != null ? result : compose(columnIndex, dateParser);
     }
@@ -98,8 +98,8 @@ public abstract class ResultSetFunc<T> implements DbUtil.Func<ResultSet, T, SQLE
         return onNumber(rs.getMetaData(), columnIndex, numberParser);
     }
 
-    @Nonnull
-    public static ResultSetFunc<Number> onNumber(@Nonnull ResultSetMetaData metaData, int columnIndex, @Nonnull IParser<Number> numberParser) throws SQLException {
+    @NonNull
+    public static ResultSetFunc<Number> onNumber(@NonNull ResultSetMetaData metaData, int columnIndex, @NonNull IParser<Number> numberParser) throws SQLException {
         ResultSetFunc<Number> result = numberBySqlType(metaData.getColumnType(columnIndex), columnIndex);
         return result != null ? result : compose(columnIndex, numberParser);
     }

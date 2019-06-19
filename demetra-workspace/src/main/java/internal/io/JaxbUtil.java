@@ -18,8 +18,8 @@ package internal.io;
 
 import java.util.Objects;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -29,14 +29,14 @@ import javax.annotation.Nullable;
 @lombok.experimental.UtilityClass
 public class JaxbUtil {
 
-    public <X> void forSingle(@Nullable X item, @Nonnull Consumer<? super X> action) {
+    public <X> void forSingle(@Nullable X item, @NonNull Consumer<? super X> action) {
         Objects.requireNonNull(action, "action");
         if (item != null) {
             action.accept(item);
         }
     }
 
-    public <X> void forEach(@Nullable X[] array, @Nonnull Consumer<? super X> action) {
+    public <X> void forEach(@Nullable X[] array, @NonNull Consumer<? super X> action) {
         Objects.requireNonNull(action, "action");
         if (array != null) {
             for (X o : array) {

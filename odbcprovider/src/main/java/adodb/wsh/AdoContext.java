@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -33,8 +33,8 @@ import javax.annotation.Nullable;
  */
 final class AdoContext {
 
-    @Nonnull
-    static AdoContext of(@Nonnull Wsh wsh, @Nonnull String connectionString) {
+    @NonNull
+    static AdoContext of(@NonNull Wsh wsh, @NonNull String connectionString) {
         Objects.requireNonNull(wsh);
         Objects.requireNonNull(connectionString);
         PropertyLoader loader = () -> loadAll(wsh, connectionString, CURRENT_CATALOG, SPECIAL_CHARACTERS, IDENTIFIER_CASE_SENSITIVITY, STRING_FUNCTIONS);
@@ -57,13 +57,13 @@ final class AdoContext {
         this.propertyLoader = propertyLoader;
     }
 
-    @Nonnull
+    @NonNull
     String getConnectionString() {
         return connectionString;
     }
 
     @Nullable
-    String getProperty(@Nonnull String name) throws IOException {
+    String getProperty(@NonNull String name) throws IOException {
         return propertyLoader.load(name);
     }
 
@@ -84,7 +84,7 @@ final class AdoContext {
         return null;
     }
 
-    @Nonnull
+    @NonNull
     Stream<SqlStringFunction> getStringFunctions() throws IOException {
         try {
             String property = getProperty(STRING_FUNCTIONS);
@@ -98,8 +98,8 @@ final class AdoContext {
         }
     }
 
-    @Nonnull
-    TsvReader preparedStatement(@Nonnull String sql, @Nonnull List<String> parameters) throws IOException {
+    @NonNull
+    TsvReader preparedStatement(@NonNull String sql, @NonNull List<String> parameters) throws IOException {
         String[] args = new String[2 + parameters.size()];
         args[0] = connectionString;
         args[1] = sql;
@@ -109,7 +109,7 @@ final class AdoContext {
         return TsvReader.of(wsh.exec("PreparedStatement", args), 2);
     }
 
-    @Nonnull
+    @NonNull
     TsvReader openSchema(String catalog, String schemaPattern, String tableNamePattern, String[] types) throws IOException {
         String[] args = new String[4 + (types != null ? types.length : 0)];
         args[0] = connectionString;

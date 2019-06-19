@@ -19,8 +19,8 @@ package adodb.wsh;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.lang.String.format;
 
 /**
@@ -30,8 +30,8 @@ import static java.lang.String.format;
  */
 final class TsvReader implements Closeable {
 
-    @Nonnull
-    static TsvReader of(@Nonnull BufferedReader reader, int headerRowCount) throws IOException {
+    @NonNull
+    static TsvReader of(@NonNull BufferedReader reader, int headerRowCount) throws IOException {
         String[][] headers = new String[headerRowCount][];
         for (int i = 0; i < headerRowCount; i++) {
             String header = readNextLine(reader);
@@ -54,12 +54,12 @@ final class TsvReader implements Closeable {
         this.headers = headers;
     }
 
-    @Nonnull
+    @NonNull
     public String[] getHeader(int row) throws IndexOutOfBoundsException {
         return headers[row];
     }
 
-    public boolean readNextInto(@Nonnull String[] array) throws IOException {
+    public boolean readNextInto(@NonNull String[] array) throws IOException {
         String line = readNextLine(reader);
         if (line != null) {
             splitInto(line, array);
@@ -107,7 +107,7 @@ final class TsvReader implements Closeable {
     }
 
     @Nullable
-    private static String readNextLine(@Nonnull BufferedReader reader) throws IOException, Err {
+    private static String readNextLine(@NonNull BufferedReader reader) throws IOException, Err {
         String line = reader.readLine();
         if (line != null && line.isEmpty()) {
             throw parseError(reader);
@@ -115,8 +115,8 @@ final class TsvReader implements Closeable {
         return line;
     }
 
-    @Nonnull
-    private static Err parseError(@Nonnull BufferedReader reader) throws IOException {
+    @NonNull
+    private static Err parseError(@NonNull BufferedReader reader) throws IOException {
         String line = reader.readLine();
         if (line != null && !line.isEmpty()) {
             int index = line.indexOf(DELIMITER);

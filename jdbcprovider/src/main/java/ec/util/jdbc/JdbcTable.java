@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -50,8 +50,8 @@ public final class JdbcTable implements Comparable<JdbcTable> {
      * @see DatabaseMetaData#getTables(java.lang.String, java.lang.String,
      * java.lang.String, java.lang.String[])
      */
-    @Nonnull
-    public static List<JdbcTable> allOf(@Nonnull DatabaseMetaData md) throws SQLException {
+    @NonNull
+    public static List<JdbcTable> allOf(@NonNull DatabaseMetaData md) throws SQLException {
         return allOf(md, null, null, "%", null);
     }
 
@@ -68,10 +68,10 @@ public final class JdbcTable implements Comparable<JdbcTable> {
      * @see DatabaseMetaData#getTables(java.lang.String, java.lang.String,
      * java.lang.String, java.lang.String[])
      */
-    @Nonnull
-    public static List<JdbcTable> allOf(@Nonnull DatabaseMetaData md,
+    @NonNull
+    public static List<JdbcTable> allOf(@NonNull DatabaseMetaData md,
             @Nullable String catalog, @Nullable String schemaPattern,
-            @Nonnull String tableNamePattern, @Nullable String[] types) throws SQLException {
+            @NonNull String tableNamePattern, @Nullable String[] types) throws SQLException {
         try (ResultSet rs = md.getTables(catalog, schemaPattern, tableNamePattern, types)) {
             List<JdbcTable> result = new ArrayList<>();
             // some infos are not supported by all drivers!
@@ -96,8 +96,8 @@ public final class JdbcTable implements Comparable<JdbcTable> {
         return columnNames;
     }
 
-    @Nonnull
-    private static JdbcTable fromMap(@Nonnull Map<String, String> map) {
+    @NonNull
+    private static JdbcTable fromMap(@NonNull Map<String, String> map) {
         return new JdbcTable(
                 get(map, "TABLE_CAT", "TABLE_CATALOG"),
                 get(map, "TABLE_SCHEM", "TABLE_SCHEMA"),
@@ -112,7 +112,7 @@ public final class JdbcTable implements Comparable<JdbcTable> {
     }
 
     @Nullable
-    private static String get(@Nonnull Map<String, String> map, String... keys) {
+    private static String get(@NonNull Map<String, String> map, String... keys) {
         for (String key : keys) {
             String result = map.get(key);
             if (result != null) {
@@ -173,7 +173,7 @@ public final class JdbcTable implements Comparable<JdbcTable> {
      *
      * @return
      */
-    @Nonnull
+    @NonNull
     public String getName() {
         return name;
     }
@@ -184,7 +184,7 @@ public final class JdbcTable implements Comparable<JdbcTable> {
      *
      * @return
      */
-    @Nonnull
+    @NonNull
     public String getType() {
         return type;
     }

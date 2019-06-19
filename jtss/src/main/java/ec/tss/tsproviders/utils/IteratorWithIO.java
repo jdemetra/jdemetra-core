@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -36,23 +36,23 @@ public interface IteratorWithIO<E> extends Closeable {
     @Nullable
     E next() throws IOException, NoSuchElementException;
 
-    @Nonnull
-    default <Z> IteratorWithIO<Z> transform(@Nonnull Function<? super E, ? extends Z> function) {
+    @NonNull
+    default <Z> IteratorWithIO<Z> transform(@NonNull Function<? super E, ? extends Z> function) {
         return new IteratorWithIOs.TransformingIterator<>(this, function);
     }
 
-    @Nonnull
-    default IteratorWithIO<E> onClose(@Nonnull Closeable closeHandler) {
+    @NonNull
+    default IteratorWithIO<E> onClose(@NonNull Closeable closeHandler) {
         return new IteratorWithIOs.OnCloseIterator<>(this, closeHandler);
     }
 
-    @Nonnull
+    @NonNull
     static <E> IteratorWithIO<E> empty() {
         return new IteratorWithIOs.EmptyIterator<>();
     }
 
-    @Nonnull
-    static <E> IteratorWithIO<E> from(@Nonnull Iterator<E> iterator) {
+    @NonNull
+    static <E> IteratorWithIO<E> from(@NonNull Iterator<E> iterator) {
         return new IteratorWithIOs.Adapter<>(iterator);
     }
 }

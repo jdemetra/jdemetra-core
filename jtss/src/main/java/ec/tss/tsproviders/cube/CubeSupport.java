@@ -40,8 +40,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import net.jcip.annotations.ThreadSafe;
 import org.slf4j.Logger;
 
 /**
@@ -55,15 +55,15 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
     @ThreadSafe
     public interface Resource {
 
-        @Nonnull
-        CubeAccessor getAccessor(@Nonnull DataSource dataSource) throws IOException, IllegalArgumentException;
+        @NonNull
+        CubeAccessor getAccessor(@NonNull DataSource dataSource) throws IOException, IllegalArgumentException;
 
-        @Nonnull
-        IParam<DataSet, CubeId> getIdParam(@Nonnull DataSource dataSource) throws IOException, IllegalArgumentException;
+        @NonNull
+        IParam<DataSet, CubeId> getIdParam(@NonNull DataSource dataSource) throws IOException, IllegalArgumentException;
     }
 
-    @Nonnull
-    public static CubeSupport of(@Nonnull Resource resource) {
+    @NonNull
+    public static CubeSupport of(@NonNull Resource resource) {
         return new CubeSupport(Objects.requireNonNull(resource));
     }
 
@@ -173,23 +173,23 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
     }
     //</editor-fold>
 
-    @Nonnull
-    public static IParam<DataSet, CubeId> idByName(@Nonnull CubeId root) {
+    @NonNull
+    public static IParam<DataSet, CubeId> idByName(@NonNull CubeId root) {
         return new ByNameParam(Objects.requireNonNull(root));
     }
 
-    @Nonnull
-    public static IParam<DataSet, CubeId> idBySeparator(@Nonnull CubeId root, @Nonnull String separator, @Nonnull String name) {
+    @NonNull
+    public static IParam<DataSet, CubeId> idBySeparator(@NonNull CubeId root, @NonNull String separator, @NonNull String name) {
         return new BySeparatorParam(Objects.requireNonNull(separator), Objects.requireNonNull(root), Objects.requireNonNull(name));
     }
 
-    @Nonnull
+    @NonNull
     public static ITsProvider asTsProvider(
-            @Nonnull String providerName,
-            @Nonnull Logger logger,
-            @Nonnull CubeSupport cubeSupport,
-            @Nonnull HasDataMoniker monikerSupport,
-            @Nonnull Runnable cacheCleaner) {
+            @NonNull String providerName,
+            @NonNull Logger logger,
+            @NonNull CubeSupport cubeSupport,
+            @NonNull HasDataMoniker monikerSupport,
+            @NonNull Runnable cacheCleaner) {
         return TsFillerAsProvider.of(providerName, TsAsyncMode.Once, TsCursorAsFiller.of(logger, cubeSupport, monikerSupport, cubeSupport), cacheCleaner);
     }
 

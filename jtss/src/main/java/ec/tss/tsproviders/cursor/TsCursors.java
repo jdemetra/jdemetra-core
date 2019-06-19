@@ -30,9 +30,9 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.concurrent.ConcurrentMap;
-import javax.annotation.concurrent.Immutable;
+import net.jcip.annotations.Immutable;
 
 /**
  * Package-private supporting class for {@link TsCursor}.
@@ -128,11 +128,11 @@ final class TsCursors {
         }
     }
 
-    @Nonnull
+    @NonNull
     static <KEY, ID> TsCursor<ID> getOrLoad(
-            @Nonnull ConcurrentMap<KEY, Object> cache,
-            @Nonnull KEY key,
-            @Nonnull FunctionWithIO<? super KEY, ? extends TsCursor<ID>> loader) throws IOException {
+            @NonNull ConcurrentMap<KEY, Object> cache,
+            @NonNull KEY key,
+            @NonNull FunctionWithIO<? super KEY, ? extends TsCursor<ID>> loader) throws IOException {
 
         requireNonNull(cache, "cache");
         requireNonNull(key, "key");
@@ -199,8 +199,8 @@ final class TsCursors {
         private final Function<? super ID, ? extends Z> function;
 
         TransformingCursor(
-                @Nonnull TsCursor<ID> delegate,
-                @Nonnull Function<? super ID, ? extends Z> function) {
+                @NonNull TsCursor<ID> delegate,
+                @NonNull Function<? super ID, ? extends Z> function) {
             super((TsCursor<Z>) delegate);
             this.function = requireNonNull(function, ID_TRANSFORMER_NPE);
         }
@@ -217,8 +217,8 @@ final class TsCursors {
         private final Predicate<? super ID> filter;
 
         FilteringCursor(
-                @Nonnull TsCursor<ID> delegate,
-                @Nonnull Predicate<? super ID> filter) {
+                @NonNull TsCursor<ID> delegate,
+                @NonNull Predicate<? super ID> filter) {
             super(delegate);
             this.filter = requireNonNull(filter, ID_FILTER_NPE);
         }
@@ -238,7 +238,7 @@ final class TsCursors {
 
         private final Map<String, String> meta;
 
-        WithMetaDataCursor(@Nonnull TsCursor<ID> delegate, @Nonnull Map<String, String> meta) {
+        WithMetaDataCursor(@NonNull TsCursor<ID> delegate, @NonNull Map<String, String> meta) {
             super(delegate);
             this.meta = requireNonNull(meta, META_DATA_NPE);
         }
@@ -253,7 +253,7 @@ final class TsCursors {
 
         private final Closeable closeHandler;
 
-        OnCloseCursor(@Nonnull TsCursor<ID> delegate, @Nonnull Closeable closeHandler) {
+        OnCloseCursor(@NonNull TsCursor<ID> delegate, @NonNull Closeable closeHandler) {
             super(delegate);
             this.closeHandler = requireNonNull(closeHandler, CLOSE_HANDLER_NPE);
         }
@@ -470,10 +470,10 @@ final class TsCursors {
         private Boolean first;
 
         SingletonCursor(
-                @Nonnull ID id,
-                @Nonnull OptionalTsData data,
-                @Nonnull Map<String, String> meta,
-                @Nonnull String label) {
+                @NonNull ID id,
+                @NonNull OptionalTsData data,
+                @NonNull Map<String, String> meta,
+                @NonNull String label) {
             this.id = requireNonNull(id, ID_NPE);
             this.data = requireNonNull(data, DATA_NPE);
             this.meta = requireNonNull(meta, META_DATA_NPE);
@@ -554,11 +554,11 @@ final class TsCursors {
         private E current;
 
         IteratingCursor(
-                @Nonnull Iterator<E> iterator,
-                @Nonnull Function<? super E, ? extends ID> toId,
-                @Nonnull Function<? super E, OptionalTsData> toData,
-                @Nonnull Function<? super E, Map<String, String>> toMeta,
-                @Nonnull Function<? super E, String> toLabel) {
+                @NonNull Iterator<E> iterator,
+                @NonNull Function<? super E, ? extends ID> toId,
+                @NonNull Function<? super E, OptionalTsData> toData,
+                @NonNull Function<? super E, Map<String, String>> toMeta,
+                @NonNull Function<? super E, String> toLabel) {
             this.iterator = requireNonNull(iterator, "iterator");
             this.toId = requireNonNull(toId, "id extractor");
             this.toData = requireNonNull(toData, "data extractor");

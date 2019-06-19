@@ -17,8 +17,8 @@
 package ec.tss.tsproviders;
 
 import ec.tss.ITsProvider;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * Defines a provider that is used to discover and browse DataSources and
@@ -43,7 +43,7 @@ public interface IDataSourceProvider extends ITsProvider, HasDataSourceList, Has
      *
      * @return a non-empty label.
      */
-    @Nonnull
+    @NonNull
     default String getDisplayName() {
         return getSource();
     }

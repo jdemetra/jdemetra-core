@@ -22,8 +22,8 @@ import ec.tss.tsproviders.spreadsheet.facade.Cell;
 import ec.tss.tsproviders.spreadsheet.facade.Sheet;
 import ec.tss.tsproviders.utils.IParser;
 import java.util.Date;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -34,15 +34,15 @@ import javax.annotation.Nullable;
 public abstract class CellParser<T> {
 
     @Nullable
-    abstract public T parse(@Nonnull Sheet sheet, int rowIndex, int columnIndex);
+    abstract public T parse(@NonNull Sheet sheet, int rowIndex, int columnIndex);
 
-    @Nonnull
-    public Optional<T> tryParse(@Nonnull Sheet sheet, int rowIndex, int columnIndex) {
+    @NonNull
+    public Optional<T> tryParse(@NonNull Sheet sheet, int rowIndex, int columnIndex) {
         return Optional.fromNullable(parse(sheet, rowIndex, columnIndex));
     }
 
-    @Nonnull
-    public CellParser<T> or(@Nonnull CellParser<T>... cellParser) {
+    @NonNull
+    public CellParser<T> or(@NonNull CellParser<T>... cellParser) {
         switch (cellParser.length) {
             case 0:
                 return this;
@@ -53,27 +53,27 @@ public abstract class CellParser<T> {
         }
     }
 
-    @Nonnull
-    public static <X> CellParser<X> firstNotNull(@Nonnull ImmutableList<? extends CellParser<X>> list) {
+    @NonNull
+    public static <X> CellParser<X> firstNotNull(@NonNull ImmutableList<? extends CellParser<X>> list) {
         return new FirstNotNull(list);
     }
 
-    @Nonnull
-    public static <X> CellParser<X> fromParser(@Nonnull IParser<X> parser) {
+    @NonNull
+    public static <X> CellParser<X> fromParser(@NonNull IParser<X> parser) {
         return new Adapter(parser);
     }
 
-    @Nonnull
+    @NonNull
     public static CellParser<Date> onDateType() {
         return DateCellFunc.INSTANCE;
     }
 
-    @Nonnull
+    @NonNull
     public static CellParser<Number> onNumberType() {
         return NumberCellFunc.INSTANCE;
     }
 
-    @Nonnull
+    @NonNull
     public static CellParser<String> onStringType() {
         return StringCellFunc.INSTANCE;
     }

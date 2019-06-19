@@ -18,8 +18,8 @@ package ec.tss.tsproviders.utils;
 
 import java.util.Optional;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Defines a class that creates a {@link CharSequence} from an object.<br> For
@@ -46,7 +46,7 @@ public interface IFormatter<T> {
      * @throws NullPointerException if input is null
      */
     @Nullable
-    CharSequence format(@Nonnull T value);
+    CharSequence format(@NonNull T value);
 
     /**
      * Format an object into a String.
@@ -57,7 +57,7 @@ public interface IFormatter<T> {
      * @since 2.2.0
      */
     @Nullable
-    default String formatAsString(@Nonnull T value) {
+    default String formatAsString(@NonNull T value) {
         CharSequence result = format(value);
         return result != null ? result.toString() : null;
     }
@@ -73,8 +73,8 @@ public interface IFormatter<T> {
      * @throws NullPointerException if input is null
      * @since 2.2.0
      */
-    @Nonnull
-    default Optional<CharSequence> formatValue(@Nonnull T value) {
+    @NonNull
+    default Optional<CharSequence> formatValue(@NonNull T value) {
         return Optional.ofNullable(format(value));
     }
 
@@ -89,8 +89,8 @@ public interface IFormatter<T> {
      * @throws NullPointerException if input is null
      * @since 2.2.0
      */
-    @Nonnull
-    default Optional<String> formatValueAsString(@Nonnull T value) {
+    @NonNull
+    default Optional<String> formatValueAsString(@NonNull T value) {
         return Optional.ofNullable(formatAsString(value));
     }
 
@@ -103,9 +103,9 @@ public interface IFormatter<T> {
      * @return a never-null formatter
      * @since 2.2.0
      */
-    @Nonnull
+    @NonNull
     @SuppressWarnings("null")
-    default <Y> IFormatter<Y> compose(@Nonnull Function<? super Y, ? extends T> before) {
+    default <Y> IFormatter<Y> compose(@NonNull Function<? super Y, ? extends T> before) {
         return o -> {
             T tmp = before.apply(o);
             return tmp != null ? format(tmp) : null;

@@ -17,7 +17,7 @@
 package ec.tstoolkit.utilities;
 
 import java.util.Arrays;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -26,8 +26,8 @@ import javax.annotation.Nonnull;
 //@Immutable
 public class LinearId implements Id {
 
-    @Nonnull
-    public static LinearId of(@Nonnull Id id) {
+    @NonNull
+    public static LinearId of(@NonNull Id id) {
         if (id instanceof LinearId) {
             return (LinearId) id;
         }

@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -49,7 +49,7 @@ public final class SpreadSheetCollection implements Comparable<SpreadSheetCollec
 
     private final Map<String, Integer> map;
 
-    public SpreadSheetCollection(@Nonnull String sheetName, int ordering, @Nonnull AlignType alignType, @Nonnull ImmutableList<SpreadSheetSeries> series) {
+    public SpreadSheetCollection(@NonNull String sheetName, int ordering, @NonNull AlignType alignType, @NonNull ImmutableList<SpreadSheetSeries> series) {
         this(sheetName, ordering, alignType, series, new HashMap<>());
     }
 

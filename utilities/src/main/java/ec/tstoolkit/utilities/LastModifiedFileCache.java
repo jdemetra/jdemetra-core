@@ -24,7 +24,7 @@ import java.io.File;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -32,8 +32,8 @@ import javax.annotation.Nonnull;
  */
 public abstract class LastModifiedFileCache<K, V> extends ForwardingCache<K, V> {
 
-    @Nonnull
-    public static <K, V> LastModifiedFileCache<K, V> from(@Nonnull File file, @Nonnull final Cache<K, V> cache) {
+    @NonNull
+    public static <K, V> LastModifiedFileCache<K, V> from(@NonNull File file, @NonNull final Cache<K, V> cache) {
         return new LastModifiedFileCache<K, V>(file) {
             @Override
             protected Cache<K, V> delegate() {
@@ -45,7 +45,7 @@ public abstract class LastModifiedFileCache<K, V> extends ForwardingCache<K, V> 
     protected final File file;
     protected long lastModifiedFile;
 
-    protected LastModifiedFileCache(@Nonnull File file) {
+    protected LastModifiedFileCache(@NonNull File file) {
         this.file = file;
         this.lastModifiedFile = file.lastModified();
     }

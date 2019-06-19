@@ -23,8 +23,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Locale;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A class that quotes identifiers in SQL queries.
@@ -33,11 +33,11 @@ import javax.annotation.Nullable;
  */
 public abstract class SqlIdentifierQuoter {
 
-    @Nonnull
-    abstract public String quote(@Nonnull String identifier, boolean force);
+    @NonNull
+    abstract public String quote(@NonNull String identifier, boolean force);
 
-    @Nonnull
-    public static SqlIdentifierQuoter create(@Nonnull DatabaseMetaData metaData) throws SQLException {
+    @NonNull
+    public static SqlIdentifierQuoter create(@NonNull DatabaseMetaData metaData) throws SQLException {
         return new SqlIdentifierQuoterImpl(
                 getIdentifierQuoteString(metaData),
                 getSqlKeywords(metaData),
@@ -46,15 +46,15 @@ public abstract class SqlIdentifierQuoter {
     }
 
     @VisibleForTesting
-    @Nonnull
-    static String getIdentifierQuoteString(@Nonnull DatabaseMetaData metaData) throws SQLException {
+    @NonNull
+    static String getIdentifierQuoteString(@NonNull DatabaseMetaData metaData) throws SQLException {
         String identifierQuoteString = metaData.getIdentifierQuoteString();
         return !isIdentifierQuotingSupported(identifierQuoteString) ? "\"" : identifierQuoteString;
     }
 
     @VisibleForTesting
-    @Nonnull
-    static Set<String> getSqlKeywords(@Nonnull DatabaseMetaData metaData) throws SQLException {
+    @NonNull
+    static Set<String> getSqlKeywords(@NonNull DatabaseMetaData metaData) throws SQLException {
         return ImmutableSet.<String>builder()
                 .addAll(KEYWORDS_SPLITTER.split(metaData.getSQLKeywords()))
                 .addAll(SqlKeywords.getSql2003ReservedWords())

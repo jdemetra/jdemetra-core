@@ -34,8 +34,8 @@ import ec.tstoolkit.timeseries.simplets.TsDataTable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -47,9 +47,9 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
     @Internal
     interface FactoryCallback {
 
-        boolean load(@Nonnull TsCollection c, @Nonnull TsInformationType type);
+        boolean load(@NonNull TsCollection c, @NonNull TsInformationType type);
 
-        boolean query(@Nonnull TsCollection c, @Nonnull TsInformationType type);
+        boolean query(@NonNull TsCollection c, @NonNull TsInformationType type);
 
         void notify(TsCollection s, TsInformationType type, Object sender);
 
@@ -58,11 +58,11 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
 
         Ts createTs(TsInformation info);
 
-        @Nonnull
+        @NonNull
         TsCollection createTsCollection(@Nullable String name, @Nullable TsMoniker moniker,
                 @Nullable MetaData md, @Nullable Iterable<Ts> ts);
 
-        @Nonnull
+        @NonNull
         @NewObject
         TsCollection createTsCollection(@Nullable String name);
     }
@@ -87,13 +87,13 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
 
     @Deprecated
     @Internal
-    TsCollection(@Nullable String name, @Nonnull TsMoniker moniker) {
+    TsCollection(@Nullable String name, @NonNull TsMoniker moniker) {
         this(TsFactory.instance.getTsCollectionCallback(), name, moniker);
     }
 
     @Deprecated
     @Internal
-    TsCollection(@Nullable String name, @Nonnull TsMoniker moniker, @Nullable MetaData md, @Nullable Iterable<Ts> ts) {
+    TsCollection(@Nullable String name, @NonNull TsMoniker moniker, @Nullable MetaData md, @Nullable Iterable<Ts> ts) {
         this(TsFactory.instance.getTsCollectionCallback(), name, moniker, md, ts);
     }
 
@@ -110,7 +110,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
     }
 
     @Internal
-    TsCollection(FactoryCallback factory, @Nullable String name, @Nonnull TsMoniker moniker) {
+    TsCollection(FactoryCallback factory, @Nullable String name, @NonNull TsMoniker moniker) {
         this.factory = factory;
         m_name = Strings.nullToEmpty(name);
         m_moniker = moniker;
@@ -122,7 +122,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
     }
 
     @Internal
-    TsCollection(FactoryCallback factory, @Nullable String name, @Nonnull TsMoniker moniker, @Nullable MetaData md, @Nullable Iterable<Ts> ts) {
+    TsCollection(FactoryCallback factory, @Nullable String name, @NonNull TsMoniker moniker, @Nullable MetaData md, @Nullable Iterable<Ts> ts) {
         this.factory = factory;
         m_name = Strings.nullToEmpty(name);
         m_moniker = moniker;
@@ -482,7 +482,7 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
         return Iterators.forArray(toArray());
     }
 
-    @Nonnull
+    @NonNull
     public Stream<Ts> stream() {
         return Stream.of(toArray());
     }
@@ -861,8 +861,8 @@ public final class TsCollection implements ITsIdentified, IDocumented, Iterable<
      * @param type
      * @return a non-null TsCollectionInformation
      */
-    @Nonnull
-    public TsCollectionInformation toInfo(@Nonnull TsInformationType type) {
+    @NonNull
+    public TsCollectionInformation toInfo(@NonNull TsInformationType type) {
         TsCollectionInformation result = new TsCollectionInformation(m_moniker, type);
         result.type = type;
         result.name = m_name;

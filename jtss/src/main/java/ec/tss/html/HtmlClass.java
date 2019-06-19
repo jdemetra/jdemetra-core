@@ -16,7 +16,7 @@
  */
 package ec.tss.html;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -26,8 +26,8 @@ public final class HtmlClass {
 
     public static HtmlClass NO_CLASS = new HtmlClass("");
 
-    @Nonnull
-    public static HtmlClass of(@Nonnull String name) {
+    @NonNull
+    public static HtmlClass of(@NonNull String name) {
         return name.isEmpty() ? NO_CLASS : new HtmlClass(name);
     }
 
@@ -37,8 +37,8 @@ public final class HtmlClass {
         this.content = content;
     }
 
-    @Nonnull
-    public HtmlClass with(@Nonnull HtmlClass name) {
+    @NonNull
+    public HtmlClass with(@NonNull HtmlClass name) {
         return name.isEmpty() ? this : this.isEmpty() ? name : new HtmlClass(content + " " + name.content);
     }
 

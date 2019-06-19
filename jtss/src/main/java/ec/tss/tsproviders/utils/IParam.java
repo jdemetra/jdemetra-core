@@ -16,9 +16,9 @@
  */
 package ec.tss.tsproviders.utils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * Tool that loads/stores values from/to a key-value structure. It provides a
@@ -33,11 +33,11 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 public interface IParam<S extends IConfig, P> {
 
-    @Nonnull
+    @NonNull
     P defaultValue();
 
-    @Nonnull
-    P get(@Nonnull S config);
+    @NonNull
+    P get(@NonNull S config);
 
-    void set(@Nonnull IConfig.Builder<?, S> builder, @Nullable P value);
+    void set(IConfig.@NonNull Builder<?, S> builder, @Nullable P value);
 }

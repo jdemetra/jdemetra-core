@@ -22,7 +22,7 @@ import ec.demetra.workspace.file.spi.FamilyHandler;
 import internal.workspace.file.util.QuickHandler;
 import java.io.IOException;
 import java.nio.file.Path;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -31,16 +31,16 @@ import javax.annotation.Nonnull;
  */
 public interface FileSupport {
 
-    @Nonnull
-    Path resolveFile(@Nonnull Path root, @Nonnull String fileName);
+    @NonNull
+    Path resolveFile(@NonNull Path root, @NonNull String fileName);
 
-    @Nonnull
-    Object read(@Nonnull Path root, @Nonnull String fileName) throws IOException;
+    @NonNull
+    Object read(@NonNull Path root, @NonNull String fileName) throws IOException;
 
-    void write(@Nonnull Path root, @Nonnull String fileName, @Nonnull Object value) throws IOException;
+    void write(@NonNull Path root, @NonNull String fileName, @NonNull Object value) throws IOException;
 
-    @Nonnull
-    default FamilyHandler asHandler(@Nonnull WorkspaceFamily family, @Nonnull FileFormat format) {
+    @NonNull
+    default FamilyHandler asHandler(@NonNull WorkspaceFamily family, @NonNull FileFormat format) {
         return new QuickHandler(family, format, this);
     }
 }

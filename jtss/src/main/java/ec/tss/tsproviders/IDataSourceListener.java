@@ -16,7 +16,7 @@
  */
 package ec.tss.tsproviders;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -25,15 +25,15 @@ import javax.annotation.Nonnull;
  */
 public interface IDataSourceListener {
 
-    default void opened(@Nonnull DataSource dataSource) {
+    default void opened(@NonNull DataSource dataSource) {
     }
 
-    default void closed(@Nonnull DataSource dataSource) {
+    default void closed(@NonNull DataSource dataSource) {
     }
 
-    default void changed(@Nonnull DataSource dataSource) {
+    default void changed(@NonNull DataSource dataSource) {
     }
 
-    default void allClosed(@Nonnull String providerName) {
+    default void allClosed(@NonNull String providerName) {
     }
 }

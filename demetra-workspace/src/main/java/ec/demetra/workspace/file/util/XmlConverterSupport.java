@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
 
 /**
@@ -34,8 +34,8 @@ import lombok.AccessLevel;
 @lombok.RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class XmlConverterSupport implements FileSupport {
 
-    @Nonnull
-    public static <VALUE, XML extends IXmlConverter<VALUE>> FileSupport of(@Nonnull Supplier<XML> factory, @Nonnull String repository) {
+    @NonNull
+    public static <VALUE, XML extends IXmlConverter<VALUE>> FileSupport of(@NonNull Supplier<XML> factory, @NonNull String repository) {
         ValueAdapter<VALUE, XML> adapter = new ValueAdapter<>(factory);
         try {
             Xml.Parser<VALUE> parser = Jaxb.Parser.of(adapter.getXmlType()).andThen(adapter::toValue);

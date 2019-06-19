@@ -20,8 +20,8 @@ import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import java.io.File;
 import java.util.Locale;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Provides utility methods for the {@link File} class;
@@ -56,7 +56,7 @@ public final class Files2 {
     }
 
     @Nullable
-    public static File getAbsoluteFile(@Nonnull File[] paths, @Nonnull File file) {
+    public static File getAbsoluteFile(@NonNull File[] paths, @NonNull File file) {
         if (file.isAbsolute()) {
             return file;
         }
@@ -71,7 +71,7 @@ public final class Files2 {
     }
 
     @Nullable
-    public static File getRelativeFile(@Nonnull File[] paths, @Nonnull File file) {
+    public static File getRelativeFile(@NonNull File[] paths, @NonNull File file) {
         if (!file.isAbsolute()) {
             return file;
         }
@@ -103,7 +103,7 @@ public final class Files2 {
      * @return
      */
     @Nullable
-    public static File extractFile(@Nonnull String path) {
+    public static File extractFile(@NonNull String path) {
         File file = new File(path);
         if (file.isFile()) {
             return file;

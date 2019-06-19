@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -32,8 +32,8 @@ import javax.annotation.Nonnull;
  */
 class SelectBuilder implements IBuilder<String> {
 
-    @Nonnull
-    public static SelectBuilder from(@Nonnull String table) {
+    @NonNull
+    public static SelectBuilder from(@NonNull String table) {
         return new SelectBuilder(table);
     }
 
@@ -45,7 +45,7 @@ class SelectBuilder implements IBuilder<String> {
     private boolean distinct;
     private SqlIdentifierQuoter identifierQuoter;
 
-    private SelectBuilder(@Nonnull String table) {
+    private SelectBuilder(@NonNull String table) {
         this.table = table;
         this.select = new ArrayList<>();
         this.filter = new ArrayList<>();
@@ -54,8 +54,8 @@ class SelectBuilder implements IBuilder<String> {
         this.identifierQuoter = null;
     }
 
-    @Nonnull
-    private SelectBuilder addIfNotNullOrEmpty(@Nonnull List<String> list, @Nonnull String... values) {
+    @NonNull
+    private SelectBuilder addIfNotNullOrEmpty(@NonNull List<String> list, @NonNull String... values) {
         for (String o : values) {
             if (!Strings.isNullOrEmpty(o)) {
                 list.add(o);
@@ -64,29 +64,29 @@ class SelectBuilder implements IBuilder<String> {
         return this;
     }
 
-    @Nonnull
+    @NonNull
     SelectBuilder distinct(boolean distinct) {
         this.distinct = distinct;
         return this;
     }
 
-    @Nonnull
-    SelectBuilder select(@Nonnull String... select) {
+    @NonNull
+    SelectBuilder select(@NonNull String... select) {
         return addIfNotNullOrEmpty(this.select, select);
     }
 
-    @Nonnull
-    SelectBuilder filter(@Nonnull String... filter) {
+    @NonNull
+    SelectBuilder filter(@NonNull String... filter) {
         return addIfNotNullOrEmpty(this.filter, filter);
     }
 
-    @Nonnull
-    SelectBuilder orderBy(@Nonnull String... order) {
+    @NonNull
+    SelectBuilder orderBy(@NonNull String... order) {
         return addIfNotNullOrEmpty(this.order, order);
     }
 
-    @Nonnull
-    SelectBuilder withQuoter(@Nonnull SqlIdentifierQuoter identifierQuoter) {
+    @NonNull
+    SelectBuilder withQuoter(@NonNull SqlIdentifierQuoter identifierQuoter) {
         this.identifierQuoter = identifierQuoter;
         return this;
     }

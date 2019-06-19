@@ -27,8 +27,8 @@ import ec.tstoolkit.timeseries.TsPeriodSelector;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import java.text.ParseException;
 import java.util.Date;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -103,8 +103,8 @@ public abstract class Ts implements IDocumented, ITsIdentified {
      * @param type
      * @return a non-null TsInformation
      */
-    @Nonnull
-    public abstract TsInformation toInfo(@Nonnull TsInformationType type);
+    @NonNull
+    public abstract TsInformation toInfo(@NonNull TsInformationType type);
 
     @Override
     public String toString() {
@@ -218,18 +218,18 @@ public abstract class Ts implements IDocumented, ITsIdentified {
     @Internal
     interface FactoryCallback {
 
-        boolean load(@Nonnull Ts ts, @Nonnull TsInformationType type);
+        boolean load(@NonNull Ts ts, @NonNull TsInformationType type);
 
-        boolean query(@Nonnull Ts s, @Nonnull TsInformationType type);
+        boolean query(@NonNull Ts s, @NonNull TsInformationType type);
 
         void notify(Ts s, TsInformationType type, Object sender);
 
-        @Nonnull
+        @NonNull
         @NewObject
         Ts createTs(@Nullable String name, @Nullable MetaData md, @Nullable TsData d);
 
-        @Nonnull
-        Ts createTs(@Nullable String name, @Nonnull TsMoniker moniker, @Nonnull TsInformationType type);
+        @NonNull
+        Ts createTs(@Nullable String name, @NonNull TsMoniker moniker, @NonNull TsInformationType type);
     }
 
     @Internal
@@ -597,7 +597,7 @@ public abstract class Ts implements IDocumented, ITsIdentified {
             return result;
         }
 
-        private static void putFreezeMeta(@Nonnull MetaData md, @Nonnull TsMoniker origin) {
+        private static void putFreezeMeta(@NonNull MetaData md, @NonNull TsMoniker origin) {
             if (origin.getSource() != null) {
                 md.put(MetaData.SOURCE, origin.getSource());
             }

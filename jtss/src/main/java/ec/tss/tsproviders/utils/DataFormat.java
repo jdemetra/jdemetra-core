@@ -28,8 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A special object that contains all information needed to format and parse
@@ -77,12 +77,12 @@ public final class DataFormat {
         this.numberPattern = Strings.nullToEmpty(numberPattern);
     }
 
-    @Nonnull
+    @NonNull
     public String getNumberPattern() {
         return numberPattern;
     }
 
-    @Nonnull
+    @NonNull
     public String getDatePattern() {
         return datePattern;
     }
@@ -92,7 +92,7 @@ public final class DataFormat {
         return locale;
     }
 
-    @Nonnull
+    @NonNull
     public String getLocaleString() {
         return locale != null ? locale.toString() : "";
     }
@@ -125,8 +125,7 @@ public final class DataFormat {
      *
      * @return a non-null formatter
      */
-    @Nonnull
-    public Formatters.Formatter<Date> dateFormatter() {
+    public Formatters.@NonNull Formatter<Date> dateFormatter() {
         try {
             return Formatters.onDateFormat(newDateFormat());
         } catch (IllegalArgumentException ex) {
@@ -140,8 +139,7 @@ public final class DataFormat {
      *
      * @return a non-null parser
      */
-    @Nonnull
-    public Parsers.Parser<Date> dateParser() {
+    public Parsers.@NonNull Parser<Date> dateParser() {
         try {
             return Parsers.onDateFormat(newDateFormat());
         } catch (IllegalArgumentException ex) {
@@ -155,8 +153,7 @@ public final class DataFormat {
      *
      * @return a non-null formatter
      */
-    @Nonnull
-    public Formatters.Formatter<Number> numberFormatter() {
+    public Formatters.@NonNull Formatter<Number> numberFormatter() {
         try {
             return Formatters.onNumberFormat(newNumberFormat());
         } catch (IllegalArgumentException ex) {
@@ -170,8 +167,7 @@ public final class DataFormat {
      *
      * @return a non-null parser
      */
-    @Nonnull
-    public Parsers.Parser<Number> numberParser() {
+    public Parsers.@NonNull Parser<Number> numberParser() {
         try {
             return Parsers.onNumberFormat(newNumberFormat());
         } catch (IllegalArgumentException ex) {
@@ -187,7 +183,7 @@ public final class DataFormat {
      * @throws IllegalArgumentException if the date pattern is invalid
      * @see SimpleDateFormat
      */
-    @Nonnull
+    @NonNull
     public DateFormat newDateFormat() throws IllegalArgumentException {
         DateFormat result;
         if (!datePattern.isEmpty()) {
@@ -217,7 +213,7 @@ public final class DataFormat {
      * @see DecimalFormat
      * @see DecimalFormatSymbols
      */
-    @Nonnull
+    @NonNull
     public NumberFormat newNumberFormat() throws IllegalArgumentException {
         if (!numberPattern.isEmpty()) {
             if (locale != null) {
@@ -244,7 +240,7 @@ public final class DataFormat {
      * instead
      */
     @Deprecated
-    @Nonnull
+    @NonNull
     public static DataFormat create(@Nullable String locale, @Nullable String datePattern) {
         return create(locale, datePattern, null);
     }
@@ -258,12 +254,12 @@ public final class DataFormat {
      * @param numberPattern an optional number pattern
      * @return a non-null DataFormat
      */
-    @Nonnull
+    @NonNull
     public static DataFormat create(@Nullable String locale, @Nullable String datePattern, @Nullable String numberPattern) {
         return new DataFormat(locale != null ? LOCALE_PARSER.parseValue(locale).orElse(null) : null, datePattern, numberPattern);
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<Locale> localeParser() {
         return LOCALE_PARSER;
     }
@@ -299,8 +295,8 @@ public final class DataFormat {
      * @see
      * http://www.java2s.com/Code/Java/Data-Type/ConvertsaStringtoaLocale.htm
      */
-    @Nonnull
-    public static Locale toLocale(@Nonnull String str) throws IllegalArgumentException {
+    @NonNull
+    public static Locale toLocale(@NonNull String str) throws IllegalArgumentException {
         Objects.requireNonNull(str);
         int len = str.length();
         if (len != 2 && len != 5 && len < 7) {
@@ -355,7 +351,7 @@ public final class DataFormat {
      * @deprecated use {@link #newDateFormat()} instead
      */
     @Deprecated
-    @Nonnull
+    @NonNull
     public static DateFormat newDateFormat(@Nullable String datePattern, @Nullable Locale locale) throws IllegalArgumentException {
         return new DataFormat(locale, datePattern, null).newDateFormat();
     }
@@ -367,7 +363,7 @@ public final class DataFormat {
      * @deprecated use {@link #newNumberFormat()} instead
      */
     @Deprecated
-    @Nonnull
+    @NonNull
     public static NumberFormat newNumberFormat(@Nullable Locale locale) {
         return new DataFormat(locale, null, null).newNumberFormat();
     }

@@ -23,7 +23,7 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -35,23 +35,23 @@ public interface ResourceWatcher<ID> {
 
     boolean isLeakingResources();
 
-    @Nonnull
-    ID open(@Nonnull String name);
+    @NonNull
+    ID open(@NonNull String name);
 
-    void close(@Nonnull ID id);
+    void close(@NonNull ID id);
 
-    @Nonnull
-    default Closeable watchAsCloseable(@Nonnull String name) {
+    @NonNull
+    default Closeable watchAsCloseable(@NonNull String name) {
         ID id = open(name);
         return () -> close(id);
     }
 
-    @Nonnull
+    @NonNull
     static ResourceWatcher<?> noOp() {
         return NoOpResourceWatcher.INSTANCE;
     }
 
-    @Nonnull
+    @NonNull
     static ResourceWatcher<Id> usingId() {
         return new IdResourceWatcher();
     }

@@ -19,7 +19,7 @@ package ec.tss;
 import ec.tstoolkit.MetaData;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.timeseries.simplets.TsData;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -123,7 +123,7 @@ public final class TsInformation {
      *
      * @return a non null Ts
      */
-    @Nonnull
+    @NonNull
     public Ts toTs() {
         Ts result = TsFactory.instance.createTs(name, moniker, metaData, data);
         if (data == null) {

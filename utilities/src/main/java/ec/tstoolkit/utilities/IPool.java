@@ -17,7 +17,7 @@
 
 package ec.tstoolkit.utilities;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -25,20 +25,20 @@ import javax.annotation.Nonnull;
  */
 public interface IPool<T> {
 
-    @Nonnull
+    @NonNull
     T getOrCreate();
 
-    void recycle(@Nonnull T o);
+    void recycle(@NonNull T o);
 
     void clear();
 
     interface Factory<T> {
 
-        @Nonnull
+        @NonNull
         T create();
 
-        void reset(@Nonnull T o);
+        void reset(@NonNull T o);
 
-        void destroy(@Nonnull T o);
+        void destroy(@NonNull T o);
     }
 }

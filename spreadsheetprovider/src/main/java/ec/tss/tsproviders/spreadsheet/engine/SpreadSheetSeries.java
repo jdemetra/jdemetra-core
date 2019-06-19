@@ -19,7 +19,7 @@ package ec.tss.tsproviders.spreadsheet.engine;
 import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -32,7 +32,7 @@ public final class SpreadSheetSeries implements Comparable<SpreadSheetSeries> {
     public final AlignType alignType;
     public final OptionalTsData data;
 
-    public SpreadSheetSeries(@Nonnull String seriesName, int ordering, @Nonnull AlignType alignType, @Nonnull OptionalTsData data) {
+    public SpreadSheetSeries(@NonNull String seriesName, int ordering, @NonNull AlignType alignType, @NonNull OptionalTsData data) {
         this.seriesName = seriesName;
         this.ordering = ordering;
         this.alignType = alignType;

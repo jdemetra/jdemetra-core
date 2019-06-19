@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.NotThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import net.jcip.annotations.NotThreadSafe;
 
 /**
  * Defines a low-level time series cursor that may retrieve data and metadata.
@@ -55,7 +55,7 @@ public interface TsCursor<ID> extends Closeable {
      * @throws IOException if an internal exception prevented data retrieval.
      * @throws IllegalStateException if this cursor is closed
      */
-    @Nonnull
+    @NonNull
     Map<String, String> getMetaData() throws IOException, IllegalStateException;
 
     /**
@@ -75,7 +75,7 @@ public interface TsCursor<ID> extends Closeable {
      * @throws IllegalStateException if {@link #nextSeries()} returns false or
      * if this cursor is closed
      */
-    @Nonnull
+    @NonNull
     ID getSeriesId() throws IOException, IllegalStateException;
 
     /**
@@ -86,7 +86,7 @@ public interface TsCursor<ID> extends Closeable {
      * @throws IllegalStateException if {@link #nextSeries()} returns false or
      * if this cursor is closed
      */
-    @Nonnull
+    @NonNull
     String getSeriesLabel() throws IOException, IllegalStateException;
 
     /**
@@ -97,7 +97,7 @@ public interface TsCursor<ID> extends Closeable {
      * @throws IllegalStateException if {@link #nextSeries()} returns false or
      * if this cursor is closed
      */
-    @Nonnull
+    @NonNull
     Map<String, String> getSeriesMetaData() throws IOException, IllegalStateException;
 
     /**
@@ -108,7 +108,7 @@ public interface TsCursor<ID> extends Closeable {
      * @throws IllegalStateException if {@link #nextSeries()} returns false or
      * if this cursor is closed
      */
-    @Nonnull
+    @NonNull
     OptionalTsData getSeriesData() throws IOException, IllegalStateException;
 
     /**
@@ -119,8 +119,8 @@ public interface TsCursor<ID> extends Closeable {
      * @param function a non-null function to apply to each identifier
      * @return a non-null cursor
      */
-    @Nonnull
-    default <Z> TsCursor<Z> transform(@Nonnull Function<? super ID, ? extends Z> function) {
+    @NonNull
+    default <Z> TsCursor<Z> transform(@NonNull Function<? super ID, ? extends Z> function) {
         return new TsCursors.TransformingCursor<>(this, function);
     }
 
@@ -131,8 +131,8 @@ public interface TsCursor<ID> extends Closeable {
      * @param predicate a non-null predicate to apply to each identifier
      * @return a non-null cursor
      */
-    @Nonnull
-    default TsCursor<ID> filter(@Nonnull Predicate<? super ID> predicate) {
+    @NonNull
+    default TsCursor<ID> filter(@NonNull Predicate<? super ID> predicate) {
         return new TsCursors.FilteringCursor<>(this, predicate);
     }
 
@@ -142,8 +142,8 @@ public interface TsCursor<ID> extends Closeable {
      * @param meta a non-null meta data
      * @return a non-null cursor
      */
-    @Nonnull
-    default TsCursor<ID> withMetaData(@Nonnull Map<String, String> meta) {
+    @NonNull
+    default TsCursor<ID> withMetaData(@NonNull Map<String, String> meta) {
         return new TsCursors.WithMetaDataCursor<>(this, meta);
     }
 
@@ -153,8 +153,8 @@ public interface TsCursor<ID> extends Closeable {
      * @param closeHandler a non-null task to execute if the stream is closed
      * @return a non-null cursor
      */
-    @Nonnull
-    default TsCursor<ID> onClose(@Nonnull Closeable closeHandler) {
+    @NonNull
+    default TsCursor<ID> onClose(@NonNull Closeable closeHandler) {
         return new TsCursors.OnCloseCursor<>(this, closeHandler);
     }
 
@@ -164,7 +164,7 @@ public interface TsCursor<ID> extends Closeable {
      * @param <ID> the type of the cursor identifiers
      * @return a new cursor
      */
-    @Nonnull
+    @NonNull
     static <ID> TsCursor<ID> empty() {
         return new TsCursors.EmptyCursor<>();
     }
@@ -179,8 +179,8 @@ public interface TsCursor<ID> extends Closeable {
      * @param label the label
      * @return a new cursor
      */
-    @Nonnull
-    static <ID> TsCursor<ID> singleton(@Nonnull ID id, @Nonnull OptionalTsData data, @Nonnull Map<String, String> meta, @Nonnull String label) {
+    @NonNull
+    static <ID> TsCursor<ID> singleton(@NonNull ID id, @NonNull OptionalTsData data, @NonNull Map<String, String> meta, @NonNull String label) {
         return new TsCursors.SingletonCursor<>(id, data, meta, label);
     }
 
@@ -193,8 +193,8 @@ public interface TsCursor<ID> extends Closeable {
      * @param meta the metadata
      * @return a new cursor
      */
-    @Nonnull
-    static <ID> TsCursor<ID> singleton(@Nonnull ID id, @Nonnull OptionalTsData data, @Nonnull Map<String, String> meta) {
+    @NonNull
+    static <ID> TsCursor<ID> singleton(@NonNull ID id, @NonNull OptionalTsData data, @NonNull Map<String, String> meta) {
         return new TsCursors.SingletonCursor<>(id, data, meta, id.toString());
     }
 
@@ -206,8 +206,8 @@ public interface TsCursor<ID> extends Closeable {
      * @param data the optional data
      * @return a new cursor
      */
-    @Nonnull
-    static <ID> TsCursor<ID> singleton(@Nonnull ID id, @Nonnull OptionalTsData data) {
+    @NonNull
+    static <ID> TsCursor<ID> singleton(@NonNull ID id, @NonNull OptionalTsData data) {
         return new TsCursors.SingletonCursor<>(id, data, Collections.emptyMap(), id.toString());
     }
 
@@ -218,8 +218,8 @@ public interface TsCursor<ID> extends Closeable {
      * @param id the identifier
      * @return a new cursor
      */
-    @Nonnull
-    static <ID> TsCursor<ID> singleton(@Nonnull ID id) {
+    @NonNull
+    static <ID> TsCursor<ID> singleton(@NonNull ID id) {
         return new TsCursors.SingletonCursor<>(id, TsCursors.NOT_REQUESTED, Collections.emptyMap(), id.toString());
     }
 
@@ -236,12 +236,12 @@ public interface TsCursor<ID> extends Closeable {
      * iterator
      * @return a new cursor
      */
-    @Nonnull
+    @NonNull
     static <E> TsCursor<E> from(
-            @Nonnull Iterator<E> iterator,
-            @Nonnull Function<? super E, OptionalTsData> toData,
-            @Nonnull Function<? super E, Map<String, String>> toMeta,
-            @Nonnull Function<? super E, String> toLabel) {
+            @NonNull Iterator<E> iterator,
+            @NonNull Function<? super E, OptionalTsData> toData,
+            @NonNull Function<? super E, Map<String, String>> toMeta,
+            @NonNull Function<? super E, String> toLabel) {
         return new TsCursors.IteratingCursor<>(iterator, Function.identity(), toData, toMeta, toLabel);
     }
 
@@ -256,11 +256,11 @@ public interface TsCursor<ID> extends Closeable {
      * from the iterator
      * @return a new cursor
      */
-    @Nonnull
+    @NonNull
     static <E> TsCursor<E> from(
-            @Nonnull Iterator<E> iterator,
-            @Nonnull Function<? super E, OptionalTsData> toData,
-            @Nonnull Function<? super E, Map<String, String>> toMeta) {
+            @NonNull Iterator<E> iterator,
+            @NonNull Function<? super E, OptionalTsData> toData,
+            @NonNull Function<? super E, Map<String, String>> toMeta) {
         return new TsCursors.IteratingCursor<>(iterator, Function.identity(), toData, toMeta, Object::toString);
     }
 
@@ -273,10 +273,10 @@ public interface TsCursor<ID> extends Closeable {
      * from the iterator
      * @return a new cursor
      */
-    @Nonnull
+    @NonNull
     static <E> TsCursor<E> from(
-            @Nonnull Iterator<E> iterator,
-            @Nonnull Function<? super E, OptionalTsData> toData) {
+            @NonNull Iterator<E> iterator,
+            @NonNull Function<? super E, OptionalTsData> toData) {
         return new TsCursors.IteratingCursor<>(iterator, Function.identity(), toData, TsCursors.NO_META, Object::toString);
     }
 
@@ -287,16 +287,16 @@ public interface TsCursor<ID> extends Closeable {
      * @param iterator the iterator
      * @return a new cursor
      */
-    @Nonnull
-    static <E> TsCursor<E> from(@Nonnull Iterator<E> iterator) {
+    @NonNull
+    static <E> TsCursor<E> from(@NonNull Iterator<E> iterator) {
         return new TsCursors.IteratingCursor<>(iterator, Function.identity(), TsCursors.NO_DATA, TsCursors.NO_META, Object::toString);
     }
 
-    @Nonnull
+    @NonNull
     static <KEY, ID> TsCursor<ID> withCache(
-            @Nonnull ConcurrentMap<KEY, Object> cache,
-            @Nonnull KEY key,
-            @Nonnull FunctionWithIO<? super KEY, ? extends TsCursor<ID>> loader) throws IOException {
+            @NonNull ConcurrentMap<KEY, Object> cache,
+            @NonNull KEY key,
+            @NonNull FunctionWithIO<? super KEY, ? extends TsCursor<ID>> loader) throws IOException {
         return TsCursors.getOrLoad(cache, key, loader);
     }
 }

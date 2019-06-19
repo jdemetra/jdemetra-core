@@ -28,8 +28,8 @@ import java.util.Stack;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -50,17 +50,17 @@ public final class Trees {
      * @param children
      * @return
      */
-    @Nonnull
+    @NonNull
     public static <T> Iterable<T> breadthFirstIterable(
-            @Nonnull T root,
-            @Nonnull Function<? super T, ? extends Stream<? extends T>> children) {
+            @NonNull T root,
+            @NonNull Function<? super T, ? extends Stream<? extends T>> children) {
         return new BreadthFirstIterable(root, children);
     }
 
-    @Nonnull
+    @NonNull
     public static <T> Stream<T> breadthFirstStream(
-            @Nonnull T root,
-            @Nonnull Function<? super T, ? extends Stream<? extends T>> children) {
+            @NonNull T root,
+            @NonNull Function<? super T, ? extends Stream<? extends T>> children) {
         return Streams.stream(breadthFirstIterable(root, children));
     }
 
@@ -72,27 +72,26 @@ public final class Trees {
      * @param children
      * @return
      */
-    @Nonnull
+    @NonNull
     public static <T> Iterable<T> depthFirstIterable(
-            @Nonnull T root,
-            @Nonnull Function<? super T, ? extends Stream<? extends T>> children) {
+            @NonNull T root,
+            @NonNull Function<? super T, ? extends Stream<? extends T>> children) {
         return new DepthFirstIterable(root, children);
     }
 
-    @Nonnull
+    @NonNull
     public static <T> Stream<T> depthFirstStream(
-            @Nonnull T root,
-            @Nonnull Function<? super T, ? extends Stream<? extends T>> children) {
+            @NonNull T root,
+            @NonNull Function<? super T, ? extends Stream<? extends T>> children) {
         return Streams.stream(depthFirstIterable(root, children));
     }
 
-    @Nonnull
     public static <T> void prettyPrint(
-            @Nonnull T root,
-            @Nonnull Function<? super T, ? extends Stream<? extends T>> children,
-            @Nonnegative int maxLevel,
-            @Nonnull Function<? super T, ? extends CharSequence> toString,
-            @Nonnull Appendable appendable) throws IOException {
+            @NonNull T root,
+            @NonNull Function<? super T, ? extends Stream<? extends T>> children,
+            @NonNegative int maxLevel,
+            @NonNull Function<? super T, ? extends CharSequence> toString,
+            @NonNull Appendable appendable) throws IOException {
         appendable.append(toString.apply(root)).append(System.lineSeparator());
         List<?> list = children.apply(root).collect(Collectors.toList());
         if (maxLevel > 0) {
@@ -102,12 +101,12 @@ public final class Trees {
         }
     }
 
-    @Nonnull
+    @NonNull
     public static <T> String prettyPrintToString(
-            @Nonnull T root,
-            @Nonnull Function<? super T, ? extends Stream<? extends T>> children,
-            @Nonnegative int maxLevel,
-            @Nonnull Function<? super T, ? extends CharSequence> toString) {
+            @NonNull T root,
+            @NonNull Function<? super T, ? extends Stream<? extends T>> children,
+            @NonNegative int maxLevel,
+            @NonNull Function<? super T, ? extends CharSequence> toString) {
         StringBuilder result = new StringBuilder();
         try {
             prettyPrint(root, children, maxLevel, toString, result);
@@ -186,12 +185,12 @@ public final class Trees {
     }
 
     private static <T> void prettyPrint(
-            @Nonnull T item,
-            @Nonnull Function<? super T, ? extends Stream<? extends T>> children,
-            @Nonnegative int maxLevel,
-            @Nonnull Appendable appendable,
-            @Nonnull Function<? super T, ? extends CharSequence> toString,
-            @Nonnull String prefix,
+            @NonNull T item,
+            @NonNull Function<? super T, ? extends Stream<? extends T>> children,
+            @NonNegative int maxLevel,
+            @NonNull Appendable appendable,
+            @NonNull Function<? super T, ? extends CharSequence> toString,
+            @NonNull String prefix,
             boolean last) throws IOException {
         appendable.append(prefix);
         if (last) {

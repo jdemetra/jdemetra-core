@@ -18,7 +18,7 @@ package internal.workspace.file;
 
 import ec.demetra.workspace.WorkspaceFamily;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -36,13 +36,13 @@ class Index {
     @lombok.Singular
     Map<Key, Value> items;
 
-    @Nonnull
-    public Index withItem(@Nonnull Key key, @Nonnull Value value) {
+    @NonNull
+    public Index withItem(@NonNull Key key, @NonNull Value value) {
         return toBuilder().item(key, value).build();
     }
 
-    @Nonnull
-    public Index withoutItem(@Nonnull Key key) {
+    @NonNull
+    public Index withoutItem(@NonNull Key key) {
         Index.Builder result = Index.builder().name(getName());
         getItems().forEach((k, v) -> {
             if (!k.equals(key)) {

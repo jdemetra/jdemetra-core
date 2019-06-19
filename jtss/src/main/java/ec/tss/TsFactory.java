@@ -35,8 +35,8 @@ import java.util.concurrent.locks.LockSupport;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -254,7 +254,7 @@ public class TsFactory {
      *
      * @return a new time series
      */
-    @Nonnull
+    @NonNull
     @NewObject
     public Ts createTs() {
         return createTs("");
@@ -266,7 +266,7 @@ public class TsFactory {
      * @param name the time series name; null replaced by empty string
      * @return a new time series
      */
-    @Nonnull
+    @NonNull
     @NewObject
     public Ts createTs(@Nullable String name) {
         synchronized (m_ts) {
@@ -300,7 +300,7 @@ public class TsFactory {
      * @param d the data; null permitted
      * @return a new time series
      */
-    @Nonnull
+    @NonNull
     @NewObject
     public Ts createTs(@Nullable String name, @Nullable MetaData md, @Nullable TsData d) {
         return createTs(name, new TsMoniker(), md, d);
@@ -316,7 +316,7 @@ public class TsFactory {
      * @param d
      * @return an existing time series or a new one
      */
-    @Nonnull
+    @NonNull
     public Ts createTs(@Nullable String name, @Nullable TsMoniker moniker, @Nullable MetaData md, @Nullable TsData d) {
         synchronized (m_ts) {
             WeakReference<Ts.Master> wref = null;
@@ -352,8 +352,8 @@ public class TsFactory {
      * @param type
      * @return a non-null time series
      */
-    @Nonnull
-    public Ts createTs(@Nullable String name, @Nonnull TsMoniker moniker, @Nonnull TsInformationType type) {
+    @NonNull
+    public Ts createTs(@Nullable String name, @NonNull TsMoniker moniker, @NonNull TsInformationType type) {
         synchronized (m_ts) {
             Ts.Master result = (Ts.Master) getTs(moniker);
             if (result == null) {
@@ -393,7 +393,7 @@ public class TsFactory {
      *
      * @return a new collection
      */
-    @Nonnull
+    @NonNull
     @NewObject
     public TsCollection createTsCollection() {
         return createTsCollection("");
@@ -405,7 +405,7 @@ public class TsFactory {
      * @param name the collection name; null replaced by empty string
      * @return a new collection
      */
-    @Nonnull
+    @NonNull
     @NewObject
     public TsCollection createTsCollection(@Nullable String name) {
         synchronized (m_collections) {
@@ -426,7 +426,7 @@ public class TsFactory {
      * @param ts
      * @return an existing collection or a new one
      */
-    @Nonnull
+    @NonNull
     public TsCollection createTsCollection(@Nullable String name, @Nullable TsMoniker moniker, @Nullable MetaData md,
             @Nullable Iterable<Ts> ts) {
         synchronized (m_collections) {
@@ -463,9 +463,9 @@ public class TsFactory {
      * @param type
      * @return a collection
      */
-    @Nonnull
-    public TsCollection createTsCollection(@Nullable String name, @Nonnull TsMoniker moniker,
-            @Nonnull TsInformationType type) {
+    @NonNull
+    public TsCollection createTsCollection(@Nullable String name, @NonNull TsMoniker moniker,
+            @NonNull TsInformationType type) {
         // Search collection
         synchronized (m_collections) {
             TsCollection result = getTsCollection(moniker);
@@ -541,7 +541,7 @@ public class TsFactory {
      *
      * @return an array of provider names
      */
-    @Nonnull
+    @NonNull
     public String[] getProviders() {
         return m_providers.keySet().stream().toArray(String[]::new);
     }
@@ -647,7 +647,7 @@ public class TsFactory {
         return m_useSynchronousNotifications;
     }
 
-    private boolean doLoad(@Nonnull Ts.Master ts, @Nonnull TsInformationType type) {
+    private boolean doLoad(Ts.@NonNull Master ts, @NonNull TsInformationType type) {
         if (ts.getMoniker().isAnonymous()) {
             return true;
         }
@@ -658,7 +658,7 @@ public class TsFactory {
         return result;
     }
 
-    private boolean doLoad(@Nonnull TsCollection c, @Nonnull TsInformationType type) {
+    private boolean doLoad(@NonNull TsCollection c, @NonNull TsInformationType type) {
         if (c.getMoniker().isAnonymous()) {
             return true;
         }
@@ -679,7 +679,7 @@ public class TsFactory {
      * @param type the type of information to load
      * @return true if the data is loaded; false otherwise
      */
-    public boolean load(@Nonnull Ts ts, @Nonnull TsInformationType type) {
+    public boolean load(@NonNull Ts ts, @NonNull TsInformationType type) {
         return doLoad(ts.getMaster(), type);
     }
 
@@ -709,7 +709,7 @@ public class TsFactory {
      * @param type
      * @return true if the data is loaded; false otherwise
      */
-    public boolean load(@Nonnull TsCollection c, @Nonnull TsInformationType type) {
+    public boolean load(@NonNull TsCollection c, @NonNull TsInformationType type) {
         ITsProvider provider = getProvider(c.getMoniker().getSource());
         if (provider == null) {
             return load(c.toArray(), type);
@@ -769,7 +769,7 @@ public class TsFactory {
      * @param type
      * @return true if the query is processed; false otherwise
      */
-    public boolean query(@Nonnull Ts s, @Nonnull TsInformationType type) {
+    public boolean query(@NonNull Ts s, @NonNull TsInformationType type) {
         if (type == TsInformationType.None) {
             return true;
         }
@@ -795,7 +795,7 @@ public class TsFactory {
      * @param type
      * @return true if the query is processed
      */
-    public boolean query(@Nonnull TsCollection c, @Nonnull TsInformationType type) {
+    public boolean query(@NonNull TsCollection c, @NonNull TsInformationType type) {
         if (type == TsInformationType.None) {
             return true;
         }
@@ -876,7 +876,7 @@ public class TsFactory {
      *
      * @param info
      */
-    public void update(@Nonnull TsCollectionInformation info) {
+    public void update(@NonNull TsCollectionInformation info) {
         synchronized (m_collections) {
             TsCollection c = getTsCollection(info.moniker);
             if (c != null) {
@@ -895,7 +895,7 @@ public class TsFactory {
      *
      * @param info
      */
-    public void update(@Nonnull TsInformation info) {
+    public void update(@NonNull TsInformation info) {
         synchronized (m_ts) {
             Ts.Master s = (Ts.Master) getTs(info.moniker);
             if (s == null) // the series has been destroyed
@@ -915,7 +915,7 @@ public class TsFactory {
         m_useSynchronousNotifications = value;
     }
 
-    @Nonnull
+    @NonNull
     public static Collector<Ts, ?, TsCollection> toTsCollection() {
         return Collector.<Ts, List<Ts>, TsCollection>of(ArrayList::new, List::add, (l, r) -> {
             l.addAll(r);

@@ -29,7 +29,7 @@ import ec.tstoolkit.MetaData;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 
 /**
@@ -51,8 +51,8 @@ public final class TsCursorAsFiller {
      * @param hddn a non-null data display name support
      * @return a non-null instance
      */
-    @Nonnull
-    public static TsFiller of(@Nonnull Logger logger, @Nonnull HasTsCursor hdc, @Nonnull HasDataMoniker hdm, @Nonnull HasDataDisplayName hddn) {
+    @NonNull
+    public static TsFiller of(@NonNull Logger logger, @NonNull HasTsCursor hdc, @NonNull HasDataMoniker hdm, @NonNull HasDataDisplayName hddn) {
         return new ComposedFiller(new CursorResource(logger, hdc, hdm, hddn));
     }
 
@@ -60,7 +60,7 @@ public final class TsCursorAsFiller {
 
         private final Resource resource;
 
-        ComposedFiller(@Nonnull Resource resource) {
+        ComposedFiller(@NonNull Resource resource) {
             this.resource = Objects.requireNonNull(resource);
         }
 
@@ -146,7 +146,7 @@ public final class TsCursorAsFiller {
         private final HasDataMoniker hdm;
         private final HasDataDisplayName hddn;
 
-        CursorResource(@Nonnull Logger logger, @Nonnull HasTsCursor htc, @Nonnull HasDataMoniker hdm, @Nonnull HasDataDisplayName hddn) {
+        CursorResource(@NonNull Logger logger, @NonNull HasTsCursor htc, @NonNull HasDataMoniker hdm, @NonNull HasDataDisplayName hddn) {
             this.logger = Objects.requireNonNull(logger, "Logger");
             this.htc = Objects.requireNonNull(htc, "HasTsCursor");
             this.hdm = Objects.requireNonNull(hdm, "HasDataMoniker");

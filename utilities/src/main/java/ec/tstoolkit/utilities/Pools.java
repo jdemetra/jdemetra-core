@@ -19,7 +19,7 @@ package ec.tstoolkit.utilities;
 
 import java.util.Deque;
 import java.util.LinkedList;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -31,13 +31,13 @@ public final class Pools {
         // static class
     }
 
-    @Nonnull
-    public static <X> IPool<X> on(@Nonnull Class<? extends X> clazz, int maxPoolSize) {
+    @NonNull
+    public static <X> IPool<X> on(@NonNull Class<? extends X> clazz, int maxPoolSize) {
         return on(new BasicFactory<>(clazz), maxPoolSize);
     }
 
-    @Nonnull
-    public static <X> IPool<X> on(@Nonnull IPool.Factory<X> factory, int maxPoolSize) {
+    @NonNull
+    public static <X> IPool<X> on(IPool.@NonNull Factory<X> factory, int maxPoolSize) {
         return new BasicPool<>(factory, maxPoolSize);
     }
 
@@ -48,7 +48,7 @@ public final class Pools {
         final Deque<T> data;
         int wildCount;
 
-        BasicPool(@Nonnull Factory<T> factory, int maxPoolSize) {
+        BasicPool(@NonNull Factory<T> factory, int maxPoolSize) {
             this.factory = factory;
             this.maxPoolSize = maxPoolSize;
             this.data = new LinkedList<>();
@@ -86,7 +86,7 @@ public final class Pools {
 
         final Class<? extends T> clazz;
 
-        BasicFactory(@Nonnull Class<? extends T> clazz) {
+        BasicFactory(@NonNull Class<? extends T> clazz) {
             this.clazz = clazz;
         }
 

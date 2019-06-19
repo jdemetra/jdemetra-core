@@ -20,7 +20,7 @@ package ec.tss.tsproviders.utils;
 import ec.tss.TsAsyncMode;
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.IDataSourceLoader;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 
 /**
@@ -38,8 +38,8 @@ public abstract class AbstractDataSourceLoader<DATA, BEAN> extends AbstractDataS
         return loadFromBean(decodeBean(key));
     }
 
-    @Nonnull
-    protected abstract DATA loadFromBean(@Nonnull BEAN bean) throws Exception;
+    @NonNull
+    protected abstract DATA loadFromBean(@NonNull BEAN bean) throws Exception;
 
     @Override
     public abstract BEAN newBean();

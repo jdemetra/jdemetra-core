@@ -18,8 +18,8 @@ package ec.tss.tsproviders.utils;
 
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import net.jcip.annotations.Immutable;
 
 /**
  * Parameters used when collecting observations in order to create time series.
@@ -32,13 +32,13 @@ import javax.annotation.concurrent.Immutable;
 @lombok.experimental.Wither
 public final class ObsGathering {
 
-    @Nonnull
-    public static ObsGathering includingMissingValues(@Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) {
+    @NonNull
+    public static ObsGathering includingMissingValues(@NonNull TsFrequency frequency, @NonNull TsAggregationType aggregationType) {
         return new ObsGathering(frequency, aggregationType, false);
     }
 
-    @Nonnull
-    public static ObsGathering excludingMissingValues(@Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) {
+    @NonNull
+    public static ObsGathering excludingMissingValues(@NonNull TsFrequency frequency, @NonNull TsAggregationType aggregationType) {
         return new ObsGathering(frequency, aggregationType, true);
     }
 

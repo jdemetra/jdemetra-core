@@ -17,7 +17,7 @@
 
 package ec.tss.tsproviders;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -26,6 +26,6 @@ import javax.annotation.Nonnull;
  */
 public interface IDataSourceBean {
 
-    @Nonnull
-    DataSource toDataSource(@Nonnull String providerName, @Nonnull String version);
+    @NonNull
+    DataSource toDataSource(@NonNull String providerName, @NonNull String version);
 }

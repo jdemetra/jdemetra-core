@@ -20,8 +20,8 @@ import ec.tss.TsInformationType;
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
 import java.io.IOException;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * Defines the ability to create a time series cursor on a DataSource or a
@@ -43,8 +43,8 @@ public interface HasTsCursor {
      * provider.
      * @throws IOException if an internal exception prevented data retrieval.
      */
-    @Nonnull
-    TsCursor<DataSet> getData(@Nonnull DataSource dataSource, @Nonnull TsInformationType type) throws IllegalArgumentException, IOException;
+    @NonNull
+    TsCursor<DataSet> getData(@NonNull DataSource dataSource, @NonNull TsInformationType type) throws IllegalArgumentException, IOException;
 
     /**
      * Creates a cursor from a DataSet.
@@ -56,6 +56,6 @@ public interface HasTsCursor {
      * provider.
      * @throws IOException if an internal exception prevented data retrieval.
      */
-    @Nonnull
-    TsCursor<DataSet> getData(@Nonnull DataSet dataSet, @Nonnull TsInformationType type) throws IllegalArgumentException, IOException;
+    @NonNull
+    TsCursor<DataSet> getData(@NonNull DataSet dataSet, @NonNull TsInformationType type) throws IllegalArgumentException, IOException;
 }

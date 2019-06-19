@@ -27,7 +27,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -37,7 +37,7 @@ import javax.annotation.Nonnull;
 @lombok.experimental.UtilityClass
 public class PathUtil {
 
-    @Nonnull
+    @NonNull
     public Path get(URL url) {
         try {
             return Paths.get(url.toURI());
@@ -46,7 +46,7 @@ public class PathUtil {
         }
     }
 
-    public void copyDirectory(@Nonnull Path sourcePath, @Nonnull Path targetPath, @Nonnull CopyOption... options) throws IOException {
+    public void copyDirectory(@NonNull Path sourcePath, @NonNull Path targetPath, @NonNull CopyOption... options) throws IOException {
         Files.walkFileTree(sourcePath, new SimpleFileVisitor<Path>() {
             final Function<Path, Path> resolver = getResolver(sourcePath, targetPath);
 

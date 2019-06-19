@@ -38,10 +38,10 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import net.jcip.annotations.NotThreadSafe;
 import ec.tstoolkit.timeseries.simplets.ObsList;
 import java.util.EnumSet;
 import java.util.Set;
@@ -75,14 +75,14 @@ public abstract class OptionalTsData {
      * @return non-null OptionalTsData
      * @since 2.2.0
      */
-    @Nonnull
-    public static OptionalTsData present(@Nonnull TsData data) {
+    @NonNull
+    public static OptionalTsData present(@NonNull TsData data) {
         return new Present(Objects.requireNonNull(data));
     }
 
     @Deprecated
-    @Nonnull
-    public static OptionalTsData present(@Nonnegative int nbrRows, @Nonnegative int nbrUselessRows, @Nonnull TsData data) {
+    @NonNull
+    public static OptionalTsData present(@NonNegative int nbrRows, @NonNegative int nbrUselessRows, @NonNull TsData data) {
         Preconditions.checkArgument(nbrRows >= nbrUselessRows && nbrUselessRows >= 0);
         return present(data);
     }
@@ -94,14 +94,14 @@ public abstract class OptionalTsData {
      * @return non-null OptionalTsData
      * @since 2.2.0
      */
-    @Nonnull
-    public static OptionalTsData absent(@Nonnull String cause) {
+    @NonNull
+    public static OptionalTsData absent(@NonNull String cause) {
         return new Absent(Objects.requireNonNull(cause));
     }
 
     @Deprecated
-    @Nonnull
-    public static OptionalTsData absent(@Nonnegative int nbrRows, @Nonnegative int nbrUselessRows, @Nonnull String cause) {
+    @NonNull
+    public static OptionalTsData absent(@NonNegative int nbrRows, @NonNegative int nbrUselessRows, @NonNull String cause) {
         Preconditions.checkArgument(nbrRows >= nbrUselessRows && nbrUselessRows >= 0);
         return absent(cause);
     }
@@ -116,8 +116,8 @@ public abstract class OptionalTsData {
      * @return non-null builder
      * @since 2.2.0
      */
-    @Nonnull
-    public static Builder2<Date> builderByDate(@Nonnull Calendar resource, @Nonnull ObsGathering gathering, @Nonnull ObsCharacteristics... characteristics) {
+    @NonNull
+    public static Builder2<Date> builderByDate(@NonNull Calendar resource, @NonNull ObsGathering gathering, @NonNull ObsCharacteristics... characteristics) {
         return builder(gathering, toEnumSet(characteristics), Date::getTime, (f, p) -> getIdFromTimeInMillis(resource, f, p));
     }
 
@@ -129,8 +129,8 @@ public abstract class OptionalTsData {
      * @return non-null builder
      * @since 2.2.0
      */
-    @Nonnull
-    public static Builder2<LocalDate> builderByLocalDate(@Nonnull ObsGathering gathering, @Nonnull ObsCharacteristics... characteristics) {
+    @NonNull
+    public static Builder2<LocalDate> builderByLocalDate(@NonNull ObsGathering gathering, @NonNull ObsCharacteristics... characteristics) {
         return builder(gathering, toEnumSet(characteristics), OptionalTsData::getYearMonthDay, OptionalTsData::getIdFromYearMonthDay);
     }
     //</editor-fold>
@@ -141,7 +141,7 @@ public abstract class OptionalTsData {
      * @return a non-negative number of rows
      */
     @Deprecated
-    @Nonnegative
+    @NonNegative
     public int getNbrRows() {
         return 0;
     }
@@ -153,7 +153,7 @@ public abstract class OptionalTsData {
      * @return a non-negative number of rows
      */
     @Deprecated
-    @Nonnegative
+    @NonNegative
     public int getNbrUselessRows() {
         return 0;
     }
@@ -173,7 +173,7 @@ public abstract class OptionalTsData {
      * @throws IllegalStateException if the time series data is absent
      * ({@link #isPresent} returns {@code false})
      */
-    @Nonnull
+    @NonNull
     @NewObject
     abstract public TsData get() throws IllegalStateException;
 
@@ -186,8 +186,8 @@ public abstract class OptionalTsData {
      * @param defaultValue a non-null default value if the data is absent
      * @return a non-null TsData
      */
-    @Nonnull
-    public TsData or(@Nonnull TsData defaultValue) {
+    @NonNull
+    public TsData or(@NonNull TsData defaultValue) {
         Objects.requireNonNull(defaultValue, "use orNull() instead of or(null)");
         return isPresent() ? get() : defaultValue;
     }
@@ -207,7 +207,7 @@ public abstract class OptionalTsData {
      * @return non-null message
      * @throws IllegalStateException if the data is present
      */
-    @Nonnull
+    @NonNull
     abstract public String getCause() throws IllegalStateException;
 
     /**
@@ -224,7 +224,7 @@ public abstract class OptionalTsData {
          *
          * @return this builder
          */
-        @Nonnull
+        @NonNull
         Builder2<T> clear();
 
         /**
@@ -238,7 +238,7 @@ public abstract class OptionalTsData {
          * @param value an optional value
          * @return this builder
          */
-        @Nonnull
+        @NonNull
         Builder2<T> add(@Nullable T date, @Nullable Number value);
 
         /**
@@ -252,7 +252,7 @@ public abstract class OptionalTsData {
          * observation
          * @return this builder
          */
-        @Nonnull
+        @NonNull
         default <X> Builder2<T> add(X obs, Function<? super X, ? extends T> dateFunc, Function<? super X, ? extends Number> valueFunc) {
             T date = dateFunc.apply(obs);
             return Builder2.this.add(date, date != null ? valueFunc.apply(obs) : null);
@@ -269,7 +269,7 @@ public abstract class OptionalTsData {
          * observation
          * @return this builder
          */
-        @Nonnull
+        @NonNull
         default <X> Builder2<T> addAll(Stream<X> stream, Function<? super X, ? extends T> dateFunc, Function<? super X, ? extends Number> valueFunc) {
             stream.forEach(o -> add(o, dateFunc, valueFunc));
             return this;
@@ -280,7 +280,7 @@ public abstract class OptionalTsData {
          *
          * @return a non-null OptionalTsData
          */
-        @Nonnull
+        @NonNull
         @Override
         OptionalTsData build();
     }
@@ -469,7 +469,7 @@ public abstract class OptionalTsData {
     }
 
     private static <T> Builder2<T> builder(
-            ObsGathering gathering, @Nonnull Set<ObsCharacteristics> characteristics,
+            ObsGathering gathering, @NonNull Set<ObsCharacteristics> characteristics,
             ToLongFunction<T> periodFunc, ObjLongToIntFunction<TsFrequency> tsPeriodIdFunc) {
         boolean ordered = characteristics.contains(ObsCharacteristics.ORDERED);
         if (gathering.getFrequency() == TsFrequency.Undefined) {
@@ -567,37 +567,37 @@ public abstract class OptionalTsData {
     @Deprecated
     public static final class Builder implements IBuilder<OptionalTsData> {
 
-        @Nonnull
-        public static String toString(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation) {
+        @NonNull
+        public static String toString(@NonNull TsFrequency freq, @NonNull TsAggregationType aggregation) {
             return "(" + freq + "/" + aggregation + ")";
         }
 
         private final Builder2<Date> delegate;
 
-        public Builder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation) {
+        public Builder(@NonNull TsFrequency freq, @NonNull TsAggregationType aggregation) {
             this(freq, aggregation, false);
         }
 
-        public Builder(@Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean skipMissingValues) {
+        public Builder(@NonNull TsFrequency freq, @NonNull TsAggregationType aggregation, boolean skipMissingValues) {
             ObsGathering gathering = skipMissingValues
                     ? ObsGathering.excludingMissingValues(freq, aggregation)
                     : ObsGathering.includingMissingValues(freq, aggregation);
             this.delegate = builderByDate(new GregorianCalendar(), gathering);
         }
 
-        @Nonnull
+        @NonNull
         public Builder clear() {
             delegate.clear();
             return this;
         }
 
-        @Nonnull
+        @NonNull
         public Builder add(@Nullable Date period, @Nullable Number value) {
             delegate.add(period, value);
             return this;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public OptionalTsData build() {
             return delegate.build();

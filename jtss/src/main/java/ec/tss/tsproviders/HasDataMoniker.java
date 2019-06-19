@@ -17,9 +17,9 @@
 package ec.tss.tsproviders;
 
 import ec.tss.TsMoniker;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * Defines the ability to convert a moniker from/to a DataSource or a DataSet.
@@ -40,8 +40,8 @@ public interface HasDataMoniker {
      * @throws IllegalArgumentException if the DataSource doesn't belong to this
      * provider.
      */
-    @Nonnull
-    TsMoniker toMoniker(@Nonnull DataSource dataSource) throws IllegalArgumentException;
+    @NonNull
+    TsMoniker toMoniker(@NonNull DataSource dataSource) throws IllegalArgumentException;
 
     /**
      * Creates a moniker from a DataSet. The resulting moniker can be used to
@@ -52,8 +52,8 @@ public interface HasDataMoniker {
      * @throws IllegalArgumentException if the DataSet doesn't belong to this
      * provider.
      */
-    @Nonnull
-    TsMoniker toMoniker(@Nonnull DataSet dataSet) throws IllegalArgumentException;
+    @NonNull
+    TsMoniker toMoniker(@NonNull DataSet dataSet) throws IllegalArgumentException;
 
     /**
      * Creates a DataSource from a moniker.
@@ -64,7 +64,7 @@ public interface HasDataMoniker {
      * provider.
      */
     @Nullable
-    DataSource toDataSource(@Nonnull TsMoniker moniker) throws IllegalArgumentException;
+    DataSource toDataSource(@NonNull TsMoniker moniker) throws IllegalArgumentException;
 
     /**
      * Creates a DataSet from a moniker.
@@ -75,7 +75,7 @@ public interface HasDataMoniker {
      * provider.
      */
     @Nullable
-    DataSet toDataSet(@Nonnull TsMoniker moniker) throws IllegalArgumentException;
+    DataSet toDataSet(@NonNull TsMoniker moniker) throws IllegalArgumentException;
 
     /**
      * Creates a new instance of HasDataMoniker using uri parser/formatter.
@@ -83,8 +83,8 @@ public interface HasDataMoniker {
      * @param providerName a non-null provider name
      * @return a non-null instance
      */
-    @Nonnull
-    static HasDataMoniker usingUri(@Nonnull String providerName) {
+    @NonNull
+    static HasDataMoniker usingUri(@NonNull String providerName) {
         return new Util.DataMonikerSupport(providerName, DataSource.uriFormatter(), DataSet.uriFormatter(), DataSource.uriParser(), DataSet.uriParser());
     }
 }
