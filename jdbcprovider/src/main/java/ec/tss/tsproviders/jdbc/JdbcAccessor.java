@@ -27,8 +27,8 @@ import java.sql.*;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Callable;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 
 /**
@@ -41,7 +41,7 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
     protected final Logger logger;
     protected final ConnectionSupplier supplier;
 
-    public JdbcAccessor(@Nonnull Logger logger, @Nonnull BEAN dbBean, @Nonnull ConnectionSupplier supplier) {
+    public JdbcAccessor(@NonNull Logger logger, @NonNull BEAN dbBean, @NonNull ConnectionSupplier supplier) {
         super(dbBean);
         this.logger = logger;
         this.supplier = supplier;
@@ -74,8 +74,8 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
      * @return
      * @throws SQLException
      */
-    @Nonnull
-    protected ResultSetFunc<String> getChildFunc(@Nonnull ResultSetMetaData metaData, int columnIndex) throws SQLException {
+    @NonNull
+    protected ResultSetFunc<String> getChildFunc(@NonNull ResultSetMetaData metaData, int columnIndex) throws SQLException {
         return ResultSetFunc.onGetString(columnIndex);
     }
 
@@ -89,8 +89,8 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
      * @return
      * @throws SQLException
      */
-    @Nonnull
-    protected ResultSetFunc<String[]> getDimValuesFunc(@Nonnull ResultSetMetaData metaData, int firstColumnIndex, int length) throws SQLException {
+    @NonNull
+    protected ResultSetFunc<String[]> getDimValuesFunc(@NonNull ResultSetMetaData metaData, int firstColumnIndex, int length) throws SQLException {
         return ResultSetFunc.onGetStringArray(firstColumnIndex, length);
     }
 
@@ -103,8 +103,8 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
      * @return
      * @throws SQLException
      */
-    @Nonnull
-    protected ResultSetFunc<java.util.Date> getPeriodFunc(@Nonnull ResultSetMetaData metaData, int columnIndex) throws SQLException {
+    @NonNull
+    protected ResultSetFunc<java.util.Date> getPeriodFunc(@NonNull ResultSetMetaData metaData, int columnIndex) throws SQLException {
         return ResultSetFunc.onDate(metaData, columnIndex, dateParser);
     }
 
@@ -117,8 +117,8 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
      * @return
      * @throws SQLException
      */
-    @Nonnull
-    protected ResultSetFunc<Number> getValueFunc(@Nonnull ResultSetMetaData metaData, int columnIndex) throws SQLException {
+    @NonNull
+    protected ResultSetFunc<Number> getValueFunc(@NonNull ResultSetMetaData metaData, int columnIndex) throws SQLException {
         return ResultSetFunc.onNumber(metaData, columnIndex, numberParser);
     }
 
@@ -290,7 +290,7 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
 
         protected final DbSetId ref;
 
-        protected JdbcQuery(@Nonnull DbSetId ref) {
+        protected JdbcQuery(@NonNull DbSetId ref) {
             this.ref = ref;
         }
 
@@ -300,18 +300,18 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
          *
          * @return a SQL statement
          */
-        @Nonnull
+        @NonNull
         protected String getQueryString(DatabaseMetaData metaData) throws SQLException {
             return getQueryString();
         }
 
-        @Nonnull
+        @NonNull
         @Deprecated
         protected String getQueryString() {
             throw new RuntimeException("Deprecated");
         }
 
-        protected void setParameters(@Nonnull PreparedStatement statement) throws SQLException {
+        protected void setParameters(@NonNull PreparedStatement statement) throws SQLException {
             for (int i = 0; i < ref.getLevel(); i++) {
                 statement.setString(i + 1, ref.getValue(i));
             }
@@ -326,7 +326,7 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
          * @throws SQLException
          */
         @Nullable
-        abstract protected T process(@Nonnull ResultSet rs) throws SQLException;
+        abstract protected T process(@NonNull ResultSet rs) throws SQLException;
 
         @Override
         public T call() throws SQLException {

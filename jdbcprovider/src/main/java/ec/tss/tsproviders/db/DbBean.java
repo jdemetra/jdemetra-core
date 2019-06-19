@@ -26,7 +26,7 @@ import static ec.tss.tsproviders.utils.Params.*;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -66,7 +66,7 @@ public class DbBean implements IDataSourceBean {
         this.aggregationType = X_AGGREGATION_TYPE.defaultValue();
     }
 
-    public DbBean(@Nonnull DataSource id) {
+    public DbBean(@NonNull DataSource id) {
         this.dbName = X_DBNAME.get(id);
         this.tableName = X_TABLENAME.get(id);
         this.dimColumns = X_DIMCOLUMNS.get(id);
@@ -172,7 +172,7 @@ public class DbBean implements IDataSourceBean {
         return builder.build();
     }
 
-    @Nonnull
+    @NonNull
     public String[] getDimArray() {
         return getDimArray(dimColumns);
     }
@@ -182,8 +182,8 @@ public class DbBean implements IDataSourceBean {
         return Iterables.toArray(DIM_ARRAY_SPLITTER.split(dimColumns), String.class);
     }
 
-    @Nonnull
-    public static String[] getDimArray(@Nonnull DataSource dataSource) {
+    @NonNull
+    public static String[] getDimArray(@NonNull DataSource dataSource) {
         return getDimArray(X_DIMCOLUMNS.get(dataSource));
     }
 
@@ -201,7 +201,7 @@ public class DbBean implements IDataSourceBean {
             this.cacheDepth = X_CACHE_DEPTH.defaultValue();
         }
 
-        public BulkBean(@Nonnull DataSource id) {
+        public BulkBean(@NonNull DataSource id) {
             super(id);
             this.cacheTtl = X_CACHE_TTL.get(id);
             this.cacheDepth = X_CACHE_DEPTH.get(id);

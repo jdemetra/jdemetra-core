@@ -17,8 +17,8 @@
 package ec.tss;
 
 import com.google.common.base.Strings;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -29,12 +29,12 @@ public class TsIdentifier implements ITsIdentified {
     private final String name;
     private final TsMoniker moniker;
 
-    public TsIdentifier(@Nonnull ITsIdentified i) {
+    public TsIdentifier(@NonNull ITsIdentified i) {
         name = i.getName();
         moniker = i.getMoniker();
     }
 
-    public TsIdentifier(@Nullable String name, @Nonnull TsMoniker moniker) {
+    public TsIdentifier(@Nullable String name, @NonNull TsMoniker moniker) {
         this.name = Strings.nullToEmpty(name);
         this.moniker = moniker;
     }

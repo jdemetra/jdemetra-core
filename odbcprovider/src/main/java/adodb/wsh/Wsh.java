@@ -18,8 +18,8 @@ package adodb.wsh;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  *
@@ -29,10 +29,10 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 interface Wsh {
 
-    @Nonnull
-    BufferedReader exec(@Nonnull String scriptName, @Nonnull String... args) throws IOException;
+    @NonNull
+    BufferedReader exec(@NonNull String scriptName, @NonNull String... args) throws IOException;
 
-    @Nonnull
+    @NonNull
     public static Wsh getDefault() {
         return CScript.INSTANCE;
     }

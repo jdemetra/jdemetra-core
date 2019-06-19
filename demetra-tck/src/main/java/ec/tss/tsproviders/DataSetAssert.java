@@ -16,7 +16,7 @@
  */
 package ec.tss.tsproviders;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.util.Objects;
 
@@ -34,7 +34,7 @@ public class DataSetAssert extends AbstractAssert<DataSetAssert, DataSet> {
      *
      * @param actual the DataSet we want to make assertions on.
      */
-    public DataSetAssert(@Nonnull DataSet actual) {
+    public DataSetAssert(@NonNull DataSet actual) {
         super(actual, DataSetAssert.class);
     }
 
@@ -48,8 +48,8 @@ public class DataSetAssert extends AbstractAssert<DataSetAssert, DataSet> {
      * @param actual the DataSet we want to make assertions on.
      * @return a new <code>{@link DataSetAssert}</code>
      */
-    @Nonnull
-    public static DataSetAssert assertThat(@Nonnull DataSet actual) {
+    @NonNull
+    public static DataSetAssert assertThat(@NonNull DataSet actual) {
         return new DataSetAssert(actual);
     }
 
@@ -62,7 +62,7 @@ public class DataSetAssert extends AbstractAssert<DataSetAssert, DataSet> {
      * @throws AssertionError - if the actual DataSet's dataSource is not equal
      * to the given one.
      */
-    @Nonnull
+    @NonNull
     public DataSetAssert hasDataSource(DataSource dataSource) {
         // check that actual DataSet we want to make assertions on is not null.
         isNotNull();
@@ -88,7 +88,7 @@ public class DataSetAssert extends AbstractAssert<DataSetAssert, DataSet> {
      * @throws AssertionError - if the actual DataSet's kind is not equal to the
      * given one.
      */
-    @Nonnull
+    @NonNull
     public DataSetAssert hasKind(DataSet.Kind kind) {
         // check that actual DataSet we want to make assertions on is not null.
         isNotNull();
@@ -114,7 +114,7 @@ public class DataSetAssert extends AbstractAssert<DataSetAssert, DataSet> {
      * @throws AssertionError - if the actual DataSet's params is not equal to
      * the given one.
      */
-    @Nonnull
+    @NonNull
     public DataSetAssert hasParams(java.util.SortedMap params) {
         // check that actual DataSet we want to make assertions on is not null.
         isNotNull();

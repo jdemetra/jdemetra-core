@@ -20,7 +20,7 @@ import com.google.common.base.Preconditions;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A class that supplies opened connections to databases. The parameters needed
@@ -38,8 +38,8 @@ public interface ConnectionSupplier {
      * @return A new opened connection.
      * @throws SQLException
      */
-    @Nonnull
-    Connection getConnection(@Nonnull JdbcBean bean) throws SQLException;
+    @NonNull
+    Connection getConnection(@NonNull JdbcBean bean) throws SQLException;
 
     /**
      * A connection supplier that uses {@link DriverManager}.
@@ -58,8 +58,8 @@ public interface ConnectionSupplier {
             return driverAvailable;
         }
 
-        @Nonnull
-        abstract protected String getUrl(@Nonnull JdbcBean bean);
+        @NonNull
+        abstract protected String getUrl(@NonNull JdbcBean bean);
 
         abstract protected boolean loadDriver();
     }
@@ -74,7 +74,6 @@ public interface ConnectionSupplier {
             return getDataSource(bean).getConnection();
         }
 
-        @Nonnull
-        abstract protected javax.sql.DataSource getDataSource(@Nonnull JdbcBean bean) throws SQLException;
+        abstract protected javax.sql.@NonNull DataSource getDataSource(@NonNull JdbcBean bean) throws SQLException;
     }
 }

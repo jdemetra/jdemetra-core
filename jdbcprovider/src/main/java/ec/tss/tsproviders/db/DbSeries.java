@@ -21,7 +21,7 @@ import ec.tss.tsproviders.utils.OptionalTsData;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -33,17 +33,17 @@ public final class DbSeries {
     private final DbSetId id;
     private final OptionalTsData data;
 
-    public DbSeries(@Nonnull DbSetId id, @Nonnull OptionalTsData data) {
+    public DbSeries(@NonNull DbSetId id, @NonNull OptionalTsData data) {
         this.id = id;
         this.data = data;
     }
 
-    @Nonnull
+    @NonNull
     public DbSetId getId() {
         return id;
     }
 
-    @Nonnull
+    @NonNull
     public OptionalTsData getData() {
         return data;
     }
@@ -62,22 +62,22 @@ public final class DbSeries {
         return id.hashCode();
     }
 
-    @Nonnull
-    public static DbSeries findById(@Nonnull Iterable<DbSeries> iterable, @Nonnull DbSetId id) throws NoSuchElementException {
+    @NonNull
+    public static DbSeries findById(@NonNull Iterable<DbSeries> iterable, @NonNull DbSetId id) throws NoSuchElementException {
         return Streams.stream(iterable)
                 .filter(o -> (o != null) ? id.equals(o.getId()) : false)
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
     }
 
-    @Nonnull
-    public static List<DbSeries> filterByAncestor(@Nonnull Iterable<DbSeries> iterable, @Nonnull DbSetId ancestor) {
+    @NonNull
+    public static List<DbSeries> filterByAncestor(@NonNull Iterable<DbSeries> iterable, @NonNull DbSetId ancestor) {
         return Streams.stream(iterable)
                 .filter(o -> (o != null) ? isDescendant(ancestor, o.getId()) : false)
                 .collect(Collectors.toList());
     }
 
-    private static boolean isDescendant(@Nonnull DbSetId ancestor, @Nonnull DbSetId o) {
+    private static boolean isDescendant(@NonNull DbSetId ancestor, @NonNull DbSetId o) {
         for (int i = ancestor.getLevel() - 1; i >= 0; i--) {
             if (!o.getValue(i).equals(ancestor.getValue(i))) {
                 return false;

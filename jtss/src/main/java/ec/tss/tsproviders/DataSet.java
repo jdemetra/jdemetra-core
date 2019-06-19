@@ -28,7 +28,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -79,18 +79,18 @@ public final class DataSet implements IConfig, Serializable {
     private final ImmutableSortedMap<String, String> params;
 
     @VisibleForTesting
-    DataSet(@Nonnull DataSource dataSource, @Nonnull Kind kind, @Nonnull ImmutableSortedMap<String, String> params) {
+    DataSet(@NonNull DataSource dataSource, @NonNull Kind kind, @NonNull ImmutableSortedMap<String, String> params) {
         this.dataSource = dataSource;
         this.kind = kind;
         this.params = params;
     }
 
-    @Nonnull
+    @NonNull
     public DataSource getDataSource() {
         return dataSource;
     }
 
-    @Nonnull
+    @NonNull
     public Kind getKind() {
         return kind;
     }
@@ -130,8 +130,8 @@ public final class DataSet implements IConfig, Serializable {
      * @return a non-null builder
      * @since 2.2.0
      */
-    @Nonnull
-    public Builder toBuilder(@Nonnull Kind kind) {
+    @NonNull
+    public Builder toBuilder(@NonNull Kind kind) {
         Objects.requireNonNull(kind, "kind");
         return new Builder(dataSource, kind).putAll(params);
     }
@@ -145,37 +145,37 @@ public final class DataSet implements IConfig, Serializable {
         return bean;
     }
 
-    @Nonnull
-    public static DataSet of(@Nonnull DataSource dataSource, @Nonnull Kind kind) {
+    @NonNull
+    public static DataSet of(@NonNull DataSource dataSource, @NonNull Kind kind) {
         Objects.requireNonNull(dataSource, "dataSource");
         Objects.requireNonNull(kind, "kind");
         return new DataSet(dataSource, kind, ImmutableSortedMap.of());
     }
 
-    @Nonnull
-    public static DataSet of(@Nonnull DataSource dataSource, @Nonnull Kind kind, @Nonnull String key, @Nonnull String value) {
+    @NonNull
+    public static DataSet of(@NonNull DataSource dataSource, @NonNull Kind kind, @NonNull String key, @NonNull String value) {
         Objects.requireNonNull(dataSource, "dataSource");
         Objects.requireNonNull(kind, "kind");
         return new DataSet(dataSource, kind, ImmutableSortedMap.of(key, value));
     }
 
-    @Nonnull
-    public static DataSet deepCopyOf(@Nonnull DataSource dataSource, @Nonnull Kind kind, @Nonnull Map<String, String> params) {
+    @NonNull
+    public static DataSet deepCopyOf(@NonNull DataSource dataSource, @NonNull Kind kind, @NonNull Map<String, String> params) {
         Objects.requireNonNull(dataSource, "dataSource");
         Objects.requireNonNull(kind, "kind");
         return new DataSet(dataSource, kind, ImmutableSortedMap.copyOf(params));
     }
 
-    @Nonnull
-    public static Builder builder(@Nonnull DataSource dataSource, @Nonnull Kind kind) {
+    @NonNull
+    public static Builder builder(@NonNull DataSource dataSource, @NonNull Kind kind) {
         Objects.requireNonNull(dataSource, "dataSource");
         Objects.requireNonNull(kind, "kind");
         return new Builder(dataSource, kind);
     }
 
     @Deprecated
-    @Nonnull
-    public static Builder builder(@Nonnull DataSet dataSet, @Nonnull Kind kind) {
+    @NonNull
+    public static Builder builder(@NonNull DataSet dataSet, @NonNull Kind kind) {
         return dataSet.toBuilder(kind);
     }
 
@@ -189,8 +189,7 @@ public final class DataSet implements IConfig, Serializable {
      * @see ThreadLocal
      * @return a DataSet formatter
      */
-    @Nonnull
-    public static Formatters.Formatter<DataSet> xmlFormatter(boolean formattedOutput) {
+    public static Formatters.@NonNull Formatter<DataSet> xmlFormatter(boolean formattedOutput) {
         return formattedOutput ? XML.get().formattedOutputFormatter : XML.get().defaultFormatter;
     }
 
@@ -203,8 +202,7 @@ public final class DataSet implements IConfig, Serializable {
      * @see ThreadLocal
      * @return a DataSet parser
      */
-    @Nonnull
-    public static Parsers.Parser<DataSet> xmlParser() {
+    public static Parsers.@NonNull Parser<DataSet> xmlParser() {
         return XML.get().defaultParser;
     }
 
@@ -214,8 +212,7 @@ public final class DataSet implements IConfig, Serializable {
      *
      * @return a DataSource formatter
      */
-    @Nonnull
-    public static Formatters.Formatter<DataSet> uriFormatter() {
+    public static Formatters.@NonNull Formatter<DataSet> uriFormatter() {
         return URI_FORMATTER;
     }
 
@@ -225,8 +222,7 @@ public final class DataSet implements IConfig, Serializable {
      *
      * @return a DataSource parser
      */
-    @Nonnull
-    public static Parsers.Parser<DataSet> uriParser() {
+    public static Parsers.@NonNull Parser<DataSet> uriParser() {
         return URI_PARSER;
     }
 

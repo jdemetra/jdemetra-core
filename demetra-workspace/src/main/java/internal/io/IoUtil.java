@@ -20,7 +20,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ServiceLoader;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 @lombok.experimental.UtilityClass
 public class IoUtil {
 
-    public void closeAll(@Nonnull Closeable first, @Nonnull Closeable second) throws IOException {
+    public void closeAll(@NonNull Closeable first, @NonNull Closeable second) throws IOException {
         try {
             first.close();
         } catch (IOException ex) {
@@ -39,7 +39,7 @@ public class IoUtil {
         second.close();
     }
 
-    public <T extends Throwable> T ensureClosed(@Nonnull T ex, @Nonnull Closeable closeable) {
+    public <T extends Throwable> T ensureClosed(@NonNull T ex, @NonNull Closeable closeable) {
         try {
             closeable.close();
         } catch (IOException suppressed) {
@@ -48,8 +48,8 @@ public class IoUtil {
         return ex;
     }
 
-    @Nonnull
-    public <T> Supplier<Iterable<T>> supplierOfServiceLoader(@Nonnull Class<T> type) {
+    @NonNull
+    public <T> Supplier<Iterable<T>> supplierOfServiceLoader(@NonNull Class<T> type) {
         return () -> ServiceLoader.load(type);
     }
 }

@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.helpers.NOPLogger;
 
@@ -32,7 +32,7 @@ import org.slf4j.helpers.NOPLogger;
  */
 public class DataSourceEventSupport {
 
-    @Nonnull
+    @NonNull
     public static DataSourceEventSupport create() {
         return create(NOPLogger.NOP_LOGGER);
     }
@@ -44,8 +44,8 @@ public class DataSourceEventSupport {
      * @param logger
      * @return
      */
-    @Nonnull
-    public static DataSourceEventSupport create(@Nonnull Logger logger) {
+    @NonNull
+    public static DataSourceEventSupport create(@NonNull Logger logger) {
         Set<IDataSourceListener> weakHashSet = Collections.newSetFromMap(new WeakHashMap<IDataSourceListener, Boolean>());
         return new DataSourceEventSupport(logger, Collections.synchronizedSet(weakHashSet));
     }
@@ -54,25 +54,25 @@ public class DataSourceEventSupport {
     protected final Set<IDataSourceListener> listeners;
 
     @Deprecated
-    public DataSourceEventSupport(@Nonnull Logger logger, @Nonnull Set<IDataSourceListener> listeners) {
+    public DataSourceEventSupport(@NonNull Logger logger, @NonNull Set<IDataSourceListener> listeners) {
         this.logger = logger;
         this.listeners = listeners;
     }
 
-    @Nonnull
+    @NonNull
     public Logger getLogger() {
         return logger;
     }
 
-    public void add(@Nonnull IDataSourceListener listener) {
+    public void add(@NonNull IDataSourceListener listener) {
         listeners.add(Objects.requireNonNull(listener));
     }
 
-    public void remove(@Nonnull IDataSourceListener listener) {
+    public void remove(@NonNull IDataSourceListener listener) {
         listeners.remove(Objects.requireNonNull(listener));
     }
 
-    public void fireOpened(@Nonnull DataSource dataSource) {
+    public void fireOpened(@NonNull DataSource dataSource) {
         listeners.forEach((o) -> {
             try {
                 o.opened(dataSource);
@@ -82,7 +82,7 @@ public class DataSourceEventSupport {
         });
     }
 
-    public void fireClosed(@Nonnull DataSource dataSource) {
+    public void fireClosed(@NonNull DataSource dataSource) {
         listeners.forEach((o) -> {
             try {
                 o.closed(dataSource);
@@ -92,7 +92,7 @@ public class DataSourceEventSupport {
         });
     }
 
-    public void fireAllClosed(@Nonnull String providerName) {
+    public void fireAllClosed(@NonNull String providerName) {
         listeners.forEach((o) -> {
             try {
                 o.allClosed(providerName);
@@ -102,7 +102,7 @@ public class DataSourceEventSupport {
         });
     }
 
-    public void fireChanged(@Nonnull DataSource dataSource) {
+    public void fireChanged(@NonNull DataSource dataSource) {
         listeners.forEach((o) -> {
             try {
                 o.changed(dataSource);

@@ -36,8 +36,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -218,7 +218,7 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         info.type = TsInformationType.All;
     }
 
-    @Nonnull
+    @NonNull
     public SpreadSheetSource getSource(DataSource dataSource) throws IOException {
         return support.getValue(cache, dataSource);
     }
@@ -298,8 +298,7 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         return "Spreadsheet file";
     }
 
-    @Nullable
-    private Book.Factory getFactoryByFile(@Nonnull File file) {
+    private Book.@Nullable Factory getFactoryByFile(@NonNull File file) {
         for (Book.Factory o : ServiceLoader.load(Book.Factory.class)) {
             if (o.canLoad() && o.accept(file)) {
                 return o;

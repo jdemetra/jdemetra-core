@@ -24,7 +24,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -33,8 +33,8 @@ import javax.annotation.Nonnull;
  */
 final class AdoPreparedStatement extends _PreparedStatement {
 
-    @Nonnull
-    static AdoPreparedStatement of(@Nonnull AdoConnection conn, @Nonnull String sql) {
+    @NonNull
+    static AdoPreparedStatement of(@NonNull AdoConnection conn, @NonNull String sql) {
         Objects.requireNonNull(conn);
         Objects.requireNonNull(sql);
         return new AdoPreparedStatement(conn, sql);

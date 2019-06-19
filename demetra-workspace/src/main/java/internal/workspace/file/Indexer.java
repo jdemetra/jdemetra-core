@@ -19,7 +19,7 @@ package internal.workspace.file;
 import internal.io.IoUtil;
 import java.io.Closeable;
 import java.io.IOException;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -27,14 +27,14 @@ import javax.annotation.Nonnull;
  */
 interface Indexer extends Closeable {
 
-    void checkId(@Nonnull Index.Key id) throws IOException;
+    void checkId(Index.@NonNull Key id) throws IOException;
 
-    @Nonnull
+    @NonNull
     Index loadIndex() throws IOException;
 
-    void storeIndex(@Nonnull Index index) throws IOException;
+    void storeIndex(@NonNull Index index) throws IOException;
 
-    @Nonnull
+    @NonNull
     default Indexer memoize() {
         Indexer delegate = this;
         return new Indexer() {

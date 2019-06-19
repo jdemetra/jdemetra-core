@@ -16,7 +16,7 @@
  */
 package ec.tss.tsproviders.spreadsheet.engine;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -24,12 +24,12 @@ import javax.annotation.Nonnull;
  */
 public final class TsExportOptions {
 
-    @Nonnull
+    @NonNull
     public static TsExportOptions create(boolean vertical, boolean showDates, boolean showTitle, boolean beginPeriod) {
         return new TsExportOptions(vertical, showDates, showTitle, beginPeriod);
     }
 
-    @Nonnull
+    @NonNull
     public static TsExportOptions getDefault() {
         return new TsExportOptions(true, true, true, true);
     }

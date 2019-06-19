@@ -26,8 +26,8 @@ import ec.tss.TsMoniker;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * Implementation of ITsProvider that delegates the data retrieval to TsFiller.
@@ -38,13 +38,13 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 public abstract class TsFillerAsProvider implements ITsProvider {
 
-    @Nonnull
-    public static ITsProvider of(@Nonnull String providerName, @Nonnull TsAsyncMode asyncMode, @Nonnull TsFiller filler) {
+    @NonNull
+    public static ITsProvider of(@NonNull String providerName, @NonNull TsAsyncMode asyncMode, @NonNull TsFiller filler) {
         return of(providerName, asyncMode, filler, NO_CACHE);
     }
 
-    @Nonnull
-    public static ITsProvider of(@Nonnull String providerName, @Nonnull TsAsyncMode asyncMode, @Nonnull TsFiller filler, @Nonnull Runnable cacheCleaner) {
+    @NonNull
+    public static ITsProvider of(@NonNull String providerName, @NonNull TsAsyncMode asyncMode, @NonNull TsFiller filler, @NonNull Runnable cacheCleaner) {
         switch (asyncMode) {
             case None:
                 return new SyncImpl(providerName, filler, cacheCleaner);

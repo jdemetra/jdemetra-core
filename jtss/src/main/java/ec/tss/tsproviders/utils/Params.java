@@ -26,7 +26,7 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -39,80 +39,80 @@ public final class Params {
         // static class
     }
 
-    @Nonnull
-    public static <S extends IConfig> IParam<S, String> onString(@Nonnull String defaultValue, @Nonnull String key) {
+    @NonNull
+    public static <S extends IConfig> IParam<S, String> onString(@NonNull String defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parsers.stringParser(), Formatters.stringFormatter());
     }
 
-    @Nonnull
-    public static <S extends IConfig> IParam<S, File> onFile(@Nonnull File defaultValue, @Nonnull String key) {
+    @NonNull
+    public static <S extends IConfig> IParam<S, File> onFile(@NonNull File defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parsers.fileParser(), Formatters.fileFormatter());
     }
 
-    @Nonnull
-    public static <S extends IConfig, X extends Enum<X>> IParam<S, X> onEnum(@Nonnull X defaultValue, @Nonnull String key) {
+    @NonNull
+    public static <S extends IConfig, X extends Enum<X>> IParam<S, X> onEnum(@NonNull X defaultValue, @NonNull String key) {
         Class<X> enumClass = (Class<X>) defaultValue.getClass();
         return new SingleParam<>(defaultValue, key, Parsers.enumParser(enumClass), Formatters.<X>enumFormatter());
     }
 
-    @Nonnull
-    public static <S extends IConfig> IParam<S, Integer> onInteger(@Nonnull Integer defaultValue, @Nonnull String key) {
+    @NonNull
+    public static <S extends IConfig> IParam<S, Integer> onInteger(@NonNull Integer defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parsers.intParser(), Formatters.intFormatter());
     }
 
-    @Nonnull
-    public static <S extends IConfig> IParam<S, Long> onLong(@Nonnull Long defaultValue, @Nonnull String key) {
+    @NonNull
+    public static <S extends IConfig> IParam<S, Long> onLong(@NonNull Long defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parsers.longParser(), Formatters.longFormatter());
     }
 
-    @Nonnull
-    public static <S extends IConfig> IParam<S, Boolean> onBoolean(@Nonnull Boolean defaultValue, @Nonnull String key) {
+    @NonNull
+    public static <S extends IConfig> IParam<S, Boolean> onBoolean(@NonNull Boolean defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parsers.boolParser(), Formatters.boolFormatter());
     }
 
-    @Nonnull
-    public static <S extends IConfig> IParam<S, Character> onCharacter(@Nonnull Character defaultValue, @Nonnull String key) {
+    @NonNull
+    public static <S extends IConfig> IParam<S, Character> onCharacter(@NonNull Character defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parsers.charParser(), Formatters.charFormatter());
     }
 
-    @Nonnull
-    public static <S extends IConfig> IParam<S, Double> onDouble(@Nonnull Double defaultValue, @Nonnull String key) {
+    @NonNull
+    public static <S extends IConfig> IParam<S, Double> onDouble(@NonNull Double defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parsers.doubleParser(), Formatters.doubleFormatter());
     }
 
-    @Nonnull
-    public static <S extends IConfig> IParam<S, Charset> onCharset(@Nonnull Charset defaultValue, @Nonnull String key) {
+    @NonNull
+    public static <S extends IConfig> IParam<S, Charset> onCharset(@NonNull Charset defaultValue, @NonNull String key) {
         return new SingleParam<>(defaultValue, key, Parsers.charsetParser(), Formatters.charsetFormatter());
     }
 
     @Deprecated
-    @Nonnull
-    public static <S extends IConfig> IParam<S, DataFormat> onDataFormat(@Nonnull DataFormat defaultValue, @Nonnull String localeKey, @Nonnull String datePatternKey) {
+    @NonNull
+    public static <S extends IConfig> IParam<S, DataFormat> onDataFormat(@NonNull DataFormat defaultValue, @NonNull String localeKey, @NonNull String datePatternKey) {
         return onDataFormat(defaultValue, localeKey, datePatternKey, "numberPattern");
     }
 
-    @Nonnull
-    public static <S extends IConfig> IParam<S, DataFormat> onDataFormat(@Nonnull DataFormat defaultValue, @Nonnull String localeKey, @Nonnull String datePatternKey, @Nonnull String numberPatternKey) {
+    @NonNull
+    public static <S extends IConfig> IParam<S, DataFormat> onDataFormat(@NonNull DataFormat defaultValue, @NonNull String localeKey, @NonNull String datePatternKey, @NonNull String numberPatternKey) {
         return new DataFormatParam(defaultValue, localeKey, datePatternKey, numberPatternKey);
     }
 
-    @Nonnull
-    public static <S extends IConfig> IParam<S, double[]> onDoubleArray(@Nonnull String key, @Nonnull double... defaultValues) {
+    @NonNull
+    public static <S extends IConfig> IParam<S, double[]> onDoubleArray(@NonNull String key, @NonNull double... defaultValues) {
         return new SingleParam<>(defaultValues, key, Parsers.doubleArrayParser(), Formatters.doubleArrayFormatter());
     }
 
-    @Nonnull
-    public static <S extends IConfig> IParam<S, String[]> onStringArray(@Nonnull String key, @Nonnull String... defaultValues) {
+    @NonNull
+    public static <S extends IConfig> IParam<S, String[]> onStringArray(@NonNull String key, @NonNull String... defaultValues) {
         return new SingleParam<>(defaultValues, key, Parsers.stringArrayParser(), Formatters.stringArrayFormatter());
     }
 
-    @Nonnull
-    public static <S extends IConfig> IParam<S, List<String>> onStringList(@Nonnull List<String> defaultValue, @Nonnull String key, @Nonnull Splitter splitter, @Nonnull Joiner joiner) {
+    @NonNull
+    public static <S extends IConfig> IParam<S, List<String>> onStringList(@NonNull List<String> defaultValue, @NonNull String key, @NonNull Splitter splitter, @NonNull Joiner joiner) {
         return new SingleParam<>(ImmutableList.copyOf(defaultValue), key, Parsers.onSplitter(splitter), Formatters.onJoiner(joiner));
     }
 
-    @Nonnull
-    public static <S extends IConfig> IParam<S, ObsGathering> onObsGathering(@Nonnull ObsGathering defaultValue, @Nonnull String frequencyKey, @Nonnull String aggregationKey, @Nonnull String skipKey) {
+    @NonNull
+    public static <S extends IConfig> IParam<S, ObsGathering> onObsGathering(@NonNull ObsGathering defaultValue, @NonNull String frequencyKey, @NonNull String aggregationKey, @NonNull String skipKey) {
         return new ObsGatheringParam(defaultValue, frequencyKey, aggregationKey, skipKey);
     }
 
@@ -125,17 +125,17 @@ public final class Params {
         private final IFormatter<P> formatter;
 
         private SingleParam(
-                @Nonnull P defaultValue,
-                @Nonnull String key,
-                @Nonnull IParser<P> parser,
-                @Nonnull IFormatter<P> formatter) {
+                @NonNull P defaultValue,
+                @NonNull String key,
+                @NonNull IParser<P> parser,
+                @NonNull IFormatter<P> formatter) {
             this.defaultValue = Objects.requireNonNull(defaultValue);
             this.key = Objects.requireNonNull(key);
             this.parser = Objects.requireNonNull(parser);
             this.formatter = Objects.requireNonNull(formatter);
         }
 
-        private boolean isValid(@Nonnull String tmp) {
+        private boolean isValid(@NonNull String tmp) {
             return !tmp.isEmpty();
         }
 
@@ -176,10 +176,10 @@ public final class Params {
         private final String numberPatternKey;
 
         private DataFormatParam(
-                @Nonnull DataFormat defaultValue,
-                @Nonnull String localeKey,
-                @Nonnull String datePatternKey,
-                @Nonnull String numberPatternKey) {
+                @NonNull DataFormat defaultValue,
+                @NonNull String localeKey,
+                @NonNull String datePatternKey,
+                @NonNull String numberPatternKey) {
             this.defaultValue = Objects.requireNonNull(defaultValue);
             this.localeKey = Objects.requireNonNull(localeKey);
             this.datePatternKey = Objects.requireNonNull(datePatternKey);
@@ -222,10 +222,10 @@ public final class Params {
         private final IParam<S, Boolean> skipMissingValues;
 
         private ObsGatheringParam(
-                @Nonnull ObsGathering defaultValue,
-                @Nonnull String frequencyKey,
-                @Nonnull String aggregationKey,
-                @Nonnull String skipKey) {
+                @NonNull ObsGathering defaultValue,
+                @NonNull String frequencyKey,
+                @NonNull String aggregationKey,
+                @NonNull String skipKey) {
             this.defaultValue = defaultValue;
             this.frequency = onEnum(defaultValue.getFrequency(), frequencyKey);
             this.aggregationType = onEnum(defaultValue.getAggregationType(), aggregationKey);

@@ -26,7 +26,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -39,30 +39,30 @@ public final class GuavaCaches {
         // static class
     }
 
-    @Nonnull
-    public static <K, V> Cache<K, V> ttlCache(@Nonnull Duration duration) {
+    @NonNull
+    public static <K, V> Cache<K, V> ttlCache(@NonNull Duration duration) {
         return CacheBuilder.newBuilder()
                 .expireAfterWrite(duration.toNanos(), TimeUnit.NANOSECONDS)
                 .build();
     }
 
-    @Nonnull
-    public static <K, V> ConcurrentMap<K, V> ttlCacheAsMap(@Nonnull Duration duration) {
+    @NonNull
+    public static <K, V> ConcurrentMap<K, V> ttlCacheAsMap(@NonNull Duration duration) {
         return GuavaCaches.<K, V>ttlCache(duration).asMap();
     }
 
-    @Nonnull
+    @NonNull
     public static <K, V> Cache<K, V> softValuesCache() {
         return CacheBuilder.newBuilder().softValues().build();
     }
 
-    @Nonnull
+    @NonNull
     public static <K, V> ConcurrentMap<K, V> softValuesCacheAsMap() {
         return GuavaCaches.<K, V>softValuesCache().asMap();
     }
 
-    @Nonnull
-    public static <K, V> V getOrThrowIOException(@Nonnull LoadingCache<K, V> cache, @Nonnull K key) throws IOException {
+    @NonNull
+    public static <K, V> V getOrThrowIOException(@NonNull LoadingCache<K, V> cache, @NonNull K key) throws IOException {
         try {
             return cache.get(key);
         } catch (ExecutionException ex) {
@@ -72,8 +72,8 @@ public final class GuavaCaches {
         }
     }
 
-    @Nonnull
-    public static <K, V> V getOrThrowIOException(@Nonnull Cache<K, V> cache, @Nonnull K key, @Nonnull Callable<V> loader) throws IOException {
+    @NonNull
+    public static <K, V> V getOrThrowIOException(@NonNull Cache<K, V> cache, @NonNull K key, @NonNull Callable<V> loader) throws IOException {
         try {
             return cache.get(key, loader);
         } catch (ExecutionException ex) {
@@ -83,8 +83,8 @@ public final class GuavaCaches {
         }
     }
 
-    @Nonnull
-    private static IOException unboxToIOException(@Nonnull ExecutionException ex) {
+    @NonNull
+    private static IOException unboxToIOException(@NonNull ExecutionException ex) {
         Throwable cause = ex.getCause();
         if (cause instanceof IOException) {
             return (IOException) cause;

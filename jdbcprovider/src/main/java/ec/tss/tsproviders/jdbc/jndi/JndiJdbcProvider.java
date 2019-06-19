@@ -26,8 +26,8 @@ import ec.tss.tsproviders.jdbc.JdbcAccessor;
 import ec.tss.tsproviders.jdbc.JdbcBean;
 import ec.tss.tsproviders.jdbc.JdbcProvider;
 import java.sql.SQLException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -83,7 +83,7 @@ public class JndiJdbcProvider extends JdbcProvider<JdbcBean> {
         return "JDBC resource";
     }
 
-    @Nonnull
+    @NonNull
     public ConnectionSupplier getConnectionSupplier() {
         return connectionSupplier;
     }

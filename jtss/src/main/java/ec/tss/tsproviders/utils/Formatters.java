@@ -30,8 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -50,7 +50,7 @@ public final class Formatters {
     }
 
     @Nullable
-    public static <T> CharSequence formatFirstNotNull(@Nonnull T value, @Nonnull Iterable<? extends IFormatter<T>> formatters) {
+    public static <T> CharSequence formatFirstNotNull(@NonNull T value, @NonNull Iterable<? extends IFormatter<T>> formatters) {
         Objects.requireNonNull(value); // if formatters is empty
         for (IFormatter<T> o : formatters) {
             CharSequence result = o.format(value);
@@ -61,13 +61,13 @@ public final class Formatters {
         return null;
     }
 
-    @Nonnull
-    public static <T> Formatter<T> firstNotNull(@Nonnull IFormatter<T>... formatters) {
+    @NonNull
+    public static <T> Formatter<T> firstNotNull(@NonNull IFormatter<T>... formatters) {
         return firstNotNull(ImmutableList.copyOf(formatters));
     }
 
-    @Nonnull
-    public static <T> Formatter<T> firstNotNull(@Nonnull ImmutableList<? extends IFormatter<T>> formatters) {
+    @NonNull
+    public static <T> Formatter<T> firstNotNull(@NonNull ImmutableList<? extends IFormatter<T>> formatters) {
         return new Wrapper<>(o -> formatFirstNotNull(o, formatters));
     }
 
@@ -87,8 +87,8 @@ public final class Formatters {
      * @param formattedOutput
      * @return
      */
-    @Nonnull
-    public static <T> Formatter<T> onJAXB(@Nonnull Class<T> classToBeFormatted, boolean formattedOutput) {
+    @NonNull
+    public static <T> Formatter<T> onJAXB(@NonNull Class<T> classToBeFormatted, boolean formattedOutput) {
         try {
             return onJAXB(JAXBContext.newInstance(classToBeFormatted), formattedOutput);
         } catch (JAXBException ex) {
@@ -96,8 +96,8 @@ public final class Formatters {
         }
     }
 
-    @Nonnull
-    public static <T> Formatter<T> onJAXB(@Nonnull JAXBContext context, boolean formattedOutput) {
+    @NonNull
+    public static <T> Formatter<T> onJAXB(@NonNull JAXBContext context, boolean formattedOutput) {
         try {
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, formattedOutput);
@@ -107,8 +107,8 @@ public final class Formatters {
         }
     }
 
-    @Nonnull
-    public static <T> Formatter<T> onJAXB(@Nonnull Marshaller marshaller) {
+    @NonNull
+    public static <T> Formatter<T> onJAXB(@NonNull Marshaller marshaller) {
         return new FailSafeFormatter<T>() {
             @Override
             protected CharSequence doFormat(T value) throws Exception {
@@ -119,17 +119,17 @@ public final class Formatters {
         };
     }
 
-    @Nonnull
-    public static Formatter<Date> onDateFormat(@Nonnull DateFormat dateFormat) {
+    @NonNull
+    public static Formatter<Date> onDateFormat(@NonNull DateFormat dateFormat) {
         return new Wrapper<>(dateFormat::format);
     }
 
-    @Nonnull
-    public static Formatter<Number> onNumberFormat(@Nonnull NumberFormat numberFormat) {
+    @NonNull
+    public static Formatter<Number> onNumberFormat(@NonNull NumberFormat numberFormat) {
         return new Wrapper<>(numberFormat::format);
     }
 
-    @Nonnull
+    @NonNull
     @SuppressWarnings("null")
     public static <T> Formatter<T> ofInstance(@Nullable CharSequence instance) {
         return new Wrapper<>(o -> {
@@ -138,77 +138,77 @@ public final class Formatters {
         });
     }
 
-    @Nonnull
+    @NonNull
     public static Formatter<File> fileFormatter() {
         return FILE_FORMATTER;
     }
 
-    @Nonnull
+    @NonNull
     public static Formatter<Integer> intFormatter() {
         return (Formatter<Integer>) OBJECT_TO_STRING_FORMATTER;
     }
 
-    @Nonnull
+    @NonNull
     public static Formatter<Long> longFormatter() {
         return (Formatter<Long>) OBJECT_TO_STRING_FORMATTER;
     }
 
-    @Nonnull
+    @NonNull
     public static Formatter<Double> doubleFormatter() {
         return (Formatter<Double>) OBJECT_TO_STRING_FORMATTER;
     }
 
-    @Nonnull
+    @NonNull
     public static Formatter<Boolean> boolFormatter() {
         return (Formatter<Boolean>) OBJECT_TO_STRING_FORMATTER;
     }
 
-    @Nonnull
+    @NonNull
     public static Formatter<Character> charFormatter() {
         return (Formatter<Character>) OBJECT_TO_STRING_FORMATTER;
     }
 
-    @Nonnull
+    @NonNull
     public static Formatter<Charset> charsetFormatter() {
         return CHARSET_FORMATTER;
     }
 
-    @Nonnull
+    @NonNull
     public static <T extends Enum<T>> Formatter<T> enumFormatter() {
         return (Formatter<T>) ENUM_NAME_FORMATTER;
     }
 
-    @Nonnull
+    @NonNull
     public static Formatter<String> stringFormatter() {
         return (Formatter<String>) OBJECT_TO_STRING_FORMATTER;
     }
 
-    @Nonnull
+    @NonNull
     public static Formatter<double[]> doubleArrayFormatter() {
         return DOUBLE_ARRAY_FORMATTER;
     }
 
-    @Nonnull
+    @NonNull
     public static Formatter<String[]> stringArrayFormatter() {
         return STRING_ARRAY_FORMATTER;
     }
 
-    @Nonnull
+    @NonNull
     @SuppressWarnings("null")
-    public static <X, Y> Formatter<Y> compose(@Nonnull IFormatter<X> formatter, @Nonnull Function<? super Y, ? extends X> before) {
+    public static <X, Y> Formatter<Y> compose(@NonNull IFormatter<X> formatter, @NonNull Function<? super Y, ? extends X> before) {
         return new Wrapper<>(o -> {
             X tmp = before.apply(o);
             return tmp != null ? formatter.format(tmp) : null;
         });
     }
 
-    @Nonnull
+    @NonNull
     public static Formatter<Object> usingToString() {
         return (Formatter<Object>) OBJECT_TO_STRING_FORMATTER;
     }
 
-    @Nonnull
-    public static Formatter<List<String>> onJoiner(@Nonnull Joiner joiner) {
+    @NonNull
+    public static Formatter<List<String>> onJoiner(@NonNull Joiner joiner) {
         return new FailSafeFormatter<List<String>>() {
             @Override
             protected CharSequence doFormat(List<String> value) throws Exception {
@@ -224,8 +224,8 @@ public final class Formatters {
      * @return
      * @since 2.2.0
      */
-    @Nonnull
-    public static <T> Formatter<T> wrap(@Nonnull IFormatter<T> formatter) {
+    @NonNull
+    public static <T> Formatter<T> wrap(@NonNull IFormatter<T> formatter) {
         return formatter instanceof Formatter ? (Formatter<T>) formatter : new Wrapper(Objects.requireNonNull(formatter));
     }
 
@@ -248,8 +248,8 @@ public final class Formatters {
          * @deprecated use {@link #formatValue(java.lang.Object)} instead
          */
         @Deprecated
-        @Nonnull
-        public Optional<CharSequence> tryFormat(@Nonnull T value) throws NullPointerException {
+        @NonNull
+        public Optional<CharSequence> tryFormat(@NonNull T value) throws NullPointerException {
             return Optional.fromNullable(format(value));
         }
 
@@ -262,8 +262,8 @@ public final class Formatters {
          * @return a never-null formatter instead
          */
         @Override
-        @Nonnull
-        public <Y> Formatter<Y> compose(@Nonnull Function<? super Y, ? extends T> before) {
+        @NonNull
+        public <Y> Formatter<Y> compose(@NonNull Function<? super Y, ? extends T> before) {
             return Formatters.<T, Y>compose(this, before);
         }
 
@@ -280,8 +280,8 @@ public final class Formatters {
          * instead
          */
         @Deprecated
-        @Nonnull
-        public Optional<String> tryFormatAsString(@Nonnull T value) throws NullPointerException {
+        @NonNull
+        public Optional<String> tryFormatAsString(@NonNull T value) throws NullPointerException {
             return Optional.fromNullable(formatAsString(value));
         }
     }
@@ -305,7 +305,7 @@ public final class Formatters {
         }
 
         @Nullable
-        abstract protected CharSequence doFormat(@Nonnull T value) throws Exception;
+        abstract protected CharSequence doFormat(@NonNull T value) throws Exception;
     }
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">

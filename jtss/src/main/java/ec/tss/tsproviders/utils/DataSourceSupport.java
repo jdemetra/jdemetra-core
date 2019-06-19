@@ -39,8 +39,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 
 /**
@@ -49,8 +49,8 @@ import org.slf4j.Logger;
  */
 public class DataSourceSupport implements HasDataSourceMutableList, HasDataMoniker, HasFilePaths {
 
-    @Nonnull
-    public static DataSourceSupport create(@Nonnull String providerName, @Nonnull Logger logger) {
+    @NonNull
+    public static DataSourceSupport create(@NonNull String providerName, @NonNull Logger logger) {
         return new DataSourceSupport(providerName, new LinkedHashSet<>(), DataSourceEventSupport.create(logger));
     }
 
@@ -61,7 +61,7 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
     protected final IConstraint<String> providerNameConstraint;
     private final HasFilePaths filePathsSupport;
 
-    public DataSourceSupport(@Nonnull String providerName, @Nonnull Set<DataSource> dataSources, @Nonnull DataSourceEventSupport eventSupport) {
+    public DataSourceSupport(@NonNull String providerName, @NonNull Set<DataSource> dataSources, @NonNull DataSourceEventSupport eventSupport) {
         this.providerName = providerName;
         this.dataSources = dataSources;
         this.dataSourcesAsList = new ArrayList(dataSources);
@@ -70,12 +70,12 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
         this.filePathsSupport = HasFilePaths.of();
     }
 
-    @Nonnull
+    @NonNull
     public String getProviderName() {
         return providerName;
     }
 
-    @Nonnull
+    @NonNull
     public DataSourceEventSupport getEventSupport() {
         return eventSupport;
     }
@@ -91,8 +91,8 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
         return true;
     }
 
-    @Nonnull
-    public DataSource check(@Nonnull DataSource dataSource, IConstraint<DataSource>... constraints) throws IllegalArgumentException {
+    @NonNull
+    public DataSource check(@NonNull DataSource dataSource, IConstraint<DataSource>... constraints) throws IllegalArgumentException {
         doCheck(providerNameConstraint, dataSource.getProviderName());
         for (IConstraint<DataSource> o : constraints) {
             doCheck(o, dataSource);
@@ -115,8 +115,8 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
         return true;
     }
 
-    @Nonnull
-    public DataSet check(@Nonnull DataSet dataSet, IConstraint<DataSet>... constraints) throws IllegalArgumentException {
+    @NonNull
+    public DataSet check(@NonNull DataSet dataSet, IConstraint<DataSet>... constraints) throws IllegalArgumentException {
         check(dataSet.getDataSource());
         for (IConstraint<DataSet> o : constraints) {
             doCheck(o, dataSet);
@@ -139,8 +139,8 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
         return true;
     }
 
-    @Nonnull
-    public <T> T checkBean(@Nonnull Object bean, final Class<T> clazz) {
+    @NonNull
+    public <T> T checkBean(@NonNull Object bean, final Class<T> clazz) {
         Objects.requireNonNull(bean);
         doCheck(new IConstraint<Object>() {
             @Override
@@ -151,7 +151,7 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
         return (T) bean;
     }
 
-    <T> void doCheck(@Nonnull IConstraint<T> constraint, @Nonnull T value) throws IllegalArgumentException {
+    <T> void doCheck(@NonNull IConstraint<T> constraint, @NonNull T value) throws IllegalArgumentException {
         String message = constraint.check(value);
         if (message != null) {
             eventSupport.logger.debug(message);
@@ -159,7 +159,7 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
         }
     }
 
-    <T> boolean doCheckQuietly(@Nonnull IConstraint<T> constraint, @Nonnull T value) {
+    <T> boolean doCheckQuietly(@NonNull IConstraint<T> constraint, @NonNull T value) {
         String message = constraint.check(value);
         if (message != null) {
             eventSupport.logger.debug(message);
@@ -276,26 +276,26 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
     }
     //</editor-fold>
 
-    @Nonnull
-    public File getRealFile(@Nonnull File file) throws FileNotFoundException {
+    @NonNull
+    public File getRealFile(@NonNull File file) throws FileNotFoundException {
         return filePathsSupport.resolveFilePath(file);
     }
 
     @Deprecated
-    @Nonnull
-    public String getDisplayName(@Nonnull IOException exception) throws IllegalArgumentException {
+    @NonNull
+    public String getDisplayName(@NonNull IOException exception) throws IllegalArgumentException {
         String message = exception.getMessage();
         return !Strings.isNullOrEmpty(message) ? message : exception.getClass().getSimpleName();
     }
 
     @Deprecated
-    @Nonnull
-    public TsInformation fillSeries(@Nonnull TsInformation info, @Nonnull OptionalTsData data) {
+    @NonNull
+    public TsInformation fillSeries(@NonNull TsInformation info, @NonNull OptionalTsData data) {
         return fillSeries(info, data, true);
     }
 
-    @Nonnull
-    public TsInformation fillSeries(@Nonnull TsInformation info, @Nonnull OptionalTsData data, boolean cleanExtremities) {
+    @NonNull
+    public TsInformation fillSeries(@NonNull TsInformation info, @NonNull OptionalTsData data, boolean cleanExtremities) {
         if (!data.isPresent()) {
             info.data = null;
             info.invalidDataCause = data.getCause();
@@ -308,13 +308,13 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
     }
 
     @Deprecated
-    @Nonnull
-    public TsInformation fillSeries(@Nonnull TsInformation info, @Nonnull Exception exception) {
+    @NonNull
+    public TsInformation fillSeries(@NonNull TsInformation info, @NonNull Exception exception) {
         reportException(info, exception, Exception::getMessage);
         return info;
     }
 
-    public boolean reportException(@Nonnull TsInformation info, @Nonnull Exception ex, @Nonnull IFormatter<? super IOException> formatter) {
+    public boolean reportException(@NonNull TsInformation info, @NonNull Exception ex, @NonNull IFormatter<? super IOException> formatter) {
         eventSupport.logger.info("Failed to get series", ex);
         info.data = null;
         info.invalidDataCause = ex instanceof IOException ? formatter.formatAsString((IOException) ex) : ex.getMessage();
@@ -322,26 +322,26 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
     }
 
     @Deprecated
-    @Nonnull
-    public TsCollectionInformation fillCollection(@Nonnull TsCollectionInformation info, @Nonnull Exception exception) {
+    @NonNull
+    public TsCollectionInformation fillCollection(@NonNull TsCollectionInformation info, @NonNull Exception exception) {
         reportException(info, exception, Exception::getMessage);
         return info;
     }
 
-    public boolean reportException(@Nonnull TsCollectionInformation info, @Nonnull Exception ex, @Nonnull IFormatter<? super IOException> formatter) {
+    public boolean reportException(@NonNull TsCollectionInformation info, @NonNull Exception ex, @NonNull IFormatter<? super IOException> formatter) {
         eventSupport.logger.info("Failed to get collection", ex);
         info.invalidDataCause = ex instanceof IOException ? formatter.formatAsString((IOException) ex) : ex.getMessage();
         return false;
     }
 
-    @Nonnull
-    public <DATA> DATA getValue(@Nonnull LoadingCache<DataSource, DATA> cache, @Nonnull DataSource key) throws IOException {
+    @NonNull
+    public <DATA> DATA getValue(@NonNull LoadingCache<DataSource, DATA> cache, @NonNull DataSource key) throws IOException {
         check(key);
         return GuavaCaches.getOrThrowIOException(cache, key);
     }
 
-    @Nonnull
-    public static File getRealFile(@Nonnull File[] paths, @Nonnull File file) throws FileNotFoundException {
+    @NonNull
+    public static File getRealFile(@NonNull File[] paths, @NonNull File file) throws FileNotFoundException {
         File result = Files2.getAbsoluteFile(paths, file);
         if (result == null) {
             throw new FileNotFoundException("Relative file '" + file.getPath() + "' outside paths");
@@ -352,12 +352,12 @@ public class DataSourceSupport implements HasDataSourceMutableList, HasDataMonik
         return result;
     }
 
-    private static boolean hasMissingValuesAtExtremities(@Nonnull TsData data) {
+    private static boolean hasMissingValuesAtExtremities(@NonNull TsData data) {
         return !data.isEmpty() && (data.isMissing(0) || data.isMissing(data.getLength() - 1));
     }
 
-    @Nonnull
-    public static IConstraint<String> onProviderName(@Nonnull final String providerName) {
+    @NonNull
+    public static IConstraint<String> onProviderName(@NonNull final String providerName) {
         return new IConstraint<String>() {
             @Override
             public String check(String t) {

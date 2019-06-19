@@ -18,7 +18,7 @@ package ec.tss.tsproviders.jdbc;
 
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.db.DbBean;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -30,7 +30,7 @@ public class JdbcBean extends DbBean.BulkBean {
         super();
     }
 
-    public JdbcBean(@Nonnull DataSource id) {
+    public JdbcBean(@NonNull DataSource id) {
         super(id);
     }
 }

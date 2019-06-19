@@ -16,8 +16,8 @@
  */
 package ec.tss.tsproviders.spreadsheet.facade;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Facade that represents <b>a sheet in a spreadsheet</b>.
@@ -39,15 +39,15 @@ public abstract class Sheet {
     @Nullable
     abstract public Cell getCell(int rowIdx, int columnIdx) throws IndexOutOfBoundsException;
 
-    @Nonnull
+    @NonNull
     abstract public String getName();
 
-    @Nonnull
+    @NonNull
     public Sheet inv() {
         return this instanceof InvSheet ? ((InvSheet) this).sheet : new InvSheet(this);
     }
 
-    @Nonnull
+    @NonNull
     @Deprecated
     public Sheet memoize() {
         return this instanceof MemoizedSheet ? this : new MemoizedSheet(this);

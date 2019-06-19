@@ -18,7 +18,7 @@
 package ec.tss.tsproviders;
 
 import java.io.File;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -27,8 +27,8 @@ import javax.annotation.Nonnull;
  */
 public interface IFileBean {
 
-    @Nonnull
+    @NonNull
     File getFile();
 
-    void setFile(@Nonnull File file);
+    void setFile(@NonNull File file);
 }

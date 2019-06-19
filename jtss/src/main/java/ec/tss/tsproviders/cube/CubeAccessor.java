@@ -21,10 +21,10 @@ import ec.tss.tsproviders.utils.IteratorWithIO;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  *
@@ -37,32 +37,32 @@ public interface CubeAccessor {
     @Nullable
     IOException testConnection();
 
-    @Nonnull
+    @NonNull
     CubeId getRoot();
 
-    @Nonnull
-    TsCursor<CubeId> getAllSeries(@Nonnull CubeId id) throws IOException;
+    @NonNull
+    TsCursor<CubeId> getAllSeries(@NonNull CubeId id) throws IOException;
 
-    @Nonnull
-    TsCursor<CubeId> getAllSeriesWithData(@Nonnull CubeId id) throws IOException;
+    @NonNull
+    TsCursor<CubeId> getAllSeriesWithData(@NonNull CubeId id) throws IOException;
 
-    @Nonnull
-    TsCursor<CubeId> getSeriesWithData(@Nonnull CubeId id) throws IOException;
+    @NonNull
+    TsCursor<CubeId> getSeriesWithData(@NonNull CubeId id) throws IOException;
 
-    @Nonnull
-    IteratorWithIO<CubeId> getChildren(@Nonnull CubeId id) throws IOException;
+    @NonNull
+    IteratorWithIO<CubeId> getChildren(@NonNull CubeId id) throws IOException;
 
-    @Nonnull
+    @NonNull
     String getDisplayName() throws IOException;
 
-    @Nonnull
-    String getDisplayName(@Nonnull CubeId id) throws IOException;
+    @NonNull
+    String getDisplayName(@NonNull CubeId id) throws IOException;
 
-    @Nonnull
-    String getDisplayNodeName(@Nonnull CubeId id) throws IOException;
+    @NonNull
+    String getDisplayNodeName(@NonNull CubeId id) throws IOException;
 
-    @Nonnull
-    default CubeAccessor bulk(@Nonnegative int depth, @Nonnull ConcurrentMap<CubeId, Object> cache) {
+    @NonNull
+    default CubeAccessor bulk(@NonNegative int depth, @NonNull ConcurrentMap<CubeId, Object> cache) {
         return new CubeAccessors.BulkCubeAccessor(this, depth, Objects.requireNonNull(cache));
     }
 }

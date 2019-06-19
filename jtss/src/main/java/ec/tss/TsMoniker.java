@@ -20,8 +20,8 @@ import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.design.Internal;
 import java.util.Objects;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -37,7 +37,7 @@ public final class TsMoniker implements Comparable<TsMoniker> {
         ANONYMOUS, DYNAMIC, PROVIDED
     }
 
-    @Nonnull
+    @NonNull
     public static TsMoniker create(@Nullable String source, @Nullable String id) throws IllegalArgumentException {
         if (source == null && id == null) {
             return createAnonymousMoniker();
@@ -52,12 +52,12 @@ public final class TsMoniker implements Comparable<TsMoniker> {
      * @return a non-null moniker
      * @since 2.2.2
      */
-    @Nonnull
+    @NonNull
     public static TsMoniker createAnonymousMoniker() {
         return new TsMoniker(null, null, UUID.randomUUID());
     }
 
-    @Nonnull
+    @NonNull
     public static TsMoniker createDynamicMoniker() {
         return new TsMoniker(Ts.DYNAMIC, null, UUID.randomUUID());
     }
@@ -69,8 +69,8 @@ public final class TsMoniker implements Comparable<TsMoniker> {
      * @return a non-null moniker
      * @since 2.2.2
      */
-    @Nonnull
-    public static TsMoniker createProvidedMoniker(@Nonnull String source, @Nonnull String id) {
+    @NonNull
+    public static TsMoniker createProvidedMoniker(@NonNull String source, @NonNull String id) {
         Objects.requireNonNull(source, "source");
         Objects.requireNonNull(id, "id");
         return new TsMoniker(source, id, null);
@@ -82,7 +82,7 @@ public final class TsMoniker implements Comparable<TsMoniker> {
      * @since 2.2.2
      */
     @Internal
-    static TsMoniker ofInternal(boolean dynamic, @Nonnull UUID uuid) {
+    static TsMoniker ofInternal(boolean dynamic, @NonNull UUID uuid) {
         Objects.requireNonNull(uuid, "uuid");
         return new TsMoniker(dynamic ? Ts.DYNAMIC : null, null, uuid);
     }
@@ -117,7 +117,7 @@ public final class TsMoniker implements Comparable<TsMoniker> {
      * {@link #createProvidedMoniker(java.lang.String, java.lang.String)}
      * instead
      */
-    public TsMoniker(@Nonnull String source, @Nonnull String id) throws IllegalArgumentException {
+    public TsMoniker(@NonNull String source, @NonNull String id) throws IllegalArgumentException {
         if (source == null || id == null) {
             throw new IllegalArgumentException("source and id cannot be null");
         }
@@ -154,7 +154,7 @@ public final class TsMoniker implements Comparable<TsMoniker> {
         return uuid;
     }
 
-    @Nonnull
+    @NonNull
     public Type getType() {
         if (m_source == null) {
             return Type.ANONYMOUS;

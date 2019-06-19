@@ -22,7 +22,7 @@ import ec.tss.tsproviders.utils.ObsGathering;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
 public final class TsImportOptions {
 
     @Deprecated
-    @Nonnull
+    @NonNull
     public static TsImportOptions create(DataFormat dataFormat, TsFrequency frequency, TsAggregationType aggregationType, boolean cleanMissing) {
         ObsGathering gathering = cleanMissing
                 ? ObsGathering.excludingMissingValues(frequency, aggregationType)
@@ -47,12 +47,12 @@ public final class TsImportOptions {
      * @return a non-null object
      * @since 2.2.0
      */
-    @Nonnull
+    @NonNull
     public static TsImportOptions create(DataFormat dataFormat, ObsGathering gathering) {
         return new TsImportOptions(dataFormat, gathering);
     }
 
-    @Nonnull
+    @NonNull
     public static TsImportOptions getDefault() {
         return DEFAULT;
     }
@@ -67,7 +67,7 @@ public final class TsImportOptions {
         this.gathering = gathering;
     }
 
-    @Nonnull
+    @NonNull
     public DataFormat getDataFormat() {
         return dataFormat;
     }
@@ -78,19 +78,19 @@ public final class TsImportOptions {
      * @return a non-null object
      * @since 2.2.0
      */
-    @Nonnull
+    @NonNull
     public ObsGathering getObsGathering() {
         return gathering;
     }
 
     @Deprecated
-    @Nonnull
+    @NonNull
     public TsFrequency getFrequency() {
         return gathering.getFrequency();
     }
 
     @Deprecated
-    @Nonnull
+    @NonNull
     public TsAggregationType getAggregationType() {
         return gathering.getAggregationType();
     }

@@ -20,7 +20,7 @@ package ec.util.jdbc;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -33,7 +33,7 @@ public final class TypeNames {
     }
 
     // Get all field in java.sql.Types
-    @Nonnull
+    @NonNull
     public static Map<Integer, String> getTypeNames() {
         Map<Integer, String> result = new HashMap<>();
         for (Field field : java.sql.Types.class.getFields()) {

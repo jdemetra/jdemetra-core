@@ -16,7 +16,7 @@
  */
 package ec.tss;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -24,9 +24,9 @@ import javax.annotation.Nonnull;
  */
 public interface ITsIdentified {
 
-    @Nonnull
+    @NonNull
     public TsMoniker getMoniker();
 
-    @Nonnull
+    @NonNull
     public String getName();
 }

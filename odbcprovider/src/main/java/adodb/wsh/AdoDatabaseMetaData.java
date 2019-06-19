@@ -22,7 +22,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import static java.lang.String.format;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -34,8 +34,8 @@ import java.util.stream.Collectors;
  */
 final class AdoDatabaseMetaData extends _DatabaseMetaData {
 
-    @Nonnull
-    static AdoDatabaseMetaData of(@Nonnull AdoConnection conn) {
+    @NonNull
+    static AdoDatabaseMetaData of(@NonNull AdoConnection conn) {
         return new AdoDatabaseMetaData(Objects.requireNonNull(conn));
     }
 

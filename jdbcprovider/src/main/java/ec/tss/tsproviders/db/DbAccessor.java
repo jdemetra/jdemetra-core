@@ -27,8 +27,8 @@ import ec.tstoolkit.utilities.GuavaCaches;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Callable;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -37,17 +37,17 @@ import javax.annotation.Nullable;
  */
 public abstract class DbAccessor<BEAN extends DbBean> {
 
-    @Nonnull
-    protected DbSetId check(@Nonnull DbSetId ref, @Nonnull IConstraint<DbSetId> constraint) throws IllegalArgumentException {
+    @NonNull
+    protected DbSetId check(@NonNull DbSetId ref, @NonNull IConstraint<DbSetId> constraint) throws IllegalArgumentException {
         String msg = constraint.check(ref);
         Preconditions.checkArgument(msg == null, msg);
         return ref;
     }
 
-    @Nonnull
+    @NonNull
     abstract public BEAN getDbBean();
 
-    @Nonnull
+    @NonNull
     abstract public DbSetId getRoot();
 
     @Nullable
@@ -68,39 +68,39 @@ public abstract class DbAccessor<BEAN extends DbBean> {
         return null;
     }
 
-    @Nonnull
+    @NonNull
     public final List<DbSetId> getAllSeries(String... dimValues) throws Exception {
         return getAllSeries(check(getRoot().child(dimValues), DbSetId.COLLECTION_CONSTRAINT));
     }
 
-    @Nonnull
-    abstract protected List<DbSetId> getAllSeries(@Nonnull DbSetId ref) throws Exception;
+    @NonNull
+    abstract protected List<DbSetId> getAllSeries(@NonNull DbSetId ref) throws Exception;
 
-    @Nonnull
+    @NonNull
     public final List<DbSeries> getAllSeriesWithData(String... dimValues) throws Exception {
         return getAllSeriesWithData(check(getRoot().child(dimValues), DbSetId.COLLECTION_CONSTRAINT));
     }
 
-    @Nonnull
-    abstract protected List<DbSeries> getAllSeriesWithData(@Nonnull DbSetId ref) throws Exception;
+    @NonNull
+    abstract protected List<DbSeries> getAllSeriesWithData(@NonNull DbSetId ref) throws Exception;
 
-    @Nonnull
+    @NonNull
     public final DbSeries getSeriesWithData(String... dimValues) throws Exception {
         return getSeriesWithData(check(getRoot().child(dimValues), DbSetId.SERIES_CONSTRAINT));
     }
 
-    @Nonnull
-    abstract protected DbSeries getSeriesWithData(@Nonnull DbSetId ref) throws Exception;
+    @NonNull
+    abstract protected DbSeries getSeriesWithData(@NonNull DbSetId ref) throws Exception;
 
-    @Nonnull
+    @NonNull
     public final List<String> getChildren(String... dimValues) throws Exception {
         return getChildren(check(getRoot().child(dimValues), DbSetId.COLLECTION_CONSTRAINT));
     }
 
-    @Nonnull
-    abstract protected List<String> getChildren(@Nonnull DbSetId ref) throws Exception;
+    @NonNull
+    abstract protected List<String> getChildren(@NonNull DbSetId ref) throws Exception;
 
-    @Nonnull
+    @NonNull
     abstract public DbAccessor<BEAN> memoize();
 
     public static abstract class Abstract<BEAN extends DbBean> extends DbAccessor<BEAN> {
@@ -110,7 +110,7 @@ public abstract class DbAccessor<BEAN extends DbBean> {
         protected final Parsers.Parser<Number> numberParser;
         protected final DbSetId root;
 
-        public Abstract(@Nonnull BEAN dbBean) {
+        public Abstract(@NonNull BEAN dbBean) {
             this.dbBean = dbBean;
             this.dateParser = dbBean.getDataFormat().dateParser().or(StrangeParsers.yearFreqPosParser());
             this.numberParser = dbBean.getDataFormat().numberParser();
@@ -133,7 +133,7 @@ public abstract class DbAccessor<BEAN extends DbBean> {
      */
     public static abstract class Commander<BEAN extends DbBean> extends Abstract<BEAN> {
 
-        public Commander(@Nonnull BEAN dbBean) {
+        public Commander(@NonNull BEAN dbBean) {
             super(dbBean);
         }
 
@@ -148,8 +148,8 @@ public abstract class DbAccessor<BEAN extends DbBean> {
          * @param ref a non-null object that identifies a collection.
          * @return
          */
-        @Nonnull
-        abstract protected Callable<List<DbSetId>> getAllSeriesQuery(@Nonnull DbSetId ref);
+        @NonNull
+        abstract protected Callable<List<DbSetId>> getAllSeriesQuery(@NonNull DbSetId ref);
 
         @Override
         protected List<DbSeries> getAllSeriesWithData(DbSetId ref) throws Exception {
@@ -162,8 +162,8 @@ public abstract class DbAccessor<BEAN extends DbBean> {
          * @param ref a non-null object that identifies a collection.
          * @return
          */
-        @Nonnull
-        abstract protected Callable<List<DbSeries>> getAllSeriesWithDataQuery(@Nonnull DbSetId ref);
+        @NonNull
+        abstract protected Callable<List<DbSeries>> getAllSeriesWithDataQuery(@NonNull DbSetId ref);
 
         @Override
         protected DbSeries getSeriesWithData(DbSetId ref) throws Exception {
@@ -176,8 +176,8 @@ public abstract class DbAccessor<BEAN extends DbBean> {
          * @param ref a non-null object that identifies a series.
          * @return
          */
-        @Nonnull
-        abstract protected Callable<DbSeries> getSeriesWithDataQuery(@Nonnull DbSetId ref);
+        @NonNull
+        abstract protected Callable<DbSeries> getSeriesWithDataQuery(@NonNull DbSetId ref);
 
         @Override
         protected List<String> getChildren(DbSetId ref) throws Exception {
@@ -190,8 +190,8 @@ public abstract class DbAccessor<BEAN extends DbBean> {
          * @param ref a non-null object that identifies a collection.
          * @return
          */
-        @Nonnull
-        abstract protected Callable<List<String>> getChildrenQuery(@Nonnull DbSetId ref);
+        @NonNull
+        abstract protected Callable<List<String>> getChildrenQuery(@NonNull DbSetId ref);
     }
 
     public static abstract class Forwarding<BEAN extends DbBean> extends DbAccessor<BEAN> {
@@ -236,8 +236,8 @@ public abstract class DbAccessor<BEAN extends DbBean> {
 
     public static abstract class BulkAccessor<BEAN extends DbBean> extends Forwarding<BEAN> {
 
-        @Nonnull
-        public static <X extends DbBean> BulkAccessor<X> from(@Nonnull final DbAccessor<X> delegate, int depth, @Nonnull Cache<DbSetId, List<DbSeries>> cache) {
+        @NonNull
+        public static <X extends DbBean> BulkAccessor<X> from(@NonNull final DbAccessor<X> delegate, int depth, @NonNull Cache<DbSetId, List<DbSeries>> cache) {
             return new BulkAccessor(depth, cache) {
                 @Override
                 protected DbAccessor<X> getDelegate() {
@@ -252,7 +252,7 @@ public abstract class DbAccessor<BEAN extends DbBean> {
         }
 
         @Deprecated
-        @Nonnull
+        @NonNull
         public static Cache<DbSetId, List<DbSeries>> newTtlCache(long ttlInMillis) {
             return GuavaCaches.ttlCache(Duration.ofMillis(ttlInMillis));
         }
@@ -261,7 +261,7 @@ public abstract class DbAccessor<BEAN extends DbBean> {
         protected final int cacheLevel;
         protected final int depth;
 
-        public BulkAccessor(int depth, @Nonnull Cache<DbSetId, List<DbSeries>> cache) {
+        public BulkAccessor(int depth, @NonNull Cache<DbSetId, List<DbSeries>> cache) {
             this.cacheLevel = Math.max(0, getRoot().getMaxLevel() - depth);
             this.cache = cache;
             this.depth = depth;
@@ -271,8 +271,8 @@ public abstract class DbAccessor<BEAN extends DbBean> {
             return depth > 0;
         }
 
-        @Nonnull
-        protected Optional<DbSetId> getAncestorForCache(@Nonnull DbSetId ref) {
+        @NonNull
+        protected Optional<DbSetId> getAncestorForCache(@NonNull DbSetId ref) {
             if (cacheLevel < ref.getLevel()) {
                 String[] tmp = new String[cacheLevel];
                 for (int i = 0; i < tmp.length; i++) {

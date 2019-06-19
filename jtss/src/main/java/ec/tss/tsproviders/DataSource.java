@@ -33,7 +33,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -61,18 +61,18 @@ public final class DataSource implements IConfig, Serializable {
     private final ImmutableSortedMap<String, String> params;
 
     @VisibleForTesting
-    DataSource(@Nonnull String providerName, @Nonnull String version, @Nonnull ImmutableSortedMap<String, String> params) {
+    DataSource(@NonNull String providerName, @NonNull String version, @NonNull ImmutableSortedMap<String, String> params) {
         this.providerName = providerName;
         this.version = version;
         this.params = params;
     }
 
-    @Nonnull
+    @NonNull
     public String getProviderName() {
         return providerName;
     }
 
-    @Nonnull
+    @NonNull
     public String getVersion() {
         return version;
     }
@@ -111,7 +111,7 @@ public final class DataSource implements IConfig, Serializable {
      * @return a non-null builder
      * @since 2.2.0
      */
-    @Nonnull
+    @NonNull
     public Builder toBuilder() {
         return new Builder(providerName, version).putAll(params);
     }
@@ -125,37 +125,37 @@ public final class DataSource implements IConfig, Serializable {
         return bean;
     }
 
-    @Nonnull
-    public static DataSource of(@Nonnull String providerName, @Nonnull String version) {
+    @NonNull
+    public static DataSource of(@NonNull String providerName, @NonNull String version) {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
         return new DataSource(providerName, version, ImmutableSortedMap.of());
     }
 
-    @Nonnull
-    public static DataSource of(@Nonnull String providerName, @Nonnull String version, @Nonnull String key, @Nonnull String value) {
+    @NonNull
+    public static DataSource of(@NonNull String providerName, @NonNull String version, @NonNull String key, @NonNull String value) {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
         return new DataSource(providerName, version, ImmutableSortedMap.of(key, value));
     }
 
-    @Nonnull
-    public static DataSource deepCopyOf(@Nonnull String providerName, @Nonnull String version, @Nonnull Map<String, String> params) {
+    @NonNull
+    public static DataSource deepCopyOf(@NonNull String providerName, @NonNull String version, @NonNull Map<String, String> params) {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
         return new DataSource(providerName, version, ImmutableSortedMap.copyOf(params));
     }
 
-    @Nonnull
-    public static Builder builder(@Nonnull String providerName, @Nonnull String version) {
+    @NonNull
+    public static Builder builder(@NonNull String providerName, @NonNull String version) {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
         return new Builder(providerName, version);
     }
 
     @Deprecated
-    @Nonnull
-    public static Builder builder(@Nonnull DataSource dataSource) {
+    @NonNull
+    public static Builder builder(@NonNull DataSource dataSource) {
         return dataSource.toBuilder();
     }
 
@@ -169,8 +169,7 @@ public final class DataSource implements IConfig, Serializable {
      * @see ThreadLocal
      * @return a DataSource formatter
      */
-    @Nonnull
-    public static Formatters.Formatter<DataSource> xmlFormatter(boolean formattedOutput) {
+    public static Formatters.@NonNull Formatter<DataSource> xmlFormatter(boolean formattedOutput) {
         return formattedOutput ? XML.get().formattedOutputFormatter : XML.get().defaultFormatter;
     }
 
@@ -183,8 +182,7 @@ public final class DataSource implements IConfig, Serializable {
      * @see ThreadLocal
      * @return a DataSource parser
      */
-    @Nonnull
-    public static Parsers.Parser<DataSource> xmlParser() {
+    public static Parsers.@NonNull Parser<DataSource> xmlParser() {
         return XML.get().defaultParser;
     }
 
@@ -194,8 +192,7 @@ public final class DataSource implements IConfig, Serializable {
      *
      * @return a DataSource formatter
      */
-    @Nonnull
-    public static Formatters.Formatter<DataSource> uriFormatter() {
+    public static Formatters.@NonNull Formatter<DataSource> uriFormatter() {
         return URI_FORMATTER;
     }
 
@@ -205,8 +202,7 @@ public final class DataSource implements IConfig, Serializable {
      *
      * @return a DataSource parser
      */
-    @Nonnull
-    public static Parsers.Parser<DataSource> uriParser() {
+    public static Parsers.@NonNull Parser<DataSource> uriParser() {
         return URI_PARSER;
     }
 

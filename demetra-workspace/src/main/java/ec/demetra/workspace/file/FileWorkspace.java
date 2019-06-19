@@ -24,7 +24,7 @@ import internal.io.IoUtil;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Defines a kind of workspace that uses files as storage.
@@ -34,35 +34,35 @@ import javax.annotation.Nonnull;
  */
 public interface FileWorkspace extends Workspace {
 
-    @Nonnull
+    @NonNull
     FileFormat getFileFormat() throws IOException;
 
-    @Nonnull
+    @NonNull
     Path getFile() throws IOException;
 
-    @Nonnull
+    @NonNull
     Path getRootFolder() throws IOException;
 
-    @Nonnull
-    Path getFile(@Nonnull WorkspaceItem item) throws IOException;
+    @NonNull
+    Path getFile(@NonNull WorkspaceItem item) throws IOException;
 
-    @Nonnull
-    static FileWorkspace create(@Nonnull Path file, @Nonnull FileFormat format) throws IOException {
+    @NonNull
+    static FileWorkspace create(@NonNull Path file, @NonNull FileFormat format) throws IOException {
         return FileWorkspaceImpl.create(file, format, IoUtil.supplierOfServiceLoader(FamilyHandler.class));
     }
 
-    @Nonnull
-    static FileWorkspace open(@Nonnull Path file) throws IOException {
+    @NonNull
+    static FileWorkspace open(@NonNull Path file) throws IOException {
         return open(file, probeFormat(file).orElseThrow(() -> new IOException("Cannot probe workspace file format of '" + file + "'")));
     }
 
-    @Nonnull
-    static FileWorkspace open(@Nonnull Path file, @Nonnull FileFormat format) throws IOException {
+    @NonNull
+    static FileWorkspace open(@NonNull Path file, @NonNull FileFormat format) throws IOException {
         return FileWorkspaceImpl.open(file, format, IoUtil.supplierOfServiceLoader(FamilyHandler.class));
     }
 
-    @Nonnull
-    static Optional<FileFormat> probeFormat(@Nonnull Path file) throws IOException {
+    @NonNull
+    static Optional<FileFormat> probeFormat(@NonNull Path file) throws IOException {
         return FileWorkspaceImpl.probeFormat(file);
     }
 }

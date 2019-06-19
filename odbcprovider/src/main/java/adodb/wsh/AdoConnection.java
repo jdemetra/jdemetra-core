@@ -22,7 +22,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import static java.lang.String.format;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -34,8 +34,8 @@ import java.util.function.Consumer;
  */
 final class AdoConnection extends _Connection {
 
-    @Nonnull
-    static AdoConnection of(@Nonnull AdoContext context, @Nonnull Consumer<AdoContext> onClose) {
+    @NonNull
+    static AdoConnection of(@NonNull AdoContext context, @NonNull Consumer<AdoContext> onClose) {
         return new AdoConnection(Objects.requireNonNull(context), Objects.requireNonNull(onClose));
     }
 
@@ -101,7 +101,7 @@ final class AdoConnection extends _Connection {
         return closed;
     }
 
-    @Nonnull
+    @NonNull
     AdoContext getContext() {
         return context;
     }

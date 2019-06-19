@@ -26,7 +26,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -35,14 +35,14 @@ import javax.annotation.Nonnull;
 public final class SpreadSheetSource {
 
     @Deprecated
-    @Nonnull
-    public static SpreadSheetSource load(@Nonnull Book book, @Nonnull DataFormat df, @Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean clean) throws IOException {
+    @NonNull
+    public static SpreadSheetSource load(@NonNull Book book, @NonNull DataFormat df, @NonNull TsFrequency freq, @NonNull TsAggregationType aggregation, boolean clean) throws IOException {
         return Engine.parseSource(book, df, freq, aggregation, clean);
     }
 
     @Deprecated
-    @Nonnull
-    public static SpreadSheetSource load(@Nonnull Book book, @Nonnull IParser<Date> dateParser, @Nonnull IParser<Number> numberParser, @Nonnull TsFrequency freq, @Nonnull TsAggregationType aggregation, boolean clean) throws IOException {
+    @NonNull
+    public static SpreadSheetSource load(@NonNull Book book, @NonNull IParser<Date> dateParser, @NonNull IParser<Number> numberParser, @NonNull TsFrequency freq, @NonNull TsAggregationType aggregation, boolean clean) throws IOException {
         return Engine.parseSource(book, dateParser, numberParser, freq, aggregation, clean);
     }
 

@@ -27,7 +27,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -36,8 +36,8 @@ import javax.annotation.Nonnull;
  */
 final class AdoResultSet extends _ResultSet {
 
-    @Nonnull
-    static AdoResultSet of(@Nonnull TsvReader tsv) throws IOException {
+    @NonNull
+    static AdoResultSet of(@NonNull TsvReader tsv) throws IOException {
         try {
             return new AdoResultSet(tsv, AdoResultSetMetaData.of(tsv.getHeader(0), tsv.getHeader(1)));
         } catch (IllegalArgumentException ex) {

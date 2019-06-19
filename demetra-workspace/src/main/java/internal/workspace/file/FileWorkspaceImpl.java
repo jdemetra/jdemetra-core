@@ -25,7 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import ec.demetra.workspace.file.FileFormat;
 import ec.demetra.workspace.file.spi.FamilyHandler;
 import internal.io.IoUtil;
@@ -43,8 +43,8 @@ import org.slf4j.LoggerFactory;
  */
 public final class FileWorkspaceImpl implements FileWorkspace {
 
-    @Nonnull
-    public static Optional<FileFormat> probeFormat(@Nonnull Path file) throws IOException {
+    @NonNull
+    public static Optional<FileFormat> probeFormat(@NonNull Path file) throws IOException {
         if (GenericIndexer.isValid(file)) {
             return Optional.of(FileFormat.GENERIC);
         }
@@ -54,16 +54,16 @@ public final class FileWorkspaceImpl implements FileWorkspace {
         return Optional.empty();
     }
 
-    @Nonnull
-    public static FileWorkspaceImpl create(@Nonnull Path file, @Nonnull FileFormat format, @Nonnull Supplier<Iterable<FamilyHandler>> handlers) throws IOException {
+    @NonNull
+    public static FileWorkspaceImpl create(@NonNull Path file, @NonNull FileFormat format, @NonNull Supplier<Iterable<FamilyHandler>> handlers) throws IOException {
         Objects.requireNonNull(file, "file");
         Objects.requireNonNull(format, "format");
         Objects.requireNonNull(handlers, "handler");
         return create(LoggerFactory.getLogger(FileWorkspaceImpl.class), file, format, handlers);
     }
 
-    @Nonnull
-    public static FileWorkspaceImpl open(@Nonnull Path file, @Nonnull FileFormat format, @Nonnull Supplier<Iterable<FamilyHandler>> handlers) throws IOException {
+    @NonNull
+    public static FileWorkspaceImpl open(@NonNull Path file, @NonNull FileFormat format, @NonNull Supplier<Iterable<FamilyHandler>> handlers) throws IOException {
         Objects.requireNonNull(file, "file");
         Objects.requireNonNull(format, "format");
         Objects.requireNonNull(handlers, "handler");

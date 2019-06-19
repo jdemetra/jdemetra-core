@@ -30,8 +30,8 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 
 /**
@@ -50,10 +50,10 @@ public abstract class AbstractDataSourceProvider<DATA> extends AbstractTsProvide
         this.support = DataSourceSupport.create(providerName, logger);
     }
 
-    @Nonnull
-    protected abstract DATA loadFromDataSource(@Nonnull DataSource key) throws Exception;
+    @NonNull
+    protected abstract DATA loadFromDataSource(@NonNull DataSource key) throws Exception;
 
-    @Nonnull
+    @NonNull
     protected CacheBuilder<Object, Object> createCacheBuilder() {
         return CacheBuilder.newBuilder().softValues();
     }
@@ -175,28 +175,28 @@ public abstract class AbstractDataSourceProvider<DATA> extends AbstractTsProvide
         return false;
     }
 
-    abstract protected void fillCollection(@Nonnull TsCollectionInformation info, @Nonnull DataSource dataSource) throws IOException;
+    abstract protected void fillCollection(@NonNull TsCollectionInformation info, @NonNull DataSource dataSource) throws IOException;
 
-    abstract protected void fillCollection(@Nonnull TsCollectionInformation info, @Nonnull DataSet dataSet) throws IOException;
+    abstract protected void fillCollection(@NonNull TsCollectionInformation info, @NonNull DataSet dataSet) throws IOException;
 
-    abstract protected void fillSeries(@Nonnull TsInformation info, @Nonnull DataSet dataSet) throws IOException;
+    abstract protected void fillSeries(@NonNull TsInformation info, @NonNull DataSet dataSet) throws IOException;
 
-    @Nonnull
-    protected TsInformation newTsInformation(@Nonnull DataSet dataSet, @Nonnull TsInformationType type) {
+    @NonNull
+    protected TsInformation newTsInformation(@NonNull DataSet dataSet, @NonNull TsInformationType type) {
         return new TsInformation(getDisplayName(dataSet), toMoniker(dataSet), type);
     }
 
     @Deprecated
-    @Nonnull
-    protected TsInformation newTsInformation(@Nonnull DataSet dataSet, @Nullable TsData data, @Nullable MetaData metaData) {
+    @NonNull
+    protected TsInformation newTsInformation(@NonNull DataSet dataSet, @Nullable TsData data, @Nullable MetaData metaData) {
         TsInformation result = newTsInformation(dataSet, data);
         result.metaData = metaData;
         return result;
     }
 
     @Deprecated
-    @Nonnull
-    protected TsInformation newTsInformation(@Nonnull DataSet dataSet, @Nullable TsData data) {
+    @NonNull
+    protected TsInformation newTsInformation(@NonNull DataSet dataSet, @Nullable TsData data) {
         TsInformation result = new TsInformation(getDisplayName(dataSet), toMoniker(dataSet), TsInformationType.All);
         result.data = data;
         return result;

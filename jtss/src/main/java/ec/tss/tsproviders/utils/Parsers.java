@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -50,7 +50,7 @@ public final class Parsers {
     }
 
     @Nullable
-    public static <T> T parseFirstNotNull(@Nonnull CharSequence input, @Nonnull Iterable<? extends IParser<T>> parsers) {
+    public static <T> T parseFirstNotNull(@NonNull CharSequence input, @NonNull Iterable<? extends IParser<T>> parsers) {
         Objects.requireNonNull(input); // if parsers is empty
         for (IParser<T> o : parsers) {
             T result = o.parse(input);
@@ -69,13 +69,13 @@ public final class Parsers {
      * @return
      * @see Parsers#using(java.lang.Iterable)
      */
-    @Nonnull
+    @NonNull
     public static <T> Parser<T> firstNotNull(IParser<T>... parsers) {
         return firstNotNull(ImmutableList.copyOf(parsers));
     }
 
-    @Nonnull
-    public static <T> Parser<T> firstNotNull(@Nonnull ImmutableList<? extends IParser<T>> parsers) {
+    @NonNull
+    public static <T> Parser<T> firstNotNull(@NonNull ImmutableList<? extends IParser<T>> parsers) {
         return new Parser<T>() {
             @Override
             public T parse(CharSequence input) throws NullPointerException {
@@ -99,8 +99,8 @@ public final class Parsers {
      * @param classToBeParsed
      * @return
      */
-    @Nonnull
-    public static <T> Parser<T> onJAXB(@Nonnull Class<T> classToBeParsed) {
+    @NonNull
+    public static <T> Parser<T> onJAXB(@NonNull Class<T> classToBeParsed) {
         try {
             return onJAXB(JAXBContext.newInstance(classToBeParsed));
         } catch (JAXBException ex) {
@@ -108,8 +108,8 @@ public final class Parsers {
         }
     }
 
-    @Nonnull
-    public static <T> Parser<T> onJAXB(@Nonnull JAXBContext context) {
+    @NonNull
+    public static <T> Parser<T> onJAXB(@NonNull JAXBContext context) {
         try {
             return onJAXB(context.createUnmarshaller());
         } catch (JAXBException ex) {
@@ -117,8 +117,8 @@ public final class Parsers {
         }
     }
 
-    @Nonnull
-    public static <T> Parser<T> onJAXB(@Nonnull Unmarshaller unmarshaller) {
+    @NonNull
+    public static <T> Parser<T> onJAXB(@NonNull Unmarshaller unmarshaller) {
         Jaxb.Parser<T> p = Jaxb.Parser.<T>builder().factory(() -> unmarshaller).build();
         return new FailSafeParser<T>() {
             @Override
@@ -128,8 +128,7 @@ public final class Parsers {
         };
     }
 
-    @Nonnull
-    public static Parsers.Parser<Date> onStrictDatePattern(@Nonnull String datePattern, @Nonnull Locale locale) {
+    public static Parsers.@NonNull Parser<Date> onStrictDatePattern(@NonNull String datePattern, @NonNull Locale locale) {
         final DateFormat dateFormat = new SimpleDateFormat(datePattern, locale);
         dateFormat.setLenient(false);
         return new Parsers.FailSafeParser<Date>() {
@@ -142,8 +141,8 @@ public final class Parsers {
         };
     }
 
-    @Nonnull
-    public static Parser<Date> onDateFormat(@Nonnull DateFormat dateFormat) {
+    @NonNull
+    public static Parser<Date> onDateFormat(@NonNull DateFormat dateFormat) {
         return new FailSafeParser<Date>() {
             @Override
             protected Date doParse(CharSequence input) throws Exception {
@@ -152,8 +151,8 @@ public final class Parsers {
         };
     }
 
-    @Nonnull
-    public static Parser<Number> onNumberFormat(@Nonnull NumberFormat numberFormat) {
+    @NonNull
+    public static Parser<Number> onNumberFormat(@NonNull NumberFormat numberFormat) {
         return new FailSafeParser<Number>() {
             @Override
             protected Number doParse(CharSequence input) throws Exception {
@@ -162,7 +161,7 @@ public final class Parsers {
         };
     }
 
-    @Nonnull
+    @NonNull
     public static <T> Parser<T> ofInstance(@Nullable T instance) {
         return new Parser<T>() {
             @Override
@@ -173,7 +172,7 @@ public final class Parsers {
         };
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<File> fileParser() {
         return FILE_PARSER;
     }
@@ -184,22 +183,22 @@ public final class Parsers {
      *
      * @return a non-null parser
      */
-    @Nonnull
+    @NonNull
     public static Parser<Integer> intParser() {
         return INT_PARSER;
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<Long> longParser() {
         return LONG_PARSER;
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<Boolean> boolParser() {
         return BOOL_PARSER;
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<Character> charParser() {
         return CHAR_PARSER;
     }
@@ -210,18 +209,18 @@ public final class Parsers {
      *
      * @return a non-null parser
      */
-    @Nonnull
+    @NonNull
     public static Parser<Double> doubleParser() {
         return DOUBLE_PARSER;
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<Charset> charsetParser() {
         return CHARSET_PARSER;
     }
 
-    @Nonnull
-    public static <T extends Enum<T>> Parser<T> enumParser(@Nonnull Class<T> enumClass) {
+    @NonNull
+    public static <T extends Enum<T>> Parser<T> enumParser(@NonNull Class<T> enumClass) {
         return new FailSafeParser<T>() {
             @Override
             protected T doParse(CharSequence input) throws Exception {
@@ -230,23 +229,23 @@ public final class Parsers {
         };
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<String> stringParser() {
         return STRING_PARSER;
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<double[]> doubleArrayParser() {
         return DOUBLE_ARRAY_PARSER;
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<String[]> stringArrayParser() {
         return STRING_ARRAY_PARSER;
     }
 
-    @Nonnull
-    public static <X, Y> Parser<Y> compose(@Nonnull IParser<X> parser, @Nonnull Function<X, Y> after) {
+    @NonNull
+    public static <X, Y> Parser<Y> compose(@NonNull IParser<X> parser, @NonNull Function<X, Y> after) {
         return new Parser<Y>() {
             @Override
             public Y parse(CharSequence input) throws NullPointerException {
@@ -256,8 +255,8 @@ public final class Parsers {
         };
     }
 
-    @Nonnull
-    public static Parser<List<String>> onSplitter(@Nonnull Splitter splitter) {
+    @NonNull
+    public static Parser<List<String>> onSplitter(@NonNull Splitter splitter) {
         return new FailSafeParser<List<String>>() {
             @Override
             protected List<String> doParse(CharSequence input) throws Exception {
@@ -273,8 +272,8 @@ public final class Parsers {
      * @return
      * @since 2.2.0
      */
-    @Nonnull
-    public static <T> Parser<T> wrap(@Nonnull IParser<T> parser) {
+    @NonNull
+    public static <T> Parser<T> wrap(@NonNull IParser<T> parser) {
         return parser instanceof Parser ? (Parser<T>) parser : new Wrapper<>(parser);
     }
 
@@ -292,19 +291,19 @@ public final class Parsers {
          * @deprecated use {@link #parseValue(java.lang.CharSequence)} instead
          */
         @Deprecated
-        @Nonnull
-        public Optional<T> tryParse(@Nonnull CharSequence input) {
+        @NonNull
+        public Optional<T> tryParse(@NonNull CharSequence input) {
             return Optional.fromNullable(parse(input));
         }
 
         @Deprecated
-        @Nonnull
-        public <X> Parser<X> compose(@Nonnull Function<T, X> after) {
+        @NonNull
+        public <X> Parser<X> compose(@NonNull Function<T, X> after) {
             return Parsers.<T, X>compose(this, after);
         }
 
         @Deprecated
-        @Nonnull
+        @NonNull
         public Parser<T> or(IParser<T>... parsers) {
             switch (parsers.length) {
                 case 0:
@@ -330,7 +329,7 @@ public final class Parsers {
         }
 
         @Nullable
-        abstract protected T doParse(@Nonnull CharSequence input) throws Exception;
+        abstract protected T doParse(@NonNull CharSequence input) throws Exception;
     }
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
