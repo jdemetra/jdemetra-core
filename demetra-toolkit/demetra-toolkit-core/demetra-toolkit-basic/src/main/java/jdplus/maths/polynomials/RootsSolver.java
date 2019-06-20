@@ -105,7 +105,7 @@ class Roots_Factory {
      * interface.
      *
      */
-    static final AtomicReference<Supplier<RootsSolver>> FASTSOLVER = new AtomicReference<>(() -> new MullerNewtonSolver());
+    static final AtomicReference<Supplier<RootsSolver>> FASTSOLVER = new AtomicReference<>(() -> new EigenValuesSolver());
     static final AtomicReference<Supplier<RootsSolver>> ROBUSTSOLVER = new AtomicReference<>(() -> new RobustMullerNewtonSolver());
 
 }

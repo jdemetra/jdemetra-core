@@ -63,13 +63,13 @@ public class EigenValuesDecomposer2 {
                 if (n > 0) {
                     Polynomial C = Polynomial.ofInternal(P.coefficients().extract(n, n + 1).toArray());
                     CanonicalMatrix M = CanonicalMatrix.square(n);
-                    DataBlock row = M.row(n - 1);
+                    DataBlock col = M.column(n - 1);
                     double sn = C.get(n);
-                    row.set(i -> -C.get(i) / sn);
+                    col.set(i -> -C.get(i) / sn);
                     if (n > 1) {
-                        M.subDiagonal(1).set(1);
-                        M.set(1, 0, 1);
-                        M.subDiagonal(-1).add(1);
+                        M.subDiagonal(-1).set(1);
+                        M.set(0, 1, 1);
+                        M.subDiagonal(1).add(1);
                     }
                     IEigenSystem es = EigenSystem.create(M, false);
                     Complex[] vals = es.getEigenValues();

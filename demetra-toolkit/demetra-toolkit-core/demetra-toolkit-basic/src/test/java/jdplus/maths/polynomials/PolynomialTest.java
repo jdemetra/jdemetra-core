@@ -118,37 +118,49 @@ public class PolynomialTest {
         }
     }
 
-    @Test
-    @Ignore
-    public void stressTestUnitRoots() {
-        int N = 1000;
+    public static void main(String[] arg) {
+        stressTestUnitRoots();
+    }
+
+    public static void stressTestUnitRoots() {
+        int N = 200, K = 10;
+
         double[] p = new double[N + 1];
         p[0] = 1;
-        p[N] = -1.0 / 3;
+        p[N] = -3;
+        Polynomial P = Polynomial.ofInternal(p);
 
-        double w = Math.pow(3, 1.0 / N);
         long t0 = System.currentTimeMillis();
-        for (int k = 0; k < 10; ++k) {
-            Polynomial P = Polynomial.ofInternal(p);
-            P = P.times(P);
-            Complex[] roots = P.roots();
+        double w = Math.pow(1.0 / 3, 1.0 / N);
+        for (int k = 0; k < K; ++k) {
+            Complex[] roots = P.roots(new EigenValuesSolver());
             for (Complex root : roots) {
-                assertEquals(w, root.abs(), 1e-7);
+                assertTrue(Math.abs(root.abs() - w) < 1e-9);
                 double arg = root.arg() * N / (2 * Math.PI);
-                assertEquals(0, arg - Math.round(arg), 1e-6);
+                assertTrue(Math.abs(arg - Math.round(arg)) < 1e-12);
             }
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
-        for (int k = 0; k < 10; ++k) {
-            Polynomial P = Polynomial.ofInternal(p);
-            P = P.times(P);
-            Complex[] rroots = P.roots(RootsSolver.robustSolver());
-            for (Complex root : rroots) {
-                assertEquals(w, root.abs(), 1e-7);
+        for (int k = 0; k < K; ++k) {
+            Complex[] roots = P.roots(new MullerNewtonSolver());
+            for (Complex root : roots) {
+                assertTrue(Math.abs(root.abs() - w) < 1e-9);
                 double arg = root.arg() * N / (2 * Math.PI);
-                assertEquals(0, arg - Math.round(arg), 1e-7);
+                assertTrue(Math.abs(arg - Math.round(arg)) < 1e-12);
+            }
+        }
+        t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+        t0 = System.currentTimeMillis();
+        for (int k = 0; k < K; ++k) {
+ //           Polynomial Q = P.times(P);
+            Complex[] roots = P.roots(RootsSolver.robustSolver());
+            for (Complex root : roots) {
+                assertTrue(Math.abs(root.abs() - w) < 1e-9);
+                double arg = root.arg() * N / (2 * Math.PI);
+                assertTrue(Math.abs(arg - Math.round(arg)) < 1e-12);
             }
         }
         t1 = System.currentTimeMillis();

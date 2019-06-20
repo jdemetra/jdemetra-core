@@ -25,7 +25,7 @@ public class UcarimaModelTest {
     }
 
     public static void testAirline2(double th, double bth) {
-        for (int period = 3; period <= 100; period++) {
+        for (int period = 5; period <= 200; period+=5) {
             System.out.print(period);
             System.out.print('\t');
             UcarimaModel ucm = ucmAirline(period, th, bth);
@@ -38,6 +38,7 @@ public class UcarimaModelTest {
     }
 
     public static void main(String[] args) {
+        long t0=System.currentTimeMillis();
 //        for (double th = -.2; th >= -.9; th -= .1) {
             double th=-.6;
             for (double bth = -.2; bth >= -.95; bth -= .05) {
@@ -48,6 +49,10 @@ public class UcarimaModelTest {
                 System.out.println();
             }
 //         }
+        long t1=System.currentTimeMillis();
+        System.out.println();
+        System.out.println("Processing time");
+        System.out.println(t1-t0);
     }
 
     @Test

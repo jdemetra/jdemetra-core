@@ -122,10 +122,10 @@ public class SymmetricFilterAlgorithms {
 
     public static SymmetricFilter.Factorizer factorizer() {
         return filter -> {
-            SymmetricFilter.Factorization fac = evFactorizer2().factorize(filter);
-            if (fac == null) {
-                fac = evFactorizer().factorize(filter);
-            }
+            SymmetricFilter.Factorization fac = evFactorizer().factorize(filter);
+//            if (fac == null) {
+//                fac = evFactorizer().factorize(filter);
+//            }
             if (fac == null) {
                 fac = robustFactorizer().factorize(filter);
             }

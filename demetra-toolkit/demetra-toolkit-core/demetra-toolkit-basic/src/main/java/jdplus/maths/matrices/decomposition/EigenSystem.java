@@ -881,7 +881,9 @@ class GeneralEigenSystem implements IEigenSystem {
         EigenRoutines.balance(data, m_std.getRowsCount());
 
         // reduce to upper hessenberg form
-        EigenRoutines.hessenberg(data, m_std.getRowsCount());
+        if (!isHessenberg()) {
+            EigenRoutines.hessenberg(data, m_std.getRowsCount());
+        }
 
         // get the eigenvalues
         m_ev = EigenRoutines.hessenbergQR(data, m_std.getRowsCount());
@@ -894,5 +896,15 @@ class GeneralEigenSystem implements IEigenSystem {
     private int m_maxiter = 30;
     private boolean m_bCalc = false;
     private boolean m_bVec = false;
+
+    private boolean isHessenberg() {
+        int n = m_std.getColumnsCount() - 2;
+        for (int i = 0; i < n; ++i) {
+            if (!m_std.column(i).drop(i+2, 0).isZero(0)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }
