@@ -1,11 +1,12 @@
+dist: xenial
 language: java
 jdk:
-  - oraclejdk8
+  - openjdk8
   - openjdk11
 
 env:
   global:
-    - DEPLOY_JDK=oraclejdk8
+    - DEPLOY_JDK=openjdk8
     - DEPLOY_REPO=jdemetra/jdemetra-core
     - DEPLOY_BIN=jtstoolkit/target/demetra-tstoolkit-*.jar
 
