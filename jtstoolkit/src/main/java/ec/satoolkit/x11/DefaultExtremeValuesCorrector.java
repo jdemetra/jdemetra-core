@@ -1,17 +1,17 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.satoolkit.x11;
@@ -37,6 +37,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
      * Returns the averages by period
      *
      * @param s The analyzed time series
+     *
      * @return An array of doubles (length = annual frequency), with the
      * averages for each period (months/quarters) of the year.
      */
@@ -60,6 +61,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
      * Searches the extreme values in a given series
      *
      * @param s The analysed series
+     *
      * @return The number of extreme values that have been detected (>= 0)
      */
     @Override
@@ -93,6 +95,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
      *
      * @param sorig The original series
      * @param corrections The corrections
+     *
      * @return The corrected series. A new time series is always returned.
      */
     @Override
@@ -200,6 +203,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
      * Computes the corrections for a given series
      *
      * @param s The series being corrected
+     *
      * @return A new time series is always returned. It will contain missing
      * values for the periods that should not be corrected and the actual
      * corrections for the other periods
@@ -258,7 +262,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
     @NewObject
     public TsData getCorrectionFactors() {
         TsData ns = new TsData(scur.getDomain());
-        ns.set(()->context.getMean());
+        ns.set(() -> context.getMean());
         for (int i = 0; i < sweights.getLength(); ++i) {
             double x = sweights.get(i);
             if (x < 1) {
@@ -289,34 +293,45 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
         return stdev;
     }
     private static final double EPS = 1e-15;
+    private static final double EPS_STDEV = 1e-5;
+
     protected int outliersDetection() {
         int nval = 0;
         double lv, uv;
         sweights = new TsData(scur.getDomain());
         YearIterator iteri = new YearIterator(scur);
         YearIterator itero = new YearIterator(sweights);
-        sweights.set(()->1);
+        sweights.set(() -> 1);
 
         double xbar = getMean();
         int y = 0;
         while (iteri.hasMoreElements()) {
+            boolean isNullStdev = false;
             if (y > stdev.length - 1) {
                 lv = stdev[stdev.length - 1] * lsigma;
                 uv = stdev[stdev.length - 1] * usigma;
+                if (Math.abs(stdev[stdev.length - 1]) < EPS_STDEV) {
+                    isNullStdev = true;
+                }
             } else {
                 lv = stdev[y] * lsigma;
                 uv = stdev[y] * usigma;
+                if (Math.abs(stdev[y]) < EPS_STDEV) {
+                    isNullStdev = true;
+                }
             }
             DataBlock dbi = iteri.nextElement().data;
             DataBlock dbo = itero.nextElement().data;
 
-            for (int i = 0; i < dbi.getLength(); i++) {
-                double tt = Math.abs(dbi.get(i) - xbar);
-                if (tt - uv > EPS) {
-                    dbo.set(i, 0.0);
-                    ++nval;
-                } else if (tt - lv > EPS) {
-                    dbo.set(i, (uv - tt) / (uv - lv));
+            if (!isNullStdev) {
+                for (int i = 0; i < dbi.getLength(); i++) {
+                    double tt = Math.abs(dbi.get(i) - xbar);
+                    if (tt - uv > EPS) {
+                        dbo.set(i, 0.0);
+                        ++nval;
+                    } else if (tt - lv > EPS) {
+                        dbo.set(i, (uv - tt) / (uv - lv));
+                    }
                 }
             }
             y++;
@@ -402,6 +417,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
      *
      * @param lsig The low sigma value
      * @param usig The high sigma value
+     *
      * @throws An exception is thrown when the limits are invalid (usig <= lsig
      * or lsig <= 0.5).
      */
@@ -416,7 +432,7 @@ class DefaultExtremeValuesCorrector extends DefaultX11Algorithm
     private TsData excludeforecast(TsData tsWithForcast) {
         TsData tsWithoutforCast;
         if (isexcludefcast) {
-            tsWithoutforCast = tsWithForcast.drop(context.getBackcastHorizon(),context.getForecastHorizon());
+            tsWithoutforCast = tsWithForcast.drop(context.getBackcastHorizon(), context.getForecastHorizon());
             return tsWithoutforCast;
         } else {
             return tsWithForcast;
