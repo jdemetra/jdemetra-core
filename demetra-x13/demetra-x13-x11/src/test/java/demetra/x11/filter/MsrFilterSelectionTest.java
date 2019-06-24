@@ -8,6 +8,7 @@ package demetra.x11.filter;
 import demetra.data.DoubleSequence;
 import demetra.x11.SeasonalFilterOption;
 import demetra.x11.X11Context;
+import demetra.x11.pseudoadd.MsrFilterSelectionPseudoAdd;
 import ec.satoolkit.x11.DefaultSeasonalFilteringStrategy;
 import ec.satoolkit.x11.FilterFactory;
 import ec.satoolkit.x11.FilteredMeanEndPoints;
@@ -49,12 +50,11 @@ public class MsrFilterSelectionTest {
     }
 
     @Test
-    @Ignore
     public void test_pseudoadd() {
         for (int freq : frequencies) {
             processMSR("PseudoAdditive", freq, WU5636);
             processMSR("PseudoAdditive", freq, WU5637);
-        }
+    }
     }
 
     @Test
@@ -205,7 +205,12 @@ public class MsrFilterSelectionTest {
                 .finalSeasonalFilter(filter_new)
                 .build();
 
-        MsrFilterSelection table = new MsrFilterSelection();
+        MsrFilterSelection table;
+        if (context.isPseudoAdd()) {
+            table = new MsrFilterSelectionPseudoAdd();
+        } else {
+            table = new MsrFilterSelection();
+        }
         table.doMSR(series, context);
 
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(TsFrequency.valueOf(frequency), 1999, 0, data, true);

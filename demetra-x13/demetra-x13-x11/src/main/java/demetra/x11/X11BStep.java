@@ -37,18 +37,18 @@ public class X11BStep {
     public void process(DoubleSequence input, X11Context context) {
 
         b1 = input;
-        b2(context);
-        b3(context);
-        b4(context);
-        b5(context);
-        b6(context);
-        b7(context);
-        b8(context);
-        b9(context);
-        bfinal(context);
+        b2Step(context);
+        b3Step(context);
+        b4Step(context);
+        b5Step(context);
+        b6Step(context);
+        b7Step(context);
+        b8Step(context);
+        b9Step(context);
+        bFinalStep(context);
     }
 
-    private void b2(X11Context context) {
+    private void b2Step(X11Context context) {
         SymmetricFilter filter = X11FilterFactory.makeSymmetricFilter(context.getPeriod());
         b2drop = filter.length() / 2;
 
@@ -58,16 +58,15 @@ public class X11BStep {
         b2 = DoubleSequence.ofInternal(x);
     }
 
-    private void b3(X11Context context) {
+    private void b3Step(X11Context context) {
         b3 = context.remove(b1.drop(b2drop, b2drop), b2);
     }
 
-    private void b4(X11Context context) {
+    private void b4Step(X11Context context) {
         X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
         b4a = processor.process(b3, (context.getFirstPeriod() + b2drop) % context.getPeriod());
-
         b4anorm = DefaultSeasonalNormalizer.normalize(b4a, 0, context, b2drop);
-        b4d(context);
+        b4d = b4d(context);
         IExtremeValuesCorrector ecorr = context.selectExtremeValuesCorrector(b4d);
         int j = (b2drop + context.getFirstPeriod()) % context.getPeriod();
         ecorr.setStart(j);
@@ -77,21 +76,25 @@ public class X11BStep {
         b4g = ecorr.applyCorrections(b3, b4);
     }
 
-    protected void b4d(X11Context context) {
-        b4d = context.remove(b3, b4anorm);
+    protected DoubleSequence b4d(X11Context context) {
+        return context.remove(b3, b4anorm);
     }
 
-    private void b5(X11Context context) {
+    private void b5Step(X11Context context) {
         X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
         DoubleSequence b5a = processor.process(b4g, (context.getFirstPeriod() + b2drop) % context.getPeriod());
-        b5 = DefaultSeasonalNormalizer.normalize(b5a, b2drop, context);               
+        b5 = DefaultSeasonalNormalizer.normalize(b5a, b2drop, context);
     }
 
-    protected void b6(X11Context context) {
-        b6 = context.remove(b1, b5);
+    private void b6Step(X11Context context) {
+        b6 = b6(context);
     }
 
-    private void b7(X11Context context) {
+    protected DoubleSequence b6(X11Context context) {
+        return context.remove(b1, b5);
+    }
+
+    private void b7Step(X11Context context) {
         SymmetricFilter filter;
         if (context.isAutomaticHenderson()) {
             double icr = AutomaticHenderson.calcICR(context, b6);
@@ -122,11 +125,11 @@ public class X11BStep {
         }
     }
 
-    protected void b8(X11Context context) {
+    private void b8Step(X11Context context) {
         b8 = context.remove(b1, b7);
     }
 
-    private void b9(X11Context context) {
+    private void b9Step(X11Context context) {
         X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
         DoubleSequence b9a = processor.process(b8, context.getFirstPeriod());
         DoubleSequence b9c = DefaultSeasonalNormalizer.normalize(b9a, 0, context);
@@ -140,15 +143,14 @@ public class X11BStep {
     }
 
     protected DoubleSequence b9d(X11Context context, DoubleSequence b9c) {
-        DoubleSequence b9d = context.remove(b8, b9c);
-        return b9d;
+        return context.remove(b8, b9c);
     }
 
-    private void bfinal(X11Context context) {
+    private void bFinalStep(X11Context context) {
         X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
         DoubleSequence b10a = processor.process(b9g, context.getFirstPeriod());
         b10 = DefaultSeasonalNormalizer.normalize(b10a, 0, context);
-        b11(context);
+        b11 = b11(context);
         b13 = context.remove(b11, b7);
 
         IExtremeValuesCorrector ecorr = context.selectExtremeValuesCorrector(b13);
@@ -158,7 +160,7 @@ public class X11BStep {
         b20 = ecorr.getCorrectionFactors();
     }
 
-    protected void b11(X11Context context) {
-        b11 = context.remove(b1, b10);
+    protected DoubleSequence b11(X11Context context) {
+        return context.remove(b1, b10);
     }
 }

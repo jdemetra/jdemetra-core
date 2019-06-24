@@ -272,7 +272,7 @@ public class X11DStepTest {
         X11BStep bStep = new X11BStep();
         X11CStep cStep = new X11CStep();
         bStep.process(b1, context);
-        cStep.process(b1,bStep.getB20(), context);
+        cStep.process(b1, bStep.getB20(), context);
         instance.process(b1, cStep.getC20(), context);
     }
 
@@ -344,6 +344,9 @@ public class X11DStepTest {
         double[] expected_D7 = old_Results.getData("d-tables.d7", TsData.class).internalStorage();
         double[] actual_D7 = prepareForCompare(instance.getD7(), context);
         Assert.assertArrayEquals("Error in D7", expected_D7, actual_D7, DELTA);
+        double[] expected_D8 = old_Results.getData("d-tables.d8", TsData.class).internalStorage();
+        double[] actual_D8 =  prepareForCompare(instance.getD8(), context);
+        Assert.assertArrayEquals("Error in D8", expected_D8, actual_D8, DELTA);
         double[] expected_D9 = old_Results.getData("d-tables.d9", TsData.class).internalStorage();
         double[] actual_D9 = prepareForCompare(instance.getD9(), context);
         Assert.assertArrayEquals("Error in D9", expected_D9, actual_D9, DELTA);

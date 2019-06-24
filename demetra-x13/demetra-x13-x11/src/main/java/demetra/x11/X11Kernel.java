@@ -14,6 +14,9 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.x11.filter.MusgraveFilterFactory;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
+import demetra.x11.pseudoadd.X11BStepPseudoAdd;
+import demetra.x11.pseudoadd.X11CStepPseudoAdd;
+import demetra.x11.pseudoadd.X11DStepPseudoAdd;
 import java.util.Arrays;
 
 /**
@@ -44,15 +47,25 @@ public class X11Kernel implements X11.Processor {
         input = timeSeries;
         DoubleSequence data = input.getValues();
         context = X11Context.of(spec, input);
-        if (context.isLogAdd()) {
-            data = data.log();
+
+        if (context.isPseudoAdd()) {
+            bstep = new X11BStepPseudoAdd();
+            bstep.process(data, context);
+            cstep = new X11CStepPseudoAdd(bstep.getB7(), bstep.getB13());
+            cstep.process(data, bstep.getB20(), context);
+            dstep = new X11DStepPseudoAdd(cstep.getC7(), cstep.getC13(), cstep.getC20());
+            dstep.process(data, cstep.getC20(), context);
+        } else {
+            if (context.isLogAdd()) {
+                data = data.log();
+            }
+            bstep = new X11BStep();
+            bstep.process(data, context);
+            cstep = new X11CStep();
+            cstep.process(data, bstep.getB20(), context);
+            dstep = new X11DStep();
+            dstep.process(data, cstep.getC20(), context);
         }
-        bstep = new X11BStep();
-        bstep.process(data, context);
-        cstep = new X11CStep();
-        cstep.process(data, bstep.getB20(), context);
-        dstep = new X11DStep();
-        dstep.process(data, cstep.getC20(), context);
         return buildResults(timeSeries.getStart(), spec);
     }
 

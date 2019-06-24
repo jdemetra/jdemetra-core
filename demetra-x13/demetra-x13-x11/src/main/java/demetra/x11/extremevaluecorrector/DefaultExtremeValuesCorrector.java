@@ -30,13 +30,15 @@ import java.util.Arrays;
 public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
 
     private static final double EPS = 1e-15;
+    private static final double EPS_STDEV = 1e-5;
 
     /**
      * Returns the averages by period
      *
      * @param s The analyzed time series
      *
-     * @return An array of doubles (length = annual frequency), with the averages for each period (months/quarters) of the year.
+     * @return An array of doubles (length = annual frequency), with the
+     * averages for each period (months/quarters) of the year.
      */
     public static double[] periodAverages(DoubleSequence s, int period) {
         double[] outs = new double[period];
@@ -82,11 +84,11 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
         excludeFcast = context.isExcludefcast();
         // compute standard deviations
         double[] stdev = calcStdev(scur);
-        sweights = outliersDetection(scur, stdev);
+        sweights = extremeValuesDetection(scur, stdev);
         if (sweights.anyMatch(x -> x < 1)) {
             DoubleSequence corr = removeExtremes(scur, sweights);
             stdev = calcStdev(corr);
-            sweights = outliersDetection(scur, stdev);
+            sweights = extremeValuesDetection(scur, stdev);
         }
     }
 
@@ -192,7 +194,9 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
      *
      * @param s The series being corrected
      *
-     * @return A new time series is always returned. It will contain missing values for the periods that should not be corrected and the actual corrections for the other periods
+     * @return A new time series is always returned. It will contain missing
+     * values for the periods that should not be corrected and the actual
+     * corrections for the other periods
      */
     @Override
     public DoubleSequence computeCorrections(DoubleSequence s) {
@@ -227,7 +231,9 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
     }
 
     /**
-     * Gets the correction factors. The correction factors are computed on the original series, using the weights of each observation. The corrections will depend on the type of the decomposition (multiplicative or not).
+     * Gets the correction factors. The correction factors are computed on the
+     * original series, using the weights of each observation. The corrections
+     * will depend on the type of the decomposition (multiplicative or not).
      *
      * @return A new series is always returned
      */
@@ -262,7 +268,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
      *
      * @return The weights corresponding to the series
      */
-    protected DoubleSequence outliersDetection(DoubleSequence cur, double[] stdev) {
+    protected DoubleSequence extremeValuesDetection(DoubleSequence cur, double[] stdev) {
         int n = cur.length();
 
         double[] w = new double[n];
@@ -275,20 +281,29 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
         int ibeg = 0, iend = nbeg;
         while (ibeg < n) {
             double lv, uv;
+            boolean isNullStdev = false;
             if (y > stdev.length - 1) {
                 lv = stdev[stdev.length - 1] * lsigma;
                 uv = stdev[stdev.length - 1] * usigma;
+                if (Math.abs(stdev[stdev.length - 1]) < EPS_STDEV) {
+                    isNullStdev = true;
+                }
             } else {
                 lv = stdev[y] * lsigma;
                 uv = stdev[y] * usigma;
+                if (Math.abs(stdev[y]) < EPS_STDEV) {
+                    isNullStdev = true;
+                }
             }
 
-            for (int i = ibeg; i < iend; i++) {
-                double tt = Math.abs(cur.get(i) - xbar);
-                if (tt - uv > EPS) {
-                    w[i] = 0;
-                } else if (tt - lv > EPS) {
-                    w[i] = (uv - tt) / (uv - lv);
+            if (!isNullStdev) {
+                for (int i = ibeg; i < iend; i++) {
+                    double tt = Math.abs(cur.get(i) - xbar);
+                    if (tt - uv > EPS) {
+                        w[i] = 0.0;
+                    } else if (tt - lv > EPS) {
+                        w[i] = (uv - tt) / (uv - lv);
+                    }
                 }
             }
             y++;
@@ -382,7 +397,8 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
      * @param lsig The low sigma value
      * @param usig The high sigma value
      *
-     * @throws IllegalArgumentException An exception is thrown when the limits are invalid (usig <= lsig or lsig <= 0.5).
+     * @throws IllegalArgumentException An exception is thrown when the limits
+     * are invalid (usig <= lsig or lsig <= 0.5).
      */
     @Override
     public void setSigma(double lsig, double usig) {

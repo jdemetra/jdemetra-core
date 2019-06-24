@@ -8,6 +8,7 @@ package demetra.x11.filter;
 import demetra.data.DataBlock;
 import demetra.data.DoubleSequence;
 import demetra.maths.linearfilters.SymmetricFilter;
+import demetra.sa.DecompositionMode;
 import demetra.x11.SeasonalFilterOption;
 import demetra.x11.X11Context;
 import static demetra.x11.X11Kernel.table;
@@ -81,14 +82,18 @@ public class MsrFilterSelection {
         seas = out;
 
         // 2. estimate irregular component
-        irr = context.remove(series, seas);
+        irr = calcIrregular(context, series, seas);
+    }
+
+    protected DoubleSequence calcIrregular(X11Context context, DoubleSequence series, DoubleSequence seas) {
+        return context.remove(series, seas);
     }
 
     private void calcPeriodicVariation(X11Context context) {
 
         int start = context.getFirstPeriod();
         int period = context.getPeriod();
-        boolean multi = context.isMultiplicative();
+        boolean multi = DecompositionMode.Multiplicative.equals(context.getMode());
 
         s = new double[period];
         i = new double[period];

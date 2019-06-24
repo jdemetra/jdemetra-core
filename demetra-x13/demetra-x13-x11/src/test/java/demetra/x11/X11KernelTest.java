@@ -191,7 +191,7 @@ public class X11KernelTest {
         demetra.timeseries.TsData tsData = demetra.timeseries.TsData.ofInternal(TsPeriod.of(TsUnit.ofAnnualFrequency(frequency), 0), values);
         seasonalFilterOptions = new ArrayList<>();
 
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < frequency; i++) {
             seasonalFilterOptions.add(SeasonalFilterOption.valueOf(seasonalFilterOptionName));
         }
 
@@ -264,6 +264,9 @@ public class X11KernelTest {
         double[] expected_D7 = old_Results.getData("d-tables.d7", TsData.class).internalStorage();
         double[] actual_D7 = x11Results.getD7().getValues().toArray();
         Assert.assertArrayEquals("Error in D7", expected_D7, actual_D7, DELTA);
+        double[] expected_D8 = old_Results.getData("d-tables.d8", TsData.class).internalStorage();
+        double[] actual_D8 = x11Results.getD8().getValues().toArray();
+        Assert.assertArrayEquals("Error in D8", expected_D8, actual_D8, DELTA);
         double[] expected_D9 = old_Results.getData("d-tables.d9", TsData.class).internalStorage();
         double[] actual_D9 = x11Results.getD9().getValues().toArray();
         Assert.assertArrayEquals("Error in D9", expected_D9, actual_D9, DELTA);

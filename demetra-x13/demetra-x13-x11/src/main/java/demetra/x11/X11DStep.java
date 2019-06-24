@@ -22,7 +22,6 @@ import demetra.x11.filter.X11SeasonalFilterProcessor;
 import demetra.x11.filter.X11SeasonalFiltersFactory;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
 import java.util.Arrays;
-import lombok.AccessLevel;
 
 /**
  *
@@ -37,27 +36,30 @@ public class X11DStep {
     private int d2drop, finalHendersonFilterLength;
     private double iCRatio;
     private SeasonalFilterOption[] seasFilter;
-    @lombok.Getter(AccessLevel.NONE)
     private DoubleSequence refSeries;
 
     public void process(DoubleSequence refSeries, DoubleSequence input, X11Context context) {
         this.refSeries = refSeries;
-        d1(context, input);
-        d2(context);
-        d4(context);
-        d5(context);
-        d6(context);
-        d7(context);
-        d8(context);
-        d9(context);
-        dfinal(context);
+        d1Step(context, input);
+        d2Step(context);
+        d4Step(context);
+        d5Step(context);
+        d6Step(context);
+        d7Step(context);
+        d8Step(context);
+        d9Step(context);
+        dFinalStep(context);
     }
 
-    protected void d1(X11Context context, DoubleSequence input) {
-        d1 = context.remove(this.refSeries, input);
+    private void d1Step(X11Context context, DoubleSequence input) {
+        d1 = d1(context, input);
     }
 
-    private void d2(X11Context context) {
+    protected DoubleSequence d1(X11Context context, DoubleSequence input) {
+        return context.remove(this.refSeries, input);
+    }
+
+    private void d2Step(X11Context context) {
         SymmetricFilter filter = X11FilterFactory.makeSymmetricFilter(context.getPeriod());
         d2drop = filter.length() / 2;
 
@@ -67,21 +69,25 @@ public class X11DStep {
         d2 = DoubleSequence.ofInternal(x);
     }
 
-    private void d4(X11Context context) {
+    private void d4Step(X11Context context) {
         d4 = context.remove(d1.drop(d2drop, d2drop), d2);
     }
 
-    private void d5(X11Context context) {
+    private void d5Step(X11Context context) {
         X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
         DoubleSequence d5a = processor.process(d4, (context.getFirstPeriod() + d2drop) % context.getPeriod());
         d5 = DefaultSeasonalNormalizer.normalize(d5a, d2drop, context);
     }
 
-    protected void d6(X11Context context) {
-        d6 = context.remove(d1, d5);
+    private void d6Step(X11Context context) {
+        d6 = d6(context);
     }
 
-    private void d7(X11Context context) {
+    protected DoubleSequence d6(X11Context context) {
+        return context.remove(d1, d5);
+    }
+
+    private void d7Step(X11Context context) {
         SymmetricFilter filter;
         if (context.isAutomaticHenderson()) {
             double icr = AutomaticHenderson.calcICR(context, d6);
@@ -107,11 +113,15 @@ public class X11DStep {
         }
     }
 
-    protected void d8(X11Context context) {
-        d8 = context.remove(refSeries, d7);
+    private void d8Step(X11Context context) {
+        d8 = d8(context);
     }
 
-    private void d9(X11Context context) {
+    protected DoubleSequence d8(X11Context context) {
+        return context.remove(refSeries, d7);
+    }
+
+    private void d9Step(X11Context context) {
         IExtremeValuesCorrector ecorr = context.getExtremeValuesCorrector();
         if (ecorr instanceof PeriodSpecificExtremeValuesCorrector && context.getCalendarSigma() != CalendarSigmaOption.Signif) {
             //compute corrections without forecast but keep the length
@@ -126,10 +136,10 @@ public class X11DStep {
         }
     }
 
-    private void dfinal(X11Context context) {
+    private void dFinalStep(X11Context context) {
         seasFilter = context.getFinalSeasonalFilter();
         if (context.isMSR()) {
-            MsrFilterSelection msr = new MsrFilterSelection();
+            MsrFilterSelection msr = getMsrFilterSelection();
             SeasonalFilterOption msrFilter = msr.doMSR(d9_g_bis, context);
             Arrays.fill(seasFilter, msrFilter);
         }
@@ -137,8 +147,7 @@ public class X11DStep {
         d10bis = processor.process(d9_g_bis, context.getFirstPeriod());
         d10 = DefaultSeasonalNormalizer.normalize(d10bis, 0, context);
 
-        d11bis(context);
-        d11(context);
+        d11bis = d11bis(context);
 
         SymmetricFilter hfilter;
         iCRatio = AutomaticHenderson.calcICR(context, d11bis);
@@ -165,15 +174,21 @@ public class X11DStep {
             d12 = X11Context.makePositivity(d12);
         }
 
+        d11 = d11(context);
+
         d13 = context.remove(d11, d12);
 
     }
 
-    protected void d11(X11Context context) {
-        d11 = context.remove(refSeries, d10);
+    protected MsrFilterSelection getMsrFilterSelection() {
+        return new MsrFilterSelection();
     }
 
-    protected void d11bis(X11Context context) {
-        d11bis = context.remove(d1, d10);
+    protected DoubleSequence d11(X11Context context) {
+        return context.remove(refSeries, d10);
+    }
+
+    protected DoubleSequence d11bis(X11Context context) {
+        return context.remove(d1, d10);
     }
 }

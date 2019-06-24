@@ -106,6 +106,10 @@ public class X11Context {
     public boolean isLogAdd() {
         return mode == DecompositionMode.LogAdditive;
     }
+    
+    public boolean isPseudoAdd(){
+        return mode == DecompositionMode.PseudoAdditive;
+    }
 
     public DoubleSequence remove(DoubleSequence l, DoubleSequence r) {
         if (isMultiplicative()) {

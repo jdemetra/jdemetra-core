@@ -7,6 +7,8 @@ package demetra.x11;
 
 import demetra.data.DoubleSequence;
 import demetra.sa.DecompositionMode;
+import demetra.x11.pseudoadd.X11BStepPseudoAdd;
+import demetra.x11.pseudoadd.X11CStepPseudoAdd;
 import ec.satoolkit.x11.X11Results;
 import ec.satoolkit.x11.X11Specification;
 import ec.tstoolkit.timeseries.simplets.TsData;
@@ -118,8 +120,8 @@ public class X11CStepTest {
         int frequency = 12;
         testC(modeName, seasonalFilterOptionName, filterLength, frequency, A);
     }
-
-    @Test
+    
+        @Test
     public void testProcess_Stable_Add() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.Stable.name();
@@ -179,7 +181,7 @@ public class X11CStepTest {
             b1 = b1.log();
         }
         X11BStep bStep = new X11BStep();
-        bStep.process(b1, context);
+            bStep.process(b1, context);
         instance.process(b1, bStep.getB20(), context);
     }
 

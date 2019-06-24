@@ -7,6 +7,7 @@ package demetra.x11;
 
 import demetra.data.DoubleSequence;
 import demetra.sa.DecompositionMode;
+import demetra.x11.pseudoadd.X11BStepPseudoAdd;
 import ec.satoolkit.x11.X11Results;
 import ec.satoolkit.x11.X11Specification;
 import ec.tstoolkit.timeseries.simplets.TsData;
@@ -112,13 +113,12 @@ public class X11BStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_PseudoAdd() {
         String modeName = DecompositionMode.PseudoAdditive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 13;
         int frequency = 12;
-        testB(modeName, seasonalFilterOptionName, filterLength, frequency, A);
+        testB(modeName, seasonalFilterOptionName, filterLength, frequency, WU5636);
     }
 
     @Test
@@ -211,7 +211,12 @@ public class X11BStepTest {
     }
 
     private void testB(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values) {
-        X11BStep instance = new X11BStep();
+        X11BStep instance;
+        if (DecompositionMode.PseudoAdditive.name().equals(modeName)) {
+            instance = new X11BStepPseudoAdd();
+        } else {
+            instance = new X11BStep();
+        }
         SeasonalFilterOption[] filters_new = new SeasonalFilterOption[frequency];
         ec.satoolkit.x11.SeasonalFilterOption[] filters_old = new ec.satoolkit.x11.SeasonalFilterOption[frequency];
         for (int i = 0; i < frequency; i++) {
@@ -249,6 +254,10 @@ public class X11BStepTest {
         double[] expected_B2 = old_Results.getData("b-tables.b2", TsData.class).internalStorage();
         double[] actual_B2 = prepareForCompare(instance.getB2(), context);
         Assert.assertArrayEquals("Error in B2", expected_B2, actual_B2, DELTA);
+
+        double[] expected_B3 = old_Results.getData("b-tables.b3", TsData.class).internalStorage();
+        double[] actual_B3 = prepareForCompare(instance.getB3(), context);
+        Assert.assertArrayEquals("Error in B3", expected_B3, actual_B3, DELTA);
 
         double[] expected_B4 = old_Results.getData("b-tables.b4", TsData.class).internalStorage();
         double[] actual_B4 = prepareForCompare(instance.getB4(), context);

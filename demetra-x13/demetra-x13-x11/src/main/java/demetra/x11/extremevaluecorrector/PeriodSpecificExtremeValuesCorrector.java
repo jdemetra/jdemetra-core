@@ -11,7 +11,9 @@ import demetra.design.Development;
 import java.util.Arrays;
 
 /**
- * This extremvalueCorrector uses period specific Standarddeviation for the detection of extremevalues, used for Calendarsigma.All or Calendarsigma.Signif if Cochran false
+ * This extremvalueCorrector uses period specific Standarddeviation for the
+ * detection of extremevalues, used for Calendarsigma.All or
+ * Calendarsigma.Signif if Cochran false
  *
  * @author Christiane Hofer
  */
@@ -22,6 +24,8 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
         super();
     }
     private static final double EPS = 1e-15;
+    private static final double EPS_STDEV = 1e-5;
+
     /**
      * Calculates the Standarddeviation for each period
      *
@@ -49,7 +53,7 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
     }
 
     @Override
-    protected DoubleSequence outliersDetection(DoubleSequence cur, double[] stdev) {
+    protected DoubleSequence extremeValuesDetection(DoubleSequence cur, double[] stdev) {
         int n = cur.length();
 
         double[] w = new double[n];
@@ -57,23 +61,28 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
         double xbar = mul ? 1 : 0;
         for (int iPeriod = 0; iPeriod < period; iPeriod++) {
             double lv, uv;
+            boolean isNullStdev = false;
             lv = stdev[iPeriod] * lsigma;
             uv = stdev[iPeriod] * usigma;
+            if (Math.abs(stdev[iPeriod]) < EPS_STDEV) {
+                isNullStdev = true;
+            }
 
-            //int j = iPeriod + start > period - 1 ? iPeriod + start - period : iPeriod + start;
             int j = ((period - start) % period + iPeriod) % period;
             DataBlock dCur = DataBlock.of(cur);
             DataBlock dsPeriod = dCur.extract(j, -1, period);
 
-            for (int i = 0; i < dsPeriod.length(); i++) {
-                double tt = Math.abs(dsPeriod.get(i) - xbar);
-                if (tt - uv > EPS) {
-                    w[i * period + j] = 0;
-                } else if (tt - lv > EPS) {
-                    w[i * period + j] = (uv - tt) / (uv - lv);
+            if (!isNullStdev) {
+                for (int i = 0; i < dsPeriod.length(); i++) {
+                    double tt = Math.abs(dsPeriod.get(i) - xbar);
+                    if (tt - uv > EPS) {
+                        w[i * period + j] = 0;
+                    } else if (tt - lv > EPS) {
+                        w[i * period + j] = (uv - tt) / (uv - lv);
+                    }
                 }
-            }
 
+            }
         }
         return DoubleSequence.of(w);
     }
