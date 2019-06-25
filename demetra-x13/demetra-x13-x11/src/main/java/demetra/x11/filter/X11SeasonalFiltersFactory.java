@@ -5,14 +5,12 @@
  */
 package demetra.x11.filter;
 
-import jdplus.data.DataBlock;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.IFiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
 import demetra.x11.SeasonalFilterOption;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
 import demetra.x11.filter.endpoints.IEndPointsProcessor;
-import demetra.data.DoubleSeq;
+import jdplus.data.DataBlock;
+import jdplus.maths.linearfilters.FiniteFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 
 /**
  *
@@ -21,37 +19,31 @@ import demetra.data.DoubleSeq;
 @lombok.experimental.UtilityClass
 public class X11SeasonalFiltersFactory {
 
-    public IFiltering filter(int period, SeasonalFilterOption option) {
+    public X11SeasonalFilterProcessor filter(int period, SeasonalFilterOption[] option) {
+        IFiltering[] result = new IFiltering[period];
 
-        SymmetricFilter sfilter = null;
-        IFiniteFilter[] efilters = null;
-
-        switch (option) {
-            case S3X1:
-                sfilter = S3X1;
-                efilters = FC1;
-                break;
-            case S3X3:
-                sfilter = S3X3;
-                efilters = FC3;
-                break;
-            case S3X5:
-                sfilter = S3X5;
-                efilters = FC5;
-                break;
-            case S3X9:
-                sfilter = S3X9;
-                efilters = FC9;
-                break;
-            case S3X15:
-                sfilter = S3X15;
-                efilters = FC15;
-                break;
-            case Stable:
-                return new StableFilter(period);
+        for (int i = 0; i < period; i++) {
+            switch (option[i]) {
+                case S3X1:
+                    result[i] = new DefaultFilter(period, S3X1, new AsymmetricEndPoints(FC1, 0));
+                    break;
+                case S3X3:
+                    result[i] = new DefaultFilter(period, S3X3, new AsymmetricEndPoints(FC3, 0));
+                    break;
+                case S3X5:
+                    result[i] = new DefaultFilter(period, S3X5, new AsymmetricEndPoints(FC5, 0));
+                    break;
+                case S3X9:
+                    result[i] = new DefaultFilter(period, S3X9, new AsymmetricEndPoints(FC9, 0));
+                    break;
+                case S3X15:
+                    result[i] = new DefaultFilter(period, S3X15, new AsymmetricEndPoints(FC15, 0));
+                    break;
+                case Stable:
+                    result[i] = new StableFilter(period);
+            }
         }
-
-        return new DefaultFilter(period, sfilter, new AsymmetricEndPoints(efilters, 0));
+        return new X11SeasonalFilterProcessor(result);
     }
 
     static class DefaultFilter implements IFiltering {
@@ -60,6 +52,14 @@ public class X11SeasonalFiltersFactory {
         private final IEndPointsProcessor endpoints;
         private final int period;
 
+        public SymmetricFilter getSfilter() {
+            return sfilter;
+        }
+
+        public IEndPointsProcessor getEndpoints() {
+            return endpoints;
+        }
+
         DefaultFilter(final int period, final SymmetricFilter sfilter, final IEndPointsProcessor endpoints) {
             this.period = period;
             this.sfilter = sfilter;
@@ -67,22 +67,18 @@ public class X11SeasonalFiltersFactory {
         }
 
         @Override
-        public DoubleSeq process(DoubleSeq in) {
-            double[] x = new double[in.length()];
-            DataBlock out = DataBlock.of(x);
-            DataBlock input = DataBlock.of(in);
-            int n = sfilter.length() / 2;
-            for (int i = 0; i < period; ++i) {
-                DataBlock cin = input.extract(i, -1, period);
-                DataBlock cout = out.extract(i, -1, period);
-                sfilter.apply(cin, cout.drop(n, n));
-                if (endpoints != null) {
-                    endpoints.process(cin, cout);
-                }
-            }
-            return DoubleSeq.of(x);
-        }
+        public DataBlock process(DataBlock cin) {
 
+            DataBlock cout = DataBlock.of(new double[cin.length()]);
+            int n = sfilter.length() / 2;
+            if (2 * n < cin.length()) {
+                sfilter.apply(cin, cout.drop(n, n));
+            }
+            if (endpoints != null) {
+                endpoints.process(cin, cout);
+            }
+            return cout;
+        }
     }
 
     static class StableFilter implements IFiltering {
@@ -94,17 +90,11 @@ public class X11SeasonalFiltersFactory {
         }
 
         @Override
-        public DoubleSeq process(DoubleSeq in) {
+        public DataBlock process(DataBlock cin) {
 
-            double[] x = new double[in.length()];
-            DataBlock out = DataBlock.of(x);
-            DataBlock input = DataBlock.of(in);
-            for (int i = 0; i < period; ++i) {
-                DataBlock cin = input.extract(i, -1, period);
-                DataBlock cout = out.extract(i, -1, period);
-                cout.set(cin.average());
-            }
-            return DoubleSeq.of(x);
+            DataBlock cout = DataBlock.of(new double[cin.length()]);
+            cout.set(cin.average());
+            return cout;
 
         }
     }

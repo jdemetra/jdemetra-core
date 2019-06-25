@@ -5,10 +5,7 @@
  */
 package demetra.x11;
 
-import jdplus.data.DataBlock;
-import jdplus.data.analysis.DiscreteKernel;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import demetra.data.DoubleSeq;
 import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
 import demetra.x11.extremevaluecorrector.Cochran;
@@ -17,8 +14,11 @@ import demetra.x11.extremevaluecorrector.GroupSpecificExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.IExtremeValuesCorrector;
 import demetra.x11.extremevaluecorrector.PeriodSpecificExtremeValuesCorrector;
 import java.util.function.IntToDoubleFunction;
+import jdplus.data.DataBlock;
+import jdplus.data.analysis.DiscreteKernel;
+import jdplus.maths.linearfilters.FiniteFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import lombok.experimental.NonFinal;
-import demetra.data.DoubleSeq;
 
 /**
  *
@@ -34,16 +34,18 @@ public class X11Context {
     int trendFilterLength;
     int localPolynomialDegree;
     @lombok.NonNull
-    SeasonalFilterOption initialSeasonalFilter;
+    SeasonalFilterOption[] initialSeasonalFilter;
     @lombok.NonNull
-    SeasonalFilterOption finalSeasonalFilter;
+    SeasonalFilterOption[] finalSeasonalFilter;
     double lowerSigma, upperSigma;
     CalendarSigmaOption calendarSigma;
     SigmavecOption[] sigmavecOptions;
     int forecastHorizon;
+    int backcastHorizon;
     int firstPeriod;
     /**
-     * Excludefcast is true if the forecast should be excluded for the calculation of the standard deviation of the extreme values
+     * Excludefcast is true if the forecast should be excluded for the
+     * calculation of the standard deviation of the extreme values
      */
     boolean excludefcast;
 
@@ -55,8 +57,9 @@ public class X11Context {
         builder.mode = DecompositionMode.Multiplicative;
         builder.trendFilterLength = 13;
         builder.localPolynomialDegree = 3;
-        builder.initialSeasonalFilter = SeasonalFilterOption.S3X3;
-        builder.finalSeasonalFilter = SeasonalFilterOption.S3X5;
+        builder.period = 1;
+        builder.initialSeasonalFilter = new SeasonalFilterOption[]{SeasonalFilterOption.S3X3};
+        builder.finalSeasonalFilter = new SeasonalFilterOption[]{SeasonalFilterOption.S3X5};
         builder.calendarSigma = CalendarSigmaOption.None;
         builder.lowerSigma = 1.5;
         builder.upperSigma = 2.5;
@@ -64,7 +67,18 @@ public class X11Context {
         return builder;
     }
 
-    public static X11Context of(X11Spec spec, TsData data) {
+    public static X11Context of(@lombok.NonNull X11Spec spec, @lombok.NonNull TsData data) {
+        SeasonalFilterOption[] filters = new SeasonalFilterOption[data.getAnnualFrequency()];
+        if (spec.getFilters().size() == 1) {
+            filters = new SeasonalFilterOption[data.getAnnualFrequency()];
+            SeasonalFilterOption filter = spec.getFilters().get(0);
+            for (int i = 0; i < data.getAnnualFrequency(); i++) {
+                filters[i] = filter;
+            }
+        } else {
+            filters = spec.getFilters().toArray(new SeasonalFilterOption[0]);
+        }
+
         return builder().mode(spec.getMode())
                 .trendFilterLength(spec.getHendersonFilterLength())
                 .period(data.getAnnualFrequency())
@@ -72,11 +86,12 @@ public class X11Context {
                 .lowerSigma(spec.getLowerSigma())
                 .upperSigma(spec.getUpperSigma())
                 .calendarSigma(spec.getCalendarSigma())
-                .sigmavecOptions(spec.getSigmavec().toArray(new SigmavecOption[0]))
+                .sigmavecOptions(spec.getSigmavec() == null ? null : spec.getSigmavec().toArray(new SigmavecOption[0]))
                 .excludefcast(spec.isExcludeForecast())
                 .forecastHorizon(spec.getForecastHorizon())
-                .initialSeasonalFilter(spec.getFilters().get(0))
-                .finalSeasonalFilter(spec.getFilters().get(0))
+                .backcastHorizon(spec.getBackcastHorizon())
+                .initialSeasonalFilter(filters)
+                .finalSeasonalFilter(filters)
                 .build();
     }
 
@@ -92,12 +107,15 @@ public class X11Context {
         return mode == DecompositionMode.LogAdditive;
     }
 
+    public boolean isPseudoAdd() {
+        return mode == DecompositionMode.PseudoAdditive;
+    }
+
     public DoubleSeq remove(DoubleSeq l, DoubleSeq r) {
         if (isMultiplicative()) {
             return DoubleSeq.onMapping(l.length(), i -> l.get(i) / r.get(i));
-        } else {
-            return DoubleSeq.onMapping(l.length(), i -> l.get(i) - r.get(i));
         }
+        return DoubleSeq.onMapping(l.length(), i -> l.get(i) - r.get(i));
     }
 
     public DoubleSeq add(DoubleSeq l, DoubleSeq r) {
@@ -150,7 +168,9 @@ public class X11Context {
     }
 
     /**
-     * Selects the extreme value corrector depending on the result of the CochranTest if CalendarSimga is Signif, the other extreme value corrector is used
+     * Selects the extreme value corrector depending on the result of the
+     * CochranTest if CalendarSimga is Signif, the other extreme value corrector
+     * is used
      *
      * @param dsToTest
      *
@@ -193,34 +213,52 @@ public class X11Context {
 
     }
 
+    /**
+     * MSR calculation is just for all periods. In case of mixed filters and
+     * MSR, the MSR defaults will be used.
+     */
     public boolean isMSR() {
-        return SeasonalFilterOption.Msr.equals(finalSeasonalFilter);
+        for (SeasonalFilterOption option : finalSeasonalFilter) {
+            if (!SeasonalFilterOption.Msr.equals(option)) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    public SeasonalFilterOption getInitialSeasonalFilter() {
-        if (SeasonalFilterOption.Msr.equals(initialSeasonalFilter) || SeasonalFilterOption.X11Default.equals(initialSeasonalFilter)) {
-            return SeasonalFilterOption.S3X3;
+    public SeasonalFilterOption[] getInitialSeasonalFilter() {
+
+        SeasonalFilterOption[] result = new SeasonalFilterOption[period];
+        for (int i = 0; i < period; i++) {
+            result[i] = initialSeasonalFilter[i];
+            if (SeasonalFilterOption.Msr.equals(initialSeasonalFilter[i]) || SeasonalFilterOption.X11Default.equals(initialSeasonalFilter[i])) {
+                result[i] = SeasonalFilterOption.S3X3;
+            }
         }
-        return initialSeasonalFilter;
+        return result;
     }
 
-    public SeasonalFilterOption getFinalSeasonalFilter() {
-        if (SeasonalFilterOption.Msr.equals(finalSeasonalFilter) || SeasonalFilterOption.X11Default.equals(finalSeasonalFilter)) {
-            return SeasonalFilterOption.S3X5;
+    public SeasonalFilterOption[] getFinalSeasonalFilter() {
+        SeasonalFilterOption[] result = new SeasonalFilterOption[period];
+        for (int i = 0; i < period; i++) {
+            result[i] = finalSeasonalFilter[i];
+            if (SeasonalFilterOption.Msr.equals(finalSeasonalFilter[i]) || SeasonalFilterOption.X11Default.equals(finalSeasonalFilter[i])) {
+                result[i] = SeasonalFilterOption.S3X5;
+            }
         }
-        return finalSeasonalFilter;
+        return result;
     }
 
     /**
-     * Replace negative values of a Double Sequence with either the mean of the two
-     * nearest positive replacements before and after the value, or the nearest value
-     * if it is on the ends of the series.
+     * Replace negative values of a Double Sequence with either the mean of the
+     * two nearest positive replacements before and after the value, or the
+     * nearest value if it is on the ends of the series.
      *
      * @param in
      *
      * @return new DoubleSeq
      */
-    public DoubleSeq makePositivity(DoubleSeq in) {
+    public static DoubleSeq makePositivity(DoubleSeq in) {
         double[] stc = in.toArray();
         int n = in.length();
         for (int i = 0; i < n; ++i) {

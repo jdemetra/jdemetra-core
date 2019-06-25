@@ -75,6 +75,8 @@ public class MusgraveFilterFactory {
     public static double findR(final int length, final int frequency) {
         if (frequency == 4) {
             return (length <= 5) ? 0.001 : 4.5;
+        } else if (frequency == 2) {
+            return 0.001;
         } else if (length <= 9) {
             return 1;
         } else if (length <= 13) {

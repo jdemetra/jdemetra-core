@@ -12,12 +12,11 @@ import static demetra.x11.X11Kernel.table;
 import demetra.x11.extremevaluecorrector.IExtremeValuesCorrector;
 import demetra.x11.filter.AutomaticHenderson;
 import demetra.x11.filter.DefaultSeasonalNormalizer;
-import demetra.x11.filter.IFiltering;
 import demetra.x11.filter.MusgraveFilterFactory;
 import demetra.x11.filter.X11FilterFactory;
+import demetra.x11.filter.X11SeasonalFilterProcessor;
 import demetra.x11.filter.X11SeasonalFiltersFactory;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
-import lombok.AccessLevel;
 import demetra.data.DoubleSeq;
 
 /**
@@ -29,23 +28,30 @@ public class X11CStep {
 
     private DoubleSeq c1, c2, c4, c5a, c5, c6, c7, c9, c10a, c10, c11, c13, c17, c20;
 
-    @lombok.Getter(AccessLevel.NONE)
     private DoubleSeq refSeries;
     private int c2drop;
 
     public void process(DoubleSeq refSeries, DoubleSeq input, X11Context context) {
         this.refSeries = refSeries;
-        c1 = input;
-        c2(context);
-        c4(context);
-        c5(context);
-        c6(context);
-        c7(context);
-        c9(context);
-        cfinal(context);
+        c1Step(context, input);
+        c2Step(context);
+        c4Step(context);
+        c5Step(context);
+        c6Step(context);
+        c7Step(context);
+        c9Step(context);
+        cFinalStep(context);
     }
 
-    private void c2(X11Context context) {
+    private void c1Step(X11Context context, DoubleSeq input) {
+        c1 = c1(context, input);
+    }
+
+    protected DoubleSeq c1(X11Context context, DoubleSeq input) {
+        return context.remove(refSeries, input);
+    }
+
+    private void c2Step(X11Context context) {
         SymmetricFilter filter = X11FilterFactory.makeSymmetricFilter(context.getPeriod());
         c2drop = filter.length() / 2;
 
@@ -55,21 +61,25 @@ public class X11CStep {
         c2 = DoubleSeq.of(x);
     }
 
-    private void c4(X11Context context) {
+    private void c4Step(X11Context context) {
         c4 = context.remove(c1.drop(c2drop, c2drop), c2);
     }
 
-    private void c5(X11Context context) {
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
-        c5a = filter.process(c4);
+    private void c5Step(X11Context context) {
+        X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
+        c5a = processor.process(c4, (context.getFirstPeriod() + c2drop) % context.getPeriod());
         c5 = DefaultSeasonalNormalizer.normalize(c5a, c2drop, context);
     }
 
-    private void c6(X11Context context) {
-        c6 = context.remove(c1, c5);
+    private void c6Step(X11Context context) {
+        c6 = c6(context);
     }
 
-    private void c7(X11Context context) {
+    protected DoubleSeq c6(X11Context context) {
+        return context.remove(c1, c5);
+    }
+
+    private void c7Step(X11Context context) {
         SymmetricFilter filter;
         if (context.isAutomaticHenderson()) {
             double icr = AutomaticHenderson.calcICR(context, c6);
@@ -91,19 +101,19 @@ public class X11CStep {
         aep.process(c6, DataBlock.of(x));
         c7 = DoubleSeq.of(x);
         if (context.isMultiplicative()) {
-            c7 = context.makePositivity(c7);
+            c7 = X11Context.makePositivity(c7);
         }
     }
 
-    private void c9(X11Context context) {
+    private void c9Step(X11Context context) {
         c9 = context.remove(c1, c7);
     }
 
-    private void cfinal(X11Context context) {
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
-        c10a = filter.process(c9);
+    private void cFinalStep(X11Context context) {
+        X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
+        c10a = processor.process(c9, context.getFirstPeriod());
         c10 = DefaultSeasonalNormalizer.normalize(c10a, 0, context);
-        c11 = context.remove(refSeries, c10);
+        c11 = c11(context);
         c13 = context.remove(c11, c7);
 
         IExtremeValuesCorrector ecorr = context.getExtremeValuesCorrector();
@@ -111,5 +121,9 @@ public class X11CStep {
         ecorr.analyse(c13, context);
         c17 = ecorr.getObservationWeights();
         c20 = ecorr.getCorrectionFactors();
+    }
+
+    protected DoubleSeq c11(X11Context context) {
+        return context.remove(refSeries, c10);
     }
 }
