@@ -15,7 +15,7 @@ import ec.tstoolkit.modelling.DefaultTransformationType;
 public class SpecHalfYearly {
 
     public static final X13Specification getSpecHKAS() {
-        X13Specification x13spec = X13Specification.RSA0;
+        X13Specification x13spec = X13Specification.RSA0.clone();
         X11Specification spec = new X11Specification();
         spec.setSeasonalFilter(SeasonalFilterOption.S3X5);
         spec.setLowerSigma(2);
@@ -28,7 +28,7 @@ public class SpecHalfYearly {
     }
 
     public static final X13Specification getSpecAgg() {
-        X13Specification x13spec = X13Specification.RSA0;
+        X13Specification x13spec = X13Specification.RSA0.clone();
         x13spec.getRegArimaSpecification().getTransform().setFunction(DefaultTransformationType.Log);
         X11Specification spec = new X11Specification();
         spec.setSeasonalFilter(SeasonalFilterOption.S3X5);
@@ -42,7 +42,7 @@ public class SpecHalfYearly {
     }
 
     public static final X13Specification getSpecSim() {
-        X13Specification x13spec = X13Specification.RSA0;
+        X13Specification x13spec = X13Specification.RSA0.clone();
         x13spec.getRegArimaSpecification().getTransform().setFunction(DefaultTransformationType.Log);
         X11Specification spec = new X11Specification();
         spec.setSeasonalFilter(SeasonalFilterOption.S3X5);

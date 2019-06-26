@@ -16,7 +16,6 @@
  */
 package ec.satoolkit.x11;
 
-import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.design.Development;
 import ec.tstoolkit.maths.linearfilters.SymmetricFilter;
 import ec.tstoolkit.timeseries.simplets.TsData;
@@ -124,7 +123,7 @@ public class DefaultX11Utilities extends DefaultX11Algorithm implements IX11Util
      */
     @Override
     public TsData correctTrendBias(TsData t, TsData s, TsData i, BiasCorrection bias) {
-        switch (bias){
+        switch (bias) {
             case Legacy:
                 return legacyBiasCorrection(t, s, i);
             case Ratio:
@@ -140,12 +139,16 @@ public class DefaultX11Utilities extends DefaultX11Algorithm implements IX11Util
         double issq = i.log().ssq();
         double sig = Math.exp(issq / (2 * i.getLength()));
         int ifreq = t.getFrequency().intValue();
-        int length = 2 * ifreq - 1;
+
+        //the length for the henderson filter for halfyearly is 5, because it is the shortest possible one
+//and therefore the best one follow to follow the movement of s to include it in the trend
+        int length = (ifreq == 2) ? 5 : 2 * ifreq - 1;
+
         SymmetricFilter smoother = TrendCycleFilterFactory
                 .makeHendersonFilter(length);
         DefaultTrendFilteringStrategy filter = new DefaultTrendFilteringStrategy(
                 smoother, new AsymmetricEndPoints(MusgraveFilterFactory
-                .makeFilters(smoother, 4.5)));
+                        .makeFilters(smoother, 4.5)));
 
         TsData hs = filter.process(s, null);
         hs.applyOnFinite(x -> x * sig);
