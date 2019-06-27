@@ -24,4 +24,11 @@ public class FastEigenValuesSolverTest {
         solver.factorize(P);
     }
     
+    @Test
+    public void testSmall2() {
+        Polynomial P=Polynomial.of(.2, .3, .5, -.8, -.6, 1);
+        FastEigenValuesSolver2 solver=new FastEigenValuesSolver2();
+        solver.factorize(P);
+    }
+    
 }

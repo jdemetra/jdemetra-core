@@ -7,8 +7,11 @@ package jdplus.maths.polynomials;
 
 import demetra.maths.Complex;
 import demetra.maths.Constants;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jdplus.data.DataBlock;
 import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 import jdplus.maths.matrices.decomposition.EigenSystem;
 import jdplus.maths.matrices.decomposition.IEigenSystem;
 
@@ -16,7 +19,83 @@ import jdplus.maths.matrices.decomposition.IEigenSystem;
  *
  * @author Jean Palate
  */
-public class FastEigenValuesSolver implements RootsSolver {
+public class FastEigenValuesSolver2 implements RootsSolver {
+
+    static final class Reflector implements Cloneable {
+
+        double c, s;
+
+        Reflector(double c, double s) {
+            this.c = c;
+            this.s = s;
+        }
+
+        // Do nothing
+        Reflector() {
+            this.c = 1;
+            this.s = 0;
+        }
+
+        CanonicalMatrix asMatrix(int n, int pos) {
+            CanonicalMatrix M = CanonicalMatrix.identity(n);
+            fill(M.extract(pos, 2, pos, 2));
+            return M;
+        }
+
+        void fill(FastMatrix m) {
+            m.set(0, 0, c);
+            m.set(0, 1, s);
+            m.set(1, 0, s);
+            m.set(1, 1, -c);
+        }
+
+        @Override
+        public Reflector clone() {
+            try {
+                return (Reflector) super.clone();
+            } catch (CloneNotSupportedException ex) {
+                return null;
+            }
+        }
+    }
+
+    static final class Rotator implements Cloneable {
+
+        double c, s;
+
+        Rotator(double c, double s) {
+            this.c = c;
+            this.s = s;
+        }
+
+        // Do nothing
+        Rotator() {
+            this.c = 1;
+            this.s = 0;
+        }
+
+        CanonicalMatrix asMatrix(int n, int pos) {
+            CanonicalMatrix M = CanonicalMatrix.identity(n);
+            fill(M.extract(pos, 2, pos, 2));
+            return M;
+        }
+
+        void fill(FastMatrix m) {
+            m.set(0, 0, c);
+            m.set(0, 1, s);
+            m.set(1, 0, -s);
+            m.set(1, 1, c);
+        }
+
+        @Override
+        public Rotator clone() {
+            try {
+                return (Rotator) super.clone();
+            } catch (CloneNotSupportedException ex) {
+                return null;
+            }
+        }
+    }
 
     private Complex[] roots;
 
@@ -79,6 +158,9 @@ public class FastEigenValuesSolver implements RootsSolver {
         }
     }
 
+    private Rotator[] Q, C, B;
+    private CanonicalMatrix A, R;
+
     private int n, itcnt, strt, zero;
     private int[] its;
     private double tol = Constants.getEpsilon();
@@ -91,13 +173,13 @@ public class FastEigenValuesSolver implements RootsSolver {
         //    polynomial has a degree larger than 2
         its = new int[n];
         dfcc(p);
-        int tr=n-2;
-        int start_index=0;
-        int stop_index=n-1;
-        int zero_index=-1;
-        int it_max=30*n;
-        int it_count=0;
-        int chase_count=0;
+        int tr = n - 2;
+        int start_index = 0;
+        int stop_index = n - 1;
+        int zero_index = -1;
+        int it_max = 30 * n;
+        int it_count = 0;
+        int chase_count = 0;
 //  
 //  ! initialize indices
 //  start_index = 1
@@ -266,39 +348,44 @@ public class FastEigenValuesSolver implements RootsSolver {
      * @param P Polynomial
      */
     private void dfcc(Polynomial p) {
-        qcb = new double[6 * n];
+
+        Q = new Rotator[n];
+        C = new Rotator[n + 1];
+        B = new Rotator[n + 1];
+
         // Q(i): c=0, s=1
-        // Q(last): c=1, s=0;
-        int jlast = 6 * (n - 1); // entry of the last row
-        for (int j = 1; j < jlast; j += 6) {
-            qcb[j] = 1;
+        for (int i = 0; i < n; ++i) {
+            Q[i] = new Rotator(0, 1);
         }
-        qcb[jlast] = 1;
-
         // build C, B (from n-1 to 0)
-        for (int i = 0, j = 0; j < qcb.length; j += 6) {
-            qcb[j] = 1;
+        // C[n]
+        Rotator c = new Rotator();
+        double r = givensRotation(p.get(0), -1, c);
+        C[n] = c;
+        B[n] = new Rotator(-c.s, c.c);
+       for (int i = n; i > 0; --i) {
+            c = new Rotator();
+            r = givensRotation(-p.get(i), r, c);
+            C[i - 1] = c;
+            B[i - 1] = new Rotator(c.c, -c.s);
         }
 
-        // last row 
-        // tmp1 = (-1)** n
-        double tmp1 = (n % 2 == 0) ? 1 : -1;
-        double[] gr = new double[3];
-        dgr(tmp1 * p.get(0), -tmp1, gr);
-        qcb[jlast + 2] = gr[0];
-        qcb[jlast + 3] = gr[1];
-        double tmp2 = gr[2];
-        qcb[jlast + 4] = tmp1 * gr[1];
-        qcb[jlast + 5] = tmp1 * gr[0];
-        for (int i = n - 1, j = jlast - 6; i > 0; --i, j -= 6) {
-            tmp1 = tmp2;
-            dgr(-p.get(i), tmp1, gr);
-            qcb[j + 2] = gr[0];
-            qcb[j + 3] = gr[1];
-            qcb[j + 4] = gr[0];
-            qcb[j + 5] = -gr[1];
-            tmp2 = gr[2];
-        }
+//        // 
+//        double r=givensReflection(p.get(0), 1, c);
+//        C[n1]=c;
+//        
+//        givensReflection(tmp1 * p.get(0), -tmp1, gr);
+//        qcb[jlast + 4] = tmp1 * gr[1];
+//        qcb[jlast + 5] = tmp1 * gr[0];
+//        for (int i = n - 1, j = jlast - 6; i > 0; --i, j -= 6) {
+//            tmp1 = tmp2;
+//            givensReflection(-p.get(i), tmp1, gr);
+//            qcb[j + 2] = gr[0];
+//            qcb[j + 3] = gr[1];
+//            qcb[j + 4] = gr[0];
+//            qcb[j + 5] = -gr[1];
+//            tmp2 = gr[2];
+//        }
     }
 
     /**
@@ -375,18 +462,19 @@ public class FastEigenValuesSolver implements RootsSolver {
 //
 //end subroutine
     /**
-     * Specialised implementation of Givens rotations
+     * Specialised implementation of Givens reflections
      *
      * @param a
      * @param b
-     * @param rslt Contains cos, sin, r (=a*a+b*b)
+     * @param gr Givens reflection corresponding to a, b (gr(a,b)=(rslt,0)
+     * @return sqrt(a*a+b*b)
      */
-    private void dgr(double a, double b, double[] rslt) {
+    private double givensReflection(double a, double b, Reflector gr) {
         double absa = Math.abs(a), absb = Math.abs(b);
         if (absb < Constants.getEpsilon()) {
-            rslt[0] = a < 0 ? 1 : -1;
-            rslt[1] = 0;
-            rslt[2] = absa;
+            gr.c = a < 0 ? 1 : -1;
+            gr.s = 0;
+            return absa;
         } else {
             double s, c, r;
             if (absa >= absb) {
@@ -414,14 +502,53 @@ public class FastEigenValuesSolver implements RootsSolver {
                     r *= b;
                 }
             }
-            rslt[0] = c;
-            rslt[1] = s;
-            rslt[2] = r;
+            gr.c = c;
+            gr.s = s;
+            return r;
+        }
+    }
+
+    private double givensRotation(double a, double b, Rotator gr) {
+        double absa = Math.abs(a), absb = Math.abs(b);
+        if (absb < Constants.getEpsilon()) {
+            gr.c = a < 0 ? 1 : -1;
+            gr.s = 0;
+            return absa;
+        } else {
+            double s, c, r;
+            if (absa >= absb) {
+                s = b / a;
+                r = Math.sqrt(1 + s * s);
+                if (a < 0) {
+                    c = -1 / r;
+                    s *= c;
+                    r *= -a;
+                } else {
+                    c = 1 / r;
+                    s *= c;
+                    r *= a;
+                }
+            } else {
+                c = a / b;
+                r = Math.sqrt(1 + c * c);
+                if (b < 0) {
+                    s = -1 / r;
+                    c *= s;
+                    r *= -b;
+                } else {
+                    s = 1 / r;
+                    c *= s;
+                    r *= b;
+                }
+            }
+            gr.c = c;
+            gr.s = s;
+            return r;
         }
     }
 
     /**
-     * Specialised implementation of Givens rotations. Same as dgr, without the
+     * Specialised implementation of Givens reflection. Same as dgr, without the
      * computation of r
      *
      * @param a
@@ -469,45 +596,47 @@ public class FastEigenValuesSolver implements RootsSolver {
     private void dcdb(int k) {
         clear(a);
         clear(r);
-        if (k == 0){
-            r[0][0]=-qcb[5]/qcb[3];
-            r[1][1]=-qcb[11]/qcb[9];
-            r[0][1]=-(qcb[4]*qcb[10]-r[1][1]*qcb[2]*qcb[8])/qcb[3];
-     
-            r[1][1]*=qcb[6];
-            a[0][0]=qcb[0];
-            a[1][0]=qcb[1];
-            a[0][1]=-qcb[1];
-            a[1][1]=qcb[0];
-            matmul_01();
-            
-            a[0][0]=r[0][0];a[1][0]=r[1][0];a[0][1]=r[0][1];a[1][1]=r[1][1];
-     
-        }
-        else{
+        if (k == 0) {
+            r[0][0] = -qcb[5] / qcb[3];
+            r[1][1] = -qcb[11] / qcb[9];
+            r[0][1] = -(qcb[4] * qcb[10] - r[1][1] * qcb[2] * qcb[8]) / qcb[3];
 
-            int ind = 6*k;
-            r[1][0]=-qcb[ind+5]/qcb[ind+3];
-            r[0][0]=-(qcb[ind-2]*qcb[ind+4]-r[1][0]*qcb[ind-4]*qcb[ind+2])/qcb[ind-1];
-            ind = 6*(k+1);
-            r[2][1]=-qcb[ind+5]/qcb[ind+3];
-            r[1][1]=-(qcb[ind-2]*qcb[ind+4]-r[2][1]*qcb[ind+2])/qcb[ind-3];
-            r[0][1] = (qcb[ind-8]*qcb[ind-1]*qcb[ind+4]-qcb[ind-10]*(qcb[ind-4]*qcb[ind-2]*qcb[ind+4]
-                    -qcb[ind+2]*r[2][1])/qcb[ind-3])/qcb[ind-9];
-	
+            r[1][1] *= qcb[6];
+            a[0][0] = qcb[0];
+            a[1][0] = qcb[1];
+            a[0][1] = -qcb[1];
+            a[1][1] = qcb[0];
+            matmul_01();
+
+            a[0][0] = r[0][0];
+            a[1][0] = r[1][0];
+            a[0][1] = r[0][1];
+            a[1][1] = r[1][1];
+
+        } else {
+
+            int ind = 6 * k;
+            r[1][0] = -qcb[ind + 5] / qcb[ind + 3];
+            r[0][0] = -(qcb[ind - 2] * qcb[ind + 4] - r[1][0] * qcb[ind - 4] * qcb[ind + 2]) / qcb[ind - 1];
+            ind = 6 * (k + 1);
+            r[2][1] = -qcb[ind + 5] / qcb[ind + 3];
+            r[1][1] = -(qcb[ind - 2] * qcb[ind + 4] - r[2][1] * qcb[ind + 2]) / qcb[ind - 3];
+            r[0][1] = (qcb[ind - 8] * qcb[ind - 1] * qcb[ind + 4] - qcb[ind - 10] * (qcb[ind - 4] * qcb[ind - 2] * qcb[ind + 4]
+                    - qcb[ind + 2] * r[2][1]) / qcb[ind - 3]) / qcb[ind - 9];
+
             r[2][1] *= qcb[ind];
-            ind = 6*k;
-            a[0][0]=qcb[ind];
-            a[1][0]=qcb[ind+1];
-            a[0][1]=-qcb[ind+1];
-            a[1][1]=qcb[ind];
+            ind = 6 * k;
+            a[0][0] = qcb[ind];
+            a[1][0] = qcb[ind + 1];
+            a[0][1] = -qcb[ind + 1];
+            a[1][1] = qcb[ind];
             matmul_12();
 
-            ind = 6*(k-1);
-            a[0][0]=qcb[ind];
-            a[1][0]=qcb[ind+1];
-            a[0][1]=-qcb[ind+1];
-            a[1][1]=qcb[ind];
+            ind = 6 * (k - 1);
+            a[0][0] = qcb[ind];
+            a[1][0] = qcb[ind + 1];
+            a[0][1] = -qcb[ind + 1];
+            a[1][1] = qcb[ind];
             matmul_01();
         }
     }
@@ -966,27 +1095,28 @@ public class FastEigenValuesSolver implements RootsSolver {
     private void matmul_01() {
         double r00 = r[0][0], r10 = r[1][0], r01 = r[0][1], r11 = r[1][1];
         double a00 = a[0][0], a10 = a[1][0], a01 = a[0][1], a11 = a[1][1];
-        r[0][0]=a00*r00+a01*r10;
-        r[1][0]=a10*r00+a11*r10;
-        r[0][1]=a00*r01+a01*r11;
-        r[1][1]=a10*r01+a11*r11;
+        r[0][0] = a00 * r00 + a01 * r10;
+        r[1][0] = a10 * r00 + a11 * r10;
+        r[0][1] = a00 * r01 + a01 * r11;
+        r[1][1] = a10 * r01 + a11 * r11;
     }
+
     /**
      * Computes R[2:3,:]=A[1:2,[1:2]*R[2:3,:]
      */
     private void matmul_12() {
         double r10 = r[1][0], r20 = r[2][0], r11 = r[1][1], r21 = r[2][1];
         double a00 = a[0][0], a10 = a[1][0], a01 = a[0][1], a11 = a[1][1];
-        r[1][0]=a00*r10+a01*r20;
-        r[2][0]=a10*r10+a11*r20;
-        r[1][1]=a00*r11+a01*r21;
-        r[2][1]=a10*r11+a11*r21;
+        r[1][0] = a00 * r10 + a01 * r20;
+        r[2][0] = a10 * r10 + a11 * r20;
+        r[1][1] = a00 * r11 + a01 * r21;
+        r[2][1] = a10 * r11 + a11 * r21;
     }
 
     private void clear(double[][] x) {
-        for (int i=0; i<3; ++i){
-            x[i][0]=0;
-            x[i][1]=0;
+        for (int i = 0; i < 3; ++i) {
+            x[i][0] = 0;
+            x[i][1] = 0;
         }
     }
 
