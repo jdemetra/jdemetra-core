@@ -5,16 +5,16 @@
  */
 package demetra.x11;
 
+import demetra.data.DoubleSeq;
 import demetra.sa.DecompositionMode;
+import demetra.x11.pseudoadd.X11BStepPseudoAdd;
 import ec.satoolkit.x11.X11Results;
 import ec.satoolkit.x11.X11Specification;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-import demetra.data.DoubleSeq;
 
 /**
  *
@@ -40,7 +40,6 @@ public class X11BStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_Multiplicative_Halfyearly() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
@@ -95,7 +94,6 @@ public class X11BStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_AutoHenderson_Halfyearly() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
@@ -114,13 +112,12 @@ public class X11BStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_PseudoAdd() {
         String modeName = DecompositionMode.PseudoAdditive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 13;
         int frequency = 12;
-        testB(modeName, seasonalFilterOptionName, filterLength, frequency, A);
+        testB(modeName, seasonalFilterOptionName, filterLength, frequency, WU5636);
     }
 
     @Test
@@ -205,7 +202,7 @@ public class X11BStepTest {
     }
 
     private void process(X11BStep instance, X11Context context, double[] input) {
-        DoubleSeq b1 = DoubleSeq.copyOf(input);
+        DoubleSeq b1 = DoubleSeq.of(input);
         if (context.isLogAdd()) {
             b1 = b1.log();
         }
@@ -213,11 +210,23 @@ public class X11BStepTest {
     }
 
     private void testB(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values) {
-        X11BStep instance = new X11BStep();
+        X11BStep instance;
+        if (DecompositionMode.PseudoAdditive.name().equals(modeName)) {
+            instance = new X11BStepPseudoAdd();
+        } else {
+            instance = new X11BStep();
+        }
+        SeasonalFilterOption[] filters_new = new SeasonalFilterOption[frequency];
+        ec.satoolkit.x11.SeasonalFilterOption[] filters_old = new ec.satoolkit.x11.SeasonalFilterOption[frequency];
+        for (int i = 0; i < frequency; i++) {
+            filters_new[i] = SeasonalFilterOption.valueOf(seasonalFilterOptionName);
+            filters_old[i] = ec.satoolkit.x11.SeasonalFilterOption.valueOf(seasonalFilterOptionName);
+        }
+
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(DecompositionMode.valueOf(modeName))
-                .initialSeasonalFilter(SeasonalFilterOption.valueOf(seasonalFilterOptionName))
-                .finalSeasonalFilter(SeasonalFilterOption.valueOf(seasonalFilterOptionName))
+                .initialSeasonalFilter(filters_new)
+                .finalSeasonalFilter(filters_new)
                 .trendFilterLength(filterLength)
                 .period(frequency)
                 .build();
@@ -225,8 +234,12 @@ public class X11BStepTest {
 
         X11Specification oldSpec = new X11Specification();
         oldSpec.setMode(ec.satoolkit.DecompositionMode.valueOf(modeName));
-        oldSpec.setSeasonalFilter(ec.satoolkit.x11.SeasonalFilterOption.valueOf(seasonalFilterOptionName));
-        oldSpec.setHendersonFilterLength(filterLength);
+        oldSpec.setSeasonalFilters(filters_old);
+        if (frequency == 2 && filterLength == 0) {
+            oldSpec.setHendersonFilterLength(5);
+        } else {
+            oldSpec.setHendersonFilterLength(filterLength);
+        }
         oldSpec.setForecastHorizon(0);
 
         ec.satoolkit.x11.X11Kernel old = new ec.satoolkit.x11.X11Kernel();
@@ -240,6 +253,10 @@ public class X11BStepTest {
         double[] expected_B2 = old_Results.getData("b-tables.b2", TsData.class).internalStorage();
         double[] actual_B2 = prepareForCompare(instance.getB2(), context);
         Assert.assertArrayEquals("Error in B2", expected_B2, actual_B2, DELTA);
+
+        double[] expected_B3 = old_Results.getData("b-tables.b3", TsData.class).internalStorage();
+        double[] actual_B3 = prepareForCompare(instance.getB3(), context);
+        Assert.assertArrayEquals("Error in B3", expected_B3, actual_B3, DELTA);
 
         double[] expected_B4 = old_Results.getData("b-tables.b4", TsData.class).internalStorage();
         double[] actual_B4 = prepareForCompare(instance.getB4(), context);

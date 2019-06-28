@@ -15,7 +15,6 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Assert;
 import org.junit.Assume;
-import org.junit.Ignore;
 import org.junit.Test;
 import demetra.data.DoubleSeq;
 
@@ -49,7 +48,7 @@ public class X11DStepTest {
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
         int filterLength = 13;
         int frequency = 4;
-        testD(modeName, seasonalFilterOptionName, filterLength, frequency, A);
+        testD(modeName, seasonalFilterOptionName, filterLength, frequency, WU5636);
     }
 
     @Test
@@ -217,7 +216,6 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_AutoHenderson_Halfyearly() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
@@ -257,7 +255,6 @@ public class X11DStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_CalendarSigmaSelect() {
         String modeName = DecompositionMode.Multiplicative.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X3.name();
@@ -275,8 +272,8 @@ public class X11DStepTest {
         X11BStep bStep = new X11BStep();
         X11CStep cStep = new X11CStep();
         bStep.process(b1, context);
-        cStep.process(b1, context.remove(b1, bStep.getB20()), context);
-        instance.process(b1, context.remove(b1, cStep.getC20()), context);
+        cStep.process(b1, bStep.getB20(), context);
+        instance.process(b1, cStep.getC20(), context);
     }
 
     private void testD(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values) {
@@ -284,12 +281,29 @@ public class X11DStepTest {
     }
 
     private void testD(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values, String calendarSigma) {
+        SeasonalFilterOption[] filters_new = new SeasonalFilterOption[frequency];
+        ec.satoolkit.x11.SeasonalFilterOption[] filters_old = new ec.satoolkit.x11.SeasonalFilterOption[frequency];
+
+        SigmavecOption[] sigmavecOptions_new = new SigmavecOption[frequency];
+        ec.satoolkit.x11.SigmavecOption[] sigmavecOptions_old = new ec.satoolkit.x11.SigmavecOption[frequency];
+
+        for (int i = 0; i < frequency; i++) {
+            filters_new[i] = SeasonalFilterOption.valueOf(seasonalFilterOptionName);
+            filters_old[i] = ec.satoolkit.x11.SeasonalFilterOption.valueOf(seasonalFilterOptionName);
+            sigmavecOptions_new[i] = SigmavecOption.Group1;
+            sigmavecOptions_old[i] = ec.satoolkit.x11.SigmavecOption.Group1;
+        }
+
+        sigmavecOptions_new[1] = SigmavecOption.Group2;
+        sigmavecOptions_old[1] = ec.satoolkit.x11.SigmavecOption.Group2;
+
         X11DStep instance = new X11DStep();
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(DecompositionMode.valueOf(modeName))
-                .initialSeasonalFilter(SeasonalFilterOption.valueOf(seasonalFilterOptionName))
-                .finalSeasonalFilter(SeasonalFilterOption.valueOf(seasonalFilterOptionName))
+                .initialSeasonalFilter(filters_new)
+                .finalSeasonalFilter(filters_new)
                 .calendarSigma(CalendarSigmaOption.valueOf(calendarSigma))
+                .sigmavecOptions(sigmavecOptions_new)
                 .trendFilterLength(filterLength)
                 .period(frequency)
                 .build();
@@ -297,9 +311,14 @@ public class X11DStepTest {
 
         X11Specification oldSpec = new X11Specification();
         oldSpec.setMode(ec.satoolkit.DecompositionMode.valueOf(modeName));
-        oldSpec.setSeasonalFilter(ec.satoolkit.x11.SeasonalFilterOption.valueOf(seasonalFilterOptionName));
+        oldSpec.setSeasonalFilters(filters_old);
         oldSpec.setCalendarSigma(ec.satoolkit.x11.CalendarSigma.valueOf(calendarSigma));
-        oldSpec.setHendersonFilterLength(filterLength);
+        oldSpec.setSigmavec(sigmavecOptions_old);
+        if (frequency == 2 && filterLength == 0) {
+            oldSpec.setHendersonFilterLength(5);
+        } else {
+            oldSpec.setHendersonFilterLength(filterLength);
+        }
         oldSpec.setForecastHorizon(0);
         oldSpec.setBiasCorrection(BiasCorrection.None);
 
@@ -325,6 +344,9 @@ public class X11DStepTest {
         double[] expected_D7 = old_Results.getData("d-tables.d7", TsData.class).internalStorage();
         double[] actual_D7 = prepareForCompare(instance.getD7(), context);
         Assert.assertArrayEquals("Error in D7", expected_D7, actual_D7, DELTA);
+        double[] expected_D8 = old_Results.getData("d-tables.d8", TsData.class).internalStorage();
+        double[] actual_D8 =  prepareForCompare(instance.getD8(), context);
+        Assert.assertArrayEquals("Error in D8", expected_D8, actual_D8, DELTA);
         double[] expected_D9 = old_Results.getData("d-tables.d9", TsData.class).internalStorage();
         double[] actual_D9 = prepareForCompare(instance.getD9(), context);
         Assert.assertArrayEquals("Error in D9", expected_D9, actual_D9, DELTA);

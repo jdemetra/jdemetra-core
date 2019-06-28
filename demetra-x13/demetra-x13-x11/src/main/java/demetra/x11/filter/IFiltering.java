@@ -5,18 +5,21 @@
  */
 package demetra.x11.filter;
 
-import demetra.data.DoubleSeq;
+import jdplus.data.DataBlock;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public interface IFiltering {
+
     /**
      * Applies a filter on an input to produce an output.
      * The inut and the output must have the same length
+     *
      * @param in
-     * @return 
+     *
+     * @return
      */
-    DoubleSeq process(DoubleSeq in);
+    DataBlock process(DataBlock in);
 }

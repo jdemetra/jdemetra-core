@@ -16,13 +16,15 @@
  */
 package demetra.x11.filter;
 
-import jdplus.data.DataBlock;
+import demetra.data.DoubleSeq;
 import demetra.design.Development;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import demetra.x11.SeasonalFilterOption;
 import demetra.x11.X11Context;
 import demetra.x11.filter.endpoints.CopyEndPoints;
 import demetra.x11.filter.endpoints.CopyPeriodicEndPoints;
-import demetra.data.DoubleSeq;
+import java.util.ArrayList;
+import jdplus.data.DataBlock;
+import jdplus.maths.linearfilters.SymmetricFilter;
 
 /**
  *
@@ -33,6 +35,28 @@ import demetra.data.DoubleSeq;
 public class DefaultSeasonalNormalizer {
 
     public DoubleSeq normalize(DoubleSeq in, int nextend, X11Context context) {
+        return normalize(in, nextend, context, 0);
+    }
+
+    public DoubleSeq normalize(DoubleSeq in, int nextend, X11Context context, int start) {
+
+        ArrayList<Integer> stable_index = new ArrayList<>();
+        SeasonalFilterOption[] filters = context.getFinalSeasonalFilter();
+
+        // conditions for short time series
+        int ny_all = in.length() / context.getPeriod();
+        int nyr_all = in.length() % context.getPeriod() == 0 ? ny_all : ny_all + 1;
+
+        int ind;
+        for (int i = 0; i < context.getPeriod(); i++) {
+            ind = (start + i) % context.getPeriod();
+            if (SeasonalFilterOption.Stable.equals(filters[i])
+                    || (ny_all < 5 || (SeasonalFilterOption.S3X15.equals(filters[i]) && nyr_all < 20))) { // condition for too short time series
+                stable_index.add(ind);
+            }
+        }
+
+        int start_period_input = (nextend + context.getFirstPeriod()) % context.getPeriod();
         SymmetricFilter filter = X11FilterFactory.makeSymmetricFilter(context.getPeriod());
         int ndrop = filter.length() / 2;
 
@@ -40,8 +64,29 @@ public class DefaultSeasonalNormalizer {
         DataBlock out = DataBlock.of(x, ndrop, x.length - ndrop);
         filter.apply(in, out);
 
+        // needed because series is too short for filter
         CopyEndPoints cp = new CopyEndPoints(ndrop);
         cp.process(in, DataBlock.of(x));
+
+        if (!stable_index.isEmpty()) {
+            int index = 0;
+            for (int p = start_period_input; p < start_period_input + ndrop; p++) {
+                if (stable_index.contains(p % context.getPeriod())) {
+                    x[index] = x[index + context.getPeriod()];
+                }
+                index++;
+            }
+            int end_period_input = (in.length() - 1 + start_period_input) % context.getPeriod();
+            index = in.length() - 1;
+            for (int p = end_period_input; p > end_period_input - ndrop; p--) {
+// the period of x[index]=(ndrop * context.getPeriod() + p))
+//ndrop * context.getPeriod() is big enough that
+                if (stable_index.contains((ndrop * context.getPeriod() + p) % context.getPeriod())) {
+                    x[index] = x[index - context.getPeriod()];
+                }
+                index--;
+            }
+        }
         DoubleSeq t = DoubleSeq.of(x);
         DoubleSeq tmp = context.remove(in, t);
         if (nextend == 0) {
@@ -53,5 +98,6 @@ public class DefaultSeasonalNormalizer {
             cpp.process(null, DataBlock.of(x));
             return DoubleSeq.of(x);
         }
+
     }
 }

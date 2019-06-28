@@ -94,7 +94,7 @@ public interface IExtremeValuesCorrector {
 
     /**
      *
-     * @param start
+     * @param start period of the start value
      */
     void setStart(int start);
 

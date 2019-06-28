@@ -5,6 +5,7 @@
  */
 package demetra.x11;
 
+import demetra.data.DoubleSeq;
 import demetra.sa.DecompositionMode;
 import ec.satoolkit.x11.X11Results;
 import ec.satoolkit.x11.X11Specification;
@@ -12,9 +13,7 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-import demetra.data.DoubleSeq;
 
 /**
  *
@@ -166,7 +165,6 @@ public class X11CStepTest {
     }
 
     @Test
-    @Ignore
     public void testProcess_AutoHenderson_Halfyearly() {
         String modeName = DecompositionMode.Additive.name();
         String seasonalFilterOptionName = SeasonalFilterOption.S3X5.name();
@@ -176,21 +174,28 @@ public class X11CStepTest {
     }
 
     private void process(X11CStep instance, X11Context context, double[] input) {
-        DoubleSeq b1 = DoubleSeq.copyOf(input);
+        DoubleSeq b1 = DoubleSeq.of(input);
         if (context.isLogAdd()) {
             b1 = b1.log();
         }
         X11BStep bStep = new X11BStep();
         bStep.process(b1, context);
-        instance.process(b1, context.remove(b1, bStep.getB20()), context);
+        instance.process(b1, bStep.getB20(), context);
     }
 
     private void testC(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values) {
         X11CStep instance = new X11CStep();
+        SeasonalFilterOption[] filters_new = new SeasonalFilterOption[frequency];
+        ec.satoolkit.x11.SeasonalFilterOption[] filters_old = new ec.satoolkit.x11.SeasonalFilterOption[frequency];
+        for (int i = 0; i < frequency; i++) {
+            filters_new[i] = SeasonalFilterOption.valueOf(seasonalFilterOptionName);
+            filters_old[i] = ec.satoolkit.x11.SeasonalFilterOption.valueOf(seasonalFilterOptionName);
+        }
+
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(DecompositionMode.valueOf(modeName))
-                .initialSeasonalFilter(SeasonalFilterOption.valueOf(seasonalFilterOptionName))
-                .finalSeasonalFilter(SeasonalFilterOption.valueOf(seasonalFilterOptionName))
+                .initialSeasonalFilter(filters_new)
+                .finalSeasonalFilter(filters_new)
                 .trendFilterLength(filterLength)
                 .period(frequency)
                 .build();
@@ -198,8 +203,12 @@ public class X11CStepTest {
 
         X11Specification oldSpec = new X11Specification();
         oldSpec.setMode(ec.satoolkit.DecompositionMode.valueOf(modeName));
-        oldSpec.setSeasonalFilter(ec.satoolkit.x11.SeasonalFilterOption.valueOf(seasonalFilterOptionName));
-        oldSpec.setHendersonFilterLength(filterLength);
+        oldSpec.setSeasonalFilters(filters_old);
+        if (frequency == 2 && filterLength == 0) {
+            oldSpec.setHendersonFilterLength(5);
+        } else {
+            oldSpec.setHendersonFilterLength(filterLength);
+        }
         oldSpec.setForecastHorizon(0);
 
         ec.satoolkit.x11.X11Kernel old = new ec.satoolkit.x11.X11Kernel();
