@@ -67,13 +67,19 @@ class AutomaticTrendCycleComputer extends DefaultX11Algorithm implements
             icr *= 6.0;
         } //CH: Reason?
         filterLength = this.selectFilter(step, icr, freq);
+        double r;
+        if (freq == 2) {
+            r = 0.001;
+        } else {
+            r = curIC;
+        }
         // double D = 4.0 / (Math.PI * curIC * curIC);
         if (filterLength == trendFilter.getLength()) {
             // just do end processing
             int len = filterLength / 2;
             sc = sc.extend(len, len);
             AsymmetricEndPoints iep = new AsymmetricEndPoints(
-                    MusgraveFilterFactory.makeFilters(trendFilter, curIC/*
+                    MusgraveFilterFactory.makeFilters(trendFilter, r/*
                      * D
                      */));
             iep.process(new DataBlock(s.internalStorage()),
@@ -86,7 +92,7 @@ class AutomaticTrendCycleComputer extends DefaultX11Algorithm implements
         } else {
             trendFilter = TrendCycleFilterFactory.makeHendersonFilter(filterLength);
             AsymmetricEndPoints iep = new AsymmetricEndPoints(
-                    MusgraveFilterFactory.makeFilters(trendFilter, curIC/*
+                    MusgraveFilterFactory.makeFilters(trendFilter, r/*
                      * D
                      */));
             strategy = new DefaultTrendFilteringStrategy(trendFilter, iep, filterLength + "-Henderson");
@@ -113,6 +119,9 @@ class AutomaticTrendCycleComputer extends DefaultX11Algorithm implements
     }
 
     private int selectFilter(X11Step step, double icr, final int freq) {
+        if (freq == 2) {
+            return 5;
+        }
         if ((step == X11Step.B && icr >= 1) || (icr >= 1 && icr < 3.5)) {
             return freq + 1;
         }
