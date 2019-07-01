@@ -19,6 +19,7 @@ package ec.tss.tsproviders.utils;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,11 +45,10 @@ public class DataFormatTest {
 
     @Test
     public void testNewNumberFormat() throws ParseException {
-
         NumberFormat f1 = new DataFormat(Locale.FRANCE, null, null).newNumberFormat();
         assertEquals(VALUE, f1.parse("1234,5").doubleValue(), 0);
-        // '\u00a0' -> non-breaking space
-        assertEquals("1\u00a0234,5", f1.format(VALUE));
+        char groupingSep = (((DecimalFormat) f1).getDecimalFormatSymbols()).getGroupingSeparator();
+        assertEquals("1" + groupingSep + "234,5", f1.format(VALUE));
 
         NumberFormat f2 = new DataFormat(Locale.US, null, null).newNumberFormat();
         assertEquals(VALUE, f2.parse("1,234.5").doubleValue(), 0);
