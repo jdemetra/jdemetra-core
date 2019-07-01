@@ -16,14 +16,12 @@
  */
 package internal.util;
 
-import demetra.util.Parser;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.ParsePosition;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalQuery;
@@ -151,19 +149,17 @@ public class InternalParser {
     }
 
     public Date parseDate(DateFormat dateFormat, CharSequence input) {
-        try {
-            return dateFormat.parse(input.toString());
-        } catch (ParseException ex) {
-            return null;
-        }
+        String source = input.toString();
+        ParsePosition pos = new ParsePosition(0);
+        Date result = dateFormat.parse(source, pos);
+        return pos.getIndex() == input.length() ? result : null;
     }
 
     public Number parseNumber(NumberFormat numberFormat, CharSequence input) {
-        try {
-            return numberFormat.parse(input.toString());
-        } catch (ParseException ex) {
-            return null;
-        }
+        String source = input.toString();
+        ParsePosition pos = new ParsePosition(0);
+        Number result = numberFormat.parse(source, pos);
+        return pos.getIndex() == input.length() ? result : null;
     }
 
     public <T extends Enum<T>> T parseEnum(Class<T> enumClass, CharSequence input) {
@@ -253,27 +249,6 @@ public class InternalParser {
                     return null;
                 }
                 return new Locale(str.substring(0, 2), str.substring(3, 5), str.substring(6));
-            }
-        }
-    }
-
-    public static final class StrictDatePatternParser implements Parser<Date> {
-
-        private final DateFormat dateFormat;
-
-        public StrictDatePatternParser(String datePattern, Locale locale) {
-            this.dateFormat = new SimpleDateFormat(datePattern, locale);
-            dateFormat.setLenient(false);
-        }
-
-        @Override
-        public Date parse(CharSequence input) {
-            String inputAsString = input.toString();
-            try {
-                Date result = dateFormat.parse(inputAsString);
-                return result != null && inputAsString.equals(dateFormat.format(result)) ? result : null;
-            } catch (ParseException ex) {
-                return null;
             }
         }
     }
