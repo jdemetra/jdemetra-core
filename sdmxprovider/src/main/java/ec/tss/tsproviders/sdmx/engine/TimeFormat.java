@@ -17,9 +17,12 @@
 package ec.tss.tsproviders.sdmx.engine;
 
 import ec.tss.tsproviders.utils.Parsers;
+import static ec.tss.tsproviders.utils.Parsers.onDateFormat;
 import static ec.tss.tsproviders.utils.StrangeParsers.yearFreqPosParser;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -111,7 +114,9 @@ public enum TimeFormat {
     }
 
     private static Parsers.Parser<Date> onStrictDatePattern(String datePattern) {
-        return Parsers.onStrictDatePattern(datePattern, Locale.ROOT);
+        DateFormat dateFormat = new SimpleDateFormat(datePattern, Locale.ROOT);
+        dateFormat.setLenient(false);
+        return onDateFormat(dateFormat);
     }
 
     @NonNull
