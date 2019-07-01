@@ -21,10 +21,14 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 
@@ -122,6 +126,34 @@ public class ParsersTest {
         assertThat(p.parse("2010-01")).isEqualTo(jan2010);
         assertThat(p.parse("2010-02")).isNotEqualTo(jan2010);
         assertThat(p.parse("2010-01-01")).isNull();
+    }
+
+    @Test
+    public void testOnDateFormat() {
+        assertThatNullPointerException().isThrownBy(() -> Parsers.onDateFormat(null));
+
+        assertCompliance(Parsers.onDateFormat(DateFormat.getDateInstance()));
+
+        Parser<Date> p = Parsers.onDateFormat(new SimpleDateFormat("yyyy-MM", Locale.ROOT));
+        assertThat(p.parse("2010-01")).isEqualTo("2010-01-01");
+        assertThat(p.parse("2010-02")).isEqualTo("2010-02-01");
+        assertThat(p.parse("2010-01-01")).isNull();
+        assertThat(p.parse("2010-01x")).isNull();
+        assertThat(p.parse("x2010-01")).isNull();
+    }
+
+    @Test
+    public void testOnNumberFormat() {
+        assertThatNullPointerException().isThrownBy(() -> Parsers.onNumberFormat(null));
+
+        assertCompliance(Parsers.onNumberFormat(NumberFormat.getInstance()));
+
+        Parser<Number> p = Parsers.onNumberFormat(NumberFormat.getInstance(Locale.ROOT));
+        assertThat(p.parse("1234.5")).isEqualTo(1234.5);
+        assertThat(p.parse("1,234.5")).isEqualTo(1234.5);
+        assertThat(p.parse("1.234,5")).isNull();
+        assertThat(p.parse("1234.5x")).isNull();
+        assertThat(p.parse("x1234.5")).isNull();
     }
 
     @SuppressWarnings("null")

@@ -25,6 +25,7 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -128,35 +129,37 @@ public final class Parsers {
         };
     }
 
+    @Deprecated
     public static Parsers.@NonNull Parser<Date> onStrictDatePattern(@NonNull String datePattern, @NonNull Locale locale) {
-        final DateFormat dateFormat = new SimpleDateFormat(datePattern, locale);
+        DateFormat dateFormat = new SimpleDateFormat(datePattern, locale);
         dateFormat.setLenient(false);
-        return new Parsers.FailSafeParser<Date>() {
-            @Override
-            protected Date doParse(CharSequence input) throws Exception {
-                String inputAsString = input.toString();
-                Date result = dateFormat.parse(inputAsString);
-                return result != null && inputAsString.equals(dateFormat.format(result)) ? result : null;
-            }
-        };
+        return onDateFormat(dateFormat);
     }
 
     @NonNull
     public static Parser<Date> onDateFormat(@NonNull DateFormat dateFormat) {
-        return new FailSafeParser<Date>() {
+        Objects.requireNonNull(dateFormat);
+        return new Parser<Date>() {
             @Override
-            protected Date doParse(CharSequence input) throws Exception {
-                return dateFormat.parse(input.toString());
+            public Date parse(CharSequence input) {
+                String source = input.toString();
+                ParsePosition pos = new ParsePosition(0);
+                Date result = dateFormat.parse(source, pos);
+                return pos.getIndex() == input.length() ? result : null;
             }
         };
     }
 
     @NonNull
     public static Parser<Number> onNumberFormat(@NonNull NumberFormat numberFormat) {
-        return new FailSafeParser<Number>() {
+        Objects.requireNonNull(numberFormat);
+        return new Parser<Number>() {
             @Override
-            protected Number doParse(CharSequence input) throws Exception {
-                return numberFormat.parse(input.toString());
+            public Number parse(CharSequence input) {
+                String source = input.toString();
+                ParsePosition pos = new ParsePosition(0);
+                Number result = numberFormat.parse(source, pos);
+                return pos.getIndex() == input.length() ? result : null;
             }
         };
     }
