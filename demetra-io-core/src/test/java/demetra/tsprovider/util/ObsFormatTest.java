@@ -18,6 +18,7 @@ package demetra.tsprovider.util;
 
 import static demetra.tsprovider.util.ObsFormat.of;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -68,8 +69,8 @@ public class ObsFormatTest {
 
         NumberFormat f1 = of(FRANCE, null, null).newNumberFormat();
         assertThat(f1.parse("1234,5")).isEqualTo(value);
-        assertThat(f1.format(value)).isEqualTo("1\u00a0234,5");
-        // '\u00a0' -> non-breaking space
+        char groupingSep = (((DecimalFormat) f1).getDecimalFormatSymbols()).getGroupingSeparator();
+        assertThat(f1.format(value)).isEqualTo("1" + groupingSep + "234,5");
 
         NumberFormat f2 = of(US, null, null).newNumberFormat();
         assertThat(f2.parse("1,234.5")).isEqualTo(value);
