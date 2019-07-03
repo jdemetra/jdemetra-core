@@ -156,10 +156,7 @@ public class InternalParser {
     }
 
     public Number parseNumber(NumberFormat numberFormat, CharSequence input) {
-        String source = input.toString();
-        ParsePosition pos = new ParsePosition(0);
-        Number result = numberFormat.parse(source, pos);
-        return pos.getIndex() == input.length() ? result : null;
+        return NumberFormats.parseAll(numberFormat, NumberFormats.simplify(numberFormat, input));
     }
 
     public <T extends Enum<T>> T parseEnum(Class<T> enumClass, CharSequence input) {
