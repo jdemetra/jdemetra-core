@@ -164,12 +164,23 @@ public class ParserTest {
 
         assertCompliance(onNumberFormat(NumberFormat.getInstance(Locale.ROOT)), "1234.5");
 
-        Parser<Number> p = onNumberFormat(NumberFormat.getInstance(Locale.ROOT));
-        assertThat(p.parse("1234.5")).isEqualTo(1234.5);
-        assertThat(p.parse("1,234.5")).isEqualTo(1234.5);
-        assertThat(p.parse("1.234,5")).isNull();
-        assertThat(p.parse("1234.5x")).isNull();
-        assertThat(p.parse("x1234.5")).isNull();
+        assertThat(onNumberFormat(NumberFormat.getInstance(Locale.ROOT)))
+                .satisfies(p -> {
+                    assertThat(p.parse("1234.5")).isEqualTo(1234.5);
+                    assertThat(p.parse("1,234.5")).isEqualTo(1234.5);
+                    assertThat(p.parse("1.234,5")).isNull();
+                    assertThat(p.parse("1234.5x")).isNull();
+                    assertThat(p.parse("x1234.5")).isNull();
+                });
+
+        assertThat(onNumberFormat(NumberFormat.getInstance(Locale.FRANCE)))
+                .satisfies(parser -> {
+                    assertThat(parser.parse("1234,5")).isEqualTo(1234.5);
+                    assertThat(parser.parse("1 234,5")).isEqualTo(1234.5);
+                    assertThat(parser.parse("1\u00A0234,5")).isEqualTo(1234.5);
+                    assertThat(parser.parse("1\u202F234,5")).isEqualTo(1234.5);
+                    assertThat(parser.parse("1_234,5")).isNull();
+                });
     }
 
     @Test
