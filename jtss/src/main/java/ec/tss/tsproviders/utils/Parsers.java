@@ -156,10 +156,7 @@ public final class Parsers {
         return new Parser<Number>() {
             @Override
             public Number parse(CharSequence input) {
-                String source = input.toString();
-                ParsePosition pos = new ParsePosition(0);
-                Number result = numberFormat.parse(source, pos);
-                return pos.getIndex() == input.length() ? result : null;
+                return NumberFormats.parseAll(numberFormat, NumberFormats.simplify(numberFormat, input));
             }
         };
     }
