@@ -21,8 +21,8 @@ import demetra.design.Development;
 import demetra.maths.Constants;
 
 /**
- * A Householder reflection is represented by a matrix of the form H = I -
- * 2/(v'v) * vv' v is called the householder vector.
+ * A Householder reflection is represented by a matrix of the form H = I - [2/(v'v)] * vv' 
+ * v is called the householder vector.
  *
  * This implementation always uses a transformation that projects x on (|x|,
  * 0...0)
@@ -65,19 +65,19 @@ public class HouseholderReflection implements IVectorTransformation {
                 // (x0-mu)*(x0+mu)/(x0+mu)=(x0^2-mu^2)/(x0+mu)=-sig/x0+mu)
                 v0 = -sig / (x0 + mu);
             }
-            beta = 2 / (sig + v0 * v0);
-            for (int i=0; i<x.length; ++i)
-                x[i]/=v0;
+            double v2 = v0 * v0;
+            beta = 2 * v2 / (sig + v2);
+            x[0] = 1;
+            for (int i = 1; i < x.length; ++i) {
+                x[i] /= v0;
+            }
         }
-
         HouseholderReflection reflection = new HouseholderReflection(beta, mu, x);
         if (apply) {
-            if (n == 1) {
-                v.set(0, mu);
-            } else {
+            if (n > 1) {
                 v.set(0);
-                v.set(0, mu);
             }
+            v.set(0, mu);
         }
         return reflection;
     }
@@ -91,31 +91,30 @@ public class HouseholderReflection implements IVectorTransformation {
             return;
         }
         double[] py = y.getStorage();
-        int p0=y.getStartPosition(), dp=y.getIncrement();
-        if (dp == 1){
-            int ycur=p0;
-            double s=py[ycur++];
-            for (int i=1; i<vector.length; ++i){
-                s+=py[ycur++]*vector[i];
+        int p0 = y.getStartPosition(), dp = y.getIncrement();
+        if (dp == 1) {
+            int ycur = p0;
+            double s = py[ycur++];
+            for (int i = 1; i < vector.length; ++i) {
+                s += py[ycur++] * vector[i];
             }
-            s*=beta;
-            py[p0++]-=s;
-            for (int i=1; i<vector.length; ++i){
-                py[p0++]-=vector[i]*s;
+            s *= beta;
+            py[p0++] -= s;
+            for (int i = 1; i < vector.length; ++i) {
+                py[p0++] -= vector[i] * s;
             }
-        }else{
-            int ycur=p0;
-            double s=py[ycur];
-            for (int i=1; i<vector.length; ++i){
-                ycur+=dp;
-                s+=py[ycur]*vector[i];
+        } else {
+            int ycur = p0;
+            double s = py[ycur];
+            for (int i = 1; i < vector.length; ++i) {
+                ycur += dp;
+                s += py[ycur] * vector[i];
             }
-            s*=beta;
-            py[p0]-=s;
-            p0+=dp;
-            for (int i=1; i<vector.length; ++i){
-                p0+=dp;
-                py[p0]-=vector[i]*s;
+            s *= beta;
+            py[p0] -= s;
+            for (int i = 1; i < vector.length; ++i) {
+                p0 += dp;
+                py[p0] -= vector[i] * s;
             }
         }
     }

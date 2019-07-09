@@ -23,6 +23,7 @@ public class FSTFilterFactory {
     private final FidelityCriterion F = new FidelityCriterion();
     private final SmoothnessCriterion S;
     private final TimelinessCriterion T;
+    private double f, s, t;
 
     FSTFilterFactory(int nlags, int nleads) {
         this.nlags = nlags;
@@ -57,6 +58,10 @@ public class FSTFilterFactory {
         Householder hous = new Householder(false);
         hous.decompose(J);
         hous.solve(z);
+        hous.decompose(CanonicalMatrix.of(T.T));
+        DataBlock y=z.deepClone();
+        hous.solve(y);
+        t=y.dot(z)/c;
         return FiniteFilter.ofInternal(z.extract(0, n).toArray(), -nlags);
     }
 
@@ -66,6 +71,27 @@ public class FSTFilterFactory {
             z *= k;
         }
         return z;
+    }
+
+    /**
+     * @return the f
+     */
+    public double getF() {
+        return f;
+    }
+
+    /**
+     * @return the s
+     */
+    public double getS() {
+        return s;
+    }
+
+    /**
+     * @return the t
+     */
+    public double getT() {
+        return t;
     }
 
     public static class FidelityCriterion {
