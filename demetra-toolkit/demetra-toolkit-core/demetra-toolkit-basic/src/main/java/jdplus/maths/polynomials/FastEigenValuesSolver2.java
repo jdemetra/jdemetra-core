@@ -231,13 +231,13 @@ public class FastEigenValuesSolver2 implements RootsSolver {
      * Creates the bulge
      */
     private void bulge() {
-        if (it_count % 15 != 0) {
+        if (it_count % 10 != 0) {
             diagonalBlock(stop, D);
             eigenValues(D, shifts, 0);
         } else {
             // Random shifts
             Random rnd = new Random();
-            double r = rnd.nextGaussian(), i = rnd.nextGaussian();
+            double r = rnd.nextGaussian() / 10, i = rnd.nextGaussian() / 10;
             shifts[0] = Complex.cart(r, i);
             shifts[1] = Complex.cart(r, -i);
         }
@@ -307,13 +307,13 @@ public class FastEigenValuesSolver2 implements RootsSolver {
             B1.copy(tmp);
         }
 
-        Rotator.turnover(B[stop - 1], B[stop], B1);
-        Rotator.turnover(B[stop - 2], B[stop - 1], B2);
-        Rotator.turnover(C[stop], C[stop - 1], B1);
-        Rotator.turnover(C[stop - 1], C[stop - 2], B2);
-        B1.s *= Q[stop].c;
-        Rotator.fuse(Q[stop - 1], B1, 0);
-        Rotator.turnover(Q[stop - 2], Q[stop - 1], B2);
+        Rotator.turnover(B[stop], B[stop + 1], B1);
+        Rotator.turnover(B[stop - 1], B[stop], B2);
+        Rotator.turnover(C[stop + 1], C[stop], B1);
+        Rotator.turnover(C[stop], C[stop - 1], B2);
+        B1.s *= Q[stop + 1].c;
+        Rotator.fuse(Q[stop], B1, 0);
+        Rotator.turnover(Q[stop - 1], Q[stop], B2);
         Rotator.fuse(B3, B2, 0);
 
         Rotator.turnover(B[stop], B[stop + 1], B3);
@@ -330,6 +330,7 @@ public class FastEigenValuesSolver2 implements RootsSolver {
      * @param D
      */
     private void diagonalBlock(int k, FastMatrix D) {
+        D.set(0);
         if (k == 0) {
             // unoptimized
             CanonicalMatrix R = CanonicalMatrix.square(2);
@@ -396,12 +397,13 @@ public class FastEigenValuesSolver2 implements RootsSolver {
         double u = n % 2 == 0 ? -1 : 1, v = -u; //(-1)^(n-1), (-1)^n
         // C[n]
         Rotator c = new Rotator();
-        double r = givensRotation(v * p.get(0), u, c);
+        double pn = p.get(n);
+        double r = givensRotation(v * p.get(0) / pn, u, c);
         C[n1] = c;
         B[n1] = new Rotator(v * c.s, v * c.c);
         for (int i = n - 1; i > 0; --i) {
             c = new Rotator();
-            r = givensRotation(-p.get(i), r, c);
+            r = givensRotation(-p.get(i) / pn, r, c);
             C[i - 1] = c;
             B[i - 1] = new Rotator(c.c, -c.s);
         }
@@ -418,9 +420,15 @@ public class FastEigenValuesSolver2 implements RootsSolver {
     private static double givensRotation(double a, double b, Rotator gr) {
         double absa = Math.abs(a), absb = Math.abs(b);
         if (absb < Constants.getEpsilon()) {
-            gr.c = a < 0 ? 1 : -1;
-            gr.s = 0;
-            return absa;
+            if (absa < Constants.getEpsilon()) {
+                gr.c = 1;
+                gr.s = 0;
+                return 0;
+            } else {
+                gr.c = a > 0 ? 1 : -1;
+                gr.s = 0;
+                return 1;
+            }
         } else {
             double s, c, r;
             if (absa >= absb) {
@@ -465,7 +473,7 @@ public class FastEigenValuesSolver2 implements RootsSolver {
     private static void givensRotation2(double a, double b, Rotator gr) {
         double absa = Math.abs(a), absb = Math.abs(b);
         if (absb < Constants.getEpsilon()) {
-            gr.c = a < 0 ? 1 : -1;
+            gr.c = a > 0 ? 1 : -1;
             gr.s = 0;
         } else {
             double s, c, r;
@@ -493,21 +501,6 @@ public class FastEigenValuesSolver2 implements RootsSolver {
             gr.c = c;
             gr.s = s;
         }
-    }
-
-    /**
-     * This subroutine computes A(K:K+2,K:K+1)
-     *
-     * @param k Desired block index
-     */
-    private void dcdb(int k) {
-    }
-
-    /**
-     * This subroutine chases the bulge
-     */
-    private void dcb(int str, int stp) {
-
     }
 
     /**

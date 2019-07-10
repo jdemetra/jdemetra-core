@@ -107,6 +107,17 @@ public class SymmetricFilterAlgorithms {
         };
     }
 
+    public static SymmetricFilter.Factorizer fastEvFactorizer() {
+        return (SymmetricFilter filter) -> {
+            FastEigenValuesDecomposer decomposer = new FastEigenValuesDecomposer();
+            if (!decomposer.decompose(filter)) {
+                return null;
+            } else {
+                return new SymmetricFilter.Factorization(decomposer.getBFilter(), decomposer.getFactor());
+            }
+        };
+    }
+
     public static SymmetricFilter.Factorizer evFactorizer2() {
         return (SymmetricFilter filter) -> {
             EigenValuesDecomposer2 decomposer = new EigenValuesDecomposer2();
@@ -122,10 +133,10 @@ public class SymmetricFilterAlgorithms {
 
     public static SymmetricFilter.Factorizer factorizer() {
         return filter -> {
-            SymmetricFilter.Factorization fac = evFactorizer().factorize(filter);
-//            if (fac == null) {
-//                fac = evFactorizer().factorize(filter);
-//            }
+            SymmetricFilter.Factorization fac = fastEvFactorizer().factorize(filter);
+            if (fac == null) {
+                fac = evFactorizer().factorize(filter);
+            }
             if (fac == null) {
                 fac = robustFactorizer().factorize(filter);
             }
