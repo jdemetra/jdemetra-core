@@ -133,9 +133,9 @@ public class SymmetricFilterAlgorithms {
 
     public static SymmetricFilter.Factorizer factorizer() {
         return filter -> {
-            SymmetricFilter.Factorization fac = evFactorizer().factorize(filter);
+            SymmetricFilter.Factorization fac = fastEvFactorizer().factorize(filter);
             if (fac == null) {
-                fac = fastEvFactorizer().factorize(filter);
+                fac = evFactorizer().factorize(filter);
             }
             if (fac == null) {
                 fac = robustFactorizer().factorize(filter);

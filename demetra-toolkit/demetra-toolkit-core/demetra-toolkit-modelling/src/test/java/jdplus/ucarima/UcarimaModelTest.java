@@ -25,7 +25,7 @@ public class UcarimaModelTest {
     }
 
     public static void testAirline2(double th, double bth) {
-        for (int period = 500; period <= 2000; period+=50) {
+        for (int period = 950; period <= 1000; period+=5) {
             System.out.print(period);
             System.out.print('\t');
             UcarimaModel ucm = ucmAirline(period, th, bth);
@@ -41,7 +41,7 @@ public class UcarimaModelTest {
         long t0=System.currentTimeMillis();
 //        for (double th = -.2; th >= -.9; th -= .1) {
             double th=-.6;
-            for (double bth = -.2; bth >= -.95; bth -= .05) {
+            for (double bth = -.2; bth >= -.2; bth -= .05) {
                 StringBuilder builder=new StringBuilder();
                 builder.append("th=").append(th).append(", bth=").append(bth);
                 System.out.println(builder.toString());

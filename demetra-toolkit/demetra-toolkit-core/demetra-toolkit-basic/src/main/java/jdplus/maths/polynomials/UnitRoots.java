@@ -250,10 +250,8 @@ public class UnitRoots implements Cloneable {
             return null;
         }
         double[] tmp = new double[p.degree() + 1 + ur.getDenomDegree()];
+        p.copyTo(tmp, 0);
         int nc = p.degree() + 1;
-        for (int i = 0; i < nc; ++i) {
-            tmp[i] = p.get(i);
-        }
         int imax = ur.m_d == null ? 0 : ur.m_d.getSize();
         for (int i = 0; i < imax; ++i) {
             nc = mul(tmp, nc, ur.m_d.get(i));
