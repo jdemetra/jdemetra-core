@@ -15,6 +15,7 @@ import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.decomposition.EigenSystem;
 import jdplus.maths.matrices.decomposition.IEigenSystem;
 import jdplus.maths.polynomials.FastEigenValuesSolver;
+import jdplus.maths.polynomials.FastEigenValuesSolver2;
 import jdplus.maths.polynomials.LeastSquaresDivision;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRoots;
@@ -58,10 +59,9 @@ public class FastEigenValuesDecomposer {
                 }
                 Polynomial P = Polynomial.of(w);
                 P = removeUnitRoots(P);
-                w = P.toArray();
                 int n = P.degree();
                 if (n > 0) {
-                    FastEigenValuesSolver solver=new FastEigenValuesSolver();
+                    FastEigenValuesSolver2 solver=new FastEigenValuesSolver2();
                     solver.factorize(P);
                     Complex[] vals = solver.roots();
                     Complex[] nvals = new Complex[vals.length / 2];
