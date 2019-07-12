@@ -21,21 +21,23 @@ import demetra.design.Development;
 import demetra.maths.Constants;
 
 /**
- *
+ * Transformation represented by 
+ * |c  s|
+ * |s -c|
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
-public class GivensRotation implements IVectorTransformation {
+public class GivensReflection implements IVectorTransformation {
 
     private final int lentry, rentry;
     private final double c, s;
 
-    public static GivensRotation of(DataBlock vector, int lentry, int rentry) {
+    public static GivensReflection of(DataBlock vector, int lentry, int rentry) {
         return of(vector, lentry, rentry, true);
     }
 
-    public static GivensRotation of(DataBlock vector, int lentry, int rentry, boolean apply) {
+    public static GivensReflection of(DataBlock vector, int lentry, int rentry, boolean apply) {
         double a = vector.get(lentry), b = vector.get(rentry);
         double absa = Math.abs(a), absb = Math.abs(b);
         if (absb < Constants.getEpsilon()) {
@@ -43,7 +45,7 @@ public class GivensRotation implements IVectorTransformation {
                 vector.set(lentry, absa);
                 vector.set(rentry, 0);
             }
-            return new GivensRotation(lentry, rentry, a < 0 ? 1 : -1, 0);
+            return new GivensReflection(lentry, rentry, a < 0 ? 1 : -1, 0);
         }
         double s, c, r;
         if (absa >= absb) {
@@ -75,15 +77,11 @@ public class GivensRotation implements IVectorTransformation {
             vector.set(lentry, r);
             vector.set(rentry, 0);
         }
-        return new GivensRotation(lentry, rentry, c, s);
+        return new GivensReflection(lentry, rentry, c, s);
     }
 
-    public static GivensRotation of(DataBlock vector, int entry) {
+    public static GivensReflection of(DataBlock vector, int entry) {
         return of(vector, 0, entry);
-    }
-    
-    public GivensRotation reverse(){
-        return new GivensRotation(lentry, rentry, c, -s);
     }
 
     @Override
@@ -93,6 +91,6 @@ public class GivensRotation implements IVectorTransformation {
         double a = vector.get(lentry);
         double b = vector.get(rentry);
         vector.set(lentry, c * a + s * b);
-        vector.set(rentry, -s * a + c * b);
+        vector.set(rentry, s * a - c * b);
     }
 }

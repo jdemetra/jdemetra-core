@@ -51,8 +51,8 @@ public class MsrFilterSelection {
             seasFilter = decideFilter(msr);
             // 5. cut year
             series = series.drop(0, context.getPeriod());
+//          As we have shortend the series, we must adapt the test on the length (5 instead of 6)
         } while (seasFilter == null && series.length() / context.getPeriod() >= 5);
-
         if (seasFilter == null) {
             seasFilter = SeasonalFilterOption.S3X5;
         }
@@ -60,7 +60,6 @@ public class MsrFilterSelection {
     }
 
     private DoubleSeq completeYear(DoubleSeq series, X11Context context) {
-        DoubleSeq seriesCopy;
         //check incomplete year
         int cut = (series.length() + context.getFirstPeriod()) % context.getPeriod();
         return series.drop(0, cut);

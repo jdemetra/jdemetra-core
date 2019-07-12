@@ -116,7 +116,7 @@ public class Householder implements QRDecomposition {
         // Main loop.
         int len = qr.length;
         for (int k = 0, k0 = 0, k1 = m; k < n; ++k) {
-            // Compute 2-norm copyOf k-th column .
+            // Compute 2-norm of k-th column .
             DataBlock col = DataBlock.of(qr, k0, k1, 1);
             double nrm = fast ? col.fastNorm2() : col.norm2();
 
@@ -129,7 +129,7 @@ public class Householder implements QRDecomposition {
                     qr[i] /= nrm;
                 }
                 qr[k0] += 1.0;
-                // rdiag contains the main diagonal copyOf the R matrix
+                // rdiag contains the main diagonal of the R matrix
                 rdiag[nrdiag++] = -nrm;
                 // in this implementation:
                 // if a(k,k) < 0 then a(k,k) = -(a(k,k) - nrm) / nrm, else

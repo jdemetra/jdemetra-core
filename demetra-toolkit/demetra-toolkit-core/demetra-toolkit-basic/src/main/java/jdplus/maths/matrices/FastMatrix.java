@@ -797,6 +797,18 @@ public interface FastMatrix extends Matrix.Mutable{
 
     //<editor-fold defaultstate="collapsed" desc="matrix windows">
     /**
+     * Bottom sub-matrix
+     *
+     * @param nr Number of rows. Could be 0.
+     * @return The last n rows
+     */
+    default MatrixWindow all() {
+        double[] storage = getStorage();
+        int start = getStartPosition(), nrows = getRowsCount(), ncols = getColumnsCount(),
+                rowInc = getRowIncrement(), colInc = getColumnIncrement();
+        return new MatrixWindow(storage, start, nrows, ncols, rowInc, colInc);
+    }
+    /**
      * Top-reader empty sub-matrix. To be used with next(a,b)
      *
      * @return An empty sub-matrix

@@ -41,7 +41,7 @@ import java.util.function.DoubleUnaryOperator;
 public final class Spectrum {
 
     private final static double EPS = 1e-7;
-    private final static double EPS2 = 1e-9;
+    private final static double EPS2 = 1e-12;
     private final static double TWOPI = Math.PI * 2;
     private final SymmetricFilter num, denom;
 
@@ -74,14 +74,14 @@ public final class Spectrum {
     static double value(Spectrum s, double x) {
         double d = s.denom.realFrequencyResponse(x);
         double n = s.num.realFrequencyResponse(x);
-        if (Math.abs(d) > EPS2) {
+        if (Math.abs(d) > EPS) {
             return n / d;
         } else if (Math.abs(n) < EPS) { // 0/0
             try {
                 for (int i = 1; i <= 10; ++i) {
                     double dd = new dfr(s.denom, i).evaluate(x);
                     double nd = new dfr(s.num, i).evaluate(x);
-                    if (Math.abs(dd) > EPS2) {
+                    if (Math.abs(dd) > EPS) {
                         return nd / dd;
                     }
                     if (Math.abs(nd) > EPS) {
@@ -151,10 +151,16 @@ public final class Spectrum {
             DoubleSeqCursor cursor = weights.cursor();
             f = cursor.getAndNext();
             df = 0;
+            double c1=Math.cos(freq), s1=Math.sin(freq);
+            double c0=c1, s0=s1;
             for (int i = 1; i < weights.length(); ++i) {
                 double w = cursor.getAndNext();
-                double wc = 2 * Math.cos(freq * i) * w;
-                double ws = 2 * Math.sin(freq * i) * w;
+                double wc = 2 * c0 * w;
+                double ws = 2 * s0 * w;
+                double cnext = c0*c1-s0*s1;
+                double snext=s0*c1+c0*s1;
+                c0=cnext;
+                s0=snext;
                 f += wc;
                 df -= i * ws;
                 d2f -= i * i * wc;
@@ -175,11 +181,10 @@ public final class Spectrum {
     }
 
     /**
-     * The Minimizer class searches the minimum of the spectrum. Since 2.1.0,
-     * the implementation is based on a simple grid search (instead of an
-     * explicit computation of the zeroes of the derivative, using the
-     * "SymmetricFrequencyResponse" representation of the spectrum (i.e.
-     * representation of the spectrum as a rational function in cos(freq))).
+     * The Minimizer class searches the minimum of the spectrum. 
+     * This implementtion searches local minima using the newton algortihm.
+     * The number of starting points is defined by the degrees of the polynomials
+     * The starting points are distributed in a uniform way. 
      */
     public static class Minimizer {
 
@@ -266,12 +271,12 @@ public final class Spectrum {
             SpectrumFunctionInstance min(final double start) {
                 double fd = spec.denom.realFrequencyResponse(start);
                 double z = start;
-                if (fd < EPS2) {
+                if (Math.abs(fd) < EPS) {
                     do {
                         z = z + EPS;
                         fd = spec.denom.realFrequencyResponse(z);
 
-                    } while (z <= b && fd < EPS2);
+                    } while (z <= b && Math.abs(fd) < EPS);
                     if (z > b) {
                         return null;
                     }
@@ -342,7 +347,8 @@ public final class Spectrum {
                 m_min = y;
                 m_x = Math.PI;
             }
-            int nd = Math.max(spectrum.num.getUpperBound(), spectrum.denom.getUpperBound());
+            int nd = spectrum.num.getUpperBound()+spectrum.denom.getUpperBound()-1;
+            // degree of the derivative
             double a = 0, step = Math.PI / nd;
             for (int i = 0; i < nd; ++i, a += step) {
                 double b = a + step;
@@ -375,23 +381,6 @@ public final class Spectrum {
                 }
             }
 
-//            GridSearch search = new GridSearch();
-//            search.setBounds(0, Math.PI);
-//            search.setMaxIter(20000);
-//            int nd = Math.max(spectrum.num.length(), spectrum.denom.length());
-//            search.setInitialGridCount(60 * nd);
-//            search.setPrecision(1e-9);
-//            search.setFunctionPrecision(1e-7);
-//            if (search.minimize(new SpectrumFunctionInstance(spectrum, 0.1))) {
-//                SpectrumFunctionInstance fmin = (SpectrumFunctionInstance) search.getResult();
-//                double min = fmin.getValue();
-//                if (min < m_min) {
-//                    m_min = min;
-//                    m_x = fmin.pt;
-//                }
-//            } else {
-//                throw new ArimaException(ArimaException.MIN_SPECTRUM);
-//            }
         }
     }
 

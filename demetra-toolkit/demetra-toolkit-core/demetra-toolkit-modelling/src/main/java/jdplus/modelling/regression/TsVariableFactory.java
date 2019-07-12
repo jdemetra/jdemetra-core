@@ -45,6 +45,7 @@ class TsVariableFactory implements RegressionVariableFactory<TsVariable> {
         int istart = curdom.getStartPeriod().until(start);
         // position of the last data (excluded)
         int n = buffer.getRowsCount();
+        int m = curdom.getLength();
         int iend = istart + n;
 
         // indexes in data
@@ -55,11 +56,13 @@ class TsVariableFactory implements RegressionVariableFactory<TsVariable> {
             istart = 0;
         }
         // not enough data at the end
-        if (iend > n) {
-            jend = jend - iend + n;
-            iend = n;
+        if (iend > m) {
+            jend = jend - (iend - m);
+            iend = m;
         }
-        buffer.column(0).range(jstart, jend).copy(v.getValues().range(istart, iend));
+        if (jstart < jend) {
+            buffer.column(0).range(jstart, jend).copy(v.getValues().range(istart, iend));
+        }
         return true;
     }
 

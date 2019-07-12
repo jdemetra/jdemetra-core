@@ -52,7 +52,7 @@ public class UnitRootsSolver {
     private UnitRoots roots;
     private int startDegree = 0;
 
-    private final static double EPS = 1e-12;
+    private final static double EPS = 1e-9;
 
     /**
      *
@@ -106,21 +106,15 @@ public class UnitRootsSolver {
                     // Divisors
                     {
                         tmp.removeOnly(divs, cdiv);
-
-                        // if (tmp.IsValid)
                     }
                 }
-                {
-                    Polynomial q = UnitRoots.divide(cur, tmp);
-                    if (q != null) {
-                        cur = q;
-                        ur.add(tmp);
-                    } else {
-                        --num;
-                    }
+                Polynomial q = UnitRoots.divide(cur, tmp);
+                if (q != null) {
+                    cur = q;
+                    ur.add(tmp);
+                } else {
+                    --num;
                 }
-                // else
-                // --m_num;
                 tmp.clear();
             } else {
                 --num;

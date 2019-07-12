@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package jdplus.maths.matrices.decomposition;
 
 import jdplus.data.DataBlock;
@@ -22,8 +21,8 @@ import demetra.design.Development;
 import demetra.maths.Constants;
 
 /**
- * A Householder reflection is represented by a matrix of the form H = I - 2/(v'v) * vv'
- * v is called the householder vector. 
+ * A Householder reflection is represented by a matrix of the form H = I - [2/(v'v)] * vv' 
+ * v is called the householder vector.
  *
  * This implementation always uses a transformation that projects x on (|x|,
  * 0...0)
@@ -33,107 +32,90 @@ import demetra.maths.Constants;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
+@lombok.Value
 public class HouseholderReflection implements IVectorTransformation {
 
     private double beta, mu;
-    private DataBlock vector;
+    private double[] vector;
 
-    /**
-     * Creates a new Householder reflection that transform the given array to 
-     * [a 0...0]
-     *
-     * @param v The vector used to compute the transformation. The vector
-     * is modified to [a 0...0].
-     * @return 
-     */
     public static HouseholderReflection of(DataBlock v) {
-        HouseholderReflection reflection = new HouseholderReflection();
-        reflection.householder(v);
-        return reflection;
+        return of(v, true);
     }
 
-    /**
-     * Gets the reflection vector (v)
-     *
-     * @return
-     */
-    public DataBlock getHouseholderVector() {
-        return vector;
-    }
+    public static HouseholderReflection of(DataBlock v, boolean apply) {
+        int n = v.length();
+        double mu, beta;
 
-    /**
-     * Gets the euclidian norm copyOf x
-     *
-     * @return
-     */
-    public double getNrm2() {
-        return mu;
-    }
-
-    /**
-     * Gets the coefficient beta (=2/(v'v))
-     *
-     * @return
-     */
-    public double getBeta() {
-        return beta;
-    }
-
-    private void householder(DataBlock x) {
-
-        int n = x.length();
-        if (n == 1) {
-            x.set(0, Math.abs(x.get(0)));
-            return;
-        }
-        vector = DataBlock.of(x);
-        prepare();
-        x.set(0.0);
-        x.set(0, mu);
-    }
-
-    private void prepare() {
-
-        int n = vector.length();
-        if (n == 1) {
-            return;
-        }
-
-        double[] v = vector.getStorage();
-        int beg = vector.getStartPosition(), end = vector.getEndPosition(), inc = vector.getIncrement();
+        double[] x = v.toArray();
         double sig = 0;
-        double x0 = v[beg];
-        for (int i = beg + inc; i != end; i += inc) {
-            sig += v[i] * v[i];
+        double x0 = x[0];
+        for (int i = 1; i < n; ++i) {
+            sig += x[i] * x[i];
         }
         if (sig < Constants.getEpsilon()) {
-            mu=Math.abs(x0);
-            return; // nothing to do...
-        }
-        mu = Math.sqrt(sig + x0 * x0);
-
-        double v0;
-        if (x0 <= 0) {
-            v0 = x0 - mu;
+            mu = Math.abs(x0);
+            beta = 0;
         } else {
-            v0 = -sig / (x0 + mu);
+            mu = Math.sqrt(sig + x0 * x0);
+            double v0;
+            // x-|x|e(1)
+            if (x0 <= 0) {
+                v0 = x0 - mu;
+            } else {
+                // (x0-mu)*(x0+mu)/(x0+mu)=(x0^2-mu^2)/(x0+mu)=-sig/x0+mu)
+                v0 = -sig / (x0 + mu);
+            }
+            double v2 = v0 * v0;
+            beta = 2 * v2 / (sig + v2);
+            x[0] = 1;
+            for (int i = 1; i < x.length; ++i) {
+                x[i] /= v0;
+            }
         }
-
-        beta = 2 / (sig + v0 * v0);
-        v[beg] = v0;
+        HouseholderReflection reflection = new HouseholderReflection(beta, mu, x);
+        if (apply) {
+            if (n > 1) {
+                v.set(0);
+            }
+            v.set(0, mu);
+        }
+        return reflection;
     }
 
     @Override
     /**
-     * Computes y = H(y) = y - beta*v*v'*y
-     * = y - v * (beta*v'y) 
+     * Computes y = H(y) = y - beta*v*v'*y = y - v * (beta*v'y)
      */
     public void transform(DataBlock y) {
         if (beta == 0) {
             return;
         }
-        // v'y
-        double vy = y.dot(vector);
-        y.addAY(-beta * vy, vector);
+        double[] py = y.getStorage();
+        int p0 = y.getStartPosition(), dp = y.getIncrement();
+        if (dp == 1) {
+            int ycur = p0;
+            double s = py[ycur++];
+            for (int i = 1; i < vector.length; ++i) {
+                s += py[ycur++] * vector[i];
+            }
+            s *= beta;
+            py[p0++] -= s;
+            for (int i = 1; i < vector.length; ++i) {
+                py[p0++] -= vector[i] * s;
+            }
+        } else {
+            int ycur = p0;
+            double s = py[ycur];
+            for (int i = 1; i < vector.length; ++i) {
+                ycur += dp;
+                s += py[ycur] * vector[i];
+            }
+            s *= beta;
+            py[p0] -= s;
+            for (int i = 1; i < vector.length; ++i) {
+                p0 += dp;
+                py[p0] -= vector[i] * s;
+            }
+        }
     }
 }

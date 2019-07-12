@@ -11,9 +11,7 @@ import jdplus.data.DataBlock;
 import jdplus.maths.ComplexUtility;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.decomposition.EigenSystem;
-import jdplus.maths.matrices.decomposition.IEigenSystem;
+import jdplus.maths.polynomials.FastEigenValuesSolver;
 import jdplus.maths.polynomials.LeastSquaresDivision;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRoots;
@@ -24,7 +22,7 @@ import jdplus.maths.polynomials.UnitRootsSolver;
  *
  * @author Jean Palate
  */
-public class EigenValuesDecomposer {
+public class FastEigenValuesDecomposer {
 
     private double fac;
     private BackFilter bf;
@@ -57,16 +55,11 @@ public class EigenValuesDecomposer {
                 }
                 Polynomial P = Polynomial.of(w);
                 P = removeUnitRoots(P);
-                w = P.toArray();
                 int n = P.degree();
                 if (n > 0) {
-                    CanonicalMatrix M = CanonicalMatrix.square(n+1);
-                    M.subDiagonal(-1).drop(0,1).set(1);
-                    DataBlock col = M.column(n - 1).drop(0,1);
-                    col.setAY(-1 / w[n], DataBlock.of(w, 0, n));
-                    M.set(0, n,1);
-                    IEigenSystem es = EigenSystem.create(M, false);
-                    Complex[] vals = es.getEigenValues();
+                    FastEigenValuesSolver solver=new FastEigenValuesSolver();
+                    solver.factorize(P);
+                    Complex[] vals = solver.roots();
                     Complex[] nvals = new Complex[vals.length / 2];
                     for (int i = 0, j = 0; i < vals.length; ++i) {
                         Complex cur = vals[i];

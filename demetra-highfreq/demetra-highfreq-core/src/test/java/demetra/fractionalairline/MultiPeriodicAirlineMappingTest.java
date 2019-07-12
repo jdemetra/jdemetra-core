@@ -52,7 +52,7 @@ public class MultiPeriodicAirlineMappingTest {
     }
 
     //@Test
-    public void testDaily() throws IOException, URISyntaxException {
+    public static void testDaily() throws IOException, URISyntaxException {
         URI uri = Data.class.getResource("/edf.txt").toURI();
         Matrix edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, false);
@@ -73,7 +73,7 @@ public class MultiPeriodicAirlineMappingTest {
     }
 
     //@Test
-    public void testDaily2() throws IOException, URISyntaxException {
+    public static void testDaily2() throws IOException, URISyntaxException {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/edf.txt").toURI();
         Matrix edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365}, true, false);
@@ -138,6 +138,11 @@ public class MultiPeriodicAirlineMappingTest {
         UcarimaModel ucm = decomposer.decompose(arima);
         ucm = ucm.setVarianceMax(-1, false);
         return ucm;
+    }
+    
+    public static void main(String[] args) throws IOException, URISyntaxException{
+        testDaily();
+        testDaily2();
     }
 }
             
