@@ -22,7 +22,7 @@
     <properties>
         <!-- dependencies -->
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
-        <jd2.version>2.2.2</jd2.version>
+        <jd2.version>2.2.3-SNAPSHOT</jd2.version>
     </properties>
   
     <modules>
@@ -52,7 +52,7 @@
             <dependency>
                 <groupId>org.netbeans.api</groupId>
                 <artifactId>org-openide-util-lookup</artifactId>
-                <version>RELEASE82</version>
+                <version>RELEASE110</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -118,7 +118,7 @@
         <profile>
             <id>enforce-java8-api</id>
             <activation>
-                <jdk>11</jdk>
+                <jdk>[11,)</jdk>
             </activation>
             <properties>
                 <maven.compiler.release>8</maven.compiler.release>
@@ -161,7 +161,7 @@
         <profile>
             <id>fix-missing-modules-jdk11</id>
             <activation>
-                <jdk>11</jdk>
+                <jdk>[11,)</jdk>
             </activation>
             <dependencies>
                 <dependency>
@@ -299,13 +299,6 @@
     </profiles>
     
     <repositories>
-        <repository>
-            <id>netbeans-releases</id>
-            <url>http://bits.netbeans.org/nexus/content/groups/netbeans/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
         <repository>
             <id>oss-jfrog-artifactory-releases</id>
             <url>https://oss.jfrog.org/artifactory/oss-release-local</url>

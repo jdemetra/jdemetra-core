@@ -5,19 +5,19 @@
  */
 package demetra.x11;
 
-import jdplus.data.DataBlock;
-import jdplus.maths.linearfilters.IFiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import demetra.data.DoubleSeq;
 import static demetra.x11.X11Kernel.table;
 import demetra.x11.extremevaluecorrector.IExtremeValuesCorrector;
 import demetra.x11.filter.AutomaticHenderson;
 import demetra.x11.filter.DefaultSeasonalNormalizer;
-import demetra.x11.filter.IFiltering;
 import demetra.x11.filter.MusgraveFilterFactory;
 import demetra.x11.filter.X11FilterFactory;
+import demetra.x11.filter.X11SeasonalFilterProcessor;
 import demetra.x11.filter.X11SeasonalFiltersFactory;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
-import demetra.data.DoubleSeq;
+import jdplus.data.DataBlock;
+import jdplus.maths.linearfilters.IFiniteFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 
 /**
  *
@@ -36,18 +36,18 @@ public class X11BStep {
     public void process(DoubleSeq input, X11Context context) {
 
         b1 = input;
-        b2(context);
-        b3(context);
-        b4(context);
-        b5(context);
-        b6(context);
-        b7(context);
-        b8(context);
-        b9(context);
-        bfinal(context);
+        b2Step(context);
+        b3Step(context);
+        b4Step(context);
+        b5Step(context);
+        b6Step(context);
+        b7Step(context);
+        b8Step(context);
+        b9Step(context);
+        bFinalStep(context);
     }
 
-    private void b2(X11Context context) {
+    private void b2Step(X11Context context) {
         SymmetricFilter filter = X11FilterFactory.makeSymmetricFilter(context.getPeriod());
         b2drop = filter.length() / 2;
 
@@ -57,40 +57,48 @@ public class X11BStep {
         b2 = DoubleSeq.of(x);
     }
 
-    private void b3(X11Context context) {
+    private void b3Step(X11Context context) {
         b3 = context.remove(b1.drop(b2drop, b2drop), b2);
     }
 
-    private void b4(X11Context context) {
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
-        b4a = filter.process(b3);
-        b4anorm = DefaultSeasonalNormalizer.normalize(b4a, 0, context);
-        b4d = context.remove(b3, b4anorm);
+    private void b4Step(X11Context context) {
+        X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
+        b4a = processor.process(b3, (context.getFirstPeriod() + b2drop) % context.getPeriod());
+        b4anorm = DefaultSeasonalNormalizer.normalize(b4a, 0, context, b2drop);
+        b4d = b4d(context);
         IExtremeValuesCorrector ecorr = context.selectExtremeValuesCorrector(b4d);
-
-        ecorr.setStart(b2drop + context.getFirstPeriod());
+        int j = (b2drop + context.getFirstPeriod()) % context.getPeriod();
+        ecorr.setStart(j);
         ecorr.analyse(b4d, context);
 
         b4 = ecorr.computeCorrections(b3);
         b4g = ecorr.applyCorrections(b3, b4);
     }
 
-    private void b5(X11Context context) {
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
-        DoubleSeq b5a = filter.process(b4g);
+    protected DoubleSeq b4d(X11Context context) {
+        return context.remove(b3, b4anorm);
+    }
+
+    private void b5Step(X11Context context) {
+        X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
+        DoubleSeq b5a = processor.process(b4g, (context.getFirstPeriod() + b2drop) % context.getPeriod());
         b5 = DefaultSeasonalNormalizer.normalize(b5a, b2drop, context);
     }
 
-    private void b6(X11Context context) {
-        b6 = context.remove(b1, b5);
+    private void b6Step(X11Context context) {
+        b6 = b6(context);
     }
 
-    private void b7(X11Context context) {
+    protected DoubleSeq b6(X11Context context) {
+        return context.remove(b1, b5);
+    }
+
+    private void b7Step(X11Context context) {
         SymmetricFilter filter;
         if (context.isAutomaticHenderson()) {
             double icr = AutomaticHenderson.calcICR(context, b6);
             int filterLength;
-            if (icr >= 1.0) {
+            if (icr >= 1.0 && context.getPeriod() != 2) {
                 filterLength = context.getPeriod() + 1;
             } else {
                 filterLength = AutomaticHenderson.selectFilter(icr, context.getPeriod());
@@ -112,19 +120,19 @@ public class X11BStep {
         aep.process(b6, DataBlock.of(x));
         b7 = DoubleSeq.of(x);
         if (context.isMultiplicative()) {
-            b7 = context.makePositivity(b7);
+            b7 = X11Context.makePositivity(b7);
         }
     }
 
-    private void b8(X11Context context) {
+    private void b8Step(X11Context context) {
         b8 = context.remove(b1, b7);
     }
 
-    private void b9(X11Context context) {
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
-        DoubleSeq b9a = filter.process(b8);
+    private void b9Step(X11Context context) {
+        X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
+        DoubleSeq b9a = processor.process(b8, context.getFirstPeriod());
         DoubleSeq b9c = DefaultSeasonalNormalizer.normalize(b9a, 0, context);
-        DoubleSeq b9d = context.remove(b8, b9c);
+        DoubleSeq b9d = b9d(context, b9c);
         IExtremeValuesCorrector ecorr = context.getExtremeValuesCorrector();
         ecorr.setStart(context.getFirstPeriod());
         ecorr.analyse(b9d, context);
@@ -133,11 +141,15 @@ public class X11BStep {
         b9g = ecorr.applyCorrections(b8, b9);
     }
 
-    private void bfinal(X11Context context) {
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
-        DoubleSeq b10a = filter.process(b9g);
+    protected DoubleSeq b9d(X11Context context, DoubleSeq b9c) {
+        return context.remove(b8, b9c);
+    }
+
+    private void bFinalStep(X11Context context) {
+        X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
+        DoubleSeq b10a = processor.process(b9g, context.getFirstPeriod());
         b10 = DefaultSeasonalNormalizer.normalize(b10a, 0, context);
-        b11 = context.remove(b1, b10);
+        b11 = b11(context);
         b13 = context.remove(b11, b7);
 
         IExtremeValuesCorrector ecorr = context.selectExtremeValuesCorrector(b13);
@@ -145,5 +157,9 @@ public class X11BStep {
         ecorr.analyse(b13, context);
         b17 = ecorr.getObservationWeights();
         b20 = ecorr.getCorrectionFactors();
+    }
+
+    protected DoubleSeq b11(X11Context context) {
+        return context.remove(b1, b10);
     }
 }

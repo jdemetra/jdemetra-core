@@ -22,6 +22,8 @@ import internal.util.InternalParser;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -30,7 +32,6 @@ import java.util.Date;
 import java.util.Locale;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.*;
-import org.assertj.core.util.DateUtil;
 
 /**
  *
@@ -144,13 +145,42 @@ public class ParserTest {
     }
 
     @Test
-    public void testOnStrictDatePattern() {
-        Parser<Date> p = onStrictDatePattern("yyyy-MM", Locale.ROOT);
-        assertCompliance(p, "2010-01");
-        Date jan2010 = DateUtil.parse("2010-01-01");
-        assertThat(p.parse("2010-01")).isEqualTo(jan2010);
-        assertThat(p.parse("2010-02")).isNotEqualTo(jan2010);
+    public void testOnDateFormat() {
+        assertThatNullPointerException().isThrownBy(() -> onDateFormat(null));
+
+        assertCompliance(onDateFormat(new SimpleDateFormat("yyyy-MM", Locale.ROOT)), "2010-01");
+
+        Parser<Date> p = onDateFormat(new SimpleDateFormat("yyyy-MM", Locale.ROOT));
+        assertThat(p.parse("2010-01")).isEqualTo("2010-01-01");
+        assertThat(p.parse("2010-02")).isEqualTo("2010-02-01");
         assertThat(p.parse("2010-01-01")).isNull();
+        assertThat(p.parse("2010-01x")).isNull();
+        assertThat(p.parse("x2010-01")).isNull();
+    }
+
+    @Test
+    public void testOnNumberFormat() {
+        assertThatNullPointerException().isThrownBy(() -> onNumberFormat(null));
+
+        assertCompliance(onNumberFormat(NumberFormat.getInstance(Locale.ROOT)), "1234.5");
+
+        assertThat(onNumberFormat(NumberFormat.getInstance(Locale.ROOT)))
+                .satisfies(p -> {
+                    assertThat(p.parse("1234.5")).isEqualTo(1234.5);
+                    assertThat(p.parse("1,234.5")).isEqualTo(1234.5);
+                    assertThat(p.parse("1.234,5")).isNull();
+                    assertThat(p.parse("1234.5x")).isNull();
+                    assertThat(p.parse("x1234.5")).isNull();
+                });
+
+        assertThat(onNumberFormat(NumberFormat.getInstance(Locale.FRANCE)))
+                .satisfies(parser -> {
+                    assertThat(parser.parse("1234,5")).isEqualTo(1234.5);
+                    assertThat(parser.parse("1 234,5")).isEqualTo(1234.5);
+                    assertThat(parser.parse("1\u00A0234,5")).isEqualTo(1234.5);
+                    assertThat(parser.parse("1\u202F234,5")).isEqualTo(1234.5);
+                    assertThat(parser.parse("1_234,5")).isNull();
+                });
     }
 
     @Test

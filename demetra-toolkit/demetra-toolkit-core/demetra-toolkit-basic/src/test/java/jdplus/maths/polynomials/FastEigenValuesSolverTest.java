@@ -22,10 +22,10 @@ public class FastEigenValuesSolverTest {
 
     @Test
     public void testSmall() {
-        int n=5001;
+        int n=10;
         Polynomial P = Polynomial.ofInternal(DoubleSeq.onMapping(n, i -> n / (i + 1.0)).toArray());
         FastEigenValuesSolver solver = new FastEigenValuesSolver();
-        long t0 = System.currentTimeMillis();
+//        long t0 = System.currentTimeMillis();
         boolean ok = solver.factorize(P);
         assertTrue(ok);
         Complex[] nr = solver.roots();
@@ -35,8 +35,8 @@ public class FastEigenValuesSolverTest {
 //            System.out.print('\t');
 //            System.out.println(nr[i].getIm());
         }
-        long t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
+//        long t1 = System.currentTimeMillis();
+//        System.out.println(t1 - t0);
     }
 
     public static void main(String[] arg) {

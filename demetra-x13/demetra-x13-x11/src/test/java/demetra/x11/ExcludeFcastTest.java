@@ -6,13 +6,9 @@
 package demetra.x11;
 
 import demetra.sa.DecompositionMode;
-import ec.satoolkit.algorithm.implementation.X13ProcessingFactory;
 import ec.satoolkit.x11.CalendarSigma;
 import ec.satoolkit.x11.X11Specification;
-import ec.satoolkit.x13.X13Specification;
-import ec.tstoolkit.algorithm.CompositeResults;
-import ec.tstoolkit.algorithm.SequentialProcessing;
-import ec.tstoolkit.modelling.DefaultTransformationType;
+import ec.satoolkit.x11.X11Toolkit;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import org.junit.Assert;
@@ -71,12 +67,18 @@ public class ExcludeFcastTest {
     }
 
     private void excludeFcastTest(CalendarSigmaOption option, boolean excludeFcast, SigmavecOption[] sigmavecOptions) {
+        SeasonalFilterOption[] filters_new = new SeasonalFilterOption[12];
+        ec.satoolkit.x11.SeasonalFilterOption[] filters_old = new ec.satoolkit.x11.SeasonalFilterOption[12];
+        for (int i = 0; i < 12; i++) {
+            filters_new[i] = SeasonalFilterOption.S3X3;
+            filters_old[i] = ec.satoolkit.x11.SeasonalFilterOption.S3X3;
+        }
 
         DoubleSeq b1 = DoubleSeq.copyOf(B1);
         demetra.x11.X11Context context = demetra.x11.X11Context.builder()
                 .mode(DecompositionMode.Additive)
-                .finalSeasonalFilter(SeasonalFilterOption.S3X3)
-                .initialSeasonalFilter(SeasonalFilterOption.S3X3)
+                .finalSeasonalFilter(filters_new)
+                .initialSeasonalFilter(filters_new)
                 .trendFilterLength(5)
                 .period(12)
                 .calendarSigma(option)
@@ -88,69 +90,88 @@ public class ExcludeFcastTest {
         X11BStep bStep = new X11BStep();
         X11CStep cStep = new X11CStep();
         bStep.process(b1, context);
-        cStep.process(b1, context.remove(b1, bStep.getB20()), context);
+        cStep.process(b1, bStep.getB20(), context);
         X11DStep instance = new X11DStep();
-        instance.process(b1, context.remove(b1, cStep.getC20()), context);
+        instance.process(b1, cStep.getC20(), context);
 
 //D-Step
         //alte Berechnung
-        X13Specification x13Specification = X13Specification.RSA0;
-        X11Specification oldX11Spec = new X11Specification();
-        oldX11Spec.setMode(ec.satoolkit.DecompositionMode.Additive);
-        oldX11Spec.setSeasonalFilter(ec.satoolkit.x11.SeasonalFilterOption.S3X3);
-        oldX11Spec.setCalendarSigma(CalendarSigma.valueOf(option.name()));
+        X11Specification oldSpec = new X11Specification();
+        oldSpec.setMode(ec.satoolkit.DecompositionMode.Additive);
+        oldSpec.setSeasonalFilter(ec.satoolkit.x11.SeasonalFilterOption.S3X3);
+        oldSpec.setCalendarSigma(CalendarSigma.valueOf(option.name()));
 
         if (option.name().equals(CalendarSigma.Select.name())) {
             ec.satoolkit.x11.SigmavecOption[] sigmavecOptionOld = new ec.satoolkit.x11.SigmavecOption[sigmavecOptions.length];
             for (int i = 0; i < sigmavecOptionOld.length; i++) {
                 sigmavecOptionOld[i] = ec.satoolkit.x11.SigmavecOption.valueOf(sigmavecOptions[i].name());
             }
-            oldX11Spec.setSigmavec(sigmavecOptionOld);
+            oldSpec.setSigmavec(sigmavecOptionOld);
         }
 
-        oldX11Spec.setHendersonFilterLength(5);
-        oldX11Spec.setForecastHorizon(-1);
-        oldX11Spec.setExcludefcst(excludeFcast);
-        x13Specification.setX11Specification(oldX11Spec);
-        x13Specification.getRegArimaSpecification().getTransform().setFunction(DefaultTransformationType.None);
-        X13Specification x13spec = x13Specification;
-        SequentialProcessing<TsData> processing = X13ProcessingFactory.instance.generateProcessing(x13spec);
-        CompositeResults old_Results = processing.process(new TsData(TsFrequency.Monthly, 1999, 0, B1, true).drop(0, 12));
+        oldSpec.setHendersonFilterLength(5);
+        oldSpec.setForecastHorizon(-1);
+        oldSpec.setExcludefcst(excludeFcast);
+        ec.satoolkit.x11.X11Kernel old = new ec.satoolkit.x11.X11Kernel();
+        X11Toolkit toolkit = ec.satoolkit.x11.X11Toolkit.create(oldSpec);
+        toolkit.setPreprocessor(null);
+        old.setToolkit(toolkit);
+        ec.satoolkit.x11.X11Results old_Results = old.process(new TsData(TsFrequency.Monthly, 1999, 0, B1, true));
 
         double[] B1_old = old_Results.getData("b-tables.b1", TsData.class).internalStorage();
-        Assert.assertArrayEquals("Error in B1", B1_old, B1, 0.00000000051);
+        Assert.assertArrayEquals("Error in B1", B1_old, B1, DELTA);
 
         double[] actual_B4 = bStep.getB4().toArray();
         double[] B4_old = old_Results.getData("b-tables.b4", TsData.class).internalStorage();
-        Assert.assertArrayEquals("Error in B4", B4_old, actual_B4, 0.00000000051);
+        Assert.assertArrayEquals("Error in B4", B4_old, actual_B4, DELTA);
 
         double[] actual_B20 = bStep.getB20().toArray();
         double[] B20_old = old_Results.getData("b-tables.b20", TsData.class).internalStorage();
-        Assert.assertArrayEquals("Error in B20", B20_old, actual_B20, 0.00000000051);
+        Assert.assertArrayEquals("Error in B20", B20_old, actual_B20, DELTA);
 
         double[] actual_C1 = cStep.getC1().toArray();
         double[] C1_old = old_Results.getData("c-tables.c1", TsData.class).internalStorage();
-        Assert.assertArrayEquals("Error in C1", C1_old, actual_C1, 0.00000000051);
+        Assert.assertArrayEquals("Error in C1", C1_old, actual_C1, DELTA);
+
+        double[] expected_D1 = old_Results.getData("d-tables.d1", TsData.class).internalStorage();
+        double[] actual_D1 = instance.getD1().toArray();
+        Assert.assertArrayEquals("Error in D1", expected_D1, actual_D1, DELTA);
+        double[] expected_D2 = old_Results.getData("d-tables.d2", TsData.class).cleanExtremities().internalStorage();
+        double[] actual_D2 = instance.getD2().toArray();
+        Assert.assertArrayEquals("Error in D2", expected_D2, actual_D2, DELTA);
+        double[] expected_D4 = old_Results.getData("d-tables.d4", TsData.class).cleanExtremities().internalStorage();
+        double[] actual_D4 = instance.getD4().toArray();
+        Assert.assertArrayEquals("Error in D4", expected_D4, actual_D4, DELTA);
+        double[] expected_D5 = old_Results.getData("d-tables.d5", TsData.class).internalStorage();
+        double[] actual_D5 = instance.getD5().toArray();
+        Assert.assertArrayEquals("Error in D5", expected_D5, actual_D5, DELTA);
+        double[] expected_D6 = old_Results.getData("d-tables.d6", TsData.class).internalStorage();
+        double[] actual_D6 = instance.getD6().toArray();
+        Assert.assertArrayEquals("Error in D6", expected_D6, actual_D6, DELTA);
+        double[] expected_D7 = old_Results.getData("d-tables.d7", TsData.class).internalStorage();
+        double[] actual_D7 = instance.getD7().toArray();
+        Assert.assertArrayEquals("Error in D7", expected_D7, actual_D7, DELTA);
 
         double[] actual_D9 = instance.getD9().toArray();
         double[] D9_old = old_Results.getData("d-tables.d9", TsData.class).internalStorage();
-        Assert.assertArrayEquals("Error in D9", D9_old, actual_D9, 0.00000000051);
+        Assert.assertArrayEquals("Error in D9", D9_old, actual_D9, DELTA);
 
-        double[] actual_D10 = instance.getD10().drop(0, 12).toArray();
+        double[] actual_D10 = instance.getD10().toArray();
         double[] D10_old = old_Results.getData("d-tables.d10", TsData.class).internalStorage();
-        Assert.assertArrayEquals("Error in D10", D10_old, actual_D10, 0.00000000051);
+        Assert.assertArrayEquals("Error in D10", D10_old, actual_D10, DELTA);
 
-        double[] actual_D11 = instance.getD11().drop(0, 12).toArray();
+        double[] actual_D11 = instance.getD11().toArray();
         double[] D11_old = old_Results.getData("d-tables.d11", TsData.class).internalStorage();
-        Assert.assertArrayEquals("Error in D11", D11_old, actual_D11, 0.00000000051);
+        Assert.assertArrayEquals("Error in D11", D11_old, actual_D11, DELTA);
 
-        double[] actual_D12 = instance.getD12().drop(0, 12).toArray();
+        double[] actual_D12 = instance.getD12().toArray();
         double[] D12_old = old_Results.getData("d-tables.d12", TsData.class).internalStorage();
-        Assert.assertArrayEquals("Error in D12", D12_old, actual_D12, 0.00000000051);
+        Assert.assertArrayEquals("Error in D12", D12_old, actual_D12, DELTA);
 
-        double[] actual_D13 = instance.getD13().drop(0, 12).toArray();
+        double[] actual_D13 = instance.getD13().toArray();
         double[] D13_old = old_Results.getData("d-tables.d13", TsData.class).internalStorage();
-        Assert.assertArrayEquals("Error in D13", D13_old, actual_D13, 0.00000000051);
+        Assert.assertArrayEquals("Error in D13", D13_old, actual_D13, DELTA);
 
     }
+    private static final double DELTA = 0.00000000051;
 }

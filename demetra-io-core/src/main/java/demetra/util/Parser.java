@@ -109,17 +109,14 @@ public interface Parser<T> {
     }
 
     @NonNull
-    static Parser<Date> onStrictDatePattern(@NonNull String datePattern, @NonNull Locale locale) {
-        return new InternalParser.StrictDatePatternParser(datePattern, locale);
-    }
-
-    @NonNull
     static Parser<Date> onDateFormat(@NonNull DateFormat dateFormat) {
+        Objects.requireNonNull(dateFormat);
         return o -> InternalParser.parseDate(dateFormat, o);
     }
 
     @NonNull
     static Parser<Number> onNumberFormat(@NonNull NumberFormat numberFormat) {
+        Objects.requireNonNull(numberFormat);
         return o -> InternalParser.parseNumber(numberFormat, o);
     }
 

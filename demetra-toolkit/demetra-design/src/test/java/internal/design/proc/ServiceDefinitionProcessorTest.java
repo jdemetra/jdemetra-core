@@ -14,10 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.design;
+package internal.design.proc;
 
+import internal.design.proc.ServiceDefinitionProcessor;
 import static _util.ProcessorAssert.assertThat;
 import com.squareup.javapoet.TypeSpec;
+import demetra.design.ServiceDefinition;
 import javax.lang.model.element.Modifier;
 import org.junit.Test;
 
