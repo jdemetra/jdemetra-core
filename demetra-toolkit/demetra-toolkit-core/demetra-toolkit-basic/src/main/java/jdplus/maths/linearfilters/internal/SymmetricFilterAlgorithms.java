@@ -133,11 +133,16 @@ public class SymmetricFilterAlgorithms {
 
     public static SymmetricFilter.Factorizer factorizer() {
         return filter -> {
-            SymmetricFilter.Factorization fac = fastEvFactorizer().factorize(filter);
+            SymmetricFilter.Factorization fac = evFactorizer2().factorize(filter);
             if (fac == null) {
-                fac = evFactorizer().factorize(filter);
+                System.out.println("fast");
+                fac = fastFactorizer().factorize(filter);
             }
+//            if (fac == null) {
+//                fac = evFactorizer().factorize(filter);
+//            }
             if (fac == null) {
+                System.out.println("robust");
                 fac = robustFactorizer().factorize(filter);
             }
             return fac;
