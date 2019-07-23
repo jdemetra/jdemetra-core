@@ -7,6 +7,8 @@ package jdplus.ucarima;
 
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
+import jdplus.arima.ArimaModel;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,7 +27,7 @@ public class UcarimaModelTest {
     }
 
     public static void testAirline2(double th, double bth) {
-        for (int period = 950; period <= 1000; period+=5) {
+        for (int period = 5; period <= 1500; period+=5) {
             System.out.print(period);
             System.out.print('\t');
             UcarimaModel ucm = ucmAirline(period, th, bth);
@@ -34,6 +36,13 @@ public class UcarimaModelTest {
             System.out.print(ucm.getComponent(1).getInnovationVariance());
             System.out.print('\t');
             System.out.println(ucm.getComponent(3).getInnovationVariance());
+//            
+//            ArimaModel sum = ArimaModel.of(ucm.getComponent(0))
+//                    .plus(ArimaModel.of(ucm.getComponent(1)))
+//                    .plus(ArimaModel.of(ucm.getComponent(3)));
+//            System.out.print('\t');
+//            SymmetricFilter diff = sum.symmetricMa().minus(ArimaModel.of(ucm.getModel()).symmetricMa());
+//            System.out.println(diff.coefficientsAsPolynomial().coefficients().norm2());
         }
     }
 
