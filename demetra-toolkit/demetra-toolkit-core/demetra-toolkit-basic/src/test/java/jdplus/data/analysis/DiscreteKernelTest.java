@@ -36,7 +36,7 @@ import static jdplus.data.analysis.DiscreteKernel.distance;
  */
 public class DiscreteKernelTest {
 
-    private final int K = 12;
+    private final int K = 22;
 
     public DiscreteKernelTest() {
     }
@@ -50,7 +50,7 @@ public class DiscreteKernelTest {
             double q = kernel.applyAsDouble(i);
             //assertTrue(q>0);
             s += q;
-//            System.out.println(kernel.applyAsDouble(i));
+            System.out.println(kernel.applyAsDouble(i));
         }
         assertEquals(1, s, 1e-9);
     }
