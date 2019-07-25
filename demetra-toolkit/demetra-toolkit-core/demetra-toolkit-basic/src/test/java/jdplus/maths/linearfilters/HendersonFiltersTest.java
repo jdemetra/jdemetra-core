@@ -66,11 +66,14 @@ public class HendersonFiltersTest {
         SymmetricFilter s = HendersonFilters.ofLength(n);
         FiniteFilter h1 = GenericHendersonFilters.make(n / 2, n / 2);
         SymmetricFilter f2 = LocalPolynomialFilters.ofDefault(n / 2, 3, DiscreteKernel.henderson(n / 2));
+        SymmetricFilter f3 = LocalPolynomialFilters.ofDefault2(n / 2, 3, DiscreteKernel.henderson(n / 2));
         DoubleSeq w1 = DoubleSeq.of(s.weightsToArray());
         DoubleSeq w2 = DoubleSeq.of(h1.weightsToArray());
         DoubleSeq w3 = DoubleSeq.of(f2.weightsToArray());
+        DoubleSeq w4 = DoubleSeq.of(f3.weightsToArray());
         assertTrue(w1.distance(w2) < 1e-9);
         assertTrue(w1.distance(w3) < 1e-9);
+        assertTrue(w1.distance(w4) < 1e-9);
     }
 
     @Test
@@ -85,7 +88,7 @@ public class HendersonFiltersTest {
         System.out.println(ws);
         System.out.println(w1);
         for (int i = 2; i <= 30; i += 2) {
-            FiniteFilter h2 = fac.make(0, 1, i*.1);
+            FiniteFilter h2 = fac.make(0, 1, i * .1);
 //            DoubleUnaryOperator phase = h2.phaseFunction();
 //            double[] q=new double[100];
 //            for (int r=0; r<q.length; ++r){
@@ -98,8 +101,23 @@ public class HendersonFiltersTest {
         s = HendersonFilters.ofLength(13);
         ws = DoubleSeq.of(s.weightsToArray());
         System.out.println(ws);
-     }
+    }
 
+    public static void main(String[] arg) {
+        int K = 1000, n = 13;
+        long t0 = System.currentTimeMillis();
+        for (int i = 0; i < K; ++i) {
+            SymmetricFilter f2 = LocalPolynomialFilters.ofDefault(n / 2, 3, DiscreteKernel.henderson(n / 2));
+        }
+        long t1 = System.currentTimeMillis();
+        System.out.println(t1-t0);
+        t0 = System.currentTimeMillis();
+        for (int i = 0; i < K; ++i) {
+            SymmetricFilter f3 = LocalPolynomialFilters.ofDefault2(n / 2, 3, DiscreteKernel.henderson(n / 2));
+        }
+        t1 = System.currentTimeMillis();
+        System.out.println(t1-t0);
+    }
 }
 
 @lombok.experimental.UtilityClass
@@ -287,4 +305,5 @@ class TimelinessCriterion {
     void add(double weight, FastMatrix X) {
         X.addAY(weight, T);
     }
+
 }
