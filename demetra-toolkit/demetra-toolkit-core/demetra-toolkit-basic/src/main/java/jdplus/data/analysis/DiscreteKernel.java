@@ -42,7 +42,7 @@ public enum DiscreteKernel {
             case Triangular:
                 return triangular(h);
             case Parabolic:
-                return parabolic(h);
+                return epanechnikov(h);
             case Biweight:
                 return biweight(h);
             case Triweight:
@@ -95,7 +95,7 @@ public enum DiscreteKernel {
         };
     }
 
-    public static IntToDoubleFunction parabolic(final int h) {
+    public static IntToDoubleFunction epanechnikov(final int h) {
         double H = h + 1, H2 = H * H;
         final double q = 1 + 2 * (h - Arithmetics.sumOfPowers(2, h) / H2);
         return i -> {
