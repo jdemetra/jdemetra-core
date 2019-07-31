@@ -20,7 +20,7 @@ public class KernelsTest {
 
     @Test
     public void testHenderson() {
-        Polynomial p0=Kernels.phenderson(11);
+        Polynomial p0=Kernels.hendersonAsPolynomial(11);
         assertEquals(p0.integrate(-1,1), 1, 1e-9);
     }
     

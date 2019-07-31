@@ -73,7 +73,20 @@ public class Kernels {
                 return 3.0 / d;
             }
         }
+
     };
+
+    public Polynomial epanechnikovAsPolynomial() {
+        return Polynomial.of(.75, 0, -.75);
+    }
+
+    public Polynomial biWeightAsPolynomial() {
+        return Polynomial.of(15.0 / 16.0, 0, -15.0 / 8.0, 0, -15.0 / 16.0);
+    }
+
+    public Polynomial triWeightAsPolynomial() {
+        return Polynomial.of(35.0 / 32.0, 0, -105.0 / 32.0, 0, 105.0 / 32.0, 0, -35.0 / 32.0);
+    }
 
     /**
      * 15/16*(1-u^2)^2
@@ -145,7 +158,7 @@ public class Kernels {
      * k*((m+1)^2-(m+1)^2 u^2)((m+2)^2-(m+1)^2 u^2)((m+3)^2-(m+1)^2 u^2)
      */
     public Kernel henderson(int length) {
-        final Polynomial p = phenderson(length);
+        final Polynomial p = hendersonAsPolynomial(length);
         return new Kernel() {
             @Override
             public double lowerBound() {
@@ -177,7 +190,7 @@ public class Kernels {
         };
     }
 
-    public Polynomial phenderson(int m) {
+    public Polynomial hendersonAsPolynomial(int m) {
         int q1 = (m + 1) * (m + 1), q2 = (m + 2) * (m + 2), q3 = (m + 3) * (m + 3);
         Polynomial p = Polynomial.of(q1 * q2 * q3, 0, -q1 * q1 * q2 - q1 * q1 * q3 - q1 * q2 * q3, 0, q1 * q1 * (q1 + q2 + q3), 0, -q1 * q1 * q1);
         return p.divide(p.integrate(-1, 1));

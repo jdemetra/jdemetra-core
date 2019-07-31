@@ -6,6 +6,7 @@
 package jdplus.stats;
 
 import java.util.function.DoubleUnaryOperator;
+import jdplus.maths.polynomials.Polynomial;
 
 /**
  *

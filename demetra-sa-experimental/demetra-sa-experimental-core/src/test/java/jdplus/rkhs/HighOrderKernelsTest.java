@@ -23,107 +23,139 @@ import static org.junit.Assert.*;
  * @author Jean Palate
  */
 public class HighOrderKernelsTest {
-    
+
     public HighOrderKernelsTest() {
     }
 
     @Test
     public void testBiWeight() {
-        CanonicalMatrix H = HighOrderKernels.hankel(jdplus.stats.Kernels.BIWEIGHT, 0, 5);
+        CanonicalMatrix H = HighOrderKernels.hankel(jdplus.stats.Kernels.BIWEIGHT, 0, 4);
         assertEquals(SymmetricMatrix.determinant(H), 2.243734e-05, 1e-12);
     }
-    
+
     @Test
     public void testBiWeight1() {
-        Kernel K=Kernels.BIWEIGHT;
-        System.out.println("BiWeight");
-        Polynomial p = HighOrderKernels.p(K, 4);
-        int m=11;
+        Kernel K = Kernels.BIWEIGHT;
+//        System.out.println("BiWeight");
+        for (int i = 1; i <= 12; ++i) {
+            Polynomial p = HighOrderKernels.p(K, i), fp = HighOrderKernels.fastP(K, i);
+            assertTrue(p.equals(fp, 1e-6));
+        }
+        int m = 11;
         SymmetricFilter sf = LocalPolynomialFilters.of(m, 3, DiscreteKernel.biweight(m));
-        System.out.println(p);
-        DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, 4);
-        double step=1.0/(m+1);
-        for (int i=0; i<=m; ++i){
-            System.out.print(sf.weights().applyAsDouble(i));
-            System.out.print('\t');
-            System.out.print(p.evaluateAt(step*i));
-            System.out.print('\t');
-            System.out.print(K.asFunction().applyAsDouble(step*i));
-            System.out.print('\t');
-            System.out.println(kernel.applyAsDouble(step*i));
+        DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, 3);
+        double step = 1.0 / (m + 1);
+        Polynomial p = HighOrderKernels.p(K, 3);
+        for (int i = 0; i <= m; ++i) {
+//            System.out.print(sf.weights().applyAsDouble(i));
+//            System.out.print('\t');
+//            System.out.println(kernel.applyAsDouble(step * i));
+            double z = p.evaluateAt(step * i),
+                    f = K.asFunction().applyAsDouble(step * i),
+                    k = kernel.applyAsDouble(step * i);
+            assertEquals(z * f, k, 1e-9);
         }
     }
 
     @Test
     public void testTriWeight() {
-        CanonicalMatrix H = HighOrderKernels.hankel(jdplus.stats.Kernels.TRIWEIGHT, 0, 5);
+        CanonicalMatrix H = HighOrderKernels.hankel(jdplus.stats.Kernels.TRIWEIGHT, 0, 4);
         assertEquals(SymmetricMatrix.determinant(H), 6.765031e-06, 1e-12);
     }
-    
+
     @Test
     public void testTriWeight1() {
-        Kernel K=Kernels.TRIWEIGHT;
-        System.out.println("TriWeight");
-        Polynomial p = HighOrderKernels.p(K, 4);
-        int m=11;
+        Kernel K = Kernels.TRIWEIGHT;
+//        System.out.println("TriWeight");
+        for (int i = 1; i <= 12; ++i) {
+            Polynomial p = HighOrderKernels.p(K, i), fp = HighOrderKernels.fastP(K, i);
+            assertTrue(p.equals(fp, 1e-6));
+        }
+        int m = 11;
         SymmetricFilter sf = LocalPolynomialFilters.of(m, 3, DiscreteKernel.triweight(m));
-        System.out.println(p);
-        DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, 4);
-        double step=1.0/(m+1);
-        for (int i=0; i<=m; ++i){
-            System.out.print(sf.weights().applyAsDouble(i));
-            System.out.print('\t');
-            System.out.print(p.evaluateAt(step*i));
-            System.out.print('\t');
-            System.out.print(K.asFunction().applyAsDouble(step*i));
-            System.out.print('\t');
-            System.out.println(kernel.applyAsDouble(step*i));
+        DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, 3);
+        double step = 1.0 / (m + 1);
+        Polynomial p = HighOrderKernels.p(K, 3);
+        for (int i = 0; i <= m; ++i) {
+//            System.out.print(sf.weights().applyAsDouble(i));
+//            System.out.print('\t');
+//            System.out.println(kernel.applyAsDouble(step * i));
+            double z = p.evaluateAt(step * i),
+                    f = K.asFunction().applyAsDouble(step * i),
+                    k = kernel.applyAsDouble(step * i);
+            assertEquals(z * f, k, 1e-9);
         }
     }
-    
+
     @Test
     public void testParabolic() {
-        Kernel K=Kernels.EPANECHNIKOV;
-        System.out.println("Epanechnikov");
-        Polynomial p = HighOrderKernels.p(K, 4);
-        int m=111;
+        Kernel K = Kernels.EPANECHNIKOV;
+//        System.out.println("Epanechnikov");
+        for (int i = 1; i <= 12; ++i) {
+            Polynomial p = HighOrderKernels.p(K, i), fp = HighOrderKernels.fastP(K, i);
+            assertTrue(p.equals(fp, 1e-6));
+//            System.out.println(p.times(Kernels.epanechnikovAsPolynomial()));
+        }
+        int m = 11;
         SymmetricFilter sf = LocalPolynomialFilters.of(m, 3, DiscreteKernel.epanechnikov(m));
-        System.out.println(p);
-        DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, 4);
-        double step=1.0/(m+1);
-        for (int i=0; i<=m; ++i){
-            System.out.print(sf.weights().applyAsDouble(i));
-            System.out.print('\t');
-            System.out.print(p.evaluateAt(step*i));
-            System.out.print('\t');
-            System.out.print(K.asFunction().applyAsDouble(step*i));
-            System.out.print('\t');
-            System.out.println(kernel.applyAsDouble(step*i));
+        DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, 3);
+        double step = 1.0 / (m + 1);
+        Polynomial p = HighOrderKernels.p(K, 3);
+        for (int i = 0; i <= m; ++i) {
+//            System.out.print(sf.weights().applyAsDouble(i));
+//            System.out.print('\t');
+//            System.out.println(kernel.applyAsDouble(step * i));
+            double z = p.evaluateAt(step * i),
+                    f = K.asFunction().applyAsDouble(step * i),
+                    k = kernel.applyAsDouble(step * i);
+            assertEquals(z * f, k, 1e-9);
         }
     }
-    
+
+    @Test
+    public void testEpanechnikov5() {
+        Kernel K = Kernels.EPANECHNIKOV;
+        int R=5;
+        int m = 51;
+        SymmetricFilter sf = LocalPolynomialFilters.ofDefault2(m, R, DiscreteKernel.epanechnikov(m));
+        DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, R);
+        double step = 1.0 / (m + 1);
+        Polynomial p = HighOrderKernels.p(K, R);
+        for (int i = 0; i <= m; ++i) {
+//            System.out.print(sf.weights().applyAsDouble(i));
+//            System.out.print('\t');
+//            System.out.println(kernel.applyAsDouble(step * i));
+            double z = p.evaluateAt(step * i),
+                    f = K.asFunction().applyAsDouble(step * i),
+                    k = kernel.applyAsDouble(step * i);
+            assertEquals(z * f, k, 1e-6);
+        }
+    }
+
     @Test
     public void testHenderson() {
-        int m=6;
-        Kernel K=Kernels.henderson(m);
-        System.out.println("Henderson-11");
-        System.out.println(Kernels.phenderson(m));
-        System.out.println(HighOrderKernels.p(K, 3));
-        System.out.println(HighOrderKernels.p(K, 4));
-        Polynomial p = HighOrderKernels.p(K, 4).times(Kernels.phenderson(m));
-        SymmetricFilter sf = LocalPolynomialFilters.of(m, 3, DiscreteKernel.henderson(m));
-        System.out.println(p);
-        DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, 4);
-        double step=1.0/(m+1);
-        for (int i=0; i<=m; ++i){
-            System.out.print(sf.weights().applyAsDouble(i));
-            System.out.print('\t');
-            System.out.print(p.evaluateAt(step*i));
-            System.out.print('\t');
-            System.out.print(K.asFunction().applyAsDouble(step*i));
-            System.out.print('\t');
-            System.out.println(kernel.applyAsDouble(step*i));
+        for (int m = 4; m >= 50; ++m) {
+            Kernel K = Kernels.henderson(m);
+            for (int i = 0; i <= 10; ++i) {
+                assertTrue(HighOrderKernels.p(K, i).equals(HighOrderKernels.fastP(K, i), 1e-9));
+            }
+            Polynomial p = HighOrderKernels.p(K, 3);
+            DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, 3);
+            double step = 1.0 / (m + 1);
+            for (int i = 0; i <= m; ++i) {
+//            System.out.print(sf.weights().applyAsDouble(i));
+//            System.out.print('\t');
+//            System.out.print(p.evaluateAt(step * i));
+//            System.out.print('\t');
+//            System.out.print(K.asFunction().applyAsDouble(step * i));
+//            System.out.print('\t');
+//            System.out.println(kernel.applyAsDouble(step * i));
+                double z = p.evaluateAt(step * i),
+                        f = K.asFunction().applyAsDouble(step * i),
+                        k = kernel.applyAsDouble(step * i);
+                assertEquals(z * f, k, 1e-9);
+            }
         }
     }
-    
+
 }

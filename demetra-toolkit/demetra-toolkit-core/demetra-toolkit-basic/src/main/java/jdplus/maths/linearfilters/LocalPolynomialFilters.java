@@ -189,7 +189,7 @@ public class LocalPolynomialFilters {
      * @param k The kernel (a uniform kernel is used if k is null)
      * @return
      */
-    SymmetricFilter ofDefault2(int h, int d, IntToDoubleFunction k) {
+    public SymmetricFilter ofDefault2(int h, int d, IntToDoubleFunction k) {
         double[] sk = new double[h + 1];
         if (k == null) {
             for (int i = 0; i < sk.length; ++i) {

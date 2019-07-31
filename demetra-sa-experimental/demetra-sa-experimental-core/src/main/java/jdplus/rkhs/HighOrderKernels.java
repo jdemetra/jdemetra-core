@@ -31,28 +31,37 @@ public class HighOrderKernels {
      * @return
      */
     public CanonicalMatrix hankel(Kernel kernel, int q, int k) {
-        CanonicalMatrix H = CanonicalMatrix.square(k-1);
+        CanonicalMatrix H = CanonicalMatrix.square(k);
         H.set((i, j) -> kernel.moment(q + i + j));
         return H;
     }
-    
-    public DoubleUnaryOperator kernel(Kernel kernel, int k) {
-        CanonicalMatrix Hk1 = hankel(kernel, 0, k + 1);
+
+    public CanonicalMatrix hankel(Kernel kernel, int k) {
+        CanonicalMatrix H = CanonicalMatrix.square(k);
+        H.set((i, j) -> kernel.moment(i + j));
+        return H;
+    }
+
+    public DoubleUnaryOperator kernel(Kernel kernel, int r) {
+        CanonicalMatrix Hk1 = hankel(kernel, 0, r + 1);
         double detHk1 = SymmetricMatrix.determinant(Hk1);
         DoubleUnaryOperator f0 = kernel.asFunction();
         DataBlock row = Hk1.row(0);
         row.set(0, 1);
+        boolean pos = r % 2 != 0;
+        double q = pos ? detHk1 : -detHk1;
         return x -> {
+
             double cur = 1;
-            for (int j = 1; j < k; ++j) {
+            for (int j = 1; j <= r; ++j) {
                 cur *= x;
                 row.set(j, cur);
             }
             double detHx = FastMatrix.determinant(Hk1);
-            return detHx / detHk1 * f0.applyAsDouble(x);
+            return (detHx / q) * f0.applyAsDouble(x);
         };
     }
-    
+
     private void suppress(int row, int column, CanonicalMatrix all, CanonicalMatrix t) {
         int k = all.getColumnsCount();
         for (int c = 0, tc = 0; c < k; ++c) {
@@ -67,24 +76,53 @@ public class HighOrderKernels {
                     } else {
                         cursor.skip(1);
                     }
-                }                
+                }
             }
         }
     }
-    
-    public Polynomial p(Kernel kernel, int k) {
-        CanonicalMatrix Hk1 = hankel(kernel, 0, k + 1);
+
+    public Polynomial p(Kernel kernel, int r) {
+        Polynomial q = Polynomial.ONE;
+        for (int i = 1; i <= r; ++i) {
+            Polynomial pcur = pk(kernel, i);
+            double p0 = pcur.evaluateAt(0);
+            if (p0 != 0) {
+                q = q.plus(pcur.times(p0));
+            }
+        }
+        return q;
+    }
+
+    public Polynomial fastP(Kernel kernel, int r) {
+        CanonicalMatrix Hk1 = hankel(kernel, 0, r + 1);
         double detHk1 = SymmetricMatrix.determinant(Hk1);
-        double[] c = new double[k];
-        CanonicalMatrix m = CanonicalMatrix.square(k - 1);
-        boolean pos=true;
-        for (int i = 0; i < k; ++i) {
+        boolean pos = r % 2 == 0;
+        double[] c = new double[r + 1];
+        CanonicalMatrix m = CanonicalMatrix.square(r);
+        for (int i = 0; i <= r; ++i) {
             suppress(0, i, Hk1, m);
-            double cur=FastMatrix.determinant(m)/detHk1;
-            c[i]=pos ? cur : -cur;
-            pos=!pos;
+            double cur = FastMatrix.determinant(m) / detHk1;
+            c[i] = pos ? cur : -cur;
+            pos = !pos;
         }
         return Polynomial.ofInternal(c);
     }
-    
+
+    public Polynomial pk(Kernel kernel, int r) {
+        CanonicalMatrix Hk0 = hankel(kernel, 0, r);
+        double detHk0 = SymmetricMatrix.determinant(Hk0);
+        CanonicalMatrix Hk1 = hankel(kernel, 0, r + 1);
+        double detHk1 = SymmetricMatrix.determinant(Hk1);
+        double q = Math.sqrt(detHk0 * detHk1);
+        double[] c = new double[r + 1];
+        CanonicalMatrix m = CanonicalMatrix.square(r);
+        boolean pos = r % 2 == 0;
+        for (int i = 0; i <= r; ++i) {
+            suppress(r, i, Hk1, m);
+            double cur = FastMatrix.determinant(m) / q;
+            c[i] = pos ? cur : -cur;
+            pos = !pos;
+        }
+        return Polynomial.ofInternal(c);
+    }
 }
