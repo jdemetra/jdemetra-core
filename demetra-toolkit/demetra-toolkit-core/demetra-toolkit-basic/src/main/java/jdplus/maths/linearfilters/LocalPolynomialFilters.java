@@ -23,7 +23,9 @@ import jdplus.maths.matrices.decomposition.Householder;
 import java.util.function.IntToDoubleFunction;
 import jdplus.linearsystem.LinearSystemSolver;
 import demetra.data.DoubleSeq;
+import jdplus.data.DataBlockIterator;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.UpperTriangularMatrix;
 
 /**
  * The local polynomial filter is defined as follows: h is the number of lags
@@ -90,11 +92,12 @@ public class LocalPolynomialFilters {
 
     /**
      * The filter is defined for the lags (-h, q)
+     *
      * @param h Horizon of the (full) filter
      * @param q Asymmetric horizon (<h)
      * @param d Degree of the polynomial
      * @param k Kernel
-     * @return 
+     * @return
      */
     public FiniteFilter directAsymmetricFilter(final int h, final int q, final int d, final IntToDoubleFunction k) {
         return defaultDirectAsymmetricFilter(h, q, d, k);
@@ -102,15 +105,15 @@ public class LocalPolynomialFilters {
 
     public FiniteFilter cutAndNormalizeFilter(final SymmetricFilter s, final int q) {
         IntToDoubleFunction weights = s.weights();
-        int l=s.getLowerBound(), u=q;
-        double[] w=new double[q-l+1];
-        double n=0;
-        for (int i=0; i<w.length; ++i){
-            w[i]=weights.applyAsDouble(l+i);
-            n+=w[i];
+        int l = s.getLowerBound(), u = q;
+        double[] w = new double[q - l + 1];
+        double n = 0;
+        for (int i = 0; i < w.length; ++i) {
+            w[i] = weights.applyAsDouble(l + i);
+            n += w[i];
         }
-        for (int i=0; i<w.length; ++i){
-            w[i]/=n;
+        for (int i = 0; i < w.length; ++i) {
+            w[i] /= n;
         }
         return FiniteFilter.ofInternal(w, l);
     }
@@ -173,6 +176,49 @@ public class LocalPolynomialFilters {
                 s += q * u[j];
             }
             w[i] = s * k.applyAsDouble(i);
+        }
+        return SymmetricFilter.ofInternal(w);
+    }
+
+    /**
+     * Computes the symmetric filter of length h corresponding to a local
+     * polynomial of degree d with a kernel k
+     *
+     * @param h The length of the filter (from -h to h)
+     * @param d The degree of the local polynomial
+     * @param k The kernel (a uniform kernel is used if k is null)
+     * @return
+     */
+    public SymmetricFilter ofDefault2(int h, int d, IntToDoubleFunction k) {
+        double[] sk = new double[h + 1];
+        if (k == null) {
+            for (int i = 0; i < sk.length; ++i) {
+                sk[i] = 1;
+            }
+        } else {
+            for (int i = 0; i < sk.length; ++i) {
+                double ki = k.applyAsDouble(i);
+                if (ki > 0) {
+                    sk[i] = Math.sqrt(ki);
+                }
+            }
+
+        }
+        CanonicalMatrix Z = createZ(h, d);
+        DataBlockIterator rows = Z.rowsIterator();
+        int pos=-h;
+        while (rows.hasNext())
+            rows.next().mul(sk[Math.abs(pos++)]);
+        
+        Householder hous=new Householder();
+        hous.decompose(Z);
+        double[] z=new double[Z.getRowsCount()];
+        z[0]=1;
+        UpperTriangularMatrix.lsolve(hous.r(false), DataBlock.of(z, 0, d+1, 1));
+        hous.applyQ(DataBlock.of(z));
+        double[] w=new double[h+1];
+        for (int i=0; i<=h;++i){
+            w[i]=sk[i]*z[i+h];
         }
         return SymmetricFilter.ofInternal(w);
     }
@@ -285,7 +331,7 @@ public class LocalPolynomialFilters {
         }
         double[] u = new double[d + 1];
         u[0] = 1;
-        Householder hous=new Householder();
+        Householder hous = new Householder();
         hous.decompose(xkx);
         hous.solve(DataBlock.of(u));
         double[] w = new double[h + q + 1];
@@ -344,7 +390,7 @@ public class LocalPolynomialFilters {
         a1.product(Uf.columnsIterator(), wf); // U'f x wf
 
         DataBlock a2 = a1.deepClone();
-        Householder hous=new Householder();
+        Householder hous = new Householder();
         hous.decompose(H);
 
         hous.solve(a2); // (U'p x Up)^-1 Uf x Wf
@@ -406,7 +452,7 @@ public class LocalPolynomialFilters {
      */
     synchronized FastMatrix z(int l, int u, int d0, int d1) {
         int nh = Math.max(Math.abs(l), Math.abs(u));
-        if (Z == null || Z.getRowsCount() / 2 < nh || Z.getColumnsCount() < d1+1) {
+        if (Z == null || Z.getRowsCount() / 2 < nh || Z.getColumnsCount() < d1 + 1) {
             Z = createZ(nh, d1);
         }
         return Z.extract(l + nh, u - l + 1, d0, d1 - d0 + 1);

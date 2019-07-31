@@ -291,9 +291,27 @@ public final class Polynomial{
         }
         return new Polynomial(result);
     }
+    
+    public Polynomial integrate(){
+        double[] c=new double[coeff.length+1];
+        for (int i=1; i<=coeff.length; ++i){
+            c[i]=coeff[i-1]/i;
+        }
+        return new Polynomial(c);
+    }
+    
+    public double integrate(double a, double b){
+        Polynomial integral = integrate();
+        return integral.evaluateAt(b)-integral.evaluateAt(a);
+    }
+    
+    public double l2(double a, double b){
+        Polynomial q2=this.times(this);
+        return Math.sqrt(q2.integrate(a, b));
+    }
 
     /**
-     * The static method creates a new polynomial as the division ofFunction p
+     * The static method creates a new polynomial as the division of p
      * and a constant value d. cnew[0] = cold[0]-d.
      *
      * @param d

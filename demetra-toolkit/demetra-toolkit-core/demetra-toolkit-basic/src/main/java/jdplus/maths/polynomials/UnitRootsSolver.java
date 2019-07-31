@@ -18,7 +18,7 @@ package jdplus.maths.polynomials;
 
 import demetra.design.Development;
 import demetra.maths.Complex;
-import jdplus.maths.IntUtility;
+import jdplus.maths.Arithmetics;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRoots;
 
@@ -99,7 +99,7 @@ public class UnitRootsSolver {
             {
                 tmp.add(num);
                 // try it
-                int ndiv = IntUtility.divisors(num, divs);
+                int ndiv = Arithmetics.divisors(num, divs);
                 for (int cdiv = ndiv - 1; cdiv >= 0; --cdiv) {
                     if (pnorm(cur, divs[cdiv]) > EPS) // remove it, and
                     // all their

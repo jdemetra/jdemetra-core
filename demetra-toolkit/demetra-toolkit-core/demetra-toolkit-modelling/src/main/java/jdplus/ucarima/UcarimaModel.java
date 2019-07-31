@@ -214,6 +214,20 @@ public class UcarimaModel implements Cloneable {
         return model;
     }
 
+    public ArimaModel sum() {
+        ArimaModel s = null;
+        for (int i = 0; i < components.length; ++i) {
+            if (!components[i].isNull()) {
+                if (s == null) {
+                    s = components[i];
+                } else {
+                    s = s.plus(components[i], false);
+                }
+            }
+        }
+        return s;
+    }
+
     /**
      * Gets all the components of the decomposition
      *
@@ -273,19 +287,19 @@ public class UcarimaModel implements Cloneable {
      */
     public UcarimaModel setVarianceMax(int ncmp, boolean adjustModel) {
         double var = 0;
-        if (components.length==0) {
+        if (components.length == 0) {
             return this;
         }
 
         ArimaModel[] ncmps;
-        int n=components.length;
+        int n = components.length;
         if (ncmp < 0) {
-            ncmps=new ArimaModel[n+1];
-            System.arraycopy(components, 0,ncmps, 0, n);
-            ncmps[n]=ArimaModel.NULL;
+            ncmps = new ArimaModel[n + 1];
+            System.arraycopy(components, 0, ncmps, 0, n);
+            ncmps[n] = ArimaModel.NULL;
             ncmp = n;
         } else {
-            ncmps=components.clone();
+            ncmps = components.clone();
         }
 
         Spectrum.Minimizer min = new Spectrum.Minimizer();
@@ -293,19 +307,19 @@ public class UcarimaModel implements Cloneable {
             if (i != ncmp) {
                 ArimaModel m = ncmps[i];
                 if (m != null) {
-                        min.minimize(m.getSpectrum());
+                    min.minimize(m.getSpectrum());
                     if (min.getMinimum() != 0) {
                         var += min.getMinimum();
-                        ncmps[i]= m.minus(min.getMinimum());
+                        ncmps[i] = m.minus(min.getMinimum());
                     }
                 }
             }
         }
-        IArimaModel nmodel=model;
+        IArimaModel nmodel = model;
         if (var < 0 && adjustModel) {
             nmodel = ArimaModel.add(-var, ArimaModel.of(model));
         } else {
-            ncmps[ncmp]= ncmps[ncmp].plus(var);
+            ncmps[ncmp] = ncmps[ncmp].plus(var);
         }
         return new UcarimaModel(nmodel, ncmps);
     }
@@ -314,9 +328,9 @@ public class UcarimaModel implements Cloneable {
      * Removes any null Arima model (0 variance and no differencing).
      */
     public UcarimaModel simplify() {
-        Builder builder=new Builder();
-        builder.model=model;
-        for (int i = 0; i <components.length; ++i) {
+        Builder builder = new Builder();
+        builder.model = model;
+        for (int i = 0; i < components.length; ++i) {
             if (!components[i].isNull()) {
                 builder.add(components[i]);
             }
@@ -336,13 +350,13 @@ public class UcarimaModel implements Cloneable {
         if (Math.abs(var - 1) < EPS) {
             return this;
         } else {
-            ArimaModel nmodel=ArimaModel.of(model).normalize();
-            ArimaModel[] ncmps=components.clone();
+            ArimaModel nmodel = ArimaModel.of(model).normalize();
+            ArimaModel[] ncmps = components.clone();
             for (int i = 0; i < components.length; ++i) {
                 ArimaModel cur = components[i];
                 if (!cur.isNull()) {
-                    ncmps[i]=ncmps[i].scaleVariance(1/var);
-                } 
+                    ncmps[i] = ncmps[i].scaleVariance(1 / var);
+                }
             }
             return new UcarimaModel(nmodel, ncmps);
         }

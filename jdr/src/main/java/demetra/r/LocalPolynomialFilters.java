@@ -83,7 +83,7 @@ public class LocalPolynomialFilters {
             case "Triangular":
                 return DiscreteKernel.triangular(horizon);
             case "Parabolic":
-                return DiscreteKernel.parabolic(horizon);
+                return DiscreteKernel.epanechnikov(horizon);
             case "Gaussian":
                 return DiscreteKernel.gaussian(4 * horizon);
             default:

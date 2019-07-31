@@ -313,49 +313,58 @@ class EigenRoutines {
      * The method computes the eigenvalues of a matrix in Upper hessenberg form.
      * No eigenvectors will be computed.
      *
-     * @param std An array representing the matrix in Upper hessenberg form
+     * @param a An array representing the matrix in Upper hessenberg form
      * @param n The number of rows of the hessenberg matrix
      * @return An array of - possibly - complex eigenvalues
      */
-    static Complex[] hessenbergQR(double[] std, int n) {
-        if (std.length != n * n) {
+    static Complex[] hessenbergQR(double[] a, int n) {
+        if (a.length != n * n) {
             throw new MatrixException(MatrixException.SQUARE);
         }
 
         double anorm = 0.0;
-        double z = 0.0, y = 0.0, x = 0.0, w = 0.0, v = 0.0, u = 0.0, t = 0.0, s = 0.0, r = 0.0, p = 0.0, q = 0.0;
+        double z = 0.0, y = 0.0, x = 0.0, w = 0.0, v = 0.0, u = 0.0, t = 0.0, r = 0.0, p = 0.0, q = 0.0;
         Complex[] eigenval = new Complex[n];
 
-        for (int i = 0; i < n; i++) {
-            for (int j = Math.max(i - 1, 0); j < n; j++) {
-                anorm += Math.abs(std[j * n + i]);
+        int nn = n - 1, nd = n + 1;
+        // computes the norm of a. Computation by column
+        for (int i = 0, k = 0; i < n; i++, k += n) {
+            int kmax = i < nn ? k + i + 1 : k + nn;
+            for (int j = k; j <= kmax; j++) {
+                anorm += Math.abs(a[j]);
             }
         }
 
-        int nn = n - 1;
         t = 0.0;
 
+        int inn = a.length - 1;
         while (nn >= 0) {
-            int its = 0;
+            int its = 1;
             int l = 0;
             do {
+                int ldiag = inn; // start of the last matrix block (2x2)
+                double dprev = Math.abs(a[ldiag]);
                 for (l = nn; l > 0; l--) {
-                    s = Math.abs(std[(l - 1) * n + l - 1]) + Math.abs(std[l * n + l]);
+                    ldiag -= nd;
+                    double dcur = Math.abs(a[ldiag]);
+                    double s = dcur + dprev;
                     if (s == 0.0) {
                         s = anorm;
                     }
-                    if (Math.abs(std[(l - 1) * n + l]) + s == s) {
-                        std[(l - 1) * n + l] = 0.0;
+                    if (Math.abs(a[ldiag + 1]) + s == s) {
+                        a[ldiag + l] = 0.0;
                         break;
                     }
+                    dprev = dcur;
                 }
 
-                x = std[nn * n + nn];
+                x = a[inn];
                 if (l == nn) {
                     eigenval[nn--] = Complex.cart(x + t, 0);
+                    inn -= nd;
                 } else {
-                    y = std[(nn - 1) * n + (nn - 1)];
-                    w = std[(nn - 1) * n + nn] * std[nn * n + (nn - 1)];
+                    y = a[inn - nd];
+                    w = a[inn - 1] * a[inn - n];
                     if (l == (nn - 1)) {
                         p = 0.5 * (y - x);
                         q = p * p + w;
@@ -363,41 +372,42 @@ class EigenRoutines {
                         x += t;
                         if (q >= 0.0) {
                             z = p + Support.sign(z, p);
-                            eigenval[nn - 1] = Complex.cart(x + z);
-                            eigenval[nn] = eigenval[nn - 1];
+                            eigenval[nn] = Complex.cart(x + z);
                             if (z != 0.0) {
-                                eigenval[nn] = Complex.cart(x - w / z);
+                                eigenval[nn - 1] = Complex.cart(x - w / z);
+                            } else {
+                                eigenval[nn - 1] = eigenval[nn];
                             }
                         } else {
                             eigenval[nn] = Complex.cart(x + p, z);
                             eigenval[nn - 1] = eigenval[nn].conj();
                         }
                         nn -= 2;
-                    } else // l != n-1
-                    {
+                        inn -= nd << 1;
+                    } else { // l != n-1
                         if (its == m_maxiter) {
                             throw new MatrixException(IEigenSystem.EIGENFAILED);
                         }
                         //otherwise exceptional shift
-                        if (its == 10 || its == 20) {
+                        if (its % 30 == 0) {
                             t += x;
-                            for (int i = 0; i < nn + 1; i++) {
-                                std[i * n + i] -= x;
+                            for (int i = 0, j = 0; i <= nn; i++, j += nd) {
+                                a[j] -= x;
                             }
-                            s = Math.abs(std[(nn - 1) * n + nn]) + Math.abs(std[(nn - 2) * n + nn - 1]);
+                            double s = Math.abs(a[inn - n]) + Math.abs(a[inn - n - nd]);
                             y = 0.75 * s;
                             x = y;
                             w = -0.4375 * s * s;
                         }
                         ++its;
-                        int m = 0;
-                        for (m = nn - 2; m >= l; m--) {
-                            z = std[m * n + m];
+                        int m = nn - 2;
+                        for (int d = m * nd, dp1 = d + nd, dm1 = d - nd; m >= l; m--, d -= nd, dm1 -= nd, dp1 -= nd) {
+                            z = a[d];
                             r = x - z;
-                            s = y - z;
-                            p = (r * s - w) / std[m * n + m + 1] + std[(m + 1) * n + m];
-                            q = std[(m + 1) * n + m + 1] - z - r - s;
-                            r = std[(m + 1) * n + m + 2];
+                            double s = y - z;
+                            p = (r * s - w) / a[d + 1] + a[dp1 - 1];
+                            q = a[dp1] - z - r - s;
+                            r = a[dp1 + 1];
                             s = Math.abs(p) + Math.abs(q) + Math.abs(r);
                             p /= s;
                             q /= s;
@@ -405,28 +415,28 @@ class EigenRoutines {
                             if (m == l) {
                                 break;
                             }
-                            u = Math.abs(std[(m - 1) * n + m]) * (Math.abs(q) + Math.abs(r));
-                            v = Math.abs(p) * (Math.abs(std[(m - 1) * n + m - 1]) + Math.abs(z) + Math.abs(std[(m + 1) * n + m + 1]));
+                            u = Math.abs(a[dm1+1]) * (Math.abs(q) + Math.abs(r));
+                            v = Math.abs(p) * (Math.abs(a[dm1]) + Math.abs(z) + Math.abs(a[dp1]));
                             if (u + v == v) {
                                 break;
                             }
                         }
 
-                        for (int i = m; i < nn - 1; i++) {
-                            std[i * n + i + 2] = 0.0;
+                        for (int i = m, j=m*nd; i < nn-1; i++, j+=nd) {
+                            a[j + 2] = 0.0;
                             if (i != m) {
-                                std[(i - 1) * n + i + 2] = 0.0;
+                                a[j-nd + 3] = 0.0;
                             }
                         }
 
-                        for (int k = m; k < nn; k++) {
+                        for (int k = m, jd=(m-1)*nd; k < nn; k++, jd+=nd) {
                             if (k != m) {
-                                p = std[(k - 1) * n + k];
-                                q = std[(k - 1) * n + k + 1];
+                                p = a[jd+1];
+                                q = a[jd+2];
                                 r = 0.0;
 
                                 if (k + 1 != nn) {
-                                    r = std[(k - 1) * n + k + 2];
+                                    r = a[jd+3];
                                 }
                                 x = Math.abs(p) + Math.abs(q) + Math.abs(r);
                                 if (x != 0.0) {
@@ -436,14 +446,14 @@ class EigenRoutines {
                                 }
                             }
 
-                            s = Support.sign(Math.sqrt(p * p + q * q + r * r), p);
+                            double s = Support.sign(Math.sqrt(p * p + q * q + r * r), p);
                             if (s != 0.0) {
                                 if (k == m) {
                                     if (m != l) {
-                                        std[(k - 1) * n + k] *= -1.0;
+                                        a[jd+1] *= -1.0;
                                     }
                                 } else {
-                                    std[(k - 1) * n + k] = -s * x;
+                                    a[jd+1] = -s * x;
                                 }
 
                                 p += s;
@@ -452,25 +462,25 @@ class EigenRoutines {
                                 z = r / s;
                                 q /= p;
                                 r /= p;
-                                for (int j = k; j < nn + 1; j++) {
-                                    p = std[j * n + k] + q * std[j * n + k + 1];
+                                for (int j = k, jk=j*n+k; j < nn + 1; j++, jk+=n) {
+                                    p = a[jk] + q * a[jk + 1];
                                     if (k + 1 != nn) {
-                                        p += r * std[j * n + k + 2];
-                                        std[j * n + k + 2] -= p * z;
+                                        p += r * a[jk + 2];
+                                        a[jk + 2] -= p * z;
                                     }
-                                    std[j * n + k + 1] -= p * y;
-                                    std[j * n + k] -= p * x;
+                                    a[jk + 1] -= p * y;
+                                    a[jk] -= p * x;
                                 }
 
                                 int mmin = nn < k + 3 ? nn : k + 3;
-                                for (int i = l; i < mmin + 1; i++) {
-                                    p = x * std[k * n + i] + y * std[(k + 1) * n + i];
+                                for (int i = l, k0=k*n, k1=k0+n, k2=k1+n; i < mmin + 1; i++) {
+                                    p = x * a[k0 + i] + y * a[k1 + i];
                                     if (k != (nn - 1)) {
-                                        p += z * std[(k + 2) * n + i];
-                                        std[(k + 2) * n + i] -= p * r;
+                                        p += z * a[k2 + i];
+                                        a[k2 + i] -= p * r;
                                     }
-                                    std[(k + 1) * n + i] -= p * q;
-                                    std[k * n + i] -= p;
+                                    a[k1 + i] -= p * q;
+                                    a[k0 + i] -= p;
                                 }
                             }
                         }
@@ -564,7 +574,7 @@ class EigenRoutines {
     static void setRadix(double value) {
         m_radix = value;
     }
-    private static int m_maxiter = 100;
+    private static int m_maxiter = 120;
     private static double m_radix = 2.0;
 }
 
@@ -893,14 +903,14 @@ class GeneralEigenSystem implements IEigenSystem {
     private CanonicalMatrix m_std;
     private Complex[] m_ev;
     private double m_zero = 1.0e-6;
-    private int m_maxiter = 30;
+    private int m_maxiter = 120;
     private boolean m_bCalc = false;
     private boolean m_bVec = false;
 
     private boolean isHessenberg() {
         int n = m_std.getColumnsCount() - 2;
         for (int i = 0; i < n; ++i) {
-            if (!m_std.column(i).drop(i+2, 0).isZero(0)) {
+            if (!m_std.column(i).drop(i + 2, 0).isZero(0)) {
                 return false;
             }
         }

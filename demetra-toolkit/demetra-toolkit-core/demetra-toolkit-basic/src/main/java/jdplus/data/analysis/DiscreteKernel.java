@@ -16,7 +16,7 @@
  */
 package jdplus.data.analysis;
 
-import jdplus.maths.IntUtility;
+import jdplus.maths.Arithmetics;
 import java.util.function.IntToDoubleFunction;
 import demetra.design.Development;
 
@@ -42,7 +42,7 @@ public enum DiscreteKernel {
             case Triangular:
                 return triangular(h);
             case Parabolic:
-                return parabolic(h);
+                return epanechnikov(h);
             case Biweight:
                 return biweight(h);
             case Triweight:
@@ -67,7 +67,7 @@ public enum DiscreteKernel {
 
     public static IntToDoubleFunction triweight(final int h) {
         double H = h + 1, H2 = H * H, H4 = H2 * H2, H6 = H2 * H4;
-        final double q = 1.0 + 2 * (h - 3 * IntUtility.sumOfPowers(2, h) / H2 + 3 * IntUtility.sumOfPowers(4, h) / H4 - IntUtility.sumOfPowers(6, h) / H6);
+        final double q = 1.0 + 2 * (h - 3 * Arithmetics.sumOfPowers(2, h) / H2 + 3 * Arithmetics.sumOfPowers(4, h) / H4 - Arithmetics.sumOfPowers(6, h) / H6);
         return i -> {
             double x = i / H;
             double t = 1 - x * x;
@@ -77,7 +77,7 @@ public enum DiscreteKernel {
 
     public static IntToDoubleFunction biweight(final int h) {
         double H = h + 1, H2 = H * H, H4 = H2 * H2;
-        final double q = 1 + 2 * (h - 2 * IntUtility.sumOfPowers(2, h) / H2 + IntUtility.sumOfPowers(4, h) / H4);
+        final double q = 1 + 2 * (h - 2 * Arithmetics.sumOfPowers(2, h) / H2 + Arithmetics.sumOfPowers(4, h) / H4);
         return i -> {
             double x = i / H;
             double t = 1 - x * x;
@@ -87,7 +87,7 @@ public enum DiscreteKernel {
 
     public static IntToDoubleFunction tricube(final int h) {
         double H = h + 1, H3 = H * H * H, H6 = H3 * H3, H9 = H3 * H6;
-        final double q = 1.0 + 2 * (h - 3 * IntUtility.sumOfPowers(3, h) / H3 + 3 * IntUtility.sumOfPowers(6, h) / H6 - IntUtility.sumOfPowers(9, h) / H9);
+        final double q = 1.0 + 2 * (h - 3 * Arithmetics.sumOfPowers(3, h) / H3 + 3 * Arithmetics.sumOfPowers(6, h) / H6 - Arithmetics.sumOfPowers(9, h) / H9);
         return i -> {
             double x = i >= 0 ? i / H : -i / H;
             double t = 1 - x * x * x;
@@ -95,9 +95,9 @@ public enum DiscreteKernel {
         };
     }
 
-    public static IntToDoubleFunction parabolic(final int h) {
+    public static IntToDoubleFunction epanechnikov(final int h) {
         double H = h + 1, H2 = H * H;
-        final double q = 1 + 2 * (h - IntUtility.sumOfPowers(2, h) / H2);
+        final double q = 1 + 2 * (h - Arithmetics.sumOfPowers(2, h) / H2);
         return i -> {
             double x = i / H;
             return (1 - x * x) / q;
@@ -110,8 +110,8 @@ public enum DiscreteKernel {
         double C = h + 3, C2 = C * C;
         // (A2 - i2)(B2 - i2)(C2 - i2)
         // A2*B2*C2 - (A2*B2+A2*C2+B2*C2)i2 + (A2+B2+C2)i4 - i6
-        final double q = A2 * B2 * C2 * (1 + 2 * h) - 2 * ((A2 * B2 + A2 * C2 + B2 * C2) * IntUtility.sumOfPowers(2, h)
-                - (A2 + B2 + C2) * IntUtility.sumOfPowers(4, h) + IntUtility.sumOfPowers(6, h));
+        final double q = A2 * B2 * C2 * (1 + 2 * h) - 2 * ((A2 * B2 + A2 * C2 + B2 * C2) * Arithmetics.sumOfPowers(2, h)
+                - (A2 + B2 + C2) * Arithmetics.sumOfPowers(4, h) + Arithmetics.sumOfPowers(6, h));
         return i -> {
             double i2 = i * i;
             return (A2 - i2) * (B2 - i2) * (C2 - i2) / q;

@@ -7,6 +7,7 @@ package jdplus.maths.linearfilters.internal;
 
 import demetra.maths.Complex;
 import demetra.maths.ComplexComputer;
+import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
 import jdplus.maths.ComplexMath;
@@ -42,6 +43,7 @@ public class EigenValuesDecomposer2 {
     private static final double EPS = 1e-9;
 
     public boolean decompose(SymmetricFilter sf) {
+        clear();
         try {
             IntToDoubleFunction weights = sf.weights();
             double var = weights.applyAsDouble(0);
@@ -54,25 +56,12 @@ public class EigenValuesDecomposer2 {
             } else {
                 // first, we remove possible unit roots (otherwise, we will get into trouble)
                 double[] w = sf.weightsToArray();
-                for (int i = 0; i < w.length; ++i) {
-                    w[i] /= var;
-                }
                 Polynomial P = Polynomial.of(w);
                 P = removeUnitRoots(P);
                 int n = P.degree() / 2;
                 if (n > 0) {
-                    Polynomial C = Polynomial.ofInternal(P.coefficients().extract(n, n + 1).toArray());
-                    CanonicalMatrix M = CanonicalMatrix.square(n);
-                    DataBlock col = M.column(n - 1);
-                    double sn = C.get(n);
-                    col.set(i -> -C.get(i) / sn);
-                    if (n > 1) {
-                        M.subDiagonal(-1).set(1);
-                        M.set(0, 1, 1);
-                        M.subDiagonal(1).add(1);
-                    }
-                    IEigenSystem es = EigenSystem.create(M, false);
-                    Complex[] vals = es.getEigenValues();
+                    double[] c = P.coefficients().extract(n, n + 1).toArray();
+                    Complex[] vals = roots(c);
                     Complex[] nvals = new Complex[vals.length];
                     double[] uvals = new double[vals.length / 2];
                     int k = 0;
@@ -83,7 +72,7 @@ public class EigenValuesDecomposer2 {
                             double r = u.getRe();
                             double rho = r * r - 4;
                             if (rho < -EPS) {
-                                Complex c = Complex.cart(r / 2, Math.sqrt(-rho) / 2);
+                                Complex cur = Complex.cart(r / 2, Math.sqrt(-rho) / 2);
                                 int l = 0;
                                 for (; l < k; ++l) {
                                     if (Math.abs(r - uvals[l]) < 1e-6) {
@@ -93,8 +82,8 @@ public class EigenValuesDecomposer2 {
                                 }
                                 if (l == k) {
                                     uvals[k++] = r;
-                                    nvals[j++] = c;
-                                    nvals[j++] = c.conj();
+                                    nvals[j++] = cur;
+                                    nvals[j++] = cur.conj();
                                 }
                                 continue;
                             } else if (rho < 0) {
@@ -138,6 +127,27 @@ public class EigenValuesDecomposer2 {
         }
     }
 
+    private Complex[] roots(double[] c) {
+        int n = c.length - 1;
+        switch (n) {
+            case 0:
+                return new Complex[0];
+            case 1:
+                return new Complex[]{Complex.cart(-c[0] / c[1])};
+
+            default:
+                CanonicalMatrix M = CanonicalMatrix.square(n);
+                DataBlock col = M.column(n - 1);
+                double sn = c[n];
+                col.set(i -> -c[i] / sn);
+                M.subDiagonal(-1).add(1);
+                M.add(0, 1, 1);
+                M.subDiagonal(1).add(1);
+                IEigenSystem es = EigenSystem.create(M, false);
+                return es.getEigenValues();
+        }
+    }
+
     private Polynomial removeUnitRoots(Polynomial P) {
         UnitRootsSolver urs = new UnitRootsSolver(0);
         if (urs.factorize(P)) {
@@ -166,5 +176,10 @@ public class EigenValuesDecomposer2 {
             bf = BackFilter.ONE;
         }
         return P;
+    }
+
+    private void clear() {
+        bf = null;
+        fac = 0;
     }
 }

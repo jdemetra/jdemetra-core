@@ -18,7 +18,6 @@ package jdplus.data.analysis;
 
 import static jdplus.data.analysis.DiscreteKernel.biweight;
 import static jdplus.data.analysis.DiscreteKernel.henderson;
-import static jdplus.data.analysis.DiscreteKernel.parabolic;
 import static jdplus.data.analysis.DiscreteKernel.triangular;
 import static jdplus.data.analysis.DiscreteKernel.tricube;
 import static jdplus.data.analysis.DiscreteKernel.triweight;
@@ -29,6 +28,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static jdplus.data.analysis.DiscreteKernel.distance;
 import static jdplus.data.analysis.DiscreteKernel.distance;
+import static jdplus.data.analysis.DiscreteKernel.epanechnikov;
+import static jdplus.data.analysis.DiscreteKernel.distance;
+import static jdplus.data.analysis.DiscreteKernel.distance;
 
 /**
  *
@@ -36,7 +38,7 @@ import static jdplus.data.analysis.DiscreteKernel.distance;
  */
 public class DiscreteKernelTest {
 
-    private final int K = 12;
+    private final int K = 22;
 
     public DiscreteKernelTest() {
     }
@@ -50,7 +52,7 @@ public class DiscreteKernelTest {
             double q = kernel.applyAsDouble(i);
             //assertTrue(q>0);
             s += q;
-//            System.out.println(kernel.applyAsDouble(i));
+            System.out.println(kernel.applyAsDouble(i));
         }
         assertEquals(1, s, 1e-9);
     }
@@ -140,7 +142,7 @@ public class DiscreteKernelTest {
         IntToDoubleFunction[] k = new IntToDoubleFunction[7];
         k[0] = uniform(K);
         k[1] = triangular(K);
-        k[2] = parabolic(K);
+        k[2] = epanechnikov(K);
         k[3] = biweight(K);
         k[4] = triweight(K);
         k[5] = tricube(K);

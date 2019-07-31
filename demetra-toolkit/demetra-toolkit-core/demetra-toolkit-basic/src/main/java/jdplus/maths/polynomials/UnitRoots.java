@@ -20,7 +20,7 @@ import demetra.design.Development;
 import java.util.Arrays;
 import demetra.maths.Complex;
 import jdplus.maths.ComplexUtility;
-import jdplus.maths.IntUtility;
+import jdplus.maths.Arithmetics;
 import jdplus.maths.Simplifying;
 import demetra.util.IntList;
 
@@ -86,7 +86,7 @@ public class UnitRoots implements Cloneable {
                 while (kl < simplifiedLeft.m_n.getSize() && kr < simplifiedRight.m_n.getSize()) {
                     lu = simplifiedLeft.m_n.get(kl);
                     ru = simplifiedRight.m_n.get(kr);
-                    pgcd = IntUtility.gcd(lu, ru);
+                    pgcd = Arithmetics.gcd(lu, ru);
                     if (pgcd > 1 || lu == 1 || ru == 1) {
                         break;
                     } else if (lu > ru) {
@@ -99,14 +99,14 @@ public class UnitRoots implements Cloneable {
                     // search possible common denominators
                     IntList d = new IntList();
                     for (int i = 0; i < simplifiedLeft.m_dp.length; ++i) {
-                        int dcur = IntUtility.gcd(simplifiedLeft.m_d.get(i), lu);
+                        int dcur = Arithmetics.gcd(simplifiedLeft.m_d.get(i), lu);
                         if (simplifiedLeft.m_dp[i] == kl && !d.contains(dcur)) {
                             d.add(dcur);
                         }
                     }
 
                     for (int i = 0; i < simplifiedRight.m_dp.length; ++i) {
-                        int dcur = IntUtility.gcd(simplifiedRight.m_d.get(i), ru);
+                        int dcur = Arithmetics.gcd(simplifiedRight.m_d.get(i), ru);
                         if (simplifiedRight.m_dp[i] == kr && !d.contains(dcur)) {
                             d.add(dcur);
                         }
@@ -326,7 +326,7 @@ public class UnitRoots implements Cloneable {
     private static int nextdiv(final int x, final int d, final int p) {
         // should be optimized for large value ofInternal x
         for (int nd = d - 1; nd > 1; --nd) {
-            if ((x % nd == 0) && (IntUtility.gcd(nd, p) == 1)) {
+            if ((x % nd == 0) && (Arithmetics.gcd(nd, p) == 1)) {
                 return nd;
             }
         }
@@ -443,7 +443,7 @@ public class UnitRoots implements Cloneable {
         }
 
         int[] divs = new int[n + 1];
-        int ndivs = IntUtility.divisors(num, divs);
+        int ndivs = Arithmetics.divisors(num, divs);
         int i = 0;
         while ((divs[i] != div) && (i < ndivs)) {
             ++i;
@@ -828,7 +828,7 @@ public class UnitRoots implements Cloneable {
         }
 
         int[] divs = new int[2 * n];
-        int ndivs = IntUtility.divisors(num, divs);
+        int ndivs = Arithmetics.divisors(num, divs);
         int i = 0;
         while ((divs[i] != div) && (i < ndivs)) {
             ++i;
@@ -880,7 +880,7 @@ public class UnitRoots implements Cloneable {
         Complex[] roots = new Complex[nroots];
         int ppcm = m_n.get(0);
         for (int i = 1; i < m_n.getSize(); ++i) {
-            ppcm = IntUtility.lcm(ppcm, m_n.get(i));
+            ppcm = Arithmetics.lcm(ppcm, m_n.get(i));
         }
         double m = Math.PI * 2 / ppcm;
         int imax = ppcm / 2;

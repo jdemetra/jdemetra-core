@@ -25,7 +25,7 @@ import demetra.design.Development;
  */
 @Development(status = Development.Status.Release)
 @lombok.experimental.UtilityClass
-public final class IntUtility {
+public final class Arithmetics {
 
     /**
      *
@@ -70,13 +70,77 @@ public final class IntUtility {
      * @param b
      * @return
      */
-    public int gcd(int a, int b) {
-        while (b > 0) {
-            int temp = b;
-            b = a % b; // % is remainder  
-            a = temp;
+    public int gcd(final int a, final int b) {
+        if (a == 0) {
+            return b;
+        } else if (b == 0) {
+            return a;
         }
-        return a;
+        int u = a < 0 ? -a : a;
+        int v = b < 0 ? -b : b;
+
+        final int aTwos = Integer.numberOfTrailingZeros(u);
+        u >>= aTwos;
+        final int bTwos = Integer.numberOfTrailingZeros(v);
+        v >>= bTwos;
+        final int shift = Math.min(aTwos, bTwos);
+
+        while (u != v) {
+            final int delta = u - v;
+            v = Math.min(u, v);
+            u = Math.abs(delta);
+            u >>= Integer.numberOfTrailingZeros(u);
+        }
+        // Recover the common power of 2.
+        return u << shift;
+    }
+
+    /**
+     * Computes the greatest common divisor of two longs. See Knuth and
+     * CommonMath package from Apache
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public long gcd(final long a, final long b) {
+        long p = a;
+        long q = b;
+        if ((p == 0) || (q == 0)) {
+            if ((p == Long.MIN_VALUE) || (q == Long.MIN_VALUE)) {
+                throw new MathException(MathException.OVERFLOW);
+            }
+            return Math.abs(p) + Math.abs(q);
+        }
+        // make u and v negative
+        if (p > 0) {
+            p = -p;
+        }
+        if (q > 0) {
+            q = -q;
+        }
+        int k = 0;
+        while ((p & 1) == 0 && (q & 1) == 0 && k < 63) {
+            p >>= 1;
+            q >>= 1;
+            k++;
+        }
+        if (k == 63) {
+            throw new MathException(MathException.OVERFLOW);
+        }
+        long t = ((p & 1) == 1) ? q : -(p >> 1);
+        do {
+            while ((t & 1) == 0) {
+                t >>= 1;
+            }
+            if (t > 0) {
+                p = -t;
+            } else {
+                q = t;
+            }
+            t = (q - p) >> 1;
+        } while (t != 0);
+        return -p * (1L << k);
     }
 
     /**
@@ -91,15 +155,15 @@ public final class IntUtility {
     }
 
     /**
-     * Computes the sum of the powers of the first n integers
-     * = 1 + 2^k + 3^k + ... + (n)^k
+     * Computes the sum of the powers of the first n integers = 1 + 2^k + 3^k +
+     * ... + (n)^k
      *
      * @param k
      * @param dn
      * @return
      */
     public double sumOfPowers(int k, long n) {
-        double dn=n;
+        double dn = n;
         switch (k) {
             case 1:
                 return dn * (dn + 1) / 2;
@@ -142,6 +206,56 @@ public final class IntUtility {
                 }
                 return s;
         }
+    }
+
+    public static long mulAndCheck(long a, long b) throws MathException {
+        long ret;
+        if (a > b) {
+            // use symmetry to reduce boundary cases
+            ret = mulAndCheck(b, a);
+        } else if (a < 0) {
+            if (b < 0) {
+                // check for positive overflow with negative a, negative b
+                if (a >= Long.MAX_VALUE / b) {
+                    ret = a * b;
+                } else {
+                    throw new MathException();
+                }
+            } else if (b > 0) {
+                // check for negative overflow with negative a, positive b
+                if (Long.MIN_VALUE / b <= a) {
+                    ret = a * b;
+                } else {
+                    throw new MathException();
+
+                }
+            } else {
+                // assert b == 0
+                ret = 0;
+            }
+        } else if (a > 0) {
+            // assert a > 0
+            // assert b > 0
+
+            // check for positive overflow with positive a, positive b
+            if (a <= Long.MAX_VALUE / b) {
+                ret = a * b;
+            } else {
+                throw new MathException();
+            }
+        } else {
+            // assert a == 0
+            ret = 0;
+        }
+        return ret;
+    }
+
+    public static int mulAndCheck(int x, int y) throws MathException {
+        long m = ((long) x) * ((long) y);
+        if (m < Integer.MIN_VALUE || m > Integer.MAX_VALUE) {
+            throw new MathException();
+        }
+        return (int) m;
     }
 
 }
