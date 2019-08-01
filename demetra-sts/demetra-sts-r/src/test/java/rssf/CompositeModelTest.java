@@ -5,15 +5,15 @@
  */
 package rssf;
 
-import demetra.msts.AtomicModels;
-import demetra.msts.ModelEquation;
+import jdplus.msts.AtomicModels;
+import jdplus.msts.ModelEquation;
 import demetra.data.Data;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
 import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.msts.CompositeModel;
-import demetra.msts.CompositeModelEstimation;
+import jdplus.msts.CompositeModel;
+import jdplus.msts.CompositeModelEstimation;
 import jdplus.ssf.implementations.Loading;
 import java.io.File;
 import java.io.IOException;
