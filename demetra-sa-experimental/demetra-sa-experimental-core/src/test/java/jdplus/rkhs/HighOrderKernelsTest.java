@@ -10,7 +10,6 @@ import jdplus.data.analysis.DiscreteKernel;
 import jdplus.maths.linearfilters.LocalPolynomialFilters;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.FastMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.stats.Kernel;

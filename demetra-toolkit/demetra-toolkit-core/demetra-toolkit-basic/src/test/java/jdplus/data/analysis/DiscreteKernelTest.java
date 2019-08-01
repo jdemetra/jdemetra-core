@@ -38,7 +38,7 @@ import static jdplus.data.analysis.DiscreteKernel.distance;
  */
 public class DiscreteKernelTest {
 
-    private final int K = 22;
+    private final int K = 56;
 
     public DiscreteKernelTest() {
     }
@@ -154,6 +154,6 @@ public class DiscreteKernelTest {
                 D.set(i, j, distance(k[i], k[j], K));
             }
         }
- //       System.out.println(D);
+       System.out.println(D);
     }
 }
