@@ -6,8 +6,8 @@
 package rssf;
 
 import demetra.data.DoubleSeq;
-import demetra.msts.CompositeModel;
-import demetra.msts.MstsMonitor;
+import jdplus.msts.CompositeModel;
+import jdplus.msts.MstsMonitor;
 import jdplus.ssf.StateStorage;
 import jdplus.ssf.dk.DefaultDiffuseFilteringResults;
 import jdplus.ssf.likelihood.DiffuseLikelihood;

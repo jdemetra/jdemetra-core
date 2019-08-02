@@ -24,7 +24,7 @@ import jdplus.ssf.implementations.CompositeSsf;
 import jdplus.ssf.implementations.RegSsf;
 import jdplus.arima.ssf.AR1;
 import jdplus.ssf.SsfComponent;
-import demetra.sts.LocalLevel;
+import jdplus.sts.LocalLevel;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.Ssf;
