@@ -103,21 +103,6 @@ public class LocalPolynomialFilters {
         return defaultDirectAsymmetricFilter(h, q, d, k);
     }
 
-    public FiniteFilter cutAndNormalizeFilter(final SymmetricFilter s, final int q) {
-        IntToDoubleFunction weights = s.weights();
-        int l = s.getLowerBound(), u = q;
-        double[] w = new double[q - l + 1];
-        double n = 0;
-        for (int i = 0; i < w.length; ++i) {
-            w[i] = weights.applyAsDouble(l + i);
-            n += w[i];
-        }
-        for (int i = 0; i < w.length; ++i) {
-            w[i] /= n;
-        }
-        return FiniteFilter.ofInternal(w, l);
-    }
-
     private static SymmetricFilter of0_1(int h, IntToDoubleFunction k) {
         double[] w = new double[h + 1];
         double s0 = S_h0(h, k);

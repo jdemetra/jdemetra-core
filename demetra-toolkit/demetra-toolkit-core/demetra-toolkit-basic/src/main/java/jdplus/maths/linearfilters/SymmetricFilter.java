@@ -117,7 +117,7 @@ public final class SymmetricFilter implements IFiniteFilter {
     /**
      * Creates a symmetric filter using the given weights
      *
-     * @param w The full weights ofFunction the filter. The number ofFunction
+     * @param w The full weights of the filter. The number ofFunction
      * weights should be odd. moreover, they should be symmetric (w[i] ==
      * w[w.getDegree()-i]).
      * @return The corresponding
@@ -167,6 +167,12 @@ public final class SymmetricFilter implements IFiniteFilter {
     private final Polynomial polynomial;
 
     // allows us to reuse ONE and ZERO
+    /**
+     * Creates a symmetric filter with given weights; the weights are ranging 
+     * from 0 to n, so that the result is given by c[n] ... c[1] c[0] c[1] ... c[n]
+     * @param c The weights
+     * @return 
+     */
     public static SymmetricFilter ofInternal(double[] c) {
         if (c.length == 1) {
             if (c[0] == 1.0) {

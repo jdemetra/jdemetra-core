@@ -113,7 +113,7 @@ public class X11Context {
         } else if (endpoints.equals("CN")) {
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[horizon-i-1] = jdplus.maths.linearfilters.LocalPolynomialFilters.cutAndNormalizeFilter(sfilter, i);
+                afilters[horizon-i-1] = jdplus.maths.linearfilters.AsymmetricFilters.cutAndNormalizeFilter(sfilter, i);
             }
         } else {
             int u = 0;

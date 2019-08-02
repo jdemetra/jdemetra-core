@@ -21,6 +21,7 @@ import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.data.analysis.DiscreteKernel;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
+import jdplus.maths.linearfilters.AsymmetricFilters;
 
 /**
  *
@@ -42,7 +43,7 @@ public class LocalPolynomialFilters {
         } else if (endpoints.equals("CN")) {
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = jdplus.maths.linearfilters.LocalPolynomialFilters.cutAndNormalizeFilter(filter, i);
+                afilters[i] = AsymmetricFilters.cutAndNormalizeFilter(filter, i);
             }
         } else {
             int u = 0;
@@ -104,7 +105,7 @@ public class LocalPolynomialFilters {
         } else if (endpoints.equals("CN")) {
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = jdplus.maths.linearfilters.LocalPolynomialFilters.cutAndNormalizeFilter(filter, i);
+                afilters[i] = jdplus.maths.linearfilters.AsymmetricFilters.cutAndNormalizeFilter(filter, i);
             }
         } else {
             int u = 0;

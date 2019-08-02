@@ -15,9 +15,6 @@ import jdplus.maths.polynomials.Polynomial;
 @lombok.experimental.UtilityClass
 public class Kernels {
 
-    /**
-     * 15/16*(1-u^2)^2
-     */
     public Kernel UNIFORM = new Kernel() {
         @Override
         public double lowerBound() {
@@ -40,6 +37,33 @@ public class Kernels {
                 return 0;
             } else {
                 return 1.0 / (order + 1);
+            }
+        }
+    };
+
+    public Kernel TRIANGULAR = new Kernel() {
+        @Override
+        public double lowerBound() {
+            return -1;
+        }
+
+        @Override
+        public double upperBound() {
+            return 1;
+        }
+
+        @Override
+        public DoubleUnaryOperator asFunction() {
+            return x -> 1 - Math.abs(x);
+        }
+
+        @Override
+        public double moment(int order) {
+            if (order % 2 == 1) {
+                return 0;
+            } else {
+                int d = (order + 1) * (order + 2);
+                return 2.0 / d;
             }
         }
     };
