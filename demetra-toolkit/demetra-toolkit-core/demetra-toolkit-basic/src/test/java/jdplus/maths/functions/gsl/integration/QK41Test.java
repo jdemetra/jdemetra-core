@@ -13,14 +13,14 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate
  */
-public class QK21Test {
+public class QK41Test {
 
-    public QK21Test() {
+    public QK41Test() {
     }
 
     @Test
     public void testPolynomial() {
-        QK q = QK21.of(x -> x * x * x - 3 * x * x + 5 * x - 11, -2, 3);
+        QK q = QK41.of(x -> x * x * x - 3 * x * x + 5 * x - 11, -2, 3);
         Polynomial p = Polynomial.of(0, -11, 2.5, -1, .25);
         double z = p.evaluateAt(3) - p.evaluateAt(-2);
         assertEquals(q.getResult(), z, 1e-9);
@@ -28,7 +28,7 @@ public class QK21Test {
 
     @Test
     public void testLog() {
-        QK q = QK21.of(x -> Math.log(x), 2, 3);
+        QK q = QK41.of(x -> Math.log(x), 2, 3);
         double z = 3 * Math.log(3) - 2 * Math.log(2) - 1;
         assertEquals(q.getResult(), z, 1e-9);
     }

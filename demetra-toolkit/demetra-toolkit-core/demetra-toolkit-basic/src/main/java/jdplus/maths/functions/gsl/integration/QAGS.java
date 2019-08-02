@@ -17,7 +17,7 @@ public class QAGS {
 
         private double epsabs = Math.pow(Utility.GSL_DBL_EPSILON, .5), epsrel = epsabs;
         private int limit = 100;
-        private IntegrationRule rule=QK21.rule();
+        private IntegrationRule rule = QK21.rule();
 
         public Builder absoluteTolerance(double epsabs) {
             this.epsabs = epsabs;
@@ -33,18 +33,18 @@ public class QAGS {
             this.limit = limit;
             return this;
         }
-        
+
         public Builder integrationRule(@lombok.NonNull IntegrationRule rule) {
-            this.rule=rule;
+            this.rule = rule;
             return this;
         }
-        
-        public QAGS build(){
+
+        public QAGS build() {
             return new QAGS(epsabs, epsrel, limit, rule);
         }
     }
-    
-    public static Builder builder(){
+
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -435,7 +435,7 @@ public class QAGS {
         this.epsabs = epsabs;
         this.epsrel = epsrel;
         this.limit = limit;
-        this.q=rule;
+        this.q = rule;
     }
 
     public void integrate(DoubleUnaryOperator fn, final double a, final double b) {
