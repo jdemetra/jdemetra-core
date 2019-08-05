@@ -142,8 +142,8 @@ class QK {
     public void setResasc(double resasc) {
         this.resasc = resasc;
     }
-    
-    IntegrationResult result(){
+
+    IntegrationResult result() {
         return new IntegrationResult(result, abserr, resabs, resasc);
     }
 
