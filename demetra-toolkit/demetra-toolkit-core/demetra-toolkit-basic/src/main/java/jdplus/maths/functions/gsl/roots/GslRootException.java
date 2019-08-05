@@ -14,23 +14,26 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.maths.functions.gsl.integration;
+package jdplus.maths.functions.gsl.roots;
 
 import demetra.DemetraException;
 import demetra.design.Development;
 
+/**
+ *
+ * @author Mats Maggi
+ */
 @Development(status = Development.Status.Alpha)
-public class GslIntegrationException extends DemetraException {
+public class GslRootException extends DemetraException {
 
-    public GslIntegrationException() {
+    public GslRootException() {
     }
-
-    public GslIntegrationException(final String msg) {
-        super(msg);
+    
+    public GslRootException(String message) {
+        super(message);
     }
-
-    public GslIntegrationException(final String message, final Exception innerException) {
+    
+    public GslRootException(String message, Exception innerException) {
         super(message, innerException);
     }
-
 }

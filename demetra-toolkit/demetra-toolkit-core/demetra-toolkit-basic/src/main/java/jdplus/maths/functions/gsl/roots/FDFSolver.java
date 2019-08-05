@@ -14,23 +14,21 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.maths.functions.gsl.integration;
+package jdplus.maths.functions.gsl.roots;
 
-import demetra.DemetraException;
-import demetra.design.Development;
+import java.util.function.DoubleUnaryOperator;
 
-@Development(status = Development.Status.Alpha)
-public class GslIntegrationException extends DemetraException {
+/**
+ *
+ * @author Mats Maggi
+ */
+public abstract class FDFSolver {
+    double root;
+    double f;
+    double df;
+    
+    DoubleUnaryOperator function;    
+    DoubleUnaryOperator functionDf;
 
-    public GslIntegrationException() {
-    }
-
-    public GslIntegrationException(final String msg) {
-        super(msg);
-    }
-
-    public GslIntegrationException(final String message, final Exception innerException) {
-        super(message, innerException);
-    }
-
+    public abstract void iterate();
 }
