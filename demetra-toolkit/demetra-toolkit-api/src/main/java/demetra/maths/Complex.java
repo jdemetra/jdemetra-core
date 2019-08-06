@@ -218,6 +218,15 @@ public class Complex implements ComplexType{
 
     /**
      *
+     * @param r
+     * @return
+     */
+    public double squareDistance(Complex r) {
+        double dr=re - r.getRe(), di=im - r.getIm();
+        return dr*dr+di*di;
+    }
+    /**
+     *
      * @param b
      * @return
      */

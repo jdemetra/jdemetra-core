@@ -74,7 +74,7 @@ public interface IFilter {
             if (c.getIm() == 0) {
                 return 0;
             } else {
-                return c.arg();
+                return -c.arg();
             }
         });
     }

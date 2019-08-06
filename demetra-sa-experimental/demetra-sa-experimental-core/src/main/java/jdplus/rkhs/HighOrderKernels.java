@@ -13,6 +13,7 @@ import jdplus.maths.matrices.FastMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.stats.Kernel;
+import jdplus.stats.Kernels;
 
 /**
  *
@@ -124,5 +125,50 @@ public class HighOrderKernels {
             pos = !pos;
         }
         return Polynomial.ofInternal(c);
+    }
+
+    /**
+     * k-Kernel
+     *
+     * @param k
+     * @return
+     */
+    public Polynomial biweightKernel(int k) {
+        Polynomial pk = pk(Kernels.BIWEIGHT, k - 1);
+        return pk.times(Kernels.biWeightAsPolynomial());
+    }
+
+    public Polynomial truncatedBiweightKernel(int k, double q) {
+        Polynomial K = biweightKernel(k);
+        double w = K.integrate(-1, q);
+        return K.divide(w);
+    }
+
+    public Polynomial triweightKernel(int k) {
+        Polynomial pk = pk(Kernels.TRIWEIGHT, k - 1);
+        return pk.times(Kernels.triWeightAsPolynomial());
+    }
+
+    public Polynomial truncatedTriweightKernel(int k, double q) {
+        Polynomial K = triweightKernel(k);
+        double w = K.integrate(-1, q);
+        return K.divide(w);
+    }
+
+    /**
+     * 
+     * @param k
+     * @param m Length of the Henderson filter (from -m to +m)
+     * @return 
+     */
+    public Polynomial hendersonKernel(int k, int m) {
+        Polynomial pk = pk(Kernels.henderson(m), k - 1);
+        return pk.times(Kernels.hendersonAsPolynomial(m));
+    }
+
+    public Polynomial truncatedHendersonKernel(int k, int m, double q) {
+        Polynomial K = hendersonKernel(k, m);
+        double w = K.integrate(-1, q);
+        return K.divide(w);
     }
 }

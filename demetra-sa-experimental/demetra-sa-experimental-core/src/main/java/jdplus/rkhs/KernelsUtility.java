@@ -7,6 +7,7 @@ package jdplus.rkhs;
 
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
+import jdplus.maths.linearfilters.FiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 
 /**
@@ -27,6 +28,10 @@ public class KernelsUtility {
     public SymmetricFilter symmetricFilter(DoubleUnaryOperator kernel, double bandwidth, int m) {
         return SymmetricFilter.ofInternal(symmetricWeights(kernel, bandwidth, m));
     }
+    
+    public FiniteFilter cutAndNormalizeAsymmetricFilter(DoubleUnaryOperator kernel, double bandwidth, int m, int q){
+        return FiniteFilter.ofInternal(asymmetricWeights(kernel, bandwidth, m, q), -m);
+    }
 
     private double[] symmetricWeights(DoubleUnaryOperator kernel, double bandwidth, int m) {
         double[] c = new double[m + 1];
@@ -38,6 +43,20 @@ public class KernelsUtility {
         }
         s = c[0] + 2 * s;
         for (int i = 0; i <= m; ++i) {
+            c[i] /= s;
+        }
+        return c;
+    }
+
+    private double[] asymmetricWeights(DoubleUnaryOperator kernel, double bandwidth, int m, int q) {
+        double[] c = new double[m + q + 1];
+        double s = 0;
+        for (int i = -m; i <= q; ++i) {
+            double w=kernel.applyAsDouble(i / bandwidth);
+            c[m+i] = w;
+            s += w;
+        }
+        for (int i = 0; i < c.length; ++i) {
             c[i] /= s;
         }
         return c;
