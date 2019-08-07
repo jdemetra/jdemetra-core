@@ -5,6 +5,8 @@
  */
 package jdplus.rkhs;
 
+import demetra.maths.Complex;
+import java.util.function.DoubleFunction;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.maths.functions.integration.NumericalIntegration;
 import jdplus.maths.linearfilters.FiniteFilter;
@@ -18,19 +20,98 @@ import jdplus.stats.Kernel;
 @lombok.experimental.UtilityClass
 public class AsymmetricFiltersUtility {
 
-    public double distance(SymmetricFilter sf, FiniteFilter af) {
-        DoubleUnaryOperator fn = x -> sf.frequencyResponse(x).squareDistance(af.frequencyResponse(x));
-        return NumericalIntegration.integrate(fn, 0, Math.PI);
+    public double frequencyResponseDistance(DoubleUnaryOperator spectralDensity, SymmetricFilter sf, FiniteFilter af) {
+        final DoubleUnaryOperator sp;
+        if (spectralDensity == null) {
+            sp = x -> 1;
+        } //            sp=x-> x == 0 ? 1 : 1/(2-2*Math.cos(x));
+        else {
+            sp = spectralDensity;
+        }
+        DoubleUnaryOperator fn = x -> sp.applyAsDouble(x) * sf.frequencyResponse(x).squareDistance(af.frequencyResponse(x));
+        return 2 * NumericalIntegration.integrate(fn, 0, Math.PI);
     }
 
-    public double distance2(SymmetricFilter sf, FiniteFilter af) {
-        DoubleUnaryOperator fn = x -> { double y=sf.gainFunction().applyAsDouble(x)-af.gainFunction().applyAsDouble(x); return y*y;};
-        return NumericalIntegration.integrate(fn, 0, Math.PI);
+    public double frequencyResponseDistance(SymmetricFilter sf, FiniteFilter af) {
+        return frequencyResponseDistance(null, sf, af);
     }
 
-    public double distance3(FiniteFilter af, double a, double b) {
-        DoubleUnaryOperator fn = x -> x == 0 ? 0 : Math.abs(af.phaseFunction().applyAsDouble(x))/x;
-        return NumericalIntegration.integrate(fn, a*2*Math.PI, b*2*Math.PI);
+    public double accuracyDistance(DoubleUnaryOperator spectralDensity, SymmetricFilter sf, FiniteFilter af, double passBand) {
+        final DoubleUnaryOperator sp;
+        if (spectralDensity == null) {
+            sp = x -> 1;
+        } //            sp=x-> x == 0 ? 1 : 1/(2-2*Math.cos(x));
+        else {
+            sp = spectralDensity;
+        }
+        DoubleUnaryOperator fn = x -> {
+            double y = sf.gainFunction().applyAsDouble(x) - af.gainFunction().applyAsDouble(x);
+            return y * y * sp.applyAsDouble(x);
+        };
+        return 2 * NumericalIntegration.integrate(fn, 0, passBand);
+    }
+
+    public double accuracyDistance(SymmetricFilter sf, FiniteFilter af, double passBand) {
+        return accuracyDistance(null, sf, af, passBand);
+    }
+
+    public double smoothnessDistance(DoubleUnaryOperator spectralDensity, SymmetricFilter sf, FiniteFilter af, double passBand) {
+        final DoubleUnaryOperator sp;
+        if (spectralDensity == null) {
+            sp = x -> 1;
+        } //            sp=x-> x == 0 ? 1 : 1/(2-2*Math.cos(x));
+        else {
+            sp = spectralDensity;
+        }
+        DoubleUnaryOperator fn = x -> {
+            double y = sf.gainFunction().applyAsDouble(x) - af.gainFunction().applyAsDouble(x);
+            return y * y * sp.applyAsDouble(x);
+        };
+        return 2 * NumericalIntegration.integrate(fn, passBand, Math.PI);
+    }
+
+    public double smoothnessDistance(SymmetricFilter sf, FiniteFilter af, double passBand) {
+        return smoothnessDistance(null, sf, af, passBand);
+    }
+
+    public double timelinessDistance(DoubleUnaryOperator spectralDensity, SymmetricFilter sf, FiniteFilter af, double passBand) {
+        final DoubleUnaryOperator sp;
+        if (spectralDensity == null) {
+            sp = x -> 1;
+        } //            sp=x-> x == 0 ? 1 : 1/(2-2*Math.cos(x));
+        else {
+            sp = spectralDensity;
+        }
+        DoubleUnaryOperator fn = x -> {
+            double g = Math.abs(sf.realFrequencyResponse(x));
+            double ga = af.frequencyResponse(x).abs();
+            double s = Math.sin(af.frequencyResponse(x).arg() / 2);
+            return g * ga * s * s * sp.applyAsDouble(x);
+        };
+        return 8 * NumericalIntegration.integrate(fn, 0, passBand);
+    }
+
+    public double timelinessDistance(SymmetricFilter sf, FiniteFilter af, double passBand) {
+        return timelinessDistance(null, sf, af, passBand);
+    }
+
+    public double timelinessDistance2(DoubleUnaryOperator spectralDensity, FiniteFilter af, double a, double b) {
+        final DoubleUnaryOperator sp;
+        if (spectralDensity == null) {
+            sp = x -> 1;
+        } //            sp=x-> x == 0 ? 1 : 1/(2-2*Math.cos(x));
+        else {
+            sp = spectralDensity;
+        }
+        DoubleUnaryOperator fn = x -> {
+            double p = af.frequencyResponse(x).arg();
+            return x == 0 ? 0 : Math.abs(p / x) * sp.applyAsDouble(x);
+        };
+        return 8 * NumericalIntegration.integrate(fn, a, b);
+    }
+
+    public double timelinessDistance2(FiniteFilter af, double a, double b) {
+        return timelinessDistance2(null, af, a, b);
     }
 
 }

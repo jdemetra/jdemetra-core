@@ -30,7 +30,7 @@ public class NumericalIntegration {
     public double integrate(DoubleUnaryOperator fn, double a, double b) {
         try {
             QAGS qags = QAGS.builder()
-                    .absoluteTolerance(1e-9)
+                    .absoluteTolerance(1e-6)
                     .build();
             qags.integrate(fn, a, b);
             return qags.getResult();
