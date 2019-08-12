@@ -5,10 +5,17 @@
  */
 package jdplus.rkhs;
 
+import demetra.data.DoubleSeq;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
+import jdplus.filters.AsymmetricFiltersUtility;
+import jdplus.maths.functions.IFunction;
+import jdplus.maths.functions.IFunctionPoint;
+import jdplus.maths.functions.IParametersDomain;
+import jdplus.maths.functions.ParametersRange;
 import jdplus.maths.linearfilters.FiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.stats.Kernels;
 
 /**
  *
@@ -28,10 +35,6 @@ public class KernelsUtility {
     public SymmetricFilter symmetricFilter(DoubleUnaryOperator kernel, double bandwidth, int m) {
         return SymmetricFilter.ofInternal(symmetricWeights(kernel, bandwidth, m));
     }
-    
-    public FiniteFilter cutAndNormalizeAsymmetricFilter(DoubleUnaryOperator kernel, double bandwidth, int m, int q){
-        return FiniteFilter.ofInternal(asymmetricWeights(kernel, bandwidth, m, q), -m);
-    }
 
     private double[] symmetricWeights(DoubleUnaryOperator kernel, double bandwidth, int m) {
         double[] c = new double[m + 1];
@@ -48,19 +51,6 @@ public class KernelsUtility {
         return c;
     }
 
-    private double[] asymmetricWeights(DoubleUnaryOperator kernel, double bandwidth, int m, int q) {
-        double[] c = new double[m + q + 1];
-        double s = 0;
-        for (int i = -m; i <= q; ++i) {
-            double w=kernel.applyAsDouble(i / bandwidth);
-            c[m+i] = w;
-            s += w;
-        }
-        for (int i = 0; i < c.length; ++i) {
-            c[i] /= s;
-        }
-        return c;
-    }
 
     public double discreteMoment(DoubleUnaryOperator kernel, double bandwidth, int l, int u, int order) {
         double s = 0;
@@ -100,7 +90,7 @@ public class KernelsUtility {
         final double step = 2.0 / n;
         double[] q = new double[n];
         for (int i = 0; i < n; ++i) {
-            double b = m + i * step-.5;
+            double b = m + i * step - .5;
             double z = discreteSymmetricMoment(kernel, b, m, order);
             q[i] = z;
         }
@@ -109,7 +99,7 @@ public class KernelsUtility {
         double smin = Double.MAX_VALUE;
         for (int i = 1; i < n; ++i) {
             if (q[i] * q[i - 1] < 0) {
-                double b =  m + i * step-.5, a = b - step;
+                double b = m + i * step - .5, a = b - step;
                 if (q[i] < 0) {
                     double tmp = a;
                     a = b;
@@ -128,7 +118,7 @@ public class KernelsUtility {
                 double[] w = symmetricWeights(kernel, rcur, m);
                 double c = hendersonCriterion(w);
                 if (c < smin) {
-                    smin=c;
+                    smin = c;
                     r = rcur;
                 }
             }
@@ -145,5 +135,6 @@ public class KernelsUtility {
         }
         return s;
     }
+
 
 }

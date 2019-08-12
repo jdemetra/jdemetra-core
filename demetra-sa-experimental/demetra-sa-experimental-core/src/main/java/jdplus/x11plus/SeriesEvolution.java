@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.x11plus;
+package jdplus.x11plus;
 
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;

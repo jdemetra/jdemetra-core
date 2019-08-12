@@ -85,7 +85,7 @@ public class LocalPolynomialFiltersTest {
         int h = 11;
         SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernel.henderson(h));
         for (int i = 0; i <= h; ++i) {
-            FiniteFilter f = LocalPolynomialFilters.asymmetricFilter(lp, i, 0, new double[]{.4}, DiscreteKernel.triweight(h));
+            FiniteFilter f = AsymmetricFilters.mmsreFilter(lp, i, 0, new double[]{.4}, DiscreteKernel.triweight(h));
             assertEquals(DoubleSeq.of(f.weightsToArray()).sum(), 1, 1e-9);
 //            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
         }

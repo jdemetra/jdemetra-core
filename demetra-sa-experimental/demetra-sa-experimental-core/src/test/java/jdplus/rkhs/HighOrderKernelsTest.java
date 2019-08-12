@@ -37,7 +37,7 @@ public class HighOrderKernelsTest {
         Kernel K = Kernels.BIWEIGHT;
 //        System.out.println("BiWeight");
         for (int i = 1; i <= 12; ++i) {
-            Polynomial p = HighOrderKernels.p(K, i), fp = HighOrderKernels.fastP(K, i);
+            Polynomial p = HighOrderKernels.oldP(K, i), fp = HighOrderKernels.p(K, i);
             assertTrue(p.equals(fp, 1e-6));
         }
         int m = 11;
@@ -67,7 +67,7 @@ public class HighOrderKernelsTest {
         Kernel K = Kernels.TRIWEIGHT;
 //        System.out.println("TriWeight");
         for (int i = 1; i <= 12; ++i) {
-            Polynomial p = HighOrderKernels.p(K, i), fp = HighOrderKernels.fastP(K, i);
+            Polynomial p = HighOrderKernels.oldP(K, i), fp = HighOrderKernels.p(K, i);
             assertTrue(p.equals(fp, 1e-6));
         }
         int m = 11;
@@ -91,7 +91,7 @@ public class HighOrderKernelsTest {
         Kernel K = Kernels.EPANECHNIKOV;
 //        System.out.println("Epanechnikov");
         for (int i = 1; i <= 12; ++i) {
-            Polynomial p = HighOrderKernels.p(K, i), fp = HighOrderKernels.fastP(K, i);
+            Polynomial p = HighOrderKernels.oldP(K, i), fp = HighOrderKernels.p(K, i);
             assertTrue(p.equals(fp, 1e-6));
 //            System.out.println(p.times(Kernels.epanechnikovAsPolynomial()));
         }
@@ -116,7 +116,7 @@ public class HighOrderKernelsTest {
         Kernel K = Kernels.EPANECHNIKOV;
         int R=5;
         int m = 51;
-        SymmetricFilter sf = LocalPolynomialFilters.ofDefault2(m, R, DiscreteKernel.epanechnikov(m));
+        SymmetricFilter sf = LocalPolynomialFilters.of(m, R, DiscreteKernel.epanechnikov(m));
         DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, R);
         double step = 1.0 / (m + 1);
         Polynomial p = HighOrderKernels.p(K, R);
@@ -133,10 +133,10 @@ public class HighOrderKernelsTest {
 
     @Test
     public void testHenderson() {
-        for (int m = 4; m >= 50; ++m) {
+        for (int m = 6; m <= 20; ++m) {
             Kernel K = Kernels.henderson(m);
-            for (int i = 0; i <= 10; ++i) {
-                assertTrue(HighOrderKernels.p(K, i).equals(HighOrderKernels.fastP(K, i), 1e-9));
+            for (int i = 0; i <= Math.min(m, 10); ++i) {
+                assertTrue(HighOrderKernels.oldP(K, i).equals(HighOrderKernels.p(K, i), 1e-6));
             }
             Polynomial p = HighOrderKernels.p(K, 3);
             DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, 3);
@@ -154,6 +154,49 @@ public class HighOrderKernelsTest {
                         k = kernel.applyAsDouble(step * i);
                 assertEquals(z * f, k, 1e-9);
             }
+        }
+    }
+    
+    public static void main(String[] args){
+        System.out.println("Henderson-9 hierarchy");
+        Kernel H=Kernels.henderson(4);
+        for (int i=0; i<=10; ++i){
+            System.out.println(HighOrderKernels.p(H, i).coefficients());
+        }
+        System.out.println("Henderson-13 hierarchy");
+        H=Kernels.henderson(6);
+        for (int i=0; i<=10; ++i){
+            System.out.println(HighOrderKernels.p(H, i).coefficients());
+        }
+        System.out.println("Henderson-23 hierarchy");
+        H=Kernels.henderson(11);
+        for (int i=0; i<=10; ++i){
+            System.out.println(HighOrderKernels.p(H, i).coefficients());
+        }
+        System.out.println("Biweight hierarchy");
+        H=Kernels.BIWEIGHT;
+        for (int i=0; i<=10; ++i){
+            System.out.println(HighOrderKernels.p(H, i).coefficients());
+        }
+        System.out.println("Triweight hierarchy");
+        H=Kernels.TRIWEIGHT;
+        for (int i=0; i<=10; ++i){
+            System.out.println(HighOrderKernels.p(H, i).coefficients());
+        }
+        System.out.println("Epanechnikov hierarchy");
+        H=Kernels.EPANECHNIKOV;
+        for (int i=0; i<=10; ++i){
+            System.out.println(HighOrderKernels.p(H, i).coefficients());
+        }
+        System.out.println("Triangular hierarchy");
+        H=Kernels.TRIANGULAR;
+        for (int i=0; i<=10; ++i){
+            System.out.println(HighOrderKernels.p(H, i).coefficients());
+        }
+        System.out.println("Uniform hierarchy");
+        H=Kernels.UNIFORM;
+        for (int i=0; i<=10; ++i){
+            System.out.println(HighOrderKernels.p(H, i).coefficients());
         }
     }
 

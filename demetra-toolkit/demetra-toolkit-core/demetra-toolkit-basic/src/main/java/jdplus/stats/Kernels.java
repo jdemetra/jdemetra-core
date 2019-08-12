@@ -214,6 +214,11 @@ public class Kernels {
         };
     }
 
+    /**
+     * Kernel corresponding to an Henderson filter[-m,m] (length = 2*m+1)
+     * @param m
+     * @return 
+     */
     public Polynomial hendersonAsPolynomial(int m) {
         int q1 = (m + 1) * (m + 1), q2 = (m + 2) * (m + 2), q3 = (m + 3) * (m + 3);
         Polynomial p = Polynomial.of(q1 * q2 * q3, 0, -q1 * q1 * q2 - q1 * q1 * q3 - q1 * q2 * q3, 0, q1 * q1 * (q1 + q2 + q3), 0, -q1 * q1 * q1);

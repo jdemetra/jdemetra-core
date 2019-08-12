@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package demetra.x11plus;
+package jdplus.x11plus;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;

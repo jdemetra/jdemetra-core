@@ -16,7 +16,7 @@
 */
 
 
-package demetra.x11plus;
+package jdplus.x11plus;
 
 import demetra.design.Development;
 import jdplus.maths.linearfilters.LinearFilterException;

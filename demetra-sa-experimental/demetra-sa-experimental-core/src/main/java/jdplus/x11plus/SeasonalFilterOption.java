@@ -15,49 +15,45 @@
 * limitations under the Licence.
 */
 
-package demetra.x11plus;
+
+package jdplus.x11plus;
 
 import demetra.design.Development;
-
 
 /**
  *
  * @author Frank Osaer, Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class X11Exception extends RuntimeException {
+public enum SeasonalFilterOption {
 
+    S3X1,
     /**
      *
      */
-    public static final String ERR_NEG = "Negative values in a multiplicative decomposition",
-            ERR_LENGTH = "Not enough observations", ERR_MISSING = "Missing values are not allowed";
-
+    S3X3,
+    /**
+     * 
+     */
+    S3X5,
     /**
      *
      */
-    public X11Exception() {
-    }
-
-    // / <summary>
-    // / Constructor for a time series exception with a specific message
-    // / </summary>
-    // / <param name="msg">Message of the exception</param>
+    S3X9,
+    /**
+     * 
+     */
+    S3X15,
     /**
      *
-     * @param msg
      */
-    public X11Exception(String msg) {
-        super(msg);
-    }
-
+    Stable,
+    /**
+     * 
+     */
+    X11Default,
     /**
      *
-     * @param message
-     * @param innerException
      */
-    public X11Exception(final String message, final Exception innerException) {
-        super(message, innerException);
-    }
-
+    Msr;
 }

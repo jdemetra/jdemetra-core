@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.x11plus;
+package jdplus.x11plus;
 
 import jdplus.data.DataBlock;
 import jdplus.data.analysis.DiscreteKernel;
@@ -133,7 +133,7 @@ public class X11Context {
             }
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[horizon-i-1] = jdplus.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(sfilter, i, u, c, null);
+                afilters[horizon-i-1] = jdplus.maths.linearfilters.AsymmetricFilters.mmsreFilter(sfilter, i, u, c, null);
             }
         }
         return afilters;

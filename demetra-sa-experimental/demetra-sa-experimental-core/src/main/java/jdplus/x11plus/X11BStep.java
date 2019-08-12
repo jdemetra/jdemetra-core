@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.x11plus;
+package jdplus.x11plus;
 
 import jdplus.data.DataBlock;
 import jdplus.maths.linearfilters.IFiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
-import static demetra.x11plus.X11Kernel.table;
+import static jdplus.x11plus.X11Kernel.table;
 import demetra.data.DoubleSeq;
 
 /**

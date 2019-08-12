@@ -14,46 +14,29 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
 */
+package jdplus.x11plus;
 
-
-package demetra.x11plus;
-
+import jdplus.data.DataBlock;
 import demetra.design.Development;
+import demetra.data.DoubleSeq;
+
 
 /**
- *
+ * Computes the endpoints of a smoothing algorithm.
+ * The end points processor is called after the regular (symmetric) smoothing, so
+ * that the processor can use values already available in the output buffer.
  * @author Frank Osaer, Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-public enum SeasonalFilterOption {
-
-    S3X1,
+@Development(status = Development.Status.Release)
+public interface IEndPointsProcessor
+{
     /**
-     *
-     */
-    S3X3,
-    /**
+     * The method computes the endpoints of a smoothing algorithm.
      * 
+     * @param in Input (the series being smoothed)
+     * @param out Output. On entry, contains regular smoothing results, 
+     * which have to be completed.
+     * The input and the output buffers should have the same size.
      */
-    S3X5,
-    /**
-     *
-     */
-    S3X9,
-    /**
-     * 
-     */
-    S3X15,
-    /**
-     *
-     */
-    Stable,
-    /**
-     * 
-     */
-    X11Default,
-    /**
-     *
-     */
-    Msr;
+    public void process(DoubleSeq in, DataBlock out);
 }

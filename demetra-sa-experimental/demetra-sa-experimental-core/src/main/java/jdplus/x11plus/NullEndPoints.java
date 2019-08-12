@@ -15,30 +15,23 @@
 * limitations under the Licence.
 */
 
-package demetra.x11plus;
 
-import java.util.Arrays;
+package jdplus.x11plus;
+
+import jdplus.data.DataBlock;
+import demetra.design.Development;
 import demetra.data.DoubleSeq;
 
-
 /**
- * The dummy filter will set the filtered series to O or 1 (multiplicative case).
- * @author Jean Palate
+ * A "do nothing" processor. The module pre-suppose that
+ * the missing end points in the output buffer have been set to 0.
+ * @author Frank Osaer, Jean Palate
  */
-public class DummyFilter{
-    
-    public static final String NAME="None";
-    
-    private final boolean mul;
-    
-    
-    public DummyFilter(boolean mul){
-        this.mul=mul;
+@Development(status = Development.Status.Release)
+public class NullEndPoints implements IEndPointsProcessor {
+
+    @Override
+    public void process(DoubleSeq in, DataBlock out) {
     }
 
-    public int[] process(DoubleSeq s, double[] out) {
-        Arrays.fill(out, mul ? 1 : 0);
-        return new int[] {0, out.length};
-    }
-    
 }

@@ -162,7 +162,7 @@ public class X11Context {
         double[] c = new double[]{d};
         afilters = new FiniteFilter[horizon];
         for (int i = 0; i < afilters.length; ++i) {
-            afilters[horizon - i - 1] = jdplus.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(sfilter, i, u, c, null);
+            afilters[horizon - i - 1] = jdplus.maths.linearfilters.AsymmetricFilters.mmsreFilter(sfilter, i, u, c, null);
         }
         return afilters;
     }

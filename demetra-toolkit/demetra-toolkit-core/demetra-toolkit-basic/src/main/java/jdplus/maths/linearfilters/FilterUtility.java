@@ -23,6 +23,7 @@ import demetra.util.Ref;
 import java.util.function.IntToDoubleFunction;
 import demetra.maths.ComplexComputer;
 import demetra.data.DoubleSeq;
+import jdplus.data.DataBlock;
 
 /**
  *
@@ -305,4 +306,37 @@ public class FilterUtility {
             return false;
         }
     }
+
+    /**
+     * Applies the given symmetric filter on a sequence of input. The end-points are
+     * handled using given asymmetric filters or set to NaN.
+     * @param input The input
+     * @param filter The symmetric filter
+     * @param afilters The asymmetric filters used for computing the end points. 
+     * Same treatment on both sides. If the symmetric filters are missing (=null),
+     * the end-points are set to NaN. The first asymmetric filter is used for computing
+     * out[0] and out[n-1], the second for out[1], out[n-2]...
+     * @return The filtered data
+     */
+    public DoubleSeq filter(DoubleSeq input, final SymmetricFilter filter, final FiniteFilter[] afilters) {
+        double[] x = new double[input.length()];
+        int h = filter.getUpperBound();
+        DataBlock out = DataBlock.of(x, h, x.length - h);
+        filter.apply(input, out);
+
+        // apply the endpoints filters
+        if (afilters != null) {
+            for (int i = 0, len=h+1; i < h; ++i, ++h) {
+                x[i] = afilters[i].apply(input.extract(0, len).reverse());
+                x[x.length - i - 1] = afilters[i].apply(input.extract(x.length - len, len));
+            }
+        } else {
+            for (int i = 0; i < h; ++i) {
+                x[i] = Double.NaN;
+                x[x.length - i - 1] = Double.NaN;
+            }
+        }
+        return DoubleSeq.of(x);
+    }
+
 }

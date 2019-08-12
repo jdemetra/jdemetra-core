@@ -5,6 +5,9 @@
  */
 package demetra.x11plus;
 
+import jdplus.x11plus.SeasonalFilterOption;
+import jdplus.x11plus.X11Kernel;
+import jdplus.x11plus.X11Context;
 import demetra.data.Data;
 import demetra.data.WeeklyData;
 import demetra.sa.DecompositionMode;

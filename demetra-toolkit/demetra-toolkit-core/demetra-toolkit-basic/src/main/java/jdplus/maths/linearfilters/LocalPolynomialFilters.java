@@ -47,28 +47,6 @@ public class LocalPolynomialFilters {
 
     };
 
-    public DoubleSeq filter(DoubleSeq input, final SymmetricFilter filter, final FiniteFilter[] afilters) {
-        double[] x = new double[input.length()];
-        int h = filter.getUpperBound();
-        DataBlock out = DataBlock.of(x, h, x.length - h);
-        filter.apply(input, out);
-
-        // apply the endpoints filters
-        if (afilters != null) {
-            for (int i = 0; i < h; ++i) {
-                int len = h + i + 1;
-                x[i] = afilters[i].apply(input.extract(0, len).reverse());
-                x[x.length - i - 1] = afilters[i].apply(input.extract(x.length - len, len));
-            }
-        } else {
-            for (int i = 0; i < h; ++i) {
-                x[i] = Double.NaN;
-                x[x.length - i - 1] = Double.NaN;
-            }
-        }
-        return DoubleSeq.of(x);
-    }
-
     /**
      *
      * @param h the number of lags (-> length of the filter is 2*h+1)
@@ -100,7 +78,47 @@ public class LocalPolynomialFilters {
      * @return
      */
     public FiniteFilter directAsymmetricFilter(final int h, final int q, final int d, final IntToDoubleFunction k) {
-        return defaultDirectAsymmetricFilter(h, q, d, k);
+        // w = KpXp (Xp'Kp Xp)^-1 e1
+        // (Xp'Kp Xp)^-1 e1 = u <-> (Xp'Kp Xp) u = e1
+        CanonicalMatrix xkx = CanonicalMatrix.square(d + 1);
+        for (int i = 0; i <= d; ++i) {
+            xkx.set(i, i, S_hqd(h, q, 2 * i, k));
+            for (int j = 0; j < i; ++j) {
+                double x = S_hqd(h, q, i + j, k);
+                if (x != 0) {
+                    xkx.set(i, j, x);
+                    xkx.set(j, i, x);
+                }
+            }
+        }
+        double[] u = new double[d + 1];
+        u[0] = 1;
+        Householder hous = new Householder();
+        hous.decompose(xkx);
+        hous.solve(DataBlock.of(u));
+        double[] w = new double[h + q + 1];
+        w[h] = u[0] * k.applyAsDouble(0);
+        for (int i = 1; i <= q; ++i) {
+            double s = u[0];
+            double l = 1;
+            for (int j = 1; j <= d; ++j) {
+                l *= i;
+                s += l * u[j];
+            }
+            double wc = s * k.applyAsDouble(i);
+            w[h + i] = wc;
+        }
+        for (int i = -1; i >= -h; --i) {
+            double s = u[0];
+            double l = 1;
+            for (int j = 1; j <= d; ++j) {
+                l *= i;
+                s += l * u[j];
+            }
+            double wc = s * k.applyAsDouble(i);
+            w[h + i] = wc;
+        }
+        return FiniteFilter.ofInternal(w, -h);
     }
 
     private static SymmetricFilter of0_1(int h, IntToDoubleFunction k) {
@@ -135,7 +153,8 @@ public class LocalPolynomialFilters {
         return SymmetricFilter.ofInternal(w);
     }
 
-    SymmetricFilter ofDefault(int h, int d, IntToDoubleFunction k) {
+    @Deprecated
+    SymmetricFilter ofDefault2(int h, int d, IntToDoubleFunction k) {
         // w = KX (X'K X)^-1 e1
         // (X'K X)^-1 e1 = u <-> (X'K X) u = e1
         CanonicalMatrix xkx = CanonicalMatrix.square(d + 1);
@@ -174,7 +193,7 @@ public class LocalPolynomialFilters {
      * @param k The kernel (a uniform kernel is used if k is null)
      * @return
      */
-    public SymmetricFilter ofDefault2(int h, int d, IntToDoubleFunction k) {
+    SymmetricFilter ofDefault(int h, int d, IntToDoubleFunction k) {
         double[] sk = new double[h + 1];
         if (k == null) {
             for (int i = 0; i < sk.length; ++i) {
@@ -298,134 +317,6 @@ public class LocalPolynomialFilters {
             s += k.applyAsDouble(i);
         }
         return s;
-    }
-
-    FiniteFilter defaultDirectAsymmetricFilter(int h, int q, int d, IntToDoubleFunction k) {
-        // w = KpXp (Xp'Kp Xp)^-1 e1
-        // (Xp'Kp Xp)^-1 e1 = u <-> (Xp'Kp Xp) u = e1
-        CanonicalMatrix xkx = CanonicalMatrix.square(d + 1);
-        for (int i = 0; i <= d; ++i) {
-            xkx.set(i, i, S_hqd(h, q, 2 * i, k));
-            for (int j = 0; j < i; ++j) {
-                double x = S_hqd(h, q, i + j, k);
-                if (x != 0) {
-                    xkx.set(i, j, x);
-                    xkx.set(j, i, x);
-                }
-            }
-        }
-        double[] u = new double[d + 1];
-        u[0] = 1;
-        Householder hous = new Householder();
-        hous.decompose(xkx);
-        hous.solve(DataBlock.of(u));
-        double[] w = new double[h + q + 1];
-        w[h] = u[0] * k.applyAsDouble(0);
-        for (int i = 1; i <= q; ++i) {
-            double s = u[0];
-            double l = 1;
-            for (int j = 1; j <= d; ++j) {
-                l *= i;
-                s += l * u[j];
-            }
-            double wc = s * k.applyAsDouble(i);
-            w[h + i] = wc;
-        }
-        for (int i = -1; i >= -h; --i) {
-            double s = u[0];
-            double l = 1;
-            for (int j = 1; j <= d; ++j) {
-                l *= i;
-                s += l * u[j];
-            }
-            double wc = s * k.applyAsDouble(i);
-            w[h + i] = wc;
-        }
-        return FiniteFilter.ofInternal(w, -h);
-    }
-
-    /**
-     * Provides an asymmetric filter [-h, p] based on the given symmetric
-     * filter. The asymmetric filter minimizes the mean square revision error
-     * relative to the symmetric filter. The series follows the model y=U*du +
-     * Z*dz + e, std(e) = sigma/ki
-     *
-     * @param sw The symmetric filter
-     * @param p The horizon of the asymmetric filter (from 0 to deg(w)/2)
-     * @param u The degree of the constraints (U)
-     * @param dz The given coefficients (usually a singleton)
-     * @param k The weighting factors (null for no weighting)
-     * @return
-     */
-    public FiniteFilter asymmetricFilter(SymmetricFilter sw, int p, int u, double[] dz, IntToDoubleFunction k) {
-        double[] w = sw.weightsToArray();
-        int h = w.length / 2;
-        int nv = h + p + 1;
-        DataBlock wp = DataBlock.of(w, 0, nv);
-        DataBlock wf = DataBlock.of(w, nv, w.length);
-        FastMatrix Zp = z(-h, p, u + 1, u + dz.length);
-        FastMatrix Zf = z(p + 1, h, u + 1, u + dz.length);
-        FastMatrix Up = z(-h, p, 0, u);
-        FastMatrix Uf = z(p + 1, h, 0, u);
-        DataBlock d = DataBlock.of(dz);
-
-        FastMatrix H = SymmetricMatrix.XtX(Up);
-
-        DataBlock a1 = DataBlock.make(u + 1);
-        a1.product(Uf.columnsIterator(), wf); // U'f x wf
-
-        DataBlock a2 = a1.deepClone();
-        Householder hous = new Householder();
-        hous.decompose(H);
-
-        hous.solve(a2); // (U'p x Up)^-1 Uf x Wf
-
-        DataBlock a3 = DataBlock.make(nv);
-        a3.product(Up.rowsIterator(), a2); // Up x (U'p x Up)^-1 Uf x Wf
-
-        DataBlock a4 = DataBlock.make(dz.length);
-        a4.product(Zp.columnsIterator(), a3);
-        a4.chs();
-        a4.addProduct(Zf.columnsIterator(), wf); // (Zf' - Zp' x  Up x (U'p x Up)^-1 Uf ) Wf
-
-        DataBlock a5 = DataBlock.make(nv);
-        a5.product(Zp.rowsIterator(), d); // Zp x d
-
-        DataBlock a6 = DataBlock.make(u + 1);
-        a6.product(Up.columnsIterator(), a5); // Up' x Zp x d
-
-        DataBlock a7 = a6.deepClone();
-        hous.solve(a7);
-
-        DataBlock a8 = DataBlock.make(nv);
-        a8.product(Up.rowsIterator(), a7);
-
-        DataBlock a9 = a5.deepClone();
-        a9.sub(a8);
-
-        DataBlock a10 = DataBlock.make(dz.length);
-        a10.product(Zp.columnsIterator(), a9);
-        CanonicalMatrix C = CanonicalMatrix.square(dz.length);
-        for (int i = 0; i < dz.length; ++i) {
-            for (int j = 0; j < dz.length; ++j) {
-                double x = a10.get(i) * dz[j];
-                if (i == j) {
-                    x += 1;
-                }
-                C.set(i, j, x);
-            }
-        }
-        DataBlock a11 = a4.deepClone();
-        hous.decompose(C);
-        hous.solve(a11);
-
-        double s = a11.dot(d);
-        a9.mul(s);
-
-        wp.add(a9);
-        wp.add(a3);
-
-        return FiniteFilter.ofInternal(wp.toArray(), -h);
     }
 
     /**

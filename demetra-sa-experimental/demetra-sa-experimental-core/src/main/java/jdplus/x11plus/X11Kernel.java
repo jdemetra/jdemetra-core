@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.x11plus;
+package jdplus.x11plus;
 
 import java.util.Arrays;
 import demetra.data.DoubleSeq;

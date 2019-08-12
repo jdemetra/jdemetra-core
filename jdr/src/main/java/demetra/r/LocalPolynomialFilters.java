@@ -63,11 +63,11 @@ public class LocalPolynomialFilters {
             }
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = jdplus.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(filter, i, u, c, null);
+                afilters[i] = jdplus.maths.linearfilters.AsymmetricFilters.mmsreFilter(filter, i, u, c, null);
             }
         }
 
-        DoubleSeq rslt = jdplus.maths.linearfilters.LocalPolynomialFilters.filter(DoubleSeq.of(data), filter, afilters);
+        DoubleSeq rslt = jdplus.maths.linearfilters.FilterUtility.filter(DoubleSeq.of(data), filter, afilters);
         return rslt.toArray();
     }
 
@@ -125,7 +125,7 @@ public class LocalPolynomialFilters {
             }
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = jdplus.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(filter, i, u, c, null);
+                afilters[i] = jdplus.maths.linearfilters.AsymmetricFilters.mmsreFilter(filter, i, u, c, null);
             }
         }
         return new FiltersToolkit.FiniteFilters(filter, afilters);
