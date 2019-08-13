@@ -37,7 +37,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  * See "Calendarization with splines and state space models" B. Quenneville, F.
@@ -46,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-@ServiceProvider(service = Calendarization.Processor.class)
+@ServiceProvider(Calendarization.Processor.class)
 public class CalendarizationProcessor implements Calendarization.Processor {
     
     public static final CalendarizationProcessor PROCESSOR = new CalendarizationProcessor();

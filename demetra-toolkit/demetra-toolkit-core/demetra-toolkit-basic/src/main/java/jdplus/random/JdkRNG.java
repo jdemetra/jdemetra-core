@@ -22,7 +22,7 @@ import demetra.random.RandomNumberGenerator;
 import static demetra.design.AlgorithmImplementation.Feature.Balanced;
 import java.security.SecureRandom;
 import java.util.Random;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  * A random number generator (RNG) that uses JDK's {@link Random} class.<br>

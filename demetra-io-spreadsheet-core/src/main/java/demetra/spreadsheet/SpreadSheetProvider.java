@@ -43,7 +43,7 @@ import internal.spreadsheet.legacy.LegacySpreadSheetMoniker;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import demetra.tsprovider.util.CacheFactory;
 
 /**
@@ -51,7 +51,7 @@ import demetra.tsprovider.util.CacheFactory;
  * @author Philippe Charles
  */
 @DirectImpl
-@ServiceProvider(service = TsProvider.class)
+@ServiceProvider(TsProvider.class)
 public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
 
     private static final String NAME = "XCLPRVDR";

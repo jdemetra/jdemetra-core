@@ -22,13 +22,13 @@ import jdplus.dstats.F;
 import jdplus.dstats.Gamma;
 import jdplus.dstats.Normal;
 import jdplus.dstats.T;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = Distributions.Processor.class)
+@ServiceProvider(Distributions.Processor.class)
 public class DistributionsProcessor implements Distributions.Processor {
 
     @Override

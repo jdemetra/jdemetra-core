@@ -26,7 +26,7 @@ import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.RationalFunction;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.CanonicalMatrix;
@@ -37,7 +37,7 @@ import jdplus.maths.matrices.FastMatrix;
  */
 @Development(status = Development.Status.Alpha)
 @AlgorithmImplementation(algorithm = ArmaFilter.class, feature = Legacy)
-@ServiceProvider(service = ArmaFilter.class)
+@ServiceProvider(ArmaFilter.class)
 public class LjungBoxFilter implements ArmaFilter {
 
     private int m_n, m_p, m_q;

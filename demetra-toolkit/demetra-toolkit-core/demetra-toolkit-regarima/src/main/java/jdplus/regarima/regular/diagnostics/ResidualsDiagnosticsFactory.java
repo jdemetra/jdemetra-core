@@ -24,13 +24,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = DiagnosticsFactory.class)
+@ServiceProvider(DiagnosticsFactory.class)
 public class ResidualsDiagnosticsFactory implements DiagnosticsFactory<PreprocessingModel> {
 
     public static final String NORMALITY = "normality", INDEPENDENCE = "independence",

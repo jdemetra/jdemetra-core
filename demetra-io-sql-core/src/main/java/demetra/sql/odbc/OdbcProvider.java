@@ -41,14 +41,14 @@ import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.ResourceMap;
 import internal.sql.odbc.legacy.LegacyOdbcMoniker;
 import java.io.IOException;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Philippe Charles
  */
 @DirectImpl
-@ServiceProvider(service = TsProvider.class)
+@ServiceProvider(TsProvider.class)
 public final class OdbcProvider implements DataSourceLoader<OdbcBean>, HasSqlProperties {
 
     private static final String NAME = "ODBCPRVDR";

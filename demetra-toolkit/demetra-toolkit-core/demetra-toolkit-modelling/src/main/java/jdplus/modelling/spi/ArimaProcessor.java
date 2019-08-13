@@ -11,13 +11,13 @@ import demetra.arima.UcarimaModel;
 import demetra.arima.spi.Arima;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = Arima.Processor.class)
+@ServiceProvider(Arima.Processor.class)
 public class ArimaProcessor implements Arima.Processor {
 
     @Override
