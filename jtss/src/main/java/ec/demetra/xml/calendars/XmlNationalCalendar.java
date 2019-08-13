@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 //@XmlRootElement(name = "NationalCalendar")
@@ -40,7 +40,7 @@ public class XmlNationalCalendar
         return this.specialDayEvent;
     }
 
-    @ServiceProvider(service = CalendarAdapter.class)
+    @ServiceProvider(CalendarAdapter.class)
     public static class Adapter extends CalendarAdapter<XmlNationalCalendar, NationalCalendarProvider> {
 
         @Override

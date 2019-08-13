@@ -25,7 +25,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * @author Philippe Charles
  * @since 2.1.0
  */
-@ServiceProvider(service = Driver.class)
+@ServiceProvider(Driver.class)
 public final class AdoDriver extends _Driver {
 
     public static final String PREFIX = "jdbc:adodb:";

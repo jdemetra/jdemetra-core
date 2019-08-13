@@ -59,13 +59,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = ISaProcessingFactory.class)
+@ServiceProvider(ISaProcessingFactory.class)
 public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpecification> {
 
     public static final AlgorithmDescriptor DESCRIPTOR = TramoSeatsProcessingFactory.DESCRIPTOR;

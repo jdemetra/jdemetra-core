@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
@@ -43,7 +43,7 @@ public class XmlVariableWindow extends XmlRegressionVariableModifier{
     @XmlJavaTypeAdapter(XmlDayAdapter.class)
     public Day To;
 
-    @ServiceProvider(service = TsModifierAdapter.class)
+    @ServiceProvider(TsModifierAdapter.class)
     public static class Adapter extends TsModifierAdapter<XmlVariableWindow, TsVariableWindow> {
 
         @Override

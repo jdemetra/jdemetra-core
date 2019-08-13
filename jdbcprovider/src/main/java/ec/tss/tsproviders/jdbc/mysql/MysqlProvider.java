@@ -29,7 +29,7 @@ import ec.tss.tsproviders.jdbc.dsm.datasource.DataSourceType;
 import ec.tss.tsproviders.jdbc.dsm.datasource.interfaces.IManagedDataSource;
 import ec.tss.tsproviders.jdbc.dsm.identification.Account;
 import ec.tss.tsproviders.jdbc.dsm.identification.AccountManager;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Jeremy Demortier
  */
 @Deprecated
-@ServiceProvider(service = ITsProvider.class)
+@ServiceProvider(ITsProvider.class)
 public class MysqlProvider extends JdbcProvider<JdbcBean> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MysqlProvider.class);

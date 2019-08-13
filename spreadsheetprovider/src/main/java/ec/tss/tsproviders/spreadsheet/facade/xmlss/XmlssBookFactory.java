@@ -18,14 +18,14 @@ package ec.tss.tsproviders.spreadsheet.facade.xmlss;
 
 import ec.tss.tsproviders.spreadsheet.facade.Book;
 import ec.tss.tsproviders.spreadsheet.facade.utils.BookFactoryAdapter;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Philippe Charles
  */
 @Deprecated
-@ServiceProvider(service = Book.Factory.class)
+@ServiceProvider(Book.Factory.class)
 public class XmlssBookFactory extends BookFactoryAdapter {
 
     public XmlssBookFactory() {

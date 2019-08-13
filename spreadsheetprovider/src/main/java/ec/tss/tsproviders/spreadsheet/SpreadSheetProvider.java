@@ -38,7 +38,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Demortier Jeremy
  */
-@ServiceProvider(service = ITsProvider.class)
+@ServiceProvider(ITsProvider.class)
 public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, SpreadSheetBean> {
 
     public static final String SOURCE = "XCLPRVDR";

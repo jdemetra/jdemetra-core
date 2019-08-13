@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
@@ -47,7 +47,7 @@ public class XmlLevelShift extends XmlOutlier {
         this.zeroEnded = value;
     }
 
-    @ServiceProvider(service = TsVariableAdapter.class)
+    @ServiceProvider(TsVariableAdapter.class)
     public static class Adapter extends TsVariableAdapter<XmlLevelShift, LevelShift> {
 
         @Override
