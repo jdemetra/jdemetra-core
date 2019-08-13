@@ -42,7 +42,7 @@ import jdplus.ssf.univariate.SsfRegressionModel;
 import jdplus.stats.tests.NiidTests;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec.Model;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
@@ -62,7 +62,7 @@ import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceProvider(service = TemporalDisaggregation.Processor.class)
+@ServiceProvider(TemporalDisaggregation.Processor.class)
 public class TemporalDisaggregationProcessor implements TemporalDisaggregation.Processor {
 
     public static final TemporalDisaggregationProcessor PROCESSOR = new TemporalDisaggregationProcessor();

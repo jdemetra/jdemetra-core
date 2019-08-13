@@ -18,7 +18,7 @@ package internal.jdplus.ar;
 
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Fast;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import jdplus.ar.AutoRegressiveEstimation;
 import demetra.data.DoubleSeq;
 
@@ -28,7 +28,7 @@ import demetra.data.DoubleSeq;
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = AutoRegressiveEstimation.class)
+@ServiceProvider(AutoRegressiveEstimation.class)
 @AlgorithmImplementation(algorithm=AutoRegressiveEstimation.class, feature=Fast)
 public class LevinsonAlgorithm implements AutoRegressiveEstimation {
 

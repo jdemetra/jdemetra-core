@@ -43,7 +43,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import demetra.data.DoubleSeq;
 import jdplus.benchmarking.univariate.CholetteProcessor;
 
@@ -51,7 +51,7 @@ import jdplus.benchmarking.univariate.CholetteProcessor;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceProvider(service = MultivariateCholette.Processor.class)
+@ServiceProvider(MultivariateCholette.Processor.class)
 public class MultivariateCholetteProcessor implements MultivariateCholette.Processor {
 
     /**

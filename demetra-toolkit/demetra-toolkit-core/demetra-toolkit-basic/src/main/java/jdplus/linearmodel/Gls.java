@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.data.LogSign;
 import jdplus.maths.matrices.LowerTriangularMatrix;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import jdplus.leastsquares.QRSolver;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.FastMatrix;

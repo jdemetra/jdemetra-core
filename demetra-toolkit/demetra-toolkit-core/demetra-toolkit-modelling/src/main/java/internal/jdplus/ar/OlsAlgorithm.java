@@ -19,7 +19,7 @@ package internal.jdplus.ar;
 import jdplus.data.DataBlockIterator;
 import demetra.design.AlgorithmImplementation;
 import jdplus.maths.matrices.CanonicalMatrix;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import jdplus.leastsquares.QRSolvers;
 import jdplus.leastsquares.QRSolver;
 import jdplus.ar.AutoRegressiveEstimation;
@@ -29,7 +29,7 @@ import demetra.data.DoubleSeq;
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = AutoRegressiveEstimation.class)
+@ServiceProvider(AutoRegressiveEstimation.class)
 @AlgorithmImplementation(algorithm=AutoRegressiveEstimation.class)
 public class OlsAlgorithm implements AutoRegressiveEstimation {
 

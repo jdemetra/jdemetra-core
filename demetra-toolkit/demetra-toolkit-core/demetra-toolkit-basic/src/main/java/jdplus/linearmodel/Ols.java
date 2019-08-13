@@ -24,7 +24,7 @@ import jdplus.maths.matrices.UpperTriangularMatrix;
 import jdplus.maths.matrices.decomposition.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import jdplus.leastsquares.QRSolver;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;

@@ -20,13 +20,13 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.spi.MatrixDecompositions;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = MatrixDecompositions.Processor.class)
+@ServiceProvider(MatrixDecompositions.Processor.class)
 public class MatrixDecompositionsProcessor implements MatrixDecompositions.Processor {
 
     @Override

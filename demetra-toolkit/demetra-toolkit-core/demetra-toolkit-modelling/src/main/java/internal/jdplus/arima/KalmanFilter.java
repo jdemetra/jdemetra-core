@@ -24,7 +24,7 @@ import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Fast;
 import demetra.design.Development;
 import jdplus.likelihood.DeterminantalTerm;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 
@@ -33,7 +33,7 @@ import demetra.data.DoubleSeq;
  */
 @Development(status = Development.Status.Alpha)
 @AlgorithmImplementation(algorithm = ArmaFilter.class, feature = Fast)
-@ServiceProvider(service = ArmaFilter.class)
+@ServiceProvider(ArmaFilter.class)
 public class KalmanFilter implements ArmaFilter {
 
     private double[] C0, C, s;
