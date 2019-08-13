@@ -22,13 +22,13 @@ import ec.tstoolkit.algorithm.IDiagnostics;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Kristof Bayens
  */
-@ServiceProvider(service = ISaDiagnosticsFactory.class)
+@ServiceProvider(ISaDiagnosticsFactory.class)
 public class SpectralDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     public static final String SEAS = "spectral seas peaks", TD = "spectral td peaks";

@@ -31,7 +31,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * @see javax.sql.DataSource
  * @see Context#lookup(java.lang.String)
  */
-@ServiceProvider(service = ITsProvider.class)
+@ServiceProvider(ITsProvider.class)
 public class JndiJdbcProvider extends JdbcProvider<JdbcBean> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JndiJdbcProvider.class);

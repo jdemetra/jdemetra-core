@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CompositeCalendarType", propOrder = {
@@ -45,7 +45,7 @@ public class XmlCompositeCalendar
         return this.weightedCalendar;
     }
 
-    @ServiceProvider(service = CalendarAdapter.class)
+    @ServiceProvider(CalendarAdapter.class)
     public static class Adapter extends CalendarAdapter<XmlCompositeCalendar, CompositeGregorianCalendarProvider> {
 
         @Override

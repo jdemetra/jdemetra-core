@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
@@ -132,7 +132,7 @@ public class XmlInterventionVariable
         }
     }
 
-    @ServiceProvider(service = TsVariableAdapter.class)
+    @ServiceProvider(TsVariableAdapter.class)
     public static class Adapter extends TsVariableAdapter<XmlInterventionVariable, InterventionVariable> {
 
         @Override

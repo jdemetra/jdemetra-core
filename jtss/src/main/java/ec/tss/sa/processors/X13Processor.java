@@ -47,13 +47,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = ISaProcessingFactory.class)
+@ServiceProvider(ISaProcessingFactory.class)
 public class X13Processor implements ISaProcessingFactory<X13Specification> {
 
     public static final AlgorithmDescriptor DESCRIPTOR = X13ProcessingFactory.DESCRIPTOR;

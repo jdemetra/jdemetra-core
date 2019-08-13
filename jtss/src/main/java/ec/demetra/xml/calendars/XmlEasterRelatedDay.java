@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "EasterRelatedDayType", propOrder = {
@@ -60,7 +60,7 @@ public class XmlEasterRelatedDay
         }
     }
 
-    @ServiceProvider(service = DayAdapter.class)
+    @ServiceProvider(DayAdapter.class)
     public static class Adapter extends DayAdapter<XmlEasterRelatedDay, EasterRelatedDay> {
 
         @Override

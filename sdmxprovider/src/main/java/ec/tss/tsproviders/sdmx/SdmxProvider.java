@@ -44,7 +44,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Kristof Bayens
  */
-@ServiceProvider(service = ITsProvider.class)
+@ServiceProvider(ITsProvider.class)
 public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
 
     public static final String SOURCE = "TSProviders.Sdmx.SdmxProvider";

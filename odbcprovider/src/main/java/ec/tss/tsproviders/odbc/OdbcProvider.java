@@ -34,7 +34,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Demortier Jeremy
  */
-@ServiceProvider(service = ITsProvider.class)
+@ServiceProvider(ITsProvider.class)
 public class OdbcProvider extends JdbcProvider<OdbcBean> implements IFileLoader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OdbcProvider.class);
