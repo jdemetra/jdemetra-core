@@ -18,7 +18,7 @@ import jdplus.msts.ParameterInterpreter;
  *
  * @author palatej
  */
-public class NoiseItem extends AbstractModelItem {
+public class NoiseItem extends StateItem {
 
     private final VarianceInterpreter v;
 

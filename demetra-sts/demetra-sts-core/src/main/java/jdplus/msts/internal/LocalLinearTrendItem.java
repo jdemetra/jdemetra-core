@@ -17,7 +17,7 @@ import jdplus.msts.ParameterInterpreter;
  *
  * @author palatej
  */
-public class LocalLinearTrendItem extends AbstractModelItem {
+public class LocalLinearTrendItem extends StateItem {
 
     public final VarianceInterpreter lv, sv;
 

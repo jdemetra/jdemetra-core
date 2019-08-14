@@ -21,7 +21,7 @@ import demetra.maths.matrices.Matrix;
  *
  * @author palatej
  */
-public class RegressionItem extends AbstractModelItem {
+public class RegressionItem extends StateItem {
 
     public final CanonicalMatrix x;
     public final VarianceInterpreter[] v;

@@ -26,7 +26,7 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  * https://msdn.microsoft.com/en-us/library/aa478977.aspx
@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @since 2.1.0
  */
 @lombok.extern.java.Log
-@ServiceProvider(service = Driver.class)
+@ServiceProvider(Driver.class)
 public final class AdoDriver extends _Driver {
 
     public static final String PREFIX = "jdbc:adodb:";

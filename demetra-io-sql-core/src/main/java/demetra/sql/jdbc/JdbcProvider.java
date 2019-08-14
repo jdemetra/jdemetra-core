@@ -38,7 +38,7 @@ import demetra.tsprovider.cursor.TsCursorAsProvider;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.ResourceMap;
 import java.io.IOException;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import util.sql.SqlConnectionSupplier;
 
 /**
@@ -46,7 +46,7 @@ import util.sql.SqlConnectionSupplier;
  * @author Philippe Charles
  */
 @DirectImpl
-@ServiceProvider(service = TsProvider.class)
+@ServiceProvider(TsProvider.class)
 public final class JdbcProvider implements DataSourceLoader<JdbcBean>, HasSqlProperties {
 
     private static final String NAME = "JNDI-JDBC";

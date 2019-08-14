@@ -20,7 +20,7 @@ import jdplus.maths.matrices.FastMatrix;
  *
  * @author palatej
  */
-public class MsaeItem3 extends AbstractModelItem {
+public class MsaeItem3 extends StateItem {
     
     private final VarianceInterpreter[] v;
     private final Matrix k;

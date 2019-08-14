@@ -27,7 +27,7 @@ import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.polynomials.Polynomial;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.SubMatrix;
@@ -38,7 +38,7 @@ import jdplus.maths.matrices.SubMatrix;
  */
 @Development(status = Development.Status.Alpha)
 @AlgorithmImplementation(algorithm=ArmaFilter.class)
-@ServiceProvider(service=ArmaFilter.class)
+@ServiceProvider(ArmaFilter.class)
 public class AnsleyFilter implements ArmaFilter {
 
     private CanonicalMatrix m_bL;

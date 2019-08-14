@@ -72,11 +72,11 @@ public class Loading {
     }
 
     public static ISsfLoading fromPosition(final int mpos) {
-        return new Loading1(mpos);
+        return mpos == 0 ? Loading1.L0 : new Loading1(mpos);
     }
 
     public static ISsfLoading from(final int mpos, final double b) {
-        return b == 1 ? new Loading1(mpos) : new Loading1l(mpos, b);
+        return b == 1 ? fromPosition(mpos) : new Loading1l(mpos, b);
     }
 
     public static ISsfLoading sum() {
@@ -347,6 +347,8 @@ public class Loading {
     }
 
     private static class Loading1 implements ISsfLoading {
+        
+        static Loading1 L0=new Loading1(0);
 
         private final int mpos;
 

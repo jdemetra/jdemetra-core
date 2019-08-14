@@ -326,7 +326,7 @@ public class FilterUtility {
 
         // apply the endpoints filters
         if (afilters != null) {
-            for (int i = 0, len=h+1; i < h; ++i, ++h) {
+            for (int i = 0, len=h+1; i < h; ++i, ++len) {
                 x[i] = afilters[i].apply(input.extract(0, len).reverse());
                 x[x.length - i - 1] = afilters[i].apply(input.extract(x.length - len, len));
             }

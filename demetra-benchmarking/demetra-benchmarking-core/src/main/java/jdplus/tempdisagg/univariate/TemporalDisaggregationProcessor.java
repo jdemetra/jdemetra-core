@@ -8,7 +8,7 @@ package jdplus.tempdisagg.univariate;
 import jdplus.arima.ssf.AR1;
 import jdplus.arima.ssf.Arima_1_1_0;
 import jdplus.arima.ssf.Rw;
-import jdplus.benchmarking.ssf.SsfDisaggregation;
+import jdplus.benchmarking.ssf.SsfCumulator;
 import demetra.data.AggregationType;
 import jdplus.data.DataBlock;
 import demetra.data.Parameter;
@@ -42,7 +42,7 @@ import jdplus.ssf.univariate.SsfRegressionModel;
 import jdplus.stats.tests.NiidTests;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec.Model;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
@@ -62,7 +62,7 @@ import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceProvider(service = TemporalDisaggregation.Processor.class)
+@ServiceProvider(TemporalDisaggregation.Processor.class)
 public class TemporalDisaggregationProcessor implements TemporalDisaggregation.Processor {
 
     public static final TemporalDisaggregationProcessor PROCESSOR = new TemporalDisaggregationProcessor();
@@ -228,7 +228,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
         DiffuseConcentratedLikelihood dll;
         if (!spec.isParameterEstimation()) {
             nssf = noiseModel(spec);
-            ssf = SsfDisaggregation.of(nssf, model.getFrequencyRatio());
+            ssf = SsfCumulator.of(nssf, model.getFrequencyRatio());
             SsfData ssfdata = new SsfData(model.getHEY());
             SsfRegressionModel ssfmodel = new SsfRegressionModel(ssf, ssfdata, model.getHEX(), diffuse);
             dll = DkToolkit.concentratedLikelihoodComputer().compute(ssfmodel);
@@ -262,7 +262,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
         // A square root form of the diffuse smoothing should also be investigated.
         SsfComponent rssf = RegSsf.of(nssf, model.getHX());
         SsfData ssfdata = new SsfData(model.getHY());
-        ssf = SsfDisaggregation.of(rssf, model.getFrequencyRatio(), model.getStart());
+        ssf = SsfCumulator.of(rssf, model.getFrequencyRatio(), model.getStart());
         DefaultSmoothingResults srslts;
         switch (spec.getAlgorithm()) {
             case Augmented:
@@ -307,7 +307,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
                 .regressionEffects(regeffect)
                 .residuals(res)
                 .estimation(lestimation(dll, spec))
-                .residualsDiagnostics(diagnostic(res, SsfDisaggregation.of(nssf, model.getFrequencyRatio()), model.getYUnit()))
+                .residualsDiagnostics(diagnostic(res, SsfCumulator.of(nssf, model.getFrequencyRatio()), model.getYUnit()))
                 .build();
     }
 
@@ -342,7 +342,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
     private static Ssf ssf(double rho, boolean disagg, boolean cl, boolean zeroinit, int ratio) {
         SsfComponent cmp = cl ? AR1.of(rho, 1, zeroinit)
                 : Arima_1_1_0.of(rho, 1, zeroinit);
-        return disagg ? SsfDisaggregation.of(cmp, ratio) : Ssf.of(cmp, 0);
+        return disagg ? SsfCumulator.of(cmp, ratio) : Ssf.of(cmp, 0);
     }
 
     private int[] diffuseRegressors(int nx, TemporalDisaggregationSpec spec) {

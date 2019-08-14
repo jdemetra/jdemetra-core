@@ -20,7 +20,7 @@ import jdplus.msts.ParameterInterpreter;
  *
  * @author palatej
  */
-public class SaeItem extends AbstractModelItem {
+public class SaeItem extends StateItem {
 
     private final ArInterpreter ar;
     private final int lag;

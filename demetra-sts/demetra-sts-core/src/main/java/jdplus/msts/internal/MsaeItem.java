@@ -19,7 +19,7 @@ import demetra.maths.matrices.Matrix;
  *
  * @author palatej
  */
-public class MsaeItem extends AbstractModelItem {
+public class MsaeItem extends StateItem {
     
     private final int nwaves;
     private final int lag;

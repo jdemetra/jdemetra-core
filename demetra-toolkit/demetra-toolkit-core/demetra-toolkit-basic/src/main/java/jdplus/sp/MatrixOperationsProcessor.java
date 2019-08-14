@@ -20,13 +20,13 @@ import demetra.maths.matrices.Matrix;
 import demetra.maths.matrices.spi.MatrixOperations;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = MatrixOperations.Processor.class)
+@ServiceProvider(MatrixOperations.Processor.class)
 public class MatrixOperationsProcessor implements MatrixOperations.Processor {
 
     private static Matrix transform(CanonicalMatrix M) {

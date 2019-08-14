@@ -18,7 +18,7 @@ import jdplus.msts.ParameterInterpreter;
  *
  * @author palatej
  */
-public class LocalLevelItem extends AbstractModelItem {
+public class LocalLevelItem extends StateItem {
 
     public final VarianceInterpreter v;
     public final double initial;

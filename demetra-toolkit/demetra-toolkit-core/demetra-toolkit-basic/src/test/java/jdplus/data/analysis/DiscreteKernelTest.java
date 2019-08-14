@@ -52,7 +52,7 @@ public class DiscreteKernelTest {
             double q = kernel.applyAsDouble(i);
             //assertTrue(q>0);
             s += q;
-            System.out.println(kernel.applyAsDouble(i));
+//            System.out.println(kernel.applyAsDouble(i));
         }
         assertEquals(1, s, 1e-9);
     }
@@ -154,6 +154,6 @@ public class DiscreteKernelTest {
                 D.set(i, j, distance(k[i], k[j], K));
             }
         }
-       System.out.println(D);
+//       System.out.println(D);
     }
 }

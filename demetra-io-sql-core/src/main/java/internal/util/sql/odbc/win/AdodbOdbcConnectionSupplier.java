@@ -20,7 +20,7 @@ import demetra.design.DirectImpl;
 import internal.util.sql.SqlConnectionSuppliers;
 import java.sql.Connection;
 import java.sql.SQLException;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import util.sql.SqlConnectionSupplier;
 import util.sql.odbc.OdbcConnectionSupplierSpi;
 
@@ -29,7 +29,7 @@ import util.sql.odbc.OdbcConnectionSupplierSpi;
  * @author Philippe Charles
  */
 @DirectImpl
-@ServiceProvider(service = OdbcConnectionSupplierSpi.class)
+@ServiceProvider(OdbcConnectionSupplierSpi.class)
 public final class AdodbOdbcConnectionSupplier implements OdbcConnectionSupplierSpi {
 
     private static final String ADO_DRIVER_NAME = "internal.util.sql.adodb.AdoDriver";

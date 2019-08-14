@@ -22,13 +22,13 @@ import demetra.maths.spi.Polynomials;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.PolynomialException;
 import jdplus.maths.polynomials.RootsSolver;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = Polynomials.Processor.class)
+@ServiceProvider(Polynomials.Processor.class)
 public class PolynomialsProcessor implements Polynomials.Processor {
     
     @Override

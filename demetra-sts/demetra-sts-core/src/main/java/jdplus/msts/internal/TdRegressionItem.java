@@ -25,7 +25,7 @@ import demetra.maths.matrices.Matrix;
  *
  * @author palatej
  */
-public class TdRegressionItem extends AbstractModelItem {
+public class TdRegressionItem extends StateItem {
 
     private final CanonicalMatrix x;
     private final CanonicalMatrix mvar;

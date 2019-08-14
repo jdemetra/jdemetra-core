@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import util.sql.odbc.OdbcDataSource;
 import util.sql.odbc.OdbcDriver;
 import util.sql.odbc.OdbcRegistrySpi;
@@ -34,7 +34,7 @@ import util.sql.odbc.OdbcRegistrySpi;
  * @author Philippe Charles
  */
 @DirectImpl
-@ServiceProvider(service = OdbcRegistrySpi.class)
+@ServiceProvider(OdbcRegistrySpi.class)
 public final class RegOdbcRegistry implements OdbcRegistrySpi {
 
     @Override

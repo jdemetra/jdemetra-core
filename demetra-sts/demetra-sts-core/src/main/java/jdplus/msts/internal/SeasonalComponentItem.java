@@ -19,7 +19,7 @@ import jdplus.msts.ParameterInterpreter;
  *
  * @author palatej
  */
-public class SeasonalComponentItem extends AbstractModelItem {
+public class SeasonalComponentItem extends StateItem {
 
     private final SeasonalModel model;
     private final int period;

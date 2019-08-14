@@ -24,13 +24,13 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
 import jdplus.timeseries.simplets.TsDataToolkit;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = Denton.Processor.class)
+@ServiceProvider(Denton.Processor.class)
 public class DentonProcessor implements Denton.Processor {
 
     public static final DentonProcessor PROCESSOR=new DentonProcessor();

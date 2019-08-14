@@ -31,7 +31,7 @@ import demetra.timeseries.TsData;
 import jdplus.timeseries.simplets.TsDataToolkit;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import demetra.data.DoubleSeq;
 import static jdplus.timeseries.simplets.TsDataToolkit.add;
 import static jdplus.timeseries.simplets.TsDataToolkit.multiply;
@@ -41,7 +41,7 @@ import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = Cholette.Processor.class)
+@ServiceProvider(Cholette.Processor.class)
 public class CholetteProcessor implements Cholette.Processor {
     
     public static final CholetteProcessor PROCESSOR=new CholetteProcessor();

@@ -20,7 +20,7 @@ import jdplus.msts.ParameterInterpreter;
  *
  * @author palatej
  */
-public class ArItem2 extends AbstractModelItem {
+public class ArItem2 extends StateItem {
 
     private final ArInterpreter ar;
     private final VarianceInterpreter v;

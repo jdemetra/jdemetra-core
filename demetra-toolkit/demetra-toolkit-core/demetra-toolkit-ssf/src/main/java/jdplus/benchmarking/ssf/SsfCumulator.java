@@ -26,6 +26,7 @@ import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.SsfComponent;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.ssf.StateComponent;
 
 /**
  *
@@ -33,14 +34,37 @@ import jdplus.maths.matrices.FastMatrix;
  */
 @Development(status = Development.Status.Beta)
 @lombok.experimental.UtilityClass
-public class SsfDisaggregation {
+public class SsfCumulator {
 
     public Ssf of(SsfComponent s, int conversion) {
-        return Ssf.of(new Initialization(s.initialization()), new Dynamics(s, conversion), new Loading(s, conversion));
+        if (conversion == 0) {
+            return Ssf.of(new Initialization(s.initialization()), new CDynamics(s.dynamics(), s.loading()), new CLoading(s.loading()));
+        } else {
+            return Ssf.of(new Initialization(s.initialization()), new Dynamics(s.dynamics(), s.loading(), conversion), new Loading(s.loading(), conversion));
+        }
     }
 
     public Ssf of(SsfComponent s, int conversion, int start) {
-        return Ssf.of(new Initialization(s.initialization()), new Dynamics(s, conversion, start), new Loading(s, conversion, start));
+        if (conversion == 0) {
+            return Ssf.of(new Initialization(s.initialization()), new CDynamics(s.dynamics(), s.loading()), new CLoading(s.loading()));
+        } else {
+            return Ssf.of(new Initialization(s.initialization()), new Dynamics(s.dynamics(), s.loading(), conversion, start), new Loading(s.loading(), conversion, start));
+        }
+    }
+
+    public StateComponent stateComponent(StateComponent s, ISsfLoading l, int conversion, int start) {
+        if (conversion == 0) {
+            return new StateComponent(new Initialization(s.initialization()), new CDynamics(s.dynamics(), l));
+        } else {
+            return new StateComponent(new Initialization(s.initialization()), new Dynamics(s.dynamics(), l, conversion, start));
+        }
+    }
+    
+    public ISsfLoading loading(ISsfLoading l, int conversion, int start){
+        if (conversion == 0)
+            return new CLoading(l);
+        else
+            return new Loading(l, conversion, start);
     }
 
     static class Initialization implements ISsfInitialization {
@@ -95,16 +119,16 @@ public class SsfDisaggregation {
         private final int conversion;
         private final int start;
 
-        Dynamics(SsfComponent ssf, int conversion) {
-            this.dynamics = ssf.dynamics();
-            this.loading = ssf.loading();
+        Dynamics(ISsfDynamics dynamics, ISsfLoading loading, int conversion) {
+            this.dynamics = dynamics;
+            this.loading = loading;
             this.conversion = conversion;
             this.start = 0;
         }
 
-        Dynamics(SsfComponent ssf, int conversion, int start) {
-            this.dynamics = ssf.dynamics();
-            this.loading = ssf.loading();
+        Dynamics(ISsfDynamics dynamics, ISsfLoading loading, int conversion, int start) {
+            this.dynamics = dynamics;
+            this.loading = loading;
             this.conversion = conversion;
             this.start = start;
         }
@@ -225,18 +249,18 @@ public class SsfDisaggregation {
 
     static class Loading implements ISsfLoading {
 
-        private final ISsfLoading measurement;
+        private final ISsfLoading loading;
         private final int conversion;
         private final int start;
 
-        Loading(SsfComponent s, int conversion) {
-            this.measurement = s.loading();
+        Loading(ISsfLoading loading, int conversion) {
+             this.loading = loading;
             this.conversion = conversion;
             this.start = 0;
         }
 
-        Loading(SsfComponent s, int conversion, int start) {
-            this.measurement = s.loading();
+        Loading(ISsfLoading loading, int conversion, int start) {
+            this.loading = loading;
             this.conversion = conversion;
             this.start = start;
         }
@@ -246,13 +270,13 @@ public class SsfDisaggregation {
             if ((start + pos) % conversion != 0) {
                 z.set(0, 1);
             }
-            measurement.Z(pos, z.drop(1, 0));
+            loading.Z(pos, z.drop(1, 0));
         }
 
         @Override
         public double ZX(int pos, DataBlock x) {
             double r = ((start + pos) % conversion == 0) ? 0 : x.get(0);
-            return r + measurement.ZX(pos, x.drop(1, 0));
+            return r + loading.ZX(pos, x.drop(1, 0));
         }
 
         @Override
@@ -266,7 +290,7 @@ public class SsfDisaggregation {
             DataBlockIterator cols = q.columnsIterator();
             DoubleSeqCursor.OnMutable cur = zm.cursor();
             while (cols.hasNext()) {
-                cur.applyAndNext(x -> x + measurement.ZX(pos, cols.next()));
+                cur.applyAndNext(x -> x + loading.ZX(pos, cols.next()));
             }
         }
 
@@ -274,11 +298,11 @@ public class SsfDisaggregation {
         public double ZVZ(int pos, FastMatrix vm) {
             FastMatrix v = vm.dropTopLeft(1, 1);
             if ((start + pos) % conversion == 0) {
-                return measurement.ZVZ(pos, v);
+                return loading.ZVZ(pos, v);
             } else {
                 double r = vm.get(0, 0);
-                r += 2 * measurement.ZX(pos, vm.row(0).drop(1, 0));
-                r += measurement.ZVZ(pos, v);
+                r += 2 * loading.ZX(pos, vm.row(0).drop(1, 0));
+                r += loading.ZVZ(pos, v);
                 return r;
             }
         }
@@ -286,17 +310,17 @@ public class SsfDisaggregation {
         @Override
         public void VpZdZ(int pos, FastMatrix vm, double d) {
             FastMatrix v = vm.dropTopLeft(1, 1);
-            measurement.VpZdZ(pos, v, d);
+            loading.VpZdZ(pos, v, d);
             if ((start + pos) % conversion != 0) {
                 vm.add(0, 0, d);
-                measurement.XpZd(pos, vm.column(0).drop(1, 0), d);
-                measurement.XpZd(pos, vm.row(0).drop(1, 0), d);
+                loading.XpZd(pos, vm.column(0).drop(1, 0), d);
+                loading.XpZd(pos, vm.row(0).drop(1, 0), d);
             }
         }
 
         @Override
         public void XpZd(int pos, DataBlock x, double d) {
-            measurement.XpZd(pos, x.drop(1, 0), d);
+            loading.XpZd(pos, x.drop(1, 0), d);
             if ((start + pos) % conversion != 0) {
                 x.add(0, d);
             }
@@ -309,4 +333,157 @@ public class SsfDisaggregation {
 
     }
 
+    static class CDynamics implements ISsfDynamics {
+
+        private final ISsfDynamics dynamics;
+        private final ISsfLoading loading;
+
+        CDynamics(ISsfDynamics dynamics, ISsfLoading loading) {
+            this.dynamics = dynamics;
+            this.loading = loading;
+        }
+
+        @Override
+        public int getInnovationsDim() {
+            return dynamics.getInnovationsDim();
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return dynamics.areInnovationsTimeInvariant();
+        }
+
+        @Override
+        public void V(int pos, FastMatrix qm) {
+            dynamics.V(pos, qm.dropTopLeft(1, 1));
+        }
+
+        @Override
+        public void S(int pos, FastMatrix s) {
+            dynamics.S(pos, s.dropTopLeft(1, 0));
+        }
+
+        @Override
+        public boolean hasInnovations(int pos) {
+            return dynamics.hasInnovations(pos);
+        }
+
+        @Override
+        public void T(int pos, FastMatrix tr) {
+            dynamics.T(pos, tr.dropTopLeft(1, 1));
+            loading.Z(pos, tr.row(0).drop(1, 0));
+            tr.set(0, 0, 1);
+        }
+
+        @Override
+        public void TX(int pos, DataBlock x) {
+            DataBlock xc = x.drop(1, 0);
+            double s = loading.ZX(pos, xc);
+            x.add(0, s);
+            dynamics.TX(pos, xc);
+        }
+
+        @Override
+        public void TVT(int pos, FastMatrix vm) {
+            FastMatrix v = vm.dropTopLeft(1, 1);
+            DataBlock r0 = vm.row(0).drop(1, 0);
+            double zv0 = loading.ZX(pos, r0);
+            loading.ZM(pos, v, r0);
+            vm.add(0, 0, 2 * zv0 + loading.ZX(pos, r0));
+            dynamics.TX(pos, r0);
+            DataBlock c0 = vm.column(0).drop(1, 0);
+            dynamics.TX(pos, c0);
+            c0.add(r0);
+            r0.copy(c0);
+            dynamics.TVT(pos, v);
+        }
+
+        @Override
+        public void addSU(int pos, DataBlock x, DataBlock u) {
+            dynamics.addSU(pos, x.drop(1, 0), u);
+        }
+
+        @Override
+        public void addV(int pos, FastMatrix p) {
+            dynamics.addV(pos, p.dropTopLeft(1, 1));
+        }
+
+        @Override
+        public void XT(int pos, DataBlock x) {
+            DataBlock xc = x.drop(1, 0);
+            dynamics.XT(pos, xc);
+            loading.XpZd(pos, xc, x.get(0));
+        }
+
+        @Override
+        public void XS(int pos, DataBlock x, DataBlock xs) {
+            dynamics.XS(pos, x.drop(1, 0), xs);
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return false;
+        }
+    }
+
+    static class CLoading implements ISsfLoading {
+
+        private final ISsfLoading loading;
+
+        CLoading(ISsfLoading loading) {
+            this.loading = loading;
+        }
+
+        @Override
+        public void Z(int pos, DataBlock z) {
+            z.set(0, 1);
+            loading.Z(pos, z.drop(1, 0));
+        }
+
+        @Override
+        public double ZX(int pos, DataBlock x) {
+            return x.get(0) + loading.ZX(pos, x.drop(1, 0));
+        }
+
+        @Override
+        public void ZM(int pos, FastMatrix m, DataBlock zm) {
+            zm.copy(m.row(0));
+            FastMatrix q = m.dropTopLeft(1, 0);
+            DataBlockIterator cols = q.columnsIterator();
+            DoubleSeqCursor.OnMutable cur = zm.cursor();
+            while (cols.hasNext()) {
+                cur.applyAndNext(x -> x + loading.ZX(pos, cols.next()));
+            }
+        }
+
+        @Override
+        public double ZVZ(int pos, FastMatrix vm) {
+            FastMatrix v = vm.dropTopLeft(1, 1);
+            double r = vm.get(0, 0);
+            r += 2 * loading.ZX(pos, vm.row(0).drop(1, 0));
+            r += loading.ZVZ(pos, v);
+            return r;
+        }
+
+        @Override
+        public void VpZdZ(int pos, FastMatrix vm, double d) {
+            FastMatrix v = vm.dropTopLeft(1, 1);
+            loading.VpZdZ(pos, v, d);
+            vm.add(0, 0, d);
+            loading.XpZd(pos, vm.column(0).drop(1, 0), d);
+            loading.XpZd(pos, vm.row(0).drop(1, 0), d);
+        }
+
+        @Override
+        public void XpZd(int pos, DataBlock x, double d) {
+            loading.XpZd(pos, x.drop(1, 0), d);
+            x.add(0, d);
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return false;
+        }
+
+    }
 }

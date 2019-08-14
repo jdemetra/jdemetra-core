@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import demetra.data.DoubleSeq;
 import jdplus.msts.ArInterpreter;
 import jdplus.msts.ModelItem;
 import jdplus.msts.MstsMapping;
@@ -15,12 +16,14 @@ import jdplus.arima.ssf.SsfAr2;
 import java.util.Arrays;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  *
  * @author palatej
  */
-public class ArItem extends AbstractModelItem {
+public class ArItem extends StateItem {
 
     private final ArInterpreter ar;
     private final VarianceInterpreter v;
@@ -35,23 +38,37 @@ public class ArItem extends AbstractModelItem {
         this.zeroinit = zeroinit;
     }
 
-    @Override
-    public void addTo(MstsMapping mapping) {
-        mapping.add(ar);
-        mapping.add(v);
-        mapping.add((p, builder) -> {
-            int n = ar.getDomain().getDim();
-            double[] par = p.extract(0, n).toArray();
-            double w = p.get(n);
-            SsfComponent cmp = SsfAr.of(par, w, nlags, zeroinit);
-            builder.add(name, cmp);
-            return n + 1;
-        });
-    }
 
     @Override
     public List<ParameterInterpreter> parameters() {
         return Arrays.asList(ar, v);
+    }
+
+    @Override
+    public StateComponent build(DoubleSeq p) {
+        int n = ar.getDomain().getDim();
+        double[] par = p.extract(0, n).toArray();
+        double w = p.get(n);
+        return SsfAr.stateComponent(par, w, nlags, zeroinit);
+    }
+
+    @Override
+    public int parametersCount() {
+        return 1 + ar.getDomain().getDim();
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        if (m > 0) {
+            return null;
+        } else {
+            return SsfAr.loading();
+        }
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

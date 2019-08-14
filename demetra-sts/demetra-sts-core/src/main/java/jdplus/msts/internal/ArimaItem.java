@@ -22,7 +22,7 @@ import jdplus.msts.ParameterInterpreter;
  *
  * @author palatej
  */
-public class ArimaItem extends AbstractModelItem {
+public class ArimaItem extends StateItem {
 
     private final StablePolynomialInterpreter par, pma;
     private final VarianceInterpreter v;

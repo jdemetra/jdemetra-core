@@ -22,7 +22,7 @@ import jdplus.msts.ParameterInterpreter;
  *
  * @author palatej
  */
-public class SarimaItem extends AbstractModelItem {
+public class SarimaItem extends StateItem {
 
     private final VarianceInterpreter v;
     private final SarimaInterpreter p;

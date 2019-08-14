@@ -21,7 +21,7 @@ import demetra.maths.matrices.Matrix;
  *
  * @author palatej
  */
-public class MsaeItem2 extends AbstractModelItem {
+public class MsaeItem2 extends StateItem {
     
     private final VarianceInterpreter[] v;
     private final int lag;

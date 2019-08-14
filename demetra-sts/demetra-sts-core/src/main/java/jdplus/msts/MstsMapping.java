@@ -35,6 +35,10 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
         this.parameters.add(block);
     }
 
+    public void addAll(List<ParameterInterpreter> blocks) {
+        this.parameters.addAll(blocks);
+    }
+
     public Stream<ParameterInterpreter> parameters() {
         return parameters.stream();
     }
