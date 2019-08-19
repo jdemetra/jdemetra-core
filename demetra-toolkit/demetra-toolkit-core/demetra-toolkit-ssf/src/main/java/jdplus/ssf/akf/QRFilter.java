@@ -35,7 +35,7 @@ import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.CanonicalMatrix;
 
 /**
- * QR variant copyOf the augmented Kalman filter. See for instance
+ * QR variant of the augmented Kalman filter. See for instance
  * Gomez-Maravall. This implementation doesn't use collapsing
  *
  * @author Jean Palate <jean.palate@nbb.be>

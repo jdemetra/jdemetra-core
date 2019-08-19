@@ -19,6 +19,8 @@ import jdplus.ssf.univariate.StateFilteringResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.likelihood.Likelihood;
+import demetra.maths.Optimizer;
+import demetra.ssf.LikelihoodType;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -27,11 +29,12 @@ import jdplus.maths.matrices.FastMatrix;
  */
 public class CompositeModelEstimation {
 
-    public static CompositeModelEstimation estimationOf(CompositeModel model, FastMatrix data, double eps, boolean marginal, boolean concentrated, double[] parameters) {
+    public static CompositeModelEstimation estimationOf(CompositeModel model, FastMatrix data, double eps, LikelihoodType lt, Optimizer optimizer,boolean concentrated, double[] parameters) {
         CompositeModelEstimation rslt = new CompositeModelEstimation();
         rslt.data = data;
         MstsMonitor monitor = MstsMonitor.builder()
-                .marginalLikelihood(marginal)
+                .likelihood(lt)
+                .optimizer(optimizer)
                 .concentratedLikelihood(concentrated)
                 .precision(eps)
                 .build();

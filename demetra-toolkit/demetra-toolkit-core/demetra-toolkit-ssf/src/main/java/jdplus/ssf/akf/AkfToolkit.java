@@ -27,6 +27,8 @@ import jdplus.ssf.univariate.OrdinaryFilter;
 import demetra.likelihood.Likelihood;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.StateStorage;
+import jdplus.ssf.ckms.CkmsDiffuseInitializer;
+import jdplus.ssf.ckms.CkmsFilter;
 import jdplus.ssf.multivariate.IMultivariateSsf;
 import jdplus.ssf.multivariate.IMultivariateSsfData;
 import jdplus.ssf.multivariate.M2uAdapter;
@@ -52,10 +54,25 @@ public class AkfToolkit {
     public static ILikelihoodComputer<ProfileLikelihood> profileLikelihoodComputer() {
         return new PLLComputer();
     }
-
+    
     public static ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer(boolean collapsing) {
-        return collapsing ? new LLComputer2() : new LLComputer1();
+        return likelihoodComputer(collapsing, false);
     }
+
+    public static ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer(boolean collapsing, boolean res) {
+        return collapsing ? new LLComputer2(res) : new LLComputer1(res);
+    }
+    
+        public static ILikelihoodComputer<DiffuseLikelihood> fastLikelihoodComputer(boolean res) {
+        return (ISsf ssf, ISsfData data) -> {
+            AugmentedPredictionErrorDecomposition decomp = new AugmentedPredictionErrorDecomposition(res);
+            CkmsDiffuseInitializer ff = new CkmsDiffuseInitializer(new AugmentedFilterInitializer(decomp));
+            CkmsFilter ffilter = new CkmsFilter(ff);
+            ffilter.process(ssf, data, decomp);
+            return decomp.likelihood();
+        };
+    }
+
 
     public static DefaultAugmentedFilteringResults filter(ISsf ssf, ISsfData data, boolean all) {
         DefaultAugmentedFilteringResults frslts = all
@@ -100,11 +117,17 @@ public class AkfToolkit {
     }
 
     private static class LLComputer1 implements ILikelihoodComputer<DiffuseLikelihood> {
+        
+        private final boolean res;
+        
+        private LLComputer1(boolean res){
+            this.res=res;
+        }
 
         @Override
         public DiffuseLikelihood compute(ISsf ssf, ISsfData data) {
             AugmentedFilter akf = new AugmentedFilter();
-            AugmentedPredictionErrorDecomposition pe = new AugmentedPredictionErrorDecomposition(false);
+            AugmentedPredictionErrorDecomposition pe = new AugmentedPredictionErrorDecomposition(res);
             pe.prepare(ssf, data.length());
             if (!akf.process(ssf, data, pe)) {
                 return null;
@@ -116,9 +139,15 @@ public class AkfToolkit {
 
     private static class LLComputer2 implements ILikelihoodComputer<DiffuseLikelihood> {
 
+        private final boolean res;
+        
+        private LLComputer2(boolean res){
+            this.res=res;
+        }
+
         @Override
         public DiffuseLikelihood compute(ISsf ssf, ISsfData data) {
-            AugmentedPredictionErrorDecomposition pe = new AugmentedPredictionErrorDecomposition(false);
+            AugmentedPredictionErrorDecomposition pe = new AugmentedPredictionErrorDecomposition(res);
             pe.prepare(ssf, data.length());
             AugmentedFilterInitializer initializer = new AugmentedFilterInitializer(pe);
             OrdinaryFilter filter = new OrdinaryFilter(initializer);

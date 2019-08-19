@@ -10,6 +10,8 @@ import jdplus.msts.ModelEquation;
 import demetra.data.Data;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
+import demetra.maths.Optimizer;
+import demetra.ssf.LikelihoodType;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.msts.CompositeModel;
 import jdplus.msts.CompositeModelEstimation;
@@ -151,7 +153,7 @@ public class AlgorithmsTest {
 //        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
 //        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
 
-        CompositeModelEstimation rslt = model.estimate(M, 1e-9, false, false, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-9, LikelihoodType.Diffuse, Optimizer.LevenbergMarquardt, true, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("SAE+TD");
@@ -200,7 +202,7 @@ public class AlgorithmsTest {
 //        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
 //        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
 
-        CompositeModelEstimation rslt = model.estimate(M, 1e-15, true, true, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-15, LikelihoodType.Marginal, Optimizer.BFGS, true, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("SUTSE");
@@ -233,7 +235,7 @@ public class AlgorithmsTest {
         CanonicalMatrix M = CanonicalMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         M.column(0).apply(q->Math.log(q));
-        CompositeModelEstimation rslt = model.estimate(M, 1e-12, true, true, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-12, LikelihoodType.Marginal, Optimizer.BFGS, true, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("Airline+TD");
@@ -254,7 +256,7 @@ public class AlgorithmsTest {
         int len = Data.ABS_RETAIL.length;
         CanonicalMatrix M = CanonicalMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModelEstimation rslt = model.estimate(M, 1e-12, false, true, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-12, LikelihoodType.Diffuse, Optimizer.LevenbergMarquardt, true, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("Crude");
@@ -279,7 +281,7 @@ public class AlgorithmsTest {
         int len = Data.ABS_RETAIL.length;
         CanonicalMatrix M = CanonicalMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModelEstimation rslt = model.estimate(M, 1e-12, false, false, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-12, LikelihoodType.Diffuse, Optimizer.LevenbergMarquardt, false, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("Dummy-non concentrated");
@@ -300,7 +302,7 @@ public class AlgorithmsTest {
         int len = Data.ABS_RETAIL.length;
         CanonicalMatrix M = CanonicalMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModelEstimation rslt = model.estimate(M, 1e-12, false, false, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-12, LikelihoodType.Diffuse, Optimizer.LevenbergMarquardt, false, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("Crude-Non concentrated");

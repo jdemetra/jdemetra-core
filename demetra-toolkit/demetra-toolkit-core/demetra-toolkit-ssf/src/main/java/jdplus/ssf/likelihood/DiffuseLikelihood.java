@@ -108,13 +108,12 @@ public final class DiffuseLikelihood implements Likelihood {
      * corresponding to a given state space: y = a * X + e, where X is derived
      * from the initial conditions and e ~ N(0, V) or e ~ N(0, s Q)
      *
-     * The diffuse likelihood is then:
-     * + non-concentrated scaling factor:
+     * The diffuse likelihood is then: + non-concentrated scaling factor:
      * -0.5*(m*log(2*pi)+log|V|+log|X'V^-1*X|+ssqerr where m=n-d
-     * 
+     *
      * + concentrated scaling factor (s = ssqerr/n)
      * -0.5*(m*log(2*pi)+m*log(ssqerr/m)+m+log|Q|+log|X'Q^-1*X| where m=n-d
-     *      
+     *
      * It should be noted that the usual definition (implemented in JD+ 2.0) is
      * -0.5*(n*log(2*pi)+n*log(ssqerr/n)+n+log|V|+log|X'V^-1*X| The difference
      * is thus -0.5*(d*log(2*pi)+d*log(ssqerr)-n*log(n)+m*log(m))
@@ -254,17 +253,17 @@ public final class DiffuseLikelihood implements Likelihood {
     public double getDiffuseCorrection() {
         return dcorr;
     }
-    
-            public DiffuseLikelihood add(Likelihood ll) {
-        return DiffuseLikelihood.builder(nobs+ll.dim(), nd)
-                .ssqErr(ssqerr+ll.ssq())
-                .logDeterminant(ldet+ll.logDeterminant())
+
+    public DiffuseLikelihood add(Likelihood ll) {
+        return DiffuseLikelihood.builder(nobs + ll.dim(), nd)
+                .ssqErr(ssqerr + ll.ssq())
+                .logDeterminant(ldet + ll.logDeterminant())
                 .diffuseCorrection(dcorr)
                 .legacy(legacy)
                 .concentratedScalingFactor(scalingFactor)
+                .residuals(ll.e())
                 .build();
     }
-
 
     @Override
     public String toString() {

@@ -30,8 +30,6 @@ import jdplus.maths.functions.ssq.ISsqFunctionDerivatives;
 import jdplus.maths.functions.ssq.SsqNumericalDerivatives;
 import demetra.data.DoubleSeq;
 import jdplus.likelihood.LikelihoodFunctionPoint;
-import jdplus.ssf.akf.AkfToolkit;
-import jdplus.ssf.univariate.ILikelihoodComputer;
 
 /**
  *
@@ -39,8 +37,8 @@ import jdplus.ssf.univariate.ILikelihoodComputer;
  * @param <S>
  * @param <F>
  */
-public class DiffuseLikelihoodFunctionPoint<S, F extends ISsf> implements
-        LikelihoodFunctionPoint<DiffuseLikelihood> {
+public class DiffuseConcentratedLikelihoodFunctionPoint<S, F extends ISsf> implements
+        LikelihoodFunctionPoint<DiffuseConcentratedLikelihood> {
 
     /**
      *
@@ -51,27 +49,27 @@ public class DiffuseLikelihoodFunctionPoint<S, F extends ISsf> implements
     /**
      *
      */
-    private final DiffuseLikelihood ll;
+    private final DiffuseConcentratedLikelihood ll;
     private final DataBlock p;
     private DataBlock E;
-    private final DiffuseLikelihoodFunction<S, F> fn;
+    private final DiffuseConcentratedLikelihoodFunction<S, F> fn;
 
     /**
      *
      * @param fn
      * @param p
      */
-    public DiffuseLikelihoodFunctionPoint(DiffuseLikelihoodFunction<S, F> fn, DoubleSeq p) {
+    public DiffuseConcentratedLikelihoodFunctionPoint(DiffuseConcentratedLikelihoodFunction<S, F> fn, DoubleSeq p) {
         this.fn = fn;
         this.p = DataBlock.of(p);
-        current = fn.getMapping().map(p);
+        current=fn.getMapping().map(p);
         currentSsf = fn.getBuilder().buildSsf(current);
-        boolean fastcomputer = fn.isFast() && !fn.isMissing() && currentSsf.isTimeInvariant();
-        if (fastcomputer) {
-            ll = AkfToolkit.fastLikelihoodComputer(fn.isResiduals()).compute(currentSsf, fn.getData());
-        } else {
-            ll = AkfToolkit.likelihoodComputer(fn.isResiduals(), true).compute(currentSsf, fn.getData());
-        }
+        boolean fastcomputer=fn.isFast() && !fn.isMissing() && currentSsf.isTimeInvariant();
+        IConcentratedLikelihoodComputer<DiffuseConcentratedLikelihood> computer= DkToolkit.concentratedLikelihoodComputer(true, fastcomputer, fn.isScalingFactor());
+        if (fn.getX() == null)
+            ll=computer.compute(currentSsf, fn.getData());
+        else
+            ll=computer.compute(new SsfRegressionModel(currentSsf, fn.getData(), fn.getX(), fn.getDiffuseX()));
     }
 
     public F getSsf() {
@@ -89,7 +87,7 @@ public class DiffuseLikelihoodFunctionPoint<S, F extends ISsf> implements
             if (res == null) {
                 return null;
             } else {
-                E = DataBlock.select(res, x -> Double.isFinite(x));
+                E = DataBlock.select(res, x->Double.isFinite(x));
                 if (fn.isMaximumLikelihood()) {
                     double factor = Math.sqrt(ll.factor());
                     E.mul(factor);
@@ -104,7 +102,7 @@ public class DiffuseLikelihoodFunctionPoint<S, F extends ISsf> implements
      * @return
      */
     @Override
-    public DiffuseLikelihood getLikelihood() {
+    public DiffuseConcentratedLikelihood getLikelihood() {
         return ll;
     }
 
@@ -143,17 +141,14 @@ public class DiffuseLikelihoodFunctionPoint<S, F extends ISsf> implements
     public IFunction getFunction() {
         return fn;
     }
-
+    
     @Override
-    public IFunctionDerivatives derivatives() {
+     public IFunctionDerivatives derivatives(){
         return new NumericalDerivatives(this, fn.isSymmetric(), fn.isMultiThreaded());
-    }
-
-    ;
+    };
 
     @Override
-    public ISsqFunctionDerivatives ssqDerivatives() {
+     public ISsqFunctionDerivatives ssqDerivatives(){
         return new SsqNumericalDerivatives(this, fn.isSymmetric(), fn.isMultiThreaded());
-    }
-;
+    };
 }

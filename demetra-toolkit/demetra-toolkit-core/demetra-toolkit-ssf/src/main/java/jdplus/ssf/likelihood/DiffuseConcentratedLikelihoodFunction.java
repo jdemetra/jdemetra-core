@@ -33,20 +33,28 @@ import jdplus.likelihood.LikelihoodFunction;
  * @param <S> Type of the underlying object
  * @param <F> Ssf representation of objects of type S
  */
-public class DiffuseLikelihoodFunction<S, F extends ISsf> implements LikelihoodFunction<DiffuseLikelihood> {
+public class DiffuseConcentratedLikelihoodFunction<S, F extends ISsf> implements LikelihoodFunction<DiffuseConcentratedLikelihood> {
 
-    @BuilderPattern(DiffuseLikelihoodFunction.class)
+    @BuilderPattern(DiffuseConcentratedLikelihoodFunction.class)
     public static class Builder<S, F extends ISsf> {
 
         private final IParametricMapping<S> mapping;
         private final ISsfBuilder<S, F> builder;
         private final ISsfData data;
-        private boolean ml = true, log = false, fast = false, mt = false, sym = false, scalingFactor = true, res = true;
+        private FastMatrix X;
+        private int[] diffuseX;
+        private boolean ml = true, log = false, fast = false, mt = false, sym = false, scalingFactor=true;
 
         private Builder(final ISsfData data, final IParametricMapping<S> mapping, final ISsfBuilder<S, F> builder) {
             this.data = data;
             this.builder = builder;
             this.mapping = mapping;
+        }
+
+        public Builder regression(final FastMatrix X, final int[] diffuseX) {
+            this.X = X;
+            this.diffuseX = diffuseX;
+            return this;
         }
 
         public Builder useParallelProcessing(boolean mt) {
@@ -75,23 +83,14 @@ public class DiffuseLikelihoodFunction<S, F extends ISsf> implements LikelihoodF
         }
 
         public Builder useScalingFactor(boolean scalingFactor) {
-            this.scalingFactor = scalingFactor;
-            if (!scalingFactor) {
-                this.log = true;
-            } else {
-                res = true;
-            }
+            this.scalingFactor=scalingFactor;
+            if (! scalingFactor)
+                this.log=true;
             return this;
         }
 
-        public Builder residuals(boolean res) {
-            this.res = res;
-            return this;
-        }
-
-        public DiffuseLikelihoodFunction<S, F> build() {
-            return new DiffuseLikelihoodFunction(data, mapping, builder, ml, log, fast, 
-                    mt, sym, scalingFactor, res);
+        public DiffuseConcentratedLikelihoodFunction<S, F> build() {
+            return new DiffuseConcentratedLikelihoodFunction(data, X, diffuseX, mapping, builder, ml, log, fast, mt, sym, scalingFactor);
         }
     }
 
@@ -103,22 +102,24 @@ public class DiffuseLikelihoodFunction<S, F extends ISsf> implements LikelihoodF
     private final ISsfBuilder<S, F> builder; // mapping from an object S to a given ssf
     private final ISsfData data;
     private final boolean missing;
-    private final boolean ml, log, fast, mt, sym, scaling, res;
+    private final FastMatrix X;
+    private final int[] diffuseX;
+    private final boolean ml, log, fast, mt, sym, scaling;
 
-    private DiffuseLikelihoodFunction(ISsfData data, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
-            final boolean ml, final boolean log, final boolean fast, final boolean mt, 
-            final boolean sym, final boolean scaling, final boolean res) {
+    private DiffuseConcentratedLikelihoodFunction(ISsfData data, FastMatrix X, int[] diffuseX, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
+            final boolean ml, final boolean log, final boolean fast, final boolean mt, final boolean sym, final boolean scaling) {
         this.data = data;
         this.mapping = mapper;
         this.builder = builder;
+        this.X = X;
+        this.diffuseX = diffuseX;
         missing = data.hasMissingValues();
         this.ml = ml;
         this.fast = fast;
         this.log = log;
         this.mt = mt;
         this.sym = sym;
-        this.scaling = scaling;
-        this.res=res;
+        this.scaling=scaling;
     }
 
     public IParametricMapping<S> getMapping() {
@@ -141,13 +142,9 @@ public class DiffuseLikelihoodFunction<S, F extends ISsf> implements LikelihoodF
         return scaling;
     }
 
-    public boolean isResiduals() {
-        return res;
-    }
-
     @Override
-    public DiffuseLikelihoodFunctionPoint<S, F> evaluate(DoubleSeq parameters) {
-        return new DiffuseLikelihoodFunctionPoint<>(this, parameters);
+    public DiffuseConcentratedLikelihoodFunctionPoint<S, F> evaluate(DoubleSeq parameters) {
+        return new DiffuseConcentratedLikelihoodFunctionPoint<>(this, parameters);
     }
 
     /**
@@ -160,8 +157,8 @@ public class DiffuseLikelihoodFunction<S, F extends ISsf> implements LikelihoodF
     }
 
     @Override
-    public DiffuseLikelihoodFunctionPoint<S, F> ssqEvaluate(DoubleSeq parameters) {
-        return new DiffuseLikelihoodFunctionPoint<>(this, parameters);
+    public DiffuseConcentratedLikelihoodFunctionPoint<S, F> ssqEvaluate(DoubleSeq parameters) {
+        return new DiffuseConcentratedLikelihoodFunctionPoint<>(this, parameters);
     }
 
     /**
@@ -183,6 +180,20 @@ public class DiffuseLikelihoodFunction<S, F extends ISsf> implements LikelihoodF
      */
     public boolean isMissing() {
         return missing;
+    }
+
+    /**
+     * @return the X
+     */
+    public FastMatrix getX() {
+        return X;
+    }
+
+    /**
+     * @return the diffuseX
+     */
+    public int[] getDiffuseX() {
+        return diffuseX;
     }
 
     /**

@@ -3,15 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.maths;
-
-import demetra.design.Development;
+package demetra.ssf;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@Development(status = Development.Status.Release)
-public enum Optimizer {
-    LevenbergMarquardt, MinPack, BFGS, LBFGS
+public enum LikelihoodType {
+    Diffuse,
+    Augmented,
+    Marginal
 }

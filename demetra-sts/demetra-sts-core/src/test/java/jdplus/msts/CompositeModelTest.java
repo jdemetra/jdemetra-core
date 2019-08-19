@@ -5,6 +5,8 @@
  */
 package jdplus.msts;
 
+import demetra.maths.Optimizer;
+import demetra.ssf.LikelihoodType;
 import jdplus.maths.matrices.CanonicalMatrix;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
@@ -47,7 +49,7 @@ public class CompositeModelTest {
         int len = Prod_B_C.length;
         CanonicalMatrix M = CanonicalMatrix.make(len, 1);
         M.column(0).copyFrom(Prod_B_C, 0);
-        CompositeModelEstimation rslt = model.estimate(M, 1e-15, false, true, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-15, LikelihoodType.Diffuse, Optimizer.LevenbergMarquardt, true, null);
         // CompositeModelEstimation rslt = model.estimate(M, 1e-15, false, true, null);
 //        System.out.println(DataBlock.ofInternal(rslt.getFullParameters()));
 //        System.out.println(rslt.getSmoothedStates().getComponent(0));

@@ -7,16 +7,11 @@ package jdplus.msts;
 
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
-import jdplus.arima.ssf.AR1;
+import demetra.maths.Optimizer;
+import demetra.ssf.LikelihoodType;
 import jdplus.data.DataBlock;
 import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.ssf.SsfComponent;
 import jdplus.ssf.StateStorage;
-import jdplus.ssf.dk.DkToolkit;
-import jdplus.ssf.implementations.RegSsf;
-import jdplus.ssf.univariate.DefaultSmoothingResults;
-import jdplus.ssf.univariate.ISsf;
-import jdplus.ssf.univariate.SsfData;
 import org.junit.Test;
 
 /**
@@ -56,7 +51,7 @@ public class CumulatorTest {
         eq.add("disagg");
         model.add(eq);
         
-        CompositeModelEstimation rslt = model.estimate(y, 1e-15, true, true, null);
+        CompositeModelEstimation rslt = model.estimate(y, 1e-15, LikelihoodType.Augmented, Optimizer.LevenbergMarquardt, false, null);
         StateStorage states = rslt.getSmoothedStates();
         
         DataBlock q=DataBlock.of(states.getComponent(1));

@@ -17,6 +17,7 @@
 package rssf;
 
 import demetra.information.InformationMapping;
+import demetra.maths.Optimizer;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.msts.CompositeModel;
 import jdplus.msts.CompositeModelEstimation;
@@ -25,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.maths.matrices.Matrix;
+import demetra.ssf.LikelihoodType;
 
 /**
  *
@@ -268,8 +270,9 @@ public class CompositeModels {
 
     }
 
-    public Results estimate(CompositeModel model, Matrix data, double eps, boolean marginal, boolean rescaling, double[] parameters) {
-        return new Results(model.estimate(CanonicalMatrix.of(data), eps, marginal, rescaling, parameters));
+    public Results estimate(CompositeModel model, Matrix data, double eps, String lt, String opt, boolean rescaling, double[] parameters) {
+        return new Results(model.estimate(CanonicalMatrix.of(data), eps, LikelihoodType.valueOf(lt)
+                , Optimizer.valueOf(opt), rescaling, parameters));
     }
 
     public Results compute(CompositeModel model, Matrix data, double[] parameters, boolean marginal, boolean concentrated) {

@@ -20,11 +20,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
+import demetra.maths.Optimizer;
+import demetra.ssf.LikelihoodType;
 import jdplus.maths.matrices.FastMatrix;
 import jdplus.likelihood.LikelihoodFunction;
 import jdplus.likelihood.LikelihoodFunctionPoint;
 import jdplus.maths.functions.FunctionMinimizer;
 import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
+import jdplus.ssf.likelihood.DiffuseLikelihoodFunction;
 
 /**
  *
@@ -41,24 +44,22 @@ public class MstsMonitor {
         private static final int MAXITER = 20, MAXITER_MIN = 500;
         private static final double SMALL_VAR = 1e-8;
 
-        private boolean marginalLikelihood;
+        private LikelihoodType likelihood = LikelihoodType.Diffuse;
+        private Optimizer optimizer = Optimizer.LevenbergMarquardt;
         private double precision = 1e-9, smallVar = SMALL_VAR, precision2 = 1e-7, precision3 = 1e-3;
         private int maxIter = MAXITER;
         private int maxIterOptimzer = MAXITER_MIN;
-        private boolean bfgs;
-        private boolean lbfgs;
-        private boolean minpack;
         private boolean concentratedLikelihood = true;
 
-        public Builder marginalLikelihood(boolean ml) {
-            this.marginalLikelihood = ml;
+        public Builder likelihood(LikelihoodType lt) {
+            this.likelihood = lt;
             return this;
         }
 
         public Builder concentratedLikelihood(boolean cl) {
             this.concentratedLikelihood = cl;
             if (!cl) {
-                bfgs();
+                optimizer = Optimizer.BFGS;
             }
             return this;
         }
@@ -86,31 +87,8 @@ public class MstsMonitor {
             return this;
         }
 
-        public Builder bfgs() {
-            this.bfgs = true;
-            this.lbfgs = false;
-            this.minpack = false;
-            return this;
-        }
-
-        public Builder lbfgs() {
-            this.bfgs = false;
-            this.lbfgs = true;
-            this.minpack = false;
-            return this;
-        }
-
-        public Builder minpack() {
-            this.bfgs = false;
-            this.lbfgs = false;
-            this.minpack = true;
-            return this;
-        }
-
-        public Builder lm() {
-            this.bfgs = false;
-            this.lbfgs = false;
-            this.minpack = false;
+        public Builder optimizer(Optimizer optimizer) {
+            this.optimizer = optimizer;
             return this;
         }
 
@@ -119,13 +97,12 @@ public class MstsMonitor {
         }
     }
     private static final int NITER = 8;
-    private final boolean marginalLikelihood;
     private final boolean concentratedLikelihood;
     private final double precision, precision2, precision3, smallStde;
     private final int maxIter;
     private final int maxIterOptimzer;
-    private final boolean bfgs, lbfgs;
-    private final boolean minpack;
+    private final LikelihoodType likelihood;
+    private final Optimizer optimizer;
 
     private FastMatrix data;
     private MstsMapping model;
@@ -138,14 +115,12 @@ public class MstsMonitor {
 //    private final List<LoadingParameter> smallLoadings = new ArrayList<>();
 
     private MstsMonitor(Builder builder) {
-        this.bfgs = builder.bfgs;
-        this.lbfgs = builder.lbfgs;
-        this.minpack = builder.minpack;
+        this.likelihood = builder.likelihood;
+        this.optimizer = builder.optimizer;
         this.maxIterOptimzer = builder.maxIterOptimzer;
         this.precision = builder.precision;
         this.precision2 = builder.precision2;
         this.precision3 = builder.precision3;
-        this.marginalLikelihood = builder.marginalLikelihood;
         this.concentratedLikelihood = builder.concentratedLikelihood;
         this.maxIter = builder.maxIter;
         this.smallStde = Math.sqrt(builder.smallVar);
@@ -153,19 +128,28 @@ public class MstsMonitor {
 
     private LikelihoodFunction function(boolean concentrated) {
         SsfMatrix s = new SsfMatrix(data);
-        if (this.marginalLikelihood) {
-            return MarginalLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
-                    .useParallelProcessing(true)
-                    .useMaximumLikelihood(true)
-                    .useScalingFactor(concentrated)
-                    .build();
-        } else {
-            return SsfFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
-                    .useParallelProcessing(true)
-                    .useMaximumLikelihood(true)
-                    .useScalingFactor(concentrated)
-                    .useFastAlgorithm(true)
-                    .build();
+        switch (likelihood) {
+            case Marginal:
+                return MarginalLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
+                        .useParallelProcessing(true)
+                        .useMaximumLikelihood(true)
+                        .useScalingFactor(concentrated)
+                        .build();
+            case Augmented:
+                return DiffuseLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
+                        .useMaximumLikelihood(true)
+                        .useScalingFactor(concentrated)
+                        .useFastAlgorithm(true)
+                        .useParallelProcessing(true)
+                        .residuals(concentrated)
+                        .build();
+            default:
+                return SsfFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
+                        .useParallelProcessing(true)
+                        .useMaximumLikelihood(true)
+                        .useScalingFactor(concentrated)
+                        .useFastAlgorithm(true)
+                        .build();
         }
     }
 
@@ -274,21 +258,45 @@ public class MstsMonitor {
         if (fn.getDomain().getDim() == 0) {
             return fn.evaluate(start);
         }
-        if (!concentrated) {
-            FunctionMinimizer m = LbfgsMinimizer
-                    .builder()
-                    .functionPrecision(eps)
-                    .maxIter(niter)
-                    .build();
-            m.minimize(fn.evaluate(start));
-            return (LikelihoodFunctionPoint) m.getResult();
-        } else {
-            SsqFunctionMinimizer.Builder builder = minpack ? MinPackMinimizer.builder() : LevenbergMarquardtMinimizer.builder();
-            SsqFunctionMinimizer lm = builder.functionPrecision(eps)
-                    .maxIter(niter)
-                    .build();
-            lm.minimize(fn.evaluate(start));
-            return (LikelihoodFunctionPoint) lm.getResult();
+        Optimizer cur=optimizer;
+        if (! concentrated)
+            cur=Optimizer.BFGS;
+            
+        switch (cur) {
+            case LBFGS: {
+                FunctionMinimizer m = LbfgsMinimizer
+                        .builder()
+                        .functionPrecision(eps)
+                        .maxIter(niter)
+                        .build();
+                m.minimize(fn.evaluate(start));
+                return (LikelihoodFunctionPoint) m.getResult();
+            }
+            case BFGS: {
+                FunctionMinimizer m = Bfgs
+                        .builder()
+                        .functionPrecision(eps)
+                        .maxIter(niter)
+                        .build();
+                m.minimize(fn.evaluate(start));
+                return (LikelihoodFunctionPoint) m.getResult();
+            }
+            case MinPack: {
+                SsqFunctionMinimizer lm = MinPackMinimizer.builder()
+                        .functionPrecision(eps)
+                        .maxIter(niter)
+                        .build();
+                lm.minimize(fn.evaluate(start));
+                return (LikelihoodFunctionPoint) lm.getResult();
+            }
+            default:
+                SsqFunctionMinimizer lm = LevenbergMarquardtMinimizer.builder()
+                        .functionPrecision(eps)
+                        .maxIter(niter)
+                        .build();
+                lm.minimize(fn.evaluate(start));
+                return (LikelihoodFunctionPoint) lm.getResult();
+
         }
     }
 
