@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.msts.ModelItem;
 import jdplus.msts.MstsMapping;
@@ -69,4 +70,8 @@ public class LocalLevelItem extends StateItem {
         return 1;
     }
 
+    @Override
+    public int stateDim() {
+        return 1;
+    }
 }

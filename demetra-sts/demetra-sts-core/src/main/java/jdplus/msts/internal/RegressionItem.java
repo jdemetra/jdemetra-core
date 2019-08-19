@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.msts.ModelItem;
@@ -111,4 +112,11 @@ public class RegressionItem extends StateItem {
     public int defaultLoadingCount() {
         return 1;
     }
+    
+    @Override
+    public int stateDim(){
+        return x.getColumnsCount();
+    }
+
+    
 }

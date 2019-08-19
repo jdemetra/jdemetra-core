@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import java.util.List;
 import jdplus.benchmarking.ssf.SsfCumulator;
@@ -75,4 +76,8 @@ public class CumulatorItem extends StateItem {
         return 1;
     }
 
+    @Override
+    public int stateDim() {
+        return 1+core.stateDim();
+    }
 }

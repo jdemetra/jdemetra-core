@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
 import jdplus.msts.ArInterpreter;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
@@ -17,28 +18,31 @@ import jdplus.msts.ParameterInterpreter;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
 import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.implementations.Loading;
 
 /**
  *
  * @author palatej
  */
 public class MsaeItem2 extends StateItem {
-    
+
     private final VarianceInterpreter[] v;
     private final int lag;
+    private final int maxar;
     private final int[] lar;
     private final ArInterpreter[] par;
-    
+
     public MsaeItem2(String name, double[] v, boolean fixedVar, Matrix ar, boolean fixedar, int lag) {
         super(name);
         int nwaves = v.length;
         this.lag = lag;
         final int nar = ar.getColumnsCount();
+        maxar = ar.getRowsCount();
         lar = new int[nar];
         par = new ArInterpreter[nar];
-        this.v=new VarianceInterpreter[nwaves];
-        for (int i=0; i<nwaves; ++i){
-            this.v[i]=new VarianceInterpreter(name + ".var" + (i+1), v[i], fixedVar, true);
+        this.v = new VarianceInterpreter[nwaves];
+        for (int i = 0; i < nwaves; ++i) {
+            this.v[i] = new VarianceInterpreter(name + ".var" + (i + 1), v[i], fixedVar, true);
         }
         for (int i = 0; i < nar; ++i) {
             int j = 0;
@@ -53,7 +57,7 @@ public class MsaeItem2 extends StateItem {
             par[i] = new ArInterpreter(name + ".wae" + (i + 1), car, fixedar);
         }
     }
-    
+
     @Override
     public void addTo(MstsMapping mapping) {
         for (int i = 0; i < v.length; ++i) {
@@ -63,11 +67,11 @@ public class MsaeItem2 extends StateItem {
             mapping.add(par[i]);
         }
         mapping.add((p, builder) -> {
-            int nwaves=v.length;
-            double[] var=new double[nwaves];
+            int nwaves = v.length;
+            double[] var = new double[nwaves];
             int pos = 0;
-            for (int i=0; i<nwaves; ++i){
-                var[i]=p.get(pos++);
+            for (int i = 0; i < nwaves; ++i) {
+                var[i] = p.get(pos++);
             }
             double[][] w = new double[nwaves][];
             w[0] = DoubleSeq.EMPTYARRAY;
@@ -85,35 +89,64 @@ public class MsaeItem2 extends StateItem {
             return pos;
         });
     }
-    
+
     @Override
     public List<ParameterInterpreter> parameters() {
-        List<ParameterInterpreter> all=new ArrayList<>();
-        for (int i=0; i<v.length; ++i)
+        List<ParameterInterpreter> all = new ArrayList<>();
+        for (int i = 0; i < v.length; ++i) {
             all.add(v[i]);
-        for (int i=0; i<par.length; ++i)
+        }
+        for (int i = 0; i < par.length; ++i) {
             all.add(par[i]);
+        }
         return all;
     }
 
     @Override
     public StateComponent build(DoubleSeq p) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int nwaves = v.length;
+        double[] var = new double[nwaves];
+        int pos = 0;
+        for (int i = 0; i < nwaves; ++i) {
+            var[i] = p.get(pos++);
+        }
+        double[][] w = new double[nwaves][];
+        w[0] = DoubleSeq.EMPTYARRAY;
+        int nar = lar.length;
+        for (int i = 0; i < nar; ++i) {
+            w[i + 1] = p.extract(pos, lar[i]).toArray();
+            pos += lar[i];
+        }
+        // same coefficients for the last waves, if any
+        for (int i = nar + 1; i < nwaves; ++i) {
+            w[i] = w[i - 1];
+        }
+        return WaveSpecificSurveyErrors2.of(var, w, lag);
     }
 
     @Override
     public int parametersCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int n = v.length;
+        int nar = lar.length;
+        for (int i = 0; i < nar; ++i) {
+            n += lar[i];
+        }
+        return n;
     }
 
     @Override
     public ISsfLoading defaultLoading(int m) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int n=maxar*lag;
+        return m>v.length ? null : Loading.fromPosition(m*n);
     }
 
     @Override
     public int defaultLoadingCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return v.length;
     }
-    
+
+    @Override
+    public int stateDim() {
+        return maxar*lag*v.length;
+    }
 }

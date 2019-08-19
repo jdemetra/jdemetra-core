@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.ssf.SsfArima;
@@ -122,7 +123,7 @@ public class ArimaItem extends StateItem {
         int n = 1;
         if (par != null) {
             int nar = par.getDomain().getDim();
-            n = nar;
+            n += nar;
         }
         if (pma != null) {
             int nma = pma.getDomain().getDim();
@@ -141,4 +142,19 @@ public class ArimaItem extends StateItem {
         return 1;
     }
 
+    @Override
+    public int stateDim() {
+        int p = 0;
+        if (par != null) {
+            p = par.getDomain().getDim();
+        }
+        if (bdiff != null) {
+            p += bdiff.getDegree();
+        }
+        int q = 0;
+        if (pma != null) {
+            q = pma.getDomain().getDim();
+        }
+        return Math.max(p, q + 1);
+    }
 }

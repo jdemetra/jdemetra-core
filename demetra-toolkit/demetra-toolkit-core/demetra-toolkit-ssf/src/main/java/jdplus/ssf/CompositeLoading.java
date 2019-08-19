@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.ssf.implementations;
+package jdplus.ssf;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataWindow;
@@ -28,14 +28,14 @@ import jdplus.maths.matrices.FastMatrix;
  *
  * @author Jean Palate
  */
-class CompositeLoading implements ISsfLoading {
+public class CompositeLoading implements ISsfLoading {
 
 
     private final ISsfLoading[] loadings;
     private final int[] dim;
     private final DataBlock tmp;
 
-    CompositeLoading(final int[] dim, final ISsfLoading[] ms) {
+    public CompositeLoading(final int[] dim, final ISsfLoading[] ms) {
         this.loadings = ms;
         this.dim = dim;
         int n = ms.length;

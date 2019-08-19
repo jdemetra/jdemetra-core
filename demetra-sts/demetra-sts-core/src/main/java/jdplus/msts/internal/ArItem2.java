@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.msts.ArInterpreter;
 import jdplus.msts.ModelItem;
@@ -79,4 +80,12 @@ public class ArItem2 extends StateItem {
         return 1;
     }
 
+    @Override
+    public int stateDim() {
+        int n = ar.getDomain().getDim();
+        if (nfcasts >= n) {
+            n = nfcasts+1;
+        }
+        return n + nlags;
+    }
 }

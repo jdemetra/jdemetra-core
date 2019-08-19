@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.msts.internal;
+package jdplus.msts;
 
 import demetra.data.DoubleSeq;
 import java.util.List;
@@ -38,6 +38,8 @@ public abstract class StateItem implements ModelItem {
             return parametersCount();
         });
     }
+    
+    public abstract int stateDim();
 
     public abstract StateComponent build(DoubleSeq p);
 

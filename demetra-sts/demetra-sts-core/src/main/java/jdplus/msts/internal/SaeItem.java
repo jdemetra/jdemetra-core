@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.arima.AutoCovarianceFunction;
 import jdplus.maths.polynomials.Polynomial;
@@ -91,6 +92,11 @@ public class SaeItem extends StateItem {
     @Override
     public int defaultLoadingCount() {
         return 1;
+    }
+
+    @Override
+    public int stateDim() {
+        return ar.getDomain().getDim()*lag;
     }
 
 }

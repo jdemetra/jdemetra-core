@@ -61,10 +61,10 @@ public class DisaggregationModelsTest {
         for (int i = 0; i < n; ++i) {
             dssf.loading().Z(i, z);
             z.set(0, 0);
-//            System.out.println(z.dot(srslts.a(i)));
+            System.out.println(z.dot(srslts.a(i)));
         }
     }
-
+    
     //@Test
     public void testFernandez() {
         int m = Data.PCRA.length;

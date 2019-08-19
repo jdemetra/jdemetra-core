@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
@@ -68,6 +69,11 @@ public class NoiseItem extends StateItem {
 
     @Override
     public int defaultLoadingCount() {
+        return 1;
+    }
+
+    @Override
+    public int stateDim(){
         return 1;
     }
 

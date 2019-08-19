@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.ssf.SsfArima;
 import jdplus.msts.ModelItem;
@@ -103,7 +104,19 @@ public class SarimaItem extends StateItem {
 
     @Override
     public int defaultLoadingCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 1;
     }
 
+    @Override
+    public int stateDim() {
+        SarimaSpecification spec = p.getDomain().getSpec();
+        int p = spec.getP()+spec.getD();
+        int q=spec.getQ();
+        int s=spec.getPeriod();
+        if (s>0){
+            p+=s*(spec.getBp()+spec.getBd());
+            q+=s*spec.getBq();
+        }
+        return Math.max(p, q + 1);
+    }
 }

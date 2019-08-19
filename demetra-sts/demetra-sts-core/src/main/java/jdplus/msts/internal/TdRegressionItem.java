@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
@@ -118,6 +119,11 @@ public class TdRegressionItem extends StateItem {
     @Override
     public int parametersCount() {
         return 1;
+    }
+    
+    @Override
+    public int stateDim(){
+        return x.getColumnsCount();
     }
 
     @Override

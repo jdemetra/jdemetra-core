@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.msts.ArInterpreter;
 import jdplus.msts.ModelItem;
@@ -38,7 +39,6 @@ public class ArItem extends StateItem {
         this.zeroinit = zeroinit;
     }
 
-
     @Override
     public List<ParameterInterpreter> parameters() {
         return Arrays.asList(ar, v);
@@ -68,7 +68,12 @@ public class ArItem extends StateItem {
 
     @Override
     public int defaultLoadingCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 1;
+    }
+
+    @Override
+    public int stateDim() {
+        return Math.max(nlags, ar.getDomain().getDim())+1;
     }
 
 }

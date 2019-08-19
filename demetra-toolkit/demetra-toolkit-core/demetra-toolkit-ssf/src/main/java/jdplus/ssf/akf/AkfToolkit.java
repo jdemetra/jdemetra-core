@@ -25,6 +25,11 @@ import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.OrdinaryFilter;
 import demetra.likelihood.Likelihood;
+import jdplus.ssf.StateInfo;
+import jdplus.ssf.StateStorage;
+import jdplus.ssf.multivariate.IMultivariateSsf;
+import jdplus.ssf.multivariate.IMultivariateSsfData;
+import jdplus.ssf.multivariate.M2uAdapter;
 
 /**
  *
@@ -40,7 +45,7 @@ public class AkfToolkit {
     }
 
     public static ILikelihoodComputer<MarginalLikelihood> marginalLikelihoodComputer(final boolean concentrated) {
-        return (ssf, data)->QRFilter.ml(ssf, data, concentrated);
+        return (ssf, data) -> QRFilter.ml(ssf, data, concentrated);
 
     }
 
@@ -73,6 +78,25 @@ public class AkfToolkit {
         } else {
             return null;
         }
+    }
+
+    public static StateStorage smooth(IMultivariateSsf ssf, IMultivariateSsfData data, boolean all, boolean rescaleVariance) {
+        ISsf ussf = M2uAdapter.of(ssf);
+        ISsfData udata = M2uAdapter.of(data);
+        DefaultSmoothingResults sr = smooth(ussf, udata, all);
+        StateStorage ss = all ? StateStorage.full(StateInfo.Smoothed) : StateStorage.light(StateInfo.Smoothed);
+        int m = data.getVarsCount(), n = data.getObsCount();
+        ss.prepare(ussf.getStateDim(), 0, n);
+        if (all) {
+            for (int i = 0; i < n; ++i) {
+                ss.save(i, sr.a(i * m), sr.P(i * m));
+            }
+        } else {
+            for (int i = 0; i < n; ++i) {
+                ss.save(i, sr.a(i * m), null);
+            }
+        }
+        return ss;
     }
 
     private static class LLComputer1 implements ILikelihoodComputer<DiffuseLikelihood> {
@@ -114,6 +138,7 @@ public class AkfToolkit {
             return qr.getProfileLikelihood();
         }
     }
+
     public static double var(int n, DefaultAugmentedFilteringResults frslts) {
         double c = frslts.getAugmentation().c();
         double ssq = c * c;

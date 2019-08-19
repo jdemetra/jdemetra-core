@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
 import jdplus.msts.ArInterpreter;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.survey.WaveSpecificSurveyErrors;
@@ -119,4 +120,8 @@ public class MsaeItem extends StateItem {
         return nwaves;
     }
 
+    @Override
+    public int stateDim() {
+        return 2*nwaves;
+    }
 }

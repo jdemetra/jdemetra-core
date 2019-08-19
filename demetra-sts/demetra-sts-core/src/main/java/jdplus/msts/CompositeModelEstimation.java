@@ -75,7 +75,8 @@ public class CompositeModelEstimation {
 
     public StateStorage getSmoothedStates() {
         if (smoothedStates == null) {
-            StateStorage ss = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
+            StateStorage ss = AkfToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
+//            StateStorage ss = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
             if (likelihood.isScalingFactor()) {
                 ss.rescaleVariances(likelihood.sigma());
             }
