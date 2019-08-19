@@ -16,6 +16,7 @@ import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
+import jdplus.ssf.ISsfLoading;
 
 /**
  *
@@ -93,6 +94,26 @@ public class MsaeItem2 extends StateItem {
         for (int i=0; i<par.length; ++i)
             all.add(par[i]);
         return all;
+    }
+
+    @Override
+    public StateComponent build(DoubleSeq p) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int parametersCount() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

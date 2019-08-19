@@ -57,7 +57,7 @@ public class SsfArima {
         return Loading.fromPosition(0);
     }
 
-    public StateComponent componentOf(IArimaModel arima) {
+    public StateComponent stateComponent(IArimaModel arima) {
         if (arima.isStationary()) {
             return ofStationary(arima);
         } else {
@@ -66,7 +66,7 @@ public class SsfArima {
     }
 
     public Ssf of(IArimaModel arima) {
-        return Ssf.of(componentOf(arima), loading(), 0);
+        return Ssf.of(stateComponent(arima), loading(), 0);
     }
 
     

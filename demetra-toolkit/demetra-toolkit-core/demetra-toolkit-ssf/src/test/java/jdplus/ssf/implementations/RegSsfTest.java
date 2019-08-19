@@ -45,7 +45,7 @@ public class RegSsfTest {
                 .btheta(1, -.8)
                 .build();
         Ssf ssf = SsfArima.of(airline);
-        StateComponent cmp1 = SsfArima.componentOf(airline);
+        StateComponent cmp1 = SsfArima.stateComponent(airline);
         TsData s = Data.TS_PROD;
         SsfData y = new SsfData(s.getValues());
         GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD7);

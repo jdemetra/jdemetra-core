@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.modelling.regression.GenericTradingDaysVariable;
@@ -20,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import demetra.maths.matrices.Matrix;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  *
@@ -36,8 +39,12 @@ public class TdRegressionItem extends StateItem {
         DayClustering dc = DayClustering.of(groups);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         this.x = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
-        this.mvar = generateVar(dc, contrast);
         this.v = new VarianceInterpreter(name + ".var", var, fixed, true);
+        if (var == 0 && fixed) {
+            this.mvar = null;
+        } else {
+            this.mvar = generateVar(dc, contrast);
+        }
     }
 
     @Override
@@ -45,9 +52,14 @@ public class TdRegressionItem extends StateItem {
         mapping.add(v);
         mapping.add((p, builder) -> {
             double pvar = p.get(0);
-            CanonicalMatrix xvar = mvar.deepClone();
-            xvar.mul(pvar);
-            SsfComponent cmp = RegSsf.ofTimeVarying(x, xvar);
+            SsfComponent cmp;
+            if (mvar == null) {
+                cmp = RegSsf.of(x);
+            } else {
+                CanonicalMatrix xvar = mvar.deepClone();
+                xvar.mul(pvar);
+                cmp = RegSsf.ofTimeVarying(x, xvar);
+            }
             builder.add(name, cmp);
             return 1;
         });
@@ -89,6 +101,37 @@ public class TdRegressionItem extends StateItem {
             }
         }
         return SymmetricMatrix.XSXt(full, Q);
+    }
+
+    @Override
+    public StateComponent build(DoubleSeq p) {
+        double pvar = p.get(0);
+        if (mvar == null) {
+            return RegSsf.stateComponent(x.getColumnsCount());
+        } else {
+            CanonicalMatrix xvar = mvar.deepClone();
+            xvar.mul(pvar);
+            return RegSsf.stateComponent(xvar);
+        }
+    }
+
+    @Override
+    public int parametersCount() {
+        return 1;
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        if (m > 0) {
+            return null;
+        } else {
+            return RegSsf.loading(x);
+        }
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        return 1;
     }
 
 }

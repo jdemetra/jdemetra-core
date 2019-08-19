@@ -13,10 +13,12 @@ import jdplus.msts.SarimaInterpreter;
 import jdplus.msts.VarianceInterpreter;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
+import demetra.data.DoubleSeq;
 import jdplus.ssf.StateComponent;
 import java.util.Arrays;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
+import jdplus.ssf.ISsfLoading;
 
 /**
  *
@@ -55,10 +57,10 @@ public class SarimaItem extends StateItem {
                     .parameters(p.extract(1, np))
                     .build();
             if (var == 1) {
-                cmp = SsfArima.componentOf(sarima);
+                cmp = SsfArima.stateComponent(sarima);
             } else {
                 ArimaModel arima = new ArimaModel(sarima.getStationaryAr(), sarima.getNonStationaryAr(), sarima.getMa(), var);
-                cmp = SsfArima.componentOf(arima);
+                cmp = SsfArima.stateComponent(arima);
             }
             builder.add(name, cmp, null);
             return np + 1;
@@ -68,6 +70,40 @@ public class SarimaItem extends StateItem {
     @Override
     public List<ParameterInterpreter> parameters() {
         return Arrays.asList(v, p);
+    }
+
+    @Override
+    public StateComponent build(DoubleSeq x) {
+        SarimaSpecification spec = p.getDomain().getSpec();
+        double var = x.get(0);
+        int np = spec.getParametersCount();
+        SarimaModel sarima = SarimaModel.builder(spec)
+                .parameters(x.extract(1, np))
+                .build();
+        StateComponent cmp;
+        if (var == 1) {
+            cmp = SsfArima.stateComponent(sarima);
+        } else {
+            ArimaModel arima = new ArimaModel(sarima.getStationaryAr(), sarima.getNonStationaryAr(), sarima.getMa(), var);
+            cmp = SsfArima.stateComponent(arima);
+        }
+        return cmp;
+    }
+
+    @Override
+    public int parametersCount() {
+        SarimaSpecification spec = p.getDomain().getSpec();
+        return spec.getParametersCount() + 1;
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        return SsfArima.loading();
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

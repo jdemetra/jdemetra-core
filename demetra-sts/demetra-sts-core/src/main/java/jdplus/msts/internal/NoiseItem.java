@@ -5,7 +5,7 @@
  */
 package jdplus.msts.internal;
 
-import jdplus.msts.ModelItem;
+import demetra.data.DoubleSeq;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
 import jdplus.ssf.SsfComponent;
@@ -13,6 +13,9 @@ import jdplus.sts.Noise;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
+import jdplus.ssf.implementations.Loading;
 
 /**
  *
@@ -41,6 +44,31 @@ public class NoiseItem extends StateItem {
     @Override
     public List<ParameterInterpreter> parameters() {
         return Collections.singletonList(v);
+    }
+
+    @Override
+    public StateComponent build(DoubleSeq p) {
+            double e = p.get(0);
+            return Noise.stateComponent(e);
+    }
+
+    @Override
+    public int parametersCount() {
+        return 1;
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        if (m > 0) {
+            return null;
+        } else {
+            return Noise.loading();
+        }
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        return 1;
     }
 
 }

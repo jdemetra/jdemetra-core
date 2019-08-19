@@ -22,6 +22,8 @@ import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.Loading;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 
 /**
@@ -33,6 +35,18 @@ public class Noise {
 
     public SsfComponent of(final double var) {
         return new SsfComponent(new Initialization(var), new Dynamics(var), Loading.fromPosition(0));
+    }
+
+    public StateComponent stateComponent(final double var) {
+        return new StateComponent(new Initialization(var), new Dynamics(var));
+    }
+    
+    public ISsfLoading loading(){
+        return Loading.fromPosition(0);
+    }
+    
+    public ISsfLoading periodicLoading(final int period, final int startPos) {
+        return Loading.circular(period, startPos);
     }
 
     public SsfComponent periodic(final int period, final int startPos, final double var) {

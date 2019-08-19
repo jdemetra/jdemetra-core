@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import demetra.data.DoubleSeq;
 import jdplus.msts.ArInterpreter;
 import jdplus.msts.ModelItem;
 import jdplus.msts.MstsMapping;
@@ -15,6 +16,8 @@ import jdplus.arima.ssf.SsfAr2;
 import java.util.Arrays;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  *
@@ -51,6 +54,29 @@ public class ArItem2 extends StateItem {
     @Override
     public List<ParameterInterpreter> parameters() {
         return Arrays.asList(ar, v);
+    }
+
+    @Override
+    public StateComponent build(DoubleSeq p) {
+        int n = ar.getDomain().getDim();
+        double[] par = p.extract(0, n).toArray();
+        double w = p.get(n);
+        return SsfAr2.stateComponent(par, w, nlags, nfcasts);
+    }
+
+    @Override
+    public int parametersCount() {
+        return 1 + ar.getDomain().getDim();
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        return SsfAr2.loading(nlags);
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        return 1;
     }
 
 }

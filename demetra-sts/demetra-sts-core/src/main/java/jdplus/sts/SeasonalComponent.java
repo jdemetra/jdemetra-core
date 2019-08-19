@@ -28,6 +28,8 @@ import jdplus.ssf.SsfComponent;
 import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  *
@@ -252,7 +254,17 @@ public class SeasonalComponent {
         return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
 
-    public SsfComponent harrisonStevens(final int period, final double v) {
+   public StateComponent stateComponent(final SeasonalModel model, final int period, final double seasVar) {
+        SeasonalModel cmodel=seasVar == 0 ? SeasonalModel.Fixed : model;
+        Data data = new Data(cmodel, seasVar, period);
+        return new StateComponent(new Initialization(data), new Dynamics(data));
+    }
+   
+   public ISsfLoading loading(){
+       return Loading.fromPosition(0);
+   }
+
+   public SsfComponent harrisonStevens(final int period, final double v) {
         HarrisonStevensData data = new HarrisonStevensData(period, v);
         return new SsfComponent(new HarrisonStevensInitialization(data),
                 new HarrisonStevensDynamics(data), Loading.circular(period));

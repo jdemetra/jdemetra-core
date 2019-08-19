@@ -22,6 +22,8 @@ import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.Loading;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  * Usual local linear trend y(t)=l(t)+n(t) l(t+1)=s(t)+l(t)+u(t)
@@ -36,6 +38,16 @@ public class LocalLinearTrend {
         Data data = new Data(lvar, svar);
         return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
+
+    public StateComponent stateComponent(double lvar, double svar) {
+        Data data = new Data(lvar, svar);
+        return new StateComponent(new Initialization(data), new Dynamics(data));
+    }
+    
+    public ISsfLoading loading(){
+        return Loading.fromPosition(0);
+    }
+
 
     static class Data {
 

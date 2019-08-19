@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import demetra.data.DoubleSeq;
 import jdplus.msts.ModelItem;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
@@ -13,6 +14,8 @@ import jdplus.sts.LocalLevel;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  *
@@ -43,6 +46,27 @@ public class LocalLevelItem extends StateItem {
     @Override
     public List<ParameterInterpreter> parameters() {
         return Collections.singletonList(v);
+    }
+
+    @Override
+    public StateComponent build(DoubleSeq p) {
+        double e = p.get(0);
+        return LocalLevel.stateComponent(e, initial);
+    }
+
+    @Override
+    public int parametersCount() {
+        return 1;
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        return LocalLevel.loading();
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        return 1;
     }
 
 }

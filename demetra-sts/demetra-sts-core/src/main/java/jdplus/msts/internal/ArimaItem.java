@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import demetra.data.DoubleSeq;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.ssf.SsfArima;
 import jdplus.maths.linearfilters.BackFilter;
@@ -17,6 +18,7 @@ import jdplus.ssf.StateComponent;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
+import jdplus.ssf.ISsfLoading;
 
 /**
  *
@@ -75,7 +77,7 @@ public class ArimaItem extends StateItem {
             }
             double var = p.get(pos++);
             ArimaModel arima = new ArimaModel(bar, bdiff, bma, var);
-            StateComponent cmp = SsfArima.componentOf(arima);
+            StateComponent cmp = SsfArima.stateComponent(arima);
             builder.add(name, cmp, null);
             return pos;
         });
@@ -92,6 +94,51 @@ public class ArimaItem extends StateItem {
         }
         list.add(v);
         return list;
+    }
+
+    @Override
+    public StateComponent build(DoubleSeq p) {
+        BackFilter bar = BackFilter.ONE, bma = BackFilter.ONE;
+        int pos = 0;
+        if (par != null) {
+            int nar = par.getDomain().getDim();
+            Polynomial ar = Polynomial.valueOf(1, p.extract(0, nar).toArray());
+            bar = new BackFilter(ar);
+            pos += nar;
+        }
+        if (pma != null) {
+            int nma = pma.getDomain().getDim();
+            Polynomial ma = Polynomial.valueOf(1, p.extract(0, nma).toArray());
+            bma = new BackFilter(ma);
+            pos += nma;
+        }
+        double var = p.get(pos++);
+        ArimaModel arima = new ArimaModel(bar, bdiff, bma, var);
+        return SsfArima.stateComponent(arima);
+    }
+
+    @Override
+    public int parametersCount() {
+        int n = 1;
+        if (par != null) {
+            int nar = par.getDomain().getDim();
+            n = nar;
+        }
+        if (pma != null) {
+            int nma = pma.getDomain().getDim();
+            n += nma;
+        }
+        return n;
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        return SsfArima.loading();
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        return 1;
     }
 
 }
