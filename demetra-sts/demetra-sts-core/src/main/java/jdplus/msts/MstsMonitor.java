@@ -258,10 +258,11 @@ public class MstsMonitor {
         if (fn.getDomain().getDim() == 0) {
             return fn.evaluate(start);
         }
-        Optimizer cur=optimizer;
-        if (! concentrated)
-            cur=Optimizer.BFGS;
-            
+        Optimizer cur = optimizer;
+        if (!concentrated && (cur == Optimizer.LevenbergMarquardt || cur == Optimizer.MinPack)) {
+            cur = Optimizer.BFGS;
+        }
+
         switch (cur) {
             case LBFGS: {
                 FunctionMinimizer m = LbfgsMinimizer

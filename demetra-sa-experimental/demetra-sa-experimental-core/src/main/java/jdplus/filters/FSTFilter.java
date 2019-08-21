@@ -22,10 +22,10 @@ import jdplus.maths.polynomials.UnitRoots;
  */
 public class FSTFilter {
 
-    public static Builder builder(){
+    public static Builder builder() {
         return new Builder();
     }
-    
+
     public static class Builder {
 
         private int pdegree = 2;
@@ -33,39 +33,39 @@ public class FSTFilter {
         private int nlags = 6, nleads = 6;
         private double w0 = 0, w1 = Math.PI / 18;
         private boolean antialias = true;
-        
-        public Builder degreeOfSmoothness(int d){
-            this.sdegree=d;
+
+        public Builder degreeOfSmoothness(int d) {
+            this.sdegree = d;
             return this;
         }
 
-        public Builder polynomialPreservation(int d){
-            this.pdegree=d;
+        public Builder polynomialPreservation(int d) {
+            this.pdegree = d;
             return this;
         }
 
-        public Builder nlags(int nlags){
-            this.nlags=nlags;
+        public Builder nlags(int nlags) {
+            this.nlags = nlags;
             return this;
         }
-        
-        public Builder nleads(int nleads){
-            this.nleads=nleads;
+
+        public Builder nleads(int nleads) {
+            this.nleads = nleads;
             return this;
         }
-        
-        public Builder timelinessAntialiasCriterion(boolean b){
-            this.antialias=b;
+
+        public Builder timelinessAntialiasCriterion(boolean b) {
+            this.antialias = b;
             return this;
         }
-        
-        public Builder timelinessLimits(double w0, double w1){
-            this.w0=w0;
-            this.w1=w1;
+
+        public Builder timelinessLimits(double w0, double w1) {
+            this.w0 = w0;
+            this.w1 = w1;
             return this;
         }
-        
-        public FSTFilter build(){
+
+        public FSTFilter build() {
             return new FSTFilter(this);
         }
     }
@@ -75,31 +75,30 @@ public class FSTFilter {
     private final TimelinessCriterion T = new TimelinessCriterion();
     private final int nlags, nleads, p;
 
-    // for caching reason
-    private final CanonicalMatrix J, SM, TM;
-
     private FSTFilter(Builder builder) {
         this.nlags = builder.nlags;
         this.nleads = builder.nleads;
-        this.p = builder.pdegree;
+        this.p = builder.pdegree + 1;
         S.degree(builder.sdegree);
         T.antialias(builder.antialias)
                 .bounds(builder.w0, builder.w1);
-        int n = nlags + nleads + 1;
-        J = CanonicalMatrix.square(n + p);
-        SM = S.buildMatrix(nlags, nleads);
-        if (T.antialias) {
-            TM = T.buildMatrix(nlags, nleads);
-        } else {
-            TM = null;
-        }
     }
 
     private Results makeQuadratic(double wf, double ws, double wt) {
         Results.Builder builder = Results.builder();
         int n = nlags + nleads + 1;
+        CanonicalMatrix J = CanonicalMatrix.square(n + p);
+        CanonicalMatrix SM = S.buildMatrix(nlags, nleads), TM = T.buildMatrix(nlags, nleads);
+        SubMatrix C = J.extract(n, p, 0, n);
+        C.row(0).set(1);
+        for (int q = 1; q < p; ++q) {
+            final int t = q;
+            C.row(q).set(k -> kpow(k - nlags, t));
+        }
+        J.extract(0, n, n, p).copy(C.transpose());
 
         SubMatrix X = J.extract(0, n, 0, n);
+        X.set(0);
         if (wf != 0) {
             X.diagonal().add(wf);
         }
@@ -109,29 +108,22 @@ public class FSTFilter {
         if (wt != 0) {
             X.addAY(wt, TM);
         }
-        SubMatrix C = J.extract(n, p, 0, n);
-        C.row(0).set(1);
-        for (int q = 1; q < p; ++q) {
-            final int t = q;
-            C.row(q).set(k -> kpow(k - nlags, t));
-        }
-        J.extract(0, n, n, p).copy(C.transpose());
         DataBlock z = DataBlock.make(n + p);
         z.set(n, 1);
         Householder hous = new Householder(false);
         hous.decompose(J);
         hous.solve(z);
-
-        builder.filter(FiniteFilter.ofInternal(z.extract(0, n).toArray(), -nlags));
+        DataBlock w = z.extract(0, n);
+        builder.filter(FiniteFilter.ofInternal(w.toArray(), -nlags));
 
         if (wf > 0) {
-            builder.f(z.ssq() * wf);
+            builder.f(w.ssq() * wf);
         }
         if (ws > 0) {
-            builder.s(QuadraticForm.apply(SM, z) * ws);
+            builder.s(QuadraticForm.apply(SM, w) * ws);
         }
         if (wt > 0 && TM != null) {
-            builder.t(QuadraticForm.apply(TM, z) * wt);
+            builder.t(QuadraticForm.apply(TM, w) * wt);
         }
         return builder.build();
     }

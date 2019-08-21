@@ -54,7 +54,7 @@ public class SsfBsmTest {
         System.out.println(ll1);
         DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(bsm, data);
 //        System.out.println(ll2);
-        DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(true).compute(bsm, data);
+        DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(true, true).compute(bsm, data);
 //        System.out.println(ll3);
         assertEquals(ll1.logLikelihood(), ll3.logLikelihood(), 1e-6);
         assertEquals(ll1.logLikelihood(), ll2.logLikelihood(), 1e-6);

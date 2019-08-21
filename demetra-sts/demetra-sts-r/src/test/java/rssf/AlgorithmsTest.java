@@ -139,13 +139,13 @@ public class AlgorithmsTest {
         model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
         model.add(AtomicModels.seasonalComponent("s", "Dummy", 12, .01, false));
 //        model.add(AtomicModels.rawTdRegression("td", Data.TS_ABS_RETAIL.getDomain(), new int[]{1,1,1,1,1,0,0}, new double[]{0.01, 0.01}, false));
-//        model.add(AtomicModels.sae("sae", new double[]{0.5, 0.3}, false, 1, false));
-        model.add(AtomicModels.noise("n", .01, false));
+        model.add(AtomicModels.sae("sae", new double[]{0.5, 0.3}, false, 1, false));
+//        model.add(AtomicModels.noise("n", .01, false));
         ModelEquation eq = new ModelEquation("eq", 0, true);
         eq.add("l");
         eq.add("s");
-//        eq.add("sae");
-        eq.add("n");//, 1, true, Loading.rescale(Loading.fromPosition(0), w));
+        eq.add("sae");
+//        eq.add("n");//, 1, true, Loading.rescale(Loading.fromPosition(0), w));
         model.add(eq);
 //        ModelEquation eqs = new ModelEquation("eqs", 0, true);
 //        eqs.add("td", 1, true, Loading.sum());
@@ -153,7 +153,7 @@ public class AlgorithmsTest {
 //        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
 //        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
 
-        CompositeModelEstimation rslt = model.estimate(M, 1e-9, LikelihoodType.Diffuse, Optimizer.LevenbergMarquardt, true, null);
+        CompositeModelEstimation rslt = model.estimate(M, 1e-9, LikelihoodType.Marginal, Optimizer.LevenbergMarquardt, true, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("SAE+TD");

@@ -30,15 +30,25 @@ public class FSTFilterTest {
 
     public static void main(String[] args) {
         FSTFilter ff = FSTFilter.builder()
-                .nlags(7)
-                .nleads(12)
+                .nlags(2)
+                .nleads(11)
                 .build();
-         for (int i = 0; i < 500; ++i) {
-             double wt=i*.002;
-             double ws=1-wt;
+        for (int i = 0; i < 10; ++i) {
+            double wt = i * .1;
+            double ws = 1 - wt;
             FSTFilter.Results rslt = ff.make(ws, wt);
             FiniteFilter filter = rslt.getFilter();
-            System.out.println(rslt.getT());
+            //           System.out.println(DoubleSeq.of(filter.weightsToArray()));
+        }
+
+        for (int i = 0; i <= 11; ++i) {
+            FSTFilter ff2 = FSTFilter.builder()
+                    .nlags(11)
+                    .nleads(i)
+                    .build();
+            FSTFilter.Results rslt = ff2.make(1,0);
+            FiniteFilter filter = rslt.getFilter();
+            System.out.println(DoubleSeq.of(filter.weightsToArray()));
         }
     }
 
@@ -49,6 +59,6 @@ public class FSTFilterTest {
             SymmetricFilter S = SymmetricFilter.convolutionOf(D, 1);
             double[] s = S.coefficientsAsPolynomial().toArray();
             assertTrue(Arrays.equals(s, SmoothnessCriterion.weights(degree)));
-       }
+        }
     }
 }
