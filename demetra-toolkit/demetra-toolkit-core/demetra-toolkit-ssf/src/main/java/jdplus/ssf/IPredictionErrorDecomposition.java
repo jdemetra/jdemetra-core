@@ -23,5 +23,5 @@ import demetra.likelihood.Likelihood;
  * @author Jean Palate
  */
 public interface IPredictionErrorDecomposition {
-    Likelihood likelihood();
+    Likelihood likelihood(boolean scalingfactor);
 }

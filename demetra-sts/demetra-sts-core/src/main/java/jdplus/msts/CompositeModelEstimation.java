@@ -63,7 +63,7 @@ public class CompositeModelEstimation {
             rslt.likelihood = AkfToolkit.marginalLikelihoodComputer(concentrated).
                     compute(M2uAdapter.of(rslt.getSsf()), M2uAdapter.of(new SsfMatrix(data)));
         } else {
-            rslt.likelihood = DkToolkit.likelihood(rslt.getSsf(), new SsfMatrix(data));
+            rslt.likelihood = DkToolkit.likelihood(rslt.getSsf(), new SsfMatrix(data), true, false);
         }
         return rslt;
     }

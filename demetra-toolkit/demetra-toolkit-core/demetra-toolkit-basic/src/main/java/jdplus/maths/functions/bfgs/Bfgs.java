@@ -20,8 +20,8 @@ import jdplus.maths.functions.FunctionMinimizer;
 /**
  * BFGS variable-metric method, based on Pascal code in J.C. Nash, `Compact
  * Numerical Methods for Computers', 2nd edition, converted by p2c then
- * re-crafted by B.D. Ripley. The current implementation is a refactoring of
- * the BFGS routine implemented in R.
+ * re-crafted by B.D. Ripley. The current implementation is a refactoring of the
+ * BFGS routine implemented in R.
  *
  * @author Jean Palate
  */

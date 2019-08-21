@@ -50,11 +50,11 @@ public class SsfBsmTest {
     @Test
     public void testLikelihood() {
         SsfData data = new SsfData(Data.PROD);
-        DiffuseLikelihood ll1 = DkToolkit.likelihoodComputer(true, true).compute(bsm, data);
+        DiffuseLikelihood ll1 = DkToolkit.likelihoodComputer(true, true, true).compute(bsm, data);
         System.out.println(ll1);
-        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(bsm, data);
+        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(bsm, data);
 //        System.out.println(ll2);
-        DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(true, true).compute(bsm, data);
+        DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(true, true, true).compute(bsm, data);
 //        System.out.println(ll3);
         assertEquals(ll1.logLikelihood(), ll3.logLikelihood(), 1e-6);
         assertEquals(ll1.logLikelihood(), ll2.logLikelihood(), 1e-6);
@@ -67,28 +67,28 @@ public class SsfBsmTest {
         testLikelihood();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < N; ++i) {
-            DkToolkit.likelihoodComputer().compute(bsm, data);
+            DkToolkit.likelihoodComputer(true, true, false).compute(bsm, data);
         }
         long t1 = System.currentTimeMillis();
         System.out.println("dk filter (sqr)");
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < N; ++i) {
-            DkToolkit.likelihoodComputer(false, false).compute(bsm, data);
+            DkToolkit.likelihoodComputer(false, true, false).compute(bsm, data);
         }
         t1 = System.currentTimeMillis();
         System.out.println("dk filter");
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < N; ++i) {
-            AkfToolkit.likelihoodComputer(true).compute(bsm, data);
+            AkfToolkit.likelihoodComputer(true, true, false).compute(bsm, data);
         }
         t1 = System.currentTimeMillis();
         System.out.println("akf filter");
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < N; ++i) {
-            CkmsToolkit.likelihoodComputer().compute(bsm, data);
+            CkmsToolkit.likelihoodComputer(true).compute(bsm, data);
         }
         t1 = System.currentTimeMillis();
         System.out.println("ckms filter");

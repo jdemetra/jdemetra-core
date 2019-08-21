@@ -25,28 +25,39 @@ public class FSTFilterTest {
     }
 
     @Test
-    public void testSomeMethod() {
+    public void testSymmetric() {
+        for (int i = 0; i <= 10; ++i) {
+            FSTFilter ff = FSTFilter.builder()
+                    .nlags(4)
+                    .nleads(4)
+                    .build();
+            FSTFilter.Results rslt = ff.make(.1 * i, 0);
+            System.out.println(DoubleSeq.of(rslt.getFilter().weightsToArray()));
+        }
     }
 
     public static void main(String[] args) {
-        FSTFilter ff = FSTFilter.builder()
-                .nlags(2)
-                .nleads(11)
-                .build();
-        for (int i = 0; i < 10; ++i) {
-            double wt = i * .1;
-            double ws = 1 - wt;
-            FSTFilter.Results rslt = ff.make(ws, wt);
-            FiniteFilter filter = rslt.getFilter();
-            //           System.out.println(DoubleSeq.of(filter.weightsToArray()));
-        }
 
-        for (int i = 0; i <= 11; ++i) {
+        for (int i = 0; i <= 21; ++i) {
             FSTFilter ff2 = FSTFilter.builder()
-                    .nlags(11)
+                    .nlags(21)
                     .nleads(i)
+                    .timelinessLimits(0, Math.PI / 8)
+                    .polynomialPreservation(2)
                     .build();
-            FSTFilter.Results rslt = ff2.make(1,0);
+            FSTFilter.Results rslt = ff2.make(.4, .5);
+            FiniteFilter filter = rslt.getFilter();
+            System.out.println(DoubleSeq.of(filter.weightsToArray()));
+        }
+        for (int i = 0; i <= 21; ++i) {
+            FSTFilter ff2 = FSTFilter.builder()
+                    .nlags(21)
+                    .nleads(i)
+                    .timelinessLimits(0, Math.PI / 8)
+                    .timelinessAntiphaseCriterion(false)
+                    .polynomialPreservation(2)
+                    .build();
+            FSTFilter.Results rslt = ff2.make(.4, .5);
             FiniteFilter filter = rslt.getFilter();
             System.out.println(DoubleSeq.of(filter.weightsToArray()));
         }

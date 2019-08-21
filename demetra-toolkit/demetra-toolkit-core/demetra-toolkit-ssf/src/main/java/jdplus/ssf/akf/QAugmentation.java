@@ -106,7 +106,7 @@ public class QAugmentation {
         return B;
     }
 
-    public DiffuseLikelihood likelihood() {
+    public DiffuseLikelihood likelihood(boolean scalingfactor) {
         double cc = c();
         cc *= cc;
         LogSign dsl = LogSign.of(a().diagonal());
@@ -115,6 +115,7 @@ public class QAugmentation {
                 .ssqErr(cc)
                 .logDeterminant(det.getLogDeterminant())
                 .diffuseCorrection(dcorr)
+                .concentratedScalingFactor(scalingfactor)
                 .build();
     }
 

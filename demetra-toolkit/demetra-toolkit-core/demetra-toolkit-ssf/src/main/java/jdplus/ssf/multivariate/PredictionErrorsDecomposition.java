@@ -103,8 +103,9 @@ public class PredictionErrorsDecomposition implements
     }
 
     @Override
-    public Likelihood likelihood() {
+    public Likelihood likelihood(boolean scalingfactor) {
         return Likelihood.builder(cumulator.getObsCount())
+                .scalingFactor(scalingfactor)
                 .ssqErr(cumulator.getSsqErr())
                 .logDeterminant(cumulator.getLogDeterminant()).build();
     }

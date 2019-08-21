@@ -61,50 +61,56 @@ import jdplus.maths.matrices.FastMatrix;
 @lombok.experimental.UtilityClass
 public class DkToolkit {
 
-    public DiffuseLikelihood likelihood(ISsf ssf, ISsfData data) {
-        return likelihoodComputer().compute(ssf, data);
+    /**
+     * Diffuse likelihood (see Durbin-Koopman)
+     * @param ssf State space form
+     * @param data Data
+     * @param scalingfactor True if the likelihood is defined up to a scaling factor
+     * @param res True if the likelihood will contain the residuals
+     * @return 
+     */
+    public DiffuseLikelihood likelihood(ISsf ssf, ISsfData data, boolean scalingfactor, boolean res) {
+        return likelihoodComputer(true, scalingfactor, res).compute(ssf, data);
     }
 
-    public MarginalLikelihood marginalLikelihood(ISsf ssf, ISsfData data, boolean concentrated) {
-        return new MLLComputer(concentrated, concentrated).compute(ssf, data);
+    /**
+     * Marginal likelihood (see Franke...)
+     * @param ssf State space form
+     * @param data Data
+     * @param scalingfactor True if the likelihood is defined up to a scaling factor
+     * @param res True if the likelihood will contain the residuals
+     * @return 
+     */
+    public MarginalLikelihood marginalLikelihood(ISsf ssf, ISsfData data, boolean scalingfactor, boolean res) {
+        return new MLLComputer(scalingfactor, res).compute(ssf, data);
     }
 
-    public MarginalLikelihood marginalLikelihood(ISsf ssf, ISsfData data, boolean res, boolean concentrated) {
-        return new MLLComputer(res, concentrated).compute(ssf, data);
-    }
-
-    public DiffuseLikelihood likelihood(IMultivariateSsf ssf, IMultivariateSsfData data) {
+   public DiffuseLikelihood likelihood(IMultivariateSsf ssf, IMultivariateSsfData data, boolean scalingfactor, boolean res) {
         ISsf ussf = M2uAdapter.of(ssf);
         ISsfData udata = M2uAdapter.of(data);
-        return likelihoodComputer().compute(ussf, udata);
+        return likelihoodComputer(true, scalingfactor, res).compute(ussf, udata);
+   }
+        
+     /**
+     * Diffuse likelihood computer (see Durbin-Koopman)
+     * @param sqr True if the square root initialization is used
+     * @param scalingfactor True if the likelihood is defined up to a scaling factor
+     * @param res True if the likelihood will contain the residuals
+     * @return 
+     */
+    public ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer(boolean sqr, boolean scalingfactor, boolean res) {
+        return sqr ? new LLComputer2(scalingfactor, res) : new LLComputer1(scalingfactor, res);
     }
 
-    public ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer() {
-        return likelihoodComputer(true, false);
-    }
-
-    public ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer(boolean res) {
-        return likelihoodComputer(true, res);
-    }
-
-    public ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer(boolean sqr, boolean res) {
-        return sqr ? new LLComputer2(res) : new LLComputer1(res);
-    }
-
-    public IConcentratedLikelihoodComputer<DiffuseConcentratedLikelihood> concentratedLikelihoodComputer() {
-        return concentratedLikelihoodComputer(true, false, true);
-    }
-
-    public IConcentratedLikelihoodComputer<DiffuseConcentratedLikelihood> concentratedLikelihoodComputer(boolean sqr, boolean fast, boolean scalingFactor) {
-        return new CLLComputer(sqr, fast, scalingFactor);
-    }
-
-    public <S, F extends ISsf> SsfFunction<S, F> likelihoodFunction(ISsfData data, IParametricMapping<S> mapping, ISsfBuilder<S, F> builder) {
-        return SsfFunction.builder(data, mapping, builder).build();
-    }
-
-    public <F extends ISsf> SsfFunction<F, F> likelihoodFunction(ISsfData data, IParametricMapping<F> mapping) {
-        return SsfFunction.builder(data, mapping, (F f) -> f).build();
+    /**
+     * Diffuse concentrated likelihood computer (see Durbin-Koopman)
+     * @param sqr True if the square root initialization is used
+     * @param fast Fast (Ckms) processing (if possible)
+     * @param scalingfactor True if the likelihood is defined up to a scaling factor
+     * @return 
+     */
+    public IConcentratedLikelihoodComputer<DiffuseConcentratedLikelihood> concentratedLikelihoodComputer(boolean sqr, boolean fast, boolean scalingfactor) {
+        return new CLLComputer(sqr, fast, scalingfactor);
     }
 
     public DefaultDiffuseFilteringResults filter(ISsf ssf, ISsfData data, boolean all) {
@@ -139,6 +145,16 @@ public class DkToolkit {
         filter.process(ssf, data, frslts);
     }
 
+
+    /**
+     * 
+     * @param ssf State space form
+     * @param data Data
+     * @param all Computes also the variances
+     * @param rescaleVariance If true, the variances are rescaled using the estimation done in the 
+     * filtering phase. Otherwise, the raw variances are returned.
+     * @return 
+     */
     public DefaultSmoothingResults smooth(ISsf ssf, ISsfData data, boolean all, boolean rescaleVariance) {
         DiffuseSmoother smoother = DiffuseSmoother
                 .builder(ssf)
@@ -155,6 +171,15 @@ public class DkToolkit {
         }
     }
 
+    /**
+     * 
+     * @param ssf State space form
+     * @param data Data
+     * @param all Computes also the variances
+     * @param rescaleVariance If true, the variances are rescaled using the estimation done in the 
+     * filtering phase. Otherwise, the raw variances are returned.
+     * @return 
+     */
     public StateStorage smooth(IMultivariateSsf ssf, IMultivariateSsfData data, boolean all, boolean rescaleVariance) {
         ISsf ussf = M2uAdapter.of(ssf);
         ISsfData udata = M2uAdapter.of(data);
@@ -174,7 +199,16 @@ public class DkToolkit {
         return ss;
     }
 
-    public static boolean smooth(ISsf ssf, ISsfData data, ISmoothingResults sresults, boolean rescaleVariance) {
+     /**
+     * 
+     * @param ssf State space form
+     * @param data Data
+     * @param sresults Storage for the results. The variances are computed or not following the properties of the storage
+      * @param rescaleVariance If true, the variances are rescaled using the estimation done in the 
+     * filtering phase. Otherwise, the raw variances are returned.
+     * @return 
+     */
+   public static boolean smooth(ISsf ssf, ISsfData data, ISmoothingResults sresults, boolean rescaleVariance) {
         boolean all = sresults.hasVariances();
         DiffuseSmoother smoother = DiffuseSmoother
                 .builder(ssf)
@@ -184,6 +218,12 @@ public class DkToolkit {
         return smoother.process(data, sresults);
     }
 
+    /**
+     * Fast smoothing (using disturbance smoother)
+     * @param ssf
+     * @param data
+     * @return 
+     */
     public static DataBlockStorage fastSmooth(ISsf ssf, ISsfData data) {
         FastStateSmoother smoother = new FastStateSmoother(ssf);
         return smoother.process(data);
@@ -217,10 +257,11 @@ public class DkToolkit {
 
     private static class LLComputer1 implements ILikelihoodComputer<DiffuseLikelihood> {
 
-        private final boolean res;
+        private final boolean scalingfactor, res;
 
-        LLComputer1(boolean res) {
+        LLComputer1(boolean scalingfactor, boolean res) {
             this.res = res;
+            this.scalingfactor=scalingfactor;
         }
 
         @Override
@@ -233,18 +274,20 @@ public class DkToolkit {
             DurbinKoopmanInitializer initializer = new DurbinKoopmanInitializer(pe);
             OrdinaryFilter filter = new OrdinaryFilter(initializer);
             filter.process(ssf, data, pe);
-            return pe.likelihood();
+            return pe.likelihood(scalingfactor);
         }
 
     }
 
     private static class LLComputer2 implements ILikelihoodComputer<DiffuseLikelihood> {
 
-        private final boolean res;
+        private final boolean scalingfactor, res;
 
-        LLComputer2(boolean res) {
+        LLComputer2(boolean scalingfactor, boolean res) {
             this.res = res;
+            this.scalingfactor=scalingfactor;
         }
+
 
         @Override
         public DiffuseLikelihood compute(ISsf ssf, ISsfData data) {
@@ -256,10 +299,10 @@ public class DkToolkit {
             DiffuseSquareRootInitializer initializer = new DiffuseSquareRootInitializer(pe);
             OrdinaryFilter filter = new OrdinaryFilter(initializer);
             filter.process(ssf, data, pe);
-            return pe.likelihood();
+            return pe.likelihood(scalingfactor);
         }
 
-        public MarginalLikelihood mcompute(ISsf ssf, ISsfData data, boolean concentrated) {
+        public MarginalLikelihood mcompute(ISsf ssf, ISsfData data, boolean scalingfactor) {
 
             DiffusePredictionErrorDecomposition pe = new DiffusePredictionErrorDecomposition(res);
             if (res) {
@@ -268,7 +311,7 @@ public class DkToolkit {
             DiffuseSquareRootInitializer initializer = new DiffuseSquareRootInitializer(pe);
             OrdinaryFilter filter = new OrdinaryFilter(initializer);
             filter.process(ssf, data, pe);
-            DiffuseLikelihood likelihood = pe.likelihood();
+            DiffuseLikelihood likelihood = pe.likelihood(scalingfactor);
             int collapsing = pe.getEndDiffusePosition();
             CanonicalMatrix M = CanonicalMatrix.make(collapsing, ssf.getDiffuseDim());
             ssf.diffuseEffects(M);
@@ -285,7 +328,7 @@ public class DkToolkit {
             hous.decompose(M.extract(0, j, 0, M.getColumnsCount()));
             double mc = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
             return MarginalLikelihood.builder(likelihood.dim(), likelihood.getD())
-                    .concentratedScalingFactor(concentrated)
+                    .concentratedScalingFactor(scalingfactor)
                     .diffuseCorrection(likelihood.getDiffuseCorrection())
                     .legacy(false)
                     .logDeterminant(likelihood.logDeterminant())
@@ -298,11 +341,11 @@ public class DkToolkit {
 
     private static class MLLComputer implements ILikelihoodComputer<MarginalLikelihood> {
 
-        private final boolean res, concentrated;
+        private final boolean res, scalingfactor;
 
-        MLLComputer(boolean res, boolean concentrated) {
+        MLLComputer(boolean scalingfactor, boolean res) {
             this.res = res;
-            this.concentrated = concentrated;
+            this.scalingfactor = scalingfactor;
         }
 
         @Override
@@ -315,7 +358,7 @@ public class DkToolkit {
             DiffuseSquareRootInitializer initializer = new DiffuseSquareRootInitializer(pe);
             OrdinaryFilter filter = new OrdinaryFilter(initializer);
             filter.process(ssf, data, pe);
-            DiffuseLikelihood likelihood = pe.likelihood();
+            DiffuseLikelihood likelihood = pe.likelihood(scalingfactor);
             int collapsing = pe.getEndDiffusePosition();
             CanonicalMatrix M = CanonicalMatrix.make(collapsing, ssf.getDiffuseDim());
             ssf.diffuseEffects(M);
@@ -332,7 +375,7 @@ public class DkToolkit {
             hous.decompose(M.extract(0, j, 0, M.getColumnsCount()));
             double mc = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
             return MarginalLikelihood.builder(likelihood.dim(), likelihood.getD())
-                    .concentratedScalingFactor(concentrated)
+                    .concentratedScalingFactor(scalingfactor)
                     .diffuseCorrection(likelihood.getDiffuseCorrection())
                     .legacy(false)
                     .logDeterminant(likelihood.logDeterminant())
@@ -360,7 +403,7 @@ public class DkToolkit {
             DiffusePredictionErrorDecomposition pe = new DiffusePredictionErrorDecomposition(true);
             pe.prepare(model.getSsf(), n);
             DkFilter filter = filteringResults(model.getSsf(), y, pe);
-            DiffuseLikelihood ll = pe.likelihood();
+            DiffuseLikelihood ll = pe.likelihood(scaling);
             DoubleSeq yl = pe.errors(true, true);
             int nl = yl.length();
             CanonicalMatrix xl = xl(model, filter, nl);

@@ -47,5 +47,12 @@ public class NumericalIntegrationTest {
         double q = NumericalIntegration.integrateQAGIU(x -> x == 0 ? 0 : Math.exp(-.5 * Math.pow(Math.log(x), 2)) / x, 0);
         assertEquals(q, Math.sqrt(2 * Math.PI), 1e-9);
     }
+    
+    @Test
+    public void testZero(){
+        double q = NumericalIntegration.integrate(x -> 0, 0, 1);
+        assertEquals(q, 0, 1e-9);
+       
+    }
 
 }

@@ -55,8 +55,8 @@ public class RegSsfTest {
                 .add(cmp1, Loading.fromPosition(0))
                 .add(RegSsf.of(X))
                 .build();
-        DiffuseLikelihood ll1 = DkToolkit.likelihoodComputer().compute(rssf1, y);
-        DiffuseLikelihood ll2 = DkToolkit.likelihoodComputer().compute(rssf2, y);
+        DiffuseLikelihood ll1 = DkToolkit.likelihoodComputer(true, true, false).compute(rssf1, y);
+        DiffuseLikelihood ll2 = DkToolkit.likelihoodComputer(true, true, false).compute(rssf2, y);
         assertEquals(ll1.logLikelihood(), ll2.logLikelihood(), 1e-5);
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 5000; ++i) {

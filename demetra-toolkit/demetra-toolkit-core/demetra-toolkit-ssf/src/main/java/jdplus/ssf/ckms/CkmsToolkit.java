@@ -32,13 +32,13 @@ import jdplus.ssf.univariate.OrdinaryFilter;
  */
 public class CkmsToolkit {
 
-    public static ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer() {
+    public static ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer(boolean scalingfactor) {
         return (ISsf ssf, ISsfData data) -> {
             DiffusePredictionErrorDecomposition decomp = new DiffusePredictionErrorDecomposition(false);
             CkmsDiffuseInitializer ff = new CkmsDiffuseInitializer(new DiffuseSquareRootInitializer(decomp));
             CkmsFilter ffilter = new CkmsFilter(ff);
             ffilter.process(ssf, data, decomp);
-            return decomp.likelihood();
+            return decomp.likelihood(scalingfactor);
         };
     }
 

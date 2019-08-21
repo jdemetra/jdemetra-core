@@ -95,7 +95,7 @@ public class QRFilter {
         return true;
     }
 
-    public static MarginalLikelihood ml(final ISsf ssf, final ISsfData data, boolean concentrated) {
+    public static MarginalLikelihood ml(final ISsf ssf, final ISsfData data, boolean scalingfactor) {
         AugmentedPredictionErrorDecomposition pe = new AugmentedPredictionErrorDecomposition(true);
         pe.prepare(ssf, data.length());
         AugmentedFilterInitializer initializer = new AugmentedFilterInitializer(pe);
@@ -103,7 +103,7 @@ public class QRFilter {
         if (!filter.process(ssf, data, pe))
             return null;
         int collapsing = pe.getCollapsingPosition();
-        DiffuseLikelihood likelihood = pe.likelihood();
+        DiffuseLikelihood likelihood = pe.likelihood(scalingfactor);
         CanonicalMatrix M = CanonicalMatrix.make(collapsing, ssf.getDiffuseDim());
         ssf.diffuseEffects(M);
         int j = 0;
@@ -119,7 +119,7 @@ public class QRFilter {
         hous.decompose(M.extract(0, j, 0, M.getColumnsCount()));
         double mc = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
         return MarginalLikelihood.builder(likelihood.dim(), likelihood.getD())
-                .concentratedScalingFactor(concentrated)
+                .concentratedScalingFactor(scalingfactor)
                 .diffuseCorrection(likelihood.getDiffuseCorrection())
                 .legacy(false)
                 .logDeterminant(likelihood.logDeterminant())

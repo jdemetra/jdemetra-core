@@ -128,12 +128,14 @@ public class MstsMonitor {
 
     private LikelihoodFunction function(boolean concentrated) {
         SsfMatrix s = new SsfMatrix(data);
+        boolean needres=optimizer == Optimizer.LevenbergMarquardt || optimizer == Optimizer.MinPack;
         switch (likelihood) {
             case Marginal:
                 return MarginalLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
                         .useParallelProcessing(true)
                         .useMaximumLikelihood(true)
                         .useScalingFactor(concentrated)
+                        .residuals(needres)
                         .build();
             case Augmented:
                 return DiffuseLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
@@ -141,7 +143,7 @@ public class MstsMonitor {
                         .useScalingFactor(concentrated)
                         .useFastAlgorithm(true)
                         .useParallelProcessing(true)
-                        .residuals(concentrated)
+                        .residuals(needres)
                         .build();
             default:
                 return SsfFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))

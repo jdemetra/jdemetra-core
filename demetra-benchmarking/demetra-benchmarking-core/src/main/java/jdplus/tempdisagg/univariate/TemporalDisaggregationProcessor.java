@@ -142,7 +142,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
             nssf = noiseModel(spec);
             SsfData ssfdata = new SsfData(model.getHEY());
             SsfRegressionModel ssfmodel = new SsfRegressionModel(Ssf.of(nssf, 0), ssfdata, model.getHEX(), diffuse);
-            dll = DkToolkit.concentratedLikelihoodComputer().compute(ssfmodel);
+            dll = DkToolkit.concentratedLikelihoodComputer(true, false, true).compute(ssfmodel);
         } else {
             SsfFunction<Parameter, Ssf> fn = ssfFunction(model, spec);
             SsqFunctionMinimizer fmin = LevenbergMarquardtMinimizer
@@ -231,7 +231,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
             ssf = SsfCumulator.of(nssf, model.getFrequencyRatio());
             SsfData ssfdata = new SsfData(model.getHEY());
             SsfRegressionModel ssfmodel = new SsfRegressionModel(ssf, ssfdata, model.getHEX(), diffuse);
-            dll = DkToolkit.concentratedLikelihoodComputer().compute(ssfmodel);
+            dll = DkToolkit.concentratedLikelihoodComputer(true, false, true).compute(ssfmodel);
         } else {
             SsfFunction<Parameter, Ssf> fn = ssfFunction(model, spec);
             SsqFunctionMinimizer fmin = LevenbergMarquardtMinimizer
@@ -380,7 +380,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
     }
 
     private ResidualsDiagnostics diagnostic(TsData res, ISsf ssf, TsUnit unit) {
-        DiffuseConcentratedLikelihood ll = DkToolkit.concentratedLikelihoodComputer().compute(ssf, new SsfData(res.getValues()));
+        DiffuseConcentratedLikelihood ll = DkToolkit.concentratedLikelihoodComputer(true, false, true).compute(ssf, new SsfData(res.getValues()));
         DoubleSeq e = ll.e();
         TsPeriod pstart = TsPeriod.of(unit, res.getStart().start());
         pstart = pstart.plus(ll.ndiffuse());

@@ -62,8 +62,8 @@ public class SsfBsm2Test {
                 .build();
 
         SsfData data = new SsfData(Data.EXPORTS);
-        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(composite, data);
-        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(SsfBsm2.of(model), data);
+        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(composite, data);
+        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(SsfBsm2.of(model), data);
         assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
     }
 
@@ -81,8 +81,8 @@ public class SsfBsm2Test {
                 .build();
 
         SsfData data = new SsfData(Data.EXPORTS);
-        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(composite, data);
-        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(SsfBsm2.of(model), data);
+        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(composite, data);
+        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(SsfBsm2.of(model), data);
         assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
     }
 
@@ -100,8 +100,8 @@ public class SsfBsm2Test {
                 .build();
 
         SsfData data = new SsfData(Data.EXPORTS);
-        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(composite, data);
-        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(SsfBsm2.of(model), data);
+        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(composite, data);
+        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(SsfBsm2.of(model), data);
         assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
     }
 
@@ -119,17 +119,17 @@ public class SsfBsm2Test {
                 .build();
 
         SsfData data = new SsfData(Data.EXPORTS);
-        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(composite, data);
-        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(SsfBsm2.of(model), data);
+        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(composite, data);
+        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(SsfBsm2.of(model), data);
         assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
     }
 
     @Test
     public void testLikelihood() {
         SsfData data = new SsfData(Data.EXPORTS);
-        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true).compute(bsm, data);
-        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer().compute(bsm, data);
-        DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(true, true).compute(bsm, data);
+        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(bsm, data);
+        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(bsm, data);
+        DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(true, true, true).compute(bsm, data);
         assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
         assertEquals(ll.logLikelihood(), ll3.logLikelihood(), 1e-6);
     }
@@ -141,28 +141,28 @@ public class SsfBsm2Test {
         testLikelihood();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < N; ++i) {
-            DkToolkit.likelihoodComputer().compute(bsm, data);
+            DkToolkit.likelihoodComputer(true, true, false).compute(bsm, data);
         }
         long t1 = System.currentTimeMillis();
         System.out.println("dk filter (sqr)");
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < N; ++i) {
-            DkToolkit.likelihoodComputer(false, false).compute(bsm, data);
+            DkToolkit.likelihoodComputer(false, true, false).compute(bsm, data);
         }
         t1 = System.currentTimeMillis();
         System.out.println("dk filter");
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < N; ++i) {
-            AkfToolkit.likelihoodComputer(true).compute(bsm, data);
+            AkfToolkit.likelihoodComputer(true, true, false).compute(bsm, data);
         }
         t1 = System.currentTimeMillis();
         System.out.println("akf filter");
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < N; ++i) {
-            CkmsToolkit.likelihoodComputer().compute(bsm, data);
+            CkmsToolkit.likelihoodComputer(true).compute(bsm, data);
         }
         t1 = System.currentTimeMillis();
         System.out.println("ckms filter");
@@ -180,7 +180,7 @@ public class SsfBsm2Test {
                 .build();
         t0 = System.currentTimeMillis();
         for (int i = 0; i < N; ++i) {
-            CkmsToolkit.likelihoodComputer().compute(composite, data);
+            CkmsToolkit.likelihoodComputer(true).compute(composite, data);
         }
         t1 = System.currentTimeMillis();
         System.out.println("ckms filter / composite");

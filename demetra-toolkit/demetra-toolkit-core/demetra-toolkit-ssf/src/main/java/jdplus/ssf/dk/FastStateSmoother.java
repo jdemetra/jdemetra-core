@@ -29,43 +29,18 @@ import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.SsfException;
 
 /**
- *
+ * Fast smoother based on the disturbance smoother
  * @author Jean Palate
  */
 public class FastStateSmoother {
 
-//    public static class Builder{
-//        private final ISsf ssf;
-//        private boolean rescaleVariance=false;
-//        
-//        public Builder(ISsf ssf){
-//            this.ssf=ssf;
-//        }
-//        
-//        public Builder rescaleVariance(boolean rescale){
-//            this.rescaleVariance=rescale;
-//            return this;
-//        }
-//
-//        
-//        public FastStateSmoother build(){
-//            return new FastStateSmoother(ssf, rescaleVariance);
-//        }
-//    }
-//    
-//    public static Builder builder(ISsf ssf){
-//        return new Builder(ssf);
-//    }
-//
     private final ISsf ssf;
     private final ISsfDynamics dynamics;
-    private final ISsfLoading loading;
     private final ISsfError error;
 
     public FastStateSmoother(final ISsf ssf) {
         this.ssf = ssf;
         dynamics = ssf.dynamics();
-        loading = ssf.loading();
         error = ssf.measurementError();
     }
 

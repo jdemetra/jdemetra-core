@@ -144,7 +144,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
     }
 
     @Override
-    public DiffuseLikelihood likelihood() {
+    public DiffuseLikelihood likelihood(boolean scalingfactor) {
         double cc = c();
         cc *= cc;
         LogSign dsl =LogSign.of(a().diagonal());
@@ -153,6 +153,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
                 .ssqErr(cc)
                 .logDeterminant(2*det)
                 .diffuseCorrection(dcorr)
+                .concentratedScalingFactor(scalingfactor)
                 .build();
     }
 

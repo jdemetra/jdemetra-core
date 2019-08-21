@@ -47,7 +47,7 @@ public class MarginalLikelihoodFunction<S, F extends ISsf> implements Likelihood
         private final IParametricMapping<S> mapping;
         private final ISsfBuilder<S, F> builder;
         private final ISsfData data;
-        private boolean ml = true, log = false, mt = false, sym = false, scalingFactor=true;
+        private boolean ml = true, log = false, mt = false, sym = false, scalingFactor=true, res=false;
 
         private Builder(final ISsfData data, final IParametricMapping<S> mapping, final ISsfBuilder<S, F> builder) {
             this.data = data;
@@ -81,9 +81,16 @@ public class MarginalLikelihoodFunction<S, F extends ISsf> implements Likelihood
                 this.log=true;
             return this;
         }
+        
+        public Builder residuals(boolean res) {
+            this.res = res;
+            return this;
+        }
+
+        
 
         public MarginalLikelihoodFunction<S, F> build() {
-            return new MarginalLikelihoodFunction(data, mapping, builder, ml, log, mt, sym, scalingFactor);
+            return new MarginalLikelihoodFunction(data, mapping, builder, ml, log, mt, sym, scalingFactor, res);
         }
     }
 
@@ -95,10 +102,10 @@ public class MarginalLikelihoodFunction<S, F extends ISsf> implements Likelihood
     private final ISsfBuilder<S, F> builder; // mapping from an object S to a given ssf
     private final ISsfData data;
     private final boolean missing;
-    private final boolean ml, log, mt, sym, scaling;
+    private final boolean ml, log, mt, sym, scaling, res;
 
     private MarginalLikelihoodFunction(ISsfData data, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
-            final boolean ml, final boolean log, final boolean mt, final boolean sym, final boolean scaling) {
+            final boolean ml, final boolean log, final boolean mt, final boolean sym, final boolean scaling, final boolean res) {
         this.data = data;
         this.mapping = mapper;
         this.builder = builder;
@@ -108,6 +115,7 @@ public class MarginalLikelihoodFunction<S, F extends ISsf> implements Likelihood
         this.mt = mt;
         this.sym = sym;
         this.scaling=scaling;
+        this.res=res;
     }
 
     public IParametricMapping<S> getMapping() {
@@ -124,6 +132,10 @@ public class MarginalLikelihoodFunction<S, F extends ISsf> implements Likelihood
 
     public boolean isScalingFactor() {
         return scaling;
+    }
+
+    public boolean isResiduals() {
+        return res;
     }
 
     @Override

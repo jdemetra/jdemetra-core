@@ -66,11 +66,11 @@ public class DiffuseLikelihoodFunctionPoint<S, F extends ISsf> implements
         this.p = DataBlock.of(p);
         current = fn.getMapping().map(p);
         currentSsf = fn.getBuilder().buildSsf(current);
-//        boolean fastcomputer = fn.isFast() && !fn.isMissing() && currentSsf.isTimeInvariant();
+        boolean fastcomputer = fn.isFast() && !fn.isMissing() && currentSsf.isTimeInvariant();
 //        if (fastcomputer) {
-//            ll = AkfToolkit.fastLikelihoodComputer(fn.isResiduals()).compute(currentSsf, fn.getData());
+//            ll = AkfToolkit.fastLikelihoodComputer(fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
 //        } else {
-            ll = AkfToolkit.likelihoodComputer(fn.isResiduals(), true).compute(currentSsf, fn.getData());
+            ll = AkfToolkit.likelihoodComputer(true, fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
 //        }
     }
 
