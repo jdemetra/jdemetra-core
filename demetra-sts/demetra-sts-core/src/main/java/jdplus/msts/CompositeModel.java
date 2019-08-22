@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.maths.Optimizer;
-import demetra.ssf.LikelihoodType;
+import demetra.ssf.SsfInitialization;
+import demetra.ssf.SsfLikelihood;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -69,8 +70,10 @@ public class CompositeModel {
 
     public void build() {
         mapping = new MstsMapping();
-        for (ModelItem item : items) {
+        for (StateItem item : items) {
             item.addTo(mapping);
+            if (! item.isScalable())
+                mapping.setScalable(false);
         }
         for (ModelEquation eq : equations) {
             eq.addTo(mapping);
@@ -91,11 +94,11 @@ public class CompositeModel {
         return mapping.modelParameters(mapping.getDefaultParameters()).toArray();
     }
 
-    public CompositeModelEstimation estimate(FastMatrix data, double eps, LikelihoodType lt, Optimizer optimizer, boolean rescaling, double[] parameters) {
+    public CompositeModelEstimation estimate(FastMatrix data, boolean marginal, boolean rescaling, SsfInitialization initialization, Optimizer optimizer, double eps, double[] parameters) {
         if (mapping == null) {
             build();
         }
-        return CompositeModelEstimation.estimationOf(this, data, eps, lt, optimizer, rescaling, parameters);
+        return CompositeModelEstimation.estimationOf(this, data, marginal, rescaling, initialization, optimizer, eps, parameters);
     }
 
     public CompositeModelEstimation compute(FastMatrix data, double[] parameters, boolean marginal, boolean concentrated) {

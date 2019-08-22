@@ -7,10 +7,11 @@ package demetra.ssf;
 
 /**
  *
- * @author Jean Palate
+ * @author Jean Palate <jean.palate@nbb.be>
  */
-public enum SsfAlgorithm {
-    Ordinary,
-    Array,
-    Fast
+public enum SsfLikelihood {
+    Undefined,
+    Diffuse,
+    Marginal,
+    Profile
 }

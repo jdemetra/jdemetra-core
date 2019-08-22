@@ -57,6 +57,11 @@ public class SaeItem extends StateItem {
             return nar;
         });
     }
+    
+    @Override
+    public boolean isScalable(){
+        return false;
+    }
 
     @Override
     public List<ParameterInterpreter> parameters() {

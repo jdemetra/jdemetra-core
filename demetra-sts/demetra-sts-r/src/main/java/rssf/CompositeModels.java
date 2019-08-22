@@ -26,7 +26,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.maths.matrices.Matrix;
-import demetra.ssf.LikelihoodType;
+import demetra.ssf.SsfInitialization;
+import demetra.ssf.SsfLikelihood;
 
 /**
  *
@@ -270,9 +271,10 @@ public class CompositeModels {
 
     }
 
-    public Results estimate(CompositeModel model, Matrix data, double eps, String lt, String opt, boolean rescaling, double[] parameters) {
-        return new Results(model.estimate(CanonicalMatrix.of(data), eps, LikelihoodType.valueOf(lt)
-                , Optimizer.valueOf(opt), rescaling, parameters));
+    public Results estimate(CompositeModel model, Matrix data, boolean marginal, boolean rescaling, String initialization,
+            String opt, double eps, double[] parameters) {
+        return new Results(model.estimate(CanonicalMatrix.of(data), marginal, rescaling, SsfInitialization.valueOf(initialization)
+                , Optimizer.valueOf(opt), eps, parameters));
     }
 
     public Results compute(CompositeModel model, Matrix data, double[] parameters, boolean marginal, boolean concentrated) {

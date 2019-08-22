@@ -3,14 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.ssf;
+package demetra.ssf ;
 
 /**
  *
- * @author Jean Palate <jean.palate@nbb.be>
+ * @author Jean Palate
  */
-public enum LikelihoodType {
+public enum SsfInitialization{
+    Undefined,
     Diffuse,
-    Augmented,
-    Marginal
+    SqrtDiffuse,
+    Augmented
 }

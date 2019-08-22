@@ -21,13 +21,14 @@ import java.util.stream.Collectors;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
 import demetra.maths.Optimizer;
-import demetra.ssf.LikelihoodType;
+import demetra.ssf.SsfInitialization;
+import demetra.ssf.SsfLikelihood;
 import jdplus.maths.matrices.FastMatrix;
 import jdplus.likelihood.LikelihoodFunction;
 import jdplus.likelihood.LikelihoodFunctionPoint;
 import jdplus.maths.functions.FunctionMinimizer;
 import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
-import jdplus.ssf.likelihood.DiffuseLikelihoodFunction;
+import jdplus.ssf.likelihood.AugmentedLikelihoodFunction;
 
 /**
  *
@@ -44,15 +45,21 @@ public class MstsMonitor {
         private static final int MAXITER = 20, MAXITER_MIN = 500;
         private static final double SMALL_VAR = 1e-8;
 
-        private LikelihoodType likelihood = LikelihoodType.Diffuse;
+        private boolean marginal = false;
+        private SsfInitialization initialization = SsfInitialization.Diffuse;
         private Optimizer optimizer = Optimizer.LevenbergMarquardt;
         private double precision = 1e-9, smallVar = SMALL_VAR, precision2 = 1e-7, precision3 = 1e-3;
         private int maxIter = MAXITER;
         private int maxIterOptimzer = MAXITER_MIN;
         private boolean concentratedLikelihood = true;
 
-        public Builder likelihood(LikelihoodType lt) {
-            this.likelihood = lt;
+        public Builder initialization(SsfInitialization initialization) {
+            this.initialization = initialization;
+            return this;
+        }
+
+        public Builder marginal(boolean marginal) {
+            this.marginal = marginal;
             return this;
         }
 
@@ -101,7 +108,8 @@ public class MstsMonitor {
     private final double precision, precision2, precision3, smallStde;
     private final int maxIter;
     private final int maxIterOptimzer;
-    private final LikelihoodType likelihood;
+    private final boolean marginal;
+    private final SsfInitialization initialization;
     private final Optimizer optimizer;
 
     private FastMatrix data;
@@ -115,7 +123,8 @@ public class MstsMonitor {
 //    private final List<LoadingParameter> smallLoadings = new ArrayList<>();
 
     private MstsMonitor(Builder builder) {
-        this.likelihood = builder.likelihood;
+        this.marginal = builder.marginal;
+        this.initialization = builder.initialization;
         this.optimizer = builder.optimizer;
         this.maxIterOptimzer = builder.maxIterOptimzer;
         this.precision = builder.precision;
@@ -128,22 +137,30 @@ public class MstsMonitor {
 
     private LikelihoodFunction function(boolean concentrated) {
         SsfMatrix s = new SsfMatrix(data);
-        boolean needres=optimizer == Optimizer.LevenbergMarquardt || optimizer == Optimizer.MinPack;
-        switch (likelihood) {
-            case Marginal:
+        boolean needres = optimizer == Optimizer.LevenbergMarquardt || optimizer == Optimizer.MinPack;
+        if (marginal)
                 return MarginalLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
                         .useParallelProcessing(true)
                         .useMaximumLikelihood(true)
                         .useScalingFactor(concentrated)
                         .residuals(needres)
                         .build();
+        switch (initialization) {
             case Augmented:
-                return DiffuseLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
+                return AugmentedLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
                         .useMaximumLikelihood(true)
                         .useScalingFactor(concentrated)
                         .useFastAlgorithm(true)
                         .useParallelProcessing(true)
                         .residuals(needres)
+                        .build();
+            case Diffuse:
+                return SsfFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
+                        .useParallelProcessing(true)
+                        .useMaximumLikelihood(true)
+                        .useScalingFactor(concentrated)
+                        .useFastAlgorithm(true)
+                        .useSqrtInitialization(false)
                         .build();
             default:
                 return SsfFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
@@ -151,6 +168,7 @@ public class MstsMonitor {
                         .useMaximumLikelihood(true)
                         .useScalingFactor(concentrated)
                         .useFastAlgorithm(true)
+                        .useSqrtInitialization(true)
                         .build();
         }
     }
@@ -165,8 +183,8 @@ public class MstsMonitor {
         // No fixed variance
         return model.parameters()
                 .filter(p -> p.isFixed()
-                && p instanceof VarianceInterpreter
-                && ((VarianceInterpreter) p).stde() > 0)
+                        && p instanceof VarianceInterpreter
+                        && ((VarianceInterpreter) p).stde() > 0)
                 .count() == 0;
     }
 

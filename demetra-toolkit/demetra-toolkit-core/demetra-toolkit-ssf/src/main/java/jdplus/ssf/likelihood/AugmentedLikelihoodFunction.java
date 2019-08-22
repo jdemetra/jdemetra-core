@@ -33,9 +33,9 @@ import jdplus.likelihood.LikelihoodFunction;
  * @param <S> Type of the underlying object
  * @param <F> Ssf representation of objects of type S
  */
-public class DiffuseLikelihoodFunction<S, F extends ISsf> implements LikelihoodFunction<DiffuseLikelihood> {
+public class AugmentedLikelihoodFunction<S, F extends ISsf> implements LikelihoodFunction<DiffuseLikelihood> {
 
-    @BuilderPattern(DiffuseLikelihoodFunction.class)
+    @BuilderPattern(AugmentedLikelihoodFunction.class)
     public static class Builder<S, F extends ISsf> {
 
         private final IParametricMapping<S> mapping;
@@ -89,8 +89,8 @@ public class DiffuseLikelihoodFunction<S, F extends ISsf> implements LikelihoodF
             return this;
         }
 
-        public DiffuseLikelihoodFunction<S, F> build() {
-            return new DiffuseLikelihoodFunction(data, mapping, builder, ml, log, fast, 
+        public AugmentedLikelihoodFunction<S, F> build() {
+            return new AugmentedLikelihoodFunction(data, mapping, builder, ml, log, fast, 
                     mt, sym, scalingFactor, res);
         }
     }
@@ -105,7 +105,7 @@ public class DiffuseLikelihoodFunction<S, F extends ISsf> implements LikelihoodF
     private final boolean missing;
     private final boolean ml, log, fast, mt, sym, scaling, res;
 
-    private DiffuseLikelihoodFunction(ISsfData data, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
+    private AugmentedLikelihoodFunction(ISsfData data, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
             final boolean ml, final boolean log, final boolean fast, final boolean mt, 
             final boolean sym, final boolean scaling, final boolean res) {
         this.data = data;
@@ -146,8 +146,8 @@ public class DiffuseLikelihoodFunction<S, F extends ISsf> implements LikelihoodF
     }
 
     @Override
-    public DiffuseLikelihoodFunctionPoint<S, F> evaluate(DoubleSeq parameters) {
-        return new DiffuseLikelihoodFunctionPoint<>(this, parameters);
+    public AugmentedLikelihoodFunctionPoint<S, F> evaluate(DoubleSeq parameters) {
+        return new AugmentedLikelihoodFunctionPoint<>(this, parameters);
     }
 
     /**
@@ -160,8 +160,8 @@ public class DiffuseLikelihoodFunction<S, F extends ISsf> implements LikelihoodF
     }
 
     @Override
-    public DiffuseLikelihoodFunctionPoint<S, F> ssqEvaluate(DoubleSeq parameters) {
-        return new DiffuseLikelihoodFunctionPoint<>(this, parameters);
+    public AugmentedLikelihoodFunctionPoint<S, F> ssqEvaluate(DoubleSeq parameters) {
+        return new AugmentedLikelihoodFunctionPoint<>(this, parameters);
     }
 
     /**

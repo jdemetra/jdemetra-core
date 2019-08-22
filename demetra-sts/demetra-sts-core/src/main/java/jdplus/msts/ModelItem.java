@@ -22,6 +22,10 @@ public interface ModelItem {
      */
     List<ParameterInterpreter> parameters();
     
+    default boolean isScalable(){
+        return true;
+    }
+    
     /**
      * 
      * @param variance

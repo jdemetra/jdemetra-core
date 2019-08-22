@@ -20,7 +20,8 @@ import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.likelihood.Likelihood;
 import demetra.maths.Optimizer;
-import demetra.ssf.LikelihoodType;
+import demetra.ssf.SsfInitialization;
+import demetra.ssf.SsfLikelihood;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -29,13 +30,15 @@ import jdplus.maths.matrices.FastMatrix;
  */
 public class CompositeModelEstimation {
 
-    public static CompositeModelEstimation estimationOf(CompositeModel model, FastMatrix data, double eps, LikelihoodType lt, Optimizer optimizer,boolean concentrated, double[] parameters) {
+    public static CompositeModelEstimation estimationOf(CompositeModel model, FastMatrix data,
+            boolean marginal, boolean concentrated, SsfInitialization initialization, Optimizer optimizer, double eps, double[] parameters) {
         CompositeModelEstimation rslt = new CompositeModelEstimation();
         rslt.data = data;
         MstsMonitor monitor = MstsMonitor.builder()
-                .likelihood(lt)
-                .optimizer(optimizer)
+                .marginal(marginal)
                 .concentratedLikelihood(concentrated)
+                .initialization(initialization)
+                .optimizer(optimizer)
                 .precision(eps)
                 .build();
         monitor.process(data, model.getMapping(), parameters == null ? null : DoubleSeq.of(parameters));
@@ -45,7 +48,7 @@ public class CompositeModelEstimation {
         rslt.parameters = monitor.getParameters().toArray();
         rslt.fullParameters = monitor.fullParameters().toArray();
         rslt.parametersName = model.getMapping().parametersName();
-        rslt.cmpName=model.getCmpsName();
+        rslt.cmpName = model.getCmpsName();
         return rslt;
     }
 
@@ -53,11 +56,11 @@ public class CompositeModelEstimation {
         CompositeModelEstimation rslt = new CompositeModelEstimation();
         rslt.data = data;
         rslt.fullParameters = fullParameters.toArray();
-        model.getMapping().fixModelParameters(p->true, fullParameters);
+        model.getMapping().fixModelParameters(p -> true, fullParameters);
         rslt.parameters = DoubleSeq.EMPTYARRAY;
         rslt.ssf = model.getMapping().map(Doubles.EMPTY);
         rslt.cmpPos = rslt.getSsf().componentsPosition();
-        rslt.cmpName=model.getMapping().parametersName();
+        rslt.cmpName = model.getMapping().parametersName();
         rslt.parametersName = model.getMapping().parametersName();
         if (marginal) {
             rslt.likelihood = AkfToolkit.marginalLikelihoodComputer(concentrated).
@@ -165,6 +168,7 @@ public class CompositeModelEstimation {
     public String[] getCmpName() {
         return cmpName;
     }
+
     /**
      * @return the data
      */

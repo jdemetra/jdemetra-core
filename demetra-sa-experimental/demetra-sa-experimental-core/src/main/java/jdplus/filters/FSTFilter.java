@@ -17,7 +17,6 @@ import jdplus.maths.functions.NumericalDerivatives;
 import jdplus.maths.functions.ParamValidation;
 import jdplus.maths.functions.bfgs.Bfgs;
 import jdplus.maths.functions.gsl.integration.QAGS;
-import jdplus.maths.functions.integration.NumericalIntegration;
 import jdplus.maths.linearfilters.FiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
@@ -123,7 +122,7 @@ public class FSTFilter {
         if (ws != 0) {
             X.addAY(ws, SM);
         }
-        if (wt != 0) {
+        if (wt != 0 && nlags != nleads) {
             X.addAY(wt, TM);
         }
         DataBlock z = DataBlock.make(n + p);
@@ -192,7 +191,7 @@ public class FSTFilter {
         if (ws < 0 || wt < 0 || ws + wt > 1) {
             throw new IllegalArgumentException();
         }
-        if (wt == 0 || T.antiphase) {
+        if (wt == 0 || T.antiphase || nleads == nlags) {
             return makeQuadratic(1 - ws - wt, ws, wt);
         } else {
             return makeNumeric(1 - ws - wt, ws, wt);

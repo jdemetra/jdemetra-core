@@ -39,7 +39,7 @@ import jdplus.ssf.univariate.ILikelihoodComputer;
  * @param <S>
  * @param <F>
  */
-public class DiffuseLikelihoodFunctionPoint<S, F extends ISsf> implements
+public class AugmentedLikelihoodFunctionPoint<S, F extends ISsf> implements
         LikelihoodFunctionPoint<DiffuseLikelihood> {
 
     /**
@@ -54,24 +54,24 @@ public class DiffuseLikelihoodFunctionPoint<S, F extends ISsf> implements
     private final DiffuseLikelihood ll;
     private final DataBlock p;
     private DataBlock E;
-    private final DiffuseLikelihoodFunction<S, F> fn;
+    private final AugmentedLikelihoodFunction<S, F> fn;
 
     /**
      *
      * @param fn
      * @param p
      */
-    public DiffuseLikelihoodFunctionPoint(DiffuseLikelihoodFunction<S, F> fn, DoubleSeq p) {
+    public AugmentedLikelihoodFunctionPoint(AugmentedLikelihoodFunction<S, F> fn, DoubleSeq p) {
         this.fn = fn;
         this.p = DataBlock.of(p);
         current = fn.getMapping().map(p);
         currentSsf = fn.getBuilder().buildSsf(current);
         boolean fastcomputer = fn.isFast() && !fn.isMissing() && currentSsf.isTimeInvariant();
-//        if (fastcomputer) {
-//            ll = AkfToolkit.fastLikelihoodComputer(fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
-//        } else {
+        if (fastcomputer) {
+            ll = AkfToolkit.fastLikelihoodComputer(fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
+        } else {
             ll = AkfToolkit.likelihoodComputer(true, fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
-//        }
+        }
     }
 
     public F getSsf() {
