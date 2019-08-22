@@ -37,30 +37,21 @@ public class FSTFilterTest {
     }
 
     public static void main(String[] args) {
+        daf(11);
+    }
+    
+    public static void daf(int h){
+        for (int i = 0; i <=h; ++i) {
+            FSTFilter ff = FSTFilter.builder()
+                    .nlags(h)
+                    .nleads(i)
+                    .polynomialPreservation(2)
+                    .build();
+            FSTFilter.Results rslt = ff.make(1, 0);
+            FiniteFilter filter = rslt.getFilter();
+            System.out.println(DoubleSeq.of(filter.weightsToArray()));
+        }
 
-        for (int i = 0; i <= 21; ++i) {
-            FSTFilter ff2 = FSTFilter.builder()
-                    .nlags(21)
-                    .nleads(i)
-                    .timelinessLimits(0, Math.PI / 8)
-                    .polynomialPreservation(2)
-                    .build();
-            FSTFilter.Results rslt = ff2.make(.4, .5);
-            FiniteFilter filter = rslt.getFilter();
-            System.out.println(DoubleSeq.of(filter.weightsToArray()));
-        }
-        for (int i = 0; i <= 21; ++i) {
-            FSTFilter ff2 = FSTFilter.builder()
-                    .nlags(21)
-                    .nleads(i)
-                    .timelinessLimits(0, Math.PI / 8)
-                    .timelinessAntiphaseCriterion(false)
-                    .polynomialPreservation(2)
-                    .build();
-            FSTFilter.Results rslt = ff2.make(.4, .5);
-            FiniteFilter filter = rslt.getFilter();
-            System.out.println(DoubleSeq.of(filter.weightsToArray()));
-        }
     }
 
     @Test

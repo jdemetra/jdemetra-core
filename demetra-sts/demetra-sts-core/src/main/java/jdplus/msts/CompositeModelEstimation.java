@@ -22,7 +22,13 @@ import demetra.likelihood.Likelihood;
 import demetra.maths.Optimizer;
 import demetra.ssf.SsfInitialization;
 import demetra.ssf.SsfLikelihood;
+import java.util.Arrays;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.QuadraticForm;
+import jdplus.ssf.ISsfLoading;
 
 /**
  *
@@ -139,6 +145,70 @@ public class CompositeModelEstimation {
             filteringStates = ss;
         }
         return filteringStates;
+    }
+
+    public DoubleSeq signal(int obs, int[] cmps) {
+        if (obs >= data.getColumnsCount()) {
+            return null;
+        }
+        CanonicalMatrix L = loading(obs, cmps);
+        return signal(L);
+    }
+
+    public DoubleSeq signal(FastMatrix L) {
+        double[] x = new double[data.getRowsCount()];
+        L.rowsIterator();
+        DataBlockIterator rows = L.rowsIterator();
+        StateStorage ss = getSmoothedStates();
+        int pos = 0;
+        while (rows.hasNext()) {
+            x[pos] = ss.a(pos).dot(rows.next());
+            ++pos;
+        }
+        return DoubleSeq.of(x);
+    }
+
+    public CanonicalMatrix loading(int obs, int[] cmps) {
+        CanonicalMatrix L = CanonicalMatrix.make(data.getRowsCount(), ssf.getStateDim());
+        ISsfLoading l = ssf.loading(obs);
+        DataBlockIterator rows = L.rowsIterator();
+        int pos = 0;
+        while (rows.hasNext()) {
+            l.Z(pos++, rows.next());
+        }
+        // suppress unwanted columns
+        if (cmps != null) {
+            for (int j = 0; j < cmpPos.length; ++j) {
+                if (Arrays.binarySearch(cmps, j) < 0) {
+                    int start = cmpPos[j], end = j < cmpPos.length - 1 ? cmpPos[j + 1] : ssf.getStateDim();
+                    for (int k = start; k < end; ++k) {
+                        L.column(k).set(0);
+                    }
+                }
+            }
+        }
+        return L;
+    }
+
+    public DoubleSeq stdevSignal(int obs, int[] cmps) {
+        if (obs >= data.getColumnsCount()) {
+            return null;
+        }
+        CanonicalMatrix L = loading(obs, cmps);
+        return stdevSignal(L);
+    }
+
+    public DoubleSeq stdevSignal(FastMatrix L) {
+        double[] x = new double[data.getRowsCount()];
+        L.rowsIterator();
+        DataBlockIterator rows = L.rowsIterator();
+        StateStorage ss = getSmoothedStates();
+        int pos = 0;
+        while (rows.hasNext()) {
+            double v = QuadraticForm.apply(ss.P(pos), rows.next());
+            x[pos++] = v <= 0 ? 0 : Math.sqrt(v);
+        }
+        return DoubleSeq.of(x);
     }
 
     /**

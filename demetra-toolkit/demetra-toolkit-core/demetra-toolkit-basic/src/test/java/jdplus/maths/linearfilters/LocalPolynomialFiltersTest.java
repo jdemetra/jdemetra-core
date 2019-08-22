@@ -16,10 +16,6 @@
  */
 package jdplus.maths.linearfilters;
 
-import jdplus.maths.linearfilters.LocalPolynomialFilters;
-import jdplus.maths.linearfilters.HendersonFilters;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.linearfilters.FiniteFilter;
 import jdplus.data.analysis.DiscreteKernel;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -91,4 +87,11 @@ public class LocalPolynomialFiltersTest {
         }
     }
 
+    public static void main(String[] args){
+        int h=11;
+        for (int i=0; i<=h; ++i){
+            FiniteFilter daf = LocalPolynomialFilters.directAsymmetricFilter(h, i, 2, DiscreteKernel.henderson(h));
+            System.out.println(DoubleSeq.of(daf.weightsToArray()));
+        }
+    }
 }

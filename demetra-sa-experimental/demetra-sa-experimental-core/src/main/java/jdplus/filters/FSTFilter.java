@@ -111,7 +111,6 @@ public class FSTFilter {
     private Results makeQuadratic(double wf, double ws, double wt) {
         int n = nlags + nleads + 1;
         CanonicalMatrix J = CanonicalMatrix.square(n + p);
-        CanonicalMatrix TM = T.buildMatrix(nlags, nleads);
         J.extract(n, p, 0, n).copy(C);
         J.extract(0, n, n, p).transpose().copy(C);
 
@@ -122,7 +121,9 @@ public class FSTFilter {
         if (ws != 0) {
             X.addAY(ws, SM);
         }
+        CanonicalMatrix TM = null;
         if (wt != 0 && nlags != nleads) {
+            TM=T.buildMatrix(nlags, nleads);
             X.addAY(wt, TM);
         }
         DataBlock z = DataBlock.make(n + p);
@@ -145,7 +146,7 @@ public class FSTFilter {
             q += ws * s;
             builder.s(s);
         }
-        if (wt > 0 && TM != null) {
+        if (TM != null) {
             double t = QuadraticForm.apply(TM, w);
             q += wt * t;
             builder.t(t);
