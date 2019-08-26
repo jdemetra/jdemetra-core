@@ -14,13 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jdplus.maths.linearfilters;
+package jdplus.filters;
 
 import jdplus.data.DataBlock;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.decomposition.Householder;
 import java.util.function.IntToDoubleFunction;
+import demetra.data.DoubleSeq;
 import jdplus.data.DataBlockIterator;
+import jdplus.data.analysis.DiscreteKernel;
+import jdplus.maths.linearfilters.AsymmetricFilters;
+import jdplus.maths.linearfilters.FiniteFilter;
+import jdplus.maths.linearfilters.IFiniteFilter;
+import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.matrices.FastMatrix;
 import jdplus.maths.matrices.UpperTriangularMatrix;
 
@@ -33,7 +39,68 @@ import jdplus.maths.matrices.UpperTriangularMatrix;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-public class LocalPolynomialFilters {
+public class LocalPolynomialFilterFactory {
+
+    public static IFiltering of(LocalPolynomialFilterSpec spec) {
+        return new Filter(spec);
+    }
+
+    private static class Filter implements ISymmetricFiltering {
+
+        private final SymmetricFilter symmetricFilter;
+        private final IFiniteFilter[] asymmetricFilters;
+
+        private Filter(LocalPolynomialFilterSpec spec) {
+            int len = spec.getFilterLength();
+            symmetricFilter = ofDefault(len, spec.getPolynomialDegree(), kernel(spec));
+            switch (spec.getAsymmetricFilters()) {
+                case CutAndNormalize:
+                    asymmetricFilters = AsymmetricFilters.cutAndNormalizeFilters(symmetricFilter);
+                    break;
+                case MMSRE:
+                    asymmetricFilters = AsymmetricFilters.mmsreFilters(symmetricFilter, spec.getAsymmetricPolynomialDegree(), spec.getLinearModelCoefficients(), null);
+                    break;
+                default:
+                    asymmetricFilters = directAsymmetricFilters(len, spec.getPolynomialDegree(), kernel(spec));
+            }
+        }
+
+        private static IntToDoubleFunction kernel(LocalPolynomialFilterSpec spec) {
+            int len = spec.getFilterLength();
+            switch (spec.getKernel()) {
+                case BiWeight:
+                    return DiscreteKernel.biweight(len);
+                case TriWeight:
+                    return DiscreteKernel.triweight(len);
+                case Uniform:
+                    return DiscreteKernel.uniform(len);
+                case Triangular:
+                    return DiscreteKernel.triangular(len);
+                case Epanechnikov:
+                    return DiscreteKernel.epanechnikov(len);
+                case Henderson:
+                    return DiscreteKernel.henderson(len);
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public DoubleSeq process(DoubleSeq in) {
+            return jdplus.maths.linearfilters.FilterUtility.filter(in, symmetricFilter, asymmetricFilters);
+        }
+
+        @Override
+        public SymmetricFilter symmetricFilter() {
+            return symmetricFilter;
+        }
+
+        @Override
+        public IFiniteFilter[] endPointsFilters() {
+            return asymmetricFilters;
+        }
+
+    }
 
     /**
      *
@@ -111,8 +178,8 @@ public class LocalPolynomialFilters {
 
     public FiniteFilter[] directAsymmetricFilters(int h, final int d, final IntToDoubleFunction k) {
         FiniteFilter[] ff = new FiniteFilter[h];
-        for (int i = 0; i < h; ++i) {
-            ff[i] = directAsymmetricFilter(h, i, d, k);
+        for (int i = 0, j=h-1; i < h; ++i, --j) {
+            ff[i] = directAsymmetricFilter(h, j, d, k);
         }
         return ff;
     }

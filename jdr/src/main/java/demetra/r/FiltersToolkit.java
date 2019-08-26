@@ -29,7 +29,7 @@ public class FiltersToolkit {
     public static class FiniteFilters implements ProcResults {
 
         private SymmetricFilter filter;
-        private FiniteFilter[] afilters;
+        private IFiniteFilter[] afilters;
 
         private static final InformationMapping<FiniteFilters> MAPPING = new InformationMapping<>(FiniteFilters.class);
 

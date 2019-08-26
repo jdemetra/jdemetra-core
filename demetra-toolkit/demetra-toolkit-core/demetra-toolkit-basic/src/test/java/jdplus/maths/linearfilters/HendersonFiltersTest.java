@@ -60,20 +60,5 @@ public class HendersonFiltersTest {
 //        System.out.println(DataBlock.ofInternal(HendersonFilters.instance.create(13).weightsToArray()));
     }
 
-    public static void main(String[] arg) {
-        int K = 1000, n = 13;
-        long t0 = System.currentTimeMillis();
-        for (int i = 0; i < K; ++i) {
-            SymmetricFilter f2 = LocalPolynomialFilters.ofDefault(n / 2, 3, DiscreteKernel.henderson(n / 2));
-        }
-        long t1 = System.currentTimeMillis();
-        System.out.println(t1-t0);
-        t0 = System.currentTimeMillis();
-        for (int i = 0; i < K; ++i) {
-            SymmetricFilter f3 = LocalPolynomialFilters.ofDefault2(n / 2, 3, DiscreteKernel.henderson(n / 2));
-        }
-        t1 = System.currentTimeMillis();
-        System.out.println(t1-t0);
-    }
 }
 

@@ -5,11 +5,13 @@
  */
 package jdplus.x11plus;
 
+import jdplus.filters.IFiltering;
 import jdplus.data.DataBlock;
 import jdplus.maths.linearfilters.FiniteFilter;
 import jdplus.maths.linearfilters.IFiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import demetra.data.DoubleSeq;
+import jdplus.filters.ISymmetricFiltering;
 
 /**
  *
@@ -18,7 +20,7 @@ import demetra.data.DoubleSeq;
 @lombok.experimental.UtilityClass
 public class X11SeasonalFiltersFactory {
 
-    IFiltering filter(Number period, SeasonalFilterOption option) {
+    ISymmetricFiltering filter(Number period, SeasonalFilterOption option) {
 
         SymmetricFilter sfilter = null;
         IFiniteFilter[] efilters = null;
@@ -53,7 +55,7 @@ public class X11SeasonalFiltersFactory {
         }
     }
 
-    static class DefaultFilter implements IFiltering {
+    static class DefaultFilter implements ISymmetricFiltering {
 
         private final SymmetricFilter sfilter;
         private final IEndPointsProcessor endpoints;
@@ -82,9 +84,18 @@ public class X11SeasonalFiltersFactory {
             return DoubleSeq.of(x);
         }
 
+        @Override
+        public SymmetricFilter symmetricFilter(){
+            return sfilter;
+        }
+
+        @Override
+        public IFiniteFilter[] endPointsFilters() {
+            return null;
+        }
     }
 
-    static class AnyFilter implements IFiltering {
+    static class AnyFilter implements ISymmetricFiltering {
 
         private final SymmetricFilter sfilter;
         private final IFiniteFilter[] endpoints;
@@ -200,6 +211,16 @@ public class X11SeasonalFiltersFactory {
                 }
             }
             return DoubleSeq.of(x);
+        }
+
+        @Override
+        public SymmetricFilter symmetricFilter(){
+            return sfilter;
+        }
+
+        @Override
+        public IFiniteFilter[] endPointsFilters() {
+            return endpoints; //To change body of generated methods, choose Tools | Templates.
         }
 
     }

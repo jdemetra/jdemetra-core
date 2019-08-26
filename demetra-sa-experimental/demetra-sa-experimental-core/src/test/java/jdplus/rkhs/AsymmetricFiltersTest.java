@@ -5,11 +5,10 @@
  */
 package jdplus.rkhs;
 
-import jdplus.filters.AsymmetricFiltersUtility;
 import demetra.data.DoubleSeq;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.dfa.MSEDecomposition;
-import jdplus.maths.functions.GridSearch;
+import jdplus.maths.linearfilters.AsymmetricFilters;
 import jdplus.maths.linearfilters.FiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.stats.Kernels;
@@ -18,15 +17,15 @@ import jdplus.stats.Kernels;
  *
  * @author Jean Palate
  */
-public class AsymmetricFiltersUtilityTest {
+public class AsymmetricFiltersTest {
 
-    public AsymmetricFiltersUtilityTest() {
+    public AsymmetricFiltersTest() {
     }
 
     public static void frDistance(DoubleUnaryOperator sd, int M, int output) {
         for (int q = 0; q < M; ++q) {
             double bandWidth = CutAndNormalizeFilters.optimalBandWidth(M, q,
-                    AsymmetricFiltersUtility.frequencyResponseDistance(sd));
+                    AsymmetricFilters.frequencyResponseDistance(sd));
             SymmetricFilter H = KernelsUtility.symmetricFilter(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), M + 1, M);
             FiniteFilter f = CutAndNormalizeFilters.of(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), bandWidth, M, q);
             output(H, f, bandWidth, output);
@@ -36,7 +35,7 @@ public class AsymmetricFiltersUtilityTest {
     public static void accuracyDistance(DoubleUnaryOperator sd, int M, int output) {
         for (int q = 0; q < M; ++q) {
             double bandWidth = CutAndNormalizeFilters.optimalBandWidth(M, q,
-                    AsymmetricFiltersUtility.accuracyDistance(sd, 2 * Math.PI / 16.0));
+                    AsymmetricFilters.accuracyDistance(sd, 2 * Math.PI / 16.0));
             SymmetricFilter H = KernelsUtility.symmetricFilter(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), M + 1, M);
             FiniteFilter f = CutAndNormalizeFilters.of(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), bandWidth, M, q);
             output(H, f, bandWidth, output);
@@ -77,7 +76,7 @@ public class AsymmetricFiltersUtilityTest {
     public static void smoothnessDistance(DoubleUnaryOperator sd, int M, int output) {
         for (int q = 0; q < M; ++q) {
             double bandWidth = CutAndNormalizeFilters.optimalBandWidth(M, q,
-                    AsymmetricFiltersUtility.smoothnessDistance(sd, 2 * Math.PI / 16.0));
+                    AsymmetricFilters.smoothnessDistance(sd, 2 * Math.PI / 16.0));
             SymmetricFilter H = KernelsUtility.symmetricFilter(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), M + 1, M);
             FiniteFilter f = CutAndNormalizeFilters.of(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), bandWidth, M, q);
             output(H, f, bandWidth, output);
@@ -87,7 +86,7 @@ public class AsymmetricFiltersUtilityTest {
     public static void timelinessDistance(DoubleUnaryOperator sd, int M, int output) {
         for (int q = 0; q < M; ++q) {
             double bandWidth = CutAndNormalizeFilters.optimalBandWidth(M, q,
-                    AsymmetricFiltersUtility.timelinessDistance(sd, 2 * Math.PI / 16.0));
+                    AsymmetricFilters.timelinessDistance(sd, 2 * Math.PI / 16.0));
             SymmetricFilter H = KernelsUtility.symmetricFilter(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), M + 1, M);
             FiniteFilter f = CutAndNormalizeFilters.of(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), bandWidth, M, q);
             output(H, f, bandWidth, output);
@@ -97,7 +96,7 @@ public class AsymmetricFiltersUtilityTest {
     public static void distance3bis(DoubleUnaryOperator sd, int M, int output) {
         for (int q = 0; q < M; ++q) {
             double bandWidth = CutAndNormalizeFilters.optimalBandWidth(M, q,
-                    AsymmetricFiltersUtility.timelinessDistance2(sd, 0, 2 * Math.PI / 16.0));
+                    AsymmetricFilters.timelinessDistance2(sd, 0, 2 * Math.PI / 16.0));
             SymmetricFilter H = KernelsUtility.symmetricFilter(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), M + 1, M);
             FiniteFilter f = CutAndNormalizeFilters.of(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), bandWidth, M, q);
             output(H, f, bandWidth, output);

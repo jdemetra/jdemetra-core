@@ -7,12 +7,12 @@ package jdplus.rkhs;
 
 import demetra.data.DoubleSeq;
 import java.util.function.DoubleUnaryOperator;
-import jdplus.filters.AsymmetricFiltersUtility;
 import jdplus.maths.functions.GridSearch;
 import jdplus.maths.functions.IFunction;
 import jdplus.maths.functions.IFunctionPoint;
 import jdplus.maths.functions.IParametersDomain;
 import jdplus.maths.functions.ParametersRange;
+import jdplus.maths.linearfilters.AsymmetricFilters;
 import jdplus.maths.linearfilters.FiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.stats.Kernels;
@@ -52,7 +52,7 @@ public class CutAndNormalizeFilters {
 
         private int m;
         private SymmetricFilter target;
-        private AsymmetricFiltersUtility.Distance distance;
+        private AsymmetricFilters.Distance distance;
         private AsymmetricFilterProvider provider;
 
         @Override
@@ -92,7 +92,7 @@ public class CutAndNormalizeFilters {
         }
     }
 
-    public double optimalBandWidth(int m, int q, AsymmetricFiltersUtility.Distance distance) {
+    public double optimalBandWidth(int m, int q, AsymmetricFilters.Distance distance) {
         SymmetricFilter H = KernelsUtility.symmetricFilter(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), m + 1, m);
         
          D fn = new D(m, H, distance, bandWidth->of(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), bandWidth, m, q));

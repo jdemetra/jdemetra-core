@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.rkhs;
+package jdplus.maths.polynomials;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -17,7 +17,7 @@ public class JacobiPolynomialsTest {
     public JacobiPolynomialsTest() {
     }
 
-    @Test
+//    @Test
     public void testLegendre() {
         for (int i=0; i<20; ++i){
             System.out.println(JacobiPolynomials.jacobi(i, 0, 0));

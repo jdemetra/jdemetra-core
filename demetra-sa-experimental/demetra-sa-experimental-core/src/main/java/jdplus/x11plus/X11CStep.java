@@ -5,6 +5,7 @@
  */
 package jdplus.x11plus;
 
+import jdplus.filters.IFiltering;
 import jdplus.data.DataBlock;
 import jdplus.maths.linearfilters.IFiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
@@ -57,23 +58,8 @@ public class X11CStep {
     }
 
     private void c7(X11Context context) {
-        SymmetricFilter filter = context.trendFilter();
-        int ndrop = filter.length() / 2;
-
-        double[] x = table(c6.length(), Double.NaN);
-        DataBlock out = DataBlock.of(x, ndrop, x.length-ndrop);
-        filter.apply(c6, out);
-        
-       // apply asymmetric filters
-        double r=MusgraveFilterFactory.findR(filter.length(), context.getPeriod().intValue());
-        IFiniteFilter[] lf = context.leftAsymmetricTrendFilters(filter, r); 
-        IFiniteFilter[] rf = context.rightAsymmetricTrendFilters(filter, r); 
-        AsymmetricEndPoints aep=new AsymmetricEndPoints(lf, -1);
-        aep.process(c6, DataBlock.of(x));
-        aep=new AsymmetricEndPoints(rf, 1);
-        aep.process(c6, DataBlock.of(x));
-        c7 = DoubleSeq.of(x);
-        if (c7.anyMatch(z->z <=0))
+        c7 = context.getTrendFiltering().process(c6);
+        if (context.getMode().isMultiplicative() && c7.anyMatch(z->z <=0))
             throw new X11Exception(X11Exception.ERR_NEG);
     }
     

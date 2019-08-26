@@ -5,11 +5,13 @@
  */
 package jdplus.x11plus;
 
+import jdplus.filters.IFiltering;
 import jdplus.data.DataBlock;
 import jdplus.maths.linearfilters.IFiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import static jdplus.x11plus.X11Kernel.table;
 import demetra.data.DoubleSeq;
+import jdplus.maths.linearfilters.FiniteFilter;
 
 /**
  *
@@ -89,58 +91,44 @@ public class X11BStep {
     private void b4(X11Context context) {
         IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
         b4a = filter.process(b3);
-        b4anorm=DefaultSeasonalNormalizer.normalize(b4a, 0, context);
-        b4d=context.remove(b3, b4anorm);
-        
-        DefaultExtremeValuesCorrector ecorr=new DefaultExtremeValuesCorrector();
+        b4anorm = DefaultSeasonalNormalizer.normalize(b4a, 0, context);
+        b4d = context.remove(b3, b4anorm);
+
+        DefaultExtremeValuesCorrector ecorr = new DefaultExtremeValuesCorrector();
         ecorr.setStart(b2drop);
         ecorr.analyse(b4d, context);
 
         b4 = ecorr.computeCorrections(b3);
         b4g = ecorr.applyCorrections(b3, b4);
     }
-    
+
     private void b5(X11Context context) {
         IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
         DoubleSeq b5a = filter.process(b4g);
-        b5=DefaultSeasonalNormalizer.normalize(b5a, b2drop, context);
+        b5 = DefaultSeasonalNormalizer.normalize(b5a, b2drop, context);
     }
-    
+
     private void b6(X11Context context) {
         b6 = context.remove(b1, b5);
     }
-    
-    private void b7(X11Context context) {
-        SymmetricFilter filter = context.trendFilter();
-        int ndrop = filter.length() / 2;
 
-        double[] x = table(b6.length(), Double.NaN);
-        DataBlock out = DataBlock.of(x, ndrop, x.length-ndrop);
-        filter.apply(b6, out);
-        
-        // apply asymmetric filters
-        double r=MusgraveFilterFactory.findR(filter.length(), context.getPeriod().intValue());
-        IFiniteFilter[] lf = context.leftAsymmetricTrendFilters(filter, r); 
-        IFiniteFilter[] rf = context.rightAsymmetricTrendFilters(filter, r); 
-        AsymmetricEndPoints aep=new AsymmetricEndPoints(lf, -1);
-        aep.process(b6, DataBlock.of(x));
-        aep=new AsymmetricEndPoints(rf, 1);
-        aep.process(b6, DataBlock.of(x));
-        b7 = DoubleSeq.of(x);
-        if (b7.anyMatch(z->z <=0))
+    private void b7(X11Context context) {
+        b7 = context.getTrendFiltering().process(b6);
+        if (context.getMode().isMultiplicative() && b7.anyMatch(z -> z <= 0)) {
             throw new X11Exception(X11Exception.ERR_NEG);
+        }
     }
-    
+
     private void b8(X11Context context) {
-        b8=context.remove(b1, b7);
+        b8 = context.remove(b1, b7);
     }
-    
+
     private void b9(X11Context context) {
         IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
         DoubleSeq b9a = filter.process(b8);
-        DoubleSeq b9c=DefaultSeasonalNormalizer.normalize(b9a, 0, context);
-        DoubleSeq b9d=context.remove(b8, b9c);
-        DefaultExtremeValuesCorrector ecorr=new DefaultExtremeValuesCorrector();
+        DoubleSeq b9c = DefaultSeasonalNormalizer.normalize(b9a, 0, context);
+        DoubleSeq b9d = context.remove(b8, b9c);
+        DefaultExtremeValuesCorrector ecorr = new DefaultExtremeValuesCorrector();
         ecorr.setStart(0);
         ecorr.analyse(b9d, context);
 
@@ -151,17 +139,16 @@ public class X11BStep {
     private void bfinal(X11Context context) {
         IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
         DoubleSeq b10a = filter.process(b9g);
-        b10=DefaultSeasonalNormalizer.normalize(b10a, 0, context);
-        b11=context.remove(b1, b10);
-        b13=context.remove(b11, b7);
-        
-        DefaultExtremeValuesCorrector ecorr=new DefaultExtremeValuesCorrector();
+        b10 = DefaultSeasonalNormalizer.normalize(b10a, 0, context);
+        b11 = context.remove(b1, b10);
+        b13 = context.remove(b11, b7);
+
+        DefaultExtremeValuesCorrector ecorr = new DefaultExtremeValuesCorrector();
         ecorr.setStart(0);
         ecorr.analyse(b13, context);
         b17 = ecorr.getObservationWeights();
         b20 = ecorr.getCorrectionFactors();
-   }
-
+    }
 
     /**
      * @return the b1

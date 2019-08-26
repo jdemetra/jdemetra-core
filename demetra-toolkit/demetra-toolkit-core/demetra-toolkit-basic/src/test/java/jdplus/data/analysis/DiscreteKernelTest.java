@@ -31,6 +31,10 @@ import static jdplus.data.analysis.DiscreteKernel.distance;
 import static jdplus.data.analysis.DiscreteKernel.epanechnikov;
 import static jdplus.data.analysis.DiscreteKernel.distance;
 import static jdplus.data.analysis.DiscreteKernel.distance;
+import static jdplus.data.analysis.DiscreteKernel.distance;
+import static jdplus.data.analysis.DiscreteKernel.distance;
+import static jdplus.data.analysis.DiscreteKernel.distance;
+import static jdplus.data.analysis.DiscreteKernel.distance;
 
 /**
  *
@@ -101,8 +105,8 @@ public class DiscreteKernelTest {
 
     @Test
     public void testParabolic() {
-        IntToDoubleFunction kernel = DiscreteKernel.Parabolic.asFunction(K);
-//        System.out.println("Parabolic");
+        IntToDoubleFunction kernel = DiscreteKernel.Epanechnikov.asFunction(K);
+//        System.out.println("Epanechnikov");
         double s = 0;
         for (int i = -K; i <= K; ++i) {
             double q = kernel.applyAsDouble(i);

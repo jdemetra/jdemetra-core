@@ -29,7 +29,7 @@ public enum DiscreteKernel {
 
     Uniform,
     Triangular,
-    Parabolic,
+    Epanechnikov,
     Biweight,
     Triweight,
     Tricube,
@@ -41,7 +41,7 @@ public enum DiscreteKernel {
                 return uniform(h);
             case Triangular:
                 return triangular(h);
-            case Parabolic:
+            case Epanechnikov:
                 return epanechnikov(h);
             case Biweight:
                 return biweight(h);

@@ -5,6 +5,7 @@
  */
 package jdplus.x11plus;
 
+import jdplus.filters.IFiltering;
 import jdplus.data.DataBlock;
 import jdplus.maths.linearfilters.IFiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
@@ -58,25 +59,9 @@ public class X11DStep {
     }
 
     private void d7(X11Context context) {
-        SymmetricFilter filter = context.trendFilter();
-        int ndrop = filter.length() / 2;
-
-        double[] x = table(d6.length(), Double.NaN);
-        DataBlock out = DataBlock.of(x, ndrop, x.length - ndrop);
-        filter.apply(d6, out);
-
-       // apply asymmetric filters
-        double r=MusgraveFilterFactory.findR(filter.length(), context.getPeriod().intValue());
-        IFiniteFilter[] lf = context.leftAsymmetricTrendFilters(filter, r); 
-        IFiniteFilter[] rf = context.rightAsymmetricTrendFilters(filter, r); 
-        AsymmetricEndPoints aep=new AsymmetricEndPoints(lf, -1);
-        aep.process(d6, DataBlock.of(x));
-        aep=new AsymmetricEndPoints(rf, 1);
-        aep.process(d6, DataBlock.of(x));
-        d7 = DoubleSeq.of(x);
-        if (d7.anyMatch(z -> z <= 0)) {
+        d7 = context.getTrendFiltering().process(d6);
+        if (context.getMode().isMultiplicative() && d7.anyMatch(z->z <=0))
             throw new X11Exception(X11Exception.ERR_NEG);
-        }
     }
 
     private void d8(X11Context context) {
@@ -94,26 +79,9 @@ public class X11DStep {
         d11bis = context.remove(d1, d10);
         d11 = context.remove(refSeries, d10);
 
-        SymmetricFilter hfilter = context.trendFilter();
-        int ndrop = hfilter.length() / 2;
-
-        double[] x = table(d11bis.length(), Double.NaN);
-        DataBlock out = DataBlock.of(x, ndrop, x.length - ndrop);
-        hfilter.apply(d11bis, out);
-
-       // apply asymmetric filters
-        double r=MusgraveFilterFactory.findR(hfilter.length(), context.getPeriod().intValue());
-        IFiniteFilter[] lf = context.leftAsymmetricTrendFilters(hfilter, r); 
-        IFiniteFilter[] rf = context.rightAsymmetricTrendFilters(hfilter, r); 
-        AsymmetricEndPoints aep=new AsymmetricEndPoints(lf, -1);
-        aep.process(d11bis, DataBlock.of(x));
-        aep=new AsymmetricEndPoints(rf, 1);
-        aep.process(d11bis, DataBlock.of(x));
-        d12 = DoubleSeq.of(x);
-        if (d12.anyMatch(z -> z <= 0)) {
+        d12 = context.getTrendFiltering().process(d11bis);
+        if (context.getMode().isMultiplicative() && d12.anyMatch(z->z <=0))
             throw new X11Exception(X11Exception.ERR_NEG);
-        }
-
         d13 = context.remove(d11, d12);
 
     }

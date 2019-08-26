@@ -5,10 +5,14 @@
  */
 package jdplus.maths.linearfilters;
 
+import demetra.data.DoubleSeq;
+import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
+import jdplus.maths.functions.integration.NumericalIntegration;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.matrices.decomposition.Householder;
 
@@ -18,8 +22,14 @@ import jdplus.maths.matrices.decomposition.Householder;
  */
 @lombok.experimental.UtilityClass
 public class AsymmetricFilters {
+    
+    public static enum Option{
+        Direct,
+        CutAndNormalize,
+        MMSRE
+    }
 
-    public FiniteFilter musgraveFilter(final SymmetricFilter s, final int q, double r) {
+    public IFiniteFilter musgraveFilter(final SymmetricFilter s, final int q, double r) {
         double[] h = s.weightsToArray();
         int n = s.length();
         int l = (n - 1) / 2;
@@ -41,7 +51,7 @@ public class AsymmetricFilters {
         return FiniteFilter.ofInternal(c, -l);
     }
 
-    public FiniteFilter cutAndNormalizeFilter(final SymmetricFilter s, final int q) {
+    public IFiniteFilter cutAndNormalizeFilter(final SymmetricFilter s, final int q) {
         IntToDoubleFunction weights = s.weights();
         int l = s.getLowerBound();
         double[] w = new double[q - l + 1];
@@ -56,6 +66,15 @@ public class AsymmetricFilters {
         return FiniteFilter.ofInternal(w, l);
     }
 
+    public IFiniteFilter[] cutAndNormalizeFilters(final SymmetricFilter s) {
+        int horizon=s.getUpperBound();
+        IFiniteFilter[] ff=new IFiniteFilter[horizon];
+        for (int i=0, h=horizon-1; i<horizon; ++i, --h){
+            ff[i]=cutAndNormalizeFilter(s, h);
+        }
+        return ff;
+    }
+
     /**
      * Provides an asymmetric filter [-h, p] based on the given symmetric
      * filter. The asymmetric filter minimizes the mean square revision error
@@ -67,12 +86,13 @@ public class AsymmetricFilters {
      *
      * @param sw The symmetric filter
      * @param q The horizon of the asymmetric filter (from 0 to deg(w)/2)
-     * @param u The degree of the constraints (U)
-     * @param dz Coefficients of the linear model
+     * @param u The degree of the constraints (U, the weights preserve polynomials of degree at most u).
+     * @param dz Coefficients of the linear model. The number of the coefficients defines
+     * the type of the linear model: no coefficient for y = a + e, one coefficient for y = a + b*t+e...
      * @param k The weighting factors (null for no weighting)
      * @return
      */
-    public FiniteFilter mmsreFilter(SymmetricFilter sw, int q, int u, double[] dz, IntToDoubleFunction k) {
+    public IFiniteFilter mmsreFilter(SymmetricFilter sw, int q, int u, double[] dz, IntToDoubleFunction k) {
         double[] w = sw.weightsToArray();
         int h = w.length / 2;
         int nv = h + q + 1;
@@ -141,6 +161,159 @@ public class AsymmetricFilters {
         wp.add(a3);
 
         return FiniteFilter.ofInternal(wp.toArray(), -h);
+    }
+
+    public IFiniteFilter[] mmsreFilters(final SymmetricFilter s, int u, double[] dz, IntToDoubleFunction k) {
+        int horizon=s.getUpperBound();
+        IFiniteFilter[] ff=new IFiniteFilter[horizon];
+        for (int i=0, h=horizon-1; i<horizon; ++i, --h){
+            ff[i]=mmsreFilter(s, h, u, dz, k);
+        }
+        return ff;
+    }
+    
+//    /**
+//     * Retrieve the implicit forecasts corresponding to the asymmetric filters
+//     * @param sfilter The underlying symmetric filter
+//     * @param afilters The asymmetric filters (from the longest to the shortest).
+//     * @param x The observations, from n-h to n
+//     * @return The forecasts, from n+1 to n+h
+//     */ 
+//    public double[] implicitForecasts(SymmetricFilter sfilter, IFiniteFilter[] afilters, DoubleSeq x){
+//        int h=sfilter.getUpperBound();
+//        if (h != afilters.length || x.length() != 2*h)
+//            return null;
+//        double[] f=new double[afilters.length];
+//        CanonicalMatrix L=CanonicalMatrix.square(h);
+//        IntToDoubleFunction sw = sfilter.weights();// from -h to h
+//        for (int i=0; i<h; ++i){
+//            IntToDoubleFunction aw = afilters[i].weights(); // from -h to h-i-1
+//            double q=0;
+//            for (int j=-h, k=i; j<h-i; ++j, ++k){
+//                double awj=aw.applyAsDouble(j), swj=sw.applyAsDouble(j);
+//                double d=awj-swj;
+//                q+=d*x.get(k);
+//            }
+//            f[i]=q;
+//            for (int j=h-i, k=0; j<=h; ++j, ++k){
+//                L.set(i, k, sw.applyAsDouble(j));
+//            }
+//        }
+//        LowerTriangularMatrix.rsolve(L, DataBlock.of(f));
+//        return f;
+//    }
+//    
+    
+    /**
+     * Retrieve the implicit forecasts corresponding to the asymmetric filters
+     * @param sfilter The underlying symmetric filter
+     * @param afilters The asymmetric filters (from the longest to the shortest).
+     * @param x The observations, from n-h to n
+     * @return The forecasts, from n+1 to n+h
+     */ 
+    public double[] implicitForecasts(SymmetricFilter sfilter, IFiniteFilter[] afilters, DoubleSeq x){
+        int h=sfilter.getUpperBound();
+        if (h != afilters.length || x.length() != h+1)
+            return null;
+        double[] f=new double[afilters.length];
+        CanonicalMatrix L=CanonicalMatrix.square(h);
+        IntToDoubleFunction sw = sfilter.weights();// from -h to h
+        for (int i=0; i<h; ++i){
+            IntToDoubleFunction aw = afilters[i].weights(); // from -h to i
+            double q=0;
+            int j=-h;
+            for (int k=0; j<=0; ++j, ++k){
+                q+=(aw.applyAsDouble(j)-sw.applyAsDouble(j))*x.get(k);
+            }
+            f[i]=q;               
+            for (; j<=h-i-1; ++j){
+                L.set(i, j-1, sw.applyAsDouble(j)-aw.applyAsDouble(j));
+            }
+            for (; j<=h; ++j){
+                L.set(i, j-1, sw.applyAsDouble(j));
+            }
+        }
+        Householder hous=new Householder(true);
+        hous.decompose(L);
+        hous.solve(DataBlock.of(f));
+        return f;
+    }
+
+    private final double Q = 1 / (2 * Math.PI);
+
+    public static interface Distance {
+
+        double compute(SymmetricFilter sf, FiniteFilter af);
+    }
+    
+    public Distance frequencyResponseDistance(@lombok.NonNull DoubleUnaryOperator spectralDensity) {
+        return (SymmetricFilter sf, FiniteFilter af) -> {
+            DoubleUnaryOperator fn = x -> spectralDensity.applyAsDouble(x) * sf.frequencyResponse(x).squareDistance(af.frequencyResponse(x));
+            return 2 * NumericalIntegration.integrate(fn, 0, Math.PI);
+        };
+    }
+
+    public Distance frequencyResponseDistance() {
+
+        return frequencyResponseDistance(x -> Q);
+    }
+
+    public Distance accuracyDistance(@lombok.NonNull DoubleUnaryOperator spectralDensity, double passBand) {
+        return (SymmetricFilter sf, FiniteFilter af) -> {
+            DoubleUnaryOperator fn = x -> {
+                double y = sf.gainFunction().applyAsDouble(x) - af.gainFunction().applyAsDouble(x);
+                return y * y * spectralDensity.applyAsDouble(x);
+            };
+            return 2 * NumericalIntegration.integrate(fn, 0, passBand);
+        };
+    }
+
+    public Distance accuracyDistance(SymmetricFilter sf, FiniteFilter af, double passBand) {
+        return accuracyDistance(x -> Q, passBand);
+    }
+
+    public Distance smoothnessDistance(DoubleUnaryOperator spectralDensity, double passBand) {
+        return (SymmetricFilter sf, FiniteFilter af) -> {
+            DoubleUnaryOperator fn = x -> {
+                double y = sf.gainFunction().applyAsDouble(x) - af.gainFunction().applyAsDouble(x);
+                return y * y * spectralDensity.applyAsDouble(x);
+            };
+            return 2 * NumericalIntegration.integrate(fn, passBand, Math.PI);
+        };
+    }
+
+    public Distance smoothnessDistance(double passBand) {
+        return smoothnessDistance(x -> Q, passBand);
+    }
+
+    public Distance timelinessDistance(DoubleUnaryOperator spectralDensity, double passBand) {
+        return (SymmetricFilter sf, FiniteFilter af) -> {
+            DoubleUnaryOperator fn = x -> {
+                double g = Math.abs(sf.realFrequencyResponse(x));
+                double ga = af.frequencyResponse(x).abs();
+                double s = Math.sin(af.frequencyResponse(x).arg() / 2);
+                return g * ga * s * s * spectralDensity.applyAsDouble(x);
+            };
+            return 8 * NumericalIntegration.integrate(fn, 0, passBand);
+        };
+    }
+
+    public Distance timelinessDistance(double passBand) {
+        return timelinessDistance(x -> Q, passBand);
+    }
+
+    public Distance timelinessDistance2(DoubleUnaryOperator spectralDensity, double a, double b) {
+        return (SymmetricFilter sf, FiniteFilter af) -> {
+            DoubleUnaryOperator fn = x -> {
+                double p = af.frequencyResponse(x).arg();
+                return x == 0 ? 0 : Math.abs(p / x) * spectralDensity.applyAsDouble(x);
+            };
+            return 8 * NumericalIntegration.integrate(fn, a, b);
+        };
+    }
+
+    public Distance timelinessDistance2(double a, double b) {
+        return timelinessDistance2(x -> Q, a, b);
     }
 
 }

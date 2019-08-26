@@ -5,17 +5,8 @@
  */
 package jdplus.rkhs;
 
-import demetra.data.DoubleSeq;
 import java.util.function.DoubleUnaryOperator;
-import java.util.function.IntToDoubleFunction;
-import jdplus.filters.AsymmetricFiltersUtility;
-import jdplus.maths.functions.IFunction;
-import jdplus.maths.functions.IFunctionPoint;
-import jdplus.maths.functions.IParametersDomain;
-import jdplus.maths.functions.ParametersRange;
-import jdplus.maths.linearfilters.FiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.stats.Kernels;
 
 /**
  *
@@ -28,8 +19,8 @@ public class KernelsUtility {
      * Computes the discrete weights corresponding to a continuous kernel
      *
      * @param kernel The continuous kernel
-     * @param m The length of the symmetric filter: from -m to m (included)
      * @param bandwidth The bandwidth parameter.
+     * @param m The length of the symmetric filter: from -m to m (included)
      * @return
      */
     public SymmetricFilter symmetricFilter(DoubleUnaryOperator kernel, double bandwidth, int m) {

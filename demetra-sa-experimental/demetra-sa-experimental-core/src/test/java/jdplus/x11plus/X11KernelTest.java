@@ -3,11 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.x11plus;
+package jdplus.x11plus;
 
-import jdplus.x11plus.SeasonalFilterOption;
-import jdplus.x11plus.X11Kernel;
-import jdplus.x11plus.X11Context;
 import demetra.data.Data;
 import demetra.data.WeeklyData;
 import demetra.sa.DecompositionMode;
@@ -40,7 +37,6 @@ public class X11KernelTest {
 //        System.out.println("Exact");
         X11Context context1=X11Context.builder()
                 .period(365.25/7)
-                .trendFilterLength(53)
                 .initialSeasonalFilter(SeasonalFilterOption.S3X1)
                 .finalSeasonalFilter(SeasonalFilterOption.S3X9)
                 .build();
@@ -49,7 +45,6 @@ public class X11KernelTest {
 //        System.out.println("Rounded");
         X11Context context2=X11Context.builder()
                 .period(52)
-                .trendFilterLength(0)
                 .initialSeasonalFilter(SeasonalFilterOption.S3X1)
                 .finalSeasonalFilter(SeasonalFilterOption.S3X9)
                 .build();
@@ -63,7 +58,6 @@ public class X11KernelTest {
         X11Context context1=X11Context.builder()
                 .mode(DecompositionMode.Multiplicative)
                 .period(12)
-                .trendFilterLength(13)
                 .build();
         kernel.process(DoubleSeq.of(Data.PROD), context1);
 //        System.out.println(kernel.getDstep().getD13());

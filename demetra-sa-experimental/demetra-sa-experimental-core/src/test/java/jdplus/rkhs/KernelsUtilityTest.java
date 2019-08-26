@@ -7,7 +7,7 @@ package jdplus.rkhs;
 
 import java.util.function.DoubleUnaryOperator;
 import jdplus.data.analysis.DiscreteKernel;
-import jdplus.maths.linearfilters.LocalPolynomialFilters;
+import jdplus.filters.LocalPolynomialFilterFactory;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.stats.Kernels;
@@ -29,8 +29,8 @@ public class KernelsUtilityTest {
         double bandwidth = m + 1;
         DoubleUnaryOperator kernel = HighOrderKernels.kernel(Kernels.BIWEIGHT, 3);
         SymmetricFilter s1 = KernelsUtility.symmetricFilter(kernel, bandwidth, m);
-        SymmetricFilter s2 = LocalPolynomialFilters.of(m, 3, DiscreteKernel.biweight(m));
-        SymmetricFilter s3 = LocalPolynomialFilters.of(m, 3, DiscreteKernel.henderson(m));
+        SymmetricFilter s2 = LocalPolynomialFilterFactory.of(m, 3, DiscreteKernel.biweight(m));
+        SymmetricFilter s3 = LocalPolynomialFilterFactory.of(m, 3, DiscreteKernel.henderson(m));
         CanonicalMatrix S = CanonicalMatrix.make(2 * m + 1, 3);
         S.column(0).copyFrom(s1.weightsToArray(), 0);
         S.column(1).copyFrom(s2.weightsToArray(), 0);

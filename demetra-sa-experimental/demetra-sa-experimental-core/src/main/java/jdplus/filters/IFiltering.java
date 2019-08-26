@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.x11plus;
+package jdplus.filters;
 
 import demetra.data.DoubleSeq;
+import jdplus.maths.linearfilters.IFiniteFilter;
 
 /**
  *
@@ -14,9 +15,14 @@ import demetra.data.DoubleSeq;
 public interface IFiltering {
     /**
      * Applies a filter on an input to produce an output.
-     * The inut and the output must have the same length
+     * The input and the output must have the same length
      * @param in
      * @return 
      */
     DoubleSeq process(DoubleSeq in);
+    
+    IFiniteFilter centralFilter();
+    
+    IFiniteFilter[] leftEndPointsFilters();
+    IFiniteFilter[] rightEndPointsFilters();
 }

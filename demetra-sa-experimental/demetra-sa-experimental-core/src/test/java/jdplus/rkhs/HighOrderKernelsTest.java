@@ -7,7 +7,7 @@ package jdplus.rkhs;
 
 import java.util.function.DoubleUnaryOperator;
 import jdplus.data.analysis.DiscreteKernel;
-import jdplus.maths.linearfilters.LocalPolynomialFilters;
+import jdplus.filters.LocalPolynomialFilterFactory;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
@@ -41,7 +41,7 @@ public class HighOrderKernelsTest {
             assertTrue(p.equals(fp, 1e-6));
         }
         int m = 11;
-        SymmetricFilter sf = LocalPolynomialFilters.of(m, 3, DiscreteKernel.biweight(m));
+        SymmetricFilter sf = LocalPolynomialFilterFactory.of(m, 3, DiscreteKernel.biweight(m));
         DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, 3);
         double step = 1.0 / (m + 1);
         Polynomial p = HighOrderKernels.p(K, 3);
@@ -71,7 +71,7 @@ public class HighOrderKernelsTest {
             assertTrue(p.equals(fp, 1e-6));
         }
         int m = 11;
-        SymmetricFilter sf = LocalPolynomialFilters.of(m, 3, DiscreteKernel.triweight(m));
+        SymmetricFilter sf = LocalPolynomialFilterFactory.of(m, 3, DiscreteKernel.triweight(m));
         DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, 3);
         double step = 1.0 / (m + 1);
         Polynomial p = HighOrderKernels.p(K, 3);
@@ -96,7 +96,7 @@ public class HighOrderKernelsTest {
 //            System.out.println(p.times(Kernels.epanechnikovAsPolynomial()));
         }
         int m = 11;
-        SymmetricFilter sf = LocalPolynomialFilters.of(m, 3, DiscreteKernel.epanechnikov(m));
+        SymmetricFilter sf = LocalPolynomialFilterFactory.of(m, 3, DiscreteKernel.epanechnikov(m));
         DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, 3);
         double step = 1.0 / (m + 1);
         Polynomial p = HighOrderKernels.p(K, 3);
@@ -116,7 +116,7 @@ public class HighOrderKernelsTest {
         Kernel K = Kernels.EPANECHNIKOV;
         int R=5;
         int m = 51;
-        SymmetricFilter sf = LocalPolynomialFilters.of(m, R, DiscreteKernel.epanechnikov(m));
+        SymmetricFilter sf = LocalPolynomialFilterFactory.of(m, R, DiscreteKernel.epanechnikov(m));
         DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, R);
         double step = 1.0 / (m + 1);
         Polynomial p = HighOrderKernels.p(K, R);

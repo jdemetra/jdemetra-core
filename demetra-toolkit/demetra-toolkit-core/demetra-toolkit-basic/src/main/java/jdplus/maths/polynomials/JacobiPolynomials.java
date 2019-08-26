@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.rkhs;
+package jdplus.maths.polynomials;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import jdplus.maths.polynomials.Polynomial;
 
 /**
  *
