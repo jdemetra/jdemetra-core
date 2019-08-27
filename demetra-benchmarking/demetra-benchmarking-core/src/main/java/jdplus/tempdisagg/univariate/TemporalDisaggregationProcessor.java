@@ -8,7 +8,7 @@ package jdplus.tempdisagg.univariate;
 import jdplus.arima.ssf.AR1;
 import jdplus.arima.ssf.Arima_1_1_0;
 import jdplus.arima.ssf.Rw;
-import jdplus.benchmarking.ssf.SsfDisaggregation;
+import jdplus.benchmarking.ssf.SsfCumulator;
 import demetra.data.AggregationType;
 import jdplus.data.DataBlock;
 import demetra.data.Parameter;
@@ -142,7 +142,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
             nssf = noiseModel(spec);
             SsfData ssfdata = new SsfData(model.getHEY());
             SsfRegressionModel ssfmodel = new SsfRegressionModel(Ssf.of(nssf, 0), ssfdata, model.getHEX(), diffuse);
-            dll = DkToolkit.concentratedLikelihoodComputer().compute(ssfmodel);
+            dll = DkToolkit.concentratedLikelihoodComputer(true, false, true).compute(ssfmodel);
         } else {
             SsfFunction<Parameter, Ssf> fn = ssfFunction(model, spec);
             SsqFunctionMinimizer fmin = LevenbergMarquardtMinimizer
@@ -228,10 +228,10 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
         DiffuseConcentratedLikelihood dll;
         if (!spec.isParameterEstimation()) {
             nssf = noiseModel(spec);
-            ssf = SsfDisaggregation.of(nssf, model.getFrequencyRatio());
+            ssf = SsfCumulator.of(nssf, model.getFrequencyRatio());
             SsfData ssfdata = new SsfData(model.getHEY());
             SsfRegressionModel ssfmodel = new SsfRegressionModel(ssf, ssfdata, model.getHEX(), diffuse);
-            dll = DkToolkit.concentratedLikelihoodComputer().compute(ssfmodel);
+            dll = DkToolkit.concentratedLikelihoodComputer(true, false, true).compute(ssfmodel);
         } else {
             SsfFunction<Parameter, Ssf> fn = ssfFunction(model, spec);
             SsqFunctionMinimizer fmin = LevenbergMarquardtMinimizer
@@ -262,7 +262,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
         // A square root form of the diffuse smoothing should also be investigated.
         SsfComponent rssf = RegSsf.of(nssf, model.getHX());
         SsfData ssfdata = new SsfData(model.getHY());
-        ssf = SsfDisaggregation.of(rssf, model.getFrequencyRatio(), model.getStart());
+        ssf = SsfCumulator.of(rssf, model.getFrequencyRatio(), model.getStart());
         DefaultSmoothingResults srslts;
         switch (spec.getAlgorithm()) {
             case Augmented:
@@ -307,7 +307,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
                 .regressionEffects(regeffect)
                 .residuals(res)
                 .estimation(lestimation(dll, spec))
-                .residualsDiagnostics(diagnostic(res, SsfDisaggregation.of(nssf, model.getFrequencyRatio()), model.getYUnit()))
+                .residualsDiagnostics(diagnostic(res, SsfCumulator.of(nssf, model.getFrequencyRatio()), model.getYUnit()))
                 .build();
     }
 
@@ -342,7 +342,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
     private static Ssf ssf(double rho, boolean disagg, boolean cl, boolean zeroinit, int ratio) {
         SsfComponent cmp = cl ? AR1.of(rho, 1, zeroinit)
                 : Arima_1_1_0.of(rho, 1, zeroinit);
-        return disagg ? SsfDisaggregation.of(cmp, ratio) : Ssf.of(cmp, 0);
+        return disagg ? SsfCumulator.of(cmp, ratio) : Ssf.of(cmp, 0);
     }
 
     private int[] diffuseRegressors(int nx, TemporalDisaggregationSpec spec) {
@@ -380,7 +380,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
     }
 
     private ResidualsDiagnostics diagnostic(TsData res, ISsf ssf, TsUnit unit) {
-        DiffuseConcentratedLikelihood ll = DkToolkit.concentratedLikelihoodComputer().compute(ssf, new SsfData(res.getValues()));
+        DiffuseConcentratedLikelihood ll = DkToolkit.concentratedLikelihoodComputer(true, false, true).compute(ssf, new SsfData(res.getValues()));
         DoubleSeq e = ll.e();
         TsPeriod pstart = TsPeriod.of(unit, res.getStart().start());
         pstart = pstart.plus(ll.ndiffuse());

@@ -35,7 +35,7 @@ import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.CanonicalMatrix;
 
 /**
- * QR variant copyOf the augmented Kalman filter. See for instance
+ * QR variant of the augmented Kalman filter. See for instance
  * Gomez-Maravall. This implementation doesn't use collapsing
  *
  * @author Jean Palate <jean.palate@nbb.be>
@@ -95,7 +95,7 @@ public class QRFilter {
         return true;
     }
 
-    public static MarginalLikelihood ml(final ISsf ssf, final ISsfData data, boolean concentrated) {
+    public static MarginalLikelihood ml(final ISsf ssf, final ISsfData data, boolean scalingfactor) {
         AugmentedPredictionErrorDecomposition pe = new AugmentedPredictionErrorDecomposition(true);
         pe.prepare(ssf, data.length());
         AugmentedFilterInitializer initializer = new AugmentedFilterInitializer(pe);
@@ -103,7 +103,7 @@ public class QRFilter {
         if (!filter.process(ssf, data, pe))
             return null;
         int collapsing = pe.getCollapsingPosition();
-        DiffuseLikelihood likelihood = pe.likelihood();
+        DiffuseLikelihood likelihood = pe.likelihood(scalingfactor);
         CanonicalMatrix M = CanonicalMatrix.make(collapsing, ssf.getDiffuseDim());
         ssf.diffuseEffects(M);
         int j = 0;
@@ -119,7 +119,7 @@ public class QRFilter {
         hous.decompose(M.extract(0, j, 0, M.getColumnsCount()));
         double mc = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
         return MarginalLikelihood.builder(likelihood.dim(), likelihood.getD())
-                .concentratedScalingFactor(concentrated)
+                .concentratedScalingFactor(scalingfactor)
                 .diffuseCorrection(likelihood.getDiffuseCorrection())
                 .legacy(false)
                 .logDeterminant(likelihood.logDeterminant())

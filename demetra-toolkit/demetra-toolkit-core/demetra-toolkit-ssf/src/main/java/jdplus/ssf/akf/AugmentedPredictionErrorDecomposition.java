@@ -96,9 +96,9 @@ public class AugmentedPredictionErrorDecomposition extends PredictionErrorDecomp
     }
 
     @Override
-    public DiffuseLikelihood likelihood() {
-        DiffuseLikelihood ll = Q.likelihood();
-        return ll.add(super.likelihood());
+    public DiffuseLikelihood likelihood(boolean scalingfactor) {
+        DiffuseLikelihood ll = Q.likelihood(scalingfactor);
+        return ll.add(super.likelihood(scalingfactor));
     }
 
 }

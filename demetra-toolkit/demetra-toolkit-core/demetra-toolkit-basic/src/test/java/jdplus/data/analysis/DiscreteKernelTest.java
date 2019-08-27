@@ -31,6 +31,10 @@ import static jdplus.data.analysis.DiscreteKernel.distance;
 import static jdplus.data.analysis.DiscreteKernel.epanechnikov;
 import static jdplus.data.analysis.DiscreteKernel.distance;
 import static jdplus.data.analysis.DiscreteKernel.distance;
+import static jdplus.data.analysis.DiscreteKernel.distance;
+import static jdplus.data.analysis.DiscreteKernel.distance;
+import static jdplus.data.analysis.DiscreteKernel.distance;
+import static jdplus.data.analysis.DiscreteKernel.distance;
 
 /**
  *
@@ -52,7 +56,7 @@ public class DiscreteKernelTest {
             double q = kernel.applyAsDouble(i);
             //assertTrue(q>0);
             s += q;
-            System.out.println(kernel.applyAsDouble(i));
+//            System.out.println(kernel.applyAsDouble(i));
         }
         assertEquals(1, s, 1e-9);
     }
@@ -101,8 +105,8 @@ public class DiscreteKernelTest {
 
     @Test
     public void testParabolic() {
-        IntToDoubleFunction kernel = DiscreteKernel.Parabolic.asFunction(K);
-//        System.out.println("Parabolic");
+        IntToDoubleFunction kernel = DiscreteKernel.Epanechnikov.asFunction(K);
+//        System.out.println("Epanechnikov");
         double s = 0;
         for (int i = -K; i <= K; ++i) {
             double q = kernel.applyAsDouble(i);
@@ -154,6 +158,6 @@ public class DiscreteKernelTest {
                 D.set(i, j, distance(k[i], k[j], K));
             }
         }
-       System.out.println(D);
+//       System.out.println(D);
     }
 }

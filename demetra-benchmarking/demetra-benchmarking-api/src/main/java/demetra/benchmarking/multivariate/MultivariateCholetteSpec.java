@@ -61,6 +61,7 @@ public class MultivariateCholetteSpec implements ProcSpecification, Validatable<
     }
     
     public static Builder builder(){
+        
         return new Builder()
                 .lambda(DEF_LAMBDA)
                 .rho(DEF_RHO);

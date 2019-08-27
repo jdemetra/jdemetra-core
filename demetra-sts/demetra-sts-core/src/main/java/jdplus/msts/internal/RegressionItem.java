@@ -5,6 +5,8 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
+import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.msts.ModelItem;
 import jdplus.msts.MstsMapping;
@@ -16,12 +18,14 @@ import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import demetra.maths.matrices.Matrix;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  *
  * @author palatej
  */
-public class RegressionItem extends AbstractModelItem {
+public class RegressionItem extends StateItem {
 
     public final CanonicalMatrix x;
     public final VarianceInterpreter[] v;
@@ -80,4 +84,39 @@ public class RegressionItem extends AbstractModelItem {
             return Arrays.asList(v);
         }
     }
+
+    @Override
+    public StateComponent build(DoubleSeq p) {
+        if (v == null) {
+            return RegSsf.stateComponent(x.getColumnsCount());
+        } else {
+            return RegSsf.stateComponent(x.getColumnsCount(), p.extract(0, v.length));
+        }
+    }
+
+    @Override
+    public int parametersCount() {
+        return v == null ? 0 : v.length;
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        if (m > 0) {
+            return null;
+        } else {
+            return RegSsf.loading(x);
+        }
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        return 1;
+    }
+    
+    @Override
+    public int stateDim(){
+        return x.getColumnsCount();
+    }
+
+    
 }

@@ -13,5 +13,5 @@ import demetra.design.Development;
  */
 @Development(status = Development.Status.Release)
 public enum Optimizer {
-    LevenbergMarquardt, MinPack, LBFGS
+    LevenbergMarquardt, MinPack, BFGS, LBFGS
 }

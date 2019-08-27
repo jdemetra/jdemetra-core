@@ -23,6 +23,7 @@ import demetra.util.Ref;
 import java.util.function.IntToDoubleFunction;
 import demetra.maths.ComplexComputer;
 import demetra.data.DoubleSeq;
+import jdplus.data.DataBlock;
 
 /**
  *
@@ -304,5 +305,85 @@ public class FilterUtility {
             np.val = p;
             return false;
         }
+    }
+
+    /**
+     * Applies the given symmetric filter on a sequence of input. The end-points
+     * are handled using given asymmetric filters or set to NaN.
+     *
+     * @param input The input
+     * @param filter The symmetric filter
+     * @param afilters The asymmetric filters used for computing the end points.
+     * Same treatment on both sides. If the symmetric filters are missing
+     * (=null), the end-points are set to NaN. The first asymmetric filter is
+     * used for computing out[h-1] and out[n-h], the second for out[h-2],
+     * out[n-h+1]...
+     * @return The filtered data
+     */
+    public DoubleSeq filter(DoubleSeq input, final SymmetricFilter filter, final IFiniteFilter[] afilters) {
+        double[] x = new double[input.length()];
+        int h = filter.getUpperBound();
+        DataBlock out = DataBlock.of(x, h, x.length - h);
+        filter.apply(input, out);
+
+        // apply the endpoints filters
+        if (afilters != null) {
+            for (int i = 0, j=h-1, k=x.length - h, len = 2 * h; i < h; ++i, --len, --j, ++k) {
+                x[j] = afilters[i].apply(input.extract(0, len).reverse());
+                x[k] = afilters[i].apply(input.extract(x.length - len, len));
+            }
+        } else {
+            for (int i = 0; i < h; ++i) {
+                x[i] = Double.NaN;
+                x[x.length - i - 1] = Double.NaN;
+            }
+        }
+        return DoubleSeq.of(x);
+    }
+
+    /**
+     * Applies the given central filter on a sequence of input. The end-points
+     * are handled using given asymmetric filters or set to NaN.
+     *
+     * @param input The input
+     * @param filter The central filter
+     * @param leftFilters The asymmetric filters used for computing the first
+     * points.
+     * @param rightFilters The asymmetric filters used for computing the first
+     * points. Same treatment on both sides. If the symmetric filters are
+     * missing (=null), the end-points are set to NaN. The first left asymmetric
+     * filter is used for computing out[l-1], the second for out[l-2]... The
+     * first right asymmetric filter is used for computing out[n-u], the second
+     * for out[n-u+1]...
+     * @return The filtered data
+     */
+    public DoubleSeq filter(DoubleSeq input, final IFiniteFilter filter, final IFiniteFilter[] leftFilters, final IFiniteFilter[] rightFilters) {
+        double[] x = new double[input.length()];
+        int l = -filter.getLowerBound(), u = filter.getUpperBound();
+        DataBlock out = DataBlock.of(x, l, x.length - u);
+        filter.apply(input, out);
+
+        // apply the endpoints filters
+        if (leftFilters != null) {
+            for (int i = 0, j=l-1; i < l; ++i, --j) {
+                IFiniteFilter cur = leftFilters[i];
+                x[j] = cur.apply(input.extract(j + cur.getLowerBound(), cur.length()));
+            }
+        } else {
+            for (int i = 0; i < l; ++i) {
+                x[i] = Double.NaN;
+            }
+        }
+        if (rightFilters != null) {
+            for (int i = 0, j=x.length - u; i < u; ++i, ++j) {
+                IFiniteFilter cur = rightFilters[i];
+                x[j] = cur.apply(input.extract(j + cur.getLowerBound(), cur.length()));
+            }
+        } else {
+            for (int i = 0; i < l; ++i) {
+                x[x.length - i - 1] = Double.NaN;
+            }
+        }
+        return DoubleSeq.of(x);
     }
 }

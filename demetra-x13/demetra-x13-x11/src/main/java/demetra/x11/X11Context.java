@@ -16,7 +16,10 @@ import demetra.x11.extremevaluecorrector.PeriodSpecificExtremeValuesCorrector;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
 import jdplus.data.analysis.DiscreteKernel;
+import jdplus.maths.linearfilters.AsymmetricFilters;
 import jdplus.maths.linearfilters.FiniteFilter;
+import jdplus.maths.linearfilters.IFiniteFilter;
+import jdplus.maths.linearfilters.LocalPolynomialFilters;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import lombok.experimental.NonFinal;
 
@@ -149,20 +152,19 @@ public class X11Context {
     public SymmetricFilter trendFilter(int filterLength) {
         int horizon = filterLength / 2;
         IntToDoubleFunction weights = DiscreteKernel.henderson(horizon);
-        return jdplus.maths.linearfilters.LocalPolynomialFilters.of(horizon, localPolynomialDegree, weights);
+        return LocalPolynomialFilters.of(horizon, localPolynomialDegree, weights);
     }
 
     private static final double SQRPI = Math.sqrt(Math.PI);
 
-    public FiniteFilter[] asymmetricTrendFilters(SymmetricFilter sfilter, double ic) {
+    public IFiniteFilter[] asymmetricTrendFilters(SymmetricFilter sfilter, double ic) {
         double d = 2 / (SQRPI * ic);
-        FiniteFilter[] afilters;
         int horizon = sfilter.getUpperBound();
         int u = 0;
         double[] c = new double[]{d};
-        afilters = new FiniteFilter[horizon];
+        IFiniteFilter[] afilters = new IFiniteFilter[horizon];
         for (int i = 0; i < afilters.length; ++i) {
-            afilters[horizon - i - 1] = jdplus.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(sfilter, i, u, c, null);
+            afilters[horizon - i - 1] = AsymmetricFilters.mmsreFilter(sfilter, i, u, c, null);
         }
         return afilters;
     }

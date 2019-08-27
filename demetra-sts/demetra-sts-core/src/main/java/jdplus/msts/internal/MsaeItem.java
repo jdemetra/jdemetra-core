@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
 import jdplus.msts.ArInterpreter;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.survey.WaveSpecificSurveyErrors;
@@ -14,18 +15,20 @@ import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.implementations.Loading;
 
 /**
  *
  * @author palatej
  */
-public class MsaeItem extends AbstractModelItem {
-    
+public class MsaeItem extends StateItem {
+
     private final int nwaves;
     private final int lag;
     private final int[] lar;
     private final ArInterpreter[] par;
-    
+
     public MsaeItem(String name, int nwaves, Matrix ar, boolean fixedar, int lag) {
         super(name);
         this.nwaves = nwaves;
@@ -46,7 +49,7 @@ public class MsaeItem extends AbstractModelItem {
             par[i] = new ArInterpreter(name + ".wae" + (i + 1), car, fixedar);
         }
     }
-    
+
     @Override
     public void addTo(MstsMapping mapping) {
         for (int i = 0; i < par.length; ++i) {
@@ -70,10 +73,55 @@ public class MsaeItem extends AbstractModelItem {
             return pos;
         });
     }
-    
+
     @Override
     public List<ParameterInterpreter> parameters() {
         return Arrays.asList(par);
     }
-    
+
+    @Override
+    public StateComponent build(DoubleSeq p) {
+        double[][] w = new double[nwaves][];
+        w[0] = DoubleSeq.EMPTYARRAY;
+        int pos = 0;
+        int nar = lar.length;
+        for (int i = 0; i < nar; ++i) {
+            w[i + 1] = p.extract(pos, lar[i]).toArray();
+            pos += lar[i];
+        }
+        // same coefficients for the last waves, if any
+        for (int i = nar + 1; i < nwaves; ++i) {
+            w[i] = w[i - 1];
+        }
+        return WaveSpecificSurveyErrors.of(w, lag);
+    }
+
+    @Override
+    public int parametersCount() {
+        int n = 0;
+        int nar = lar.length;
+        for (int i = 0; i < nar; ++i) {
+            n += lar[i];
+        }
+        return n;
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        if (m > nwaves) {
+            return null;
+        } else {
+            return Loading.fromPosition(2 * m);
+        }
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        return nwaves;
+    }
+
+    @Override
+    public int stateDim() {
+        return 2*nwaves;
+    }
 }

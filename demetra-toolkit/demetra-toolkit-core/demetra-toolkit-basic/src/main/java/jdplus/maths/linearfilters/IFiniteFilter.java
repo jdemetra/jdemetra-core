@@ -39,14 +39,14 @@ public interface IFiniteFilter extends IFilter {
     default int length() {
         return getUpperBound() - getLowerBound() + 1;
     }
-    
+
     @Override
-    default boolean hasLowerBound(){
+    default boolean hasLowerBound() {
         return true;
     }
 
     @Override
-    default boolean hasUpperBound(){
+    default boolean hasUpperBound() {
         return true;
     }
 
@@ -196,23 +196,23 @@ public interface IFiniteFilter extends IFilter {
         double[] xin = in.getStorage();
         int start = in.getStartPosition(), inc = in.getIncrement();
         int n = out.length();
-        double[] xout=out.getStorage();
+        double[] xout = out.getStorage();
         int ostart = out.getStartPosition(), oinc = out.getIncrement();
         if (inc == 1) {
-            for (int i = 0, j = start, o=ostart; i < n; ++i, ++j, o+=oinc) {
+            for (int i = 0, j = start, o = ostart; i < n; ++i, ++j, o += oinc) {
                 double s = 0;
                 for (int k = 0, t = j; k < w.length; ++k, ++t) {
                     s += xin[t] * w[k];
                 }
-                xout[o]=s;
+                xout[o] = s;
             }
         } else {
-            for (int i = 0, j = start, o=ostart; i < n; ++i, j += inc, o+=oinc) {
+            for (int i = 0, j = start, o = ostart; i < n; ++i, j += inc, o += oinc) {
                 double s = 0;
                 for (int k = 0, t = j; k < w.length; ++k, t += inc) {
                     s += xin[t] * w[k];
                 }
-                xout[o]=s;
+                xout[o] = s;
             }
         }
     }
@@ -245,6 +245,19 @@ public interface IFiniteFilter extends IFilter {
             }
         }
         return sb.toString();
+    }
 
+    public static boolean equals(IFiniteFilter f1, IFiniteFilter f2, double eps) {
+        int l = f1.getLowerBound(), u = f1.getUpperBound();
+        if (l != f2.getLowerBound() || u != f2.getUpperBound()) {
+            return false;
+        }
+        IntToDoubleFunction w = f1.weights(), fw = f2.weights();
+        for (int i = l; i <= u; ++i) {
+            if (Math.abs(w.applyAsDouble(i) - fw.applyAsDouble(i)) > eps) {
+                return false;
+            }
+        }
+        return true;
     }
 }

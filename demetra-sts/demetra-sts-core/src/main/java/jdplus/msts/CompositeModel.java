@@ -19,6 +19,9 @@ package jdplus.msts;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;
+import demetra.maths.Optimizer;
+import demetra.ssf.SsfInitialization;
+import demetra.ssf.SsfLikelihood;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -28,7 +31,7 @@ import jdplus.maths.matrices.FastMatrix;
 public class CompositeModel {
 
     private MstsMapping mapping;
-    private final List<ModelItem> items = new ArrayList<>();
+    private final List<StateItem> items = new ArrayList<>();
     private final List<ModelEquation> equations = new ArrayList<>();
 
     public int getEquationsCount() {
@@ -51,7 +54,7 @@ public class CompositeModel {
         return equations.get(pos);
     }
 
-    public void add(ModelItem item) {
+    public void add(StateItem item) {
         this.items.add(item);
         mapping = null;
     }
@@ -67,8 +70,10 @@ public class CompositeModel {
 
     public void build() {
         mapping = new MstsMapping();
-        for (ModelItem item : items) {
+        for (StateItem item : items) {
             item.addTo(mapping);
+            if (! item.isScalable())
+                mapping.setScalable(false);
         }
         for (ModelEquation eq : equations) {
             eq.addTo(mapping);
@@ -89,11 +94,11 @@ public class CompositeModel {
         return mapping.modelParameters(mapping.getDefaultParameters()).toArray();
     }
 
-    public CompositeModelEstimation estimate(FastMatrix data, double eps, boolean marginal, boolean rescaling, double[] parameters) {
+    public CompositeModelEstimation estimate(FastMatrix data, boolean marginal, boolean rescaling, SsfInitialization initialization, Optimizer optimizer, double eps, double[] parameters) {
         if (mapping == null) {
             build();
         }
-        return CompositeModelEstimation.estimationOf(this, data, eps, marginal, rescaling, parameters);
+        return CompositeModelEstimation.estimationOf(this, data, marginal, rescaling, initialization, optimizer, eps, parameters);
     }
 
     public CompositeModelEstimation compute(FastMatrix data, double[] parameters, boolean marginal, boolean concentrated) {

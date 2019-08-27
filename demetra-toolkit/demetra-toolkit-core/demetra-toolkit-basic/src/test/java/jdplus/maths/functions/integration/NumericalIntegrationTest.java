@@ -19,9 +19,9 @@ public class NumericalIntegrationTest {
 
     @Test
     public void testInv() {
-        double q = NumericalIntegration.integrate(x -> 1 / x, 1e-10, 10);
-        double z = Math.log(10) - Math.log(1e-10);
-        assertEquals(q, z, 1e-9);
+        double q = NumericalIntegration.integrate(x -> x - 1 / x, 1e-10, 10);
+        double z = -10 * 5 + 1e-10 * 1e-10 / 2 + Math.log(10) - Math.log(1e-10);
+        assertEquals(q, -z, 1e-9);
     }
 
     @Test
@@ -35,17 +35,24 @@ public class NumericalIntegrationTest {
         double q = NumericalIntegration.integrateQAGI(x -> Math.exp(-.5 * x * x));
         assertEquals(q, Math.sqrt(2 * Math.PI), 1e-9);
     }
-    
+
     @Test
     public void testInvQAGIU() {
         double q = NumericalIntegration.integrateQAGIU(x -> 1 / x, Double.POSITIVE_INFINITY);
         assertEquals(q, 0.0, 1e-9);
     }
-    
+
     @Test
     public void testQAGIU1() {
         double q = NumericalIntegration.integrateQAGIU(x -> x == 0 ? 0 : Math.exp(-.5 * Math.pow(Math.log(x), 2)) / x, 0);
         assertEquals(q, Math.sqrt(2 * Math.PI), 1e-9);
+    }
+    
+    @Test
+    public void testZero(){
+        double q = NumericalIntegration.integrate(x -> 0, 0, 1);
+        assertEquals(q, 0, 1e-9);
+       
     }
 
 }

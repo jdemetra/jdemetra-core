@@ -19,7 +19,16 @@ import jdplus.ssf.univariate.StateFilteringResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.likelihood.Likelihood;
+import demetra.maths.Optimizer;
+import demetra.ssf.SsfInitialization;
+import demetra.ssf.SsfLikelihood;
+import java.util.Arrays;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.maths.matrices.QuadraticForm;
+import jdplus.ssf.ISsfLoading;
 
 /**
  *
@@ -27,12 +36,15 @@ import jdplus.maths.matrices.FastMatrix;
  */
 public class CompositeModelEstimation {
 
-    public static CompositeModelEstimation estimationOf(CompositeModel model, FastMatrix data, double eps, boolean marginal, boolean concentrated, double[] parameters) {
+    public static CompositeModelEstimation estimationOf(CompositeModel model, FastMatrix data,
+            boolean marginal, boolean concentrated, SsfInitialization initialization, Optimizer optimizer, double eps, double[] parameters) {
         CompositeModelEstimation rslt = new CompositeModelEstimation();
         rslt.data = data;
         MstsMonitor monitor = MstsMonitor.builder()
-                .marginalLikelihood(marginal)
+                .marginal(marginal)
                 .concentratedLikelihood(concentrated)
+                .initialization(initialization)
+                .optimizer(optimizer)
                 .precision(eps)
                 .build();
         monitor.process(data, model.getMapping(), parameters == null ? null : DoubleSeq.of(parameters));
@@ -42,7 +54,7 @@ public class CompositeModelEstimation {
         rslt.parameters = monitor.getParameters().toArray();
         rslt.fullParameters = monitor.fullParameters().toArray();
         rslt.parametersName = model.getMapping().parametersName();
-        rslt.cmpName=model.getCmpsName();
+        rslt.cmpName = model.getCmpsName();
         return rslt;
     }
 
@@ -50,17 +62,17 @@ public class CompositeModelEstimation {
         CompositeModelEstimation rslt = new CompositeModelEstimation();
         rslt.data = data;
         rslt.fullParameters = fullParameters.toArray();
-        model.getMapping().fixModelParameters(p->true, fullParameters);
+        model.getMapping().fixModelParameters(p -> true, fullParameters);
         rslt.parameters = DoubleSeq.EMPTYARRAY;
         rslt.ssf = model.getMapping().map(Doubles.EMPTY);
         rslt.cmpPos = rslt.getSsf().componentsPosition();
-        rslt.cmpName=model.getMapping().parametersName();
+        rslt.cmpName = model.getMapping().parametersName();
         rslt.parametersName = model.getMapping().parametersName();
         if (marginal) {
             rslt.likelihood = AkfToolkit.marginalLikelihoodComputer(concentrated).
                     compute(M2uAdapter.of(rslt.getSsf()), M2uAdapter.of(new SsfMatrix(data)));
         } else {
-            rslt.likelihood = DkToolkit.likelihood(rslt.getSsf(), new SsfMatrix(data));
+            rslt.likelihood = DkToolkit.likelihood(rslt.getSsf(), new SsfMatrix(data), true, false);
         }
         return rslt;
     }
@@ -75,7 +87,8 @@ public class CompositeModelEstimation {
 
     public StateStorage getSmoothedStates() {
         if (smoothedStates == null) {
-            StateStorage ss = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
+            StateStorage ss = AkfToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
+//            StateStorage ss = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
             if (likelihood.isScalingFactor()) {
                 ss.rescaleVariances(likelihood.sigma());
             }
@@ -134,6 +147,70 @@ public class CompositeModelEstimation {
         return filteringStates;
     }
 
+    public DoubleSeq signal(int obs, int[] cmps) {
+        if (obs >= data.getColumnsCount()) {
+            return null;
+        }
+        CanonicalMatrix L = loading(obs, cmps);
+        return signal(L);
+    }
+
+    public DoubleSeq signal(FastMatrix L) {
+        double[] x = new double[data.getRowsCount()];
+        L.rowsIterator();
+        DataBlockIterator rows = L.rowsIterator();
+        StateStorage ss = getSmoothedStates();
+        int pos = 0;
+        while (rows.hasNext()) {
+            x[pos] = ss.a(pos).dot(rows.next());
+            ++pos;
+        }
+        return DoubleSeq.of(x);
+    }
+
+    public CanonicalMatrix loading(int obs, int[] cmps) {
+        CanonicalMatrix L = CanonicalMatrix.make(data.getRowsCount(), ssf.getStateDim());
+        ISsfLoading l = ssf.loading(obs);
+        DataBlockIterator rows = L.rowsIterator();
+        int pos = 0;
+        while (rows.hasNext()) {
+            l.Z(pos++, rows.next());
+        }
+        // suppress unwanted columns
+        if (cmps != null) {
+            for (int j = 0; j < cmpPos.length; ++j) {
+                if (Arrays.binarySearch(cmps, j) < 0) {
+                    int start = cmpPos[j], end = j < cmpPos.length - 1 ? cmpPos[j + 1] : ssf.getStateDim();
+                    for (int k = start; k < end; ++k) {
+                        L.column(k).set(0);
+                    }
+                }
+            }
+        }
+        return L;
+    }
+
+    public DoubleSeq stdevSignal(int obs, int[] cmps) {
+        if (obs >= data.getColumnsCount()) {
+            return null;
+        }
+        CanonicalMatrix L = loading(obs, cmps);
+        return stdevSignal(L);
+    }
+
+    public DoubleSeq stdevSignal(FastMatrix L) {
+        double[] x = new double[data.getRowsCount()];
+        L.rowsIterator();
+        DataBlockIterator rows = L.rowsIterator();
+        StateStorage ss = getSmoothedStates();
+        int pos = 0;
+        while (rows.hasNext()) {
+            double v = QuadraticForm.apply(ss.P(pos), rows.next());
+            x[pos++] = v <= 0 ? 0 : Math.sqrt(v);
+        }
+        return DoubleSeq.of(x);
+    }
+
     /**
      * @return the likelihood
      */
@@ -161,6 +238,7 @@ public class CompositeModelEstimation {
     public String[] getCmpName() {
         return cmpName;
     }
+
     /**
      * @return the data
      */

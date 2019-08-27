@@ -5,6 +5,8 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
+import demetra.data.DoubleSeq;
 import jdplus.msts.BoundedParameterInterpreter;
 import jdplus.msts.ModelItem;
 import jdplus.msts.MstsMapping;
@@ -13,12 +15,14 @@ import jdplus.sts.CyclicalComponent;
 import java.util.Arrays;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  *
  * @author palatej
  */
-public class CycleItem extends AbstractModelItem {
+public class CycleItem extends StateItem {
 
     private final BoundedParameterInterpreter factor, period;
     private final VarianceInterpreter v;
@@ -45,7 +49,7 @@ public class CycleItem extends AbstractModelItem {
         mapping.add(v);
         mapping.add((p, builder) -> {
             double f = p.get(0), l = p.get(1), var = p.get(2);
-            builder.add(name, CyclicalComponent.of(f, l, var));
+            builder.add(name, CyclicalComponent.stateComponent(f, l, var), CyclicalComponent.loading());
             return 3;
         });
     }
@@ -55,4 +59,32 @@ public class CycleItem extends AbstractModelItem {
         return Arrays.asList(factor, period, v);
     }
 
+    @Override
+    public StateComponent build(DoubleSeq p) {
+        double f = p.get(0), l = p.get(1), var = p.get(2);
+        return CyclicalComponent.stateComponent(f, l, var);
+    }
+
+    @Override
+    public int parametersCount() {
+        return 3;
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        if (m > 0) {
+            return null;
+        }
+        return CyclicalComponent.loading();
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        return 1;
+    }
+
+    @Override
+    public int stateDim() {
+        return 2;
+    }
 }

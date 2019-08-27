@@ -18,6 +18,8 @@ import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.Loading;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  * State array: y(t-nlags)...y(t)y(t+1|t)...y(t+fcasts|t)
@@ -31,14 +33,32 @@ public class SsfAr2 {
         if (ar.length == 0) {
             throw new IllegalArgumentException();
         }
-        if (fcasts < ar.length-1) {
-            fcasts = ar.length-1;
+        if (fcasts < ar.length - 1) {
+            fcasts = ar.length - 1;
         }
         Polynomial p = polynomial(ar);
         AutoCovarianceFunction acf = acf(p, var);
-        double[] psi = psi(p).coefficients(fcasts+1);
+        double[] psi = psi(p).coefficients(fcasts + 1);
         Data data = new Data(ar, psi, var, acf, nlags);
         return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(nlags));
+    }
+
+    public StateComponent stateComponent(@NonNull double[] ar, double var, int nlags, int fcasts) {
+        if (ar.length == 0) {
+            throw new IllegalArgumentException();
+        }
+        if (fcasts < ar.length - 1) {
+            fcasts = ar.length - 1;
+        }
+        Polynomial p = polynomial(ar);
+        AutoCovarianceFunction acf = acf(p, var);
+        double[] psi = psi(p).coefficients(fcasts + 1);
+        Data data = new Data(ar, psi, var, acf, nlags);
+        return new StateComponent(new Initialization(data), new Dynamics(data));
+    }
+
+    public static ISsfLoading loading(int nlags) {
+        return Loading.fromPosition(nlags);
     }
 
     private static Polynomial polynomial(double[] phi) {
@@ -121,7 +141,7 @@ public class SsfAr2 {
             int dim = info.psi.length, nl = info.nlags;
             info.acf.prepare(dim + nl);
             pf0.diagonal().set(info.acf.get(0));
-            for (int i = 1; i < dim+nl; ++i) {
+            for (int i = 1; i < dim + nl; ++i) {
                 pf0.subDiagonal(i).set(info.acf.get(i));
                 pf0.subDiagonal(-i).set(info.acf.get(i));
             }

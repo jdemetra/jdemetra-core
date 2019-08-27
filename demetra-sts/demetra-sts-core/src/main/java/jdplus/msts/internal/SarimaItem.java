@@ -5,6 +5,7 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.ssf.SsfArima;
 import jdplus.msts.ModelItem;
@@ -13,16 +14,18 @@ import jdplus.msts.SarimaInterpreter;
 import jdplus.msts.VarianceInterpreter;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
+import demetra.data.DoubleSeq;
 import jdplus.ssf.StateComponent;
 import java.util.Arrays;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
+import jdplus.ssf.ISsfLoading;
 
 /**
  *
  * @author palatej
  */
-public class SarimaItem extends AbstractModelItem {
+public class SarimaItem extends StateItem {
 
     private final VarianceInterpreter v;
     private final SarimaInterpreter p;
@@ -55,10 +58,10 @@ public class SarimaItem extends AbstractModelItem {
                     .parameters(p.extract(1, np))
                     .build();
             if (var == 1) {
-                cmp = SsfArima.componentOf(sarima);
+                cmp = SsfArima.stateComponent(sarima);
             } else {
                 ArimaModel arima = new ArimaModel(sarima.getStationaryAr(), sarima.getNonStationaryAr(), sarima.getMa(), var);
-                cmp = SsfArima.componentOf(arima);
+                cmp = SsfArima.stateComponent(arima);
             }
             builder.add(name, cmp, null);
             return np + 1;
@@ -70,4 +73,50 @@ public class SarimaItem extends AbstractModelItem {
         return Arrays.asList(v, p);
     }
 
+    @Override
+    public StateComponent build(DoubleSeq x) {
+        SarimaSpecification spec = p.getDomain().getSpec();
+        double var = x.get(0);
+        int np = spec.getParametersCount();
+        SarimaModel sarima = SarimaModel.builder(spec)
+                .parameters(x.extract(1, np))
+                .build();
+        StateComponent cmp;
+        if (var == 1) {
+            cmp = SsfArima.stateComponent(sarima);
+        } else {
+            ArimaModel arima = new ArimaModel(sarima.getStationaryAr(), sarima.getNonStationaryAr(), sarima.getMa(), var);
+            cmp = SsfArima.stateComponent(arima);
+        }
+        return cmp;
+    }
+
+    @Override
+    public int parametersCount() {
+        SarimaSpecification spec = p.getDomain().getSpec();
+        return spec.getParametersCount() + 1;
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        return SsfArima.loading();
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        return 1;
+    }
+
+    @Override
+    public int stateDim() {
+        SarimaSpecification spec = p.getDomain().getSpec();
+        int p = spec.getP()+spec.getD();
+        int q=spec.getQ();
+        int s=spec.getPeriod();
+        if (s>0){
+            p+=s*(spec.getBp()+spec.getBd());
+            q+=s*spec.getBq();
+        }
+        return Math.max(p, q + 1);
+    }
 }

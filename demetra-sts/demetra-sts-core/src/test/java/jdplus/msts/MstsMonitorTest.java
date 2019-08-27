@@ -55,7 +55,6 @@ public class MstsMonitorTest {
         }
 
         MstsMonitor monitor = MstsMonitor.builder()
-                .marginalLikelihood(false)
                 .build();
         MstsMapping mapping = new MstsMapping();
         generateU(mapping);
@@ -99,7 +98,6 @@ public class MstsMonitorTest {
         generateXCycle(mapping);
 
         MstsMonitor monitor = MstsMonitor.builder()
-                .marginalLikelihood(false)
                 .precision(1e-12)
                 .build();
         System.out.println("X");
@@ -140,7 +138,6 @@ public class MstsMonitorTest {
         generateC(mapping);
 
         MstsMonitor monitor = MstsMonitor.builder()
-                .marginalLikelihood(false)
                 .precision(1e-12)
                 .build();
         monitor.process(D, mapping, null);
@@ -181,7 +178,6 @@ public class MstsMonitorTest {
         generateCycle2(mapping);
 
         MstsMonitor monitor = MstsMonitor.builder()
-                .marginalLikelihood(false)
                 .precision(1e-12)
                 .build();
         monitor.process(D, mapping, null);

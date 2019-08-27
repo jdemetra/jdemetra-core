@@ -11,17 +11,21 @@ import jdplus.maths.linearfilters.HendersonFilters;
 import jdplus.maths.linearfilters.IFiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import demetra.sa.DecompositionMode;
-import demetra.x11plus.AsymmetricEndPoints;
-import demetra.x11plus.MusgraveFilterFactory;
-import demetra.x11plus.SeasonalFilterOption;
-import demetra.x11plus.SeriesEvolution;
-import demetra.x11plus.X11Context;
-import demetra.x11plus.X11Kernel;
+import jdplus.x11plus.AsymmetricEndPoints;
+import jdplus.x11plus.MusgraveFilterFactory;
+import jdplus.x11plus.SeasonalFilterOption;
+import jdplus.x11plus.SeriesEvolution;
+import jdplus.x11plus.X11Context;
+import jdplus.x11plus.X11Kernel;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
+import jdplus.filters.KernelOption;
+import jdplus.filters.LocalPolynomialFilterFactory;
+import jdplus.filters.LocalPolynomialFilterSpec;
+import jdplus.maths.linearfilters.AsymmetricFilters;
 
 /**
  *
@@ -111,7 +115,7 @@ public class X11Decomposition {
     }
 
     public Results process(double[] data, double period, boolean mul, int trendLength, int pdegree, 
-            String pkernel, String leftAsymmetric, String rightAsymmetric, String seas0, String seas1, double lsig, double usig) {
+            String pkernel, String asymmetric, String seas0, String seas1, double lsig, double usig) {
         int iperiod = (int) period;
         Number P;
         if (Math.abs(period - iperiod) < 1e-9) {
@@ -119,14 +123,16 @@ public class X11Decomposition {
         } else {
             P = period;
         }
+        LocalPolynomialFilterSpec tspec=new LocalPolynomialFilterSpec();
+        tspec.setFilterLength(trendLength);
+        tspec.setPolynomialDegree(pdegree);
+        tspec.setKernel(KernelOption.valueOf(pkernel));
+        tspec.setAsymmetricFilters(AsymmetricFilters.Option.valueOf(asymmetric));
+        
         X11Context context = X11Context.builder()
                 .mode(mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive)
                 .period(P)
-                .trendFilterLength(trendLength)
-                .localPolynomialDegree(pdegree)
-                .kernel(pkernel)
-                .leftAsymmetricEndPoints(leftAsymmetric)
-                .rightAsymmetricEndPoints(rightAsymmetric)
+                .trendFiltering(LocalPolynomialFilterFactory.of(tspec))
                 .initialSeasonalFilter(SeasonalFilterOption.valueOf(seas0))
                 .finalSeasonalFilter(SeasonalFilterOption.valueOf(seas1))
                 .lowerSigma(lsig)

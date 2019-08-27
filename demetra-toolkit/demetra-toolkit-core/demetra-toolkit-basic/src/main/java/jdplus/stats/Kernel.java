@@ -6,6 +6,7 @@
 package jdplus.stats;
 
 import java.util.function.DoubleUnaryOperator;
+import jdplus.maths.functions.integration.NumericalIntegration;
 import jdplus.maths.polynomials.Polynomial;
 
 /**
@@ -17,6 +18,10 @@ public interface Kernel {
     double upperBound();
     DoubleUnaryOperator asFunction();
     
-    double moment(int order);
+    default double moment(final int order){
+       return NumericalIntegration.integrate(x->Math.pow(x, order)*asFunction().applyAsDouble(x)
+               , lowerBound(), upperBound());
+
+    }
         
 }

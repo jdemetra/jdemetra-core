@@ -5,6 +5,7 @@
  */
 package jdplus.ssf.implementations;
 
+import jdplus.ssf.CompositeLoading;
 import jdplus.data.DataBlock;
 import jdplus.ssf.CompositeInitialization;
 import jdplus.ssf.CompositeDynamics;

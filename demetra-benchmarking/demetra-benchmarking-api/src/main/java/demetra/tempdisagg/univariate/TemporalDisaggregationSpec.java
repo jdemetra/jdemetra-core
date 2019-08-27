@@ -23,7 +23,7 @@ import demetra.data.ParameterType;
 import demetra.design.Development;
 import demetra.timeseries.TimeSelector;
 import demetra.processing.ProcSpecification;
-import demetra.ssf.SsfAlgorithm;
+import demetra.ssf.SsfInitialization;
 import demetra.util.Validatable;
 
 /**
@@ -92,7 +92,7 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
     private boolean zeroInitialization, maximumLikelihood;
     
     private double estimationPrecision;
-    private SsfAlgorithm algorithm;
+    private SsfInitialization algorithm;
     private boolean rescale;
     
     public boolean isParameterEstimation(){
@@ -112,7 +112,7 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
                 .maximumLikelihood(true)
                 .parameter(ParameterSpec.undefined())
                 .estimationPrecision(DEF_EPS)
-                .algorithm(SsfAlgorithm.SqrtDiffuse)
+                .algorithm(SsfInitialization.SqrtDiffuse)
                 .rescale(true);
     }
 

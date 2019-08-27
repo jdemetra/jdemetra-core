@@ -3,16 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.ssf ;
+package demetra.ssf;
 
 /**
  *
  * @author Jean Palate
  */
-public enum SsfAlgorithm{
+public enum SsfAlgorithm {
     Ordinary,
-    Fast,
-    Diffuse,
-    Augmented,
-    SqrtDiffuse
+    Array,
+    Fast
 }

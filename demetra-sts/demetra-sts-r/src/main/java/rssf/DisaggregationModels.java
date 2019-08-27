@@ -16,7 +16,7 @@
  */
 package rssf;
 
-import jdplus.benchmarking.ssf.SsfDisaggregation;
+import jdplus.benchmarking.ssf.SsfCumulator;
 import jdplus.ssf.SsfComponent;
 import jdplus.ssf.univariate.ISsf;
 
@@ -28,11 +28,11 @@ import jdplus.ssf.univariate.ISsf;
 public class DisaggregationModels {
 
     public ISsf of(ISsf ssf, int conversion){
-        return SsfDisaggregation.of(ssf.asComponent(), conversion);
+        return SsfCumulator.of(ssf.asComponent(), conversion);
     }
     
     public ISsf of(SsfComponent ssf, int conversion){
-        return SsfDisaggregation.of(ssf, conversion);
+        return SsfCumulator.of(ssf, conversion);
     }
     
 }

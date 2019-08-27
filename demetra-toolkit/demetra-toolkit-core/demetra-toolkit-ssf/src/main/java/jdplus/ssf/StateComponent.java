@@ -25,7 +25,12 @@ package jdplus.ssf;
 @lombok.experimental.Accessors(fluent=true)
 public class StateComponent {
     
+    @lombok.NonNull
     private ISsfInitialization initialization;
     @lombok.NonNull
     private ISsfDynamics dynamics;
+    
+    public int dim(){
+        return initialization.getStateDim();
+    }
 }

@@ -39,8 +39,9 @@ public class DiffusePredictionErrorDecomposition extends PredictionErrorDecompos
     }
 
     @Override
-    public DiffuseLikelihood likelihood() {
+    public DiffuseLikelihood likelihood(boolean scalingfactor) {
         return DiffuseLikelihood.builder(nd + cumulator.getObsCount(), nd)
+                .concentratedScalingFactor(scalingfactor)
                 .ssqErr(cumulator.getSsqErr())
                 .logDeterminant(cumulator.getLogDeterminant())
                 .diffuseCorrection(ddet.getLogDeterminant())

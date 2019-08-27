@@ -5,6 +5,8 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
+import demetra.data.DoubleSeq;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.ssf.SsfArima;
 import jdplus.maths.linearfilters.BackFilter;
@@ -18,12 +20,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
+import jdplus.ssf.ISsfLoading;
 
 /**
  *
  * @author palatej
  */
-public class ArmaItem extends AbstractModelItem{
+public class ArmaItem extends StateItem {
 
     private final StablePolynomialInterpreter par, pma;
     private final VarianceInterpreter v;
@@ -57,20 +60,20 @@ public class ArmaItem extends AbstractModelItem{
             BackFilter bar = BackFilter.ONE, bma = BackFilter.ONE;
             int pos = 0;
             if (par != null) {
-                int nar=par.getDomain().getDim();
+                int nar = par.getDomain().getDim();
                 Polynomial ar = Polynomial.valueOf(1, p.extract(0, nar).toArray());
                 bar = new BackFilter(ar);
                 pos += nar;
             }
             if (pma != null) {
-                int nma=pma.getDomain().getDim();
+                int nma = pma.getDomain().getDim();
                 Polynomial ma = Polynomial.valueOf(1, p.extract(0, nma).toArray());
                 bma = new BackFilter(ma);
                 pos += nma;
             }
             double n = p.get(pos++);
             ArimaModel arima = new ArimaModel(bar, BackFilter.ONE, bma, n);
-            StateComponent cmp = SsfArima.componentOf(arima);
+            StateComponent cmp = SsfArima.stateComponent(arima);
             builder.add(name, cmp, null);
             return pos;
         });
@@ -79,5 +82,63 @@ public class ArmaItem extends AbstractModelItem{
     @Override
     public List<ParameterInterpreter> parameters() {
         return Arrays.asList(par, pma, v);
+    }
+
+    @Override
+    public StateComponent build(DoubleSeq p) {
+        BackFilter bar = BackFilter.ONE, bma = BackFilter.ONE;
+        int pos = 0;
+        if (par != null) {
+            int nar = par.getDomain().getDim();
+            Polynomial ar = Polynomial.valueOf(1, p.extract(0, nar).toArray());
+            bar = new BackFilter(ar);
+            pos += nar;
+        }
+        if (pma != null) {
+            int nma = pma.getDomain().getDim();
+            Polynomial ma = Polynomial.valueOf(1, p.extract(0, nma).toArray());
+            bma = new BackFilter(ma);
+            pos += nma;
+        }
+        double n = p.get(pos++);
+        ArimaModel arima = new ArimaModel(bar, BackFilter.ONE, bma, n);
+        return SsfArima.stateComponent(arima);
+    }
+
+    @Override
+    public int parametersCount() {
+        int n = 1;
+        if (par != null) {
+            int nar = par.getDomain().getDim();
+            n += nar;
+        }
+        if (pma != null) {
+            int nma = pma.getDomain().getDim();
+            n += nma;
+        }
+        return n;
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        return SsfArima.loading();
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        return 1;
+    }
+    
+    @Override
+    public int stateDim() {
+        int p = 0;
+        if (par != null) {
+            p = par.getDomain().getDim();
+        }
+        int q = 0;
+        if (pma != null) {
+            q = pma.getDomain().getDim();
+        }
+        return Math.max(p, q + 1);
     }
 }

@@ -8,7 +8,7 @@ package jdplus.tempdisagg.univariate;
 import jdplus.tempdisagg.univariate.TemporalDisaggregationProcessor;
 import demetra.data.AggregationType;
 import demetra.data.Data;
-import demetra.ssf.SsfAlgorithm;
+import demetra.ssf.SsfInitialization;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Augmented)
+                .algorithm(SsfInitialization.Augmented)
                 .build();
         TemporalDisaggregationResults rslt1 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec1);
         TemporalDisaggregationSpec spec2 = TemporalDisaggregationSpec.builder()
@@ -49,7 +49,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.SqrtDiffuse)
+                .algorithm(SsfInitialization.SqrtDiffuse)
                 .build();
         TemporalDisaggregationResults rslt2 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec2);
         assertTrue(rslt1.getStdevDisaggregatedSeries().distance(rslt2.getStdevDisaggregatedSeries()) < 1e-5);
@@ -62,7 +62,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Diffuse)
+                .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
         assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
@@ -88,7 +88,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Augmented)
+                .algorithm(SsfInitialization.Augmented)
                 .build();
         TemporalDisaggregationResults rslt1 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec1);
         TemporalDisaggregationSpec spec2 = TemporalDisaggregationSpec.builder()
@@ -99,7 +99,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.SqrtDiffuse)
+                .algorithm(SsfInitialization.SqrtDiffuse)
                 .build();
         TemporalDisaggregationResults rslt2 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec2);
         assertTrue(rslt1.getStdevDisaggregatedSeries().distance(rslt2.getStdevDisaggregatedSeries()) < 1e-5);
@@ -112,7 +112,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Diffuse)
+                .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
         assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
@@ -135,7 +135,7 @@ public class TemporalDisaggregationProcessorTest {
                 .residualsModel(TemporalDisaggregationSpec.Model.Rw)
                 .constant(false)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Augmented)
+                .algorithm(SsfInitialization.Augmented)
                 .build();
         TemporalDisaggregationResults rslt1 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec1);
         TemporalDisaggregationSpec spec2 = TemporalDisaggregationSpec.builder()
@@ -143,7 +143,7 @@ public class TemporalDisaggregationProcessorTest {
                 .residualsModel(TemporalDisaggregationSpec.Model.Rw)
                 .constant(false)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.SqrtDiffuse)
+                .algorithm(SsfInitialization.SqrtDiffuse)
                 .build();
         TemporalDisaggregationResults rslt2 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec2);
         assertTrue(rslt1.getStdevDisaggregatedSeries().distance(rslt2.getStdevDisaggregatedSeries()) < 1e-5);
@@ -153,7 +153,7 @@ public class TemporalDisaggregationProcessorTest {
                 .residualsModel(TemporalDisaggregationSpec.Model.Rw)
                 .constant(false)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Diffuse)
+                .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
         assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
@@ -175,7 +175,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Augmented)
+                .algorithm(SsfInitialization.Augmented)
                 .build();
         TemporalDisaggregationResults rslt1 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec1);
         TemporalDisaggregationSpec spec2 = TemporalDisaggregationSpec.builder()
@@ -185,7 +185,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.SqrtDiffuse)
+                .algorithm(SsfInitialization.SqrtDiffuse)
                 .build();
         TemporalDisaggregationResults rslt2 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec2);
         assertTrue(rslt1.getStdevDisaggregatedSeries().distance(rslt2.getStdevDisaggregatedSeries()) < 1e-5);
@@ -197,7 +197,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Diffuse)
+                .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
         assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
@@ -217,7 +217,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Augmented)
+                .algorithm(SsfInitialization.Augmented)
                 .build();
         TemporalDisaggregationResults rslt1 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec1);
         TemporalDisaggregationSpec spec2 = TemporalDisaggregationSpec.builder()
@@ -228,7 +228,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.SqrtDiffuse)
+                .algorithm(SsfInitialization.SqrtDiffuse)
                 .build();
         TemporalDisaggregationResults rslt2 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec2);
         assertTrue(rslt1.getStdevDisaggregatedSeries().distance(rslt2.getStdevDisaggregatedSeries()) < 1e-5);
@@ -241,7 +241,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Diffuse)
+                .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
         assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
@@ -261,7 +261,7 @@ public class TemporalDisaggregationProcessorTest {
                 .residualsModel(TemporalDisaggregationSpec.Model.Rw)
                 .constant(false)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Augmented)
+                .algorithm(SsfInitialization.Augmented)
                 .build();
         TemporalDisaggregationResults rslt1 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec1);
         TemporalDisaggregationSpec spec2 = TemporalDisaggregationSpec.builder()
@@ -269,7 +269,7 @@ public class TemporalDisaggregationProcessorTest {
                 .residualsModel(TemporalDisaggregationSpec.Model.Rw)
                 .constant(false)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.SqrtDiffuse)
+                .algorithm(SsfInitialization.SqrtDiffuse)
                 .build();
         TemporalDisaggregationResults rslt2 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec2);
         assertTrue(rslt1.getStdevDisaggregatedSeries().distance(rslt2.getStdevDisaggregatedSeries()) < 1e-5);
@@ -279,7 +279,7 @@ public class TemporalDisaggregationProcessorTest {
                 .residualsModel(TemporalDisaggregationSpec.Model.Rw)
                 .constant(false)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Diffuse)
+                .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
         assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
@@ -301,7 +301,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Augmented)
+                .algorithm(SsfInitialization.Augmented)
                 .build();
         TemporalDisaggregationResults rslt1 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec1);
         TemporalDisaggregationSpec spec2 = TemporalDisaggregationSpec.builder()
@@ -311,7 +311,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.SqrtDiffuse)
+                .algorithm(SsfInitialization.SqrtDiffuse)
                 .build();
         TemporalDisaggregationResults rslt2 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec2);
         assertTrue(rslt1.getStdevDisaggregatedSeries().distance(rslt2.getStdevDisaggregatedSeries()) < 1e-5);
@@ -323,7 +323,7 @@ public class TemporalDisaggregationProcessorTest {
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Diffuse)
+                .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
         assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
@@ -341,7 +341,7 @@ public class TemporalDisaggregationProcessorTest {
                 .residualsModel(TemporalDisaggregationSpec.Model.Rw)
                 .constant(false)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.SqrtDiffuse)
+                .algorithm(SsfInitialization.SqrtDiffuse)
                 .build();
         TsData y1 = TsData.of(TsPeriod.yearly(1976), Doubles.of(Data.PCRA));
         TsData q1 = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
@@ -364,7 +364,7 @@ public class TemporalDisaggregationProcessorTest {
                 .residualsModel(TemporalDisaggregationSpec.Model.Rw)
                 .constant(false)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Augmented)
+                .algorithm(SsfInitialization.Augmented)
                 .build();
         TsData y1 = TsData.of(TsPeriod.yearly(1976), Doubles.of(Data.PCRA));
         TsData q1 = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
@@ -387,7 +387,7 @@ public class TemporalDisaggregationProcessorTest {
                 .residualsModel(TemporalDisaggregationSpec.Model.Rw)
                 .constant(false)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.Diffuse)
+                .algorithm(SsfInitialization.Diffuse)
                 .build();
         TsData y1 = TsData.of(TsPeriod.yearly(1976), Doubles.of(Data.PCRA));
         TsData q1 = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
@@ -410,7 +410,7 @@ public class TemporalDisaggregationProcessorTest {
                 .residualsModel(TemporalDisaggregationSpec.Model.Rw)
                 .constant(false)
                 .rescale(true)
-                .algorithm(SsfAlgorithm.SqrtDiffuse)
+                .algorithm(SsfInitialization.SqrtDiffuse)
                 .build();
         TsData y1 = TsData.of(TsPeriod.yearly(1976), Doubles.of(Data.PCRA));
         TsData q1 = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));

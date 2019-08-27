@@ -16,6 +16,8 @@ import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.Loading;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  * Dynamics of the state array for y(t) = ar(0) y(t-1)+ ... + ar(p)y(t-p-1) The
@@ -47,6 +49,21 @@ public class SsfAr {
         }
         Data data = new Data(ar, var, nlags+1);
         return new SsfComponent(new Initialization(data, zeroinit), new Dynamics(data), Loading.fromPosition(0));
+    }
+
+    public StateComponent stateComponent(@NonNull double[] ar, double var, int nlags, boolean zeroinit) {
+        if (ar.length == 0) {
+            throw new IllegalArgumentException();
+        }
+        if (nlags < ar.length) {
+            nlags = ar.length;
+        }
+        Data data = new Data(ar, var, nlags+1);
+        return new StateComponent(new Initialization(data, zeroinit), new Dynamics(data));
+    }
+    
+    public ISsfLoading loading(){
+        return Loading.fromPosition(0);
     }
 
     @lombok.Value

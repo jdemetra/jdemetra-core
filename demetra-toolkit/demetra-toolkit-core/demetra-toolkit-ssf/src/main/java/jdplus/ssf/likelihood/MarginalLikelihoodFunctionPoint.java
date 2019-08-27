@@ -63,7 +63,7 @@ public class MarginalLikelihoodFunctionPoint<S, F extends ISsf> implements
         currentSsf = fn.getBuilder().buildSsf(current);
 //        ILikelihoodComputer<MarginalLikelihood> computer= AkfToolkit.marginalLikelihoodComputer(fn.isScalingFactor());
 //        ll=computer.compute(currentSsf, fn.getData());
-        ll=DkToolkit.marginalLikelihood(currentSsf, fn.getData(), fn.isScalingFactor());
+        ll=DkToolkit.marginalLikelihood(currentSsf, fn.getData(), fn.isScalingFactor(), fn.isResiduals());
     }
 
     public F getSsf() {

@@ -22,15 +22,14 @@ import demetra.data.DoubleSeq;
  */
 public class QRSolverTest {
 
-        AdvancedQRSolver solver = AdvancedQRSolver.builder(new HouseholderWithPivoting())
+     static AdvancedQRSolver solver = AdvancedQRSolver.builder(new HouseholderWithPivoting())
                 .iterative(1)
                 .simpleIteration(true)
                 .build();
     public QRSolverTest() {
     }
 
-    @Test
-    public void testNorris() {
+    public static void testNorris() {
         double[] y=DataSets.Norris.y;
         CanonicalMatrix M = CanonicalMatrix.make(y.length, 2);
         DataBlock x = DataBlock.of(DataSets.Norris.x);
@@ -48,8 +47,7 @@ public class QRSolverTest {
         System.out.println("");
     }
 
-    @Test
-    public void testPontius() {
+     public static void testPontius() {
         double[] y=DataSets.Pontius.y;
         CanonicalMatrix M = CanonicalMatrix.make(y.length, 3);
         DataBlock x = DataBlock.of(DataSets.Pontius.x);
@@ -68,8 +66,8 @@ public class QRSolverTest {
         System.out.println("");
     }
 
-    @Test
-    public void testNoInt1() {
+    
+    public static void testNoInt1() {
         double[] y=DataSets.NoInt1.y;
         CanonicalMatrix M = CanonicalMatrix.make(y.length, 1);
         M.column(0).copyFrom(DataSets.NoInt1.x, 0);
@@ -85,8 +83,7 @@ public class QRSolverTest {
         System.out.println("");
     }
 
-    @Test
-    public void testNoInt2() {
+    public static void testNoInt2() {
         double[] y=DataSets.NoInt2.y;
         CanonicalMatrix M = CanonicalMatrix.make(y.length, 1);
         DataBlock x = DataBlock.of(DataSets.NoInt2.x);
@@ -103,8 +100,7 @@ public class QRSolverTest {
         System.out.println("");
     }
 
-    @Test
-    public void testFilip() {
+     public static void testFilip() {
         double[] y=DataSets.Filip.y;
         CanonicalMatrix M = CanonicalMatrix.make(y.length, 11);
         DataBlock x = DataBlock.of(DataSets.Filip.x);
@@ -131,8 +127,7 @@ public class QRSolverTest {
         System.out.println("");
     }
 
-    @Test
-    public void testLongley() {
+    public static void testLongley() {
         double[] y=DataSets.Longley.y;
         CanonicalMatrix M = CanonicalMatrix.make(y.length, 7);
         M.column(0).set(1);
@@ -154,8 +149,7 @@ public class QRSolverTest {
         System.out.println("");
     }
 
-    @Test
-    public void testWampler1() {
+    public static void testWampler1() {
         double[] y=DataSets.Wampler1.y;
         CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler1.x);
@@ -177,8 +171,7 @@ public class QRSolverTest {
         System.out.println("");
     }
 
-    @Test
-    public void testWampler2() {
+     public static void testWampler2() {
         double[] y=DataSets.Wampler2.y;
         CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler2.x);
@@ -201,8 +194,7 @@ public class QRSolverTest {
         System.out.println("");
     }
 
-    @Test
-    public void testWampler3() {
+    public static void testWampler3() {
         double[] y=DataSets.Wampler3.y;
         CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler3.x);
@@ -224,8 +216,7 @@ public class QRSolverTest {
         System.out.println("");
     }
 
-    @Test
-    public void testWampler4() {
+    public static void testWampler4() {
         double[] y=DataSets.Wampler4.y;
         CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler4.x);
@@ -247,8 +238,7 @@ public class QRSolverTest {
         System.out.println("");
     }
 
-    @Test
-    public void testWampler5() {
+    public static void testWampler5() {
         double[] y=DataSets.Wampler5.y;
         CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler5.x);
@@ -269,6 +259,20 @@ public class QRSolverTest {
             System.out.print('\t');
         }
         System.out.println("");
+    }
+    
+    public static void main(String[] arg){
+        testNorris();
+        testPontius();
+        testNoInt1();
+        testNoInt2();
+        testFilip();
+        testLongley();
+        testWampler1();
+        testWampler2();
+        testWampler3();
+        testWampler4();
+        testWampler5();
     }
 
 }

@@ -21,8 +21,9 @@ import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.Loading;
-import jdplus.ssf.univariate.Ssf;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  *
@@ -35,7 +36,16 @@ public class CyclicalComponent {
         Data data = new Data(dumpingFactor, period, cvar);
         return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
     }
-
+    
+    public StateComponent stateComponent(final double dumpingFactor, final double period, final double cvar) {
+        Data data = new Data(dumpingFactor, period, cvar);
+        return new StateComponent(new Initialization(data), new Dynamics(data));
+    }
+    
+    public ISsfLoading loading(){
+        return Loading.fromPosition(0);
+    }
+    
     static class Data {
 
         private final double var;

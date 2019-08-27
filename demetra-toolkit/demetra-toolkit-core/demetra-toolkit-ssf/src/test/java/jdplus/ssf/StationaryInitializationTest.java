@@ -33,7 +33,7 @@ public class StationaryInitializationTest {
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault(-.3, -.9)
                 .build();
-        StateComponent cmp = SsfArima.componentOf(arima);
+        StateComponent cmp = SsfArima.stateComponent(arima);
         int dim = cmp.initialization().getStateDim();
         CanonicalMatrix I = StationaryInitialization.of(cmp.dynamics(), dim);
         CanonicalMatrix P = CanonicalMatrix.square(dim);
@@ -51,7 +51,7 @@ public class StationaryInitializationTest {
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault(-.3, -.9)
                 .build();
-        StateComponent cmp = SsfArima.componentOf(arima);
+        StateComponent cmp = SsfArima.stateComponent(arima);
         int dim = cmp.initialization().getStateDim();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 10000; ++i) {

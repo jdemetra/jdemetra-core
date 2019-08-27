@@ -5,6 +5,8 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
+import demetra.data.DoubleSeq;
 import jdplus.msts.ModelItem;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
@@ -12,12 +14,15 @@ import jdplus.ssf.SsfComponent;
 import java.util.Arrays;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
+import jdplus.sts.LocalLinearTrend;
 
 /**
  *
  * @author palatej
  */
-public class LocalLinearTrendItem extends AbstractModelItem {
+public class LocalLinearTrendItem extends StateItem {
 
     public final VarianceInterpreter lv, sv;
 
@@ -45,4 +50,30 @@ public class LocalLinearTrendItem extends AbstractModelItem {
         return Arrays.asList(lv, sv);
     }
 
+    @Override
+    public StateComponent build(DoubleSeq p) {
+        double e1 = p.get(0);
+        double e2 = p.get(1);
+        return LocalLinearTrend.stateComponent(e1, e2);
+    }
+
+    @Override
+    public int parametersCount() {
+        return 2;
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        return LocalLinearTrend.loading();
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        return 1;
+    }
+
+    @Override
+    public int stateDim() {
+        return 2;
+    }
 }

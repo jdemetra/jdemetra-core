@@ -21,6 +21,8 @@ import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.data.analysis.DiscreteKernel;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
+import jdplus.maths.linearfilters.AsymmetricFilters;
+import jdplus.maths.linearfilters.IFiniteFilter;
 
 /**
  *
@@ -32,17 +34,17 @@ public class LocalPolynomialFilters {
     public double[] filter(double[] data, int horizon, int degree, String kernel, String endpoints, double ic) {
         // Creates the filters
         IntToDoubleFunction weights = weights(horizon, kernel);
-        SymmetricFilter filter = jdplus.maths.linearfilters.LocalPolynomialFilters.of(horizon, degree, weights);
-        FiniteFilter[] afilters;
+        SymmetricFilter filter = jdplus.filters.LocalPolynomialFilterFactory.of(horizon, degree, weights);
+        IFiniteFilter[] afilters;
         if (endpoints.equals("DAF")) {
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = jdplus.maths.linearfilters.LocalPolynomialFilters.directAsymmetricFilter(horizon, i, degree, weights);
+                afilters[i] = jdplus.filters.LocalPolynomialFilterFactory.directAsymmetricFilter(horizon, horizon-i-1, degree, weights);
             }
         } else if (endpoints.equals("CN")) {
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = jdplus.maths.linearfilters.LocalPolynomialFilters.cutAndNormalizeFilter(filter, i);
+                afilters[i] = AsymmetricFilters.cutAndNormalizeFilter(filter, horizon-i-1);
             }
         } else {
             int u = 0;
@@ -62,11 +64,10 @@ public class LocalPolynomialFilters {
             }
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = jdplus.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(filter, i, u, c, null);
+                afilters[i] = AsymmetricFilters.mmsreFilter(filter, horizon-i-1, u, c, null);
             }
         }
-
-        DoubleSeq rslt = jdplus.maths.linearfilters.LocalPolynomialFilters.filter(DoubleSeq.of(data), filter, afilters);
+        DoubleSeq rslt = jdplus.maths.linearfilters.FilterUtility.filter(DoubleSeq.of(data), filter, afilters);
         return rslt.toArray();
     }
 
@@ -94,17 +95,17 @@ public class LocalPolynomialFilters {
     public FiltersToolkit.FiniteFilters filterProperties(int horizon, int degree, String kernel, String endpoints, double ic) {
         // Creates the filters
         IntToDoubleFunction weights = weights(horizon, kernel);
-        SymmetricFilter filter = jdplus.maths.linearfilters.LocalPolynomialFilters.of(horizon, degree, weights);
-        FiniteFilter[] afilters;
+        SymmetricFilter filter = jdplus.filters.LocalPolynomialFilterFactory.of(horizon, degree, weights);
+        IFiniteFilter[] afilters;
         if (endpoints.equals("DAF")) {
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = jdplus.maths.linearfilters.LocalPolynomialFilters.directAsymmetricFilter(horizon, i, degree, weights);
+                afilters[i] = jdplus.filters.LocalPolynomialFilterFactory.directAsymmetricFilter(horizon, i, degree, weights);
             }
         } else if (endpoints.equals("CN")) {
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = jdplus.maths.linearfilters.LocalPolynomialFilters.cutAndNormalizeFilter(filter, i);
+                afilters[i] = AsymmetricFilters.cutAndNormalizeFilter(filter, i);
             }
         } else {
             int u = 0;
@@ -124,11 +125,10 @@ public class LocalPolynomialFilters {
             }
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = jdplus.maths.linearfilters.LocalPolynomialFilters.asymmetricFilter(filter, i, u, c, null);
+                afilters[i] = AsymmetricFilters.mmsreFilter(filter, i, u, c, null);
             }
         }
         return new FiltersToolkit.FiniteFilters(filter, afilters);
-
     }
 
 }

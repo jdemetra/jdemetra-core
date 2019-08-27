@@ -113,7 +113,7 @@ final class InternalLikelihood implements Likelihood {
 
     @Override
     public DoubleSeq e() {
-        return DoubleSeq.copyOf(res);
+        return res == null ? null : DoubleSeq.of(res);
     }
 
     /**

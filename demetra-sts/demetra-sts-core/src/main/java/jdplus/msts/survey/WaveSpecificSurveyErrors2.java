@@ -108,7 +108,7 @@ public class WaveSpecificSurveyErrors2 {
     static class Dynamics implements ISsfDynamics {
 
         private final Data info;
-        private double[] tmp;
+        private final double[] tmp;
 
         Dynamics(Data info) {
             this.info = info;

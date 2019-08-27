@@ -42,7 +42,7 @@ public class Algorithms {
     public double diffuseLikelihood(ISsf model, double[] data) {
         try {
             SsfData s = new SsfData(data);
-            DiffuseLikelihood dll = DkToolkit.likelihood(model, s);
+            DiffuseLikelihood dll = DkToolkit.likelihood(model, s, true, false);
             return dll.logLikelihood();
         } catch (Exception err) {
             return Double.NaN;
@@ -57,7 +57,7 @@ public class Algorithms {
     public double diffuseLikelihood(IMultivariateSsf model, FastMatrix data) {
         try {
             SsfMatrix s = new SsfMatrix(data);
-            DiffuseLikelihood dll = DkToolkit.likelihood(model, s);
+            DiffuseLikelihood dll = DkToolkit.likelihood(model, s, true, false);
             return dll.logLikelihood();
         } catch (Exception err) {
             return Double.NaN;
@@ -71,7 +71,7 @@ public class Algorithms {
     
     public double diffuseLikelihood(CompositeModel model, FastMatrix data, double[] parameters){
         MultivariateCompositeSsf mssf = model.getMapping().map(DoubleSeq.copyOf(parameters));
-        DiffuseLikelihood likelihood = DkToolkit.likelihood(mssf, new SsfMatrix(data));
+        DiffuseLikelihood likelihood = DkToolkit.likelihood(mssf, new SsfMatrix(data), true, false);
         return likelihood.logLikelihood();
     }
     

@@ -56,7 +56,7 @@ public class SsfArimaTest {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < M; ++i) {
             Ssf ssf = SsfArima.of(arima);
-            DiffuseLikelihood ll = DkToolkit.likelihoodComputer(false).compute(ssf, new SsfData(data));
+            DiffuseLikelihood ll = DkToolkit.likelihoodComputer(false, true, false).compute(ssf, new SsfData(data));
         }
         long t1 = System.currentTimeMillis();
         System.out.println("DK (normal)");
@@ -64,7 +64,7 @@ public class SsfArimaTest {
         t0 = System.currentTimeMillis();
         for (int i = 0; i < M; ++i) {
             Ssf ssf = SsfArima.of(arima);
-            DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true).compute(ssf, new SsfData(data));
+            DiffuseLikelihood ll = DkToolkit.likelihoodComputer(false, true, false).compute(ssf, new SsfData(data));
         }
         t1 = System.currentTimeMillis();
         System.out.println("DK (square root form)");
@@ -73,7 +73,7 @@ public class SsfArimaTest {
         for (int i = 0; i < M; ++i) {
             Ssf ssf = SsfArima.of(arima);
             ISsf tssf = TimeInvariantSsf.of(ssf);
-            DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true).compute(tssf, new SsfData(data));
+            DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, false).compute(tssf, new SsfData(data));
         }
 
         t1 = System.currentTimeMillis();

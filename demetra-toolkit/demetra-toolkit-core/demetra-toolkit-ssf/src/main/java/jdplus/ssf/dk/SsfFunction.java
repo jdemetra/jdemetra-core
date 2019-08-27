@@ -43,7 +43,7 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
         private final ISsfData data;
         private FastMatrix X;
         private int[] diffuseX;
-        private boolean ml = true, log = false, fast = false, mt = false, sym = false, scalingFactor=true;
+        private boolean ml = true, log = false, fast = false, sqr = true, mt = false, sym = false, scalingFactor=true;
 
         private Builder(final ISsfData data, final IParametricMapping<S> mapping, final ISsfBuilder<S, F> builder) {
             this.data = data;
@@ -77,6 +77,11 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
             return this;
         }
 
+        public Builder useSqrtInitialization(boolean sqr) {
+            this.sqr = sqr;
+            return this;
+        }
+
         public Builder useSymmetricNumericalDerivatives(boolean sym) {
             this.sym = sym;
             return this;
@@ -90,7 +95,7 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
         }
 
         public SsfFunction<S, F> build() {
-            return new SsfFunction(data, X, diffuseX, mapping, builder, ml, log, fast, mt, sym, scalingFactor);
+            return new SsfFunction(data, X, diffuseX, mapping, builder, ml, log, fast, sqr, mt, sym, scalingFactor);
         }
     }
 
@@ -104,10 +109,10 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
     private final boolean missing;
     private final FastMatrix X;
     private final int[] diffuseX;
-    private final boolean ml, log, fast, mt, sym, scaling;
+    private final boolean ml, log, fast, sqr, mt, sym, scaling;
 
     private SsfFunction(ISsfData data, FastMatrix X, int[] diffuseX, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
-            final boolean ml, final boolean log, final boolean fast, final boolean mt, final boolean sym, final boolean scaling) {
+            final boolean ml, final boolean log, final boolean fast, final boolean sqr, final boolean mt, final boolean sym, final boolean scaling) {
         this.data = data;
         this.mapping = mapper;
         this.builder = builder;
@@ -115,6 +120,7 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
         this.diffuseX = diffuseX;
         missing = data.hasMissingValues();
         this.ml = ml;
+        this.sqr=sqr;
         this.fast = fast;
         this.log = log;
         this.mt = mt;
@@ -136,6 +142,10 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
 
     public boolean isFast() {
         return fast;
+    }
+    
+    public boolean isSqrtInitialization(){
+        return sqr;
     }
 
     public boolean isScalingFactor() {

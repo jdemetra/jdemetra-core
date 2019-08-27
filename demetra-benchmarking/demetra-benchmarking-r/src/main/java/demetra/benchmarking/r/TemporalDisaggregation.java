@@ -18,7 +18,7 @@ package demetra.benchmarking.r;
 
 import demetra.data.AggregationType;
 import demetra.data.ParameterSpec;
-import demetra.ssf.SsfAlgorithm;
+import demetra.ssf.SsfInitialization;
 import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
 import demetra.timeseries.TsData;
@@ -44,7 +44,7 @@ public class TemporalDisaggregation {
                 .aggregationType(AggregationType.valueOf(aggregation))
                 .parameter(fixedrho ? ParameterSpec.fixed(rho) : ParameterSpec.initial(rho))
                 .truncatedParameter(truncatedRho <= -1 ? null : truncatedRho)
-                .algorithm(SsfAlgorithm.valueOf(algorithm))
+                .algorithm(SsfInitialization.valueOf(algorithm))
                 .zeroInitialization(zeroinit)
                 .diffuseRegressors(diffuseregs)
                 .rescale(true);

@@ -5,6 +5,8 @@
  */
 package jdplus.msts.internal;
 
+import jdplus.msts.StateItem;
+import demetra.data.DoubleSeq;
 import jdplus.msts.ArInterpreter;
 import jdplus.msts.ModelItem;
 import jdplus.msts.MstsMapping;
@@ -15,12 +17,14 @@ import jdplus.arima.ssf.SsfAr2;
 import java.util.Arrays;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  *
  * @author palatej
  */
-public class ArItem2 extends AbstractModelItem {
+public class ArItem2 extends StateItem {
 
     private final ArInterpreter ar;
     private final VarianceInterpreter v;
@@ -53,4 +57,35 @@ public class ArItem2 extends AbstractModelItem {
         return Arrays.asList(ar, v);
     }
 
+    @Override
+    public StateComponent build(DoubleSeq p) {
+        int n = ar.getDomain().getDim();
+        double[] par = p.extract(0, n).toArray();
+        double w = p.get(n);
+        return SsfAr2.stateComponent(par, w, nlags, nfcasts);
+    }
+
+    @Override
+    public int parametersCount() {
+        return 1 + ar.getDomain().getDim();
+    }
+
+    @Override
+    public ISsfLoading defaultLoading(int m) {
+        return SsfAr2.loading(nlags);
+    }
+
+    @Override
+    public int defaultLoadingCount() {
+        return 1;
+    }
+
+    @Override
+    public int stateDim() {
+        int n = ar.getDomain().getDim();
+        if (nfcasts >= n) {
+            n = nfcasts+1;
+        }
+        return n + nlags;
+    }
 }

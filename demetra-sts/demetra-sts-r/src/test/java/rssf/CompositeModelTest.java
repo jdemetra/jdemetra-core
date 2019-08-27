@@ -11,6 +11,7 @@ import demetra.data.Data;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
+import demetra.maths.Optimizer;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.msts.CompositeModel;
 import jdplus.msts.CompositeModelEstimation;
@@ -23,6 +24,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Test;
 import demetra.maths.matrices.Matrix;
+import demetra.ssf.SsfInitialization;
+import demetra.ssf.SsfLikelihood;
 
 /**
  *
@@ -60,7 +63,7 @@ public class CompositeModelTest {
         int len = Data.ABS_RETAIL.length;
         CanonicalMatrix M = CanonicalMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModelEstimation rslt = model.estimate(M, 1e-15, false, true, null);
+        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
         System.out.println(DataBlock.of(rslt.getFullParameters()));
         System.out.println(rslt.getSmoothedStates().getComponent(0));
         System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
@@ -120,7 +123,7 @@ public class CompositeModelTest {
         model.add(eq6);
         //estimate the model
         double[] dp = model.fullDefaultParameters();
-        CompositeModelEstimation rslt = model.estimate(x, 1e-15, false, true, null);
+        CompositeModelEstimation rslt = model.estimate(x, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
 //        System.out.println(rslt.getLikelihood().logLikelihood());
 //        System.out.println(DataBlock.ofInternal(rslt.getFullParameters()));
 ////        System.out.println(rslt.getLikelihood().sigma());

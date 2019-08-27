@@ -24,6 +24,8 @@ import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.Loading;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  *
@@ -40,6 +42,13 @@ public class LocalLevel {
         return new SsfComponent(new Initialization(var, initialValue), new Dynamics(var), Loading.fromPosition(0));
     }
 
+    public StateComponent stateComponent(final double var, final double initialValue) {
+        return new StateComponent(new Initialization(var, initialValue), new Dynamics(var));
+    }
+    
+    public ISsfLoading loading(){
+        return Loading.fromPosition(0);
+    }
 
     static class Initialization implements ISsfInitialization {
 

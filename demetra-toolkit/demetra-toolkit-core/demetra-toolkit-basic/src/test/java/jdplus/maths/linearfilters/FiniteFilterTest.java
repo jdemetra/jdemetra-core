@@ -8,6 +8,7 @@ package jdplus.maths.linearfilters;
 import jdplus.maths.linearfilters.FiniteFilter;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
+import demetra.maths.Complex;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -18,13 +19,15 @@ import org.junit.Ignore;
  */
 public class FiniteFilterTest {
 
-    FiniteFilter filter;
-    DataBlock in;
-
-    public FiniteFilterTest() {
+    static final FiniteFilter filter;
+    static final DataBlock in;
+    static{
         filter = new FiniteFilter(new double[]{1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8}, -9);
         in = DataBlock.make(240);
         in.set(i -> 1 / (1 + i));
+    }
+
+    public FiniteFilterTest() {
     }
 
     @Test
@@ -37,10 +40,16 @@ public class FiniteFilterTest {
 
         assertTrue(out.distance(out2) < 1e-9);
     }
+    
+   @Test
+    public void testFR() {
+        Complex fr = filter.frequencyResponse(1.5);
+        double g=filter.gainFunction().applyAsDouble(1.5);
+        double p=filter.phaseFunction().applyAsDouble(1.5);
+        assertTrue(fr.equals(Complex.polar(g, -p), 1e-9));
+    }    
 
-    @Test
-    @Ignore
-    public void stressTestApply() {
+    public static void main(String[] arg) {
         int K = 1000000;
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {

@@ -17,6 +17,7 @@
 package demetra.likelihood;
 
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
@@ -133,7 +134,7 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
 
     @Override
     public DoubleSeq coefficients() {
-        return DoubleSeq.of(b);
+        return b == null ? Doubles.EMPTY : DoubleSeq.of(b);
     }
 
     @Override

@@ -23,6 +23,7 @@ import jdplus.msts.internal.SeasonalComponentItem;
 import jdplus.msts.internal.TdRegressionItem;
 import demetra.timeseries.TsDomain;
 import demetra.maths.matrices.Matrix;
+import jdplus.msts.internal.CumulatorItem;
 
 /**
  *
@@ -31,51 +32,51 @@ import demetra.maths.matrices.Matrix;
 @lombok.experimental.UtilityClass
 public class AtomicModels {
 
-    public ModelItem arma(final String name, double[] ar, double[] ma, double var, boolean fixed) {
+    public StateItem arma(final String name, double[] ar, double[] ma, double var, boolean fixed) {
         return new ArmaItem(name, ar, ma, var, fixed);
     }
 
-    public ModelItem sarima(final String name, int period, int[] orders, int[] seasonal, double[] parameters, boolean fixed, double var, boolean fixedvar) {
+    public StateItem sarima(final String name, int period, int[] orders, int[] seasonal, double[] parameters, boolean fixed, double var, boolean fixedvar) {
         return new SarimaItem(name, period, orders, seasonal, parameters, fixed, var, fixedvar);
     }
 
-    public ModelItem localLevel(String name, final double lvar, final boolean fixed, final double initial) {
+    public StateItem localLevel(String name, final double lvar, final boolean fixed, final double initial) {
         return new LocalLevelItem(name, lvar, fixed, initial);
     }
 
-    public ModelItem localLinearTrend(final String name, double lvar, double svar, boolean lfixed, boolean sfixed) {
-    return new LocalLinearTrendItem(name, lvar, svar, lfixed, sfixed);
+    public StateItem localLinearTrend(final String name, double lvar, double svar, boolean lfixed, boolean sfixed) {
+        return new LocalLinearTrendItem(name, lvar, svar, lfixed, sfixed);
     }
 
-    public ModelItem seasonalComponent(String name, String smodel, int period, double seasvar, boolean fixed) {
-    return new SeasonalComponentItem(name, smodel, period, seasvar, fixed);
+    public StateItem seasonalComponent(String name, String smodel, int period, double seasvar, boolean fixed) {
+        return new SeasonalComponentItem(name, smodel, period, seasvar, fixed);
     }
 
-    public ModelItem noise(String name, double var, boolean fixed) {
+    public StateItem noise(String name, double var, boolean fixed) {
         return new NoiseItem(name, var, fixed);
     }
 
-    public ModelItem regression(String name, Matrix x) {
+    public StateItem regression(String name, Matrix x) {
         return new RegressionItem(name, x, null, true);
     }
 
-    public ModelItem timeVaryingRegression(String name, Matrix x, double var, boolean fixed) {
+    public StateItem timeVaryingRegression(String name, Matrix x, double var, boolean fixed) {
         return new RegressionItem(name, x, new double[]{var}, fixed);
     }
 
-    public ModelItem timeVaryingRegression(String name, Matrix x, final double[] vars, final boolean fixed) {
-         return new RegressionItem(name, x, vars, fixed);
+    public StateItem timeVaryingRegression(String name, Matrix x, final double[] vars, final boolean fixed) {
+        return new RegressionItem(name, x, vars, fixed);
     }
 
-    public ModelItem tdRegression(String name, TsDomain domain, int[] groups, final boolean contrast, final double var, final boolean fixed) {
-    return new TdRegressionItem(name, domain, groups, contrast, var, fixed);
+    public StateItem tdRegression(String name, TsDomain domain, int[] groups, final boolean contrast, final double var, final boolean fixed) {
+        return new TdRegressionItem(name, domain, groups, contrast, var, fixed);
     }
 
-    public ModelItem ar(String name, double[] ar, boolean fixedar, double var, boolean fixedvar, int nlags, boolean zeroinit) {
+    public StateItem ar(String name, double[] ar, boolean fixedar, double var, boolean fixedvar, int nlags, boolean zeroinit) {
         return new ArItem(name, ar, fixedar, var, fixedvar, nlags, zeroinit);
     }
 
-    public ModelItem sae(String name, double[] ar, boolean fixedar, int lag, boolean zeroinit) {
+    public StateItem sae(String name, double[] ar, boolean fixedar, int lag, boolean zeroinit) {
         return new SaeItem(name, ar, fixedar, lag, zeroinit);
     }
 
@@ -107,29 +108,29 @@ public class AtomicModels {
 //            });
 //        };
 //    }
-
-    public ModelItem waveSpecificSurveyError(String name, int nwaves, Matrix ar, boolean fixedar, int lag) {
+    public StateItem waveSpecificSurveyError(String name, int nwaves, Matrix ar, boolean fixedar, int lag) {
         return new MsaeItem(name, nwaves, ar, fixedar, lag);
     }
 
-    public ModelItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, Matrix ar, boolean fixedar, int lag) {
+    public StateItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, Matrix ar, boolean fixedar, int lag) {
         return new MsaeItem2(name, var, fixedVar, ar, fixedar, lag);
     }
 
-    public ModelItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, double[] ar, boolean fixedar, Matrix k, int lag) {
+    public StateItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, double[] ar, boolean fixedar, Matrix k, int lag) {
         return new MsaeItem3(name, var, fixedVar, ar, fixedar, k, lag);
     }
 
-    public ModelItem ar(String name, double[] ar, boolean fixedar, double var, boolean fixedvar, int nlags, int nfcasts) {
+    public StateItem ar(String name, double[] ar, boolean fixedar, double var, boolean fixedvar, int nlags, int nfcasts) {
         return new ArItem2(name, ar, fixedar, var, fixedvar, nlags, nfcasts);
     }
 
-    public ModelItem arima(String name, double[] ar, boolean fixedar, double[] diff, double[] ma, boolean fixedma, double var, boolean fixedvar) {
+    public StateItem arima(String name, double[] ar, boolean fixedar, double[] diff, double[] ma, boolean fixedma, double var, boolean fixedvar) {
         return new ArimaItem(name, ar, fixedar, diff, ma, fixedma, var, fixedvar);
     }
 
-    public ModelItem cycle(String name, double dumpingFactor, double cyclicalPeriod, boolean fixedcycle, double cvar, boolean fixedvar) {
+    public StateItem cycle(String name, double dumpingFactor, double cyclicalPeriod, boolean fixedcycle, double cvar, boolean fixedvar) {
         return new CycleItem(name, dumpingFactor, cyclicalPeriod, fixedcycle, cvar, fixedvar);
     }
+
 
 }

@@ -16,12 +16,15 @@
  */
 package jdplus.ssf.ckms;
 
+import jdplus.ssf.akf.AugmentedFilterInitializer;
+import jdplus.ssf.akf.AugmentedPredictionErrorDecomposition;
 import jdplus.ssf.dk.DiffusePredictionErrorDecomposition;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import jdplus.ssf.univariate.ILikelihoodComputer;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
+import jdplus.ssf.univariate.OrdinaryFilter;
 
 /**
  *
@@ -29,13 +32,14 @@ import jdplus.ssf.univariate.ISsfData;
  */
 public class CkmsToolkit {
 
-    public static ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer() {
+    public static ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer(boolean scalingfactor) {
         return (ISsf ssf, ISsfData data) -> {
             DiffusePredictionErrorDecomposition decomp = new DiffusePredictionErrorDecomposition(false);
             CkmsDiffuseInitializer ff = new CkmsDiffuseInitializer(new DiffuseSquareRootInitializer(decomp));
             CkmsFilter ffilter = new CkmsFilter(ff);
             ffilter.process(ssf, data, decomp);
-            return decomp.likelihood();
+            return decomp.likelihood(scalingfactor);
         };
     }
+
 }

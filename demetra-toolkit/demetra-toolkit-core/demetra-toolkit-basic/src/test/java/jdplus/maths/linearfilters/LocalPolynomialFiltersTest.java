@@ -16,10 +16,6 @@
  */
 package jdplus.maths.linearfilters;
 
-import jdplus.maths.linearfilters.LocalPolynomialFilters;
-import jdplus.maths.linearfilters.HendersonFilters;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.linearfilters.FiniteFilter;
 import jdplus.data.analysis.DiscreteKernel;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -58,7 +54,7 @@ public class LocalPolynomialFiltersTest {
             assertEquals(DoubleSeq.of(f.weightsToArray()).sum(), 1, 1e-9);
 //            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
         }
-//        SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernels.henderson(h));
+//        SymmetricFilter lp = LocalPolynomialFilterFactory.ofDefault(h, 3, DiscreteKernels.henderson(h));
 //        System.out.println(DoubleSequence.ofInternal(lp.weightsToArray()));
     }
 
@@ -70,7 +66,7 @@ public class LocalPolynomialFiltersTest {
             assertEquals(DoubleSeq.of(f.weightsToArray()).sum(), 1, 1e-9);
 //           System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
         }
-//        SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernels.biweight(h));
+//        SymmetricFilter lp = LocalPolynomialFilterFactory.ofDefault(h, 3, DiscreteKernels.biweight(h));
 //        System.out.println(DoubleSequence.ofInternal(lp.weightsToArray()));
     }
 
@@ -85,10 +81,17 @@ public class LocalPolynomialFiltersTest {
         int h = 11;
         SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernel.henderson(h));
         for (int i = 0; i <= h; ++i) {
-            FiniteFilter f = LocalPolynomialFilters.asymmetricFilter(lp, i, 0, new double[]{.4}, DiscreteKernel.triweight(h));
+            IFiniteFilter f = AsymmetricFilters.mmsreFilter(lp, i, 0, new double[]{.4}, DiscreteKernel.triweight(h));
             assertEquals(DoubleSeq.of(f.weightsToArray()).sum(), 1, 1e-9);
 //            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
         }
     }
 
+    public static void main(String[] args){
+        int h=11;
+        for (int i=0; i<=h; ++i){
+            FiniteFilter daf = LocalPolynomialFilters.directAsymmetricFilter(h, i, 2, DiscreteKernel.henderson(h));
+            System.out.println(DoubleSeq.of(daf.weightsToArray()));
+        }
+    }
 }

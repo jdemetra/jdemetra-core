@@ -34,6 +34,7 @@ import jdplus.ssf.univariate.ISsfMeasurement;
 import jdplus.ssf.univariate.Measurement;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;
+import jdplus.ssf.StateComponent;
 
 /**
  * SSF extended by regression variables with fixed or time varying coefficients.
@@ -65,9 +66,32 @@ public class RegSsf {
         }
     }
 
+    public StateComponent stateComponent(int nx, DoubleSeq vars) {
+        if (vars.length() == 1) {
+            return new StateComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(nx, vars.get(0)));
+        } else if (nx == vars.length()) {
+            return new StateComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(vars));
+        } else {
+            throw new SsfException(SsfException.MODEL);
+        }
+    }
+
     public SsfComponent ofTimeVarying(FastMatrix X, FastMatrix vars) {
         int nx = X.getColumnsCount();
         return new SsfComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(vars), Loading.regression(X));
+    }
+
+    public StateComponent stateComponent(FastMatrix vars) {
+        int nx = vars.getColumnsCount();
+        return new StateComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(vars));
+    }
+
+    public StateComponent stateComponent(int nx) {
+        return new StateComponent(new ConstantInitialization(nx), new ConstantDynamics());
+    }
+
+    public ISsfLoading loading(FastMatrix X) {
+        return Loading.regression(X);
     }
 
     public ISsf of(ISsf model, FastMatrix X) {
