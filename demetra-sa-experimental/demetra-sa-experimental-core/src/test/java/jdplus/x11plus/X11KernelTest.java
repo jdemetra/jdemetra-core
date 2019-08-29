@@ -11,39 +11,75 @@ import demetra.sa.DecompositionMode;
 import ec.satoolkit.x11.X11Results;
 import org.junit.Test;
 import demetra.data.DoubleSeq;
+import demetra.timeseries.TsData;
+import java.util.ArrayList;
+import java.util.List;
+import jdplus.filters.AsymmetricCriterion;
+import jdplus.filters.FSTFilterFactory;
+import jdplus.filters.FSTFilterSpec;
+import jdplus.filters.LocalPolynomialFilterFactory;
+import jdplus.filters.LocalPolynomialFilterSpec;
+import jdplus.filters.SpectralDensity;
+import jdplus.maths.linearfilters.AsymmetricFilters;
+import jdplus.rkhs.RKHSFilterFactory;
+import jdplus.rkhs.RKHSFilterSpec;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public class X11KernelTest {
-    
+
+    private static DoubleSeq INPUT = DoubleSeq.of(Data.RETAIL_BOOKSTORES);
+
     public X11KernelTest() {
     }
-    
-    public static void main(String[] cmds){
-//        try {
-            new X11KernelTest().testWeekly();
-//        } catch (URISyntaxException ex) {
-//            Logger.getLogger(X11KernelTest.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (IOException ex) {
-//            Logger.getLogger(X11KernelTest.class.getName()).log(Level.SEVERE, null, ex);
+
+    public static void main(String[] cmds) {
+//        for (int k = 1; k <= 5; ++k) {
+//            test_FST_ap_Prod(k);
+//            test_LP_c_Prod(k);
+//            test_LP_trend_Prod(k);
+//            test_LP_DAF_Prod(k);
+//            test_LP_cut_Prod(k);
+//            test_RKHS_fr_Prod(k);
+//            test_RKHS_fr_Prod2(k);
+//            test_RKHS_tm_Prod(k);
 //        }
+        TsData[] surveys = Data.surveys();
+        List<DoubleSeq> lseq = new ArrayList<>();
+        for (int i = 0; i < surveys.length; ++i) {
+            if (surveys[i].getValues().allMatch(x -> Double.isFinite(x))) {
+                lseq.add(surveys[i].getValues());
+            }
+        }
+        DoubleSeq[] seq = lseq.toArray(new DoubleSeq[lseq.size()]);
+        for (int l = 1; l <= 3; ++l) {
+            System.out.println(l);
+            System.out.println(test_FST_ap_Prod(seq, l));
+            System.out.println(test_LP_c_Prod(seq, l));
+            System.out.println(test_LP_trend_Prod(seq, l));
+            System.out.println(test_LP_DAF_Prod(seq, l));
+            System.out.println(test_LP_cut_Prod(seq, l));
+            System.out.println(test_RKHS_fr_Prod(seq, l));
+            System.out.println(test_RKHS_fr_Prod2(seq, l));
+            System.out.println(test_RKHS_sm_Prod(seq, l));
+        }
     }
 
     @Test
     public void testWeekly() {
-        X11Kernel kernel=new X11Kernel();
+        X11Kernel kernel = new X11Kernel();
 //        System.out.println("Exact");
-        X11Context context1=X11Context.builder()
-                .period(365.25/7)
+        X11Context context1 = X11Context.builder()
+                .period(365.25 / 7)
                 .initialSeasonalFilter(SeasonalFilterOption.S3X1)
                 .finalSeasonalFilter(SeasonalFilterOption.S3X9)
                 .build();
         kernel.process(DoubleSeq.of(WeeklyData.US_CLAIMS2), context1);
 //        System.out.println(kernel.getDstep().getD11());
 //        System.out.println("Rounded");
-        X11Context context2=X11Context.builder()
+        X11Context context2 = X11Context.builder()
                 .period(52)
                 .initialSeasonalFilter(SeasonalFilterOption.S3X1)
                 .finalSeasonalFilter(SeasonalFilterOption.S3X9)
@@ -51,41 +87,502 @@ public class X11KernelTest {
         kernel.process(DoubleSeq.of(WeeklyData.US_CLAIMS2), context2);
 //        System.out.println(kernel.getDstep().getD11());
     }
-    
+
     @Test
     public void testMonthly() {
-        X11Kernel kernel=new X11Kernel();
-        X11Context context1=X11Context.builder()
-                .mode(DecompositionMode.Multiplicative)
+        X11Kernel kernel = new X11Kernel();
+        X11Context context1 = X11Context.builder()
                 .period(12)
                 .build();
         kernel.process(DoubleSeq.of(Data.PROD), context1);
 //        System.out.println(kernel.getDstep().getD13());
-        ec.satoolkit.x11.X11Specification spec=new ec.satoolkit.x11.X11Specification();
-        spec.setMode(ec.satoolkit.DecompositionMode.Multiplicative);
+        ec.satoolkit.x11.X11Specification spec = new ec.satoolkit.x11.X11Specification();
+        spec.setMode(ec.satoolkit.DecompositionMode.Additive);
         spec.setForecastHorizon(0);
         spec.setHendersonFilterLength(13);
-        ec.satoolkit.x11.X11Toolkit toolkit=ec.satoolkit.x11.X11Toolkit.create(spec);
-        ec.satoolkit.x11.X11Kernel okernel=new ec.satoolkit.x11.X11Kernel();
+        ec.satoolkit.x11.X11Toolkit toolkit = ec.satoolkit.x11.X11Toolkit.create(spec);
+        ec.satoolkit.x11.X11Kernel okernel = new ec.satoolkit.x11.X11Kernel();
         okernel.setToolkit(toolkit);
-        ec.tstoolkit.timeseries.simplets.TsData s=
-                new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, true);
+        ec.tstoolkit.timeseries.simplets.TsData s
+                = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, true);
         X11Results x11 = okernel.process(s);
-        ec.tstoolkit.timeseries.simplets.TsData b=x11.getData("d-tables.d13", ec.tstoolkit.timeseries.simplets.TsData.class);
+        ec.tstoolkit.timeseries.simplets.TsData b = x11.getData("d-tables.d13", ec.tstoolkit.timeseries.simplets.TsData.class);
 //        System.out.println(new ec.tstoolkit.data.DataBlock(b));
     }
-    
-    // 31/12/2002
-//    @Test
-//    public void testDaily() throws URISyntaxException, IOException {
-//        URI uri = X11Kernel.class.getResource("/cic.txt").toURI();
-//        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
-//        X11Kernel kernel=new X11Kernel();
-//        X11Context context1=X11Context.builder()
-//                .mode(DecompositionMode.Multiplicative)
-//                .period(7)
-//                .trendFilterLength(13)
-//                .build();
-//        kernel.process(data.column(0), context1);
-//    }
+
+    @Test
+    public void testLP() {
+        TsData[] insee = Data.surveys();
+        DoubleSeq input = insee[9].getValues();
+        X11Kernel kernel = new X11Kernel();
+        LocalPolynomialFilterSpec fspec = new LocalPolynomialFilterSpec();
+        fspec.setFilterLength(6);
+        fspec.setAsymmetricFilters(AsymmetricFilters.Option.MMSRE);
+        fspec.setLinearModelCoefficients(new double[0]);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        for (int i = 200; i < 300; ++i) {
+            kernel.process(input.range(0, i), context);
+            System.out.println(kernel.getDstep().getD12().drop(200, 0));
+        }
+    }
+
+    @Test
+    public void testRKHS() {
+        TsData[] insee = Data.surveys();
+        DoubleSeq input = insee[9].getValues();
+        X11Kernel kernel = new X11Kernel();
+        RKHSFilterSpec tspec = new RKHSFilterSpec();
+        tspec.setFilterLength(6);
+        tspec.setDensity(SpectralDensity.RandomWalk);
+        tspec.setAsymmetricBandWith(AsymmetricCriterion.Undefined);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(RKHSFilterFactory.of(tspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        for (int i = 300; i < 330; ++i) {
+            kernel.process(input.range(0, i), context);
+            System.out.println(kernel.getDstep().getD12().drop(200, 0));
+        }
+    }
+
+    public static void test_RKHS_fr_Prod(int k) {
+        RKHSFilterSpec tspec = new RKHSFilterSpec();
+        tspec.setDensity(SpectralDensity.RandomWalk);
+        tspec.setAsymmetricBandWith(AsymmetricCriterion.FrequencyResponse);
+        tspec.setFilterLength(6);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(RKHSFilterFactory.of(tspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        kernel.process(INPUT, context);
+        DoubleSeq target = kernel.getDstep().getD12();
+        int start = 84;
+//        System.out.println(target.drop(start, 0));
+        double[] e = new double[target.length() - start - 24];
+        for (int i = start; i < target.length() - 24; ++i) {
+            kernel.process(INPUT.range(0, i), context);
+            DoubleSeq d12 = kernel.getDstep().getD12();
+            e[i - start] = target.get(i - k) - d12.get(i - k);
+        }
+        System.out.println(DoubleSeq.of(e));
+    }
+
+    public static void test_FST_ap_Prod(int k) {
+        FSTFilterSpec fspec = new FSTFilterSpec();
+        fspec.setAntiphase(true);
+        fspec.setSmoothnessWeight(.5);
+        fspec.setTimelinessWeight(0.5);
+        fspec.setLags(8);
+        fspec.setLeads(4);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(FSTFilterFactory.of(fspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        kernel.process(INPUT, context);
+        DoubleSeq target = kernel.getDstep().getD12();
+        int start = 84;
+//        System.out.println(target.drop(start, 0));
+        double[] e = new double[target.length() - start - 24];
+        for (int i = start; i < target.length() - 24; ++i) {
+            kernel.process(INPUT.range(0, i), context);
+            DoubleSeq d12 = kernel.getDstep().getD12();
+            e[i - start] = target.get(i - k) - d12.get(i - k);
+        }
+        System.out.println(DoubleSeq.of(e));
+    }
+
+    public static void test_RKHS_fr_Prod2(int k) {
+        RKHSFilterSpec tspec = new RKHSFilterSpec();
+        tspec.setDensity(SpectralDensity.Undefined);
+        tspec.setAsymmetricBandWith(AsymmetricCriterion.FrequencyResponse);
+        tspec.setFilterLength(6);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(RKHSFilterFactory.of(tspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        kernel.process(INPUT, context);
+        DoubleSeq target = kernel.getDstep().getD12();
+        int start = 84;
+//        System.out.println(target.drop(start, 0));
+        double[] e = new double[target.length() - start - 24];
+        for (int i = start; i < target.length() - 24; ++i) {
+            kernel.process(INPUT.range(0, i), context);
+            DoubleSeq d12 = kernel.getDstep().getD12();
+            e[i - start] = target.get(i - k) - d12.get(i - k);
+        }
+        System.out.println(DoubleSeq.of(e));
+    }
+
+    public static void test_RKHS_tm_Prod(int k) {
+        RKHSFilterSpec tspec = new RKHSFilterSpec();
+        tspec.setDensity(SpectralDensity.RandomWalk);
+        tspec.setAsymmetricBandWith(AsymmetricCriterion.Timeliness);
+        tspec.setFilterLength(6);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(RKHSFilterFactory.of(tspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        kernel.process(INPUT, context);
+        DoubleSeq target = kernel.getDstep().getD12();
+        int start = 84;
+//        System.out.println(target.drop(start, 0));
+        double[] e = new double[target.length() - start - 24];
+        for (int i = start; i < target.length() - 24; ++i) {
+            kernel.process(INPUT.range(0, i), context);
+            DoubleSeq d12 = kernel.getDstep().getD12();
+            e[i - start] = target.get(i - k) - d12.get(i - k);
+        }
+        System.out.println(DoubleSeq.of(e));
+    }
+
+    public static void test_LP_trend_Prod(int k) {
+        LocalPolynomialFilterSpec fspec = new LocalPolynomialFilterSpec();
+        fspec.setFilterLength(6);
+        fspec.setAsymmetricFilters(AsymmetricFilters.Option.MMSRE);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        kernel.process(INPUT, context);
+        DoubleSeq target = kernel.getDstep().getD12();
+        int start = 84;
+        //       System.out.println(target.drop(start, 0));
+        double[] e = new double[target.length() - start - 24];
+        for (int i = start; i < target.length() - 24; ++i) {
+            kernel.process(INPUT.range(0, i), context);
+            DoubleSeq d12 = kernel.getDstep().getD12();
+            e[i - start] = target.get(i - k) - d12.get(i - k);
+        }
+        System.out.println(DoubleSeq.of(e));
+    }
+
+    public static void test_LP_c_Prod(int k) {
+        LocalPolynomialFilterSpec fspec = new LocalPolynomialFilterSpec();
+        fspec.setFilterLength(6);
+        fspec.setAsymmetricFilters(AsymmetricFilters.Option.MMSRE);
+        fspec.setLinearModelCoefficients(new double[0]);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        kernel.process(INPUT, context);
+        DoubleSeq target = kernel.getDstep().getD12();
+        int start = 84;
+//        System.out.println(target.drop(start, 0));
+        double[] e = new double[target.length() - start - 24];
+        for (int i = start; i < target.length() - 24; ++i) {
+            kernel.process(INPUT.range(0, i), context);
+            DoubleSeq d12 = kernel.getDstep().getD12();
+            e[i - start] = target.get(i - k) - d12.get(i - k);
+        }
+        System.out.println(DoubleSeq.of(e));
+
+    }
+
+    public static double test_FST_ap_Prod(DoubleSeq[] input, int k) {
+        FSTFilterSpec fspec = new FSTFilterSpec();
+        fspec.setAntiphase(true);
+        fspec.setSmoothnessWeight(.5);
+        fspec.setTimelinessWeight(0.5);
+        fspec.setLags(7);
+        fspec.setLeads(5);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(FSTFilterFactory.of(fspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        double se = 0, se2 = 0;
+        int n = 0;
+        for (int j = 0; j < input.length; ++j) {
+
+            kernel.process(input[j], context);
+            DoubleSeq target = kernel.getDstep().getD12();
+            int start = 84;
+            for (int i = start; i < target.length() - 24; ++i) {
+                kernel.process(input[j].range(0, i), context);
+                DoubleSeq d12 = kernel.getDstep().getD12();
+                double e = target.get(i - k) - d12.get(i - k);
+                ++n;
+                se += e;
+                se2 += e * e;
+            }
+        }
+        return Math.sqrt(se2 * n - se * se) / n;
+    }
+
+    public static double test_LP_c_Prod(DoubleSeq[] input, int k) {
+        LocalPolynomialFilterSpec fspec = new LocalPolynomialFilterSpec();
+        fspec.setFilterLength(6);
+        fspec.setAsymmetricFilters(AsymmetricFilters.Option.MMSRE);
+        fspec.setLinearModelCoefficients(new double[0]);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        double se = 0, se2 = 0;
+        int n = 0;
+        for (int j = 0; j < input.length; ++j) {
+
+            kernel.process(input[j], context);
+            DoubleSeq target = kernel.getDstep().getD12();
+            int start = 84;
+            for (int i = start; i < target.length() - 24; ++i) {
+                kernel.process(input[j].range(0, i), context);
+                DoubleSeq d12 = kernel.getDstep().getD12();
+                double e = target.get(i - k) - d12.get(i - k);
+                ++n;
+                se += e;
+                se2 += e * e;
+            }
+        }
+        return Math.sqrt(se2 * n - se * se) / n;
+    }
+
+    public static double test_LP_trend_Prod(DoubleSeq[] input, int k) {
+        LocalPolynomialFilterSpec fspec = new LocalPolynomialFilterSpec();
+        fspec.setFilterLength(6);
+        fspec.setAsymmetricFilters(AsymmetricFilters.Option.MMSRE);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        double se = 0, se2 = 0;
+        int n = 0;
+        for (int j = 0; j < input.length; ++j) {
+
+            kernel.process(input[j], context);
+            DoubleSeq target = kernel.getDstep().getD12();
+            int start = 84;
+            for (int i = start; i < target.length() - 24; ++i) {
+                kernel.process(input[j].range(0, i), context);
+                DoubleSeq d12 = kernel.getDstep().getD12();
+                double e = target.get(i - k) - d12.get(i - k);
+                ++n;
+                se += e;
+                se2 += e * e;
+            }
+        }
+        return Math.sqrt(se2 * n - se * se) / n;
+    }
+
+    public static double test_LP_DAF_Prod(DoubleSeq[] input, int k) {
+        LocalPolynomialFilterSpec fspec = new LocalPolynomialFilterSpec();
+        fspec.setFilterLength(6);
+        fspec.setAsymmetricFilters(AsymmetricFilters.Option.Direct);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        double se = 0, se2 = 0;
+        int n = 0;
+        for (int j = 0; j < input.length; ++j) {
+
+            kernel.process(input[j], context);
+            DoubleSeq target = kernel.getDstep().getD12();
+            int start = 84;
+            for (int i = start; i < target.length() - 24; ++i) {
+                kernel.process(input[j].range(0, i), context);
+                DoubleSeq d12 = kernel.getDstep().getD12();
+                double e = target.get(i - k) - d12.get(i - k);
+                ++n;
+                se += e;
+                se2 += e * e;
+            }
+        }
+        return Math.sqrt(se2 * n - se * se) / n;
+    }
+
+    public static double test_LP_cut_Prod(DoubleSeq[] input, int k) {
+        LocalPolynomialFilterSpec fspec = new LocalPolynomialFilterSpec();
+        fspec.setFilterLength(6);
+        fspec.setAsymmetricFilters(AsymmetricFilters.Option.CutAndNormalize);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        double se = 0, se2 = 0;
+        int n = 0;
+        for (int j = 0; j < input.length; ++j) {
+
+            kernel.process(input[j], context);
+            DoubleSeq target = kernel.getDstep().getD12();
+            int start = 84;
+            for (int i = start; i < target.length() - 24; ++i) {
+                kernel.process(input[j].range(0, i), context);
+                DoubleSeq d12 = kernel.getDstep().getD12();
+                double e = target.get(i - k) - d12.get(i - k);
+                ++n;
+                se += e;
+                se2 += e * e;
+            }
+        }
+        return Math.sqrt(se2 * n - se * se) / n;
+    }
+
+    public static double test_RKHS_fr_Prod(DoubleSeq[] input, int k) {
+        RKHSFilterSpec tspec = new RKHSFilterSpec();
+        tspec.setDensity(SpectralDensity.RandomWalk);
+        tspec.setAsymmetricBandWith(AsymmetricCriterion.FrequencyResponse);
+        tspec.setFilterLength(6);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(RKHSFilterFactory.of(tspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        double se = 0, se2 = 0;
+        int n = 0;
+        for (int j = 0; j < input.length; ++j) {
+
+            kernel.process(input[j], context);
+            DoubleSeq target = kernel.getDstep().getD12();
+            int start = 84;
+            for (int i = start; i < target.length() - 24; ++i) {
+                kernel.process(input[j].range(0, i), context);
+                DoubleSeq d12 = kernel.getDstep().getD12();
+                double e = target.get(i - k) - d12.get(i - k);
+                ++n;
+                se += e;
+                se2 += e * e;
+            }
+        }
+        return Math.sqrt(se2 * n - se * se) / n;
+    }
+
+    public static double test_RKHS_fr_Prod2(DoubleSeq[] input, int k) {
+        RKHSFilterSpec tspec = new RKHSFilterSpec();
+        tspec.setDensity(SpectralDensity.WhiteNoise);
+        tspec.setAsymmetricBandWith(AsymmetricCriterion.FrequencyResponse);
+        tspec.setFilterLength(6);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(RKHSFilterFactory.of(tspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        double se = 0, se2 = 0;
+        int n = 0;
+        for (int j = 0; j < input.length; ++j) {
+
+            kernel.process(input[j], context);
+            DoubleSeq target = kernel.getDstep().getD12();
+            int start = 84;
+            for (int i = start; i < target.length() - 24; ++i) {
+                kernel.process(input[j].range(0, i), context);
+                DoubleSeq d12 = kernel.getDstep().getD12();
+                double e = target.get(i - k) - d12.get(i - k);
+                ++n;
+                se += e;
+                se2 += e * e;
+            }
+        }
+        return Math.sqrt(se2 * n - se * se) / n;
+    }
+
+    public static double test_RKHS_sm_Prod(DoubleSeq[] input, int k) {
+        RKHSFilterSpec tspec = new RKHSFilterSpec();
+        tspec.setDensity(SpectralDensity.RandomWalk);
+        tspec.setAsymmetricBandWith(AsymmetricCriterion.Smoothness);
+        tspec.setFilterLength(6);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(RKHSFilterFactory.of(tspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        double se = 0, se2 = 0;
+        int n = 0;
+        for (int j = 0; j < input.length; ++j) {
+
+            kernel.process(input[j], context);
+            DoubleSeq target = kernel.getDstep().getD12();
+            int start = 84;
+            for (int i = start; i < target.length() - 24; ++i) {
+                kernel.process(input[j].range(0, i), context);
+                DoubleSeq d12 = kernel.getDstep().getD12();
+                double e = target.get(i - k) - d12.get(i - k);
+                ++n;
+                se += e;
+                se2 += e * e;
+            }
+        }
+        return Math.sqrt(se2 * n - se * se) / n;
+    }
+
+    public static void test_LP_DAF_Prod(int k) {
+        LocalPolynomialFilterSpec fspec = new LocalPolynomialFilterSpec();
+        fspec.setFilterLength(6);
+        fspec.setAsymmetricFilters(AsymmetricFilters.Option.Direct);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        kernel.process(INPUT, context);
+        DoubleSeq target = kernel.getDstep().getD12();
+        int start = 84;
+//        System.out.println(target.drop(start, 0));
+        double[] e = new double[target.length() - start - 24];
+        for (int i = start; i < target.length() - 24; ++i) {
+            kernel = new X11Kernel();
+            kernel.process(INPUT.range(0, i), context);
+            DoubleSeq d12 = kernel.getDstep().getD12();
+            e[i - start] = target.get(i - k) - d12.get(i - k);
+        }
+        System.out.println(DoubleSeq.of(e));
+
+    }
+
+    public static void test_LP_cut_Prod(int k) {
+        LocalPolynomialFilterSpec fspec = new LocalPolynomialFilterSpec();
+        fspec.setFilterLength(6);
+        fspec.setAsymmetricFilters(AsymmetricFilters.Option.CutAndNormalize);
+        X11Context context = X11Context.builder()
+                .period(12)
+                .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
+                .mode(DecompositionMode.Additive)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        kernel.process(INPUT, context);
+        DoubleSeq target = kernel.getDstep().getD12();
+        int start = 84;
+//        System.out.println(target.drop(start, 0));
+        double[] e = new double[target.length() - start - 24];
+        for (int i = start; i < target.length() - 24; ++i) {
+            kernel = new X11Kernel();
+            kernel.process(INPUT.range(0, i), context);
+            DoubleSeq d12 = kernel.getDstep().getD12();
+            e[i - start] = target.get(i - k) - d12.get(i - k);
+        }
+        System.out.println(DoubleSeq.of(e));
+
+    }
+
 }

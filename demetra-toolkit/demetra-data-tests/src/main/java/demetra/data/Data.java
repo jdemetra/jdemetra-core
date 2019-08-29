@@ -216,8 +216,7 @@ public class Data {
 
     public static final double[] PCRA = {
         16094.34042, 16368.12021, 15233.88966, 15370.77955, 15683.67074, 16407.23161, 16876.56839, 17424.12796,
-        18206.35593, 19340.58648, 19555.69917, 19916.36579, 20482.17633, 21100.69323, 22038.76268,23006.35799,24479.42141
-     ,26286.34352,28357.72638,30543.23084
+        18206.35593, 19340.58648, 19555.69917, 19916.36579, 20482.17633, 21100.69323, 22038.76268, 23006.35799, 24479.42141, 26286.34352, 28357.72638, 30543.23084
     };
 
     public static final double[] IND_PCR = {
@@ -434,4 +433,21 @@ public class Data {
         }
 
     }
+
+    public static final TsData[] surveys() {
+        try {
+            File file = copyToTempFile(Data.class.getResource("/surveys.txt"));
+            Matrix bs = MatrixSerializer.read(file);
+            TsData[] all = new TsData[bs.getColumnsCount()];
+            TsPeriod start = TsPeriod.monthly(1990, 1);
+            for (int i = 0; i < all.length; ++i) {
+                all[i] = TsData.of(start, Doubles.of(bs.column(i)));
+            }
+            return all;
+        } catch (IOException ex) {
+            return null;
+        }
+
+    }
+
 }

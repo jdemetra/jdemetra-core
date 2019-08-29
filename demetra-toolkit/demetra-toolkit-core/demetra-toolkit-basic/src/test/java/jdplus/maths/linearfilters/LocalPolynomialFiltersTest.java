@@ -78,20 +78,53 @@ public class LocalPolynomialFiltersTest {
 
     @Test
     public void testAsymmetric3() {
-        int h = 11;
+        int h = 21;
         SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernel.henderson(h));
         for (int i = 0; i <= h; ++i) {
-            IFiniteFilter f = AsymmetricFilters.mmsreFilter(lp, i, 0, new double[]{.4}, DiscreteKernel.triweight(h));
-            assertEquals(DoubleSeq.of(f.weightsToArray()).sum(), 1, 1e-9);
-//            System.out.println(DoubleSequence.ofInternal(f.weightsToArray()));
+            IFiniteFilter f1 = AsymmetricFilters.mmsreFilter(lp, i, 0, new double[]{.4}, DiscreteKernel.triweight(h));
+            IFiniteFilter f2= AsymmetricFilters.mmsreFilter2(lp, i, 0, new double[]{.4}, DiscreteKernel.triweight(h));
+            DoubleSeq c1=DoubleSeq.of(f1.weightsToArray());
+            DoubleSeq c2=DoubleSeq.of(f2.weightsToArray());
+            assertEquals(DoubleSeq.of(f1.weightsToArray()).sum(), 1, 1e-9);
+            assertTrue(c1.distance(c2)<1e-9);
+        }
+        for (int i = 0; i <= h; ++i) {
+            IFiniteFilter f1 = AsymmetricFilters.mmsreFilter(lp, i, 0, new double[0], DiscreteKernel.triweight(h));
+            IFiniteFilter f2= AsymmetricFilters.mmsreFilter2(lp, i, 0, new double[0], DiscreteKernel.triweight(h));
+            DoubleSeq c1=DoubleSeq.of(f1.weightsToArray());
+            DoubleSeq c2=DoubleSeq.of(f2.weightsToArray());
+            assertEquals(DoubleSeq.of(f1.weightsToArray()).sum(), 1, 1e-9);
+            assertTrue(c1.distance(c2)<1e-9);
+        }
+        for (int i = 0; i <= h; ++i) {
+            IFiniteFilter f1 = AsymmetricFilters.mmsreFilter(lp, i, 1, new double[0], DiscreteKernel.triweight(h));
+            IFiniteFilter f2= AsymmetricFilters.mmsreFilter2(lp, i, 1, new double[0], DiscreteKernel.triweight(h));
+            DoubleSeq c1=DoubleSeq.of(f1.weightsToArray());
+            DoubleSeq c2=DoubleSeq.of(f2.weightsToArray());
+            assertEquals(DoubleSeq.of(f1.weightsToArray()).sum(), 1, 1e-9);
+            assertTrue(c1.distance(c2)<1e-9);
+        }
+        for (int i = 0; i <= h; ++i) {
+            IFiniteFilter f1 = AsymmetricFilters.mmsreFilter(lp, i, 2, new double[0], DiscreteKernel.triweight(h));
+            IFiniteFilter f2= AsymmetricFilters.mmsreFilter2(lp, i, 2, new double[0], DiscreteKernel.triweight(h));
+            DoubleSeq c1=DoubleSeq.of(f1.weightsToArray());
+            DoubleSeq c2=DoubleSeq.of(f2.weightsToArray());
+            assertEquals(DoubleSeq.of(f1.weightsToArray()).sum(), 1, 1e-9);
+            assertTrue(c1.distance(c2)<1e-9);
         }
     }
 
     public static void main(String[] args){
-        int h=11;
+        int h=6;
         for (int i=0; i<=h; ++i){
             FiniteFilter daf = LocalPolynomialFilters.directAsymmetricFilter(h, i, 2, DiscreteKernel.henderson(h));
             System.out.println(DoubleSeq.of(daf.weightsToArray()));
+        }
+        double D=2.0/.20*Math.sqrt(1 / Math.PI);
+        SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernel.henderson(h));
+        for (int i=0; i<=h; ++i){
+            IFiniteFilter f = AsymmetricFilters.mmsreFilter(lp, i, 2, new double[0], null);
+            System.out.println(DoubleSeq.of(f.weightsToArray()));
         }
     }
 }

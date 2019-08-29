@@ -7,6 +7,8 @@ package jdplus.filters;
 
 import demetra.data.DoubleSeq;
 import demetra.maths.Complex;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.data.DataBlock;
 import jdplus.maths.functions.IFunction;
@@ -36,6 +38,18 @@ public class FSTFilter {
     public static Builder builder() {
         return new Builder();
     }
+
+    @lombok.Value
+    private static class Key {
+
+        private int pdegree;
+        private int sdegree;
+        private int nlags, nleads;
+        private double w0, w1;
+        private boolean antiphase;
+    }
+
+    private static final Map<Key, FSTFilter> dictionary = new HashMap<>();
 
     public static class Builder {
 
@@ -77,7 +91,16 @@ public class FSTFilter {
         }
 
         public FSTFilter build() {
-            return new FSTFilter(this);
+            synchronized (dictionary) {
+                Key key = new Key(pdegree, sdegree, nlags, nleads,
+                        w0, w1, antiphase);
+                FSTFilter f = dictionary.get(key);
+                if (f == null) {
+                    f = new FSTFilter(this);
+                    dictionary.put(key, f);
+                }
+                return f;
+            }
         }
     }
 
@@ -123,7 +146,7 @@ public class FSTFilter {
         }
         CanonicalMatrix TM = null;
         if (wt != 0 && nlags != nleads) {
-            TM=T.buildMatrix(nlags, nleads);
+            TM = T.buildMatrix(nlags, nleads);
             X.addAY(wt, TM);
         }
         DataBlock z = DataBlock.make(n + p);
