@@ -56,14 +56,14 @@ public class X11KernelTest {
         DoubleSeq[] seq = lseq.toArray(new DoubleSeq[lseq.size()]);
         for (int l = 1; l <= 3; ++l) {
             System.out.println(l);
-            System.out.println(test_FST_ap_Prod(seq, l));
+            //System.out.println(test_FST_ap_Prod(seq, l));
             System.out.println(test_LP_c_Prod(seq, l));
             System.out.println(test_LP_trend_Prod(seq, l));
             System.out.println(test_LP_DAF_Prod(seq, l));
             System.out.println(test_LP_cut_Prod(seq, l));
             System.out.println(test_RKHS_fr_Prod(seq, l));
             System.out.println(test_RKHS_fr_Prod2(seq, l));
-            System.out.println(test_RKHS_sm_Prod(seq, l));
+            System.out.println(test_RKHS_acc_Prod(seq, l));
         }
     }
 
@@ -333,6 +333,7 @@ public class X11KernelTest {
         fspec.setFilterLength(6);
         fspec.setAsymmetricFilters(AsymmetricFilters.Option.MMSRE);
         fspec.setLinearModelCoefficients(new double[0]);
+        fspec.setTweight(1);
         X11Context context = X11Context.builder()
                 .period(12)
                 .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
@@ -505,10 +506,10 @@ public class X11KernelTest {
         return Math.sqrt(se2 * n - se * se) / n;
     }
 
-    public static double test_RKHS_sm_Prod(DoubleSeq[] input, int k) {
+    public static double test_RKHS_acc_Prod(DoubleSeq[] input, int k) {
         RKHSFilterSpec tspec = new RKHSFilterSpec();
         tspec.setDensity(SpectralDensity.RandomWalk);
-        tspec.setAsymmetricBandWith(AsymmetricCriterion.Smoothness);
+        tspec.setAsymmetricBandWith(AsymmetricCriterion.Accuracy);
         tspec.setFilterLength(6);
         X11Context context = X11Context.builder()
                 .period(12)
