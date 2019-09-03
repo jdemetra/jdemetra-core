@@ -85,6 +85,8 @@ public class LocalPolynomialFilters {
                 return DiscreteKernel.triangular(horizon);
             case "Parabolic":
                 return DiscreteKernel.epanechnikov(horizon);
+            case "Trapezoidal":
+                return DiscreteKernel.trapezoidal(horizon);
             case "Gaussian":
                 return DiscreteKernel.gaussian(4 * horizon);
             default:
@@ -130,5 +132,5 @@ public class LocalPolynomialFilters {
         }
         return new FiltersToolkit.FiniteFilters(filter, afilters);
     }
-
+    
 }

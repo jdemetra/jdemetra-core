@@ -6,16 +6,11 @@
 package jdplus.x11plus;
 
 import jdplus.data.DataBlock;
-import jdplus.data.analysis.DiscreteKernel;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
 import demetra.sa.DecompositionMode;
-import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import jdplus.filters.IFiltering;
 import jdplus.filters.LocalPolynomialFilterFactory;
 import jdplus.filters.LocalPolynomialFilterSpec;
-import jdplus.rkhs.RKHSFilterSpec;
 
 /**
  *
@@ -29,21 +24,17 @@ public class X11Context {
     DecompositionMode mode;
     @lombok.NonNull
     Number period;
-    @lombok.NonNull
-    SeasonalFilterOption initialSeasonalFilter;
-    @lombok.NonNull
-    SeasonalFilterOption finalSeasonalFilter;
     double lowerSigma, upperSigma;
     
     IFiltering trendFiltering;
+    IFiltering initialSeasonalFiltering, finalSeasonalFiltering;
+    
 
     public static Builder builder() {
         Builder builder = new Builder();
         builder.mode = DecompositionMode.Multiplicative;
         builder.trendFiltering=LocalPolynomialFilterFactory.of(new LocalPolynomialFilterSpec());
         
-        builder.initialSeasonalFilter = SeasonalFilterOption.S3X3;
-        builder.finalSeasonalFilter = SeasonalFilterOption.S3X5;
         builder.lowerSigma = 1.5;
         builder.upperSigma = 2.5;
         return builder;
