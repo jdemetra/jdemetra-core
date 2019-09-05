@@ -17,7 +17,8 @@
 package ec.tss;
 
 import ec.tstoolkit.design.Development;
-import ec.tstoolkit.design.ServiceDefinition;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 import net.jcip.annotations.ThreadSafe;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -28,7 +29,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 1.0.0
  */
 @Development(status = Development.Status.Alpha)
-@ServiceDefinition
+@ServiceDefinition(quantifier = Quantifier.MULTIPLE)
 @ThreadSafe
 public interface ITsProvider extends AutoCloseable {
 

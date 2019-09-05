@@ -16,7 +16,7 @@
  */
 package internal.workspace.file;
 
-import internal.io.IoUtil;
+import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -63,7 +63,7 @@ interface Indexer extends Closeable {
 
             @Override
             public void close() throws IOException {
-                IoUtil.closeAll(this::flushIndex, delegate::close);
+                IO.closeBoth(this::flushIndex, delegate::close);
             }
 
             private void flushIndex() throws IOException {

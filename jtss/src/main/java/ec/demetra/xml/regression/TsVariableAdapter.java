@@ -18,6 +18,8 @@ package ec.demetra.xml.regression;
 
 import ec.tss.xml.ExtendedXmlAdapter;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 
 /**
  *
@@ -25,5 +27,9 @@ import ec.tstoolkit.timeseries.regression.ITsVariable;
  * @param <V>
  * @param <X>
  */
-public abstract class TsVariableAdapter<X extends XmlRegressionVariable, V extends ITsVariable> extends ExtendedXmlAdapter<X, V>{
+@ServiceDefinition(
+        quantifier = Quantifier.MULTIPLE,
+        loaderName = "internal.xml.regression.TsVariableAdapterLoader"
+)
+public abstract class TsVariableAdapter<X extends XmlRegressionVariable, V extends ITsVariable> extends ExtendedXmlAdapter<X, V> {
 }

@@ -32,6 +32,7 @@ import ec.tss.tsproviders.spreadsheet.engine.TsImportOptions;
 import ec.tss.tsproviders.utils.*;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.util.spreadsheet.Book;
+import ec.util.spreadsheet.BookFactoryLoader;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -299,7 +300,7 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
     }
 
     private Book.@Nullable Factory getFactoryByFile(@NonNull File file) {
-        for (Book.Factory o : ServiceLoader.load(Book.Factory.class)) {
+        for (Book.Factory o : BookFactoryLoader.get()) {
             if (o.canLoad() && o.accept(file)) {
                 return o;
             }
