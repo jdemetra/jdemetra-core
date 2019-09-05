@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,23 +14,21 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.design;
+package internal.util.sql.odbc;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
+import util.sql.odbc.OdbcRegistrySpi;
 
 /**
- * Global service is a service that can be used by multiple modules and is
- * provided by one module.
  *
  * @author Philippe Charles
  */
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.SOURCE)
-@Documented
-public @interface GlobalService {
+public enum OdbcRegistrySpiProc implements UnaryOperator<Stream<OdbcRegistrySpi>> {
+    INSTANCE;
 
+    @Override
+    public Stream<OdbcRegistrySpi> apply(Stream<OdbcRegistrySpi> t) {
+        return t.filter(OdbcRegistrySpi::isAvailable);
+    }
 }

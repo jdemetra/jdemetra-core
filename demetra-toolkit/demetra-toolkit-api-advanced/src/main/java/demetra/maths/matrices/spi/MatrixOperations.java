@@ -18,9 +18,9 @@ package demetra.maths.matrices.spi;
 
 import demetra.maths.matrices.Matrix;
 import demetra.design.Algorithm;
-import demetra.design.ServiceDefinition;
-import demetra.util.ServiceLookup;
-import java.util.concurrent.atomic.AtomicReference;
+import nbbrd.service.ServiceDefinition;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
 
 /**
  *
@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @lombok.experimental.UtilityClass
 public class MatrixOperations {
 
-    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
+    private final MatrixOperationsLoader.Processor PROCESSOR = new MatrixOperationsLoader.Processor();
 
     public void setProcessor(Processor processor) {
         PROCESSOR.set(processor);
@@ -59,31 +59,31 @@ public class MatrixOperations {
         return PROCESSOR.get().times(left, right);
     }
 
-    public Matrix times(Matrix M, double d){
+    public Matrix times(Matrix M, double d) {
         return PROCESSOR.get().times(M, d);
     }
 
-    public Matrix chs(Matrix M){
+    public Matrix chs(Matrix M) {
         return PROCESSOR.get().chs(M);
     }
 
-    public Matrix inv(Matrix M){
+    public Matrix inv(Matrix M) {
         return PROCESSOR.get().inv(M);
     }
 
-    public Matrix transpose(Matrix M){
+    public Matrix transpose(Matrix M) {
         return PROCESSOR.get().transpose(M);
     }
 
-    public Matrix XXt(Matrix X){
+    public Matrix XXt(Matrix X) {
         return PROCESSOR.get().XXt(X);
     }
 
-    public Matrix XtX(Matrix X){
+    public Matrix XtX(Matrix X) {
         return PROCESSOR.get().XtX(X);
     }
 
-    @ServiceDefinition
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     @Algorithm
     public static interface Processor {
 
@@ -104,7 +104,7 @@ public class MatrixOperations {
         Matrix inv(Matrix M);
 
         Matrix transpose(Matrix M);
-        
+
         Matrix XXt(Matrix X);
 
         Matrix XtX(Matrix X);

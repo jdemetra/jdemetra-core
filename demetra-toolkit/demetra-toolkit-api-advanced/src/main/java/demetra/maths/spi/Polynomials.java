@@ -17,11 +17,11 @@
 package demetra.maths.spi;
 
 import demetra.design.Algorithm;
-import demetra.design.ServiceDefinition;
+import nbbrd.service.ServiceDefinition;
 import demetra.maths.Complex;
 import demetra.maths.RealPolynomial;
-import demetra.util.ServiceLookup;
-import java.util.concurrent.atomic.AtomicReference;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
 
 /**
  *
@@ -29,8 +29,9 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @lombok.experimental.UtilityClass
 public class Polynomials {
-    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
-    
+
+    private final PolynomialsLoader.Processor PROCESSOR = new PolynomialsLoader.Processor();
+
     public void setProcessor(Processor processor) {
         PROCESSOR.set(processor);
     }
@@ -38,17 +39,17 @@ public class Polynomials {
     public Processor getProcessor() {
         return PROCESSOR.get();
     }
-    
-    public Complex[] roots(RealPolynomial p){
+
+    public Complex[] roots(RealPolynomial p) {
         return PROCESSOR.get().roots(p);
     }
-    
-    @ServiceDefinition
+
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     @Algorithm
     public static interface Processor {
+
         Complex[] roots(RealPolynomial p);
-        
-        
-    }    
-    
+
+    }
+
 }

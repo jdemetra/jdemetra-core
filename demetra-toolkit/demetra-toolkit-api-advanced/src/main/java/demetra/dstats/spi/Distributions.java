@@ -17,10 +17,10 @@
 package demetra.dstats.spi;
 
 import demetra.design.Algorithm;
-import demetra.design.ServiceDefinition;
+import nbbrd.service.ServiceDefinition;
 import demetra.stats.ProbabilityType;
-import demetra.util.ServiceLookup;
-import java.util.concurrent.atomic.AtomicReference;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
 
 /**
  *
@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @lombok.experimental.UtilityClass
 public class Distributions {
 
-    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
+    private final DistributionsLoader.Processor PROCESSOR = new DistributionsLoader.Processor();
 
     public void setProcessor(Processor processor) {
         PROCESSOR.set(processor);
@@ -63,7 +63,7 @@ public class Distributions {
         return PROCESSOR.get().gamma(alpha, beta);
     }
 
-    @ServiceDefinition
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     @Algorithm
     public static interface Processor {
 

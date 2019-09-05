@@ -17,8 +17,8 @@
 package internal.spreadsheet;
 
 import ec.util.spreadsheet.Book;
+import ec.util.spreadsheet.BookFactoryLoader;
 import java.io.File;
-import java.util.ServiceLoader;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -39,7 +39,7 @@ public interface BookSupplier {
         return new BookSupplier() {
             @Override
             public Book.Factory getFactory(File file) {
-                for (Book.Factory o : ServiceLoader.load(Book.Factory.class)) {
+                for (Book.Factory o : BookFactoryLoader.get()) {
                     if (o.canLoad() && o.accept(file)) {
                         return o;
                     }

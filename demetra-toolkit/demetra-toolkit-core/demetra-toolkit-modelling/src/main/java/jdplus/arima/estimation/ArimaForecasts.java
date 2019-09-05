@@ -6,11 +6,9 @@
 package jdplus.arima.estimation;
 
 import jdplus.arima.IArimaModel;
-import jdplus.arima.IArimaModel;
-import internal.jdplus.arima.FastArimaForecasts;
 import demetra.design.Algorithm;
 import demetra.design.Development;
-import demetra.design.ServiceDefinition;
+import nbbrd.service.ServiceDefinition;
 import demetra.design.ThreadSafe;
 import demetra.data.DoubleSeq;
 
@@ -21,7 +19,7 @@ import demetra.data.DoubleSeq;
 
 @ThreadSafe
 @Algorithm
-@ServiceDefinition(isSingleton = true)
+@ServiceDefinition(singleton = true)
 @Development(status = Development.Status.Beta)
 public interface ArimaForecasts {
     
