@@ -169,7 +169,7 @@
             </activation>
             <properties>
                 <lombok.version>1.18.8</lombok.version>
-                <java-service.version>1.0.2</java-service.version>
+                <java-service.version>1.1.0</java-service.version>
             </properties>
             <dependencyManagement>
                 <dependencies>
@@ -181,6 +181,11 @@
                     <dependency>
                         <groupId>be.nbb.rd</groupId>
                         <artifactId>java-service-annotation</artifactId>
+                        <version>${java-service.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>be.nbb.rd</groupId>
+                        <artifactId>java-service-processor</artifactId>
                         <version>${java-service.version}</version>
                     </dependency>
                 </dependencies>

@@ -18,9 +18,10 @@ package ec.demetra.workspace.file.spi;
 
 import ec.demetra.workspace.WorkspaceFamily;
 import ec.demetra.workspace.file.FileFormat;
-import ec.tstoolkit.design.ServiceDefinition;
 import java.io.IOException;
 import java.nio.file.Path;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -30,7 +31,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  * @since 2.2.0
  */
-@ServiceDefinition
+@ServiceDefinition(
+        quantifier = Quantifier.MULTIPLE,
+        loaderName = "internal.workspace.file.spi.FamilyHandlerLoader"
+)
 public interface FamilyHandler {
 
     @NonNull

@@ -33,7 +33,6 @@ import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 import ec.tstoolkit.timeseries.calendars.GregorianCalendarManager;
 import ec.tstoolkit.timeseries.regression.TsVariables;
-import internal.io.IoUtil;
 import static internal.test.TestResources.GENERIC_INDEX;
 import static internal.test.TestResources.GENERIC_ITEMS;
 import static internal.test.TestResources.GENERIC_MOD_DOC_REGARIMA;
@@ -58,6 +57,7 @@ import static internal.test.TestResources.LEGACY_SA_SPEC_TRAMOSEATS;
 import static internal.test.TestResources.LEGACY_SA_SPEC_X13;
 import static internal.test.TestResources.LEGACY_UTIL_CAL;
 import static internal.test.TestResources.LEGACY_UTIL_VAR;
+import internal.workspace.file.spi.FamilyHandlerLoader;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
@@ -121,7 +121,7 @@ public class FileWorkspaceImplTest {
 
     @Test
     public void testLoadLegacy() throws IOException {
-        try (FileWorkspace ws = FileWorkspaceImpl.open(LEGACY_INDEX, FileFormat.LEGACY, IoUtil.supplierOfServiceLoader(FamilyHandler.class))) {
+        try (FileWorkspace ws = FileWorkspaceImpl.open(LEGACY_INDEX, FileFormat.LEGACY, new FamilyHandlerLoader()::get)) {
             assertThat(ws.getFileFormat()).isEqualTo(FileFormat.LEGACY);
             assertThat(ws.getFile()).isEqualTo(LEGACY_INDEX);
             assertThat(ws.getRootFolder()).isEqualTo(LEGACY_ROOT);
@@ -281,7 +281,7 @@ public class FileWorkspaceImplTest {
     }
 
     private static FileWorkspaceImpl openGenericUsingServiceLoader(Path file) throws IOException {
-        return FileWorkspaceImpl.open(file, FileFormat.GENERIC, IoUtil.supplierOfServiceLoader(FamilyHandler.class));
+        return FileWorkspaceImpl.open(file, FileFormat.GENERIC, new FamilyHandlerLoader()::get);
     }
 
     private static Path newGenericSample() throws IOException {

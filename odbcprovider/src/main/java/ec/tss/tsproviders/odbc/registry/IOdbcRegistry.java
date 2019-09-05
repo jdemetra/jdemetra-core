@@ -16,8 +16,9 @@
  */
 package ec.tss.tsproviders.odbc.registry;
 
-import ec.tstoolkit.design.ServiceDefinition;
 import java.util.List;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 
 /**
  *
@@ -25,7 +26,10 @@ import java.util.List;
  * http://msdn.microsoft.com/en-us/library/windows/desktop/ms715432(v=vs.85).aspx
  * @author Philippe Charles
  */
-@ServiceDefinition
+@ServiceDefinition(
+        quantifier = Quantifier.OPTIONAL,
+        singleton = true
+)
 public interface IOdbcRegistry {
 
     List<OdbcDataSource> getDataSources(OdbcDataSource.Type... types) throws Exception;

@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import ec.demetra.workspace.file.FileFormat;
 import ec.demetra.workspace.file.spi.FamilyHandler;
-import internal.io.IoUtil;
+import ioutil.IO;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
@@ -98,7 +98,8 @@ public final class FileWorkspaceImpl implements FileWorkspace {
         try {
             return new FileWorkspaceImpl(indexFile, format, rootFolder, indexer, SafeHandler.create(logger, handlers, format));
         } catch (IOException ex) {
-            throw IoUtil.ensureClosed(ex, indexer);
+            IO.ensureClosed(ex, indexer);
+            throw ex;
         }
     }
 

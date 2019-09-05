@@ -24,11 +24,14 @@ import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import java.util.List;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 
 /**
  *
  * @author Jean Palate
  */
+@ServiceDefinition(quantifier = Quantifier.MULTIPLE)
 public interface ISaProcessingFactory<S extends ISaSpecification> extends
         IProcessingFactory<S, TsData, CompositeResults> {
 

@@ -14,12 +14,11 @@ import static ec.demetra.workspace.WorkspaceFamily.SA_SPEC_X13;
 import static ec.demetra.workspace.WorkspaceFamily.UTIL_CAL;
 import static ec.demetra.workspace.WorkspaceFamily.UTIL_VAR;
 import ec.demetra.workspace.WorkspaceItem;
-import ec.tss.sa.ISaProcessingFactory;
+import ec.tss.sa.ISaProcessingFactoryLoader;
 import ec.tss.sa.SaManager;
 import internal.io.PathUtil;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.ServiceLoader;
 
 /*
  * Copyright 2017 National Bank of Belgium
@@ -46,7 +45,7 @@ public class TestResources {
 
     static {
         // FIXME: X13Document constructor needs ISaProcessingFactory
-        ServiceLoader.load(ISaProcessingFactory.class).forEach(SaManager.instance::add);
+        new ISaProcessingFactoryLoader().get().forEach(SaManager.instance::add);
     }
 
     public static final Path GENERIC_INDEX = PathUtil.get(TestResources.class.getResource("/generic_ws.xml"));

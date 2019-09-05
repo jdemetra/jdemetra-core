@@ -19,8 +19,7 @@ package ec.demetra.workspace.file;
 import internal.workspace.file.FileWorkspaceImpl;
 import ec.demetra.workspace.Workspace;
 import ec.demetra.workspace.WorkspaceItem;
-import ec.demetra.workspace.file.spi.FamilyHandler;
-import internal.io.IoUtil;
+import internal.workspace.file.spi.FamilyHandlerLoader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -48,7 +47,7 @@ public interface FileWorkspace extends Workspace {
 
     @NonNull
     static FileWorkspace create(@NonNull Path file, @NonNull FileFormat format) throws IOException {
-        return FileWorkspaceImpl.create(file, format, IoUtil.supplierOfServiceLoader(FamilyHandler.class));
+        return FileWorkspaceImpl.create(file, format, new FamilyHandlerLoader()::get);
     }
 
     @NonNull
@@ -58,7 +57,7 @@ public interface FileWorkspace extends Workspace {
 
     @NonNull
     static FileWorkspace open(@NonNull Path file, @NonNull FileFormat format) throws IOException {
-        return FileWorkspaceImpl.open(file, format, IoUtil.supplierOfServiceLoader(FamilyHandler.class));
+        return FileWorkspaceImpl.open(file, format, new FamilyHandlerLoader()::get);
     }
 
     @NonNull
