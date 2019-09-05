@@ -6,7 +6,7 @@
 package demetra.maths;
 
 import demetra.design.Algorithm;
-import demetra.design.ServiceDefinition;
+import nbbrd.service.ServiceDefinition;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**

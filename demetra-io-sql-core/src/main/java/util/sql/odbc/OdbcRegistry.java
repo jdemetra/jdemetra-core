@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.ServiceLoader;
 import java.util.logging.Level;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -36,12 +35,9 @@ public final class OdbcRegistry {
 
     @NonNull
     public static OdbcRegistry ofServiceLoader() {
-        for (OdbcRegistrySpi o : ServiceLoader.load(OdbcRegistrySpi.class)) {
-            if (o.isAvailable()) {
-                return new OdbcRegistry(o);
-            }
-        }
-        return noOp();
+        return new OdbcRegistrySpiLoader().get()
+                .map(OdbcRegistry::new)
+                .orElseGet(OdbcRegistry::noOp);
     }
 
     @NonNull

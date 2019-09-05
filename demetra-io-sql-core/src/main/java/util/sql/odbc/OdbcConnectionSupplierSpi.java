@@ -16,16 +16,21 @@
  */
 package util.sql.odbc;
 
-import demetra.design.ServiceDefinition;
+import internal.util.sql.odbc.OdbcConnectionSupplierSpiProc;
+import nbbrd.service.ServiceDefinition;
 import java.sql.Connection;
 import java.sql.SQLException;
+import nbbrd.service.Quantifier;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Philippe Charles
  */
-@ServiceDefinition(scope = ServiceDefinition.Scope.FRAMEWORK)
+@ServiceDefinition(
+        quantifier = Quantifier.OPTIONAL,
+        preprocessor = OdbcConnectionSupplierSpiProc.class
+)
 public interface OdbcConnectionSupplierSpi {
 
     @NonNull

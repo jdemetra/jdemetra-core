@@ -18,9 +18,9 @@ package demetra.maths.matrices.spi;
 
 import demetra.maths.matrices.Matrix;
 import demetra.design.Algorithm;
-import demetra.design.ServiceDefinition;
-import demetra.util.ServiceLookup;
-import java.util.concurrent.atomic.AtomicReference;
+import nbbrd.service.ServiceDefinition;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
 
 /**
  *
@@ -28,8 +28,9 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @lombok.experimental.UtilityClass
 public class MatrixDecompositions {
-    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
-    
+
+    private final MatrixDecompositionsLoader.Processor PROCESSOR = new MatrixDecompositionsLoader.Processor();
+
     public void setProcessor(Processor processor) {
         PROCESSOR.set(processor);
     }
@@ -37,15 +38,16 @@ public class MatrixDecompositions {
     public Processor getProcessor() {
         return PROCESSOR.get();
     }
-    
-    public Matrix cholesky(Matrix S){
+
+    public Matrix cholesky(Matrix S) {
         return PROCESSOR.get().cholesky(S);
     }
-    
-    @ServiceDefinition
+
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     @Algorithm
     public static interface Processor {
+
         Matrix cholesky(Matrix matrix);
-    }    
-    
+    }
+
 }

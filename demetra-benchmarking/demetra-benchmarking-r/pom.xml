@@ -55,7 +55,7 @@
         </dependency>
         <dependency>
             <groupId>be.nbb.rd</groupId>
-            <artifactId>java-service-annotation</artifactId>
+            <artifactId>java-service-processor</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

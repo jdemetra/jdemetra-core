@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2019 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,18 +14,21 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.util;
+package internal.util.sql.odbc;
+
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
+import util.sql.odbc.OdbcConnectionSupplierSpi;
 
 /**
  *
  * @author Philippe Charles
  */
-public final class ServiceException extends RuntimeException {
+public enum OdbcConnectionSupplierSpiProc implements UnaryOperator<Stream<OdbcConnectionSupplierSpi>> {
+    INSTANCE;
 
-    private final Class<?> type;
-
-    ServiceException(Class<?> type, String message) {
-        super(message);
-        this.type = type;
+    @Override
+    public Stream<OdbcConnectionSupplierSpi> apply(Stream<OdbcConnectionSupplierSpi> t) {
+        return t.filter(OdbcConnectionSupplierSpi::isAvailable);
     }
 }

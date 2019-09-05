@@ -16,16 +16,21 @@
  */
 package util.sql.odbc;
 
-import demetra.design.ServiceDefinition;
+import internal.util.sql.odbc.OdbcRegistrySpiProc;
+import nbbrd.service.ServiceDefinition;
 import java.io.IOException;
 import java.util.List;
+import nbbrd.service.Quantifier;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Philippe Charles
  */
-@ServiceDefinition(scope = ServiceDefinition.Scope.FRAMEWORK)
+@ServiceDefinition(
+        quantifier = Quantifier.OPTIONAL,
+        preprocessor = OdbcRegistrySpiProc.class
+)
 public interface OdbcRegistrySpi {
 
     @NonNull

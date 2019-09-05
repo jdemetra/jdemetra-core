@@ -5,15 +5,13 @@
  */
 package demetra.modelling.spi;
 
-import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
 import demetra.modelling.regression.ITsVariable;
 import demetra.timeseries.TimeSeriesDomain;
-import demetra.timeseries.TsPeriod;
-import demetra.util.ServiceLookup;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Predicate;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 
 /**
  *
@@ -22,7 +20,7 @@ import java.util.function.Predicate;
 @lombok.experimental.UtilityClass
 public class Regression {
 
-    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
+    private final RegressionLoader.Processor PROCESSOR = new RegressionLoader.Processor();
 
     public void setProcessor(Processor processor) {
         PROCESSOR.set(processor);
@@ -31,11 +29,12 @@ public class Regression {
     public Processor getProcessor() {
         return PROCESSOR.get();
     }
-    
-    public <D extends TimeSeriesDomain> Matrix variables(List<ITsVariable> vars, D domain){
+
+    public <D extends TimeSeriesDomain> Matrix variables(List<ITsVariable> vars, D domain) {
         return PROCESSOR.get().variables(vars, domain);
     }
 
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     public static interface Processor {
 
         <D extends TimeSeriesDomain> Matrix variables(List<ITsVariable> vars, D domain);

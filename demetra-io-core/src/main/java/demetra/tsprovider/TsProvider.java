@@ -16,9 +16,10 @@
  */
 package demetra.tsprovider;
 
-import demetra.design.ServiceDefinition;
+import nbbrd.service.ServiceDefinition;
 import demetra.design.ThreadSafe;
 import java.io.IOException;
+import nbbrd.service.Quantifier;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -27,7 +28,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Jean Palate
  * @since 1.0.0
  */
-@ServiceDefinition
+@ServiceDefinition(quantifier = Quantifier.MULTIPLE)
 @ThreadSafe
 public interface TsProvider extends AutoCloseable {
 
