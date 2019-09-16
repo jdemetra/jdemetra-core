@@ -37,4 +37,5 @@ public class LocalPolynomialFiltersTest {
 //        System.out.println(DoubleSequence.ofInternal(rslt));
     }
     
+ 
 }

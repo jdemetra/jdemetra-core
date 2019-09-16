@@ -59,6 +59,15 @@ public class HendersonFiltersTest {
 //        System.out.println("");
 //        System.out.println(DataBlock.ofInternal(HendersonFilters.instance.create(13).weightsToArray()));
     }
+    
+    public static void main(String[] args){
+        SymmetricFilter H = HendersonFilters.ofLength(9);
+        System.out.println(DoubleSeq.of(H.weightsToArray()));
+        H = HendersonFilters.ofLength(13);
+        System.out.println(DoubleSeq.of(H.weightsToArray()));
+        H = HendersonFilters.ofLength(23);
+        System.out.println(DoubleSeq.of(H.weightsToArray()));
+    }
 
 }
 

@@ -49,7 +49,7 @@ public class X11DStep {
     }
 
     private void d5(X11Context context) {
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getInitialSeasonalFilter());
+        IFiltering filter = context.getInitialSeasonalFiltering();
         DoubleSeq d5a = filter.process(d4);
         d5 = DefaultSeasonalNormalizer.normalize(d5a, d2drop, context);
     }
@@ -73,7 +73,7 @@ public class X11DStep {
     }
 
     private void dfinal(X11Context context) {
-        IFiltering filter = X11SeasonalFiltersFactory.filter(context.getPeriod(), context.getFinalSeasonalFilter());
+        IFiltering filter = context.getFinalSeasonalFiltering();
         d10bis = filter.process(d9bis);
         d10 = DefaultSeasonalNormalizer.normalize(d10bis, 0, context);
         d11bis = context.remove(d1, d10);

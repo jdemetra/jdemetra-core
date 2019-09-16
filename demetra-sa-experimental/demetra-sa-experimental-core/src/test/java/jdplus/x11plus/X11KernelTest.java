@@ -91,16 +91,16 @@ public class X11KernelTest {
 //        System.out.println("Exact");
         X11Context context1 = X11Context.builder()
                 .period(365.25 / 7)
-                .initialSeasonalFilter(SeasonalFilterOption.S3X1)
-                .finalSeasonalFilter(SeasonalFilterOption.S3X9)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(365.25 / 7, SeasonalFilterOption.S3X1))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(365.25 / 7, SeasonalFilterOption.S3X9))
                 .build();
         kernel.process(DoubleSeq.of(WeeklyData.US_CLAIMS2), context1);
 //        System.out.println(kernel.getDstep().getD11());
 //        System.out.println("Rounded");
         X11Context context2 = X11Context.builder()
                 .period(52)
-                .initialSeasonalFilter(SeasonalFilterOption.S3X1)
-                .finalSeasonalFilter(SeasonalFilterOption.S3X9)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(52, SeasonalFilterOption.S3X1))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(52, SeasonalFilterOption.S3X9))
                 .build();
         kernel.process(DoubleSeq.of(WeeklyData.US_CLAIMS2), context2);
 //        System.out.println(kernel.getDstep().getD11());
@@ -111,6 +111,8 @@ public class X11KernelTest {
         X11Kernel kernel = new X11Kernel();
         X11Context context1 = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .build();
         kernel.process(DoubleSeq.of(Data.PROD), context1);
 //        System.out.println(kernel.getDstep().getD13());
@@ -140,6 +142,8 @@ public class X11KernelTest {
         fspec.setTimelinessWeight(10);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -160,6 +164,8 @@ public class X11KernelTest {
         tspec.setAsymmetricBandWith(AsymmetricCriterion.Undefined);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(RKHSFilterFactory.of(tspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -176,6 +182,8 @@ public class X11KernelTest {
         tspec.setFilterLength(6);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(RKHSFilterFactory.of(tspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -202,6 +210,8 @@ public class X11KernelTest {
         fspec.setLeads(4);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(FSTFilterFactory.of(fspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -226,6 +236,8 @@ public class X11KernelTest {
         tspec.setFilterLength(6);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(RKHSFilterFactory.of(tspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -250,6 +262,8 @@ public class X11KernelTest {
         tspec.setFilterLength(6);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(RKHSFilterFactory.of(tspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -273,6 +287,8 @@ public class X11KernelTest {
         fspec.setAsymmetricFilters(AsymmetricFilters.Option.MMSRE);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -297,6 +313,8 @@ public class X11KernelTest {
         fspec.setLinearModelCoefficients(new double[0]);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -348,6 +366,8 @@ public class X11KernelTest {
         fspec.setLeads(5);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(FSTFilterFactory.of(fspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -361,6 +381,8 @@ public class X11KernelTest {
         fspec.setLinearModelCoefficients(new double[0]);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -375,6 +397,8 @@ public class X11KernelTest {
         fspec.setTimelinessWeight(1);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -390,6 +414,8 @@ public class X11KernelTest {
 //        fspec.setTimelinessWeight(10);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -405,6 +431,8 @@ public class X11KernelTest {
         fspec.setTimelinessWeight(10);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -417,6 +445,8 @@ public class X11KernelTest {
         fspec.setAsymmetricFilters(AsymmetricFilters.Option.Direct);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -429,6 +459,8 @@ public class X11KernelTest {
         fspec.setAsymmetricFilters(AsymmetricFilters.Option.CutAndNormalize);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -442,6 +474,8 @@ public class X11KernelTest {
         tspec.setFilterLength(6);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(RKHSFilterFactory.of(tspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -455,6 +489,8 @@ public class X11KernelTest {
         tspec.setFilterLength(6);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(RKHSFilterFactory.of(tspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -468,6 +504,8 @@ public class X11KernelTest {
         tspec.setFilterLength(6);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(RKHSFilterFactory.of(tspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -480,6 +518,8 @@ public class X11KernelTest {
         fspec.setAsymmetricFilters(AsymmetricFilters.Option.Direct);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
                 .mode(DecompositionMode.Additive)
                 .build();
@@ -505,6 +545,8 @@ public class X11KernelTest {
         fspec.setAsymmetricFilters(AsymmetricFilters.Option.CutAndNormalize);
         X11Context context = X11Context.builder()
                 .period(12)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
                 .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
                 .mode(DecompositionMode.Additive)
                 .build();

@@ -33,7 +33,8 @@ public enum DiscreteKernel {
     Biweight,
     Triweight,
     Tricube,
-    Henderson;
+    Henderson,
+    Trapezoidal;
 
     public IntToDoubleFunction asFunction(int h) {
         switch (this) {
@@ -51,6 +52,8 @@ public enum DiscreteKernel {
                 return tricube(h);
             case Henderson:
                 return henderson(h);
+            case Trapezoidal:
+                return trapezoidal(h);
         }
         return null;
     }
@@ -104,6 +107,18 @@ public enum DiscreteKernel {
         };
     }
 
+    public static IntToDoubleFunction trapezoidal(final int h) {
+        int len=2*h-1;
+        double H = 1.0/len, H3=1.0/(3*len);
+        return i -> {
+            if (i == -h || i == h)
+                return H3;
+            if (i == 1-h || i == h-1)
+                return 2*H3;
+            return H;
+        };
+    }
+
     public static IntToDoubleFunction henderson(final int h) {
         double A = h + 1, A2 = A * A;
         double B = h + 2, B2 = B * B;
@@ -116,7 +131,6 @@ public enum DiscreteKernel {
             double i2 = i * i;
             return (A2 - i2) * (B2 - i2) * (C2 - i2) / q;
         };
-
     }
 
     public static IntToDoubleFunction gaussian(final double v) {

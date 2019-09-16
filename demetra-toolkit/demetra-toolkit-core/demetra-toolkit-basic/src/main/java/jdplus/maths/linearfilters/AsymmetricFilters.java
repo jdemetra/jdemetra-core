@@ -204,7 +204,7 @@ public class AsymmetricFilters {
         Q.extract(0, nv, nv, u + 1).copy(Up);
         DataBlock a = DataBlock.make(Q.getRowsCount());
         a.extract(nv, u + 1).product(wf, Uf.columnsIterator());
-        if (dz.length > 0) {
+        if (dz != null && dz.length > 0) {
             DataBlock d = DataBlock.of(dz);
             FastMatrix Zp = LocalPolynomialFilters.z(-h, q, u + 1, u + dz.length);
             FastMatrix Zf = LocalPolynomialFilters.z(q + 1, h, u + 1, u + dz.length);

@@ -11,7 +11,10 @@ import jdplus.maths.linearfilters.FiniteFilter;
 import jdplus.maths.linearfilters.IFiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import demetra.data.DoubleSeq;
+import java.util.function.IntToDoubleFunction;
 import jdplus.filters.ISymmetricFiltering;
+import jdplus.maths.linearfilters.AsymmetricFilters;
+import jdplus.maths.linearfilters.LocalPolynomialFilters;
 
 /**
  *
@@ -19,8 +22,14 @@ import jdplus.filters.ISymmetricFiltering;
  */
 @lombok.experimental.UtilityClass
 public class X11SeasonalFiltersFactory {
+    
+    public ISymmetricFiltering filter(int period, int length, IntToDoubleFunction kernel){
+        SymmetricFilter sf = LocalPolynomialFilters.of(length, 0, kernel);
+        IFiniteFilter[] af = AsymmetricFilters.mmsreFilters(sf, 0, new double[0], null);
+        return new DefaultFilter(period, sf, new AsymmetricEndPoints(af, 0));
+    }
 
-    ISymmetricFiltering filter(Number period, SeasonalFilterOption option) {
+    public ISymmetricFiltering filter(Number period, SeasonalFilterOption option) {
 
         SymmetricFilter sfilter = null;
         IFiniteFilter[] efilters = null;

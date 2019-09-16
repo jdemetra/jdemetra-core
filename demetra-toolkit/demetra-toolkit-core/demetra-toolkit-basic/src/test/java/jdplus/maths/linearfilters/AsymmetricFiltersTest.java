@@ -33,14 +33,14 @@ public class AsymmetricFiltersTest {
 
     public static void main(String[] arg) {
         int h = 6;
-        double tw=1000;
+        double tw=5;
         double[] c=new double[]{1};
 //        double[] c=new double[]{2/Math.sqrt(Math.PI)/3.5};
         DoubleSeq input = DoubleSeq.of(Data.NILE);
         SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 2, DiscreteKernel.henderson(h));
         IFiniteFilter[] f1 = AsymmetricFilters.musgraveFilters(lp, 3.5);
-        IFiniteFilter[] f2 = AsymmetricFilters.musgraveFilters(lp, 4.5);
-        IFiniteFilter[] f3 = AsymmetricFilters.musgraveFilters(lp, 100);
+        IFiniteFilter[] f2 = AsymmetricFilters.mmsreFilters(lp, 0, null, null);
+        IFiniteFilter[] f3 = AsymmetricFilters.mmsreFilters(lp, 0, null, null, Math.PI/8, tw);
         for (int i = 0; i < h; ++i) {
 //            System.out.println(DoubleSeq.of(f.weightsToArray()));
             DoubleUnaryOperator p = f1[i].gainFunction();
