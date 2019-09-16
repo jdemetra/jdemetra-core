@@ -20,17 +20,27 @@ public class AsymmetricFiltersTest {
 
     public AsymmetricFiltersTest() {
     }
+    
+    @Test
+    public void testMusgrave(){
+        int h=6;
+        SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 2, DiscreteKernel.henderson(h));
+        double[] c=new double[]{2/Math.sqrt(Math.PI)/3.5};
+        IFiniteFilter f1 = AsymmetricFilters.mmsreFilter(lp, 0, 0, c, null);
+        IFiniteFilter f2 = AsymmetricFilters.musgraveFilter(lp, 0, 3.5);
+        assertTrue(DoubleSeq.of(f1.weightsToArray()).distance(DoubleSeq.of(f2.weightsToArray()))<1e-9);
+    }
 
     public static void main(String[] arg) {
         int h = 6;
-        double tw=100;
-        double[] c=new double[]{};
+        double tw=1000;
+        double[] c=new double[]{1};
 //        double[] c=new double[]{2/Math.sqrt(Math.PI)/3.5};
         DoubleSeq input = DoubleSeq.of(Data.NILE);
         SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 2, DiscreteKernel.henderson(h));
-        IFiniteFilter[] f1 = AsymmetricFilters.mmsreFilters(lp, 0, c, null);
-        IFiniteFilter[] f2 = AsymmetricFilters.mmsreFilters(lp, 0, c, null, Math.PI / 8, tw);
-        IFiniteFilter[] f3 = AsymmetricFilters.cutAndNormalizeFilters(lp);
+        IFiniteFilter[] f1 = AsymmetricFilters.musgraveFilters(lp, 3.5);
+        IFiniteFilter[] f2 = AsymmetricFilters.musgraveFilters(lp, 4.5);
+        IFiniteFilter[] f3 = AsymmetricFilters.musgraveFilters(lp, 100);
         for (int i = 0; i < h; ++i) {
 //            System.out.println(DoubleSeq.of(f.weightsToArray()));
             DoubleUnaryOperator p = f1[i].gainFunction();

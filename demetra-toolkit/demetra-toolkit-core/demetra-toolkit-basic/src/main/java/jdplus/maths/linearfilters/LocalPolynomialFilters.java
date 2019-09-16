@@ -201,7 +201,6 @@ public class LocalPolynomialFilters {
                     sk[i] = Math.sqrt(ki);
                 }
             }
-
         }
         CanonicalMatrix Z = createZ(h, d);
         DataBlockIterator rows = Z.rowsIterator();

@@ -32,7 +32,15 @@ public class AsymmetricFilters {
         MMSRE
     }
 
-    public IFiniteFilter musgraveFilter(final SymmetricFilter s, final int q, double r) {
+    /**
+     * 
+     * @param s
+     * @param q
+     * @param ic I/C Ratio
+     * @return 
+     */
+    public IFiniteFilter musgraveFilter(final SymmetricFilter s, final int q, double ic) {
+        double r=4/(Math.PI*ic*ic);
         double[] h = s.weightsToArray();
         int n = s.length();
         int l = (n - 1) / 2;
@@ -52,6 +60,15 @@ public class AsymmetricFilters {
             c[i] += (p1 + p2);
         }
         return FiniteFilter.ofInternal(c, -l);
+    }
+
+    public IFiniteFilter[] musgraveFilters(final SymmetricFilter s, double ic) {
+        int horizon = s.getUpperBound();
+        IFiniteFilter[] ff = new IFiniteFilter[horizon];
+        for (int i = 0, h = horizon - 1; i < horizon; ++i, --h) {
+            ff[i] = musgraveFilter(s, h, ic);
+        }
+        return ff;
     }
 
     public IFiniteFilter cutAndNormalizeFilter(final SymmetricFilter s, final int q) {
@@ -92,8 +109,7 @@ public class AsymmetricFilters {
      * @param u The degree of the constraints (U, the weights preserve
      * polynomials of degree at most u).
      * @param dz Coefficients of the linear model. The number of the
-     * coefficients defines the type of the linear model: no coefficient for y =
-     * a + e, one coefficient for y = a + b*t+e...
+     * coefficients and the degree of the constraints define the type of the linear model.
      * @param k The weighting factors (null for no weighting)
      * @return
      */
@@ -286,7 +302,7 @@ public class AsymmetricFilters {
         CanonicalMatrix L = CanonicalMatrix.square(h);
         IntToDoubleFunction sw = sfilter.weights();// from -h to h
         for (int i = 0; i < h; ++i) {
-            IntToDoubleFunction aw = afilters[i].weights(); // from -h to i
+            IntToDoubleFunction aw = afilters[i].weights(); // from -h to h-i-1
             double q = 0;
             int j = -h;
             for (int k = 0; j <= 0; ++j, ++k) {

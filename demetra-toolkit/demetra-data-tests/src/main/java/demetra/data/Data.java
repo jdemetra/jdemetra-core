@@ -450,4 +450,34 @@ public class Data {
 
     }
 
+    public static final TsData[] indprod_de() {
+        try {
+            File file = copyToTempFile(Data.class.getResource("/indprod_de.txt"));
+            Matrix insee = MatrixSerializer.read(file);
+            TsData[] all = new TsData[insee.getColumnsCount()];
+            TsPeriod start = TsPeriod.monthly(1991, 1);
+            for (int i = 0; i < all.length; ++i) {
+                all[i] = TsData.of(start, Doubles.of(insee.column(i)));
+            }
+            return all;
+        } catch (IOException ex) {
+            return null;
+        }
+    }
+
+    public static final TsData[] indprod_fr() {
+        try {
+            File file = copyToTempFile(Data.class.getResource("/indprod_fr.txt"));
+            Matrix insee = MatrixSerializer.read(file);
+            TsData[] all = new TsData[insee.getColumnsCount()];
+            TsPeriod start = TsPeriod.monthly(1990, 1);
+            for (int i = 0; i < all.length; ++i) {
+                all[i] = TsData.of(start, Doubles.of(insee.column(i)));
+            }
+            return all;
+        } catch (IOException ex) {
+            return null;
+        }
+    }
+
 }

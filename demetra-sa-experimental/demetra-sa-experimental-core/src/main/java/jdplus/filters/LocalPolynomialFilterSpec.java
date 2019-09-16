@@ -20,6 +20,6 @@ public class LocalPolynomialFilterSpec {
     private AsymmetricFilters.Option asymmetricFilters=AsymmetricFilters.Option.MMSRE;
     private int asymmetricPolynomialDegree=0;
     private double[] linearModelCoefficients=new double[]{2/(Math.sqrt(Math.PI)*3.5)};
-    private double tweight;
+    private double timelinessWeight;
     private double passBand=Math.PI/18;
 }

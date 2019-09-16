@@ -60,7 +60,7 @@ public class LocalPolynomialFilterFactory {
                 case MMSRE:
                     asymmetricFilters = AsymmetricFilters.mmsreFilters(symmetricFilter
                             , spec.getAsymmetricPolynomialDegree(), spec.getLinearModelCoefficients(), null,
-                            spec.getPassBand(), spec.getTweight());
+                            spec.getPassBand(), spec.getTimelinessWeight());
                     break;
                 default:
                     asymmetricFilters = directAsymmetricFilters(len, spec.getPolynomialDegree(), kernel(spec));
