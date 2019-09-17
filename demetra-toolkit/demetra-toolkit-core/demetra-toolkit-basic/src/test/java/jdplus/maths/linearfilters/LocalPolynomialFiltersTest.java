@@ -20,6 +20,7 @@ import jdplus.data.analysis.DiscreteKernel;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
+import java.util.function.DoubleUnaryOperator;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -116,16 +117,55 @@ public class LocalPolynomialFiltersTest {
 
     public static void main(String[] args) {
         int h = 6;
-        for (int i = 0; i <= h; ++i) {
-            FiniteFilter daf = LocalPolynomialFilters.directAsymmetricFilter(h, i, 2, DiscreteKernel.henderson(h));
-            System.out.println(DoubleSeq.of(daf.weightsToArray()));
+        displaySymmetric(h);
+        System.out.println();
+//        for (int i = 0; i <= h; ++i) {
+//            FiniteFilter daf = LocalPolynomialFilters.directAsymmetricFilter(h, i, 2, DiscreteKernel.henderson(h));
+//            System.out.println(DoubleSeq.of(daf.weightsToArray()));
+//        }
+//        double D = 2.0 / .20 * Math.sqrt(1 / Math.PI);
+//        SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernel.henderson(h));
+//        for (int i = 0; i <= h; ++i) {
+//            IFiniteFilter f = AsymmetricFilters.mmsreFilter(lp, i, 2, new double[0], null);
+//            System.out.println(DoubleSeq.of(f.weightsToArray()));
+//        }
+    }
+    
+    public static void displaySymmetric(int h){
+        SymmetricFilter sf0 = LocalPolynomialFilters.of(h, 2, DiscreteKernel.biweight(h));
+        SymmetricFilter sf1 = LocalPolynomialFilters.of(h, 2, DiscreteKernel.henderson(h));
+        SymmetricFilter sf2 = LocalPolynomialFilters.of(h, 2, DiscreteKernel.epanechnikov(h));
+        SymmetricFilter sf3 = LocalPolynomialFilters.of(h, 2, DiscreteKernel.triweight(h));
+        SymmetricFilter sf4 = LocalPolynomialFilters.of(h, 2, DiscreteKernel.tricube(h));
+        System.out.println(DoubleSeq.of(sf0.weightsToArray()));
+        System.out.println(DoubleSeq.of(sf1.weightsToArray()));
+        System.out.println(DoubleSeq.of(sf2.weightsToArray()));
+        System.out.println(DoubleSeq.of(sf3.weightsToArray()));
+        System.out.println(DoubleSeq.of(sf4.weightsToArray()));
+        System.out.println();
+        displayGain(sf0);
+        displayGain(sf1);
+        displayGain(sf2);
+        displayGain(sf3);
+        displayGain(sf4);
+    }
+
+    public static void displayGain(IFiniteFilter f) {
+        DoubleUnaryOperator p = f.gainFunction();
+        double[] pw = new double[100];
+        for (int k = 0; k < 100; ++k) {
+            pw[k] = p.applyAsDouble(k * Math.PI / 100);
         }
-        double D = 2.0 / .20 * Math.sqrt(1 / Math.PI);
-        SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 3, DiscreteKernel.henderson(h));
-        for (int i = 0; i <= h; ++i) {
-            IFiniteFilter f = AsymmetricFilters.mmsreFilter(lp, i, 2, new double[0], null);
-            System.out.println(DoubleSeq.of(f.weightsToArray()));
+        System.out.println(DoubleSeq.of(pw));
+    }
+
+    public static void displayPhase(IFiniteFilter f) {
+        DoubleUnaryOperator p = f.phaseFunction();
+        double[] pw = new double[100];
+        for (int k = 0; k < 100; ++k) {
+            pw[k] = p.applyAsDouble(k * Math.PI / 800);
         }
+        System.out.println(DoubleSeq.of(pw));
     }
 
     @Test

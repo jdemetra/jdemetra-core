@@ -17,8 +17,10 @@ import java.util.Arrays;
 public class SurveysDemo {
     public static void main(String[] cmd){
         TsData[] all=Data.surveys();
+        System.out.println(all.length);
+        System.out.println();
+        System.out.println(all[0].length());
+        System.out.println();
         System.out.println(all[0]);
-        System.out.println(all[all.length-1]);
-        
     }
 }

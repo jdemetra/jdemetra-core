@@ -17,12 +17,16 @@ import java.util.Arrays;
 public class IndProd_Demo {
     public static void main(String[] cmd){
         TsData[] all=Data.indprod_de();
-        System.out.println(all.length-1);
+        System.out.println(all.length);
+        System.out.println();
+        System.out.println(all[0].length());
         System.out.println();
         System.out.println(all[0]);
         all=Data.indprod_fr();
         System.out.println();
-        System.out.println(all.length-1);
+        System.out.println(all.length);
+        System.out.println();
+        System.out.println(all[0].length());
         System.out.println();
         System.out.println(all[0]);
         
