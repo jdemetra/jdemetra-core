@@ -17,6 +17,12 @@ import static org.junit.Assert.*;
  * @author Jean Palate
  */
 public class AsymmetricFiltersTest {
+    private static double[] X=new double[]{
+    3.786724019, -3.241032825, -9.9780745, -8.101999137, -15.85172051, -10.1778258,
+        -12.57219934, -18.71197275, -21.37801699, -26.03744919, -32.6788264, -58.0473876,
+        -66.22635948, -49.27173938, -53.14157742, -61.09071485, -85.76962979, -40.06557711,
+        -29.51672908, -23.61275001, -28.31723678, -18.09617463, -15.68454682, 
+    };
 
     public AsymmetricFiltersTest() {
     }
@@ -175,4 +181,17 @@ public class AsymmetricFiltersTest {
 //        System.arraycopy(f, 0, all, h+1, h);
 //        System.out.println(DoubleSeq.of(all));
 //    }
+    
+    @Test
+    public void implicitForecasts(){
+        int h = 6;
+        DoubleSeq input = DoubleSeq.of(X, 10, 7);
+        SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 2, DiscreteKernel.henderson(h));
+        IFiniteFilter[] f3 = AsymmetricFilters.musgraveFilters(lp, 3.5);
+        IFiniteFilter[] f1 = AsymmetricFilters.mmsreFilters(lp, 0, null, null);
+        double[] f = AsymmetricFilters.implicitForecasts(lp, f1, input); 
+        System.out.println(DoubleSeq.of(f));
+        f = AsymmetricFilters.implicitForecasts(lp, f3, input); 
+        System.out.println(DoubleSeq.of(f));
+    }
 }

@@ -293,7 +293,7 @@ public class AsymmetricFilters {
      * @param x The observations, from n-h to n
      * @return The forecasts, from n+1 to n+h
      */
-    public double[] implicitForecasts(SymmetricFilter sfilter, IFiniteFilter[] afilters, DoubleSeq x) {
+    public double[] implicitForecasts(IFiniteFilter sfilter, IFiniteFilter[] afilters, DoubleSeq x) {
         int h = sfilter.getUpperBound();
         if (h != afilters.length || x.length() != h + 1) {
             return null;

@@ -20,6 +20,7 @@ import jdplus.maths.functions.ParamValidation;
 import jdplus.maths.functions.bfgs.Bfgs;
 import jdplus.maths.functions.gsl.integration.QAGS;
 import jdplus.maths.linearfilters.FiniteFilter;
+import jdplus.maths.linearfilters.IFiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.FastMatrix;
@@ -116,7 +117,6 @@ public class FSTFilter {
         this.nleads = builder.nleads;
         int n = nlags + nleads + 1;
         this.p = builder.pdegree + 1;
-        S.degree(builder.sdegree);
         T.antiphase(builder.antiphase)
                 .bounds(builder.w0, builder.w1);
         C = CanonicalMatrix.make(p, n);
@@ -125,7 +125,7 @@ public class FSTFilter {
             final int t = q;
             C.row(q).set(k -> kpow(k - nlags, t));
         }
-        SM = S.buildMatrix(nleads, nlags);
+        SM = S.buildMatrix(builder.sdegree, nleads, nlags);
         double[] q = new double[p];
         q[0] = 1;
         a = DoubleSeq.of(q);
@@ -232,6 +232,10 @@ public class FSTFilter {
 
     public static class FidelityCriterion {
 
+        public static double fidelity(IFiniteFilter f) {
+            return DoubleSeq.of(f.weightsToArray()).ssq();
+        }
+
         void add(double weight, FastMatrix X) {
             X.diagonal().add(weight);
         }
@@ -239,26 +243,26 @@ public class FSTFilter {
 
     public static class SmoothnessCriterion {
 
+        public static double smoothness(IFiniteFilter f) {
+            DataBlock w = DataBlock.of(f.weightsToArray());
+            CanonicalMatrix M = buildMatrix(3, f.getUpperBound(), -f.getLowerBound());
+            return QuadraticForm.ofSymmetric(M).apply(w);
+        }
+
         private static final double[] W1 = new double[]{2, -1};
         private static final double[] W2 = new double[]{6, -4, 1};
         private static final double[] W3 = new double[]{20, -15, 6, -1};
-        private int degree = 3;
 
         public SmoothnessCriterion() {
         }
 
-        public SmoothnessCriterion degree(int degree) {
-            this.degree = degree;
-            return this;
-        }
-
-        public CanonicalMatrix buildMatrix(int nleads, int nlags) {
+        public static CanonicalMatrix buildMatrix(int deg, int nleads, int nlags) {
             int n = nlags + nleads + 1;
-            if (2 * degree >= n) {
+            if (2 * deg >= n) {
                 throw new IllegalArgumentException();
             }
             CanonicalMatrix S = CanonicalMatrix.square(n);
-            double[] W = weights(degree);
+            double[] W = weights(deg);
             S.diagonal().set(W[0]);
             for (int i = 1; i < W.length; ++i) {
                 S.subDiagonal(i).set(W[i]);
@@ -284,6 +288,13 @@ public class FSTFilter {
     }
 
     public static class TimelinessCriterion {
+        
+        public static double timeliness(IFiniteFilter f, double bandpass){
+            TimelinessCriterion c=new TimelinessCriterion().antiphase(true).bounds(0, bandpass);
+            CanonicalMatrix M = c.buildMatrix(-f.getLowerBound(), f.getUpperBound());
+            DataBlock w = DataBlock.of(f.weightsToArray());
+             return QuadraticForm.ofSymmetric(M).apply(w);
+        }
 
         private double w0 = 0, w1 = Math.PI / 18;
         private boolean antiphase = false;
