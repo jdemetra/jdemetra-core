@@ -105,7 +105,7 @@ public class Kernels {
     }
 
     public Polynomial biWeightAsPolynomial() {
-        return Polynomial.of(15.0 / 16.0, 0, -15.0 / 8.0, 0, -15.0 / 16.0);
+        return Polynomial.of(15.0 / 16.0, 0, -15.0 / 8.0, 0, 15.0 / 16.0);
     }
 
     public Polynomial triWeightAsPolynomial() {

@@ -26,15 +26,9 @@ import jdplus.maths.matrices.CanonicalMatrix;
 import java.util.function.IntToDoubleFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static jdplus.data.analysis.DiscreteKernel.distance;
-import static jdplus.data.analysis.DiscreteKernel.distance;
 import static jdplus.data.analysis.DiscreteKernel.epanechnikov;
 import static jdplus.data.analysis.DiscreteKernel.distance;
-import static jdplus.data.analysis.DiscreteKernel.distance;
-import static jdplus.data.analysis.DiscreteKernel.distance;
-import static jdplus.data.analysis.DiscreteKernel.distance;
-import static jdplus.data.analysis.DiscreteKernel.distance;
-import static jdplus.data.analysis.DiscreteKernel.distance;
+import static jdplus.data.analysis.DiscreteKernel.trapezoidal;
 
 /**
  *
@@ -42,7 +36,7 @@ import static jdplus.data.analysis.DiscreteKernel.distance;
  */
 public class DiscreteKernelTest {
 
-    private final int K = 56;
+    private final int K = 6;
 
     public DiscreteKernelTest() {
     }
@@ -56,7 +50,7 @@ public class DiscreteKernelTest {
             double q = kernel.applyAsDouble(i);
             //assertTrue(q>0);
             s += q;
-//            System.out.println(kernel.applyAsDouble(i));
+           System.out.println(kernel.applyAsDouble(i));
         }
         assertEquals(1, s, 1e-9);
     }
@@ -131,6 +125,19 @@ public class DiscreteKernelTest {
         assertEquals(1, s, 1e-9);
     }
 
+    @Test
+    public void testTrapezoidal() {
+        IntToDoubleFunction kernel = DiscreteKernel.Trapezoidal.asFunction(K);
+//        System.out.println("Triangular");
+        double s = 0;
+        for (int i = -K; i <= K; ++i) {
+            double q = kernel.applyAsDouble(i);
+            assertTrue(q > 0);
+            s += q;
+//            System.out.println(kernel.applyAsDouble(i));
+        }
+        assertEquals(1, s, 1e-9);
+    }
 //    @Test
 //    public void testGaussian() {
 //        IntToDoubleFunction kernel = gaussian(4 * K);
@@ -143,14 +150,15 @@ public class DiscreteKernelTest {
 
     @Test
     public void testDistance() {
-        IntToDoubleFunction[] k = new IntToDoubleFunction[7];
+        IntToDoubleFunction[] k = new IntToDoubleFunction[8];
         k[0] = uniform(K);
         k[1] = triangular(K);
-        k[2] = epanechnikov(K);
-        k[3] = biweight(K);
-        k[4] = triweight(K);
-        k[5] = tricube(K);
-        k[6] = henderson(K);
+        k[2] = trapezoidal(K);
+        k[3] = epanechnikov(K);
+        k[4] = biweight(K);
+        k[5] = triweight(K);
+        k[6] = tricube(K);
+        k[7] = henderson(K);
         CanonicalMatrix D = CanonicalMatrix.square(k.length);
 
         for (int i = 0; i < k.length; ++i) {
@@ -158,6 +166,6 @@ public class DiscreteKernelTest {
                 D.set(i, j, distance(k[i], k[j], K));
             }
         }
-//       System.out.println(D);
+       System.out.println(D);
     }
 }

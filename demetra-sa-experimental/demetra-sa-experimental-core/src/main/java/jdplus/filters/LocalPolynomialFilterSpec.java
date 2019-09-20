@@ -15,9 +15,11 @@ import jdplus.maths.linearfilters.AsymmetricFilters;
 public class LocalPolynomialFilterSpec {
 
     private int filterLength=6;
-    private KernelOption kernel=KernelOption.BiWeight;
+    private KernelOption kernel=KernelOption.Henderson;
     private int polynomialDegree=2;
     private AsymmetricFilters.Option asymmetricFilters=AsymmetricFilters.Option.MMSRE;
     private int asymmetricPolynomialDegree=0;
     private double[] linearModelCoefficients=new double[]{2/(Math.sqrt(Math.PI)*3.5)};
+    private double timelinessWeight;
+    private double passBand=Math.PI/18;
 }

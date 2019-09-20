@@ -26,6 +26,7 @@ import jdplus.filters.KernelOption;
 import jdplus.filters.LocalPolynomialFilterFactory;
 import jdplus.filters.LocalPolynomialFilterSpec;
 import jdplus.maths.linearfilters.AsymmetricFilters;
+import jdplus.x11plus.X11SeasonalFiltersFactory;
 
 /**
  *
@@ -133,8 +134,8 @@ public class X11Decomposition {
                 .mode(mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive)
                 .period(P)
                 .trendFiltering(LocalPolynomialFilterFactory.of(tspec))
-                .initialSeasonalFilter(SeasonalFilterOption.valueOf(seas0))
-                .finalSeasonalFilter(SeasonalFilterOption.valueOf(seas1))
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(period, SeasonalFilterOption.valueOf(seas0)))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(period, SeasonalFilterOption.valueOf(seas1)))
                 .lowerSigma(lsig)
                 .upperSigma(usig)
                 .build();

@@ -19,6 +19,9 @@ public class MSEDecomposition {
     
     private double accuracy, timeliness, smoothness, residual;
     
+    public double getTotal(){
+        return accuracy+timeliness+smoothness+residual;
+    }
     /**
      * @param spectralDensity
      * @param frfTarget

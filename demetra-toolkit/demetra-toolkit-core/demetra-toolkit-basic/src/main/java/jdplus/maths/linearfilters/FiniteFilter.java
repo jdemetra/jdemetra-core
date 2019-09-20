@@ -126,7 +126,7 @@ public class FiniteFilter implements IFiniteFilter, Cloneable {
      * @return
      */
     public static FiniteFilter ofInternal(final double[] c, final int lb) {
-        return new FiniteFilter(Polynomial.ofInternal(c), lb);
+        return new FiniteFilter(Polynomial.raw(c), lb);
     }
 
     /**
@@ -275,7 +275,7 @@ public class FiniteFilter implements IFiniteFilter, Cloneable {
      */
     @Override
     public FiniteFilter mirror() {
-        Polynomial mw = w.mirror();
+        Polynomial mw = w.rawMirror();
         int mlb = -lb - w.degree();
         return new FiniteFilter(mw, mlb);
     }

@@ -5,11 +5,17 @@
  */
 package jdplus.rkhs;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import java.util.function.DoubleUnaryOperator;
+import jdplus.data.DataBlock;
 import jdplus.data.analysis.DiscreteKernel;
 import jdplus.filters.LocalPolynomialFilterFactory;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.FastMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.stats.Kernel;
@@ -114,7 +120,7 @@ public class HighOrderKernelsTest {
     @Test
     public void testEpanechnikov5() {
         Kernel K = Kernels.EPANECHNIKOV;
-        int R=5;
+        int R = 5;
         int m = 51;
         SymmetricFilter sf = LocalPolynomialFilterFactory.of(m, R, DiscreteKernel.epanechnikov(m));
         DoubleUnaryOperator kernel = HighOrderKernels.kernel(K, R);
@@ -156,48 +162,93 @@ public class HighOrderKernelsTest {
             }
         }
     }
-    
-    public static void main(String[] args){
+
+    public static void main(String[] args) {
         System.out.println("Henderson-9 hierarchy");
-        Kernel H=Kernels.henderson(4);
-        for (int i=0; i<=10; ++i){
+        Kernel H = Kernels.henderson(4);
+        for (int i = 0; i <= 10; ++i) {
             System.out.println(HighOrderKernels.p(H, i).coefficients());
         }
         System.out.println("Henderson-13 hierarchy");
-        H=Kernels.henderson(6);
-        for (int i=0; i<=10; ++i){
+        H = Kernels.henderson(6);
+        for (int i = 0; i <= 10; ++i) {
             System.out.println(HighOrderKernels.p(H, i).coefficients());
         }
+        for (int i = 0; i <= 10; ++i) {
+            System.out.println(HighOrderKernels.hendersonKernel(i, 6).coefficients());
+        }
         System.out.println("Henderson-23 hierarchy");
-        H=Kernels.henderson(11);
-        for (int i=0; i<=10; ++i){
+        H = Kernels.henderson(11);
+        for (int i = 0; i <= 10; ++i) {
             System.out.println(HighOrderKernels.p(H, i).coefficients());
         }
         System.out.println("Biweight hierarchy");
-        H=Kernels.BIWEIGHT;
-        for (int i=0; i<=10; ++i){
+        H = Kernels.BIWEIGHT;
+        for (int i = 0; i <= 10; ++i) {
             System.out.println(HighOrderKernels.p(H, i).coefficients());
         }
         System.out.println("Triweight hierarchy");
-        H=Kernels.TRIWEIGHT;
-        for (int i=0; i<=10; ++i){
+        H = Kernels.TRIWEIGHT;
+        for (int i = 0; i <= 10; ++i) {
             System.out.println(HighOrderKernels.p(H, i).coefficients());
         }
         System.out.println("Epanechnikov hierarchy");
-        H=Kernels.EPANECHNIKOV;
-        for (int i=0; i<=10; ++i){
+        H = Kernels.EPANECHNIKOV;
+        for (int i = 0; i <= 10; ++i) {
             System.out.println(HighOrderKernels.p(H, i).coefficients());
         }
         System.out.println("Triangular hierarchy");
-        H=Kernels.TRIANGULAR;
-        for (int i=0; i<=10; ++i){
+        H = Kernels.TRIANGULAR;
+        for (int i = 0; i <= 10; ++i) {
             System.out.println(HighOrderKernels.p(H, i).coefficients());
         }
         System.out.println("Uniform hierarchy");
-        H=Kernels.UNIFORM;
-        for (int i=0; i<=10; ++i){
+        H = Kernels.UNIFORM;
+        for (int i = 0; i <= 10; ++i) {
             System.out.println(HighOrderKernels.p(H, i).coefficients());
         }
+    }
+
+    @Test
+    public void testUnequallySpaced() {
+        DoubleUnaryOperator kernel = HighOrderKernels.kernel(Kernels.TRIWEIGHT, 4);
+        FastMatrix M = randomize(x -> 10 * Math.sin(x), 1000, 0, Math.PI * 16);
+        double step = Math.PI * 16 / 1000;
+        for (int j = 0; j < 900; ++j) {
+            double a = j * step, b = a + step * 100;
+            int start = 0;
+            DataBlock col = M.column(0);
+            while (col.get(start) < a && start < col.length()) {
+                ++start;
+            }
+            if (start == col.length()) {
+                return;
+            }
+            int end = start + 1;
+            while (col.get(end) < b && end < col.length()) {
+                ++end;
+            }
+            double num = 0, denom = 0;
+            for (int i = start; i < end; ++i) {
+                double x = (col.get(i) - (a + b) / 2) / (50 * step);
+                double k = kernel.applyAsDouble(x);
+                denom += k;
+                num += M.get(i, 1) * k;
+            }
+            System.out.print(M.get((start + end) / 2, 1));
+            System.out.print('\t');
+            System.out.println(num / denom);
+        }
+    }
+
+    public static FastMatrix randomize(DoubleUnaryOperator fn, int n, double a, double b) {
+        CanonicalMatrix M = CanonicalMatrix.make(n, 2);
+        Random rnd = new Random(0);
+        double[] array = rnd.doubles(n, a, b).toArray();
+        Arrays.sort(array);
+        M.column(0).copyFrom(array, 0);
+        M.column(1).set(i -> fn.applyAsDouble(array[i]) + rnd.nextGaussian());
+        return M;
     }
 
 }

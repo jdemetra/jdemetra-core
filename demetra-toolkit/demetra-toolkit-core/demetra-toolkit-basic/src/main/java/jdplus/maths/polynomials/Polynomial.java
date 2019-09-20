@@ -73,6 +73,15 @@ public final class Polynomial{
     }
 
     /**
+     * Generates a polynomial that can contain leading/trailing zeros.
+     * That can lead to problems in some algorithms. Should be used with caution
+     * @param coefficients
+     * @return 
+     */
+    public static Polynomial raw(@NonNull double[] coefficients) {
+        return new Polynomial(coefficients);
+    }
+    /**
      * Creates a new polynomial form given coefficients
      *
      * @param p0 The constant term
@@ -541,6 +550,21 @@ public final class Polynomial{
         return new Polynomial(Coefficients.ofInternal(result));
     }
 
+    /**
+     * Generates a mirror polynomial that can contain leading/trailing zeros.
+     * That can lead to problems in some algorithms. Should be used with caution
+     * @return 
+     */
+    public Polynomial rawMirror() {
+        if (coeff.length == 1) {
+            return this;
+        }
+        double[] result = new double[coeff.length];
+        for (int i = 0, j = coeff.length - 1; i < coeff.length; ++i, --j) {
+            result[i] = coeff[j];
+        }
+        return new Polynomial(result);
+    }
     /**
      * The operator changes the sign ofFunction the coefficients ofFunction the
      * polynomial. A new polynomial is returned as a result.
