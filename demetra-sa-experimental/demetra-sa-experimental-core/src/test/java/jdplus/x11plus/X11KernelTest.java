@@ -32,6 +32,7 @@ import jdplus.maths.linearfilters.IFiniteFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.rkhs.RKHSFilterFactory;
 import jdplus.rkhs.RKHSFilterSpec;
+import org.junit.Ignore;
 
 /**
  *
@@ -39,25 +40,15 @@ import jdplus.rkhs.RKHSFilterSpec;
  */
 public class X11KernelTest {
 
-    private static DoubleSeq INPUT = DoubleSeq.of(Data.RETAIL_BOOKSTORES);
+    private static final DoubleSeq INPUT = DoubleSeq.of(Data.RETAIL_BOOKSTORES);
 
-    private static int H = 6;
-    private static DecompositionMode mode = DecompositionMode.Multiplicative;
+    private static final int H = 6;
+    private static final DecompositionMode mode = DecompositionMode.Multiplicative;
 
     public X11KernelTest() {
     }
 
     public static void main(String[] cmds) {
-//        for (int k = 1; k <= 5; ++k) {
-//            test_FST_ap_Prod(k);
-//            test_LP_c_Prod(k);
-//            test_Musgrave(k);
-//            test_LP_DAF(k);
-//            test_LP_cut(k);
-//            test_RKHS_frf(k);
-//            test_RKHS_fr_Prod2(k);
-//            test_RKHS_tm_Prod(k);
-//        }
 
         TsData[] surveys = Data.indprod_de();
         List<DoubleSeq> lseq = new ArrayList<>();
@@ -149,6 +140,7 @@ public class X11KernelTest {
         return model;
     }
 
+    @Ignore
     @Test
     public void testLP() {
         TsData test = Data.surveys()[9];
@@ -176,186 +168,6 @@ public class X11KernelTest {
             kernel.process(input.range(0, i), context);
             System.out.println(kernel.getDstep().getD12().drop(200, 0));
         }
-    }
-
-    @Test
-    public void testRKHS() {
-        TsData[] insee = Data.surveys();
-        DoubleSeq input = insee[9].getValues();
-        X11Kernel kernel = new X11Kernel();
-        RKHSFilterSpec tspec = new RKHSFilterSpec();
-        tspec.setFilterLength(6);
-        tspec.setDensity(SpectralDensity.RandomWalk);
-        tspec.setAsymmetricBandWith(AsymmetricCriterion.Undefined);
-        X11Context context = X11Context.builder()
-                .period(12)
-                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
-                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
-                .trendFiltering(RKHSFilterFactory.of(tspec))
-                .mode(DecompositionMode.Additive)
-                .build();
-        for (int i = 300; i < 330; ++i) {
-            kernel.process(input.range(0, i), context);
-            System.out.println(kernel.getDstep().getD12().drop(200, 0));
-        }
-    }
-
-    public static void test_RKHS_fr_Prod(int k) {
-        RKHSFilterSpec tspec = new RKHSFilterSpec();
-        tspec.setDensity(SpectralDensity.RandomWalk);
-        tspec.setAsymmetricBandWith(AsymmetricCriterion.FrequencyResponse);
-        tspec.setFilterLength(6);
-        X11Context context = X11Context.builder()
-                .period(12)
-                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
-                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
-                .trendFiltering(RKHSFilterFactory.of(tspec))
-                .mode(DecompositionMode.Additive)
-                .build();
-        X11Kernel kernel = new X11Kernel();
-        kernel.process(INPUT, context);
-        DoubleSeq target = kernel.getDstep().getD12();
-        int start = 84;
-//        System.out.println(target.drop(start, 0));
-        double[] e = new double[target.length() - start - 24];
-        for (int i = start; i < target.length() - 24; ++i) {
-            kernel.process(INPUT.range(0, i), context);
-            DoubleSeq d12 = kernel.getDstep().getD12();
-            e[i - start] = target.get(i - k) - d12.get(i - k);
-        }
-        System.out.println(DoubleSeq.of(e));
-    }
-
-    public static void test_FST_ap_Prod(int k) {
-        FSTFilterSpec fspec = new FSTFilterSpec();
-        fspec.setAntiphase(true);
-        fspec.setSmoothnessWeight(.5);
-        fspec.setTimelinessWeight(0.5);
-        fspec.setLags(8);
-        fspec.setLeads(4);
-        X11Context context = X11Context.builder()
-                .period(12)
-                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
-                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
-                .trendFiltering(FSTFilterFactory.of(fspec))
-                .mode(DecompositionMode.Additive)
-                .build();
-        X11Kernel kernel = new X11Kernel();
-        kernel.process(INPUT, context);
-        DoubleSeq target = kernel.getDstep().getD12();
-        int start = 84;
-//        System.out.println(target.drop(start, 0));
-        double[] e = new double[target.length() - start - 24];
-        for (int i = start; i < target.length() - 24; ++i) {
-            kernel.process(INPUT.range(0, i), context);
-            DoubleSeq d12 = kernel.getDstep().getD12();
-            e[i - start] = target.get(i - k) - d12.get(i - k);
-        }
-        System.out.println(DoubleSeq.of(e));
-    }
-
-    public static void test_RKHS_fr_Prod2(int k) {
-        RKHSFilterSpec tspec = new RKHSFilterSpec();
-        tspec.setDensity(SpectralDensity.Undefined);
-        tspec.setAsymmetricBandWith(AsymmetricCriterion.FrequencyResponse);
-        tspec.setFilterLength(6);
-        X11Context context = X11Context.builder()
-                .period(12)
-                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
-                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
-                .trendFiltering(RKHSFilterFactory.of(tspec))
-                .mode(DecompositionMode.Additive)
-                .build();
-        X11Kernel kernel = new X11Kernel();
-        kernel.process(INPUT, context);
-        DoubleSeq target = kernel.getDstep().getD12();
-        int start = 84;
-//        System.out.println(target.drop(start, 0));
-        double[] e = new double[target.length() - start - 24];
-        for (int i = start; i < target.length() - 24; ++i) {
-            kernel.process(INPUT.range(0, i), context);
-            DoubleSeq d12 = kernel.getDstep().getD12();
-            e[i - start] = target.get(i - k) - d12.get(i - k);
-        }
-        System.out.println(DoubleSeq.of(e));
-    }
-
-    public static void test_RKHS_tm_Prod(int k) {
-        RKHSFilterSpec tspec = new RKHSFilterSpec();
-        tspec.setDensity(SpectralDensity.RandomWalk);
-        tspec.setAsymmetricBandWith(AsymmetricCriterion.Timeliness);
-        tspec.setFilterLength(6);
-        X11Context context = X11Context.builder()
-                .period(12)
-                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
-                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
-                .trendFiltering(RKHSFilterFactory.of(tspec))
-                .mode(DecompositionMode.Additive)
-                .build();
-        X11Kernel kernel = new X11Kernel();
-        kernel.process(INPUT, context);
-        DoubleSeq target = kernel.getDstep().getD12();
-        int start = 84;
-//        System.out.println(target.drop(start, 0));
-        double[] e = new double[target.length() - start - 24];
-        for (int i = start; i < target.length() - 24; ++i) {
-            kernel.process(INPUT.range(0, i), context);
-            DoubleSeq d12 = kernel.getDstep().getD12();
-            e[i - start] = target.get(i - k) - d12.get(i - k);
-        }
-        System.out.println(DoubleSeq.of(e));
-    }
-
-    public static void test_LP_trend_Prod(int k) {
-        LocalPolynomialFilterSpec fspec = new LocalPolynomialFilterSpec();
-        fspec.setFilterLength(6);
-        fspec.setAsymmetricFilters(AsymmetricFilters.Option.MMSRE);
-        X11Context context = X11Context.builder()
-                .period(12)
-                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
-                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
-                .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
-                .mode(DecompositionMode.Additive)
-                .build();
-        X11Kernel kernel = new X11Kernel();
-        kernel.process(INPUT, context);
-        DoubleSeq target = kernel.getDstep().getD12();
-        int start = 84;
-        //       System.out.println(target.drop(start, 0));
-        double[] e = new double[target.length() - start - 24];
-        for (int i = start; i < target.length() - 24; ++i) {
-            kernel.process(INPUT.range(0, i), context);
-            DoubleSeq d12 = kernel.getDstep().getD12();
-            e[i - start] = target.get(i - k) - d12.get(i - k);
-        }
-        System.out.println(DoubleSeq.of(e));
-    }
-
-    public static void test_LP_c_Prod(int k) {
-        LocalPolynomialFilterSpec fspec = new LocalPolynomialFilterSpec();
-        fspec.setFilterLength(6);
-        fspec.setAsymmetricFilters(AsymmetricFilters.Option.MMSRE);
-        fspec.setLinearModelCoefficients(new double[0]);
-        X11Context context = X11Context.builder()
-                .period(12)
-                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
-                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
-                .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
-                .mode(DecompositionMode.Additive)
-                .build();
-        X11Kernel kernel = new X11Kernel();
-        kernel.process(INPUT, context);
-        DoubleSeq target = kernel.getDstep().getD12();
-        int start = 84;
-//        System.out.println(target.drop(start, 0));
-        double[] e = new double[target.length() - start - 24];
-        for (int i = start; i < target.length() - 24; ++i) {
-            kernel.process(INPUT.range(0, i), context);
-            DoubleSeq d12 = kernel.getDstep().getD12();
-            e[i - start] = (d12.get(i - k) - target.get(i - k)) / target.get(i - k);
-        }
-        System.out.println(DoubleSeq.of(e));
-
     }
 
     public static double test(X11Context context, DoubleSeq[] input, int k) {
@@ -512,60 +324,6 @@ public class X11KernelTest {
         return test(context, input, k);
     }
 
-    public static void test_LP_DAF_Prod(int k) {
-        LocalPolynomialFilterSpec fspec = new LocalPolynomialFilterSpec();
-        fspec.setFilterLength(6);
-        fspec.setAsymmetricFilters(AsymmetricFilters.Option.Direct);
-        X11Context context = X11Context.builder()
-                .period(12)
-                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
-                //                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, 2, DiscreteKernel.trapezoidal(3)))
-                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
-                .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
-                .mode(DecompositionMode.Additive)
-                .build();
-        X11Kernel kernel = new X11Kernel();
-        kernel.process(INPUT, context);
-        DoubleSeq target = kernel.getDstep().getD12();
-        int start = 84;
-//        System.out.println(target.drop(start, 0));
-        double[] e = new double[target.length() - start - 24];
-        for (int i = start; i < target.length() - 24; ++i) {
-            kernel = new X11Kernel();
-            kernel.process(INPUT.range(0, i), context);
-            DoubleSeq d12 = kernel.getDstep().getD12();
-            e[i - start] = target.get(i - k) - d12.get(i - k);
-        }
-        System.out.println(DoubleSeq.of(e));
-
-    }
-
-    public static void test_LP_cut_Prod(int k) {
-        LocalPolynomialFilterSpec fspec = new LocalPolynomialFilterSpec();
-        fspec.setFilterLength(6);
-        fspec.setAsymmetricFilters(AsymmetricFilters.Option.CutAndNormalize);
-        X11Context context = X11Context.builder()
-                .period(12)
-                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X3))
-                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(12, SeasonalFilterOption.S3X5))
-                .trendFiltering(LocalPolynomialFilterFactory.of(fspec))
-                .mode(DecompositionMode.Additive)
-                .build();
-        X11Kernel kernel = new X11Kernel();
-        kernel.process(INPUT, context);
-        DoubleSeq target = kernel.getDstep().getD12();
-        int start = 84;
-//        System.out.println(target.drop(start, 0));
-        double[] e = new double[target.length() - start - 24];
-        for (int i = start; i < target.length() - 24; ++i) {
-            kernel = new X11Kernel();
-            kernel.process(INPUT.range(0, i), context);
-            DoubleSeq d12 = kernel.getDstep().getD12();
-            e[i - start] = target.get(i - k) - d12.get(i - k);
-        }
-        System.out.println(DoubleSeq.of(e));
-    }
-
     public static IFiltering lp_c0(int h) {
         LocalPolynomialFilterSpec fspec = new LocalPolynomialFilterSpec();
         fspec.setFilterLength(h);
@@ -638,11 +396,12 @@ public class X11KernelTest {
         return RKHSFilterFactory.of(tspec);
     }
 
-    private static double[] X = new double[]{
+    private static final double[] X = new double[]{
         -32.6788264, -58.0473876, -66.22635948, -49.27173938, -53.14157742, -61.09071485, -85.76962979
     };
 
     @Test
+    @Ignore
     public void testFilters() {
         int h = 6;
         IFiltering[] ff = new IFiltering[]{lp_c0(h), lp_c1(h, 10), musgrave(h), lp_quad(h, 1, 10),

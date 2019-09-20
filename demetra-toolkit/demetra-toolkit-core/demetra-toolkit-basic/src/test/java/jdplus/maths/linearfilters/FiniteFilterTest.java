@@ -47,7 +47,7 @@ public class FiniteFilterTest {
         Complex fr = filter.frequencyResponse(1.5);
         double g = filter.gainFunction().applyAsDouble(1.5);
         double p = filter.phaseFunction().applyAsDouble(1.5);
-        assertTrue(fr.equals(Complex.polar(g, -p), 1e-9));
+        assertTrue(fr.equals(Complex.polar(g, p), 1e-9));
     }
 
     public static void main(String[] arg) {
