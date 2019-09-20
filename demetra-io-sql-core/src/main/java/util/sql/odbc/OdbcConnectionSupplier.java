@@ -18,7 +18,6 @@ package util.sql.odbc;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ServiceLoader;
 import java.util.logging.Level;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import util.sql.SqlConnectionSupplier;
@@ -33,12 +32,9 @@ public final class OdbcConnectionSupplier implements SqlConnectionSupplier {
 
     @NonNull
     public static OdbcConnectionSupplier ofServiceLoader() {
-        for (OdbcConnectionSupplierSpi o : ServiceLoader.load(OdbcConnectionSupplierSpi.class)) {
-            if (o.isAvailable()) {
-                return new OdbcConnectionSupplier(o);
-            }
-        }
-        return noOp();
+        return new OdbcConnectionSupplierSpiLoader().get()
+                .map(OdbcConnectionSupplier::new)
+                .orElseGet(OdbcConnectionSupplier::noOp);
     }
 
     @NonNull

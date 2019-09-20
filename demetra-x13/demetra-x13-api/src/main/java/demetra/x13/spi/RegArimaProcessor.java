@@ -6,7 +6,7 @@
 package demetra.x13.spi;
 
 import demetra.design.Algorithm;
-import demetra.design.ServiceDefinition;
+import nbbrd.service.ServiceDefinition;
 import demetra.modelling.regression.ModellingContext;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;

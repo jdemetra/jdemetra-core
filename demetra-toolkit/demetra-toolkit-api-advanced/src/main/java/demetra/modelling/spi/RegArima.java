@@ -10,8 +10,9 @@ import demetra.arima.SarimaModel;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.modelling.regarima.RegSarimaProcessing;
 import demetra.regarima.RegArimaModel;
-import demetra.util.ServiceLookup;
-import java.util.concurrent.atomic.AtomicReference;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 
 /**
  *
@@ -19,8 +20,9 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @lombok.experimental.UtilityClass
 public class RegArima {
-    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
-    
+
+    private final RegArimaLoader.Processor PROCESSOR = new RegArimaLoader.Processor();
+
     public void setProcessor(Processor processor) {
         PROCESSOR.set(processor);
     }
@@ -28,31 +30,32 @@ public class RegArima {
     public Processor getProcessor() {
         return PROCESSOR.get();
     }
-    
-    public <S extends ArimaType> ConcentratedLikelihoodWithMissing computeConcentratedLikelihood(RegArimaModel.Data<S> model){
+
+    public <S extends ArimaType> ConcentratedLikelihoodWithMissing computeConcentratedLikelihood(RegArimaModel.Data<S> model) {
         return PROCESSOR.get().computeConcentratedLikelihood(model);
     }
-    
-    public RegArimaModel<SarimaModel> compute(RegSarimaProcessing.Specification model){
+
+    public RegArimaModel<SarimaModel> compute(RegSarimaProcessing.Specification model) {
         return PROCESSOR.get().compute(model);
     }
-    
-    public static interface Processor{
- 
+
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
+    public static interface Processor {
+
         /**
-         * 
+         *
          * @param <S>
          * @param model
-         * @return 
+         * @return
          */
         <S extends ArimaType> ConcentratedLikelihoodWithMissing computeConcentratedLikelihood(RegArimaModel.Data<S> model);
-        
+
         /**
-         * 
+         *
          * @param model
-         * @return 
+         * @return
          */
         RegArimaModel<SarimaModel> compute(RegSarimaProcessing.Specification model);
     }
-    
+
 }

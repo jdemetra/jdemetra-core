@@ -6,7 +6,7 @@
 package demetra.tramoseats.spi;
 
 import demetra.design.Algorithm;
-import demetra.design.ServiceDefinition;
+import nbbrd.service.ServiceDefinition;
 import demetra.processing.ProcResults;
 import demetra.modelling.regarima.SarimaSpec;
 import demetra.timeseries.TsData;

@@ -6,13 +6,14 @@
 package demetra.information;
 
 import demetra.design.Development;
-import demetra.design.ServiceDefinition;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceDefinition
+@ServiceDefinition(quantifier = Quantifier.MULTIPLE)
 @Development(status = Development.Status.Release)
 public interface InformationMappingExtension<S>  {
     

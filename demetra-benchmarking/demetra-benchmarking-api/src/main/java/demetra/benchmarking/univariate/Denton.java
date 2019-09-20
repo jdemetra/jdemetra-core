@@ -18,11 +18,11 @@ package demetra.benchmarking.univariate;
 
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
-import demetra.util.ServiceLookup;
-import java.util.concurrent.atomic.AtomicReference;
 import demetra.design.Algorithm;
 import demetra.design.Development;
-import demetra.design.ServiceDefinition;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 
 /**
  *
@@ -32,7 +32,7 @@ import demetra.design.ServiceDefinition;
 @lombok.experimental.UtilityClass
 public class Denton {
 
-    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
+    private final DentonLoader.Processor PROCESSOR = new DentonLoader.Processor();
 
     public void setProcessor(Processor algorithm) {
         PROCESSOR.set(algorithm);
@@ -51,7 +51,7 @@ public class Denton {
     }
 
     @Algorithm
-    @ServiceDefinition
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     public interface Processor {
 
         TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, DentonSpec spec);

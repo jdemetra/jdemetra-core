@@ -20,11 +20,11 @@ import demetra.arima.ArimaModel;
 import demetra.arima.ArimaType;
 import demetra.arima.UcarimaModel;
 import demetra.design.Algorithm;
-import demetra.design.ServiceDefinition;
-import demetra.util.ServiceLookup;
-import java.util.concurrent.atomic.AtomicReference;
+import nbbrd.service.ServiceDefinition;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
 
 /**
  *
@@ -33,8 +33,8 @@ import java.util.function.IntToDoubleFunction;
 @lombok.experimental.UtilityClass
 public class Arima {
 
-    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
-    
+    private final ArimaLoader.Processor PROCESSOR = new ArimaLoader.Processor();
+
     public void setProcessor(Processor processor) {
         PROCESSOR.set(processor);
     }
@@ -42,44 +42,44 @@ public class Arima {
     public Processor getProcessor() {
         return PROCESSOR.get();
     }
-    
-    public IntToDoubleFunction autoCovarianceFunction(ArimaType process){
+
+    public IntToDoubleFunction autoCovarianceFunction(ArimaType process) {
         return PROCESSOR.get().autoCovarianceFunction(process);
     }
 
-    public DoubleUnaryOperator pseudoSpectrum(ArimaType process){
+    public DoubleUnaryOperator pseudoSpectrum(ArimaType process) {
         return PROCESSOR.get().pseudoSpectrum(process);
     }
 
-    public IntToDoubleFunction piWeights(ArimaType process){
+    public IntToDoubleFunction piWeights(ArimaType process) {
         return PROCESSOR.get().piWeights(process);
     }
 
-    public IntToDoubleFunction psiWeights(ArimaType process){
+    public IntToDoubleFunction psiWeights(ArimaType process) {
         return PROCESSOR.get().psiWeights(process);
     }
-        
-    public ArimaModel plus(ArimaType left, ArimaType right){
+
+    public ArimaModel plus(ArimaType left, ArimaType right) {
         return PROCESSOR.get().plus(left, right);
     }
 
-    public ArimaModel minus(ArimaType left, ArimaType right){
+    public ArimaModel minus(ArimaType left, ArimaType right) {
         return PROCESSOR.get().minus(left, right);
     }
-        
-    public ArimaModel plus(ArimaType left, double noise){
+
+    public ArimaModel plus(ArimaType left, double noise) {
         return PROCESSOR.get().plus(left, noise);
     }
 
-    public ArimaType minus(ArimaType left, double noise){
+    public ArimaType minus(ArimaType left, double noise) {
         return PROCESSOR.get().minus(left, noise);
     }
-       
-    public UcarimaModel doCanonical(UcarimaModel ucarima){
+
+    public UcarimaModel doCanonical(UcarimaModel ucarima) {
         return PROCESSOR.get().doCanonical(ucarima);
     }
-    
-    @ServiceDefinition
+
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     @Algorithm
     public static interface Processor {
 
@@ -90,15 +90,15 @@ public class Arima {
         IntToDoubleFunction piWeights(ArimaType process);
 
         IntToDoubleFunction psiWeights(ArimaType process);
-        
+
         ArimaModel plus(ArimaType left, ArimaType right);
 
         ArimaModel minus(ArimaType left, ArimaType right);
-        
+
         ArimaModel plus(ArimaType left, double noise);
 
         ArimaModel minus(ArimaType left, double noise);
-       
+
         UcarimaModel doCanonical(UcarimaModel ucarima);
 
     }

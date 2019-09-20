@@ -7,10 +7,10 @@ package demetra.x11;
 
 import demetra.design.Algorithm;
 import demetra.design.Development;
-import demetra.design.ServiceDefinition;
+import nbbrd.service.ServiceDefinition;
 import demetra.timeseries.TsData;
-import demetra.util.ServiceLookup;
-import java.util.concurrent.atomic.AtomicReference;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
 
 /**
  *
@@ -21,14 +21,14 @@ import java.util.concurrent.atomic.AtomicReference;
 public class X11 {
 
     @Algorithm
-    @ServiceDefinition
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     public static interface Processor {
 
         X11Results process(@lombok.NonNull TsData timeSeries, @lombok.NonNull X11Spec spec);
 
     }
 
-    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
+    private final X11Loader.Processor PROCESSOR = new X11Loader.Processor();
 
     public void setProcessor(Processor algorithm) {
         PROCESSOR.set(algorithm);

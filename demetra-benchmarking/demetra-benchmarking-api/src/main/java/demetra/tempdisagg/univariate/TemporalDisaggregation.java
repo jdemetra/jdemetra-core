@@ -18,11 +18,11 @@ package demetra.tempdisagg.univariate;
 
 import demetra.design.Algorithm;
 import demetra.design.Development;
-import demetra.design.ServiceDefinition;
+import nbbrd.service.ServiceDefinition;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import demetra.util.ServiceLookup;
-import java.util.concurrent.atomic.AtomicReference;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
 
 /**
  *
@@ -32,8 +32,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @lombok.experimental.UtilityClass
 public class TemporalDisaggregation {
 
-
-    private final AtomicReference<Processor> PROCESSOR = ServiceLookup.firstMutable(Processor.class);
+    private final TemporalDisaggregationLoader.Processor PROCESSOR = new TemporalDisaggregationLoader.Processor();
 
     public void setProcessor(Processor algorithm) {
         PROCESSOR.set(algorithm);
@@ -51,12 +50,12 @@ public class TemporalDisaggregation {
         return PROCESSOR.get().process(aggregatedSeries, domain, spec);
     }
 
-@Algorithm
-@ServiceDefinition
-public interface Processor {
+    @Algorithm
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
+    public interface Processor {
 
-    TemporalDisaggregationResults process(TsData aggregatedSeries, TsData[] indicators, TemporalDisaggregationSpec spec);
+        TemporalDisaggregationResults process(TsData aggregatedSeries, TsData[] indicators, TemporalDisaggregationSpec spec);
 
-    TemporalDisaggregationResults process(TsData aggregatedSeries, TsDomain domain, TemporalDisaggregationSpec spec);
-}
+        TemporalDisaggregationResults process(TsData aggregatedSeries, TsDomain domain, TemporalDisaggregationSpec spec);
+    }
 }
