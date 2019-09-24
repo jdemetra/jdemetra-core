@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>eu.europa.ec.joinup.sat</groupId>
+        <artifactId>demetra-parent</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>demetra-sa-experimental-r</artifactId>
+    <packaging>jar</packaging>
+    <name>JD3 - SA - Experimental - R</name>
+    <version>1.0.0-SNAPSHOT</version>
+    
+    <properties>
+        <demetra.version>3.0.0-SNAPSHOT</demetra.version>
+        <jd3-toolkit.version>1.0.0-SNAPSHOT</jd3-toolkit.version>
+        <jd3-saX.version>1.0.0-SNAPSHOT</jd3-saX.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-design</artifactId>
+            <version>${jd3-toolkit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-toolkit-api</artifactId>
+            <version>${jd3-toolkit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-toolkit-basic</artifactId>
+            <version>${jd3-toolkit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-sa-experimental-api</artifactId>
+            <version>${jd3-saX.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-sa-experimental-core</artifactId>
+            <version>${jd3-saX.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tstoolkit</artifactId>
+            <version>${jd2.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-data-tests</artifactId>
+            <version>${jd3-toolkit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>be.nbb.rd</groupId>
+            <artifactId>java-service-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
