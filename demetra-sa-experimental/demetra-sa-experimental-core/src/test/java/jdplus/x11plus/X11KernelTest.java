@@ -17,6 +17,8 @@ import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import jdplus.data.DataBlock;
 import jdplus.data.analysis.DiscreteKernel;
 import jdplus.dfa.MSEDecomposition;
 import jdplus.filters.AsymmetricCriterion;
@@ -104,6 +106,25 @@ public class X11KernelTest {
                 .build();
         kernel.process(DoubleSeq.of(WeeklyData.US_CLAIMS2), context2);
 //        System.out.println(kernel.getDstep().getD11());
+    }
+
+    @Test
+    public void testDaily() {
+        Random rnd=new Random();
+        DataBlock s=DataBlock.make(5000);
+        s.set(rnd::nextDouble);
+        X11Kernel kernel = new X11Kernel();
+//        System.out.println("Exact");
+        X11Context context1 = X11Context.builder()
+                .period(365.25)
+                .trendFiltering(daf(367))
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(365.25, SeasonalFilterOption.S3X1))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(365.25, SeasonalFilterOption.S3X9))
+                .build();
+        long t0=System.currentTimeMillis();
+        kernel.process(s, context1);
+        long t1=System.currentTimeMillis();
+        System.out.println(t1-t0);
     }
 
     @Test
