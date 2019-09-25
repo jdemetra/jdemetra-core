@@ -104,6 +104,8 @@ public class X11Decomposition {
             MAPPING.set("b2", double[].class, source -> source.getKernel().getBstep().getB2().toArray());
             MAPPING.set("b3", double[].class, source -> source.getKernel().getBstep().getB3().toArray());
             MAPPING.set("b4", double[].class, source -> source.getKernel().getBstep().getB4().toArray());
+            MAPPING.set("b4a", double[].class, source -> source.getKernel().getBstep().getB4a().toArray());
+            MAPPING.set("b4d", double[].class, source -> source.getKernel().getBstep().getB4d().toArray());
             MAPPING.set("b5", double[].class, source -> source.getKernel().getBstep().getB5().toArray());
             MAPPING.set("b6", double[].class, source -> source.getKernel().getBstep().getB6().toArray());
             MAPPING.set("b7", double[].class, source -> source.getKernel().getBstep().getB7().toArray());
@@ -164,8 +166,8 @@ public class X11Decomposition {
                 .mode(mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive)
                 .period(P)
                 .trendFiltering(LocalPolynomialFilterFactory.of(tspec))
-                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(period, SeasonalFilterOption.valueOf(seas0)))
-                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(period, SeasonalFilterOption.valueOf(seas1)))
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(P, SeasonalFilterOption.valueOf(seas0)))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(P, SeasonalFilterOption.valueOf(seas1)))
                 .lowerSigma(lsig)
                 .upperSigma(usig)
                 .build();
