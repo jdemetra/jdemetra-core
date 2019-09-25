@@ -152,7 +152,7 @@ public class X11SeasonalFiltersFactory {
                         if (p0 > 1e-9) {
                             cin.set(j, p1 * in.get(i - jcur) + p0 * in.get(i - jcur - 1));
                         } else {
-                            cin.set(j, in.get(i + jcur));
+                            cin.set(j, in.get(i - jcur));
                         }
                     }
                     x[i] = sfilter.apply(cin);
