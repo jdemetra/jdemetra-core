@@ -122,7 +122,7 @@ public class SpreadSheetProviderTest {
         }
     }
 
-    static final URL SAMPLE = SpreadSheetProviderTest.class.getResource("/Top5Browsers.ods");
+    static final URL SAMPLE = SpreadSheetProviderTest.class.getResource("/Top5Browsers.xlsx");
     static final double[] VALUES = {0.0, 0.0, 1.03, 1.02, 0.93, 1.21, 1.38, 1.52, 1.73, 2.07, 2.42, 2.82, 3.01, 3.38, 3.69, 4.17, 4.66, 5.45, 6.04, 6.72, 7.29, 8.06, 8.61, 9.24, 9.88, 10.76, 11.54, 12.39, 13.35, 14.85, 15.68, 16.54, 17.37, 18.29, 19.36, 20.65, 22.14, 23.16, 23.61, 25.0, 25.65};
 
     private static SpreadSheetBean getSampleBean(SpreadSheetProvider p) {
