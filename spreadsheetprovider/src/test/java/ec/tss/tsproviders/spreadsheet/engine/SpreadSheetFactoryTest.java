@@ -45,6 +45,7 @@ import static ec.tstoolkit.timeseries.TsAggregationType.None;
 import static ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly;
 import static ec.tstoolkit.timeseries.simplets.TsFrequency.Undefined;
 import java.util.Date;
+import org.junit.Ignore;
 
 /**
  *
@@ -184,6 +185,7 @@ public class SpreadSheetFactoryTest {
     }
 
     @Test
+    @Ignore("spreadsheet4j")
     public void testOpenDocument() throws IOException {
         testFactory(new OpenDocumentBookFactory(), top5OpenDocument());
     }
