@@ -185,7 +185,6 @@ public class SpreadSheetFactoryTest {
     }
 
     @Test
-    @Ignore("spreadsheet4j")
     public void testOpenDocument() throws IOException {
         testFactory(new OpenDocumentBookFactory(), top5OpenDocument());
     }
