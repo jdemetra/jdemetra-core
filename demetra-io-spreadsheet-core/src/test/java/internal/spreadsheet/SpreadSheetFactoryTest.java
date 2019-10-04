@@ -56,10 +56,10 @@ public class SpreadSheetFactoryTest {
         testFactory(new ExcelClassicBookFactory(), top5ExcelClassic());
     }
 
-//    @Test
-//    public void testOpenDocument() throws IOException {
-//        testFactory(new OpenDocumentBookFactory(), top5OpenDocument());
-//    }
+    @Test
+    public void testOpenDocument() throws IOException {
+        testFactory(new OpenDocumentBookFactory(), top5OpenDocument());
+    }
 
     @Test
     public void testXmlss() throws IOException {
