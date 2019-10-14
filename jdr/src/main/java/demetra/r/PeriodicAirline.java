@@ -198,7 +198,7 @@ public class PeriodicAirline {
                     break;
                 case "ls":
                 case "LS":
-                    fac.add(LevelShiftFactory.FACTORY_ZEROSTARTED);
+                    fac.add(LevelShiftFactory.FACTORY_ZEROENDED);
                     break;
             }
         }
