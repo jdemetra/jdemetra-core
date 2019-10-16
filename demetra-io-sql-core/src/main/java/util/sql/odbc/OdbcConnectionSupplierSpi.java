@@ -16,26 +16,24 @@
  */
 package util.sql.odbc;
 
-import internal.util.sql.odbc.OdbcConnectionSupplierSpiProc;
 import nbbrd.service.ServiceDefinition;
 import java.sql.Connection;
 import java.sql.SQLException;
 import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceFilter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Philippe Charles
  */
-@ServiceDefinition(
-        quantifier = Quantifier.OPTIONAL,
-        preprocessor = OdbcConnectionSupplierSpiProc.class
-)
+@ServiceDefinition(quantifier = Quantifier.OPTIONAL)
 public interface OdbcConnectionSupplierSpi {
 
     @NonNull
     String getName();
 
+    @ServiceFilter
     boolean isAvailable();
 
     @NonNull
