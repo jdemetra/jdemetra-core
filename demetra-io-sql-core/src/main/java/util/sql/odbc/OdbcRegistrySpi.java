@@ -16,26 +16,24 @@
  */
 package util.sql.odbc;
 
-import internal.util.sql.odbc.OdbcRegistrySpiProc;
 import nbbrd.service.ServiceDefinition;
 import java.io.IOException;
 import java.util.List;
 import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceFilter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Philippe Charles
  */
-@ServiceDefinition(
-        quantifier = Quantifier.OPTIONAL,
-        preprocessor = OdbcRegistrySpiProc.class
-)
+@ServiceDefinition(quantifier = Quantifier.OPTIONAL)
 public interface OdbcRegistrySpi {
 
     @NonNull
     String getName();
 
+    @ServiceFilter
     boolean isAvailable();
 
     @NonNull
