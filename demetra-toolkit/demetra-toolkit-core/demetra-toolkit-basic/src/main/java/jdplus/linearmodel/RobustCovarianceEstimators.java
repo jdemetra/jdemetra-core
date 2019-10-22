@@ -52,10 +52,28 @@ public class RobustCovarianceEstimators {
         return omega;
     }
     
+    public IntToDoubleFunction HC0(final LinearModel model, final DoubleSeq olsCoefficients){
+        DoubleSeq u = model.calcResiduals(olsCoefficients);
+        return i->u.get(i);
+    }
+    
+    public IntToDoubleFunction HC1(final LinearModel model, final DoubleSeq olsCoefficients){
+        DoubleSeq u = model.calcResiduals(olsCoefficients);
+        double n=u.length(), k=olsCoefficients.length();
+        double c=n/(n-k);
+        return i->c*u.get(i);
+    }
+
+    public IntToDoubleFunction HC2(final LinearModel model, final DoubleSeq olsCoefficients){
+        DoubleSeq u = model.calcResiduals(olsCoefficients);
+        double n=u.length(), k=olsCoefficients.length();
+        double c=n/(n-k);
+        return i->c*u.get(i);
+    }
+
     public CanonicalMatrix hc(final LinearModel model, final DoubleSeq olsCoefficients, final IntToDoubleFunction w) {
 
         CanonicalMatrix x = model.variables();
-        DoubleSeq u = model.calcResiduals(olsCoefficients);
         CanonicalMatrix xx = SymmetricMatrix.XtX(x);
         int n = x.getRowsCount();
         xx.div(n);

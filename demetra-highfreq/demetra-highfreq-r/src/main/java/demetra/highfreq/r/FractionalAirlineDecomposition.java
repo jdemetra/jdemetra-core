@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.r;
+package demetra.highfreq.r;
 
 import demetra.descriptors.arima.UcarimaDescriptor;
 import jdplus.regarima.RegArimaEstimation;
@@ -28,7 +28,6 @@ import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
 import jdplus.maths.functions.ParamValidation;
 import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.maths.linearfilters.BackFilter;
-import static demetra.r.AirlineDecomposition.ucm;
 import jdplus.regarima.GlsArimaProcessor;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.ssf.dk.DkToolkit;
@@ -41,6 +40,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import static demetra.highfreq.r.AirlineDecomposition.ucm;
 import demetra.maths.matrices.Matrix;
 import jdplus.modelling.spi.ArimaProcessorUtility;
 import jdplus.arima.ArimaModel;

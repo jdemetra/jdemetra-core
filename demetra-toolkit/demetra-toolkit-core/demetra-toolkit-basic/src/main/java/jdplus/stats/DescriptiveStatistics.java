@@ -29,10 +29,8 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@Immutable
-@SkipProcessing(target = Immutable.class, reason = "fields skewness & kurtosis are not final")
+@Immutable(lazy=true)
 public final class DescriptiveStatistics {
-
 
     public static boolean isSmall(double val) {
         return Math.abs(val) < Constants.getEpsilon();
@@ -41,7 +39,7 @@ public final class DescriptiveStatistics {
     private final double[] data;
     private final double sx, sxx;
     private final int nmissings;
-    private double skewness, kurtosis;
+    private final double skewness, kurtosis;
     private volatile double[] obs, sortedObs;
 
     public static DescriptiveStatistics of(DoubleSeq data) {
@@ -96,7 +94,8 @@ public final class DescriptiveStatistics {
         this.data = data;
         double s_x = 0, s_xx = 0;
         int nm = 0;
-        for (int i = 0; i < data.length; i++) {
+        int n = data.length;
+        for (int i = 0; i < n; i++) {
             double v = data[i];
             if (!Double.isFinite(v)) {
                 ++nm;
@@ -108,31 +107,32 @@ public final class DescriptiveStatistics {
         sx = s_x;
         sxx = s_xx;
         nmissings = nm;
-        calcMoments();
-    }
-
-    /**
-     *
-     */
-    private void calcMoments() {
-        double stdev = getStdev(), avg = getAverage();
-        int n = data.length;
-
+        int nc = n - nmissings;
+        double mu = sx / nc;
+        double sxxc = 0;
+        for (int i = 0; i < data.length; i++) {
+            double v = data[i];
+            if (Double.isFinite(v)) {
+                double e = v - mu;
+                sxxc += e * e;
+            }
+        }
+        double stdev = Math.sqrt(sxxc / nc);
         // skweness...
-        skewness = 0.0;
-        kurtosis = 0.0;
+        double skew = 0.0;
+        double kurt = 0.0;
         double stdev3 = stdev * stdev * stdev;
         for (int i = 0; i < n; i++) {
             double cur = data[i];
             if (Double.isFinite(cur)) {
-                double m3 = (cur - avg) * (cur - avg) * (cur - avg);
-                skewness += m3;
-                kurtosis += m3 * (cur - avg);
+                cur -= mu;
+                double m3 = cur * cur * cur;
+                skew += m3;
+                kurt += m3 * cur;
             }
         }
-        n -= nmissings;
-        skewness /= stdev3 * n;
-        kurtosis /= stdev3 * stdev * n;
+        skewness = skew / (stdev3 * nc);
+        kurtosis = kurt / (stdev3 * stdev * nc);
     }
 
     /**

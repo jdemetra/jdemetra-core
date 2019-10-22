@@ -25,6 +25,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Internal;
 import demetra.data.DoubleSeq;
+import demetra.maths.matrices.Matrix;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.FastMatrix;
 
@@ -180,7 +181,7 @@ public final class LinearModel{
         return mean;
     }
     
-    public CanonicalMatrix getX(){
+    public Matrix getX(){
         return x;
     }
 

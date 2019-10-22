@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.r;
+package demetra.highfreq.r;
 
 import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
@@ -28,6 +28,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
+import demetra.modelling.r.OutlierDescriptor;
 
 /**
  *

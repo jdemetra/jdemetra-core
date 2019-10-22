@@ -13,73 +13,70 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package jdplus.tramo;
 
 import jdplus.stats.AutoCovariances;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 
-
 /**
  *
  * @author Jean Palate
  */
-public class DifferencingResults{
+public class DifferencingResults {
 
-    private static int searchOrder(DoubleSeq data, int period) {
-        IntToDoubleFunction cov=AutoCovariances.autoCovarianceFunction(data, 0);
-        if (period < 6) {
-            for (int i = 1; i < period; ++i) {
-                if (cov.applyAsDouble(i) < 0) {
-                    return 1;
+    private static boolean checkStationarity(DoubleSeq data, int period) {
+        IntToDoubleFunction cov = AutoCovariances.autoCovarianceFunction(data, 0);
+        if (period <= 4) {
+            double var = cov.applyAsDouble(0);
+            for (int i = 1; i <= period; ++i) {
+                if (cov.applyAsDouble(i) / var <= 0.2) {
+                    return true;
                 }
             }
-        }
-        else {
+        } else {
+            if (cov.applyAsDouble(period) <= 0) {
+                return true;
+            }
             for (int i = 1; i <= 4; ++i) {
-                if (cov.applyAsDouble(i) < 0) {
-                    return 1;
+                if (cov.applyAsDouble(i) <= 0) {
+                    return true;
                 }
             }
         }
-        if (cov.applyAsDouble(period) < 0) {
-            return 1;
-        }
-        else {
-            return 2;
-        }
+        return false;
     }
 
     /**
      * Compute differences
+     *
      * @param input The series being differenced
      * @param period Periodicity of the data
-     * @param delta The differencing order. If delta is negative, the routine 
-     * searches the differencing order, based on the covariances at several lags.
-     * @param mean The series must be corrected for mean (not used if the differencing
-     * order is automatically identified)
-     * @return 
+     * @param delta The differencing order. If delta is negative, the routine
+     * searches the differencing order, based on the covariances at several
+     * lags.
+     * @param mean The series must be corrected for mean (not used if the
+     * differencing order is automatically identified)
+     * @return
      */
     public static DifferencingResults of(DoubleSeq input, int period, int delta, boolean mean) {
-        DoubleSeq diff;
-        int del;
-        boolean bmean;
         if (delta < 0) {
-            del = searchOrder(input, period);
-            bmean = del != 2;
+            DoubleSeq del = input.delta(1, 1);
+            del = del.removeMean();
+            if (!checkStationarity(del, period)) {
+                del = del.delta(1, 1);
+                return new DifferencingResults(input, del, false);
+            } else {
+                return new DifferencingResults(input, del, true);
+            }
+        } else {
+            DoubleSeq del = input.delta(1, delta);
+            if (mean) {
+                del = del.removeMean();
+            }
+            return new DifferencingResults(input, del, mean);
         }
-        else {
-            del = delta;
-            bmean = mean;
-        }
-
-        diff = input.delta(1, del);
-        if (bmean) {
-            diff=diff.removeMean();
-        }
-        return new DifferencingResults(input, diff, bmean);
     }
 
     private final DoubleSeq original;
@@ -95,11 +92,11 @@ public class DifferencingResults{
     public int getDifferencingOrder() {
         return original.length() - differenced.length();
     }
-    
-    public DoubleSeq getRestrictedOriginal(){
+
+    public DoubleSeq getRestrictedOriginal() {
         return original.drop(getDifferencingOrder(), 0);
     }
-    
+
     /**
      * @return the original
      */

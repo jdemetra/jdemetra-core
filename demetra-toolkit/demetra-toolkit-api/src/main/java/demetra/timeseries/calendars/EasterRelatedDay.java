@@ -88,11 +88,6 @@ public class EasterRelatedDay implements IHoliday {
         return new EasterRelatedDay(offset + ndays, weight, julian);
     }
 
-    @Override
-    public double getWeight() {
-        return weight;
-    }
-
     public static final EasterRelatedDay SHROVEMONDAY = gregorian(-48),
             SHROVETUESDAY = gregorian(-47),
             ASHWEDNESDAY = gregorian(-46),
