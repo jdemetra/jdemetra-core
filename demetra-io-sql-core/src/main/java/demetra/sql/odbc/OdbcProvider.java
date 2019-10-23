@@ -18,7 +18,7 @@ package demetra.sql.odbc;
 
 import demetra.design.DirectImpl;
 import demetra.sql.HasSqlProperties;
-import util.sql.odbc.OdbcConnectionSupplier;
+import nbbrd.sql.odbc.OdbcConnectionSupplier;
 import internal.sql.odbc.OdbcParam;
 import demetra.sql.SqlTableAsCubeResource;
 import demetra.tsprovider.DataSet;
@@ -42,6 +42,7 @@ import demetra.tsprovider.util.ResourceMap;
 import internal.sql.odbc.legacy.LegacyOdbcMoniker;
 import java.io.IOException;
 import nbbrd.service.ServiceProvider;
+import nbbrd.sql.jdbc.SqlConnectionSupplier;
 
 /**
  *
@@ -75,7 +76,7 @@ public final class OdbcProvider implements DataSourceLoader<OdbcBean>, HasSqlPro
         ResourceMap<CubeAccessor> accessors = ResourceMap.newInstance();
         OdbcParam param = new OdbcParam.V1();
 
-        this.properties = HasSqlProperties.of(OdbcConnectionSupplier::ofServiceLoader, accessors::clear);
+        this.properties = HasSqlProperties.of(OdbcProvider::lookupDefaultSupplier, accessors::clear);
         this.mutableListSupport = HasDataSourceMutableList.of(NAME, accessors::remove);
         this.monikerSupport = FallbackDataMoniker.of(HasDataMoniker.usingUri(NAME), LegacyOdbcMoniker.of(NAME, param));
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
@@ -86,6 +87,12 @@ public final class OdbcProvider implements DataSourceLoader<OdbcBean>, HasSqlPro
     @Override
     public String getDisplayName() {
         return "ODBC DSNs";
+    }
+
+    private static SqlConnectionSupplier lookupDefaultSupplier() {
+        return OdbcConnectionSupplier.ofServiceLoader()
+                .map(SqlConnectionSupplier.class::cast)
+                .orElseGet(SqlConnectionSupplier::noOp);
     }
 
     @lombok.AllArgsConstructor

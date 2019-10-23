@@ -19,9 +19,9 @@ package demetra.sql;
 import internal.sql.SqlPropertiesSupport;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import nbbrd.sql.jdbc.SqlConnectionSupplier;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import util.sql.SqlConnectionSupplier;
 
 /**
  *

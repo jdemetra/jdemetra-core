@@ -16,6 +16,7 @@
     <properties>
         <hsqldb.version>2.3.4</hsqldb.version>
         <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
+        <java-sql-util.version>1.0.0-SNAPSHOT</java-sql-util.version>
     </properties>
 
     <dependencies>
@@ -47,6 +48,22 @@
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-io-core</artifactId>
             <version>${demetra.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>be.nbb.rd</groupId>
+            <artifactId>java-sql-jdbc</artifactId>
+            <version>${java-sql-util.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>be.nbb.rd</groupId>
+            <artifactId>java-sql-odbc</artifactId>
+            <version>${java-sql-util.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>be.nbb.rd</groupId>
+            <artifactId>java-sql-lhod</artifactId>
+            <version>${java-sql-util.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- test only -->

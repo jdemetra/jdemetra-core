@@ -19,7 +19,7 @@ package internal.sql;
 import demetra.sql.HasSqlProperties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import util.sql.SqlConnectionSupplier;
+import nbbrd.sql.jdbc.SqlConnectionSupplier;
 
 /**
  *
