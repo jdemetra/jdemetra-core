@@ -108,4 +108,6 @@ public class CoherenceDiagnosticsFactory implements ISaDiagnosticsFactory {
     public int getOrder() {
         return 0;
     }
+    
+    
 }

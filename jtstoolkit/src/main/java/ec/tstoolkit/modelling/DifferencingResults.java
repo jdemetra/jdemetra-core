@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.tstoolkit.modelling;
 
 import ec.tstoolkit.data.DescriptiveStatistics;
@@ -24,51 +23,48 @@ import ec.tstoolkit.timeseries.simplets.TsData;
  *
  * @author Jean Palate
  */
-public class DifferencingResults{
+public class DifferencingResults {
 
-    private static int searchOrder(double[] data, int ifreq) {
-        if (ifreq < 6) {
+    private static boolean checkStationarity(double[] data, int ifreq) {
+        if (ifreq <= 4) {
+            double var = DescriptiveStatistics.cov(0, data);
             for (int i = 0; i < ifreq; ++i) {
-                if (DescriptiveStatistics.cov(i + 1, data) < 0) {
-                    return 1;
+                if (DescriptiveStatistics.cov(i + 1, data) / var <= 0.2) {
+                    return true;
                 }
             }
-        }
-        else {
+        } else {
+            if (DescriptiveStatistics.cov(ifreq, data) <= 0) {
+                return true;
+            }
             for (int i = 0; i < 4; ++i) {
-                if (DescriptiveStatistics.cov(i + 1, data) < 0) {
-                    return 1;
+                if (DescriptiveStatistics.cov(i + 1, data) <= 0) {
+                    return true;
                 }
             }
         }
-        if (DescriptiveStatistics.cov(ifreq, data) < 0) {
-            return 1;
-        }
-        else {
-            return 2;
+        return false;
+    }
+
+    public static DifferencingResults create(final TsData input, final int delta, final boolean mean) {
+        int ifreq = input.getFrequency().intValue();
+        if (delta < 0) {
+            TsData del = diff(input, 1, true);
+            if (! checkStationarity(del.internalStorage(), ifreq))
+                del=diff(del, 1, true);
+            return new DifferencingResults(input, del, true);
+        } else {
+            return new DifferencingResults(input, diff(input, delta, mean), mean);
         }
     }
 
-    public static DifferencingResults create(TsData input, int delta, boolean mean) {
-        TsData diff;
-        int del;
-        boolean bmean;
-        int ifreq = input.getFrequency().intValue();
-        if (delta < 0) {
-            del = searchOrder(input.internalStorage(), ifreq);
-            bmean = del != 2;
+    private static TsData diff(TsData s, int delta, boolean mean) {
+        TsData del = s.delta(1, delta);
+        if (mean) {
+            DescriptiveStatistics stats = new DescriptiveStatistics(del);
+            del.apply(x -> x - stats.getAverage());
         }
-        else {
-            del = delta;
-            bmean = mean;
-        }
-
-        diff = input.delta(1, del);
-        if (bmean) {
-            DescriptiveStatistics stats = new DescriptiveStatistics(diff);
-            diff.apply(x->x-stats.getAverage());
-        }
-        return new DifferencingResults(input, diff, bmean);
+        return del;
     }
 
     public DifferencingResults(TsData orig, TsData diff, boolean mean) {
@@ -80,11 +76,11 @@ public class DifferencingResults{
     public int getDifferencingOrder() {
         return original.getLength() - differenced.getLength();
     }
-    
-    public TsData getRestrictedOriginal(){
+
+    public TsData getRestrictedOriginal() {
         return original.fittoDomain(differenced.getDomain());
     }
-    
+
     private final TsData original;
     private final TsData differenced;
     private final boolean mean;
