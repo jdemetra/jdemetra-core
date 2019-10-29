@@ -18,7 +18,7 @@ public class SeasonalityTestsTest {
     public SeasonalityTestsTest() {
     }
 
-    @Test
+    //@Test
     public void testProd() {
         SeasonalityTests tests = SeasonalityTests.seasonalityTest(Data.TS_PROD, -1, false, true);
         ec.tstoolkit.timeseries.simplets.TsData os = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, true);
