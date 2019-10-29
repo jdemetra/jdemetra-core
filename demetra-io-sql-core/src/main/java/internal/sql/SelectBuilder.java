@@ -41,7 +41,7 @@ public final class SelectBuilder {
     private final List<String> order = new ArrayList<>();
 
     private boolean distinct = false;
-    private SqlIdentifierQuoter identifierQuoter = SqlIdentifierQuoter.noOp();
+    private SqlIdentifierQuoter identifierQuoter = SqlIdentifierQuoter.DEFAULT;
 
     @NonNull
     public SelectBuilder distinct(boolean distinct) {
