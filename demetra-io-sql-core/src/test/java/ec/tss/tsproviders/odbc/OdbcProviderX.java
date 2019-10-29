@@ -20,7 +20,7 @@ import ec.tss.tsproviders.jdbc.ConnectionSupplier;
 import ec.tss.tsproviders.jdbc.JdbcBean;
 import java.sql.Connection;
 import java.sql.SQLException;
-import util.sql.SqlConnectionSupplier;
+import nbbrd.sql.jdbc.SqlConnectionSupplier;
 
 /**
  *

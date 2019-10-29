@@ -39,7 +39,7 @@ import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.ResourceMap;
 import java.io.IOException;
 import nbbrd.service.ServiceProvider;
-import util.sql.SqlConnectionSupplier;
+import nbbrd.sql.jdbc.SqlConnectionSupplier;
 
 /**
  *
@@ -73,7 +73,7 @@ public final class JdbcProvider implements DataSourceLoader<JdbcBean>, HasSqlPro
         ResourceMap<CubeAccessor> accessors = ResourceMap.newInstance();
         JdbcParam param = new JdbcParam.V1();
 
-        this.properties = HasSqlProperties.of(SqlConnectionSupplier::usingJndi, accessors::clear);
+        this.properties = HasSqlProperties.of(SqlConnectionSupplier::ofJndi, accessors::clear);
         this.mutableListSupport = HasDataSourceMutableList.of(NAME, accessors::remove);
         this.monikerSupport = HasDataMoniker.usingUri(NAME);
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());

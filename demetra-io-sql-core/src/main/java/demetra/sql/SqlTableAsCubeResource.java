@@ -37,7 +37,6 @@ import demetra.tsprovider.cube.TableDataParams;
 import demetra.timeseries.util.ObsCharacteristics;
 import demetra.timeseries.util.ObsGathering;
 import demetra.timeseries.util.TsDataBuilder;
-import util.sql.SqlIdentifierQuoter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -45,9 +44,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.GregorianCalendar;
+import nbbrd.sql.jdbc.SqlConnectionSupplier;
+import nbbrd.sql.jdbc.SqlIdentifierQuoter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import util.sql.SqlConnectionSupplier;
 
 /**
  *

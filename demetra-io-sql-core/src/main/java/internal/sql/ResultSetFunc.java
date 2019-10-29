@@ -21,10 +21,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import nbbrd.sql.jdbc.SqlFunc;
+import nbbrd.sql.jdbc.SqlTypes;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import util.sql.SqlFunc;
-import util.sql.SqlTypes;
 
 /**
  * Defines a function that creates a new object from the current ResultSet.

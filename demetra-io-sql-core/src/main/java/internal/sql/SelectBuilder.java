@@ -17,12 +17,12 @@
 package internal.sql;
 
 import demetra.design.BuilderPattern;
-import util.sql.SqlIdentifierQuoter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import nbbrd.sql.jdbc.SqlIdentifierQuoter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
