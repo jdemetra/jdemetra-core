@@ -33,17 +33,17 @@ public class OneWayAnova {
     @lombok.Value
     public static final class Group {
 
-        public String name;
-        public DoubleSeq data;
+        String name;
+        DoubleSeq data;
 
-        final int n;
-        final double sx;
+        int n;
+        double sx;
 
-        double mean() {
+        public double mean() {
             return sx / n;
         }
 
-        Group(final String name, final DoubleSeq data) {
+        public Group(final String name, final DoubleSeq data) {
             this.name = name;
             this.data = data;
             n = data.length();
