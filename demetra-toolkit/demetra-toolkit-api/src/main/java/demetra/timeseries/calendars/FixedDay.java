@@ -52,17 +52,12 @@ public class FixedDay implements IHoliday {
         this.month = month;
         this.weight = weight;
     }
-
+    
     public FixedDay reweight(double nweight) {
         if (weight == this.weight) {
             return this;
         }
         return new FixedDay(day, month, nweight);
-    }
-
-    @Override
-    public double getWeight() {
-        return weight;
     }
 
     public static final FixedDay CHRISTMAS = new FixedDay(12, 25), NEWYEAR = new FixedDay(1, 1),

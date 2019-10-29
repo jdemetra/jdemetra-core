@@ -33,7 +33,7 @@ import demetra.data.DoubleSeq;
 public class KruskalWallis {
 
     private double h;
-    private int period;
+    private final int period;
 
     /**
      *

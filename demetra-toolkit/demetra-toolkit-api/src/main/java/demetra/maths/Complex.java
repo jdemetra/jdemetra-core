@@ -116,16 +116,16 @@ public class Complex implements ComplexType{
 
         return cart(r * Math.cos(theta), r * Math.sin(theta));
     }
-
+    
     /**
-     *
+     * Real part
      */
-    private final double re;
+    private double re;
     /**
-     *
+     * Imaginary part
      */
-    private final double im;
-
+    private double im;
+    
     /**
      * Constructs a Complex representing a real number. The im-part is zero.
      *

@@ -33,7 +33,7 @@ public class SwitchOutlierFactory implements IOutlierFactory {
     @Override
     public void fill(int outlierPosition, DataBlock buffer) {
         buffer.set(outlierPosition, 1);
-        buffer.set(outlierPosition, -1);
+        buffer.set(outlierPosition + 1, -1);
     }
 
     @Override
@@ -61,9 +61,10 @@ public class SwitchOutlierFactory implements IOutlierFactory {
 
 class WOFactory implements RegressionVariableFactory<SwitchOutlier> {
 
-    static WOFactory FACTORY=new WOFactory();
+    static WOFactory FACTORY = new WOFactory();
 
-    private WOFactory(){}
+    private WOFactory() {
+    }
 
     @Override
     public boolean fill(SwitchOutlier var, TsPeriod start, FastMatrix buffer) {

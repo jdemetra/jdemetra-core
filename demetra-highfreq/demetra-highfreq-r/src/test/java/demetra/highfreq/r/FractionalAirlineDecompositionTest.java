@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.r;
+package demetra.highfreq.r;
 
+import demetra.highfreq.r.FractionalAirlineDecomposition;
 import demetra.data.Data;
 import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;

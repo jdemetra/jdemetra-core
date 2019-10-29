@@ -14,28 +14,28 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.r;
+package demetra.saexperimental.r;
 
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsPeriod;
+import demetra.data.Data;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.maths.matrices.Matrix;
+import demetra.data.DoubleSeq;
 
 /**
  *
  * @author Jean Palate
  */
-public class GenericCalendarsTest {
-
-    public GenericCalendarsTest() {
+public class LocalPolynomialFiltersTest {
+    
+    public LocalPolynomialFiltersTest() {
     }
 
     @Test
-    public void testTD() {
-        Matrix m = GenericCalendars.td(TsDomain.of(TsPeriod.monthly(1980, 1), 600), new int[]{1, 2, 3, 4, 5, 6, 0}, true);
-        double[] all = m.toArray();
-        assertTrue(!m.isEmpty());
+    public void testHenderson() {
+        double[] rslt = LocalPolynomialFilters.filter(Data.NILE, 11, 3, "Henderson", "DAF", .5);
+        assertTrue(rslt != null);
+//        System.out.println(DoubleSequence.ofInternal(rslt));
     }
-
+    
+ 
 }

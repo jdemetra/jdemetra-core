@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.r;
+package demetra.highfreq.r;
 
 import demetra.descriptors.arima.UcarimaDescriptor;
 import jdplus.regarima.RegArimaEstimation;

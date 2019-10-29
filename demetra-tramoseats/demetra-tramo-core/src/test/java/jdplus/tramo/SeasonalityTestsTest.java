@@ -5,7 +5,6 @@
  */
 package jdplus.tramo;
 
-import jdplus.tramo.SeasonalityTests;
 import demetra.data.Data;
 import org.junit.Test;
 import static org.junit.Assert.*;

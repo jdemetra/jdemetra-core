@@ -45,9 +45,9 @@ public class CompositeModel {
     public ModelItem getItem(int pos) {
         return items.get(pos);
     }
-    
-    public String[] getCmpsName(){
-        return items.stream().map(item->item.getName()).toArray(n->new String[n]);
+
+    public String[] getCmpsName() {
+        return items.stream().map(item -> item.getName()).toArray(n -> new String[n]);
     }
 
     public ModelEquation getEquation(int pos) {
@@ -72,8 +72,9 @@ public class CompositeModel {
         mapping = new MstsMapping();
         for (StateItem item : items) {
             item.addTo(mapping);
-            if (! item.isScalable())
+            if (!item.isScalable()) {
                 mapping.setScalable(false);
+            }
         }
         for (ModelEquation eq : equations) {
             eq.addTo(mapping);
@@ -95,16 +96,12 @@ public class CompositeModel {
     }
 
     public CompositeModelEstimation estimate(FastMatrix data, boolean marginal, boolean rescaling, SsfInitialization initialization, Optimizer optimizer, double eps, double[] parameters) {
-        if (mapping == null) {
-            build();
-        }
+        build();
         return CompositeModelEstimation.estimationOf(this, data, marginal, rescaling, initialization, optimizer, eps, parameters);
     }
 
     public CompositeModelEstimation compute(FastMatrix data, double[] parameters, boolean marginal, boolean concentrated) {
-        if (mapping == null) {
-            build();
-        }
+        build();
         return CompositeModelEstimation.computationOf(this, data, DoubleSeq.of(parameters), marginal, concentrated);
     }
 }

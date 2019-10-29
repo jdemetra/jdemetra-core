@@ -115,8 +115,8 @@ public class SeasonalityTests {
      * @return
      */
     void test(TsData input, int ndiff, boolean mean) {
-        delta = DifferencingResults.of(input.getValues(), period, ndiff, mean);
         period = input.getAnnualFrequency();
+        delta = DifferencingResults.of(input.getValues(), period, ndiff, mean);
         clear();
     }
 
