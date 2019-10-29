@@ -214,7 +214,7 @@ public final class LeastSquaresResults {
     }
 
     /**
-     * @return the unscaledCovariance
+     * @return the covariance matrix of the coefficients
      */
     public FastMatrix covariance() {
         return ucov.times(ssq / (n - nx));

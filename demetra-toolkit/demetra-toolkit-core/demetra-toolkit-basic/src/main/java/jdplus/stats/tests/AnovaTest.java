@@ -23,7 +23,7 @@ import jdplus.dstats.F;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-public class FTest {
+public class AnovaTest {
 
     private double SSM;
     private int dfm;

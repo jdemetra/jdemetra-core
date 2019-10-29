@@ -217,6 +217,17 @@ public interface IFiniteFilter extends IFilter {
         }
     }
 
+    default void apply2(DataBlock in, DataBlock out) {
+        IntToDoubleFunction weights = weights();
+        int l=getLowerBound(), u=getUpperBound(), n=out.length();
+        for (int i=l, j=0; i<=u; ++i, ++j){
+            double w = weights.applyAsDouble(i);
+            if (w != 0){
+                out.addAY(w, in.range(j, j+n));
+            }
+        }
+    }
+
     static String toString(IFiniteFilter filter) {
         StringBuilder sb = new StringBuilder();
         String fmt = "%6g";

@@ -15,6 +15,7 @@
     <modules>
         <module>demetra-highfreq-api</module>
         <module>demetra-highfreq-core</module>
+        <module>demetra-highfreq-r</module>
     </modules>
   
     <properties>
@@ -58,6 +59,11 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-toolkit-r</artifactId>
+                <version>${jd3-toolkit.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-toolkit-regarima</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
@@ -74,6 +80,11 @@
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-highfreq-core</artifactId>
+                <version>${jd3-highfreq.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-highfreq-r</artifactId>
                 <version>${jd3-highfreq.version}</version>            
             </dependency>
             <!-- < modules 3.0 -->

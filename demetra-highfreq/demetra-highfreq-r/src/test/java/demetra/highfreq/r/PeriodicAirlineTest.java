@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.r;
+package demetra.highfreq.r;
 
+import demetra.highfreq.r.PeriodicAirline;
 import demetra.data.WeeklyData;
 import org.junit.Test;
 import static org.junit.Assert.*;

@@ -28,7 +28,7 @@ import java.time.LocalDate;
 @lombok.Value
 public class Holiday {
 
-    private final IHoliday day;
+    private IHoliday day;
     private ValidityPeriod validityPeriod;
 
     public Holiday(IHoliday day) {
@@ -40,7 +40,7 @@ public class Holiday {
         this.day = day;
         this.validityPeriod=validityPeriod;
     }
-
+    
     public boolean isStartSpecified() {
         return validityPeriod != null && validityPeriod.isStartSpecified();
     }

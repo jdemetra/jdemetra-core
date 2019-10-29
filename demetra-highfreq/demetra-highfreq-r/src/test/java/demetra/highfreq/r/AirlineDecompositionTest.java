@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.r;
+package demetra.highfreq.r;
 
+import demetra.highfreq.r.AirlineDecomposition;
 import demetra.data.Data;
 import static jdplus.timeseries.simplets.TsDataToolkit.log;
 import java.util.LinkedHashMap;

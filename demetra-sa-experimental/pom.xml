@@ -15,6 +15,7 @@
         <module>demetra-sa-experimental-api</module>
         <module>demetra-sa-experimental-core</module>
         <module>demetra-sigex-core</module>
+        <module>demetra-sa-experimental-r</module>
     </modules>
   
     <properties>
@@ -74,6 +75,11 @@
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-sa-experimental-core</artifactId>
+                <version>${jd3-saX.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sa-experimental-r</artifactId>
                 <version>${jd3-saX.version}</version>            
             </dependency>
             <!-- < modules 3.0 -->
