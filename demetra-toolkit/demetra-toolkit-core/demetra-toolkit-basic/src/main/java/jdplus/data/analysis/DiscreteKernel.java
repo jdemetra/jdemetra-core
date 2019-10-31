@@ -16,7 +16,7 @@
  */
 package jdplus.data.analysis;
 
-import jdplus.maths.Arithmetics;
+import demetra.maths.Arithmetics;
 import java.util.function.IntToDoubleFunction;
 import demetra.design.Development;
 

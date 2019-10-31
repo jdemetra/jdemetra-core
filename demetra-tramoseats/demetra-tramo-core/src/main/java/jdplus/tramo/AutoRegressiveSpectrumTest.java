@@ -19,7 +19,7 @@ package jdplus.tramo;
 
 import jdplus.data.analysis.AutoRegressiveSpectrum;
 import jdplus.data.analysis.Periodogram;
-import jdplus.stats.DescriptiveStatistics;
+import demetra.stats.DescriptiveStatistics;
 import demetra.data.DoubleSeq;
 
 

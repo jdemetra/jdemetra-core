@@ -19,6 +19,7 @@ package jdplus.maths.functions.integration;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.maths.functions.gsl.integration.QAGS;
 import jdplus.maths.functions.gsl.integration.QK15;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
@@ -26,7 +27,7 @@ import jdplus.maths.functions.gsl.integration.QK15;
  */
 @lombok.experimental.UtilityClass
 public class NumericalIntegration {
-
+    
     public double integrate(DoubleUnaryOperator fn, double a, double b) {
         try {
             QAGS qags = QAGS.builder()

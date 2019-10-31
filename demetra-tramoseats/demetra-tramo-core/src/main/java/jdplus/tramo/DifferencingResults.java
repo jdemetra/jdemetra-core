@@ -16,7 +16,7 @@
  */
 package jdplus.tramo;
 
-import jdplus.stats.AutoCovariances;
+import demetra.stats.AutoCovariances;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 

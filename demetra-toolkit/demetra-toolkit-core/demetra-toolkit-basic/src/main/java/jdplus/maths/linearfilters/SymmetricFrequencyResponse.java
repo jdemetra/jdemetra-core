@@ -21,7 +21,7 @@ import demetra.util.TableOfLong;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.maths.Complex;
-import jdplus.maths.Simplifying;
+import demetra.maths.Simplifying;
 import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.matrices.UpperTriangularMatrix;

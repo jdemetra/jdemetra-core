@@ -21,7 +21,7 @@ import demetra.data.DoublesMath;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.maths.Constants;
-import jdplus.stats.AutoCovariances;
+import demetra.stats.AutoCovariances;
 
 /**
  *

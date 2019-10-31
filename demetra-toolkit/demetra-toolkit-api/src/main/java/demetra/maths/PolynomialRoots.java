@@ -15,7 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @Algorithm
 @ServiceDefinition
-public interface RealPolynomialRootsSolver {
+public interface PolynomialRoots {
     Complex[] roots(@NonNull RealPolynomial polynomial);
     
 }

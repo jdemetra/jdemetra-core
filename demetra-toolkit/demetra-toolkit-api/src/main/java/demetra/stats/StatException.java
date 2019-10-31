@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jdplus.stats;
+package demetra.stats;
 
 import demetra.design.Development;
 

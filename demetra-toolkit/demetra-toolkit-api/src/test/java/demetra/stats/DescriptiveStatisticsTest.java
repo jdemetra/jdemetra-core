@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.stats;
+package demetra.stats;
 
+import demetra.data.DoubleSeq;
 import java.util.Random;
-import jdplus.data.DataBlock;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -18,15 +18,34 @@ public class DescriptiveStatisticsTest {
     
     public DescriptiveStatisticsTest() {
     }
+    
+    private double[] random(int n){
+        double[] values=new double[50];
+        Random rnd=new Random(0);
+        for (int i=0; i<values.length; ++i){
+            values[i]=rnd.nextDouble();
+        }
+        return values;
+    }
+
+    private double[] randomWithMissing(int n){
+        double[] values=new double[50];
+        Random rnd=new Random(0);
+        for (int i=0; i<values.length; ++i){
+            if (i%5 == 0)
+                values[i]=Double.NaN;
+            else
+            values[i]=rnd.nextDouble();
+        }
+        return values;
+    }
 
     @Test
     public void testNoMissing() {
-        DataBlock data=DataBlock.make(50);
-        Random rnd=new Random(0);
-        data.set(rnd::nextDouble);
+        double[] values=random(50);
         
-        DescriptiveStatistics stats=DescriptiveStatistics.of(data);
-        ec.tstoolkit.data.DescriptiveStatistics ostats=new ec.tstoolkit.data.DescriptiveStatistics(data.getStorage());
+        DescriptiveStatistics stats=DescriptiveStatistics.of(DoubleSeq.of(values));
+        ec.tstoolkit.data.DescriptiveStatistics ostats=new ec.tstoolkit.data.DescriptiveStatistics(values);
         
         assertEquals(stats.getSkewness(), ostats.getSkewness(), 1e-9);
         assertEquals(stats.getKurtosis(), ostats.getKurtosis(), 1e-9);
@@ -36,12 +55,10 @@ public class DescriptiveStatisticsTest {
     
     @Test
     public void testMissing() {
-        DataBlock data=DataBlock.make(50);
+        double[] values=randomWithMissing(50);
         Random rnd=new Random(0);
-        data.set(i->i%5 == 0 ? Double.NaN : rnd.nextDouble());
-        
-        DescriptiveStatistics stats=DescriptiveStatistics.of(data);
-        ec.tstoolkit.data.DescriptiveStatistics ostats=new ec.tstoolkit.data.DescriptiveStatistics(data.getStorage());
+         DescriptiveStatistics stats=DescriptiveStatistics.of(DoubleSeq.of(values));
+        ec.tstoolkit.data.DescriptiveStatistics ostats=new ec.tstoolkit.data.DescriptiveStatistics(values);
         
         assertEquals(stats.getSkewness(), ostats.getSkewness(), 1e-9);
         assertEquals(stats.getKurtosis(), ostats.getKurtosis(), 1e-9);

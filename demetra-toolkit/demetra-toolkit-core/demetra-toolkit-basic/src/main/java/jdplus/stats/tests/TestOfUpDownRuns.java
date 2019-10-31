@@ -20,7 +20,7 @@ import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
 import jdplus.dstats.Chi2;
 import jdplus.dstats.Normal;
-import jdplus.stats.StatException;
+import demetra.stats.StatException;
 import demetra.data.DoubleSeq;
 
 

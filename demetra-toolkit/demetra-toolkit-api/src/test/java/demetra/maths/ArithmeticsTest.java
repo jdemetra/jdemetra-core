@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.maths;
+package demetra.maths;
 
+import demetra.maths.Arithmetics;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

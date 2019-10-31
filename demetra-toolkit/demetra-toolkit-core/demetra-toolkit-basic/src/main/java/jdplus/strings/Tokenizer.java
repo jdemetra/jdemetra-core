@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.strings;
+package jdplus.strings;
 
 import demetra.design.Development;
 

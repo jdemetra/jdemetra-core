@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package jdplus.maths;
+package demetra.maths;
 
 import demetra.design.Development;
 
@@ -156,10 +156,10 @@ public final class Arithmetics {
 
     /**
      * Computes the sum of the powers of the first n integers = 1 + 2^k + 3^k +
-     * ... + (n)^k
+     * ...+ (n)^k
      *
      * @param k
-     * @param dn
+     * @param n
      * @return
      */
     public double sumOfPowers(int k, long n) {
@@ -208,6 +208,13 @@ public final class Arithmetics {
         }
     }
 
+    /**
+     * Multiply 
+     * @param a
+     * @param b
+     * @return
+     * @throws MathException 
+     */
     public static long mulAndCheck(long a, long b) throws MathException {
         long ret;
         if (a > b) {

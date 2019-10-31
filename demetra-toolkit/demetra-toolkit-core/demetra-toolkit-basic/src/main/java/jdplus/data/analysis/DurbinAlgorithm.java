@@ -18,8 +18,8 @@ package jdplus.data.analysis;
 
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
-import jdplus.stats.AutoCovariances;
-import jdplus.stats.DescriptiveStatistics;
+import demetra.stats.AutoCovariances;
+import demetra.stats.DescriptiveStatistics;
 import java.util.function.IntToDoubleFunction;
 
 /**

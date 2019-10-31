@@ -16,6 +16,7 @@
  */
 package jdplus.stats;
 
+import demetra.stats.AutoCovariances;
 import jdplus.data.analysis.WindowFunction;
 import jdplus.maths.matrices.SymmetricMatrix;
 import java.util.function.DoubleUnaryOperator;

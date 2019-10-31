@@ -1,4 +1,4 @@
-package jdplus.maths;
+package demetra.maths;
 
 /*
 * Copyright 2013 National Bank of Belgium

@@ -20,8 +20,8 @@ import demetra.design.Development;
 import java.util.Arrays;
 import demetra.maths.Complex;
 import jdplus.maths.ComplexUtility;
-import jdplus.maths.Arithmetics;
-import jdplus.maths.Simplifying;
+import demetra.maths.Arithmetics;
+import demetra.maths.Simplifying;
 import demetra.util.IntList;
 
 /**
