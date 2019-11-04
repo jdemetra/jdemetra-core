@@ -27,7 +27,7 @@ public class SymmetricMullerNewtonSolverTest {
         double[] coefficients=new double[]{1, -.5, -.3, .2, .1};
         BackFilter bf = BackFilter.ofInternal(coefficients);
         bf=bf.times(bf);
-        SymmetricFilter sf=SymmetricFilter.fromFilter(bf);
+        SymmetricFilter sf=SymmetricFilter.convolutionOf(bf);
         SymmetricMullerNewtonSolver solver=new SymmetricMullerNewtonSolver();
         solver.factorize(Polynomial.ofInternal(sf.weightsToArray()));
         Complex[] sroots = solver.getStableRoots();
@@ -41,7 +41,7 @@ public class SymmetricMullerNewtonSolverTest {
         BackFilter bf = BackFilter.ofInternal(coefficients);
         bf=bf.times(bf);
         bf=bf.times(BackFilter.D1);
-        SymmetricFilter sf=SymmetricFilter.fromFilter(bf);
+        SymmetricFilter sf=SymmetricFilter.convolutionOf(bf);
         SymmetricMullerNewtonSolver solver=new SymmetricMullerNewtonSolver();
         solver.factorize(Polynomial.ofInternal(sf.weightsToArray()));
         Complex[] sroots = solver.getStableRoots();
@@ -56,7 +56,7 @@ public class SymmetricMullerNewtonSolverTest {
         BackFilter bf = BackFilter.ofInternal(coefficients);
         bf=bf.times(BackFilter.D1);
         bf=bf.times(bf);
-        SymmetricFilter sf=SymmetricFilter.fromFilter(bf);
+        SymmetricFilter sf=SymmetricFilter.convolutionOf(bf);
         SymmetricMullerNewtonSolver solver=new SymmetricMullerNewtonSolver();
         solver.factorize(Polynomial.ofInternal(sf.weightsToArray()));
         Complex[] sroots = solver.getStableRoots();

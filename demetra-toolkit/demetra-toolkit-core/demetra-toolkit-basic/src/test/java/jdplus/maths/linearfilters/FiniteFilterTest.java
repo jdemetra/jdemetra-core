@@ -5,7 +5,6 @@
  */
 package jdplus.maths.linearfilters;
 
-import jdplus.maths.linearfilters.FiniteFilter;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
 import demetra.maths.Complex;
@@ -19,13 +18,13 @@ import org.junit.Ignore;
  */
 public class FiniteFilterTest {
 
-    static final FiniteFilter filter;
-    static final DataBlock in;
+    static final FiniteFilter FILTER;
+    static final DataBlock IN;
 
     static {
-        filter = new FiniteFilter(new double[]{1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8}, -9);
-        in = DataBlock.make(240);
-        in.set(i -> 1 / (1 + i));
+        FILTER = FiniteFilter.ofInternal(new double[]{1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8}, -9);
+        IN = DataBlock.make(240);
+        IN.set(i -> 1 / (1 + i));
     }
 
     public FiniteFilterTest() {
@@ -33,20 +32,20 @@ public class FiniteFilterTest {
 
     @Test
     public void testApply() {
-        DataBlock out = DataBlock.make(in.length() - filter.length() + 1);
-        filter.apply(in, out);
+        DataBlock out = DataBlock.make(IN.length() - FILTER.length() + 1);
+        FILTER.apply(IN, out);
 
-        DataBlock out2 = DataBlock.make(in.length() - filter.length() + 1);
-        filter.apply((DoubleSeq) in, out2);
+        DataBlock out2 = DataBlock.make(IN.length() - FILTER.length() + 1);
+        FILTER.apply((DoubleSeq) IN, out2);
 
         assertTrue(out.distance(out2) < 1e-9);
     }
 
     @Test
     public void testFR() {
-        Complex fr = filter.frequencyResponse(1.5);
-        double g = filter.gainFunction().applyAsDouble(1.5);
-        double p = filter.phaseFunction().applyAsDouble(1.5);
+        Complex fr = FILTER.frequencyResponse(1.5);
+        double g = FILTER.gainFunction().applyAsDouble(1.5);
+        double p = FILTER.phaseFunction().applyAsDouble(1.5);
         assertTrue(fr.equals(Complex.polar(g, p), 1e-9));
     }
 
@@ -104,16 +103,16 @@ public class FiniteFilterTest {
         int K = 1000000;
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
-            DataBlock out = DataBlock.make(in.length() - filter.length() + 1);
-            filter.apply(in, out);
+            DataBlock out = DataBlock.make(IN.length() - FILTER.length() + 1);
+            FILTER.apply(IN, out);
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
 
         t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
-            DataBlock out = DataBlock.make(in.length() - filter.length() + 1);
-            filter.apply((DoubleSeq) in, out);
+            DataBlock out = DataBlock.make(IN.length() - FILTER.length() + 1);
+            FILTER.apply((DoubleSeq) IN, out);
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

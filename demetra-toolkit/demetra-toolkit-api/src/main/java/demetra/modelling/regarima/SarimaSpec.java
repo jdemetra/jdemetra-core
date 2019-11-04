@@ -16,7 +16,6 @@
  */
 package demetra.modelling.regarima;
 
-import demetra.arima.SarimaModel;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
@@ -30,7 +29,7 @@ import demetra.util.Validatable;
 @Development(status = Development.Status.Beta)
 @lombok.Value
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
-public final class SarimaSpec implements Validatable<SarimaSpec>, ArimaSpecification<SarimaModel> {
+public final class SarimaSpec implements Validatable<SarimaSpec> {
 
     @Override
     public SarimaSpec validate() throws IllegalArgumentException {

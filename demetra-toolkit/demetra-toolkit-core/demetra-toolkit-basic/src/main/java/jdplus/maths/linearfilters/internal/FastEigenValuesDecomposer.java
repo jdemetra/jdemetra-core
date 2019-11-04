@@ -88,7 +88,7 @@ public class FastEigenValuesDecomposer {
             UnitRoots ur = urs.getUnitRoots();
             UnitRoots sur = ur.sqrt();
             if (sur != null) {
-                Polynomial urp = sur.toPolynomial();
+                Polynomial urp = sur.asPolynomial();
                 Polynomial ur2 = urp.times(urp);
                 bf = new BackFilter(urp);
                 // ensure symmetry

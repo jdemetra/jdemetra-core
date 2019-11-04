@@ -17,10 +17,10 @@
 package jdplus.maths.linearfilters;
 
 import demetra.design.Development;
+import demetra.util.Arrays2;
 import java.text.NumberFormat;
 
 import jdplus.maths.polynomials.Polynomial;
-import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 
 /**
@@ -126,9 +126,18 @@ public class FiniteFilter implements IFiniteFilter, Cloneable {
      * @return
      */
     public static FiniteFilter ofInternal(final double[] c, final int lb) {
-        return new FiniteFilter(Polynomial.raw(c), lb);
+        return new FiniteFilter(c, lb);
     }
 
+    /**
+     *
+     * @param c
+     * @param lb
+     * @return
+     */
+    public static FiniteFilter of(final double[] c, final int lb) {
+        return new FiniteFilter(c.clone(), lb);
+    }
     /**
      *
      * @param l
@@ -166,7 +175,7 @@ public class FiniteFilter implements IFiniteFilter, Cloneable {
     }
 
     private final int lb;
-    private final Polynomial w;
+    private final double[] w;
 
     private static final double EPS = 1e-4;
 
@@ -176,10 +185,14 @@ public class FiniteFilter implements IFiniteFilter, Cloneable {
      * @param c
      * @param lb
      */
-    public FiniteFilter(final double[] c, final int lb) {
+    private FiniteFilter(final double[] c, final int lb) {
         this.lb = lb;
-        w = Polynomial.of(c);
+        w = c;
     }
+    
+//    public static FiniteFilter ofInternal(final double[] c, final int lb){
+//        return new FiniteFilter(c,lb);
+//    }
 
     /**
      *
@@ -188,7 +201,7 @@ public class FiniteFilter implements IFiniteFilter, Cloneable {
      */
     public FiniteFilter(final Polynomial c, final int lb) {
         this.lb = lb;
-        w = c;
+        w = c.toArray();
     }
 
     /**
@@ -196,20 +209,8 @@ public class FiniteFilter implements IFiniteFilter, Cloneable {
      * @param f
      */
     public FiniteFilter(final IFiniteFilter f) {
-        double[] w = f.weightsToArray();
-        this.w = Polynomial.ofInternal(w);
+        w = f.weightsToArray();
         lb = f.getLowerBound();
-    }
-
-    /**
-     *
-     * @param n
-     */
-    public FiniteFilter(final int n) {
-        double[] weights = new double[n];
-        Arrays.fill(weights, 1);
-        w = Polynomial.ofInternal(weights);
-        lb = 0;
     }
 
     /**
@@ -218,7 +219,7 @@ public class FiniteFilter implements IFiniteFilter, Cloneable {
      */
     @Override
     public int length() {
-        return w.degree() + 1;
+        return w.length;
     }
 
     /**
@@ -232,7 +233,7 @@ public class FiniteFilter implements IFiniteFilter, Cloneable {
 
     @Override
     public int getUpperBound() {
-        return lb + w.degree();
+        return lb + w.length-1;
     }
 
     /**
@@ -241,15 +242,7 @@ public class FiniteFilter implements IFiniteFilter, Cloneable {
      */
     @Override
     public IntToDoubleFunction weights() {
-        return i -> w.get(i - lb);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isIdentity() {
-        return w.isIdentity();
+        return i -> w[i - lb];
     }
 
     /**
@@ -257,12 +250,12 @@ public class FiniteFilter implements IFiniteFilter, Cloneable {
      * @return
      */
     public boolean isSymmetric() {
-        int d = w.degree();
+        int d = w.length-1;
         if (d % 2 != 0 || d != -lb) {
             return false;
         }
         for (int i = 0; i < d / 2; ++i) {
-            if (Math.abs(w.get(i) - w.get(d - i)) > EPS) {
+            if (Math.abs(w[i] - w[d - i]) > EPS) {
                 return false;
             }
         }
@@ -275,14 +268,15 @@ public class FiniteFilter implements IFiniteFilter, Cloneable {
      */
     @Override
     public FiniteFilter mirror() {
-        Polynomial mw = w.rawMirror();
-        int mlb = -lb - w.degree();
+        double[] mw=w.clone();
+        Arrays2.reverse(mw);
+        int mlb = -lb - w.length+1;
         return new FiniteFilter(mw, mlb);
     }
 
     @Override
     public String toString() {
-        Polynomial p = w.smooth();
+        Polynomial p = Polynomial.ofInternal(w).smooth();
         NumberFormat format = NumberFormat.getNumberInstance();
         format.setMaximumFractionDigits(4);
         format.setMinimumFractionDigits(4);

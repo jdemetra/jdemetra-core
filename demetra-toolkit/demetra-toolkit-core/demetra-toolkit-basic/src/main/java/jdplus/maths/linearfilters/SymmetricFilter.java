@@ -63,8 +63,8 @@ public final class SymmetricFilter implements IFiniteFilter {
      * @param f The initial filter
      * @return f * f.mirror()
      */
-    public static SymmetricFilter fromFilter(IFiniteFilter f) {
-        return fromFilter(f, 1);
+    public static SymmetricFilter convolutionOf(IFiniteFilter f) {
+        return convolutionOf(f, 1);
     }
 
     /**
@@ -74,7 +74,7 @@ public final class SymmetricFilter implements IFiniteFilter {
      * @param scaling
      * @return f * f.mirror()
      */
-    public static SymmetricFilter fromFilter(IFiniteFilter f, final double scaling) {
+    public static SymmetricFilter convolutionOf(IFiniteFilter f, final double scaling) {
         double[] w = f.weightsToArray();
         double[] c = new double[w.length];
         for (int i = 0; i < w.length; ++i) {

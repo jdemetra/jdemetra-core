@@ -973,7 +973,7 @@ public class UnitRoots implements Cloneable {
      *
      * @return
      */
-    public Polynomial toPolynomial() {
+    public Polynomial asPolynomial() {
         return Polynomial.ofInternal(coefficients());
     }
 }

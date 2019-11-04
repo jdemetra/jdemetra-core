@@ -79,7 +79,7 @@ public class RobustSymmetricFrequencyResponseDecomposer  {
             UnitRoots ur = urs.getUnitRoots();
             UnitRoots sur = ur.sqrt();
             if (sur != null) {
-                Polynomial urp = sur.toPolynomial();
+                Polynomial urp = sur.asPolynomial();
                 Polynomial ur2=urp.times(urp);
                 m_bf = new BackFilter(urp);
              // ensure symmetry

@@ -27,14 +27,13 @@ import demetra.maths.Constants;
  *
  * @author Jean Palate
  */
-@Immutable
+@Immutable(lazy=true)
 @Development(status = Development.Status.Alpha)
-@SkipProcessing(target = Immutable.class, reason = "coeff field is not thread safe")
-public final class RationalFunction {
+  public final class RationalFunction {
 
     private static final RationalFunction ZERO = new RationalFunction(), ONE = RationalFunction.of(Polynomial.ONE, Polynomial.ONE);
 
-    private double[] coeff;
+    private volatile double[] coeff;
     private final Polynomial num;
     private final Polynomial denom;
     private final static int ATOM = 32;
@@ -43,7 +42,7 @@ public final class RationalFunction {
         return new RationalFunction(num, denom, false);
     }
 
-    public static RationalFunction zero() {
+     public static RationalFunction zero() {
         return ZERO;
     }
 
@@ -57,12 +56,13 @@ public final class RationalFunction {
     }
 
     /**
-     * The constructor creates a new rational function n/d based on the
-     * polynomials passed in as parameters. We suppose that the two polynomials
-     * are prime (not checked)
+     * The constructor creates a new rational function pn(x)/pd(x) based on the
+     * polynomials passed in as parameters.
      *
-     * @param pn A polynomial of getDegree d
-     * @param pd A polynomial of getDegree d'
+     * @param pn Numerator
+     * @param pd Denominator
+     * @param simplify Indicates that the polynomials must be simplified. If
+     * not, we suppose that the two polynomials are prime (not checked)
      */
     public RationalFunction(final Polynomial pn, final Polynomial pd, boolean simplify) {
         if (simplify) {
@@ -316,86 +316,90 @@ public final class RationalFunction {
     }
 
     /**
-     * The method computes the weights ofInternal the power series expansion 
+     * The method computes the weights ofInternal the power series expansion
      *
      * @param degree
      */
     public void prepare(int degree) {
-        if ((coeff != null) && (coeff.length > degree)) {
-            return;
-        }
-        Polynomial pd = denom;
-        Polynomial pn = num;
+        double[] c = coeff;
+        if (c == null || c.length <= degree) {
+            synchronized (this) {
+                Polynomial pd = denom;
+                Polynomial pn = num;
 
-        int k0 = 1;
-        int p = pd.degree();
-        int q = pn.degree();
-        double d = pd.get(0);
+                int k0 = 1;
+                int p = pd.degree();
+                int q = pn.degree();
+                double d = pd.get(0);
 
-        // trivial case
-        if (p == 0) {
-            coeff = pn.coefficients().toArray();
-            if (d != 1) {
-                for (int i = 0; i < coeff.length; ++i) {
-                    coeff[i] /= d;
+                // trivial case
+                if (p == 0) {
+                    c = pn.coefficients().toArray();
+                    if (d != 1) {
+                        for (int i = 0; i < c.length; ++i) {
+                            c[i] /= d;
+                        }
+                    }
+                    coeff = c;
+                    return;
                 }
-            }
-            return;
-        }
 
-        // compute at least the first max(p, q) weights, otherwise, expand by
-        // blocks
-        int r = p < q ? q : p;
-        if (degree < r) {
-            degree = r;
-        } else {
-            degree = ((degree - 1) / ATOM + 1) * ATOM;
-        }
-
-        if (coeff == null) {
-            coeff = new double[degree + 1];
-            coeff[0] = pn.get(0) / d;
-
-            // until p...
-            for (int k = k0; k <= p; ++k) {
-                double s = 0;
-                for (int w = 1; w <= k; ++w) {
-                    s += pd.get(w) * coeff[k - w];
-                }
-                if (k <= q) {
-                    coeff[k] = (pn.get(k) - s) / d;
+                // compute at least the first max(p, q) weights, otherwise, expand by
+                // blocks
+                int r = p < q ? q : p;
+                if (degree < r) {
+                    degree = r;
                 } else {
-                    coeff[k] = -s / d;
+                    degree = ((degree - 1) / ATOM + 1) * ATOM;
                 }
-            }
 
-            // until r...
-            if (q > p) {
-                for (int k = p + 1; k <= q; ++k) {
+                if (c == null) {
+                    c = new double[degree + 1];
+                    c[0] = pn.get(0) / d;
+
+                    // until p...
+                    for (int k = k0; k <= p; ++k) {
+                        double s = 0;
+                        for (int w = 1; w <= k; ++w) {
+                            s += pd.get(w) * c[k - w];
+                        }
+                        if (k <= q) {
+                            c[k] = (pn.get(k) - s) / d;
+                        } else {
+                            c[k] = -s / d;
+                        }
+                    }
+
+                    // until r...
+                    if (q > p) {
+                        for (int k = p + 1; k <= q; ++k) {
+                            double s = 0;
+                            for (int w = 1; w <= p; ++w) {
+                                s += pd.get(w) * c[k - w];
+                            }
+                            c[k] = (pn.get(k) - s) / pd.get(0);
+                        }
+                    }
+
+                    k0 = r + 1;
+                } else {
+                    double[] tmp = new double[degree + 1];
+                    k0 = c.length;
+                    for (int u = 0; u < k0; ++u) {
+                        tmp[u] = c[u];
+                    }
+                    c = tmp;
+                }
+
+                for (int k = k0; k <= degree; ++k) {
                     double s = 0;
                     for (int w = 1; w <= p; ++w) {
-                        s += pd.get(w) * coeff[k - w];
+                        s += pd.get(w) * c[k - w];
                     }
-                    coeff[k] = (pn.get(k) - s) / pd.get(0);
+                    c[k] = -s / d;
                 }
+                coeff = c;
             }
-
-            k0 = r + 1;
-        } else {
-            double[] tmp = new double[degree + 1];
-            k0 = coeff.length;
-            for (int u = 0; u < k0; ++u) {
-                tmp[u] = coeff[u];
-            }
-            coeff = tmp;
-        }
-
-        for (int k = k0; k <= degree; ++k) {
-            double s = 0;
-            for (int w = 1; w <= p; ++w) {
-                s += pd.get(w) * coeff[k - w];
-            }
-            coeff[k] = -s / d;
         }
     }
 

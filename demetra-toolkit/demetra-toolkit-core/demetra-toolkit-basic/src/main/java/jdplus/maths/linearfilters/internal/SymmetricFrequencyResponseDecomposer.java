@@ -80,7 +80,7 @@ class SymmetricFrequencyResponseDecomposer  {
 
             UnitRoots sur = ur.sqrt();
             if (sur != null) {
-                m_bf = new BackFilter(sur.toPolynomial());
+                m_bf = new BackFilter(sur.asPolynomial());
 
                 // to ensure the symmetry
                 SymmetricFrequencyResponse sfrur = SymmetricFrequencyResponse.createFromFilter(m_bf);

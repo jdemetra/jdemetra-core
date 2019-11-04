@@ -37,9 +37,9 @@ public class ArimaDescriptor {
     final InformationMapping<ArimaModel> MAPPING = new InformationMapping<>(ArimaModel.class);
 
     static {
-        MAPPING.set(AR, double[].class, source->source.getAr().toArray());
-        MAPPING.set(DELTA, double[].class, source->source.getDelta().toArray());
-        MAPPING.set(MA, double[].class, source->source.getMa().toArray());
+        MAPPING.set(AR, double[].class, source->source.getAr());
+        MAPPING.set(DELTA, double[].class, source->source.getDelta());
+        MAPPING.set(MA, double[].class, source->source.getMa());
         MAPPING.set(VAR, Double.class, source->source.getInnovationVariance());
         MAPPING.set(DESC, String.class, source->source.getName());
     }

@@ -5,7 +5,6 @@
  */
 package demetra.regarima;
 
-import demetra.arima.ArimaType;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihood;
@@ -20,11 +19,11 @@ import demetra.maths.matrices.Matrix;
  */
 @Development(status = Development.Status.Alpha)
 @lombok.Value
-public class RegArimaModel<S extends ArimaType> {
+public class RegArimaModel<S> {
 
     @Development(status = Development.Status.Alpha)
     @lombok.Value
-    public static class Data<T extends ArimaType> {
+    public static class Data<T> {
 
         @lombok.NonNull
         private LinearModel model;

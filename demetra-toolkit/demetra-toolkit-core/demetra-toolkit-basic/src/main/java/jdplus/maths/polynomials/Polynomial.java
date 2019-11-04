@@ -1031,7 +1031,7 @@ public final class Polynomial{
         public boolean simplify(final Polynomial left, final UnitRoots right) {
             clear();
             common = Polynomial.ONE;
-            return simplify(left, right.toPolynomial(), right.roots());
+            return simplify(left, right.asPolynomial(), right.roots());
         }
 
         private boolean simplifyExact(Polynomial left, Polynomial right) {

@@ -19,7 +19,6 @@ package demetra.descriptors.arima;
 import demetra.information.InformationMapping;
 import demetra.arima.SarimaModel;
 import demetra.arima.SarimaSpecification;
-import java.util.function.Function;
 
 /**
  *
@@ -45,32 +44,29 @@ public class SarimaDescriptor {
         MAPPING.set(BD, Integer.class, source -> source.getBd());
         MAPPING.set(PARAMETERS, double[].class,
                 source -> {
-                    SarimaSpecification spec = source.specification();
-                    double[] all = new double[spec.getParametersCount()];
+                    double[] phi=source.getPhi(), bphi=source.getBphi()
+                            , th=source.getTheta(), bth=source.getBtheta();
+                    int n=phi.length+bphi.length+th.length+bth.length;
                     int pos = 0;
-                    for (int i = 1; i <= spec.getP(); ++i) {
-                        all[pos++] = -source.phi(i);
+                    double[] all = new double[n];
+                    for (int i = 0; i < phi.length; ++i) {
+                        all[pos++] = -phi[i];
                     }
-                    for (int i = 1; i <= spec.getQ(); ++i) {
-                        all[pos++] = source.theta(i);
+                    for (int i = 0; i < bphi.length; ++i) {
+                        all[pos++] = -bphi[i];
                     }
-                    for (int i = 1; i <= spec.getBp(); ++i) {
-                        all[pos++] = -source.bphi(i);
+                    for (int i = 0; i < th.length; ++i) {
+                        all[pos++] = -th[i];
                     }
-                    for (int i = 1; i <= spec.getBq(); ++i) {
-                        all[pos++] = source.btheta(i);
+                    for (int i = 0; i < bth.length; ++i) {
+                        all[pos++] = -bth[i];
                     }
                     return all;
                 });
-        MAPPING.setArray(PHI, 1, 12, Double.class,
-                (source, i) -> i >source.getP() ? 0 : source.phi(i));
-        MAPPING.setArray(BPHI, 1, 12, Double.class,
-                (source, i) -> i >source.getBp() ? 0 : source.bphi(i));
-        MAPPING.setArray(THETA, 1, 12, Double.class,
-                (source, i) -> i >source.getQ() ? 0 : source.theta(i));
-        MAPPING.setArray(BTHETA, 1, 12, Double.class,
-                (source, i) -> i >source.getBq() ? 0 : source.btheta(i));
-
+        MAPPING.set(PHI, double[].class, source -> source.getPhi());
+        MAPPING.set(BPHI, double[].class, source -> source.getBphi());
+        MAPPING.set(THETA, double[].class, source -> source.getTheta());
+        MAPPING.set(BTHETA, double[].class, source -> source.getBtheta());
     }
 
     public InformationMapping<SarimaModel> getMapping() {

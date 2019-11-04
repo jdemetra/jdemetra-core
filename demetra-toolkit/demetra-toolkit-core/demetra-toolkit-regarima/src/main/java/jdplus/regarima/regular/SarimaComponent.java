@@ -280,7 +280,7 @@ public class SarimaComponent  {
         for (int i = 0; i < d; ++i) {
             ur.add(1);
         }
-        return new BackFilter(ur.toPolynomial());
+        return new BackFilter(ur.asPolynomial());
     }
 
     public int getPeriod() {

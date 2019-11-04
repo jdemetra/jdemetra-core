@@ -67,7 +67,7 @@ public class UnitRootSelector  {
     public boolean select(final Polynomial p) {
 	UnitRootsSolver urs = new UnitRootsSolver(m_freq);
 	if (urs.factorize(p)) {
-	    m_sel = urs.getUnitRoots().toPolynomial();
+	    m_sel = urs.getUnitRoots().asPolynomial();
 	    m_nsel = urs.remainder();
 	    return true;
 	} else
