@@ -5,7 +5,7 @@
  */
 package jdplus.maths.matrices.internal;
 
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import java.util.Random;
 import org.junit.Test;
@@ -19,8 +19,8 @@ import jdplus.maths.matrices.decomposition.LDLDecomposition;
  */
 public class LDLDecompositionTest {
 
-    static CanonicalMatrix M(int n) {
-        CanonicalMatrix M = CanonicalMatrix.square(n);
+    static Matrix M(int n) {
+        Matrix M = Matrix.square(n);
         Random rnd = new Random(0);
         M.set((i, j) -> i == j ? 1.0 : (i < j ? 0.0 : rnd.nextDouble()));
         return M;
@@ -31,18 +31,18 @@ public class LDLDecompositionTest {
 
         for (int n = 3; n < 50; ++n) {
             double[] d = new double[n];
-            CanonicalMatrix L = M(n).deepClone();
+            Matrix L = M(n).deepClone();
             for (int i = 0; i < n; ++i) {
                 d[i] = i - n / 2;
                 if (d[i] == 0) {
                     L.column(i).range(i + 1, n).set(0);
                 }
             }
-            CanonicalMatrix D = CanonicalMatrix.diagonal(DoubleSeq.of(d));
-            CanonicalMatrix S = SymmetricMatrix.XSXt(D, L);
+            Matrix D = Matrix.diagonal(DoubleSeq.of(d));
+            Matrix S = SymmetricMatrix.XSXt(D, L);
             LDLDecomposition ldl = new LDLDecomposition();
             ldl.decompose(S, 1e-9);
-            CanonicalMatrix del = ldl.L().minus(L);
+            Matrix del = ldl.L().minus(L);
             assertTrue(del.frobeniusNorm() < 1e-9);
         }
     }
@@ -52,18 +52,18 @@ public class LDLDecompositionTest {
 
         for (int n = 3; n < 50; ++n) {
             double[] d = new double[n];
-            CanonicalMatrix L = M(n).deepClone();
+            Matrix L = M(n).deepClone();
             for (int i = 0; i < n; ++i) {
                 d[i] = i % 3 == 0 ? 0 : i - n / 2;
                 if (d[i] == 0) {
                     L.column(i).range(i + 1, n).set(0);
                 }
             }
-            CanonicalMatrix D = CanonicalMatrix.diagonal(DoubleSeq.of(d));
-            CanonicalMatrix S = SymmetricMatrix.XSXt(D, L);
+            Matrix D = Matrix.diagonal(DoubleSeq.of(d));
+            Matrix S = SymmetricMatrix.XSXt(D, L);
             LDLDecomposition ldl = new LDLDecomposition();
             ldl.decompose(S, 1e-9);
-            CanonicalMatrix del = ldl.L().minus(L);
+            Matrix del = ldl.L().minus(L);
             assertTrue(del.frobeniusNorm() < 1e-9);
         }
     }

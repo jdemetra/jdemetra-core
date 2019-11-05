@@ -23,8 +23,8 @@ import jdplus.arima.StationaryTransformation;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import jdplus.dstats.Normal;
-import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.stats.AutoCovariances;
+import jdplus.maths.matrices.Matrix;
+import jdplus.stats.AutoCovariances;
 import demetra.data.DoubleSeq;
 
 /**
@@ -34,7 +34,7 @@ import demetra.data.DoubleSeq;
 @Development(status = Development.Status.Alpha)
 public final class WienerKolmogorovDiagnostics {
 
-    private CanonicalMatrix m_tac, m_eac, m_sdvar;
+    private Matrix m_tac, m_eac, m_sdvar;
     private ArimaModel[] m_stcmp;
     private LinearProcess[] m_stest;
     private double[][] m_stdata;
@@ -109,9 +109,9 @@ public final class WienerKolmogorovDiagnostics {
             if (n != stdata.length) {
                 return false;
             }
-            m_eac = CanonicalMatrix.square(n);
-            m_tac = CanonicalMatrix.square(n);
-            m_sdvar = CanonicalMatrix.square(n);
+            m_eac = Matrix.square(n);
+            m_tac = Matrix.square(n);
+            m_sdvar = Matrix.square(n);
 
             for (int i = 0; i < n; ++i) {
                 if (stmodels[i] != null) {

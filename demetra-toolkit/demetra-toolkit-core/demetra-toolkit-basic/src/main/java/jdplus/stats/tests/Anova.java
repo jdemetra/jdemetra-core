@@ -22,7 +22,7 @@ import jdplus.linearmodel.LinearModel;
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
 import jdplus.dstats.F;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.matrices.UpperTriangularMatrix;
 import jdplus.maths.matrices.decomposition.HouseholderR;
@@ -97,8 +97,8 @@ public class Anova {
         qr.partialLeastSquares(y, b, res);
         double ssqerr = res.ssq();
         // initializing the results...
-        CanonicalMatrix u = UpperTriangularMatrix.inverse(qr.r());
-        CanonicalMatrix bvar = SymmetricMatrix.UUt(u);
+        Matrix u = UpperTriangularMatrix.inverse(qr.r());
+        Matrix bvar = SymmetricMatrix.UUt(u);
         return ConcentratedLikelihood.builder()
                 .ndata(n)
                 .ssqErr(ssqerr)

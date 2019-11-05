@@ -16,7 +16,7 @@
  */
 package jdplus.likelihood;
 
-import jdplus.maths.functions.IFunction;
+import jdplus.math.functions.IFunction;
 import jdplus.maths.functions.ssq.ISsqFunction;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;

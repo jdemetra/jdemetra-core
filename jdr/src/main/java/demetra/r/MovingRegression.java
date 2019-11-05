@@ -10,7 +10,7 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.sarima.SarimaModel;
@@ -22,7 +22,7 @@ import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
-import demetra.modelling.regression.GenericTradingDaysVariable;
+import demetra.timeseries.regression.GenericTradingDaysVariable;
 import jdplus.modelling.regression.Regression;
 import demetra.timeseries.TsData;
 import static jdplus.timeseries.simplets.TsDataToolkit.fitToDomain;
@@ -45,7 +45,7 @@ public class MovingRegression {
     @lombok.Data
     static class Airline {
 
-        CanonicalMatrix td;
+        Matrix td;
         double regVariance;
         double theta, btheta;
     }
@@ -147,7 +147,7 @@ public class MovingRegression {
 //        for (int i = 1; i < xi.length; ++i) {
 //            xi[i] = xi[i - 1] + period;
 //        }
-        CanonicalMatrix cl = CanonicalMatrix.make(s.length(), x.getColumnsCount());
+        Matrix cl = Matrix.make(s.length(), x.getColumnsCount());
         cl.set(Double.NaN);
         int j = 0;
         for (; j < (period * nyears) / 2; ++j) {
@@ -203,14 +203,14 @@ public class MovingRegression {
         return Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
     }
 
-    private CanonicalMatrix generateVar(DayClustering dc, String var) {
+    private Matrix generateVar(DayClustering dc, String var) {
         int groupsCount = dc.getGroupsCount();
-        CanonicalMatrix full = CanonicalMatrix.square(7);
+        Matrix full = Matrix.square(7);
         if (!var.equalsIgnoreCase("Contrasts")) {
             full.set(-1.0 / 7.0);
         }
         full.diagonal().add(1);
-        CanonicalMatrix Q = CanonicalMatrix.make(groupsCount - 1, 7);
+        Matrix Q = Matrix.make(groupsCount - 1, 7);
         int[] gdef = dc.getGroupsDefinition();
         for (int i = 1; i < groupsCount; ++i) {
             for (int j = 0; j < 7; ++j) {

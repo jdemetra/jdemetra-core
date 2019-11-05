@@ -21,7 +21,7 @@ import demetra.data.AggregationType;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRoots;
@@ -67,7 +67,7 @@ public class MatrixDenton {
         }
     }
 
-    private CanonicalMatrix D(DataBlock x) {
+    private Matrix D(DataBlock x) {
         Polynomial pd = UnitRoots.D(1, differencing);
         int d = pd.degree();
         int n = x.length();
@@ -77,7 +77,7 @@ public class MatrixDenton {
         }
 
         if (modified) {
-            CanonicalMatrix D = CanonicalMatrix.make(n - d, n);
+            Matrix D = Matrix.make(n - d, n);
             for (int i = 0; i <= d; ++i) {
                 if (multiplicative) {
                     D.subDiagonal(i).setAY(pd.get(d - i), x.drop(i, d - i));
@@ -87,7 +87,7 @@ public class MatrixDenton {
             }
             return D;
         } else {
-            CanonicalMatrix D = CanonicalMatrix.square(n);
+            Matrix D = Matrix.square(n);
             for (int i = 0; i <= d; ++i) {
                 if (multiplicative) {
                     D.subDiagonal(-i).setAY(pd.get(i), x.drop(0, i));
@@ -111,13 +111,13 @@ public class MatrixDenton {
         double xm = x.sum() / x.length();
         x.mul(1 / xm);
 
-        CanonicalMatrix D = D(x);
+        Matrix D = D(x);
 
-        CanonicalMatrix A = CanonicalMatrix.square(n + ny);
+        Matrix A = Matrix.square(n + ny);
 
         SymmetricMatrix.XtX(D, A.extract(0, n, 0, n));
         J(A.extract(n, ny, 0, n));
-        CanonicalMatrix B = A.deepClone();
+        Matrix B = A.deepClone();
         J(A.extract(0, n, n, ny).transpose());
         B.diagonal().drop(n, 0).set(1);
 
@@ -148,12 +148,12 @@ public class MatrixDenton {
         if (multiplicative) {
             x.set(1);
         }
-        CanonicalMatrix D = D(x);
-        CanonicalMatrix A = CanonicalMatrix.square(n + ny);
+        Matrix D = D(x);
+        Matrix A = Matrix.square(n + ny);
 
         SymmetricMatrix.XtX(D, A.extract(0, n, 0, n));
         J(A.extract(n, ny, 0, n));
-        CanonicalMatrix B = A.deepClone();
+        Matrix B = A.deepClone();
         J(A.extract(0, n, n, ny).transpose());
         B.diagonal().drop(n, 0).set(1);
 

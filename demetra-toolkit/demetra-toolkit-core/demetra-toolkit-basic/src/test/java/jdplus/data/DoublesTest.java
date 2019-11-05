@@ -7,7 +7,7 @@ package jdplus.data;
 
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -24,7 +24,7 @@ public class DoublesTest {
 
     @Test
     public void testOp() {
-        CanonicalMatrix m = CanonicalMatrix.make(200, 20);
+        Matrix m = Matrix.make(200, 20);
         Random rnd = new Random();
         m.set(rnd::nextDouble);
         DoubleSeq a = m.column(0);
@@ -42,7 +42,7 @@ public class DoublesTest {
     @Ignore
     public void stressTestOp() {
         int K = 100000;
-        CanonicalMatrix m = CanonicalMatrix.make(200, 20);
+        Matrix m = Matrix.make(200, 20);
         Random rnd = new Random();
         m.set(rnd::nextDouble);
         long t0 = System.currentTimeMillis();

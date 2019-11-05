@@ -6,7 +6,7 @@
 package jdplus.maths.polynomials;
 
 import demetra.data.DoubleSeq;
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

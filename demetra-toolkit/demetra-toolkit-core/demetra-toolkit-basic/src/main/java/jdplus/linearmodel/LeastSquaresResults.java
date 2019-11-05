@@ -28,7 +28,7 @@ import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -203,7 +203,7 @@ public final class LeastSquaresResults {
      * @return
      */
     public StatisticalTest Ftest(int v0, int nvars) {
-        CanonicalMatrix bvar = ucov.extract(v0, nvars, v0, nvars).deepClone();
+        Matrix bvar = ucov.extract(v0, nvars, v0, nvars).deepClone();
         SymmetricMatrix.lcholesky(bvar);
         DataBlock b = DataBlock.of(coefficients.extract(v0, nvars));
         LowerTriangularMatrix.rsolve(bvar, b);

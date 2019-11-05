@@ -17,7 +17,7 @@
 package jdplus.maths.linearfilters;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.decomposition.Householder;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlockIterator;
@@ -68,7 +68,7 @@ public class LocalPolynomialFilters {
     public FiniteFilter directAsymmetricFilter(final int h, final int q, final int d, final IntToDoubleFunction k) {
         // w = KpXp (Xp'Kp Xp)^-1 e1
         // (Xp'Kp Xp)^-1 e1 = u <-> (Xp'Kp Xp) u = e1
-        CanonicalMatrix xkx = CanonicalMatrix.square(d + 1);
+        Matrix xkx = Matrix.square(d + 1);
         for (int i = 0; i <= d; ++i) {
             xkx.set(i, i, S_hqd(h, q, 2 * i, k));
             for (int j = 0; j < i; ++j) {
@@ -202,7 +202,7 @@ public class LocalPolynomialFilters {
                 }
             }
         }
-        CanonicalMatrix Z = createZ(h, d);
+        Matrix Z = createZ(h, d);
         DataBlockIterator rows = Z.rowsIterator();
         int pos = -h;
         while (rows.hasNext()) {
@@ -329,8 +329,8 @@ public class LocalPolynomialFilters {
         return Z.extract(l + nh, u - l + 1, d0, d1 - d0 + 1);
     }
 
-    private CanonicalMatrix createZ(int h, int d) {
-        CanonicalMatrix M = CanonicalMatrix.make(2 * h + 1, d + 1);
+    private Matrix createZ(int h, int d) {
+        Matrix M = Matrix.make(2 * h + 1, d + 1);
         M.column(0).set(1);
         if (d >= 1) {
             DataBlock c1 = M.column(1);
@@ -342,5 +342,5 @@ public class LocalPolynomialFilters {
         return M;
     }
 
-    private CanonicalMatrix Z;
+    private Matrix Z;
 }

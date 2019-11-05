@@ -7,8 +7,8 @@ package jdplus.maths.matrices;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.data.LogSign;
-import demetra.random.RandomNumberGenerator;
+import jdplus.data.LogSign;
+import jdplus.random.RandomNumberGenerator;
 
 /**
  *
@@ -141,9 +141,9 @@ public class UpperTriangularMatrix {
      * @throws MatrixException when the matrix is non invertible (some elements
      * of the diagonal are 0).
      */
-    public CanonicalMatrix inverse(final FastMatrix U) throws MatrixException {
+    public Matrix inverse(final FastMatrix U) throws MatrixException {
         int n = U.getRowsCount();
-        CanonicalMatrix IU = CanonicalMatrix.identity(n);
+        Matrix IU = Matrix.identity(n);
         rsolve(U, IU);
         return IU;
     }

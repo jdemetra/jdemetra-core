@@ -6,7 +6,7 @@
 package jdplus.maths.matrices.decomposition;
 
 import jdplus.data.DataBlockIterator;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.matrices.MatrixWindow;
 
@@ -30,7 +30,7 @@ public class SimilarTransformations {
 
         public final double RADIX = 2;
 
-        public void balance(CanonicalMatrix A) {
+        public void balance(Matrix A) {
             if (!A.isSquare()) {
                 throw new MatrixException(MatrixException.SQUARE);
             }
@@ -92,7 +92,7 @@ public class SimilarTransformations {
          *
          * @param A The matrix being transformed
          */
-        public void householder(CanonicalMatrix A) {
+        public void householder(Matrix A) {
             int n = A.getRowsCount();
             if (!A.isSquare()) {
                 throw new MatrixException(MatrixException.SQUARE);
@@ -120,7 +120,7 @@ public class SimilarTransformations {
          *
          * @param A The matrix being transformed
          */
-        public void gauss(CanonicalMatrix A) {
+        public void gauss(Matrix A) {
             int n = A.getRowsCount();
             if (!A.isSquare()) {
                 throw new MatrixException(MatrixException.SQUARE);
@@ -177,7 +177,7 @@ public class SimilarTransformations {
          * @param A The considered matrix
          * @return
          */
-        public boolean isHessenberg(CanonicalMatrix A) {
+        public boolean isHessenberg(Matrix A) {
             int n = A.getColumnsCount() - 2;
             for (int i = 0; i < n; ++i) {
                 if (!A.column(i).drop(i + 2, 0).isZero(0)) {

@@ -16,10 +16,10 @@
  */
 package jdplus.maths.matrices.decomposition;
 
-import demetra.maths.Constants;
+import demetra.math.Constants;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.decomposition.QRDecomposition;
@@ -66,8 +66,8 @@ public class Householder implements QRDecomposition {
     }
 
     @Override
-    public CanonicalMatrix r(boolean compact) {
-        CanonicalMatrix r = CanonicalMatrix.square(n);
+    public Matrix r(boolean compact) {
+        Matrix r = Matrix.square(n);
         double[] data = r.getStorage();
         for (int i = 0, k = 0, l = 0; i < n; ++i, k += n, l += m) {
             for (int j = 0; j < i; ++j) {

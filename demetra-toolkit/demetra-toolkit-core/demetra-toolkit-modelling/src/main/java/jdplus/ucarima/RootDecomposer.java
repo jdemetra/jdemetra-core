@@ -25,7 +25,7 @@ import jdplus.maths.linearfilters.SymmetricFrequencyResponse;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.leastsquares.QRSolver;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -97,7 +97,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
 
         int xs = qs + 1, xn = qn + 1, x = xs + xn;
 
-        CanonicalMatrix m = CanonicalMatrix.square(x);
+        Matrix m = Matrix.square(x);
 
         // modify the arrays to get the frequency response (and not the agf)
         n[0] /= 2;

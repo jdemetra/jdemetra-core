@@ -5,7 +5,7 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.LevelShift;
+import demetra.timeseries.regression.LevelShift;
 import jdplus.data.DataBlock;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.RationalBackFilter;

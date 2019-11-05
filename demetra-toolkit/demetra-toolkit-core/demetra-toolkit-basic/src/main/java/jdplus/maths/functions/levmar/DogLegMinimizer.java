@@ -20,11 +20,11 @@ import jdplus.data.DataBlock;
 import jdplus.maths.functions.ssq.ISsqFunction;
 import jdplus.maths.functions.ssq.ISsqFunctionPoint;
 import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
 
 /**
@@ -50,13 +50,13 @@ public class DogLegMinimizer implements SsqFunctionMinimizer {
     private ISsqFunctionPoint fcur_, ftry_;
     private DataBlock ecur_;
     private double Fcur_, Ftry_;
-    private CanonicalMatrix J, JtJ;
+    private Matrix J, JtJ;
     private double scale_, scale2_;
     ///////////////////////////////////////////
     private int stop;
 
     @Override
-    public CanonicalMatrix curvatureAtMinimum() {
+    public Matrix curvatureAtMinimum() {
         if (JtJ == null) {
             fcur_.ssqDerivatives().jacobian(J);
             JtJ = SymmetricMatrix.XtX(J);
@@ -129,7 +129,7 @@ public class DogLegMinimizer implements SsqFunctionMinimizer {
 
         double k = 0;
         do {
-            CanonicalMatrix A = JtJ.deepClone();
+            Matrix A = JtJ.deepClone();
             if (k == 0) {
                 k = 1e-6 * jdiag_ninf;
             } else {
@@ -252,7 +252,7 @@ public class DogLegMinimizer implements SsqFunctionMinimizer {
         int n = ecur_.length(), m = fn_.getDomain().getDim();
 
         // Jacobian
-        J = CanonicalMatrix.make(n, m);
+        J = Matrix.make(n, m);
         g_ = DataBlock.make(m);
         while (iterate() && iter < itmax) {
             ++iter;

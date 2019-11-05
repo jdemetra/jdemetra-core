@@ -30,7 +30,7 @@ import jdplus.maths.polynomials.RationalFunction;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
 
 
@@ -158,7 +158,7 @@ public class McElroyEstimates {
             // M = (L*L')^-1 or LL'M = I 
             // L X = I
             // X = L' M or M L = X'
-            CanonicalMatrix I = CanonicalMatrix.identity(L.getColumnsCount());
+            Matrix I = Matrix.identity(L.getColumnsCount());
             LowerTriangularMatrix.rsolve(L, I);
             LowerTriangularMatrix.lsolve(L, I);
             M_[cmp] = I;
@@ -220,8 +220,8 @@ public class McElroyEstimates {
         Polynomial ds = stS.getUnitRoots().asPolynomial();
         Polynomial dn = stN.getUnitRoots().asPolynomial();
 
-        CanonicalMatrix DS = CanonicalMatrix.make(n - ds.degree(), n);
-        CanonicalMatrix DN = CanonicalMatrix.make(n - dn.degree(), n);
+        Matrix DS = Matrix.make(n - ds.degree(), n);
+        Matrix DN = Matrix.make(n - dn.degree(), n);
 
         double[] c = ds.toArray();
         for (int j = 0; j < c.length; ++j) {
@@ -240,7 +240,7 @@ public class McElroyEstimates {
         AnsleyFilter N = new AnsleyFilter();
         N.prepare(stN.getStationaryModel(), n - dn.degree());
 
-        CanonicalMatrix Q = CanonicalMatrix.make(n, 2 * n - ds.degree() - dn.degree());
+        Matrix Q = Matrix.make(n, 2 * n - ds.degree() - dn.degree());
         for (int i = 0; i < n; ++i) {
             S.apply(DS.column(i), Q.row(n - i - 1).range(0, n - ds.degree()));
         }
@@ -309,7 +309,7 @@ public class McElroyEstimates {
 
         Polynomial ds = stS.getUnitRoots().asPolynomial();
 
-        CanonicalMatrix DS = CanonicalMatrix.make(n - ds.degree(), n);
+        Matrix DS = Matrix.make(n - ds.degree(), n);
 
         double[] c = ds.toArray();
         for (int j = 0; j < c.length; ++j) {
@@ -317,29 +317,29 @@ public class McElroyEstimates {
             d.set(c[c.length - j - 1]);
         }
 
-        CanonicalMatrix Q = CanonicalMatrix.make(n - ds.degree(), n);
+        Matrix Q = Matrix.make(n - ds.degree(), n);
         for (int i = 0; i < n; ++i) {
             filters_[cmp].apply(DS.column(i), Q.column(i));
         }
-        CanonicalMatrix U = CanonicalMatrix.make(n - ds.degree(), nf_);
+        Matrix U = Matrix.make(n - ds.degree(), nf_);
         double[] acf = stS.getStationaryModel().getAutoCovarianceFunction().values(n - ds.degree() + nf_);
         for (int i = 0; i < nf_; ++i) {
             U.column(i).reverse().copyFrom(acf, i + 1);
         }
-        CanonicalMatrix V = CanonicalMatrix.make(nf_, n - ds.degree());
+        Matrix V = Matrix.make(nf_, n - ds.degree());
         for (int i = 0; i < nf_; ++i) {
             if (!U.column(i).allMatch(x->Math.abs(x)<1.e-6)) {
                 filters_[cmp].apply(U.column(i), V.row(i));
             }
         }
-        CanonicalMatrix W = V.times(Q);
-        CanonicalMatrix D;
+        Matrix W = V.times(Q);
+        Matrix D;
         if (ds.degree() > 0) {
-            D = CanonicalMatrix.make(ds.degree() + nf_, n);
+            D = Matrix.make(ds.degree() + nf_, n);
 
             D.subDiagonal(n - ds.degree()).set(1);
             D.extract(ds.degree(), D.getRowsCount(), 0, n).copy(W);
-            CanonicalMatrix S = CanonicalMatrix.make(ds.degree() + nf_, ds.degree() + nf_);
+            Matrix S = Matrix.make(ds.degree() + nf_, ds.degree() + nf_);
             S.diagonal().set(1);
             for (int i = 1; i <= ds.degree(); ++i) {
                 S.subDiagonal(-i).drop(ds.degree() - i, 0).set(ds.get(i));
@@ -353,7 +353,7 @@ public class McElroyEstimates {
         double[] data = fs ? data_ : getComponent(cmp);
         f.product(D.rowsIterator(), DataBlock.of(data));
         fcmps_[cmp] = f.getStorage();
-        CanonicalMatrix G = SymmetricMatrix.XXt(V);
+        Matrix G = SymmetricMatrix.XXt(V);
         G.chs();
         G.diagonal().add(acf[0]);
         for (int i = 1; i < nf_; ++i) {
@@ -362,7 +362,7 @@ public class McElroyEstimates {
         }
 
         if (ds.degree() > 0) {
-            CanonicalMatrix B = CanonicalMatrix.square(nf_);
+            Matrix B = Matrix.square(nf_);
             RationalFunction rfe = RationalFunction.of(Polynomial.ONE, ds);
             double[] coeff = rfe.coefficients(nf_);
             for (int i = 0; i < nf_; ++i) {

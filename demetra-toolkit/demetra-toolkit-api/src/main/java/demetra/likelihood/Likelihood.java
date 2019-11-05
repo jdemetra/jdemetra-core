@@ -18,7 +18,7 @@ package demetra.likelihood;
 
 import demetra.design.Development;
 import demetra.eco.EcoException;
-import demetra.maths.Constants;
+import demetra.math.Constants;
 import demetra.data.DoubleSeq;
 import demetra.design.BuilderPattern;
 

@@ -80,7 +80,7 @@ public interface LinearSystemSolver {
 class LS_Factory{
    
     static AtomicReference<Supplier<LinearSystemSolver>> FAST_FACTORY = new AtomicReference<>(
-            ()->LUSolver.builder(new CroutDoolittle()).normalize(true).improve(true).build());
+            ()->LUSolver.builder(new CroutDoolittle()).normalize(true).build());
     static AtomicReference<Supplier<LinearSystemSolver>> ROBUST_FACTORY = new AtomicReference<>(
-            ()->QRLinearSystemSolver.builder(new Householder()).normalize(true).improve(true).build());
+            ()->QRLinearSystemSolver.builder(new Householder()).normalize(true).build());
 }

@@ -22,16 +22,15 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntToDoubleFunction;
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.maths.Complex;
-import demetra.maths.ComplexComputer;
-import jdplus.maths.ComplexMath;
-import demetra.maths.Simplifying;
+import demetra.math.Complex;
+import jdplus.math.ComplexComputer;
+import jdplus.math.ComplexMath;
+import demetra.math.Simplifying;
 import demetra.util.Arrays2;
 import lombok.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.design.Unsafe;
-import jdplus.maths.ComplexUtility;
-import demetra.maths.RealPolynomial;
+import jdplus.math.ComplexUtility;
 
 /**
  *
@@ -90,9 +89,9 @@ public final class Polynomial{
      */
     public static Polynomial valueOf(double p0, double... p) {
         if (Arrays2.isNullOrEmpty(p)) {
-            if (p0 == 0) {
+            if (p0 == 0.0) {
                 return ZERO;
-            } else if (p0 == 1) {
+            } else if (p0 == 1.0) {
                 return ONE;
             } else {
                 return new Polynomial(new double[]{p0});
@@ -123,10 +122,6 @@ public final class Polynomial{
         return new Polynomial(Coefficients.of(coefficients));
     }
     
-    public static Polynomial of(RealPolynomial p){
-        return new Polynomial(Coefficients.of(p.toArray()));
-    }
-
     /**
      * Create a new Polynomial by using the specified coefficients, from reader.
      * The polynomial will be of degree <code>n-1</code> <br>, except if there

@@ -18,7 +18,7 @@ package jdplus.maths.matrices.decomposition;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.Constants;
+import demetra.math.Constants;
 
 /**
  * A Householder reflection is represented by a matrix of the form H = I - [2/(v'v)] * vv' 

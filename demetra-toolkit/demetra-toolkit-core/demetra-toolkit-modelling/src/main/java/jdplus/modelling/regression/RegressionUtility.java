@@ -10,7 +10,7 @@ import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.data.DoubleSeq;
-import demetra.modelling.regression.ITsVariable;
+import demetra.timeseries.regression.ITsVariable;
 import jdplus.maths.matrices.FastMatrix;
 
 /**

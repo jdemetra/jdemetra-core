@@ -19,13 +19,12 @@ package jdplus.linearsystem.internal;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import jdplus.data.accumulator.NeumaierAccumulator;
 import demetra.design.BuilderPattern;
 import jdplus.maths.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.decomposition.QRDecomposition;
 import jdplus.maths.matrices.FastMatrix;
 
@@ -41,7 +40,7 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
     public static class Builder {
 
         private final QRDecomposition qr;
-        private boolean improve, normalize;
+        private boolean normalize;
 
         private Builder(QRDecomposition qr) {
             this.qr = qr;
@@ -52,13 +51,8 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
             return this;
         }
 
-        public Builder improve(boolean improve) {
-            this.improve = improve;
-            return this;
-        }
-
         public QRLinearSystemSolver build() {
-            return new QRLinearSystemSolver(qr, normalize, improve);
+            return new QRLinearSystemSolver(qr, normalize);
         }
     }
 
@@ -66,12 +60,11 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
         return new Builder(qr);
     }
     private final QRDecomposition qr;
-    private final boolean improve, normalize;
+    private final boolean normalize;
 
-    private QRLinearSystemSolver(QRDecomposition qr, boolean normalize, boolean improve) {
+    private QRLinearSystemSolver(QRDecomposition qr, boolean normalize) {
         this.qr = qr;
         this.normalize = normalize;
-        this.improve = improve;
     }
 
     @Override
@@ -98,20 +91,7 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
             An = A;
         }
         qr.decompose(An);
-//        if (!qr.isFullRank()) {
-//            throw new MatrixException(MatrixException.SINGULAR);
-//        }
-
-        DataBlock b0 = improve ? DataBlock.of(b) : null;
         qr.leastSquares(b, b, null);
-        if (!improve) {
-            return;
-        }
-        DataBlock db = DataBlock.make(b.length());
-        db.robustProduct(An.rowsIterator(), b, new NeumaierAccumulator());
-        db.sub(b0);
-        qr.leastSquares(db, db, null);
-        b.sub(db);
     }
 
     @Override
@@ -141,18 +121,7 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
         if (!qr.isFullRank()) {
             throw new MatrixException(MatrixException.SINGULAR);
         }
-        FastMatrix B0 = improve ? B.deepClone() : null;
         B.applyByColumns(col -> qr.leastSquares(col, col, null));
-        if (!improve) {
-            return;
-        }
-        // improve the result
-        CanonicalMatrix DB = CanonicalMatrix.make(B.getRowsCount(), B.getColumnsCount());
-        DB.robustProduct(An, B, new NeumaierAccumulator());
-        DB.sub(B0);
-        DB.applyByColumns(col -> qr.leastSquares(col, col, null));
-        B.sub(DB);
-
     }
 
 }

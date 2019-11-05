@@ -19,10 +19,10 @@ package internal.jdplus.arima;
 
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
-import demetra.data.LogSign;
+import jdplus.data.LogSign;
 import demetra.design.Development;
 import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.RationalFunction;
@@ -40,7 +40,7 @@ public class QRMaLjungBoxFilter {
     private Polynomial ma;
     private double[] u;
 
-    private CanonicalMatrix G, X, V1;
+    private Matrix G, X, V1;
 
     private double m_t;
 
@@ -82,7 +82,7 @@ public class QRMaLjungBoxFilter {
     private void calcg(int m) {
 	RationalFunction rf = RationalFunction.of(Polynomial.ONE, ma);
 	double[] pi = rf.coefficients(n);
-	CanonicalMatrix gg = CanonicalMatrix.square(m);
+	Matrix gg = Matrix.square(m);
 
 	// compute first column
 	for (int i = 0; i < m; ++i) {
@@ -160,7 +160,7 @@ public class QRMaLjungBoxFilter {
 
 	// compute V1' * G * V1 = X' X and V (covar model)
 
-	V1 = CanonicalMatrix.square(q);
+	V1 = Matrix.square(q);
 
 	if (q > 0) {
 	    V1.diagonal().set(ma.get(q));

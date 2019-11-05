@@ -5,7 +5,7 @@
  */
 package jdplus.maths.matrices.decomposition;
 
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;
@@ -17,11 +17,11 @@ import jdplus.maths.matrices.FastMatrix;
 public interface ISingularValueDecomposition {
     void decompose(FastMatrix A)throws MatrixException;
     
-    CanonicalMatrix U();
+    Matrix U();
     
     DoubleSeq S();
     
-    CanonicalMatrix V();
+    Matrix V();
     
     boolean isFullRank();
     

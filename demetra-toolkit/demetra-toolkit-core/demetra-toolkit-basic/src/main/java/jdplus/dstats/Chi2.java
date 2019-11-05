@@ -20,7 +20,7 @@ import jdplus.dstats.internal.ProbInvFinder;
 import jdplus.dstats.internal.SpecialFunctions;
 import demetra.stats.ProbabilityType;
 import demetra.design.Development;
-import demetra.random.RandomNumberGenerator;
+import jdplus.random.RandomNumberGenerator;
 
 
 /**

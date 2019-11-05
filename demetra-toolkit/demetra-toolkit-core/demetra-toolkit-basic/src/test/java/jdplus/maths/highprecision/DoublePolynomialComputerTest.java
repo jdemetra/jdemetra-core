@@ -16,7 +16,7 @@
  */
 package jdplus.maths.highprecision;
 
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import java.util.Random;
 import jdplus.data.DataBlock;
 import jdplus.maths.polynomials.Polynomial;

@@ -5,7 +5,7 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.JulianEasterVariable;
+import demetra.timeseries.regression.JulianEasterVariable;
 import jdplus.data.DataBlock;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;

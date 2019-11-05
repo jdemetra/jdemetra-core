@@ -18,7 +18,7 @@ package internal.jdplus.arima;
 
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
-import demetra.data.LogSign;
+import jdplus.data.LogSign;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Legacy;
 import demetra.design.Development;
@@ -29,7 +29,7 @@ import jdplus.maths.polynomials.RationalFunction;
 import nbbrd.service.ServiceProvider;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -43,7 +43,7 @@ public class LjungBoxFilter implements ArmaFilter {
     private int m_n, m_p, m_q;
     private Polynomial m_ar, m_ma;
     private double[] m_u;
-    private CanonicalMatrix m_G, m_X, m_V1, m_L;
+    private Matrix m_G, m_X, m_V1, m_L;
     private double m_s, m_t;
 
     private void ar(double[] a) {
@@ -110,7 +110,7 @@ public class LjungBoxFilter implements ArmaFilter {
     private void calcg(int m) {
         RationalFunction rf = RationalFunction.of(Polynomial.ONE, m_ma);
         double[] pi = rf.coefficients(m_n);
-        CanonicalMatrix gg = CanonicalMatrix.square(m);
+        Matrix gg = Matrix.square(m);
 
         // compute first column
         for (int i = 0; i < m; ++i) {
@@ -214,9 +214,9 @@ public class LjungBoxFilter implements ArmaFilter {
         if (m > 0) {
             // compute V1' * G * V1 = X' X and V (covar model)
 
-            m_L = CanonicalMatrix.square(m_p + m_q);
+            m_L = Matrix.square(m_p + m_q);
             m_L.diagonal().set(1);
-            m_V1 = CanonicalMatrix.make(m, m_p + m_q);
+            m_V1 = Matrix.make(m, m_p + m_q);
             if (m_p > 0) {
                 double[] cov = arima.getAutoCovarianceFunction().values(m_p);
                 FastMatrix W = m_L.extract(0, m_p, 0, m_p);
@@ -259,7 +259,7 @@ public class LjungBoxFilter implements ArmaFilter {
             // compute the inverse of the covariance matrix
             SymmetricMatrix.lcholesky(m_L);
             m_s = 2 * LogSign.of(m_L.diagonal()).getValue();
-            CanonicalMatrix I = CanonicalMatrix.identity(m_p + m_q);
+            Matrix I = Matrix.identity(m_p + m_q);
             LowerTriangularMatrix.rsolve(m_L, I);
             LowerTriangularMatrix.lsolve(m_L, I.transpose());
             m_X.add(I);

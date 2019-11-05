@@ -5,13 +5,13 @@
  */
 package jdplus.maths.linearfilters.internal;
 
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
-import jdplus.maths.ComplexUtility;
+import jdplus.math.ComplexUtility;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.decomposition.EigenSystem;
 import jdplus.maths.matrices.decomposition.IEigenSystem;
 import jdplus.maths.polynomials.LeastSquaresDivision;
@@ -60,7 +60,7 @@ public class EigenValuesDecomposer {
                 w = P.toArray();
                 int n = P.degree();
                 if (n > 0) {
-                    CanonicalMatrix M = CanonicalMatrix.square(n+1);
+                    Matrix M = Matrix.square(n+1);
                     M.subDiagonal(-1).drop(0,1).set(1);
                     DataBlock col = M.column(n - 1).drop(0,1);
                     col.setAY(-1 / w[n], DataBlock.of(w, 0, n));

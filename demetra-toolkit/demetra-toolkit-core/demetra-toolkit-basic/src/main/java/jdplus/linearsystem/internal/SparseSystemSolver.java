@@ -20,10 +20,10 @@ import demetra.design.Development;
 import java.util.Arrays;
 import jdplus.data.DataBlock;
 import demetra.design.AlgorithmImplementation;
-import demetra.maths.Constants;
+import demetra.math.Constants;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -105,7 +105,7 @@ public final class SparseSystemSolver implements LinearSystemSolver {
         double[] X=new double[n*(n+1)];
         A.copyTo(X, 0);
         b.copyTo(X, n*n);
-        if (! solve(X, CanonicalMatrix.columnOf(b)))
+        if (! solve(X, Matrix.columnOf(b)))
             throw new MatrixException(MatrixException.SINGULAR);
     }
 

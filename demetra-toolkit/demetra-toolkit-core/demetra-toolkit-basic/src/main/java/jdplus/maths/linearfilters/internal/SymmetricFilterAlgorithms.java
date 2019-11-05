@@ -21,7 +21,7 @@ import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 
 /**
  *
@@ -49,7 +49,7 @@ public class SymmetricFilterAlgorithms {
             int nc = c.degree();
             int r = nq > nc ? nq : nc;
 
-            CanonicalMatrix a = CanonicalMatrix.square(r + 1);
+            Matrix a = Matrix.square(r + 1);
             double[] mc = new double[r + 1];
             for (int i = 0; i <= r; ++i) {
                 mc[r - i] = i <= nc ? c.get(i) : 0;

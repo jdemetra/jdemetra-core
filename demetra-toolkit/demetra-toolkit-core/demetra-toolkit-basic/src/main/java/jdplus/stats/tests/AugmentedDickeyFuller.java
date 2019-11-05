@@ -19,7 +19,7 @@ package jdplus.stats.tests;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.design.BuilderPattern;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.decomposition.Householder;
 import demetra.data.DoubleSeq;
 
@@ -74,7 +74,7 @@ public class AugmentedDickeyFuller {
             if (trend) {
                 ++ncols;
             }
-            CanonicalMatrix x = CanonicalMatrix.make(ndata - k, ncols);
+            Matrix x = Matrix.make(ndata - k, ncols);
 
             DataBlockIterator columns = x.reverseColumnsIterator();
             columns.next().copy(y.extract(k - 1, ndata - k));
@@ -105,12 +105,12 @@ public class AugmentedDickeyFuller {
     private static final double[] LT_10 = new double[]{-3.12705, -2.5856, -3.925, -22.380};
 
     private final boolean cnt, trend;
-    private final CanonicalMatrix x;
+    private final Matrix x;
     private final DoubleSeq y;
     private final DataBlock b, e;
     private final double t;
 
-    private AugmentedDickeyFuller(DoubleSeq y, CanonicalMatrix x, boolean cnt, boolean trend) {
+    private AugmentedDickeyFuller(DoubleSeq y, Matrix x, boolean cnt, boolean trend) {
         this.x = x;
         this.y = y;
         this.cnt = cnt;

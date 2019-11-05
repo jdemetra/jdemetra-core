@@ -16,9 +16,9 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.PeriodicContrasts;
+import demetra.timeseries.regression.PeriodicContrasts;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
@@ -34,9 +34,9 @@ import jdplus.maths.matrices.FastMatrix;
  */
 public class PeriodicContrastsFactory implements RegressionVariableFactory<PeriodicContrasts> {
 
-    public static CanonicalMatrix matrix(PeriodicContrasts var, int length, int start) {
+    public static Matrix matrix(PeriodicContrasts var, int length, int start) {
         int period = var.getPeriod();
-        CanonicalMatrix M = CanonicalMatrix.make(length, period - 1);
+        Matrix M = Matrix.make(length, period - 1);
         int lstart = period - start - 1;
         if (lstart < 0) {
             lstart += period;

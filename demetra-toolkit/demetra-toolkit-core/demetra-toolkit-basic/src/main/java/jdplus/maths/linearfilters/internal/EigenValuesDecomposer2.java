@@ -5,16 +5,16 @@
  */
 package jdplus.maths.linearfilters.internal;
 
-import demetra.maths.Complex;
-import demetra.maths.ComplexComputer;
+import demetra.math.Complex;
+import jdplus.math.ComplexComputer;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
-import jdplus.maths.ComplexMath;
-import jdplus.maths.ComplexUtility;
+import jdplus.math.ComplexMath;
+import jdplus.math.ComplexUtility;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.decomposition.EigenSystem;
 import jdplus.maths.matrices.decomposition.IEigenSystem;
 import jdplus.maths.polynomials.LeastSquaresDivision;
@@ -136,7 +136,7 @@ public class EigenValuesDecomposer2 {
                 return new Complex[]{Complex.cart(-c[0] / c[1])};
 
             default:
-                CanonicalMatrix M = CanonicalMatrix.square(n);
+                Matrix M = Matrix.square(n);
                 DataBlock col = M.column(n - 1);
                 double sn = c[n];
                 col.set(i -> -c[i] / sn);

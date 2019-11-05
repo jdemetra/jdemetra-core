@@ -17,7 +17,7 @@
 package jdplus.tramo;
 
 import demetra.data.Data;
-import demetra.modelling.regression.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import jdplus.regarima.regular.PreprocessingModel;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;

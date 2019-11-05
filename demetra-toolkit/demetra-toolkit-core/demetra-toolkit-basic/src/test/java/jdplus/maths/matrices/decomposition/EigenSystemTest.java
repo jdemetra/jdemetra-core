@@ -6,17 +6,17 @@
 package jdplus.maths.matrices.decomposition;
 
 import demetra.data.DoubleSeq;
-import demetra.maths.Complex;
-import demetra.maths.ComplexComputer;
+import demetra.math.Complex;
+import jdplus.math.ComplexComputer;
 import ec.tstoolkit.maths.linearfilters.SymmetricFrequencyResponse2;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
-import jdplus.maths.ComplexMath;
-import jdplus.maths.ComplexUtility;
+import jdplus.math.ComplexMath;
+import jdplus.math.ComplexUtility;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.linearfilters.SymmetricFrequencyResponse;
 import jdplus.maths.linearfilters.internal.SymmetricFilterAlgorithms;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.polynomials.Polynomial;
 import org.junit.Test;
 
@@ -45,7 +45,7 @@ public class EigenSystemTest {
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         int n = S.length() - 1, m = S.getLowerBound();
-        CanonicalMatrix M = CanonicalMatrix.square(n);
+        Matrix M = Matrix.square(n);
         M.subDiagonal(1).set(1);
         DataBlock row = M.row(n - 1);
         IntToDoubleFunction weights = S.weights();

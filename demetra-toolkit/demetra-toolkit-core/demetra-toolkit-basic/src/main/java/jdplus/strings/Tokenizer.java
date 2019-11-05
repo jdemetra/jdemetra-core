@@ -28,87 +28,71 @@ import demetra.design.Development;
 @Development(status = Development.Status.Alpha)
 public class Tokenizer {
 
-    private String m_str;
-    private int m_cur;
-    private char m_delimiter;
-    private boolean m_ws;
+    private final String input;
+    private int curpos;
+    private final char delimiter;
+    private final boolean ws;
 
-    // / <summary>
-    // / Default tokenizer, with items separated by white spaces
-    // / </summary>
-    // / <param name="s">The string being split</param>
     /**
-     *
-     * @param s
+     * Default tokenizer, with items separated by white spaces
+     * @param s The string being split
      */
     public Tokenizer(String s) {
-        m_cur = 0;
-        m_str = s;
-        m_ws = true;
+        curpos = 0;
+        input = s;
+        ws = true;
+        delimiter=0;
     }
 
-    // / <summary>
-    // / Tokenizer with a specified delimiter
-    // / </summary>
-    // / <param name="s">The string being split</param>
-    // / <param name="delimiter">The delimiter character</param>
     /**
-     *
-     * @param s
-     * @param delimiter
+     * Tokenizer with a specified delimiter
+     * @param s The string being split
+     * @param delimiter The delimiter
      */
     public Tokenizer(String s, char delimiter) {
-        m_cur = 0;
-        m_str = s;
-        m_ws = false;
-        m_delimiter = delimiter;
+        curpos = 0;
+        input = s;
+        ws = false;
+        this.delimiter = delimiter;
     }
 
-    // / <summary>
-    // / Checks if there is another token
-    // / </summary>
-    // / <returns>True if there is another token.</returns>
-    // / <remarks>That method should always be called before
-    // "NextToken"</remarks>
     /**
-     *
-     * @return
+     * Checks if there is another token. This method should always be called before
+     * a call to "nextToken"
+     * @return True if there is another token.
+     * 
      */
     public boolean hasNextToken() {
-        if (m_ws) {
-            while (m_cur < m_str.length()
-                    && Character.isWhitespace(m_str.charAt(m_cur))) {
-                ++m_cur;
+        if (ws) {
+            while (curpos < input.length()
+                    && Character.isWhitespace(input.charAt(curpos))) {
+                ++curpos;
             }
-            return m_cur < m_str.length();
+            return curpos < input.length();
         } else {
-            return m_cur < m_str.length();
+            return curpos < input.length();
         }
 
     }
 
-    // / <summary>
-    // / Retrieves the next token
-    // / </summary>
-    // / <returns>The next token. Coul be empty</returns>
     /**
-     *
-     * @return
+     * Retrieves the next token
+     * @return The next token. Could be empty.
      */
     public String nextToken() {
-        int cur = m_cur;
-        if (m_ws) {
-            while (m_cur < m_str.length()
-                    && !Character.isWhitespace(m_str.charAt(m_cur))) {
-                ++m_cur;
+        int cur = curpos;
+        if (ws) {
+            while (curpos < input.length()
+                    && !Character.isWhitespace(input.charAt(curpos))) {
+                ++curpos;
             }
-            String sub = m_str.substring(cur, m_cur);
+            String sub = input.substring(cur, curpos);
             return sub;
         } else {
-            while (m_cur < m_str.length() && m_str.charAt(m_cur) != m_delimiter) {
-                ++m_cur;
+            while (curpos < input.length() && input.charAt(curpos) != delimiter) {
+                ++curpos;
             }
-            String sub = m_str.substring(cur, m_cur++);
+            String sub = input.substring(cur, curpos++);
             return sub;
         }
     }

@@ -18,8 +18,8 @@ package jdplus.maths.functions.ssq;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.functions.IFunction;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.functions.IFunction;
+import jdplus.maths.matrices.Matrix;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -41,7 +41,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
     private double[] m_epsp;
     private double[] m_epsm;
     private double[] m_grad;
-    private CanonicalMatrix m_h;
+    private Matrix m_h;
     private final ISsqFunction fn;
     private DoubleSeq m_pt;
     private DoubleSeq m_ecur;
@@ -135,7 +135,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
             calcgrad();
         }
         int n = m_grad.length;
-        m_h = CanonicalMatrix.square(n);
+        m_h = Matrix.square(n);
         // compute first the diagonal
         for (int i = 0; i < n; ++i) {
             DoubleSeq de = m_de[i];

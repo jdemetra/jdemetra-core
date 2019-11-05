@@ -5,18 +5,14 @@
  */
 package jdplus.dstats;
 
-import jdplus.dstats.DStatException;
-import jdplus.dstats.T;
-import jdplus.dstats.Distribution;
 import demetra.stats.ProbabilityType;
-import jdplus.random.SystemRNG;
-import java.util.Random;
+import jdplus.random.JdkRNG;
 import org.assertj.core.api.Assertions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Ignore;
 import org.junit.Test;
-import demetra.random.RandomNumberGenerator;
+import jdplus.random.RandomNumberGenerator;
 
 /**
  *
@@ -418,7 +414,7 @@ public class TTest {
     }
 
     private RandomNumberGenerator getRandomNumberGenerator() {
-        return new SystemRNG(0);
+        return JdkRNG.newRandom(0);
     }
 
 }

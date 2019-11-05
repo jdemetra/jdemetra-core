@@ -25,7 +25,7 @@ import demetra.design.Immutable;
 import jdplus.dstats.internal.Utility.calcProbDelegate;
 import java.util.Formatter;
 import lombok.NonNull;
-import demetra.random.RandomNumberGenerator;
+import jdplus.random.RandomNumberGenerator;
 
 /**
  * 

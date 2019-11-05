@@ -22,7 +22,7 @@ import jdplus.regarima.regular.IRegressionTest;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.modelling.regression.Variable;
+import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
@@ -32,9 +32,9 @@ import jdplus.regarima.regular.ProcessingResult;
 import jdplus.regarima.regular.RegArimaModelling;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.sarima.SarimaModel;
-import demetra.modelling.regression.ILengthOfPeriodVariable;
-import demetra.modelling.regression.ITradingDaysVariable;
-import demetra.modelling.regression.IEasterVariable;
+import demetra.timeseries.regression.ILengthOfPeriodVariable;
+import demetra.timeseries.regression.ITradingDaysVariable;
+import demetra.timeseries.regression.IEasterVariable;
 
 /**
  * This module test for the presence of td, easter and mean in 

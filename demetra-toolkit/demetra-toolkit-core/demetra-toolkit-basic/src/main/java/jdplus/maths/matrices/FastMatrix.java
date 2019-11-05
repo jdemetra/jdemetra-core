@@ -19,7 +19,6 @@ package jdplus.maths.matrices;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.DataWindow;
-import jdplus.data.accumulator.DoubleAccumulator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
@@ -27,9 +26,9 @@ import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 import org.checkerframework.checker.index.qual.NonNegative;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.LogSign;
+import jdplus.data.LogSign;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.maths.matrices.decomposition.Householder;
@@ -42,9 +41,9 @@ import java.util.Iterator;
  */
 
 @Development(status = Development.Status.Release)
-public interface FastMatrix extends Matrix.Mutable{
+public interface FastMatrix extends MatrixType.Mutable{
     
-    public static final CanonicalMatrix EMPTY = new CanonicalMatrix(new double[0], 0, 0);
+    public static final Matrix EMPTY = new Matrix(new double[0], 0, 0);
     
     /**
      * This version try to return the current object if its type is Matrix. To
@@ -61,7 +60,7 @@ public interface FastMatrix extends Matrix.Mutable{
         if (matrix instanceof FastMatrix) {
             return (FastMatrix) matrix;
         } else {
-            return new CanonicalMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
+            return new Matrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
         }
     }
     
@@ -105,7 +104,7 @@ public interface FastMatrix extends Matrix.Mutable{
     @Override
     DataBlock column(@NonNull int icolumn);
     
-    CanonicalMatrix asCanonical();
+    Matrix asCanonical();
     
     SubMatrix asSubMatrix();
     
@@ -344,8 +343,8 @@ public interface FastMatrix extends Matrix.Mutable{
         }
     }
     
-    default CanonicalMatrix deepClone() {
-        return new CanonicalMatrix(toArray(), getRowsCount(), getColumnsCount());
+    default Matrix deepClone() {
+        return new Matrix(toArray(), getRowsCount(), getColumnsCount());
     }
    
     default void copy(FastMatrix M) {
@@ -576,19 +575,6 @@ public interface FastMatrix extends Matrix.Mutable{
         }
     }
     
-    default void robustProduct(final FastMatrix lm, final FastMatrix rm, DoubleAccumulator acc) {
-        DataBlockIterator iter = columnsIterator(), riter = lm.rowsIterator(), citer = rm.columnsIterator();
-        while (iter.hasNext()) {
-            riter.reset();
-            DataBlock cur = iter.next(), col = citer.next();
-            cur.set(riter, row -> {
-                acc.reset();
-                col.robustDot(row, acc);
-                return acc.sum();
-            });
-        }
-    }
-    
     default void addXaXt(final double a, final DataBlock x) {
         if (a == 0) {
             return;
@@ -651,8 +637,8 @@ public interface FastMatrix extends Matrix.Mutable{
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Operations">
-    default CanonicalMatrix times(FastMatrix B) {
-        CanonicalMatrix AB = new CanonicalMatrix(getRowsCount(), B.getColumnsCount());
+    default Matrix times(FastMatrix B) {
+        Matrix AB = new Matrix(getRowsCount(), B.getColumnsCount());
         if (isCanonical() && B.isCanonical()) {
             AB.addXY(asCanonical(), B.asCanonical());
         } else {
@@ -661,26 +647,26 @@ public interface FastMatrix extends Matrix.Mutable{
         return AB;
     }
     
-    default CanonicalMatrix times(double d) {
+    default Matrix times(double d) {
         if (d == 0) {
-            return new CanonicalMatrix(getRowsCount(), getColumnsCount());
+            return new Matrix(getRowsCount(), getColumnsCount());
         } else if (d == 1) {
             return deepClone();
         } else {
-            CanonicalMatrix r = deepClone();
+            Matrix r = deepClone();
             r.mul(d);
             return r;
         }
     }
     
-    default CanonicalMatrix plus(double d) {
-        CanonicalMatrix r = deepClone();
+    default Matrix plus(double d) {
+        Matrix r = deepClone();
         r.add(d);
         return r;
     }
     
-    default CanonicalMatrix plus(FastMatrix B) {
-        CanonicalMatrix AB = deepClone();
+    default Matrix plus(FastMatrix B) {
+        Matrix AB = deepClone();
         if (B.isCanonical()) {
             AB.add(B.asCanonical());
         } else {
@@ -689,14 +675,14 @@ public interface FastMatrix extends Matrix.Mutable{
         return AB;
     }
     
-    default CanonicalMatrix minus(double d) {
-        CanonicalMatrix r = deepClone();
+    default Matrix minus(double d) {
+        Matrix r = deepClone();
         r.sub(d);
         return r;
     }
     
-    default CanonicalMatrix minus(FastMatrix B) {
-        CanonicalMatrix AB = deepClone();
+    default Matrix minus(FastMatrix B) {
+        Matrix AB = deepClone();
         if (B.isCanonical()) {
             AB.sub(B.asCanonical());
         } else {
@@ -705,8 +691,8 @@ public interface FastMatrix extends Matrix.Mutable{
         return AB;
     }
     
-    default CanonicalMatrix minus() {
-        CanonicalMatrix r = deepClone();
+    default Matrix minus() {
+        Matrix r = deepClone();
         r.apply(x -> -x);
         return r;
     }
@@ -946,7 +932,7 @@ public interface FastMatrix extends Matrix.Mutable{
         return DataWindow.windowOf(storage, beg, beg + nrows * rowInc, rowInc);
     }
     
-    default CanonicalMatrix inv(){
+    default Matrix inv(){
         if (!isSquare()) {
             throw new IllegalArgumentException();
         }
@@ -956,7 +942,7 @@ public interface FastMatrix extends Matrix.Mutable{
             return null;
         }
         
-        CanonicalMatrix I=CanonicalMatrix.identity(getRowsCount());
+        Matrix I=Matrix.identity(getRowsCount());
         DataBlockIterator cols=I.columnsIterator();
         while (cols.hasNext()){
             hous.solve(cols.next());
@@ -1014,8 +1000,8 @@ public interface FastMatrix extends Matrix.Mutable{
     }
     
     @Override
-    default Matrix unmodifiable(){
-        return Matrix.ofInternal(toArray(), getRowsCount(), getColumnsCount());
+    default MatrixType unmodifiable(){
+        return MatrixType.of(toArray(), getRowsCount(), getColumnsCount());
     }
 }
 

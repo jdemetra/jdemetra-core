@@ -23,7 +23,7 @@ import jdplus.data.DataBlockIterator;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.DeterminantalTerm;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import demetra.util.SubArrayOfInt;
 import jdplus.leastsquares.QRSolvers;
 import jdplus.leastsquares.QRSolver;
@@ -354,7 +354,7 @@ public class FastKalmanFilter {
      * @return
      */
     public ConcentratedLikelihoodWithMissing process(final DoubleSeq y, final SubArrayOfInt ao,
-            final CanonicalMatrix x) {
+            final Matrix x) {
         fast = false;
         DeterminantalTerm det = new DeterminantalTerm();
         double[] c = c0.clone();
@@ -367,7 +367,7 @@ public class FastKalmanFilter {
         int n = y.length();
         double[] yl = new double[n];
         // double[] xa = new double[nx * dim];
-        CanonicalMatrix xl = CanonicalMatrix.make(n, nx);
+        Matrix xl = Matrix.make(n, nx);
         double[][] A = new double[nx][];
         double[] px = xl.getStorage();
 
@@ -444,10 +444,10 @@ public class FastKalmanFilter {
 
         QRSolver solver = QRSolvers.fastSolver();
         solver.solve(DataBlock.of(yl), xl);
-        CanonicalMatrix R = solver.R();
+        Matrix R = solver.R();
         double ssqerr = solver.ssqerr();
-        CanonicalMatrix u = UpperTriangularMatrix.inverse(R);
-        CanonicalMatrix bvar = SymmetricMatrix.UUt(u);
+        Matrix u = UpperTriangularMatrix.inverse(R);
+        Matrix bvar = SymmetricMatrix.UUt(u);
 
         double ldet = det.getLogDeterminant();
         if (ao != null && !ao.isEmpty()) {

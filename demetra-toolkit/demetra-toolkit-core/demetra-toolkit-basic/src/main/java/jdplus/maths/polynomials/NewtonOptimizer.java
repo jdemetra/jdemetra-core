@@ -16,7 +16,7 @@
  */
 package jdplus.maths.polynomials;
 
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import jdplus.maths.polynomials.Polynomial;
 import demetra.data.DoubleSeq;
 

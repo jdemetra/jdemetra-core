@@ -18,8 +18,8 @@ package jdplus.maths.matrices.decomposition;
 
 import demetra.design.Development;
 import jdplus.data.DataBlock;
-import demetra.data.LogSign;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.data.LogSign;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.matrices.FastMatrix;
 
@@ -33,6 +33,7 @@ import jdplus.maths.matrices.FastMatrix;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
+
 public interface LUDecomposition {
 
     void setPrecision(double eps);

@@ -5,7 +5,7 @@
  */
 package jdplus.maths.highprecision;
 
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

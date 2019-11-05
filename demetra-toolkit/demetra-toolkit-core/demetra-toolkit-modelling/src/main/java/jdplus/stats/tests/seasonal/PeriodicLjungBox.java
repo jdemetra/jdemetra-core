@@ -19,7 +19,7 @@ package jdplus.stats.tests.seasonal;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import jdplus.dstats.Chi2;
-import demetra.stats.AutoCovariances;
+import jdplus.stats.AutoCovariances;
 import demetra.stats.StatException;
 import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.TestType;

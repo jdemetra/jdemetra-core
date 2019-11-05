@@ -5,9 +5,9 @@
  */
 package jdplus.leastsquares;
 
-import jdplus.leastsquares.internal.AdvancedQRSolver;
+import jdplus.leastsquares.internal.DefaultQRSolver;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.decomposition.Householder;
 import jdplus.maths.matrices.decomposition.HouseholderWithPivoting;
 import java.util.Random;
@@ -29,28 +29,20 @@ public class ILeastSquaresSolverTest {
     @Ignore
     public void testPerformance() {
         int N=300, M=20, K=10000;
-        FastMatrix A=CanonicalMatrix.make(N, M);
+        FastMatrix A=Matrix.make(N, M);
         Random rnd=new Random(0);
         A.set(rnd::nextDouble);
         DataBlock y=DataBlock.make(N);
         y.set(rnd::nextDouble);
         long t0=System.currentTimeMillis();
         for (int i=0; i<K; ++i){
-            AdvancedQRSolver qr= AdvancedQRSolver.builder(new Householder()).build();
+            DefaultQRSolver qr= new DefaultQRSolver(new Householder());
             qr.solve(y, A);
         }
         long t1=System.currentTimeMillis();
         System.out.println(t1-t0);
-        t0=System.currentTimeMillis();
         for (int i=0; i<K; ++i){
-            AdvancedQRSolver qr= AdvancedQRSolver.builder(new Householder()).iterative(3).simpleIteration(true).build();
-            qr.solve(y, A);
-        }
-        t1=System.currentTimeMillis();
-        System.out.println(t1-t0);
-        t0=System.currentTimeMillis();
-        for (int i=0; i<K; ++i){
-            AdvancedQRSolver qr= AdvancedQRSolver.builder(new HouseholderWithPivoting()).build();
+            DefaultQRSolver qr= new DefaultQRSolver(new HouseholderWithPivoting());
             qr.solve(y, A);
         }
         t1=System.currentTimeMillis();

@@ -16,57 +16,42 @@
  */
 package jdplus.linearmodel;
 
-import demetra.eco.EcoException;
-import lombok.NonNull;
-import jdplus.leastsquares.internal.AdvancedQRSolver;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.matrices.UpperTriangularMatrix;
-import jdplus.maths.matrices.decomposition.Householder;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
-import nbbrd.service.ServiceProvider;
-import jdplus.leastsquares.QRSolver;
-import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.linearmodel.internal.OlsComputer;
+import demetra.design.Algorithm;
+import demetra.design.Development;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Development(status = Development.Status.Beta)
+@lombok.experimental.UtilityClass
 public class Ols {
 
-    private static AtomicReference<Supplier<QRSolver>> QR_FACTORY = new AtomicReference<>(()
-            -> AdvancedQRSolver.builder(new Householder()).build());
+    private final OlsLoader.Processor PROCESSOR = new OlsLoader.Processor();
 
-    public static void setDefaultSolver(Supplier<QRSolver> factory) {
-        QR_FACTORY.set(factory);
+    public void setProcessor(Processor algorithm) {
+        PROCESSOR.set(algorithm);
     }
 
-    private final QRSolver solver;
-
-    public Ols() {
-        solver = QR_FACTORY.get().get();
-    }
-
-    public Ols(@NonNull final QRSolver solver) {
-        this.solver = solver;
+    public Processor getProcessor() {
+        return PROCESSOR.get();
     }
 
     public LeastSquaresResults compute(LinearModel model) {
-        DoubleSeq y = model.getY();
-        FastMatrix x = model.variables();
-        if (!solver.solve(y, x)) {
-            throw new EcoException(EcoException.OLS_FAILED);
-        }
-        FastMatrix R = solver.R();
-        FastMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
-                .inverse(R));
-        return LeastSquaresResults.builder(y, x)
-                .mean(model.isMeanCorrection())
-                .estimation(solver.coefficients(), bvar)
-                .ssq(solver.ssqerr())
-                .residuals(solver.residuals())
-                .build();
+        return PROCESSOR.get().compute(model);
+    }
+
+    @Algorithm
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, 
+            mutability = Mutability.CONCURRENT,
+            fallback = OlsComputer.class)
+    @FunctionalInterface
+    public static interface Processor {
+        LeastSquaresResults compute(LinearModel model);
     }
 
 }

@@ -20,9 +20,9 @@ import jdplus.arima.estimation.IArimaMapping;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.Complex;
-import jdplus.maths.functions.FunctionException;
-import jdplus.maths.functions.ParamValidation;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.functions.FunctionException;
+import jdplus.math.functions.ParamValidation;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
@@ -217,7 +217,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
         // number of invalid coefficients
     }
 
-    public CanonicalMatrix expandCovariance(CanonicalMatrix cov) {
+    public Matrix expandCovariance(Matrix cov) {
         int dim = getDim();
         if (cov.getColumnsCount() != dim) {
             return null;
@@ -228,7 +228,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
                 idx[j++] = i;
             }
         }
-        CanonicalMatrix ecov = CanonicalMatrix.make(fixedItems.length, fixedItems.length);
+        Matrix ecov = Matrix.make(fixedItems.length, fixedItems.length);
         for (int i = 0; i < dim; ++i) {
             for (int j = 0; j <= i; ++j) {
                 double s = cov.get(i, j);

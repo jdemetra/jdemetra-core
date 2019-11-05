@@ -7,11 +7,11 @@ package jdplus.modelling.regression;
 
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
-import demetra.modelling.regression.GenericTradingDaysVariable;
-import demetra.modelling.regression.ICalendarVariable;
-import demetra.modelling.regression.ITsVariable;
-import demetra.modelling.regression.PeriodicContrasts;
-import demetra.modelling.regression.RegressionVariables;
+import demetra.timeseries.regression.GenericTradingDaysVariable;
+import demetra.timeseries.regression.ICalendarVariable;
+import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.PeriodicContrasts;
+import demetra.timeseries.regression.RegressionVariables;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.DayClustering;

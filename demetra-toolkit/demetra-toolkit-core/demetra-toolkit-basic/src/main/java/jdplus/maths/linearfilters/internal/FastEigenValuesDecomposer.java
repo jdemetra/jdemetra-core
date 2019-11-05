@@ -5,10 +5,10 @@
  */
 package jdplus.maths.linearfilters.internal;
 
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
-import jdplus.maths.ComplexUtility;
+import jdplus.math.ComplexUtility;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.FastEigenValuesSolver;

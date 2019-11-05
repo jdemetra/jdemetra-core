@@ -17,7 +17,7 @@
 package jdplus.maths.functions.minpack;
 
 import demetra.design.Development;
-import jdplus.maths.functions.FunctionException;
+import jdplus.math.functions.FunctionException;
 
 /**
  *

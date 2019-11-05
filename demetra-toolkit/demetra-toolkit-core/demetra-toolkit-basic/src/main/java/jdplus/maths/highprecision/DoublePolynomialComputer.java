@@ -16,7 +16,7 @@
  */
 package jdplus.maths.highprecision;
 
-import demetra.maths.Constants;
+import demetra.math.Constants;
 
 /**
  *

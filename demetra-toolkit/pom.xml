@@ -21,6 +21,7 @@
         <module>demetra-toolkit-core</module>
         <module>demetra-toolkit-r</module>
         <module>demetra-toolkit-api-advanced</module>
+        <module>demetra-toolkit-io</module>
     </modules>
   
     <properties>

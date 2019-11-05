@@ -16,10 +16,6 @@
  */
 package jdplus.linearmodel;
 
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.Ols;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.RobustCovarianceEstimators;
 import jdplus.data.DataBlock;
 import demetra.data.DataSets;
 import jdplus.data.analysis.WindowFunction;
@@ -52,8 +48,7 @@ public class RobustCovarianceEstimatorsTest {
                 .addX(DoubleSeq.of(DataSets.Longley.x6))
                 .build();
 
-        Ols ols = new Ols();
-        LeastSquaresResults rslts = ols.compute(model);
+        LeastSquaresResults rslts = Ols.compute(model);
 //        System.out.println(rslts.covariance());
         FastMatrix hac=RobustCovarianceEstimators.hac(model, rslts.getCoefficients(), WindowFunction.Bartlett, 5);
 //        System.out.println(hac);

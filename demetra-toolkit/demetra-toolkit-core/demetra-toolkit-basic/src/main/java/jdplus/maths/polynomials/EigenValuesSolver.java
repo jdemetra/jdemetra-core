@@ -5,9 +5,9 @@
  */
 package jdplus.maths.polynomials;
 
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.decomposition.EigenSystem;
 import jdplus.maths.matrices.decomposition.IEigenSystem;
 
@@ -34,7 +34,7 @@ public class EigenValuesSolver implements RootsSolver {
                 return true;
             default:
                 double pn = p.get(n);
-                CanonicalMatrix M = CanonicalMatrix.square(n + 1);
+                Matrix M = Matrix.square(n + 1);
                 M.subDiagonal(-1).drop(0, 1).set(1);
                 DataBlock col = M.column(n - 1).drop(0, 1);
                 col.setAY(-1 / pn, p.coefficients().drop(0, 1));

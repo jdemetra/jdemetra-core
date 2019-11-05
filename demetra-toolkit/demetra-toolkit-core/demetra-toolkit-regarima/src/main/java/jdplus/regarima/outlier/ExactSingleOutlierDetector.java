@@ -32,7 +32,7 @@ import jdplus.leastsquares.QRSolver;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -145,7 +145,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
                 return true;
             }
 
-            Xl = CanonicalMatrix.make(n, regs.getColumnsCount());
+            Xl = Matrix.make(n, regs.getColumnsCount());
             DataBlockIterator rcols = regs.columnsIterator(), drcols = Xl.columnsIterator();
             while (rcols.hasNext()) {
                 filter.apply(rcols.next(), drcols.next());

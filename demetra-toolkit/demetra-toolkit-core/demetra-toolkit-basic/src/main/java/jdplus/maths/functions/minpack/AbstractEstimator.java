@@ -18,8 +18,8 @@ package jdplus.maths.functions.minpack;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.functions.FunctionException;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.functions.FunctionException;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.matrices.SymmetricMatrix;
 
@@ -114,8 +114,8 @@ public abstract class AbstractEstimator implements IEstimator {
     }
 
     @Override
-    public CanonicalMatrix covariance(IEstimationProblem problem) {
-        CanonicalMatrix cur = curvature(problem);
+    public Matrix covariance(IEstimationProblem problem) {
+        Matrix cur = curvature(problem);
         try {
             return SymmetricMatrix.inverse(cur);
         } catch (MatrixException ex) {
@@ -130,7 +130,7 @@ public abstract class AbstractEstimator implements IEstimator {
      * @return covariance matrix
      */
     @Override
-    public CanonicalMatrix curvature(IEstimationProblem problem) {
+    public Matrix curvature(IEstimationProblem problem) {
 
         // set up the jacobian
         updateJacobian(problem);
@@ -147,7 +147,7 @@ public abstract class AbstractEstimator implements IEstimator {
         int rows = problem.getMeasurementsCount();
         int cols = problem.getParametersCount();
         int Max = cols * rows;
-        CanonicalMatrix jTj = CanonicalMatrix.square(cols);
+        Matrix jTj = Matrix.square(cols);
         for (int i = 0; i < cols; ++i) {
             for (int j = i; j < cols; ++j) {
                 double sum = 0;
@@ -237,7 +237,7 @@ public abstract class AbstractEstimator implements IEstimator {
         }
         double[] errors = new double[p];
         double c = Math.sqrt(chiSquare(problem) / (m - p));
-        CanonicalMatrix covar = covariance(problem);
+        Matrix covar = covariance(problem);
         DataBlock diag = covar.diagonal();
         for (int i = 0; i < errors.length; ++i) {
             errors[i] = Math.sqrt(diag.get(i)) * c;

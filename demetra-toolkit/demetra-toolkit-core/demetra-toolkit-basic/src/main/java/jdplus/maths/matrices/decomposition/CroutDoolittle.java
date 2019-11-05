@@ -19,7 +19,7 @@ package jdplus.maths.matrices.decomposition;
 
 
 import demetra.design.Development;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.matrices.FastMatrix;
 

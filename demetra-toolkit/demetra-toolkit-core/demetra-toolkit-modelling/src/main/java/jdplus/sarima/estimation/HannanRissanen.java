@@ -20,7 +20,7 @@ import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import demetra.design.BuilderPattern;
 import jdplus.leastsquares.QRSolvers;
 import jdplus.leastsquares.QRSolver;
@@ -124,7 +124,7 @@ public class HannanRissanen {
         this.biascorrection=builder.biascorrection;
     }
     
-    private double[] ls(CanonicalMatrix mat, double[] y, boolean bbic) {
+    private double[] ls(Matrix mat, double[] y, boolean bbic) {
         QRSolver solver = QRSolvers.fastSolver();
         solver.solve(DataBlock.of(y), mat);
         DoubleSeq pi = solver.coefficients();
@@ -147,7 +147,7 @@ public class HannanRissanen {
         double[] a1 = new double[n];
         double[] a2 = new double[n];
         double[] res = new double[n];
-        CanonicalMatrix mat = CanonicalMatrix.make(n, np + nq);
+        Matrix mat = Matrix.make(n, np + nq);
         double[] mdata = mat.getStorage();
         for (int i = 0; i < n; ++i) {
             int picur = 0;
@@ -335,7 +335,7 @@ public class HannanRissanen {
         int np = m_spec.getP() + m_spec.getBp() * (1 + m_spec.getP());
         int nq = m_spec.getQ() + m_spec.getBq() * (1 + m_spec.getQ());
 
-        CanonicalMatrix mat =  CanonicalMatrix.make(nc, np + nq);
+        Matrix mat =  Matrix.make(nc, np + nq);
         double[] dmat = mat.getStorage();
         double[] data = new double[nc];
         System.arraycopy(m_data, m, data, 0, nc);

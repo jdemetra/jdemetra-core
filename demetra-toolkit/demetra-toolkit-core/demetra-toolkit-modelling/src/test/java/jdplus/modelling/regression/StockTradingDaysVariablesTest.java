@@ -14,8 +14,8 @@ import java.util.Collections;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
-import demetra.modelling.regression.StockTradingDays;
-import jdplus.maths.matrices.CanonicalMatrix;
+import demetra.timeseries.regression.StockTradingDays;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
 
 /**

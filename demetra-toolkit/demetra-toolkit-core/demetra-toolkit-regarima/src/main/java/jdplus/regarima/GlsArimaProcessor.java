@@ -21,7 +21,7 @@ import jdplus.arima.IArimaModel;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import jdplus.likelihood.LogLikelihoodFunction;
-import jdplus.maths.functions.IParametricMapping;
+import jdplus.math.functions.IParametricMapping;
 import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;

@@ -18,10 +18,10 @@ package jdplus.maths.polynomials;
 
 import demetra.design.Development;
 import java.util.Arrays;
-import demetra.maths.Complex;
-import jdplus.maths.ComplexUtility;
-import demetra.maths.Arithmetics;
-import demetra.maths.Simplifying;
+import demetra.math.Complex;
+import jdplus.math.ComplexUtility;
+import jdplus.math.Arithmetics;
+import demetra.math.Simplifying;
 import demetra.util.IntList;
 
 /**

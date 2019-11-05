@@ -21,12 +21,12 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.design.SkipProcessing;
 import demetra.util.Arrays2;
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 
 /**
  * Rational filters are the ratio of two filters. They are defined in
@@ -187,7 +187,7 @@ public final class RationalFilter implements IRationalFilter {
 
         double[] db = bd.weightsToArray(), df = fd.weightsToArray();
 
-        CanonicalMatrix m = CanonicalMatrix.square(ne);
+        Matrix m = Matrix.square(ne);
         // initialisation of the matrix
         // left/up block [k+1]
         for (int i = 0; i <= ndf; ++i) {

@@ -17,7 +17,7 @@
 package jdplus.maths.matrices;
 
 import demetra.design.Development;
-import demetra.maths.MathException;
+import demetra.math.MathException;
 
 /**
  *

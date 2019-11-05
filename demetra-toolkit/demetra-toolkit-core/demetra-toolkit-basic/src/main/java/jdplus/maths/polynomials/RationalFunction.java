@@ -19,8 +19,8 @@ package jdplus.maths.polynomials;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.design.SkipProcessing;
-import demetra.maths.Complex;
-import demetra.maths.Constants;
+import demetra.math.Complex;
+import demetra.math.Constants;
 
 /**
  * Rational function expansion, defined by N(x)/D(x)

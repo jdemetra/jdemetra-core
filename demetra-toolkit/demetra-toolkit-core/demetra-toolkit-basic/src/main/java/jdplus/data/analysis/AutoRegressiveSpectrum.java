@@ -21,7 +21,7 @@ import jdplus.data.DataBlockIterator;
 import jdplus.data.DataWindow;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.matrices.decomposition.Householder;
 
@@ -113,7 +113,7 @@ public class AutoRegressiveSpectrum {
             if (nc < nar) {
                 return;
             }
-            CanonicalMatrix M = CanonicalMatrix.make(nc, nar);
+            Matrix M = Matrix.make(nc, nar);
             DataWindow rc = DataWindow.windowOf(all, nar, n, 1);
             DataBlockIterator cols = M.columnsIterator();
             while (cols.hasNext()) {

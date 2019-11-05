@@ -5,7 +5,7 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.LengthOfPeriod;
+import demetra.timeseries.regression.LengthOfPeriod;
 import jdplus.data.DataBlock;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;

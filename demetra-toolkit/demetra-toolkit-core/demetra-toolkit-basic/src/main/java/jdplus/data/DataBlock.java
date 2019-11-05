@@ -16,13 +16,12 @@
  */
 package jdplus.data;
 
-import demetra.data.DoubleList;
-import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
+import demetra.data.DoubleSeq;
+import demetra.data.DoubleList;
 import demetra.design.Development;
 import demetra.design.Unsafe;
 import demetra.util.function.BiDoublePredicate;
-import jdplus.data.accumulator.DoubleAccumulator;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.DoubleBinaryOperator;
@@ -814,34 +813,6 @@ public final class DataBlock implements DoubleSeq.Mutable {
         return s;
     }
 
-    /**
-     * Computes in a robust way the scalar product
-     *
-     * @param x The other DataBlock. Cannot be smaller than this object.
-     * @param sum The robust accumulator. Should be correctly initialized. It
-     * will contain the result on exit *
-     */
-    public void robustDot(DataBlock x, DoubleAccumulator sum) {
-        if (inc == 1) {
-            if (x.inc == 1) {
-                for (int i = beg, j = x.beg; i != end; ++i, ++j) {
-                    sum.add(data[i] * x.data[j]);
-                }
-            } else {
-                for (int i = beg, j = x.beg; i != end; ++i, j += x.inc) {
-                    sum.add(data[i] * x.data[j]);
-                }
-            }
-        } else if (x.inc == 1) {
-            for (int i = beg, j = x.beg; i != end; i += inc, ++j) {
-                sum.add(data[i] * x.data[j]);
-            }
-        } else {
-            for (int i = beg, j = x.beg; i != end; i += inc, j += x.inc) {
-                sum.add(data[i] * x.data[j]);
-            }
-        }
-    }
 
     @Override
     public double sum() {
@@ -958,30 +929,10 @@ public final class DataBlock implements DoubleSeq.Mutable {
         }
     }
 
-    public void product(DataBlock row, Iterator<DataBlock> cols, DoubleAccumulator acc) {
-        int idx = beg;
-        while (cols.hasNext()) {
-            acc.reset();
-            cols.next().robustDot(row, acc);
-            data[idx] = acc.sum();
-            idx += inc;
-        }
-    }
-
     public void product(Iterator<DataBlock> rows, DataBlock column) {
         int idx = beg;
         while (rows.hasNext()) {
             data[idx] = column.dot(rows.next());
-            idx += inc;
-        }
-    }
-
-    public void robustProduct(Iterator<DataBlock> rows, DataBlock column, DoubleAccumulator acc) {
-        int idx = beg;
-        while (rows.hasNext()) {
-            acc.reset();
-            column.robustDot(rows.next(), acc);
-            data[idx] = acc.sum();
             idx += inc;
         }
     }
@@ -1322,6 +1273,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
      * @param x
      * @param fn
      */
+    @Override
     public void set(@NonNull DoubleSeq x, @NonNull DoubleUnaryOperator fn) {
         DoubleSeqCursor xcell = x.cursor();
         for (int i = beg; i != end; i += inc) {
@@ -1447,12 +1399,14 @@ public final class DataBlock implements DoubleSeq.Mutable {
         }
     }
 
+    @Override
     public void set(@NonNull DoubleSupplier fn) {
         for (int i = beg; i != end; i += inc) {
             data[i] = fn.getAsDouble();
         }
     }
 
+    @Override
     public void set(IntToDoubleFunction fn) {
         if (inc == 1) {
             for (int i = beg, j = 0; i < end; ++i, ++j) {
@@ -1465,6 +1419,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
         }
     }
 
+    @Override
     public void set(double val) {
         if (inc == 1) {
             for (int i = beg; i < end; ++i) {

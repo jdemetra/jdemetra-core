@@ -22,7 +22,7 @@ import jdplus.data.DataBlock;
 import jdplus.linearsystem.internal.QRLinearSystemSolver;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.decomposition.Householder;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.RationalFunction;
@@ -46,7 +46,7 @@ public class AutoCovarianceComputers {
             RationalFunction rfe = RationalFunction.of(ma, ar);
             double[] cr = rfe.coefficients(q+1);
 
-            CanonicalMatrix M = CanonicalMatrix.square(r0);
+            Matrix M = Matrix.square(r0);
             DataBlock x = DataBlock.of(c, 0, r0);
             for (int i = 0; i <= q; ++i) {
                 double s = 0;

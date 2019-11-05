@@ -19,7 +19,7 @@ package jdplus.maths.matrices;
 import jdplus.data.DataBlock;
 import jdplus.data.DataWindow;
 import demetra.design.Development;
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import jdplus.data.analysis.FFT;
 import demetra.design.Immutable;
 import demetra.util.Arrays2;
@@ -127,8 +127,8 @@ public final class ToeplitzMatrix {
         this.r = r.clone();
     }
 
-    public CanonicalMatrix asMatrix() {
-        CanonicalMatrix T = new CanonicalMatrix(r.length, r.length);
+    public Matrix asMatrix() {
+        Matrix T = new Matrix(r.length, r.length);
         DataBlock diag = T.diagonal();
         diag.set(r[0]);
         DataWindow ldiag = diag.window();
@@ -145,9 +145,9 @@ public final class ToeplitzMatrix {
      *
      * @return
      */
-    public CanonicalMatrix inverse() {
+    public Matrix inverse() {
         int n = r.length, nc = n - 1;
-        CanonicalMatrix m = new CanonicalMatrix(n, n);
+        Matrix m = new Matrix(n, n);
         // double[] rc = new double[nc];
         // Array.Copy(m_r, rc, nc);
         double[] y = solveDurbinSystem(r);

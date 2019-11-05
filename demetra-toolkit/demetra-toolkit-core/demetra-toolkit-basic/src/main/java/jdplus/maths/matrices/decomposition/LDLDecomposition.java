@@ -7,7 +7,7 @@ package jdplus.maths.matrices.decomposition;
 
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;
 
@@ -21,7 +21,7 @@ import jdplus.maths.matrices.FastMatrix;
  */
 public class LDLDecomposition {
 
-    private CanonicalMatrix M;
+    private Matrix M;
 
     public void decompose(FastMatrix S, double zero) {
         M = S.deepClone();
@@ -74,14 +74,14 @@ public class LDLDecomposition {
         LowerTriangularMatrix.toLower(M);
     }
 
-    public CanonicalMatrix L() {
-        CanonicalMatrix L = M.deepClone();
+    public Matrix L() {
+        Matrix L = M.deepClone();
         L.diagonal().set(1);
         return L;
     }
 
-    public CanonicalMatrix D() {
-        return CanonicalMatrix.diagonal(M.diagonal());
+    public Matrix D() {
+        return Matrix.diagonal(M.diagonal());
     }
 
     public DoubleSeq diagonal() {

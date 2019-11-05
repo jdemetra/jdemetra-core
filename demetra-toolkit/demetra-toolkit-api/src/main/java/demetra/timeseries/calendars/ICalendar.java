@@ -6,7 +6,7 @@
 package demetra.timeseries.calendars;
 
 import demetra.timeseries.TsDomain;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -21,5 +21,5 @@ public interface ICalendar {
      * @return The (weighted) number of holidays for each period of the domain.
      * The different arrays correspond to Mondays...Sundays
      */
-    Matrix holidays(TsDomain domain);
+    MatrixType holidays(TsDomain domain);
 }

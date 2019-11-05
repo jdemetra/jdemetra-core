@@ -18,8 +18,8 @@
 package jdplus.maths.matrices.decomposition;
 
 import demetra.design.Development;
-import demetra.maths.Constants;
-import jdplus.maths.matrices.CanonicalMatrix;
+import demetra.math.Constants;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.matrices.FastMatrix;
 

@@ -19,13 +19,13 @@
 package jdplus.maths.functions.riso;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.functions.IFunction;
-import jdplus.maths.functions.IFunctionDerivatives;
-import jdplus.maths.functions.IFunctionPoint;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.functions.ParamValidation;
+import jdplus.math.functions.IFunction;
+import jdplus.math.functions.IFunctionDerivatives;
+import jdplus.math.functions.IFunctionPoint;
+import jdplus.maths.matrices.Matrix;
+import jdplus.math.functions.ParamValidation;
 import demetra.data.DoubleSeq;
-import jdplus.maths.functions.FunctionMinimizer;
+import jdplus.math.functions.FunctionMinimizer;
 
 /**
  *
@@ -103,7 +103,7 @@ public class LbfgsMinimizer implements FunctionMinimizer {
     }
 
     @Override
-    public CanonicalMatrix curvatureAtMinimum() {
+    public Matrix curvatureAtMinimum() {
         return fpt.derivatives().hessian();
     }
 

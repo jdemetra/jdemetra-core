@@ -5,10 +5,10 @@
  */
 package jdplus.maths.polynomials;
 
-import demetra.maths.Complex;
-import demetra.maths.Constants;
+import demetra.math.Complex;
+import demetra.math.Constants;
 import java.util.Random;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -35,8 +35,8 @@ public class FastEigenValuesSolver implements RootsSolver {
             this.s = 0;
         }
 
-        CanonicalMatrix asMatrix(int n, int pos) {
-            CanonicalMatrix M = CanonicalMatrix.identity(n);
+        Matrix asMatrix(int n, int pos) {
+            Matrix M = Matrix.identity(n);
             fill(M.extract(pos, 2, pos, 2));
             return M;
         }
@@ -200,7 +200,7 @@ public class FastEigenValuesSolver implements RootsSolver {
     private int[] its;
     private double tol = Constants.getEpsilon();
     private Complex[] shifts;
-    private CanonicalMatrix D = CanonicalMatrix.square(2);
+    private Matrix D = Matrix.square(2);
 
     private void qr(Polynomial p) {
         //    polynomial has a degree larger than 2
@@ -334,13 +334,13 @@ public class FastEigenValuesSolver implements RootsSolver {
         D.set(0);
         if (k == 0) {
             // unoptimized
-            CanonicalMatrix R = CanonicalMatrix.square(2);
+            Matrix R = Matrix.square(2);
             R.set(0, 0, -B[0].s / C[0].s);
             double r11 = -B[1].s / C[1].s;
             R.set(0, 1, -(B[0].c * B[1].c - r11 * C[0].c * C[1].c) / C[0].s);
             R.set(1, 1, r11 * Q[1].c);
 
-            CanonicalMatrix A = CanonicalMatrix.square(2);
+            Matrix A = Matrix.square(2);
             A.set(0, 0, Q[0].c);
             A.set(1, 0, Q[0].s);
             A.set(0, 1, -Q[0].s);
@@ -348,7 +348,7 @@ public class FastEigenValuesSolver implements RootsSolver {
             D.product(A, R);
 
         } else {
-            CanonicalMatrix R = CanonicalMatrix.make(3, 2);
+            Matrix R = Matrix.make(3, 2);
             double r10 = -B[k].s / C[k].s;
             R.set(1, 0, r10);
             R.set(0, 0, -(B[k - 1].c * B[k].c - r10 * C[k - 1].c * C[k].c) / C[k - 1].s);
@@ -357,7 +357,7 @@ public class FastEigenValuesSolver implements RootsSolver {
             R.set(1, 1, -(B[k].c * B[k + 1].c - r21 * C[k].c * C[k + 1].c) / C[k].s);
             R.set(2, 1, r21 * Q[k + 1].c);
 
-            CanonicalMatrix A = CanonicalMatrix.square(2);
+            Matrix A = Matrix.square(2);
             A.set(0, 0, Q[k].c);
             A.set(1, 0, Q[k].s);
             A.set(0, 1, -Q[k].s);

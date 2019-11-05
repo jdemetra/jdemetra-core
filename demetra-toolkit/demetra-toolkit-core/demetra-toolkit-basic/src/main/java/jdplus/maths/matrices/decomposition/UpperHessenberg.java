@@ -6,7 +6,7 @@
 package jdplus.maths.matrices.decomposition;
 
 import jdplus.data.DataBlockIterator;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.matrices.MatrixWindow;
 
@@ -20,16 +20,16 @@ import jdplus.maths.matrices.MatrixWindow;
 public class UpperHessenberg {
 
     private final HouseholderReflection[] householderReflections;
-    private final CanonicalMatrix H;
+    private final Matrix H;
 
-    public static UpperHessenberg of(CanonicalMatrix A) {
+    public static UpperHessenberg of(Matrix A) {
         if (! A.isSquare())
             throw new MatrixException(MatrixException.SQUARE);
         else 
             return new UpperHessenberg(A);
     }
     
-    private UpperHessenberg(CanonicalMatrix A){
+    private UpperHessenberg(Matrix A){
         int n = A.getRowsCount();
         H = A.deepClone();
         if (n <= 2) {

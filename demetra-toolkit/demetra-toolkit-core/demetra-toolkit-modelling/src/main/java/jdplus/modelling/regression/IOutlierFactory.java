@@ -7,7 +7,7 @@ package jdplus.modelling.regression;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.modelling.regression.IOutlier;
+import demetra.timeseries.regression.IOutlier;
 import jdplus.maths.linearfilters.RationalBackFilter;
 import java.time.LocalDateTime;
 

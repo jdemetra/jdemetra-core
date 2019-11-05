@@ -16,9 +16,6 @@
  */
 package jdplus.maths.matrices;
 
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SubMatrix;
-import jdplus.maths.matrices.FastMatrix;
 import java.util.Random;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -54,7 +51,7 @@ public class FastMatrixTest {
                 .ncolumns(n)
                 .build();
         A.set((i, j) -> i + 10 * j);
-        CanonicalMatrix B=A.deepClone();
+        Matrix B=A.deepClone();
         int del=3;
         A.upLeftShift(del);
         assertTrue(A.extract(0, m-del, 0, n-del).minus(B.extract(del, m, del, n)).isZero(1e15));
@@ -69,7 +66,7 @@ public class FastMatrixTest {
                 .ncolumns(n)
                 .build();
         A.set((i, j) -> i + 10 * j);
-        CanonicalMatrix B=A.deepClone();
+        Matrix B=A.deepClone();
         int del=2;
         A.downRightShift(del);
         assertTrue(A.extract(del, m-del, del, n-del).minus(B.extract(0, m-del, 0, n-del)).isZero(1e15));
@@ -80,7 +77,7 @@ public class FastMatrixTest {
 
     public static void stressColumnsTest() {
         System.out.println("Columns");
-        CanonicalMatrix m = CanonicalMatrix.make(N, M);
+        Matrix m = Matrix.make(N, M);
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             m.applyByColumns(x -> x.set(10));
@@ -112,7 +109,7 @@ public class FastMatrixTest {
 
      public static void stressRowsTest() {
         System.out.println("Rows");
-        CanonicalMatrix m = CanonicalMatrix.make(N, M);
+        Matrix m = Matrix.make(N, M);
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             m.applyByRows(x -> x.set(0));
@@ -144,18 +141,19 @@ public class FastMatrixTest {
 
     @Test
     public void testRC() {
-        CanonicalMatrix A = CanonicalMatrix.make(10, 10);
+        Matrix A = Matrix.make(10, 10);
         A.rows().forEach(row -> row.set(i -> row.getStartPosition() + i));
         System.out.println(A);
-        A = CanonicalMatrix.make(10, 10);
+        A = Matrix.make(10, 10);
         A.columns().forEach(col -> col.set(i -> col.getStartPosition() - i));
         System.out.println(A);
     }
 
     @Test
     public void testProduct() {
-        CanonicalMatrix A = CanonicalMatrix.make(3, 4), B = CanonicalMatrix.make(4, 2);
-        CanonicalMatrix C = CanonicalMatrix.make(A.getRowsCount(), B.getColumnsCount());
+        Matrix A = Matrix.make(3, 4);
+        Matrix B = Matrix.make(4, 2);
+        Matrix C = Matrix.make(A.getRowsCount(), B.getColumnsCount());
         A.set((i, j) -> i + j);
         B.set((i, j) -> (i + 1) * (j + 1));
 
@@ -168,8 +166,9 @@ public class FastMatrixTest {
 
     @Test
     public void testProduct2() {
-        CanonicalMatrix A = CanonicalMatrix.make(3, 4), B = CanonicalMatrix.make(2, 4);
-        CanonicalMatrix C = CanonicalMatrix.make(A.getRowsCount(), B.getRowsCount());
+        Matrix A = Matrix.make(3, 4);
+        Matrix B = Matrix.make(2, 4);
+        Matrix C = Matrix.make(A.getRowsCount(), B.getRowsCount());
         A.set((i, j) -> i + j);
         B.set((j, i) -> (i + 1) * (j + 1));
 
@@ -182,8 +181,9 @@ public class FastMatrixTest {
 
     @Test
     public void testProduct3() {
-        CanonicalMatrix A = CanonicalMatrix.make(3, 4), B = CanonicalMatrix.make(4, 2);
-        CanonicalMatrix C = CanonicalMatrix.make(A.getRowsCount(), B.getColumnsCount());
+        Matrix A = Matrix.make(3, 4);
+        Matrix B = Matrix.make(4, 2);
+        Matrix C = Matrix.make(A.getRowsCount(), B.getColumnsCount());
         A.set((i, j) -> i + j);
         B.set((i, j) -> (i + 1) * (j + 1));
 
@@ -196,8 +196,9 @@ public class FastMatrixTest {
 
     public static void stressProductTest() {
         System.out.println("Product");
-        CanonicalMatrix A = CanonicalMatrix.make(100, 10), B = CanonicalMatrix.make(10, 20);
-        CanonicalMatrix C = CanonicalMatrix.make(A.getRowsCount(), B.getColumnsCount());
+        Matrix A = Matrix.make(100, 10);
+        Matrix B = Matrix.make(10, 20);
+        Matrix C = Matrix.make(A.getRowsCount(), B.getColumnsCount());
         Random rnd = new Random(0);
         A.set((i, j) -> rnd.nextDouble());
         B.set((i, j) -> rnd.nextDouble());

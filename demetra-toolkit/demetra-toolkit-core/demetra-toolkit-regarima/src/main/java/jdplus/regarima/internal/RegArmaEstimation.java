@@ -18,7 +18,7 @@ package jdplus.regarima.internal;
 
 import jdplus.regarima.RegArmaModel;
 import jdplus.arima.IArimaModel;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 
 /**
  *
@@ -33,6 +33,6 @@ public class RegArmaEstimation<S extends IArimaModel> {
     private boolean converged;
     private double[] parameters;
     private double[] gradient;
-    private CanonicalMatrix hessian;
+    private Matrix hessian;
     private int degreesOfFreedom;
 }

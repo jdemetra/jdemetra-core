@@ -17,14 +17,14 @@
 package jdplus.maths.functions.levmar;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.functions.ParamValidation;
+import jdplus.math.functions.ParamValidation;
 import jdplus.maths.functions.ssq.ISsqFunction;
 import jdplus.maths.functions.ssq.ISsqFunctionDerivatives;
 import jdplus.maths.functions.ssq.ISsqFunctionPoint;
 import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
 
 /**
@@ -97,7 +97,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
     private ISsqFunctionPoint fcur_, ftry_;
     private DataBlock ecur;
     private double Fcur_, Ftry_;
-    private CanonicalMatrix J, V;
+    private Matrix J, V;
     private DoubleSeq G;
     //private SubMatrix J, K;
     private double scale_, scale2_;
@@ -120,7 +120,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
     }
 
     @Override
-    public CanonicalMatrix curvatureAtMinimum() {
+    public Matrix curvatureAtMinimum() {
         if (V == null) {
             ISsqFunctionDerivatives derivatives = fcur_.ssqDerivatives();
             V = derivatives.hessian();
@@ -191,7 +191,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
         int kiter = 0;
         while (kiter++ < 100) {
             DataBlock dp = null;
-            CanonicalMatrix K = V.deepClone();
+            Matrix K = V.deepClone();
             if (mu > 0) {
                 K.diagonal().add(mu);
             }
@@ -325,7 +325,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
         scale2_ = Fcur_;
         scale_ = Math.sqrt(Fcur_);
         int n = ecur.length(), m = fn_.getDomain().getDim();
-        J = CanonicalMatrix.make(n, m);
+        J = Matrix.make(n, m);
         Jte = DataBlock.make(m);
         while (iter++ < maxIter) {
             if (!iterate()) {

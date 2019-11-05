@@ -16,7 +16,7 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.PeriodicDummies;
+import demetra.timeseries.regression.PeriodicDummies;
 import jdplus.modelling.regression.Regression;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;

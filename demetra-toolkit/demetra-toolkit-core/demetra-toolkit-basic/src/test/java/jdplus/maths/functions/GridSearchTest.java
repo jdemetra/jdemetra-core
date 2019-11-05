@@ -5,6 +5,12 @@
  */
 package jdplus.maths.functions;
 
+import jdplus.math.functions.GridSearch;
+import jdplus.math.functions.IFunctionPoint;
+import jdplus.math.functions.IParametersDomain;
+import jdplus.math.functions.IFunction;
+import jdplus.math.functions.ParamValidation;
+import jdplus.math.functions.IFunctionDerivatives;
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
 import jdplus.maths.matrices.FastMatrix;

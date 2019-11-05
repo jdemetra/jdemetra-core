@@ -17,7 +17,7 @@
 package jdplus.maths.polynomials;
 
 import jdplus.maths.polynomials.PolynomialComputer;
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import jdplus.maths.polynomials.Polynomial;
 import org.junit.Test;
 import static org.junit.Assert.*;

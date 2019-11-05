@@ -24,7 +24,7 @@ import jdplus.data.DataBlock;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.decomposition.Householder;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
@@ -84,9 +84,9 @@ public final class ConcentratedLikelihoodComputer {
         DataBlock yl = DataBlock.make(nl);
         filter.apply(y, yl);
         int nx = x.getColumnsCount();
-        CanonicalMatrix xl;
+        Matrix xl;
         if (nx > 0) {
-            xl = CanonicalMatrix.make(nl, nx);
+            xl = Matrix.make(nl, nx);
             for (int i = 0; i < nx; ++i) {
                 filter.apply(x.column(i), xl.column(i));
             }
@@ -110,10 +110,10 @@ public final class ConcentratedLikelihoodComputer {
                 DataBlock b = DataBlock.make(qr.rank());
                 DataBlock res = DataBlock.make(nl - qr.rank());
                 qr.leastSquares(yl, b, res);
-                CanonicalMatrix R = qr.r(false);
+                Matrix R = qr.r(false);
                 double ssqerr = res.ssq();
                 double ldet = filter.getLogDeterminant();
-                CanonicalMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
+                Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                         .inverse(R));
 
                 cll = ConcentratedLikelihoodWithMissing.builder()

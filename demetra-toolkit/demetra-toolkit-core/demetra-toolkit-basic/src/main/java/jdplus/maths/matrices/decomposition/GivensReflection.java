@@ -18,7 +18,7 @@ package jdplus.maths.matrices.decomposition;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.Constants;
+import demetra.math.Constants;
 
 /**
  * Transformation represented by 

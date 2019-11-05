@@ -18,10 +18,10 @@ package jdplus.maths.matrices.decomposition;
 
 import jdplus.data.DataBlock;
 import jdplus.maths.matrices.decomposition.ISingularValueDecomposition;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.data.DataBlockIterator;
-import demetra.maths.Constants;
+import demetra.math.Constants;
 import jdplus.maths.matrices.decomposition.ElementaryTransformations;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;
@@ -472,13 +472,13 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
     }
 
     @Override
-    public CanonicalMatrix U() {
-        return new CanonicalMatrix(m_U, m_m, Math.min(m_m, m_n));
+    public Matrix U() {
+        return new Matrix(m_U, m_m, Math.min(m_m, m_n));
     }
 
     @Override
-    public CanonicalMatrix V() {
-        return new CanonicalMatrix(m_V, m_n, m_n);
+    public Matrix V() {
+        return new Matrix(m_V, m_n, m_n);
     }
 
     public double[] getSingularValues() {
@@ -565,7 +565,7 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
     /*
      * Solves A X = B
      */
-    public void solve(CanonicalMatrix B, CanonicalMatrix X) {
+    public void solve(Matrix B, Matrix X) {
         DataBlockIterator b = B.columnsIterator(), x = X.columnsIterator();
         while (b.hasNext()) {
             solve(b.next(), x.next());

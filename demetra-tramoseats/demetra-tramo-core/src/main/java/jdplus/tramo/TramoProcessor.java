@@ -20,7 +20,7 @@ import jdplus.tramo.internal.TramoUtility;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.modelling.TransformationType;
-import demetra.modelling.regression.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import jdplus.regarima.regular.IPreprocessor;
 import jdplus.regarima.regular.IRegressionModule;
 import jdplus.regarima.regular.SeasonalityDetector;

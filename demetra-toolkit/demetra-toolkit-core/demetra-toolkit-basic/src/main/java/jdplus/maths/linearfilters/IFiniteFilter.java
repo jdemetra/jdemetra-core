@@ -21,7 +21,7 @@ import demetra.design.Development;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import java.util.Formatter;
 
 /**

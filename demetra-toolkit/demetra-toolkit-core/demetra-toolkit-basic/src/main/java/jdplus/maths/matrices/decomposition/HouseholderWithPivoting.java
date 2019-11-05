@@ -19,8 +19,8 @@ package jdplus.maths.matrices.decomposition;
 import jdplus.data.DataBlock;
 import jdplus.data.DataWindow;
 import demetra.design.Development;
-import demetra.maths.Constants;
-import jdplus.maths.matrices.CanonicalMatrix;
+import demetra.math.Constants;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.decomposition.QRDecomposition;
@@ -68,13 +68,13 @@ public class HouseholderWithPivoting implements QRDecomposition {
     }
 
     @Override
-    public CanonicalMatrix r(boolean compact) {
+    public Matrix r(boolean compact) {
         if (compact) {
-            CanonicalMatrix r = CanonicalMatrix.square(n);
+            Matrix r = Matrix.square(n);
             return r;
 
         } else {
-            CanonicalMatrix r = CanonicalMatrix.square(norig);
+            Matrix r = Matrix.square(norig);
             return r;
         }
     }

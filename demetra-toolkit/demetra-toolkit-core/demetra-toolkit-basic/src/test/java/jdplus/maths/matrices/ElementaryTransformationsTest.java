@@ -16,7 +16,7 @@
  */
 package jdplus.maths.matrices;
 
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
 import jdplus.maths.matrices.UpperTriangularMatrix;
 import jdplus.maths.matrices.decomposition.ElementaryTransformations;
@@ -38,7 +38,7 @@ public class ElementaryTransformationsTest {
     @Test
     public void testQRGivens() {
         Random rnd=new Random(0);
-        FastMatrix M=CanonicalMatrix.make(20, 5);
+        FastMatrix M=Matrix.make(20, 5);
         M.set(rnd::nextDouble);
         FastMatrix cur=M;
         for (int i=0; i<M.getColumnsCount()-1; ++i){
@@ -50,7 +50,7 @@ public class ElementaryTransformationsTest {
         System.out.println(b);
         
         rnd=new Random(0);
-        M=CanonicalMatrix.make(20, 5);
+        M=Matrix.make(20, 5);
         M.set(rnd::nextDouble);
         
         Householder qr=new Householder();

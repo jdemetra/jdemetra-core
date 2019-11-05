@@ -5,7 +5,7 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.HolidaysCorrectedTradingDays;
+import demetra.timeseries.regression.HolidaysCorrectedTradingDays;
 import jdplus.modelling.regression.Regression;
 import jdplus.modelling.regression.HolidaysCorrectionFactory;
 import demetra.timeseries.TsDomain;

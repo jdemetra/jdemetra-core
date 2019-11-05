@@ -18,14 +18,12 @@
 package jdplus.maths.matrices.decomposition;
 
 import jdplus.data.DataBlock;
-import demetra.data.LogSign;
+import jdplus.data.LogSign;
 import demetra.design.Development;
-import demetra.maths.Constants;
-import jdplus.maths.matrices.CanonicalMatrix;
+import demetra.math.Constants;
 import jdplus.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.decomposition.LUDecomposition;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
 
 
@@ -86,8 +84,8 @@ public abstract class AbstractLuDecomposition implements LUDecomposition {
         pivSign = 1;
     }
 
-    public CanonicalMatrix l() {
-        CanonicalMatrix l = CanonicalMatrix.square(n);
+    public Matrix l() {
+        Matrix l = Matrix.square(n);
         double[] lx = l.getStorage();
         for (int c = 0, idx = 0; c < n; c++) {
             lx[idx] = 1.0;
@@ -99,8 +97,8 @@ public abstract class AbstractLuDecomposition implements LUDecomposition {
         return l;
     }
 
-    public CanonicalMatrix u() {
-        CanonicalMatrix u = CanonicalMatrix.square(n);
+    public Matrix u() {
+        Matrix u = Matrix.square(n);
         double[] ux=u.getStorage();
         for (int c = 0, idx = 0; c < n; c++) {
             for (int r = 0; r <= c; r++, ++idx) {

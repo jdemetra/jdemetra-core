@@ -106,11 +106,11 @@ public class SubMatrix implements FastMatrix {
 
     @Override
     @Unsafe
-    public CanonicalMatrix asCanonical() {
+    public Matrix asCanonical() {
         if (isCanonical()) {
-            return new CanonicalMatrix(storage, nrows, ncols);
+            return new Matrix(storage, nrows, ncols);
         } else {
-            return new CanonicalMatrix(toArray(), nrows, ncols);
+            return new Matrix(toArray(), nrows, ncols);
         }
     }
 

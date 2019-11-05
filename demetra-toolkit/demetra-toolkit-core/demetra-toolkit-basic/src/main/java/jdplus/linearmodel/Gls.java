@@ -19,17 +19,17 @@ package jdplus.linearmodel;
 import jdplus.data.DataBlock;
 import demetra.eco.EcoException;
 import lombok.NonNull;
-import jdplus.leastsquares.internal.AdvancedQRSolver;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.matrices.UpperTriangularMatrix;
 import jdplus.maths.matrices.decomposition.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import demetra.data.LogSign;
+import jdplus.data.LogSign;
 import jdplus.maths.matrices.LowerTriangularMatrix;
 import nbbrd.service.ServiceProvider;
 import jdplus.leastsquares.QRSolver;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.leastsquares.internal.DefaultQRSolver;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -39,7 +39,7 @@ import jdplus.maths.matrices.FastMatrix;
 public class Gls {
 
     private static AtomicReference<Supplier<QRSolver>> QR_FACTORY = new AtomicReference<>(()
-            -> AdvancedQRSolver.builder(new Householder()).build());
+            -> new DefaultQRSolver());
 
     public static void setDefaultSolver(Supplier<QRSolver> factory) {
         QR_FACTORY.set(factory);
@@ -57,7 +57,7 @@ public class Gls {
 
     public LeastSquaresResults compute(LinearModel model, FastMatrix cov) {
 
-        CanonicalMatrix L = cov.deepClone();
+        Matrix L = cov.deepClone();
         try {
             SymmetricMatrix.lcholesky(L);
         } catch (Exception err) {
@@ -74,7 +74,7 @@ public class Gls {
             throw new EcoException(EcoException.GLS_FAILED);
         }
         FastMatrix R = solver.R();
-        CanonicalMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
+        Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(R));
         return LeastSquaresResults.builder(yl, xl)
                 .mean(model.isMeanCorrection())

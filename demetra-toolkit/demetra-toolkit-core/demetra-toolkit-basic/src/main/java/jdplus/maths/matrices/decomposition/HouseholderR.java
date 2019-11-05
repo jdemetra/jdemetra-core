@@ -18,9 +18,9 @@ package jdplus.maths.matrices.decomposition;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.maths.Constants;
+import demetra.math.Constants;
 import jdplus.maths.matrices.MatrixException;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import demetra.data.DoubleSeq;
 
 /**
@@ -31,7 +31,7 @@ import demetra.data.DoubleSeq;
 public class HouseholderR {
 
     private double[] qrauxilary;
-    private CanonicalMatrix matrix;
+    private Matrix matrix;
     private int[] pivot;
     private int nrows, ncols;
     private int rank;
@@ -51,7 +51,7 @@ public class HouseholderR {
      *
      * @param m
      */
-    public void decompose(CanonicalMatrix m) {
+    public void decompose(Matrix m) {
         init(m.deepClone());
         householder();
     }
@@ -64,7 +64,7 @@ public class HouseholderR {
         return rank;
     }
 
-    private void init(CanonicalMatrix m) {
+    private void init(Matrix m) {
         matrix = m;
         nrows = m.getRowsCount();
         ncols = m.getColumnsCount();
@@ -290,10 +290,10 @@ public class HouseholderR {
         }
     }
 
-    public CanonicalMatrix r() {
+    public Matrix r() {
        double[] x = matrix.getStorage();
         int rank = getRank();
-        CanonicalMatrix r = CanonicalMatrix.square(rank);
+        Matrix r = Matrix.square(rank);
         double[] data = r.getStorage();
         for (int i = 0, k = 0, l = 0; i < rank; ++i, k += rank, l += nrows) {
             for (int j = 0; j <= i; ++j) {

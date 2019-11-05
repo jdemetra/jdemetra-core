@@ -17,7 +17,7 @@
 package jdplus.regarima.regular;
 
 import jdplus.arima.IArimaModel;
-import demetra.data.Parameter;
+import jdplus.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
 import jdplus.maths.linearfilters.BackFilter;

@@ -20,7 +20,7 @@ import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.maths.Complex;
-import jdplus.maths.functions.IParametricMapping;
+import jdplus.math.functions.IParametricMapping;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.regarima.regular.IModelEstimator;
 import jdplus.regarima.regular.ModelDescription;

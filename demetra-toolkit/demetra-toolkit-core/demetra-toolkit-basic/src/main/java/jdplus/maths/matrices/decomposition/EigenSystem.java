@@ -17,8 +17,8 @@
 package jdplus.maths.matrices.decomposition;
 
 /// <summary>
-import demetra.maths.Complex;
-import jdplus.maths.matrices.CanonicalMatrix;
+import demetra.math.Complex;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 
 /// The class represents routines for finding EigenValues and EigenVectors of matrices. The
@@ -629,7 +629,7 @@ public class EigenSystem {
     /// <param name="im">An IMatrix interface pointer</param>
     /// <returns>An IEigenSystem interface pointer</returns>
 
-    public static IEigenSystem create(CanonicalMatrix m, boolean symmetric) {
+    public static IEigenSystem create(Matrix m, boolean symmetric) {
         if (symmetric) {
             return new SymmetricEigenSystem(m);
         } else {
@@ -637,7 +637,7 @@ public class EigenSystem {
         }
     }
 
-    public static IEigenSystem create(CanonicalMatrix m) {
+    public static IEigenSystem create(Matrix m) {
         if (isSymmetric(m)) {
             return new SymmetricEigenSystem(m);
         } else {
@@ -645,7 +645,7 @@ public class EigenSystem {
         }
     }
 
-    public static boolean isSymmetric(CanonicalMatrix m) {
+    public static boolean isSymmetric(Matrix m) {
         if (m.getRowsCount() != m.getColumnsCount()) {
             return false;
         }
@@ -660,7 +660,7 @@ public class EigenSystem {
         return true;
     }
 
-    public static double[] convertToArray(CanonicalMatrix m) {
+    public static double[] convertToArray(Matrix m) {
         return m.toArray();
     }
 }
@@ -670,7 +670,7 @@ class SymmetricEigenSystem implements IEigenSystem {
     public SymmetricEigenSystem() {
     }
 
-    public SymmetricEigenSystem(CanonicalMatrix m) {
+    public SymmetricEigenSystem(Matrix m) {
         m_sm = m.deepClone();
     }
 
@@ -698,7 +698,7 @@ class SymmetricEigenSystem implements IEigenSystem {
         // compute the eigenvalues and - if m_bVec == true - the eigenvectors of the reduction
         EigenRoutines.triQL(m_ev, m_sm.getRowsCount(), data, m_bVec);
 
-        m_eivec = new CanonicalMatrix(data, m_sm.getRowsCount(), m_sm.getColumnsCount());
+        m_eivec = new Matrix(data, m_sm.getRowsCount(), m_sm.getColumnsCount());
         m_bCalc = true;
     }
 
@@ -740,18 +740,18 @@ class SymmetricEigenSystem implements IEigenSystem {
     }
 
     @Override
-    public CanonicalMatrix getEigenVectors() {
+    public Matrix getEigenVectors() {
         if (!m_bVec) {
             throw new MatrixException(IEigenSystem.EIGENINIT);
         }
         calc();
 
-        CanonicalMatrix iout = m_eivec.deepClone();
+        Matrix iout = m_eivec.deepClone();
         return iout;
     }
 
     @Override
-    public CanonicalMatrix getEigenVectors(int m) {
+    public Matrix getEigenVectors(int m) {
         if (!m_bVec) {
             throw new MatrixException(IEigenSystem.EIGENINIT);
         }
@@ -759,7 +759,7 @@ class SymmetricEigenSystem implements IEigenSystem {
 
         int n = m_eivec.getRowsCount();
         int mel = Math.min(m, m_eivec.getColumnsCount());
-        CanonicalMatrix sm = CanonicalMatrix.make(n, mel);
+        Matrix sm = Matrix.make(n, mel);
         for (int i = 0; i < sm.getRowsCount(); i++) {
             for (int j = 0; j < mel; j++) {
                 sm.set(i, j, m_eivec.get(i, j));
@@ -796,9 +796,9 @@ class SymmetricEigenSystem implements IEigenSystem {
         m_bVec = value;
         m_bCalc = false;
     }
-    private CanonicalMatrix m_sm;
+    private Matrix m_sm;
     private double[] m_ev;
-    private CanonicalMatrix m_eivec;
+    private Matrix m_eivec;
     private boolean m_bCalc;
     private double m_zero = 1.0e-9;
     private int m_maxiter = 100;
@@ -807,7 +807,7 @@ class SymmetricEigenSystem implements IEigenSystem {
 
 class GeneralEigenSystem implements IEigenSystem {
 
-    public GeneralEigenSystem(CanonicalMatrix im) {
+    public GeneralEigenSystem(Matrix im) {
         m_std = im.deepClone();
     }
 
@@ -870,12 +870,12 @@ class GeneralEigenSystem implements IEigenSystem {
     }
 
     @Override
-    public CanonicalMatrix getEigenVectors() {
+    public Matrix getEigenVectors() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public CanonicalMatrix getEigenVectors(int n) {
+    public Matrix getEigenVectors(int n) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -900,7 +900,7 @@ class GeneralEigenSystem implements IEigenSystem {
 
         m_bCalc = true;
     }
-    private CanonicalMatrix m_std;
+    private Matrix m_std;
     private Complex[] m_ev;
     private double m_zero = 1.0e-6;
     private int m_maxiter = 120;

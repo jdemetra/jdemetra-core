@@ -16,7 +16,7 @@
  */
 package jdplus.maths.functions;
 
-import jdplus.maths.functions.CubicSpline;
+import jdplus.math.functions.CubicSpline;
 import java.util.function.DoubleUnaryOperator;
 import org.junit.Test;
 import static org.junit.Assert.*;

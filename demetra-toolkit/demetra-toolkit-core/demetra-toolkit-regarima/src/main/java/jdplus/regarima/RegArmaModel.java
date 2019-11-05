@@ -12,7 +12,7 @@ import jdplus.data.DataBlockIterator;
 import demetra.eco.EcoException;
 import jdplus.linearmodel.LinearModel;
 import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;
@@ -57,7 +57,7 @@ public class RegArmaModel<M extends IArimaModel> {
         List<DoubleSeq> x = regarima.getX();
         int[] missing = regarima.missing();
         int nx = regarima.getMissingValuesCount() + regarima.getVariablesCount();
-        CanonicalMatrix dx = CanonicalMatrix.make(ndy, nx);
+        Matrix dx = Matrix.make(ndy, nx);
         double[] dy;
         // dy
         if (d > 0) {
@@ -129,7 +129,7 @@ public class RegArmaModel<M extends IArimaModel> {
     int missingCount;
     
     public LinearModel asLinearModel(){
-        return new LinearModel(y.toArray(), false, CanonicalMatrix.of(x));
+        return new LinearModel(y.toArray(), false, Matrix.of(x));
     }
     
 }

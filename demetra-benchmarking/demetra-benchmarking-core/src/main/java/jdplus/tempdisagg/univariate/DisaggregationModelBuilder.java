@@ -24,7 +24,7 @@ import demetra.data.DoubleSeqCursor;
 import jdplus.data.normalizer.AbsMeanNormalizer;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.modelling.regression.ITsVariable;
+import demetra.timeseries.regression.ITsVariable;
 import jdplus.modelling.regression.Regression;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;

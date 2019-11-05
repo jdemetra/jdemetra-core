@@ -5,14 +5,13 @@
  */
 package jdplus.leastsquares.internal;
 
-import jdplus.leastsquares.internal.AdvancedQRSolver;
+import jdplus.leastsquares.internal.DefaultQRSolver;
 import jdplus.data.DataBlock;
 import demetra.data.DataSets;
 import static demetra.data.DataSets.lre;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.decomposition.Householder;
 import jdplus.maths.matrices.decomposition.HouseholderWithPivoting;
-import jdplus.maths.matrices.decomposition.RobustHouseholder;
 import org.junit.Test;
 import demetra.data.DoubleSeq;
 
@@ -22,16 +21,13 @@ import demetra.data.DoubleSeq;
  */
 public class QRSolverTest {
 
-     static AdvancedQRSolver solver = AdvancedQRSolver.builder(new HouseholderWithPivoting())
-                .iterative(1)
-                .simpleIteration(true)
-                .build();
+     static DefaultQRSolver solver = new DefaultQRSolver(new Householder());
     public QRSolverTest() {
     }
 
     public static void testNorris() {
         double[] y=DataSets.Norris.y;
-        CanonicalMatrix M = CanonicalMatrix.make(y.length, 2);
+        Matrix M = Matrix.make(y.length, 2);
         DataBlock x = DataBlock.of(DataSets.Norris.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -49,7 +45,7 @@ public class QRSolverTest {
 
      public static void testPontius() {
         double[] y=DataSets.Pontius.y;
-        CanonicalMatrix M = CanonicalMatrix.make(y.length, 3);
+        Matrix M = Matrix.make(y.length, 3);
         DataBlock x = DataBlock.of(DataSets.Pontius.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -69,7 +65,7 @@ public class QRSolverTest {
     
     public static void testNoInt1() {
         double[] y=DataSets.NoInt1.y;
-        CanonicalMatrix M = CanonicalMatrix.make(y.length, 1);
+        Matrix M = Matrix.make(y.length, 1);
         M.column(0).copyFrom(DataSets.NoInt1.x, 0);
 
          solver.solve(DataBlock.of(y), M);
@@ -85,7 +81,7 @@ public class QRSolverTest {
 
     public static void testNoInt2() {
         double[] y=DataSets.NoInt2.y;
-        CanonicalMatrix M = CanonicalMatrix.make(y.length, 1);
+        Matrix M = Matrix.make(y.length, 1);
         DataBlock x = DataBlock.of(DataSets.NoInt2.x);
         M.column(0).copy(x);
 
@@ -102,7 +98,7 @@ public class QRSolverTest {
 
      public static void testFilip() {
         double[] y=DataSets.Filip.y;
-        CanonicalMatrix M = CanonicalMatrix.make(y.length, 11);
+        Matrix M = Matrix.make(y.length, 11);
         DataBlock x = DataBlock.of(DataSets.Filip.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -129,7 +125,7 @@ public class QRSolverTest {
 
     public static void testLongley() {
         double[] y=DataSets.Longley.y;
-        CanonicalMatrix M = CanonicalMatrix.make(y.length, 7);
+        Matrix M = Matrix.make(y.length, 7);
         M.column(0).set(1);
         M.column(1).copyFrom(DataSets.Longley.x1, 0);
         M.column(2).copyFrom(DataSets.Longley.x2, 0);
@@ -151,7 +147,7 @@ public class QRSolverTest {
 
     public static void testWampler1() {
         double[] y=DataSets.Wampler1.y;
-        CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
+        Matrix M = Matrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler1.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -173,7 +169,7 @@ public class QRSolverTest {
 
      public static void testWampler2() {
         double[] y=DataSets.Wampler2.y;
-        CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
+        Matrix M = Matrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler2.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -196,7 +192,7 @@ public class QRSolverTest {
 
     public static void testWampler3() {
         double[] y=DataSets.Wampler3.y;
-        CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
+        Matrix M = Matrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler3.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -218,7 +214,7 @@ public class QRSolverTest {
 
     public static void testWampler4() {
         double[] y=DataSets.Wampler4.y;
-        CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
+        Matrix M = Matrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler4.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -240,7 +236,7 @@ public class QRSolverTest {
 
     public static void testWampler5() {
         double[] y=DataSets.Wampler5.y;
-        CanonicalMatrix M = CanonicalMatrix.make(y.length, 6);
+        Matrix M = Matrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler5.x);
         M.column(0).set(1);
         M.column(1).copy(x);

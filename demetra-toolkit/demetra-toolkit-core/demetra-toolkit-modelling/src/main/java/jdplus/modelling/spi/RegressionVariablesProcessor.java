@@ -6,8 +6,8 @@
 package jdplus.modelling.spi;
 
 import demetra.maths.matrices.Matrix;
-import demetra.modelling.regression.ITsVariable;
-import demetra.modelling.regression.RegressionVariables;
+import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.RegressionVariables;
 import demetra.timeseries.TimeSeriesDomain;
 import jdplus.modelling.regression.Regression;
 import nbbrd.service.ServiceProvider;

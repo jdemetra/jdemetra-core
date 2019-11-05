@@ -16,7 +16,7 @@
  */
 package jdplus.maths.matrices;
 
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.data.DataBlock;
 import java.util.Random;
@@ -30,7 +30,7 @@ import org.junit.Test;
 public class LowerTriangularMatrixTest {
 
     int N = 30, K = 5000000;
-    CanonicalMatrix M;
+    Matrix M;
 
     public LowerTriangularMatrixTest() {
         double[] x = new double[N * N];
@@ -38,7 +38,7 @@ public class LowerTriangularMatrixTest {
         for (int i = 0; i < x.length; ++i) {
             x[i] = rnd.nextDouble();
         }
-        M = new CanonicalMatrix(x, N, N);
+        M = new Matrix(x, N, N);
     }
 
     @Test

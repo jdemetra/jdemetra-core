@@ -10,7 +10,7 @@ import demetra.data.Data;
 import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.regarima.RegArimaEstimation;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
@@ -46,7 +46,7 @@ public class PeriodicAirlineProcessorTest {
         URI uri = Data.class.getResource("/edf.txt").toURI();
         Matrix edf = MatrixSerializer.read(new File(uri));
         Holiday[] france = france();
-        CanonicalMatrix hol = CanonicalMatrix.make(edf.getRowsCount(), france.length);
+        Matrix hol = Matrix.make(edf.getRowsCount(), france.length);
         HolidaysUtility.fillDays(france, hol, LocalDate.of(1996, 1, 1), false);
         RegArimaEstimation<ArimaModel> rslt = PeriodicAirlineProcessor.process(edf.column(0).fn(z->Math.log(z)), hol, new double[]{7, 365.25}, 1e-12);
         assertTrue(rslt != null);

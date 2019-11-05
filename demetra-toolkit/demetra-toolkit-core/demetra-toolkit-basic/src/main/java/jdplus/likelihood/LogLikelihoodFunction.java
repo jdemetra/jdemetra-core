@@ -17,12 +17,12 @@
 package jdplus.likelihood;
 
 import demetra.design.Development;
-import jdplus.maths.functions.IFunction;
-import jdplus.maths.functions.IFunctionDerivatives;
-import jdplus.maths.functions.IFunctionPoint;
-import jdplus.maths.functions.IParametersDomain;
-import jdplus.maths.functions.IParametricMapping;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.functions.IFunction;
+import jdplus.math.functions.IFunctionDerivatives;
+import jdplus.math.functions.IFunctionPoint;
+import jdplus.math.functions.IParametersDomain;
+import jdplus.math.functions.IParametricMapping;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import java.util.function.Function;
 import demetra.data.DoubleSeq;
@@ -107,7 +107,7 @@ public class LogLikelihoodFunction<T, L extends Likelihood> implements IFunction
 
         private LogLikelihoodFunction<T, L> function;
         private double[] parameters, gradient;
-        private CanonicalMatrix hessian;
+        private Matrix hessian;
 
     }
 }

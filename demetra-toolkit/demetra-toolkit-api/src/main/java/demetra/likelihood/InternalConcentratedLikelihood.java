@@ -17,11 +17,11 @@
 package demetra.likelihood;
 
 import demetra.design.Immutable;
-import demetra.maths.Constants;
+import demetra.math.Constants;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -38,11 +38,11 @@ final class InternalConcentratedLikelihood implements ConcentratedLikelihood {
     private final double ll, ssqerr, ldet;
     private final double[] res;
     private final double[] b;
-    private final Matrix bvar;
+    private final MatrixType bvar;
     private final boolean scalingFactor;
 
     InternalConcentratedLikelihood(final int n, final double ssqerr, final double ldet, final double[] res,
-            final double[] b, final Matrix bvar, final boolean scalingFactor) {
+            final double[] b, final MatrixType bvar, final boolean scalingFactor) {
         this.n = n;
         this.ldet = ldet;
         this.ssqerr = ssqerr;
@@ -115,9 +115,9 @@ final class InternalConcentratedLikelihood implements ConcentratedLikelihood {
 
     @Override
     @NonNull
-    public Matrix unscaledCovariance() {
+    public MatrixType unscaledCovariance() {
         if (bvar == null) {
-            return Matrix.EMPTY;
+            return MatrixType.EMPTY;
         } else {
             return bvar;
         }

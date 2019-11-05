@@ -26,7 +26,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -196,7 +196,7 @@ public class CalendarUtility {
      * @return The (weighted) number of holidays for each period of the domain.
      * The different columns of the matrix correspond to Mondays...Sundays
      */
-    public Matrix holidays(Holiday[] holidays, TsDomain domain) {
+    public MatrixType holidays(Holiday[] holidays, TsDomain domain) {
         int n = domain.getLength();
         double[] h = new double[7 * n];
 
@@ -229,7 +229,7 @@ public class CalendarUtility {
                 }
             }
         }
-        return Matrix.ofInternal(h, n, 7);
+        return MatrixType.of(h, n, 7);
     }
 
     /**

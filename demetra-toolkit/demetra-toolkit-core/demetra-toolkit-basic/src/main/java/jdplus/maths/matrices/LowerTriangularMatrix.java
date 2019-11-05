@@ -7,8 +7,8 @@ package jdplus.maths.matrices;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.data.LogSign;
-import demetra.random.RandomNumberGenerator;
+import jdplus.data.LogSign;
+import jdplus.random.RandomNumberGenerator;
 
 /**
  *
@@ -123,7 +123,7 @@ public class LowerTriangularMatrix {
      */
     public FastMatrix inverse(final FastMatrix L) throws MatrixException {
         int n = L.getRowsCount();
-        FastMatrix IL = CanonicalMatrix.identity(n);
+        FastMatrix IL = Matrix.identity(n);
         rsolve(L, IL);
         return IL;
     }

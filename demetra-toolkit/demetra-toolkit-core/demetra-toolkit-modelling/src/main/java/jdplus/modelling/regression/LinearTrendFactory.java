@@ -5,7 +5,7 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.LinearTrend;
+import demetra.timeseries.regression.LinearTrend;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import jdplus.maths.matrices.FastMatrix;

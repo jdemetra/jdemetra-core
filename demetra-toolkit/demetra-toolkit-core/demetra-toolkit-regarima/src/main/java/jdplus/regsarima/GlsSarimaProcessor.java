@@ -26,7 +26,7 @@ import jdplus.regarima.internal.RegArmaProcessor;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
-import jdplus.maths.functions.IParametricMapping;
+import jdplus.math.functions.IParametricMapping;
 import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.IRegArimaProcessor;

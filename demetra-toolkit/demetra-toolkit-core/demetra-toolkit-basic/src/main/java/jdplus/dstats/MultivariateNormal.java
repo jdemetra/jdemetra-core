@@ -19,11 +19,11 @@ package jdplus.dstats;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.maths.Constants;
+import demetra.math.Constants;
 import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import lombok.NonNull;
-import demetra.random.RandomNumberGenerator;
+import jdplus.random.RandomNumberGenerator;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;
 

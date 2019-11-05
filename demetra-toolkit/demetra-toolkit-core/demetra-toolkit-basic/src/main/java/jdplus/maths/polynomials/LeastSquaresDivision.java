@@ -18,8 +18,8 @@ package jdplus.maths.polynomials;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.maths.Constants;
-import jdplus.maths.matrices.CanonicalMatrix;
+import demetra.math.Constants;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.matrices.decomposition.Householder;
 import demetra.data.DoubleSeq;
@@ -45,7 +45,7 @@ public class LeastSquaresDivision {
             }
             int q = n - d + 1;
             coeff = new double[q];
-            CanonicalMatrix m = CanonicalMatrix.make(n, q);
+            Matrix m = Matrix.make(n, q);
             DataBlockIterator columns = m.columnsIterator();
             int c = 0;
             while (columns.hasNext()) {

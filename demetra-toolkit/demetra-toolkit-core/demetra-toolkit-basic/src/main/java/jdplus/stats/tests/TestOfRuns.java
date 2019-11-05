@@ -19,7 +19,7 @@ package jdplus.stats.tests;
 import demetra.design.Development;
 import jdplus.dstats.Chi2;
 import jdplus.dstats.Normal;
-import demetra.stats.DescriptiveStatistics;
+import jdplus.stats.DescriptiveStatistics;
 import demetra.stats.StatException;
 import demetra.data.DoubleSeq;
 

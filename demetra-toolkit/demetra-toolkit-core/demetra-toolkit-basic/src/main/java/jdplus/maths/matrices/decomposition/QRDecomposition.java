@@ -18,7 +18,7 @@ package jdplus.maths.matrices.decomposition;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
 import jdplus.maths.matrices.FastMatrix;
@@ -48,7 +48,7 @@ public interface QRDecomposition {
      * false otherwise
      * @return
      */
-    CanonicalMatrix r(boolean compact);
+    Matrix r(boolean compact);
 
     /**
      * Gets the diagonal of the R matrix

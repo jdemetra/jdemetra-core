@@ -7,10 +7,9 @@ package jdplus.maths.matrices;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.data.LogSign;
-import jdplus.data.accumulator.DoubleAccumulator;
+import jdplus.data.LogSign;
 import jdplus.maths.matrices.decomposition.CroutDoolittle;
-import demetra.random.RandomNumberGenerator;
+import jdplus.random.RandomNumberGenerator;
 
 /**
  *
@@ -295,8 +294,8 @@ public class SymmetricMatrix {
         }
     }
 
-    public CanonicalMatrix xxt(final DataBlock x) {
-        CanonicalMatrix M = CanonicalMatrix.square(x.length());
+    public Matrix xxt(final DataBlock x) {
+        Matrix M = Matrix.square(x.length());
         xxt(x, M);
         return M;
     }
@@ -313,72 +312,72 @@ public class SymmetricMatrix {
         UUt(L.transpose(), M);
     }
 
-    public CanonicalMatrix inverse(FastMatrix S) {
+    public Matrix inverse(FastMatrix S) {
         try {
-            CanonicalMatrix lower = S.deepClone();
+            Matrix lower = S.deepClone();
             lcholesky(lower);
             lower = LowerTriangularCanonicalMatrix.inverse(lower);
             return LtL(lower);
         } catch (MatrixException e) {
             CroutDoolittle cr = new CroutDoolittle();
             cr.decompose(S);
-            CanonicalMatrix I = CanonicalMatrix.identity(S.getRowsCount());
+            Matrix I = Matrix.identity(S.getRowsCount());
             cr.solve(I);
             return I;
         }
     }
 
-    public CanonicalMatrix XXt(final FastMatrix X) {
+    public Matrix XXt(final FastMatrix X) {
         if (X.isCanonical()) {
             return SymmetricCanonicalMatrix.XXt(X.asCanonical());
         }
-        CanonicalMatrix M = CanonicalMatrix.square(X.getRowsCount());
+        Matrix M = Matrix.square(X.getRowsCount());
         XXt(X, M);
         return M;
     }
 
-    public CanonicalMatrix XtX(final FastMatrix X) {
+    public Matrix XtX(final FastMatrix X) {
         if (X.isCanonical()) {
             return SymmetricCanonicalMatrix.XtX(X.asCanonical());
         }
-        CanonicalMatrix M = CanonicalMatrix.square(X.getColumnsCount());
+        Matrix M = Matrix.square(X.getColumnsCount());
         XXt(X.transpose(), M);
         return M;
     }
 
-    public CanonicalMatrix LLt(final FastMatrix L) {
+    public Matrix LLt(final FastMatrix L) {
         if (L.isCanonical()) {
             return SymmetricCanonicalMatrix.LLt(L.asCanonical());
         }
 
-        CanonicalMatrix M = CanonicalMatrix.square(L.getRowsCount());
+        Matrix M = Matrix.square(L.getRowsCount());
         LLt(L, M);
         return M;
     }
 
-    public CanonicalMatrix UtU(final FastMatrix U) {
+    public Matrix UtU(final FastMatrix U) {
         if (U.isCanonical()) {
             return SymmetricCanonicalMatrix.UtU(U.asCanonical());
         }
-        CanonicalMatrix M = CanonicalMatrix.square(U.getColumnsCount());
+        Matrix M = Matrix.square(U.getColumnsCount());
         LLt(U.transpose(), M);
         return M;
     }
 
-    public CanonicalMatrix LtL(final FastMatrix L) {
+    public Matrix LtL(final FastMatrix L) {
         if (L.isCanonical()) {
             return SymmetricCanonicalMatrix.LtL(L.asCanonical());
         }
-        CanonicalMatrix M = CanonicalMatrix.square(L.getRowsCount());
+        Matrix M = Matrix.square(L.getRowsCount());
         UUt(L.transpose(), M);
         return M;
     }
 
-    public CanonicalMatrix UUt(final FastMatrix U) {
+    public Matrix UUt(final FastMatrix U) {
         if (U.isCanonical()) {
             return SymmetricCanonicalMatrix.UUt(U.asCanonical());
         }
-        CanonicalMatrix M = CanonicalMatrix.square(U.getColumnsCount());
+        Matrix M = Matrix.square(U.getColumnsCount());
         UUt(U, M);
         return M;
     }
@@ -390,7 +389,7 @@ public class SymmetricMatrix {
      * @param S
      * @return
      */
-    public CanonicalMatrix XSXt(final FastMatrix S, final FastMatrix X) {
+    public Matrix XSXt(final FastMatrix S, final FastMatrix X) {
         if (S.isCanonical() && X.isCanonical()) {
             return SymmetricCanonicalMatrix.XSXt(S.asCanonical(), X.asCanonical());
         }
@@ -419,43 +418,18 @@ public class SymmetricMatrix {
      * @param S
      * @return
      */
-    public CanonicalMatrix XtSX(final FastMatrix S, final FastMatrix X) {
+    public Matrix XtSX(final FastMatrix S, final FastMatrix X) {
         if (S.isCanonical() && X.isCanonical()) {
             return SymmetricCanonicalMatrix.XtSX(S.asCanonical(), X.asCanonical());
         }
         int n = X.getColumnsCount();
-        CanonicalMatrix M = CanonicalMatrix.square(n);
+        Matrix M = Matrix.square(n);
         XtSX(S, X, M);
         return M;
     }
 
     public void lcholesky(final FastMatrix M) {
         lcholesky(M, 0);
-    }
-
-    public CanonicalMatrix robustXtX(final FastMatrix X, DoubleAccumulator acc) {
-        int n = X.getColumnsCount();
-        CanonicalMatrix z = CanonicalMatrix.square(n);
-        DataBlockIterator rows = X.columnsIterator(), columns = X.columnsIterator();
-        int irow = 0;
-        while (rows.hasNext()) {
-            DataBlock row = rows.next();
-            columns.reset(irow);
-            acc.reset();
-            row.robustDot(columns.next(), acc);
-            z.set(irow, irow, acc.sum());
-            int icol = irow;
-            while (columns.hasNext()) {
-                icol++;
-                acc.reset();
-                row.robustDot(columns.next(), acc);
-                double val = acc.sum();
-                z.set(irow, icol, val);
-                z.set(icol, irow, val);
-            }
-            irow++;
-        }
-        return z;
     }
 
     public void reenforceSymmetry(FastMatrix S) {

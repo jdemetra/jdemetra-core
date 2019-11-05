@@ -16,8 +16,8 @@
  */
 package jdplus.maths.polynomials;
 
-import demetra.maths.Complex;
-import jdplus.maths.ComplexMath;
+import demetra.math.Complex;
+import jdplus.math.ComplexMath;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;

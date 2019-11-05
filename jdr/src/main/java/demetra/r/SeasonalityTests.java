@@ -20,8 +20,8 @@ import jdplus.data.DataBlock;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
-import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.modelling.regression.PeriodicContrasts;
+import jdplus.maths.matrices.Matrix;
+import demetra.timeseries.regression.PeriodicContrasts;
 import demetra.stats.TestResult;
 import jdplus.stats.tests.LjungBox;
 import jdplus.stats.tests.StatisticalTest;
@@ -124,7 +124,7 @@ public class SeasonalityTests {
             DataBlock y = DataBlock.of(s);
             y.sub(y.average());
             PeriodicContrasts var = new PeriodicContrasts(freq);
-            CanonicalMatrix sd = PeriodicContrastsFactory.matrix(var, s.length(), 0);
+            Matrix sd = PeriodicContrastsFactory.matrix(var, s.length(), 0);
             LinearModel reg = new LinearModel(y.getStorage(), false, sd);
             Ols ols = new Ols();
             LeastSquaresResults rslt = ols.compute(reg);
@@ -141,7 +141,7 @@ public class SeasonalityTests {
         try {
             PeriodicContrasts var = new PeriodicContrasts(freq);
 
-            CanonicalMatrix sd = PeriodicContrastsFactory.matrix(var, s.length() - 1, 0);
+            Matrix sd = PeriodicContrastsFactory.matrix(var, s.length() - 1, 0);
 
             LinearModel reg = LinearModel.builder()
                     .y(s.drop(1, 0))

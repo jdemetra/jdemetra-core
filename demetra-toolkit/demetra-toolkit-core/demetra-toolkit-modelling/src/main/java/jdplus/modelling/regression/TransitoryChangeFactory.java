@@ -5,7 +5,7 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.TransitoryChange;
+import demetra.timeseries.regression.TransitoryChange;
 import jdplus.data.DataBlock;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.RationalBackFilter;

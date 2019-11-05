@@ -20,7 +20,7 @@ import demetra.design.Algorithm;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import demetra.design.Development;
-import demetra.maths.Complex;
+import demetra.math.Complex;
 
 /**
  *

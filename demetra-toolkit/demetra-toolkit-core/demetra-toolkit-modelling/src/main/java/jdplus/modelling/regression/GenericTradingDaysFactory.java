@@ -19,8 +19,8 @@ package jdplus.modelling.regression;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
-import demetra.modelling.regression.GenericTradingDaysVariable;
-import jdplus.maths.matrices.CanonicalMatrix;
+import demetra.timeseries.regression.GenericTradingDaysVariable;
+import jdplus.maths.matrices.Matrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
@@ -52,7 +52,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
     private static class Data {
 
         TsPeriod start;
-        CanonicalMatrix data;
+        Matrix data;
 
     }
 
@@ -64,7 +64,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
             Entry entry = new Entry(clustering, domain.getAnnualFrequency());
             Data rslt = CACHE.get(entry);
             if (rslt == null) {
-                CanonicalMatrix m = generateContrasts(clustering, domain);
+                Matrix m = generateContrasts(clustering, domain);
                 CACHE.put(entry, new Data(start, m));
                 return m;
             } else {
@@ -89,7 +89,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
                         n1 = end - ncur;
                     }
                     int nn = n0 + n1 + ncur;
-                    CanonicalMatrix m = CanonicalMatrix.make(nn, ng);
+                    Matrix m = Matrix.make(nn, ng);
                     MatrixWindow mw = m.top(0);
                     if (n0 > 0) {
                         TsDomain d0 = TsDomain.of(start, n0);
@@ -181,7 +181,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         buffer.copy(m);
     }
 
-    private static CanonicalMatrix generateContrasts(DayClustering clustering, TsDomain domain) {
+    private static Matrix generateContrasts(DayClustering clustering, TsDomain domain) {
         int n = domain.length();
         int[][] days = tdCount(domain);
 
@@ -190,7 +190,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         int ng = groups.length - 1;
         int[] cgroup = groups[ng];
         DoubleSeqCursor.OnMutable[] cells = new DoubleSeqCursor.OnMutable[ng];
-        CanonicalMatrix data = CanonicalMatrix.make(n, ng);
+        Matrix data = Matrix.make(n, ng);
         for (int i = 0; i < cells.length; ++i) {
             cells[i] = data.column(i).cursor();
         }
@@ -216,8 +216,8 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         return data;
     }
 
-    public static CanonicalMatrix generateContrasts(DayClustering clustering, FastMatrix days) {
-        CanonicalMatrix m = CanonicalMatrix.make(days.getRowsCount(), clustering.getGroupsCount() - 1);
+    public static Matrix generateContrasts(DayClustering clustering, FastMatrix days) {
+        Matrix m = Matrix.make(days.getRowsCount(), clustering.getGroupsCount() - 1);
         fillContrasts(clustering, days, m);
         return m;
     }
@@ -259,9 +259,9 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         return data;
     }
 
-    public static CanonicalMatrix generateNoContrast(DayClustering clustering, TsPeriod start,
+    public static Matrix generateNoContrast(DayClustering clustering, TsPeriod start,
             FastMatrix days) {
-        CanonicalMatrix m = CanonicalMatrix.make(days.getRowsCount(), clustering.getGroupsCount());
+        Matrix m = Matrix.make(days.getRowsCount(), clustering.getGroupsCount());
         fillNoContrasts(clustering, start, days, m);
         return m;
     }

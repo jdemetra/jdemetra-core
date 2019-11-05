@@ -17,7 +17,7 @@
 
 package jdplus.maths.functions.ssq;
 
-import jdplus.maths.functions.IEvaluation;
+import jdplus.math.functions.IEvaluation;
 import demetra.design.Development;
 
 /**

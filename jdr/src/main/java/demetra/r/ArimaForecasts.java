@@ -10,7 +10,7 @@ import jdplus.arima.ssf.SsfArima;
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
 import jdplus.ssf.ISsfLoading;
@@ -119,7 +119,7 @@ public class ArimaForecasts {
         ISsf ssf = arima;
         int nx = regarima.getVariablesCount();
         if (nx > 0) {
-            CanonicalMatrix x = CanonicalMatrix.make(yc.length, nx);
+            Matrix x = Matrix.make(yc.length, nx);
             if (regarima.isMean()) {
                 generateMeanEffect(regarima.arima().getNonStationaryAr(), x.column(0));
             }

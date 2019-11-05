@@ -17,7 +17,7 @@
 package jdplus.pca;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.decomposition.ISingularValueDecomposition;
 import jdplus.maths.matrices.decomposition.SingularValueDecomposition;
 import demetra.data.DoubleSeq;
@@ -28,16 +28,16 @@ import demetra.data.DoubleSeq;
  */
 public class PrincipalComponents {
 
-    private CanonicalMatrix data;
+    private Matrix data;
     private ISingularValueDecomposition svd;
     private double scaling;
 
-    public boolean process(CanonicalMatrix data) {
+    public boolean process(Matrix data) {
         clear();
         this.data = data;
         svd=new SingularValueDecomposition();
        
-        CanonicalMatrix ndata;
+        Matrix ndata;
         if (data.getColumnsCount() == 1){
             ndata=data;
             scaling=1;
@@ -60,7 +60,7 @@ public class PrincipalComponents {
         return scaling;
     }
 
-    public CanonicalMatrix getData() {
+    public Matrix getData() {
         return data;
     }
     
@@ -72,7 +72,7 @@ public class PrincipalComponents {
         return svd.S();
     }
     
-    public CanonicalMatrix getEigenVectors(){
+    public Matrix getEigenVectors(){
         return svd.V();
     }
     

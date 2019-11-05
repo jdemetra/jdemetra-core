@@ -18,8 +18,8 @@ package jdplus.data.analysis;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.Constants;
-import jdplus.maths.matrices.CanonicalMatrix;
+import demetra.math.Constants;
+import jdplus.maths.matrices.Matrix;
 
 /**
  * Computes cos(tw), sin(tw)
@@ -83,11 +83,11 @@ public class TrigonometricSeries {
         this.w = freq;
     }
 
-    public CanonicalMatrix matrix(int len) {
+    public Matrix matrix(int len) {
         return matrix(0, len);
     }
 
-    public CanonicalMatrix matrix(int len, int start) {
+    public Matrix matrix(int len, int start) {
         int nlast = w.length - 1;
         int n = w.length * 2;
         boolean zero = false, pi = false;
@@ -100,7 +100,7 @@ public class TrigonometricSeries {
             zero = true;
             --n;
         }
-        CanonicalMatrix m = CanonicalMatrix.make(len, n);
+        Matrix m = Matrix.make(len, n);
         int icur = 0, ccur = 0;
         if (zero) {
             m.column(ccur++).set(0);

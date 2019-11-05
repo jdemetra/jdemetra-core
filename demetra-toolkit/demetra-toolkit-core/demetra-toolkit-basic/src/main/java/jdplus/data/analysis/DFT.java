@@ -17,7 +17,7 @@
 package jdplus.data.analysis;
 
 import demetra.design.Development;
-import demetra.maths.Constants;
+import demetra.math.Constants;
 
 /**
  * X(k) = sum (x(j) e(-i 2pi/N *jk))

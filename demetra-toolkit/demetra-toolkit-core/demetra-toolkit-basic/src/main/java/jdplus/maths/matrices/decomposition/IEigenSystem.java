@@ -17,7 +17,7 @@
 
 package jdplus.maths.matrices.decomposition;
 
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import jdplus.maths.matrices.FastMatrix;
 
 

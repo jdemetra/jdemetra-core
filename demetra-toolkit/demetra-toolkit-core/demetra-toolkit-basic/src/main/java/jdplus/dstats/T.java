@@ -22,7 +22,7 @@ import jdplus.dstats.internal.SpecialFunctions;
 import demetra.stats.ProbabilityType;
 import demetra.design.Development;
 import java.util.concurrent.atomic.AtomicReference;
-import demetra.random.RandomNumberGenerator;
+import jdplus.random.RandomNumberGenerator;
 
 /**
  *

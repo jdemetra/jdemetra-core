@@ -30,7 +30,7 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
-import jdplus.maths.functions.IParametricMapping;
+import jdplus.math.functions.IParametricMapping;
 import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.regarima.RegArimaMapping;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;

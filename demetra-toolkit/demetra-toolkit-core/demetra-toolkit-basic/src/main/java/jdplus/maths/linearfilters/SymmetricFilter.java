@@ -20,7 +20,7 @@ import jdplus.maths.matrices.MatrixException;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import jdplus.maths.linearfilters.internal.SymmetricFilterAlgorithms;
 import jdplus.maths.polynomials.Polynomial;
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,7 +28,6 @@ import java.util.function.IntToDoubleFunction;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.RealPolynomial;
 
 /**
  *

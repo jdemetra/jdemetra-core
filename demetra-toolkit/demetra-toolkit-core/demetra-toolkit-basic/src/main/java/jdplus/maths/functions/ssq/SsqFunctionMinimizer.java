@@ -17,7 +17,7 @@
 package jdplus.maths.functions.ssq;
 
 import demetra.design.Development;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import demetra.data.DoubleSeq;
 
 
@@ -40,7 +40,7 @@ public interface SsqFunctionMinimizer {
      *
      * @return
      */
-    CanonicalMatrix curvatureAtMinimum();
+    Matrix curvatureAtMinimum();
 
     /**
      *

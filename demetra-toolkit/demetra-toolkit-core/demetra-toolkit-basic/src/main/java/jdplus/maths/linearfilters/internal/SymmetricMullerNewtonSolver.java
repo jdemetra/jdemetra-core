@@ -18,9 +18,9 @@ package jdplus.maths.linearfilters.internal;
 
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
-import demetra.maths.Complex;
-import jdplus.maths.ComplexMath;
-import jdplus.maths.ComplexUtility;
+import demetra.math.Complex;
+import jdplus.math.ComplexMath;
+import jdplus.math.ComplexUtility;
 import jdplus.maths.polynomials.LeastSquaresDivision;
 import jdplus.maths.polynomials.Polynomial;
 import demetra.util.Ref;

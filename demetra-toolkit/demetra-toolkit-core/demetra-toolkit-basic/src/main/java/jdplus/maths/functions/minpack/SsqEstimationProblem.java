@@ -18,11 +18,11 @@ package jdplus.maths.functions.minpack;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.functions.FunctionException;
+import jdplus.math.functions.FunctionException;
 import jdplus.maths.functions.ssq.ISsqFunction;
 import jdplus.maths.functions.ssq.ISsqFunctionDerivatives;
 import jdplus.maths.functions.ssq.ISsqFunctionPoint;
-import jdplus.maths.functions.ParamValidation;
+import jdplus.math.functions.ParamValidation;
 import demetra.data.DoubleSeq;
 
 /**

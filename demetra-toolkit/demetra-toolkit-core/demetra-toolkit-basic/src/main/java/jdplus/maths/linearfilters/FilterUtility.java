@@ -17,11 +17,11 @@
 package jdplus.maths.linearfilters;
 
 import demetra.design.Development;
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import jdplus.maths.polynomials.Polynomial;
 import demetra.util.Ref;
 import java.util.function.IntToDoubleFunction;
-import demetra.maths.ComplexComputer;
+import jdplus.math.ComplexComputer;
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
 

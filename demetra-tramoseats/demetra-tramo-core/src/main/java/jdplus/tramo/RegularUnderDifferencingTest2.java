@@ -21,7 +21,7 @@ import jdplus.regarima.regular.PreprocessingModel;
 import jdplus.regarima.regular.ProcessingResult;
 import jdplus.regarima.regular.RegArimaModelling;
 import demetra.arima.SarimaSpecification;
-import demetra.stats.AutoCovariances;
+import jdplus.stats.AutoCovariances;
 import demetra.data.DoubleSeq;
 
 /**

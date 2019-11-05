@@ -21,7 +21,7 @@ import demetra.design.Development;
 import demetra.eco.EcoException;
 import demetra.data.DoubleSeq;
 import demetra.design.BuilderPattern;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  * This interface represents the concentrated likelihood of a linear regression
@@ -46,7 +46,7 @@ public interface ConcentratedLikelihood extends Likelihood {
         private double ssqerr, ldet;
         private double[] res;
         private double[] b = B_EMPTY;
-        private Matrix bvar;
+        private MatrixType bvar;
         private boolean scalingFactor = true;
 
         private Builder() {
@@ -102,7 +102,7 @@ public interface ConcentratedLikelihood extends Likelihood {
             return this;
         }
 
-        public Builder unscaledCovariance(Matrix var) {
+        public Builder unscaledCovariance(MatrixType var) {
             bvar = var;
             return this;
         }
@@ -132,12 +132,12 @@ public interface ConcentratedLikelihood extends Likelihood {
      *
      * @return
      */
-    Matrix unscaledCovariance();
+    MatrixType unscaledCovariance();
 
-    default Matrix covariance(int nhp, boolean unbiased) {
+    default MatrixType covariance(int nhp, boolean unbiased) {
 
         if (nx() == 0) {
-            return Matrix.EMPTY;
+            return MatrixType.EMPTY;
         }
         
         double[] v = unscaledCovariance().toArray();
@@ -145,7 +145,7 @@ public interface ConcentratedLikelihood extends Likelihood {
         double sig2=ssq()/ndf;
         for (int i=0; i<v.length; ++i)
             v[i]*=sig2;
-        return Matrix.ofInternal(v, nx(), nx());
+        return MatrixType.of(v, nx(), nx());
     }
     /**
      * Number of regression variables

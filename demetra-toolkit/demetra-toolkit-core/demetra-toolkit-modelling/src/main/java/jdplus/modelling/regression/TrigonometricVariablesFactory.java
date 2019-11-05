@@ -16,9 +16,9 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.TrigonometricVariables;
+import demetra.timeseries.regression.TrigonometricVariables;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import jdplus.maths.matrices.FastMatrix;
@@ -31,9 +31,9 @@ import jdplus.maths.matrices.FastMatrix;
  */
 public class TrigonometricVariablesFactory implements RegressionVariableFactory<TrigonometricVariables> {
 
-    public static CanonicalMatrix matrix(TrigonometricVariables var, int length, int start) {
+    public static Matrix matrix(TrigonometricVariables var, int length, int start) {
         double[] freq = var.getFrequencies();
-        CanonicalMatrix m = CanonicalMatrix.make(length, var.dim());
+        Matrix m = Matrix.make(length, var.dim());
         int nlast = freq.length - 1;
         if (freq[nlast] != 1) {
             ++nlast;

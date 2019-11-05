@@ -6,7 +6,7 @@
 package jdplus.maths.matrices.decomposition;
 
 import java.util.Random;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -21,7 +21,7 @@ public class UpperHessenbergTest {
 
     @Test
     public void testRandom() {
-        CanonicalMatrix A = CanonicalMatrix.square(100);
+        Matrix A = Matrix.square(100);
         Random rnd = new Random(0);
         A.set(rnd::nextDouble);
         long t0 = System.currentTimeMillis();
@@ -34,7 +34,7 @@ public class UpperHessenbergTest {
 //        System.out.println(uh.getH());
 
         t0 = System.currentTimeMillis();
-        CanonicalMatrix B;
+        Matrix B;
         for (int j = 0; j < 100; ++j) {
             B = A.deepClone();
             EigenRoutines.hessenberg(B.getStorage(), B.getColumnsCount());

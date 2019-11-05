@@ -17,9 +17,9 @@
 package jdplus.tramo.internal;
 
 import demetra.design.BuilderPattern;
-import demetra.modelling.regression.Variable;
+import demetra.timeseries.regression.Variable;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
-import demetra.modelling.regression.IOutlier;
+import demetra.timeseries.regression.IOutlier;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
 import jdplus.regarima.RegArimaUtility;

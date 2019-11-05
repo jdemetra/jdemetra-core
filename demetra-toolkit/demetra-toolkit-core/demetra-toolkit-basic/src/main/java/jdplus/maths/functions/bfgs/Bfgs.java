@@ -9,13 +9,13 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import jdplus.maths.matrices.MatrixException;
-import jdplus.maths.functions.FunctionException;
-import jdplus.maths.functions.IFunction;
-import jdplus.maths.functions.IFunctionPoint;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.functions.FunctionException;
+import jdplus.math.functions.IFunction;
+import jdplus.math.functions.IFunctionPoint;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
-import jdplus.maths.functions.FunctionMinimizer;
+import jdplus.math.functions.FunctionMinimizer;
 
 /**
  * BFGS variable-metric method, based on Pascal code in J.C. Nash, `Compact
@@ -126,7 +126,7 @@ public class Bfgs implements FunctionMinimizer {
     private IFunctionPoint fcur;
     private double Fmin;
     private double[] btry;
-    private CanonicalMatrix H;
+    private Matrix H;
     private DoubleSeq g;
 
     public Bfgs(BfgsBuilder builder) {
@@ -143,7 +143,7 @@ public class Bfgs implements FunctionMinimizer {
     private void vmmin(DoubleSeq b, IFunction fn) {
         boolean accpoint, enough;
         double[] t, X, c;
-        CanonicalMatrix B;
+        Matrix B;
         int count, funcount, gradcount;
         double f, gradproj;
         int i, j, ilast;
@@ -166,7 +166,7 @@ public class Bfgs implements FunctionMinimizer {
             throw new FunctionException("REPORT must be > 0 (method = \"BFGS\")");
         }
         t = new double[n];
-        B = CanonicalMatrix.square(n);
+        B = Matrix.square(n);
 
         if (!Double.isFinite(f)) {
             throw new FunctionException("initial value in 'vmmin' is not finite");
@@ -321,7 +321,7 @@ public class Bfgs implements FunctionMinimizer {
     }
 
     @Override
-    public CanonicalMatrix curvatureAtMinimum() {
+    public Matrix curvatureAtMinimum() {
         return H;
     }
 

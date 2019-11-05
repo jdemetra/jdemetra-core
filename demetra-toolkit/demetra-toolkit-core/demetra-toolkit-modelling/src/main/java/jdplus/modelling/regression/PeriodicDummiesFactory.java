@@ -16,9 +16,9 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.PeriodicDummies;
+import demetra.timeseries.regression.PeriodicDummies;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import jdplus.maths.matrices.FastMatrix;
@@ -33,9 +33,9 @@ import jdplus.maths.matrices.FastMatrix;
  */
 public class PeriodicDummiesFactory implements RegressionVariableFactory<PeriodicDummies> {
 
-    public static CanonicalMatrix matrix(PeriodicDummies var, int length, int start) {
+    public static Matrix matrix(PeriodicDummies var, int length, int start) {
         int period = var.getPeriod();
-        CanonicalMatrix m = CanonicalMatrix.make(length, period);
+        Matrix m = Matrix.make(length, period);
         int pstart = start % period;
         for (int i = 0; i < period; i++) {
             DataBlock x = m.column(i);

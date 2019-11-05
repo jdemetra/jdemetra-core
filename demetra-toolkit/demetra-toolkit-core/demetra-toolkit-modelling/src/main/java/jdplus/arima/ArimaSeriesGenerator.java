@@ -28,8 +28,8 @@ import jdplus.maths.polynomials.Polynomial;
 import jdplus.random.XorshiftRNG;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.dstats.Distribution;
-import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.random.RandomNumberGenerator;
+import jdplus.maths.matrices.Matrix;
+import jdplus.random.RandomNumberGenerator;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -195,7 +195,7 @@ public final class ArimaSeriesGenerator {
                 e[i] = distribution.random(rng);
             }
         } else {
-            CanonicalMatrix ac = CanonicalMatrix.square(p + q);
+            Matrix ac = Matrix.square(p + q);
             AutoCovarianceFunction acf = starima.getAutoCovarianceFunction();
             acf.prepare(p);
             // fill the p part

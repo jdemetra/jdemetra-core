@@ -19,8 +19,8 @@
 package jdplus.maths.functions.ssq;
 
 import demetra.design.Development;
-import jdplus.maths.functions.IFunction;
-import jdplus.maths.functions.IFunctionPoint;
+import jdplus.math.functions.IFunction;
+import jdplus.math.functions.IFunctionPoint;
 import demetra.data.DoubleSeq;
 
 /**

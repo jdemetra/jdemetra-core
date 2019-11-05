@@ -6,7 +6,7 @@
 package jdplus.maths.linearfilters.internal;
 
 import jdplus.maths.linearfilters.internal.SymmetricMullerNewtonSolver;
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.Polynomial;

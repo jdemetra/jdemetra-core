@@ -5,7 +5,7 @@
  */
 package jdplus.maths.matrices;
 
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 import jdplus.data.DataBlockIterator;
 import java.util.Arrays;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -17,7 +17,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 @lombok.experimental.UtilityClass
 public class MatrixFactory {
 
-    public CanonicalMatrix rowBind(@NonNull Matrix... M) {
+    public Matrix rowBind(@NonNull MatrixType... M) {
         int nr = 0;
         int nc = 0;
         for (int i = 0; i < M.length; ++i) {
@@ -30,7 +30,7 @@ public class MatrixFactory {
                 }
             }
         }
-        CanonicalMatrix all = new CanonicalMatrix(nr, nc);
+        Matrix all = new Matrix(nr, nc);
         DataBlockIterator rows = all.rowsIterator();
         for (int i = 0; i < M.length; ++i) {
             if (M[i] != null) {
@@ -43,7 +43,7 @@ public class MatrixFactory {
         return all;
     }
 
-    public CanonicalMatrix columnBind(@NonNull Matrix... M) {
+    public Matrix columnBind(@NonNull MatrixType... M) {
         int nr = 0;
         int nc = 0;
         for (int i = 0; i < M.length; ++i) {
@@ -56,7 +56,7 @@ public class MatrixFactory {
                 }
             }
         }
-        CanonicalMatrix all = new CanonicalMatrix(nr, nc);
+        Matrix all = new Matrix(nr, nc);
         DataBlockIterator cols = all.columnsIterator();
         for (int i = 0; i < M.length; ++i) {
             if (M[i] != null) {
@@ -70,9 +70,9 @@ public class MatrixFactory {
     }
 
 
-    public CanonicalMatrix select(FastMatrix M, final int[] selectedRows, final int[] selectedColumns) {
+    public Matrix select(MatrixType M, final int[] selectedRows, final int[] selectedColumns) {
         // TODO optimization
-        CanonicalMatrix m = new CanonicalMatrix(selectedRows.length, selectedColumns.length);
+        Matrix m = new Matrix(selectedRows.length, selectedColumns.length);
         for (int c = 0; c < selectedRows.length; ++c) {
             for (int r = 0; r < selectedRows.length; ++r) {
                 m.set(r, c, M.get(selectedRows[r], selectedColumns[c]));
@@ -89,7 +89,7 @@ public class MatrixFactory {
      * @param excludedColumns
      * @return A new matrix, based on another storage, is returned.
      */
-    public CanonicalMatrix  exclude(FastMatrix M, final int[] excludedRows, final int[] excludedColumns) {
+    public Matrix  exclude(FastMatrix M, final int[] excludedRows, final int[] excludedColumns) {
         int[] srx = excludedRows.clone();
         Arrays.sort(srx);
         int[] scx = excludedColumns.clone();
@@ -115,7 +115,7 @@ public class MatrixFactory {
             return M.deepClone();
         }
 
-        CanonicalMatrix m = new CanonicalMatrix(nrows - nrx, ncols - ncx);
+        Matrix m = new Matrix(nrows - nrx, ncols - ncx);
         for (int c = 0, nc = 0; c < ncols; ++c) {
             if (cx[c]) {
                 for (int r = 0, nr = 0; r < nrows; ++r) {
@@ -141,11 +141,11 @@ public class MatrixFactory {
      * @param colPos
      * @return A new matrix, based on another storage, is returned.
      */
-    public CanonicalMatrix expand(FastMatrix M, final int nr, final int[] rowPos, final int nc, final int[] colPos) {
+    public Matrix expand(FastMatrix M, final int nr, final int[] rowPos, final int nc, final int[] colPos) {
         if (rowPos.length != nr || colPos.length != nc) {
             throw new MatrixException(MatrixException.DIM);
         }
-        CanonicalMatrix m = new CanonicalMatrix(nr, nc);
+        Matrix m = new Matrix(nr, nc);
         int nrows=M.getRowsCount(), ncols=M.getColumnsCount();
         for (int c = 0; c < ncols; ++c) {
             for (int r = 0; r < nrows; ++r) {

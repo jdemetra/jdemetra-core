@@ -19,10 +19,10 @@ package jdplus.maths.matrices;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.LogSign;
+import jdplus.data.LogSign;
 import jdplus.maths.matrices.decomposition.CroutDoolittle;
 import jdplus.random.MersenneTwister;
-import demetra.random.RandomNumberGenerator;
+import jdplus.random.RandomNumberGenerator;
 
 /**
  *
@@ -31,7 +31,7 @@ import demetra.random.RandomNumberGenerator;
 @lombok.experimental.UtilityClass
 class SymmetricCanonicalMatrix {
 
-    void randomize(CanonicalMatrix S, RandomNumberGenerator rng) {
+    void randomize(Matrix S, RandomNumberGenerator rng) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -52,7 +52,7 @@ class SymmetricCanonicalMatrix {
         }
     }
 
-    void lcholesky(CanonicalMatrix M, double zero) {
+    void lcholesky(Matrix M, double zero) {
         double[] data = M.getStorage();
         int n = M.getRowsCount(), dinc = 1 + n;
         int end = n * dinc;
@@ -103,11 +103,11 @@ class SymmetricCanonicalMatrix {
         LowerTriangularCanonicalMatrix.toLower(M);
     }
 
-    void lcholesky(final CanonicalMatrix M) {
+    void lcholesky(final Matrix M) {
         lcholesky(M, 0);
     }
 
-    void lcholesky2(CanonicalMatrix M, double zero) {
+    void lcholesky2(Matrix M, double zero) {
         // gaxpy implementation
         double[] x = M.getStorage();
         int n = M.getRowsCount(), dinc = 1 + n;
@@ -144,11 +144,11 @@ class SymmetricCanonicalMatrix {
         LowerTriangularCanonicalMatrix.toLower(M);
     }
 
-    void lcholesky2(final CanonicalMatrix M) {
+    void lcholesky2(final Matrix M) {
         lcholesky2(M, 0);
     }
 
-    void LLt(CanonicalMatrix L, CanonicalMatrix M) {
+    void LLt(Matrix L, Matrix M) {
         int n = L.getRowsCount(), d = n + 1;
         double[] pl = L.getStorage(), pm = M.getStorage();
         for (int i = 0, ix = 0, im = 0; i < n; ++i, ++ix, im += d) {
@@ -166,7 +166,7 @@ class SymmetricCanonicalMatrix {
         }
     }
 
-    void UUt(CanonicalMatrix U, CanonicalMatrix M) {
+    void UUt(Matrix U, Matrix M) {
         int n = U.getRowsCount(), d = n + 1;
         double[] pl = U.getStorage(), pm = M.getStorage();
         for (int i = 0, ix = 0, imax = ix + n * n, im = 0; i < n; ++i, ix += d, im += d, ++imax) {
@@ -185,7 +185,7 @@ class SymmetricCanonicalMatrix {
         }
     }
 
-    void LtL(CanonicalMatrix L, CanonicalMatrix M) {
+    void LtL(Matrix L, Matrix M) {
         int n = L.getRowsCount();
         double[] pl = L.getStorage(), pm = M.getStorage();
         for (int r = 0, mpos = 0, x0 = 0, x1 = n; r < n; ++r, x0 += n, x1 += n) {
@@ -201,7 +201,7 @@ class SymmetricCanonicalMatrix {
         fromLower(M);
     }
 
-    void UtU(CanonicalMatrix U, CanonicalMatrix M) {
+    void UtU(Matrix U, Matrix M) {
         int n = U.getRowsCount();
         double[] pu = U.getStorage(), pm = M.getStorage();
         for (int r = 0, mpos = 0, x0 = 0; r < n; ++r, x0 += n) {
@@ -218,24 +218,24 @@ class SymmetricCanonicalMatrix {
 
     }
 
-    CanonicalMatrix inverse(CanonicalMatrix S) {
+    Matrix inverse(Matrix S) {
         try {
-            CanonicalMatrix lower = S.deepClone();
+            Matrix lower = S.deepClone();
             lcholesky(lower);
             lower = LowerTriangularCanonicalMatrix.inverse(lower);
             return LtL(lower);
         } catch (MatrixException e) {
             CroutDoolittle cr = new CroutDoolittle();
             cr.decompose(S);
-            CanonicalMatrix I = CanonicalMatrix.identity(S.getRowsCount());
+            Matrix I = Matrix.identity(S.getRowsCount());
             cr.solve(I);
             return I;
         }
     }
 
-    CanonicalMatrix XXt(final CanonicalMatrix X) {
+    Matrix XXt(final Matrix X) {
         int nr = X.getRowsCount();
-        CanonicalMatrix S = CanonicalMatrix.square(nr);
+        Matrix S = Matrix.square(nr);
         double[] sx = S.getStorage();
         double[] px = X.getStorage();
         int xmax = px.length;
@@ -258,9 +258,9 @@ class SymmetricCanonicalMatrix {
         return S;
     }
 
-    CanonicalMatrix XtX(final CanonicalMatrix X) {
+    Matrix XtX(final Matrix X) {
         int nr = X.getRowsCount(), nc = X.getColumnsCount();
-        CanonicalMatrix M = CanonicalMatrix.square(nc);
+        Matrix M = Matrix.square(nc);
         double[] px = X.getStorage(), pm = M.getStorage();
         int xmax = px.length;
         for (int c = 0, mpos = 0, x0 = 0, x1 = nr; c < nc; ++c, x0 += nr, x1 += nr) {
@@ -277,26 +277,26 @@ class SymmetricCanonicalMatrix {
         return M;
     }
 
-    CanonicalMatrix UUt(final CanonicalMatrix U) {
-        CanonicalMatrix M = CanonicalMatrix.square(U.getColumnsCount());
+    Matrix UUt(final Matrix U) {
+        Matrix M = Matrix.square(U.getColumnsCount());
         UUt(U, M);
         return M;
     }
 
-    CanonicalMatrix LLt(final CanonicalMatrix L) {
-        CanonicalMatrix M = CanonicalMatrix.square(L.getRowsCount());
+    Matrix LLt(final Matrix L) {
+        Matrix M = Matrix.square(L.getRowsCount());
         LLt(L, M);
         return M;
     }
 
-    CanonicalMatrix UtU(final CanonicalMatrix U) {
-        CanonicalMatrix M = CanonicalMatrix.square(U.getColumnsCount());
+    Matrix UtU(final Matrix U) {
+        Matrix M = Matrix.square(U.getColumnsCount());
         UtU(U, M);
         return M;
     }
 
-    CanonicalMatrix LtL(final CanonicalMatrix L) {
-        CanonicalMatrix M = CanonicalMatrix.square(L.getColumnsCount());
+    Matrix LtL(final Matrix L) {
+        Matrix M = Matrix.square(L.getColumnsCount());
         LtL(L, M);
         return M;
     }
@@ -308,14 +308,14 @@ class SymmetricCanonicalMatrix {
      * @param S
      * @return
      */
-    CanonicalMatrix XSXt(final CanonicalMatrix S, final CanonicalMatrix X) {
-        CanonicalMatrix XSX = CanonicalMatrix.square(X.getRowsCount());
+    Matrix XSXt(final Matrix S, final Matrix X) {
+        Matrix XSX = Matrix.square(X.getRowsCount());
         XSXt(S, X, XSX);
         return XSX;
     }
 
-    void XSXt(final CanonicalMatrix S, final CanonicalMatrix X, final CanonicalMatrix M) {
-        CanonicalMatrix XS = X.times(S);
+    void XSXt(final Matrix S, final Matrix X, final Matrix M) {
+        Matrix XS = X.times(S);
         DataBlockIterator xsrows = XS.rowsIterator(), xtcols = X.rowsIterator(), mcols = M.columnsIterator();
         int c = 0;
         while (xtcols.hasNext()) {
@@ -338,15 +338,15 @@ class SymmetricCanonicalMatrix {
      * @param S
      * @return
      */
-    CanonicalMatrix XtSX(final CanonicalMatrix S, final CanonicalMatrix X) {
+    Matrix XtSX(final Matrix S, final Matrix X) {
         int n = X.getColumnsCount();
-        CanonicalMatrix M = CanonicalMatrix.square(n);
+        Matrix M = Matrix.square(n);
         XtSX(S, X, M);
         return M;
     }
 
-    void XtSX(CanonicalMatrix S, CanonicalMatrix X, CanonicalMatrix M) {
-        CanonicalMatrix SX = S.times(X);
+    void XtSX(Matrix S, Matrix X, Matrix M) {
+        Matrix SX = S.times(X);
         DataBlockIterator sxcols = SX.columnsIterator(), xtrows = X.columnsIterator(), mcols = M.columnsIterator();
         int c = 0;
         while (sxcols.hasNext()) {
@@ -362,7 +362,7 @@ class SymmetricCanonicalMatrix {
         fromLower(M);
     }
 
-    void reenforceSymmetry(CanonicalMatrix S) {
+    void reenforceSymmetry(Matrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -382,8 +382,8 @@ class SymmetricCanonicalMatrix {
         }
     }
 
-    LogSign logDeterminant(CanonicalMatrix S) {
-        CanonicalMatrix s = S.deepClone();
+    LogSign logDeterminant(Matrix S) {
+        Matrix s = S.deepClone();
         try {
             lcholesky(s);
             DataBlock diagonal = s.diagonal();
@@ -394,7 +394,7 @@ class SymmetricCanonicalMatrix {
         }
     }
 
-    double determinant(CanonicalMatrix L) {
+    double determinant(Matrix L) {
         LogSign ls = logDeterminant(L);
         if (ls == null) {
             return 0;
@@ -403,7 +403,7 @@ class SymmetricCanonicalMatrix {
         return ls.isPositive() ? val : -val;
     }
 
-    void fromLower(CanonicalMatrix S) {
+    void fromLower(Matrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -421,7 +421,7 @@ class SymmetricCanonicalMatrix {
         }
     }
 
-    void fromUpper(CanonicalMatrix S) {
+    void fromUpper(Matrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -447,7 +447,7 @@ class SymmetricCanonicalMatrix {
      * @param S
      * @param x
      */
-    private void laddXXt(final CanonicalMatrix S, final DataBlock x) {
+    private void laddXXt(final Matrix S, final DataBlock x) {
         double[] sx = S.getStorage();
         double[] px = x.getStorage();
         int xinc = x.getIncrement();
@@ -474,7 +474,7 @@ class SymmetricCanonicalMatrix {
         }
     }
 
-    void addXXt(final CanonicalMatrix S, final DataBlock x) {
+    void addXXt(final Matrix S, final DataBlock x) {
         laddXXt(S, x);
         fromLower(S);
     }

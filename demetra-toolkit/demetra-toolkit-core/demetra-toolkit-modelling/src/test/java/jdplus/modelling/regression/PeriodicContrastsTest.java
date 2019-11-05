@@ -16,7 +16,7 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.PeriodicContrasts;
+import demetra.timeseries.regression.PeriodicContrasts;
 import jdplus.modelling.regression.Regression;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;

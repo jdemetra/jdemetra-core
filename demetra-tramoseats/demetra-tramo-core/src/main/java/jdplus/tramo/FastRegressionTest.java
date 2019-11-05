@@ -7,7 +7,7 @@ package jdplus.tramo;
 
 import demetra.design.BuilderPattern;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.modelling.regression.Variable;
+import demetra.timeseries.regression.Variable;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.regular.IRegressionModule;
 import jdplus.regarima.regular.IRegressionTest;

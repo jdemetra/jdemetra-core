@@ -5,7 +5,7 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.StockTradingDays;
+import demetra.timeseries.regression.StockTradingDays;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.CalendarUtility;

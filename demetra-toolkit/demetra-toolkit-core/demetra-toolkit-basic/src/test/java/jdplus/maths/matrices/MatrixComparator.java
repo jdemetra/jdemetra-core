@@ -16,7 +16,7 @@
  */
 package jdplus.maths.matrices;
 
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
 
@@ -26,7 +26,7 @@ import demetra.data.DoubleSeq;
  */
 public class MatrixComparator {
 
-    public static double distance(final CanonicalMatrix m, final ec.tstoolkit.maths.matrices.Matrix o) {
+    public static double distance(final Matrix m, final ec.tstoolkit.maths.matrices.Matrix o) {
         final int nrows = m.getRowsCount();
         if (o.getRowsCount() != nrows) {
             return Double.MAX_VALUE;
@@ -36,7 +36,7 @@ public class MatrixComparator {
         return delta.normInf();
     }
 
-    public static double distance(final CanonicalMatrix m, final CanonicalMatrix o) {
+    public static double distance(final Matrix m, final Matrix o) {
         final int nrows = m.getRowsCount();
         if (o.getRowsCount() != nrows) {
             return Double.MAX_VALUE;
@@ -57,9 +57,9 @@ public class MatrixComparator {
         return O;
     }
 
-    public static CanonicalMatrix fromLegacy(ec.tstoolkit.maths.matrices.Matrix M) {
+    public static Matrix fromLegacy(ec.tstoolkit.maths.matrices.Matrix M) {
         int nrows = M.getRowsCount(), ncols = M.getColumnsCount();
-        CanonicalMatrix N = CanonicalMatrix.make(nrows, ncols);
+        Matrix N = Matrix.make(nrows, ncols);
         for (int c = 0; c < ncols; ++c) {
             for (int r = 0; r < nrows; ++r) {
                 N.set(r, c, M.get(r, c));

@@ -10,7 +10,7 @@ import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihood;
 import demetra.likelihood.MaximumLogLikelihood;
 import demetra.linearmodel.LinearModel;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -40,7 +40,7 @@ public class RegArimaModel<S> {
             return model.isMeanCorrection();
         }
 
-        public Matrix getX() {
+        public MatrixType getX() {
             return model.getX();
         }
         //</editor-fold>

@@ -3,12 +3,49 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
-        <artifactId>demetra-parent</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <artifactId>demetra-sa</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>demetra-sa-api</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>JD3 - SA - API</name>
+    
+    <dependencies>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-design</artifactId>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-toolkit-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>be.nbb.rd</groupId>
+            <artifactId>java-service-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-data-tests</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

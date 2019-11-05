@@ -24,7 +24,7 @@ import java.util.Map;
 import jdplus.benchmarking.univariate.CholetteProcessor;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.multivariate.IMultivariateSsf;
 import jdplus.ssf.multivariate.M2uAdapter;
@@ -184,7 +184,7 @@ class MultivariateCholetteEngine {
                 .build();
 
         // build the observations
-        CanonicalMatrix M = CanonicalMatrix.make(idomain.getLength(), ncnts);
+        Matrix M = Matrix.make(idomain.getLength(), ncnts);
         for (int i = 0; i < ncnts; ++i) {
             M.column(i).copyFrom(lcntData[i], 0);
         }
@@ -356,7 +356,7 @@ class MultivariateCholetteEngine {
                 .weights(weights)
                 .build();
         // build the observations
-        CanonicalMatrix M = CanonicalMatrix.make(len, nvars + ncnts);
+        Matrix M = Matrix.make(len, nvars + ncnts);
         M.set(Double.NaN);
 
         // fill the matrix: first rows with temporal constraints

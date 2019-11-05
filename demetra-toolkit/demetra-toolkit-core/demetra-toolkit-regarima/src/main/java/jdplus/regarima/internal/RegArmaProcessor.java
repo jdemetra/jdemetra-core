@@ -18,11 +18,11 @@ package jdplus.regarima.internal;
 
 import jdplus.regarima.RegArmaModel;
 import jdplus.arima.IArimaModel;
-import jdplus.maths.functions.IFunctionDerivatives;
-import jdplus.maths.functions.IParametricMapping;
-import jdplus.maths.functions.NumericalDerivatives;
+import jdplus.math.functions.IFunctionDerivatives;
+import jdplus.math.functions.IParametricMapping;
+import jdplus.math.functions.NumericalDerivatives;
 import jdplus.maths.functions.ssq.SsqProxyFunctionPoint;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.arima.estimation.IArimaMapping;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
@@ -55,7 +55,7 @@ public class RegArmaProcessor {
         boolean ok = minimizer.minimize(fn.ssqEvaluate(start));
         RegArmaSsqFunction.Evaluation<S> rslt = (RegArmaSsqFunction.Evaluation<S>) minimizer.getResult();
         double objective = rslt.getSsqE();
-        CanonicalMatrix hessian;
+        Matrix hessian;
         double[] gradient;
         if (fast) {
             gradient = minimizer.gradientAtMinimum().toArray();

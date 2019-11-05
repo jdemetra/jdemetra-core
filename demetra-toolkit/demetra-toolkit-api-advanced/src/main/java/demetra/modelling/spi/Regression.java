@@ -6,7 +6,7 @@
 package demetra.modelling.spi;
 
 import demetra.maths.matrices.Matrix;
-import demetra.modelling.regression.ITsVariable;
+import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.TimeSeriesDomain;
 import java.util.List;
 import nbbrd.service.Mutability;

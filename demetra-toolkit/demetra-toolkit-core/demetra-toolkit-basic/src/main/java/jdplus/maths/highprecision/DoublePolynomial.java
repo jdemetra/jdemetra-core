@@ -18,7 +18,7 @@ package jdplus.maths.highprecision;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import jdplus.maths.polynomials.Polynomial;
 
 /**

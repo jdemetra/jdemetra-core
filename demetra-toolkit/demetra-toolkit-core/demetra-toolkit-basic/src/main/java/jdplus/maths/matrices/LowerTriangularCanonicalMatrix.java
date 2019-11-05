@@ -26,36 +26,36 @@ import jdplus.data.DataBlockIterator;
 @lombok.experimental.UtilityClass
 class LowerTriangularCanonicalMatrix {
 
-    void lsolve(final CanonicalMatrix L, final FastMatrix B, double zero) throws MatrixException {
+    void lsolve(final Matrix L, final FastMatrix B, double zero) throws MatrixException {
         DataBlockIterator rows = B.rowsIterator();
         while (rows.hasNext()) {
             lsolve(L, rows.next(), zero);
         }
     }
 
-    void lsolve(final CanonicalMatrix L, final FastMatrix B) throws MatrixException {
+    void lsolve(final Matrix L, final FastMatrix B) throws MatrixException {
         lsolve(L, B, 0);
     }
 
-    void rsolve(final CanonicalMatrix L, final FastMatrix B, final double zero) throws MatrixException {
+    void rsolve(final Matrix L, final FastMatrix B, final double zero) throws MatrixException {
         DataBlockIterator columns = B.columnsIterator();
         while (columns.hasNext()) {
             rsolve(L, columns.next(), zero);
         }
     }
 
-    void rsolve(final CanonicalMatrix L, final FastMatrix B) throws MatrixException {
+    void rsolve(final Matrix L, final FastMatrix B) throws MatrixException {
         rsolve(L, B, 0);
     }
 
-    void rmul(final CanonicalMatrix L, final FastMatrix B) {
+    void rmul(final Matrix L, final FastMatrix B) {
         DataBlockIterator columns = B.columnsIterator();
         while (columns.hasNext()) {
             rmul(L, columns.next());
         }
     }
 
-    void rsolve(CanonicalMatrix L, final DataBlock b, double zero) throws MatrixException {
+    void rsolve(Matrix L, final DataBlock b, double zero) throws MatrixException {
         double[] data = L.getStorage();
         double[] x = b.getStorage();
         int xbeg = b.getStartPosition();
@@ -88,11 +88,11 @@ class LowerTriangularCanonicalMatrix {
         }
     }
 
-    void rsolve(CanonicalMatrix L, final DataBlock b) throws MatrixException {
+    void rsolve(Matrix L, final DataBlock b) throws MatrixException {
         rsolve(L, b, 0);
     }
 
-    void lsolve(CanonicalMatrix L, DataBlock b, double zero) throws MatrixException {
+    void lsolve(Matrix L, DataBlock b, double zero) throws MatrixException {
         double[] data = L.getStorage();
         int nr = L.getRowsCount();
         double[] x = b.getStorage();
@@ -120,11 +120,11 @@ class LowerTriangularCanonicalMatrix {
         }
     }
 
-    void lsolve(CanonicalMatrix M, DataBlock x) throws MatrixException {
+    void lsolve(Matrix M, DataBlock x) throws MatrixException {
         lsolve(M, x, 0);
     }
 
-    void rmul(CanonicalMatrix L, DataBlock r) {
+    void rmul(Matrix L, DataBlock r) {
         double[] data = L.getStorage();
         int nr = L.getRowsCount();
 
@@ -143,7 +143,7 @@ class LowerTriangularCanonicalMatrix {
         }
     }
 
-    void toLower(CanonicalMatrix S) {
+    void toLower(Matrix S) {
         int m = S.getRowsCount(), n = S.getColumnsCount();
         if (n == 1) {
             return;
@@ -167,9 +167,9 @@ class LowerTriangularCanonicalMatrix {
      * @throws MatrixException when the matrix is non invertible (some elements
      * of the diagonal are 0).
      */
-    CanonicalMatrix inverse(final CanonicalMatrix L) throws MatrixException {
+    Matrix inverse(final Matrix L) throws MatrixException {
         int n = L.getRowsCount();
-        CanonicalMatrix IL = CanonicalMatrix.identity(n);
+        Matrix IL = Matrix.identity(n);
         rsolve(L, IL);
         return IL;
     }

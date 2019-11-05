@@ -11,10 +11,9 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.maths.functions.integration.NumericalIntegration;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.functions.NumericalIntegration;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
-import jdplus.maths.matrices.LowerTriangularMatrix;
 import jdplus.maths.matrices.SubMatrix;
 import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.maths.matrices.decomposition.Householder;
@@ -162,7 +161,7 @@ public class AsymmetricFilters {
 
         DataBlock a10 = DataBlock.make(dz.length);
         a10.product(Zp.columnsIterator(), a9);
-        CanonicalMatrix C = CanonicalMatrix.square(dz.length);
+        Matrix C = Matrix.square(dz.length);
         for (int i = 0; i < dz.length; ++i) {
             for (int j = 0; j < dz.length; ++j) {
                 double x = a10.get(i) * dz[j];
@@ -197,7 +196,7 @@ public class AsymmetricFilters {
         DataBlock wf = DataBlock.of(w, nv, w.length);
         FastMatrix Up = LocalPolynomialFilters.z(-h, q, 0, u);
         FastMatrix Uf = LocalPolynomialFilters.z(q + 1, h, 0, u);
-        CanonicalMatrix Q = CanonicalMatrix.square(nv + u + 1);
+        Matrix Q = Matrix.square(nv + u + 1);
         SubMatrix D = Q.extract(0, nv, 0, nv);
         D.diagonal().set(1);
         Q.extract(nv, u + 1, 0, nv).copy(Up.transpose());
@@ -224,7 +223,7 @@ public class AsymmetricFilters {
             a.extract(0, nv).setAY(Yf.dot(wf), Yp);
         }
         if (passBand>0 && tweight >0){
-            CanonicalMatrix W=buildMatrix(passBand, h, q);
+            Matrix W=buildMatrix(passBand, h, q);
             D.addAY(tweight, W);
             // we have to update a
             DataBlock row=DataBlock.of(wp);
@@ -238,10 +237,10 @@ public class AsymmetricFilters {
         return FiniteFilter.ofInternal(wp.toArray(), -h);
     }
 
-    private CanonicalMatrix buildMatrix(double w, int nlags, int nleads) {
+    private Matrix buildMatrix(double w, int nlags, int nleads) {
         int n = 2 * Math.max(nlags, nleads) + 1;
         int m = nlags + nleads + 1;
-        CanonicalMatrix T = CanonicalMatrix.square(m);
+        Matrix T = Matrix.square(m);
         double[] sin1 = new double[n];
         double[] sin0 = new double[n];
         for (int i = 0; i < n; ++i) {
@@ -299,7 +298,7 @@ public class AsymmetricFilters {
             return null;
         }
         double[] f = new double[afilters.length];
-        CanonicalMatrix L = CanonicalMatrix.square(h);
+        Matrix L = Matrix.square(h);
         IntToDoubleFunction sw = sfilter.weights();// from -h to h
         for (int i = 0; i < h; ++i) {
             IntToDoubleFunction aw = afilters[i].weights(); // from -h to h-i-1

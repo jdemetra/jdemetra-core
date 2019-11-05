@@ -26,7 +26,7 @@ import jdplus.maths.linearfilters.RationalBackFilter;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.regarima.RegArmaModel;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
-import demetra.modelling.regression.IOutlier;
+import demetra.timeseries.regression.IOutlier;
 import jdplus.modelling.regression.IOutlierFactory;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;

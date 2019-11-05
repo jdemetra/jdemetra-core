@@ -6,7 +6,7 @@
 package jdplus.maths.matrices.decomposition;
 
 import java.util.Random;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
 import jdplus.maths.matrices.decomposition.SimilarTransformations.Balancing;
 import jdplus.maths.matrices.decomposition.SimilarTransformations.Hessenberg;
@@ -24,10 +24,10 @@ public class SimilarTransformationsTest {
 
     @Test
     public void testRandom() {
-        CanonicalMatrix A = CanonicalMatrix.square(100);
+        Matrix A = Matrix.square(100);
         Random rnd = new Random(0);
         A.set(() -> rnd.nextDouble() - .5);
-        CanonicalMatrix h = A.deepClone();
+        Matrix h = A.deepClone();
         Hessenberg.householder(h);
         double d0 = FastMatrix.logDeterminant(h).getValue();
         h = A.deepClone();
@@ -43,11 +43,11 @@ public class SimilarTransformationsTest {
 
     public static void main(String[] args) {
         int N = 200, K = 100;
-        CanonicalMatrix A = CanonicalMatrix.square(N);
+        Matrix A = Matrix.square(N);
         Random rnd = new Random(0);
         A.set(() -> rnd.nextDouble() - .5);
         long t0 = System.currentTimeMillis();
-        CanonicalMatrix h = null;
+        Matrix h = null;
         for (int j = 0; j < K; ++j) {
             h = A.deepClone();
             Balancing.balance(h);

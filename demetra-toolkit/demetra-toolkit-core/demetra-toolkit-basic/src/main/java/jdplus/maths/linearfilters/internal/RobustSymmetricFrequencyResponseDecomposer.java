@@ -17,8 +17,8 @@
 package jdplus.maths.linearfilters.internal;
 
 import demetra.design.Development;
-import demetra.maths.Complex;
-import jdplus.maths.ComplexUtility;
+import demetra.math.Complex;
+import jdplus.math.ComplexUtility;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.LeastSquaresDivision;

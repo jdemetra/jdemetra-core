@@ -18,8 +18,8 @@ package jdplus.maths.linearfilters;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.maths.Complex;
-import demetra.maths.Simplifying;
+import demetra.math.Complex;
+import demetra.math.Simplifying;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRootSelector;
 import jdplus.maths.polynomials.UnitRoots;

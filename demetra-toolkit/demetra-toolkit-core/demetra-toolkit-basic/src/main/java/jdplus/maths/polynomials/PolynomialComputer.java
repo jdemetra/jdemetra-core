@@ -16,8 +16,8 @@
  */
 package jdplus.maths.polynomials;
 
-import demetra.maths.Complex;
-import demetra.maths.Constants;
+import demetra.math.Complex;
+import demetra.math.Constants;
 
 /**
  *

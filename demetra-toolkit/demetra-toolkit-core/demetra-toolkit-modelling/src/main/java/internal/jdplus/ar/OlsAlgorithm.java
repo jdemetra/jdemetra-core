@@ -18,7 +18,7 @@ package internal.jdplus.ar;
 
 import jdplus.data.DataBlockIterator;
 import demetra.design.AlgorithmImplementation;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import nbbrd.service.ServiceProvider;
 import jdplus.leastsquares.QRSolvers;
 import jdplus.leastsquares.QRSolver;
@@ -40,7 +40,7 @@ public class OlsAlgorithm implements AutoRegressiveEstimation {
         y=Y.toArray();
         int n = y.length;
         
-        CanonicalMatrix M = CanonicalMatrix.make(n-nar, nar);
+        Matrix M = Matrix.make(n-nar, nar);
         DataBlockIterator cols = M.columnsIterator();
         for (int i = 0; i < nar; ++i) {
             cols.next().copy(Y.drop(nar-i-1, n));

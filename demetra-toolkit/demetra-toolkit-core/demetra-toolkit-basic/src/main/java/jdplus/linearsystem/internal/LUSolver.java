@@ -19,13 +19,11 @@ package jdplus.linearsystem.internal;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import jdplus.data.accumulator.NeumaierAccumulator;
 import demetra.design.BuilderPattern;
 import jdplus.maths.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.maths.matrices.decomposition.LUDecomposition;
 import jdplus.maths.matrices.FastMatrix;
 
@@ -41,7 +39,7 @@ public class LUSolver implements LinearSystemSolver {
     public static class Builder {
 
         private final LUDecomposition lu;
-        private boolean improve, normalize;
+        private boolean normalize;
 
         private Builder(LUDecomposition lu) {
             this.lu = lu;
@@ -52,13 +50,8 @@ public class LUSolver implements LinearSystemSolver {
             return this;
         }
 
-        public Builder improve(boolean improve) {
-            this.improve = improve;
-            return this;
-        }
-
         public LUSolver build() {
-            return new LUSolver(lu, normalize, improve);
+            return new LUSolver(lu, normalize);
         }
     }
 
@@ -67,11 +60,10 @@ public class LUSolver implements LinearSystemSolver {
     }
 
     private final LUDecomposition lu;
-    private final boolean improve, normalize;
+    private final boolean normalize;
 
-    private LUSolver(LUDecomposition lu, boolean normalize, boolean improve) {
+    private LUSolver(LUDecomposition lu, boolean normalize) {
         this.lu = lu;
-        this.improve = improve;
         this.normalize = normalize;
     }
 
@@ -100,20 +92,7 @@ public class LUSolver implements LinearSystemSolver {
             An = A;
         }
         lu.decompose(An);
-        DataBlock b0 = null;
-        if (improve) {
-            b0 = DataBlock.of(b);
-        }
         lu.solve(b);
-        // improve the result
-        if (!improve) {
-            return;
-        }
-        DataBlock db = DataBlock.make(b.length());
-        db.robustProduct(An.rowsIterator(), b, new NeumaierAccumulator());
-        db.sub(b0);
-        lu.solve(db);
-        b.sub(db);
     }
 
     @Override
@@ -140,16 +119,5 @@ public class LUSolver implements LinearSystemSolver {
             An = A;
         }
         lu.decompose(An);
-        CanonicalMatrix B0 = improve ? B.deepClone() : null;
-        lu.solve(B);
-        if (!improve) {
-            return;
-        }
-        // improve the result
-        CanonicalMatrix DB = CanonicalMatrix.make(B.getRowsCount(), B.getColumnsCount());
-        DB.robustProduct(An, B, new NeumaierAccumulator());
-        DB.sub(B0);
-        lu.solve(DB);
-        B.sub(DB);
     }
 }

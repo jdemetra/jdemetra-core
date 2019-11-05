@@ -5,10 +5,10 @@
  */
 package jdplus.leastsquares;
 
-import jdplus.leastsquares.internal.AdvancedQRSolver;
 import jdplus.maths.matrices.decomposition.Householder;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import jdplus.leastsquares.internal.DefaultQRSolver;
 
 /**
  *
@@ -34,7 +34,7 @@ public class QRSolvers {
     }
 
     private static final AtomicReference<Supplier<QRSolver>> FAST_FACTORY = new AtomicReference<>(()
-            -> AdvancedQRSolver.builder(new Householder()).build());
+            -> new DefaultQRSolver(new Householder()));
     private static final AtomicReference<Supplier<QRSolver>> ROBUST_FACTORY = new AtomicReference<>(()
-            -> AdvancedQRSolver.builder(new Householder()).iterative(3).simpleIteration(true).build());
+            -> new DefaultQRSolver(new Householder()));
 }

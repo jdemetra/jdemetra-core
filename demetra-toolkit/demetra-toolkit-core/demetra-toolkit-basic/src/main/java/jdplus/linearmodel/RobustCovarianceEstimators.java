@@ -21,7 +21,7 @@ import jdplus.maths.matrices.SymmetricMatrix;
 import jdplus.stats.RobustCovarianceComputer;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -31,23 +31,23 @@ import jdplus.maths.matrices.FastMatrix;
 @lombok.experimental.UtilityClass
 public class RobustCovarianceEstimators {
 
-    public CanonicalMatrix hac(final LinearModel model, final DoubleSeq olsCoefficients, final WindowFunction w, final int truncationLag) {
-        CanonicalMatrix x = model.variables();
+    public Matrix hac(final LinearModel model, final DoubleSeq olsCoefficients, final WindowFunction w, final int truncationLag) {
+        Matrix x = model.variables();
         DoubleSeq u = model.calcResiduals(olsCoefficients);
-        CanonicalMatrix xx = SymmetricMatrix.XtX(x);
+        Matrix xx = SymmetricMatrix.XtX(x);
         int n = x.getRowsCount();
         xx.div(n);
-        CanonicalMatrix ixx = SymmetricMatrix.inverse(xx);
+        Matrix ixx = SymmetricMatrix.inverse(xx);
         // multiply the columns of x by e
         x.applyByColumns(c -> c.apply(u, (a, b) -> a * b));
-        CanonicalMatrix phi = RobustCovarianceComputer.covariance(x, w, truncationLag);
+        Matrix phi = RobustCovarianceComputer.covariance(x, w, truncationLag);
 
         // sandwich estimator
         return sandwich(phi, ixx, n);
     }
 
-    public CanonicalMatrix sandwich(FastMatrix meat, FastMatrix bread, int n) {
-        CanonicalMatrix omega = SymmetricMatrix.XtSX(meat, bread);
+    public Matrix sandwich(FastMatrix meat, FastMatrix bread, int n) {
+        Matrix omega = SymmetricMatrix.XtSX(meat, bread);
         omega.div(n);
         return omega;
     }
@@ -71,15 +71,15 @@ public class RobustCovarianceEstimators {
         return i->c*u.get(i);
     }
 
-    public CanonicalMatrix hc(final LinearModel model, final DoubleSeq olsCoefficients, final IntToDoubleFunction w) {
+    public Matrix hc(final LinearModel model, final DoubleSeq olsCoefficients, final IntToDoubleFunction w) {
 
-        CanonicalMatrix x = model.variables();
-        CanonicalMatrix xx = SymmetricMatrix.XtX(x);
+        Matrix x = model.variables();
+        Matrix xx = SymmetricMatrix.XtX(x);
         int n = x.getRowsCount();
         xx.div(n);
-        CanonicalMatrix ixx = SymmetricMatrix.inverse(xx);
+        Matrix ixx = SymmetricMatrix.inverse(xx);
         // multiply the columns of x by e
-        CanonicalMatrix phi = CanonicalMatrix.square(x.getColumnsCount());
+        Matrix phi = Matrix.square(x.getColumnsCount());
         for (int i = 0; i < n; ++i) {
             double z=w.applyAsDouble(i);
             phi.addXaXt(z*z, x.row(i));

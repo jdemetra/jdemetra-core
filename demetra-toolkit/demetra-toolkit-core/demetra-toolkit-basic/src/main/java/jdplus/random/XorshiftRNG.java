@@ -18,7 +18,6 @@ package jdplus.random;
 
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
-import demetra.random.RandomNumberGenerator;
 
 
 /**
