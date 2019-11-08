@@ -14,11 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.jdplus.maths.functions.integration;
+package internal.jdplus.maths.functions.gsl.integration;
 
 import java.util.function.DoubleUnaryOperator;
-import internal.jdplus.maths.functions.gsl.integration.QAGS;
-import internal.jdplus.maths.functions.gsl.integration.QK15;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -26,9 +24,9 @@ import nbbrd.service.ServiceProvider;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-public class NumericalIntegration {
+class NumericalIntegration {
     
-    public double integrate(DoubleUnaryOperator fn, double a, double b) {
+    double integrate(DoubleUnaryOperator fn, double a, double b) {
         try {
             QAGS qags = QAGS.builder()
                     .absoluteTolerance(1e-9)
@@ -49,7 +47,7 @@ public class NumericalIntegration {
      * @param fn Function to transform
      * @return integral result
      */
-    public double integrateQAGI(DoubleUnaryOperator fn) {
+    double integrateQAGI(DoubleUnaryOperator fn) {
         try {
             QAGS qags = QAGS.builder()
                     .absoluteTolerance(1e-9)
@@ -76,7 +74,7 @@ public class NumericalIntegration {
      * @param b Upper bound
      * @return
      */
-    public double integrateQAGIL(DoubleUnaryOperator fn, double b) {
+    double integrateQAGIL(DoubleUnaryOperator fn, double b) {
         try {
             QAGS qags = QAGS.builder()
                     .absoluteTolerance(1e-9)
@@ -103,7 +101,7 @@ public class NumericalIntegration {
      * @param a Lower bound
      * @return
      */
-    public double integrateQAGIU(DoubleUnaryOperator fn, double a) {
+    double integrateQAGIU(DoubleUnaryOperator fn, double a) {
         try {
             QAGS qags = QAGS.builder()
                     .absoluteTolerance(1e-9)

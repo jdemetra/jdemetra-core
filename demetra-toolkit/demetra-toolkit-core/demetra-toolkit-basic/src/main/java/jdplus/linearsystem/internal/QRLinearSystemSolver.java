@@ -24,7 +24,6 @@ import jdplus.maths.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.decomposition.QRDecomposition;
 import jdplus.maths.matrices.FastMatrix;
 
@@ -39,10 +38,10 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
     @BuilderPattern(QRLinearSystemSolver.class)
     public static class Builder {
 
-        private final QRDecomposition qr;
+        private final QRDecomposition.Processor qr;
         private boolean normalize;
 
-        private Builder(QRDecomposition qr) {
+        private Builder(QRDecomposition.Processor qr) {
             this.qr = qr;
         }
 
@@ -56,13 +55,13 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
         }
     }
 
-    public static Builder builder(QRDecomposition qr) {
+    public static Builder builder(QRDecomposition.Processor qr) {
         return new Builder(qr);
     }
-    private final QRDecomposition qr;
+    private final QRDecomposition.Processor qr;
     private final boolean normalize;
 
-    private QRLinearSystemSolver(QRDecomposition qr, boolean normalize) {
+    private QRLinearSystemSolver(QRDecomposition.Processor qr, boolean normalize) {
         this.qr = qr;
         this.normalize = normalize;
     }
@@ -90,8 +89,8 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
         } else {
             An = A;
         }
-        qr.decompose(An);
-        qr.leastSquares(b, b, null);
+        QRDecomposition decomposition = qr.decompose(An);
+        decomposition.leastSquares(b, b, null);
     }
 
     @Override
@@ -117,11 +116,11 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
         } else {
             An = A;
         }
-        qr.decompose(An);
-        if (!qr.isFullRank()) {
+        QRDecomposition decomposition = qr.decompose(An);
+        if (!decomposition.isFullRank()) {
             throw new MatrixException(MatrixException.SINGULAR);
         }
-        B.applyByColumns(col -> qr.leastSquares(col, col, null));
+        B.applyByColumns(col -> decomposition.leastSquares(col, col, null));
     }
 
 }

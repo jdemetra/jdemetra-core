@@ -18,6 +18,7 @@ package jdplus.spi;
 
 import demetra.dstats.spi.Distributions;
 import jdplus.data.DataBlock;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -32,22 +33,16 @@ public class DistributionsProcessorTest {
     @Test
     public void testNormal() {
         Distributions.Processor.Distribution normal = Distributions.normal();
-//        long t0 = System.currentTimeMillis();
         DataBlock Z = DataBlock.make(1001);
         Z.set(i -> normal.density((i - 501) * .01));
-//        long t1 = System.currentTimeMillis();
-//        System.out.println(t1 - t0);
-//        System.out.println(Z);
+        assertTrue(!Z.isZero(0));
     }
 
     @Test
     public void testT() {
         Distributions.Processor.Distribution t = Distributions.t(2);
-//        long t0 = System.currentTimeMillis();
         DataBlock Z = DataBlock.make(1001);
         Z.set(i -> t.density((i - 501) * .01));
-//        long t1 = System.currentTimeMillis();
-//        System.out.println(t1 - t0);
-//        System.out.println(Z);
+        assertTrue(!Z.isZero(0));
     }
 }

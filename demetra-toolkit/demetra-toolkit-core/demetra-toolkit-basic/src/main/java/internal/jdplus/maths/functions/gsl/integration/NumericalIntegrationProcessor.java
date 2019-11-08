@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package internal.jdplus.maths.functions.integration;
+package internal.jdplus.maths.functions.gsl.integration;
 
 import java.util.function.DoubleUnaryOperator;
-import internal.jdplus.maths.functions.integration.NumericalIntegration;
+import internal.jdplus.maths.functions.gsl.integration.NumericalIntegration;
 import nbbrd.service.ServiceProvider;
 
 /**

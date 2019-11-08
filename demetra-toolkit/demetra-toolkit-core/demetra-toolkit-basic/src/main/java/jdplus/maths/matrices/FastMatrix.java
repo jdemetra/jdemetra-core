@@ -936,8 +936,7 @@ public interface FastMatrix extends MatrixType.Mutable{
         if (!isSquare()) {
             throw new IllegalArgumentException();
         }
-        Householder hous = new Householder(true);
-        hous.decompose(this);
+        Householder hous = new Householder(this);
         if (!hous.isFullRank()) {
             return null;
         }
@@ -954,8 +953,7 @@ public interface FastMatrix extends MatrixType.Mutable{
         if (!X.isSquare()) {
             throw new IllegalArgumentException();
         }
-        Householder hous = new Householder(true);
-        hous.decompose(X);
+        Householder hous = new Householder(X);
         if (!hous.isFullRank()) {
             return null;
         }

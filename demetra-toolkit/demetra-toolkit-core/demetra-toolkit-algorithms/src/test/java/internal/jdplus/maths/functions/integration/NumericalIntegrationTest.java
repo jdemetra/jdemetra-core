@@ -5,6 +5,7 @@
  */
 package internal.jdplus.maths.functions.integration;
 
+import internal.jdplus.maths.functions.gsl.integration.NumericalIntegration;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

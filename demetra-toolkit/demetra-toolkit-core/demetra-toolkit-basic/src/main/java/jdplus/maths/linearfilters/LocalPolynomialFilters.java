@@ -81,8 +81,7 @@ public class LocalPolynomialFilters {
         }
         double[] u = new double[d + 1];
         u[0] = 1;
-        Householder hous = new Householder();
-        hous.decompose(xkx);
+        Householder hous = new Householder(xkx);
         hous.solve(DataBlock.of(u));
         double[] w = new double[h + q + 1];
         w[h] = u[0] * k.applyAsDouble(0);
@@ -209,8 +208,7 @@ public class LocalPolynomialFilters {
             rows.next().mul(sk[Math.abs(pos++)]);
         }
 
-        Householder hous = new Householder();
-        hous.decompose(Z);
+        Householder hous = new Householder(Z);
         double[] z = new double[Z.getRowsCount()];
         z[0] = 1;
         UpperTriangularMatrix.lsolve(hous.r(false), DataBlock.of(z, 0, d + 1, 1));

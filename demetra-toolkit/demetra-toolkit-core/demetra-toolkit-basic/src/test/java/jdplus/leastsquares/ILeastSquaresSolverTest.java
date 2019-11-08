@@ -36,13 +36,13 @@ public class ILeastSquaresSolverTest {
         y.set(rnd::nextDouble);
         long t0=System.currentTimeMillis();
         for (int i=0; i<K; ++i){
-            DefaultQRSolver qr= new DefaultQRSolver(new Householder());
+            DefaultQRSolver qr= new DefaultQRSolver();
             qr.solve(y, A);
         }
         long t1=System.currentTimeMillis();
         System.out.println(t1-t0);
         for (int i=0; i<K; ++i){
-            DefaultQRSolver qr= new DefaultQRSolver(new HouseholderWithPivoting());
+            DefaultQRSolver qr= new DefaultQRSolver(new HouseholderWithPivoting.Processor());
             qr.solve(y, A);
         }
         t1=System.currentTimeMillis();

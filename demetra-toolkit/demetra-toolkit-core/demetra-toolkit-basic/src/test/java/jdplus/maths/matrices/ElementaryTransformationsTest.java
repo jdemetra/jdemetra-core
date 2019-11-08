@@ -53,8 +53,7 @@ public class ElementaryTransformationsTest {
         M=Matrix.make(20, 5);
         M.set(rnd::nextDouble);
         
-        Householder qr=new Householder();
-        qr.decompose(M.extract(0, 20, 0, 4));
+        Householder qr=new Householder(M.extract(0, 20, 0, 4));
         DataBlock b2=DataBlock.make(4);
         qr.leastSquares(M.column(4), b2, null);
 //        System.out.println(b2);

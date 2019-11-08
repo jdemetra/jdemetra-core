@@ -52,8 +52,7 @@ public class LeastSquaresDivision {
                 columns.next().range(c, c + d).copy(D);
                 ++c;
             }
-            Householder qr = new Householder();
-            qr.decompose(m);
+            Householder qr = new Householder(m);
             DataBlock E = DataBlock.make(d - 1);
             qr.leastSquares(N, DataBlock.of(coeff), E);
             this.err = E.norm2() / d;

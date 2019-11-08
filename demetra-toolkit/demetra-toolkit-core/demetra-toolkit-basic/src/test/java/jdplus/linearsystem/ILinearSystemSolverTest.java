@@ -30,9 +30,9 @@ public class ILinearSystemSolverTest {
 
     public static void testMethods() {
 
-        QRLinearSystemSolver qr = QRLinearSystemSolver.builder(new Householder())
+        QRLinearSystemSolver qr = QRLinearSystemSolver.builder(new Householder.Processor())
                 .normalize(true).build();
-        QRLinearSystemSolver pqr = QRLinearSystemSolver.builder(new HouseholderWithPivoting())
+        QRLinearSystemSolver pqr = QRLinearSystemSolver.builder(new HouseholderWithPivoting.Processor())
                 .normalize(true).build();
         LUSolver igauss = LUSolver.builder(new Gauss())
                 .normalize(true).build();

@@ -22,7 +22,6 @@ import demetra.design.Development;
 import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.decomposition.QRDecomposition;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -31,38 +30,28 @@ import jdplus.maths.matrices.FastMatrix;
  */
 @Development(status = Development.Status.Alpha)
 public class Householder implements QRDecomposition {
+    
+    public static class Processor implements QRDecomposition.Processor{
+        
+        @Override
+        public QRDecomposition decompose(FastMatrix A, double eps) throws MatrixException {
+            return new Householder(A, true, eps);
+        }
+        
+    }
 
-    private final boolean fast;
     private double[] qr, rdiag;
     private int[] unused;
     private int norig, n, m; // m=nrows, n=ncols
-    private double eps=Constants.getEpsilon();
     
-    public Householder(){
-        fast=false;
+    public Householder(final FastMatrix A){
+        init(A);
+        householder(true, Constants.getEpsilon());
     }
 
-    public Householder(final boolean fast){
-        this.fast=fast;
-    }
-    
-    @Override
-    public double getPrecision(){
-        return eps;
-    }
-
-    @Override
-    public void setPrecision(double eps){
-        this.eps=eps;
-    }
-    /**
-     *
-     * @param m
-     */
-    @Override
-    public void decompose(FastMatrix m) {
-        init(m);
-        householder();
+    public Householder(final FastMatrix A, final boolean fast, final double eps){
+        init(A);
+        householder(fast, eps);
     }
 
     @Override
@@ -110,7 +99,7 @@ public class Householder implements QRDecomposition {
         return u;
     }
 
-    private void householder() {
+    private void householder(boolean fast, double eps) {
         int[] tmpunused = new int[norig];
         int nunused = 0, nrdiag = 0;
         // Main loop.
@@ -201,6 +190,7 @@ public class Householder implements QRDecomposition {
         if (res != null) {
             res.copyFrom(y, n);
         }
+        double eps=Constants.getEpsilon();
         // Solve R*X = Y;
         for (int j = n - 1, jm = j * m; j >= 0; --j, jm -= m) {
             double t = y[j];

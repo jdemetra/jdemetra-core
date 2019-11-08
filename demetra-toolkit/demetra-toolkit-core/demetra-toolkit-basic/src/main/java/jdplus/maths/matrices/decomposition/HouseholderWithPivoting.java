@@ -23,7 +23,6 @@ import demetra.math.Constants;
 import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.decomposition.QRDecomposition;
 import jdplus.maths.matrices.FastMatrix;
 
 /**
@@ -33,32 +32,26 @@ import jdplus.maths.matrices.FastMatrix;
 @Development(status = Development.Status.Alpha)
 public class HouseholderWithPivoting implements QRDecomposition {
 
+    public static class Processor implements QRDecomposition.Processor{
+        
+        @Override
+        public QRDecomposition decompose(FastMatrix A, double eps) throws MatrixException {
+            return new HouseholderWithPivoting(A, eps);
+        }
+        
+    }
+
     private double[] qr, rdiag, norm, wa;
     private int[] unused;
     private int norig, n, m; // m=nrows, n=ncols
     private int[] col;
-    private double eps = Constants.getEpsilon();
 
-    @Override
-    public double getPrecision(){
-        return eps;
+     public HouseholderWithPivoting(FastMatrix A, double eps){
+        init(A);
+        householder(eps);
     }
 
-    @Override
-    public void setPrecision(double eps){
-        this.eps=eps;
-    }
-    /**
-     *
-     * @param m
-     */
-    @Override
-    public void decompose(FastMatrix m) {
-        init(m);
-        householder();
-    }
-
-    private int pos(int var) {
+   private int pos(int var) {
         for (int i = 0; i < norig; ++i) {
             if (col[i] == var) {
                 return i;
@@ -132,7 +125,7 @@ public class HouseholderWithPivoting implements QRDecomposition {
         return new int[]{m, norig};
     }
 
-    private void householder() {
+    private void householder(double eps) {
         // Main loop.
 
         for (int k = 0; k < n; ++k) {
@@ -250,7 +243,8 @@ public class HouseholderWithPivoting implements QRDecomposition {
         if (res != null) {
             res.copyFrom(y, n);
         }
-        // Solve R*X = Y; don't forget that the order ofInternal the column is given in pivot
+        double eps=Constants.getEpsilon();
+        // Solve R*X = Y; don't forget that the order of the column is given in pivot
         for (int j = n - 1; j >= 0; --j) {
             int cj = col[j];
             double t = y[j];

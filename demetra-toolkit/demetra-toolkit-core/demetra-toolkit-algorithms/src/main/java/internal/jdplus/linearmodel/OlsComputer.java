@@ -7,7 +7,8 @@ package internal.jdplus.linearmodel;
 
 import demetra.data.DoubleSeq;
 import demetra.eco.EcoException;
-import jdplus.leastsquares.internal.AdvancedQRSolver;
+import jdplus.leastsquares.QRSolver;
+import jdplus.leastsquares.internal.DefaultQRSolver;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.maths.matrices.FastMatrix;
@@ -24,7 +25,7 @@ public class OlsComputer implements jdplus.linearmodel.Ols.Processor{
 
     @Override
     public LeastSquaresResults compute(LinearModel model) {
-        AdvancedQRSolver solver=new AdvancedQRSolver();
+        QRSolver solver=new DefaultQRSolver();
         DoubleSeq y = model.getY();
         FastMatrix x = model.variables();
         if (!solver.solve(y, x)) {

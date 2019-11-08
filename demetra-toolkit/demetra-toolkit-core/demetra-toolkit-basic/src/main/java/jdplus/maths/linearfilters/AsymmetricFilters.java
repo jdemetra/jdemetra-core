@@ -131,9 +131,7 @@ public class AsymmetricFilters {
         a1.product(Uf.columnsIterator(), wf); // U'f x wf
 
         DataBlock a2 = a1.deepClone();
-        Householder hous = new Householder();
-        hous.decompose(H);
-
+        Householder hous = new Householder(H);
         hous.solve(a2); // (U'p x Up)^-1 Uf x Wf
 
         DataBlock a3 = DataBlock.make(nv);
@@ -172,7 +170,7 @@ public class AsymmetricFilters {
             }
         }
         DataBlock a11 = a4.deepClone();
-        hous.decompose(C);
+        hous=new Householder(C);
         hous.solve(a11);
 
         double s = a11.dot(d);
@@ -230,8 +228,7 @@ public class AsymmetricFilters {
             row.mul(-tweight);
             a.addProduct(row, W.columnsIterator());
         }
-        Householder hous = new Householder(true);
-        hous.decompose(Q);
+        Householder hous = new Householder(Q);
         hous.solve(a);
         wp.add(a.extract(0, nv));
         return FiniteFilter.ofInternal(wp.toArray(), -h);
@@ -315,8 +312,7 @@ public class AsymmetricFilters {
                 L.set(i, j - 1, sw.applyAsDouble(j));
             }
         }
-        Householder hous = new Householder(true);
-        hous.decompose(L);
+        Householder hous = new Householder(L);
         hous.solve(DataBlock.of(f));
         return f;
     }

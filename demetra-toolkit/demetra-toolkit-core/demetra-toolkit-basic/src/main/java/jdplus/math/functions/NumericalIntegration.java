@@ -7,6 +7,7 @@ package jdplus.math.functions;
 
 import demetra.design.Algorithm;
 import demetra.design.Development;
+import internal.jdplus.maths.functions.gsl.integration.NumericalIntegrationProcessor;
 import java.util.function.DoubleUnaryOperator;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
@@ -35,7 +36,8 @@ public class NumericalIntegration {
     }
 
     @Algorithm
-    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT
+      , fallback = NumericalIntegrationProcessor.class)
     @FunctionalInterface
     public static interface Processor {
 

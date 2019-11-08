@@ -21,6 +21,7 @@ import jdplus.data.DataBlockIterator;
 import jdplus.data.DataWindow;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
+import demetra.math.Constants;
 import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import jdplus.maths.matrices.decomposition.Householder;
@@ -120,8 +121,7 @@ public class AutoRegressiveSpectrum {
                 cols.next().copy(rc.move(-1));
             }
 
-            Householder qr = new Householder(false);
-            qr.decompose(M);
+            Householder qr = new Householder(M, false, Constants.getEpsilon());
             ar = new double[nar];
             DataBlock c = DataBlock.of(ar);
             DataBlock e = DataBlock.make(nc - nar);

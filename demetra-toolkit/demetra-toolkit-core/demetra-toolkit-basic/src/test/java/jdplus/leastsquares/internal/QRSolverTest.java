@@ -5,14 +5,10 @@
  */
 package jdplus.leastsquares.internal;
 
-import jdplus.leastsquares.internal.DefaultQRSolver;
 import jdplus.data.DataBlock;
 import demetra.data.DataSets;
 import static demetra.data.DataSets.lre;
 import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.decomposition.Householder;
-import jdplus.maths.matrices.decomposition.HouseholderWithPivoting;
-import org.junit.Test;
 import demetra.data.DoubleSeq;
 
 /**
@@ -21,7 +17,7 @@ import demetra.data.DoubleSeq;
  */
 public class QRSolverTest {
 
-     static DefaultQRSolver solver = new DefaultQRSolver(new Householder());
+     static DefaultQRSolver solver = new DefaultQRSolver();
     public QRSolverTest() {
     }
 

@@ -115,8 +115,7 @@ public class AugmentedDickeyFuller {
         this.y = y;
         this.cnt = cnt;
         this.trend = trend;
-        Householder qr = new Householder(true);
-        qr.decompose(x);
+        Householder qr = new Householder(x);
         b = DataBlock.make(x.getColumnsCount());
         e = DataBlock.make(x.getRowsCount() - x.getColumnsCount());
         qr.leastSquares(y, b, e);

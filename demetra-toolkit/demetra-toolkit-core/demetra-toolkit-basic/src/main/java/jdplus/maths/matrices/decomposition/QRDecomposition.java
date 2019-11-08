@@ -21,7 +21,12 @@ import demetra.design.Development;
 import jdplus.maths.matrices.Matrix;
 import jdplus.maths.matrices.MatrixException;
 import demetra.data.DoubleSeq;
+import demetra.design.Algorithm;
+import demetra.math.Constants;
 import jdplus.maths.matrices.FastMatrix;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 
 /**
  * Decomposes a matrix A as A = applyQ*R
@@ -31,15 +36,28 @@ import jdplus.maths.matrices.FastMatrix;
  */
 @Development(status = Development.Status.Alpha)
 public interface QRDecomposition {
+    static final QRDecompositionLoader.Processor PROCESSOR = new QRDecompositionLoader.Processor();
 
-    void setPrecision(double eps);
+    public static void setProcessor(Processor algorithm) {
+        PROCESSOR.set(algorithm);
+    }
 
-    double getPrecision();
+    public static Processor getProcessor() {
+        return PROCESSOR.get();
+    }
 
-    /**
-     * @param m A matrix
-     */
-    void decompose(FastMatrix m) throws MatrixException;
+    @Algorithm
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, 
+            mutability = Mutability.CONCURRENT,
+            fallback=Householder.Processor.class)
+    @FunctionalInterface
+    public static interface Processor {
+        QRDecomposition decompose(FastMatrix A, double eps)throws MatrixException;
+        
+        default QRDecomposition decompose(FastMatrix A)throws MatrixException{
+            return decompose(A, Constants.getEpsilon());
+        }
+    }
 
     /**
      * Gets the R matrix

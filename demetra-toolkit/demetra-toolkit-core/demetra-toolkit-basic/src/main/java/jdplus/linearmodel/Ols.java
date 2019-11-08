@@ -16,7 +16,7 @@
  */
 package jdplus.linearmodel;
 
-import jdplus.linearmodel.internal.OlsComputer;
+import internal.jdplus.linearmodel.OlsComputer;
 import demetra.design.Algorithm;
 import demetra.design.Development;
 import nbbrd.service.Mutability;
