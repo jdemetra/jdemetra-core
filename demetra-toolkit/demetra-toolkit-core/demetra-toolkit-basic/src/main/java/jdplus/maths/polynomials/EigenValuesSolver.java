@@ -7,9 +7,9 @@ package jdplus.maths.polynomials;
 
 import demetra.math.Complex;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.decomposition.EigenSystem;
-import jdplus.maths.matrices.decomposition.IEigenSystem;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.EigenSystem;
+import jdplus.math.matrices.decomposition.IEigenSystem;
 
 /**
  *

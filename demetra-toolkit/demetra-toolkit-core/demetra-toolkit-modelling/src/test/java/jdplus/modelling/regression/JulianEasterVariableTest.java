@@ -14,7 +14,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.regression.JulianEasterVariable;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

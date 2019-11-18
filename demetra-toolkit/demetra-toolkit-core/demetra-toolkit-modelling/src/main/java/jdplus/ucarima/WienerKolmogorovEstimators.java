@@ -29,7 +29,7 @@ import jdplus.maths.linearfilters.RationalBackFilter;
 import jdplus.maths.linearfilters.RationalFilter;
 import jdplus.maths.linearfilters.RationalForeFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.matrices.MatrixException;
+import jdplus.math.matrices.MatrixException;
 import java.util.function.IntToDoubleFunction;
 import jdplus.arima.ILinearProcess;
 

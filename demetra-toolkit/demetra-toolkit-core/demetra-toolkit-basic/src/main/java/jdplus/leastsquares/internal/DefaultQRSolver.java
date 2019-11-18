@@ -6,14 +6,13 @@
 package jdplus.leastsquares.internal;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.MatrixException;
-import jdplus.maths.matrices.decomposition.Householder;
+import jdplus.math.matrices.decomposition.Householder;
 import jdplus.leastsquares.QRSolver;
 import demetra.design.AlgorithmImplementation;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.decomposition.QRDecomposition;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.leastsquares.QRSolution;
+import jdplus.math.matrices.decomposition.QRDecomposition;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -22,12 +21,6 @@ import jdplus.maths.matrices.FastMatrix;
 @AlgorithmImplementation(algorithm = QRSolver.class)
 public class DefaultQRSolver implements QRSolver {
 
-    private double ssqerr;
-    private double[] b, res;
-    private Matrix R;
-    private int[] used;
-    private int n, m;
-    private QRDecomposition qr;
     private final QRDecomposition.Processor processor;
 
     public DefaultQRSolver() {
@@ -39,69 +32,29 @@ public class DefaultQRSolver implements QRSolver {
     }
 
     @Override
-    public boolean solve(DoubleSeq y, FastMatrix x) {
-        try {
-            clear();
-            compute(y, x);
-            return true;
-        } catch (MatrixException err) {
-            return false;
-        }
-    }
-
-    private void clear() {
-        ssqerr = 0;
-        R = null;
-        b = null;
-        res = null;
-    }
-
-    private void compute(DoubleSeq y, FastMatrix x) {
-
+    public QRSolution solve(DoubleSeq y, Matrix X) {
         // X'X, X'y
-        n = y.length();
-        m = x.getColumnsCount();
-        qr = processor.decompose(x);
+        int n = y.length();
+        int m = X.getColumnsCount();
+        QRDecomposition qr = processor.decompose(X);
         int r = qr.rank();
-        R = qr.r(true);
-        b = new double[r];
-        res = new double[n - qr.rank()];
-        used = qr.used();
+        Matrix R = qr.r(false);
+        double[] b = new double[r];
+        double[] res = new double[n - qr.rank()];
+        int[] used = qr.used();
         res = new double[n - qr.rank()];
         DataBlock B = DataBlock.of(b), E = DataBlock.of(res);
         qr.leastSquares(y, B, E);
-        ssqerr = E.ssq();
-    }
-
-    @Override
-    public DoubleSeq coefficients() {
-        if (used.length == m) {
-            return DoubleSeq.of(b);
-        } else {
+        double ssqerr = E.ssq();
+        if (used.length != m) {
             // expand the coefficients
             double[] c = new double[m];
             for (int i = 0; i < used.length; ++i) {
                 c[used[i]] = b[i];
             }
-            return DoubleSeq.of(c);
+            b = c;
         }
+        return new QRSolution(DoubleSeq.of(b), DoubleSeq.of(res), ssqerr, R);
     }
 
-    @Override
-    public DoubleSeq residuals() {
-        return DoubleSeq.of(res);
-    }
-
-    @Override
-    public double ssqerr() {
-        return ssqerr;
-    }
-
-    /**
-     * @return the R
-     */
-    @Override
-    public Matrix R() {
-        return qr.r(false);
-    }
 }

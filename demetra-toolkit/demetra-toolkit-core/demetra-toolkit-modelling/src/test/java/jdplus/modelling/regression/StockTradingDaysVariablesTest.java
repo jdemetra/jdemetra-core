@@ -7,7 +7,7 @@ package jdplus.modelling.regression;
 
 import jdplus.modelling.regression.Regression;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.SubMatrix;
+import jdplus.math.matrices.SubMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.util.Collections;
@@ -15,8 +15,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.regression.StockTradingDays;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

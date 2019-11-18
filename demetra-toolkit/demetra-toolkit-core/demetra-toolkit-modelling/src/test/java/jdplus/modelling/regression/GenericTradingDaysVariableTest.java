@@ -25,7 +25,7 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

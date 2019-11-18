@@ -8,8 +8,10 @@ package jdplus.maths.polynomials;
 import demetra.math.Complex;
 import demetra.math.Constants;
 import java.util.Random;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.FastMatrix;
+import jdplus.math.matrices.MatrixOperations;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixTransformation;
 
 /**
  *
@@ -41,7 +43,7 @@ public class FastEigenValuesSolver implements RootsSolver {
             return M;
         }
 
-        void fill(FastMatrix m) {
+        void fill(Matrix m) {
             m.set(0, 0, c);
             m.set(0, 1, -s);
             m.set(1, 0, s);
@@ -330,7 +332,7 @@ public class FastEigenValuesSolver implements RootsSolver {
      * @param k A[k,k+1; k, k+1]
      * @param D
      */
-    private void diagonalBlock(int k, FastMatrix D) {
+    private void diagonalBlock(int k, Matrix D) {
         D.set(0);
         if (k == 0) {
             // unoptimized
@@ -345,7 +347,7 @@ public class FastEigenValuesSolver implements RootsSolver {
             A.set(1, 0, Q[0].s);
             A.set(0, 1, -Q[0].s);
             A.set(1, 1, Q[0].c);
-            D.product(A, R);
+            MatrixOperations.aAB_p_bC(1, A, R, 0, D);
 
         } else {
             Matrix R = Matrix.make(3, 2);
@@ -364,14 +366,14 @@ public class FastEigenValuesSolver implements RootsSolver {
             A.set(1, 1, Q[k].c);
 
             FastMatrix R12 = R.bottom(2);
-            R12.copy(A.times(R12));
+            R12.copy(MatrixOperations.AB(A, R12));
             A.set(0, 0, Q[k - 1].c);
             A.set(1, 0, Q[k - 1].s);
             A.set(0, 1, -Q[k - 1].s);
             A.set(1, 1, Q[k - 1].c);
 
             FastMatrix R01 = R.top(2);
-            R01.copy(A.times(R01));
+            R01.copy(MatrixOperations.AB(A, R01));
             D.copy(R12);
         }
     }

@@ -18,19 +18,13 @@ package jdplus.linearmodel;
 
 import jdplus.data.DataBlock;
 import demetra.eco.EcoException;
-import lombok.NonNull;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.matrices.UpperTriangularMatrix;
-import jdplus.maths.matrices.decomposition.Householder;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.matrices.UpperTriangularMatrix;
 import jdplus.data.LogSign;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import nbbrd.service.ServiceProvider;
+import jdplus.leastsquares.QRSolution;
+import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.leastsquares.QRSolver;
-import jdplus.leastsquares.internal.DefaultQRSolver;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -38,51 +32,35 @@ import jdplus.maths.matrices.FastMatrix;
  */
 public class Gls {
 
-    private static AtomicReference<Supplier<QRSolver>> QR_FACTORY = new AtomicReference<>(()
-            -> new DefaultQRSolver());
-
-    public static void setDefaultSolver(Supplier<QRSolver> factory) {
-        QR_FACTORY.set(factory);
-    }
-
-    private final QRSolver solver;
-
     public Gls() {
-        solver = QR_FACTORY.get().get();
     }
 
-    public Gls(@NonNull final QRSolver solver) {
-        this.solver = solver;
-    }
-
-    public LeastSquaresResults compute(LinearModel model, FastMatrix cov) {
+    public LeastSquaresResults compute(LinearModel model, Matrix cov) {
 
         Matrix L = cov.deepClone();
         try {
             SymmetricMatrix.lcholesky(L);
-        } catch (Exception err) {
-            throw new EcoException(EcoException.GLS_FAILED);
-        }
         // yl = L^-1*y <-> L*yl = y
         DataBlock yl = DataBlock.of(model.getY());
         LowerTriangularMatrix.rsolve(L, yl);
 
-        FastMatrix xl = model.variables();
+        Matrix xl = model.variables();
         LowerTriangularMatrix.rsolve(L, xl);
 
-        if (!solver.solve(yl, xl)) {
-            throw new EcoException(EcoException.GLS_FAILED);
-        }
-        FastMatrix R = solver.R();
+        QRSolution solution = QRSolver.process(yl, xl);
+        Matrix R = solution.getR();
         Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(R));
         return LeastSquaresResults.builder(yl, xl)
                 .mean(model.isMeanCorrection())
-                .estimation(solver.coefficients(), bvar)
-                .ssq(solver.ssqerr())
-                .residuals(solver.residuals())
+                .estimation(solution.getB(), bvar)
+                .ssq(solution.getSsqErr())
+                .residuals(solution.getE())
                 .logDeterminant(2 * LogSign.of(L.diagonal()).getValue())
                 .build();
-    }
+        } catch (Exception err) {
+            throw new EcoException(EcoException.GLS_FAILED);
+        }
+ }
 
 }

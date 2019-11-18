@@ -24,7 +24,7 @@ import java.util.Map;
 import jdplus.benchmarking.univariate.CholetteProcessor;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.multivariate.IMultivariateSsf;
 import jdplus.ssf.multivariate.M2uAdapter;

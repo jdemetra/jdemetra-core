@@ -19,8 +19,7 @@ package jdplus.math.functions;
 
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 
 /**
@@ -44,7 +43,7 @@ public interface IFunctionDerivatives {
      * 
      * @param hessian
      */
-    void hessian(FastMatrix hessian);
+    void hessian(Matrix hessian);
     
     default Matrix hessian(){
         int n=getFunction().getDomain().getDim();

@@ -22,11 +22,11 @@ import demetra.design.Immutable;
 import demetra.design.SkipProcessing;
 import demetra.util.Arrays2;
 import demetra.math.Complex;
-import jdplus.maths.matrices.MatrixException;
+import jdplus.math.matrices.MatrixException;
 import jdplus.maths.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  * Rational filters are the ratio of two filters. They are defined in

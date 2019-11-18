@@ -11,9 +11,9 @@ import demetra.information.InformationMapping;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.ParamValidation;
 import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.QuadraticForm;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.QuadraticForm;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.descriptors.arima.SarimaDescriptor;
@@ -39,10 +39,10 @@ import jdplus.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import jdplus.maths.matrices.SubMatrix;
+import jdplus.math.matrices.SubMatrix;
 import demetra.maths.matrices.Matrix;
 import jdplus.modelling.spi.ArimaProcessorUtility;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

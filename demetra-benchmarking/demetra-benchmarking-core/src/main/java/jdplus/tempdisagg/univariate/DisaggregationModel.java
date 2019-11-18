@@ -20,7 +20,7 @@ import demetra.design.Development;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

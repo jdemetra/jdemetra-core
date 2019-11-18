@@ -7,17 +7,17 @@ package jdplus.leastsquares.internal;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.MatrixException;
-import jdplus.maths.matrices.UpperTriangularMatrix;
-import jdplus.maths.matrices.decomposition.Householder;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixException;
+import jdplus.math.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.decomposition.Householder;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
 import jdplus.leastsquares.QRSolver;
 import demetra.design.AlgorithmImplementation;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.decomposition.QRDecomposition;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.decomposition.QRDecomposition;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

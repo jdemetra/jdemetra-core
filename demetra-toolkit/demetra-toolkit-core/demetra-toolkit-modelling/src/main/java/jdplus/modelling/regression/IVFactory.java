@@ -8,7 +8,7 @@ package jdplus.modelling.regression;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

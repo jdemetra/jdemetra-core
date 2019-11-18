@@ -55,7 +55,7 @@ import demetra.tempdisagg.univariate.ResidualsDiagnostics;
 import demetra.tempdisagg.univariate.TemporalDisaggregation;
 import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
 
 /**

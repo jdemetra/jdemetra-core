@@ -19,8 +19,8 @@ package jdplus.regarima.outlier;
 import jdplus.data.DataBlock;
 import jdplus.dstats.Normal;
 import demetra.stats.ProbabilityType;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.decomposition.Householder;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.Householder;
 import java.util.function.IntToDoubleFunction;
 
 /**

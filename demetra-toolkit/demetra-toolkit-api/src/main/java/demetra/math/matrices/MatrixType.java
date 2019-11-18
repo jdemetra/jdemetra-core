@@ -83,6 +83,18 @@ public interface MatrixType extends BaseTable<Double> {
         }
 
     }
+    
+    @FunctionalInterface
+    interface MatrixFunction{
+
+        /**
+         *
+         * @param nrow
+         * @param ncolumn
+         * @return
+         */
+        double apply(int nrow, int ncolumn);
+    }
 
     static MatrixType EMPTY = new LightMatrix(null, 0, 0);
 

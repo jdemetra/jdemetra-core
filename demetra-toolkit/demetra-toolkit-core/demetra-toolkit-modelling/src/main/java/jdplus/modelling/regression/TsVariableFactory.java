@@ -23,7 +23,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDataSupplier;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

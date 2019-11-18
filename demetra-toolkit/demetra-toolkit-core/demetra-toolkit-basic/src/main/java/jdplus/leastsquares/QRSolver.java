@@ -16,23 +16,32 @@
  */
 package jdplus.leastsquares;
 
+import demetra.data.DoubleSeq;
 import demetra.design.Algorithm;
 import demetra.design.Development;
-import jdplus.maths.matrices.Matrix;
+import jdplus.leastsquares.internal.DefaultQRSolver;
+import jdplus.math.matrices.Matrix;
+import nbbrd.service.Mutability;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 
 /**
  * Solves a least squares problem by means of the QR algorithm.
+ *
  * @author Jean Palate
  */
 @Algorithm
-@Development(status = Development.Status.Beta)
-public interface QRSolver extends LeastSquaresSolver {
-
-    /**
-     * Gets the R matrix (upper triangular matrix) of the used QR decomposition.
-     *    
-     * @return The R matrix. Might be singular. 
-     */
-    Matrix R();
+@ServiceDefinition(quantifier = Quantifier.SINGLE,
+        mutability = Mutability.CONCURRENT,
+        fallback = DefaultQRSolver.class)
+public interface QRSolver {
+    
+    static QRSolverLoader PROCESSOR=new QRSolverLoader();
+    
+    public static QRSolution process(DoubleSeq y, Matrix X){
+        return PROCESSOR.get().solve(y, X);
+    }
+    
+    QRSolution solve(DoubleSeq y, Matrix X);
+ 
 }
-

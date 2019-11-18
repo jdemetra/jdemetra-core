@@ -18,7 +18,7 @@ package jdplus.regarima.outlier;
 
 import jdplus.arima.IArimaModel;
 import demetra.data.DoubleList;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.regarima.RegArimaModel;
 import jdplus.modelling.regression.IOutlierFactory;
 import demetra.util.TableOfBoolean;

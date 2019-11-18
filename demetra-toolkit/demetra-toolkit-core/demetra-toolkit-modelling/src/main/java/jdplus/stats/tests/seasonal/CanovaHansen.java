@@ -11,15 +11,15 @@ import demetra.design.BuilderPattern;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import demetra.timeseries.regression.PeriodicDummies;
 import jdplus.stats.RobustCovarianceComputer;
 import jdplus.modelling.regression.PeriodicDummiesFactory;
 import jdplus.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

@@ -11,7 +11,7 @@ import demetra.data.DoubleSeqCursor;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.regression.ITsVariable;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

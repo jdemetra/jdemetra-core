@@ -17,12 +17,11 @@
 package jdplus.linearmodel;
 
 import jdplus.data.analysis.WindowFunction;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.stats.RobustCovarianceComputer;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -46,7 +45,7 @@ public class RobustCovarianceEstimators {
         return sandwich(phi, ixx, n);
     }
 
-    public Matrix sandwich(FastMatrix meat, FastMatrix bread, int n) {
+    public Matrix sandwich(Matrix meat, Matrix bread, int n) {
         Matrix omega = SymmetricMatrix.XtSX(meat, bread);
         omega.div(n);
         return omega;

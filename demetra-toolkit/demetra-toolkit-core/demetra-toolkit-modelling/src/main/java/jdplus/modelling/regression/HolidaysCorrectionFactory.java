@@ -9,7 +9,7 @@ import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.maths.matrices.Matrix;
 import demetra.timeseries.regression.HolidaysCorrectedTradingDays;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import demetra.timeseries.regression.HolidaysCorrectedTradingDays.HolidaysCorrector;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
@@ -22,8 +22,8 @@ import demetra.timeseries.calendars.CompositeCalendar;
 import demetra.util.WeightedItem;
 import java.time.LocalDate;
 import demetra.timeseries.calendars.CalendarDefinition;
-import jdplus.maths.matrices.MatrixFactory;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.MatrixFactory;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

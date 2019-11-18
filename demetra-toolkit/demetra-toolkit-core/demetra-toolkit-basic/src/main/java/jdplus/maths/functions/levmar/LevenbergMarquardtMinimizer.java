@@ -21,10 +21,10 @@ import jdplus.math.functions.ParamValidation;
 import jdplus.maths.functions.ssq.ISsqFunction;
 import jdplus.maths.functions.ssq.ISsqFunctionDerivatives;
 import jdplus.maths.functions.ssq.ISsqFunctionPoint;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
 
 /**

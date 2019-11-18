@@ -7,36 +7,39 @@ package internal.jdplus.linearmodel;
 
 import demetra.data.DoubleSeq;
 import demetra.eco.EcoException;
-import jdplus.leastsquares.internal.DefaultQRSolver;
+import jdplus.leastsquares.QRSolution;
+import jdplus.leastsquares.QRSolver;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
-import jdplus.maths.matrices.FastMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixException;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.matrices.UpperTriangularMatrix;
 
 /**
  *
  * @author palatej
  */
-public class OlsComputer implements jdplus.linearmodel.Ols.Processor{
-    
+public class OlsComputer implements jdplus.linearmodel.Ols.Processor {
+
     @Override
     public LeastSquaresResults compute(LinearModel model) {
-        DefaultQRSolver solver=new DefaultQRSolver();
-        DoubleSeq y = model.getY();
-        FastMatrix x = model.variables();
-        if (!solver.solve(y, x)) {
+        try {
+            DoubleSeq y = model.getY();
+            Matrix x = model.variables();
+            QRSolution solution = QRSolver.process(y, x);
+            Matrix R = solution.getR();
+            Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
+                    .inverse(R));
+            return LeastSquaresResults.builder(y, x)
+                    .mean(model.isMeanCorrection())
+                    .estimation(solution.getB(), bvar)
+                    .ssq(solution.getSsqErr())
+                    .residuals(solution.getE())
+                    .build();
+        } catch (MatrixException err) {
             throw new EcoException(EcoException.OLS_FAILED);
         }
-        FastMatrix R = solver.R();
-        FastMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
-                .inverse(R));
-        return LeastSquaresResults.builder(y, x)
-                .mean(model.isMeanCorrection())
-                .estimation(solver.coefficients(), bvar)
-                .ssq(solver.ssqerr())
-                .residuals(solver.residuals())
-                .build();
     }
 
 }

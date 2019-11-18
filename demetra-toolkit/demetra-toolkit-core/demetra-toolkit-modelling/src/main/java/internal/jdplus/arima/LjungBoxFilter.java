@@ -22,15 +22,15 @@ import jdplus.data.LogSign;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Legacy;
 import demetra.design.Development;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.RationalFunction;
 import nbbrd.service.ServiceProvider;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  * @author Jean Palate

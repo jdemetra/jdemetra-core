@@ -22,7 +22,7 @@ import demetra.design.Development;
 import demetra.maths.Complex;
 import jdplus.math.functions.FunctionException;
 import jdplus.math.functions.ParamValidation;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;

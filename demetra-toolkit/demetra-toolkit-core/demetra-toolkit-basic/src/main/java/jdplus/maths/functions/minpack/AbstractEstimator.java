@@ -19,9 +19,9 @@ package jdplus.maths.functions.minpack;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import jdplus.math.functions.FunctionException;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.MatrixException;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixException;
+import jdplus.math.matrices.SymmetricMatrix;
 
 /**
  * Base class for implementing estimators. This base class handles the

@@ -10,7 +10,7 @@ import demetra.data.DoubleSeqCursor;
 import java.util.Iterator;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

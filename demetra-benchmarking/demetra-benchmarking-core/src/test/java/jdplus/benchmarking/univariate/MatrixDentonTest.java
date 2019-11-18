@@ -10,7 +10,7 @@ import demetra.benchmarking.univariate.DentonSpec;
 import demetra.benchmarking.univariate.DentonSpec;
 import jdplus.data.DataBlock;
 import org.junit.Test;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

@@ -25,8 +25,8 @@ import jdplus.maths.linearfilters.SymmetricFrequencyResponse;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.leastsquares.QRSolver;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

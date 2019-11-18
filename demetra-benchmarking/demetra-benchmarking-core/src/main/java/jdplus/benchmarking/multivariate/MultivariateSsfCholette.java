@@ -26,7 +26,7 @@ import jdplus.ssf.multivariate.IMultivariateSsf;
 import jdplus.ssf.multivariate.ISsfErrors;
 import jdplus.ssf.multivariate.ISsfMeasurements;
 import jdplus.ssf.multivariate.MultivariateSsf;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

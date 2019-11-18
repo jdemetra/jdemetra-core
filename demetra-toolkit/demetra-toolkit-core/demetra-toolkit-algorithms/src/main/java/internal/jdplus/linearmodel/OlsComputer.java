@@ -11,9 +11,9 @@ import jdplus.leastsquares.QRSolver;
 import jdplus.leastsquares.internal.DefaultQRSolver;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
-import jdplus.maths.matrices.FastMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.matrices.UpperTriangularMatrix;
 import nbbrd.service.ServiceProvider;
 
 /**

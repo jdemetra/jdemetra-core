@@ -7,14 +7,11 @@ package jdplus.leastsquares;
 
 import jdplus.leastsquares.internal.DefaultQRSolver;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.decomposition.Householder;
-import jdplus.maths.matrices.decomposition.HouseholderWithPivoting;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import java.util.Random;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Ignore;
-import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -24,20 +21,21 @@ public class ILeastSquaresSolverTest {
     
     public ILeastSquaresSolverTest() {
     }
+    
+    public static void main(String[] args){
+        testPerformance();
+    }
 
-    @Test
-    @Ignore
-    public void testPerformance() {
+    public static void testPerformance() {
         int N=300, M=20, K=10000;
-        FastMatrix A=Matrix.make(N, M);
+        Matrix A=Matrix.make(N, M);
         Random rnd=new Random(0);
-        A.set(rnd::nextDouble);
+        A.set((i, j)->rnd.nextDouble());
         DataBlock y=DataBlock.make(N);
         y.set(rnd::nextDouble);
         long t0=System.currentTimeMillis();
         for (int i=0; i<K; ++i){
-            DefaultQRSolver qr= new DefaultQRSolver();
-            qr.solve(y, A);
+            QRSolver.process(y, A);
         }
         long t1=System.currentTimeMillis();
         System.out.println(t1-t0);

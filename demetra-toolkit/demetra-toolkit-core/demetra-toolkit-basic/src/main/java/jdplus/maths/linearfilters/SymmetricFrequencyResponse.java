@@ -22,9 +22,9 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.math.Complex;
 import demetra.math.Simplifying;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.MatrixException;
-import jdplus.maths.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixException;
+import jdplus.math.matrices.UpperTriangularMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.RootsSolver;
 

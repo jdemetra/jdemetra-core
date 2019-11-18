@@ -24,14 +24,14 @@ import jdplus.data.DataBlock;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.decomposition.Householder;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.Householder;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.decomposition.QRDecomposition;
+import jdplus.math.matrices.decomposition.QRDecomposition;
 import demetra.maths.matrices.Matrix;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.matrices.UpperTriangularMatrix;
 
 /**
  *

@@ -19,8 +19,8 @@ package jdplus.stats.tests;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.design.BuilderPattern;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.decomposition.Householder;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.Householder;
 import demetra.data.DoubleSeq;
 
 /**

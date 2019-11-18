@@ -17,13 +17,15 @@
 package jdplus.stats;
 
 import jdplus.data.analysis.WindowFunction;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixOperations;
+import jdplus.math.matrices.MatrixTransformation;
+import jdplus.math.matrices.lapack.GEMM;
 
 /**
  *
@@ -41,7 +43,7 @@ public class RobustCovarianceComputer {
      * @param truncationLag Truncation lag (excluded from the computation)
      * @return
      */
-    public Matrix covariance(FastMatrix x, WindowFunction winFunction, int truncationLag) {
+    public Matrix covariance(Matrix x, WindowFunction winFunction, int truncationLag) {
         DoubleUnaryOperator w = winFunction.window();
         int n = x.getRowsCount(), nx = x.getColumnsCount();
         Matrix s = SymmetricMatrix.XtX(x);
@@ -50,11 +52,11 @@ public class RobustCovarianceComputer {
         double q = 1+truncationLag;
         for (int l = 1; l <= truncationLag; ++l) {
             double wl = w.applyAsDouble(l / q);
-            FastMatrix m = x.extract(0, n - l, 0, nx);
-            FastMatrix ml = x.extract(l, n - l, 0, nx);
-            ol.product(m.transpose(), ml);
-            s.addAY(wl, ol);
-            s.addAY(wl, ol.transpose());
+            Matrix m = x.extract(0, n - l, 0, nx);
+            Matrix ml = x.extract(l, n - l, 0, nx);
+            MatrixOperations.setAtB(m, ml, s);
+            s.addAY(wl, ol, false);
+            s.addAY(wl, ol, true);
         }
         s.div(n);
         return s;

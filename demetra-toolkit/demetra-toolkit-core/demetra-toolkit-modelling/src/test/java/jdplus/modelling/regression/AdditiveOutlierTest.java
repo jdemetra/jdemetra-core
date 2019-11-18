@@ -27,7 +27,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

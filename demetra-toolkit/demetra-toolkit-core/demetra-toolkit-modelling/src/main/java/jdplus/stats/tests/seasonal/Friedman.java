@@ -21,7 +21,7 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import jdplus.dstats.Chi2;
 import jdplus.dstats.F;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.TestType;
 import demetra.data.DoubleSeq;

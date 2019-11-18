@@ -22,16 +22,16 @@ import jdplus.arima.StationaryTransformation;
 import internal.jdplus.arima.AnsleyFilter;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.matrices.decomposition.ElementaryTransformations;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.decomposition.ElementaryTransformations;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.RationalFunction;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 
 /**

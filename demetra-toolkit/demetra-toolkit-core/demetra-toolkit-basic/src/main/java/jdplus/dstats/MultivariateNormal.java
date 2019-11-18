@@ -20,12 +20,12 @@ import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.math.Constants;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import lombok.NonNull;
 import jdplus.random.RandomNumberGenerator;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -38,10 +38,10 @@ public final class MultivariateNormal {
     private static final Normal N=new Normal(0,1);
 
     private final DataBlock mean;
-    private final FastMatrix cov;
-    private volatile FastMatrix lchol;
+    private final Matrix cov;
+    private volatile Matrix lchol;
 
-    public MultivariateNormal(DoubleSeq mean, FastMatrix cov) {
+    public MultivariateNormal(DoubleSeq mean, Matrix cov) {
         this.mean = DataBlock.of(mean);
         this.cov = cov.deepClone();
     }
@@ -56,7 +56,7 @@ public final class MultivariateNormal {
     /**
      * @return the cov
      */
-    public FastMatrix getCovariance() {
+    public Matrix getCovariance() {
         return cov;
     }
 
@@ -71,13 +71,13 @@ public final class MultivariateNormal {
      */
     public void random(@NonNull RandomNumberGenerator rng, DataBlock rnd) {
         rnd.set(()->N.random(rng));
-        FastMatrix lm=l();
+        Matrix lm=l();
         LowerTriangularMatrix.lmul(lm, rnd);
         rnd.add(mean);
     }
     
-    private FastMatrix l(){
-        FastMatrix tmp = this.lchol;
+    private Matrix l(){
+        Matrix tmp = this.lchol;
         if (tmp == null) {
             synchronized (this) {
                 tmp = this.lchol;

@@ -24,13 +24,13 @@ import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.MatrixException;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixException;
 import jdplus.maths.polynomials.Polynomial;
 import nbbrd.service.ServiceProvider;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.SubMatrix;
+import jdplus.math.matrices.SubMatrix;
 
 
 /**

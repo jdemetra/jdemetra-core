@@ -17,7 +17,7 @@
 package jdplus.maths.functions.ssq;
 
 import demetra.design.Development;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import demetra.data.DoubleSeq;
 import jdplus.math.functions.FunctionMinimizer;
 

@@ -17,12 +17,11 @@
 package jdplus.maths.linearfilters;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.decomposition.Householder;
+import jdplus.math.matrices.decomposition.Householder;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlockIterator;
-import jdplus.maths.matrices.FastMatrix;
-import jdplus.maths.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.UpperTriangularMatrix;
 
 /**
  * The local polynomial filter is defined as follows: h is the number of lags
@@ -319,7 +318,7 @@ public class LocalPolynomialFilters {
      * @param u included (positive)
      * @return
      */
-    synchronized FastMatrix z(int l, int u, int d0, int d1) {
+    synchronized Matrix z(int l, int u, int d0, int d1) {
         int nh = Math.max(Math.abs(l), Math.abs(u));
         if (Z == null || Z.getRowsCount() / 2 < nh || Z.getColumnsCount() < d1 + 1) {
             Z = createZ(nh, d1);

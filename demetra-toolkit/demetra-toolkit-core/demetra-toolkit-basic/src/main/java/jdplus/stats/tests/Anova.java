@@ -22,10 +22,10 @@ import jdplus.linearmodel.LinearModel;
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
 import jdplus.dstats.F;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.matrices.UpperTriangularMatrix;
-import jdplus.maths.matrices.decomposition.HouseholderR;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.decomposition.HouseholderR;
 import java.util.Arrays;
 import java.util.List;
 

@@ -25,15 +25,15 @@ import demetra.design.Development;
 import jdplus.leastsquares.QRSolvers;
 import jdplus.linearmodel.LinearModel;
 import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArmaModel;
 import jdplus.leastsquares.QRSolver;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

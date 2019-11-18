@@ -50,9 +50,12 @@ public class Constants {
     public final double LOGPI = 1.14472988584940017414;
     public final double LOGTWOPI = Math.log(TWOPI);
 
+    public final int EMIN=-1079;
+    
     public final double BIG = 4.503599627370496e15;
     public final double BIGINV = 2.22044604925031308085e-16;
-    public final double MACHEP = 1.11022302462515654042E-16;
+    public final double MACHEP = 1.11022302462515654042e-16;
+    
 
     /**
      * Relative machine precision
@@ -61,6 +64,14 @@ public class Constants {
      */
     public double getEpsilon() {
         return MACHEP;
+    }
+    
+    public double getSafeMin(){
+        return Double.MIN_NORMAL;
+    }
+    
+    public double getSmall(){
+        return 1/Double.MAX_VALUE;
     }
 
     /**

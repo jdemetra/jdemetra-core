@@ -18,7 +18,7 @@ package jdplus.math.functions;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import demetra.data.DoubleSeq;
 
 /**

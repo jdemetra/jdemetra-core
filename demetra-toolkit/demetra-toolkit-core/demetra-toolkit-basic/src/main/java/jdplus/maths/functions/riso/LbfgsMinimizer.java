@@ -22,7 +22,7 @@ import jdplus.data.DataBlock;
 import jdplus.math.functions.IFunction;
 import jdplus.math.functions.IFunctionDerivatives;
 import jdplus.math.functions.IFunctionPoint;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.math.functions.ParamValidation;
 import demetra.data.DoubleSeq;
 import jdplus.math.functions.FunctionMinimizer;

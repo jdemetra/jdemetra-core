@@ -24,12 +24,11 @@ import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.TestType;
 import demetra.design.BuilderPattern;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -41,7 +40,7 @@ public final class LeastSquaresResults {
     @BuilderPattern(LeastSquaresResults.class)
     public static class Builder {
 
-        private Builder(DoubleSeq y, final FastMatrix X) {
+        private Builder(DoubleSeq y, final Matrix X) {
             this.y = y;
             this.X = X;
         }
@@ -51,7 +50,7 @@ public final class LeastSquaresResults {
             return this;
         }
 
-        public Builder estimation(DoubleSeq coefficients, FastMatrix ucov) {
+        public Builder estimation(DoubleSeq coefficients, Matrix ucov) {
             this.coefficients = coefficients;
             this.ucov = ucov;
             return this;
@@ -76,22 +75,22 @@ public final class LeastSquaresResults {
         }
 
         private final DoubleSeq y;
-        private final FastMatrix X;
+        private final Matrix X;
         private boolean mean;
         private DoubleSeq coefficients, res;
         private double ssq, ldet;
-        private FastMatrix ucov;
+        private Matrix ucov;
 
         public LeastSquaresResults build() {
             return new LeastSquaresResults(y, X, mean, coefficients, ucov, ssq, ldet);
         }
     }
 
-    public static Builder builder(@NonNull DoubleSeq Y, FastMatrix X) {
+    public static Builder builder(@NonNull DoubleSeq Y, Matrix X) {
         return new Builder(Y, X);
     }
 
-    private LeastSquaresResults(DoubleSeq Y, FastMatrix X, boolean mean, DoubleSeq coefficients, FastMatrix unscaledCov, double ssq, double ldet) {
+    private LeastSquaresResults(DoubleSeq Y, Matrix X, boolean mean, DoubleSeq coefficients, Matrix unscaledCov, double ssq, double ldet) {
         this.y = Y;
         this.X = X;
         this.mean = mean;
@@ -108,12 +107,12 @@ public final class LeastSquaresResults {
     }
 
     private final DoubleSeq y;
-    private final FastMatrix X;
+    private final Matrix X;
     private final boolean mean;
     private final int n, nx;
     private final DoubleSeq coefficients;
     private final double ssq, ldet;
-    private final FastMatrix ucov;
+    private final Matrix ucov;
     // auxiliary results
     private final double y2, ym, bxy;
 
@@ -216,7 +215,7 @@ public final class LeastSquaresResults {
     /**
      * @return the covariance matrix of the coefficients
      */
-    public FastMatrix covariance() {
+    public Matrix covariance() {
         return ucov.times(ssq / (n - nx));
     }
 

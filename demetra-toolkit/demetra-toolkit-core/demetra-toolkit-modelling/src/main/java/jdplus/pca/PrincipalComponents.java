@@ -17,9 +17,9 @@
 package jdplus.pca;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.decomposition.ISingularValueDecomposition;
-import jdplus.maths.matrices.decomposition.SingularValueDecomposition;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.ISingularValueDecomposition;
+import jdplus.math.matrices.decomposition.SingularValueDecomposition;
 import demetra.data.DoubleSeq;
 
 /**

@@ -24,8 +24,8 @@ import jdplus.data.DataBlock;
 import demetra.design.Development;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.matrices.MatrixException;
-import jdplus.maths.matrices.decomposition.CroutDoolittle;
+import jdplus.math.matrices.MatrixException;
+import jdplus.math.matrices.decomposition.CroutDoolittle;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRoots;
 import jdplus.ucarima.UcarimaModel;
@@ -33,9 +33,8 @@ import jdplus.ucarima.WienerKolmogorovEstimators;
 import java.util.Arrays;
 import jdplus.arima.estimation.ArimaForecasts;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.decomposition.LUDecomposition;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.LUDecomposition;
 
 /**
  * Estimation of the components of an UCARIMA model using a variant of the

@@ -21,7 +21,7 @@ import jdplus.dstats.Normal;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.random.MersenneTwister;
 import java.io.IOException;
 import java.util.Arrays;

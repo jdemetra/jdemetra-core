@@ -20,14 +20,14 @@ import demetra.math.Constants;
 import jdplus.data.DataBlock;
 import jdplus.data.accumulator.DoubleAccumulator;
 import demetra.design.Development;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.MatrixException;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixException;
 import jdplus.data.accumulator.NeumaierAccumulator;
 import java.util.function.Supplier;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.decomposition.QRDecomposition;
-import jdplus.maths.matrices.FastMatrix;
-import jdplus.maths.matrices.decomposition.QRDecomposition;
+import jdplus.math.matrices.decomposition.QRDecomposition;
+import jdplus.math.matrices.lapack.FastMatrix;
+import jdplus.math.matrices.decomposition.QRDecomposition;
 
 /**
  *

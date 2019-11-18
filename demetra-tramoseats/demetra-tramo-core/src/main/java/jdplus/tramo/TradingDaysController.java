@@ -20,7 +20,7 @@ import java.util.Optional;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import jdplus.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

@@ -18,7 +18,7 @@ package internal.jdplus.ar;
 
 import jdplus.data.DataBlockIterator;
 import demetra.design.AlgorithmImplementation;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import nbbrd.service.ServiceProvider;
 import jdplus.leastsquares.QRSolvers;
 import jdplus.leastsquares.QRSolver;

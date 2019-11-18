@@ -23,7 +23,7 @@ import jdplus.arima.StationaryTransformation;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import jdplus.dstats.Normal;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.stats.AutoCovariances;
 import demetra.data.DoubleSeq;
 

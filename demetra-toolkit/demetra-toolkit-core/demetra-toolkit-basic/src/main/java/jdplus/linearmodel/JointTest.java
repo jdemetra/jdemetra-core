@@ -20,15 +20,15 @@ import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import jdplus.dstats.F;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.TestType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.MatrixFactory;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixFactory;
 
 /**
  *

@@ -19,12 +19,12 @@ package jdplus.maths.functions.levmar;
 import jdplus.data.DataBlock;
 import jdplus.maths.functions.ssq.ISsqFunction;
 import jdplus.maths.functions.ssq.ISsqFunctionPoint;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.MatrixException;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixException;
+import jdplus.math.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
 
 /**

@@ -19,7 +19,7 @@ package jdplus.data.analysis;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.math.Constants;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  * Computes cos(tw), sin(tw)

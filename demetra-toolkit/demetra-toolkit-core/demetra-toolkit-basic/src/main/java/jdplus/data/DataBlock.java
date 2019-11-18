@@ -813,7 +813,6 @@ public final class DataBlock implements DoubleSeq.Mutable {
         return s;
     }
 
-
     @Override
     public double sum() {
         double s = 0;
@@ -1332,13 +1331,25 @@ public final class DataBlock implements DoubleSeq.Mutable {
             add(y);
         } else if (a == -1) {
             sub(y);
-        } else if (inc == 1 && y.inc == 1) {
-            for (int i = beg, j = y.beg; i < end; ++i, ++j) {
-                data[i] += a * y.data[j];
+        } else if (inc == 1) {
+            if (y.inc == 1) {
+                for (int i = beg, j = y.beg; i < end; ++i, ++j) {
+                    data[i] += a * y.data[j];
+                }
+            } else {
+                for (int i = beg, j = y.beg; i < end; ++i, j += y.inc) {
+                    data[i] += a * y.data[j];
+                }
             }
         } else {
-            for (int i = beg, j = y.beg; i != end; i += inc, j += y.inc) {
-                data[i] += a * y.data[j];
+            if (y.inc == 1) {
+                for (int i = beg, j = y.beg; i != end; i += inc, ++j) {
+                    data[i] += a * y.data[j];
+                }
+            } else {
+                for (int i = beg, j = y.beg; i != end; i += inc, j += y.inc) {
+                    data[i] += a * y.data[j];
+                }
             }
         }
     }

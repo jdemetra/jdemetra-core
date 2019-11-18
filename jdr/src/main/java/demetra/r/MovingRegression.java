@@ -10,8 +10,8 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
@@ -33,7 +33,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.maths.matrices.Matrix;
 import jdplus.modelling.spi.ArimaProcessorUtility;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

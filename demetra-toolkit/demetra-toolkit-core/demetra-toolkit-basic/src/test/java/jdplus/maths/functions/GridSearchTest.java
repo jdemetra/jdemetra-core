@@ -13,7 +13,7 @@ import jdplus.math.functions.ParamValidation;
 import jdplus.math.functions.IFunctionDerivatives;
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -67,7 +67,7 @@ class MyFunction implements IFunction {
                     }
 
                     @Override
-                    public void hessian(FastMatrix hessian) {
+                    public void hessian(Matrix hessian) {
                         double x = parameters.get(0);
                         hessian.set(0, 0, 6 * x + 3);
                     }

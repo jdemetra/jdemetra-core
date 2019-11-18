@@ -19,8 +19,7 @@ package jdplus.math.functions;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 
 /**
@@ -95,7 +94,7 @@ public class TransformedFunction implements IFunction {
          * @return
          */
         @Override
-        public void hessian(FastMatrix H) {
+        public void hessian(Matrix H) {
             int n = getDomain().getDim();
             Matrix h = Matrix.square(n);
             dfx.hessian(h);

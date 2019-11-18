@@ -22,9 +22,9 @@ import jdplus.data.DataWindow;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
 import demetra.math.Constants;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.MatrixException;
-import jdplus.maths.matrices.decomposition.Householder;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixException;
+import jdplus.math.matrices.decomposition.Householder;
 
 
 /**

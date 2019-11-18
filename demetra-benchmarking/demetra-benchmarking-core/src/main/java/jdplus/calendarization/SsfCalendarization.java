@@ -25,7 +25,7 @@ import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.Ssf;
 import java.util.HashSet;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  * State space form for calendarization. State vector: 0: Cumulative (weighted) sum (from

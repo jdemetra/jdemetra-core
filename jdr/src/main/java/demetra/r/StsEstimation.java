@@ -40,7 +40,7 @@ import demetra.timeseries.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 import static jdplus.timeseries.simplets.TsDataToolkit.add;
 import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
 

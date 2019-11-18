@@ -18,7 +18,7 @@ package jdplus.regarima.internal;
 
 import jdplus.regarima.RegArmaModel;
 import jdplus.arima.IArimaModel;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *

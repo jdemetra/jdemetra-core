@@ -18,7 +18,7 @@ package jdplus.modelling.regression;
 
 import jdplus.modelling.regression.GenericTradingDaysFactory;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.DayClustering;

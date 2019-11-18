@@ -20,7 +20,7 @@ import jdplus.data.DataBlock;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import demetra.timeseries.regression.PeriodicContrasts;
 import demetra.stats.TestResult;
 import jdplus.stats.tests.LjungBox;

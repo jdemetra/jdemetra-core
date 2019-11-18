@@ -8,12 +8,12 @@ package jdplus.maths.functions.bfgs;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import jdplus.maths.matrices.MatrixException;
+import jdplus.math.matrices.MatrixException;
 import jdplus.math.functions.FunctionException;
 import jdplus.math.functions.IFunction;
 import jdplus.math.functions.IFunctionPoint;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
 import jdplus.math.functions.FunctionMinimizer;
 

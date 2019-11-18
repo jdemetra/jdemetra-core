@@ -27,7 +27,7 @@ import demetra.arima.SarimaSpecification;
 import jdplus.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

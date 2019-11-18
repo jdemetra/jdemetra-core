@@ -12,7 +12,7 @@ import jdplus.data.DataBlockIterator;
 import demetra.eco.EcoException;
 import jdplus.linearmodel.LinearModel;
 import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.maths.matrices.Matrix;

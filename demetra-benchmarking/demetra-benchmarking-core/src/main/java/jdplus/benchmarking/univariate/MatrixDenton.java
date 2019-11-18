@@ -21,12 +21,12 @@ import demetra.data.AggregationType;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.maths.polynomials.UnitRoots;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

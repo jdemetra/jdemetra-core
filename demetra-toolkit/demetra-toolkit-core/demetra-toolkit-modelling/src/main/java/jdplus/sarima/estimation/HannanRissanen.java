@@ -20,7 +20,7 @@ import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import demetra.design.BuilderPattern;
 import jdplus.leastsquares.QRSolver;
 import jdplus.ar.AutoRegressiveEstimation;

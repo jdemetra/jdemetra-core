@@ -21,7 +21,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
 import java.util.function.DoubleUnaryOperator;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -73,7 +73,7 @@ public class LocalPolynomialFiltersTest {
 
     @Test
     public void testZ() {
-        FastMatrix z = LocalPolynomialFilters.z(-12, 2, 0, 3);
+        Matrix z = LocalPolynomialFilters.z(-12, 2, 0, 3);
         assertTrue(z.sum() != 0);
     }
 

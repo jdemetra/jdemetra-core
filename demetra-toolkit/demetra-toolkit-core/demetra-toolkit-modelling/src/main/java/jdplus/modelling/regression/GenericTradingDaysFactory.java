@@ -20,19 +20,19 @@ import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
-import jdplus.maths.matrices.MatrixWindow;
+import jdplus.math.matrices.MatrixWindow;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.calendars.CalendarUtility;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.HashMap;
 import java.util.Map;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

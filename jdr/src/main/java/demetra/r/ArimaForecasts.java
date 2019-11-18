@@ -10,7 +10,7 @@ import jdplus.arima.ssf.SsfArima;
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
 import jdplus.ssf.ISsfLoading;

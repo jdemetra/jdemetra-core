@@ -22,7 +22,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

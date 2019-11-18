@@ -10,14 +10,14 @@ import jdplus.linearsystem.internal.QRLinearSystemSolver;
 import jdplus.linearsystem.internal.LUSolver;
 import java.util.Random;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.decomposition.CroutDoolittle;
-import jdplus.maths.matrices.decomposition.Gauss;
-import jdplus.maths.matrices.decomposition.Householder;
-import jdplus.maths.matrices.decomposition.HouseholderWithPivoting;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.CroutDoolittle;
+import jdplus.math.matrices.decomposition.Gauss;
+import jdplus.math.matrices.decomposition.Householder;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import org.junit.Ignore;
 import org.junit.Test;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -40,12 +40,12 @@ public class ILinearSystemSolverTest {
                 .normalize(true).build();
         SparseSystemSolver sparse = new SparseSystemSolver();
         for (int N = 1; N <= 50; ++N) {
-            FastMatrix M = Matrix.square(N);
+            Matrix M = Matrix.square(N);
             Random rnd = new Random();
             DataBlock x = DataBlock.make(N);
             double[] del = new double[5];
             for (int K = 0; K < 10000; ++K) {
-                M.set(() -> rnd.nextDouble());
+                M.set((i,j) -> rnd.nextDouble());
                 x.set(() -> rnd.nextDouble());
                 DataBlock y = DataBlock.make(N);
                 y.product(M.rowsIterator(), x);

@@ -16,7 +16,7 @@
  */
 package demetra.calendar.r;
 
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import demetra.timeseries.calendars.DayEvent;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;

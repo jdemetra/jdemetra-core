@@ -21,7 +21,7 @@ import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.Polynomial;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *

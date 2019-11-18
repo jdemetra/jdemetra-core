@@ -20,7 +20,7 @@ package jdplus.maths.functions.minpack;
 import demetra.design.Development;
 import jdplus.maths.functions.ssq.ISsqFunction;
 import jdplus.maths.functions.ssq.ISsqFunctionPoint;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 import demetra.data.DoubleSeq;
 import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.maths.functions.ssq.SsqFunctionMinimizer;

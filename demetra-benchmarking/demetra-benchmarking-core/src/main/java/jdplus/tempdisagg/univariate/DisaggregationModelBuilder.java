@@ -37,7 +37,7 @@ import java.util.Collection;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.data.normalizer.DataNormalizer;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *

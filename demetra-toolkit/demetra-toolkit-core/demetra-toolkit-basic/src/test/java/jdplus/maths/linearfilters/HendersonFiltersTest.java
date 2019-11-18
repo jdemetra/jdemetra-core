@@ -18,12 +18,6 @@ package jdplus.maths.linearfilters;
 
 import demetra.data.DoubleSeq;
 import java.util.function.DoubleUnaryOperator;
-import jdplus.data.DataBlock;
-import jdplus.data.analysis.DiscreteKernel;
-import jdplus.maths.matrices.Matrix;
-import jdplus.maths.matrices.FastMatrix;
-import jdplus.maths.matrices.SubMatrix;
-import jdplus.maths.matrices.decomposition.Householder;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
