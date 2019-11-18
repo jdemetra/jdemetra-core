@@ -10,6 +10,6 @@ jdemetra-core
  The original software can be downloaded from the following address:
   [http://www.bde.es](http://www.bde.es "Bank of Spain")
 
- The program X12-ARIMA was produced by the US-Census Bureau. It can be downloaded from the following address: [http://www.census.gov/srd/www/x12a](http://www.census.gov/srd/www/x12a "US-Census Bureau (X12a)")
+ The program X12-ARIMA was produced by the US-Census Bureau. It can be downloaded from the following address: [https://www.census.gov/data/software/x13as.html](https://www.census.gov/data/software/x13as.html)
 
  
