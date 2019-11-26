@@ -26,6 +26,7 @@ import nbbrd.service.ServiceDefinition;
  * http://msdn.microsoft.com/en-us/library/windows/desktop/ms715432(v=vs.85).aspx
  * @author Philippe Charles
  */
+@Deprecated
 @ServiceDefinition(
         quantifier = Quantifier.OPTIONAL,
         singleton = true

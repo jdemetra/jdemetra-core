@@ -21,7 +21,6 @@ import com.google.common.collect.ImmutableSet;
 import ec.tstoolkit.design.VisibleForTesting;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.util.Locale;
 import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -31,6 +30,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @author Philippe Charles
  */
+@Deprecated
 public abstract class SqlIdentifierQuoter {
 
     @NonNull
@@ -38,11 +38,7 @@ public abstract class SqlIdentifierQuoter {
 
     @NonNull
     public static SqlIdentifierQuoter create(@NonNull DatabaseMetaData metaData) throws SQLException {
-        return new SqlIdentifierQuoterImpl(
-                getIdentifierQuoteString(metaData),
-                getSqlKeywords(metaData),
-                StorageRule.unquoted(metaData),
-                metaData.getExtraNameCharacters());
+        return new SqlIdentifierQuoterImpl(nbbrd.sql.jdbc.SqlIdentifierQuoter.of(metaData));
     }
 
     @VisibleForTesting
@@ -63,58 +59,15 @@ public abstract class SqlIdentifierQuoter {
 
     private static final Splitter KEYWORDS_SPLITTER = Splitter.on(',').trimResults();
 
+    @lombok.AllArgsConstructor
     private static final class SqlIdentifierQuoterImpl extends SqlIdentifierQuoter {
 
-        private final String identifierQuoteString;
-        private final Set<String> sqlKeywords;
-        private final StorageRule unquotedStorageRule;
-        private final String extraNameCharacters;
-
-        public SqlIdentifierQuoterImpl(String identifierQuoteString, Set<String> sqlKeywords, StorageRule unquotedStorageRule, String extraNameCharacters) {
-            this.identifierQuoteString = identifierQuoteString;
-            this.sqlKeywords = sqlKeywords;
-            this.unquotedStorageRule = unquotedStorageRule;
-            this.extraNameCharacters = extraNameCharacters;
-        }
+        @lombok.NonNull
+        private final nbbrd.sql.jdbc.SqlIdentifierQuoter delegate;
 
         @Override
         public String quote(String identifier, boolean force) {
-            if (isQuoted(identifier)) {
-                return identifier;
-            }
-            if (force || containsExtraCharacters(identifier) || breaksStorageRule(identifier) || isSqlKeyword(identifier)) {
-                return quoteIdentifier(identifier);
-            }
-            return identifier;
-        }
-
-        private boolean isQuoted(String identifier) {
-            return identifier.startsWith(identifierQuoteString)
-                    && identifier.endsWith(identifierQuoteString)
-                    && identifier.length() != identifierQuoteString.length();
-        }
-
-        private boolean isSqlKeyword(String identifier) {
-            return sqlKeywords.contains(identifier.toUpperCase(Locale.ROOT));
-        }
-
-        private boolean breaksStorageRule(String identifier) {
-            return false;
-            // FIXME: seems to follow API but fails in tests!
-            //return !unquotedStorageRule.isValid(identifier);
-        }
-
-        private boolean containsExtraCharacters(String identifier) {
-            for (int i = 0; i < identifier.length(); i++) {
-                if (extraNameCharacters.indexOf(identifier.charAt(i)) != -1) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private String quoteIdentifier(String identifier) {
-            return identifierQuoteString + identifier.replace(identifierQuoteString, identifierQuoteString + identifierQuoteString) + identifierQuoteString;
+            return delegate.quote(identifier, force);
         }
     }
 
@@ -124,43 +77,5 @@ public abstract class SqlIdentifierQuoter {
      */
     private static boolean isIdentifierQuotingSupported(@Nullable String identifierQuoteString) {
         return identifierQuoteString != null && !identifierQuoteString.trim().isEmpty();
-    }
-
-    private enum StorageRule {
-
-        UPPER {
-                    @Override
-                    public boolean isValid(String identifier) {
-                        return identifier.toUpperCase(Locale.ROOT).equals(identifier);
-                    }
-                },
-        LOWER {
-                    @Override
-                    public boolean isValid(String identifier) {
-                        return identifier.toLowerCase(Locale.ROOT).equals(identifier);
-                    }
-                },
-        MIXED {
-                    @Override
-                    public boolean isValid(String identifier) {
-                        return true;
-                    }
-                };
-
-        abstract public boolean isValid(String identifier);
-
-        public static StorageRule unquoted(DatabaseMetaData metaData) throws SQLException {
-            if (metaData.storesUpperCaseIdentifiers()) {
-                return UPPER;
-            }
-            if (metaData.storesLowerCaseIdentifiers()) {
-                return LOWER;
-            }
-            if (metaData.storesMixedCaseIdentifiers()) {
-                return MIXED;
-            }
-            return UPPER;
-
-        }
     }
 }

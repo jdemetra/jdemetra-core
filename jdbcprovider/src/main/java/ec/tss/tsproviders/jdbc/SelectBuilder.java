@@ -19,18 +19,18 @@ package ec.tss.tsproviders.jdbc;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import ec.tstoolkit.design.IBuilder;
-import ec.util.jdbc.SqlIdentifierQuoter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
+import nbbrd.sql.jdbc.SqlIdentifierQuoter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Philippe Charles
  */
-class SelectBuilder implements IBuilder<String> {
+final class SelectBuilder implements IBuilder<String> {
 
     @NonNull
     public static SelectBuilder from(@NonNull String table) {
