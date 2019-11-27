@@ -21,17 +21,16 @@ import ec.tss.TsAsyncMode;
 import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.db.DbAccessor;
 import ec.tss.tsproviders.jdbc.ConnectionSupplier;
-import ec.tss.tsproviders.jdbc.ConnectionSupplier.DataSourceBasedSupplier;
 import ec.tss.tsproviders.jdbc.JdbcAccessor;
 import ec.tss.tsproviders.jdbc.JdbcBean;
 import ec.tss.tsproviders.jdbc.JdbcProvider;
+import java.sql.Connection;
 import java.sql.SQLException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import nbbrd.service.ServiceProvider;
+import nbbrd.sql.jdbc.SqlConnectionSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,12 +54,11 @@ public class JndiJdbcProvider extends JdbcProvider<JdbcBean> {
     public static final String SOURCE = "JNDI-JDBC";
     private static final String VERSION = "20131203";
     // PROPERTIES
-    private static final DataSourceBasedSupplier DEFAULT_SUPPLIER = new JndiJdbcSupplier();
     private ConnectionSupplier connectionSupplier;
 
     public JndiJdbcProvider() {
         super(SOURCE, VERSION, LOGGER, TsAsyncMode.Once);
-        this.connectionSupplier = DEFAULT_SUPPLIER;
+        this.connectionSupplier = JndiJdbcSupplier.INSTANCE;
     }
 
     @Override
@@ -89,19 +87,18 @@ public class JndiJdbcProvider extends JdbcProvider<JdbcBean> {
     }
 
     public void setConnectionSupplier(@Nullable ConnectionSupplier connectionSupplier) {
-        this.connectionSupplier = connectionSupplier != null ? connectionSupplier : DEFAULT_SUPPLIER;
+        this.connectionSupplier = connectionSupplier != null ? connectionSupplier : JndiJdbcSupplier.INSTANCE;
     }
 
-    private final static class JndiJdbcSupplier extends DataSourceBasedSupplier {
+    private enum JndiJdbcSupplier implements ConnectionSupplier {
 
+        INSTANCE;
+        
+        private final SqlConnectionSupplier delegate = SqlConnectionSupplier.ofJndi();
+        
         @Override
-        protected javax.sql.DataSource getDataSource(JdbcBean bean) throws SQLException {
-            try {
-                Context ctx = new InitialContext();
-                return (javax.sql.DataSource) ctx.lookup(bean.getDbName());
-            } catch (NamingException ex) {
-                throw new SQLException("Cannot retrieve javax.sql.DataSource object", ex);
-            }
+        public Connection getConnection(JdbcBean bean) throws SQLException {
+            return delegate.getConnection(bean.getDbName());
         }
     }
 }

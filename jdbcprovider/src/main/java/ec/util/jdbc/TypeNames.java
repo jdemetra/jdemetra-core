@@ -26,6 +26,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @author Philippe Charles
  */
+@Deprecated
 public final class TypeNames {
 
     private TypeNames() {

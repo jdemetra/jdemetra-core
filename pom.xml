@@ -38,6 +38,10 @@
         <module>jbench</module>
     </modules>
 
+    <properties>
+        <sql-util.version>1.0.0</sql-util.version>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <!-- annotations & processors -->

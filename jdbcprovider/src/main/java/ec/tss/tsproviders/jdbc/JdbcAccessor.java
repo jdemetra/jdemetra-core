@@ -21,12 +21,12 @@ import ec.tss.tsproviders.db.DbSeries;
 import ec.tss.tsproviders.db.DbSetId;
 import ec.tss.tsproviders.db.DbUtil;
 import ec.tstoolkit.utilities.GuavaCaches;
-import ec.util.jdbc.JdbcTable;
-import ec.util.jdbc.SqlIdentifierQuoter;
 import java.sql.*;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Callable;
+import nbbrd.sql.jdbc.SqlIdentifierQuoter;
+import nbbrd.sql.jdbc.SqlTable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
@@ -35,6 +35,7 @@ import org.slf4j.Logger;
  *
  * @author Demortier Jeremy
  * @author Philippe Charles
+ * @param <BEAN>
  */
 public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BEAN> {
 
@@ -55,8 +56,8 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
         }
         try (Connection conn = supplier.getConnection(dbBean)) {
             DatabaseMetaData metaData = conn.getMetaData();
-            String tableName = SqlIdentifierQuoter.create(metaData).quote(dbBean.getTableName(), false);
-            if (JdbcTable.allOf(metaData, null, null, tableName, null).isEmpty()) {
+            String tableName = SqlIdentifierQuoter.of(metaData).quote(dbBean.getTableName(), false);
+            if (SqlTable.allOf(metaData, null, null, tableName, null).isEmpty()) {
                 return new Exception("Table named '" + dbBean.getTableName() + "' does not exist");
             }
             return null;
@@ -132,7 +133,7 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
                         .select(ref.selectColumns())
                         .filter(ref.filterColumns())
                         .orderBy(ref.selectColumns())
-                        .withQuoter(SqlIdentifierQuoter.create(metaData))
+                        .withQuoter(SqlIdentifierQuoter.of(metaData))
                         .build();
             }
 
@@ -166,7 +167,7 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
                         .select(ref.selectColumns()).select(dbBean.getPeriodColumn(), dbBean.getValueColumn())
                         .filter(ref.filterColumns())
                         .orderBy(ref.selectColumns()).orderBy(dbBean.getPeriodColumn(), dbBean.getVersionColumn())
-                        .withQuoter(SqlIdentifierQuoter.create(metaData))
+                        .withQuoter(SqlIdentifierQuoter.of(metaData))
                         .build();
             }
 
@@ -209,7 +210,7 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
                         .select(dbBean.getPeriodColumn(), dbBean.getValueColumn())
                         .filter(ref.filterColumns())
                         .orderBy(dbBean.getPeriodColumn(), dbBean.getVersionColumn())
-                        .withQuoter(SqlIdentifierQuoter.create(metaData))
+                        .withQuoter(SqlIdentifierQuoter.of(metaData))
                         .build();
             }
 
@@ -251,7 +252,7 @@ public class JdbcAccessor<BEAN extends JdbcBean> extends DbAccessor.Commander<BE
                         .select(column)
                         .filter(ref.filterColumns())
                         .orderBy(column)
-                        .withQuoter(SqlIdentifierQuoter.create(metaData))
+                        .withQuoter(SqlIdentifierQuoter.of(metaData))
                         .build();
             }
 
