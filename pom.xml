@@ -48,7 +48,7 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>2.8.2</version>
+                <version>3.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.github.stephenc.jcip</groupId>
@@ -65,7 +65,7 @@
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.12.2</version>
+                <version>3.14.0</version>
             </dependency>
 
             <!-- modules > -->
@@ -152,7 +152,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-jar-plugin</artifactId>
-                        <version>3.1.1</version>
+                        <version>3.2.0</version>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -173,7 +173,7 @@
             </activation>
             <properties>
                 <lombok.version>1.18.10</lombok.version>
-                <java-service.version>1.1.0</java-service.version>
+                <java-service.version>1.2.1</java-service.version>
             </properties>
             <dependencyManagement>
                 <dependencies>
@@ -229,12 +229,12 @@
             </properties>
         </profile>
                 
-        <!-- Enforce dependency convergence -->
+        <!-- Enforce dependency rules -->
         <profile>
-            <id>enforce-dependency-convergence</id>
+            <id>enforce-dependency-rules</id>
             <activation>
                 <property>
-                    <name>!skipEnforceDependencyConvergence</name>
+                    <name>!skipEnforceDependencyRules</name>
                 </property>
             </activation>
             <build>
@@ -242,12 +242,15 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>
-                        <version>3.0.0-M2</version>
+                        <version>3.0.0-M3</version>
                         <executions>
                             <execution>
                                 <id>enforce</id>
                                 <configuration>
                                     <rules>
+                                        <requireMavenVersion>
+                                            <version>3.3.9</version>
+                                        </requireMavenVersion>
                                         <DependencyConvergence/>
                                     </rules>
                                 </configuration>
@@ -297,7 +300,7 @@
                     <plugin>
                         <groupId>org.gaul</groupId>
                         <artifactId>modernizer-maven-plugin</artifactId>
-                        <version>1.8.0</version>
+                        <version>2.0.0</version>
                         <configuration>
                             <javaVersion>1.8</javaVersion>
                             <!--<failOnViolations>false</failOnViolations>-->
@@ -315,7 +318,7 @@
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId> 
-                        <version>0.8.3</version> 
+                        <version>0.8.5</version> 
                         <executions> 
                             <execution> 
                                 <goals> 
@@ -354,7 +357,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.0.1</version>
+                        <version>3.2.0</version>
                         <executions>
                             <execution>
                                 <phase>verify</phase>
@@ -387,7 +390,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.0.1</version>
+                        <version>3.2.0</version>
                         <executions>
                             <execution>
                                 <phase>verify</phase>
