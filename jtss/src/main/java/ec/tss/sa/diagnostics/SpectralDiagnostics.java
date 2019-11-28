@@ -164,7 +164,7 @@ public class SpectralDiagnostics implements IDiagnostics {
         if (!sorig_) {
             return Collections.singletonList("No seasonal peak in the original differenced series");
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 }

@@ -370,7 +370,7 @@ public class DeterministicComponent implements IProcResults {
 
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     public static void fillDictionary(String prefix, Map<String, Class> map, boolean compact) {

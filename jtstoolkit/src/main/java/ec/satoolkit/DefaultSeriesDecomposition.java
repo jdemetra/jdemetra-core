@@ -140,7 +140,7 @@ public class DefaultSeriesDecomposition implements ISeriesDecomposition, IProcRe
 
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     public static final String SPAN = "span", START = "start", END = "end", N = "n";

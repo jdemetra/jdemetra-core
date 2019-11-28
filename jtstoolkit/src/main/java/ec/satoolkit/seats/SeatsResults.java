@@ -220,7 +220,7 @@ public class SeatsResults implements ISaResults {
 
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
-        return log_ == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(log_);
+        return log_ == null ? Collections.emptyList() : Collections.unmodifiableList(log_);
     }
 
     public static void fillDictionary(String prefix, Map<String, Class> map, boolean compact) {
