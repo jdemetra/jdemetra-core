@@ -156,7 +156,7 @@ public class StmDecomposition implements ISaResults {
 
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     public ISeriesDecomposition getComponents() {

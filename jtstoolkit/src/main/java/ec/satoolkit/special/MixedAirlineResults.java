@@ -168,7 +168,7 @@ public class MixedAirlineResults implements ISaResults {
 
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     public UcarimaModel getUcarimaModel() {

@@ -47,7 +47,7 @@ public class StmEstimation implements IProcResults{
 
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     @Override
