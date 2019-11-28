@@ -58,17 +58,17 @@ public class TsCollection implements TsResource<List<Ts>> {
 
         @Override
         public TsMoniker getMoniker() {
-            return LombokHelper.getValue(moniker, moniker$set, TsCollection::$default$moniker);
+            return LombokHelper.getValue(moniker$value, moniker$set, TsCollection::$default$moniker);
         }
 
         @Override
         public TsInformationType getType() {
-            return LombokHelper.getValue(type, type$set, TsCollection::$default$type);
+            return LombokHelper.getValue(type$value, type$set, TsCollection::$default$type);
         }
 
         @Override
         public String getName() {
-            return LombokHelper.getValue(name, name$set, TsCollection::$default$name);
+            return LombokHelper.getValue(name$value, name$set, TsCollection::$default$name);
         }
 
         @Override
