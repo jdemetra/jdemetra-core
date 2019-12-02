@@ -14,9 +14,9 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public class LAFRGTest {
+public class LARFGTest {
     
-    public LAFRGTest() {
+    public LARFGTest() {
     }
 
     @Test
@@ -24,8 +24,8 @@ public class LAFRGTest {
                 DataBlock x=DataBlock.make(10);
         Random rnd=new Random(0);
         x.set(rnd::nextDouble);
-        LAFRG.Reflector reflector=new LAFRG.Reflector(10, DataPointer.of(x));
-        LAFRG.apply(reflector);
+        LARFG.Reflector reflector=new LARFG.Reflector(10, DataPointer.of(x));
+        LARFG.apply(reflector);
     }
     
 }
