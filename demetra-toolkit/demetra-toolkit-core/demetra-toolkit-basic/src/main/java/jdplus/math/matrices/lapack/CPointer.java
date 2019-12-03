@@ -28,30 +28,21 @@ final class CPointer extends DataPointer {
 
     @Override
     public double dot(int n, DataPointer x) {
-
-        if (x instanceof CPointer) {
-            return dot(n, (CPointer) x);
-        } else {
-            int imax = pos + n;
-            int xinc = x.inc();
-            double s = 0;
-            for (int i = pos, j = x.pos; i < imax; ++i, j += xinc) {
-                s += p[i] * x.p[j];
-            }
-            return s;
+        int imax = pos + n;
+        int xinc = x.inc();
+        double s = 0;
+        for (int i = pos, j = x.pos; i < imax; ++i, j += xinc) {
+            s += p[i] * x.p[j];
         }
+        return s;
     }
 
     @Override
     public void addAX(int n, double a, DataPointer x) {
-        if (x instanceof CPointer) {
-            addAX(n, a, (CPointer) x);
-        } else {
-            int imax = pos + n;
-            int xinc = x.inc();
-            for (int i = pos, j = x.pos; i < imax; ++i, j += xinc) {
-                p[i] += a * x.p[j];
-            }
+        int imax = pos + n;
+        int xinc = x.inc();
+        for (int i = pos, j = x.pos; i < imax; ++i, j += xinc) {
+            p[i] += a * x.p[j];
         }
     }
 

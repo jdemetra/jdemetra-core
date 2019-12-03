@@ -7,7 +7,7 @@ package jdplus.math.matrices.lapack;
 
 import demetra.math.Constants;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.TyoeOfMatrix;
+import jdplus.math.matrices.TypeOfMatrix;
 
 /**
  *
@@ -29,7 +29,7 @@ public class LASCL {
      * @param cfrom
      * @param cto
      */
-    public void apply(Matrix A, TyoeOfMatrix type, double cfrom, double cto) {
+    public void apply(Matrix A, TypeOfMatrix type, double cfrom, double cto) {
         if (A.isEmpty()) {
             return;
         }

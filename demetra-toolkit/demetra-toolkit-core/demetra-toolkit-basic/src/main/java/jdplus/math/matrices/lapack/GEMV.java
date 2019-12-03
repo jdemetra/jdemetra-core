@@ -5,7 +5,6 @@
  */
 package jdplus.math.matrices.lapack;
 
-import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixTransformation;
 
@@ -32,7 +31,7 @@ public class GEMV {
      * @param y
      * @param ta
      */
-    public void apply(double alpha, FastMatrix A, DataPointer x, double beta, DataPointer y, MatrixTransformation ta) {
+    public void apply(double alpha, Matrix A, DataPointer x, double beta, DataPointer y, MatrixTransformation ta) {
         int m = A.getRowsCount(), n = A.getColumnsCount();
         if (m == 0 || n == 0 || (alpha == 0 && beta == 1)) {
             return;

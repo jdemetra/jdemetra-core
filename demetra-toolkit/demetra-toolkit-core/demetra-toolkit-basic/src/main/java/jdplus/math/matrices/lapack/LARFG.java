@@ -68,6 +68,7 @@ public class LARFG {
         for (int j = 0; j < k; ++j) {
             beta *= safemin;
         }
-        r.beta(beta);
+        r.beta=beta;
+        r.x0(1);
     }
 }

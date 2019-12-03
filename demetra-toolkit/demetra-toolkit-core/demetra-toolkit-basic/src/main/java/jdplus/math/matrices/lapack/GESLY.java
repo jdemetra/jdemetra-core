@@ -5,29 +5,92 @@
  */
 package jdplus.math.matrices.lapack;
 
+import demetra.math.Constants;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixNorms;
+import jdplus.math.matrices.TypeOfMatrix;
+
 /**
- *
+* DGELSY computes the minimum-norm solution to a real linear least
+* squares problem:
+*     minimize || A * X - B ||
+* using a complete orthogonal factorization of A.  A is an M-by-N
+* matrix which may be rank-deficient.
+*
+* Several right hand side vectors b and solution vectors x can be
+* handled in a single call; they are stored as the columns of the
+* M-by-NRHS right hand side matrix B and the N-by-NRHS solution
+* matrix X.
+*
+* The routine first computes a QR factorization with column pivoting:
+*     A * P = Q * [ R11 R12 ]
+*                 [  0  R22 ]
+* with R11 defined as the largest leading submatrix whose estimated
+* condition number is less than 1/RCOND.  The order of R11, RANK,
+* is the effective rank of A.
+*
+* Then, R22 is considered to be negligible, and R12 is annihilated
+* by orthogonal transformations from the right, arriving at the
+* complete orthogonal factorization:
+*    A * P = Q * [ T11 0 ] * Z
+*                [  0  0 ]
+* The minimum-norm solution is then
+*    X = P * Z**T [ inv(T11)*Q1**T*B ]
+*                 [        0         ]
+* where Q1 consists of the first RANK columns of Q.
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@lombok.experimental.UtilityClass
 public class GESLY {
-//*> \brief <b> DGELSY solves overdetermined or underdetermined systems for GE matrices</b>
-//*
-//*  =========== DOCUMENTATION ===========
-//*
-//* Online html documentation available at
-//*            http://www.netlib.org/lapack/explore-html/
-//*
-//*> \htmlonly
-//*> Download DGELSY + dependencies
-//*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgelsy.f">
-//*> [TGZ]</a>
-//*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgelsy.f">
-//*> [ZIP]</a>
-//*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgelsy.f">
-//*> [TXT]</a>
-//*> \endhtmlonly
-//*
+    
+    private int[] pivot;
+    private Matrix QR;
+    private double rankCondition;
+    private int rank;
+    private Matrix B;
+    
+    public void apply(Matrix A, Matrix B, int[] pivot){
+        clear();
+        int m=A.getRowsCount(), n=A.getColumnsCount(), k=B.getColumnsCount();
+        if (m == 0 || n == 0 || k == 0)
+            return;
+        if (pivot != null){
+            this.pivot=pivot.clone();
+        }else{
+            this.pivot=new int[n];
+            for (int i=0; i<n; ++i)
+                this.pivot[i]=-1;
+        }
+        double smlnum=Constants.getSafeMin()/Constants.getPrecision();
+        double bignum=1/smlnum;
+        double anrm=MatrixNorms.absNorm(A);
+        int ascal=0;
+        if (anrm>0 && anrm <smlnum){
+            LASCL.apply(A, TypeOfMatrix.General, anrm, smlnum);
+            ascal=1;
+        }else if (anrm>bignum){
+            LASCL.apply(A, TypeOfMatrix.General, anrm, bignum);
+            ascal=2;
+        }else if (anrm == 0){
+            B.set(0);
+            return;
+        } 
+        double bnrm=MatrixNorms.absNorm(B);
+        int bscal=0;
+        if (bnrm>0 && bnrm <smlnum){
+            LASCL.apply(B, TypeOfMatrix.General, bnrm, smlnum);
+            bscal=1;
+        }else if (bnrm>bignum){
+            LASCL.apply(B, TypeOfMatrix.General, bnrm, bignum);
+            bscal=2;
+        }
+    }
+    
+    private void clear(){
+        pivot=null;
+        QR=null;
+        rankCondition=0;
+        rank=0;
+    }
 //*  Definition:
 //*  ===========
 //*

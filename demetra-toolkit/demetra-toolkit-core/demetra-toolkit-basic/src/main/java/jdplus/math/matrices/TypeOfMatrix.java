@@ -9,7 +9,7 @@ package jdplus.math.matrices;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public enum TyoeOfMatrix {
+public enum TypeOfMatrix {
     General,
     LowerTriangular,
     UpperTriangular,

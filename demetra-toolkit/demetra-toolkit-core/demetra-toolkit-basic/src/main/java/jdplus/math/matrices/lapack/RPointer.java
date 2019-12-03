@@ -33,16 +33,9 @@ final class RPointer extends DataPointer {
     public double dot(int n, DataPointer x) {
         int xinc = x.inc();
         double s = 0;
-        if (xinc == 1) {
-            int jmax = x.pos + n;
-            for (int i = pos, j = x.pos; j < jmax; i += inc, ++j) {
-                s += p[i] * x.p[j];
-            }
-        } else {
-            int imax = pos + n;
-            for (int i = pos, j = x.pos; i != imax; i += inc, j += xinc) {
-                s += p[i] * x.p[j];
-            }
+        int imax = pos + n;
+        for (int i = pos, j = x.pos; i != imax; i += inc, j += xinc) {
+            s += p[i] * x.p[j];
         }
         return s;
     }
@@ -50,22 +43,8 @@ final class RPointer extends DataPointer {
     @Override
     public void addAX(int n, double a, DataPointer x) {
         int xinc = x.inc();
-        if (xinc == 1) {
-            int jmax = x.pos + n;
-            for (int i = pos, j = x.pos; j < jmax; i += inc, ++j) {
-                p[i] += a * x.p[j];
-            }
-        } else {
-            int imax = pos + n * inc;
-            for (int i = pos, j = x.pos; i != imax; i += inc, j += xinc) {
-                p[i] += a * x.p[j];
-            }
-        }
-    }
-
-    public void addAX(int n, double a, RPointer x) {
         int imax = pos + n * inc;
-        for (int i = pos, j = x.pos; i != imax; i += inc, j += x.inc) {
+        for (int i = pos, j = x.pos; i != imax; i += inc, j += xinc) {
             p[i] += a * x.p[j];
         }
     }

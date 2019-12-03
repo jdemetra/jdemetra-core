@@ -8,10 +8,8 @@ package jdplus.maths.polynomials;
 import demetra.math.Complex;
 import demetra.math.Constants;
 import java.util.Random;
-import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixOperations;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.MatrixTransformation;
 
 /**
  *
@@ -365,14 +363,14 @@ public class FastEigenValuesSolver implements RootsSolver {
             A.set(0, 1, -Q[k].s);
             A.set(1, 1, Q[k].c);
 
-            FastMatrix R12 = R.bottom(2);
+            Matrix R12 = R.bottom(2);
             R12.copy(MatrixOperations.AB(A, R12));
             A.set(0, 0, Q[k - 1].c);
             A.set(1, 0, Q[k - 1].s);
             A.set(0, 1, -Q[k - 1].s);
             A.set(1, 1, Q[k - 1].c);
 
-            FastMatrix R01 = R.top(2);
+            Matrix R01 = R.top(2);
             R01.copy(MatrixOperations.AB(A, R01));
             D.copy(R12);
         }
@@ -558,7 +556,7 @@ public class FastEigenValuesSolver implements RootsSolver {
 
     }
 
-    private void eigenValues(FastMatrix M, Complex[] ev, int pos) {
+    private void eigenValues(Matrix M, Complex[] ev, int pos) {
         double m00 = M.get(0, 0), m01 = M.get(0, 1), m10 = M.get(1, 0), m11 = M.get(1, 1);
         double trace = m00 + m11;
         double detm = m00 * m11 - m10 * m01;

@@ -8,7 +8,6 @@ package jdplus.math.matrices.decomposition;
 import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixException;
-import jdplus.math.matrices.MatrixWindow;
 
 /**
  * SimilarTransformations of matrices 
@@ -97,15 +96,15 @@ public class SimilarTransformations {
             if (!A.isSquare()) {
                 throw new MatrixException(MatrixException.SQUARE);
             } else if (n > 2) {
-                MatrixWindow hwnd = A.bottom(n - 1);
+                Matrix hwnd = A.bottom(n - 1);
                 for (int i = 1; i < n - 1; ++i) {
                     DataBlockIterator cols = hwnd.columnsIterator();
                     HouseholderReflection hr = HouseholderReflection.of(cols.next(), true);
                     while (cols.hasNext()) {
                         hr.transform(cols.next());
                     }
-                    hwnd.bshrink();
-                    MatrixWindow mr = A.right(n - i);
+                    hwnd=hwnd.bshrink();
+                    Matrix mr = A.right(n - i);
                     DataBlockIterator rows = mr.rowsIterator();
                     while (rows.hasNext()) {
                         hr.transform(rows.next());

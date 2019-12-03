@@ -20,7 +20,6 @@ import jdplus.data.DataBlock;
 import demetra.design.Immutable;
 import java.util.ArrayList;
 import jdplus.data.DataBlockIterator;
-import jdplus.math.matrices.MatrixWindow;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Internal;
@@ -191,11 +190,10 @@ public final class LinearModel{
         if (!mean) {
             return x.deepClone();
         } else {
-            Matrix vars = Matrix.make(x.getRowsCount(), x.getColumnsCount() + 1);
-            MatrixWindow left = vars.left(1);
-            left.set(1);
-            left.hnext(x.getColumnsCount());
-            left.copy(x);
+            int m=x.getRowsCount(), n=x.getColumnsCount();
+            Matrix vars = Matrix.make(m, n+1);
+            vars.column(0).set(1);
+            vars.extract(0, m, 1, n).copy(x);
             return vars;
         }
     }

@@ -5,29 +5,20 @@
  */
 package jdplus.math.matrices.lapack;
 
+import jdplus.math.matrices.Matrix;
+
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@lombok.experimental.UtilityClass
 public class GEQP3 {
-//*> \brief \b DGEQP3
-//*
-//*  =========== DOCUMENTATION ===========
-//*
-//* Online html documentation available at
-//*            http://www.netlib.org/lapack/explore-html/
-//*
-//*> \htmlonly
-//*> Download DGEQP3 + dependencies
-//*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgeqp3.f">
-//*> [TGZ]</a>
-//*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgeqp3.f">
-//*> [ZIP]</a>
-//*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgeqp3.f">
-//*> [TXT]</a>
-//*> \endhtmlonly
-//*
+    
+    private int[] pivot;
+    private double[] tau;
+    
+    public void apply(Matrix A){
+        
+    }
 //*  Definition:
 //*  ===========
 //*

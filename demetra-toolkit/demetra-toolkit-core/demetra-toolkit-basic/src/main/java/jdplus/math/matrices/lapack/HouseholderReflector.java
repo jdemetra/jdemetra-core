@@ -12,7 +12,7 @@ package jdplus.math.matrices.lapack;
 @lombok.Data
 public class HouseholderReflector {
 
-    double tau;
+    double tau, beta;
     private final double[] px;
     private final int incx; // increment between x
     private int xstart; // start of the vector 
@@ -22,10 +22,14 @@ public class HouseholderReflector {
         return px[xstart];
     }
     
-    void beta(double beta){
-        px[xstart]=beta;
+    void x0(double value){
+        px[xstart]=value;
     }
-
+    
+    DataPointer x(){
+        return DataPointer.of(px, xstart, incx);
+    }
+    
     DataPointer v() {
         return DataPointer.of(px, xstart + incx, incx);
     }
@@ -34,7 +38,7 @@ public class HouseholderReflector {
         this.n = n;
         this.px = x.p;
         this.incx = x.inc();
-        this.xstart = x.pos + incx;
+        this.xstart = x.pos;
     }
 
     public HouseholderReflector(double[] x, int incx) {

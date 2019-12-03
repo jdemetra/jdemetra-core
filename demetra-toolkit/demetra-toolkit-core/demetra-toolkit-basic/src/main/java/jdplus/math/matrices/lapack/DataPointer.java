@@ -8,7 +8,8 @@ package jdplus.math.matrices.lapack;
 import jdplus.data.DataBlock;
 
 /**
- *
+ * Light-weight class for passing parameters
+ * The content of the class should not be modified by the called methods.
  * @author palatej
  */
 public abstract class DataPointer {

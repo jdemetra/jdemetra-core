@@ -58,6 +58,7 @@ public class Constants {
     
 
     /**
+     * DLAMCH('E')
      * Relative machine precision
      *
      * @return the value
@@ -66,12 +67,48 @@ public class Constants {
         return MACHEP;
     }
     
+    /**
+     * DLAMCH('P')
+     *
+     * @return the value
+     */
+    public double getPrecision() {
+        return MACHEP*2;
+    }
+    
+    /**
+     * DLAMCH('S')
+     * Safe minimun (such that 1/sfmin doesn't overflow)
+     * Same as Double.MIN_NORMAL
+     * @return 
+     */
     public double getSafeMin(){
         return Double.MIN_NORMAL;
     }
     
+    /**
+     * DLAMCH('S')
+     * Inverse of Double.MAX_VALUE
+     * @return 
+     */
     public double getSmall(){
         return 1/Double.MAX_VALUE;
+    }
+    
+    /**
+     * DLAMCH('O')
+     * @return 
+     */
+    public double getOverflowThreshold(){
+        return Double.MAX_VALUE;
+    }
+
+    /**
+     * DLAMCH('U')
+     * @return 
+     */
+    public double getUnderflowThreshold(){
+        return Double.MIN_VALUE;
     }
 
     /**

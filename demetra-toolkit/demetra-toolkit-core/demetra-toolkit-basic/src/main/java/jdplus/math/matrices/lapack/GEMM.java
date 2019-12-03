@@ -5,7 +5,6 @@
  */
 package jdplus.math.matrices.lapack;
 
-import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.MatrixTransformation;
@@ -20,7 +19,7 @@ import jdplus.math.matrices.MatrixTransformation;
 @lombok.experimental.UtilityClass
 public class GEMM {
 
-    public void apply(double alpha, FastMatrix A, FastMatrix B, double beta, FastMatrix C) {
+    public void apply(double alpha, Matrix A, Matrix B, double beta, Matrix C) {
         int m = C.getRowsCount(), n = C.getColumnsCount();
         // multiply by beta
         int cstart = C.getStartPosition(), cinc = C.getColumnIncrement();
@@ -60,7 +59,7 @@ public class GEMM {
         }
     }
 
-    public void apply(double alpha, FastMatrix A, FastMatrix B, double beta, FastMatrix C,
+    public void apply(double alpha, Matrix A, Matrix B, double beta, Matrix C,
             MatrixTransformation ta, MatrixTransformation tb) {
         int m = C.getRowsCount(), n = C.getColumnsCount();
         int ma = A.getRowsCount(), na = A.getColumnsCount();
@@ -137,7 +136,7 @@ public class GEMM {
      * @param B
      * @param alpha
      */
-    private static void addAB(FastMatrix C, double beta, FastMatrix A, FastMatrix B, double alpha) {
+    private static void addAB(Matrix C, double beta, Matrix A, Matrix B, double alpha) {
         int m = C.getRowsCount(), n = C.getColumnsCount(), k = A.getColumnsCount();
         int astart = A.getStartPosition(), alda = A.getColumnIncrement();
         int bstart = B.getStartPosition(), blda = B.getColumnIncrement();
@@ -161,7 +160,7 @@ public class GEMM {
         }
     }
 
-    private static void addAtBt(FastMatrix C, double beta, FastMatrix A, FastMatrix B, double alpha) {
+    private static void addAtBt(Matrix C, double beta, Matrix A, Matrix B, double alpha) {
         int m = C.getRowsCount(), n = C.getColumnsCount(), k = A.getRowsCount();
         int astart = A.getStartPosition(), alda = A.getColumnIncrement();
         int bstart = B.getStartPosition(), blda = B.getColumnIncrement();
@@ -182,7 +181,7 @@ public class GEMM {
         }
     }
 
-    private static void addAtB(FastMatrix C, double beta, FastMatrix A, FastMatrix B, double alpha) {
+    private static void addAtB(Matrix C, double beta, Matrix A, Matrix B, double alpha) {
         int m = C.getRowsCount(), n = C.getColumnsCount(), k = A.getRowsCount();
         int astart = A.getStartPosition(), alda = A.getColumnIncrement();
         int bstart = B.getStartPosition(), blda = B.getColumnIncrement();
@@ -204,7 +203,7 @@ public class GEMM {
 
     }
 
-    private static void addABt(FastMatrix C, double beta, FastMatrix A, FastMatrix B, double alpha) {
+    private static void addABt(Matrix C, double beta, Matrix A, Matrix B, double alpha) {
         int m = C.getRowsCount(), n = C.getColumnsCount(), k = A.getColumnsCount();
         int astart = A.getStartPosition(), alda = A.getColumnIncrement();
         int bstart = B.getStartPosition(), blda = B.getColumnIncrement();

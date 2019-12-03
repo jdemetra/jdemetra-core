@@ -24,7 +24,7 @@ public class LARFGTest {
                 DataBlock x=DataBlock.make(10);
         Random rnd=new Random(0);
         x.set(rnd::nextDouble);
-        LARFG.Reflector reflector=new LARFG.Reflector(10, DataPointer.of(x));
+        HouseholderReflector reflector=new HouseholderReflector(10, DataPointer.of(x));
         LARFG.apply(reflector);
     }
     
