@@ -25,10 +25,10 @@ import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.DeterminantalTerm;
 import jdplus.math.matrices.Matrix;
 import demetra.util.SubArrayOfInt;
-import jdplus.leastsquares.QRSolvers;
 import jdplus.leastsquares.QRSolver;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
+import jdplus.leastsquares.QRSolution;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
 
@@ -442,10 +442,9 @@ public class FastKalmanFilter {
             xrows.next();
         }
 
-        QRSolver solver = QRSolvers.fastSolver();
-        solver.solve(DataBlock.of(yl), xl);
-        Matrix R = solver.R();
-        double ssqerr = solver.ssqerr();
+        QRSolution qr = QRSolver.process(DataBlock.of(yl), xl);
+        Matrix R = qr.getR();
+        double ssqerr = qr.getSsqErr();
         Matrix u = UpperTriangularMatrix.inverse(R);
         Matrix bvar = SymmetricMatrix.UUt(u);
 
@@ -459,10 +458,10 @@ public class FastKalmanFilter {
         }
         return ConcentratedLikelihoodWithMissing.builder()
                 .ndata(n)
-                .coefficients(solver.coefficients())
+                .coefficients(qr.getB())
                 .ssqErr(ssqerr)
                 .logDeterminant(ldet)
-                .residuals(solver.residuals())
+                .residuals(qr.getE())
                 .unscaledCovariance(bvar.unmodifiable())
                 .build();
     }

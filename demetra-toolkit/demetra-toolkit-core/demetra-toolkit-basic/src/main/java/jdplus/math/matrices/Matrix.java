@@ -83,8 +83,8 @@ public final class Matrix implements MatrixType.Mutable {
     }
 
     private final double[] storage;
-    private final int lda, start;
-    private final int nrows, ncols;
+    private final int lda;
+    int start, nrows, ncols;
 
     //<editor-fold defaultstate="collapsed" desc="matrix constructors">
     public static Matrix square(int n) {
@@ -174,6 +174,10 @@ public final class Matrix implements MatrixType.Mutable {
     //</editor-fold>
     public Matrix deepClone() {
         return new Matrix(toArray(), nrows, ncols);
+    }
+
+    public Matrix shallowClone() {
+        return new Matrix(storage, lda, start, nrows, ncols);
     }
 
     @Override
@@ -786,18 +790,29 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
-    public void addAY(double alpha, Matrix Y, boolean transposey) {
+    public void addAY(double alpha, Matrix Y) {
         if (alpha == 0) {
             return;
         }
 
         DataBlockIterator cols = this.columnsIterator();
-        DataBlockIterator ycols = transposey ? Y.rowsIterator() : Y.columnsIterator();
+        DataBlockIterator ycols = Y.columnsIterator();
         while (cols.hasNext()) {
             cols.next().addAY(alpha, ycols.next());
         }
     }
+    public void addAYt(double alpha, Matrix Y) {
+        if (alpha == 0) {
+            return;
+        }
 
+        DataBlockIterator cols = this.columnsIterator();
+        DataBlockIterator ycols = Y.rowsIterator();
+        while (cols.hasNext()) {
+            cols.next().addAY(alpha, ycols.next());
+        }
+    }
+    
     public void addXYt(final DataBlock x, final DataBlock y) {
         double[] px = x.getStorage(), py = y.getStorage();
         int xinc = x.getIncrement(), yinc = y.getIncrement();
@@ -1023,6 +1038,10 @@ public final class Matrix implements MatrixType.Mutable {
     }
 
     //<editor-fold defaultstate="collapsed" desc="matrix windows">
+
+    public MatrixWindow all() {
+        return new MatrixWindow(storage, lda, start, nrows, ncols);
+    }
     /**
      * Top-reader sub-matrix
      *
@@ -1030,8 +1049,8 @@ public final class Matrix implements MatrixType.Mutable {
      * @param nc Number of columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
-    public Matrix topLeft(int nr, int nc) {
-        return new Matrix(storage, lda, start, nr, nc);
+    public MatrixWindow topLeft(int nr, int nc) {
+        return new MatrixWindow(storage, lda, start, nr, nc);
     }
 
     /**
@@ -1040,8 +1059,8 @@ public final class Matrix implements MatrixType.Mutable {
      * @param nr Number of rows. Could be 0.
      * @return A nr src nc sub-matrix
      */
-    public Matrix top(int nr) {
-        return new Matrix(storage, lda, start, nr, ncols);
+    public MatrixWindow top(int nr) {
+        return new MatrixWindow(storage, lda, start, nr, ncols);
     }
 
     /**
@@ -1050,8 +1069,8 @@ public final class Matrix implements MatrixType.Mutable {
      * @param nc Number of columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
-    public Matrix left(int nc) {
-        return new Matrix(storage, lda, start, nrows, nc);
+    public MatrixWindow left(int nc) {
+        return new MatrixWindow(storage, lda, start, nrows, nc);
     }
 
     /**
@@ -1059,9 +1078,9 @@ public final class Matrix implements MatrixType.Mutable {
      *
      * @return An empty sub-matrix
      */
-    public Matrix bottomRight() {
+    public MatrixWindow bottomRight() {
         int nstart = start + nrows + ncols * lda;
-        return new Matrix(storage, lda, nstart, 0, 0);
+        return new MatrixWindow(storage, lda, nstart, 0, 0);
     }
 
     /**
@@ -1071,9 +1090,9 @@ public final class Matrix implements MatrixType.Mutable {
      * @param nc Number of columns. Could be 0.
      * @return A nr src nc sub-matrix
      */
-    public Matrix bottomRight(int nr, int nc) {
+    public MatrixWindow bottomRight(int nr, int nc) {
         int nstart = start + (nrows - nr) + (ncols - nc) * lda;
-        return new Matrix(storage, lda, nstart, nr, nc);
+        return new MatrixWindow(storage, lda, nstart, nr, nc);
     }
 
     /**
@@ -1082,8 +1101,8 @@ public final class Matrix implements MatrixType.Mutable {
      * @param nr Number of rows. Could be 0.
      * @return The last n rows
      */
-    public Matrix bottom(int nr) {
-        return new Matrix(storage, lda, start + nrows - nr, nr, ncols);
+    public MatrixWindow bottom(int nr) {
+        return new MatrixWindow(storage, lda, start + nrows - nr, nr, ncols);
     }
 
     /**
@@ -1092,8 +1111,8 @@ public final class Matrix implements MatrixType.Mutable {
      * @param nc Number of columns. Could be 0.
      * @return The nc right columns
      */
-    public Matrix right(int nc) {
-        return new Matrix(storage, lda, start + (ncols - nc) * lda, nrows, nc);
+    public MatrixWindow right(int nc) {
+        return new MatrixWindow(storage, lda, start + (ncols - nc) * lda, nrows, nc);
     }
 
     public DataWindow top() {
@@ -1114,155 +1133,6 @@ public final class Matrix implements MatrixType.Mutable {
         return DataWindow.windowOf(storage, beg, beg + nrows, 1);
     }
 
-    /**
-     *
-     * @param dr
-     * @param dc
-     * @return
-     */
-    public Matrix move(final int dr, final int dc) {
-        return new Matrix(storage, lda, start + dr + dc * lda, nrows, ncols);
-    }
-
-    /**
-     * The following methods can be used to make fast iterations.They avoid
-     * the creation of unnecessary objects
-     *
-     * example:
-     *
-     * (Sub)Matrix data=... SubMatrix cur=data.topLeft(); while (...){
-     * cur.next(r,c); }
-     *
-     * @return
-     */
-    public Matrix bshrink() {
-        return new Matrix(storage, lda, start + lda + 1, nrows - 1, ncols - 1);
-    }
-
-    public Matrix eshrink() {
-        return new Matrix(storage, lda, start, nrows - 1, ncols - 1);
-    }
-
-    /**
-     * Takes the bottom-right of the current submatrix as the new starting
-     * position and updates the number of rows/columns
-     *
-     * @param nr The number of rows in the submatrix
-     * @param nc The number of columns in the submatrix
-     * @return
-     */
-    public Matrix next(int nr, int nc) {
-        return new Matrix(storage, lda, start + nrows + ncols * lda, nr, nc);
-    }
-
-    /**
-     * Takes the bottom-right of the current submatrix as the new starting
-     * position
-     *
-     * @return
-     */
-    public Matrix next() {
-        return new Matrix(storage, lda, start + nrows + ncols * lda, nrows, ncols);
-    }
-
-    /**
-     * Takes the top-right of the current submatrix as the new starting position
-     * and updates the number of columns
-     *
-     * @param nc The number of columns in the submatrix
-     * @return
-     */
-    public Matrix hnext(int nc) {
-        return new Matrix(storage, lda, start + ncols * lda, nrows, nc);
-    }
-
-    /**
-     * Takes the top-right of the current submatrix as the new starting position
-     *
-     * @return
-     */
-    public Matrix hnext() {
-        return new Matrix(storage, lda, start + ncols * lda, nrows, ncols);
-    }
-
-    /**
-     * Takes the bottom-left of the current submatrix as the new starting
-     * position and updates the number of rows
-     *
-     * @param nr The number of rows in the submatrix
-     * @return
-     */
-    public Matrix vnext(int nr) {
-        return new Matrix(storage, lda, start + nrows, nr, ncols);
-    }
-
-    /**
-     * Takes the bottom-left of the current submatrix as the new starting
-     * position
-     *
-     * @return
-     */
-    public Matrix vnext() {
-        return new Matrix(storage, lda, start + nrows, nrows, ncols);
-    }
-
-    /**
-     * Takes the top-left of the current submatrix as the new ending position
-     * and updates the number of rows/columns
-     *
-     * @param nr The number of rows in the submatrix
-     * @param nc The number of columns in the submatrix
-     * @return
-     */
-    public Matrix previous(int nr, int nc) {
-        return new Matrix(storage, lda, start - nr - nc * lda, nr, nc);
-    }
-
-    /**
-     * Takes the top-left of the current submatrix as the new ending position
-     *
-     * @return
-     */
-    public Matrix previous() {
-        return new Matrix(storage, lda, start - nrows - ncols * lda, nrows, ncols);
-    }
-
-    /**
-     * Takes the bottom-left of the current submatrix as the new ending position
-     * and updates the number of columns
-     *
-     * @param nc The number of columns in the submatrix
-     */
-    public Matrix hprevious(int nc) {
-        return new Matrix(storage, lda, start - nc * lda, nrows, nc);
-    }
-
-    /**
-     * Takes the bottom-left of the current submatrix as the new ending position
-     * @return 
-     */
-    public Matrix hprevious() {
-        return new Matrix(storage, lda, start - ncols * lda, nrows, ncols);
-    }
-
-    /**
-     * Takes the top-right of the current submatrix as the new ending position
-     * and updates the number of rows
-     *
-     * @param nr The number of rows in the submatrix
-     * @return 
-     */
-    public Matrix vprevious(int nr) {
-        return new Matrix(storage, lda, start - nr, nr, ncols);
-    }
-
-    /**
-     * Takes the top-right of the current submatrix as the new ending position
-     * @return 
-     */
-    public Matrix vprevious() {
-        return new Matrix(storage, lda, start - nrows, nrows, ncols);
-    }
     //</editor-fold>  
 
     public String toString(String fmt) {

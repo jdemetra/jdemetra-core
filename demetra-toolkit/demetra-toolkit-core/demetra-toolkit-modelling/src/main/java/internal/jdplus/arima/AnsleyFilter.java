@@ -30,7 +30,6 @@ import jdplus.maths.polynomials.Polynomial;
 import nbbrd.service.ServiceProvider;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.SubMatrix;
 
 
 /**
@@ -127,7 +126,7 @@ public class AnsleyFilter implements ArmaFilter {
             }
         }
 
-        Polynomial sma = SymmetricFilter.fromFilter(ma, m_var).coefficientsAsPolynomial();
+        Polynomial sma = SymmetricFilter.convolutionOf(ma, m_var).coefficientsAsPolynomial();
 
         m_bL = Matrix.make(r, n);
         // complete the matrix
@@ -145,7 +144,7 @@ public class AnsleyFilter implements ArmaFilter {
             }
         }
 
-        SubMatrix M = m_bL.extract(0, q + 1, p, n-p);
+        Matrix M = m_bL.extract(0, q + 1, p, n-p);
         DataBlockIterator rows = M.rowsIterator();
 
         int pos=0;

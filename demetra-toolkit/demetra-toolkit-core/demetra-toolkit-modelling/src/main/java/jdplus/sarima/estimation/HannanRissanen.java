@@ -27,6 +27,7 @@ import jdplus.ar.AutoRegressiveEstimation;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarmaSpecification;
 import demetra.data.DoubleSeq;
+import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.internal.DefaultQRSolver;
 
 /**
@@ -126,11 +127,11 @@ public class HannanRissanen {
     
     private double[] ls(Matrix mat, double[] y, boolean bbic) {
         QRSolver solver = new DefaultQRSolver();
-        solver.solve(DataBlock.of(y), mat);
-        DoubleSeq pi = solver.coefficients();
+        QRSolution rslt = solver.solve(DataBlock.of(y), mat);
+        DoubleSeq pi = rslt.getB();
         int n = y.length, m = pi.count(x -> x != 0);
         if (bbic) {
-            bic = Math.log(solver.ssqerr() / n) + Math.log(n) * m / n;
+            bic = Math.log(rslt.getSsqErr() / n) + Math.log(n) * m / n;
         }
         return pi.toArray();
     }

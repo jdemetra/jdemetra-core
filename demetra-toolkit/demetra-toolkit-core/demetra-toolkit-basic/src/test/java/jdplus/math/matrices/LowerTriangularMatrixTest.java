@@ -7,6 +7,7 @@ package jdplus.math.matrices;
 
 import ec.tstoolkit.maths.matrices.SubMatrix;
 import jdplus.data.DataBlock;
+import static jdplus.math.matrices.GeneralMatrix.transpose;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -140,18 +141,48 @@ public class LowerTriangularMatrixTest {
         DataBlock on = DataBlock.of(oN.internalStorage());
         assertTrue(n.distance(on) < 1e-9);
     }
-    
+
     @Test
     public void testToLower() {
         Matrix L = Matrix.square(10);
         L.set((i, j) -> i + 10 * j + 1);
         LowerTriangularMatrix.toLower(L);
         System.out.println(L);
-        
-        Matrix M=L.extract(5, 4, 0, 4);
+
+        Matrix M = L.extract(5, 4, 0, 4);
         LowerTriangularMatrix.toLower(L);
         System.out.println(M);
-    }   
+    }
+
+    @Test
+    public void testOperations() {
+        Matrix L = Matrix.square(10);
+        L.set((i, j) -> i < j ? 0 : (i + 10 * j + 1));
+        Matrix M = Matrix.make(10, 5);
+        M.set((i, j) -> i * i + j * j);
+        Matrix N = transpose(M);
+        Matrix iL=LowerTriangularMatrix.inverse(L);
+        Matrix X = GeneralMatrix.AB(iL, M);
+        Matrix Z=M.deepClone();
+        LowerTriangularMatrix.iLM(L, Z);
+        Z.sub(X);
+        assertTrue(MatrixNorms.absNorm(Z)<1e-9);
+        Z=M.deepClone(); // 10 x 5
+        X=GeneralMatrix.AtB(iL, M); // 5 x 10
+        LowerTriangularMatrix.iLtM(L, Z); 
+        Z.sub(X);
+        assertTrue(MatrixNorms.absNorm(Z)<1e-9);
+        Z=N.deepClone(); // 5 x 10
+        X=GeneralMatrix.AtB(M, iL); // 5 x 10
+        LowerTriangularMatrix.MiL(L, Z); 
+        Z.sub(X);
+        assertTrue(MatrixNorms.absNorm(Z)<1e-9);
+        Z=N.deepClone(); // 5 x 10
+        X=GeneralMatrix.AtBt(M, iL); // 5 x 10
+        LowerTriangularMatrix.MiLt(L, Z); 
+        Z.sub(X);
+        assertTrue(MatrixNorms.absNorm(Z)<1e-9);
+    }
 
     public static void testMul() {
         int K = 10000000;
@@ -254,8 +285,8 @@ public class LowerTriangularMatrixTest {
         System.out.println("Old");
         System.out.println(t1 - t0);
     }
-    
-    public static void main(String[] arg){
+
+    public static void main(String[] arg) {
         testMul();
         testSolve();
     }

@@ -11,7 +11,7 @@ import demetra.data.DoubleSeqCursor;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.regression.ITsVariable;
-import jdplus.math.matrices.lapack.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -21,7 +21,7 @@ import jdplus.math.matrices.lapack.FastMatrix;
 public class RegressionUtility {
 
     public <D extends TimeSeriesDomain> void addAY(D domain, DataBlock rslt, double a, DoubleSeq c, ITsVariable... var) {
-        FastMatrix x = Regression.matrix(domain, var);
+        Matrix x = Regression.matrix(domain, var);
         DoubleSeqCursor reader = c.cursor();
         DataBlockIterator columns = x.columnsIterator();
         while (columns.hasNext()) {

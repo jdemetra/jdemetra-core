@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -421,7 +421,7 @@ public class Data {
     public static final TsData[] insee() {
         try {
             File file = copyToTempFile(Data.class.getResource("/insee.txt"));
-            Matrix insee = MatrixSerializer.read(file);
+            MatrixType insee = MatrixSerializer.read(file);
             TsData[] all = new TsData[insee.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1990, 1);
             for (int i = 0; i < all.length; ++i) {
@@ -437,7 +437,7 @@ public class Data {
     public static final TsData[] surveys() {
         try {
             File file = copyToTempFile(Data.class.getResource("/surveys.txt"));
-            Matrix bs = MatrixSerializer.read(file);
+            MatrixType bs = MatrixSerializer.read(file);
             TsData[] all = new TsData[bs.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1990, 1);
             for (int i = 0; i < all.length; ++i) {
@@ -453,7 +453,7 @@ public class Data {
     public static final TsData[] indprod_de() {
         try {
             File file = copyToTempFile(Data.class.getResource("/indprod_de.txt"));
-            Matrix insee = MatrixSerializer.read(file);
+            MatrixType insee = MatrixSerializer.read(file);
             TsData[] all = new TsData[insee.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1991, 1);
             for (int i = 0; i < all.length; ++i) {
@@ -468,7 +468,7 @@ public class Data {
     public static final TsData[] indprod_fr() {
         try {
             File file = copyToTempFile(Data.class.getResource("/indprod_fr.txt"));
-            Matrix insee = MatrixSerializer.read(file);
+            MatrixType insee = MatrixSerializer.read(file);
             TsData[] all = new TsData[insee.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1990, 1);
             for (int i = 0; i < all.length; ++i) {

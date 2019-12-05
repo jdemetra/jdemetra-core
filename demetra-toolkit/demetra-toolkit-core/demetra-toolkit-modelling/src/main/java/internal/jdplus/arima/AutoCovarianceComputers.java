@@ -66,7 +66,7 @@ public class AutoCovarianceComputers {
             }
             try {
                 if (solver == null) {
-                    QRLinearSystemSolver.builder(new Householder()).build().solve(M, x);
+                    LinearSystemSolver.robustSolver().solve(M, x);
                 } else {
                     solver.solve(M, x);
                 }

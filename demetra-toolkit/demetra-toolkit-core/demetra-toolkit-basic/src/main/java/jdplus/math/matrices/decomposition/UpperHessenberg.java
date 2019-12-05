@@ -8,6 +8,7 @@ package jdplus.math.matrices.decomposition;
 import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixException;
+import jdplus.math.matrices.MatrixWindow;
 
 /**
  * Transform a given matrix to a similar upper Hessenberg matrix using
@@ -35,15 +36,14 @@ public class UpperHessenberg {
             householderReflections = null;
         } else {
             householderReflections = new HouseholderReflection[n - 2];
-            Matrix hwnd = H.bottom(n-1);
+            MatrixWindow wnd = H.all(), rwnd=H.all();
             for (int i=1; i<=householderReflections.length; ++i){
-                DataBlockIterator cols = hwnd.columnsIterator();
+                DataBlockIterator cols = wnd.bvshrink().columnsIterator();
                 HouseholderReflection hr = HouseholderReflection.of(cols.next(), true);
                 while (cols.hasNext())
                     hr.transform(cols.next());
-                hwnd=hwnd.bshrink();
-                Matrix mr = H.right(n-i);
-                DataBlockIterator rows = mr.rowsIterator();
+                wnd.bhshrink();
+                 DataBlockIterator rows = rwnd.bhshrink().rowsIterator();
                 while (rows.hasNext())
                     hr.transform(rows.next());
                 householderReflections[i-1]=hr;

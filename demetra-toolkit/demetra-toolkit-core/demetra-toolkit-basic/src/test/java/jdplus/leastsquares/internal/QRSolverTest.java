@@ -11,6 +11,9 @@ import static demetra.data.DataSets.lre;
 import jdplus.math.matrices.Matrix;
 import demetra.data.DoubleSeq;
 import jdplus.leastsquares.QRSolution;
+import jdplus.math.matrices.decomposition.Householder;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting2;
 
 /**
  *
@@ -18,7 +21,7 @@ import jdplus.leastsquares.QRSolution;
  */
 public class QRSolverTest {
 
-     static DefaultQRSolver solver = new DefaultQRSolver();
+     static DefaultQRSolver solver = new DefaultQRSolver(new HouseholderWithPivoting.Processor());
     public QRSolverTest() {
     }
 
@@ -32,7 +35,7 @@ public class QRSolverTest {
         QRSolution solution = solver.solve(DoubleSeq.of(y), M);
         DoubleSeq beta = solution.getB();
         System.out.println("Norris");
-        System.out.println(beta);
+//        System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
             System.out.print(lre(beta.get(i), DataSets.Norris.expectedBeta[i]));
             System.out.print('\t');
@@ -51,7 +54,7 @@ public class QRSolverTest {
         QRSolution solution = solver.solve(DoubleSeq.of(y), M);
         DoubleSeq beta = solution.getB();
         System.out.println("Pontius");
-        System.out.println(beta);
+//        System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
             System.out.print(lre(beta.get(i), DataSets.Pontius.expectedBeta[i]));
             System.out.print('\t');
@@ -68,7 +71,7 @@ public class QRSolverTest {
         QRSolution solution = solver.solve(DoubleSeq.of(y), M);
         DoubleSeq beta = solution.getB();
         System.out.println("NoInt1");
-        System.out.println(beta);
+//        System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
             System.out.print(lre(beta.get(i), DataSets.NoInt1.expectedBeta[i]));
             System.out.print('\t');
@@ -85,7 +88,7 @@ public class QRSolverTest {
         QRSolution solution = solver.solve(DoubleSeq.of(y), M);
         DoubleSeq beta = solution.getB();
         System.out.println("NoInt2");
-        System.out.println(beta);
+//        System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
             System.out.print(lre(beta.get(i), DataSets.NoInt2.expectedBeta[i]));
             System.out.print('\t');
@@ -134,7 +137,7 @@ public class QRSolverTest {
         QRSolution solution = solver.solve(DoubleSeq.of(y), M);
         DoubleSeq beta = solution.getB();
         System.out.println("Longley");
-        System.out.println(beta);
+//        System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
             System.out.print(lre(beta.get(i), DataSets.Longley.expectedBeta[i]));
             System.out.print('\t');
@@ -156,7 +159,7 @@ public class QRSolverTest {
         QRSolution solution = solver.solve(DoubleSeq.of(y), M);
         DoubleSeq beta = solution.getB();
         System.out.println("Wampler1");
-        System.out.println(beta);
+//        System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
             System.out.print(lre(beta.get(i), DataSets.Wampler1.expectedBeta[i]));
             System.out.print('\t');
@@ -178,7 +181,7 @@ public class QRSolverTest {
         QRSolution solution = solver.solve(DoubleSeq.of(y), M);
         DoubleSeq beta = solution.getB();
         System.out.println("Wampler2");
-        System.out.println(beta);
+//        System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
             System.out.print(lre(beta.get(i), DataSets.Wampler2.expectedBeta[i]));
             System.out.print('\t');
@@ -200,7 +203,7 @@ public class QRSolverTest {
         QRSolution solution = solver.solve(DoubleSeq.of(y), M);
         DoubleSeq beta = solution.getB();
         System.out.println("Wampler3");
-        System.out.println(beta);
+//        System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
             System.out.print(lre(beta.get(i), DataSets.Wampler3.expectedBeta[i]));
             System.out.print('\t');
@@ -222,7 +225,7 @@ public class QRSolverTest {
         QRSolution solution = solver.solve(DoubleSeq.of(y), M);
         DoubleSeq beta = solution.getB();
         System.out.println("Wampler4");
-        System.out.println(beta);
+//        System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
             System.out.print(lre(beta.get(i), DataSets.Wampler4.expectedBeta[i]));
             System.out.print('\t');

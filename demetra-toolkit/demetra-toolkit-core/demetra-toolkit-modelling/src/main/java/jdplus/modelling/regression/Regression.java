@@ -116,19 +116,15 @@ public class Regression {
             TsPeriod start = ((TsDomain) domain).getStartPeriod();
             for (int i = 0, j = 0; i < vars.length; ++i) {
                 ITsVariable v = vars[i];
-                wnd.hnext(v.dim());
                 RegressionVariableFactory factory = FACTORIES.get(v.getClass());
-                if (factory != null) {
-                    factory.fill(v, start, wnd);
-                }
+                    factory.fill(v, start, wnd.hnext(v.dim()));
             }
         } else {
             for (int i = 0, j = 0; i < vars.length; ++i) {
                 ITsVariable v = vars[i];
-                MatrixWindow cur = wnd.right(v.dim());
                 RegressionVariableFactory factory = FACTORIES.get(v.getClass());
                 if (factory != null) {
-                    factory.fill(v, domain, cur);
+                    factory.fill(v, domain, wnd.hnext(v.dim()));
                 }
             }
         }

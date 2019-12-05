@@ -8,6 +8,7 @@ package jdplus.math.matrices.lapack;
 import java.util.Random;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.decomposition.Householder;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -36,7 +37,7 @@ public class GEQR2Test {
     }
     
     public static void main(String[] arg) {
-        int M = 300, N = 5, K = 1000000;
+        int M = 300, N = 10, K = 500000;
         Matrix A = Matrix.make(M, N);
         Random rnd = new Random(0);
         A.set((i, j) -> rnd.nextDouble());
@@ -50,6 +51,12 @@ public class GEQR2Test {
         t0 = System.currentTimeMillis();
         for (int i = 0; i < K; ++i) {
             Householder hous = new Householder(A);
+        }
+        t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+        t0 = System.currentTimeMillis();
+        for (int i = 0; i < K; ++i) {
+            HouseholderWithPivoting hous = new HouseholderWithPivoting(A, 1e-16);
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

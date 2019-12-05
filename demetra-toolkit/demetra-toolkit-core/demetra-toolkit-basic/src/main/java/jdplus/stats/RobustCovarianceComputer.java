@@ -23,9 +23,7 @@ import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.MatrixOperations;
-import jdplus.math.matrices.MatrixTransformation;
-import jdplus.math.matrices.lapack.GEMM;
+import jdplus.math.matrices.GeneralMatrix;
 
 /**
  *
@@ -54,9 +52,9 @@ public class RobustCovarianceComputer {
             double wl = w.applyAsDouble(l / q);
             Matrix m = x.extract(0, n - l, 0, nx);
             Matrix ml = x.extract(l, n - l, 0, nx);
-            MatrixOperations.setAtB(m, ml, s);
-            s.addAY(wl, ol, false);
-            s.addAY(wl, ol, true);
+            GeneralMatrix.setAtB(m, ml, s);
+            s.addAY(wl, ol);
+            s.addAYt(wl, ol);
         }
         s.div(n);
         return s;

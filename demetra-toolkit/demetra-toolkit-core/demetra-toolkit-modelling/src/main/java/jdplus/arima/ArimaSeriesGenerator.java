@@ -30,7 +30,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.dstats.Distribution;
 import jdplus.math.matrices.Matrix;
 import jdplus.random.RandomNumberGenerator;
-import jdplus.math.matrices.lapack.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -199,15 +199,15 @@ public final class ArimaSeriesGenerator {
             AutoCovarianceFunction acf = starima.getAutoCovarianceFunction();
             acf.prepare(p);
             // fill the p part
-            FastMatrix pm = ac.extract(0, p, 0, p);
+            Matrix pm = ac.extract(0, p, 0, p);
             pm.diagonal().set(acf.get(0));
             for (int i = 1; i < p; ++i) {
                 pm.subDiagonal(-i).set(acf.get(i));
             }
             if (q > 0) {
-                FastMatrix qm = ac.extract(p, q, p, q);
+                Matrix qm = ac.extract(p, q, p, q);
                 qm.diagonal().set(starima.getInnovationVariance());
-                FastMatrix qp = ac.extract(p, q, 0, p);
+                Matrix qp = ac.extract(p, q, 0, p);
                 RationalBackFilter psi = starima.getPsiWeights();
                 int nw = Math.min(q, p);
                 psi.prepare(q);

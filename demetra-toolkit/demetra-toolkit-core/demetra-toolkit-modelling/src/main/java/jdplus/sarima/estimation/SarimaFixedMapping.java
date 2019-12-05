@@ -19,7 +19,6 @@ package jdplus.sarima.estimation;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.maths.Complex;
 import jdplus.math.functions.FunctionException;
 import jdplus.math.functions.ParamValidation;
 import jdplus.math.matrices.Matrix;
@@ -27,6 +26,7 @@ import jdplus.maths.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.data.DoubleSeq;
+import demetra.math.Complex;
 
 /**
  *

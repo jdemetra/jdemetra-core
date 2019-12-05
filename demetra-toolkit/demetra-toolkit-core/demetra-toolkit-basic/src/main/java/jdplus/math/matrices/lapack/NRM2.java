@@ -11,7 +11,7 @@ package jdplus.math.matrices.lapack;
  */
 @lombok.experimental.UtilityClass
 public class NRM2 {
-
+    
     public double apply(int n, DataPointer x) {
         if (n < 1) {
             return 0;

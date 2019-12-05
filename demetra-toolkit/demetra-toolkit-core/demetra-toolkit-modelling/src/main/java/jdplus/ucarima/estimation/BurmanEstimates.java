@@ -491,7 +491,7 @@ public class BurmanEstimates {
                     nar = nar.times(smar);
 
                     BackFilter denom = new BackFilter(m_ma).times(dar);
-                    SymmetricFilter c = sma.times(SymmetricFilter.fromFilter(nar));
+                    SymmetricFilter c = sma.times(SymmetricFilter.convolutionOf(nar));
                     double mvar = model.getInnovationVariance();
                     if (mvar != 1) {
                         c = c.times(1 / mvar);

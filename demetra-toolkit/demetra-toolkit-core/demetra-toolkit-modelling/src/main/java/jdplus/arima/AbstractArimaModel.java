@@ -33,11 +33,11 @@ public abstract class AbstractArimaModel implements IArimaModel {
     private volatile AutoCovarianceFunction acf;
 
     protected SymmetricFilter symmetricMa(){
-        return SymmetricFilter.fromFilter(getMa(), getInnovationVariance());
+        return SymmetricFilter.convolutionOf(getMa(), getInnovationVariance());
     }
 
     protected SymmetricFilter symmetricAr(){
-        return SymmetricFilter.fromFilter(getAr());
+        return SymmetricFilter.convolutionOf(getAr());
     }
 
     @Override

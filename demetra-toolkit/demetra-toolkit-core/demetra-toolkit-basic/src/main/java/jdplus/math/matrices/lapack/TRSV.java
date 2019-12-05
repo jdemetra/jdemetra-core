@@ -73,7 +73,7 @@ public class TRSV {
     public void Lsolve(Matrix L, double[] px, int startx, int incx) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
-        if (incx == 0) {
+        if (incx == 1) {
             int xend = startx + n;
             for (int ix = startx, il = start; ix < xend; ++ix, il += lda + 1) {
                 double tmp = px[ix];
@@ -129,11 +129,13 @@ public class TRSV {
     }
 
     /**
-     * L' * x = b
+     * L' * x = b or x' L = b'
      *
      * @param L Lower triangular matrix
-     * @param x On entry, contains b. On exit, contains the solution of the
+     * @param px On entry, contains b. On exit, contains the solution of the
      * system
+     * @param startx
+     * @param incx
      */
     public void Ltsolve(Matrix L, double[] px, int startx, int incx) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();

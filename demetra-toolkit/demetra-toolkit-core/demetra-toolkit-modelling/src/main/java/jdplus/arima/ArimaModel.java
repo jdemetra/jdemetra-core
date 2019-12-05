@@ -18,8 +18,7 @@ package jdplus.arima;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.maths.Complex;
-import demetra.maths.RealPolynomial;
+import demetra.math.Complex;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.SymmetricFilter;
 import jdplus.maths.polynomials.Polynomial;
@@ -290,7 +289,7 @@ public final class ArimaModel extends AbstractArimaModel {
             rar = rar.times(rur);
         }
 
-        SymmetricFilter sl = SymmetricFilter.fromFilter(lar), sr = SymmetricFilter.fromFilter(rar);
+        SymmetricFilter sl = SymmetricFilter.convolutionOf(lar), sr = SymmetricFilter.convolutionOf(rar);
 
         // use SymmetricFilter for the numerator.
         SymmetricFilter lma = l.symmetricMa(), rma = r.symmetricMa(); // contains the innovation
@@ -537,7 +536,7 @@ public final class ArimaModel extends AbstractArimaModel {
             synchronized (this) {
                 s = sar;
                 if (s == null) {
-                    s = SymmetricFilter.fromFilter(ar.times(delta));
+                    s = SymmetricFilter.convolutionOf(ar.times(delta));
                     sar = s;
                 }
             }
@@ -615,7 +614,7 @@ public final class ArimaModel extends AbstractArimaModel {
             synchronized (this) {
                 s = derivedsma;
                 if (s == null) {
-                    s = SymmetricFilter.fromFilter(ma, var);
+                    s = SymmetricFilter.convolutionOf(ma, var);
                     derivedsma = s;
                 }
             }

@@ -24,6 +24,7 @@ public class LowerTriangularMatrix {
         M.set((r, c) -> (c > r) ? 0 : rng.nextDouble());
     }
 
+    @Deprecated
     public void lsolve(final Matrix L, final Matrix B) throws MatrixException {
         int nc = B.getColumnsCount();
         if (nc != L.getRowsCount()) {
@@ -36,16 +37,126 @@ public class LowerTriangularMatrix {
         }
     }
 
-    public void rsolve(final Matrix L, final Matrix B) throws MatrixException {
-        int nr = B.getRowsCount(), nc = B.getColumnsCount();
+    /**
+     * y := L*x or x = iL*y
+     * @param L
+     * @param x 
+     */
+    public void iLx(Matrix L, DataBlock x){
+        TRSV.Lsolve(L, x.getStorage(), x.getStartPosition(), x.getIncrement());
+    }
+    
+    /**
+     * y := x*L or y' = L'*x or  x = iLt*y
+     * @param L
+     * @param x 
+     */
+    public void iLtx(Matrix L, DataBlock x){
+        TRSV.Ltsolve(L, x.getStorage(), x.getStartPosition(), x.getIncrement());
+    }
+
+    /**
+     * X*L=M or X = M*iL (iL = L^-1) or Z = iLt*N or Lt*Z=N
+     * @param L
+     * @param M
+     * @throws MatrixException 
+     */
+    public void MiL(final Matrix L, final Matrix M) throws MatrixException {
+        int nc = M.getColumnsCount();
+        if (nc != L.getRowsCount()) {
+            throw new MatrixException(MatrixException.DIM);
+        }
+        DataBlockIterator rows = M.rowsIterator();
+        while (rows.hasNext()) {
+            DataBlock c = rows.next();
+            TRSV.Ltsolve(L, c.getStorage(), c.getStartPosition(), c.getIncrement());
+        }
+    }
+
+    /**
+     * L*X=M or X = iL*M
+     * @param L
+     * @param M
+     * @throws MatrixException 
+     */
+    public void iLM(final Matrix L, final Matrix M) throws MatrixException {
+        int nr = M.getRowsCount();
         if (nr != L.getRowsCount()) {
             throw new MatrixException(MatrixException.DIM);
         }
-        double[] pb = B.getStorage();
-        int start = B.getStartPosition(), lda = B.getColumnIncrement();
+        DataBlockIterator cols = M.columnsIterator();
+        while (cols.hasNext()) {
+            DataBlock c = cols.next();
+            TRSV.Lsolve(L, c.getStorage(), c.getStartPosition(), c.getIncrement());
+        }
+    }
+
+    /**
+     * X*L'=M or L*X'=M' or X' = iL*M' or Z = iL*N
+     * @param L
+     * @param M
+     * @throws MatrixException 
+     */
+    public void MiLt(final Matrix L, final Matrix M) throws MatrixException {
+        int nr = M.getColumnsCount();
+        if (nr != L.getRowsCount()) {
+            throw new MatrixException(MatrixException.DIM);
+        }
+        DataBlockIterator rows = M.rowsIterator();
+        while (rows.hasNext()) {
+            DataBlock r = rows.next();
+            TRSV.Lsolve(L, r.getStorage(), r.getStartPosition(), r.getIncrement());
+        }
+    }
+
+    /**
+     * L*X'=M' or X*L'=M or X = M*iLt or IL*M' = X'
+     * @param L
+     * @param M
+     * @throws MatrixException 
+     */
+    public void iLtM(final Matrix L, final Matrix M) throws MatrixException {
+        int nr = M.getRowsCount();
+        if (nr != L.getRowsCount()) {
+            throw new MatrixException(MatrixException.DIM);
+        }
+        DataBlockIterator cols = M.columnsIterator();
+        while (cols.hasNext()) {
+            DataBlock c = cols.next();
+            TRSV.Ltsolve(L, c.getStorage(), c.getStartPosition(), c.getIncrement());
+        }
+    }
+
+    @Deprecated
+    public void rsolve(final Matrix L, final Matrix M) throws MatrixException {
+        int nr = M.getRowsCount(), nc = M.getColumnsCount();
+        if (nr != L.getRowsCount()) {
+            throw new MatrixException(MatrixException.DIM);
+        }
+        double[] pb = M.getStorage();
+        int start = M.getStartPosition(), lda = M.getColumnIncrement();
         int bmax = start + nc * lda;
         for (int b = start; b < bmax; b += lda) {
             TRSV.Lsolve(L, pb, b, 1);
+        }
+    }
+
+    /**
+     * XL = M or L'X' = M' or Z = iLi*N  where N = M'
+     * @param L
+     * @param M
+     * @throws MatrixException 
+     */
+    public void iLMt(final Matrix L, final Matrix M) throws MatrixException {
+        int nr = M.getRowsCount(), nc = M.getColumnsCount();
+        if (nc != L.getRowsCount()) {
+            throw new MatrixException(MatrixException.DIM);
+        }
+        double[] pb = M.getStorage();
+        int start = M.getStartPosition(), lda = M.getColumnIncrement();
+        int bmax = start + nr;
+        for (int b = start; b < bmax; ++b) {
+            TRSV.Ltsolve(L, pb, b, lda);
         }
     }
 
@@ -57,8 +168,91 @@ public class LowerTriangularMatrix {
      * @param L The lower triangular matrix
      * @param r An array of double
      */
+    @Deprecated
     public void rmul(Matrix L, DataBlock r) {
         TRMV.Lx(L, r.getStorage(), r.getStartPosition(), r.getIncrement());
+    }
+    
+    /**
+     * x := L*x
+     * @param L
+     * @param x 
+     */
+    public void Lx(Matrix L, DataBlock x){
+        TRMV.Lx(L, x.getStorage(), x.getStartPosition(), x.getIncrement());
+    }
+    
+    /**
+     * x := x*L' or z := L*z with z=x' 
+     * This method is strictly the same as Lx
+     * @param L
+     * @param x 
+     */
+    public void xLt(Matrix L, DataBlock x){
+        TRMV.Lx(L, x.getStorage(), x.getStartPosition(), x.getIncrement());
+    }
+
+    /**
+     * x := x*L or z := L'z with z=x'
+     * @param L
+     * @param x 
+     */
+    public void xL(Matrix L, DataBlock x){
+        TRMV.Ltx(L, x.getStorage(), x.getStartPosition(), x.getIncrement());
+    }
+    
+    /**
+     * x := L'x
+     * This method is strictly the same as xL
+     * @param L
+     * @param x 
+     */
+    public void Ltx(Matrix L, DataBlock x){
+        TRMV.Ltx(L, x.getStorage(), x.getStartPosition(), x.getIncrement());
+    }
+    
+    /**
+     * M := L*M
+     * @param L
+     * @param M 
+     */
+    public void LM(Matrix L, Matrix M){
+        DataBlockIterator cols = M.columnsIterator();
+        while (cols.hasNext())
+            Lx(L, cols.next());
+    }
+    
+    /**
+     * M := M*L or L'N = N (N = M') 
+     * @param L
+     * @param M 
+     */
+    public void ML(Matrix L, Matrix M){
+        DataBlockIterator rows = M.rowsIterator();
+        while (rows.hasNext())
+            Ltx(L, rows.next());
+    }
+
+    /**
+     * M := L'*M
+     * @param L
+     * @param M 
+     */
+    public void LtM(Matrix L, Matrix M){
+        DataBlockIterator cols = M.columnsIterator();
+        while (cols.hasNext())
+            Ltx(L, cols.next());
+    }
+
+    /**
+     * M := M*L' or LN = N (N = M') 
+     * @param L
+     * @param M 
+     */
+    public void MLt(Matrix L, Matrix M){
+        DataBlockIterator rows = M.rowsIterator();
+        while (rows.hasNext())
+            Lx(L, rows.next());
     }
 
     /**
@@ -69,6 +263,7 @@ public class LowerTriangularMatrix {
      * @param L The lower triangular matrix
      * @param l An array of double
      */
+    @Deprecated
     public void lmul(Matrix L, DataBlock l) {
         // l = l *L <=> L'l' = l'
         TRMV.Ltx(L, l.getStorage(), l.getStartPosition(), l.getIncrement());
@@ -80,6 +275,7 @@ public class LowerTriangularMatrix {
      * @param L
      * @param B
      */
+    @Deprecated
     public void rmul(final Matrix L, final Matrix B) {
         int nr = B.getRowsCount(), nc = B.getColumnsCount();
         if (nr != L.getRowsCount()) {
@@ -99,6 +295,7 @@ public class LowerTriangularMatrix {
      * @param L
      * @param B
      */
+    @Deprecated
     public void lmul(final Matrix L, final Matrix B) {
         // B=B*L <=> L'B' = B'
         int nc = B.getColumnsCount();

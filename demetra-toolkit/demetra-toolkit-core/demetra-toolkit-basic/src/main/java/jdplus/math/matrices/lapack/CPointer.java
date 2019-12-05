@@ -154,5 +154,9 @@ final class CPointer extends DataPointer {
         }
         return d;
     }
+    
+    public double fastNorm(int n){
+        return Math.sqrt(ssq(n));
+    }
 
 }

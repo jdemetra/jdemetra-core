@@ -30,7 +30,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
 import demetra.design.SkipProcessing;
-import demetra.maths.RealPolynomial;
 import demetra.data.DoubleSeq;
 import java.util.Arrays;
 

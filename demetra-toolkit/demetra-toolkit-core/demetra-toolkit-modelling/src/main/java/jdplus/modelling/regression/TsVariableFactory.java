@@ -23,7 +23,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDataSupplier;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import jdplus.math.matrices.lapack.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -38,7 +38,7 @@ class TsVariableFactory implements RegressionVariableFactory<TsVariable> {
     }
 
     @Override
-    public boolean fill(TsVariable var, TsPeriod start, FastMatrix buffer) {
+    public boolean fill(TsVariable var, TsPeriod start, Matrix buffer) {
         TsData v = var.getData();
         TsDomain curdom = v.getDomain();
         // position of the first data (in m_ts)
@@ -67,7 +67,7 @@ class TsVariableFactory implements RegressionVariableFactory<TsVariable> {
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(TsVariable var, D domain, FastMatrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(TsVariable var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -132,7 +132,7 @@ public final class LinearProcess implements ILinearProcess {
                 tmp=spectrum;
                 if (tmp == null) {
                     IRationalFilter rf = this.getFilter();
-                    tmp = new Spectrum(SymmetricFilter.fromFilter(rf.getNumerator()).times(getInnovationVariance()), SymmetricFilter.fromFilter(rf.getDenominator()));
+                    tmp = new Spectrum(SymmetricFilter.convolutionOf(rf.getNumerator()).times(getInnovationVariance()), SymmetricFilter.convolutionOf(rf.getDenominator()));
                     spectrum=tmp;
                 }
             }

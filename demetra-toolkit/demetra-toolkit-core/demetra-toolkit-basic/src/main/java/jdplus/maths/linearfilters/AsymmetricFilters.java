@@ -220,7 +220,7 @@ public class AsymmetricFilters {
         }
         if (passBand>0 && tweight >0){
             Matrix W=buildMatrix(passBand, h, q);
-            D.addAY(tweight, W, false);
+            D.addAY(tweight, W);
             // we have to update a
             DataBlock row=DataBlock.of(wp);
             row.mul(-tweight);

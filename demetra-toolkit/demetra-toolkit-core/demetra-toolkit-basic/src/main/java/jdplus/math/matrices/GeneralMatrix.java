@@ -16,7 +16,13 @@ import jdplus.math.matrices.lapack.GER;
  */
 
 @lombok.experimental.UtilityClass
-public class MatrixOperations {
+public class GeneralMatrix {
+    
+    public Matrix transpose(Matrix a){
+        Matrix b=Matrix.make(a.getColumnsCount(), a.getRowsCount());
+        b.copyTranspose(a);
+        return b;
+    }
     
     /**
      * Computes A:=alpha * x * y' + A

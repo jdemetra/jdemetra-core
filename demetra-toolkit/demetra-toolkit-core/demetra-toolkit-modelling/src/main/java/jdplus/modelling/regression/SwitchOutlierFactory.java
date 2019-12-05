@@ -12,7 +12,7 @@ import jdplus.maths.linearfilters.RationalBackFilter;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
-import jdplus.math.matrices.lapack.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -67,14 +67,14 @@ class WOFactory implements RegressionVariableFactory<SwitchOutlier> {
     }
 
     @Override
-    public boolean fill(SwitchOutlier var, TsPeriod start, FastMatrix buffer) {
+    public boolean fill(SwitchOutlier var, TsPeriod start, Matrix buffer) {
         TsPeriod p = start.withDate(var.getPosition());
         set(buffer.column(0), start.until(p));
         return true;
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(SwitchOutlier var, D domain, FastMatrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(SwitchOutlier var, D domain, Matrix buffer) {
         set(buffer.column(0), (int) domain.indexOf(var.getPosition()));
         return true;
     }

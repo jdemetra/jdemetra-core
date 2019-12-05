@@ -17,7 +17,6 @@
 package jdplus.math.matrices.decomposition;
 
 import jdplus.data.DataBlock;
-import jdplus.data.DataWindow;
 import demetra.design.Development;
 import demetra.math.Constants;
 import jdplus.math.matrices.Matrix;
@@ -29,30 +28,31 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class HouseholderWithPivoting implements QRDecomposition {
+public class HouseholderWithPivoting2 implements QRDecomposition {
 
     public static class Processor implements QRDecomposition.Processor {
 
         @Override
         public QRDecomposition decompose(Matrix A, double eps) throws MatrixException {
-            return new HouseholderWithPivoting(A, eps);
+            return new HouseholderWithPivoting2(A, eps);
         }
 
     }
 
-    private double[] qr, rdiag, wa;
+    private double[] qr, rdiag, wa, scale;
     private int[] unused;
     private int norig, n, m; // m=nrows, n=ncols
-    private int[] pivot;
+    private int[] col;
 
-    public HouseholderWithPivoting(Matrix A, double eps) {
-        init(A);
+    public HouseholderWithPivoting2(Matrix A, double eps) {
+        init(A, eps);
         householder(eps);
+        rescale();
     }
 
     private int pos(int var) {
         for (int i = 0; i < norig; ++i) {
-            if (pivot[i] == var) {
+            if (col[i] == var) {
                 return i;
             }
         }
@@ -83,7 +83,7 @@ public class HouseholderWithPivoting implements QRDecomposition {
         } else {
             diag = new double[norig];
             for (int i = 0; i < n; ++i) {
-                diag[pivot[i]] = rdiag[i];
+                diag[col[i]] = rdiag[i];
             }
         }
         return DataBlock.of(diag);
@@ -129,44 +129,42 @@ public class HouseholderWithPivoting implements QRDecomposition {
 
         for (int k = 0; k < n; ++k) {
 
-            // select the column with the greatest norm on active components
+            // select the column with the greatest 'norm' on active components
             int lmax = k;
             for (int j = k + 1; j < n; ++j) {
-                if (rdiag[pivot[j]] > rdiag[pivot[lmax]]) {
+                if (rdiag[col[j]] > rdiag[col[lmax]]) {
                     lmax = j;
                 }
             }
             if (lmax != k) {
-                int tmp = pivot[k];
-                pivot[k] = pivot[lmax];
-                pivot[lmax] = tmp;
+                int tmp = col[k];
+                col[k] = col[lmax];
+                col[lmax] = tmp;
             }
-            int ck = pivot[k];
+            int ck = col[k];
 
-            // Compute norm2 copyOf the current column
+            // Compute norm2 of the current column
             int k0 = ck * m, k1 = k0 + m;
             k0 += k;
-            DataBlock cur = DataBlock.of(qr, k0, k1);
-            double nrm = cur.norm2();
-//            double nrm=norm2(k0, k1);
+            double nrm = norm2(k0, k1);
             if (nrm > eps) {
-                // Form k-th Householder vector. v(k)=x(k)+/-norm(x)
-                // in this implementation:
-                // if a(k,k) < 0 then a(k,k) = -(a(k,k) - nrm) / nrm, else
-                // a(k,k)=( a(k,k) + nrm) / nrm
-                if (qr[k0] < -eps) {
+                double x0 = qr[k0];
+                // Form k-th Householder vector. v=(x +/- norm(x) * e0)*tau
+                // if x0 < 0 then v = (x - nrm*e0)/(-nrm), else
+                //  v = (x + norm(x)*e0)/nrm 
+                if (x0 < -eps) {
                     nrm = -nrm;
                 }
                 for (int i = k0; i < k1; ++i) {
                     qr[i] /= nrm;
                 }
                 qr[k0] += 1.0;
-                double kk = qr[k0];
-                // rdiag contains the main diagonal copyOf the R matrix
+                x0 = qr[k0];
+                // rdiag contains the main diagonal of the R matrix
                 rdiag[ck] = -nrm;
 
                 for (int j = k + 1; j < n; ++j) {
-                    int cj = pivot[j];
+                    int cj = col[j];
                     // Apply transformation to remaining columns.
                     int j0 = cj * m + k;
                     double s = 0.0;
@@ -174,7 +172,7 @@ public class HouseholderWithPivoting implements QRDecomposition {
                     for (int ik = k0, ij = j0; ik < k1; ++ik, ++ij) {
                         s += qr[ik] * qr[ij];
                     }
-                    s /= -kk;
+                    s /= -x0;
                     for (int ik = k0, ij = j0; ik < k1; ++ik, ++ij) {
                         qr[ij] += s * qr[ik];
                     }
@@ -192,33 +190,41 @@ public class HouseholderWithPivoting implements QRDecomposition {
             } else {
                 // we stop
                 for (int i = k; i < n; ++i) {
-                    rdiag[pivot[i]] = 0;
+                    rdiag[col[i]] = 0;
                 }
                 n = k;
                 unused = new int[norig - n];
                 for (int i = 0; i < unused.length; ++i, ++k) {
-                    unused[i] = pivot[k];
+                    unused[i] = col[k];
                 }
                 break;
             }
         }
-
     }
 
-    private void init(Matrix M) {
+    private void init(Matrix M, double eps) {
         m = M.getRowsCount();
         norig = n = M.getColumnsCount();
         qr = M.toArray();
         rdiag = new double[n];
+        scale = new double[n]; // we rescale the column of X so that the norm of each 
+        // column is 1 (except for null column)
         wa = new double[n];
-        pivot = new int[n];
+        col = new int[n];
         // initializations
-        DataWindow wnd = DataWindow.startOf(qr);
-        for (int k = 0; k < n; ++k) {
-            pivot[k] = k;
-            double nrm = wnd.next(m).fastNorm2();
-            rdiag[k] = nrm;
-            wa[k] = nrm;
+        for (int k = 0, pos = 0; k < n; ++k) {
+            int end = pos + m;
+            col[k] = k;
+            double nrm = norm2(pos, end);
+            if (nrm < eps) {
+                set(pos, end, 0);
+            } else {
+                mul(pos, end, 1 / nrm);
+                scale[k] = nrm;
+                rdiag[k] = 1;
+                wa[k] = 1;
+            }
+            pos = end;
         }
     }
 
@@ -243,7 +249,7 @@ public class HouseholderWithPivoting implements QRDecomposition {
         double eps = Constants.getEpsilon();
         // Solve R*X = Y; don't forget that the order of the column is given in pivot
         for (int j = n - 1; j >= 0; --j) {
-            int cj = pivot[j];
+            int cj = col[j];
             double t = y[j];
             if (Math.abs(t) > eps) {
                 double d = rdiag[cj];
@@ -268,7 +274,7 @@ public class HouseholderWithPivoting implements QRDecomposition {
      */
     private void Qt(double[] b) {
         for (int k = 0; k < n; k++) {
-            int k0 = pivot[k] * m + k;
+            int k0 = col[k] * m + k;
             double s = 0.0;
             for (int i = k, j = k0; i < m; ++i, ++j) {
                 s -= qr[j] * b[i];
@@ -284,7 +290,7 @@ public class HouseholderWithPivoting implements QRDecomposition {
 
     private void restore(DataBlock external, double[] internal) {
         for (int i = 0; i < n; ++i) {
-            external.set(pivot[i], internal[i]);
+            external.set(col[i], internal[i]);
         }
     }
 
@@ -295,7 +301,7 @@ public class HouseholderWithPivoting implements QRDecomposition {
         int xbeg = x.getStartPosition(), xend = x.getEndPosition();
 
         for (int k = 0, l = xbeg; k < n; k++, l += xinc) {
-            int k0 = pivot[k] * m + k;
+            int k0 = col[k] * m + k;
             double s = 0.0;
             for (int i = l, j = k0; i != xend; i += xinc, ++j) {
                 s += qr[j] * b[i];
@@ -315,7 +321,7 @@ public class HouseholderWithPivoting implements QRDecomposition {
         int xinc = x.getIncrement();
         int xbeg = x.getStartPosition();
         for (int k = n - 1, l = xbeg + (n - 1) * xinc; k >= 0; --k, l -= xinc) {
-            int k0 = pivot[k] * m;
+            int k0 = col[k] * m;
             double s = 0.0;
             for (int i = k, j = l; i < m; ++i, j += xinc) {
                 s += qr[k0 + i] * b[j];
@@ -327,12 +333,61 @@ public class HouseholderWithPivoting implements QRDecomposition {
         }
     }
 
+    private void rescale() {
+        // rescale the columns of R with the corresponding norms
+        for (int i = 0; i < n; ++i) {
+            int j = col[i];
+            double s = scale[j];
+            if (m != 0) {
+                int k0 = j * m, k1 = k0 + i;
+                for (int k = k0; k < k1; ++k) {
+                    qr[k] *= s;
+                }
+                rdiag[j] *= s;
+            }
+        }
+    }
+
+    private double ssq(int beg, int end) {
+        double d = 0;
+        for (int i = beg; i < end; ++i) {
+            double cur = qr[i];
+            d += cur * cur;
+        }
+        return d;
+    }
+
     private double norm2(int beg, int end) {
+//        DataBlock c = DataBlock.of(qr, beg, end);
+//        return c.norm2();
         double d = 0;
         for (int i = beg; i < end; ++i) {
             double cur = qr[i];
             d += cur * cur;
         }
         return Math.sqrt(d);
+    }
+
+    private double norma(int beg, int end) {
+        double d = 0;
+        for (int i = beg; i < end; ++i) {
+            double cur = Math.abs(qr[i]);
+            if (cur > d) {
+                d = cur;
+            }
+        }
+        return d;
+    }
+
+    private void set(int beg, int end, double val) {
+        for (int i = beg; i < end; ++i) {
+            qr[i] = val;
+        }
+    }
+
+    private void mul(int beg, int end, double s) {
+        for (int i = beg; i < end; ++i) {
+            qr[i] *= s;
+        }
     }
 }
