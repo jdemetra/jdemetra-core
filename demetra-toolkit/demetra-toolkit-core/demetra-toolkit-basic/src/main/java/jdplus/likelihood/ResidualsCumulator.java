@@ -51,7 +51,7 @@ public class ResidualsCumulator {
             SymmetricMatrix.lcholesky(l);
             DataBlock el = DataBlock.of(e);
             // L^-1*e=el <-> e=L*el
-            LowerTriangularMatrix.rsolve(l, el);
+            LowerTriangularMatrix.solveLx(l, el);
             DataBlock diag = l.diagonal();
             for (int i = 0; i < el.length(); ++i) {
                 double r = diag.get(i);

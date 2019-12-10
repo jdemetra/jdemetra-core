@@ -8,8 +8,6 @@ package jdplus.math.matrices;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.LogSign;
-import jdplus.math.matrices.lapack.TRMV;
-import jdplus.math.matrices.lapack.TRSV;
 import jdplus.random.RandomNumberGenerator;
 
 /**
@@ -19,133 +17,387 @@ import jdplus.random.RandomNumberGenerator;
 @lombok.experimental.UtilityClass
 public class UpperTriangularMatrix {
 
-
     public void randomize(Matrix M, RandomNumberGenerator rng) {
         M.set((r, c) -> (r < c) ? 0 : rng.nextDouble());
     }
 
-    public void rsolve(final Matrix U, final Matrix B) throws MatrixException {
-        int nr = B.getRowsCount(), nc = B.getColumnsCount();
-        if (nr != U.getRowsCount()) {
-            throw new MatrixException(MatrixException.DIM);
-        }
-        double[] pb = B.getStorage();
-        int start = B.getStartPosition(), lda = B.getColumnIncrement();
-        int bmax = start + nc * lda;
-        for (int b = start; b < bmax; b += lda) {
-            TRSV.Usolve(U, pb, b, 1);
-        }
+    /**
+     * y := U*x or x = iU*y
+     *
+     * @param U
+     * @param x
+     * @param zero
+     */
+    public void solveUx(Matrix U, DataBlock x, double zero) {
+        solveUx(U, x.getStorage(), x.getStartPosition(), x.getIncrement(), zero);
     }
 
-    public void lsolve(final Matrix U, final Matrix B) throws MatrixException {
+    public void solveUx(Matrix U, DataBlock x) {
+        solveUx(U, x.getStorage(), x.getStartPosition(), x.getIncrement(), 0);
+    }
+
+    /**
+     * y := x*U or y' = U'*x or x = iUt*y
+     *
+     * @param U
+     * @param x
+     */
+    public void solvexU(Matrix U, DataBlock x) {
+        solveUtx(U, x.getStorage(), x.getStartPosition(), x.getIncrement(), 0);
+    }
+
+    /**
+     * y := x*U or y' = U'*x or x = iUt*y
+     *
+     * @param U
+     * @param x
+     * @param zero
+     */
+    public void solvexU(Matrix U, DataBlock x, double zero) {
+        solveUtx(U, x.getStorage(), x.getStartPosition(), x.getIncrement(), zero);
+    }
+
+    /**
+     * Solves the system X*U=B
+     *
+     * @param U
+     * @param B
+     * @throws MatrixException
+     */
+    public void solveXU(final Matrix U, final Matrix B) throws MatrixException {
+        solveXU(U, B, 0);
+    }
+
+    /**
+     * Solves the system X*U=B for (quasi) singular matrices X*U=M or X = M*iU
+     * (iU = U^-1) or Z = iUt*N or Ut*Z=N
+     *
+     * @param U
+     * @param B
+     * @param zero
+     * @throws MatrixException
+     */
+    public void solveXU(final Matrix U, final Matrix B, double zero) throws MatrixException {
         int nc = B.getColumnsCount();
         if (nc != U.getRowsCount()) {
             throw new MatrixException(MatrixException.DIM);
         }
         DataBlockIterator rows = B.rowsIterator();
         while (rows.hasNext()) {
-            DataBlock c = rows.next();
-            TRSV.Utsolve(U, c.getStorage(), c.getStartPosition(), c.getIncrement());
+            DataBlock r = rows.next();
+            solveUtx(U, r.getStorage(), r.getStartPosition(), r.getIncrement(), zero);
         }
     }
 
-    /**
-     * Computes r = U*r The method right-multiplies the matrix by a vector.The
-     * Length of the vector must be equal or less than the number of rows of the
-     * matrix. The multiplier is modified in place. Column version
-     *
-     * @param U The upper triangular matrix
-     * @param r An array of double
-     */
-    public void rmul(Matrix U, DataBlock r) {
-        TRMV.Ux(U, r.getStorage(), r.getStartPosition(), r.getIncrement());
+    public void solveUX(final Matrix U, final Matrix M) throws MatrixException {
+        solveUX(U, M, 0);
     }
 
-    /**
-     * Computes l = l*U The method left-multiplies the matrix by a vector.The
-     * Length of the vector must be equal to the number of rows of the matrix.
-     * The multiplier is modified in place. Column version
-     *
-     * @param U The upper triangular matrix
-     * @param l An array of double
-     */
-    public void lmul(Matrix U, DataBlock l) {
-        // l = l *U <=> U'l' = l'
-        TRMV.Utx(U, l.getStorage(), l.getStartPosition(), l.getIncrement());
-    }
-
-    /**
-     * B=U*B
-     *
-     * @param U
-     * @param B
-     */
-    public void rmul(final Matrix U, final Matrix B) {
-        int nr = B.getRowsCount(), nc = B.getColumnsCount();
+    public void solveUX(final Matrix U, final Matrix M, double zero) throws MatrixException {
+        int nr = M.getRowsCount(), nc = M.getColumnsCount();
         if (nr != U.getRowsCount()) {
             throw new MatrixException(MatrixException.DIM);
         }
-        double[] pb = B.getStorage();
-        int start = B.getStartPosition(), lda = B.getColumnIncrement();
+        double[] pb = M.getStorage();
+        int start = M.getStartPosition(), lda = M.getColumnIncrement();
         int bmax = start + nc * lda;
         for (int b = start; b < bmax; b += lda) {
-            TRMV.Ux(U, pb, b, 1);
+            solveUx(U, pb, b, 1, zero);
         }
     }
 
     /**
-     * B=B*U
+     * X*U'=M or U*X'=M' or X' = iU*M' or Z = iU*N
      *
      * @param U
-     * @param B
+     * @param M
+     * @param zero
+     * @throws MatrixException
      */
-     public void lmul(final Matrix U, final Matrix B) {
-        // B=B*U <=> U'B' = B'
-        int nc = B.getColumnsCount();
-        if (nc != U.getRowsCount()) {
+    public void solveXUt(final Matrix U, final Matrix M, double zero) throws MatrixException {
+        int nr = M.getColumnsCount();
+        if (nr != U.getRowsCount()) {
             throw new MatrixException(MatrixException.DIM);
         }
-        DataBlockIterator rows = B.rowsIterator();
+        DataBlockIterator rows = M.rowsIterator();
         while (rows.hasNext()) {
-            DataBlock c = rows.next();
-            TRMV.Utx(U, c.getStorage(), c.getStartPosition(), c.getIncrement());
+            DataBlock r = rows.next();
+            solveUx(U, r.getStorage(), r.getStartPosition(), r.getIncrement(), zero);
         }
-    }
-
-    public void rsolve(Matrix U, DataBlock x) throws MatrixException {
-        TRSV.Usolve(U, x.getStorage(), x.getStartPosition(), x.getIncrement());
-    }
-
-    public void lsolve(Matrix U, DataBlock x) throws MatrixException {
-        TRSV.Utsolve(U, x.getStorage(), x.getStartPosition(), x.getIncrement());
     }
 
     /**
-     * Computes the inverse of a triangular matrix R = U^-1
      *
-     * @param U The upper matrix being inverted
-     * @return The inverse
-     * @throws MatrixException when the matrix is non invertible (some elements
-     * of the diagonal are 0).
+     * @param U
+     * @param M
+     * @throws MatrixException
      */
-    public Matrix inverse(final Matrix U) throws MatrixException {
-        int n = U.getRowsCount();
-        Matrix IU = Matrix.identity(n);
-        rsolve(U, IU);
-        return IU;
-    }
-    
-    public LogSign logDeterminant(Matrix L) {
-        return LogSign.of(L.diagonal());
+    public void solveXUt(final Matrix U, final Matrix M) throws MatrixException {
+        solveXUt(U, M, 0);
     }
 
-    public double determinant(Matrix L) {
-        LogSign ls = logDeterminant(L);
-        if (ls == null) {
-            return 0;
+    /**
+     * X'U=M' or U'X=M or X = iUtM
+     *
+     * @param U
+     * @param M
+     * @param zero
+     * @throws MatrixException
+     */
+    public void solveUtX(final Matrix U, final Matrix M, double zero) throws MatrixException {
+        int nr = M.getRowsCount();
+        if (nr != U.getRowsCount()) {
+            throw new MatrixException(MatrixException.DIM);
         }
-        double val = Math.exp(ls.getValue());
-        return ls.isPositive() ? val : -val;
+        DataBlockIterator cols = M.columnsIterator();
+        while (cols.hasNext()) {
+            DataBlock c = cols.next();
+            solveUtx(U, c.getStorage(), c.getStartPosition(), 1, zero);
+        }
+    }
+
+    public void solveUtX(final Matrix U, final Matrix M) throws MatrixException {
+        solveUtX(U, M, 0);
+    }
+
+    /**
+     * x := U*x
+     *
+     * @param U
+     * @param x
+     */
+    public void Ux(Matrix U, DataBlock x) {
+        int incx = x.getIncrement();
+        if (incx == 1) {
+            Ux(U, x.getStorage(), x.getStartPosition());
+        } else {
+            Ux(U, x.getStorage(), x.getStartPosition(), x.getIncrement());
+        }
+    }
+
+    /**
+     * x := x*U or z := U'z with z=x'
+     *
+     * @param U
+     * @param x
+     */
+    public void xU(Matrix U, DataBlock x) {
+        int incx = x.getIncrement();
+        if (incx == 1) {
+            Utx(U, x.getStorage(), x.getStartPosition());
+        } else {
+            Utx(U, x.getStorage(), x.getStartPosition(), x.getIncrement());
+        }
+    }
+
+    /**
+     * M := U*M
+     *
+     * @param U
+     * @param M
+     */
+    public void UM(Matrix U, Matrix M) {
+        int mstart = M.getStartPosition(), mlda = M.getColumnIncrement(), n = M.getColumnsCount();
+        double[] pm = M.getStorage();
+        int cmax = mstart + mlda * n;
+        for (int c = mstart; c < cmax; c += mlda) {
+            Ux(U, pm, c);
+        }
+    }
+
+    /**
+     * M := M*U or U'N = N (N = M')
+     *
+     * @param U
+     * @param M
+     */
+    public void MU(Matrix U, Matrix M) {
+        int mstart = M.getStartPosition(), mlda = M.getColumnIncrement(), m = M.getRowsCount();
+        double[] pm = M.getStorage();
+        int cmax = mstart + m;
+        for (int c = mstart; c < cmax; ++c) {
+            Utx(U, pm, c, mlda);
+        }
+    }
+
+    /**
+     * M := U'*M
+     *
+     * @param U
+     * @param M
+     */
+    public void UtM(Matrix U, Matrix M) {
+        DataBlockIterator cols = M.columnsIterator();
+        while (cols.hasNext()) {
+            DataBlock c=cols.next();
+            Utx(U, c.getStorage(), c.getStartPosition());
+        }
+    }
+
+    /**
+     * M := M*U' or UN = N (N = M')
+     *
+     * @param U
+     * @param M
+     */
+    public void MUt(Matrix U, Matrix M) {
+        DataBlockIterator rows = M.rowsIterator();
+        while (rows.hasNext()) {
+            DataBlock r=rows.next();
+            Ux(U, r.getStorage(), r.getStartPosition(), r.getIncrement());
+        }
+    }
+
+    private void Ux(Matrix U, double[] px, int startx) {
+        int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
+        double[] pu = U.getStorage();
+        int xend = startx + n;
+        for (int ixj = startx, u0 = start; ixj < xend; ++ixj, u0 += lda) {
+            double xcur = px[ixj];
+            if (xcur != 0) {
+                int iu = u0;
+                for (int ix = startx; ix < ixj; ++ix) {
+                    px[ix] += xcur * pu[iu++];
+                }
+                px[ixj] = xcur * pu[iu];
+            }
+        }
+    }
+
+    private void Ux(Matrix U, double[] px, int startx, int incx) {
+        int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
+        double[] pu = U.getStorage();
+        int xend = startx + n * incx;
+        for (int ixj = startx, u0 = start; ixj != xend; ixj += incx, u0 += lda) {
+            double xcur = px[ixj];
+            if (xcur != 0) {
+                int iu = u0;
+                for (int ix = startx; ix != ixj; ix += incx) {
+                    px[ix] += xcur * pu[iu++];
+                }
+                px[ixj] = xcur * pu[iu];
+            }
+        }
+    }
+
+    private void Utx(Matrix U, double[] px, int startx) {
+        int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
+        double[] pu = U.getStorage();
+        int xend = startx + n - 1, uend = start + (n - 1) * (lda + 1);
+        for (int ixj = xend, u0 = uend; ixj >= startx; u0 -= lda, --ixj) {
+            double tmp = px[ixj] * pu[u0--];
+            for (int ix = ixj - 1, iu = u0; ix >= startx; --ix, --iu) {
+                tmp += px[ix] * pu[iu];
+            }
+            px[ixj] = tmp;
+        }
+    }
+
+    private void Utx(Matrix U, double[] px, int startx, int incx) {
+        int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
+        double[] pu = U.getStorage();
+        int xend = startx + n * incx, uend = start + (n - 1) * (lda + 1);
+        for (int ixj = xend, u0 = uend; ixj != startx; u0 -= lda) {
+            ixj -= incx;
+            double tmp = px[ixj] * pu[u0--];
+            int iu = u0;
+            int ix = ixj;
+            while (ix != startx) {
+                ix -= incx;
+                tmp += px[ix] * pu[iu--];
+            }
+            px[ixj] = tmp;
+        }
+    }
+
+    public void solveUtx(Matrix U, double[] px, int startx, int incx, double zero) {
+        int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
+        double[] pu = U.getStorage();
+        if (incx == 1) {
+            int xend = startx + n;
+            for (int ix = startx, il = start; ix < xend; ++ix, il += lda) {
+                double t = px[ix];
+                int jl = il;
+                for (int jx = startx; jx < ix; ++jx, ++jl) {
+                    t -= px[jx] * pu[jl];
+                }
+                double d = pu[jl];
+                if (Math.abs(d) <= zero) {
+                    if (Math.abs(t) >= zero) { // if zero=0, an exception is always thrown
+                        throw new MatrixException(MatrixException.SINGULAR);
+                    } else {
+                        px[ix] = 0;
+                    }
+                } else {
+                    px[ix] = t / d;
+                }
+            }
+        } else {
+            int xend = startx + n * incx;
+            for (int ix = startx, il = start; ix < xend; ix += incx, il += lda) {
+                double t = px[ix];
+                int jl = il;
+                for (int jx = startx; jx < ix; jx += incx, ++jl) {
+                    t -= px[jx] * pu[jl];
+                }
+                double d = pu[jl];
+                if (Math.abs(d) <= zero) {
+                    if (Math.abs(t) >= zero) { // if zero=0, an exception is always thrown
+                        throw new MatrixException(MatrixException.SINGULAR);
+                    } else {
+                        px[ix] = 0;
+                    }
+                } else {
+                    px[ix] = t / d;
+                }
+            }
+        }
+    }
+
+    public void solveUx(Matrix U, double[] px, int startx, int incx, double zero) {
+        int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
+        double[] pu = U.getStorage();
+        if (incx == 1) {
+            int xend = startx + n - 1;
+            for (int jx = xend, ju = start + (n - 1) * (lda + 1); jx >= startx; --jx, ju -= lda + 1) {
+                double t = px[jx];
+                double d = pu[ju];
+                if (Math.abs(d) <= zero) {
+                    if (Math.abs(t) >= zero) {
+                        throw new MatrixException(MatrixException.SINGULAR);
+                    } else {
+                        px[jx] = 0;
+                    }
+                } else {
+                    double c = t / d;
+                    px[jx] = c;
+                    for (int ix = jx - 1, il = ju - 1; ix >= startx; --ix, --il) {
+                        px[ix] -= c * pu[il];
+                    }
+                }
+            }
+        } else {
+            int xend = startx + n * incx;
+            for (int jx = xend, ju = start + (n - 1) * (lda + 1); jx != startx; ju -= lda + 1) {
+                jx -= incx;
+                double t = px[jx];
+                double d = pu[ju];
+                if (Math.abs(d) <= zero) {
+                    if (Math.abs(t) >= zero) {
+                        throw new MatrixException(MatrixException.SINGULAR);
+                    } else {
+                        px[jx] = 0;
+                    }
+                } else {
+                    double c = t / d;
+                    px[jx] = c;
+                    for (int ix = jx, il = ju - 1; ix != startx; --il) {
+                        ix -= incx;
+                        px[ix] -= c * pu[il];
+                    }
+                }
+            }
+        }
     }
 
     public void toUpper(Matrix M) {
@@ -158,11 +410,47 @@ public class UpperTriangularMatrix {
         }
         double[] x = M.getStorage();
         int lda = M.getColumnIncrement(), start = M.getStartPosition();
-        for (int c = n-1, id = start+1; c >0; id += lda+1, --c) {
-            int imax=id+c;
+        for (int c = n - 1, id = start + 1; c > 0; id += lda + 1, --c) {
+            int imax = id + c;
             for (int iu = id; iu < imax; ++iu) {
                 x[iu] = 0;
             }
         }
     }
+
+    /**
+     * Computes the inverse of a triangular matrix R = U^-1
+     *
+     * @param U The triangular matrix being inverted
+     * @return The inverse
+     * @throws MatrixException when the matrix is non invertible (some elements
+     * of the diagonal are 0).
+     */
+    public Matrix inverse(final Matrix U) throws MatrixException {
+        if (U.diagonal().anyMatch(x -> x == 0)) {
+            throw new MatrixException(MatrixException.SINGULAR);
+        }
+        int n = U.getRowsCount();
+        if (n != U.getColumnsCount()) {
+            throw new MatrixException(MatrixException.SQUARE);
+        }
+
+        Matrix IU = Matrix.identity(n);
+        solveUX(U, IU);
+        return IU;
+    }
+
+    public LogSign logDeterminant(Matrix U) {
+        return LogSign.of(U.diagonal());
+    }
+
+    public double determinant(Matrix U) {
+        LogSign ls = logDeterminant(U);
+        if (ls == null) {
+            return 0;
+        }
+        double val = Math.exp(ls.getValue());
+        return ls.isPositive() ? val : -val;
+    }
+
 }

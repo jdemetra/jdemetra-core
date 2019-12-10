@@ -139,8 +139,8 @@ public class DogLegMinimizer implements SsqFunctionMinimizer {
             try {
                 SymmetricMatrix.lcholesky(A);
                 hgn = DataBlock.of(g_);
-                LowerTriangularMatrix.rsolve(A, hgn);
-                LowerTriangularMatrix.lsolve(A, hgn);
+                LowerTriangularMatrix.solveLx(A, hgn);
+                LowerTriangularMatrix.solvexL(A, hgn);
                 hgn.chs();
             } catch (MatrixException err) {
                 hgn = null;

@@ -205,7 +205,7 @@ public final class LeastSquaresResults {
         Matrix bvar = ucov.extract(v0, nvars, v0, nvars).deepClone();
         SymmetricMatrix.lcholesky(bvar);
         DataBlock b = DataBlock.of(coefficients.extract(v0, nvars));
-        LowerTriangularMatrix.rsolve(bvar, b);
+        LowerTriangularMatrix.solveLx(bvar, b);
         double fval = b.ssq() / nvars / (ssq / (n - nx));
         F f = new F(nvars, n - nx);
         return new StatisticalTest(f, fval, TestType.Upper, false);

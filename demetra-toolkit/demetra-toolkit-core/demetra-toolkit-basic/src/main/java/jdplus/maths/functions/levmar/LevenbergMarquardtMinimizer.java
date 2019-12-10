@@ -200,8 +200,8 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
                 SymmetricMatrix.lcholesky(K);
                 dp = DataBlock.of(Jte);
                 dp.chs();
-                LowerTriangularMatrix.rsolve(K, dp);
-                LowerTriangularMatrix.lsolve(K, dp);
+                LowerTriangularMatrix.solveLx(K, dp);
+                LowerTriangularMatrix.solvexL(K, dp);
                 solved = true;
 //                Householder qr = new Householder(true);
 //                qr.decompose(M);

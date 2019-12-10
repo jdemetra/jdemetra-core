@@ -31,7 +31,7 @@ public class LowerTriangularMatrixTest {
         L.set((i, j) -> i < j ? 0 : (i + 10 * j + 1));
         ec.tstoolkit.maths.matrices.Matrix oL
                 = new ec.tstoolkit.maths.matrices.Matrix(L.toArray(), 10, 10);
-        LowerTriangularMatrix.rmul(L, B);
+        LowerTriangularMatrix.LM(L, B);
         ec.tstoolkit.maths.matrices.LowerTriangularMatrix.rmul(oL, oB.all());
 
         DataBlock b = DataBlock.of(B.getStorage());
@@ -41,7 +41,7 @@ public class LowerTriangularMatrixTest {
         Matrix M = L.extract(2, 5, 2, 5);
         Matrix N = B.extract(2, 5, 0, 5);
 
-        LowerTriangularMatrix.rmul(M, N);
+        LowerTriangularMatrix.LM(M, N);
         ec.tstoolkit.maths.matrices.Matrix oN = new ec.tstoolkit.maths.matrices.Matrix(oB.subMatrix(2, 7, 0, 5));
         ec.tstoolkit.maths.matrices.Matrix oM = new ec.tstoolkit.maths.matrices.Matrix(oL.subMatrix(2, 7, 2, 7));
         ec.tstoolkit.maths.matrices.LowerTriangularMatrix.rmul(oM, oN.all());
@@ -62,7 +62,7 @@ public class LowerTriangularMatrixTest {
         L.set((i, j) -> i < j ? 0 : (i + 10 * j + 1));
         ec.tstoolkit.maths.matrices.Matrix oL
                 = new ec.tstoolkit.maths.matrices.Matrix(L.toArray(), 10, 10);
-        LowerTriangularMatrix.lmul(L, B);
+        LowerTriangularMatrix.ML(L, B);
         ec.tstoolkit.maths.matrices.LowerTriangularMatrix.lmul(oL, oB.all());
         DataBlock b = DataBlock.of(B.getStorage());
         DataBlock ob = DataBlock.of(oB.internalStorage());
@@ -71,7 +71,7 @@ public class LowerTriangularMatrixTest {
         Matrix M = L.extract(2, 5, 2, 5);
         Matrix N = B.extract(0, 5, 2, 5);
 
-        LowerTriangularMatrix.lmul(M, N);
+        LowerTriangularMatrix.ML(M, N);
         ec.tstoolkit.maths.matrices.Matrix oN = new ec.tstoolkit.maths.matrices.Matrix(oB.subMatrix(0, 5, 2, 7));
         ec.tstoolkit.maths.matrices.Matrix oM = new ec.tstoolkit.maths.matrices.Matrix(oL.subMatrix(2, 7, 2, 7));
         ec.tstoolkit.maths.matrices.LowerTriangularMatrix.lmul(oM, oN.all());
@@ -92,7 +92,7 @@ public class LowerTriangularMatrixTest {
         L.set((i, j) -> i < j ? 0 : (i + 10 * j + 1));
         ec.tstoolkit.maths.matrices.Matrix oL
                 = new ec.tstoolkit.maths.matrices.Matrix(L.toArray(), 10, 10);
-        LowerTriangularMatrix.rsolve(L, B);
+        LowerTriangularMatrix.solveLX(L, B);
         ec.tstoolkit.maths.matrices.LowerTriangularMatrix.rsolve(oL, oB.all());
 
         DataBlock b = DataBlock.of(B.getStorage());
@@ -102,7 +102,7 @@ public class LowerTriangularMatrixTest {
         Matrix M = L.extract(2, 5, 2, 5);
         Matrix N = B.extract(2, 5, 0, 5);
 
-        LowerTriangularMatrix.rsolve(M, N);
+        LowerTriangularMatrix.solveLX(M, N);
         ec.tstoolkit.maths.matrices.Matrix oN = new ec.tstoolkit.maths.matrices.Matrix(oB.subMatrix(2, 7, 0, 5));
         ec.tstoolkit.maths.matrices.Matrix oM = new ec.tstoolkit.maths.matrices.Matrix(oL.subMatrix(2, 7, 2, 7));
         ec.tstoolkit.maths.matrices.LowerTriangularMatrix.rsolve(oM, oN.all());
@@ -123,7 +123,7 @@ public class LowerTriangularMatrixTest {
         L.set((i, j) -> i < j ? 0 : (i + 10 * j + 1));
         ec.tstoolkit.maths.matrices.Matrix oL
                 = new ec.tstoolkit.maths.matrices.Matrix(L.toArray(), 10, 10);
-        LowerTriangularMatrix.lsolve(L, B);
+        LowerTriangularMatrix.solveXL(L, B);
         ec.tstoolkit.maths.matrices.LowerTriangularMatrix.lsolve(oL, oB.all());
         DataBlock b = DataBlock.of(B.getStorage());
         DataBlock ob = DataBlock.of(oB.internalStorage());
@@ -132,7 +132,7 @@ public class LowerTriangularMatrixTest {
         Matrix M = L.extract(2, 5, 2, 5);
         Matrix N = B.extract(0, 5, 2, 5);
 
-        LowerTriangularMatrix.lsolve(M, N);
+        LowerTriangularMatrix.solveXL(M, N);
         ec.tstoolkit.maths.matrices.Matrix oN = new ec.tstoolkit.maths.matrices.Matrix(oB.subMatrix(0, 5, 2, 7));
         ec.tstoolkit.maths.matrices.Matrix oM = new ec.tstoolkit.maths.matrices.Matrix(oL.subMatrix(2, 7, 2, 7));
         ec.tstoolkit.maths.matrices.LowerTriangularMatrix.lsolve(oM, oN.all());
@@ -147,11 +147,9 @@ public class LowerTriangularMatrixTest {
         Matrix L = Matrix.square(10);
         L.set((i, j) -> i + 10 * j + 1);
         LowerTriangularMatrix.toLower(L);
-        System.out.println(L);
-
+ 
         Matrix M = L.extract(5, 4, 0, 4);
         LowerTriangularMatrix.toLower(L);
-        System.out.println(M);
     }
 
     @Test
@@ -164,24 +162,52 @@ public class LowerTriangularMatrixTest {
         Matrix iL=LowerTriangularMatrix.inverse(L);
         Matrix X = GeneralMatrix.AB(iL, M);
         Matrix Z=M.deepClone();
-        LowerTriangularMatrix.iLM(L, Z);
+        LowerTriangularMatrix.solveLX(L, Z);
         Z.sub(X);
         assertTrue(MatrixNorms.absNorm(Z)<1e-9);
         Z=M.deepClone(); // 10 x 5
         X=GeneralMatrix.AtB(iL, M); // 5 x 10
-        LowerTriangularMatrix.iLtM(L, Z); 
+        LowerTriangularMatrix.solveLtX(L, Z); 
         Z.sub(X);
         assertTrue(MatrixNorms.absNorm(Z)<1e-9);
         Z=N.deepClone(); // 5 x 10
         X=GeneralMatrix.AtB(M, iL); // 5 x 10
-        LowerTriangularMatrix.MiL(L, Z); 
+        LowerTriangularMatrix.solveXL(L, Z); 
         Z.sub(X);
         assertTrue(MatrixNorms.absNorm(Z)<1e-9);
         Z=N.deepClone(); // 5 x 10
         X=GeneralMatrix.AtBt(M, iL); // 5 x 10
-        LowerTriangularMatrix.MiLt(L, Z); 
+        LowerTriangularMatrix.solveXLt(L, Z); 
         Z.sub(X);
         assertTrue(MatrixNorms.absNorm(Z)<1e-9);
+    }
+
+   @Test
+    public void testOperations2() {
+        Matrix B = Matrix.make(5, 10);
+        B.set((i, j) -> i * 2 + j * 3);
+        Matrix L = Matrix.square(10);
+        L.set((i, j) -> i < j ? 0 : (i + 10 * j + 1));
+        Matrix C = B.deepClone();
+        LowerTriangularMatrix.ML(L, C);
+        LowerTriangularMatrix.solveXL(L, C);
+        C.sub(B);
+        assertTrue(MatrixNorms.frobeniusNorm(C) < 1e-9);
+        C = B.deepClone();
+        LowerTriangularMatrix.MLt(L, C);
+        LowerTriangularMatrix.solveXLt(L, C);
+        C.sub(B);
+        assertTrue(MatrixNorms.frobeniusNorm(C) < 1e-9);
+        C = transpose(B);
+        LowerTriangularMatrix.LtM(L, C);
+        LowerTriangularMatrix.solveLtX(L, C);
+        C.sub(transpose(B));
+        assertTrue(MatrixNorms.frobeniusNorm(C) < 1e-9);
+        C = transpose(B);
+        LowerTriangularMatrix.LM(L, C);
+        LowerTriangularMatrix.solveLX(L, C);
+        C.sub(transpose(B));
+        assertTrue(MatrixNorms.frobeniusNorm(C) < 1e-9);
     }
 
     public static void testMul() {
@@ -200,14 +226,14 @@ public class LowerTriangularMatrixTest {
         ec.tstoolkit.maths.matrices.Matrix oC
                 = new ec.tstoolkit.maths.matrices.Matrix(C.toArray(), 5, 10);
         for (int k = 0; k < 1000; ++k) {
-            LowerTriangularMatrix.rmul(L, B.deepClone());
+            LowerTriangularMatrix.LM(L, B.deepClone());
         }
         for (int k = 0; k < 1000; ++k) {
             ec.tstoolkit.maths.matrices.LowerTriangularMatrix.rmul(oL, oB.clone().all());
         }
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
-            LowerTriangularMatrix.rmul(L, B.deepClone());
+            LowerTriangularMatrix.LM(L, B.deepClone());
         }
         long t1 = System.currentTimeMillis();
         System.out.println("New");
@@ -221,7 +247,7 @@ public class LowerTriangularMatrixTest {
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
-            LowerTriangularMatrix.lmul(L, C.deepClone());
+            LowerTriangularMatrix.ML(L, C.deepClone());
         }
         t1 = System.currentTimeMillis();
         System.out.println("New");
@@ -251,14 +277,14 @@ public class LowerTriangularMatrixTest {
         ec.tstoolkit.maths.matrices.Matrix oC
                 = new ec.tstoolkit.maths.matrices.Matrix(C.toArray(), 5, 10);
         for (int k = 0; k < 1000; ++k) {
-            LowerTriangularMatrix.rsolve(L, B.deepClone());
+            LowerTriangularMatrix.solveLX(L, B.deepClone());
         }
         for (int k = 0; k < 1000; ++k) {
             ec.tstoolkit.maths.matrices.LowerTriangularMatrix.rsolve(oL, oB.clone().all());
         }
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
-            LowerTriangularMatrix.rsolve(L, B.deepClone());
+            LowerTriangularMatrix.solveLX(L, B.deepClone());
         }
         long t1 = System.currentTimeMillis();
         System.out.println("New");
@@ -272,7 +298,7 @@ public class LowerTriangularMatrixTest {
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
-            LowerTriangularMatrix.lsolve(L, C.deepClone());
+            LowerTriangularMatrix.solveXL(L, C.deepClone());
         }
         t1 = System.currentTimeMillis();
         System.out.println("New");

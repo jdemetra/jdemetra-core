@@ -114,7 +114,7 @@ public class JointTest {
         Matrix rwr = rwr();
         int nx = rb.length(), df = df();
         SymmetricMatrix.lcholesky(rwr);
-        LowerTriangularMatrix.rsolve(rwr, rb);
+        LowerTriangularMatrix.solveLx(rwr, rb);
         f = (rb.ssq() / nx) / (rss / df);
         F fdist = new F(nx, df);
         return new StatisticalTest(fdist, f, TestType.Upper, !deterministicRegressors);

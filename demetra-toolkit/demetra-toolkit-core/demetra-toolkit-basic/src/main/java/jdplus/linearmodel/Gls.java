@@ -42,10 +42,10 @@ public class Gls {
             SymmetricMatrix.lcholesky(L);
         // yl = L^-1*y <-> L*yl = y
         DataBlock yl = DataBlock.of(model.getY());
-        LowerTriangularMatrix.rsolve(L, yl);
+        LowerTriangularMatrix.solveLx(L, yl);
 
         Matrix xl = model.variables();
-        LowerTriangularMatrix.rsolve(L, xl);
+        LowerTriangularMatrix.solveLX(L, xl);
 
         QRSolution solution = QRSolver.process(yl, xl);
         Matrix R = solution.getR();

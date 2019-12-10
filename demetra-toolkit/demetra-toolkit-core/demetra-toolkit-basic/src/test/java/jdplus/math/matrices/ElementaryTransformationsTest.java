@@ -48,7 +48,7 @@ public class ElementaryTransformationsTest {
             cur = cur.extract(1, cur.getRowsCount() - 1, 1, cur.getColumnsCount() - 1);
         }
         DataBlock b = M.column(4).range(0, 4);
-        UpperTriangularMatrix.rsolve(M.extract(0, 4, 0, 4), b);
+        UpperTriangularMatrix.solveUx(M.extract(0, 4, 0, 4), b);
         System.out.println(b);
 
         M = Matrix.make(20, 5);

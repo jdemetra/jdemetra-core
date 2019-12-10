@@ -87,7 +87,7 @@ public final class MultivariateT {
     public void random(@NonNull RandomNumberGenerator rng, DataBlock rnd) {
         rnd.set(()->N.random(rng));
         Matrix lm=l();
-        LowerTriangularMatrix.lmul(lm, rnd);
+        LowerTriangularMatrix.xL(lm, rnd);
         double z=chi2.random(rng);
         rnd.mul(Math.sqrt(chi2.getDegreesofFreedom()/z));
         rnd.add(location);

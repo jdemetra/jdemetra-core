@@ -72,7 +72,7 @@ public final class MultivariateNormal {
     public void random(@NonNull RandomNumberGenerator rng, DataBlock rnd) {
         rnd.set(()->N.random(rng));
         Matrix lm=l();
-        LowerTriangularMatrix.lmul(lm, rnd);
+        LowerTriangularMatrix.xL(lm, rnd);
         rnd.add(mean);
     }
     

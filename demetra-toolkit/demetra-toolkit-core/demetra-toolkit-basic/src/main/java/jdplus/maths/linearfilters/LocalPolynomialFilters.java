@@ -210,7 +210,7 @@ public class LocalPolynomialFilters {
         Householder hous = new Householder(Z);
         double[] z = new double[Z.getRowsCount()];
         z[0] = 1;
-        UpperTriangularMatrix.lsolve(hous.r(false), DataBlock.of(z, 0, d + 1, 1));
+        UpperTriangularMatrix.solveUx(hous.r(false), DataBlock.of(z, 0, d + 1, 1));
         hous.applyQ(DataBlock.of(z));
         double[] w = new double[h + 1];
         for (int i = 0; i <= h; ++i) {
