@@ -23,13 +23,13 @@ public class GEQR2Test {
     
     @Test
     public void testRandom() {
-        Matrix A = Matrix.make(100, 20);
+        Matrix A = Matrix.make(100, 5);
         Random rnd = new Random(0);
         A.set((i, j) -> rnd.nextDouble());
         Matrix B = A.deepClone();
-        double[] tau = new double[20];
+        double[] tau = new double[5];
         GEQR2.apply(A, tau);
-        System.out.println(A.top(20));
+        System.out.println(A.top(5).get());
         Householder hous = new Householder(B);
         Matrix r = hous.r(false);
         System.out.println("");

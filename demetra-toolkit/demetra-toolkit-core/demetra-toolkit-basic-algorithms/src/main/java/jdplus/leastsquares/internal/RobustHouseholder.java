@@ -25,16 +25,16 @@ import jdplus.math.matrices.MatrixException;
 import jdplus.data.accumulator.NeumaierAccumulator;
 import java.util.function.Supplier;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.decomposition.QRDecomposition;
 import jdplus.math.matrices.lapack.FastMatrix;
-import jdplus.math.matrices.decomposition.QRDecomposition;
+import jdplus.math.matrices.decomposition.QRDecomposer;
+import jdplus.math.matrices.decomposition.QRDecomposer;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class RobustHouseholder implements QRDecomposition {
+public class RobustHouseholder implements QRDecomposer {
 
     private final boolean fast;
     private double[] qr, rdiag;

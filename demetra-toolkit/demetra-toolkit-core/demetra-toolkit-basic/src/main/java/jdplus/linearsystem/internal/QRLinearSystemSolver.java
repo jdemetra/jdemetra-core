@@ -24,8 +24,8 @@ import jdplus.math.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.math.matrices.decomposition.QRDecomposition;
 import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.QRDecomposer;
 
 /**
  *
@@ -38,10 +38,10 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
     @BuilderPattern(QRLinearSystemSolver.class)
     public static class Builder {
 
-        private final QRDecomposition.Processor qr;
+        private final QRDecomposer.Processor qr;
         private boolean normalize;
 
-        private Builder(QRDecomposition.Processor qr) {
+        private Builder(QRDecomposer.Processor qr) {
             this.qr = qr;
         }
 
@@ -55,13 +55,13 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
         }
     }
 
-    public static Builder builder(QRDecomposition.Processor qr) {
+    public static Builder builder(QRDecomposer.Processor qr) {
         return new Builder(qr);
     }
-    private final QRDecomposition.Processor qr;
+    private final QRDecomposer.Processor qr;
     private final boolean normalize;
 
-    private QRLinearSystemSolver(QRDecomposition.Processor qr, boolean normalize) {
+    private QRLinearSystemSolver(QRDecomposer.Processor qr, boolean normalize) {
         this.qr = qr;
         this.normalize = normalize;
     }
@@ -89,7 +89,7 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
         } else {
             An = A;
         }
-        QRDecomposition decomposition = qr.decompose(An);
+        QRDecomposer decomposition = qr.decompose(An);
         decomposition.leastSquares(b, b, null);
     }
 
@@ -116,7 +116,7 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
         } else {
             An = A;
         }
-        QRDecomposition decomposition = qr.decompose(An);
+        QRDecomposer decomposition = qr.decompose(An);
         if (!decomposition.isFullRank()) {
             throw new MatrixException(MatrixException.SINGULAR);
         }

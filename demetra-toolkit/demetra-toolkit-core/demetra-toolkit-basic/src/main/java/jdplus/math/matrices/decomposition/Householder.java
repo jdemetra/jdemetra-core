@@ -28,12 +28,12 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class Householder implements QRDecomposition {
+public class Householder implements QRDecomposer {
     
-    public static class Processor implements QRDecomposition.Processor{
+    public static class Processor implements QRDecomposer.Processor{
         
         @Override
-        public QRDecomposition decompose(Matrix A, double eps) throws MatrixException {
+        public QRDecomposer decompose(Matrix A, double eps) throws MatrixException {
             return new Householder(A, true, eps);
         }
         

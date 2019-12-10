@@ -11,8 +11,8 @@ import jdplus.leastsquares.QRSolver;
 import demetra.design.AlgorithmImplementation;
 import demetra.data.DoubleSeq;
 import jdplus.leastsquares.QRSolution;
-import jdplus.math.matrices.decomposition.QRDecomposition;
 import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.QRDecomposer;
 
 /**
  *
@@ -21,13 +21,13 @@ import jdplus.math.matrices.Matrix;
 @AlgorithmImplementation(algorithm = QRSolver.class)
 public class DefaultQRSolver implements QRSolver {
 
-    private final QRDecomposition.Processor processor;
+    private final QRDecomposer.Processor processor;
 
     public DefaultQRSolver() {
         this(new Householder.Processor());
     }
 
-    public DefaultQRSolver(QRDecomposition.Processor qr) {
+    public DefaultQRSolver(QRDecomposer.Processor qr) {
         this.processor = qr;
     }
 
@@ -36,7 +36,7 @@ public class DefaultQRSolver implements QRSolver {
         // X'X, X'y
         int n = y.length();
         int m = X.getColumnsCount();
-        QRDecomposition qr = processor.decompose(X);
+        QRDecomposer qr = processor.decompose(X);
         int r = qr.rank();
         Matrix R = qr.r(false);
         double[] b = new double[r];

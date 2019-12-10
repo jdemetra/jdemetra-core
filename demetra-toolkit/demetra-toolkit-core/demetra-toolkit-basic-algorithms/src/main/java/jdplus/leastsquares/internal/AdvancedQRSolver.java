@@ -16,8 +16,8 @@ import demetra.design.BuilderPattern;
 import jdplus.leastsquares.QRSolver;
 import demetra.design.AlgorithmImplementation;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.decomposition.QRDecomposition;
 import jdplus.math.matrices.lapack.FastMatrix;
+import jdplus.math.matrices.decomposition.QRDecomposer;
 
 /**
  *
@@ -29,11 +29,11 @@ public class AdvancedQRSolver implements QRSolver {
     @BuilderPattern(AdvancedQRSolver.class)
     public static class Builder {
 
-        private final QRDecomposition qr;
+        private final QRDecomposer qr;
         private int niter = 1;
         private boolean simple;
 
-        private Builder(QRDecomposition qr) {
+        private Builder(QRDecomposer qr) {
             this.qr = qr;
         }
 
@@ -57,7 +57,7 @@ public class AdvancedQRSolver implements QRSolver {
         }
     }
 
-    public static Builder builder(QRDecomposition qr) {
+    public static Builder builder(QRDecomposer qr) {
         return new Builder(qr);
     }
     private double ssqerr;
@@ -65,7 +65,7 @@ public class AdvancedQRSolver implements QRSolver {
     private Matrix R;
     private int[] used;
     private int n, m;
-    private final QRDecomposition qr;
+    private final QRDecomposer qr;
     private final boolean simple;
     private final int niter;
     
@@ -73,7 +73,7 @@ public class AdvancedQRSolver implements QRSolver {
         this(new Householder(), 1, false);
     }
     
-    private AdvancedQRSolver(QRDecomposition qr, int niter, boolean simple) {
+    private AdvancedQRSolver(QRDecomposer qr, int niter, boolean simple) {
         this.qr = qr;
         this.niter = niter;
         this.simple = simple;

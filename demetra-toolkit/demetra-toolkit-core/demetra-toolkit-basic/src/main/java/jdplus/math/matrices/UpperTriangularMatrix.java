@@ -400,6 +400,10 @@ public class UpperTriangularMatrix {
         }
     }
 
+    /**
+     * Set 0 to the lower part of a matrix
+     * @param M 
+     */
     public void toUpper(Matrix M) {
         int m = M.getRowsCount(), n = M.getColumnsCount();
         if (m != n) {

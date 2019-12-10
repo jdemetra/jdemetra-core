@@ -34,8 +34,8 @@ import nbbrd.service.ServiceDefinition;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface QRDecomposition {
-    static final QRDecompositionLoader.Processor PROCESSOR = new QRDecompositionLoader.Processor();
+public interface QRDecomposer {
+    static final QRDecomposerLoader.Processor PROCESSOR = new QRDecomposerLoader.Processor();
 
     public static void setProcessor(Processor algorithm) {
         PROCESSOR.set(algorithm);
@@ -52,9 +52,9 @@ public interface QRDecomposition {
     @FunctionalInterface
     public static interface Processor {
         
-        QRDecomposition decompose(Matrix A, double eps)throws MatrixException;
+        QRDecomposer decompose(Matrix A, double eps)throws MatrixException;
         
-        default QRDecomposition decompose(Matrix A)throws MatrixException{
+        default QRDecomposer decompose(Matrix A)throws MatrixException{
             return decompose(A, Constants.getEpsilon());
         }
     }

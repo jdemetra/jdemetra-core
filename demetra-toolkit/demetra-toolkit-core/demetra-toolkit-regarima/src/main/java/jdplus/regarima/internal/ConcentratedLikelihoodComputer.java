@@ -28,10 +28,10 @@ import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.decomposition.Householder;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.decomposition.QRDecomposition;
 import demetra.maths.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.decomposition.QRDecomposer;
 
 /**
  *
@@ -41,13 +41,13 @@ import jdplus.math.matrices.UpperTriangularMatrix;
 public final class ConcentratedLikelihoodComputer {
 
     private final ArmaFilter filter;
-    private final QRDecomposition qr;
+    private final QRDecomposer qr;
     private final boolean scaling;
 
     public static final ConcentratedLikelihoodComputer DEFAULT_COMPUTER
             = new ConcentratedLikelihoodComputer(null, null, true);
 
-    public ConcentratedLikelihoodComputer(final ArmaFilter filter, final QRDecomposition qr, final boolean scaling) {
+    public ConcentratedLikelihoodComputer(final ArmaFilter filter, final QRDecomposer qr, final boolean scaling) {
         this.filter = filter == null ? new KalmanFilter(true) : filter;
         this.qr = qr == null ? new Householder() : qr;
         this.scaling = scaling;
