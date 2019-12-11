@@ -5,6 +5,8 @@
  */
 package jdplus.math.matrices.lapack;
 
+import java.util.function.DoublePredicate;
+
 /**
  *
  * @author palatej
@@ -58,6 +60,16 @@ final class RPointer extends DataPointer {
         return s;
     }
 
+    @Override
+    public boolean test(int n, DoublePredicate pred) {
+        int imax = pos + n * inc;
+        for (int i = pos; i != imax; i += inc) {
+            if (!pred.test(p[i]))
+                return false;
+        }
+        return true;
+    }
+
     void add(int n, RPointer x) {
         int imax = pos + n * inc;
         for (int i = pos, j = x.pos; i != imax; i += inc, j += x.inc) {
@@ -84,6 +96,14 @@ final class RPointer extends DataPointer {
         int imax = pos + n * inc;
         for (int i = pos; i != imax; i += inc) {
             p[i] *= a;
+        }
+    }
+
+    @Override
+    public void div(int n, double a) {
+        int imax = pos + n * inc;
+        for (int i = pos; i != imax; i += inc) {
+            p[i] /= a;
         }
     }
 

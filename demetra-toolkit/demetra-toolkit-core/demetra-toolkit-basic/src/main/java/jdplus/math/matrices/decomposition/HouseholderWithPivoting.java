@@ -143,7 +143,7 @@ public class HouseholderWithPivoting implements QRDecomposer {
             }
             int ck = pivot[k];
 
-            // Compute norm2 copyOf the current column
+            // Compute norm2 of the current column
             int k0 = ck * m, k1 = k0 + m;
             k0 += k;
             DataBlock cur = DataBlock.of(qr, k0, k1);
@@ -162,7 +162,7 @@ public class HouseholderWithPivoting implements QRDecomposer {
                 }
                 qr[k0] += 1.0;
                 double kk = qr[k0];
-                // rdiag contains the main diagonal copyOf the R matrix
+                // rdiag contains the main diagonal of the R matrix
                 rdiag[ck] = -nrm;
 
                 for (int j = k + 1; j < n; ++j) {
@@ -184,7 +184,7 @@ public class HouseholderWithPivoting implements QRDecomposer {
                         rdiag[cj] *= Math.sqrt(Math.max(1 - tmp * tmp, 0));
                         tmp = rdiag[cj] / wa[cj];
                         if (.05 * tmp * tmp <= eps) {
-                            rdiag[cj] = norm2(j0, j0 + m - k);
+                            rdiag[cj] = norm2(j0+1, j0 + m - k);
                             wa[cj] = rdiag[cj];
                         }
                     }

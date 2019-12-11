@@ -5,6 +5,7 @@
  */
 package jdplus.math.matrices.lapack;
 
+import java.util.function.DoublePredicate;
 import jdplus.data.DataBlock;
 
 /**
@@ -65,6 +66,10 @@ public abstract class DataPointer {
     }
 
     public abstract double value(int n);
+    
+    public double fastNorm2(int n){
+        return Math.sqrt(ssq(n));
+    }
 
     public double norm2(int n) {
         int inc = inc();
@@ -93,8 +98,12 @@ public abstract class DataPointer {
             return scale * Math.sqrt(ssq);
         }
     }
+    
+    public abstract boolean test(int n, DoublePredicate pred);
 
     public abstract void mul(int n, double a);
+
+    public abstract void div(int n, double a);
 
     public abstract void add(int n, double a);
 

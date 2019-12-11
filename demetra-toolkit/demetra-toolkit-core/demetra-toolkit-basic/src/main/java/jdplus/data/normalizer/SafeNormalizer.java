@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2019 National Bank of Belgium.
  *
@@ -29,7 +28,7 @@ import demetra.design.Development;
  */
 @Development(status = Development.Status.Release)
 @AlgorithmImplementation(algorithm=DataNormalizer.class)
-public class AbsMeanNormalizer implements DataNormalizer {
+public class SafeNormalizer implements DataNormalizer {
 
     @Override
     public double normalize(DataBlock data) {
@@ -46,10 +45,25 @@ public class AbsMeanNormalizer implements DataNormalizer {
 		++m;
 	    }
 	}
-	if (s == 0)
+	if (s == 0 )
 	    return 1;
-	double c = m / s;
-        data.apply((x)->x*c);
+        double am=s/m;
+        if (am >= 1 && am <=2)
+            return 1;
+        double c=1;
+        if (am >2){
+            do{
+                c/=2;
+                am/=2;
+            }while (am>2);
+        }else{
+            // am<1
+            do{
+                c*=2;
+                am*=2;
+            } while (am<1);
+        }
+        data.mul(c);
         return c;
     }
 }

@@ -17,9 +17,9 @@ import static org.junit.Assert.*;
  *
  * @author palatej
  */
-public class Householder2Test {
+public class HouseholderWithPivoting2Test {
 
-    public Householder2Test() {
+    public HouseholderWithPivoting2Test() {
     }
 
     @Test
@@ -35,15 +35,44 @@ public class Householder2Test {
         Householder H = new Householder(A);
         DataBlock B = DataBlock.make(N);
         H.leastSquares(Y, B, null);
-        Householder2 H2 = new Householder2();
-        QRDecomposition qr = H2.decompose(A);
+
+        HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
+        QRDecomposition qr = H2.decompose(A, 0);
         DataBlock B2 = DataBlock.make(N);
         qr.leastSquares(Y, B2, null);
+
         assertTrue(B.distance(B2) < 1e-9);
     }
 
     @Test
-    public void testFilip() {
+    public void testSingular() {
+        int M = 100, N = 10;
+        Matrix A = Matrix.make(M, N);
+        Random rnd = new Random(0);
+        A.set((i, j) -> rnd.nextDouble());
+
+        A.column(4).setAY(.5, A.column(2));
+        A.column(4).addAY(.5, A.column(1));
+        A.column(7).setAY(-500, A.column(0));
+
+        DataBlock Y = DataBlock.make(M);
+        Y.set(rnd::nextDouble);
+        Householder H = new Householder(A, true, 1e-12);
+        DataBlock B = DataBlock.make(N-2);
+        H.leastSquares(Y, B, null);
+        System.out.println(B);
+        
+        HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
+        QRDecomposition qr = H2.decompose(A, 0);
+        System.out.println("");
+        System.out.println(qr.rawR());
+        System.out.println("");
+        DataBlock B2 = DataBlock.make(N);
+        qr.leastSquares(Y, B2, null, 1e-14);
+        System.out.println(B2);
+    }
+
+    public static void testFilip() {
         double[] y = DataSets.Filip.y;
         Matrix M = Matrix.make(y.length, 11);
         DataBlock x = DataBlock.of(DataSets.Filip.x);
@@ -59,8 +88,8 @@ public class Householder2Test {
         M.column(9).set(x, a -> a * a * a * a * a * a * a * a * a);
         M.column(10).set(x, a -> a * a * a * a * a * a * a * a * a * a);
 
-        Householder2 H2 = new Householder2();
-        QRDecomposition qr = H2.decompose(M);
+        HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
+        QRDecomposition qr = H2.decompose(M, 0);
         DataBlock beta = DataBlock.make(M.getColumnsCount());
         qr.leastSquares(DataBlock.of(y), beta, null);
         System.out.println("Filip");
@@ -72,9 +101,32 @@ public class Householder2Test {
         System.out.println("");
     }
 
-    @Test
-    public void testWampler4() {
-        double[] y=DataSets.Wampler4.y;
+    public static void testWampler3() {
+        double[] y = DataSets.Wampler3.y;
+        Matrix M = Matrix.make(y.length, 6);
+        DataBlock x = DataBlock.of(DataSets.Wampler3.x);
+        M.column(0).set(1);
+        M.column(1).copy(x);
+        M.column(2).set(x, a -> a * a);
+        M.column(3).set(x, a -> a * a * a);
+        M.column(4).set(x, a -> a * a * a * a);
+        M.column(5).set(x, a -> a * a * a * a * a);
+
+        HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
+        QRDecomposition qr = H2.decompose(M, 0);
+        DataBlock beta = DataBlock.make(M.getColumnsCount());
+        qr.leastSquares(DataBlock.of(y), beta, null);
+        System.out.println("Wampler3");
+        System.out.println(beta);
+        for (int i = 0; i < beta.length(); ++i) {
+            System.out.print(lre(beta.get(i), DataSets.Wampler3.expectedBeta[i]));
+            System.out.print('\t');
+        }
+        System.out.println("");
+    }
+
+    public static void testWampler4() {
+        double[] y = DataSets.Wampler4.y;
         Matrix M = Matrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler4.x);
         M.column(0).set(1);
@@ -84,8 +136,8 @@ public class Householder2Test {
         M.column(4).set(x, a -> a * a * a * a);
         M.column(5).set(x, a -> a * a * a * a * a);
 
-        Householder2 H2 = new Householder2();
-        QRDecomposition qr = H2.decompose(M);
+        HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
+        QRDecomposition qr = H2.decompose(M, 0);
         DataBlock beta = DataBlock.make(M.getColumnsCount());
         qr.leastSquares(DataBlock.of(y), beta, null);
         System.out.println("Wampler4");
@@ -97,9 +149,8 @@ public class Householder2Test {
         System.out.println("");
     }
 
-    @Test
-    public void testWampler5() {
-        double[] y=DataSets.Wampler5.y;
+    public static void testWampler5() {
+        double[] y = DataSets.Wampler5.y;
         Matrix M = Matrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler5.x);
         M.column(0).set(1);
@@ -109,8 +160,8 @@ public class Householder2Test {
         M.column(4).set(x, a -> a * a * a * a);
         M.column(5).set(x, a -> a * a * a * a * a);
 
-        Householder2 H2 = new Householder2();
-        QRDecomposition qr = H2.decompose(M);
+        HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
+        QRDecomposition qr = H2.decompose(M, 0);
         DataBlock beta = DataBlock.make(M.getColumnsCount());
         qr.leastSquares(DataBlock.of(y), beta, null);
         System.out.println("Wampler5");
@@ -121,7 +172,16 @@ public class Householder2Test {
         }
         System.out.println("");
     }
+
     public static void main(String[] args) {
+        testFilip();
+        testWampler3();
+        testWampler4();
+        testWampler5();
+//        stressTest();
+    }
+
+    public static void stressTest() {
         int M = 300, N = 20, K = 100000;
         Matrix A = Matrix.make(M, N);
         Random rnd = new Random(0);
@@ -141,8 +201,8 @@ public class Householder2Test {
 
         t0 = System.currentTimeMillis();
         for (int i = 0; i < K; ++i) {
-            Householder2 H2 = new Householder2();
-            QRDecomposition qr = H2.decompose(A);
+            HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
+            QRDecomposition qr = H2.decompose(A, 0);
             DataBlock B2 = DataBlock.make(N);
             qr.leastSquares(Y, B2, null);
         }

@@ -72,6 +72,7 @@ public class HouseholderReflection implements IVectorTransformation {
                 x[i] /= v0;
             }
         }
+        
         HouseholderReflection reflection = new HouseholderReflection(beta, mu, x);
         if (apply) {
             if (n > 1) {

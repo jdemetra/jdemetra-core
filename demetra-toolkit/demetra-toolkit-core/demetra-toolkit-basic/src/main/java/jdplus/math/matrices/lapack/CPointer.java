@@ -5,6 +5,8 @@
  */
 package jdplus.math.matrices.lapack;
 
+import java.util.function.DoublePredicate;
+
 /**
  *
  * @author palatej
@@ -53,6 +55,16 @@ final class CPointer extends DataPointer {
         }
     }
 
+    @Override
+    public boolean test(int n, DoublePredicate pred) {
+        int imax = pos + n;
+        for (int i = pos; i < imax; ++i) {
+            if (!pred.test(p[i]))
+                return false;
+        }
+        return true;
+    }
+    
     double dot(int n, CPointer x) {
         int imax = pos + n;
         double s = 0;
@@ -88,6 +100,14 @@ final class CPointer extends DataPointer {
         int imax = pos + n;
         for (int i = pos; i < imax; ++i) {
             p[i] *= a;
+        }
+    }
+
+    @Override
+    public void div(int n, double a) {
+        int imax = pos + n;
+        for (int i = pos; i < imax; ++i) {
+            p[i] /= a;
         }
     }
 
