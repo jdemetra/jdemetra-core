@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.math.matrices.lapack;
+package jdplus.math.matrices;
 
 import java.util.function.DoublePredicate;
 import jdplus.data.DataBlock;
@@ -55,6 +55,14 @@ public abstract class DataPointer {
 
     public final void move(int del) {
         pos += del;
+    }
+
+    public final void next() {
+        pos++;
+    }
+
+    public final void previous() {
+        pos--;
     }
 
     public double value() {

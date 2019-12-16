@@ -7,8 +7,11 @@ package jdplus.math.matrices.decomposition;
 
 import demetra.data.DataSets;
 import static demetra.data.DataSets.lre;
+import demetra.data.DoubleSeq;
 import java.util.Random;
 import jdplus.data.DataBlock;
+import jdplus.leastsquares.QRSolution;
+import jdplus.leastsquares.QRSolver;
 import jdplus.math.matrices.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -32,14 +35,11 @@ public class Householder2Test {
         DataBlock Y = DataBlock.make(M);
         Y.set(rnd::nextDouble);
 
-        Householder H = new Householder(A);
-        DataBlock B = DataBlock.make(N);
-        H.leastSquares(Y, B, null);
         Householder2 H2 = new Householder2();
         QRDecomposition qr = H2.decompose(A);
-        DataBlock B2 = DataBlock.make(N);
-        qr.leastSquares(Y, B2, null);
-        assertTrue(B.distance(B2) < 1e-9);
+        QRSolution ls = QRSolver.leastSquares(qr, Y, 1e-15);
+//        System.out.println(ls.getB());
+//        assertTrue(B.distance(B2) < 1e-9);
     }
 
     @Test
@@ -61,8 +61,8 @@ public class Householder2Test {
 
         Householder2 H2 = new Householder2();
         QRDecomposition qr = H2.decompose(M);
-        DataBlock beta = DataBlock.make(M.getColumnsCount());
-        qr.leastSquares(DataBlock.of(y), beta, null);
+        QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
+        DoubleSeq beta = ls.getB();
         System.out.println("Filip");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -74,7 +74,7 @@ public class Householder2Test {
 
     @Test
     public void testWampler4() {
-        double[] y=DataSets.Wampler4.y;
+        double[] y = DataSets.Wampler4.y;
         Matrix M = Matrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler4.x);
         M.column(0).set(1);
@@ -86,8 +86,8 @@ public class Householder2Test {
 
         Householder2 H2 = new Householder2();
         QRDecomposition qr = H2.decompose(M);
-        DataBlock beta = DataBlock.make(M.getColumnsCount());
-        qr.leastSquares(DataBlock.of(y), beta, null);
+        QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
+        DoubleSeq beta = ls.getB();
         System.out.println("Wampler4");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -99,7 +99,7 @@ public class Householder2Test {
 
     @Test
     public void testWampler5() {
-        double[] y=DataSets.Wampler5.y;
+        double[] y = DataSets.Wampler5.y;
         Matrix M = Matrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler5.x);
         M.column(0).set(1);
@@ -111,8 +111,8 @@ public class Householder2Test {
 
         Householder2 H2 = new Householder2();
         QRDecomposition qr = H2.decompose(M);
-        DataBlock beta = DataBlock.make(M.getColumnsCount());
-        qr.leastSquares(DataBlock.of(y), beta, null);
+        QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
+        DoubleSeq beta = ls.getB();
         System.out.println("Wampler5");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -121,6 +121,7 @@ public class Householder2Test {
         }
         System.out.println("");
     }
+
     public static void main(String[] args) {
         int M = 300, N = 20, K = 100000;
         Matrix A = Matrix.make(M, N);
@@ -134,7 +135,7 @@ public class Householder2Test {
         for (int i = 0; i < K; ++i) {
             Householder H = new Householder(A);
             DataBlock B = DataBlock.make(N);
-            H.leastSquares(Y, B, null);
+//            H.leastSquares(Y, B, null);
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
@@ -143,8 +144,8 @@ public class Householder2Test {
         for (int i = 0; i < K; ++i) {
             Householder2 H2 = new Householder2();
             QRDecomposition qr = H2.decompose(A);
-            DataBlock B2 = DataBlock.make(N);
-            qr.leastSquares(Y, B2, null);
+            QRSolution ls = QRSolver.leastSquares(qr, Y, 1e-15);
+            DoubleSeq beta = ls.getB();
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

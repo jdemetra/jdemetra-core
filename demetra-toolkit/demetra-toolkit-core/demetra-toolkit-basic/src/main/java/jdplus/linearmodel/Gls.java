@@ -47,8 +47,8 @@ public class Gls {
         Matrix xl = model.variables();
         LowerTriangularMatrix.solveLX(L, xl);
 
-        QRSolution solution = QRSolver.process(yl, xl);
-        Matrix R = solution.getR();
+        QRSolution solution = QRSolver.robustLeastSquares(yl, xl);
+        Matrix R = solution.getQr().rawR();
         Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(R));
         return LeastSquaresResults.builder(yl, xl)

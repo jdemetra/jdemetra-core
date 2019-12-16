@@ -22,6 +22,8 @@ import jdplus.data.DataWindow;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
 import demetra.math.Constants;
+import jdplus.leastsquares.QRSolution;
+import jdplus.leastsquares.QRSolver;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.decomposition.Householder;
@@ -121,13 +123,14 @@ public class AutoRegressiveSpectrum {
                 cols.next().copy(rc.move(-1));
             }
 
+            QRSolution ls = QRSolver.fastLeastSquares(DataBlock.of(all, nar, n, 1), M);
             Householder qr = new Householder(M, false, Constants.getEpsilon());
             ar = new double[nar];
-            DataBlock c = DataBlock.of(ar);
-            DataBlock e = DataBlock.make(nc - nar);
-            qr.leastSquares(DataBlock.of(all, nar, n, 1), c, e);
-            c.chs();
-            sig = e.ssq() / nc;
+            DoubleSeq c = ls.getB();
+            DataBlock D=DataBlock.of(c);
+            D.chs();
+            ar=D.getStorage();
+            sig = ls.getSsqErr() / nc;
         } catch (MatrixException err) {
             clear();
         }

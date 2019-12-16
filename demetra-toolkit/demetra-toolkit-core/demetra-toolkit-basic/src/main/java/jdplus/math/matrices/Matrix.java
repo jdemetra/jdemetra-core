@@ -838,42 +838,43 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
-    public Matrix inv() {
-        if (!isSquare()) {
-            throw new IllegalArgumentException();
-        }
-        Householder hous = new Householder(this);
-        if (!hous.isFullRank()) {
-            return null;
-        }
-
-        Matrix I = Matrix.identity(nrows);
-        DataBlockIterator cols = I.columnsIterator();
-        while (cols.hasNext()) {
-            hous.solve(cols.next());
-        }
-        return I;
-    }
-
-    public static LogSign logDeterminant(Matrix X) {
-        if (!X.isSquare()) {
-            throw new IllegalArgumentException();
-        }
-        Householder hous = new Householder(X);
-        if (!hous.isFullRank()) {
-            return null;
-        }
-        return LogSign.of(hous.rdiagonal(false));
-    }
-
-    public static double determinant(Matrix X) {
-        LogSign ls = logDeterminant(X);
-        if (ls == null) {
-            return 0;
-        }
-        double val = Math.exp(ls.getValue());
-        return ls.isPositive() ? val : -val;
-    }
+//    public Matrix inv() {
+//        if (!isSquare()) {
+//            throw new IllegalArgumentException();
+//        }
+//        Householder hous = new Householder(this);
+//        
+//        if (!hous.isFullRank()) {
+//            return null;
+//        }
+//
+//        Matrix I = Matrix.identity(nrows);
+//        DataBlockIterator cols = I.columnsIterator();
+//        while (cols.hasNext()) {
+//            hous.solve(cols.next());
+//        }
+//        return I;
+//    }
+//
+//    public static LogSign logDeterminant(Matrix X) {
+//        if (!X.isSquare()) {
+//            throw new IllegalArgumentException();
+//        }
+//        Householder hous = new Householder(X);
+//        if (!hous.isFullRank()) {
+//            return null;
+//        }
+//        return LogSign.of(hous.rdiagonal(false));
+//    }
+//
+//    public static double determinant(Matrix X) {
+//        LogSign ls = logDeterminant(X);
+//        if (ls == null) {
+//            return 0;
+//        }
+//        double val = Math.exp(ls.getValue());
+//        return ls.isPositive() ? val : -val;
+//    }
 
     @Override
     public DataBlock diagonal() {

@@ -5,6 +5,9 @@
  */
 package jdplus.math.matrices.lapack;
 
+import jdplus.math.matrices.DataPointer;
+import jdplus.math.matrices.RPointer;
+import jdplus.math.matrices.CPointer;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixTransformation;
 
@@ -39,25 +42,25 @@ public class GEMV {
         int xinc=x.inc();
         // first compute y=beta*y
         if (ta == MatrixTransformation.None) {
-            SCAL.apply(m, beta, y);
+            y.mul(m, beta);
             if (alpha != 0) {
                 // form y+=alpha*A*x
-                int jxmax = x.pos + xinc * n;
-                DataPointer acol = new CPointer(A.getStorage(), A.getStartPosition());
-                for (int jx = x.pos; jx < jxmax; jx += xinc, acol.pos += A.getColumnIncrement()) {
-                    double tmp = alpha * x.p[jx];
-                    AXPY.apply(m, tmp, acol, y);
+                int jxmax = x.pos() + xinc * n;
+                CPointer acol = new CPointer(A.getStorage(), A.getStartPosition());
+                for (int jx = x.pos(); jx < jxmax; jx += xinc, acol.move(A.getColumnIncrement())) {
+                    double tmp = alpha * x.p()[jx];
+                    y.addAX(m, tmp, acol);
                 }
             }
         } else {
             // first compute beta*y
-            SCAL.apply(n, beta, y);
+            y.mul(n, beta);
             // form y+=alpha*A'*x
-            int jxmax = x.pos + xinc * m;
+            int jxmax = x.pos() + xinc * m;
             DataPointer arow = new RPointer(A.getStorage(), A.getStartPosition(), A.getColumnIncrement());
-            for (int jx = x.pos; jx < jxmax; jx += xinc, ++arow.pos) {
-                double tmp = alpha * x.p[jx];
-                AXPY.apply(n, tmp, arow, y);
+            for (int jx = x.pos(); jx < jxmax; jx += xinc, arow.next()) {
+                double tmp = alpha * x.p()[jx];
+                y.addAX(n, tmp, arow);
             }
         }
     }

@@ -7,8 +7,7 @@ package jdplus.math.matrices.decomposition;
 
 import demetra.math.Constants;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.lapack.DataPointer;
-import jdplus.math.matrices.lapack.LapackUtility;
+import jdplus.math.matrices.DataPointer;
 
 /**
  *

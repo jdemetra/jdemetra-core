@@ -11,6 +11,7 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
+import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.functions.NumericalIntegration;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
@@ -129,8 +130,7 @@ public class AsymmetricFilters {
         a1.product(Uf.columnsIterator(), wf); // U'f x wf
 
         DataBlock a2 = a1.deepClone();
-        Householder hous = new Householder(H);
-        hous.solve(a2); // (U'p x Up)^-1 Uf x Wf
+        LinearSystemSolver.fastSolver().solve(H, a2);// (U'p x Up)^-1 Uf x Wf
 
         DataBlock a3 = DataBlock.make(nv);
         a3.product(Up.rowsIterator(), a2); // Up x (U'p x Up)^-1 Uf x Wf
@@ -147,7 +147,8 @@ public class AsymmetricFilters {
         a6.product(Up.columnsIterator(), a5); // Up' x Zp x d
 
         DataBlock a7 = a6.deepClone();
-        hous.solve(a7);
+        LinearSystemSolver.fastSolver().solve(H, a7);
+//        hous.solve(a7);
 
         DataBlock a8 = DataBlock.make(nv);
         a8.product(Up.rowsIterator(), a7);
@@ -168,9 +169,9 @@ public class AsymmetricFilters {
             }
         }
         DataBlock a11 = a4.deepClone();
-        hous=new Householder(C);
-        hous.solve(a11);
-
+//        hous=new Householder(C);
+//        hous.solve(a11);
+LinearSystemSolver.fastSolver().solve(C, a11);
         double s = a11.dot(d);
         a9.mul(s);
 
@@ -226,8 +227,9 @@ public class AsymmetricFilters {
             row.mul(-tweight);
             a.addProduct(row, W.columnsIterator());
         }
-        Householder hous = new Householder(Q);
-        hous.solve(a);
+//        Householder hous = new Householder(Q);
+//        hous.solve(a);
+        LinearSystemSolver.fastSolver().solve(Q, a);
         wp.add(a.extract(0, nv));
         return FiniteFilter.ofInternal(wp.toArray(), -h);
     }
@@ -310,8 +312,9 @@ public class AsymmetricFilters {
                 L.set(i, j - 1, sw.applyAsDouble(j));
             }
         }
-        Householder hous = new Householder(L);
-        hous.solve(DataBlock.of(f));
+//        Householder hous = new Householder(L);
+//        hous.solve(DataBlock.of(f));
+        LinearSystemSolver.fastSolver().solve(L, DataBlock.of(f));
         return f;
     }
 

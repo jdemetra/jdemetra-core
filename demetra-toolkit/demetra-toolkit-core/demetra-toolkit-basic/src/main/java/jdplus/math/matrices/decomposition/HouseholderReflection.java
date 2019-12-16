@@ -19,15 +19,12 @@ package jdplus.math.matrices.decomposition;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.math.Constants;
+import jdplus.math.matrices.DataPointer;
+import jdplus.math.matrices.Matrix;
 
 /**
- * A Householder reflection is represented by a matrix of the form H = I - [2/(v'v)] * vv' 
- * v is called the householder vector.
- *
- * This implementation always uses a transformation that projects x on (|x|,
- * 0...0)
- *
- * See Golub. Van Loan, §5.1
+ * A Householder reflection is represented by a matrix of the form H = I -
+ * [2/(v'v)] * vv' v is called the householder vector.
  *
  * @author Jean Palate
  */
@@ -35,52 +32,103 @@ import demetra.math.Constants;
 @lombok.Value
 public class HouseholderReflection implements IVectorTransformation {
 
-    private double beta, mu;
-    private double[] vector;
+    private final double alpha; //+-||x|| (=Hv)
+    private final double beta;
+    private final double[] px;
 
     public static HouseholderReflection of(DataBlock v) {
-        return of(v, true);
+        return new HouseholderReflection(v.toArray());
     }
 
     public static HouseholderReflection of(DataBlock v, boolean apply) {
-        int n = v.length();
-        double mu, beta;
-
-        double[] x = v.toArray();
-        double sig = 0;
-        double x0 = x[0];
-        for (int i = 1; i < n; ++i) {
-            sig += x[i] * x[i];
-        }
-        if (sig < Constants.getEpsilon()) {
-            mu = Math.abs(x0);
-            beta = 0;
-        } else {
-            mu = Math.sqrt(sig + x0 * x0);
-            double v0;
-            // x-|x|e(1)
-            if (x0 <= 0) {
-                v0 = x0 - mu;
-            } else {
-                // (x0-mu)*(x0+mu)/(x0+mu)=(x0^2-mu^2)/(x0+mu)=-sig/x0+mu)
-                v0 = -sig / (x0 + mu);
-            }
-            double v2 = v0 * v0;
-            beta = 2 * v2 / (sig + v2);
-            x[0] = 1;
-            for (int i = 1; i < x.length; ++i) {
-                x[i] /= v0;
-            }
-        }
-        
-        HouseholderReflection reflection = new HouseholderReflection(beta, mu, x);
+        HouseholderReflection hr = new HouseholderReflection(v.toArray());
         if (apply) {
-            if (n > 1) {
-                v.set(0);
-            }
-            v.set(0, mu);
+            v.set(0);
+            v.set(0, hr.alpha);
         }
-        return reflection;
+        return hr;
+    }
+
+    public double x0() {
+        return px[0];
+    }
+
+    public DataPointer v() {
+        return DataPointer.of(px, 1);
+    }
+
+    public DataPointer x() {
+        return DataPointer.of(px, 0);
+    }
+
+    HouseholderReflection(double[] w) {
+        this.px = w;
+        int m = w.length - 1;
+        switch (m) {
+            case -1:
+                alpha = 0;
+                beta = 0;
+                break;
+            case 0:
+                alpha = Math.abs(px[0]);
+                beta = 0;
+                break;
+            default:
+                double x0 = px[0];
+                DataPointer v = v(),
+                 x = x();
+                if (v.test(m, q -> q == 0)) {
+                    alpha = Math.abs(x0);
+                    beta = 0;
+                } else {
+                    double nrm = x.norm2(px.length);
+                    double eps = Constants.getEpsilon();
+                    double safemin = Constants.getSafeMin() / eps;
+                    int k = 0;
+                    if (nrm < safemin) {
+                        double rsafemin = 1 / safemin;
+                        do {
+                            v.mul(m, rsafemin);
+                            x0 *= rsafemin;
+                            nrm *= rsafemin;
+                        } while (nrm < safemin && ++k < 4);
+                        nrm = x.norm2(px.length);
+                    }
+                    if (x0 < 0) {
+                        nrm = -nrm;
+                    }
+                    for (int j = 0; j < k; ++j) {
+                        nrm *= safemin;
+                        v.mul(m, 1 / nrm);
+                    }
+                    beta = nrm / (nrm + x0);
+                    v().div(m, nrm);
+                    alpha = -nrm;
+
+                    // beta = -+ || x ||
+                }
+        }
+    }
+
+    void lapply(Matrix M) {
+        if (beta == 0) {
+            return;
+        }
+        int nc = M.getColumnsCount(), lda = M.getColumnIncrement(), m = px.length - 1, mstart = M.getStartPosition();
+        double[] pm = M.getStorage();
+        for (int k = 0, im = mstart; k < nc; ++k, im += lda) {
+            double s = pm[im] / beta;
+            for (int i = 1, j = im + 1; i < px.length; ++i, ++j) {
+                s += pm[j] * px[i];
+            }
+            if (s != 0) {
+                pm[im] -= s;
+                s *= -beta;
+                for (int i = 1, j = im + 1; i < px.length; ++i, ++j) {
+                    pm[j] += s * px[i];
+                }
+            }
+        }
     }
 
     @Override
@@ -92,30 +140,16 @@ public class HouseholderReflection implements IVectorTransformation {
             return;
         }
         double[] py = y.getStorage();
-        int p0 = y.getStartPosition(), dp = y.getIncrement();
-        if (dp == 1) {
-            int ycur = p0;
-            double s = py[ycur++];
-            for (int i = 1; i < vector.length; ++i) {
-                s += py[ycur++] * vector[i];
-            }
-            s *= beta;
-            py[p0++] -= s;
-            for (int i = 1; i < vector.length; ++i) {
-                py[p0++] -= vector[i] * s;
-            }
-        } else {
-            int ycur = p0;
-            double s = py[ycur];
-            for (int i = 1; i < vector.length; ++i) {
-                ycur += dp;
-                s += py[ycur] * vector[i];
-            }
-            s *= beta;
-            py[p0] -= s;
-            for (int i = 1; i < vector.length; ++i) {
-                p0 += dp;
-                py[p0] -= vector[i] * s;
+        int inc = y.getIncrement(), im = y.getStartPosition();
+        double s = py[im] / beta;
+        for (int i = 1, j = im + inc; i < px.length; ++i, j += inc) {
+            s += py[j] * px[i];
+        }
+        if (s != 0) {
+            py[im] -= s;
+            s *= -beta;
+            for (int i = 1, j = im + inc; i < px.length; ++i, j += inc) {
+                py[j] += s * px[i];
             }
         }
     }

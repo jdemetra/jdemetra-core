@@ -6,8 +6,6 @@
 package jdplus.math.matrices.decomposition;
 
 import demetra.data.DoubleSeq;
-import demetra.math.Constants;
-import jdplus.data.DataBlock;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.UpperTriangularMatrix;
@@ -18,22 +16,21 @@ import jdplus.math.matrices.UpperTriangularMatrix;
  *
  * Each H(i) has the form
  *
- * H(i) = I - tau * v * v'
+ * H(i) = I - beta * v * v'
  *
- * where tau is a real scalar, and v is a real vector with v(0:i-1) = 0
- * v(i) = 1; v(i+1:m) is stored in qr(i+1:m,i), and tau in tau(i).
- * 
- * v is defined by x/||x|| -+ e1 (- if x0 lt 0, + otherwise
+ * where beta is a real scalar, and v is a real vector with v(0:i-1) = 0
+ * v(i) = 1/beta; v(i+1:m) is stored in qr(i+1:m,i), and beta in beta(i).
+ *
+ * v is defined by e1-+x/||x|| (- if x0 lt 0, + otherwise
  * we write x/||x||=y
- * 
- * tau = 2/(v*v') = 2/( y-+e1)(y-+e1)' = 2/(2-+2y0)) = 1/(1-+y0)=-1/v0
- * 
- * v(i) = -1/tau(i) (not stored); v(i+1:m) is stored in qr(i+1:m,i), and tau in tau(i).
- * 
- * H*x = H*y*||x|| = -+ e1*||x|| 
- * 
+ *
+ * beta = 2/(v*v') = 2/( e1-+y)(e1-+y)' = 2/(2-+2y0)) = 1/(1-+y0)=1/v0
+ *
+ *
+ * H*x = H*y*||x|| = +- e1*||x||
+ *
  * In the case of Singular matrix, householder with pivoting should be used.
- * All the taus equal to 0 should be placed at the end of the tau-vector
+ * All the betas equal to 0 should be placed at the end of the beta-vector
  *
  * When pivoting is not used, pivot should be null.
  *
@@ -64,14 +61,14 @@ public class QRDecomposition {
             throw new MatrixException(MatrixException.DIM);
         }
         for (int k = n - 1, ik = (m + 1) * n; k >= 0; --k, ik -= m + 1) {
-            double s = b[k]/beta[k];
-            for (int i = k+1, j = ik+1; i < m; ++i, ++j) {
+            double s = b[k] / beta[k];
+            for (int i = k + 1, j = ik + 1; i < m; ++i, ++j) {
                 s += p[j] * b[i];
             }
             if (s != 0) {
-                b[k]-=s;
+                b[k] -= s;
                 s *= -beta[k];
-                for (int i = k+1, j = ik+1; i < m; ++i, ++j) {
+                for (int i = k + 1, j = ik + 1; i < m; ++i, ++j) {
                     b[i] += s * p[j];
                 }
             }
@@ -91,46 +88,26 @@ public class QRDecomposition {
             throw new MatrixException(MatrixException.DIM);
         }
         for (int k = 0, ik = 0; k < n; ++k, ik += m + 1) {
-            double s = b[k]/beta[k];
-            for (int i = k+1, j = ik+1; i < m; ++i, ++j) {
-                s +=  b[i]*p[j];
+            double s = b[k] / beta[k];
+            for (int i = k + 1, j = ik + 1; i < m; ++i, ++j) {
+                s += b[i] * p[j];
             }
             if (s != 0) {
-                b[k]-=s;
+                b[k] -= s;
                 s *= -beta[k];
-                for (int i = k+1, j = ik+1; i < m; ++i, ++j) {
+                for (int i = k + 1, j = ik + 1; i < m; ++i, ++j) {
                     b[i] += s * p[j];
                 }
             }
         }
     }
 
-    public int rank(double eps) {
-        return qr.diagonal().count(x -> Math.abs(x) > eps);
+    public int m() {
+        return qr.getRowsCount();
     }
 
-    public void leastSquares(DoubleSeq x, DataBlock b, DataBlock res, double eps) {
-        double[] y = new double[x.length()];
-        int rank = rank(eps);
-        x.copyTo(y, 0);
-        applyQt(y);
-        if (res != null) {
-            res.copyFrom(y, rank);
-        }
-        // Solve R*X = Y;
-        UpperTriangularMatrix.solveUx(qr.extract(0, rank, 0, rank), DataBlock.of(y));
-        if (pivot == null) {
-            b.copyFrom(y, 0);
-        } else {
-            for (int i = 0; i < rank; ++i) {
-                b.set(pivot[i], y[i]);
-            }
-        }
-
-    }
-
-    public void leastSquares(DoubleSeq x, DataBlock b, DataBlock res) {
-        leastSquares(x, b, res, Constants.getEpsilon());
+    public int n() {
+        return qr.getColumnsCount();
     }
 
     public Matrix rawR() {
@@ -139,7 +116,11 @@ public class QRDecomposition {
         UpperTriangularMatrix.toUpper(R);
         return R;
     }
-
+    
+    public int[] pivot(){
+        return pivot;
+    }
+ 
     public DoubleSeq rawRdiagonal() {
         return qr.diagonal();
     }

@@ -5,6 +5,9 @@
  */
 package jdplus.math.matrices.lapack;
 
+import jdplus.math.matrices.DataPointer;
+import jdplus.math.matrices.RPointer;
+import jdplus.math.matrices.CPointer;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.MatrixTransformation;
@@ -25,20 +28,20 @@ public class GEMM {
         int cstart = C.getStartPosition(), cinc = C.getColumnIncrement();
         CPointer pc = new CPointer(C.getStorage(), cstart);
         if (beta == 0) {
-            for (int c = 0; c < n; ++c, pc.pos += cinc) {
+            for (int c = 0; c < n; ++c, pc.move(cinc)) {
                 pc.set(m, 0);
             }
-            pc.pos = cstart;
+            pc.pos(cstart);
         } else if (beta == -1) {
-            for (int c = 0; c < n; ++c, pc.pos += cinc) {
+            for (int c = 0; c < n; ++c, pc.move(cinc)) {
                 pc.chs(m);
             }
-            pc.pos = cstart;
+            pc.pos(cstart);
         } else if (beta != 1) {
-            for (int c = 0; c < n; ++c, pc.pos += cinc) {
+            for (int c = 0; c < n; ++c, pc.move(cinc)) {
                 pc.mul(m, beta);
             }
-            pc.pos = cstart;
+            pc.pos(cstart);
         }
         if (alpha != 0) {
             int k = A.getColumnsCount();
@@ -47,14 +50,14 @@ public class GEMM {
             CPointer pa = new CPointer(A.getStorage(), astart);
             CPointer pb = new CPointer(B.getStorage(), bstart);
 
-            for (int j = 0; j < n; ++j, pc.pos += cinc, pb.pos += binc) {
-                for (int i = 0; i < k; ++i, pa.pos += ainc) {
+            for (int j = 0; j < n; ++j, pc.move(cinc), pb.move(binc)) {
+                for (int i = 0; i < k; ++i, pa.move(ainc)) {
                     double w = alpha * pb.value(i);
                     if (w != 0) {
                         pc.addAX(m, w, pa);
                     }
                 }
-                pa.pos = astart;
+                pa.pos(astart);
             }
         }
     }
@@ -144,14 +147,14 @@ public class GEMM {
         CPointer lc = new CPointer(C.getStorage(), cstart);
         CPointer la = new CPointer(A.getStorage(), astart);
         CPointer lb = new CPointer(B.getStorage(), bstart);
-        for (int j = 0; j < n; ++j, lc.pos += clda, lb.pos += blda) {
+        for (int j = 0; j < n; ++j, lc.move(clda), lb.move(blda)) {
             if (beta == 0) {
                 lc.set(m, 0);
             } else if (beta != 1) {
                 lc.mul(m, beta);
             }
-            la.pos = astart;
-            for (int l = 0; l < k; ++l, la.pos += alda) {
+            la.pos(astart);
+            for (int l = 0; l < k; ++l, la.move(alda)) {
                 double tmp = alpha * lb.value(l);
                 if (tmp != 0) {
                     lc.addAX(m, tmp, la);
@@ -168,9 +171,9 @@ public class GEMM {
         DataPointer la = new CPointer(A.getStorage(), astart);
         DataPointer lb = new RPointer(B.getStorage(), bstart, blda);
         double[] pc = C.getStorage();
-        for (int j = 0, ic = cstart; j < n; ++j, ic += clda, ++lb.pos) {
-            la.pos=astart;
-            for (int i = 0, ijc = ic; i < m; ++i, ++ijc, la.pos+=alda) {
+        for (int j = 0, ic = cstart; j < n; ++j, ic += clda, lb.next()) {
+            la.pos(astart);
+            for (int i = 0, ijc = ic; i < m; ++i, ++ijc, la.move(alda)) {
                 double tmp = la.dot(k, lb);
                 if (beta == 0) {
                     pc[ijc] = alpha * tmp;
@@ -189,9 +192,9 @@ public class GEMM {
         DataPointer la = new CPointer(A.getStorage(), astart);
         DataPointer lb = new CPointer(B.getStorage(), bstart);
         double[] pc = C.getStorage();
-        for (int j = 0, ic = cstart; j < n; ++j, ic += clda, lb.pos += blda) {
-            la.pos=astart;
-            for (int i = 0, ijc = ic; i < m; ++i, ++ijc, la.pos+=alda) {
+        for (int j = 0, ic = cstart; j < n; ++j, ic += clda, lb.move(blda)) {
+            la.pos(astart);
+            for (int i = 0, ijc = ic; i < m; ++i, ++ijc, la.move(alda)) {
                 double tmp = la.dot(k, lb);
                 if (beta == 0) {
                     pc[ijc] = alpha * tmp;
@@ -211,17 +214,17 @@ public class GEMM {
         DataPointer lc = new CPointer(C.getStorage(), cstart);
         DataPointer la = new CPointer(A.getStorage(), astart);
         DataPointer lb = new RPointer(B.getStorage(), bstart, blda);
-        for (int j = 0; j < n; ++j, lc.pos += clda, lb.pos++) {
+        for (int j = 0; j < n; ++j, lc.move(clda), lb.next()) {
             if (beta == 0) {
-                SCAL.apply(m, 0, lc);
+                lc.set(m, 0);
             } else if (beta != 1) {
-                SCAL.apply(m, beta, lc);
+                lc.mul(n, beta);
             }
-            la.pos = astart;
-            for (int l = 0; l < k; ++l, la.pos += alda) {
+            la.pos(astart);
+            for (int l = 0; l < k; ++l, la.move(alda)) {
                 double tmp = alpha * lb.value(l);
                 if (tmp != 0) {
-                    AXPY.apply(m, tmp, la, lc);
+                    lc.addAX(m, tmp, la);
                 }
             }
         }

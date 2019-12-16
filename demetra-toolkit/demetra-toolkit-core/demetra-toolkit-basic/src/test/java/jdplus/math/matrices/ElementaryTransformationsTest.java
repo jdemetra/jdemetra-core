@@ -16,17 +16,12 @@
  */
 package jdplus.math.matrices;
 
-import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.UpperTriangularMatrix;
 import jdplus.math.matrices.decomposition.ElementaryTransformations;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.decomposition.Householder;
-import java.util.Random;
-import jdplus.math.matrices.MatrixUtility;
+import jdplus.leastsquares.QRSolution;
+import jdplus.leastsquares.QRSolver;
 import jdplus.random.JdkRNG;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -54,9 +49,8 @@ public class ElementaryTransformationsTest {
         M = Matrix.make(20, 5);
         MatrixUtility.randomize(M, rng);
 
-        Householder qr = new Householder(M.extract(0, 20, 0, 4));
-        DataBlock b2 = DataBlock.make(4);
-        qr.leastSquares(M.column(4), b2, null);
+        QRSolution ls = QRSolver.fastLeastSquares(M.column(4), M.extract(0, 20, 0, 4));
+        DataBlock b2 = DataBlock.of(ls.getB());
 //        System.out.println(b2);
     }
 

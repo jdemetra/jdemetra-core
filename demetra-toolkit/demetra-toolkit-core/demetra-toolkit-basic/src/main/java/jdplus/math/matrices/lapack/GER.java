@@ -5,6 +5,8 @@
  */
 package jdplus.math.matrices.lapack;
 
+import jdplus.math.matrices.DataPointer;
+import jdplus.math.matrices.CPointer;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -31,7 +33,7 @@ public class GER {
         if (incx == 1) {
             CPointer ca = new CPointer(A.getStorage(), start);
             CPointer cx = (CPointer) x;
-            for (int c = 0; c < n; ++c, ca.pos += lda) {
+            for (int c = 0; c < n; ++c, ca.move(lda)) {
                 double z = y.value(c);
                 if (z != 0) {
                     ca.addAX(m, z * alpha, cx);
@@ -39,7 +41,7 @@ public class GER {
             }
         } else {
             CPointer ca = new CPointer(A.getStorage(), start);
-            for (int c = 0; c < n; ++c, ca.pos += lda) {
+            for (int c = 0; c < n; ++c, ca.move(lda)) {
                 double z = y.value(c);
                 if (z != 0) {
                     ca.addAX(m, z * alpha, x);

@@ -48,7 +48,7 @@ public interface QRDecomposer {
     @Algorithm
     @ServiceDefinition(quantifier = Quantifier.SINGLE, 
             mutability = Mutability.CONCURRENT,
-            fallback=Householder.Processor.class)
+            fallback=HouseholderWithPivoting.Processor.class)
     @FunctionalInterface
     public static interface Processor {
         

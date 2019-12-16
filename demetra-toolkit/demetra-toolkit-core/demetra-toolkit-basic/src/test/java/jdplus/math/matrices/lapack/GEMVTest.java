@@ -5,6 +5,7 @@
  */
 package jdplus.math.matrices.lapack;
 
+import jdplus.math.matrices.DataPointer;
 import ec.tstoolkit.random.JdkRNG;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.Matrix;

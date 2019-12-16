@@ -7,8 +7,12 @@ package jdplus.math.matrices.decomposition;
 
 import demetra.data.DataSets;
 import static demetra.data.DataSets.lre;
+import demetra.data.DoubleSeq;
+import ec.tstoolkit.maths.Constants;
 import java.util.Random;
 import jdplus.data.DataBlock;
+import jdplus.leastsquares.QRSolution;
+import jdplus.leastsquares.QRSolver;
 import jdplus.math.matrices.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -32,16 +36,10 @@ public class HouseholderWithPivoting2Test {
         DataBlock Y = DataBlock.make(M);
         Y.set(rnd::nextDouble);
 
-        Householder H = new Householder(A);
-        DataBlock B = DataBlock.make(N);
-        H.leastSquares(Y, B, null);
-
         HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
         QRDecomposition qr = H2.decompose(A, 0);
-        DataBlock B2 = DataBlock.make(N);
-        qr.leastSquares(Y, B2, null);
-
-        assertTrue(B.distance(B2) < 1e-9);
+        QRSolution ls = QRSolver.leastSquares(qr, Y, 1e-15);
+        DoubleSeq beta = ls.getB();
     }
 
     @Test
@@ -57,19 +55,14 @@ public class HouseholderWithPivoting2Test {
 
         DataBlock Y = DataBlock.make(M);
         Y.set(rnd::nextDouble);
-        Householder H = new Householder(A, true, 1e-12);
-        DataBlock B = DataBlock.make(N-2);
-        H.leastSquares(Y, B, null);
-        System.out.println(B);
-        
+
         HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
         QRDecomposition qr = H2.decompose(A, 0);
         System.out.println("");
         System.out.println(qr.rawR());
         System.out.println("");
-        DataBlock B2 = DataBlock.make(N);
-        qr.leastSquares(Y, B2, null, 1e-14);
-        System.out.println(B2);
+        QRSolution ls = QRSolver.leastSquares(qr, Y, Constants.getEpsilon());
+        System.out.println(ls.getB());
     }
 
     public static void testFilip() {
@@ -90,8 +83,8 @@ public class HouseholderWithPivoting2Test {
 
         HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
         QRDecomposition qr = H2.decompose(M, 0);
-        DataBlock beta = DataBlock.make(M.getColumnsCount());
-        qr.leastSquares(DataBlock.of(y), beta, null);
+        QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
+        DoubleSeq beta = ls.getB();
         System.out.println("Filip");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -114,8 +107,8 @@ public class HouseholderWithPivoting2Test {
 
         HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
         QRDecomposition qr = H2.decompose(M, 0);
-        DataBlock beta = DataBlock.make(M.getColumnsCount());
-        qr.leastSquares(DataBlock.of(y), beta, null);
+        QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
+        DoubleSeq beta = ls.getB();
         System.out.println("Wampler3");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -138,8 +131,8 @@ public class HouseholderWithPivoting2Test {
 
         HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
         QRDecomposition qr = H2.decompose(M, 0);
-        DataBlock beta = DataBlock.make(M.getColumnsCount());
-        qr.leastSquares(DataBlock.of(y), beta, null);
+        QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
+        DoubleSeq beta = ls.getB();
         System.out.println("Wampler4");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -162,8 +155,8 @@ public class HouseholderWithPivoting2Test {
 
         HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
         QRDecomposition qr = H2.decompose(M, 0);
-        DataBlock beta = DataBlock.make(M.getColumnsCount());
-        qr.leastSquares(DataBlock.of(y), beta, null);
+        QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
+        DoubleSeq beta = ls.getB();
         System.out.println("Wampler5");
         System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
@@ -178,7 +171,7 @@ public class HouseholderWithPivoting2Test {
         testWampler3();
         testWampler4();
         testWampler5();
-//        stressTest();
+        stressTest();
     }
 
     public static void stressTest() {
@@ -194,7 +187,7 @@ public class HouseholderWithPivoting2Test {
         for (int i = 0; i < K; ++i) {
             Householder H = new Householder(A);
             DataBlock B = DataBlock.make(N);
-            H.leastSquares(Y, B, null);
+//            H.leastSquares(Y, B, null);
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
@@ -203,8 +196,7 @@ public class HouseholderWithPivoting2Test {
         for (int i = 0; i < K; ++i) {
             HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
             QRDecomposition qr = H2.decompose(A, 0);
-            DataBlock B2 = DataBlock.make(N);
-            qr.leastSquares(Y, B2, null);
+            QRSolution ls = QRSolver.leastSquares(qr, Y, 1e-15);
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

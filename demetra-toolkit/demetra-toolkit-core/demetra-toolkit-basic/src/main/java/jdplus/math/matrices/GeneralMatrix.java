@@ -6,7 +6,6 @@
 package jdplus.math.matrices;
 
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.lapack.DataPointer;
 import jdplus.math.matrices.lapack.GEMM;
 import jdplus.math.matrices.lapack.GER;
 

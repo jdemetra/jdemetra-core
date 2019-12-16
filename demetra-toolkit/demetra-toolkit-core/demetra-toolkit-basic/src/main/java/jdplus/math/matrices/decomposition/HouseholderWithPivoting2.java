@@ -23,7 +23,7 @@ import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixException;
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.MatrixWindow;
-import jdplus.math.matrices.lapack.DataPointer;
+import jdplus.math.matrices.DataPointer;
 
 /**
  *
@@ -110,6 +110,8 @@ public class HouseholderWithPivoting2 {
             qr[j]=hous.alpha;
             wnd.bvshrink();
             // update the norms of partial columns
+            // pnorm(ci:n) = pnorm(H(i)c(i:n))-> pnorm(c(i+1:n))=sqrt(pnorm(ci:n)^2-H(i)c(i)^2)
+            // =pnorm(ci:n)sqrt(1-tmp*tmp)
             for (int l = i + 1, j0=j+m; l < k; ++l, j0+=m) {
                 if (pnorm[l] != 0){
                     double tmp=qr[j0]/pnorm[l];

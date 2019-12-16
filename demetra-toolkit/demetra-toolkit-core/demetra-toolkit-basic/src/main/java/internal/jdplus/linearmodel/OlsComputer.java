@@ -27,8 +27,8 @@ public class OlsComputer implements jdplus.linearmodel.Ols.Processor {
         try {
             DoubleSeq y = model.getY();
             Matrix x = model.variables();
-            QRSolution solution = QRSolver.process(y, x);
-            Matrix R = solution.getR();
+            QRSolution solution = QRSolver.robustLeastSquares(y, x);
+            Matrix R = solution.getQr().rawR();
             Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                     .inverse(R));
             return LeastSquaresResults.builder(y, x)

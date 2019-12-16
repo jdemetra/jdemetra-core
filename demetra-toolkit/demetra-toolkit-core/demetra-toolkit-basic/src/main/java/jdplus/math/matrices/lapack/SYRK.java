@@ -5,6 +5,9 @@
  */
 package jdplus.math.matrices.lapack;
 
+import jdplus.math.matrices.DataPointer;
+import jdplus.math.matrices.RPointer;
+import jdplus.math.matrices.CPointer;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -60,19 +63,20 @@ public class SYRK {
         int dinc = slda + 1;
         int xinc=x.inc();
         // Raw gaxpy implementation
-        for (int spos = sstart, ypos = x.pos, c = 0; c < n; ypos += xinc, ++c, spos += dinc) {
-            double yc = x.p[ypos];
+        double[] xp=x.p();
+        for (int spos = sstart, ypos = x.pos(), c = 0; c < n; ypos += xinc, ++c, spos += dinc) {
+            double yc = xp[ypos];
             if (yc != 0) {
                 yc *= a;
                 if (xinc == 1) {
-                    int xmax = x.pos + n;
+                    int xmax = x.pos() + n;
                     for (int xpos = ypos, jpos = spos; xpos < xmax; ++jpos, ++xpos) {
-                        sx[jpos] += yc * x.p[xpos];
+                        sx[jpos] += yc * xp[xpos];
                     }
                 } else {
-                    int xmax = x.pos + n * xinc;
+                    int xmax = x.pos() + n * xinc;
                     for (int xpos = ypos, jpos = spos; xpos != xmax; ++jpos, xpos += xinc) {
-                        sx[jpos] += yc * x.p[xpos];
+                        sx[jpos] += yc * xp[xpos];
                     }
                 }
             }
@@ -97,19 +101,20 @@ public class SYRK {
 
         // Raw gaxpy implementation
         int xinc=x.inc();
-        for (int spos = sstart, ypos = x.pos, c = 1; c <= n; ypos += xinc, ++c, spos += slda) {
-            double yc = x.p[ypos];
+        double[] xp=x.p();
+        for (int spos = sstart, ypos = x.pos(), c = 1; c <= n; ypos += xinc, ++c, spos += slda) {
+            double yc = xp[ypos];
             if (yc != 0) {
                 yc *= a;
                 if (xinc == 1) {
                     int jmax = spos + c;
-                    for (int xpos = x.pos, jpos = spos; jpos < jmax; ++jpos, ++xpos) {
-                        sx[jpos] += yc * x.p[xpos];
+                    for (int xpos = x.pos(), jpos = spos; jpos < jmax; ++jpos, ++xpos) {
+                        sx[jpos] += yc * xp[xpos];
                     }
                 } else {
                     int jmax = spos + c;
-                    for (int xpos = x.pos, jpos = spos; jpos < jmax; ++jpos, xpos += xinc) {
-                        sx[jpos] += yc * x.p[xpos];
+                    for (int xpos = x.pos(), jpos = spos; jpos < jmax; ++jpos, xpos += xinc) {
+                        sx[jpos] += yc * xp[xpos];
                     }
                 }
             }
@@ -129,7 +134,7 @@ public class SYRK {
         }
         CPointer col = new CPointer(A.getStorage(), A.getStartPosition());
         int n = A.getColumnsCount(), lda = A.getColumnIncrement();
-        for (int c = 0; c < n; ++c, col.pos += lda) {
+        for (int c = 0; c < n; ++c, col.move(lda)) {
             laddaXXt(a, col, S);
         }
     }
@@ -147,7 +152,7 @@ public class SYRK {
         }
         CPointer col = new CPointer(A.getStorage(), A.getStartPosition());
         int n = A.getColumnsCount(), lda = A.getColumnIncrement();
-        for (int c = 0; c < n; ++c, col.pos += lda) {
+        for (int c = 0; c < n; ++c, col.move(lda)) {
             uaddaXXt(a, col, S);
         }
     }
@@ -165,7 +170,7 @@ public class SYRK {
         }
         int m = A.getRowsCount(), lda = A.getColumnIncrement();
         RPointer row = new RPointer(A.getStorage(), A.getStartPosition(), lda);
-        for (int r = 0; r < m; ++r, ++row.pos) {
+        for (int r = 0; r < m; ++r, row.next()) {
             laddaXXt(a, row, S);
         }
     }
@@ -184,7 +189,7 @@ public class SYRK {
         }
         int m = A.getRowsCount(), lda = A.getColumnIncrement();
         RPointer row = new RPointer(A.getStorage(), A.getStartPosition(), lda);
-        for (int r = 0; r < m; ++r, ++row.pos) {
+        for (int r = 0; r < m; ++r, row.next()) {
             uaddaXXt(a, row, S);
         }
     }

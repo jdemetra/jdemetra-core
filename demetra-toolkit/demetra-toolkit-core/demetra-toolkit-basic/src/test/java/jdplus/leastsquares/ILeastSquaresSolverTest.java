@@ -5,7 +5,6 @@
  */
 package jdplus.leastsquares;
 
-import jdplus.leastsquares.internal.DefaultQRSolver;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
@@ -37,15 +36,13 @@ public class ILeastSquaresSolverTest {
         y.set(rnd::nextDouble);
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < K; ++i) {
-            DefaultQRSolver qr = new DefaultQRSolver(new Householder.Processor());
-            qr.solve(y, A);
+            QRSolver.fastLeastSquares(y, A);
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < K; ++i) {
-            DefaultQRSolver qr = new DefaultQRSolver(new HouseholderWithPivoting.Processor());
-            qr.solve(y, A);
+            QRSolver.robustLeastSquares(y, A);
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

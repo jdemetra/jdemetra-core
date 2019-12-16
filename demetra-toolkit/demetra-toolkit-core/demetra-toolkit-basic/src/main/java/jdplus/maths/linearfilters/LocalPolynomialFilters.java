@@ -20,8 +20,11 @@ import jdplus.data.DataBlock;
 import jdplus.math.matrices.decomposition.Householder;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlockIterator;
+import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.decomposition.Householder2;
+import jdplus.math.matrices.decomposition.QRDecomposition;
 
 /**
  * The local polynomial filter is defined as follows: h is the number of lags
@@ -80,8 +83,9 @@ public class LocalPolynomialFilters {
         }
         double[] u = new double[d + 1];
         u[0] = 1;
-        Householder hous = new Householder(xkx);
-        hous.solve(DataBlock.of(u));
+//        Householder hous = new Householder(xkx);
+//        hous.solve(DataBlock.of(u));
+        LinearSystemSolver.fastSolver().solve(xkx, DataBlock.of(u));
         double[] w = new double[h + q + 1];
         w[h] = u[0] * k.applyAsDouble(0);
         for (int i = 1; i <= q; ++i) {
@@ -207,11 +211,12 @@ public class LocalPolynomialFilters {
             rows.next().mul(sk[Math.abs(pos++)]);
         }
 
-        Householder hous = new Householder(Z);
+        Householder2 hous = new Householder2();
+        QRDecomposition qr = hous.decompose(Z);
         double[] z = new double[Z.getRowsCount()];
         z[0] = 1;
-        UpperTriangularMatrix.solveUx(hous.r(false), DataBlock.of(z, 0, d + 1, 1));
-        hous.applyQ(DataBlock.of(z));
+        UpperTriangularMatrix.solveUx(qr.rawR(), DataBlock.of(z, 0, d + 1, 1));
+        qr.applyQ(z);
         double[] w = new double[h + 1];
         for (int i = 0; i <= h; ++i) {
             w[i] = sk[i] * z[i + h];

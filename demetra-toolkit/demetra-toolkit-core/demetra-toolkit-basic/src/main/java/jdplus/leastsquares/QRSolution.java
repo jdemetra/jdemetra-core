@@ -7,6 +7,7 @@ package jdplus.leastsquares;
 
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.QRDecomposition;
 
 /**
  * Solution to the least squares problem: min || y - X*b ||
@@ -28,9 +29,9 @@ import jdplus.math.matrices.Matrix;
  */
 @lombok.Value
 public class QRSolution{
+    private QRDecomposition qr;
+    private int rank;
     private DoubleSeq b;
     private DoubleSeq e;
     private double ssqErr;
-    
-    private Matrix R;
 }

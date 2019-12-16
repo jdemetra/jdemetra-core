@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.math.matrices.lapack;
+package jdplus.math.matrices;
 
 import java.util.function.DoublePredicate;
 
@@ -12,11 +12,11 @@ import java.util.function.DoublePredicate;
  * @author palatej
  */
 @lombok.ToString
-final class RPointer extends DataPointer {
+public final class RPointer extends DataPointer {
 
     final int inc;
 
-    RPointer(final double[] storage, final int pos, final int inc) {
+    public RPointer(final double[] storage, final int pos, final int inc) {
         super(storage, pos);
         this.inc = inc;
     }
@@ -51,7 +51,7 @@ final class RPointer extends DataPointer {
         }
     }
 
-    double dot(int n, RPointer x) {
+    public double dot(int n, RPointer x) {
         int imax = pos + n * inc;
         double s = 0;
         for (int i = pos, j = x.pos; i != imax; i += inc, j += x.inc) {
@@ -70,21 +70,21 @@ final class RPointer extends DataPointer {
         return true;
     }
 
-    void add(int n, RPointer x) {
+    public void add(int n, RPointer x) {
         int imax = pos + n * inc;
         for (int i = pos, j = x.pos; i != imax; i += inc, j += x.inc) {
             p[i] += x.p[j];
         }
     }
 
-    void sub(int n, RPointer x) {
+    public void sub(int n, RPointer x) {
         int imax = pos + n * inc;
         for (int i = pos, j = x.pos; i != imax; i += inc, j += x.inc) {
             p[i] -= x.p[j];
         }
     }
 
-    void copy(int n, RPointer x) {
+    public void copy(int n, RPointer x) {
         int imax = pos + n * inc;
         for (int i = pos, j = x.pos; i != imax; i += inc, j += x.inc) {
             p[i] = x.p[j];
@@ -162,7 +162,7 @@ final class RPointer extends DataPointer {
         return d;
     }
 
-    void swap(int n, RPointer x) {
+    public void swap(int n, RPointer x) {
         int imax = pos + n * inc;
         for (int i = pos, j = x.pos; i < imax; i += inc, j += x.inc) {
             double tmp = p[i];

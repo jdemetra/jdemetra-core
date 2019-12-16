@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.math.matrices.lapack;
+package jdplus.math.matrices;
 
 import java.util.function.DoublePredicate;
 
@@ -12,9 +12,9 @@ import java.util.function.DoublePredicate;
  * @author palatej
  */
 @lombok.ToString
-final class CPointer extends DataPointer {
+public final class CPointer extends DataPointer {
 
-    CPointer(final double[] storage, final int pos) {
+    public CPointer(final double[] storage, final int pos) {
         super(storage, pos);
     }
 
@@ -65,7 +65,7 @@ final class CPointer extends DataPointer {
         return true;
     }
     
-    double dot(int n, CPointer x) {
+    public double dot(int n, CPointer x) {
         int imax = pos + n;
         double s = 0;
         for (int i = pos, j = x.pos; i < imax; ++i, ++j) {
@@ -74,21 +74,21 @@ final class CPointer extends DataPointer {
         return s;
     }
 
-    void add(int n, CPointer x) {
+    public void add(int n, CPointer x) {
         int imax = pos + n;
         for (int i = pos, j = x.pos; i < imax; ++i, ++j) {
             p[i] += x.p[j];
         }
     }
 
-    void sub(int n, CPointer x) {
+    public void sub(int n, CPointer x) {
         int imax = pos + n;
         for (int i = pos, j = x.pos; i < imax; ++i, ++j) {
             p[i] -= x.p[j];
         }
     }
 
-    void copy(int n, CPointer x) {
+    public void copy(int n, CPointer x) {
         int imax = pos + n;
         for (int i = pos, j = x.pos; i < imax; ++i, ++j) {
             p[i] = x.p[j];
@@ -135,7 +135,7 @@ final class CPointer extends DataPointer {
         }
     }
 
-    void swap(int n, CPointer other) {
+    public void swap(int n, CPointer other) {
         int imax = pos + n;
         for (int i = pos, j = other.pos; i < imax; ++i, ++j) {
             double tmp = p[i];
