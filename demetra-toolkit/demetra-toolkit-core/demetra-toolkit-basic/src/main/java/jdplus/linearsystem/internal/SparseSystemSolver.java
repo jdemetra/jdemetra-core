@@ -32,6 +32,7 @@ import jdplus.math.matrices.Matrix;
  */
 @Development(status = Development.Status.Release)
 @AlgorithmImplementation(algorithm = LinearSystemSolver.class)
+@Deprecated
 public final class SparseSystemSolver implements LinearSystemSolver {
 
     

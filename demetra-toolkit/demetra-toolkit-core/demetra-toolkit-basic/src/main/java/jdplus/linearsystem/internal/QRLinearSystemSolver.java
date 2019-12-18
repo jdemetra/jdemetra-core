@@ -16,6 +16,7 @@
  */
 package jdplus.linearsystem.internal;
 
+import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
@@ -23,9 +24,13 @@ import demetra.design.BuilderPattern;
 import jdplus.math.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
+import jdplus.data.normalizer.SafeNormalizer;
+import jdplus.leastsquares.QRSolver;
 import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.decomposition.QRDecomposer;
+import jdplus.math.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
+import jdplus.math.matrices.decomposition.QRDecomposition;
 
 /**
  *
@@ -38,11 +43,16 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
     @BuilderPattern(QRLinearSystemSolver.class)
     public static class Builder {
 
-        private final QRDecomposer.Processor qr;
+        private QRDecomposition.Decomposer decomposer = A -> new HouseholderWithPivoting().decompose(A, 0);
+        private double eps;
         private boolean normalize;
 
-        private Builder(QRDecomposer.Processor qr) {
-            this.qr = qr;
+        private Builder() {
+        }
+
+        public Builder decomposer(QRDecomposition.Decomposer decomposer) {
+            this.decomposer = decomposer;
+            return this;
         }
 
         public Builder normalize(boolean normalize) {
@@ -50,77 +60,114 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
             return this;
         }
 
+        public Builder precision(double eps) {
+            this.eps = eps;
+            return this;
+        }
+
         public QRLinearSystemSolver build() {
-            return new QRLinearSystemSolver(qr, normalize);
+            return new QRLinearSystemSolver(decomposer, eps, normalize);
         }
     }
 
-    public static Builder builder(QRDecomposer.Processor qr) {
-        return new Builder(qr);
+    public static Builder builder() {
+        return new Builder();
     }
-    private final QRDecomposer.Processor qr;
+
+    private final QRDecomposition.Decomposer decomposer;
+    private final double eps;
     private final boolean normalize;
 
-    private QRLinearSystemSolver(QRDecomposer.Processor qr, boolean normalize) {
-        this.qr = qr;
+    private QRLinearSystemSolver(QRDecomposition.Decomposer decomposer, double eps, boolean normalize) {
+        this.decomposer = decomposer;
+        this.eps = eps;
         this.normalize = normalize;
     }
 
     @Override
     public void solve(Matrix A, DataBlock b) {
-        if (!A.isSquare()) {
-            throw new MatrixException(MatrixException.SQUARE);
-        }
-        if (A.getRowsCount() != b.length()) {
-            throw new MatrixException(MatrixException.DIM);
-        }
         // we normalize b
         Matrix An;
+        double[] factor = null;
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
-            DoubleSeqCursor.OnMutable cells = b.cursor();
+            SafeNormalizer sn = new SafeNormalizer();
+            factor = new double[A.getRowsCount()];
+            int i = 0;
             while (rows.hasNext()) {
-                DataBlock row = rows.next();
-                double norm = row.norm2();
-                row.div(norm);
-                cells.applyAndNext(x -> x / norm);
+                factor[i++] = sn.normalize(rows.next());
             }
         } else {
             An = A;
         }
-        QRDecomposer decomposition = qr.decompose(An);
-        decomposition.leastSquares(b, b, null);
+        QRDecomposition qr = decomposer.decompose(A);
+        int rank = QRSolver.rankOfUpperTriangularMatrix(qr.rawR(), eps);
+        if (rank != A.getRowsCount()) {
+            throw new MatrixException(MatrixException.SINGULAR);
+        }
+        double[] y = b.toArray();
+        qr.applyQt(y);
+        // Solve R*X = Y;
+        UpperTriangularMatrix.solveUx(qr.rawR(), DataBlock.of(y));
+        int[] pivot = qr.pivot();
+        if (pivot == null) {
+            b.copyFrom(y, 0);
+        } else {
+            for (int i = 0; i < rank; ++i) {
+                b.set(pivot[i], y[i]);
+            }
+        }
+        if (factor != null) {
+            b.div(DataBlock.of(factor));
+        }
     }
 
     @Override
     public void solve(Matrix A, Matrix B) {
-        if (!A.isSquare()) {
-            throw new MatrixException(MatrixException.SQUARE);
-        }
-        if (A.getRowsCount() != B.getRowsCount()) {
-            throw new MatrixException(MatrixException.DIM);
-        }
         // we normalize b
         Matrix An;
+        double[] factor = null;
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
-            DataBlockIterator brows = B.rowsIterator();
+            SafeNormalizer sn = new SafeNormalizer();
+            factor = new double[A.getRowsCount()];
+            int i = 0;
             while (rows.hasNext()) {
-                DataBlock row = rows.next();
-                double norm = row.norm2();
-                row.div(norm);
-                brows.next().div(norm);
+                factor[i++] = sn.normalize(rows.next());
             }
         } else {
             An = A;
         }
-        QRDecomposer decomposition = qr.decompose(An);
-        if (!decomposition.isFullRank()) {
+        QRDecomposition qr = decomposer.decompose(A);
+        int rank = QRSolver.rankOfUpperTriangularMatrix(qr.rawR(), eps);
+        if (rank != A.getRowsCount()) {
             throw new MatrixException(MatrixException.SINGULAR);
         }
-        B.applyByColumns(col -> decomposition.leastSquares(col, col, null));
+        DataBlockIterator cols = B.columnsIterator();
+        while (cols.hasNext()) {
+            DataBlock b = cols.next();
+            double[] y = b.toArray();
+            qr.applyQt(y);
+            // Solve R*X = Y;
+            UpperTriangularMatrix.solveUx(qr.rawR(), DataBlock.of(y));
+            int[] pivot = qr.pivot();
+            if (pivot == null) {
+                b.copyFrom(y, 0);
+            } else {
+                for (int i = 0; i < rank; ++i) {
+                    b.set(pivot[i], y[i]);
+                }
+            }
+        }
+        if (factor != null) {
+            DataBlockIterator rows = B.rowsIterator();
+            int r = 0;
+            while (rows.hasNext()) {
+                rows.next().div(factor[r++]);
+            }
+        }
     }
 
 }

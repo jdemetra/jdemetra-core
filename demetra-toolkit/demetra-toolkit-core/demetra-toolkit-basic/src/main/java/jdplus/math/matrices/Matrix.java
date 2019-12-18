@@ -30,7 +30,10 @@ import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.data.DataWindow;
 import jdplus.data.LogSign;
+import jdplus.linearsystem.LinearSystemSolver;
+import jdplus.math.matrices.decomposition.Gauss;
 import jdplus.math.matrices.decomposition.Householder;
+import jdplus.math.matrices.decomposition.LUDecomposition;
 import org.checkerframework.checker.index.qual.Positive;
 
 /**
@@ -838,43 +841,33 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
-//    public Matrix inv() {
-//        if (!isSquare()) {
-//            throw new IllegalArgumentException();
-//        }
-//        Householder hous = new Householder(this);
-//        
-//        if (!hous.isFullRank()) {
-//            return null;
-//        }
-//
-//        Matrix I = Matrix.identity(nrows);
-//        DataBlockIterator cols = I.columnsIterator();
-//        while (cols.hasNext()) {
-//            hous.solve(cols.next());
-//        }
-//        return I;
-//    }
-//
-//    public static LogSign logDeterminant(Matrix X) {
-//        if (!X.isSquare()) {
-//            throw new IllegalArgumentException();
-//        }
-//        Householder hous = new Householder(X);
-//        if (!hous.isFullRank()) {
-//            return null;
-//        }
-//        return LogSign.of(hous.rdiagonal(false));
-//    }
-//
-//    public static double determinant(Matrix X) {
-//        LogSign ls = logDeterminant(X);
-//        if (ls == null) {
-//            return 0;
-//        }
-//        double val = Math.exp(ls.getValue());
-//        return ls.isPositive() ? val : -val;
-//    }
+    public Matrix inv() {
+        if (!isSquare()) {
+            throw new IllegalArgumentException();
+        }
+        Matrix I = Matrix.identity(nrows);
+        LUDecomposition lu = Gauss.decompose(this);
+        lu.solve(I);
+        return I;
+    }
+
+    public static LogSign logDeterminant(Matrix X) {
+        if (!X.isSquare()) {
+            throw new IllegalArgumentException();
+        }
+        LUDecomposition lu = Gauss.decompose(X);
+        return lu.logDeterminant();
+    }
+
+    public static double determinant(Matrix X) {
+        try{
+        LogSign ls = logDeterminant(X);
+        double val = Math.exp(ls.getValue());
+        return ls.isPositive() ? val : -val;
+        }catch (MatrixException err){
+            return 0; // singular matrix
+        }
+    }
 
     @Override
     public DataBlock diagonal() {

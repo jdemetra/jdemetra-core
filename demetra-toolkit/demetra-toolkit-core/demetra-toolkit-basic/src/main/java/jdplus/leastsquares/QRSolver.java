@@ -25,7 +25,7 @@ import jdplus.math.matrices.DataPointer;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
 import jdplus.math.matrices.decomposition.Householder2;
-import jdplus.math.matrices.decomposition.HouseholderWithPivoting2;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import jdplus.math.matrices.decomposition.QRDecomposition;
 
 /**
@@ -36,6 +36,11 @@ import jdplus.math.matrices.decomposition.QRDecomposition;
 @lombok.experimental.UtilityClass
 public class QRSolver {
     
+    @FunctionalInterface
+    public interface Processor{
+        QRSolution solve(DoubleSeq y, Matrix X);
+    }
+    
     public QRSolution fastLeastSquares(DoubleSeq y, Matrix X){
         Householder2 h = new Householder2();
         QRDecomposition qr = h.decompose(X);
@@ -43,7 +48,7 @@ public class QRSolver {
     }
     
     public QRSolution robustLeastSquares(DoubleSeq y, Matrix X){
-        HouseholderWithPivoting2 h = new HouseholderWithPivoting2();
+        HouseholderWithPivoting h = new HouseholderWithPivoting();
         QRDecomposition qr = h.decompose(X, 0);
         return leastSquares(qr, y, Constants.getEpsilon());
     }
@@ -71,7 +76,7 @@ public class QRSolver {
         return new QRSolution(qr, rank, b, e, e.ssq());
     }
 
-    int rankOfUpperTriangularMatrix(Matrix U, double rcond) {
+    public static int rankOfUpperTriangularMatrix(Matrix U, double rcond) {
         DoubleSeqCursor.OnMutable cursor = U.diagonal().cursor();
         double smax = Math.abs(cursor.getAndNext()), smin = smax;
         if (smax == 0) {

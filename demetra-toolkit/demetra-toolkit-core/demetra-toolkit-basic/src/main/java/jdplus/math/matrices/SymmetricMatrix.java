@@ -7,13 +7,13 @@ package jdplus.math.matrices;
 
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Algorithm;
-import jdplus.math.matrices.Matrix;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.LogSign;
 import jdplus.math.matrices.lapack.Cholesky;
 import jdplus.math.matrices.lapack.SYRK;
 import jdplus.math.matrices.decomposition.CroutDoolittle;
+import jdplus.math.matrices.decomposition.LUDecomposition;
 import jdplus.random.MersenneTwister;
 import jdplus.random.RandomNumberGenerator;
 import nbbrd.service.Mutability;
@@ -49,7 +49,7 @@ public class SymmetricMatrix {
             lcholesky(L, 0);
         }
 
-        default void ucholesky(Matrix U){
+        default void ucholesky(Matrix U) {
             ucholesky(U, 0);
         }
     }
@@ -191,10 +191,9 @@ public class SymmetricMatrix {
             lower = LowerTriangularMatrix.inverse(lower);
             return LtL(lower);
         } catch (MatrixException e) {
-            CroutDoolittle cr = new CroutDoolittle();
-            cr.decompose(S);
+            LUDecomposition lu = CroutDoolittle.decompose(S);
             Matrix I = Matrix.identity(S.getRowsCount());
-            cr.solve(I);
+            lu.solve(I);
             return I;
         }
     }
@@ -228,9 +227,9 @@ public class SymmetricMatrix {
         int nr = X.getRowsCount(), nc = X.getColumnsCount();
         Matrix M = Matrix.square(nc);
         double[] px = X.getStorage(), pm = M.getStorage();
-        int xstart=X.getStartPosition(), xinc=X.getColumnIncrement();
-        int xmax = xstart+xinc*nc;
-        for (int c = 0, mpos = 0, x0 = xstart, x1 = xstart+nr; c < nc; ++c, x0 += xinc, x1 += xinc) {
+        int xstart = X.getStartPosition(), xinc = X.getColumnIncrement();
+        int xmax = xstart + xinc * nc;
+        for (int c = 0, mpos = 0, x0 = xstart, x1 = xstart + nr; c < nc; ++c, x0 += xinc, x1 += xinc) {
             mpos += c;
             for (int xpos = x0; xpos < xmax; xpos += xinc) {
                 double s = 0;

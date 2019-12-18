@@ -10,7 +10,7 @@ import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import java.util.Random;
 import jdplus.math.matrices.decomposition.Householder;
-import jdplus.math.matrices.decomposition.HouseholderWithPivoting2;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import org.junit.Test;
 import org.junit.Ignore;
 

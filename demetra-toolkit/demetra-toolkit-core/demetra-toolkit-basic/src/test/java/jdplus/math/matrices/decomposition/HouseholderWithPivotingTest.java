@@ -21,9 +21,9 @@ import static org.junit.Assert.*;
  *
  * @author palatej
  */
-public class HouseholderWithPivoting2Test {
+public class HouseholderWithPivotingTest {
 
-    public HouseholderWithPivoting2Test() {
+    public HouseholderWithPivotingTest() {
     }
 
     @Test
@@ -36,7 +36,7 @@ public class HouseholderWithPivoting2Test {
         DataBlock Y = DataBlock.make(M);
         Y.set(rnd::nextDouble);
 
-        HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
+        HouseholderWithPivoting H2 = new HouseholderWithPivoting();
         QRDecomposition qr = H2.decompose(A, 0);
         QRSolution ls = QRSolver.leastSquares(qr, Y, 1e-15);
         DoubleSeq beta = ls.getB();
@@ -56,7 +56,7 @@ public class HouseholderWithPivoting2Test {
         DataBlock Y = DataBlock.make(M);
         Y.set(rnd::nextDouble);
 
-        HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
+        HouseholderWithPivoting H2 = new HouseholderWithPivoting();
         QRDecomposition qr = H2.decompose(A, 0);
         System.out.println("");
         System.out.println(qr.rawR());
@@ -81,7 +81,7 @@ public class HouseholderWithPivoting2Test {
         M.column(9).set(x, a -> a * a * a * a * a * a * a * a * a);
         M.column(10).set(x, a -> a * a * a * a * a * a * a * a * a * a);
 
-        HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
+        HouseholderWithPivoting H2 = new HouseholderWithPivoting();
         QRDecomposition qr = H2.decompose(M, 0);
         QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
         DoubleSeq beta = ls.getB();
@@ -105,7 +105,7 @@ public class HouseholderWithPivoting2Test {
         M.column(4).set(x, a -> a * a * a * a);
         M.column(5).set(x, a -> a * a * a * a * a);
 
-        HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
+        HouseholderWithPivoting H2 = new HouseholderWithPivoting();
         QRDecomposition qr = H2.decompose(M, 0);
         QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
         DoubleSeq beta = ls.getB();
@@ -129,7 +129,7 @@ public class HouseholderWithPivoting2Test {
         M.column(4).set(x, a -> a * a * a * a);
         M.column(5).set(x, a -> a * a * a * a * a);
 
-        HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
+        HouseholderWithPivoting H2 = new HouseholderWithPivoting();
         QRDecomposition qr = H2.decompose(M, 0);
         QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
         DoubleSeq beta = ls.getB();
@@ -153,7 +153,7 @@ public class HouseholderWithPivoting2Test {
         M.column(4).set(x, a -> a * a * a * a);
         M.column(5).set(x, a -> a * a * a * a * a);
 
-        HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
+        HouseholderWithPivoting H2 = new HouseholderWithPivoting();
         QRDecomposition qr = H2.decompose(M, 0);
         QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
         DoubleSeq beta = ls.getB();
@@ -194,7 +194,7 @@ public class HouseholderWithPivoting2Test {
 
         t0 = System.currentTimeMillis();
         for (int i = 0; i < K; ++i) {
-            HouseholderWithPivoting2 H2 = new HouseholderWithPivoting2();
+            HouseholderWithPivoting H2 = new HouseholderWithPivoting();
             QRDecomposition qr = H2.decompose(A, 0);
             QRSolution ls = QRSolver.leastSquares(qr, Y, 1e-15);
         }

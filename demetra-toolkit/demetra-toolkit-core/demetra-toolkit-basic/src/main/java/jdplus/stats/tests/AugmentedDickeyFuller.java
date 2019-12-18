@@ -22,6 +22,8 @@ import demetra.design.BuilderPattern;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.decomposition.Householder;
 import demetra.data.DoubleSeq;
+import jdplus.leastsquares.QRSolution;
+import jdplus.leastsquares.QRSolver;
 
 /**
  * Augmented Dickey-Fuller test
@@ -115,14 +117,13 @@ public class AugmentedDickeyFuller {
         this.y = y;
         this.cnt = cnt;
         this.trend = trend;
-        Householder qr = new Householder(x);
-        b = DataBlock.make(x.getColumnsCount());
-        e = DataBlock.make(x.getRowsCount() - x.getColumnsCount());
-        qr.leastSquares(y, b, e);
+        QRSolution ls = QRSolver.fastLeastSquares(y, x);
+        b=DataBlock.of(ls.getB());
+        e=DataBlock.of(ls.getE());
         int nlast = b.length() - 1;
-        double ssq = e.ssq();
+        double ssq = ls.getSsqErr();
         double val = b.get(nlast);
-        double std = Math.abs(Math.sqrt(ssq / e.length()) / qr.rdiagonal(false).get(nlast));
+        double std = Math.abs(Math.sqrt(ssq / e.length()) / ls.getQr().rawRdiagonal().get(nlast));
         t = val / std;
     }
 

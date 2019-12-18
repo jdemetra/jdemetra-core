@@ -23,9 +23,12 @@ import demetra.design.BuilderPattern;
 import jdplus.math.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
+import demetra.math.Constants;
+import jdplus.data.normalizer.SafeNormalizer;
 import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.decomposition.LUDecomposition;
 import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.Gauss;
 
 /**
  *
@@ -38,86 +41,94 @@ public class LUSolver implements LinearSystemSolver {
     @BuilderPattern(LUSolver.class)
     public static class Builder {
 
-        private final LUDecomposition lu;
-        private boolean normalize;
+        private LUDecomposition.Decomposer decomposer=(M, e)->Gauss.decompose(M, e);
+        private double eps=Constants.getEpsilon();
+        private boolean normalize=false;
 
-        private Builder(LUDecomposition lu) {
-            this.lu = lu;
+        private Builder() {
         }
 
+        public Builder decomposer(LUDecomposition.Decomposer decomposer) {
+            this.decomposer=decomposer;
+            return this;
+        }
+        
         public Builder normalize(boolean normalize) {
             this.normalize = normalize;
             return this;
         }
+        
+        public Builder precision(double eps){
+            this.eps=eps;
+            return this;
+        }
 
         public LUSolver build() {
-            return new LUSolver(lu, normalize);
+            return new LUSolver(decomposer, eps, normalize);
         }
     }
 
-    public static Builder builder(LUDecomposition lu) {
-        return new Builder(lu);
+    public static Builder builder() {
+        return new Builder();
     }
 
-    private final LUDecomposition lu;
-    private final boolean normalize;
+        private final LUDecomposition.Decomposer decomposer;
+        private double eps=Constants.getEpsilon();
+        private boolean normalize;
 
-    private LUSolver(LUDecomposition lu, boolean normalize) {
-        this.lu = lu;
+    private LUSolver(LUDecomposition.Decomposer decomposer, double eps, boolean normalize) {
+        this.decomposer=decomposer;
+        this.eps=eps;
         this.normalize = normalize;
     }
 
     @Override
     public void solve(Matrix A, DataBlock b) {
-        if (!A.isSquare()) {
-            throw new MatrixException(MatrixException.SQUARE);
-        }
-        if (A.getRowsCount() != b.length()) {
-            throw new MatrixException(MatrixException.DIM);
-        }
         // we normalize b
         Matrix An;
+        double[] factor=null;
         if (normalize) {
-
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
-            DoubleSeqCursor.OnMutable cells = b.cursor();
+            SafeNormalizer sn=new SafeNormalizer();
+            factor=new double[A.getRowsCount()];
+            int i=0;
             while (rows.hasNext()) {
-                DataBlock row = rows.next();
-                double norm = row.norm2()/Math.sqrt(row.length());
-                row.div(norm);
-                cells.applyAndNext(x -> x / norm);
+                factor[i++]=sn.normalize(rows.next());
             }
         } else {
             An = A;
         }
-        lu.decompose(An);
+        LUDecomposition lu = decomposer.decompose(An, eps);
         lu.solve(b);
+        if (factor != null){
+            b.div(DataBlock.of(factor));
+        }
     }
 
     @Override
     public void solve(Matrix A, Matrix B) {
-        if (!A.isSquare()) {
-            throw new MatrixException(MatrixException.SQUARE);
-        }
-        if (A.getRowsCount() != B.getRowsCount()) {
-            throw new MatrixException(MatrixException.DIM);
-        }
-        // we normalize b 
         Matrix An;
+        double[] factor=null;
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
-            DataBlockIterator brows = B.rowsIterator();
+            SafeNormalizer sn=new SafeNormalizer();
+            factor=new double[A.getRowsCount()];
+            int i=0;
             while (rows.hasNext()) {
-                DataBlock row = rows.next();
-                double norm = row.norm2();
-                row.div(norm);
-                brows.next().div(norm);
+                factor[i++]=sn.normalize(rows.next());
             }
         } else {
             An = A;
         }
-        lu.decompose(An);
+        LUDecomposition lu = decomposer.decompose(An, eps);
+        lu.solve(B);
+        if (factor != null){
+            DataBlockIterator rows = B.rowsIterator();
+            int r=0;
+            while (rows.hasNext())
+                rows.next().div(factor[r++]);
+        }
     }
 }

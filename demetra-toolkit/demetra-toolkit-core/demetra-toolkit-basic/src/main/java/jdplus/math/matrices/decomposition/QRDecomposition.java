@@ -41,6 +41,11 @@ public class QRDecomposition {
     private final Matrix qr;
     private final double[] beta;
     private final int[] pivot;
+    
+    @FunctionalInterface
+    public static interface Decomposer{
+        QRDecomposition decompose(Matrix A);
+    }
 
     public QRDecomposition(Matrix qr, double[] beta, int[] pivot) {
         this.qr = qr;

@@ -53,6 +53,18 @@ public class LowerTriangularMatrix {
         }
     }
 
+    public void solveX1L(final Matrix L, final Matrix B) throws MatrixException {
+        int nc = B.getColumnsCount();
+        if (nc != L.getRowsCount()) {
+            throw new MatrixException(MatrixException.DIM);
+        }
+        DataBlockIterator rows = B.rowsIterator();
+        while (rows.hasNext()) {
+            DataBlock r = rows.next();
+            solveL1tx(L, r.getStorage(), r.getStartPosition(), r.getIncrement());
+        }
+    }
+
     /**
      * y := L*x or x = iL*y
      *
@@ -68,6 +80,10 @@ public class LowerTriangularMatrix {
         solveLx(L, x.getStorage(), x.getStartPosition(), x.getIncrement(), 0);
     }
 
+    public void solveL1x(Matrix L, DataBlock x) {
+        solveL1x(L, x.getStorage(), x.getStartPosition(), x.getIncrement());
+    }
+    
     /**
      * y := x*L or y' = L'*x or x = iLt*y
      *
@@ -78,6 +94,15 @@ public class LowerTriangularMatrix {
         solveLtx(L, x.getStorage(), x.getStartPosition(), x.getIncrement(), 0);
     }
 
+    /**
+     * y := x*L or y' = L'*x or x = iLt*y
+     *
+     * @param L L is a unitary lower triangular matrix (diag(L)=1)
+     * @param x
+     */
+    public void solvexL1(Matrix L, DataBlock x) {
+        solveL1tx(L, x.getStorage(), x.getStartPosition(), x.getIncrement());
+    }
     /**
      * y := x*L or y' = L'*x or x = iLt*y
      *
@@ -157,6 +182,19 @@ public class LowerTriangularMatrix {
         int bmax = start + nc * lda;
         for (int b = start; b < bmax; b += lda) {
             LowerTriangularMatrix.solveLx(L, pb, b, 1, zero);
+        }
+    }
+
+    public void solveL1X(final Matrix L, final Matrix M) throws MatrixException {
+        int nr = M.getRowsCount(), nc = M.getColumnsCount();
+        if (nr != L.getRowsCount()) {
+            throw new MatrixException(MatrixException.DIM);
+        }
+        double[] pb = M.getStorage();
+        int start = M.getStartPosition(), lda = M.getColumnIncrement();
+        int bmax = start + nc * lda;
+        for (int b = start; b < bmax; b += lda) {
+            LowerTriangularMatrix.solveL1x(L, pb, b, 1);
         }
     }
 
@@ -367,7 +405,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    public void solveLx(Matrix L, double[] px, int startx, int incx, double zero) {
+    private void solveLx(Matrix L, double[] px, int startx, int incx, double zero) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
         int dl = lda + 1;
@@ -412,6 +450,36 @@ public class LowerTriangularMatrix {
         }
     }
 
+    /**
+     *
+     * @param L L is a unit matrix (diag(L)=1)
+     * @param px
+     * @param startx
+     * @param incx
+     */
+    private void solveL1x(Matrix L, double[] px, int startx, int incx) {
+        int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
+        double[] pl = L.getStorage();
+        int dl = lda + 1;
+        if (incx == 1) {
+            int xend = startx + n;
+            for (int ix = startx, il = start; ix < xend; ++ix, il += dl) {
+                double t = px[ix];
+                for (int jx = ix + 1, jl = il + 1; jx < xend; ++jx, ++jl) {
+                    px[jx] -= t * pl[jl];
+                }
+            }
+        } else {
+            int xend = startx + n * incx;
+            for (int ix = startx, il = start; ix < xend; ix += incx, il += lda + 1) {
+                double t = px[ix];
+                for (int jx = ix + incx, jl = il + 1; jx < xend; jx += incx, ++jl) {
+                    px[jx] -= t * pl[jl];
+                }
+            }
+        }
+    }
+
     private void solveLtx(Matrix L, double[] px, int startx, int incx, double zero) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
@@ -451,6 +519,31 @@ public class LowerTriangularMatrix {
                 } else {
                     px[jx] = t / d;
                 }
+            }
+        }
+    }
+
+    private void solveL1tx(Matrix L, double[] px, int startx, int incx) {
+        int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
+        double[] pl = L.getStorage();
+        if (incx == 1) {
+            int xend = startx + n;
+            for (int jx = startx + n - 1, jl = start + (n - 1) * (lda + 1); jx >= startx; --jx, jl -= lda + 1) {
+                double t = 0;
+                for (int ix = jx + 1, il = jl + 1; ix < xend; ++ix, ++il) {
+                    t += pl[il] * px[ix];
+                }
+                px[jx] -= t;
+            }
+        } else {
+            int xend = startx + n * incx;
+            for (int jx = xend, jl = start + (n - 1) * (lda + 1); jx != startx; jl -= lda + 1) {
+                jx -= incx;
+                double t = 0;
+                for (int ix = jx + incx, il = jl + 1; ix != xend; ix += incx, ++il) {
+                    t += pl[il] * px[ix];
+                }
+                px[jx] -= t;
             }
         }
     }

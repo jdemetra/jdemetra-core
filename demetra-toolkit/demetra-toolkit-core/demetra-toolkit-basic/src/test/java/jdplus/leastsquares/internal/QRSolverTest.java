@@ -11,9 +11,7 @@ import static demetra.data.DataSets.lre;
 import jdplus.math.matrices.Matrix;
 import demetra.data.DoubleSeq;
 import jdplus.leastsquares.QRSolution;
-import jdplus.math.matrices.decomposition.Householder;
-import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
-import jdplus.math.matrices.decomposition.HouseholderWithPivoting2;
+import jdplus.leastsquares.QRSolver;
 
 /**
  *
@@ -21,7 +19,7 @@ import jdplus.math.matrices.decomposition.HouseholderWithPivoting2;
  */
 public class QRSolverTest {
 
-     static DefaultQRSolver solver = new DefaultQRSolver(new HouseholderWithPivoting.Processor());
+    static QRSolver.Processor solver = (y, X)->QRSolver.fastLeastSquares(y, X);
     public QRSolverTest() {
     }
 
@@ -115,7 +113,7 @@ public class QRSolverTest {
         QRSolution solution = solver.solve(DoubleSeq.of(y), M);
         DoubleSeq beta = solution.getB();
         System.out.println("Filip");
-        System.out.println(beta);
+//        System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
             System.out.print(lre(beta.get(i), DataSets.Filip.expectedBeta[i]));
             System.out.print('\t');
@@ -247,7 +245,7 @@ public class QRSolverTest {
         QRSolution solution = solver.solve(DoubleSeq.of(y), M);
         DoubleSeq beta = solution.getB();
         System.out.println("Wampler5");
-        System.out.println(beta);
+//        System.out.println(beta);
         for (int i = 0; i < beta.length(); ++i) {
             System.out.print(lre(beta.get(i), DataSets.Wampler5.expectedBeta[i]));
             System.out.print('\t');

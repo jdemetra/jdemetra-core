@@ -27,19 +27,21 @@ import jdplus.math.matrices.MatrixException;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class Gauss extends AbstractLuDecomposition {
+@lombok.experimental.UtilityClass
+public class Gauss {
 
-    @Override
-    public void decompose(Matrix m) {
-        init(m);
-        gauss();
+    public LUDecomposition decompose(Matrix M) {
+        return decompose(M, Constants.getEpsilon());
     }
+    
+    public LUDecomposition decompose(Matrix M, double eps) {
+        int n = M.getColumnsCount();
+        if (M.getRowsCount() != n) {
+            throw new MatrixException(MatrixException.SQUARE);
+        }
+        double[] lu = M.toArray();
+        int[] piv = null;
 
-
-    /// <summary>
-    /// The method implements the Gauss algorithm for LU-decomposition of a square matrix.
-    /// </summary>
-    private void gauss() {
         for (int k = 0, kn = 0; k < n; k++, kn++) {
             // Find pivot.
             int p = k;
@@ -53,6 +55,13 @@ public class Gauss extends AbstractLuDecomposition {
             }
             // Exchange if necessary.
             if (p != k) {
+                if (piv == null) {
+                    piv = new int[n];
+                    for (int i = 0; i < n; ++i) {
+                        piv[i] = i;
+                    }
+                }
+                
                 for (int j = 0, pj = p, kj = k; j < n; ++j, pj += n, kj += n) {
                     double tmp = lu[pj];
                     lu[pj] = lu[kj];
@@ -61,8 +70,6 @@ public class Gauss extends AbstractLuDecomposition {
                 int t = piv[p];
                 piv[p] = piv[k];
                 piv[k] = t;
-
-                pivSign = -pivSign;
             }
             // Compute multipliers and eliminate k-th column.
             double kk = lu[kn + k * n];
@@ -78,5 +85,6 @@ public class Gauss extends AbstractLuDecomposition {
                 }
             }
         }
+        return new LUDecomposition(Matrix.builder(lu).nrows(n).ncolumns(n).build(), piv);
     }
 }

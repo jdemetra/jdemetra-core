@@ -23,6 +23,10 @@ import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.decomposition.Householder;
 import demetra.data.DoubleSeq;
+import jdplus.leastsquares.QRSolution;
+import jdplus.leastsquares.QRSolver;
+import jdplus.math.matrices.decomposition.Householder2;
+import jdplus.math.matrices.decomposition.QRDecomposition;
 
 /**
  *
@@ -44,7 +48,6 @@ public class LeastSquaresDivision {
                 return false;
             }
             int q = n - d + 1;
-            coeff = new double[q];
             Matrix m = Matrix.make(n, q);
             DataBlockIterator columns = m.columnsIterator();
             int c = 0;
@@ -52,10 +55,10 @@ public class LeastSquaresDivision {
                 columns.next().range(c, c + d).copy(D);
                 ++c;
             }
-            Householder qr = new Householder(m);
-            DataBlock E = DataBlock.make(d - 1);
-            qr.leastSquares(N, DataBlock.of(coeff), E);
-            this.err = E.norm2() / d;
+            
+            QRSolution ls = QRSolver.fastLeastSquares(N, m);
+            this.coeff=ls.getB().toArray();
+            this.err = ls.getSsqErr() / d;
             return true;
         } catch (MatrixException error) {
             return false;

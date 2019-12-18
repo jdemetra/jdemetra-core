@@ -10,13 +10,7 @@ import jdplus.linearsystem.internal.QRLinearSystemSolver;
 import jdplus.linearsystem.internal.LUSolver;
 import java.util.Random;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.decomposition.CroutDoolittle;
-import jdplus.math.matrices.decomposition.Gauss;
-import jdplus.math.matrices.decomposition.Householder;
-import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
-import org.junit.Ignore;
-import org.junit.Test;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -30,13 +24,10 @@ public class ILinearSystemSolverTest {
 
     public static void testMethods() {
 
-        QRLinearSystemSolver qr = QRLinearSystemSolver.builder(new Householder.Processor())
-                .normalize(true).build();
-        QRLinearSystemSolver pqr = QRLinearSystemSolver.builder(new HouseholderWithPivoting.Processor())
-                .normalize(true).build();
-        LUSolver igauss = LUSolver.builder(new Gauss())
-                .normalize(true).build();
-        LUSolver icrout = LUSolver.builder(new CroutDoolittle())
+        QRLinearSystemSolver qr = QRLinearSystemSolver.builder().normalize(false).build();
+        QRLinearSystemSolver pqr = QRLinearSystemSolver.builder().normalize(true).build();
+        LUSolver igauss = LUSolver.builder().build();
+        LUSolver icrout = LUSolver.builder().decomposer((A, eps)->CroutDoolittle.decompose(A, eps))
                 .normalize(true).build();
         SparseSystemSolver sparse = new SparseSystemSolver();
         for (int N = 1; N <= 50; ++N) {
