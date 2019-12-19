@@ -47,12 +47,11 @@ public class OlsAlgorithm implements AutoRegressiveEstimation {
         }
         
         DoubleSeq yc = Y.drop(nar, 0);
-        QRSolution rslt = QRSolver.process(yc, M);
+        QRSolution rslt = QRSolver.fastLeastSquares(yc, M);
         if (rslt == null) {
             return false;
         }
-        DoubleSeq c = rslt.getB();
-        a=c.toArray();
+        a = rslt.getB().toArray();
         return true;
     }
 

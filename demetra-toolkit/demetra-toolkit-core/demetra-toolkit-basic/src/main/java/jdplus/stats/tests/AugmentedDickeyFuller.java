@@ -123,7 +123,7 @@ public class AugmentedDickeyFuller {
         int nlast = b.length() - 1;
         double ssq = ls.getSsqErr();
         double val = b.get(nlast);
-        double std = Math.abs(Math.sqrt(ssq / e.length()) / ls.getQr().rawRdiagonal().get(nlast));
+        double std = Math.abs(Math.sqrt(ssq / e.length()) / ls.rawRDiagonal().get(nlast));
         t = val / std;
     }
 

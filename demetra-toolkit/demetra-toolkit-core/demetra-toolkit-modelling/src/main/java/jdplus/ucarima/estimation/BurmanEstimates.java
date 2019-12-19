@@ -33,6 +33,7 @@ import jdplus.ucarima.WienerKolmogorovEstimators;
 import java.util.Arrays;
 import jdplus.arima.estimation.ArimaForecasts;
 import demetra.data.DoubleSeq;
+import jdplus.linearsystem.internal.LUSolver;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.decomposition.LUDecomposition;
 
@@ -549,7 +550,7 @@ public class BurmanEstimates {
             }
         }
 
-        solver = new CroutDoolittle();
+        solver = LUSolver.builder().build();
         solver.decompose(m);
     }
 

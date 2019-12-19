@@ -23,7 +23,7 @@ import jdplus.arima.IArimaModel;
 import jdplus.arima.LinearProcess;
 import jdplus.arima.StationaryTransformation;
 import demetra.design.Development;
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import jdplus.maths.linearfilters.BackFilter;
 import jdplus.maths.linearfilters.FiniteFilter;
 import jdplus.maths.linearfilters.RationalFilter;

@@ -5,13 +5,11 @@
  */
 package jdplus.linearsystem;
 
-import jdplus.linearsystem.internal.SparseSystemSolver;
-import jdplus.linearsystem.internal.QRLinearSystemSolver;
-import jdplus.linearsystem.internal.LUSolver;
 import java.util.Random;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.decomposition.CroutDoolittle;
 import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.Householder2;
 
 /**
  *
@@ -24,23 +22,22 @@ public class ILinearSystemSolverTest {
 
     public static void testMethods() {
 
-        QRLinearSystemSolver qr = QRLinearSystemSolver.builder().normalize(false).build();
-        QRLinearSystemSolver pqr = QRLinearSystemSolver.builder().normalize(true).build();
+        QRLinearSystemSolver qr = QRLinearSystemSolver.builder().decomposer(A->new Householder2().decompose(A)).normalize(false).build();
+        QRLinearSystemSolver pqr = QRLinearSystemSolver.builder().normalize(false).build();
         LUSolver igauss = LUSolver.builder().build();
         LUSolver icrout = LUSolver.builder().decomposer((A, eps)->CroutDoolittle.decompose(A, eps))
-                .normalize(true).build();
-        SparseSystemSolver sparse = new SparseSystemSolver();
+                .normalize(false).build();
+        LUSolver2 sparse = new LUSolver2();
         for (int N = 1; N <= 50; ++N) {
             Matrix M = Matrix.square(N);
             Random rnd = new Random();
             DataBlock x = DataBlock.make(N);
             double[] del = new double[5];
-            for (int K = 0; K < 10000; ++K) {
-                M.set((i,j) -> rnd.nextDouble());
+            for (int K = 0; K < 50000; ++K) {
+                M.set((i,j) -> (j+1)*(i+1)*rnd.nextDouble());
                 x.set(() -> rnd.nextDouble());
                 DataBlock y = DataBlock.make(N);
                 y.product(M.rowsIterator(), x);
-
                 DataBlock tmp = DataBlock.of(y);
                 qr.solve(M, tmp);
                 del[0] += x.distance(tmp);
@@ -58,7 +55,7 @@ public class ILinearSystemSolverTest {
                 del[4] += x.distance(tmp);
             }
             DataBlock q = DataBlock.copyOf(del);
-            q.div(10000);
+            q.div(50000);
             System.out.println(q);
         }
     }

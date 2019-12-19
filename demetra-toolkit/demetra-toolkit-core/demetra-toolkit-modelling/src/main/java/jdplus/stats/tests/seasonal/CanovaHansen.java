@@ -192,7 +192,7 @@ public class CanovaHansen {
         // LL'^-1 * xe2 = L'^-1* L^-1 xe2 = L'^-1*a <-> a=L^-1 xe2 <->La=xe2
         Matrix sig = O.deepClone();
         SymmetricMatrix.lcholesky(sig);
-        LowerTriangularMatrix.rsolve(sig, FF);
+        LowerTriangularMatrix.solveLX(sig, FF);
         // b=L'^-1*a <-> L'b=a <->b'L = a'
         LowerTriangularMatrix.lsolve(sig, FF.transpose());
         double tr = FF.diagonal().sum();
@@ -205,7 +205,7 @@ public class CanovaHansen {
 
         Matrix Lx = SymmetricMatrix.XtX(x);
         SymmetricMatrix.lcholesky(Lx);
-        LowerTriangularMatrix.rsolve(Lx, Lo);
+        LowerTriangularMatrix.solveLX(Lx, Lo);
         LowerTriangularMatrix.lsolve(Lx, Lo.transpose());
 
         Matrix XXt = SymmetricMatrix.XXt(Lo);

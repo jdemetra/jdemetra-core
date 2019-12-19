@@ -124,7 +124,6 @@ public class AutoRegressiveSpectrum {
             }
 
             QRSolution ls = QRSolver.fastLeastSquares(DataBlock.of(all, nar, n, 1), M);
-            Householder qr = new Householder(M, false, Constants.getEpsilon());
             ar = new double[nar];
             DoubleSeq c = ls.getB();
             DataBlock D=DataBlock.of(c);

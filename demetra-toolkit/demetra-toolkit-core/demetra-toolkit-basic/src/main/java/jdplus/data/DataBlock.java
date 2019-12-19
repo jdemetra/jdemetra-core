@@ -910,6 +910,22 @@ public final class DataBlock implements DoubleSeq.Mutable {
             data[i] = tmp;
         }
     }
+    
+    public void swap(int i, int j){
+        if (i == j)
+            return;
+        int xi, xj;
+        if (inc ==1){
+            xi=beg+i;
+            xj=beg+j;
+        }else{
+            xi=beg+i*inc;
+            xj=beg+j*inc;
+        }
+        double tmp = data[xj];
+        data[xj] = data[xi];
+        data[xi] = tmp;
+    }
 
     /**
      * Computes the product of a vector by a matrix and stores the result in

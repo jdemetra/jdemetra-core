@@ -20,6 +20,7 @@ import demetra.data.DataSets;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
+import jdplus.data.DataBlock;
 
 /**
  *
@@ -48,7 +49,6 @@ public class OlsTest {
         LeastSquaresResults rslts = Ols.compute(model);
 //        System.out.println("Longley");
 //        System.out.println(rslts);
-        
         assertEquals(Math.abs(rslts.Ttest(0).getValue()), Math.sqrt(rslts.Ftest(0, 1).getValue()), 1e-9 );
         assertEquals(rslts.Ftest().getValue(), rslts.Ftest(1, model.getVariablesCount()-1).getValue(), 1e-9 );
     }

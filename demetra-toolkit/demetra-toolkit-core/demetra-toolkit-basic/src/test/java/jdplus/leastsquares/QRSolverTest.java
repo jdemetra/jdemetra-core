@@ -3,15 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.leastsquares.internal;
+package jdplus.leastsquares;
 
 import jdplus.data.DataBlock;
 import demetra.data.DataSets;
 import static demetra.data.DataSets.lre;
 import jdplus.math.matrices.Matrix;
 import demetra.data.DoubleSeq;
-import jdplus.leastsquares.QRSolution;
-import jdplus.leastsquares.QRSolver;
 
 /**
  *
@@ -19,7 +17,7 @@ import jdplus.leastsquares.QRSolver;
  */
 public class QRSolverTest {
 
-    static QRSolver.Processor solver = (y, X)->QRSolver.fastLeastSquares(y, X);
+    static QRSolver.Processor solver = (y, X)->QRSolver.robustLeastSquares(y, X);
     public QRSolverTest() {
     }
 

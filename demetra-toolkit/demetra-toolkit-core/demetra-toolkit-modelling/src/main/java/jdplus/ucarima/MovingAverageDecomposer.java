@@ -58,9 +58,9 @@ public class MovingAverageDecomposer extends SimpleModelDecomposer {
             r = r.times(cq / (cr * cp));
             BackFilter fr = new BackFilter(r);
             // compute the remainder:
-            SymmetricFilter sq = SymmetricFilter.fromFilter(new BackFilter(q));
-            SymmetricFilter sr = SymmetricFilter.fromFilter(new BackFilter(r));
-            SymmetricFilter spr = SymmetricFilter.fromFilter(AR.times(fr));
+            SymmetricFilter sq = SymmetricFilter.convolutionOf(new BackFilter(q));
+            SymmetricFilter sr = SymmetricFilter.convolutionOf(new BackFilter(r));
+            SymmetricFilter spr = SymmetricFilter.convolutionOf(AR.times(fr));
             SymmetricFilter ss = spr.minus(sq);
 
             signal = new ArimaModel(BackFilter.ONE, BackFilter.ONE, sr);

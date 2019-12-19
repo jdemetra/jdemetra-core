@@ -215,7 +215,7 @@ public class LocalPolynomialFilters {
         QRDecomposition qr = hous.decompose(Z);
         double[] z = new double[Z.getRowsCount()];
         z[0] = 1;
-        UpperTriangularMatrix.solveUx(qr.rawR(), DataBlock.of(z, 0, d + 1, 1));
+        UpperTriangularMatrix.solvexU(qr.rawR(), DataBlock.of(z, 0, d + 1, 1));
         qr.applyQ(z);
         double[] w = new double[h + 1];
         for (int i = 0; i <= h; ++i) {

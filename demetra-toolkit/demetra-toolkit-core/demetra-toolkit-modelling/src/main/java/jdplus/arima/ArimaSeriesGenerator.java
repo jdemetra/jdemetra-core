@@ -223,7 +223,7 @@ public final class ArimaSeriesGenerator {
             for (int i = 0; i < x.length; ++i) {
                 x[i] = distribution.random(rng);
             }
-            LowerTriangularMatrix.lmul(ac, DataBlock.of(x));
+            LowerTriangularMatrix.xL(ac, DataBlock.of(x));
             System.arraycopy(x, 0, y, 0, p);
             if (q > 0) {
                 System.arraycopy(x, p, e, 0, q);

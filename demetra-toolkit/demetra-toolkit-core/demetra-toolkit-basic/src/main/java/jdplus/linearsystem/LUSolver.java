@@ -14,18 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jdplus.linearsystem.internal;
+package jdplus.linearsystem;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
-import jdplus.math.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import demetra.math.Constants;
 import jdplus.data.normalizer.SafeNormalizer;
-import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.decomposition.LUDecomposition;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.decomposition.Gauss;
@@ -86,24 +83,20 @@ public class LUSolver implements LinearSystemSolver {
     public void solve(Matrix A, DataBlock b) {
         // we normalize b
         Matrix An;
-        double[] factor=null;
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
             SafeNormalizer sn=new SafeNormalizer();
-            factor=new double[A.getRowsCount()];
             int i=0;
             while (rows.hasNext()) {
-                factor[i++]=sn.normalize(rows.next());
+                double factor=sn.normalize(rows.next());
+                b.mul(i++, factor);
             }
         } else {
             An = A;
         }
         LUDecomposition lu = decomposer.decompose(An, eps);
         lu.solve(b);
-        if (factor != null){
-            b.div(DataBlock.of(factor));
-        }
     }
 
     @Override

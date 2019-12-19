@@ -127,14 +127,14 @@ public class WienerKolmogorovEstimators {
         // denom is Q(B)Ps'(B)
         BackFilter num = s.getMa().times(nar);
         // num is Qs(B)P'(B)Dn(B)
-        SymmetricFilter c = SymmetricFilter.fromFilter(num);
+        SymmetricFilter c = SymmetricFilter.convolutionOf(num);
         double svar = s.getInnovationVariance(), mvar = m_ucm.getModel().getInnovationVariance();
         c = c.times(svar / mvar);
         BackFilter gf = c.decompose(denom);
 
         RationalBackFilter rb = new RationalBackFilter(gf, denom, 0);
 
-        RationalFilter f = new RationalFilter(rb, rb.mirror(), c, SymmetricFilter.fromFilter(denom));
+        RationalFilter f = new RationalFilter(rb, rb.mirror(), c, SymmetricFilter.convolutionOf(denom));
         RationalFilter mf = new RationalFilter(s.getMa().times(svar / mvar), s.getAr(), num.mirror(), denom.mirror());
         LinearProcess m = new LinearProcess(mf, mvar);
 

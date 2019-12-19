@@ -28,9 +28,7 @@ public class OlsComputer implements jdplus.linearmodel.Ols.Processor {
             DoubleSeq y = model.getY();
             Matrix x = model.variables();
             QRSolution solution = QRSolver.robustLeastSquares(y, x);
-            Matrix R = solution.getQr().rawR();
-            Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
-                    .inverse(R));
+            Matrix bvar = solution.unscaledCovariance();
             return LeastSquaresResults.builder(y, x)
                     .mean(model.isMeanCorrection())
                     .estimation(solution.getB(), bvar)
@@ -41,5 +39,4 @@ public class OlsComputer implements jdplus.linearmodel.Ols.Processor {
             throw new EcoException(EcoException.OLS_FAILED);
         }
     }
-
 }

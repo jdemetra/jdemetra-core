@@ -19,6 +19,7 @@ package jdplus.math.matrices.decomposition;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
 import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import jdplus.data.LogSign;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.Matrix;
@@ -37,9 +38,10 @@ import jdplus.math.matrices.UpperTriangularMatrix;
 @Development(status = Development.Status.Alpha)
 
 public class LUDecomposition {
-    
+
     @FunctionalInterface
-    public static interface Decomposer{
+    public static interface Decomposer {
+
         LUDecomposition decompose(Matrix A, double eps);
     }
 
@@ -124,57 +126,33 @@ public class LUDecomposition {
         if (pivot != null) {
             swap(b);
         }
-        UpperTriangularMatrix.solveUx(lu, b);
         LowerTriangularMatrix.solveL1x(lu, b);
+        UpperTriangularMatrix.solveUx(lu, b);
     }
 
     public void solve(Matrix B) {
         if (pivot != null) {
             swap(B);
         }
-        UpperTriangularMatrix.solveUX(lu, B);
         LowerTriangularMatrix.solveL1X(lu, B);
+        UpperTriangularMatrix.solveUX(lu, B);
     }
 
     private void swap(DataBlock b) {
-        double[] pb = b.getStorage();
-        int start = b.getStartPosition();
-        int inc = b.getIncrement();
-        if (inc == 1) {
-            for (int i = 0; i < pivot.length; ++i) {
-                int ip = pivot[i];
-                if (ip != i) {
-                    int j = start + i, jp = start + ip;
-                    double tmp = pb[j];
-                    pb[j] = pb[jp];
-                    pb[jp] = tmp;
-                }
-            }
-        } else {
-            for (int i = 0; i < pivot.length; ++i) {
-                int ip = pivot[i];
-                if (ip != i) {
-                    int j = start + i * inc, jp = start + ip * inc;
-                    double tmp = pb[j];
-                    pb[j] = pb[jp];
-                    pb[jp] = tmp;
-                }
-            }
+        double[] tmp = b.toArray();
+        for (int i = 0; i < pivot.length; ++i) {
+            b.set(i, tmp[pivot[i]]);
         }
     }
 
     private void swap(Matrix B) {
-        double[] pb = B.getStorage();
-        int start = B.getStartPosition(), lda = B.getColumnIncrement();
-        int n = B.getColumnsCount();
-        for (int i = 0, rmax = start + n * lda; i < pivot.length; ++i, ++rmax) {
-            int ip = pivot[i];
-            if (ip != i) {
-                for (int j = start + i, jp = start + ip; j < rmax; j += lda, jp += lda) {
-                    double tmp = pb[j];
-                    pb[j] = pb[jp];
-                    pb[jp] = tmp;
-                }
+        double[] tmp = new double[lu.getRowsCount()];
+        DataBlockIterator cols = B.columnsIterator();
+        while (cols.hasNext()) {
+            DataBlock b = cols.next();
+            b.copyTo(tmp, 0);
+            for (int i = 0; i < pivot.length; ++i) {
+                b.set(i, tmp[pivot[i]]);
             }
         }
     }

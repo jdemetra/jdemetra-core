@@ -28,7 +28,6 @@ import jdplus.sarima.SarimaModel;
 import demetra.arima.SarmaSpecification;
 import demetra.data.DoubleSeq;
 import jdplus.leastsquares.QRSolution;
-import jdplus.leastsquares.internal.DefaultQRSolver;
 
 /**
  * The Hannan-Rissanen procedure is performed as in TRAMO. See
@@ -126,8 +125,7 @@ public class HannanRissanen {
     }
     
     private double[] ls(Matrix mat, double[] y, boolean bbic) {
-        QRSolver solver = new DefaultQRSolver();
-        QRSolution rslt = solver.solve(DataBlock.of(y), mat);
+        QRSolution rslt = QRSolver.fastLeastSquares(DataBlock.of(y), mat);
         DoubleSeq pi = rslt.getB();
         int n = y.length, m = pi.count(x -> x != 0);
         if (bbic) {

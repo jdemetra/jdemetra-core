@@ -18,7 +18,7 @@
 package jdplus.ucarima;
 
 import demetra.design.Development;
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import jdplus.math.ComplexUtility;
 import jdplus.maths.polynomials.Polynomial;
 import java.util.ArrayList;

@@ -54,17 +54,21 @@ class Reflector {
     }
 
     void larfg() {
-        int m = n - 1;
-        if (m <= 0) {
+        if (n == 0)
             return;
-        }
         double x0 = x0();
+        int m = n - 1;
         DataPointer v = v(), x=x();
-        if (v.test(m, w->w == 0)) {
-            alpha = Math.abs(x0);
-            beta = 0;
-            x0(1);
-        } else {
+//        if (n == 1){
+//            alpha = Math.abs(x0);
+//            beta = 0;
+//            return;
+//        }
+//        if (v.test(m, w->w == 0)) {
+//            alpha = Math.abs(x0);
+//            beta = 0;
+//            x0(1);
+//        } else {
             double nrm = x.norm2(n);
 //            double nrm = LapackUtility.lapy2(x0, vnrm);
             double eps = Constants.getEpsilon();
@@ -84,15 +88,14 @@ class Reflector {
             }
             for (int j = 0; j < k; ++j) {
                 nrm *= safemin;
-                v.mul(m, 1 / nrm);
             }
             beta = nrm / (nrm + x0);
-            v().div(m, nrm);
+            v.div(m, nrm);
             x0(1 + x0 / nrm);
             alpha = -nrm;
 
             // beta = -+ || x ||
-        }
+//        }
     }
 
     void lapply(Matrix M) {

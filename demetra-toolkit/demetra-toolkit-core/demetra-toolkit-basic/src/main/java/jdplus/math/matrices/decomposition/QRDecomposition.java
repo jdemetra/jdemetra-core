@@ -41,9 +41,10 @@ public class QRDecomposition {
     private final Matrix qr;
     private final double[] beta;
     private final int[] pivot;
-    
+
     @FunctionalInterface
-    public static interface Decomposer{
+    public static interface Decomposer {
+
         QRDecomposition decompose(Matrix A);
     }
 
@@ -65,16 +66,18 @@ public class QRDecomposition {
         if (m != b.length) {
             throw new MatrixException(MatrixException.DIM);
         }
-        for (int k = n - 1, ik = (m + 1) * n; k >= 0; --k, ik -= m + 1) {
-            double s = b[k] / beta[k];
-            for (int i = k + 1, j = ik + 1; i < m; ++i, ++j) {
-                s += p[j] * b[i];
-            }
-            if (s != 0) {
-                b[k] -= s;
-                s *= -beta[k];
+        for (int k = n - 1, ik = (m + 1) * (n - 1); k >= 0; --k, ik -= m + 1) {
+            if (beta[k] != 0) {
+                double s = b[k] / beta[k];
                 for (int i = k + 1, j = ik + 1; i < m; ++i, ++j) {
-                    b[i] += s * p[j];
+                    s += p[j] * b[i];
+                }
+                if (s != 0) {
+                    b[k] -= s;
+                    s *= -beta[k];
+                    for (int i = k + 1, j = ik + 1; i < m; ++i, ++j) {
+                        b[i] += s * p[j];
+                    }
                 }
             }
         }
@@ -93,15 +96,17 @@ public class QRDecomposition {
             throw new MatrixException(MatrixException.DIM);
         }
         for (int k = 0, ik = 0; k < n; ++k, ik += m + 1) {
-            double s = b[k] / beta[k];
-            for (int i = k + 1, j = ik + 1; i < m; ++i, ++j) {
-                s += b[i] * p[j];
-            }
-            if (s != 0) {
-                b[k] -= s;
-                s *= -beta[k];
+            if (beta[k] != 0) {
+                double s = b[k] / beta[k];
                 for (int i = k + 1, j = ik + 1; i < m; ++i, ++j) {
-                    b[i] += s * p[j];
+                    s += b[i] * p[j];
+                }
+                if (s != 0) {
+                    b[k] -= s;
+                    s *= -beta[k];
+                    for (int i = k + 1, j = ik + 1; i < m; ++i, ++j) {
+                        b[i] += s * p[j];
+                    }
                 }
             }
         }
@@ -121,11 +126,11 @@ public class QRDecomposition {
         UpperTriangularMatrix.toUpper(R);
         return R;
     }
-    
-    public int[] pivot(){
+
+    public int[] pivot() {
         return pivot;
     }
- 
+
     public DoubleSeq rawRdiagonal() {
         return qr.diagonal();
     }

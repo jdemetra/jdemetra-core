@@ -17,15 +17,12 @@
 package jdplus.linearsystem;
 
 
-import jdplus.linearsystem.internal.LUSolver;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import jdplus.data.DataBlock;
 import demetra.design.Algorithm;
 import demetra.design.Development;
-import jdplus.linearsystem.internal.QRLinearSystemSolver;
 import jdplus.math.matrices.MatrixException;
-import jdplus.math.matrices.decomposition.CroutDoolittle;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -81,5 +78,5 @@ class LS_Factory{
     static AtomicReference<Supplier<LinearSystemSolver>> FAST_FACTORY = new AtomicReference<>(
             ()->LUSolver.builder().build());
     static AtomicReference<Supplier<LinearSystemSolver>> ROBUST_FACTORY = new AtomicReference<>(
-            ()->QRLinearSystemSolver.builder().build());
+            ()->new LUSolver2(1e-13));
 }

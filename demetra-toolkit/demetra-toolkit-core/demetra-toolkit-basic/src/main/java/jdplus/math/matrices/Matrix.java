@@ -132,11 +132,13 @@ public final class Matrix implements MatrixType.Mutable {
     }
 
     public static Matrix internalColumnOf(DataBlock x) {
-        if (x.getIncrement() != 1)
+        if (x.getIncrement() != 1) {
             throw new MatrixException(MatrixException.DIM);
-        int start=x.getStartPosition(), n=x.length();
-        return new Matrix(x.getStorage(), start+n, start, n, 1);
+        }
+        int start = x.getStartPosition(), n = x.length();
+        return new Matrix(x.getStorage(), start + n, start, n, 1);
     }
+
     /**
      * Creates a new instance of SubMatrix
      *
@@ -637,6 +639,21 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
+    public void chs() {
+        if (isFull()) {
+            for (int i = 0; i < storage.length; ++i) {
+                storage[i] = -storage[i];
+            }
+        } else {
+            int end = start + ncols * lda;
+            for (int i0 = start, i1 = start + nrows; i0 < end; i0 += lda, i1 += lda) {
+                for (int k = i0; k < i1; ++k) {
+                    storage[k] = -storage[k];
+                }
+            }
+        }
+    }
+
     public void sub(Matrix M) {
         if (nrows != M.nrows || ncols != M.ncols) {
             throw new MatrixException(MatrixException.DIM);
@@ -740,6 +757,7 @@ public final class Matrix implements MatrixType.Mutable {
      * @param X
      * @param Y
      */
+    @Deprecated
     public final void addXY(final Matrix X, final Matrix Y) {
         // Raw gaxpy implementation
         int cmax = X.storage.length, rnrows = Y.nrows, nmax = storage.length;
@@ -767,6 +785,7 @@ public final class Matrix implements MatrixType.Mutable {
      * @param a Scalar
      * @param x Array. Length equal to the number of rows of this matrix
      */
+    @Deprecated
     public void addXaXt(final double a, final DataBlock x) {
         if (a == 0) {
             return;
@@ -804,6 +823,7 @@ public final class Matrix implements MatrixType.Mutable {
             cols.next().addAY(alpha, ycols.next());
         }
     }
+
     public void addAYt(double alpha, Matrix Y) {
         if (alpha == 0) {
             return;
@@ -815,7 +835,8 @@ public final class Matrix implements MatrixType.Mutable {
             cols.next().addAY(alpha, ycols.next());
         }
     }
-    
+
+    @Deprecated
     public void addXYt(final DataBlock x, final DataBlock y) {
         double[] px = x.getStorage(), py = y.getStorage();
         int xinc = x.getIncrement(), yinc = y.getIncrement();
@@ -860,11 +881,11 @@ public final class Matrix implements MatrixType.Mutable {
     }
 
     public static double determinant(Matrix X) {
-        try{
-        LogSign ls = logDeterminant(X);
-        double val = Math.exp(ls.getValue());
-        return ls.isPositive() ? val : -val;
-        }catch (MatrixException err){
+        try {
+            LogSign ls = logDeterminant(X);
+            double val = Math.exp(ls.getValue());
+            return ls.isPositive() ? val : -val;
+        } catch (MatrixException err) {
             return 0; // singular matrix
         }
     }
@@ -955,6 +976,7 @@ public final class Matrix implements MatrixType.Mutable {
 
     //</editor-fold>
     //</editor-fold>
+    @Deprecated
     public Matrix times(Matrix B) {
         Matrix AB = new Matrix(nrows, B.ncols);
         AB.addXY(this, B);
@@ -1032,10 +1054,10 @@ public final class Matrix implements MatrixType.Mutable {
     }
 
     //<editor-fold defaultstate="collapsed" desc="matrix windows">
-
     public MatrixWindow all() {
         return new MatrixWindow(storage, lda, start, nrows, ncols);
     }
+
     /**
      * Top-reader sub-matrix
      *
@@ -1128,7 +1150,6 @@ public final class Matrix implements MatrixType.Mutable {
     }
 
     //</editor-fold>  
-
     public String toString(String fmt) {
         return MatrixType.format(this, fmt);
     }

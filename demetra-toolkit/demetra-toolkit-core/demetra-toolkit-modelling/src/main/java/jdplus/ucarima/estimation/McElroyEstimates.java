@@ -158,8 +158,8 @@ public class McElroyEstimates {
             // L X = I
             // X = L' M or M L = X'
             Matrix I = Matrix.identity(L.getColumnsCount());
-            LowerTriangularMatrix.rsolve(L, I);
-            LowerTriangularMatrix.lsolve(L, I);
+            LowerTriangularMatrix.solveXL(L, I);
+            LowerTriangularMatrix.solveLX(L, I);
             M_[cmp] = I;
         }
         return M_[cmp];
@@ -179,7 +179,7 @@ public class McElroyEstimates {
             Matrix KK = SymmetricMatrix.XtX(K);
             // compute X=L^-1*K'K
             // LX = K'K 
-            LowerTriangularMatrix.rsolve(L, KK);
+            LowerTriangularMatrix.solveLX(L, KK);
             // compute L'^-1 * X = F or L'F = X or F' L = X' 
             LowerTriangularMatrix.lsolve(L, KK.transpose());
 
@@ -260,8 +260,8 @@ public class McElroyEstimates {
         // triangularize by means of Givens rotations
         ElementaryTransformations.fastGivensTriangularize(Q);
         Matrix L = Q.extract(0, n, 0, n).deepClone();
-        LowerTriangularMatrix.rsolve(L, DataBlock.of(z));
-        LowerTriangularMatrix.lsolve(L, DataBlock.of(z));
+        LowerTriangularMatrix.solveLx(L, DataBlock.of(z));
+        LowerTriangularMatrix.solvexL(L, DataBlock.of(z));
         L_[cmp] = L;
         cmps_[cmp] = z;
         // computes M^-1, 
@@ -343,7 +343,7 @@ public class McElroyEstimates {
             for (int i = 1; i <= ds.degree(); ++i) {
                 S.subDiagonal(-i).drop(ds.degree() - i, 0).set(ds.get(i));
             }
-            LowerTriangularMatrix.rsolve(S, D);
+            LowerTriangularMatrix.solveLX(S, D);
             D = D.extract(ds.degree(), D.getRowsCount()-ds.degree(), 0, n).deepClone();
         } else {
             D = W;

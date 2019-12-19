@@ -27,7 +27,7 @@ public class HouseholderReflectionTest {
         DataBlock z = DataBlock.of(X);
         HouseholderReflection hr = HouseholderReflection.of(z, false);
         hr.transform(z);
-        assertEquals(hr.getAlpha(), Math.sqrt(55), 1e-12);
+        assertEquals(Math.abs(hr.getAlpha()), Math.sqrt(55), 1e-12);
     }
     
 }

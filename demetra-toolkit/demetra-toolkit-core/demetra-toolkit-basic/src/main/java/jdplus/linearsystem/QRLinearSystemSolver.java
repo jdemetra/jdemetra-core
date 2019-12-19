@@ -14,18 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jdplus.linearsystem.internal;
+package jdplus.linearsystem;
 
-import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
 import jdplus.math.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
 import jdplus.data.normalizer.SafeNormalizer;
-import jdplus.leastsquares.QRSolver;
 import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
@@ -88,22 +85,21 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
     public void solve(Matrix A, DataBlock b) {
         // we normalize b
         Matrix An;
-        double[] factor = null;
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
             SafeNormalizer sn = new SafeNormalizer();
-            factor = new double[A.getRowsCount()];
             int i = 0;
             while (rows.hasNext()) {
-                factor[i++] = sn.normalize(rows.next());
+                double fac = sn.normalize(rows.next());
+                b.mul(i++, fac);
             }
         } else {
             An = A;
         }
-        QRDecomposition qr = decomposer.decompose(A);
-        int rank = QRSolver.rankOfUpperTriangularMatrix(qr.rawR(), eps);
-        if (rank != A.getRowsCount()) {
+        QRDecomposition qr = decomposer.decompose(An);
+        int rank = UpperTriangularMatrix.rank(qr.rawR(), eps);
+        if (rank != An.getRowsCount()) {
             throw new MatrixException(MatrixException.SINGULAR);
         }
         double[] y = b.toArray();
@@ -117,9 +113,6 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
             for (int i = 0; i < rank; ++i) {
                 b.set(pivot[i], y[i]);
             }
-        }
-        if (factor != null) {
-            b.div(DataBlock.of(factor));
         }
     }
 
@@ -141,7 +134,7 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
             An = A;
         }
         QRDecomposition qr = decomposer.decompose(A);
-        int rank = QRSolver.rankOfUpperTriangularMatrix(qr.rawR(), eps);
+        int rank = UpperTriangularMatrix.rank(qr.rawR(), eps);
         if (rank != A.getRowsCount()) {
             throw new MatrixException(MatrixException.SINGULAR);
         }

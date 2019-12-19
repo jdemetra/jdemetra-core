@@ -5,6 +5,9 @@
  */
 package jdplus.math.matrices;
 
+import jdplus.math.matrices.lapack.LAIC1;
+import demetra.data.DoubleSeqCursor;
+import demetra.math.Constants;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.LogSign;
@@ -21,6 +24,42 @@ public class UpperTriangularMatrix {
         M.set((r, c) -> (r < c) ? 0 : rng.nextDouble());
     }
 
+    public int rank(Matrix U, double rcond) {
+        DoubleSeqCursor.OnMutable cursor = U.diagonal().cursor();
+        double smax = Math.abs(cursor.getAndNext()), smin = smax;
+        if (smax == 0) {
+            return 0;
+        }
+        int rank = 1;
+        int n = U.getRowsCount();
+        double[] xmin = new double[n], xmax = new double[n];
+        xmin[0] = 1;
+        xmax[0] = 1;
+        LAIC1 cmax = new LAIC1(), cmin = new LAIC1();
+        CPointer pxmax = new CPointer(xmax, 0), pxmin = new CPointer(xmin, 0);
+        CPointer pw = new CPointer(U.getStorage(), U.getStartPosition());
+        while (rank < n) {
+            pw.move(U.getColumnIncrement());
+            double urr = cursor.getAndNext();
+            cmin.minSingularValue(rank, pxmin, smin, pw, urr);
+            cmax.maxSingularValue(rank, pxmax, smax, pw, urr);
+            double sminpr = cmin.getSestpr();
+            double smaxpr = cmax.getSestpr();
+            if (smaxpr * rcond > sminpr) {
+                break;
+            }
+            for (int i = 0; i < rank - 1; ++i) {
+                xmin[i] *= cmin.getS();
+                xmax[i] *= cmax.getS();
+            }
+            xmin[rank] = cmin.getC();
+            xmax[rank] = cmax.getC();
+            smin = sminpr;
+            smax = smaxpr;
+            ++rank;
+        }
+        return rank;
+    }
     /**
      * y := U*x or x = iU*y
      *
@@ -458,3 +497,5 @@ public class UpperTriangularMatrix {
     }
 
 }
+
+

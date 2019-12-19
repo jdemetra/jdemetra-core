@@ -48,9 +48,7 @@ public class Gls {
         LowerTriangularMatrix.solveLX(L, xl);
 
         QRSolution solution = QRSolver.robustLeastSquares(yl, xl);
-        Matrix R = solution.getQr().rawR();
-        Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
-                .inverse(R));
+         Matrix bvar = solution.unscaledCovariance();
         return LeastSquaresResults.builder(yl, xl)
                 .mean(model.isMeanCorrection())
                 .estimation(solution.getB(), bvar)

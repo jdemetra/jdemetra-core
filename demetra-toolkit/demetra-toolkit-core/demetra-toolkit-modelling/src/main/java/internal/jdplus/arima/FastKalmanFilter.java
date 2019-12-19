@@ -29,8 +29,6 @@ import jdplus.leastsquares.QRSolver;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
 import jdplus.leastsquares.QRSolution;
-import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.math.matrices.UpperTriangularMatrix;
 
 /**
  * The FastKalmanFilter class provides fast computation of Regression models
@@ -442,15 +440,13 @@ public class FastKalmanFilter {
             xrows.next();
         }
 
-        QRSolution qr = QRSolver.process(DataBlock.of(yl), xl);
-        Matrix R = qr.getR();
+        QRSolution qr = QRSolver.fastLeastSquares(DataBlock.of(yl), xl);
         double ssqerr = qr.getSsqErr();
-        Matrix u = UpperTriangularMatrix.inverse(R);
-        Matrix bvar = SymmetricMatrix.UUt(u);
+        Matrix bvar = qr.unscaledCovariance();
 
         double ldet = det.getLogDeterminant();
         if (ao != null && !ao.isEmpty()) {
-            DataBlock rdiag = R.diagonal();
+            DoubleSeq rdiag = qr.rawRDiagonal();
             n -= ao.getLength();
             for (int i = 0; i < ao.getLength(); ++i) {
                 ldet += 2 * Math.log(Math.abs(rdiag.get(ao.get(i))));
