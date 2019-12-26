@@ -19,10 +19,10 @@ package jdplus.ucarima;
 import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.linearfilters.SymmetricFrequencyResponse;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.SymmetricFrequencyResponse;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.Matrix;
 

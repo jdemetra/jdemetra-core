@@ -551,6 +551,29 @@ public final class Matrix implements MatrixType.Mutable {
     }
 
     /**
+     * Return the sum of the squares of all the cells of the matrix
+     *
+     * @return
+     */
+    public double ssq() {
+        if (isEmpty()) {
+            return 0;
+        }
+        double s = 0;
+        if (isFull()) {
+            for (int i = 0; i < storage.length; ++i) {
+                s += storage[i]*storage[i];
+            }
+        } else {
+            DataBlockIterator cols = columnsIterator();
+            while (cols.hasNext()) {
+                s += cols.next().ssq();
+            }
+        }
+        return s;
+    }
+
+    /**
      *
      * @param row
      * @param col
@@ -793,10 +816,9 @@ public final class Matrix implements MatrixType.Mutable {
         double[] px = x.getStorage();
         int xinc = x.getIncrement();
         int x0 = x.getStartPosition(), x1 = x.getEndPosition();
-        int nmax = start + (lda + 1) * (nrows - 1);
 
         // Raw gaxpy implementation
-        for (int pos = start, ypos = x0; pos < nmax; ypos += xinc, pos += lda) {
+        for (int pos = start, ypos = x0; ypos != x1; ypos += xinc, pos += lda) {
             double yc = a * px[ypos];
             if (yc != 0) {
                 if (xinc == 1) {

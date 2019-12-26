@@ -16,7 +16,6 @@ import jdplus.math.matrices.SymmetricMatrix;
 import demetra.timeseries.regression.PeriodicDummies;
 import jdplus.stats.RobustCovarianceComputer;
 import jdplus.modelling.regression.PeriodicDummiesFactory;
-import jdplus.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.Matrix;
 
@@ -193,8 +192,8 @@ public class CanovaHansen {
         Matrix sig = O.deepClone();
         SymmetricMatrix.lcholesky(sig);
         LowerTriangularMatrix.solveLX(sig, FF);
-        // b=L'^-1*a <-> L'b=a <->b'L = a'
-        LowerTriangularMatrix.lsolve(sig, FF.transpose());
+        // b=L'^-1*a <-> L'b=a 
+        LowerTriangularMatrix.solveLtX(sig, FF);
         double tr = FF.diagonal().sum();
         return tr / (n * n);
     }
@@ -206,7 +205,7 @@ public class CanovaHansen {
         Matrix Lx = SymmetricMatrix.XtX(x);
         SymmetricMatrix.lcholesky(Lx);
         LowerTriangularMatrix.solveLX(Lx, Lo);
-        LowerTriangularMatrix.lsolve(Lx, Lo.transpose());
+        LowerTriangularMatrix.solveLtX(Lx, Lo);
 
         Matrix XXt = SymmetricMatrix.XXt(Lo);
         XXt.mul(xe.getRowsCount());

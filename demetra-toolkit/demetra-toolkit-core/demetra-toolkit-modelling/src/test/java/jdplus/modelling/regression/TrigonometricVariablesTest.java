@@ -20,9 +20,10 @@ import demetra.timeseries.regression.TrigonometricVariables;
 import jdplus.modelling.regression.Regression;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
+import jdplus.data.DataBlockIterator;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import jdplus.math.matrices.lapack.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -37,9 +38,11 @@ public class TrigonometricVariablesTest {
     public void testMonthly() {
         TrigonometricVariables vars = TrigonometricVariables.regular(12);
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2017, 8), 180);
-        FastMatrix M = Regression.matrix(domain, vars);
+        Matrix M = Regression.matrix(domain, vars);
         //System.out.println(M);
-        assertTrue(M.columnList().stream().allMatch(col->Math.abs(col.sum())<1e-6));
+        DataBlockIterator cols = M.columnsIterator();
+        while (cols.hasNext())
+            assertTrue(Math.abs(cols.next().sum())<1e-6);
     }
     
 }

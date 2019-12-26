@@ -19,10 +19,10 @@ package jdplus.arima;
 import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.math.Complex;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.maths.polynomials.UnitRootsSolver;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.polynomials.Polynomial;
+import jdplus.math.polynomials.UnitRootsSolver;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**

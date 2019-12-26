@@ -19,7 +19,7 @@ package jdplus.sarima.estimation;
 import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.linearfilters.BackFilter;
+import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.matrices.Matrix;
 import demetra.design.BuilderPattern;
 import jdplus.leastsquares.QRSolver;

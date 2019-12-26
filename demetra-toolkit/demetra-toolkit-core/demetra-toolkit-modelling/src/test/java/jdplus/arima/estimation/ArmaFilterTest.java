@@ -55,18 +55,6 @@ public class ArmaFilterTest {
         filter.apply(data, s);
         assertEquals(ldet, filter.getLogDeterminant(), 1e-8);
         assertEquals(ssq, s.ssq(), 1e-6);
-        filter = ArmaFilter.ljungBox();
-        m = filter.prepare((IArimaModel) airline.stationaryTransformation().getStationaryModel(), data.length());
-        s = DataBlock.make(m);
-        filter.apply(data, s);
-        assertEquals(ldet, filter.getLogDeterminant(), 1e-8);
-        assertEquals(ssq, s.ssq(), 1e-6);
-        filter = ArmaFilter.modifiedLjungBox();
-        m = filter.prepare((IArimaModel) airline.stationaryTransformation().getStationaryModel(), data.length());
-        s = DataBlock.make(m);
-        filter.apply(data, s);
-        assertEquals(ldet, filter.getLogDeterminant(), 1e-8);
-        assertEquals(ssq, s.ssq(), 1e-6);
     }
 
     @Test
@@ -77,18 +65,6 @@ public class ArmaFilterTest {
         filter.apply(data, s);
         double ldet = filter.getLogDeterminant(), ssq = s.ssq();
         filter = ArmaFilter.kalman();
-        m = filter.prepare((IArimaModel) arima.stationaryTransformation().getStationaryModel(), data.length());
-        s = DataBlock.make(m);
-        filter.apply(data, s);
-        assertEquals(ldet, filter.getLogDeterminant(), 1e-8);
-        assertEquals(ssq, s.ssq(), 1e-6);
-        filter = ArmaFilter.ljungBox();
-        m = filter.prepare((IArimaModel) arima.stationaryTransformation().getStationaryModel(), data.length());
-        s = DataBlock.make(m);
-        filter.apply(data, s);
-        assertEquals(ldet, filter.getLogDeterminant(), 1e-8);
-        assertEquals(ssq, s.ssq(), 1e-6);
-        filter = ArmaFilter.modifiedLjungBox();
         m = filter.prepare((IArimaModel) arima.stationaryTransformation().getStationaryModel(), data.length());
         s = DataBlock.make(m);
         filter.apply(data, s);
@@ -122,25 +98,6 @@ public class ArmaFilterTest {
             System.out.println(filter.getClass().getName());
             System.out.println(t1 - t0);
             t0 = System.currentTimeMillis();
-            filter = ArmaFilter.ljungBox();
-            for (int i = 0; i < K; ++i) {
-                int m = filter.prepare((IArimaModel) model.stationaryTransformation().getStationaryModel(), data.length());
-                DataBlock s = DataBlock.make(m);
-                filter.apply(data, s);
-            }
-            t1 = System.currentTimeMillis();
-            System.out.println(filter.getClass().getName());
-            System.out.println(t1 - t0);
-            t0 = System.currentTimeMillis();
-            filter = ArmaFilter.modifiedLjungBox();
-            for (int i = 0; i < K; ++i) {
-                int m = filter.prepare((IArimaModel) model.stationaryTransformation().getStationaryModel(), data.length());
-                DataBlock s = DataBlock.make(m);
-                filter.apply(data, s);
-            }
-            t1 = System.currentTimeMillis();
-            System.out.println(filter.getClass().getName());
-            System.out.println(t1 - t0);
 
             ec.tstoolkit.arima.IArimaModel lmodel = toLegacy(model);
 
@@ -218,29 +175,6 @@ public class ArmaFilterTest {
             System.out.println(filter.getClass().getName());
             System.out.println(t1 - t0);
             t0 = System.currentTimeMillis();
-            filter = ArmaFilter.ljungBox();
-            for (int i = 0; i < K; ++i) {
-                int m = filter.prepare((IArimaModel) model.stationaryTransformation().getStationaryModel(), data.length());
-                for (int j = 0; j < L; ++j) {
-                    DataBlock s = DataBlock.make(m);
-                    filter.apply(data, s);
-                }
-            }
-            t1 = System.currentTimeMillis();
-            System.out.println(filter.getClass().getName());
-            System.out.println(t1 - t0);
-            t0 = System.currentTimeMillis();
-            filter = ArmaFilter.modifiedLjungBox();
-            for (int i = 0; i < K; ++i) {
-                int m = filter.prepare((IArimaModel) model.stationaryTransformation().getStationaryModel(), data.length());
-                for (int j = 0; j < L; ++j) {
-                    DataBlock s = DataBlock.make(m);
-                    filter.apply(data, s);
-                }
-            }
-            t1 = System.currentTimeMillis();
-            System.out.println(filter.getClass().getName());
-            System.out.println(t1 - t0);
 
         }
     }

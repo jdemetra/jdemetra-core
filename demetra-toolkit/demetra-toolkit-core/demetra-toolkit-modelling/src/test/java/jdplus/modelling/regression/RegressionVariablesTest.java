@@ -6,7 +6,7 @@
 package jdplus.modelling.regression;
 
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
 import demetra.timeseries.regression.ICalendarVariable;
 import demetra.timeseries.regression.ITsVariable;
@@ -40,7 +40,7 @@ public class RegressionVariablesTest {
         vars.add(vtd);
 
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2000, 1), 200);
-        Matrix matrix = RegressionVariables.matrix(domain, vars);
+        MatrixType matrix = RegressionVariables.matrix(domain, vars);
         System.out.println(matrix);
         DataBlock c = DataBlock.make(matrix.getColumnsCount());
         c.set(i -> i + 1);

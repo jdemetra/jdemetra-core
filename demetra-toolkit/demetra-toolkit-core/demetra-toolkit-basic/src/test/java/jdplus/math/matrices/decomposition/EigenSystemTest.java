@@ -15,11 +15,11 @@ import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
 import jdplus.math.ComplexMath;
 import jdplus.math.ComplexUtility;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.linearfilters.SymmetricFrequencyResponse;
-import jdplus.maths.linearfilters.internal.SymmetricFilterAlgorithms;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.SymmetricFrequencyResponse;
+import jdplus.math.linearfilters.internal.SymmetricFilterAlgorithms;
 import jdplus.math.matrices.Matrix;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.polynomials.Polynomial;
 import org.junit.Test;
 
 /**

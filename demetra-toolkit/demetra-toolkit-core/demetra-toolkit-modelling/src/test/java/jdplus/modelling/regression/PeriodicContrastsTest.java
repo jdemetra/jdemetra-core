@@ -22,9 +22,10 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import jdplus.data.DataBlockIterator;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import jdplus.math.matrices.lapack.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -39,9 +40,11 @@ public class PeriodicContrastsTest {
     public void testMonthly() {
         PeriodicContrasts vars = new PeriodicContrasts(12);
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2017, 8), 120);
-        FastMatrix M=Regression.matrix(domain, vars);
+        Matrix M=Regression.matrix(domain, vars);
         //System.out.println(M);
-        assertTrue(M.columnList().stream().allMatch(col->col.sum()==0));
+        DataBlockIterator cols = M.columnsIterator();
+        while (cols.hasNext())
+            assertTrue(cols.next().sum()==0);
     }
 
 }

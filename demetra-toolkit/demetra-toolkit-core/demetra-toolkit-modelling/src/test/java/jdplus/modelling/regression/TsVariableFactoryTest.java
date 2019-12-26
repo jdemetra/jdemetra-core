@@ -11,7 +11,6 @@ import demetra.timeseries.regression.UserVariable;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.lapack.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

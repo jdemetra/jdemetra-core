@@ -17,17 +17,15 @@
 package jdplus.modelling.regression;
 
 import demetra.timeseries.regression.AdditiveOutlier;
-import jdplus.modelling.regression.Regression;
 import jdplus.data.DataBlock;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
+import jdplus.math.matrices.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import jdplus.math.matrices.lapack.FastMatrix;
 
 /**
  *
@@ -43,7 +41,7 @@ public class AdditiveOutlierTest {
         final int pos = 25;
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2000, 1), 100);
         AdditiveOutlier ao = new AdditiveOutlier(domain.get(pos).start());
-        FastMatrix M = Regression.matrix(domain, ao);
+        Matrix M = Regression.matrix(domain, ao);
         DataBlock buffer = M.column(0);
         assertTrue(buffer.indexOf(x -> x != 0) == pos);
         assertTrue(buffer.lastIndexOf(x -> x == 1) == pos);

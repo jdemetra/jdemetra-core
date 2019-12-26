@@ -20,15 +20,14 @@ import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Immutable;
 import jdplus.dstats.Normal;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.RationalBackFilter;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.RationalBackFilter;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.random.XorshiftRNG;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.dstats.Distribution;
-import jdplus.math.matrices.Matrix;
 import jdplus.random.RandomNumberGenerator;
 import jdplus.math.matrices.Matrix;
 

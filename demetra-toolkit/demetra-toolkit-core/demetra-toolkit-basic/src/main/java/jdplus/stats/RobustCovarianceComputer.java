@@ -46,13 +46,12 @@ public class RobustCovarianceComputer {
         int n = x.getRowsCount(), nx = x.getColumnsCount();
         Matrix s = SymmetricMatrix.XtX(x);
         s.mul(w.applyAsDouble(0));
-        Matrix ol = Matrix.square(nx);
         double q = 1+truncationLag;
         for (int l = 1; l <= truncationLag; ++l) {
             double wl = w.applyAsDouble(l / q);
             Matrix m = x.extract(0, n - l, 0, nx);
             Matrix ml = x.extract(l, n - l, 0, nx);
-            GeneralMatrix.setAtB(m, ml, s);
+            Matrix ol=GeneralMatrix.AtB(m, ml);
             s.addAY(wl, ol);
             s.addAYt(wl, ol);
         }

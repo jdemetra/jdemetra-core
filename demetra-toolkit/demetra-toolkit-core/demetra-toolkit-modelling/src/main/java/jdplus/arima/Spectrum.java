@@ -18,7 +18,7 @@ package jdplus.arima;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.math.functions.GridSearch;
 import jdplus.math.functions.IFunction;
 import jdplus.math.functions.IFunctionPoint;

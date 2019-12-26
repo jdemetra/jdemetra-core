@@ -25,8 +25,8 @@ import demetra.design.Development;
 import jdplus.math.matrices.decomposition.ElementaryTransformations;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.maths.polynomials.RationalFunction;
+import jdplus.math.polynomials.Polynomial;
+import jdplus.math.polynomials.RationalFunction;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
@@ -180,8 +180,8 @@ public class McElroyEstimates {
             // compute X=L^-1*K'K
             // LX = K'K 
             LowerTriangularMatrix.solveLX(L, KK);
-            // compute L'^-1 * X = F or L'F = X or F' L = X' 
-            LowerTriangularMatrix.lsolve(L, KK.transpose());
+            // compute L'^-1 * X = F or L'F = X 
+            LowerTriangularMatrix.solveLtX(L, KK);
 
             F_[cmp] = KK;
 

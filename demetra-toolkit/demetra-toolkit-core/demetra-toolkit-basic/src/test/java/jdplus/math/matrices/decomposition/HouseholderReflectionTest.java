@@ -5,7 +5,6 @@
  */
 package jdplus.math.matrices.decomposition;
 
-import jdplus.math.matrices.decomposition.HouseholderReflection;
 import jdplus.data.DataBlock;
 import org.junit.Test;
 import static org.junit.Assert.*;

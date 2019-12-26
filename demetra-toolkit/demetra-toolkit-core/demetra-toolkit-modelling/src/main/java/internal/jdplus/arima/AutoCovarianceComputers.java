@@ -19,14 +19,13 @@ package internal.jdplus.arima;
 import jdplus.arima.ArimaException;
 import jdplus.arima.AutoCovarianceFunction;
 import jdplus.data.DataBlock;
-import jdplus.linearsystem.internal.QRLinearSystemSolver;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.decomposition.Householder;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.maths.polynomials.RationalFunction;
+import jdplus.math.polynomials.Polynomial;
+import jdplus.math.polynomials.RationalFunction;
 import jdplus.linearsystem.LinearSystemSolver;
+import jdplus.math.matrices.MatrixException;
 
 /**
  *
@@ -70,7 +69,7 @@ public class AutoCovarianceComputers {
                 } else {
                     solver.solve(M, x);
                 }
-            } catch (Exception err) {
+            } catch (MatrixException err) {
                 throw new ArimaException(ArimaException.NONSTATIONARY);
             }
 

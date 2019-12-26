@@ -7,12 +7,11 @@ package jdplus.stats.tests.seasonal;
 
 import jdplus.data.analysis.TrigonometricSeries;
 import jdplus.data.analysis.WindowFunction;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
 import jdplus.stats.RobustCovarianceComputer;
 import demetra.data.DoubleSeq;
+import jdplus.linearmodel.Ols;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -58,8 +57,7 @@ public class CanovaHansen2 {
     public double compute() {
         Matrix x = sx();
         LinearModel lm = buildModel(x);
-        Ols ols = new Ols();
-        LeastSquaresResults olsResults = ols.compute(lm);
+        LeastSquaresResults olsResults= Ols.compute(lm);
         DoubleSeq e = lm.calcResiduals(olsResults.getCoefficients());
         double rvar = RobustCovarianceComputer.covariance(e, winFunction, truncationLag);
         Matrix xe = x.deepClone();

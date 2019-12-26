@@ -7,8 +7,6 @@ package jdplus.ucarima;
 
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
-import jdplus.arima.ArimaModel;
-import jdplus.maths.linearfilters.SymmetricFilter;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

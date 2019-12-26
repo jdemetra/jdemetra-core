@@ -17,7 +17,7 @@
 package jdplus.ucarima;
 
 import jdplus.arima.ArimaModel;
-import jdplus.maths.linearfilters.RationalFilter;
+import jdplus.math.linearfilters.RationalFilter;
 import static jdplus.ucarima.UcarimaModelTest.ucm3111;
 import static jdplus.ucarima.UcarimaModelTest.ucmAirline;
 import org.junit.Test;
@@ -82,7 +82,7 @@ public class WienerKolmogorovEstimatorsTest {
                 if (psie[i]!= null)
                     s+=psie[i][l];
             }
-            assertEquals(s, l!=12 ? 0 : 1, 1e-12);
+            assertEquals(s, l!=12 ? 0 : 1, 1e-10);
         }
     }
 }

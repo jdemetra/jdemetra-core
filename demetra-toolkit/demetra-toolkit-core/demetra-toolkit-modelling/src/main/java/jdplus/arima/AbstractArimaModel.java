@@ -16,12 +16,11 @@
  */
 package jdplus.arima;
 
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.IRationalFilter;
-import jdplus.maths.linearfilters.RationalBackFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.IRationalFilter;
+import jdplus.math.linearfilters.RationalBackFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 
-/**
+/** 
  * This class caches all the properties of the final ArimaModel
  *
  * @author Jean Palate

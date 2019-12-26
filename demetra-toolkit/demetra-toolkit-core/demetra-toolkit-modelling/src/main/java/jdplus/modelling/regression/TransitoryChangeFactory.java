@@ -7,8 +7,8 @@ package jdplus.modelling.regression;
 
 import demetra.timeseries.regression.TransitoryChange;
 import jdplus.data.DataBlock;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.RationalBackFilter;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.RationalBackFilter;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;

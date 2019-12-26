@@ -17,7 +17,6 @@
 package internal.jdplus.maths.functions.gsl.integration;
 
 import java.util.function.DoubleUnaryOperator;
-import nbbrd.service.ServiceProvider;
 
 /**
  *

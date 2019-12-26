@@ -18,10 +18,10 @@ package jdplus.arima;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import jdplus.maths.linearfilters.IRationalFilter;
-import jdplus.maths.linearfilters.RationalFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.linearfilters.IRationalFilter;
+import jdplus.math.linearfilters.RationalFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.polynomials.Polynomial;
 
 /**
  * @author Jean Palate

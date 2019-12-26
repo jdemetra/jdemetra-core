@@ -7,9 +7,9 @@ package jdplus.modelling.regression;
 
 import demetra.timeseries.regression.PeriodicOutlier;
 import jdplus.data.DataBlock;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.RationalBackFilter;
-import jdplus.maths.polynomials.UnitRoots;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.RationalBackFilter;
+import jdplus.math.polynomials.UnitRoots;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
