@@ -23,7 +23,7 @@ import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.implementations.Loading;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.SsfComponent;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -78,7 +78,7 @@ public class Rw {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
             if (!data.zeroinit)
                 b.set(1);
         }
@@ -88,14 +88,14 @@ public class Rw {
         }
 
         @Override
-        public void Pf0(FastMatrix pf0) {
+        public void Pf0(Matrix pf0) {
             if (data.zeroinit) {
                 pf0.set(0, 0, data.var);
             }
         }
 
         @Override
-        public void Pi0(FastMatrix pi0) {
+        public void Pi0(Matrix pi0) {
             if (!data.zeroinit) {
                 pi0.set(0, 0, 1);
             }
@@ -121,7 +121,7 @@ public class Rw {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             qm.set(0, 0, data.var);
         }
 
@@ -136,7 +136,7 @@ public class Rw {
         }
 
         @Override
-        public void S(int pos, FastMatrix sm) {
+        public void S(int pos, Matrix sm) {
             sm.set(0, 0, data.std());
         }
 
@@ -151,7 +151,7 @@ public class Rw {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             tr.set(0, 0, 1);
         }
 
@@ -160,7 +160,7 @@ public class Rw {
         }
 
         @Override
-        public void TVT(int pos, FastMatrix v) {
+        public void TVT(int pos, Matrix v) {
         }
 
         @Override
@@ -168,7 +168,7 @@ public class Rw {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             p.add(0, 0, data.var);
         }
     }

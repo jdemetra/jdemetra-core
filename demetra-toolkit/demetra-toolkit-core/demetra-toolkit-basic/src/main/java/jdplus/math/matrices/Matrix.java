@@ -19,6 +19,7 @@ package jdplus.math.matrices;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.design.Unsafe;
 import demetra.math.matrices.MatrixType;
@@ -30,9 +31,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.data.DataWindow;
 import jdplus.data.LogSign;
-import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.decomposition.Gauss;
-import jdplus.math.matrices.decomposition.Householder;
 import jdplus.math.matrices.decomposition.LUDecomposition;
 import org.checkerframework.checker.index.qual.Positive;
 
@@ -90,6 +89,9 @@ public final class Matrix implements MatrixType.Mutable {
     int start, nrows, ncols;
 
     //<editor-fold defaultstate="collapsed" desc="matrix constructors">
+    
+    public static final Matrix EMPTY=new Matrix(Doubles.EMPTYARRAY, 0, 0);
+    
     public static Matrix square(int n) {
         double[] data = new double[n * n];
         return new Matrix(data, n, n);
@@ -190,6 +192,14 @@ public final class Matrix implements MatrixType.Mutable {
         return new Matrix(storage, lda, start + r0 + c0 * lda, nr, nc);
     }
 
+    public Matrix dropTopLeft(int nr, int nc) {
+        return new Matrix(storage, lda, start + nr + nc * lda, nrows-nr, ncols-nc);
+    }
+
+    public Matrix dropBottomRight(int nr, int nc) {
+        return new Matrix(storage, lda, start, nrows-nr, ncols-nc);
+    }
+    
     //<editor-fold defaultstate="collapsed" desc="diagnistics">
     public boolean isFull() {
         return start == 0 && lda == nrows;

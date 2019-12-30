@@ -39,6 +39,14 @@ public class QRSolution {
     private DoubleSeq e;
     private double ssqErr;
     
+    public double rank(){
+        return rank;
+    }
+    
+    public Matrix rawR(){
+        return qr.rawR();
+    }
+    
     public DoubleSeq rawRDiagonal(){
         return qr.rawRdiagonal();
     }

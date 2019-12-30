@@ -19,8 +19,9 @@ package jdplus.ssf.univariate;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.UpdateInformation;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.MatrixWindow;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.GeneralMatrix;
+import jdplus.math.matrices.MatrixWindow;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.SsfException;
 import jdplus.ssf.State;
@@ -28,17 +29,17 @@ import jdplus.ssf.StateInfo;
 import jdplus.ssf.StateStorage;
 import jdplus.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import jdplus.ssf.implementations.DummyInitialization;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  * /**
- The fixed point smoother computes the expectations and the covariance
- matrices copyOf [M*a(fixpos) | fixpos + k]. The ordinary filter is used till
- position fixpos, where E(a(fixpos)|fixpos), Cov((a(fixpos)|fixpos)) is
- available. The moments copyOf the augmented state vector a(fixpos), Ma(fixpos)
- can then be easily derived. The augmented vector is then used to compute the
- next expectations/cov. See for instance Anderson and Moore (optimal filtering
- [1979]).
+ * The fixed point smoother computes the expectations and the covariance
+ * matrices copyOf [M*a(fixpos) | fixpos + k]. The ordinary filter is used till
+ * position fixpos, where E(a(fixpos)|fixpos), Cov((a(fixpos)|fixpos)) is
+ * available. The moments copyOf the augmented state vector a(fixpos),
+ * Ma(fixpos) can then be easily derived. The augmented vector is then used to
+ * compute the next expectations/cov. See for instance Anderson and Moore
+ * (optimal filtering [1979]).
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
@@ -46,18 +47,17 @@ public class FixedPointSmoother {
 
     private final ISsf ssf;
     private final int fixpos;
-    private final FastMatrix M;
+    private final Matrix M;
     private StateStorage states;
 
     /**
-     * Returns the expectations copyOf the augmented part copyOf the filter at position
- pos, computed after the fixed point position. The size copyOf the augmented
- part is either the size copyOf the underlying state space model or the number
- copyOf rows copyOf the M matrix that defines the linear transformation copyOf the
- state vector considered in the smoothing algorithm.
+     * Returns the expectations copyOf the augmented part copyOf the filter at
+     * position pos, computed after the fixed point position.The size copyOf
+ the augmented part is either the size copyOf the underlying state space
+ model or the number copyOf rows copyOf the M matrix that defines the
+ linear transformation copyOf the state vector considered in the smoothing
+ algorithm.
      *
-     * @param pos The position copyOf the requested information (corresponds to
- fixdpos+pos)
      * @return The expectations vector. Should not be modified
      */
     public StateStorage getResults() {
@@ -86,7 +86,7 @@ public class FixedPointSmoother {
      * @param M The transformation matrix. May be null; in that case, M is
      * considered to be I.
      */
-    public FixedPointSmoother(final ISsf ssf, final int fixpos, final FastMatrix M) {
+    public FixedPointSmoother(final ISsf ssf, final int fixpos, final Matrix M) {
 
         if (M != null && ssf.getStateDim() != M.getColumnsCount()) {
             throw new SsfException("Invalid fixed point argument");
@@ -96,7 +96,7 @@ public class FixedPointSmoother {
         this.M = M;
     }
 
-    public FastMatrix getTransformationMatrix() {
+    public Matrix getTransformationMatrix() {
         return M;
     }
 
@@ -109,7 +109,7 @@ public class FixedPointSmoother {
         OrdinaryFilter filter = new OrdinaryFilter(new Initializer(ssf, fixpos, M));
         SsfDataWindow xdata = new SsfDataWindow(data, fixpos, data.length());
         int mdim = M == null ? ssf.getStateDim() : M.getRowsCount();
-        Ssf xssf = Ssf.of(new DummyInitialization(mdim+ssf.getStateDim()), 
+        Ssf xssf = Ssf.of(new DummyInitialization(mdim + ssf.getStateDim()),
                 new Dynamics(ssf, mdim), new Loading(ssf, mdim), ssf.measurementError());
         states = StateStorage.full(StateInfo.Concurrent);
         states.prepare(mdim, fixpos, data.length());
@@ -120,10 +120,10 @@ public class FixedPointSmoother {
     static class Initializer implements OrdinaryFilter.Initializer {
 
         private final int fixpos;
-        private final FastMatrix M;
+        private final Matrix M;
         private final ISsf core;
 
-        Initializer(final ISsf core, final int fixpos, final FastMatrix M) {
+        Initializer(final ISsf core, final int fixpos, final Matrix M) {
             this.fixpos = fixpos;
             this.M = M;
             this.core = core;
@@ -140,33 +140,27 @@ public class FixedPointSmoother {
             }
             int r = core.getStateDim();
             DataBlock a = filter.getFinalState().a();
-            FastMatrix P = filter.getFinalState().P();
+            Matrix P = filter.getFinalState().P();
             state.a().range(0, r).copy(a);
-            MatrixWindow cur = state.P().topLeft(r, r);
-            cur.copy(P);
+            MatrixWindow cur = state.P().topLeft(0, 0);
+            cur.next(r, r).copy(P);
             if (M == null) {
                 state.a().range(r, 2 * r).copy(a);
-                cur.vnext(r);
-                cur.copy(P);
-                cur.hnext(r);
-                cur.copy(P);
-                cur.vprevious(r);
-                cur.copy(P);
+                cur.vnext(r).copy(P);
+                cur.hnext(r).copy(P);
+                cur.vprevious(r).copy(P);
             } else {
                 int m = M.getRowsCount();
                 state.a().range(r, r + m).product(M.rowsIterator(), a);
-                cur.vnext(r);
-                cur.product(M, P);
-                cur.hnext(r);
-                SymmetricMatrix.XSXt(P, M, cur);
-                cur.vprevious(r);
-                cur.product(M, P);
+                GeneralMatrix.setAB(M, P, cur.vnext(r));
+                SymmetricMatrix.XSXt(P, M, cur.hnext(r));
+                GeneralMatrix.setAB(M, P, cur.vprevious(r));
             }
             return fixpos;
         }
     }
 
-    static class Loading implements ISsfLoading{
+    static class Loading implements ISsfLoading {
 
         private final ISsfLoading core;
         private final int cdim, mdim;
@@ -188,8 +182,8 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
-            return core.ZVZ(pos, V.topLeft(cdim, cdim));
+        public double ZVZ(int pos, Matrix V) {
+            return core.ZVZ(pos, V.extract(0, cdim, 0, cdim));
         }
 
         @Override
@@ -198,7 +192,7 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
+        public void VpZdZ(int pos, Matrix V, double d) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body copyOf generated methods, choose Tools | Templates.
         }
 
@@ -207,7 +201,7 @@ public class FixedPointSmoother {
             throw new UnsupportedOperationException("Not supported yet."); //To change body copyOf generated methods, choose Tools | Templates.
         }
     }
-    
+
     static class Dynamics implements ISsfDynamics {
 
         private final ISsfDynamics core;
@@ -225,13 +219,13 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
-            core.V(pos, qm.topLeft(cdim, cdim));
+        public void V(int pos, Matrix qm) {
+            core.V(pos, qm.extract(0, cdim, 0, cdim));
         }
 
         @Override
-        public void S(int pos, FastMatrix cm) {
-            core.S(pos, cm.top(cdim));
+        public void S(int pos, Matrix cm) {
+            core.S(pos, cm.extract(0, cdim, 0, cm.getColumnsCount()));
         }
 
         @Override
@@ -245,9 +239,9 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
-            core.T(pos, tr.topLeft(cdim, cdim));
-            tr.bottomRight(mdim, mdim).diagonal().set(1);
+        public void T(int pos, Matrix tr) {
+            core.T(pos, tr.extract(0, cdim, 0, cdim));
+            tr.diagonal().range(tr.getRowsCount()-mdim, tr.getRowsCount()).set(1);
         }
 
         @Override
@@ -261,8 +255,8 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
-            core.addV(pos, p.topLeft(cdim, cdim));
+        public void addV(int pos, Matrix p) {
+            core.addV(pos, p.extract(0, cdim, 0, cdim));
         }
 
         @Override
@@ -275,7 +269,6 @@ public class FixedPointSmoother {
             throw new UnsupportedOperationException("Not supported yet."); //To change body copyOf generated methods, choose Tools | Templates.
         }
 
-
         @Override
         public boolean isTimeInvariant() {
             return core.isTimeInvariant();
@@ -285,7 +278,7 @@ public class FixedPointSmoother {
 
     static class Results implements IFilteringResults {
 
-        private StateStorage states;
+        private final StateStorage states;
         private final int start, n;
 
         Results(StateStorage states, final int start, final int n) {

@@ -21,9 +21,9 @@ import jdplus.ssf.likelihood.MarginalLikelihood;
 import jdplus.data.DataBlock;
 import jdplus.data.LogSign;
 import jdplus.likelihood.DeterminantalTerm;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.matrices.UpperTriangularMatrix;
-import jdplus.maths.matrices.decomposition.Householder;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.decomposition.Householder;
 import jdplus.ssf.ResultsRange;
 import jdplus.ssf.univariate.DefaultFilteringResults;
 import jdplus.ssf.univariate.FastFilter;
@@ -32,7 +32,9 @@ import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.OrdinaryFilter;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.Householder2;
+import jdplus.math.matrices.decomposition.QRDecomposition;
 
 /**
  * QR variant of the augmented Kalman filter. See for instance Gomez-Maravall.
@@ -116,8 +118,8 @@ public class QRFilter {
                 j++;
             }
         }
-        Householder hous = new Householder(M.extract(0, j, 0, M.getColumnsCount()));
-        double mc = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
+        QRDecomposition qr = new Householder2().decompose(M.extract(0, j, 0, M.getColumnsCount()));
+        double mc = 2 * LogSign.of(qr.rawRdiagonal()).getValue();
         return MarginalLikelihood.builder(likelihood.dim(), likelihood.getD())
                 .concentratedScalingFactor(scalingfactor)
                 .diffuseCorrection(likelihood.getDiffuseCorrection())
@@ -143,9 +145,9 @@ public class QRFilter {
                 }
             }
         }
-        Householder housx = new Householder(Q);
-        mcorr = 2 * LogSign.of(housx.rdiagonal(true)).getValue();
-        int nd = housx.rank(), n = Xl.getRowsCount();
+        QRDecomposition qrx = new Householder2().decompose(Q);
+        mcorr = 2 * LogSign.of(qrx.rawRdiagonal()).getValue();
+        int nd = qrx.rank(), n = Xl.getRowsCount();
 
         mll = MarginalLikelihood.builder(n, nd)
                 .ssqErr(ssq)

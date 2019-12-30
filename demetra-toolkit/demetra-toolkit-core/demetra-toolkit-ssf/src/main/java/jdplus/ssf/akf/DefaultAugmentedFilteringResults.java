@@ -23,7 +23,7 @@ import jdplus.ssf.DataBlockResults;
 import jdplus.ssf.MatrixResults;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -81,7 +81,7 @@ public class DefaultAugmentedFilteringResults extends DefaultFilteringResults im
     }
 
     @Override
-    public FastMatrix B(int pos) {
+    public Matrix B(int pos) {
         return B.matrix(pos);
     }
 

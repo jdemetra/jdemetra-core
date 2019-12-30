@@ -17,8 +17,8 @@
 package jdplus.ssf.akf;
 
 import jdplus.data.DataBlockIterator;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.State;
 import jdplus.ssf.multivariate.IMultivariateSsf;
 import jdplus.ssf.multivariate.MultivariateUpdateInformation;
@@ -36,7 +36,7 @@ public class MultivariateAugmentedUpdateInformation extends MultivariateUpdateIn
      * E is the "prediction error" on the diffuse constraints (=(0-Z(t)A(t)) E ~
      * ndiffuse x nvars
      */
-    private final CanonicalMatrix E;
+    private final Matrix E;
 
     /**
      *
@@ -46,10 +46,10 @@ public class MultivariateAugmentedUpdateInformation extends MultivariateUpdateIn
      */
     public MultivariateAugmentedUpdateInformation(final int dim, final int nvars, final int ndiffuse) {
         super(dim, nvars);
-        E = CanonicalMatrix.make(ndiffuse, nvars);
+        E = Matrix.make(ndiffuse, nvars);
     }
 
-    public CanonicalMatrix E() {
+    public Matrix E() {
         return E;
     }
 
@@ -62,11 +62,11 @@ public class MultivariateAugmentedUpdateInformation extends MultivariateUpdateIn
         super.compute(ssf, t, state, x, equations);
         // E is ndiffuse x nobs. Each column contains the diffuse effects
         // on the corresponding variable
-        ZM(t, ssf.measurements(), equations, state.B(), E.transpose());
+        MZt(t, ssf.measurements(), equations, state.B(), E);
         E.chs();
         DataBlockIterator erows = E.rowsIterator();
         while (erows.hasNext()) {
-            LowerTriangularMatrix.rsolve(this.getCholeskyFactor(), erows.next(), State.ZERO);
+            LowerTriangularMatrix.solveLx(this.getCholeskyFactor(), erows.next(), State.ZERO);
         }
     }
 }

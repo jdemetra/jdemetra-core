@@ -17,8 +17,7 @@
 package jdplus.ssf;
 
 import jdplus.data.DataBlock;
-import java.util.function.Consumer;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -48,7 +47,7 @@ public class DiffuseInitialization implements ISsfInitialization {
     }
     
     @Override
-    public void diffuseConstraints(FastMatrix b) {
+    public void diffuseConstraints(Matrix b) {
         b.diagonal().set(1);
     }
     
@@ -57,11 +56,11 @@ public class DiffuseInitialization implements ISsfInitialization {
     }
     
     @Override
-    public void Pf0(FastMatrix pf) {
+    public void Pf0(Matrix pf) {
     }
     
     @Override
-    public void Pi0(FastMatrix pi) {
+    public void Pi0(Matrix pi) {
         pi.diagonal().set(1);
     }
 }

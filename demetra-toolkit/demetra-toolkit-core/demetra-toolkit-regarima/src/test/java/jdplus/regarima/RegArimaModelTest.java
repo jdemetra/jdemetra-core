@@ -91,10 +91,13 @@ public class RegArimaModelTest {
 //        System.out.println("Old estimation");
 //        System.out.println(estimation.statistics(2, 0));
     }
+    
+    public static void main(String[] arg){
+        stressTestEstimation();
+        stressTestOldEstimation();
+    }
 
-    @Test
-    @Ignore
-    public void stressTestEstimation() {
+    public static void stressTestEstimation() {
 
         SarimaSpecification spec = new SarimaSpecification(12);
         spec.airline(true);
@@ -121,9 +124,7 @@ public class RegArimaModelTest {
 //        System.out.println(estimation.statistics(2, 0));
     }
 
-    @Test
-    @Ignore
-    public void stressTestOldEstimation() {
+    public static void stressTestOldEstimation() {
         ec.tstoolkit.sarima.SarimaSpecification spec = new ec.tstoolkit.sarima.SarimaSpecification(12);
         spec.airline();
         ec.tstoolkit.data.DataBlock y = new ec.tstoolkit.data.DataBlock(Data.PROD);

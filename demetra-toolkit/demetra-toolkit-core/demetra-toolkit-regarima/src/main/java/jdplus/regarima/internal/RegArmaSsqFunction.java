@@ -24,14 +24,14 @@ import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.DefaultLikelihoodEvaluation;
 import jdplus.math.functions.IParametersDomain;
 import jdplus.math.functions.IParametricMapping;
-import jdplus.maths.functions.ssq.ISsqFunction;
-import jdplus.maths.functions.ssq.ISsqFunctionPoint;
+import jdplus.math.functions.ssq.ISsqFunction;
+import jdplus.math.functions.ssq.ISsqFunctionPoint;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import jdplus.arima.estimation.IArimaMapping;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
-import demetra.maths.matrices.Matrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *

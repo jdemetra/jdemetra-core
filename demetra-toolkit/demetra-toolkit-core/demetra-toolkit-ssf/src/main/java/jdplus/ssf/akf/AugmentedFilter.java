@@ -29,7 +29,7 @@ import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.ISsfMeasurement;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -169,7 +169,7 @@ public class AugmentedFilter {
     }
 
     // P -= c*r
-    private void update(FastMatrix P, double v, DataBlock C) {
+    private void update(Matrix P, double v, DataBlock C) {
         P.addXaXt(-1 / v, C);
     }
 

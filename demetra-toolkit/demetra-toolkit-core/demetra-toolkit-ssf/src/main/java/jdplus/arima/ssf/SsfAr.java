@@ -9,13 +9,13 @@ import jdplus.arima.AutoCovarianceFunction;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.Loading;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 
@@ -113,7 +113,7 @@ public class SsfAr {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
         }
 
         @Override
@@ -121,11 +121,11 @@ public class SsfAr {
         }
 
         @Override
-        public void Pi0(FastMatrix pf0) {
+        public void Pi0(Matrix pf0) {
         }
 
         @Override
-        public void Pf0(FastMatrix pf0) {
+        public void Pf0(Matrix pf0) {
             if (!zeroinit) {
                 AutoCovarianceFunction acf = new AutoCovarianceFunction(Polynomial.ONE, info.ar(), info.var);
                 acf.prepare(pf0.getColumnsCount());
@@ -157,12 +157,12 @@ public class SsfAr {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             qm.set(0, 0, info.var);
         }
 
         @Override
-        public void S(int pos, FastMatrix cm) {
+        public void S(int pos, Matrix cm) {
             cm.set(0, 0, Math.sqrt(info.var));
         }
 
@@ -177,7 +177,7 @@ public class SsfAr {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             tr.subDiagonal(-1).set(1);
             tr.row(0).extract(0, info.phi.length).copyFrom(info.phi, 0);
         }
@@ -194,7 +194,7 @@ public class SsfAr {
         }
 
         @Override
-        public void TVT(final int pos, final FastMatrix vm) {
+        public void TVT(final int pos, final Matrix vm) {
             z.set(0);
             DataBlockIterator cols = vm.columnsIterator();
             for (int i = 0; i < info.phi.length; ++i) {
@@ -212,7 +212,7 @@ public class SsfAr {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             p.add(0, 0, info.var);
         }
 

@@ -18,8 +18,8 @@ package jdplus.ssf.akf;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.univariate.ISmoothingResults;
@@ -27,10 +27,10 @@ import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.OrdinarySmoother;
 import demetra.data.DoubleSeqCursor;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.GeneralMatrix;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfLoading;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -46,8 +46,8 @@ public class AugmentedSmoother {
 
     private double e, f;
     private DataBlock C, E, R;
-    private CanonicalMatrix N, Rd, U, V, RNA, S;
-    private CanonicalMatrix Psi;
+    private Matrix N, Rd, U, V, RNA, S;
+    private Matrix Psi;
     private DataBlock delta;
     private boolean missing, hasinfo, calcvar = true;
 
@@ -87,13 +87,13 @@ public class AugmentedSmoother {
         R = DataBlock.make(dim);
         C = DataBlock.make(dim);
         E = DataBlock.make(nd);
-        Rd = CanonicalMatrix.make(dim, nd);
-        U = CanonicalMatrix.make(dim, nd);
+        Rd = Matrix.make(dim, nd);
+        U = Matrix.make(dim, nd);
 
         if (calcvar) {
-            N = CanonicalMatrix.square(dim);
-            V = CanonicalMatrix.make(dim, nd);
-            RNA = CanonicalMatrix.make(dim, nd);
+            N = Matrix.square(dim);
+            V = Matrix.make(dim, nd);
+            RNA = Matrix.make(dim, nd);
         }
     }
 
@@ -173,18 +173,17 @@ public class AugmentedSmoother {
     }
 
     private void updateP() {
-        CanonicalMatrix P = state.P();
+        Matrix P = state.P();
         // normal iteration
-        CanonicalMatrix PNP = SymmetricMatrix.XtSX(N, P);
+        Matrix PNP = SymmetricMatrix.XtSX(N, P);
         P.sub(PNP);
         // diffuse correction
-        CanonicalMatrix UPsiU = SymmetricMatrix.XSXt(Psi, U);
+        Matrix UPsiU = SymmetricMatrix.XSXt(Psi, U);
         P.add(UPsiU);
-        LowerTriangularMatrix.rsolve(S, U.transpose());
-        LowerTriangularMatrix.rsolve(S, V.transpose());
+        LowerTriangularMatrix.solveXLt(S, U);
+        LowerTriangularMatrix.solveXLt(S, V);
         // compute U*V'
-        CanonicalMatrix UV = CanonicalMatrix.square(U.getRowsCount());
-        UV.product(U, V.transpose());
+        Matrix UV =GeneralMatrix.ABt(U, V); 
         P.sub(UV);
         P.sub(UV.transpose());
         SymmetricMatrix.reenforceSymmetry(P);
@@ -217,7 +216,7 @@ public class AugmentedSmoother {
             loading.VpZdZ(pos, N, 1 / f);
         } else {
             dynamics.MT(pos, N);
-            dynamics.MT(pos, N.transpose());
+            dynamics.TtM(pos, N);
         }
         SymmetricMatrix.reenforceSymmetry(N);
     }
@@ -230,7 +229,7 @@ public class AugmentedSmoother {
         //   = v/f*Z + R*(T-TC/f*Z)
         //  = (v - RT*C)/f*Z + RT
         dynamics.XT(pos, R);
-        dynamics.MT(pos, Rd.transpose());
+        dynamics.TtM(pos, Rd);
         if (!missing && f != 0) {
             // RT
             double c = (e - R.dot(C)) / f;
@@ -281,7 +280,7 @@ public class AugmentedSmoother {
         // delta = a'^-1*a^-1(-a*b' + B'*R)
         // delta = - (b * a^-1)' + a'^-1*a^-1*B'*r = a'^-1 * (a^-1*B'*r - b)
         // Psi = = a'^-1*(I - a^-1*B'*N*B*a'^-1)* a^-1
-        FastMatrix B = q.B(); // B*a^-1'
+        Matrix B = q.B(); // B*a^-1'
         S = q.a().deepClone();
         // computes a^-1*B'*r (or r*B*a^-1')
         delta = DataBlock.make(B.getColumnsCount());

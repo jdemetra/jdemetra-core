@@ -16,12 +16,11 @@
  */
 package jdplus.regarima.regular;
 
-import jdplus.arima.IArimaModel;
 import jdplus.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.polynomials.UnitRoots;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.polynomials.UnitRoots;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.sarima.estimation.SarimaFixedMapping;
 import jdplus.sarima.estimation.SarimaMapping;

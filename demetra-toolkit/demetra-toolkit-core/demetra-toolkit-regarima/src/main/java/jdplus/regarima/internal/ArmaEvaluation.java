@@ -22,8 +22,8 @@ import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.functions.IFunction;
 import jdplus.math.functions.IFunctionPoint;
-import jdplus.maths.functions.ssq.ISsqFunction;
-import jdplus.maths.functions.ssq.ISsqFunctionPoint;
+import jdplus.math.functions.ssq.ISsqFunction;
+import jdplus.math.functions.ssq.ISsqFunctionPoint;
 import demetra.data.DoubleSeq;
 
 /**

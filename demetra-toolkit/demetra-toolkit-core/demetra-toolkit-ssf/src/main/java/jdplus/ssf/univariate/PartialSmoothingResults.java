@@ -20,7 +20,7 @@ import jdplus.data.DataBlock;
 import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -29,7 +29,7 @@ import jdplus.maths.matrices.FastMatrix;
 public class PartialSmoothingResults implements ISmoothingResults {
 
     private final int npos;
-    private ISmoothingResults core;
+    private final ISmoothingResults core;
 
     public PartialSmoothingResults(int npos, final ISmoothingResults core) {
         this.npos = npos;
@@ -49,7 +49,7 @@ public class PartialSmoothingResults implements ISmoothingResults {
     }
 
     @Override
-    public FastMatrix P(int pos) {
+    public Matrix P(int pos) {
         return core.P(pos);
     }
 

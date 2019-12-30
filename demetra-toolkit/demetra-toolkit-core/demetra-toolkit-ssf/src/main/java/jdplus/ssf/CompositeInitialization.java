@@ -18,11 +18,8 @@ package jdplus.ssf;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataWindow;
-import jdplus.maths.matrices.MatrixWindow;
-import jdplus.ssf.multivariate.IMultivariateSsf;
-import jdplus.ssf.univariate.ISsf;
-import jdplus.ssf.ISsfInitialization;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.MatrixWindow;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -69,14 +66,13 @@ public class CompositeInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void diffuseConstraints(FastMatrix b) {
+    public void diffuseConstraints(Matrix b) {
         // statedim * diffusedim
-        MatrixWindow cur = b.topLeft();
+        MatrixWindow cur = b.topLeft(0, 0);
         for (int i = 0; i < initializers.length; ++i) {
             int nst = initializers[i].getDiffuseDim();
             if (nst != 0) {
-                cur.next(dim[i], nst);
-                initializers[i].diffuseConstraints(cur);
+                initializers[i].diffuseConstraints(cur.next(dim[i], nst));
             } else {
                 cur.vnext(dim[i]);
             }
@@ -92,20 +88,18 @@ public class CompositeInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void Pf0(FastMatrix p) {
-        MatrixWindow cur = p.topLeft();
+    public void Pf0(Matrix p) {
+        MatrixWindow cur = p.topLeft(0, 0);
         for (int i = 0; i < initializers.length; ++i) {
-            cur.next(dim[i], dim[i]);
-            initializers[i].Pf0(cur);
+            initializers[i].Pf0(cur.next(dim[i], dim[i]));
         }
     }
 
     @Override
-    public void Pi0(FastMatrix p) {
-        MatrixWindow cur = p.topLeft();
+    public void Pi0(Matrix p) {
+        MatrixWindow cur = p.topLeft(0, 0);
         for (int i = 0; i < initializers.length; ++i) {
-            cur.next(dim[i], dim[i]);
-            initializers[i].Pi0(cur);
+            initializers[i].Pi0(cur.next(dim[i], dim[i]));
         }
     }
 

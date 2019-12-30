@@ -6,7 +6,6 @@
 package jdplus.math.matrices;
 
 import demetra.design.Development;
-import jdplus.data.DataBlock;
 
 /**
  *

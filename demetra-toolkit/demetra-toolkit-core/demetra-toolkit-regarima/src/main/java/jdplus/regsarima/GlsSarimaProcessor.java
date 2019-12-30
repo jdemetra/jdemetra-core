@@ -27,13 +27,13 @@ import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.math.functions.IParametricMapping;
-import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaMapping;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import java.util.function.Function;
-import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
+import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 import jdplus.sarima.SarimaModel;
 
 /**

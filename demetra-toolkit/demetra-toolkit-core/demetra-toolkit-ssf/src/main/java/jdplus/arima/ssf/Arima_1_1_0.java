@@ -24,7 +24,7 @@ import jdplus.ssf.implementations.Loading;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.SsfComponent;
 import jdplus.arima.ssf.AR1.Data;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  * Ssf for (1 1 0) ARIMA models.
@@ -77,7 +77,7 @@ public class Arima_1_1_0 {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
             if (!data.zeroinit) {
                 b.set(0, 0, 1);
             }
@@ -88,7 +88,7 @@ public class Arima_1_1_0 {
         }
 
         @Override
-        public void Pf0(FastMatrix pf0) {
+        public void Pf0(Matrix pf0) {
             if (data.zeroinit) {
                 pf0.set(1, 1, data.var);
             } else {
@@ -97,7 +97,7 @@ public class Arima_1_1_0 {
         }
 
         @Override
-        public void Pi0(FastMatrix pi0) {
+        public void Pi0(Matrix pi0) {
             if (!data.zeroinit) {
                 pi0.set(0, 0, 1);
             }
@@ -128,7 +128,7 @@ public class Arima_1_1_0 {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             qm.set(1, 1, data.var);
         }
 
@@ -138,7 +138,7 @@ public class Arima_1_1_0 {
         }
 
         @Override
-        public void S(int pos, FastMatrix sm) {
+        public void S(int pos, Matrix sm) {
             sm.set(1, 0, data.std());
         }
 
@@ -153,7 +153,7 @@ public class Arima_1_1_0 {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             tr.set(0, 0, 1);
             tr.set(0, 1, 1);
             tr.set(1, 1, data.rho);
@@ -166,7 +166,7 @@ public class Arima_1_1_0 {
         }
 
         @Override
-        public void TVT(int pos, FastMatrix vm) {
+        public void TVT(int pos, Matrix vm) {
             double v00 = vm.get(0, 0);
             double v01 = vm.get(0, 1);
             double v10 = vm.get(1, 0);
@@ -183,7 +183,7 @@ public class Arima_1_1_0 {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             p.add(1, 1, data.var);
         }
     }

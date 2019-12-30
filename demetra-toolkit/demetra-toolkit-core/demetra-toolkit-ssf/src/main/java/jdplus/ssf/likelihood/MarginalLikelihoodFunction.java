@@ -16,21 +16,12 @@
  */
 package jdplus.ssf.likelihood;
 
-import jdplus.maths.functions.IFunction;
-import jdplus.maths.functions.IParametersDomain;
-import jdplus.maths.functions.IParametricMapping;
-import jdplus.maths.functions.ssq.ISsqFunction;
-import jdplus.maths.functions.ssq.ISsqFunctionPoint;
-import jdplus.ssf.univariate.ISsf;
-import jdplus.ssf.univariate.ISsfBuilder;
-import jdplus.ssf.univariate.ISsfData;
-import demetra.design.BuilderPattern;
-import jdplus.ssf.likelihood.MarginalLikelihood;
+import jdplus.math.functions.IParametersDomain;
+import jdplus.math.functions.IParametricMapping;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfBuilder;
 import jdplus.ssf.univariate.ISsfData;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.FastMatrix;
 import jdplus.likelihood.LikelihoodFunction;
 
 /**

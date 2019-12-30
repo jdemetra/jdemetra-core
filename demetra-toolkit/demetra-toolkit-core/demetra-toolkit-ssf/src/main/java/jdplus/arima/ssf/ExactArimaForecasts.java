@@ -19,10 +19,9 @@ package jdplus.arima.ssf;
 
 import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
-import jdplus.arima.ssf.SsfArima;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.linearfilters.BackFilter;
+import jdplus.math.linearfilters.BackFilter;
 import jdplus.ssf.ckms.CkmsFilter;
 import jdplus.ssf.univariate.PredictionErrorDecomposition;
 import jdplus.ssf.univariate.SsfData;

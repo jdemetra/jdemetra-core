@@ -26,9 +26,9 @@ import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.maths.polynomials.UnitRoots;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.polynomials.Polynomial;
+import jdplus.math.polynomials.UnitRoots;
 import jdplus.regsarima.GlsSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
@@ -37,7 +37,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
-import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 
 /**
  *
@@ -130,8 +130,7 @@ public class RegArimaUtility {
      */
     public <M extends IArimaModel> DoubleSeq olsResiduals(@NonNull RegArimaModel<M> model) {
         LinearModel lm = model.differencedModel().asLinearModel();
-        Ols ols = new Ols();
-        LeastSquaresResults lsr = ols.compute(lm);
+        LeastSquaresResults lsr = Ols.compute(lm);
         return lm.calcResiduals(lsr.getCoefficients());
     }
 

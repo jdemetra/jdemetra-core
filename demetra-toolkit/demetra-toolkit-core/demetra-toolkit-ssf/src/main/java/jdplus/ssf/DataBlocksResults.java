@@ -18,8 +18,7 @@ package jdplus.ssf;
 
 import jdplus.data.DataBlockIterator;
 import jdplus.data.DataBlockStorage;
-import jdplus.maths.matrices.SubMatrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -78,7 +77,7 @@ public class DataBlocksResults {
      * @param t
      * @return
      */
-    public SubMatrix matrix(final int t) {
+    public Matrix matrix(final int t) {
         int st = t - start;
         if (st < 0) {
             return null;
@@ -88,7 +87,7 @@ public class DataBlocksResults {
         }
     }
 
-    public void save(final int t, final FastMatrix P) {
+    public void save(final int t, final Matrix P) {
         int st = t - start;
         if (st < 0) {
             return;

@@ -125,16 +125,6 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
         }
 
         public ConcentratedLikelihoodWithMissing build() {
-//            if (nmissing > 0) {
-//                if (r == null) {
-//                    throw new EcoException(EcoException.UNEXPECTEDOPERATION);
-//                }
-//                double corr = LogSign.of(r.diagonal().extract(0, nmissing)).getValue();
-//                double nldet = ldet + 2 * corr;
-//                return new ConcentratedLikelihoodWithMissing(n - nmissing, nmissing, ssqerr, nldet, res, b, bvar, r, scalingFactor);
-//            } else {
-//                return new ConcentratedLikelihoodWithMissing(n, 0, ssqerr, ldet, res, b, bvar, r, scalingFactor);
-//            }
             return new ConcentratedLikelihoodWithMissing(n - nmissing, nmissing, ssqerr, ldet, res, b, bvar, scalingFactor);
         }
 

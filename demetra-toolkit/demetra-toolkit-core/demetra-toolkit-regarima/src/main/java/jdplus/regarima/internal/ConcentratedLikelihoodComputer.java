@@ -28,10 +28,14 @@ import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.decomposition.Householder;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.data.DoubleSeqCursor;
+import jdplus.data.LogSign;
+import jdplus.leastsquares.QRSolution;
+import jdplus.leastsquares.QRSolver;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
-import jdplus.math.matrices.decomposition.QRDecomposer;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
+import jdplus.math.matrices.decomposition.QRDecomposition;
 
 /**
  *
@@ -41,16 +45,19 @@ import jdplus.math.matrices.decomposition.QRDecomposer;
 public final class ConcentratedLikelihoodComputer {
 
     private final ArmaFilter filter;
-    private final QRDecomposer qr;
-    private final boolean scaling;
+    private final double rcond;
 
     public static final ConcentratedLikelihoodComputer DEFAULT_COMPUTER
-            = new ConcentratedLikelihoodComputer(null, null, true);
+            = new ConcentratedLikelihoodComputer(null);
 
-    public ConcentratedLikelihoodComputer(final ArmaFilter filter, final QRDecomposer qr, final boolean scaling) {
+    public ConcentratedLikelihoodComputer(final ArmaFilter filter) {
         this.filter = filter == null ? new KalmanFilter(true) : filter;
-        this.qr = qr == null ? new Householder() : qr;
-        this.scaling = scaling;
+        this.rcond = 1e-13;
+    }
+
+    public ConcentratedLikelihoodComputer(final ArmaFilter filter, double rcond) {
+        this.filter = filter == null ? new KalmanFilter(true) : filter;
+        this.rcond = rcond;
     }
 
     public <M extends IArimaModel> ConcentratedLikelihoodWithMissing compute(RegArimaModel<M> model) {
@@ -73,14 +80,6 @@ public final class ConcentratedLikelihoodComputer {
 
         DataBlock y = DataBlock.of(dy);
         int n = y.length();
-        double yfactor = 1;
-        if (scaling) {
-            double yn = y.norm2();
-            if (yn != 0) {
-                yfactor = n / yn;
-                y.mul(yfactor);
-            }
-        }
         DataBlock yl = DataBlock.make(nl);
         filter.apply(y, yl);
         int nx = x.getColumnsCount();
@@ -91,9 +90,11 @@ public final class ConcentratedLikelihoodComputer {
                 filter.apply(x.column(i), xl.column(i));
             }
 
-            qr.decompose(xl);
+            HouseholderWithPivoting hous = new HouseholderWithPivoting();
+            QRDecomposition qr = hous.decompose(xl, nm);
+            QRSolution ls = QRSolver.leastSquares(qr, yl, 1e-13);
             ConcentratedLikelihoodWithMissing cll;
-            if (qr.rank() == 0) {
+            if (ls.rank() == 0) {
                 double ssqerr = yl.ssq();
                 double ldet = filter.getLogDeterminant();
                 cll = ConcentratedLikelihoodWithMissing.builder()
@@ -102,20 +103,18 @@ public final class ConcentratedLikelihoodComputer {
                         .ssqErr(ssqerr)
                         .residuals(yl)
                         .build();
-                if (scaling) {
-                    cll = cll.rescale(yfactor, null);
-                }
                 return cll;
             } else {
-                DataBlock b = DataBlock.make(qr.rank());
-                DataBlock res = DataBlock.make(nl - qr.rank());
-                qr.leastSquares(yl, b, res);
-                Matrix R = qr.r(false);
-                double ssqerr = res.ssq();
+                double ssqerr = ls.getSsqErr();
                 double ldet = filter.getLogDeterminant();
-                Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
-                        .inverse(R));
+                // correction for missing
+                if (nm > 0) {
+                    double corr = LogSign.of(qr.rawRdiagonal().extract(0, nm)).getValue();
+                    ldet += 2 * corr;
+                }
 
+                Matrix bvar = ls.unscaledCovariance();
+                DoubleSeq b = ls.getB();
                 cll = ConcentratedLikelihoodWithMissing.builder()
                         .ndata(n)
                         .nmissing(nm)
@@ -123,15 +122,12 @@ public final class ConcentratedLikelihoodComputer {
                         .unscaledCovariance(bvar)
                         .logDeterminant(ldet)
                         .ssqErr(ssqerr)
-                        .residuals(res)
+                        .residuals(ls.getE())
                         .build();
                 DataBlock rel = yl.deepClone();
+                DoubleSeqCursor cursor = b.cursor();
                 for (int i = 0; i < nx; ++i) {
-                    rel.addAY(-b.get(i), xl.column(i));
-                }
-                if (scaling) {
-                    cll = cll.rescale(yfactor, null);
-                    rel.div(yfactor);
+                    rel.addAY(-cursor.getAndNext(), xl.column(i));
                 }
                 return cll;
             }
@@ -144,9 +140,6 @@ public final class ConcentratedLikelihoodComputer {
                     .logDeterminant(ldet)
                     .residuals(yl)
                     .build();
-            if (scaling) {
-                cll = cll.rescale(yfactor, null);
-            }
             return cll;
         }
     }

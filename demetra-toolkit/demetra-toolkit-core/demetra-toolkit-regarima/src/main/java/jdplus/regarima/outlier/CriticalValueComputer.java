@@ -22,6 +22,7 @@ import demetra.stats.ProbabilityType;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.decomposition.Householder;
 import java.util.function.IntToDoubleFunction;
+import jdplus.linearsystem.LinearSystemSolver;
 
 /**
  *
@@ -74,9 +75,7 @@ public class CriticalValueComputer {
                 y[i] = calcVAL(x[i], threshold);
             }
             // solve X b = y
-            Householder qr = new Householder(false);
-            qr.decompose(X);
-            qr.solve(DataBlock.of(y));
+            LinearSystemSolver.robustSolver().solve(X, DataBlock.of(y));
 
             double acv = Math.sqrt(2 * Math.log(n));
             double bcv = (Math.log(Math.log(n)) + Math.log(4 * Math.PI))

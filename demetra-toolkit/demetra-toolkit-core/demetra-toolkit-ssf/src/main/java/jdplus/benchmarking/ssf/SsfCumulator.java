@@ -25,7 +25,7 @@ import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.SsfComponent;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.StateComponent;
 
 /**
@@ -91,7 +91,7 @@ public class SsfCumulator {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
             initialization.diffuseConstraints(b.dropTopLeft(1, 0));
         }
 
@@ -101,12 +101,12 @@ public class SsfCumulator {
         }
 
         @Override
-        public void Pf0(FastMatrix pf0) {
+        public void Pf0(Matrix pf0) {
             initialization.Pf0(pf0.dropTopLeft(1, 1));
         }
 
         @Override
-        public void Pi0(FastMatrix pi0) {
+        public void Pi0(Matrix pi0) {
             initialization.Pi0(pi0.dropTopLeft(1, 1));
         }
 
@@ -144,12 +144,12 @@ public class SsfCumulator {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             dynamics.V(pos, qm.dropTopLeft(1, 1));
         }
 
         @Override
-        public void S(int pos, FastMatrix s) {
+        public void S(int pos, Matrix s) {
             dynamics.S(pos, s.dropTopLeft(1, 0));
         }
 
@@ -159,7 +159,7 @@ public class SsfCumulator {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             dynamics.T(pos, tr.dropTopLeft(1, 1));
             if ((start + pos + 1) % conversion != 0) {
                 loading.Z(pos, tr.row(0).drop(1, 0));
@@ -187,8 +187,8 @@ public class SsfCumulator {
         }
 
         @Override
-        public void TVT(int pos, FastMatrix vm) {
-            FastMatrix v = vm.dropTopLeft(1, 1);
+        public void TVT(int pos, Matrix vm) {
+            Matrix v = vm.dropTopLeft(1, 1);
             if ((start + pos) % conversion == 0) {
                 DataBlock v0 = vm.row(0).drop(1, 0);
                 loading.ZM(pos, v, v0);
@@ -218,7 +218,7 @@ public class SsfCumulator {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             dynamics.addV(pos, p.dropTopLeft(1, 1));
         }
 
@@ -280,13 +280,13 @@ public class SsfCumulator {
         }
 
         @Override
-        public void ZM(int pos, FastMatrix m, DataBlock zm) {
+        public void ZM(int pos, Matrix m, DataBlock zm) {
             if ((start + pos) % conversion == 0) {
                 zm.set(0);
             } else {
                 zm.copy(m.row(0));
             }
-            FastMatrix q = m.dropTopLeft(1, 0);
+            Matrix q = m.dropTopLeft(1, 0);
             DataBlockIterator cols = q.columnsIterator();
             DoubleSeqCursor.OnMutable cur = zm.cursor();
             while (cols.hasNext()) {
@@ -295,8 +295,8 @@ public class SsfCumulator {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix vm) {
-            FastMatrix v = vm.dropTopLeft(1, 1);
+        public double ZVZ(int pos, Matrix vm) {
+            Matrix v = vm.dropTopLeft(1, 1);
             if ((start + pos) % conversion == 0) {
                 return loading.ZVZ(pos, v);
             } else {
@@ -308,8 +308,8 @@ public class SsfCumulator {
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix vm, double d) {
-            FastMatrix v = vm.dropTopLeft(1, 1);
+        public void VpZdZ(int pos, Matrix vm, double d) {
+            Matrix v = vm.dropTopLeft(1, 1);
             loading.VpZdZ(pos, v, d);
             if ((start + pos) % conversion != 0) {
                 vm.add(0, 0, d);
@@ -354,12 +354,12 @@ public class SsfCumulator {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             dynamics.V(pos, qm.dropTopLeft(1, 1));
         }
 
         @Override
-        public void S(int pos, FastMatrix s) {
+        public void S(int pos, Matrix s) {
             dynamics.S(pos, s.dropTopLeft(1, 0));
         }
 
@@ -369,7 +369,7 @@ public class SsfCumulator {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             dynamics.T(pos, tr.dropTopLeft(1, 1));
             loading.Z(pos, tr.row(0).drop(1, 0));
             tr.set(0, 0, 1);
@@ -384,8 +384,8 @@ public class SsfCumulator {
         }
 
         @Override
-        public void TVT(int pos, FastMatrix vm) {
-            FastMatrix v = vm.dropTopLeft(1, 1);
+        public void TVT(int pos, Matrix vm) {
+            Matrix v = vm.dropTopLeft(1, 1);
             DataBlock r0 = vm.row(0).drop(1, 0);
             double zv0 = loading.ZX(pos, r0);
             loading.ZM(pos, v, r0);
@@ -404,7 +404,7 @@ public class SsfCumulator {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             dynamics.addV(pos, p.dropTopLeft(1, 1));
         }
 
@@ -446,9 +446,9 @@ public class SsfCumulator {
         }
 
         @Override
-        public void ZM(int pos, FastMatrix m, DataBlock zm) {
+        public void ZM(int pos, Matrix m, DataBlock zm) {
             zm.copy(m.row(0));
-            FastMatrix q = m.dropTopLeft(1, 0);
+            Matrix q = m.dropTopLeft(1, 0);
             DataBlockIterator cols = q.columnsIterator();
             DoubleSeqCursor.OnMutable cur = zm.cursor();
             while (cols.hasNext()) {
@@ -457,8 +457,8 @@ public class SsfCumulator {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix vm) {
-            FastMatrix v = vm.dropTopLeft(1, 1);
+        public double ZVZ(int pos, Matrix vm) {
+            Matrix v = vm.dropTopLeft(1, 1);
             double r = vm.get(0, 0);
             r += 2 * loading.ZX(pos, vm.row(0).drop(1, 0));
             r += loading.ZVZ(pos, v);
@@ -466,8 +466,8 @@ public class SsfCumulator {
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix vm, double d) {
-            FastMatrix v = vm.dropTopLeft(1, 1);
+        public void VpZdZ(int pos, Matrix vm, double d) {
+            Matrix v = vm.dropTopLeft(1, 1);
             loading.VpZdZ(pos, v, d);
             vm.add(0, 0, d);
             loading.XpZd(pos, vm.column(0).drop(1, 0), d);

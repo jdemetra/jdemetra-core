@@ -21,12 +21,12 @@ import jdplus.arima.IArimaModel;
 import jdplus.math.functions.IFunctionDerivatives;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.NumericalDerivatives;
-import jdplus.maths.functions.ssq.SsqProxyFunctionPoint;
+import jdplus.math.functions.ssq.SsqProxyFunctionPoint;
 import jdplus.math.matrices.Matrix;
 import jdplus.arima.estimation.IArimaMapping;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
-import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
+import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 
 /**
  *

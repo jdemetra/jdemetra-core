@@ -8,13 +8,12 @@ package jdplus.ssf.univariate;
 import jdplus.ssf.ISsfLoading;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ResultsRange;
 import demetra.data.DoubleSeqCursor;
 import jdplus.ssf.State;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -27,7 +26,7 @@ public class FastFilter {
     private final ISsfLoading loading;
     private final ISsfDynamics dynamics;
     private final int start, end;
-    private CanonicalMatrix states;
+    private Matrix states;
     // temporaries
     private DataBlock tmp;
     private DataBlockIterator scols;
@@ -41,12 +40,12 @@ public class FastFilter {
         end = range.getEnd();
     }
 
-    public boolean filter(FastMatrix x) {
+    public boolean filter(Matrix x) {
         if (end - start < x.getRowsCount()) {
             return false;
         }
         int dim = ssf.getStateDim();
-        states = CanonicalMatrix.make(dim, x.getColumnsCount());
+        states = Matrix.make(dim, x.getColumnsCount());
         prepareTmp();
         DataBlockIterator rows = x.rowsIterator();
         int pos = start;
