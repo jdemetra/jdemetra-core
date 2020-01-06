@@ -154,6 +154,8 @@ public class SsfCholette {
 
         @Override
         public void VpZdZ(int pos, Matrix vm, double d) {
+            if (d == 0)
+                return;
             int rpos = pos + def.start;
             vm.add(1, 1, def.mweight2(pos, d));
             if (rpos % def.conversion != 0) {

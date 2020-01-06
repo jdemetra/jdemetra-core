@@ -30,6 +30,7 @@ import jdplus.math.polynomials.RationalFunction;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
+import jdplus.math.matrices.GeneralMatrix;
 import jdplus.math.matrices.Matrix;
 
 
@@ -331,7 +332,7 @@ public class McElroyEstimates {
                 filters_[cmp].apply(U.column(i), V.row(i));
             }
         }
-        Matrix W = V.times(Q);
+        Matrix W = GeneralMatrix.AB(V, Q);
         Matrix D;
         if (ds.degree() > 0) {
             D = Matrix.make(ds.degree() + nf_, n);

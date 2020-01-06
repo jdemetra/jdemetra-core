@@ -5,7 +5,6 @@
  */
 package jdplus.ssf.akf;
 
-import jdplus.ssf.akf.QRFilter;
 import jdplus.ssf.likelihood.MarginalLikelihood;
 import jdplus.arima.ssf.SsfArima;
 import demetra.data.Data;
@@ -41,8 +40,8 @@ public class QRFilterTest {
 
     @Test
     public void testMarginal() {
-        Ssf ssf1 = SsfArima.of(arima1);
-        Ssf ssf2 = SsfArima.of(arima2);
+        Ssf ssf1 = Ssf.of(SsfArima.of(arima1), SsfArima.defaultLoading());
+        Ssf ssf2 = Ssf.of(SsfArima.of(arima2), SsfArima.defaultLoading());
         SsfData ssfData = new SsfData(data);
 
         QRFilter filter = new QRFilter();

@@ -22,7 +22,7 @@ import jdplus.ssf.StateInfo;
 import jdplus.ssf.akf.AugmentedState;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.dk.BaseDiffuseFilteringResults;
-import jdplus.maths.matrices.SubMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -67,7 +67,7 @@ public class DefaultDiffuseSquareRootFilteringResults extends BaseDiffuseFilteri
 
     }
 
-    public SubMatrix B(int pos) {
+    public Matrix B(int pos) {
         return B.matrix(pos);
     }
 

@@ -52,23 +52,18 @@ import jdplus.math.matrices.Matrix;
 @lombok.experimental.UtilityClass
 public class SsfArima {
     
-    public ISsfLoading loading(){
+    public ISsfLoading defaultLoading(){
         return Loading.fromPosition(0);
     }
 
-    public StateComponent stateComponent(IArimaModel arima) {
+    public StateComponent of(IArimaModel arima) {
         if (arima.isStationary()) {
             return ofStationary(arima);
         } else {
             return ofNonStationary(arima);
         }
     }
-
-    public Ssf of(IArimaModel arima) {
-        return Ssf.of(stateComponent(arima), loading(), 0);
-    }
-
-    
+   
     public CkmsFilter.IFastFilterInitializer fastInitializer(IArimaModel arima) {
         return (CkmsState state, UpdateInformation upd, ISsf ssf, ISsfData data) -> {
             if (arima.isStationary()) {

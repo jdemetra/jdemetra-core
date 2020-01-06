@@ -89,9 +89,8 @@ public final class Matrix implements MatrixType.Mutable {
     int start, nrows, ncols;
 
     //<editor-fold defaultstate="collapsed" desc="matrix constructors">
-    
-    public static final Matrix EMPTY=new Matrix(Doubles.EMPTYARRAY, 0, 0);
-    
+    public static final Matrix EMPTY = new Matrix(Doubles.EMPTYARRAY, 0, 0);
+
     public static Matrix square(int n) {
         double[] data = new double[n * n];
         return new Matrix(data, n, n);
@@ -138,7 +137,7 @@ public final class Matrix implements MatrixType.Mutable {
             throw new MatrixException(MatrixException.DIM);
         }
         int start = x.getStartPosition(), n = x.length();
-        return new Matrix(x.getStorage(), start + n, start, n, 1);
+        return new Matrix(x.getStorage(), n, start, n, 1);
     }
 
     /**
@@ -187,19 +186,28 @@ public final class Matrix implements MatrixType.Mutable {
         return new Matrix(storage, lda, start, nrows, ncols);
     }
 
+    /**
+     * Creates a sub-matrix
+     *
+     * @param r0 starting row
+     * @param nr number of rows
+     * @param c0 starting column
+     * @param nc number of columns
+     * @return
+     */
     @Override
     public Matrix extract(int r0, int nr, int c0, int nc) {
         return new Matrix(storage, lda, start + r0 + c0 * lda, nr, nc);
     }
 
     public Matrix dropTopLeft(int nr, int nc) {
-        return new Matrix(storage, lda, start + nr + nc * lda, nrows-nr, ncols-nc);
+        return new Matrix(storage, lda, start + nr + nc * lda, nrows - nr, ncols - nc);
     }
 
     public Matrix dropBottomRight(int nr, int nc) {
-        return new Matrix(storage, lda, start, nrows-nr, ncols-nc);
+        return new Matrix(storage, lda, start, nrows - nr, ncols - nc);
     }
-    
+
     //<editor-fold defaultstate="collapsed" desc="diagnistics">
     public boolean isFull() {
         return start == 0 && lda == nrows;
@@ -572,7 +580,7 @@ public final class Matrix implements MatrixType.Mutable {
         double s = 0;
         if (isFull()) {
             for (int i = 0; i < storage.length; ++i) {
-                s += storage[i]*storage[i];
+                s += storage[i] * storage[i];
             }
         } else {
             DataBlockIterator cols = columnsIterator();
@@ -655,6 +663,18 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
+    public void addTranspose(Matrix M) {
+        if (nrows != M.ncols || ncols != M.nrows) {
+            throw new MatrixException(MatrixException.DIM);
+        }
+        int end = start + ncols * lda;
+        for (int i0 = start, i1 = start + nrows, j0 = M.start; i0 < end; i0 += lda, i1 += lda, ++j0) {
+            for (int k = i0, l = j0; k < i1; ++k, l += M.lda) {
+                storage[k] += M.storage[l];
+            }
+        }
+    }
+
     public void add(double d) {
         if (d != 0) {
             if (isFull()) {
@@ -701,6 +721,18 @@ public final class Matrix implements MatrixType.Mutable {
                 for (int k = i0, l = j0; k < i1; ++k, ++l) {
                     storage[k] -= M.storage[l];
                 }
+            }
+        }
+    }
+
+    public void subTranspose(Matrix M) {
+        if (nrows != M.ncols || ncols != M.nrows) {
+            throw new MatrixException(MatrixException.DIM);
+        }
+        int end = start + ncols * lda;
+        for (int i0 = start, i1 = start + nrows, j0 = M.start; i0 < end; i0 += lda, i1 += lda, ++j0) {
+            for (int k = i0, l = j0; k < i1; ++k, l += M.lda) {
+                storage[k] -= M.storage[l];
             }
         }
     }
@@ -784,66 +816,6 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
-    /**
-     * This = This + X*Y
-     *
-     * @param X
-     * @param Y
-     */
-    @Deprecated
-    public final void addXY(final Matrix X, final Matrix Y) {
-        // Raw gaxpy implementation
-        int cmax = X.storage.length, rnrows = Y.nrows, nmax = storage.length;
-
-        for (int cpos = 0, cend = nrows, rpos = 0; cpos < cmax; ++rpos) {
-            for (int pos = 0, mpos = rpos; pos < nmax; mpos += rnrows) {
-                double rc = Y.storage[mpos];
-                if (rc != 0) {
-                    int lpos = cpos;
-                    while (lpos < cend) {
-                        storage[pos++] += X.storage[lpos++] * rc;
-                    }
-                } else {
-                    pos += nrows;
-                }
-            }
-            cpos = cend;
-            cend += nrows;
-        }
-    }
-
-    /**
-     * This = This + a X*X'. This matrix must be a square matrix
-     *
-     * @param a Scalar
-     * @param x Array. Length equal to the number of rows of this matrix
-     */
-    @Deprecated
-    public void addXaXt(final double a, final DataBlock x) {
-        if (a == 0) {
-            return;
-        }
-        double[] px = x.getStorage();
-        int xinc = x.getIncrement();
-        int x0 = x.getStartPosition(), x1 = x.getEndPosition();
-
-        // Raw gaxpy implementation
-        for (int pos = start, ypos = x0; ypos != x1; ypos += xinc, pos += lda) {
-            double yc = a * px[ypos];
-            if (yc != 0) {
-                if (xinc == 1) {
-                    for (int xpos = x0, cpos = pos; xpos < x1; ++cpos, ++xpos) {
-                        storage[cpos] += yc * px[xpos];
-                    }
-                } else {
-                    for (int xpos = x0, cpos = pos; xpos != x1; ++cpos, xpos += xinc) {
-                        storage[cpos] += yc * px[xpos];
-                    }
-                }
-            }
-        }
-    }
-
     public void addAY(double alpha, Matrix Y) {
         if (alpha == 0) {
             return;
@@ -868,30 +840,40 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
-    @Deprecated
-    public void addXYt(final DataBlock x, final DataBlock y) {
+    public void addXaYt(final double a, final DataBlock x, final DataBlock y) {
+        if (a == 0) {
+            return;
+        }
         double[] px = x.getStorage(), py = y.getStorage();
         int xinc = x.getIncrement(), yinc = y.getIncrement();
-        int x0 = x.getStartPosition(), x1 = x.getEndPosition(), y0 = y.getStartPosition();
-        int nmax = storage.length;
+        int x0 = x.getStartPosition(), x1 = x.getEndPosition(), y0 = y.getStartPosition(), y1 = y.getEndPosition();
 
         // Raw gaxpy implementation
-        for (int pos = 0, ypos = y0; pos < nmax; ypos += yinc) {
+        for (int pos = start, ypos = y0; ypos != y1; ypos += yinc, pos += lda) {
             double yc = py[ypos];
             if (yc != 0) {
+                yc *= a;
                 if (xinc == 1) {
-                    for (int xpos = x0; xpos < x1; ++pos, ++xpos) {
-                        storage[pos] += yc * px[xpos];
+                    for (int xpos = x0, cpos = pos; xpos < x1; ++cpos, ++xpos) {
+                        storage[cpos] += yc * px[xpos];
                     }
                 } else {
-                    for (int xpos = x0; xpos != x1; ++pos, xpos += xinc) {
-                        storage[pos] += yc * px[xpos];
+                    for (int xpos = x0, cpos = pos; xpos != x1; ++cpos, xpos += xinc) {
+                        storage[cpos] += yc * px[xpos];
                     }
                 }
-            } else {
-                pos += nrows;
             }
         }
+    }
+
+    /**
+     * This = This + a X*X'. This matrix must be a square matrix
+     *
+     * @param a Scalar
+     * @param x Array. Length equal to the number of rows of this matrix
+     */
+    public void addXaXt(final double a, final DataBlock x) {
+        addXaYt(a,x,x);
     }
 
     public Matrix inv() {
@@ -1008,13 +990,6 @@ public final class Matrix implements MatrixType.Mutable {
 
     //</editor-fold>
     //</editor-fold>
-    @Deprecated
-    public Matrix times(Matrix B) {
-        Matrix AB = new Matrix(nrows, B.ncols);
-        AB.addXY(this, B);
-        return AB;
-    }
-
     public Matrix plus(Matrix B) {
         Matrix AB = deepClone();
         AB.add(B);

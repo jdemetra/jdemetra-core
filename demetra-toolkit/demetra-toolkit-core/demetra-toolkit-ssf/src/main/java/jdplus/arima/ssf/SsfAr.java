@@ -12,7 +12,7 @@ import demetra.data.DoubleSeqCursor;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.ssf.SsfComponent;
+import jdplus.ssf.StateComponent;
 import jdplus.ssf.implementations.Loading;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.math.matrices.Matrix;
@@ -29,7 +29,7 @@ import jdplus.ssf.StateComponent;
 @lombok.experimental.UtilityClass
 public class SsfAr {
 
-    public SsfComponent of(@NonNull double[] ar, double var, int nlags) {
+    public StateComponent of(@NonNull double[] ar, double var, int nlags) {
         return of(ar, var, nlags, false);
     }
 
@@ -40,18 +40,7 @@ public class SsfAr {
      * @param zeroinit Zero initialization. Should be false by default
      * @return
      */
-    public SsfComponent of(@NonNull double[] ar, double var, int nlags, boolean zeroinit) {
-        if (ar.length == 0) {
-            throw new IllegalArgumentException();
-        }
-        if (nlags < ar.length) {
-            nlags = ar.length;
-        }
-        Data data = new Data(ar, var, nlags+1);
-        return new SsfComponent(new Initialization(data, zeroinit), new Dynamics(data), Loading.fromPosition(0));
-    }
-
-    public StateComponent stateComponent(@NonNull double[] ar, double var, int nlags, boolean zeroinit) {
+    public StateComponent of(@NonNull double[] ar, double var, int nlags, boolean zeroinit) {
         if (ar.length == 0) {
             throw new IllegalArgumentException();
         }
@@ -61,8 +50,8 @@ public class SsfAr {
         Data data = new Data(ar, var, nlags+1);
         return new StateComponent(new Initialization(data, zeroinit), new Dynamics(data));
     }
-    
-    public ISsfLoading loading(){
+
+    public ISsfLoading defaultLoading(){
         return Loading.fromPosition(0);
     }
 

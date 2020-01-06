@@ -50,6 +50,10 @@ public class QRSolution {
     public DoubleSeq rawRDiagonal(){
         return qr.rawRdiagonal();
     }
+    
+    public int[] pivot(){
+        return qr.pivot();
+    }
 
     public Matrix unscaledCovariance() {
         int[] pivot = qr.pivot();

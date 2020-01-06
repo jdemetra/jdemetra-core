@@ -30,7 +30,7 @@ public class GeneralMatrix {
      * @param y
      * @param A 
      */
-    public void aXY_pA(double alpha, DataBlock x, DataBlock y, Matrix A){
+    public void aXYt_p_A(double alpha, DataBlock x, DataBlock y, Matrix A){
         GER.apply(alpha, DataPointer.of(x), DataPointer.of(y), A);
     }
     

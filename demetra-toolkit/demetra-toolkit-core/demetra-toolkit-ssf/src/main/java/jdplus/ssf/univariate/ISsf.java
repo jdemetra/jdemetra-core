@@ -21,7 +21,7 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.ssf.SsfComponent;
+import jdplus.ssf.StateComponent;
 import jdplus.ssf.ISsfState;
 import jdplus.math.matrices.Matrix;
 
@@ -46,9 +46,6 @@ public interface ISsf extends ISsfState {
         return measurement().error();
     }
     
-    default SsfComponent asComponent(){
-        return new SsfComponent(initialization(), dynamics(), loading());
-    }
     
 
 //<editor-fold defaultstate="collapsed" desc="auxiliary operations">

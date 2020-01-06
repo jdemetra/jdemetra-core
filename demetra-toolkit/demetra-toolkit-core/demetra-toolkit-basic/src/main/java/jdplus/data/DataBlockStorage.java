@@ -199,7 +199,7 @@ public class DataBlockStorage {
     /**
      * Gets a matrix representation of the saved data blocks, from the position reader (included)
  to the position end (excluded). 
-     * The successive data blocks are stored in the columns copyOf the sub-matrix
+     * The successive data blocks are stored in the columns of the sub-matrix
      * @param start First position (included)
      * @param end Last position (excluded)
      * @return

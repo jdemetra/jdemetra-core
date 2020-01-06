@@ -16,13 +16,12 @@
  */
 package jdplus.ssf.implementations;
 
-import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.ssf.univariate.ISsfMeasurement;
 import jdplus.ssf.multivariate.ISsfMeasurements;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.multivariate.ISsfErrors;
 import jdplus.ssf.univariate.ISsfError;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -30,7 +29,7 @@ import jdplus.maths.matrices.FastMatrix;
  */
 public class TimeInvariantMeasurements implements ISsfMeasurements {
 
-    private final CanonicalMatrix Z;
+    private final Matrix Z;
     private final ISsfErrors errors;
 
     public static TimeInvariantMeasurements of(int dim, ISsfMeasurements measurements) {
@@ -38,7 +37,7 @@ public class TimeInvariantMeasurements implements ISsfMeasurements {
             return null;
         }
         int m = measurements.getCount();
-        CanonicalMatrix Z = CanonicalMatrix.make(m, dim);
+        Matrix Z = Matrix.make(m, dim);
         for (int i = 0; i < m; ++i) {
             measurements.loading(i).Z(0, Z.row(i));
         }
@@ -46,8 +45,8 @@ public class TimeInvariantMeasurements implements ISsfMeasurements {
         if (errors == null) {
             return new TimeInvariantMeasurements(Z, null, null);
         }
-        CanonicalMatrix H = CanonicalMatrix.square(m);
-        CanonicalMatrix R = CanonicalMatrix.square(m);
+        Matrix H = Matrix.square(m);
+        Matrix R = Matrix.square(m);
         errors.H(0, H);
         errors.R(0, R);
         return new TimeInvariantMeasurements(Z, H, R);
@@ -58,22 +57,22 @@ public class TimeInvariantMeasurements implements ISsfMeasurements {
         if (!measurement.isTimeInvariant()) {
             return null;
         }
-        CanonicalMatrix Z = CanonicalMatrix.make(1, dim);
+        Matrix Z = Matrix.make(1, dim);
         measurement.loading().Z(0, Z.row(0));
         ISsfError error = measurement.error();
         if (error == null) {
             return new TimeInvariantMeasurements(Z, null, null);
         }
         double v = error.at(0);
-        CanonicalMatrix H = CanonicalMatrix.square(1);
+        Matrix H = Matrix.square(1);
         H.set(0, 0, v);
-        CanonicalMatrix R = CanonicalMatrix.square(1);
+        Matrix R = Matrix.square(1);
         R.set(0, 0, Math.sqrt(v));
         return new TimeInvariantMeasurements(Z, H, R);
 
     }
 
-    public TimeInvariantMeasurements(CanonicalMatrix Z, CanonicalMatrix H, CanonicalMatrix R) {
+    public TimeInvariantMeasurements(Matrix Z, Matrix H, Matrix R) {
         this.Z = Z;
         if (H == null && R == null) {
             errors = null;

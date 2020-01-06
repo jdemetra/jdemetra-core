@@ -22,9 +22,10 @@ import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.implementations.Loading;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.ssf.SsfComponent;
+import jdplus.ssf.StateComponent;
 import jdplus.arima.ssf.AR1.Data;
 import jdplus.math.matrices.Matrix;
+import jdplus.ssf.ISsfLoading;
 
 /**
  * Ssf for (1 1 0) ARIMA models.
@@ -43,14 +44,18 @@ import jdplus.math.matrices.Matrix;
 @lombok.experimental.UtilityClass
 public class Arima_1_1_0 {
 
-    public SsfComponent of(final double rho) {
+    public StateComponent of(final double rho) {
         Data data = new Data(rho, 1, false);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.sum());
+        return new StateComponent(new Initialization(data), new Dynamics(data));
     }
 
-    public SsfComponent of(final double rho, final double var, final boolean zeroinit) {
+    public StateComponent of(final double rho, final double var, final boolean zeroinit) {
         Data data = new Data(rho, var, zeroinit);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.sum());
+        return new StateComponent(new Initialization(data), new Dynamics(data));
+    }
+    
+    public static ISsfLoading defaultLoading(){
+        return Loading.sum();
     }
 
     static class Initialization implements ISsfInitialization {

@@ -18,17 +18,16 @@ package jdplus.ssf.akf;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.ssf.IPredictionErrorDecomposition;
 import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.multivariate.IMultivariateSsf;
 import jdplus.ssf.multivariate.IMultivariateSsfData;
-import demetra.data.LogSign;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.decomposition.ElementaryTransformations;
+import jdplus.data.LogSign;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.ElementaryTransformations;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
-import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -49,7 +48,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
     // -s = a * b'
     // s' * S^-1 * s = b * a' * S^-1 * a * b' = b * b'
     // q - s' * S^-1 * s = c * c
-    private CanonicalMatrix Q, B;
+    private Matrix Q, B;
     private int n, nd;
     
     /**
@@ -80,10 +79,11 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         // update the state vector
         B = state.B().deepClone();
         int d = B.getColumnsCount();
-        CanonicalMatrix S = a().deepClone();
-        LowerTriangularMatrix.rsolve(S, B.transpose());
+        Matrix S = a().deepClone();
+        // B' = S X' <-> XS'=B
+        LowerTriangularMatrix.solveXLt(S, B);
         DataBlock D = DataBlock.of(b());
-        LowerTriangularMatrix.lsolve(S, D);
+        LowerTriangularMatrix.solvexL(S, D);
         for (int i = 0; i < d; ++i) {
             DataBlock col = B.column(i);
             state.a().addAY(-Q.get(d, i), col);
@@ -93,7 +93,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         return true;
     }
 
-    public FastMatrix a() {
+    public Matrix a() {
         return Q.extract(0, nd, 0, nd);
     }
 
@@ -109,7 +109,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
      * B*a^-1'
      * @return 
      */
-    public CanonicalMatrix B(){
+    public Matrix B(){
         return B;
     }
 
@@ -121,15 +121,15 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         this.det=0;
         this.n = 0;
         this.nd = nd;
-        Q = CanonicalMatrix.make(nd + 1, nd + 1+nvars);
+        Q = Matrix.make(nd + 1, nd + 1+nvars);
     }
 
     @Override
     public void save(final int t, final MultivariateAugmentedUpdateInformation pe) {
         DataBlock U = pe.getTransformedPredictionErrors();
-        CanonicalMatrix L=pe.getCholeskyFactor();
+        Matrix L=pe.getCholeskyFactor();
         DataBlock D=L.diagonal();
-        FastMatrix E = pe.E();
+        Matrix E = pe.E();
         int nvars=E.getColumnsCount();
         n+=nvars;
         LogSign sld = LogSign.of(D);
@@ -139,7 +139,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
         ElementaryTransformations.fastGivensTriangularize(Q);
     }
 
-    public FastMatrix getFinalQ() {
+    public Matrix getFinalQ() {
         return Q;
     }
 

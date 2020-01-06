@@ -17,7 +17,6 @@
 package demetra.arima.spi;
 
 import demetra.arima.ArimaModel;
-import demetra.arima.ArimaType;
 import demetra.arima.UcarimaModel;
 import demetra.design.Algorithm;
 import nbbrd.service.ServiceDefinition;
@@ -43,35 +42,35 @@ public class Arima {
         return PROCESSOR.get();
     }
 
-    public IntToDoubleFunction autoCovarianceFunction(ArimaType process) {
+    public IntToDoubleFunction autoCovarianceFunction(ArimaModel process) {
         return PROCESSOR.get().autoCovarianceFunction(process);
     }
 
-    public DoubleUnaryOperator pseudoSpectrum(ArimaType process) {
+    public DoubleUnaryOperator pseudoSpectrum(ArimaModel process) {
         return PROCESSOR.get().pseudoSpectrum(process);
     }
 
-    public IntToDoubleFunction piWeights(ArimaType process) {
+    public IntToDoubleFunction piWeights(ArimaModel process) {
         return PROCESSOR.get().piWeights(process);
     }
 
-    public IntToDoubleFunction psiWeights(ArimaType process) {
+    public IntToDoubleFunction psiWeights(ArimaModel process) {
         return PROCESSOR.get().psiWeights(process);
     }
 
-    public ArimaModel plus(ArimaType left, ArimaType right) {
+    public ArimaModel plus(ArimaModel left, ArimaModel right) {
         return PROCESSOR.get().plus(left, right);
     }
 
-    public ArimaModel minus(ArimaType left, ArimaType right) {
+    public ArimaModel minus(ArimaModel left, ArimaModel right) {
         return PROCESSOR.get().minus(left, right);
     }
 
-    public ArimaModel plus(ArimaType left, double noise) {
+    public ArimaModel plus(ArimaModel left, double noise) {
         return PROCESSOR.get().plus(left, noise);
     }
 
-    public ArimaType minus(ArimaType left, double noise) {
+    public ArimaModel minus(ArimaModel left, double noise) {
         return PROCESSOR.get().minus(left, noise);
     }
 
@@ -83,21 +82,21 @@ public class Arima {
     @Algorithm
     public static interface Processor {
 
-        IntToDoubleFunction autoCovarianceFunction(ArimaType process);
+        IntToDoubleFunction autoCovarianceFunction(ArimaModel process);
 
-        DoubleUnaryOperator pseudoSpectrum(ArimaType process);
+        DoubleUnaryOperator pseudoSpectrum(ArimaModel process);
 
-        IntToDoubleFunction piWeights(ArimaType process);
+        IntToDoubleFunction piWeights(ArimaModel process);
 
-        IntToDoubleFunction psiWeights(ArimaType process);
+        IntToDoubleFunction psiWeights(ArimaModel process);
 
-        ArimaModel plus(ArimaType left, ArimaType right);
+        ArimaModel plus(ArimaModel left, ArimaModel right);
 
-        ArimaModel minus(ArimaType left, ArimaType right);
+        ArimaModel minus(ArimaModel left, ArimaModel right);
 
-        ArimaModel plus(ArimaType left, double noise);
+        ArimaModel plus(ArimaModel left, double noise);
 
-        ArimaModel minus(ArimaType left, double noise);
+        ArimaModel minus(ArimaModel left, double noise);
 
         UcarimaModel doCanonical(UcarimaModel ucarima);
 

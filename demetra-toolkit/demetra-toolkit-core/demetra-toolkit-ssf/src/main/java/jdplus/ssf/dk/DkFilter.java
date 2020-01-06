@@ -19,7 +19,7 @@ package jdplus.ssf.dk;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.ISsfDynamics;
@@ -48,7 +48,7 @@ public class DkFilter  {
         return normalized;
     }
 
-    public boolean filter(CanonicalMatrix x) {
+    public boolean filter(Matrix x) {
         if (x.getColumnsCount() == 1) {
             return new FastDiffuseFilter1().filter(x.column(0), normalized);
         } else {
@@ -76,17 +76,17 @@ public class DkFilter  {
 
     class FastDiffuseFilterN {
 
-        private CanonicalMatrix states;
+        private Matrix states;
         // temporaries
         private DataBlock tmp;
         private DataBlockIterator scols;
 
-        boolean filter(CanonicalMatrix x, boolean normalized) {
+        boolean filter(Matrix x, boolean normalized) {
             if (x.getRowsCount() > end - start) {
                 return false;
             }
             int dim = ssf.getStateDim();
-            states = CanonicalMatrix.make(dim, x.getColumnsCount());
+            states = Matrix.make(dim, x.getColumnsCount());
             prepareTmp();
             DataBlockIterator rows = x.rowsIterator();
             int pos = start;

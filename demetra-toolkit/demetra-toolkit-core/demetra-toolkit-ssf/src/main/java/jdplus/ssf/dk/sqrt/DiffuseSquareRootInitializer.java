@@ -18,7 +18,7 @@ package jdplus.ssf.dk.sqrt;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.matrices.decomposition.ElementaryTransformations;
+import jdplus.math.matrices.decomposition.ElementaryTransformations;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.SsfException;
@@ -32,7 +32,7 @@ import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.OrdinaryFilter;
 import jdplus.ssf.univariate.ISsfMeasurement;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  * Mixed algorithm based on the diffuse initializer copyOf Durbin-Koopman and on
@@ -46,10 +46,10 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
 
     public interface Transformation {
 
-        void transform(DataBlock row, FastMatrix A);
+        void transform(DataBlock row, Matrix A);
     }
 
-    private Transformation fn = (DataBlock row, FastMatrix A) -> ElementaryTransformations.fastRowGivens(row, A);
+    private Transformation fn = (DataBlock row, Matrix A) -> ElementaryTransformations.fastRowGivens(row, A);
     private final IDiffuseSquareRootFilteringResults results;
     private AugmentedState astate;
     private DiffuseUpdateInformation pe;
@@ -179,7 +179,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
         if (f != 0) {
             double e = pe.get();
             DataBlock C = pe.M();
-            FastMatrix P = astate.P();
+            Matrix P = astate.P();
             P.addXaXt(-1 / f, C);
             // state
             // a0 = a0 + f1*Mi*v0.
@@ -257,7 +257,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
         DataBlock C = pe.M();
         loading.ZM(t, astate.P(), C);
         if (pe.isDiffuse()) {
-            FastMatrix B = constraints();
+            Matrix B = constraints();
             fn.transform(z, B);
             pe.Mi().setAY(z.get(0), B.column(0));
             // move right
@@ -278,12 +278,12 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
     private void preArray() {
         DataBlock zconstraints = zconstraints();
         zconstraints.set(0);
-        FastMatrix A = constraints();
+        Matrix A = constraints();
         loading.ZM(t, A, zconstraints);
         //dynamics.TM(pos, A);
     }
 
-    private FastMatrix constraints() {
+    private Matrix constraints() {
         return astate.B();
     }
 

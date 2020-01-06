@@ -16,9 +16,8 @@
  */
 package jdplus.benchmarking.ssf;
 
-import jdplus.benchmarking.ssf.SsfSpline;
 import jdplus.data.DataBlockStorage;
-import jdplus.maths.functions.CubicSpline;
+import jdplus.math.functions.CubicSpline;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.ISsf;

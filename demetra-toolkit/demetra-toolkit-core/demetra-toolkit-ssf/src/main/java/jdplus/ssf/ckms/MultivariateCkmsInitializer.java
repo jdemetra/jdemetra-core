@@ -29,7 +29,7 @@ import jdplus.ssf.array.LState;
 import jdplus.ssf.multivariate.IMultivariateSsf;
 import jdplus.ssf.multivariate.IMultivariateSsfData;
 import jdplus.ssf.multivariate.MultivariateUpdateInformation;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *

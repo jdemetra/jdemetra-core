@@ -18,9 +18,9 @@ package jdplus.ssf.dk;
 
 import jdplus.data.DataBlock;
 import jdplus.dstats.Normal;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.random.JdkRNG;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.univariate.ISsf;
@@ -28,7 +28,7 @@ import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.ISsfMeasurement;
-import demetra.random.RandomNumberGenerator;
+import jdplus.random.RandomNumberGenerator;
 
 /**
  *
@@ -49,7 +49,7 @@ public class RandomGenerator {
 
     private static final double EPS = 1e-8;
 
-    private CanonicalMatrix LA;
+    private Matrix LA;
     private final ISsf ssf;
     private final ISsfDynamics dynamics;
     private final ISsfLoading loading;
@@ -78,7 +78,7 @@ public class RandomGenerator {
 
     private void initSsf() {
         int dim = ssf.getStateDim();
-        LA = CanonicalMatrix.square(dim);
+        LA = Matrix.square(dim);
         ssf.initialization().Pf0(LA);
         SymmetricMatrix.lcholesky(LA, EPS);
 
@@ -95,7 +95,7 @@ public class RandomGenerator {
 
     private void generateInitialState(DataBlock a) {
         fillRandoms(a);
-        LowerTriangularMatrix.rmul(LA, a);
+        LowerTriangularMatrix.Lx(LA, a);
         // generate diffuse elements
         double std = Math.sqrt(svar);
         a.mul(std);
@@ -105,7 +105,7 @@ public class RandomGenerator {
             fillRandoms(b);
             double dstd = Math.sqrt(dvar);
             b.mul(dstd);
-            CanonicalMatrix B= CanonicalMatrix.make(a.length(), b.length());
+            Matrix B= Matrix.make(a.length(), b.length());
             initialization.diffuseConstraints(B);
             a.addProduct(B.rowsIterator(), b);
         }

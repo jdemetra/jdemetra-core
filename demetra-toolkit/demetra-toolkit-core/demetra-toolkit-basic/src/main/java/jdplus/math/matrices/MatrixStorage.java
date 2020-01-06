@@ -92,7 +92,7 @@ public class MatrixStorage {
      * @return
      */
     public Matrix matrix(final int pos) {
-        return new Matrix(m_data, m_size * pos, m_nr, m_nr, m_nc);
+        return new Matrix(m_data, m_nr, m_size * pos, m_nr, m_nc);
     }
     
     public DataBlock item(final int row, final int col){

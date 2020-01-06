@@ -29,7 +29,6 @@ import jdplus.math.matrices.Matrix;
  */
 public class CompositeLoading implements ISsfLoading {
 
-
     private final ISsfLoading[] loadings;
     private final int[] dim;
     private final DataBlock tmp;
@@ -96,6 +95,9 @@ public class CompositeLoading implements ISsfLoading {
 
     @Override
     public void VpZdZ(int pos, Matrix V, double d) {
+        if (d == 0) {
+            return;
+        }
         tmp.set(0);
         Z(pos, tmp);
         DataBlockIterator cols = V.columnsIterator();

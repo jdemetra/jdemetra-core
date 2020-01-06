@@ -19,21 +19,20 @@ package jdplus.ssf.implementations;
 import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfLoading;
 import java.util.function.IntToDoubleFunction;
-import jdplus.ssf.univariate.ISsfMeasurement;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public class WeightedLoading implements ISsfLoading {
-    
-    public static WeightedLoading of(final ISsfLoading loading, final IntToDoubleFunction weights){
+
+    public static WeightedLoading of(final ISsfLoading loading, final IntToDoubleFunction weights) {
         return new WeightedLoading(loading, weights, false);
     }
 
-     public static WeightedLoading of(final ISsfLoading loading, final double w){
-        return new WeightedLoading(loading, i->w, true);
+    public static WeightedLoading of(final ISsfLoading loading, final double w) {
+        return new WeightedLoading(loading, i -> w, true);
     }
 
     private final IntToDoubleFunction weights;
@@ -43,7 +42,7 @@ public class WeightedLoading implements ISsfLoading {
     private WeightedLoading(final ISsfLoading loading, final IntToDoubleFunction weights, final boolean timeInvariant) {
         this.weights = weights;
         this.loading = loading;
-        this.timeInvariantWeights=timeInvariant ;
+        this.timeInvariantWeights = timeInvariant;
     }
 
     public IntToDoubleFunction getWeights() {
@@ -62,13 +61,16 @@ public class WeightedLoading implements ISsfLoading {
     }
 
     @Override
-    public double ZVZ(int pos, FastMatrix V) {
+    public double ZVZ(int pos, Matrix V) {
         double w = weights.applyAsDouble(pos);
         return loading.ZVZ(pos, V) * w * w;
     }
 
     @Override
-    public void VpZdZ(int pos, FastMatrix V, double d) {
+    public void VpZdZ(int pos, Matrix V, double d) {
+        if (d == 0) {
+            return;
+        }
         double w = weights.applyAsDouble(pos);
         loading.VpZdZ(pos, V, w * w * d);
     }

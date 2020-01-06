@@ -20,7 +20,6 @@ import jdplus.ssf.StateInfo;
 import jdplus.ssf.akf.AugmentedState;
 import jdplus.ssf.dk.DiffuseUpdateInformation;
 import jdplus.ssf.dk.IBaseDiffuseFilteringResults;
-import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

@@ -32,6 +32,8 @@ import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.OrdinaryFilter;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import demetra.data.DoubleSeq;
+import jdplus.leastsquares.QRSolution;
+import jdplus.leastsquares.QRSolver;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.decomposition.Householder2;
 import jdplus.math.matrices.decomposition.QRDecomposition;
@@ -51,6 +53,8 @@ public class QRFilter {
     private Matrix R, X, Xl;
     private DataBlock yl, b, e;
     private double ldet, ssq, dcorr, pcorr, mcorr;
+
+    private static final double EPS = 1e-12;
 
     /**
      *
@@ -147,7 +151,7 @@ public class QRFilter {
         }
         QRDecomposition qrx = new Householder2().decompose(Q);
         mcorr = 2 * LogSign.of(qrx.rawRdiagonal()).getValue();
-        int nd = qrx.rank(), n = Xl.getRowsCount();
+        int nd = UpperTriangularMatrix.rank(qrx.rawR(), EPS), n = Xl.getRowsCount();
 
         mll = MarginalLikelihood.builder(n, nd)
                 .ssqErr(ssq)
@@ -159,14 +163,13 @@ public class QRFilter {
     }
 
     private void calcDLL() {
-        Householder hous = new Householder(Xl);
-        b = DataBlock.make(hous.rank());
+        QRSolution ls = QRSolver.robustLeastSquares(yl, Xl);
+        b = DataBlock.of(ls.getB());
+        e = DataBlock.of(ls.getE());
         int nd = b.length(), n = Xl.getRowsCount();
-        e = DataBlock.make(n - nd);
-        hous.leastSquares(yl, b, e);
-        ssq = e.ssq();
-        dcorr = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
-        R = hous.r(true);
+        ssq = ls.getSsqErr();
+        dcorr = 2 * LogSign.of(ls.rawRDiagonal()).getValue();
+        R = ls.rawR();
         dll = DiffuseLikelihood.builder(n, nd)
                 .ssqErr(ssq)
                 .logDeterminant(ldet)

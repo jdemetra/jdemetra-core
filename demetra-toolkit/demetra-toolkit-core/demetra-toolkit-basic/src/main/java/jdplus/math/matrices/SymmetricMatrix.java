@@ -281,7 +281,7 @@ public class SymmetricMatrix {
     }
 
     public void XSXt(final Matrix S, final Matrix X, final Matrix M) {
-        Matrix XS = X.times(S);
+        Matrix XS = GeneralMatrix.AB(X, S);
         DataBlockIterator xsrows = XS.rowsIterator(), xtcols = X.rowsIterator(), mcols = M.columnsIterator();
         int c = 0;
         while (xtcols.hasNext()) {
@@ -312,7 +312,7 @@ public class SymmetricMatrix {
     }
 
     public void XtSX(Matrix S, Matrix X, Matrix M) {
-        Matrix SX = S.times(X);
+        Matrix SX = GeneralMatrix.AB(S, X);
         DataBlockIterator sxcols = SX.columnsIterator(), xtrows = X.columnsIterator(), mcols = M.columnsIterator();
         int c = 0;
         while (sxcols.hasNext()) {

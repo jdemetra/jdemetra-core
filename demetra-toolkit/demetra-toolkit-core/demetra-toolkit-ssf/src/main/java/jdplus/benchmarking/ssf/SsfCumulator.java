@@ -23,8 +23,6 @@ import demetra.design.Development;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfLoading;
-import jdplus.ssf.univariate.Ssf;
-import jdplus.ssf.SsfComponent;
 import jdplus.math.matrices.Matrix;
 import jdplus.ssf.StateComponent;
 
@@ -36,31 +34,15 @@ import jdplus.ssf.StateComponent;
 @lombok.experimental.UtilityClass
 public class SsfCumulator {
 
-    public Ssf of(SsfComponent s, int conversion) {
+    public StateComponent of(StateComponent s, ISsfLoading loading, int conversion, int start) {
         if (conversion == 0) {
-            return Ssf.of(new Initialization(s.initialization()), new CDynamics(s.dynamics(), s.loading()), new CLoading(s.loading()));
+            return new StateComponent(new Initialization(s.initialization()), new CDynamics(s.dynamics(), loading));
         } else {
-            return Ssf.of(new Initialization(s.initialization()), new Dynamics(s.dynamics(), s.loading(), conversion), new Loading(s.loading(), conversion));
-        }
-    }
-
-    public Ssf of(SsfComponent s, int conversion, int start) {
-        if (conversion == 0) {
-            return Ssf.of(new Initialization(s.initialization()), new CDynamics(s.dynamics(), s.loading()), new CLoading(s.loading()));
-        } else {
-            return Ssf.of(new Initialization(s.initialization()), new Dynamics(s.dynamics(), s.loading(), conversion, start), new Loading(s.loading(), conversion, start));
-        }
-    }
-
-    public StateComponent stateComponent(StateComponent s, ISsfLoading l, int conversion, int start) {
-        if (conversion == 0) {
-            return new StateComponent(new Initialization(s.initialization()), new CDynamics(s.dynamics(), l));
-        } else {
-            return new StateComponent(new Initialization(s.initialization()), new Dynamics(s.dynamics(), l, conversion, start));
+            return new StateComponent(new Initialization(s.initialization()), new Dynamics(s.dynamics(), loading, conversion, start));
         }
     }
     
-    public ISsfLoading loading(ISsfLoading l, int conversion, int start){
+    public ISsfLoading defaultLoading(ISsfLoading l, int conversion, int start){
         if (conversion == 0)
             return new CLoading(l);
         else
@@ -309,6 +291,8 @@ public class SsfCumulator {
 
         @Override
         public void VpZdZ(int pos, Matrix vm, double d) {
+            if (d == 0)
+                return;
             Matrix v = vm.dropTopLeft(1, 1);
             loading.VpZdZ(pos, v, d);
             if ((start + pos) % conversion != 0) {
@@ -467,6 +451,8 @@ public class SsfCumulator {
 
         @Override
         public void VpZdZ(int pos, Matrix vm, double d) {
+            if (d == 0)
+                return;
             Matrix v = vm.dropTopLeft(1, 1);
             loading.VpZdZ(pos, v, d);
             vm.add(0, 0, d);

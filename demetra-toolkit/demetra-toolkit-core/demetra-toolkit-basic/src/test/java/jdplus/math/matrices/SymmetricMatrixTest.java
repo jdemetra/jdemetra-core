@@ -47,7 +47,7 @@ public class SymmetricMatrixTest {
         Matrix T = S.deepClone();
         SymmetricMatrix.lcholesky(T);
         Matrix I = SymmetricMatrix.LtL(LowerTriangularMatrix.inverse(T));
-        Matrix P=I.times(S);
+        Matrix P=GeneralMatrix.AB(I, S);
         assertTrue(P.isDiagonal(1e-9) && P.diagonal().allMatch(x->Math.abs(x-1)<1e-9));
     }
 }

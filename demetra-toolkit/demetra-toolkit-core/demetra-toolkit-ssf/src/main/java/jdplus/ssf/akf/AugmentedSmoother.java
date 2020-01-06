@@ -185,7 +185,7 @@ public class AugmentedSmoother {
         // compute U*V'
         Matrix UV =GeneralMatrix.ABt(U, V); 
         P.sub(UV);
-        P.sub(UV.transpose());
+        P.subTranspose(UV);
         SymmetricMatrix.reenforceSymmetry(P);
     }
 
@@ -287,7 +287,7 @@ public class AugmentedSmoother {
         delta.product(B.columnsIterator(), R);
         // t1 = - b*a^-1 <-> -t1*a=b
         delta.sub(q.b());
-        LowerTriangularMatrix.lsolve(S, delta);
+        LowerTriangularMatrix.solvexL(S, delta);
         // B'NB 
         if (N != null) {
             // we have to make a copy copyOf B
@@ -299,9 +299,9 @@ public class AugmentedSmoother {
             Psi.chs();
             Psi.diagonal().add(1);
             // B*a^-1* =C <->B =Ca
-            LowerTriangularMatrix.lsolve(S, Psi);
+            LowerTriangularMatrix.solveXL(S, Psi);
             // a'^-1*B = C <-> B' = C'a
-            LowerTriangularMatrix.lsolve(S, Psi.transpose());
+            LowerTriangularMatrix.solveLtX(S, Psi);
         }
     }
 

@@ -55,7 +55,7 @@ public class SsfArimaTest {
     public void testStressLikelihood() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < M; ++i) {
-            Ssf ssf = SsfArima.of(arima);
+            Ssf ssf = Ssf.of(SsfArima.of(arima), SsfArima.defaultLoading());
             DiffuseLikelihood ll = DkToolkit.likelihoodComputer(false, true, false).compute(ssf, new SsfData(data));
         }
         long t1 = System.currentTimeMillis();
@@ -63,7 +63,7 @@ public class SsfArimaTest {
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < M; ++i) {
-            Ssf ssf = SsfArima.of(arima);
+            Ssf ssf = Ssf.of(SsfArima.of(arima), SsfArima.defaultLoading());
             DiffuseLikelihood ll = DkToolkit.likelihoodComputer(false, true, false).compute(ssf, new SsfData(data));
         }
         t1 = System.currentTimeMillis();
@@ -71,7 +71,7 @@ public class SsfArimaTest {
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < M; ++i) {
-            Ssf ssf = SsfArima.of(arima);
+            Ssf ssf = Ssf.of(SsfArima.of(arima), SsfArima.defaultLoading());
             ISsf tssf = TimeInvariantSsf.of(ssf);
             DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, false).compute(tssf, new SsfData(data));
         }

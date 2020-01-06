@@ -18,10 +18,10 @@ package jdplus.ssf.ckms;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.decomposition.GivensRotation;
-import jdplus.maths.matrices.decomposition.HyperbolicRotation;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.decomposition.GivensRotation;
+import jdplus.math.matrices.decomposition.HyperbolicRotation;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.State;
 import jdplus.ssf.array.LState;
@@ -30,7 +30,6 @@ import jdplus.ssf.multivariate.IMultivariateSsf;
 import jdplus.ssf.multivariate.IMultivariateSsfData;
 import jdplus.ssf.multivariate.ISsfMeasurements;
 import jdplus.ssf.multivariate.MultivariateUpdateInformation;
-import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -47,12 +46,12 @@ public class MultivariateCkmsArrayFilter {
      */
     static class UMatrix {
 
-        final CanonicalMatrix M;
-        final FastMatrix R, Z;
-        final FastMatrix K, L;
+        final Matrix M;
+        final Matrix R, Z;
+        final Matrix K, L;
 
         UMatrix(int stateDim, int varDim, int lDim) {
-            M = CanonicalMatrix.make(varDim + stateDim, varDim + lDim);
+            M = Matrix.make(varDim + stateDim, varDim + lDim);
             R = M.extract(0, varDim, 0, varDim);
             Z = M.extract(0, varDim, varDim, lDim);
             K = M.extract(varDim, stateDim, 0, varDim);
@@ -151,13 +150,13 @@ public class MultivariateCkmsArrayFilter {
     
     private void error(int t) {
         DataBlock U = perrors.getTransformedPredictionErrors();
-        CanonicalMatrix L = perrors.getCholeskyFactor();
+        Matrix L = perrors.getCholeskyFactor();
         U.set(0);
         for (int i = 0; i < nm; ++i) {
             double y = data.get(t, i);
             U.set(i, y - measurements.loading(i).ZX(t, state.a));
         }
-        LowerTriangularMatrix.rsolve(L, U, State.ZERO);
+        LowerTriangularMatrix.solveLx(L, U, State.ZERO);
     }
 
     private int initialize(IMultivariateSsf ssf) {

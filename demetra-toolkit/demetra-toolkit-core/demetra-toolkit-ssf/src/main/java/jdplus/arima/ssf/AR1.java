@@ -21,10 +21,10 @@ package jdplus.arima.ssf;
 import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.implementations.Loading;
-import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.ssf.SsfComponent;
 import jdplus.math.matrices.Matrix;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  *
@@ -33,14 +33,18 @@ import jdplus.math.matrices.Matrix;
 @lombok.experimental.UtilityClass
 public class AR1 {
 
-    public SsfComponent of(final double rho) {
+    public StateComponent of(final double rho) {
         Data data = new Data(rho, 1, false);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
+        return new StateComponent(new Initialization(data), new Dynamics(data));
     }
 
-    public static SsfComponent of(final double rho, final double var, final boolean zeroinit) {
+    public static StateComponent of(final double rho, final double var, final boolean zeroinit) {
         Data data = new Data(rho, var, zeroinit);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
+        return new StateComponent(new Initialization(data), new Dynamics(data));
+    }
+    
+    public static ISsfLoading defaultLoading(){
+        return Loading.fromPosition(0);
     }
 
     static class Data {

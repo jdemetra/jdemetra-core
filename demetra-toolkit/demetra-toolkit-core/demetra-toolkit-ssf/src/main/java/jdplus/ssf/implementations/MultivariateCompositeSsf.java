@@ -10,7 +10,7 @@ import jdplus.ssf.CompositeDynamics;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfLoading;
-import jdplus.ssf.SsfComponent;
+import jdplus.ssf.StateComponent;
 import jdplus.ssf.SsfException;
 import jdplus.ssf.StateComponent;
 import jdplus.ssf.multivariate.IMultivariateSsf;
@@ -53,20 +53,8 @@ public class MultivariateCompositeSsf extends MultivariateSsf {
 
         private String component;
         private double coefficient;
-        private ISsfLoading loading;
+        private @lombok.NonNull ISsfLoading loading;
         
-        public Item(String component){
-            this.component=component;
-            coefficient=1;
-            loading=null;
-        }
-
-        public Item(String component, double coefficient){
-            this.component=component;
-            this.coefficient=coefficient;
-            loading=null;
-        }
-
         public Item(String component, double coefficient, ISsfLoading loading){
             this.component=component;
             this.coefficient=coefficient;
@@ -87,20 +75,19 @@ public class MultivariateCompositeSsf extends MultivariateSsf {
 
     public static class Builder {
 
-        private final List<SsfComponent> components = new ArrayList<>();
+        private final List<StateComponent> components = new ArrayList<>();
         private final List<String> names = new ArrayList<>();
         private final List<Equation> equations = new ArrayList<>();
         private ISsfErrors measurementsError;
 
-        public Builder add(String name, SsfComponent cmp) {
+        public Builder add(String name, StateComponent cmp) {
             components.add(cmp);
             names.add(name);
             return this;
         }
 
         public Builder add(String name, StateComponent cmp, ISsfLoading loading) {
-            components.add(new SsfComponent(cmp.initialization(), cmp.dynamics(), 
-                    loading == null ? Loading.fromPosition(0) : loading));
+            components.add(new StateComponent(cmp.initialization(), cmp.dynamics()));
             names.add(name);
             return this;
         }
@@ -128,7 +115,7 @@ public class MultivariateCompositeSsf extends MultivariateSsf {
             ISsfDynamics[] d = new ISsfDynamics[n];
             int cpos = 0;
             for (int j = 0; j < n; ++j) {
-                SsfComponent cur = components.get(j);
+                StateComponent cur = components.get(j);
                 i[j] = cur.initialization();
                 d[j] = cur.dynamics();
                 pos[j] = cpos;
@@ -157,9 +144,7 @@ public class MultivariateCompositeSsf extends MultivariateSsf {
             ISsfLoading[] loadings = new ISsfLoading[c.length];
             for (int j = 0; j < c.length; ++j) {
                 Item item = eq.items.get(j);
-                SsfComponent cmp = components.get(c[j]);
-                ISsfLoading loading = item.loading != null ? item.loading : cmp.loading();
-                loadings[j] = Loading.rescale(loading, item.coefficient);
+                loadings[j] = Loading.rescale(item.loading, item.coefficient);
                 npos[j] = pos[c[j]];
                 ndim[j] = dim[c[j]];
             }

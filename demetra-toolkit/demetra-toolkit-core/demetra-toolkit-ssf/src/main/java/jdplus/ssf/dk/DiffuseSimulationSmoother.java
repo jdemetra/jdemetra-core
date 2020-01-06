@@ -19,9 +19,9 @@ package jdplus.ssf.dk;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
 import jdplus.dstats.Normal;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.random.JdkRNG;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ResultsRange;
@@ -30,7 +30,7 @@ import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsfError;
-import demetra.random.RandomNumberGenerator;
+import jdplus.random.RandomNumberGenerator;
 import demetra.data.DoubleSeq;
 
 /**
@@ -58,7 +58,7 @@ public class DiffuseSimulationSmoother {
 
     private static final double EPS = 1e-8;
 
-    private CanonicalMatrix LA;
+    private Matrix LA;
     private final ISsf ssf;
     private final ISsfData data;
     private final ISsfDynamics dynamics;
@@ -96,7 +96,7 @@ public class DiffuseSimulationSmoother {
 
     private void initSsf() {
         int dim = ssf.getStateDim();
-        LA = CanonicalMatrix.square(dim);
+        LA = Matrix.square(dim);
         ssf.initialization().Pf0(LA);
         SymmetricMatrix.lcholesky(LA, EPS);
 
@@ -113,7 +113,7 @@ public class DiffuseSimulationSmoother {
 
     private void generateInitialState(DataBlock a) {
         fillRandoms(a);
-        LowerTriangularMatrix.rmul(LA, a);
+        LowerTriangularMatrix.Lx(LA, a);
     }
 
     abstract class BaseSimulation {
@@ -239,7 +239,7 @@ public class DiffuseSimulationSmoother {
         private void computeInitialState() {
             // initial state
             a0 = DataBlock.make(dim);
-            CanonicalMatrix Pf0 = CanonicalMatrix.square(dim);
+            Matrix Pf0 = Matrix.square(dim);
             ISsfInitialization initializer = ssf.initialization();
             initializer.a0(a0);
             initializer.Pf0(Pf0);
@@ -248,7 +248,7 @@ public class DiffuseSimulationSmoother {
 
             // non stationary initialisation
             if (initializer.isDiffuse()) {
-                CanonicalMatrix Pi0 = CanonicalMatrix.square(dim);
+                Matrix Pi0 = Matrix.square(dim);
                 initializer.Pi0(Pi0);
                 a0.addProduct(Ri, Pi0.columnsIterator());
             }

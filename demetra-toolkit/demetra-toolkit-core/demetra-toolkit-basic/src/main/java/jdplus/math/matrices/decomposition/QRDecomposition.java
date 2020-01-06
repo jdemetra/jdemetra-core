@@ -128,7 +128,7 @@ public class QRDecomposition {
     }
 
     public int[] pivot() {
-        return pivot;
+        return pivot == null ? null : pivot.clone();
     }
 
     public DoubleSeq rawRdiagonal() {

@@ -67,6 +67,8 @@ public class RegArimaModelTest {
         estimation.statistics(0);
 //        System.out.println("New estimation");
 //        System.out.println(estimation.statistics(0));
+//        System.out.println(estimation.getConcentratedLikelihood().allCoefficients());
+//        System.out.println(estimation.getConcentratedLikelihood().ssq());
     }
 
     @Test
@@ -90,6 +92,8 @@ public class RegArimaModelTest {
         estimation.statistics(2, 0);
 //        System.out.println("Old estimation");
 //        System.out.println(estimation.statistics(2, 0));
+//        System.out.println(DoubleSeq.of(estimation.likelihood.getB()));
+//        System.out.println(estimation.likelihood.getSsqErr());
     }
     
     public static void main(String[] arg){

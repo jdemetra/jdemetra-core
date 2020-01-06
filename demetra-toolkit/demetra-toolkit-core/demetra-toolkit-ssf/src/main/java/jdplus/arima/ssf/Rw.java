@@ -22,8 +22,9 @@ import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.implementations.Loading;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.ssf.SsfComponent;
+import jdplus.ssf.StateComponent;
 import jdplus.math.matrices.Matrix;
+import jdplus.ssf.ISsfLoading;
 
 /**
  *
@@ -32,11 +33,15 @@ import jdplus.math.matrices.Matrix;
 @lombok.experimental.UtilityClass
 public class Rw {
     
-    public SsfComponent DEFAULT=of(1, false);
+    public StateComponent DEFAULT=of(1, false);
 
-    public static SsfComponent of(final double var, final boolean zeroinit) {
+    public static StateComponent of(final double var, final boolean zeroinit) {
         Data data = new Data(var, zeroinit);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
+        return new StateComponent(new Initialization(data), new Dynamics(data));
+    }
+
+    public static ISsfLoading defaultLoading(){
+        return Loading.fromPosition(0);
     }
 
     static class Data {

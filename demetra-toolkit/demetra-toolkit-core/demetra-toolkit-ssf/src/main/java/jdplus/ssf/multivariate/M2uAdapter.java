@@ -131,6 +131,8 @@ public class M2uAdapter {
 
         @Override
         public void VpZdZ(int pos, Matrix V, double d) {
+            if (d == 0)
+                return;
             measurements.loading(pos % nvars).VpZdZ(pos / nvars, V, d);
         }
 

@@ -17,7 +17,7 @@
 package jdplus.ssf.dk;
 
 import demetra.design.Development;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.State;
 import jdplus.ssf.ISsfInitialization;
@@ -46,7 +46,7 @@ public class DiffuseState extends State {
     /**
      * Pi is the covariance matrix of the diffuse part
      */
-    private final CanonicalMatrix Pi;
+    private final Matrix Pi;
 
     /**
      *
@@ -55,13 +55,13 @@ public class DiffuseState extends State {
      */
     public DiffuseState(final int dim) {
         super(dim);
-        Pi = CanonicalMatrix.square(dim);
+        Pi = Matrix.square(dim);
     }
 
     /**
      * @return the Pi
      */
-    public CanonicalMatrix Pi() {
+    public Matrix Pi() {
         return Pi;
     }
 
