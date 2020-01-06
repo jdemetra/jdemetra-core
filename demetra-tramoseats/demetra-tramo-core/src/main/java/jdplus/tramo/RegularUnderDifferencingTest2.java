@@ -82,7 +82,7 @@ class RegularUnderDifferencingTest2 extends ModelController {
         ModelDescription desc = modelling.getDescription();
         RegArimaModelling ncontext = new RegArimaModelling();
         ModelDescription ndesc = new ModelDescription(desc);
-        SarimaSpecification spec = desc.getSpecification();
+        SarimaSpecification spec = desc.specification();
         if (spec.getD() == 2) {
             if (spec.getP() == 3) {
                 return null;

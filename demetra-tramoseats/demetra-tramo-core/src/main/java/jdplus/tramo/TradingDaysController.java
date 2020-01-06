@@ -20,7 +20,7 @@ import java.util.Optional;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import jdplus.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.lapack.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -82,14 +82,13 @@ class TradingDaysController extends ModelController {
         // drop the number of data corresponding to the number of regression variables 
         domain = domain.drop(domain.getLength() - res.length(), 0);
         if (td != null){
-            FastMatrix mtd = Regression.matrix(domain, td);
+            Matrix mtd = Regression.matrix(domain, td);
             builder.addX(mtd);
         }
             
         LinearModel lm = builder.build();
         
-        Ols ols = new Ols();
-        LeastSquaresResults lsr = ols.compute(lm);
+        LeastSquaresResults lsr = Ols.compute(lm);
         if (lsr == null) {
             return false;
         }

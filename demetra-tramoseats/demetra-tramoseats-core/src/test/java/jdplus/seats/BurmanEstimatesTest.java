@@ -16,7 +16,12 @@
  */
 package jdplus.seats;
 
+import demetra.arima.SarimaSpecification;
 import demetra.data.Data;
+import jdplus.sarima.SarimaModel;
+import jdplus.ucarima.ModelDecomposer;
+import jdplus.ucarima.SeasonalSelector;
+import jdplus.ucarima.TrendCycleSelector;
 import jdplus.ucarima.UcarimaModel;
 import org.junit.Test;
 
@@ -44,4 +49,22 @@ public class BurmanEstimatesTest {
 //        System.out.println(DataBlock.ofInternal(estimates));
     }
     
+    public static UcarimaModel ucmAirline(double th, double bth) {
+        SarimaSpecification spec = SarimaSpecification.airline(true);
+        SarimaModel sarima = SarimaModel.builder(spec)
+                .theta(1, th)
+                .btheta(1, bth)
+                .build();
+
+        TrendCycleSelector tsel = new TrendCycleSelector();
+        SeasonalSelector ssel = new SeasonalSelector(12);
+
+        ModelDecomposer decomposer = new ModelDecomposer();
+        decomposer.add(tsel);
+        decomposer.add(ssel);
+
+        UcarimaModel ucm = decomposer.decompose(sarima);
+        ucm = ucm.setVarianceMax(-1, false);
+        return ucm;
+    }
 }

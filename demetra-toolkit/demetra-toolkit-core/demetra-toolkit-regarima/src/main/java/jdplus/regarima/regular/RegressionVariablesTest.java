@@ -170,7 +170,7 @@ public class RegressionVariablesTest {
         }
         
         if (changed) {
-            context.setEstimation(null);
+            context.clearEstimation();
             return ProcessingResult.Changed;
         } else {
             return ProcessingResult.Unchanged;

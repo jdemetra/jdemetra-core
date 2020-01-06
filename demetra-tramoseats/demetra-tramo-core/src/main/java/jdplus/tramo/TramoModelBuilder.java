@@ -16,6 +16,7 @@
  */
 package jdplus.tramo;
 
+import demetra.data.ParameterSpec;
 import jdplus.data.interpolation.AverageInterpolator;
 import demetra.design.Development;
 import demetra.information.InformationSet;
@@ -62,6 +63,7 @@ import demetra.tramo.RegressionSpec;
 import demetra.tramo.TradingDaysSpec;
 import demetra.tramo.TramoSpec;
 import demetra.tramo.TransformSpec;
+import jdplus.data.Parameter;
 
 /**
  *
@@ -81,6 +83,16 @@ class TramoModelBuilder implements IModelBuilder {
             this.context = ModellingContext.getActiveContext();
         }
     }
+    
+    private Parameter[] toParameters(ParameterSpec[] p){
+        if (p == null)
+            return null;
+        Parameter[] np=new Parameter[p.length];
+        for (int i=0; i<np.length; ++i){
+            np[i]=new Parameter(p[i].getValue(), p[i].getType());
+        }
+        return np;
+    }
 
     private void initializeArima(ModelDescription model) {
         int freq = model.getAnnualFrequency();
@@ -91,12 +103,12 @@ class TramoModelBuilder implements IModelBuilder {
             SarimaComponent cmp = model.getArimaComponent();
             SarimaSpec arima = spec.getArima();
             cmp.setPeriod(freq);
-            cmp.setPhi(arima.getPhi());
-            cmp.setTheta(arima.getTheta());
+            cmp.setPhi(toParameters(arima.getPhi()));
+            cmp.setTheta(toParameters(arima.getTheta()));
             cmp.setD(arima.getD());
             if (!yearly) {
-                cmp.setBphi(arima.getBphi());
-                cmp.setBtheta(arima.getBtheta());
+                cmp.setBphi(toParameters(arima.getBphi()));
+                cmp.setBtheta(toParameters(arima.getBtheta()));
                 cmp.setBd(arima.getBd());
             }
         }

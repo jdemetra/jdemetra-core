@@ -210,7 +210,7 @@ public final class Matrix implements MatrixType.Mutable {
 
     //<editor-fold defaultstate="collapsed" desc="diagnistics">
     public boolean isFull() {
-        return start == 0 && lda == nrows;
+        return storage.length == nrows * ncols;
     }
 
     public boolean isDiagonal(double zero) {
@@ -873,7 +873,7 @@ public final class Matrix implements MatrixType.Mutable {
      * @param x Array. Length equal to the number of rows of this matrix
      */
     public void addXaXt(final double a, final DataBlock x) {
-        addXaYt(a,x,x);
+        addXaYt(a, x, x);
     }
 
     public Matrix inv() {
@@ -947,6 +947,56 @@ public final class Matrix implements MatrixType.Mutable {
     @Override
     public DataBlock column(int c) {
         int beg = start + c * lda, end = beg + nrows;
+        return DataBlock.of(storage, beg, end, 1);
+    }
+
+    /**
+     *
+     * @param r0 Row index of the first cell
+     * @param c0 Column index of the first cell
+     * @param n Number of cells
+     * @return
+     */
+    public DataBlock diagonal(int r0, int c0, int n) {
+        int inc = lda + 1;
+        int beg = start + c0 * lda + r0, end = beg + n * inc;
+        return DataBlock.of(storage, beg, end, inc);
+    }
+
+    /**
+     *
+     * @param r0 Row index of the first cell
+     * @param c0 Column index of the first cell
+     * @param n Number of cells
+     * @return
+     */
+    public DataBlock skewDiagonal(int r0, int c0, int n) {
+        int inc = 1 - lda;
+        int beg = start + c0 * lda + r0, end = beg + n * inc;
+        return DataBlock.of(storage, beg, end, inc);
+    }
+
+    /**
+     *
+     * @param r0 Row index of the first cell
+     * @param c0 Column index of the first cell
+     * @param n Number of cells
+     * @return
+     */
+    public DataBlock row(int r0, int c0, int n) {
+        int beg = start + c0 * lda + r0, end = beg + n * lda;
+        return DataBlock.of(storage, beg, end, lda);
+    }
+
+    /**
+     *
+     * @param r0 Row index of the first cell
+     * @param c0 Column index of the first cell
+     * @param n Number of cells
+     * @return
+     */
+    public DataBlock column(int r0, int c0, int n) {
+        int beg = start + c0 * lda + r0, end = beg + n;
         return DataBlock.of(storage, beg, end, 1);
     }
 

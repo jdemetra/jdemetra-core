@@ -217,7 +217,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
                 IOutlier o = impl.getFactory(cur[1]).make(pos.start());
                 model.addVariable(new Variable(o, IOutlier.defaultName(o.getCode(), pos), false));
             }
-            context.setEstimation(null);
+            context.clearEstimation();
             return ProcessingResult.Changed;
         } catch (Exception err) {
             return ProcessingResult.Failed;

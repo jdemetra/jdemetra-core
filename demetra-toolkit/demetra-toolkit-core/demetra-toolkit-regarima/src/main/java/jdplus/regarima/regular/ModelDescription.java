@@ -369,8 +369,8 @@ public final class ModelDescription {
         return arima;
     }
 
-    public SarimaSpecification getSpecification() {
-        return arima.getSpecification();
+    public SarimaSpecification specification() {
+        return arima.specification();
     }
 
     public SarimaModel arima() {
@@ -393,8 +393,9 @@ public final class ModelDescription {
     }
 
     public void setAirline(boolean seas) {
-        SarimaSpecification s = new SarimaSpecification(this.getAnnualFrequency());
-        s.airline(seas);
+        int period=getAnnualFrequency();
+        SarimaSpecification s = seas? SarimaSpecification.airline(period)
+                : SarimaSpecification.m011(period);
         arima.setSpecification(s);
         if (transformedSeries != null) {
             transformedSeries = null;
@@ -608,7 +609,7 @@ public final class ModelDescription {
     }
 
     public static boolean sameArimaSpecification(ModelDescription desc1, ModelDescription desc2) {
-        if (!desc1.getSpecification().equals(desc2.getSpecification())) {
+        if (!desc1.specification().equals(desc2.specification())) {
             return false;
         }
         return desc1.isMean() == desc2.isMean();

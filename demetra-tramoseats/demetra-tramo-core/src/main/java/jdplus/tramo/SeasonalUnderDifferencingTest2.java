@@ -38,7 +38,7 @@ class SeasonalUnderDifferencingTest2 extends ModelController {
         if (period == 1) {
             return ProcessingResult.Unprocessed;
         }
-        SarimaSpecification spec = desc.getSpecification();
+        SarimaSpecification spec = desc.specification();
         if (spec.getBd() == 1 || spec.getBq() == 1 || context.originalSeasonalityTest == 0) {
             return ProcessingResult.Unchanged;
         }
@@ -79,7 +79,7 @@ class SeasonalUnderDifferencingTest2 extends ModelController {
     private RegArimaModelling buildNewModel(RegArimaModelling context) {
         RegArimaModelling ncontext = new RegArimaModelling();
         ModelDescription ndesc = new ModelDescription(context.getDescription());
-        SarimaSpecification spec = ndesc.getSpecification();
+        SarimaSpecification spec = ndesc.specification();
         spec.setBp(0);
         spec.setBd(1);
         spec.setBq(1);

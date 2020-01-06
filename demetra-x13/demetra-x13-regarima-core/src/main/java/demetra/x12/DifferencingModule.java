@@ -582,7 +582,7 @@ public class DifferencingModule implements IDifferencingModule {
             if (nmean != desc.isMean()) {
                 changed = true;
                 desc.setMean(nmean);
-                context.setEstimation(null);
+                context.clearEstimation();
             }
             return changed ? ProcessingResult.Changed : ProcessingResult.Unchanged;
         } catch (RuntimeException err) {

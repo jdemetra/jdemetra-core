@@ -30,8 +30,7 @@ public class RegSarimaProcessorTest {
     }
     
     public static RegArimaModel<SarimaModel> prodAirline(){
-        SarimaSpecification spec=new SarimaSpecification(12);
-        spec.airline(true);
+        SarimaSpecification spec=SarimaSpecification.airline(12);
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();

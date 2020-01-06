@@ -20,8 +20,8 @@ import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
-import demetra.maths.Complex;
-import jdplus.maths.linearfilters.BackFilter;
+import demetra.math.Complex;
+import jdplus.math.linearfilters.BackFilter;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
@@ -36,7 +36,6 @@ import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import jdplus.tramo.TramoException;
 import java.util.Optional;
-import java.util.stream.Stream;
 import demetra.data.DoubleSeq;
 import internal.jdplus.arima.FastKalmanFilter;
 import jdplus.sarima.estimation.HannanRissanen;
@@ -525,7 +524,7 @@ public class DifferencingModule implements IDifferencingModule {
                 DoubleSeq outs = RegArimaUtility.regressionEffect(desc.regarima(), estimation.getConcentratedLikelihood(), desc.findPosition(first.get().getVariable()), nvars);
                 res = res.op(outs, (a, b) -> a - b);
             }
-            SarimaSpecification curspec = desc.getSpecification();
+            SarimaSpecification curspec = desc.specification();
             // get residuals
             if (!process(res, freq, initial ? 0 : curspec.getD(), initial ? 0 : curspec.getBd(), seasonal)) {
                 return airline(context);
@@ -535,12 +534,12 @@ public class DifferencingModule implements IDifferencingModule {
             if (spec.getD() != curspec.getD() || spec.getBd() != curspec.getBd()) {
                 changed = true;
                 desc.setSpecification(spec);
-                context.setEstimation(null);
+                context.clearEstimation();
             }
             if (nmean != desc.isMean()) {
                 changed = true;
                 desc.setMean(nmean);
-                context.setEstimation(null);
+                context.clearEstimation();
             }
             return changed ? ProcessingResult.Changed : ProcessingResult.Unchanged;
         } catch (RuntimeException err) {
@@ -551,10 +550,10 @@ public class DifferencingModule implements IDifferencingModule {
 
     private ProcessingResult airline(RegArimaModelling context) {
         ModelDescription desc = context.getDescription();
-        if (!desc.getSpecification().isAirline(seasonal)) {
+        if (!desc.specification().isAirline(seasonal)) {
             desc.setAirline(seasonal);
             desc.setMean(false);
-            context.setEstimation(null);
+            context.clearEstimation();
             return ProcessingResult.Changed;
         } else {
             return ProcessingResult.Unprocessed;

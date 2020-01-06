@@ -282,7 +282,7 @@ public class X12Preprocessor implements IPreprocessor {
                                     && arslt == ProcessingResult.Unchanged;
                             if (!defModel) {
                                 if (context.getDescription().removeVariable(var -> var.isOutlier(false))) {
-                                    context.setEstimation(null);
+                                    context.clearEstimation();
                                     needOutliers = outliers != null;
                                 }
                             }
@@ -321,7 +321,7 @@ public class X12Preprocessor implements IPreprocessor {
                         if (isAutoModelling() && !context.getDescription().isMean() && Math.abs(rtval0) > 2.5) {
                             if (options.checkMu) {
                                 context.getDescription().setMean(true);
-                                context.setEstimation(null);
+                                context.clearEstimation();
                             }
                         }
 
@@ -520,7 +520,7 @@ public class X12Preprocessor implements IPreprocessor {
         }
         if (desc.variables().filter(v -> v.isOutlier(false)).findAny().isPresent()) {
             desc.removeVariable(v -> v.isOutlier(false));
-            context.setEstimation(null);
+            context.clearEstimation();
         }
         if (context.needEstimation()) {
             context.estimate(options.precision);

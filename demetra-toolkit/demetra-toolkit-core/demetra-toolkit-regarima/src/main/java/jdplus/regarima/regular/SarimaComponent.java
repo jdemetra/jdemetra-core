@@ -340,7 +340,7 @@ public class SarimaComponent  {
         return builder.build();
     }
 
-    public SarimaSpecification getSpecification() {
+    public SarimaSpecification specification() {
         SarimaSpecification spec = new SarimaSpecification(period);
         spec.setP(getP());
         spec.setD(d);
@@ -587,9 +587,9 @@ public class SarimaComponent  {
 
     public IArimaMapping<SarimaModel> defaultMapping() {
         if (getFixedParametersCount() == 0) {
-            return SarimaMapping.of(getSpecification());
+            return SarimaMapping.of(specification());
         } else {
-            return new SarimaFixedMapping(getSpecification(), DoubleSeq.of(parameters()), fixedConstraints());
+            return new SarimaFixedMapping(specification(), DoubleSeq.of(parameters()), fixedConstraints());
         }
     }
 

@@ -160,13 +160,12 @@ public class RangeMeanTest {
             smean[i] = s;
         }
         try {
-            Ols ols = new Ols();
             LinearModel model = LinearModel.builder()
                     .y(DoubleSeq.of(range))
                     .addX(DoubleSeq.of(smean))
                     .meanCorrection(true)
                     .build();
-            LeastSquaresResults rslt = ols.compute(model);
+            LeastSquaresResults rslt = Ols.compute(model);
             t = rslt.getLikelihood().tstat(1, 0, true);
             return t > tlog;
         } catch (Exception err) {

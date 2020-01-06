@@ -13,8 +13,6 @@ import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixException;
-import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.math.matrices.UpperTriangularMatrix;
 
 /**
  *
@@ -26,15 +24,24 @@ public class OlsComputer implements jdplus.linearmodel.Ols.Processor {
     public LeastSquaresResults compute(LinearModel model) {
         try {
             DoubleSeq y = model.getY();
-            Matrix x = model.variables();
-            QRSolution solution = QRSolver.robustLeastSquares(y, x);
-            Matrix bvar = solution.unscaledCovariance();
-            return LeastSquaresResults.builder(y, x)
-                    .mean(model.isMeanCorrection())
-                    .estimation(solution.getB(), bvar)
-                    .ssq(solution.getSsqErr())
-                    .residuals(solution.getE())
-                    .build();
+            if (model.getVariablesCount() > 0) {
+                Matrix x = model.variables();
+                QRSolution solution = QRSolver.robustLeastSquares(y, x);
+                Matrix bvar = solution.unscaledCovariance();
+                return LeastSquaresResults.builder(y, x)
+                        .mean(model.isMeanCorrection())
+                        .estimation(solution.getB(), bvar)
+                        .ssq(solution.getSsqErr())
+                        .residuals(solution.getE())
+                        .build();
+            }else{
+                return LeastSquaresResults.builder(y, null)
+                        .mean(model.isMeanCorrection())
+                        .ssq(y.ssq())
+                        .residuals(y)
+                        .build();
+                
+            }
         } catch (MatrixException err) {
             throw new EcoException(EcoException.OLS_FAILED);
         }

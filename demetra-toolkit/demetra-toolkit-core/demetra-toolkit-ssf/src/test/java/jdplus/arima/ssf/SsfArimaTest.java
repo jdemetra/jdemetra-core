@@ -38,10 +38,9 @@ public class SsfArimaTest {
     private static final int N = 100000, M = 10000;
     static final jdplus.sarima.SarimaModel arima;
     static final double[] data;
-    
-    static{
-        SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline(true);
+
+    static {
+        SarimaSpecification spec = SarimaSpecification.airline(12);
         arima = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).build();
         data = Data.PROD.clone();
     }
@@ -49,7 +48,6 @@ public class SsfArimaTest {
     public SsfArimaTest() {
     }
 
-    
     @Ignore
     @Test
     public void testStressLikelihood() {
@@ -80,5 +78,5 @@ public class SsfArimaTest {
         System.out.println("DK Filter. Matrix");
         System.out.println(t1 - t0);
     }
-    
+
 }

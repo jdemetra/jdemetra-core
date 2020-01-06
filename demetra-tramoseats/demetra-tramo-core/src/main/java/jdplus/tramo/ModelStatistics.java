@@ -22,11 +22,9 @@ import jdplus.regarima.regular.PreprocessingModel;
 import jdplus.stats.AutoCovariances;
 import jdplus.stats.samples.Sample;
 import jdplus.stats.tests.LjungBox;
-import jdplus.stats.tests.SampleMean;
 import jdplus.stats.tests.Skewness;
 import jdplus.stats.tests.StatisticalTest;
 import jdplus.tramo.internal.TramoUtility;
-import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 
@@ -94,7 +92,7 @@ public class ModelStatistics {
         DoubleSeq data0 = e.range(0, nres - nlast);
         DoubleSeq data1 = e.range(nlast, nres);
         
-        Sample s0 = Sample.ofResiduals(data1);
+        Sample s0 = Sample.ofResiduals(data0);
         Sample s1 = Sample.ofResiduals(data1);
         StatisticalTest means = Sample.compareMeans(s0, s1, true);
         StatisticalTest vars = Sample.compareVariances(s0, s1);

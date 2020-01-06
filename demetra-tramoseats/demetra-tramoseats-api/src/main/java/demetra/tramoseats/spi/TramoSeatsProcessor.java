@@ -18,9 +18,9 @@ package demetra.tramoseats.spi;
 
 import demetra.design.Algorithm;
 import nbbrd.service.ServiceDefinition;
-import demetra.modelling.regression.ModellingContext;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
+import demetra.timeseries.regression.ModellingContext;
 import demetra.tramoseats.TramoSeatsSpec;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

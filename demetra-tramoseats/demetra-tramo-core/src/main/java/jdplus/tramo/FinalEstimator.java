@@ -19,17 +19,16 @@ package jdplus.tramo;
 import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import jdplus.math.functions.IParametricMapping;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.regarima.regular.IModelEstimator;
-import jdplus.regarima.regular.ModelDescription;
 import jdplus.regarima.regular.RegArimaModelling;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.data.DoubleSeq;
-import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 
 /**
  *
@@ -274,8 +273,7 @@ class FinalEstimator implements IModelEstimator {
             nspec.setBq(nspec.getBq() - 1);
         }
 
-        context.getDescription().setSpecification(nspec);
-        context.setEstimation(null);
+        context.setSpecification(nspec);
         return nnsig;
     }
 
@@ -307,8 +305,7 @@ class FinalEstimator implements IModelEstimator {
             changed = true;
         }
         if (changed) {
-            context.getDescription().setSpecification(spec);
-            context.setEstimation(null);
+            context.setSpecification(spec);
             return false;
         } else {
             return true;
@@ -339,8 +336,7 @@ class FinalEstimator implements IModelEstimator {
         if (ok) {
             return true;
         } else {
-            context.getDescription().setSpecification(nspec);
-            context.setEstimation(null);
+            context.setSpecification(nspec);
             return false;
         }
     }

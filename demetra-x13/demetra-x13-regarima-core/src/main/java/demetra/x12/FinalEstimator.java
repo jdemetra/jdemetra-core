@@ -169,7 +169,7 @@ public class FinalEstimator implements IModelEstimator {
             return 0;
         }
 
-        context.setEstimation(null);
+        context.clearEstimation();
         // reduce the orders
         if (cpr > 0) {
             spec.setP(spec.getP() - cpr);

@@ -219,7 +219,7 @@ public class LogLevelModule implements ILogLevelModule {
             return ProcessingResult.Failed;
         if (isChoosingLog()){
             desc.setLogTransformation(true);
-            context.setEstimation(null);
+            context.clearEstimation();
             return ProcessingResult.Changed;
         }else{
             return ProcessingResult.Unchanged;

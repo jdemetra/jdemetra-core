@@ -227,7 +227,7 @@ public class DefaultRegressionTest implements IRegressionModule {
         }
 
         if (changed) {
-            context.setEstimation(null);
+            context.clearEstimation();
         }
 
         return changed ? ProcessingResult.Changed : ProcessingResult.Unchanged;

@@ -61,7 +61,7 @@ public class MeanController  implements IRegressionModule{
         }
         else{
             context.getDescription().setMean(nmean);
-            context.setEstimation(null);
+            context.clearEstimation();
             return ProcessingResult.Changed;
         }
    }

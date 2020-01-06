@@ -21,16 +21,18 @@ import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.math.matrices.MatrixException;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.maths.polynomials.UnitRoots;
+import jdplus.math.polynomials.Polynomial;
+import jdplus.math.polynomials.UnitRoots;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.ucarima.WienerKolmogorovEstimators;
 import java.util.Arrays;
 import demetra.data.DoubleSeq;
+import jdplus.arima.ssf.ExactArimaForecasts;
 import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.Gauss;
 import jdplus.math.matrices.decomposition.LUDecomposition;
 
 /**
@@ -58,7 +60,7 @@ public class BurmanEstimates {
     private double[][] m_e, m_f;
     private DoubleSeq m_xb, m_xf;
     private boolean m_bmean;
-    private LUDecomposition solver;
+    private LUDecomposition lu;
 
     /**
      * Creates a new instance of WKEstimators
@@ -145,7 +147,7 @@ public class BurmanEstimates {
             ww[i] = w1[ntmp + i];
         }
         if (ww.length >0)
-            solver.solve(DataBlock.of(ww));
+            lu.solve(DataBlock.of(ww));
         double[] mx = ww.length == 0 ? new double[0] : ww;
         int nx1 = n + Math.max(2 * qstar, nf);
         double[] x1 = new double[nx1];
@@ -175,7 +177,7 @@ public class BurmanEstimates {
             ww[i] = w2[pstar - i - 1];
         }
         if (ww.length>0)
-            solver.solve(DataBlock.of(ww));
+            lu.solve(DataBlock.of(ww));
         mx = ww.length == 0 ? new double[0] : ww;
         int nx2 = n + 2 * qstar + Math.max(nf, 2 * qstar);
         double[] x2 = new double[nx2];
@@ -293,11 +295,13 @@ public class BurmanEstimates {
         if (m_bmean && nf <= m_ar.degree()) {
             nf = m_ar.degree() + 1;
         }
-        forecaster.prepare(m_wk.getUcarimaModel().getModel(), m_bmean);
-        m_xf = forecaster.forecasts(DataBlock.of(m_data), nf);
-        m_xb = forecaster.backcasts(DataBlock.of(m_data), nf);
+        
+        ExactArimaForecasts fcasts=new ExactArimaForecasts();
+        fcasts.prepare(m_wk.getUcarimaModel().getModel(), m_bmean);
+        m_xf = fcasts.forecasts(DataBlock.of(m_data), nf);
+        m_xb = fcasts.backcasts(DataBlock.of(m_data), nf);
         if (m_bmean) {
-            m_mean = forecaster.getMean();
+            m_mean = fcasts.getMean();
         } else {
             m_mean = 0;
         }
@@ -545,8 +549,7 @@ public class BurmanEstimates {
             }
         }
 
-        solver = LUSolver.builder().build();
-        solver.decompose(m);
+        lu = Gauss.decompose(m);
     }
 
     /**

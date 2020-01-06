@@ -77,7 +77,7 @@ public class RegArimaUtility {
         }
         return e;
     }
-    
+
     public <M extends IArimaModel> DoubleSeq interpolatedData(@NonNull RegArimaModel<M> model, @NonNull ConcentratedLikelihoodWithMissing concentratedLikelihood) {
         int[] missing = model.missing();
         if (missing.length == 0) {
@@ -99,9 +99,12 @@ public class RegArimaUtility {
      * @param <M>
      * @param model
      * @param concentratedLikelihood
-     * @param startPos Start position (including) of the removed regression variables.
-     * That start position is defined in the list of all regression variables, excluding
-     * possible missing values (measured by additive outliers) and mean correction.
+     * @param startPos Start position (including) of the removed regression
+     * variables.
+     * That start position is defined in the list of all regression variables,
+     * excluding
+     * possible missing values (measured by additive outliers) and mean
+     * correction.
      * @param nvars Number of removed regression variable
      * @return
      */
@@ -130,8 +133,12 @@ public class RegArimaUtility {
      */
     public <M extends IArimaModel> DoubleSeq olsResiduals(@NonNull RegArimaModel<M> model) {
         LinearModel lm = model.differencedModel().asLinearModel();
-        LeastSquaresResults lsr = Ols.compute(lm);
-        return lm.calcResiduals(lsr.getCoefficients());
+        if (lm.getVariablesCount() > 0) {
+            LeastSquaresResults lsr = Ols.compute(lm);
+            return lm.calcResiduals(lsr.getCoefficients());
+        } else {
+            return lm.getY();
+        }
     }
 
     /**
@@ -146,11 +153,11 @@ public class RegArimaUtility {
         if (model.getVariablesCount() == 0) {
             return concentratedLikelihood.e();
         }
-        
+
         DoubleSeq ld = linearizedData(model, concentratedLikelihood);
         StationaryTransformation st = model.arima().stationaryTransformation();
         DataBlock dld;
-        
+
         if (st.getUnitRoots().getDegree() == 0) {
             dld = DataBlock.of(ld);
             if (model.isMean()) {
@@ -160,13 +167,13 @@ public class RegArimaUtility {
             dld = DataBlock.make(ld.length() - st.getUnitRoots().getDegree());
         }
         st.getUnitRoots().apply(ld, dld);
-        
+
         FastKalmanFilter kf = new FastKalmanFilter((IArimaModel) st.getStationaryModel());
         Likelihood ll = kf.process(dld);
         return ll.e();
-        
+
     }
-    
+
     public IRegArimaProcessor<SarimaModel> processor(IArimaMapping<SarimaModel> mapping, boolean ml, double eps) {
         HannanRissanenInitializer initializer = HannanRissanenInitializer.builder()
                 .stabilize(true)
@@ -180,11 +187,10 @@ public class RegArimaUtility {
                 .useMaximumLikelihood(ml)
                 .build();
     }
-    
+
     public RegArimaModel<SarimaModel> airlineModel(DoubleSeq data, boolean mean, int ifreq, boolean seas) {
         // use airline model with mean
-        SarimaSpecification spec = new SarimaSpecification(ifreq);
-        spec.airline(seas);
+        SarimaSpecification spec = seas ? SarimaSpecification.airline(ifreq) : SarimaSpecification.m011(ifreq);
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();
@@ -194,7 +200,7 @@ public class RegArimaUtility {
                 .meanCorrection(mean)
                 .build();
     }
-    
+
     public BackFilter differencingFilter(int freq, int d, int bd) {
         Polynomial X = null;
         if (d > 0) {
@@ -213,8 +219,8 @@ public class RegArimaUtility {
         }
         return new BackFilter(X);
     }
-    
-        /**
+
+    /**
      *
      * @param differencing
      * @param n

@@ -35,8 +35,7 @@ public class RegSsfTest {
 
     @Test
     public void testDirectComposite() {
-        SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline(true);
+        SarimaSpecification spec=SarimaSpecification.airline(12);
         SarimaModel airline = SarimaModel.builder(spec)
                 .theta(1, -.6)
                 .btheta(1, -.8)
@@ -58,8 +57,7 @@ public class RegSsfTest {
     }
 
     public static void main(String[] arg) {
-        SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline(true);
+        SarimaSpecification spec=SarimaSpecification.airline(12);
         SarimaModel airline = SarimaModel.builder(spec)
                 .theta(1, -.6)
                 .btheta(1, -.8)

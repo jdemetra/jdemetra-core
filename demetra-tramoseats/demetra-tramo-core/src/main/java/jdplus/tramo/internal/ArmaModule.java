@@ -212,14 +212,13 @@ public class ArmaModule implements IArmaModule {
     @Override
     public ProcessingResult process(RegArimaModelling context) {
         ModelDescription desc = context.getDescription();
-        SarimaSpecification curspec = desc.getSpecification();
+        SarimaSpecification curspec = desc.specification();
         int inic = comespa(curspec.getPeriod(), desc.regarima().getObservationsCount(),
                 maxInic(curspec.getPeriod()), curspec.getD(), curspec.getBd(), seasonal);
         if (inic == 0) {
             if (!curspec.isAirline(seasonal)) {
-                curspec.airline(seasonal);
+                curspec.setDefault(seasonal);
                 desc.setSpecification(curspec);
-                context.setEstimation(null);
                 return ProcessingResult.Changed;
             } else {
                 return ProcessingResult.Unprocessed;
@@ -235,7 +234,6 @@ public class ArmaModule implements IArmaModule {
         }
         curspec = SarimaSpecification.of(nspec, curspec.getD(), curspec.getBd());
         desc.setSpecification(curspec);
-        context.setEstimation(null);
         return ProcessingResult.Changed;
     }
 
@@ -243,7 +241,7 @@ public class ArmaModule implements IArmaModule {
         SarimaSpecification curSpec = regarima.arima().specification();
         int inic = comespa(curSpec.getPeriod(), regarima.getObservationsCount(),  maxInic(curSpec.getPeriod()), curSpec.getD(), curSpec.getBd(), seas);
         if (inic == 0) {
-            curSpec.airline(seas);
+            curSpec.setDefault(seas);
             return curSpec;
         }
         SarimaSpecification maxspec = calcmaxspec(curSpec.getPeriod(), inic, curSpec.getD(), curSpec.getBd(), seas);
@@ -251,7 +249,7 @@ public class ArmaModule implements IArmaModule {
         ArmaModuleImpl impl = createModule(maxspec);
         SarmaSpecification spec = impl.process(res, curSpec.getPeriod(), curSpec.getD(), curSpec.getBd(), curSpec.getPeriod() > 1);
         if (spec == null) {
-            curSpec.airline(seas);
+            curSpec.setDefault(seas);
             return curSpec;
         } else {
             return SarimaSpecification.of(spec, curSpec.getD(), curSpec.getBd());

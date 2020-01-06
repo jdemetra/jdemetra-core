@@ -73,8 +73,7 @@ public class SeasonalFTest {
 
     private RegArimaModel.Builder prepareSeasonalModel(TsData input) {
         int period = input.getAnnualFrequency();
-        SarimaSpecification rspec = new SarimaSpecification(period);
-        rspec.airline(false);
+        SarimaSpecification rspec = SarimaSpecification.m011(period);
         SarimaModel arima = SarimaModel.builder(rspec).build();
         return RegArimaModel.builder(SarimaModel.class)
                 .y(input.getValues())
@@ -83,7 +82,7 @@ public class SeasonalFTest {
     }
 
     private RegArimaModel.Builder prepareSeasonalModel(ModelDescription m) {
-        SarimaSpecification rspec = m.getSpecification();
+        SarimaSpecification rspec = m.specification();
         rspec.setBd(0);
         rspec.setBp(0);
         rspec.setBq(0);

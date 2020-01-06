@@ -38,25 +38,25 @@ public class LUSolver implements LinearSystemSolver {
     @BuilderPattern(LUSolver.class)
     public static class Builder {
 
-        private LUDecomposition.Decomposer decomposer=(M, e)->Gauss.decompose(M, e);
-        private double eps=Constants.getEpsilon();
-        private boolean normalize=false;
+        private LUDecomposition.Decomposer decomposer = (M, e) -> Gauss.decompose(M, e);
+        private double eps = Constants.getEpsilon();
+        private boolean normalize = false;
 
         private Builder() {
         }
 
         public Builder decomposer(LUDecomposition.Decomposer decomposer) {
-            this.decomposer=decomposer;
+            this.decomposer = decomposer;
             return this;
         }
-        
+
         public Builder normalize(boolean normalize) {
             this.normalize = normalize;
             return this;
         }
-        
-        public Builder precision(double eps){
-            this.eps=eps;
+
+        public Builder precision(double eps) {
+            this.eps = eps;
             return this;
         }
 
@@ -69,13 +69,13 @@ public class LUSolver implements LinearSystemSolver {
         return new Builder();
     }
 
-        private final LUDecomposition.Decomposer decomposer;
-        private double eps=Constants.getEpsilon();
-        private boolean normalize;
+    private final LUDecomposition.Decomposer decomposer;
+    private final double eps;
+    private final boolean normalize;
 
     private LUSolver(LUDecomposition.Decomposer decomposer, double eps, boolean normalize) {
-        this.decomposer=decomposer;
-        this.eps=eps;
+        this.decomposer = decomposer;
+        this.eps = eps;
         this.normalize = normalize;
     }
 
@@ -86,10 +86,10 @@ public class LUSolver implements LinearSystemSolver {
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
-            SafeNormalizer sn=new SafeNormalizer();
-            int i=0;
+            SafeNormalizer sn = new SafeNormalizer();
+            int i = 0;
             while (rows.hasNext()) {
-                double factor=sn.normalize(rows.next());
+                double factor = sn.normalize(rows.next());
                 b.mul(i++, factor);
             }
         } else {
@@ -102,26 +102,27 @@ public class LUSolver implements LinearSystemSolver {
     @Override
     public void solve(Matrix A, Matrix B) {
         Matrix An;
-        double[] factor=null;
+        double[] factor = null;
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
-            SafeNormalizer sn=new SafeNormalizer();
-            factor=new double[A.getRowsCount()];
-            int i=0;
+            SafeNormalizer sn = new SafeNormalizer();
+            factor = new double[A.getRowsCount()];
+            int i = 0;
             while (rows.hasNext()) {
-                factor[i++]=sn.normalize(rows.next());
+                factor[i++] = sn.normalize(rows.next());
             }
         } else {
             An = A;
         }
         LUDecomposition lu = decomposer.decompose(An, eps);
         lu.solve(B);
-        if (factor != null){
+        if (factor != null) {
             DataBlockIterator rows = B.rowsIterator();
-            int r=0;
-            while (rows.hasNext())
+            int r = 0;
+            while (rows.hasNext()) {
                 rows.next().div(factor[r++]);
+            }
         }
     }
 }
