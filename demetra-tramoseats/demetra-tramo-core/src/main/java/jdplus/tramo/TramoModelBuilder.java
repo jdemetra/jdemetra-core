@@ -84,7 +84,7 @@ class TramoModelBuilder implements IModelBuilder {
         }
     }
     
-    private Parameter[] toParameters(ParameterSpec[] p){
+    private static Parameter[] toParameters(ParameterSpec[] p){
         if (p == null)
             return null;
         Parameter[] np=new Parameter[p.length];

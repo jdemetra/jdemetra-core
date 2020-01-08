@@ -24,8 +24,8 @@ import demetra.design.Development;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.maths.polynomials.RationalFunction;
+import jdplus.math.polynomials.Polynomial;
+import jdplus.math.polynomials.RationalFunction;
 import demetra.data.DoubleSeq;
 
 /**

@@ -83,7 +83,7 @@ public class UcarimaModelTest {
     }
 
     public static UcarimaModel ucmAirline(int period, double th, double bth) {
-        SarimaSpecification spec=SarimaSpecification.airline(12);
+        SarimaSpecification spec=SarimaSpecification.airline(period);
         SarimaModel sarima = SarimaModel.builder(spec)
                 .theta(1, th)
                 .btheta(1, bth)

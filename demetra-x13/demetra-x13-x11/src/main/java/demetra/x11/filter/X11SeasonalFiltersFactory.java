@@ -9,8 +9,8 @@ import demetra.x11.SeasonalFilterOption;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
 import demetra.x11.filter.endpoints.IEndPointsProcessor;
 import jdplus.data.DataBlock;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.FiniteFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 
 /**
  *

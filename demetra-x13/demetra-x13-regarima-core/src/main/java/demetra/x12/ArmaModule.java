@@ -100,7 +100,7 @@ public class ArmaModule implements IArmaModule {
     @Override
     public ProcessingResult process(RegArimaModelling context) {
         ModelDescription desc = context.getDescription();
-        SarimaSpecification curspec = desc.getSpecification();
+        SarimaSpecification curspec = desc.specification();
         DoubleSeq res = RegArimaUtility.olsResiduals(desc.regarima());
         ArmaModuleImpl impl = createModule();
         SarmaSpecification nspec = impl.process(res, curspec.getPeriod(), curspec.getD(), curspec.getBd(), desc.getAnnualFrequency()>1);
@@ -109,7 +109,6 @@ public class ArmaModule implements IArmaModule {
         }
         curspec = SarimaSpecification.of(nspec, curspec.getD(), curspec.getBd());
         desc.setSpecification(curspec);
-        context.setEstimation(null);
         return ProcessingResult.Changed;
     }
 
@@ -119,7 +118,7 @@ public class ArmaModule implements IArmaModule {
         ArmaModuleImpl impl = createModule();
         SarmaSpecification spec = impl.process(res, curSpec.getPeriod(), curSpec.getD(), curSpec.getBd(), curSpec.getPeriod() > 1);
         if (spec == null) {
-            curSpec.airline(seas);
+            curSpec.setDefault(seas);
             return curSpec;
         } else {
             return SarimaSpecification.of(spec, curSpec.getD(), curSpec.getBd());

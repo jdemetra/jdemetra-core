@@ -21,8 +21,8 @@ import demetra.design.Development;
 import demetra.design.LombokWorkaround;
 import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.TransformationType;
-import demetra.modelling.regression.TradingDaysType;
 import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.regression.TradingDaysType;
 import demetra.util.Validatable;
 import lombok.NonNull;
 

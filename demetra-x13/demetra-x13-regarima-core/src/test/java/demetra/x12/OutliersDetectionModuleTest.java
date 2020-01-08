@@ -33,8 +33,7 @@ public class OutliersDetectionModuleTest {
     @Test
     public void testProd() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline(true);
+        SarimaSpecification spec =  SarimaSpecification.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
 
         OutliersDetectionModuleImpl od = OutliersDetectionModuleImpl.builder()
@@ -106,10 +105,8 @@ public class OutliersDetectionModuleTest {
         System.out.println("JD3");
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 200; ++i) {
-            SarimaSpecification spec = new SarimaSpecification(12);
-            spec.airline(true);
+        SarimaSpecification spec =  SarimaSpecification.airline(12);
             SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
-
             OutliersDetectionModuleImpl od = OutliersDetectionModuleImpl.builder()
                     .singleOutlierDetector(OutliersDetectionModuleImpl.defaultOutlierDetector(12))
                     .criticalValue(3)

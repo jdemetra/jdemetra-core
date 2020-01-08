@@ -17,12 +17,14 @@
 package demetra.x12;
 
 import demetra.design.Development;
+import jdplus.arima.estimation.ResidualsComputer;
+import jdplus.data.DataBlock;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.outlier.CriticalValueComputer;
 import jdplus.regsarima.GlsSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
-import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 
 /**
  *
@@ -51,4 +53,16 @@ public class X12Utility {
                 .precision(precision)
                 .build();
     }
+    
+        public static ResidualsComputer mlComputer() {
+        return (arma, y) -> {
+            ModifiedLjungBoxFilter f = new ModifiedLjungBoxFilter();
+            int n = y.length();
+            int nf = f.prepare(arma, n);
+            DataBlock fres = DataBlock.make(nf);
+            f.apply(y, fres);
+            return nf == n ? fres : fres.drop(nf - n, 0);
+        };
+    }
+
 }

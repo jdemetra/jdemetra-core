@@ -16,8 +16,8 @@ import demetra.x11.pseudoadd.X11CStepPseudoAdd;
 import demetra.x11.pseudoadd.X11DStepPseudoAdd;
 import java.util.Arrays;
 import jdplus.data.DataBlock;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.FiniteFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 
 /**
  *

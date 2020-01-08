@@ -18,10 +18,10 @@ package demetra.regarima;
 
 import demetra.design.Development;
 import demetra.design.LombokWorkaround;
-import demetra.modelling.regression.IOutlier;
-import demetra.modelling.regression.InterventionVariable;
-import demetra.modelling.regression.Ramp;
-import demetra.modelling.regression.UserVariable;
+import demetra.timeseries.regression.IOutlier;
+import demetra.timeseries.regression.InterventionVariable;
+import demetra.timeseries.regression.Ramp;
+import demetra.timeseries.regression.UserVariable;
 import java.util.*;
 import demetra.util.Validatable;
 

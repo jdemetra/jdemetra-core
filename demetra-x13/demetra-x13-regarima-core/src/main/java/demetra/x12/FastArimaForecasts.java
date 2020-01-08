@@ -19,7 +19,7 @@ package demetra.x12;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.arima.estimation.ArimaForecasts;
 import demetra.data.DoubleSeq;
 

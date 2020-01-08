@@ -19,8 +19,8 @@ package demetra.x12;
 import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.maths.Complex;
-import jdplus.maths.linearfilters.BackFilter;
+import demetra.math.Complex;
+import jdplus.math.linearfilters.BackFilter;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
@@ -565,7 +565,7 @@ public class DifferencingModule implements IDifferencingModule {
         ModelDescription desc = context.getDescription();
         ModelEstimation est = context.getEstimation();
         int freq = desc.getAnnualFrequency();
-        SarimaSpecification curspec = desc.getSpecification();
+        SarimaSpecification curspec = desc.specification();
         try {
             // get residuals
             DoubleSeq res = RegArimaUtility.linearizedData(desc.regarima(), est.getConcentratedLikelihood());
@@ -576,7 +576,6 @@ public class DifferencingModule implements IDifferencingModule {
             if (spec.getD() != curspec.getD() || spec.getBd() != curspec.getBd()) {
                 changed = true;
                 desc.setSpecification(spec);
-                context.setEstimation(null);
             }
             boolean nmean = isMeanCorrection();
             if (nmean != desc.isMean()) {
@@ -593,10 +592,10 @@ public class DifferencingModule implements IDifferencingModule {
     private ProcessingResult airline(RegArimaModelling context) {
         ModelDescription desc = context.getDescription();
         boolean seasonal = desc.getAnnualFrequency() > 1;
-        if (!desc.getSpecification().isAirline(seasonal)) {
+        if (!desc.specification().isAirline(seasonal)) {
             desc.setAirline(seasonal);
             desc.setMean(false);
-            context.setEstimation(null);
+            context.clearEstimation();
             return ProcessingResult.Changed;
         } else {
             return ProcessingResult.Unprocessed;

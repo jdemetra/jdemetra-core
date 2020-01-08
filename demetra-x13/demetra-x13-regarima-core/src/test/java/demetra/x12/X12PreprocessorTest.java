@@ -35,15 +35,19 @@ import demetra.data.Doubles;
  */
 public class X12PreprocessorTest {
 
-    private final double[] data, datamissing;
+    private static final double[] data, datamissing;
 
-    public X12PreprocessorTest() {
+    static {
         data = Data.PROD.clone();
         datamissing = Data.PROD.clone();
         datamissing[2] = Double.NaN;
         datamissing[100] = Double.NaN;
         datamissing[101] = Double.NaN;
         datamissing[102] = Double.NaN;
+
+    }
+
+    public X12PreprocessorTest() {
     }
 
     @Test
@@ -65,32 +69,29 @@ public class X12PreprocessorTest {
         System.out.println(rslt.estimation.getLikelihood().getLogLikelihood());
     }
 
-    //@Test
+//    @Test
     public void testProd() {
         RegArimaSpec spec = RegArimaSpec.RG5;
-        OutlierSpec outlierSpec = spec.getOutliers().toBuilder()
-                .defaultCriticalValue(3)
-                .build();
+//        OutlierSpec outlierSpec = spec.getOutliers().toBuilder()
+//                .defaultCriticalValue(3)
+//                .build();
 
-        spec = spec.toBuilder()
-                .outliers(outlierSpec)
-                .build();
-
+//        spec = spec.toBuilder()
+//                .outliers(outlierSpec)
+//                .build();
         X12Preprocessor processor = X12Preprocessor.of(spec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(data));
         PreprocessingModel rslt = processor.process(s, null);
         RegArimaSpecification ospec = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.clone();
-        ospec.getOutliers().setDefaultCriticalValue(3);
+//        ospec.getOutliers().setDefaultCriticalValue(3);
         IPreprocessor oprocessor = ospec.build();
         ec.tstoolkit.timeseries.simplets.TsData os = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
         ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(os, null);
         assertEquals(rslt.getEstimation().getStatistics().getLogLikelihood(), orslt.estimation.getStatistics().logLikelihood, 1e-4);
     }
 
-    @Test
-    @Ignore
-    public void stressTestProd() {
+    public static void stressTestProd() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 250; ++i) {
             RegArimaSpecification spec = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.clone();
@@ -110,5 +111,9 @@ public class X12PreprocessorTest {
         }
         t1 = System.currentTimeMillis();
         System.out.println("new: " + (t1 - t0));
+    }
+
+    public static void main(String[] args) {
+        stressTestProd();
     }
 }

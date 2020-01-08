@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 import demetra.data.DoubleSeq;
+import jdplus.regarima.RegArimaUtility;
 
 /**
  *
@@ -115,13 +116,10 @@ public class ArmaModuleImpl {
 
     public SarimaSpecification process(RegArimaModel<SarimaModel> regarima, boolean seas) {
         SarimaSpecification curSpec = regarima.arima().specification();
-        LinearModel lm = regarima.differencedModel().asLinearModel();
-        Ols ols = new Ols();
-        LeastSquaresResults lsr = ols.compute(lm);
-        DataBlock res = lm.calcResiduals(lsr.getCoefficients());
+        DoubleSeq res = RegArimaUtility.olsResiduals(regarima);
         SarmaSpecification nspec = select(res, curSpec.getPeriod(), curSpec.getD(), curSpec.getBd());
         if (nspec == null) {
-            curSpec.airline(seas);
+            curSpec.setDefault(seas);
             return curSpec;
         } else {
             SarimaSpecification rspec = SarimaSpecification.of(nspec, curSpec.getD(), curSpec.getBd());

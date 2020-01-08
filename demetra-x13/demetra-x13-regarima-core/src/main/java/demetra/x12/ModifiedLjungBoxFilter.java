@@ -27,8 +27,7 @@ import demetra.design.Development;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.maths.polynomials.Polynomial;
-import nbbrd.service.ServiceProvider;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 
@@ -37,7 +36,6 @@ import demetra.data.DoubleSeq;
  */
 @Development(status = Development.Status.Alpha)
 @AlgorithmImplementation(algorithm=ArmaFilter.class, feature=Legacy)
-@ServiceProvider(ArmaFilter.class)
 public class ModifiedLjungBoxFilter implements ArmaFilter {
 
     private int m_n, m_p, m_q;
