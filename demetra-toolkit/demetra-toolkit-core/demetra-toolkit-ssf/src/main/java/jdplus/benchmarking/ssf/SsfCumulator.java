@@ -41,12 +41,13 @@ public class SsfCumulator {
             return new StateComponent(new Initialization(s.initialization()), new Dynamics(s.dynamics(), loading, conversion, start));
         }
     }
-    
-    public ISsfLoading defaultLoading(ISsfLoading l, int conversion, int start){
-        if (conversion == 0)
+
+    public ISsfLoading defaultLoading(ISsfLoading l, int conversion, int start) {
+        if (conversion == 0) {
             return new CLoading(l);
-        else
+        } else {
             return new Loading(l, conversion, start);
+        }
     }
 
     static class Initialization implements ISsfInitialization {
@@ -236,7 +237,7 @@ public class SsfCumulator {
         private final int start;
 
         Loading(ISsfLoading loading, int conversion) {
-             this.loading = loading;
+            this.loading = loading;
             this.conversion = conversion;
             this.start = 0;
         }
@@ -291,8 +292,9 @@ public class SsfCumulator {
 
         @Override
         public void VpZdZ(int pos, Matrix vm, double d) {
-            if (d == 0)
+            if (d == 0) {
                 return;
+            }
             Matrix v = vm.dropTopLeft(1, 1);
             loading.VpZdZ(pos, v, d);
             if ((start + pos) % conversion != 0) {
@@ -451,8 +453,9 @@ public class SsfCumulator {
 
         @Override
         public void VpZdZ(int pos, Matrix vm, double d) {
-            if (d == 0)
+            if (d == 0) {
                 return;
+            }
             Matrix v = vm.dropTopLeft(1, 1);
             loading.VpZdZ(pos, v, d);
             vm.add(0, 0, d);

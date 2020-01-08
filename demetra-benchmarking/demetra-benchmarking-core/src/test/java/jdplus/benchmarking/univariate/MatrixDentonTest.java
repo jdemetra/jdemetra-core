@@ -5,12 +5,11 @@
  */
 package jdplus.benchmarking.univariate;
 
-import jdplus.benchmarking.univariate.MatrixDenton;
 import demetra.benchmarking.univariate.DentonSpec;
 import demetra.benchmarking.univariate.DentonSpec;
 import jdplus.data.DataBlock;
 import org.junit.Test;
-import jdplus.math.matrices.lapack.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *

@@ -22,10 +22,9 @@ import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.DiffuseInitialization;
 import jdplus.ssf.ISsfDynamics;
-import jdplus.ssf.ISsfInitialization;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 import jdplus.ssf.implementations.Loading;
-import jdplus.ssf.univariate.ISsf;
-import jdplus.ssf.univariate.Ssf;
 
 /**
  * State space representation of a non parametric spline model
@@ -35,17 +34,17 @@ import jdplus.ssf.univariate.Ssf;
 @Development(status = Development.Status.Alpha)
 @lombok.experimental.UtilityClass
 public class SsfSpline {
-
-    public ISsf of(double measurementError) {
-        return Ssf.of(new DiffuseInitialization(2), new SimpleDynamics(1), Loading.fromPosition(0), measurementError);
+    
+    public ISsfLoading defaultLoading(){
+        return Loading.fromPosition(0);
     }
 
-    public ISsf of(double measurementError, double d) {
-        return Ssf.of(new DiffuseInitialization(2), new SimpleDynamics(d), Loading.fromPosition(0), measurementError);
+    public StateComponent of(double d) {
+        return new StateComponent(new DiffuseInitialization(2), new SimpleDynamics(d));
     }
 
-    public ISsf of(double measurementError, double[] d) {
-        return Ssf.of(new DiffuseInitialization(2), new Dynamics(d), Loading.fromPosition(0), measurementError);
+    public StateComponent of(double[] d) {
+        return new StateComponent(new DiffuseInitialization(2), new Dynamics(d));
     }
 
     static class SimpleDynamics implements ISsfDynamics {

@@ -41,15 +41,14 @@ public class RegSsfTest {
                 .btheta(1, -.8)
                 .build();
         StateComponent cmp1 = SsfArima.of(airline);
-        Ssf ssf = Ssf.of(cmp1, SsfArima.defaultLoading());
         TsData s = Data.TS_PROD;
         SsfData y = new SsfData(s.getValues());
         GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD7);
         Matrix X = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(td));
-        ISsf rssf1 = RegSsf.of(ssf, X);
+        ISsf rssf1 = Ssf.of(RegSsf.of(cmp1, X), RegSsf.defaultLoading(cmp1.dim(), SsfArima.defaultLoading(), X));
         CompositeSsf rssf2 = CompositeSsf.builder()
                 .add(cmp1, Loading.fromPosition(0))
-                .add(RegSsf.of(X.getColumnsCount()), RegSsf.loading(X))
+                .add(Coefficients.fixedCoefficients(X.getColumnsCount()), Loading.regression(X))
                 .build();
         DiffuseLikelihood ll1 = DkToolkit.likelihoodComputer(true, true, false).compute(rssf1, y);
         DiffuseLikelihood ll2 = DkToolkit.likelihoodComputer(true, true, false).compute(rssf2, y);
@@ -63,15 +62,14 @@ public class RegSsfTest {
                 .btheta(1, -.8)
                 .build();
         StateComponent cmp1 = SsfArima.of(airline);
-        Ssf ssf = Ssf.of(cmp1, SsfArima.defaultLoading());
         TsData s = Data.TS_PROD;
         SsfData y = new SsfData(s.getValues());
         GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD7);
         Matrix X = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(td));
-        ISsf rssf1 = RegSsf.of(ssf, X);
+        ISsf rssf1 = Ssf.of(RegSsf.of(cmp1, X), RegSsf.defaultLoading(cmp1.dim(), SsfArima.defaultLoading(), X));
         CompositeSsf rssf2 = CompositeSsf.builder()
                 .add(cmp1, Loading.fromPosition(0))
-                .add(RegSsf.of(X.getColumnsCount()), RegSsf.loading(X))
+                .add(Coefficients.fixedCoefficients(X.getColumnsCount()), Loading.regression(X))
                 .build();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 10000; ++i) {

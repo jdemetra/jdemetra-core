@@ -16,8 +16,6 @@
  */
 package jdplus.stl;
 
-import jdplus.stl.StlPlusSpecification;
-import jdplus.stl.StlPlus;
 import demetra.data.Data;
 import jdplus.data.DataBlock;
 import java.util.Random;

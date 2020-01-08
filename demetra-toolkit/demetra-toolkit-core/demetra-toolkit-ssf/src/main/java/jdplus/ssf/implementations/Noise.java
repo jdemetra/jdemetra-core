@@ -14,14 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.sts;
+package jdplus.ssf.implementations;
 
 import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.Loading;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 
@@ -33,24 +32,16 @@ import jdplus.ssf.StateComponent;
 @lombok.experimental.UtilityClass
 public class Noise {
 
-    public SsfComponent of(final double var) {
-        return new SsfComponent(new Initialization(var), new Dynamics(var), Loading.fromPosition(0));
-    }
-
-    public StateComponent stateComponent(final double var) {
+    public StateComponent of(final double var) {
         return new StateComponent(new Initialization(var), new Dynamics(var));
     }
-    
-    public ISsfLoading loading(){
+
+    public ISsfLoading defaultLoading(){
         return Loading.fromPosition(0);
     }
     
     public ISsfLoading periodicLoading(final int period, final int startPos) {
         return Loading.circular(period, startPos);
-    }
-
-    public SsfComponent periodic(final int period, final int startPos, final double var) {
-        return new SsfComponent(new Initialization(var), new Dynamics(var), Loading.circular(period, startPos));
     }
 
     static class Initialization implements ISsfInitialization {
@@ -77,7 +68,7 @@ public class Noise {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
         }
 
         @Override
@@ -85,7 +76,7 @@ public class Noise {
         }
 
         @Override
-        public void Pf0(FastMatrix pf0) {
+        public void Pf0(Matrix pf0) {
             pf0.set(0, 0, var);
         }
 
@@ -106,12 +97,12 @@ public class Noise {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             qm.set(0, 0, var);
         }
 
         @Override
-        public void S(int pos, FastMatrix cm) {
+        public void S(int pos, Matrix cm) {
             cm.set(0, 0, e);
         }
 
@@ -126,7 +117,7 @@ public class Noise {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
         }
 
         @Override
@@ -135,7 +126,7 @@ public class Noise {
         }
 
         @Override
-        public void TVT(int pos, FastMatrix v) {
+        public void TVT(int pos, Matrix v) {
             v.set(0,0,0);
         }
 
@@ -145,7 +136,7 @@ public class Noise {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             p.add(0, 0, var);
         }
 

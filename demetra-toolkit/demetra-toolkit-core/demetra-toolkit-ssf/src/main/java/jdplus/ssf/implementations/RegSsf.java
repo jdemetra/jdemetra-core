@@ -19,21 +19,16 @@ package jdplus.ssf.implementations;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.DataWindow;
-import jdplus.math.matrices.MatrixWindow;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.ssf.ISsfDynamics;
-import jdplus.ssf.univariate.ISsf;
-import jdplus.ssf.univariate.Ssf;
 import demetra.data.DoubleSeqCursor;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfLoading;
-import jdplus.ssf.SsfException;
-import jdplus.ssf.univariate.ISsfMeasurement;
-import jdplus.ssf.univariate.Measurement;
-import demetra.data.DoubleSeq;
 import jdplus.math.matrices.Matrix;
 import jdplus.ssf.StateComponent;
+import jdplus.ssf.univariate.ISsf;
+import jdplus.ssf.univariate.Ssf;
 
 /**
  * SSF extended by regression variables with fixed or time varying coefficients.
@@ -43,79 +38,75 @@ import jdplus.ssf.StateComponent;
  */
 @lombok.experimental.UtilityClass
 public class RegSsf {
-
-    public StateComponent of(int nx, DoubleSeq vars) {
-        if (vars.length() == 1) {
-            return new StateComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(nx, vars.get(0)));
-        } else if (nx == vars.length()) {
-            return new StateComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(vars));
-        } else {
-            throw new SsfException(SsfException.MODEL);
-        }
-    }
-
-    public StateComponent of(Matrix vars) {
-        int nx = vars.getColumnsCount();
-        return new StateComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(vars));
-    }
-
-    public StateComponent of(int nx) {
-        return new StateComponent(new ConstantInitialization(nx), new ConstantDynamics());
-    }
-
-    public ISsfLoading loading(Matrix X) {
-        return Loading.regression(X);
-    }
-
-    public ISsf of(ISsf model, Matrix X) {
+    
+    public Ssf ssf(ISsf model, Matrix X){
         if (X.isEmpty()) {
             throw new IllegalArgumentException();
         }
-        int mdim = model.getStateDim();
-        return Ssf.of(new Xinitializer(model.initialization(), X.getColumnsCount()),
-                new Xdynamics(mdim, model.dynamics(), X.getColumnsCount()),
-                new Xloading(mdim, model.loading(), X), model.measurementError());
+        int mdim = model.getStateDim(), nx=X.getColumnsCount();
+        return Ssf.of(new Xinitializer(model.initialization(), nx),
+                new Xdynamics(mdim, model.dynamics(), nx),
+                new Xloading(mdim, model.loading(), X),
+                model.measurementError());
+        
     }
 
     /**
-     * Creates a ssf with time varying coefficients, such that the innovations
-     * covariance are defined by cvar
-     *
-     * @param model
+     * Extends the loading of a given state block with regression variables
+     * @param dim The size of the state block that will be extended
+     * @param loading The loading to be applied on the state block
+     * @param X The regression variables
+     * @return 
+     */
+    public ISsfLoading defaultLoading(int dim, ISsfLoading loading, Matrix X) {
+        return new Xloading(dim, loading, X);
+    }
+
+    public StateComponent of(StateComponent cmp, Matrix X) {
+        if (X.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        int mdim = cmp.dim(), nx=X.getColumnsCount();
+        return new StateComponent(new Xinitializer(cmp.initialization(), nx),
+                new Xdynamics(mdim, cmp.dynamics(), nx));
+    }
+
+    /**
+     * Creates a state component with time varying coefficients     *
+     * @param cmp
      * @param X
      * @param cvar The covariance of the coefficients
      * @return
      */
-    public ISsf ofTimeVarying(ISsf model, Matrix X, Matrix cvar) {
-        if (X.isEmpty()) {
+    public StateComponent ofTimeVarying(StateComponent cmp, Matrix X, Matrix cvar) {
+        int nx=X.getColumnsCount();
+        if (X.isEmpty() || ! cvar.isSquare() || cvar.getColumnsCount() != nx) {
             throw new IllegalArgumentException();
         }
-        int mdim = model.getStateDim();
+        int mdim = cmp.dim();
         Matrix s = cvar.deepClone();
         SymmetricMatrix.lcholesky(s, 1e-12);
-        return Ssf.of(new Xinitializer(model.initialization(), X.getColumnsCount()),
-                new Xvardynamics(mdim, model.dynamics(), cvar, s),
-                new Xloading(mdim, model.loading(), X), model.measurementError());
+        return new StateComponent(new Xinitializer(cmp.initialization(), nx),
+                new Xvardynamics(mdim, cmp.dynamics(), cvar, s));
     }
 
     /**
-     * Creates a ssf with time varying coefficients, such that the innovations
+     * Creates a state component with time varying coefficients, such that the innovations
      * covariance are defined by SS'
      *
-     * @param model
+     * @param cmp
      * @param X
-     * @param s The Cholesky factor of the covariance of the coefficients
+     * @param l The Cholesky factor of the covariance of the coefficients
      * @return
      */
-    public ISsf ofTimeVaryingFactor(ISsf model, Matrix X, Matrix s) {
-        if (X.isEmpty()) {
+    public StateComponent ofTimeVaryingFactor(StateComponent cmp, Matrix X, Matrix l) {
+        int nx=X.getColumnsCount();
+        if (X.isEmpty() || ! l.isSquare() || l.getColumnsCount() != nx) {
             throw new IllegalArgumentException();
         }
-        int mdim = model.getStateDim();
-        Matrix var = SymmetricMatrix.XXt(s);
-        return Ssf.of(new Xinitializer(model.initialization(), X.getColumnsCount()),
-                new Xvardynamics(mdim, model.dynamics(), var, s),
-                new Xloading(mdim, model.loading(), X), model.measurementError());
+        int mdim = cmp.dim();
+        return new StateComponent(new Xinitializer(cmp.initialization(), nx),
+                new Xvardynamics(mdim, cmp.dynamics(), SymmetricMatrix.XXt(l), l));
     }
 
     static class Xdynamics implements ISsfDynamics {

@@ -10,7 +10,7 @@ import demetra.data.DoubleSeq;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
 import jdplus.ssf.SsfComponent;
-import jdplus.sts.Noise;
+import jdplus.ssf.implementations.Noise;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;

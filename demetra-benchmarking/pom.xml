@@ -15,6 +15,7 @@
     <modules>
         <module>demetra-benchmarking-api</module>
         <module>demetra-benchmarking-core</module>
+        <module>demetra-benchmarking-io</module>
         <module>demetra-benchmarking-r</module>
     </modules>
   
@@ -74,12 +75,22 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-toolkit-io</artifactId>
+                <version>${jd3-toolkit.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-benchmarking-api</artifactId>
                 <version>${jd3-benchmarking.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-benchmarking-core</artifactId>
+                <version>${jd3-benchmarking.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-benchmarking-io</artifactId>
                 <version>${jd3-benchmarking.version}</version>            
             </dependency>
             <!-- < modules 3.0 -->

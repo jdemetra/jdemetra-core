@@ -57,11 +57,6 @@ public class ConstantDynamics implements ISsfDynamics {
     public void S(int pos, Matrix sm) {
     }
 
-//    @Override
-//    public void addSX(int pos, DataBlock x, DataBlock y) {
-//        y.add(x);
-//    }
-//
     @Override
     public void T(int pos, Matrix tr) {
         tr.diagonal().set(1);
@@ -97,5 +92,13 @@ public class ConstantDynamics implements ISsfDynamics {
 
     @Override
     public void MT(int pos, Matrix x) {
+    }
+
+    @Override
+    public void TtM(int pos, Matrix x) {
+    }
+
+    @Override
+    public void MTt(int pos, Matrix x) {
     }
 }

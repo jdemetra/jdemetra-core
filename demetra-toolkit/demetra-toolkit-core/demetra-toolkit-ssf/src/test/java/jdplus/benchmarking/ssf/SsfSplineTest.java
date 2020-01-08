@@ -27,6 +27,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import demetra.data.DoubleSeq;
+import jdplus.ssf.univariate.Ssf;
 
 /**
  *
@@ -47,7 +48,7 @@ public class SsfSplineTest {
         for (int i = 0; i < x.length; ++i) {
             s[(i + 1) * 5] = x[i];
         }
-        ISsf ssf = SsfSpline.of(0, 1);
+        ISsf ssf = Ssf.of(SsfSpline.of(1), SsfSpline.defaultLoading());
         DataBlockStorage sr = DkToolkit.fastSmooth(ssf, new SsfData(DoubleSeq.of(s)));
         DoubleSeq component = sr.item(0);
 
@@ -60,9 +61,7 @@ public class SsfSplineTest {
         System.out.println(r.getComponentVariance(1));
     }
 
-    @Test
-    @Ignore
-    public void stressTest() {
+    public static void stressTest() {
         double[] x = new double[]{-3, 20, -10, 5, 6, 50, -10, 8, 9, 60, 100, 50};
         double[] s = new double[(x.length + 1) * 5];
         for (int i = 0; i < s.length; ++i) {
@@ -76,7 +75,7 @@ public class SsfSplineTest {
         int K = 100000;
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
-            ISsf ssf = SsfSpline.of(0, 1);
+        ISsf ssf = Ssf.of(SsfSpline.of(1), SsfSpline.defaultLoading());
             DataBlockStorage sr = DkToolkit.fastSmooth(ssf, new SsfData(DoubleSeq.of(s)));
             DoubleSeq component = sr.item(0);
         }
@@ -93,5 +92,9 @@ public class SsfSplineTest {
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
+    }
+    
+    public static void main(String[] args){
+        stressTest();
     }
 }
