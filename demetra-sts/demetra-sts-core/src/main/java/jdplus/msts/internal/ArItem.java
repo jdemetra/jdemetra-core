@@ -11,7 +11,6 @@ import jdplus.msts.ArInterpreter;
 import jdplus.msts.ModelItem;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
-import jdplus.ssf.SsfComponent;
 import jdplus.arima.ssf.SsfAr;
 import jdplus.arima.ssf.SsfAr2;
 import java.util.Arrays;
@@ -49,7 +48,7 @@ public class ArItem extends StateItem {
         int n = ar.getDomain().getDim();
         double[] par = p.extract(0, n).toArray();
         double w = p.get(n);
-        return SsfAr.stateComponent(par, w, nlags, zeroinit);
+        return SsfAr.of(par, w, nlags, zeroinit);
     }
 
     @Override
@@ -62,7 +61,7 @@ public class ArItem extends StateItem {
         if (m > 0) {
             return null;
         } else {
-            return SsfAr.loading();
+            return SsfAr.defaultLoading();
         }
     }
 

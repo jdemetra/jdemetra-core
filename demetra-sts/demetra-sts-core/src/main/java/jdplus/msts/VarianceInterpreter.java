@@ -7,8 +7,8 @@ package jdplus.msts;
 
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
-import jdplus.maths.functions.IParametersDomain;
-import jdplus.maths.functions.ParamValidation;
+import jdplus.math.functions.IParametersDomain;
+import jdplus.math.functions.ParamValidation;
 import demetra.data.DoubleSeq;
 
 /**

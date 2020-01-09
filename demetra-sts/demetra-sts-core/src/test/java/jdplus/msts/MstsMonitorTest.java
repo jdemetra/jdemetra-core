@@ -9,7 +9,7 @@ import demetra.data.Data;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateStorage;
 import jdplus.ssf.dk.DkToolkit;
@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.junit.Test;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -40,9 +40,9 @@ public class MstsMonitorTest {
     public void testSimple() throws URISyntaxException, IOException {
 
         File file = Data.copyToTempFile(MultivariateCompositeSsf.class.getResource("/bematrix.txt"));
-        Matrix data = MatrixSerializer.read(file, "\t|,");
+        MatrixType data = MatrixSerializer.read(file, "\t|,");
 
-        CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 4);
+        Matrix D = Matrix.make(data.getRowsCount(), 4);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));
@@ -73,9 +73,9 @@ public class MstsMonitorTest {
     public void testSimpleX() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
-        Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
+        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
 
-        CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 6);
+        Matrix D = Matrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));
@@ -112,9 +112,9 @@ public class MstsMonitorTest {
     public void testSimpleX2() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
-        Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
+        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
 
-        CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 6);
+        Matrix D = Matrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));
@@ -151,9 +151,9 @@ public class MstsMonitorTest {
     public void testSimpleXbis() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
-        Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
+        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
 
-        CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 6);
+        Matrix D = Matrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));
@@ -194,8 +194,8 @@ public class MstsMonitorTest {
         mapping.add(new VarianceInterpreter("tu_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
-            eq.add(new MultivariateCompositeSsf.Item("tu"));
-            eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1)));
+            eq.add(new MultivariateCompositeSsf.Item("tu", 1, LocalLinearTrend.defaultLoading()));
+            eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), SsfAr.defaultLoading()));
             builder.add("tu", LocalLinearTrend.of(0, p.get(2)))
                     .add(eq);
             return 3;
@@ -209,8 +209,8 @@ public class MstsMonitorTest {
         mapping.add(new VarianceInterpreter("ty_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
-            eq.add(new MultivariateCompositeSsf.Item("ty"));
-            eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1)));
+            eq.add(new MultivariateCompositeSsf.Item("ty", 1, LocalLinearTrend.defaultLoading()));
+            eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1),SsfAr.defaultLoading()));
             builder.add("ty", LocalLinearTrend.of(0, p.get(2)))
                     .add(eq);
             return 3;
@@ -224,7 +224,7 @@ public class MstsMonitorTest {
         mapping.add(new VarianceInterpreter("tpicore_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
-            eq.add(new MultivariateCompositeSsf.Item("tpicore"));
+            eq.add(new MultivariateCompositeSsf.Item("tpicore", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), Loading.fromPosition(4)));
             builder.add("tpicore", LocalLevel.of(p.get(2)))
                     .add(eq);
@@ -238,8 +238,8 @@ public class MstsMonitorTest {
         mapping.add(new VarianceInterpreter("tpi_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
-            eq.add(new MultivariateCompositeSsf.Item("tpi"));
-            eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1)));
+            eq.add(new MultivariateCompositeSsf.Item("tpi", 1, LocalLevel.defaultLoading()));
+            eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), SsfAr.defaultLoading()));
             builder.add("tpi", LocalLevel.of(p.get(2)))
                     .add(eq);
             return 3;
@@ -271,14 +271,14 @@ public class MstsMonitorTest {
             double b2 = p.get(5), v2 = p.get(6);
             ISsfLoading pl = Loading.from(new int[]{0, 1}, new double[]{b1 * c1, b1 * c2});
             MultivariateCompositeSsf.Equation eq1 = new MultivariateCompositeSsf.Equation(v1);
-            eq1.add(new MultivariateCompositeSsf.Item("tb"));
+            eq1.add(new MultivariateCompositeSsf.Item("tb", 1, LocalLevel.defaultLoading()));
             eq1.add(new MultivariateCompositeSsf.Item("cycle", 1, pl));
             double c12 = c1 * c1, c13 = c12 * c1, c14 = c13 * c1, c22 = c2 * c2;
             double d1 = c1 + c12 + c13 + c14 + c2 + c22 + 2 * c1 * c2 + 3 * c12 * c2;
             double d2 = c2 + c1 * c2 + c22 + c12 * c2 + 2 * c1 * c22 + c13 * c2;
             pl = Loading.from(new int[]{0, 1}, new double[]{b2 * d1, b2 * d2});
             MultivariateCompositeSsf.Equation eq2 = new MultivariateCompositeSsf.Equation(v2);
-            eq2.add(new MultivariateCompositeSsf.Item("tc"));
+            eq2.add(new MultivariateCompositeSsf.Item("tc", 1, LocalLevel.defaultLoading()));
             eq2.add(new MultivariateCompositeSsf.Item("cycle", 1, pl));
             builder.add("cycle", SsfAr.of(new double[]{c1, c2}, v, 5))
                     .add("tb", LocalLevel.of(0))
@@ -301,7 +301,7 @@ public class MstsMonitorTest {
             double v = p.get(0), a1 = p.get(1), a2 = p.get(2);
             ISsfLoading pl = Loading.from(new int[]{0, 1}, new double[]{a1, a2});
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(v);
-            eq.add(new MultivariateCompositeSsf.Item("tb"));
+            eq.add(new MultivariateCompositeSsf.Item("tb", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", a1, Loading.fromPosition(0)));
             eq.add(new MultivariateCompositeSsf.Item("cycle", a2, Loading.fromPosition(1)));
             builder.add("tb", LocalLevel.of(0))
@@ -318,7 +318,7 @@ public class MstsMonitorTest {
             double v = p.get(0), a1 = p.get(1), a2 = p.get(2);
             ISsfLoading pl = Loading.from(new int[]{0, 1}, new double[]{a1, a2});
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(v);
-            eq.add(new MultivariateCompositeSsf.Item("tc"));
+            eq.add(new MultivariateCompositeSsf.Item("tc", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", 1, pl));
             builder.add("tc", LocalLevel.of(0))
                     .add(eq);
@@ -332,7 +332,7 @@ public class MstsMonitorTest {
         mapping.add(new VarianceInterpreter("tu_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
-            eq.add(new MultivariateCompositeSsf.Item("tu"));
+            eq.add(new MultivariateCompositeSsf.Item("tu", 1, LocalLinearTrend.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), Loading.fromPosition(4)));
             builder.add("tu", LocalLinearTrend.of(0, p.get(2)))
                     .add(eq);
@@ -347,7 +347,7 @@ public class MstsMonitorTest {
         mapping.add(new VarianceInterpreter("ty_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
-            eq.add(new MultivariateCompositeSsf.Item("ty"));
+            eq.add(new MultivariateCompositeSsf.Item("ty", 1, LocalLinearTrend.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), Loading.fromPosition(4)));
             builder.add("ty", LocalLinearTrend.of(0, p.get(2)))
                     .add(eq);
@@ -362,7 +362,7 @@ public class MstsMonitorTest {
         mapping.add(new VarianceInterpreter("tpicore_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
-            eq.add(new MultivariateCompositeSsf.Item("tpicore"));
+            eq.add(new MultivariateCompositeSsf.Item("tpicore", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), Loading.fromPosition(0)));
             builder.add("tpicore", LocalLevel.of(p.get(2)))
                     .add(eq);
@@ -376,7 +376,7 @@ public class MstsMonitorTest {
         mapping.add(new VarianceInterpreter("tpi_var", true));
         mapping.add((p, builder) -> {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
-            eq.add(new MultivariateCompositeSsf.Item("tpi"));
+            eq.add(new MultivariateCompositeSsf.Item("tpi", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), Loading.fromPosition(4)));
             builder.add("tpi", LocalLevel.of(p.get(2)))
                     .add(eq);
@@ -402,7 +402,7 @@ public class MstsMonitorTest {
         mapping.add((p, builder) -> {
             double v = p.get(0), a1 = p.get(1);
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(v);
-            eq.add(new MultivariateCompositeSsf.Item("tb"));
+            eq.add(new MultivariateCompositeSsf.Item("tb", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", a1, Loading.fromPosition(5)));
             builder.add("tb", LocalLevel.of(0))
                     .add(eq);
@@ -416,7 +416,7 @@ public class MstsMonitorTest {
         mapping.add((p, builder) -> {
             double v = p.get(0), a1 = p.get(1);
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(v);
-            eq.add(new MultivariateCompositeSsf.Item("tc"));
+            eq.add(new MultivariateCompositeSsf.Item("tc", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", 1, Loading.from(new int[]{5,6,7,8},
                     new double[]{a1,a1,a1,a1})));
             builder.add("tc", LocalLevel.of(0))

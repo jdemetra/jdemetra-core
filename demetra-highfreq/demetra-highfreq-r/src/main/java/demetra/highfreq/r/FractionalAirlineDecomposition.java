@@ -16,7 +16,7 @@
  */
 package demetra.highfreq.r;
 
-import demetra.descriptors.arima.UcarimaDescriptor;
+import demetra.descriptors.arimadescriptors..UcarimaDescriptor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.data.DataBlock;

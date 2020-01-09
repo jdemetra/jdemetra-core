@@ -5,10 +5,10 @@
  */
 package jdplus.msts;
 
-import jdplus.maths.functions.bfgs.Bfgs;
-import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import jdplus.maths.functions.minpack.MinPackMinimizer;
-import jdplus.maths.functions.riso.LbfgsMinimizer;
+import jdplus.math.functions.bfgs.Bfgs;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.math.functions.minpack.MinPackMinimizer;
+import jdplus.math.functions.riso.LbfgsMinimizer;
 import jdplus.ssf.likelihood.MarginalLikelihoodFunction;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.implementations.MultivariateCompositeSsf;
@@ -20,14 +20,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
-import demetra.maths.Optimizer;
+import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
 import demetra.ssf.SsfLikelihood;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.likelihood.LikelihoodFunction;
 import jdplus.likelihood.LikelihoodFunctionPoint;
-import jdplus.maths.functions.FunctionMinimizer;
-import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
+import jdplus.math.functions.FunctionMinimizer;
+import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 import jdplus.ssf.likelihood.AugmentedLikelihoodFunction;
 
 /**
@@ -112,7 +112,7 @@ public class MstsMonitor {
     private final SsfInitialization initialization;
     private final Optimizer optimizer;
 
-    private FastMatrix data;
+    private Matrix data;
     private MstsMapping model;
     private MultivariateCompositeSsf ssf;
     private DoubleSeq fullp;
@@ -188,7 +188,7 @@ public class MstsMonitor {
                 .count() == 0;
     }
 
-    public void process(FastMatrix data, MstsMapping model, DoubleSeq fullInitial) {
+    public void process(Matrix data, MstsMapping model, DoubleSeq fullInitial) {
         fixedVariance = null;
         this.data = data;
         this.model = model;
@@ -393,7 +393,7 @@ public class MstsMonitor {
     /**
      * @return the data
      */
-    public FastMatrix getData() {
+    public Matrix getData() {
         return data;
     }
 

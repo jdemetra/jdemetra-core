@@ -9,7 +9,6 @@ import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
-import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.Noise;
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +35,7 @@ public class NoiseItem extends StateItem {
         mapping.add(v);
         mapping.add((p, builder) -> {
             double e = p.get(0);
-            SsfComponent cmp = Noise.of(e);
+            StateComponent cmp = Noise.of(e);
             builder.add(name, cmp);
             return 1;
         });
@@ -50,7 +49,7 @@ public class NoiseItem extends StateItem {
     @Override
     public StateComponent build(DoubleSeq p) {
             double e = p.get(0);
-            return Noise.stateComponent(e);
+            return Noise.of(e);
     }
 
     @Override
@@ -63,7 +62,7 @@ public class NoiseItem extends StateItem {
         if (m > 0) {
             return null;
         } else {
-            return Noise.loading();
+            return Noise.defaultLoading();
         }
     }
 

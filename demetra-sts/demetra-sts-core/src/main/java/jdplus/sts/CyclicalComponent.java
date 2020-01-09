@@ -19,9 +19,8 @@ package jdplus.sts;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.Loading;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 
@@ -32,17 +31,12 @@ import jdplus.ssf.StateComponent;
 @lombok.experimental.UtilityClass
 public class CyclicalComponent {
 
-    public SsfComponent of(final double dumpingFactor, final double period, final double cvar) {
-        Data data = new Data(dumpingFactor, period, cvar);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
-    }
-    
     public StateComponent stateComponent(final double dumpingFactor, final double period, final double cvar) {
         Data data = new Data(dumpingFactor, period, cvar);
         return new StateComponent(new Initialization(data), new Dynamics(data));
     }
     
-    public ISsfLoading loading(){
+    public ISsfLoading defaultLoading(){
         return Loading.fromPosition(0);
     }
     
@@ -82,7 +76,7 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
         }
 
         @Override
@@ -90,7 +84,7 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void Pf0(FastMatrix p) {
+        public void Pf0(Matrix p) {
             double q = data.var / (1 - data.cdump * data.cdump);
             p.diagonal().set(q);
         }
@@ -116,12 +110,12 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void V(int pos, FastMatrix v) {
+        public void V(int pos, Matrix v) {
             v.diagonal().set(data.var);
         }
 
         @Override
-        public void S(int pos, FastMatrix s) {
+        public void S(int pos, Matrix s) {
             s.diagonal().set(e);
         }
 
@@ -136,7 +130,7 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             tr.set(0, 0, ccos);
             tr.set(1, 1, ccos);
             tr.set(0, 1, csin);
@@ -156,7 +150,7 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             p.diagonal().add(data.var);
         }
 

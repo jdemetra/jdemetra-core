@@ -602,6 +602,16 @@ public final class Matrix implements MatrixType.Mutable {
         int idx = start + row + col * lda;
         storage[idx] = fn.applyAsDouble(storage[idx]);
     }
+    
+    public void apply(final DoubleUnaryOperator fn){
+        if (isFull()){
+            for (int i=0; i<storage.length; ++i){
+                storage[i]=fn.applyAsDouble(storage[i]);
+            }
+        }else{
+            applyByColumns(col->col.apply(fn));
+        }
+    }
 
     public void applyByRows(final Consumer<DataBlock> fn) {
         DataBlockIterator rows = rowsIterator();

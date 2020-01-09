@@ -6,10 +6,8 @@
 package jdplus.benchmarking.univariate;
 
 import demetra.benchmarking.univariate.DentonSpec;
-import demetra.benchmarking.univariate.DentonSpec;
 import jdplus.data.DataBlock;
 import org.junit.Test;
-import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -17,7 +15,8 @@ import jdplus.math.matrices.Matrix;
  */
 public class MatrixDentonTest {
 
-    public MatrixDentonTest() {
+    @Test
+    public void MatrixDentonTest() {
         DataBlock y = DataBlock.make(20);
         y.set(i -> (1 + i));
         DataBlock x = DataBlock.make(80);

@@ -9,10 +9,10 @@ import demetra.data.Data;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
-import jdplus.maths.functions.IParametersDomain;
-import jdplus.maths.functions.ParamValidation;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.functions.IParametersDomain;
+import jdplus.math.functions.ParamValidation;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.ssf.akf.AkfToolkit;
 import jdplus.ssf.dk.SsfFunction;
@@ -20,7 +20,7 @@ import jdplus.ssf.dk.SsfFunctionPoint;
 import jdplus.ssf.implementations.Loading;
 import jdplus.ssf.implementations.MultivariateCompositeSsf;
 import jdplus.arima.ssf.SsfAr;
-import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.sts.LocalLevel;
 import jdplus.sts.LocalLinearTrend;
 import jdplus.ssf.multivariate.M2uAdapter;
@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import org.junit.Test;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -48,9 +48,9 @@ public class MstsMappingTest {
     public void testSimple() throws URISyntaxException, IOException {
 
         File file = Data.copyToTempFile(MultivariateCompositeSsf.class.getResource("/mssf1"));
-        Matrix data = MatrixSerializer.read(file, "\t|,");
+        MatrixType data = MatrixSerializer.read(file, "\t|,");
 
-        CanonicalMatrix D = CanonicalMatrix.make(data.getRowsCount(), 4);
+        Matrix D = Matrix.make(data.getRowsCount(), 4);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));
@@ -97,26 +97,26 @@ public class MstsMappingTest {
             double v = p.get(14);
             double l = p.get(7);
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(v);
-            eq.add(new MultivariateCompositeSsf.Item("tu"));
-            eq.add(new MultivariateCompositeSsf.Item("cycle", l));
+            eq.add(new MultivariateCompositeSsf.Item("tu", 1, LocalLinearTrend.defaultLoading()));
+            eq.add(new MultivariateCompositeSsf.Item("cycle", 1, SsfAr.defaultLoading()));
             builder.add(eq);
             v = p.get(4);
             l = p.get(8);
             eq = new MultivariateCompositeSsf.Equation(v);
-            eq.add(new MultivariateCompositeSsf.Item("ty"));
-            eq.add(new MultivariateCompositeSsf.Item("cycle", l));
+            eq.add(new MultivariateCompositeSsf.Item("ty", 1, LocalLinearTrend.defaultLoading()));
+            eq.add(new MultivariateCompositeSsf.Item("cycle", l, SsfAr.defaultLoading()));
             builder.add(eq);
             v = p.get(5);
             l = p.get(9);
             eq = new MultivariateCompositeSsf.Equation(v);
-            eq.add(new MultivariateCompositeSsf.Item("tpicore"));
+            eq.add(new MultivariateCompositeSsf.Item("tpicore", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", l, Loading.fromPosition(4)));
             builder.add(eq);
             v = p.get(6);
             l = p.get(10);
             eq = new MultivariateCompositeSsf.Equation(v);
-            eq.add(new MultivariateCompositeSsf.Item("tpi"));
-            eq.add(new MultivariateCompositeSsf.Item("cycle", l));
+            eq.add(new MultivariateCompositeSsf.Item("tpi", 1, LocalLevel.defaultLoading()));
+            eq.add(new MultivariateCompositeSsf.Item("cycle", l, SsfAr.defaultLoading()));
             builder.add(eq);
             return 15;
         });

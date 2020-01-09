@@ -22,8 +22,8 @@ import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import demetra.sts.ComponentUse;
 import demetra.sts.SeasonalModel;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 
 /**
  *
@@ -72,9 +72,9 @@ public class BasicStructuralModel {
         return spec;
     }
 
-    private static void svar(int freq, CanonicalMatrix O) {
+    private static void svar(int freq, Matrix O) {
         int n = freq - 1;
-        CanonicalMatrix H = CanonicalMatrix.make(freq, n);
+        Matrix H = Matrix.make(freq, n);
         // should be improved
         for (int i = 0; i < freq; ++i) {
             double z = 2 * Math.PI * (i + 1) / freq;

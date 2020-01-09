@@ -21,9 +21,8 @@ package jdplus.sts;
 import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.Loading;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 
@@ -33,21 +32,17 @@ import jdplus.ssf.StateComponent;
  */
 @lombok.experimental.UtilityClass
 public class LocalLevel {
-
-    public SsfComponent of(final double var) {
-        return new SsfComponent(new Initialization(var, Double.NaN), new Dynamics(var), Loading.fromPosition(0));
-    }
-
-    public SsfComponent of(final double var, final double initialValue) {
-        return new SsfComponent(new Initialization(var, initialValue), new Dynamics(var), Loading.fromPosition(0));
-    }
-
-    public StateComponent stateComponent(final double var, final double initialValue) {
-        return new StateComponent(new Initialization(var, initialValue), new Dynamics(var));
-    }
     
-    public ISsfLoading loading(){
+    public ISsfLoading defaultLoading(){
         return Loading.fromPosition(0);
+    }
+
+    public StateComponent of(final double var) {
+        return new StateComponent(new Initialization(var, Double.NaN), new Dynamics(var));
+    }
+
+    public StateComponent of(final double var, final double initialValue) {
+        return new StateComponent(new Initialization(var, initialValue), new Dynamics(var));
     }
 
     static class Initialization implements ISsfInitialization {
@@ -81,7 +76,7 @@ public class LocalLevel {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
             if (Double.isNaN(initialValue)) {
                 b.set(0, 0, 1);
             }
@@ -94,14 +89,14 @@ public class LocalLevel {
         }
 
         @Override
-        public void Pf0(FastMatrix pf0) {
+        public void Pf0(Matrix pf0) {
             if (Double.isFinite(initialValue)) {
                 pf0.set(0, 0, var);
             }
         }
 
         @Override
-        public void Pi0(FastMatrix pi0) {
+        public void Pi0(Matrix pi0) {
             if (Double.isNaN(initialValue)) {
                 pi0.set(0, 0, 1);
             }
@@ -134,7 +129,7 @@ public class LocalLevel {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             qm.set(0, 0, var);
         }
 
@@ -144,7 +139,7 @@ public class LocalLevel {
         }
 
         @Override
-        public void S(int pos, FastMatrix sm) {
+        public void S(int pos, Matrix sm) {
             sm.set(0, 0, std);
         }
 
@@ -159,7 +154,7 @@ public class LocalLevel {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             tr.set(0, 0, 1);
         }
 
@@ -168,7 +163,7 @@ public class LocalLevel {
         }
 
         @Override
-        public void TVT(int pos, FastMatrix v) {
+        public void TVT(int pos, Matrix v) {
         }
 
         @Override
@@ -176,7 +171,7 @@ public class LocalLevel {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             p.add(0, 0, var);
         }
 

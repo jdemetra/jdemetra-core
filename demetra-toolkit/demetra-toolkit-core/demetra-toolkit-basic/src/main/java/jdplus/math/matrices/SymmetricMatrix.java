@@ -369,15 +369,15 @@ public class SymmetricMatrix {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
-        int n = S.getRowsCount();
+        int n = S.getRowsCount(), lda=S.getColumnIncrement(), start=S.start;
         if (n == 1) {
             return;
         }
         double[] x = S.getStorage();
-        int n1 = n + 1;
-        int max = x.length;
-        for (int id = 0; id < max; id += n1) {
-            for (int il = id + 1, iu = id + n; iu < max; il++, iu += n) {
+        int del = lda + 1;
+        int max = start+lda*n;
+        for (int id = start; id < max; id += del) {
+            for (int il = id + 1, iu = id + lda; iu < max; il++, iu += lda) {
                 x[iu] = x[il];
             }
         }
@@ -387,15 +387,15 @@ public class SymmetricMatrix {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
-        int n = S.getRowsCount();
+        int n = S.getRowsCount(), lda=S.getColumnIncrement(), start=S.start;
         if (n == 1) {
             return;
         }
         double[] x = S.getStorage();
-        int n1 = n + 1;
-        int max = x.length;
-        for (int id = 0; id < max; id += n1) {
-            for (int il = id + 1, iu = id + n; iu < max; il++, iu += n) {
+        int del = lda + 1;
+        int max = start+lda*n;
+        for (int id = start; id < max; id += del) {
+            for (int il = id + 1, iu = id + lda; iu < max; il++, iu += lda) {
                 x[il] = x[iu];
             }
         }
@@ -519,7 +519,7 @@ public class SymmetricMatrix {
     }
 
     public void XtX(final Matrix X, final Matrix M) {
-        SYRK.lapply(true, 1, X, 0, M);
+        SYRK.lapply(false, 1, X, 0, M);
         fromLower(M);
     }
 

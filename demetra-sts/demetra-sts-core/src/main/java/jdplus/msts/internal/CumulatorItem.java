@@ -39,7 +39,7 @@ public class CumulatorItem extends StateItem {
         mapping.add((p, builder) -> {
             StateComponent cmp = core.build(p);
             ISsfLoading l = core.defaultLoading(0);
-            builder.add(name, SsfCumulator.stateComponent(cmp, l, period, start), SsfCumulator.loading(l, period, start));
+            builder.add(name, SsfCumulator.of(cmp, l, period, start), SsfCumulator.defaultLoading(l, period, start));
             return core.parametersCount();
         });
 
@@ -54,7 +54,7 @@ public class CumulatorItem extends StateItem {
     public StateComponent build(DoubleSeq p) {
         StateComponent cmp = core.build(p);
         ISsfLoading l = core.defaultLoading(0);
-        return SsfCumulator.stateComponent(cmp, l, period, start);
+        return SsfCumulator.of(cmp, l, period, start);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class CumulatorItem extends StateItem {
             return null;
         }
         ISsfLoading l = core.defaultLoading(0);
-        return SsfCumulator.loading(l, period, start);
+        return SsfCumulator.defaultLoading(l, period, start);
     }
 
     @Override

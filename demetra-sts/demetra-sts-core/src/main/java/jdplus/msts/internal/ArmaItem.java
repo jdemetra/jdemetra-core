@@ -9,15 +9,13 @@ import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.ssf.SsfArima;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.msts.ModelItem;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.StablePolynomialInterpreter;
 import jdplus.msts.VarianceInterpreter;
 import jdplus.ssf.StateComponent;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import jdplus.ssf.ISsfLoading;
@@ -73,7 +71,7 @@ public class ArmaItem extends StateItem {
             }
             double n = p.get(pos++);
             ArimaModel arima = new ArimaModel(bar, BackFilter.ONE, bma, n);
-            StateComponent cmp = SsfArima.stateComponent(arima);
+            StateComponent cmp = SsfArima.of(arima);
             builder.add(name, cmp, null);
             return pos;
         });
@@ -102,7 +100,7 @@ public class ArmaItem extends StateItem {
         }
         double n = p.get(pos++);
         ArimaModel arima = new ArimaModel(bar, BackFilter.ONE, bma, n);
-        return SsfArima.stateComponent(arima);
+        return SsfArima.of(arima);
     }
 
     @Override
@@ -121,7 +119,7 @@ public class ArmaItem extends StateItem {
 
     @Override
     public ISsfLoading defaultLoading(int m) {
-        return SsfArima.loading();
+        return SsfArima.defaultLoading();
     }
 
     @Override

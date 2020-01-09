@@ -18,16 +18,13 @@ package jdplus.sts;
 
 import demetra.sts.SeasonalModel;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.implementations.Loading;
-import jdplus.ssf.univariate.ISsf;
-import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.ssf.SsfComponent;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.GeneralMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 
@@ -38,14 +35,14 @@ import jdplus.ssf.StateComponent;
 @lombok.experimental.UtilityClass
 public class SeasonalComponent {
 
-    private CanonicalMatrix tsvar(int freq) {
+    private Matrix tsvar(int freq) {
         int n = freq - 1;
-        CanonicalMatrix M = CanonicalMatrix.make(n, freq);
+        Matrix M = Matrix.make(n, freq);
         M.diagonal().set(1);
         M.column(n).set(-1);
-        CanonicalMatrix O = SymmetricMatrix.XXt(M);
+        Matrix O = SymmetricMatrix.XXt(M);
         LinearSystemSolver.robustSolver().solve(O, M);
-        CanonicalMatrix H = CanonicalMatrix.make(freq, n);
+        Matrix H = Matrix.make(freq, n);
         // should be improved
         for (int i = 0; i < freq; ++i) {
             double z = 2 * Math.PI * (i + 1) / freq;
@@ -57,8 +54,8 @@ public class SeasonalComponent {
                 H.set(i, n - 1, Math.cos((freq / 2) * z));
             }
         }
-        CanonicalMatrix QH = M.times(H);
-        CanonicalMatrix Z = SymmetricMatrix.XXt(QH);
+        Matrix QH = GeneralMatrix.AB(M, H);
+        Matrix Z = SymmetricMatrix.XXt(QH);
         Z.apply(x -> Math.abs(x) < 1e-12 ? 0 : x);
 
         return Z;
@@ -69,7 +66,7 @@ public class SeasonalComponent {
      * @param freq
      * @return
      */
-    private synchronized CanonicalMatrix tsVar(int freq) {
+    private synchronized Matrix tsVar(int freq) {
         switch (freq) {
             case 12:
                 if (VTS12 == null) {
@@ -101,14 +98,14 @@ public class SeasonalComponent {
         }
     }
 
-    private CanonicalMatrix hsvar(int freq) {
-        CanonicalMatrix m = CanonicalMatrix.square(freq - 1);
+    private Matrix hsvar(int freq) {
+        Matrix m = Matrix.square(freq - 1);
         m.set(-1.0 / freq);
         m.diagonal().add(1);
         return m;
     }
 
-    private synchronized CanonicalMatrix hslVar(int freq) {
+    private synchronized Matrix hslVar(int freq) {
         switch (freq) {
             case 12:
                 if (LHS12 == null) {
@@ -141,18 +138,18 @@ public class SeasonalComponent {
                 }
                 return LHS6.deepClone();
             default:
-                CanonicalMatrix lhs = hsvar(freq);
+                Matrix lhs = hsvar(freq);
                 SymmetricMatrix.lcholesky(lhs);
                 return lhs;
         }
     }
 
-    public CanonicalMatrix tsVar(SeasonalModel seasModel, final int freq) {
+    public Matrix tsVar(SeasonalModel seasModel, final int freq) {
         if (seasModel == SeasonalModel.Trigonometric) {
             return tsVar(freq);
         } else {
             int n = freq - 1;
-            CanonicalMatrix Q = CanonicalMatrix.square(n);
+            Matrix Q = Matrix.square(n);
             if (null != seasModel) // Dummy
             {
                 switch (seasModel) {
@@ -176,7 +173,7 @@ public class SeasonalComponent {
         }
     }
 
-    private synchronized CanonicalMatrix tslVar(int freq) {
+    private synchronized Matrix tslVar(int freq) {
         switch (freq) {
             case 12:
                 if (LVTS12 == null) {
@@ -214,14 +211,14 @@ public class SeasonalComponent {
                 }
                 return LVTS6.deepClone();
             default:
-                CanonicalMatrix var = tsvar(freq);
+                Matrix var = tsvar(freq);
                 SymmetricMatrix.lcholesky(var);
                 var.apply(x -> Math.abs(x) < 1e-12 ? 0 : x);
                 return var;
         }
     }
 
-    public CanonicalMatrix tslVar(SeasonalModel seasModel, final int freq) {
+    public Matrix tslVar(SeasonalModel seasModel, final int freq) {
         switch (seasModel) {
             case Trigonometric:
                 return tslVar(freq);
@@ -229,7 +226,7 @@ public class SeasonalComponent {
                 return hslVar(freq);
             default:
                 int n = freq - 1;
-                CanonicalMatrix Q = CanonicalMatrix.square(n);
+                Matrix Q = Matrix.square(n);
                 switch (seasModel) {
                     case Dummy:
                         Q.set(n - 1, n - 1, 1);
@@ -245,35 +242,33 @@ public class SeasonalComponent {
         }
     }
 
-    private static CanonicalMatrix VTS2, VTS3, VTS4, VTS6, VTS12;
-    private static CanonicalMatrix LVTS2, LVTS3, LVTS4, LVTS6, LVTS12, LHS2, LHS3, LHS4, LHS6, LHS12;
+    private static Matrix VTS2, VTS3, VTS4, VTS6, VTS12;
+    private static Matrix LVTS2, LVTS3, LVTS4, LVTS6, LVTS12, LHS2, LHS3, LHS4, LHS6, LHS12;
 
-    public SsfComponent of(final SeasonalModel model, final int period, final double seasVar) {
-        SeasonalModel cmodel=seasVar == 0 ? SeasonalModel.Fixed : model;
-        Data data = new Data(cmodel, seasVar, period);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
-    }
-
-   public StateComponent stateComponent(final SeasonalModel model, final int period, final double seasVar) {
-        SeasonalModel cmodel=seasVar == 0 ? SeasonalModel.Fixed : model;
+    public StateComponent of(final SeasonalModel model, final int period, final double seasVar) {
+        SeasonalModel cmodel = seasVar == 0 ? SeasonalModel.Fixed : model;
         Data data = new Data(cmodel, seasVar, period);
         return new StateComponent(new Initialization(data), new Dynamics(data));
     }
-   
-   public ISsfLoading loading(){
-       return Loading.fromPosition(0);
-   }
 
-   public SsfComponent harrisonStevens(final int period, final double v) {
-        HarrisonStevensData data = new HarrisonStevensData(period, v);
-        return new SsfComponent(new HarrisonStevensInitialization(data),
-                new HarrisonStevensDynamics(data), Loading.circular(period));
+    public ISsfLoading defaultLoading() {
+        return Loading.fromPosition(0);
     }
 
-    public SsfComponent harrisonStevens(final double[] var) {
+    public StateComponent harrisonStevens(final int period, final double v) {
+        HarrisonStevensData data = new HarrisonStevensData(period, v);
+        return new StateComponent(new HarrisonStevensInitialization(data),
+                new HarrisonStevensDynamics(data));
+    }
+
+    public ISsfLoading harrisonStevensLoading(final int period) {
+        return Loading.circular(period);
+    }
+
+    public StateComponent harrisonStevens(final double[] var) {
         HarrisonStevensData data = new HarrisonStevensData(var);
-        return new SsfComponent(new HarrisonStevensInitialization(data),
-                new HarrisonStevensDynamics(data), Loading.circular(var.length));
+        return new StateComponent(new HarrisonStevensInitialization(data),
+                new HarrisonStevensDynamics(data));
     }
 
     static class Data {
@@ -281,17 +276,17 @@ public class SeasonalComponent {
         private final SeasonalModel seasModel;
         private final double seasVar;
         private final int period;
-        private final CanonicalMatrix tsvar, lvar;
+        private final Matrix tsvar, lvar;
 
-        Data(final SeasonalModel model, final double seasVar, final int freq) {
+        Data(final SeasonalModel model, final double seasVar, final int period) {
             this.seasVar = seasVar;
             this.seasModel = model;
-            this.period = freq;
+            this.period = period;
             if (seasVar > 0) {
-                tsvar = tsVar(seasModel, freq);
+                tsvar = tsVar(seasModel, period);
                 tsvar.mul(seasVar);
                 if (model != SeasonalModel.Crude && model != SeasonalModel.Dummy) {
-                    lvar = tslVar(seasModel, freq);
+                    lvar = tslVar(seasModel, period);
                     lvar.mul(std());
                 } else {
                     lvar = null;
@@ -335,12 +330,12 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
             b.diagonal().set(1);
         }
 
         @Override
-        public void Pi0(FastMatrix p) {
+        public void Pi0(Matrix p) {
             p.diagonal().set(1);
         }
 
@@ -349,7 +344,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void Pf0(FastMatrix p) {
+        public void Pf0(Matrix p) {
             if (data.seasVar > 0) {
                 if (data.seasModel == SeasonalModel.Dummy) {
                     p.set(0, 0, data.seasVar);
@@ -393,7 +388,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void V(int pos, FastMatrix v) {
+        public void V(int pos, Matrix v) {
             if (data.seasVar > 0) {
                 if (data.seasModel == SeasonalModel.Dummy) {
                     v.set(0, 0, data.seasVar);
@@ -409,7 +404,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void S(int pos, FastMatrix s) {
+        public void S(int pos, Matrix s) {
             if (null != data.seasModel) {
                 switch (data.seasModel) {
                     case Crude:
@@ -456,7 +451,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             if (data.seasVar >= 0) {
                 tr.row(data.period - 2).set(-1);
                 tr.subDiagonal(1).set(1);
@@ -479,7 +474,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             switch (data.seasModel) {
                 case Fixed:
                     return;
@@ -500,12 +495,12 @@ public class SeasonalComponent {
 
         private final int period;
         private final double[] var;
-        private final FastMatrix V;
+        private final Matrix V;
 
         public HarrisonStevensData(final int period, final double v) {
             this.period = period;
             var = null;
-            V = CanonicalMatrix.square(period - 1);
+            V = Matrix.square(period - 1);
             V.set(-1.0 / period);
             V.diagonal().add(1);
             V.mul(v);
@@ -515,7 +510,7 @@ public class SeasonalComponent {
             period = var.length;
             this.var = var.clone();
             DataBlock xvar = DataBlock.of(var);
-            V = CanonicalMatrix.square(period - 1);
+            V = Matrix.square(period - 1);
             double mvar = xvar.sum() / (period * period);
             double dp = 2.0 / period;
             for (int i = 0; i < period - 1; ++i) {
@@ -556,12 +551,12 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
             b.diagonal().set(1);
         }
 
         @Override
-        public void Pi0(FastMatrix b) {
+        public void Pi0(Matrix b) {
             b.diagonal().set(1);
         }
 
@@ -570,7 +565,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void Pf0(FastMatrix p) {
+        public void Pf0(Matrix p) {
             if (data.V != null) {
                 p.copy(data.V);
             }
@@ -602,7 +597,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             if (data.V != null) {
                 qm.copy(data.V);
             }
@@ -614,7 +609,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void S(int pos, FastMatrix s) {
+        public void S(int pos, Matrix s) {
             //TODO
         }
 
@@ -629,7 +624,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             tr.diagonal().set(1);
         }
 
@@ -642,7 +637,7 @@ public class SeasonalComponent {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             p.add(data.V);
         }
 

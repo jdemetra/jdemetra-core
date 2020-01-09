@@ -7,8 +7,8 @@ package jdplus.msts;
 
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
-import jdplus.maths.functions.IParametricMapping;
-import jdplus.maths.functions.ParamValidation;
+import jdplus.math.functions.IParametricMapping;
+import jdplus.math.functions.ParamValidation;
 import jdplus.ssf.SsfException;
 import jdplus.ssf.implementations.MultivariateCompositeSsf;
 import java.util.ArrayList;

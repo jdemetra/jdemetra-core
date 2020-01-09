@@ -50,4 +50,12 @@ public class SymmetricMatrixTest {
         Matrix P=GeneralMatrix.AB(I, S);
         assertTrue(P.isDiagonal(1e-9) && P.diagonal().allMatch(x->Math.abs(x-1)<1e-9));
     }
+    
+    @Test
+    public void testXtX(){
+        Matrix X = Matrix.make(2, 4);
+        X.set((i, j) -> i+j*10);
+        System.out.println(X);
+        System.out.println(SymmetricMatrix.XtX(X));
+    }
 }

@@ -7,19 +7,20 @@ package jdplus.msts.internal;
 
 import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.msts.ModelItem;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
-import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.RegSsf;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
+import jdplus.ssf.implementations.Coefficients;
+import jdplus.ssf.implementations.Loading;
 
 /**
  *
@@ -27,12 +28,12 @@ import jdplus.ssf.StateComponent;
  */
 public class RegressionItem extends StateItem {
 
-    public final CanonicalMatrix x;
+    public final Matrix x;
     public final VarianceInterpreter[] v;
 
-    public RegressionItem(String name, Matrix x, final double[] vars, final boolean fixed) {
+    public RegressionItem(String name, MatrixType x, final double[] vars, final boolean fixed) {
         super(name);
-        this.x = CanonicalMatrix.of(x);
+        this.x = Matrix.of(x);
         if (vars == null) {
             v = null;
         } else {
@@ -51,14 +52,14 @@ public class RegressionItem extends StateItem {
     public void addTo(MstsMapping mapping) {
         if (v == null) {
             mapping.add((p, builder) -> {
-                SsfComponent cmp = RegSsf.of(x);
+                StateComponent cmp = Coefficients.fixedCoefficients(x.getColumnsCount());
                 builder.add(name, cmp);
                 return 0;
             });
         } else if (v.length == 1) {
             mapping.add(v[0]);
             mapping.add((p, builder) -> {
-                SsfComponent cmp = RegSsf.ofTimeVarying(x, p.get(0));
+                StateComponent cmp = Coefficients.timeVaryingCoefficients(DoubleSeq.of(p.get(0)));
                 builder.add(name, cmp);
                 return 1;
             });
@@ -67,7 +68,7 @@ public class RegressionItem extends StateItem {
                 mapping.add(v[i]);
             }
             mapping.add((p, builder) -> {
-                SsfComponent cmp = RegSsf.ofTimeVarying(x, p.extract(0, v.length));
+                StateComponent cmp = Coefficients.timeVaryingCoefficients(   p.extract(0, v.length));
                 builder.add(name, cmp);
                 return v.length;
             });
@@ -88,9 +89,9 @@ public class RegressionItem extends StateItem {
     @Override
     public StateComponent build(DoubleSeq p) {
         if (v == null) {
-            return RegSsf.stateComponent(x.getColumnsCount());
+            return Coefficients.fixedCoefficients(x.getColumnsCount());
         } else {
-            return RegSsf.stateComponent(x.getColumnsCount(), p.extract(0, v.length));
+            return Coefficients.timeVaryingCoefficients(p.extract(0, v.length));
         }
     }
 
@@ -104,7 +105,7 @@ public class RegressionItem extends StateItem {
         if (m > 0) {
             return null;
         } else {
-            return RegSsf.loading(x);
+            return Loading.regression(x);
         }
     }
 

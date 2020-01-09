@@ -8,7 +8,6 @@ package jdplus.msts.internal;
 import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.msts.BoundedParameterInterpreter;
-import jdplus.msts.ModelItem;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
 import jdplus.sts.CyclicalComponent;
@@ -49,7 +48,7 @@ public class CycleItem extends StateItem {
         mapping.add(v);
         mapping.add((p, builder) -> {
             double f = p.get(0), l = p.get(1), var = p.get(2);
-            builder.add(name, CyclicalComponent.stateComponent(f, l, var), CyclicalComponent.loading());
+            builder.add(name, CyclicalComponent.stateComponent(f, l, var), CyclicalComponent.defaultLoading());
             return 3;
         });
     }
@@ -75,7 +74,7 @@ public class CycleItem extends StateItem {
         if (m > 0) {
             return null;
         }
-        return CyclicalComponent.loading();
+        return CyclicalComponent.defaultLoading();
     }
 
     @Override

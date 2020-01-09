@@ -5,11 +5,10 @@
  */
 package jdplus.msts.internal;
 
-import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
+import jdplus.msts.StateItem;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
-import jdplus.ssf.SsfComponent;
 import jdplus.sts.SeasonalComponent;
 import demetra.sts.SeasonalModel;
 import java.util.Collections;
@@ -40,7 +39,7 @@ public class SeasonalComponentItem extends StateItem {
         mapping.add(v);
         mapping.add((p, builder) -> {
             double e = p.get(0);
-            SsfComponent cmp = SeasonalComponent.of(model, period, e);
+            StateComponent cmp = SeasonalComponent.of(model, period, e);
             builder.add(name, cmp);
             return 1;
         });
@@ -54,7 +53,7 @@ public class SeasonalComponentItem extends StateItem {
     @Override
     public StateComponent build(DoubleSeq p) {
         double e = p.get(0);
-        return SeasonalComponent.stateComponent(model, period, e);
+        return SeasonalComponent.of(model, period, e);
     }
 
     @Override
@@ -64,7 +63,7 @@ public class SeasonalComponentItem extends StateItem {
 
     @Override
     public ISsfLoading defaultLoading(int m) {
-        return SeasonalComponent.loading();
+        return SeasonalComponent.defaultLoading();
     }
 
     @Override

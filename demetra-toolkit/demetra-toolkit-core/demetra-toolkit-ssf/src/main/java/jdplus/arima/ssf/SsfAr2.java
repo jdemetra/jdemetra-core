@@ -42,7 +42,7 @@ public class SsfAr2 {
         return new StateComponent(new Initialization(data), new Dynamics(data));
     }
 
-    public static ISsfLoading defaultoading(int nlags) {
+    public static ISsfLoading defaultLoading(int nlags) {
         return Loading.fromPosition(nlags);
     }
 

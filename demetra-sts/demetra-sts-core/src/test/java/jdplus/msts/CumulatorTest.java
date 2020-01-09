@@ -7,10 +7,10 @@ package jdplus.msts;
 
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
-import demetra.maths.Optimizer;
+import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.StateStorage;
 import org.junit.Test;
 
@@ -28,12 +28,12 @@ public class CumulatorTest {
     public void testChowLin() {
         int m = Data.PCRA.length;
         int n = Data.IND_PCR.length;
-        CanonicalMatrix x = CanonicalMatrix.make(n, 2);
+        Matrix x = Matrix.make(n, 2);
         x.column(0).copyFrom(Data.IND_PCR, 0);
         //x.column(0).div(100);
         x.column(1).set(1);
         
-        CanonicalMatrix y = CanonicalMatrix.make(n, 1);
+        Matrix y = Matrix.make(n, 1);
         DataBlock edata = y.column(0);
         edata.set(Double.NaN);
         edata.extract(3, m, 4).copyFrom(Data.PCRA, 0);
