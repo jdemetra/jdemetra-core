@@ -36,7 +36,7 @@ public class NoiseItem extends StateItem {
         mapping.add((p, builder) -> {
             double e = p.get(0);
             StateComponent cmp = Noise.of(e);
-            builder.add(name, cmp);
+            builder.add(name, cmp, Noise.defaultLoading());
             return 1;
         });
     }

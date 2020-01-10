@@ -9,9 +9,13 @@ import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
+import jdplus.arima.ssf.SsfAr;
+import jdplus.benchmarking.ssf.SsfCumulator;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.Matrix;
+import jdplus.ssf.CompositeLoading;
 import jdplus.ssf.StateStorage;
+import jdplus.ssf.implementations.Loading;
 import org.junit.Test;
 
 /**
@@ -48,7 +52,7 @@ public class CumulatorTest {
         
         model.add(disagg);
         ModelEquation eq=new ModelEquation("eq", 0, true);
-        eq.add("disagg");
+        eq.add("disagg", disagg.defaultLoading(0));
         model.add(eq);
         
         CompositeModelEstimation rslt = model.estimate(y, false, true, SsfInitialization.Augmented, Optimizer.BFGS, 1e-15, null);

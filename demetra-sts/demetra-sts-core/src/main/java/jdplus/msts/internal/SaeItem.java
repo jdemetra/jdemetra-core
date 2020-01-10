@@ -51,7 +51,7 @@ public class SaeItem extends StateItem {
             }
             AutoCovarianceFunction acf = new AutoCovarianceFunction(Polynomial.ONE, Polynomial.ofInternal(car), 1);
             StateComponent cmp = SsfAr.of(lpar, 1 / acf.get(0), lpar.length, zeroinit);
-            builder.add(name, cmp);
+            builder.add(name, cmp, SsfAr.defaultLoading());
             return nar;
         });
     }

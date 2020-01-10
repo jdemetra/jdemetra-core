@@ -134,7 +134,7 @@ public class CompositeDynamics implements ISsfDynamics {
     @Override
     public void T(int pos, Matrix tr) {
         MatrixWindow cur = tr.topLeft(0, 0);
-        for (int i = 0, j = 0; i < dyn.length; ++i) {
+        for (int i = 0; i < dyn.length; ++i) {
             dyn[i].T(pos, cur.next(dim[i], dim[i]));
         }
     }

@@ -28,10 +28,10 @@ public class ModelEquation implements ModelItem {
         LoadingInterpreter c;
         ISsfLoading loading;
 
-        Item(String cmp) {
+        Item(String cmp, ISsfLoading loading) {
             this.cmp = cmp;
             c = null;
-            loading = null;
+            this.loading = loading;
         }
 
         Item(String eq, String cmp, double p, boolean fixed, ISsfLoading loading) {
@@ -61,12 +61,26 @@ public class ModelEquation implements ModelItem {
         return name;
     }
 
-    public void add(String item) {
-        items.add(new Item(item));
+    public void add(String item, ISsfLoading loading) {
+        items.add(new Item(item, loading));
     }
 
     public void add(String item, double coeff, boolean fixed, ISsfLoading loading) {
         items.add(new Item(name, item, coeff, fixed, loading));
+    }
+
+    public void add(StateItem sitem) {
+        if (sitem.defaultLoadingCount() > 1) {
+            throw new IllegalArgumentException();
+        }
+        items.add(new Item(sitem.name, sitem.defaultLoading(0)));
+    }
+
+    public void add(StateItem sitem, double coeff, boolean fixed) {
+        if (sitem.defaultLoadingCount() > 1) {
+            throw new IllegalArgumentException();
+        }
+        items.add(new Item(name, sitem.name, coeff, fixed, sitem.defaultLoading(0)));
     }
 
     public void free() {

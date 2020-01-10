@@ -44,7 +44,7 @@ public class ArItem2 extends StateItem {
             double[] par = p.extract(0, n).toArray();
             double w = p.get(n);
             StateComponent cmp = SsfAr2.of(par, w, nlags, nfcasts);
-            builder.add(name, cmp);
+            builder.add(name, cmp, SsfAr2.defaultLoading(nlags));
             return n + 1;
         });
     }

@@ -10,6 +10,10 @@ import demetra.ssf.SsfInitialization;
 import jdplus.math.matrices.Matrix;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
+import jdplus.ssf.implementations.Loading;
+import jdplus.ssf.implementations.Noise;
+import jdplus.sts.LocalLinearTrend;
+import jdplus.sts.SeasonalComponent;
 import org.junit.Test;
 
 /**
@@ -35,16 +39,20 @@ public class CompositeModelTest {
     @Test
     public void test1() {
         CompositeModel model = new CompositeModel();
-        model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
-        model.add(AtomicModels.seasonalComponent("s", "Crude", 12, .01, false));
-        model.add(AtomicModels.noise("n", .01, false));
+        StateItem l = AtomicModels.localLinearTrend("l", .01, .01, false, false);
+        StateItem s=AtomicModels.seasonalComponent("s", "Crude", 12, .01, false);
+        StateItem n=AtomicModels.noise("n", .01, false);
         //model.add(AtomicModels.regression("r", x));
-         model.add(AtomicModels.timeVaryingRegression("r", x, .01, false));
+         StateItem r=AtomicModels.timeVaryingRegression("r", x, .01, false);
         ModelEquation eq = new ModelEquation("eq1", 0, true);
-        eq.add("l");
-        eq.add("s");
-        eq.add("n");
-        eq.add("r");
+        eq.add(l);
+        eq.add(s);
+        eq.add(n);
+        eq.add(r);
+        model.add(l);
+        model.add(s);
+        model.add(n);
+        model.add(r);
         model.add(eq);
         int len = Prod_B_C.length;
         Matrix M = Matrix.make(len, 1);

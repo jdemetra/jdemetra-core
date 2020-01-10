@@ -40,7 +40,7 @@ public class SeasonalComponentItem extends StateItem {
         mapping.add((p, builder) -> {
             double e = p.get(0);
             StateComponent cmp = SeasonalComponent.of(model, period, e);
-            builder.add(name, cmp);
+            builder.add(name, cmp, SeasonalComponent.defaultLoading());
             return 1;
         });
     }

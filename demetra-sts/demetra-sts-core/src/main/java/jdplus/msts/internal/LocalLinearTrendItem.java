@@ -38,7 +38,7 @@ public class LocalLinearTrendItem extends StateItem {
             double e1 = p.get(0);
             double e2 = p.get(1);
             StateComponent cmp = jdplus.sts.LocalLinearTrend.of(e1, e2);
-            builder.add(name, cmp);
+            builder.add(name, cmp, LocalLinearTrend.defaultLoading());
             return 2;
         });
     }

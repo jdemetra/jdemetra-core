@@ -332,18 +332,18 @@ public class SymmetricMatrix {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
-        int n = S.getRowsCount();
+        int n = S.getRowsCount(), lda=S.getColumnIncrement(), start=S.start;
         if (n == 1) {
             return;
         }
         double[] x = S.getStorage();
-        int n1 = n + 1;
-        int max = x.length;
-        for (int id = 0; id < max; id += n1) {
-            for (int il = id + 1, iu = id + n; iu < max; il++, iu += n) {
-                double q = (x[iu] + x[il]) / 2;
-                x[iu] = q;
+        int del = lda + 1;
+        int max = start+lda*n;
+        for (int id = start; id < max; id += del) {
+            for (int il = id + 1, iu = id + lda; iu < max; il++, iu += lda) {
+                double q=(x[iu]+ x[il])/2;
                 x[il] = q;
+                x[iu] = q;
             }
         }
     }

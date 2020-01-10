@@ -62,7 +62,7 @@ public class TdRegressionItem extends StateItem {
                 xvar.mul(pvar);
                 cmp = Coefficients.timeVaryingCoefficients(xvar);
             }
-            builder.add(name, cmp);
+            builder.add(name, cmp, Loading.regression(x));
             return 1;
         });
     }

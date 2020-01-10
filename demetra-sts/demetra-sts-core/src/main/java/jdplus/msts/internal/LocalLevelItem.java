@@ -37,7 +37,7 @@ public class LocalLevelItem extends StateItem {
         mapping.add((p, builder) -> {
             double e = p.get(0);
             StateComponent cmp = LocalLevel.of(e, initial);
-            builder.add(name, cmp);
+            builder.add(name, cmp, LocalLevel.defaultLoading());
             return 1;
         });
     }

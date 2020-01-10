@@ -53,14 +53,14 @@ public class RegressionItem extends StateItem {
         if (v == null) {
             mapping.add((p, builder) -> {
                 StateComponent cmp = Coefficients.fixedCoefficients(x.getColumnsCount());
-                builder.add(name, cmp);
+                builder.add(name, cmp, Loading.regression(x));
                 return 0;
             });
         } else if (v.length == 1) {
             mapping.add(v[0]);
             mapping.add((p, builder) -> {
                 StateComponent cmp = Coefficients.timeVaryingCoefficients(DoubleSeq.of(p.get(0)));
-                builder.add(name, cmp);
+                builder.add(name, cmp, Loading.regression(x));
                 return 1;
             });
         } else {
@@ -69,7 +69,7 @@ public class RegressionItem extends StateItem {
             }
             mapping.add((p, builder) -> {
                 StateComponent cmp = Coefficients.timeVaryingCoefficients(   p.extract(0, v.length));
-                builder.add(name, cmp);
+                builder.add(name, cmp, Loading.regression(x));
                 return v.length;
             });
         }

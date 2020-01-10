@@ -29,7 +29,6 @@ import jdplus.ssf.implementations.CompositeSsf;
 import jdplus.ssf.univariate.SsfData;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 
 /**
  *
@@ -39,13 +38,17 @@ public class SsfBsm2Test {
 
     static final int N = 50000;
 
-    final SsfBsm2 bsm;
+    static final SsfBsm2 BSM;
 
-    public SsfBsm2Test() {
+    static {
         BsmSpec mspec = new BsmSpec();
         //mspec.setSeasonalModel(SeasonalModel.Crude);
         BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
-        bsm = SsfBsm2.of(model);
+        BSM = SsfBsm2.of(model);
+
+    }
+
+    public SsfBsm2Test() {
     }
 
     @Test
@@ -127,42 +130,39 @@ public class SsfBsm2Test {
     @Test
     public void testLikelihood() {
         SsfData data = new SsfData(Data.EXPORTS);
-        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(bsm, data);
-        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(bsm, data);
-        DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(true, true, true).compute(bsm, data);
+        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(BSM, data);
+        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(BSM, data);
+        DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(true, true, true).compute(BSM, data);
         assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
         assertEquals(ll.logLikelihood(), ll3.logLikelihood(), 1e-6);
     }
 
-    @Test
-    @Ignore
-    public void stressTestBsm() {
+    public static void stressTestBsm() {
         SsfData data = new SsfData(Data.EXPORTS);
-        testLikelihood();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < N; ++i) {
-            DkToolkit.likelihoodComputer(true, true, false).compute(bsm, data);
+            DkToolkit.likelihoodComputer(true, true, false).compute(BSM, data);
         }
         long t1 = System.currentTimeMillis();
         System.out.println("dk filter (sqr)");
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < N; ++i) {
-            DkToolkit.likelihoodComputer(false, true, false).compute(bsm, data);
+            DkToolkit.likelihoodComputer(false, true, false).compute(BSM, data);
         }
         t1 = System.currentTimeMillis();
         System.out.println("dk filter");
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < N; ++i) {
-            AkfToolkit.likelihoodComputer(true, true, false).compute(bsm, data);
+            AkfToolkit.likelihoodComputer(true, true, false).compute(BSM, data);
         }
         t1 = System.currentTimeMillis();
         System.out.println("akf filter");
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < N; ++i) {
-            CkmsToolkit.likelihoodComputer(true).compute(bsm, data);
+            CkmsToolkit.likelihoodComputer(true).compute(BSM, data);
         }
         t1 = System.currentTimeMillis();
         System.out.println("ckms filter");
@@ -186,5 +186,9 @@ public class SsfBsm2Test {
         System.out.println("ckms filter / composite");
         System.out.println(t1 - t0);
 
+    }
+
+    public static void main(String[] args) {
+        stressTestBsm();
     }
 }
