@@ -159,7 +159,7 @@ public class WienerKolmogorovEstimators {
         BackFilter ar = model.getMA();
         SymmetricFilter ss = s.sma(), sn = n.sma();
         SymmetricFilter num = ss.times(sn);
-        return new ArimaModel(ar, null, num);
+        return new ArimaModel(ar, BackFilter.ONE, num);
     }
 
     /**
