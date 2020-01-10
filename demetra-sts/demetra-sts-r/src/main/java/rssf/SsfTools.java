@@ -6,7 +6,7 @@
 package rssf;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfError;
 
@@ -17,14 +17,14 @@ import jdplus.ssf.univariate.ISsfError;
 @lombok.experimental.UtilityClass
 public class SsfTools {
 
-    public CanonicalMatrix transitionMatrix(ISsf ssf, int pos) {
-        CanonicalMatrix m = CanonicalMatrix.square(ssf.getStateDim());
+    public Matrix transitionMatrix(ISsf ssf, int pos) {
+        Matrix m = Matrix.square(ssf.getStateDim());
         ssf.dynamics().T(pos, m);
         return m;
     }
 
-    public CanonicalMatrix innovationMatrix(ISsf ssf, int pos) {
-        CanonicalMatrix m = CanonicalMatrix.square(ssf.getStateDim());
+    public Matrix innovationMatrix(ISsf ssf, int pos) {
+        Matrix m = Matrix.square(ssf.getStateDim());
         ssf.dynamics().V(pos, m);
         return m;
     }
@@ -46,26 +46,26 @@ public class SsfTools {
         return m.getStorage();
     }
 
-    public CanonicalMatrix stationaryInitialVariance(ISsf ssf) {
-        CanonicalMatrix m = CanonicalMatrix.square(ssf.getStateDim());
+    public Matrix stationaryInitialVariance(ISsf ssf) {
+        Matrix m = Matrix.square(ssf.getStateDim());
         ssf.initialization().Pf0(m);
         return m;
     }
 
-    public CanonicalMatrix diffuseInitialConstraint(ISsf ssf) {
+    public Matrix diffuseInitialConstraint(ISsf ssf) {
         if (!ssf.initialization().isDiffuse()) {
             return null;
         }
-        CanonicalMatrix m = CanonicalMatrix.make(ssf.getStateDim(), ssf.getDiffuseDim());
+        Matrix m = Matrix.make(ssf.getStateDim(), ssf.getDiffuseDim());
         ssf.initialization().diffuseConstraints(m);
         return m;
     }
 
-    public CanonicalMatrix diffuseInitialVariance(ISsf ssf) {
+    public Matrix diffuseInitialVariance(ISsf ssf) {
         if (!ssf.initialization().isDiffuse()) {
             return null;
         }
-        CanonicalMatrix m = CanonicalMatrix.square(ssf.getStateDim());
+        Matrix m = Matrix.square(ssf.getStateDim());
         ssf.initialization().Pi0(m);
         return m;
     }

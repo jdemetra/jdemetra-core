@@ -25,9 +25,9 @@ import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import jdplus.maths.functions.ParamValidation;
-import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import jdplus.maths.linearfilters.BackFilter;
+import jdplus.math.functions.ParamValidation;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.math.linearfilters.BackFilter;
 import jdplus.regarima.GlsArimaProcessor;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.ssf.dk.DkToolkit;
@@ -41,10 +41,9 @@ import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import static demetra.highfreq.r.AirlineDecomposition.ucm;
-import demetra.maths.matrices.Matrix;
-import jdplus.modelling.spi.ArimaProcessorUtility;
+import demetra.math.matrices.MatrixType;
 import jdplus.arima.ArimaModel;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *

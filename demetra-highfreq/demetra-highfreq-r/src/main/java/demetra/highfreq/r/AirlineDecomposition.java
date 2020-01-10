@@ -41,10 +41,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.Doubles;
-import demetra.maths.matrices.Matrix;
-import jdplus.modelling.spi.ArimaProcessorUtility;
+import demetra.math.matrices.MatrixType;
 import jdplus.arima.IArimaModel;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.sarima.SarimaModel;
 import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
 import jdplus.ucarima.UcarimaModel;
@@ -104,15 +103,14 @@ public class AirlineDecomposition {
             MAPPING.delegate(UCARIMA, UcarimaDescriptor.getMapping(), source -> source.getUcarima());
             MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getSarima());
             MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
-            MAPPING.set(PCOV, Matrix.class, source -> source.getParametersCovariance());
+            MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
         }
     }
 
     public Results process(TsData s, boolean sn) {
         int period = s.getTsUnit().ratioOf(TsUnit.YEAR);
-        SarimaSpecification spec = new SarimaSpecification(period);
-        spec.airline(true);
+        SarimaSpecification spec =  SarimaSpecification.airline(period);
         SarimaModel arima = SarimaModel
                 .builder(spec)
                 .setDefault()

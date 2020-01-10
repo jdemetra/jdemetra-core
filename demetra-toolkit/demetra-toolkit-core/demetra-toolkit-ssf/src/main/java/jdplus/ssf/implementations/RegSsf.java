@@ -51,6 +51,20 @@ public class RegSsf {
         
     }
 
+    public Ssf timeVaryingSsf(ISsf model, Matrix X, Matrix cvar){
+        int nx=X.getColumnsCount();
+        if (X.isEmpty() || ! cvar.isSquare() || cvar.getColumnsCount() != nx) {
+            throw new IllegalArgumentException();
+        }
+        int mdim = model.getStateDim();
+        Matrix s = cvar.deepClone();
+        SymmetricMatrix.lcholesky(s, 1e-12);
+        return Ssf.of(new Xinitializer(model.initialization(), nx),
+                new Xvardynamics(mdim, model.dynamics(), cvar, s),
+                new Xloading(mdim, model.loading(), X),
+                model.measurementError());
+    }
+    
     /**
      * Extends the loading of a given state block with regression variables
      * @param dim The size of the state block that will be extended
