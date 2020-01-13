@@ -6,8 +6,8 @@
 package jdplus.filters;
 
 import demetra.data.DoubleSeq;
-import jdplus.maths.linearfilters.IFiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.IFiniteFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 
 /**
  *

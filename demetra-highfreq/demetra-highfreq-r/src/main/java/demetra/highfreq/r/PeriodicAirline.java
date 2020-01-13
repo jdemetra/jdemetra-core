@@ -7,7 +7,7 @@ package demetra.highfreq.r;
 
 import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
-import demetra.fractionalairline.MultiPeriodicAirlineMapping;
+import jdplus.fractionalairline.MultiPeriodicAirlineMapping;
 import demetra.information.InformationMapping;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
@@ -28,7 +28,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
-import demetra.modelling.r.OutlierDescriptor;
+import demetra.modelling.OutlierDescriptor;
 
 /**
  *

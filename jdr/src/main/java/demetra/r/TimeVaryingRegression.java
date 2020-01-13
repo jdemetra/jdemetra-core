@@ -10,7 +10,7 @@ import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.ParamValidation;
-import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.SymmetricMatrix;
@@ -39,10 +39,11 @@ import jdplus.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import jdplus.math.matrices.SubMatrix;
-import demetra.maths.matrices.Matrix;
-import jdplus.modelling.spi.ArimaProcessorUtility;
-import jdplus.math.matrices.lapack.FastMatrix;
+import demetra.math.matrices.MatrixType;
+import jdplus.math.matrices.Matrix;
+import jdplus.modelling.ApiUtility;
+import jdplus.ssf.StateComponent;
+import jdplus.ssf.univariate.Ssf;
 
 /**
  *
@@ -64,9 +65,9 @@ public class TimeVaryingRegression {
     public static class Results implements ProcResults {
 
         TsDomain domain;
-        FastMatrix variables;
-        FastMatrix coefficients;
-        FastMatrix coefficientsStde;
+        Matrix variables;
+        Matrix coefficients;
+        Matrix coefficientsStde;
         SarimaModel arima0, arima;
         DiffuseConcentratedLikelihood ll0;
         DiffuseConcentratedLikelihood ll;
@@ -78,16 +79,16 @@ public class TimeVaryingRegression {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA0,SarimaDescriptor.getMapping(), r ->  ArimaProcessorUtility.convert(r.getArima0()));
+            MAPPING.delegate(ARIMA0,SarimaDescriptor.getMapping(), r ->  ApiUtility.toApi(r.getArima0(), null));
             MAPPING.delegate(LL0, DiffuseConcentratedLikelihoodDescriptor.getMapping(), r -> r.getLl0());
-            MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> ArimaProcessorUtility.convert(r.getArima()));
+            MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> ApiUtility.toApi(r.getArima(), null));
             MAPPING.delegate(LL, DiffuseConcentratedLikelihoodDescriptor.getMapping(), r -> r.getLl());
             MAPPING.set("aic0", Double.class, r -> r.getLl0().AIC(2));
             MAPPING.set("aic", Double.class, r -> r.getLl().AIC(3));
             MAPPING.set("tdvar", Double.class, r -> r.getNvar());
-            MAPPING.set(COEFF, FastMatrix.class, r -> r.getCoefficients());
-            MAPPING.set(STDCOEFF, FastMatrix.class, r -> r.getCoefficientsStde());
-            MAPPING.set(TD, FastMatrix.class, r -> r.getVariables());
+            MAPPING.set(COEFF, Matrix.class, r -> r.getCoefficients());
+            MAPPING.set(STDCOEFF, Matrix.class, r -> r.getCoefficientsStde());
+            MAPPING.set(TD, Matrix.class, r -> r.getVariables());
             MAPPING.set(TDEFFECT, TsData.class, r
                     -> {
                 DataBlock tmp = DataBlock.make(r.getDomain().length());
@@ -124,8 +125,7 @@ public class TimeVaryingRegression {
 
     public Results regarima(TsData s, String td, String svar, double aicdiff) {
         int freq = s.getTsUnit().ratioOf(TsUnit.YEAR);
-        SarimaSpecification spec = new SarimaSpecification(freq);
-        spec.airline(true);
+        SarimaSpecification spec =  SarimaSpecification.airline(freq);
         DayClustering dc = days(td);
         Matrix mtd = generate(s.getDomain(), dc);
         Matrix nvar = generateVar(dc, svar);
@@ -176,7 +176,7 @@ public class TimeVaryingRegression {
         }
         DataBlock Z = DataBlock.of(z);
         for (int i = 0; i < c.getRowsCount(); ++i) {
-            SubMatrix var = fs.P(i).dropTopLeft(del, del);
+            Matrix var = fs.P(i).dropTopLeft(del, del);
             ec.set(i, z.length, QuadraticForm.apply(var, Z));
         }
         ec.apply(x -> x <= 0 ? 0 : Math.sqrt(x));
@@ -212,11 +212,11 @@ public class TimeVaryingRegression {
                     .theta(params.getTheta())
                     .btheta(params.getBtheta())
                     .build();
-            ISsf ssf = SsfArima.of(arima);
+            ISsf ssf = Ssf.of(SsfArima.of(arima), SsfArima.defaultLoading());
             double nv = params.getRegVariance();
             Matrix v = nvar.deepClone();
             v.mul(nv);
-            return RegSsf.ofTimeVarying(ssf, mtd, v);
+            return RegSsf.timeVaryingSsf(ssf, mtd, v);
         }).build();
     }
 
@@ -273,8 +273,7 @@ public class TimeVaryingRegression {
         private static final SarimaMapping airlineMapping;
 
         static {
-            SarimaSpecification spec = new SarimaSpecification(12);
-            spec.airline(true);
+            SarimaSpecification spec = SarimaSpecification.airline(12);
             airlineMapping = SarimaMapping.of(spec);
         }
 

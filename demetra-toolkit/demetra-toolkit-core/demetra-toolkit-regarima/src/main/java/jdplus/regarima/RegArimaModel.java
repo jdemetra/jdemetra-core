@@ -215,7 +215,7 @@ public final class RegArimaModel<M extends IArimaModel> {
     public List<DoubleSeq> getX() {
         return x;
     }
-
+    
     @NonNull
     public M arima() {
         return arima;

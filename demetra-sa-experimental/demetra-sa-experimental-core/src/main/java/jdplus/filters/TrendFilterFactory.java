@@ -6,7 +6,7 @@
 package jdplus.filters;
 
 import demetra.data.DoubleSeq;
-import jdplus.maths.linearfilters.FiniteFilter;
+import jdplus.math.linearfilters.FiniteFilter;
 
 /**
  *

@@ -16,6 +16,7 @@
  */
 package demetra.fractionalairline;
 
+import jdplus.fractionalairline.MultiPeriodicAirlineMapping;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
 import demetra.data.Data;

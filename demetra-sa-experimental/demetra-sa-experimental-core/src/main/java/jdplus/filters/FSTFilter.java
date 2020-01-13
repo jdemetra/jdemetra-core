@@ -6,29 +6,30 @@
 package jdplus.filters;
 
 import demetra.data.DoubleSeq;
-import demetra.maths.Complex;
+import demetra.math.Complex;
+import internal.jdplus.maths.functions.gsl.integration.QAGS;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.data.DataBlock;
-import jdplus.maths.functions.IFunction;
-import jdplus.maths.functions.IFunctionDerivatives;
-import jdplus.maths.functions.IFunctionPoint;
-import jdplus.maths.functions.IParametersDomain;
-import jdplus.maths.functions.NumericalDerivatives;
-import jdplus.maths.functions.ParamValidation;
-import jdplus.maths.functions.bfgs.Bfgs;
-import jdplus.maths.functions.gsl.integration.QAGS;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.IFiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.FastMatrix;
-import jdplus.maths.matrices.QuadraticForm;
-import jdplus.maths.matrices.SubMatrix;
-import jdplus.maths.matrices.decomposition.Householder;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.maths.polynomials.UnitRoots;
+import jdplus.linearsystem.LinearSystemSolver;
+import jdplus.math.functions.IFunction;
+import jdplus.math.functions.IFunctionDerivatives;
+import jdplus.math.functions.IFunctionPoint;
+import jdplus.math.functions.IParametersDomain;
+import jdplus.math.functions.NumericalDerivatives;
+import jdplus.math.functions.ParamValidation;
+import jdplus.math.functions.bfgs.Bfgs;
+import jdplus.math.linearfilters.FiniteFilter;
+import jdplus.math.linearfilters.IFiniteFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.QuadraticForm;
+import jdplus.math.matrices.decomposition.Gauss;
+import jdplus.math.matrices.decomposition.Householder;
+import jdplus.math.matrices.decomposition.LUDecomposition;
+import jdplus.math.polynomials.Polynomial;
+import jdplus.math.polynomials.UnitRoots;
 
 /**
  *
@@ -109,7 +110,7 @@ public class FSTFilter {
     private final SmoothnessCriterion S = new SmoothnessCriterion();
     private final TimelinessCriterion T = new TimelinessCriterion();
     private final int nlags, nleads, p;
-    private final CanonicalMatrix C, SM;
+    private final Matrix C, SM;
     private final DoubleSeq a;
 
     private FSTFilter(Builder builder) {
@@ -119,7 +120,7 @@ public class FSTFilter {
         this.p = builder.pdegree + 1;
         T.antiphase(builder.antiphase)
                 .bounds(builder.w0, builder.w1);
-        C = CanonicalMatrix.make(p, n);
+        C = Matrix.make(p, n);
         C.row(0).set(1);
         for (int q = 1; q < p; ++q) {
             final int t = q;
@@ -133,27 +134,25 @@ public class FSTFilter {
 
     private Results makeQuadratic(double wf, double ws, double wt) {
         int n = nlags + nleads + 1;
-        CanonicalMatrix J = CanonicalMatrix.square(n + p);
+        Matrix J = Matrix.square(n + p);
         J.extract(n, p, 0, n).copy(C);
-        J.extract(0, n, n, p).transpose().copy(C);
+        J.extract(0, n, n, p).copyTranspose(C);
 
-        SubMatrix X = J.extract(0, n, 0, n);
+        Matrix X = J.extract(0, n, 0, n);
         if (wf != 0) {
             X.diagonal().add(wf);
         }
         if (ws != 0) {
             X.addAY(ws, SM);
         }
-        CanonicalMatrix TM = null;
+        Matrix TM = null;
         if (wt != 0 && nlags != nleads) {
             TM = T.buildMatrix(nlags, nleads);
             X.addAY(wt, TM);
         }
         DataBlock z = DataBlock.make(n + p);
         z.extract(n, p).copy(a);
-        Householder hous = new Householder(false);
-        hous.decompose(J);
-        hous.solve(z);
+        LinearSystemSolver.robustSolver().solve(J, z);
         DataBlock w = z.extract(0, n);
         Results.Builder builder = Results.builder();
         builder.filter(FiniteFilter.ofInternal(w.toArray(), -nlags));
@@ -236,7 +235,7 @@ public class FSTFilter {
             return DoubleSeq.of(f.weightsToArray()).ssq();
         }
 
-        void add(double weight, FastMatrix X) {
+        void add(double weight, Matrix X) {
             X.diagonal().add(weight);
         }
     }
@@ -245,7 +244,7 @@ public class FSTFilter {
 
         public static double smoothness(IFiniteFilter f) {
             DataBlock w = DataBlock.of(f.weightsToArray());
-            CanonicalMatrix M = buildMatrix(3, f.getUpperBound(), -f.getLowerBound());
+            Matrix M = buildMatrix(3, f.getUpperBound(), -f.getLowerBound());
             return QuadraticForm.ofSymmetric(M).apply(w);
         }
 
@@ -256,12 +255,12 @@ public class FSTFilter {
         public SmoothnessCriterion() {
         }
 
-        public static CanonicalMatrix buildMatrix(int deg, int nleads, int nlags) {
+        public static Matrix buildMatrix(int deg, int nleads, int nlags) {
             int n = nlags + nleads + 1;
             if (2 * deg >= n) {
                 throw new IllegalArgumentException();
             }
-            CanonicalMatrix S = CanonicalMatrix.square(n);
+            Matrix S = Matrix.square(n);
             double[] W = weights(deg);
             S.diagonal().set(W[0]);
             for (int i = 1; i < W.length; ++i) {
@@ -291,7 +290,7 @@ public class FSTFilter {
         
         public static double timeliness(IFiniteFilter f, double bandpass){
             TimelinessCriterion c=new TimelinessCriterion().antiphase(true).bounds(0, bandpass);
-            CanonicalMatrix M = c.buildMatrix(-f.getLowerBound(), f.getUpperBound());
+            Matrix M = c.buildMatrix(-f.getLowerBound(), f.getUpperBound());
             DataBlock w = DataBlock.of(f.weightsToArray());
              return QuadraticForm.ofSymmetric(M).apply(w);
         }
@@ -313,10 +312,10 @@ public class FSTFilter {
             return this;
         }
 
-        public CanonicalMatrix buildMatrix(int nlags, int nleads) {
+        public Matrix buildMatrix(int nlags, int nleads) {
             int n = 2 * Math.max(nlags, nleads) + 1;
             int m = nlags + nleads + 1;
-            CanonicalMatrix T = CanonicalMatrix.square(m);
+            Matrix T = Matrix.square(m);
             double[] sin1 = new double[n];
             double[] sin0 = new double[n];
             for (int i = 0; i < n; ++i) {
@@ -352,7 +351,7 @@ public class FSTFilter {
 
         private final FSTFilter core;
         private final double ws, wt;
-        private final Householder C0;
+        private final LUDecomposition C0;
 
         /**
          *
@@ -366,8 +365,7 @@ public class FSTFilter {
             this.core = core;
             this.ws = ws;
             this.wt = wt;
-            C0 = new Householder(true);
-            C0.decompose(core.C.left(core.p));
+            C0 = Gauss.decompose(core.C.extract(0, core.p, 0, core.p));
         }
 
         @Override

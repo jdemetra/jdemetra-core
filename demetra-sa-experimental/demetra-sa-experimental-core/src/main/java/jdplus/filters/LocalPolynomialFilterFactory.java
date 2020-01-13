@@ -17,18 +17,20 @@
 package jdplus.filters;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.decomposition.Householder;
+import jdplus.math.matrices.Matrix;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.analysis.DiscreteKernel;
-import jdplus.maths.linearfilters.AsymmetricFilters;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.IFiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.matrices.FastMatrix;
-import jdplus.maths.matrices.UpperTriangularMatrix;
+import jdplus.linearsystem.LinearSystemSolver;
+import jdplus.math.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.FiniteFilter;
+import jdplus.math.linearfilters.IFiniteFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.decomposition.Householder2;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
+import jdplus.math.matrices.decomposition.QRDecomposition;
 
 /**
  * The local polynomial filter is defined as follows: h is the number of lags
@@ -89,7 +91,7 @@ public class LocalPolynomialFilterFactory {
 
         @Override
         public DoubleSeq process(DoubleSeq in) {
-            return jdplus.maths.linearfilters.FilterUtility.filter(in, symmetricFilter, asymmetricFilters);
+            return jdplus.math.linearfilters.FilterUtility.filter(in, symmetricFilter, asymmetricFilters);
         }
 
         @Override
@@ -137,7 +139,7 @@ public class LocalPolynomialFilterFactory {
     public FiniteFilter directAsymmetricFilter(final int h, final int q, final int d, final IntToDoubleFunction k) {
         // w = KpXp (Xp'Kp Xp)^-1 e1
         // (Xp'Kp Xp)^-1 e1 = u <-> (Xp'Kp Xp) u = e1
-        CanonicalMatrix xkx = CanonicalMatrix.square(d + 1);
+        Matrix xkx = Matrix.square(d + 1);
         for (int i = 0; i <= d; ++i) {
             xkx.set(i, i, S_hqd(h, q, 2 * i, k));
             for (int j = 0; j < i; ++j) {
@@ -150,9 +152,7 @@ public class LocalPolynomialFilterFactory {
         }
         double[] u = new double[d + 1];
         u[0] = 1;
-        Householder hous = new Householder();
-        hous.decompose(xkx);
-        hous.solve(DataBlock.of(u));
+        LinearSystemSolver.robustSolver().solve(xkx, DataBlock.of(u));
         double[] w = new double[h + q + 1];
         w[h] = u[0] * k.applyAsDouble(0);
         for (int i = 1; i <= q; ++i) {
@@ -222,7 +222,7 @@ public class LocalPolynomialFilterFactory {
 //    SymmetricFilter ofDefault2(int h, int d, IntToDoubleFunction k) {
 //        // w = KX (X'K X)^-1 e1
 //        // (X'K X)^-1 e1 = u <-> (X'K X) u = e1
-//        CanonicalMatrix xkx = CanonicalMatrix.square(d + 1);
+//        Matrix xkx = Matrix.square(d + 1);
 //        for (int i = 0; i <= d; ++i) {
 //            xkx.set(i, i, S_hd(h, 2 * i, k));
 //            for (int j = 0; j < i; ++j) {
@@ -272,19 +272,18 @@ public class LocalPolynomialFilterFactory {
             }
 
         }
-        CanonicalMatrix Z = createZ(h, d);
+        Matrix Z = createZ(h, d);
         DataBlockIterator rows = Z.rowsIterator();
         int pos = -h;
         while (rows.hasNext()) {
             rows.next().mul(sk[Math.abs(pos++)]);
         }
 
-        Householder hous = new Householder();
-        hous.decompose(Z);
+        QRDecomposition qr=new Householder2().decompose(Z);
         double[] z = new double[Z.getRowsCount()];
         z[0] = 1;
-        UpperTriangularMatrix.lsolve(hous.r(false), DataBlock.of(z, 0, d + 1, 1));
-        hous.applyQ(DataBlock.of(z));
+        UpperTriangularMatrix.solvexU(qr.rawR(), DataBlock.of(z, 0, d + 1, 1));
+        qr.applyQ(z);
         double[] w = new double[h + 1];
         for (int i = 0; i <= h; ++i) {
             w[i] = sk[i] * z[i + h];
@@ -391,7 +390,7 @@ public class LocalPolynomialFilterFactory {
      * @param u included (positive)
      * @return
      */
-    synchronized FastMatrix z(int l, int u, int d0, int d1) {
+    synchronized Matrix z(int l, int u, int d0, int d1) {
         int nh = Math.max(Math.abs(l), Math.abs(u));
         if (Z == null || Z.getRowsCount() / 2 < nh || Z.getColumnsCount() < d1 + 1) {
             Z = createZ(nh, d1);
@@ -399,8 +398,8 @@ public class LocalPolynomialFilterFactory {
         return Z.extract(l + nh, u - l + 1, d0, d1 - d0 + 1);
     }
 
-    private CanonicalMatrix createZ(int h, int d) {
-        CanonicalMatrix M = CanonicalMatrix.make(2 * h + 1, d + 1);
+    private Matrix createZ(int h, int d) {
+        Matrix M = Matrix.make(2 * h + 1, d + 1);
         M.column(0).set(1);
         if (d >= 1) {
             DataBlock c1 = M.column(1);
@@ -412,5 +411,5 @@ public class LocalPolynomialFilterFactory {
         return M;
     }
 
-    private CanonicalMatrix Z;
+    private Matrix Z;
 }

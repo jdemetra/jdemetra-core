@@ -126,8 +126,7 @@ public class SeasonalityTests {
             PeriodicContrasts var = new PeriodicContrasts(freq);
             Matrix sd = PeriodicContrastsFactory.matrix(var, s.length(), 0);
             LinearModel reg = new LinearModel(y.getStorage(), false, sd);
-            Ols ols = new Ols();
-            LeastSquaresResults rslt = ols.compute(reg);
+            LeastSquaresResults rslt = Ols.compute(reg);
 
             StatisticalTest ftest = rslt.Ftest();
             return ftest.toSummary();
@@ -150,8 +149,7 @@ public class SeasonalityTests {
                     .meanCorrection(true)
                     .build();
 
-            Ols ols = new Ols();
-            LeastSquaresResults rslt = ols.compute(reg);
+            LeastSquaresResults rslt = Ols.compute(reg);
             StatisticalTest ftest = rslt.Ftest(2, sd.getColumnsCount());
             return ftest.toSummary();
         } catch (Exception err) {

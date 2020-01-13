@@ -5,8 +5,8 @@
  */
 package demetra.sigex;
 
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -22,13 +22,13 @@ public class MatrixOperationsTest {
 
     @Test
     public void testGcd() {
-        CanonicalMatrix m=CanonicalMatrix.make(10,5 );
+        Matrix m=Matrix.make(10,5 );
         Random rnd=new Random();
         double[] storage = m.getStorage();
         for (int i=0; i<storage.length; ++i)
             storage[i]=rnd.nextDouble();
-        CanonicalMatrix s=SymmetricMatrix.XXt(m);
-        CanonicalMatrix[] gcd = MatrixOperations.gcd(s, 10);
+        Matrix s=SymmetricMatrix.XXt(m);
+        Matrix[] gcd = MatrixOperations.gcd(s, 10);
         System.out.println(gcd[0]);
         System.out.println(gcd[1]);
     }

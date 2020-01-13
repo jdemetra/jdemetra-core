@@ -33,7 +33,7 @@ public class LinearModel {
     /**
      * Exogenous variable
      */
-    private DoubleSeq y;
+    private double[] y;
 
     /**
      * Mean correction

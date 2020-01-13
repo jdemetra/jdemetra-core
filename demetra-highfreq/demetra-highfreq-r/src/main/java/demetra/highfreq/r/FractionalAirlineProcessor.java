@@ -16,15 +16,10 @@
  */
 package demetra.highfreq.r;
 
-import demetra.descriptors.arimadescriptors..UcarimaDescriptor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
-import demetra.information.InformationMapping;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.likelihood.LikelihoodStatistics;
-import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
 import jdplus.math.functions.ParamValidation;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.linearfilters.BackFilter;
@@ -35,84 +30,50 @@ import jdplus.ssf.implementations.CompositeSsf;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.ucarima.ssf.SsfUcarima;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import static demetra.highfreq.r.AirlineDecomposition.ucm;
-import demetra.math.matrices.MatrixType;
+import demetra.highfreq.FractionalAirlineDecomposition;
+import demetra.highfreq.descriptors.FractionalAirlineDecompositionDescriptor;
 import jdplus.arima.ArimaModel;
-import jdplus.math.matrices.Matrix;
+import static jdplus.fractionalairline.PeriodicAirlineEngine.ucm;
+import jdplus.modelling.ApiUtility;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-public class FractionalAirlineDecomposition {
+public class FractionalAirlineProcessor{
 
     @lombok.Value
-    @lombok.Builder
-    public static class Results implements ProcResults {
-
-        double[] y, t, s, i, sa, n;
-        demetra.arima.ArimaModel arima;
-        demetra.arima.UcarimaModel ucarima;
-        ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
-        LikelihoodStatistics statistics;
-        Matrix parametersCovariance;
-        double[] parameters, score;
+    public static class DecompositionResults implements ProcResults {
+        
+        private final FractionalAirlineDecomposition core;
+        
+        public DecompositionResults(FractionalAirlineDecomposition core){
+            this.core=core;
+        }
 
         @Override
         public boolean contains(String id) {
-            return MAPPING.contains(id);
+            return FractionalAirlineDecompositionDescriptor.contains(id);
         }
 
         @Override
         public Map<String, Class> getDictionary() {
-            Map<String, Class> dic = new LinkedHashMap<>();
-            MAPPING.fillDictionary(null, dic, true);
-            return dic;
+            return FractionalAirlineDecompositionDescriptor.getDictionary();
         }
 
         @Override
         public <T> T getData(String id, Class<T> tclass) {
-            return MAPPING.getData(this, id, tclass);
+            return FractionalAirlineDecompositionDescriptor.getData(core, id, tclass);
         }
 
-        static final String Y = "y", T = "t", S = "s", I = "i", SA = "sa", N = "n",
-                UCM = "ucm", UCARIMA = "ucarima",
-                LL = "likelihood", PCOV = "pcov", SCORE = "score", PARAMETERS = "parameters";
-
-        public static final InformationMapping<Results> getMapping() {
-            return MAPPING;
-        }
-
-        private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
-
-        static {
-            MAPPING.set(Y, double[].class, source -> source.getY());
-            MAPPING.set(T, double[].class, source -> source.getT());
-            MAPPING.set(S, double[].class, source -> source.getS());
-            MAPPING.set(I, double[].class, source -> source.getI());
-            MAPPING.set(N, double[].class, source -> source.getN());
-            MAPPING.set(SA, double[].class, source -> {
-                double[] y = source.getY().clone(), s = source.getS();
-                for (int i = 0; i < y.length; ++i) {
-                    y[i] -= s[i];
-                }
-                return y;
-            });
-            MAPPING.delegate(UCARIMA, UcarimaDescriptor.getMapping(), source -> source.getUcarima());
-            MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
-            //MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
-            MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters());
-            //MAPPING.set(SCORE, double[].class, source -> source.getScore());
-        }
     }
 
-    public Results process(double[] s, double period, boolean adjust, boolean sn) {
+    public DecompositionResults process(double[] s, double period, boolean adjust, boolean sn) {
         int iperiod = (int) period;
         if (period - iperiod < 1e-9) {
             period = iperiod;
@@ -144,33 +105,33 @@ public class FractionalAirlineDecomposition {
         SsfData data = new SsfData(s);
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
 
-        demetra.arima.ArimaModel sum = ArimaProcessorUtility.convert(ucm.getModel(), "sum");
+        demetra.arima.ArimaModel sum = ApiUtility.toApi(ucm.getModel(), "sum");
         demetra.arima.UcarimaModel ucmt;
         if (sn) {
-            demetra.arima.ArimaModel mn = ArimaProcessorUtility.convert(ucm.getComponent(0), "noise");
-            demetra.arima.ArimaModel ms = ArimaProcessorUtility.convert(ucm.getComponent(1), "signal");
+            demetra.arima.ArimaModel mn = ApiUtility.toApi(ucm.getComponent(0), "noise");
+            demetra.arima.ArimaModel ms = ApiUtility.toApi(ucm.getComponent(1), "signal");
             ucmt = new demetra.arima.UcarimaModel(sum, new demetra.arima.ArimaModel[]{ms, mn});
 
         } else {
-            demetra.arima.ArimaModel mt = ArimaProcessorUtility.convert(ucm.getComponent(0), "trend");
-            demetra.arima.ArimaModel ms = ArimaProcessorUtility.convert(ucm.getComponent(1), "seasonal");
-            demetra.arima.ArimaModel mi = ArimaProcessorUtility.convert(ucm.getComponent(2), "irregular");
+            demetra.arima.ArimaModel mt = ApiUtility.toApi(ucm.getComponent(0), "trend");
+            demetra.arima.ArimaModel ms = ApiUtility.toApi(ucm.getComponent(1), "seasonal");
+            demetra.arima.ArimaModel mi = ApiUtility.toApi(ucm.getComponent(2), "irregular");
             ucmt = new demetra.arima.UcarimaModel(sum, new demetra.arima.ArimaModel[]{mt, ms, mi});
         }
         int[] pos = ssf.componentsPosition();
         if (sn) {
-            return Results.builder()
+            return new DecompositionResults(FractionalAirlineDecomposition.builder()
                     .y(s)
                     .s(ds.item(pos[1]).toArray())
                     .n(ds.item(pos[0]).toArray())
                     .ucarima(ucmt)
                     .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
                     .parameters(p)
-                    .arima(ArimaProcessorUtility.convert(arima, "airline"))
+                    .arima(ApiUtility.toApi(arima, "airline"))
                     .statistics(rslt.statistics(0))
-                    .build();
+                    .build());
         } else {
-            return Results.builder()
+            return new DecompositionResults(FractionalAirlineDecomposition.builder()
                     .y(s)
                     .t(ds.item(pos[0]).toArray())
                     .s(ds.item(pos[1]).toArray())
@@ -178,9 +139,9 @@ public class FractionalAirlineDecomposition {
                     .ucarima(ucmt)
                     .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
                     .parameters(p)
-                    .arima(ArimaProcessorUtility.convert(arima, "airline"))
+                    .arima(ApiUtility.toApi(arima, "airline"))
                     .statistics(rslt.statistics(0))
-                    .build();
+                    .build());
         }
 
     }

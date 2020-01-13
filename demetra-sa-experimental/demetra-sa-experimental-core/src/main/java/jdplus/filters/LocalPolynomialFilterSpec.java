@@ -5,7 +5,7 @@
  */
 package jdplus.filters;
 
-import jdplus.maths.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.AsymmetricFilters;
 
 /**
  *

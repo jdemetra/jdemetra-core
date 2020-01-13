@@ -9,7 +9,7 @@ import demetra.data.DoubleSeq;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.filters.AsymmetricCriterion;
 import jdplus.filters.ISymmetricFiltering;
-import jdplus.maths.linearfilters.IFiniteFilter;
+import jdplus.math.linearfilters.IFiniteFilter;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

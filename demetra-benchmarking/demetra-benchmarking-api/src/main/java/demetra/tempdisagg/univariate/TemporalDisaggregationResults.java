@@ -16,17 +16,10 @@
  */
 package demetra.tempdisagg.univariate;
 
-import demetra.benchmarking.descriptors.ResidualsDiagnosticsDescriptor;
-import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.likelihood.MaximumLogLikelihood;
-import demetra.linearmodel.Coefficient;
+import demetra.math.functions.ObjectiveFunctionPoint;
 import demetra.linearmodel.LinearModelEstimation;
-import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -41,7 +34,7 @@ public class TemporalDisaggregationResults {
     private @lombok.NonNull
     TsData stdevDisaggregatedSeries;
     private TsData regressionEffects, residuals;
-    private MaximumLogLikelihood maximum;
+    private ObjectiveFunctionPoint maximum;
     private LikelihoodStatistics likelihood;
     private LinearModelEstimation estimation;
     private ResidualsDiagnostics residualsDiagnostics;

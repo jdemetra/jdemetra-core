@@ -7,8 +7,8 @@ package jdplus.x11plus;
 
 import jdplus.filters.IFiltering;
 import jdplus.data.DataBlock;
-import jdplus.maths.linearfilters.IFiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.IFiniteFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 import static jdplus.x11plus.X11Kernel.table;
 import demetra.data.DoubleSeq;
 

@@ -6,7 +6,7 @@
 package jdplus.rkhs;
 
 import java.util.function.DoubleUnaryOperator;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 
 /**
  *

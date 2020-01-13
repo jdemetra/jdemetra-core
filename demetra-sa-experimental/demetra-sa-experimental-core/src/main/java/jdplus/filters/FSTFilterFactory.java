@@ -6,7 +6,7 @@
 package jdplus.filters;
 
 import demetra.data.DoubleSeq;
-import jdplus.maths.linearfilters.IFiniteFilter;
+import jdplus.math.linearfilters.IFiniteFilter;
 
 /**
  *
@@ -52,7 +52,7 @@ public class FSTFilterFactory {
 
         @Override
         public DoubleSeq process(DoubleSeq in) {
-            return jdplus.maths.linearfilters.FilterUtility.filter(in, cf, lf, rf);
+            return jdplus.math.linearfilters.FilterUtility.filter(in, cf, lf, rf);
         }
 
         @Override

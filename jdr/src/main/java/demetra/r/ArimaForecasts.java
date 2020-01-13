@@ -9,9 +9,9 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.arima.ssf.SsfArima;
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
-import jdplus.maths.linearfilters.BackFilter;
+import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.matrices.Matrix;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.dk.DkToolkit;
@@ -24,7 +24,9 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import jdplus.arima.ssf.ExactArimaForecasts;
 import demetra.data.DoubleSeq;
-import internal.jdplus.arima.FastArimaForecasts;
+import demetra.x12.FastArimaForecasts;
+import jdplus.ssf.StateComponent;
+import jdplus.ssf.univariate.Ssf;
 
 /**
  *
@@ -100,7 +102,7 @@ public class ArimaForecasts {
     }
 
     private Results ssfcompute(RegArimaModel regarima, int nf, int nb) {
-        ISsf arima = SsfArima.of(regarima.arima());
+        StateComponent arima = SsfArima.of(regarima.arima());
         DoubleSeq y = regarima.getY();
         double[] yc = new double[y.length() + nf + nb];
         for (int i = 0; i < nb; ++i) {
@@ -116,14 +118,14 @@ public class ArimaForecasts {
         for (int i = nb + y.length(); i < yc.length; ++i) {
             yc[i] = Double.NaN;
         }
-        ISsf ssf = arima;
+        ISsf ssf = Ssf.of(arima, SsfArima.defaultLoading());
         int nx = regarima.getVariablesCount();
         if (nx > 0) {
             Matrix x = Matrix.make(yc.length, nx);
             if (regarima.isMean()) {
                 generateMeanEffect(regarima.arima().getNonStationaryAr(), x.column(0));
             }
-            ssf = RegSsf.of(ssf, x);
+            ssf = RegSsf.ssf(ssf, x);
         }
         DefaultSmoothingResults ss = DkToolkit.sqrtSmooth(ssf, new SsfData(yc), true, true);
         Results.ResultsBuilder builder = Results.builder();

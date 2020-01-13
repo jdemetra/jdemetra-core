@@ -15,9 +15,9 @@ import jdplus.math.matrices.decomposition.Householder2;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public class ILinearSystemSolverTest {
+public class LinearSystemSolverTest {
 
-    public ILinearSystemSolverTest() {
+    public LinearSystemSolverTest() {
     }
 
     public static void testMethods() {

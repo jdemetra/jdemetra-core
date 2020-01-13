@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.likelihood;
+package demetra.math.functions;
 
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
@@ -26,23 +26,21 @@ import demetra.math.matrices.MatrixType;
  */
 @Development(status=Development.Status.Release)
 @lombok.Value
-public class MaximumLogLikelihood {
+public class ObjectiveFunctionPoint {
     /**
-     * Max of the log-likelihood
+     * value of the function
      */
     private double value;
     /**
-     * Parameters that maximize the likelihood
+     * Parameters of the function 
      */
     private DoubleSeq parameters;
     /**
-     * Gradient of the log likelihood function (=score) at its maximum.
-     * Should be very near 0
+     * Gradient of the function at the given point
      */
     private DoubleSeq gradient;
     /**
-     * Hessian of the log likelihood function at its maximum. 
-     * E(hessian)=Information. The hessian is an approximation of the information matrix
+     * Hessian of the function at the given point
      */
     private MatrixType hessian;
 }

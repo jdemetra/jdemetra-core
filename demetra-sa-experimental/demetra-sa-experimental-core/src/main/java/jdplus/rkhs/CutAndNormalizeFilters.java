@@ -7,14 +7,14 @@ package jdplus.rkhs;
 
 import demetra.data.DoubleSeq;
 import java.util.function.DoubleUnaryOperator;
-import jdplus.maths.functions.GridSearch;
-import jdplus.maths.functions.IFunction;
-import jdplus.maths.functions.IFunctionPoint;
-import jdplus.maths.functions.IParametersDomain;
-import jdplus.maths.functions.ParametersRange;
-import jdplus.maths.linearfilters.AsymmetricFilters;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.functions.GridSearch;
+import jdplus.math.functions.IFunction;
+import jdplus.math.functions.IFunctionPoint;
+import jdplus.math.functions.IParametersDomain;
+import jdplus.math.functions.ParametersRange;
+import jdplus.math.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.FiniteFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.stats.Kernels;
 
 /**

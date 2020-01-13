@@ -17,7 +17,7 @@ import demetra.stats.ProbabilityType;
 import jdplus.dstats.T;
 import demetra.likelihood.DiffuseConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.likelihood.MaximumLogLikelihood;
+import demetra.math.functions.ObjectiveFunctionPoint;
 import demetra.linearmodel.Coefficient;
 import demetra.linearmodel.LinearModelEstimation;
 import jdplus.math.functions.IParametricMapping;
@@ -136,7 +136,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
 
     private TemporalDisaggregationResults interpolate(DisaggregationModel model, TemporalDisaggregationSpec spec) {
         Ssf nmodel = noiseModel(spec);
-        MaximumLogLikelihood ml = null;
+        ObjectiveFunctionPoint ml = null;
         int[] diffuse = diffuseRegressors(model.nx(), spec);
         DiffuseConcentratedLikelihood dll;
         if (!spec.isParameterEstimation()) {
@@ -155,7 +155,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
             DoubleSeq p = rslt.getParameters();
             dll = rslt.getLikelihood();
             double c = 2 * rslt.getSsqE() / (dll.dim() - dll.nx() - 1);
-            ml = new MaximumLogLikelihood(rslt.getLikelihood().logLikelihood(),
+            ml = new ObjectiveFunctionPoint(rslt.getLikelihood().logLikelihood(),
                     p, fmin.gradientAtMinimum().map(z -> -z / c), fmin.curvatureAtMinimum().times(1 / c));
 
             if (spec.getResidualsModel() == Model.Ar1) {
@@ -224,7 +224,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
         StateComponent ncmp = noiseComponent(spec);
         ISsfLoading nloading = noiseLoading(spec);
         int[] diffuse = diffuseRegressors(model.nx(), spec);
-        MaximumLogLikelihood ml = null;
+        ObjectiveFunctionPoint ml = null;
         DiffuseConcentratedLikelihood dll;
         if (!spec.isParameterEstimation()) {
             Ssf cssf = Ssf.of(SsfCumulator.of(ncmp, nloading, model.getFrequencyRatio(), 0),
@@ -244,7 +244,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
             DoubleSeq p = rslt.getParameters();
             dll = rslt.getLikelihood();
             double c = .5 * (dll.dim() - dll.nx() - 1) / rslt.getSsqE();
-            ml = new MaximumLogLikelihood(rslt.getLikelihood().logLikelihood(),
+            ml = new ObjectiveFunctionPoint(rslt.getLikelihood().logLikelihood(),
                     p, fmin.gradientAtMinimum().map(z -> -z * c), fmin.curvatureAtMinimum().times(c));
 
             if (spec.getResidualsModel() == Model.Ar1) {

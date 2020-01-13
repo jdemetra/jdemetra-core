@@ -31,7 +31,7 @@ public class LinearModelDescriptor {
     private final InformationMapping<LinearModel> MAPPING = new InformationMapping<>(LinearModel.class);
 
     static {
-        MAPPING.set(Y, double[].class, source -> source.getY().toArray());
+        MAPPING.set(Y, double[].class, source -> source.getY());
         MAPPING.set(X, MatrixType.class, source -> source.getX());
         MAPPING.set(MEAN, Boolean.class, source -> source.isMeanCorrection());
     }

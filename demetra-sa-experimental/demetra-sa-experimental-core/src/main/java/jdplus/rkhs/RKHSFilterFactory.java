@@ -10,10 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.filters.ISymmetricFiltering;
-import jdplus.maths.linearfilters.AsymmetricFilters;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.IFiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.FiniteFilter;
+import jdplus.math.linearfilters.IFiniteFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.stats.Kernels;
 
 /**
@@ -96,7 +96,7 @@ public class RKHSFilterFactory {
 
         @Override
         public DoubleSeq process(DoubleSeq in) {
-            return jdplus.maths.linearfilters.FilterUtility.filter(in, symmetricFilter, asymmetricFilters);
+            return jdplus.math.linearfilters.FilterUtility.filter(in, symmetricFilter, asymmetricFilters);
         }
         
         @Override

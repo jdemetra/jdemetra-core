@@ -8,8 +8,6 @@ package demetra.highfreq.r;
 import demetra.highfreq.r.PeriodicAirline;
 import demetra.data.WeeklyData;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import demetra.maths.matrices.Matrix;
 
 /**
  *

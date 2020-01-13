@@ -66,8 +66,7 @@ public class TradingDaysTests {
             GenericTradingDaysVariable var=new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD7));
             Matrix td = Regression.matrix(s.getDomain(), var);
             LinearModel reg=new LinearModel(y.getStorage(), false, td);
-            Ols ols = new Ols();
-            LeastSquaresResults rslt = ols.compute(reg);
+            LeastSquaresResults rslt = Ols.compute(reg);
             StatisticalTest ftest = rslt.Ftest();
             return ftest.toSummary();
           
@@ -88,8 +87,7 @@ public class TradingDaysTests {
                     .addX(td)
                     .build();
             
-            Ols ols = new Ols();
-            LeastSquaresResults rslt = ols.compute(reg);
+            LeastSquaresResults rslt = Ols.compute(reg);
             StatisticalTest ftest = rslt.Ftest(1, td.getColumnsCount());
             return ftest.toSummary();
          } catch (Exception err) {

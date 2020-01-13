@@ -3,19 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.modelling.r;
+package demetra.regarima;
 
 /**
  *
  * @author palatej
  */
-@lombok.Value
-public class OutlierDescriptor {
-    private String code;
-    private int position;
+public class RegArimaEstimation {
     
-    @Override
-    public String toString(){
-        return code+"."+(position+1);
-    }
 }

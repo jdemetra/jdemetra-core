@@ -40,7 +40,7 @@ import demetra.timeseries.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
-import jdplus.math.matrices.lapack.FastMatrix;
+import jdplus.math.matrices.Matrix;
 import static jdplus.timeseries.simplets.TsDataToolkit.add;
 import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
 
@@ -58,7 +58,7 @@ public class StsEstimation {
         TsData y, t, s, i;
         BasicStructuralModel bsm;
         DiffuseConcentratedLikelihood likelihood;
-        FastMatrix parametersCovariance;
+        Matrix parametersCovariance;
         double[] score;
 
         @Override
@@ -104,7 +104,7 @@ public class StsEstimation {
             MAPPING.set(I, TsData.class, source -> source.getI());
             MAPPING.set(SA, TsData.class, source -> subtract(source.getY(), source.getS()));
             MAPPING.delegate(LL, DiffuseConcentratedLikelihoodDescriptor.getMapping(), r -> r.getLikelihood());
-            MAPPING.set(PCOV, FastMatrix.class, source -> source.getParametersCovariance());
+            MAPPING.set(PCOV, Matrix.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
         }
 
@@ -165,7 +165,7 @@ public class StsEstimation {
         IFunctionDerivatives derivatives = new NumericalDerivatives(ml, false);
         int ndf = y.length();
         double objective = ml.getValue();
-        FastMatrix hessian = derivatives.hessian();
+        Matrix hessian = derivatives.hessian();
         double[] score = derivatives.gradient().toArray();
         hessian.mul((.5 * ndf) / objective);
         for (int i = 0; i < score.length; ++i) {

@@ -7,14 +7,14 @@ package jdplus.x11plus;
 
 import jdplus.filters.IFiltering;
 import jdplus.data.DataBlock;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.IFiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.FiniteFilter;
+import jdplus.math.linearfilters.IFiniteFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 import demetra.data.DoubleSeq;
 import java.util.function.IntToDoubleFunction;
 import jdplus.filters.ISymmetricFiltering;
-import jdplus.maths.linearfilters.AsymmetricFilters;
-import jdplus.maths.linearfilters.LocalPolynomialFilters;
+import jdplus.math.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.LocalPolynomialFilters;
 
 /**
  *
@@ -305,28 +305,28 @@ public class X11SeasonalFiltersFactory {
                 0.06667, 0.06667, 0.06667, 0.06667, 0.07111, 0.07111,
                 0.07111, 0.07111, 0.04889};
 
-    final FiniteFilter M_1X0 = new FiniteFilter(ma1x0, -1);
+    final FiniteFilter M_1X0 = FiniteFilter.of(ma1x0, -1);
 
-    final FiniteFilter M_2X1 = new FiniteFilter(ma2x1, -2);
+    final FiniteFilter M_2X1 = FiniteFilter.of(ma2x1, -2);
 
-    final FiniteFilter M_2X0 = new FiniteFilter(ma2x0, -2);
+    final FiniteFilter M_2X0 = FiniteFilter.of(ma2x0, -2);
 
-    final FiniteFilter M_3X2 = new FiniteFilter(ma3x2, -3);
-    final FiniteFilter M_3X1 = new FiniteFilter(ma3x1, -3);
-    final FiniteFilter M_3X0 = new FiniteFilter(ma3x0, -3);
-    final FiniteFilter M_5X4 = new FiniteFilter(ma5x4, -5);
-    final FiniteFilter M_5X3 = new FiniteFilter(ma5x3, -5);
-    final FiniteFilter M_5X2 = new FiniteFilter(ma5x2, -5);
-    final FiniteFilter M_5X1 = new FiniteFilter(ma5x1, -5);
-    final FiniteFilter M_5X0 = new FiniteFilter(ma5x0, -5);
-    final FiniteFilter M_8X0 = new FiniteFilter(ma8x0, -8);
-    final FiniteFilter M_8X1 = new FiniteFilter(ma8x1, -8);
-    final FiniteFilter M_8X2 = new FiniteFilter(ma8x2, -8);
-    final FiniteFilter M_8X3 = new FiniteFilter(ma8x3, -8);
-    final FiniteFilter M_8X4 = new FiniteFilter(ma8x4, -8);
-    final FiniteFilter M_8X5 = new FiniteFilter(ma8x5, -8);
-    final FiniteFilter M_8X6 = new FiniteFilter(ma8x6, -8);
-    final FiniteFilter M_8X7 = new FiniteFilter(ma8x7, -8);
+    final FiniteFilter M_3X2 = FiniteFilter.of(ma3x2, -3);
+    final FiniteFilter M_3X1 = FiniteFilter.of(ma3x1, -3);
+    final FiniteFilter M_3X0 = FiniteFilter.of(ma3x0, -3);
+    final FiniteFilter M_5X4 = FiniteFilter.of(ma5x4, -5);
+    final FiniteFilter M_5X3 = FiniteFilter.of(ma5x3, -5);
+    final FiniteFilter M_5X2 = FiniteFilter.of(ma5x2, -5);
+    final FiniteFilter M_5X1 = FiniteFilter.of(ma5x1, -5);
+    final FiniteFilter M_5X0 = FiniteFilter.of(ma5x0, -5);
+    final FiniteFilter M_8X0 = FiniteFilter.of(ma8x0, -8);
+    final FiniteFilter M_8X1 = FiniteFilter.of(ma8x1, -8);
+    final FiniteFilter M_8X2 = FiniteFilter.of(ma8x2, -8);
+    final FiniteFilter M_8X3 = FiniteFilter.of(ma8x3, -8);
+    final FiniteFilter M_8X4 = FiniteFilter.of(ma8x4, -8);
+    final FiniteFilter M_8X5 = FiniteFilter.of(ma8x5, -8);
+    final FiniteFilter M_8X6 = FiniteFilter.of(ma8x6, -8);
+    final FiniteFilter M_8X7 = FiniteFilter.of(ma8x7, -8);
     final FiniteFilter[] FC1 = new FiniteFilter[]{M_1X0};
     final FiniteFilter[] FC3 = new FiniteFilter[]{M_2X1, M_2X0};
     final FiniteFilter[] FC5 = new FiniteFilter[]{M_3X2, M_3X1, M_3X0};

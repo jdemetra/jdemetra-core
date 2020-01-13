@@ -16,13 +16,13 @@
  */
 package demetra.saexperimental.r;
 
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.FiniteFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.data.analysis.DiscreteKernel;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
-import jdplus.maths.linearfilters.AsymmetricFilters;
-import jdplus.maths.linearfilters.IFiniteFilter;
+import jdplus.math.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.IFiniteFilter;
 
 /**
  *
@@ -67,7 +67,7 @@ public class LocalPolynomialFilters {
                 afilters[i] = AsymmetricFilters.mmsreFilter(filter, horizon-i-1, u, c, null);
             }
         }
-        DoubleSeq rslt = jdplus.maths.linearfilters.FilterUtility.filter(DoubleSeq.of(data), filter, afilters);
+        DoubleSeq rslt = jdplus.math.linearfilters.FilterUtility.filter(DoubleSeq.of(data), filter, afilters);
         return rslt.toArray();
     }
 

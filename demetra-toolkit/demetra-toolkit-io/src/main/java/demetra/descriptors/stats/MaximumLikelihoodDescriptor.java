@@ -7,7 +7,7 @@ package demetra.descriptors.stats;
 
 import demetra.design.Development;
 import demetra.information.InformationMapping;
-import demetra.likelihood.MaximumLogLikelihood;
+import demetra.math.functions.ObjectiveFunctionPoint;
 import demetra.math.matrices.MatrixType;
 
 /**
@@ -20,7 +20,7 @@ public class MaximumLikelihoodDescriptor {
 
     private final String VALUE = "value", PARAMS = "parameters", GRADIENT = "gradient", HESSIAN = "hessian";
 
-    private final InformationMapping<MaximumLogLikelihood> MAPPING = new InformationMapping<>(MaximumLogLikelihood.class);
+    private final InformationMapping<ObjectiveFunctionPoint> MAPPING = new InformationMapping<>(ObjectiveFunctionPoint.class);
 
     static {
         MAPPING.set(VALUE, Double.class, source -> source.getValue());
@@ -32,7 +32,7 @@ public class MaximumLikelihoodDescriptor {
                 source.getHessian() == null ? null : source.getHessian());
     }
 
-    public InformationMapping<MaximumLogLikelihood> getMapping() {
+    public InformationMapping<ObjectiveFunctionPoint> getMapping() {
         return MAPPING;
     }
 }
