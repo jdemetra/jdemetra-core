@@ -5,16 +5,13 @@
  */
 package jdplus.modelling.regression;
 
-import jdplus.modelling.regression.Regression;
 import demetra.timeseries.TsPeriod;
 import jdplus.data.DataBlock;
 import demetra.timeseries.TsDomain;
-import java.util.Collections;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
-import demetra.modelling.regression.JulianEasterVariable;
-import jdplus.maths.matrices.FastMatrix;
+import demetra.timeseries.regression.JulianEasterVariable;
 
 /**
  *

@@ -19,7 +19,7 @@ package jdplus.data.analysis;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
-import demetra.maths.Constants;
+import demetra.math.Constants;
 import demetra.util.IntList;
 
 /**

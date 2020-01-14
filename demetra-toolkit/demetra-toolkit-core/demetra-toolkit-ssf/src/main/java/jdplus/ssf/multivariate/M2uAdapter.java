@@ -17,7 +17,7 @@
 package jdplus.ssf.multivariate;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfLoading;
@@ -25,9 +25,7 @@ import jdplus.ssf.implementations.MeasurementError;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.ISsfError;
-import jdplus.ssf.univariate.Measurement;
 import jdplus.ssf.univariate.Ssf;
-import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -59,7 +57,7 @@ public class M2uAdapter {
             ISsfError error = null;
             if (errors != null) {
                 if (errors.isTimeInvariant()) {
-                    CanonicalMatrix h = CanonicalMatrix.square(1);
+                    Matrix h = Matrix.square(1);
                     errors.H(0, h);
                     error = MeasurementError.of(h.get(0, 0));
                 } else {
@@ -127,12 +125,14 @@ public class M2uAdapter {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
+        public double ZVZ(int pos, Matrix V) {
             return measurements.loading(pos % nvars).ZVZ(pos / nvars, V);
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
+        public void VpZdZ(int pos, Matrix V, double d) {
+            if (d == 0)
+                return;
             measurements.loading(pos % nvars).VpZdZ(pos / nvars, V, d);
         }
 
@@ -147,13 +147,13 @@ public class M2uAdapter {
 
         private final ISsfErrors errors;
         private final int nvars;
-        private final CanonicalMatrix H;
+        private final Matrix H;
         private int hpos = -1;
 
         Error(ISsfErrors errors, int nvars) {
             this.errors = errors.isTimeInvariant() ? null : errors;
             this.nvars = nvars;
-            H = CanonicalMatrix.square(nvars);
+            H = Matrix.square(nvars);
             if (errors.isTimeInvariant()) {
                 errors.H(0, H);
             }
@@ -200,7 +200,7 @@ public class M2uAdapter {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.V(pos / nstep, qm);
             }
@@ -221,7 +221,7 @@ public class M2uAdapter {
         }
 
         @Override
-        public void S(int pos, FastMatrix sm) {
+        public void S(int pos, Matrix sm) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.S(pos / nstep, sm);
             }
@@ -244,7 +244,7 @@ public class M2uAdapter {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.T(pos / nstep, tr);
             } else {
@@ -260,14 +260,14 @@ public class M2uAdapter {
         }
 
         @Override
-        public void TM(int pos, FastMatrix m) {
+        public void TM(int pos, Matrix m) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.TM(pos / nstep, m);
             }
         }
 
         @Override
-        public void TVT(int pos, FastMatrix m) {
+        public void TVT(int pos, Matrix m) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.TVT(pos / nstep, m);
             }
@@ -281,14 +281,14 @@ public class M2uAdapter {
         }
 
         @Override
-        public void MT(int pos, FastMatrix m) {
+        public void MT(int pos, Matrix m) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.MT(pos / nstep, m);
             }
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             if (pos % nstep == nstep - 1) {
                 mdynamics.addV(pos / nstep, p);
             }

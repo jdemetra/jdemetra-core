@@ -6,12 +6,12 @@
 package demetra.r;
 
 import demetra.information.InformationMapping;
-import demetra.stl.IDataGetter;
-import demetra.stl.IDataSelector;
-import demetra.stl.LoessFilter;
-import demetra.stl.LoessSpecification;
-import demetra.stl.StlPlus;
-import demetra.stl.StlPlusSpecification;
+import jdplus.stl.IDataGetter;
+import jdplus.stl.IDataSelector;
+import jdplus.stl.LoessFilter;
+import jdplus.stl.LoessSpecification;
+import jdplus.stl.StlPlus;
+import jdplus.stl.StlPlusSpecification;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;

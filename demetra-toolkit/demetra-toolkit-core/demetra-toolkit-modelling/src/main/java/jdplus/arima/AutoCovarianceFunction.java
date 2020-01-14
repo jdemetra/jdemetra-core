@@ -19,9 +19,9 @@ package jdplus.arima;
 import java.util.concurrent.atomic.AtomicReference;
 import demetra.design.Development;
 import demetra.design.Immutable;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.polynomials.Polynomial;
 import internal.jdplus.arima.AutoCovarianceComputers;
 import java.util.function.IntToDoubleFunction;
 
@@ -87,7 +87,7 @@ public final class AutoCovarianceFunction {
         this.ma = ma;
         this.ar = ar;
         if (ar.degree() == 0) {
-            this.sma = SymmetricFilter.fromFilter(new BackFilter(ma), var);
+            this.sma = SymmetricFilter.convolutionOf(new BackFilter(ma), var);
         } else {
             this.sma = null;
         }

@@ -19,14 +19,12 @@ package jdplus.ucarima;
 import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.linearfilters.SymmetricFrequencyResponse;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.leastsquares.QRSolver;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.SymmetricFrequencyResponse;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -97,7 +95,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
 
         int xs = qs + 1, xn = qn + 1, x = xs + xn;
 
-        CanonicalMatrix m = CanonicalMatrix.square(x);
+        Matrix m = Matrix.square(x);
 
         // modify the arrays to get the frequency response (and not the agf)
         n[0] /= 2;
@@ -224,7 +222,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
 //	     m_sfds = smp.getRight().toSymmetriicFilter();
 //	     }
 //	     else
-            m_sfds = SymmetricFilter.fromFilter(m_sur);
+            m_sfds = SymmetricFilter.convolutionOf(m_sur);
         }
         if (m_nur != null) {
 //	     if (smp.simplify(sfma, m_nur))
@@ -235,23 +233,23 @@ public class RootDecomposer extends SimpleModelDecomposer {
 //	     m_sfdn = smp.getRight().toSymmetriicFilter();
 //	     }
 //	     else
-            m_sfdn = SymmetricFilter.fromFilter(m_nur);
+            m_sfdn = SymmetricFilter.convolutionOf(m_nur);
         }
         if (m_sfcs != null || m_sfcn != null) {
             m_sma = sfma.toSymmetricFilter();
         }
         if (m_sar != null) {
             if (m_sfds != null) {
-                m_sfds = m_sfds.times(SymmetricFilter.fromFilter(m_sar));
+                m_sfds = m_sfds.times(SymmetricFilter.convolutionOf(m_sar));
             } else {
-                m_sfds = SymmetricFilter.fromFilter(m_sar);
+                m_sfds = SymmetricFilter.convolutionOf(m_sar);
             }
         }
         if (m_nar != null) {
             if (m_sfdn != null) {
-                m_sfdn = m_sfdn.times(SymmetricFilter.fromFilter(m_nar));
+                m_sfdn = m_sfdn.times(SymmetricFilter.convolutionOf(m_nar));
             } else {
-                m_sfdn = SymmetricFilter.fromFilter(m_nar);
+                m_sfdn = SymmetricFilter.convolutionOf(m_nar);
             }
         }
     }

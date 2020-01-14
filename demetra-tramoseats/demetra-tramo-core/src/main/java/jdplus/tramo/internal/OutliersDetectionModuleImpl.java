@@ -239,8 +239,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         LinearModel lm = dm.asLinearModel();
         if (rflag) {
             if (lm.getVariablesCount() > 0) {
-                Ols ols = new Ols();
-                LeastSquaresResults lsr = ols.compute(lm);
+                LeastSquaresResults lsr = Ols.compute(lm);
                 if (lsr == null) {
                     return false;
                 }

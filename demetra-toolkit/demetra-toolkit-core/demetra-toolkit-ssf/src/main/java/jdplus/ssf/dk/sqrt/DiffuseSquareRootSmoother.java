@@ -17,9 +17,9 @@
 package jdplus.ssf.dk.sqrt;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SubMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.GeneralMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.dk.DkToolkit;
@@ -115,9 +115,9 @@ public class DiffuseSquareRootSmoother extends BaseDiffuseSmoother {
         if (calcvar) {
             tmp0 = DataBlock.make(dim);
             tmp1 = DataBlock.make(dim);
-            N0 = CanonicalMatrix.square(dim);
-            N1 = CanonicalMatrix.square(dim);
-            N2 = CanonicalMatrix.square(dim);
+            N0 = Matrix.square(dim);
+            N1 = Matrix.square(dim);
+            N2 = Matrix.square(dim);
             Z = DataBlock.make(dim);
             if (loading.isTimeInvariant()) {
                 Z.set(0);
@@ -161,7 +161,7 @@ public class DiffuseSquareRootSmoother extends BaseDiffuseSmoother {
     protected void updateA(int pos) {
         DataBlock a = state.a();
         a.addProduct(Rf, frslts.P(pos).columnsIterator());
-        SubMatrix B = frslts.B(pos);
+        Matrix B = frslts.B(pos);
         DataBlock tmp = DataBlock.make(B.getColumnsCount());
         tmp.product(Ri, B.columnsIterator());
         a.addProduct(tmp, B.rowsIterator());
@@ -172,21 +172,19 @@ public class DiffuseSquareRootSmoother extends BaseDiffuseSmoother {
         // V = Pf - Pf * N0 * Pf - < Pi * N1 * Pf > - Pi * N2 * Pi
         // Pi = B*B'
         // ! N1 is not a symmetric matrix
-        CanonicalMatrix P = state.P();
-        CanonicalMatrix PN0P = SymmetricMatrix.XtSX(N0, P);
-        CanonicalMatrix BN2B = SymmetricMatrix.XtSX(N2, state.B());
-        CanonicalMatrix PN2P = SymmetricMatrix.XSXt(BN2B, state.B());
-        CanonicalMatrix N1B = CanonicalMatrix.make(N1.getRowsCount(), state.B().getColumnsCount());
-        N1B.product(N1, state.B());
-        CanonicalMatrix PN1B = P.times(N1B);
-        CanonicalMatrix PN1Pi = CanonicalMatrix.square(P.getRowsCount());
-        PN1Pi.product(PN1B, state.B().transpose());
+        Matrix P = state.P();
+        Matrix PN0P = SymmetricMatrix.XtSX(N0, P);
+        Matrix BN2B = SymmetricMatrix.XtSX(N2, state.B());
+        Matrix PN2P = SymmetricMatrix.XSXt(BN2B, state.B());
+        Matrix N1B = GeneralMatrix.AB(N1, state.B());
+        Matrix PN1B = GeneralMatrix.AB(P, N1B);
+        Matrix PN1Pi = GeneralMatrix.ABt(PN1B, state.B());
 //        Matrix PN2P = SymmetricMatrix.quadraticForm(N2, Pi);
 //        Matrix PN1 = P.times(N1);
 //        Matrix PN1Pi = PN1.times(Pi);
         PN0P.add(PN2P);
         PN0P.add(PN1Pi);
-        PN0P.add(PN1Pi.transpose());
+        PN0P.addTranspose(PN1Pi);
         SymmetricMatrix.reenforceSymmetry(PN0P);
         P.sub(PN0P);
     }

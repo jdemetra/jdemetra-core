@@ -18,12 +18,11 @@ package jdplus.ssf.multivariate;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.State;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -41,12 +40,12 @@ public class MultivariateUpdateInformation {
      * =(ZPZ'+H)^1/2 Cholesky factor of the variance/covariance matrix of the
      * prediction errors (lower triangular). nvars x nvars
      */
-    private final CanonicalMatrix R;
+    private final Matrix R;
 
     /**
      * K = P Z' L'^-1 dim x nvars
      */
-    private final CanonicalMatrix K;
+    private final Matrix K;
 
     /**
      *
@@ -55,31 +54,31 @@ public class MultivariateUpdateInformation {
      */
     public MultivariateUpdateInformation(final int dim, final int nvars) {
         U = DataBlock.make(nvars);
-        R = CanonicalMatrix.square(nvars);
-        K = CanonicalMatrix.make(dim, nvars);
+        R = Matrix.square(nvars);
+        K = Matrix.make(dim, nvars);
     }
 
     public DataBlock getTransformedPredictionErrors() {
         return U;
     }
 
-    public CanonicalMatrix getPredictionErrorCovariance() {
+    public Matrix getPredictionErrorCovariance() {
         if (R.getRowsCount() == 1) {
             double l = R.get(0, 0);
-            return new CanonicalMatrix(new double[]{l * l}, 1, 1);
+            return new Matrix(new double[]{l * l}, 1, 1);
         } else {
             return SymmetricMatrix.LLt(R);
         }
     }
 
-    public CanonicalMatrix getCholeskyFactor() {
+    public Matrix getCholeskyFactor() {
         return R;
     }
 
     /**
      * @return the K
      */
-    public CanonicalMatrix getK() {
+    public Matrix getK() {
         return K;
     }
 
@@ -87,7 +86,7 @@ public class MultivariateUpdateInformation {
         ISsfMeasurements measurements = ssf.measurements();
         ISsfErrors errors = ssf.errors();
 
-        ZM(t, measurements, equations, state.P(), K.transpose());
+        MZt(t, measurements, equations, state.P(), K);
         // computes ZPZ'; results in pe_.L
         ZM(t, measurements, equations, K, R);
         addH(t, errors, equations, R);
@@ -98,7 +97,7 @@ public class MultivariateUpdateInformation {
 
         // We put in K  PZ'*(ZPZ'+H)^-1/2 = PZ'* F^-1 = PZ'*(LL')^-1/2 = PZ'(L')^-1
         // K L' = PZ' or L K' = ZP
-        LowerTriangularMatrix.rsolve(R, K.transpose(), State.ZERO);
+        LowerTriangularMatrix.solveXLt(R, K, State.ZERO);
         if (equations == null) {
             for (int i = 0; i < x.length(); ++i) {
                 double y = x.get(i);
@@ -122,7 +121,7 @@ public class MultivariateUpdateInformation {
      * @param M
      * @param zm
      */
-    protected void ZM(int t, ISsfMeasurements measurements, int[] equations, FastMatrix M, FastMatrix zm) {
+    protected void ZM(int t, ISsfMeasurements measurements, int[] equations, Matrix M, Matrix zm) {
         DataBlockIterator zrows = zm.rowsIterator();
         if (equations == null) {
             int eq = 0;
@@ -137,6 +136,20 @@ public class MultivariateUpdateInformation {
         }
     }
 
+    protected void MZt(int t, ISsfMeasurements measurements, int[] equations, Matrix M, Matrix zm) {
+        DataBlockIterator zcols = zm.columnsIterator();
+        if (equations == null) {
+            int eq = 0;
+            while (zcols.hasNext()) {
+                measurements.loading(eq++).MZt(t, M, zcols.next());
+            }
+        } else {
+            int eq = 0;
+            while (zcols.hasNext()) {
+                measurements.loading(equations[eq++]).MZt(t, M, zcols.next());
+            }
+        }
+    }
     /**
      * *
      *
@@ -147,14 +160,14 @@ public class MultivariateUpdateInformation {
      * to null.
      * @param P The covariance matrix of the prediction errors
      */
-    private void addH(int t, ISsfErrors errors, int[] equations, FastMatrix P) {
+    private void addH(int t, ISsfErrors errors, int[] equations, Matrix P) {
         if (errors == null) {
             return;
         }
         if (equations == null) {
             errors.addH(t, P);
         } else {
-            CanonicalMatrix H = CanonicalMatrix.square(P.getColumnsCount());
+            Matrix H = Matrix.square(P.getColumnsCount());
             errors.H(t, H);
             for (int i = 0; i < equations.length; ++i) {
                 for (int j = 0; j < i; ++j) {

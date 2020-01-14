@@ -18,7 +18,7 @@ package jdplus.ssf.univariate;
 
 import demetra.design.Development;
 import java.util.Arrays;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  * Uni-variate state space regression model y = X b + e e ~ ssf b may contain
@@ -32,7 +32,7 @@ public class SsfRegressionModel<F extends ISsf> {
 
     private final ISsfData y;
 
-    private final FastMatrix X;
+    private final Matrix X;
 
     private final int[] diffuseElements;
 
@@ -50,7 +50,7 @@ public class SsfRegressionModel<F extends ISsf> {
      * @param DiffuseX The 0-based positions of the diffuse regression
      * coefficients. May be null.
      */
-    public SsfRegressionModel(final F ssf, final ISsfData data, final FastMatrix X,
+    public SsfRegressionModel(final F ssf, final ISsfData data, final Matrix X,
             final int[] DiffuseX) {
         this.ssf = ssf;
         y = data;
@@ -108,7 +108,7 @@ public class SsfRegressionModel<F extends ISsf> {
      * @return The internal object containing the regression variables. May be
      * null.
      */
-    public FastMatrix getX() {
+    public Matrix getX() {
         return X;
     }
 

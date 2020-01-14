@@ -18,15 +18,15 @@ package jdplus.ssf.dk;
 
 import demetra.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.data.DataBlock;
-import jdplus.maths.functions.IFunction;
-import jdplus.maths.functions.ssq.ISsqFunction;
+import jdplus.math.functions.IFunction;
+import jdplus.math.functions.ssq.ISsqFunction;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.IConcentratedLikelihoodComputer;
 import jdplus.ssf.univariate.SsfRegressionModel;
-import jdplus.maths.functions.IFunctionDerivatives;
-import jdplus.maths.functions.NumericalDerivatives;
-import jdplus.maths.functions.ssq.ISsqFunctionDerivatives;
-import jdplus.maths.functions.ssq.SsqNumericalDerivatives;
+import jdplus.math.functions.IFunctionDerivatives;
+import jdplus.math.functions.NumericalDerivatives;
+import jdplus.math.functions.ssq.ISsqFunctionDerivatives;
+import jdplus.math.functions.ssq.SsqNumericalDerivatives;
 import demetra.data.DoubleSeq;
 import jdplus.likelihood.LikelihoodFunctionPoint;
 

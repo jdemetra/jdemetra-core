@@ -24,8 +24,7 @@ public class RegArimaModelTest {
 
     @Test
     public void testMissing() {
-        SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline(true);
+        SarimaSpecification spec=SarimaSpecification.airline(12);
         DoubleSeq y = DataBlock.of(Data.PROD);
         int[] missingPos = new int[30];
         for (int i = 0; i < missingPos.length - 15; ++i) {
@@ -48,9 +47,7 @@ public class RegArimaModelTest {
 
     @Test
     public void testEstimation() {
-
-        SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline(true);
+        SarimaSpecification spec=SarimaSpecification.airline(12);
         DoubleSeq y = DataBlock.of(Data.PROD);
         int[] missingPos = new int[15];
         for (int i = 0; i < missingPos.length; ++i) {
@@ -67,6 +64,8 @@ public class RegArimaModelTest {
         estimation.statistics(0);
 //        System.out.println("New estimation");
 //        System.out.println(estimation.statistics(0));
+//        System.out.println(estimation.getConcentratedLikelihood().allCoefficients());
+//        System.out.println(estimation.getConcentratedLikelihood().ssq());
     }
 
     @Test
@@ -90,14 +89,17 @@ public class RegArimaModelTest {
         estimation.statistics(2, 0);
 //        System.out.println("Old estimation");
 //        System.out.println(estimation.statistics(2, 0));
+//        System.out.println(DoubleSeq.of(estimation.likelihood.getB()));
+//        System.out.println(estimation.likelihood.getSsqErr());
+    }
+    
+    public static void main(String[] arg){
+        stressTestEstimation();
+        stressTestOldEstimation();
     }
 
-    @Test
-    @Ignore
-    public void stressTestEstimation() {
-
-        SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline(true);
+    public static void stressTestEstimation() {
+        SarimaSpecification spec=SarimaSpecification.airline(12);
         DoubleSeq y = DataBlock.of(Data.PROD);
         int[] missingPos = new int[15];
         for (int i = 0; i < missingPos.length; ++i) {
@@ -121,9 +123,7 @@ public class RegArimaModelTest {
 //        System.out.println(estimation.statistics(2, 0));
     }
 
-    @Test
-    @Ignore
-    public void stressTestOldEstimation() {
+    public static void stressTestOldEstimation() {
         ec.tstoolkit.sarima.SarimaSpecification spec = new ec.tstoolkit.sarima.SarimaSpecification(12);
         spec.airline();
         ec.tstoolkit.data.DataBlock y = new ec.tstoolkit.data.DataBlock(Data.PROD);

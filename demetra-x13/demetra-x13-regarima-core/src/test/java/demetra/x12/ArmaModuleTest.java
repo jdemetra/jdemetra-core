@@ -35,8 +35,7 @@ public class ArmaModuleTest {
     @Test
     public void testProd() {
         ArmaModuleImpl test = ArmaModuleImpl.builder().build();
-        SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline(true);
+        SarimaSpecification spec =  SarimaSpecification.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
         SarimaSpecification nspec = test.process(regarima, true);
@@ -47,8 +46,7 @@ public class ArmaModuleTest {
     @Test
     public void testX() {
         ArmaModuleImpl test = ArmaModuleImpl.builder().build();
-        SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline(true);
+        SarimaSpecification spec =  SarimaSpecification.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSeq.copyOf(Data.EXPORTS)).arima(sarima).build();
         SarimaSpecification nspec = test.process(regarima, true);

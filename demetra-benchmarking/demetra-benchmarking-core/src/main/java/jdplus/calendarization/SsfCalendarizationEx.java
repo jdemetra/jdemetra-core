@@ -25,7 +25,7 @@ import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.Ssf;
 import java.util.HashSet;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  * See "Calendarization with splines and state space models" B. Quenneville, F.
@@ -158,7 +158,7 @@ public class SsfCalendarizationEx {
          * @param pf0
          */
         @Override
-        public void Pf0(FastMatrix pf0) {
+        public void Pf0(Matrix pf0) {
             pf0.set(2, 2, 1);
         }
 
@@ -167,12 +167,12 @@ public class SsfCalendarizationEx {
          * @param pi0
          */
         @Override
-        public void Pi0(FastMatrix pi0) {
+        public void Pi0(Matrix pi0) {
             pi0.set(2, 2, 1);
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
             b.set(2, 0, 1);
         }
 
@@ -204,7 +204,7 @@ public class SsfCalendarizationEx {
          * @param qm
          */
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             qm.set(2, 2, 1);
         }
 
@@ -217,7 +217,7 @@ public class SsfCalendarizationEx {
          * @param tr
          */
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             tr.set(2, 2, 1);
             int postype = info.posType(pos);
             if (postype != LAST) {
@@ -313,7 +313,7 @@ public class SsfCalendarizationEx {
         }
 
         @Override
-        public void S(int pos, FastMatrix cm) {
+        public void S(int pos, Matrix cm) {
             cm.set(2, 0, 1);
         }
 
@@ -338,7 +338,7 @@ public class SsfCalendarizationEx {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             p.add(2, 2, 1);
         }
 
@@ -364,7 +364,7 @@ public class SsfCalendarizationEx {
          * @param d
          */
         @Override
-        public void VpZdZ(int pos, FastMatrix vm, double d) {
+        public void VpZdZ(int pos, Matrix vm, double d) {
 
             vm.add(2, 2, info.mweight2(pos, d));
             int postype = info.posType(pos);
@@ -415,7 +415,7 @@ public class SsfCalendarizationEx {
          * @param x
          */
         @Override
-        public void ZM(int pos, FastMatrix m, DataBlock x) {
+        public void ZM(int pos, Matrix m, DataBlock x) {
             x.setAY(info.weight(pos), m.row(2));
             int postype = info.posType(pos);
             if (postype != FIRST) {
@@ -430,7 +430,7 @@ public class SsfCalendarizationEx {
          * @return
          */
         @Override
-        public double ZVZ(int pos, FastMatrix vm) {
+        public double ZVZ(int pos, Matrix vm) {
             int postype = info.posType(pos);
             if (postype == FIRST) {
                 return info.mweight2(pos, vm.get(2, 2));

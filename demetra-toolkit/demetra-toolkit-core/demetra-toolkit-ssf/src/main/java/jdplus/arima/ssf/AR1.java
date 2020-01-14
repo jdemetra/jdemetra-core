@@ -21,10 +21,10 @@ package jdplus.arima.ssf;
 import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.implementations.Loading;
-import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.ssf.SsfComponent;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.StateComponent;
 
 /**
  *
@@ -33,14 +33,18 @@ import jdplus.maths.matrices.FastMatrix;
 @lombok.experimental.UtilityClass
 public class AR1 {
 
-    public SsfComponent of(final double rho) {
+    public StateComponent of(final double rho) {
         Data data = new Data(rho, 1, false);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
+        return new StateComponent(new Initialization(data), new Dynamics(data));
     }
 
-    public static SsfComponent of(final double rho, final double var, final boolean zeroinit) {
+    public static StateComponent of(final double rho, final double var, final boolean zeroinit) {
         Data data = new Data(rho, var, zeroinit);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(0));
+        return new StateComponent(new Initialization(data), new Dynamics(data));
+    }
+    
+    public static ISsfLoading defaultLoading(){
+        return Loading.fromPosition(0);
     }
 
     static class Data {
@@ -84,7 +88,7 @@ public class AR1 {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
         }
 
         @Override
@@ -92,7 +96,7 @@ public class AR1 {
         }
 
         @Override
-        public void Pf0(FastMatrix pf0) {
+        public void Pf0(Matrix pf0) {
             if (data.zeroinit) {
                 pf0.set(0, 0, data.var);
             } else {
@@ -121,7 +125,7 @@ public class AR1 {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             qm.set(0, 0, data.var);
         }
 
@@ -136,7 +140,7 @@ public class AR1 {
         }
 
         @Override
-        public void S(int pos, FastMatrix sm) {
+        public void S(int pos, Matrix sm) {
             sm.set(0, 0, data.std());
         }
 
@@ -151,7 +155,7 @@ public class AR1 {
         }
 
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             tr.set(0, 0, data.rho);
         }
 
@@ -161,7 +165,7 @@ public class AR1 {
         }
 
         @Override
-        public void TVT(int pos, FastMatrix v) {
+        public void TVT(int pos, Matrix v) {
             v.mul(0, 0, data.rho * data.rho);
         }
 
@@ -171,7 +175,7 @@ public class AR1 {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             p.add(0, 0, data.var);
         }
     }

@@ -5,13 +5,12 @@
  */
 package demetra.regarima;
 
-import demetra.arima.ArimaType;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihood;
-import demetra.likelihood.MaximumLogLikelihood;
+import demetra.math.functions.ObjectiveFunctionPoint;
 import demetra.linearmodel.LinearModel;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -20,48 +19,17 @@ import demetra.maths.matrices.Matrix;
  */
 @Development(status = Development.Status.Alpha)
 @lombok.Value
-public class RegArimaModel<S extends ArimaType> {
-
-    @Development(status = Development.Status.Alpha)
-    @lombok.Value
-    public static class Data<T extends ArimaType> {
+public class RegArimaModel<S> {
 
         @lombok.NonNull
-        private LinearModel model;
+        private double[] y;
+        
+        private boolean mean;
+        
+        private MatrixType X;
 
         @lombok.NonNull
-        private T arima;
+        private S arima;
+ 
 
-        //<editor-fold defaultstate="collapsed" desc="delegate to model">
-        public DoubleSeq getY() {
-            return model.getY();
-        }
-
-        public boolean isMeanCorrection() {
-            return model.isMeanCorrection();
-        }
-
-        public Matrix getX() {
-            return model.getX();
-        }
-        //</editor-fold>
-    }
-
-    @lombok.Value
-    public static class Estimation {
-
-        /**
-         * Concentrated likelihood
-         */
-        @lombok.NonNull
-        private ConcentratedLikelihood likelihood;
-        /**
-         * Maximum of the likelihood. Could be missing if the arima model
-         * doesn't contain any free parameter
-         */
-        private MaximumLogLikelihood maximumLogLikelihood;
-    }
-    
-    private Data<S> data;
-    private Estimation estimation;
 }

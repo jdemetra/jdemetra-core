@@ -50,7 +50,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         SingleOutlierDetector sod = ExactSingleOutlierDetector.builder()
                 .robustStandardDeviationComputer(RobustStandardDeviationComputer.mad(false))
                 .armaFilter(new AnsleyFilter())
-                .residualsComputer(ResidualsComputer.mlComputer())
+                .residualsComputer(X12Utility.mlComputer())
                 .build();
         sod.addOutlierFactory(AdditiveOutlierFactory.FACTORY);
         sod.addOutlierFactory(LevelShiftFactory.FACTORY_ZEROENDED);

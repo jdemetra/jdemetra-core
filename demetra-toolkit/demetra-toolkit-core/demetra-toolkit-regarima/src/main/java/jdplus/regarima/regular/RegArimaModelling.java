@@ -16,6 +16,7 @@
  */
 package jdplus.regarima.regular;
 
+import demetra.arima.SarimaSpecification;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import jdplus.regarima.IRegArimaProcessor;
@@ -27,7 +28,9 @@ import jdplus.sarima.SarimaModel;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-@lombok.Data
+@lombok.Getter
+@lombok.NoArgsConstructor
+@lombok.AllArgsConstructor
 public class RegArimaModelling {
 
     private ModelDescription description;
@@ -51,14 +54,33 @@ public class RegArimaModelling {
     public PreprocessingModel build() {
         return new PreprocessingModel(new ModelDescription(description), estimation);
     }
+    
+    public void clearEstimation(){
+        estimation=null;
+        description.getArimaComponent().clearFreeParameters();
+    }
 
     public boolean needEstimation() {
         return estimation == null;
     }
     
+    /**
+     * Change the Arima specification and remove the current estimation
+     * @param spec 
+     */
+    public void setSpecification(SarimaSpecification spec){
+        description.setSpecification(spec);
+        this.estimation=null;
+    }
+
     public void setDescription(ModelDescription desc){
         this.description=desc;
         this.estimation=null;
+    }
+    
+    public void set(ModelDescription desc, ModelEstimation est){
+        this.description=desc;
+        this.estimation=est;
     }
     
 //    public ModellingContext() {

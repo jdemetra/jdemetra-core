@@ -20,8 +20,8 @@ import demetra.design.Development;
 import demetra.design.LombokWorkaround;
 import demetra.modelling.ChangeOfRegimeSpec;
 import demetra.modelling.RegressionTestSpec;
-import demetra.modelling.regression.TradingDaysType;
 import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.regression.TradingDaysType;
 import demetra.util.Validatable;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +95,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
 
         public Builder type(TradingDaysType type) {
             this.type = type;
-            this.userVariables = new ArrayList<>();
+            this.userVariables = null;
             this.stockTradingDays = 0;
             return this;
         }
@@ -108,7 +108,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
         public Builder stockTradingDays(int w) {
             this.stockTradingDays = w;
             this.holidays = null;
-            this.userVariables = new ArrayList<>();
+            this.userVariables = null;
             this.type = TradingDaysType.None;
             this.lengthOfPeriodTime = LengthOfPeriodType.None;
             return this;
@@ -120,20 +120,21 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
                 holidays = null;
             }
             if (holidays != null) {
-                this.userVariables = new ArrayList<>();
+                this.userVariables = null;
                 stockTradingDays = 0;
             }
             return this;
         }
 
         public Builder userVariables(List<String> userVariables) {
-            this.userVariables = new ArrayList<>(userVariables);
             if (userVariables != null) {
+                this.userVariables = new ArrayList<>(userVariables);
                 this.holidays = null;
                 this.type = TradingDaysType.None;
                 this.lengthOfPeriodTime = LengthOfPeriodType.None;
                 this.autoAdjust = false;
-            }
+            }else
+                this.userVariables=null;
             return this;
         }
     }

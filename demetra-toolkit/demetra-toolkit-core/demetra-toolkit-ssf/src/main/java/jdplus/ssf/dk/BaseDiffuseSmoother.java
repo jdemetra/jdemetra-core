@@ -23,7 +23,7 @@ import jdplus.ssf.univariate.ISmoothingResults;
 import jdplus.ssf.univariate.ISsf;
 import demetra.data.DoubleSeqCursor;
 import jdplus.ssf.ISsfLoading;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -39,7 +39,7 @@ public abstract class BaseDiffuseSmoother {
 
     protected double e, f, fi;
     protected DataBlock C, Ci, Rf, Ri, tmp0, tmp1, Z;
-    protected FastMatrix N0, N1, N2;
+    protected Matrix N0, N1, N2;
     protected boolean missing, hasinfo;
     
     protected BaseDiffuseSmoother(ISsf ssf, boolean calcvar, boolean rescalevar){
@@ -171,9 +171,9 @@ public abstract class BaseDiffuseSmoother {
         subZ(pos, N2.columnsIterator(), tmp1);
     }
 
-    private void tvt(int pos, FastMatrix N) {
+    private void tvt(int pos, Matrix N) {
         dynamics.MT(pos, N);
-        dynamics.MT(pos, N.transpose());
+        dynamics.TtM(pos, N);
     }
 
     private void subZ(int pos, DataBlockIterator rows, DataBlock b) {

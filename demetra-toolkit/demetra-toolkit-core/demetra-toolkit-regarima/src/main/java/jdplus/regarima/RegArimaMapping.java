@@ -18,8 +18,8 @@ package jdplus.regarima;
 
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
-import jdplus.maths.functions.IParametricMapping;
-import jdplus.maths.functions.ParamValidation;
+import jdplus.math.functions.IParametricMapping;
+import jdplus.math.functions.ParamValidation;
 import demetra.data.DoubleSeq;
 
 /**

@@ -5,11 +5,11 @@
  */
 package rssf;
 
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.implementations.TimeInvariantDynamics;
 import jdplus.ssf.implementations.TimeInvariantDynamics.Innovations;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -17,7 +17,7 @@ import demetra.maths.matrices.Matrix;
  */
 @lombok.experimental.UtilityClass
 public class Dynamics {
-    public ISsfDynamics of(Matrix T, Matrix V, Matrix S){
-        return new TimeInvariantDynamics(CanonicalMatrix.of(T), new Innovations(CanonicalMatrix.of(V), CanonicalMatrix.of(S)));
+    public ISsfDynamics of(MatrixType T, MatrixType V, MatrixType S){
+        return new TimeInvariantDynamics(Matrix.of(T), new Innovations(Matrix.of(V), Matrix.of(S)));
     }
 }

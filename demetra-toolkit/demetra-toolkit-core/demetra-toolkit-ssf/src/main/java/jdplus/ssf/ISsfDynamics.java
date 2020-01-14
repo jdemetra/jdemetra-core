@@ -17,8 +17,8 @@
 package jdplus.ssf;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -47,13 +47,13 @@ public interface ISsfDynamics extends ISsfRoot {
      * @param pos
      * @param qm
      */
-    void V(int pos, FastMatrix qm);
+    void V(int pos, Matrix qm);
 
     /**
      * @param pos
      * @param cm
      */
-    void S(int pos, FastMatrix cm);
+    void S(int pos, Matrix cm);
 
     /**
      *
@@ -72,7 +72,7 @@ public interface ISsfDynamics extends ISsfRoot {
      * responsibility to provide a clean sub-matrix, so that the callee can
      * safely set only the non zero values.
      */
-    void T(int pos, FastMatrix tr);
+    void T(int pos, Matrix tr);
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="forward operations">
@@ -100,20 +100,29 @@ public interface ISsfDynamics extends ISsfRoot {
      * @param pos
      * @param M
      */
-    default void TM(int pos, FastMatrix M) {
+    default void TM(int pos, Matrix M) {
         M.applyByColumns(x->TX(pos, x));
     }
 
     /**
+     * Computes M* T'(pos)
+     *
+     * @param pos
+     * @param M
+     */
+    default void MTt(int pos, Matrix M) {
+        M.applyByRows(x->TX(pos, x));
+    }
+    /**
      * Computes T V T'
      *
      * @param pos The position of the model
-     * @param vm
+     * @param M
      */
-    default void TVT(int pos, FastMatrix vm) {
-        TM(pos, vm);
-        TM(pos, vm.transpose());
-        SymmetricMatrix.reenforceSymmetry(vm);
+    default void TVT(int pos, Matrix M) {
+        TM(pos, M);
+        MTt(pos, M);
+        SymmetricMatrix.reenforceSymmetry(M);
     }
 
     /**
@@ -122,7 +131,7 @@ public interface ISsfDynamics extends ISsfRoot {
      * @param pos
      * @param p
      */
-    void addV(int pos, FastMatrix p);
+    void addV(int pos, Matrix p);
 
     //</editor-fold>  
     //<editor-fold defaultstate="collapsed" desc="backward operations">
@@ -140,10 +149,19 @@ public interface ISsfDynamics extends ISsfRoot {
      * @param pos
      * @param M
      */
-    default void MT(int pos, FastMatrix M) {
+    default void MT(int pos, Matrix M) {
         M.applyByRows(row->XT(pos, row));
     }
 
+    /**
+     * Computes T'((pos)*M
+     *
+     * @param pos
+     * @param M
+     */
+    default void TtM(int pos, Matrix M) {
+        M.applyByColumns(col->XT(pos, col));
+    }
     /**
      * Computes xs = x*S(pos)
      *

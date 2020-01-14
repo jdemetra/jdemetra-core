@@ -49,4 +49,20 @@ public class DataNormalizerTest {
         new DecimalNormalizer().normalize(z.deepClone());
     }
     
+    @Test
+    public void testSafe(){
+        DataBlock z=DataBlock.make(100);
+        Random rnd=new Random(0);
+        z.set(i->rnd.nextDouble()*1000000);
+        DataBlock w = z.deepClone();
+        double c = new SafeNormalizer().normalize(w);
+        w.div(c);
+        assertTrue(w.distance(z)==0);
+        z.set(i->rnd.nextDouble()/1000000);
+        w = z.deepClone();
+        c = new SafeNormalizer().normalize(w);
+        w.div(c);
+        assertTrue(w.distance(z)==0);
+    }
+    
 }

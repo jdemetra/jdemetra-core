@@ -21,14 +21,14 @@ import jdplus.arima.IArimaModel;
 import demetra.design.BuilderPattern;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.DefaultLikelihoodEvaluation;
-import jdplus.maths.functions.IFunction;
-import jdplus.maths.functions.IFunctionPoint;
-import jdplus.maths.functions.IParametersDomain;
-import jdplus.maths.functions.IParametricMapping;
+import jdplus.math.functions.IFunction;
+import jdplus.math.functions.IFunctionPoint;
+import jdplus.math.functions.IParametersDomain;
+import jdplus.math.functions.IParametricMapping;
 import java.util.function.ToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -46,7 +46,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
         private boolean mt = false;
         // model
         private final DoubleSeq dy;
-        private FastMatrix x;
+        private Matrix x;
         private int nmissing;
         // mapping
         private IParametricMapping<S> mapping;
@@ -55,7 +55,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
             this.dy = dy;
         }
 
-        public Builder variables(FastMatrix x) {
+        public Builder variables(Matrix x) {
             this.x = x;
             return this;
         }
@@ -88,7 +88,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
 
     // model
     final DoubleSeq dy;
-    final FastMatrix x;
+    final Matrix x;
     final int nmissing;
     // mapping
     final IParametricMapping<S> mapping;
@@ -98,7 +98,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
     final boolean mt;
 
     private RegArmaFunction(final DoubleSeq dy,
-            final FastMatrix x,
+            final Matrix x,
             final int nm,
             final IParametricMapping<S> mapping,
             final ConcentratedLikelihoodComputer cll,

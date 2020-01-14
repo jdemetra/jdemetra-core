@@ -16,7 +16,7 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.PeriodicOutlier;
+import demetra.timeseries.regression.PeriodicOutlier;
 import jdplus.modelling.regression.Regression;
 import jdplus.data.DataBlock;
 import demetra.timeseries.TsDomain;

@@ -16,6 +16,10 @@
  */
 package demetra.data;
 
+import demetra.data.DoubleSeqCursor;
+import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
+
 /**
  *
  * @author Philippe Charles

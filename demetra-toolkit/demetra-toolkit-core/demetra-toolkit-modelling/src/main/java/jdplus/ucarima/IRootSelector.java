@@ -17,7 +17,7 @@
 package jdplus.ucarima;
 
 import demetra.design.Development;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.polynomials.Polynomial;
 
 
 /**

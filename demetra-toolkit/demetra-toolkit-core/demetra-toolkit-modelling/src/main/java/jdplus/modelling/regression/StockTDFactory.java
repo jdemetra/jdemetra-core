@@ -5,12 +5,12 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.StockTradingDays;
+import demetra.timeseries.regression.StockTradingDays;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.CalendarUtility;
 import java.time.LocalDate;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -23,7 +23,7 @@ class StockTDFactory implements RegressionVariableFactory<StockTradingDays> {
     private StockTDFactory(){}
 
     @Override
-    public boolean fill(StockTradingDays var, TsPeriod start, FastMatrix buffer) {
+    public boolean fill(StockTradingDays var, TsPeriod start, Matrix buffer) {
         int n = buffer.getRowsCount();
         int w = var.getW();
         TsPeriod cur = start;
@@ -73,7 +73,7 @@ class StockTDFactory implements RegressionVariableFactory<StockTradingDays> {
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(StockTradingDays var, D domain, FastMatrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(StockTradingDays var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported."); //To change body of generated methods, choose Tools | Templates.
     }
 

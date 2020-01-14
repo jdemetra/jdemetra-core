@@ -18,7 +18,7 @@ package jdplus.stats;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.maths.Constants;
+import demetra.math.Constants;
 import java.util.Arrays;
 import java.util.function.DoublePredicate;
 import demetra.design.SkipProcessing;

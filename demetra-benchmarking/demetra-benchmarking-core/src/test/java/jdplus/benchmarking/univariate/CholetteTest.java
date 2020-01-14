@@ -167,7 +167,7 @@ public class CholetteTest {
 
     @Test
     public void test6() {
-        DataBlock y = DataBlock.make(20);
+        DataBlock y = DataBlock.make(5);
         y.set(i -> (1 + i));
 
         DentonSpec spec = DentonSpec.builder()
@@ -177,7 +177,7 @@ public class CholetteTest {
 
         TsPeriod a = TsPeriod.yearly(1980);
         TsData t = TsData.of(a, Doubles.of(y));
-        TsData b = Denton.benchmark(TsUnit.of(4, ChronoUnit.MONTHS), t, spec);
+        TsData b = Denton.benchmark(TsUnit.of(3, ChronoUnit.MONTHS), t, spec);
         TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
         assertTrue(TsDataToolkit.subtract(t, bc).getValues().allMatch(x -> Math.abs(x) < 1e-9));
     }

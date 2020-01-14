@@ -5,17 +5,25 @@
  */
 package rssf;
 
+import static demetra.calendar.r.GenericCalendars.td;
 import jdplus.msts.AtomicModels;
 import jdplus.msts.ModelEquation;
 import demetra.data.Data;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
-import demetra.maths.Optimizer;
+import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
 import demetra.ssf.SsfLikelihood;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.arima.ssf.SsfArima;
+import jdplus.math.matrices.Matrix;
 import jdplus.msts.CompositeModel;
 import jdplus.msts.CompositeModelEstimation;
+import jdplus.msts.StateItem;
+import jdplus.ssf.implementations.Loading;
+import jdplus.ssf.implementations.Noise;
+import jdplus.sts.LocalLevel;
+import jdplus.sts.LocalLinearTrend;
+import jdplus.sts.SeasonalComponent;
 import org.junit.Test;
 
 /**
@@ -131,7 +139,7 @@ public class AlgorithmsTest {
     @Test
     public void testBsm() {
         int len = BUG.length;
-        CanonicalMatrix M = CanonicalMatrix.make(len, 1);
+        Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(BUG, 0);
 //        M.column(0).apply(q->Math.log(q));
 
@@ -142,10 +150,10 @@ public class AlgorithmsTest {
 //        model.add(AtomicModels.sae("sae", new double[]{0.5, 0.3}, false, 1, false));
         model.add(AtomicModels.noise("n", .01, false));
         ModelEquation eq = new ModelEquation("eq", 0, true);
-        eq.add("l");
-        eq.add("s");
+        eq.add("l", LocalLevel.defaultLoading());
+        eq.add("s", SeasonalComponent.defaultLoading());
 //        eq.add("sae");
-        eq.add("n");//, 1, true, Loading.rescale(Loading.fromPosition(0), w));
+        eq.add("n", Noise.defaultLoading());//, 1, true, Loading.rescale(Loading.fromPosition(0), w));
         model.add(eq);
 //        ModelEquation eqs = new ModelEquation("eqs", 0, true);
 //        eqs.add("td", 1, true, Loading.sum());
@@ -166,7 +174,7 @@ public class AlgorithmsTest {
     //@Ignore
     public void testSutse() {
         int len = Data.ABS63.length;
-        CanonicalMatrix M = CanonicalMatrix.make(len, 2);
+        Matrix M = Matrix.make(len, 2);
         M.column(0).copyFrom(Data.ABS63, 0);
         M.column(1).copyFrom(Data.ABS68, 0);
 
@@ -180,19 +188,19 @@ public class AlgorithmsTest {
         model.add(AtomicModels.seasonalComponent("s2", "Trigonometric", 12, .01, false));
         model.add(AtomicModels.noise("n2", .01, false));
         ModelEquation eq1 = new ModelEquation("eq", 0, true);
-        eq1.add("l1");
-        eq1.add("lt1");
-        eq1.add("s1");
-        eq1.add("n1");
+        eq1.add("l1", null);
+        eq1.add("lt1", null);
+        eq1.add("s1", null);
+        eq1.add("n1", null);
         model.add(eq1);
         ModelEquation eq2 = new ModelEquation("eq", 0, true);
-        eq2.add("l2");
+        eq2.add("l2", null);
         eq2.add("l1", 0, false, null);
-        eq2.add("lt2");
+        eq2.add("lt2", null);
         eq2.add("lt1", 0, false, null);
-        eq2.add("s2");
+        eq2.add("s2", null);
         eq2.add("s1", 0, false, null);
-        eq2.add("n2");
+        eq2.add("n2", null);
         eq2.add("n1", 0, false, null);
         model.add(eq2);
         //        ModelEquation eqs = new ModelEquation("eqs", 0, true);
@@ -222,16 +230,17 @@ public class AlgorithmsTest {
     public void testAirline() {
         CompositeModel model = new CompositeModel();
         model.add(AtomicModels.sarima("air", 12, new int[]{0, 1, 1}, new int[]{0, 1, 1}, null, false, 1, false));
-        model.add(AtomicModels.tdRegression("td", Data.TS_ABS_RETAIL.getDomain(), new int[]{1, 1, 1, 1, 2, 3, 0}, false, 0.01, false));
+        StateItem td = AtomicModels.tdRegression("td", Data.TS_ABS_RETAIL.getDomain(), new int[]{1, 1, 1, 1, 2, 3, 0}, false, 0.01, false);
+model.add(td);
         ModelEquation eq = new ModelEquation("eq1", 0, true);
-        eq.add("air");
-        eq.add("td");
+        eq.add("air", SsfArima.defaultLoading());
+        eq.add("td", td.defaultLoading(0));
         model.add(eq);
 //        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
 //        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
 
         int len = Data.ABS_RETAIL.length;
-        CanonicalMatrix M = CanonicalMatrix.make(len, 1);
+        Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         M.column(0).apply(q -> Math.log(q));
         CompositeModelEstimation rslt = model.estimate(M, true, true, SsfInitialization.Diffuse, Optimizer.BFGS, 1e-12, null);
@@ -248,12 +257,12 @@ public class AlgorithmsTest {
         model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
         model.add(AtomicModels.seasonalComponent("s", "Crude", 12, .01, false));
         ModelEquation eq = new ModelEquation("eq1", 1, true);
-        eq.add("l");
-        eq.add("s");
+        eq.add("l", LocalLinearTrend.defaultLoading());
+        eq.add("s", SeasonalComponent.defaultLoading());
         model.add(eq);
 
         int len = Data.ABS_RETAIL.length;
-        CanonicalMatrix M = CanonicalMatrix.make(len, 1);
+        Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
 
@@ -270,15 +279,15 @@ public class AlgorithmsTest {
         model.add(AtomicModels.seasonalComponent("s", "Dummy", 12, 1, false));
         model.add(AtomicModels.noise("n", .01, false));
         ModelEquation eq = new ModelEquation("eq1", 0, true);
-        eq.add("l");
-        eq.add("s");
-        eq.add("n");
+        eq.add("l", LocalLinearTrend.defaultLoading());
+        eq.add("s", SeasonalComponent.defaultLoading());
+        eq.add("n", Noise.defaultLoading());
         model.add(eq);
 //        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
 //        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
 
         int len = Data.ABS_RETAIL.length;
-        CanonicalMatrix M = CanonicalMatrix.make(len, 1);
+        Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-12, null);
 
@@ -294,12 +303,12 @@ public class AlgorithmsTest {
         model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
         model.add(AtomicModels.seasonalComponent("s", "Crude", 12, .01, false));
         ModelEquation eq = new ModelEquation("eq1", 1, false);
-        eq.add("l");
-        eq.add("s");
+        eq.add("l", LocalLinearTrend.defaultLoading());
+        eq.add("s", SeasonalComponent.defaultLoading());
         model.add(eq);
 
         int len = Data.ABS_RETAIL.length;
-        CanonicalMatrix M = CanonicalMatrix.make(len, 1);
+        Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-12, null);
 

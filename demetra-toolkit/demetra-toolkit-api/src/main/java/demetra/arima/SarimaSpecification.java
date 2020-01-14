@@ -30,48 +30,79 @@ public final class SarimaSpecification implements Cloneable {
 
     private final int period;
     private int p, d, q, bp, bd, bq;
-    
-    public static SarimaSpecification stationary(SarimaSpecification spec){
-        SarimaSpecification sspec=new SarimaSpecification(spec.getPeriod());
-        sspec.p=spec.p;
-        sspec.q=spec.q;
-        sspec.bp=spec.bp;
-        sspec.bq=spec.bq;
+
+    public static SarimaSpecification stationary(SarimaSpecification spec) {
+        SarimaSpecification sspec = new SarimaSpecification(spec.getPeriod());
+        sspec.p = spec.p;
+        sspec.q = spec.q;
+        sspec.bp = spec.bp;
+        sspec.bq = spec.bq;
         return sspec;
-        
+
     }
-    
-    public static SarimaSpecification of(SarmaSpecification sspec, int d, int bd){
-        SarimaSpecification spec=new SarimaSpecification(sspec.getPeriod());
-        spec.p=sspec.getP();
-        spec.d=d;
-        spec.q=sspec.getQ();
-        spec.bp=sspec.getBp();
-        spec.bd=bd;
-        spec.bq=sspec.getBq();
+
+    public static SarimaSpecification of(SarmaSpecification sspec, int d, int bd) {
+        SarimaSpecification spec = new SarimaSpecification(sspec.getPeriod());
+        spec.p = sspec.getP();
+        spec.d = d;
+        spec.q = sspec.getQ();
+        spec.bp = sspec.getBp();
+        spec.bd = bd;
+        spec.bq = sspec.getBq();
         return spec;
     }
-    
+
     /**
-     * Generates an airline model (0, 1, 1)(0, 1, 1) or (0, 1, 1), following the
-     * parameter.
+     * Generates an airline model (0, 1, 1)(0, 1, 1) or (0, 1, 1) for annual
+     * periodicity.
      *
-     * @param seas Model with or without a seasonal part.
+     * @param period
+     * @return
      */
-    public void airline(boolean seas) {
+    public static SarimaSpecification airline(int period) {
+        SarimaSpecification spec = new SarimaSpecification(period);
+        spec.p = 0;
+        spec.d = 1;
+        spec.q = 1;
+        spec.bp = 0;
+        if (period > 1) {
+            spec.bd = 1;
+            spec.bq = 1;
+        }
+        return spec;
+    }
+
+    /**
+     * Generates a (0, 1, 1) model.
+     *
+     * @param period
+     * @return
+     */
+    public static SarimaSpecification m011(int period) {
+        SarimaSpecification spec = new SarimaSpecification(period);
+        spec.p = 0;
+        spec.d = 1;
+        spec.q = 1;
+        spec.bp = 0;
+        return spec;
+    }
+
+    /**
+     * Set either an airline model or a m011 model
+     *
+     * @param seas True for an airline model
+     */
+    public void setDefault(boolean seas) {
         p = 0;
         d = 1;
         q = 1;
         bp = 0;
-        if (seas) {
+        if (period > 1 && seas) {
             bd = 1;
             bq = 1;
-        } else {
-            bd = 0;
-            bq = 0;
         }
     }
-     
+
     @Override
     public SarimaSpecification clone() {
         try {
@@ -118,7 +149,7 @@ public final class SarimaSpecification implements Cloneable {
         return p + bp + q + bq;
     }
 
-     /**
+    /**
      *
      * @param seas
      * @return
@@ -132,7 +163,7 @@ public final class SarimaSpecification implements Cloneable {
     }
 
     public boolean isStationary() {
-        return d==0 && bd==0; 
+        return d == 0 && bd == 0;
     }
 
     public boolean isSeasonal() {

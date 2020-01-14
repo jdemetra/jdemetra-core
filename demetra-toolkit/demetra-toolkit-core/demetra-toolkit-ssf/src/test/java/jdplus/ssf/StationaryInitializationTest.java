@@ -10,7 +10,8 @@ import jdplus.ssf.StateComponent;
 import jdplus.arima.ssf.SsfArima;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixNorms;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -33,12 +34,12 @@ public class StationaryInitializationTest {
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault(-.3, -.9)
                 .build();
-        StateComponent cmp = SsfArima.stateComponent(arima);
+        StateComponent cmp = SsfArima.of(arima);
         int dim = cmp.initialization().getStateDim();
-        CanonicalMatrix I = StationaryInitialization.of(cmp.dynamics(), dim);
-        CanonicalMatrix P = CanonicalMatrix.square(dim);
+        Matrix I = StationaryInitialization.of(cmp.dynamics(), dim);
+        Matrix P = Matrix.square(dim);
         cmp.initialization().Pf0(P);
-        assertTrue(I.minus(P).frobeniusNorm() < 1e-12);
+        assertTrue(MatrixNorms.frobeniusNorm(I.minus(P)) < 1e-12);
     }
 
     //@Test
@@ -51,11 +52,11 @@ public class StationaryInitializationTest {
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault(-.3, -.9)
                 .build();
-        StateComponent cmp = SsfArima.stateComponent(arima);
+        StateComponent cmp = SsfArima.of(arima);
         int dim = cmp.initialization().getStateDim();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 10000; ++i) {
-            CanonicalMatrix I = StationaryInitialization.of(cmp.dynamics(), dim);
+            Matrix I = StationaryInitialization.of(cmp.dynamics(), dim);
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1-t0);

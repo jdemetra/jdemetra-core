@@ -18,12 +18,12 @@ package internal.jdplus.ar;
 
 import jdplus.data.DataBlockIterator;
 import demetra.design.AlgorithmImplementation;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import nbbrd.service.ServiceProvider;
-import jdplus.leastsquares.QRSolvers;
 import jdplus.leastsquares.QRSolver;
 import jdplus.ar.AutoRegressiveEstimation;
 import demetra.data.DoubleSeq;
+import jdplus.leastsquares.QRSolution;
 
 /**
  *
@@ -40,18 +40,18 @@ public class OlsAlgorithm implements AutoRegressiveEstimation {
         y=Y.toArray();
         int n = y.length;
         
-        CanonicalMatrix M = CanonicalMatrix.make(n-nar, nar);
+        Matrix M = Matrix.make(n-nar, nar);
         DataBlockIterator cols = M.columnsIterator();
         for (int i = 0; i < nar; ++i) {
             cols.next().copy(Y.drop(nar-i-1, n));
         }
-        QRSolver solver = QRSolvers.fastSolver();
+        
         DoubleSeq yc = Y.drop(nar, 0);
-        if (!solver.solve(yc, M)) {
+        QRSolution rslt = QRSolver.fastLeastSquares(yc, M);
+        if (rslt == null) {
             return false;
         }
-        DoubleSeq c = solver.coefficients();
-        a=c.toArray();
+        a = rslt.getB().toArray();
         return true;
     }
 

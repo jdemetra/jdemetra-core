@@ -18,8 +18,8 @@ package jdplus.ssf.dk;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.univariate.DisturbanceSmoother;
 import jdplus.ssf.univariate.IDisturbanceSmoothingResults;
@@ -79,7 +79,7 @@ public class DiffuseDisturbanceSmoother {
 
     private double e, f, esm, esmVariance, h, fi;
     private DataBlock C, Ci, R, Ri, U;
-    private CanonicalMatrix N, UVar, S;
+    private Matrix N, UVar, S;
     private boolean missing;
     private int pos;
     // temporary
@@ -147,11 +147,11 @@ public class DiffuseDisturbanceSmoother {
         Ri = DataBlock.make(dim);
         Ci = DataBlock.make(dim);
         U = DataBlock.make(resdim);
-        S = CanonicalMatrix.make(dim, resdim);
+        S = Matrix.make(dim, resdim);
         if (calcvar) {
-            N = CanonicalMatrix.square(dim);
+            N = Matrix.square(dim);
             tmp = DataBlock.make(dim);
-            UVar = CanonicalMatrix.square(resdim);
+            UVar = Matrix.square(resdim);
             if (error != null && error.isTimeInvariant()) {
                 h = error.at(0);
             } else {
@@ -296,7 +296,7 @@ public class DiffuseDisturbanceSmoother {
         }
     }
 
-    private void tvt(CanonicalMatrix N) {
+    private void tvt(Matrix N) {
         DataBlockIterator columns = N.columnsIterator();
         while (columns.hasNext()) {
             dynamics.XT(pos, columns.next());
@@ -340,7 +340,7 @@ public class DiffuseDisturbanceSmoother {
         return Ri;
     }
 
-    public CanonicalMatrix getFinalN() {
+    public Matrix getFinalN() {
         return N;
     }
 
@@ -350,14 +350,14 @@ public class DiffuseDisturbanceSmoother {
         int n = initialization.getStateDim();
         // initial state
         DataBlock a = DataBlock.make(n);
-        CanonicalMatrix Pf0 = CanonicalMatrix.square(n);
+        Matrix Pf0 = Matrix.square(n);
         initialization.a0(a);
         initialization.Pf0(Pf0);
         // stationary initialization
         a.addProduct(R, Pf0.columnsIterator());
 
         // non stationary initialisation
-        CanonicalMatrix Pi0 = CanonicalMatrix.square(n);
+        Matrix Pi0 = Matrix.square(n);
         initialization.Pi0(Pi0);
         a.addProduct(Ri, Pi0.columnsIterator());
         return a;

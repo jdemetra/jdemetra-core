@@ -16,6 +16,7 @@
  */
 package demetra.fractionalairline;
 
+import jdplus.fractionalairline.MultiPeriodicAirlineMapping;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
 import demetra.data.Data;
@@ -40,7 +41,7 @@ import java.util.function.Consumer;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -54,7 +55,7 @@ public class MultiPeriodicAirlineMappingTest {
     //@Test
     public static void testDaily() throws IOException, URISyntaxException {
         URI uri = Data.class.getResource("/edf.txt").toURI();
-        Matrix edf = MatrixSerializer.read(new File(uri));
+        MatrixType edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, false);
         GlsArimaProcessor<ArimaModel> processor=GlsArimaProcessor.builder(ArimaModel.class)
                 .mapping(mapping)
@@ -75,7 +76,7 @@ public class MultiPeriodicAirlineMappingTest {
     //@Test
     public static void testDaily2() throws IOException, URISyntaxException {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/edf.txt").toURI();
-        Matrix edf = MatrixSerializer.read(new File(uri));
+        MatrixType edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365}, true, false);
         GlsArimaProcessor<ArimaModel> processor=GlsArimaProcessor.builder(ArimaModel.class)
                 .mapping(mapping )
@@ -97,7 +98,7 @@ public class MultiPeriodicAirlineMappingTest {
     @Ignore
     public void testOutliers() throws IOException, URISyntaxException {
         URI uri = MultiPeriodicAirlineMapping.class.getResource("/births.txt").toURI();
-        Matrix edf = MatrixSerializer.read(new File(uri));
+        MatrixType edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, false);
         GlsArimaProcessor<ArimaModel> processor=GlsArimaProcessor.builder(ArimaModel.class)
                 .mapping(mapping )

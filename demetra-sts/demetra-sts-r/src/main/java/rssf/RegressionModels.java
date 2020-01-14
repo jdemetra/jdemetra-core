@@ -5,10 +5,10 @@
  */
 package rssf;
 
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.implementations.RegSsf;
 import jdplus.ssf.univariate.ISsf;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -16,17 +16,18 @@ import demetra.maths.matrices.Matrix;
  */
 @lombok.experimental.UtilityClass
 public class RegressionModels {
-    public ISsf fixed(ISsf ssf, Matrix x){
-        return RegSsf.of(ssf, CanonicalMatrix.of(x));
+
+    public ISsf fixed(ISsf ssf, Matrix x) {
+        return RegSsf.ssf(ssf, x);
     }
 
-    public ISsf timeVarying(ISsf ssf, Matrix x, Matrix v){
-        return RegSsf.ofTimeVaryingFactor(ssf, CanonicalMatrix.of(x), CanonicalMatrix.of(v));
+    public ISsf timeVarying(ISsf ssf, MatrixType x, MatrixType v) {
+        return RegSsf.timeVaryingSsf(ssf, Matrix.of(x), Matrix.of(v));
     }
 
-    public ISsf timeVarying(ISsf ssf, Matrix x, double v){
-        CanonicalMatrix V = CanonicalMatrix.square(x.getColumnsCount());
-        V.diagonal().set(v);
-        return RegSsf.ofTimeVaryingFactor(ssf, CanonicalMatrix.of(x), V);
+    public ISsf timeVarying(ISsf ssf, Matrix x, double[] v) {
+        Matrix V = Matrix.square(x.getColumnsCount());
+        V.diagonal().copyFrom(v, 0);
+        return RegSsf.timeVaryingSsf(ssf, Matrix.of(x), V);
     }
 }

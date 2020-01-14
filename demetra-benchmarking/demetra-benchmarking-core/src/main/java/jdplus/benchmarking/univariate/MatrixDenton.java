@@ -21,12 +21,11 @@ import demetra.data.AggregationType;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.maths.polynomials.UnitRoots;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.polynomials.Polynomial;
+import jdplus.math.polynomials.UnitRoots;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -46,28 +45,35 @@ public class MatrixDenton {
         this.differencing = spec.getDifferencing();
         this.type = spec.getAggregationType();
     }
-
-    private void J(FastMatrix M) {
+    
+    private void J(DataBlockIterator iterator) {
         int j = offset;
-        DataBlockIterator rows = M.rowsIterator();
-        while (rows.hasNext()) {
+        while (iterator.hasNext()) {
             switch (type) {
                 case Sum:
                 case Average:
-                    rows.next().range(j, j + conversion).set(1);
+                    iterator.next().range(j, j + conversion).set(1);
                     break;
                 case First:
-                    rows.next().set(j, 1);
+                    iterator.next().set(j, 1);
                     break;
                 case Last:
-                    rows.next().set(j + conversion - 1, 1);
+                    iterator.next().set(j + conversion - 1, 1);
                     break;
             }
             j += conversion;
         }
     }
 
-    private CanonicalMatrix D(DataBlock x) {
+    private void J(Matrix M) {
+        J(M.rowsIterator());
+    }
+
+    private void Jtranspose(Matrix M) {
+        J(M.columnsIterator());
+    }
+
+    private Matrix D(DataBlock x) {
         Polynomial pd = UnitRoots.D(1, differencing);
         int d = pd.degree();
         int n = x.length();
@@ -77,7 +83,7 @@ public class MatrixDenton {
         }
 
         if (modified) {
-            CanonicalMatrix D = CanonicalMatrix.make(n - d, n);
+            Matrix D = Matrix.make(n - d, n);
             for (int i = 0; i <= d; ++i) {
                 if (multiplicative) {
                     D.subDiagonal(i).setAY(pd.get(d - i), x.drop(i, d - i));
@@ -87,7 +93,7 @@ public class MatrixDenton {
             }
             return D;
         } else {
-            CanonicalMatrix D = CanonicalMatrix.square(n);
+            Matrix D = Matrix.square(n);
             for (int i = 0; i <= d; ++i) {
                 if (multiplicative) {
                     D.subDiagonal(-i).setAY(pd.get(i), x.drop(0, i));
@@ -111,14 +117,14 @@ public class MatrixDenton {
         double xm = x.sum() / x.length();
         x.mul(1 / xm);
 
-        CanonicalMatrix D = D(x);
+        Matrix D = D(x);
 
-        CanonicalMatrix A = CanonicalMatrix.square(n + ny);
+        Matrix A = Matrix.square(n + ny);
 
         SymmetricMatrix.XtX(D, A.extract(0, n, 0, n));
         J(A.extract(n, ny, 0, n));
-        CanonicalMatrix B = A.deepClone();
-        J(A.extract(0, n, n, ny).transpose());
+        Matrix B = A.deepClone();
+        Jtranspose(A.extract(0, n, n, ny));
         B.diagonal().drop(n, 0).set(1);
 
         DataBlock q = DataBlock.make(n + ny);
@@ -148,13 +154,13 @@ public class MatrixDenton {
         if (multiplicative) {
             x.set(1);
         }
-        CanonicalMatrix D = D(x);
-        CanonicalMatrix A = CanonicalMatrix.square(n + ny);
+        Matrix D = D(x);
+        Matrix A = Matrix.square(n + ny);
 
         SymmetricMatrix.XtX(D, A.extract(0, n, 0, n));
         J(A.extract(n, ny, 0, n));
-        CanonicalMatrix B = A.deepClone();
-        J(A.extract(0, n, n, ny).transpose());
+        Matrix B = A.deepClone();
+        Jtranspose(A.extract(0, n, n, ny));
         B.diagonal().drop(n, 0).set(1);
 
         DataBlock q = DataBlock.make(n + ny);

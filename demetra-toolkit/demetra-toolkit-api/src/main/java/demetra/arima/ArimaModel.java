@@ -17,7 +17,6 @@
 package demetra.arima;
 
 import demetra.design.Development;
-import demetra.maths.RealPolynomial;
 
 /**
  *
@@ -26,53 +25,50 @@ import demetra.maths.RealPolynomial;
 @Development(status = Development.Status.Release)
 @lombok.Builder(builderClassName = "Builder")
 @lombok.Value
-public class ArimaModel implements ArimaType{
+@lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+public class ArimaModel {
 
-//    @lombok.Builder.Default
-//    private double innovationVariance = 1;
-//    @lombok.NonNull
-//    @lombok.Builder.Default
-//    private PolynomialType ar = PolynomialType.ONE;
-//    @lombok.NonNull
-//    @lombok.Builder.Default
-//    private PolynomialType delta = PolynomialType.ONE;
-//    @lombok.NonNull
-//    @lombok.Builder.Default
-//    private PolynomialType ma = PolynomialType.ONE;
-//    private String name;
+    private static double[] ONE = new double[]{1};
+
+    /**
+     * Innovation variance. 1 by default
+     */
     private double innovationVariance;
     @lombok.NonNull
-    private RealPolynomial ar;
+    /**
+     * Stationary auto-regressive polynomial (1, phi(1)...); True signs. 1 by default
+     */
+    private double[] ar;
     @lombok.NonNull
-    private RealPolynomial delta;
+    /**
+     * Non-stationary auto-regressive polynomial (1, delta(1)...); True signs. 1 by default
+     */
+    private double[] delta;
+    /**
+     * Moving-average polynomial (1, theta(1)...); True signs. 1 by default
+     */
     @lombok.NonNull
-    private RealPolynomial ma;
+    private double[] ma;
+    /**
+     * Name of the model (optional); null by default
+     */
     private String name;
-    
-    public static ArimaModel of(ArimaType arima){
-        return new ArimaModel(arima.getInnovationVariance(), arima.getAr(),
-                arima.getDelta(), arima.getMa(), "");
-    }
-    
-    public ArimaModel stationary() {
-        if (delta == RealPolynomial.ONE) {
-            return this;
-        } else {
-            String stname = name == null ? null : name + " (stationary)";
-            return new ArimaModel(innovationVariance, ar, RealPolynomial.ONE, ma, stname);
-        }
-    }
 
+    /**
+     * Rename the model. 
+     * @param nname
+     * @return 
+     */
     public ArimaModel rename(String nname) {
-        return new ArimaModel(innovationVariance, ar, RealPolynomial.ONE, ma, nname);
+        return new ArimaModel(innovationVariance, ar, delta, ma, nname);
     }
 
     public static Builder builder() {
         Builder builder = new Builder();
         builder.innovationVariance = 1;
-        builder.ar = RealPolynomial.ONE;
-        builder.delta = RealPolynomial.ONE;
-        builder.ma = RealPolynomial.ONE;
+        builder.ar = ONE;
+        builder.delta = ONE;
+        builder.ma = ONE;
         return builder;
     }
 }

@@ -16,7 +16,7 @@
  */
 package demetra.maths.matrices.spi;
 
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 import demetra.design.Algorithm;
 import nbbrd.service.ServiceDefinition;
 import nbbrd.service.Mutability;
@@ -39,7 +39,7 @@ public class MatrixDecompositions {
         return PROCESSOR.get();
     }
 
-    public Matrix cholesky(Matrix S) {
+    public MatrixType cholesky(MatrixType S) {
         return PROCESSOR.get().cholesky(S);
     }
 
@@ -47,7 +47,7 @@ public class MatrixDecompositions {
     @Algorithm
     public static interface Processor {
 
-        Matrix cholesky(Matrix matrix);
+        MatrixType cholesky(MatrixType matrix);
     }
 
 }

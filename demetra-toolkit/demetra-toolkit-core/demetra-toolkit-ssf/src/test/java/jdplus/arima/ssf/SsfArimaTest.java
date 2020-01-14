@@ -38,10 +38,9 @@ public class SsfArimaTest {
     private static final int N = 100000, M = 10000;
     static final jdplus.sarima.SarimaModel arima;
     static final double[] data;
-    
-    static{
-        SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline(true);
+
+    static {
+        SarimaSpecification spec = SarimaSpecification.airline(12);
         arima = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).build();
         data = Data.PROD.clone();
     }
@@ -49,13 +48,12 @@ public class SsfArimaTest {
     public SsfArimaTest() {
     }
 
-    
     @Ignore
     @Test
     public void testStressLikelihood() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < M; ++i) {
-            Ssf ssf = SsfArima.of(arima);
+            Ssf ssf = Ssf.of(SsfArima.of(arima), SsfArima.defaultLoading());
             DiffuseLikelihood ll = DkToolkit.likelihoodComputer(false, true, false).compute(ssf, new SsfData(data));
         }
         long t1 = System.currentTimeMillis();
@@ -63,7 +61,7 @@ public class SsfArimaTest {
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < M; ++i) {
-            Ssf ssf = SsfArima.of(arima);
+            Ssf ssf = Ssf.of(SsfArima.of(arima), SsfArima.defaultLoading());
             DiffuseLikelihood ll = DkToolkit.likelihoodComputer(false, true, false).compute(ssf, new SsfData(data));
         }
         t1 = System.currentTimeMillis();
@@ -71,7 +69,7 @@ public class SsfArimaTest {
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < M; ++i) {
-            Ssf ssf = SsfArima.of(arima);
+            Ssf ssf = Ssf.of(SsfArima.of(arima), SsfArima.defaultLoading());
             ISsf tssf = TimeInvariantSsf.of(ssf);
             DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, false).compute(tssf, new SsfData(data));
         }
@@ -80,5 +78,5 @@ public class SsfArimaTest {
         System.out.println("DK Filter. Matrix");
         System.out.println(t1 - t0);
     }
-    
+
 }

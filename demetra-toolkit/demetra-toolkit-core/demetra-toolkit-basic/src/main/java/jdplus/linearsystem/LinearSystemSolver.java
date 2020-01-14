@@ -17,17 +17,13 @@
 package jdplus.linearsystem;
 
 
-import jdplus.linearsystem.internal.QRLinearSystemSolver;
-import jdplus.linearsystem.internal.LUSolver;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import jdplus.data.DataBlock;
 import demetra.design.Algorithm;
 import demetra.design.Development;
-import jdplus.maths.matrices.MatrixException;
-import jdplus.maths.matrices.decomposition.CroutDoolittle;
-import jdplus.maths.matrices.decomposition.Householder;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.MatrixException;
+import jdplus.math.matrices.Matrix;
 
 /**
  * Defines algorithms that solve linear system
@@ -64,7 +60,7 @@ public interface LinearSystemSolver {
           On exit, it contains the results of the system (x).
      * @throws MatrixException
      */
-    void solve(FastMatrix A, DataBlock b) throws MatrixException;
+    void solve(Matrix A, DataBlock b) throws MatrixException;
 
     /**
      * Solves AX=B
@@ -74,13 +70,13 @@ public interface LinearSystemSolver {
           On exit, it contains the results of the system (X).
      * @throws MatrixException
      */
-    void solve(FastMatrix A, FastMatrix B) throws MatrixException;
+    void solve(Matrix A, Matrix B) throws MatrixException;
 }
 
 class LS_Factory{
    
     static AtomicReference<Supplier<LinearSystemSolver>> FAST_FACTORY = new AtomicReference<>(
-            ()->LUSolver.builder(new CroutDoolittle()).normalize(true).improve(true).build());
+            ()->LUSolver.builder().build());
     static AtomicReference<Supplier<LinearSystemSolver>> ROBUST_FACTORY = new AtomicReference<>(
-            ()->QRLinearSystemSolver.builder(new Householder()).normalize(true).improve(true).build());
+            ()->new LUSolver2(1e-13));
 }

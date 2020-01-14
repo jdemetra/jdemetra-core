@@ -5,10 +5,10 @@
  */
 package jdplus.dfa;
 
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import java.util.function.DoubleFunction;
 import java.util.function.DoubleUnaryOperator;
-import jdplus.maths.functions.integration.NumericalIntegration;
+import jdplus.math.functions.NumericalIntegration;
 
 /**
  * See McElroy and Wildi, International Journal of Forecasting, 2019.

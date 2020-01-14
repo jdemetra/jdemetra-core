@@ -5,12 +5,15 @@
  */
 package jdplus.msts;
 
-import demetra.maths.Optimizer;
+import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
-import demetra.ssf.SsfLikelihood;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
+import jdplus.ssf.implementations.Loading;
+import jdplus.ssf.implementations.Noise;
+import jdplus.sts.LocalLinearTrend;
+import jdplus.sts.SeasonalComponent;
 import org.junit.Test;
 
 /**
@@ -29,26 +32,30 @@ public class CompositeModelTest {
     public static final double[] UY8413z = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75308642, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.2469136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.2469136};
 
     public static final TsData ts_Prod_B_C = TsData.ofInternal(TsPeriod.monthly(1967, 1), Prod_B_C);
-    public static final CanonicalMatrix x = new CanonicalMatrix(UZ4712z_k, UZ4712z_k.length, 1);
+    public static final Matrix x = new Matrix(UZ4712z_k, UZ4712z_k.length, 1);
 //zweiter Regressor fehlt
     //wie kürzt man die Länge von einem Regres
 
     @Test
     public void test1() {
         CompositeModel model = new CompositeModel();
-        model.add(AtomicModels.localLinearTrend("l", .01, .01, false, false));
-        model.add(AtomicModels.seasonalComponent("s", "Crude", 12, .01, false));
-        model.add(AtomicModels.noise("n", .01, false));
+        StateItem l = AtomicModels.localLinearTrend("l", .01, .01, false, false);
+        StateItem s=AtomicModels.seasonalComponent("s", "Crude", 12, .01, false);
+        StateItem n=AtomicModels.noise("n", .01, false);
         //model.add(AtomicModels.regression("r", x));
-         model.add(AtomicModels.timeVaryingRegression("r", x, .01, false));
+         StateItem r=AtomicModels.timeVaryingRegression("r", x, .01, false);
         ModelEquation eq = new ModelEquation("eq1", 0, true);
-        eq.add("l");
-        eq.add("s");
-        eq.add("n");
-        eq.add("r");
+        eq.add(l);
+        eq.add(s);
+        eq.add(n);
+        eq.add(r);
+        model.add(l);
+        model.add(s);
+        model.add(n);
+        model.add(r);
         model.add(eq);
         int len = Prod_B_C.length;
-        CanonicalMatrix M = CanonicalMatrix.make(len, 1);
+        Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Prod_B_C, 0);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
         // CompositeModelEstimation rslt = model.estimate(M, 1e-15, false, true, null);

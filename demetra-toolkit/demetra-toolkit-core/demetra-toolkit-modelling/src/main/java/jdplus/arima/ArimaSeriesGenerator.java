@@ -20,17 +20,16 @@ import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Immutable;
 import jdplus.dstats.Normal;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.RationalBackFilter;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.RationalBackFilter;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.random.XorshiftRNG;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.dstats.Distribution;
-import jdplus.maths.matrices.CanonicalMatrix;
-import demetra.random.RandomNumberGenerator;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.random.RandomNumberGenerator;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -195,19 +194,19 @@ public final class ArimaSeriesGenerator {
                 e[i] = distribution.random(rng);
             }
         } else {
-            CanonicalMatrix ac = CanonicalMatrix.square(p + q);
+            Matrix ac = Matrix.square(p + q);
             AutoCovarianceFunction acf = starima.getAutoCovarianceFunction();
             acf.prepare(p);
             // fill the p part
-            FastMatrix pm = ac.extract(0, p, 0, p);
+            Matrix pm = ac.extract(0, p, 0, p);
             pm.diagonal().set(acf.get(0));
             for (int i = 1; i < p; ++i) {
                 pm.subDiagonal(-i).set(acf.get(i));
             }
             if (q > 0) {
-                FastMatrix qm = ac.extract(p, q, p, q);
+                Matrix qm = ac.extract(p, q, p, q);
                 qm.diagonal().set(starima.getInnovationVariance());
-                FastMatrix qp = ac.extract(p, q, 0, p);
+                Matrix qp = ac.extract(p, q, 0, p);
                 RationalBackFilter psi = starima.getPsiWeights();
                 int nw = Math.min(q, p);
                 psi.prepare(q);
@@ -223,7 +222,7 @@ public final class ArimaSeriesGenerator {
             for (int i = 0; i < x.length; ++i) {
                 x[i] = distribution.random(rng);
             }
-            LowerTriangularMatrix.lmul(ac, DataBlock.of(x));
+            LowerTriangularMatrix.xL(ac, DataBlock.of(x));
             System.arraycopy(x, 0, y, 0, p);
             if (q > 0) {
                 System.arraycopy(x, p, e, 0, q);

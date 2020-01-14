@@ -23,14 +23,13 @@ import jdplus.arima.StationaryTransformation;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.design.Immutable;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.FilterUtility;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.FilterUtility;
+import jdplus.math.polynomials.Polynomial;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
 import demetra.design.SkipProcessing;
-import demetra.maths.RealPolynomial;
 import demetra.data.DoubleSeq;
 import java.util.Arrays;
 

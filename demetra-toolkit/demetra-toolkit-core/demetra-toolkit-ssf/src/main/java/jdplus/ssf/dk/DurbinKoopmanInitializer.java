@@ -26,7 +26,8 @@ import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.univariate.OrdinaryFilter;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixNorms;
 
 /**
  *
@@ -158,12 +159,12 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.Initializer {
         if (state == null) {
             return false;
         }
-        norm = state.Pi().frobeniusNorm();
+        norm = MatrixNorms.frobeniusNorm(state.Pi());
         pe = new DiffuseUpdateInformation(ssf.getStateDim());
         return true;
     }
 
-    private boolean isZero(final FastMatrix P) {
+    private boolean isZero(final Matrix P) {
         return P.isZero(1e-6 * norm);
     }
 

@@ -125,8 +125,7 @@ public class HannanRissanenInitializer implements IArmaInitializer {
             LinearModel lm = regs.asLinearModel();
             HannanRissanen hr = HannanRissanen.builder().build();
             if (lm.getVariablesCount() > 0) {
-                Ols ols = new Ols();
-                LeastSquaresResults lsr = ols.compute(lm);
+                LeastSquaresResults lsr = Ols.compute(lm);
                 dy_ = lm.calcResiduals(lsr.getCoefficients());
             } else {
                 dy_ = lm.getY();

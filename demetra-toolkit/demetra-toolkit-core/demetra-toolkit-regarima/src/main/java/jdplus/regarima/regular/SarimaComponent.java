@@ -16,12 +16,11 @@
  */
 package jdplus.regarima.regular;
 
-import jdplus.arima.IArimaModel;
-import demetra.data.Parameter;
+import jdplus.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.polynomials.UnitRoots;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.polynomials.UnitRoots;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.sarima.estimation.SarimaFixedMapping;
 import jdplus.sarima.estimation.SarimaMapping;
@@ -280,7 +279,7 @@ public class SarimaComponent  {
         for (int i = 0; i < d; ++i) {
             ur.add(1);
         }
-        return new BackFilter(ur.toPolynomial());
+        return new BackFilter(ur.asPolynomial());
     }
 
     public int getPeriod() {
@@ -341,7 +340,7 @@ public class SarimaComponent  {
         return builder.build();
     }
 
-    public SarimaSpecification getSpecification() {
+    public SarimaSpecification specification() {
         SarimaSpecification spec = new SarimaSpecification(period);
         spec.setP(getP());
         spec.setD(d);
@@ -588,9 +587,9 @@ public class SarimaComponent  {
 
     public IArimaMapping<SarimaModel> defaultMapping() {
         if (getFixedParametersCount() == 0) {
-            return SarimaMapping.of(getSpecification());
+            return SarimaMapping.of(specification());
         } else {
-            return new SarimaFixedMapping(getSpecification(), DoubleSeq.of(parameters()), fixedConstraints());
+            return new SarimaFixedMapping(specification(), DoubleSeq.of(parameters()), fixedConstraints());
         }
     }
 

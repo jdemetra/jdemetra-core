@@ -23,13 +23,13 @@ import jdplus.arima.IArimaModel;
 import jdplus.arima.LinearProcess;
 import jdplus.arima.StationaryTransformation;
 import demetra.design.Development;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.ForeFilter;
-import jdplus.maths.linearfilters.RationalBackFilter;
-import jdplus.maths.linearfilters.RationalFilter;
-import jdplus.maths.linearfilters.RationalForeFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.matrices.MatrixException;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.ForeFilter;
+import jdplus.math.linearfilters.RationalBackFilter;
+import jdplus.math.linearfilters.RationalFilter;
+import jdplus.math.linearfilters.RationalForeFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.matrices.MatrixException;
 import java.util.function.IntToDoubleFunction;
 import jdplus.arima.ILinearProcess;
 
@@ -127,14 +127,14 @@ public class WienerKolmogorovEstimators {
         // denom is Q(B)Ps'(B)
         BackFilter num = s.getMa().times(nar);
         // num is Qs(B)P'(B)Dn(B)
-        SymmetricFilter c = SymmetricFilter.fromFilter(num);
+        SymmetricFilter c = SymmetricFilter.convolutionOf(num);
         double svar = s.getInnovationVariance(), mvar = m_ucm.getModel().getInnovationVariance();
         c = c.times(svar / mvar);
         BackFilter gf = c.decompose(denom);
 
         RationalBackFilter rb = new RationalBackFilter(gf, denom, 0);
 
-        RationalFilter f = new RationalFilter(rb, rb.mirror(), c, SymmetricFilter.fromFilter(denom));
+        RationalFilter f = new RationalFilter(rb, rb.mirror(), c, SymmetricFilter.convolutionOf(denom));
         RationalFilter mf = new RationalFilter(s.getMa().times(svar / mvar), s.getAr(), num.mirror(), denom.mirror());
         LinearProcess m = new LinearProcess(mf, mvar);
 
@@ -165,7 +165,7 @@ public class WienerKolmogorovEstimators {
         BackFilter ar = model.getMa();
         SymmetricFilter ss = s.symmetricMa(), sn = n.symmetricMa();
         SymmetricFilter num = ss.times(sn);
-        return new ArimaModel(ar, null, num);
+        return new ArimaModel(ar, BackFilter.ONE, num);
     }
 
     /**

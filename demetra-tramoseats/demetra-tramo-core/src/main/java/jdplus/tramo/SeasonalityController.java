@@ -28,14 +28,14 @@ import static jdplus.tramo.SeasonalityTests.SHORT;
  */
 @Development(status = Development.Status.Preliminary)
 class SeasonalityController extends ModelController {
-    
+
     private StatisticalTest ftest;
     private SeasonalityTests stests;
     private ModelStatistics mstats;
-    
+
     public SeasonalityController() {
     }
-    
+
     @Override
     ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context) {
         ProcessingResult result;
@@ -47,10 +47,10 @@ class SeasonalityController extends ModelController {
 
         return result;
     }
-    
+
     private void computeSTests() {
         TsData lin = getReferenceModel().linearizedSeries();
-        SarimaSpecification spec = getReferenceModel().getDescription().getSpecification();
+        SarimaSpecification spec = getReferenceModel().getDescription().specification();
 //        int del = spec.getD() + spec.getBD();
 //        del = Math.max(Math.min(2, del), 1);
         int del = 1;
@@ -58,7 +58,7 @@ class SeasonalityController extends ModelController {
         stests.test(lin, del, true);
         mstats = ModelStatistics.of(getReferenceModel());
     }
-    
+
     private boolean hasSeasonality(RegArimaModelling modelling, TramoProcessor.Context context) {
         int period = modelling.getDescription().getAnnualFrequency();
         if (stests == null) {
@@ -93,7 +93,7 @@ class SeasonalityController extends ModelController {
             return true;
         }
         return fs || mstats.getSeasonalLjungBoxPvalue() < .01;
-        
+
     }
 
     /**
@@ -107,25 +107,22 @@ class SeasonalityController extends ModelController {
         setReferenceModel(model);
         computeSTests();
         boolean seas = hasSeasonality(modelling, context);
-        SarimaSpecification spec = model.getDescription().getSpecification();
-        
-        boolean schanged = false;
+        SarimaSpecification spec = model.getDescription().specification();
+        SarimaSpecification nspec = null;
         if (!seas && spec.isSeasonal()) {
-            spec.airline(false);
-            spec.setBq(1);
-            schanged = true;
+            nspec = SarimaSpecification.m011(spec.getPeriod());
+            nspec.setBq(1);
         } else if (!context.seasonal && seas) {
             context.seasonal = true;
             return ProcessingResult.Changed;
         }
         if (!context.seasonal && (mstats.getSeasonalLjungBoxPvalue() < 0.05 || mstats.getLjungBoxPvalue() < 0.05)) {
             context.seasonal = true;
-            spec.airline(false);
-            spec.setBq(1);
-            schanged = true;
+            nspec = SarimaSpecification.m011(spec.getPeriod());
+            nspec.setBq(1);
         }
-        
-        if (schanged) {
+
+        if (nspec != null) {
             RegArimaModelling ncontext = new RegArimaModelling();
             ModelDescription desc = new ModelDescription(modelling.getDescription());
             desc.setSpecification(spec);
@@ -138,12 +135,12 @@ class SeasonalityController extends ModelController {
         }
         return ProcessingResult.Unchanged;
     }
-    
+
     private ProcessingResult compareReferenceModels(RegArimaModelling context) {
         // compare with the previous reference model
         PreprocessingModel refmodel = getReferenceModel();
         ModelComparator.Preference pref = ModelComparator.Preference.BIC;
-        if (!refmodel.getDescription().getSpecification().equals(context.getDescription().getSpecification())) {
+        if (!refmodel.getDescription().specification().equals(context.getDescription().specification())) {
             SeasonalOverDifferencingTest overseas = new SeasonalOverDifferencingTest();
             switch (overseas.test(context)) {
                 case 1:

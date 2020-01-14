@@ -19,8 +19,8 @@ import demetra.x11.filter.X11SeasonalFiltersFactory;
 import demetra.x11.filter.endpoints.AsymmetricEndPoints;
 import java.util.Arrays;
 import jdplus.data.DataBlock;
-import jdplus.maths.linearfilters.IFiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.IFiniteFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 
 /**
  *

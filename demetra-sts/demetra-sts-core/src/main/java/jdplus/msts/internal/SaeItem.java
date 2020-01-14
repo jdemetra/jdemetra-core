@@ -8,11 +8,9 @@ package jdplus.msts.internal;
 import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.arima.AutoCovarianceFunction;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.msts.ArInterpreter;
-import jdplus.msts.ModelItem;
 import jdplus.msts.MstsMapping;
-import jdplus.ssf.SsfComponent;
 import jdplus.arima.ssf.SsfAr;
 import java.util.Collections;
 import java.util.List;
@@ -52,8 +50,8 @@ public class SaeItem extends StateItem {
                 car[i + 1] = -par[i];
             }
             AutoCovarianceFunction acf = new AutoCovarianceFunction(Polynomial.ONE, Polynomial.ofInternal(car), 1);
-            SsfComponent cmp = SsfAr.of(lpar, 1 / acf.get(0), lpar.length, zeroinit);
-            builder.add(name, cmp);
+            StateComponent cmp = SsfAr.of(lpar, 1 / acf.get(0), lpar.length, zeroinit);
+            builder.add(name, cmp, SsfAr.defaultLoading());
             return nar;
         });
     }
@@ -81,7 +79,7 @@ public class SaeItem extends StateItem {
             car[i + 1] = -par[i];
         }
         AutoCovarianceFunction acf = new AutoCovarianceFunction(Polynomial.ONE, Polynomial.ofInternal(car), 1);
-        return SsfAr.stateComponent(lpar, 1 / acf.get(0), lpar.length, zeroinit);
+        return SsfAr.of(lpar, 1 / acf.get(0), lpar.length, zeroinit);
     }
 
     @Override
@@ -91,7 +89,7 @@ public class SaeItem extends StateItem {
 
     @Override
     public ISsfLoading defaultLoading(int m) {
-        return m > 0 ? null : SsfAr.loading();
+        return m > 0 ? null : SsfAr.defaultLoading();
     }
 
     @Override

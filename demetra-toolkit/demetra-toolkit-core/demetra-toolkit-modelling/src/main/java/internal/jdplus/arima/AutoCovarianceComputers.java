@@ -19,14 +19,13 @@ package internal.jdplus.arima;
 import jdplus.arima.ArimaException;
 import jdplus.arima.AutoCovarianceFunction;
 import jdplus.data.DataBlock;
-import jdplus.linearsystem.internal.QRLinearSystemSolver;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.decomposition.Householder;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.maths.polynomials.RationalFunction;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.polynomials.Polynomial;
+import jdplus.math.polynomials.RationalFunction;
 import jdplus.linearsystem.LinearSystemSolver;
+import jdplus.math.matrices.MatrixException;
 
 /**
  *
@@ -46,7 +45,7 @@ public class AutoCovarianceComputers {
             RationalFunction rfe = RationalFunction.of(ma, ar);
             double[] cr = rfe.coefficients(q+1);
 
-            CanonicalMatrix M = CanonicalMatrix.square(r0);
+            Matrix M = Matrix.square(r0);
             DataBlock x = DataBlock.of(c, 0, r0);
             for (int i = 0; i <= q; ++i) {
                 double s = 0;
@@ -66,11 +65,11 @@ public class AutoCovarianceComputers {
             }
             try {
                 if (solver == null) {
-                    QRLinearSystemSolver.builder(new Householder()).build().solve(M, x);
+                    LinearSystemSolver.robustSolver().solve(M, x);
                 } else {
                     solver.solve(M, x);
                 }
-            } catch (Exception err) {
+            } catch (MatrixException err) {
                 throw new ArimaException(ArimaException.NONSTATIONARY);
             }
 

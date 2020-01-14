@@ -23,7 +23,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.Iterator;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -34,7 +34,7 @@ import jdplus.maths.matrices.FastMatrix;
 public class HolidaysUtility {
 
     
-    public void fillDays(Holiday[] holidays, final FastMatrix D, final LocalDate start, final boolean skipSundays) {
+    public void fillDays(Holiday[] holidays, final Matrix D, final LocalDate start, final boolean skipSundays) {
         LocalDate end = start.plusDays(D.getRowsCount());
         int col = 0;
         for (Holiday item : holidays) {
@@ -52,7 +52,7 @@ public class HolidaysUtility {
         }
     }
 
-    public void fillPreviousWorkingDays(Holiday[] holidays, final FastMatrix D, final LocalDate start, final int del) {
+    public void fillPreviousWorkingDays(Holiday[] holidays, final Matrix D, final LocalDate start, final int del) {
         int n = D.getRowsCount();
         LocalDate nstart = start.plusDays(del);
         LocalDate end = start.plusDays(n);
@@ -73,7 +73,7 @@ public class HolidaysUtility {
         }
     }
 
-    public void fillNextWorkingDays(Holiday[] holidays, final FastMatrix D, final LocalDate start, final int del) {
+    public void fillNextWorkingDays(Holiday[] holidays, final Matrix D, final LocalDate start, final int del) {
         int n = D.getRowsCount();
         LocalDate nstart = start.minusDays(del);
         LocalDate end = nstart.plusDays(n);

@@ -18,7 +18,7 @@ package jdplus.ssf;
 
 import jdplus.data.DataBlock;
 import java.util.function.Consumer;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -30,7 +30,7 @@ public class Initialization implements ISsfInitialization {
     
     private int dim, diffuseDim;
     private double[] a0;
-    private FastMatrix Pf, Pi, B;
+    private Matrix Pf, Pi, B;
     
     @Override
     public int getStateDim() {
@@ -48,7 +48,7 @@ public class Initialization implements ISsfInitialization {
     }
     
     @Override
-    public void diffuseConstraints(FastMatrix b) {
+    public void diffuseConstraints(Matrix b) {
         if (B != null)
             b.copy(B);
     }
@@ -61,14 +61,14 @@ public class Initialization implements ISsfInitialization {
     }
     
     @Override
-    public void Pf0(FastMatrix pf) {
+    public void Pf0(Matrix pf) {
         if (Pf != null) {
             pf.copy(Pf);
         }
     }
     
     @Override
-    public void Pi0(FastMatrix pi) {
+    public void Pi0(Matrix pi) {
         if (Pi != null) {
             pi.copy(Pi);
         } else {

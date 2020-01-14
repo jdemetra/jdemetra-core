@@ -1,5 +1,5 @@
 /*
-* Copyright 2013 National Bank of Belgium
+* Copyright 2020 National Bank of Belgium
 *
 * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -21,9 +21,9 @@ import jdplus.arima.IArimaModel;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import jdplus.likelihood.LogLikelihoodFunction;
-import jdplus.maths.functions.IParametricMapping;
-import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import jdplus.maths.functions.ssq.SsqFunctionMinimizer;
+import jdplus.math.functions.IParametricMapping;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.regarima.internal.RegArmaEstimation;
 import jdplus.regarima.internal.RegArmaProcessor;

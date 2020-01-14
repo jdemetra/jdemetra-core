@@ -19,15 +19,15 @@ package jdplus.sarima.estimation;
 import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.matrices.Matrix;
 import demetra.design.BuilderPattern;
-import jdplus.leastsquares.QRSolvers;
 import jdplus.leastsquares.QRSolver;
 import jdplus.ar.AutoRegressiveEstimation;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarmaSpecification;
 import demetra.data.DoubleSeq;
+import jdplus.leastsquares.QRSolution;
 
 /**
  * The Hannan-Rissanen procedure is performed as in TRAMO. See
@@ -124,13 +124,12 @@ public class HannanRissanen {
         this.biascorrection=builder.biascorrection;
     }
     
-    private double[] ls(CanonicalMatrix mat, double[] y, boolean bbic) {
-        QRSolver solver = QRSolvers.fastSolver();
-        solver.solve(DataBlock.of(y), mat);
-        DoubleSeq pi = solver.coefficients();
+    private double[] ls(Matrix mat, double[] y, boolean bbic) {
+        QRSolution rslt = QRSolver.fastLeastSquares(DataBlock.of(y), mat);
+        DoubleSeq pi = rslt.getB();
         int n = y.length, m = pi.count(x -> x != 0);
         if (bbic) {
-            bic = Math.log(solver.ssqerr() / n) + Math.log(n) * m / n;
+            bic = Math.log(rslt.getSsqErr() / n) + Math.log(n) * m / n;
         }
         return pi.toArray();
     }
@@ -147,7 +146,7 @@ public class HannanRissanen {
         double[] a1 = new double[n];
         double[] a2 = new double[n];
         double[] res = new double[n];
-        CanonicalMatrix mat = CanonicalMatrix.make(n, np + nq);
+        Matrix mat = Matrix.make(n, np + nq);
         double[] mdata = mat.getStorage();
         for (int i = 0; i < n; ++i) {
             int picur = 0;
@@ -335,7 +334,7 @@ public class HannanRissanen {
         int np = m_spec.getP() + m_spec.getBp() * (1 + m_spec.getP());
         int nq = m_spec.getQ() + m_spec.getBq() * (1 + m_spec.getQ());
 
-        CanonicalMatrix mat =  CanonicalMatrix.make(nc, np + nq);
+        Matrix mat =  Matrix.make(nc, np + nq);
         double[] dmat = mat.getStorage();
         double[] data = new double[nc];
         System.arraycopy(m_data, m, data, 0, nc);

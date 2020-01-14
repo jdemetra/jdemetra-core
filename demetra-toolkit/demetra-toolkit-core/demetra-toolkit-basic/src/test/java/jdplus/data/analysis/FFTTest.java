@@ -16,7 +16,7 @@
  */
 package jdplus.data.analysis;
 
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;

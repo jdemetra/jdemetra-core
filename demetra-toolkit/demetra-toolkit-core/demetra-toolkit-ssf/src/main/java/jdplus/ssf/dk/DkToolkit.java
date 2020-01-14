@@ -21,11 +21,10 @@ import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.DataBlockStorage;
-import jdplus.maths.functions.IParametricMapping;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.matrices.UpperTriangularMatrix;
-import jdplus.maths.matrices.decomposition.Householder;
+import jdplus.math.functions.IParametricMapping;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.decomposition.Householder;
 import jdplus.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import jdplus.ssf.ResultsRange;
 import jdplus.ssf.ckms.CkmsDiffuseInitializer;
@@ -42,7 +41,7 @@ import jdplus.ssf.univariate.ISsfBuilder;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.OrdinaryFilter;
 import jdplus.ssf.univariate.SsfRegressionModel;
-import demetra.data.LogSign;
+import jdplus.data.LogSign;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.StateStorage;
 import jdplus.ssf.dk.sqrt.IDiffuseSquareRootFilteringResults;
@@ -52,7 +51,11 @@ import jdplus.ssf.multivariate.IMultivariateSsfData;
 import jdplus.ssf.multivariate.M2uAdapter;
 import jdplus.ssf.univariate.IFilteringResults;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.leastsquares.QRSolution;
+import jdplus.leastsquares.QRSolver;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.Householder2;
+import jdplus.math.matrices.decomposition.QRDecomposition;
 
 /**
  *
@@ -63,11 +66,13 @@ public class DkToolkit {
 
     /**
      * Diffuse likelihood (see Durbin-Koopman)
+     *
      * @param ssf State space form
      * @param data Data
-     * @param scalingfactor True if the likelihood is defined up to a scaling factor
+     * @param scalingfactor True if the likelihood is defined up to a scaling
+     * factor
      * @param res True if the likelihood will contain the residuals
-     * @return 
+     * @return
      */
     public DiffuseLikelihood likelihood(ISsf ssf, ISsfData data, boolean scalingfactor, boolean res) {
         return likelihoodComputer(true, scalingfactor, res).compute(ssf, data);
@@ -75,28 +80,32 @@ public class DkToolkit {
 
     /**
      * Marginal likelihood (see Franke...)
+     *
      * @param ssf State space form
      * @param data Data
-     * @param scalingfactor True if the likelihood is defined up to a scaling factor
+     * @param scalingfactor True if the likelihood is defined up to a scaling
+     * factor
      * @param res True if the likelihood will contain the residuals
-     * @return 
+     * @return
      */
     public MarginalLikelihood marginalLikelihood(ISsf ssf, ISsfData data, boolean scalingfactor, boolean res) {
         return new MLLComputer(scalingfactor, res).compute(ssf, data);
     }
 
-   public DiffuseLikelihood likelihood(IMultivariateSsf ssf, IMultivariateSsfData data, boolean scalingfactor, boolean res) {
+    public DiffuseLikelihood likelihood(IMultivariateSsf ssf, IMultivariateSsfData data, boolean scalingfactor, boolean res) {
         ISsf ussf = M2uAdapter.of(ssf);
         ISsfData udata = M2uAdapter.of(data);
         return likelihoodComputer(true, scalingfactor, res).compute(ussf, udata);
-   }
-        
-     /**
+    }
+
+    /**
      * Diffuse likelihood computer (see Durbin-Koopman)
+     *
      * @param sqr True if the square root initialization is used
-     * @param scalingfactor True if the likelihood is defined up to a scaling factor
+     * @param scalingfactor True if the likelihood is defined up to a scaling
+     * factor
      * @param res True if the likelihood will contain the residuals
-     * @return 
+     * @return
      */
     public ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer(boolean sqr, boolean scalingfactor, boolean res) {
         return sqr ? new LLComputer2(scalingfactor, res) : new LLComputer1(scalingfactor, res);
@@ -104,10 +113,12 @@ public class DkToolkit {
 
     /**
      * Diffuse concentrated likelihood computer (see Durbin-Koopman)
+     *
      * @param sqr True if the square root initialization is used
      * @param fast Fast (Ckms) processing (if possible)
-     * @param scalingfactor True if the likelihood is defined up to a scaling factor
-     * @return 
+     * @param scalingfactor True if the likelihood is defined up to a scaling
+     * factor
+     * @return
      */
     public IConcentratedLikelihoodComputer<DiffuseConcentratedLikelihood> concentratedLikelihoodComputer(boolean sqr, boolean fast, boolean scalingfactor) {
         return new CLLComputer(sqr, fast, scalingfactor);
@@ -145,15 +156,15 @@ public class DkToolkit {
         filter.process(ssf, data, frslts);
     }
 
-
     /**
-     * 
+     *
      * @param ssf State space form
      * @param data Data
      * @param all Computes also the variances
-     * @param rescaleVariance If true, the variances are rescaled using the estimation done in the 
+     * @param rescaleVariance If true, the variances are rescaled using the
+     * estimation done in the
      * filtering phase. Otherwise, the raw variances are returned.
-     * @return 
+     * @return
      */
     public DefaultSmoothingResults smooth(ISsf ssf, ISsfData data, boolean all, boolean rescaleVariance) {
         DiffuseSmoother smoother = DiffuseSmoother
@@ -172,13 +183,14 @@ public class DkToolkit {
     }
 
     /**
-     * 
+     *
      * @param ssf State space form
      * @param data Data
      * @param all Computes also the variances
-     * @param rescaleVariance If true, the variances are rescaled using the estimation done in the 
+     * @param rescaleVariance If true, the variances are rescaled using the
+     * estimation done in the
      * filtering phase. Otherwise, the raw variances are returned.
-     * @return 
+     * @return
      */
     public StateStorage smooth(IMultivariateSsf ssf, IMultivariateSsfData data, boolean all, boolean rescaleVariance) {
         ISsf ussf = M2uAdapter.of(ssf);
@@ -199,16 +211,18 @@ public class DkToolkit {
         return ss;
     }
 
-     /**
-     * 
+    /**
+     *
      * @param ssf State space form
      * @param data Data
-     * @param sresults Storage for the results. The variances are computed or not following the properties of the storage
-      * @param rescaleVariance If true, the variances are rescaled using the estimation done in the 
+     * @param sresults Storage for the results. The variances are computed or
+     * not following the properties of the storage
+     * @param rescaleVariance If true, the variances are rescaled using the
+     * estimation done in the
      * filtering phase. Otherwise, the raw variances are returned.
-     * @return 
+     * @return
      */
-   public static boolean smooth(ISsf ssf, ISsfData data, ISmoothingResults sresults, boolean rescaleVariance) {
+    public static boolean smooth(ISsf ssf, ISsfData data, ISmoothingResults sresults, boolean rescaleVariance) {
         boolean all = sresults.hasVariances();
         DiffuseSmoother smoother = DiffuseSmoother
                 .builder(ssf)
@@ -220,9 +234,10 @@ public class DkToolkit {
 
     /**
      * Fast smoothing (using disturbance smoother)
+     *
      * @param ssf
      * @param data
-     * @return 
+     * @return
      */
     public static DataBlockStorage fastSmooth(ISsf ssf, ISsfData data) {
         FastStateSmoother smoother = new FastStateSmoother(ssf);
@@ -261,7 +276,7 @@ public class DkToolkit {
 
         LLComputer1(boolean scalingfactor, boolean res) {
             this.res = res;
-            this.scalingfactor=scalingfactor;
+            this.scalingfactor = scalingfactor;
         }
 
         @Override
@@ -285,9 +300,8 @@ public class DkToolkit {
 
         LLComputer2(boolean scalingfactor, boolean res) {
             this.res = res;
-            this.scalingfactor=scalingfactor;
+            this.scalingfactor = scalingfactor;
         }
-
 
         @Override
         public DiffuseLikelihood compute(ISsf ssf, ISsfData data) {
@@ -313,7 +327,7 @@ public class DkToolkit {
             filter.process(ssf, data, pe);
             DiffuseLikelihood likelihood = pe.likelihood(scalingfactor);
             int collapsing = pe.getEndDiffusePosition();
-            CanonicalMatrix M = CanonicalMatrix.make(collapsing, ssf.getDiffuseDim());
+            Matrix M = Matrix.make(collapsing, ssf.getDiffuseDim());
             ssf.diffuseEffects(M);
             int j = 0;
             for (int i = 0; i < collapsing; ++i) {
@@ -324,9 +338,9 @@ public class DkToolkit {
                     j++;
                 }
             }
-            Householder hous = new Householder();
-            hous.decompose(M.extract(0, j, 0, M.getColumnsCount()));
-            double mc = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
+
+            QRDecomposition qr = new Householder2().decompose(M.extract(0, j, 0, M.getColumnsCount()));
+            double mc = 2 * LogSign.of(qr.rawRdiagonal()).getValue();
             return MarginalLikelihood.builder(likelihood.dim(), likelihood.getD())
                     .concentratedScalingFactor(scalingfactor)
                     .diffuseCorrection(likelihood.getDiffuseCorrection())
@@ -360,7 +374,7 @@ public class DkToolkit {
             filter.process(ssf, data, pe);
             DiffuseLikelihood likelihood = pe.likelihood(scalingfactor);
             int collapsing = pe.getEndDiffusePosition();
-            CanonicalMatrix M = CanonicalMatrix.make(collapsing, ssf.getDiffuseDim());
+            Matrix M = Matrix.make(collapsing, ssf.getDiffuseDim());
             ssf.diffuseEffects(M);
             int j = 0;
             for (int i = 0; i < collapsing; ++i) {
@@ -371,9 +385,8 @@ public class DkToolkit {
                     j++;
                 }
             }
-            Householder hous = new Householder();
-            hous.decompose(M.extract(0, j, 0, M.getColumnsCount()));
-            double mc = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
+            QRDecomposition qr = new Householder2().decompose(M.extract(0, j, 0, M.getColumnsCount()));
+            double mc = 2 * LogSign.of(qr.rawRdiagonal()).getValue();
             return MarginalLikelihood.builder(likelihood.dim(), likelihood.getD())
                     .concentratedScalingFactor(scalingfactor)
                     .diffuseCorrection(likelihood.getDiffuseCorrection())
@@ -406,7 +419,7 @@ public class DkToolkit {
             DiffuseLikelihood ll = pe.likelihood(scaling);
             DoubleSeq yl = pe.errors(true, true);
             int nl = yl.length();
-            CanonicalMatrix xl = xl(model, filter, nl);
+            Matrix xl = xl(model, filter, nl);
             if (xl == null) {
                 return DiffuseConcentratedLikelihood.builder(ll.dim(), ll.getD())
                         .ssqErr(ll.ssq())
@@ -416,101 +429,45 @@ public class DkToolkit {
                         .scalingFactor(scaling)
                         .build();
             } else {
-                Householder qr = new Householder();
-                qr.decompose(xl);
-                if (qr.rank() == 0) {
-                    return DiffuseConcentratedLikelihood.builder(ll.dim(), ll.getD())
-                            .ssqErr(ll.ssq())
-                            .logDeterminant(ll.logDeterminant())
-                            .logDiffuseDeterminant(ll.getDiffuseCorrection())
-                            .residuals(yl)
-                            .scalingFactor(scaling)
-                            .build();
-                } else {
-                    int rank = qr.rank();
-                    DataBlock b = DataBlock.make(rank);
-                    DataBlock res = DataBlock.make(nl - rank);
-                    qr.leastSquares(yl, b, res);
-                    double ssqerr = res.ssq();
-                    CanonicalMatrix u = UpperTriangularMatrix.inverse(qr.r(true));
-                    int[] unused = qr.unused();
-                    // expand the results, if need be
-                    b = expand(b, unused);
-                    u = expand(u, unused);
-                    // initializing the results...
-                    int nobs = ll.dim();
-                    int d = ll.getD();
-                    int[] idiffuse = model.getDiffuseElements();
-                    double ldet = ll.logDeterminant(), dcorr = ll.getDiffuseCorrection();
-                    if (idiffuse != null) {
-                        DoubleSeq rdiag = qr.rdiagonal(true);
-                        double lregdet = 0;
-                        int ndc = 0;
-                        for (int i = 0; i < idiffuse.length; ++i) {
-                            if (isUsed(idiffuse[i], unused)) {
-                                lregdet += Math.log(Math.abs(rdiag
-                                        .get(idiffuse[i])));
-                                ++ndc;
-                            }
-                        }
-                        lregdet *= 2;
-                        dcorr += lregdet;
-                        d += ndc;
-                    }
-                    CanonicalMatrix bvar = SymmetricMatrix.UUt(u);
-                    return DiffuseConcentratedLikelihood.builder(nobs, d)
-                            .ssqErr(ssqerr)
-                            .logDeterminant(ldet)
-                            .logDiffuseDeterminant(dcorr)
-                            .residuals(res)
-                            .coefficients(b)
-                            .unscaledCovariance(bvar)
-                            .scalingFactor(scaling)
-                            .build();
-                }
-            }
-        }
-
-        private DataBlock expand(DataBlock x, int[] unused) {
-            if (unused == null) {
-                return x;
-            }
-            double[] bc = new double[x.length() + unused.length];
-            for (int i = 0, j = 0, k = 0; i < bc.length; ++i) {
-                if (k < unused.length && i == unused[k]) {
-                    ++k;
-                } else {
-                    bc[i] = x.get(j);
-                    ++j;
-                }
-            }
-            return DataBlock.of(bc);
-        }
-
-        private CanonicalMatrix expand(CanonicalMatrix v, int[] unused) {
-            if (unused == null) {
-                return v;
-            }
-            int nx = v.getColumnsCount() + unused.length;
-            CanonicalMatrix bvar = CanonicalMatrix.square(nx);
-            for (int i = 0, j = 0, k = 0; i < nx; ++i) {
-                if (k < unused.length && i == unused[k]) {
-                    ++k;
-                } else {
-                    for (int ci = 0, cj = 0, ck = 0; ci <= i; ++ci) {
-                        if (ck < unused.length && ci == unused[ck]) {
-                            ++ck;
-                        } else {
-                            double d = v.get(j, cj);
-                            bvar.set(i, ci, d);
-                            bvar.set(ci, i, d);
-                            ++cj;
+                QRSolution ls = QRSolver.robustLeastSquares(yl, xl);
+                DataBlock b = DataBlock.of(ls.getB());
+                DataBlock res = DataBlock.of(ls.getE());
+                double ssqerr = ls.getSsqErr();
+                // initializing the results...
+                int nobs = ll.dim();
+                int d = ll.getD();
+                int[] idiffuse = model.getDiffuseElements();
+                double ldet = ll.logDeterminant(), dcorr = ll.getDiffuseCorrection();
+                if (idiffuse != null) {
+                    DoubleSeq rdiag = ls.rawRDiagonal();
+                    int[] pivot = ls.pivot();
+                    double lregdet = 0;
+                    int ndc = 0;
+                    for (int i = 0; i < idiffuse.length; ++i) {
+                        double r = pivot == null ? rdiag.get(idiffuse[i])
+                                : rdiag.get(pivot[idiffuse[i]]);
+                        if (r != 0) {
+                            lregdet += Math.log(Math.abs(rdiag
+                                    .get(idiffuse[i])));
+                            ++ndc;
                         }
                     }
-                    ++j;
+                    lregdet *= 2;
+                    dcorr += lregdet;
+                    d += ndc;
                 }
+                Matrix bvar = ls.unscaledCovariance();
+                return DiffuseConcentratedLikelihood.builder(nobs, d)
+                        .ssqErr(ssqerr)
+                        .logDeterminant(ldet)
+                        .logDiffuseDeterminant(dcorr)
+                        .residuals(res)
+                        .coefficients(b)
+                        .unscaledCovariance(bvar)
+                        .scalingFactor(scaling)
+                        .build();
             }
-            return bvar;
+
         }
 
         private DkFilter filteringResults(ISsf ssf, ISsfData data, DiffusePredictionErrorDecomposition pe) {
@@ -551,12 +508,12 @@ public class DkToolkit {
             }
         }
 
-        private CanonicalMatrix xl(SsfRegressionModel model, DkFilter lp, int nl) {
-            FastMatrix x = model.getX();
+        private Matrix xl(SsfRegressionModel model, DkFilter lp, int nl) {
+            Matrix x = model.getX();
             if (x == null) {
                 return null;
             }
-            CanonicalMatrix xl = CanonicalMatrix.make(nl, x.getColumnsCount());
+            Matrix xl = Matrix.make(nl, x.getColumnsCount());
             DataBlockIterator lcols = xl.columnsIterator();
             DataBlockIterator cols = x.columnsIterator();
             while (cols.hasNext() && lcols.hasNext()) {
@@ -566,8 +523,9 @@ public class DkToolkit {
         }
 
         private static boolean isUsed(final int i, final int[] unused) {
-            if (unused == null)
+            if (unused == null) {
                 return true;
+            }
             for (int j = 0; j < unused.length; ++j) {
                 if (unused[j] == i) {
                     return false;
@@ -577,5 +535,4 @@ public class DkToolkit {
         }
     }
 
- 
 }

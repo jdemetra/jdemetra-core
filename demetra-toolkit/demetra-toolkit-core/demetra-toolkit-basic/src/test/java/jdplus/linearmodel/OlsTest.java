@@ -16,13 +16,11 @@
  */
 package jdplus.linearmodel;
 
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.Ols;
-import jdplus.linearmodel.LinearModel;
 import demetra.data.DataSets;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
+import jdplus.data.DataBlock;
 
 /**
  *
@@ -48,11 +46,9 @@ public class OlsTest {
                 .addX(DoubleSeq.of(DataSets.Longley.x6))
                 .build();
 
-        Ols ols = new Ols();
-        LeastSquaresResults rslts = ols.compute(model);
+        LeastSquaresResults rslts = Ols.compute(model);
 //        System.out.println("Longley");
 //        System.out.println(rslts);
-        
         assertEquals(Math.abs(rslts.Ttest(0).getValue()), Math.sqrt(rslts.Ftest(0, 1).getValue()), 1e-9 );
         assertEquals(rslts.Ftest().getValue(), rslts.Ftest(1, model.getVariablesCount()-1).getValue(), 1e-9 );
     }
@@ -76,8 +72,7 @@ public class OlsTest {
                 .addX(x.map(a -> a * a * a * a * a * a * a * a * a * a))
                 .build();
 
-        Ols ols = new Ols();
-        LeastSquaresResults rslts = ols.compute(model);
+        LeastSquaresResults rslts = Ols.compute(model);
 //        System.out.println("Filip");
 //        System.out.println(rslts);
         assertEquals(Math.abs(rslts.Ttest(0).getValue()), Math.sqrt(rslts.Ftest(0, 1).getValue()), 1e-9 );

@@ -20,14 +20,11 @@ import jdplus.data.DataBlock;
 import demetra.design.Immutable;
 import java.util.ArrayList;
 import jdplus.data.DataBlockIterator;
-import jdplus.maths.matrices.MatrixWindow;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Internal;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -60,7 +57,7 @@ public final class LinearModel{
             return this;
         }
 
-        public Builder addX(@NonNull FastMatrix X) {
+        public Builder addX(@NonNull Matrix X) {
             X.columns().forEach(col -> x.add(col));
             return this;
         }
@@ -77,7 +74,7 @@ public final class LinearModel{
                 throw new RuntimeException("Missing y");
             }
 
-            CanonicalMatrix X = CanonicalMatrix.make(y.length, x.size());
+            Matrix X = Matrix.make(y.length, x.size());
             if (!X.isEmpty()) {
                 DataBlockIterator cols = X.columnsIterator();
                 for (DoubleSeq xcur : x) {
@@ -93,7 +90,7 @@ public final class LinearModel{
 
     private final double[] y;
     private final boolean mean;
-    private final CanonicalMatrix x;
+    private final Matrix x;
 
     public static Builder builder() {
         return new Builder();
@@ -103,10 +100,10 @@ public final class LinearModel{
      *
      * @param y
      * @param mean
-     * @param x X doesn't contain the mean !!
+     * @param x X should not contain the mean !!
      */
     @Internal
-    public LinearModel(double[] y, final boolean mean, final CanonicalMatrix x) {
+    public LinearModel(double[] y, final boolean mean, final Matrix x) {
         this.y = y;
         this.mean = mean;
         this.x = x;
@@ -189,15 +186,14 @@ public final class LinearModel{
      *
      * @return
      */
-    public CanonicalMatrix variables() {
+    public Matrix variables() {
         if (!mean) {
             return x.deepClone();
         } else {
-            CanonicalMatrix vars = CanonicalMatrix.make(x.getRowsCount(), x.getColumnsCount() + 1);
-            MatrixWindow left = vars.left(1);
-            left.set(1);
-            left.hnext(x.getColumnsCount());
-            left.copy(x);
+            int m=x.getRowsCount(), n=x.getColumnsCount();
+            Matrix vars = Matrix.make(m, n+1);
+            vars.column(0).set(1);
+            vars.extract(0, m, 1, n).copy(x);
             return vars;
         }
     }

@@ -5,10 +5,8 @@
  */
 package jdplus.ssf.multivariate;
 
-import jdplus.data.DataBlock;
-import jdplus.data.DataBlockIterator;
 import jdplus.ssf.ISsfRoot;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -32,7 +30,7 @@ public interface ISsfErrors extends ISsfRoot{
      * @param h The matrix that will contain the variance. Should be 0 on entry.
  The matrix must have the size of the measurements (=getCount(pos)).
      */
-    void H(int pos, FastMatrix h);
+    void H(int pos, Matrix h);
 
     /**
      * Gets the Cholesky factor of the variance of the measurements error at a
@@ -43,7 +41,7 @@ public interface ISsfErrors extends ISsfRoot{
  entry. The matrix must have the size of the measurements
  (=getCount(pos)).
      */
-    void R(int pos, FastMatrix r);
+    void R(int pos, Matrix r);
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="forward operations">
@@ -54,7 +52,7 @@ public interface ISsfErrors extends ISsfRoot{
      * @param pos
      * @param V
      */
-    void addH(int pos, FastMatrix V);
+    void addH(int pos, Matrix V);
 //</editor-fold>    
 
 }

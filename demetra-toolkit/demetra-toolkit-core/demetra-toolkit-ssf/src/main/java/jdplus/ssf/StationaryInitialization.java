@@ -17,8 +17,8 @@
 package jdplus.ssf;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.linearsystem.LinearSystemSolver;
 
 /**
@@ -28,20 +28,20 @@ import jdplus.linearsystem.LinearSystemSolver;
 @lombok.experimental.UtilityClass
 public class StationaryInitialization {
 
-    public CanonicalMatrix of(ISsfDynamics dynamics, int dim) {
+    public Matrix of(ISsfDynamics dynamics, int dim) {
         if (!dynamics.isTimeInvariant()) {
             return null;
         }
-        CanonicalMatrix cov = CanonicalMatrix.square(dim);
+        Matrix cov = Matrix.square(dim);
 //            // We have to solve the steady state equation:
 //            // V = T V T' + Q
 
-        CanonicalMatrix T = CanonicalMatrix.square(dim);
-        CanonicalMatrix Q = CanonicalMatrix.square(dim);
+        Matrix T = Matrix.square(dim);
+        Matrix Q = Matrix.square(dim);
         dynamics.T(0, T);
         dynamics.V(0, Q);
         int np = (dim * (dim + 1)) / 2;
-        CanonicalMatrix M = CanonicalMatrix.square(np);
+        Matrix M = Matrix.square(np);
         double[] b = new double[np];
         for (int c = 0, i = 0; c < dim; ++c) {
             for (int r = c; r < dim; ++r, ++i) {

@@ -17,12 +17,9 @@
 package jdplus.ssf.univariate;
 
 import jdplus.ssf.ISsfLoading;
-import demetra.design.BuilderPattern;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.implementations.TimeInvariantSsf;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.ssf.SsfComponent;
-import jdplus.ssf.SsfException;
 import jdplus.ssf.StateComponent;
 import jdplus.ssf.implementations.MeasurementError;
 
@@ -35,11 +32,6 @@ public class Ssf implements ISsf {
     private final ISsfInitialization initializer;
     private final ISsfMeasurement measurement;
     private final ISsfDynamics dynamics;
-
-    public static Ssf of(SsfComponent cmp, double measurementError) {
-        return new Ssf(cmp.initialization(), cmp.dynamics(),
-                new Measurement(cmp.loading(), MeasurementError.of(measurementError)));
-    }
 
     public static Ssf of(StateComponent cmp, ISsfLoading loading, double measurementError) {
         return new Ssf(cmp.initialization(), cmp.dynamics(),

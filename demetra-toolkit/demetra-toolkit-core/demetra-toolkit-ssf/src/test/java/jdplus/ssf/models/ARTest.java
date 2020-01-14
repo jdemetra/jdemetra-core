@@ -6,10 +6,11 @@
 package jdplus.ssf.models;
 
 import jdplus.arima.ssf.SsfAr;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.ssf.SsfComponent;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import java.util.Random;
+import jdplus.math.matrices.MatrixNorms;
+import jdplus.ssf.StateComponent;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -24,16 +25,16 @@ public class ARTest {
 
     @Test
     public void testTVT() {
-        SsfComponent cmp = SsfAr.of(new double[]{.3, -.4, .2}, 0.7, 10);
-        CanonicalMatrix z=CanonicalMatrix.square(cmp.initialization().getStateDim());
+        StateComponent cmp = SsfAr.of(new double[]{.3, -.4, .2}, 0.7, 10);
+        Matrix z=Matrix.square(cmp.initialization().getStateDim());
         Random rnd=new Random();
-        z.set(rnd::nextDouble);
-        CanonicalMatrix V=SymmetricMatrix.XXt(z);
-        CanonicalMatrix W=V.deepClone();
+        z.set((i,j)->rnd.nextDouble());
+        Matrix V=SymmetricMatrix.XXt(z);
+        Matrix W=V.deepClone();
         cmp.dynamics().TVT(0, V);
         cmp.dynamics().TM(0, W);
-        cmp.dynamics().TM(0, W.transpose());
-        assertTrue(V.minus(W).frobeniusNorm()<1e-9);
+        cmp.dynamics().MTt(0, W);
+        assertTrue(MatrixNorms.frobeniusNorm(V.minus(W))<1e-9);
     }
     
 }

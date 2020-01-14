@@ -16,11 +16,10 @@ import demetra.x11.extremevaluecorrector.PeriodSpecificExtremeValuesCorrector;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
 import jdplus.data.analysis.DiscreteKernel;
-import jdplus.maths.linearfilters.AsymmetricFilters;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.IFiniteFilter;
-import jdplus.maths.linearfilters.LocalPolynomialFilters;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.IFiniteFilter;
+import jdplus.math.linearfilters.LocalPolynomialFilters;
+import jdplus.math.linearfilters.SymmetricFilter;
 import lombok.experimental.NonFinal;
 
 /**

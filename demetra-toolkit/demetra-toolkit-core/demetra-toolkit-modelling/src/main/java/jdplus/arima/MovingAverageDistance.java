@@ -18,8 +18,8 @@
  */
 package jdplus.arima;
 
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.RationalBackFilter;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.RationalBackFilter;
 
 
 /**

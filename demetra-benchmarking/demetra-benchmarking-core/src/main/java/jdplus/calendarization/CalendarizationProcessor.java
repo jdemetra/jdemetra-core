@@ -26,7 +26,7 @@ import demetra.calendarization.CalendarizationSpec;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
 import demetra.design.Development;
-import jdplus.maths.matrices.QuadraticForm;
+import jdplus.math.matrices.QuadraticForm;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.SsfData;

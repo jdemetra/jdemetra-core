@@ -23,7 +23,7 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.NonNull;
-import demetra.random.RandomNumberGenerator;
+import jdplus.random.RandomNumberGenerator;
 
 
 /**

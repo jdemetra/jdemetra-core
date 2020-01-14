@@ -19,11 +19,11 @@ package jdplus.ssf.akf;
 import jdplus.ssf.likelihood.ProfileLikelihood;
 import jdplus.ssf.likelihood.MarginalLikelihood;
 import jdplus.data.DataBlock;
-import demetra.data.LogSign;
+import jdplus.data.LogSign;
 import jdplus.likelihood.DeterminantalTerm;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.matrices.UpperTriangularMatrix;
-import jdplus.maths.matrices.decomposition.Householder;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.decomposition.Householder;
 import jdplus.ssf.ResultsRange;
 import jdplus.ssf.univariate.DefaultFilteringResults;
 import jdplus.ssf.univariate.FastFilter;
@@ -32,11 +32,15 @@ import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.OrdinaryFilter;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.leastsquares.QRSolution;
+import jdplus.leastsquares.QRSolver;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.Householder2;
+import jdplus.math.matrices.decomposition.QRDecomposition;
 
 /**
- * QR variant of the augmented Kalman filter. See for instance
- * Gomez-Maravall. This implementation doesn't use collapsing
+ * QR variant of the augmented Kalman filter. See for instance Gomez-Maravall.
+ * This implementation doesn't use collapsing
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
@@ -46,9 +50,11 @@ public class QRFilter {
     private MarginalLikelihood mll;
     private DiffuseLikelihood dll;
     private ISsfData o;
-    private CanonicalMatrix R, X, Xl;
+    private Matrix R, X, Xl;
     private DataBlock yl, b, e;
     private double ldet, ssq, dcorr, pcorr, mcorr;
+
+    private static final double EPS = 1e-12;
 
     /**
      *
@@ -83,12 +89,12 @@ public class QRFilter {
         ldet = det.getLogDeterminant();
 
         // apply the filter on the diffuse effects
-        X = CanonicalMatrix.make(data.length(), ssf.getDiffuseDim());
+        X = Matrix.make(data.length(), ssf.getDiffuseDim());
         ssf.diffuseEffects(X);
         yl = DataBlock.of(fr.errors(true, true));
         FastFilter ffilter = new FastFilter(ssf, fr, new ResultsRange(0, data.length()));
         int n = ffilter.getOutputLength(X.getRowsCount());
-        Xl = CanonicalMatrix.make(n, X.getColumnsCount());
+        Xl = Matrix.make(n, X.getColumnsCount());
         for (int i = 0; i < X.getColumnsCount(); ++i) {
             ffilter.apply(X.column(i), Xl.column(i));
         }
@@ -100,11 +106,12 @@ public class QRFilter {
         pe.prepare(ssf, data.length());
         AugmentedFilterInitializer initializer = new AugmentedFilterInitializer(pe);
         OrdinaryFilter filter = new OrdinaryFilter(initializer);
-        if (!filter.process(ssf, data, pe))
+        if (!filter.process(ssf, data, pe)) {
             return null;
+        }
         int collapsing = pe.getCollapsingPosition();
         DiffuseLikelihood likelihood = pe.likelihood(scalingfactor);
-        CanonicalMatrix M = CanonicalMatrix.make(collapsing, ssf.getDiffuseDim());
+        Matrix M = Matrix.make(collapsing, ssf.getDiffuseDim());
         ssf.diffuseEffects(M);
         int j = 0;
         for (int i = 0; i < collapsing; ++i) {
@@ -115,9 +122,8 @@ public class QRFilter {
                 j++;
             }
         }
-        Householder hous = new Householder();
-        hous.decompose(M.extract(0, j, 0, M.getColumnsCount()));
-        double mc = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
+        QRDecomposition qr = new Householder2().decompose(M.extract(0, j, 0, M.getColumnsCount()));
+        double mc = 2 * LogSign.of(qr.rawRdiagonal()).getValue();
         return MarginalLikelihood.builder(likelihood.dim(), likelihood.getD())
                 .concentratedScalingFactor(scalingfactor)
                 .diffuseCorrection(likelihood.getDiffuseCorrection())
@@ -134,19 +140,18 @@ public class QRFilter {
             calcDLL();
         }
 
-        Householder housx = new Householder();
-        CanonicalMatrix Q = X;
+        Matrix Q = X;
         if (X.getRowsCount() != Xl.getRowsCount()) {
-            Q = CanonicalMatrix.make(Xl.getRowsCount(), X.getColumnsCount());
+            Q = Matrix.make(Xl.getRowsCount(), X.getColumnsCount());
             for (int i = 0, j = 0; i < o.length(); ++i) {
                 if (!o.isMissing(i)) {
                     Q.row(j++).copy(X.row(i));
                 }
             }
         }
-        housx.decompose(Q);
-        mcorr = 2 * LogSign.of(housx.rdiagonal(true)).getValue();
-        int nd = housx.rank(), n = Xl.getRowsCount();
+        QRDecomposition qrx = new Householder2().decompose(Q);
+        mcorr = 2 * LogSign.of(qrx.rawRdiagonal()).getValue();
+        int nd = UpperTriangularMatrix.rank(qrx.rawR(), EPS), n = Xl.getRowsCount();
 
         mll = MarginalLikelihood.builder(n, nd)
                 .ssqErr(ssq)
@@ -158,15 +163,13 @@ public class QRFilter {
     }
 
     private void calcDLL() {
-        Householder hous = new Householder(false);
-        hous.decompose(Xl);
-        b = DataBlock.make(hous.rank());
+        QRSolution ls = QRSolver.robustLeastSquares(yl, Xl);
+        b = DataBlock.of(ls.getB());
+        e = DataBlock.of(ls.getE());
         int nd = b.length(), n = Xl.getRowsCount();
-        e = DataBlock.make(n - nd);
-        hous.leastSquares(yl, b, e);
-        ssq = e.ssq();
-        dcorr = 2 * LogSign.of(hous.rdiagonal(true)).getValue();
-        R = hous.r(true);
+        ssq = ls.getSsqErr();
+        dcorr = 2 * LogSign.of(ls.rawRDiagonal()).getValue();
+        R = ls.rawR();
         dll = DiffuseLikelihood.builder(n, nd)
                 .ssqErr(ssq)
                 .logDeterminant(ldet)
@@ -180,7 +183,7 @@ public class QRFilter {
         }
 
         int n = Xl.getRowsCount();
-        CanonicalMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
+        Matrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(R));
         bvar.mul(ssq / n);
         pll = new ProfileLikelihood();
@@ -196,7 +199,7 @@ public class QRFilter {
         pcorr = 0;
         mcorr = 0;
         mll = null;
-        dll=null;
+        dll = null;
         pll = null;
         X = null;
         Xl = null;

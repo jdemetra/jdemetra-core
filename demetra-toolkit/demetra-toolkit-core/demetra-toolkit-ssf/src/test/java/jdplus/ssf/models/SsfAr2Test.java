@@ -6,8 +6,9 @@
 package jdplus.ssf.models;
 
 import jdplus.arima.ssf.SsfAr2;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.ssf.SsfComponent;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixNorms;
+import jdplus.ssf.StateComponent;
 import jdplus.ssf.StationaryInitialization;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -23,13 +24,12 @@ public class SsfAr2Test {
 
     @Test
     public void testInitialization() {
-        SsfComponent cmp = SsfAr2.of(new double[]{1.2, -.6}, 1, 5, 6);
+        StateComponent cmp = SsfAr2.of(new double[]{1.2, -.6}, 1, 5, 6);
         int dim = cmp.initialization().getStateDim();
-        CanonicalMatrix I = StationaryInitialization.of(cmp.dynamics(), dim);
-        CanonicalMatrix P = CanonicalMatrix.square(dim);
+        Matrix I = StationaryInitialization.of(cmp.dynamics(), dim);
+        Matrix P = Matrix.square(dim);
         cmp.initialization().Pf0(P);
-        assertTrue(I.minus(P).frobeniusNorm() < 1e-12);
-
+        assertTrue(MatrixNorms.frobeniusNorm(I.minus(P))<1e-9);
     }
 
 }

@@ -18,7 +18,7 @@ package demetra.x12;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.modelling.regression.Variable;
+import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.regular.IRegressionModule;
 import jdplus.regarima.regular.ProcessingResult;
@@ -30,8 +30,8 @@ import jdplus.regarima.regular.ModelEstimation;
 import jdplus.regarima.regular.RegArimaModelling;
 import jdplus.sarima.SarimaModel;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.modelling.regression.ILengthOfPeriodVariable;
-import demetra.modelling.regression.ITradingDaysVariable;
+import demetra.timeseries.regression.ILengthOfPeriodVariable;
+import demetra.timeseries.regression.ITradingDaysVariable;
 
 /**
  *
@@ -133,14 +133,12 @@ public class CalendarEffectsDetectionModule implements IRegressionModule {
             if (!removed) {
                 changed = true;
             }
-            context.setDescription(tddesc);
-            context.setEstimation(tdest);
+            context.set(tddesc, tdest);
         } else {
             if (removed) {
                 changed = true;
             }
-            context.setDescription(ntddesc);
-            context.setEstimation(ntdest);
+            context.set(ntddesc, ntdest);
         }
 
         return changed ? ProcessingResult.Changed : ProcessingResult.Unchanged;

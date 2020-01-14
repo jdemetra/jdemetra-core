@@ -16,7 +16,8 @@
  */
 package demetra.sts;
 
-import demetra.maths.Optimizer;
+import demetra.math.functions.Optimizer;
+
 
 /**
  *

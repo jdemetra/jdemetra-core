@@ -21,7 +21,7 @@ import jdplus.dstats.Normal;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.random.MersenneTwister;
 import java.io.IOException;
 import java.util.Arrays;
@@ -86,8 +86,8 @@ public class AugmentedDickeyFullerTest {
                 L[i] = lprev + 100;
             }
         }
-        CanonicalMatrix X = CanonicalMatrix.make(M * S, 3);
-        CanonicalMatrix Y = CanonicalMatrix.make(M * S, 9);
+        Matrix X = Matrix.make(M * S, 3);
+        Matrix Y = Matrix.make(M * S, 9);
         for (int i = 0, k = 0; i < M; ++i) {
             for (int j = 0; j < S; ++j, ++k) {
                 double[] pct = simulate(R, L[i], false, false);
@@ -108,8 +108,7 @@ public class AugmentedDickeyFullerTest {
                     .meanCorrection(true)
                     .addX(X)
                     .build();
-            Ols ols = new Ols();
-            LeastSquaresResults result = ols.compute(reg);
+            LeastSquaresResults result = Ols.compute(reg);
             System.out.println(result.getCoefficients());
         }
     }

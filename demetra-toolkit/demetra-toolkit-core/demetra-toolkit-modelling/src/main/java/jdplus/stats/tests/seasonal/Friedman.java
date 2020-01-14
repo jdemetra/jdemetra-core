@@ -21,7 +21,7 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import jdplus.dstats.Chi2;
 import jdplus.dstats.F;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.TestType;
 import demetra.data.DoubleSeq;
@@ -49,7 +49,7 @@ public class Friedman {
 
         DoubleSeq x = all.drop(nall - n * this.period, 0);
         DoubleSeq y = x.extract(0, period);
-        CanonicalMatrix R = CanonicalMatrix.make(n, this.period);
+        Matrix R = Matrix.make(n, this.period);
 
         // computes the ranks on each year:
         int row = 0;

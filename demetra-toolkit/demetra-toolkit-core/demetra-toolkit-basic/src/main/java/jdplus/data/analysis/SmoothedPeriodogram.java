@@ -20,7 +20,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.maths.Constants;
+import demetra.math.Constants;
 import jdplus.stats.AutoCovariances;
 
 /**

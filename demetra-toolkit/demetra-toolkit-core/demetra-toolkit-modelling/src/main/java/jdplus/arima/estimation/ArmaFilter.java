@@ -21,8 +21,6 @@ package jdplus.arima.estimation;
 import jdplus.arima.IArimaModel;
 import internal.jdplus.arima.AnsleyFilter;
 import internal.jdplus.arima.KalmanFilter;
-import internal.jdplus.arima.LjungBoxFilter;
-import internal.jdplus.arima.ModifiedLjungBoxFilter;
 import jdplus.data.DataBlock;
 import demetra.design.Algorithm;
 import demetra.design.Development;
@@ -73,13 +71,9 @@ public interface ArmaFilter {
     public static ArmaFilter ansley(){
         return new AnsleyFilter();
     }
-    public static ArmaFilter ljungBox(){
-        return new LjungBoxFilter();
-    }
+
     public static ArmaFilter kalman(){
         return new KalmanFilter();
     }
-    public static ArmaFilter modifiedLjungBox(){
-        return new ModifiedLjungBoxFilter();
-    }
+
 }

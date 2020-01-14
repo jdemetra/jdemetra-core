@@ -5,18 +5,12 @@
  */
 package jdplus.modelling.regression;
 
-import jdplus.modelling.regression.Regression;
-import jdplus.data.DataBlock;
-import jdplus.maths.matrices.SubMatrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import java.util.Collections;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.data.DoubleSeq;
-import demetra.modelling.regression.StockTradingDays;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.FastMatrix;
+import demetra.timeseries.regression.StockTradingDays;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -37,8 +31,8 @@ public class StockTradingDaysVariablesTest {
 
             StockTradingDays var = new StockTradingDays(-3);
             TsPeriod start = TsPeriod.monthly(2000, 1);
-            FastMatrix m = Regression.matrix(TsDomain.of(start, i), var);
-            SubMatrix mc = SubMatrix.builder(om.internalStorage()).nrows(i).ncolumns(6).build();
+            Matrix m = Regression.matrix(TsDomain.of(start, i), var);
+            Matrix mc = Matrix.builder(om.internalStorage()).nrows(i).ncolumns(6).build();
             assertTrue(m.minus(mc).isZero(1e-9));
         }
     }
@@ -53,8 +47,8 @@ public class StockTradingDaysVariablesTest {
 
             StockTradingDays var = new StockTradingDays(-3);
             TsPeriod start = TsPeriod.quarterly(2000, 1);
-            FastMatrix m = Regression.matrix(TsDomain.of(start, i), var);
-            SubMatrix mc = SubMatrix.builder(om.internalStorage()).nrows(i).ncolumns(6).build();
+            Matrix m = Regression.matrix(TsDomain.of(start, i), var);
+            Matrix mc = Matrix.builder(om.internalStorage()).nrows(i).ncolumns(6).build();
             assertTrue(m.minus(mc).isZero(1e-9));
         }
     }
@@ -69,8 +63,8 @@ public class StockTradingDaysVariablesTest {
 
             StockTradingDays var = new StockTradingDays(17);
             TsPeriod start = TsPeriod.monthly(2000, 1);
-            FastMatrix m = Regression.matrix(TsDomain.of(start, i), var);
-            SubMatrix mc = SubMatrix.builder(om.internalStorage()).nrows(i).ncolumns(6).build();
+            Matrix m = Regression.matrix(TsDomain.of(start, i), var);
+            Matrix mc = Matrix.builder(om.internalStorage()).nrows(i).ncolumns(6).build();
             assertTrue(m.minus(mc).isZero(1e-9));
         }
     }
@@ -85,8 +79,8 @@ public class StockTradingDaysVariablesTest {
 
             StockTradingDays var = new StockTradingDays(30);
             TsPeriod start = TsPeriod.quarterly(2000, 1);
-            FastMatrix m = Regression.matrix(TsDomain.of(start, i), var);
-            SubMatrix mc = SubMatrix.builder(om.internalStorage()).nrows(i).ncolumns(6).build();
+            Matrix m = Regression.matrix(TsDomain.of(start, i), var);
+            Matrix mc = Matrix.builder(om.internalStorage()).nrows(i).ncolumns(6).build();
             assertTrue(m.minus(mc).isZero(1e-9));
         }
     }

@@ -5,12 +5,13 @@
  */
 package demetra.fractionalairline;
 
+import jdplus.fractionalairline.PeriodicAirlineEngine;
 import jdplus.arima.ArimaModel;
 import demetra.data.Data;
 import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.regarima.RegArimaEstimation;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
@@ -29,7 +30,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -44,25 +45,25 @@ public class PeriodicAirlineProcessorTest {
     @Ignore
     public void testDaily() throws URISyntaxException, IOException {
         URI uri = Data.class.getResource("/edf.txt").toURI();
-        Matrix edf = MatrixSerializer.read(new File(uri));
+        MatrixType edf = MatrixSerializer.read(new File(uri));
         Holiday[] france = france();
-        CanonicalMatrix hol = CanonicalMatrix.make(edf.getRowsCount(), france.length);
+        Matrix hol = Matrix.make(edf.getRowsCount(), france.length);
         HolidaysUtility.fillDays(france, hol, LocalDate.of(1996, 1, 1), false);
-        RegArimaEstimation<ArimaModel> rslt = PeriodicAirlineProcessor.process(edf.column(0).fn(z->Math.log(z)), hol, new double[]{7, 365.25}, 1e-12);
+        RegArimaEstimation<ArimaModel> rslt = PeriodicAirlineEngine.process(edf.column(0).fn(z->Math.log(z)), hol, new double[]{7, 365.25}, 1e-12);
         assertTrue(rslt != null);
         ConcentratedLikelihoodWithMissing cll = rslt.getConcentratedLikelihood();
         System.out.println(cll.coefficients());
         System.out.println(DoubleSeq.of(cll.tstats(0, false)));
         System.out.println(cll.logLikelihood());
 
-        rslt = PeriodicAirlineProcessor.process(edf.column(0).fn(z->Math.log(z)), null, new double[]{7, 365.25}, 1e-12);
+        rslt = PeriodicAirlineEngine.process(edf.column(0).fn(z->Math.log(z)), null, new double[]{7, 365.25}, 1e-12);
         cll = rslt.getConcentratedLikelihood();
         System.out.println(cll.logLikelihood());
     }
 
     //@Test
     public void testWeekly() {
-        double ll = PeriodicAirlineProcessor.process(DoubleSeq.copyOf(WeeklyData.US_CLAIMS), null, 365.25 / 7, 1e-9).getConcentratedLikelihood().logLikelihood();
+        double ll = PeriodicAirlineEngine.process(DoubleSeq.copyOf(WeeklyData.US_CLAIMS), null, 365.25 / 7, 1e-9).getConcentratedLikelihood().logLikelihood();
     }
 
     private static void addDefault(List<IHoliday> holidays) {

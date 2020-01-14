@@ -18,10 +18,7 @@ package demetra.calendarization;
 
 import demetra.design.Development;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import demetra.data.DoubleSeq;
 
 /**
  *

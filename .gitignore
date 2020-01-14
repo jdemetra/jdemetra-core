@@ -44,3 +44,9 @@ demetra-io-core/target/
 /demetra-sts/demetra-sts-r/target/
 /demetra-toolkit/demetra-toolkit-api-advanced/target/
 /demetra-highfreq/demetra-highfreq-r/target/
+/demetra-toolkit/demetra-toolkit-core/demetra-toolkit-algorithms/target/
+/demetra-toolkit/demetra-toolkit-core/demetra-toolkit-basic-algorithms/target/
+/demetra-toolkit/demetra-toolkit-io/target/
+/demetra-highfreq/demetra-highfreq-io/target/
+/demetra-benchmarking/demetra-benchmarking-io/target/
+

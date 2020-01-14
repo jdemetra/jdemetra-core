@@ -17,8 +17,8 @@
 package demetra.x11.filter;
 
 import demetra.design.Development;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.polynomials.Polynomial;
 
 /**
  *

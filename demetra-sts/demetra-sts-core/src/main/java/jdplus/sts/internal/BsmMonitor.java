@@ -19,13 +19,13 @@ package jdplus.sts.internal;
 import jdplus.data.DataBlock;
 import jdplus.data.normalizer.AbsMeanNormalizer;
 import demetra.design.Development;
-import jdplus.maths.functions.IFunction;
-import jdplus.maths.functions.IFunctionPoint;
-import jdplus.maths.functions.TransformedFunction;
-import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import jdplus.maths.functions.minpack.MinPackMinimizer;
-import jdplus.maths.functions.riso.LbfgsMinimizer;
-import jdplus.maths.functions.ssq.ProxyMinimizer;
+import jdplus.math.functions.IFunction;
+import jdplus.math.functions.IFunctionPoint;
+import jdplus.math.functions.TransformedFunction;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.math.functions.minpack.MinPackMinimizer;
+import jdplus.math.functions.riso.LbfgsMinimizer;
+import jdplus.math.functions.ssq.ProxyMinimizer;
 import demetra.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
@@ -37,9 +37,9 @@ import demetra.sts.BsmSpec;
 import jdplus.sts.SsfBsm2;
 import jdplus.sts.internal.BsmMapping.Transformation;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.FastMatrix;
-import jdplus.maths.functions.FunctionMinimizer;
-import jdplus.maths.functions.bfgs.Bfgs;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.functions.FunctionMinimizer;
+import jdplus.math.functions.bfgs.Bfgs;
 
 /**
  *
@@ -48,7 +48,7 @@ import jdplus.maths.functions.bfgs.Bfgs;
 @Development(status = Development.Status.Preliminary)
 public class BsmMonitor {
 
-    private FastMatrix m_x;
+    private Matrix m_x;
 
     private double[] m_y;
 
@@ -395,7 +395,7 @@ public class BsmMonitor {
      * @param freq
      * @return
      */
-    public boolean process(DoubleSeq y, FastMatrix x, int freq) {
+    public boolean process(DoubleSeq y, Matrix x, int freq) {
         m_y = y.toArray();
         m_x = x;
         period = freq;

@@ -22,18 +22,18 @@ import internal.jdplus.arima.AnsleyFilter;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.design.Development;
-import jdplus.leastsquares.QRSolvers;
 import jdplus.linearmodel.LinearModel;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.matrices.LowerTriangularMatrix;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArmaModel;
 import jdplus.leastsquares.QRSolver;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.leastsquares.QRSolution;
+import static jdplus.math.matrices.GeneralMatrix.transpose;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -77,7 +77,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
 
     private ArmaFilter filter;
     private final ResidualsComputer resComputer;
-    private FastMatrix L, Xl;
+    private Matrix L, Xl;
     private double[] yl, b, w;
     private int n;
     private double mad;
@@ -139,35 +139,31 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
             DataBlock Yl = DataBlock.of(yl);
             filter.apply(model.getY(), Yl);
 
-            FastMatrix regs = lm.variables();
+            Matrix regs = lm.variables();
             if (regs.isEmpty()) {
                 mad = getStandardDeviationComputer().compute(filter(model.getY()));
                 return true;
             }
 
-            Xl = CanonicalMatrix.make(n, regs.getColumnsCount());
+            Xl = Matrix.make(n, regs.getColumnsCount());
             DataBlockIterator rcols = regs.columnsIterator(), drcols = Xl.columnsIterator();
             while (rcols.hasNext()) {
                 filter.apply(rcols.next(), drcols.next());
             }
 
-            QRSolver qr = QRSolvers.fastSolver();
-
-            if (!qr.solve(Yl, Xl)) {
-                return false;
-            }
+            QRSolution ls = QRSolver.fastLeastSquares(Yl, Xl);
 
             int nx = Xl.getColumnsCount();
-            DoubleSeq B = qr.coefficients();
+            DoubleSeq B = ls.getB();
             b = B.toArray();
             w = new double[nx];
-            L = qr.R().transpose();
+            L = transpose(ls.rawR()); 
 
             drcols.begin();
             for (int i = 0; i < Xl.getColumnsCount(); ++i) {
                 w[i] = drcols.next().dot(Yl);
             }
-            LowerTriangularMatrix.rsolve(L, DataBlock.of(w));
+            LowerTriangularMatrix.solveLx(L, DataBlock.of(w));
 
 //	    calcMAD(E);
             DataBlock e = lm.calcResiduals(B);
@@ -212,7 +208,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
                     // K=A^-1*L
                     // lA * lA' * K = L
                     // l'AA^-1l = |l' * lA'^-1|
-                    LowerTriangularMatrix.rsolve(L, M);
+                    LowerTriangularMatrix.solveLx(L, M);
                     // q = l'A^-1l
                     double q = M.ssq();
                     //

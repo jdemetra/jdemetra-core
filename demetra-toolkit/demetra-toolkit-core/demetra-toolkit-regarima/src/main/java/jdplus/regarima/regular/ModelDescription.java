@@ -16,7 +16,7 @@
  */
 package jdplus.regarima.regular;
 
-import demetra.modelling.regression.Variable;
+import demetra.timeseries.regression.Variable;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
@@ -26,10 +26,10 @@ import jdplus.data.interpolation.DataInterpolator;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
-import demetra.modelling.regression.PreadjustmentVariable;
-import demetra.modelling.regression.ITsVariable;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
+import demetra.timeseries.regression.PreadjustmentVariable;
+import demetra.timeseries.regression.ITsVariable;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.ami.TransformedSeries;
@@ -170,7 +170,7 @@ public final class ModelDescription {
                 final DataBlock ndata = DataBlock.of(tmp.getValues());
                 final TsDomain domain = tmp.getDomain();
                 preadjustmentVariables.forEach(v -> {
-                    CanonicalMatrix m = Regression.matrix(domain, v.getVariable());
+                    Matrix m = Regression.matrix(domain, v.getVariable());
                     DoubleSeqCursor reader = v.getCoefficients().cursor();
                     DataBlockIterator columns = m.columnsIterator();
                     while (columns.hasNext()) {
@@ -316,7 +316,7 @@ public final class ModelDescription {
         return logTransformation && lpTransformation != LengthOfPeriodType.None;
     }
 
-    private CanonicalMatrix getX(ITsVariable variable) {
+    private Matrix getX(ITsVariable variable) {
         return Regression.matrix(series.getDomain(), variable);
     }
 
@@ -369,8 +369,8 @@ public final class ModelDescription {
         return arima;
     }
 
-    public SarimaSpecification getSpecification() {
-        return arima.getSpecification();
+    public SarimaSpecification specification() {
+        return arima.specification();
     }
 
     public SarimaModel arima() {
@@ -393,8 +393,9 @@ public final class ModelDescription {
     }
 
     public void setAirline(boolean seas) {
-        SarimaSpecification s = new SarimaSpecification(this.getAnnualFrequency());
-        s.airline(seas);
+        int period=getAnnualFrequency();
+        SarimaSpecification s = seas? SarimaSpecification.airline(period)
+                : SarimaSpecification.m011(period);
         arima.setSpecification(s);
         if (transformedSeries != null) {
             transformedSeries = null;
@@ -553,11 +554,11 @@ public final class ModelDescription {
         regarima = rslt.getModel();
         int p = this.getAnnualFrequency();
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
-        CanonicalMatrix J = CanonicalMatrix.EMPTY;
+        Matrix J = Matrix.EMPTY;
         DoubleSeq score = Doubles.EMPTY;
         if (max != null) {
             double[] gradient = max.getGradient();
-            CanonicalMatrix hessian = rslt.getMax().getHessian();
+            Matrix hessian = rslt.getMax().getHessian();
             score = DoubleSeq.of(gradient == null ? DoubleSeq.EMPTYARRAY : gradient);
             J = hessian == null ? null : SymmetricMatrix.inverse(hessian);
             if (np < allp) {
@@ -585,7 +586,7 @@ public final class ModelDescription {
                 .build();
     }
 
-    private CanonicalMatrix expand(CanonicalMatrix cov) {
+    private Matrix expand(Matrix cov) {
         boolean[] fixedItems = arima.fixedConstraints();
         int dim = cov.getColumnsCount();
         int[] idx = new int[dim];
@@ -594,7 +595,7 @@ public final class ModelDescription {
                 idx[j++] = i;
             }
         }
-        CanonicalMatrix ecov = CanonicalMatrix.make(fixedItems.length, fixedItems.length);
+        Matrix ecov = Matrix.make(fixedItems.length, fixedItems.length);
         for (int i = 0; i < dim; ++i) {
             for (int j = 0; j <= i; ++j) {
                 double s = cov.get(i, j);
@@ -608,7 +609,7 @@ public final class ModelDescription {
     }
 
     public static boolean sameArimaSpecification(ModelDescription desc1, ModelDescription desc2) {
-        if (!desc1.getSpecification().equals(desc2.getSpecification())) {
+        if (!desc1.specification().equals(desc2.specification())) {
             return false;
         }
         return desc1.isMean() == desc2.isMean();

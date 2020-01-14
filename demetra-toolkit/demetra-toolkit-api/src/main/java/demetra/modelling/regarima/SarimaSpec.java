@@ -16,11 +16,9 @@
  */
 package demetra.modelling.regarima;
 
-import demetra.arima.SarimaModel;
-import demetra.data.Parameter;
-import demetra.data.ParameterType;
 import demetra.design.Development;
 import demetra.arima.SarimaSpecification;
+import demetra.data.ParameterSpec;
 import demetra.util.Validatable;
 
 /**
@@ -30,7 +28,7 @@ import demetra.util.Validatable;
 @Development(status = Development.Status.Beta)
 @lombok.Value
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
-public final class SarimaSpec implements Validatable<SarimaSpec>, ArimaSpecification<SarimaModel> {
+public final class SarimaSpec implements Validatable<SarimaSpec> {
 
     @Override
     public SarimaSpec validate() throws IllegalArgumentException {
@@ -62,22 +60,22 @@ public final class SarimaSpec implements Validatable<SarimaSpec>, ArimaSpecifica
 
     private final Validator validator;
     private int d, bd;
-    private Parameter[] phi, theta, bphi, btheta;
+    private ParameterSpec[] phi, theta, bphi, btheta;
 
     public static class Builder implements Validatable.Builder<SarimaSpec> {
 
         public Builder airline() {
-            phi=Parameter.create(0);
-            bphi=Parameter.create(0);
-            theta=Parameter.create(1);
-            btheta=Parameter.create(1);
+            phi=ParameterSpec.make(0);
+            bphi=ParameterSpec.make(0);
+            theta=ParameterSpec.make(1);
+            btheta=ParameterSpec.make(1);
             d = 1;
             bd = 1;
             return this;
         }
 
         public Builder p(int value) {
-            phi = Parameter.create(value);
+            phi = ParameterSpec.make(value);
             return this;
         }
 
@@ -87,12 +85,12 @@ public final class SarimaSpec implements Validatable<SarimaSpec>, ArimaSpecifica
         }
 
         public Builder q(int value) {
-            theta = Parameter.create(value);
+            theta = ParameterSpec.make(value);
             return this;
         }
 
         public Builder bp(int value) {
-            bphi = Parameter.create(value);
+            bphi = ParameterSpec.make(value);
             return this;
         }
 
@@ -102,27 +100,27 @@ public final class SarimaSpec implements Validatable<SarimaSpec>, ArimaSpecifica
         }
 
         public Builder bq(int value) {
-            btheta = Parameter.create(value);
+            btheta = ParameterSpec.make(value);
             return this;
         }
 
-        public Builder phi(Parameter[] value) {
-            phi = Parameter.clone(value);
+        public Builder phi(ParameterSpec[] value) {
+            phi = value.clone();
             return this;
         }
 
-        public Builder theta(Parameter[] value) {
-            theta = Parameter.clone(value);
+        public Builder theta(ParameterSpec[] value) {
+            theta = value.clone();
             return this;
         }
 
-        public Builder bphi(Parameter[] value) {
-            phi = Parameter.clone(value);
+        public Builder bphi(ParameterSpec[] value) {
+            bphi = value.clone();
             return this;
         }
 
-        public Builder btheta(Parameter[] value) {
-            theta = Parameter.clone(value);
+        public Builder btheta(ParameterSpec[] value) {
+            btheta = value.clone();
             return this;
         }
 
@@ -130,21 +128,6 @@ public final class SarimaSpec implements Validatable<SarimaSpec>, ArimaSpecifica
             this.validator = validator;
             return this;
         }
-    }
-
-    public boolean hasParameters() {
-        return !Parameter.isDefault(phi) || !Parameter.isDefault(theta)
-                || !Parameter.isDefault(bphi) || !Parameter.isDefault(btheta);
-    }
-
-    public boolean hasFreeParameters() {
-        return Parameter.hasFreeParameters(phi) || Parameter.hasFreeParameters(theta)
-                || Parameter.hasFreeParameters(bphi) || Parameter.hasFreeParameters(btheta);
-    }
-
-    public boolean hasFixedParameters() {
-        return Parameter.hasFixedParameters(phi) || Parameter.hasFixedParameters(theta)
-                || Parameter.hasFixedParameters(bphi) || Parameter.hasFixedParameters(btheta);
     }
 
     public int getP() {
@@ -168,12 +151,6 @@ public final class SarimaSpec implements Validatable<SarimaSpec>, ArimaSpecifica
                 && getBp() == 0 && bd == 1 && getBq() == 1;
     }
 
-    public boolean isDefault() {
-        return isAirline()
-                && Parameter.isDefault(phi) && Parameter.isDefault(theta)
-                && Parameter.isDefault(bphi) && Parameter.isDefault(btheta);
-    }
-
     public SarimaSpecification getSpecification(int period) {
         SarimaSpecification spec = new SarimaSpecification(period);
         spec.setP(getP());
@@ -185,73 +162,6 @@ public final class SarimaSpec implements Validatable<SarimaSpec>, ArimaSpecifica
             spec.setBq(getBq());
         }
         return spec;
-    }
-
-    private static void clearFreeParameters(Parameter[] P) {
-        if (P != null) {
-            for (int i = 0; i < P.length; ++i) {
-                if (!P[i].isFixed()) {
-                    P[i] = new Parameter();
-                }
-            }
-        }
-    }
-
-    private static void clearParameters(Parameter[] P) {
-        if (P != null) {
-            for (int i = 0; i < P.length; ++i) {
-                P[i] = new Parameter();
-            }
-        }
-    }
-
-    private static void setParameterType(Parameter[] P, ParameterType type) {
-        if (P != null) {
-            for (int i = 0; i < P.length; ++i) {
-                P[i].setType(type);
-            }
-        }
-    }
-
-    public SarimaSpec clearFreeParameters() {
-        Builder builder = toBuilder();
-        clearFreeParameters(builder.phi);
-        clearFreeParameters(builder.bphi);
-        clearFreeParameters(builder.theta);
-        clearFreeParameters(builder.btheta);
-        return builder.build();
-    }
-
-    public SarimaSpec clearParameters() {
-        Builder builder = toBuilder();
-        clearParameters(builder.phi);
-        clearParameters(builder.bphi);
-        clearParameters(builder.theta);
-        clearParameters(builder.btheta);
-        return builder.build();
-    }
-
-    public SarimaSpec setParameterType(ParameterType type) {
-        Builder builder = toBuilder();
-        setParameterType(builder.phi, type);
-        setParameterType(builder.bphi, type);
-        setParameterType(builder.theta, type);
-        setParameterType(builder.btheta, type);
-        return builder.build();
-    }
-
-    public SarimaSpec setMaParameterType(ParameterType type) {
-        Builder builder = toBuilder();
-        setParameterType(builder.theta, type);
-        setParameterType(builder.btheta, type);
-        return builder.build();
-    }
-
-    public SarimaSpec setArParameterType(ParameterType type) {
-        Builder builder = toBuilder();
-        setParameterType(builder.phi, type);
-        setParameterType(builder.bphi, type);
-        return builder.build();
     }
 
 }

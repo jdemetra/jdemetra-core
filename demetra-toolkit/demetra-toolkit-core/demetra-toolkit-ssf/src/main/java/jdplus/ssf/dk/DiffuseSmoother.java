@@ -17,8 +17,9 @@
 package jdplus.ssf.dk;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.GeneralMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.univariate.ISmoothingResults;
 import jdplus.ssf.univariate.ISsf;
@@ -91,8 +92,9 @@ public class DiffuseSmoother extends BaseDiffuseSmoother {
                 srslts.save(t, state, StateInfo.Smoothed);
             }
         }
-        if (rescalevar)
+        if (rescalevar) {
             srslts.rescaleVariances(frslts.var());
+        }
         return true;
     }
 
@@ -109,9 +111,9 @@ public class DiffuseSmoother extends BaseDiffuseSmoother {
             tmp0 = DataBlock.make(dim);
             tmp1 = DataBlock.make(dim);
             Z = DataBlock.make(dim);
-            N0 = CanonicalMatrix.square(dim);
-            N1 = CanonicalMatrix.square(dim);
-            N2 = CanonicalMatrix.square(dim);
+            N0 = Matrix.square(dim);
+            N1 = Matrix.square(dim);
+            N2 = Matrix.square(dim);
         }
     }
 
@@ -158,16 +160,16 @@ public class DiffuseSmoother extends BaseDiffuseSmoother {
 
     @Override
     protected void updateP(int pos) {
-        CanonicalMatrix P = state.P();
-        CanonicalMatrix PN0P = SymmetricMatrix.XtSX(N0, P);
-        CanonicalMatrix Pi = state.Pi();
-        CanonicalMatrix PN2P = SymmetricMatrix.XtSX(N2, Pi);
-        CanonicalMatrix PN1 = P.times(N1);
-        CanonicalMatrix PN1Pi = PN1.times(Pi);
+        Matrix P = state.P();
+        Matrix PN0P = SymmetricMatrix.XtSX(N0, P);
+        Matrix Pi = state.Pi();
+        Matrix PN2P = SymmetricMatrix.XtSX(N2, Pi);
+        Matrix PN1 = GeneralMatrix.AB(P, N1);
+        Matrix PN1Pi = GeneralMatrix.AB(PN1, Pi);
         P.sub(PN0P);
         P.sub(PN2P);
         P.sub(PN1Pi);
-        P.sub(PN1Pi.transpose());
+        P.subTranspose(PN1Pi);
         SymmetricMatrix.reenforceSymmetry(P);
 
     }

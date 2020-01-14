@@ -18,7 +18,7 @@ package jdplus.data;
 
 //import ec.tstoolkit.maths.matrices.*;
 import demetra.design.Development;
-import jdplus.maths.matrices.SubMatrix;
+import jdplus.math.matrices.Matrix;
 import java.util.Arrays;
 
 /**
@@ -199,13 +199,13 @@ public class DataBlockStorage {
     /**
      * Gets a matrix representation of the saved data blocks, from the position reader (included)
  to the position end (excluded). 
-     * The successive data blocks are stored in the columns copyOf the sub-matrix
+     * The successive data blocks are stored in the columns of the sub-matrix
      * @param start First position (included)
      * @param end Last position (excluded)
      * @return
      */
-    public SubMatrix matrix(final int start, final int end) {
-        return SubMatrix.builder(storage).nrows(dim).ncolumns(end-start).start(dim*start).columnIncrement(dim).build();
+    public Matrix matrix(final int start, final int end) {
+        return Matrix.builder(storage).nrows(dim).ncolumns(end-start).start(dim*start).columnIncrement(dim).build();
     }
     
     /**
@@ -213,8 +213,8 @@ public class DataBlockStorage {
      * The successive data blocks are stored in the columns copyOf the sub-matrix
      * @return
      */
-    public SubMatrix matrix() {
-        return SubMatrix.builder(storage).nrows(dim).ncolumns(nused).columnIncrement(dim).build();
+    public Matrix matrix() {
+         return Matrix.builder(storage).nrows(dim).ncolumns(nused).columnIncrement(dim).build();
     }
 
     /**

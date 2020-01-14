@@ -5,15 +5,13 @@
  */
 package jdplus.msts.internal;
 
-import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
-import demetra.modelling.regression.GenericTradingDaysVariable;
+import jdplus.msts.StateItem;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
-import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.RegSsf;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
@@ -21,9 +19,12 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
+import demetra.timeseries.regression.GenericTradingDaysVariable;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
+import jdplus.ssf.implementations.Coefficients;
+import jdplus.ssf.implementations.Loading;
 
 /**
  *
@@ -31,8 +32,8 @@ import jdplus.ssf.StateComponent;
  */
 public class TdRegressionItem extends StateItem {
 
-    private final CanonicalMatrix x;
-    private final CanonicalMatrix mvar;
+    private final Matrix x;
+    private final Matrix mvar;
     private final VarianceInterpreter v;
 
     public TdRegressionItem(String name, TsDomain domain, int[] groups, final boolean contrast, final double var, final boolean fixed) {
@@ -53,15 +54,15 @@ public class TdRegressionItem extends StateItem {
         mapping.add(v);
         mapping.add((p, builder) -> {
             double pvar = p.get(0);
-            SsfComponent cmp;
+            StateComponent cmp;
             if (mvar == null) {
-                cmp = RegSsf.of(x);
+                cmp = Coefficients.fixedCoefficients(x.getColumnsCount());
             } else {
-                CanonicalMatrix xvar = mvar.deepClone();
+                Matrix xvar = mvar.deepClone();
                 xvar.mul(pvar);
-                cmp = RegSsf.ofTimeVarying(x, xvar);
+                cmp = Coefficients.timeVaryingCoefficients(xvar);
             }
-            builder.add(name, cmp);
+            builder.add(name, cmp, Loading.regression(x));
             return 1;
         });
     }
@@ -71,28 +72,28 @@ public class TdRegressionItem extends StateItem {
         return Collections.singletonList(v);
     }
 
-    public static Matrix tdContrasts(TsDomain domain, int[] groups) {
+    public static MatrixType tdContrasts(TsDomain domain, int[] groups) {
         DayClustering dc = DayClustering.of(groups);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        CanonicalMatrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
+        Matrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
         return td.unmodifiable();
     }
 
-    public static Matrix rawTd(TsDomain domain, int[] groups) {
+    public static MatrixType rawTd(TsDomain domain, int[] groups) {
         DayClustering dc = DayClustering.of(groups);
         GenericTradingDays gtd = GenericTradingDays.of(dc);
-        CanonicalMatrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
+        Matrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
         return td.unmodifiable();
     }
 
-    public static CanonicalMatrix generateVar(DayClustering dc, boolean contrasts) {
+    public static Matrix generateVar(DayClustering dc, boolean contrasts) {
         int groupsCount = dc.getGroupsCount();
-        CanonicalMatrix full = CanonicalMatrix.square(7);
+        Matrix full = Matrix.square(7);
         if (!contrasts) {
             full.set(-1.0 / 7.0);
         }
         full.diagonal().add(1);
-        CanonicalMatrix Q = CanonicalMatrix.make(groupsCount - 1, 7);
+        Matrix Q = Matrix.make(groupsCount - 1, 7);
         int[] gdef = dc.getGroupsDefinition();
         for (int i = 1; i < groupsCount; ++i) {
             for (int j = 0; j < 7; ++j) {
@@ -108,11 +109,11 @@ public class TdRegressionItem extends StateItem {
     public StateComponent build(DoubleSeq p) {
         double pvar = p.get(0);
         if (mvar == null) {
-            return RegSsf.stateComponent(x.getColumnsCount());
+            return Coefficients.fixedCoefficients(x.getColumnsCount());
         } else {
-            CanonicalMatrix xvar = mvar.deepClone();
+            Matrix xvar = mvar.deepClone();
             xvar.mul(pvar);
-            return RegSsf.stateComponent(xvar);
+            return Coefficients.timeVaryingCoefficients(xvar);
         }
     }
 
@@ -131,7 +132,7 @@ public class TdRegressionItem extends StateItem {
         if (m > 0) {
             return null;
         } else {
-            return RegSsf.loading(x);
+            return Loading.regression(x);
         }
     }
 

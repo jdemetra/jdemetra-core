@@ -5,6 +5,7 @@
  */
 package jdplus.stats;
 
+import demetra.stats.StatException;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 

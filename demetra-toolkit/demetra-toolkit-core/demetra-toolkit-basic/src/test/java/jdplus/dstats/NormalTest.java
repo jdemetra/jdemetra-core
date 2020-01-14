@@ -5,13 +5,12 @@
  */
 package jdplus.dstats;
 
-import jdplus.dstats.Normal;
 import demetra.stats.ProbabilityType;
 import java.util.Random;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
-import demetra.random.RandomNumberGenerator;
+import jdplus.random.RandomNumberGenerator;
 
 /**
  *

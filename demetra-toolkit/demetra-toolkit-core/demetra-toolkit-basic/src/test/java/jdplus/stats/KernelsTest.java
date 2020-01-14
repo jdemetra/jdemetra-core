@@ -6,8 +6,8 @@
 package jdplus.stats;
 
 import java.util.function.DoubleUnaryOperator;
-import jdplus.maths.functions.integration.NumericalIntegration;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.functions.NumericalIntegration;
+import jdplus.math.polynomials.Polynomial;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

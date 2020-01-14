@@ -16,23 +16,65 @@
  */
 package jdplus.leastsquares;
 
-import demetra.design.Algorithm;
-import demetra.design.Development;
-import jdplus.maths.matrices.CanonicalMatrix;
+import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
+import demetra.math.Constants;
+import jdplus.data.DataBlock;
+import jdplus.math.matrices.CPointer;
+import jdplus.math.matrices.DataPointer;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.decomposition.Householder2;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
+import jdplus.math.matrices.decomposition.QRDecomposition;
 
 /**
  * Solves a least squares problem by means of the QR algorithm.
+ *
  * @author Jean Palate
  */
-@Algorithm
-@Development(status = Development.Status.Beta)
-public interface QRSolver extends LeastSquaresSolver {
+@lombok.experimental.UtilityClass
+public class QRSolver {
+    
+    @FunctionalInterface
+    public interface Processor{
+        QRSolution solve(DoubleSeq y, Matrix X);
+    }
+    
+    public QRSolution fastLeastSquares(DoubleSeq y, Matrix X){
+        Householder2 h = new Householder2();
+        QRDecomposition qr = h.decompose(X);
+        return leastSquares(qr, y, 0);
+    }
+    
+    public QRSolution robustLeastSquares(DoubleSeq y, Matrix X){
+        HouseholderWithPivoting h = new HouseholderWithPivoting();
+        QRDecomposition qr = h.decompose(X, 0);
+        return leastSquares(qr, y, Constants.getEpsilon());
+    }
+    
+    public QRSolution leastSquares(QRDecomposition qr, DoubleSeq x, double rcond){
+        int rank = UpperTriangularMatrix.rank(qr.rawR(), rcond);
+        double[] y = x.toArray();
+        qr.applyQt(y);
+        int m=qr.m(), n=qr.n();
+        DoubleSeq e=DoubleSeq.of(y, rank, m-rank);
+        // Solve R*X = Y;
+        UpperTriangularMatrix.solveUx(qr.rawR(), DataBlock.of(y));
+        int[] pivot=qr.pivot();
+        DoubleSeq b;
+        if (pivot == null) {
+            b=DoubleSeq.of(y, 0, rank);
+        } else {
+            double[] tmp=new double[n];
+            for (int i = 0; i < rank; ++i) {
+                tmp[pivot[i]]=y[i];
+            }
+            b=DoubleSeq.of(tmp);
+        }
 
-    /**
-     * Gets the R matrix (upper triangular matrix) of the used QR decomposition.
-     *    
-     * @return The R matrix. Might be singular. 
-     */
-    CanonicalMatrix R();
+        return new QRSolution(qr, rank, b, e, e.ssq());
+    }
+
 }
 

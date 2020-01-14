@@ -16,17 +16,13 @@
  */
 package jdplus.linearmodel;
 
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.Ols;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.RobustCovarianceEstimators;
 import jdplus.data.DataBlock;
 import demetra.data.DataSets;
 import jdplus.data.analysis.WindowFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -52,13 +48,12 @@ public class RobustCovarianceEstimatorsTest {
                 .addX(DoubleSeq.of(DataSets.Longley.x6))
                 .build();
 
-        Ols ols = new Ols();
-        LeastSquaresResults rslts = ols.compute(model);
+        LeastSquaresResults rslts = Ols.compute(model);
 //        System.out.println(rslts.covariance());
-        FastMatrix hac=RobustCovarianceEstimators.hac(model, rslts.getCoefficients(), WindowFunction.Bartlett, 5);
+        Matrix hac=RobustCovarianceEstimators.hac(model, rslts.getCoefficients(), WindowFunction.Bartlett, 5);
 //        System.out.println(hac);
         DataBlock u = model.calcResiduals(rslts.getCoefficients());
-        FastMatrix hc=RobustCovarianceEstimators.hc(model, rslts.getCoefficients(), i->u.get(i));
+        Matrix hc=RobustCovarianceEstimators.hc(model, rslts.getCoefficients(), i->u.get(i));
 //        System.out.println(hc);
     }
 

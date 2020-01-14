@@ -16,10 +16,7 @@
  */
 package jdplus.ssf.univariate;
 
-import jdplus.data.DataBlock;
-import jdplus.data.DataWindow;
 import jdplus.ssf.ISsfRoot;
-import jdplus.maths.matrices.FastMatrix;
 
 /**
  *

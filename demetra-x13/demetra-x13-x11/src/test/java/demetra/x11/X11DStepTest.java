@@ -5,7 +5,7 @@
  */
 package demetra.x11;
 
-import demetra.maths.Constants;
+import demetra.math.Constants;
 import demetra.sa.DecompositionMode;
 import ec.satoolkit.x11.BiasCorrection;
 import ec.satoolkit.x11.X11Results;

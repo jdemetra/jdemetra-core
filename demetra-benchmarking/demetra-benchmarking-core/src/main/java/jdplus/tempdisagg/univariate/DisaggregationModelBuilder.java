@@ -24,20 +24,19 @@ import demetra.data.DoubleSeqCursor;
 import jdplus.data.normalizer.AbsMeanNormalizer;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.modelling.regression.ITsVariable;
+import demetra.timeseries.regression.ITsVariable;
 import jdplus.modelling.regression.Regression;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.data.normalizer.DataNormalizer;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -56,8 +55,8 @@ class DisaggregationModelBuilder {
 
     // local information used in the building operation
     double[] hO, hY, hEY;
-    FastMatrix hX;
-    FastMatrix hEX;
+    Matrix hX;
+    Matrix hEX;
     TsDomain lEDom, hDom, hEDom;
     int frequencyRatio;
     double yfactor = 1;

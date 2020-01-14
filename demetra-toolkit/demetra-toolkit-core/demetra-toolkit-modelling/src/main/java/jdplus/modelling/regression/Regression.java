@@ -5,34 +5,34 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.AdditiveOutlier;
-import demetra.modelling.regression.Constant;
-import demetra.modelling.regression.EasterVariable;
-import demetra.modelling.regression.GenericTradingDaysVariable;
-import demetra.modelling.regression.HolidaysCorrectedTradingDays;
-import demetra.modelling.regression.ITsVariable;
-import demetra.modelling.regression.InterventionVariable;
-import demetra.modelling.regression.JulianEasterVariable;
-import demetra.modelling.regression.LengthOfPeriod;
-import demetra.modelling.regression.LevelShift;
-import demetra.modelling.regression.LinearTrend;
-import demetra.modelling.regression.PeriodicContrasts;
-import demetra.modelling.regression.PeriodicDummies;
-import demetra.modelling.regression.PeriodicOutlier;
-import demetra.modelling.regression.Ramp;
-import demetra.modelling.regression.StockTradingDays;
-import demetra.modelling.regression.SwitchOutlier;
-import demetra.modelling.regression.TransitoryChange;
-import demetra.modelling.regression.TrigonometricVariables;
-import demetra.modelling.regression.TsVariable;
-import demetra.modelling.regression.TsVariables;
-import demetra.modelling.regression.UserMovingHoliday;
-import demetra.modelling.regression.UserTradingDays;
-import demetra.modelling.regression.UserVariable;
-import demetra.modelling.regression.UserVariables;
+import demetra.timeseries.regression.AdditiveOutlier;
+import demetra.timeseries.regression.Constant;
+import demetra.timeseries.regression.EasterVariable;
+import demetra.timeseries.regression.GenericTradingDaysVariable;
+import demetra.timeseries.regression.HolidaysCorrectedTradingDays;
+import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.InterventionVariable;
+import demetra.timeseries.regression.JulianEasterVariable;
+import demetra.timeseries.regression.LengthOfPeriod;
+import demetra.timeseries.regression.LevelShift;
+import demetra.timeseries.regression.LinearTrend;
+import demetra.timeseries.regression.PeriodicContrasts;
+import demetra.timeseries.regression.PeriodicDummies;
+import demetra.timeseries.regression.PeriodicOutlier;
+import demetra.timeseries.regression.Ramp;
+import demetra.timeseries.regression.StockTradingDays;
+import demetra.timeseries.regression.SwitchOutlier;
+import demetra.timeseries.regression.TransitoryChange;
+import demetra.timeseries.regression.TrigonometricVariables;
+import demetra.timeseries.regression.TsVariable;
+import demetra.timeseries.regression.TsVariables;
+import demetra.timeseries.regression.UserMovingHoliday;
+import demetra.timeseries.regression.UserTradingDays;
+import demetra.timeseries.regression.UserVariable;
+import demetra.timeseries.regression.UserVariables;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.MatrixWindow;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixWindow;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
@@ -106,29 +106,25 @@ public class Regression {
         }
     }
 
-    public <D extends TimeSeriesDomain> CanonicalMatrix matrix(@NonNull D domain, @NonNull ITsVariable... vars) {
+    public <D extends TimeSeriesDomain> Matrix matrix(@NonNull D domain, @NonNull ITsVariable... vars) {
         int nvars = ITsVariable.dim(vars);
         int nobs = domain.length();
-        CanonicalMatrix M = CanonicalMatrix.make(nobs, nvars);
+        Matrix M = Matrix.make(nobs, nvars);
 
         MatrixWindow wnd = M.left(0);
         if (domain instanceof TsDomain) {
             TsPeriod start = ((TsDomain) domain).getStartPeriod();
             for (int i = 0, j = 0; i < vars.length; ++i) {
                 ITsVariable v = vars[i];
-                wnd.hnext(v.dim());
                 RegressionVariableFactory factory = FACTORIES.get(v.getClass());
-                if (factory != null) {
-                    factory.fill(v, start, wnd);
-                }
+                    factory.fill(v, start, wnd.hnext(v.dim()));
             }
         } else {
             for (int i = 0, j = 0; i < vars.length; ++i) {
                 ITsVariable v = vars[i];
-                MatrixWindow cur = wnd.right(v.dim());
                 RegressionVariableFactory factory = FACTORIES.get(v.getClass());
                 if (factory != null) {
-                    factory.fill(v, domain, cur);
+                    factory.fill(v, domain, wnd.hnext(v.dim()));
                 }
             }
         }
@@ -139,7 +135,7 @@ public class Regression {
         if (vars.dim() != 1) {
             throw new IllegalArgumentException();
         }
-        CanonicalMatrix m = matrix(domain, vars);
+        Matrix m = matrix(domain, vars);
         return DataBlock.of(m.getStorage());
     }
 

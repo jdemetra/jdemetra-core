@@ -6,23 +6,19 @@
 package jdplus.ssf.implementations;
 
 import jdplus.ssf.CompositeLoading;
-import jdplus.data.DataBlock;
 import jdplus.ssf.CompositeInitialization;
 import jdplus.ssf.CompositeDynamics;
 import demetra.design.BuilderPattern;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfLoading;
-import jdplus.ssf.SsfComponent;
 import jdplus.ssf.StateComponent;
-import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.univariate.Measurement;
 import jdplus.ssf.univariate.Ssf;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.ssf.univariate.ISsfMeasurement;
-import demetra.util.IntList;
 
 /**
  *
@@ -50,18 +46,16 @@ public class CompositeSsf extends Ssf {
     @BuilderPattern(CompositeSsf.class)
     public static class Builder {
 
-        private final List<SsfComponent> components = new ArrayList<>();
+        private final List<StateComponent> components = new ArrayList<>();
+        private final List<ISsfLoading> loadings = new ArrayList<>();
         private ISsfError measurementError;
 
         private int[] dim, pos;
 
-        public Builder add(SsfComponent cmp) {
-            components.add(cmp);
-            return this;
-        }
-
+ 
         public Builder add(StateComponent cmp, ISsfLoading loading) {
-            components.add(new SsfComponent(cmp.initialization(), cmp.dynamics(), loading));
+            components.add(cmp);
+            loadings.add(loading);
             return this;
         }
 
@@ -88,10 +82,10 @@ public class CompositeSsf extends Ssf {
             ISsfLoading[] l = new ISsfLoading[n];
             int cpos = 0;
             for (int j = 0; j < n; ++j) {
-                SsfComponent cur = components.get(j);
+                StateComponent cur = components.get(j);
                 i[j] = cur.initialization();
                 d[j] = cur.dynamics();
-                l[j] = cur.loading();
+                l[j] = loadings.get(j);
                 pos[j] = cpos;
                 dim[j] = i[j].getStateDim();
                 cpos += dim[j];

@@ -32,10 +32,10 @@ import java.util.List;
 import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
-import jdplus.modelling.spi.ArimaProcessorUtility;
-import jdplus.maths.matrices.FastMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import demetra.math.matrices.MatrixType;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.modelling.ApiUtility;
 import jdplus.sarima.SarimaModel;
 
 /**
@@ -104,11 +104,11 @@ public class ArimaEstimation {
         RegArimaModel<SarimaModel> regarima;
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
-        FastMatrix parametersCovariance;
+        Matrix parametersCovariance;
         double[] score;
 
         public demetra.arima.SarimaModel getArima() {
-            return ArimaProcessorUtility.convert(regarima.arima());
+            return ApiUtility.toApi(regarima.arima(), null);
         }
 
         private static final String ARIMA = "arima", LL = "likelihood", PCOV = "pcov", SCORE = "score",
@@ -118,7 +118,7 @@ public class ArimaEstimation {
         static {
             MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getArima());
             MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
-            MAPPING.set(PCOV, FastMatrix.class, source -> source.getParametersCovariance());
+            MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
             MAPPING.set(B, double[].class, source
                     -> {
@@ -135,7 +135,7 @@ public class ArimaEstimation {
                     return 0.0;
                 }
             });
-            MAPPING.set(UNSCALEDBVAR, Matrix.class, source -> source.getConcentratedLogLikelihood().unscaledCovariance());
+            MAPPING.set(UNSCALEDBVAR, MatrixType.class, source -> source.getConcentratedLogLikelihood().unscaledCovariance());
         }
 
         @Override

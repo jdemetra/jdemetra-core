@@ -18,7 +18,7 @@ package jdplus.regarima.outlier;
 
 import jdplus.arima.IArimaModel;
 import demetra.data.DoubleList;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.regarima.RegArimaModel;
 import jdplus.modelling.regression.IOutlierFactory;
 import demetra.util.TableOfBoolean;
@@ -36,8 +36,8 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
     protected final DoubleList weights = new DoubleList();
     protected int lbound;
     protected int ubound;
-    protected CanonicalMatrix T;
-    protected CanonicalMatrix coef;
+    protected Matrix T;
+    protected Matrix coef;
     private RegArimaModel<T> regarima;
 
     private TableOfBoolean allowedTable;
@@ -283,8 +283,8 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
     public void prepare(int n) {
         lbound=0;
         ubound=n;
-        T = CanonicalMatrix.make(n, factories.size());
-        coef = CanonicalMatrix.make(n, factories.size());
+        T = Matrix.make(n, factories.size());
+        coef = Matrix.make(n, factories.size());
         allowedTable = new TableOfBoolean(n, factories.size());
         for (int i = 0; i < factories.size(); ++i) {
             IOutlierFactory fac = getOutlierFactory(i);
@@ -390,14 +390,14 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
     /**
      * @return the T
      */
-    public CanonicalMatrix getT() {
+    public Matrix getT() {
         return T;
     }
 
     /**
      * @return the coef
      */
-    public CanonicalMatrix getCoef() {
+    public Matrix getCoef() {
         return coef;
     }
 

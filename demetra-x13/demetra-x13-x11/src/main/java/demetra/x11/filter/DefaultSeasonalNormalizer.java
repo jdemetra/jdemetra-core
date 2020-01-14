@@ -24,7 +24,7 @@ import demetra.x11.filter.endpoints.CopyEndPoints;
 import demetra.x11.filter.endpoints.CopyPeriodicEndPoints;
 import java.util.ArrayList;
 import jdplus.data.DataBlock;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 
 /**
  *

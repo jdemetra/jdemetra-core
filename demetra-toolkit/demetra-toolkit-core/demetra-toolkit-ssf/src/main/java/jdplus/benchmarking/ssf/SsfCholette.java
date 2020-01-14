@@ -26,7 +26,7 @@ import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.Ssf;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -140,7 +140,7 @@ public class SsfCholette {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
+        public double ZVZ(int pos, Matrix V) {
             int rpos = pos + def.start;
             if (rpos % def.conversion == 0) {
                 return def.mweight2(pos, V.get(1, 1));
@@ -153,7 +153,9 @@ public class SsfCholette {
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix vm, double d) {
+        public void VpZdZ(int pos, Matrix vm, double d) {
+            if (d == 0)
+                return;
             int rpos = pos + def.start;
             vm.add(1, 1, def.mweight2(pos, d));
             if (rpos % def.conversion != 0) {
@@ -203,7 +205,7 @@ public class SsfCholette {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
         }
 
         @Override
@@ -211,12 +213,12 @@ public class SsfCholette {
         }
 
         @Override
-        public void Pf0(FastMatrix pf0) {
+        public void Pf0(Matrix pf0) {
             pf0.set(1, 1, 1 / (1 - rho * rho));
         }
 
         @Override
-        public void Pi0(FastMatrix pi0) {
+        public void Pi0(Matrix pi0) {
             pi0.set(1, 1, 1);
         }
     }
@@ -242,7 +244,7 @@ public class SsfCholette {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
             b.set(1, 0, 1);
         }
 
@@ -251,11 +253,11 @@ public class SsfCholette {
         }
 
         @Override
-        public void Pf0(FastMatrix pf0) {
+        public void Pf0(Matrix pf0) {
         }
 
         @Override
-        public void Pi0(FastMatrix pi0) {
+        public void Pi0(Matrix pi0) {
             pi0.set(1, 1, 1);
         }
     }
@@ -274,12 +276,12 @@ public class SsfCholette {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             qm.set(1, 1, 1);
         }
 
         @Override
-        public void S(int pos, FastMatrix cm) {
+        public void S(int pos, Matrix cm) {
             cm.set(1, 0, 1);
         }
 
@@ -301,7 +303,7 @@ public class SsfCholette {
          * @param tr
          */
         @Override
-        public void T(int pos, FastMatrix tr) {
+        public void T(int pos, Matrix tr) {
             tr.set(1, 1, def.rho);
             int rpos = pos + def.start;
             if ((rpos + 1) % def.conversion != 0) {
@@ -331,7 +333,7 @@ public class SsfCholette {
         }
 
         @Override
-        public void TVT(int pos, FastMatrix vm) {
+        public void TVT(int pos, Matrix vm) {
             int rpos = pos + def.start;
             if ((rpos + 1) % def.conversion == 0) {
                 vm.set(0, 0, 0);
@@ -361,7 +363,7 @@ public class SsfCholette {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             p.add(1, 1, 1);
         }
 

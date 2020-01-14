@@ -6,11 +6,9 @@
 package demetra.saexperimental.r;
 
 import demetra.information.InformationMapping;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.IFilter;
-import jdplus.maths.linearfilters.IFiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import demetra.likelihood.DiffuseConcentratedLikelihood;
+import jdplus.math.linearfilters.IFilter;
+import jdplus.math.linearfilters.IFiniteFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.DoubleUnaryOperator;

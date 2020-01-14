@@ -19,18 +19,17 @@ package internal.jdplus.arima;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.data.LogSign;
+import jdplus.data.LogSign;
 import demetra.design.AlgorithmImplementation;
 import demetra.design.Development;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.MatrixException;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixException;
+import jdplus.math.polynomials.Polynomial;
 import nbbrd.service.ServiceProvider;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.SubMatrix;
 
 
 /**
@@ -41,7 +40,7 @@ import jdplus.maths.matrices.SubMatrix;
 @ServiceProvider(ArmaFilter.class)
 public class AnsleyFilter implements ArmaFilter {
 
-    private CanonicalMatrix m_bL;
+    private Matrix m_bL;
     private double[] m_ar, m_ma;
     private double m_var;
     private int m_n;
@@ -127,9 +126,9 @@ public class AnsleyFilter implements ArmaFilter {
             }
         }
 
-        Polynomial sma = SymmetricFilter.fromFilter(ma, m_var).coefficientsAsPolynomial();
+        Polynomial sma = SymmetricFilter.convolutionOf(ma, m_var).coefficientsAsPolynomial();
 
-        m_bL = CanonicalMatrix.make(r, n);
+        m_bL = Matrix.make(r, n);
         // complete the matrix
         // if (i >= j) m(i, j) = lband[i-j, j]; if i-j >= r, m(i, j) =0
         // if (i < j) m(i, j) = lband(j-i, i)
@@ -145,7 +144,7 @@ public class AnsleyFilter implements ArmaFilter {
             }
         }
 
-        SubMatrix M = m_bL.extract(0, q + 1, p, n-p);
+        Matrix M = m_bL.extract(0, q + 1, p, n-p);
         DataBlockIterator rows = M.rowsIterator();
 
         int pos=0;
@@ -249,9 +248,9 @@ public class AnsleyFilter implements ArmaFilter {
         }
     }
 
-    public CanonicalMatrix getCholeskyFactor() {
+    public Matrix getCholeskyFactor() {
         if (m_bL == null) {
-            CanonicalMatrix l = CanonicalMatrix.make(1, m_n);
+            Matrix l = Matrix.make(1, m_n);
             l.set(Math.sqrt(m_var));
             return l;
         } else {

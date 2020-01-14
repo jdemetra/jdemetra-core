@@ -5,14 +5,14 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.LevelShift;
+import demetra.timeseries.regression.LevelShift;
 import jdplus.data.DataBlock;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.RationalBackFilter;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.RationalBackFilter;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -72,14 +72,14 @@ class LSFactory implements RegressionVariableFactory<LevelShift> {
     private LSFactory(){}
 
     @Override
-    public boolean fill(LevelShift var, TsPeriod start, FastMatrix m) {
+    public boolean fill(LevelShift var, TsPeriod start, Matrix m) {
         TsPeriod p = start.withDate(var.getPosition());
         fill(var, start.until(p), m.column(0));
         return true;
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(LevelShift var, D domain, FastMatrix m) {
+    public <D extends TimeSeriesDomain> boolean fill(LevelShift var, D domain, Matrix m) {
         fill(var, domain.indexOf(var.getPosition()), m.column(0));
         return true;
     }

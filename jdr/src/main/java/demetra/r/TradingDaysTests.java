@@ -20,13 +20,13 @@ import jdplus.data.DataBlock;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import demetra.stats.TestResult;
 import jdplus.stats.tests.StatisticalTest;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.DayClustering;
-import demetra.modelling.regression.GenericTradingDaysVariable;
+import demetra.timeseries.regression.GenericTradingDaysVariable;
 import jdplus.modelling.regression.Regression;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.GenericTradingDays;
@@ -64,10 +64,9 @@ public class TradingDaysTests {
             DataBlock y=DataBlock.of(s.getValues());
             y.sub(y.average());
             GenericTradingDaysVariable var=new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD7));
-            CanonicalMatrix td = Regression.matrix(s.getDomain(), var);
+            Matrix td = Regression.matrix(s.getDomain(), var);
             LinearModel reg=new LinearModel(y.getStorage(), false, td);
-            Ols ols = new Ols();
-            LeastSquaresResults rslt = ols.compute(reg);
+            LeastSquaresResults rslt = Ols.compute(reg);
             StatisticalTest ftest = rslt.Ftest();
             return ftest.toSummary();
           
@@ -81,15 +80,14 @@ public class TradingDaysTests {
             DataBlock y=DataBlock.of(s.getValues());
             TsDomain domain = s.getDomain();
             GenericTradingDaysVariable var=new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD7));
-            CanonicalMatrix td = Regression.matrix(domain.range(1, domain.length()), var);
+            Matrix td = Regression.matrix(domain.range(1, domain.length()), var);
             LinearModel reg=LinearModel.builder()
                     .y(y.drop(1, 0))
                     .addX(y.drop(0, 1))
                     .addX(td)
                     .build();
             
-            Ols ols = new Ols();
-            LeastSquaresResults rslt = ols.compute(reg);
+            LeastSquaresResults rslt = Ols.compute(reg);
             StatisticalTest ftest = rslt.Ftest(1, td.getColumnsCount());
             return ftest.toSummary();
          } catch (Exception err) {

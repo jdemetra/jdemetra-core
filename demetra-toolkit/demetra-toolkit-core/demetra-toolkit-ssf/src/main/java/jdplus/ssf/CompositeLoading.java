@@ -18,18 +18,16 @@ package jdplus.ssf;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataWindow;
-import jdplus.maths.matrices.MatrixWindow;
+import jdplus.math.matrices.MatrixWindow;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import jdplus.ssf.ISsfLoading;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
  * @author Jean Palate
  */
 public class CompositeLoading implements ISsfLoading {
-
 
     private final ISsfLoading[] loadings;
     private final int[] dim;
@@ -75,21 +73,20 @@ public class CompositeLoading implements ISsfLoading {
     }
 
     @Override
-    public double ZVZ(int pos, FastMatrix v) {
-        MatrixWindow D = v.topLeft();
+    public double ZVZ(int pos, Matrix v) {
+        MatrixWindow D = v.topLeft(0, 0);
         double x = 0;
         for (int i = 0; i < loadings.length; ++i) {
             int ni = dim[i];
             tmp.set(0);
             DataWindow wnd = tmp.left();
-            D.next(ni, ni);
-            x += loadings[i].ZVZ(pos, D);
-            MatrixWindow C = D.clone();
+            Matrix nD = D.next(ni, ni);
+            x += loadings[i].ZVZ(pos, nD);
+            MatrixWindow C = MatrixWindow.of(nD);
             for (int j = i + 1; j < loadings.length; ++j) {
                 int nj = dim[j];
                 DataBlock cur = wnd.next(nj);
-                C.vnext(nj);
-                loadings[j].ZM(pos, C, cur);
+                loadings[j].ZM(pos, C.vnext(nj), cur);
                 x += 2 * loadings[i].ZX(pos, cur);
             }
         }
@@ -97,7 +94,10 @@ public class CompositeLoading implements ISsfLoading {
     }
 
     @Override
-    public void VpZdZ(int pos, FastMatrix V, double d) {
+    public void VpZdZ(int pos, Matrix V, double d) {
+        if (d == 0) {
+            return;
+        }
         tmp.set(0);
         Z(pos, tmp);
         DataBlockIterator cols = V.columnsIterator();

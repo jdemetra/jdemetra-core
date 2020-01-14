@@ -9,9 +9,8 @@ import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.ssf.SsfArima;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.msts.ModelItem;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.StablePolynomialInterpreter;
 import jdplus.msts.VarianceInterpreter;
@@ -78,7 +77,7 @@ public class ArimaItem extends StateItem {
             }
             double var = p.get(pos++);
             ArimaModel arima = new ArimaModel(bar, bdiff, bma, var);
-            StateComponent cmp = SsfArima.stateComponent(arima);
+            StateComponent cmp = SsfArima.of(arima);
             builder.add(name, cmp, null);
             return pos;
         });
@@ -115,7 +114,7 @@ public class ArimaItem extends StateItem {
         }
         double var = p.get(pos++);
         ArimaModel arima = new ArimaModel(bar, bdiff, bma, var);
-        return SsfArima.stateComponent(arima);
+        return SsfArima.of(arima);
     }
 
     @Override
@@ -134,7 +133,7 @@ public class ArimaItem extends StateItem {
 
     @Override
     public ISsfLoading defaultLoading(int m) {
-        return SsfArima.loading();
+        return SsfArima.defaultLoading();
     }
 
     @Override

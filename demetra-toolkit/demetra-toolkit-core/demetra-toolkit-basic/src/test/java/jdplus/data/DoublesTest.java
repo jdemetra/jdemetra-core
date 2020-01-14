@@ -6,8 +6,9 @@
 package jdplus.data;
 
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -24,9 +25,9 @@ public class DoublesTest {
 
     @Test
     public void testOp() {
-        CanonicalMatrix m = CanonicalMatrix.make(200, 20);
+        Matrix m = Matrix.make(200, 20);
         Random rnd = new Random();
-        m.set(rnd::nextDouble);
+        m.set((i, j) -> rnd.nextDouble());
         DoubleSeq a = m.column(0);
         for (int i = 1; i < m.getColumnsCount(); ++i) {
             a = a.op(m.column(i), (x, y) -> x + y);
@@ -38,13 +39,11 @@ public class DoublesTest {
         assertTrue(a.distance(b) < 1e-12);
     }
 
-    @Test
-    @Ignore
-    public void stressTestOp() {
+    public static void stressTestOp() {
         int K = 100000;
-        CanonicalMatrix m = CanonicalMatrix.make(200, 20);
+        Matrix m = Matrix.make(200, 20);
         Random rnd = new Random();
-        m.set(rnd::nextDouble);
+        m.set((i, j) -> rnd.nextDouble());
         long t0 = System.currentTimeMillis();
         for (int k = 0; k < K; ++k) {
             DoubleSeq a = m.column(0);
@@ -60,9 +59,40 @@ public class DoublesTest {
             for (int i = 1; i < m.getColumnsCount(); ++i) {
                 b = b.fastOp(m.column(i), (x, y) -> x + y);
             }
-            b=Doubles.of(b);
+            b = Doubles.of(b);
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
+    }
+
+    public static void main(String[] arg) {
+        int K = 100000;
+        Matrix m = Matrix.make(1000, 30);
+        Random rnd = new Random();
+        m.set((i, j) -> rnd.nextDouble());
+        long t0 = System.currentTimeMillis();
+        for (int k = 0; k < K; ++k) {
+            for (int c = 0; c < m.getRowsCount(); ++c) {
+                DataBlock a = m.row(c);
+                double z = a.sum();
+            }
+        }
+        long t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+        t0 = System.currentTimeMillis();
+        int nr=m.getRowsCount();
+        for (int k = 0; k < K; ++k) {
+            for (int c = 0; c < m.getRowsCount(); ++c) {
+                DoubleSeq b = m.row(c);
+                DoubleSeqCursor cursor = b.cursor();
+                double z = 0;
+                for (int j = 0; j < m.getColumnsCount(); ++j) {
+                    z += cursor.getAndNext();
+                }
+            }
+        }
+        t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+
     }
 }

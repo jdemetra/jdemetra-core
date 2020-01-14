@@ -20,14 +20,15 @@ import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import jdplus.dstats.F;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.TestType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.MatrixFactory;
+import demetra.math.matrices.MatrixType;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixFactory;
 
 /**
  *
@@ -37,16 +38,16 @@ import jdplus.maths.matrices.MatrixFactory;
 public class JointTest {
 
     private final DoubleSeq b;
-    private final CanonicalMatrix bvar;
+    private final Matrix bvar;
     private final double rss;
     private final int n;
     private int hyperParameters;
-    private CanonicalMatrix R;
+    private Matrix R;
     private DoubleSeq alpha;
     private int[] coef;
     private boolean blue = true, deterministicRegressors = true;
 
-    public JointTest(final DoubleSeq coefficients, final CanonicalMatrix unscaledVariance, final double rss, final int n) {
+    public JointTest(final DoubleSeq coefficients, final Matrix unscaledVariance, final double rss, final int n) {
         this.b = coefficients;
         this.bvar = unscaledVariance;
         this.rss = rss;
@@ -55,7 +56,7 @@ public class JointTest {
 
     public JointTest(final ConcentratedLikelihoodWithMissing ll) {
         this.b = ll.coefficients();
-        this.bvar = CanonicalMatrix.of(ll.unscaledCovariance());
+        this.bvar = Matrix.of(ll.unscaledCovariance());
         this.rss = ll.ssq();
         this.n = ll.dim();
     }
@@ -77,7 +78,7 @@ public class JointTest {
         return this;
     }
 
-    public JointTest constraints(@NonNull CanonicalMatrix R, @NonNull DoubleSeq alpha) {
+    public JointTest constraints(@NonNull Matrix R, @NonNull DoubleSeq alpha) {
         if (R.getRowsCount() != alpha.length()) {
             throw new IllegalArgumentException();
         }
@@ -110,16 +111,16 @@ public class JointTest {
     public StatisticalTest build() {
         final double f;
         DataBlock rb = rb();
-        CanonicalMatrix rwr = rwr();
+        Matrix rwr = rwr();
         int nx = rb.length(), df = df();
         SymmetricMatrix.lcholesky(rwr);
-        LowerTriangularMatrix.rsolve(rwr, rb);
+        LowerTriangularMatrix.solveLx(rwr, rb);
         f = (rb.ssq() / nx) / (rss / df);
         F fdist = new F(nx, df);
         return new StatisticalTest(fdist, f, TestType.Upper, !deterministicRegressors);
     }
 
-    private CanonicalMatrix rwr() {
+    private Matrix rwr() {
         if (coef != null) {
             return MatrixFactory.select(bvar, coef, coef);
         } else {

@@ -16,14 +16,13 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.PeriodicDummies;
-import jdplus.modelling.regression.Regression;
+import demetra.timeseries.regression.PeriodicDummies;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import java.time.LocalDate;
+import jdplus.data.DataBlockIterator;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -38,9 +37,11 @@ public class PeriodicDummiesTest {
     public void testMonthly() {
         PeriodicDummies vars = new PeriodicDummies(12);
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2017, 8), 180);
-        FastMatrix M=Regression.matrix(domain, vars);
+        Matrix M=Regression.matrix(domain, vars);
         //System.out.println(M);
-        assertTrue(M.columnList().stream().allMatch(col->col.sum()==15));
+        DataBlockIterator cols = M.columnsIterator();
+        while (cols.hasNext())
+            assertTrue(cols.next().sum()==15);
     }
     
 }

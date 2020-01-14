@@ -12,7 +12,7 @@ import jdplus.regarima.RegArimaModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
-import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.sarima.SarimaModel;
 
 /**
@@ -30,8 +30,7 @@ public class RegSarimaProcessorTest {
     }
     
     public static RegArimaModel<SarimaModel> prodAirline(){
-        SarimaSpecification spec=new SarimaSpecification(12);
-        spec.airline(true);
+        SarimaSpecification spec=SarimaSpecification.airline(12);
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();

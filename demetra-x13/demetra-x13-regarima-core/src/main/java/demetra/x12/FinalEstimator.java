@@ -19,15 +19,15 @@ package demetra.x12;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
-import jdplus.maths.functions.IParametricMapping;
+import jdplus.math.functions.IParametricMapping;
 import jdplus.regarima.regular.IModelEstimator;
 import jdplus.regarima.regular.ModelDescription;
 import jdplus.regarima.regular.RegArimaModelling;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
-import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
-import static jdplus.maths.linearfilters.FilterUtility.checkRoots;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
+import static jdplus.math.linearfilters.FilterUtility.checkRoots;
 
 /**
  *
@@ -169,7 +169,7 @@ public class FinalEstimator implements IModelEstimator {
             return 0;
         }
 
-        context.setEstimation(null);
+        context.clearEstimation();
         // reduce the orders
         if (cpr > 0) {
             spec.setP(spec.getP() - cpr);

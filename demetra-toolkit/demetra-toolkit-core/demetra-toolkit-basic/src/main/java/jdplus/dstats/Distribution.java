@@ -18,7 +18,7 @@ package jdplus.dstats;
 
 import demetra.stats.ProbabilityType;
 import demetra.design.Development;
-import demetra.random.RandomNumberGenerator;
+import jdplus.random.RandomNumberGenerator;
 
 /**
  * Represents a statistical distribution

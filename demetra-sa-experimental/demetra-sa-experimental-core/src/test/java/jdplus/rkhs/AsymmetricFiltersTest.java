@@ -8,9 +8,9 @@ package jdplus.rkhs;
 import demetra.data.DoubleSeq;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.dfa.MSEDecomposition;
-import jdplus.maths.linearfilters.AsymmetricFilters;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.FiniteFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.stats.Kernels;
 
 /**

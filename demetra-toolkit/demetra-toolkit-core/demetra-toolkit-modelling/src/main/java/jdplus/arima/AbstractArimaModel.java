@@ -16,12 +16,11 @@
  */
 package jdplus.arima;
 
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.IRationalFilter;
-import jdplus.maths.linearfilters.RationalBackFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.IRationalFilter;
+import jdplus.math.linearfilters.RationalBackFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 
-/**
+/** 
  * This class caches all the properties of the final ArimaModel
  *
  * @author Jean Palate
@@ -33,11 +32,11 @@ public abstract class AbstractArimaModel implements IArimaModel {
     private volatile AutoCovarianceFunction acf;
 
     protected SymmetricFilter symmetricMa(){
-        return SymmetricFilter.fromFilter(getMa(), getInnovationVariance());
+        return SymmetricFilter.convolutionOf(getMa(), getInnovationVariance());
     }
 
     protected SymmetricFilter symmetricAr(){
-        return SymmetricFilter.fromFilter(getAr());
+        return SymmetricFilter.convolutionOf(getAr());
     }
 
     @Override

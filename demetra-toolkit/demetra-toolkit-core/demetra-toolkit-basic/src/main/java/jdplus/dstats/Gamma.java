@@ -23,9 +23,9 @@
 package jdplus.dstats;
 
 import demetra.stats.ProbabilityType;
-import demetra.maths.Constants;
-import jdplus.maths.polynomials.Polynomial;
-import demetra.random.RandomNumberGenerator;
+import demetra.math.Constants;
+import jdplus.math.polynomials.Polynomial;
+import jdplus.random.RandomNumberGenerator;
 
 
 /**

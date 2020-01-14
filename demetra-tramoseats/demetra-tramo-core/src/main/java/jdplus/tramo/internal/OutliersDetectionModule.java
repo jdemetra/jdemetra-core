@@ -17,9 +17,9 @@
 package jdplus.tramo.internal;
 
 import demetra.design.BuilderPattern;
-import demetra.modelling.regression.Variable;
+import demetra.timeseries.regression.Variable;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
-import demetra.modelling.regression.IOutlier;
+import demetra.timeseries.regression.IOutlier;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
 import jdplus.regarima.RegArimaUtility;
@@ -220,6 +220,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
             IOutlier o = impl.getFactory(cur[1]).make(pos.start());
             model.addVariable(new Variable(o, IOutlier.defaultName(o.getCode(), pos), false));
         }
+        context.clearEstimation();
         return ProcessingResult.Changed;
     }
 
@@ -236,7 +237,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         // int rslt = ml ? 1 : 0;
         int n = desc.getSeries().getValues().count(x -> Double.isFinite(x));
         // first, check if od is possible
-        SarimaSpecification spec = desc.getSpecification();
+        SarimaSpecification spec = desc.specification();
         int nparm = Math.max(spec.getD() + spec.getP() + spec.getPeriod()
                 * (spec.getBd() + spec.getBp()), spec.getQ()
                 + spec.getPeriod() * spec.getBq())

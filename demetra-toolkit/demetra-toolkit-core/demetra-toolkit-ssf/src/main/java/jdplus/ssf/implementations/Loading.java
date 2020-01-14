@@ -19,10 +19,10 @@ package jdplus.ssf.implementations;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import jdplus.maths.matrices.QuadraticForm;
+import jdplus.math.matrices.QuadraticForm;
 import jdplus.ssf.ISsfLoading;
 import demetra.util.IntList;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -87,10 +87,6 @@ public class Loading {
         return new PartialSumLoading(n);
     }
 
-    public static ISsfLoading createExtractor(final int i0, final int n, final int inc) {
-        return new ExtractorLoading(n, inc, n);
-    }
-
     public static ISsfLoading fromPositions(final int[] mpos) {
         return new Loading2(mpos);
     }
@@ -118,7 +114,7 @@ public class Loading {
     public static ISsfLoading periodic(final int period, final int start) {
         return new PeriodicLoading(period, start);
     }
-    public static ISsfLoading regression(final FastMatrix X) {
+    public static ISsfLoading regression(final Matrix X) {
         return new RegressionLoading(X);
     }
 
@@ -140,9 +136,9 @@ public class Loading {
 
     private static class RegressionLoading implements ISsfLoading {
 
-        private final FastMatrix data;
+        private final Matrix data;
 
-        private RegressionLoading(final FastMatrix data) {
+        private RegressionLoading(final Matrix data) {
             this.data = data;
         }
 
@@ -162,12 +158,12 @@ public class Loading {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
+        public double ZVZ(int pos, Matrix V) {
             return QuadraticForm.apply(V, data.row(pos));
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
+        public void VpZdZ(int pos, Matrix V, double d) {
             V.addXaXt(d, data.row(pos));
         }
 
@@ -189,7 +185,7 @@ public class Loading {
         }
 
         @Override
-        public void ZM(int pos, FastMatrix m, DataBlock zm) {
+        public void ZM(int pos, Matrix m, DataBlock zm) {
             zm.set(m.row(0), m.row(1), (x, y) -> x + y);
             for (int r = 2; r < m.getRowsCount(); ++r) {
                 zm.add(m.row(r));
@@ -197,12 +193,12 @@ public class Loading {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
+        public double ZVZ(int pos, Matrix V) {
             return V.sum();
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
+        public void VpZdZ(int pos, Matrix V, double d) {
             V.add(d);
         }
 
@@ -237,7 +233,7 @@ public class Loading {
         }
 
         @Override
-        public void ZM(int pos, FastMatrix m, DataBlock zm) {
+        public void ZM(int pos, Matrix m, DataBlock zm) {
             zm.set(m.row(0), m.row(1), (x, y) -> x + y);
             for (int r = 2; r < cdim; ++r) {
                 zm.add(m.row(r));
@@ -245,13 +241,15 @@ public class Loading {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
-            return V.topLeft(cdim, cdim).sum();
+        public double ZVZ(int pos, Matrix V) {
+            return V.extract(0,cdim, 0,cdim).sum();
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
-            V.topLeft(cdim, cdim).add(d);
+        public void VpZdZ(int pos, Matrix V, double d) {
+            if (d == 0)
+                return;
+            V.extract(0, cdim, 0, cdim).add(d);
         }
 
         @Override
@@ -267,81 +265,6 @@ public class Loading {
         @Override
         public void Z(int pos, DataBlock z) {
             z.extract(0, cdim).set(1);
-        }
-
-    }
-
-    private static class ExtractorLoading implements ISsfLoading {
-
-        private final int i0, n, inc;
-
-        ExtractorLoading(int i0, int n, int inc) {
-            this.i0 = i0;
-            this.n = n;
-            this.inc = inc;
-        }
-
-//        /**
-//         * Selects specific columns
-//         *
-//         * @param m
-//         * @return
-//         */
-//        private Matrix columnExtract(Matrix m) {
-//            return m.extract(0, i0, m.getRowsCount(), n, 1, inc);
-//        }
-
-        /**
-         * Selects specific rows
-         *
-         * @param m
-         * @return
-         */
-        private FastMatrix rowExtract(FastMatrix m) {
-            return m.extract(i0, 0, n, m.getColumnsCount(), inc, 1);
-        }
-
-        private FastMatrix extract(FastMatrix v) {
-            return v.extract(i0, i0, n, n, inc, inc);
-        }
-
-        @Override
-        public double ZX(int pos, DataBlock m) {
-            return m.extract(i0, n, inc).sum();
-        }
-
-        @Override
-        public void ZM(int pos, FastMatrix m, DataBlock zm) {
-            DataBlockIterator rows = rowExtract(m).rowsIterator();
-            zm.copy(rows.next());
-            while (rows.hasNext()) {
-                zm.add(rows.next());
-            }
-        }
-
-        @Override
-        public double ZVZ(int pos, FastMatrix V) {
-            return extract(V).sum();
-        }
-
-        @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
-            extract(V).add(d);
-        }
-
-        @Override
-        public void XpZd(int pos, DataBlock x, double d) {
-            x.extract(i0, n, inc).add(d);
-        }
-
-        @Override
-        public boolean isTimeInvariant() {
-            return true;
-        }
-
-        @Override
-        public void Z(int pos, DataBlock z) {
-            z.extract(i0, n, inc).set(1);
         }
 
     }
@@ -362,17 +285,19 @@ public class Loading {
         }
 
         @Override
-        public void ZM(int pos, FastMatrix m, DataBlock zm) {
+        public void ZM(int pos, Matrix m, DataBlock zm) {
             zm.copy(m.row(mpos));
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
+        public double ZVZ(int pos, Matrix V) {
             return V.get(mpos, mpos);
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
+        public void VpZdZ(int pos, Matrix V, double d) {
+            if (d == 0)
+                return;
             V.add(mpos, mpos, d);
         }
 
@@ -410,18 +335,20 @@ public class Loading {
         }
 
         @Override
-        public void ZM(int pos, FastMatrix m, DataBlock zm) {
+        public void ZM(int pos, Matrix m, DataBlock zm) {
             zm.setAY(b, m.row(mpos));
 
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
+        public double ZVZ(int pos, Matrix V) {
             return b2 * V.get(mpos, mpos);
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
+        public void VpZdZ(int pos, Matrix V, double d) {
+            if (d == 0)
+                return;
             V.add(mpos, mpos, d * b2);
         }
 
@@ -461,7 +388,7 @@ public class Loading {
         }
 
         @Override
-        public void ZM(int pos, FastMatrix m, DataBlock zm) {
+        public void ZM(int pos, Matrix m, DataBlock zm) {
             zm.copy(m.row(mpos[0]));
             for (int i = 1; i < mpos.length; ++i) {
                 zm.add(m.row(mpos[i]));
@@ -469,7 +396,7 @@ public class Loading {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
+        public double ZVZ(int pos, Matrix V) {
             double d = 0;
             int n = mpos.length;
             for (int i = 0; i < n; ++i) {
@@ -482,7 +409,7 @@ public class Loading {
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
+        public void VpZdZ(int pos, Matrix V, double d) {
             if (d == 0) {
                 return;
             }
@@ -541,7 +468,7 @@ public class Loading {
         }
 
         @Override
-        public void ZM(int pos, FastMatrix m, DataBlock zm) {
+        public void ZM(int pos, Matrix m, DataBlock zm) {
             zm.setAY(w[0], m.row(mpos[0]));
             for (int i = 1; i < mpos.length; ++i) {
                 zm.addAY(w[i], m.row(mpos[i]));
@@ -549,7 +476,7 @@ public class Loading {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
+        public double ZVZ(int pos, Matrix V) {
             double d = 0;
             int n = mpos.length;
             for (int i = 0; i < n; ++i) {
@@ -564,7 +491,7 @@ public class Loading {
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
+        public void VpZdZ(int pos, Matrix V, double d) {
             if (d == 0) {
                 return;
             }
@@ -639,7 +566,7 @@ public class Loading {
         }
 
         @Override
-        public void ZM(int pos, FastMatrix m, DataBlock x) {
+        public void ZM(int pos, Matrix m, DataBlock x) {
             int spos = (start + pos) % period;
             if (spos == period - 1) {
                 for (int i = 0; i < x.length(); ++i) {
@@ -651,7 +578,7 @@ public class Loading {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix vm) {
+        public double ZVZ(int pos, Matrix vm) {
             int spos = (start + pos) % period;
             if (spos == period - 1) {
                 return vm.sum();
@@ -661,7 +588,7 @@ public class Loading {
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix vm, double d) {
+        public void VpZdZ(int pos, Matrix vm, double d) {
             if (d == 0) {
                 return;
             }
@@ -714,19 +641,19 @@ public class Loading {
         }
 
         @Override
-        public void ZM(int pos, FastMatrix m, DataBlock x) {
+        public void ZM(int pos, Matrix m, DataBlock x) {
             int spos = (start + pos) % period;
             x.copy(m.row(spos));
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix vm) {
+        public double ZVZ(int pos, Matrix vm) {
             int spos = (start + pos) % period;
             return vm.get(spos, spos);
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix vm, double d) {
+        public void VpZdZ(int pos, Matrix vm, double d) {
             if (d == 0) {
                 return;
             }
@@ -776,7 +703,7 @@ public class Loading {
         }
 
         @Override
-        public void ZM(int t, FastMatrix m, DataBlock x) {
+        public void ZM(int t, Matrix m, DataBlock x) {
             if (t % period == pos) {
                 x.copy(m.row(0));
             } else {
@@ -785,7 +712,7 @@ public class Loading {
         }
 
         @Override
-        public double ZVZ(int t, FastMatrix vm) {
+        public double ZVZ(int t, Matrix vm) {
             if (t % period == pos) {
                 return vm.get(0, 0);
             } else {
@@ -794,7 +721,7 @@ public class Loading {
         }
 
         @Override
-        public void VpZdZ(int t, FastMatrix vm, double d) {
+        public void VpZdZ(int t, Matrix vm, double d) {
             if (d == 0) {
                 return;
             }
@@ -837,12 +764,14 @@ public class Loading {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
+        public double ZVZ(int pos, Matrix V) {
             return s2 * loading.ZVZ(pos, V);
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
+        public void VpZdZ(int pos, Matrix V, double d) {
+            if (d == 0)
+                return;
             loading.VpZdZ(pos, V, d * s2);
         }
 
@@ -889,12 +818,14 @@ public class Loading {
         }
 
         @Override
-        public double ZVZ(int pos, FastMatrix V) {
+        public double ZVZ(int pos, Matrix V) {
             return l2(pos) * loading.ZVZ(pos, V);
         }
 
         @Override
-        public void VpZdZ(int pos, FastMatrix V, double d) {
+        public void VpZdZ(int pos, Matrix V, double d) {
+            if (d == 0)
+                return;
             loading.VpZdZ(pos, V, d * l2(pos));
         }
 

@@ -17,7 +17,7 @@
 package jdplus.regarima.regular;
 
 import jdplus.linearmodel.JointTest;
-import demetra.modelling.regression.PeriodicContrasts;
+import demetra.timeseries.regression.PeriodicContrasts;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
@@ -27,7 +27,7 @@ import demetra.arima.SarimaSpecification;
 import jdplus.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -73,8 +73,7 @@ public class SeasonalFTest {
 
     private RegArimaModel.Builder prepareSeasonalModel(TsData input) {
         int period = input.getAnnualFrequency();
-        SarimaSpecification rspec = new SarimaSpecification(period);
-        rspec.airline(false);
+        SarimaSpecification rspec = SarimaSpecification.m011(period);
         SarimaModel arima = SarimaModel.builder(rspec).build();
         return RegArimaModel.builder(SarimaModel.class)
                 .y(input.getValues())
@@ -83,7 +82,7 @@ public class SeasonalFTest {
     }
 
     private RegArimaModel.Builder prepareSeasonalModel(ModelDescription m) {
-        SarimaSpecification rspec = m.getSpecification();
+        SarimaSpecification rspec = m.specification();
         rspec.setBd(0);
         rspec.setBp(0);
         rspec.setBq(0);
@@ -95,7 +94,7 @@ public class SeasonalFTest {
     private void addSeasonalDummies(RegArimaModel.Builder builder, TsDomain domain) {
         // makes seasonal dummies
         PeriodicContrasts dummies = new PeriodicContrasts(domain.getAnnualFrequency());
-        FastMatrix x = Regression.matrix(domain, dummies);
+        Matrix x = Regression.matrix(domain, dummies);
         builder.addX(x);
         regarima = builder.build();
         nseas = dummies.dim();

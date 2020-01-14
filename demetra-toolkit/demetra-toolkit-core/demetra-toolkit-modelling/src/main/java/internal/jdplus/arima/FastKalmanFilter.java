@@ -23,14 +23,12 @@ import jdplus.data.DataBlockIterator;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.DeterminantalTerm;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import demetra.util.SubArrayOfInt;
-import jdplus.leastsquares.QRSolvers;
 import jdplus.leastsquares.QRSolver;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.Likelihood;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.matrices.UpperTriangularMatrix;
+import jdplus.leastsquares.QRSolution;
 
 /**
  * The FastKalmanFilter class provides fast computation of Regression models
@@ -354,7 +352,7 @@ public class FastKalmanFilter {
      * @return
      */
     public ConcentratedLikelihoodWithMissing process(final DoubleSeq y, final SubArrayOfInt ao,
-            final CanonicalMatrix x) {
+            final Matrix x) {
         fast = false;
         DeterminantalTerm det = new DeterminantalTerm();
         double[] c = c0.clone();
@@ -367,7 +365,7 @@ public class FastKalmanFilter {
         int n = y.length();
         double[] yl = new double[n];
         // double[] xa = new double[nx * dim];
-        CanonicalMatrix xl = CanonicalMatrix.make(n, nx);
+        Matrix xl = Matrix.make(n, nx);
         double[][] A = new double[nx][];
         double[] px = xl.getStorage();
 
@@ -442,16 +440,13 @@ public class FastKalmanFilter {
             xrows.next();
         }
 
-        QRSolver solver = QRSolvers.fastSolver();
-        solver.solve(DataBlock.of(yl), xl);
-        CanonicalMatrix R = solver.R();
-        double ssqerr = solver.ssqerr();
-        CanonicalMatrix u = UpperTriangularMatrix.inverse(R);
-        CanonicalMatrix bvar = SymmetricMatrix.UUt(u);
+        QRSolution qr = QRSolver.fastLeastSquares(DataBlock.of(yl), xl);
+        double ssqerr = qr.getSsqErr();
+        Matrix bvar = qr.unscaledCovariance();
 
         double ldet = det.getLogDeterminant();
         if (ao != null && !ao.isEmpty()) {
-            DataBlock rdiag = R.diagonal();
+            DoubleSeq rdiag = qr.rawRDiagonal();
             n -= ao.getLength();
             for (int i = 0; i < ao.getLength(); ++i) {
                 ldet += 2 * Math.log(Math.abs(rdiag.get(ao.get(i))));
@@ -459,10 +454,10 @@ public class FastKalmanFilter {
         }
         return ConcentratedLikelihoodWithMissing.builder()
                 .ndata(n)
-                .coefficients(solver.coefficients())
+                .coefficients(qr.getB())
                 .ssqErr(ssqerr)
                 .logDeterminant(ldet)
-                .residuals(solver.residuals())
+                .residuals(qr.getE())
                 .unscaledCovariance(bvar.unmodifiable())
                 .build();
     }

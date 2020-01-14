@@ -18,7 +18,7 @@ package demetra.x12;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.modelling.regression.Variable;
+import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.regular.IRegressionModule;
@@ -30,7 +30,7 @@ import jdplus.regarima.regular.ModelDescription;
 import jdplus.regarima.regular.ModelEstimation;
 import jdplus.regarima.regular.RegArimaModelling;
 import jdplus.sarima.SarimaModel;
-import demetra.modelling.regression.IEasterVariable;
+import demetra.timeseries.regression.IEasterVariable;
 import jdplus.arima.estimation.IArimaMapping;
 
 /**
@@ -100,17 +100,15 @@ public class EasterDetectionModule implements IRegressionModule {
             ModelDescription curDesc = new ModelDescription(refdesc);
             curDesc.addVariable(new Variable(easters[i], "easter", false));
             desc[i] = curDesc;
-            est[i]=curDesc.estimate(processor);
-         }
+            est[i] = curDesc.estimate(processor);
+        }
 
         // choose best model
         int imodel = comparator.compare(refest, est);
         if (imodel < 0) {
-            context.setDescription(refdesc);
-            context.setEstimation(refest);
+            context.set(refdesc, refest);
         } else {
-            context.setDescription(desc[imodel]);
-            context.setEstimation(est[imodel]);
+            context.set(desc[imodel], est[imodel]);
         }
 
         return icur == imodel ? ProcessingResult.Unchanged : ProcessingResult.Changed;

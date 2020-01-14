@@ -56,7 +56,19 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-toolkit-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-r</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-highfreq-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-highfreq-io</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>

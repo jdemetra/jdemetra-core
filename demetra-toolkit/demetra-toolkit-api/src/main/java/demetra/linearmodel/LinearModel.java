@@ -18,7 +18,7 @@ package demetra.linearmodel;
 
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  * Describes the linear model: y = a + b * X
@@ -33,7 +33,7 @@ public class LinearModel {
     /**
      * Exogenous variable
      */
-    private DoubleSeq y;
+    private double[] y;
 
     /**
      * Mean correction
@@ -41,8 +41,8 @@ public class LinearModel {
     private boolean meanCorrection;
 
     /**
-     * Regression vaiables
+     * Regression variables (without the mean)
      */
-    private Matrix X;
+    private MatrixType X;
     
 }

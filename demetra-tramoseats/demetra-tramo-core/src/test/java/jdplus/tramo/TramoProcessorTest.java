@@ -17,7 +17,7 @@
 package jdplus.tramo;
 
 import demetra.data.Data;
-import demetra.modelling.regression.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import jdplus.regarima.regular.PreprocessingModel;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
@@ -117,6 +117,15 @@ public class TramoProcessorTest {
     }
 
     @Test
+    public void testProdLegacy() {
+        IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
+        ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
+        ec.tstoolkit.modelling.arima.PreprocessingModel rslt = processor.process(s, null);
+        System.out.println("Legacy");
+        System.out.println(rslt.estimation.getStatistics().adjustedLogLikelihood);
+    }
+
+    @Test
     public void testInseeFull() {
         TsData[] all = Data.insee();
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
@@ -140,7 +149,7 @@ public class TramoProcessorTest {
         }
         System.out.println("TRfull");
         System.out.println(n);
-        assertTrue(n > .9 * all.length);
+        assertTrue(n >= .9 * all.length);
     }
 
     public static void testInseeFullc() {
@@ -299,7 +308,7 @@ public class TramoProcessorTest {
         }
         System.out.println("TR3");
         System.out.println(n);
-        assertTrue(n > .9 * all.length);
+        assertTrue(n >= .9 * all.length);
     }
 
     @Test
@@ -356,14 +365,6 @@ public class TramoProcessorTest {
         assertTrue(n > .9 * all.length);
     }
 
-//    @Test
-    public void testProdLegacy() {
-        IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
-        ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
-        ec.tstoolkit.modelling.arima.PreprocessingModel rslt = processor.process(s, null);
-        System.out.println("Legacy");
-        System.out.println(rslt.estimation.getStatistics().adjustedLogLikelihood);
-    }
 
 //    @Test
     public void testProdWald() {

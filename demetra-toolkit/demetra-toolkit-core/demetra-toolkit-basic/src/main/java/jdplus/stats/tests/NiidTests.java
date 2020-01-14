@@ -21,7 +21,7 @@ import demetra.design.Development;
 import jdplus.dstats.DStatException;
 import jdplus.stats.AutoCovariances;
 import jdplus.stats.DescriptiveStatistics;
-import jdplus.stats.StatException;
+import demetra.stats.StatException;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 

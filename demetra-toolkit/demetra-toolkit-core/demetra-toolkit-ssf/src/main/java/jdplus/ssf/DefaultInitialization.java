@@ -17,9 +17,8 @@
 package jdplus.ssf;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
 import java.util.function.Consumer;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -29,7 +28,7 @@ public class DefaultInitialization implements ISsfInitialization {
     
     private final int dim, ndiffuse;
     private Consumer<DataBlock> a0;
-    private Consumer<FastMatrix> Pf, Pi, B;
+    private Consumer<Matrix> Pf, Pi, B;
     
     public DefaultInitialization(int dim, int ndiffuse) {
         this.dim = dim;
@@ -41,12 +40,12 @@ public class DefaultInitialization implements ISsfInitialization {
         return this;
     }
     
-    public DefaultInitialization Pf(Consumer<FastMatrix> Pf) {
+    public DefaultInitialization Pf(Consumer<Matrix> Pf) {
         this.Pf = Pf;
         return this;
     }
     
-    public DefaultInitialization Pi(Consumer<FastMatrix> Pi) {
+    public DefaultInitialization Pi(Consumer<Matrix> Pi) {
         if (ndiffuse == 0) {
             throw new SsfException(SsfException.INITIALIZATION);
         }
@@ -54,7 +53,7 @@ public class DefaultInitialization implements ISsfInitialization {
         return this;
     }
     
-    public DefaultInitialization B(Consumer<FastMatrix> B) {
+    public DefaultInitialization B(Consumer<Matrix> B) {
         if (ndiffuse == 0) {
             throw new SsfException(SsfException.INITIALIZATION);
         }
@@ -78,7 +77,7 @@ public class DefaultInitialization implements ISsfInitialization {
     }
     
     @Override
-    public void diffuseConstraints(FastMatrix b) {
+    public void diffuseConstraints(Matrix b) {
         if (B != null) {
             B.accept(b);
         }
@@ -92,14 +91,14 @@ public class DefaultInitialization implements ISsfInitialization {
     }
     
     @Override
-    public void Pf0(FastMatrix pf) {
+    public void Pf0(Matrix pf) {
         if (Pf != null) {
             Pf.accept(pf);
         }
     }
     
     @Override
-    public void Pi0(FastMatrix pi) {
+    public void Pi0(Matrix pi) {
         if (Pi != null) {
             Pi.accept(pi);
         } else {
@@ -121,7 +120,7 @@ public class DefaultInitialization implements ISsfInitialization {
         if (Pf == null) {
             builder.append("Pf0:").append(System.lineSeparator()).append("0");
         } else {
-            CanonicalMatrix M = CanonicalMatrix.square(dim);
+            Matrix M = Matrix.square(dim);
             Pf.accept(M);
             builder.append(M.toString(ISsfState.FMT));
         }
@@ -129,7 +128,7 @@ public class DefaultInitialization implements ISsfInitialization {
         if (B == null) {
             builder.append("B:").append(System.lineSeparator()).append("0");
         } else {
-            CanonicalMatrix M = CanonicalMatrix.make(dim, ndiffuse);
+            Matrix M = Matrix.make(dim, ndiffuse);
             B.accept(M);
             builder.append(M.toString(ISsfState.FMT));
         }

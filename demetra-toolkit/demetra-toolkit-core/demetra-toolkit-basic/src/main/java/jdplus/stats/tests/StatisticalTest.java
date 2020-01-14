@@ -18,7 +18,7 @@ package jdplus.stats.tests;
 
 import demetra.design.Development;
 import demetra.stats.ProbabilityType;
-import jdplus.stats.StatException;
+import demetra.stats.StatException;
 import demetra.stats.TestResult;
 import jdplus.dstats.Distribution;
 

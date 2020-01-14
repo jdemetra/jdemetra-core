@@ -16,27 +16,28 @@
  */
 package jdplus.tramo;
 
+import demetra.data.ParameterSpec;
 import jdplus.data.interpolation.AverageInterpolator;
 import demetra.design.Development;
 import demetra.information.InformationSet;
-import demetra.modelling.regression.PreadjustmentVariable;
+import demetra.timeseries.regression.PreadjustmentVariable;
 import demetra.modelling.TransformationType;
-import demetra.modelling.regression.Variable;
-import demetra.modelling.regression.AdditiveOutlier;
+import demetra.timeseries.regression.Variable;
+import demetra.timeseries.regression.AdditiveOutlier;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
-import demetra.modelling.regression.EasterVariable;
-import demetra.modelling.regression.GenericTradingDaysVariable;
-import demetra.modelling.regression.HolidaysCorrectedTradingDays;
+import demetra.timeseries.regression.EasterVariable;
+import demetra.timeseries.regression.GenericTradingDaysVariable;
+import demetra.timeseries.regression.HolidaysCorrectedTradingDays;
 import jdplus.modelling.regression.HolidaysCorrectionFactory;
-import demetra.modelling.regression.ITsVariable;
-import demetra.modelling.regression.JulianEasterVariable;
-import demetra.modelling.regression.LengthOfPeriod;
-import demetra.modelling.regression.LevelShift;
-import demetra.modelling.regression.ModellingContext;
-import demetra.modelling.regression.PeriodicOutlier;
-import demetra.modelling.regression.StockTradingDays;
-import demetra.modelling.regression.TradingDaysType;
-import demetra.modelling.regression.TransitoryChange;
+import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.JulianEasterVariable;
+import demetra.timeseries.regression.LengthOfPeriod;
+import demetra.timeseries.regression.LevelShift;
+import demetra.timeseries.regression.ModellingContext;
+import demetra.timeseries.regression.PeriodicOutlier;
+import demetra.timeseries.regression.StockTradingDays;
+import demetra.timeseries.regression.TradingDaysType;
+import demetra.timeseries.regression.TransitoryChange;
 import jdplus.regarima.regular.IModelBuilder;
 import jdplus.regarima.regular.ModelDescription;
 import jdplus.regarima.regular.SarimaComponent;
@@ -46,14 +47,14 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import jdplus.timeseries.simplets.TsDataToolkit;
 import java.time.LocalDateTime;
 import java.util.Map;
-import demetra.modelling.regression.ILengthOfPeriodVariable;
-import demetra.modelling.regression.ITradingDaysVariable;
-import demetra.modelling.regression.IEasterVariable;
-import demetra.modelling.regression.IOutlier;
+import demetra.timeseries.regression.ILengthOfPeriodVariable;
+import demetra.timeseries.regression.ITradingDaysVariable;
+import demetra.timeseries.regression.IEasterVariable;
+import demetra.timeseries.regression.IOutlier;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.PeriodicOutlierFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
-import demetra.modelling.regression.UserTradingDays;
+import demetra.timeseries.regression.UserTradingDays;
 import demetra.modelling.regarima.SarimaSpec;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.tramo.CalendarSpec;
@@ -62,6 +63,7 @@ import demetra.tramo.RegressionSpec;
 import demetra.tramo.TradingDaysSpec;
 import demetra.tramo.TramoSpec;
 import demetra.tramo.TransformSpec;
+import jdplus.data.Parameter;
 
 /**
  *
@@ -81,6 +83,16 @@ class TramoModelBuilder implements IModelBuilder {
             this.context = ModellingContext.getActiveContext();
         }
     }
+    
+    private static Parameter[] toParameters(ParameterSpec[] p){
+        if (p == null)
+            return null;
+        Parameter[] np=new Parameter[p.length];
+        for (int i=0; i<np.length; ++i){
+            np[i]=new Parameter(p[i].getValue(), p[i].getType());
+        }
+        return np;
+    }
 
     private void initializeArima(ModelDescription model) {
         int freq = model.getAnnualFrequency();
@@ -91,12 +103,12 @@ class TramoModelBuilder implements IModelBuilder {
             SarimaComponent cmp = model.getArimaComponent();
             SarimaSpec arima = spec.getArima();
             cmp.setPeriod(freq);
-            cmp.setPhi(arima.getPhi());
-            cmp.setTheta(arima.getTheta());
+            cmp.setPhi(toParameters(arima.getPhi()));
+            cmp.setTheta(toParameters(arima.getTheta()));
             cmp.setD(arima.getD());
             if (!yearly) {
-                cmp.setBphi(arima.getBphi());
-                cmp.setBtheta(arima.getBtheta());
+                cmp.setBphi(toParameters(arima.getBphi()));
+                cmp.setBtheta(toParameters(arima.getBtheta()));
                 cmp.setBd(arima.getBd());
             }
         }

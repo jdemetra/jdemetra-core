@@ -6,18 +6,15 @@
 package jdplus.rkhs;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.data.DataBlock;
 import jdplus.data.analysis.DiscreteKernel;
 import jdplus.filters.LocalPolynomialFilterFactory;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.FastMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.stats.Kernel;
 import jdplus.stats.Kernels;
 import org.junit.Test;
@@ -34,7 +31,7 @@ public class HighOrderKernelsTest {
 
     @Test
     public void testBiWeight() {
-        CanonicalMatrix H = HighOrderKernels.hankel(jdplus.stats.Kernels.BIWEIGHT, 0, 4);
+        Matrix H = HighOrderKernels.hankel(jdplus.stats.Kernels.BIWEIGHT, 0, 4);
         assertEquals(SymmetricMatrix.determinant(H), 2.243734e-05, 1e-12);
     }
 
@@ -64,7 +61,7 @@ public class HighOrderKernelsTest {
 
     @Test
     public void testTriWeight() {
-        CanonicalMatrix H = HighOrderKernels.hankel(jdplus.stats.Kernels.TRIWEIGHT, 0, 4);
+        Matrix H = HighOrderKernels.hankel(jdplus.stats.Kernels.TRIWEIGHT, 0, 4);
         assertEquals(SymmetricMatrix.determinant(H), 6.765031e-06, 1e-12);
     }
 
@@ -209,10 +206,9 @@ public class HighOrderKernelsTest {
         }
     }
 
-    @Test
-    public void testUnequallySpaced() {
+    public static void testUnequallySpaced() {
         DoubleUnaryOperator kernel = HighOrderKernels.kernel(Kernels.TRIWEIGHT, 4);
-        FastMatrix M = randomize(x -> 10 * Math.sin(x), 1000, 0, Math.PI * 16);
+        Matrix M = randomize(x -> 10 * Math.sin(x), 1000, 0, Math.PI * 16);
         double step = Math.PI * 16 / 1000;
         for (int j = 0; j < 900; ++j) {
             double a = j * step, b = a + step * 100;
@@ -241,8 +237,8 @@ public class HighOrderKernelsTest {
         }
     }
 
-    public static FastMatrix randomize(DoubleUnaryOperator fn, int n, double a, double b) {
-        CanonicalMatrix M = CanonicalMatrix.make(n, 2);
+    public static Matrix randomize(DoubleUnaryOperator fn, int n, double a, double b) {
+        Matrix M = Matrix.make(n, 2);
         Random rnd = new Random(0);
         double[] array = rnd.doubles(n, a, b).toArray();
         Arrays.sort(array);

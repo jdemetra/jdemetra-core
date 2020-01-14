@@ -71,7 +71,7 @@ class SeasonalUnderDifferencingTest extends ModelController {
     private RegArimaModelling buildNewModel(RegArimaModelling context) {
         RegArimaModelling ncontext = new RegArimaModelling();
         ModelDescription ndesc = new ModelDescription(context.getDescription());
-        SarimaSpecification spec = ndesc.getSpecification();
+        SarimaSpecification spec = ndesc.specification();
         spec.setBp(0);
         spec.setBd(1);
         spec.setBq(1);

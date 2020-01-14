@@ -17,13 +17,12 @@
 package jdplus.ssf.likelihood;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.functions.IFunction;
-import jdplus.maths.functions.ssq.ISsqFunction;
-import jdplus.maths.functions.IFunctionDerivatives;
-import jdplus.maths.functions.NumericalDerivatives;
-import jdplus.maths.functions.ssq.ISsqFunctionDerivatives;
-import jdplus.maths.functions.ssq.SsqNumericalDerivatives;
-import jdplus.ssf.likelihood.MarginalLikelihood;
+import jdplus.math.functions.IFunction;
+import jdplus.math.functions.ssq.ISsqFunction;
+import jdplus.math.functions.IFunctionDerivatives;
+import jdplus.math.functions.NumericalDerivatives;
+import jdplus.math.functions.ssq.ISsqFunctionDerivatives;
+import jdplus.math.functions.ssq.SsqNumericalDerivatives;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.univariate.ISsf;
 import demetra.data.DoubleSeq;

@@ -20,13 +20,12 @@ package jdplus.ssf.univariate;
 
 import jdplus.ssf.ISsfLoading;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ResultsRange;
 import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
-import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
@@ -79,7 +78,7 @@ public class OrdinarySmoother {
 
     private double err, errVariance, u, uVariance;
     private DataBlock M, R;
-    private CanonicalMatrix N;
+    private Matrix N;
     private boolean missing;
     private int stop;
 
@@ -146,7 +145,7 @@ public class OrdinarySmoother {
         return R;
     }
 
-    public CanonicalMatrix getFinalN() {
+    public Matrix getFinalN() {
         return N;
     }
 
@@ -158,7 +157,7 @@ public class OrdinarySmoother {
         M = DataBlock.make(dim);
 
         if (calcvar) {
-            N = CanonicalMatrix.square(dim);
+            N = Matrix.square(dim);
         }
     }
 
@@ -175,7 +174,7 @@ public class OrdinarySmoother {
             iterateN(pos);
         }
         DataBlock fa = frslts.a(pos);
-        FastMatrix fP = frslts.P(pos);
+        Matrix fP = frslts.P(pos);
         if (fP == null) {
             return false;
         }
@@ -185,9 +184,9 @@ public class OrdinarySmoother {
         a.addProduct(R, fP.columnsIterator());
         if (calcvar) {
             // P = P-PNP
-            CanonicalMatrix P = state.P();
+            Matrix P = state.P();
             P.copy(fP);
-            CanonicalMatrix V = SymmetricMatrix.XtSX(N, P);
+            Matrix V = SymmetricMatrix.XtSX(N, P);
             P.sub(V);
         }
         return true;
@@ -204,13 +203,13 @@ public class OrdinarySmoother {
             // N(t-1) = Z'(t)*Z(t)/f(t) + (T'(t)-Z'K')*N(t)*(T(t)-KZ)
             // Z'(t)*Z(t)(1/f(t)+K'N(t)K) + T'NT - Z'K'N(t) - NK'Z'
             ssf.XL(pos, N, M, errVariance);
-            ssf.XL(pos, N.transpose(), M, errVariance);
+            ssf.XtL(pos, N,  M, errVariance);
 
             loading.VpZdZ(pos, N, 1 / errVariance);
         } else {
             //T'*N(t)*T
             dynamics.MT(pos, N);
-            dynamics.MT(pos, N.transpose());
+            dynamics.TtM(pos, N);
         }
         SymmetricMatrix.reenforceSymmetry(N);
     }

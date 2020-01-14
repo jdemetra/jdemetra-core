@@ -5,17 +5,14 @@
  */
 package jdplus.dstats;
 
-import jdplus.dstats.DStatException;
-import jdplus.dstats.Distribution;
-import jdplus.dstats.Chi2;
 import demetra.stats.ProbabilityType;
-import jdplus.random.SystemRNG;
 import java.util.Random;
+import jdplus.random.JdkRNG;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import demetra.random.RandomNumberGenerator;
+import jdplus.random.RandomNumberGenerator;
 
 /**
  *
@@ -248,6 +245,6 @@ public class Chi2Test {
     }
 
     private RandomNumberGenerator getRandomNumberGenerator() {
-        return new SystemRNG(0);
+        return JdkRNG.newRandom(0);
     }
 }

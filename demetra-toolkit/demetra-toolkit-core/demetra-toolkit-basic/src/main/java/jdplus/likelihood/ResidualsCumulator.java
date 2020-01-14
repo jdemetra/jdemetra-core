@@ -19,9 +19,9 @@ package jdplus.likelihood;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.likelihood.Likelihood;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.matrices.Matrix;
 
 
 /**
@@ -43,15 +43,15 @@ public class ResidualsCumulator {
     public ResidualsCumulator() {
     }
 
-    public void add(final DataBlock e, final FastMatrix var) {
+    public void add(final DataBlock e, final Matrix var) {
         if (e.length() == 1) {
             add(e.get(0), var.get(0, 0));
         } else {
-            FastMatrix l = var.deepClone();
-            SymmetricMatrix.lcholesky(l, 1e-9);
+            Matrix l = var.deepClone();
+            SymmetricMatrix.lcholesky(l);
             DataBlock el = DataBlock.of(e);
             // L^-1*e=el <-> e=L*el
-            LowerTriangularMatrix.rsolve(l, el, 1e-9);
+            LowerTriangularMatrix.solveLx(l, el);
             DataBlock diag = l.diagonal();
             for (int i = 0; i < el.length(); ++i) {
                 double r = diag.get(i);

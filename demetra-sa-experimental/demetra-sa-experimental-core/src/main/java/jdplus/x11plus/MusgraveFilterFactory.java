@@ -17,10 +17,10 @@
 package jdplus.x11plus;
 
 import demetra.design.Development;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.HendersonFilters;
-import jdplus.maths.linearfilters.IFiniteFilter;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.linearfilters.FiniteFilter;
+import jdplus.math.linearfilters.HendersonFilters;
+import jdplus.math.linearfilters.IFiniteFilter;
+import jdplus.math.polynomials.Polynomial;
 import java.util.HashMap;
 import java.util.Map;
 

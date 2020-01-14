@@ -8,10 +8,10 @@ package jdplus.filters;
 import demetra.data.DoubleSeq;
 import java.util.Arrays;
 import jdplus.filters.FSTFilter.SmoothnessCriterion;
-import jdplus.maths.linearfilters.FiniteFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.maths.polynomials.UnitRoots;
+import jdplus.math.linearfilters.FiniteFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.polynomials.Polynomial;
+import jdplus.math.polynomials.UnitRoots;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

@@ -17,9 +17,9 @@
 package demetra.x12;
 
 import demetra.design.BuilderPattern;
-import demetra.modelling.regression.Variable;
+import demetra.timeseries.regression.Variable;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
-import demetra.modelling.regression.IOutlier;
+import demetra.timeseries.regression.IOutlier;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.PeriodicOutlierFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
@@ -138,7 +138,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         SingleOutlierDetector sod = ExactSingleOutlierDetector.builder()
                 .robustStandardDeviationComputer(RobustStandardDeviationComputer.mad(false))
                 .armaFilter(new AnsleyFilter())
-                .residualsComputer(ResidualsComputer.mlComputer())
+                .residualsComputer(X12Utility.mlComputer())
                 .build();
         if (ao) {
             sod.addOutlierFactory(AdditiveOutlierFactory.FACTORY);
@@ -217,7 +217,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
                 IOutlier o = impl.getFactory(cur[1]).make(pos.start());
                 model.addVariable(new Variable(o, IOutlier.defaultName(o.getCode(), pos), false));
             }
-            context.setEstimation(null);
+            context.clearEstimation();
             return ProcessingResult.Changed;
         } catch (Exception err) {
             return ProcessingResult.Failed;

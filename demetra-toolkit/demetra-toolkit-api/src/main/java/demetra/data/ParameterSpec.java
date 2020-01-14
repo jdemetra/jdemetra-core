@@ -37,6 +37,13 @@ public class ParameterSpec {
     public static ParameterSpec initial(double value){
         return new ParameterSpec(value, 0, ParameterType.Initial);
     }
+    
+    public static ParameterSpec[] make(int n){
+        ParameterSpec[] all=new ParameterSpec[n];
+        for (int i=0; i<n; ++i)
+            all[i]=UNDEFINED;
+        return all;
+    }
 
     private static final ParameterSpec UNDEFINED =new ParameterSpec(0,0,ParameterType.Undefined);
 }

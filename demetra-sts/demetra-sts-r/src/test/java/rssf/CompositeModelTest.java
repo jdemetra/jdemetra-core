@@ -11,8 +11,8 @@ import demetra.data.Data;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
-import demetra.maths.Optimizer;
-import jdplus.maths.matrices.CanonicalMatrix;
+import demetra.math.functions.Optimizer;
+import jdplus.math.matrices.Matrix;
 import jdplus.msts.CompositeModel;
 import jdplus.msts.CompositeModelEstimation;
 import jdplus.ssf.implementations.Loading;
@@ -23,9 +23,11 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Test;
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 import demetra.ssf.SsfInitialization;
 import demetra.ssf.SsfLikelihood;
+import jdplus.sts.LocalLevel;
+import jdplus.sts.LocalLinearTrend;
 
 /**
  *
@@ -33,10 +35,10 @@ import demetra.ssf.SsfLikelihood;
  */
 public class CompositeModelTest {
 
-    static final Matrix data;
+    static final MatrixType data;
 
     static {
-        Matrix tmp = null;
+        MatrixType tmp = null;
         try {
             URI uri = CompositeModels.class.getResource("/mssf1").toURI();
             tmp = MatrixSerializer.read(new File(uri), "\t|,");
@@ -61,7 +63,7 @@ public class CompositeModelTest {
         eq.add("n", .1, false, null);
         model.add(eq);
         int len = Data.ABS_RETAIL.length;
-        CanonicalMatrix M = CanonicalMatrix.make(len, 1);
+        Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
         System.out.println(DataBlock.of(rslt.getFullParameters()));
@@ -72,7 +74,7 @@ public class CompositeModelTest {
 
     @Test
     public void testX() {
-        CanonicalMatrix x = CanonicalMatrix.make(data.getRowsCount(), 6);
+        Matrix x = Matrix.make(data.getRowsCount(), 6);
         x.column(0).copy(data.column(0));
         x.column(1).copy(data.column(9));
         x.column(2).copy(data.column(2));
@@ -98,27 +100,27 @@ public class CompositeModelTest {
 // create the equations 
 
         ModelEquation eq1 = new ModelEquation("eq1", 1, true);
-        eq1.add("tu");
+        eq1.add("tu", LocalLinearTrend.defaultLoading());
         eq1.add("cycle", .1, false, Loading.fromPosition(4));
         model.add(eq1);
         ModelEquation eq2 = new ModelEquation("eq2", 0.01, false);
-        eq2.add("ty");
+        eq2.add("ty", LocalLinearTrend.defaultLoading());
         eq2.add("cycle", .1, false, Loading.fromPosition(4));
         model.add(eq2);
         ModelEquation eq3 = new ModelEquation("eq3", .01, false);
-        eq3.add("tpicore");
+        eq3.add("tpicore", LocalLevel.defaultLoading());
         eq3.add("cycle", .1, false, Loading.fromPosition(0));
         model.add(eq3);
         ModelEquation eq4 = new ModelEquation("eq4", .01, false);
-        eq4.add("tpi");
+        eq4.add("tpi", LocalLevel.defaultLoading());
         eq4.add("cycle", .1, false, Loading.fromPosition(4));
         model.add(eq4);
         ModelEquation eq5 = new ModelEquation("eq5", .01, false);
-        eq5.add("tb");
+        eq5.add("tb", LocalLevel.defaultLoading());
         eq5.add("cycle", .1, false, Loading.fromPosition(5));
         model.add(eq5);
         ModelEquation eq6 = new ModelEquation("eq6", .01, false);
-        eq6.add("tc");
+        eq6.add("tc", LocalLevel.defaultLoading());
         eq6.add("cycle", .1, false, Loading.from(new int[]{5, 6, 7, 8}, new double[]{1, 1, 1, 1}));
         model.add(eq6);
         //estimate the model

@@ -39,7 +39,7 @@ class ModelBenchmarking extends ModelController {
 
         PreprocessingModel current = modelling.build();
 
-        SarimaSpecification spec = current.getDescription().getSpecification();
+        SarimaSpecification spec = current.getDescription().specification();
         if (spec.isAirline(context.seasonal)) {
             return ProcessingResult.Unchanged;
         }

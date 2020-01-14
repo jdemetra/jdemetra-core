@@ -12,7 +12,7 @@ import demetra.x11.X11Context;
 import static demetra.x11.X11Kernel.table;
 import demetra.x11.filter.endpoints.FilteredMeanEndPoints;
 import jdplus.data.DataBlock;
-import jdplus.maths.linearfilters.SymmetricFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
 
 /**
  *

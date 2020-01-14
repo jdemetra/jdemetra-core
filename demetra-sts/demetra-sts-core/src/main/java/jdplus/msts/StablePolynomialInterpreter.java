@@ -7,9 +7,9 @@ package jdplus.msts;
 
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
-import jdplus.maths.functions.IParametersDomain;
-import jdplus.maths.functions.ParamValidation;
-import jdplus.maths.polynomials.Polynomial;
+import jdplus.math.functions.IParametersDomain;
+import jdplus.math.functions.ParamValidation;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.estimation.SarimaMapping;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;

@@ -72,15 +72,13 @@ abstract class ModelController {
     }
 
     protected void transferInformation(RegArimaModelling from, RegArimaModelling to) {
-        to.setDescription(from.getDescription());
-        to.setEstimation(from.getEstimation());
+        to.set(from.getDescription(),from.getEstimation());
         //        to.information.clear();
         //        to.information.copy(from.information);
     }
 
     protected void transferInformation(PreprocessingModel from, RegArimaModelling to) {
-        to.setDescription(from.getDescription());
-        to.setEstimation(from.getEstimation());
+        to.set(from.getDescription(),from.getEstimation());
         //        to.information.clear();
         //        to.information.copy(from.information);
     }

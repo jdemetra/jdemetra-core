@@ -19,9 +19,11 @@ package jdplus.stats.tests;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.design.BuilderPattern;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.decomposition.Householder;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.Householder;
 import demetra.data.DoubleSeq;
+import jdplus.leastsquares.QRSolution;
+import jdplus.leastsquares.QRSolver;
 
 /**
  * Augmented Dickey-Fuller test
@@ -74,7 +76,7 @@ public class AugmentedDickeyFuller {
             if (trend) {
                 ++ncols;
             }
-            CanonicalMatrix x = CanonicalMatrix.make(ndata - k, ncols);
+            Matrix x = Matrix.make(ndata - k, ncols);
 
             DataBlockIterator columns = x.reverseColumnsIterator();
             columns.next().copy(y.extract(k - 1, ndata - k));
@@ -105,25 +107,23 @@ public class AugmentedDickeyFuller {
     private static final double[] LT_10 = new double[]{-3.12705, -2.5856, -3.925, -22.380};
 
     private final boolean cnt, trend;
-    private final CanonicalMatrix x;
+    private final Matrix x;
     private final DoubleSeq y;
     private final DataBlock b, e;
     private final double t;
 
-    private AugmentedDickeyFuller(DoubleSeq y, CanonicalMatrix x, boolean cnt, boolean trend) {
+    private AugmentedDickeyFuller(DoubleSeq y, Matrix x, boolean cnt, boolean trend) {
         this.x = x;
         this.y = y;
         this.cnt = cnt;
         this.trend = trend;
-        Householder qr = new Householder(true);
-        qr.decompose(x);
-        b = DataBlock.make(x.getColumnsCount());
-        e = DataBlock.make(x.getRowsCount() - x.getColumnsCount());
-        qr.leastSquares(y, b, e);
+        QRSolution ls = QRSolver.fastLeastSquares(y, x);
+        b=DataBlock.of(ls.getB());
+        e=DataBlock.of(ls.getE());
         int nlast = b.length() - 1;
-        double ssq = e.ssq();
+        double ssq = ls.getSsqErr();
         double val = b.get(nlast);
-        double std = Math.abs(Math.sqrt(ssq / e.length()) / qr.rdiagonal(false).get(nlast));
+        double std = Math.abs(Math.sqrt(ssq / e.length()) / ls.rawRDiagonal().get(nlast));
         t = val / std;
     }
 

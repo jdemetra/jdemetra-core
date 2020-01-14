@@ -21,9 +21,12 @@ import jdplus.data.DataBlockIterator;
 import jdplus.data.DataWindow;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.MatrixException;
-import jdplus.maths.matrices.decomposition.Householder;
+import demetra.math.Constants;
+import jdplus.leastsquares.QRSolution;
+import jdplus.leastsquares.QRSolver;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixException;
+import jdplus.math.matrices.decomposition.Householder;
 
 
 /**
@@ -113,21 +116,20 @@ public class AutoRegressiveSpectrum {
             if (nc < nar) {
                 return;
             }
-            CanonicalMatrix M = CanonicalMatrix.make(nc, nar);
+            Matrix M = Matrix.make(nc, nar);
             DataWindow rc = DataWindow.windowOf(all, nar, n, 1);
             DataBlockIterator cols = M.columnsIterator();
             while (cols.hasNext()) {
                 cols.next().copy(rc.move(-1));
             }
 
-            Householder qr = new Householder(false);
-            qr.decompose(M);
+            QRSolution ls = QRSolver.fastLeastSquares(DataBlock.of(all, nar, n, 1), M);
             ar = new double[nar];
-            DataBlock c = DataBlock.of(ar);
-            DataBlock e = DataBlock.make(nc - nar);
-            qr.leastSquares(DataBlock.of(all, nar, n, 1), c, e);
-            c.chs();
-            sig = e.ssq() / nc;
+            DoubleSeq c = ls.getB();
+            DataBlock D=DataBlock.of(c);
+            D.chs();
+            ar=D.getStorage();
+            sig = ls.getSsqErr() / nc;
         } catch (MatrixException err) {
             clear();
         }

@@ -20,7 +20,7 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import jdplus.dstats.Chi2;
 import jdplus.stats.DescriptiveStatistics;
-import jdplus.stats.StatException;
+import demetra.stats.StatException;
 import demetra.data.DoubleSeq;
 
 

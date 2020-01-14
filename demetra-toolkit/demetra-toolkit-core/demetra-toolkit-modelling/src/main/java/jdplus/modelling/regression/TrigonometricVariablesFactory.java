@@ -16,12 +16,12 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.TrigonometricVariables;
+import demetra.timeseries.regression.TrigonometricVariables;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  * Computes trigonometric variables: sin(wt), cos(wt) at given frequencies if w
@@ -31,9 +31,9 @@ import jdplus.maths.matrices.FastMatrix;
  */
 public class TrigonometricVariablesFactory implements RegressionVariableFactory<TrigonometricVariables> {
 
-    public static CanonicalMatrix matrix(TrigonometricVariables var, int length, int start) {
+    public static Matrix matrix(TrigonometricVariables var, int length, int start) {
         double[] freq = var.getFrequencies();
-        CanonicalMatrix m = CanonicalMatrix.make(length, var.dim());
+        Matrix m = Matrix.make(length, var.dim());
         int nlast = freq.length - 1;
         if (freq[nlast] != 1) {
             ++nlast;
@@ -57,7 +57,7 @@ public class TrigonometricVariablesFactory implements RegressionVariableFactory<
     private TrigonometricVariablesFactory(){}
 
     @Override
-    public boolean fill(TrigonometricVariables var, TsPeriod start, FastMatrix buffer) {
+    public boolean fill(TrigonometricVariables var, TsPeriod start, Matrix buffer) {
         TsPeriod refPeriod = start.withDate(var.getReference());
         long istart = start.getId() - refPeriod.getId();
         double[] freq = var.getFrequencies();
@@ -80,7 +80,7 @@ public class TrigonometricVariablesFactory implements RegressionVariableFactory<
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(TrigonometricVariables var, D domain, FastMatrix buffer) {
+    public <D extends TimeSeriesDomain> boolean fill(TrigonometricVariables var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

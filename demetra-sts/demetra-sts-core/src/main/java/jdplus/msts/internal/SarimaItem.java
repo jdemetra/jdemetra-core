@@ -8,7 +8,6 @@ package jdplus.msts.internal;
 import jdplus.msts.StateItem;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.ssf.SsfArima;
-import jdplus.msts.ModelItem;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.SarimaInterpreter;
 import jdplus.msts.VarianceInterpreter;
@@ -58,10 +57,10 @@ public class SarimaItem extends StateItem {
                     .parameters(p.extract(1, np))
                     .build();
             if (var == 1) {
-                cmp = SsfArima.stateComponent(sarima);
+                cmp = SsfArima.of(sarima);
             } else {
                 ArimaModel arima = new ArimaModel(sarima.getStationaryAr(), sarima.getNonStationaryAr(), sarima.getMa(), var);
-                cmp = SsfArima.stateComponent(arima);
+                cmp = SsfArima.of(arima);
             }
             builder.add(name, cmp, null);
             return np + 1;
@@ -83,10 +82,10 @@ public class SarimaItem extends StateItem {
                 .build();
         StateComponent cmp;
         if (var == 1) {
-            cmp = SsfArima.stateComponent(sarima);
+            cmp = SsfArima.of(sarima);
         } else {
             ArimaModel arima = new ArimaModel(sarima.getStationaryAr(), sarima.getNonStationaryAr(), sarima.getMa(), var);
-            cmp = SsfArima.stateComponent(arima);
+            cmp = SsfArima.of(arima);
         }
         return cmp;
     }
@@ -99,7 +98,7 @@ public class SarimaItem extends StateItem {
 
     @Override
     public ISsfLoading defaultLoading(int m) {
-        return SsfArima.loading();
+        return SsfArima.defaultLoading();
     }
 
     @Override

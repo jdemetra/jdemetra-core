@@ -5,8 +5,7 @@
  */
 package jdplus.stats;
 
-import jdplus.maths.Arithmetics;
-import jdplus.maths.MathException;
+import jdplus.math.Arithmetics;
 
 /**
  *

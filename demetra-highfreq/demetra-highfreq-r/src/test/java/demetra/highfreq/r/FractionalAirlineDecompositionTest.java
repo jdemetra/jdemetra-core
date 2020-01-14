@@ -5,7 +5,7 @@
  */
 package demetra.highfreq.r;
 
-import demetra.highfreq.r.FractionalAirlineDecomposition;
+import demetra.highfreq.r.FractionalAirlineProcessor;
 import demetra.data.Data;
 import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
@@ -17,7 +17,8 @@ import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
-import demetra.maths.matrices.Matrix;
+import demetra.highfreq.FractionalAirlineDecomposition;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -29,8 +30,8 @@ public class FractionalAirlineDecompositionTest {
     }
     
     public static void main(String[] cmds) throws IOException{
-        Matrix M = MatrixSerializer.read(new File("c://highfreq/data/births.txt"));
-        FractionalAirlineDecomposition.Results rslt = FractionalAirlineDecomposition.process(M.column(0).toArray(), 365.25, true, true);
+        MatrixType M = MatrixSerializer.read(new File("c://highfreq/data/births.txt"));
+        FractionalAirlineProcessor.DecompositionResults rslt = FractionalAirlineProcessor.process(M.column(0).toArray(), 365.25, true, true);
         double[] s = rslt.getData("s", double[].class);
         System.out.println(DoubleSeq.of(s));
         double[] n = rslt.getData("n", double[].class);
@@ -39,12 +40,10 @@ public class FractionalAirlineDecompositionTest {
 
     @Test
     public void testWeekly() {
-        FractionalAirlineDecomposition.Results rslt = FractionalAirlineDecomposition.process(WeeklyData.US_CLAIMS, 365.25/7, true, false);
+        FractionalAirlineProcessor.DecompositionResults rslt = FractionalAirlineProcessor.process(WeeklyData.US_CLAIMS, 365.25/7, true, false);
 //        System.out.println(rslt.getUcarima());
 //        System.out.println(DoubleSequence.ofInternal(rslt.getData("sa", double[].class)));
         assertTrue(null != rslt.getData("sa", double[].class));
-        Map<String, Class> dictionary=new LinkedHashMap<>();
-        FractionalAirlineDecomposition.Results.getMapping().fillDictionary(null, dictionary, true);
         
 //        dictionary.keySet().forEach(s->System.out.println(s));
         

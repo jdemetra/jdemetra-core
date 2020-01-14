@@ -20,7 +20,7 @@ import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.MatrixResults;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -64,7 +64,7 @@ public class DefaultDiffuseFilteringResults extends BaseDiffuseFilteringResults{
         }
     }
 
-    public FastMatrix Pi(int pos) {
+    public Matrix Pi(int pos) {
         return Pi.matrix(pos);
     }
 

@@ -34,10 +34,6 @@ public class UcarimaModel {
         return components.length;
     }
     
-    public ArimaModel[] getComponents(){
-        return components.clone();
-    }
-    
     public ArimaModel getComponent(int i){
         return components[i];
     }

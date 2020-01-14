@@ -18,12 +18,11 @@ package jdplus.arima;
 
 import demetra.design.Development;
 import demetra.design.Immutable;
-import demetra.maths.Complex;
-import demetra.maths.RealPolynomial;
-import jdplus.maths.linearfilters.BackFilter;
-import jdplus.maths.linearfilters.SymmetricFilter;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.maths.polynomials.UnitRootsSolver;
+import demetra.math.Complex;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.polynomials.Polynomial;
+import jdplus.math.polynomials.UnitRootsSolver;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -290,7 +289,7 @@ public final class ArimaModel extends AbstractArimaModel {
             rar = rar.times(rur);
         }
 
-        SymmetricFilter sl = SymmetricFilter.fromFilter(lar), sr = SymmetricFilter.fromFilter(rar);
+        SymmetricFilter sl = SymmetricFilter.convolutionOf(lar), sr = SymmetricFilter.convolutionOf(rar);
 
         // use SymmetricFilter for the numerator.
         SymmetricFilter lma = l.symmetricMa(), rma = r.symmetricMa(); // contains the innovation
@@ -375,7 +374,7 @@ public final class ArimaModel extends AbstractArimaModel {
     @Override
     public int getMaOrder() {
         if (ma != null) {
-            return -ma.getLowerBound();
+            return ma.length()-1;
         } else {
             return sma.getUpperBound();
         }
@@ -388,7 +387,7 @@ public final class ArimaModel extends AbstractArimaModel {
 
     @Override
     public int getNonStationaryArOrder() {
-        return delta.getDegree();
+        return delta.length()-1;
     }
 
     @Override
@@ -402,7 +401,7 @@ public final class ArimaModel extends AbstractArimaModel {
      */
     @Override
     public int getStationaryArOrder() {
-        return ar.getDegree();
+        return ar.length()-1;
     }
 
     @Override
@@ -428,7 +427,7 @@ public final class ArimaModel extends AbstractArimaModel {
         if (this == NULL) {
             return true;
         }
-        return delta.getDegree() == 0
+        return delta.length() == 1
                 && (sma != null ? sma.isNull() : Math.abs(var)<EPS);
     }
 
@@ -437,13 +436,13 @@ public final class ArimaModel extends AbstractArimaModel {
      * @return
      */
     public boolean isWhiteNoise() {
-        if (ar.getDegree() > 0) {
+        if (ar.length() > 1) {
             return false;
         }
-        if (delta.getDegree() > 0) {
+        if (delta.length() > 1) {
             return false;
         }
-        if (ma != null && ma.getDegree() > 0) {
+        if (ma != null && ma.length() > 1) {
             return false;
         }
         if (sma != null && sma.length() > 1) {
@@ -537,7 +536,7 @@ public final class ArimaModel extends AbstractArimaModel {
             synchronized (this) {
                 s = sar;
                 if (s == null) {
-                    s = SymmetricFilter.fromFilter(ar.times(delta));
+                    s = SymmetricFilter.convolutionOf(ar.times(delta));
                     sar = s;
                 }
             }
@@ -588,7 +587,7 @@ public final class ArimaModel extends AbstractArimaModel {
                 return this;
             }
             Polynomial.SimplifyingTool smp = new Polynomial.SimplifyingTool();
-            if (smp.simplify(urs.getUnitRoots().toPolynomial(), delta.asPolynomial())) {
+            if (smp.simplify(urs.getUnitRoots().asPolynomial(), delta.asPolynomial())) {
                 BackFilter ndelta = new BackFilter(smp.getRight());
                 BackFilter nma = new BackFilter(smp.getLeft().times(urs.remainder()));
                 return new ArimaModel(getStationaryAr(), ndelta, nma, getInnovationVariance());
@@ -615,7 +614,7 @@ public final class ArimaModel extends AbstractArimaModel {
             synchronized (this) {
                 s = derivedsma;
                 if (s == null) {
-                    s = SymmetricFilter.fromFilter(ma, var);
+                    s = SymmetricFilter.convolutionOf(ma, var);
                     derivedsma = s;
                 }
             }

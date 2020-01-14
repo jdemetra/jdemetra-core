@@ -17,8 +17,8 @@
 package jdplus.likelihood;
 
 import demetra.likelihood.Likelihood;
-import jdplus.maths.functions.IFunctionPoint;
-import jdplus.maths.functions.ssq.ISsqFunctionPoint;
+import jdplus.math.functions.IFunctionPoint;
+import jdplus.math.functions.ssq.ISsqFunctionPoint;
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>

@@ -5,56 +5,47 @@
  */
 package jdplus.leastsquares;
 
-import jdplus.leastsquares.internal.AdvancedQRSolver;
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.decomposition.Householder;
-import jdplus.maths.matrices.decomposition.HouseholderWithPivoting;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import java.util.Random;
+import jdplus.math.matrices.decomposition.Householder;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Ignore;
-import jdplus.maths.matrices.FastMatrix;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public class ILeastSquaresSolverTest {
-    
+
     public ILeastSquaresSolverTest() {
     }
 
-    @Test
-    @Ignore
-    public void testPerformance() {
-        int N=300, M=20, K=10000;
-        FastMatrix A=CanonicalMatrix.make(N, M);
-        Random rnd=new Random(0);
-        A.set(rnd::nextDouble);
-        DataBlock y=DataBlock.make(N);
-        y.set(rnd::nextDouble);
-        long t0=System.currentTimeMillis();
-        for (int i=0; i<K; ++i){
-            AdvancedQRSolver qr= AdvancedQRSolver.builder(new Householder()).build();
-            qr.solve(y, A);
-        }
-        long t1=System.currentTimeMillis();
-        System.out.println(t1-t0);
-        t0=System.currentTimeMillis();
-        for (int i=0; i<K; ++i){
-            AdvancedQRSolver qr= AdvancedQRSolver.builder(new Householder()).iterative(3).simpleIteration(true).build();
-            qr.solve(y, A);
-        }
-        t1=System.currentTimeMillis();
-        System.out.println(t1-t0);
-        t0=System.currentTimeMillis();
-        for (int i=0; i<K; ++i){
-            AdvancedQRSolver qr= AdvancedQRSolver.builder(new HouseholderWithPivoting()).build();
-            qr.solve(y, A);
-        }
-        t1=System.currentTimeMillis();
-        System.out.println(t1-t0);
+    public static void main(String[] args) {
+        testPerformance();
     }
-    
+
+    public static void testPerformance() {
+        int N = 300, M = 10, K = 500000;
+        Matrix A = Matrix.make(N, M);
+        Random rnd = new Random(0);
+        A.set((i, j) -> rnd.nextDouble());
+        DataBlock y = DataBlock.make(N);
+        y.set(rnd::nextDouble);
+        long t0 = System.currentTimeMillis();
+        for (int i = 0; i < K; ++i) {
+            QRSolver.fastLeastSquares(y, A);
+        }
+        long t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+        t0 = System.currentTimeMillis();
+        for (int i = 0; i < K; ++i) {
+            QRSolver.robustLeastSquares(y, A);
+        }
+        t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+    }
+
 }

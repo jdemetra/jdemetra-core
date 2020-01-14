@@ -18,7 +18,7 @@ package jdplus.ssf.implementations;
 
 import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfDynamics;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -45,7 +45,7 @@ public class ConstantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void V(int pos, FastMatrix qm) {
+    public void V(int pos, Matrix qm) {
     }
 
     @Override
@@ -54,16 +54,11 @@ public class ConstantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void S(int pos, FastMatrix sm) {
+    public void S(int pos, Matrix sm) {
     }
 
-//    @Override
-//    public void addSX(int pos, DataBlock x, DataBlock y) {
-//        y.add(x);
-//    }
-//
     @Override
-    public void T(int pos, FastMatrix tr) {
+    public void T(int pos, Matrix tr) {
         tr.diagonal().set(1);
     }
 
@@ -72,7 +67,7 @@ public class ConstantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void TM(int pos, FastMatrix m) {
+    public void TM(int pos, Matrix m) {
     }
 
     @Override
@@ -88,14 +83,22 @@ public class ConstantDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void TVT(int pos, FastMatrix v) {
+    public void TVT(int pos, Matrix v) {
     }
 
     @Override
-    public void addV(int pos, FastMatrix p) {
+    public void addV(int pos, Matrix p) {
     }
 
     @Override
-    public void MT(int pos, FastMatrix x) {
+    public void MT(int pos, Matrix x) {
+    }
+
+    @Override
+    public void TtM(int pos, Matrix x) {
+    }
+
+    @Override
+    public void MTt(int pos, Matrix x) {
     }
 }

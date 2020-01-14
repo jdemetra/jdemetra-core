@@ -5,7 +5,7 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.modelling.regression.ITsVariable;
+import demetra.timeseries.regression.ITsVariable;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

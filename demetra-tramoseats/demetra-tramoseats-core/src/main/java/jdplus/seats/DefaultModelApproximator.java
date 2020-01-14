@@ -16,7 +16,7 @@
  */
 package jdplus.seats;
 
-import demetra.maths.Complex;
+import demetra.math.Complex;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 

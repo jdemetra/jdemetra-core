@@ -39,9 +39,7 @@
         <module>demetra-sa</module>
         <module>demetra-sts</module>
         <module>demetra-stl</module>
-        <module>demetra-dfm</module>
         <module>demetra-highfreq</module>
-        <module>demetra-toolkit-ext</module>
         <module>jdr</module>
         <module>demetra-sa-experimental</module>
     </modules>

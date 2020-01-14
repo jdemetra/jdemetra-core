@@ -17,7 +17,7 @@
 package jdplus.data.analysis;
 
 import demetra.design.Development;
-import demetra.maths.Constants;
+import demetra.math.Constants;
 
 /**
  * TUKEY-HANNING Taper.

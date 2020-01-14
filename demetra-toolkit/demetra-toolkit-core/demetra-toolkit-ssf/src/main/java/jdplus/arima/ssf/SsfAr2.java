@@ -9,15 +9,14 @@ import jdplus.arima.AutoCovarianceFunction;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.polynomials.Polynomial;
-import jdplus.maths.polynomials.RationalFunction;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.polynomials.Polynomial;
+import jdplus.math.polynomials.RationalFunction;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.ssf.SsfComponent;
 import jdplus.ssf.implementations.Loading;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 
@@ -29,21 +28,7 @@ import jdplus.ssf.StateComponent;
 @lombok.experimental.UtilityClass
 public class SsfAr2 {
 
-    public SsfComponent of(@NonNull double[] ar, double var, int nlags, int fcasts) {
-        if (ar.length == 0) {
-            throw new IllegalArgumentException();
-        }
-        if (fcasts < ar.length - 1) {
-            fcasts = ar.length - 1;
-        }
-        Polynomial p = polynomial(ar);
-        AutoCovarianceFunction acf = acf(p, var);
-        double[] psi = psi(p).coefficients(fcasts + 1);
-        Data data = new Data(ar, psi, var, acf, nlags);
-        return new SsfComponent(new Initialization(data), new Dynamics(data), Loading.fromPosition(nlags));
-    }
-
-    public StateComponent stateComponent(@NonNull double[] ar, double var, int nlags, int fcasts) {
+    public StateComponent of(@NonNull double[] ar, double var, int nlags, int fcasts) {
         if (ar.length == 0) {
             throw new IllegalArgumentException();
         }
@@ -57,7 +42,7 @@ public class SsfAr2 {
         return new StateComponent(new Initialization(data), new Dynamics(data));
     }
 
-    public static ISsfLoading loading(int nlags) {
+    public static ISsfLoading defaultLoading(int nlags) {
         return Loading.fromPosition(nlags);
     }
 
@@ -124,7 +109,7 @@ public class SsfAr2 {
         }
 
         @Override
-        public void diffuseConstraints(FastMatrix b) {
+        public void diffuseConstraints(Matrix b) {
         }
 
         @Override
@@ -132,11 +117,11 @@ public class SsfAr2 {
         }
 
         @Override
-        public void Pi0(FastMatrix pf0) {
+        public void Pi0(Matrix pf0) {
         }
 
         @Override
-        public void Pf0(FastMatrix pf0) {
+        public void Pf0(Matrix pf0) {
             // initialization of the "forecast part"
             int dim = info.psi.length, nl = info.nlags;
             info.acf.prepare(dim + nl);
@@ -162,10 +147,10 @@ public class SsfAr2 {
 
         private final Data data;
         private final DataBlock z;
-        private final FastMatrix V;
+        private final Matrix V;
 
-        static FastMatrix v(double var, double[] psi) {
-            FastMatrix v = SymmetricMatrix.xxt(DataBlock.of(psi));
+        static Matrix v(double var, double[] psi) {
+            Matrix v = SymmetricMatrix.xxt(DataBlock.of(psi));
             v.mul(var);
             return v;
         }
@@ -182,7 +167,7 @@ public class SsfAr2 {
          * @param tr
          */
         @Override
-        public void T(final int pos, final FastMatrix tr) {
+        public void T(final int pos, final Matrix tr) {
             T(tr);
         }
 
@@ -190,7 +175,7 @@ public class SsfAr2 {
          *
          * @param tr
          */
-        public void T(final FastMatrix tr) {
+        public void T(final Matrix tr) {
             tr.subDiagonal(1).set(1);
             int l = data.last();
             for (int i = 0; i < data.phi.length; ++i) {
@@ -204,7 +189,7 @@ public class SsfAr2 {
          * @param vm
          */
         @Override
-        public void TVT(final int pos, final FastMatrix vm) {
+        public void TVT(final int pos, final Matrix vm) {
             int l = data.last();
             z.set(0);
             DataBlockIterator cols = vm.reverseColumnsIterator();
@@ -269,12 +254,12 @@ public class SsfAr2 {
         }
 
         @Override
-        public void V(int pos, FastMatrix qm) {
+        public void V(int pos, Matrix qm) {
             qm.extract(data.nlags, data.psi.length, data.nlags, data.psi.length).copy(V);
         }
 
         @Override
-        public void S(int pos, FastMatrix sm) {
+        public void S(int pos, Matrix sm) {
             DataBlock s = sm.column(0).drop(data.nlags, 0);
             s.copyFrom(data.psi, 0);
             s.mul(data.se());
@@ -286,7 +271,7 @@ public class SsfAr2 {
         }
 
         @Override
-        public void addV(int pos, FastMatrix p) {
+        public void addV(int pos, Matrix p) {
             p.extract(data.nlags, data.psi.length, data.nlags, data.psi.length).add(V);
         }
 

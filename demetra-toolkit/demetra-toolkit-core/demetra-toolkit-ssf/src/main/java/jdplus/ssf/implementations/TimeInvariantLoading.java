@@ -22,7 +22,7 @@ import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.ISsfMeasurement;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -61,18 +61,18 @@ public class TimeInvariantLoading implements ISsfLoading {
     }
 
     @Override
-    public double ZVZ(int pos, FastMatrix V) {
+    public double ZVZ(int pos, Matrix V) {
         DataBlock zv = DataBlock.make(V.getColumnsCount());
         zv.product(Z, V.columnsIterator());
         return zv.dot(Z);
     }
 
     @Override
-    public void VpZdZ(int pos, FastMatrix V, double d) {
-
+    public void VpZdZ(int pos, Matrix V, double d) {
+            if (d == 0)
+                return;
         DataBlockIterator cols = V.columnsIterator();
         DoubleSeqCursor z=Z.cursor();
-        int i = 0;
         while (cols.hasNext()) {
             cols.next().addAY(d * z.getAndNext(), Z);
         }

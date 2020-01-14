@@ -19,8 +19,8 @@ package jdplus.regarima.regular;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.modelling.regression.Variable;
-import demetra.modelling.regression.ITsVariable;
+import demetra.timeseries.regression.Variable;
+import demetra.timeseries.regression.ITsVariable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -170,7 +170,7 @@ public class RegressionVariablesTest {
         }
         
         if (changed) {
-            context.setEstimation(null);
+            context.clearEstimation();
             return ProcessingResult.Changed;
         } else {
             return ProcessingResult.Unchanged;

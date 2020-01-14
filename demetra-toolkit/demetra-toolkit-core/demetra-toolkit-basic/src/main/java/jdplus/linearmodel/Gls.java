@@ -18,19 +18,13 @@ package jdplus.linearmodel;
 
 import jdplus.data.DataBlock;
 import demetra.eco.EcoException;
-import lombok.NonNull;
-import jdplus.leastsquares.internal.AdvancedQRSolver;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.matrices.UpperTriangularMatrix;
-import jdplus.maths.matrices.decomposition.Householder;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
-import demetra.data.LogSign;
-import jdplus.maths.matrices.LowerTriangularMatrix;
-import nbbrd.service.ServiceProvider;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.matrices.UpperTriangularMatrix;
+import jdplus.data.LogSign;
+import jdplus.leastsquares.QRSolution;
+import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.leastsquares.QRSolver;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -38,51 +32,33 @@ import jdplus.maths.matrices.FastMatrix;
  */
 public class Gls {
 
-    private static AtomicReference<Supplier<QRSolver>> QR_FACTORY = new AtomicReference<>(()
-            -> AdvancedQRSolver.builder(new Householder()).build());
-
-    public static void setDefaultSolver(Supplier<QRSolver> factory) {
-        QR_FACTORY.set(factory);
-    }
-
-    private final QRSolver solver;
-
     public Gls() {
-        solver = QR_FACTORY.get().get();
     }
 
-    public Gls(@NonNull final QRSolver solver) {
-        this.solver = solver;
-    }
+    public LeastSquaresResults compute(LinearModel model, Matrix cov) {
 
-    public LeastSquaresResults compute(LinearModel model, FastMatrix cov) {
-
-        CanonicalMatrix L = cov.deepClone();
+        Matrix L = cov.deepClone();
         try {
             SymmetricMatrix.lcholesky(L);
+        // yl = L^-1*y <-> L*yl = y
+        DataBlock yl = DataBlock.of(model.getY());
+        LowerTriangularMatrix.solveLx(L, yl);
+
+        Matrix xl = model.variables();
+        LowerTriangularMatrix.solveLX(L, xl);
+
+        QRSolution solution = QRSolver.robustLeastSquares(yl, xl);
+         Matrix bvar = solution.unscaledCovariance();
+        return LeastSquaresResults.builder(yl, xl)
+                .mean(model.isMeanCorrection())
+                .estimation(solution.getB(), bvar)
+                .ssq(solution.getSsqErr())
+                .residuals(solution.getE())
+                .logDeterminant(2 * LogSign.of(L.diagonal()).getValue())
+                .build();
         } catch (Exception err) {
             throw new EcoException(EcoException.GLS_FAILED);
         }
-        // yl = L^-1*y <-> L*yl = y
-        DataBlock yl = DataBlock.of(model.getY());
-        LowerTriangularMatrix.rsolve(L, yl);
-
-        FastMatrix xl = model.variables();
-        LowerTriangularMatrix.rsolve(L, xl);
-
-        if (!solver.solve(yl, xl)) {
-            throw new EcoException(EcoException.GLS_FAILED);
-        }
-        FastMatrix R = solver.R();
-        CanonicalMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
-                .inverse(R));
-        return LeastSquaresResults.builder(yl, xl)
-                .mean(model.isMeanCorrection())
-                .estimation(solver.coefficients(), bvar)
-                .ssq(solver.ssqerr())
-                .residuals(solver.residuals())
-                .logDeterminant(2 * LogSign.of(L.diagonal()).getValue())
-                .build();
-    }
+ }
 
 }

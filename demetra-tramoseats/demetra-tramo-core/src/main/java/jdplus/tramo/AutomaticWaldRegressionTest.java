@@ -21,7 +21,7 @@ import jdplus.dstats.F;
 import demetra.stats.ProbabilityType;
 import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.modelling.regression.Variable;
+import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
@@ -32,9 +32,9 @@ import jdplus.regarima.regular.RegArimaModelling;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.sarima.SarimaModel;
 import java.util.Optional;
-import demetra.modelling.regression.ILengthOfPeriodVariable;
-import demetra.modelling.regression.ITradingDaysVariable;
-import demetra.modelling.regression.IEasterVariable;
+import demetra.timeseries.regression.ILengthOfPeriodVariable;
+import demetra.timeseries.regression.ITradingDaysVariable;
+import demetra.timeseries.regression.IEasterVariable;
 
 /**
  * * @author gianluca, jean Correction 22/7/2014. pre-specified Easter effect

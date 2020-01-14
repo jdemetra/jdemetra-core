@@ -20,8 +20,8 @@ import demetra.regarima.X13Exception;
 import demetra.regarima.RegArimaSpec;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.maths.Complex;
-import demetra.modelling.regression.ModellingContext;
+import demetra.math.Complex;
+import demetra.timeseries.regression.ModellingContext;
 import jdplus.regarima.regular.ILogLevelModule;
 import jdplus.regarima.regular.IRegressionModule;
 import jdplus.regarima.regular.ProcessingResult;
@@ -282,7 +282,7 @@ public class X12Preprocessor implements IPreprocessor {
                                     && arslt == ProcessingResult.Unchanged;
                             if (!defModel) {
                                 if (context.getDescription().removeVariable(var -> var.isOutlier(false))) {
-                                    context.setEstimation(null);
+                                    context.clearEstimation();
                                     needOutliers = outliers != null;
                                 }
                             }
@@ -321,7 +321,7 @@ public class X12Preprocessor implements IPreprocessor {
                         if (isAutoModelling() && !context.getDescription().isMean() && Math.abs(rtval0) > 2.5) {
                             if (options.checkMu) {
                                 context.getDescription().setMean(true);
-                                context.setEstimation(null);
+                                context.clearEstimation();
                             }
                         }
 
@@ -370,8 +370,8 @@ public class X12Preprocessor implements IPreprocessor {
         ModelEstimation estimation0 = reference.getEstimation();
 
         int naut0 = (int) desc0.variables().filter(v -> v.isOutlier(false)).count();
-        SarimaSpecification spec0 = desc0.getSpecification(),
-                spec = desc.getSpecification();
+        SarimaSpecification spec0 = desc0.specification(),
+                spec = desc.specification();
         SarimaModel arima = desc.arima();
         boolean mu0 = desc0.isMean(),
                 mu = desc.isMean();
@@ -402,8 +402,7 @@ public class X12Preprocessor implements IPreprocessor {
             }
         }
         if (ichk > 0) {
-            context.setDescription(desc0);
-            context.setEstimation(estimation0);
+            context.set(desc0,estimation0);
             plbox = plbox0;
             rvr = rvr0;
             defModel = true;
@@ -445,7 +444,7 @@ public class X12Preprocessor implements IPreprocessor {
     // use the default model
     private void lastSolution(RegArimaModelling context) {
         ModelDescription description = context.getDescription();
-        SarimaSpecification nspec = description.getSpecification();
+        SarimaSpecification nspec = description.specification();
         nspec.setP(3);
         if (nspec.getBd() > 0) {
             nspec.setBp(0);
@@ -459,7 +458,7 @@ public class X12Preprocessor implements IPreprocessor {
         if (nspec.getPeriod() > 1) {
             nspec.setBq(1);
         }
-        description.setSpecification(nspec);
+        context.setSpecification(nspec);
         if (outliers != null) {
             curva = va0;
             needOutliers = true;
@@ -520,7 +519,7 @@ public class X12Preprocessor implements IPreprocessor {
         }
         if (desc.variables().filter(v -> v.isOutlier(false)).findAny().isPresent()) {
             desc.removeVariable(v -> v.isOutlier(false));
-            context.setEstimation(null);
+            context.clearEstimation();
         }
         if (context.needEstimation()) {
             context.estimate(options.precision);

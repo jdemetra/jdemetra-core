@@ -29,7 +29,6 @@ import jdplus.sarima.SarimaModel;
 import jdplus.stats.tests.LjungBox;
 import jdplus.stats.tests.StatisticalTest;
 import demetra.data.DoubleSeq;
-import internal.jdplus.arima.ModifiedLjungBoxFilter;
 
 
 /**

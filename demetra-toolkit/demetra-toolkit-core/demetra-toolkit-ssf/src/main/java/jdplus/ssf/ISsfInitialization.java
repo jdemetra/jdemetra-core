@@ -17,9 +17,8 @@
 package jdplus.ssf;
 
 import jdplus.data.DataBlock;
-import jdplus.maths.matrices.CanonicalMatrix;
-import jdplus.maths.matrices.SymmetricMatrix;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -76,7 +75,7 @@ public interface ISsfInitialization {
      *
      * @param b
      */
-    void diffuseConstraints(FastMatrix b);
+    void diffuseConstraints(Matrix b);
 
     /**
      * Initial state
@@ -90,20 +89,20 @@ public interface ISsfInitialization {
      *
      * @param pf0
      */
-    void Pf0(FastMatrix pf0);
+    void Pf0(Matrix pf0);
 
     /**
      * Modelling of the non stationary part of the initial state P(-1, inf)
      *
      * @param pi0
      */
-    default void Pi0(FastMatrix pi0) {
+    default void Pi0(Matrix pi0) {
         int nd = this.getDiffuseDim();
         if (nd == 0) {
             return;
         }
         int n = pi0.getColumnsCount();
-        CanonicalMatrix B = CanonicalMatrix.make(n, nd);
+        Matrix B = Matrix.make(n, nd);
         this.diffuseConstraints(B);
         SymmetricMatrix.XXt(B, pi0);
     }

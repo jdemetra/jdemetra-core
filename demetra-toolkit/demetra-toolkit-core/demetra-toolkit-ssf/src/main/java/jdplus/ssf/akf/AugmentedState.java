@@ -17,13 +17,11 @@
 package jdplus.ssf.akf;
 
 import demetra.design.Development;
-import jdplus.maths.matrices.CanonicalMatrix;
+import jdplus.math.matrices.Matrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.State;
-import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfState;
-import jdplus.maths.matrices.FastMatrix;
 
 /**
  * Represents x* = x + A d, where x is a usual state vector and A is a matrix of
@@ -50,7 +48,7 @@ public class AugmentedState extends State {
      * B contains the states of the constraints. Its interpretation depends on
      * the considered step
      */
-    private final CanonicalMatrix B;
+    private final Matrix B;
     private int ndropped = 0;
 
     /**
@@ -61,14 +59,14 @@ public class AugmentedState extends State {
      */
     public AugmentedState(final int dim, final int ndiffuse) {
         super(dim);
-        B = CanonicalMatrix.make(dim, ndiffuse);
+        B = Matrix.make(dim, ndiffuse);
     }
 
-    public final FastMatrix B() {
+    public final Matrix B() {
         return B.extract(0, B.getRowsCount(), ndropped, B.getColumnsCount()-ndropped);
     }
 
-    public void restoreB(FastMatrix b) {
+    public void restoreB(Matrix b) {
         int n = b.getColumnsCount(), m = B.getColumnsCount();
         ndropped = m - n;
         B().copy(b);

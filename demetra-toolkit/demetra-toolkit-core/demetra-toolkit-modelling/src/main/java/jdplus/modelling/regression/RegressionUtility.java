@@ -10,8 +10,11 @@ import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.data.DoubleSeq;
-import demetra.modelling.regression.ITsVariable;
-import jdplus.maths.matrices.FastMatrix;
+import demetra.math.matrices.MatrixType;
+import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.RegressionVariables;
+import jdplus.math.matrices.Matrix;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
@@ -21,12 +24,22 @@ import jdplus.maths.matrices.FastMatrix;
 public class RegressionUtility {
 
     public <D extends TimeSeriesDomain> void addAY(D domain, DataBlock rslt, double a, DoubleSeq c, ITsVariable... var) {
-        FastMatrix x = Regression.matrix(domain, var);
+        Matrix x = Regression.matrix(domain, var);
         DoubleSeqCursor reader = c.cursor();
         DataBlockIterator columns = x.columnsIterator();
         while (columns.hasNext()) {
             rslt.addAY(a * reader.getAndNext(), columns.next());
         }
     }
-   
+
+    @ServiceProvider(RegressionVariables.Processor.class)
+    public static class Processor implements RegressionVariables.Processor {
+
+        @Override
+        public <D extends TimeSeriesDomain> MatrixType matrix(D d, ITsVariable... itvs) {
+            return Regression.matrix(d, itvs);
+        }
+
+    }
+
 }

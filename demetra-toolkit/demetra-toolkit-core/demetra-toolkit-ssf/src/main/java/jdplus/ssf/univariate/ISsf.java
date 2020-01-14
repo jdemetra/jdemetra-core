@@ -19,12 +19,11 @@ package jdplus.ssf.univariate;
 import jdplus.ssf.ISsfLoading;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.maths.matrices.CanonicalMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.ssf.SsfComponent;
+import jdplus.ssf.StateComponent;
 import jdplus.ssf.ISsfState;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -47,9 +46,6 @@ public interface ISsf extends ISsfState {
         return measurement().error();
     }
     
-    default SsfComponent asComponent(){
-        return new SsfComponent(initialization(), dynamics(), loading());
-    }
     
 
 //<editor-fold defaultstate="collapsed" desc="auxiliary operations">
@@ -67,7 +63,7 @@ public interface ISsf extends ISsfState {
         loading().XpZd(pos, x, -x.dot(m) / f);
     }
 
-    default void XL(int pos, FastMatrix M, DataBlock m, double f) {
+    default void XL(int pos, Matrix M, DataBlock m, double f) {
         // MT - [(MT)*m]/f * z
         ISsfDynamics dynamics = dynamics();
         ISsfLoading loading = loading();
@@ -81,6 +77,19 @@ public interface ISsf extends ISsfState {
        
     }
 
+    default void XtL(int pos, Matrix M, DataBlock m, double f) {
+        // MT - [(MT)*m]/f * z
+        ISsfDynamics dynamics = dynamics();
+        ISsfLoading loading = loading();
+        // Apply XL on each row copyOf M
+        DataBlockIterator cols = M.columnsIterator();
+        while (cols.hasNext()){
+            DataBlock col=cols.next();
+            dynamics.XT(pos, col);
+            loading.XpZd(pos, col, -col.dot(m) / f);
+        }
+       
+    }
     /**
      *
      * @param pos
@@ -96,7 +105,7 @@ public interface ISsf extends ISsfState {
         dynamics().XT(pos, x);
     }
 
-    default void LM(int pos, FastMatrix M, DataBlock m, double f) {
+    default void LM(int pos, Matrix M, DataBlock m, double f) {
         // TX - T*m/f * z * X
         // TX - T * m * (zX)/f)
         // T (X - m*(zX/f))
@@ -109,7 +118,7 @@ public interface ISsf extends ISsfState {
         });
     }
 
-    default boolean diffuseEffects(FastMatrix effects) {
+    default boolean diffuseEffects(Matrix effects) {
         ISsfDynamics dynamics = dynamics();
         ISsfLoading loading = loading();
         ISsfInitialization initializer = initialization();
@@ -118,7 +127,7 @@ public interface ISsf extends ISsfState {
         if (d == 0 || d != effects.getColumnsCount()) {
             return false;
         }
-        CanonicalMatrix matrix = CanonicalMatrix.make(n, d);
+        Matrix matrix = Matrix.make(n, d);
         // initialization
         initializer.diffuseConstraints(matrix);
         DataBlockIterator rows = effects.rowsIterator();

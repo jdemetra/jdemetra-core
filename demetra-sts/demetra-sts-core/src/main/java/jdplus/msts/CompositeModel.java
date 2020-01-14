@@ -19,10 +19,10 @@ package jdplus.msts;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;
-import demetra.maths.Optimizer;
+import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
 import demetra.ssf.SsfLikelihood;
-import jdplus.maths.matrices.FastMatrix;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -95,12 +95,12 @@ public class CompositeModel {
         return mapping.modelParameters(mapping.getDefaultParameters()).toArray();
     }
 
-    public CompositeModelEstimation estimate(FastMatrix data, boolean marginal, boolean rescaling, SsfInitialization initialization, Optimizer optimizer, double eps, double[] parameters) {
+    public CompositeModelEstimation estimate(Matrix data, boolean marginal, boolean rescaling, SsfInitialization initialization, Optimizer optimizer, double eps, double[] parameters) {
         build();
         return CompositeModelEstimation.estimationOf(this, data, marginal, rescaling, initialization, optimizer, eps, parameters);
     }
 
-    public CompositeModelEstimation compute(FastMatrix data, double[] parameters, boolean marginal, boolean concentrated) {
+    public CompositeModelEstimation compute(Matrix data, double[] parameters, boolean marginal, boolean concentrated) {
         build();
         return CompositeModelEstimation.computationOf(this, data, DoubleSeq.of(parameters), marginal, concentrated);
     }

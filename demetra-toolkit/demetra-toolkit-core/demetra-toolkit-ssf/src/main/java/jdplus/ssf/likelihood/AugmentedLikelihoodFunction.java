@@ -16,15 +16,13 @@
  */
 package jdplus.ssf.likelihood;
 
-import demetra.likelihood.DiffuseConcentratedLikelihood;
-import jdplus.maths.functions.IParametersDomain;
-import jdplus.maths.functions.IParametricMapping;
+import jdplus.math.functions.IParametersDomain;
+import jdplus.math.functions.IParametricMapping;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfBuilder;
 import jdplus.ssf.univariate.ISsfData;
 import demetra.design.BuilderPattern;
 import demetra.data.DoubleSeq;
-import jdplus.maths.matrices.FastMatrix;
 import jdplus.likelihood.LikelihoodFunction;
 
 /**

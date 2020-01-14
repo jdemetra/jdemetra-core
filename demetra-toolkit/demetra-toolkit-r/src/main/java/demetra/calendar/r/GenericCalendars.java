@@ -16,12 +16,12 @@
  */
 package demetra.calendar.r;
 
-import jdplus.maths.matrices.CanonicalMatrix;
+import demetra.math.matrices.MatrixType;
+import jdplus.math.matrices.Matrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
 import jdplus.modelling.regression.GenericTradingDaysFactory;
 import demetra.timeseries.calendars.GenericTradingDays;
-import demetra.maths.matrices.Matrix;
 
 /**
  *
@@ -30,16 +30,16 @@ import demetra.maths.matrices.Matrix;
 @lombok.experimental.UtilityClass
 public class GenericCalendars {
 
-    public Matrix td(TsDomain domain, int[] groups, boolean contrasts) {
+    public MatrixType td(TsDomain domain, int[] groups, boolean contrasts) {
         DayClustering dc = DayClustering.of(groups);
         if (contrasts) {
             GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-            CanonicalMatrix m = CanonicalMatrix.make(domain.getLength(), dc.getGroupsCount() - 1);
+            Matrix m = Matrix.make(domain.getLength(), dc.getGroupsCount() - 1);
             GenericTradingDaysFactory.FACTORY.fill(gtd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         } else {
             GenericTradingDays gtd = GenericTradingDays.of(dc);
-            CanonicalMatrix m = CanonicalMatrix.make(domain.getLength(), dc.getGroupsCount());
+            Matrix m = Matrix.make(domain.getLength(), dc.getGroupsCount());
             GenericTradingDaysFactory.FACTORY.fill(gtd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         }

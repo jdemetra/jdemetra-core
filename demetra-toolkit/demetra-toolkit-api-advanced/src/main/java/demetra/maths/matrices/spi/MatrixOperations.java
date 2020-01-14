@@ -16,7 +16,7 @@
  */
 package demetra.maths.matrices.spi;
 
-import demetra.maths.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 import demetra.design.Algorithm;
 import nbbrd.service.ServiceDefinition;
 import nbbrd.service.Mutability;
@@ -39,47 +39,47 @@ public class MatrixOperations {
         return PROCESSOR.get();
     }
 
-    public Matrix plus(Matrix left, Matrix right) {
+    public MatrixType plus(MatrixType left, MatrixType right) {
         return PROCESSOR.get().plus(left, right);
     }
 
-    public Matrix plus(Matrix M, double d) {
+    public MatrixType plus(MatrixType M, double d) {
         return PROCESSOR.get().plus(M, d);
     }
 
-    public Matrix minus(Matrix left, Matrix right) {
+    public MatrixType minus(MatrixType left, MatrixType right) {
         return PROCESSOR.get().minus(left, right);
     }
 
-    public Matrix minus(Matrix M, double d) {
+    public MatrixType minus(MatrixType M, double d) {
         return PROCESSOR.get().minus(M, d);
     }
 
-    public Matrix times(Matrix left, Matrix right) {
+    public MatrixType times(MatrixType left, MatrixType right) {
         return PROCESSOR.get().times(left, right);
     }
 
-    public Matrix times(Matrix M, double d) {
+    public MatrixType times(MatrixType M, double d) {
         return PROCESSOR.get().times(M, d);
     }
 
-    public Matrix chs(Matrix M) {
+    public MatrixType chs(MatrixType M) {
         return PROCESSOR.get().chs(M);
     }
 
-    public Matrix inv(Matrix M) {
+    public MatrixType inv(MatrixType M) {
         return PROCESSOR.get().inv(M);
     }
 
-    public Matrix transpose(Matrix M) {
+    public MatrixType transpose(MatrixType M) {
         return PROCESSOR.get().transpose(M);
     }
 
-    public Matrix XXt(Matrix X) {
+    public MatrixType XXt(MatrixType X) {
         return PROCESSOR.get().XXt(X);
     }
 
-    public Matrix XtX(Matrix X) {
+    public MatrixType XtX(MatrixType X) {
         return PROCESSOR.get().XtX(X);
     }
 
@@ -87,27 +87,27 @@ public class MatrixOperations {
     @Algorithm
     public static interface Processor {
 
-        Matrix plus(Matrix left, Matrix right);
+        MatrixType plus(MatrixType left, MatrixType right);
 
-        Matrix plus(Matrix M, double d);
+        MatrixType plus(MatrixType M, double d);
 
-        Matrix minus(Matrix left, Matrix right);
+        MatrixType minus(MatrixType left, MatrixType right);
 
-        Matrix minus(Matrix M, double d);
+        MatrixType minus(MatrixType M, double d);
 
-        Matrix times(Matrix left, Matrix right);
+        MatrixType times(MatrixType left, MatrixType right);
 
-        Matrix times(Matrix M, double d);
+        MatrixType times(MatrixType M, double d);
 
-        Matrix chs(Matrix M);
+        MatrixType chs(MatrixType M);
 
-        Matrix inv(Matrix M);
+        MatrixType inv(MatrixType M);
 
-        Matrix transpose(Matrix M);
+        MatrixType transpose(MatrixType M);
 
-        Matrix XXt(Matrix X);
+        MatrixType XXt(MatrixType X);
 
-        Matrix XtX(Matrix X);
+        MatrixType XtX(MatrixType X);
     }
 
 }

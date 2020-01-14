@@ -6,13 +6,11 @@
 package jdplus.tramo;
 
 import demetra.design.Development;
-import jdplus.maths.functions.IParametricMapping;
 import jdplus.regarima.regular.IModelEstimator;
 import jdplus.regarima.regular.RegArimaModelling;
 import jdplus.regsarima.RegSarimaProcessor;
-import jdplus.sarima.SarimaModel;
 import jdplus.tramo.internal.OutliersDetectionModule;
-import jdplus.maths.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 
 @Development(status = Development.Status.Beta)
 class ModelEstimator implements IModelEstimator {

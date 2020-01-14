@@ -42,8 +42,7 @@ public class OutliersDetectionModuleTest {
     @Test
     public void testProd() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        SarimaSpecification spec = new SarimaSpecification(12);
-        spec.airline(true);
+        SarimaSpecification spec = SarimaSpecification.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
 
 //        long t0 = System.currentTimeMillis();
