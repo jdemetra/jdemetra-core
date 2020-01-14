@@ -32,7 +32,11 @@ import java.util.function.DoubleUnaryOperator;
 import jdplus.data.DataWindow;
 import jdplus.data.LogSign;
 import jdplus.math.matrices.decomposition.Gauss;
+import jdplus.math.matrices.decomposition.Householder;
+import jdplus.math.matrices.decomposition.Householder2;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import jdplus.math.matrices.decomposition.LUDecomposition;
+import jdplus.math.matrices.decomposition.QRDecomposition;
 import org.checkerframework.checker.index.qual.Positive;
 
 /**
@@ -602,14 +606,14 @@ public final class Matrix implements MatrixType.Mutable {
         int idx = start + row + col * lda;
         storage[idx] = fn.applyAsDouble(storage[idx]);
     }
-    
-    public void apply(final DoubleUnaryOperator fn){
-        if (isFull()){
-            for (int i=0; i<storage.length; ++i){
-                storage[i]=fn.applyAsDouble(storage[i]);
+
+    public void apply(final DoubleUnaryOperator fn) {
+        if (isFull()) {
+            for (int i = 0; i < storage.length; ++i) {
+                storage[i] = fn.applyAsDouble(storage[i]);
             }
-        }else{
-            applyByColumns(col->col.apply(fn));
+        } else {
+            applyByColumns(col -> col.apply(fn));
         }
     }
 
@@ -900,13 +904,30 @@ public final class Matrix implements MatrixType.Mutable {
         if (!X.isSquare()) {
             throw new IllegalArgumentException();
         }
-        LUDecomposition lu = Gauss.decompose(X);
-        return lu.logDeterminant();
+        if (X.nrows == 1) {
+            double x00 = X.get(0, 0);
+            return new LogSign(Math.log(Math.abs(x00)), x00 < 0);
+        }
+//        LUDecomposition lu = Gauss.decompose(X);
+//        return lu.logDeterminant();
+        HouseholderWithPivoting hous = new HouseholderWithPivoting();
+        QRDecomposition qr = hous.decompose(X, 0);
+        int rank = UpperTriangularMatrix.rank(qr.rawR(), 1e-13);
+        if (rank < X.nrows) {
+            return null;
+        }
+        return LogSign.of(qr.rawRdiagonal(), (qr.pivotSign() == -1) != (X.nrows % 2 == 1));
     }
 
     public static double determinant(Matrix X) {
         try {
+            if (X.nrows == 1) {
+                return X.get(0, 0);
+            }
             LogSign ls = logDeterminant(X);
+            if (ls == null) {
+                return 0;
+            }
             double val = Math.exp(ls.getValue());
             return ls.isPositive() ? val : -val;
         } catch (MatrixException err) {

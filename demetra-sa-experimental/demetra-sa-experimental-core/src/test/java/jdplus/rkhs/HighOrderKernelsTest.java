@@ -206,8 +206,7 @@ public class HighOrderKernelsTest {
         }
     }
 
-    @Test
-    public void testUnequallySpaced() {
+    public static void testUnequallySpaced() {
         DoubleUnaryOperator kernel = HighOrderKernels.kernel(Kernels.TRIWEIGHT, 4);
         Matrix M = randomize(x -> 10 * Math.sin(x), 1000, 0, Math.PI * 16);
         double step = Math.PI * 16 / 1000;

@@ -12,9 +12,9 @@ import static org.junit.Assert.*;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public class MatrixTest {
+public class MatrixTypeTest {
 
-    public MatrixTest() {
+    public MatrixTypeTest() {
     }
 
     @Test

@@ -16,6 +16,7 @@
  */
 package jdplus.math.matrices.decomposition;
 
+import demetra.data.DoubleSeq;
 import demetra.math.Constants;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.Matrix;
@@ -38,6 +39,10 @@ public class Householder{
     public Householder(final Matrix A, final boolean fast, final double eps){
         init(A);
         householder(fast, eps);
+    }
+    
+    public DoubleSeq rDiagonal(){
+        return DoubleSeq.of(rdiag);
     }
     
 //    public QRDecomposition qr(){
@@ -85,7 +90,6 @@ public class Householder{
                 throw new MatrixException(MatrixException.SINGULAR);
             }
         }
-
     }
 
     private void init(Matrix M) {

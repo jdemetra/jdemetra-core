@@ -73,7 +73,7 @@ public class Gauss {
             }
             // Compute multipliers and eliminate k-th column.
             double kk = lu[kn + k * n];
-            if (Math.abs(kk) < eps) {
+            if (kk == 0) {
                 throw new MatrixException(MatrixException.SINGULAR);
             }
 

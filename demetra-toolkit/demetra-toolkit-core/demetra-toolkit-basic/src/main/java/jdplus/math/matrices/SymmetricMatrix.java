@@ -361,8 +361,7 @@ public class SymmetricMatrix {
         if (ls == null) {
             return 0;
         }
-        double val = Math.exp(ls.getValue());
-        return ls.isPositive() ? val : -val;
+        return Math.exp(ls.getValue());
     }
 
     public void fromLower(Matrix S) {

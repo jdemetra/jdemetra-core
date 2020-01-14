@@ -69,6 +69,10 @@ public class LUDecomposition {
     public Matrix lu() {
         return lu;
     }
+    
+    public int rank(double rcond){
+        return UpperTriangularMatrix.rank(lu, rcond);
+    }
 
     /**
      * The pivot indices that define the permutation matrix P;
@@ -89,13 +93,15 @@ public class LUDecomposition {
         if (pivot == null) {
             return 1;
         }
-        int n = 1;
+        int n = 0;
         for (int i = 0; i < pivot.length; ++i) {
-            if (pivot[i] != i) {
-                n = -n;
+            for (int j = 0; j < i; ++j) {
+                if (pivot[j] > pivot[i]) {
+                    ++n;
+                }
             }
         }
-        return n;
+        return n%2 == 0 ? 1 : -1;
     }
 
     /**

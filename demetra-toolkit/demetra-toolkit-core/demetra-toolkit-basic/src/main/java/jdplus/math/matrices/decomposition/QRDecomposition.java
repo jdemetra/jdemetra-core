@@ -135,4 +135,18 @@ public class QRDecomposition {
         return qr.diagonal();
     }
 
+    public int pivotSign() {
+        if (pivot == null) {
+            return 1;
+        }
+        int n = 0;
+        for (int i = 0; i < pivot.length; ++i) {
+            for (int j = 0; j < i; ++j) {
+                if (pivot[j] > pivot[i]) {
+                    ++n;
+                }
+            }
+        }
+        return n%2 == 0 ? 1 : -1;
+    }
 }

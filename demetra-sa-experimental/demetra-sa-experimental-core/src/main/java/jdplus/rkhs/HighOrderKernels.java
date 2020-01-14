@@ -62,8 +62,6 @@ public class HighOrderKernels {
         DoubleUnaryOperator f0 = kernel.asFunction();
         DataBlock row = Hk1.row(0);
         row.set(0, 1);
-        boolean pos = r % 2 != 0;
-        double q = pos ? detHk1 : -detHk1;
         return x -> {
 
             double cur = 1;
@@ -72,17 +70,17 @@ public class HighOrderKernels {
                 row.set(j, cur);
             }
             double detHx = Matrix.determinant(Hk1);
-            return (detHx / q) * f0.applyAsDouble(x);
+            return (detHx / detHk1) * f0.applyAsDouble(x);
         };
     }
 
-    private void suppress(int row, int column, Matrix all, Matrix t) {
+    private void suppress(final int row, final int column, Matrix all, Matrix t) {
         int k = all.getColumnsCount();
         for (int c = 0, tc = 0; c < k; ++c) {
             if (c != column) {
                 DataBlock cur = all.column(c);
                 DataBlock tcur = t.column(tc++);
-                DoubleSeqCursor.OnMutable cursor = cur.cursor();
+                DoubleSeqCursor cursor = cur.cursor();
                 DoubleSeqCursor.OnMutable tcursor = tcur.cursor();
                 for (int r = 0; r < k; ++r) {
                     if (r != row) {
@@ -109,9 +107,11 @@ public class HighOrderKernels {
     }
 
     public Polynomial p(Kernel kernel, int r) {
+        if (r == 0)
+            return Polynomial.ONE;
         Matrix Hk1 = hankel(kernel, 0, r + 1);
         double detHk1 = SymmetricMatrix.determinant(Hk1);
-        boolean pos = r % 2 == 0;
+        boolean pos = true;
         double[] c = new double[r + 1];
         Matrix m = Matrix.square(r);
         for (int i = 0; i <= r; ++i) {
