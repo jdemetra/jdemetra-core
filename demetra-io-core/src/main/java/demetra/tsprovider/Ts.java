@@ -53,17 +53,17 @@ public class Ts implements TsResource<TsData> {
 
         @Override
         public TsMoniker getMoniker() {
-            return LombokHelper.getValue(moniker, moniker$set, Ts::$default$moniker);
+            return LombokHelper.getValue(moniker$value, moniker$set, Ts::$default$moniker);
         }
 
         @Override
         public TsInformationType getType() {
-            return LombokHelper.getValue(type, type$set, Ts::$default$type);
+            return LombokHelper.getValue(type$value, type$set, Ts::$default$type);
         }
 
         @Override
         public String getName() {
-            return LombokHelper.getValue(name, name$set, Ts::$default$name);
+            return LombokHelper.getValue(name$value, name$set, Ts::$default$name);
         }
 
         @Override
@@ -73,7 +73,7 @@ public class Ts implements TsResource<TsData> {
 
         @Override
         public TsData getData() {
-            return LombokHelper.getValue(data, data$set, Ts::$default$data);
+            return LombokHelper.getValue(data$value, data$set, Ts::$default$data);
         }
     }
 }

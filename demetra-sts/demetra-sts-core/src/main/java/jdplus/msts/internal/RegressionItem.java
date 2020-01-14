@@ -78,7 +78,7 @@ public class RegressionItem extends StateItem {
     @Override
     public List<ParameterInterpreter> parameters() {
         if (v == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         } else if (v.length == 1) {
             return Collections.singletonList(v[0]);
         } else {

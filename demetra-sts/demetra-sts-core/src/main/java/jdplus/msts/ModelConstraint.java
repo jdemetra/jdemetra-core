@@ -77,7 +77,7 @@ public class ModelConstraint implements ModelItem {
 
     @Override
     public List<ParameterInterpreter> parameters() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
 }

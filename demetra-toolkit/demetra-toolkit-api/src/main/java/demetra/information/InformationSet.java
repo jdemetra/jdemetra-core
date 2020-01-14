@@ -865,7 +865,7 @@ public final class InformationSet implements Cloneable {
         String[] split = split(wc);
         InformationSet cur = root(split);
         if (cur == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         WildCards w = new WildCards(split[split.length - 1]);
         List<Information<Object>> list = new ArrayList<>();
@@ -897,7 +897,7 @@ public final class InformationSet implements Cloneable {
         String[] split = split(wc);
         InformationSet cur = root(split);
         if (cur == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         WildCards w = new WildCards(split[split.length - 1]);
         ArrayList<Information<S>> list = new ArrayList<>();
