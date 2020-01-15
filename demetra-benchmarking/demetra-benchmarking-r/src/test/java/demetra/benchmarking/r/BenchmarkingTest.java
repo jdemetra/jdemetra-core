@@ -33,13 +33,13 @@ public class BenchmarkingTest {
     }
 
     @Test
-    public void testSomeMethod() {
+    public void testDenton() {
         DataBlock y = DataBlock.make(20);
         y.set(i -> (1 + i));
-        DataBlock x = DataBlock.make(90);
+        DataBlock x = DataBlock.make(270);
         x.set(i -> (1 + i) * (1 + i));
 
-        TsPeriod q = TsPeriod.quarterly(1978, 4);
+        TsPeriod q = TsPeriod.monthly(1978, 4);
         TsPeriod a = TsPeriod.yearly(1980);
         TsData t = TsData.of(a, Doubles.of(y));
         TsData s = TsData.of(q, Doubles.of(x));
@@ -49,4 +49,20 @@ public class BenchmarkingTest {
         
     }
 
+    @Test
+    public void testGRP() {
+        DataBlock y = DataBlock.make(20);
+        y.set(i -> (1 + i));
+        DataBlock x = DataBlock.make(270);
+        x.set(i -> (1 + i) * (1 + i));
+
+        TsPeriod q = TsPeriod.monthly(1979, 4);
+        TsPeriod a = TsPeriod.yearly(1980);
+        TsData t = TsData.of(a, Doubles.of(y));
+        TsData s = TsData.of(q, Doubles.of(x));
+
+        TsData qs = Benchmarking.grp(s, t, "Sum");
+        assertTrue(qs != null);
+        
+    }
 }

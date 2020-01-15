@@ -13,6 +13,7 @@ import demetra.benchmarking.univariate.CholetteSpec;
 import demetra.benchmarking.univariate.DentonSpec;
 import demetra.benchmarking.univariate.Cholette;
 import demetra.benchmarking.univariate.Denton;
+import demetra.benchmarking.univariate.GrowthRatePreservation;
 import demetra.data.AggregationType;
 import demetra.timeseries.TsData;
 import demetra.util.r.Dictionary;
@@ -44,6 +45,12 @@ public class Benchmarking {
                 .bias(CholetteSpec.BiasCorrection.valueOf(bias))
                 .build();
         return Cholette.benchmark(source, bench, spec);
+    }
+
+    public TsData grp(TsData source, TsData bench, String conversion) {
+        AggregationType type = AggregationType.valueOf(conversion);
+        
+        return GrowthRatePreservation.benchmark(source, bench, type);
     }
 
     public Dictionary multiCholette(Dictionary input, String[] temporalConstraints, String[] contemporaneousConstraints, double rho, double lambda) {
