@@ -28,7 +28,6 @@ import ec.tss.tsproviders.utils.OptionalTsData;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -142,6 +141,6 @@ public class GuessingCompactFactory extends AbstractDocumentFactory {
     private static final String TIME_PERIOD_ATTRIBUTE = "TIME_PERIOD";
     private static final String OBS_VALUE_ATTRIBUTE = "OBS_VALUE";
 
-    private static final DataFormat DEFAULT_DATA_FORMAT = new DataFormat(Locale.ROOT, null, null);
+    private static final DataFormat DEFAULT_DATA_FORMAT = DataFormat.ROOT;
     //</editor-fold>
 }

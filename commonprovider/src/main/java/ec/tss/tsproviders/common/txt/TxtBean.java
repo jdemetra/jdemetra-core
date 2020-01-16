@@ -46,7 +46,7 @@ public class TxtBean implements IFileBean, IDataSourceBean {
     }
     //
     static final IParam<DataSource, File> FILE = onFile(new File(""), "file");
-    static final IParam<DataSource, DataFormat> DATAFORMAT = onDataFormat(new DataFormat(Locale.ENGLISH, "yyyy-MM-DD", null), "locale", "datePattern", "numberPattern");
+    static final IParam<DataSource, DataFormat> DATAFORMAT = onDataFormat(DataFormat.of(Locale.ENGLISH, "yyyy-MM-DD", null), "locale", "datePattern", "numberPattern");
     static final IParam<DataSource, Charset> CHARSET = onCharset(StandardCharsets.UTF_8, "charset");
     static final IParam<DataSource, Delimiter> DELIMITER = onEnum(Delimiter.TAB, "delimiter");
     static final IParam<DataSource, Boolean> HEADERS = onBoolean(true, "headers");

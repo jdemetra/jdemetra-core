@@ -113,13 +113,13 @@ public class ParamsTest {
 
     @Test
     public void testOnDataFormat() {
-        DataFormat d = DataFormat.create(null, "yyyy-MM", null);
-        DataFormat n1 = DataFormat.create(null, "dd-MM-yyyy", null);
+        DataFormat d = DataFormat.of(null, "yyyy-MM", null);
+        DataFormat n1 = DataFormat.of(null, "dd-MM-yyyy", null);
         assertBehavior(Params.onDataFormat(d, "k1", "k2"), d, n1, ImmutableMap.of("k1", "", "k2", "dd-MM-yyyy"));
         assertBehavior(Params.onDataFormat(d, "k1", "k2"), d, n1, ImmutableMap.of("k1", "", "k2", "dd-MM-yyyy", "numberPattern", ""));
         assertBehavior(Params.onDataFormat(d, "k1", "k2", "k3"), d, n1, ImmutableMap.of("k1", "", "k2", "dd-MM-yyyy"));
         assertBehavior(Params.onDataFormat(d, "k1", "k2", "k3"), d, n1, ImmutableMap.of("k1", "", "k2", "dd-MM-yyyy", "k3", ""));
-        DataFormat n2 = DataFormat.create(null, "dd-MM-yyyy", "#");
+        DataFormat n2 = DataFormat.of(null, "dd-MM-yyyy", "#");
         assertBehavior(Params.onDataFormat(d, "k1", "k2", "k3"), d, n2, ImmutableMap.of("k1", "", "k2", "dd-MM-yyyy", "k3", "#"));
     }
 
