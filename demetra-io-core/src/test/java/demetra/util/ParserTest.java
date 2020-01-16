@@ -18,7 +18,6 @@ package demetra.util;
 
 import demetra.data.AggregationType;
 import static demetra.util.Parser.*;
-import internal.util.InternalParser;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -184,19 +183,24 @@ public class ParserTest {
     }
 
     @Test
-    public void testToLocale() {
-        Locale locale;
-        locale = InternalParser.parseLocale("fr");
-        assertThat(locale.getLanguage()).isEqualTo("fr");
-        locale = InternalParser.parseLocale("fr_BE");
-        assertThat(locale.getLanguage()).isEqualTo("fr");
-        locale = InternalParser.parseLocale("fr_BE_WIN");
-        assertThat(locale.getLanguage()).isEqualTo("fr");
-        assertThat(locale.getCountry()).isEqualTo("BE");
-        assertThat(locale.getVariant()).isEqualTo("WIN");
-        assertThat(InternalParser.parseLocale("helloworld")).isNull();
-        assertThat(InternalParser.parseLocale("fr_")).isNull();
-        assertThat(InternalParser.parseLocale("fr_BE_")).isNull();
+    public void testOnLocale() {
+        assertCompliance(onLocale(), "fr_BE");
+
+        assertThat(onLocale().parse("helloworld")).isNull();
+        assertThat(onLocale().parse("fr_")).isNull();
+        assertThat(onLocale().parse("fr_BE_")).isNull();
+
+        assertThat(onLocale().parse("fr"))
+                .extracting(Locale::getLanguage, Locale::getCountry, Locale::getVariant)
+                .containsExactly("fr", "", "");
+
+        assertThat(onLocale().parse("fr_BE"))
+                .extracting(Locale::getLanguage, Locale::getCountry, Locale::getVariant)
+                .containsExactly("fr", "BE", "");
+
+        assertThat(onLocale().parse("fr_BE_WIN"))
+                .extracting(Locale::getLanguage, Locale::getCountry, Locale::getVariant)
+                .containsExactly("fr", "BE", "WIN");
     }
 
     @SuppressWarnings("null")

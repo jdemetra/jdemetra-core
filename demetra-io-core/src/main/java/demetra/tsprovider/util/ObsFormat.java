@@ -51,10 +51,11 @@ import lombok.AccessLevel;
 @lombok.Getter
 public final class ObsFormat {
 
-    public static final ObsFormat DEFAULT = new ObsFormat(null, "", "");
+    public static final ObsFormat DEFAULT = of(null, null, null);
+    public static final ObsFormat ROOT = of(Locale.ROOT, null, null);
 
     /**
-     * Creates a DataFormat from an optional locale, an optional date pattern
+     * Creates an ObsFormat from an optional locale, an optional date pattern
      * and an optional number pattern.
      *
      * @param locale an optional locale
@@ -189,47 +190,30 @@ public final class ObsFormat {
                 .parseDefaulting(ChronoField.DAY_OF_MONTH, 1);
 
         // 3. locale
-        return locale != null
-                ? result.toFormatter(locale)
-                : result.toFormatter();
+        return result.toFormatter(getLocaleOrDefault());
     }
 
     @VisibleForTesting
     DateFormat newDateFormat() throws IllegalArgumentException {
-        DateFormat result;
-        if (!datePattern.isEmpty()) {
-            if (locale != null) {
-                result = new SimpleDateFormat(datePattern, locale);
-                result.setLenient(false);
-            } else {
-                result = new SimpleDateFormat(datePattern);
-                result.setLenient(false);
-            }
-        } else if (locale != null) {
-            result = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
-            result.setLenient(false);
-        } else {
-            result = SimpleDateFormat.getDateInstance();
-            result.setLenient(true);
-        }
+        DateFormat result = !datePattern.isEmpty()
+                ? new SimpleDateFormat(datePattern, getLocaleOrDefault())
+                : SimpleDateFormat.getDateInstance(DateFormat.DEFAULT, getLocaleOrDefault());
+        result.setLenient(datePattern.isEmpty() && locale == null);
         return result;
     }
 
     @VisibleForTesting
     NumberFormat newNumberFormat() throws IllegalArgumentException {
-        if (!numberPattern.isEmpty()) {
-            if (locale != null) {
-                return new DecimalFormat(numberPattern, new DecimalFormatSymbols(locale));
-            } else {
-                return new DecimalFormat(numberPattern);
-            }
-        } else if (locale != null) {
-            return NumberFormat.getInstance(locale);
-        } else {
-            return NumberFormat.getInstance();
-        }
+        NumberFormat result = !numberPattern.isEmpty()
+                ? new DecimalFormat(numberPattern, DecimalFormatSymbols.getInstance(getLocaleOrDefault()))
+                : NumberFormat.getInstance(getLocaleOrDefault());
+        return result;
     }
 
     private static final TemporalQuery[] TEMPORAL_QUERIES = {LocalDateTime::from, o -> LocalDate.from(o).atStartOfDay()};
+
+    private Locale getLocaleOrDefault() {
+        return locale != null ? locale : Locale.getDefault(Locale.Category.FORMAT);
+    }
     //</editor-fold>
 }

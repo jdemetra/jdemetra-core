@@ -61,16 +61,28 @@ public class ObsFormatTest {
     }
 
     @Test
+    public void testEquals() {
+        assertThat(of(null, null, null)).isEqualTo(of(null, null, null));
+        assertThat(of(JAPAN, null, null))
+                .isEqualTo(of(JAPAN, null, null))
+                .isNotEqualTo(of(null, null, null))
+                .isNotEqualTo(of(FRANCE, null, null));
+        assertThat(of(JAPAN, "MMMdd", "#"))
+                .isEqualTo(of(JAPAN, "MMMdd", "#"))
+                .isNotEqualTo(of(null, null, null))
+                .isNotEqualTo(of(FRANCE, "MMMdd", "#"));
+    }
+
+    @Test
     public void testNewNumberFormat() throws ParseException {
-        assertThatThrownBy(() -> of(FRENCH, null, ",.,.,.").newNumberFormat()).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> of(null, null, ",.,.,.").newNumberFormat()).isInstanceOf(IllegalArgumentException.class);
+        assertThatIllegalArgumentException().isThrownBy(() -> of(FRENCH, null, ",.,.,.").newNumberFormat());
+        assertThatIllegalArgumentException().isThrownBy(() -> of(null, null, ",.,.,.").newNumberFormat());
 
         double value = 1234.5d;
 
         NumberFormat f1 = of(FRANCE, null, null).newNumberFormat();
         assertThat(f1.parse("1234,5")).isEqualTo(value);
-        char groupingSep = (((DecimalFormat) f1).getDecimalFormatSymbols()).getGroupingSeparator();
-        assertThat(f1.format(value)).isEqualTo("1" + groupingSep + "234,5");
+        assertThat(f1.format(value)).isEqualTo("1" + getGroupingSeparator(f1) + "234,5");
 
         NumberFormat f2 = of(US, null, null).newNumberFormat();
         assertThat(f2.parse("1,234.5")).isEqualTo(value);
@@ -87,8 +99,8 @@ public class ObsFormatTest {
 
     @Test
     public void testNewDateFormat() throws ParseException {
-        assertThatThrownBy(() -> of(FRENCH, "c", null).newDateFormat()).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> of(null, "c", null).newDateFormat()).isInstanceOf(IllegalArgumentException.class);
+        assertThatIllegalArgumentException().isThrownBy(() -> of(FRENCH, "c", null).newDateFormat());
+        assertThatIllegalArgumentException().isThrownBy(() -> of(null, "c", null).newDateFormat());
 
         Date date = DateUtil.parse("2000-01-01");
 
@@ -170,19 +182,6 @@ public class ObsFormatTest {
         }
     }
 
-    @Test
-    public void testEquals() {
-        assertThat(of(null, null, null)).isEqualTo(of(null, null, null));
-        assertThat(of(JAPAN, null, null))
-                .isEqualTo(of(JAPAN, null, null))
-                .isNotEqualTo(of(null, null, null))
-                .isNotEqualTo(of(FRANCE, null, null));
-        assertThat(of(JAPAN, "MMMdd", "#"))
-                .isEqualTo(of(JAPAN, "MMMdd", "#"))
-                .isNotEqualTo(of(null, null, null))
-                .isNotEqualTo(of(FRANCE, "MMMdd", "#"));
-    }
-
     private final TemporalQuery[] temporalQueries = {LocalDateTime::from, o -> LocalDate.from(o).atStartOfDay()};
 
     private final Locale[] locales = {
@@ -197,4 +196,8 @@ public class ObsFormatTest {
         LocalDate.of(2000, 12, 31).atTime(12, 0, 0),
         LocalDate.of(2000, 12, 31).atTime(23, 59, 59)
     };
+
+    private static char getGroupingSeparator(NumberFormat format) {
+        return (((DecimalFormat) format).getDecimalFormatSymbols()).getGroupingSeparator();
+    }
 }
