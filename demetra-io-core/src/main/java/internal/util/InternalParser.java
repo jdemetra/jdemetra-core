@@ -28,7 +28,6 @@ import java.time.temporal.TemporalQuery;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,145 +40,166 @@ import java.util.stream.Stream;
 public class InternalParser {
 
     public <T> T parseTemporalAccessor(DateTimeFormatter formatter, TemporalQuery<T>[] queries, CharSequence input) {
-        try {
-            switch (queries.length) {
-                case 0:
-                    throw new IllegalArgumentException("At least one query must be specified");
-                case 1:
-                    return formatter.parse(input, queries[0]);
-                default:
-                    return (T) formatter.parseBest(input, queries);
+        if (input != null) {
+            try {
+                switch (queries.length) {
+                    case 0:
+                        throw new IllegalArgumentException("At least one query must be specified");
+                    case 1:
+                        return formatter.parse(input, queries[0]);
+                    default:
+                        return (T) formatter.parseBest(input, queries);
+                }
+            } catch (DateTimeParseException ex) {
             }
-        } catch (DateTimeParseException ex) {
-            return null;
         }
+        return null;
     }
 
     public Boolean parseBoolean(CharSequence input) {
-        switch (input.toString()) {
-            case "true":
-            case "TRUE":
-            case "1":
-                return Boolean.TRUE;
-            case "false":
-            case "FALSE":
-            case "0":
-                return Boolean.FALSE;
-            default:
-                return null;
+        if (input != null) {
+            switch (input.toString()) {
+                case "true":
+                case "TRUE":
+                case "1":
+                    return Boolean.TRUE;
+                case "false":
+                case "FALSE":
+                case "0":
+                    return Boolean.FALSE;
+            }
         }
+        return null;
     }
 
     public static Character parseCharacter(CharSequence input) {
-        return input.length() == 1 ? input.charAt(0) : null;
+        return input != null && input.length() == 1 ? input.charAt(0) : null;
     }
 
     public double[] parseDoubleArray(CharSequence input) {
-        String tmp = input.toString();
-        try {
-            int beginIndex = tmp.indexOf('[');
-            int endIndex = tmp.lastIndexOf(']');
-            if (beginIndex == -1 || endIndex == -1) {
-                return null;
+        if (input != null) {
+            String tmp = input.toString();
+            try {
+                int beginIndex = tmp.indexOf('[');
+                int endIndex = tmp.lastIndexOf(']');
+                if (beginIndex == -1 || endIndex == -1) {
+                    return null;
+                }
+                String[] values = tmp.substring(beginIndex + 1, endIndex).split("\\s*,\\s*");
+                double[] result = new double[values.length];
+                for (int i = 0; i < result.length; i++) {
+                    result[i] = Double.parseDouble(values[i].trim());
+                }
+                return result;
+            } catch (Exception ex) {
             }
-            String[] values = tmp.substring(beginIndex + 1, endIndex).split("\\s*,\\s*");
-            double[] result = new double[values.length];
-            for (int i = 0; i < result.length; i++) {
-                result[i] = Double.parseDouble(values[i].trim());
-            }
-            return result;
-        } catch (Exception ex) {
-            return null;
         }
+        return null;
     }
 
     public String[] parseStringArray(CharSequence input) {
-        String tmp = input.toString();
-        try {
-            int beginIndex = tmp.indexOf('[');
-            int endIndex = tmp.lastIndexOf(']');
-            if (beginIndex == -1 || endIndex == -1) {
-                return null;
+        if (input != null) {
+            String tmp = input.toString();
+            try {
+                int beginIndex = tmp.indexOf('[');
+                int endIndex = tmp.lastIndexOf(']');
+                if (beginIndex == -1 || endIndex == -1) {
+                    return null;
+                }
+                String[] values = tmp.substring(beginIndex + 1, endIndex).split("\\s*,\\s*");
+                String[] result = new String[values.length];
+                for (int i = 0; i < result.length; i++) {
+                    result[i] = values[i].trim();
+                }
+                return result;
+            } catch (Exception ex) {
             }
-            String[] values = tmp.substring(beginIndex + 1, endIndex).split("\\s*,\\s*");
-            String[] result = new String[values.length];
-            for (int i = 0; i < result.length; i++) {
-                result[i] = values[i].trim();
-            }
-            return result;
-        } catch (Exception ex) {
-            return null;
         }
+        return null;
     }
 
     public Integer parseInteger(CharSequence input) {
-        try {
-            return Integer.valueOf(input.toString());
-        } catch (NumberFormatException ex) {
-            return null;
+        if (input != null) {
+            try {
+                return Integer.valueOf(input.toString());
+            } catch (NumberFormatException ex) {
+            }
         }
+        return null;
     }
 
     public Long parseLong(CharSequence input) {
-        try {
-            return Long.valueOf(input.toString());
-        } catch (NumberFormatException ex) {
-            return null;
+        if (input != null) {
+            try {
+                return Long.valueOf(input.toString());
+            } catch (NumberFormatException ex) {
+            }
         }
+        return null;
     }
 
     public Double parseDouble(CharSequence input) {
-        try {
-            return Double.valueOf(input.toString());
-        } catch (NumberFormatException ex) {
-            return null;
+        if (input != null) {
+            try {
+                return Double.valueOf(input.toString());
+            } catch (NumberFormatException ex) {
+            }
         }
+        return null;
     }
 
     public Charset parseCharset(CharSequence input) {
-        try {
-            return Charset.forName(input.toString());
-        } catch (UnsupportedCharsetException ex) {
-            return null;
+        if (input != null) {
+            try {
+                return Charset.forName(input.toString());
+            } catch (UnsupportedCharsetException ex) {
+            }
         }
+        return null;
     }
 
     public File parseFile(CharSequence input) {
-        return new File(input.toString());
+        return input != null ? new File(input.toString()) : null;
     }
 
     public Date parseDate(DateFormat dateFormat, CharSequence input) {
-        String source = input.toString();
-        ParsePosition pos = new ParsePosition(0);
-        Date result = dateFormat.parse(source, pos);
-        return pos.getIndex() == input.length() ? result : null;
+        if (input != null) {
+            String source = input.toString();
+            ParsePosition pos = new ParsePosition(0);
+            Date result = dateFormat.parse(source, pos);
+            return pos.getIndex() == input.length() ? result : null;
+        }
+        return null;
     }
 
     public Number parseNumber(NumberFormat numberFormat, CharSequence input) {
-        return NumberFormats.parseAll(numberFormat, NumberFormats.simplify(numberFormat, input));
+        return input != null ? NumberFormats.parseAll(numberFormat, NumberFormats.simplify(numberFormat, input)) : null;
     }
 
     public <T extends Enum<T>> T parseEnum(Class<T> enumClass, CharSequence input) {
-        try {
-            return Enum.valueOf(enumClass, input.toString());
-        } catch (IllegalArgumentException ex) {
-            return null;
+        if (input != null) {
+            try {
+                return Enum.valueOf(enumClass, input.toString());
+            } catch (IllegalArgumentException ex) {
+            }
         }
+        return null;
+    }
+
+    public String parseString(CharSequence input) {
+        return input != null ? input.toString() : null;
     }
 
     public <T> T parseConstant(T constant, CharSequence input) {
-        Objects.requireNonNull(input);
         return constant;
     }
 
     public <T> T parseNull(CharSequence input) {
-        Objects.requireNonNull(input);
         return null;
     }
 
     public List<String> parseStringList(Function<CharSequence, Stream<String>> splitter, CharSequence input) {
-        Objects.requireNonNull(input);
-        return splitter.apply(input).collect(Collectors.toList());
+        return input != null ? splitter.apply(input).collect(Collectors.toList()) : null;
     }
 
     /**
@@ -209,12 +229,13 @@ public class InternalParser {
      *
      * @param input the locale String to convert, null returns null
      * @return a Locale, null if invalid locale format
-     * @throws IllegalArgumentException if the string is an invalid format
      * @see
      * http://www.java2s.com/Code/Java/Data-Type/ConvertsaStringtoaLocale.htm
      */
     public Locale parseLocale(CharSequence input) {
-        Objects.requireNonNull(input);
+        if (input == null) {
+            return null;
+        }
         String str = input.toString();
         int len = str.length();
         if (len != 2 && len != 5 && len < 7) {

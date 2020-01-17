@@ -205,10 +205,12 @@ public class ParserTest {
 
     @SuppressWarnings("null")
     private static <T> void assertCompliance(Parser<T> p, CharSequence input) {
-        assertThatThrownBy(() -> p.parse(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> p.parseValue(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> p.andThen(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> p.orElse(null)).isInstanceOf(NullPointerException.class);
+        assertThatCode(() -> p.parse(null)).doesNotThrowAnyException();
+        assertThatCode(() -> p.parseValue(null)).doesNotThrowAnyException();
+        
+        assertThatNullPointerException().isThrownBy(() -> p.andThen(null));
+        assertThatNullPointerException().isThrownBy(() -> p.orElse(null));
+
         assertThat(p.parse(input)).isEqualTo(p.parse(input));
         assertThat(p.parseValue(input)).contains(p.parse(input));
     }
