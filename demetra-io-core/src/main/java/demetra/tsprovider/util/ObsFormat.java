@@ -16,7 +16,6 @@
  */
 package demetra.tsprovider.util;
 
-import demetra.design.Immutable;
 import demetra.design.VisibleForTesting;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -37,7 +36,6 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalQuery;
-import lombok.AccessLevel;
 
 /**
  * A special object that contains all information needed to format and parse
@@ -45,14 +43,12 @@ import lombok.AccessLevel;
  *
  * @author Philippe Charles
  */
-@Immutable
-@lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-@lombok.EqualsAndHashCode
-@lombok.Getter
+@lombok.Value
+@lombok.Builder(builderClassName = "Builder")
 public final class ObsFormat {
 
-    public static final ObsFormat DEFAULT = of(null, null, null);
-    public static final ObsFormat ROOT = of(Locale.ROOT, null, null);
+    public static final ObsFormat DEFAULT = new ObsFormat(null, null, null, false);
+    public static final ObsFormat ROOT = new ObsFormat(Locale.ROOT, null, null, false);
 
     /**
      * Creates an ObsFormat from an optional locale, an optional date pattern
@@ -68,26 +64,19 @@ public final class ObsFormat {
      */
     @NonNull
     public static ObsFormat of(@Nullable Locale locale, @Nullable String datePattern, @Nullable String numberPattern) {
-        return new ObsFormat(locale, Strings.nullToEmpty(datePattern), Strings.nullToEmpty(numberPattern));
+        return new ObsFormat(locale, Strings.emptyToNull(datePattern), Strings.emptyToNull(numberPattern), false);
     }
 
+    @Nullable
     private final Locale locale;
 
-    @lombok.NonNull
-    private final String datePattern;
+    @Nullable
+    private final String dateTimePattern;
 
-    @lombok.NonNull
+    @Nullable
     private final String numberPattern;
 
-    @NonNull
-    public String getLocaleString() {
-        return locale != null ? locale.toString() : "";
-    }
-
-    @Override
-    public String toString() {
-        return getLocaleString() + " ~ " + datePattern + " ~ " + numberPattern;
-    }
+    private final boolean ignoreNumberGrouping;
 
     @NonNull
     public Formatter<LocalDateTime> dateTimeFormatter() {
@@ -173,8 +162,8 @@ public final class ObsFormat {
         DateTimeFormatterBuilder result = new DateTimeFormatterBuilder();
 
         // 1. pattern
-        if (!datePattern.isEmpty()) {
-            result.appendPattern(datePattern);
+        if (dateTimePattern != null) {
+            result.appendPattern(dateTimePattern);
         } else {
             result
                     .append(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
@@ -195,25 +184,28 @@ public final class ObsFormat {
 
     @VisibleForTesting
     DateFormat newDateFormat() throws IllegalArgumentException {
-        DateFormat result = !datePattern.isEmpty()
-                ? new SimpleDateFormat(datePattern, getLocaleOrDefault())
+        DateFormat result = dateTimePattern != null
+                ? new SimpleDateFormat(dateTimePattern, getLocaleOrDefault())
                 : SimpleDateFormat.getDateInstance(DateFormat.DEFAULT, getLocaleOrDefault());
-        result.setLenient(datePattern.isEmpty() && locale == null);
+        result.setLenient(dateTimePattern == null && locale == null);
         return result;
     }
 
     @VisibleForTesting
     NumberFormat newNumberFormat() throws IllegalArgumentException {
-        NumberFormat result = !numberPattern.isEmpty()
+        NumberFormat result = numberPattern != null
                 ? new DecimalFormat(numberPattern, DecimalFormatSymbols.getInstance(getLocaleOrDefault()))
                 : NumberFormat.getInstance(getLocaleOrDefault());
+        if (ignoreNumberGrouping) {
+            result.setGroupingUsed(false);
+        }
         return result;
     }
-
-    private static final TemporalQuery[] TEMPORAL_QUERIES = {LocalDateTime::from, o -> LocalDate.from(o).atStartOfDay()};
 
     private Locale getLocaleOrDefault() {
         return locale != null ? locale : Locale.getDefault(Locale.Category.FORMAT);
     }
+
+    private static final TemporalQuery[] TEMPORAL_QUERIES = {LocalDateTime::from, o -> LocalDate.from(o).atStartOfDay()};
     //</editor-fold>
 }

@@ -29,9 +29,11 @@ import demetra.util.Parser;
 import demetra.util.Formatter;
 import demetra.util.List2;
 import internal.util.InternalParser;
+import internal.util.Strings;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -214,10 +216,22 @@ public class Params {
         public void set(IConfig.Builder<?, S> builder, ObsFormat value) {
             Objects.requireNonNull(builder);
             if (!defaultValue.equals(value)) {
-                builder.put(localeKey, value.getLocaleString());
-                builder.put(datePatternKey, value.getDatePattern());
-                builder.put(numberPatternKey, value.getNumberPattern());
+                builder.put(localeKey, getLocaleValue(value.getLocale()));
+                builder.put(datePatternKey, getDateTimePatternValue(value.getDateTimePattern()));
+                builder.put(numberPatternKey, getNumberPatternValue(value.getNumberPattern()));
             }
+        }
+
+        private static String getLocaleValue(Locale locale) {
+            return locale != null ? locale.toString() : "";
+        }
+
+        private static String getDateTimePatternValue(String dateTimePattern) {
+            return Strings.nullToEmpty(dateTimePattern);
+        }
+
+        private static String getNumberPatternValue(String numberPattern) {
+            return Strings.nullToEmpty(numberPattern);
         }
     }
 

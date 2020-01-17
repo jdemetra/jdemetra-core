@@ -16,6 +16,7 @@
  */
 package demetra.tsprovider.util;
 
+import static demetra.tsprovider.util.ObsFormat.builder;
 import static demetra.tsprovider.util.ObsFormat.of;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -44,33 +45,36 @@ public class ObsFormatTest {
     @Test
     public void testFactories() {
         assertThat(of(null, null, null))
-                .extracting(ObsFormat::getLocale, ObsFormat::getDatePattern, ObsFormat::getNumberPattern)
-                .containsExactly(null, "", "");
+                .extracting(ObsFormat::getLocale, ObsFormat::getDateTimePattern, ObsFormat::getNumberPattern)
+                .containsExactly(null, null, null);
+
+        assertThat(of(null, "", ""))
+                .extracting(ObsFormat::getLocale, ObsFormat::getDateTimePattern, ObsFormat::getNumberPattern)
+                .containsExactly(null, null, null);
 
         assertThat(of(FRENCH, null, null))
-                .extracting(ObsFormat::getLocale, ObsFormat::getDatePattern, ObsFormat::getNumberPattern)
-                .containsExactly(FRENCH, "", "");
+                .extracting(ObsFormat::getLocale, ObsFormat::getDateTimePattern, ObsFormat::getNumberPattern)
+                .containsExactly(FRENCH, null, null);
+
+        assertThat(of(FRENCH, "", ""))
+                .extracting(ObsFormat::getLocale, ObsFormat::getDateTimePattern, ObsFormat::getNumberPattern)
+                .containsExactly(FRENCH, null, null);
 
         assertThat(of(null, "yyyy", null))
-                .extracting(ObsFormat::getLocale, ObsFormat::getDatePattern, ObsFormat::getNumberPattern)
-                .containsExactly(null, "yyyy", "");
+                .extracting(ObsFormat::getLocale, ObsFormat::getDateTimePattern, ObsFormat::getNumberPattern)
+                .containsExactly(null, "yyyy", null);
+
+        assertThat(of(null, "yyyy", ""))
+                .extracting(ObsFormat::getLocale, ObsFormat::getDateTimePattern, ObsFormat::getNumberPattern)
+                .containsExactly(null, "yyyy", null);
 
         assertThat(of(null, null, "#0.00"))
-                .extracting(ObsFormat::getLocale, ObsFormat::getDatePattern, ObsFormat::getNumberPattern)
-                .containsExactly(null, "", "#0.00");
-    }
+                .extracting(ObsFormat::getLocale, ObsFormat::getDateTimePattern, ObsFormat::getNumberPattern)
+                .containsExactly(null, null, "#0.00");
 
-    @Test
-    public void testEquals() {
-        assertThat(of(null, null, null)).isEqualTo(of(null, null, null));
-        assertThat(of(JAPAN, null, null))
-                .isEqualTo(of(JAPAN, null, null))
-                .isNotEqualTo(of(null, null, null))
-                .isNotEqualTo(of(FRANCE, null, null));
-        assertThat(of(JAPAN, "MMMdd", "#"))
-                .isEqualTo(of(JAPAN, "MMMdd", "#"))
-                .isNotEqualTo(of(null, null, null))
-                .isNotEqualTo(of(FRANCE, "MMMdd", "#"));
+        assertThat(of(null, "", "#0.00"))
+                .extracting(ObsFormat::getLocale, ObsFormat::getDateTimePattern, ObsFormat::getNumberPattern)
+                .containsExactly(null, null, "#0.00");
     }
 
     @Test
@@ -82,7 +86,9 @@ public class ObsFormatTest {
 
         NumberFormat f1 = of(FRANCE, null, null).newNumberFormat();
         assertThat(f1.parse("1234,5")).isEqualTo(value);
-        assertThat(f1.format(value)).isEqualTo("1" + getGroupingSeparator(f1) + "234,5");
+        String x1 = "1" + getGroupingSeparator(f1) + "234,5";
+        assertThat(f1.parse(x1)).isEqualTo(value);
+        assertThat(f1.format(value)).isEqualTo(x1);
 
         NumberFormat f2 = of(US, null, null).newNumberFormat();
         assertThat(f2.parse("1,234.5")).isEqualTo(value);
@@ -95,6 +101,12 @@ public class ObsFormatTest {
         NumberFormat f4 = of(US, null, "#0.00 €").newNumberFormat();
         assertThat(f4.parse("1234.50 €")).isEqualTo(value);
         assertThat(f4.format(value)).isEqualTo("1234.50 €");
+
+        NumberFormat f5 = builder().locale(FRANCE).ignoreNumberGrouping(true).build().newNumberFormat();
+        assertThat(f5.parse("1234,5")).isEqualTo(value);
+        assertThat(f5.format(value)).isEqualTo("1234,5");
+        String x5 = "1" + getGroupingSeparator(f1) + "234,5";
+        assertThat(f5.parse(x5)).isNotEqualTo(value);
     }
 
     @Test
