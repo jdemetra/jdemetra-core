@@ -18,18 +18,12 @@ package jdplus.benchmarking.univariate;
 
 import demetra.benchmarking.univariate.CubicSpline;
 import demetra.benchmarking.univariate.CubicSplineSpec;
-import demetra.benchmarking.univariate.Denton;
-import demetra.benchmarking.univariate.DentonSpec;
-import demetra.data.AggregationType;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
-import java.time.LocalDateTime;
 import java.util.function.DoubleUnaryOperator;
-import jdplus.timeseries.simplets.TsDataToolkit;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -47,16 +41,23 @@ public class CubicSplineProcessor implements CubicSpline.Processor {
         if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
-        // Y is limited to q !
-        LocalDateTime hstart = highFreqSeries.getStart().start();
-        LocalDateTime hend = highFreqSeries.getPeriod(highFreqSeries.length()).start();
-        TimeSelector qsel = TimeSelector.between(hstart, hend);
-        TsData naggregationConstraint = TsDataToolkit.select(aggregationConstraint, qsel);
-                // if sum or average, remove incomplete periods
-        if (spec.getAggregationType() == AggregationType.Average || spec.getAggregationType() == AggregationType.Sum){
-            throw new IllegalArgumentException();
+        
+        TsData naggregationConstraint;
+        switch (spec.getAggregationType()){
+            case Last:
+                naggregationConstraint=BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, ratio-1);
+                break;
+            case First:
+                naggregationConstraint=BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, 0);
+                break;
+            case UserDefined:
+                naggregationConstraint=BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, spec.getObservationPosition());
+                break;
+            default:
+                throw new TsException(TsException.INVALID_OPERATION);
         }
-
+        
+  
         TsPeriod sh = highFreqSeries.getStart();
         TsPeriod sl = TsPeriod.of(sh.getUnit(), naggregationConstraint.getStart().start());
         int offset = sh.until(sl);

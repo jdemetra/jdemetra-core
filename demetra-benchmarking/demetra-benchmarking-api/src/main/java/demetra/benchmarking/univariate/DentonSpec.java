@@ -37,13 +37,15 @@ public class DentonSpec implements ProcSpecification, Validatable<DentonSpec> {
     private int differencing;
     @lombok.NonNull
     private AggregationType aggregationType;
+    private int observationPosition;
 
     public static Builder builder() {
         return new Builder()
                 .multiplicative(true)
                 .modified(true)
                 .differencing(1)
-                .aggregationType(AggregationType.Sum);
+                .aggregationType(AggregationType.Sum)
+                .observationPosition(0);
     }
 
     @Override
@@ -53,6 +55,12 @@ public class DentonSpec implements ProcSpecification, Validatable<DentonSpec> {
 
     @Override
     public DentonSpec validate() throws IllegalArgumentException {
+        if (aggregationType == AggregationType.None || aggregationType == AggregationType.Max
+                || aggregationType == AggregationType.Min) {
+            throw new IllegalArgumentException();
+        }
+        if (aggregationType == AggregationType.UserDefined && observationPosition<0)
+            throw new IllegalArgumentException();
         return this;
     }
 

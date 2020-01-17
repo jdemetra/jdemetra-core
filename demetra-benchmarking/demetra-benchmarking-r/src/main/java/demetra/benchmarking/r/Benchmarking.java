@@ -30,47 +30,51 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 public class Benchmarking {
 
-    public TsData denton(TsData source, TsData bench, int differencing, boolean multiplicative, boolean modified, String conversion) {
+    public TsData denton(TsData source, TsData bench, int differencing, boolean multiplicative, boolean modified, String conversion, int pos) {
         DentonSpec spec = DentonSpec
                 .builder()
                 .differencing(differencing)
                 .multiplicative(multiplicative)
                 .modified(modified)
                 .aggregationType(AggregationType.valueOf(conversion))
+                .observationPosition(pos-1)
                 .build();
-        return Denton.benchmark(source, bench, spec);
+        return Denton.benchmark(source.cleanExtremities(), bench.cleanExtremities(), spec);
     }
 
-    public TsData denton(int nfreq, TsData bench, int differencing, boolean multiplicative, boolean modified, String conversion) {
+    public TsData denton(int nfreq, TsData bench, int differencing, boolean multiplicative, boolean modified, String conversion, int pos) {
         DentonSpec spec = DentonSpec
                 .builder()
                 .differencing(differencing)
                 .multiplicative(multiplicative)
                 .modified(modified)
                 .aggregationType(AggregationType.valueOf(conversion))
+                .observationPosition(pos-1)
                 .build();
-        return Denton.benchmark(TsUnit.ofAnnualFrequency(nfreq), bench, spec);
+        return Denton.benchmark(TsUnit.ofAnnualFrequency(nfreq), bench.cleanExtremities(), spec);
     }
 
-    public TsData cholette(TsData source, TsData bench, double rho, double lambda, String bias, String conversion) {
+    public TsData cholette(TsData source, TsData bench, double rho, double lambda, String bias, String conversion, int pos) {
         CholetteSpec spec = CholetteSpec.builder()
                 .rho(rho)
                 .lambda(lambda)
                 .aggregationType(AggregationType.valueOf(conversion))
+                .observationPosition(pos-1)
                 .bias(CholetteSpec.BiasCorrection.valueOf(bias))
                 .build();
-        return Cholette.benchmark(source, bench, spec);
+        return Cholette.benchmark(source.cleanExtremities(), bench.cleanExtremities(), spec);
     }
 
-    public TsData grp(TsData source, TsData bench, String conversion, double eps, int iter, boolean denton) {
+    public TsData grp(TsData source, TsData bench, String conversion, int pos, double eps, int iter, boolean denton) {
         AggregationType type = AggregationType.valueOf(conversion);
         GrpSpec spec=GrpSpec.builder()
                 .aggregationType(type)
+                .observationPosition(pos-1)
                 .maxIter(iter)
                 .precision(eps)
                 .dentonInitialization(denton)
                 .build();
-        return GrowthRatePreservation.benchmark(source, bench, spec);
+        return GrowthRatePreservation.benchmark(source.cleanExtremities(), bench.cleanExtremities(), spec);
     }
 
     public TsData cubicSpline(TsData source, TsData bench, String conversion, int pos) {
@@ -79,7 +83,7 @@ public class Benchmarking {
                 .aggregationType(type)
                 .observationPosition(pos-1)
                 .build();
-        return CubicSpline.benchmark(source, bench, spec);
+        return CubicSpline.benchmark(source.cleanExtremities(), bench.cleanExtremities(), spec);
     }
 
     public TsData cubicSpline(int nfreq, TsData bench, String conversion, int pos) {
@@ -88,7 +92,7 @@ public class Benchmarking {
                 .aggregationType(type)
                 .observationPosition(pos-1)
                 .build();
-        return CubicSpline.benchmark(TsUnit.ofAnnualFrequency(nfreq), bench, spec);
+        return CubicSpline.benchmark(TsUnit.ofAnnualFrequency(nfreq), bench.cleanExtremities(), spec);
     }
 
     public Dictionary multiCholette(Dictionary input, String[] temporalConstraints, String[] contemporaneousConstraints, double rho, double lambda) {

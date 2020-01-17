@@ -32,9 +32,9 @@ public class GRPTest {
         GRP grp = new GRP(GrpSpec.DEFAULT, 4, 0);
         double[] rslt = grp.process(x, y);
         Matrix K4 = Matrix.make(4, 3);
-        GRP.K(K4);
+        GRP.K(K4, true);
         double[] mg = GRP.mg(rslt, x.getStorage(), K4);
- //       System.out.println(DoubleSeq.of(rslt));
+        //       System.out.println(DoubleSeq.of(rslt));
         assertTrue(DoubleSeq.of(mg).allMatch(w -> Math.abs(w) < 1e-6));
     }
 
@@ -51,12 +51,12 @@ public class GRPTest {
     @Test
     public void testK() {
         Matrix K4 = Matrix.make(4, 3);
-        GRP.K(K4);
+        GRP.K(K4, true);
         Matrix XtX = SymmetricMatrix.XtX(K4);
         boolean identity = XtX.isDiagonal(1e-9) && XtX.diagonal().allMatch(x -> Math.abs(x - 1) < 1e-9);
         assertTrue(identity);
         Matrix K12 = Matrix.make(12, 11);
-        GRP.K(K12);
+        GRP.K(K12, true);
         XtX = SymmetricMatrix.XtX(K4);
         identity = XtX.isDiagonal(1e-9) && XtX.diagonal().allMatch(x -> Math.abs(x - 1) < 1e-9);
         assertTrue(identity);
@@ -82,9 +82,9 @@ public class GRPTest {
             g[i] = GRP.g(i, start, x.getStorage());
         }
         Matrix K4 = Matrix.make(4, 3);
-        GRP.K(K4);
+        GRP.K(K4, true);
         double[] mg = GRP.mg(start, x.getStorage(), K4);
-        double[] zx = GRP.Ztx(x.getStorage(), K4);
+        double[] zx = GRP.Ztx(x.getStorage(), K4, true);
 
     }
 
@@ -104,11 +104,11 @@ public class GRPTest {
         double[] start = denton.process(x, y);
 
         Matrix K = Matrix.make(4, 3);
-        GRP.K(K);
-        double[] z = GRP.Ztx(start, K);
+        GRP.K(K, true);
+        double[] z = GRP.Ztx(start, K, true);
 
-        double[] zz = GRP.Zz(z, K);
-        GRP.addXbar(zz, y.getStorage(), 4);
+        double[] zz = GRP.Zz(z, K, true);
+        GRP.addXbar(zz, y.getStorage(), 4, true);
         assertTrue(DoubleSeq.of(zz).distance(DoubleSeq.of(start)) < 1e-9);
     }
 }

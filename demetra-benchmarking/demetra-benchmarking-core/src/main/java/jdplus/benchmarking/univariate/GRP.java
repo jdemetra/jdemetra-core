@@ -7,6 +7,7 @@ package jdplus.benchmarking.univariate;
 
 import demetra.benchmarking.univariate.DentonSpec;
 import demetra.benchmarking.univariate.GrpSpec;
+import demetra.data.AggregationType;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import jdplus.data.DataBlock;
@@ -22,10 +23,9 @@ import jdplus.math.matrices.GeneralMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 
 /**
- * Growth rate preservation
- * Algorithm base on the paper:
- * A Newton's method for benchmarking time series according to a Growth Rates
- * Preservation Principle by T. Di Fonzo and M. Marini (IMF WP/11/179)
+ * Growth rate preservation Algorithm base on the paper: A Newton's method for
+ * benchmarking time series according to a Growth Rates Preservation Principle
+ * by T. Di Fonzo and M. Marini (IMF WP/11/179)
  *
  * @author palatej
  */
@@ -33,38 +33,60 @@ public class GRP {
 
     private final int conversion, offset;
     private final GrpSpec spec;
+    private final boolean flow;
 
     public GRP(GrpSpec spec, int conversion, int offset) {
+        switch (spec.getAggregationType()) {
+            case Last:
+                this.offset = offset + conversion - 1;
+                break;
+            case UserDefined:
+                this.offset = offset + spec.getObservationPosition();
+                break;
+            default:
+                this.offset = offset;
+        }
         this.conversion = conversion;
-        this.offset = offset;
         this.spec = spec;
+        this.flow = spec.getAggregationType() == AggregationType.Average
+                || spec.getAggregationType() == AggregationType.Sum;
     }
 
     public double[] process(DoubleSeq highSeries, DoubleSeq lowSeries) {
         double[] start;
-        int n = conversion * lowSeries.length();
+        int n = flow ? conversion * lowSeries.length() : (1 + conversion * (lowSeries.length() - 1));
         if (spec.isDentonInitialization()) {
             DentonSpec dspec = DentonSpec.builder()
                     .modified(true)
                     .multiplicative(true)
                     .differencing(1)
                     .aggregationType(spec.getAggregationType())
+                    .observationPosition(0)
                     .buildWithoutValidation();
             MatrixDenton denton = new MatrixDenton(dspec, conversion, 0);
             start = denton.process(highSeries.range(offset, offset + n), lowSeries);
         } else {
             start = new double[n];
-            addXbar(start, lowSeries.toArray(), conversion);
+            if (flow) {
+                addXbar(start, lowSeries.toArray(), conversion, flow);
+            } else {
+                init(start, lowSeries.toArray(), conversion);
+            }
         }
-        
+
         Bfgs bfgs = Bfgs.builder()
                 .functionPrecision(spec.getPrecision())
                 .maxIter(spec.getMaxIter())
                 .build();
         Matrix K = Matrix.make(conversion, conversion - 1);
-        K(K);
-        GRPFunction fn = new GRPFunction(highSeries.range(offset, offset + n).toArray(), lowSeries.toArray(), K);
-        bfgs.minimize(fn.evaluate(DoubleSeq.of(Ztx(start, K))));
+        K(K, flow);
+        GRPFunction fn = new GRPFunction(highSeries.range(offset, offset + n).toArray(), lowSeries.toArray(), K, flow);
+        IFunctionPoint ps = fn.evaluate(DoubleSeq.of(Ztx(start, K, flow)));
+        if (!Double.isFinite(ps.getValue())) {
+            init(start, lowSeries.toArray(), conversion);
+            ps = fn.evaluate(DoubleSeq.of(Ztx(start, K, flow)));
+        }
+        bfgs.minimize(ps);
         GRPFunction.Point rslt = (GRPFunction.Point) bfgs.getResult();
         if (n == highSeries.length()) {
             return rslt.x;
@@ -143,22 +165,30 @@ public class GRP {
     static double f(double[] x, double[] p) {
         double s = 0;
         for (int i = 1; i < p.length; ++i) {
+            if (x[i] <= 0) {
+                return Double.NaN;
+            }
             double del = x[i] / x[i - 1] - p[i] / p[i - 1];
             s += del * del;
         }
         return s;
     }
 
-    static void K(Matrix k) {
-        int s = k.getRowsCount();
-        DataBlockIterator cols = k.columnsIterator();
-        int c = 0;
-        while (cols.hasNext()) {
-            double sm1 = s - 1;
-            DataBlock col = cols.next();
-            col.set(c++, Math.sqrt(sm1 / s));
-            col.drop(c, 0).set(-Math.sqrt(1 / (s * sm1)));
-            --s;
+    static void K(Matrix k, boolean flow) {
+        if (flow) {
+            int s = k.getRowsCount();
+            DataBlockIterator cols = k.columnsIterator();
+            int c = 0;
+
+            while (cols.hasNext()) {
+                double sm1 = s - 1;
+                DataBlock col = cols.next();
+                col.set(c++, Math.sqrt(sm1 / s));
+                col.drop(c, 0).set(-Math.sqrt(1 / (s * sm1)));
+                --s;
+            }
+        } else {
+            k.subDiagonal(-1).set(1);
         }
     }
 
@@ -205,67 +235,108 @@ public class GRP {
         return xbar;
     }
 
-    static void addXbar(double[] x, double[] b, int s) {
-        for (int i = 0, j = 0; i < b.length; ++i) {
-            double m = b[i] / s;
-            for (int k = 0; k < s; ++j, ++k) {
-                x[j] += m;
+    static void addXbar(double[] x, double[] b, int s, boolean flow) {
+        if (flow) {
+            for (int i = 0, j = 0; i < b.length; ++i) {
+                double m = b[i] / s;
+                for (int k = 0; k < s; ++j, ++k) {
+                    x[j] += m;
+                }
+            }
+        } else {
+            for (int i = 0, j = 0; i < b.length; ++i, j += s) {
+                x[j] += b[i];
             }
         }
     }
 
-    static double mf(double[] z, double[] p, double[] b, Matrix K) {
-        double[] x = Zz(z, K);
-        addXbar(x, b, K.getRowsCount());
+    static void init(double[] x, double[] b, int s) {
+        for (int i = 0, j = 0; i < b.length - 1; ++i) {
+            for (int k = 0; k < s; ++k) {
+                x[j++] = b[i];
+            }
+        }
+        x[x.length - 1] = b[b.length - 1];
+    }
+
+    static double mf(double[] z, double[] p, double[] b, Matrix K, final boolean flow) {
+        double[] x = Zz(z, K, flow);
+        addXbar(x, b, K.getRowsCount(), flow);
         return f(x, p);
     }
 
-    static double[] Ztx(double[] x, Matrix K) {
+    static double[] Ztx(double[] x, Matrix K, boolean flow) {
         int s = K.getRowsCount();
-        int m = x.length / s; // x.length should be a multiple of s
-        int n = m * (s - 1);
-        double[] zx = new double[n];
-        for (int i = 0, j = 0, k = 0; i < m; ++i, j += s) {
-            boolean zero = true;
-            for (int l = j; l < j + s; ++l) {
-                if (x[l] != 0) {
-                    zero = false;
-                    break;
-                }
-            }
-            if (!zero) {
-                for (int l = 0; l < s - 1; ++l) {
-                    DataBlock col = K.column(l);
-                    DoubleSeqCursor cursor = col.cursor();
-                    cursor.skip(l);
-                    double q = 0;
-                    for (int t = l, u = j + l; t < s; ++t, ++u) {
-                        q += x[u] * cursor.getAndNext();
+        if (flow) {
+            int m = x.length / s; // x.length should be a multiple of s
+            int n = m * (s - 1);
+            double[] zx = new double[n];
+            for (int i = 0, j = 0, k = 0; i < m; ++i, j += s) {
+                boolean zero = true;
+                for (int l = j; l < j + s; ++l) {
+                    if (x[l] != 0) {
+                        zero = false;
+                        break;
                     }
-                    zx[k++] = q;
+                }
+                if (!zero) {
+                    for (int l = 0; l < s - 1; ++l) {
+                        DataBlock col = K.column(l);
+                        DoubleSeqCursor cursor = col.cursor();
+                        cursor.skip(l);
+                        double q = 0;
+                        for (int t = l, u = j + l; t < s; ++t, ++u) {
+                            q += x[u] * cursor.getAndNext();
+                        }
+                        zx[k++] = q;
+                    }
                 }
             }
+            return zx;
+        } else {
+            int m = (x.length - 1) / s;
+            int n = m * (s - 1);
+            double[] zx = new double[n];
+            for (int j = 0, k = 0; j < n;) {
+                ++k;
+                for (int l = 0; l < s - 1; ++l) {
+                    zx[j++] = x[k++];
+                }
+            }
+            return zx;
         }
-        return zx;
     }
 
-    static double[] Zz(double[] z, Matrix K) {
+    static double[] Zz(double[] z, Matrix K, boolean flow) {
         int s = K.getRowsCount();
-        int m = z.length / (s - 1); // x.length should be a multiple of s-1
-        int n = m * s;
-        double[] zz = new double[n];
-        for (int i = 0, j = 0, k = 0; i < m; ++i, j += s - 1) {
-            for (int l = 0; l < s; ++l) {
-                DataBlock row = K.row(l);
-                DoubleSeqCursor cursor = row.cursor();
-                double q = 0;
-                for (int t = 0, u = j; t < Math.min(s - 1, l + 1); ++t, ++u) {
-                    q += z[u] * cursor.getAndNext();
+        if (flow) {
+            int m = z.length / (s - 1); // x.length should be a multiple of s-1
+            int n = m * s;
+            double[] zz = new double[n];
+            for (int i = 0, j = 0, k = 0; i < m; ++i, j += s - 1) {
+                for (int l = 0; l < s; ++l) {
+                    DataBlock row = K.row(l);
+                    DoubleSeqCursor cursor = row.cursor();
+                    double q = 0;
+                    for (int t = 0, u = j; t < Math.min(s - 1, l + 1); ++t, ++u) {
+                        q += z[u] * cursor.getAndNext();
+                    }
+                    zz[k++] = q;
                 }
-                zz[k++] = q;
             }
+            return zz;
+        } else {
+            int m = z.length / (s - 1);
+            int n = z.length + m + 1;// we add the obs we suppressed in Ztx
+            double[] zz = new double[n];
+            for (int j = 0, k = 0; j < z.length;) {
+                k++;
+                for (int l = 0; l < s - 1; ++l) {
+                    zz[k++] = z[j++];
+                }
+            }
+            return zz;
         }
-        return zz;
     }
 }
 
@@ -273,11 +344,13 @@ class GRPFunction implements IFunction {
 
     private final double[] p, b;
     private final Matrix K;
+    private final boolean flow;
 
-    GRPFunction(double[] p, double[] b, Matrix K) {
+    GRPFunction(double[] p, double[] b, Matrix K, boolean flow) {
         this.p = p;
         this.b = b;
         this.K = K;
+        this.flow = flow;
     }
 
     @Override
@@ -297,8 +370,8 @@ class GRPFunction implements IFunction {
 
         Point(double[] z) {
             this.z = z;
-            this.x = GRP.Zz(z, K);
-            GRP.addXbar(x, b, K.getRowsCount());
+            this.x = GRP.Zz(z, K, flow);
+            GRP.addXbar(x, b, K.getRowsCount(), flow);
         }
 
         @Override

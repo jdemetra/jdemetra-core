@@ -39,7 +39,7 @@ public class CubicSplineSpec implements ProcSpecification, Validatable<CubicSpli
 
     public static Builder builder() {
         return new Builder()
-                .aggregationType(AggregationType.Sum);
+                .aggregationType(AggregationType.Last);
     }
 
     @Override
@@ -49,6 +49,10 @@ public class CubicSplineSpec implements ProcSpecification, Validatable<CubicSpli
 
     @Override
     public CubicSplineSpec validate() throws IllegalArgumentException {
+        if (aggregationType != AggregationType.First && aggregationType != AggregationType.Last
+                && aggregationType != AggregationType.UserDefined) {
+            throw new IllegalArgumentException();
+        }
         return this;
     }
 

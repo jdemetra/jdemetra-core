@@ -28,7 +28,7 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder=true, builderClassName="Builder", buildMethodName="buildWithoutValidation")
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public class GrpSpec implements ProcSpecification, Validatable<GrpSpec> {
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "grp", null);
@@ -37,6 +37,7 @@ public class GrpSpec implements ProcSpecification, Validatable<GrpSpec> {
     private double precision;
     @lombok.NonNull
     private AggregationType aggregationType;
+    private int observationPosition;
     private boolean dentonInitialization;
 
     public static Builder builder() {
@@ -44,8 +45,9 @@ public class GrpSpec implements ProcSpecification, Validatable<GrpSpec> {
                 .maxIter(500)
                 .precision(1e-12)
                 .aggregationType(AggregationType.Sum)
+                .observationPosition(0)
                 .dentonInitialization(true);
-        
+
     }
 
     @Override
@@ -55,13 +57,19 @@ public class GrpSpec implements ProcSpecification, Validatable<GrpSpec> {
 
     @Override
     public GrpSpec validate() throws IllegalArgumentException {
-        if (aggregationType != AggregationType.Average && aggregationType != AggregationType.Sum)
-            throw new IllegalArgumentException("Not supported yet");
+        if (aggregationType == AggregationType.None || aggregationType == AggregationType.Max
+                || aggregationType == AggregationType.Min) {
+            throw new IllegalArgumentException();
+        }
+        if (aggregationType == AggregationType.UserDefined && observationPosition < 0) {
+            throw new IllegalArgumentException();
+        }
+
         return this;
     }
 
-    public static class Builder implements Validatable.Builder<GrpSpec>{
-        
+    public static class Builder implements Validatable.Builder<GrpSpec> {
+
     }
     public static final GrpSpec DEFAULT = builder().build();
 
