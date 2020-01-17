@@ -17,12 +17,14 @@
 package jdplus.benchmarking.univariate;
 
 import demetra.benchmarking.univariate.GrowthRatePreservation;
+import demetra.benchmarking.univariate.GrpSpec;
 import demetra.data.AggregationType;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
+import java.time.LocalDateTime;
 import jdplus.timeseries.simplets.TsDataToolkit;
 import nbbrd.service.ServiceProvider;
 
@@ -37,21 +39,37 @@ public class GRPProcessor implements GrowthRatePreservation.Processor {
     
 
     @Override
-    public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, AggregationType type) {
+    public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, GrpSpec spec) {
         int ratio = highFreqSeries.getTsUnit().ratioOf(aggregationConstraint.getTsUnit());
         if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
-        // Y is limited to q !
-        TimeSelector qsel = TimeSelector.between(highFreqSeries.getStart().start(), highFreqSeries.getPeriod(highFreqSeries.length()).start());
+        LocalDateTime hstart = highFreqSeries.getStart().start();
+        LocalDateTime hend = highFreqSeries.getPeriod(highFreqSeries.length()).start();
+        TimeSelector qsel = TimeSelector.between(hstart, hend);
         TsData naggregationConstraint = TsDataToolkit.select(aggregationConstraint, qsel);
+        
+        // if sum or average, remove incomplete periods
+        if (spec.getAggregationType() == AggregationType.Average || spec.getAggregationType() == AggregationType.Sum){
+            int nbeg=0, nend=0;
+            if (hstart.isAfter(naggregationConstraint.getStart().start()))
+                    nbeg=1;
+            if (hend.isBefore(naggregationConstraint.getPeriod(naggregationConstraint.length()).start())){
+                nend=1;
+            }
+            naggregationConstraint=naggregationConstraint.drop(nbeg, nend);
+        }
+ 
         TsPeriod sh = highFreqSeries.getStart();
         TsPeriod sl = TsPeriod.of(sh.getUnit(), naggregationConstraint.getStart().start());
         int offset = sh.until(sl);
-        GRP grp = new GRP(type, ratio, offset);
+        // exclude incomplete low frequency periods at the beginning and at the end
+        
+        GRP grp = new GRP(spec, ratio, offset);
+        
         double[] r = grp.process(highFreqSeries.getValues(), naggregationConstraint.getValues());
         TsData rslt = TsData.ofInternal(sh, r);
-        if (type == AggregationType.Average)
+        if (spec.getAggregationType() == AggregationType.Average)
             rslt=rslt.multiply(ratio);
         return rslt;
     }

@@ -6,7 +6,7 @@
 package jdplus.benchmarking.univariate;
 
 import demetra.benchmarking.univariate.DentonSpec;
-import demetra.data.AggregationType;
+import demetra.benchmarking.univariate.GrpSpec;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import jdplus.data.DataBlock;
@@ -32,34 +32,38 @@ import jdplus.math.matrices.SymmetricMatrix;
 public class GRP {
 
     private final int conversion, offset;
-    private final AggregationType type;
+    private final GrpSpec spec;
 
-    public GRP(AggregationType type, int conversion, int offset) {
+    public GRP(GrpSpec spec, int conversion, int offset) {
         this.conversion = conversion;
         this.offset = offset;
-        this.type = type;
+        this.spec = spec;
     }
 
     public double[] process(DoubleSeq highSeries, DoubleSeq lowSeries) {
-        DentonSpec spec = DentonSpec.builder()
-                .modified(true)
-                .multiplicative(true)
-                .differencing(1)
-                .aggregationType(type)
-                .buildWithoutValidation();
-        MatrixDenton denton = new MatrixDenton(spec, conversion, offset);
-
+        double[] start;
         int n = conversion * lowSeries.length();
-        double[] start = denton.process(highSeries.range(offset, offset + n), lowSeries);
-//    double[] start=new double[n];
-//    addXbar(start, lowSeries.toArray(), conversion);
+        if (spec.isDentonInitialization()) {
+            DentonSpec dspec = DentonSpec.builder()
+                    .modified(true)
+                    .multiplicative(true)
+                    .differencing(1)
+                    .aggregationType(spec.getAggregationType())
+                    .buildWithoutValidation();
+            MatrixDenton denton = new MatrixDenton(dspec, conversion, 0);
+            start = denton.process(highSeries.range(offset, offset + n), lowSeries);
+        } else {
+            start = new double[n];
+            addXbar(start, lowSeries.toArray(), conversion);
+        }
+        
         Bfgs bfgs = Bfgs.builder()
-                .functionPrecision(1e-15)
-                .maxIter(2000)
+                .functionPrecision(spec.getPrecision())
+                .maxIter(spec.getMaxIter())
                 .build();
         Matrix K = Matrix.make(conversion, conversion - 1);
         K(K);
-        GRPFunction fn = new GRPFunction(highSeries.range(offset, offset+n).toArray(), lowSeries.toArray(), K);
+        GRPFunction fn = new GRPFunction(highSeries.range(offset, offset + n).toArray(), lowSeries.toArray(), K);
         bfgs.minimize(fn.evaluate(DoubleSeq.of(Ztx(start, K))));
         GRPFunction.Point rslt = (GRPFunction.Point) bfgs.getResult();
         if (n == highSeries.length()) {
@@ -80,34 +84,6 @@ public class GRP {
             }
             return q;
         }
-    }
-
-    // Creates the matrix of the aggregation constraint
-    private void J(DataBlockIterator iterator) {
-        int j = offset;
-        while (iterator.hasNext()) {
-            switch (type) {
-                case Sum:
-                case Average:
-                    iterator.next().range(j, j + conversion).set(1);
-                    break;
-                case First:
-                    iterator.next().set(j, 1);
-                    break;
-                case Last:
-                    iterator.next().set(j + conversion - 1, 1);
-                    break;
-            }
-            j += conversion;
-        }
-    }
-
-    private void J(Matrix M) {
-        J(M.rowsIterator());
-    }
-
-    private void Jtranspose(Matrix M) {
-        J(M.columnsIterator());
     }
 
     /**

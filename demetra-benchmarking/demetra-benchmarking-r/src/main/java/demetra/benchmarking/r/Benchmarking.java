@@ -12,10 +12,14 @@ import demetra.benchmarking.multivariate.TemporalConstraint;
 import demetra.benchmarking.univariate.CholetteSpec;
 import demetra.benchmarking.univariate.DentonSpec;
 import demetra.benchmarking.univariate.Cholette;
+import demetra.benchmarking.univariate.CubicSpline;
+import demetra.benchmarking.univariate.CubicSplineSpec;
 import demetra.benchmarking.univariate.Denton;
 import demetra.benchmarking.univariate.GrowthRatePreservation;
+import demetra.benchmarking.univariate.GrpSpec;
 import demetra.data.AggregationType;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsUnit;
 import demetra.util.r.Dictionary;
 import java.util.Map;
 
@@ -37,6 +41,17 @@ public class Benchmarking {
         return Denton.benchmark(source, bench, spec);
     }
 
+    public TsData denton(int nfreq, TsData bench, int differencing, boolean multiplicative, boolean modified, String conversion) {
+        DentonSpec spec = DentonSpec
+                .builder()
+                .differencing(differencing)
+                .multiplicative(multiplicative)
+                .modified(modified)
+                .aggregationType(AggregationType.valueOf(conversion))
+                .build();
+        return Denton.benchmark(TsUnit.ofAnnualFrequency(nfreq), bench, spec);
+    }
+
     public TsData cholette(TsData source, TsData bench, double rho, double lambda, String bias, String conversion) {
         CholetteSpec spec = CholetteSpec.builder()
                 .rho(rho)
@@ -47,10 +62,33 @@ public class Benchmarking {
         return Cholette.benchmark(source, bench, spec);
     }
 
-    public TsData grp(TsData source, TsData bench, String conversion) {
+    public TsData grp(TsData source, TsData bench, String conversion, double eps, int iter, boolean denton) {
         AggregationType type = AggregationType.valueOf(conversion);
-        
-        return GrowthRatePreservation.benchmark(source, bench, type);
+        GrpSpec spec=GrpSpec.builder()
+                .aggregationType(type)
+                .maxIter(iter)
+                .precision(eps)
+                .dentonInitialization(denton)
+                .build();
+        return GrowthRatePreservation.benchmark(source, bench, spec);
+    }
+
+    public TsData cubicSpline(TsData source, TsData bench, String conversion, int pos) {
+        AggregationType type = AggregationType.valueOf(conversion);
+        CubicSplineSpec spec=CubicSplineSpec.builder()
+                .aggregationType(type)
+                .observationPosition(pos-1)
+                .build();
+        return CubicSpline.benchmark(source, bench, spec);
+    }
+
+    public TsData cubicSpline(int nfreq, TsData bench, String conversion, int pos) {
+        AggregationType type = AggregationType.valueOf(conversion);
+        CubicSplineSpec spec=CubicSplineSpec.builder()
+                .aggregationType(type)
+                .observationPosition(pos-1)
+                .build();
+        return CubicSpline.benchmark(TsUnit.ofAnnualFrequency(nfreq), bench, spec);
     }
 
     public Dictionary multiCholette(Dictionary input, String[] temporalConstraints, String[] contemporaneousConstraints, double rho, double lambda) {

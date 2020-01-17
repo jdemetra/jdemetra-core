@@ -16,6 +16,7 @@
  */
 package demetra.benchmarking.r;
 
+import demetra.data.Data;
 import jdplus.data.DataBlock;
 import demetra.data.Doubles;
 import demetra.timeseries.TsPeriod;
@@ -56,13 +57,30 @@ public class BenchmarkingTest {
         DataBlock x = DataBlock.make(270);
         x.set(i -> (1 + i) * (1 + i));
 
-        TsPeriod q = TsPeriod.monthly(1979, 4);
+        TsPeriod q = TsPeriod.monthly(1980, 1);
         TsPeriod a = TsPeriod.yearly(1980);
         TsData t = TsData.of(a, Doubles.of(y));
         TsData s = TsData.of(q, Doubles.of(x));
 
-        TsData qs = Benchmarking.grp(s, t, "Sum");
+        TsData qs = Benchmarking.grp(s, t, "Sum", 1e-15, 100, true);
         assertTrue(qs != null);
-        
     }
+    
+    @Test
+    public void testCubicSpline() {
+        DataBlock y = DataBlock.of(Data.PCRA);
+        TsPeriod a = TsPeriod.yearly(1979);
+        TsData t = TsData.of(a, Doubles.of(y));
+        TsData qs1 = Benchmarking.cubicSpline(4, t, "UserDefined", 2);
+        System.out.println(qs1);
+        assertTrue(qs1 != null);
+        System.out.println();
+        DataBlock x = DataBlock.of(Data.IND_PCR);
+        TsPeriod q = TsPeriod.quarterly(1978,1);
+        TsData s = TsData.of(q, Doubles.of(x));
+        TsData qs2 = Benchmarking.cubicSpline(s, t, "UserDefined", 2);
+        System.out.println(qs2);
+        assertTrue(qs1 != null);
+    }
+    
 }

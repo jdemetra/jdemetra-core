@@ -16,7 +16,7 @@
  */
 package demetra.benchmarking.univariate;
 
-import demetra.data.AggregationType;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
 import demetra.design.Algorithm;
 import demetra.design.Development;
@@ -30,9 +30,9 @@ import nbbrd.service.ServiceDefinition;
  */
 @Development(status = Development.Status.Beta)
 @lombok.experimental.UtilityClass
-public class GrowthRatePreservation {
+public class CubicSpline {
 
-    private final GrowthRatePreservationLoader.Processor PROCESSOR = new GrowthRatePreservationLoader.Processor();
+    private final CubicSplineLoader.Processor PROCESSOR = new CubicSplineLoader.Processor();
 
     public void setProcessor(Processor algorithm) {
         PROCESSOR.set(algorithm);
@@ -42,15 +42,21 @@ public class GrowthRatePreservation {
         return PROCESSOR.get();
     }
 
-    public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, GrpSpec spec) {
+    public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, CubicSplineSpec spec) {
         return PROCESSOR.get().benchmark(highFreqSeries, aggregationConstraint, spec);
+    }
+
+    public TsData benchmark(TsUnit highFreq, TsData aggregationConstraint, CubicSplineSpec spec) {
+        return PROCESSOR.get().benchmark(highFreq, aggregationConstraint, spec);
     }
 
     @Algorithm
     @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     public interface Processor {
 
-        TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, GrpSpec spec);
+        TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, CubicSplineSpec spec);
+
+        TsData benchmark(TsUnit highFreq, TsData aggregationConstraint, CubicSplineSpec spec);
     }
 
 }

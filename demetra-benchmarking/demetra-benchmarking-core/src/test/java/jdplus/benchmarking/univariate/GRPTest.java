@@ -6,6 +6,7 @@
 package jdplus.benchmarking.univariate;
 
 import demetra.benchmarking.univariate.DentonSpec;
+import demetra.benchmarking.univariate.GrpSpec;
 import demetra.data.AggregationType;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
@@ -28,7 +29,7 @@ public class GRPTest {
     public void testGRP() {
         DataBlock y = DataBlock.of(Data.PCRA);
         DataBlock x = DataBlock.of(Data.IND_PCR);
-        GRP grp = new GRP(AggregationType.Sum, 4, 0);
+        GRP grp = new GRP(GrpSpec.DEFAULT, 4, 0);
         double[] rslt = grp.process(x, y);
         Matrix K4 = Matrix.make(4, 3);
         GRP.K(K4);
@@ -41,7 +42,7 @@ public class GRPTest {
     public void testGRP2() {
         DataBlock y = DataBlock.of(Data.PCRA);
         DataBlock x = DataBlock.of(Data.IND_PCR);
-        GRP grp = new GRP(AggregationType.Sum, 4, 0);
+        GRP grp = new GRP(GrpSpec.DEFAULT, 4, 0);
         double[] rslt = grp.process(x, y);
         y = y.drop(0, 2);
         rslt = grp.process(x, y);
