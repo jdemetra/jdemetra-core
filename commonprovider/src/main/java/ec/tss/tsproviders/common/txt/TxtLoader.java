@@ -177,7 +177,7 @@ final class TxtLoader {
         @Override
         protected IParser<Date> initialValue() {
             ImmutableList<IParser<Date>> list = Stream.of(FALLBACK_FORMATS)
-                    .map(o -> new DataFormat(Locale.ROOT, o, null).dateParser())
+                    .map(o -> DataFormat.of(Locale.ROOT, o, null).dateParser())
                     .collect(ImmutableList.toImmutableList());
             return Parsers.firstNotNull(list);
         }

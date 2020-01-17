@@ -79,7 +79,7 @@ public class TxtLoaderTest {
     public void testGermanCsvWithComments() throws IOException {
         TxtBean bean = new TxtBean();
         bean.setCharset(StandardCharsets.UTF_8);
-        bean.setDataFormat(new DataFormat(Locale.GERMAN, "yyyy-MM", null));
+        bean.setDataFormat(DataFormat.of(Locale.GERMAN, "yyyy-MM", null));
         bean.setDelimiter(TxtBean.Delimiter.SEMICOLON);
         bean.setHeaders(false);
         bean.setSkipLines(5);

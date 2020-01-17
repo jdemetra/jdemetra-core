@@ -167,6 +167,27 @@ public class ParsersTest {
                 });
     }
 
+    @Test
+    public void testLocaleParser() {
+        assertCompliance(Parsers.localeParser());
+
+        assertThat(Parsers.localeParser().parse("helloworld")).isNull();
+        assertThat(Parsers.localeParser().parse("fr_")).isNull();
+        assertThat(Parsers.localeParser().parse("fr_BE_")).isNull();
+
+        assertThat(Parsers.localeParser().parse("fr"))
+                .extracting(Locale::getLanguage, Locale::getCountry, Locale::getVariant)
+                .containsExactly("fr", "", "");
+
+        assertThat(Parsers.localeParser().parse("fr_BE"))
+                .extracting(Locale::getLanguage, Locale::getCountry, Locale::getVariant)
+                .containsExactly("fr", "BE", "");
+
+        assertThat(Parsers.localeParser().parse("fr_BE_WIN"))
+                .extracting(Locale::getLanguage, Locale::getCountry, Locale::getVariant)
+                .containsExactly("fr", "BE", "WIN");
+    }
+
     @SuppressWarnings("null")
     private static void assertCompliance(Parser<?> p) {
         assertThatThrownBy(() -> p.parse(null)).isInstanceOf(NullPointerException.class);

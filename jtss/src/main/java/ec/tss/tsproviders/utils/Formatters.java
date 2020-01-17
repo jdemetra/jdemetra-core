@@ -130,6 +130,11 @@ public final class Formatters {
     }
 
     @NonNull
+    public static <T> Formatter<T> onNull() {
+        return ofInstance(null);
+    }
+
+    @NonNull
     @SuppressWarnings("null")
     public static <T> Formatter<T> ofInstance(@Nullable CharSequence instance) {
         return new Wrapper<>(o -> {

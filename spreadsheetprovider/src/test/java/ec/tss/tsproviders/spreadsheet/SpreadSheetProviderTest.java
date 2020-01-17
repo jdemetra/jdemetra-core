@@ -30,6 +30,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -68,7 +69,7 @@ public class SpreadSheetProviderTest {
         SpreadSheetBean bean = new SpreadSheetBean();
         bean.setAggregationType(TsAggregationType.Last);
         bean.setCleanMissing(false);
-        bean.setDataFormat(DataFormat.create("fr", "dd/MM/yyyy", "#.#"));
+        bean.setDataFormat(DataFormat.of(Locale.FRENCH, "dd/MM/yyyy", "#.#"));
         bean.setFile(new File("Insee.xlsx"));
         bean.setFrequency(TsFrequency.Monthly);
 

@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
@@ -68,7 +69,7 @@ public class TxtProviderTest {
         TxtBean bean = new TxtBean();
         bean.setCharset(StandardCharsets.UTF_16);
         bean.setCleanMissing(true);
-        bean.setDataFormat(DataFormat.create("fr", "dd/MM/yyyy", "#.#"));
+        bean.setDataFormat(DataFormat.of(Locale.FRENCH, "dd/MM/yyyy", "#.#"));
         bean.setDelimiter(TxtBean.Delimiter.SEMICOLON);
         bean.setFile(new File("Insee1.txt"));
         bean.setFrequency(TsFrequency.Monthly);

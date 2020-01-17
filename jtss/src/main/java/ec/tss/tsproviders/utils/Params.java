@@ -200,7 +200,9 @@ public final class Params {
             String locale = config.get(localeKey);
             String datePattern = config.get(datePatternKey);
             String numberPattern = config.get(numberPatternKey);
-            return isValid(locale, datePattern) ? DataFormat.create(locale, datePattern, numberPattern) : defaultValue;
+            return isValid(locale, datePattern) 
+                    ? DataFormat.of(Parsers.localeParser().parse(locale), datePattern, numberPattern) 
+                    : defaultValue;
         }
 
         @Override
