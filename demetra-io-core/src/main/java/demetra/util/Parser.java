@@ -43,8 +43,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @author Philippe Charles
  * @param <T> The type of the object to be created
- * @see IFormatter
- * @since 1.0.0
+ * @see Formatter
  */
 @FunctionalInterface
 public interface Parser<T> {
@@ -54,10 +53,9 @@ public interface Parser<T> {
      *
      * @param input the input used to create the object
      * @return a new object if possible, {@code null} otherwise
-     * @throws NullPointerException if input is null
      */
     @Nullable
-    T parse(@NonNull CharSequence input);
+    T parse(@Nullable CharSequence input);
 
     /**
      * Returns an {@link Optional} containing the object that has bean created
@@ -67,11 +65,9 @@ public interface Parser<T> {
      *
      * @param input the input used to create the object
      * @return a never-null {@link Optional}
-     * @throws NullPointerException if input is null
-     * @since 2.2.0
      */
     @NonNull
-    default Optional<T> parseValue(@NonNull CharSequence input) {
+    default Optional<T> parseValue(@Nullable CharSequence input) {
         return Optional.ofNullable(parse(input));
     }
 
@@ -79,10 +75,8 @@ public interface Parser<T> {
      *
      * @param other
      * @return
-     * @since 2.2.0
      */
     @NonNull
-    @SuppressWarnings("null")
     default Parser<T> orElse(@NonNull Parser<T> other) {
         Objects.requireNonNull(other);
         return o -> {
@@ -92,13 +86,9 @@ public interface Parser<T> {
     }
 
     @NonNull
-    @SuppressWarnings("null")
     default <X> Parser<X> andThen(@NonNull Function<? super T, ? extends X> after) {
         Objects.requireNonNull(after);
-        return o -> {
-            T tmp = parse(o);
-            return tmp != null ? after.apply(tmp) : null;
-        };
+        return o -> after.apply(parse(o));
     }
 
     @NonNull
@@ -151,16 +141,6 @@ public interface Parser<T> {
         return InternalParser::parseLong;
     }
 
-    @NonNull
-    static Parser<Boolean> onBoolean() {
-        return InternalParser::parseBoolean;
-    }
-
-    @NonNull
-    static Parser<Character> onCharacter() {
-        return InternalParser::parseCharacter;
-    }
-
     /**
      * Create a {@link Parser} that delegates its parsing to
      * {@link Double#valueOf(java.lang.String)}.
@@ -173,18 +153,29 @@ public interface Parser<T> {
     }
 
     @NonNull
+    static Parser<Boolean> onBoolean() {
+        return InternalParser::parseBoolean;
+    }
+
+    @NonNull
+    static Parser<Character> onCharacter() {
+        return InternalParser::parseCharacter;
+    }
+
+    @NonNull
     static Parser<Charset> onCharset() {
         return InternalParser::parseCharset;
     }
 
     @NonNull
     static <T extends Enum<T>> Parser<T> onEnum(@NonNull Class<T> enumClass) {
+        Objects.requireNonNull(enumClass);
         return o -> InternalParser.parseEnum(enumClass, o);
     }
 
     @NonNull
     static Parser<String> onString() {
-        return Object::toString;
+        return InternalParser::parseString;
     }
 
     @NonNull
@@ -199,6 +190,7 @@ public interface Parser<T> {
 
     @NonNull
     static Parser<List<String>> onStringList(@NonNull Function<CharSequence, Stream<String>> splitter) {
+        Objects.requireNonNull(splitter);
         return o -> InternalParser.parseStringList(splitter, o);
     }
 

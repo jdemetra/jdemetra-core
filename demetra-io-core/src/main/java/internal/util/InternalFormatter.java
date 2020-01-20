@@ -16,13 +16,16 @@
  */
 package internal.util;
 
+import java.io.File;
+import java.nio.charset.Charset;
+import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.time.DateTimeException;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -34,40 +37,86 @@ import java.util.stream.Stream;
 public class InternalFormatter {
 
     public CharSequence formatTemporalAccessor(DateTimeFormatter formatter, TemporalAccessor value) {
-        try {
-            return formatter.format(value);
-        } catch (DateTimeException ex) {
-            return null;
+        if (value != null) {
+            try {
+                return formatter.format(value);
+            } catch (DateTimeException ex) {
+            }
         }
+        return null;
+    }
+
+    public CharSequence formatDate(DateFormat format, Date value) {
+        return value != null ? format.format(value) : null;
     }
 
     public CharSequence formatNumber(NumberFormat format, Number value) {
-        return format.format(Objects.requireNonNull(value));
+        return value != null ? format.format(value) : null;
     }
 
     public CharSequence formatDoubleArray(double[] value) {
-        return Arrays.toString(Objects.requireNonNull(value));
+        return value != null ? Arrays.toString(value) : null;
     }
 
     public CharSequence formatStringArray(String[] value) {
-        return Arrays.toString(Objects.requireNonNull(value));
+        return value != null ? Arrays.toString(value) : null;
     }
 
     public CharSequence formatStringList(Function<Stream<CharSequence>, String> joiner, List<String> value) {
-        try {
-            return joiner.apply(value.stream().map(CharSequence.class::cast));
-        } catch (Exception ex) {
-            return null;
+        if (value != null) {
+            try {
+                return joiner.apply(value.stream().map(CharSequence.class::cast));
+            } catch (Exception ex) {
+            }
         }
+        return null;
     }
 
     public <T> CharSequence formatConstant(CharSequence constant, T value) {
-        Objects.requireNonNull(value);
         return constant;
     }
 
     public <T> CharSequence formatNull(T value) {
-        Objects.requireNonNull(value);
         return null;
+    }
+
+    public <T> CharSequence formatFile(File value) {
+        return value != null ? value.getPath() : null;
+    }
+
+    public <T> CharSequence formatInteger(Integer value) {
+        return value != null ? value.toString() : null;
+    }
+
+    public <T> CharSequence formatLong(Long value) {
+        return value != null ? value.toString() : null;
+    }
+
+    public <T> CharSequence formatDouble(Double value) {
+        return value != null ? value.toString() : null;
+    }
+
+    public <T> CharSequence formatBoolean(Boolean value) {
+        return value != null ? value.toString() : null;
+    }
+
+    public <T> CharSequence formatCharacter(Character value) {
+        return value != null ? value.toString() : null;
+    }
+
+    public <T> CharSequence formatCharset(Charset value) {
+        return value != null ? value.name() : null;
+    }
+
+    public <T> CharSequence formatEnum(Enum value) {
+        return value != null ? value.name() : null;
+    }
+
+    public <T> CharSequence formatString(String value) {
+        return value;
+    }
+
+    public <T> CharSequence formatObjectToString(Object value) {
+        return value != null ? value.toString() : null;
     }
 }

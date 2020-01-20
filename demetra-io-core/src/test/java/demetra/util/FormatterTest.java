@@ -27,8 +27,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.*;
 import org.assertj.core.util.DateUtil;
 import org.junit.Test;
@@ -41,13 +44,15 @@ public class FormatterTest {
 
     @Test
     @SuppressWarnings("null")
-    public void testOnDateTimeFormatter() {
-        assertThatThrownBy(() -> onDateTimeFormatter(null)).isInstanceOf(NullPointerException.class);
-        assertCompliance(onDateTimeFormatter(DateTimeFormatter.ISO_DATE));
+    public void testDateTimeFormatter() {
+        assertThatNullPointerException().isThrownBy(() -> onDateTimeFormatter(null));
 
         LocalDate date = LocalDate.of(2003, 4, 26);
         LocalTime time = LocalTime.of(3, 1, 2);
         LocalDateTime dateTime = date.atTime(time);
+
+        Formatter<TemporalAccessor> f = onDateTimeFormatter(DateTimeFormatter.ISO_DATE);
+        assertCompliance(f, date, "2003-04-26");
 
         Formatter<TemporalAccessor> f1 = onDateTimeFormatter(DateTimeFormatter.ISO_DATE);
         assertThat(f1.format(date)).isEqualTo("2003-04-26");
@@ -67,115 +72,140 @@ public class FormatterTest {
 
     @Test
     @SuppressWarnings("null")
-    public void testOnDateFormat() {
-        assertThatThrownBy(() -> onDateFormat(null)).isInstanceOf(NullPointerException.class);
-        assertCompliance(onDateFormat(DateUtil.newIsoDateTimeFormat()));
+    public void testDateFormat() {
+        assertThatNullPointerException().isThrownBy(() -> onDateFormat(null));
 
         Formatter<Date> f = onDateFormat(DateUtil.newIsoDateTimeFormat());
-        assertThat(f.format(DateUtil.parseDatetime("2003-04-26T03:01:02"))).isEqualTo("2003-04-26T03:01:02");
+        assertCompliance(f, DateUtil.parseDatetime("2003-04-26T03:01:02"), "2003-04-26T03:01:02");
     }
 
     @Test
     @SuppressWarnings("null")
-    public void testOnNumberFormat() {
-        assertThatThrownBy(() -> onNumberFormat(null)).isInstanceOf(NullPointerException.class);
-        assertCompliance(onNumberFormat(NumberFormat.getInstance(Locale.ROOT)));
+    public void testNumberFormat() {
+        assertThatNullPointerException().isThrownBy(() -> onNumberFormat(null));
 
         Formatter<Number> f = onNumberFormat(NumberFormat.getInstance(Locale.ROOT));
-        assertThat(f.format(3.14)).isEqualTo("3.14");
+        assertCompliance(f, 3.14, "3.14");
     }
 
     @Test
-    public void testCharFormatter() {
-        Formatter<Character> f = onCharacter();
-        assertCompliance(f);
-        assertThat(f.format('h')).isEqualTo("h");
-        assertThat(f.format('\t')).isEqualTo("\t");
+    public void testConstant() {
+        Formatter<String> nonNullConstant = onConstant("hello");
+        assertCompliance(nonNullConstant, "abc", "hello");
+        assertCompliance(nonNullConstant, "", "hello");
+
+        Formatter<String> nullConstant = onConstant(null);
+        assertCompliance(nullConstant, "abc", null);
+        assertCompliance(nullConstant, "", null);
     }
 
     @Test
-    @SuppressWarnings("null")
-    public void testBoolFormatter() {
-        Formatter<Boolean> f = onBoolean();
-        assertCompliance(f);
-        assertThat(f.format(Boolean.TRUE)).isEqualTo("true");
-        assertThat(f.format(Boolean.FALSE)).isEqualTo("false");
+    public void testNull() {
+        Formatter<Integer> f = onNull();
+        assertCompliance(f, 123, null);
     }
 
     @Test
-    public void testCharsetFormatter() {
-        Formatter<Charset> f = onCharset();
-        assertCompliance(f);
-        assertThat(f.format(StandardCharsets.UTF_8)).isEqualTo("UTF-8");
-    }
-
-    @Test
-    public void testOfInstance() {
-        Formatter<String> f = onConstant("hello");
-        assertCompliance(f);
-        assertThat(f.format("lkj")).isEqualTo("hello");
-        assertThat(Formatter.onConstant(null).format("lkj")).isNull();
-    }
-
-    @Test
-    public void testDoubleArrayFormatter() {
-        Formatter<double[]> f = onDoubleArray();
-        assertCompliance(f);
-        assertThat(f.format(new double[]{0.4, -4.5})).isEqualTo("[0.4, -4.5]");
-        assertThat(f.format(new double[]{})).isEqualTo("[]");
-    }
-
-    @Test
-    public void testEnumFormatter() {
-        Formatter<AggregationType> f = onEnum();
-        assertCompliance(f);
-        assertThat(f.format(AggregationType.Average)).isEqualTo("Average");
-    }
-
-    @Test
-    public void testFileFormatter() {
+    public void testFile() {
         Formatter<File> f = onFile();
-        assertCompliance(f);
-        assertThat(f.format(new File("test.xml"))).isEqualTo("test.xml");
+        assertCompliance(f, new File("test.xml"), "test.xml");
     }
 
     @Test
-    public void testIntFormatter() {
+    public void testInteger() {
         Formatter<Integer> f = onInteger();
-        assertCompliance(f);
-        assertThat(f.format(42)).isEqualTo("42");
+        assertCompliance(f, 42, "42");
     }
 
     @Test
-    public void testStringFormatter() {
+    public void testLong() {
+        Formatter<Long> f = onLong();
+        assertCompliance(f, 42L, "42");
+    }
+
+    @Test
+    public void testDouble() {
+        Formatter<Double> f = onDouble();
+        assertCompliance(f, 3.14, "3.14");
+    }
+
+    @Test
+    public void testBoolean() {
+        Formatter<Boolean> f = onBoolean();
+        assertCompliance(f, Boolean.TRUE, "true");
+        assertCompliance(f, Boolean.FALSE, "false");
+    }
+
+    @Test
+    public void testCharacter() {
+        Formatter<Character> f = onCharacter();
+        assertCompliance(f, 'h', "h");
+        assertCompliance(f, '\t', "\t");
+    }
+
+    @Test
+    public void testCharset() {
+        Formatter<Charset> f = onCharset();
+        assertCompliance(f, StandardCharsets.UTF_8, "UTF-8");
+    }
+
+    @Test
+    public void testEnum() {
+        Formatter<AggregationType> f = onEnum();
+        assertCompliance(f, AggregationType.Average, "Average");
+    }
+
+    @Test
+    public void testString() {
         Formatter<String> f = onString();
-        assertCompliance(f);
-        assertThat(f.format("hello")).isEqualTo("hello");
+        assertCompliance(f, "hello", "hello");
     }
 
     @Test
-    public void testFormatterFormatValue() {
-        assertThat(onConstant("123").formatValue(new Object()).get()).isEqualTo("123");
-        assertThat(onConstant(null).formatValue(new Object()).isPresent()).isFalse();
+    public void testObjectToString() {
+        Formatter<Object> f = onObjectToString();
+        assertCompliance(f, 123, "123");
     }
 
     @Test
-    public void testFormatterFormatAsString() {
-        assertThat(onConstant("123").formatAsString(new Object())).isEqualTo("123");
-        assertThat(onConstant(null).formatAsString(new Object())).isNull();
+    public void testDoubleArray() {
+        Formatter<double[]> f = onDoubleArray();
+        assertCompliance(f, new double[]{0.4, -4.5}, "[0.4, -4.5]");
+        assertCompliance(f, new double[]{}, "[]");
     }
 
     @Test
-    public void testFormatterFormatValueAsString() {
-        assertThat(onConstant("123").formatValueAsString(new Object()).get()).isEqualTo("123");
-        assertThat(onConstant(null).formatValueAsString(new Object()).isPresent()).isFalse();
+    public void testStringArray() {
+        Formatter<String[]> f = onStringArray();
+        assertCompliance(f, new String[]{"x", "y"}, "[x, y]");
+        assertCompliance(f, new String[]{}, "[]");
     }
 
-    @SuppressWarnings("null")
-    private static void assertCompliance(Formatter<?> f) {
-        assertThatThrownBy(() -> f.format(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> f.formatAsString(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> f.formatValue(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> f.formatValueAsString(null)).isInstanceOf(NullPointerException.class);
+    @Test
+    public void testStringList() {
+        assertThatNullPointerException().isThrownBy(() -> onStringList(null));
+
+        Formatter<List<String>> f = onStringList(stream -> stream.collect(Collectors.joining(":")));
+        assertCompliance(f, Arrays.asList("A", "B"), "A:B");
+        assertCompliance(f, Arrays.asList(), "");
+    }
+
+    private static <T> void assertCompliance(Formatter<T> f, T value, CharSequence text) {
+        assertThatCode(() -> f.format(null)).doesNotThrowAnyException();
+        assertThatCode(() -> f.formatAsString(null)).doesNotThrowAnyException();
+        assertThatCode(() -> f.formatValue(null)).doesNotThrowAnyException();
+        assertThatCode(() -> f.formatValueAsString(null)).doesNotThrowAnyException();
+
+        assertThatNullPointerException().isThrownBy(() -> f.compose(null));
+
+        assertThat(f.format(value)).isEqualTo(text);
+        assertThat(f.formatAsString(value)).isEqualTo(text != null ? text.toString() : null);
+        if (text != null) {
+            assertThat(f.formatValue(value)).contains(text);
+            assertThat(f.formatValueAsString(value)).contains(text.toString());
+        } else {
+            assertThat(f.formatValue(value)).isEmpty();
+            assertThat(f.formatValueAsString(value)).isEmpty();
+        }
     }
 }

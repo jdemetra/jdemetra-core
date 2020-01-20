@@ -34,17 +34,16 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Defines a class that creates a {@link CharSequence} from an object.<br> For
- * example, you could use it to format a into a String. Note that it can also be
- * used to convert a String to a new one.<br> The formatter must not throw
- * Exceptions; it must swallow it and return {@code null}. This means that
+ * example, you could use it to format a Date into a String. Note that it can
+ * also be used to convert a String to a new one.<br> The formatter must not
+ * throw Exceptions; it must swallow it and return {@code null}. This means that
  * {@code null} is not considered has a value (same as Collection API). To
  * create a "null value" from a formatter, you should use the NullObject
  * pattern.
  *
  * @author Philippe Charles
  * @param <T> The type of the object to be formatted
- * @see IParser
- * @since 1.0.0
+ * @see Parser
  */
 @FunctionalInterface
 public interface Formatter<T> {
@@ -54,21 +53,18 @@ public interface Formatter<T> {
      *
      * @param value the input used to create the CharSequence
      * @return a new CharSequence if possible, {@code null} otherwise
-     * @throws NullPointerException if input is null
      */
     @Nullable
-    CharSequence format(@NonNull T value);
+    CharSequence format(@Nullable T value);
 
     /**
      * Format an object into a String.
      *
-     * @param value the non-null input used to create the String
+     * @param value the input used to create the String
      * @return a new String if possible, {@code null} otherwise
-     * @throws NullPointerException if input is null
-     * @since 2.2.0
      */
     @Nullable
-    default String formatAsString(@NonNull T value) {
+    default String formatAsString(@Nullable T value) {
         CharSequence result = format(value);
         return result != null ? result.toString() : null;
     }
@@ -81,11 +77,9 @@ public interface Formatter<T> {
      *
      * @param value the input used to create the CharSequence
      * @return a never-null {@link Optional}
-     * @throws NullPointerException if input is null
-     * @since 2.2.0
      */
     @NonNull
-    default Optional<CharSequence> formatValue(@NonNull T value) {
+    default Optional<CharSequence> formatValue(@Nullable T value) {
         return Optional.ofNullable(format(value));
     }
 
@@ -97,11 +91,9 @@ public interface Formatter<T> {
      *
      * @param value the input used to create the String
      * @return a never-null {@link Optional}
-     * @throws NullPointerException if input is null
-     * @since 2.2.0
      */
     @NonNull
-    default Optional<String> formatValueAsString(@NonNull T value) {
+    default Optional<String> formatValueAsString(@Nullable T value) {
         return Optional.ofNullable(formatAsString(value));
     }
 
@@ -112,15 +104,11 @@ public interface Formatter<T> {
      * @param <Y>
      * @param before
      * @return a never-null formatter
-     * @since 2.2.0
      */
     @NonNull
-    @SuppressWarnings("null")
     default <Y> Formatter<Y> compose(@NonNull Function<? super Y, ? extends T> before) {
-        return o -> {
-            T tmp = before.apply(o);
-            return tmp != null ? format(tmp) : null;
-        };
+        Objects.requireNonNull(before);
+        return o -> format(before.apply(o));
     }
 
     @NonNull
@@ -131,7 +119,8 @@ public interface Formatter<T> {
 
     @NonNull
     static Formatter<Date> onDateFormat(@NonNull DateFormat dateFormat) {
-        return dateFormat::format;
+        Objects.requireNonNull(dateFormat);
+        return o -> InternalFormatter.formatDate(dateFormat, o);
     }
 
     @NonNull
@@ -147,52 +136,57 @@ public interface Formatter<T> {
 
     @NonNull
     static <T> Formatter<T> onNull() {
-        return o -> InternalFormatter.formatNull(o);
+        return InternalFormatter::formatNull;
     }
 
     @NonNull
     static Formatter<File> onFile() {
-        return File::getPath;
+        return InternalFormatter::formatFile;
     }
 
     @NonNull
     static Formatter<Integer> onInteger() {
-        return Object::toString;
+        return InternalFormatter::formatInteger;
     }
 
     @NonNull
     static Formatter<Long> onLong() {
-        return Object::toString;
+        return InternalFormatter::formatLong;
     }
 
     @NonNull
     static Formatter<Double> onDouble() {
-        return Object::toString;
+        return InternalFormatter::formatDouble;
     }
 
     @NonNull
     static Formatter<Boolean> onBoolean() {
-        return Object::toString;
+        return InternalFormatter::formatBoolean;
     }
 
     @NonNull
     static Formatter<Character> onCharacter() {
-        return Object::toString;
+        return InternalFormatter::formatCharacter;
     }
 
     @NonNull
     static Formatter<Charset> onCharset() {
-        return Charset::name;
+        return InternalFormatter::formatCharset;
     }
 
     @NonNull
     static <T extends Enum<T>> Formatter<T> onEnum() {
-        return Enum::name;
+        return InternalFormatter::formatEnum;
     }
 
     @NonNull
     static Formatter<String> onString() {
-        return Object::toString;
+        return InternalFormatter::formatString;
+    }
+
+    @NonNull
+    static Formatter<Object> onObjectToString() {
+        return InternalFormatter::formatObjectToString;
     }
 
     @NonNull
@@ -206,12 +200,8 @@ public interface Formatter<T> {
     }
 
     @NonNull
-    static Formatter<Object> onObjectToString() {
-        return Object::toString;
-    }
-
-    @NonNull
     static Formatter<List<String>> onStringList(@NonNull Function<Stream<CharSequence>, String> joiner) {
+        Objects.requireNonNull(joiner);
         return o -> InternalFormatter.formatStringList(joiner, o);
     }
 }

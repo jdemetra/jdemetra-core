@@ -35,6 +35,11 @@ public class Strings {
         return (o == null) ? "" : o;
     }
 
+    @Nullable
+    public String emptyToNull(@Nullable String o) {
+        return o != null && o.isEmpty() ? null : o;
+    }
+
     public boolean isNullOrEmpty(@Nullable String o) {
         return o == null || o.isEmpty();
     }
