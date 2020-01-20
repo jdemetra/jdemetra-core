@@ -16,7 +16,9 @@
  */
 package demetra.tsprovider.grid;
 
-import org.checkerframework.checker.index.qual.NonNegative;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -26,17 +28,22 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public interface GridInput {
 
-    boolean isSupportedDataType(@NonNull Class<?> type);
+    @NonNull
+    Set<GridDataType> getDataTypes();
 
     @NonNull
     String getName();
 
-    @NonNegative
-    int getRowCount();
+    @NonNull
+    Stream open() throws IOException;
 
-    @NonNegative
-    int getColumnCount();
+    interface Stream extends Closeable {
 
-    @Nullable
-    Object getValue(@NonNegative int row, @NonNegative int column);
+        boolean readCell() throws IOException;
+
+        boolean readRow() throws IOException;
+
+        @Nullable
+        Object getCell() throws IOException;
+    }
 }

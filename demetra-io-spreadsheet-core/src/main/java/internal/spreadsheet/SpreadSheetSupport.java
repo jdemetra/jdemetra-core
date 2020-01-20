@@ -28,6 +28,7 @@ import demetra.tsprovider.TsCollection;
 import demetra.tsprovider.TsInformationType;
 import demetra.tsprovider.cursor.HasTsCursor;
 import demetra.tsprovider.cursor.TsCursor;
+import demetra.tsprovider.grid.GridLayout;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.MultiLineNameUtil;
@@ -177,7 +178,7 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
         }
 
         static SheetTs of(TsCollection sheet, Ts series) {
-            return new SheetTs(sheet.getName(), sheet.getMeta().getOrDefault("gridLayout", ""), series.getName(), series.getData());
+            return new SheetTs(sheet.getName(), sheet.getMeta().getOrDefault(GridLayout.PROPERTY, ""), series.getName(), series.getData());
         }
 
         private final String sheetName;

@@ -16,7 +16,6 @@
  */
 package internal.tsprovider.grid;
 
-import demetra.tsprovider.grid.GridInput;
 import java.io.IOException;
 import org.junit.Test;
 import test.tsprovider.grid.ArrayGridInput;
@@ -34,8 +33,8 @@ public class InternalValueReaderTest {
         InternalValueReader x = InternalValueReader.onNull();
 
         for (int i = 0; i < grid.getRowCount(); i++) {
-            for (int j = 0; j < grid.getColumnCount(); j++) {
-                assertThat(x.read(grid, i, j)).isNull();
+            for (int j = 0; j < grid.getColumnCount(i); j++) {
+                assertThat(x.read(grid.getValue(i, j))).isNull();
             }
         }
     }
@@ -44,15 +43,15 @@ public class InternalValueReaderTest {
     public void testOnDateTime() throws IOException {
         InternalValueReader x = InternalValueReader.onDateTime();
 
-        assertThat(x.read(grid, 0, 0)).isNull();
-        assertThat(x.read(grid, 1, 0)).isNull();
-        assertThat(x.read(grid, 0, 1)).isEqualTo(JAN_2010);
-        assertThat(x.read(grid, 0, 2)).isEqualTo(FEB_2010);
+        assertThat(x.read(grid.getValue(0, 0))).isNull();
+        assertThat(x.read(grid.getValue(1, 0))).isNull();
+        assertThat(x.read(grid.getValue(0, 1))).isEqualTo(JAN_2010);
+        assertThat(x.read(grid.getValue(0, 2))).isEqualTo(FEB_2010);
     }
 
     private final Object[][] data = {
         {null, JAN_2010, FEB_2010, MAR_2010},
         {"S1", 3.14, 4.56, 7.89}
     };
-    private final GridInput grid = ArrayGridInput.of(data);
+    private final ArrayGridInput grid = ArrayGridInput.of(data);
 }

@@ -19,9 +19,11 @@ package internal.spreadsheet.grid;
 import demetra.tsprovider.TsCollection;
 import ec.util.spreadsheet.Book;
 import demetra.tsprovider.grid.GridReader;
+import ec.util.spreadsheet.Sheet;
 import internal.spreadsheet.SpreadSheetAccessor;
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
@@ -74,7 +76,7 @@ public class SheetGrid implements SpreadSheetAccessor {
     private Optional<TsCollection> getSheetByName(Book book, String name) throws IOException {
         for (int i = 0; i < book.getSheetCount(); i++) {
             if (book.getSheetName(i).equals(name)) {
-                return Optional.of(reader.read(SheetGridInput.of(book.getSheet(i), this::isSupportedDataType)));
+                return Optional.of(readSheet(book.getSheet(i)));
             }
         }
         return Optional.empty();
@@ -90,8 +92,22 @@ public class SheetGrid implements SpreadSheetAccessor {
 
     private List<TsCollection> getSheets(Book book) throws IOException {
         TsCollection[] result = new TsCollection[book.getSheetCount()];
-        book.parallelForEach((sheet, index) -> result[index] = reader.read(SheetGridInput.of(sheet, this::isSupportedDataType)));
+        try {
+            book.parallelForEach((sheet, index) -> {
+                try {
+                    result[index] = readSheet(sheet);
+                } catch (IOException ex) {
+                    throw new UncheckedIOException(ex);
+                }
+            });
+        } catch (UncheckedIOException ex) {
+            throw ex.getCause();
+        }
         return Arrays.asList(result);
+    }
+
+    private TsCollection readSheet(Sheet sheet) throws IOException {
+        return reader.read(SheetGridInput.of(sheet, this::isSupportedDataType));
     }
 
     public boolean isSupportedDataType(Class<?> type) {

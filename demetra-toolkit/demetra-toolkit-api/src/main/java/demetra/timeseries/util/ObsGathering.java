@@ -17,6 +17,7 @@
 package demetra.timeseries.util;
 
 import demetra.data.AggregationType;
+import demetra.design.LombokWorkaround;
 import demetra.timeseries.TsUnit;
 
 /**
@@ -27,23 +28,28 @@ import demetra.timeseries.TsUnit;
  */
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder", toBuilder = true)
-@lombok.experimental.Wither
+@lombok.With
 public class ObsGathering {
 
     public static final ObsGathering DEFAULT = builder().build();
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    private TsUnit unit = TsUnit.UNDEFINED;
+    private TsUnit unit;
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    private AggregationType aggregationType = AggregationType.None;
+    private AggregationType aggregationType;
 
     // FIXME: find a better name/description
-    @lombok.Builder.Default
-    private boolean complete = true;
+    private boolean complete;
 
-    @lombok.Builder.Default
-    private boolean skipMissingValues = true;
+    private boolean skipMissingValues;
+
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .unit(TsUnit.UNDEFINED)
+                .aggregationType(AggregationType.None)
+                .complete(true)
+                .skipMissingValues(true);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,32 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.tsprovider.grid;
-
-import demetra.tsprovider.grid.GridOutput;
+package demetra.tsprovider.grid;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.AllArgsConstructor(staticName = "of")
-public final class InvGridOutput implements GridOutput {
+public enum GridDataType {
 
-    @lombok.NonNull
-    private final GridOutput delegate;
-
-    @Override
-    public boolean isSupportedDataType(Class<?> type) {
-        return delegate.isSupportedDataType(type);
-    }
-
-    @Override
-    public void setName(String name) {
-        delegate.setName(name);
-    }
-
-    @Override
-    public void setValue(int row, int column, Object value) {
-        delegate.setValue(column, row, value);
-    }
+    DOUBLE, LOCAL_DATE_TIME, STRING;
 }

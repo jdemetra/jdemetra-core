@@ -16,13 +16,15 @@
  */
 package internal.tsprovider.grid;
 
-import demetra.tsprovider.grid.GridInput;
+import demetra.tsprovider.grid.GridDataType;
 import demetra.tsprovider.grid.GridLayout;
+import demetra.tsprovider.grid.GridOutput;
 import demetra.tsprovider.util.ObsFormat;
 import static internal.tsprovider.grid.InternalValueWriter.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.EnumSet;
 import java.util.Locale;
 import org.junit.Test;
 import test.tsprovider.grid.ArrayGridInput;
@@ -45,16 +47,19 @@ public class InternalValueWriterTest {
             {"S1", 3.14, 4.56, 7.89}
         };
 
-        GridInput in = ArrayGridInput.of(data);
+        ArrayGridInput in = ArrayGridInput.of(data);
 
-        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, Object.class::isAssignableFrom);
-        for (int i = 0; i < in.getRowCount(); i++) {
-            for (int j = 0; j < in.getColumnCount(); j++) {
-                x.write(out, i, j, in.getValue(i, j));
+        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, EnumSet.allOf(GridDataType.class));
+        try (GridOutput.Stream stream = out.open("test", in.getRowCount(), in.getColumnCount())) {
+            for (int i = 0; i < in.getRowCount(); i++) {
+                for (int j = 0; j < in.getColumnCount(i); j++) {
+                    x.write(stream, in.getValue(i, j));
+                }
+                stream.writeEndOfRow();
             }
         }
 
-        assertThat(out.build())
+        assertThat(out.getData().get("test"))
                 .containsExactly(
                         new Object[][]{
                             {null, null, null, null},
@@ -66,45 +71,53 @@ public class InternalValueWriterTest {
     public void testOnDateTime() throws IOException {
         InternalValueWriter<LocalDateTime> x = onDateTime();
 
-        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, Object.class::isAssignableFrom);
-        x.write(out, 0, 0, JAN_2010);
-        x.write(out, 0, 1, null);
+        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, EnumSet.allOf(GridDataType.class));
+        try (GridOutput.Stream stream = out.open("test", 1, 2)) {
+            x.write(stream, JAN_2010);
+            x.write(stream, null);
+        }
 
-        assertThat(out.build()).containsExactly(new Object[]{JAN_2010, null});
+        assertThat(out.getData().get("test")).containsExactly(new Object[]{JAN_2010, null});
     }
 
     @Test
-    public void testOnNumber() throws IOException {
-        InternalValueWriter<Number> x = onNumber();
+    public void testOnDouble() throws IOException {
+        InternalValueWriter<Double> x = onDouble();
 
-        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, Object.class::isAssignableFrom);
-        x.write(out, 0, 0, 3.14);
-        x.write(out, 0, 1, null);
+        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, EnumSet.allOf(GridDataType.class));
+        try (GridOutput.Stream stream = out.open("test", 1, 2)) {
+            x.write(stream, 3.14);
+            x.write(stream, null);
+        }
 
-        assertThat(out.build()).containsExactly(new Object[]{3.14, null});
+        assertThat(out.getData().get("test")).containsExactly(new Object[]{3.14, null});
     }
 
     @Test
     public void testOnString() throws IOException {
         InternalValueWriter<String> x = onString();
 
-        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, Object.class::isAssignableFrom);
-        x.write(out, 0, 0, "S1");
-        x.write(out, 0, 1, null);
+        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, EnumSet.allOf(GridDataType.class));
+        try (GridOutput.Stream stream = out.open("test", 1, 2)) {
+            x.write(stream, "S1");
+            x.write(stream, null);
+        }
 
-        assertThat(out.build()).containsExactly(new Object[]{"S1", null});
+        assertThat(out.getData().get("test")).containsExactly(new Object[]{"S1", null});
     }
 
     @Test
     public void testOnStringFormatter() throws IOException {
         ObsFormat f = ObsFormat.of(Locale.ROOT, "yyyy-MM-dd", "");
 
-        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, Object.class::isAssignableFrom);
-        onStringFormatter(f.dateTimeFormatter()::formatAsString).write(out, 0, 0, JAN_2010);
-        onStringFormatter(f.dateTimeFormatter()::formatAsString).write(out, 0, 1, null);
-        onStringFormatter(f.numberFormatter()::formatAsString).write(out, 0, 2, null);
-        onStringFormatter(f.numberFormatter()::formatAsString).write(out, 0, 3, 3.14);
+        ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, EnumSet.allOf(GridDataType.class));
+        try (GridOutput.Stream stream = out.open("test", 1, 4)) {
+            onStringFormatter(f.dateTimeFormatter()::formatAsString).write(stream, JAN_2010);
+            onStringFormatter(f.dateTimeFormatter()::formatAsString).write(stream, null);
+            onStringFormatter(f.numberFormatter()::formatAsString).write(stream, null);
+            onStringFormatter(f.numberFormatter()::formatAsString).write(stream, 3.14);
+        }
 
-        assertThat(out.build()).containsExactly(new Object[]{JAN_2010.format(DateTimeFormatter.ISO_DATE), null, null, "3.14"});
+        assertThat(out.getData().get("test")).containsExactly(new Object[]{JAN_2010.format(DateTimeFormatter.ISO_DATE), null, null, "3.14"});
     }
 }
