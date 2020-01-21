@@ -36,6 +36,7 @@ public class MatrixDenton {
     private final boolean multiplicative, modified;
     private final int differencing, conversion, offset;
     private final AggregationType type;
+    private final int obsPosition;
 
     public MatrixDenton(DentonSpec spec, int conversion, int offset) {
         this.conversion = conversion;
@@ -44,8 +45,9 @@ public class MatrixDenton {
         this.modified = spec.isModified();
         this.differencing = spec.getDifferencing();
         this.type = spec.getAggregationType();
+        this.obsPosition = spec.getObservationPosition();
     }
-    
+
     private void J(DataBlockIterator iterator) {
         int j = offset;
         while (iterator.hasNext()) {
@@ -60,6 +62,11 @@ public class MatrixDenton {
                 case Last:
                     iterator.next().set(j + conversion - 1, 1);
                     break;
+                case UserDefined:
+                    iterator.next().set(j + obsPosition, 1);
+                    break;
+                default:
+                    throw new IllegalArgumentException();
             }
             j += conversion;
         }
@@ -137,7 +144,7 @@ public class MatrixDenton {
 
         DataBlock z = DataBlock.make(n + ny);
         z.product(B.rowsIterator(), q);
-        LinearSystemSolver.fastSolver().solve(A, z);
+        LinearSystemSolver.robustSolver().solve(A, z);
         DataBlock rslt = z.range(0, n);
         rslt.mul(xm);
         return rslt.toArray();

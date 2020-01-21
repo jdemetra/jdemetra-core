@@ -16,25 +16,27 @@
  */
 package jdplus.benchmarking.univariate;
 
-import demetra.benchmarking.univariate.Denton;
-import demetra.benchmarking.univariate.DentonSpec;
+import demetra.benchmarking.univariate.CubicSpline;
+import demetra.benchmarking.univariate.CubicSplineSpec;
+import demetra.data.DoubleSeq;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
+import java.util.function.DoubleUnaryOperator;
 import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(Denton.Processor.class)
-public class DentonProcessor implements Denton.Processor {
+@ServiceProvider(CubicSpline.Processor.class)
+public class CubicSplineProcessor implements CubicSpline.Processor {
 
-    public static final DentonProcessor PROCESSOR=new DentonProcessor();
+    public static final CubicSplineProcessor PROCESSOR=new CubicSplineProcessor();
 
     @Override
-    public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, DentonSpec spec) {
+    public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, CubicSplineSpec spec) {
         int ratio = highFreqSeries.getTsUnit().ratioOf(aggregationConstraint.getTsUnit());
         if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
@@ -42,10 +44,6 @@ public class DentonProcessor implements Denton.Processor {
         
         TsData naggregationConstraint;
         switch (spec.getAggregationType()){
-            case Sum:
-            case Average:
-                naggregationConstraint=BenchmarkingUtility.constraints(highFreqSeries, aggregationConstraint);
-                break;
             case Last:
                 naggregationConstraint=BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, ratio-1);
                 break;
@@ -63,22 +61,70 @@ public class DentonProcessor implements Denton.Processor {
         TsPeriod sh = highFreqSeries.getStart();
         TsPeriod sl = TsPeriod.of(sh.getUnit(), naggregationConstraint.getStart().start());
         int offset = sh.until(sl);
-        MatrixDenton denton = new MatrixDenton(spec, ratio, offset);
-        double[] r = denton.process(highFreqSeries.getValues(), naggregationConstraint.getValues());
+        double[] r = process(spec, ratio, offset, highFreqSeries.getValues(), naggregationConstraint.getValues());
         return TsData.ofInternal(sh, r);
     }
 
     @Override
-    public TsData benchmark(TsUnit highFreq, TsData aggregationConstraint, DentonSpec spec) {
+    public TsData benchmark(TsUnit highFreq, TsData aggregationConstraint, CubicSplineSpec spec) {
         int ratio = highFreq.ratioOf(aggregationConstraint.getTsUnit());
         if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
         // Y is limited to q !
         TsPeriod sh = TsPeriod.of(highFreq, aggregationConstraint.getStart().start());
-        MatrixDenton denton = new MatrixDenton(spec, ratio, 0);
-        double[] r = denton.process(aggregationConstraint.getValues());
+        double[] r = process(spec, ratio,aggregationConstraint.getValues());
         return TsData.ofInternal(sh, r);
+    }
+
+    private double[] process(CubicSplineSpec spec, int ratio, int offset, DoubleSeq hvals, DoubleSeq lvals) {
+        double[] fxi=lvals.toArray();
+        double[] obs=hvals.toArray();
+        int n=fxi.length;
+        double[] xi=new double[n];
+        int start;
+        switch (spec.getAggregationType()){
+            case Last:
+                start=ratio-1; break;
+            case UserDefined:
+                start=Math.min(ratio-1, spec.getObservationPosition());break;
+            default:
+                start=0;
+        }
+        for (int i=0, j=start+offset; i<xi.length; ++i, j+=ratio){
+            xi[i]=j;
+            fxi[i]/=obs[j];
+        }
+        DoubleUnaryOperator cs = jdplus.math.functions.CubicSpline.of(xi, fxi);
+        for (int i=0; i<obs.length; ++i){
+            double r=cs.applyAsDouble(i);
+            obs[i]*=r;
+        }
+        return obs;
+    }
+
+    private double[] process(CubicSplineSpec spec, int ratio, DoubleSeq lvals) {
+        double[] fxi=lvals.toArray();
+        int n=fxi.length;
+        double[] xi=new double[n];
+        int start;
+        switch (spec.getAggregationType()){
+            case Last:
+                start=ratio-1; break;
+            case UserDefined:
+                start=Math.min(ratio-1, spec.getObservationPosition());break;
+            default:
+                start=0;
+        }
+        for (int i=0, j=start; i<xi.length; ++i, j+=ratio){
+            xi[i]=j;
+        }
+        DoubleUnaryOperator cs = jdplus.math.functions.CubicSpline.of(xi, fxi);
+        double[] rslt=new double[n*ratio];
+        for (int i=0; i<rslt.length; ++i){
+            rslt[i]=cs.applyAsDouble(i);
+        }
+        return rslt;
     }
 
 

@@ -27,6 +27,10 @@ import nbbrd.service.ServiceDefinition;
 @lombok.experimental.UtilityClass
 public class SymmetricMatrix {
 
+    public static void XtSX() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     private final SymmetricMatrixLoader.CholeskyProcessor CHOLESKY = new SymmetricMatrixLoader.CholeskyProcessor();
 
     @Algorithm

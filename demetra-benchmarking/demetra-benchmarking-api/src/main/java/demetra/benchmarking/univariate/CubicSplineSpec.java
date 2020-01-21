@@ -29,23 +29,17 @@ import demetra.util.Validatable;
 @Development(status = Development.Status.Beta)
 @lombok.Value
 @lombok.Builder(toBuilder=true, builderClassName="Builder", buildMethodName="buildWithoutValidation")
-public class DentonSpec implements ProcSpecification, Validatable<DentonSpec> {
+public class CubicSplineSpec implements ProcSpecification, Validatable<CubicSplineSpec> {
 
-    public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "denton", null);
+    public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "cubicspline", null);
 
-    private boolean multiplicative, modified;
-    private int differencing;
     @lombok.NonNull
     private AggregationType aggregationType;
     private int observationPosition;
 
     public static Builder builder() {
         return new Builder()
-                .multiplicative(true)
-                .modified(true)
-                .differencing(1)
-                .aggregationType(AggregationType.Sum)
-                .observationPosition(0);
+                .aggregationType(AggregationType.Last);
     }
 
     @Override
@@ -54,19 +48,17 @@ public class DentonSpec implements ProcSpecification, Validatable<DentonSpec> {
     }
 
     @Override
-    public DentonSpec validate() throws IllegalArgumentException {
-        if (aggregationType == AggregationType.None || aggregationType == AggregationType.Max
-                || aggregationType == AggregationType.Min) {
+    public CubicSplineSpec validate() throws IllegalArgumentException {
+        if (aggregationType != AggregationType.First && aggregationType != AggregationType.Last
+                && aggregationType != AggregationType.UserDefined) {
             throw new IllegalArgumentException();
         }
-        if (aggregationType == AggregationType.UserDefined && observationPosition<0)
-            throw new IllegalArgumentException();
         return this;
     }
 
-    public static class Builder implements Validatable.Builder<DentonSpec>{
+    public static class Builder implements Validatable.Builder<CubicSplineSpec>{
         
     }
-    public static final DentonSpec DEFAULT = builder().build();
+    public static final CubicSplineSpec DEFAULT = builder().build();
 
 }

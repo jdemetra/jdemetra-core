@@ -237,7 +237,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
      * @return A new (possibly empty) series is returned (or null if the domain
      * hasn't the right frequency.
      */
-    public TsData fitToDomain(TsData s, TsDomain domain) {
+    public static TsData fitToDomain(TsData s, TsDomain domain) {
         if (!s.getTsUnit().equals(domain.getStartPeriod().getUnit())) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
@@ -492,15 +492,41 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
         switch (ratio) {
             case TsUnit.NO_STRICT_RATIO:
             case TsUnit.NO_RATIO:
-                // FIXME: throw exception?
-                return null;
+                throw new TsException(TsException.INCOMPATIBLE_FREQ);
             case 1:
-                return TsData.of(this.getStart().withUnit(newUnit), Doubles.of(this.getValues()));
+                return this;
         }
         if (this.isEmpty()) {
             return TsData.of(this.getStart().withUnit(newUnit), Doubles.of(this.getValues()));
         }
         return changeUsingRatio(this, newUnit, InternalAggregator.of(conversion), ratio, complete);
+    }
+
+    public TsData aggregateByPosition(@NonNull TsUnit newUnit, int position) {
+        int ratio = this.getTsUnit().ratioOf(newUnit);
+        switch (ratio) {
+            case TsUnit.NO_STRICT_RATIO:
+            case TsUnit.NO_RATIO:
+                throw new TsException(TsException.INCOMPATIBLE_FREQ);
+            case 1:
+                return this;
+        }
+        if (position < 0 || position >= ratio) {
+            throw new IllegalArgumentException();
+        }
+        if (this.isEmpty()) {
+            return TsData.of(this.getStart().withUnit(newUnit), Doubles.of(this.getValues()));
+        }
+        int oldLength = length();
+        TsPeriod start = getStart(), nstart = start.withUnit(newUnit);
+        int spos = TsDomain.splitOf(nstart, start.getUnit(), false).indexOf(start);
+        int head = position - spos;
+        if (head < 0) {
+            head += ratio;
+            nstart=nstart.next();
+        }
+        int nlength = 1 + (oldLength - head - 1) / ratio;
+        return TsData.of(nstart, Doubles.of(values.extract(head, nlength, ratio)));
     }
 
     private static TsData changeUsingRatio(TsData s, TsUnit newUnit, InternalAggregator aggregator, int ratio, boolean complete) {

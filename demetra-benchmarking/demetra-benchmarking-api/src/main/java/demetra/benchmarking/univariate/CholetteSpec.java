@@ -28,7 +28,7 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder=true, builderClassName="Builder", buildMethodName="buildWithoutValidation")
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public class CholetteSpec implements ProcSpecification, Validatable<CholetteSpec> {
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "cholette", null);
@@ -45,29 +45,40 @@ public class CholetteSpec implements ProcSpecification, Validatable<CholetteSpec
     private BiasCorrection bias;
     @lombok.NonNull
     private AggregationType aggregationType;
+    private int observationPosition;
 
     public static Builder builder() {
         return new Builder()
                 .bias(DEF_BIAS)
                 .lambda(DEF_LAMBDA)
                 .rho(DEF_RHO)
-                .aggregationType(AggregationType.Sum);
+                .aggregationType(AggregationType.Sum)
+                .observationPosition(0);
     }
 
     @Override
     public AlgorithmDescriptor getAlgorithmDescriptor() {
         return ALGORITHM;
     }
-    
+
     @Override
     public CholetteSpec validate() throws IllegalArgumentException {
-        if (rho<=-1 || rho>1)
+        if (aggregationType == AggregationType.None || aggregationType == AggregationType.Max
+                || aggregationType == AggregationType.Min) {
+            throw new IllegalArgumentException();
+        }
+        if (rho <= -1 || rho > 1) {
             throw new IllegalArgumentException("Rho should be in ]-1,1]");
+        }
+        if (aggregationType == AggregationType.UserDefined && observationPosition < 0) {
+            throw new IllegalArgumentException();
+        }
+
         return this;
     }
 
-    public static class Builder implements Validatable.Builder<CholetteSpec>{
-        
+    public static class Builder implements Validatable.Builder<CholetteSpec> {
+
     }
 
     public static final CholetteSpec DEFAULT = builder().build();

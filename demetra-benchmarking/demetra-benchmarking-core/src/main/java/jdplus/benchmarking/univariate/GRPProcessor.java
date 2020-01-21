@@ -16,8 +16,9 @@
  */
 package jdplus.benchmarking.univariate;
 
-import demetra.benchmarking.univariate.Denton;
-import demetra.benchmarking.univariate.DentonSpec;
+import demetra.benchmarking.univariate.GrowthRatePreservation;
+import demetra.benchmarking.univariate.GrpSpec;
+import demetra.data.AggregationType;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
@@ -28,13 +29,14 @@ import nbbrd.service.ServiceProvider;
  *
  * @author Jean Palate
  */
-@ServiceProvider(Denton.Processor.class)
-public class DentonProcessor implements Denton.Processor {
-
-    public static final DentonProcessor PROCESSOR=new DentonProcessor();
+@ServiceProvider(GrowthRatePreservation.Processor.class)
+public class GRPProcessor implements GrowthRatePreservation.Processor {
+    
+    public static final GRPProcessor PROCESSOR=new GRPProcessor();
+    
 
     @Override
-    public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, DentonSpec spec) {
+    public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, GrpSpec spec) {
         int ratio = highFreqSeries.getTsUnit().ratioOf(aggregationConstraint.getTsUnit());
         if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
@@ -63,23 +65,13 @@ public class DentonProcessor implements Denton.Processor {
         TsPeriod sh = highFreqSeries.getStart();
         TsPeriod sl = TsPeriod.of(sh.getUnit(), naggregationConstraint.getStart().start());
         int offset = sh.until(sl);
-        MatrixDenton denton = new MatrixDenton(spec, ratio, offset);
-        double[] r = denton.process(highFreqSeries.getValues(), naggregationConstraint.getValues());
-        return TsData.ofInternal(sh, r);
+        GRP grp = new GRP(spec, ratio, offset);
+        
+        double[] r = grp.process(highFreqSeries.getValues(), naggregationConstraint.getValues());
+        TsData rslt = TsData.ofInternal(sh, r);
+        if (spec.getAggregationType() == AggregationType.Average)
+            rslt=rslt.multiply(ratio);
+        return rslt;
     }
-
-    @Override
-    public TsData benchmark(TsUnit highFreq, TsData aggregationConstraint, DentonSpec spec) {
-        int ratio = highFreq.ratioOf(aggregationConstraint.getTsUnit());
-        if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
-            throw new TsException(TsException.INCOMPATIBLE_FREQ);
-        }
-        // Y is limited to q !
-        TsPeriod sh = TsPeriod.of(highFreq, aggregationConstraint.getStart().start());
-        MatrixDenton denton = new MatrixDenton(spec, ratio, 0);
-        double[] r = denton.process(aggregationConstraint.getValues());
-        return TsData.ofInternal(sh, r);
-    }
-
-
+    
 }

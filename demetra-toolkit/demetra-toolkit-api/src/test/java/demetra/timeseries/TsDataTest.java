@@ -139,7 +139,7 @@ public class TsDataTest {
     @Test
     public void testAggregationNoRatio() {
         TsData ts = monthlyTs(DEFAULT_EPOCH.plusYears(40), 24);
-        assertThat(ts.aggregate(DAY, First, true)).isNull();
+        assertThatExceptionOfType(TsException.class).isThrownBy(() ->ts.aggregate(DAY, First, true));
     }
 
     @Test
@@ -211,7 +211,15 @@ public class TsDataTest {
         assertThat(ts11.aggregate(YEAR, First, false)).containsExactly(y(1969, 1));
         assertThat(ts11.aggregate(YEAR, First, true)).isEmpty();
     }
-
+    
+    @Test
+    public void testAggregationByPosition() {
+        TsData ts = monthlyTs(DEFAULT_EPOCH.plusMonths(1), 61);
+        assertThat(ts.aggregateByPosition(YEAR, 3)).hasSize(5);
+        assertThat(ts.aggregateByPosition(YEAR, 0)).hasSize(5);
+        assertThat(ts.aggregateByPosition(YEAR, 11)).hasSize(5);
+        assertThat(ts.aggregateByPosition(YEAR, 1)).hasSize(6);
+    }
     private static TsData monthlyTs(LocalDateTime start, int count) {
         return TsData.of(TsPeriod.of(TsUnit.MONTH, start), Doubles.of(count, i -> i + start.getMonthValue()));
     }

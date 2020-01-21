@@ -29,13 +29,16 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
 
     /**
      * Generates a domain which is a splitting of a given period in sub-periods
+     *
      * @param period The period which corresponds to the domain
      * @param hUnit The time unit of the sub-periods
-     * @param exact Indicates if that the domain must be exactly decomposed into its sub-periods 
+     * @param exact Indicates if that the domain must be exactly decomposed into
+     * its sub-periods
      * @return The new domain (never null)
      * @throws TsException is thrown when the decomposition is not possible
      */
-    public static @NonNull TsDomain splitOf(TsPeriod period, TsUnit hUnit, boolean exact)throws TsException {
+    public static @NonNull
+    TsDomain splitOf(TsPeriod period, TsUnit hUnit, boolean exact) throws TsException {
         LocalDateTime start = period.start(), end = period.end();
         long len = hUnit.getChronoUnit().between(start, end) / hUnit.getAmount();
         TsPeriod pstart = period.withUnit(hUnit);
@@ -47,7 +50,7 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
     }
 
     public static final TsDomain DEFAULT_EMPTY = TsDomain.of(TsPeriod.of(TsUnit.YEAR, 0), 0);
-    
+
     @lombok.NonNull
     TsPeriod startPeriod;
 
@@ -58,7 +61,6 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
     public int length() {
         return getLength();
     }
-
 
     @Override
     public TsPeriod get(int index) throws IndexOutOfBoundsException {
@@ -209,6 +211,73 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
         return new TsDomain(startPeriod.withId(beg), distance(beg, end));
     }
 
+    public TsDomain aggregate(@NonNull TsUnit newUnit, boolean complete) {
+        int ratio = this.getTsUnit().ratioOf(newUnit);
+        switch (ratio) {
+            case TsUnit.NO_STRICT_RATIO:
+            case TsUnit.NO_RATIO:
+                throw new TsException(TsException.INCOMPATIBLE_FREQ);
+            case 1:
+                return this;
+        }
+        if (this.isEmpty()) {
+            return TsDomain.of(this.getStartPeriod().withUnit(newUnit), 0);
+        }
+        int oldLength = length();
+        TsPeriod start = getStartPeriod(), nstart = start.withUnit(newUnit);
+        int spos = TsDomain.splitOf(nstart, start.getUnit(), false).indexOf(start);
+        int head = spos > 0 ? ratio - spos : 0;
+        int tail = (oldLength - head) % ratio;
+        int nlength = (oldLength - head - tail) / ratio;
+        if (head > 0) {
+            if (complete) {
+                nstart = nstart.next();
+            } else {
+                nlength++;
+            }
+        }
+        if (tail > 0 && !complete) {
+            nlength++;
+        }
+        return TsDomain.of(nstart, nlength);
+    }
+
+    public TsDomain aggregateByPosition(@NonNull TsUnit newUnit, int position) {
+        int ratio = this.getTsUnit().ratioOf(newUnit);
+        switch (ratio) {
+            case TsUnit.NO_STRICT_RATIO:
+            case TsUnit.NO_RATIO:
+                throw new TsException(TsException.INCOMPATIBLE_FREQ);
+            case 1:
+                return this;
+        }
+        if (position < 0 || position >= ratio) {
+            throw new IllegalArgumentException();
+        }
+        if (this.isEmpty()) {
+            return TsDomain.of(this.getStartPeriod().withUnit(newUnit), 0);
+        }
+        int oldLength = length();
+        TsPeriod start = getStartPeriod(), nstart = start.withUnit(newUnit);
+        int spos = TsDomain.splitOf(nstart, start.getUnit(), false).indexOf(start);
+        int head = position - spos;
+        if (head < 0) {
+            head += ratio;
+            nstart=nstart.next();
+        }
+        int nlength = 1 + (oldLength - head - 1) / ratio;
+        return TsDomain.of(nstart, nlength);
+    }
+
+    /**
+     * The new domain will only contain complete periods.
+     * For instance, if the selector is from 2/1/1980 to 25/5/2000,
+     * the selector applied to a yearly domain from 1978 to 2010 will
+     * generate a yearly domain from 1981 to 1999
+     *
+     * @param ps
+     * @return
+     */
     @Override
     public TsDomain select(TimeSelector ps) {
         if (isEmpty()) {

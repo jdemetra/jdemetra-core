@@ -19,6 +19,7 @@ package demetra.benchmarking.r;
 import demetra.benchmarking.descriptors.TemporalDisaggregationDescriptor;
 import demetra.data.AggregationType;
 import demetra.data.ParameterSpec;
+import demetra.information.InformationMapping;
 import demetra.processing.ProcResults;
 import demetra.ssf.SsfInitialization;
 import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
@@ -43,6 +44,10 @@ public class TemporalDisaggregation {
 
         private Results(TemporalDisaggregationResults results) {
             this.core = results;
+        }
+
+        public static InformationMapping<TemporalDisaggregationResults> getMapping() {
+            return TemporalDisaggregationDescriptor.getMapping();
         }
 
         @Override

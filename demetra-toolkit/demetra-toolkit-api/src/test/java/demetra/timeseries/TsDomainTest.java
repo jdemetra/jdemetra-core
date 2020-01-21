@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
 import static demetra.timeseries.TsUnit.HOUR;
+import java.time.LocalDate;
+import java.time.Month;
 
 /**
  *
@@ -244,5 +246,18 @@ public class TsDomainTest {
         assertThat(of(feb2010, 2).select(TimeSelector.between(x.plusMonths(-2), x))).isEqualTo(of(feb2010, 0));
     }
 
+    @Test
+    public void testSelect2() {
+        TsDomain sel = of(TsPeriod.yearly(1978), 30).select(TimeSelector.between(LocalDate.of(1980, Month.JANUARY, 1).atStartOfDay(),
+                LocalDate.of(2001, Month.JANUARY, 1).atStartOfDay()));
+        assertThat(sel.length() == 21);
+        sel = of(TsPeriod.yearly(1978), 30).select(TimeSelector.between(LocalDate.of(1980, Month.JANUARY, 2).atStartOfDay(),
+                LocalDate.of(2001, Month.JANUARY, 1).atStartOfDay()));
+        assertThat(sel.length() == 20);
+        sel = of(TsPeriod.yearly(1978), 30).select(TimeSelector.between(LocalDate.of(1980, Month.JANUARY, 2).atStartOfDay(),
+                LocalDate.of(2000, Month.DECEMBER, 31).atStartOfDay()));
+        assertThat(sel.length() == 19);
+    }
+    
     private final TsPeriod feb2010 = TsPeriod.monthly(2010, 2);
 }

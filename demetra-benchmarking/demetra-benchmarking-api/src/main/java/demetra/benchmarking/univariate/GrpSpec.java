@@ -28,24 +28,26 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder=true, builderClassName="Builder", buildMethodName="buildWithoutValidation")
-public class DentonSpec implements ProcSpecification, Validatable<DentonSpec> {
+@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+public class GrpSpec implements ProcSpecification, Validatable<GrpSpec> {
 
-    public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "denton", null);
+    public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "grp", null);
 
-    private boolean multiplicative, modified;
-    private int differencing;
+    private int maxIter;
+    private double precision;
     @lombok.NonNull
     private AggregationType aggregationType;
     private int observationPosition;
+    private boolean dentonInitialization;
 
     public static Builder builder() {
         return new Builder()
-                .multiplicative(true)
-                .modified(true)
-                .differencing(1)
+                .maxIter(500)
+                .precision(1e-12)
                 .aggregationType(AggregationType.Sum)
-                .observationPosition(0);
+                .observationPosition(0)
+                .dentonInitialization(true);
+
     }
 
     @Override
@@ -54,19 +56,21 @@ public class DentonSpec implements ProcSpecification, Validatable<DentonSpec> {
     }
 
     @Override
-    public DentonSpec validate() throws IllegalArgumentException {
+    public GrpSpec validate() throws IllegalArgumentException {
         if (aggregationType == AggregationType.None || aggregationType == AggregationType.Max
                 || aggregationType == AggregationType.Min) {
             throw new IllegalArgumentException();
         }
-        if (aggregationType == AggregationType.UserDefined && observationPosition<0)
+        if (aggregationType == AggregationType.UserDefined && observationPosition < 0) {
             throw new IllegalArgumentException();
+        }
+
         return this;
     }
 
-    public static class Builder implements Validatable.Builder<DentonSpec>{
-        
+    public static class Builder implements Validatable.Builder<GrpSpec> {
+
     }
-    public static final DentonSpec DEFAULT = builder().build();
+    public static final GrpSpec DEFAULT = builder().build();
 
 }
