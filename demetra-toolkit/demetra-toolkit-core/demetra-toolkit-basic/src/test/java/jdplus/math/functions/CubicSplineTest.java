@@ -16,7 +16,10 @@
  */
 package jdplus.math.functions;
 
+import java.util.Random;
 import java.util.function.DoubleUnaryOperator;
+import jdplus.data.DataBlock;
+import jdplus.math.matrices.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,36 +28,24 @@ import static org.junit.Assert.*;
  * @author Jean Palate
  */
 public class CubicSplineTest {
-    
+
     public CubicSplineTest() {
     }
 
     @Test
-    public void testSimple() {
-        System.out.println("Test");
-        DoubleUnaryOperator fn = CubicSpline.of(new double[]{5, 10, 15, 20} , new double[]{-3, 20, -10, 5});
-        for (int i=0; i<25; ++i){
-            double f=fn.applyAsDouble(i);
-//            System.out.println(f);
-        }
-    }
-    
-    @Test
     public void testConstant() {
-        System.out.println("Constant");
-        DoubleUnaryOperator fn = CubicSpline.of(new double[]{5, 10, 15, 20} , new double[]{1, 1, 1, 1});
-        for (int i=0; i<25; ++i){
+        DoubleUnaryOperator fn = CubicSpline.of(new double[]{5, 10, 15, 20}, new double[]{1, 1, 1, 1});
+        for (int i = 0; i < 25; ++i) {
             assertEquals(1, fn.applyAsDouble(i), 1e-9);
         }
     }
-    
+
     @Test
     public void testLinear() {
-        System.out.println("Linear");
-        DoubleUnaryOperator fn = CubicSpline.of(new double[]{5, 10, 15, 20} , new double[]{5, 10, 15, 20});
-        for (int i=0; i<25; ++i){
+        DoubleUnaryOperator fn = CubicSpline.of(new double[]{5, 10, 15, 20}, new double[]{5, 10, 15, 20});
+        for (int i = 0; i < 25; ++i) {
             assertEquals(i, fn.applyAsDouble(i), 1e-9);
         }
     }
-    
+
 }

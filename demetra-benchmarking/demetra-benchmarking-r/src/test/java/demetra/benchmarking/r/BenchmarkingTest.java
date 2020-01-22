@@ -226,6 +226,22 @@ public class BenchmarkingTest {
             assertEquals(TsData.subtract(t, ta).getValues().norm2(), 0, 1e-6);
             q = q.plus(1);
         }
+        q = TsPeriod.monthly(1979, 1);
+        for (int i = 0; i < 8; ++i) {
+            TsData s = TsData.of(q, Doubles.of(x));
+            TsData qs = Benchmarking.cubicSpline(s, t, "Sum", 0);
+            TsData ta=qs.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
+            assertEquals(TsData.subtract(t, ta).getValues().norm2(), 0, 1e-6);
+            q = q.plus(1);
+        }
+        q = TsPeriod.monthly(1979, 1);
+        for (int i = 0; i < 8; ++i) {
+            TsData s = TsData.of(q, Doubles.of(x));
+            TsData qs = Benchmarking.cubicSpline(s, t, "Average", 0);
+            TsData ta=qs.aggregate(TsUnit.YEAR, AggregationType.Average, true);
+            assertEquals(TsData.subtract(t, ta).getValues().norm2(), 0, 1e-6);
+            q = q.plus(1);
+        }
     }
 
 }

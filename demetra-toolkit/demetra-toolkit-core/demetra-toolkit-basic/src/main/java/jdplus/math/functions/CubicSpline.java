@@ -37,6 +37,7 @@ public class CubicSpline {
         return new CubicSplineFunction(xi, fxi);
     }
 
+
     static class CubicSplineFunction implements DoubleUnaryOperator {
 
         final int n;
@@ -49,7 +50,7 @@ public class CubicSpline {
             // compute the polynomials
             n = xi.length - 1;
             b = new double[n];
-            c = new double[n+1];
+            c = new double[n + 1];
             d = new double[n];
             double[] h = new double[n];
 
@@ -59,29 +60,31 @@ public class CubicSpline {
 
             double[] m = new double[n], z = new double[n];
             for (int i = 1; i < n; ++i) {
-                double l=2*(xi[i+1]-xi[i-1])-h[i-1]*m[i-1];
-                m[i]=h[i]/l;
+                double l = 2 * (xi[i + 1] - xi[i - 1]) - h[i - 1] * m[i - 1];
+                m[i] = h[i] / l;
                 double alpha = 3 / h[i] * (a[i + 1] - a[i]) - 3 / h[i - 1] * (a[i] - a[i - 1]);
-                z[i]=(alpha-h[i-1]*z[i-1])/l;
+                z[i] = (alpha - h[i - 1] * z[i - 1]) / l;
             }
             // STEP 5
-            for (int i=n-1; i>=0; --i){
-                c[i]=z[i]-m[i]*c[i+1];
-                b[i]=(a[i+1]-a[i])/h[i]-h[i]*(c[i+1]+2*c[i])/3;
-                d[i]=(c[i+1]-c[i])/(3*h[i]);
+            for (int i = n - 1; i >= 0; --i) {
+                c[i] = z[i] - m[i] * c[i + 1];
+                b[i] = (a[i + 1] - a[i]) / h[i] - h[i] * (c[i + 1] + 2 * c[i]) / 3;
+                d[i] = (c[i + 1] - c[i]) / (3 * h[i]);
             }
         }
 
         private int find(double x) {
-            if (x <= xi[0])
+            if (x <= xi[0]) {
                 return -1;
-            else if (x >= xi[n])
+            } else if (x >= xi[n]) {
                 return n;
-            int pos=Arrays.binarySearch(xi, x);
-            if (pos >= 0)
+            }
+            int pos = Arrays.binarySearch(xi, x);
+            if (pos >= 0) {
                 return pos;
-            else
-                return -pos-2;
+            } else {
+                return -pos - 2;
+            }
         }
 
         private double compute(double x, int p) {
@@ -111,6 +114,6 @@ public class CubicSpline {
                 return compute(value, pos);
             }
         }
-
     }
 }
+

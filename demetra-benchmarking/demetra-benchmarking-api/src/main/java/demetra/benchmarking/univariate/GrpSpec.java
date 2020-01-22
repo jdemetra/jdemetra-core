@@ -30,22 +30,28 @@ import demetra.util.Validatable;
 @lombok.Value
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public class GrpSpec implements ProcSpecification, Validatable<GrpSpec> {
+    
+    public static enum Objective{
+        Forward, Backward, Symmetric, Log
+    }
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "grp", null);
 
-    private int maxIter;
-    private double precision;
+    private Objective objective;
     @lombok.NonNull
     private AggregationType aggregationType;
     private int observationPosition;
     private boolean dentonInitialization;
+    private int maxIter;
+    private double precision;
 
     public static Builder builder() {
         return new Builder()
-                .maxIter(500)
-                .precision(1e-12)
+                .objective(Objective.Forward)
                 .aggregationType(AggregationType.Sum)
                 .observationPosition(0)
+                .maxIter(500)
+                .precision(1e-12)
                 .dentonInitialization(true);
 
     }
