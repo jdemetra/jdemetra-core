@@ -25,7 +25,6 @@ import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.SsfData;
-import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsData;
 import jdplus.timeseries.simplets.TsDataToolkit;
@@ -34,17 +33,13 @@ import demetra.timeseries.TsUnit;
 import nbbrd.service.ServiceProvider;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.SeqCursor;
-import demetra.timeseries.TsObs;
 import jdplus.arima.ssf.AR1;
 import jdplus.arima.ssf.Rw;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 import jdplus.ssf.implementations.WeightedLoading;
 import jdplus.ssf.univariate.Ssf;
-import static jdplus.timeseries.simplets.TsDataToolkit.add;
 import static jdplus.timeseries.simplets.TsDataToolkit.multiply;
-import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
 
 /**
  *
@@ -99,9 +94,9 @@ public class CholetteProcessor implements Cholette.Processor {
             y[i] = Double.NaN;
         }
         // search the first non missing value
-        int pos = offset, j=0, m=agg.length();
+        int pos = offset, j = 0, m = agg.length();
         DoubleSeqCursor cursor = agg.cursor();
-        
+
         while (j++ < m) {
             y[pos] = cursor.getAndNext();
             pos += ratio;
@@ -121,20 +116,24 @@ public class CholetteProcessor implements Cholette.Processor {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
 
-        TsData naggregationConstraint;
+        TsData naggregationConstraint, agg;
         switch (spec.getAggregationType()) {
             case Sum:
             case Average:
                 naggregationConstraint = BenchmarkingUtility.constraints(highFreqSeries, aggregationConstraint);
+                agg = highFreqSeries.aggregate(aggregationConstraint.getTsUnit(), spec.getAggregationType(), true);
                 break;
             case Last:
                 naggregationConstraint = BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, ratio - 1);
+                agg = highFreqSeries.aggregateByPosition(aggregationConstraint.getTsUnit(), ratio - 1);
                 break;
             case First:
                 naggregationConstraint = BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, 0);
+                agg = highFreqSeries.aggregateByPosition(aggregationConstraint.getTsUnit(), 0);
                 break;
             case UserDefined:
                 naggregationConstraint = BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, spec.getObservationPosition());
+                agg = highFreqSeries.aggregateByPosition(aggregationConstraint.getTsUnit(), spec.getObservationPosition());
                 break;
             default:
                 throw new TsException(TsException.INVALID_OPERATION);
@@ -145,6 +144,7 @@ public class CholetteProcessor implements Cholette.Processor {
         int offset = sh.until(sl);
         if (spec.getAggregationType() == AggregationType.Average) {
             naggregationConstraint = multiply(naggregationConstraint, ratio);
+            agg = multiply(agg, ratio);
         }
         switch (spec.getAggregationType()) {
             case First:
@@ -157,6 +157,7 @@ public class CholetteProcessor implements Cholette.Processor {
 
         }
 
+        naggregationConstraint = TsData.subtract(naggregationConstraint, agg);
         double[] y = expand(highFreqSeries.length(), ratio, naggregationConstraint.getValues(), offset);
 
         double[] w = null;
@@ -187,7 +188,7 @@ public class CholetteProcessor implements Cholette.Processor {
             } else {
                 rslts.getComponent(1).copyTo(b, 0);
             }
-            return TsData.ofInternal(start, b);
+            return TsData.add(highFreqSeries, TsData.ofInternal(start, b));
         } else {
             ISsfLoading loading;
             StateComponent cmp;
@@ -208,7 +209,7 @@ public class CholetteProcessor implements Cholette.Processor {
             for (int i = 0; i < b.length; ++i) {
                 b[i] = loading.ZX(i, rslts.a(i));
             }
-            return TsData.ofInternal(start, b);
+            return TsData.add(highFreqSeries, TsData.ofInternal(start, b));
         }
     }
 
