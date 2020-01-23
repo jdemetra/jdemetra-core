@@ -49,8 +49,8 @@ public class CubicSplineSpec implements ProcSpecification, Validatable<CubicSpli
 
     @Override
     public CubicSplineSpec validate() throws IllegalArgumentException {
-        if (aggregationType != AggregationType.First && aggregationType != AggregationType.Last
-                && aggregationType != AggregationType.UserDefined) {
+        if (aggregationType == AggregationType.None || aggregationType == AggregationType.Max
+                || aggregationType == AggregationType.Min) {
             throw new IllegalArgumentException();
         }
         return this;
