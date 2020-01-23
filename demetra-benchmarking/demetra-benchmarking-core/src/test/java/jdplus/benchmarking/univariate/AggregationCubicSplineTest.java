@@ -57,8 +57,7 @@ public class AggregationCubicSplineTest {
         }
     }
     
-    @Test
-    public void testDisaggregation() {
+    public static void disaggregation() {
         double[] d = AggregationCubicSpline.disaggregate(Data.PCRA, 4);
         System.out.println(DoubleSeq.of(d));
         d = AggregationCubicSpline.disaggregateByCumul(Data.PCRA, 4);
@@ -70,8 +69,7 @@ public class AggregationCubicSplineTest {
         System.out.println(DoubleSeq.of(d2));
     }
     
-    @Test
-    public void tesDisaggregationWithIndicator(){
+     public static void disaggregationWithIndicator(){
         double[] d = AggregationCubicSpline.disaggregateByCumul(Arrays.copyOf(Data.PCRA, 16), 4, Data.IND_PCR, 4);
         System.out.println(DoubleSeq.of(d));
         DentonSpec spec = DentonSpec.builder()
@@ -81,5 +79,10 @@ public class AggregationCubicSplineTest {
         System.out.println(DoubleSeq.of(d2));
         
     }
+     
+     public static void main(String[] args){
+         disaggregation();
+         disaggregationWithIndicator();
+     }
     
 }
