@@ -18,7 +18,6 @@ package demetra.util;
 
 import demetra.data.AggregationType;
 import static demetra.util.Parser.*;
-import internal.util.InternalParser;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -184,27 +183,34 @@ public class ParserTest {
     }
 
     @Test
-    public void testToLocale() {
-        Locale locale;
-        locale = InternalParser.parseLocale("fr");
-        assertThat(locale.getLanguage()).isEqualTo("fr");
-        locale = InternalParser.parseLocale("fr_BE");
-        assertThat(locale.getLanguage()).isEqualTo("fr");
-        locale = InternalParser.parseLocale("fr_BE_WIN");
-        assertThat(locale.getLanguage()).isEqualTo("fr");
-        assertThat(locale.getCountry()).isEqualTo("BE");
-        assertThat(locale.getVariant()).isEqualTo("WIN");
-        assertThat(InternalParser.parseLocale("helloworld")).isNull();
-        assertThat(InternalParser.parseLocale("fr_")).isNull();
-        assertThat(InternalParser.parseLocale("fr_BE_")).isNull();
+    public void testOnLocale() {
+        assertCompliance(onLocale(), "fr_BE");
+
+        assertThat(onLocale().parse("helloworld")).isNull();
+        assertThat(onLocale().parse("fr_")).isNull();
+        assertThat(onLocale().parse("fr_BE_")).isNull();
+
+        assertThat(onLocale().parse("fr"))
+                .extracting(Locale::getLanguage, Locale::getCountry, Locale::getVariant)
+                .containsExactly("fr", "", "");
+
+        assertThat(onLocale().parse("fr_BE"))
+                .extracting(Locale::getLanguage, Locale::getCountry, Locale::getVariant)
+                .containsExactly("fr", "BE", "");
+
+        assertThat(onLocale().parse("fr_BE_WIN"))
+                .extracting(Locale::getLanguage, Locale::getCountry, Locale::getVariant)
+                .containsExactly("fr", "BE", "WIN");
     }
 
     @SuppressWarnings("null")
     private static <T> void assertCompliance(Parser<T> p, CharSequence input) {
-        assertThatThrownBy(() -> p.parse(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> p.parseValue(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> p.andThen(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> p.orElse(null)).isInstanceOf(NullPointerException.class);
+        assertThatCode(() -> p.parse(null)).doesNotThrowAnyException();
+        assertThatCode(() -> p.parseValue(null)).doesNotThrowAnyException();
+        
+        assertThatNullPointerException().isThrownBy(() -> p.andThen(null));
+        assertThatNullPointerException().isThrownBy(() -> p.orElse(null));
+
         assertThat(p.parse(input)).isEqualTo(p.parse(input));
         assertThat(p.parseValue(input)).contains(p.parse(input));
     }

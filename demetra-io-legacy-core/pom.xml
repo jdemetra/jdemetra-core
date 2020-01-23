@@ -65,12 +65,6 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-bridge</artifactId>
-            <version>${jd3-basic.version}</version>
-            <scope>test</scope>
-        </dependency>-->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-tck</artifactId>
