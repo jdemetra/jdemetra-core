@@ -15,7 +15,7 @@ import java.util.List;
  */
 @lombok.Value
 @lombok.Builder
-public class LinearRegressionComponent {
+public class LinearModelSpec {
 
     /**
      * Original series
@@ -32,17 +32,11 @@ public class LinearRegressionComponent {
     /**
      * Pre-adjustment variables (with their corresponding coefficients)
      */
-    @lombok.Singular
-    private List<PreadjustmentVariable> preadjustmentVariables;
+    private PreadjustmentVariable[] preadjustmentVariables;
 
     /**
      * Regression variables
      */
-    @lombok.Singular
-    private List<Variable> variables;
+    private Variable[] variables;
 
-    /**
-     * Specification of the Sarima model (orders + initial/fixed parameters, if
-     * any)
-     */
 }

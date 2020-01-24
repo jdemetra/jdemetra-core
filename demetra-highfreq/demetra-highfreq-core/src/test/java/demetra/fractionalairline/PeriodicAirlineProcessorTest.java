@@ -10,7 +10,7 @@ import jdplus.arima.ArimaModel;
 import demetra.data.Data;
 import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.Matrix;
 import jdplus.regarima.RegArimaEstimation;
 import demetra.timeseries.calendars.EasterRelatedDay;

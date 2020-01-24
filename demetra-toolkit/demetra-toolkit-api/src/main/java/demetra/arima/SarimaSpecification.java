@@ -22,7 +22,7 @@ import demetra.design.Development;
  * Definition of the orders of the polynomials of Box-Jenkins models.
  * Corresponds to (P, D, Q)(BP, BD, BQ)s
  *
- * @author Jeremy Demortier, Jean Palate
+ * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
 @lombok.Data

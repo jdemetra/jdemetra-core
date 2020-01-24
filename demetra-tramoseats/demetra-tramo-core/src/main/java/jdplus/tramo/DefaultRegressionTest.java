@@ -21,7 +21,7 @@ import jdplus.regarima.regular.FRegressionTest;
 import jdplus.regarima.regular.IRegressionTest;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;

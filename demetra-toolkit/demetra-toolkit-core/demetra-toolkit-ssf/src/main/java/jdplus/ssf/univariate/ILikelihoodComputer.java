@@ -18,7 +18,7 @@
  */
 package jdplus.ssf.univariate;
 
-import demetra.likelihood.Likelihood;
+import jdplus.likelihood.Likelihood;
 
 /**
  *

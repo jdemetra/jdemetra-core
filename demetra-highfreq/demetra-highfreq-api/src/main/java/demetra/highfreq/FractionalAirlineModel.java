@@ -6,11 +6,8 @@
 package demetra.highfreq;
 
 import demetra.arima.ArimaModel;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.likelihood.LikelihoodStatistics;
-import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
-import demetra.regarima.RegArimaModel;
+import demetra.modelling.regarima.RegArimaEstimation;
 
 /**
  *
@@ -19,12 +16,6 @@ import demetra.regarima.RegArimaModel;
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder")
 public class FractionalAirlineModel {
-        RegArimaModel<ArimaModel> regarima;
-        ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
-        LikelihoodStatistics statistics;
+        RegArimaEstimation<ArimaModel> regarima;
         OutlierDescriptor[] outliers;
-        MatrixType parametersCovariance;
-        double[] score;
-        double[] parameters;
-        double[] linearized;
 }

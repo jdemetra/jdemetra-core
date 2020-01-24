@@ -9,7 +9,7 @@ import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.fractionalairline.MultiPeriodicAirlineMapping;
 import demetra.information.InformationMapping;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
 import jdplus.math.matrices.Matrix;

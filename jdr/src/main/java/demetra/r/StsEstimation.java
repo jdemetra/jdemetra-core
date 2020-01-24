@@ -22,7 +22,7 @@ import demetra.information.InformationMapping;
 import jdplus.math.functions.IFunctionDerivatives;
 import jdplus.math.functions.IFunctionPoint;
 import jdplus.math.functions.NumericalDerivatives;
-import demetra.likelihood.DiffuseConcentratedLikelihood;
+import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.SsfData;

@@ -23,7 +23,7 @@ import jdplus.ssf.IPredictionErrorDecomposition;
 import jdplus.likelihood.ResidualsCumulator;
 import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
-import demetra.likelihood.Likelihood;
+import jdplus.likelihood.Likelihood;
 
 /**
  *

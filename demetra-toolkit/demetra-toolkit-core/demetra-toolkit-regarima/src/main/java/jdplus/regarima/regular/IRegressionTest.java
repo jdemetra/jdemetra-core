@@ -20,7 +20,7 @@ package jdplus.regarima.regular;
 
 import demetra.design.Development;
 import demetra.information.InformationSet;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 
 
 /**

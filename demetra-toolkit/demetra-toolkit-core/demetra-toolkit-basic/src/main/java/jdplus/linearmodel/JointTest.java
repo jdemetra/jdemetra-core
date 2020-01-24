@@ -19,7 +19,7 @@ package jdplus.linearmodel;
 import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import jdplus.dstats.F;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.stats.tests.StatisticalTest;

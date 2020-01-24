@@ -17,7 +17,7 @@
 package jdplus.ssf.likelihood;
 
 import jdplus.ssf.dk.DkToolkit;
-import demetra.likelihood.DiffuseConcentratedLikelihood;
+import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.data.DataBlock;
 import jdplus.math.functions.IFunction;
 import jdplus.math.functions.ssq.ISsqFunction;

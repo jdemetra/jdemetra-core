@@ -84,7 +84,6 @@ public class FractionalAirlineProcessor implements FractionalAirline.Processor{
         RegArimaEstimation rslt = finalProcessor.process(builder.build());
         demetra.regarima.RegArimaModel rm = jdplus.regarima.ApiUtility.toApi(rslt.getModel(),s->jdplus.modelling.ApiUtility.toApi((ArimaModel)s, null));
         return FractionalAirlineModel.builder()
-                .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
                 .parameters(mapping.parametersOf((ArimaModel) rslt.getModel().arima()).toArray())
                 .regarima(rm)
                 .parametersCovariance(rslt.getMax().getHessian())

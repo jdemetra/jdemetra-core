@@ -20,7 +20,7 @@ import jdplus.data.DataBlock;
 import demetra.design.Immutable;
 import jdplus.dstats.F;
 import jdplus.dstats.T;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.TestType;
 import demetra.design.BuilderPattern;

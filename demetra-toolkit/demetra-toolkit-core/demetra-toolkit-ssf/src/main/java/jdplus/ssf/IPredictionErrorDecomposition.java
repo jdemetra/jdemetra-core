@@ -16,7 +16,7 @@
  */
 package jdplus.ssf;
 
-import demetra.likelihood.Likelihood;
+import jdplus.likelihood.Likelihood;
 
 /**
  *

@@ -10,7 +10,7 @@ import demetra.descriptors.arima.UcarimaDescriptor;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
 import demetra.highfreq.FractionalAirlineDecomposition;
 import demetra.information.InformationMapping;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.processing.ProcResults;

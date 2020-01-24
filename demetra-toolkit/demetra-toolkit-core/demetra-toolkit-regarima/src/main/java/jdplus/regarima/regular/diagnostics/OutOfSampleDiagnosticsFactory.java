@@ -76,7 +76,7 @@ public class OutOfSampleDiagnosticsFactory implements DiagnosticsFactory<Preproc
 
     @Override
     public Diagnostics create(PreprocessingModel rslts) {
-        return OutOfSampleDiagnostics.create(config, rslts);
+        return OutOfSampleDiagnostics.create(config, rslts.getDescription().regarima());
     }
 
 }

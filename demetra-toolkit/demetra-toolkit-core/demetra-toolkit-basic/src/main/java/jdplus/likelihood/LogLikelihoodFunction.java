@@ -26,7 +26,6 @@ import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import java.util.function.Function;
 import demetra.data.DoubleSeq;
-import demetra.likelihood.Likelihood;
 
 /**
  *

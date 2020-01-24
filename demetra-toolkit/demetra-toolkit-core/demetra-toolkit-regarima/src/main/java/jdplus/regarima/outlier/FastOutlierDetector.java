@@ -20,7 +20,7 @@ import jdplus.arima.IArimaModel;
 import jdplus.arima.StationaryTransformation;
 import internal.jdplus.arima.FastKalmanFilter;
 import jdplus.data.DataBlock;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.RationalBackFilter;
 import jdplus.math.polynomials.Polynomial;
@@ -28,7 +28,7 @@ import jdplus.regarima.RegArmaModel;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.modelling.regression.IOutlierFactory;
 import demetra.data.DoubleSeq;
-import demetra.likelihood.Likelihood;
+import jdplus.likelihood.Likelihood;
 
 /**
  *

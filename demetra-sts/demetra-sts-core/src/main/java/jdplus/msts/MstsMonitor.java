@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import demetra.data.DoubleSeq;
-import demetra.likelihood.Likelihood;
+import jdplus.likelihood.Likelihood;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
 import demetra.ssf.SsfLikelihood;

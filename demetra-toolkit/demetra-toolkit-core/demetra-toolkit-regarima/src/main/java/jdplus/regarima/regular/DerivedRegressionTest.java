@@ -18,7 +18,7 @@
 package jdplus.regarima.regular;
 
 import demetra.information.InformationSet;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.Matrix;
 
 /**

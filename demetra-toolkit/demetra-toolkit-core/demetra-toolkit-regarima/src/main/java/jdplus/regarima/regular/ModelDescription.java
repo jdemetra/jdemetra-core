@@ -24,7 +24,7 @@ import jdplus.data.transformation.LogJacobian;
 import demetra.data.ParameterType;
 import jdplus.data.interpolation.DataInterpolator;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
@@ -92,7 +92,6 @@ public final class ModelDescription {
      * Arima component (including mean correction
      */
     private final SarimaComponent arima = new SarimaComponent();
-    private boolean mean;
 
     // Caching
     private ITsVariable[] regressionVariables;
@@ -196,7 +195,7 @@ public final class ModelDescription {
                     .y(DoubleSeq.of(transformedSeries.data))
                     .missing(transformedSeries.missing)
                     .arima(arima.getModel())
-                    .meanCorrection(mean);
+                    .meanCorrection(arima.isMean());
             for (ITsVariable v : regressionVariables) {
                 builder.addX(getX(v));
             }
@@ -410,7 +409,7 @@ public final class ModelDescription {
      * @return the mean_
      */
     public boolean isMean() {
-        return mean;
+        return arima.isMean();
     }
 
     public boolean hasFixedEffects() {
@@ -470,7 +469,7 @@ public final class ModelDescription {
     }
 
     public void setMean(boolean mean) {
-        this.mean=mean;
+        this.arima.setMean(mean);
         if (regarima != null && mean != regarima.isMean()) {
             regarima = regarima.toBuilder().meanCorrection(mean).build();
         }
@@ -564,9 +563,7 @@ public final class ModelDescription {
             if (np < allp) {
                 J = expand(J);
             }
-            DataBlock stde = J.diagonal().deepClone();
-            stde.apply(a -> a <= 0 ? 0 : Math.sqrt(a));
-            arima.setFreeParameters(regarima.arima().parameters(), stde, ParameterType.Estimated);
+            arima.setFreeParameters(regarima.arima().parameters(), ParameterType.Estimated);
         }
         NiidTests tests = NiidTests.builder()
                 .data(rslt.getConcentratedLikelihood().e())
