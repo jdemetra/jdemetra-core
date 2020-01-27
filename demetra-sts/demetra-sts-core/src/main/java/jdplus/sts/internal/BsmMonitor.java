@@ -26,7 +26,7 @@ import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.functions.minpack.MinPackMinimizer;
 import jdplus.math.functions.riso.LbfgsMinimizer;
 import jdplus.math.functions.ssq.ProxyMinimizer;
-import demetra.likelihood.DiffuseConcentratedLikelihood;
+import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
 import jdplus.ssf.univariate.SsfData;

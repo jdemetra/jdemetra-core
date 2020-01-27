@@ -34,11 +34,11 @@ public class ObjectiveFunctionPoint {
     /**
      * Parameters of the function 
      */
-    private DoubleSeq parameters;
+    private double[] parameters;
     /**
      * Gradient of the function at the given point
      */
-    private DoubleSeq gradient;
+    private double[] gradient;
     /**
      * Hessian of the function at the given point
      */

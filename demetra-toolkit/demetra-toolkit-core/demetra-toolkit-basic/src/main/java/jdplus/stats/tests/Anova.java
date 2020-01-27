@@ -17,7 +17,7 @@
 
 package jdplus.stats.tests;
 
-import demetra.likelihood.ConcentratedLikelihood;
+import jdplus.likelihood.ConcentratedLikelihood;
 import jdplus.linearmodel.LinearModel;
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;

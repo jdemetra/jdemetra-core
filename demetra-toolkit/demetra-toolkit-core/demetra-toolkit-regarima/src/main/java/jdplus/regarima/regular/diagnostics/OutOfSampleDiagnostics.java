@@ -22,6 +22,7 @@ import jdplus.regarima.regular.PreprocessingModel;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 import java.util.List;
+import jdplus.regarima.RegArimaModel;
 
 /**
  *
@@ -33,12 +34,12 @@ public class OutOfSampleDiagnostics implements Diagnostics {
     private final double bb;
     private double mpval, vpval;
 
-    static OutOfSampleDiagnostics create(OutOfSampleDiagnosticsConfiguration config, PreprocessingModel pp) {
+    static OutOfSampleDiagnostics create(OutOfSampleDiagnosticsConfiguration config, RegArimaModel<SarimaModel> regarima) {
         try {
-            if (pp == null) {
+            if (regarima == null) {
                 return null;
             } else {
-                return new OutOfSampleDiagnostics(config, pp);
+                return new OutOfSampleDiagnostics(config, regarima);
             }
 
         } catch (Exception ex) {
@@ -46,22 +47,22 @@ public class OutOfSampleDiagnostics implements Diagnostics {
         }
     }
 
-    private OutOfSampleDiagnostics(OutOfSampleDiagnosticsConfiguration config, PreprocessingModel rslts) {
+    private OutOfSampleDiagnostics(OutOfSampleDiagnosticsConfiguration config, RegArimaModel<SarimaModel> regarima) {
         // set the boundaries...
         bb = config.getBadThreshold();
         ub = config.getUncertainThreshold();
-        test(rslts, config.getOutOfSampleLength(), config.isDiagnosticOnMean(), config.isDiagnosticOnVariance());
+        test(regarima, config.getOutOfSampleLength(), config.isDiagnosticOnMean(), config.isDiagnosticOnVariance());
     }
 
-    private void test(PreprocessingModel rslts, double len, boolean m, boolean v) {
-        int ifreq = rslts.getDescription().getAnnualFrequency();
+    private void test(RegArimaModel<SarimaModel> regarima, double len, boolean m, boolean v) {
+        int ifreq = regarima.arima().getFrequency();
         int nback = (int) (len * ifreq);
         if (nback < 5) {
             nback = 5;
         }
         RegSarimaProcessor processor = RegSarimaProcessor.builder().build();
         OneStepAheadForecastingTest<SarimaModel> xtest = new OneStepAheadForecastingTest<>(processor, nback);
-        xtest.test(rslts.getDescription().regarima());
+        xtest.test(regarima);
         if (m) {
             mpval = xtest.outOfSampleMeanTest().getPValue();
         } else {

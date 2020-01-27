@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 National Bank of Belgium.
+ * Copyright 2020 National Bank of Belgium.
  *
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,22 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jdplus.likelihood;
+package demetra.data;
 
-import jdplus.math.functions.IFunction;
-import jdplus.math.functions.ssq.ISsqFunction;
-import demetra.data.DoubleSeq;
+import demetra.design.Development;
 
 /**
- *
+ * Estimation of a missing value in an array of doubles.
  * @author Jean Palate <jean.palate@nbb.be>
- * @param <L>
  */
-public interface LikelihoodFunction<L extends Likelihood> extends IFunction, ISsqFunction {
-    @Override
-    LikelihoodFunctionPoint<L> evaluate(DoubleSeq p);
+@lombok.Value
+@Development(status = Development.Status.Release)
+public class MissingValueEstimation {
     
-    @Override
-    LikelihoodFunctionPoint<L> ssqEvaluate(DoubleSeq p);
-    
+    /**
+     * 0-based position of the missing value in the array
+     */
+    private int position;
+    /**
+     * Estimated value
+     */
+    private double value;
+    /**
+     * Standard deviation of the estimated value
+     */
+    private double standardError;
+   
 }

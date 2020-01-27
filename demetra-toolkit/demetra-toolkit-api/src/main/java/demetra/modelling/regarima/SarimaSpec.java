@@ -58,7 +58,15 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         void checkBq(int bq);
     }
 
-    private final Validator validator;
+    private Validator validator;
+    /**
+     * Mean effect
+     */
+    private ParameterSpec mu; 
+    /**
+     * Period of the Arima model. Should be 0 when the period is unspecified
+     */
+    private int period;
     private int d, bd;
     private ParameterSpec[] phi, theta, bphi, btheta;
 
@@ -121,11 +129,6 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
 
         public Builder btheta(ParameterSpec[] value) {
             btheta = value.clone();
-            return this;
-        }
-
-        public Builder validator(Validator validator) {
-            this.validator = validator;
             return this;
         }
     }

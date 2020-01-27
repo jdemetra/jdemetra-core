@@ -17,7 +17,6 @@
 package demetra.timeseries;
 
 import java.time.LocalDate;
-import java.util.Iterator;
 import java.util.List;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;

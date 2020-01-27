@@ -5,11 +5,10 @@
  */
 package demetra.benchmarking.descriptors;
 
+import demetra.data.ParameterEstimation;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import demetra.descriptors.stats.MaximumLikelihoodDescriptor;
 import demetra.design.Development;
 import demetra.information.InformationMapping;
-import demetra.linearmodel.Coefficient;
 import demetra.linearmodel.LinearModelEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
@@ -34,11 +33,10 @@ public class TemporalDisaggregationDescriptor{
         MAPPING.set(DISAGG, TsData.class, source -> source.getDisaggregatedSeries());
         MAPPING.set(EDISAGG, TsData.class, source -> source.getStdevDisaggregatedSeries());
         MAPPING.set(REGEFFECT, TsData.class, source -> source.getRegressionEffects());
-        MAPPING.delegate(ML, MaximumLikelihoodDescriptor.getMapping(), source -> source.getMaximum());
-        MAPPING.setArray(COEFF, 1, 9, Coefficient.class, (TemporalDisaggregationResults source, Integer i)->
+        MAPPING.setArray(COEFF, 1, 9, ParameterEstimation.class, (TemporalDisaggregationResults source, Integer i)->
         {
             LinearModelEstimation estimation = source.getEstimation();
-            Coefficient[] coefficients = estimation.getCoefficients();
+            ParameterEstimation[] coefficients = estimation.getCoefficients();
             if (i>=1 && i<=coefficients.length){
                 return coefficients[i-1];
             }

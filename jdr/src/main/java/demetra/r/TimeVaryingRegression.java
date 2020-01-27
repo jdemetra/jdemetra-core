@@ -18,7 +18,7 @@ import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.descriptors.stats.DiffuseConcentratedLikelihoodDescriptor;
-import demetra.likelihood.DiffuseConcentratedLikelihood;
+import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;

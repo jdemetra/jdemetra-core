@@ -16,7 +16,6 @@
  */
 package jdplus.likelihood;
 
-import demetra.likelihood.Likelihood;
 import jdplus.math.functions.IFunctionPoint;
 import jdplus.math.functions.ssq.ISsqFunctionPoint;
 /**

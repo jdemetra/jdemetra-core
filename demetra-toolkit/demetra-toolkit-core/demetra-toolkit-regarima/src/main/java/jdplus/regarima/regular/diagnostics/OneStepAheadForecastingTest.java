@@ -19,7 +19,7 @@ package jdplus.regarima.regular.diagnostics;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.dstats.F;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;

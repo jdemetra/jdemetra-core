@@ -5,7 +5,6 @@
  */
 package demetra.highfreq;
 
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 
@@ -19,7 +18,6 @@ public class FractionalAirlineDecomposition {
         double[] y, t, s, i, n;
         demetra.arima.ArimaModel arima;
         demetra.arima.UcarimaModel ucarima;
-        ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
         MatrixType parametersCovariance;
         double[] parameters, score;

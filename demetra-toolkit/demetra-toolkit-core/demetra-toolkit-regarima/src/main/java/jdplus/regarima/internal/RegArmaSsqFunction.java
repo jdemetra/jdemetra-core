@@ -20,7 +20,7 @@ import jdplus.regarima.RegArmaModel;
 import jdplus.arima.IArimaModel;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.DefaultLikelihoodEvaluation;
 import jdplus.math.functions.IParametersDomain;
 import jdplus.math.functions.IParametricMapping;
@@ -30,7 +30,7 @@ import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import jdplus.arima.estimation.IArimaMapping;
 import demetra.data.DoubleSeq;
-import demetra.likelihood.Likelihood;
+import jdplus.likelihood.Likelihood;
 import jdplus.math.matrices.Matrix;
 
 /**

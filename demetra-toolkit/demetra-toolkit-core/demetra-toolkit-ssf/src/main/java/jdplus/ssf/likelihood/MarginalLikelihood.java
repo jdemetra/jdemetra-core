@@ -19,7 +19,7 @@ package jdplus.ssf.likelihood;
 import demetra.design.BuilderPattern;
 import demetra.math.Constants;
 import demetra.data.DoubleSeq;
-import demetra.likelihood.Likelihood;
+import jdplus.likelihood.Likelihood;
 
 /**
  *

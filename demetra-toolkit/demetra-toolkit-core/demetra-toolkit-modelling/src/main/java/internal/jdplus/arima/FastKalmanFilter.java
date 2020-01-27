@@ -21,13 +21,13 @@ import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.DeterminantalTerm;
 import jdplus.math.matrices.Matrix;
 import demetra.util.SubArrayOfInt;
 import jdplus.leastsquares.QRSolver;
 import demetra.data.DoubleSeq;
-import demetra.likelihood.Likelihood;
+import jdplus.likelihood.Likelihood;
 import jdplus.leastsquares.QRSolution;
 
 /**
