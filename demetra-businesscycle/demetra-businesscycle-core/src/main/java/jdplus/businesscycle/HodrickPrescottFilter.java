@@ -54,10 +54,15 @@ public class HodrickPrescottFilter {
 
     public DoubleSeq[] process(DoubleSeq x) {
         DataBlockStorage ss = DkToolkit.fastSmooth(ssf, new SsfData(x));
-        Matrix r=Matrix.make(x.length(), 2);
         DataBlock t = ss.item(0);
         DataBlock c = ss.item(2);
         return new DoubleSeq[]{DoubleSeq.of(t.toArray()), DoubleSeq.of(c.toArray())};
+    }
+
+    public static double lambda(double nperiods) {
+        double w = 2 * Math.PI / nperiods;
+        double x = 1 - Math.cos(w);
+        return .75 / (x * x);
     }
 
 }
