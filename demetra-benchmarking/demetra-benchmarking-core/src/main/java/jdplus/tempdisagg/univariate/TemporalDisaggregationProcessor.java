@@ -15,10 +15,9 @@ import jdplus.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.stats.ProbabilityType;
 import jdplus.dstats.T;
-import demetra.likelihood.DiffuseConcentratedLikelihood;
+import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.functions.ObjectiveFunctionPoint;
-import demetra.linearmodel.Coefficient;
 import demetra.linearmodel.LinearModelEstimation;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.ParamValidation;
@@ -50,6 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import demetra.data.ParameterEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.tempdisagg.univariate.ResidualsDiagnostics;
 import demetra.tempdisagg.univariate.TemporalDisaggregation;
@@ -155,8 +155,11 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
             DoubleSeq p = rslt.getParameters();
             dll = rslt.getLikelihood();
             double c = 2 * rslt.getSsqE() / (dll.dim() - dll.nx() - 1);
+            double[] grad = fmin.gradientAtMinimum().toArray();
+            for (int i=0; i<grad.length; ++i)
+                grad[i]/=-c;
             ml = new ObjectiveFunctionPoint(rslt.getLikelihood().logLikelihood(),
-                    p, fmin.gradientAtMinimum().map(z -> -z / c), fmin.curvatureAtMinimum().times(1 / c));
+                    p.toArray(), grad, fmin.curvatureAtMinimum().times(1 / c));
 
             if (spec.getResidualsModel() == Model.Ar1) {
                 nmodel = Ssf.of(AR1.of(p.get(0), 1, spec.isZeroInitialization()), AR1.defaultLoading());
@@ -244,8 +247,11 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
             DoubleSeq p = rslt.getParameters();
             dll = rslt.getLikelihood();
             double c = .5 * (dll.dim() - dll.nx() - 1) / rslt.getSsqE();
+            double[] grad = fmin.gradientAtMinimum().toArray();
+            for (int i=0; i<grad.length; ++i)
+                grad[i]*=-c;
             ml = new ObjectiveFunctionPoint(rslt.getLikelihood().logLikelihood(),
-                    p, fmin.gradientAtMinimum().map(z -> -z * c), fmin.curvatureAtMinimum().times(c));
+                    p.toArray(), grad, fmin.curvatureAtMinimum().times(c));
 
             if (spec.getResidualsModel() == Model.Ar1) {
                 ncmp = AR1.of(p.get(0), 1, spec.isZeroInitialization());
@@ -459,7 +465,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
         if (dll.nx() == 0) {
             return LinearModelEstimation.EMPTY;
         }
-        Coefficient[] c = new Coefficient[dll.nx()];
+        ParameterEstimation[] c = new ParameterEstimation[dll.nx()];
         int pos = 0;
         int nparams = spec.isParameterEstimation() ? 1 : 0;
         T tstat = new T(dll.dim() - dll.nx() - nparams);
@@ -469,18 +475,18 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
         if (spec.isConstant()) {
             double ccur = coefficients.get(pos), ecur = Math.sqrt(ser.get(pos));
             double pval = 2 * tstat.getProbability(Math.abs(ccur / ecur), ProbabilityType.Upper);
-            c[pos++] = new Coefficient(ccur, ecur, pval, "constant");
+            c[pos++] = new ParameterEstimation(ccur, ecur, pval, "constant");
         }
         if (spec.isTrend()) {
             double ccur = coefficients.get(pos), ecur = Math.sqrt(ser.get(pos));
             double pval = 2 * tstat.getProbability(Math.abs(ccur / ecur), ProbabilityType.Upper);
-            c[pos++] = new Coefficient(ccur, ecur, pval, "trend");
+            c[pos++] = new ParameterEstimation(ccur, ecur, pval, "trend");
         }
         int i = 1;
         while (pos < c.length) {
             double ccur = coefficients.get(pos), ecur = Math.sqrt(ser.get(pos));
             double pval = 2 * tstat.getProbability(Math.abs(ccur / ecur), ProbabilityType.Upper);
-            c[pos++] = new Coefficient(ccur, ecur, pval, "var" + (i++));
+            c[pos++] = new ParameterEstimation(ccur, ecur, pval, "var" + (i++));
         }
         return new LinearModelEstimation(c, cov);
     }

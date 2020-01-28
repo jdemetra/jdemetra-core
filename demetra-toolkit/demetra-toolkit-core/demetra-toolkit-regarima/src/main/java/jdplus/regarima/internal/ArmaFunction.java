@@ -27,7 +27,7 @@ import jdplus.math.functions.ssq.ISsqFunction;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import demetra.data.DoubleSeq;
-import demetra.likelihood.Likelihood;
+import jdplus.likelihood.Likelihood;
 import jdplus.math.matrices.Matrix;
 
 /**

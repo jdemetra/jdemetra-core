@@ -5,10 +5,6 @@
  */
 package demetra.highfreq;
 
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.likelihood.LikelihoodStatistics;
-import demetra.math.matrices.MatrixType;
-
 /**
  *
  * @author palatej
@@ -16,21 +12,17 @@ import demetra.math.matrices.MatrixType;
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder")
 public class FractionalAirlineDecomposition {
-        double[] y, t, s, i, n;
-        demetra.arima.ArimaModel arima;
-        demetra.arima.UcarimaModel ucarima;
-        ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
-        LikelihoodStatistics statistics;
-        MatrixType parametersCovariance;
-        double[] parameters, score;
-        
-        public double[] getSa(){
-            double[] sa=y.clone();
-            if (s != null){
-                for (int i=0; i<sa.length; ++i){
-                    sa[i]-=s[i];
-                }
+
+    double[] y, t, s, i, n;
+    demetra.arima.UcarimaModel ucarima;
+
+    public double[] getSa() {
+        double[] sa = y.clone();
+        if (s != null) {
+            for (int i = 0; i < sa.length; ++i) {
+                sa[i] -= s[i];
             }
-            return sa;
         }
+        return sa;
+    }
 }

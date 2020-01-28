@@ -7,7 +7,7 @@ package demetra.highfreq.descriptors;
 
 import demetra.data.DoubleSeq;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import demetra.highfreq.FractionalAirlineModel;
+import demetra.highfreq.FractionalAirlineEstimation;
 import demetra.information.InformationMapping;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
@@ -20,66 +20,72 @@ import java.util.Map;
  */
 @lombok.experimental.UtilityClass
 public class FractionalAirlineModelDescriptor {
-        private static final String PARAMETERS = "parameters", LL = "likelihood", PCOV = "pcov", SCORE = "score",
-                B = "b", T = "t", UNSCALEDBVAR = "unscaledbvar", OUTLIERS = "outliers"
-                , LIN="lin", REGRESSORS="regressors";
 
-        private static final InformationMapping<FractionalAirlineModel> MAPPING = new InformationMapping<>(FractionalAirlineModel.class);
+    private static final String PARAMETERS = "parameters", LL = "likelihood", PCOV = "pcov", SCORE = "score",
+            B = "b", T = "t", BVAR = "bvar", OUTLIERS = "outliers", LIN = "lin", REGRESSORS = "regressors";
 
-         public boolean contains(String id) {
-            return MAPPING.contains(id);
-        }
+    private static final InformationMapping<FractionalAirlineEstimation> MAPPING = new InformationMapping<>(FractionalAirlineEstimation.class);
 
-         public Map<String, Class> getDictionary() {
-            Map<String, Class> dic = new LinkedHashMap<>();
-            MAPPING.fillDictionary(null, dic, true);
-            return dic;
-        }
+    public boolean contains(String id) {
+        return MAPPING.contains(id);
+    }
 
-        public <T> T getData(FractionalAirlineModel model, String id, Class<T> tclass) {
-            return MAPPING.getData(model, id, tclass);
-        }
+    public Map<String, Class> getDictionary() {
+        Map<String, Class> dic = new LinkedHashMap<>();
+        MAPPING.fillDictionary(null, dic, true);
+        return dic;
+    }
 
-        public static final InformationMapping<FractionalAirlineModel> getMapping() {
-            return MAPPING;
-        }
+    public <T> T getData(FractionalAirlineEstimation model, String id, Class<T> tclass) {
+        return MAPPING.getData(model, id, tclass);
+    }
 
-        static {
-            MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.getStatistics());
-            MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
-            MAPPING.set(SCORE, double[].class, source -> source.getScore());
-            MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters());
-            MAPPING.set(B, double[].class, source
-                    -> {
-                DoubleSeq b = source.getConcentratedLogLikelihood().coefficients();
-                return b.toArray();
-            });
-            MAPPING.set(T, double[].class, source
-                    -> {
-                int nhp = source.getParameters().length;
-                return source.getConcentratedLogLikelihood().tstats(nhp, true);
-            });
-            MAPPING.set(UNSCALEDBVAR, MatrixType.class, source -> source.getConcentratedLogLikelihood().unscaledCovariance());
-            MAPPING.set(OUTLIERS, String[].class, source -> {
-                OutlierDescriptor[] o = source.getOutliers();
-                if (o == null) {
-                    return null;
-                }
-                String[] no = new String[o.length];
-                for (int i = 0; i < o.length; ++i) {
-                    no[i] = o[i].toString();
-                }
-                return no;
-            });
-            MAPPING.set(REGRESSORS, MatrixType.class, source
-                    -> {
-                return source.getRegarima().getX();
-            });            
-            MAPPING.set(LIN, double[].class, source
-                    -> {
-                return source.getLinearized();
-            });
-            
-        }
+    public static final InformationMapping<FractionalAirlineEstimation> getMapping() {
+        return MAPPING;
+    }
+
+    static {
+        MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.getRegarima().getLikelihood());
+        MAPPING.set(PCOV, MatrixType.class, source -> source.getRegarima().getParameters().getCovariance());
+        MAPPING.set(PARAMETERS, double[].class, source -> source.getRegarima().getParameters().getValues());
+        MAPPING.set(B, double[].class, source
+                -> {
+            return source.getRegarima().getCoefficients().getValues();
+        });
+        MAPPING.set(T, double[].class, source
+                -> {
+            double[] b = source.getRegarima().getCoefficients().getValues();
+            if (b == null) {
+                return null;
+            }
+            DoubleSeq v = source.getRegarima().getCoefficients().getCovariance().diagonal();
+            double[] t = b.clone();
+            for (int i = 0; i < t.length; ++i) {
+                t[i] /= Math.sqrt(v.get(i));
+            }
+            return t;
+        });
+        MAPPING.set(BVAR, MatrixType.class, source -> source.getRegarima().getCoefficients().getCovariance());
+        MAPPING.set(OUTLIERS, String[].class, source -> {
+            OutlierDescriptor[] o = source.getOutliers();
+            if (o == null) {
+                return null;
+            }
+            String[] no = new String[o.length];
+            for (int i = 0; i < o.length; ++i) {
+                no[i] = o[i].toString();
+            }
+            return no;
+        });
+        MAPPING.set(REGRESSORS, MatrixType.class, source
+                -> {
+            return source.getRegarima().getX();
+        });
+        MAPPING.set(LIN, double[].class, source
+                -> {
+            return source.getRegarima().linearized();
+        });
+
+    }
 
 }

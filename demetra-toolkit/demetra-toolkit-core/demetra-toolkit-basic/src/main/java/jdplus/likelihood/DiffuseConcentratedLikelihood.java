@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.likelihood;
+package jdplus.likelihood;
 
 import demetra.design.BuilderPattern;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
-import demetra.math.matrices.MatrixType;
+import demetra.likelihood.LikelihoodStatistics;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -40,7 +41,7 @@ public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
         private double[] res;
         private boolean legacy;
         private double[] b;
-        private MatrixType bvar;
+        private Matrix bvar;
         private boolean scalingFactor = true;
 
         Builder(int n, int nd) {
@@ -91,7 +92,7 @@ public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
             return this;
         }
 
-        public Builder unscaledCovariance(MatrixType var) {
+        public Builder unscaledCovariance(Matrix var) {
             bvar = var;
             return this;
         }
@@ -119,6 +120,15 @@ public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
     @Override
     default int degreesOfFreedom(){
         return dim()-nx()-ndiffuse();
+    }
+    
+    default LikelihoodStatistics stats(double llcorrection, int nparams) {
+        return LikelihoodStatistics.statistics(logLikelihood(), dim())
+                .llAdjustment(llcorrection)
+                .differencingOrder(ndiffuse())
+                .parametersCount((nparams) + nx() + 1)
+                .ssq(ssq())
+                .build();
     }
 
 }

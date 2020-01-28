@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 National Bank of Belgium.
+ * Copyright 2020 National Bank of Belgium.
  *
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,38 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.linearmodel;
+package demetra.data;
+
+import demetra.design.Development;
+import demetra.math.matrices.MatrixType;
 
 /**
- * 
- * @author Jean Palate
+ *
+ * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-public class Coefficient {
-
+@Development(status = Development.Status.Release)
+public class ParametersEstimation {
     /**
-     * Value of the coefficient
+     * Values of the parameters
      */
-    private double value;
+    private double[] values;
     /**
-     * Std error of the coefficient. Could be 0 (fixed coeff)
+     * Covariance of the parameters
      */
-    private double stdError;
-    /**
-     * P-value (T-Stat)
-     */
-    private double pValue;
-    /**
-     * Description of the coefficient
-     */
-    private String description;
-
-    /**
-     * T-Stat
-     *
-     * @return
-     */
-    public double getTStat() {
-        return stdError == 0 ? Double.NaN : value / stdError;
-    }
+    private MatrixType covariance;
 }

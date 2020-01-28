@@ -19,7 +19,7 @@ package jdplus.tramo;
 import demetra.design.BuilderPattern;
 import jdplus.dstats.F;
 import demetra.stats.ProbabilityType;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;

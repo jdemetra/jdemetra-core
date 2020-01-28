@@ -34,11 +34,11 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class SarimaComponent  {
+public class SarimaComponent {
 
     private int d, bd, period;
-
     private Parameter[] phi, theta, bphi, btheta;
+    private Parameter mu;
 
     public SarimaComponent() {
     }
@@ -46,17 +46,17 @@ public class SarimaComponent  {
     public SarimaComponent(int freq) {
         period = freq;
     }
-    
-    
-    public void copy(SarimaComponent other){
-        d=other.d;
-        bd=other.bd;
-        period=other.period;
-        phi=Parameter.clone(other.phi);
-        bphi=Parameter.clone(other.bphi);
-        theta=Parameter.clone(other.theta);
-        btheta=Parameter.clone(other.btheta);
-   }
+
+    public void copy(SarimaComponent other) {
+        d = other.d;
+        bd = other.bd;
+        period = other.period;
+        phi = Parameter.clone(other.phi);
+        bphi = Parameter.clone(other.bphi);
+        theta = Parameter.clone(other.theta);
+        btheta = Parameter.clone(other.btheta);
+        mu = Parameter.clone(other.mu);
+    }
 
     public void setParameterType(ParameterType type) {
         if (phi != null) {
@@ -79,62 +79,45 @@ public class SarimaComponent  {
                 btheta[i].setType(type);
             }
         }
-
+        if (mu != null) {
+            mu.setType(type);
+        }
     }
 
     public void clearParameters() {
-        if (phi != null) {
-            for (int i = 0; i < phi.length; ++i) {
-                phi[i] = new Parameter();
-            }
-        }
-        if (bphi != null) {
-            for (int i = 0; i < bphi.length; ++i) {
-                bphi[i] = new Parameter();
-            }
-        }
-        if (theta != null) {
-            for (int i = 0; i < theta.length; ++i) {
-                theta[i] = new Parameter();
-            }
-        }
-        if (btheta != null) {
-            for (int i = 0; i < btheta.length; ++i) {
-                btheta[i] = new Parameter();
-            }
-        }
-
+        setParameterType(ParameterType.Undefined);
     }
 
     public void clearFreeParameters() {
         if (phi != null) {
             for (int i = 0; i < phi.length; ++i) {
                 if (phi[i] == null || !phi[i].isFixed()) {
-                    phi[i] = new Parameter();
+                    phi[i].setType(ParameterType.Undefined);
                 }
             }
         }
         if (bphi != null) {
             for (int i = 0; i < bphi.length; ++i) {
                 if (bphi[i] == null || !bphi[i].isFixed()) {
-                    bphi[i] = new Parameter();
+                    bphi[i].setType(ParameterType.Undefined);
                 }
             }
         }
         if (theta != null) {
             for (int i = 0; i < theta.length; ++i) {
                 if (theta[i] == null || !theta[i].isFixed()) {
-                    theta[i] = new Parameter();
+                    theta[i].setType(ParameterType.Undefined);
                 }
             }
         }
         if (btheta != null) {
             for (int i = 0; i < btheta.length; ++i) {
                 if (btheta[i] == null || !btheta[i].isFixed()) {
-                    btheta[i] = new Parameter();
+                    btheta[i].setType(ParameterType.Undefined);
                 }
             }
         }
+
     }
 
     public void updateParameters(SarimaComponent aspec) {
@@ -142,6 +125,9 @@ public class SarimaComponent  {
         updateParameters(theta, aspec.theta);
         updateParameters(bphi, aspec.bphi);
         updateParameters(btheta, aspec.btheta);
+        if (mu != null && aspec.mu != null) {
+            mu.copy(aspec.mu);
+        }
     }
 
     private void updateParameters(Parameter[] target, Parameter[] source) {
@@ -352,6 +338,18 @@ public class SarimaComponent  {
         return spec;
     }
 
+    public boolean isMean() {
+        return mu != null;
+    }
+
+    public void setMean(boolean mean) {
+        if (mean) {
+            mu = new Parameter();
+        } else {
+            mu = null;
+        }
+    }
+
     public boolean isDefined() {
         return Parameter.isDefined(phi) && Parameter.isDefined(theta)
                 && Parameter.isDefined(bphi) && Parameter.isDefined(btheta);
@@ -372,7 +370,7 @@ public class SarimaComponent  {
         period = spec.getPeriod();
     }
 
-   public void setModel(SarimaModel value) {
+    public void setModel(SarimaModel value) {
         SarimaSpecification spec = value.specification();
         setP(spec.getP());
         d = spec.getD();
@@ -501,7 +499,7 @@ public class SarimaComponent  {
         return p;
     }
 
-    public void setFreeParameters(DoubleSeq p, DoubleSeq stde, ParameterType type) {
+    public void setFreeParameters(DoubleSeq p, ParameterType type) {
         int j = 0;
         if (phi != null) {
             for (int i = 0; i < phi.length; ++i, ++j) {
@@ -510,9 +508,6 @@ public class SarimaComponent  {
                 } else if (!phi[i].isFixed()) {
                     phi[i].setValue(p.get(j));
                     phi[i].setType(type);
-                }
-                if (stde != null) {
-                    phi[i].setStde(stde.get(j));
                 }
             }
         }
@@ -524,9 +519,6 @@ public class SarimaComponent  {
                     bphi[i].setValue(p.get(j));
                     bphi[i].setType(type);
                 }
-                if (stde != null) {
-                    bphi[i].setStde(stde.get(j));
-                }
             }
         }
         if (theta != null) {
@@ -537,9 +529,6 @@ public class SarimaComponent  {
                     theta[i].setValue(p.get(j));
                     theta[i].setType(type);
                 }
-                if (stde != null) {
-                    theta[i].setStde(stde.get(j));
-                }
             }
         }
         if (btheta != null) {
@@ -549,9 +538,6 @@ public class SarimaComponent  {
                 } else if (!btheta[i].isFixed()) {
                     btheta[i].setValue(p.get(j));
                     btheta[i].setType(type);
-                }
-                if (stde != null) {
-                    btheta[i].setStde(stde.get(j));
                 }
             }
         }

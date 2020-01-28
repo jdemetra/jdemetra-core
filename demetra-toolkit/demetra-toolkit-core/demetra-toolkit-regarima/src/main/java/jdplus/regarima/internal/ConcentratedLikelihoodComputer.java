@@ -23,7 +23,7 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.data.DataBlock;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.decomposition.Householder;
 import jdplus.arima.estimation.ArmaFilter;

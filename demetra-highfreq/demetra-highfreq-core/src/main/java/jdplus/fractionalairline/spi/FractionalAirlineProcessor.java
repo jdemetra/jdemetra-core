@@ -7,17 +7,16 @@ package jdplus.fractionalairline.spi;
 
 import demetra.data.DoubleSeq;
 import demetra.highfreq.FractionalAirline;
+import demetra.highfreq.FractionalAirlineAlgorithms;
 import demetra.highfreq.FractionalAirlineDecomposition;
-import demetra.highfreq.FractionalAirlineModel;
+import demetra.highfreq.FractionalAirlineEstimation;
 import demetra.highfreq.FractionalAirlineSpec;
-import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.fractionalairline.MultiPeriodicAirlineMapping;
-import jdplus.fractionalairline.PeriodicAirlineEngine;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.IOutlierFactory;
@@ -33,17 +32,16 @@ import nbbrd.service.ServiceProvider;
  *
  * @author palatej
  */
-@ServiceProvider(FractionalAirline.Processor.class)
-public class FractionalAirlineProcessor implements FractionalAirline.Processor{
+@ServiceProvider(FractionalAirlineAlgorithms.Processor.class)
+public class FractionalAirlineProcessor implements FractionalAirlineAlgorithms.Processor{
 
     @Override
-    public FractionalAirlineDecomposition process(double[] s, double period, boolean adjust, boolean sn) {
-        return FractionalAirlineDecomposition.builder()
-                .build();
+    public FractionalAirlineDecomposition process(double[] s, FractionalAirline model) {
+        return null;
     }
 
     @Override
-    public FractionalAirlineModel process(FractionalAirlineSpec spec) {
+    public FractionalAirlineEstimation process(FractionalAirlineSpec spec) {
         final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(spec.getPeriodicities(), true, false);
         double[] y=spec.getY();
         RegArimaModel.Builder builder = RegArimaModel.builder(ArimaModel.class)
@@ -82,18 +80,16 @@ public class FractionalAirlineProcessor implements FractionalAirline.Processor{
                 .precision(1e-9)
                 .build();
         RegArimaEstimation rslt = finalProcessor.process(builder.build());
-        demetra.regarima.RegArimaModel rm = jdplus.regarima.ApiUtility.toApi(rslt.getModel(),s->jdplus.modelling.ApiUtility.toApi((ArimaModel)s, null));
-        return FractionalAirlineModel.builder()
-                .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
-                .parameters(mapping.parametersOf((ArimaModel) rslt.getModel().arima()).toArray())
-                .regarima(rm)
-                .parametersCovariance(rslt.getMax().getHessian())
-                .score(rslt.getMax().getGradient())
-                .statistics(rslt.statistics(0))
-                .outliers(o)
-                .linearized(rslt.linearizedSeries().toArray())
-                .build();
         
+        demetra.modelling.regarima.RegArimaEstimation<FractionalAirline> re = jdplus.regarima.ApiUtility.toApi(rslt,s->toApi(spec, mapping, (ArimaModel)s));
+        return new FractionalAirlineEstimation(re, o);
+        
+    }
+    
+    private static demetra.highfreq.FractionalAirline toApi(FractionalAirlineSpec spec, MultiPeriodicAirlineMapping mapping, ArimaModel arima ){
+              double[] parameters = mapping.parametersOf(arima).toArray();
+        return new demetra.highfreq.FractionalAirline(spec.getPeriodicities(), parameters, spec.isAdjustToInt());
+  
     }
 
     private static IOutlierFactory[] factories(String[] code) {

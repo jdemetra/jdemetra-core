@@ -18,7 +18,6 @@ package jdplus.likelihood;
 
 import jdplus.data.DataBlock;
 import demetra.design.Development;
-import demetra.likelihood.Likelihood;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.matrices.Matrix;

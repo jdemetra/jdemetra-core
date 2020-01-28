@@ -17,7 +17,7 @@
 package jdplus.regarima.regular;
 
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import jdplus.stats.tests.NiidTests;
 import demetra.data.DoubleSeq;

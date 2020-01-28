@@ -19,7 +19,7 @@ package jdplus.regarima.internal;
 import jdplus.regarima.RegArmaModel;
 import jdplus.arima.IArimaModel;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.functions.IFunction;
 import jdplus.math.functions.IFunctionPoint;
 import jdplus.math.functions.ssq.ISsqFunction;

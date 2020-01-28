@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 National Bank of Belgium.
+ * Copyright 2020 National Bank of Belgium.
  *
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -17,13 +17,20 @@
 package demetra.data;
 
 /**
- *
+ * 
  * @author Jean Palate
  */
 @lombok.Value
+@lombok.AllArgsConstructor(access=lombok.AccessLevel.PRIVATE)
 public class ParameterSpec {
     
-    private double value, stde;
+    /**
+     * Value of the parameter
+     */
+    private double value;
+    /**
+     * Type of the parameter. Should be undefined, initial or fixed 
+     */
     private ParameterType type;
     
     public static ParameterSpec undefined(){
@@ -31,11 +38,11 @@ public class ParameterSpec {
     }
     
     public static ParameterSpec fixed(double value){
-        return new ParameterSpec(value, 0, ParameterType.Fixed);
+        return new ParameterSpec(value, ParameterType.Fixed);
     }
     
     public static ParameterSpec initial(double value){
-        return new ParameterSpec(value, 0, ParameterType.Initial);
+        return new ParameterSpec(value, ParameterType.Initial);
     }
     
     public static ParameterSpec[] make(int n){
@@ -45,5 +52,5 @@ public class ParameterSpec {
         return all;
     }
 
-    private static final ParameterSpec UNDEFINED =new ParameterSpec(0,0,ParameterType.Undefined);
+    private static final ParameterSpec UNDEFINED =new ParameterSpec(0,ParameterType.Undefined);
 }

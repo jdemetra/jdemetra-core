@@ -16,7 +16,7 @@
  */
 package jdplus.ssf.likelihood;
 
-import demetra.likelihood.DiffuseConcentratedLikelihood;
+import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.math.functions.IParametersDomain;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.ssf.univariate.ISsf;

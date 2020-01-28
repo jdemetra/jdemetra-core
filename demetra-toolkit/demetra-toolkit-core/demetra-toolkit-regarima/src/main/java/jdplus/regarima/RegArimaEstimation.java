@@ -22,7 +22,7 @@ import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Development;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.sarima.SarimaModel;

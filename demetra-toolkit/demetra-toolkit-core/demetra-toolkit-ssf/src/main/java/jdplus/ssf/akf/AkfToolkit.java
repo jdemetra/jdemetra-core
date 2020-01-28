@@ -24,7 +24,7 @@ import jdplus.ssf.univariate.ILikelihoodComputer;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.OrdinaryFilter;
-import demetra.likelihood.Likelihood;
+import jdplus.likelihood.Likelihood;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.StateStorage;
 import jdplus.ssf.ckms.CkmsDiffuseInitializer;

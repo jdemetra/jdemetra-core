@@ -27,9 +27,9 @@ import demetra.data.ParameterType;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public class Parameter implements Cloneable, Comparable<Parameter> {
+public final class Parameter implements Cloneable, Comparable<Parameter> {
 
-    private double value, stde;
+    private double value;
     private ParameterType type;
 
     private static final String EMPTY="";
@@ -49,6 +49,10 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
             }
         }
         return p;
+    }
+    
+    public static Parameter clone(Parameter p){
+        return p == null ? null : p.clone();
     }
 
     /**
@@ -240,6 +244,11 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
         }
     }
 
+    public void copy(Parameter mu) {
+        this.value=mu.value;
+        this.type=mu.type;
+    }
+
     @Override
     public int compareTo(Parameter p) {
         int r = Double.compare(value, p.value);
@@ -256,20 +265,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
     }
     
     public boolean equals(Parameter other) {
-        return value == other.value && type == other.type
-                && stde == other.stde;
-    }
-
-    // / <summary>
-    // / 
-    // / </summary>
-    // / <remarks>0 by default.</remarks>
-    /**
-     * Gets the standard error of the parameter. Used only if the parameter has been estimated.
-     * @return The standard error (or 0 if unused).
-     */
-    public double getStde() {
-        return stde;
+        return value == other.value && type == other.type;
     }
 
     /**
@@ -297,14 +293,6 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
     }
 
     /**
-     * Sets the standard error of the parameter
-     * @param value The standard error.
-     */
-    public void setStde(double value) {
-        stde = value;
-    }
-
-    /**
      * Sets the type of the parameter. Settings the type of a parameter can change 
      * its value (set to 0 if undefined) or its standard deviation 
      * (set to 0 if not estimated)
@@ -314,10 +302,7 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
         type = value;
         if (type == ParameterType.Undefined) {
             this.value = 0;
-            stde = 0;
-        } else if (type != ParameterType.Estimated && type != ParameterType.Derived) {
-            stde = 0;
-        }
+        } 
     }
 
     /**
@@ -359,10 +344,8 @@ public class Parameter implements Cloneable, Comparable<Parameter> {
         builder.append(new Formatter().format(fmt, value).toString());
         if (type == ParameterType.Fixed)
             builder.append('f');
-        else if (stde > 0) {
-            builder.append(" (").append(new Formatter().format(fmt, stde).toString()).append(')');
-        }
         return builder.toString();
     }
+
 
 }

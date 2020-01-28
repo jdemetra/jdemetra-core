@@ -20,7 +20,7 @@ import demetra.design.Immutable;
 import demetra.design.BuilderPattern;
 import demetra.math.Constants;
 import demetra.data.DoubleSeq;
-import demetra.likelihood.Likelihood;
+import jdplus.likelihood.Likelihood;
 
 /**
  * The diffuse likelihood follows the definition provided in the paper:

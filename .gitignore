@@ -50,3 +50,15 @@ demetra-io-core/target/
 /demetra-highfreq/demetra-highfreq-io/target/
 /demetra-benchmarking/demetra-benchmarking-io/target/
 
+/demetra-highfreq - Copy/demetra-highfreq-api/target/
+/demetra-highfreq - Copy/demetra-highfreq-core/target/
+/demetra-highfreq - Copy/demetra-highfreq-io/target/
+/demetra-highfreq - Copy/demetra-highfreq-r/target/
+/demetra-businesscycle/demetra-highfreq-api/target/
+/demetra-businesscycle/demetra-highfreq-core/target/
+/demetra-businesscycle/demetra-highfreq-io/target/
+/demetra-businesscycle/demetra-highfreq-r/target/
+/demetra-businesscycle/demetra-businesscycle-core/target/
+/demetra-businesscycle/demetra-businesscycle-io/target/
+/demetra-businesscycle/demetra-businesscycle-r/target/
+/demetra-businesscycle/demetra-businesscycle-api/target/

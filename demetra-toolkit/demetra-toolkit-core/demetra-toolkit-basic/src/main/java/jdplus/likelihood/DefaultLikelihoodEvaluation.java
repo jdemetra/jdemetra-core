@@ -19,7 +19,6 @@ package jdplus.likelihood;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import demetra.data.DoubleSeq;
-import demetra.likelihood.Likelihood;
 
 /**
  *

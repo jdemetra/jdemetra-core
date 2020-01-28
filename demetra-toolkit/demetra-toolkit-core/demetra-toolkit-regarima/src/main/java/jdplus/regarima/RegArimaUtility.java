@@ -22,7 +22,7 @@ import jdplus.arima.StationaryTransformation;
 import internal.jdplus.arima.FastKalmanFilter;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
-import demetra.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
@@ -36,7 +36,7 @@ import jdplus.regsarima.internal.HannanRissanenInitializer;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
-import demetra.likelihood.Likelihood;
+import jdplus.likelihood.Likelihood;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 
 /**

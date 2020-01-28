@@ -17,7 +17,6 @@
 package demetra.linearmodel;
 
 import demetra.design.Development;
-import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
 
 /**

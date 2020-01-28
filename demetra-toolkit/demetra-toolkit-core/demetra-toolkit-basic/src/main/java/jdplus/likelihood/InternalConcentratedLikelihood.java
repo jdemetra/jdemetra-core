@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.likelihood;
+package jdplus.likelihood;
 
 import demetra.design.Immutable;
 import demetra.math.Constants;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
-import demetra.math.matrices.MatrixType;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -38,11 +38,11 @@ final class InternalConcentratedLikelihood implements ConcentratedLikelihood {
     private final double ll, ssqerr, ldet;
     private final double[] res;
     private final double[] b;
-    private final MatrixType bvar;
+    private final Matrix bvar;
     private final boolean scalingFactor;
 
     InternalConcentratedLikelihood(final int n, final double ssqerr, final double ldet, final double[] res,
-            final double[] b, final MatrixType bvar, final boolean scalingFactor) {
+            final double[] b, final Matrix bvar, final boolean scalingFactor) {
         this.n = n;
         this.ldet = ldet;
         this.ssqerr = ssqerr;
@@ -115,9 +115,9 @@ final class InternalConcentratedLikelihood implements ConcentratedLikelihood {
 
     @Override
     @NonNull
-    public MatrixType unscaledCovariance() {
+    public Matrix unscaledCovariance() {
         if (bvar == null) {
-            return MatrixType.EMPTY;
+            return Matrix.EMPTY;
         } else {
             return bvar;
         }
@@ -133,6 +133,7 @@ final class InternalConcentratedLikelihood implements ConcentratedLikelihood {
         return ssqerr;
     }
 
+    @Override
     public int degreesOfFreedom() {
         return n - nx();
     }

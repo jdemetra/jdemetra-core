@@ -23,7 +23,7 @@ import jdplus.ssf.StateInfo;
 import jdplus.ssf.akf.AugmentedState;
 import jdplus.ssf.dk.sqrt.IDiffuseSquareRootFilteringResults;
 import jdplus.ssf.univariate.PredictionErrorDecomposition;
-import demetra.likelihood.Likelihood;
+import jdplus.likelihood.Likelihood;
 
 /**
  *

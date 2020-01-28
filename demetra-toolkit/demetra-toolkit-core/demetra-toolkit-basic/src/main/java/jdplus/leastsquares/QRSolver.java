@@ -17,11 +17,8 @@
 package jdplus.leastsquares;
 
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleSeqCursor;
 import demetra.math.Constants;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.CPointer;
-import jdplus.math.matrices.DataPointer;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
 import jdplus.math.matrices.decomposition.Householder2;
