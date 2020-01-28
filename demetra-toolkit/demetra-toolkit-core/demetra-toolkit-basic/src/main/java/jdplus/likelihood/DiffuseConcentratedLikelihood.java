@@ -19,6 +19,7 @@ package jdplus.likelihood;
 import demetra.design.BuilderPattern;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
+import demetra.likelihood.LikelihoodStatistics;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -119,6 +120,15 @@ public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
     @Override
     default int degreesOfFreedom(){
         return dim()-nx()-ndiffuse();
+    }
+    
+    default LikelihoodStatistics stats(double llcorrection, int nparams) {
+        return LikelihoodStatistics.statistics(logLikelihood(), dim())
+                .llAdjustment(llcorrection)
+                .differencingOrder(ndiffuse())
+                .parametersCount((nparams) + nx() + 1)
+                .ssq(ssq())
+                .build();
     }
 
 }

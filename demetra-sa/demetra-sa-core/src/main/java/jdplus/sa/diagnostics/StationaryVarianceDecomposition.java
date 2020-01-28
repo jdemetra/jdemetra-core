@@ -91,17 +91,18 @@ public class StationaryVarianceDecomposition {
             cyclelen = len;
         }
 
-    public static double defaultLambda(double ylen, int freq) {
-        double w = 2 * Math.PI / (freq * ylen);
-        double x = 1 - Math.cos(w);
-        return .75 / (x * x);
-    }
+        public static double defaultLambda(double ylen, int freq) {
+            double w = 2 * Math.PI / (freq * ylen);
+            double x = 1 - Math.cos(w);
+            return .75 / (x * x);
+        }
+
         @Override
         public TsData calcLongTermTrend(TsData s) {
-       Polynomial D = UnitRoots.D(1), D2 = D.times(D);
-       double lambda=defaultLambda(cyclelen, s.getAnnualFrequency());
-        ArimaModel i2 = new ArimaModel(BackFilter.ONE, new BackFilter(D2), BackFilter.ONE, 1);
-        ArimaModel wn = new ArimaModel(BackFilter.ONE, BackFilter.ONE, BackFilter.ONE, lambda);
+            Polynomial D = UnitRoots.D(1), D2 = D.times(D);
+            double lambda = defaultLambda(cyclelen, s.getAnnualFrequency());
+            ArimaModel i2 = new ArimaModel(BackFilter.ONE, new BackFilter(D2), BackFilter.ONE, 1);
+            ArimaModel wn = new ArimaModel(BackFilter.ONE, BackFilter.ONE, BackFilter.ONE, lambda);
             UcarimaModel ucm = UcarimaModel.builder()
                     .add(i2)
                     .add(wn)

@@ -11,14 +11,11 @@ import demetra.information.InformationMapping;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.ParamValidation;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
-import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.descriptors.arima.SarimaDescriptor;
-import demetra.descriptors.stats.DiffuseConcentratedLikelihoodDescriptor;
-import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
@@ -39,10 +36,10 @@ import jdplus.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import demetra.math.matrices.MatrixType;
+import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
+import demetra.likelihood.LikelihoodStatistics;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.ApiUtility;
-import jdplus.ssf.StateComponent;
 import jdplus.ssf.univariate.Ssf;
 
 /**
@@ -69,8 +66,8 @@ public class TimeVaryingRegression {
         Matrix coefficients;
         Matrix coefficientsStde;
         SarimaModel arima0, arima;
-        DiffuseConcentratedLikelihood ll0;
-        DiffuseConcentratedLikelihood ll;
+        LikelihoodStatistics ll0;
+        LikelihoodStatistics ll;
         double nvar;
 
         private static final String ARIMA0 = "arima0", LL0 = "likelihood0",
@@ -80,11 +77,11 @@ public class TimeVaryingRegression {
 
         static {
             MAPPING.delegate(ARIMA0,SarimaDescriptor.getMapping(), r ->  ApiUtility.toApi(r.getArima0(), null));
-            MAPPING.delegate(LL0, DiffuseConcentratedLikelihoodDescriptor.getMapping(), r -> r.getLl0());
+            MAPPING.delegate(LL0, LikelihoodStatisticsDescriptor.getMapping(), r -> r.getLl0());
             MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> ApiUtility.toApi(r.getArima(), null));
-            MAPPING.delegate(LL, DiffuseConcentratedLikelihoodDescriptor.getMapping(), r -> r.getLl());
-            MAPPING.set("aic0", Double.class, r -> r.getLl0().AIC(2));
-            MAPPING.set("aic", Double.class, r -> r.getLl().AIC(3));
+            MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.getLl());
+            MAPPING.set("aic0", Double.class, r -> r.getLl0().getAIC());
+            MAPPING.set("aic", Double.class, r -> r.getLl().getAIC());
             MAPPING.set("tdvar", Double.class, r -> r.getNvar());
             MAPPING.set(COEFF, Matrix.class, r -> r.getCoefficients());
             MAPPING.set(STDCOEFF, Matrix.class, r -> r.getCoefficientsStde());
@@ -195,8 +192,8 @@ public class TimeVaryingRegression {
                 .domain(s.getDomain())
                 .arima0(arima0)
                 .arima(arima)
-                .ll0(rfn0.getLikelihood())
-                .ll(rfn.getLikelihood())
+                .ll0(rfn0.getLikelihood().stats(0, 2))
+                .ll(rfn.getLikelihood().stats(0, 3))
                 .nvar(air.regVariance)
                 .variables(mtd)
                 .coefficients(c)

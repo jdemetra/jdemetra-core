@@ -17,7 +17,7 @@
 package demetra.r;
 
 import demetra.data.Doubles;
-import demetra.descriptors.stats.DiffuseConcentratedLikelihoodDescriptor;
+import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
 import demetra.information.InformationMapping;
 import jdplus.math.functions.IFunctionDerivatives;
 import jdplus.math.functions.IFunctionPoint;
@@ -60,6 +60,7 @@ public class StsEstimation {
         DiffuseConcentratedLikelihood likelihood;
         Matrix parametersCovariance;
         double[] score;
+        int nparams;
 
         @Override
         public boolean contains(String id) {
@@ -103,7 +104,7 @@ public class StsEstimation {
             MAPPING.set(S, TsData.class, source -> source.getS());
             MAPPING.set(I, TsData.class, source -> source.getI());
             MAPPING.set(SA, TsData.class, source -> subtract(source.getY(), source.getS()));
-            MAPPING.delegate(LL, DiffuseConcentratedLikelihoodDescriptor.getMapping(), r -> r.getLikelihood());
+            MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.getLikelihood().stats(0, r.getNparams()));
             MAPPING.set(PCOV, Matrix.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
         }
@@ -181,6 +182,7 @@ public class StsEstimation {
                 .i(add(n, c))
                 .parametersCovariance(hessian)
                 .score(score)
+                .nparams(score.length)
                 .build();
     }
 
