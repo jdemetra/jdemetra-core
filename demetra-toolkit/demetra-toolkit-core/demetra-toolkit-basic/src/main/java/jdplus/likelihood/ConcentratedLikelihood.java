@@ -21,7 +21,7 @@ import demetra.design.Development;
 import demetra.eco.EcoException;
 import demetra.data.DoubleSeq;
 import demetra.design.BuilderPattern;
-import demetra.math.matrices.MatrixType;
+import jdplus.math.matrices.Matrix;
 
 /**
  * This interface represents the concentrated likelihood of a linear regression
@@ -46,7 +46,7 @@ public interface ConcentratedLikelihood extends Likelihood {
         private double ssqerr, ldet;
         private double[] res;
         private double[] b = B_EMPTY;
-        private MatrixType bvar;
+        private Matrix bvar;
         private boolean scalingFactor = true;
 
         private Builder() {
@@ -102,7 +102,7 @@ public interface ConcentratedLikelihood extends Likelihood {
             return this;
         }
 
-        public Builder unscaledCovariance(MatrixType var) {
+        public Builder unscaledCovariance(Matrix var) {
             bvar = var;
             return this;
         }
@@ -112,6 +112,7 @@ public interface ConcentratedLikelihood extends Likelihood {
         }
 
     }
+
     /**
      * The coefficients of the regression variables
      *
@@ -132,21 +133,21 @@ public interface ConcentratedLikelihood extends Likelihood {
      *
      * @return
      */
-    MatrixType unscaledCovariance();
+    Matrix unscaledCovariance();
 
-    default MatrixType covariance(int nhp, boolean unbiased) {
+    default Matrix covariance(int nhp, boolean unbiased) {
 
         if (nx() == 0) {
-            return MatrixType.EMPTY;
+            return Matrix.EMPTY;
         }
-        
-        double[] v = unscaledCovariance().toArray();
+
+        Matrix v = unscaledCovariance().deepClone();
         int ndf = unbiased ? dim() - nx() - nhp : dim();
-        double sig2=ssq()/ndf;
-        for (int i=0; i<v.length; ++i)
-            v[i]*=sig2;
-        return MatrixType.of(v, nx(), nx());
+        double sig2 = ssq() / ndf;
+        v.mul(sig2);
+        return v;
     }
+
     /**
      * Number of regression variables
      *
@@ -155,9 +156,9 @@ public interface ConcentratedLikelihood extends Likelihood {
     default int nx() {
         return coefficients().length();
     }
-    
-    default int degreesOfFreedom(){
-        return dim()-nx();
+
+    default int degreesOfFreedom() {
+        return dim() - nx();
     }
 
     /**
@@ -205,12 +206,15 @@ public interface ConcentratedLikelihood extends Likelihood {
      * when the likelihood contains a scaling factor. In the other case,
      * the user should use the corresponding ser() method.
      * When it is defined T(i) = coefficient(i)/ser(i)
-     * @param ix The 0-based position of the variable. 0 for mean correction, if any
-     * @param nhp The number of hyper-parameters; used to correct the degrees 
+     *
+     * @param ix The 0-based position of the variable. 0 for mean correction, if
+     * any
+     * @param nhp The number of hyper-parameters; used to correct the degrees
      * of freedom (unused if we use the ML (biased) estimator.
-     * @param unbiased True if the estimator of the scaling factor is unbiased. False
+     * @param unbiased True if the estimator of the scaling factor is unbiased.
+     * False
      * if we use the (biased) ML estimator.
-     * @return 
+     * @return
      */
     default double tstat(int ix, int nhp, boolean unbiased) {
         if (!isScalingFactor()) {

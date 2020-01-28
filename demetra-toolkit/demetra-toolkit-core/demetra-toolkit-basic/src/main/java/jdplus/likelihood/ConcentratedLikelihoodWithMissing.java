@@ -23,7 +23,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.data.DoublesMath;
-import demetra.math.matrices.MatrixType;
+import jdplus.math.matrices.Matrix;
 
 /**
  * This class represents the concentrated likelihood of a linear regression
@@ -49,7 +49,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
         private double ssqerr, ldet;
         private double[] res;
         private double[] b = B_EMPTY;
-        private MatrixType bvar;
+        private Matrix bvar;
         private boolean scalingFactor = true;
 
         private Builder() {
@@ -119,7 +119,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
             return this;
         }
 
-        public Builder unscaledCovariance(MatrixType var) {
+        public Builder unscaledCovariance(Matrix var) {
             bvar = var;
             return this;
         }
@@ -137,11 +137,11 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
     private final double ll, ssqerr, ldet;
     private final double[] res;
     private final double[] b;
-    private final MatrixType bvar;
+    private final Matrix bvar;
     private final boolean scalingFactor;
 
     private ConcentratedLikelihoodWithMissing(final int n, final int nmissing, final double ssqerr, final double ldet, final double[] res,
-            final double[] b, final MatrixType bvar, final boolean scalingFactor) {
+            final double[] b, final Matrix bvar, final boolean scalingFactor) {
         this.n = n;
         this.nmissing = nmissing;
         this.ldet = ldet;
@@ -239,9 +239,9 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
 
     @Override
     @NonNull
-    public MatrixType unscaledCovariance() {
+    public Matrix unscaledCovariance() {
         if (bvar == null) {
-            return MatrixType.EMPTY;
+            return Matrix.EMPTY;
         }
         if (nmissing == 0) {
             return bvar;
@@ -280,7 +280,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
             }
         }
         double[] nb = null;
-        MatrixType nbvar = null;
+        Matrix nbvar = null;
         if (b != null) {
             nb = new double[b.length];
             if (xfactor == null) {
@@ -294,7 +294,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
                 for (int i = 0; i < b.length; ++i) {
                     nb[i] = b[i] * xfactor[i] / yfactor;
                 }
-                MatrixType.Mutable tmp = MatrixType.Mutable.copyOf(bvar);
+                Matrix tmp = bvar.deepClone();
                 for (int i = 0; i < b.length; ++i) {
                     double ifactor = xfactor[i];
                     for (int j = 0; j < i; ++j) {
@@ -304,7 +304,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
                     }
                     tmp.apply(i, i, x -> x * ifactor * ifactor);
                 }
-                nbvar=tmp.unmodifiable();
+                nbvar=tmp;
             }
         }
         double nldet = ldet;

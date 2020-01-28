@@ -5,6 +5,7 @@
  */
 package demetra.modelling.regarima;
 
+import demetra.data.DoubleSeqCursor;
 import demetra.data.MissingValueEstimation;
 import demetra.data.ParameterEstimation;
 import demetra.data.ParametersEstimation;
@@ -27,7 +28,7 @@ public class RegArimaEstimation<S> {
     @NonNull 
     private S arima;
     /**
-     * Estimated parameters of the stochastic model
+     * Parameters of the (estimated) stochastic model
      */
     private ParametersEstimation parameters;
     
@@ -63,4 +64,21 @@ public class RegArimaEstimation<S> {
      * Likelihood of the model.
      */
     private LikelihoodStatistics likelihood;
+    
+    public double[] linearized(){
+        double[] l=y.clone();
+        double[] b=coefficients.getValues();
+        if (b == null)
+            return l;
+        for (int i=0; i<b.length; ++i){
+            double c=b[i];
+            if (c != 0){
+                DoubleSeqCursor cursor = X.column(i).cursor();
+                for (int j=0; j<l.length; ++j){
+                    l[j]-=c*cursor.getAndNext();
+                }
+            }
+        }
+        return l;
+    }
 }

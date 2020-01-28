@@ -42,6 +42,7 @@
         <module>demetra-highfreq</module>
         <module>jdr</module>
         <module>demetra-sa-experimental</module>
+        <module>demetra-businesscycle</module>
     </modules>
 	
     <dependencyManagement>

@@ -125,10 +125,6 @@ public class FractionalAirlineProcessor{
                     .s(ds.item(pos[1]).toArray())
                     .n(ds.item(pos[0]).toArray())
                     .ucarima(ucmt)
-                    .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
-                    .parameters(p)
-                    .arima(ApiUtility.toApi(arima, "airline"))
-                    .statistics(rslt.statistics(0))
                     .build());
         } else {
             return new DecompositionResults(FractionalAirlineDecomposition.builder()
@@ -137,10 +133,6 @@ public class FractionalAirlineProcessor{
                     .s(ds.item(pos[1]).toArray())
                     .i(ds.item(pos[2]).toArray())
                     .ucarima(ucmt)
-                    .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
-                    .parameters(p)
-                    .arima(ApiUtility.toApi(arima, "airline"))
-                    .statistics(rslt.statistics(0))
                     .build());
         }
 

@@ -5,7 +5,6 @@
  */
 package demetra.highfreq;
 
-import demetra.arima.ArimaModel;
 import demetra.modelling.OutlierDescriptor;
 import demetra.modelling.regarima.RegArimaEstimation;
 
@@ -14,8 +13,8 @@ import demetra.modelling.regarima.RegArimaEstimation;
  * @author palatej
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
-public class FractionalAirlineModel {
-        RegArimaEstimation<ArimaModel> regarima;
+public class FractionalAirlineEstimation {
+        RegArimaEstimation<FractionalAirline> regarima;
+//        LinearModelDescription model;
         OutlierDescriptor[] outliers;
 }

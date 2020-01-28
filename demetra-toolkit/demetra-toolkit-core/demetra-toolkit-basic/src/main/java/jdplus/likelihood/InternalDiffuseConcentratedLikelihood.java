@@ -22,7 +22,7 @@ import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
 import demetra.math.Constants;
-import demetra.math.matrices.MatrixType;
+import jdplus.math.matrices.Matrix;
 
 /**
  *
@@ -36,12 +36,12 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
     private final int nobs, nd;
     private final double[] res;
     private final double[] b;
-    private final MatrixType bvar;
+    private final Matrix bvar;
     private final boolean legacy;
     private final boolean scalingFactor;
 
     InternalDiffuseConcentratedLikelihood(final int n, final int nd, final double ssqerr, final double ldet, final double lddet,
-            final double[] b, final MatrixType bvar, final double[] res, final boolean legacy, final boolean scalingFactor) {
+            final double[] b, final Matrix bvar, final double[] res, final boolean legacy, final boolean scalingFactor) {
         this.nobs = n;
         this.nd = nd;
         this.ssqerr = ssqerr;
@@ -143,7 +143,7 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
     }
 
     @Override
-    public MatrixType unscaledCovariance() {
+    public Matrix unscaledCovariance() {
         return bvar;
     }
 
@@ -172,7 +172,7 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
             }
         }
         double[] nb = null;
-        MatrixType nbvar = null;
+        Matrix nbvar = null;
         if (b != null) {
             int nx = b.length;
             if (xfactor != null) {
@@ -188,7 +188,7 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
                     }
                     nbv[i * (nx + 1)] *= ifactor * ifactor;
                 }
-                nbvar = MatrixType.of(nbv, nx, nx);
+                nbvar = Matrix.builder(nbv).ncolumns(nx).nrows(nx).build();
             } else if (yfactor != 1) {
                 nb = new double[nx];
                 for (int i = 0; i < nx; ++i) {

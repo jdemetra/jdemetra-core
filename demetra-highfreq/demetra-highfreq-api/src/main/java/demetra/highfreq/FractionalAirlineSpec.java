@@ -16,6 +16,8 @@ import demetra.math.matrices.MatrixType;
 public class FractionalAirlineSpec {
     // series
     private double[] y;
+    private boolean log;
+    
     // regression variables
     private boolean meanCorrection;
     private MatrixType X;
@@ -28,5 +30,6 @@ public class FractionalAirlineSpec {
     private double criticalValue;
     
     // operational
+    private boolean adjustToInt;
     
 }

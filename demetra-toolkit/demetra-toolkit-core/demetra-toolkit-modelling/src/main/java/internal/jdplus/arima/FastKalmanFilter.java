@@ -458,7 +458,7 @@ public class FastKalmanFilter {
                 .ssqErr(ssqerr)
                 .logDeterminant(ldet)
                 .residuals(qr.getE())
-                .unscaledCovariance(bvar.unmodifiable())
+                .unscaledCovariance(bvar)
                 .build();
     }
 
