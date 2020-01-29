@@ -46,7 +46,7 @@ final class SpreadSheetCollectionAssert extends AbstractAssert<SpreadSheetCollec
 
     public SpreadSheetCollectionAssert hasLayout(GridLayout layout) {
         isNotNull();
-        if (!actual.getMeta().getOrDefault("gridLayout", GridLayout.UNKNOWN.name()).equals(layout.name())) {
+        if (!actual.getMeta().getOrDefault(GridLayout.PROPERTY, GridLayout.UNDEFINED.name()).equals(layout.name())) {
             failWithMessage("Expected alignType to be <%s> but was <%s>", layout, actual.getData());
         }
         return this;

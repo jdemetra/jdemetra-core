@@ -33,24 +33,42 @@ import static test.tsprovider.grid.Data.*;
 public class GridReaderTest {
 
     @Test
+    public void testReadEmpty() throws IOException {
+        GridReader x = GridReader.DEFAULT.toBuilder().namePattern("Series ${index}").build();
+
+        assertThat(x.read(EMPTY))
+                .isEqualTo(TsCollection
+                        .builder()
+                        .meta(GridLayout.PROPERTY, VERTICAL.name())
+                        .type(TsInformationType.Data)
+                        .name("")
+                        .build());
+    }
+
+    @Test
     public void testReadHorizontal() throws IOException {
         GridReader x = GridReader.DEFAULT.toBuilder().namePattern("Series ${index}").build();
 
-        for (GridInput o : new GridInput[]{HGRID_WITH_HEADER, HGRID_WITH_DATE_HEADER}) {
-            assertThat(x.read(o)).isEqualTo(of(HORIZONTAL, "S1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
+        for (GridInput o : new GridInput[]{HGRID, HGRID_OVERFLOW, HGRID_NULL_NAME, HGRID_CORNER_LABEL}) {
+            assertThat(x.read(o)).isEqualTo(c(HORIZONTAL, s("S1", MONTH, 2010, 0, 3.14, 4.56, 7.89)));
         }
 
-        assertThat(x.read(HGRID_WITHOUT_HEADER))
-                .isEqualTo(of(HORIZONTAL, "Series 0", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
+        assertThat(x.read(HGRID_UNDERFLOW))
+                .isEqualTo(c(HORIZONTAL, s("S1", MONTH, 2010, 0, 3.14, 4.56)));
 
-        assertThat(x.read(HGRID_WITH_HEADERS))
-                .isEqualTo(TsCollection.builder().meta("gridLayout", HORIZONTAL.name())
+        assertThat(x.read(HGRID_NO_NAME))
+                .isEqualTo(c(HORIZONTAL, s("Series 0", MONTH, 2010, 0, 3.14, 4.56, 7.89)));
+
+        assertThat(x.read(HGRID_MULTI_NAME))
+                .isEqualTo(TsCollection
+                        .builder()
+                        .meta(GridLayout.PROPERTY, HORIZONTAL.name())
                         .type(TsInformationType.Data)
                         .name("")
-                        .data(s("G1\nS1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)))
-                        .data(s("G1\nS2", data(MONTH, 2010, 0, 3, 4, 5)))
-                        .data(s("G2\nS1", data(MONTH, 2010, 0, 7, 8, 9)))
-                        .data(s("S1", data(MONTH, 2010, 0, 0, 1, 2)))
+                        .data(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
+                        .data(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
+                        .data(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
+                        .data(s("S1", MONTH, 2010, 0, 0, 1, 2))
                         .build());
     }
 
@@ -58,59 +76,70 @@ public class GridReaderTest {
     public void testReadVertical() throws IOException {
         GridReader x = GridReader.DEFAULT.toBuilder().namePattern("Series ${index}").build();
 
-        for (GridInput o : new GridInput[]{VGRID_WITH_HEADER, VGRID_WITH_DATE_HEADER}) {
-            assertThat(x.read(o)).isEqualTo(of(VERTICAL, "S1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
+        for (GridInput o : new GridInput[]{VGRID, VGRID_OVERFLOW, VGRID_NULL_NAME, VGRID_CORNER_LABEL}) {
+            assertThat(x.read(o)).isEqualTo(c(VERTICAL, s("S1", MONTH, 2010, 0, 3.14, 4.56, 7.89)));
         }
 
-        assertThat(x.read(VGRID_WITHOUT_HEADER))
-                .isEqualTo(of(VERTICAL, "Series 0", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)));
+        assertThat(x.read(VGRID_UNDERFLOW))
+                .isEqualTo(c(VERTICAL, s("S1", MONTH, 2010, 0, 3.14, 4.56)));
 
-        assertThat(x.read(VGRID_WITH_HEADERS))
-                .isEqualTo(TsCollection.builder().meta("gridLayout", VERTICAL.name())
+        assertThat(x.read(VGRID_NO_NAME))
+                .isEqualTo(c(VERTICAL, s("Series 0", MONTH, 2010, 0, 3.14, 4.56, 7.89)));
+
+        assertThat(x.read(VGRID_MULTI_NAME))
+                .isEqualTo(TsCollection
+                        .builder()
+                        .meta(GridLayout.PROPERTY, VERTICAL.name())
                         .type(TsInformationType.Data)
                         .name("")
-                        .data(s("G1\nS1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)))
-                        .data(s("G1\nS2", data(MONTH, 2010, 0, 3, 4, 5)))
-                        .data(s("G2\nS1", data(MONTH, 2010, 0, 7, 8, 9)))
-                        .data(s("S1", data(MONTH, 2010, 0, 0, 1, 2)))
+                        .data(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
+                        .data(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
+                        .data(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
+                        .data(s("S1", MONTH, 2010, 0, 0, 1, 2))
                         .build());
     }
 
     @Test
-    public void testNameSeparator() {
+    public void testNameSeparator() throws IOException {
         GridReader x = GridReader.DEFAULT.toBuilder().nameSeparator("-").build();
 
-        assertThat(x.read(VGRID_WITH_HEADERS))
-                .isEqualTo(TsCollection.builder().meta("gridLayout", VERTICAL.name())
+        assertThat(x.read(VGRID_MULTI_NAME))
+                .isEqualTo(TsCollection
+                        .builder()
+                        .meta(GridLayout.PROPERTY, VERTICAL.name())
                         .type(TsInformationType.Data)
                         .name("")
-                        .data(s("G1-S1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)))
-                        .data(s("G1-S2", data(MONTH, 2010, 0, 3, 4, 5)))
-                        .data(s("G2-S1", data(MONTH, 2010, 0, 7, 8, 9)))
-                        .data(s("S1", data(MONTH, 2010, 0, 0, 1, 2)))
+                        .data(s("G1-S1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
+                        .data(s("G1-S2", MONTH, 2010, 0, 3, 4, 5))
+                        .data(s("G2-S1", MONTH, 2010, 0, 7, 8, 9))
+                        .data(s("S1", MONTH, 2010, 0, 0, 1, 2))
                         .build());
     }
 
     @Test
-    public void testLayout() {
-        assertThat(GridReader.builder().layout(HORIZONTAL).build().read(HGRID_WITH_HEADERS))
-                .isEqualTo(TsCollection.builder().meta("gridLayout", HORIZONTAL.name())
+    public void testLayout() throws IOException {
+        assertThat(GridReader.builder().layout(HORIZONTAL).build().read(HGRID_MULTI_NAME))
+                .isEqualTo(TsCollection
+                        .builder()
+                        .meta(GridLayout.PROPERTY, HORIZONTAL.name())
                         .type(TsInformationType.Data)
                         .name("")
-                        .data(s("G1\nS1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)))
-                        .data(s("G1\nS2", data(MONTH, 2010, 0, 3, 4, 5)))
-                        .data(s("G2\nS1", data(MONTH, 2010, 0, 7, 8, 9)))
-                        .data(s("S1", data(MONTH, 2010, 0, 0, 1, 2)))
+                        .data(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
+                        .data(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
+                        .data(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
+                        .data(s("S1", MONTH, 2010, 0, 0, 1, 2))
                         .build());
 
-        assertThat(GridReader.builder().layout(VERTICAL).build().read(VGRID_WITH_HEADERS))
-                .isEqualTo(TsCollection.builder().meta("gridLayout", VERTICAL.name())
+        assertThat(GridReader.builder().layout(VERTICAL).build().read(VGRID_MULTI_NAME))
+                .isEqualTo(TsCollection
+                        .builder()
+                        .meta(GridLayout.PROPERTY, VERTICAL.name())
                         .type(TsInformationType.Data)
                         .name("")
-                        .data(s("G1\nS1", data(MONTH, 2010, 0, 3.14, 4.56, 7.89)))
-                        .data(s("G1\nS2", data(MONTH, 2010, 0, 3, 4, 5)))
-                        .data(s("G2\nS1", data(MONTH, 2010, 0, 7, 8, 9)))
-                        .data(s("S1", data(MONTH, 2010, 0, 0, 1, 2)))
+                        .data(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
+                        .data(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
+                        .data(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
+                        .data(s("S1", MONTH, 2010, 0, 0, 1, 2))
                         .build());
     }
 }

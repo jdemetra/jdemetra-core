@@ -17,6 +17,7 @@
 package internal.tsprovider.grid;
 
 import demetra.tsprovider.grid.GridOutput;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -30,7 +31,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 @FunctionalInterface
 public interface InternalValueWriter<T> {
 
-    void write(@NonNull GridOutput grid, int row, int column, @Nullable T value);
+    void write(GridOutput.@NonNull Stream stream, @Nullable T value) throws IOException;
 
     @NonNull
     static <X> InternalValueWriter<X> onStringFormatter(@NonNull Function<X, String> formatter) {
@@ -43,8 +44,8 @@ public interface InternalValueWriter<T> {
     }
 
     @NonNull
-    static InternalValueWriter<Number> onNumber() {
-        return FuncWriter.NUMBER;
+    static InternalValueWriter<Double> onDouble() {
+        return FuncWriter.DOUBLE;
     }
 
     @NonNull
@@ -61,20 +62,20 @@ public interface InternalValueWriter<T> {
         INSTANCE;
 
         @Override
-        public void write(GridOutput grid, int row, int column, Object value) {
-            grid.setValue(row, column, null);
+        public void write(GridOutput.Stream stream, Object value) throws IOException {
+            stream.writeCell(null);
         }
     }
 
     interface FuncWriter<T> extends InternalValueWriter<T>, Function<T, Object> {
 
         @Override
-        default public void write(GridOutput grid, int row, int column, T value) {
-            grid.setValue(row, column, apply(value));
+        default public void write(GridOutput.Stream stream, T value) throws IOException {
+            stream.writeCell(apply(value));
         }
 
         static final FuncWriter<LocalDateTime> DATETIME = o -> o;
-        static final FuncWriter<Number> NUMBER = o -> o;
+        static final FuncWriter<Double> DOUBLE = o -> o;
         static final FuncWriter<String> STRING = o -> o;
 
         static <T> FuncWriter<T> onStringFormatter(Function<T, String> parser) {

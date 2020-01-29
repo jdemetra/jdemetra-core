@@ -16,11 +16,15 @@
  */
 package internal.spreadsheet.grid;
 
+import demetra.tsprovider.grid.GridDataType;
 import ec.util.spreadsheet.Sheet;
 import demetra.tsprovider.grid.GridInput;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -35,8 +39,18 @@ public final class SheetGridInput implements GridInput {
     private final ZoneId zoneId = ZoneId.systemDefault();
 
     @Override
-    public boolean isSupportedDataType(Class<?> dateType) {
-        return isSupportedDataType.test(dateType);
+    public Set<GridDataType> getDataTypes() {
+        EnumSet<GridDataType> dataTypes = EnumSet.noneOf(GridDataType.class);
+        if (isSupportedDataType.test(String.class)) {
+            dataTypes.add(GridDataType.STRING);
+        }
+        if (isSupportedDataType.test(Double.class)) {
+            dataTypes.add(GridDataType.DOUBLE);
+        }
+        if (isSupportedDataType.test(LocalDateTime.class)) {
+            dataTypes.add(GridDataType.LOCAL_DATE_TIME);
+        }
+        return dataTypes;
     }
 
     @Override
@@ -45,22 +59,40 @@ public final class SheetGridInput implements GridInput {
     }
 
     @Override
-    public int getRowCount() {
-        return sheet.getRowCount();
+    public Stream open() throws IOException {
+        return new SheetGridInputStream();
     }
 
-    @Override
-    public int getColumnCount() {
-        return sheet.getColumnCount();
-    }
+    private final class SheetGridInputStream implements GridInput.Stream {
 
-    @Override
-    public Object getValue(int i, int j) {
-        Object result = sheet.getCellValue(i, j);
-        return result instanceof Date ? toDateTime((Date) result) : result;
-    }
+        private int row = -1;
+        private int col = -1;
 
-    private LocalDateTime toDateTime(Date o) {
-        return LocalDateTime.ofInstant(o.toInstant(), zoneId);
+        @Override
+        public boolean readCell() {
+            col++;
+            return col < sheet.getColumnCount();
+        }
+
+        @Override
+        public boolean readRow() {
+            col = -1;
+            row++;
+            return row < sheet.getRowCount();
+        }
+
+        @Override
+        public Object getCell() {
+            Object result = sheet.getCellValue(row, col);
+            return result instanceof Date ? toDateTime((Date) result) : result;
+        }
+
+        @Override
+        public void close() {
+        }
+
+        private LocalDateTime toDateTime(Date o) {
+            return LocalDateTime.ofInstant(o.toInstant(), zoneId);
+        }
     }
 }

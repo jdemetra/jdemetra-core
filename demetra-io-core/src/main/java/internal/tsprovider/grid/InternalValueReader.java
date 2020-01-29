@@ -16,7 +16,6 @@
  */
 package internal.tsprovider.grid;
 
-import demetra.tsprovider.grid.GridInput;
 import java.time.LocalDateTime;
 import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -31,31 +30,34 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public interface InternalValueReader<T> {
 
     @Nullable
-    T read(@NonNull GridInput grid, int row, int column);
+    T read(@Nullable Object obj);
 
     @NonNull
     default InternalValueReader<T> or(@NonNull InternalValueReader<T> fallback) {
-        return compose(this, fallback);
+        return (obj) -> {
+            T result = this.read(obj);
+            return result != null ? result : fallback.read(obj);
+        };
     }
 
     @NonNull
     static <X> InternalValueReader<X> onStringParser(@NonNull Function<String, X> parser) {
-        return FuncReader.onStringParser(parser);
+        return obj -> obj instanceof String ? parser.apply((String) obj) : null;
     }
 
     @NonNull
     static InternalValueReader<LocalDateTime> onDateTime() {
-        return FuncReader.DATETIME;
+        return CastReader.DATETIME;
     }
 
     @NonNull
     static InternalValueReader<Number> onNumber() {
-        return FuncReader.NUMBER;
+        return CastReader.NUMBER;
     }
 
     @NonNull
     static InternalValueReader<String> onString() {
-        return FuncReader.STRING;
+        return CastReader.STRING;
     }
 
     @NonNull
@@ -63,18 +65,11 @@ public interface InternalValueReader<T> {
         return NullReader.INSTANCE;
     }
 
-    static <T> InternalValueReader<T> compose(InternalValueReader<T> main, InternalValueReader<T> fallback) {
-        return (g, r, c) -> {
-            T result = main.read(g, r, c);
-            return result != null ? result : fallback.read(g, r, c);
-        };
-    }
-
     enum NullReader implements InternalValueReader {
         INSTANCE;
 
         @Override
-        public Object read(GridInput grid, int row, int column) {
+        public Object read(Object obj) {
             return null;
         }
 
@@ -84,37 +79,23 @@ public interface InternalValueReader<T> {
         }
     }
 
-    interface FuncReader<T> extends InternalValueReader<T>, Function<Object, T> {
+    @lombok.AllArgsConstructor
+    static final class CastReader<T> implements InternalValueReader<T> {
+
+        private final Class<T> type;
 
         @Override
-        default public T read(GridInput grid, int row, int column) {
-            return apply(grid.getValue(row, column));
+        public T read(Object obj) {
+            return type.isInstance(obj) ? (T) obj : null;
         }
 
         @Override
-        default public InternalValueReader<T> or(InternalValueReader<T> fallback) {
-            if (fallback == NullReader.INSTANCE) {
-                return this;
-            }
-            if (fallback instanceof FuncReader) {
-                return compose(this, (FuncReader<T>) fallback);
-            }
-            return InternalValueReader.super.or(fallback);
+        public InternalValueReader<T> or(InternalValueReader<T> fallback) {
+            return fallback == NullReader.INSTANCE ? this : InternalValueReader.super.or(fallback);
         }
 
-        static final FuncReader<LocalDateTime> DATETIME = o -> o instanceof LocalDateTime ? (LocalDateTime) o : null;
-        static final FuncReader<Number> NUMBER = o -> o instanceof Number ? (Number) o : null;
-        static final FuncReader<String> STRING = o -> o instanceof String ? (String) o : null;
-
-        static <T> FuncReader<T> onStringParser(Function<String, T> parser) {
-            return o -> o instanceof String ? parser.apply((String) o) : null;
-        }
-
-        static <T> FuncReader<T> compose(FuncReader<T> main, FuncReader<T> fallback) {
-            return o -> {
-                T result = main.apply(o);
-                return result != null ? result : fallback.apply(o);
-            };
-        }
+        static final CastReader<LocalDateTime> DATETIME = new CastReader(LocalDateTime.class);
+        static final CastReader<Number> NUMBER = new CastReader(Number.class);
+        static final CastReader<String> STRING = new CastReader(String.class);
     }
 }

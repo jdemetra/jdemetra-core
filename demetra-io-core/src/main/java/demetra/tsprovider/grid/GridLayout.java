@@ -22,5 +22,7 @@ package demetra.tsprovider.grid;
  */
 public enum GridLayout {
 
-    VERTICAL, HORIZONTAL, UNKNOWN
+    VERTICAL, HORIZONTAL, UNDEFINED;
+
+    public static final String PROPERTY = "gridLayout";
 }

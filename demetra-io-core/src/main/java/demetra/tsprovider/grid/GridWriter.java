@@ -17,19 +17,24 @@
 package demetra.tsprovider.grid;
 
 import demetra.design.LombokWorkaround;
+import demetra.design.MightBePromoted;
 import demetra.timeseries.TsDataTable;
 import demetra.timeseries.TsDomain;
 import demetra.tsprovider.Ts;
 import demetra.tsprovider.TsCollection;
 import demetra.tsprovider.util.ObsFormat;
 import internal.tsprovider.grid.InternalValueWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.PrimitiveIterator;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.stream.IntStream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -47,163 +52,215 @@ public final class GridWriter {
     @lombok.NonNull
     private GridLayout layout;
 
-    private boolean includeNames;
+    private boolean ignoreNames;
 
-    private boolean includeDates;
+    private boolean ignoreDates;
+
+    private String cornerLabel;
+
+    private boolean reverseChronology;
+
+    // TODO
+    private Function<TsCollection, TsDataTable.DistributionType> colX = col -> TsDataTable.DistributionType.FIRST;
+
+    // TODO
+    private Function<Ts, TsDataTable.DistributionType> seriesX = series -> TsDataTable.DistributionType.FIRST;
 
     @LombokWorkaround
     public static Builder builder() {
         Builder result = new Builder();
         result.format = ObsFormat.DEFAULT;
-        result.layout = GridLayout.VERTICAL;
-        result.includeNames = true;
-        result.includeDates = true;
+        result.layout = GridLayout.UNDEFINED;
+        result.ignoreNames = false;
+        result.ignoreDates = false;
+        result.cornerLabel = null;
+        result.reverseChronology = false;
         return result;
     }
 
-    public void write(@NonNull TsCollection col, @NonNull GridOutput output) {
-        ValueWriters writers = ValueWriters.of(
-                output::isSupportedDataType,
-                () -> format.dateTimeFormatter()::formatAsString,
-                () -> format.numberFormatter()::formatAsString
-        );
-
-        output.setName(col.getName());
-
-        TsDataTable table = TsDataTable.of(col.getData(), Ts::getData);
+    public void write(@NonNull TsCollection input, @NonNull GridOutput output) throws IOException {
+        TsDataTable table = TsDataTable.of(input.getData(), Ts::getData);
 
         if (table.getDomain().isEmpty()) {
+            try (GridOutput.Stream stream = output.open(input.getName(), 0, 0)) {
+            }
             return;
         }
 
-        IntFunction<String> names = getNames(col);
+        boolean seriesByRow = isSeriesByRow(input);
+
+        int rows = getLength(table, seriesByRow);
+        int columns = getLength(table, !seriesByRow);
+
+        IntFunction<String> names = getNames(input.getData());
         IntFunction<LocalDateTime> dates = getDates(table.getDomain());
-        TsDataTable.Cursor cursor = table.cursor(getDistribution(col));
 
-        switch (layout) {
-            case VERTICAL:
-            case UNKNOWN:
-                writePeriodByRow(cursor, names, dates, output, writers);
-                break;
-            case HORIZONTAL:
-                writeSeriesByRow(cursor, names, dates, output, writers);
-                break;
+        TsDataTable.Cursor cursor = table.cursor(getDistribution(input.getData()));
+
+        try (TypedOutputStream stream = TypedOutputStream.of(output.getDataTypes(), format, output.open(input.getName(), rows, columns))) {
+            if (seriesByRow) {
+                writeSeriesByRow(cursor, stream, names, dates);
+            } else {
+                writePeriodByRow(cursor, stream, names, dates);
+            }
         }
     }
 
-    private void writePeriodByRow(TsDataTable.Cursor c, IntFunction<String> names, IntFunction<LocalDateTime> dates, GridOutput output, ValueWriters writers) {
-        int row = 0;
+    private boolean isSeriesByRow(TsCollection col) {
+        return layout.equals(GridLayout.HORIZONTAL) || peekSeriesByRow(col);
+    }
 
-        if (includeNames) {
-            int column = includeDates ? 1 : 0;
-            for (int series = 0; series < c.getSeriesCount(); series++) {
-                writers.writeString(output, row, column, names.apply(series));
-                column++;
-            }
-            row++;
-        }
+    private int getLength(TsDataTable table, boolean data) {
+        return data
+                ? (table.getData().size() + (!ignoreDates ? 1 : 0))
+                : (table.getDomain().length() + (!ignoreNames ? 1 : 0));
+    }
 
-        for (int period = 0; period < c.getPeriodCount(); period++) {
-            int column = 0;
-            if (includeDates) {
-                writers.writeDateTime(output, row, column, dates.apply(period));
-                column++;
+    private PrimitiveIterator.OfInt getPeriodIterator(TsDataTable.Cursor input) {
+        return reverseChronology
+                ? reverseRange(0, input.getPeriodCount()).iterator()
+                : IntStream.range(0, input.getPeriodCount()).iterator();
+    }
+
+    private void writePeriodByRow(TsDataTable.Cursor input, TypedOutputStream output, IntFunction<String> names, IntFunction<LocalDateTime> dates) throws IOException {
+        writePeriodByRowHead(input, output, names);
+        writePeriodByRowBody(input, output, dates);
+    }
+
+    private void writePeriodByRowHead(TsDataTable.Cursor input, TypedOutputStream output, IntFunction<String> names) throws IOException {
+        if (!ignoreNames) {
+            if (!ignoreDates) {
+                output.writeString(cornerLabel);
             }
-            for (int series = 0; series < c.getSeriesCount(); series++) {
-                c.moveTo(period, series);
-                if (c.getStatus() == TsDataTable.ValueStatus.PRESENT) {
-                    writers.writeNumber(output, row, column, nanToNull(c.getValue()));
-                }
-                column++;
+            for (int series = 0; series < input.getSeriesCount(); series++) {
+                output.writeString(names.apply(series));
             }
-            row++;
+            output.writeEndOfRow();
         }
     }
 
-    private void writeSeriesByRow(TsDataTable.Cursor c, IntFunction<String> names, IntFunction<LocalDateTime> dates, GridOutput output, ValueWriters writers) {
-        int row = 0;
-
-        if (includeDates) {
-            int column = includeNames ? 1 : 0;
-            for (int period = 0; period < c.getPeriodCount(); period++) {
-                writers.writeDateTime(output, row, column, dates.apply(period));
-                column++;
+    private void writePeriodByRowBody(TsDataTable.Cursor input, TypedOutputStream output, IntFunction<LocalDateTime> dates) throws IOException {
+        for (PrimitiveIterator.OfInt periods = getPeriodIterator(input); periods.hasNext();) {
+            int period = periods.nextInt();
+            if (!ignoreDates) {
+                output.writeDateTime(dates.apply(period));
             }
-            row++;
-        }
-
-        for (int series = 0; series < c.getSeriesCount(); series++) {
-            int column = 0;
-            if (includeNames) {
-                writers.writeString(output, row, column, names.apply(series));
-                column++;
+            for (int series = 0; series < input.getSeriesCount(); series++) {
+                writeValue(input, output, period, series);
             }
-            for (int period = 0; period < c.getPeriodCount(); period++) {
-                c.moveTo(period, series);
-                if (c.getStatus() == TsDataTable.ValueStatus.PRESENT) {
-                    writers.writeNumber(output, row, column, nanToNull(c.getValue()));
-                }
-                column++;
-            }
-            row++;
+            output.writeEndOfRow();
         }
     }
 
-    private static Number nanToNull(double value) {
+    private void writeSeriesByRow(TsDataTable.Cursor input, TypedOutputStream output, IntFunction<String> names, IntFunction<LocalDateTime> dates) throws IOException {
+        writeSeriesByRowHead(input, output, dates);
+        writeSeriesByRowBody(input, output, names);
+    }
+
+    private void writeSeriesByRowHead(TsDataTable.Cursor input, TypedOutputStream output, IntFunction<LocalDateTime> dates) throws IOException {
+        if (!ignoreDates) {
+            if (!ignoreNames) {
+                output.writeString(cornerLabel);
+            }
+            for (PrimitiveIterator.OfInt periods = getPeriodIterator(input); periods.hasNext();) {
+                int period = periods.nextInt();
+                output.writeDateTime(dates.apply(period));
+            }
+            output.writeEndOfRow();
+        }
+    }
+
+    private void writeSeriesByRowBody(TsDataTable.Cursor input, TypedOutputStream output, IntFunction<String> names) throws IOException {
+        for (int series = 0; series < input.getSeriesCount(); series++) {
+            if (!ignoreNames) {
+                output.writeString(names.apply(series));
+            }
+            for (PrimitiveIterator.OfInt periods = getPeriodIterator(input); periods.hasNext();) {
+                writeValue(input, output, periods.nextInt(), series);
+            }
+            output.writeEndOfRow();
+        }
+    }
+
+    private void writeValue(TsDataTable.Cursor input, TypedOutputStream output, int period, int series) throws IOException {
+        input.moveTo(period, series);
+        if (input.getStatus() == TsDataTable.ValueStatus.PRESENT) {
+            output.writeDouble(nanToNull(input.getValue()));
+        } else {
+            output.writeDouble(null);
+        }
+    }
+
+    private Double nanToNull(double value) {
         return Double.isNaN(value) ? null : value;
     }
 
-    private static IntFunction<String> getNames(TsCollection col) {
-        return series -> col.getData().get(series).getName();
+    private IntFunction<String> getNames(List<Ts> col) {
+        return seriesIndex -> col.get(seriesIndex).getName();
     }
 
-    private static IntFunction<LocalDateTime> getDates(TsDomain domain) {
-        return series -> domain.get(series).start();
+    private IntFunction<LocalDateTime> getDates(TsDomain domain) {
+        return seriesIndex -> domain.get(seriesIndex).start();
     }
 
-    private static IntFunction<TsDataTable.DistributionType> getDistribution(TsCollection col) {
-        return series -> TsDataTable.DistributionType.FIRST;
+    private IntFunction<TsDataTable.DistributionType> getDistribution(List<Ts> col) {
+        return seriesIndex -> seriesX.apply(col.get(seriesIndex));
     }
 
     @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static final class ValueWriters {
+    private static final class TypedOutputStream implements GridOutput.Stream {
 
-        static ValueWriters of(
-                Predicate<Class<?>> isSupportedDataType,
-                Supplier<Function<LocalDateTime, String>> dateTimeFormatter,
-                Supplier<Function<Number, String>> numberFormatter) {
-
-            boolean stringSupported = isSupportedDataType.test(String.class);
+        static TypedOutputStream of(Set<GridDataType> dataTypes, ObsFormat format, GridOutput.Stream stream) {
+            boolean stringSupported = dataTypes.contains(GridDataType.STRING);
 
             InternalValueWriter<String> string = stringSupported ? InternalValueWriter.onString() : InternalValueWriter.onNull();
 
             InternalValueWriter<LocalDateTime> dateTime
-                    = isSupportedDataType.test(LocalDateTime.class)
+                    = dataTypes.contains(GridDataType.LOCAL_DATE_TIME)
                     ? InternalValueWriter.onDateTime()
-                    : (stringSupported ? InternalValueWriter.onStringFormatter(dateTimeFormatter.get()) : InternalValueWriter.onNull());
+                    : (stringSupported ? InternalValueWriter.onStringFormatter(format.dateTimeFormatter()::formatAsString) : InternalValueWriter.onNull());
 
-            InternalValueWriter<Number> number
-                    = isSupportedDataType.test(Number.class)
-                    ? InternalValueWriter.onNumber()
-                    : (stringSupported ? InternalValueWriter.onStringFormatter(numberFormatter.get()) : InternalValueWriter.onNull());
+            InternalValueWriter<Double> number
+                    = dataTypes.contains(GridDataType.DOUBLE)
+                    ? InternalValueWriter.onDouble()
+                    : (stringSupported ? InternalValueWriter.onStringFormatter(format.numberFormatter()::formatAsString) : InternalValueWriter.onNull());
 
-            return new ValueWriters(string, dateTime, number);
+            return new TypedOutputStream(string, dateTime, number, stream);
         }
 
+        @lombok.NonNull
         private final InternalValueWriter<String> string;
+
+        @lombok.NonNull
         private final InternalValueWriter<LocalDateTime> dateTime;
-        private final InternalValueWriter<Number> number;
 
-        public void writeString(GridOutput grid, int row, int column, String value) {
-            string.write(grid, row, column, value);
+        @lombok.NonNull
+        private final InternalValueWriter<Double> number;
+
+        @lombok.NonNull
+        @lombok.experimental.Delegate
+        private final GridOutput.Stream delegate;
+
+        public void writeString(@Nullable String value) throws IOException {
+            string.write(delegate, value);
         }
 
-        public void writeDateTime(GridOutput grid, int row, int column, LocalDateTime value) {
-            dateTime.write(grid, row, column, value);
+        public void writeDateTime(@Nullable LocalDateTime value) throws IOException {
+            dateTime.write(delegate, value);
         }
 
-        public void writeNumber(GridOutput grid, int row, int column, Number value) {
-            number.write(grid, row, column, value);
+        public void writeDouble(@Nullable Double value) throws IOException {
+            number.write(delegate, value);
         }
+    }
+
+    private static boolean peekSeriesByRow(TsCollection col) {
+        return GridLayout.HORIZONTAL.name().equals(col.getMeta().get(GridLayout.PROPERTY));
+    }
+
+    // https://stackoverflow.com/questions/24010109/java-8-stream-reverse-order/24011264#24011264
+    @MightBePromoted
+    static IntStream reverseRange(int from, int to) {
+        return IntStream.range(from, to).map(i -> to - i + from - 1);
     }
 }
