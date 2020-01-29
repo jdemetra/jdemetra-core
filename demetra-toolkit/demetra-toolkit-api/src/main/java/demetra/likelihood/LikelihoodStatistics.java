@@ -46,6 +46,11 @@ public class LikelihoodStatistics {
             return this;
         }
 
+        public Builder diffuseOrder(int ndiff) {
+            this.neffective -= ndiff;
+            return this;
+        }
+
         public Builder llAdjustment(double adj) {
             this.adj = adj;
             return this;
