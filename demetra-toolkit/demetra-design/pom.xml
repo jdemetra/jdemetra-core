@@ -11,11 +11,6 @@
     <packaging>jar</packaging>
     <name>JD3 - Design</name>
     
-    <properties>
-        <javapoet.version>1.11.1</javapoet.version>
-        <joor-java-8.version>0.9.10</joor-java-8.version>
-    </properties>
-
     <dependencies>
         <!-- compile only -->
         <dependency>
@@ -27,13 +22,6 @@
             <groupId>be.nbb.rd</groupId>
             <artifactId>java-service-processor</artifactId>
             <scope>provided</scope>
-        </dependency>
-        
-        <!-- compile and runtime -->
-        <dependency>
-            <groupId>com.squareup</groupId>
-            <artifactId>javapoet</artifactId>
-            <version>${javapoet.version}</version>
         </dependency>
         
         <!-- test only -->
@@ -50,7 +38,13 @@
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>joor-java-8</artifactId>
-            <version>${joor-java-8.version}</version>
+            <version>0.9.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup</groupId>
+            <artifactId>javapoet</artifactId>
+            <version>1.11.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
