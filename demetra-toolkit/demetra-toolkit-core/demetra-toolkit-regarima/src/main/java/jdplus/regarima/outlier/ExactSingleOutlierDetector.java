@@ -31,9 +31,11 @@ import jdplus.leastsquares.QRSolver;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
+import java.util.function.Supplier;
 import jdplus.leastsquares.QRSolution;
 import static jdplus.math.matrices.GeneralMatrix.transpose;
 import jdplus.math.matrices.Matrix;
+import jdplus.modelling.regression.IOutlierFactory;
 
 /**
  *
@@ -42,38 +44,6 @@ import jdplus.math.matrices.Matrix;
  */
 @Development(status = Development.Status.Preliminary)
 public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOutlierDetector<T> {
-
-    public static class Builder {
-
-        private ArmaFilter filter = null;
-        private ResidualsComputer resComputer = null;
-        private RobustStandardDeviationComputer madComputer = RobustStandardDeviationComputer.mad();
-
-        public Builder armaFilter(@NonNull ArmaFilter filter) {
-            this.filter = filter;
-            return this;
-        }
-
-        public Builder robustStandardDeviationComputer(@NonNull RobustStandardDeviationComputer mad) {
-            this.madComputer = mad;
-            return this;
-        }
-
-        public Builder residualsComputer(@NonNull ResidualsComputer res) {
-            this.resComputer = res;
-            return this;
-        }
-
-        public ExactSingleOutlierDetector build() {
-            ArmaFilter f=filter == null ? new AnsleyFilter() : filter;
-            ResidualsComputer r = resComputer == null ? ResidualsComputer.defaultComputer(f) : resComputer;
-            return new ExactSingleOutlierDetector(madComputer, f, r);
-        }
-    }
-    
-    public static Builder builder(){
-        return new Builder();
-    }
 
     private ArmaFilter filter;
     private final ResidualsComputer resComputer;
@@ -86,22 +56,15 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
      *
      * @param computer
      * @param filter
+     * @param res
      */
-    private ExactSingleOutlierDetector(@NonNull RobustStandardDeviationComputer computer, @NonNull ArmaFilter filter, @NonNull ResidualsComputer res) {
-        super(computer);
-        this.filter = filter;
-        resComputer = res;
+    public ExactSingleOutlierDetector(RobustStandardDeviationComputer computer, ArmaFilter filter, ResidualsComputer res) {
+        super(computer == null ? RobustStandardDeviationComputer.mad() : computer);
+        this.filter = filter == null ? new AnsleyFilter() : filter;
+        resComputer = res == null ? ResidualsComputer.defaultComputer(this.filter) : res;
     }
-
-    public ExactSingleOutlierDetector(RobustStandardDeviationComputer computer, ResidualsComputer resComputer, ArmaFilter filter) {
-        super(computer);
-        if (filter == null) {
-            this.filter = new AnsleyFilter();
-        } else {
-            this.filter = filter;
-        }
-        this.resComputer = resComputer;
-    }
+    
+    
 
     /**
      *

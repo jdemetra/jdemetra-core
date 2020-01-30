@@ -20,10 +20,10 @@ package jdplus.regarima;
 
 import jdplus.arima.IArimaModel;
 import demetra.design.Development;
-import jdplus.regarima.RegArimaModel;
+import jdplus.arima.estimation.IArimaMapping;
 
 /**
- *
+ * 
  * @author Jean Palate
  * @param <M>
  */
@@ -31,10 +31,10 @@ import jdplus.regarima.RegArimaModel;
 @FunctionalInterface
 public interface IRegArimaInitializer<M extends IArimaModel>  {
     /**
-     * 
+     * Initializes a regarima model (first improvement of the parameters of the model)
      * @param regarima
      * @return
      */
-    RegArimaModel<M> initialize(RegArimaModel<M> regarima);
+    RegArimaModel<M> initialize(RegArimaModel<M> regarima, IArimaMapping<M> mapping);
 
 }

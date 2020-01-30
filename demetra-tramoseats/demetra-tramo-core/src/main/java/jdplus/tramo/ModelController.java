@@ -5,12 +5,14 @@
  */
 package jdplus.tramo;
 
+import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.regular.IModelEstimator;
 import jdplus.regarima.regular.ModelDescription;
 import jdplus.regarima.regular.ModelEstimation;
 import jdplus.regarima.regular.PreprocessingModel;
 import jdplus.regarima.regular.ProcessingResult;
 import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.sarima.SarimaModel;
 
 /**
  *
@@ -46,7 +48,7 @@ abstract class ModelController {
      */
     protected boolean checkMean(RegArimaModelling context) {
         ModelDescription desc = context.getDescription();
-        ModelEstimation estimation = context.getEstimation();
+        RegArimaEstimation<SarimaModel> estimation = context.getEstimation();
         if (!desc.isMean()) {
             return true;
         }

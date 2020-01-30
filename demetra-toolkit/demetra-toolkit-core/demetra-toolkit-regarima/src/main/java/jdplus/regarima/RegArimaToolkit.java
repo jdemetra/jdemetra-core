@@ -16,8 +16,8 @@
  */
 package jdplus.regarima;
 
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.sarima.SarimaModel;
 import jdplus.regsarima.GlsSarimaProcessor;
 import jdplus.regsarima.RegSarimaProcessor;
@@ -41,6 +41,10 @@ public class RegArimaToolkit {
     
     RegArimaEstimation<SarimaModel> concentratedLikelihood(RegArimaModel<SarimaModel> regarima, int nparams){
         ConcentratedLikelihoodWithMissing cl = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
-        return new RegArimaEstimation(regarima, cl, nparams);
+        return RegArimaEstimation.<SarimaModel>builder()
+                .model(regarima)
+                .concentratedLikelihood(cl)
+                .nparams(nparams)
+                .build();
     }
 }

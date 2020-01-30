@@ -83,7 +83,7 @@ public class ArimaEstimation {
 
         IntList missings = new IntList();
         jdplus.data.interpolation.AverageInterpolator.cleanMissings(y, missings);
-        RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.builder(SarimaModel.class)
+        RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.<SarimaModel>builder()
                 .y(DoubleSeq.copyOf(y))
                 .arima(arima)
                 .meanCorrection(mean)
@@ -94,8 +94,8 @@ public class ArimaEstimation {
         }
 
         RegArimaEstimation<SarimaModel> rslt = monitor.process(rbuilder.build());
-        return new Results(rslt.getModel(), rslt.getConcentratedLikelihood(), rslt.statistics(0),
-                SymmetricMatrix.inverse(rslt.getMax().getHessian()), rslt.getMax().getGradient());
+        return new Results(rslt.getModel(), rslt.getConcentratedLikelihood(), rslt.statistics(),
+                rslt.getMax().asymptoticCovariance(), rslt.getMax().getScore());
     }
 
     @lombok.Value

@@ -87,14 +87,13 @@ public class EasterDetectionModule implements IRegressionModule {
         int n = easters.length;
         int icur = -1;
         ModelDescription[] desc = new ModelDescription[n];
-        ModelEstimation[] est = new ModelEstimation[n];
+        RegArimaEstimation[] est = new RegArimaEstimation[n];
         IArimaMapping<SarimaModel> mapping = description.getArimaComponent().defaultMapping();
         IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(mapping, true, eps);
 
         ModelDescription refdesc = new ModelDescription(description);
         refdesc.remove("easter");
-        ModelEstimation refest = refdesc.estimate(processor);
-        RegArimaEstimation<SarimaModel> process = processor.process(refdesc.regarima());
+        RegArimaEstimation<SarimaModel> refest = refdesc.estimate(processor);
 
         for (int i = 0; i < n; ++i) {
             ModelDescription curDesc = new ModelDescription(refdesc);

@@ -34,7 +34,7 @@ public class RegSarimaProcessorTest {
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();
-        RegArimaModel model = RegArimaModel.builder(SarimaModel.class)
+        RegArimaModel model = RegArimaModel.<SarimaModel>builder()
                 .y(DoubleSeq.of(Data.PROD))
                 .arima(arima)
                 .meanCorrection(true)

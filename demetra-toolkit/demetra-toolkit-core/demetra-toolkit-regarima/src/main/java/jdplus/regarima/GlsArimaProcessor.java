@@ -16,19 +16,17 @@
  */
 package jdplus.regarima;
 
+import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.arima.IArimaModel;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import jdplus.likelihood.LogLikelihoodFunction;
-import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
-import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
+import demetra.data.DoubleSeq;
 import jdplus.regarima.internal.RegArmaEstimation;
 import jdplus.regarima.internal.RegArmaProcessor;
-import java.util.function.Function;
-import demetra.data.DoubleSeq;
 
 /**
  *
@@ -143,7 +141,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
     public RegArimaModel<M> initialize(RegArimaModel<M> regs) {
         RegArimaModel<M> start = null;
         if (initializer != null) {
-            start = initializer.initialize(regs);
+            start = initializer.initialize(regs, mapping);
         }
         if (start == null) {
             return RegArimaModel.of(regs, mapping.getDefault());
@@ -154,7 +152,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
 
     public RegArimaEstimation<M> finalize(RegArimaEstimation<M> estimation) {
         if (finalizer != null) {
-            return finalizer.finalize(estimation);
+            return finalizer.finalize(estimation, mapping);
         } else {
             return estimation;
         }
@@ -172,8 +170,12 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
         M nmodel = mapping.map(DoubleSeq.of(rslt.getParameters()));
         RegArimaModel<M> nregs = regs.toBuilder().arima(nmodel).build();
 
-        return new RegArimaEstimation(nregs, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nregs),
-                new LogLikelihoodFunction.Point(RegArimaEstimation.concentratedLogLikelihoodFunction(mapping, regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()));
+        return RegArimaEstimation.<M>builder()
+                .model(nregs)
+                .concentratedLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nregs))
+                .max(new LogLikelihoodFunction.Point(RegArimaEstimation.concentratedLogLikelihoodFunction(mapping, regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()))
+                .nparams(stmapping.getDim())
+                .build();
     }
 
 }

@@ -40,7 +40,7 @@ public class ResidualsDiagnostics implements Diagnostics {
 
     private NiidTests stats;
     private Periodogram periodogram;
-    private int freq;
+    private int period;
 
     static ResidualsDiagnostics create(ResidualsDiagnosticsConfiguration config, PreprocessingModel regarima) {
         try {
@@ -72,8 +72,15 @@ public class ResidualsDiagnostics implements Diagnostics {
     private boolean testRegarima(PreprocessingModel regarima) {
         try {
             DoubleSeq res = RegArimaUtility.fullResiduals(regarima.getDescription().regarima(), regarima.getEstimation().getConcentratedLikelihood());
-            freq = regarima.getDescription().getAnnualFrequency();
-            stats = regarima.getEstimation().getTests();
+            period = regarima.getDescription().getAnnualFrequency();
+            stats = NiidTests.builder()
+                    .data(regarima.getEstimation().getConcentratedLikelihood().e())
+                    .period(period)
+                    .k(RegArimaUtility.defaultLjungBoxLength(period))
+                    .ks(2)
+                    .seasonal(period > 1)
+                    .hyperParametersCount(regarima.getEstimation().getNparams())
+                    .build();
             periodogram = Periodogram.of(res);
             return true;
         } catch (Exception ex) {
@@ -131,7 +138,7 @@ public class ResidualsDiagnostics implements Diagnostics {
                 if (periodogram == null) {
                     return ProcQuality.Undefined;
                 }
-                double[] tdfreqs = Periodogram.getTradingDaysFrequencies(freq);
+                double[] tdfreqs = Periodogram.getTradingDaysFrequencies(period);
                 double[] p = periodogram.getP();
                 double xmax = 0;
                 double dstep = periodogram.getIntervalInRadians();
@@ -162,10 +169,10 @@ public class ResidualsDiagnostics implements Diagnostics {
                 if (periodogram == null) {
                     return ProcQuality.Undefined;
                 }
-                double[] seasfreqs = new double[(freq - 1) / 2];
+                double[] seasfreqs = new double[(period - 1) / 2];
                 // seas freq in radians...
                 for (int i = 0; i < seasfreqs.length; ++i) {
-                    seasfreqs[i] = (i + 1) * 2 * Math.PI / freq;
+                    seasfreqs[i] = (i + 1) * 2 * Math.PI / period;
                 }
 
                 double[] p = periodogram.getP();
@@ -219,7 +226,7 @@ public class ResidualsDiagnostics implements Diagnostics {
                     break;
                 case ResidualsDiagnosticsFactory.TD_PEAK:
                     if (periodogram != null) {
-                        double[] tdfreqs = Periodogram.getTradingDaysFrequencies(freq);
+                        double[] tdfreqs = Periodogram.getTradingDaysFrequencies(period);
                         double[] p = periodogram.getP();
                         double xmax = 0;
                         double dstep = periodogram.getIntervalInRadians();
@@ -239,10 +246,10 @@ public class ResidualsDiagnostics implements Diagnostics {
                     break;
                 case ResidualsDiagnosticsFactory.S_PEAK:
                     if (periodogram != null) {
-                        double[] seasfreqs = new double[(freq - 1) / 2];
+                        double[] seasfreqs = new double[(period - 1) / 2];
                         // seas freq in radians...
                         for (int i = 0; i < seasfreqs.length; ++i) {
-                            seasfreqs[i] = (i + 1) * 2 * Math.PI / freq;
+                            seasfreqs[i] = (i + 1) * 2 * Math.PI / period;
                         }
 
                         double[] p = periodogram.getP();

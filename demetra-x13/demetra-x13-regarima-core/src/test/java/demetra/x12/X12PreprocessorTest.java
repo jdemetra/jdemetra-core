@@ -88,7 +88,7 @@ public class X12PreprocessorTest {
         IPreprocessor oprocessor = ospec.build();
         ec.tstoolkit.timeseries.simplets.TsData os = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
         ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(os, null);
-        assertEquals(rslt.getEstimation().getStatistics().getLogLikelihood(), orslt.estimation.getStatistics().logLikelihood, 1e-4);
+        assertEquals(rslt.getEstimation().statistics().getLogLikelihood(), orslt.estimation.getStatistics().logLikelihood, 1e-4);
     }
 
     public static void stressTestProd() {

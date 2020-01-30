@@ -97,7 +97,7 @@ public class FastOutlierDetector<T extends IArimaModel> extends
         int n = nl + d;
 //        double[] o = new double[n];
 //        DataBlock O = new DataBlock(o);
-        IOutlierFactory.FilterRepresentation representation = factory(idx).getFilterRepresentation();
+        IOutlierFactory.FilterRepresentation representation = getOutlierFactory(idx).getFilterRepresentation();
         if (representation == null) {
             return;
         }

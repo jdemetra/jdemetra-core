@@ -36,6 +36,8 @@ import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import jdplus.math.matrices.decomposition.QRDecomposition;
+import jdplus.regarima.RegArimaModel;
+import jdplus.regarima.RegArmaModel;
 
 /**
  *

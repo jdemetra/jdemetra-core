@@ -30,14 +30,14 @@ import demetra.data.DoubleSeq;
 public class RegArmaModel<M extends IArimaModel> {
 
     /**
-     * Creates a new RegArma model from an existing one, with a new stationary ARMA
+     * Creates a new RegArma model from an existing one, with a new stationary ARMA model
      * @param <M>
      * @param model
      * @param newarma
      * @return 
      */
     public static <M extends IArimaModel> RegArmaModel<M> of(RegArmaModel<M> model, M newarma){
-        return new RegArmaModel(model.y, newarma, model.x, model.missingCount);
+        return new RegArmaModel(model.y, newarma, model.missingCount, model.x);
     }
 
     static <M extends IArimaModel> RegArmaModel<M> of(RegArimaModel<M> regarima) {
@@ -100,7 +100,7 @@ public class RegArmaModel<M extends IArimaModel> {
                 }
             }
         }
-        return new RegArmaModel<>(DoubleSeq.of(dy), arma, dx, missing.length);
+        return new RegArmaModel<>(DoubleSeq.of(dy), arma, missing.length, dx);
 
     }
 
@@ -116,18 +116,20 @@ public class RegArmaModel<M extends IArimaModel> {
     @lombok.NonNull
     M arma;
     /**
+     * For information only. Number of missing observations (additive outliers at the beginning of x)
+     */
+    int missingCount;
+    
+    /**
      * The differenced regression variables. Contains successively
      * the additive outliers corresponding to the missing values,
      * the constant
      * the other regression variables
      */
     Matrix x;
-    /**
-     * Number of missing observations (additive outliers at the beginning of x)
-     */
-    int missingCount;
     
     public LinearModel asLinearModel(){
+        // the mean is in X. Don't repeat it in the linear model
         return new LinearModel(y.toArray(), false, Matrix.of(x));
     }
     

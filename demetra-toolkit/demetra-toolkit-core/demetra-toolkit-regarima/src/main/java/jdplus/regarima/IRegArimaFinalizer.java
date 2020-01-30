@@ -20,6 +20,7 @@ package jdplus.regarima;
 
 import jdplus.arima.IArimaModel;
 import demetra.design.Development;
+import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.RegArimaEstimation;
 
 /**
@@ -35,6 +36,6 @@ public interface IRegArimaFinalizer<M extends IArimaModel>  {
      * @param regarima
      * @return
      */
-    RegArimaEstimation<M> finalize(RegArimaEstimation<M> regarima);
+    RegArimaEstimation<M> finalize(RegArimaEstimation<M> regarima, IArimaMapping<M> mapping);
 
 }

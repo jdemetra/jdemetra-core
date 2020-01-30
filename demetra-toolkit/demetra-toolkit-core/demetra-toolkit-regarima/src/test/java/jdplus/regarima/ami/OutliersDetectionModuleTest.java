@@ -43,7 +43,7 @@ public class OutliersDetectionModuleTest {
         HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
         OutliersDetectionModule<SarimaModel> od = OutliersDetectionModule.build(SarimaModel.class)
                 .processor(GlsSarimaProcessor.builder().initializer(hr).build())
-                .detector(ExactSingleOutlierDetector.builder().build())
+                .detector(new ExactSingleOutlierDetector(null, null, null))
                 .setAll()
                 .build();
         od.setCriticalValue(3.0);
@@ -52,7 +52,7 @@ public class OutliersDetectionModuleTest {
         System.out.println("Full");
 //        Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
 //        Consumer<int[]> rhook = a -> System.out.println("Remove outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
 //        od.setAddHook(hook);
 //        od.setRemoveHook(rhook);
         long t0 = System.currentTimeMillis();
@@ -79,7 +79,7 @@ public class OutliersDetectionModuleTest {
         System.out.println("Fast");
 //        Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
 //        Consumer<int[]> rhook = a -> System.out.println("Remove outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
 //        od.setAddHook(hook);
 //        od.setRemoveHook(rhook);
         long t0 = System.currentTimeMillis();

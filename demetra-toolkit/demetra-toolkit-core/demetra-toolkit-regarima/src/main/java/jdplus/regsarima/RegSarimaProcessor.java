@@ -17,6 +17,7 @@
 package jdplus.regsarima;
 
 import demetra.arima.SarimaSpecification;
+import demetra.data.DoubleSeq;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
 import jdplus.regarima.IRegArimaProcessor;
@@ -154,7 +155,10 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         SarimaModel current = regs.arima();
         SarimaSpecification curSpec = current.specification();
         if (curSpec.getParametersCount() == 0 || (mapping != null && mapping.getDim() == 0)) {
-            return new RegArimaEstimation(regs, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs), 0);
+            return RegArimaEstimation.<SarimaModel>builder()
+                    .model(regs)
+                    .concentratedLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs))
+                    .build();
         }
         SarimaModel mstart;
         switch (start) {
@@ -232,8 +236,10 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
     private RegArimaEstimation<SarimaModel> estimate(RegArimaModel<SarimaModel> regs, SarimaModel start, double precision) {
         SarimaSpecification curSpec = regs.arima().specification();
         if (curSpec.getParametersCount() == 0 || (mapping != null && mapping.getDim() == 0)) {
-            return new RegArimaEstimation<>(regs,
-                    ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs), 0);
+            return RegArimaEstimation.<SarimaModel>builder()
+                    .model(regs)
+                    .concentratedLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regs))
+                    .build();
         }
         return optimize(regs, start, precision, true);
     }
@@ -382,10 +388,15 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, p, stationaryMapping, min.functionPrecision(precision).build(), ndf);
 
         SarimaModel arima = SarimaModel.builder(regs.arima().specification())
-                .parameters(rslt.getModel().getArma().parameters())
+                .parameters(DoubleSeq.of(rslt.getParameters()))
                 .build();
         RegArimaModel<SarimaModel> nmodel = RegArimaModel.of(regs, arima);
-        RegArimaEstimation finalRslt = new RegArimaEstimation(nmodel, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nmodel), new LogLikelihoodFunction.Point(llFunction(regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()));
+        RegArimaEstimation finalRslt = RegArimaEstimation.<SarimaModel>builder()
+                .model(nmodel)
+                .concentratedLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nmodel))
+                .max(new LogLikelihoodFunction.Point(llFunction(regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()))
+                .nparams(stationaryMapping.getDim())
+                .build();
         return finalProcessing ? finalProcessing(finalRslt) : finalRslt;
     }
 

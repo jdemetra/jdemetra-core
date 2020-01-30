@@ -45,7 +45,7 @@ public class AICcComparator<M extends IArimaModel> {
         double aicc = 0;
         for (int i = 0; i < models.length; ++i) {
             if (models[i] != null) {
-                double aiccCur = models[i].statistics(0).getAICC();
+                double aiccCur = models[i].statistics().getAICC();
                 if (imin < 0 || aiccCur < aicc) {
                     aicc = aiccCur;
                     imin = i;
@@ -59,7 +59,7 @@ public class AICcComparator<M extends IArimaModel> {
             return imin;
         }
         else {
-            double aiccRef = reference.statistics(0).getAICC();
+            double aiccRef = reference.statistics().getAICC();
             return aiccRef > aicc - aicDiff_ ? imin : -1;
         }
     }
@@ -71,8 +71,8 @@ public class AICcComparator<M extends IArimaModel> {
         else if (alternative == null) {
             return -1;
         }
-        double aiccRef = reference.statistics(0).getAICC();
-        double aicc = alternative.statistics(0).getAICC();
+        double aiccRef = reference.statistics().getAICC();
+        double aicc = alternative.statistics().getAICC();
         return aiccRef > aicc - aicDiff_ ? 0 : -1;
     }
     

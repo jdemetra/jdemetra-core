@@ -34,7 +34,7 @@ public class RegArimaModelTest {
             missingPos[i] = y.length() - j;
         }
         SarimaModel arima = SarimaModel.builder(spec).build();
-        RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
+        RegArimaModel<SarimaModel> model = RegArimaModel.<SarimaModel>builder()
                 .y(y)
                 .arima(arima)
                 .meanCorrection(true)
@@ -54,14 +54,14 @@ public class RegArimaModelTest {
             missingPos[i] = 2 * i;
         }
         SarimaModel arima = SarimaModel.builder(spec).setDefault().build();
-        RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
+        RegArimaModel<SarimaModel> model = RegArimaModel.<SarimaModel>builder()
                 .y(y)
                 .arima(arima)
                 .meanCorrection(true)
                 .missing(missingPos)
                 .build();
         RegArimaEstimation<SarimaModel> estimation = RegArimaEstimation.of(model, 2);
-        estimation.statistics(0);
+        estimation.statistics();
 //        System.out.println("New estimation");
 //        System.out.println(estimation.statistics(0));
 //        System.out.println(estimation.getConcentratedLikelihood().allCoefficients());
@@ -108,14 +108,14 @@ public class RegArimaModelTest {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 100000; ++i) {
             SarimaModel arima = SarimaModel.builder(spec).setDefault().build();
-            RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class)
+            RegArimaModel<SarimaModel> model = RegArimaModel.<SarimaModel>builder()
                     .y(y)
                     .arima(arima)
                     .meanCorrection(true)
                     .missing(missingPos)
                     .build();
             RegArimaEstimation<SarimaModel> estimation = RegArimaEstimation.of(model, 2);
-            estimation.statistics(0);
+            estimation.statistics();
         }
         long t1 = System.currentTimeMillis();
         System.out.println("New estimation");

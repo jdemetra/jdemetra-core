@@ -27,6 +27,8 @@ import jdplus.timeseries.simplets.TsDataToolkit;
 import jdplus.timeseries.simplets.TsDataTransformation;
 import java.util.List;
 import demetra.data.DoubleSeq;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.sarima.SarimaModel;
 
 /**
  * The pre-processing model contains all information on the estimated regarima
@@ -40,7 +42,7 @@ public class PreprocessingModel {
 
     // Model description
     private ModelDescription description;
-    private ModelEstimation estimation;
+    private RegArimaEstimation<SarimaModel> estimation;
 
 //
 //    public static ComponentType outlierComponent(OutlierType type) {

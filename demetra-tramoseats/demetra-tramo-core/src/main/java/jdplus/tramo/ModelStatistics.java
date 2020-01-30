@@ -57,7 +57,7 @@ public class ModelStatistics {
     }
 
     public static ModelStatistics of(PreprocessingModel m) {
-        LikelihoodStatistics stats = m.getEstimation().getStatistics();
+        LikelihoodStatistics stats = m.getEstimation().statistics();
         DoubleSeq e = m.getEstimation().getConcentratedLikelihood().e();
         int p = m.getDescription().getAnnualFrequency();
         int n = TramoUtility.calcLBLength(p);

@@ -130,7 +130,7 @@ public final class RegArimaModel<M extends IArimaModel> {
     private final int[] missing;
     private volatile RegArmaModel<M> dmodel;
 
-    public static <M extends IArimaModel> Builder<M> builder(Class<M> mclass) {
+    public static <M extends IArimaModel> Builder<M> builder() {
         return new Builder<>();
     }
 

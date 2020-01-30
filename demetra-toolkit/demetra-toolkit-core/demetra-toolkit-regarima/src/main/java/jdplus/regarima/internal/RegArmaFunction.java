@@ -134,7 +134,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
             this.fn = fn;
             this.p = p;
             this.arma = fn.mapping.map(p);
-            RegArmaModel<S> regarma = new RegArmaModel<>(fn.dy, arma, fn.x, fn.nmissing);
+            RegArmaModel<S> regarma = new RegArmaModel<>(fn.dy, arma, fn.nmissing, fn.x);
             ll = fn.cll.compute(regarma);
         }
 

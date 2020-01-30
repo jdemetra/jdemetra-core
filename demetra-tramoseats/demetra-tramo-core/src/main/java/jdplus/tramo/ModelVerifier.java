@@ -22,6 +22,9 @@ import jdplus.regarima.regular.ModelEstimation;
 import jdplus.regarima.regular.RegArimaModelling;
 import jdplus.stats.tests.NiidTests;
 import demetra.data.DoubleSeq;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaUtility;
+import jdplus.sarima.SarimaModel;
 
 
 /**
@@ -34,12 +37,20 @@ public class ModelVerifier {
 
     public boolean accept(RegArimaModelling context) {
         ModelDescription desc = context.getDescription();
-        ModelEstimation estimation = context.getEstimation();
+        RegArimaEstimation<SarimaModel> estimation = context.getEstimation();
         int nz = desc.getSeries().getValues().count(x->Double.isFinite(x));
         if (desc.variables().filter(var->var.isOutlier(false)).count() > OUT * nz) {
             return false;
         }
-        NiidTests niid = estimation.getTests();
+        int period=desc.getAnnualFrequency();
+        NiidTests niid = NiidTests.builder()
+                    .data(estimation.getConcentratedLikelihood().e())
+                    .period(period)
+                    .k(RegArimaUtility.defaultLjungBoxLength(period))
+                    .ks(2)
+                    .seasonal(period > 1)
+                    .hyperParametersCount(estimation.getNparams())
+                    .build();
         //join test on normality
         if (niid.normalityTest().getValue() > NORMAL) {
             return false;
@@ -61,7 +72,6 @@ public class ModelVerifier {
             return false;
         }
         // qs
-        int period = desc.getAnnualFrequency();
         if (period > 1) {
             if (niid.seasonalLjungBox().getValue() > QS) {
                 return false;

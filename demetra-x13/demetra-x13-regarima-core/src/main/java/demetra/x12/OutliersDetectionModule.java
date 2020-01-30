@@ -36,7 +36,10 @@ import jdplus.regarima.regular.ProcessingResult;
 import jdplus.regarima.regular.RegArimaModelling;
 import jdplus.regarima.outlier.RobustStandardDeviationComputer;
 import internal.jdplus.arima.AnsleyFilter;
+import java.util.ArrayList;
+import java.util.List;
 import jdplus.arima.estimation.ResidualsComputer;
+import jdplus.modelling.regression.IOutlierFactory;
 
 /**
  *
@@ -135,16 +138,15 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
     }
 
     private SingleOutlierDetector<SarimaModel> factories(int freq) {
-        SingleOutlierDetector sod = ExactSingleOutlierDetector.builder()
-                .robustStandardDeviationComputer(RobustStandardDeviationComputer.mad(false))
-                .armaFilter(new AnsleyFilter())
-                .residualsComputer(X12Utility.mlComputer())
-                .build();
+        SingleOutlierDetector sod = new ExactSingleOutlierDetector(RobustStandardDeviationComputer.mad(false),
+                null, X12Utility.mlComputer());
+        
+        List<IOutlierFactory> factory=new ArrayList<>();
         if (ao) {
-            sod.addOutlierFactory(AdditiveOutlierFactory.FACTORY);
+            factory.add(AdditiveOutlierFactory.FACTORY);
         }
         if (ls) {
-            sod.addOutlierFactory(LevelShiftFactory.FACTORY_ZEROENDED);
+            factory.add(LevelShiftFactory.FACTORY_ZEROENDED);
         }
         if (tc) {
             double c = tcrate;
@@ -152,11 +154,12 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
             if (r > 1) {
                 c = Math.pow(c, r);
             }
-            sod.addOutlierFactory(new TransitoryChangeFactory(c));
+            factory.add(new TransitoryChangeFactory(c));
         }
         if (freq > 1 && so) {
-            sod.addOutlierFactory(new PeriodicOutlierFactory(freq, true));
+            factory.add(new PeriodicOutlierFactory(freq, true));
         }
+        sod.setOutlierFactories(factory.toArray(new IOutlierFactory[factory.size()]));
         return sod;
     }
 

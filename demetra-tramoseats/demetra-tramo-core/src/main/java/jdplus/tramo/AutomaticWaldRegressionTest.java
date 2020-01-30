@@ -153,17 +153,17 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         int nhp = test6.getArimaComponent().getFreeParametersCount();
         int df = ll.degreesOfFreedom() - nhp;
         double sigma = ll.ssq() / df;
-        LikelihoodStatistics td6Stats = regarima6.statistics(0);
+        LikelihoodStatistics td6Stats = regarima6.statistics();
 
         ModelDescription test1 = createTestModel(context, wd, null);
         RegArimaModel<SarimaModel> reg = RegArimaModel.of(test1.regarima(), regarima6.getModel().arima());
         RegArimaEstimation<SarimaModel> regarima1 = RegArimaEstimation.of(reg, nhp);
-        LikelihoodStatistics td1Stats = regarima1.statistics(0);
+        LikelihoodStatistics td1Stats = regarima1.statistics();
 
         ModelDescription test0 = createTestModel(context, null, null);
         reg = RegArimaModel.of(test0.regarima(), regarima6.getModel().arima());
         RegArimaEstimation<SarimaModel> regarima0 = RegArimaEstimation.of(reg, nhp);
-        LikelihoodStatistics td0Stats = regarima0.statistics(0);
+        LikelihoodStatistics td0Stats = regarima0.statistics();
 
         // compute the probabilities
         double pdel = 1;

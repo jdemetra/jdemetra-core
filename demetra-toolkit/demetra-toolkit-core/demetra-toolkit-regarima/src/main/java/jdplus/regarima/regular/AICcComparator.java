@@ -18,6 +18,8 @@
 package jdplus.regarima.regular;
 
 import demetra.design.Development;
+import jdplus.arima.IArimaModel;
+import jdplus.regarima.RegArimaEstimation;
 
 /**
  *
@@ -38,12 +40,12 @@ public class AICcComparator implements IModelComparator {
     private final double aicDiff;
 
     @Override
-    public int compare(ModelEstimation reference, ModelEstimation[] models) {
+    public <M extends IArimaModel> int compare(RegArimaEstimation<M> reference, RegArimaEstimation<M>[] models) {
         int imin = -1;
         double aicc = 0;
         for (int i = 0; i < models.length; ++i) {
             if (models[i] != null) {
-                double aiccCur = models[i].getStatistics().getAICC();
+                double aiccCur = models[i].statistics().getAICC();
                 if (imin < 0 || aiccCur < aicc) {
                     aicc = aiccCur;
                     imin = i;
@@ -57,21 +59,21 @@ public class AICcComparator implements IModelComparator {
             return imin;
         }
         else {
-            double aiccRef = reference.getStatistics().getAICC();
+            double aiccRef = reference.statistics().getAICC();
             return aiccRef > aicc - aicDiff ? imin : -1;
         }
     }
 
     @Override
-    public int compare(ModelEstimation reference, ModelEstimation alternative) {
+    public <M extends IArimaModel> int compare(RegArimaEstimation<M> reference, RegArimaEstimation<M> alternative) {
         if (reference == null) {
             return 0;
         }
         else if (alternative == null) {
             return -1;
         }
-        double aiccRef = reference.getStatistics().getAICC();
-        double aicc = alternative.getStatistics().getAICC();
+        double aiccRef = reference.statistics().getAICC();
+        double aicc = alternative.statistics().getAICC();
         return aiccRef > aicc - aicDiff ? 0 : -1;
     }
     

@@ -90,8 +90,8 @@ public class FractionalAirlineProcessor{
                 .build();
         ArimaModel arima = mapping.getDefault();
         RegArimaModel<ArimaModel> regarima
-                = RegArimaModel.builder(ArimaModel.class)
-                .y(DoubleSeq.copyOf(s))
+                = RegArimaModel.<ArimaModel>builder()
+                .y(DoubleSeq.of(s))
                 .arima(arima)
                 .build();
         GlsArimaProcessor<ArimaModel> monitor = builder.build();

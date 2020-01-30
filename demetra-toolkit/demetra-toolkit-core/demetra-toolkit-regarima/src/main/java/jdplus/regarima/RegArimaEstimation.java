@@ -16,8 +16,8 @@
  */
 package jdplus.regarima;
 
-import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
+import jdplus.arima.estimation.IArimaMapping;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
@@ -38,52 +38,38 @@ import demetra.data.DoubleSeq;
  */
 @Development(status = Development.Status.Alpha)
 @lombok.Value
+@lombok.Builder(builderClassName = "Builder")
 public class RegArimaEstimation<M extends IArimaModel> {
 
     /**
      * Estimated model
      */
     @lombok.NonNull
-    RegArimaModel<M> model;
+    private RegArimaModel<M> model;
 
     /**
      * Concentrated likelihood
      */
     @lombok.NonNull
-    ConcentratedLikelihoodWithMissing concentratedLikelihood;
+    private ConcentratedLikelihoodWithMissing concentratedLikelihood;
 
     /**
-     *
+     * Maximum Log-likelihood
      */
-    LogLikelihoodFunction.Point<RegArimaModel<M>, ConcentratedLikelihoodWithMissing> max;
+    private LogLikelihoodFunction.Point<RegArimaModel<M>, ConcentratedLikelihoodWithMissing> max;
 
-    int nparams;
+    
+    private double llAdjustment;
+    private int nparams;
 
-    public RegArimaEstimation(@NonNull RegArimaModel<M> model, @NonNull ConcentratedLikelihoodWithMissing concentratedLikelihood,
-            LogLikelihoodFunction.@NonNull Point<RegArimaModel<M>, ConcentratedLikelihoodWithMissing> max) {
-        this.model = model;
-        this.concentratedLikelihood = concentratedLikelihood;
-        this.max = max;
-        this.nparams = max.getParameters().length;
-    }
-
-    public RegArimaEstimation(@NonNull RegArimaModel<M> model, @NonNull ConcentratedLikelihoodWithMissing concentratedLikelihood,
-            int nparams) {
-        this.model = model;
-        this.concentratedLikelihood = concentratedLikelihood;
-        this.max = null;
-        this.nparams = nparams;
-    }
 
     /**
-     *
-     * @param adj Adjustment factor, defined by the possible transformation of
-     * the data
+     * Likelihood statistics
      * @return
      */
-    public LikelihoodStatistics statistics(double adj) {
+    public LikelihoodStatistics statistics() {
         return LikelihoodStatistics.statistics(concentratedLikelihood.logLikelihood(), model.getObservationsCount() - model.getMissingValuesCount())
-                .llAdjustment(adj)
+                .llAdjustment(llAdjustment)
                 .differencingOrder(model.arima().getNonStationaryArOrder())
                 .parametersCount(nparams + model.getVariablesCount() + 1)
                 .ssq(concentratedLikelihood.ssq())
@@ -97,7 +83,7 @@ public class RegArimaEstimation<M extends IArimaModel> {
      * and the underlying parametric ARIMA model
      *
      * @param <M>
-     * @param mappingProvider
+     * @param mapping
      * @param regs
      * @return
      */
@@ -109,7 +95,11 @@ public class RegArimaEstimation<M extends IArimaModel> {
     }
 
     public static <M extends IArimaModel> RegArimaEstimation<M> of(RegArimaModel<M> model, int nparams) {
-        return new RegArimaEstimation<>(model, ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model), nparams);
+        return RegArimaEstimation.<M>builder()
+                .model(model)
+                .concentratedLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model))
+                .nparams(nparams)
+                .build();
     }
 
     public DoubleSeq interpolatedSeries() {
@@ -118,13 +108,13 @@ public class RegArimaEstimation<M extends IArimaModel> {
         if (missing.length == 0) {
             return y;
         } else {
-            double[] dy = y.toArray();
+            double[] ay = y.toArray();
             DoubleSeq missingEstimates = concentratedLikelihood.missingEstimates();
             DoubleSeqCursor reader = missingEstimates.cursor();
             for (int i = 0; i < missing.length; ++i) {
-                dy[missing[i]] = reader.getAndNext();
+                ay[missing[i]] = reader.getAndNext();
             }
-            return DoubleSeq.of(dy);
+            return DoubleSeq.of(ay);
         }
     }
 

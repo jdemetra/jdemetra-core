@@ -24,17 +24,18 @@ import jdplus.regarima.RegArimaModel;
  * @author Jean Palate
  * @param <T>
  */
-public interface IGenericOutliersDetectionModule<T extends IArimaModel> {
+public interface GenericOutliersDetection<T extends IArimaModel> {
 
 
     /**
-     * Set the range where the outliers will be searched for
+     * Prepare outliers detection. Should be called before any other method
      *
-     * @param n Number of observations. Should be called before any other method
+     * @param n Number of observations
      */
     void prepare(int n);
     /**
-     * Set the range where the outliers will be searched for
+     * Set the range where the outliers will be searched for.
+     * The bounds must be in [0, n]
      *
      * @param start First position (included)
      * @param end Last position (excluded)
@@ -43,8 +44,8 @@ public interface IGenericOutliersDetectionModule<T extends IArimaModel> {
     
     /**
      * Exclude the specified outlier (position and type)
-     * @param pos
-     * @param type 
+     * @param pos Position of the outlier
+     * @param type Type of the outlier
      */
     void exclude(int pos, int type);
     

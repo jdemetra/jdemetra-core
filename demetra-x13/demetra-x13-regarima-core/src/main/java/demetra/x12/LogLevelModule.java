@@ -26,6 +26,8 @@ import jdplus.regarima.regular.ModelDescription;
 import jdplus.regarima.regular.ModelEstimation;
 import jdplus.regarima.regular.RegArimaModelling;
 import demetra.timeseries.calendars.LengthOfPeriodType;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.sarima.SarimaModel;
 
 /**
  *
@@ -68,14 +70,14 @@ public class LogLevelModule implements ILogLevelModule {
 
     private final double aiccDiff;
     private final double precision;
-       private final LengthOfPeriodType adjust;
-    private ModelEstimation level, log;
+    private final LengthOfPeriodType adjust;
+    private RegArimaEstimation<SarimaModel> level, log;
     private double aiccLevel, aiccLog;
 
     private LogLevelModule(double aiccdiff, final double precision, final LengthOfPeriodType adjust) {
         this.aiccDiff = aiccdiff;
         this.precision = precision;
-        this.adjust=adjust;
+        this.adjust = adjust;
     }
 
     public double getEpsilon() {
@@ -100,30 +102,32 @@ public class LogLevelModule implements ILogLevelModule {
     public ProcessingResult process(RegArimaModelling context) {
         clear();
         ModelDescription model = context.getDescription();
-        if (model.getSeries().getValues().anyMatch(z->z<=0))
+        if (model.getSeries().getValues().anyMatch(z -> z <= 0)) {
             return ProcessingResult.Failed;
+        }
         IRegArimaProcessor processor = X12Utility.processor(true, precision);
         level = model.estimate(processor);
 
         ModelDescription logmodel = new ModelDescription(model);
         logmodel.setLogTransformation(true);
-        if (adjust != LengthOfPeriodType.None){
+        if (adjust != LengthOfPeriodType.None) {
             logmodel.remove("lp");
             logmodel.setTransformation(adjust);
         }
         log = logmodel.estimate(processor);
         if (level != null) {
-            aiccLevel = level.getStatistics().getAICC();
+            aiccLevel = level.statistics().getAICC();
         }
         if (log != null) {
-            aiccLog = log.getStatistics().getAICC();
+            aiccLog = log.statistics().getAICC();
         }
-        if (isChoosingLog()){
+        if (isChoosingLog()) {
             context.set(logmodel, log);
             return ProcessingResult.Changed;
-        }else
+        } else {
             return ProcessingResult.Unchanged;
-        
+        }
+
     }
 
     public TransformationType getTransformation() {
@@ -146,14 +150,14 @@ public class LogLevelModule implements ILogLevelModule {
     /**
      * @return the level_
      */
-    public ModelEstimation getLevel() {
+    public RegArimaEstimation<SarimaModel> getLevel() {
         return level;
     }
 
     /**
      * @return the log_
      */
-    public ModelEstimation getLog() {
+    public RegArimaEstimation<SarimaModel> getLog() {
         return log;
     }
 

@@ -21,14 +21,10 @@ import jdplus.data.DataBlock;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarmaSpecification;
-import demetra.timeseries.regression.AdditiveOutlier;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
-import demetra.timeseries.regression.LevelShift;
 import jdplus.modelling.regression.LevelShiftFactory;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Random;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -47,15 +43,14 @@ public class FastOutlierDetectorTest {
         Random gen = new Random(0);
         rnd.set(gen::nextDouble);
         FastOutlierDetector sod = new FastOutlierDetector(null);
-        sod.addOutlierFactory(AdditiveOutlierFactory.FACTORY);
-        sod.addOutlierFactory(LevelShiftFactory.FACTORY_ZEROENDED);
+        sod.setOutlierFactories(AdditiveOutlierFactory.FACTORY, LevelShiftFactory.FACTORY_ZEROENDED);
         SarmaSpecification spec = new SarmaSpecification(12);
         spec.setBq(1);
         spec.setQ(1);
         SarimaModel model = SarimaModel.builder(spec)
                 .setDefault()
                 .build();
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class)
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder()
                 .y(rnd)
                 .meanCorrection(true)
                 .arima(model)

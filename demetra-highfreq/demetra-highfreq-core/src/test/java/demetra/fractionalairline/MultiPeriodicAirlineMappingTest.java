@@ -61,7 +61,7 @@ public class MultiPeriodicAirlineMappingTest {
                 .mapping(mapping)
                 .precision(1e-5)
                 .build();
-        RegArimaModel<ArimaModel> regarima=RegArimaModel.builder(ArimaModel.class)
+        RegArimaModel<ArimaModel> regarima=RegArimaModel.<ArimaModel>builder()
                 .y(edf.column(0))
                 .arima(mapping.getDefault())
                 .build();
@@ -82,7 +82,7 @@ public class MultiPeriodicAirlineMappingTest {
                 .mapping(mapping )
                 .precision(1e-5)
                 .build();
-        RegArimaModel<ArimaModel> regarima=RegArimaModel.builder(ArimaModel.class)
+        RegArimaModel<ArimaModel> regarima=RegArimaModel.<ArimaModel>builder()
                 .y(edf.column(0))
                 .arima(mapping.getDefault())
                 .build();
@@ -104,7 +104,7 @@ public class MultiPeriodicAirlineMappingTest {
                 .mapping(mapping )
                 .precision(1e-5)
                 .build();
-        RegArimaModel<ArimaModel> regarima=RegArimaModel.builder(ArimaModel.class)
+        RegArimaModel<ArimaModel> regarima=RegArimaModel.<ArimaModel>builder()
                 .y(edf.column(0).range(5000, 8000))
                 .arima(mapping.getDefault())
                 .build();

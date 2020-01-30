@@ -118,7 +118,7 @@ public class MovingRegression {
                 .useCorrectedDegreesOfFreedom(false) // compatibility with R
                 .precision(1e-12)
                 .build();
-        RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.builder(SarimaModel.class)
+        RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.<SarimaModel>builder()
                 .y(s.getValues())
                 .arima(arima);
         x.columns().forEach(xx -> rbuilder.addX(xx));
@@ -132,7 +132,7 @@ public class MovingRegression {
         while (dom.end().isBefore(s.getDomain().end())) {
             Matrix mtd = generate(dom, dc);
             TsData yc = fitToDomain(s, dom);
-            RegArimaModel.Builder<SarimaModel> builder = RegArimaModel.builder(SarimaModel.class)
+            RegArimaModel.Builder<SarimaModel> builder = RegArimaModel.<SarimaModel>builder()
                     .y(yc.getValues())
                     .arima(arima);
             mtd.columns().forEach(xx -> builder.addX(xx));
