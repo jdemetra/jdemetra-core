@@ -20,6 +20,7 @@ import demetra.design.Immutable;
 import demetra.design.BuilderPattern;
 import demetra.math.Constants;
 import demetra.data.DoubleSeq;
+import demetra.likelihood.LikelihoodStatistics;
 import jdplus.likelihood.Likelihood;
 
 /**
@@ -275,4 +276,14 @@ public final class DiffuseLikelihood implements Likelihood {
         builder.append("dcorr=").append(this.getDiffuseCorrection()).append(System.lineSeparator());
         return builder.toString();
     }
+    
+     public LikelihoodStatistics stats(double llcorrection, int nparams) {
+        return LikelihoodStatistics.statistics(logLikelihood(), dim())
+                .llAdjustment(llcorrection)
+                .parametersCount(scalingFactor ? nparams + 1 : nparams)
+                .diffuseOrder(nd)
+                .ssq(ssq())
+                .build();
+    }
+
 }

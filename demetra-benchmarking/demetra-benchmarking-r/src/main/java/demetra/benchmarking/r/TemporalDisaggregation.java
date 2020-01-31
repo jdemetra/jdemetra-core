@@ -22,14 +22,18 @@ import demetra.data.ParameterSpec;
 import demetra.information.InformationMapping;
 import demetra.processing.ProcResults;
 import demetra.ssf.SsfInitialization;
+import demetra.tempdisagg.univariate.TemporalDisaggregationIResults;
+import demetra.tempdisagg.univariate.TemporalDisaggregationISpec;
 import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
+import demetra.tempdisagg.univariate.TemporalDisaggregationSpec.Model;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import jdplus.tempdisagg.univariate.ProcessorI;
 
 /**
  *
@@ -66,6 +70,20 @@ public class TemporalDisaggregation {
         public <T> T getData(String id, Class<T> tclass) {
             return TemporalDisaggregationDescriptor.getMapping().getData(core, id, tclass);
         }
+    }
+
+    public TsData processI(TsData y, TsData indicator, String model, String aggregation, int obspos,
+            double rho, boolean fixedrho, double truncatedRho) {
+        TemporalDisaggregationISpec spec = TemporalDisaggregationISpec.builder()
+                .constant(true)
+                .residualsModel(Model.valueOf(model))
+                .aggregationType(AggregationType.valueOf(aggregation))
+                .observationPosition(obspos)
+                .parameter(fixedrho ? ParameterSpec.fixed(rho) : ParameterSpec.initial(rho))
+                .truncatedRho(truncatedRho)
+                .build();
+        TemporalDisaggregationIResults rslt = new ProcessorI().process(y, indicator, spec);
+        return rslt.getDisaggregatedSeries();
     }
 
     public Results process(TsData y, boolean constant, boolean trend, TsData[] indicators,

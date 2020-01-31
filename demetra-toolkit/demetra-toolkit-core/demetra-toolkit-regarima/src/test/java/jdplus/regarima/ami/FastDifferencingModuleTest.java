@@ -28,9 +28,9 @@ public class FastDifferencingModuleTest {
 
         for (int i = 0; i < insee.length; ++i) {
             int[] del = d.process(insee[i].getValues().fn(x->Math.log(x)), new int[]{1, 12}, null);
-            System.out.print(del[0]);
-            System.out.print('\t');
-            System.out.println(del[1]);
+//            System.out.print(del[0]);
+//            System.out.print('\t');
+//            System.out.println(del[1]);
         }
     }
 

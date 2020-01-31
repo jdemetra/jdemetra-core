@@ -77,17 +77,11 @@ public class TsHodrickPrescott {
         return trend;
     }
 
-    public static double lambda(double ylen, int freq) {
-        double w = 2 * Math.PI / (freq * ylen);
-        double x = 1 - Math.cos(w);
-        return .75 / (x * x);
-    }
-
     private double calcLambda(int frequency) {
         if (lambda > 0) {
             return lambda;
         } else {
-            return lambda(cycleLength, frequency);
+            return HodrickPrescottFilter.lambda(cycleLength*frequency);
         }
     }
 

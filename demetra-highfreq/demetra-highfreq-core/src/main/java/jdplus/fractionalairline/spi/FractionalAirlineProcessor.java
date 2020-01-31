@@ -44,7 +44,7 @@ public class FractionalAirlineProcessor implements FractionalAirlineAlgorithms.P
     public FractionalAirlineEstimation process(FractionalAirlineSpec spec) {
         final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(spec.getPeriodicities(), true, false);
         double[] y=spec.getY();
-        RegArimaModel.Builder builder = RegArimaModel.builder(ArimaModel.class)
+        RegArimaModel.Builder builder = RegArimaModel.<ArimaModel>builder()
                 .y(DoubleSeq.of(y))
                 .addX(Matrix.of(spec.getX()))
                 .arima(mapping.getDefault())

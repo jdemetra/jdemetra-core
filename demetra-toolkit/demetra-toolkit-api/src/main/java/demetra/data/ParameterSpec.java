@@ -33,6 +33,10 @@ public class ParameterSpec {
      */
     private ParameterType type;
     
+    public boolean isFixed(){
+        return type == ParameterType.Fixed;
+    }
+    
     public static ParameterSpec undefined(){
         return UNDEFINED ;
     }

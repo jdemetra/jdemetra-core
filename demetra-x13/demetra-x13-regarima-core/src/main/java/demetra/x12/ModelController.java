@@ -23,12 +23,12 @@ import jdplus.linearmodel.LinearModel;
 import jdplus.regarima.RegArmaModel;
 import jdplus.regarima.regular.IAmiController;
 import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.ModelEstimation;
 import jdplus.regarima.regular.RegArimaModelling;
 import jdplus.sarima.SarimaModel;
 import jdplus.stats.tests.LjungBox;
 import jdplus.stats.tests.StatisticalTest;
 import demetra.data.DoubleSeq;
+import jdplus.regarima.RegArimaEstimation;
 
 
 /**
@@ -54,7 +54,7 @@ public class ModelController implements IAmiController {
     @Override
     public boolean accept(RegArimaModelling context) {
         ModelDescription desc = context.getDescription();
-        ModelEstimation estimation = context.getEstimation();
+        RegArimaEstimation<SarimaModel> estimation = context.getEstimation();
         
         DoubleSeq coeff = estimation.getConcentratedLikelihood().allCoefficients();
         RegArmaModel<SarimaModel> dmodel = desc.regarima().differencedModel();
@@ -66,7 +66,7 @@ public class ModelController implements IAmiController {
         int nres = filter.prepare(arma, res.length());
         DataBlock fres = DataBlock.make(nres);
         filter.apply(res, fres);
-        int nobs = context.getEstimation().getStatistics().getEffectiveObservationsCount();
+        int nobs = context.getEstimation().statistics().getEffectiveObservationsCount();
         rvr=Math.sqrt(fres.ssq()/nobs);
         fres = fres.drop(nres - nobs, 0);
         calcResStat(fres);

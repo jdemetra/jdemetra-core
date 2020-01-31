@@ -20,17 +20,21 @@ import jdplus.data.DataBlock;
 import jdplus.dstats.Normal;
 import demetra.stats.ProbabilityType;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.decomposition.Householder;
 import java.util.function.IntToDoubleFunction;
 import jdplus.linearsystem.LinearSystemSolver;
 
 /**
- *
+ * Computation of critical values for outliers detection.
+ * 
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
 public class CriticalValueComputer {
 
+    /**
+     * Simple computation of the critical value (linear function). Used in Tramo 
+     * @return 
+     */
     public IntToDoubleFunction simpleComputer() {
         return len -> {
             double cv;
@@ -45,10 +49,19 @@ public class CriticalValueComputer {
         };
     }
 
+    /**
+     * Advanced computation of the critical value. Used in X12
+     * @return 
+     */
     public IntToDoubleFunction advancedComputer() {
         return advancedComputer(0.05);
     }
 
+    /**
+     * Advanced computation of the critical value.Used in X12
+     * @param threshold Probability threshold to detect outliers. Default value is 0.05. 
+     * @return 
+     */
     public IntToDoubleFunction advancedComputer(final double threshold) {
 
         return len -> {

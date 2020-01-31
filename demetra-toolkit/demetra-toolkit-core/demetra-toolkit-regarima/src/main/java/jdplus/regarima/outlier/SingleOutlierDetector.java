@@ -32,8 +32,8 @@ import java.util.ArrayList;
 public abstract class SingleOutlierDetector<T extends IArimaModel> {
 
     private final RobustStandardDeviationComputer sdevComputer;
-    private final ArrayList<IOutlierFactory> factories = new ArrayList<>();
-    protected final DoubleList weights = new DoubleList();
+    private IOutlierFactory[] factories;
+    private double[] weights;
     protected int lbound;
     protected int ubound;
     protected Matrix T;
@@ -44,14 +44,18 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
 
     private int posMax = -1, oMax = -1;
 
-    public boolean process(RegArimaModel<T> model){
-        this.regarima=model;
+    public boolean process(RegArimaModel<T> model) {
+        if (factories == null) {
+            return false;
+        }
+        this.regarima = model;
         clear(false);
         return calc();
     }
+
     /**
      *
-     * @param sdevComputer
+     * @param sdevComputer Computation of the standard deviation
      */
     protected SingleOutlierDetector(RobustStandardDeviationComputer sdevComputer) {
         this.sdevComputer = sdevComputer;
@@ -59,22 +63,30 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
 
     /**
      *
-     * @param o
+     * @param factories Outliers factories
+     * @param weights Weights of the corresponding outliers factories. Could be
+     * null,
+     * which means that all factories have the same weight (1)
      */
-    public void addOutlierFactory(IOutlierFactory o) {
-        factories.add(o);
-        weights.add(1);
+    public void setOutlierFactories(IOutlierFactory[] factories, double[] weights) {
+        this.factories = factories;
+        if (weights == null) {
+            this.weights = new double[factories.length];
+            for (int i = 0; i < this.weights.length; ++i) {
+                this.weights[i] = 1;
+            }
+        } else {
+            this.weights = weights;
+        }
         clear(true);
     }
 
-    /**
-     *
-     * @param o
-     * @param weight
-     */
-    public void addOutlierFactory(IOutlierFactory o, double weight) {
-        factories.add(o);
-        weights.add(weight);
+    public void setOutlierFactories(IOutlierFactory... factories) {
+        this.factories = factories;
+        this.weights = new double[factories.length];
+        for (int i = 0; i < this.weights.length; ++i) {
+            this.weights[i] = 1;
+        }
         clear(true);
     }
 
@@ -110,20 +122,11 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
 
     /**
      *
-     */
-    public void clearOutlierFactories() {
-        factories.clear();
-        weights.clear();
-        clear(true);
-    }
-
-    /**
-     *
      * @param pos
      * @param outlier
      * @return
      */
-    public double coeff(int pos, int outlier) {
+    public double coefficient(int pos, int outlier) {
         return coef.get(pos, outlier);
     }
 
@@ -162,7 +165,7 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
             return;
         }
         for (int i = 0; i < pos.length; ++i) {
-            for (int j = 0; j < factories.size(); ++j) {
+            for (int j = 0; j < factories.length; ++j) {
                 exclude(pos[i], j);
             }
         }
@@ -177,7 +180,7 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
             return;
         }
         for (int i = 0; i < pos.length; ++i) {
-            for (int j = 0; j < factories.size(); ++j) {
+            for (int j = 0; j < factories.length; ++j) {
                 allow(pos[i], j);
             }
         }
@@ -188,7 +191,7 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
      * @param pos
      */
     public void exclude(int pos) {
-        for (int j = 0; j < factories.size(); ++j) {
+        for (int j = 0; j < factories.length; ++j) {
             exclude(pos, j);
         }
     }
@@ -235,13 +238,16 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
         return tmax;
     }
 
- 
     /**
      *
      * @return
      */
     public int getOutlierFactoriesCount() {
-        return factories.size();
+        return factories.length;
+    }
+    
+    public IOutlierFactory[] getOutliersFactories(){
+        return factories;
     }
 
     /**
@@ -250,7 +256,7 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
      * @return
      */
     public IOutlierFactory getOutlierFactory(int i) {
-        return factories.get(i);
+        return factories[i];
     }
 
     /**
@@ -281,13 +287,13 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
      * @param n
      */
     public void prepare(int n) {
-        lbound=0;
-        ubound=n;
-        T = Matrix.make(n, factories.size());
-        coef = Matrix.make(n, factories.size());
-        allowedTable = new TableOfBoolean(n, factories.size());
-        for (int i = 0; i < factories.size(); ++i) {
-            IOutlierFactory fac = getOutlierFactory(i);
+        lbound = 0;
+        ubound = n;
+        T = Matrix.make(n, factories.length);
+        coef = Matrix.make(n, factories.length);
+        allowedTable = new TableOfBoolean(n, factories.length);
+        for (int i = 0; i < factories.length; ++i) {
+            IOutlierFactory fac = factories[i];
             int jstart = fac.excludingZoneAtStart();
             int jend = n - fac.excludingZoneAtEnd();
             for (int j = jstart; j < jend; ++j) {
@@ -295,7 +301,6 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
             }
         }
     }
-
 
     private void searchMax() {
         if (T == null) {
@@ -305,7 +310,7 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
         int imax = -1;
         double[] table = T.getStorage();
         for (int i = 0, c = 0; c < T.getColumnsCount(); ++c) {
-            double w = weights.get(c);
+            double w = weights[c];
 
             for (int r = 0; r < T.getRowsCount(); ++r, ++i) {
                 double cur = Math.abs(table[i]) * w;
@@ -353,24 +358,10 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
     }
 
     /**
-     * @return the factories
-     */
-    public ArrayList<IOutlierFactory> getFactories() {
-        return factories;
-    }
-
-    /**
-     * @param idx
-     * @return the given factory
-     */
-    public IOutlierFactory factory(int idx) {
-        return factories.get(idx);
-    }
-    /**
      * @return the weights
      */
-    public DoubleList getWeights() {
-        return weights;
+    public double getWeight(int pos) {
+        return weights[pos];
     }
 
     /**
@@ -397,13 +388,13 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
     /**
      * @return the coef
      */
-    public Matrix getCoef() {
+    public Matrix allCoefficients() {
         return coef;
     }
 
     void allow(int pos, String code) {
-        for (int i = 0; i < factories.size(); ++i) {
-            IOutlierFactory outlier = factories.get(i);
+        for (int i = 0; i < factories.length; ++i) {
+            IOutlierFactory outlier = factories[i];
             if (outlier.getCode().equals(code)) {
                 allow(pos - lbound, i);
                 return;
@@ -412,8 +403,8 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
     }
 
     void exclude(int pos, String code) {
-        for (int i = 0; i < factories.size(); ++i) {
-            IOutlierFactory factory = factories.get(i);
+        for (int i = 0; i < factories.length; ++i) {
+            IOutlierFactory factory = factories[i];
             if (factory.getCode().equals(code)) {
                 exclude(pos - lbound, i);
                 return;

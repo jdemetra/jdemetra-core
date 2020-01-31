@@ -99,8 +99,8 @@ public final class LinearModel{
     /**
      *
      * @param y
-     * @param mean
-     * @param x X should not contain the mean !!
+     * @param mean Mean correction
+     * @param x X. Should not contain the mean if mean is set to true !!
      */
     @Internal
     public LinearModel(double[] y, final boolean mean, final Matrix x) {

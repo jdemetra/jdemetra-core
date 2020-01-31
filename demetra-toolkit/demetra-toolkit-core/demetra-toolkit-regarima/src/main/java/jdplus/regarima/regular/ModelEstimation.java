@@ -22,6 +22,8 @@ import demetra.likelihood.LikelihoodStatistics;
 import jdplus.stats.tests.NiidTests;
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.Matrix;
+import jdplus.regarima.RegArimaModel;
+import jdplus.sarima.SarimaModel;
 
 /**
  *
@@ -30,8 +32,10 @@ import jdplus.math.matrices.Matrix;
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
 @lombok.Builder
+@Deprecated
 public class ModelEstimation {
 
+    private RegArimaModel<SarimaModel> regarima;
     private ConcentratedLikelihoodWithMissing concentratedLikelihood;
     private LikelihoodStatistics statistics;
     private DoubleSeq score;

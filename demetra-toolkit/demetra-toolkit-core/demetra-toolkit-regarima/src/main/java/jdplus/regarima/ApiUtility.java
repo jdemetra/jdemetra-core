@@ -20,6 +20,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.MissingValueEstimation;
 import demetra.data.ParameterEstimation;
 import demetra.data.ParametersEstimation;
+import demetra.design.Development;
 import demetra.math.matrices.MatrixType;
 import java.util.List;
 import java.util.function.Function;
@@ -27,13 +28,13 @@ import jdplus.arima.IArimaModel;
 import jdplus.dstats.T;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
-import jdplus.math.matrices.Matrix;
 
 /**
  *
  * @author palatej
  */
 @lombok.experimental.UtilityClass
+@Development(status = Development.Status.Alpha)
 public class ApiUtility {
 
     public <S extends IArimaModel, R> demetra.modelling.regarima.RegArimaEstimation<R> toApi(RegArimaEstimation<S> regarima, Function<S, R> fn) {
@@ -64,7 +65,7 @@ public class ApiUtility {
         ParametersEstimation p = null;
         if (nhp > 0) {
             // TODO: adjust the computation of the covariance of the parameters
-            p=new ParametersEstimation(max.getParameters(), max.getHessian());
+            p=new ParametersEstimation(max.getParameters(), max.asymptoticCovariance());
         }
         
         ParameterEstimation mean = null;
@@ -102,7 +103,7 @@ public class ApiUtility {
                 .X(X)
                 .meanCorrection(mean)
                 .coefficients(all)
-                .likelihood(regarima.statistics(0))
+                .likelihood(regarima.statistics())
                 .missing(me)
                 .parameters(p)
                 .build();

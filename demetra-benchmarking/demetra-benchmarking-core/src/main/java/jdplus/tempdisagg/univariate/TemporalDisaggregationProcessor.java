@@ -271,7 +271,6 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
         SsfData ssfdata = new SsfData(model.getHY());
         Ssf ssf = Ssf.of(SsfCumulator.of(rcmp, rloading, model.getFrequencyRatio(), model.getStart()),
                  SsfCumulator.defaultLoading(rloading, model.getFrequencyRatio(), model.getStart()));
-        StateComponent rssf = RegSsf.of(ncmp, model.getHX());
         DefaultSmoothingResults srslts;
         switch (spec.getAlgorithm()) {
             case Augmented:

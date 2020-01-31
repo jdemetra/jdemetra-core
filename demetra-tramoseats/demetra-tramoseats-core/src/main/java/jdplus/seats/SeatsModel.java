@@ -50,7 +50,7 @@ public class SeatsModel {
     private boolean significantSeasonality;
 
     public RegArimaModel<SarimaModel> asRegarima() {
-        return RegArimaModel.builder(SarimaModel.class)
+        return RegArimaModel.<SarimaModel>builder()
                 .y(series)
                 .arima(currentModel)
                 .meanCorrection(meanCorrection)

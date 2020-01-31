@@ -30,7 +30,7 @@ public class PeriodicAirlineEngine {
                 .mapping(mapping)
                 .precision(precision)
                 .build();
-        RegArimaModel<ArimaModel> regarima = RegArimaModel.builder(ArimaModel.class)
+        RegArimaModel<ArimaModel> regarima = RegArimaModel.<ArimaModel>builder()
                 .y(y)
                 .addX(x)
                 .arima(mapping.getDefault())
@@ -44,7 +44,7 @@ public class PeriodicAirlineEngine {
                 .mapping(mapping)
                 .precision(precision)
                 .build();
-        RegArimaModel<ArimaModel> regarima = RegArimaModel.builder(ArimaModel.class)
+        RegArimaModel<ArimaModel> regarima = RegArimaModel.<ArimaModel>builder()
                 .y(y)
                 .addX(x)
                 .arima(mapping.getDefault())

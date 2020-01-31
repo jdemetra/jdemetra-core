@@ -20,6 +20,7 @@ import demetra.arima.SarimaSpecification;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import jdplus.regarima.IRegArimaProcessor;
+import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 
@@ -34,7 +35,7 @@ import jdplus.sarima.SarimaModel;
 public class RegArimaModelling {
 
     private ModelDescription description;
-    private ModelEstimation estimation;
+    private RegArimaEstimation<SarimaModel> estimation;
     private final InformationSet log = new InformationSet();
 
     public void estimate(IRegArimaProcessor<SarimaModel> processor) {
@@ -78,7 +79,7 @@ public class RegArimaModelling {
         this.estimation=null;
     }
     
-    public void set(ModelDescription desc, ModelEstimation est){
+    public void set(ModelDescription desc, RegArimaEstimation<SarimaModel> est){
         this.description=desc;
         this.estimation=est;
     }

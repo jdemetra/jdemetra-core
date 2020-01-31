@@ -23,7 +23,6 @@ import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.arima.SarmaSpecification;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import demetra.data.DoubleSeq;
@@ -31,18 +30,21 @@ import internal.jdplus.arima.FastKalmanFilter;
 import jdplus.sarima.estimation.HannanRissanen;
 
 /**
+ * This module select the "best" Arma specification for a given stationary
+ * series.
+ * The series should have been cleaned up of its deterministic effects.
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-class ArmaModuleImpl {
+public class ArmaModelSelector {
 
-    static Builder builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
-    @BuilderPattern(ArmaModuleImpl.class)
-    static class Builder {
+    @BuilderPattern(ArmaModelSelector.class)
+    public static class Builder {
 
         private int modelsCount = NMOD;
         private boolean wn = false;
@@ -81,8 +83,8 @@ class ArmaModuleImpl {
             return this;
         }
 
-        public ArmaModuleImpl build() {
-            return new ArmaModuleImpl(modelsCount, wn, maxP, maxQ, maxBp, maxBq);
+        public ArmaModelSelector build() {
+            return new ArmaModelSelector(modelsCount, wn, maxP, maxQ, maxBp, maxBq);
         }
     }
 
@@ -95,10 +97,11 @@ class ArmaModuleImpl {
     /**
      *
      */
-    static class FastBIC implements Comparable<FastBIC> {
+    @lombok.Value
+    public static class FastBIC implements Comparable<FastBIC> {
 
-        private final SarimaModel arma;
-        private final double bic;
+        private SarimaModel arma;
+        private double BIC;
 
         /**
          *
@@ -107,107 +110,25 @@ class ArmaModuleImpl {
         FastBIC(final DoubleSeq data, final SarimaModel arma) {
             this.arma = arma;
             FastKalmanFilter fkf = new FastKalmanFilter(arma);
-            bic = fkf.fastProcessing(data, arma.getParametersCount());
+            BIC = fkf.fastProcessing(data, arma.getParametersCount());
         }
 
         @Override
         public int compareTo(FastBIC o) {
-            return Double.compare(bic, o.bic);
+            return Double.compare(BIC, o.BIC);
         }
 
-        /**
-         *
-         * @return
-         */
-        double getBIC() {
-            return bic;
-        }
-
-        /**
-         *
-         * @return
-         */
-        SarimaModel getArma() {
-            return arma;
-        }
-
-        private SarmaSpecification getSpecification() {
+        public SarmaSpecification getSpecification() {
             return arma == null ? null : arma.specification().doStationary();
         }
 
-        /**
-         *
-         * @param data
-         * @param specs
-         * @return
-         */
-        static FastBIC[] sort(final DoubleSeq data, final SarmaSpecification[] specs) {
-            List<FastBIC> hrs = new ArrayList<FastBIC>();
-            for (int i = 0; i < specs.length; ++i) {
-                HannanRissanen hr = HannanRissanen.builder().build();
-                if (hr.process(data, specs[i])) {
-                    SarimaModel m = hr.getModel();
-                    if (m.isStable(true)) {
-                        FastBIC hrbic = new FastBIC(data, m);
-                        hrs.add(hrbic);
-                    }
-                }
-            }
-            Collections.sort(hrs);
-            return hrs.toArray(new FastBIC[hrs.size()]);
-        }
-
-        static SarmaSpecification getPreferredSpecification(FastBIC[] hrs, boolean acceptwn) {
-            if (hrs.length == 0) {
-                return null;
-            }
-            if (hrs.length == 1 || acceptwn) {
-                return hrs[0].arma.specification().doStationary();
-            }
-            int idx = 0;
-            while (idx < hrs.length && hrs[idx].arma.specification().getParametersCount() == 0) {
-                ++idx;
-            }
-            return hrs[idx].arma.specification().doStationary();
-        }
-
-        static void mergeInto(FastBIC[] candidates, FastBIC[] models) {
-            int gmod = models.length;
-            int nmax = candidates.length;
-            if (nmax > gmod) {
-                nmax = gmod;
-            }
-            // insert the new specifications in the old one
-            for (int i = 0, icur = 0; i < nmax && icur < gmod; ++i) {
-                SarimaModel cur = candidates[i].getArma();
-                SarimaSpecification curSpec = cur.specification();
-                double bic = candidates[i].getBIC();
-                for (int j = icur; j < gmod; ++j) {
-                    if (models[j] == null) {
-                        models[j] = candidates[i];
-                        icur = j + 1;
-                        break;
-                    } else if (models[j].getArma().specification().equals(curSpec)) {
-                        icur = j + 1;
-                        break;
-                    } else if (models[j].getBIC() > bic) {
-                        for (int k = gmod - 1; k > j; --k) {
-                            models[k] = models[k - 1];
-                        }
-                        models[j] = candidates[i];
-                        icur = j + 1;
-                        break;
-                    }
-                }
-            }
-        }
     }
 
     /**
      *
      * @param nmod
      */
-    private ArmaModuleImpl(final int nmod, final boolean acceptwn,
+    private ArmaModelSelector(final int nmod, final boolean acceptwn,
             final int maxP, final int maxQ, final int maxBp, final int maxBq) {
         nmodels = nmod;
         this.acceptwn = acceptwn;
@@ -218,10 +139,17 @@ class ArmaModuleImpl {
     }
 
     /**
+     * @return the hrModels
+     */
+    public FastBIC[] gePreferredModels() {
+        return hrModels;
+    }
+
+    /**
      *
      */
     private void clear() {
-        hrModels = null;
+        hrModels=null;
     }
 
     /**
@@ -229,7 +157,7 @@ class ArmaModuleImpl {
      * @param idx
      * @return
      */
-    SarimaModel Arma(final int idx) {
+    public SarimaModel Arma(final int idx) {
         return hrModels[idx].getArma();
     }
 
@@ -240,7 +168,7 @@ class ArmaModuleImpl {
      * @param bd
      * @return
      */
-    SarmaSpecification select(DoubleSeq data, final int d, final int bd) {
+    private SarmaSpecification select(final int d, final int bd) {
         int idmax = nmodels;
         while (hrModels[idmax - 1] == null || hrModels[idmax - 1].getArma() == null && idmax > 0) {
             --idmax;
@@ -268,7 +196,6 @@ class ArmaModuleImpl {
         double vc22 = 0.0075 * bmax;
 
         int idpref = 0;
-        int icmod = 0;
         for (int i = 1; i < idmax; ++i) {
             SarmaSpecification cur = hrModels[i].getSpecification();
             int nr2 = cur.getP() + cur.getQ(), ns2 = cur.getBp() + cur.getBq();
@@ -290,7 +217,6 @@ class ArmaModuleImpl {
                     && nr2 > 0 && ns2 == ns1 && dbic < vc22)
                     || (ns2 < ns1 && ns2 > 0 && nr2 == nr1 && nss2 == 0 && dbic < vc2)
                     || (ns2 < ns1 && ns2 > 0 && nr2 == nr1 && dbic < vc2)) {
-                ++icmod;
                 double dc = hrModels[i].getBIC() - hrModels[0].getBIC();
                 vc11 -= dc;
                 vc2 -= dc;
@@ -315,13 +241,79 @@ class ArmaModuleImpl {
     /**
      *
      * @param data
-     * @param maxspec
+     * @param specs
+     * @return
+     */
+    static FastBIC[] sort(final DoubleSeq data, final SarmaSpecification[] specs) {
+        List<FastBIC> hrs = new ArrayList<>();
+        for (int i = 0; i < specs.length; ++i) {
+            HannanRissanen hr = HannanRissanen.builder().build();
+            if (hr.process(data, specs[i])) {
+                SarimaModel m = hr.getModel();
+                if (m.isStable(true)) {
+                    FastBIC hrbic = new FastBIC(data, m);
+                    hrs.add(hrbic);
+                }
+            }
+        }
+        Collections.sort(hrs);
+        return hrs.toArray(new FastBIC[hrs.size()]);
+    }
+
+    static SarmaSpecification getPreferredSpecification(FastBIC[] hrs, boolean acceptwn) {
+        if (hrs.length == 0) {
+            return null;
+        }
+        if (hrs.length == 1 || acceptwn) {
+            return hrs[0].arma.specification().doStationary();
+        }
+        int idx = 0;
+        while (idx < hrs.length && hrs[idx].arma.specification().getParametersCount() == 0) {
+            ++idx;
+        }
+        return hrs[idx].arma.specification().doStationary();
+    }
+
+    static void mergeInto(FastBIC[] candidates, FastBIC[] models) {
+        int gmod = models.length;
+        int nmax = candidates.length;
+        if (nmax > gmod) {
+            nmax = gmod;
+        }
+        // insert the new specifications in the old one
+        for (int i = 0, icur = 0; i < nmax && icur < gmod; ++i) {
+            SarimaModel cur = candidates[i].getArma();
+            SarimaSpecification curSpec = cur.specification();
+            double bic = candidates[i].getBIC();
+            for (int j = icur; j < gmod; ++j) {
+                if (models[j] == null) {
+                    models[j] = candidates[i];
+                    icur = j + 1;
+                    break;
+                } else if (models[j].getArma().specification().equals(curSpec)) {
+                    icur = j + 1;
+                    break;
+                } else if (models[j].getBIC() > bic) {
+                    for (int k = gmod - 1; k > j; --k) {
+                        models[k] = models[k - 1];
+                    }
+                    models[j] = candidates[i];
+                    icur = j + 1;
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @param data
+     * @param period
      * @param d
      * @param bd
      * @param seas
      * @return
      */
-    @VisibleForTesting
     public SarmaSpecification process(final DoubleSeq data, final int period, final int d, final int bd, final boolean seas) {
         clear();
         // step I
@@ -331,7 +323,7 @@ class ArmaModuleImpl {
         SarmaSpecification spec = new SarmaSpecification(period);
         SarmaSpecification cur;
 
-        hrModels = new FastBIC[nmodels];
+        hrModels=new FastBIC[nmodels];
 
         spec.setP(3);
         spec.setQ(0);
@@ -345,20 +337,20 @@ class ArmaModuleImpl {
                 }
             }
 
-            FastBIC[] hrs0 = FastBIC.sort(data, specs);
+            FastBIC[] hrs0 = sort(data, specs);
             if (0 == hrs0.length) {
                 for (int i = 0; i < specs.length; ++i) {
                     specs[i].setP(1);
                 }
-                hrs0 = FastBIC.sort(data, specs);
+                hrs0 = sort(data, specs);
                 if (0 == hrs0.length) {
                     return null;
                 }
             }
 
-            cur = FastBIC.getPreferredSpecification(hrs0, acceptwn);
+            cur = getPreferredSpecification(hrs0, acceptwn);
             if (spec.getP() <= maxP) {
-                FastBIC.mergeInto(hrs0, hrModels);
+                mergeInto(hrs0, hrModels);
             }
         } else {
             cur = spec.clone();
@@ -373,13 +365,13 @@ class ArmaModuleImpl {
             }
         }
 
-        FastBIC[] hrs1 = FastBIC.sort(data, specs);
+        FastBIC[] hrs1 = sort(data, specs);
         if (0 == hrs1.length) {
             return null;
         }
 
-        cur = FastBIC.getPreferredSpecification(hrs1, acceptwn);
-        FastBIC.mergeInto(hrs1, hrModels);
+        cur = getPreferredSpecification(hrs1, acceptwn);
+        mergeInto(hrs1, hrModels);
 
         if (seas) {
             specs = new SarmaSpecification[(maxBp + 1) * (maxBq + 1)];
@@ -391,11 +383,11 @@ class ArmaModuleImpl {
                 }
             }
 
-            FastBIC[] hrs2 = FastBIC.sort(data, specs);
+            FastBIC[] hrs2 = sort(data, specs);
             if (0 == hrs2.length) {
                 return null;
             }
-            FastBIC.mergeInto(hrs2, hrModels);
+            mergeInto(hrs2, hrModels);
         }
         if (!seas) {
             if (hrModels[1] != null && hrModels[0].arma.getParametersCount() == 0 && !acceptwn) {
@@ -404,7 +396,7 @@ class ArmaModuleImpl {
                 return hrModels[0].getSpecification();
             }
         } else {
-            return select(data, d, bd);
+            return select(d, bd);
         }
     }
 

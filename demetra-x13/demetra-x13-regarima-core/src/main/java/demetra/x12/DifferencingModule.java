@@ -344,8 +344,10 @@ public class DifferencingModule implements IDifferencingModule {
             SarimaMapping.stabilize(lastModel);
 
             IRegArimaProcessor processor = X12Utility.processor(true, eps);
-            RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class
-            ).y(data).arima(lastModel).build();
+            RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder()
+                    .y(data)
+                    .arima(lastModel)
+                    .build();
             RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima);
             if (rslt == null) {
                 throw new X13Exception("Non convergence in IDDIF");
@@ -527,8 +529,7 @@ public class DifferencingModule implements IDifferencingModule {
         //GlsSarimaMonitor monitor = new GlsSarimaMonitor();
         //monitor.setMinimizer(new ProxyMinimizer(new LevenbergMarquardtMethod()));
         SarimaSpecification spec = this.spec.clone();
-        RegArimaModel<SarimaModel> model = RegArimaModel.builder(SarimaModel.class
-        )
+        RegArimaModel<SarimaModel> model = RegArimaModel.<SarimaModel>builder()
                 .y(DoubleSeq.of(x))
                 .meanCorrection(true)
                 .arima(SarimaModel.builder(spec).setDefault().build())
@@ -563,12 +564,12 @@ public class DifferencingModule implements IDifferencingModule {
             context.estimate(eps);
         }
         ModelDescription desc = context.getDescription();
-        ModelEstimation est = context.getEstimation();
+        RegArimaEstimation<SarimaModel> estimation = context.getEstimation();
         int freq = desc.getAnnualFrequency();
         SarimaSpecification curspec = desc.specification();
         try {
             // get residuals
-            DoubleSeq res = RegArimaUtility.linearizedData(desc.regarima(), est.getConcentratedLikelihood());
+            DoubleSeq res = RegArimaUtility.linearizedData(desc.regarima(), estimation.getConcentratedLikelihood());
             if (!process(res, freq)) {
                 return airline(context);
             }

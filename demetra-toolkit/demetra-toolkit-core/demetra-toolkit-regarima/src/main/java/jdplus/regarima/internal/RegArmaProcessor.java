@@ -70,6 +70,6 @@ public class RegArmaProcessor {
             gradient[i] *= (-.5 * ndf) / objective;
         }
         RegArmaModel<S> nmodel = RegArmaModel.of(model, rslt.arma);
-        return new RegArmaEstimation<>(nmodel, objective, ok, rslt.getParameters().toArray(), gradient, hessian, ndf);
+        return new RegArmaEstimation<>(rslt.getParameters().toArray(), gradient, hessian);
     }
 }

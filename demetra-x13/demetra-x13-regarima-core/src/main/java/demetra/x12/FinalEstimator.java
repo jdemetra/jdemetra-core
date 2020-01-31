@@ -28,6 +28,8 @@ import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import static jdplus.math.linearfilters.FilterUtility.checkRoots;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 
 /**
  *
@@ -101,7 +103,7 @@ public class FinalEstimator implements IModelEstimator {
         }
         int cpr = 0, cps = 0, cqr = 0, cqs = 0;
         double tmin = cval;
-        DataBlock diag = context.getEstimation().getParametersCovariance().diagonal();
+        DataBlock diag = context.getEstimation().getMax().getInformation().diagonal();
 
         int k = -1;
         if (dpr) {

@@ -29,6 +29,8 @@ import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.data.DoubleSeq;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 
 /**
  *
@@ -189,7 +191,7 @@ class FinalEstimator implements IModelEstimator {
         int k = -1;
 //        int nnsig = 0;
         double tmin = cval;
-        DataBlock diag = context.getEstimation().getParametersCovariance().diagonal();
+        DataBlock diag = context.getEstimation().getMax().asymptoticCovariance().diagonal();
         k += spec.getP();
 //        if (spec.getP() > 0 && dpr) {
         if (spec.getP() > 0) {

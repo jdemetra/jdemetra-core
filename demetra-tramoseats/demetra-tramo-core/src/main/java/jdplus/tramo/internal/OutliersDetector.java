@@ -43,22 +43,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import jdplus.regarima.ami.IGenericOutliersDetectionModule;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import jdplus.regarima.ami.GenericOutliersDetection;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<SarimaModel> {
+public class OutliersDetector implements GenericOutliersDetection<SarimaModel> {
 
     static SingleOutlierDetector<SarimaModel> defaultOutlierDetector(){
         FastOutlierDetector detector=new FastOutlierDetector(null);
-        detector.addOutlierFactory(AdditiveOutlierFactory.FACTORY);
-        detector.addOutlierFactory(LevelShiftFactory.FACTORY_ZEROSTARTED);
-        detector.addOutlierFactory(new TransitoryChangeFactory(.7));
+        detector.setOutlierFactories(AdditiveOutlierFactory.FACTORY,
+                LevelShiftFactory.FACTORY_ZEROSTARTED,
+                new TransitoryChangeFactory(.7));
         return detector;
     }
 
@@ -69,7 +69,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         return new Builder();
     }
 
-    @BuilderPattern(OutliersDetectionModuleImpl.class)
+    @BuilderPattern(OutliersDetector.class)
     static class Builder {
 
         private double cv = 0;
@@ -112,8 +112,8 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
             return this;
         }
 
-        OutliersDetectionModuleImpl build() {
-            return new OutliersDetectionModuleImpl(sod, processor, maxRound, maxOutliers, cv, mvx);
+        OutliersDetector build() {
+            return new OutliersDetector(sod, processor, maxRound, maxOutliers, cv, mvx);
         }
     }
 
@@ -133,7 +133,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
     private DoubleSeq coeff, res;
     //
 
-    private OutliersDetectionModuleImpl(final SingleOutlierDetector sod, final IRegArimaProcessor<SarimaModel> processor,
+    private OutliersDetector(final SingleOutlierDetector sod, final IRegArimaProcessor<SarimaModel> processor,
             final int maxOutliers, final int maxRound, final double cv, final boolean mvx) {
         this.sod = sod;
         this.processor = processor;
@@ -171,10 +171,10 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
     }
 
     String[] outlierTypes() {
-        ArrayList<IOutlierFactory> factories = sod.getFactories();
-        String[] types = new String[factories.size()];
+        IOutlierFactory[] factories = sod.getOutliersFactories();
+        String[] types = new String[factories.length];
         for (int i = 0; i < types.length; ++i) {
-            types[i] = factories.get(i).getCode();
+            types[i] = factories[i].getCode();
         }
         return types;
     }
@@ -208,7 +208,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
                     }
                     int type = sod.getMaxOutlierType();
                     int pos = sod.getMaxOutlierPosition();
-                    addOutlier(pos, type, sod.coeff(pos, type));
+                    addOutlier(pos, type, sod.coefficient(pos, type));
                     if (outliers.size() == maxOutliers) {
                         break;
                     }
@@ -370,7 +370,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         outliers.add(o);
         double[] xo = new double[regarima.getObservationsCount()];
         DataBlock XO = DataBlock.of(xo);
-        sod.factory(type).fill(pos, XO);
+        sod.getOutlierFactory(type).fill(pos, XO);
         regarima = regarima.toBuilder().addX(XO).build();
         sod.exclude(pos, type);
     }
@@ -407,8 +407,8 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
      *
      * @return
      */
-    List<IOutlierFactory> factories() {
-        return Collections.unmodifiableList(sod.getFactories());
+    IOutlierFactory[] factories() {
+        return sod.getOutliersFactories();
     }
 
 }

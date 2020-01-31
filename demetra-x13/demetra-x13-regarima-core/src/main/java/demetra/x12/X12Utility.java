@@ -53,8 +53,8 @@ public class X12Utility {
                 .precision(precision)
                 .build();
     }
-    
-        public static ResidualsComputer mlComputer() {
+
+    public static ResidualsComputer mlComputer() {
         return (arma, y) -> {
             ModifiedLjungBoxFilter f = new ModifiedLjungBoxFilter();
             int n = y.length();

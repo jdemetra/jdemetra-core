@@ -13,14 +13,14 @@ import demetra.timeseries.TsDomain;
  * @author palatej
  */
 @lombok.experimental.UtilityClass
-class BenchmarkingUtility {
-    TsData constraintsByPosition(TsData highFreqSeries, TsData aggregationConstraint, int pos){
+public class BenchmarkingUtility {
+    public TsData constraintsByPosition(TsData highFreqSeries, TsData aggregationConstraint, int pos){
         TsDomain adom = highFreqSeries.getDomain().aggregateByPosition(aggregationConstraint.getTsUnit(), pos);
         adom=adom.intersection(aggregationConstraint.getDomain());
         return TsData.fitToDomain(aggregationConstraint, adom);
     }
 
-    TsData constraints(TsData highFreqSeries, TsData aggregationConstraint){
+    public TsData constraints(TsData highFreqSeries, TsData aggregationConstraint){
         TsDomain adom = highFreqSeries.getDomain().aggregate(aggregationConstraint.getTsUnit(), true);
         adom=adom.intersection(aggregationConstraint.getDomain());
         return TsData.fitToDomain(aggregationConstraint, adom);

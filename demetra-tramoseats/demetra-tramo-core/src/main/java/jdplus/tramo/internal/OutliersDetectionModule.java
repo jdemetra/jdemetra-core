@@ -35,6 +35,9 @@ import jdplus.regarima.regular.IOutliersDetectionModule;
 import jdplus.regarima.regular.ProcessingResult;
 import jdplus.regarima.regular.RegArimaModelling;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import jdplus.modelling.regression.IOutlierFactory;
 
 /**
  *
@@ -140,7 +143,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         this.ml = builder.ml;
     }
 
-    private OutliersDetectionModuleImpl make(ModelDescription desc, double cv) {
+    private OutliersDetector make(ModelDescription desc, double cv) {
         TsDomain domain = desc.getDomain();
         int test = comatip(desc);
         boolean cmvx;
@@ -153,14 +156,14 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
             cmvx = false;
         }
 
-        OutliersDetectionModuleImpl.Builder builder = OutliersDetectionModuleImpl.builder()
+        OutliersDetector.Builder builder = OutliersDetector.builder()
                 .singleOutlierDetector(factories())
                 .criticalValue(cv)
                 .maximumLikelihood(cmvx)
                 .maxOutliers(maxOutliers)
                 .maxRound(maxRound)
                 .processor(RegArimaUtility.processor(desc.getArimaComponent().defaultMapping(), true, eps));
-        OutliersDetectionModuleImpl impl = builder.build();
+        OutliersDetector impl = builder.build();
         TsDomain odom = domain.select(span);
         int start = domain.indexOf(odom.getStartPeriod()), end = start + odom.getLength();
         impl.prepare(domain.getLength());
@@ -185,15 +188,17 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
 
     private SingleOutlierDetector<SarimaModel> factories() {
         FastOutlierDetector detector = new FastOutlierDetector(null);
+        List<IOutlierFactory> factories=new ArrayList<>();
         if (ao) {
-            detector.addOutlierFactory(AdditiveOutlierFactory.FACTORY);
+            factories.add(AdditiveOutlierFactory.FACTORY);
         }
         if (ls) {
-            detector.addOutlierFactory(LevelShiftFactory.FACTORY_ZEROENDED);
+            factories.add(LevelShiftFactory.FACTORY_ZEROENDED);
         }
         if (tc) {
-            detector.addOutlierFactory(new TransitoryChangeFactory(tcrate));
+            factories.add(new TransitoryChangeFactory(tcrate));
         }
+        detector.setOutlierFactories(factories.toArray(new IOutlierFactory[factories.size()]));
         return detector;
     }
 
@@ -201,7 +206,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
     public ProcessingResult process(RegArimaModelling context, double criticalValue) {
         ModelDescription model = context.getDescription();
         TsDomain domain = model.getDomain();
-        OutliersDetectionModuleImpl impl = make(model, criticalValue);
+        OutliersDetector impl = make(model, criticalValue);
         if (impl == null) {
             return ProcessingResult.Failed;
         }

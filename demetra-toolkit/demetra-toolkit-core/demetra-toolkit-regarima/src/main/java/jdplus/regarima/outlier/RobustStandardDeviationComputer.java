@@ -20,11 +20,13 @@ import jdplus.dstats.Normal;
 import demetra.stats.ProbabilityType;
 import java.util.Arrays;
 import demetra.data.DoubleSeq;
+import demetra.design.Immutable;
 
 /**
  *
  * @author Jean Palate
  */
+@FunctionalInterface
 public interface RobustStandardDeviationComputer {
 
     /**
@@ -35,7 +37,7 @@ public interface RobustStandardDeviationComputer {
     double compute(DoubleSeq data);
 
     public static RobustStandardDeviationComputer mad() {
-        return new Mad2(50);
+        return Mad2.DEFAULT;
     }
     /**
      *
@@ -43,7 +45,7 @@ public interface RobustStandardDeviationComputer {
      * @return
      */
     public static RobustStandardDeviationComputer mad(boolean mediancorrected) {
-        return mediancorrected ? new Mad2(50) : new Mad(50);
+        return mediancorrected ? Mad2.DEFAULT : Mad.DEFAULT;
     }
 
     /**
@@ -56,7 +58,10 @@ public interface RobustStandardDeviationComputer {
         return mediancorrected ? new Mad2(centile) : new Mad(centile);
     }
 
-    static class Mad implements RobustStandardDeviationComputer {
+    @Immutable
+    static final class Mad implements RobustStandardDeviationComputer {
+        
+        public static final Mad DEFAULT=new Mad(50);
 
         private final double centile;
 
@@ -89,7 +94,10 @@ public interface RobustStandardDeviationComputer {
 
     }
 
-    static class Mad2 implements RobustStandardDeviationComputer {
+    @Immutable
+    static final class Mad2 implements RobustStandardDeviationComputer {
+
+        public static final Mad2 DEFAULT=new Mad2(50);
 
         private final double centile;
 
@@ -102,7 +110,7 @@ public interface RobustStandardDeviationComputer {
             double[] e = data.toArray();
             int n = e.length;
             Arrays.sort(e);
-            double median = 0;
+            double median;
             int n2 = n / 2;
             if (n2 * 2 == n) // n even
             {
@@ -136,28 +144,4 @@ public interface RobustStandardDeviationComputer {
 
     }
 
-//    static class Rmse implements IRobustStandardDeviationComputer {
-//
-//        private double ss;
-//        private DoubleSequence data;
-//
-//        @Override
-//        public double compute(DoubleSequence e) {
-//            data = e;
-//            ss = ssq(e);
-//            int n = data.length();
-//            return Math.sqrt(ss / n);
-//        }
-//
-//         public double get(int i) {
-//            int n = data.length();
-//            if (i >= 0 && i < n) {
-//                double e = data.get(i);
-//                return Math.sqrt((ss - e * e) / (n - 1));
-//            } else {
-//                return Math.sqrt(ss / (n - 1));
-//            }
-//        }
-//
-//    }
 }

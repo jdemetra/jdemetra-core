@@ -15,10 +15,11 @@ import demetra.data.DoubleSeq;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@FunctionalInterface
 public interface ResidualsComputer {
 
     DoubleSeq residuals(IArimaModel arma, DoubleSeq y);
-
+    
     public static ResidualsComputer defaultComputer() {
         return defaultComputer(new KalmanFilter(false));
     }

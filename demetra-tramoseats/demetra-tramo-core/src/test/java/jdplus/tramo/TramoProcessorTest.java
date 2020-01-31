@@ -87,17 +87,17 @@ public class TramoProcessorTest {
     public TramoProcessorTest() {
     }
 
-//    @Test
+    @Test
     public void testProdMissing() {
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TR5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(datamissing));
         jdplus.regarima.regular.PreprocessingModel rslt = processor.process(s, null);
         System.out.println("JD3 with missing");
-        System.out.println(rslt.getEstimation().getStatistics().getLogLikelihood());
+        System.out.println(rslt.getEstimation().statistics().getLogLikelihood());
     }
 
-//    @Test
+    @Test
     public void testProdLegacyMissing() {
         IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR5.build();
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, datamissing, true);
@@ -106,14 +106,14 @@ public class TramoProcessorTest {
         System.out.println(rslt.estimation.getStatistics().logLikelihood);
     }
 
-//    @Test
+    @Test
     public void testProd() {
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(data));
         PreprocessingModel rslt = processor.process(s, null);
         System.out.println("JD3");
-        System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+        System.out.println(rslt.getEstimation().statistics().getAdjustedLogLikelihood());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class TramoProcessorTest {
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().statistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -185,7 +185,7 @@ public class TramoProcessorTest {
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().statistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -214,7 +214,7 @@ public class TramoProcessorTest {
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().statistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -241,7 +241,7 @@ public class TramoProcessorTest {
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().statistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -268,7 +268,7 @@ public class TramoProcessorTest {
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().statistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -295,7 +295,7 @@ public class TramoProcessorTest {
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().statistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -322,7 +322,7 @@ public class TramoProcessorTest {
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().statistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -349,7 +349,7 @@ public class TramoProcessorTest {
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().statistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -389,7 +389,7 @@ public class TramoProcessorTest {
         TsData s = TsData.of(start, Doubles.of(data));
         PreprocessingModel rslt = processor.process(s, null);
         System.out.println("JD3 wald");
-        System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+        System.out.println(rslt.getEstimation().statistics().getAdjustedLogLikelihood());
     }
 
 //    @Test

@@ -144,7 +144,7 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
         DoubleSeq linearizedData = RegArimaUtility.linearizedData(regarima, concentratedLikelihood);
 
         mean = regarima.isMean();
-        return RegArimaModel.builder(regarima.arima().getClass())
+        return RegArimaModel.<M>builder()
                 .y(linearizedData)
                 .arima(regarima.arima())
                 .meanCorrection(mean)
@@ -157,7 +157,7 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
             return null;
         }
         M arima = regarima.arima();
-        RegArimaModel model = RegArimaModel.builder(arima.getClass())
+        RegArimaModel model = RegArimaModel.<M>builder()
                 .y(regarima.getY().drop(0, nback))
                 .arima(arima)
                 .meanCorrection(mean)
@@ -178,7 +178,7 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
                 yc.addAY(-est.getConcentratedLikelihood().coefficient(0), DataBlock.of(m));
                 y = yc;
             }
-            RegArimaModel model = RegArimaModel.builder(regarima.arima().getClass())
+            RegArimaModel model = RegArimaModel.<M>builder()
                     .y(y)
                     .arima(est.getModel().arima())
                     .build();

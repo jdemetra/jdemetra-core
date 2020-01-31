@@ -194,7 +194,7 @@ public class RegArimaUtility {
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();
-        return RegArimaModel.builder(SarimaModel.class)
+        return RegArimaModel.<SarimaModel>builder()
                 .arima(arima)
                 .y(data)
                 .meanCorrection(mean)
@@ -242,4 +242,14 @@ public class RegArimaUtility {
         return m;
     }
 
+    public static int defaultLjungBoxLength(final int period) {
+        switch (period) {
+            case 12:
+                return 24;
+            case 1:
+                return 8;
+            default:
+                return 4 * period;
+        }
+    }
 }

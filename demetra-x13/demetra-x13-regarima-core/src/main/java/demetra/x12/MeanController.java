@@ -18,12 +18,14 @@
 
 package demetra.x12;
 
+import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.regular.IRegressionModule;
 import jdplus.regarima.regular.ProcessingResult;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.regarima.regular.ModelDescription;
 import jdplus.regarima.regular.ModelEstimation;
 import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.sarima.SarimaModel;
 
 
 /**
@@ -44,7 +46,7 @@ public class MeanController  implements IRegressionModule{
     public ProcessingResult test(RegArimaModelling context) {
         
         ModelDescription desc=context.getDescription();
-        ModelEstimation est=context.getEstimation();
+        RegArimaEstimation<SarimaModel> est=context.getEstimation();
         boolean mean=desc.isMean();
         if (!mean){
             desc=new ModelDescription(desc);

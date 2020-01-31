@@ -28,11 +28,17 @@ import jdplus.math.matrices.Matrix;
 @lombok.Value
 public class RegArmaEstimation<S extends IArimaModel> {
 
-    private RegArmaModel<S> model;
-    private double objective;
-    private boolean converged;
+//    /**
+//     * Differenced model
+//     */
+//    private RegArmaModel<S> model;
+//    /**
+//     * Objective function
+//     */
+//    private double objective;
+//    private boolean converged;
     private double[] parameters;
     private double[] gradient;
     private Matrix hessian;
-    private int degreesOfFreedom;
+//    private int degreesOfFreedom;
 }

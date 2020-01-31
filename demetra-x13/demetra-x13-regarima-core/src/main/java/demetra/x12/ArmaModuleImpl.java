@@ -144,14 +144,13 @@ public class ArmaModuleImpl {
          */
         RegArmaBic(final DoubleSeq data, final SarmaSpecification spec, double eps) {
             IRegArimaProcessor processor = X12Utility.processor(true, eps);
-            RegArimaModel<SarimaModel> model
-                    = RegArimaModel.builder(SarimaModel.class)
+            RegArimaModel<SarimaModel> model = RegArimaModel.<SarimaModel>builder()
                     .y(data)
                     .arima(SarimaModel.builder(spec).setDefault().build())
                     .build();
             RegArimaEstimation<SarimaModel> est = processor.process(model);
             if (est != null) {
-                bic = est.statistics(0).getBIC2();
+                bic = est.statistics().getBIC2();
                 arima = est.getModel().arima();
             } else {
                 bic = NO_BIC;

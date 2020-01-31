@@ -30,31 +30,28 @@ import jdplus.modelling.regression.IOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
 import java.util.ArrayList;
-import jdplus.regarima.ami.IGenericOutliersDetectionModule;
 import jdplus.regarima.outlier.RobustStandardDeviationComputer;
 import internal.jdplus.arima.AnsleyFilter;
 import jdplus.arima.estimation.ResidualsComputer;
+import jdplus.regarima.ami.GenericOutliersDetection;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<SarimaModel> {
+class OutliersDetectionModuleImpl implements GenericOutliersDetection<SarimaModel> {
 
     static int DEF_MAXROUND = 100;
     static int DEF_MAXOUTLIERS = 50;
     static final double EPS = 1e-5;
 
     static SingleOutlierDetector<SarimaModel> defaultOutlierDetector(int period) {
-        SingleOutlierDetector sod = ExactSingleOutlierDetector.builder()
-                .robustStandardDeviationComputer(RobustStandardDeviationComputer.mad(false))
-                .armaFilter(new AnsleyFilter())
-                .residualsComputer(X12Utility.mlComputer())
-                .build();
-        sod.addOutlierFactory(AdditiveOutlierFactory.FACTORY);
-        sod.addOutlierFactory(LevelShiftFactory.FACTORY_ZEROENDED);
-        sod.addOutlierFactory(new TransitoryChangeFactory(EPS));
+        SingleOutlierDetector sod = new ExactSingleOutlierDetector(RobustStandardDeviationComputer.mad(false),
+                null, X12Utility.mlComputer());
+        sod.setOutlierFactories(AdditiveOutlierFactory.FACTORY,
+                LevelShiftFactory.FACTORY_ZEROENDED,
+                new TransitoryChangeFactory(EPS));
         return sod;
     }
 
@@ -167,10 +164,10 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
     }
 
     public String[] outlierTypes() {
-        ArrayList<IOutlierFactory> factories = sod.getFactories();
-        String[] types = new String[factories.size()];
+        IOutlierFactory[] factories = sod.getOutliersFactories();
+        String[] types = new String[factories.length];
         for (int i = 0; i < types.length; ++i) {
-            types[i] = factories.get(i).getCode();
+            types[i] = factories[i].getCode();
         }
         return types;
     }
@@ -180,7 +177,7 @@ class OutliersDetectionModuleImpl implements IGenericOutliersDetectionModule<Sar
         outliers.add(o);
         double[] xo = new double[regarima.getObservationsCount()];
         DataBlock XO = DataBlock.of(xo);
-        sod.factory(type).fill(pos, XO);
+        sod.getOutlierFactory(type).fill(pos, XO);
         regarima = regarima.toBuilder().addX(XO).build();
         sod.exclude(pos, type);
         changed = true;

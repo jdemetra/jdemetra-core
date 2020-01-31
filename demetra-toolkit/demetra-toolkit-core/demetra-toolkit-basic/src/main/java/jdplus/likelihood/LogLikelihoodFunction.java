@@ -45,13 +45,13 @@ public class LogLikelihoodFunction<T, L extends Likelihood> implements IFunction
      * Function that computes the log-likelihood
      */
     private final Function<T, L> function;
-    
+
     public LogLikelihoodFunction(final IParametricMapping<T> mapping, final Function<T, L> function) {
         this.mapping = mapping;
         this.function = function;
     }
-   
-    public IParametricMapping<T> getMapping(){
+
+    public IParametricMapping<T> getMapping() {
         return mapping;
     }
 
@@ -95,18 +95,49 @@ public class LogLikelihoodFunction<T, L extends Likelihood> implements IFunction
             }
         }
     }
-    
-    public Point point(DoubleSeq parameters){
+
+    public Point point(DoubleSeq parameters) {
         IFunctionDerivatives d = this.evaluate(parameters).derivatives();
-        return new Point(this, parameters.toArray(), d.gradient().toArray(), SymmetricMatrix.inverse(d.hessian()));
+        Matrix H = d.hessian();
+        H.chs();
+        return new Point(this, parameters.toArray(), d.gradient().toArray(), H);
     }
 
     @lombok.Value
     public static class Point<T, L extends Likelihood> {
 
+        public static <T, L extends Likelihood> Point ofNegativeLogLikelihood(LogLikelihoodFunction<T, L> function,
+                double[] p, double[] grad, Matrix hessian) {
+            double[] score;
+            if (grad.length == 0) {
+                score = grad;
+            } else {
+                score = grad.clone();
+            }
+            for (int i = 0; i < score.length; ++i) {
+                score[i] = -score[i];
+            }
+            return new Point<>(function, p, score, hessian);
+        }
+
         private LogLikelihoodFunction<T, L> function;
-        private double[] parameters, gradient;
-        private Matrix hessian;
+        /**
+         * Parameters of the log-likelihood function at this point
+         */
+        private double[] parameters;
+        /**
+         * Score (or gradient) of the log-likelihood function at this point.
+         */
+        private double[] score;
+
+        /**
+         * Observed Information matrix at this point.
+         */
+        private Matrix information;
+
+        public Matrix asymptoticCovariance() {
+            return SymmetricMatrix.inverse(information);
+        }
 
     }
 }

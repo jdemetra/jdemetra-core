@@ -137,7 +137,7 @@ public class PeriodicAirline {
 
     public Results process(double[] y, Matrix x, boolean mean, double[] periods, String[] outliers, double cv) {
         final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(periods, true, false);
-        RegArimaModel.Builder builder = RegArimaModel.builder(ArimaModel.class)
+        RegArimaModel.Builder builder = RegArimaModel.<ArimaModel>builder()
                 .y(DoubleSeq.of(y))
                 .addX(Matrix.of(x))
                 .arima(mapping.getDefault())
@@ -177,9 +177,9 @@ public class PeriodicAirline {
                 .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
                 .parameters(mapping.parametersOf((ArimaModel) rslt.getModel().arima()).toArray())
                 .regarima(rslt.getModel())
-                .parametersCovariance(rslt.getMax().getHessian())
-                .score(rslt.getMax().getGradient())
-                .statistics(rslt.statistics(0))
+                .parametersCovariance(rslt.getMax().asymptoticCovariance())
+                .score(rslt.getMax().getScore())
+                .statistics(rslt.statistics())
                 .outliers(o)
                 .linearized(rslt.linearizedSeries().toArray())
                 .build();

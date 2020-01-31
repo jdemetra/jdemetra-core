@@ -27,7 +27,6 @@ import demetra.design.Development;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.SymmetricMatrix;
 import demetra.timeseries.regression.PreadjustmentVariable;
 import demetra.timeseries.regression.ITsVariable;
 import jdplus.modelling.regression.Regression;
@@ -35,7 +34,6 @@ import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.ami.TransformedSeries;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
-import jdplus.stats.tests.NiidTests;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.LengthOfPeriodType;
@@ -50,7 +48,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
-import demetra.data.Doubles;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 
@@ -96,7 +93,6 @@ public final class ModelDescription {
     // Caching
     private ITsVariable[] regressionVariables;
     private TransformedSeries transformedSeries;
-    private RegArimaModel<SarimaModel> regarima;
 
     public static ModelDescription dummyModel() {
         return new ModelDescription();
@@ -130,7 +126,6 @@ public final class ModelDescription {
         this.logTransformation = desc.logTransformation;
         this.lpTransformation = desc.lpTransformation;
         this.transformedSeries = desc.transformedSeries;
-        this.regarima = desc.regarima;
         this.regressionVariables = desc.regressionVariables;
     }
 
@@ -187,40 +182,31 @@ public final class ModelDescription {
         }
     }
 
-    private void buildRegarima() {
-        if (regarima == null) {
-            buildTransformation();
-            buildRegressionVariables();
-            RegArimaModel.Builder builder = RegArimaModel.builder(SarimaModel.class)
-                    .y(DoubleSeq.of(transformedSeries.data))
-                    .missing(transformedSeries.missing)
-                    .arima(arima.getModel())
-                    .meanCorrection(arima.isMean());
-            for (ITsVariable v : regressionVariables) {
-                builder.addX(getX(v));
-            }
-            regarima = builder.build();
+    public RegArimaModel<SarimaModel> regarima() {
+        buildTransformation();
+        buildRegressionVariables();
+        RegArimaModel.Builder builder = RegArimaModel.<SarimaModel>builder()
+                .y(DoubleSeq.of(transformedSeries.data))
+                .missing(transformedSeries.missing)
+                .arima(arima.getModel())
+                .meanCorrection(arima.isMean());
+        for (ITsVariable v : regressionVariables) {
+            builder.addX(getX(v));
         }
+        return builder.build();
     }
 
     private void invalidateRegarima() {
         this.regressionVariables = null;
-        this.regarima = null;
     }
 
     private void invalidateTransformation() {
         this.transformedSeries = null;
-        this.regarima = null;
     }
 
     public ITsVariable[] regressionVariables() {
         buildRegressionVariables();
         return regressionVariables;
-    }
-
-    public RegArimaModel<SarimaModel> regarima() {
-        buildRegarima();
-        return regarima;
     }
 
     public Variable variable(String name) {
@@ -296,7 +282,7 @@ public final class ModelDescription {
         return variables.stream()
                 .anyMatch(var -> var.getName().equals(name))
                 || preadjustmentVariables.stream()
-                .anyMatch(var -> var.getVariable().equals(name));
+                        .anyMatch(var -> var.getVariable().equals(name));
     }
 
     public void setLogTransformation(boolean log) {
@@ -373,11 +359,7 @@ public final class ModelDescription {
     }
 
     public SarimaModel arima() {
-        if (regarima != null) {
-            return regarima.arima();
-        } else {
-            return arima.getModel();
-        }
+        return arima.getModel();
     }
 
     public void setSpecification(SarimaSpecification spec) {
@@ -386,22 +368,16 @@ public final class ModelDescription {
             transformedSeries = null;
             buildTransformation();
         }
-        if (regarima != null) {
-            regarima = RegArimaModel.of(regarima, arima.getModel());
-        }
     }
 
     public void setAirline(boolean seas) {
-        int period=getAnnualFrequency();
-        SarimaSpecification s = seas? SarimaSpecification.airline(period)
+        int period = getAnnualFrequency();
+        SarimaSpecification s = seas ? SarimaSpecification.airline(period)
                 : SarimaSpecification.m011(period);
         arima.setSpecification(s);
         if (transformedSeries != null) {
             transformedSeries = null;
             buildTransformation();
-        }
-        if (regarima != null) {
-            regarima = RegArimaModel.of(regarima, arima.getModel());
         }
     }
 
@@ -470,9 +446,6 @@ public final class ModelDescription {
 
     public void setMean(boolean mean) {
         this.arima.setMean(mean);
-        if (regarima != null && mean != regarima.isMean()) {
-            regarima = regarima.toBuilder().meanCorrection(mean).build();
-        }
     }
 
     public void addPreadjustmentVariable(PreadjustmentVariable... var) {
@@ -486,7 +459,6 @@ public final class ModelDescription {
     public boolean removeVariable(Predicate<Variable> pred) {
         if (variables.removeIf(pred.and(var -> !var.isPrespecified()))) {
             regressionVariables = null;
-            regarima = null;
             return true;
         } else {
             return false;
@@ -538,11 +510,10 @@ public final class ModelDescription {
         return cur < regressionVariables.length ? pos : -1;
     }
 
-    public ModelEstimation estimate(IRegArimaProcessor<SarimaModel> processor) {
+    public RegArimaEstimation<SarimaModel> estimate(IRegArimaProcessor<SarimaModel> processor) {
 
         RegArimaModel<SarimaModel> model = regarima();
         int np = arima.getFreeParametersCount();
-        int allp = arima.getParametersCount();
         RegArimaEstimation<SarimaModel> rslt;
         if (arima.isDefined()) {
             rslt = processor.optimize(model);
@@ -550,37 +521,43 @@ public final class ModelDescription {
             rslt = processor.process(model);
         }
         // update current description
-        regarima = rslt.getModel();
         int p = this.getAnnualFrequency();
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
-        Matrix J = Matrix.EMPTY;
-        DoubleSeq score = Doubles.EMPTY;
+//        Matrix J = Matrix.EMPTY;
+//        DoubleSeq score = Doubles.EMPTY;
         if (max != null) {
-            double[] gradient = max.getGradient();
-            Matrix hessian = rslt.getMax().getHessian();
-            score = DoubleSeq.of(gradient == null ? DoubleSeq.EMPTYARRAY : gradient);
-            J = hessian == null ? null : SymmetricMatrix.inverse(hessian);
-            if (np < allp) {
-                J = expand(J);
-            }
-            arima.setFreeParameters(regarima.arima().parameters(), ParameterType.Estimated);
+//            double[] gradient = max.getGradient();
+//            Matrix hessian = rslt.getMax().getHessian();
+//            score = DoubleSeq.of(gradient == null ? DoubleSeq.EMPTYARRAY : gradient);
+//            J = hessian == null ? null : SymmetricMatrix.inverse(hessian);
+//            if (np < allp) {
+//                J = expand(J);
+//            }
+            arima.setFreeParameters(DoubleSeq.of(max.getParameters()), ParameterType.Estimated);
         }
-        NiidTests tests = NiidTests.builder()
-                .data(rslt.getConcentratedLikelihood().e())
-                .period(p)
-                .k(calcLBLength(p))
-                .ks(2)
-                .seasonal(p > 1)
-                .hyperParametersCount(np)
+//        NiidTests tests = NiidTests.builder()
+//                .data(rslt.getConcentratedLikelihood().e())
+//                .period(p)
+//                .k(calcLBLength(p))
+//                .ks(2)
+//                .seasonal(p > 1)
+//                .hyperParametersCount(np)
+//                .build();
+        return RegArimaEstimation.<SarimaModel>builder()
+                .model(model)
+                .concentratedLikelihood(rslt.getConcentratedLikelihood())
+                .max(max)
+                .nparams(np)
+                .llAdjustment(transformation().transformationCorrection)
                 .build();
 
-        return ModelEstimation.builder()
-                .concentratedLikelihood(rslt.getConcentratedLikelihood())
-                .statistics(rslt.statistics(transformedSeries.getTransformationCorrection()))
-                .score(score)
-                .parametersCovariance(J)
-                .tests(tests)
-                .build();
+//        return ModelEstimation.builder()
+//                .concentratedLikelihood(rslt.getConcentratedLikelihood())
+//                .statistics(rslt.statistics(transformedSeries.getTransformationCorrection()))
+//                .score(score)
+//                .parametersCovariance(J)
+//                .tests(tests)
+//                .build();
     }
 
     private Matrix expand(Matrix cov) {
@@ -616,18 +593,6 @@ public final class ModelDescription {
         desc1.buildRegressionVariables();
         desc2.buildRegressionVariables();
         return Arrays.deepEquals(desc1.regressionVariables, desc2.regressionVariables);
-    }
-
-    private static int calcLBLength(final int freq) {
-        int n;
-        switch (freq) {
-            case 12:
-                return 24;
-            case 1:
-                return 8;
-            default:
-                return 4 * freq;
-        }
     }
 
 }

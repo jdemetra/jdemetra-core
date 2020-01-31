@@ -39,6 +39,7 @@ import jdplus.regarima.regular.ModelEstimation;
 import jdplus.regarima.regular.RegressionVariablesTest;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
+import jdplus.regarima.RegArimaEstimation;
 
 /**
  *
@@ -367,7 +368,7 @@ public class X12Preprocessor implements IPreprocessor {
         int naut = (int) desc.variables().filter(v -> v.isOutlier(false)).count();
 
         ModelDescription desc0 = reference.getDescription();
-        ModelEstimation estimation0 = reference.getEstimation();
+        RegArimaEstimation<SarimaModel> estimation0 = reference.getEstimation();
 
         int naut0 = (int) desc0.variables().filter(v -> v.isOutlier(false)).count();
         SarimaSpecification spec0 = desc0.specification(),

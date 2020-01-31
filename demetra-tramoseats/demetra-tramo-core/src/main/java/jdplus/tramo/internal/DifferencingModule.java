@@ -339,7 +339,7 @@ public class DifferencingModule implements IDifferencingModule {
         if (usedefault || ml || useml) {
             lastModel=SarimaMapping.stabilize(lastModel);
             IRegArimaProcessor processor = TramoUtility.processor(true, eps);
-            RegArimaModel<SarimaModel> regarima = RegArimaModel.builder(SarimaModel.class).y(data).arima(lastModel).build();
+            RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(data).arima(lastModel).build();
             RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima);
             if (rslt == null) {
                 throw new TramoException("Non convergence in ESPDIF");
@@ -508,7 +508,7 @@ public class DifferencingModule implements IDifferencingModule {
         ModelDescription desc = context.getDescription();
         if (context.needEstimation())
             context.estimate(eps);
-        ModelEstimation estimation = context.getEstimation();
+        RegArimaEstimation<SarimaModel> estimation = context.getEstimation();
 
         int freq = desc.getAnnualFrequency();
         try {

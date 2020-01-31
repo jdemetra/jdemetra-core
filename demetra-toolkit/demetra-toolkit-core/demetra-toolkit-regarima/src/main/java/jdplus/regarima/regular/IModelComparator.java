@@ -19,6 +19,9 @@
 package jdplus.regarima.regular;
 
 import demetra.design.Development;
+import jdplus.arima.IArimaModel;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.sarima.SarimaModel;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -30,12 +33,13 @@ public interface IModelComparator {
 
     /**
      * 
+     * @param <M>
      * @param reference Reference model. Could be null
      * @param models Alternative models
      * @return -1 if the preferred model is the reference, 
      * the index of the alternative model in the array otherwise
      */
-    int compare(ModelEstimation reference, @NonNull ModelEstimation[] models);
+    <M extends IArimaModel> int compare(RegArimaEstimation<M> reference, @NonNull RegArimaEstimation<M>[] models);
 
     /**
      * 
@@ -43,5 +47,5 @@ public interface IModelComparator {
      * @param alternative Alternative model
      * @return -1 if the preferred model is the reference, 0 otherwise
      */
-    int compare(@NonNull ModelEstimation reference, @NonNull ModelEstimation alternative);
+    <M extends IArimaModel> int compare(@NonNull RegArimaEstimation<M> reference, @NonNull RegArimaEstimation<M> alternative);
 }

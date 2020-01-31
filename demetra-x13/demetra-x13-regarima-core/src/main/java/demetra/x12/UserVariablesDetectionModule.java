@@ -32,6 +32,7 @@ import jdplus.sarima.SarimaModel;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.timeseries.regression.IUserTsVariable;
+import jdplus.regarima.RegArimaEstimation;
 
 /**
  *
@@ -87,7 +88,7 @@ public class UserVariablesDetectionModule implements IRegressionModule {
     public ProcessingResult test(RegArimaModelling context) {
 
         ModelDescription description = context.getDescription();
-        ModelEstimation est = context.getEstimation();
+        RegArimaEstimation<SarimaModel> est = context.getEstimation();
         IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(description.getArimaComponent().defaultMapping(), true, eps);
 
         // builds models with and without user variables 
@@ -98,7 +99,7 @@ public class UserVariablesDetectionModule implements IRegressionModule {
             ModelDescription udesc = new ModelDescription(nudesc);
             nudesc.addVariable(new Variable(users[i], "user-"+(i+1), false));
 
-            ModelEstimation nuest, uest;
+            RegArimaEstimation<SarimaModel> nuest, uest;
             if (removed || est == null) {
                 nuest = nudesc.estimate(processor);
             } else {

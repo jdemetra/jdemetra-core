@@ -198,8 +198,8 @@ public class ArmaModule implements IArmaModule {
         this.seasonal=builder.seasonal;
     }
 
-    private ArmaModuleImpl createModule(SarimaSpecification maxspec) {
-        return ArmaModuleImpl.builder()
+    private ArmaModelSelector createModule(SarimaSpecification maxspec) {
+        return ArmaModelSelector.builder()
                 .acceptWhiteNoise(wn)
                 .maxP(maxspec.getP())
                 .maxQ(maxspec.getQ())
@@ -227,7 +227,7 @@ public class ArmaModule implements IArmaModule {
         SarimaSpecification maxspec = calcmaxspec(desc.getAnnualFrequency(),
                 inic, curspec.getD(), curspec.getBd(), seasonal);
         DoubleSeq res = RegArimaUtility.olsResiduals(desc.regarima());
-        ArmaModuleImpl impl = createModule(maxspec);
+        ArmaModelSelector impl = createModule(maxspec);
         SarmaSpecification nspec = impl.process(res, desc.getAnnualFrequency(), maxspec.getD(), maxspec.getBd(), seasonal);
         if (nspec.equals(curspec.doStationary())) {
             return ProcessingResult.Unchanged;
@@ -246,7 +246,7 @@ public class ArmaModule implements IArmaModule {
         }
         SarimaSpecification maxspec = calcmaxspec(curSpec.getPeriod(), inic, curSpec.getD(), curSpec.getBd(), seas);
         DoubleSeq res = RegArimaUtility.olsResiduals(regarima);
-        ArmaModuleImpl impl = createModule(maxspec);
+        ArmaModelSelector impl = createModule(maxspec);
         SarmaSpecification spec = impl.process(res, curSpec.getPeriod(), curSpec.getD(), curSpec.getBd(), curSpec.getPeriod() > 1);
         if (spec == null) {
             curSpec.setDefault(seas);

@@ -75,7 +75,7 @@ public class SeasonalFTest {
         int period = input.getAnnualFrequency();
         SarimaSpecification rspec = SarimaSpecification.m011(period);
         SarimaModel arima = SarimaModel.builder(rspec).build();
-        return RegArimaModel.builder(SarimaModel.class)
+        return RegArimaModel.<SarimaModel>builder()
                 .y(input.getValues())
                 .arima(arima)
                 .meanCorrection(true);

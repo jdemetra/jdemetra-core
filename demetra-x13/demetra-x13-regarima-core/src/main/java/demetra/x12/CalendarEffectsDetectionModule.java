@@ -32,6 +32,7 @@ import jdplus.sarima.SarimaModel;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
+import jdplus.regarima.RegArimaEstimation;
 
 /**
  *
@@ -125,8 +126,8 @@ public class CalendarEffectsDetectionModule implements IRegressionModule {
             }
         }
 
-        ModelEstimation tdest = tddesc.estimate(processor);
-        ModelEstimation ntdest = ntddesc.estimate(processor);
+        RegArimaEstimation<SarimaModel> tdest = tddesc.estimate(processor);
+        RegArimaEstimation<SarimaModel> ntdest = ntddesc.estimate(processor);
 
         boolean changed = false;
         if (comparator.compare(ntdest, tdest) == 0) {
