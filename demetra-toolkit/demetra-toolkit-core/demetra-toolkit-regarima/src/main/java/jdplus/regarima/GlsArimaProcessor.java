@@ -29,11 +29,11 @@ import jdplus.regarima.internal.RegArmaEstimation;
 import jdplus.regarima.internal.RegArmaProcessor;
 
 /**
- *
+ * Generic module for estimation of RegArima models
  * @author Jean Palate
  * @param <M>
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Beta)
 public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProcessor<M> {
 
     @BuilderPattern(GlsArimaProcessor.class)

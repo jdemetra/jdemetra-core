@@ -16,6 +16,7 @@
  */
 package jdplus.regarima;
 
+import demetra.design.Development;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.sarima.SarimaModel;
@@ -27,6 +28,7 @@ import jdplus.regsarima.RegSarimaProcessor;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
+@Development(status = Development.Status.Beta)
 public class RegArimaToolkit {
 
     RegArimaEstimation<SarimaModel> robustEstimation(RegArimaModel<SarimaModel> regarima){

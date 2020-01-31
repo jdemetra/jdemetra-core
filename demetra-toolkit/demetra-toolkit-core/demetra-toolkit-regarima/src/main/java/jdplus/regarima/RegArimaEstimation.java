@@ -28,15 +28,14 @@ import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.sarima.SarimaModel;
 import java.util.List;
 import java.util.function.Function;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 
 /**
- *
+ * RegArimaEstimation. Main results
  * @param <M>
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Beta)
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder")
 public class RegArimaEstimation<M extends IArimaModel> {
@@ -58,8 +57,16 @@ public class RegArimaEstimation<M extends IArimaModel> {
      */
     private LogLikelihoodFunction.Point<RegArimaModel<M>, ConcentratedLikelihoodWithMissing> max;
 
-    
+    /**
+     * Adjustment of the likelihood when the initial observations have been 
+     * transformed before estimation (log...). 0 if unused.
+     */
     private double llAdjustment;
+    
+    /**
+     * Number of parameters in the model. Should be identical to the number of parameters in max.
+     * Only useful when the max is not computed.
+     */
     private int nparams;
 
 

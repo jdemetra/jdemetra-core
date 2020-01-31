@@ -34,7 +34,7 @@ import jdplus.likelihood.LogLikelihoodFunction;
  * @author palatej
  */
 @lombok.experimental.UtilityClass
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Beta)
 public class ApiUtility {
 
     public <S extends IArimaModel, R> demetra.modelling.regarima.RegArimaEstimation<R> toApi(RegArimaEstimation<S> regarima, Function<S, R> fn) {

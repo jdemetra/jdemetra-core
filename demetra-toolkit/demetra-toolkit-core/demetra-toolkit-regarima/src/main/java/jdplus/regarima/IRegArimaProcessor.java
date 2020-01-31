@@ -22,7 +22,7 @@ import demetra.design.Development;
 
 
 /**
- * 
+ * Defines the generic interface for the actual estimation of a RegArima model
  * @param <S>
  * @author Jean Palate
  */
