@@ -92,7 +92,7 @@ public class ApiUtility {
             int ndf = ll.degreesOfFreedom() - nhp;
             double sig2 = ll.ssq() / ndf;
             DoubleSeq mvar = ll.missingUnscaledVariances();
-            DoubleSeq mval = ll.missingEstimates();
+            DoubleSeq mval = ll.missingCorrections();
             for (int i = 0; i < missing.length; ++i) {
                 me[i] = new MissingValueEstimation(missing[i], mval.get(i), Math.sqrt(mvar.get(i) / sig2));
             }

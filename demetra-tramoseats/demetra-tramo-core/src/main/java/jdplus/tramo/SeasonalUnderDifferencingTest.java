@@ -16,10 +16,10 @@
  */
 package jdplus.tramo;
 
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.PreprocessingModel;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.data.DoubleSeq;
@@ -46,7 +46,7 @@ class SeasonalUnderDifferencingTest extends ModelController {
             return ProcessingResult.Unchanged;
         }
         RegArimaModelling scontext = buildNewModel(modelling);
-        PreprocessingModel smodel = scontext.build();
+        ModelEstimation smodel = scontext.build();
         if (smodel == null) {
             return ProcessingResult.Failed;
         }
@@ -69,15 +69,14 @@ class SeasonalUnderDifferencingTest extends ModelController {
     }
 
     private RegArimaModelling buildNewModel(RegArimaModelling context) {
-        RegArimaModelling ncontext = new RegArimaModelling();
-        ModelDescription ndesc = new ModelDescription(context.getDescription());
+        ModelDescription ndesc = ModelDescription.copyOf(context.getDescription());
         SarimaSpecification spec = ndesc.specification();
         spec.setBp(0);
         spec.setBd(1);
         spec.setBq(1);
         ndesc.setSpecification(spec);
         ndesc.setMean(false);
-        ncontext.setDescription(ndesc);
+        RegArimaModelling ncontext = RegArimaModelling.of(ndesc);
         // estimate the new model
         if (!estimate(ncontext, false)) {
             return null;
@@ -95,11 +94,10 @@ class SeasonalUnderDifferencingTest extends ModelController {
         spec.setBp(0);
         spec.setBd(1);
         spec.setBq(1);
-        RegArimaModelling ncontext = new RegArimaModelling();
-        ModelDescription ndesc = new ModelDescription(description);
+        ModelDescription ndesc = ModelDescription.copyOf(description);
         ndesc.setSpecification(spec);
         ndesc.setMean(false);
-        ncontext.setDescription(ndesc);
+        RegArimaModelling ncontext = RegArimaModelling.of(ndesc);
         // estimate the new model
         if (!estimate(ncontext, false)) {
             return false;

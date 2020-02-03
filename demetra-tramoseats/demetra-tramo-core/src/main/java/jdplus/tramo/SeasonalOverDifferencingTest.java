@@ -16,8 +16,8 @@
  */
 package jdplus.tramo;
 
-import jdplus.regarima.regular.RegArimaModelling;
-import jdplus.regarima.regular.SeasonalFTest;
+import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.SeasonalFTest;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.timeseries.TsData;

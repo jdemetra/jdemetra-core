@@ -19,28 +19,31 @@ package jdplus.regarima;
 
 import jdplus.arima.IArimaModel;
 import demetra.design.Development;
+import jdplus.arima.estimation.IArimaMapping;
 
 
 /**
  * Defines the generic interface for the actual estimation of a RegArima model
- * @param <S>
+ * @param <M>
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IRegArimaProcessor<S extends IArimaModel> {
+public interface IRegArimaProcessor<M extends IArimaModel> {
 
     /**
      * 
      * @param regs
+     * @param mapping
      * @return
      */
-    public RegArimaEstimation<S> optimize(final RegArimaModel<S> regs);
+    public RegArimaEstimation<M> optimize(final RegArimaModel<M> regs, IArimaMapping<M> mapping);
 
     /**
      *
      * @param regs
+     * @param mapping
      * @return
      */
-    public RegArimaEstimation<S> process(final RegArimaModel<S> regs);
+    public RegArimaEstimation<M> process(final RegArimaModel<M> regs, IArimaMapping<M> mapping);
 
 }

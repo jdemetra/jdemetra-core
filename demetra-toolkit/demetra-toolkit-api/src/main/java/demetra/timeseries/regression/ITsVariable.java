@@ -5,6 +5,8 @@
  */
 package demetra.timeseries.regression;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -19,11 +21,11 @@ public interface ITsVariable {
     int dim();
 
     public static int dim(@NonNull ITsVariable... vars) {
-        int nvars = 0;
-        for (int i = 0; i < vars.length; ++i) {
-            nvars += vars[i].dim();
-        }
-        return nvars;
+        return dim(Arrays.stream(vars));
+    }
+
+    public static int dim(@NonNull Stream<ITsVariable> vars) {
+        return vars.mapToInt(var->var.dim()).sum();
     }
 
     public static String nextName(String name) {

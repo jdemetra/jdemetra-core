@@ -16,10 +16,10 @@
  */
 package jdplus.tramo;
 
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.PreprocessingModel;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
 import demetra.arima.SarimaSpecification;
 import jdplus.stats.AutoCovariances;
 import demetra.data.DoubleSeq;
@@ -44,7 +44,7 @@ class RegularUnderDifferencingTest2 extends ModelController {
             return ProcessingResult.Unchanged;
         }
         RegArimaModelling ncontext = buildNewModel(modelling);
-        PreprocessingModel nmodel = ncontext.build();
+        ModelEstimation nmodel = ncontext.build();
         if (nmodel == null) {
             return ProcessingResult.Failed;
         }
@@ -80,8 +80,7 @@ class RegularUnderDifferencingTest2 extends ModelController {
 
     private RegArimaModelling buildNewModel(RegArimaModelling modelling) {
         ModelDescription desc = modelling.getDescription();
-        RegArimaModelling ncontext = new RegArimaModelling();
-        ModelDescription ndesc = new ModelDescription(desc);
+        ModelDescription ndesc = ModelDescription.copyOf(desc);
         SarimaSpecification spec = desc.specification();
         if (spec.getD() == 2) {
             if (spec.getP() == 3) {
@@ -99,7 +98,7 @@ class RegularUnderDifferencingTest2 extends ModelController {
             ndesc.setSpecification(spec);
             ndesc.setMean(false);
         }
-        ncontext.setDescription(ndesc);
+        RegArimaModelling ncontext = RegArimaModelling.of(ndesc);
         // estimate the new model
         if (!estimate(ncontext, true)) {
             return null;

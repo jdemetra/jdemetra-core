@@ -27,11 +27,11 @@ import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regarima.regular.IDifferencingModule;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.ModelEstimation;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.IDifferencingModule;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import jdplus.tramo.TramoException;
@@ -340,7 +340,7 @@ public class DifferencingModule implements IDifferencingModule {
             lastModel=SarimaMapping.stabilize(lastModel);
             IRegArimaProcessor processor = TramoUtility.processor(true, eps);
             RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(data).arima(lastModel).build();
-            RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima);
+            RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima, null);
             if (rslt == null) {
                 throw new TramoException("Non convergence in ESPDIF");
             }

@@ -21,15 +21,16 @@ import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.regression.ModellingContext;
-import jdplus.regarima.regular.IPreprocessor;
-import jdplus.regarima.regular.IRegressionModule;
-import jdplus.regarima.regular.SeasonalityDetector;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.RegArimaModelling;
-import jdplus.regarima.regular.PreprocessingModel;
+import jdplus.regsarima.regular.IPreprocessor;
+import jdplus.regsarima.regular.IRegressionModule;
+import jdplus.regsarima.regular.SeasonalityDetector;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.ModelEstimation;
 import demetra.arima.SarimaSpecification;
 import demetra.timeseries.TsData;
-import jdplus.regarima.regular.ProcessingResult;
+import demetra.timeseries.TsDomain;
+import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.sarima.SarimaModel;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.tramo.AutoModelSpec;
@@ -90,7 +91,7 @@ public class TramoProcessor implements IPreprocessor {
     private final SeasonalityController scontroller;
     private final List<ModelController> controllers = new ArrayList<>();
 
-    private PreprocessingModel refAirline, refAuto;
+    private RegArimaModelling refAirline, refAuto;
     private ModelStatistics refStats;
 
     private int pass = 0, round = 0;
@@ -99,7 +100,7 @@ public class TramoProcessor implements IPreprocessor {
     private boolean needOutliers;
     private boolean needAutoModelling;
 
-    private TramoProcessor(TramoSpec spec, ModellingContext context) {        
+    private TramoProcessor(TramoSpec spec, ModellingContext context) {
         this.spec = spec;
         this.modellingContext = context;
         this.options = readAmiOptions(spec);
@@ -198,7 +199,7 @@ public class TramoProcessor implements IPreprocessor {
                 .ub2(amiSpec.getUb2())
                 .seasonal(context.seasonal)
                 .precision(options.intermediatePrecision)
-                .initial(round==1)
+                .initial(round == 1)
                 .build();
     }
 
@@ -209,17 +210,18 @@ public class TramoProcessor implements IPreprocessor {
     }
 
     @Override
-    public PreprocessingModel process(TsData originalTs, RegArimaModelling modelling) {
+    public ModelEstimation process(TsData originalTs, RegArimaModelling modelling) {
 //        clear();
-        if (modelling == null) {
-            modelling = new RegArimaModelling();
-        }
-        ModelDescription desc = build(originalTs, modelling.getLog());
+        ModelDescription desc = build(originalTs, null);
         if (desc == null) {
             throw new TramoException("Initialization failed");
         }
-        modelling.setDescription(desc);
-        PreprocessingModel rslt = ami(modelling);
+        if (modelling == null) {
+            modelling = RegArimaModelling.of(desc);
+        } else {
+            modelling.setDescription(desc);
+        }
+        ModelEstimation rslt = ami(modelling);
 //        if (rslt != null) {
 //            rslt.info_ = context.information;
 //            rslt.addProcessingInformation(context.processingLog);
@@ -238,7 +240,7 @@ public class TramoProcessor implements IPreprocessor {
 
     }
 
-    private PreprocessingModel ami(RegArimaModelling modelling) {
+    private ModelEstimation ami(RegArimaModelling modelling) {
 
         // Test the seasonality
         testSeasonality(modelling);
@@ -310,9 +312,9 @@ public class TramoProcessor implements IPreprocessor {
         SarimaSpecification curspec = desc.specification();
         boolean curMean = desc.isMean();
         if (needDifferencing(desc)) {
-            changed=execDifferencing(modelling) == ProcessingResult.Changed;
+            changed = execDifferencing(modelling) == ProcessingResult.Changed;
             SarimaSpecification nspec = desc.specification();
-            if (pass == 1 && nspec.getDifferenceOrder() != curspec.getDifferenceOrder() ) {
+            if (pass == 1 && nspec.getDifferenceOrder() != curspec.getDifferenceOrder()) {
                 desc.removeVariable(var -> var.isOutlier(false));
                 modelling.clearEstimation();
             }
@@ -346,9 +348,9 @@ public class TramoProcessor implements IPreprocessor {
             needAutoModelling = isAutoModelling();
             ++round;
             ++pass;
-            refAirline = modelling.build();
-            refAuto = refAirline;
-            refStats = ModelStatistics.of(refAuto);
+            refAirline = RegArimaModelling.copyOf(modelling);
+            refAuto = RegArimaModelling.copyOf(modelling);
+            refStats = ModelStatistics.of(refAuto.build());
             double lb = refStats.getLjungBoxPvalue();
             return options.acceptAirline && (1 - lb) < options.ljungBoxLimit;
         }
@@ -471,7 +473,7 @@ public class TramoProcessor implements IPreprocessor {
         if (curspec.getParametersCount() == 0 && pass >= 3) {
             curspec.setQ(1);
             desc.setSpecification(curspec);
-         }
+        }
         return rslt;
     }
 
@@ -480,7 +482,7 @@ public class TramoProcessor implements IPreprocessor {
     }
 
     private void restore(RegArimaModelling context) {
-        context.set(new ModelDescription(refAuto.getDescription()), refAuto.getEstimation());
+        context.set(ModelDescription.copyOf(refAuto.getDescription(), null), refAuto.getEstimation());
     }
 //
 //    /////////////////////////////////////////////////////////////////////////////
@@ -554,7 +556,7 @@ public class TramoProcessor implements IPreprocessor {
         SarimaModel curmodel = context.getDescription().arima();
         SarimaSpecification curspec = curmodel.specification();
 
-        PreprocessingModel cur = context.build();
+        ModelEstimation cur = context.build();
         ModelStatistics stats = ModelStatistics.of(cur);
         double plbox = 1 - stats.getLjungBoxPvalue();
         double rvr = stats.getSe();
@@ -582,14 +584,14 @@ public class TramoProcessor implements IPreprocessor {
                 useprev = true;
             }
             if (!useprev) {
-                refAuto = cur;
+                refAuto = RegArimaModelling.copyOf(context);
                 refStats = stats;
             } else {
                 restore(context);
                 plbox = plbox0;
             }
         } else {
-            refAuto = cur;
+            refAuto = RegArimaModelling.copyOf(context);
             refStats = stats;
         }
 

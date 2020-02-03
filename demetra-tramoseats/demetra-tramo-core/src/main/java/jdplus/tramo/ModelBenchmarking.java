@@ -17,10 +17,10 @@
 package jdplus.tramo;
 
 import demetra.design.Development;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.PreprocessingModel;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
 import demetra.arima.SarimaSpecification;
 
 
@@ -37,9 +37,9 @@ class ModelBenchmarking extends ModelController {
     @Override
     public ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context) {
 
-        PreprocessingModel current = modelling.build();
+        ModelEstimation current = modelling.build();
 
-        SarimaSpecification spec = current.getDescription().specification();
+        SarimaSpecification spec = current.specification();
         if (spec.isAirline(context.seasonal)) {
             return ProcessingResult.Unchanged;
         }
@@ -49,19 +49,18 @@ class ModelBenchmarking extends ModelController {
         }
 
         // compute the corresponding airline model.
-        RegArimaModelling nmodelling = new RegArimaModelling();
-        ModelDescription ndesc=new ModelDescription(current.getDescription()); 
+        ModelDescription ndesc=ModelDescription.copyOf(modelling.getDescription()); 
         ndesc.setAirline(context.seasonal);
         ndesc.setMean(context.seasonal ? modelling.getDescription().isMean() : true);
         ndesc.removeVariable(var->var.isOutlier(false));
-        nmodelling.setDescription(ndesc);
+        RegArimaModelling nmodelling = RegArimaModelling.of(ndesc);
 
         if (!estimate(nmodelling, true)) {
             return ProcessingResult.Failed;
         }
 
 
-        PreprocessingModel nmodel = nmodelling.build();
+        ModelEstimation nmodel = nmodelling.build();
         ModelComparator mcmp = ModelComparator.builder().build();
         int cmp = mcmp.compare(current, nmodel);
         if (cmp < 1) {

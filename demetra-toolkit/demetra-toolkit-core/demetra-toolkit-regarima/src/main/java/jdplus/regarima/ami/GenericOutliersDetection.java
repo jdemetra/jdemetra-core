@@ -17,6 +17,7 @@
 package jdplus.regarima.ami;
 
 import jdplus.arima.IArimaModel;
+import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.RegArimaModel;
 
 /**
@@ -56,7 +57,7 @@ public interface GenericOutliersDetection<T extends IArimaModel> {
      * @return True if the processing was successful (which doesn't mean that outliers were found), 
      * false otherwise.
      */
-    boolean process(RegArimaModel<T> initialModel);
+    boolean process(RegArimaModel<T> initialModel, IArimaMapping<T> mapping);
 
     /**
      * Returns the detected outliers

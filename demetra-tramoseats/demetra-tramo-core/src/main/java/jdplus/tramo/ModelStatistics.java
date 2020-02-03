@@ -18,7 +18,7 @@ package jdplus.tramo;
 
 import demetra.design.Development;
 import demetra.likelihood.LikelihoodStatistics;
-import jdplus.regarima.regular.PreprocessingModel;
+import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.stats.AutoCovariances;
 import jdplus.stats.samples.Sample;
 import jdplus.stats.tests.LjungBox;
@@ -27,13 +27,14 @@ import jdplus.stats.tests.StatisticalTest;
 import jdplus.tramo.internal.TramoUtility;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
+import java.util.Arrays;
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
-@lombok.Builder
+@lombok.Builder(builderClassName="Builder")
 public class ModelStatistics {
 
     private int outliersCount;
@@ -52,25 +53,25 @@ public class ModelStatistics {
     private double stableVariance;
     private double stableVariancePvalue;
 
-    private static ModelStatisticsBuilder builder() {
-        return new ModelStatisticsBuilder();
+    private static Builder builder() {
+        return new Builder();
     }
 
-    public static ModelStatistics of(PreprocessingModel m) {
-        LikelihoodStatistics stats = m.getEstimation().statistics();
-        DoubleSeq e = m.getEstimation().getConcentratedLikelihood().e();
-        int p = m.getDescription().getAnnualFrequency();
+    public static ModelStatistics of(ModelEstimation m) {
+        LikelihoodStatistics stats = m.getStatistics();
+        DoubleSeq e = m.getConcentratedLikelihood().e();
+        int p = m.getAnnualFrequency();
         int n = TramoUtility.calcLBLength(p);
         int nres = e.length();
-        int nhp=m.getDescription().getArimaComponent().getFreeParametersCount();
+        int nhp=m.getFreeParametersCount();
         IntToDoubleFunction acf = AutoCovariances.autoCorrelationFunction(e, 0);
         StatisticalTest lb = new LjungBox(acf, nres)
                 .autoCorrelationsCount(n)
                 .hyperParametersCount(nhp)
                 .build();
         StatisticalTest sk = new Skewness(e).build();
-        ModelStatisticsBuilder builder = builder()
-                .outliersCount((int) m.getDescription().variables().filter(var -> var.isOutlier(false)).count())
+        Builder builder = builder()
+                .outliersCount((int) Arrays.stream(m.getVariables()).filter(var -> var.isOutlier(false)).count())
                 .observationsCount(stats.getObservationsCount())
                 .effectiveObservationsCount(stats.getEffectiveObservationsCount())
                 .bic(stats.getBICC())

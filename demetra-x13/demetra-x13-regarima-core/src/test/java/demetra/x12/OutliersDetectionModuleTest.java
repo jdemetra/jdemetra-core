@@ -5,7 +5,7 @@
  */
 package demetra.x12;
 
-import demetra.x12.OutliersDetectionModuleImpl;
+import jdplus.regsarima.ami.ExactOutliersDetector;
 import demetra.data.Data;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
@@ -19,6 +19,13 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.Ignore;
 import demetra.data.DoubleSeq;
+import static demetra.x12.OutliersDetectionModule.EPS;
+import jdplus.modelling.regression.AdditiveOutlierFactory;
+import jdplus.modelling.regression.LevelShiftFactory;
+import jdplus.modelling.regression.TransitoryChangeFactory;
+import jdplus.regarima.outlier.ExactSingleOutlierDetector;
+import jdplus.regarima.outlier.RobustStandardDeviationComputer;
+import jdplus.regarima.outlier.SingleOutlierDetector;
 import jdplus.sarima.estimation.SarimaMapping;
 
 /**
@@ -30,20 +37,29 @@ public class OutliersDetectionModuleTest {
     public OutliersDetectionModuleTest() {
     }
 
+    static SingleOutlierDetector<SarimaModel> defaultOutlierDetector(int period) {
+        SingleOutlierDetector sod = new ExactSingleOutlierDetector(RobustStandardDeviationComputer.mad(false),
+                null, X12Utility.mlComputer());
+        sod.setOutlierFactories(AdditiveOutlierFactory.FACTORY,
+                LevelShiftFactory.FACTORY_ZEROENDED,
+                new TransitoryChangeFactory(EPS));
+        return sod;
+    }
+    
     @Test
     public void testProd() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
         SarimaSpecification spec =  SarimaSpecification.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
 
-        OutliersDetectionModuleImpl od = OutliersDetectionModuleImpl.builder()
-                .singleOutlierDetector(OutliersDetectionModuleImpl.defaultOutlierDetector(12))
+        ExactOutliersDetector od = ExactOutliersDetector.builder()
+                .singleOutlierDetector(defaultOutlierDetector(12))
                 .criticalValue(3)
                 .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
                 .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());
-        od.process(regarima);
+        od.process(regarima, SarimaMapping.of(spec));
         int[][] outliers = od.getOutliers();
         for (int i = 0; i < outliers.length; ++i) {
             int[] cur = outliers[i];
@@ -62,14 +78,14 @@ public class OutliersDetectionModuleTest {
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
         System.out.println("WN");
         HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
-        OutliersDetectionModuleImpl od = OutliersDetectionModuleImpl.builder()
-                .singleOutlierDetector(OutliersDetectionModuleImpl.defaultOutlierDetector(12))
+        ExactOutliersDetector od = ExactOutliersDetector.builder()
+                .singleOutlierDetector(defaultOutlierDetector(12))
                 .criticalValue(3)
                 .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
                 .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());
-        od.process(regarima);
+        od.process(regarima, SarimaMapping.of(spec));
         int[][] outliers = od.getOutliers();
         for (int i = 0; i < outliers.length; ++i) {
             int[] cur = outliers[i];
@@ -107,14 +123,14 @@ public class OutliersDetectionModuleTest {
         for (int i = 0; i < 200; ++i) {
         SarimaSpecification spec =  SarimaSpecification.airline(12);
             SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
-            OutliersDetectionModuleImpl od = OutliersDetectionModuleImpl.builder()
-                    .singleOutlierDetector(OutliersDetectionModuleImpl.defaultOutlierDetector(12))
+            ExactOutliersDetector od = ExactOutliersDetector.builder()
+                    .singleOutlierDetector(defaultOutlierDetector(12))
                     .criticalValue(3)
                     .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
                     .build();
             RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
             od.prepare(regarima.getObservationsCount());
-            od.process(regarima);
+            od.process(regarima, SarimaMapping.of(spec));
             int[][] outliers = od.getOutliers();
         }
         long t1 = System.currentTimeMillis();

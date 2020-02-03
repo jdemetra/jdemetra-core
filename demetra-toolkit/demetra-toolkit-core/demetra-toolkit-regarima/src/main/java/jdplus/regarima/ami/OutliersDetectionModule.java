@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import jdplus.arima.estimation.IArimaMapping;
 
 /**
  *
@@ -204,15 +205,15 @@ public class OutliersDetectionModule<T extends IArimaModel>
     }
 
     @Override
-    public boolean process(RegArimaModel<T> initialModel) {
+    public boolean process(RegArimaModel<T> initialModel, IArimaMapping<T> mapping) {
         clear();
         regarima = initialModel;
         nhp = 0;
-        if (!estimateModel(true)) {
+        if (!estimateModel(mapping, true)) {
             return false;
         }
         try {
-            calc();
+            calc(mapping);
             return true;
         } catch (RuntimeException err) {
             return false;
@@ -229,7 +230,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
         sod.setBounds(start, end);
     }
 
-    private void calc() {
+    private void calc(IArimaMapping<T> mapping) {
         double max;
         exit = false;
         do {
@@ -244,7 +245,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
             int type = sod.getMaxOutlierType();
             int pos = sod.getMaxOutlierPosition();
             addOutlier(pos, type);
-            estimateModel(false);
+            estimateModel(mapping, false);
             if (!verifyModel()) {
                 cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
                 if (exit) {
@@ -259,8 +260,8 @@ public class OutliersDetectionModule<T extends IArimaModel>
         }
     }
 
-    private boolean estimateModel(boolean full) {
-        RegArimaEstimation<T> est = full ? processor.process(regarima) : processor.optimize(regarima);
+    private boolean estimateModel(IArimaMapping<T> mapping, boolean full) {
+        RegArimaEstimation<T> est = full ? processor.process(regarima, mapping) : processor.optimize(regarima, mapping);
         regarima = est.getModel();
         cll = est.getConcentratedLikelihood();
         return true;

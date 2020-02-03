@@ -20,11 +20,11 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.TransformationType;
 import jdplus.regarima.IRegArimaProcessor;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.ILogLevelModule;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.ModelEstimation;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.ILogLevelModule;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegArimaModelling;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.sarima.SarimaModel;
@@ -108,7 +108,7 @@ public class LogLevelModule implements ILogLevelModule {
         IRegArimaProcessor processor = X12Utility.processor(true, precision);
         level = model.estimate(processor);
 
-        ModelDescription logmodel = new ModelDescription(model);
+        ModelDescription logmodel = ModelDescription.copyOf(model);
         logmodel.setLogTransformation(true);
         if (adjust != LengthOfPeriodType.None) {
             logmodel.remove("lp");

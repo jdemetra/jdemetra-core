@@ -25,16 +25,17 @@ import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
-import jdplus.regarima.regular.IRegressionModule;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.IRegressionModule;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.sarima.SarimaModel;
 import java.util.Optional;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.IEasterVariable;
+import jdplus.arima.estimation.IArimaMapping;
 
 /**
  * * @author gianluca, jean Correction 22/7/2014. pre-specified Easter effect
@@ -145,10 +146,11 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
     public ProcessingResult test(RegArimaModelling context) {
 
         ModelDescription current = context.getDescription();
+        IArimaMapping<SarimaModel> mapping = current.mapping();
         IRegArimaProcessor processor = RegArimaUtility.processor(current.getArimaComponent().defaultMapping(), true, precision);
         // We compute the full model
         ModelDescription test6 = createTestModel(context, td, null);
-        RegArimaEstimation<SarimaModel> regarima6 = processor.process(test6.regarima());
+        RegArimaEstimation<SarimaModel> regarima6 = processor.process(test6.regarima(), mapping);
         ConcentratedLikelihoodWithMissing ll = regarima6.getConcentratedLikelihood();
         int nhp = test6.getArimaComponent().getFreeParametersCount();
         int df = ll.degreesOfFreedom() - nhp;
@@ -200,12 +202,12 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
             lpsel=null;
                
         ModelDescription model = createTestModel(context, tdsel, lpsel);
-        RegArimaEstimation<SarimaModel> regarima = processor.process(model.regarima());
+        RegArimaEstimation<SarimaModel> regarima = processor.process(model.regarima(), mapping);
         return update(current, model, tdsel, regarima.getConcentratedLikelihood(), nhp);
     }
 
     private ModelDescription createTestModel(RegArimaModelling context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
-        ModelDescription tmp = new ModelDescription(context.getDescription());
+        ModelDescription tmp = ModelDescription.copyOf(context.getDescription());
         tmp.setAirline(true);
         tmp.setMean(true);
         if (td != null) {
@@ -232,14 +234,14 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
             }
         }
         if (aTd!= null && lp != null) {
-            int pos = 1 + test.findPosition(lp);
+            int pos = test.findPosition(lp);
             if (Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
                 current.addVariable(new Variable(lp, "lp", false));
                 changed = true;
             }
         }
         if (easter != null) {
-            int pos = 1 + test.findPosition(easter);
+            int pos = test.findPosition(easter);
             if (Math.abs(ll.tstat(pos, nhp, true)) > teaster) {
                 current.addVariable(new Variable(easter, "easter", false));
                 changed = true;

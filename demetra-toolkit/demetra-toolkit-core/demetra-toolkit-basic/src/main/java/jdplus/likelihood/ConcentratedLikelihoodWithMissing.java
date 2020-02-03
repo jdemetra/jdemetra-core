@@ -163,7 +163,12 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
         return nmissing;
     }
 
-    public DoubleSeq missingEstimates() {
+    /**
+     * Returns the values of the additive outliers corresponding to missing.
+     * The actual estimate of a missing value if y[t]-missingCorrections[t]
+     * @return 
+     */
+    public DoubleSeq missingCorrections() {
         return nmissing == 0 ? Doubles.EMPTY : DoubleSeq.of(b, 0, nmissing);
     }
 

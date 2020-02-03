@@ -385,4 +385,6 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
     public IArimaMapping<SarimaModel> stationaryMapping() {
         return new SarimaFixedMapping(SarimaSpecification.stationary(mapper.getSpec()), DoubleSeq.of(parameters), this.fixedItems);
     }
+    
+
 }

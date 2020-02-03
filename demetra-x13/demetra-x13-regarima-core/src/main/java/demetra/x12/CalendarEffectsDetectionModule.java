@@ -20,14 +20,14 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
-import jdplus.regarima.regular.IRegressionModule;
-import jdplus.regarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.IRegressionModule;
+import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regarima.regular.AICcComparator;
-import jdplus.regarima.regular.IModelComparator;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.ModelEstimation;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regarima.AICcComparator;
+import jdplus.regsarima.regular.IModelComparator;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.sarima.SarimaModel;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
@@ -105,7 +105,7 @@ public class CalendarEffectsDetectionModule implements IRegressionModule {
         IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(description.getArimaComponent().defaultMapping(), true, eps);
 
         // builds models with and without td
-        ModelDescription ntddesc = new ModelDescription(description);
+        ModelDescription ntddesc = ModelDescription.copyOf(description, null);
         boolean removed = ntddesc.removeVariable(var->var.isTradingDays());
         if (lp != null) {
             if (ntddesc.isAdjusted()) {
@@ -116,7 +116,7 @@ public class CalendarEffectsDetectionModule implements IRegressionModule {
 
         }
 
-        ModelDescription tddesc = new ModelDescription(ntddesc);
+        ModelDescription tddesc = ModelDescription.copyOf(ntddesc);
         tddesc.addVariable(new Variable(td, "td", false));
         if (lp != null) {
             if (tddesc.isLogTransformation() && adjust != LengthOfPeriodType.None) {

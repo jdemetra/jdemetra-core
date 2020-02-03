@@ -23,14 +23,16 @@ import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
-import jdplus.regarima.regular.IRegressionModule;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.IRegressionModule;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.regarima.RegArimaUtility;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.IEasterVariable;
+import jdplus.arima.estimation.IArimaMapping;
+import jdplus.sarima.SarimaModel;
 
 /**
  *
@@ -135,10 +137,11 @@ public class AutomaticFRegressionTest implements IRegressionModule {
     public ProcessingResult test(RegArimaModelling context) {
 
         ModelDescription current = context.getDescription();
+        IArimaMapping<SarimaModel> mapping = current.mapping();
 //      First case TD=0 or Just test EE
         ModelDescription test0 = createTestModel(context, null, null);
         IRegArimaProcessor processor = RegArimaUtility.processor(current.getArimaComponent().defaultMapping(), true, precision);
-        RegArimaEstimation regarima0 = processor.process(test0.regarima());
+        RegArimaEstimation regarima0 = processor.process(test0.regarima(), mapping);
         ConcentratedLikelihoodWithMissing ll0 = regarima0.getConcentratedLikelihood();
         int nhp = test0.getArimaComponent().getFreeParametersCount();
         double SS0 = ll0.ssq();
@@ -149,7 +152,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
 
         //      Second case TD=TradindDay only
         ModelDescription test6 = createTestModel(context, td, null);
-        RegArimaEstimation regarima6 = processor.process(test6.regarima());
+        RegArimaEstimation regarima6 = processor.process(test6.regarima(), mapping);
         ConcentratedLikelihoodWithMissing ll6 = regarima6.getConcentratedLikelihood();
         double SS6 = ll6.ssq(), SSmc6 = SS6 / (ll6.degreesOfFreedom() - nhp);
         double Ftd = (SS0 - SS6) / (SSmc6 * 6);
@@ -161,7 +164,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
 
 //      Third case TD=WorkingDay only
         ModelDescription test1 = createTestModel(context, wd, null);
-        RegArimaEstimation regarima1 = processor.process(test1.regarima());
+        RegArimaEstimation regarima1 = processor.process(test1.regarima(), mapping);
         ConcentratedLikelihoodWithMissing ll1 = regarima1.getConcentratedLikelihood();
         double SS1 = ll1.ssq(), SSmc1 = SS1 / (ll1.degreesOfFreedom() - nhp);
         Ftd = (SS0 - SS1) / SSmc1;
@@ -175,20 +178,20 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         if ((pFtd6 > pFtd1) && (pFtd6 > 1 - fpvalue)) {
             // add leap year
             ModelDescription all = createTestModel(context, td, lp);
-            RegArimaEstimation regarima = processor.process(all.regarima());
+            RegArimaEstimation regarima = processor.process(all.regarima(), mapping);
             return update(current, all, td, regarima.getConcentratedLikelihood(), nhp);
         } else if (pFtd1 < 1 - fpvalue) {
             return update(current, test0, null, ll0, nhp);
         } else {
             // add leap year
             ModelDescription all = createTestModel(context, wd, lp);
-            RegArimaEstimation regarima = processor.process(all.regarima());
+            RegArimaEstimation regarima = processor.process(all.regarima(), mapping);
             return update(current, all, wd, regarima.getConcentratedLikelihood(), nhp);
         }
     }
 
     private ModelDescription createTestModel(RegArimaModelling context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
-        ModelDescription tmp = new ModelDescription(context.getDescription());
+        ModelDescription tmp = ModelDescription.copyOf(context.getDescription());
         tmp.setAirline(true);
         tmp.setMean(true);
         if (td != null) {
@@ -216,14 +219,14 @@ public class AutomaticFRegressionTest implements IRegressionModule {
             }
         }
         if (aTd != null && lp != null) {
-            int pos = 1 + test.findPosition(lp);
+            int pos = test.findPosition(lp);
             if (Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
                 current.addVariable(new Variable(lp, "lp", false));
                 changed = true;
             }
         }
         if (easter != null) {
-            int pos = 1 + test.findPosition(easter);
+            int pos = test.findPosition(easter);
             if (Math.abs(ll.tstat(pos, nhp, true)) > teaster) {
                 current.addVariable(new Variable(easter, "easter", false));
                 changed = true;

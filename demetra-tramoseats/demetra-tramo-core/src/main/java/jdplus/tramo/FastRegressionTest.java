@@ -9,12 +9,12 @@ import demetra.design.BuilderPattern;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.RegArimaModel;
-import jdplus.regarima.regular.IRegressionModule;
-import jdplus.regarima.regular.IRegressionTest;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
-import jdplus.regarima.regular.TRegressionTest;
+import jdplus.regsarima.regular.IRegressionModule;
+import jdplus.regsarima.regular.IRegressionTest;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.TRegressionTest;
 import jdplus.sarima.SarimaModel;
 import java.util.Optional;
 
@@ -73,7 +73,7 @@ public class FastRegressionTest implements IRegressionModule {
         // estimate the model.
         ModelDescription currentModel = context.getDescription();
         // make a copy.
-        ModelDescription tmpModel = new ModelDescription(currentModel);
+        ModelDescription tmpModel = ModelDescription.copyOf(currentModel);
         boolean changed = false;
         RegArimaModel<SarimaModel> regarima = tmpModel.regarima();
         ConcentratedLikelihoodWithMissing ll = context.getEstimation().getConcentratedLikelihood();
@@ -88,7 +88,7 @@ public class FastRegressionTest implements IRegressionModule {
         boolean removetd = false;
         if (td.isPresent()) {
             Variable variable = td.get();
-            int pos = start + tmpModel.findPosition(variable.getVariable());
+            int pos = tmpModel.findPosition(variable.getVariable());
             int dim = variable.getVariable().dim();
             IRegressionTest test = dim == 1 ? wdTest : tdTest;
             if (!test.accept(ll, nhp, pos, dim, null)) {
@@ -97,7 +97,7 @@ public class FastRegressionTest implements IRegressionModule {
         }
         if (removetd && lp.isPresent()) {
             Variable variable = lp.get();
-            int pos = start + tmpModel.findPosition(variable.getVariable());
+            int pos = tmpModel.findPosition(variable.getVariable());
             if (lpTest.accept(ll, nhp, pos, 1, null)) {
                 removetd = false;
             } else {
@@ -115,7 +115,7 @@ public class FastRegressionTest implements IRegressionModule {
 
         if (easter.isPresent()) {
             Variable variable = easter.get();
-            int pos = start + tmpModel.findPosition(variable.getVariable());
+            int pos =  tmpModel.findPosition(variable.getVariable());
             if (!mhTest.accept(ll, nhp, pos, 1, null)) {
                 currentModel.remove(variable.getVariable());
                 changed = true;

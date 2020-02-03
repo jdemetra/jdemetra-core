@@ -19,10 +19,10 @@ package jdplus.tramo;
 
 import jdplus.data.DataBlock;
 import demetra.math.Complex;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.ModelEstimation;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import jdplus.tramo.internal.DifferencingModule;
@@ -58,11 +58,10 @@ class RegularUnderDifferencingTest extends ModelController {
         }
         spec.setD(spec.getD() + 1);
         spec.setP(spec.getP() - 1);
-        RegArimaModelling ncontext = new RegArimaModelling();
-        ModelDescription ndesc=new ModelDescription(desc);
+        ModelDescription ndesc=ModelDescription.copyOf(desc);
         ndesc.setSpecification(spec);
         ndesc.setMean(false);
-        ncontext.setDescription(ndesc);
+        RegArimaModelling ncontext = RegArimaModelling.of(ndesc);
         if (!estimate(ncontext, false)) {
             return ProcessingResult.Failed;
         }

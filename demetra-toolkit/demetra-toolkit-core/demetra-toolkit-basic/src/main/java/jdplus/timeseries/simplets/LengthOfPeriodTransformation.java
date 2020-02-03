@@ -26,6 +26,7 @@ import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.CalendarUtility;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.data.Doubles;
+import java.util.Arrays;
 
 /**
  *
@@ -77,11 +78,11 @@ class LengthOfPeriodTransformation implements TsDataTransformation {
             return lp(data, ratio, ljacobian);
         }
     }
-    
+
     @Override
-    public double transform(TsPeriod p, double value){
+    public double transform(TsPeriod p, double value) {
         // TODO: optimize        
-        TsData s=TsData.of(p, Doubles.of(value));
+        TsData s = TsData.of(p, Doubles.of(value));
         TsData t = transform(s, null);
         return t.getValue(0);
     }
@@ -96,16 +97,68 @@ class LengthOfPeriodTransformation implements TsDataTransformation {
             for (int i = 0; i < ndays.length; ++i) {
                 double fac = ndays[i] / m;
                 data[i] *= fac;
-                if (lj != null && i >= lj.start && i < lj.end) {
-                    lj.value += Math.log(fac);
+            }
+            if (lj != null) {
+                if (lj.missing == null) {
+                    for (int i = lj.start; i < lj.end; ++i) {
+                        if (Double.isFinite(data[i])) {
+                            double fac = ndays[i] / m;
+                            lj.value += Math.log(fac);
+                        }
+                    }
+                } else {
+                    int nmissing = lj.missing.length;
+                    int imissing = 0, ic = lj.start;
+                    while (imissing < nmissing && lj.missing[imissing] < ic) {
+                        ++imissing;
+                    }
+                    while (imissing != nmissing && ic < lj.end) {
+                        if (ic == lj.missing[imissing]) {
+                            ++ic;
+                            ++imissing;
+                        } else {
+                            double fac = ndays[ic++] / m;
+                            lj.value += Math.log(fac);
+                        }
+                    }
+                    while (ic < lj.end) {
+                        double fac = ndays[ic++] / m;
+                        lj.value += Math.log(fac);
+                    }
                 }
             }
         } else {
             for (int i = 0; i < ndays.length; ++i) {
                 double fac = m / ndays[i];
                 data[i] *= fac;
-                if (lj != null && i >= lj.start && i < lj.end) {
-                    lj.value += Math.log(fac);
+            }
+            if (lj != null) {
+                if (lj.missing == null) {
+                    for (int i = lj.start; i < lj.end; ++i) {
+                        if (Double.isFinite(data[i])) {
+                            double fac = m / ndays[i];
+                            lj.value += Math.log(fac);
+                        }
+                    }
+                } else {
+                    int nmissing = lj.missing.length;
+                    int imissing = 0, ic = lj.start;
+                    while (imissing < nmissing && lj.missing[imissing] < ic) {
+                        ++imissing;
+                    }
+                    while (imissing != nmissing && ic < lj.end) {
+                        if (ic == lj.missing[imissing]) {
+                            ++ic;
+                            ++imissing;
+                        } else {
+                            double fac = m / ndays[ic++];
+                            lj.value += Math.log(fac);
+                        }
+                    }
+                    while (ic < lj.end) {
+                        double fac = m / ndays[ic++];
+                        lj.value += Math.log(fac);
+                    }
                 }
             }
         }
@@ -150,7 +203,16 @@ class LengthOfPeriodTransformation implements TsDataTransformation {
                 double fac = (idx - lppos) % (4 * freq) != 0 ? nleap : leap;
                 data[idx] *= fac;
                 if (lj != null && idx >= lj.start && idx < lj.end) {
-                    lj.value += Math.log(fac);
+                    if (lj.missing == null) {
+                        if (Double.isFinite(data[idx])) {
+                            lj.value += Math.log(fac);
+                        }
+                    } else {
+                        int lpos = Arrays.binarySearch(lj.missing, idx);
+                        if (lpos < 0) {
+                            lj.value += Math.log(fac);
+                        }
+                    }
                 }
                 idx += freq;
             }
@@ -161,7 +223,16 @@ class LengthOfPeriodTransformation implements TsDataTransformation {
                 double fac = (idx - lppos) % (4 * freq) != 0 ? nleap : leap;
                 data[idx] *= fac;
                 if (lj != null && idx >= lj.start && idx < lj.end) {
-                    lj.value += Math.log(fac);
+                    if (lj.missing == null) {
+                        if (Double.isFinite(data[idx])) {
+                            lj.value += Math.log(fac);
+                        }
+                    } else {
+                        int lpos = Arrays.binarySearch(lj.missing, idx);
+                        if (lpos < 0) {
+                            lj.value += Math.log(fac);
+                        }
+                    }
                 }
                 idx += freq;
             }

@@ -33,6 +33,7 @@ public interface IRegArimaFinalizer<M extends IArimaModel>  {
     /**
      * 
      * @param regarima
+     * @param mapping
      * @return
      */
     RegArimaEstimation<M> finalize(RegArimaEstimation<M> regarima, IArimaMapping<M> mapping);

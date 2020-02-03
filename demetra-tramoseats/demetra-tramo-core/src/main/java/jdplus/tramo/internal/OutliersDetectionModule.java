@@ -16,6 +16,7 @@
  */
 package jdplus.tramo.internal;
 
+import jdplus.regsarima.ami.FastOutliersDetector;
 import demetra.design.BuilderPattern;
 import demetra.timeseries.regression.Variable;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
@@ -25,15 +26,15 @@ import jdplus.modelling.regression.TransitoryChangeFactory;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.regarima.outlier.FastOutlierDetector;
 import jdplus.regarima.outlier.SingleOutlierDetector;
-import jdplus.regarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelDescription;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import jdplus.regarima.regular.IOutliersDetectionModule;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.IOutliersDetectionModule;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -143,8 +144,8 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         this.ml = builder.ml;
     }
 
-    private OutliersDetector make(ModelDescription desc, double cv) {
-        TsDomain domain = desc.getDomain();
+    private FastOutliersDetector make(ModelDescription desc, double cv) {
+        TsDomain domain = desc.getEstimationDomain();
         int test = comatip(desc);
         boolean cmvx;
         if (test < 0) {
@@ -156,21 +157,21 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
             cmvx = false;
         }
 
-        OutliersDetector.Builder builder = OutliersDetector.builder()
+        FastOutliersDetector.Builder builder = FastOutliersDetector.builder()
                 .singleOutlierDetector(factories())
                 .criticalValue(cv)
                 .maximumLikelihood(cmvx)
                 .maxOutliers(maxOutliers)
                 .maxRound(maxRound)
                 .processor(RegArimaUtility.processor(desc.getArimaComponent().defaultMapping(), true, eps));
-        OutliersDetector impl = builder.build();
+        FastOutliersDetector impl = builder.build();
         TsDomain odom = domain.select(span);
         int start = domain.indexOf(odom.getStartPeriod()), end = start + odom.getLength();
         impl.prepare(domain.getLength());
         impl.setBounds(start, end);
         String[] types = impl.outlierTypes();
         // remove missing values
-        int[] missing = desc.transformation().getMissing();
+        int[] missing = desc.getMissingInEstimationDomain();
         if (missing != null) {
             for (int i = 0; i < missing.length; ++i) {
                 for (int j = 0; j < types.length; ++j) {
@@ -205,12 +206,12 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
     @Override
     public ProcessingResult process(RegArimaModelling context, double criticalValue) {
         ModelDescription model = context.getDescription();
-        TsDomain domain = model.getDomain();
-        OutliersDetector impl = make(model, criticalValue);
+        TsDomain domain = model.getEstimationDomain();
+        FastOutliersDetector impl = make(model, criticalValue);
         if (impl == null) {
             return ProcessingResult.Failed;
         }
-        boolean ok = impl.process(model.regarima());
+        boolean ok = impl.process(model.regarima(), model.mapping());
         if (!ok) {
             return ProcessingResult.Failed;
         }

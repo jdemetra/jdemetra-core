@@ -5,18 +5,15 @@
  */
 package jdplus.tramo;
 
-import jdplus.data.DataBlock;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import demetra.timeseries.regression.Variable;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.PreprocessingModel;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
 import demetra.timeseries.TsDomain;
-import java.util.List;
-import java.util.Optional;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import jdplus.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
@@ -54,13 +51,12 @@ class TradingDaysController extends ModelController {
         ModelDescription nmodel = newModel(modelling);
         nmodel.removeVariable(var->var.isOutlier(false));
         // compute the corresponding airline model.
-        RegArimaModelling ncontext = new RegArimaModelling();
-        ncontext.setDescription(nmodel);
+        RegArimaModelling ncontext = RegArimaModelling.of(nmodel);
         if (!estimate(ncontext, true)) {
             return ProcessingResult.Failed;
         }
-        PreprocessingModel current = modelling.build();
-        PreprocessingModel ncurrent = ncontext.build();
+        ModelEstimation current = modelling.build();
+        ModelEstimation ncurrent = ncontext.build();
         ModelComparator mcmp = ModelComparator.builder().build();
         int cmp = mcmp.compare(current, ncurrent);
         if (cmp < 1) {
@@ -78,7 +74,7 @@ class TradingDaysController extends ModelController {
         LinearModel.Builder builder = LinearModel.builder();
         builder.y(res);
         
-        TsDomain domain = context.getDescription().getDomain();
+        TsDomain domain = context.getDescription().getEstimationDomain();
         // drop the number of data corresponding to the number of regression variables 
         domain = domain.drop(domain.getLength() - res.length(), 0);
         if (td != null){
@@ -97,7 +93,7 @@ class TradingDaysController extends ModelController {
     }
 
     private ModelDescription newModel(RegArimaModelling context) {
-        ModelDescription ndesc = new ModelDescription(context.getDescription());
+        ModelDescription ndesc = ModelDescription.copyOf(context.getDescription());
         ndesc.removeVariable(var -> var.isCalendar());
         ndesc.addVariable(new Variable(td, "td", false));
         return ndesc;

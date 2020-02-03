@@ -145,7 +145,6 @@ public class PeriodicAirline {
         OutlierDescriptor[] o = null;
         if (outliers != null) {
             GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
-                    .mapping(mapping)
                     .precision(1e-5)
                     .build();
             IOutlierFactory[] factories = factories(outliers);
@@ -157,7 +156,7 @@ public class PeriodicAirline {
             od.setCriticalValue(cv);
             RegArimaModel regarima = builder.build();
             od.prepare(regarima.getObservationsCount());
-            od.process(regarima);
+            od.process(regarima, mapping);
             int[][] io = od.getOutliers();
             o=new OutlierDescriptor[io.length];
             for (int i = 0; i < io.length; ++i) {
@@ -169,10 +168,9 @@ public class PeriodicAirline {
             }
         }
         GlsArimaProcessor<ArimaModel> finalProcessor = GlsArimaProcessor.builder(ArimaModel.class)
-                .mapping(mapping)
                 .precision(1e-9)
                 .build();
-        RegArimaEstimation rslt = finalProcessor.process(builder.build());
+        RegArimaEstimation rslt = finalProcessor.process(builder.build(), mapping);
         return Results.builder()
                 .concentratedLogLikelihood(rslt.getConcentratedLikelihood())
                 .parameters(mapping.parametersOf((ArimaModel) rslt.getModel().arima()).toArray())

@@ -27,6 +27,7 @@ import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 import demetra.data.DoubleSeq;
 import jdplus.regarima.internal.RegArmaEstimation;
 import jdplus.regarima.internal.RegArmaProcessor;
+import jdplus.sarima.estimation.SarimaMapping;
 
 /**
  * Generic module for estimation of RegArima models
@@ -39,17 +40,11 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
     @BuilderPattern(GlsArimaProcessor.class)
     public static class Builder<M extends IArimaModel> {
 
-        private IArimaMapping<M> mapping;
         private IRegArimaInitializer<M> initializer;
         private IRegArimaFinalizer<M> finalizer;
         private double eps = 1e-9;
         private SsqFunctionMinimizer.Builder min;
         private boolean ml = true, mt = false, fast = true;
-
-        public Builder<M> mapping(IArimaMapping<M> mapping) {
-            this.mapping = mapping;
-            return this;
-        }
 
         public Builder<M> initializer(IRegArimaInitializer<M> initializer) {
             this.initializer = initializer;
@@ -87,9 +82,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
         }
 
         public GlsArimaProcessor<M> build() {
-            if (mapping == null)
-                throw new IllegalArgumentException();
-            return new GlsArimaProcessor(mapping, initializer, finalizer, min, eps, ml, mt, fast);
+            return new GlsArimaProcessor(initializer, finalizer, min, eps, ml, mt, fast);
         }
 
     }
@@ -98,7 +91,6 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
         return new Builder<>();
     }
 
-    private final IArimaMapping<M> mapping;
     private final IRegArimaInitializer<M> initializer;
     private final IRegArimaFinalizer<M> finalizer;
     private final SsqFunctionMinimizer.Builder min;
@@ -107,10 +99,8 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
     /**
      *
      */
-    private GlsArimaProcessor(IArimaMapping<M> mapping,
-            final IRegArimaInitializer<M> initializer, final IRegArimaFinalizer<M> finalizer, final SsqFunctionMinimizer.Builder min,
-            final double eps, final boolean ml, final boolean mt, final boolean fast) {
-        this.mapping = mapping;
+    private GlsArimaProcessor(final IRegArimaInitializer<M> initializer, final IRegArimaFinalizer<M> finalizer, 
+            final SsqFunctionMinimizer.Builder min, final double eps, final boolean ml, final boolean mt, final boolean fast) {
         this.initializer = initializer;
         this.finalizer = finalizer;
         if (min == null) {
@@ -130,15 +120,16 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
      * @return
      */
     @Override
-    public RegArimaEstimation<M> process(RegArimaModel<M> regs) {
-        RegArimaEstimation<M> estimation = optimize(initialize(regs));
+    public RegArimaEstimation<M> process(RegArimaModel<M> regs, IArimaMapping<M> mapping) {
+        RegArimaModel<M> initial = initialize(regs, mapping);
+        RegArimaEstimation<M> estimation = optimize(initial, mapping);
         if (estimation == null) {
             return null;
         }
-        return finalize(estimation);
+        return finalize(estimation, mapping);
     }
 
-    public RegArimaModel<M> initialize(RegArimaModel<M> regs) {
+    public RegArimaModel<M> initialize(RegArimaModel<M> regs, IArimaMapping<M> mapping) {
         RegArimaModel<M> start = null;
         if (initializer != null) {
             start = initializer.initialize(regs, mapping);
@@ -150,7 +141,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
         }
     }
 
-    public RegArimaEstimation<M> finalize(RegArimaEstimation<M> estimation) {
+    public RegArimaEstimation<M> finalize(RegArimaEstimation<M> estimation, IArimaMapping<M> mapping) {
         if (finalizer != null) {
             return finalizer.finalize(estimation, mapping);
         } else {
@@ -159,7 +150,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
     }
 
     @Override
-    public RegArimaEstimation<M> optimize(RegArimaModel<M> regs) {
+    public RegArimaEstimation<M> optimize(RegArimaModel<M> regs, IArimaMapping<M> mapping) {
         M arima = regs.arima();
         M arma = (M) arima.stationaryTransformation().getStationaryModel();
         IArimaMapping<M> stmapping = mapping.stationaryMapping();
@@ -174,7 +165,6 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
                 .model(nregs)
                 .concentratedLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nregs))
                 .max(new LogLikelihoodFunction.Point(RegArimaEstimation.concentratedLogLikelihoodFunction(mapping, regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()))
-                .nparams(stmapping.getDim())
                 .build();
     }
 

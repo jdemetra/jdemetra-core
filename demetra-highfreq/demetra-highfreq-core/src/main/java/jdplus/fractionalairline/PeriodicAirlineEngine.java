@@ -27,7 +27,6 @@ public class PeriodicAirlineEngine {
     public RegArimaEstimation<ArimaModel> process(DoubleSeq y, Matrix x, double[] periods, double precision) {
         final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(periods, true, false);
         GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
-                .mapping(mapping)
                 .precision(precision)
                 .build();
         RegArimaModel<ArimaModel> regarima = RegArimaModel.<ArimaModel>builder()
@@ -35,13 +34,12 @@ public class PeriodicAirlineEngine {
                 .addX(x)
                 .arima(mapping.getDefault())
                 .build();
-        return processor.process(regarima);
+        return processor.process(regarima, mapping);
     }
 
     public RegArimaEstimation<ArimaModel> process(DoubleSeq y, Matrix x, double period, double precision) {
         final PeriodicAirlineMapping mapping = new PeriodicAirlineMapping(period, true, false);
         GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
-                .mapping(mapping)
                 .precision(precision)
                 .build();
         RegArimaModel<ArimaModel> regarima = RegArimaModel.<ArimaModel>builder()
@@ -49,7 +47,7 @@ public class PeriodicAirlineEngine {
                 .addX(x)
                 .arima(mapping.getDefault())
                 .build();
-        return processor.process(regarima);
+        return processor.process(regarima, mapping);
     }
 
     public static UcarimaModel ucm(IArimaModel arima, boolean sn) {

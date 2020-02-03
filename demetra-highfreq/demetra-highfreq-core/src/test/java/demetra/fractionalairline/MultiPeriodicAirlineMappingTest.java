@@ -58,14 +58,13 @@ public class MultiPeriodicAirlineMappingTest {
         MatrixType edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, false);
         GlsArimaProcessor<ArimaModel> processor=GlsArimaProcessor.builder(ArimaModel.class)
-                .mapping(mapping)
                 .precision(1e-5)
                 .build();
         RegArimaModel<ArimaModel> regarima=RegArimaModel.<ArimaModel>builder()
                 .y(edf.column(0))
                 .arima(mapping.getDefault())
                 .build();
-        RegArimaEstimation<ArimaModel> estimation = processor.process(regarima);
+        RegArimaEstimation<ArimaModel> estimation = processor.process(regarima, mapping);
         assertTrue(estimation != null);
         UcarimaModel ucm=ucm(estimation.getModel().arima(), true);
         assertTrue(ucm.isValid());
@@ -79,14 +78,13 @@ public class MultiPeriodicAirlineMappingTest {
         MatrixType edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365}, true, false);
         GlsArimaProcessor<ArimaModel> processor=GlsArimaProcessor.builder(ArimaModel.class)
-                .mapping(mapping )
                 .precision(1e-5)
                 .build();
         RegArimaModel<ArimaModel> regarima=RegArimaModel.<ArimaModel>builder()
                 .y(edf.column(0))
                 .arima(mapping.getDefault())
                 .build();
-        RegArimaEstimation<ArimaModel> estimation = processor.process(regarima);
+        RegArimaEstimation<ArimaModel> estimation = processor.process(regarima, mapping);
         assertTrue(estimation != null);
         UcarimaModel ucm=ucm(estimation.getModel().arima(), true);
         assertTrue(ucm.isValid());
@@ -101,7 +99,6 @@ public class MultiPeriodicAirlineMappingTest {
         MatrixType edf = MatrixSerializer.read(new File(uri));
         final MultiPeriodicAirlineMapping mapping=new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, false);
         GlsArimaProcessor<ArimaModel> processor=GlsArimaProcessor.builder(ArimaModel.class)
-                .mapping(mapping )
                 .precision(1e-5)
                 .build();
         RegArimaModel<ArimaModel> regarima=RegArimaModel.<ArimaModel>builder()
@@ -122,7 +119,7 @@ public class MultiPeriodicAirlineMappingTest {
         od.setAddHook(hook);
         od.setCriticalValue(5);
         od.prepare(regarima.getObservationsCount());
-        od.process(regarima);
+        od.process(regarima, mapping);
     }
     
     public static UcarimaModel ucm(IArimaModel arima, boolean week) {

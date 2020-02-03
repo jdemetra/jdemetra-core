@@ -123,7 +123,7 @@ public class MovingRegression {
                 .arima(arima);
         x.columns().forEach(xx -> rbuilder.addX(xx));
 
-        RegArimaEstimation<SarimaModel> rslt = monitor.process(rbuilder.build());
+        RegArimaEstimation<SarimaModel> rslt = monitor.process(rbuilder.build(), null);
         arima = rslt.getModel().arima();
 
         List<double[]> coef = new ArrayList<>();
