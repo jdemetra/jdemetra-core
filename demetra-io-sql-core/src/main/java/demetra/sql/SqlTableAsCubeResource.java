@@ -37,6 +37,7 @@ import demetra.tsprovider.cube.TableDataParams;
 import demetra.timeseries.util.ObsCharacteristics;
 import demetra.timeseries.util.ObsGathering;
 import demetra.timeseries.util.TsDataBuilder;
+import demetra.tsprovider.cube.TableAsCubeAccessor.SeriesCursor;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -44,6 +45,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.GregorianCalendar;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import nbbrd.sql.jdbc.SqlConnectionSupplier;
 import nbbrd.sql.jdbc.SqlIdentifierQuoter;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -99,6 +102,11 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
     }
 
     @Override
+    public SeriesCursor getSeriesCursor(CubeId id) throws Exception {
+        return new SeriesQuery(id, table, labelColumn).call(supplier, db);
+    }
+
+    @Override
     public SeriesWithDataCursor<java.util.Date> getSeriesWithDataCursor(CubeId id) throws Exception {
         return new SeriesWithDataQuery(id, table, labelColumn, tdp).call(supplier, db);
     }
@@ -120,7 +128,7 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
 
     @Override
     public String getDisplayName(CubeId id) throws Exception {
-        return TableAsCubeUtil.getDisplayName(id, SqlTableAsCubeUtil.LABEL_COLLECTOR);
+        return TableAsCubeUtil.getDisplayName(id, LABEL_COLLECTOR);
     }
 
     @Override
@@ -128,11 +136,9 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
         return TableAsCubeUtil.getDisplayNodeName(id);
     }
 
-    @Override
-    public void close() throws Exception {
-    }
-
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
+    private static final Collector<? super String, ?, String> LABEL_COLLECTOR = Collectors.joining(", ");
+
     private static void closeAll(Exception root, AutoCloseable... items) {
         for (AutoCloseable o : items) {
             if (o != null) {
@@ -227,14 +233,14 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
     static final class AllSeriesQuery implements JdbcQuery<AllSeriesCursor> {
 
         private final CubeId ref;
-        private final String table;
-        private final String label;
+        private final String tableName;
+        private final String labelColumn;
 
         @Override
         public String getQueryString(DatabaseMetaData metaData) throws SQLException {
-            return SelectBuilder.from(table)
+            return SelectBuilder.from(tableName)
                     .distinct(true)
-                    .select(toSelect(ref)).select(label)
+                    .select(toSelect(ref)).select(labelColumn)
                     .filter(toFilter(ref))
                     .orderBy(toSelect(ref))
                     .withQuoter(SqlIdentifierQuoter.of(metaData))
@@ -251,9 +257,9 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
         @Override
         public AllSeriesCursor process(ResultSet rs, AutoCloseable closeable) throws SQLException {
             ResultSetFunc<String[]> toDimValues = onGetStringArray(1, ref.getDepth());
-            ResultSetFunc<String> toLabel = !label.isEmpty() ? onGetString(2) : onNull();
+            ResultSetFunc<String> toLabel = !labelColumn.isEmpty() ? onGetString(2) : onNull();
 
-            return SqlTableAsCubeUtil.allSeriesCursor(rs, closeable, toDimValues, toLabel, ref);
+            return SqlTableAsCubeUtil.allSeriesCursor(rs, closeable, toDimValues, toLabel);
         }
     }
 
@@ -262,14 +268,14 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
     static final class AllSeriesWithDataQuery implements JdbcQuery<AllSeriesWithDataCursor<java.util.Date>> {
 
         private final CubeId ref;
-        private final String table;
-        private final String label;
+        private final String tableName;
+        private final String labelColumn;
         private final TableDataParams tdp;
 
         @Override
         public String getQueryString(DatabaseMetaData metaData) throws SQLException {
-            return SelectBuilder.from(table)
-                    .select(toSelect(ref)).select(tdp.getPeriodColumn(), tdp.getValueColumn()).select(label)
+            return SelectBuilder.from(tableName)
+                    .select(toSelect(ref)).select(tdp.getPeriodColumn(), tdp.getValueColumn()).select(labelColumn)
                     .filter(toFilter(ref))
                     .orderBy(toSelect(ref)).orderBy(tdp.getPeriodColumn(), tdp.getVersionColumn())
                     .withQuoter(SqlIdentifierQuoter.of(metaData))
@@ -292,9 +298,41 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
             ResultSetFunc<String[]> toDimValues = onGetStringArray(1, ref.getDepth());
             ResultSetFunc<java.util.Date> toPeriod = onDate(metaData, ref.getDepth() + 1, tdp.getObsFormat().calendarParser());
             ResultSetFunc<Number> toValue = onNumber(metaData, ref.getDepth() + 2, tdp.getObsFormat().numberParser());
-            ResultSetFunc<String> toLabel = !label.isEmpty() ? onGetString(ref.getDepth() + 3) : onNull();
+            ResultSetFunc<String> toLabel = !labelColumn.isEmpty() ? onGetString(ref.getDepth() + 3) : onNull();
 
-            return SqlTableAsCubeUtil.allSeriesWithDataCursor(rs, closeable, toDimValues, toPeriod, toValue, toLabel, ref);
+            return SqlTableAsCubeUtil.allSeriesWithDataCursor(rs, closeable, toDimValues, toPeriod, toValue, toLabel);
+        }
+    }
+
+    @VisibleForTesting
+    @lombok.AllArgsConstructor
+    static final class SeriesQuery implements JdbcQuery<SeriesCursor> {
+
+        private final CubeId ref;
+        private final String tableName;
+        private final String labelColumn;
+
+        @Override
+        public String getQueryString(DatabaseMetaData metaData) throws SQLException {
+            return SelectBuilder.from(tableName)
+                    .select(labelColumn)
+                    .filter(toFilter(ref))
+                    .withQuoter(SqlIdentifierQuoter.of(metaData))
+                    .build();
+        }
+
+        @Override
+        public void setParameters(PreparedStatement statement) throws SQLException {
+            for (int i = 0; i < ref.getLevel(); i++) {
+                statement.setString(i + 1, ref.getDimensionValue(i));
+            }
+        }
+
+        @Override
+        public SeriesCursor process(ResultSet rs, AutoCloseable closeable) throws SQLException {
+            ResultSetFunc<String> toLabel = !labelColumn.isEmpty() ? onGetString(1) : onNull();
+
+            return SqlTableAsCubeUtil.seriesCursor(rs, closeable, toLabel);
         }
     }
 
@@ -303,14 +341,14 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
     static final class SeriesWithDataQuery implements JdbcQuery<SeriesWithDataCursor<java.util.Date>> {
 
         private final CubeId ref;
-        private final String table;
-        private final String label;
+        private final String tableName;
+        private final String labelColumn;
         private final TableDataParams tdp;
 
         @Override
         public String getQueryString(DatabaseMetaData metaData) throws SQLException {
-            return SelectBuilder.from(table)
-                    .select(tdp.getPeriodColumn(), tdp.getValueColumn()).select(label)
+            return SelectBuilder.from(tableName)
+                    .select(tdp.getPeriodColumn(), tdp.getValueColumn()).select(labelColumn)
                     .filter(toFilter(ref))
                     .orderBy(tdp.getPeriodColumn(), tdp.getVersionColumn())
                     .withQuoter(SqlIdentifierQuoter.of(metaData))
@@ -332,9 +370,9 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
             ResultSetMetaData metaData = rs.getMetaData();
             ResultSetFunc<java.util.Date> toPeriod = onDate(metaData, 1, tdp.getObsFormat().calendarParser());
             ResultSetFunc<Number> toValue = onNumber(metaData, 2, tdp.getObsFormat().numberParser());
-            ResultSetFunc<String> toLabel = !label.isEmpty() ? onGetString(3) : onNull();
+            ResultSetFunc<String> toLabel = !labelColumn.isEmpty() ? onGetString(3) : onNull();
 
-            return SqlTableAsCubeUtil.seriesWithDataCursor(rs, closeable, toPeriod, toValue, toLabel, ref);
+            return SqlTableAsCubeUtil.seriesWithDataCursor(rs, closeable, toPeriod, toValue, toLabel);
         }
     }
 
@@ -343,12 +381,12 @@ public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resourc
     static final class ChildrenQuery implements JdbcQuery<ChildrenCursor> {
 
         private final CubeId ref;
-        private final String table;
+        private final String tableName;
 
         @Override
         public String getQueryString(DatabaseMetaData metaData) throws SQLException {
             String column = ref.getDimensionId(ref.getLevel());
-            return SelectBuilder.from(table)
+            return SelectBuilder.from(tableName)
                     .distinct(true)
                     .select(column)
                     .filter(toFilter(ref))

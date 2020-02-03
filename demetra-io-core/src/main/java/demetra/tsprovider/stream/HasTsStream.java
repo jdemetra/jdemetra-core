@@ -14,48 +14,48 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tsprovider.cursor;
+package demetra.tsprovider.stream;
 
 import demetra.design.ThreadSafe;
 import demetra.tsprovider.TsInformationType;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import java.io.IOException;
+import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Defines the ability to create a time series cursor on a DataSource or a
+ * Defines the ability to create a time series stream on a DataSource or a
  * DataSet. Note that the implementations must be thread-safe.
  *
  * @author Philippe Charles
- * @since 2.2.0
  */
 @ThreadSafe
-public interface HasTsCursor {
+public interface HasTsStream {
 
     /**
-     * Creates a cursor from a DataSource.
+     * Creates a stream from a DataSource.
      *
      * @param dataSource the DataSource
      * @param type the type of data to return
-     * @return a new cursor
+     * @return a new stream
      * @throws IllegalArgumentException if the DataSource doesn't belong to this
      * provider.
      * @throws IOException if an internal exception prevented data retrieval.
      */
     @NonNull
-    TsCursor<DataSet> getData(@NonNull DataSource dataSource, @NonNull TsInformationType type) throws IllegalArgumentException, IOException;
+    Stream<DataSetTs> getData(@NonNull DataSource dataSource, @NonNull TsInformationType type) throws IllegalArgumentException, IOException;
 
     /**
-     * Creates a cursor from a DataSet.
+     * Creates a stream from a DataSet.
      *
      * @param dataSet the DataSet
      * @param type the type of data to return
-     * @return a new cursor
+     * @return a new stream
      * @throws IllegalArgumentException if the DataSet doesn't belong to this
      * provider.
      * @throws IOException if an internal exception prevented data retrieval.
      */
     @NonNull
-    TsCursor<DataSet> getData(@NonNull DataSet dataSet, @NonNull TsInformationType type) throws IllegalArgumentException, IOException;
+    Stream<DataSetTs> getData(@NonNull DataSet dataSet, @NonNull TsInformationType type) throws IllegalArgumentException, IOException;
 }

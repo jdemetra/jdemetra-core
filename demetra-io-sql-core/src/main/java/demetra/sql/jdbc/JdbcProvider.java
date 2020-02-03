@@ -33,13 +33,13 @@ import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;
 import demetra.tsprovider.cube.TableAsCubeAccessor;
 import demetra.tsprovider.cube.TableDataParams;
-import demetra.tsprovider.cursor.HasTsCursor;
-import demetra.tsprovider.cursor.TsCursorAsProvider;
+import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.ResourceMap;
 import java.io.IOException;
 import nbbrd.service.ServiceProvider;
 import nbbrd.sql.jdbc.SqlConnectionSupplier;
+import demetra.tsprovider.stream.HasTsStream;
 
 /**
  *
@@ -63,7 +63,7 @@ public final class JdbcProvider implements DataSourceLoader<JdbcBean>, HasSqlPro
     @lombok.experimental.Delegate
     private final HasDataSourceBean<JdbcBean> beanSupport;
 
-    @lombok.experimental.Delegate(excludes = HasTsCursor.class)
+    @lombok.experimental.Delegate(excludes = HasTsStream.class)
     private final CubeSupport cubeSupport;
 
     @lombok.experimental.Delegate
@@ -78,7 +78,7 @@ public final class JdbcProvider implements DataSourceLoader<JdbcBean>, HasSqlPro
         this.monikerSupport = HasDataMoniker.usingUri(NAME);
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
         this.cubeSupport = CubeSupport.of(NAME, new JdbcCubeResource(accessors, properties, param));
-        this.tsSupport = TsCursorAsProvider.of(NAME, cubeSupport, monikerSupport, accessors::clear);
+        this.tsSupport = TsStreamAsProvider.of(NAME, cubeSupport, monikerSupport, accessors::clear);
     }
 
     @Override

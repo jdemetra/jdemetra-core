@@ -19,14 +19,15 @@ package demetra.tsprovider.poc;
 import demetra.timeseries.TsData;
 import demetra.tsprovider.cube.CubeAccessor;
 import demetra.tsprovider.cube.CubeId;
-import demetra.tsprovider.cursor.TsCursor;
-import demetra.io.IteratorWithIO;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import static demetra.timeseries.TsUnit.MONTH;
+import demetra.tsprovider.cube.CubeSeries;
+import demetra.tsprovider.cube.CubeSeriesWithData;
+import java.util.stream.Stream;
 
 /**
  *
@@ -57,26 +58,31 @@ final class FakeDbAccessor implements CubeAccessor {
     }
 
     @Override
-    public TsCursor<CubeId> getAllSeries(CubeId id) throws IOException {
-        return toDataCursor(data).filter(id::isAncestorOf);
+    public Stream<CubeSeries> getAllSeries(CubeId id) throws IOException {
+        return toSeriesStream(data).filter(ts -> id.isAncestorOf(ts.getId()));
     }
 
     @Override
-    public TsCursor<CubeId> getAllSeriesWithData(CubeId id) throws IOException {
-        return toDataCursor(data).filter(id::isAncestorOf);
+    public Stream<CubeSeriesWithData> getAllSeriesWithData(CubeId id) throws IOException {
+        return toSeriesWithDataStream(data).filter(ts -> id.isAncestorOf(ts.getId()));
     }
 
     @Override
-    public TsCursor<CubeId> getSeriesWithData(CubeId id) throws IOException {
-        return toDataCursor(data).filter(id::isAncestorOf);
+    public CubeSeries getSeries(CubeId id) throws IOException {
+        return toSeriesStream(data).filter(ts -> id.isAncestorOf(ts.getId())).findFirst().orElse(null);
     }
 
     @Override
-    public IteratorWithIO<CubeId> getChildren(CubeId id) throws IOException {
-        return IteratorWithIO.checked(data.keySet().stream()
+    public CubeSeriesWithData getSeriesWithData(CubeId id) throws IOException {
+        return toSeriesWithDataStream(data).filter(ts -> id.isAncestorOf(ts.getId())).findFirst().orElse(null);
+    }
+
+    @Override
+    public Stream<CubeId> getChildren(CubeId id) throws IOException {
+        return data.keySet().stream()
                 .filter(id::isAncestorOf)
                 .map(o -> o.getDimensionValue(id.getLevel()))
-                .distinct().sorted().iterator())
+                .distinct().sorted()
                 .map(id::child);
     }
 
@@ -95,10 +101,18 @@ final class FakeDbAccessor implements CubeAccessor {
         return id.isVoid() ? "All" : id.getDimensionValue(id.getLevel() - 1);
     }
 
-    private static TsCursor<CubeId> toDataCursor(Map<CubeId, TsData> data) {
-        return TsCursor
-                .from(data.entrySet().iterator(), Map.Entry::getValue, o -> Collections.emptyMap(), o -> o.getKey().getDimensionValueStream().collect(Collectors.joining("/")))
-                .map(Map.Entry::getKey);
+    private static Stream<CubeSeries> toSeriesStream(Map<CubeId, TsData> data) {
+        return data.entrySet().stream()
+                .map(o -> new CubeSeries(o.getKey(), getLabel(o.getKey()), Collections.emptyMap()));
+    }
+
+    private static Stream<CubeSeriesWithData> toSeriesWithDataStream(Map<CubeId, TsData> data) {
+        return data.entrySet().stream()
+                .map(o -> new CubeSeriesWithData(o.getKey(), getLabel(o.getKey()), Collections.emptyMap(), o.getValue()));
+    }
+
+    private static String getLabel(CubeId id) {
+        return id.getDimensionValueStream().collect(Collectors.joining("/"));
     }
 
     @Override

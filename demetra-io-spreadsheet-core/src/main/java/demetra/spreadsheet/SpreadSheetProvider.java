@@ -26,8 +26,7 @@ import demetra.tsprovider.HasDataSourceBean;
 import demetra.tsprovider.HasDataSourceMutableList;
 import demetra.tsprovider.HasFilePaths;
 import demetra.tsprovider.TsProvider;
-import demetra.tsprovider.cursor.HasTsCursor;
-import demetra.tsprovider.cursor.TsCursorAsProvider;
+import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.grid.GridReader;
 import demetra.tsprovider.util.FallbackDataMoniker;
 import demetra.tsprovider.util.IParam;
@@ -45,6 +44,7 @@ import java.io.IOException;
 import java.time.Duration;
 import nbbrd.service.ServiceProvider;
 import demetra.tsprovider.util.CacheFactory;
+import demetra.tsprovider.stream.HasTsStream;
 
 /**
  *
@@ -73,7 +73,7 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
     @lombok.experimental.Delegate
     private final HasDataDisplayName displayNameSupport;
 
-    @lombok.experimental.Delegate(excludes = HasTsCursor.class)
+    @lombok.experimental.Delegate(excludes = HasTsStream.class)
     private final SpreadSheetSupport spreadSheetSupport;
 
     @lombok.experimental.Delegate
@@ -91,7 +91,7 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
         this.filePathSupport = HasFilePaths.of(accessors::clear);
         this.displayNameSupport = SpreadSheetDataDisplayName.of(NAME, param);
         this.spreadSheetSupport = SpreadSheetSupport.of(NAME, new SpreadSheetResource(accessors, filePathSupport, param, bookSupplier));
-        this.tsSupport = TsCursorAsProvider.of(NAME, spreadSheetSupport, monikerSupport, accessors::clear);
+        this.tsSupport = TsStreamAsProvider.of(NAME, spreadSheetSupport, monikerSupport, accessors::clear);
     }
 
     @Override

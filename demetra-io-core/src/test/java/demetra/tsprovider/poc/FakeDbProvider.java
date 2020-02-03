@@ -26,11 +26,11 @@ import demetra.tsprovider.TsProvider;
 import demetra.tsprovider.cube.CubeAccessor;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;
-import demetra.tsprovider.cursor.HasTsCursor;
-import demetra.tsprovider.cursor.TsCursorAsProvider;
+import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.ResourceMap;
 import java.io.IOException;
+import demetra.tsprovider.stream.HasTsStream;
 
 /**
  *
@@ -46,7 +46,7 @@ public final class FakeDbProvider implements DataSourceLoader {
     private final HasDataMoniker monikerSupport;
     @lombok.experimental.Delegate
     private final HasDataSourceBean<FakeDbBean> beanSupport;
-    @lombok.experimental.Delegate(excludes = HasTsCursor.class)
+    @lombok.experimental.Delegate(excludes = HasTsStream.class)
     private final CubeSupport cubeSupport;
     @lombok.experimental.Delegate
     private final TsProvider tsSupport;
@@ -59,7 +59,7 @@ public final class FakeDbProvider implements DataSourceLoader {
         FakeDbParam fakeDbParam = new FakeDbParam.V1();
         this.beanSupport = HasDataSourceBean.of(NAME, fakeDbParam, fakeDbParam.getVersion());
         this.cubeSupport = CubeSupport.of(NAME, new FakeDbCubeResource(accessors, fakeDbParam));
-        this.tsSupport = TsCursorAsProvider.of(NAME, cubeSupport, monikerSupport, accessors::clear);
+        this.tsSupport = TsStreamAsProvider.of(NAME, cubeSupport, monikerSupport, accessors::clear);
     }
 
     @lombok.AllArgsConstructor

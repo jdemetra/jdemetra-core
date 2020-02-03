@@ -29,20 +29,20 @@ import demetra.tsprovider.HasDataMoniker;
 import demetra.tsprovider.HasDataSourceList;
 import demetra.tsprovider.TsInformationType;
 import demetra.tsprovider.TsProvider;
-import demetra.tsprovider.cursor.HasTsCursor;
-import demetra.tsprovider.cursor.TsCursor;
-import demetra.tsprovider.cursor.TsCursorAsProvider;
+import demetra.tsprovider.stream.TsStreamAsProvider;
+import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.Params;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Spliterators;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -51,7 +51,8 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import nbbrd.io.function.IOFunction;
+import java.util.stream.StreamSupport;
+import demetra.tsprovider.stream.HasTsStream;
 
 /**
  *
@@ -87,7 +88,7 @@ public final class PocProvider implements DataSourceProvider {
         this.listSupport = HasDataSourceList.of(NAME, createDataSources());
         this.nameSupport = new PocDataDisplayName();
         this.monikerSupport = HasDataMoniker.usingUri(NAME);
-        this.tsSupport = TsCursorAsProvider.of(NAME, dataSupport, monikerSupport, () -> {
+        this.tsSupport = TsStreamAsProvider.of(NAME, dataSupport, monikerSupport, () -> {
         });
 
         this.updater = new Timer(true);
@@ -157,7 +158,7 @@ public final class PocProvider implements DataSourceProvider {
         }
     }
 
-    private static final class PocDataSupport implements HasTsCursor, HasDataHierarchy {
+    private static final class PocDataSupport implements HasTsStream, HasDataHierarchy {
 
         private final Function<Integer, TsData> normalData;
         private final Function<Integer, TsData> updatingData;
@@ -172,13 +173,11 @@ public final class PocProvider implements DataSourceProvider {
         @Override
         public List<DataSet> children(DataSource dataSource) throws IllegalArgumentException, IOException {
             DataSourcePreconditions.checkProvider(NAME, dataSource);
-            List<DataSet> result = new ArrayList<>();
-            try (TsCursor<DataSet> cursor = cursorOf(TYPE_PARAM.get(dataSource), TsInformationType.Definition).map(dataSetFunc(dataSource))) {
-                while (cursor.nextSeries()) {
-                    result.add(cursor.getSeriesId());
-                }
+            try (Stream<DataSetTs> cursor = cursorOf(dataSource, TsInformationType.Definition)) {
+                return cursor.map(DataSetTs::getId).collect(Collectors.toList());
+            } catch (UncheckedIOException ex) {
+                throw ex.getCause();
             }
-            return result;
         }
 
         @Override
@@ -188,56 +187,72 @@ public final class PocProvider implements DataSourceProvider {
         }
 
         @Override
-        public TsCursor<DataSet> getData(DataSource dataSource, TsInformationType type) throws IllegalArgumentException, IOException {
+        public Stream<DataSetTs> getData(DataSource dataSource, TsInformationType type) throws IllegalArgumentException, IOException {
             DataSourcePreconditions.checkProvider(NAME, dataSource);
-            return cursorOf(TYPE_PARAM.get(dataSource), type).map(dataSetFunc(dataSource));
+            return cursorOf(dataSource, type);
         }
 
         @Override
-        public TsCursor<DataSet> getData(DataSet dataSet, TsInformationType type) throws IllegalArgumentException, IOException {
+        public Stream<DataSetTs> getData(DataSet dataSet, TsInformationType type) throws IllegalArgumentException, IOException {
             DataSourcePreconditions.checkProvider(NAME, dataSet);
             if (!dataSet.getKind().equals(DataSet.Kind.SERIES)) {
                 throw new IllegalArgumentException("Invalid hierarchy");
             }
-            int seriesIndex = INDEX_PARAM.get(dataSet);
-            return cursorOf(TYPE_PARAM.get(dataSet.getDataSource()), type).filter(o -> o == seriesIndex).map(o -> dataSet);
+            return cursorOf(dataSet.getDataSource(), type)
+                    .filter(o -> o.getId().equals(dataSet));
         }
 
-        private static IOFunction<Integer, DataSet> dataSetFunc(DataSource dataSource) {
+        private static Function<Integer, DataSet> dataSetFunc(DataSource dataSource) {
             DataSet.Builder b = DataSet.builder(dataSource, DataSet.Kind.SERIES);
-            return o -> b.put(INDEX_PARAM, o).build();
+            return index -> b.put(INDEX_PARAM, index).build();
         }
 
-        private TsCursor<Integer> cursorOf(DataType dt, TsInformationType type) throws IOException {
+        static Stream<DataSetTs> from(
+                Iterator<Integer> iterator,
+                Function<Integer, DataSet> toId,
+                Function<Integer, TsData> toData,
+                Function<Integer, Map<String, String>> toMeta,
+                Function<Integer, String> toLabel) {
+            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), true)
+                    .map(index -> new DataSetTs(toId.apply(index), toLabel.apply(index), toMeta.apply(index), toData.apply(index)));
+        }
+
+        static Stream<DataSetTs> from(Iterator<Integer> iterator, Function<Integer, DataSet> toId) {
+            return from(iterator, toId, o -> DataSetTs.DATA_NOT_REQUESTED, o -> Collections.emptyMap(), Object::toString);
+        }
+
+        private Stream<DataSetTs> cursorOf(DataSource source, TsInformationType type) throws IOException {
+            DataType dt = TYPE_PARAM.get(source);
+            Function<Integer, DataSet> dataSetFunc = dataSetFunc(source);
             Iterator<Integer> iter = seriesIndexIterator(dt);
             switch (dt) {
                 case NORMAL:
                     sleep(dt, type);
-                    return TsCursor.from(iter, dataFunc(normalData, type), metaFunc(dt, type), labelFunc(dt));
+                    return from(iter, dataSetFunc, dataFunc(normalData, type), metaFunc(dt, type), labelFunc(dt));
                 case FAILING_META:
                     sleep(dt, type);
                     if (type.encompass(TsInformationType.MetaData)) {
                         throw new IOException("Cannot load meta");
                     }
-                    return TsCursor.from(iter);
+                    return from(iter, dataSetFunc);
                 case FAILING_DATA:
                     sleep(dt, type);
                     if (type.encompass(TsInformationType.Data)) {
                         throw new IOException("Cannot load data");
                     }
-                    return TsCursor.from(iter);
+                    return from(iter, dataSetFunc);
                 case FAILING_DEF:
                     sleep(dt, type);
                     if (type.encompass(TsInformationType.Definition)) {
                         throw new IOException("Cannot load definition");
                     }
-                    return TsCursor.from(iter);
+                    return from(iter, dataSetFunc);
                 case UPDATING:
-                    return TsCursor.from(iter, dataFunc(updatingData, type), metaFunc(dt, type), labelFunc(dt));
+                    return from(iter, dataSetFunc, dataFunc(updatingData, type), metaFunc(dt, type), labelFunc(dt));
                 case SLOW:
                     log.log(Level.INFO, "Getting data {0} - {1}", new Object[]{dt, type});
                     sleep(dt, type);
-                    return TsCursor.from(iter, dataFunc(slowData, type), metaFunc(dt, type), labelFunc(dt));
+                    return from(iter, dataSetFunc, dataFunc(slowData, type), metaFunc(dt, type), labelFunc(dt));
                 default:
                     throw new IllegalArgumentException("Invalid data type");
             }
@@ -250,7 +265,7 @@ public final class PocProvider implements DataSourceProvider {
         private static Function<Integer, TsData> dataFunc(Function<Integer, TsData> delegate, TsInformationType type) {
             return type.encompass(TsInformationType.Data)
                     ? delegate
-                    : o -> TsData.empty("Data not requested");
+                    : o -> DataSetTs.DATA_NOT_REQUESTED;
         }
 
         private static Function<Integer, Map<String, String>> metaFunc(DataType dt, TsInformationType type) {

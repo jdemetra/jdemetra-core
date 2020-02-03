@@ -26,8 +26,7 @@ import demetra.tsprovider.HasDataHierarchy;
 import demetra.tsprovider.Ts;
 import demetra.tsprovider.TsCollection;
 import demetra.tsprovider.TsInformationType;
-import demetra.tsprovider.cursor.HasTsCursor;
-import demetra.tsprovider.cursor.TsCursor;
+import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.grid.GridLayout;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.IParam;
@@ -40,8 +39,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import nbbrd.io.function.IOFunction;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.tsprovider.stream.HasTsStream;
 
 /**
  *
@@ -49,7 +48,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @ThreadSafe
 @lombok.AllArgsConstructor(staticName = "of")
-public final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
+public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
 
     @ThreadSafe
     public interface Resource {
@@ -102,7 +101,7 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
     }
 
     @Override
-    public TsCursor<DataSet> getData(DataSource dataSource, TsInformationType type) throws IOException {
+    public Stream<DataSetTs> getData(DataSource dataSource, TsInformationType type) throws IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
         SpreadSheetAccessor accessor = resource.getAccessor(dataSource);
@@ -114,11 +113,11 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
                 .stream()
                 .flatMap(SheetTs::allOf);
 
-        return cursorOf(data, dataSource, sheetParam, seriesParam);
+        return streamOf(data, dataSource, sheetParam, seriesParam);
     }
 
     @Override
-    public TsCursor<DataSet> getData(DataSet dataSet, TsInformationType type) throws IllegalArgumentException, IOException {
+    public Stream<DataSetTs> getData(DataSet dataSet, TsInformationType type) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSet);
 
         SpreadSheetAccessor accessor = resource.getAccessor(dataSet.getDataSource());
@@ -131,7 +130,7 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
                 .orElseThrow(() -> sheetNotFound(dataSet))
                 .filter(getSeriesFilter(dataSet, seriesParam));
 
-        return cursorOf(data, dataSet.getDataSource(), sheetParam, seriesParam);
+        return streamOf(data, dataSet.getDataSource(), sheetParam, seriesParam);
     }
 
     private static IOException sheetNotFound(DataSet dataSet) {
@@ -164,10 +163,9 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
         }
     }
 
-    private static TsCursor<DataSet> cursorOf(Stream<SheetTs> data, DataSource dataSource, IParam<DataSet, String> sheetParam, IParam<DataSet, String> seriesParam) {
-        return TsCursor
-                .from(data.iterator(), SheetTs::getData, SheetTs::getMeta, SheetTs::getLabel)
-                .map(IOFunction.checked(dataMapper(dataSource, sheetParam, seriesParam)));
+    private static Stream<DataSetTs> streamOf(Stream<SheetTs> data, DataSource dataSource, IParam<DataSet, String> sheetParam, IParam<DataSet, String> seriesParam) {
+        Function<SheetTs, DataSet> mapper = dataMapper(dataSource, sheetParam, seriesParam);
+        return data.map(sheetTs -> new DataSetTs(mapper.apply(sheetTs), sheetTs.getLabel(), sheetTs.getMeta(), sheetTs.getData()));
     }
 
     @lombok.AllArgsConstructor
