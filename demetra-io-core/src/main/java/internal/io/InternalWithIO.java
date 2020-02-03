@@ -17,13 +17,14 @@
 package internal.io;
 
 import demetra.io.IteratorWithIO;
-import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import nbbrd.io.Resource;
+import nbbrd.io.function.IOFunction;
 
 /**
  *
@@ -35,9 +36,9 @@ public class InternalWithIO {
     public static final class MappingIterator<E, Z> implements IteratorWithIO<Z> {
 
         private final IteratorWithIO<E> delegate;
-        private final IO.Function<? super E, ? extends Z> function;
+        private final IOFunction<? super E, ? extends Z> function;
 
-        public MappingIterator(IteratorWithIO<E> delegate, IO.Function<? super E, ? extends Z> function) {
+        public MappingIterator(IteratorWithIO<E> delegate, IOFunction<? super E, ? extends Z> function) {
             this.delegate = Objects.requireNonNull(delegate);
             this.function = Objects.requireNonNull(function);
         }
@@ -80,7 +81,7 @@ public class InternalWithIO {
 
         @Override
         public void close() throws IOException {
-            IO.closeBoth(delegate, closeHandler);
+            Resource.closeBoth(delegate, closeHandler);
         }
     }
 

@@ -56,10 +56,10 @@ import internal.tsprovider.cursor.InternalTsCursor.SingletonCursor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static com.google.common.collect.Iterators.forArray;
 import demetra.timeseries.TsUnit;
-import ioutil.IO;
 import java.time.Duration;
 import javax.cache.Cache;
 import demetra.tsprovider.util.CacheFactory;
+import nbbrd.io.function.IOFunction;
 
 /**
  *
@@ -71,10 +71,10 @@ public class InternalTsCursorsTest {
     private final TsData someData = TsData.random(TsUnit.MONTH, 1);
     private final Map<String, String> someMeta = ImmutableMap.of("key", "value");
 
-    private final IO.Function<String, String> goodIdFunc = String::toUpperCase;
+    private final IOFunction<String, String> goodIdFunc = String::toUpperCase;
     private final Function<String, TsData> goodDataFunc = o -> someData;
     private final Function<String, Map<String, String>> goodMetaFunc = o -> someMeta;
-    private final IO.Function<String, String> badIdFunc = o -> null;
+    private final IOFunction<String, String> badIdFunc = o -> null;
     private final Function<String, TsData> badDataFunc = o -> null;
     private final Function<String, Map<String, String>> badMetaFunc = o -> null;
 
@@ -96,7 +96,7 @@ public class InternalTsCursorsTest {
             assertThat(cursor.nextSeries()).isFalse();
         }
 
-        try (EmptyCursor cursor = new EmptyCursor().map(IO.Function.identity())) {
+        try (EmptyCursor cursor = new EmptyCursor().map(IOFunction.identity())) {
             assertThat(cursor.getMetaData()).isEmpty();
             assertThat(cursor.nextSeries()).isFalse();
         }
@@ -325,7 +325,7 @@ public class InternalTsCursorsTest {
         assertThat(cursor.filter(o -> true)).isNotNull();
         assertThat(cursor.onClose(() -> {
         })).isNotNull();
-        assertThat(cursor.map(IO.Function.identity())).isNotNull();
+        assertThat(cursor.map(IOFunction.identity())).isNotNull();
         assertThat(cursor.withMetaData(Collections.emptyMap())).isNotNull();
     }
 

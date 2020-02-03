@@ -35,7 +35,6 @@ import demetra.tsprovider.cursor.TsCursorAsProvider;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.Params;
-import ioutil.IO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,6 +51,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import nbbrd.io.function.IOFunction;
 
 /**
  *
@@ -203,7 +203,7 @@ public final class PocProvider implements DataSourceProvider {
             return cursorOf(TYPE_PARAM.get(dataSet.getDataSource()), type).filter(o -> o == seriesIndex).map(o -> dataSet);
         }
 
-        private static IO.Function<Integer, DataSet> dataSetFunc(DataSource dataSource) {
+        private static IOFunction<Integer, DataSet> dataSetFunc(DataSource dataSource) {
             DataSet.Builder b = DataSet.builder(dataSource, DataSet.Kind.SERIES);
             return o -> b.put(INDEX_PARAM, o).build();
         }

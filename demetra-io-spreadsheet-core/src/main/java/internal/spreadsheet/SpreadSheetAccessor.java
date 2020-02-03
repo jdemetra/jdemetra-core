@@ -17,7 +17,6 @@
 package internal.spreadsheet;
 
 import demetra.tsprovider.TsCollection;
-import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
@@ -26,6 +25,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import javax.cache.Cache;
+import nbbrd.io.Resource;
+import nbbrd.io.function.IOSupplier;
 
 /**
  *
@@ -75,14 +76,14 @@ public interface SpreadSheetAccessor extends Closeable {
 
             @Override
             public void close() throws IOException {
-                IO.closeBoth(cache, delegate);
+                Resource.closeBoth(cache, delegate);
             }
 
             private <T> T peek(String key) {
                 return (T) cache.get(key);
             }
 
-            private <T> T load(String key, IO.Supplier<T> loader) throws IOException {
+            private <T> T load(String key, IOSupplier<T> loader) throws IOException {
                 T result = (T) cache.get(key);
                 if (result == null) {
                     result = loader.getWithIO();

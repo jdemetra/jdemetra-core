@@ -20,7 +20,6 @@ import demetra.design.Immutable;
 import demetra.timeseries.TsData;
 import demetra.tsprovider.cursor.TsCursor;
 import internal.util.AbstractIterator;
-import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,6 +33,9 @@ import java.util.function.Predicate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import static java.util.Objects.requireNonNull;
 import javax.cache.Cache;
+import nbbrd.io.Resource;
+import nbbrd.io.function.IOFunction;
+import nbbrd.io.function.IOPredicate;
 
 /**
  * Package-private supporting class for {@link TsCursor}.
@@ -68,7 +70,7 @@ public class InternalTsCursor {
         throw new RuntimeException("Invalid function '" + funcName + "': expected non-null result with parameter + '" + input + "'");
     }
 
-    private static <X, Y> Y applyNotNullWithIO(String funcName, IO.Function<X, Y> func, X input) throws IOException, RuntimeException {
+    private static <X, Y> Y applyNotNullWithIO(String funcName, IOFunction<X, Y> func, X input) throws IOException, RuntimeException {
         Y result = func.applyWithIO(input);
         if (result != null) {
             return result;
@@ -103,7 +105,7 @@ public class InternalTsCursor {
     public static <KEY, ID> TsCursor<ID> getOrLoad(
             @NonNull Cache<KEY, Object> cache,
             @NonNull KEY key,
-            IO.@NonNull Function<? super KEY, ? extends TsCursor<ID>> loader) throws IOException {
+            @NonNull IOFunction<? super KEY, ? extends TsCursor<ID>> loader) throws IOException {
 
         requireNonNull(cache, "cache");
         requireNonNull(key, "key");
@@ -167,11 +169,11 @@ public class InternalTsCursor {
 
     public static final class MappingCursor<ID, Z> extends ForwardingCursor<Z> {
 
-        private final IO.Function<? super ID, ? extends Z> function;
+        private final IOFunction<? super ID, ? extends Z> function;
 
         public MappingCursor(
                 @NonNull TsCursor<ID> delegate,
-                IO.@NonNull Function<? super ID, ? extends Z> function) {
+                @NonNull IOFunction<? super ID, ? extends Z> function) {
             super((TsCursor<Z>) delegate);
             this.function = requireNonNull(function, ID_TRANSFORMER_NPE);
         }
@@ -185,11 +187,11 @@ public class InternalTsCursor {
 
     public static final class FilteringCursor<ID> extends ForwardingCursor<ID> {
 
-        private final IO.Predicate<? super ID> filter;
+        private final IOPredicate<? super ID> filter;
 
         public FilteringCursor(
                 @NonNull TsCursor<ID> delegate,
-                IO.@NonNull Predicate<? super ID> filter) {
+                @NonNull IOPredicate<? super ID> filter) {
             super(delegate);
             this.filter = requireNonNull(filter, ID_FILTER_NPE);
         }
@@ -231,7 +233,7 @@ public class InternalTsCursor {
 
         @Override
         public void close() throws IOException {
-            IO.closeBoth(delegate, closeHandler);
+            Resource.closeBoth(delegate, closeHandler);
         }
     }
 
@@ -300,7 +302,7 @@ public class InternalTsCursor {
 
         @Override
         public void close() throws IOException {
-            IO.closeBoth(this::flushToCache, delegate::close);
+            Resource.closeBoth(this::flushToCache, delegate::close);
         }
 
         private void flushToCache() throws IOException {
@@ -380,7 +382,7 @@ public class InternalTsCursor {
 
         private Closeable compose(Closeable closeHandler) {
             Closeable first = this.closeable;
-            return () -> IO.closeBoth(first, closeHandler);
+            return () -> Resource.closeBoth(first, closeHandler);
         }
     }
 
@@ -417,13 +419,13 @@ public class InternalTsCursor {
         }
 
         @Override
-        public EmptyCursor<ID> filter(IO.Predicate<? super ID> predicate) {
+        public EmptyCursor<ID> filter(IOPredicate<? super ID> predicate) {
             requireNonNull(predicate, ID_FILTER_NPE);
             return this;
         }
 
         @Override
-        public <Z> EmptyCursor<Z> map(IO.Function<? super ID, ? extends Z> function) {
+        public <Z> EmptyCursor<Z> map(IOFunction<? super ID, ? extends Z> function) {
             requireNonNull(function, ID_TRANSFORMER_NPE);
             return (EmptyCursor<Z>) this;
         }
@@ -436,7 +438,7 @@ public class InternalTsCursor {
                 @NonNull TsData data,
                 @NonNull Map<String, String> meta,
                 @NonNull String label) {
-            super(Collections.singleton(id).iterator(), IO.Function.identity(), o -> data, o -> meta, o -> label);
+            super(Collections.singleton(id).iterator(), IOFunction.identity(), o -> data, o -> meta, o -> label);
             Objects.requireNonNull(data);
             Objects.requireNonNull(meta);
             Objects.requireNonNull(label);
@@ -446,7 +448,7 @@ public class InternalTsCursor {
     public static class IteratingCursor<E, ID> extends InMemoryCursor<ID> {
 
         private Iterator<E> iterator;
-        private IO.Function<? super E, ? extends ID> toId;
+        private IOFunction<? super E, ? extends ID> toId;
         private final Function<? super E, TsData> toData;
         private final Function<? super E, Map<String, String>> toMeta;
         private final Function<? super E, String> toLabel;
@@ -454,7 +456,7 @@ public class InternalTsCursor {
 
         public IteratingCursor(
                 @NonNull Iterator<E> iterator,
-                IO.@NonNull Function<? super E, ? extends ID> toId,
+                @NonNull IOFunction<? super E, ? extends ID> toId,
                 @NonNull Function<? super E, TsData> toData,
                 @NonNull Function<? super E, Map<String, String>> toMeta,
                 @NonNull Function<? super E, String> toLabel) {
@@ -507,21 +509,21 @@ public class InternalTsCursor {
         }
 
         @Override
-        public IteratingCursor<E, ID> filter(IO.Predicate<? super ID> predicate) {
+        public IteratingCursor<E, ID> filter(IOPredicate<? super ID> predicate) {
             iterator = compose(iterator, toId, requireNonNull(predicate, ID_FILTER_NPE));
             return this;
         }
 
         @Override
-        public <Z> IteratingCursor<E, Z> map(IO.Function<? super ID, ? extends Z> function) {
+        public <Z> IteratingCursor<E, Z> map(IOFunction<? super ID, ? extends Z> function) {
             IteratingCursor<E, Z> result = (IteratingCursor<E, Z>) this;
             result.toId = toId.andThen(requireNonNull(function, ID_TRANSFORMER_NPE));
             return result;
         }
     }
 
-    private static <E, ID> Iterator<E> compose(Iterator<E> iterator, IO.Function<? super E, ? extends ID> toId, IO.Predicate<? super ID> predicate) {
-        return filter(iterator, IO.Predicate.unchecked(o -> predicate.testWithIO(applyNotNullWithIO("id", toId, o))));
+    private static <E, ID> Iterator<E> compose(Iterator<E> iterator, IOFunction<? super E, ? extends ID> toId, IOPredicate<? super ID> predicate) {
+        return filter(iterator, IOPredicate.unchecked(o -> predicate.testWithIO(applyNotNullWithIO("id", toId, o))));
     }
 
     private static <E> Iterator<E> filter(Iterator<E> iterator, Predicate<? super E> predicate) {

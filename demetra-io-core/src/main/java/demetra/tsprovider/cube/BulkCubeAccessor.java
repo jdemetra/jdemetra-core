@@ -26,7 +26,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import javax.cache.Cache;
 import lombok.AccessLevel;
 import demetra.tsprovider.util.CacheFactory;
-import ioutil.IO;
+import nbbrd.io.Resource;
 
 /**
  *
@@ -121,6 +121,6 @@ public final class BulkCubeAccessor implements CubeAccessor {
 
     @Override
     public void close() throws IOException {
-        IO.closeBoth(cache, delegate);
+        Resource.closeBoth(cache, delegate);
     }
 }

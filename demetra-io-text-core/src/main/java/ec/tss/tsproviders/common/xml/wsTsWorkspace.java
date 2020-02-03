@@ -22,7 +22,6 @@ package ec.tss.tsproviders.common.xml;
  */
 import demetra.data.DoubleList;
 import internal.util.Strings;
-import ioutil.Stax;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import nbbrd.io.xml.Stax;
 
 public class wsTsWorkspace {
 

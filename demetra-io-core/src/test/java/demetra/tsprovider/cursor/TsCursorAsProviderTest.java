@@ -37,10 +37,10 @@ import static demetra.tsprovider.TsInformationType.None;
 import demetra.tsprovider.TsMoniker;
 import demetra.tsprovider.TsProvider;
 import internal.timeseries.util.TsDataBuilderUtil;
-import ioutil.IO;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
+import nbbrd.io.function.IOFunction;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
@@ -87,7 +87,7 @@ public class TsCursorAsProviderTest {
             public TsCursor<DataSet> getData(DataSource dataSource, TsInformationType type) throws IllegalArgumentException, IOException {
                 if (dataSource.equals(ds)) {
                     DataSet.Builder b = DataSet.builder(dataSource, SERIES);
-                    IO.Function<Ts, DataSet> toDataSet = o -> {
+                    IOFunction<Ts, DataSet> toDataSet = o -> {
                         b.put("id", o.getName());
                         return b.build();
                     };

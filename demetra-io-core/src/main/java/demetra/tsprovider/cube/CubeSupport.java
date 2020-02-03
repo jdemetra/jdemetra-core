@@ -29,7 +29,6 @@ import demetra.tsprovider.cursor.TsCursor;
 import demetra.io.IteratorWithIO;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import internal.util.Strings;
-import ioutil.IO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +37,7 @@ import java.util.List;
 import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AllArgsConstructor;
+import nbbrd.io.function.IOFunction;
 
 /**
  *
@@ -192,7 +192,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
         return result;
     }
 
-    private static IO.Function<CubeId, DataSet> toDataSetFunc(DataSet.Builder builder, IParam<DataSet, CubeId> dimValuesParam) {
+    private static IOFunction<CubeId, DataSet> toDataSetFunc(DataSet.Builder builder, IParam<DataSet, CubeId> dimValuesParam) {
         return o -> builder.put(dimValuesParam, o).build();
     }
 

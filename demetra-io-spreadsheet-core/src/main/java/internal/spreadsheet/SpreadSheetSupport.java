@@ -32,7 +32,6 @@ import demetra.tsprovider.grid.GridLayout;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.MultiLineNameUtil;
-import ioutil.IO;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +40,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import nbbrd.io.function.IOFunction;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -167,7 +167,7 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsCursor {
     private static TsCursor<DataSet> cursorOf(Stream<SheetTs> data, DataSource dataSource, IParam<DataSet, String> sheetParam, IParam<DataSet, String> seriesParam) {
         return TsCursor
                 .from(data.iterator(), SheetTs::getData, SheetTs::getMeta, SheetTs::getLabel)
-                .map(IO.Function.checked(dataMapper(dataSource, sheetParam, seriesParam)));
+                .map(IOFunction.checked(dataMapper(dataSource, sheetParam, seriesParam)));
     }
 
     @lombok.AllArgsConstructor
